@@ -3,23 +3,23 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "dev": "nuxt-ts",
-    "build": "nuxt-ts build",
-    "start": "nuxt-ts start",
-    "generate": "nuxt-ts generate",
-    "lint:js": "eslint --ext .js,.vue --ignore-path .gitignore .",
-    "lint:style": "stylelint **/*.{vue,css} --ignore-path .gitignore",
+    "dev": "yarn nuxt-ts",
+    "build": "yarn nuxt-ts build",
+    "start": "yarn nuxt-ts start",
+    "generate": "yarn nuxt-ts generate",
+    "lint:js": "yarn eslint --ext .js,.vue --ignore-path .gitignore .",
+    "lint:style": "yarn stylelint **/*.{vue,css} --ignore-path .gitignore",
     "lint": "yarn lint:js && yarn lint:style",
-    "test": "jest"
+    "test": "yarn jest"
   },
   "lint-staged": {
-    "*.{js,vue}": "eslint",
-    "*.{css,vue}": "stylelint"
+    "*.{js,vue}": "yarn eslint",
+    "*.{css,vue}": "yarn stylelint"
   },
   "husky": {
     "hooks": {
-      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS",
-      "pre-commit": "lint-staged"
+      "commit-msg": "yarn commitlint -E HUSKY_GIT_PARAMS",
+      "pre-commit": "yarn lint-staged"
     }
   },
   "dependencies": {

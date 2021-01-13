@@ -1,5 +1,14 @@
 # Created by .ignore support plugin (hsz.mobi)
 ### Node template
+
+# Yarn v2
+.yarn/*
+!.yarn/releases
+!.yarn/plugins
+!.yarn/sdks
+!.yarn/versions
+.pnp.*
+
 # Logs
 /logs
 *.log
@@ -37,6 +46,7 @@ build/Release
 # Dependency directories
 node_modules/
 jspm_packages/
+
 
 # TypeScript v1 declaration files
 typings/
