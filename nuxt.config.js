@@ -1,3 +1,15 @@
+import dotenv from 'dotenv'
+
+dotenv.config()
+
+function checkEnvVariable(variableName) {
+  if (!process.env[variableName]) {
+    throw new Error(`Vido: The ${variableName} environment variable must exist`)
+  }
+}
+
+checkEnvVariable('TILES_TOKEN')
+
 export default {
   // Global page headers (https://go.nuxtjs.dev/config-head)
   head: {
@@ -21,6 +33,7 @@ export default {
 
   // Modules for dev and build (recommended) (https://go.nuxtjs.dev/config-modules)
   buildModules: [
+    ['@nuxtjs/dotenv', { only: ['TILES_TOKEN'] }],
     // https://go.nuxtjs.dev/typescript
     '@nuxt/typescript-build',
     // https://go.nuxtjs.dev/stylelint

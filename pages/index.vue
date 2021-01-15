@@ -4,31 +4,62 @@
       <Logo />
       <h1 class="title">@teritorio/vido</h1>
       <div class="links">
-        <a
-          href="https://nuxtjs.org/"
-          target="_blank"
-          rel="noopener noreferrer"
-          class="button--green"
+        <button
+          type="button"
+          class="bg-blue-600 text-white font-medium px-6 py-3 rounded"
+          @click="setFlat"
         >
-          Documentation
-        </a>
-        <a
-          href="https://github.com/nuxt/nuxt.js"
-          target="_blank"
-          rel="noopener noreferrer"
-          class="button--grey"
+          Flat
+        </button>
+        <button
+          type="button"
+          class="bg-blue-600 text-white font-medium px-6 py-3 rounded"
+          @click="set3D"
         >
-          GitHub
-        </a>
+          3D
+        </button>
       </div>
     </div>
+    <div id="map"></div>
   </div>
 </template>
 
 <script lang="ts">
+import { building3d } from '@teritorio/map'
+import mapboxgl from 'mapbox-gl'
 import Vue from 'vue'
 
-export default Vue.extend({})
+export default Vue.extend({
+  data(): {
+    map: mapboxgl.Map | null
+  } {
+    return {
+      map: null,
+    }
+  },
+  mounted() {
+    this.map = new mapboxgl.Map({
+      container: 'map',
+      style: `https://vecto.teritorio.xyz/styles/teritorio-tourism-0.9/style.json?key=${process.env.TILES_TOKEN}`,
+      center: [-1.559646, 43.482489],
+      zoom: 16.54,
+      maxZoom: 20,
+      hash: true,
+    })
+  },
+  methods: {
+    setFlat() {
+      if (this.map) {
+        building3d(this.map).set3d(false, 0)
+      }
+    },
+    set3D() {
+      if (this.map) {
+        building3d(this.map).set3d(true, 60)
+      }
+    },
+  },
+})
 </script>
 
 <style>
@@ -41,6 +72,7 @@ export default Vue.extend({})
   margin: 0 auto;
   min-height: 100vh;
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
   text-align: center;
@@ -66,5 +98,11 @@ export default Vue.extend({})
 
 .links {
   padding-top: 15px;
+  padding-bottom: 15px;
+}
+
+#map {
+  width: 500px;
+  height: 500px;
 }
 </style>
