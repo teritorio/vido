@@ -98,8 +98,11 @@
         <div class="inline-block w-80 m-6 overflow-hidden">
           <a
             href="#"
-            class="inline-block h-48 w-full bg-gradient-to-br from-gray-50 to-gray-100 rounded-xl"
+            class="h-48 w-full flex justify-center items-center bg-green-100 rounded-xl"
           >
+            <LeisureParkGardenIcon
+              class="w-12 h-12 fill-current text-green-300"
+            />
           </a>
 
           <div class="mt-6 flex justify-between">
@@ -132,12 +135,20 @@ import Vue from 'vue'
 import Map from '@/components/Map.vue'
 import OpenMention from '@/components/OpenMention.vue'
 import ClosedMention from '@/components/ClosedMention.vue'
+import LeisureParkGardenIcon from '@/assets/leisure-park-garden•.svg?inline'
 
 export default Vue.extend({
   components: {
     ClosedMention,
+    LeisureParkGardenIcon,
     Map,
     OpenMention,
   },
 })
 </script>
+
+<style>
+svg.fill-current g {
+  fill: currentColor;
+}
+</style>
