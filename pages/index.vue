@@ -3,17 +3,20 @@
     <div class="w-1/2 px-16 py-8">
       <h1 class="uppercase font-bold">Titre</h1>
 
-      <form class="flex w-full max-w-xl mx-auto my-4 space-x-3">
-        <input
-          class="flex-1 appearance-none border border-transparent w-full py-2 px-4 bg-gray-100 text-gray-700 placeholder-gray-800 rounded-lg text-base focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-          placeholder="Une petite faim ?"
-        />
-        <button
-          class="flex-shrink-0 bg-blue-600 text-white text-base font-semibold py-2 px-4 rounded-lg shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-blue-200"
-        >
-          Chercher
-        </button>
-      </form>
+      <div class="w-full max-w-2xl mx-auto my-4">
+        <form class="flex space-x-3">
+          <input
+            class="flex-1 appearance-none border border-transparent w-full py-3 px-7 bg-gray-100 text-gray-700 placeholder-gray-800 text-lg rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            placeholder="Recherche..."
+          />
+        </form>
+        <div class="flex justify-center mt-4 space-x-6 font-medium">
+          <p>Il est presque midi, vous n'avez pas faim ?</p>
+          <a href="#" class="text-blue-500 hover:underline"
+            >Voir les restaurants</a
+          >
+        </div>
+      </div>
 
       <div class="mt-10">
         <div class="inline-block w-80 m-6 overflow-hidden">
