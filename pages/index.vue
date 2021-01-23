@@ -138,10 +138,10 @@
 import Vue from 'vue'
 
 import LeisureParkGardenIcon from '@/assets/leisure-park-garden•.svg?inline'
+import ClosedMention from '@/components/ClosedMention.vue'
 import Logo from '@/components/Logo.vue'
 import Map from '@/components/Map.vue'
 import OpenMention from '@/components/OpenMention.vue'
-import ClosedMention from '@/components/ClosedMention.vue'
 
 export default Vue.extend({
   components: {
