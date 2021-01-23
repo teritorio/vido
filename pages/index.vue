@@ -2,10 +2,7 @@
   <div class="flex">
     <div class="w-1/2 px-16 py-8">
       <h1>
-        <Logo
-          class="w-40 h-auto fill-current text-gray-900"
-          aria-label="Landes, Terre des possibles"
-        />
+        <Logo class="w-40 h-auto" />
       </h1>
 
       <div class="w-full max-w-2xl mx-auto my-10">
@@ -141,7 +138,7 @@
 import Vue from 'vue'
 
 import LeisureParkGardenIcon from '@/assets/leisure-park-garden•.svg?inline'
-import Logo from '@/assets/logo-white.svg?inline'
+import Logo from '@/components/Logo.vue'
 import Map from '@/components/Map.vue'
 import OpenMention from '@/components/OpenMention.vue'
 import ClosedMention from '@/components/ClosedMention.vue'
@@ -156,9 +153,3 @@ export default Vue.extend({
   },
 })
 </script>
-
-<style>
-svg.fill-current g {
-  fill: currentColor;
-}
-</style>
