@@ -45,7 +45,7 @@
 
           <a
             href="#"
-            class="block mt-2 text-lg leading-tight font-medium text-black hover:underline"
+            class="block mt-2 text-lg leading-tight font-medium text-gray-900 hover:underline"
           >
             Lorem Ipsum dolor sit amet
           </a>
@@ -72,7 +72,7 @@
 
           <a
             href="#"
-            class="block mt-2 text-lg leading-tight font-medium text-black hover:underline"
+            class="block mt-2 text-lg leading-tight font-medium text-gray-900 hover:underline"
           >
             At vero eos et accusamus
           </a>
@@ -97,7 +97,7 @@
 
           <a
             href="#"
-            class="block mt-2 text-lg leading-tight font-medium text-black hover:underline"
+            class="block mt-2 text-lg leading-tight font-medium text-gray-900 hover:underline"
           >
             Nemo enim ipsam voluptatem
           </a>
@@ -123,7 +123,7 @@
 
           <a
             href="#"
-            class="block mt-2 text-lg leading-tight font-medium text-black hover:underline"
+            class="block mt-2 text-lg leading-tight font-medium text-gray-900 hover:underline"
           >
             Ut enim ad minima veniam
           </a>
