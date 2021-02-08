@@ -1,6 +1,6 @@
 <template>
   <LogoSvg
-    class="w-40 h-auto fill-current text-gray-900"
+    class="fill-current text-gray-900"
     aria-label="Landes, Terre des possibles"
   />
 </template>
