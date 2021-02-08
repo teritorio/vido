@@ -1,26 +1,31 @@
 <template>
-  <div class="relative flex flex-col">
-    <div id="map" class="flex-grow rounded-lg overflow-hidden shadow-md"></div>
+  <div class="w-full h-full">
+    <div class="relative flex flex-col w-full h-full">
+      <div
+        id="map"
+        class="flex-grow overflow-hidden rounded-lg shadow-md"
+      ></div>
 
-    <div class="absolute top-3 right-3">
-      <button
-        type="button"
-        class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded shadow-md"
-        @click="setFlat"
-      >
-        Flat
-      </button>
-      <button
-        type="button"
-        class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded shadow-md"
-        @click="set3D"
-      >
-        3D
-      </button>
-    </div>
+      <div class="absolute top-3 right-3">
+        <button
+          type="button"
+          class="px-4 py-2 font-bold text-white bg-blue-500 rounded shadow-md hover:bg-blue-700"
+          @click="setFlat"
+        >
+          Flat
+        </button>
+        <button
+          type="button"
+          class="px-4 py-2 font-bold text-white bg-blue-500 rounded shadow-md hover:bg-blue-700"
+          @click="set3D"
+        >
+          3D
+        </button>
+      </div>
 
-    <div class="absolute inset-x-3 bottom-3 flex justify-center">
+      <!-- <div class="absolute flex justify-center inset-x-3 bottom-3">
       <MapPoiToast class="flex-grow-0" />
+    </div> -->
     </div>
   </div>
 </template>
@@ -30,12 +35,12 @@ import { building3d } from '@teritorio/map'
 import mapboxgl from 'mapbox-gl'
 import Vue from 'vue'
 
-import MapPoiToast from '@/components/MapPoiToast.vue'
+// import MapPoiToast from '@/components/MapPoiToast.vue'
 
 export default Vue.extend({
-  components: {
-    MapPoiToast,
-  },
+  // components: {
+  //   MapPoiToast,
+  // },
   data(): {
     map: mapboxgl.Map | null
   } {
