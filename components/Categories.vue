@@ -1,35 +1,18 @@
 <template>
-  <div class="px-5 py-4 bg-white rounded-lg shadow-md">
+  <div class="p-4 bg-white rounded-lg shadow-md">
     <h2 class="mb-4 text-xs font-bold text-gray-800 uppercase">
       Les catégories
     </h2>
-
-    <div class="grid grid-cols-5 gap-y-4 gap-x-2">
-      <category-button name="Bar" color="blue">
-        <LeisureParkGardenIcon class="w-6 h-6 fill-current" />
-      </category-button>
-      <category-button name="Hébergement" color="green" :badge="6" selected>
-        <LeisureParkGardenIcon class="w-6 h-6 fill-current" />
-      </category-button>
-      <category-button name="Loisir" color="indigo">
-        <LeisureParkGardenIcon class="w-6 h-6 fill-current" />
-      </category-button>
-      <category-button name="Promenade" color="purple" :badge="2">
-        <LeisureParkGardenIcon class="w-6 h-6 fill-current" />
-      </category-button>
-      <category-button name="Pratique" color="pink">
-        <LeisureParkGardenIcon class="w-6 h-6 fill-current" />
-      </category-button>
-      <category-button name="Transport" color="yellow" :badge="1">
-        <LeisureParkGardenIcon class="w-6 h-6 fill-current" />
-      </category-button>
-      <category-button name="Alimentation" color="blue">
-        <LeisureParkGardenIcon class="w-6 h-6 fill-current" />
-      </category-button>
-      <category-button name="Commerce" color="green">
-        <LeisureParkGardenIcon class="w-6 h-6 fill-current" />
-      </category-button>
-      <category-button name="Santé" color="red">
+    <div class="grid grid-cols-4 gap-1 md:grid-cols-5">
+      <category-button
+        v-for="(category, name) in categories"
+        :key="name"
+        :name="category.label"
+        :badge="category.badge"
+        :color="category.color"
+        :selected="selected === name"
+        @click.native="onCategoryButtonClick(name)"
+      >
         <LeisureParkGardenIcon class="w-6 h-6 fill-current" />
       </category-button>
     </div>
@@ -46,6 +29,72 @@ export default Vue.extend({
   components: {
     CategoryButton,
     LeisureParkGardenIcon,
+  },
+  data() {
+    return {
+      selected: '', // should be null
+      categories: {
+        bar: {
+          label: 'Bars',
+          color: 'blue',
+          badge: 0,
+          icon: LeisureParkGardenIcon,
+        },
+        housing: {
+          label: 'Hébergement',
+          color: 'green',
+          badge: 6,
+          icon: LeisureParkGardenIcon,
+        },
+        hobby: {
+          label: 'Loisir',
+          color: 'indigo',
+          badge: 0,
+          icon: LeisureParkGardenIcon,
+        },
+        walk: {
+          label: 'Promenade',
+          color: 'blue',
+          badge: 2,
+          icon: LeisureParkGardenIcon,
+        },
+        utils: {
+          label: 'Pratique',
+          color: 'purple',
+          badge: 0,
+          icon: LeisureParkGardenIcon,
+        },
+        transport: {
+          label: 'Transport',
+          color: 'pink',
+          badge: 1,
+          icon: LeisureParkGardenIcon,
+        },
+        food: {
+          label: 'Alimentation',
+          color: 'yellow',
+          badge: 0,
+          icon: LeisureParkGardenIcon,
+        },
+        shoping: {
+          label: 'Commerce',
+          color: 'green',
+          badge: 0,
+          icon: LeisureParkGardenIcon,
+        },
+        health: {
+          label: 'Santé',
+          color: 'red',
+          badge: 0,
+          icon: LeisureParkGardenIcon,
+        },
+      },
+    }
+  },
+  methods: {
+    onCategoryButtonClick(name: string) {
+      this.selected = name
+    },
   },
 })
 </script>

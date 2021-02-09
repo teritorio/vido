@@ -1,9 +1,14 @@
 <template>
   <button
-    class="flex flex-col flex-wrap items-center justify-center leading-none"
+    class="flex flex-col items-center justify-center pt-4 pb-2 leading-none"
   >
     <div
-      :class="`relative flex items-center justify-center w-14 h-14 mb-1 rounded-full border-2 ${bgClass} ${textClass} ${borderClass} `"
+      :class="[
+        'relative flex items-center justify-center lg:w-14 lg:h-14 w-12 h-12 mb-1 rounded-full border-2',
+        selected ? `bg-${color}-200` : `bg-gray-100`,
+        selected ? `text-${color}-700` : `text-${color}-500`,
+        selected ? `border-${color}-500` : `border-gray-300`,
+      ]"
     >
       <span
         v-if="badge > 0"
@@ -40,21 +45,7 @@ export default Vue.extend({
       default: false,
     },
   },
-  data(): any {
-    const bgClass = this.selected ? `bg-${this.color}-200` : `bg-gray-100`
-    const borderClass = this.selected
-      ? `border-${this.color}-500`
-      : `border-gray-300`
-
-    const textClassIntenisty = this.selected ? '700' : '500'
-    const textClass = `text-${this.color}-${textClassIntenisty}`
-
-    return {
-      bgClass,
-      textClass,
-      borderClass,
-    }
-  },
+  data(): any {},
   methods: {},
 })
 </script>
