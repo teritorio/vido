@@ -2,9 +2,11 @@
   <div class="w-full h-full overflow-hidden">
     <Map class="absolute w-full h-full" />
 
-    <div class="fixed top-0 bottom-0 w-full p-4">
+    <div class="fixed top-0 bottom-0 w-full p-4 pointer-events-none">
       <div class="grid grid-cols-2 gap-4 m-h-full lg:grid-cols-3">
-        <div class="col-start-1 col-end-2 bg-white rounded-lg shadow-md">
+        <div
+          class="col-start-1 col-end-2 bg-white rounded-lg shadow-md pointer-events-auto"
+        >
           <div class="flex flex-row items-stretch">
             <h1 class="flex px-5 py-3">
               <Logo class="w-20 h-auto" />
@@ -19,7 +21,7 @@
           </div>
         </div>
 
-        <div class="h-full row-start-2 space-y-4">
+        <div class="h-full row-start-2 space-y-4 pointer-events-auto">
           <!-- Categories -->
           <div class="flex flex-col space-y-2">
             <div class="px-5 py-4 bg-white rounded-lg shadow-md">
@@ -34,7 +36,7 @@
                 <category-button
                   name="Hébergement"
                   color="green"
-                  badge="6"
+                  :badge="6"
                   selected
                 >
                   <LeisureParkGardenIcon class="w-6 h-6 fill-current" />
@@ -42,13 +44,13 @@
                 <category-button name="Loisir" color="indigo">
                   <LeisureParkGardenIcon class="w-6 h-6 fill-current" />
                 </category-button>
-                <category-button name="Promenade" color="purple" badge="2">
+                <category-button name="Promenade" color="purple" :badge="2">
                   <LeisureParkGardenIcon class="w-6 h-6 fill-current" />
                 </category-button>
                 <category-button name="Pratique" color="pink">
                   <LeisureParkGardenIcon class="w-6 h-6 fill-current" />
                 </category-button>
-                <category-button name="Transport" color="yellow" badge="1">
+                <category-button name="Transport" color="yellow" :badge="1">
                   <LeisureParkGardenIcon class="w-6 h-6 fill-current" />
                 </category-button>
                 <category-button name="Alimentation" color="blue">
@@ -81,7 +83,7 @@
         </div>
 
         <div
-          class="row-start-2 gap-2 px-5 overflow-y-auto bg-white rounded-lg shadow-md"
+          class="row-start-2 gap-2 px-5 overflow-y-auto bg-white rounded-lg shadow-md pointer-events-auto"
         >
           <div>
             <h3
@@ -96,13 +98,13 @@
             <ul class="mb-4">
               <li>
                 <label className="flex flex-row items-center space-x-2">
-                  <input type="radio" checked />
+                  <input type="checkbox" checked />
                   <span>Hotel</span>
                 </label>
               </li>
               <li>
                 <label className="flex flex-row items-center space-x-2">
-                  <input type="radio" />
+                  <input type="checkbox" />
                   <span>Chambre d'hôtes</span>
                 </label>
               </li>
@@ -121,25 +123,25 @@
             <ul class="mb-4">
               <li>
                 <label className="flex flex-row items-center space-x-2">
-                  <input type="radio" />
+                  <input type="checkbox" />
                   <span>Location</span>
                 </label>
               </li>
               <li>
                 <label className="flex flex-row items-center space-x-2">
-                  <input type="radio" checked />
+                  <input type="checkbox" checked />
                   <span>Village vacances</span>
                 </label>
               </li>
               <li>
                 <label className="flex flex-row items-center space-x-2">
-                  <input type="radio" checked />
+                  <input type="checkbox" checked />
                   <span>Résidence de tourisme</span>
                 </label>
               </li>
               <li>
                 <label className="flex flex-row items-center space-x-2">
-                  <input type="radio" checked />
+                  <input type="checkbox" checked />
                   <span>Agences immobilière</span>
                 </label>
               </li>
@@ -158,13 +160,13 @@
             <ul class="mb-4">
               <li>
                 <label className="flex flex-row items-center space-x-2">
-                  <input type="radio" checked />
+                  <input type="checkbox" checked />
                   <span>Campings</span>
                 </label>
               </li>
               <li>
                 <label className="flex flex-row items-center space-x-2">
-                  <input type="radio" checked />
+                  <input type="checkbox" checked />
                   <span>Aires de camping car</span>
                 </label>
               </li>
