@@ -1,21 +1,31 @@
 <template>
-  <div class="p-4 bg-white rounded-lg shadow-md">
-    <h2 class="mb-4 text-xs font-bold text-gray-800 uppercase">
-      Les catégories
-    </h2>
-    <div class="grid grid-cols-4 gap-1 md:grid-cols-5">
-      <category-button
-        v-for="(category, name) in categories"
-        :key="name"
-        :name="category.label"
-        :badge="category.badge"
-        :color="category.color"
-        :selected="selected === name"
-        @click.native="onCategoryButtonClick(name)"
-      >
-        <component :is="category.icon" class="w-6 h-6 fill-current"></component>
-      </category-button>
+  <div class="flex flex-col space-y-4 overflow-hidden" @keyup.esc="onEscape">
+    <div class="p-4 bg-white rounded-lg shadow-md">
+      <h2 class="mb-4 text-xs font-bold text-gray-800 uppercase">
+        Les catégories
+      </h2>
+      <div class="grid grid-cols-4 gap-1 md:grid-cols-5">
+        <category-button
+          v-for="(category, name) in categories"
+          :key="name"
+          :name="category.label"
+          :badge="category.badge"
+          :color="category.color"
+          :selected="selected === name"
+          @click.native="onCategoryButtonClick(name)"
+        >
+          <component
+            :is="category.icon"
+            class="w-6 h-6 fill-current"
+          ></component>
+        </category-button>
+      </div>
     </div>
+
+    <sub-categories
+      v-if="selected"
+      class="px-5 overflow-y-auto bg-white rounded-lg shadow-md"
+    />
   </div>
 </template>
 
@@ -24,11 +34,13 @@ import Vue from 'vue'
 
 import LeisureParkGardenIcon from '@/assets/leisure-park-garden•.svg?inline'
 import CategoryButton from '@/components/CategoryButton.vue'
+import SubCategories from '@/components/SubCategories.vue'
 
 export default Vue.extend({
   components: {
     CategoryButton,
     LeisureParkGardenIcon,
+    SubCategories,
   },
   data(): {
     selected: null | string
@@ -105,6 +117,9 @@ export default Vue.extend({
   methods: {
     onCategoryButtonClick(name: string) {
       this.selected = name
+    },
+    onEscape() {
+      this.selected = null
     },
   },
 })

@@ -48,7 +48,6 @@ export default Vue.extend({
       default: false,
     },
   },
-  data(): any {},
   methods: {},
 })
 </script>

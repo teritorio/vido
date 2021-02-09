@@ -1,10 +1,7 @@
 <template>
   <div class="w-full h-full">
     <div class="relative flex flex-col w-full h-full">
-      <div
-        id="map"
-        class="flex-grow overflow-hidden rounded-lg shadow-md"
-      ></div>
+      <div id="map" class="flex-grow overflow-hidden"></div>
 
       <div class="absolute top-3 right-3">
         <button
