@@ -70,7 +70,7 @@
         <div class="px-5 overflow-y-auto bg-white rounded-lg shadow-md">
           <div>
             <h3
-              class="sticky top-0 flex flex-row items-center py-2 py-4 font-bold uppercase bg-white"
+              class="sticky top-0 flex flex-row items-center py-4 font-bold uppercase bg-white"
             >
               <span>Chambres</span>
               <span
