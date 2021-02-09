@@ -12,7 +12,10 @@
     >
       <span
         v-if="badge > 0"
-        :class="`absolute top-0 right-0 flex items-center justify-center w-6 h-6 -m-2 text-xs font-bold leading-none text-white bg-${color}-900 rounded-full ring-2 ring-white`"
+        :class="[
+          'absolute top-0 right-0 flex items-center justify-center w-6 h-6 -m-2 text-xs font-bold leading-none text-white rounded-full ring-2 ring-white',
+          `bg-${color}-900`,
+        ]"
         >{{ badge }}</span
       >
       <slot />

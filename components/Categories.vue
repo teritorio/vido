@@ -13,7 +13,7 @@
         :selected="selected === name"
         @click.native="onCategoryButtonClick(name)"
       >
-        <LeisureParkGardenIcon class="w-6 h-6 fill-current" />
+        <component :is="category.icon" class="w-6 h-6 fill-current"></component>
       </category-button>
     </div>
   </div>
@@ -30,9 +30,20 @@ export default Vue.extend({
     CategoryButton,
     LeisureParkGardenIcon,
   },
-  data() {
+  data(): {
+    selected: null | string
+    categories: Record<
+      string,
+      {
+        label: string
+        color: string
+        badge: number
+        icon: any
+      }
+    >
+  } {
     return {
-      selected: '', // should be null
+      selected: null,
       categories: {
         bar: {
           label: 'Bars',
