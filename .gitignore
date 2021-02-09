@@ -98,3 +98,7 @@ sw.*
 
 # Vim swap files
 *.swp
+
+# VS Code
+
+.vscode/settings.json
