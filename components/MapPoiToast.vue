@@ -1,9 +1,9 @@
 <template>
   <div
-    class="max-w-xl mx-auto flex bg-white rounded-xl shadow-md overflow-hidden"
+    class="flex max-w-xl mx-auto overflow-hidden bg-white shadow-md rounded-xl"
   >
     <img
-      class="h-full w-48 object-cover"
+      class="object-cover w-48"
       src="https://images.unsplash.com/photo-1591242825378-ba17ddd7975c?ixlib=rb-1.2.1&ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&auto=format&fit=crop&w=500&q=80"
       alt="Lorem Ipsum dolor sit amet"
     />
@@ -11,7 +11,7 @@
     <div class="p-8">
       <div class="flex justify-between">
         <div
-          class="uppercase tracking-wide text-sm text-blue-500 font-semibold"
+          class="text-sm font-semibold tracking-wide text-blue-500 uppercase"
         >
           Restaurant
         </div>
@@ -20,7 +20,7 @@
       </div>
 
       <p
-        class="block mt-2 text-lg leading-tight font-medium text-black hover:underline"
+        class="block mt-2 text-lg font-medium leading-tight text-black hover:underline"
       >
         Lorem Ipsum dolor sit amet
       </p>
