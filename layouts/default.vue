@@ -6,8 +6,6 @@
 
 <style>
 html {
-  @apply text-gray-900;
-
   font-family: 'Source Sans Pro', -apple-system, BlinkMacSystemFont, 'Segoe UI',
     Roboto, 'Helvetica Neue', Arial, sans-serif;
   font-size: 16px;
@@ -16,22 +14,27 @@ html {
   -webkit-text-size-adjust: 100%;
   -moz-osx-font-smoothing: grayscale;
   -webkit-font-smoothing: antialiased;
-  box-sizing: border-box;
-  height: 100%;
-  width: 100%;
+  @apply h-full;
+  @apply w-full;
+  @apply box-border;
+  @apply text-gray-900;
 }
 
 body,
 #__nuxt,
 #__layout {
-  height: 100%;
-  width: 100%;
+  @apply h-full;
+  @apply w-full;
 }
 
 *,
 *::before,
 *::after {
-  box-sizing: border-box;
-  margin: 0;
+  @apply m-0;
+  @apply box-border;
+}
+
+* svg g {
+  @apply fill-current;
 }
 </style>
