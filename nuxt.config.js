@@ -35,7 +35,15 @@ export default {
   buildModules: [
     ['@nuxtjs/dotenv', { only: ['TILES_TOKEN'] }],
     // https://go.nuxtjs.dev/typescript
-    '@nuxt/typescript-build',
+    [
+      '@nuxt/typescript-build',
+      // Workaround : https://github.com/nuxt/typescript/issues/145#issuecomment-710755252
+      {
+        typeCheck: {
+          typescript: require.resolve('typescript'),
+        },
+      },
+    ],
     // https://go.nuxtjs.dev/stylelint
     '@nuxtjs/stylelint-module',
     // https://go.nuxtjs.dev/tailwindcss
@@ -62,4 +70,12 @@ export default {
 
   // Build Configuration (https://go.nuxtjs.dev/config-build)
   build: {},
+
+  // Storybook module configuration (https://storybook.nuxtjs.org/setup)
+  storybook: {
+    typescript: { check: false },
+    port: 4000,
+    // addons: ['@storybook/addon-controls', '@storybook/addon-notes'],
+    stories: ['@/pages/**/*.stories.js', '@/components/**/*.stories.js'],
+  },
 }
