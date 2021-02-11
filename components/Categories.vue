@@ -29,14 +29,30 @@
 <script lang="ts">
 import Vue from 'vue'
 
-import LeisureParkGardenIcon from '@/assets/leisure-park-garden•.svg?inline'
+import CateringIcon from '@/assets/icons/catering•.svg?inline'
+import ConvenienceIcon from '@/assets/icons/convenience•.svg?inline'
+import HostingIcon from '@/assets/icons/hosting•.svg?inline'
+import WalkIcon from '@/assets/icons/leisure-park-garden•.svg?inline'
+import LeisureIcon from '@/assets/icons/leisure•.svg?inline'
+import MobilityIcon from '@/assets/icons/mobility•.svg?inline'
+import SafetyIcon from '@/assets/icons/safety•.svg?inline'
+import ServicesIcon from '@/assets/icons/services•.svg?inline'
+import ShoppingIcon from '@/assets/icons/shopping•.svg?inline'
 import CategoryButton from '@/components/CategoryButton.vue'
 import SubCategories from '@/components/SubCategories.vue'
 
 export default Vue.extend({
   components: {
+    CateringIcon,
+    ConvenienceIcon,
+    HostingIcon,
+    WalkIcon,
+    LeisureIcon,
+    MobilityIcon,
+    SafetyIcon,
+    ServicesIcon,
+    ShoppingIcon,
     CategoryButton,
-    LeisureParkGardenIcon,
     SubCategories,
   },
   data(): {
@@ -54,59 +70,59 @@ export default Vue.extend({
     return {
       selected: null,
       categories: {
-        bar: {
+        catering: {
           label: 'Bars',
-          color: 'blue',
+          color: 'yellow',
           badge: 0,
-          icon: LeisureParkGardenIcon,
+          icon: CateringIcon,
         },
-        housing: {
+        hosting: {
           label: 'Hébergement',
-          color: 'green',
+          color: 'blue',
           badge: 6,
-          icon: LeisureParkGardenIcon,
+          icon: HostingIcon,
         },
-        hobby: {
+        leisure: {
           label: 'Loisir',
           color: 'indigo',
           badge: 0,
-          icon: LeisureParkGardenIcon,
+          icon: LeisureIcon,
         },
         walk: {
           label: 'Promenade',
-          color: 'blue',
+          color: 'green',
           badge: 2,
-          icon: LeisureParkGardenIcon,
+          icon: WalkIcon,
         },
-        utils: {
+        services: {
           label: 'Pratique',
           color: 'purple',
           badge: 0,
-          icon: LeisureParkGardenIcon,
+          icon: ServicesIcon,
         },
-        transport: {
+        mobility: {
           label: 'Transport',
           color: 'pink',
           badge: 1,
-          icon: LeisureParkGardenIcon,
+          icon: MobilityIcon,
         },
-        food: {
+        convenience: {
           label: 'Alimentation',
           color: 'yellow',
           badge: 0,
-          icon: LeisureParkGardenIcon,
+          icon: ConvenienceIcon,
         },
-        shoping: {
+        shopping: {
           label: 'Commerce',
           color: 'green',
           badge: 0,
-          icon: LeisureParkGardenIcon,
+          icon: ShoppingIcon,
         },
-        health: {
+        safety: {
           label: 'Santé',
           color: 'red',
           badge: 0,
-          icon: LeisureParkGardenIcon,
+          icon: SafetyIcon,
         },
       },
     }
