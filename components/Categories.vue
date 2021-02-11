@@ -14,10 +14,7 @@
           :selected="selected === name"
           @click.native="onCategoryButtonClick(name)"
         >
-          <component
-            :is="category.icon"
-            class="w-6 h-6 fill-current"
-          ></component>
+          <component :is="category.icon" class="w-6 h-6" />
         </category-button>
       </div>
     </div>

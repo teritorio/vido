@@ -1,8 +1,5 @@
 <template>
-  <LogoSvg
-    class="fill-current text-gray-900"
-    aria-label="Landes, Terre des possibles"
-  />
+  <LogoSvg class="text-gray-900" aria-label="Landes, Terre des possibles" />
 </template>
 
 <script lang="ts">
@@ -16,9 +13,3 @@ export default Vue.extend({
   },
 })
 </script>
-
-<style>
-svg.fill-current g {
-  fill: currentColor;
-}
-</style>
