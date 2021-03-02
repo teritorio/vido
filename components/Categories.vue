@@ -38,7 +38,7 @@ import MobilityIcon from '@/assets/icons/mobility•.svg?inline'
 import SafetyIcon from '@/assets/icons/safety•.svg?inline'
 import ServicesIcon from '@/assets/icons/services•.svg?inline'
 import ShoppingIcon from '@/assets/icons/shopping•.svg?inline'
-import CategoryButton from '@/components/CategoryButton.vue'
+import CategoryButton from '@/components/CategoryButton/CategoryButton.vue'
 import SubCategories from '@/components/SubCategories.vue'
 
 export default Vue.extend({

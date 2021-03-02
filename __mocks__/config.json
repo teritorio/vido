@@ -1,0 +1,74 @@
+{
+  "site": {
+    "fr": {
+      "name": "Landes, Terre des possibles",
+      "description": "Site web de la commune de tartas",
+      "logo": "https://via.placeholder.com/100x50"
+    }
+  },
+  "map": {
+    "attribution": {
+      "fr": ""
+    },
+    "center": {
+      "lat": 43.482489,
+      "lng": -1.559646
+    },
+    "zoom": {
+      "default": 11,
+      "max": 19,
+      "min": 1
+    },
+    "pitch": 60
+  },
+  "classes": {
+    "catering": {
+      "id": "catering",
+      "metadata": {
+        "label": {
+          "fr": "Bars et Restaurants"
+        },
+        "color": "red",
+        "picto": "catering"
+      },
+      "order": 1
+    },
+    "bar": {
+      "id": "bar",
+      "metadata": {
+        "label": {
+          "fr": "Bars"
+        },
+        "color": "red",
+        "picto": "bar"
+      },
+      "parents": {
+        "catering": { "id": "catering", "order": 1, "metadata": {} }
+      }
+    },
+    "restaurant": {
+      "id": "restaurant",
+      "metadata": {
+        "label": {
+          "fr": "Restaurants"
+        },
+        "color": "red",
+        "picto": "restaurant"
+      },
+      "parents": {
+        "catering": { "id": "catering", "order": 2, "metadata": {} }
+      }
+    },
+    "other": {
+      "id": "other-catering",
+      "metadata": {
+        "label": {
+          "fr": "Other"
+        }
+      },
+      "parents": {
+        "catering": { "id": "catering", "order": 3 }
+      }
+    }
+  }
+}

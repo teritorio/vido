@@ -1,4 +1,4 @@
-import LeisureParkGardenIcon from '@/assets/leisure-park-garden•.svg?inline'
+import LeisureParkGardenIcon from '@/assets/icons/leisure-park-garden•.svg?inline'
 
 import CategoryButton from './CategoryButton'
 

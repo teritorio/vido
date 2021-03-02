@@ -31,6 +31,7 @@
 import { building3d } from '@teritorio/map'
 import mapboxgl from 'mapbox-gl'
 import Vue from 'vue'
+import { mapGetters } from 'vuex'
 
 // import MapPoiToast from '@/components/MapPoiToast.vue'
 
@@ -45,15 +46,21 @@ export default Vue.extend({
       map: null,
     }
   },
+  computed: {
+    ...mapGetters({
+      mapConfig: 'config/map',
+    }),
+  },
+
   mounted() {
     this.map = new mapboxgl.Map({
       container: 'map',
       style: `https://vecto.teritorio.xyz/styles/teritorio-tourism-0.9/style.json?key=${this.$config.TILES_TOKEN}`,
-      center: [-1.559646, 43.482489],
-      zoom: 16.54,
-      maxZoom: 20,
+      center: [this.mapConfig.center.lng, this.mapConfig.center.lat],
+      zoom: this.mapConfig.zoom.default,
+      maxZoom: this.mapConfig.zoom.max,
       hash: false,
-      pitch: 60,
+      pitch: this.mapConfig.pitch,
     })
 
     this.map.once('load', (event) => {
