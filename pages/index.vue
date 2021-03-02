@@ -3,7 +3,7 @@
     <Map class="absolute" />
 
     <div
-      class="fixed top-0 bottom-0 flex flex-col w-full h-full p-4 space-y-4 pointer-events-none md:w-1/2 xl:w-1/3"
+      class="fixed top-0 bottom-0 flex flex-col h-full max-w-lg p-4 space-y-4 pointer-events-none"
     >
       <header-search class="flex-none pointer-events-auto" />
       <categories class="flex-1 pointer-events-auto" />

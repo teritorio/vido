@@ -48,7 +48,7 @@ export default Vue.extend({
   mounted() {
     this.map = new mapboxgl.Map({
       container: 'map',
-      style: `https://vecto.teritorio.xyz/styles/teritorio-tourism-0.9/style.json?key=${process.env.TILES_TOKEN}`,
+      style: `https://vecto.teritorio.xyz/styles/teritorio-tourism-0.9/style.json?key=${this.$config.TILES_TOKEN}`,
       center: [-1.559646, 43.482489],
       zoom: 16.54,
       maxZoom: 20,

@@ -1,0 +1,45 @@
+name: deploy
+
+on:
+  push:
+    branches:
+      - develop
+  pull_request:
+    branches:
+      - develop
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@master
+
+      - name: Install
+        run: yarn install
+
+      - name: Build
+        env:
+          TILES_TOKEN: ${{secrets.TILES_TOKEN_DEV}}
+        run: yarn build
+
+      - name: Deploy
+        uses: up9cloud/action-rsync@master
+        env:
+          HOST: 146.59.177.9
+          KEY: ${{secrets.DEPLOY_SSH_KEY_DEV}}
+          TARGET: /var/www/clients/client1/web1/web/vido
+
+          VERBOSE: false
+          USER: vido
+          ARGS: -az --exclude=/.git/
+          SSH_ARGS: '-p 2222 -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no'
+          SOURCE: .
+
+          PRE_SCRIPT: |
+            echo -n 'VIDO: Deployment started at: '
+            date -u
+          POST_SCRIPT: |
+            echo -n 'VIDO: Deployment completed at: '
+            date -u

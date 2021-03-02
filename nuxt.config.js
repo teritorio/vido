@@ -11,6 +11,10 @@ function checkEnvVariable(variableName) {
 checkEnvVariable('TILES_TOKEN')
 
 export default {
+  publicRuntimeConfig: {
+    TILES_TOKEN: process.env.TILES_TOKEN || '',
+  },
+
   // Global page headers (https://go.nuxtjs.dev/config-head)
   head: {
     title: '@teritorio/vido',
@@ -33,7 +37,6 @@ export default {
 
   // Modules for dev and build (recommended) (https://go.nuxtjs.dev/config-modules)
   buildModules: [
-    ['@nuxtjs/dotenv', { only: ['TILES_TOKEN'] }],
     // https://go.nuxtjs.dev/typescript
     [
       '@nuxt/typescript-build',
