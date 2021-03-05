@@ -4,10 +4,8 @@
   >
     <div
       :class="[
-        'relative flex items-center justify-center lg:w-14 lg:h-14 w-12 h-12 mb-1 rounded-full border-2',
-        selected ? `bg-${color}-200` : `bg-gray-100`,
-        selected ? `text-${color}-700` : `text-${color}-500`,
-        selected ? `border-${color}-500` : `border-gray-300`,
+        'relative flex items-center justify-center lg:w-14 lg:h-14 w-12 h-12 mb-2 rounded-full text-white',
+        selected ? `bg-${color}-500` : `bg-${color}-300`,
       ]"
     >
       <span

@@ -3,10 +3,30 @@
     <Map v-if="!!mapConfig" class="absolute" />
 
     <div
-      class="fixed top-0 bottom-0 flex flex-col h-full max-w-lg p-4 space-y-4 pointer-events-none"
+      class="fixed top-0 bottom-0 flex flex-col h-full max-w-md p-4 space-y-4 pointer-events-none"
     >
-      <header-search class="flex-none pointer-events-auto" />
-      <categories class="flex-1 pointer-events-auto" />
+      <aside
+        class="px-5 py-4 space-y-12 bg-white shadow-md pointer-events-auto rounded-xl"
+      >
+        <div class="flex items-center justify-between">
+          <h1>
+            <Logo
+              :aria-label="siteConfig ? siteConfig.fr.name : ''"
+              class="h-auto w-36"
+            />
+          </h1>
+
+          <button
+            type="button"
+            class="flex items-center justify-center w-10 h-10 text-2xl font-bold transition-all rounded-full cursor-pointer hover:bg-gray-100"
+          >
+            <span class="block w-4 h-1 bg-gray-500 rounded-full"></span>
+          </button>
+        </div>
+
+        <HeaderSearch class="flex-none pointer-events-auto" />
+        <HeaderCategories class="flex-1 pointer-events-auto" />
+      </aside>
     </div>
   </div>
 </template>
@@ -15,19 +35,24 @@
 import Vue from 'vue'
 import { mapActions, mapGetters } from 'vuex'
 
-import Categories from '@/components/Categories.vue'
+import HeaderCategories from '@/components/HeaderCategories.vue'
 import HeaderSearch from '@/components/HeaderSearch.vue'
+import Logo from '@/components/Logo/Logo.vue'
 import Map from '@/components/Map.vue'
 
 export default Vue.extend({
   components: {
-    Map,
-    Categories,
+    HeaderCategories,
     HeaderSearch,
+    Logo,
+    Map,
   },
   computed: {
     ...mapGetters({
       mapConfig: 'config/map',
+    }),
+    ...mapGetters({
+      siteConfig: 'config/site',
     }),
   },
   mounted() {
