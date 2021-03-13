@@ -39,6 +39,7 @@
     "@nuxtjs/stylelint-module": "^4.0.0",
     "@nuxtjs/svg": "^0.1.12",
     "@nuxtjs/tailwindcss": "^3.4.2",
+    "@tailwindcss/forms": "^0.2.1",
     "@types/mapbox-gl": "1.13.0",
     "@types/wcag-contrast": "^3.0.0",
     "@vue/test-utils": "^1.1.2",
