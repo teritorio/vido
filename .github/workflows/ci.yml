@@ -4,6 +4,7 @@ on: push
 
 jobs:
   ci:
+    name: Lint code base
     runs-on: ${{ matrix.os }}
 
     strategy:

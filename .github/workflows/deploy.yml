@@ -1,12 +1,17 @@
 name: deploy
 
 on:
-  push:
+  workflow_run:
+    workflows:
+      - 'Lint code base'
+    types:
+      - completed
     branches:
       - develop
 
 jobs:
   deploy:
+    name: Deploy to https://vido.teritorio.xyz/
     runs-on: ubuntu-latest
 
     steps:
