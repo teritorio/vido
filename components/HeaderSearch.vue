@@ -13,7 +13,7 @@ import Vue from 'vue'
 export default Vue.extend({
   methods: {
     onSubmit() {
-      console.log('onSubmit')
+      // console.log('onSubmit')
     },
   },
 })

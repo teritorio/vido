@@ -27,10 +27,14 @@ export default {
   },
 
   // Global CSS (https://go.nuxtjs.dev/config-css)
-  css: [],
+  css: ['@fortawesome/fontawesome-svg-core/styles.css'],
+
+  purgeCSS: {
+    whitelistPatterns: [/svg.*/, /fa.*/],
+  },
 
   // Plugins to run before rendering page (https://go.nuxtjs.dev/config-plugins)
-  plugins: ['@/plugins/mirage.ts'],
+  plugins: ['@/plugins/mirage.ts', '@/plugins/fontawesome.ts'],
 
   // Auto import components (https://go.nuxtjs.dev/config-components)
   components: false,

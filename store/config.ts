@@ -14,12 +14,14 @@ type Pitch = number
 
 interface ClassMetadata {
   label: { [lang: string]: string }
+  slug?: { [lang: string]: string }
   color?: string // Inherited from its parent by default
   picto?: string // Inherited from its parent by default
 }
 
-interface Class {
+interface ClassBase {
   id: string
+  level: number // 1, 2, 3
   metadata: ClassMetadata
   order?: number
   parents?: {
@@ -30,6 +32,14 @@ interface Class {
     }
   }
 }
+
+// Only first level classes can be highlighted
+interface FirstLevelClass extends ClassBase {
+  highlighted: boolean
+  level: 1
+}
+
+type Class = ClassBase & FirstLevelClass
 
 interface State {
   site: {
@@ -86,4 +96,34 @@ export const getters = {
   site: (state: State) => state.site,
   map: (state: State) => state.map,
   classes: (state: State) => state.classes,
+
+  firstLevelClasses: (state: State) => {
+    if (!state.classes) {
+      return []
+    }
+
+    return Object.values(state.classes)
+      .filter((c) => c.level === 1)
+      .sort((a, b) => (a.order || 0) - (b.order || 0))
+  },
+
+  highlightedFirstLevelClasses: (state: State) => {
+    if (!state.classes) {
+      return []
+    }
+
+    return Object.values(state.classes)
+      .filter((c) => c.level === 1 && c.highlighted)
+      .sort((a, b) => (a.order || 0) - (b.order || 0))
+  },
+
+  nonHighlightedFirstLevelClasses: (state: State) => {
+    if (!state.classes) {
+      return []
+    }
+
+    return Object.values(state.classes)
+      .filter((c) => c.level === 1 && !c.highlighted)
+      .sort((a, b) => (a.order || 0) - (b.order || 0))
+  },
 }

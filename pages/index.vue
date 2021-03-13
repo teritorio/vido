@@ -18,9 +18,9 @@
 
           <button
             type="button"
-            class="flex items-center justify-center w-10 h-10 text-2xl font-bold transition-all rounded-full cursor-pointer hover:bg-gray-100"
+            class="flex items-center justify-center w-10 h-10 text-2xl font-bold transition-all rounded-full cursor-pointer focus:outline-none hover:bg-gray-100 focus:bg-gray-100"
           >
-            <span class="block w-4 h-1 bg-gray-500 rounded-full"></span>
+            <font-awesome-icon icon="minus" class="text-gray-800 fa-xs" />
           </button>
         </div>
 

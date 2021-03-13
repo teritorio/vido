@@ -22,52 +22,481 @@
     "pitch": 60
   },
   "classes": {
-    "catering": {
-      "id": "catering",
+    "8": {
+      "id": "8",
+      "level": 1,
+      "highlighted": true,
       "metadata": {
         "label": {
-          "fr": "Bars et Restaurants"
+          "fr": "Bar, Restaurants"
         },
-        "color": "red",
+        "color": "#F5B806",
         "picto": "catering"
-      },
-      "order": 1
-    },
-    "bar": {
-      "id": "bar",
-      "metadata": {
-        "label": {
-          "fr": "Bars"
-        },
-        "color": "red",
-        "picto": "bar"
-      },
-      "parents": {
-        "catering": { "id": "catering", "order": 1, "metadata": {} }
       }
     },
-    "restaurant": {
-      "id": "restaurant",
+
+    "8-109": {
+      "id": "109",
+      "level": 3,
       "metadata": {
         "label": {
           "fr": "Restaurants"
         },
-        "color": "red",
-        "picto": "restaurant"
+        "slug": {
+          "fr": "restaurant-covid19"
+        },
+        "picto": "catering-food-restaurant"
       },
       "parents": {
-        "catering": { "id": "catering", "order": 2, "metadata": {} }
+        "8": { "id": "8" }
       }
     },
-    "other": {
-      "id": "other-catering",
+    "8-139": {
+      "id": "139",
+      "level": 3,
       "metadata": {
         "label": {
-          "fr": "Other"
+          "fr": "Bar"
+        },
+        "slug": {
+          "fr": "commerce-amenity_bar"
+        },
+        "picto": "catering-drink-bar"
+      },
+      "parents": {
+        "8": { "id": "8" }
+      }
+    },
+    "8-145": {
+      "id": "145",
+      "level": 3,
+      "metadata": {
+        "label": {
+          "fr": "Traiteurs"
+        },
+        "slug": {
+          "fr": "traiteurs"
         }
       },
       "parents": {
-        "catering": { "id": "catering", "order": 3 }
+        "8": { "id": "8" }
+      }
+    },
+
+    "2": {
+      "id": "2",
+      "level": 1,
+      "highlighted": true,
+      "metadata": {
+        "label": {
+          "fr": "Hébergements"
+        },
+        "color": "#A11461",
+        "picto": "hosting"
+      }
+    },
+
+    "2-1": {
+      "id": "1",
+      "level": 2,
+      "metadata": {
+        "label": {
+          "fr": "Chambres"
+        },
+        "picto": "hosting-hotel-guest_house"
+      },
+      "parents": {
+        "2": { "id": "2" }
+      }
+    },
+
+    "1-4": {
+      "id": "4",
+      "level": 3,
+      "metadata": {
+        "label": {
+          "fr": "Hôtels"
+        },
+        "slug": {
+          "fr": "hotels"
+        },
+        "picto": "hosting-hotel-hostel"
+      },
+      "parents": {
+        "1": { "id": "1" }
+      }
+    },
+    "1-5": {
+      "id": "5",
+      "level": 3,
+      "metadata": {
+        "label": {
+          "fr": "Chambres d’hôtes"
+        },
+        "slug": {
+          "fr": "chambres_d_hotes"
+        },
+        "picto": "hosting-hotel-guest_house"
+      },
+      "parents": {
+        "1": { "id": "1" }
+      }
+    },
+
+    "2-21": {
+      "id": "21",
+      "level": 2,
+      "metadata": {
+        "label": {
+          "fr": "Locations"
+        },
+        "picto": "hosting-rental-apartment"
+      },
+      "parents": {
+        "2": { "id": "2" }
+      }
+    },
+
+    "21-2": {
+      "id": "2",
+      "level": 3,
+      "metadata": {
+        "label": {
+          "fr": "Villages vacances"
+        },
+        "slug": {
+          "fr": "village_vacances"
+        },
+        "picto": "hosting-resort-resort"
+      },
+      "parents": {
+        "21": { "id": "21" }
+      }
+    },
+    "21-3": {
+      "id": "3",
+      "level": 3,
+      "metadata": {
+        "label": {
+          "fr": "Résidences de tourisme"
+        },
+        "slug": {
+          "fr": "residence_de_tourisme"
+        },
+        "picto": "hosting-resort-resort"
+      },
+      "parents": {
+        "21": { "id": "21" }
+      }
+    },
+    "21-8": {
+      "id": "8",
+      "level": 3,
+      "metadata": {
+        "label": {
+          "fr": "Agences immobilières"
+        },
+        "slug": {
+          "fr": "agences_immobilieres"
+        },
+        "picto": "hosting-rental-apartment"
+      },
+      "parents": {
+        "21": { "id": "21" }
+      }
+    },
+
+    "2-20": {
+      "id": "20",
+      "level": 2,
+      "metadata": {
+        "label": {
+          "fr": "Campings"
+        },
+        "picto": "hosting-resort-camp_site"
+      },
+      "parents": {
+        "2": { "id": "2" }
+      }
+    },
+
+    "20-1": {
+      "id": "1",
+      "level": 3,
+      "metadata": {
+        "label": {
+          "fr": "Campings"
+        },
+        "slug": {
+          "fr": "campings"
+        }
+      },
+      "parents": {
+        "20": { "id": "20" }
+      }
+    },
+    "20-9": {
+      "id": "9",
+      "level": 3,
+      "metadata": {
+        "label": {
+          "fr": "Aires de camping-cars"
+        },
+        "slug": {
+          "fr": "aire_de_campingcars"
+        }
+      },
+      "parents": {
+        "20": { "id": "20" }
+      }
+    },
+
+    "3": {
+      "id": "3",
+      "level": 1,
+      "highlighted": true,
+      "metadata": {
+        "label": {
+          "fr": "Loisirs"
+        },
+        "color": "#008584",
+        "picto": "leisure"
+      }
+    },
+
+    "17": {
+      "id": "17",
+      "level": 1,
+      "metadata": {
+        "label": {
+          "fr": "Pratique & utile"
+        },
+        "color": "#2a62ac",
+        "picto": "services"
+      }
+    },
+
+    "26": {
+      "id": "26",
+      "level": 1,
+      "highlighted": true,
+      "metadata": {
+        "label": {
+          "fr": "Transports & mobilité"
+        },
+        "color": "#008ecf",
+        "picto": "mobility"
+      }
+    },
+
+    "25": {
+      "id": "25",
+      "level": 1,
+      "metadata": {
+        "label": {
+          "fr": "Alimentation"
+        },
+        "color": "#E47975",
+        "picto": "convenience-marketplace"
+      }
+    },
+
+    "135": {
+      "id": "135",
+      "level": 3,
+      "metadata": {
+        "label": {
+          "fr": "Marchés"
+        },
+        "slug": {
+          "fr": "marche-covid19"
+        }
+      },
+      "parents": {
+        "25": { "id": "25" }
+      }
+    },
+    "113": {
+      "id": "113",
+      "level": 3,
+      "metadata": {
+        "label": {
+          "fr": "Producteurs"
+        },
+        "slug": {
+          "fr": "producteurs"
+        },
+        "picto": "products-craft-basket_maker"
+      },
+      "parents": {
+        "25": { "id": "25" }
+      }
+    },
+    "111": {
+      "id": "111",
+      "level": 3,
+      "metadata": {
+        "label": {
+          "fr": "Boucheries"
+        },
+        "slug": {
+          "fr": "boucherie-covid19"
+        },
+        "picto": "convenience-butcher"
+      },
+      "parents": {
+        "25": { "id": "25" }
+      }
+    },
+    "112": {
+      "id": "112",
+      "level": 3,
+      "metadata": {
+        "label": {
+          "fr": "Poissonneries"
+        },
+        "slug": {
+          "fr": "poissonneries-covid19"
+        },
+        "picto": "convenience-seafood"
+      },
+      "parents": {
+        "25": { "id": "25" }
+      }
+    },
+    "110": {
+      "id": "110",
+      "level": 3,
+      "metadata": {
+        "label": {
+          "fr": "Boulangeries"
+        },
+        "slug": {
+          "fr": "boulangeries-covid19"
+        },
+        "picto": "convenience-bakery"
+      },
+      "parents": {
+        "25": { "id": "25" }
+      }
+    },
+    "114": {
+      "id": "114",
+      "level": 3,
+      "metadata": {
+        "label": {
+          "fr": "Magasins Bio"
+        },
+        "slug": {
+          "fr": "magasin-bio-covid19"
+        }
+      },
+      "parents": {
+        "25": { "id": "25" }
+      }
+    },
+    "117": {
+      "id": "117",
+      "level": 3,
+      "metadata": {
+        "label": {
+          "fr": "Épiceries"
+        },
+        "slug": {
+          "fr": "epiceries-covid19"
+        }
+      },
+      "parents": {
+        "25": { "id": "25" }
+      }
+    },
+    "115": {
+      "id": "115",
+      "level": 3,
+      "metadata": {
+        "label": {
+          "fr": "Supermarchés"
+        },
+        "slug": {
+          "fr": "supermarches-covid19"
+        },
+        "picto": "convenience-supermarket"
+      },
+      "parents": {
+        "25": { "id": "25" }
+      }
+    },
+    "146": {
+      "id": "146",
+      "level": 3,
+      "metadata": {
+        "label": {
+          "fr": "Primeurs"
+        },
+        "slug": {
+          "fr": "primeurs"
+        },
+        "picto": "convenience-greengrocer"
+      },
+      "parents": {
+        "25": { "id": "25" }
+      }
+    },
+    "147": {
+      "id": "147",
+      "level": 3,
+      "metadata": {
+        "label": {
+          "fr": "Les AMAPs"
+        },
+        "slug": {
+          "fr": "amaps"
+        },
+        "color": "#81d742",
+        "picto": "convenience-greengrocer"
+      },
+      "parents": {
+        "25": { "id": "25" }
+      }
+    },
+    "149": {
+      "id": "149",
+      "level": 3,
+      "metadata": {
+        "label": {
+          "fr": "Banque alimentaire"
+        },
+        "slug": {
+          "fr": "banque-alimentaire"
+        },
+        "color": "#81d742"
+      },
+      "parents": {
+        "25": { "id": "25" }
+      }
+    },
+
+    "16": {
+      "id": "16",
+      "level": 1,
+      "metadata": {
+        "label": {
+          "fr": "Commerces"
+        },
+        "color": "#808081",
+        "picto": "shopping"
+      }
+    },
+
+    "18": {
+      "id": "18",
+      "level": 1,
+      "metadata": {
+        "label": {
+          "fr": "Urgences & santé"
+        },
+        "color": "#e42525",
+        "picto": "safety-emergency-hospital"
       }
     }
   }
