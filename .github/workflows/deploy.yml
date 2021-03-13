@@ -12,6 +12,7 @@ on:
 jobs:
   deploy:
     name: Deploy
+    runs-on: ${{ matrix.os }}
 
     strategy:
       matrix:
