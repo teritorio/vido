@@ -1,6 +1,8 @@
 <template>
   <div class="flex flex-col space-y-4" @keyup.esc="onEscape">
-    <div class="grid items-start grid-cols-4 gap-1">
+    <div
+      class="grid items-start grid-flow-col gap-1 sm:grid-cols-4 auto-cols-fr"
+    >
       <CategoryButton
         v-for="category in highlightedFirstLevelClasses"
         :key="category.id"
@@ -10,7 +12,7 @@
       >
         <component
           :is="pictoComponent(category.metadata.picto)"
-          class="w-6 h-6 lg:w-7 lg:h-7"
+          class="w-7 h-7"
         />
       </CategoryButton>
     </div>
@@ -24,7 +26,10 @@
     </button>
 
     <transition name="non-highlighted" appear>
-      <div v-if="!collapsed" class="grid items-start grid-cols-4 gap-1">
+      <div
+        v-if="!collapsed"
+        class="grid items-start grid-flow-col gap-1 sm:grid-cols-4 auto-cols-fr"
+      >
         <CategoryButton
           v-for="category in nonHighlightedFirstLevelClasses"
           :key="category.id"
@@ -34,7 +39,7 @@
         >
           <component
             :is="pictoComponent(category.metadata.picto)"
-            class="w-6 h-6 lg:w-7 lg:h-7"
+            class="w-7 h-7"
           />
         </CategoryButton>
       </div>

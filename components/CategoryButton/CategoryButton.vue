@@ -3,7 +3,7 @@
     class="flex flex-col items-center justify-center pt-4 pb-2 leading-none"
   >
     <div
-      class="relative flex items-center justify-center w-12 h-12 mb-2 text-white rounded-full lg:w-14 lg:h-14"
+      class="relative flex items-center justify-center mb-2 text-white rounded-full w-14 h-14"
       :style="{ backgroundColor: color, color: textColor }"
     >
       <slot />
