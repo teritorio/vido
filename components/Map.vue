@@ -4,6 +4,7 @@
       <div id="map" class="flex-grow overflow-hidden"></div>
 
       <MapControls :map="map" />
+      <MapAttribution />
 
       <!-- <div class="absolute flex justify-center inset-x-3 bottom-3">
       <MapPoiToast class="flex-grow-0" />
@@ -19,10 +20,12 @@ import Vue from 'vue'
 import { mapGetters } from 'vuex'
 
 // import MapPoiToast from '@/components/MapPoiToast.vue'
+import MapAttribution from '@/components/MapAttribution.vue'
 import MapControls from '@/components/MapControls.vue'
 
 export default Vue.extend({
   components: {
+    MapAttribution,
     MapControls,
     // MapPoiToast,
   },
@@ -54,18 +57,6 @@ export default Vue.extend({
       const map = event.target
       building3d(map).set3d(true, 60)
     })
-  },
-  methods: {
-    setFlat() {
-      if (this.map) {
-        building3d(this.map).set3d(false, 0)
-      }
-    },
-    set3D() {
-      if (this.map) {
-        building3d(this.map).set3d(true, 60)
-      }
-    },
   },
 })
 </script>
