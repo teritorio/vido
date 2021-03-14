@@ -47,6 +47,19 @@ export default Vue.extend({
     Logo,
     Map,
   },
+  head() {
+    return {
+      title: this.siteConfig?.fr?.name,
+      meta: [
+        {
+          // https://nuxtjs.org/docs/2.x/features/meta-tags-seo#local-settings
+          hid: 'index',
+          name: this.siteConfig?.fr?.name,
+          content: this.siteConfig?.fr?.description,
+        },
+      ],
+    }
+  },
   computed: {
     ...mapGetters({
       mapConfig: 'config/map',
