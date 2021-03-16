@@ -1,21 +1,18 @@
 <template>
   <div class="absolute flex flex-col space-y-0 top-3 right-3">
     <button
-      aria-label="Visualiser la carte en 2D"
-      type="button"
-      class="px-4 py-3 text-gray-800 bg-white rounded-t-full shadow-md hover:bg-gray-100 focus:outline-none focus:bg-gray-100"
-      @click="setFlat"
-    >
-      <font-awesome-icon :icon="['far', 'square']" />
-    </button>
-
-    <button
       aria-label="Visualiser la carte en 3D"
       type="button"
-      class="px-4 py-3 text-gray-800 bg-white rounded-b-full shadow-md hover:bg-gray-100 focus:outline-none focus:bg-gray-100"
-      @click="set3D"
+      :class="[
+        'text-sm font-bold rounded-full shadow-md w-11 h-11 focus:outline-none',
+        is3D &&
+          'bg-blue-500 text-white hover:bg-blue-400 focus-visible:bg-blue-400',
+        !is3D &&
+          'bg-white text-gray-800 hover:bg-gray-100 focus-visible:bg-gray-100',
+      ]"
+      @click="toggle3D"
     >
-      <font-awesome-icon icon="cube" />
+      3D
     </button>
   </div>
 </template>
@@ -31,15 +28,23 @@ export default Vue.extend({
       default: null,
     },
   },
+  data(): {
+    is3D: boolean
+  } {
+    return {
+      is3D: false,
+    }
+  },
   methods: {
-    setFlat() {
+    toggle3D() {
       if (this.map) {
-        building3d(this.map).set3d(false, 0)
-      }
-    },
-    set3D() {
-      if (this.map) {
-        building3d(this.map).set3d(true, 60)
+        if (this.is3D) {
+          building3d(this.map).set3d(false, 0)
+        } else {
+          building3d(this.map).set3d(true, 60)
+        }
+
+        this.is3D = !this.is3D
       }
     },
   },
