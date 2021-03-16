@@ -1,4 +1,5 @@
 import dotenv from 'dotenv'
+import webpack from 'webpack'
 
 dotenv.config()
 
@@ -76,7 +77,13 @@ export default {
   content: {},
 
   // Build Configuration (https://go.nuxtjs.dev/config-build)
-  build: {},
+  build: {
+    plugins: [
+      new webpack.ProvidePlugin({
+        mapboxgl: 'mapbox-gl',
+      }),
+    ],
+  },
 
   // Storybook module configuration (https://storybook.nuxtjs.org/setup)
   storybook: {

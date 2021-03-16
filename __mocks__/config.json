@@ -15,11 +15,11 @@
       "lng": -1.559646
     },
     "zoom": {
-      "default": 16,
+      "default": 14,
       "max": 19,
       "min": 1
     },
-    "pitch": 60
+    "pitch": 0
   },
   "classes": {
     "8": {

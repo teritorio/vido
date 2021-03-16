@@ -1,8 +1,22 @@
 <template>
   <div class="w-full h-full">
     <div class="relative flex flex-col w-full h-full">
-      <div id="map" class="flex-grow overflow-hidden"></div>
-
+      <div id="map" class="flex-grow overflow-hidden">
+        <mapbox
+          access-token=""
+          :map-options="{
+            style: mapStyle,
+            center: [mapConfig.center.lng, mapConfig.center.lat],
+            zoom: mapConfig.zoom.default,
+            maxZoom: mapConfig.zoom.max,
+            minZoom: mapConfig.zoom.min,
+            hash: false,
+            pitch: mapConfig.pitch,
+          }"
+          @map-init="onMapInit"
+          @map-load="onMapLoad"
+        />
+      </div>
       <MapControls :map="map" />
       <MapAttribution />
 
@@ -14,8 +28,9 @@
 </template>
 
 <script lang="ts">
-import { building3d } from '@teritorio/map'
+import { poiFilter } from '@teritorio/map'
 import mapboxgl from 'mapbox-gl'
+import Mapbox from 'mapbox-gl-vue'
 import Vue from 'vue'
 import { mapGetters } from 'vuex'
 
@@ -26,6 +41,7 @@ import MapControls from '@/components/MapControls.vue'
 export default Vue.extend({
   components: {
     MapAttribution,
+    Mapbox,
     MapControls,
     // MapPoiToast,
   },
@@ -40,23 +56,17 @@ export default Vue.extend({
     ...mapGetters({
       mapConfig: 'config/map',
     }),
+    mapStyle(): string {
+      return `https://vecto.teritorio.xyz/styles/teritorio-tourism-0.9/style.json?key=${this.$config.TILES_TOKEN}`
+    },
   },
-
-  mounted() {
-    this.map = new mapboxgl.Map({
-      container: 'map',
-      style: `https://vecto.teritorio.xyz/styles/teritorio-tourism-0.9/style.json?key=${this.$config.TILES_TOKEN}`,
-      center: [this.mapConfig.center.lng, this.mapConfig.center.lat],
-      zoom: this.mapConfig.zoom.default,
-      maxZoom: this.mapConfig.zoom.max,
-      hash: false,
-      pitch: this.mapConfig.pitch,
-    })
-
-    this.map.once('load', (event) => {
-      const map = event.target
-      building3d(map).set3d(true, 60)
-    })
+  methods: {
+    onMapInit(map: mapboxgl.Map) {
+      this.map = map
+    },
+    onMapLoad(map: mapboxgl.Map) {
+      poiFilter(map).remove(false)
+    },
   },
 })
 </script>
