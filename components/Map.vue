@@ -65,7 +65,7 @@ export default Vue.extend({
       this.map = map
     },
     onMapLoad(map: mapboxgl.Map) {
-      poiFilter(map).remove(false)
+      poiFilter(map).remove(true)
     },
   },
 })
