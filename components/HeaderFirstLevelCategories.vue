@@ -1,10 +1,10 @@
 <template>
-  <div class="flex flex-col space-y-4" @keyup.esc="onEscape">
+  <div class="flex flex-col space-y-4">
     <div
       class="grid items-start grid-flow-col gap-1 sm:grid-cols-4 auto-cols-fr"
     >
       <CategoryButton
-        v-for="category in highlightedFirstLevelClasses"
+        v-for="category in highlightedCategories"
         :key="category.id"
         :color="category.metadata.color"
         :label="category.metadata.label.fr"
@@ -31,7 +31,7 @@
         class="grid items-start grid-flow-col gap-1 sm:grid-cols-4 auto-cols-fr"
       >
         <CategoryButton
-          v-for="category in nonHighlightedFirstLevelClasses"
+          v-for="category in nonHighlightedCategories"
           :key="category.id"
           :color="category.metadata.color"
           :label="category.metadata.label.fr"
@@ -49,7 +49,6 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { mapGetters } from 'vuex'
 
 import CategoryButton from '@/components/CategoryButton/CategoryButton.vue'
 
@@ -57,18 +56,26 @@ export default Vue.extend({
   components: {
     CategoryButton,
   },
+  props: {
+    highlightedCategories: {
+      type: Array,
+      required: true,
+    },
+    nonHighlightedCategories: {
+      type: Array,
+      required: true,
+    },
+    onCategoryClick: {
+      type: Function,
+      required: true,
+    },
+  },
   data(): {
     collapsed: boolean
   } {
     return {
       collapsed: true,
     }
-  },
-  computed: {
-    ...mapGetters({
-      highlightedFirstLevelClasses: 'config/highlightedFirstLevelClasses',
-      nonHighlightedFirstLevelClasses: 'config/nonHighlightedFirstLevelClasses',
-    }),
   },
   methods: {
     pictoComponent(pictoName: string) {
@@ -78,15 +85,11 @@ export default Vue.extend({
 
       return require(`@/assets/icons/services•.svg?inline`)
     },
-    // onCategoryButtonClick(id: string) {
-    //   this.selected = id
-    // },
     onCollapseButtonClick() {
       this.collapsed = !this.collapsed
     },
-    onCategoryButtonClick() {},
-    onEscape() {
-      // this.selected = null
+    onCategoryButtonClick(categoryId: string) {
+      this.onCategoryClick(categoryId)
     },
   },
 })

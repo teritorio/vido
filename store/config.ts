@@ -1,45 +1,10 @@
 import { Store } from 'vuex'
 
+import { Classes, LatLng, Pitch, ZoomLevel } from '@/utils/types'
+
 enum Mutation {
   SET = 'SET',
 }
-
-interface LatLng {
-  lat: number
-  lng: number
-}
-
-type ZoomLevel = number
-type Pitch = number
-
-interface ClassMetadata {
-  label: { [lang: string]: string }
-  slug?: { [lang: string]: string }
-  color?: string // Inherited from its parent by default
-  picto?: string // Inherited from its parent by default
-}
-
-interface ClassBase {
-  id: string
-  level: number // 1, 2, 3
-  metadata: ClassMetadata
-  order?: number
-  parents?: {
-    [className: string]: {
-      id: string
-      order: number
-      metadata?: ClassMetadata // Inherited from its parent by default
-    }
-  }
-}
-
-// Only first level classes can be highlighted
-interface FirstLevelClass extends ClassBase {
-  highlighted: boolean
-  level: 1
-}
-
-type Class = ClassBase & FirstLevelClass
 
 interface State {
   site: {
@@ -59,9 +24,7 @@ interface State {
     }
     pitch: Pitch
   } | null
-  classes: {
-    [lang: string]: Class
-  } | null
+  classes: Classes | null
 }
 
 export const state = (): State => ({
@@ -84,6 +47,32 @@ export const actions = {
       const configPromise = await fetch('/api/config')
       const config = await configPromise.json()
 
+      config.classes = Object.entries(
+        config.classes as Classes
+      ).reduce<Classes>((result, [categoryId, category]) => {
+        // Fill the missing colors
+        if (!category?.metadata?.color) {
+          const defaultColor = '#ddd'
+
+          if (
+            category.level > 1 &&
+            category?.parents &&
+            Object.keys(category.parents).length > 0
+          ) {
+            const parentId = Object.keys(category.parents)[0]
+            const parent = config.classes[parentId]
+
+            category.metadata.color = parent?.metadata?.color || defaultColor
+          } else {
+            category.metadata.color = defaultColor
+          }
+        }
+
+        result[categoryId] = category
+
+        return result
+      }, {})
+
       store.commit(Mutation.SET, config)
     } catch (error) {
       // eslint-disable-next-line no-console
@@ -97,7 +86,7 @@ export const getters = {
   map: (state: State) => state.map,
   classes: (state: State) => state.classes,
 
-  firstLevelClasses: (state: State) => {
+  firstLevelCategories: (state: State) => {
     if (!state.classes) {
       return []
     }
@@ -107,7 +96,19 @@ export const getters = {
       .sort((a, b) => (a.order || 0) - (b.order || 0))
   },
 
-  highlightedFirstLevelClasses: (state: State) => {
+  getSubLevelCategoriesFromCategoryId: (state: State) => (
+    categoryId: string
+  ) => {
+    if (!state.classes) {
+      return []
+    }
+
+    return Object.values(state.classes)
+      .filter((c) => c.parents?.[categoryId])
+      .sort((a, b) => (a.order || 0) - (b.order || 0))
+  },
+
+  highlightedFirstLevelCategories: (state: State) => {
     if (!state.classes) {
       return []
     }
@@ -117,7 +118,7 @@ export const getters = {
       .sort((a, b) => (a.order || 0) - (b.order || 0))
   },
 
-  nonHighlightedFirstLevelClasses: (state: State) => {
+  nonHighlightedFirstLevelCategories: (state: State) => {
     if (!state.classes) {
       return []
     }
