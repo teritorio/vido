@@ -7,7 +7,7 @@
         <button
           aria-label="Zoomer"
           type="button"
-          class="text-sm font-bold text-gray-800 bg-white rounded-full shadow-md w-11 h-11 focus:outline-none hover:bg-gray-100 focus-visible:bg-gray-100"
+          class="text-sm font-bold text-gray-800 bg-white rounded-full shadow-md outline-none w-11 h-11 focus:outline-none hover:bg-gray-100 focus-visible:bg-gray-100"
           @click="zoomIn"
         >
           <font-awesome-icon icon="plus" />
@@ -16,7 +16,7 @@
         <button
           aria-label="Dézoomer"
           type="button"
-          class="text-sm font-bold text-gray-800 bg-white rounded-full shadow-md w-11 h-11 focus:outline-none hover:bg-gray-100 focus-visible:bg-gray-100"
+          class="text-sm font-bold text-gray-800 bg-white rounded-full shadow-md outline-none w-11 h-11 focus:outline-none hover:bg-gray-100 focus-visible:bg-gray-100"
           @click="zoomOut"
         >
           <font-awesome-icon icon="minus" />
@@ -27,7 +27,7 @@
         aria-label="Visualiser la carte en 3D"
         type="button"
         :class="[
-          'text-sm font-bold rounded-full shadow-md w-11 h-11 focus:outline-none ',
+          'text-sm font-bold rounded-full shadow-md w-11 h-11 outline-none focus:outline-none ',
           is3D &&
             'bg-blue-500 text-white hover:bg-blue-400 focus-visible:bg-blue-400',
           !is3D &&

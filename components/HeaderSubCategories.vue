@@ -1,6 +1,6 @@
 <template>
   <div class="flex flex-col space-y-4">
-    <div class="grid items-start grid-cols-3 gap-2">
+    <div class="grid items-start grid-cols-3 gap-4">
       <CategoryButton
         v-for="category in categories"
         :key="category.id"

@@ -1,6 +1,6 @@
 <template>
   <div class="flex flex-col space-y-4">
-    <div class="grid items-start grid-cols-3 gap-2">
+    <div class="grid items-start grid-cols-3 gap-4">
       <CategoryButton
         v-for="category in highlightedCategories"
         :key="category.id"
@@ -16,7 +16,7 @@
     </div>
 
     <button
-      class="flex items-center justify-start gap-3 px-3 py-2 font-medium text-gray-800 rounded-full focus:outline-none hover:bg-gray-100 focus:bg-gray-100"
+      class="flex items-center justify-start gap-3 px-3 py-2 font-medium text-gray-800 rounded-full outline-none focus:outline-none hover:bg-gray-100 focus:bg-gray-100"
       @click="onCollapseButtonClick"
     >
       <font-awesome-icon icon="chevron-down" />
@@ -24,7 +24,7 @@
     </button>
 
     <transition name="non-highlighted" appear>
-      <div v-if="!collapsed" class="grid items-start grid-cols-3 gap-2">
+      <div v-if="!collapsed" class="grid items-start grid-cols-3 gap-4">
         <CategoryButton
           v-for="category in nonHighlightedCategories"
           :key="category.id"

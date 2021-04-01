@@ -2,6 +2,7 @@ import { config, library } from '@fortawesome/fontawesome-svg-core'
 // import { faSquare } from '@fortawesome/free-regular-svg-icons'
 import {
   faArrowLeft,
+  faCheckCircle,
   faChevronDown,
   faInfo,
   faMinus,
@@ -16,7 +17,15 @@ config.autoAddCss = false
 
 // You can add your icons directly in this plugin. See other examples for how you
 // can add other styles or just individual icons.
-library.add(faArrowLeft, faChevronDown, faInfo, faMinus, faPlus, faSearch)
+library.add(
+  faArrowLeft,
+  faCheckCircle,
+  faChevronDown,
+  faInfo,
+  faMinus,
+  faPlus,
+  faSearch
+)
 
 // Register the component globally
 Vue.component('FontAwesomeIcon', FontAwesomeIcon)

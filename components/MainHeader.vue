@@ -12,7 +12,7 @@
 
         <button
           type="button"
-          class="flex items-center justify-center w-10 h-10 text-2xl font-bold transition-all rounded-full cursor-pointer focus:outline-none hover:bg-gray-100 focus:bg-gray-100"
+          class="flex items-center justify-center w-10 h-10 text-2xl font-bold transition-all rounded-full outline-none cursor-pointer focus:outline-none hover:bg-gray-100 focus:bg-gray-100"
         >
           <font-awesome-icon icon="minus" class="text-gray-800 fa-xs" />
         </button>

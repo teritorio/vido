@@ -2,7 +2,7 @@
   <div class="attribution-wrapper">
     <button
       type="button"
-      class="absolute w-6 h-6 text-gray-800 transition-opacity bg-white rounded-full shadow-sm opacity-100 pointer-events-auto hover:bg-gray-100 focus-visible:bg-gray-100 focus:outline-none bottom-3 right-3 sm:opacity-0 sm:pointer-events-none"
+      class="absolute w-6 h-6 text-gray-800 transition-opacity bg-white rounded-full shadow-sm outline-none opacity-100 pointer-events-auto hover:bg-gray-100 focus-visible:bg-gray-100 focus:outline-none bottom-3 right-3 sm:opacity-0 sm:pointer-events-none"
     >
       <font-awesome-icon icon="info" class="fa-xs" />
     </button>
