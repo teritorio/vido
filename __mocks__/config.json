@@ -491,6 +491,7 @@
     "18": {
       "id": "18",
       "level": 1,
+      "highlighted": true,
       "metadata": {
         "label": {
           "fr": "Urgences & santé"

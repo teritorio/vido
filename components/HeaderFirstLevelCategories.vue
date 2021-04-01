@@ -1,8 +1,6 @@
 <template>
   <div class="flex flex-col space-y-4">
-    <div
-      class="grid items-start grid-flow-col gap-1 sm:grid-cols-4 auto-cols-fr"
-    >
+    <div class="grid items-start grid-cols-3 gap-2">
       <CategoryButton
         v-for="category in highlightedCategories"
         :key="category.id"
@@ -26,10 +24,7 @@
     </button>
 
     <transition name="non-highlighted" appear>
-      <div
-        v-if="!collapsed"
-        class="grid items-start grid-flow-col gap-1 sm:grid-cols-4 auto-cols-fr"
-      >
+      <div v-if="!collapsed" class="grid items-start grid-cols-3 gap-2">
         <CategoryButton
           v-for="category in nonHighlightedCategories"
           :key="category.id"

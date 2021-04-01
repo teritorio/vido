@@ -1,8 +1,6 @@
 <template>
   <div class="flex flex-col space-y-4">
-    <div
-      class="grid items-start grid-flow-col gap-1 sm:grid-cols-4 auto-cols-fr"
-    >
+    <div class="grid items-start grid-cols-3 gap-2">
       <CategoryButton
         v-for="category in categories"
         :key="category.id"
