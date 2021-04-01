@@ -8,7 +8,7 @@
     >
       <slot />
     </div>
-    <div class="text-xs">{{ label }}</div>
+    <div class="text-sm">{{ label }}</div>
   </button>
 </template>
 
