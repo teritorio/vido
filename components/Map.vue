@@ -14,10 +14,11 @@
             pitch: mapConfig.pitch,
           }"
           @map-init="onMapInit"
-          @map-load="onMapLoad"
         />
       </div>
+
       <MapControls :map="map" />
+
       <MapAttribution />
 
       <!-- <div class="absolute flex justify-center inset-x-3 bottom-3">
