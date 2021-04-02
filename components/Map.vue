@@ -28,7 +28,7 @@
 </template>
 
 <script lang="ts">
-import { poiFilter } from '@teritorio/map'
+import { PoiFilter } from '@teritorio/map'
 import mapboxgl from 'mapbox-gl'
 import Mapbox from 'mapbox-gl-vue'
 import Vue from 'vue'
@@ -57,15 +57,20 @@ export default Vue.extend({
       mapConfig: 'config/map',
     }),
     mapStyle(): string {
-      return `https://vecto.teritorio.xyz/styles/teritorio-tourism-0.9/style.json?key=${this.$config.TILES_TOKEN}`
+      return `https://vecto.teritorio.xyz/styles/teritorio-tourism-latest/style.json?key=${this.$config.TILES_TOKEN}`
     },
   },
   methods: {
     onMapInit(map: mapboxgl.Map) {
-      this.map = map
-    },
-    onMapLoad(map: mapboxgl.Map) {
-      poiFilter(map).remove(true)
+      map.addControl(
+        new PoiFilter({
+          filter: [
+            // ['catering', 'food', 'restaurant'],
+            // ['leisure', 'park'],
+          ],
+          include: true,
+        })
+      )
     },
   },
 })

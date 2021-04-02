@@ -4610,12 +4610,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@teritorio/map@npm:^0.7.0":
-  version: 0.7.0
-  resolution: "@teritorio/map@npm:0.7.0"
+"@teritorio/map@npm:^0.9.0":
+  version: 0.9.0
+  resolution: "@teritorio/map@npm:0.9.0"
   peerDependencies:
     mapbox-gl: ^1.10.1
-  checksum: d09f3c51b72a90463fb6d0cb4204423ffe97939e0e79630201d4ef4a798d5a39f36e08bd3712d3f66cac27b0598b10287f95a7e1ca5637d349f7bb288b349d21
+  checksum: 05f150bdf63aa6fdb52430f6d4da73fcce13d1fa2eec9939b2d34afd184fd6f6fe210ba5829cc5e74af0d22784b42000d65922fb39a307674b006af8e550622b
   languageName: node
   linkType: hard
 
@@ -4643,7 +4643,7 @@ __metadata:
     "@nuxtjs/svg": ^0.1.12
     "@nuxtjs/tailwindcss": ^3.4.2
     "@tailwindcss/forms": ^0.2.1
-    "@teritorio/map": ^0.7.0
+    "@teritorio/map": ^0.9.0
     "@types/lodash.concat": ^4.5.6
     "@types/lodash.without": ^4.4.6
     "@types/mapbox-gl": 1.13.0
