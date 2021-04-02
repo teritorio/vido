@@ -5,6 +5,7 @@
       !selected && 'hover:bg-gray-100',
       selected && 'selected bg-gray-100 hover:bg-transparent',
     ]"
+    @click="onClick"
   >
     <div
       class="relative flex items-center justify-center mb-2 text-white rounded-full w-14 h-14"
@@ -37,17 +38,20 @@ import { hex } from 'wcag-contrast'
 
 export default Vue.extend({
   props: {
-    label: {
-      type: String,
-      required: true,
-    },
     color: {
       type: String,
       required: true,
     },
+    label: {
+      type: String,
+      required: true,
+    },
+    onClick: {
+      type: Function,
+      default: () => null,
+    },
     selected: {
       type: Boolean,
-      required: false,
       default: false,
     },
   },

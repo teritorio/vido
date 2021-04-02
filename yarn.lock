@@ -4644,6 +4644,8 @@ __metadata:
     "@nuxtjs/tailwindcss": ^3.4.2
     "@tailwindcss/forms": ^0.2.1
     "@teritorio/map": ^0.7.0
+    "@types/lodash.concat": ^4.5.6
+    "@types/lodash.without": ^4.4.6
     "@types/mapbox-gl": 1.13.0
     "@types/wcag-contrast": ^3.0.0
     "@vue/test-utils": ^1.1.2
@@ -4660,6 +4662,8 @@ __metadata:
     husky: ^4.3.8
     jest: ^26.6.3
     lint-staged: ^10.5.3
+    lodash.concat: ^4.5.0
+    lodash.without: ^4.4.0
     mapbox-gl: 1.13.0
     mapbox-gl-vue: ^2.0.4
     miragejs: ^0.1.41
@@ -4981,6 +4985,31 @@ __metadata:
   version: 3.0.2
   resolution: "@types/less@npm:3.0.2"
   checksum: 7a1d5794b85128b5fdc68b96efb31a7bf9dab9f5085e5d337c27c64a1ac3587c74e46e6d8073066181dfffda6454e7977c9e055649fcfe5def9a38458dda9565
+  languageName: node
+  linkType: hard
+
+"@types/lodash.concat@npm:^4.5.6":
+  version: 4.5.6
+  resolution: "@types/lodash.concat@npm:4.5.6"
+  dependencies:
+    "@types/lodash": "*"
+  checksum: a73bbc371d1798c24892c388124e7c1f6d8a131fafa423cfa01926d78710609a1b9f432fcbc7b22efc00eeec4d5ac2329c6bbfcc79a19e759332ad264ebc77c0
+  languageName: node
+  linkType: hard
+
+"@types/lodash.without@npm:^4.4.6":
+  version: 4.4.6
+  resolution: "@types/lodash.without@npm:4.4.6"
+  dependencies:
+    "@types/lodash": "*"
+  checksum: 4085af29eb3903eb6db1f1844f76a8fed2a96bd47ea1871db5c98dba7d5215ba9010391b67c8d3f439f5d5002a131dd99b7eec6291296981868b950583cdf683
+  languageName: node
+  linkType: hard
+
+"@types/lodash@npm:*":
+  version: 4.14.168
+  resolution: "@types/lodash@npm:4.14.168"
+  checksum: 9a4e25f89fc035b9f0388f1f7be85e5eff49f9e6db0d93432c9a89fce0916f8a89db4e8290415f7ea02de6b00d3573826378dcb655b7b2d20530a6e8d6dd6fd0
   languageName: node
   linkType: hard
 
@@ -15010,6 +15039,13 @@ fsevents@^1.2.7:
   languageName: node
   linkType: hard
 
+"lodash.concat@npm:^4.5.0":
+  version: 4.5.0
+  resolution: "lodash.concat@npm:4.5.0"
+  checksum: 98bbb1adb7fb62a30bfdbeaaac6fcdebad514ea657c5672540db9f858c83e3eb0a825e5dcd96d8b2824686bea6fa60d4395252e773c3a8f6a98c531b974d1958
+  languageName: node
+  linkType: hard
+
 "lodash.find@npm:^4.6.0":
   version: 4.6.0
   resolution: "lodash.find@npm:4.6.0"
@@ -15187,6 +15223,13 @@ fsevents@^1.2.7:
   version: 4.3.0
   resolution: "lodash.values@npm:4.3.0"
   checksum: 6cbacb0e042e100dd077ed1f0a1435fa1e5381478d17770edafc8c03f936db9ef57c6c7e771b728c1c6512026101f3e8000b6105eb9954293bf8724fafe4f231
+  languageName: node
+  linkType: hard
+
+"lodash.without@npm:^4.4.0":
+  version: 4.4.0
+  resolution: "lodash.without@npm:4.4.0"
+  checksum: 3a6ab61a2551f0920c92e0affe4c9645536bad38e5c52c7430e59433f87fd21f9cfe17c06b1bfe59aa3f0dde10535c700392e669aa808f0c3622791188f41966
   languageName: node
   linkType: hard
 

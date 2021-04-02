@@ -16,7 +16,7 @@
     </div>
 
     <button
-      class="flex items-center justify-start gap-3 px-3 py-2 font-medium text-gray-800 rounded-full outline-none focus:outline-none hover:bg-gray-100 focus:bg-gray-100"
+      class="flex items-center justify-start gap-3 px-3 py-2 font-medium text-gray-800 rounded-md outline-none focus:outline-none hover:bg-gray-100 focus:bg-gray-100"
       @click="onCollapseButtonClick"
     >
       <font-awesome-icon icon="chevron-down" />

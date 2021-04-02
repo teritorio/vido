@@ -5,8 +5,9 @@
         v-for="category in categories"
         :key="category.id"
         :color="category.metadata.color"
+        :selected="isSubCategorySelected(category.id)"
         :label="category.metadata.label.fr"
-        @click.native="onCategoryButtonClick(category.id)"
+        :on-click="() => onCategoryButtonClick(category.id)"
       >
         <component
           :is="pictoComponent(category.metadata.picto)"
@@ -29,6 +30,10 @@ export default Vue.extend({
   props: {
     categories: {
       type: Array,
+      required: true,
+    },
+    isSubCategorySelected: {
+      type: Function,
       required: true,
     },
     onCategoryClick: {

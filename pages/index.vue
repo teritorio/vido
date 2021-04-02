@@ -14,8 +14,11 @@
       <SubCategoryHeader
         v-else
         :categories="subCategoriesFromSelectedCategory"
+        :is-sub-category-selected="isSubCategorySelected"
         :on-category-click="onSubLevelCategoryClick"
         :on-go-back-click="unselectCategory"
+        :on-select-all-categories="selectSubCategory"
+        :on-unselect-all-categories="unselectSubCategory"
       />
     </transition>
   </div>
@@ -61,6 +64,7 @@ export default Vue.extend({
       getSubLevelCategoriesFromCategoryId:
         'config/getSubLevelCategoriesFromCategoryId',
       highlightedFirstLevelCategories: 'config/highlightedFirstLevelCategories',
+      isSubCategorySelected: 'categories/isSubCategorySelected',
       mapConfig: 'config/map',
       nonHighlightedFirstLevelCategories:
         'config/nonHighlightedFirstLevelCategories',
@@ -79,14 +83,15 @@ export default Vue.extend({
   methods: {
     ...mapActions({
       fetchConfigFromAPI: 'config/fetch',
+      selectSubCategory: 'categories/selectSubCategory',
+      toggleSubCategorySelection: 'categories/toggleSubCategorySelection',
+      unselectSubCategory: 'categories/unselectSubCategory',
     }),
     onFirstLevelCategoryClick(categoryId: string) {
       this.selectedCategoryId = categoryId
     },
     onSubLevelCategoryClick(categoryId: string) {
-      // eslint-disable-next-line no-console
-      console.log(categoryId)
-      // this.selectedCategoryId = categoryId
+      this.toggleSubCategorySelection(categoryId)
     },
     unselectCategory() {
       this.selectedCategoryId = null
