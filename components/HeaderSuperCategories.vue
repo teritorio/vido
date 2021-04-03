@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-col space-y-4">
+  <div class="flex flex-col space-y-6">
     <div class="grid items-start grid-cols-3 gap-4">
       <CategoryButton
         v-for="category in highlightedCategories"

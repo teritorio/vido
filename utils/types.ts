@@ -6,35 +6,35 @@ export interface LatLng {
 export type ZoomLevel = number
 export type Pitch = number
 
-export interface ClassMetadata {
+export interface CategoryMetadata {
   label: { [lang: string]: string }
   slug?: { [lang: string]: string }
   color?: string // Inherited from its parent by default
   picto?: string // Inherited from its parent by default
 }
 
-export interface ClassBase {
+export interface CategoryBase {
   id: string
   level: number // 1, 2, 3
-  metadata: ClassMetadata
+  metadata: CategoryMetadata
   order?: number
   parents?: {
     [className: string]: {
       id: string
       order: number
-      metadata?: ClassMetadata // Inherited from its parent by default
+      metadata?: CategoryMetadata // Inherited from its parent by default
     }
   }
 }
 
 // Only first level classes can be highlighted
-export interface FirstLevelClass extends ClassBase {
+export interface SuperCategory extends CategoryBase {
   highlighted: boolean
   level: 1
 }
 
-export type Class = ClassBase & FirstLevelClass
+export type Category = CategoryBase & SuperCategory
 
-export interface Classes {
-  [lang: string]: Class
+export interface Categories {
+  [lang: string]: Category
 }

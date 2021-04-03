@@ -4644,11 +4644,12 @@ __metadata:
     "@nuxtjs/tailwindcss": ^3.4.2
     "@tailwindcss/forms": ^0.2.1
     "@teritorio/map": ^0.9.0
-    "@types/lodash.concat": ^4.5.6
+    "@types/lodash.uniq": ^4.5.6
     "@types/lodash.without": ^4.4.6
     "@types/mapbox-gl": 1.13.0
     "@types/wcag-contrast": ^3.0.0
     "@vue/test-utils": ^1.1.2
+    "@xstate/vue": ^0.5.0
     autoprefixer: ^9.8.6
     babel-core: 7.0.0-bridge.0
     babel-eslint: ^10.1.0
@@ -4662,7 +4663,7 @@ __metadata:
     husky: ^4.3.8
     jest: ^26.6.3
     lint-staged: ^10.5.3
-    lodash.concat: ^4.5.0
+    lodash.uniq: ^4.5.0
     lodash.without: ^4.4.0
     mapbox-gl: 1.13.0
     mapbox-gl-vue: ^2.0.4
@@ -4678,6 +4679,7 @@ __metadata:
     ts-jest: ^26.4.4
     vue-jest: ^3.0.7
     wcag-contrast: ^3.0.0
+    xstate: ^4.17.1
   languageName: unknown
   linkType: soft
 
@@ -4988,12 +4990,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/lodash.concat@npm:^4.5.6":
+"@types/lodash.uniq@npm:^4.5.6":
   version: 4.5.6
-  resolution: "@types/lodash.concat@npm:4.5.6"
+  resolution: "@types/lodash.uniq@npm:4.5.6"
   dependencies:
     "@types/lodash": "*"
-  checksum: a73bbc371d1798c24892c388124e7c1f6d8a131fafa423cfa01926d78710609a1b9f432fcbc7b22efc00eeec4d5ac2329c6bbfcc79a19e759332ad264ebc77c0
+  checksum: 1f25cfeeef528a6da8921098d390dcef9caf1713ed7cdeb32af7da82486e81e62d2d046dd069f3a68981b2e4397b42400a441c5343e2a2de492aea635a1004b9
   languageName: node
   linkType: hard
 
@@ -5911,6 +5913,22 @@ __metadata:
     "@webassemblyjs/wast-parser": 1.9.0
     "@xtuc/long": 4.2.2
   checksum: 9f013b27e28b60cb215011079a15c94d1a7b0784eb3b59ec4936f8c0635ecdb58875c6809485cff814e01df170f02c18676cf782826795dc08553b98e69c1049
+  languageName: node
+  linkType: hard
+
+"@xstate/vue@npm:^0.5.0":
+  version: 0.5.0
+  resolution: "@xstate/vue@npm:0.5.0"
+  peerDependencies:
+    "@xstate/fsm": ^1.0.0
+    vue: ^3.0.0
+    xstate: ^4.7.8
+  peerDependenciesMeta:
+    "@xstate/fsm":
+      optional: true
+    xstate:
+      optional: true
+  checksum: b7a664411f474857f7a627530d0ecd6a2e834e5d27dd7436aacf5cfa962dc260cbbfab1347d762956d8d5ea536ec3f7920cd35228ec9ef317d83aa3ec891124e
   languageName: node
   linkType: hard
 
@@ -15039,13 +15057,6 @@ fsevents@^1.2.7:
   languageName: node
   linkType: hard
 
-"lodash.concat@npm:^4.5.0":
-  version: 4.5.0
-  resolution: "lodash.concat@npm:4.5.0"
-  checksum: 98bbb1adb7fb62a30bfdbeaaac6fcdebad514ea657c5672540db9f858c83e3eb0a825e5dcd96d8b2824686bea6fa60d4395252e773c3a8f6a98c531b974d1958
-  languageName: node
-  linkType: hard
-
 "lodash.find@npm:^4.6.0":
   version: 4.6.0
   resolution: "lodash.find@npm:4.6.0"
@@ -23863,6 +23874,13 @@ typescript@~4.0:
   version: 2.2.0
   resolution: "xmlchars@npm:2.2.0"
   checksum: 69bbb61e8d939873c8aa7d006d082944de2eb6f12f55e53fdfc670d544e677736b59e498ece303f264bd1dc39b77557eef1c1c9bfb09eb5e1e30ac552420d81e
+  languageName: node
+  linkType: hard
+
+"xstate@npm:^4.17.1":
+  version: 4.17.1
+  resolution: "xstate@npm:4.17.1"
+  checksum: f689f9c3cfab11d3238897e41bc9d9489494fc730796a123ac13cace99a2635bc88afb24363dc43571534ed509fbe06b6ddb956b756b3a044a07d88abe709474
   languageName: node
   linkType: hard
 

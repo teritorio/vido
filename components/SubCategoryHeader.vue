@@ -47,7 +47,7 @@
 import Vue, { PropType } from 'vue'
 
 import HeaderSubCategories from '@/components/HeaderSubCategories.vue'
-import { Class } from '@/utils/types'
+import { Category } from '@/utils/types'
 
 export default Vue.extend({
   components: {
@@ -55,7 +55,7 @@ export default Vue.extend({
   },
   props: {
     categories: {
-      type: Array as PropType<Class[]>,
+      type: Array as PropType<Category[]>,
       required: true,
     },
     isSubCategorySelected: {
@@ -80,7 +80,7 @@ export default Vue.extend({
     },
   },
   computed: {
-    allCategoriesId(): Class['id'][] {
+    allCategoriesId(): Category['id'][] {
       return this.categories.map((category) => category.id)
     },
     isAllSelected(): boolean {

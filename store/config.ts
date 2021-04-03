@@ -1,19 +1,13 @@
 import { Store } from 'vuex'
 
-import { Classes, LatLng, Pitch, ZoomLevel } from '@/utils/types'
+import { Categories, LatLng, Pitch, ZoomLevel } from '@/utils/types'
 
 enum Mutation {
   SET = 'SET',
 }
 
 interface State {
-  site: {
-    [lang: string]: {
-      name: string
-      description: string
-      logo: string
-    }
-  } | null
+  categories: Categories | null
   map: {
     attribution: { [lang: string]: string }
     center: LatLng
@@ -24,20 +18,26 @@ interface State {
     }
     pitch: Pitch
   } | null
-  classes: Classes | null
+  site: {
+    [lang: string]: {
+      name: string
+      description: string
+      logo: string
+    }
+  } | null
 }
 
 export const state = (): State => ({
-  site: null,
+  categories: null,
   map: null,
-  classes: null,
+  site: null,
 })
 
 export const mutations = {
   [Mutation.SET](state: State, config: State) {
-    state.site = config.site
+    state.categories = config.categories
     state.map = config.map
-    state.classes = config.classes
+    state.site = config.site
   },
 }
 
@@ -47,9 +47,9 @@ export const actions = {
       const configPromise = await fetch('/api/config')
       const config = await configPromise.json()
 
-      config.classes = Object.entries(
-        config.classes as Classes
-      ).reduce<Classes>((result, [categoryId, category]) => {
+      const categories = Object.entries(
+        config.classes as Categories
+      ).reduce<Categories>((result, [categoryId, category]) => {
         // Fill the missing colors
         if (!category?.metadata?.color) {
           const defaultColor = '#ddd'
@@ -73,7 +73,11 @@ export const actions = {
         return result
       }, {})
 
-      store.commit(Mutation.SET, config)
+      store.commit(Mutation.SET, {
+        categories,
+        map: config.map,
+        site: config.site,
+      })
     } catch (error) {
       // eslint-disable-next-line no-console
       console.error('Vido error: Unable to fetch the config from the API')
@@ -84,46 +88,44 @@ export const actions = {
 export const getters = {
   site: (state: State) => state.site,
   map: (state: State) => state.map,
-  classes: (state: State) => state.classes,
+  categories: (state: State) => state.categories,
 
-  firstLevelCategories: (state: State) => {
-    if (!state.classes) {
+  superCategories: (state: State) => {
+    if (!state.categories) {
       return []
     }
 
-    return Object.values(state.classes)
+    return Object.values(state.categories)
       .filter((c) => c.level === 1)
       .sort((a, b) => (a.order || 0) - (b.order || 0))
   },
 
-  getSubLevelCategoriesFromCategoryId: (state: State) => (
-    categoryId: string
-  ) => {
-    if (!state.classes) {
+  getSubCategoriesFromCategoryId: (state: State) => (categoryId: string) => {
+    if (!state.categories) {
       return []
     }
 
-    return Object.values(state.classes)
+    return Object.values(state.categories)
       .filter((c) => c.parents?.[categoryId])
       .sort((a, b) => (a.order || 0) - (b.order || 0))
   },
 
-  highlightedFirstLevelCategories: (state: State) => {
-    if (!state.classes) {
+  highlightedSuperCategories: (state: State) => {
+    if (!state.categories) {
       return []
     }
 
-    return Object.values(state.classes)
+    return Object.values(state.categories)
       .filter((c) => c.level === 1 && c.highlighted)
       .sort((a, b) => (a.order || 0) - (b.order || 0))
   },
 
-  nonHighlightedFirstLevelCategories: (state: State) => {
-    if (!state.classes) {
+  nonHighlightedSuperCategories: (state: State) => {
+    if (!state.categories) {
       return []
     }
 
-    return Object.values(state.classes)
+    return Object.values(state.categories)
       .filter((c) => c.level === 1 && !c.highlighted)
       .sort((a, b) => (a.order || 0) - (b.order || 0))
   },
