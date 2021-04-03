@@ -63,7 +63,9 @@ export default Vue.extend({
   },
   methods: {
     onMapInit(map: mapboxgl.Map) {
-      map.addControl(
+      this.map = map
+
+      this.map.addControl(
         new PoiFilter({
           filter: [
             // ['catering', 'food', 'restaurant'],

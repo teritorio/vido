@@ -42,7 +42,7 @@
 </template>
 
 <script lang="ts">
-import { building3d } from '@teritorio/map'
+import { Building3d } from '@teritorio/map'
 import Vue from 'vue'
 
 export default Vue.extend({
@@ -53,19 +53,29 @@ export default Vue.extend({
     },
   },
   data(): {
+    building3d: Building3d | null
     is3D: boolean
   } {
     return {
+      building3d: null,
       is3D: false,
     }
   },
   methods: {
     toggle3D() {
       if (this.map) {
+        if (!this.building3d) {
+          this.building3d = new Building3d({
+            building3d: true,
+          })
+
+          this.map.addControl(this.building3d)
+        }
+
         if (this.is3D) {
-          building3d(this.map).set3d(false, 0)
+          this.building3d.set3d(false, 0)
         } else {
-          building3d(this.map).set3d(true, 60)
+          this.building3d.set3d(true, 60)
         }
 
         this.is3D = !this.is3D
