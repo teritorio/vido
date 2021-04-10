@@ -13,8 +13,8 @@ export interface MainContext {
 }
 
 export enum MainEvents {
+  GoToMain = 'GO_TO_MAIN',
   GoToSearch = 'GO_TO_SEARCH',
-  GoToStart = 'GO_TO_START',
   GoToSubCategories = 'GO_TO_SUB_CATEGORIES',
   SelectSubCategories = 'SELECT_SUB_CATEGORIES',
   ToggleSubCategorySelection = 'TOGGLE_SUB_CATEGORY_SELECTION',
@@ -23,7 +23,7 @@ export enum MainEvents {
 
 export type MainEvent =
   | { type: MainEvents.GoToSearch }
-  | { type: MainEvents.GoToStart }
+  | { type: MainEvents.GoToMain }
   | {
       type: MainEvents.GoToSubCategories
       subCategories: Category[]
@@ -43,14 +43,14 @@ export type MainEvent =
     }
 
 export enum MainStates {
+  Main = 'main',
   Search = 'search',
-  Start = 'start',
   SubCategories = 'subCategories',
 }
 
 export interface MainStateSchema {
   states: {
-    [MainStates.Start]: {}
+    [MainStates.Main]: {}
     [MainStates.Search]: {}
     [MainStates.SubCategories]: {}
   }
@@ -63,9 +63,9 @@ export const mainMachine = Machine<MainContext, MainStateSchema, MainEvent>(
       selectedSubCategoriesIds: [],
       selectedSuperCategory: null,
     },
-    initial: MainStates.Start,
+    initial: MainStates.Main,
     states: {
-      [MainStates.Start]: {
+      [MainStates.Main]: {
         meta: {
           description: 'Main header containing the super categories',
         },
@@ -82,7 +82,7 @@ export const mainMachine = Machine<MainContext, MainStateSchema, MainEvent>(
           description: 'Secondary header containing the search input',
         },
         on: {
-          [MainEvents.GoToStart]: MainStates.Start,
+          [MainEvents.GoToMain]: MainStates.Main,
         },
       },
       [MainStates.SubCategories]: {
@@ -101,7 +101,7 @@ export const mainMachine = Machine<MainContext, MainStateSchema, MainEvent>(
           [MainEvents.UnselectSubCategories]: {
             actions: ['unselectSubCategories'],
           },
-          [MainEvents.GoToStart]: MainStates.Start,
+          [MainEvents.GoToMain]: MainStates.Main,
         },
       },
     },

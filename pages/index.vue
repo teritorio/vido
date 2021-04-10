@@ -7,7 +7,7 @@
     >
       <transition name="headers" appear mode="out-in">
       <MainHeader
-        v-if="current.matches(mainStates.Start)"
+          v-if="current.matches(mainStates.Main)"
         :highlighted-categories="highlightedSuperCategories"
         :non-highlighted-categories="nonHighlightedSuperCategories"
         :on-category-click="onSuperCategoryClick"
@@ -20,14 +20,14 @@
         :categories="context.selectedSuperCategory.subCategories"
         :is-sub-category-selected="isSubCategorySelected"
         :on-category-click="onSubCategoryClick"
-        :on-go-back-click="goToStart"
+          :on-go-back-click="goToMain"
         :on-select-all-categories="selectSubCategory"
         :on-unselect-all-categories="unselectSubCategory"
       />
 
       <SearchHeader
         v-if="current.matches(mainStates.Search)"
-        :on-go-back-click="goToStart"
+          :on-go-back-click="goToMain"
       />
     </transition>
     </header>
@@ -116,11 +116,11 @@ export default Vue.extend({
     ...mapActions({
       fetchConfigFromAPI: 'config/fetch',
     }),
+    goToMain() {
+      this.mainService.send(MainEvents.GoToMain)
+    },
     goToSearch() {
       this.mainService.send(MainEvents.GoToSearch)
-    },
-    goToStart() {
-      this.mainService.send(MainEvents.GoToStart)
     },
     isSubCategorySelected(subCategoryId: Category['id']) {
       return this.context.selectedSubCategoriesIds.includes(subCategoryId)
