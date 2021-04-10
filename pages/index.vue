@@ -2,7 +2,10 @@
   <div class="w-full h-full">
     <Map v-if="!!mapConfig" class="absolute" />
 
-    <transition name="headers" appear>
+    <header
+      class="fixed top-0 bottom-0 flex flex-col w-full h-full max-w-md p-4 space-y-4 pointer-events-none"
+    >
+      <transition name="headers" appear mode="out-in">
       <MainHeader
         v-if="current.matches(mainStates.Start)"
         :highlighted-categories="highlightedSuperCategories"
@@ -27,6 +30,7 @@
         :on-go-back-click="goToStart"
       />
     </transition>
+    </header>
   </div>
 </template>
 
@@ -155,7 +159,7 @@ export default Vue.extend({
 <style>
 .headers-enter-active,
 .headers-leave-active {
-  transition: opacity 0.2s, transform 0.2s;
+  transition: opacity 0.1s, transform 0.1s;
 }
 
 .headers-enter {
