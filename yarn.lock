@@ -4649,6 +4649,7 @@ __metadata:
     "@types/mapbox-gl": 1.13.0
     "@types/wcag-contrast": ^3.0.0
     "@vue/test-utils": ^1.1.2
+    "@xstate/inspect": ^0.4.1
     "@xstate/vue": ^0.5.0
     autoprefixer: ^9.8.6
     babel-core: 7.0.0-bridge.0
@@ -5913,6 +5914,17 @@ __metadata:
     "@webassemblyjs/wast-parser": 1.9.0
     "@xtuc/long": 4.2.2
   checksum: 9f013b27e28b60cb215011079a15c94d1a7b0784eb3b59ec4936f8c0635ecdb58875c6809485cff814e01df170f02c18676cf782826795dc08553b98e69c1049
+  languageName: node
+  linkType: hard
+
+"@xstate/inspect@npm:^0.4.1":
+  version: 0.4.1
+  resolution: "@xstate/inspect@npm:0.4.1"
+  dependencies:
+    fast-safe-stringify: ^2.0.7
+  peerDependencies:
+    ws: ^7.3.1
+  checksum: 9cff5f78012f6d04df1fb792fba54fd17a8c6f565c22012a527743588c4ffc7b4519529ebf5a199a6118db65d1780a2619b2b18b31741c91a246c586a2eb5652
   languageName: node
   linkType: hard
 
@@ -11056,6 +11068,13 @@ __metadata:
   version: 2.0.6
   resolution: "fast-levenshtein@npm:2.0.6"
   checksum: a2d03af3088b0397633e007fb3010ecfa4f91cae2116d2385653c59396a1b31467641afa672a79e6f82218518670dc144128378124e711e35dbf90bc82846f22
+  languageName: node
+  linkType: hard
+
+"fast-safe-stringify@npm:^2.0.7":
+  version: 2.0.7
+  resolution: "fast-safe-stringify@npm:2.0.7"
+  checksum: 7bd22543263b707870d70c6f2336b6e8563e34d6807dc388cc0566895e31e0a8273af017a7eb1c9538d0ef54288284e1c0585b557bd856491295a847159fd929
   languageName: node
   linkType: hard
 

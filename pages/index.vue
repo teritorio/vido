@@ -54,6 +54,16 @@ import {
 
 import { Category } from '~/utils/types'
 
+const interpretOptions = { devTools: false }
+
+if (typeof window !== 'undefined' && process.env.NODE_ENV === 'development') {
+  const { inspect } = require('@xstate/inspect')
+
+  inspect({ iframe: false })
+
+  interpretOptions.devTools = true
+}
+
 export default Vue.extend({
   components: {
     MainHeader,
@@ -72,7 +82,7 @@ export default Vue.extend({
       context: mainMachine.context,
       current: mainMachine.initialState,
       mainEvents: MainEvents,
-      mainService: interpret(mainMachine, { devTools: true }),
+      mainService: interpret(mainMachine, interpretOptions),
       mainStates: MainStates,
     }
   },
