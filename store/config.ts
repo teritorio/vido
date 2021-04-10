@@ -90,6 +90,16 @@ export const getters = {
   map: (state: State) => state.map,
   categories: (state: State) => state.categories,
 
+  subCategories: (state: State) => {
+    if (!state.categories) {
+      return []
+    }
+
+    return Object.values(state.categories)
+      .filter((c) => c.level === 3)
+      .sort((a, b) => (a.order || 0) - (b.order || 0))
+  },
+
   superCategories: (state: State) => {
     if (!state.categories) {
       return []

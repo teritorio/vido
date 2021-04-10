@@ -6,30 +6,40 @@
       class="fixed top-0 bottom-0 flex flex-col w-full h-full max-w-md p-4 space-y-4 pointer-events-none"
     >
       <transition name="headers" appear mode="out-in">
-      <MainHeader
+        <MainHeader
           v-if="current.matches(mainStates.Main)"
-        :highlighted-categories="highlightedSuperCategories"
-        :non-highlighted-categories="nonHighlightedSuperCategories"
-        :on-category-click="onSuperCategoryClick"
-        :on-search-click="goToSearch"
-        :site-name="siteName"
-      />
+          :highlighted-categories="highlightedSuperCategories"
+          :non-highlighted-categories="nonHighlightedSuperCategories"
+          :on-category-click="onSuperCategoryClick"
+          :on-search-click="goToSearch"
+          :site-name="siteName"
+        />
 
-      <SubCategoryHeader
-        v-if="current.matches(mainStates.SubCategories)"
-        :categories="context.selectedSuperCategory.subCategories"
+        <SubCategoryHeader
+          v-if="current.matches(mainStates.SubCategories)"
+          :categories="context.selectedSuperCategory.subCategories"
+          :is-sub-category-selected="isSubCategorySelected"
+          :on-category-click="onSubCategoryClick"
+          :on-go-back-click="goToMain"
+          :on-select-all-categories="selectSubCategory"
+          :on-unselect-all-categories="unselectSubCategory"
+        />
+
+        <SearchHeader
+          v-if="current.matches(mainStates.Search)"
+          :on-go-back-click="goToMain"
+        />
+      </transition>
+
+      <SelectedSubCategoriesAside
+        v-if="context.selectedSubCategoriesIds.length"
+        :categories="selectedSubCategories"
         :is-sub-category-selected="isSubCategorySelected"
         :on-category-click="onSubCategoryClick"
-          :on-go-back-click="goToMain"
+        :on-go-back-click="goToMain"
         :on-select-all-categories="selectSubCategory"
         :on-unselect-all-categories="unselectSubCategory"
       />
-
-      <SearchHeader
-        v-if="current.matches(mainStates.Search)"
-          :on-go-back-click="goToMain"
-      />
-    </transition>
     </header>
   </div>
 </template>
@@ -42,6 +52,7 @@ import { interpret, Interpreter, State } from 'xstate'
 import MainHeader from '@/components/MainHeader.vue'
 import Map from '@/components/Map.vue'
 import SearchHeader from '@/components/SearchHeader.vue'
+import SelectedSubCategoriesAside from '@/components/SelectedSubCategoriesAside.vue'
 import SubCategoryHeader from '@/components/SubCategoryHeader.vue'
 import {
   MainContext,
@@ -69,6 +80,7 @@ export default Vue.extend({
     MainHeader,
     Map,
     SearchHeader,
+    SelectedSubCategoriesAside,
     SubCategoryHeader,
   },
   data(): {
@@ -106,7 +118,16 @@ export default Vue.extend({
       mapConfig: 'config/map',
       nonHighlightedSuperCategories: 'config/nonHighlightedSuperCategories',
       siteConfig: 'config/site',
+      subCategories: 'config/subCategories',
     }),
+    selectedSubCategories(): Category[] {
+      const categories: Category[] = this.subCategories
+
+      return categories.filter((category) =>
+        this.context.selectedSubCategoriesIds.includes(category.id)
+      )
+    },
+
     siteName() {
       return this.siteConfig?.fr?.name || ''
     },
