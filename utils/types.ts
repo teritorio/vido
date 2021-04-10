@@ -15,7 +15,7 @@ export interface CategoryMetadata {
 
 export interface CategoryBase {
   id: string
-  level: number // 1, 2, 3
+  level: 1 | 2 | 3
   metadata: CategoryMetadata
   order?: number
   parents?: {
@@ -33,7 +33,16 @@ export interface SuperCategory extends CategoryBase {
   level: 1
 }
 
-export type Category = CategoryBase & SuperCategory
+export interface MidCategory extends CategoryBase {
+  level: 2
+}
+
+export interface SubCategory extends CategoryBase {
+  level: 3
+}
+
+export type Category = CategoryBase &
+  (SuperCategory | MidCategory | SubCategory)
 
 export interface Categories {
   [lang: string]: Category
