@@ -1,4 +1,4 @@
-import LeisureParkGardenIcon from '@/assets/icons/leisure-park-garden•.svg?inline'
+import LeisureIcon from '@/assets/icons/leisure•.svg?inline'
 
 import CategoryButton from './CategoryButton'
 
@@ -7,29 +7,27 @@ export default {
   component: CategoryButton,
 }
 
-const DefaultTemplate = (_, { argTypes }) => {
-  return {
-    components: { CategoryButton, LeisureParkGardenIcon },
-    props: Object.keys(argTypes),
-    template: `
-    <category-button v-bind="$props" v-on="$props">
-      <leisure-park-garden-icon class="w-6 h-6" />
-    </category-button>`,
-  }
-}
+const DefaultTemplate = (_, { args }) => ({
+  components: { CategoryButton, LeisureIcon },
+  props: Object.keys(args),
+  template: `
+    <CategoryButton v-bind="$props" v-on="$props">
+      <LeisureIcon class="w-7 h-7" />
+    </CategoryButton>`,
+})
 
 export const Default = DefaultTemplate.bind({})
+
 Default.args = {
-  color: 'red',
-  name: 'Santé',
-  badge: '2',
+  color: 'rebeccapurple',
+  label: 'Leisure',
   selected: false,
 }
 
 export const Selected = DefaultTemplate.bind({})
+
 Selected.args = {
-  color: 'red',
-  name: 'Santé',
-  badge: '2',
+  color: 'rebeccapurple',
+  label: 'Leisure',
   selected: true,
 }
