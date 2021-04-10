@@ -12,23 +12,23 @@
       :style="{ backgroundColor: color, color: textColor }"
     >
       <slot />
+
+      <div
+        v-if="selected"
+        class="absolute right-0 text-lg text-green-500 -top-1.5"
+      >
+        <font-awesome-icon
+          icon="check-circle"
+          :class="[
+            'rounded-full bg-white fill-current ring-4 transition-colors',
+            !selected && ' ring-white',
+            selected && 'ring-gray-100',
+          ]"
+        />
+      </div>
     </div>
 
     <div class="text-sm">{{ label }}</div>
-
-    <div
-      v-if="selected"
-      class="absolute text-lg text-green-500 top-2.5 right-7"
-    >
-      <font-awesome-icon
-        icon="check-circle"
-        :class="[
-          'rounded-full bg-white fill-current ring-4 transition-colors',
-          !selected && ' ring-white',
-          selected && 'ring-gray-100',
-        ]"
-      />
-    </div>
   </button>
 </template>
 
