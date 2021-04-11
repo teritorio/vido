@@ -13,6 +13,7 @@ export function makeServer() {
 
       this.passthrough('https://vecto.teritorio.xyz/**')
       this.passthrough('https://vecto-dev.teritorio.xyz/**')
+      this.passthrough('https://demov2.teritorio.xyz/**')
 
       /**
        * Needed because responseType is not set correctly in Mirages passthrough

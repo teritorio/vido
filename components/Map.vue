@@ -6,12 +6,12 @@
           access-token=""
           :map-options="{
             style: mapStyle,
-            center: [mapConfig.center.lng, mapConfig.center.lat],
-            zoom: mapConfig.zoom.default,
-            maxZoom: mapConfig.zoom.max,
-            minZoom: mapConfig.zoom.min,
+            center: [center.lng, center.lat],
+            zoom: zoom.default,
+            maxZoom: zoom.max,
+            minZoom: zoom.min,
             hash: false,
-            pitch: mapConfig.pitch,
+            pitch,
           }"
           @map-init="onMapInit"
         />
@@ -55,7 +55,9 @@ export default Vue.extend({
   },
   computed: {
     ...mapGetters({
-      mapConfig: 'config/map',
+      center: 'map/center',
+      pitch: 'map/pitch',
+      zoom: 'map/zoom',
     }),
     mapStyle(): string {
       return `https://vecto.teritorio.xyz/styles/teritorio-tourism-latest/style.json?key=${this.$config.TILES_TOKEN}`

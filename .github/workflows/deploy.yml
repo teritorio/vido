@@ -48,6 +48,7 @@ jobs:
 
       - name: Build
         env:
+          API_ORIGIN: https://demov2.teritorio.xyz
           TILES_TOKEN: ${{secrets.TILES_TOKEN_DEV}}
         run: yarn build
 

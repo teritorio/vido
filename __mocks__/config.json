@@ -6,21 +6,6 @@
       "logo": "https://via.placeholder.com/100x50"
     }
   },
-  "map": {
-    "attribution": {
-      "fr": "Comité Départemental du Tourisme des Landes • © C.D.T. 40"
-    },
-    "center": {
-      "lat": 43.482489,
-      "lng": -1.559646
-    },
-    "zoom": {
-      "default": 16,
-      "max": 20,
-      "min": 1
-    },
-    "pitch": 0
-  },
   "classes": {
     "8": {
       "id": "8",

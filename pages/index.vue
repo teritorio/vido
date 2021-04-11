@@ -1,6 +1,6 @@
 <template>
   <div class="w-full h-full">
-    <Map v-if="!!mapConfig" class="absolute" />
+    <Map v-if="isMapConfigLoaded" class="absolute" />
 
     <header
       class="fixed top-0 bottom-0 flex flex-col justify-between w-full h-full max-w-md p-4 space-y-4 pointer-events-none"
@@ -94,6 +94,10 @@ export default Vue.extend({
       mainStates: MainStates,
     }
   },
+  fetch() {
+    this.fetchMapConfigFromAPI(this.$config.API_ORIGIN)
+  },
+  fetchOnServer: false,
   head() {
     return {
       title: this.siteConfig?.fr?.name,
@@ -111,7 +115,7 @@ export default Vue.extend({
     ...mapGetters({
       getSubCategoriesFromCategoryId: 'config/getSubCategoriesFromCategoryId',
       highlightedSuperCategories: 'config/highlightedSuperCategories',
-      mapConfig: 'config/map',
+      isMapConfigLoaded: 'map/isLoaded',
       nonHighlightedSuperCategories: 'config/nonHighlightedSuperCategories',
       siteConfig: 'config/site',
       subCategories: 'config/subCategories',
@@ -142,6 +146,7 @@ export default Vue.extend({
   methods: {
     ...mapActions({
       fetchConfigFromAPI: 'config/fetch',
+      fetchMapConfigFromAPI: 'map/fetch',
     }),
     goToMain() {
       this.mainService.send(MainEvents.GoToMain)

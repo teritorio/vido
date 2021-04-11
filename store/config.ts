@@ -1,6 +1,6 @@
 import { Store } from 'vuex'
 
-import { Categories, LatLng, Pitch, ZoomLevel } from '@/utils/types'
+import { Categories } from '@/utils/types'
 
 enum Mutation {
   SET = 'SET',
@@ -8,16 +8,6 @@ enum Mutation {
 
 interface State {
   categories: Categories | null
-  map: {
-    attribution: { [lang: string]: string }
-    center: LatLng
-    zoom: {
-      default: ZoomLevel
-      max: ZoomLevel
-      min: ZoomLevel
-    }
-    pitch: Pitch
-  } | null
   site: {
     [lang: string]: {
       name: string
@@ -29,14 +19,12 @@ interface State {
 
 export const state = (): State => ({
   categories: null,
-  map: null,
   site: null,
 })
 
 export const mutations = {
   [Mutation.SET](state: State, config: State) {
     state.categories = config.categories
-    state.map = config.map
     state.site = config.site
   },
 }
@@ -75,7 +63,6 @@ export const actions = {
 
       store.commit(Mutation.SET, {
         categories,
-        map: config.map,
         site: config.site,
       })
     } catch (error) {
@@ -87,7 +74,6 @@ export const actions = {
 
 export const getters = {
   site: (state: State) => state.site,
-  map: (state: State) => state.map,
   categories: (state: State) => state.categories,
 
   subCategories: (state: State) => {

@@ -11,7 +11,7 @@
       class="absolute bottom-0 right-0 px-2 py-1 m-3 text-xs text-center text-gray-800 transition-opacity bg-white rounded-sm shadow-sm opacity-0 pointer-events-none"
     >
       <p>
-        {{ mapConfig.attribution.fr }} &bull; &copy; Contributeurs de
+        {{ attribution.fr }} &bull; &copy; Contributeurs de
         <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>
         &bull; Réalisation <a href="https://www.teritorio.fr/">Teritorio</a>
       </p>
@@ -26,7 +26,7 @@ import { mapGetters } from 'vuex'
 export default Vue.extend({
   computed: {
     ...mapGetters({
-      mapConfig: 'config/map',
+      attribution: 'map/attribution',
     }),
   },
 })
