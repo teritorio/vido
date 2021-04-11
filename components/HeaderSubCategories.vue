@@ -1,31 +1,16 @@
 <template>
-  <div class="flex flex-col space-y-4">
-    <div class="grid items-start grid-cols-3 gap-4">
-      <CategoryButton
-        v-for="category in categories"
-        :key="category.id"
-        :color="category.metadata.color"
-        :selected="isSubCategorySelected(category.id)"
-        :label="category.metadata.label.fr"
-        :on-click="() => onCategoryButtonClick(category.id)"
-      >
-        <component
-          :is="pictoComponent(category.metadata.picto)"
-          class="w-7 h-7"
-        />
-      </CategoryButton>
-    </div>
-  </div>
+  <CategoryList :categories="listItems" @click="onCategoryClick" />
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
 
-import CategoryButton from '@/components/CategoryButton/CategoryButton.vue'
+import CategoryList from '@/components/CategoryList/CategoryList.vue'
+import { Category } from '@/utils/types'
 
 export default Vue.extend({
   components: {
-    CategoryButton,
+    CategoryList,
   },
   props: {
     categories: {
@@ -36,21 +21,21 @@ export default Vue.extend({
       type: Function,
       required: true,
     },
-    onCategoryClick: {
-      type: Function,
-      required: true,
+  },
+  computed: {
+    listItems() {
+      return this.$props.categories.map((category: Category) => ({
+        id: category.id,
+        color: category.metadata.color,
+        label: category.metadata.label.fr,
+        picto: category.metadata.picto,
+        selected: this.$props.isSubCategorySelected(category.id),
+      }))
     },
   },
   methods: {
-    pictoComponent(pictoName: string) {
-      if (pictoName) {
-        return require(`@/assets/icons/${pictoName}•.svg?inline`)
-      }
-
-      return require(`@/assets/icons/services•.svg?inline`)
-    },
-    onCategoryButtonClick(categoryId: string) {
-      this.onCategoryClick(categoryId)
+    onCategoryClick(categoryId: Category['id']) {
+      this.$emit('category-click', categoryId)
     },
   },
 })

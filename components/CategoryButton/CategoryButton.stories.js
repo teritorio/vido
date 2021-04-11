@@ -20,6 +20,7 @@ export const Default = DefaultTemplate.bind({})
 
 Default.args = {
   color: 'rebeccapurple',
+  id: '123',
   label: 'Leisure',
   selected: false,
 }
@@ -28,6 +29,7 @@ export const Selected = DefaultTemplate.bind({})
 
 Selected.args = {
   color: 'rebeccapurple',
+  id: '123',
   label: 'Leisure',
   selected: true,
 }

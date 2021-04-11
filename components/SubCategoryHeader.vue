@@ -8,7 +8,7 @@
         class="flex items-center justify-center w-10 h-10 text-2xl font-bold transition-all rounded-full outline-none cursor-pointer focus:outline-none hover:bg-gray-100 focus:bg-gray-100"
         @click="onGoBackClick"
       >
-        <font-awesome-icon icon="arrow-left" class="text-gray-800 fa-xs" />
+        <font-awesome-icon icon="arrow-left" class="text-gray-800" size="xs" />
       </button>
 
       <button
@@ -34,7 +34,7 @@
       class="flex-1 pointer-events-auto"
       :categories="categories"
       :is-sub-category-selected="isSubCategorySelected"
-      :on-category-click="onCategoryClick"
+      @category-click="onCategoryClick"
     />
   </aside>
 </template>
@@ -58,22 +58,6 @@ export default Vue.extend({
       type: Function,
       required: true,
     },
-    onCategoryClick: {
-      type: Function,
-      required: true,
-    },
-    onGoBackClick: {
-      type: Function,
-      required: true,
-    },
-    onSelectAllCategories: {
-      type: Function,
-      required: true,
-    },
-    onUnselectAllCategories: {
-      type: Function,
-      required: true,
-    },
   },
   computed: {
     allCategoriesId(): Category['id'][] {
@@ -86,11 +70,17 @@ export default Vue.extend({
     },
   },
   methods: {
+    onCategoryClick(categoryId: Category['id']) {
+      this.$emit('category-click', categoryId)
+    },
     onClickSelectAll(): void {
-      this.onSelectAllCategories(this.allCategoriesId)
+      this.$emit('select-all-categories', this.allCategoriesId)
     },
     onClickUnselectAll(): void {
-      this.onUnselectAllCategories(this.allCategoriesId)
+      this.$emit('unselect-all-categories', this.allCategoriesId)
+    },
+    onGoBackClick() {
+      this.$emit('go-back-click')
     },
   },
 })

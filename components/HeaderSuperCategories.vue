@@ -3,10 +3,11 @@
     <div class="grid items-start grid-cols-3 gap-4">
       <CategoryButton
         v-for="category in highlightedCategories"
+        :id="category.id"
         :key="category.id"
         :color="category.metadata.color"
         :label="category.metadata.label.fr"
-        @click.native="onCategoryButtonClick(category.id)"
+        @click="onCategoryClick"
       >
         <component
           :is="pictoComponent(category.metadata.picto)"
@@ -27,10 +28,11 @@
       <div v-if="!collapsed" class="grid items-start grid-cols-3 gap-4">
         <CategoryButton
           v-for="category in nonHighlightedCategories"
+          :id="category.id"
           :key="category.id"
           :color="category.metadata.color"
           :label="category.metadata.label.fr"
-          @click.native="onCategoryButtonClick(category.id)"
+          @click="onCategoryClick"
         >
           <component
             :is="pictoComponent(category.metadata.picto)"
@@ -46,6 +48,7 @@
 import Vue from 'vue'
 
 import CategoryButton from '@/components/CategoryButton/CategoryButton.vue'
+import { Category } from '@/utils/types'
 
 export default Vue.extend({
   components: {
@@ -58,10 +61,6 @@ export default Vue.extend({
     },
     nonHighlightedCategories: {
       type: Array,
-      required: true,
-    },
-    onCategoryClick: {
-      type: Function,
       required: true,
     },
   },
@@ -83,8 +82,8 @@ export default Vue.extend({
     onCollapseButtonClick() {
       this.collapsed = !this.collapsed
     },
-    onCategoryButtonClick(categoryId: string) {
-      this.onCategoryClick(categoryId)
+    onCategoryClick(categoryId: Category['id']) {
+      this.$emit('category-click', categoryId)
     },
   },
 })

@@ -6,7 +6,6 @@
       class="flex-1 pointer-events-auto"
       :categories="categories"
       :is-sub-category-selected="isSubCategorySelected"
-      :on-category-click="onCategoryClick"
     />
   </aside>
 </template>

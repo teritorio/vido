@@ -4,7 +4,7 @@
       type="button"
       class="absolute w-6 h-6 text-gray-800 bg-white rounded-full shadow-sm outline-none hover:bg-gray-100 focus-visible:bg-gray-100 focus:outline-none bottom-3 right-3"
     >
-      <font-awesome-icon icon="info" class="fa-xs" />
+      <font-awesome-icon icon="info" size="xs" />
     </button>
 
     <aside

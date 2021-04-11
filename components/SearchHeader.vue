@@ -7,7 +7,7 @@
       class="flex items-center justify-center w-10 h-10 text-2xl font-bold transition-all rounded-full outline-none cursor-pointer focus:outline-none hover:bg-gray-100 focus:bg-gray-100"
       @click="onGoBackClick"
     >
-      <font-awesome-icon icon="arrow-left" class="text-gray-800 fa-xs" />
+      <font-awesome-icon icon="arrow-left" class="text-gray-800" size="xs" />
     </button>
 
     <form class="flex-none pointer-events-auto" @submit.prevent="onSubmit">
@@ -32,13 +32,10 @@
 import Vue from 'vue'
 
 export default Vue.extend({
-  props: {
-    onGoBackClick: {
-      type: Function,
-      required: true,
-    },
-  },
   methods: {
+    onGoBackClick() {
+      this.$emit('go-back-click')
+    },
     onSubmit() {
       // console.log('onSubmit')
     },

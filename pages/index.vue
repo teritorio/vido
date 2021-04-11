@@ -3,42 +3,38 @@
     <Map v-if="!!mapConfig" class="absolute" />
 
     <header
-      class="fixed top-0 bottom-0 flex flex-col w-full h-full max-w-md p-4 space-y-4 pointer-events-none"
+      class="fixed top-0 bottom-0 flex flex-col justify-between w-full h-full max-w-md p-4 space-y-4 pointer-events-none"
     >
       <transition name="headers" appear mode="out-in">
         <MainHeader
           v-if="current.matches(mainStates.Main)"
           :highlighted-categories="highlightedSuperCategories"
           :non-highlighted-categories="nonHighlightedSuperCategories"
-          :on-category-click="onSuperCategoryClick"
-          :on-search-click="goToSearch"
           :site-name="siteName"
+          @category-click="onSuperCategoryClick"
+          @search-click="goToSearch"
         />
 
         <SubCategoryHeader
           v-if="current.matches(mainStates.SubCategories)"
           :categories="context.selectedSuperCategory.subCategories"
           :is-sub-category-selected="isSubCategorySelected"
-          :on-category-click="onSubCategoryClick"
-          :on-go-back-click="goToMain"
-          :on-select-all-categories="selectSubCategory"
-          :on-unselect-all-categories="unselectSubCategory"
+          @category-click="onSubCategoryClick"
+          @go-back-click="goToMain"
+          @select-all-categories="selectSubCategory"
+          @unselect-all-categories="unselectSubCategory"
         />
 
         <SearchHeader
           v-if="current.matches(mainStates.Search)"
-          :on-go-back-click="goToMain"
+          @go-back-click="goToMain"
         />
       </transition>
 
       <SelectedSubCategoriesAside
-        v-if="context.selectedSubCategoriesIds.length"
+        v-if="selectedSubCategories.length"
         :categories="selectedSubCategories"
         :is-sub-category-selected="isSubCategorySelected"
-        :on-category-click="onSubCategoryClick"
-        :on-go-back-click="goToMain"
-        :on-select-all-categories="selectSubCategory"
-        :on-unselect-all-categories="unselectSubCategory"
       />
     </header>
   </div>
@@ -156,13 +152,13 @@ export default Vue.extend({
     isSubCategorySelected(subCategoryId: Category['id']) {
       return this.context.selectedSubCategoriesIds.includes(subCategoryId)
     },
-    onSuperCategoryClick(superCategoryId: string) {
+    onSuperCategoryClick(superCategoryId: Category['id']) {
       this.mainService.send(MainEvents.GoToSubCategories, {
         subCategories: this.getSubCategoriesFromCategoryId(superCategoryId),
         superCategoryId,
       })
     },
-    onSubCategoryClick(categoryId: string) {
+    onSubCategoryClick(categoryId: Category['id']) {
       this.toggleSubCategorySelection(categoryId)
     },
     selectSubCategory(subCategoriesIds: Category['id'][]) {

@@ -1,5 +1,5 @@
 import { config, library } from '@fortawesome/fontawesome-svg-core'
-// import { faSquare } from '@fortawesome/free-regular-svg-icons'
+import { faCircle } from '@fortawesome/free-regular-svg-icons'
 import {
   faArrowLeft,
   faCheckCircle,
@@ -21,6 +21,7 @@ library.add(
   faArrowLeft,
   faCheckCircle,
   faChevronDown,
+  faCircle,
   faInfo,
   faMinus,
   faPlus,

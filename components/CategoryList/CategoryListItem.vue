@@ -1,34 +1,36 @@
 <template>
   <button
-    :class="[
-      'flex focus:outline-none outline-none flex-col items-center self-stretch justify-start pt-4 pb-2 leading-none transition-colors rounded-lg p-4',
-      !selected && 'hover:bg-gray-100',
-      selected && 'selected bg-gray-100 hover:bg-transparent',
-    ]"
+    class="flex items-center justify-between w-full px-5 py-3 rounded-lg outline-none focus:outline-none hover:bg-gray-100"
     @click="onClick"
   >
-    <div
-      class="relative flex items-center justify-center mb-2 text-white rounded-full w-14 h-14"
-      :style="{ backgroundColor: color, color: textColor }"
-    >
-      <slot />
-
+    <div class="flex items-center space-x-4">
       <div
-        v-if="selected"
-        class="absolute right-0 text-lg text-green-500 -top-1.5"
+        class="flex items-center justify-center flex-shrink-0 w-10 h-10 text-white rounded-full"
+        :style="{ backgroundColor: color, color: textColor }"
       >
-        <font-awesome-icon
-          icon="check-circle"
-          :class="[
-            'rounded-full bg-white fill-current ring-4 transition-colors',
-            !selected && ' ring-white',
-            selected && 'ring-gray-100',
-          ]"
-        />
+        <slot />
       </div>
+
+      <div class="text-left">{{ label }}</div>
     </div>
 
-    <div class="text-sm">{{ label }}</div>
+    <div v-if="!selected" class="flex-shrink-0 text-gray-300">
+      <font-awesome-icon
+        class="fill-current"
+        fixed-width
+        :icon="['far', 'circle']"
+        size="lg"
+      />
+    </div>
+
+    <div v-if="selected" class="flex-shrink-0 text-green-500">
+      <font-awesome-icon
+        class="bg-white rounded-full fill-current"
+        fixed-width
+        icon="check-circle"
+        size="lg"
+      />
+    </div>
   </button>
 </template>
 
