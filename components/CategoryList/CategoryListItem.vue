@@ -25,7 +25,7 @@
 
     <div v-if="selected" class="flex-shrink-0 text-green-500">
       <font-awesome-icon
-        class="bg-white rounded-full fill-current"
+        class="fill-current"
         fixed-width
         icon="check-circle"
         size="lg"
