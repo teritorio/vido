@@ -4,7 +4,7 @@ import { assign, Machine } from 'xstate'
 
 import { Category } from '@/utils/types'
 
-export interface MainContext {
+export interface HomeContext {
   selectedSubCategoriesIds: Category['id'][]
   selectedSuperCategory: {
     id: Category['id']
@@ -12,8 +12,8 @@ export interface MainContext {
   } | null
 }
 
-export enum MainEvents {
-  GoToMain = 'GO_TO_MAIN',
+export enum HomeEvents {
+  GoToHome = 'GO_TO_HOME',
   GoToSearch = 'GO_TO_SEARCH',
   GoToSubCategories = 'GO_TO_SUB_CATEGORIES',
   SelectSubCategories = 'SELECT_SUB_CATEGORIES',
@@ -21,95 +21,95 @@ export enum MainEvents {
   UnselectSubCategories = 'UNSELECT_SUB_CATEGORIES',
 }
 
-export type MainEvent =
-  | { type: MainEvents.GoToSearch }
-  | { type: MainEvents.GoToMain }
+export type HomeEvent =
+  | { type: HomeEvents.GoToSearch }
+  | { type: HomeEvents.GoToHome }
   | {
-      type: MainEvents.GoToSubCategories
+      type: HomeEvents.GoToSubCategories
       subCategories: Category[]
       superCategoryId: Category['id']
     }
   | {
-      type: MainEvents.ToggleSubCategorySelection
+      type: HomeEvents.ToggleSubCategorySelection
       subCategoryId: Category['id']
     }
   | {
-      type: MainEvents.SelectSubCategories
+      type: HomeEvents.SelectSubCategories
       subCategoriesIds: Category['id'][]
     }
   | {
-      type: MainEvents.UnselectSubCategories
+      type: HomeEvents.UnselectSubCategories
       subCategoriesIds: Category['id'][]
     }
 
-export enum MainStates {
-  Main = 'main',
+export enum HomeStates {
+  Home = 'home',
   Search = 'search',
   SubCategories = 'subCategories',
 }
 
-export interface MainStateSchema {
+export interface HomeStateSchema {
   states: {
-    [MainStates.Main]: {}
-    [MainStates.Search]: {}
-    [MainStates.SubCategories]: {}
+    [HomeStates.Home]: {}
+    [HomeStates.Search]: {}
+    [HomeStates.SubCategories]: {}
   }
 }
 
-export const mainMachine = Machine<MainContext, MainStateSchema, MainEvent>(
+export const homeMachine = Machine<HomeContext, HomeStateSchema, HomeEvent>(
   {
-    id: 'main',
+    id: 'home',
     context: {
       selectedSubCategoriesIds: [],
       selectedSuperCategory: null,
     },
-    initial: MainStates.Main,
+    initial: HomeStates.Home,
     states: {
-      [MainStates.Main]: {
+      [HomeStates.Home]: {
         meta: {
           description: 'Main header containing the super categories',
         },
         on: {
-          [MainEvents.GoToSearch]: MainStates.Search,
-          [MainEvents.GoToSubCategories]: {
-            target: MainStates.SubCategories,
+          [HomeEvents.GoToSearch]: HomeStates.Search,
+          [HomeEvents.GoToSubCategories]: {
+            target: HomeStates.SubCategories,
             actions: ['onGoToSubCategories'],
           },
         },
       },
-      [MainStates.Search]: {
+      [HomeStates.Search]: {
         meta: {
           description: 'Secondary header containing the search input',
         },
         on: {
-          [MainEvents.GoToMain]: MainStates.Main,
+          [HomeEvents.GoToHome]: HomeStates.Home,
         },
       },
-      [MainStates.SubCategories]: {
+      [HomeStates.SubCategories]: {
         meta: {
           description:
             'Secondary header containing the sub-categories of the selected super category',
         },
         exit: ['resetSelectedSuperCategoryId'],
         on: {
-          [MainEvents.ToggleSubCategorySelection]: {
+          [HomeEvents.ToggleSubCategorySelection]: {
             actions: ['toggleSubCategorySelection'],
           },
-          [MainEvents.SelectSubCategories]: {
+          [HomeEvents.SelectSubCategories]: {
             actions: ['selectSubCategories'],
           },
-          [MainEvents.UnselectSubCategories]: {
+          [HomeEvents.UnselectSubCategories]: {
             actions: ['unselectSubCategories'],
           },
-          [MainEvents.GoToMain]: MainStates.Main,
+          [HomeEvents.GoToHome]: HomeStates.Home,
         },
       },
     },
   },
   {
     actions: {
-      onGoToSubCategories: assign<MainContext, MainEvent>((context, event) => {
-        if (event.type === MainEvents.GoToSubCategories) {
+      onGoToSubCategories: assign<HomeContext, HomeEvent>((context, event) => {
+        if (event.type === HomeEvents.GoToSubCategories) {
           return {
             selectedSuperCategory: {
               id: event.superCategoryId,
@@ -120,11 +120,11 @@ export const mainMachine = Machine<MainContext, MainStateSchema, MainEvent>(
 
         return context
       }),
-      resetSelectedSuperCategoryId: assign<MainContext, MainEvent>({
+      resetSelectedSuperCategoryId: assign<HomeContext, HomeEvent>({
         selectedSuperCategory: null,
       }),
-      selectSubCategories: assign<MainContext, MainEvent>((context, event) => {
-        if (event.type === MainEvents.SelectSubCategories) {
+      selectSubCategories: assign<HomeContext, HomeEvent>((context, event) => {
+        if (event.type === HomeEvents.SelectSubCategories) {
           return {
             selectedSubCategoriesIds: uniq([
               ...context.selectedSubCategoriesIds,
@@ -135,9 +135,9 @@ export const mainMachine = Machine<MainContext, MainStateSchema, MainEvent>(
 
         return context
       }),
-      toggleSubCategorySelection: assign<MainContext, MainEvent>(
+      toggleSubCategorySelection: assign<HomeContext, HomeEvent>(
         (context, event) => {
-          if (event.type === MainEvents.ToggleSubCategorySelection) {
+          if (event.type === HomeEvents.ToggleSubCategorySelection) {
             if (
               context.selectedSubCategoriesIds.includes(event.subCategoryId)
             ) {
@@ -160,9 +160,9 @@ export const mainMachine = Machine<MainContext, MainStateSchema, MainEvent>(
           return context
         }
       ),
-      unselectSubCategories: assign<MainContext, MainEvent>(
+      unselectSubCategories: assign<HomeContext, HomeEvent>(
         (context, event) => {
-          if (event.type === MainEvents.UnselectSubCategories) {
+          if (event.type === HomeEvents.UnselectSubCategories) {
             return {
               selectedSubCategoriesIds: without(
                 context.selectedSubCategoriesIds,
