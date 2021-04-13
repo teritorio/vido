@@ -47,3 +47,11 @@ export type Category = CategoryBase &
 export interface Categories {
   [lang: string]: Category
 }
+
+export interface SiteInfos {
+  [lang: string]: {
+    name: string
+    description: string
+    logo: string
+  }
+}

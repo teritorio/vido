@@ -8,24 +8,15 @@ enum Mutation {
 
 interface State {
   categories: Categories | null
-  site: {
-    [lang: string]: {
-      name: string
-      description: string
-      logo: string
-    }
-  } | null
 }
 
 export const state = (): State => ({
   categories: null,
-  site: null,
 })
 
 export const mutations = {
   [Mutation.SET](state: State, config: State) {
     state.categories = config.categories
-    state.site = config.site
   },
 }
 
@@ -73,7 +64,6 @@ export const actions = {
 }
 
 export const getters = {
-  site: (state: State) => state.site,
   categories: (state: State) => state.categories,
 
   subCategories: (state: State) => {

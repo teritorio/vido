@@ -9,6 +9,7 @@
         <MainHeader
           v-if="current.matches(states.Home)"
           :highlighted-categories="highlightedSuperCategories"
+          :logo-url="logoUrl"
           :non-highlighted-categories="nonHighlightedSuperCategories"
           :site-name="siteName"
           @category-click="onSuperCategoryClick"
@@ -95,14 +96,16 @@ export default Vue.extend({
     }
   },
   head() {
+    const infos = this.siteInfos('fr')
+
     return {
-      title: this.siteConfig?.fr?.name,
+      title: infos?.name,
       meta: [
         {
           // https://nuxtjs.org/docs/2.x/features/meta-tags-seo#local-settings
           hid: 'index',
-          name: this.siteConfig?.fr?.name,
-          content: this.siteConfig?.fr?.description,
+          name: infos?.name,
+          content: infos?.description,
         },
       ],
     }
@@ -113,9 +116,12 @@ export default Vue.extend({
       highlightedSuperCategories: 'config/highlightedSuperCategories',
       isMapConfigLoaded: 'map/isLoaded',
       nonHighlightedSuperCategories: 'config/nonHighlightedSuperCategories',
-      siteConfig: 'config/site',
+      siteInfos: 'site/infos',
       subCategories: 'config/subCategories',
     }),
+    logoUrl() {
+      return this.siteInfos('fr')?.logo || ''
+    },
     selectedSubCategories(): Category[] {
       const categories: Category[] = this.subCategories
 
@@ -124,7 +130,7 @@ export default Vue.extend({
       )
     },
     siteName() {
-      return this.siteConfig?.fr?.name || ''
+      return this.siteInfos('fr')?.name || ''
     },
   },
   created() {

@@ -4,7 +4,7 @@
   >
     <div class="flex items-center justify-between">
       <h1>
-        <Logo :aria-label="siteName" class="h-auto w-36" />
+        <img :aria-label="siteName" :src="logoUrl" class="w-40 h-auto" />
       </h1>
 
       <!-- <button
@@ -36,17 +36,19 @@
 import Vue from 'vue'
 
 import HeaderSuperCategories from '@/components/HeaderSuperCategories.vue'
-import Logo from '@/components/Logo/Logo.vue'
 import { Category } from '@/utils/types'
 
 export default Vue.extend({
   components: {
     HeaderSuperCategories,
-    Logo,
   },
   props: {
     highlightedCategories: {
       type: Array,
+      required: true,
+    },
+    logoUrl: {
+      type: String,
       required: true,
     },
     nonHighlightedCategories: {
