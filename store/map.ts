@@ -7,7 +7,7 @@ enum Mutation {
 }
 
 interface State {
-  attribution: { [lang: string]: string }
+  // attribution: { [lang: string]: string }
   center: LatLng
   isLoaded: boolean
   pitch: Pitch
@@ -19,7 +19,7 @@ interface State {
 }
 
 export const state = (): State | null => ({
-  attribution: {},
+  // attribution: {},
   center: {
     lat: 43.482489,
     lng: -1.559646,
@@ -35,7 +35,7 @@ export const state = (): State | null => ({
 
 export const mutations = {
   [Mutation.SET](state: State, payload: State) {
-    state.attribution = payload.attribution
+    // state.attribution = payload.attribution
     state.center = payload.center
     state.pitch = payload.pitch || 0
     state.zoom = payload.zoom
@@ -62,7 +62,7 @@ export const actions = {
 
 export const getters = {
   all: (state: State) => state,
-  attribution: (state: State) => state.attribution,
+  // attribution: (state: State) => state.attribution,
   center: (state: State) => state.center,
   isLoaded: (state: State) => state.isLoaded,
   pitch: (state: State) => state.pitch,
