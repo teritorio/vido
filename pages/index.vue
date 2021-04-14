@@ -13,10 +13,8 @@ export default Vue.extend({
   },
   async fetch() {
     await this.$store.dispatch('map/fetch', this.$config.API_ORIGIN)
+    await this.$store.dispatch('menu/fetch', this.$config.API_ORIGIN)
     await this.$store.dispatch('site/fetch', this.$config.API_ORIGIN)
-  },
-  mounted() {
-    this.$store.dispatch('config/fetch')
   },
 })
 </script>

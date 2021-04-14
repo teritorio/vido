@@ -1,6 +1,6 @@
 <template>
   <div class="flex flex-col space-y-6">
-    <div class="grid items-start grid-cols-3 gap-4">
+    <!-- <div class="grid items-start grid-cols-3 gap-4">
       <CategoryButton
         v-for="category in highlightedCategories"
         :id="category.id"
@@ -22,7 +22,7 @@
     >
       <font-awesome-icon icon="chevron-down" />
       <span>Plus de choix</span>
-    </button>
+    </button> -->
 
     <transition name="non-highlighted" appear>
       <div v-if="!collapsed" class="grid items-start grid-cols-3 gap-4">
@@ -48,6 +48,7 @@
 import Vue from 'vue'
 
 import CategoryButton from '@/components/CategoryButton/CategoryButton.vue'
+import { pictoComponent } from '@/utils/picto'
 import { Category } from '@/utils/types'
 
 export default Vue.extend({
@@ -68,17 +69,11 @@ export default Vue.extend({
     collapsed: boolean
   } {
     return {
-      collapsed: true,
+      collapsed: false,
     }
   },
   methods: {
-    pictoComponent(pictoName: string) {
-      if (pictoName) {
-        return require(`@/assets/icons/${pictoName}•.svg?inline`)
-      }
-
-      return require(`@/assets/icons/services•.svg?inline`)
-    },
+    pictoComponent: (pictoName: string) => pictoComponent(pictoName),
     onCollapseButtonClick() {
       this.collapsed = !this.collapsed
     },
@@ -90,7 +85,7 @@ export default Vue.extend({
 </script>
 
 <style>
-.non-highlighted-enter-active {
+/* .non-highlighted-enter-active {
   transition: opacity 0.1s, transform 0.1s;
 }
 
@@ -102,5 +97,5 @@ export default Vue.extend({
 .non-highlighted-enter-to {
   opacity: 1;
   transform: translateY(0);
-}
+} */
 </style>

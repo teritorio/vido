@@ -112,12 +112,12 @@ export default Vue.extend({
   },
   computed: {
     ...mapGetters({
-      getSubCategoriesFromCategoryId: 'config/getSubCategoriesFromCategoryId',
-      highlightedSuperCategories: 'config/highlightedSuperCategories',
+      getSubCategoriesFromCategoryId: 'menu/getSubCategoriesFromCategoryId',
+      highlightedSuperCategories: 'menu/highlightedSuperCategories',
       isMapConfigLoaded: 'map/isLoaded',
-      nonHighlightedSuperCategories: 'config/nonHighlightedSuperCategories',
+      nonHighlightedSuperCategories: 'menu/nonHighlightedSuperCategories',
       siteInfos: 'site/infos',
-      subCategories: 'config/subCategories',
+      subCategories: 'menu/subCategories',
     }),
     logoUrl() {
       return this.siteInfos('fr')?.logo || ''

@@ -34,7 +34,8 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { hex } from 'wcag-contrast'
+
+import { getContrastedTextColor } from '@/utils/picto'
 
 export default Vue.extend({
   props: {
@@ -57,10 +58,7 @@ export default Vue.extend({
   },
   computed: {
     textColor() {
-      const isLightBackgroundColor =
-        hex('#333', this.color) > hex('#fff', this.color)
-
-      return isLightBackgroundColor ? '#4d4d4d' : '#fff'
+      return getContrastedTextColor(this.color)
     },
   },
   methods: {

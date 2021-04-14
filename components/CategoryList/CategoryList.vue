@@ -18,6 +18,7 @@
 import Vue from 'vue'
 
 import CategoryListItem from '@/components/CategoryList/CategoryListItem.vue'
+import { pictoComponent } from '@/utils/picto'
 import { Category } from '@/utils/types'
 
 export default Vue.extend({
@@ -36,13 +37,7 @@ export default Vue.extend({
     onCategoryClick(categoryId: Category['id']) {
       this.$emit('click', categoryId)
     },
-    pictoComponent(pictoName: string) {
-      if (pictoName) {
-        return require(`@/assets/icons/${pictoName}•.svg?inline`)
-      }
-
-      return require(`@/assets/icons/services•.svg?inline`)
-    },
+    pictoComponent: (pictoName: string) => pictoComponent(pictoName),
   },
 })
 </script>

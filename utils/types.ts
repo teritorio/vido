@@ -6,25 +6,34 @@ export interface LatLng {
 export type ZoomLevel = number
 export type Pitch = number
 
-export interface CategoryMetadata {
-  label: { [lang: string]: string }
-  slug?: { [lang: string]: string }
-  color?: string // Inherited from its parent by default
-  picto?: string // Inherited from its parent by default
+export type PoiType = 'tis' | 'osm' | 'zone'
+
+export interface ApiCategoryBase {
+  id: string
+  parent: string
+  level: 1 | 2 | 3
+  metadata: {
+    color: string
+    count: string
+    description: { [lang: string]: string }
+    hide: boolean
+    label: { [lang: string]: string }
+    picto: string
+  }
+  order: string
+  datasources: {
+    idsrc: string
+    // eslint-disable-next-line camelcase
+    poi_type: PoiType
+    slug: string
+  }
 }
 
-export interface CategoryBase {
-  id: string
-  level: 1 | 2 | 3
-  metadata: CategoryMetadata
-  order?: number
-  parents?: {
-    [className: string]: {
-      id: string
-      order: number
-      metadata?: CategoryMetadata // Inherited from its parent by default
-    }
+export type CategoryBase = ApiCategoryBase & {
+  metadata: {
+    count: number
   }
+  order: number
 }
 
 // Only first level classes can be highlighted
@@ -43,10 +52,6 @@ export interface SubCategory extends CategoryBase {
 
 export type Category = CategoryBase &
   (SuperCategory | MidCategory | SubCategory)
-
-export interface Categories {
-  [lang: string]: Category
-}
 
 export interface SiteInfos {
   [lang: string]: {

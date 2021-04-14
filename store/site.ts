@@ -35,7 +35,10 @@ export const actions = {
       store.commit(Mutation.SET, config)
     } catch (error) {
       // eslint-disable-next-line no-console
-      console.error('Vido error: Unable to fetch the site config from the API')
+      console.error(
+        'Vido error: Unable to fetch the site config from the API',
+        error
+      )
     }
   },
 }

@@ -37,7 +37,7 @@ export default {
   },
 
   // Plugins to run before rendering page (https://go.nuxtjs.dev/config-plugins)
-  plugins: ['@/plugins/mirage.ts', '@/plugins/fontawesome.ts'],
+  plugins: ['@/plugins/fontawesome.ts'],
 
   // Auto import components (https://go.nuxtjs.dev/config-components)
   components: false,
