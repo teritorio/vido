@@ -48,7 +48,7 @@ export const actions = {
   async fetch(store: Store<State>, apiOrigin: string) {
     try {
       const configPromise = await fetch(
-        `${apiOrigin}/api.teritorio/map/v1/metadata`
+        `${apiOrigin}/api.teritorio/geodata/v1/map`
       )
       const config = await configPromise.json()
 

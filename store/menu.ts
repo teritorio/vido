@@ -28,22 +28,19 @@ export const actions = {
   async fetch(store: Store<State>, apiOrigin: string) {
     try {
       const configPromise = await fetch(
-        `${apiOrigin}/api.teritorio/menu/v1/menu`
+        `${apiOrigin}/api.teritorio/geodata/v1/menu`
       )
       const config: {
         [id: string]: ApiCategoryBase
       } = await configPromise.json()
 
-      const categories: Category[] = Object.values(config).map<Category>(
+      // FIXME
+      const categories = Object.values(config).filter(
         (category) =>
-          ({
-            ...category,
-            metadata: {
-              ...category.metadata,
-              count: parseInt(category.metadata.count, 10),
-            },
-            order: parseInt(category.order, 10),
-          } as Category)
+          category.isdataitem === 'yes' ||
+          category.isdataitem === true ||
+          category.isDataItem === 'yes' ||
+          category.isDataItem === true
       )
 
       store.commit(Mutation.SET, { categories })

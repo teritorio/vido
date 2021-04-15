@@ -28,7 +28,7 @@ export const actions = {
   async fetch(store: Store<State>, apiOrigin: string) {
     try {
       const configPromise = await fetch(
-        `${apiOrigin}/api.teritorio/site/v1/infos`
+        `${apiOrigin}/api.teritorio/geodata/v1/site`
       )
       const config = await configPromise.json()
 

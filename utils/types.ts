@@ -12,29 +12,27 @@ export interface ApiCategoryBase {
   id: string
   parent: string
   level: 1 | 2 | 3
-  metadata: {
-    color: string
-    count: string
-    description: { [lang: string]: string }
-    hide: boolean
-    label: { [lang: string]: string }
-    picto: string
-  }
-  order: string
   datasources: {
     idsrc: string
     // eslint-disable-next-line camelcase
     poi_type: PoiType
     slug: string
   }
-}
-
-export type CategoryBase = ApiCategoryBase & {
+  // FIXME
+  isdataitem: string | boolean
+  isDataItem: string | boolean
   metadata: {
+    color: string
     count: number
+    description: { [lang: string]: string }
+    hide: boolean
+    label: { [lang: string]: string }
+    picto: string
   }
   order: number
 }
+
+export type CategoryBase = ApiCategoryBase
 
 // Only first level classes can be highlighted
 export interface SuperCategory extends CategoryBase {
