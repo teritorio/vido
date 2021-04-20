@@ -34,13 +34,8 @@ export const actions = {
         [id: string]: ApiCategoryBase
       } = await configPromise.json()
 
-      // FIXME
       const categories = Object.values(config).filter(
-        (category) =>
-          category.isdataitem === 'yes' ||
-          category.isdataitem === true ||
-          category.isDataItem === 'yes' ||
-          category.isDataItem === true
+        (category) => category.isDataItem === true
       )
 
       store.commit(Mutation.SET, { categories })
