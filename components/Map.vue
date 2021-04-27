@@ -17,14 +17,15 @@
             show: false,
           }"
           :attribution-control="{
-            show: true,
             position: 'bottom-right',
+            show: true,
           }"
           @map-init="onMapInit"
+          @map-pitchend="onMapPitchEnd"
         />
       </div>
 
-      <MapControls :map="map" />
+      <MapControls :map="map" :pitch="pitch" />
 
       <!-- <div class="absolute flex justify-center inset-x-3 bottom-3">
       <MapPoiToast class="flex-grow-0" />
@@ -35,6 +36,7 @@
 
 <script lang="ts">
 import { PoiFilter } from '@teritorio/map'
+import throttle from 'lodash.throttle'
 import mapboxgl from 'mapbox-gl'
 import Mapbox from 'mapbox-gl-vue'
 import Vue from 'vue'
@@ -51,20 +53,26 @@ export default Vue.extend({
   },
   data(): {
     map: mapboxgl.Map | null
+    pitch: number
   } {
     return {
       map: null,
+      pitch: 0,
     }
   },
   computed: {
     ...mapGetters({
       center: 'map/center',
-      pitch: 'map/pitch',
       zoom: 'map/zoom',
     }),
     mapStyle(): string {
       return `https://vecto.teritorio.xyz/styles/teritorio-tourism-latest/style.json?key=${this.$config.TILES_TOKEN}`
     },
+  },
+  created() {
+    this.pitch = this.$store.getters['map/pitch']
+
+    this.onMapPitchEnd = throttle(this.onMapPitchEnd, 300)
   },
   methods: {
     onMapInit(map: mapboxgl.Map) {
@@ -79,6 +87,9 @@ export default Vue.extend({
           include: true,
         })
       )
+    },
+    onMapPitchEnd(map: mapboxgl.Map) {
+      this.pitch = map.getPitch()
     },
   },
 })

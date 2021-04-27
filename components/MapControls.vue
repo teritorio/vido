@@ -2,26 +2,8 @@
   <div
     class="absolute flex flex-col justify-center pointer-events-none inset-y-3 right-3"
   >
-    <div class="flex flex-col pointer-events-auto space-y-9">
-      <div class="flex flex-col space-y-3">
-        <button
-          aria-label="Zoomer"
-          type="button"
-          class="text-sm font-bold text-gray-800 bg-white rounded-full shadow-md outline-none w-11 h-11 focus:outline-none hover:bg-gray-100 focus-visible:bg-gray-100"
-          @click="zoomIn"
-        >
-          <font-awesome-icon icon="plus" />
-        </button>
-
-        <button
-          aria-label="Dézoomer"
-          type="button"
-          class="text-sm font-bold text-gray-800 bg-white rounded-full shadow-md outline-none w-11 h-11 focus:outline-none hover:bg-gray-100 focus-visible:bg-gray-100"
-          @click="zoomOut"
-        >
-          <font-awesome-icon icon="minus" />
-        </button>
-      </div>
+    <div class="flex flex-col space-y-3 pointer-events-auto">
+      <div ref="navigationControlContainer"></div>
 
       <button
         aria-label="Visualiser la carte en 3D"
@@ -43,6 +25,7 @@
 
 <script lang="ts">
 import { Building3d } from '@teritorio/map'
+import mapboxgl from 'mapbox-gl'
 import Vue from 'vue'
 
 export default Vue.extend({
@@ -50,6 +33,10 @@ export default Vue.extend({
     map: {
       type: Object,
       default: null,
+    },
+    pitch: {
+      type: Number,
+      default: 0,
     },
   },
   data(): {
@@ -61,7 +48,32 @@ export default Vue.extend({
       is3D: false,
     }
   },
+  watch: {
+    map(value, oldValue) {
+      if (!oldValue && value) {
+        const navigationControl = new mapboxgl.NavigationControl({
+          showCompass: true,
+          showZoom: true,
+          visualizePitch: true,
+        })
+
+        ;(this.$refs.navigationControlContainer as HTMLDivElement).appendChild(
+          navigationControl.onAdd(this.map)
+        )
+      }
+    },
+    pitch(value) {
+      if (value === 0) {
+        this.setIs3D(false)
+      } else {
+        this.setIs3D(true)
+      }
+    },
+  },
   methods: {
+    setIs3D(value: boolean) {
+      this.is3D = value
+    },
     toggle3D() {
       if (this.map) {
         if (!this.building3d) {
@@ -78,19 +90,26 @@ export default Vue.extend({
           this.building3d.set3d(true, 60)
         }
 
-        this.is3D = !this.is3D
-      }
-    },
-    zoomIn() {
-      if (this.map) {
-        this.map.flyTo({ zoom: this.map.getZoom() + 1 })
-      }
-    },
-    zoomOut() {
-      if (this.map) {
-        this.map.flyTo({ zoom: this.map.getZoom() - 1 })
+        this.setIs3D(!this.is3D)
       }
     },
   },
 })
 </script>
+
+<style>
+.mapboxgl-ctrl {
+  @apply space-y-3;
+
+  display: contents;
+}
+
+.mapboxgl-ctrl > button,
+.mapboxgl-ctrl > button:not(:disabled) {
+  @apply text-sm font-bold text-gray-800 bg-white rounded-full focus:rounded-full shadow-md focus:shadow-md outline-none w-11 h-11 focus:outline-none hover:bg-gray-100 focus-visible:bg-gray-100;
+}
+
+.mapboxgl-ctrl-compass {
+  @apply overflow-hidden;
+}
+</style>
