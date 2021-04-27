@@ -8,17 +8,17 @@
       <transition name="headers" appear mode="out-in">
         <MainHeader
           v-if="current.matches(states.Home)"
-          :highlighted-categories="highlightedSuperCategories"
+          :highlighted-categories="highlightedRootCategories"
           :logo-url="logoUrl"
-          :non-highlighted-categories="nonHighlightedSuperCategories"
+          :non-highlighted-categories="nonHighlightedRootCategories"
           :site-name="siteName"
-          @category-click="onSuperCategoryClick"
+          @category-click="onRootCategoryClick"
           @search-click="goToSearch"
         />
 
         <SubCategoryHeader
           v-if="current.matches(states.SubCategories)"
-          :categories="context.selectedSuperCategory.subCategories"
+          :categories="context.selectedRootCategory.subCategories"
           :is-sub-category-selected="isSubCategorySelected"
           @category-click="onSubCategoryClick"
           @go-back-click="goToHome"
@@ -113,10 +113,11 @@ export default Vue.extend({
   computed: {
     ...mapGetters({
       getSubCategoriesFromCategoryId: 'menu/getSubCategoriesFromCategoryId',
-      highlightedSuperCategories: 'menu/highlightedSuperCategories',
+      highlightedRootCategories: 'menu/highlightedRootCategories',
       isMapConfigLoaded: 'map/isLoaded',
-      nonHighlightedSuperCategories: 'menu/nonHighlightedSuperCategories',
+      nonHighlightedRootCategories: 'menu/nonHighlightedRootCategories',
       siteInfos: 'site/infos',
+      categories: 'menu/categories',
       subCategories: 'menu/subCategories',
     }),
     logoUrl() {
@@ -151,10 +152,10 @@ export default Vue.extend({
     isSubCategorySelected(subCategoryId: Category['id']) {
       return this.context.selectedSubCategoriesIds.includes(subCategoryId)
     },
-    onSuperCategoryClick(superCategoryId: Category['id']) {
+    onRootCategoryClick(rootCategoryId: Category['id']) {
       this.service.send(HomeEvents.GoToSubCategories, {
-        subCategories: this.getSubCategoriesFromCategoryId(superCategoryId),
-        superCategoryId,
+        rootCategoryId,
+        subCategories: this.getSubCategoriesFromCategoryId(rootCategoryId),
       })
     },
     onSubCategoryClick(categoryId: Category['id']) {

@@ -28,6 +28,7 @@ export default Vue.extend({
         id: category.id,
         color: category.metadata.color,
         label: category.metadata.label.fr,
+        level: category.level,
         picto: category.metadata.picto,
         selected: this.$props.isSubCategorySelected(category.id),
       }))

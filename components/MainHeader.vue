@@ -23,7 +23,7 @@
       </button>
     </div>
 
-    <HeaderSuperCategories
+    <HeaderRootCategories
       class="flex-1 pointer-events-auto"
       :highlighted-categories="highlightedCategories"
       :non-highlighted-categories="nonHighlightedCategories"
@@ -35,12 +35,12 @@
 <script lang="ts">
 import Vue from 'vue'
 
-import HeaderSuperCategories from '@/components/HeaderSuperCategories.vue'
+import HeaderRootCategories from '@/components/HeaderRootCategories.vue'
 import { Category } from '@/utils/types'
 
 export default Vue.extend({
   components: {
-    HeaderSuperCategories,
+    HeaderRootCategories,
   },
   props: {
     highlightedCategories: {

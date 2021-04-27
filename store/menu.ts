@@ -52,28 +52,28 @@ export const actions = {
 export const getters = {
   categories: (state: State) => state.categories,
 
-  subCategories: (state: State) =>
-    state.categories
-      .filter((c) => c.level === 3)
-      .sort((a, b) => (a.order || 0) - (b.order || 0)),
-
-  superCategories: (state: State) =>
-    state.categories
-      .filter((c) => c.level === 1)
-      .sort((a, b) => (a.order || 0) - (b.order || 0)),
-
   getSubCategoriesFromCategoryId: (state: State) => (categoryId: string) =>
     state.categories
       .filter((c) => c.parent === categoryId)
       .sort((a, b) => (a.order || 0) - (b.order || 0)),
 
-  highlightedSuperCategories: (state: State) =>
+  highlightedRootCategories: (state: State) =>
     state.categories
       .filter((c) => c.level === 1 && c.highlighted)
       .sort((a, b) => (a.order || 0) - (b.order || 0)),
 
-  nonHighlightedSuperCategories: (state: State) =>
+  nonHighlightedRootCategories: (state: State) =>
     state.categories
       .filter((c) => c.level === 1 && !c.highlighted)
+      .sort((a, b) => (a.order || 0) - (b.order || 0)),
+
+  rootCategories: (state: State) =>
+    state.categories
+      .filter((c) => c.level === 1)
+      .sort((a, b) => (a.order || 0) - (b.order || 0)),
+
+  subCategories: (state: State) =>
+    state.categories
+      .filter((c) => c.level > 1)
       .sort((a, b) => (a.order || 0) - (b.order || 0)),
 }

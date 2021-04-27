@@ -6,7 +6,7 @@ import { Category } from '@/utils/types'
 
 export interface HomeContext {
   selectedSubCategoriesIds: Category['id'][]
-  selectedSuperCategory: {
+  selectedRootCategory: {
     id: Category['id']
     subCategories: Category[]
   } | null
@@ -26,8 +26,8 @@ export type HomeEvent =
   | { type: HomeEvents.GoToHome }
   | {
       type: HomeEvents.GoToSubCategories
+      rootCategoryId: Category['id']
       subCategories: Category[]
-      superCategoryId: Category['id']
     }
   | {
       type: HomeEvents.ToggleSubCategorySelection
@@ -61,13 +61,13 @@ export const homeMachine = Machine<HomeContext, HomeStateSchema, HomeEvent>(
     id: 'home',
     context: {
       selectedSubCategoriesIds: [],
-      selectedSuperCategory: null,
+      selectedRootCategory: null,
     },
     initial: HomeStates.Home,
     states: {
       [HomeStates.Home]: {
         meta: {
-          description: 'Main header containing the super categories',
+          description: 'Main header containing the root categories',
         },
         on: {
           [HomeEvents.GoToSearch]: HomeStates.Search,
@@ -88,9 +88,9 @@ export const homeMachine = Machine<HomeContext, HomeStateSchema, HomeEvent>(
       [HomeStates.SubCategories]: {
         meta: {
           description:
-            'Secondary header containing the sub-categories of the selected super category',
+            'Secondary header containing the sub-categories of the selected root category',
         },
-        exit: ['resetSelectedSuperCategoryId'],
+        exit: ['resetSelectedRootCategoryId'],
         on: {
           [HomeEvents.ToggleSubCategorySelection]: {
             actions: ['toggleSubCategorySelection'],
@@ -111,8 +111,8 @@ export const homeMachine = Machine<HomeContext, HomeStateSchema, HomeEvent>(
       onGoToSubCategories: assign<HomeContext, HomeEvent>((context, event) => {
         if (event.type === HomeEvents.GoToSubCategories) {
           return {
-            selectedSuperCategory: {
-              id: event.superCategoryId,
+            selectedRootCategory: {
+              id: event.rootCategoryId,
               subCategories: event.subCategories,
             },
           }
@@ -120,8 +120,8 @@ export const homeMachine = Machine<HomeContext, HomeStateSchema, HomeEvent>(
 
         return context
       }),
-      resetSelectedSuperCategoryId: assign<HomeContext, HomeEvent>({
-        selectedSuperCategory: null,
+      resetSelectedRootCategoryId: assign<HomeContext, HomeEvent>({
+        selectedRootCategory: null,
       }),
       selectSubCategories: assign<HomeContext, HomeEvent>((context, event) => {
         if (event.type === HomeEvents.SelectSubCategories) {

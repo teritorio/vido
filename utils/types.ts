@@ -18,8 +18,6 @@ export interface ApiCategoryBase {
     poi_type: PoiType
     slug: string
   }
-  // FIXME
-  isdataitem: string | boolean
   isDataItem: string | boolean
   metadata: {
     color: string
@@ -35,21 +33,16 @@ export interface ApiCategoryBase {
 export type CategoryBase = ApiCategoryBase
 
 // Only first level classes can be highlighted
-export interface SuperCategory extends CategoryBase {
+export interface RootCategory extends CategoryBase {
   highlighted: boolean
   level: 1
 }
 
-export interface MidCategory extends CategoryBase {
-  level: 2
-}
-
 export interface SubCategory extends CategoryBase {
-  level: 3
+  level: 2 | 3
 }
 
-export type Category = CategoryBase &
-  (SuperCategory | MidCategory | SubCategory)
+export type Category = CategoryBase & (RootCategory | SubCategory)
 
 export interface SiteInfos {
   [lang: string]: {
