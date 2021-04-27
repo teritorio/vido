@@ -28,9 +28,16 @@ export function pictoComponent(pictoName: string) {
 export function getContrastedTextColor(backgroundColor: string) {
   const darkColor = '#222'
   const lightColor = '#fff'
+  const darkColorContrast = hex(darkColor, backgroundColor)
+  const lightColorContrast = hex(lightColor, backgroundColor)
+  const wcagAAAThreshold = 7
 
-  const isLightBackgroundColor =
-    hex(darkColor, backgroundColor) > hex(lightColor, backgroundColor)
+  if (
+    darkColorContrast < wcagAAAThreshold &&
+    lightColorContrast < wcagAAAThreshold
+  ) {
+    return lightColor
+  }
 
-  return isLightBackgroundColor ? darkColor : lightColor
+  return darkColorContrast > lightColorContrast ? darkColor : lightColor
 }
