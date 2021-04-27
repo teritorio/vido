@@ -60,30 +60,31 @@ export default Vue.extend({
         ;(this.$refs.navigationControlContainer as HTMLDivElement).appendChild(
           navigationControl.onAdd(this.map)
         )
+
+        this.building3d = new Building3d({
+          building3d: this.is3D,
+        })
+
+        this.map.addControl(this.building3d)
       }
     },
     pitch(value) {
-      if (value === 0) {
-        this.setIs3D(false)
-      } else {
-        this.setIs3D(true)
+      if (this.building3d) {
+        this.building3d.set3d(value !== 0)
       }
+
+      this.setIs3D(value !== 0)
     },
+  },
+  created() {
+    this.setIs3D(this.pitch !== 0)
   },
   methods: {
     setIs3D(value: boolean) {
       this.is3D = value
     },
     toggle3D() {
-      if (this.map) {
-        if (!this.building3d) {
-          this.building3d = new Building3d({
-            building3d: true,
-          })
-
-          this.map.addControl(this.building3d)
-        }
-
+      if (this.building3d) {
         if (this.is3D) {
           this.building3d.set3d(false, 0)
         } else {
