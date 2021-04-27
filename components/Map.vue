@@ -5,21 +5,26 @@
         <mapbox
           access-token=""
           :map-options="{
-            style: mapStyle,
             center: [center.lng, center.lat],
-            zoom: zoom.default,
+            hash: false,
             maxZoom: zoom.max,
             minZoom: zoom.min,
-            hash: false,
             pitch,
+            style: mapStyle,
+            zoom: zoom.default,
+          }"
+          :nav-control="{
+            show: false,
+          }"
+          :attribution-control="{
+            show: true,
+            position: 'bottom-right',
           }"
           @map-init="onMapInit"
         />
       </div>
 
       <MapControls :map="map" />
-
-      <MapAttribution />
 
       <!-- <div class="absolute flex justify-center inset-x-3 bottom-3">
       <MapPoiToast class="flex-grow-0" />
@@ -36,12 +41,10 @@ import Vue from 'vue'
 import { mapGetters } from 'vuex'
 
 // import MapPoiToast from '@/components/MapPoiToast.vue'
-import MapAttribution from '@/components/MapAttribution.vue'
 import MapControls from '@/components/MapControls.vue'
 
 export default Vue.extend({
   components: {
-    MapAttribution,
     Mapbox,
     MapControls,
     // MapPoiToast,

@@ -30,7 +30,10 @@ export default {
   },
 
   // Global CSS (https://go.nuxtjs.dev/config-css)
-  css: ['@fortawesome/fontawesome-svg-core/styles.css'],
+  css: [
+    '@fortawesome/fontawesome-svg-core/styles.css',
+    'mapbox-gl/dist/mapbox-gl.css',
+  ],
 
   purgeCSS: {
     whitelistPatterns: [/svg.*/, /fa.*/],
