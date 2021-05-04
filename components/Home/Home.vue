@@ -7,7 +7,7 @@
     >
       <transition name="headers" appear mode="out-in">
         <MainHeader
-          v-if="current.matches(states.Home)"
+          v-if="current.matches(states.Home) && isMenuConfigLoaded"
           :highlighted-categories="highlightedRootCategories"
           :logo-url="logoUrl"
           :non-highlighted-categories="nonHighlightedRootCategories"
@@ -115,6 +115,7 @@ export default Vue.extend({
       getSubCategoriesFromCategoryId: 'menu/getSubCategoriesFromCategoryId',
       highlightedRootCategories: 'menu/highlightedRootCategories',
       isMapConfigLoaded: 'map/isLoaded',
+      isMenuConfigLoaded: 'menu/isLoaded',
       nonHighlightedRootCategories: 'menu/nonHighlightedRootCategories',
       siteInfos: 'site/infos',
       categories: 'menu/categories',

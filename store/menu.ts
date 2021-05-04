@@ -51,6 +51,7 @@ export const actions = {
 
 export const getters = {
   categories: (state: State) => state.categories,
+  isLoaded: (state: State) => state.isLoaded,
 
   getSubCategoriesFromCategoryId: (state: State) => (categoryId: string) =>
     state.categories
