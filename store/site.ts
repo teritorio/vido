@@ -3,7 +3,7 @@ import { Store } from 'vuex'
 import { SiteInfos } from '@/utils/types'
 
 enum Mutation {
-  SET = 'SET',
+  SET_CONFIG = 'SET_CONFIG',
 }
 
 interface State {
@@ -17,7 +17,7 @@ export const state = (): State | null => ({
 })
 
 export const mutations = {
-  [Mutation.SET](state: State, payload: SiteInfos) {
+  [Mutation.SET_CONFIG](state: State, payload: SiteInfos) {
     state.infos = payload
 
     state.isLoaded = true
@@ -25,12 +25,12 @@ export const mutations = {
 }
 
 export const actions = {
-  async fetch(store: Store<State>, apiOrigin: string) {
+  async fetchConfig(store: Store<State>, apiOrigin: string) {
     try {
       const configPromise = await fetch(`${apiOrigin}/geodata/v1/site`)
       const config = await configPromise.json()
 
-      store.commit(Mutation.SET, config)
+      store.commit(Mutation.SET_CONFIG, config)
     } catch (error) {
       // eslint-disable-next-line no-console
       console.error(

@@ -3,7 +3,7 @@ import { Store } from 'vuex'
 import { LatLng, Pitch, ZoomLevel } from '@/utils/types'
 
 enum Mutation {
-  SET = 'SET',
+  SET_CONFIG = 'SET_CONFIG',
 }
 
 interface State {
@@ -34,7 +34,7 @@ export const state = (): State | null => ({
 })
 
 export const mutations = {
-  [Mutation.SET](state: State, payload: State) {
+  [Mutation.SET_CONFIG](state: State, payload: State) {
     // state.attribution = payload.attribution
     state.center = payload.center
     state.pitch = payload.pitch || 0
@@ -45,12 +45,12 @@ export const mutations = {
 }
 
 export const actions = {
-  async fetch(store: Store<State>, apiOrigin: string) {
+  async fetchConfig(store: Store<State>, apiOrigin: string) {
     try {
       const configPromise = await fetch(`${apiOrigin}/geodata/v1/map`)
       const config = await configPromise.json()
 
-      store.commit(Mutation.SET, config)
+      store.commit(Mutation.SET_CONFIG, config)
     } catch (error) {
       // eslint-disable-next-line no-console
       console.error(

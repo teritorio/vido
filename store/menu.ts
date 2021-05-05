@@ -1,31 +1,49 @@
 import { Store } from 'vuex'
 
-import { ApiCategoryBase, Category } from '@/utils/types'
+import {
+  ApiCategoryBase,
+  ApiPosts,
+  Category,
+  OsmFeature,
+  TisFeature,
+} from '@/utils/types'
 
 enum Mutation {
-  SET = 'SET',
+  SET_CONFIG = 'SET_CONFIG',
+  SET_FEATURES = 'SET_FEATURES',
 }
 
 interface State {
   categories: Category[]
   isLoaded: boolean
+  features: {
+    [categoryId: string]: {
+      osm: OsmFeature[]
+      tis: TisFeature[]
+    }
+  }
 }
 
 export const state = (): State => ({
   categories: [],
   isLoaded: false,
+  features: {},
 })
 
 export const mutations = {
-  [Mutation.SET](state: State, config: State) {
-    state.categories = config.categories
+  [Mutation.SET_CONFIG](state: State, payload: State) {
+    state.categories = payload.categories
 
     state.isLoaded = true
+  },
+
+  [Mutation.SET_FEATURES](state: State, payload: State) {
+    state.features = payload.features
   },
 }
 
 export const actions = {
-  async fetch(store: Store<State>, apiOrigin: string) {
+  async fetchConfig(store: Store<State>, apiOrigin: string) {
     try {
       const configPromise = await fetch(`${apiOrigin}/geodata/v1/menu`)
 
@@ -37,11 +55,42 @@ export const actions = {
         (category) => category.isDataItem === true
       )
 
-      store.commit(Mutation.SET, { categories })
+      store.commit(Mutation.SET_CONFIG, { categories })
     } catch (error) {
       // eslint-disable-next-line no-console
       console.error(
         'Vido error: Unable to fetch the menu config from the API',
+        error
+      )
+    }
+  },
+
+  async fetchFeatures(store: Store<State>, categoryIds: Category['id'][]) {
+    try {
+      const posts: ApiPosts[] = await Promise.all(
+        categoryIds.map((categoryId) =>
+          fetch(
+            `https://demov2.teritorio.xyz/api.teritorio/geodata/v1/posts?idmenu=${categoryId}`
+          ).then((res) => res.json())
+        )
+      )
+
+      const features: State['features'] = {}
+
+      posts.forEach((post, index) => {
+        const categoryId = categoryIds[index]
+
+        features[categoryId] = {
+          osm: post.osm?.[0].FeaturesCollection.features || [],
+          tis: post.tis?.[0].FeaturesCollection.features || [],
+        }
+      })
+
+      store.commit(Mutation.SET_FEATURES, { features })
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.error(
+        'Vido error: Unable to fetch the features from the API',
         error
       )
     }

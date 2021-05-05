@@ -42,6 +42,7 @@
 </template>
 
 <script lang="ts">
+import debounce from 'lodash.debounce'
 import Vue from 'vue'
 import { mapGetters } from 'vuex'
 import { interpret, Interpreter, State } from 'xstate'
@@ -87,11 +88,28 @@ export default Vue.extend({
     service: Interpreter<HomeContext, HomeStateSchema, HomeEvent>
     states: typeof HomeStates
   } {
+    const debouncedFetchFeatures = debounce(
+      (selectedSubCategoriesIds) =>
+        this.$store.dispatch('menu/fetchFeatures', selectedSubCategoriesIds),
+      500
+    )
+
     return {
       context: homeMachine.context,
       current: homeMachine.initialState,
       events: HomeEvents,
-      service: interpret(homeMachine, interpretOptions),
+      service: interpret(
+        homeMachine.withConfig({
+          services: {
+            fetchFeatures: (context: HomeContext) => {
+              debouncedFetchFeatures(context.selectedSubCategoriesIds)
+
+              return Promise.resolve()
+            },
+          },
+        }),
+        interpretOptions
+      ),
       states: HomeStates,
     }
   },

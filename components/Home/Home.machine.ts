@@ -44,15 +44,25 @@ export type HomeEvent =
 
 export enum HomeStates {
   Home = 'home',
+  Idle = 'idle',
   Search = 'search',
   SubCategories = 'subCategories',
+  Select = 'select',
+  Toggle = 'toggle',
+  Unselect = 'unselect',
+  FetchFeatures = 'fetchFeatures',
 }
 
 export interface HomeStateSchema {
   states: {
     [HomeStates.Home]: {}
     [HomeStates.Search]: {}
-    [HomeStates.SubCategories]: {}
+    [HomeStates.SubCategories]: {
+      states: {
+        [HomeStates.Idle]: {}
+        [HomeStates.FetchFeatures]: {}
+      }
+    }
   }
 }
 
@@ -92,16 +102,34 @@ export const homeMachine = Machine<HomeContext, HomeStateSchema, HomeEvent>(
         },
         exit: ['resetSelectedRootCategoryId'],
         on: {
-          [HomeEvents.ToggleSubCategorySelection]: {
-            actions: ['toggleSubCategorySelection'],
-          },
-          [HomeEvents.SelectSubCategories]: {
-            actions: ['selectSubCategories'],
-          },
-          [HomeEvents.UnselectSubCategories]: {
-            actions: ['unselectSubCategories'],
-          },
           [HomeEvents.GoToHome]: HomeStates.Home,
+        },
+        initial: HomeStates.Idle,
+        states: {
+          [HomeStates.Idle]: {
+            on: {
+              [HomeEvents.SelectSubCategories]: {
+                actions: ['selectSubCategories'],
+                target: HomeStates.FetchFeatures,
+              },
+              [HomeEvents.ToggleSubCategorySelection]: {
+                actions: ['toggleSubCategorySelection'],
+                target: HomeStates.FetchFeatures,
+              },
+              [HomeEvents.UnselectSubCategories]: {
+                actions: ['unselectSubCategories'],
+                target: HomeStates.FetchFeatures,
+              },
+            },
+          },
+          [HomeStates.FetchFeatures]: {
+            invoke: {
+              src: 'fetchFeatures',
+              onDone: {
+                target: HomeStates.Idle,
+              },
+            },
+          },
         },
       },
     },
