@@ -66,7 +66,8 @@ export default Vue.extend({
       zoom: 'map/zoom',
     }),
     mapStyle(): string {
-      return `https://vecto.teritorio.xyz/styles/teritorio-tourism-latest/style.json?key=${this.$config.TILES_TOKEN}`
+      // return `https://vecto.teritorio.xyz/styles/teritorio-tourism-latest/style.json?key=${this.$config.TILES_TOKEN}`
+      return `https://vecto-dev.teritorio.xyz/styles/teritorio-tourism-proxy/style.json?key=${this.$config.TILES_TOKEN}`
     },
   },
   created() {
