@@ -27,9 +27,8 @@ export const mutations = {
 export const actions = {
   async fetch(store: Store<State>, apiOrigin: string) {
     try {
-      const configPromise = await fetch(
-        `${apiOrigin}/api.teritorio/geodata/v1/menu`
-      )
+      const configPromise = await fetch(`${apiOrigin}/geodata/v1/menu`)
+
       const config: {
         [id: string]: ApiCategoryBase
       } = await configPromise.json()

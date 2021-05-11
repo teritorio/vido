@@ -48,7 +48,7 @@ jobs:
 
       - name: Build
         env:
-          API_ORIGIN: https://demov2.teritorio.xyz
+          API_ENDPOINT: https://cdt40.carto.guide/api.teritorio
           TILES_TOKEN: ${{secrets.TILES_TOKEN_DEV}}
         run: yarn build
 

@@ -9,12 +9,12 @@ function checkEnvVariable(variableName) {
   }
 }
 
-checkEnvVariable('API_ORIGIN')
+checkEnvVariable('API_ENDPOINT')
 checkEnvVariable('TILES_TOKEN')
 
 export default {
   publicRuntimeConfig: {
-    API_ORIGIN: process.env.API_ORIGIN || '',
+    API_ENDPOINT: process.env.API_ENDPOINT || '',
     TILES_TOKEN: process.env.TILES_TOKEN || '',
   },
 
