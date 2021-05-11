@@ -4,19 +4,24 @@ import { hex } from 'wcag-contrast'
  * Tries to find a component/file based on a picto name and returns it
  */
 export function pictoComponent(pictoName: string) {
-  if (pictoName) {
-    if (pictoName.startsWith('teritorio')) {
-      return require(`@/assets/icons/${pictoName.replace(
-        /^teritorio icon-/,
-        ''
-      )}•.svg?inline`)
-    } else if (pictoName.startsWith('glyphicons')) {
-      // return require(`@/assets/icons/${pictoName.replace(/^teritorio\ icon\-/, '')}•.svg?inline`)
-    } else if (pictoName.startsWith('icocustom')) {
-      // return require(`@/assets/icons/${pictoName.replace(/^teritorio\ icon\-/, '')}•.svg?inline`)
-    } else {
-      return require(`@/assets/icons/${pictoName}•.svg?inline`)
+  try {
+    if (pictoName) {
+      if (pictoName.startsWith('teritorio')) {
+        return require(`@/assets/icons/${pictoName.replace(
+          /^teritorio icon-/,
+          ''
+        )}•.svg?inline`)
+      } else if (pictoName.startsWith('glyphicons')) {
+        // return require(`@/assets/icons/${pictoName.replace(/^teritorio\ icon\-/, '')}•.svg?inline`)
+      } else if (pictoName.startsWith('icocustom')) {
+        // return require(`@/assets/icons/${pictoName.replace(/^teritorio\ icon\-/, '')}•.svg?inline`)
+      } else {
+        return require(`@/assets/icons/${pictoName}•.svg?inline`)
+      }
     }
+  } catch (error) {
+    // eslint-disable-next-line no-console
+    console.error('Vido error: Unable to find a picto', error)
   }
 
   return null
