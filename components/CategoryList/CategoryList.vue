@@ -9,7 +9,7 @@
       :selected="category.selected"
       @click="onCategoryClick"
     >
-      <component :is="pictoComponent(category.picto)" class="w-5 h-5" />
+      <component :is="getPicto(category.picto)" class="w-5 h-5" />
     </CategoryListItem>
   </ul>
 </template>
@@ -18,7 +18,7 @@
 import Vue from 'vue'
 
 import CategoryListItem from '@/components/CategoryList/CategoryListItem.vue'
-import { pictoComponent } from '@/utils/picto'
+import { getPicto } from '@/utils/picto'
 import { Category } from '@/utils/types'
 
 export default Vue.extend({
@@ -34,10 +34,10 @@ export default Vue.extend({
     },
   },
   methods: {
+    getPicto: (pictoName: string) => getPicto(pictoName),
     onCategoryClick(categoryId: Category['id']) {
       this.$emit('click', categoryId)
     },
-    pictoComponent: (pictoName: string) => pictoComponent(pictoName),
   },
 })
 </script>

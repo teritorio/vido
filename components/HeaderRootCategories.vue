@@ -10,7 +10,7 @@
         @click="onCategoryClick"
       >
         <component
-          :is="pictoComponent(category.metadata.picto)"
+          :is="getPicto(category.metadata.picto)"
           class="w-7 h-7"
         />
       </CategoryButton>
@@ -34,10 +34,7 @@
           :label="category.metadata.label.fr"
           @click="onCategoryClick"
         >
-          <component
-            :is="pictoComponent(category.metadata.picto)"
-            class="w-7 h-7"
-          />
+          <component :is="getPicto(category.metadata.picto)" class="w-7 h-7" />
         </CategoryButton>
       </div>
     </transition>
@@ -48,7 +45,7 @@
 import Vue from 'vue'
 
 import CategoryButton from '@/components/CategoryButton/CategoryButton.vue'
-import { pictoComponent } from '@/utils/picto'
+import { getPicto } from '@/utils/picto'
 import { Category } from '@/utils/types'
 
 export default Vue.extend({
@@ -73,7 +70,7 @@ export default Vue.extend({
     }
   },
   methods: {
-    pictoComponent: (pictoName: string) => pictoComponent(pictoName),
+    getPicto: (pictoName: string) => getPicto(pictoName),
     onCollapseButtonClick() {
       this.collapsed = !this.collapsed
     },

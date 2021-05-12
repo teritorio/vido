@@ -90,7 +90,10 @@ export default Vue.extend({
   } {
     const debouncedFetchFeatures = debounce(
       (selectedSubCategoriesIds) =>
-        this.$store.dispatch('menu/fetchFeatures', selectedSubCategoriesIds),
+        this.$store.dispatch('menu/fetchFeatures', {
+          apiEndpoint: this.$config.API_ENDPOINT,
+          categoryIds: selectedSubCategoriesIds,
+        }),
       500
     )
 
@@ -136,7 +139,6 @@ export default Vue.extend({
       isMenuConfigLoaded: 'menu/isLoaded',
       nonHighlightedRootCategories: 'menu/nonHighlightedRootCategories',
       siteInfos: 'site/infos',
-      categories: 'menu/categories',
       subCategories: 'menu/subCategories',
     }),
     logoUrl() {

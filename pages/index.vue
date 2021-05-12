@@ -13,9 +13,15 @@ export default Vue.extend({
   },
   fetchOnServer: false,
   async fetch() {
-    await this.$store.dispatch('map/fetchConfig', this.$config.API_ENDPOINT)
-    await this.$store.dispatch('menu/fetchConfig', this.$config.API_ENDPOINT)
-    await this.$store.dispatch('site/fetchConfig', this.$config.API_ENDPOINT)
+    await this.$store.dispatch('map/fetchConfig', {
+      apiEndpoint: this.$config.API_ENDPOINT,
+    })
+    await this.$store.dispatch('menu/fetchConfig', {
+      apiEndpoint: this.$config.API_ENDPOINT,
+    })
+    await this.$store.dispatch('site/fetchConfig', {
+      apiEndpoint: this.$config.API_ENDPOINT,
+    })
   },
 })
 </script>

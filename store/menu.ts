@@ -1,20 +1,25 @@
 import { Store } from 'vuex'
 
-import {
-  ApiCategoryBase,
-  ApiPosts,
-  Category,
-  OsmFeature,
-  TisFeature,
-} from '@/utils/types'
+import { ApiPosts, Category, OsmFeature, TisFeature } from '@/utils/types'
 
 enum Mutation {
   SET_CONFIG = 'SET_CONFIG',
   SET_FEATURES = 'SET_FEATURES',
 }
 
-interface State {
-  categories: Category[]
+interface FetchConfigPayload {
+  apiEndpoint: string
+}
+
+interface FetchFeaturesPayload {
+  apiEndpoint: string
+  categoryIds: Category['id'][]
+}
+
+export interface State {
+  categories: {
+    [categoryId: string]: Category
+  }
   isLoaded: boolean
   features: {
     [categoryId: string]: {
@@ -25,7 +30,7 @@ interface State {
 }
 
 export const state = (): State => ({
-  categories: [],
+  categories: {},
   isLoaded: false,
   features: {},
 })
@@ -43,17 +48,19 @@ export const mutations = {
 }
 
 export const actions = {
-  async fetchConfig(store: Store<State>, apiOrigin: string) {
+  async fetchConfig(store: Store<State>, { apiEndpoint }: FetchConfigPayload) {
     try {
-      const configPromise = await fetch(`${apiOrigin}/geodata/v1/menu`)
+      const configPromise = await fetch(`${apiEndpoint}/geodata/v1/menu`)
 
       const config: {
-        [id: string]: ApiCategoryBase
+        [id: string]: Category
       } = await configPromise.json()
 
-      const categories = Object.values(config).filter(
-        (category) => category.isDataItem === true
-      )
+      const categories: State['categories'] = {}
+
+      Object.values(config)
+        .filter((category) => category.isDataItem === true)
+        .forEach((category) => (categories[category.id] = category))
 
       store.commit(Mutation.SET_CONFIG, { categories })
     } catch (error) {
@@ -65,12 +72,15 @@ export const actions = {
     }
   },
 
-  async fetchFeatures(store: Store<State>, categoryIds: Category['id'][]) {
+  async fetchFeatures(
+    store: Store<State>,
+    { apiEndpoint, categoryIds }: FetchFeaturesPayload
+  ) {
     try {
       const posts: ApiPosts[] = await Promise.all(
         categoryIds.map((categoryId) =>
           fetch(
-            `https://demov2.teritorio.xyz/api.teritorio/geodata/v1/posts?idmenu=${categoryId}`
+            `${apiEndpoint}/geodata/v1/posts?idmenu=${categoryId}`
           ).then((res) => res.json())
         )
       )
@@ -99,30 +109,31 @@ export const actions = {
 
 export const getters = {
   categories: (state: State) => state.categories,
+  features: (state: State) => state.features,
   isLoaded: (state: State) => state.isLoaded,
 
   getSubCategoriesFromCategoryId: (state: State) => (categoryId: string) =>
-    state.categories
+    Object.values(state.categories)
       .filter((c) => c.parent === categoryId)
       .sort((a, b) => (a.order || 0) - (b.order || 0)),
 
   highlightedRootCategories: (state: State) =>
-    state.categories
+    Object.values(state.categories)
       .filter((c) => c.level === 1 && c.highlighted)
       .sort((a, b) => (a.order || 0) - (b.order || 0)),
 
   nonHighlightedRootCategories: (state: State) =>
-    state.categories
+    Object.values(state.categories)
       .filter((c) => c.level === 1 && !c.highlighted)
       .sort((a, b) => (a.order || 0) - (b.order || 0)),
 
   rootCategories: (state: State) =>
-    state.categories
+    Object.values(state.categories)
       .filter((c) => c.level === 1)
       .sort((a, b) => (a.order || 0) - (b.order || 0)),
 
   subCategories: (state: State) =>
-    state.categories
+    Object.values(state.categories)
       .filter((c) => c.level > 1)
       .sort((a, b) => (a.order || 0) - (b.order || 0)),
 }
