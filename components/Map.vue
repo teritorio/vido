@@ -45,9 +45,8 @@ import { mapGetters } from 'vuex'
 // import MapPoiToast from '@/components/MapPoiToast.vue'
 import MapControls from '@/components/MapControls.vue'
 import { State as MenuState } from '@/store/menu'
-import { getContrastedTextColor, getPicto } from '@/utils/picto'
-
-import { Category } from '~/utils/types'
+// import { getContrastedTextColor, getPicto } from '@/utils/picto'
+// import { Category } from '@/utils/types'
 
 export default Vue.extend({
   components: {
@@ -79,43 +78,60 @@ export default Vue.extend({
   watch: {
     features(features: MenuState['features']) {
       Object.keys(features).forEach((categoryId) => {
-        const category: Category = this.categories[categoryId]
-
-        // console.log(this.categories[categoryId])
-        // console.log(features[categoryId])
+        // const category: Category = this.categories[categoryId]
 
         if (!this.map) {
           return
         }
 
-        const mapCanvas = this.map.getCanvas()
-        const mapCanvasContainer = this.map.getCanvasContainer()
-        const markerSize = '2rem'
-        const pictoSize = '1rem'
+        // const mapCanvas = this.map.getCanvas()
+        // const mapCanvasContainer = this.map.getCanvasContainer()
+        // const markerSize = '2rem'
+        // const pictoSize = '1rem'
 
-        // const sourceId = `category-${categoryId}`
-        // const layerId = sourceId
+        const sourceId = `category-${categoryId}`
+        const layerId = sourceId
 
-        // this.map.addSource(sourceId, {
-        //   type: 'geojson',
-        //   data: {
-        //     type: 'FeatureCollection',
-        //     features: features[categoryId],
-        //   },
-        // })
+        this.map.addSource(sourceId, {
+          type: 'geojson',
+          // cluster: true,
+          // clusterRadius: 80,
+          data: {
+            type: 'FeatureCollection',
+            features: features[categoryId],
+          },
+        })
 
-        // // var features = map.querySourceFeatures('earthquakes');
+        this.map.addLayer({
+          id: `${layerId}-circle`,
+          type: 'circle',
+          source: sourceId,
+          // filter: ['!=', 'cluster', true],
+          paint: {
+            'circle-color': ['get', 'color', ['object', ['get', 'metadata']]],
+            'circle-radius': 16,
+            'circle-stroke-color': '#fff',
+            'circle-stroke-width': 2,
+          },
+          layout: {
+            visibility: 'visible',
+          },
+        })
 
-        // this.map.addLayer({
-        //   id: layerId,
-        //   type: 'symbol',
-        //   source: sourceId,
-        //   layout: {
-        //     'icon-image': 'rocket-15',
-        //     // 'icon-image': '{icon}',
-        //     'icon-allow-overlap': true,
-        //   },
-        // })
+        this.map.addLayer({
+          id: `${layerId}-labal`,
+          type: 'symbol',
+          source: sourceId,
+          // filter: ['!=', 'cluster', true],
+          layout: {
+            'text-field': ['get', 'post_title'],
+            'text-offset': [0, 3],
+            'text-size': 10,
+          },
+          paint: {
+            'text-color': ['case', ['<', ['get', 'mag'], 3], 'black', 'white'],
+          },
+        })
 
         // // When a click event occurs on a feature in the places layer, open a popup at the
         // // location of the feature, with description HTML from its properties.
@@ -146,54 +162,56 @@ export default Vue.extend({
         //   map.getCanvas().style.cursor = ''
         // })
 
-        features[categoryId].forEach((feature) => {
-          if (!this.map) {
-            return
-          }
+        /// /////////////////////////////////////////
 
-          const el = document.createElement('div')
-          el.style.backgroundColor = category.metadata.color
-          el.style.width = markerSize
-          el.style.height = markerSize
-          el.style.display = 'flex'
-          el.style.justifyContent = 'center'
-          el.style.alignItems = 'center'
-          el.style.borderRadius = '50%'
+        // features[categoryId].forEach((feature) => {
+        //   if (!this.map) {
+        //     return
+        //   }
 
-          el.innerHTML = getPicto(category.metadata.picto, 'raw')
-          el.style.color = getContrastedTextColor(category.metadata.color)
+        //   const el = document.createElement('div')
+        //   el.style.backgroundColor = category.metadata.color
+        //   el.style.width = markerSize
+        //   el.style.height = markerSize
+        //   el.style.display = 'flex'
+        //   el.style.justifyContent = 'center'
+        //   el.style.alignItems = 'center'
+        //   el.style.borderRadius = '50%'
 
-          const picto = el.querySelector('svg')
+        //   el.innerHTML = getPicto(category.metadata.picto, 'raw')
+        //   el.style.color = getContrastedTextColor(category.metadata.color)
 
-          if (picto) {
-            picto.style.fill = 'currentColor'
-            picto.style.width = pictoSize
-            picto.style.height = pictoSize
-          }
+        //   const picto = el.querySelector('svg')
 
-          new mapboxgl.Marker(el)
-            .setLngLat(feature.geometry.coordinates)
-            .setPopup(
-              new mapboxgl.Popup()
-                .setLngLat(feature.geometry.coordinates)
-                .setHTML(feature.properties.post_title)
-            )
-            .addTo(this.map)
+        //   if (picto) {
+        //     picto.style.fill = 'currentColor'
+        //     picto.style.width = pictoSize
+        //     picto.style.height = pictoSize
+        //   }
 
-          el.addEventListener('mouseenter', () => {
-            if (this.map) {
-              mapCanvasContainer.style.cursor = 'pointer'
-              mapCanvas.style.cursor = 'pointer'
-            }
-          })
+        //   new mapboxgl.Marker(el)
+        //     .setLngLat(feature.geometry.coordinates)
+        //     .setPopup(
+        //       new mapboxgl.Popup()
+        //         .setLngLat(feature.geometry.coordinates)
+        //         .setHTML(feature.properties.post_title)
+        //     )
+        //     .addTo(this.map)
 
-          el.addEventListener('mouseleave', () => {
-            if (this.map) {
-              mapCanvasContainer.style.cursor = ''
-              mapCanvas.style.cursor = ''
-            }
-          })
-        })
+        //   el.addEventListener('mouseenter', () => {
+        //     if (this.map) {
+        //       mapCanvasContainer.style.cursor = 'pointer'
+        //       mapCanvas.style.cursor = 'pointer'
+        //     }
+        //   })
+
+        //   el.addEventListener('mouseleave', () => {
+        //     if (this.map) {
+        //       mapCanvasContainer.style.cursor = ''
+        //       mapCanvas.style.cursor = ''
+        //     }
+        //   })
+        // })
       })
     },
   },
