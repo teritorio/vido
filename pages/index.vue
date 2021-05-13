@@ -11,7 +11,7 @@ export default Vue.extend({
   components: {
     Home,
   },
-  fetchOnServer: false,
+  // fetchOnServer: false,
   async fetch() {
     await this.$store.dispatch('map/fetchConfig', {
       apiEndpoint: this.$config.API_ENDPOINT,
