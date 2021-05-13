@@ -6,6 +6,7 @@
       <div ref="navigationControlContainer"></div>
 
       <button
+        v-if="map"
         aria-label="Visualiser la carte en 3D"
         type="button"
         :class="[
