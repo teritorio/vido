@@ -22,10 +22,7 @@ export interface State {
   }
   isLoaded: boolean
   features: {
-    [categoryId: string]: {
-      osm: OsmFeature[]
-      tis: TisFeature[]
-    }
+    [categoryId: string]: Array<OsmFeature | TisFeature>
   }
 }
 
@@ -90,10 +87,10 @@ export const actions = {
       posts.forEach((post, index) => {
         const categoryId = categoryIds[index]
 
-        features[categoryId] = {
-          osm: post.osm?.[0].FeaturesCollection.features || [],
-          tis: post.tis?.[0].FeaturesCollection.features || [],
-        }
+        features[categoryId] = [
+          ...(post.osm?.[0].FeaturesCollection.features || []),
+          ...(post.tis?.[0].FeaturesCollection.features || []),
+        ]
       })
 
       store.commit(Mutation.SET_FEATURES, { features })

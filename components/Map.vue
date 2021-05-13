@@ -100,7 +100,7 @@ export default Vue.extend({
         //   type: 'geojson',
         //   data: {
         //     type: 'FeatureCollection',
-        //     features: features[categoryId].tis,
+        //     features: features[categoryId],
         //   },
         // })
 
@@ -146,7 +146,7 @@ export default Vue.extend({
         //   map.getCanvas().style.cursor = ''
         // })
 
-        features[categoryId].tis.forEach((feature) => {
+        features[categoryId].forEach((feature) => {
           if (!this.map) {
             return
           }
