@@ -59,7 +59,7 @@ export const actions = {
       const categories: State['categories'] = {}
 
       Object.values(config)
-        .filter((category) => category.isDataItem === true)
+        .filter((category) => category.isDataItem && !category.metadata.hide)
         .forEach((category) => (categories[category.id] = category))
 
       store.commit(Mutation.SET_CONFIG, { categories })
