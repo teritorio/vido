@@ -1,27 +1,50 @@
 <template>
-  <div
-    class="absolute flex flex-col justify-center pointer-events-none inset-y-3 right-3"
-  >
-    <div class="flex flex-col space-y-3 pointer-events-auto">
-      <div ref="navigationControlContainer"></div>
+  <aside class="pointer-events-none">
+    <div
+      class="absolute flex items-center justify-end space-x-3 pointer-events-auto inset-x-3 top-3"
+    >
+      <button
+        v-if="map"
+        aria-label="Favoris"
+        type="button"
+        class="'text-sm font-medium px-5 space-x-1 rounded-full shadow-md h-11 outline-none focus:outline-none bg-white text-gray-800 hover:bg-gray-100 focus-visible:bg-gray-100',"
+      >
+        <font-awesome-icon icon="star" class="text-yellow-500" size="sm" />
+        <span>Favoris</span>
+      </button>
 
       <button
         v-if="map"
-        aria-label="Visualiser la carte en 3D"
+        aria-label="Navigation"
         type="button"
-        :class="[
-          'text-sm font-bold rounded-full shadow-md w-11 h-11 outline-none focus:outline-none ',
-          is3D &&
-            'bg-blue-500 text-white hover:bg-blue-400 focus-visible:bg-blue-400',
-          !is3D &&
-            'bg-white text-gray-800 hover:bg-gray-100 focus-visible:bg-gray-100',
-        ]"
-        @click="toggle3D"
+        class="'text-sm rounded-full shadow-md w-11 h-11 outline-none focus:outline-none bg-white text-gray-800 hover:bg-gray-100 focus-visible:bg-gray-100',"
       >
-        3D
+        <font-awesome-icon icon="bars" class="text-gray-800" size="sm" />
       </button>
     </div>
-  </div>
+
+    <div class="absolute flex flex-col justify-center inset-y-3 right-3">
+      <div class="flex flex-col space-y-3 pointer-events-auto">
+        <div ref="navigationControlContainer"></div>
+
+        <button
+          v-if="map"
+          aria-label="Visualiser la carte en 3D"
+          type="button"
+          :class="[
+            'text-sm font-bold rounded-full shadow-md w-11 h-11 outline-none focus:outline-none ',
+            is3D &&
+              'bg-blue-500 text-white hover:bg-blue-400 focus-visible:bg-blue-400',
+            !is3D &&
+              'bg-white text-gray-800 hover:bg-gray-100 focus-visible:bg-gray-100',
+          ]"
+          @click="toggle3D"
+        >
+          3D
+        </button>
+      </div>
+    </div>
+  </aside>
 </template>
 
 <script lang="ts">
