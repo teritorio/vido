@@ -22,6 +22,7 @@
           }"
           @map-init="onMapInit"
           @map-pitchend="onMapPitchEnd"
+          @map-render="onMapRender"
         />
       </div>
 
@@ -45,8 +46,10 @@ import { mapGetters } from 'vuex'
 // import MapPoiToast from '@/components/MapPoiToast.vue'
 import MapControls from '@/components/MapControls.vue'
 import { State as MenuState } from '@/store/menu'
-// import { getContrastedTextColor, getPicto } from '@/utils/picto'
+import { getContrastedTextColor, getPicto } from '@/utils/picto'
 // import { Category } from '@/utils/types'
+
+const POI_SOURCE = 'poi'
 
 export default Vue.extend({
   components: {
@@ -54,15 +57,21 @@ export default Vue.extend({
     MapControls,
     // MapPoiToast,
   },
+
   data(): {
     map: mapboxgl.Map | null
     pitch: number
+    markers: object
+    markersOnScreen: object
   } {
     return {
       map: null,
       pitch: 0,
+      markers: {},
+      markersOnScreen: {},
     }
   },
+
   computed: {
     ...mapGetters({
       categories: 'menu/categories',
@@ -75,38 +84,63 @@ export default Vue.extend({
       return `https://vecto-dev.teritorio.xyz/styles/teritorio-tourism-proxy/style.json?key=${this.$config.TILES_TOKEN}`
     },
   },
+
   watch: {
     features(features: MenuState['features']) {
+      if (!this.map) {
+        return
+      }
+
+      // Add category ID into features
       Object.keys(features).forEach((categoryId) => {
-        // const category: Category = this.categories[categoryId]
+        features[categoryId].forEach(
+          (feature) => (feature.properties.vido_cat = categoryId)
+        )
+      })
 
-        if (!this.map) {
-          return
-        }
+      //       console.log(features);
 
-        // const mapCanvas = this.map.getCanvas()
-        // const mapCanvasContainer = this.map.getCanvasContainer()
-        // const markerSize = '2rem'
-        // const pictoSize = '1rem'
+      // Change visible data
+      if (this.map.getSource(POI_SOURCE)) {
+        // Clean-up previous cluster markers
+        this.markers = {}
+        Object.values(this.markersOnScreen).forEach((marker) => marker.remove())
+        this.markersOnScreen = {}
 
-        const sourceId = `category-${categoryId}`
-        const layerId = sourceId
+        // Change data
+        this.map.getSource(POI_SOURCE).setData({
+          type: 'FeatureCollection',
+          features: Object.values(features).flat(),
+        })
+      }
+      // Create POI source + layer
+      else {
+        // Create cluster properties, which will contain count of features per category
+        const clusterProps = {}
+        Object.keys(this.categories).forEach((category) => {
+          clusterProps[category] = [
+            '+',
+            ['case', ['==', ['get', 'vido_cat'], category], 1, 0],
+          ]
+        })
 
-        this.map.addSource(sourceId, {
+        this.map.addSource(POI_SOURCE, {
           type: 'geojson',
-          // cluster: true,
-          // clusterRadius: 80,
+          cluster: true,
+          clusterRadius: 80,
+          clusterProperties: clusterProps,
           data: {
             type: 'FeatureCollection',
-            features: features[categoryId],
+            features: Object.values(features).flat(),
           },
         })
 
+        // Add individual markers
         this.map.addLayer({
-          id: `${layerId}-circle`,
+          id: `${POI_SOURCE}-simple-marker`,
           type: 'circle',
-          source: sourceId,
-          // filter: ['!=', 'cluster', true],
+          source: POI_SOURCE,
+          filter: ['!=', 'cluster', true],
           paint: {
             'circle-color': ['get', 'color', ['object', ['get', 'metadata']]],
             'circle-radius': 16,
@@ -119,107 +153,35 @@ export default Vue.extend({
         })
 
         this.map.addLayer({
-          id: `${layerId}-labal`,
+          id: `${POI_SOURCE}-simple-icon`,
           type: 'symbol',
-          source: sourceId,
-          // filter: ['!=', 'cluster', true],
-          layout: {
-            'text-field': ['get', 'post_title'],
-            'text-offset': [0, 3],
-            'text-size': 10,
-          },
+          source: POI_SOURCE,
+          filter: ['!=', 'cluster', true],
           paint: {
-            'text-color': ['case', ['<', ['get', 'mag'], 3], 'black', 'white'],
+            'icon-color': [
+              'match',
+              ['get', 'vido_cat'],
+              ...Object.entries(this.categories)
+                .map((c) => [c[0], getContrastedTextColor(c[1].metadata.color)])
+                .flat(),
+              'white',
+            ],
+          },
+          layout: {
+            'icon-image': ['image', ['get', 'vido_cat']],
           },
         })
-
-        // // When a click event occurs on a feature in the places layer, open a popup at the
-        // // location of the feature, with description HTML from its properties.
-        // this.map.on('click', 'places', function (e) {
-        //   const coordinates = e.features[0].geometry.coordinates.slice()
-        //   const description = e.features[0].properties.description
-
-        //   // Ensure that if the map is zoomed out such that multiple
-        //   // copies of the feature are visible, the popup appears
-        //   // over the copy being pointed to.
-        //   while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
-        //     coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360
-        //   }
-
-        //   new mapboxgl.Popup()
-        //     .setLngLat(coordinates)
-        //     .setHTML(description)
-        //     .addTo(map)
-        // })
-
-        // // Change the cursor to a pointer when the mouse is over the places layer.
-        // this.map.on('mouseenter', 'places', function () {
-        //   map.getCanvas().style.cursor = 'pointer'
-        // })
-
-        // // Change it back to a pointer when it leaves.
-        // this.map.on('mouseleave', 'places', function () {
-        //   map.getCanvas().style.cursor = ''
-        // })
-
-        /// /////////////////////////////////////////
-
-        // features[categoryId].forEach((feature) => {
-        //   if (!this.map) {
-        //     return
-        //   }
-
-        //   const el = document.createElement('div')
-        //   el.style.backgroundColor = category.metadata.color
-        //   el.style.width = markerSize
-        //   el.style.height = markerSize
-        //   el.style.display = 'flex'
-        //   el.style.justifyContent = 'center'
-        //   el.style.alignItems = 'center'
-        //   el.style.borderRadius = '50%'
-
-        //   el.innerHTML = getPicto(category.metadata.picto, 'raw')
-        //   el.style.color = getContrastedTextColor(category.metadata.color)
-
-        //   const picto = el.querySelector('svg')
-
-        //   if (picto) {
-        //     picto.style.fill = 'currentColor'
-        //     picto.style.width = pictoSize
-        //     picto.style.height = pictoSize
-        //   }
-
-        //   new mapboxgl.Marker(el)
-        //     .setLngLat(feature.geometry.coordinates)
-        //     .setPopup(
-        //       new mapboxgl.Popup()
-        //         .setLngLat(feature.geometry.coordinates)
-        //         .setHTML(feature.properties.post_title)
-        //     )
-        //     .addTo(this.map)
-
-        //   el.addEventListener('mouseenter', () => {
-        //     if (this.map) {
-        //       mapCanvasContainer.style.cursor = 'pointer'
-        //       mapCanvas.style.cursor = 'pointer'
-        //     }
-        //   })
-
-        //   el.addEventListener('mouseleave', () => {
-        //     if (this.map) {
-        //       mapCanvasContainer.style.cursor = ''
-        //       mapCanvas.style.cursor = ''
-        //     }
-        //   })
-        // })
-      })
+      }
     },
   },
+
   created() {
     this.pitch = this.$store.getters['map/pitch']
 
     this.onMapPitchEnd = throttle(this.onMapPitchEnd, 300)
+    this.onMapRender = throttle(this.onMapRender, 300)
   },
+
   methods: {
     onMapInit(map: mapboxgl.Map) {
       this.map = map
@@ -233,18 +195,174 @@ export default Vue.extend({
           include: true,
         })
       )
+
+      // Add icons to map
+      Object.entries(this.categories)
+        .map((e) => [e[0], getPicto(e[1].metadata.picto, 'data')])
+        .filter((p) => p[1] !== null)
+        .forEach((p) => {
+          const img = new Image(128, 128)
+          img.onload = () => {
+            try {
+              this.map.addImage(p[0], img, { sdf: true, pixelRatio: 7 })
+            } catch (e) {}
+          }
+          img.src = p[1]
+        })
     },
+
     onMapPitchEnd(map: mapboxgl.Map) {
       this.pitch = map.getPitch()
+    },
+
+    onMapRender() {
+      if (
+        !this.map.getSource(POI_SOURCE) ||
+        !this.map.isSourceLoaded(POI_SOURCE)
+      )
+        return
+      this.updateMarkers()
+    },
+
+    updateMarkers() {
+      const newMarkers = {}
+      const features = this.map.querySourceFeatures(POI_SOURCE)
+
+      // for every cluster on the screen, create an HTML marker for it (if we didn't yet),
+      // and add it to the map if it's not there already
+      for (let i = 0; i < features.length; i++) {
+        const coords = features[i].geometry.coordinates
+        const props = features[i].properties
+        if (!props.cluster) continue
+        const id = props.cluster_id
+
+        let marker = this.markers[id]
+        if (!marker) {
+          const el = this.createMarkerDonutChart(props)
+          marker = this.markers[id] = new mapboxgl.Marker({
+            element: el,
+          }).setLngLat(coords)
+        }
+        newMarkers[id] = marker
+
+        if (!this.markersOnScreen[id]) marker.addTo(this.map)
+      }
+      // for every marker we've added previously, remove those that are no longer visible
+      for (const id in this.markersOnScreen) {
+        if (!newMarkers[id]) this.markersOnScreen[id].remove()
+      }
+      this.markersOnScreen = newMarkers
+    },
+
+    createMarkerDonutChart(props) {
+      const offsets = []
+
+      const countPerColor = {}
+      Object.keys(this.categories)
+        .filter((categoryId) => props[categoryId] > 0)
+        .forEach((categoryId) => {
+          const color = this.categories[categoryId].metadata.color
+          if (countPerColor[color]) {
+            countPerColor[color] += props[categoryId]
+          } else {
+            countPerColor[color] = props[categoryId]
+          }
+        })
+      const counts = Object.values(countPerColor)
+      const colors = Object.keys(countPerColor)
+
+      let total = 0
+      for (let i = 0; i < counts.length; i++) {
+        offsets.push(total)
+        total += counts[i]
+      }
+      const fontSize =
+        total >= 1000 ? 22 : total >= 100 ? 20 : total >= 10 ? 18 : 16
+      const r = total >= 1000 ? 50 : total >= 100 ? 32 : total >= 10 ? 24 : 18
+      const r0 = Math.round(r * 0.6)
+      const w = r * 2
+
+      let html =
+        '<div><svg width="' +
+        w +
+        '" height="' +
+        w +
+        '" viewbox="0 0 ' +
+        w +
+        ' ' +
+        w +
+        '" text-anchor="middle" style="font-size: ' +
+        fontSize +
+        'px; display: block">'
+
+      for (let i = 0; i < counts.length; i++) {
+        html += this.getMarkerDonutSegment(
+          offsets[i] / total,
+          (offsets[i] + counts[i]) / total,
+          r,
+          r0,
+          colors[i]
+        )
+      }
+      html +=
+        '<circle cx="' +
+        r +
+        '" cy="' +
+        r +
+        '" r="' +
+        r0 +
+        '" fill="white" /><text dominant-baseline="central" transform="translate(' +
+        r +
+        ', ' +
+        r +
+        ')">' +
+        total.toLocaleString() +
+        '</text></svg></div>'
+
+      const el = document.createElement('div')
+      el.innerHTML = html
+      return el.firstChild
+    },
+
+    getMarkerDonutSegment(start, end, r, r0, color) {
+      if (end - start === 1) end -= 0.00001
+      const a0 = 2 * Math.PI * (start - 0.25)
+      const a1 = 2 * Math.PI * (end - 0.25)
+      const x0 = Math.cos(a0)
+      const y0 = Math.sin(a0)
+      const x1 = Math.cos(a1)
+      const y1 = Math.sin(a1)
+      const largeArc = end - start > 0.5 ? 1 : 0
+
+      return [
+        '<path d="M',
+        r + r0 * x0,
+        r + r0 * y0,
+        'L',
+        r + r * x0,
+        r + r * y0,
+        'A',
+        r,
+        r,
+        0,
+        largeArc,
+        1,
+        r + r * x1,
+        r + r * y1,
+        'L',
+        r + r0 * x1,
+        r + r0 * y1,
+        'A',
+        r0,
+        r0,
+        0,
+        largeArc,
+        0,
+        r + r0 * x0,
+        r + r0 * y0,
+        '" fill="' + color + '" />',
+      ].join(' ')
     },
   },
 })
 </script>
-
-<style>
-.mapboxgl-marker svg,
-.mapboxgl-marker svg g,
-.mapboxgl-marker svg path {
-  fill: currentColor;
-}
-</style>
