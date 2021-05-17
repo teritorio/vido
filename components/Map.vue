@@ -63,12 +63,14 @@ export default Vue.extend({
     pitch: number
     markers: object
     markersOnScreen: object
+    poiFilter: mapboxgl.Control | null
   } {
     return {
       map: null,
       pitch: 0,
       markers: {},
       markersOnScreen: {},
+      poiFilter: null,
     }
   },
 
@@ -98,8 +100,6 @@ export default Vue.extend({
         )
       })
 
-      //       console.log(features);
-
       // Change visible data
       if (this.map.getSource(POI_SOURCE)) {
         // Clean-up previous cluster markers
@@ -127,7 +127,7 @@ export default Vue.extend({
         this.map.addSource(POI_SOURCE, {
           type: 'geojson',
           cluster: true,
-          clusterRadius: 80,
+          clusterRadius: 50,
           clusterProperties: clusterProps,
           data: {
             type: 'FeatureCollection',
@@ -186,15 +186,9 @@ export default Vue.extend({
     onMapInit(map: mapboxgl.Map) {
       this.map = map
 
-      this.map.addControl(
-        new PoiFilter({
-          filter: [
-            // ['catering', 'food', 'restaurant'],
-            // ['leisure', 'park'],
-          ],
-          include: true,
-        })
-      )
+      this.poiFilter = new PoiFilter()
+      this.map.addControl(this.poiFilter)
+      this.map.on('load', () => this.poiFilter.remove(true))
 
       // Add icons to map
       Object.entries(this.categories)
