@@ -52,7 +52,7 @@ import { mapGetters } from 'vuex'
 import MapControls from '@/components/MapControls.vue'
 import MapPoiToast from '@/components/MapPoiToast.vue'
 import { State as MenuState } from '@/store/menu'
-import { getContrastedTextColor, getPicto } from '@/utils/picto'
+import { getContrastedTextColor } from '@/utils/picto'
 // import { Category } from '@/utils/types'
 
 const POI_SOURCE = 'poi'
@@ -147,22 +147,6 @@ export default Vue.extend({
         // Add individual markers
         this.map.addLayer({
           id: POI_LAYER_MARKER,
-          type: 'circle',
-          source: POI_SOURCE,
-          filter: ['!=', 'cluster', true],
-          paint: {
-            'circle-color': ['get', 'color', ['object', ['get', 'metadata']]],
-            'circle-radius': 16,
-            'circle-stroke-color': '#fff',
-            'circle-stroke-width': 2,
-          },
-          layout: {
-            visibility: 'visible',
-          },
-        })
-
-        this.map.addLayer({
-          id: `${POI_SOURCE}-simple-icon`,
           type: 'symbol',
           source: POI_SOURCE,
           filter: ['!=', 'cluster', true],
@@ -223,7 +207,93 @@ export default Vue.extend({
             'text-opacity': ['interpolate', ['linear'], ['zoom'], 14, 0, 15, 1],
           },
           layout: {
-            'icon-image': ['image', ['get', 'vido_cat']],
+            'icon-image': [
+              'concat',
+              [
+                'at',
+                0,
+                [
+                  'array',
+                  [
+                    'get',
+                    'tourism_style_class',
+                    ['object', ['get', 'metadata']],
+                  ],
+                ],
+              ],
+              [
+                'case',
+                [
+                  '>=',
+                  [
+                    'length',
+                    [
+                      'array',
+                      [
+                        'get',
+                        'tourism_style_class',
+                        ['object', ['get', 'metadata']],
+                      ],
+                    ],
+                  ],
+                  2,
+                ],
+                [
+                  'concat',
+                  '-',
+                  [
+                    'at',
+                    1,
+                    [
+                      'array',
+                      [
+                        'get',
+                        'tourism_style_class',
+                        ['object', ['get', 'metadata']],
+                      ],
+                    ],
+                  ],
+                ],
+                '',
+              ],
+              [
+                'case',
+                [
+                  '>=',
+                  [
+                    'length',
+                    [
+                      'array',
+                      [
+                        'get',
+                        'tourism_style_class',
+                        ['object', ['get', 'metadata']],
+                      ],
+                    ],
+                  ],
+                  3,
+                ],
+                [
+                  'concat',
+                  '-',
+                  [
+                    'at',
+                    2,
+                    [
+                      'array',
+                      [
+                        'get',
+                        'tourism_style_class',
+                        ['object', ['get', 'metadata']],
+                      ],
+                    ],
+                  ],
+                ],
+                '',
+              ],
+              '⬤',
+            ],
+            'icon-size': 1,
             'text-anchor': 'top',
             'text-field': ['get', 'name'],
             'text-font': ['Noto Sans Regular'],
@@ -253,20 +323,6 @@ export default Vue.extend({
       this.poiFilter = new PoiFilter()
       this.map.addControl(this.poiFilter)
       this.map.on('load', () => this.poiFilter.remove(true))
-
-      // Add icons to map
-      Object.entries(this.categories)
-        .map((e) => [e[0], getPicto(e[1].metadata.picto, 'data')])
-        .filter((p) => p[1] !== null)
-        .forEach((p) => {
-          const img = new Image(128, 128)
-          img.onload = () => {
-            try {
-              this.map.addImage(p[0], img, { sdf: true, pixelRatio: 7 })
-            } catch (e) {}
-          }
-          img.src = p[1]
-        })
 
       // Handle POI click
       this.map.on('click', (e) => {
