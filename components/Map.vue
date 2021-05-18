@@ -28,9 +28,15 @@
 
       <MapControls :map="map" :pitch="pitch" />
 
-      <!-- <div class="absolute flex justify-center inset-x-3 bottom-3">
-      <MapPoiToast class="flex-grow-0" />
-    </div> -->
+      <div
+        class="absolute flex justify-center inset-x-3 bottom-3 pointer-events-none"
+      >
+        <MapPoiToast
+          v-if="selectedFeature"
+          :poi="selectedFeature"
+          class="flex-grow-0"
+        />
+      </div>
     </div>
   </div>
 </template>
@@ -43,19 +49,20 @@ import Mapbox from 'mapbox-gl-vue'
 import Vue from 'vue'
 import { mapGetters } from 'vuex'
 
-// import MapPoiToast from '@/components/MapPoiToast.vue'
 import MapControls from '@/components/MapControls.vue'
+import MapPoiToast from '@/components/MapPoiToast.vue'
 import { State as MenuState } from '@/store/menu'
 import { getContrastedTextColor, getPicto } from '@/utils/picto'
 // import { Category } from '@/utils/types'
 
 const POI_SOURCE = 'poi'
+const POI_LAYER_MARKER = 'poi-simple-marker'
 
 export default Vue.extend({
   components: {
     Mapbox,
     MapControls,
-    // MapPoiToast,
+    MapPoiToast,
   },
 
   data(): {
@@ -64,6 +71,7 @@ export default Vue.extend({
     markers: object
     markersOnScreen: object
     poiFilter: mapboxgl.Control | null
+    selectedFeature: object | null
   } {
     return {
       map: null,
@@ -71,6 +79,7 @@ export default Vue.extend({
       markers: {},
       markersOnScreen: {},
       poiFilter: null,
+      selectedFeature: null,
     }
   },
 
@@ -137,7 +146,7 @@ export default Vue.extend({
 
         // Add individual markers
         this.map.addLayer({
-          id: `${POI_SOURCE}-simple-marker`,
+          id: POI_LAYER_MARKER,
           type: 'circle',
           source: POI_SOURCE,
           filter: ['!=', 'cluster', true],
@@ -203,6 +212,32 @@ export default Vue.extend({
           }
           img.src = p[1]
         })
+
+      // Handle POI click
+      this.map.on('click', (e) => {
+        const features = this.map.queryRenderedFeatures(e.point, {
+          layers: [POI_LAYER_MARKER],
+        })
+
+        if (
+          features.length > 0 &&
+          features[0].properties.metadata &&
+          typeof features[0].properties.metadata === 'string'
+        ) {
+          features[0].properties.metadata = JSON.parse(
+            features[0].properties.metadata
+          )
+        }
+
+        if (
+          features.length === 1 &&
+          features[0].properties.metadata.HasPopup === 'yes'
+        ) {
+          this.selectedFeature = features[0]
+        } else {
+          this.selectedFeature = null
+        }
+      })
     },
 
     onMapPitchEnd(map: mapboxgl.Map) {

@@ -1,35 +1,58 @@
 <template>
   <div
-    class="flex max-w-xl mx-auto overflow-hidden bg-white shadow-md rounded-xl"
+    class="flex max-w-xl mx-auto overflow-hidden bg-white shadow-md rounded-xl pointer-events-auto"
   >
     <img
+      v-if="poiProp('teritorio:image')"
       class="object-cover w-48"
-      src="https://images.unsplash.com/photo-1591242825378-ba17ddd7975c?ixlib=rb-1.2.1&ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&auto=format&fit=crop&w=500&q=80"
-      alt="Lorem Ipsum dolor sit amet"
+      :src="poiProp('teritorio:image')"
+      alt=""
     />
 
     <div class="p-8">
       <div class="flex justify-between">
         <div
-          class="text-sm font-semibold tracking-wide text-blue-500 uppercase"
+          class="flex text-sm font-semibold tracking-wide text-blue-500 uppercase"
         >
-          Restaurant
+          <component :is="getPicto(poiMeta('icon'))" class="w-5 h-5 mr-1" />
+          {{ poiMeta('label_infobulle') }}
         </div>
 
-        <OpenMention />
+        <!--OpenMention /-->
       </div>
 
-      <p
-        class="block mt-2 text-lg font-medium leading-tight text-black hover:underline"
-      >
-        Lorem Ipsum dolor sit amet
+      <p class="block mt-2 text-lg font-medium leading-tight text-black">
+        <a v-if="hasFiche" :href="poiProp('teritorio:url')" target="_blank">
+          {{ poi.properties.name }}
+        </a>
+        <template v-else>
+          {{ poi.properties.name }}
+        </template>
       </p>
 
-      <p class="mt-2 text-gray-500">
-        Sed ut perspiciatis unde omnis iste natus error sit voluptatem
-        accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab
-        illo inventore veritatis et quasi architecto beatae vitae dicta sunt
-        explicabo.
+      <p v-if="poiMeta('PopupAdress') === 'yes'" class="text-gray-500">
+        {{
+          [
+            poiProp('addr:street'),
+            poiProp('addr:postcode'),
+            poiProp('addr:city'),
+          ]
+            .filter((p) => p)
+            .join(' ')
+        }}
+      </p>
+
+      <template v-if="listFields">
+        <p v-for="field in listFields" :key="field">
+          {{ field }}
+        </p>
+      </template>
+
+      <p v-if="hasFiche" class="text-right mt-2">
+        <a :href="poiProp('teritorio:url')" target="_blank">
+          <font-awesome-icon icon="info" />
+          Détail
+        </a>
       </p>
     </div>
   </div>
@@ -39,10 +62,69 @@
 import Vue from 'vue'
 
 import OpenMention from '@/components/OpenMention.vue'
+import { getPicto } from '@/utils/picto'
 
 export default Vue.extend({
   components: {
     OpenMention,
+  },
+
+  props: {
+    poi: {
+      type: Object,
+      required: true,
+    },
+  },
+
+  data() {
+    return {
+      sptags: null,
+    }
+  },
+
+  computed: {
+    hasFiche() {
+      return this.poiMeta('hasfiche') === 'yes'
+    },
+
+    listFields() {
+      if (!this.sptags) {
+        return null
+      }
+      return this.poiMeta('PopupListField')
+        .split(';')
+        .filter(
+          (f) =>
+            this.sptags[f] && this.poiProp(f) && this.sptags[f][this.poiProp(f)]
+        )
+        .map((f) => this.sptags[f][this.poiProp(f)])
+    },
+  },
+
+  created() {
+    this.fetchSpTags()
+  },
+
+  methods: {
+    getPicto: (pictoName: string) => getPicto(pictoName),
+
+    poiProp(name: String) {
+      return this.poi.properties[name]
+    },
+
+    poiMeta(name: String) {
+      return this.poiProp('metadata')[name]
+    },
+
+    fetchSpTags() {
+      fetch(
+        `${
+          this.$config.API_ENDPOINT
+        }/geodata/v1/sptags?PopupListField=${this.poiMeta('PopupListField')}`
+      )
+        .then((data) => data.json())
+        .then((data) => (this.sptags = data))
+    },
   },
 })
 </script>
