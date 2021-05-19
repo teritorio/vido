@@ -14,6 +14,7 @@ import {
   faSearch,
   faStar,
   faExternalLinkAlt,
+  faMap,
 } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import Vue from 'vue'
@@ -36,6 +37,7 @@ library.add(
   faStar,
   farStar,
   faExternalLinkAlt,
+  faMap,
 )
 
 // Register the component globally

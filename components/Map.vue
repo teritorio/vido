@@ -26,7 +26,12 @@
         />
       </div>
 
-      <MapControls :map="map" :pitch="pitch" />
+      <MapControls
+        :map="map"
+        :pitch="pitch"
+        :backgrounds="availableStyles"
+        @changeBackground="onClickChangeBackground"
+      />
 
       <div
         class="absolute flex justify-center inset-x-3 bottom-3 pointer-events-none"
@@ -58,6 +63,11 @@ import { getContrastedTextColor } from '@/utils/picto'
 
 const POI_SOURCE = 'poi'
 const POI_LAYER_MARKER = 'poi-simple-marker'
+const MAP_STYLES = {
+  'tourism-0.9': 'Teritorio Tourisme (0.9)',
+  'tourism-proxy': 'Teritorio Tourisme (proxy)',
+  mapnik: 'OpenStreetMap',
+}
 
 export default Vue.extend({
   components: {
@@ -74,6 +84,7 @@ export default Vue.extend({
     poiFilter: mapboxgl.Control | null
     selectedFeature: object | null
     selectedFeatureMarker: mapboxgl.Marker | null
+    selectedBackground: String
   } {
     return {
       map: null,
@@ -83,6 +94,7 @@ export default Vue.extend({
       poiFilter: null,
       selectedFeature: null,
       selectedMarker: null,
+      selectedBackground: 'tourism-0.9',
     }
   },
 
@@ -93,9 +105,20 @@ export default Vue.extend({
       features: 'menu/features',
       zoom: 'map/zoom',
     }),
+
     mapStyle(): string {
-      // return `https://vecto.teritorio.xyz/styles/teritorio-tourism-latest/style.json?key=${this.$config.TILES_TOKEN}`
-      return `https://vecto-dev.teritorio.xyz/styles/teritorio-tourism-proxy/style.json?key=${this.$config.TILES_TOKEN}`
+      switch (this.selectedBackground) {
+        case 'tourism-0.9':
+          return `https://vecto-dev.teritorio.xyz/styles/teritorio-tourism-0.9/style.json?key=${this.$config.TILES_TOKEN}`
+        case 'mapnik':
+        case 'tourism-proxy':
+        default:
+          return `https://vecto-dev.teritorio.xyz/styles/teritorio-tourism-proxy/style.json?key=${this.$config.TILES_TOKEN}`
+      }
+    },
+
+    availableStyles() {
+      return MAP_STYLES
     },
   },
 
@@ -328,6 +351,32 @@ export default Vue.extend({
           .addTo(this.map)
       }
     },
+
+    selectedBackground(background: String) {
+      if (background === 'mapnik') {
+        this.map.addSource('mapnik', {
+          type: 'raster',
+          tiles: [
+            //             'https://tile.openstreetmap.org/{z}/{x}/{y}.png' // Main OSM tiles
+            'https://a.tiles.teritorio.xyz/osm_tiles/{z}/{x}/{y}.png',
+            'https://b.tiles.teritorio.xyz/osm_tiles/{z}/{x}/{y}.png',
+            'https://c.tiles.teritorio.xyz/osm_tiles/{z}/{x}/{y}.png',
+          ],
+          tileSize: 256,
+        })
+
+        this.map.addLayer({
+          id: 'mapnik',
+          type: 'raster',
+          source: 'mapnik',
+          minzoom: 1,
+          maxzoom: 18,
+        })
+      } else {
+        this.map.setStyle(this.mapStyle)
+        this.map.once('styledata', () => this.poiFilter.remove(true))
+      }
+    },
   },
 
   created() {
@@ -393,6 +442,10 @@ export default Vue.extend({
         center: this.selectedFeature.geometry.coordinates,
         zoom: 15,
       })
+    },
+
+    onClickChangeBackground(background: String) {
+      this.selectedBackground = background
     },
 
     updateMarkers() {

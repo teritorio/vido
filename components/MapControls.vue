@@ -42,6 +42,17 @@
         >
           3D
         </button>
+
+        <button
+          v-if="map"
+          aria-label="Changer le fond de carte"
+          :title="`Changer le fond de carte (actuellement ${backgrounds[background]})`"
+          type="button"
+          class="text-sm font-bold rounded-full shadow-md w-11 h-11 outline-none focus:outline-none bg-white text-gray-800 hover:bg-gray-100 focus-visible:bg-gray-100"
+          @click="changeBackground"
+        >
+          <font-awesome-icon icon="map" class="text-gray-800" size="sm" />
+        </button>
       </div>
     </div>
   </aside>
@@ -62,14 +73,19 @@ export default Vue.extend({
       type: Number,
       default: 0,
     },
+    backgrounds: {
+      type: Object,
+    },
   },
   data(): {
     building3d: Building3d | null
     is3D: boolean
+    background: String | null
   } {
     return {
       building3d: null,
       is3D: false,
+      background: null,
     }
   },
   watch: {
@@ -102,6 +118,7 @@ export default Vue.extend({
   },
   created() {
     this.setIs3D(this.pitch !== 0)
+    this.changeBackground()
   },
   methods: {
     setIs3D(value: boolean) {
@@ -117,6 +134,14 @@ export default Vue.extend({
 
         this.setIs3D(!this.is3D)
       }
+    },
+    changeBackground() {
+      const backs = Object.keys(this.backgrounds)
+      const lastId = this.background
+        ? backs.findIndex((b) => b === this.background)
+        : -1
+      this.background = backs[(lastId + 1) % backs.length]
+      this.$emit('changeBackground', this.background)
     },
   },
 })
