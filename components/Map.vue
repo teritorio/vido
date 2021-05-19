@@ -178,9 +178,9 @@ export default Vue.extend({
           type: 'raster',
           tiles: [
             // 'https://tile.openstreetmap.org/{z}/{x}/{y}.png' // Main OSM tiles
-            'https://a.tiles.teritorio.xyz/osm_tiles/{z}/{x}/{y}.png',
-            'https://b.tiles.teritorio.xyz/osm_tiles/{z}/{x}/{y}.png',
-            'https://c.tiles.teritorio.xyz/osm_tiles/{z}/{x}/{y}.png',
+            'https://a.tiles.teritorio.xyz/styles/osm/{z}/{x}/{y}.png',
+            'https://b.tiles.teritorio.xyz/styles/osm/{z}/{x}/{y}.png',
+            'https://c.tiles.teritorio.xyz/styles/osm/{z}/{x}/{y}.png',
           ],
           tileSize: 256,
         })
