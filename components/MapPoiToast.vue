@@ -1,59 +1,51 @@
 <template>
   <div
     class="flex max-w-xl mx-auto overflow-hidden bg-white shadow-md rounded-xl pointer-events-auto"
+    @click="() => $emit('click')"
   >
     <img
       v-if="poiProp('teritorio:image')"
-      class="object-cover w-48"
+      class="object-cover w-52"
       :src="poiProp('teritorio:image')"
       alt=""
     />
 
     <div class="p-8">
-      <div class="flex justify-between">
-        <div
-          class="flex text-sm font-semibold tracking-wide text-blue-500 uppercase"
-        >
-          <component :is="getPicto(poiMeta('icon'))" class="w-5 h-5 mr-1" />
-          {{ poiMeta('label_infobulle') }}
-        </div>
+      <p
+        class="block text-xl font-semibold leading-tight cursor-pointer"
+        :style="'color:' + poiMeta('color')"
+      >
+        {{ poi.properties.name || poiMeta('label_infobulle') }}
+      </p>
 
-        <!--OpenMention /-->
+      <div class="flex items-center text-sm text-gray-500 cursor-pointer">
+        <component :is="getPicto(poiMeta('icon'))" class="w-4 h-4 mr-1" />
+        {{ poiMeta('label_infobulle') }}
       </div>
 
-      <p class="block mt-2 text-lg font-medium leading-tight text-black">
-        <a v-if="hasFiche" :href="poiProp('teritorio:url')" target="_blank">
-          {{ poi.properties.name }}
-        </a>
-        <template v-else>
-          {{ poi.properties.name }}
+      <p class="mt-2">
+        <template v-if="address">
+          {{ address }}
+          <br />
         </template>
+
+        <span v-for="field in listFields" :key="encodeURIComponent(field)">
+          {{ field }} <br />
+        </span>
       </p>
 
-      <p v-if="poiMeta('PopupAdress') === 'yes'" class="text-gray-500">
-        {{
-          [
-            poiProp('addr:street'),
-            poiProp('addr:postcode'),
-            poiProp('addr:city'),
-          ]
-            .filter((p) => p)
-            .join(' ')
-        }}
-      </p>
-
-      <template v-if="listFields">
-        <p v-for="field in listFields" :key="field">
-          {{ field }}
-        </p>
-      </template>
-
-      <p v-if="hasFiche" class="text-right mt-2">
-        <a :href="poiProp('teritorio:url')" target="_blank">
-          <font-awesome-icon icon="info" />
-          Détail
-        </a>
-      </p>
+      <div class="flex justify-between items-center mt-3">
+        <font-awesome-icon :icon="['far', 'star']" :color="poiMeta('color')" />
+        <template v-if="hasFiche">
+          <a :href="poiProp('teritorio:url')" target="_blank" @click.stop>
+            <font-awesome-icon
+              icon="external-link-alt"
+              :color="poiMeta('color')"
+            />
+            Détail
+          </a>
+        </template>
+      </div>
     </div>
   </div>
 </template>
@@ -87,17 +79,52 @@ export default Vue.extend({
       return this.poiMeta('hasfiche') === 'yes'
     },
 
+    address() {
+      if (this.poiMeta('PopupAdress') !== 'yes') {
+        return null
+      }
+
+      return [
+        this.poiProp('addr:street') &&
+          this.titleCase(this.poiProp('addr:street')),
+        this.poiProp('addr:postcode'),
+        this.poiProp('addr:city') && this.poiProp('addr:city').toUpperCase(),
+      ]
+        .filter((f) => f && f.trim().length > 0)
+        .join(' ')
+    },
+
     listFields() {
       if (!this.sptags) {
-        return null
+        return []
       }
       return this.poiMeta('PopupListField')
         .split(';')
-        .filter(
-          (f) =>
-            this.sptags[f] && this.poiProp(f) && this.sptags[f][this.poiProp(f)]
-        )
-        .map((f) => this.sptags[f][this.poiProp(f)])
+        .map((f) => {
+          if (this.sptags[f] && this.sptags[f][this.poiProp(f)]) {
+            return this.sptags[f][this.poiProp(f)]
+          } else if (
+            this.sptags[f] &&
+            this.poiProp(f) &&
+            this.poiProp(f).includes(';')
+          ) {
+            return this.poiProp(f)
+              .split(';')
+              .map((p) => this.sptags[f][p])
+              .filter((f) => f && f.trim().length > 0)
+              .join(', ')
+          } else {
+            return this.poiProp(f)
+          }
+        })
+        .filter((f) => f && f.trim().length > 0)
+    },
+  },
+
+  watch: {
+    poi() {
+      this.sptags = null
+      this.fetchSpTags()
     },
   },
 
@@ -124,6 +151,19 @@ export default Vue.extend({
       )
         .then((data) => data.json())
         .then((data) => (this.sptags = data))
+    },
+
+    titleCase(str) {
+      const ignoredWords = ['la', 'le', 'les', 'du', 'des', 'de', 'à', 'aux']
+      return str
+        .toLowerCase()
+        .split(' ')
+        .map(function (word) {
+          return ignoredWords.includes(word.toLowerCase())
+            ? word
+            : word.replace(word[0], word[0].toUpperCase())
+        })
+        .join(' ')
     },
   },
 })

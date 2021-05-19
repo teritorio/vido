@@ -35,6 +35,7 @@
           v-if="selectedFeature"
           :poi="selectedFeature"
           class="flex-grow-0"
+          @click="onPoiToastClick"
         />
       </div>
     </div>
@@ -72,6 +73,7 @@ export default Vue.extend({
     markersOnScreen: object
     poiFilter: mapboxgl.Control | null
     selectedFeature: object | null
+    selectedFeatureMarker: mapboxgl.Marker | null
   } {
     return {
       map: null,
@@ -80,6 +82,7 @@ export default Vue.extend({
       markersOnScreen: {},
       poiFilter: null,
       selectedFeature: null,
+      selectedMarker: null,
     }
   },
 
@@ -307,6 +310,24 @@ export default Vue.extend({
         })
       }
     },
+
+    selectedFeature(feature: Object) {
+      // Clean-up previous marker
+      if (this.selectedFeatureMarker) {
+        this.selectedFeatureMarker.remove()
+        this.selectedFeatureMarker = null
+      }
+
+      // Add new marker if a feature is selected
+      if (feature) {
+        this.selectedFeatureMarker = new mapboxgl.Marker({
+          scale: 1.3,
+          color: '#f44336',
+        })
+          .setLngLat(feature.geometry.coordinates)
+          .addTo(this.map)
+      }
+    },
   },
 
   created() {
@@ -362,6 +383,16 @@ export default Vue.extend({
       )
         return
       this.updateMarkers()
+    },
+
+    onPoiToastClick() {
+      if (!this.map || !this.selectedFeature) {
+        return
+      }
+      this.map.flyTo({
+        center: this.selectedFeature.geometry.coordinates,
+        zoom: 15,
+      })
     },
 
     updateMarkers() {

@@ -1,5 +1,8 @@
 import { config, library } from '@fortawesome/fontawesome-svg-core'
-import { faCircle } from '@fortawesome/free-regular-svg-icons'
+import {
+  faCircle,
+  faStar as farStar
+} from '@fortawesome/free-regular-svg-icons'
 import {
   faArrowLeft,
   faBars,
@@ -10,6 +13,7 @@ import {
   faPlus,
   faSearch,
   faStar,
+  faExternalLinkAlt,
 } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import Vue from 'vue'
@@ -29,7 +33,9 @@ library.add(
   faMinus,
   faPlus,
   faSearch,
-  faStar
+  faStar,
+  farStar,
+  faExternalLinkAlt,
 )
 
 // Register the component globally

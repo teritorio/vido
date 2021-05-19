@@ -33,8 +33,4 @@ body,
   @apply m-0;
   @apply box-border;
 }
-
-* svg g {
-  @apply fill-current;
-}
 </style>
