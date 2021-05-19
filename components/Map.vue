@@ -150,187 +150,7 @@ export default Vue.extend({
       }
       // Create POI source + layer
       else {
-        // Create cluster properties, which will contain count of features per category
-        const clusterProps = {}
-        Object.keys(this.categories).forEach((category) => {
-          clusterProps[category] = [
-            '+',
-            ['case', ['==', ['get', 'vido_cat'], category], 1, 0],
-          ]
-        })
-
-        this.map.addSource(POI_SOURCE, {
-          type: 'geojson',
-          cluster: true,
-          clusterRadius: 50,
-          clusterProperties: clusterProps,
-          data: {
-            type: 'FeatureCollection',
-            features: Object.values(features).flat(),
-          },
-        })
-
-        // Add individual markers
-        this.map.addLayer({
-          id: POI_LAYER_MARKER,
-          type: 'symbol',
-          source: POI_SOURCE,
-          filter: ['!=', 'cluster', true],
-          paint: {
-            'icon-color': [
-              'match',
-              ['get', 'vido_cat'],
-              ...Object.entries(this.categories)
-                .map((c) => [c[0], getContrastedTextColor(c[1].metadata.color)])
-                .flat(),
-              'white',
-            ],
-            'text-color': [
-              'match',
-              [
-                'at',
-                0,
-                [
-                  'array',
-                  [
-                    'get',
-                    'tourism_style_class',
-                    ['object', ['get', 'metadata']],
-                  ],
-                ],
-              ],
-              'products',
-              '#F25C05',
-              'convenience',
-              '#00a0a4',
-              'services',
-              '#2a62ac',
-              'safety',
-              '#e42224',
-              'mobility',
-              '#3b74b9',
-              'amenity',
-              '#2a62ac',
-              'remarkable',
-              '#e50980',
-              'culture',
-              '#76009e',
-              'hosting',
-              '#99163a',
-              'catering',
-              '#f09007',
-              'leisure',
-              '#00A757',
-              'public_landmark',
-              '#1D1D1B',
-              'shopping',
-              '#808080',
-              '#666',
-            ],
-            'text-halo-blur': 0.5,
-            'text-halo-color': '#ffffff',
-            'text-halo-width': 1,
-            'text-opacity': ['interpolate', ['linear'], ['zoom'], 14, 0, 15, 1],
-          },
-          layout: {
-            'icon-image': [
-              'concat',
-              [
-                'at',
-                0,
-                [
-                  'array',
-                  [
-                    'get',
-                    'tourism_style_class',
-                    ['object', ['get', 'metadata']],
-                  ],
-                ],
-              ],
-              [
-                'case',
-                [
-                  '>=',
-                  [
-                    'length',
-                    [
-                      'array',
-                      [
-                        'get',
-                        'tourism_style_class',
-                        ['object', ['get', 'metadata']],
-                      ],
-                    ],
-                  ],
-                  2,
-                ],
-                [
-                  'concat',
-                  '-',
-                  [
-                    'at',
-                    1,
-                    [
-                      'array',
-                      [
-                        'get',
-                        'tourism_style_class',
-                        ['object', ['get', 'metadata']],
-                      ],
-                    ],
-                  ],
-                ],
-                '',
-              ],
-              [
-                'case',
-                [
-                  '>=',
-                  [
-                    'length',
-                    [
-                      'array',
-                      [
-                        'get',
-                        'tourism_style_class',
-                        ['object', ['get', 'metadata']],
-                      ],
-                    ],
-                  ],
-                  3,
-                ],
-                [
-                  'concat',
-                  '-',
-                  [
-                    'at',
-                    2,
-                    [
-                      'array',
-                      [
-                        'get',
-                        'tourism_style_class',
-                        ['object', ['get', 'metadata']],
-                      ],
-                    ],
-                  ],
-                ],
-                '',
-              ],
-              '⬤',
-            ],
-            'icon-size': 1,
-            'text-anchor': 'top',
-            'text-field': ['get', 'name'],
-            'text-font': ['Noto Sans Regular'],
-            'text-max-width': 9,
-            'text-offset': [0, 1.3],
-            'text-padding': 2,
-            'text-size': 12,
-            'text-optional': true,
-            'text-allow-overlap': false,
-          },
-        })
+        this.initPoiLayer(features)
       }
     },
 
@@ -357,7 +177,7 @@ export default Vue.extend({
         this.map.addSource('mapnik', {
           type: 'raster',
           tiles: [
-            //             'https://tile.openstreetmap.org/{z}/{x}/{y}.png' // Main OSM tiles
+            // 'https://tile.openstreetmap.org/{z}/{x}/{y}.png' // Main OSM tiles
             'https://a.tiles.teritorio.xyz/osm_tiles/{z}/{x}/{y}.png',
             'https://b.tiles.teritorio.xyz/osm_tiles/{z}/{x}/{y}.png',
             'https://c.tiles.teritorio.xyz/osm_tiles/{z}/{x}/{y}.png',
@@ -374,7 +194,10 @@ export default Vue.extend({
         })
       } else {
         this.map.setStyle(this.mapStyle)
-        this.map.once('styledata', () => this.poiFilter.remove(true))
+        this.map.once('styledata', () => {
+          this.poiFilter.remove(true)
+          this.initPoiLayer(this.features)
+        })
       }
     },
   },
@@ -448,6 +271,182 @@ export default Vue.extend({
       this.selectedBackground = background
     },
 
+    initPoiLayer(features) {
+      // Create cluster properties, which will contain count of features per category
+      const clusterProps = {}
+      Object.keys(this.categories).forEach((category) => {
+        clusterProps[category] = [
+          '+',
+          ['case', ['==', ['get', 'vido_cat'], category], 1, 0],
+        ]
+      })
+
+      this.map.addSource(POI_SOURCE, {
+        type: 'geojson',
+        cluster: true,
+        clusterRadius: 50,
+        clusterProperties: clusterProps,
+        data: {
+          type: 'FeatureCollection',
+          features: Object.values(features).flat(),
+        },
+      })
+
+      // Add individual markers
+      this.map.addLayer({
+        id: POI_LAYER_MARKER,
+        type: 'symbol',
+        source: POI_SOURCE,
+        filter: ['!=', 'cluster', true],
+        paint: {
+          'icon-color': [
+            'match',
+            ['get', 'vido_cat'],
+            ...Object.entries(this.categories)
+              .map((c) => [c[0], getContrastedTextColor(c[1].metadata.color)])
+              .flat(),
+            'white',
+          ],
+          'text-color': [
+            'match',
+            [
+              'at',
+              0,
+              [
+                'array',
+                ['get', 'tourism_style_class', ['object', ['get', 'metadata']]],
+              ],
+            ],
+            'products',
+            '#F25C05',
+            'convenience',
+            '#00a0a4',
+            'services',
+            '#2a62ac',
+            'safety',
+            '#e42224',
+            'mobility',
+            '#3b74b9',
+            'amenity',
+            '#2a62ac',
+            'remarkable',
+            '#e50980',
+            'culture',
+            '#76009e',
+            'hosting',
+            '#99163a',
+            'catering',
+            '#f09007',
+            'leisure',
+            '#00A757',
+            'public_landmark',
+            '#1D1D1B',
+            'shopping',
+            '#808080',
+            '#666',
+          ],
+          'text-halo-blur': 0.5,
+          'text-halo-color': '#ffffff',
+          'text-halo-width': 1,
+          'text-opacity': ['interpolate', ['linear'], ['zoom'], 14, 0, 15, 1],
+        },
+        layout: {
+          'icon-image': [
+            'concat',
+            [
+              'at',
+              0,
+              [
+                'array',
+                ['get', 'tourism_style_class', ['object', ['get', 'metadata']]],
+              ],
+            ],
+            [
+              'case',
+              [
+                '>=',
+                [
+                  'length',
+                  [
+                    'array',
+                    [
+                      'get',
+                      'tourism_style_class',
+                      ['object', ['get', 'metadata']],
+                    ],
+                  ],
+                ],
+                2,
+              ],
+              [
+                'concat',
+                '-',
+                [
+                  'at',
+                  1,
+                  [
+                    'array',
+                    [
+                      'get',
+                      'tourism_style_class',
+                      ['object', ['get', 'metadata']],
+                    ],
+                  ],
+                ],
+              ],
+              '',
+            ],
+            [
+              'case',
+              [
+                '>=',
+                [
+                  'length',
+                  [
+                    'array',
+                    [
+                      'get',
+                      'tourism_style_class',
+                      ['object', ['get', 'metadata']],
+                    ],
+                  ],
+                ],
+                3,
+              ],
+              [
+                'concat',
+                '-',
+                [
+                  'at',
+                  2,
+                  [
+                    'array',
+                    [
+                      'get',
+                      'tourism_style_class',
+                      ['object', ['get', 'metadata']],
+                    ],
+                  ],
+                ],
+              ],
+              '',
+            ],
+            '⬤',
+          ],
+          'icon-size': 1,
+          'text-anchor': 'top',
+          'text-field': ['get', 'name'],
+          'text-font': ['Noto Sans Regular'],
+          'text-max-width': 9,
+          'text-offset': [0, 1.3],
+          'text-padding': 2,
+          'text-size': 12,
+          'text-optional': true,
+          'text-allow-overlap': false,
+        },
+      })
+    },
+
     updateMarkers() {
       const newMarkers = {}
       const features = this.map.querySourceFeatures(POI_SOURCE)
@@ -466,6 +465,14 @@ export default Vue.extend({
           marker = this.markers[id] = new mapboxgl.Marker({
             element: el,
           }).setLngLat(coords)
+          marker.getElement().addEventListener('click', () => {
+            this.map
+              .getSource(POI_SOURCE)
+              .getClusterExpansionZoom(id, (err, zoom) => {
+                if (err) return
+                this.map.easeTo({ center: coords, zoom })
+              })
+          })
         }
         newMarkers[id] = marker
 

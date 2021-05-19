@@ -158,6 +158,7 @@ export default Vue.extend({
       return str
         .toLowerCase()
         .split(' ')
+        .filter((word) => word.length > 0)
         .map(function (word) {
           return ignoredWords.includes(word.toLowerCase())
             ? word
