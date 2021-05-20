@@ -106,11 +106,41 @@ export default Vue.extend({
       zoom: 'map/zoom',
     }),
 
-    mapStyle(): string {
+    mapStyle(): string | Object {
       switch (this.selectedBackground) {
         case 'tourism-0.9':
           return `https://vecto-dev.teritorio.xyz/styles/teritorio-tourism-0.9/style.json?key=${this.$config.TILES_TOKEN}`
+
         case 'mapnik':
+          return {
+            version: 8,
+            name: 'Teritorio Mapnik',
+            sprite: `https://vecto-dev.teritorio.xyz/styles/teritorio-tourism-proxy/sprite?key=${this.$config.TILES_TOKEN}`,
+            glyphs: `https://vecto-dev.teritorio.xyz/fonts/{fontstack}/{range}.pbf?key=${this.$config.TILES_TOKEN}`,
+            vido_israster: true,
+            sources: {
+              mapnik: {
+                type: 'raster',
+                tiles: [
+                  // 'https://tile.openstreetmap.org/{z}/{x}/{y}.png' // Main OSM tiles
+                  'https://a.tiles.teritorio.xyz/styles/osm/{z}/{x}/{y}.png',
+                  'https://b.tiles.teritorio.xyz/styles/osm/{z}/{x}/{y}.png',
+                  'https://c.tiles.teritorio.xyz/styles/osm/{z}/{x}/{y}.png',
+                ],
+                tileSize: 256,
+              },
+            },
+            layers: [
+              {
+                id: 'mapnik',
+                type: 'raster',
+                source: 'mapnik',
+                minzoom: 1,
+                maxzoom: 20,
+              },
+            ],
+          }
+
         case 'tourism-proxy':
         default:
           return `https://vecto-dev.teritorio.xyz/styles/teritorio-tourism-proxy/style.json?key=${this.$config.TILES_TOKEN}`
@@ -172,33 +202,14 @@ export default Vue.extend({
       }
     },
 
-    selectedBackground(background: String) {
-      if (background === 'mapnik') {
-        this.map.addSource('mapnik', {
-          type: 'raster',
-          tiles: [
-            // 'https://tile.openstreetmap.org/{z}/{x}/{y}.png' // Main OSM tiles
-            'https://a.tiles.teritorio.xyz/styles/osm/{z}/{x}/{y}.png',
-            'https://b.tiles.teritorio.xyz/styles/osm/{z}/{x}/{y}.png',
-            'https://c.tiles.teritorio.xyz/styles/osm/{z}/{x}/{y}.png',
-          ],
-          tileSize: 256,
-        })
-
-        this.map.addLayer({
-          id: 'mapnik',
-          type: 'raster',
-          source: 'mapnik',
-          minzoom: 1,
-          maxzoom: 18,
-        })
-      } else {
-        this.map.setStyle(this.mapStyle)
-        this.map.once('styledata', () => {
+    selectedBackground() {
+      this.map.setStyle(this.mapStyle)
+      this.map.once('styledata', () => {
+        if (typeof this.mapStyle !== 'object' || !this.mapStyle.vido_israster) {
           this.poiFilter.remove(true)
-          this.initPoiLayer(this.features)
-        })
-      }
+        }
+        this.initPoiLayer(this.features)
+      })
     },
   },
 
