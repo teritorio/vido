@@ -6,7 +6,7 @@
           access-token=""
           :map-options="{
             center: [center.lng, center.lat],
-            hash: false,
+            hash: 'map',
             maxZoom: zoom.max,
             minZoom: zoom.min,
             pitch,
@@ -59,6 +59,7 @@ import MapControls from '@/components/MapControls.vue'
 import MapPoiToast from '@/components/MapPoiToast.vue'
 import { State as MenuState } from '@/store/menu'
 import { getContrastedTextColor } from '@/utils/picto'
+import { getHashPart, setHashPart } from '@/utils/url'
 // import { Category } from '@/utils/types'
 
 const POI_SOURCE = 'poi'
@@ -193,12 +194,15 @@ export default Vue.extend({
 
       // Add new marker if a feature is selected
       if (feature) {
+        setHashPart('poi', feature.properties.metadata.PID)
         this.selectedFeatureMarker = new mapboxgl.Marker({
           scale: 1.3,
           color: '#f44336',
         })
           .setLngLat(feature.geometry.coordinates)
           .addTo(this.map)
+      } else {
+        setHashPart('poi', null)
       }
     },
 
@@ -227,6 +231,16 @@ export default Vue.extend({
       this.poiFilter = new PoiFilter()
       this.map.addControl(this.poiFilter)
       this.map.on('load', () => this.poiFilter.remove(true))
+
+      this.map.on('data', () => {
+        // Restore selected POI from URL hash
+        const poiHash = getHashPart('poi')
+        if (poiHash && !this.selectedFeature && this.features) {
+          this.selectedFeature = Object.values(this.features)
+            .flat()
+            .find((f) => f.properties.metadata.PID === poiHash)
+        }
+      })
 
       // Handle POI click
       this.map.on('click', (e) => {
