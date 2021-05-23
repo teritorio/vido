@@ -32,6 +32,7 @@ export default {
   // Global CSS (https://go.nuxtjs.dev/config-css)
   css: [
     '@fortawesome/fontawesome-svg-core/styles.css',
+    '@teritorio/font-teritorio-tourism/teritorio-tourism/teritorio-tourism.css',
     'mapbox-gl/dist/mapbox-gl.css',
   ],
 

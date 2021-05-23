@@ -9,9 +9,9 @@
   >
     <div
       class="relative flex items-center justify-center mb-2 text-white rounded-full w-14 h-14"
-      :style="{ backgroundColor: color, color: textColor }"
+      :style="{ backgroundColor: color }"
     >
-      <slot />
+      <TeritorioIcon :category-color="color" class="text-xl" :picto="picto" />
 
       <div
         v-if="selected"
@@ -35,9 +35,12 @@
 <script lang="ts">
 import Vue from 'vue'
 
-import { getContrastedTextColor } from '@/utils/picto'
+import TeritorioIcon from '@/components/TeritorioIcon/TeritorioIcon.vue'
 
 export default Vue.extend({
+  components: {
+    TeritorioIcon,
+  },
   props: {
     color: {
       type: String,
@@ -51,14 +54,13 @@ export default Vue.extend({
       type: String,
       required: true,
     },
+    picto: {
+      type: String,
+      required: true,
+    },
     selected: {
       type: Boolean,
       default: false,
-    },
-  },
-  computed: {
-    textColor() {
-      return getContrastedTextColor(this.color)
     },
   },
   methods: {
@@ -70,11 +72,6 @@ export default Vue.extend({
 </script>
 
 <style scoped>
-svg g,
-svg path {
-  fill: currentColor;
-}
-
 button:not(.selected):hover svg[data-icon='check-circle'] {
   @apply ring-gray-100;
 }
