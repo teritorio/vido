@@ -1,6 +1,6 @@
 <template>
   <div
-    class="flex max-w-xl mx-auto overflow-hidden bg-white shadow-md rounded-xl pointer-events-auto"
+    class="flex max-w-xl mx-auto overflow-hidden bg-white shadow-md pointer-events-auto rounded-xl"
     @click="() => $emit('click')"
   >
     <img
@@ -19,7 +19,14 @@
       </p>
 
       <div class="flex items-center text-sm text-gray-500 cursor-pointer">
-        <component :is="getPicto(poiMeta('icon'))" class="w-4 h-4 mr-1" />
+        <TeritorioIcon
+          :category-color="poiMeta('color')"
+          class="mr-2"
+          :picto="poiMeta('icon')"
+          :use-category-color="true"
+          :use-native-alignment="true"
+        />
+
         {{ poiMeta('label_infobulle') }}
       </div>
 
@@ -34,7 +41,7 @@
         </span>
       </p>
 
-      <div class="flex justify-between items-center mt-3">
+      <div class="flex items-center justify-between mt-3">
         <font-awesome-icon :icon="['far', 'star']" :color="poiMeta('color')" />
         <template v-if="hasFiche">
           <a :href="poiProp('teritorio:url')" target="_blank" @click.stop>
@@ -53,12 +60,11 @@
 <script lang="ts">
 import Vue from 'vue'
 
-import OpenMention from '@/components/OpenMention.vue'
-import { getPicto } from '@/utils/picto'
+import TeritorioIcon from '@/components/TeritorioIcon/TeritorioIcon.vue'
 
 export default Vue.extend({
   components: {
-    OpenMention,
+    TeritorioIcon,
   },
 
   props: {
@@ -133,8 +139,6 @@ export default Vue.extend({
   },
 
   methods: {
-    getPicto: (pictoName: string) => getPicto(pictoName),
-
     poiProp(name: String) {
       return this.poi.properties[name]
     },

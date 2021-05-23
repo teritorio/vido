@@ -23,6 +23,7 @@
     "@nuxtjs/axios": "^5.12.5",
     "@nuxtjs/pwa": "^3.3.4",
     "@nuxtjs/storybook": "^3.3.1",
+    "@teritorio/font-teritorio-tourism": "^1.1.0",
     "@teritorio/map": "^0.10.0",
     "@xstate/vue": "^0.5.0",
     "core-js": "^3.8.2",

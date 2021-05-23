@@ -1,5 +1,3 @@
-import LeisureIcon from '@/assets/icons/leisure•.svg?inline'
-
 import CategoryButton from './CategoryButton'
 
 export default {
@@ -8,12 +6,10 @@ export default {
 }
 
 const DefaultTemplate = (_, { args }) => ({
-  components: { CategoryButton, LeisureIcon },
+  components: { CategoryButton },
   props: Object.keys(args),
   template: `
-    <CategoryButton v-bind="$props" v-on="$props">
-      <LeisureIcon class="w-7 h-7" />
-    </CategoryButton>`,
+    <CategoryButton v-bind="$props" v-on="$props" />`,
 })
 
 export const Default = DefaultTemplate.bind({})
@@ -22,6 +18,7 @@ Default.args = {
   color: 'rebeccapurple',
   id: '123',
   label: 'Leisure',
+  picto: 'leisure',
   selected: false,
 }
 
@@ -31,5 +28,6 @@ Selected.args = {
   color: 'rebeccapurple',
   id: '123',
   label: 'Leisure',
+  picto: 'leisure',
   selected: true,
 }
