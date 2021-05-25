@@ -1,6 +1,9 @@
 <template>
   <div
-    :class="`flex items-center justify-center flex-shrink-0 w-${iconDim} h-${iconDim} text-white rounded-full`"
+    :class="[
+      'flex items-center justify-center flex-shrink-0 text-white rounded-full',
+      iconDim,
+    ]"
     :style="{ backgroundColor: color }"
   >
     <TeritorioIcon :category-color="color" :class="iconSize" :picto="picto" />
@@ -43,13 +46,13 @@ export default Vue.extend({
       }
       return values[this.size]
     },
-    iconDim(): number {
-      const values: { [size: string]: number } = {
-        xs: 4,
-        sm: 6,
-        md: 8,
-        lg: 10,
-        xl: 12,
+    iconDim(): string {
+      const values: { [size: string]: string } = {
+        xs: 'w-4 h-4',
+        sm: 'w-6 h-6',
+        md: 'w-8 h-8',
+        lg: 'w-10 h-10',
+        xl: 'w-12 h-12',
       }
       return values[this.size]
     },
