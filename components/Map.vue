@@ -351,7 +351,6 @@ export default Vue.extend({
         layout: {
           'text-anchor': 'top',
           'text-field': ['get', 'name'],
-          'text-font': ['Noto Sans Regular'],
           'text-max-width': 9,
           'text-offset': [0, 1.3],
           'text-padding': 2,
@@ -458,24 +457,11 @@ export default Vue.extend({
         offsets.push(total)
         total += counts[i]
       }
-      const fontSize =
-        total >= 1000 ? 22 : total >= 100 ? 20 : total >= 10 ? 18 : 16
       const r = total >= 1000 ? 50 : total >= 100 ? 32 : total >= 10 ? 24 : 18
-      const r0 = Math.round(r * 0.6)
+      const r0 = r - 5
       const w = r * 2
 
-      let html =
-        '<svg width="' +
-        w +
-        '" height="' +
-        w +
-        '" viewbox="0 0 ' +
-        w +
-        ' ' +
-        w +
-        '" text-anchor="middle" style="font-size: ' +
-        fontSize +
-        'px; display: block">'
+      let html = `<svg width="${w}" height="${w}" viewbox="0 0 ${w} ${w}" text-anchor="middle" class="cluster-donut">`
 
       for (let i = 0; i < counts.length; i++) {
         html += this.getMarkerDonutSegment(
@@ -486,20 +472,11 @@ export default Vue.extend({
           colors[i]
         )
       }
-      html +=
-        '<circle cx="' +
-        r +
-        '" cy="' +
-        r +
-        '" r="' +
-        r0 +
-        '" fill="white" /><text dominant-baseline="central" transform="translate(' +
-        r +
-        ', ' +
-        r +
-        ')">' +
-        total.toLocaleString() +
-        '</text></svg>'
+      html += `<circle cx="${r}" cy="${r}" r="${r0}" fill="white" />
+        <text dominant-baseline="central" transform="translate(${r}, ${r})">
+          ${total.toLocaleString()}
+        </text>
+      </svg>`
 
       const el = document.createElement('div')
       el.innerHTML = html
@@ -548,3 +525,9 @@ export default Vue.extend({
   },
 })
 </script>
+
+<style>
+.cluster-donut {
+  @apply text-sm leading-none font-medium block text-gray-800;
+}
+</style>

@@ -8,27 +8,27 @@
     @click="onClick"
   >
     <div
-      class="relative flex items-center justify-center mb-2 text-white rounded-full w-14 h-14"
+      class="relative flex items-center justify-center w-12 h-12 mb-2 text-white rounded-full"
       :style="{ backgroundColor: color }"
     >
-      <TeritorioIcon :category-color="color" class="text-xl" :picto="picto" />
+      <TeritorioIcon :category-color="color" class="text-2xl" :picto="picto" />
 
       <div
         v-if="selected"
-        class="absolute right-0 text-lg text-green-500 -top-1.5"
+        class="absolute -right-0.5 text-lg text-green-500 -top-1.5"
       >
         <font-awesome-icon
           icon="check-circle"
           :class="[
-            'rounded-full bg-white fill-current ring-4 transition-colors',
-            !selected && ' ring-white',
+            'rounded-full bg-white fill-current ring-2 transition-colors',
+            !selected && 'ring-white',
             selected && 'ring-gray-100',
           ]"
         />
       </div>
     </div>
 
-    <div class="text-sm">{{ label }}</div>
+    <div class="text-xs">{{ label }}</div>
   </button>
 </template>
 

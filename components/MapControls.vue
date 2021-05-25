@@ -148,18 +148,20 @@ export default Vue.extend({
 </script>
 
 <style>
-.mapboxgl-ctrl {
-  @apply space-y-3;
-
-  display: contents;
+.mapboxgl-ctrl-group {
+  @apply space-y-3 contents;
 }
 
-.mapboxgl-ctrl > button,
-.mapboxgl-ctrl > button:not(:disabled) {
+.mapboxgl-ctrl-group > button,
+.mapboxgl-ctrl-group > button:not(:disabled) {
   @apply text-sm font-bold text-gray-800 bg-white rounded-full focus:rounded-full shadow-md focus:shadow-md outline-none w-11 h-11 focus:outline-none hover:bg-gray-100 focus-visible:bg-gray-100;
 }
 
 .mapboxgl-ctrl-compass {
   @apply overflow-hidden;
+}
+
+.mapboxgl-ctrl.mapboxgl-ctrl-attrib {
+  @apply text-xs px-1 py-0.5;
 }
 </style>
