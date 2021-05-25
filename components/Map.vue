@@ -82,8 +82,8 @@ export default Vue.extend({
     pitch: number
     markers: { [id: number]: mapboxgl.Marker }
     markersOnScreen: { [id: number]: mapboxgl.Marker }
-    poiFilter: mapboxgl.Control | null
-    selectedFeature: mapboxgl.MapboxGeoJSONFeature | null
+    poiFilter: PoiFilter | null
+    selectedFeature: VidoFeature | null
     selectedFeatureMarker: mapboxgl.Marker | null
     selectedBackground: String
   } {
@@ -162,10 +162,7 @@ export default Vue.extend({
       // Add category ID into features
       Object.keys(features).forEach((categoryId) => {
         features[categoryId].forEach((feature) => {
-          if (!feature.properties) {
-            feature.properties = {}
-          }
-          feature.properties.vido_cat = categoryId
+          feature.properties.vido_cat = parseInt(categoryId, 10)
         })
       })
 
@@ -177,10 +174,14 @@ export default Vue.extend({
         this.markersOnScreen = {}
 
         // Change data
-        this.map.getSource(POI_SOURCE).setData({
-          type: 'FeatureCollection',
-          features: Object.values(features).flat(),
-        })
+        const source = this.map.getSource(POI_SOURCE)
+
+        if ('setData' in source) {
+          source.setData({
+            type: 'FeatureCollection',
+            features: Object.values(features).flat(),
+          })
+        }
       }
       // Create POI source + layer
       else {
@@ -240,18 +241,20 @@ export default Vue.extend({
   methods: {
     onMapInit(map: mapboxgl.Map) {
       this.map = map
+      const features = this.features as MenuState['features']
 
       this.poiFilter = new PoiFilter()
       this.map.addControl(this.poiFilter)
-      this.map.on('load', () => this.poiFilter.remove(true))
+      this.map.on('load', () => this.poiFilter?.remove(true))
 
       this.map.on('data', () => {
         // Restore selected POI from URL hash
         const poiHash = getHashPart('poi')
-        if (poiHash && !this.selectedFeature && this.features) {
-          this.selectedFeature = Object.values(this.features)
-            .flat()
-            .find((f) => f.properties.metadata.PID === poiHash)
+        if (poiHash && !this.selectedFeature && features) {
+          this.selectedFeature =
+            Object.values(features)
+              .flat()
+              .find((f) => f.properties?.metadata.PID === poiHash) || null
         }
       })
 
@@ -279,7 +282,7 @@ export default Vue.extend({
           features.length === 1 &&
           features[0]?.properties?.metadata.HasPopup === 'yes'
         ) {
-          this.selectedFeature = features[0]
+          this.selectedFeature = features[0] as VidoFeature
         } else {
           this.selectedFeature = null
         }
@@ -502,7 +505,7 @@ export default Vue.extend({
         return
       }
       const newMarkers: { [id: number]: mapboxgl.Marker } = {}
-      const features = this.map.querySourceFeatures(POI_SOURCE)
+      const features = this.map.querySourceFeatures(POI_SOURCE) as VidoFeature[]
 
       // for every cluster on the screen, create an HTML marker for it (if we didn't yet),
       // and add it to the map if it's not there already
@@ -522,15 +525,18 @@ export default Vue.extend({
             if (!this.map) {
               return
             }
-            this.map
-              .getSource(POI_SOURCE)
-              .getClusterExpansionZoom(id, (err: Error, zoom: number) => {
+
+            const source = this.map.getSource(POI_SOURCE)
+
+            if ('getClusterExpansionZoom' in source) {
+              source.getClusterExpansionZoom(id, (err: Error, zoom: number) => {
                 if (err) return
                 if (!this.map) {
                   return
                 }
                 this.map.easeTo({ center: coords, zoom })
               })
+            }
           })
         }
         newMarkers[id] = marker
@@ -613,7 +619,7 @@ export default Vue.extend({
 
       const el = document.createElement('div')
       el.innerHTML = html
-      return el.firstChild
+      return el.firstChild as HTMLElement
     },
 
     getMarkerDonutSegment(

@@ -1,4 +1,4 @@
-import { Style, MapboxGeoJSONFeature } from 'mapbox-gl'
+import { Style, MapboxGeoJSONFeature } from 'maplibre-gl'
 
 export interface LatLng {
   lat: number
@@ -68,6 +68,8 @@ export interface FeatureBase extends MapboxGeoJSONFeature {
     type: GeometryType
   }
   properties: {
+    [key: string]: any
+
     'addr:city': string
     'addr:housenumber': string
     'addr:postcode': string

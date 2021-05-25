@@ -119,7 +119,7 @@ export default Vue.extend({
       this.setIs3D(value !== 0)
     },
     background() {
-      setHashPart('bg', this.background)
+      setHashPart('bg', this.background || '')
       this.$emit('changeBackground', this.background)
     },
   },

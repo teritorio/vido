@@ -58,9 +58,10 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
+import Vue, { PropType } from 'vue'
 
 import TeritorioIcon from '@/components/TeritorioIcon/TeritorioIcon.vue'
+import { VidoFeature } from '@/utils/types'
 
 export default Vue.extend({
   components: {
@@ -69,7 +70,7 @@ export default Vue.extend({
 
   props: {
     poi: {
-      type: Object,
+      type: Object as PropType<VidoFeature>,
       required: true,
     },
   },
@@ -83,11 +84,11 @@ export default Vue.extend({
   },
 
   computed: {
-    hasFiche() {
+    hasFiche(): boolean {
       return this.poiMeta('hasfiche') === 'yes'
     },
 
-    address() {
+    address(): string | null {
       if (this.poiMeta('PopupAdress') !== 'yes') {
         return null
       }
@@ -102,10 +103,11 @@ export default Vue.extend({
         .join(' ')
     },
 
-    listFields() {
+    listFields(): string[] {
       if (!this.sptags) {
         return []
       }
+
       return this.poiMeta('PopupListField')
         .split(';')
         .map((f: string) => {
@@ -146,11 +148,11 @@ export default Vue.extend({
   },
 
   methods: {
-    poiProp(name: string): any {
+    poiProp(name: string) {
       return this.poi.properties[name]
     },
 
-    poiMeta(name: string): string {
+    poiMeta(name: string) {
       return this.poiProp('metadata')[name]
     },
 
