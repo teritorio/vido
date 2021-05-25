@@ -83,7 +83,7 @@ export default Vue.extend({
   data(): {
     building3d: Building3d | null
     is3D: boolean
-    background: String | null
+    background: string | null
   } {
     return {
       building3d: null,
@@ -128,7 +128,7 @@ export default Vue.extend({
   },
 
   mounted() {
-    if (getHashPart('bg') && this.backgrounds[getHashPart('bg')]) {
+    if (getHashPart('bg') && this.backgrounds[getHashPart('bg') || '']) {
       this.background = getHashPart('bg')
     } else {
       this.nextBackground()

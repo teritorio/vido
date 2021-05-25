@@ -1,6 +1,13 @@
+import { MapboxGeoJSONFeature } from 'mapbox-gl'
 import { Store } from 'vuex'
 
-import { ApiPosts, Category, OsmFeature, TisFeature } from '@/utils/types'
+import {
+  ApiPosts,
+  Category,
+  OsmFeature,
+  TisFeature,
+  VidoFeature,
+} from '@/utils/types'
 
 enum Mutation {
   SET_CONFIG = 'SET_CONFIG',
@@ -22,7 +29,9 @@ export interface State {
   }
   isLoaded: boolean
   features: {
-    [categoryId: string]: Array<OsmFeature | TisFeature>
+    [categoryId: string]: Array<
+      OsmFeature | TisFeature | VidoFeature | MapboxGeoJSONFeature
+    >
   }
 }
 

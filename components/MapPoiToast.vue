@@ -74,7 +74,9 @@ export default Vue.extend({
     },
   },
 
-  data() {
+  data(): {
+    sptags: { [key: string]: any } | null
+  } {
     return {
       sptags: null,
     }
@@ -106,24 +108,29 @@ export default Vue.extend({
       }
       return this.poiMeta('PopupListField')
         .split(';')
-        .map((f) => {
-          if (this.sptags[f] && this.sptags[f][this.poiProp(f)]) {
+        .map((f: string) => {
+          if (
+            this.sptags !== null &&
+            this.sptags[f] &&
+            this.sptags[f][this.poiProp(f)]
+          ) {
             return this.sptags[f][this.poiProp(f)]
           } else if (
+            this.sptags !== null &&
             this.sptags[f] &&
             this.poiProp(f) &&
             this.poiProp(f).includes(';')
           ) {
             return this.poiProp(f)
               .split(';')
-              .map((p) => this.sptags[f][p])
-              .filter((f) => f && f.trim().length > 0)
+              .map((p: string) => this.sptags !== null && this.sptags[f][p])
+              .filter((f: string) => f && f.trim().length > 0)
               .join(', ')
           } else {
             return this.poiProp(f)
           }
         })
-        .filter((f) => f && f.trim().length > 0)
+        .filter((f: string) => f && f.trim().length > 0)
     },
   },
 
@@ -139,11 +146,11 @@ export default Vue.extend({
   },
 
   methods: {
-    poiProp(name: String) {
+    poiProp(name: string): any {
       return this.poi.properties[name]
     },
 
-    poiMeta(name: String) {
+    poiMeta(name: string): string {
       return this.poiProp('metadata')[name]
     },
 
@@ -157,7 +164,7 @@ export default Vue.extend({
         .then((data) => (this.sptags = data))
     },
 
-    titleCase(str) {
+    titleCase(str: string) {
       const ignoredWords = ['la', 'le', 'les', 'du', 'des', 'de', 'à', 'aux']
       return str
         .toLowerCase()

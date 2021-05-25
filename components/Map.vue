@@ -59,8 +59,8 @@ import MapControls from '@/components/MapControls.vue'
 import MapPoiToast from '@/components/MapPoiToast.vue'
 import { State as MenuState } from '@/store/menu'
 import { getContrastedTextColor } from '@/utils/picto'
+import { VidoFeature, VidoMglStyle } from '@/utils/types'
 import { getHashPart, setHashPart } from '@/utils/url'
-// import { Category } from '@/utils/types'
 
 const POI_SOURCE = 'poi'
 const POI_LAYER_MARKER = 'poi-simple-marker'
@@ -80,10 +80,10 @@ export default Vue.extend({
   data(): {
     map: mapboxgl.Map | null
     pitch: number
-    markers: object
-    markersOnScreen: object
+    markers: { [id: number]: mapboxgl.Marker }
+    markersOnScreen: { [id: number]: mapboxgl.Marker }
     poiFilter: mapboxgl.Control | null
-    selectedFeature: object | null
+    selectedFeature: mapboxgl.MapboxGeoJSONFeature | null
     selectedFeatureMarker: mapboxgl.Marker | null
     selectedBackground: String
   } {
@@ -94,7 +94,7 @@ export default Vue.extend({
       markersOnScreen: {},
       poiFilter: null,
       selectedFeature: null,
-      selectedMarker: null,
+      selectedFeatureMarker: null,
       selectedBackground: 'tourism-0.9',
     }
   },
@@ -107,7 +107,7 @@ export default Vue.extend({
       zoom: 'map/zoom',
     }),
 
-    mapStyle(): string | Object {
+    mapStyle(): string | VidoMglStyle {
       switch (this.selectedBackground) {
         case 'tourism-0.9':
           return `https://vecto-dev.teritorio.xyz/styles/teritorio-tourism-0.9/style.json?key=${this.$config.TILES_TOKEN}`
@@ -161,9 +161,12 @@ export default Vue.extend({
 
       // Add category ID into features
       Object.keys(features).forEach((categoryId) => {
-        features[categoryId].forEach(
-          (feature) => (feature.properties.vido_cat = categoryId)
-        )
+        features[categoryId].forEach((feature) => {
+          if (!feature.properties) {
+            feature.properties = {}
+          }
+          feature.properties.vido_cat = categoryId
+        })
       })
 
       // Change visible data
@@ -185,7 +188,11 @@ export default Vue.extend({
       }
     },
 
-    selectedFeature(feature: Object) {
+    selectedFeature(feature: VidoFeature) {
+      if (!this.map) {
+        return
+      }
+
       // Clean-up previous marker
       if (this.selectedFeatureMarker) {
         this.selectedFeatureMarker.remove()
@@ -207,9 +214,15 @@ export default Vue.extend({
     },
 
     selectedBackground() {
+      if (!this.map) {
+        return
+      }
       this.map.setStyle(this.mapStyle)
       this.map.once('styledata', () => {
-        if (typeof this.mapStyle !== 'object' || !this.mapStyle.vido_israster) {
+        if (
+          this.poiFilter &&
+          (typeof this.mapStyle !== 'object' || !this.mapStyle.vido_israster)
+        ) {
           this.poiFilter.remove(true)
         }
         this.initPoiLayer(this.features)
@@ -244,13 +257,17 @@ export default Vue.extend({
 
       // Handle POI click
       this.map.on('click', (e) => {
+        if (!this.map) {
+          return
+        }
+
         const features = this.map.queryRenderedFeatures(e.point, {
           layers: [POI_LAYER_MARKER],
         })
 
         if (
           features.length > 0 &&
-          features[0].properties.metadata &&
+          features[0]?.properties?.metadata &&
           typeof features[0].properties.metadata === 'string'
         ) {
           features[0].properties.metadata = JSON.parse(
@@ -260,7 +277,7 @@ export default Vue.extend({
 
         if (
           features.length === 1 &&
-          features[0].properties.metadata.HasPopup === 'yes'
+          features[0]?.properties?.metadata.HasPopup === 'yes'
         ) {
           this.selectedFeature = features[0]
         } else {
@@ -275,6 +292,7 @@ export default Vue.extend({
 
     onMapRender() {
       if (
+        !this.map ||
         !this.map.getSource(POI_SOURCE) ||
         !this.map.isSourceLoaded(POI_SOURCE)
       )
@@ -296,9 +314,13 @@ export default Vue.extend({
       this.selectedBackground = background
     },
 
-    initPoiLayer(features) {
+    initPoiLayer(features: MenuState['features']) {
+      if (!this.map) {
+        return
+      }
+
       // Create cluster properties, which will contain count of features per category
-      const clusterProps = {}
+      const clusterProps: { [category: string]: object } = {}
       Object.keys(this.categories).forEach((category) => {
         clusterProps[category] = [
           '+',
@@ -328,7 +350,10 @@ export default Vue.extend({
             'match',
             ['get', 'vido_cat'],
             ...Object.entries(this.categories)
-              .map((c) => [c[0], getContrastedTextColor(c[1].metadata.color)])
+              .map((c: [string, any]) => [
+                c[0],
+                getContrastedTextColor(c[1].metadata.color),
+              ])
               .flat(),
             'white',
           ],
@@ -473,7 +498,10 @@ export default Vue.extend({
     },
 
     updateMarkers() {
-      const newMarkers = {}
+      if (!this.map) {
+        return
+      }
+      const newMarkers: { [id: number]: mapboxgl.Marker } = {}
       const features = this.map.querySourceFeatures(POI_SOURCE)
 
       // for every cluster on the screen, create an HTML marker for it (if we didn't yet),
@@ -481,20 +509,26 @@ export default Vue.extend({
       for (let i = 0; i < features.length; i++) {
         const coords = features[i].geometry.coordinates
         const props = features[i].properties
-        if (!props.cluster) continue
+        if (!props || !props.cluster) continue
         const id = props.cluster_id
 
-        let marker = this.markers[id]
+        let marker: mapboxgl.Marker = this.markers[id]
         if (!marker) {
           const el = this.createMarkerDonutChart(props)
           marker = this.markers[id] = new mapboxgl.Marker({
             element: el,
           }).setLngLat(coords)
           marker.getElement().addEventListener('click', () => {
+            if (!this.map) {
+              return
+            }
             this.map
               .getSource(POI_SOURCE)
-              .getClusterExpansionZoom(id, (err, zoom) => {
+              .getClusterExpansionZoom(id, (err: Error, zoom: number) => {
                 if (err) return
+                if (!this.map) {
+                  return
+                }
                 this.map.easeTo({ center: coords, zoom })
               })
           })
@@ -510,21 +544,23 @@ export default Vue.extend({
       this.markersOnScreen = newMarkers
     },
 
-    createMarkerDonutChart(props) {
+    createMarkerDonutChart(
+      props: mapboxgl.MapboxGeoJSONFeature['properties']
+    ): HTMLElement {
       const offsets = []
 
-      const countPerColor = {}
+      const countPerColor: { [color: string]: number } = {}
       Object.keys(this.categories)
-        .filter((categoryId) => props[categoryId] > 0)
+        .filter((categoryId) => ((props && props[categoryId]) || 0) > 0)
         .forEach((categoryId) => {
           const color = this.categories[categoryId].metadata.color
           if (countPerColor[color]) {
-            countPerColor[color] += props[categoryId]
+            countPerColor[color] += (props && props[categoryId]) || 0
           } else {
-            countPerColor[color] = props[categoryId]
+            countPerColor[color] = (props && props[categoryId]) || 0
           }
         })
-      const counts = Object.values(countPerColor)
+      const counts: number[] = Object.values(countPerColor)
       const colors = Object.keys(countPerColor)
 
       let total = 0
@@ -580,7 +616,13 @@ export default Vue.extend({
       return el.firstChild
     },
 
-    getMarkerDonutSegment(start, end, r, r0, color) {
+    getMarkerDonutSegment(
+      start: number,
+      end: number,
+      r: number,
+      r0: number,
+      color: string
+    ) {
       if (end - start === 1) end -= 0.00001
       const a0 = 2 * Math.PI * (start - 0.25)
       const a1 = 2 * Math.PI * (end - 0.25)
