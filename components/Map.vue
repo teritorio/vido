@@ -34,7 +34,7 @@
       />
 
       <div
-        class="absolute flex justify-center inset-x-3 bottom-3 pointer-events-none"
+        class="absolute flex justify-center pointer-events-none inset-x-3 bottom-3"
       >
         <MapPoiToast
           v-if="selectedFeature"
@@ -50,8 +50,8 @@
 <script lang="ts">
 import { PoiFilter } from '@teritorio/map'
 import throttle from 'lodash.throttle'
-import mapboxgl from 'mapbox-gl'
 import Mapbox from 'mapbox-gl-vue'
+import mapboxgl from 'maplibre-gl'
 import Vue from 'vue'
 import { mapGetters } from 'vuex'
 

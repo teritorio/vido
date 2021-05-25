@@ -33,7 +33,7 @@ export default {
   css: [
     '@fortawesome/fontawesome-svg-core/styles.css',
     '@teritorio/font-teritorio-tourism/teritorio-tourism/teritorio-tourism.css',
-    'mapbox-gl/dist/mapbox-gl.css',
+    'maplibre-gl/dist/maplibre-gl.css',
   ],
 
   purgeCSS: {
@@ -86,7 +86,7 @@ export default {
   build: {
     plugins: [
       new webpack.ProvidePlugin({
-        mapboxgl: 'mapbox-gl',
+        mapboxgl: 'maplibre-gl',
       }),
     ],
   },
