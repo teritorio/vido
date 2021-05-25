@@ -53,7 +53,7 @@ import throttle from 'lodash.throttle'
 import mapboxgl from 'mapbox-gl'
 import Mapbox from 'mapbox-gl-vue'
 import Vue from 'vue'
-import { mapGetters } from 'vuex'
+import { mapGetters, mapActions } from 'vuex'
 
 import MapControls from '@/components/MapControls.vue'
 import MapPoiToast from '@/components/MapPoiToast.vue'
@@ -153,7 +153,10 @@ export default Vue.extend({
   },
 
   watch: {
-    features(features: MenuState['features']) {
+    features(
+      features: MenuState['features'],
+      oldFeatures: MenuState['features']
+    ) {
       if (!this.map) {
         return
       }
@@ -181,6 +184,19 @@ export default Vue.extend({
       // Create POI source + layer
       else {
         this.initPoiLayer(features)
+      }
+
+      // Zoom back to whole region if categories changed
+      if (
+        JSON.stringify(Object.keys(features)) !==
+        JSON.stringify(Object.keys(oldFeatures))
+      ) {
+        this.resetMapview().then(() => {
+          this.map?.flyTo({
+            center: [this.center.lng, this.center.lat],
+            zoom: this.zoom.default,
+          })
+        })
       }
     },
 
@@ -221,6 +237,10 @@ export default Vue.extend({
   },
 
   methods: {
+    ...mapActions({
+      resetMapview: 'map/resetMapview',
+    }),
+
     onMapInit(map: mapboxgl.Map) {
       this.map = map
 

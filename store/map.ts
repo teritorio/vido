@@ -4,6 +4,7 @@ import { LatLng, Pitch, ZoomLevel } from '@/utils/types'
 
 enum Mutation {
   SET_CONFIG = 'SET_CONFIG',
+  RESET_MAPVIEW = 'RESET_MAPVIEW',
 }
 
 interface FetchConfigPayload {
@@ -22,20 +23,27 @@ interface State {
   }
 }
 
-export const state = (): State | null => ({
-  // attribution: {},
+const getInitialMapview: Function = () => ({
   center: {
-    lat: 43.482489,
-    lng: -1.559646,
+    lat: 44.0122,
+    lng: -0.6984,
   },
-  isLoaded: false,
-  pitch: 0,
   zoom: {
-    default: 16,
+    default: 8,
     max: 20,
     min: 1,
   },
 })
+
+export const state = (): State | null =>
+  Object.assign(
+    {
+      // attribution: {},
+      isLoaded: false,
+      pitch: 0,
+    },
+    getInitialMapview()
+  )
 
 export const mutations = {
   [Mutation.SET_CONFIG](state: State, payload: State) {
@@ -45,6 +53,10 @@ export const mutations = {
     state.zoom = payload.zoom
 
     state.isLoaded = true
+  },
+  [Mutation.RESET_MAPVIEW](state: State) {
+    state.center = getInitialMapview().center
+    state.zoom = getInitialMapview().zoom
   },
 }
 
@@ -62,6 +74,9 @@ export const actions = {
         error
       )
     }
+  },
+  resetMapview(store: Store<State>) {
+    store.commit(Mutation.RESET_MAPVIEW)
   },
 }
 
