@@ -48,7 +48,7 @@
           aria-label="Changer le fond de carte"
           :title="`Changer le fond de carte (actuellement ${backgrounds[background]})`"
           type="button"
-          class="text-sm font-bold rounded-full shadow-md w-11 h-11 outline-none focus:outline-none bg-white text-gray-800 hover:bg-gray-100 focus-visible:bg-gray-100"
+          class="text-sm font-bold text-gray-800 bg-white rounded-full shadow-md outline-none w-11 h-11 focus:outline-none hover:bg-gray-100 focus-visible:bg-gray-100"
           @click="changeBackground"
         >
           <font-awesome-icon icon="map" class="text-gray-800" size="sm" />
@@ -60,7 +60,7 @@
 
 <script lang="ts">
 import { Building3d } from '@teritorio/map'
-import mapboxgl from 'mapbox-gl'
+import mapboxgl from 'maplibre-gl'
 import Vue from 'vue'
 
 export default Vue.extend({
