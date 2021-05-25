@@ -57,8 +57,8 @@ import { mapGetters } from 'vuex'
 
 import MapControls from '@/components/MapControls.vue'
 import MapPoiToast from '@/components/MapPoiToast.vue'
+import TeritorioIconBadge from '@/components/TeritorioIcon/TeritorioIconBadge.vue'
 import { State as MenuState } from '@/store/menu'
-import { getContrastedTextColor } from '@/utils/picto'
 // import { Category } from '@/utils/types'
 
 const POI_SOURCE = 'poi'
@@ -227,32 +227,7 @@ export default Vue.extend({
       this.poiFilter = new PoiFilter()
       this.map.addControl(this.poiFilter)
       this.map.on('load', () => this.poiFilter.remove(true))
-
-      // Handle POI click
-      this.map.on('click', (e) => {
-        const features = this.map.queryRenderedFeatures(e.point, {
-          layers: [POI_LAYER_MARKER],
-        })
-
-        if (
-          features.length > 0 &&
-          features[0].properties.metadata &&
-          typeof features[0].properties.metadata === 'string'
-        ) {
-          features[0].properties.metadata = JSON.parse(
-            features[0].properties.metadata
-          )
-        }
-
-        if (
-          features.length === 1 &&
-          features[0].properties.metadata.HasPopup === 'yes'
-        ) {
-          this.selectedFeature = features[0]
-        } else {
-          this.selectedFeature = null
-        }
-      })
+      this.map.on('click', () => (this.selectedFeature = null))
     },
 
     onMapPitchEnd(map: mapboxgl.Map) {
@@ -310,14 +285,6 @@ export default Vue.extend({
         source: POI_SOURCE,
         filter: ['!=', 'cluster', true],
         paint: {
-          'icon-color': [
-            'match',
-            ['get', 'vido_cat'],
-            ...Object.entries(this.categories)
-              .map((c) => [c[0], getContrastedTextColor(c[1].metadata.color)])
-              .flat(),
-            'white',
-          ],
           'text-color': [
             'match',
             [
@@ -362,89 +329,6 @@ export default Vue.extend({
           'text-opacity': ['interpolate', ['linear'], ['zoom'], 14, 0, 15, 1],
         },
         layout: {
-          'icon-image': [
-            'concat',
-            [
-              'at',
-              0,
-              [
-                'array',
-                ['get', 'tourism_style_class', ['object', ['get', 'metadata']]],
-              ],
-            ],
-            [
-              'case',
-              [
-                '>=',
-                [
-                  'length',
-                  [
-                    'array',
-                    [
-                      'get',
-                      'tourism_style_class',
-                      ['object', ['get', 'metadata']],
-                    ],
-                  ],
-                ],
-                2,
-              ],
-              [
-                'concat',
-                '-',
-                [
-                  'at',
-                  1,
-                  [
-                    'array',
-                    [
-                      'get',
-                      'tourism_style_class',
-                      ['object', ['get', 'metadata']],
-                    ],
-                  ],
-                ],
-              ],
-              '',
-            ],
-            [
-              'case',
-              [
-                '>=',
-                [
-                  'length',
-                  [
-                    'array',
-                    [
-                      'get',
-                      'tourism_style_class',
-                      ['object', ['get', 'metadata']],
-                    ],
-                  ],
-                ],
-                3,
-              ],
-              [
-                'concat',
-                '-',
-                [
-                  'at',
-                  2,
-                  [
-                    'array',
-                    [
-                      'get',
-                      'tourism_style_class',
-                      ['object', ['get', 'metadata']],
-                    ],
-                  ],
-                ],
-              ],
-              '',
-            ],
-            '⬤',
-          ],
-          'icon-size': 1,
           'text-anchor': 'top',
           'text-field': ['get', 'name'],
           'text-font': ['Noto Sans Regular'],
@@ -467,27 +351,63 @@ export default Vue.extend({
       for (let i = 0; i < features.length; i++) {
         const coords = features[i].geometry.coordinates
         const props = features[i].properties
-        if (!props.cluster) continue
-        const id = props.cluster_id
+        let id: string
+        let marker: mapboxgl.Marker | null = null
+        if (props && props.cluster) {
+          id = 'c' + props.cluster_id
+          marker = this.markers[id]
+          if (!marker) {
+            const el = this.createMarkerDonutChart(props)
+            marker = this.markers[id] = new mapboxgl.Marker({
+              element: el,
+            }).setLngLat(coords)
+            el.addEventListener('click', (e) => {
+              e.stopPropagation()
+              this.map
+                .getSource(POI_SOURCE)
+                .getClusterExpansionZoom(props.cluster_id, (err, zoom) => {
+                  if (err) return
+                  this.map.easeTo({ center: coords, zoom })
+                })
+            })
+          }
+        } else if (props) {
+          if (typeof props.metadata === 'string') {
+            props.metadata = JSON.parse(props.metadata)
+          }
+          id = 'm' + props.metadata.PID
+          marker = this.markers[id]
+          if (!marker) {
+            // Marker
+            const el: HTMLElement = document.createElement('div')
+            el.classList.add('mapboxgl-marker')
+            marker = this.markers[id] = new mapboxgl.Marker({
+              element: el,
+            }).setLngLat(coords)
 
-        let marker = this.markers[id]
-        if (!marker) {
-          const el = this.createMarkerDonutChart(props)
-          marker = this.markers[id] = new mapboxgl.Marker({
-            element: el,
-          }).setLngLat(coords)
-          marker.getElement().addEventListener('click', () => {
-            this.map
-              .getSource(POI_SOURCE)
-              .getClusterExpansionZoom(id, (err, zoom) => {
-                if (err) return
-                this.map.easeTo({ center: coords, zoom })
+            // Teritorio badge
+            const instance = new TeritorioIconBadge({
+              propsData: {
+                color: props.metadata.color,
+                picto: props.metadata.icon,
+              },
+            }).$mount()
+            el.appendChild(instance.$el)
+
+            // Click handler
+            if (props.metadata.HasPopup === 'yes') {
+              el.addEventListener('click', (e) => {
+                e.stopPropagation()
+                this.selectedFeature = features[i]
               })
-          })
+            }
+          }
         }
-        newMarkers[id] = marker
 
-        if (!this.markersOnScreen[id]) marker.addTo(this.map)
+        if (marker) {
+          newMarkers[id] = marker
+          if (!this.markersOnScreen[id]) marker.addTo(this.map)
+        }
       }
       // for every marker we've added previously, remove those that are no longer visible
       for (const id in this.markersOnScreen) {
@@ -496,7 +416,7 @@ export default Vue.extend({
       this.markersOnScreen = newMarkers
     },
 
-    createMarkerDonutChart(props) {
+    createMarkerDonutChart(props): HTMLElement {
       const offsets = []
 
       const countPerColor = {}
@@ -525,7 +445,7 @@ export default Vue.extend({
       const w = r * 2
 
       let html =
-        '<div><svg width="' +
+        '<svg width="' +
         w +
         '" height="' +
         w +
@@ -559,11 +479,11 @@ export default Vue.extend({
         r +
         ')">' +
         total.toLocaleString() +
-        '</text></svg></div>'
+        '</text></svg>'
 
       const el = document.createElement('div')
       el.innerHTML = html
-      return el.firstChild
+      return el
     },
 
     getMarkerDonutSegment(start, end, r, r0, color) {

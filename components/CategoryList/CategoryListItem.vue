@@ -4,12 +4,7 @@
     @click="onClick"
   >
     <div class="flex items-center space-x-4">
-      <div
-        class="flex items-center justify-center flex-shrink-0 w-10 h-10 text-white rounded-full"
-        :style="{ backgroundColor: color }"
-      >
-        <TeritorioIcon :category-color="color" class="text-lg" :picto="picto" />
-      </div>
+      <TeritorioIconBadge :color="color" :picto="picto" size="lg" />
 
       <div class="text-left">{{ label }}</div>
     </div>
@@ -37,11 +32,11 @@
 <script lang="ts">
 import Vue from 'vue'
 
-import TeritorioIcon from '@/components/TeritorioIcon/TeritorioIcon.vue'
+import TeritorioIconBadge from '@/components/TeritorioIcon/TeritorioIconBadge.vue'
 
 export default Vue.extend({
   components: {
-    TeritorioIcon,
+    TeritorioIconBadge,
   },
   props: {
     color: {
