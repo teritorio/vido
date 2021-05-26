@@ -191,10 +191,12 @@ export default Vue.extend({
         this.initPoiLayer(features)
       }
 
-      // Zoom back to whole region if categories changed
+      // Zoom back to whole region if a new category is selected
+      const oldCategories: string[] = Object.keys(oldFeatures)
+      const newCategories: string[] = Object.keys(features)
       if (
-        JSON.stringify(Object.keys(features)) !==
-        JSON.stringify(Object.keys(oldFeatures))
+        JSON.stringify(newCategories) !== JSON.stringify(oldCategories) &&
+        newCategories.find((c) => !oldCategories.includes(c))
       ) {
         this.resetMapview().then(() => {
           this.map?.flyTo({
