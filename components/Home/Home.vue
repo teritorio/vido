@@ -53,6 +53,7 @@ import SearchHeader from '@/components/SearchHeader.vue'
 import SelectedSubCategoriesAside from '@/components/SelectedSubCategoriesAside.vue'
 import SubCategoryHeader from '@/components/SubCategoryHeader.vue'
 import { Category } from '@/utils/types'
+import { setHashPart } from '@/utils/url'
 
 import {
   HomeContext,
@@ -160,6 +161,10 @@ export default Vue.extend({
       .onTransition((state) => {
         this.current = state
         this.context = state.context
+
+        if (typeof location !== 'undefined') {
+          setHashPart('cat', this.context.selectedSubCategoriesIds.join('.'))
+        }
       })
       .start()
   },

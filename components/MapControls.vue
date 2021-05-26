@@ -49,7 +49,7 @@
           :title="`Changer le fond de carte (actuellement ${backgrounds[background]})`"
           type="button"
           class="text-sm font-bold text-gray-800 bg-white rounded-full shadow-md outline-none w-11 h-11 focus:outline-none hover:bg-gray-100 focus-visible:bg-gray-100"
-          @click="changeBackground"
+          @click="nextBackground"
         >
           <font-awesome-icon icon="map" class="text-gray-800" size="sm" />
         </button>
@@ -63,6 +63,8 @@ import { Building3d } from '@teritorio/map'
 import mapboxgl from 'maplibre-gl'
 import Vue from 'vue'
 
+import { getHashPart, setHashPart } from '@/utils/url'
+
 export default Vue.extend({
   props: {
     map: {
@@ -75,12 +77,13 @@ export default Vue.extend({
     },
     backgrounds: {
       type: Object,
+      default: null,
     },
   },
   data(): {
     building3d: Building3d | null
     is3D: boolean
-    background: String | null
+    background: string | null
   } {
     return {
       building3d: null,
@@ -115,11 +118,23 @@ export default Vue.extend({
 
       this.setIs3D(value !== 0)
     },
+    background() {
+      setHashPart('bg', this.background || '')
+      this.$emit('changeBackground', this.background)
+    },
   },
   created() {
     this.setIs3D(this.pitch !== 0)
-    this.changeBackground()
   },
+
+  mounted() {
+    if (getHashPart('bg') && this.backgrounds[getHashPart('bg') || '']) {
+      this.background = getHashPart('bg')
+    } else {
+      this.nextBackground()
+    }
+  },
+
   methods: {
     setIs3D(value: boolean) {
       this.is3D = value
@@ -135,13 +150,12 @@ export default Vue.extend({
         this.setIs3D(!this.is3D)
       }
     },
-    changeBackground() {
+    nextBackground() {
       const backs = Object.keys(this.backgrounds)
       const lastId = this.background
         ? backs.findIndex((b) => b === this.background)
         : -1
       this.background = backs[(lastId + 1) % backs.length]
-      this.$emit('changeBackground', this.background)
     },
   },
 })

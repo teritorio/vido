@@ -1,6 +1,6 @@
 import { Store } from 'vuex'
 
-import { ApiPosts, Category, OsmFeature, TisFeature } from '@/utils/types'
+import { ApiPosts, Category, VidoFeature } from '@/utils/types'
 
 enum Mutation {
   SET_CONFIG = 'SET_CONFIG',
@@ -22,7 +22,7 @@ export interface State {
   }
   isLoaded: boolean
   features: {
-    [categoryId: string]: Array<OsmFeature | TisFeature>
+    [categoryId: string]: VidoFeature[]
   }
 }
 
@@ -88,8 +88,10 @@ export const actions = {
         const categoryId = categoryIds[index]
 
         features[categoryId] = [
-          ...(post.osm?.[0].FeaturesCollection.features || []),
-          ...(post.tis?.[0].FeaturesCollection.features || []),
+          ...((post.osm?.[0].FeaturesCollection.features ||
+            []) as VidoFeature[]),
+          ...((post.tis?.[0].FeaturesCollection.features ||
+            []) as VidoFeature[]),
         ]
       })
 

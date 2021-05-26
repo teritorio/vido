@@ -1,3 +1,5 @@
+import { Style, MapboxGeoJSONFeature } from 'maplibre-gl'
+
 export interface LatLng {
   lat: number
   lng: number
@@ -59,13 +61,15 @@ export type GeometryType = 'Point'
 
 export type OsmPoiType = 'node' | 'way' | 'relation'
 
-export interface FeatureBase {
+export interface FeatureBase extends MapboxGeoJSONFeature {
   // eslint-disable-next-line camelcase
   geometry: {
     coordinates: TupleLatLng
     type: GeometryType
   }
   properties: {
+    [key: string]: any
+
     'addr:city': string
     'addr:housenumber': string
     'addr:postcode': string
@@ -156,6 +160,13 @@ export type TisFeature = FeatureBase & {
   }
 }
 
+export type VidoFeature = (TisFeature | OsmFeature) & {
+  properties: {
+    // eslint-disable-next-line camelcase
+    vido_cat: number | null
+  }
+}
+
 export interface ApiPosts {
   osm?: Array<{
     FeaturesCollection: {
@@ -169,4 +180,9 @@ export interface ApiPosts {
       type: 'FeatureCollection'
     }
   }>
+}
+
+export type VidoMglStyle = Style & {
+  // eslint-disable-next-line camelcase
+  vido_israster: boolean
 }
