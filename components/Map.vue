@@ -59,7 +59,7 @@ import MapControls from '@/components/MapControls.vue'
 import MapPoiToast from '@/components/MapPoiToast.vue'
 import TeritorioIconBadge from '@/components/TeritorioIcon/TeritorioIconBadge.vue'
 import { State as MenuState } from '@/store/menu'
-import { VidoFeature, VidoMglStyle } from '@/utils/types'
+import { VidoFeature, VidoMglStyle, TupleLatLng } from '@/utils/types'
 import { getHashPart, setHashPart } from '@/utils/url'
 
 const POI_SOURCE = 'poi'
@@ -86,6 +86,7 @@ export default Vue.extend({
     selectedFeature: VidoFeature | null
     selectedFeatureMarker: mapboxgl.Marker | null
     selectedBackground: String
+    featuresCoordinates: { [id: string]: TupleLatLng }
   } {
     return {
       map: null,
@@ -96,6 +97,7 @@ export default Vue.extend({
       selectedFeature: null,
       selectedFeatureMarker: null,
       selectedBackground: 'tourism-0.9',
+      featuresCoordinates: {},
     }
   },
 
@@ -166,6 +168,8 @@ export default Vue.extend({
       Object.keys(features).forEach((categoryId) => {
         features[categoryId].forEach((feature) => {
           feature.properties.vido_cat = parseInt(categoryId, 10)
+          this.featuresCoordinates[feature.properties.metadata.PID] =
+            feature.geometry.coordinates
         })
       })
 
@@ -225,7 +229,7 @@ export default Vue.extend({
           scale: 1.3,
           color: '#f44336',
         })
-          .setLngLat(feature.geometry.coordinates)
+          .setLngLat(this.featuresCoordinates[feature.properties.metadata.PID])
           .addTo(this.map)
       } else {
         setHashPart('poi', null)
@@ -450,7 +454,7 @@ export default Vue.extend({
             el.classList.add('mapboxgl-marker')
             marker = this.markers[id] = new mapboxgl.Marker({
               element: el,
-            }).setLngLat(coords)
+            }).setLngLat(this.featuresCoordinates[props.metadata.PID]) // Using this to avoid misplaced marker
 
             // Teritorio badge
             const instance = new TeritorioIconBadge({
