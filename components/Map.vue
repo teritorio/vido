@@ -59,7 +59,7 @@ import MapControls from '@/components/MapControls.vue'
 import MapPoiToast from '@/components/MapPoiToast.vue'
 import TeritorioIconBadge from '@/components/TeritorioIcon/TeritorioIconBadge.vue'
 import { State as MenuState } from '@/store/menu'
-import { VidoFeature, VidoMglStyle, TupleLatLng } from '@/utils/types'
+import { VidoFeature, VidoMglStyle, TupleLatLng, Mode } from '@/utils/types'
 import { getHashPart, setHashPart } from '@/utils/url'
 
 const POI_SOURCE = 'poi'
@@ -107,7 +107,12 @@ export default Vue.extend({
       center: 'map/center',
       features: 'menu/features',
       zoom: 'map/zoom',
+      mode: 'site/mode',
     }),
+
+    isModeExplorer() {
+      return this.mode === Mode.EXPLORER
+    },
 
     mapStyle(): string | VidoMglStyle {
       switch (this.selectedBackground) {
@@ -224,12 +229,15 @@ export default Vue.extend({
 
       // Add new marker if a feature is selected
       if (feature) {
-        setHashPart('poi', feature.properties.metadata.PID)
+        setHashPart('poi', feature.properties.metadata?.PID)
         this.selectedFeatureMarker = new mapboxgl.Marker({
           scale: 1.3,
           color: '#f44336',
         })
-          .setLngLat(this.featuresCoordinates[feature.properties.metadata.PID])
+          .setLngLat(
+            this.featuresCoordinates[feature.properties.metadata?.PID] ||
+              feature.geometry.coordinates
+          )
           .addTo(this.map)
       } else {
         setHashPart('poi', null)
@@ -244,12 +252,24 @@ export default Vue.extend({
       this.map.once('styledata', () => {
         if (
           this.poiFilter &&
-          (typeof this.mapStyle !== 'object' || !this.mapStyle.vido_israster)
+          (typeof this.mapStyle !== 'object' || !this.mapStyle.vido_israster) &&
+          !this.isModeExplorer
         ) {
           this.poiFilter.remove(true)
         }
         this.initPoiLayer(this.features)
       })
+    },
+
+    mode() {
+      switch (this.mode) {
+        case Mode.EXPLORER:
+          this.poiFilter.reset()
+          break
+        case Mode.BROWSER:
+          this.poiFilter.remove(true)
+          break
+      }
     },
   },
 
@@ -271,8 +291,23 @@ export default Vue.extend({
 
       this.poiFilter = new PoiFilter()
       this.map.addControl(this.poiFilter)
-      this.map.on('load', () => this.poiFilter?.remove(true))
+      this.map.on('load', () => {
+        if (!this.isModeExplorer) {
+          this.poiFilter?.remove(true)
+        }
+      })
       this.map.on('click', () => (this.selectedFeature = null))
+
+      // Listen to click on POI from vector tiles (explorer mode)
+      this.map.on('click', 'poi-level-1', (e: Event) => {
+        this.selectedFeature = e.features.pop()
+      })
+      this.map.on('click', 'poi-level-2', (e: Event) => {
+        this.selectedFeature = e.features.pop()
+      })
+      this.map.on('click', 'poi-level-3', (e: Event) => {
+        this.selectedFeature = e.features.pop()
+      })
 
       this.map.on('data', () => {
         // Restore selected POI from URL hash

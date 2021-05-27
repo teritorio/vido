@@ -51,7 +51,31 @@
           class="text-sm font-bold text-gray-800 bg-white rounded-full shadow-md outline-none w-11 h-11 focus:outline-none hover:bg-gray-100 focus-visible:bg-gray-100"
           @click="nextBackground"
         >
-          <font-awesome-icon icon="map" class="text-gray-800" size="sm" />
+          <font-awesome-icon icon="map" class="text-gray-800" size="lg" />
+        </button>
+
+        <button
+          v-if="map"
+          aria-label="Mode Explore"
+          title="Basculer en mode Explore"
+          type="button"
+          :class="[
+            'text-sm font-bold rounded-full shadow-md w-11 h-11 outline-none focus:outline-none ',
+            isModeExplorer &&
+              'bg-blue-500 hover:bg-blue-400 focus-visible:bg-blue-400',
+            !isModeExplorer &&
+              'bg-white hover:bg-gray-100 focus-visible:bg-gray-100',
+          ]"
+          @click="toggleMode"
+        >
+          <font-awesome-icon
+            icon="eye"
+            :class="[
+              isModeExplorer && 'text-white',
+              !isModeExplorer && 'text-gray-800',
+            ]"
+            size="lg"
+          />
         </button>
       </div>
     </div>
@@ -62,7 +86,9 @@
 import { Building3d } from '@teritorio/map'
 import mapboxgl from 'maplibre-gl'
 import Vue from 'vue'
+import { mapGetters } from 'vuex'
 
+import { Mode } from '@/utils/types'
 import { getHashPart, setHashPart } from '@/utils/url'
 
 export default Vue.extend({
@@ -91,6 +117,17 @@ export default Vue.extend({
       background: null,
     }
   },
+
+  computed: {
+    ...mapGetters({
+      mode: 'site/mode',
+    }),
+
+    isModeExplorer() {
+      return this.mode === Mode.EXPLORER
+    },
+  },
+
   watch: {
     map(value, oldValue) {
       if (!oldValue && value) {
@@ -123,6 +160,7 @@ export default Vue.extend({
       this.$emit('changeBackground', this.background)
     },
   },
+
   created() {
     this.setIs3D(this.pitch !== 0)
   },
@@ -156,6 +194,12 @@ export default Vue.extend({
         ? backs.findIndex((b) => b === this.background)
         : -1
       this.background = backs[(lastId + 1) % backs.length]
+    },
+    toggleMode() {
+      this.$store.dispatch(
+        'site/setMode',
+        this.isModeExplorer ? Mode.BROWSER : Mode.EXPLORER
+      )
     },
   },
 })

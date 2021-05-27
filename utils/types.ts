@@ -186,3 +186,8 @@ export type VidoMglStyle = Style & {
   // eslint-disable-next-line camelcase
   vido_israster: boolean
 }
+
+export enum Mode {
+  BROWSER = 'BROWSER', // User browses by category
+  EXPLORER = 'EXPLORER', // User explores around
+}

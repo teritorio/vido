@@ -24,6 +24,7 @@
     </div>
 
     <HeaderRootCategories
+      v-if="showCategories"
       class="flex-1 pointer-events-auto"
       :highlighted-categories="highlightedCategories"
       :non-highlighted-categories="nonHighlightedCategories"
@@ -58,6 +59,10 @@ export default Vue.extend({
     siteName: {
       type: String,
       required: true,
+    },
+    showCategories: {
+      type: Boolean,
+      default: true,
     },
   },
   methods: {

@@ -12,12 +12,13 @@
           :logo-url="logoUrl"
           :non-highlighted-categories="nonHighlightedRootCategories"
           :site-name="siteName"
+          :show-categories="!isModeExplorer"
           @category-click="onRootCategoryClick"
           @search-click="goToSearch"
         />
 
         <SubCategoryHeader
-          v-if="current.matches(states.SubCategories)"
+          v-if="!isModeExplorer && current.matches(states.SubCategories)"
           :categories="context.selectedRootCategory.subCategories"
           :is-sub-category-selected="isSubCategorySelected"
           @category-click="onSubCategoryClick"
@@ -33,7 +34,7 @@
       </transition>
 
       <SelectedSubCategoriesAside
-        v-if="selectedSubCategories.length"
+        v-if="!isModeExplorer && selectedSubCategories.length"
         :categories="selectedSubCategories"
         :is-sub-category-selected="isSubCategorySelected"
       />
@@ -52,7 +53,7 @@ import Map from '@/components/Map.vue'
 import SearchHeader from '@/components/SearchHeader.vue'
 import SelectedSubCategoriesAside from '@/components/SelectedSubCategoriesAside.vue'
 import SubCategoryHeader from '@/components/SubCategoryHeader.vue'
-import { Category } from '@/utils/types'
+import { Category, Mode } from '@/utils/types'
 import { setHashPart } from '@/utils/url'
 
 import {
@@ -141,6 +142,7 @@ export default Vue.extend({
       nonHighlightedRootCategories: 'menu/nonHighlightedRootCategories',
       siteInfos: 'site/infos',
       subCategories: 'menu/subCategories',
+      mode: 'site/mode',
     }),
     logoUrl() {
       return this.siteInfos('fr')?.logo || ''
@@ -154,6 +156,9 @@ export default Vue.extend({
     },
     siteName() {
       return this.siteInfos('fr')?.name || ''
+    },
+    isModeExplorer() {
+      return this.mode === Mode.EXPLORER
     },
   },
   created() {

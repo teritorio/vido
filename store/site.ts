@@ -1,9 +1,10 @@
 import { Store } from 'vuex'
 
-import { SiteInfos } from '@/utils/types'
+import { SiteInfos, Mode } from '@/utils/types'
 
 enum Mutation {
   SET_CONFIG = 'SET_CONFIG',
+  SET_MODE = 'SET_MODE',
 }
 
 interface FetchConfigPayload {
@@ -13,11 +14,13 @@ interface FetchConfigPayload {
 interface State {
   infos: SiteInfos
   isLoaded: boolean
+  mode: Mode
 }
 
 export const state = (): State | null => ({
   infos: {},
   isLoaded: false,
+  mode: Mode.BROWSER,
 })
 
 export const mutations = {
@@ -25,6 +28,10 @@ export const mutations = {
     state.infos = payload
 
     state.isLoaded = true
+  },
+
+  [Mutation.SET_MODE](state: State, mode: Mode) {
+    state.mode = mode
   },
 }
 
@@ -43,10 +50,15 @@ export const actions = {
       )
     }
   },
+
+  setMode(store: Store<State>, mode: Mode) {
+    store.commit(Mutation.SET_MODE, mode)
+  },
 }
 
 export const getters = {
   all: (state: State) => state,
   infos: (state: State) => (lang: string) => state.infos[lang],
   isLoaded: (state: State) => state.isLoaded,
+  mode: (state: State) => state.mode,
 }

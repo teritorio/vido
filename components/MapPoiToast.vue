@@ -13,21 +13,21 @@
     <div class="p-8">
       <p
         class="block text-xl font-semibold leading-tight cursor-pointer"
-        :style="'color:' + poiMeta('color')"
+        :style="'color:' + color"
       >
-        {{ poi.properties.name || poiMeta('label_infobulle') }}
+        {{ name }}
       </p>
 
       <div class="flex items-center text-sm text-gray-500 cursor-pointer">
         <TeritorioIcon
-          :category-color="poiMeta('color')"
+          :category-color="color"
           class="mr-2"
-          :picto="poiMeta('icon')"
+          :picto="icon"
           :use-category-color="true"
           :use-native-alignment="true"
         />
 
-        {{ poiMeta('label_infobulle') }}
+        {{ category }}
       </div>
 
       <p class="mt-2">
@@ -42,13 +42,10 @@
       </p>
 
       <div class="flex items-center justify-between mt-3">
-        <font-awesome-icon :icon="['far', 'star']" :color="poiMeta('color')" />
+        <font-awesome-icon :icon="['far', 'star']" :color="color" />
         <template v-if="hasFiche">
           <a :href="poiProp('teritorio:url')" target="_blank" @click.stop>
-            <font-awesome-icon
-              icon="external-link-alt"
-              :color="poiMeta('color')"
-            />
+            <font-awesome-icon icon="external-link-alt" :color="color" />
             Détail
           </a>
         </template>
@@ -58,6 +55,7 @@
 </template>
 
 <script lang="ts">
+import { MapboxGeoJSONFeature } from 'maplibre-gl'
 import Vue, { PropType } from 'vue'
 
 import TeritorioIcon from '@/components/TeritorioIcon/TeritorioIcon.vue'
@@ -70,7 +68,7 @@ export default Vue.extend({
 
   props: {
     poi: {
-      type: Object as PropType<VidoFeature>,
+      type: Object as PropType<VidoFeature | MapboxGeoJSONFeature>,
       required: true,
     },
   },
@@ -86,6 +84,40 @@ export default Vue.extend({
   computed: {
     hasFiche(): boolean {
       return this.poiMeta('hasfiche') === 'yes'
+    },
+
+    name(): string {
+      return this.poi.properties?.name || this.poiMeta('label_infobulle')
+    },
+
+    color(): string | null {
+      if (this.poiMeta('color')) {
+        return this.poiMeta('color')
+      } else if (this.poi && this.poi.layer && this.poi.layer.paint) {
+        const tc = this.poi.layer.paint['text-color']
+        return `rgba(${Math.round(tc.r * 255).toFixed(0)}, ${Math.round(
+          tc.g * 255
+        ).toFixed(0)}, ${Math.round(tc.b * 255).toFixed(0)}, ${tc.a})`
+      } else {
+        return null
+      }
+    },
+
+    icon(): string {
+      if (this.poiMeta('icon')) {
+        return this.poiMeta('icon')
+      } else if (this.poi.layer?.layout['icon-image']?.name) {
+        return (
+          'teritorio teritorio-tourism-' +
+          this.poi.layer?.layout['icon-image']?.name.replace(/[•◯⬤]/g, '')
+        )
+      } else {
+        return ''
+      }
+    },
+
+    category(): string {
+      return this.poiMeta('label_infobulle') || this.poi.properties?.class
     },
 
     address(): string | null {
@@ -108,7 +140,7 @@ export default Vue.extend({
         return []
       }
 
-      return this.poiMeta('PopupListField')
+      return (this.poiMeta('PopupListField') || '')
         .split(';')
         .map((f: string) => {
           if (
@@ -153,10 +185,13 @@ export default Vue.extend({
     },
 
     poiMeta(name: string) {
-      return this.poiProp('metadata')[name]
+      return this.poiProp('metadata') && this.poiProp('metadata')[name]
     },
 
     fetchSpTags() {
+      if (!this.poiMeta('PopupListField')) {
+        return
+      }
       fetch(
         `${
           this.$config.API_ENDPOINT
