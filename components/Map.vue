@@ -366,8 +366,9 @@ export default Vue.extend({
       this.map.addSource(POI_SOURCE, {
         type: 'geojson',
         cluster: true,
-        clusterRadius: 60,
+        clusterRadius: 64,
         clusterProperties: clusterProps,
+        clusterMaxZoom: 15,
         data: {
           type: 'FeatureCollection',
           features: Object.values(features).flat(),
@@ -471,7 +472,7 @@ export default Vue.extend({
                   (err: Error, zoom: number) => {
                     if (err) return
                     if (!this.map) return
-                    this.map.easeTo({ center: coords, zoom })
+                    this.map.easeTo({ center: coords, zoom: zoom + 2 })
                   }
                 )
               }
