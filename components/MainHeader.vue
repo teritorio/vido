@@ -28,13 +28,14 @@
       class="flex-1 pointer-events-auto"
       :highlighted-categories="highlightedCategories"
       :non-highlighted-categories="nonHighlightedCategories"
+      :categories-activesubs-count="categoriesActivesubsCount"
       @category-click="onCategoryClick"
     />
   </aside>
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
+import Vue, { PropType } from 'vue'
 
 import HeaderRootCategories from '@/components/HeaderRootCategories.vue'
 import { Category } from '@/utils/types'
@@ -63,6 +64,10 @@ export default Vue.extend({
     showCategories: {
       type: Boolean,
       default: true,
+    },
+    categoriesActivesubsCount: {
+      type: Object as PropType<{ [id: string]: number }>,
+      default: {},
     },
   },
   methods: {

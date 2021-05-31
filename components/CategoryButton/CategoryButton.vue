@@ -14,6 +14,13 @@
       <TeritorioIcon :category-color="color" class="text-2xl" :picto="picto" />
 
       <div
+        v-if="activeSubCategories > 0"
+        class="text-white text-xs font-semibold font-sans text-center rounded-full absolute -top-1 -right-1 w-5 h-5 border-2 border-white bg-red-600"
+      >
+        {{ activeSubCategories }}
+      </div>
+
+      <div
         v-if="selected"
         class="absolute -right-0.5 text-lg text-green-500 -top-1.5"
       >
@@ -61,6 +68,10 @@ export default Vue.extend({
     selected: {
       type: Boolean,
       default: false,
+    },
+    activeSubCategories: {
+      type: Number,
+      default: 0,
     },
   },
   methods: {

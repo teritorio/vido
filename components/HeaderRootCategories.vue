@@ -29,6 +29,7 @@
           :color="category.metadata.color"
           :label="category.metadata.label.fr"
           :picto="category.metadata.picto"
+          :active-sub-categories="categoriesActivesubsCount[category.id] || 0"
           @click="onCategoryClick"
         />
       </div>
@@ -37,7 +38,7 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
+import Vue, { PropType } from 'vue'
 
 import CategoryButton from '@/components/CategoryButton/CategoryButton.vue'
 import { Category } from '@/utils/types'
@@ -54,6 +55,10 @@ export default Vue.extend({
     nonHighlightedCategories: {
       type: Array,
       required: true,
+    },
+    categoriesActivesubsCount: {
+      type: Object as PropType<{ [id: string]: number }>,
+      default: {},
     },
   },
   data(): {

@@ -14,6 +14,7 @@
             :non-highlighted-categories="nonHighlightedRootCategories"
             :site-name="siteName"
             :show-categories="!isModeExplorer"
+            :categories-activesubs-count="subCategoriesCounts"
             @category-click="onRootCategoryClick"
             @search-click="goToSearch"
           />
@@ -164,6 +165,20 @@ export default Vue.extend({
     },
     isModeExplorer() {
       return this.mode === Mode.EXPLORER
+    },
+    rootCategories() {
+      return this.highlightedRootCategories.concat(
+        this.nonHighlightedRootCategories
+      )
+    },
+    subCategoriesCounts(): { [id: string]: number } {
+      const counts: { [id: string]: number } = {}
+      this.rootCategories.forEach((rootCategory: Category) => {
+        counts[rootCategory.id] = this.selectedSubCategories.filter(
+          (subcategory) => subcategory.parent === rootCategory.id
+        ).length
+      })
+      return counts
     },
   },
   created() {
