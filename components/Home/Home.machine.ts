@@ -63,6 +63,7 @@ export interface HomeStateSchema {
         [HomeStates.FetchFeatures]: {}
       }
     }
+    [HomeStates.FetchFeatures]: {}
   }
 }
 
@@ -74,6 +75,12 @@ export const homeMachine = Machine<HomeContext, HomeStateSchema, HomeEvent>(
       selectedRootCategory: null,
     },
     initial: HomeStates.Home,
+    on: {
+      [HomeEvents.UnselectSubCategories]: {
+        actions: ['unselectSubCategories'],
+        target: HomeStates.FetchFeatures,
+      },
+    },
     states: {
       [HomeStates.Home]: {
         meta: {
@@ -129,6 +136,14 @@ export const homeMachine = Machine<HomeContext, HomeStateSchema, HomeEvent>(
                 target: HomeStates.Idle,
               },
             },
+          },
+        },
+      },
+      [HomeStates.FetchFeatures]: {
+        invoke: {
+          src: 'fetchFeatures',
+          onDone: {
+            target: HomeStates.Home,
           },
         },
       },

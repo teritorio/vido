@@ -1,43 +1,48 @@
 <template>
-  <div class="w-full h-full">
+  <div class="fixed w-full h-full overflow-hidden">
     <Map v-if="isMapConfigLoaded" class="absolute" />
 
     <header
-      class="fixed top-0 bottom-0 flex flex-col justify-between w-full h-full max-w-md p-4 space-y-4 pointer-events-none"
+      class="fixed top-0 bottom-0 flex flex-row w-full h-full p-4 space-x-4 pointer-events-none"
     >
-      <transition name="headers" appear mode="out-in">
-        <MainHeader
-          v-if="current.matches(states.Home) && isMenuConfigLoaded"
-          :highlighted-categories="highlightedRootCategories"
-          :logo-url="logoUrl"
-          :non-highlighted-categories="nonHighlightedRootCategories"
-          :site-name="siteName"
-          :show-categories="!isModeExplorer"
-          @category-click="onRootCategoryClick"
-          @search-click="goToSearch"
-        />
+      <div class="flex flex-col justify-between max-w-md space-y-4">
+        <transition name="headers" appear mode="out-in">
+          <MainHeader
+            v-if="current.matches(states.Home) && isMenuConfigLoaded"
+            :highlighted-categories="highlightedRootCategories"
+            :logo-url="logoUrl"
+            :non-highlighted-categories="nonHighlightedRootCategories"
+            :site-name="siteName"
+            :show-categories="!isModeExplorer"
+            @category-click="onRootCategoryClick"
+            @search-click="goToSearch"
+          />
 
-        <SubCategoryHeader
-          v-if="!isModeExplorer && current.matches(states.SubCategories)"
-          :categories="context.selectedRootCategory.subCategories"
+          <SubCategoryHeader
+            v-if="!isModeExplorer && current.matches(states.SubCategories)"
+            :categories="context.selectedRootCategory.subCategories"
+            :is-sub-category-selected="isSubCategorySelected"
+            @category-click="onSubCategoryClick"
+            @go-back-click="goToHome"
+            @select-all-categories="selectSubCategory"
+            @unselect-all-categories="unselectSubCategory"
+          />
+
+          <SearchHeader
+            v-if="current.matches(states.Search)"
+            @go-back-click="goToHome"
+          />
+        </transition>
+      </div>
+
+      <div>
+        <SelectedSubCategoriesDense
+          v-if="!isModeExplorer && selectedSubCategories.length"
+          :categories="selectedSubCategories"
           :is-sub-category-selected="isSubCategorySelected"
-          @category-click="onSubCategoryClick"
-          @go-back-click="goToHome"
-          @select-all-categories="selectSubCategory"
-          @unselect-all-categories="unselectSubCategory"
+          @category-unselect="unselectSubCategory"
         />
-
-        <SearchHeader
-          v-if="current.matches(states.Search)"
-          @go-back-click="goToHome"
-        />
-      </transition>
-
-      <SelectedSubCategoriesAside
-        v-if="!isModeExplorer && selectedSubCategories.length"
-        :categories="selectedSubCategories"
-        :is-sub-category-selected="isSubCategorySelected"
-      />
+      </div>
     </header>
   </div>
 </template>
@@ -51,7 +56,7 @@ import { interpret, Interpreter, State } from 'xstate'
 import MainHeader from '@/components/MainHeader.vue'
 import Map from '@/components/Map.vue'
 import SearchHeader from '@/components/SearchHeader.vue'
-import SelectedSubCategoriesAside from '@/components/SelectedSubCategoriesAside.vue'
+import SelectedSubCategoriesDense from '@/components/SelectedSubCategoriesDense.vue'
 import SubCategoryHeader from '@/components/SubCategoryHeader.vue'
 import { Category, Mode } from '@/utils/types'
 import { setHashPart } from '@/utils/url'
@@ -80,7 +85,7 @@ export default Vue.extend({
     MainHeader,
     Map,
     SearchHeader,
-    SelectedSubCategoriesAside,
+    SelectedSubCategoriesDense,
     SubCategoryHeader,
   },
   data(): {

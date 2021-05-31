@@ -1,7 +1,7 @@
 <template>
   <aside class="pointer-events-none">
     <div
-      class="absolute flex items-center justify-end space-x-3 pointer-events-auto inset-x-3 top-3"
+      class="absolute flex items-top justify-end space-x-3 pointer-events-auto inset-x-3 top-3"
     >
       <button
         v-if="map"
@@ -106,6 +106,7 @@ export default Vue.extend({
       default: null,
     },
   },
+
   data(): {
     building3d: Building3d | null
     is3D: boolean

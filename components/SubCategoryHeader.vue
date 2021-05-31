@@ -1,6 +1,6 @@
 <template>
   <aside
-    class="px-5 py-4 space-y-6 bg-white shadow-md pointer-events-auto rounded-xl"
+    class="flex flex-col px-5 py-4 space-y-6 bg-white shadow-md pointer-events-auto rounded-xl max-h-full"
   >
     <div class="flex justify-between">
       <button
@@ -31,7 +31,7 @@
     </div>
 
     <HeaderSubCategories
-      class="flex-1 pointer-events-auto"
+      class="flex-1 pointer-events-auto max-h-full overflow-y-auto"
       :categories="categories"
       :is-sub-category-selected="isSubCategorySelected"
       @category-click="onCategoryClick"
