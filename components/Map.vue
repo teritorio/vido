@@ -68,6 +68,7 @@ const MAP_STYLES = {
   'tourism-0.9': 'Teritorio Tourisme (0.9)',
   'tourism-proxy': 'Teritorio Tourisme (proxy)',
   mapnik: 'OpenStreetMap',
+  aerial: 'Imagerie aérienne IGN',
 }
 
 export default Vue.extend({
@@ -145,6 +146,33 @@ export default Vue.extend({
                 source: 'mapnik',
                 minzoom: 1,
                 maxzoom: 20,
+              },
+            ],
+          }
+
+        case 'aerial':
+          return {
+            version: 8,
+            name: 'Imagerie aérienne IGN',
+            sprite: `https://vecto-dev.teritorio.xyz/styles/teritorio-tourism-proxy/sprite?key=${this.$config.TILES_TOKEN}`,
+            glyphs: `https://vecto-dev.teritorio.xyz/fonts/{fontstack}/{range}.pbf?key=${this.$config.TILES_TOKEN}`,
+            vido_israster: true,
+            sources: {
+              aerial: {
+                type: 'raster',
+                tiles: [
+                  `https://wxs.ign.fr/${this.$config.IGN_TOKEN}/geoportail/wmts?SERVICE=WMTS&REQUEST=GetTile&VERSION=1.0.0&LAYER=ORTHOIMAGERY.ORTHOPHOTOS&TILEMATRIXSET=PM&TILEMATRIX={z}&TILECOL={x}&TILEROW={y}&STYLE=normal&FORMAT=image/jpeg`,
+                ],
+                tileSize: 256,
+              },
+            },
+            layers: [
+              {
+                id: 'aerial',
+                type: 'raster',
+                source: 'aerial',
+                minzoom: 1,
+                maxzoom: 21,
               },
             ],
           }

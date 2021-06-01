@@ -16,6 +16,7 @@ export default {
   publicRuntimeConfig: {
     API_ENDPOINT: process.env.API_ENDPOINT || '',
     TILES_TOKEN: process.env.TILES_TOKEN || '',
+    IGN_TOKEN: process.env.TILES_TOKEN || '',
   },
 
   // Global page headers (https://go.nuxtjs.dev/config-head)

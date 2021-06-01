@@ -50,6 +50,7 @@ jobs:
         env:
           API_ENDPOINT: https://cdt40.carto.guide/api.teritorio
           TILES_TOKEN: ${{secrets.TILES_TOKEN_DEV}}
+          IGN_TOKEN: ${{secrets.IGN_TOKEN_DEV}}
         run: yarn build
 
       - name: Deploy
