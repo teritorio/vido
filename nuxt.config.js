@@ -38,7 +38,7 @@ export default {
   ],
 
   purgeCSS: {
-    whitelistPatterns: [/svg.*/, /fa.*/],
+    whitelistPatterns: [/svg.*/, /fa.*/, /multiselect.*/],
   },
 
   // Plugins to run before rendering page (https://go.nuxtjs.dev/config-plugins)
