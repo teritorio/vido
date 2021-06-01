@@ -1,7 +1,7 @@
 <template>
   <div
     :class="[
-      'flex items-center justify-center flex-shrink-0 text-white rounded-full',
+      'flex items-center justify-center flex-shrink-0 text-white rounded-full border-2 border-white',
       iconDim,
     ]"
     :style="{ backgroundColor: color }"
