@@ -33,12 +33,12 @@
       </div>
     </button>
     <button
-      v-if="category.filtres.length > 0"
-      class="text-gray-500 w-full text-left"
+      v-if="category.filtres.length > 0 && selected"
+      class="text-gray-500 w-full text-left rounded-lg outline-none focus:outline-none hover:bg-gray-100"
       @click="onFilterClick"
     >
       <font-awesome-icon icon="filter" size="md" class="ml-16" />
-      Filtres
+      Filtrer
     </button>
   </div>
 </template>

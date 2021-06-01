@@ -13,7 +13,7 @@
 
       <button
         type="button"
-        class="px-3 py-2 font-medium transition-all rounded-md outline-none focus:outline-none text-white bg-green-600 hover:bg-green-500"
+        class="px-3 py-2 font-medium transition-all rounded-md outline-none focus:outline-none text-white bg-green-500 hover:bg-green-500"
         @click="onApplyFilters"
       >
         Appliquer
@@ -27,7 +27,11 @@
           :key="v"
           class="block mb-1 text-gray-800"
         >
-          <input type="checkbox" :name="'bf_' + bf.datasourceId + '_' + v" />
+          <input
+            type="checkbox"
+            class="text-green-500 focus:ring-0 focus:ring-transparent rounded-full"
+            :name="'bf_' + bf.datasourceId + '_' + v"
+          />
           {{ (sptags && sptags[v] && sptags[v][bf[v]]) || v }}
         </label>
       </div>
@@ -59,7 +63,12 @@
         :key="v"
         class="block mb-1 text-gray-800"
       >
-        <input type="checkbox" :name="'cf_' + cf.tag + '_' + v" /> {{ v }}
+        <input
+          type="checkbox"
+          class="text-green-500 focus:ring-0 focus:ring-transparent rounded-full"
+          :name="'cf_' + cf.tag + '_' + v"
+        />
+        {{ v }}
       </label>
     </div>
   </aside>
@@ -179,3 +188,21 @@ export default Vue.extend({
   },
 })
 </script>
+
+<style>
+.multiselect__tag {
+  @apply bg-gray-500;
+}
+.multiselect__tag span {
+  @apply mr-1;
+}
+.multiselect__tag-icon,
+.multiselect__tag-icon:hover {
+  @apply bg-red-600;
+}
+.multiselect__tag-icon::after,
+.multiselect__tag-icon:hover::after {
+  @apply text-white;
+  @apply font-extrabold;
+}
+</style>
