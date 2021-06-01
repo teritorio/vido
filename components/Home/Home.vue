@@ -24,9 +24,16 @@
             :categories="context.selectedRootCategory.subCategories"
             :is-sub-category-selected="isSubCategorySelected"
             @category-click="onSubCategoryClick"
+            @filter-click="onSubCategoryFilterClick"
             @go-back-click="goToHome"
             @select-all-categories="selectSubCategory"
             @unselect-all-categories="unselectSubCategory"
+          />
+
+          <SubCategoryFilterHeader
+            v-if="!isModeExplorer && current.matches(states.SubCategoryFilters)"
+            :subcategory="subCategoryForFilter"
+            @go-back-click="onBackToSubCategoryClick"
           />
 
           <SearchHeader
@@ -58,6 +65,7 @@ import MainHeader from '@/components/MainHeader.vue'
 import Map from '@/components/Map.vue'
 import SearchHeader from '@/components/SearchHeader.vue'
 import SelectedSubCategoriesDense from '@/components/SelectedSubCategoriesDense.vue'
+import SubCategoryFilterHeader from '@/components/SubCategoryFilterHeader.vue'
 import SubCategoryHeader from '@/components/SubCategoryHeader.vue'
 import { Category, Mode } from '@/utils/types'
 import { setHashPart } from '@/utils/url'
@@ -88,6 +96,7 @@ export default Vue.extend({
     SearchHeader,
     SelectedSubCategoriesDense,
     SubCategoryHeader,
+    SubCategoryFilterHeader,
   },
   data(): {
     context: HomeContext
@@ -180,6 +189,11 @@ export default Vue.extend({
       })
       return counts
     },
+    subCategoryForFilter(): Category {
+      return this.subCategories.find(
+        (sc: Category) => sc.id === this.context.selectedSubCategoryForFilters
+      )
+    },
   },
   created() {
     this.service
@@ -211,6 +225,20 @@ export default Vue.extend({
     },
     onSubCategoryClick(categoryId: Category['id']) {
       this.toggleSubCategorySelection(categoryId)
+    },
+    onSubCategoryFilterClick(subCategoryId: Category['id']) {
+      this.service.send(HomeEvents.GoToSubCategoryFilters, {
+        subCategoryId,
+      })
+    },
+    onBackToSubCategoryClick() {
+      const rootCatId = this.subCategories.find(
+        (sc: Category) => sc.id === this.context.selectedSubCategoryForFilters
+      )?.parent
+      this.service.send(HomeEvents.GoToSubCategories, {
+        rootCategoryId: rootCatId,
+        subCategories: this.getSubCategoriesFromCategoryId(rootCatId),
+      })
     },
     selectSubCategory(subCategoriesIds: Category['id'][]) {
       this.service.send(HomeEvents.SelectSubCategories, {

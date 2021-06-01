@@ -13,16 +13,50 @@ export type Pitch = number
 
 export type PoiType = 'tis' | 'osm' | 'zone'
 
+export type SelectionFiltre = {
+  tag: string
+  label: string
+  values: { [val: string]: string }
+}
+
+export type SelectionFiltreDS = SelectionFiltre & {
+  datasourceId: string
+}
+
+export type BooleanFiltre = { [val: string]: string }
+
+export type BooleanFiltreDS = BooleanFiltre & {
+  datasourceId: string
+}
+
+export type CheckboxFiltre = {
+  tag: string
+  label: string
+  values: string
+}
+
+export type CheckboxFiltreDS = CheckboxFiltre & {
+  datasourceId: string
+}
+
+export type DataSource = {
+  idsrc: string
+  // eslint-disable-next-line camelcase
+  poi_type: PoiType
+  slug: string
+  HasFiltre: boolean
+  filtre: null | {
+    selectionFiltre: null | SelectionFiltre[]
+    booleanFiltre: null | BooleanFiltre
+    checkboxFiltre: null | CheckboxFiltre[]
+  }
+}
+
 export interface ApiCategoryBase {
   id: string
   parent: string
   level: 1 | 2 | 3
-  datasources: {
-    idsrc: string
-    // eslint-disable-next-line camelcase
-    poi_type: PoiType
-    slug: string
-  }
+  datasources: DataSource[]
   isDataItem: string | boolean
   metadata: {
     color: string

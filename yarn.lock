@@ -4594,12 +4594,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@tailwindcss/forms@npm:^0.2.1":
-  version: 0.2.1
-  resolution: "@tailwindcss/forms@npm:0.2.1"
+"@tailwindcss/forms@npm:^0.3.2":
+  version: 0.3.2
+  resolution: "@tailwindcss/forms@npm:0.3.2"
   dependencies:
     mini-svg-data-uri: ^1.2.3
-  checksum: 968520113161a4720f79af53e3efd1354ec7ab560ad457891246fb044cc1b23d31e909f9ac04b515a71acf5cf9642434c86a277475474cae5fe9b7efa2938804
+  peerDependencies:
+    tailwindcss: ">=2.0.0"
+  checksum: a400fa0dbc9773a29484c0d9d20b95b6f4e8364b9ed598fd8529e08ad99962612e102b20efd0f0b5320c9bf41f38dae89416af13dd8ac1ad17fbbf811113c656
   languageName: node
   linkType: hard
 
@@ -4642,7 +4644,7 @@ __metadata:
     "@nuxtjs/stylelint-module": ^4.0.0
     "@nuxtjs/svg": ^0.1.12
     "@nuxtjs/tailwindcss": ^3.4.2
-    "@tailwindcss/forms": ^0.2.1
+    "@tailwindcss/forms": ^0.3.2
     "@teritorio/font-teritorio-tourism": ^1.2.1
     "@teritorio/map": ^0.10.0
     "@types/lodash.debounce": ^4.0.6
@@ -4687,6 +4689,7 @@ __metadata:
     tailwindcss: "npm:@tailwindcss/postcss7-compat@^2.0.2"
     ts-jest: ^26.4.4
     vue-jest: ^3.0.7
+    vue-multiselect: ^2.1.6
     wcag-contrast: ^3.0.0
     xstate: ^4.17.1
   languageName: unknown
@@ -23178,6 +23181,13 @@ typescript@~4.0:
   dependencies:
     deepmerge: ^4.2.2
   checksum: 529ada6c6dc759d2c7aecc77d0d04c1fc60add706b356bb12391cb31149b722f1fe35d1fa171bb154d67ccd76e538aa649673a8aca1f69a493c7e788d79a6c4a
+  languageName: node
+  linkType: hard
+
+"vue-multiselect@npm:^2.1.6":
+  version: 2.1.6
+  resolution: "vue-multiselect@npm:2.1.6"
+  checksum: d0704d3667a4cd93da8d50573c49a5f097738e0bb775dce8f0b40326d9ab3f0d4bf6a6e0ad7b69ef9937323c2fe6b888f808f7aab1c1ac65813edcb83718a640
   languageName: node
   linkType: hard
 

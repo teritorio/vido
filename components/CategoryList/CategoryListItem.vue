@@ -1,58 +1,61 @@
 <template>
-  <button
-    class="flex items-center justify-between w-full px-5 py-3 rounded-lg outline-none focus:outline-none hover:bg-gray-100"
-    @click="onClick"
-  >
-    <div class="flex items-center space-x-4">
-      <TeritorioIconBadge :color="color" :picto="picto" size="lg" />
+  <div class="flex flex-col items-start">
+    <button
+      class="flex items-center justify-between w-full px-5 py-3 rounded-lg outline-none focus:outline-none hover:bg-gray-100"
+      @click="onClick"
+    >
+      <div class="flex items-center space-x-4">
+        <TeritorioIconBadge
+          :color="category.color"
+          :picto="category.picto"
+          size="lg"
+        />
 
-      <div class="text-left">{{ label }}</div>
-    </div>
+        <div class="text-left">{{ category.label }}</div>
+      </div>
 
-    <div v-if="!selected" class="flex-shrink-0 text-gray-300">
-      <font-awesome-icon
-        class="fill-current"
-        fixed-width
-        :icon="['far', 'circle']"
-        size="lg"
-      />
-    </div>
+      <div v-if="!selected" class="flex-shrink-0 text-gray-300">
+        <font-awesome-icon
+          class="fill-current"
+          fixed-width
+          :icon="['far', 'circle']"
+          size="lg"
+        />
+      </div>
 
-    <div v-if="selected" class="flex-shrink-0 text-green-500">
-      <font-awesome-icon
-        class="fill-current"
-        fixed-width
-        icon="check-circle"
-        size="lg"
-      />
-    </div>
-  </button>
+      <div v-if="selected" class="flex-shrink-0 text-green-500">
+        <font-awesome-icon
+          class="fill-current"
+          fixed-width
+          icon="check-circle"
+          size="lg"
+        />
+      </div>
+    </button>
+    <button
+      v-if="category.filtres.length > 0"
+      class="text-gray-500 w-full text-left"
+      @click="onFilterClick"
+    >
+      <font-awesome-icon icon="filter" size="md" class="ml-16" />
+      Filtres
+    </button>
+  </div>
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
+import Vue, { PropType } from 'vue'
 
 import TeritorioIconBadge from '@/components/TeritorioIcon/TeritorioIconBadge.vue'
+import { Category } from '@/utils/types'
 
 export default Vue.extend({
   components: {
     TeritorioIconBadge,
   },
   props: {
-    color: {
-      type: String,
-      required: true,
-    },
-    id: {
-      type: String,
-      required: true,
-    },
-    label: {
-      type: String,
-      required: true,
-    },
-    picto: {
-      type: String,
+    category: {
+      type: Object as PropType<Category>,
       required: true,
     },
     selected: {
@@ -62,7 +65,10 @@ export default Vue.extend({
   },
   methods: {
     onClick() {
-      this.$emit('click', this.$props.id)
+      this.$emit('click', this.category.id)
+    },
+    onFilterClick() {
+      this.$emit('filter-click', this.category.id)
     },
   },
 })

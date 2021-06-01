@@ -2,13 +2,11 @@
   <ul v-if="categories.length > 0">
     <CategoryListItem
       v-for="category in categories"
-      :id="category.id"
       :key="category.id"
-      :color="category.color"
-      :label="category.label"
+      :category="category"
       :selected="category.selected"
-      :picto="category.picto"
       @click="onCategoryClick"
+      @filter-click="onFilterClick"
     />
   </ul>
 </template>
@@ -34,6 +32,9 @@ export default Vue.extend({
   methods: {
     onCategoryClick(categoryId: Category['id']) {
       this.$emit('click', categoryId)
+    },
+    onFilterClick(categoryId: Category['id']) {
+      this.$emit('filter-click', categoryId)
     },
   },
 })

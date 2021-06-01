@@ -547,7 +547,7 @@ export default Vue.extend({
         offsets.push(total)
         total += counts[i]
       }
-      const r = total >= 1000 ? 50 : total >= 100 ? 32 : total >= 10 ? 24 : 18
+      const r = total >= 1000 ? 40 : total >= 100 ? 32 : total >= 10 ? 24 : 16
       const r0 = r - 5
       const w = r * 2
 

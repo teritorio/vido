@@ -35,6 +35,7 @@
       :categories="categories"
       :is-sub-category-selected="isSubCategorySelected"
       @category-click="onCategoryClick"
+      @filter-click="onFilterClick"
     />
   </aside>
 </template>
@@ -72,6 +73,9 @@ export default Vue.extend({
   methods: {
     onCategoryClick(categoryId: Category['id']) {
       this.$emit('category-click', categoryId)
+    },
+    onFilterClick(categoryId: Category['id']) {
+      this.$emit('filter-click', categoryId)
     },
     onClickSelectAll(): void {
       this.$emit('select-all-categories', this.allCategoriesId)

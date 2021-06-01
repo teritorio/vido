@@ -1,5 +1,9 @@
 <template>
-  <CategoryList :categories="listItems" @click="onCategoryClick" />
+  <CategoryList
+    :categories="listItems"
+    @click="onCategoryClick"
+    @filter-click="onFilterClick"
+  />
 </template>
 
 <script lang="ts">
@@ -30,6 +34,9 @@ export default Vue.extend({
         label: category.metadata.label.fr,
         level: category.level,
         picto: category.metadata.picto,
+        filtres: category.datasources
+          .filter((ds) => ds.HasFiltre)
+          .map((ds) => ({ idsrc: ds.idsrc, filtre: ds.filtre })),
         selected: this.$props.isSubCategorySelected(category.id),
       }))
     },
@@ -37,6 +44,9 @@ export default Vue.extend({
   methods: {
     onCategoryClick(categoryId: Category['id']) {
       this.$emit('category-click', categoryId)
+    },
+    onFilterClick(categoryId: Category['id']) {
+      this.$emit('filter-click', categoryId)
     },
   },
 })

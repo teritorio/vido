@@ -36,6 +36,7 @@
     "mapbox-gl-vue": "^2.0.4",
     "maplibre-gl": "^1.14.0",
     "nuxt": "^2.14.12",
+    "vue-multiselect": "^2.1.6",
     "wcag-contrast": "^3.0.0",
     "xstate": "^4.17.1"
   },
@@ -50,7 +51,7 @@
     "@nuxtjs/stylelint-module": "^4.0.0",
     "@nuxtjs/svg": "^0.1.12",
     "@nuxtjs/tailwindcss": "^3.4.2",
-    "@tailwindcss/forms": "^0.2.1",
+    "@tailwindcss/forms": "^0.3.2",
     "@types/lodash.debounce": "^4.0.6",
     "@types/lodash.memoize": "^4.1.6",
     "@types/lodash.throttle": "^4.1.6",

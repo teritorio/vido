@@ -10,12 +10,14 @@ export interface HomeContext {
     id: Category['id']
     subCategories: Category[]
   } | null
+  selectedSubCategoryForFilters: Category['id'] | null
 }
 
 export enum HomeEvents {
   GoToHome = 'GO_TO_HOME',
   GoToSearch = 'GO_TO_SEARCH',
   GoToSubCategories = 'GO_TO_SUB_CATEGORIES',
+  GoToSubCategoryFilters = 'GO_TO_SUB_CATEGORY_FILTERS',
   SelectSubCategories = 'SELECT_SUB_CATEGORIES',
   ToggleSubCategorySelection = 'TOGGLE_SUB_CATEGORY_SELECTION',
   UnselectSubCategories = 'UNSELECT_SUB_CATEGORIES',
@@ -28,6 +30,10 @@ export type HomeEvent =
       type: HomeEvents.GoToSubCategories
       rootCategoryId: Category['id']
       subCategories: Category[]
+    }
+  | {
+      type: HomeEvents.GoToSubCategoryFilters
+      subCategoryId: Category['id']
     }
   | {
       type: HomeEvents.ToggleSubCategorySelection
@@ -47,6 +53,7 @@ export enum HomeStates {
   Idle = 'idle',
   Search = 'search',
   SubCategories = 'subCategories',
+  SubCategoryFilters = 'subCategoryFilters',
   Select = 'select',
   Toggle = 'toggle',
   Unselect = 'unselect',
@@ -63,6 +70,7 @@ export interface HomeStateSchema {
         [HomeStates.FetchFeatures]: {}
       }
     }
+    [HomeStates.SubCategoryFilters]: {}
     [HomeStates.FetchFeatures]: {}
   }
 }
@@ -73,6 +81,7 @@ export const homeMachine = Machine<HomeContext, HomeStateSchema, HomeEvent>(
     context: {
       selectedSubCategoriesIds: [],
       selectedRootCategory: null,
+      selectedSubCategoryForFilters: null,
     },
     initial: HomeStates.Home,
     on: {
@@ -110,6 +119,10 @@ export const homeMachine = Machine<HomeContext, HomeStateSchema, HomeEvent>(
         exit: ['resetSelectedRootCategoryId'],
         on: {
           [HomeEvents.GoToHome]: HomeStates.Home,
+          [HomeEvents.GoToSubCategoryFilters]: {
+            target: HomeStates.SubCategoryFilters,
+            actions: ['onGoToSubCategoryFilters'],
+          },
         },
         initial: HomeStates.Idle,
         states: {
@@ -136,6 +149,17 @@ export const homeMachine = Machine<HomeContext, HomeStateSchema, HomeEvent>(
                 target: HomeStates.Idle,
               },
             },
+          },
+        },
+      },
+      [HomeStates.SubCategoryFilters]: {
+        meta: {
+          description: 'Secondary header containing subcategory filters',
+        },
+        on: {
+          [HomeEvents.GoToSubCategories]: {
+            target: HomeStates.SubCategories,
+            actions: ['onGoToSubCategories'],
           },
         },
       },
@@ -211,6 +235,17 @@ export const homeMachine = Machine<HomeContext, HomeStateSchema, HomeEvent>(
                 context.selectedSubCategoriesIds,
                 ...event.subCategoriesIds
               ),
+            }
+          }
+
+          return context
+        }
+      ),
+      onGoToSubCategoryFilters: assign<HomeContext, HomeEvent>(
+        (context, event) => {
+          if (event.type === HomeEvents.GoToSubCategoryFilters) {
+            return {
+              selectedSubCategoryForFilters: event.subCategoryId,
             }
           }
 

@@ -17,6 +17,7 @@ import {
   faMap,
   faEye,
   faTimes,
+  faFilter,
 } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import Vue from 'vue'
@@ -41,7 +42,8 @@ library.add(
   faExternalLinkAlt,
   faMap,
   faEye,
-  faTimes
+  faTimes,
+  faFilter
 )
 
 // Register the component globally

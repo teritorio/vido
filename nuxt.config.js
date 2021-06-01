@@ -34,6 +34,7 @@ export default {
     '@fortawesome/fontawesome-svg-core/styles.css',
     '@teritorio/font-teritorio-tourism/teritorio-tourism/teritorio-tourism.css',
     'maplibre-gl/dist/maplibre-gl.css',
+    'vue-multiselect/dist/vue-multiselect.min.css',
   ],
 
   purgeCSS: {
