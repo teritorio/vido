@@ -1,6 +1,7 @@
 <template>
   <aside
     class="flex flex-col px-5 py-4 space-y-6 bg-white shadow-md pointer-events-auto rounded-xl max-h-full"
+    style="min-width: 200px"
   >
     <div class="flex justify-between">
       <button
@@ -11,13 +12,13 @@
         <font-awesome-icon icon="arrow-left" class="text-gray-800" size="xs" />
       </button>
 
-      <button
+      <!--button
         type="button"
         class="px-3 py-2 font-medium transition-all rounded-md outline-none focus:outline-none text-white bg-green-500 hover:bg-green-500"
         @click="onApplyFilters"
       >
         Appliquer
-      </button>
+      </button-->
     </div>
 
     <template v-if="sptags">
@@ -59,7 +60,7 @@
     <div v-for="cf in checkboxFiltres" :key="cf.tag">
       <p class="mb-2 text-gray-500">{{ cf.label }}</p>
       <label
-        v-for="v in cf.values.split(';')"
+        v-for="v in Object.keys(cf.values)"
         :key="v"
         class="block mb-1 text-gray-800"
       >
@@ -68,7 +69,7 @@
           class="text-green-500 focus:ring-0 focus:ring-transparent rounded-full"
           :name="'cf_' + cf.tag + '_' + v"
         />
-        {{ v }}
+        {{ cf.values[v] }}
       </label>
     </div>
   </aside>
@@ -166,8 +167,6 @@ export default Vue.extend({
     onGoBackClick() {
       this.$emit('go-back-click')
     },
-
-    onApplyFilters() {},
 
     fetchSpTags() {
       const tags = new Set()
