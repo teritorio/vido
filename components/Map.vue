@@ -88,6 +88,7 @@ export default Vue.extend({
     selectedFeatureMarker: mapboxgl.Marker | null
     selectedBackground: String
     featuresCoordinates: { [id: string]: TupleLatLng }
+    allowRegionBackZoom: boolean
   } {
     return {
       map: null,
@@ -99,6 +100,7 @@ export default Vue.extend({
       selectedFeatureMarker: null,
       selectedBackground: 'tourism-0.9',
       featuresCoordinates: {},
+      allowRegionBackZoom: false,
     }
   },
 
@@ -232,6 +234,7 @@ export default Vue.extend({
       const oldCategories: string[] = Object.keys(oldFeatures)
       const newCategories: string[] = Object.keys(features)
       if (
+        this.allowRegionBackZoom &&
         JSON.stringify(newCategories) !== JSON.stringify(oldCategories) &&
         newCategories.find((c) => !oldCategories.includes(c))
       ) {
@@ -241,6 +244,9 @@ export default Vue.extend({
             zoom: this.zoom.default,
           })
         })
+      } else {
+        // Made to avoid back zoom on categories reload
+        this.allowRegionBackZoom = true
       }
     },
 
@@ -315,7 +321,6 @@ export default Vue.extend({
 
     onMapInit(map: mapboxgl.Map) {
       this.map = map
-      const features = this.features as MenuState['features']
 
       this.poiFilter = new PoiFilter()
       this.map.addControl(this.poiFilter)
@@ -340,9 +345,9 @@ export default Vue.extend({
       this.map.on('data', () => {
         // Restore selected POI from URL hash
         const poiHash = getHashPart('poi')
-        if (poiHash && !this.selectedFeature && features) {
+        if (poiHash && !this.selectedFeature && this.features) {
           this.selectedFeature =
-            Object.values(features)
+            Object.values(this.features)
               .flat()
               .find((f) => f.properties?.metadata.PID === poiHash) || null
         }
@@ -549,6 +554,12 @@ export default Vue.extend({
         if (!newMarkers[id]) this.markersOnScreen[id].remove()
       }
       this.markersOnScreen = newMarkers
+
+      // Put selected feature marker above
+      if (this.selectedFeature) {
+        this.selectedFeatureMarker.remove()
+        this.selectedFeatureMarker.addTo(this.map)
+      }
     },
 
     createMarkerDonutChart(

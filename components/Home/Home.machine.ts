@@ -14,6 +14,7 @@ export interface HomeContext {
 }
 
 export enum HomeEvents {
+  Init = 'xstate.init',
   GoToHome = 'GO_TO_HOME',
   GoToSearch = 'GO_TO_SEARCH',
   GoToSubCategories = 'GO_TO_SUB_CATEGORIES',
@@ -24,6 +25,7 @@ export enum HomeEvents {
 }
 
 export type HomeEvent =
+  | { type: HomeEvents.Init }
   | { type: HomeEvents.GoToSearch }
   | { type: HomeEvents.GoToHome }
   | {
@@ -87,6 +89,10 @@ export const homeMachine = Machine<HomeContext, HomeStateSchema, HomeEvent>(
     on: {
       [HomeEvents.UnselectSubCategories]: {
         actions: ['unselectSubCategories'],
+        target: HomeStates.FetchFeatures,
+      },
+      [HomeEvents.SelectSubCategories]: {
+        actions: ['selectSubCategories'],
         target: HomeStates.FetchFeatures,
       },
     },

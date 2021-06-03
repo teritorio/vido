@@ -68,7 +68,7 @@ import SelectedSubCategoriesDense from '@/components/SelectedSubCategoriesDense.
 import SubCategoryFilterHeader from '@/components/SubCategoryFilterHeader.vue'
 import SubCategoryHeader from '@/components/SubCategoryHeader.vue'
 import { Category, Mode } from '@/utils/types'
-import { setHashPart } from '@/utils/url'
+import { getHashPart, setHashPart } from '@/utils/url'
 
 import {
   HomeContext,
@@ -201,11 +201,19 @@ export default Vue.extend({
         this.current = state
         this.context = state.context
 
-        if (typeof location !== 'undefined') {
+        if (
+          typeof location !== 'undefined' &&
+          state.event.type !== HomeEvents.Init
+        ) {
           setHashPart('cat', this.context.selectedSubCategoriesIds.join('.'))
         }
       })
       .start()
+  },
+  mounted() {
+    if (typeof location !== 'undefined' && getHashPart('cat')) {
+      this.selectSubCategory(getHashPart('cat')?.split('.') || [])
+    }
   },
   methods: {
     goToHome() {
