@@ -52,6 +52,12 @@ export type DataSource = {
   }
 }
 
+export type FiltreValues = {
+  booleanFiltre?: { [key: string]: string[] }
+  checkboxFiltre?: { [key: string]: string[] }
+  selectionFiltre?: { [key: string]: string[] }
+}
+
 export interface ApiCategoryBase {
   id: string
   parent: string

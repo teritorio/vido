@@ -37,7 +37,7 @@
       class="text-gray-500 w-full text-left rounded-lg outline-none focus:outline-none hover:bg-gray-100"
       @click="onFilterClick"
     >
-      <font-awesome-icon icon="filter" size="md" class="ml-16" />
+      <font-awesome-icon icon="filter" size="sm" class="ml-16" />
       Filtrer
     </button>
   </div>

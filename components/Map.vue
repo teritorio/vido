@@ -22,7 +22,15 @@
           }"
           @map-init="onMapInit"
           @map-pitchend="onMapPitchEnd"
-          @map-render="onMapRender"
+          @map-data="onMapRenderLimited"
+          @map-dataloading="onMapRenderLimited"
+          @map-drag="onMapRenderLimited"
+          @map-move="onMapRenderLimited"
+          @map-pitch="onMapRenderLimited"
+          @map-resize="onMapRenderLimited"
+          @map-rotate="onMapRenderLimited"
+          @map-touchmove="onMapRenderLimited"
+          @map-zoom="onMapRenderLimited"
         />
       </div>
 
@@ -49,6 +57,8 @@
 
 <script lang="ts">
 import { PoiFilter } from '@teritorio/map'
+import Bottleneck from 'bottleneck'
+import { deepEqual } from 'fast-equals'
 import throttle from 'lodash.throttle'
 import Mapbox from 'mapbox-gl-vue'
 import mapboxgl from 'maplibre-gl'
@@ -199,10 +209,9 @@ export default Vue.extend({
         return
       }
 
-      // Add category ID into features
+      // Add exact coordinates to a store to avoid rounding from Mapbox GL
       Object.keys(features).forEach((categoryId) => {
         features[categoryId].forEach((feature) => {
-          feature.properties.vido_cat = parseInt(categoryId, 10)
           this.featuresCoordinates[feature.properties.metadata.PID] =
             feature.geometry.coordinates
         })
@@ -221,7 +230,9 @@ export default Vue.extend({
         if ('setData' in source) {
           source.setData({
             type: 'FeatureCollection',
-            features: Object.values(features).flat(),
+            features: Object.values(features)
+              .flat()
+              .filter((f: VidoFeature) => f.properties.vido_visible),
           })
         }
       }
@@ -235,7 +246,7 @@ export default Vue.extend({
       const newCategories: string[] = Object.keys(features)
       if (
         this.allowRegionBackZoom &&
-        JSON.stringify(newCategories) !== JSON.stringify(oldCategories) &&
+        !deepEqual(newCategories, oldCategories) &&
         newCategories.find((c) => !oldCategories.includes(c))
       ) {
         this.resetMapview().then(() => {
@@ -311,7 +322,13 @@ export default Vue.extend({
     this.pitch = this.$store.getters['map/pitch']
 
     this.onMapPitchEnd = throttle(this.onMapPitchEnd, 300)
-    this.onMapRender = throttle(this.onMapRender, 300)
+    const limiter = new Bottleneck({
+      maxConcurrent: 1,
+      minTime: 1000,
+      highWater: 1,
+      strategy: Bottleneck.strategy.OVERFLOW,
+    })
+    this.onMapRenderLimited = () => limiter.submit(this.onMapRender, null)
   },
 
   methods: {
@@ -358,14 +375,15 @@ export default Vue.extend({
       this.pitch = map.getPitch()
     },
 
-    onMapRender() {
+    onMapRender(cb: Function) {
       if (
         !this.map ||
         !this.map.getSource(POI_SOURCE) ||
         !this.map.isSourceLoaded(POI_SOURCE)
       )
-        return
+        return cb()
       this.updateMarkers()
+      cb()
     },
 
     onPoiToastClick() {
@@ -404,7 +422,9 @@ export default Vue.extend({
         clusterMaxZoom: 15,
         data: {
           type: 'FeatureCollection',
-          features: Object.values(features).flat(),
+          features: Object.values(features)
+            .flat()
+            .filter((f: VidoFeature) => f.properties.vido_visible),
         },
       })
 

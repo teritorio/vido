@@ -33,6 +33,8 @@
           <SubCategoryFilterHeader
             v-if="!isModeExplorer && current.matches(states.SubCategoryFilters)"
             :subcategory="subCategoryForFilter"
+            :filters-values="subCategoryFilters"
+            @filter-changed="onSubCategoryFilterChange"
             @go-back-click="onBackToSubCategoryClick"
           />
 
@@ -58,7 +60,7 @@
 <script lang="ts">
 import debounce from 'lodash.debounce'
 import Vue from 'vue'
-import { mapGetters } from 'vuex'
+import { mapGetters, mapActions } from 'vuex'
 import { interpret, Interpreter, State } from 'xstate'
 
 import MainHeader from '@/components/MainHeader.vue'
@@ -67,7 +69,7 @@ import SearchHeader from '@/components/SearchHeader.vue'
 import SelectedSubCategoriesDense from '@/components/SelectedSubCategoriesDense.vue'
 import SubCategoryFilterHeader from '@/components/SubCategoryFilterHeader.vue'
 import SubCategoryHeader from '@/components/SubCategoryHeader.vue'
-import { Category, Mode } from '@/utils/types'
+import { Category, Mode, FiltreValues } from '@/utils/types'
 import { getHashPart, setHashPart } from '@/utils/url'
 
 import {
@@ -157,6 +159,7 @@ export default Vue.extend({
       nonHighlightedRootCategories: 'menu/nonHighlightedRootCategories',
       siteInfos: 'site/infos',
       subCategories: 'menu/subCategories',
+      filters: 'menu/filters',
       mode: 'site/mode',
     }),
     logoUrl() {
@@ -194,6 +197,12 @@ export default Vue.extend({
         (sc: Category) => sc.id === this.context.selectedSubCategoryForFilters
       )
     },
+    subCategoryFilters(): FiltreValues {
+      return (
+        this.context.selectedSubCategoryForFilters &&
+        this.filters[this.context.selectedSubCategoryForFilters]
+      )
+    },
   },
   created() {
     this.service
@@ -216,6 +225,9 @@ export default Vue.extend({
     }
   },
   methods: {
+    ...mapActions({
+      setCategoriesFilters: 'menu/setFilters',
+    }),
     goToHome() {
       this.service.send(HomeEvents.GoToHome)
     },
@@ -265,6 +277,17 @@ export default Vue.extend({
       this.service.send(HomeEvents.UnselectSubCategories, {
         subCategoriesIds,
       })
+    },
+    onSubCategoryFilterChange(filters: FiltreValues) {
+      if (this.context.selectedSubCategoryForFilters) {
+        const newFilters = Object.assign({}, this.filters)
+        if (Object.keys(filters).length > 0) {
+          newFilters[this.context.selectedSubCategoryForFilters] = filters
+        } else {
+          delete newFilters[this.context.selectedSubCategoryForFilters]
+        }
+        this.setCategoriesFilters(newFilters)
+      }
     },
   },
 })

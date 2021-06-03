@@ -1,10 +1,12 @@
+import copy from 'fast-copy'
 import { Store } from 'vuex'
 
-import { ApiPosts, Category, VidoFeature } from '@/utils/types'
+import { ApiPosts, Category, VidoFeature, FiltreValues } from '@/utils/types'
 
 enum Mutation {
   SET_CONFIG = 'SET_CONFIG',
   SET_FEATURES = 'SET_FEATURES',
+  SET_FILTERS = 'SET_FILTERS',
 }
 
 interface FetchConfigPayload {
@@ -24,24 +26,67 @@ export interface State {
   features: {
     [categoryId: string]: VidoFeature[]
   }
+  filters: { [subcat: string]: FiltreValues }
 }
 
 export const state = (): State => ({
   categories: {},
   isLoaded: false,
   features: {},
+  filters: {},
 })
 
 export const mutations = {
   [Mutation.SET_CONFIG](state: State, payload: State) {
     state.categories = payload.categories
-
     state.isLoaded = true
+  },
+
+  [Mutation.SET_FILTERS](state: State, payload: State) {
+    state.filters = payload.filters
   },
 
   [Mutation.SET_FEATURES](state: State, payload: State) {
     state.features = payload.features
   },
+}
+
+function keepFeature(feature: VidoFeature, filters: FiltreValues): boolean {
+  if (!filters || Object.keys(filters).length === 0) {
+    return true
+  }
+
+  for (const key in filters.selectionFiltre) {
+    if (
+      filters.selectionFiltre[key].length > 0 &&
+      (!feature.properties[key] ||
+        !filters.selectionFiltre[key].includes(feature.properties[key]))
+    ) {
+      return false
+    }
+  }
+
+  for (const key in filters.checkboxFiltre) {
+    if (
+      filters.checkboxFiltre[key].length > 0 &&
+      (!feature.properties[key] ||
+        !filters.checkboxFiltre[key].includes(feature.properties[key]))
+    ) {
+      return false
+    }
+  }
+
+  for (const key in filters.booleanFiltre) {
+    if (
+      filters.booleanFiltre[key].length > 0 &&
+      (!feature.properties[key] ||
+        !filters.booleanFiltre[key].includes(feature.properties[key]))
+    ) {
+      return false
+    }
+  }
+
+  return true
 }
 
 export const actions = {
@@ -92,7 +137,14 @@ export const actions = {
             []) as VidoFeature[]),
           ...((post.tis?.[0].FeaturesCollection.features ||
             []) as VidoFeature[]),
-        ]
+        ].map((f) => {
+          f.properties.vido_cat = parseInt(categoryId, 10)
+          f.properties.vido_visible = keepFeature(
+            f,
+            store.getters.filters[categoryId]
+          )
+          return f
+        })
       })
 
       store.commit(Mutation.SET_FEATURES, { features })
@@ -104,12 +156,29 @@ export const actions = {
       )
     }
   },
+
+  setFilters(store: Store<State>, filters: { [subcat: string]: FiltreValues }) {
+    store.commit(Mutation.SET_FILTERS, { filters })
+
+    // Update features visibility
+    const features: { [categoryId: string]: VidoFeature[] } = copy(
+      store.getters.features
+    )
+    Object.keys(features).forEach((categoryId: string) => {
+      features[categoryId] = features[categoryId].map((f: VidoFeature) => {
+        f.properties.vido_visible = keepFeature(f, filters[categoryId])
+        return f
+      })
+    })
+    store.commit(Mutation.SET_FEATURES, { features })
+  },
 }
 
 export const getters = {
   categories: (state: State) => state.categories,
-  features: (state: State) => state.features,
   isLoaded: (state: State) => state.isLoaded,
+  filters: (state: State) => state.filters,
+  features: (state: State) => state.features,
 
   getSubCategoriesFromCategoryId: (state: State) => (categoryId: string) =>
     Object.values(state.categories)
