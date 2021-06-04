@@ -35,6 +35,7 @@
       :categories="categories"
       :filtered-categories="filteredCategories"
       :is-sub-category-selected="isSubCategorySelected"
+      :categories-activesubs-count="categoriesActivesubsCount"
       @category-click="onCategoryClick"
       @filter-click="onFilterClick"
     />
@@ -63,6 +64,10 @@ export default Vue.extend({
     isSubCategorySelected: {
       type: Function,
       required: true,
+    },
+    categoriesActivesubsCount: {
+      type: Object as PropType<{ [id: string]: number }>,
+      default: {},
     },
   },
   computed: {

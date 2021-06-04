@@ -6,6 +6,7 @@
       :category="category"
       :selected="category.selected"
       :filtered="filteredCategories.includes(category.id)"
+      :active-sub-categories="categoriesActivesubsCount[category.id] || 0"
       @click="onCategoryClick"
       @filter-click="onFilterClick"
     />
@@ -32,6 +33,10 @@ export default Vue.extend({
     filteredCategories: {
       type: Array as PropType<Category['id'][]>,
       default: [],
+    },
+    categoriesActivesubsCount: {
+      type: Object as PropType<{ [id: string]: number }>,
+      default: {},
     },
   },
   methods: {

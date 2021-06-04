@@ -102,7 +102,23 @@ export const actions = {
 
       Object.values(config)
         .filter((category) => category.isDataItem && !category.metadata.hide)
-        .forEach((category) => (categories[category.id] = category))
+        .map((category) => {
+          categories[category.id] = category
+          return category
+        })
+        .forEach((category) => {
+          // Separated from previous map to allow batch processing and make sure parent category is always there
+          // Associate to parent
+          if (category.parent && category.parent !== '0') {
+            const parent = categories[category.parent]
+            if (parent) {
+              if (!parent.vido_children) {
+                parent.vido_children = []
+              }
+              parent.vido_children.push(category.id)
+            }
+          }
+        })
 
       store.commit(Mutation.SET_CONFIG, { categories })
     } catch (error) {

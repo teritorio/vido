@@ -75,7 +75,10 @@ export interface ApiCategoryBase {
   order: number
 }
 
-export type CategoryBase = ApiCategoryBase
+export type CategoryBase = ApiCategoryBase & {
+  // eslint-disable-next-line camelcase
+  vido_children: null | ApiCategoryBase['id'][]
+}
 
 // Only first level classes can be highlighted
 export interface RootCategory extends CategoryBase {

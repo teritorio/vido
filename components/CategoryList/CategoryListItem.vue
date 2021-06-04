@@ -5,32 +5,51 @@
       @click="onClick"
     >
       <div class="flex items-center space-x-4">
-        <TeritorioIconBadge
-          :color="category.color"
-          :picto="category.picto"
-          size="lg"
-        />
+        <div class="relative">
+          <TeritorioIconBadge
+            :color="category.color"
+            :picto="category.picto"
+            size="lg"
+          />
+
+          <div
+            v-if="activeSubCategories > 0"
+            class="text-white text-xs font-semibold font-sans text-center rounded-full absolute -top-1 -right-1 w-5 h-5 border-2 border-white bg-red-600"
+          >
+            {{ activeSubCategories }}
+          </div>
+        </div>
 
         <div class="text-left">{{ category.label }}</div>
       </div>
 
-      <div v-if="!selected" class="flex-shrink-0 text-gray-300">
+      <template v-if="hasChildren">
         <font-awesome-icon
-          class="fill-current"
+          class="text-gray-800"
           fixed-width
-          :icon="['far', 'circle']"
+          icon="chevron-right"
           size="lg"
         />
-      </div>
+      </template>
+      <template v-else>
+        <div v-if="!selected" class="flex-shrink-0 text-gray-300">
+          <font-awesome-icon
+            class="fill-current"
+            fixed-width
+            :icon="['far', 'circle']"
+            size="lg"
+          />
+        </div>
 
-      <div v-if="selected" class="flex-shrink-0 text-green-500">
-        <font-awesome-icon
-          class="fill-current"
-          fixed-width
-          icon="check-circle"
-          size="lg"
-        />
-      </div>
+        <div v-if="selected" class="flex-shrink-0 text-green-500">
+          <font-awesome-icon
+            class="fill-current"
+            fixed-width
+            icon="check-circle"
+            size="lg"
+          />
+        </div>
+      </template>
     </button>
     <button
       v-if="category.filtres.length > 0 && selected"
@@ -69,6 +88,15 @@ export default Vue.extend({
     filtered: {
       type: Boolean,
       default: false,
+    },
+    activeSubCategories: {
+      type: Number,
+      default: 0,
+    },
+  },
+  computed: {
+    hasChildren(): boolean {
+      return (this.category.vido_children || []).length > 0
     },
   },
   methods: {

@@ -24,9 +24,10 @@
             :categories="context.selectedRootCategory.subCategories"
             :filtered-categories="filteredSubCategories"
             :is-sub-category-selected="isSubCategorySelected"
+            :categories-activesubs-count="subCategoriesCounts"
             @category-click="onSubCategoryClick"
             @filter-click="onSubCategoryFilterClick"
-            @go-back-click="goToHome"
+            @go-back-click="goToParentFromSubCategory"
             @select-all-categories="selectSubCategory"
             @unselect-all-categories="unselectSubCategory"
           />
@@ -186,11 +187,24 @@ export default Vue.extend({
     },
     subCategoriesCounts(): { [id: string]: number } {
       const counts: { [id: string]: number } = {}
-      this.rootCategories.forEach((rootCategory: Category) => {
-        counts[rootCategory.id] = this.selectedSubCategories.filter(
-          (subcategory) => subcategory.parent === rootCategory.id
-        ).length
-      })
+      const addCount = (cat: Category) => {
+        if (counts[cat.parent]) {
+          counts[cat.parent]++
+        } else {
+          counts[cat.parent] = 1
+        }
+        if (cat.parent !== '0') {
+          const parent =
+            this.subCategories.find((sc: Category) => sc.id === cat.parent) ||
+            this.rootCategories.find((sc: Category) => sc.id === cat.parent)
+          if (parent) {
+            addCount(parent)
+          }
+        }
+      }
+      this.selectedSubCategories.forEach((subcategory: Category) =>
+        addCount(subcategory)
+      )
       return counts
     },
     subCategoryForFilter(): Category {
@@ -235,6 +249,20 @@ export default Vue.extend({
     goToHome() {
       this.service.send(HomeEvents.GoToHome)
     },
+    goToParentFromSubCategory() {
+      if (this.context.selectedRootCategory) {
+        const rootCat = this.subCategories.find(
+          (sc: Category) => sc.id === this.context.selectedRootCategory?.id
+        )
+        if (rootCat && rootCat.level >= 2) {
+          this.onRootCategoryClick(rootCat.parent)
+        } else {
+          this.goToHome()
+        }
+      } else {
+        this.goToHome()
+      }
+    },
     goToSearch() {
       this.service.send(HomeEvents.GoToSearch)
     },
@@ -248,7 +276,12 @@ export default Vue.extend({
       })
     },
     onSubCategoryClick(categoryId: Category['id']) {
-      this.toggleSubCategorySelection(categoryId)
+      const sc = this.subCategories.find((sc: Category) => sc.id === categoryId)
+      if (sc && sc.vido_children && sc.vido_children.length > 0) {
+        this.onRootCategoryClick(categoryId)
+      } else {
+        this.toggleSubCategorySelection(categoryId)
+      }
     },
     onSubCategoryFilterClick(subCategoryId: Category['id']) {
       this.service.send(HomeEvents.GoToSubCategoryFilters, {

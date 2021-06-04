@@ -125,6 +125,10 @@ export const homeMachine = Machine<HomeContext, HomeStateSchema, HomeEvent>(
         exit: ['resetSelectedRootCategoryId'],
         on: {
           [HomeEvents.GoToHome]: HomeStates.Home,
+          [HomeEvents.GoToSubCategories]: {
+            target: HomeStates.SubCategories,
+            actions: ['onGoToSubCategories'],
+          },
           [HomeEvents.GoToSubCategoryFilters]: {
             target: HomeStates.SubCategoryFilters,
             actions: ['onGoToSubCategoryFilters'],

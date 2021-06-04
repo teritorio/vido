@@ -2,6 +2,7 @@
   <CategoryList
     :categories="listItems"
     :filtered-categories="filteredCategories"
+    :categories-activesubs-count="categoriesActivesubsCount"
     @click="onCategoryClick"
     @filter-click="onFilterClick"
   />
@@ -30,14 +31,17 @@ export default Vue.extend({
       type: Function,
       required: true,
     },
+    categoriesActivesubsCount: {
+      type: Object as PropType<{ [id: string]: number }>,
+      default: {},
+    },
   },
   computed: {
     listItems() {
       return this.$props.categories.map((category: Category) => ({
-        id: category.id,
+        ...category,
         color: category.metadata.color,
         label: category.metadata.label.fr,
-        level: category.level,
         picto: category.metadata.picto,
         filtres: category.datasources
           .filter((ds) => ds.HasFiltre)
