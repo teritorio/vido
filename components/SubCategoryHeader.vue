@@ -72,12 +72,34 @@ export default Vue.extend({
   },
   computed: {
     allCategoriesId(): Category['id'][] {
-      return this.categories.map((category) => category.id)
+      let ids: Category['id'][] = []
+      this.categories.forEach((c: Category) => {
+        if (c.vido_children && c.vido_children.length > 0) {
+          ids = ids.concat(c.vido_children)
+        } else {
+          ids.push(c.id)
+        }
+      })
+      return ids
     },
     isAllSelected(): boolean {
-      return !this.categories.find(
-        (category) => !this.isSubCategorySelected(category.id)
-      )
+      let hasNotSelected = false
+
+      for (const c of this.categories) {
+        if (c.vido_children && c.vido_children.length > 0) {
+          for (const sc of c.vido_children) {
+            if (!this.isSubCategorySelected(sc)) {
+              hasNotSelected = true
+              break
+            }
+          }
+        } else if (!this.isSubCategorySelected(c.id)) {
+          hasNotSelected = true
+          break
+        }
+      }
+
+      return !hasNotSelected
     },
   },
   methods: {
