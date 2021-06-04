@@ -34,11 +34,15 @@
     </button>
     <button
       v-if="category.filtres.length > 0 && selected"
-      class="text-gray-500 w-full text-left rounded-lg outline-none focus:outline-none hover:bg-gray-100"
+      :class="[
+        'w-full text-left rounded-lg outline-none focus:outline-none hover:bg-gray-100',
+        filtered && 'text-green-500',
+        !filtered && 'text-gray-500',
+      ]"
       @click="onFilterClick"
     >
       <font-awesome-icon icon="filter" size="sm" class="ml-16" />
-      Filtrer
+      {{ filtered ? 'Modifier les filtres' : 'Filtrer' }}
     </button>
   </div>
 </template>
@@ -59,6 +63,10 @@ export default Vue.extend({
       required: true,
     },
     selected: {
+      type: Boolean,
+      default: false,
+    },
+    filtered: {
       type: Boolean,
       default: false,
     },

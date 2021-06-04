@@ -33,6 +33,7 @@
     <HeaderSubCategories
       class="flex-1 pointer-events-auto max-h-full overflow-y-auto"
       :categories="categories"
+      :filtered-categories="filteredCategories"
       :is-sub-category-selected="isSubCategorySelected"
       @category-click="onCategoryClick"
       @filter-click="onFilterClick"
@@ -54,6 +55,10 @@ export default Vue.extend({
     categories: {
       type: Array as PropType<Category[]>,
       required: true,
+    },
+    filteredCategories: {
+      type: Array as PropType<Category['id'][]>,
+      default: [],
     },
     isSubCategorySelected: {
       type: Function,

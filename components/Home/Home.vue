@@ -22,6 +22,7 @@
           <SubCategoryHeader
             v-if="!isModeExplorer && current.matches(states.SubCategories)"
             :categories="context.selectedRootCategory.subCategories"
+            :filtered-categories="filteredSubCategories"
             :is-sub-category-selected="isSubCategorySelected"
             @category-click="onSubCategoryClick"
             @filter-click="onSubCategoryFilterClick"
@@ -202,6 +203,9 @@ export default Vue.extend({
         this.context.selectedSubCategoryForFilters &&
         this.filters[this.context.selectedSubCategoryForFilters]
       )
+    },
+    filteredSubCategories(): Category['id'][] {
+      return Object.keys(this.filters)
     },
   },
   created() {

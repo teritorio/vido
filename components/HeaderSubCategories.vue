@@ -1,13 +1,14 @@
 <template>
   <CategoryList
     :categories="listItems"
+    :filtered-categories="filteredCategories"
     @click="onCategoryClick"
     @filter-click="onFilterClick"
   />
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
+import Vue, { PropType } from 'vue'
 
 import CategoryList from '@/components/CategoryList/CategoryList.vue'
 import { Category } from '@/utils/types'
@@ -20,6 +21,10 @@ export default Vue.extend({
     categories: {
       type: Array,
       required: true,
+    },
+    filteredCategories: {
+      type: Array as PropType<Category['id'][]>,
+      default: [],
     },
     isSubCategorySelected: {
       type: Function,

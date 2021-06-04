@@ -5,6 +5,7 @@
       :key="category.id"
       :category="category"
       :selected="category.selected"
+      :filtered="filteredCategories.includes(category.id)"
       @click="onCategoryClick"
       @filter-click="onFilterClick"
     />
@@ -12,7 +13,7 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
+import Vue, { PropType } from 'vue'
 
 import CategoryListItem from '@/components/CategoryList/CategoryListItem.vue'
 import { Category } from '@/utils/types'
@@ -27,6 +28,10 @@ export default Vue.extend({
       default() {
         return []
       },
+    },
+    filteredCategories: {
+      type: Array as PropType<Category['id'][]>,
+      default: [],
     },
   },
   methods: {
