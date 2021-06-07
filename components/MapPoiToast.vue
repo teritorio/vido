@@ -75,9 +75,11 @@ export default Vue.extend({
 
   data(): {
     sptags: { [key: string]: any } | null
+    apiProps: { [key: string]: any } | null
   } {
     return {
       sptags: null,
+      apiProps: null,
     }
   },
 
@@ -87,7 +89,7 @@ export default Vue.extend({
     },
 
     name(): string {
-      return this.poi.properties?.name || this.poiMeta('label_infobulle')
+      return this.poiProp('name') || this.poiMeta('label_infobulle')
     },
 
     color(): string | null {
@@ -117,7 +119,7 @@ export default Vue.extend({
     },
 
     category(): string {
-      return this.poiMeta('label_infobulle') || this.poi.properties?.class
+      return this.poiMeta('label_infobulle') || this.poiProp('class')
     },
 
     address(): string | null {
@@ -170,29 +172,66 @@ export default Vue.extend({
 
   watch: {
     poi() {
-      this.sptags = null
-      this.fetchSpTags()
+      this.onPoiChange()
     },
   },
 
   created() {
-    this.fetchSpTags()
+    this.onPoiChange()
   },
 
   methods: {
+    onPoiChange() {
+      this.sptags = null
+      this.apiProps = null
+      if (this.poi && this.poiProp('metadata')) {
+        this.fetchSpTags()
+      } else {
+        this.fetchMetadata().then(this.fetchSpTags)
+      }
+    },
+
     poiProp(name: string) {
-      return this.poi.properties[name]
+      return this.apiProps
+        ? this.apiProps[name]
+        : this.poi.properties && this.poi.properties[name]
     },
 
     poiMeta(name: string) {
       return this.poiProp('metadata') && this.poiProp('metadata')[name]
     },
 
+    fetchMetadata(): Promise<void> {
+      if (!this.poiProp('PID')) {
+        return Promise.resolve()
+      }
+
+      return fetch(
+        `${
+          this.$config.API_ENDPOINT
+        }/geodata/v1/allposts?post_id=${this.poiProp('PID')}`
+      )
+        .then((data) => data.json())
+        .then((data) => {
+          const apiPoi = Object.values(data)
+            .flat()
+            .filter((v) => v !== null)
+            .map((v: any) => v.FeaturesCollection?.features)
+            .flat()
+            .filter((v) => v !== null)
+            .pop()
+
+          if (apiPoi) {
+            this.apiProps = apiPoi.properties
+          }
+        })
+    },
+
     fetchSpTags() {
       if (!this.poiMeta('PopupListField')) {
         return
       }
-      fetch(
+      return fetch(
         `${
           this.$config.API_ENDPOINT
         }/geodata/v1/sptags?PopupListField=${this.poiMeta('PopupListField')}`
