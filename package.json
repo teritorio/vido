@@ -55,6 +55,7 @@
     "@nuxtjs/svg": "^0.1.12",
     "@nuxtjs/tailwindcss": "^3.4.2",
     "@tailwindcss/forms": "^0.3.2",
+    "@types/lodash.debounce": "^4.0.6",
     "@types/lodash.memoize": "^4.1.6",
     "@types/lodash.throttle": "^4.1.6",
     "@types/lodash.uniq": "^4.5.6",

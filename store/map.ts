@@ -1,10 +1,11 @@
 import { Store } from 'vuex'
 
-import { LatLng, Pitch, ZoomLevel } from '@/utils/types'
+import { LatLng, Pitch, ZoomLevel, VidoFeature } from '@/utils/types'
 
 enum Mutation {
   SET_CONFIG = 'SET_CONFIG',
   RESET_MAPVIEW = 'RESET_MAPVIEW',
+  SELECT_FEATURE = 'SELECT_FEATURE',
 }
 
 interface FetchConfigPayload {
@@ -21,6 +22,7 @@ interface State {
     max: ZoomLevel
     min: ZoomLevel
   }
+  selectedFeature: string | null
 }
 
 const getInitialMapview: Function = () => ({
@@ -41,6 +43,7 @@ export const state = (): State | null =>
       // attribution: {},
       isLoaded: false,
       pitch: 0,
+      selectedFeature: null,
     },
     getInitialMapview()
   )
@@ -57,6 +60,11 @@ export const mutations = {
   [Mutation.RESET_MAPVIEW](state: State) {
     state.center = getInitialMapview().center
     state.zoom = getInitialMapview().zoom
+  },
+  [Mutation.SELECT_FEATURE](state: State, payload: State) {
+    // JSON conversion necessary to have map watcher working
+    state.selectedFeature =
+      payload.selectedFeature && JSON.stringify(payload.selectedFeature)
   },
 }
 
@@ -78,6 +86,9 @@ export const actions = {
   resetMapview(store: Store<State>) {
     store.commit(Mutation.RESET_MAPVIEW)
   },
+  selectFeature(store: Store<State>, feature: VidoFeature) {
+    store.commit(Mutation.SELECT_FEATURE, { selectedFeature: feature })
+  },
 }
 
 export const getters = {
@@ -87,4 +98,6 @@ export const getters = {
   isLoaded: (state: State) => state.isLoaded,
   pitch: (state: State) => state.pitch,
   zoom: (state: State) => state.zoom,
+  selectedFeature: (state: State) =>
+    state.selectedFeature && JSON.parse(state.selectedFeature),
 }

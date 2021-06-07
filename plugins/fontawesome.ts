@@ -19,6 +19,10 @@ import {
   faEye,
   faTimes,
   faFilter,
+  faSpinner,
+  faMapMarkerAlt,
+  faLayerGroup,
+  faHome,
 } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import Vue from 'vue'
@@ -45,7 +49,11 @@ library.add(
   faMap,
   faEye,
   faTimes,
-  faFilter
+  faFilter,
+  faSpinner,
+  faMapMarkerAlt,
+  faLayerGroup,
+  faHome
 )
 
 // Register the component globally

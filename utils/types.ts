@@ -225,6 +225,33 @@ export interface ApiPosts {
   }>
 }
 
+export type ApiSearchResult = {
+  postid: number
+  label: string
+}
+
+export type ApiSearchResults = {
+  classe: {
+    idmenu: string
+    label: string
+    // eslint-disable-next-line camelcase
+    poi_type: string
+  }[]
+  osm: string | ApiSearchResult[]
+  tis: string | ApiSearchResult[]
+  wp: string | ApiSearchResult[]
+  adress: {
+    ID: string
+    label: string
+    geojson: MapboxGeoJSONFeature
+  }[]
+}
+
+export type SearchResult = {
+  id: string
+  label: string
+}
+
 export type VidoMglStyle = Style & {
   // eslint-disable-next-line camelcase
   vido_israster: boolean

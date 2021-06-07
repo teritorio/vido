@@ -1,6 +1,6 @@
 <template>
   <div class="fixed w-full h-full overflow-hidden">
-    <Map v-if="isMapConfigLoaded" class="absolute" />
+    <Map v-if="isMapConfigLoaded" ref="map" class="absolute" />
 
     <header
       class="fixed top-0 bottom-0 flex flex-row w-full h-full p-4 space-x-4 pointer-events-none"
@@ -43,6 +43,9 @@
           <SearchHeader
             v-if="current.matches(states.Search)"
             @go-back-click="goToHome"
+            @category-click="onSearchCategory"
+            @poi-click="onSearchPoi"
+            @feature-click="onFeatureClick"
           />
         </transition>
       </div>
@@ -61,6 +64,7 @@
 
 <script lang="ts">
 import debounce from 'lodash.debounce'
+import { MapboxGeoJSONFeature } from 'maplibre-gl'
 import Vue from 'vue'
 import { mapGetters, mapActions } from 'vuex'
 import { interpret, Interpreter, State } from 'xstate'
@@ -71,6 +75,7 @@ import SearchHeader from '@/components/SearchHeader.vue'
 import SelectedSubCategoriesDense from '@/components/SelectedSubCategoriesDense.vue'
 import SubCategoryFilterHeader from '@/components/SubCategoryFilterHeader.vue'
 import SubCategoryHeader from '@/components/SubCategoryHeader.vue'
+import { getPoiById } from '@/utils/api'
 import { Category, Mode, FiltreValues } from '@/utils/types'
 import { getHashPart, setHashPart } from '@/utils/url'
 
@@ -245,6 +250,7 @@ export default Vue.extend({
   methods: {
     ...mapActions({
       setCategoriesFilters: 'menu/setFilters',
+      setSelectedFeature: 'map/selectFeature',
     }),
     goToHome() {
       this.service.send(HomeEvents.GoToHome)
@@ -324,6 +330,26 @@ export default Vue.extend({
           delete newFilters[this.context.selectedSubCategoryForFilters]
         }
         this.setCategoriesFilters(newFilters)
+      }
+    },
+    onSearchCategory(/* categoryId: Category['id'] */) {
+      // this.selectSubCategory([categoryId])
+    },
+    onSearchPoi(poiId: string) {
+      getPoiById(this.$config.API_ENDPOINT, poiId).then((poi) => {
+        if (poi) {
+          this.setSelectedFeature(poi).then(() => {
+            if (this.$refs.map) {
+              this.$refs.map.goToSelectedPoi()
+            }
+          })
+        }
+      })
+    },
+    onFeatureClick(feature: MapboxGeoJSONFeature) {
+      this.setSelectedFeature(null)
+      if (this.$refs.map) {
+        this.$refs.map.goTo(feature)
       }
     },
   },

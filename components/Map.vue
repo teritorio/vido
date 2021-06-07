@@ -48,7 +48,7 @@
           v-if="selectedFeature"
           :poi="selectedFeature"
           class="flex-grow-0"
-          @click="onPoiToastClick"
+          @click="goToSelectedPoi"
         />
       </div>
     </div>
@@ -61,7 +61,7 @@ import Bottleneck from 'bottleneck'
 import { deepEqual } from 'fast-equals'
 import throttle from 'lodash.throttle'
 import Mapbox from 'mapbox-gl-vue'
-import mapboxgl from 'maplibre-gl'
+import mapboxgl, { MapboxGeoJSONFeature } from 'maplibre-gl'
 import Vue from 'vue'
 import { mapGetters, mapActions } from 'vuex'
 
@@ -69,6 +69,7 @@ import MapControls from '@/components/MapControls.vue'
 import MapPoiToast from '@/components/MapPoiToast.vue'
 import TeritorioIconBadge from '@/components/TeritorioIcon/TeritorioIconBadge.vue'
 import { State as MenuState } from '@/store/menu'
+import { getPoiById } from '@/utils/api'
 import { VidoFeature, VidoMglStyle, TupleLatLng, Mode } from '@/utils/types'
 import { getHashPart, setHashPart } from '@/utils/url'
 
@@ -94,7 +95,6 @@ export default Vue.extend({
     markers: { [id: string]: mapboxgl.Marker }
     markersOnScreen: { [id: string]: mapboxgl.Marker }
     poiFilter: PoiFilter | null
-    selectedFeature: VidoFeature | null
     selectedFeatureMarker: mapboxgl.Marker | null
     selectedBackground: String
     featuresCoordinates: { [id: string]: TupleLatLng }
@@ -106,7 +106,6 @@ export default Vue.extend({
       markers: {},
       markersOnScreen: {},
       poiFilter: null,
-      selectedFeature: null,
       selectedFeatureMarker: null,
       selectedBackground: 'tourism-0.9',
       featuresCoordinates: {},
@@ -121,6 +120,7 @@ export default Vue.extend({
       features: 'menu/features',
       zoom: 'map/zoom',
       mode: 'site/mode',
+      selectedFeature: 'map/selectedFeature',
     }),
 
     isModeExplorer() {
@@ -334,6 +334,7 @@ export default Vue.extend({
   methods: {
     ...mapActions({
       resetMapview: 'map/resetMapview',
+      selectFeature: 'map/selectFeature',
     }),
 
     onMapInit(map: mapboxgl.Map) {
@@ -346,29 +347,27 @@ export default Vue.extend({
           this.poiFilter?.remove(true)
         }
       })
-      this.map.on('click', () => (this.selectedFeature = null))
+      this.map.on('click', () => this.selectFeature(null))
 
       // Listen to click on POI from vector tiles (explorer mode)
       this.map.on('click', 'poi-level-1', (e: Event) => {
-        this.selectedFeature = e.features.pop()
+        this.selectFeature(e.features.pop())
       })
       this.map.on('click', 'poi-level-2', (e: Event) => {
-        this.selectedFeature = e.features.pop()
+        this.selectFeature(e.features.pop())
       })
       this.map.on('click', 'poi-level-3', (e: Event) => {
-        this.selectedFeature = e.features.pop()
+        this.selectFeature(e.features.pop())
       })
 
-      this.map.on('data', () => {
-        // Restore selected POI from URL hash
-        const poiHash = getHashPart('poi')
-        if (poiHash && !this.selectedFeature && this.features) {
-          this.selectedFeature =
-            Object.values(this.features)
-              .flat()
-              .find((f) => f.properties?.metadata.PID === poiHash) || null
-        }
-      })
+      const poiHash = getHashPart('poi')
+      if (poiHash && !this.selectedFeature) {
+        getPoiById(this.$config.API_ENDPOINT, poiHash).then((poi) => {
+          if (poi) {
+            this.selectFeature(poi)
+          }
+        })
+      }
     },
 
     onMapPitchEnd(map: mapboxgl.Map) {
@@ -386,7 +385,7 @@ export default Vue.extend({
       cb()
     },
 
-    onPoiToastClick() {
+    goToSelectedPoi() {
       if (!this.map || !this.selectedFeature) {
         return
       }
@@ -394,6 +393,40 @@ export default Vue.extend({
         center: this.selectedFeature.geometry.coordinates,
         zoom: 15,
       })
+    },
+
+    goTo(feature: MapboxGeoJSONFeature) {
+      if (!this.map || !feature) {
+        return
+      }
+
+      const coords = feature.geometry.coordinates
+      let bounds: mapboxgl.LngLatBounds
+
+      switch (feature.geometry.type) {
+        case 'Point':
+          bounds = new mapboxgl.LngLatBounds([coords, coords])
+          break
+
+        case 'LineString':
+          bounds = coords.reduce(
+            (bounds: mapboxgl.LngLatBounds, coord: mapboxgl.LngLat) => {
+              return bounds.extend(coord)
+            },
+            new mapboxgl.LngLatBounds(coords[0], coords[0])
+          )
+          break
+
+        case 'Polygon':
+          bounds = coords
+            .flat(2)
+            .reduce((bounds: mapboxgl.LngLatBounds, coord: mapboxgl.LngLat) => {
+              return bounds.extend(coord)
+            }, new mapboxgl.LngLatBounds(coords[0], coords[0]))
+          break
+      }
+
+      this.map.fitBounds(bounds)
     },
 
     onClickChangeBackground(background: String) {
@@ -558,7 +591,7 @@ export default Vue.extend({
             if (props.metadata.HasPopup === 'yes') {
               el.addEventListener('click', (e) => {
                 e.stopPropagation()
-                this.selectedFeature = features[i]
+                this.selectFeature(features[i])
               })
             }
           }
