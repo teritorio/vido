@@ -59,6 +59,7 @@ import { MapboxGeoJSONFeature } from 'maplibre-gl'
 import Vue, { PropType } from 'vue'
 
 import TeritorioIcon from '@/components/TeritorioIcon/TeritorioIcon.vue'
+import { getPoiById } from '@/utils/api'
 import { VidoFeature } from '@/utils/types'
 
 export default Vue.extend({
@@ -206,25 +207,13 @@ export default Vue.extend({
         return Promise.resolve()
       }
 
-      return fetch(
-        `${
-          this.$config.API_ENDPOINT
-        }/geodata/v1/allposts?post_id=${this.poiProp('PID')}`
-      )
-        .then((data) => data.json())
-        .then((data) => {
-          const apiPoi = Object.values(data)
-            .flat()
-            .filter((v) => v !== null)
-            .map((v: any) => v.FeaturesCollection?.features)
-            .flat()
-            .filter((v) => v !== null)
-            .pop()
-
+      return getPoiById(this.$config.API_ENDPOINT, this.poiProp('PID')).then(
+        (apiPoi) => {
           if (apiPoi) {
             this.apiProps = apiPoi.properties
           }
-        })
+        }
+      )
     },
 
     fetchSpTags() {
