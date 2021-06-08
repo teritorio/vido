@@ -1,6 +1,7 @@
 <template>
   <aside
-    class="flex flex-col max-h-full px-5 py-4 space-y-6 bg-white shadow-md pointer-events-auto rounded-xl"
+    class="flex flex-col min-w-full max-h-full px-5 py-4 space-y-6 bg-white shadow-md pointer-events-auto rounded-xl"
+    style="min-width: 300px"
   >
     <button
       type="button"
@@ -20,6 +21,7 @@
           class="w-full px-5 py-3 font-medium text-gray-700 placeholder-gray-500 bg-gray-100 border-none rounded-full outline-none appearance-none focus:outline-none focus:ring focus:ring-gray-300"
           placeholder="Recherche"
           type="text"
+          @input="onSubmit"
         />
         <button
           class="absolute inset-y-0 right-0 px-5 text-gray-800 rounded-r-full outline-none focus:outline-none"
@@ -160,9 +162,20 @@ export default Vue.extend({
     },
 
     onSubmit() {
-      this.searchResults = null
+      // Reset results if empty search text
+      if (
+        !this.isLoading &&
+        (!this.searchText || this.searchText.trim().length === 0)
+      ) {
+        this.searchResults = null
+      }
 
-      if (this.searchText && this.searchText.trim().length >= 3) {
+      // Launch search if not already loading + search text length >= 3
+      if (
+        !this.isLoading &&
+        this.searchText &&
+        this.searchText.trim().length >= 3
+      ) {
         this.isLoading = true
         fetch(
           `${this.$config.API_ENDPOINT}/geodata/v1/search?q=${this.searchText}`
