@@ -38,6 +38,7 @@
         :map="map"
         :pitch="pitch"
         :backgrounds="availableStyles"
+        :initial-background="selectedBackground"
         @changeBackground="onClickChangeBackground"
       />
 
@@ -107,7 +108,7 @@ export default Vue.extend({
       markersOnScreen: {},
       poiFilter: null,
       selectedFeatureMarker: null,
-      selectedBackground: 'tourism-0.9',
+      selectedBackground: 'tourism-proxy',
       featuresCoordinates: {},
       allowRegionBackZoom: false,
     }

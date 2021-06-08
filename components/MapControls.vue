@@ -105,6 +105,10 @@ export default Vue.extend({
       type: Object,
       default: null,
     },
+    initialBackground: {
+      type: String,
+      default: null,
+    },
   },
 
   data(): {
@@ -169,6 +173,8 @@ export default Vue.extend({
   mounted() {
     if (getHashPart('bg') && this.backgrounds[getHashPart('bg') || '']) {
       this.background = getHashPart('bg')
+    } else if (this.initialBackground) {
+      this.background = this.initialBackground
     } else {
       this.nextBackground()
     }
