@@ -183,7 +183,6 @@ export default Vue.extend({
 
   methods: {
     onPoiChange() {
-      // console.log(this.poi.properties)
       this.sptags = null
       this.apiProps = null
       if (this.poi && this.poiProp('metadata')) {
@@ -204,17 +203,18 @@ export default Vue.extend({
     },
 
     fetchMetadata(): Promise<void> {
-      if (!this.poiProp('PID')) {
+      if (!this.poiProp('PID') && !this.poi.id) {
         return Promise.resolve()
       }
 
-      return getPoiById(this.$config.API_ENDPOINT, this.poiProp('PID')).then(
-        (apiPoi) => {
-          if (apiPoi) {
-            this.apiProps = apiPoi.properties
-          }
+      return getPoiById(
+        this.$config.API_ENDPOINT,
+        this.poiProp('PID') || this.poi.id
+      ).then((apiPoi) => {
+        if (apiPoi) {
+          this.apiProps = apiPoi.properties
         }
-      )
+      })
     },
 
     fetchSpTags() {
