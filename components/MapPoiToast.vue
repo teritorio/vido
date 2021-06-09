@@ -183,6 +183,7 @@ export default Vue.extend({
 
   methods: {
     onPoiChange() {
+      // console.log(this.poi.properties)
       this.sptags = null
       this.apiProps = null
       if (this.poi && this.poiProp('metadata')) {

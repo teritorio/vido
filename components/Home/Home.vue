@@ -42,6 +42,7 @@
 
           <SearchHeader
             v-if="current.matches(states.Search)"
+            :datasources-to-categories="datasourcesToCategories"
             @go-back-click="goToHome"
             @category-click="onSearchCategory"
             @poi-click="onSearchPoi"
@@ -76,7 +77,7 @@ import SelectedSubCategoriesDense from '@/components/SelectedSubCategoriesDense.
 import SubCategoryFilterHeader from '@/components/SubCategoryFilterHeader.vue'
 import SubCategoryHeader from '@/components/SubCategoryHeader.vue'
 import { getPoiById } from '@/utils/api'
-import { Category, Mode, FiltreValues } from '@/utils/types'
+import { Category, Mode, FiltreValues, DataSource } from '@/utils/types'
 import { getHashPart, setHashPart } from '@/utils/url'
 
 import {
@@ -226,6 +227,18 @@ export default Vue.extend({
     filteredSubCategories(): Category['id'][] {
       return Object.keys(this.filters)
     },
+    datasourcesToCategories(): { [id: string]: Category['id'][] } {
+      const res: { [id: string]: Category['id'][] } = {}
+      this.subCategories.forEach((sc: Category) => {
+        sc.datasources.forEach((ds: DataSource) => {
+          if (!res[ds.idsrc]) {
+            res[ds.idsrc] = []
+          }
+          res[ds.idsrc].push(sc.id)
+        })
+      })
+      return res
+    },
   },
   created() {
     this.service
@@ -332,8 +345,8 @@ export default Vue.extend({
         this.setCategoriesFilters(newFilters)
       }
     },
-    onSearchCategory(/* categoryId: Category['id'] */) {
-      // this.selectSubCategory([categoryId])
+    onSearchCategory(subcategoryIds: Category[]) {
+      this.selectSubCategory(subcategoryIds)
     },
     onSearchPoi(poiId: string) {
       getPoiById(this.$config.API_ENDPOINT, poiId).then((poi) => {

@@ -73,14 +73,21 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
+import Vue, { PropType } from 'vue'
 
 import SearchResultBlock from '@/components/SearchResultBlock.vue'
-import { ApiSearchResults, SearchResult } from '@/utils/types'
+import { ApiSearchResults, SearchResult, Category } from '@/utils/types'
 
 export default Vue.extend({
   components: {
     SearchResultBlock,
+  },
+
+  props: {
+    datasourcesToCategories: {
+      type: Object as PropType<{ [id: string]: Category['id'][] }>,
+      required: true,
+    },
   },
 
   data(): {
@@ -107,10 +114,12 @@ export default Vue.extend({
 
     itemsClasse(): SearchResult[] {
       return this.searchResults && Array.isArray(this.searchResults.classe)
-        ? this.searchResults.classe.map((v) => ({
-            id: v.idmenu,
-            label: `${v.label} (${v.poi_type.toUpperCase()})`,
-          }))
+        ? this.searchResults.classe
+            .map((v) => ({
+              id: v.idmenu,
+              label: `${v.label} (${v.poi_type.toUpperCase()})`,
+            }))
+            .filter((v) => this.datasourcesToCategories[v.id])
         : []
     },
 
@@ -145,7 +154,9 @@ export default Vue.extend({
     },
 
     onCategoryClick(id: string) {
-      this.$emit('category-click', id)
+      if (this.datasourcesToCategories[id]) {
+        this.$emit('category-click', this.datasourcesToCategories[id])
+      }
     },
 
     onPoiClick(id: string) {
