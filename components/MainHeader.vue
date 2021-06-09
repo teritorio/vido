@@ -1,18 +1,11 @@
 <template>
   <aside
-    class="px-5 py-4 space-y-10 bg-white shadow-md pointer-events-auto rounded-xl"
+    class="absolute sm:relative inset-x-0 bottom-0 sm:inset-auto h-3/5 sm:h-auto overflow-y-auto px-5 py-4 sm:space-y-10 bg-white shadow-md pointer-events-auto rounded-t-lg rounded-b-none sm:rounded-xl"
   >
-    <div class="flex items-center justify-between">
+    <div class="hidden sm:flex items-center justify-between">
       <h1>
         <img :aria-label="siteName" :src="logoUrl" class="w-40 h-auto" />
       </h1>
-
-      <!-- <button
-          type="button"
-          class="flex items-center justify-center w-10 h-10 text-2xl font-bold transition-all rounded-full outline-none cursor-pointer focus:outline-none hover:bg-gray-100 focus:bg-gray-100"
-        >
-          <font-awesome-icon icon="minus" class="text-gray-800" size="xs" />
-        </button> -->
 
       <button
         type="button"

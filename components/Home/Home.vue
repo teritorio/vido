@@ -1,14 +1,25 @@
 <template>
   <div class="fixed w-full h-full overflow-hidden">
-    <Map v-if="isMapConfigLoaded" ref="map" class="absolute" />
+    <Map
+      v-if="isMapConfigLoaded"
+      ref="map"
+      class="absolute"
+      @click="onMapClick"
+    />
 
     <header
-      class="fixed top-0 bottom-0 flex flex-row w-full h-full p-4 space-x-4 pointer-events-none"
+      class="z-10 fixed top-0 bottom-0 w-full sm:w-auto flex flex-row h-full sm:p-4 space-x-4 pointer-events-none"
     >
-      <div class="flex flex-col justify-between max-w-md space-y-4">
+      <div
+        :class="[
+          'flex-col justify-between w-full sm:w-auto sm:max-w-md space-y-4',
+          selectedFeature && 'hidden sm:flex',
+          !selectedFeature && 'flex',
+        ]"
+      >
         <transition name="headers" appear mode="out-in">
           <MainHeader
-            v-if="current.matches(states.Home) && isMenuConfigLoaded"
+            v-if="current.matches(states.Categories) && isMenuConfigLoaded"
             :highlighted-categories="highlightedRootCategories"
             :logo-url="logoUrl"
             :non-highlighted-categories="nonHighlightedRootCategories"
@@ -40,26 +51,45 @@
             @go-back-click="onBackToSubCategoryClick"
           />
 
-          <SearchHeader
+          <div
             v-if="current.matches(states.Search)"
-            :datasources-to-categories="datasourcesToCategories"
-            @go-back-click="goToHome"
-            @category-click="onSearchCategory"
-            @poi-click="onSearchPoi"
-            @feature-click="onFeatureClick"
-          />
+            :class="['max-h-full', isBottomMenuOpened && 'hidden sm:block']"
+          >
+            <SearchHeader
+              :site-name="siteName"
+              :logo-url="logoUrl"
+              @go-back-click="goToHome"
+              @category-click="onSearchCategory"
+              @poi-click="onSearchPoi"
+              @feature-click="onFeatureClick"
+            />
+          </div>
         </transition>
       </div>
 
-      <div>
+      <div
+        v-if="!isModeExplorer && selectedSubCategories.length"
+        class="hidden sm:block"
+      >
         <SelectedSubCategoriesDense
-          v-if="!isModeExplorer && selectedSubCategories.length"
           :categories="selectedSubCategories"
           :is-sub-category-selected="isSubCategorySelected"
           @category-unselect="unselectSubCategory"
         />
       </div>
     </header>
+
+    <button
+      v-if="!isModeExplorer || selectedFeature"
+      :class="[
+        'z-0 absolute sm:hidden right-1/3 left-1/3 w-1/3 h-8 transition-all rounded-t-lg text-sm font-medium px-5 space-x-1 shadow-lg outline-none focus:outline-none bg-white text-gray-800 hover:bg-gray-100 focus-visible:bg-gray-100',
+        isBottomMenuOpened && 'bottom-3/5',
+        !isBottomMenuOpened && 'bottom-0',
+      ]"
+      @click="onBottomMenuButtonClick"
+    >
+      <font-awesome-icon icon="grip-lines" size="lg" />
+    </button>
   </div>
 </template>
 
@@ -77,7 +107,7 @@ import SelectedSubCategoriesDense from '@/components/SelectedSubCategoriesDense.
 import SubCategoryFilterHeader from '@/components/SubCategoryFilterHeader.vue'
 import SubCategoryHeader from '@/components/SubCategoryHeader.vue'
 import { getPoiById } from '@/utils/api'
-import { Category, Mode, FiltreValues, DataSource } from '@/utils/types'
+import { Category, Mode, FiltreValues } from '@/utils/types'
 import { getHashPart, setHashPart } from '@/utils/url'
 
 import {
@@ -169,6 +199,7 @@ export default Vue.extend({
       subCategories: 'menu/subCategories',
       filters: 'menu/filters',
       mode: 'site/mode',
+      selectedFeature: 'map/selectedFeature',
     }),
     logoUrl() {
       return this.siteInfos('fr')?.logo || ''
@@ -185,6 +216,14 @@ export default Vue.extend({
     },
     isModeExplorer() {
       return this.mode === Mode.EXPLORER
+    },
+    isBottomMenuOpened() {
+      return (
+        this.selectedFeature ||
+        this.current.matches(this.states.Categories) ||
+        this.current.matches(this.states.SubCategories) ||
+        this.current.matches(this.states.SubCategoryFilters)
+      )
     },
     rootCategories() {
       return this.highlightedRootCategories.concat(
@@ -227,17 +266,17 @@ export default Vue.extend({
     filteredSubCategories(): Category['id'][] {
       return Object.keys(this.filters)
     },
-    datasourcesToCategories(): { [id: string]: Category['id'][] } {
-      const res: { [id: string]: Category['id'][] } = {}
-      this.subCategories.forEach((sc: Category) => {
-        sc.datasources.forEach((ds: DataSource) => {
-          if (!res[ds.idsrc]) {
-            res[ds.idsrc] = []
-          }
-          res[ds.idsrc].push(sc.id)
-        })
-      })
-      return res
+  },
+  watch: {
+    current(val, oldVal) {
+      if (val.matches(this.states.Home) && !oldVal.matches(this.states.Home)) {
+        this.goToHome()
+      }
+    },
+    mode() {
+      if (this.isModeExplorer) {
+        this.unselectSubCategory(this.context.selectedSubCategoriesIds)
+      }
     },
   },
   created() {
@@ -259,6 +298,8 @@ export default Vue.extend({
     if (typeof location !== 'undefined' && getHashPart('cat')) {
       this.selectSubCategory(getHashPart('cat')?.split('.') || [])
     }
+
+    this.goToHome()
   },
   methods: {
     ...mapActions({
@@ -267,6 +308,11 @@ export default Vue.extend({
     }),
     goToHome() {
       this.service.send(HomeEvents.GoToHome)
+      if (this.$isMobile()) {
+        this.goToSearch()
+      } else {
+        this.goToCategories()
+      }
     },
     goToParentFromSubCategory() {
       if (this.context.selectedRootCategory) {
@@ -276,14 +322,17 @@ export default Vue.extend({
         if (rootCat && rootCat.level >= 2) {
           this.onRootCategoryClick(rootCat.parent)
         } else {
-          this.goToHome()
+          this.service.send(HomeEvents.GoToCategories)
         }
       } else {
-        this.goToHome()
+        this.service.send(HomeEvents.GoToCategories)
       }
     },
     goToSearch() {
       this.service.send(HomeEvents.GoToSearch)
+    },
+    goToCategories() {
+      this.service.send(HomeEvents.GoToCategories)
     },
     isSubCategorySelected(subCategoryId: Category['id']) {
       return this.context.selectedSubCategoriesIds.includes(subCategoryId)
@@ -345,8 +394,8 @@ export default Vue.extend({
         this.setCategoriesFilters(newFilters)
       }
     },
-    onSearchCategory(subcategoryIds: Category[]) {
-      this.selectSubCategory(subcategoryIds)
+    onSearchCategory(subcategoryId: Category['id']) {
+      this.selectSubCategory([subcategoryId])
     },
     onSearchPoi(poiId: string) {
       getPoiById(this.$config.API_ENDPOINT, poiId).then((poi) => {
@@ -363,6 +412,21 @@ export default Vue.extend({
       this.setSelectedFeature(null)
       if (this.$refs.map) {
         this.$refs.map.goTo(feature)
+      }
+    },
+    onBottomMenuButtonClick() {
+      if (this.isBottomMenuOpened) {
+        if (this.selectedFeature) {
+          this.setSelectedFeature(null)
+        }
+        this.goToHome()
+      } else if (!this.isModeExplorer) {
+        this.goToCategories()
+      }
+    },
+    onMapClick() {
+      if (this.$isMobile()) {
+        this.goToHome()
       }
     },
   },
@@ -389,5 +453,13 @@ export default Vue.extend({
 .headers-leave-to {
   opacity: 0;
   transform: translateX(-10px);
+}
+
+.bottom-2\/5 {
+  bottom: 40%;
+}
+
+.bottom-3\/5 {
+  bottom: 60%;
 }
 </style>

@@ -43,7 +43,7 @@
       />
 
       <div
-        class="absolute flex justify-center pointer-events-none inset-x-3 bottom-3"
+        class="absolute flex justify-center pointer-events-none h-3/5 sm:h-auto overflow-y-auto inset-x-0 bottom-0 sm:inset-x-3 sm:bottom-3"
       >
         <MapPoiToast
           v-if="selectedFeature"
@@ -348,7 +348,10 @@ export default Vue.extend({
           this.poiFilter?.remove(true)
         }
       })
-      this.map.on('click', () => this.selectFeature(null))
+      this.map.on('click', () => {
+        this.selectFeature(null)
+        this.$emit('click')
+      })
 
       // Listen to click on POI from vector tiles (explorer mode)
       this.map.on('click', 'poi-level-1', (e: Event) => {

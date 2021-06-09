@@ -16,6 +16,7 @@ export interface HomeContext {
 export enum HomeEvents {
   Init = 'xstate.init',
   GoToHome = 'GO_TO_HOME',
+  GoToCategories = 'GO_TO_CATEGORIES',
   GoToSearch = 'GO_TO_SEARCH',
   GoToSubCategories = 'GO_TO_SUB_CATEGORIES',
   GoToSubCategoryFilters = 'GO_TO_SUB_CATEGORY_FILTERS',
@@ -26,8 +27,9 @@ export enum HomeEvents {
 
 export type HomeEvent =
   | { type: HomeEvents.Init }
-  | { type: HomeEvents.GoToSearch }
   | { type: HomeEvents.GoToHome }
+  | { type: HomeEvents.GoToSearch }
+  | { type: HomeEvents.GoToCategories }
   | {
       type: HomeEvents.GoToSubCategories
       rootCategoryId: Category['id']
@@ -52,6 +54,7 @@ export type HomeEvent =
 
 export enum HomeStates {
   Home = 'home',
+  Categories = 'categories',
   Idle = 'idle',
   Search = 'search',
   SubCategories = 'subCategories',
@@ -65,6 +68,7 @@ export enum HomeStates {
 export interface HomeStateSchema {
   states: {
     [HomeStates.Home]: {}
+    [HomeStates.Categories]: {}
     [HomeStates.Search]: {}
     [HomeStates.SubCategories]: {
       states: {
@@ -99,9 +103,19 @@ export const homeMachine = Machine<HomeContext, HomeStateSchema, HomeEvent>(
     states: {
       [HomeStates.Home]: {
         meta: {
+          description: 'Home',
+        },
+        on: {
+          [HomeEvents.GoToCategories]: HomeStates.Categories,
+          [HomeEvents.GoToSearch]: HomeStates.Search,
+        },
+      },
+      [HomeStates.Categories]: {
+        meta: {
           description: 'Main header containing the root categories',
         },
         on: {
+          [HomeEvents.GoToHome]: HomeStates.Home,
           [HomeEvents.GoToSearch]: HomeStates.Search,
           [HomeEvents.GoToSubCategories]: {
             target: HomeStates.SubCategories,
@@ -115,6 +129,7 @@ export const homeMachine = Machine<HomeContext, HomeStateSchema, HomeEvent>(
         },
         on: {
           [HomeEvents.GoToHome]: HomeStates.Home,
+          [HomeEvents.GoToCategories]: HomeStates.Categories,
         },
       },
       [HomeStates.SubCategories]: {
@@ -125,6 +140,7 @@ export const homeMachine = Machine<HomeContext, HomeStateSchema, HomeEvent>(
         exit: ['resetSelectedRootCategoryId'],
         on: {
           [HomeEvents.GoToHome]: HomeStates.Home,
+          [HomeEvents.GoToCategories]: HomeStates.Categories,
           [HomeEvents.GoToSubCategories]: {
             target: HomeStates.SubCategories,
             actions: ['onGoToSubCategories'],
@@ -167,6 +183,7 @@ export const homeMachine = Machine<HomeContext, HomeStateSchema, HomeEvent>(
           description: 'Secondary header containing subcategory filters',
         },
         on: {
+          [HomeEvents.GoToHome]: HomeStates.Home,
           [HomeEvents.GoToSubCategories]: {
             target: HomeStates.SubCategories,
             actions: ['onGoToSubCategories'],

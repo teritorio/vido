@@ -39,6 +39,7 @@
     "mapbox-gl-vue": "^2.0.4",
     "maplibre-gl": "^1.14.0",
     "nuxt": "^2.14.12",
+    "vue-mobile-detection": "^1.0.0",
     "vue-multiselect": "^2.1.6",
     "wcag-contrast": "^3.0.0",
     "xstate": "^4.17.1"

@@ -1,6 +1,6 @@
 <template>
   <aside
-    class="flex flex-col px-5 py-4 space-y-6 bg-white shadow-md pointer-events-auto rounded-xl max-h-full"
+    class="absolute sm:relative inset-x-0 bottom-0 sm:inset-auto h-3/5 sm:h-auto overflow-y-auto flex flex-col px-5 py-4 space-y-6 bg-white shadow-md pointer-events-auto rounded-t-lg rounded-b-none sm:rounded-xl"
     style="min-width: 200px"
   >
     <div class="flex justify-between">

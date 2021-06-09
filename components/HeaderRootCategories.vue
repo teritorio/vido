@@ -21,7 +21,10 @@
     </button> -->
 
     <transition name="non-highlighted" appear>
-      <div v-if="!collapsed" class="grid items-start grid-cols-4 gap-3">
+      <div
+        v-if="!collapsed"
+        class="grid items-start grid-cols-3 sm:grid-cols-4 gap-3"
+      >
         <CategoryButton
           v-for="category in nonHighlightedCategories"
           :id="category.id"

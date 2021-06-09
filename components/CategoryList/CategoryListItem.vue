@@ -54,7 +54,7 @@
     <button
       v-if="category.filtres.length > 0 && selected"
       :class="[
-        'w-full text-left rounded-lg outline-none focus:outline-none hover:bg-gray-100',
+        'w-full h-12 sm:h-8 text-left rounded-lg outline-none focus:outline-none hover:bg-gray-100',
         filtered && 'text-green-500',
         !filtered && 'text-gray-500',
       ]"

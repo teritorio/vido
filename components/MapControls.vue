@@ -7,7 +7,7 @@
         v-if="map"
         aria-label="Favoris"
         type="button"
-        class="'text-sm font-medium px-5 space-x-1 rounded-full shadow-md h-11 outline-none focus:outline-none bg-white text-gray-800 hover:bg-gray-100 focus-visible:bg-gray-100',"
+        class="hidden sm:block text-sm font-medium px-5 space-x-1 rounded-full shadow-md h-11 outline-none focus:outline-none bg-white text-gray-800 hover:bg-gray-100 focus-visible:bg-gray-100"
       >
         <font-awesome-icon icon="star" class="text-yellow-500" size="sm" />
         <span>Favoris</span>
@@ -17,7 +17,7 @@
         v-if="map"
         aria-label="Navigation"
         type="button"
-        class="'text-sm rounded-full shadow-md w-11 h-11 outline-none focus:outline-none bg-white text-gray-800 hover:bg-gray-100 focus-visible:bg-gray-100',"
+        class="hidden sm:block text-sm rounded-full shadow-md w-11 h-11 outline-none focus:outline-none bg-white text-gray-800 hover:bg-gray-100 focus-visible:bg-gray-100"
       >
         <font-awesome-icon icon="bars" class="text-gray-800" size="sm" />
       </button>

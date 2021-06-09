@@ -23,6 +23,7 @@ import {
   faMapMarkerAlt,
   faLayerGroup,
   faHome,
+  faGripLines,
 } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import Vue from 'vue'
@@ -53,7 +54,8 @@ library.add(
   faSpinner,
   faMapMarkerAlt,
   faLayerGroup,
-  faHome
+  faHome,
+  faGripLines
 )
 
 // Register the component globally

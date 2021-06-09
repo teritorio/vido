@@ -3,7 +3,13 @@
  */
 export function setHashPart(key: string, val: string | null) {
   const params = new URLSearchParams(location.hash.substring(1))
-  if (val === null) {
+  if (
+    val === null ||
+    val === undefined ||
+    val === '' ||
+    val === 'null' ||
+    val === 'undefined'
+  ) {
     params.delete(key)
   } else {
     params.set(key, val)

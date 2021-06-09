@@ -1,11 +1,11 @@
 <template>
   <div
-    class="flex max-w-xl mx-auto overflow-hidden bg-white shadow-md pointer-events-auto rounded-xl"
+    class="z-10 flex flex-col sm:flex-row max-w-xl mx-0 w-full sm:w-auto sm:mx-auto overflow-y-auto bg-white shadow-md pointer-events-auto rounded-t-xl sm:rounded-xl"
     @click="() => $emit('click')"
   >
     <img
       v-if="poiProp('teritorio:image')"
-      class="object-cover w-52"
+      class="object-cover w-full h-auto max-h-44 sm:max-h-full sm:w-52"
       :src="poiProp('teritorio:image')"
       alt=""
     />

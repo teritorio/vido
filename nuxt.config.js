@@ -44,7 +44,7 @@ export default {
   },
 
   // Plugins to run before rendering page (https://go.nuxtjs.dev/config-plugins)
-  plugins: ['@/plugins/fontawesome.ts'],
+  plugins: ['@/plugins/fontawesome.ts', '@/plugins/mobile.ts'],
 
   // Auto import components (https://go.nuxtjs.dev/config-components)
   components: false,
@@ -92,6 +92,11 @@ export default {
         mapboxgl: 'maplibre-gl',
       }),
     ],
+  },
+
+  // Server config (allow listening to local network)
+  server: {
+    host: '0.0.0.0',
   },
 
   // Storybook module configuration (https://storybook.nuxtjs.org/setup)
