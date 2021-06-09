@@ -44,18 +44,18 @@
       />
 
       <SearchResultBlock
-        v-if="itemsOsm.length > 0"
-        label="Points d'intérêts (OSM)"
-        icon="map-marker-alt"
-        :items="itemsOsm"
-        @item-click="onPoiClick"
-      />
-
-      <SearchResultBlock
         v-if="itemsTis.length > 0"
         label="Points d'intérêts (TIS)"
         icon="map-marker-alt"
         :items="itemsTis"
+        @item-click="onPoiClick"
+      />
+
+      <SearchResultBlock
+        v-if="itemsOsm.length > 0"
+        label="Points d'intérêts (OSM)"
+        icon="map-marker-alt"
+        :items="itemsOsm"
         @item-click="onPoiClick"
       />
 
