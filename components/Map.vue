@@ -275,7 +275,7 @@ export default Vue.extend({
 
       // Add new marker if a feature is selected
       if (feature) {
-        setHashPart('poi', feature.properties.PID)
+        setHashPart('poi', feature.properties.PID || feature.id)
         this.selectedFeatureMarker = new mapboxgl.Marker({
           scale: 1.3,
           color: '#f44336',
