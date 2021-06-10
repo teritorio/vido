@@ -15,6 +15,7 @@
         <p
           class="block text-xl font-semibold leading-tight cursor-pointer"
           :style="'color:' + color"
+          title="Zoomer sur le lieu"
         >
           {{ name }}
         </p>
@@ -25,6 +26,7 @@
           class="ml-2 rounded-lg px-2 py-1"
           :style="'background-color: ' + color"
           target="_blank"
+          title="Voir les détails du lieu"
           @click.stop
         >
           <font-awesome-icon
@@ -61,19 +63,27 @@
         <button
           class="flex flex-1 flex-col items-center rounded-lg border-2 border-gray-300 hover:bg-gray-100 p-2 h-full"
           title="Trouver la route pour venir jusqu'à ce lieu"
-          @click="onRouteClick"
+          @click.stop="onRouteClick"
         >
           <font-awesome-icon icon="route" :color="color" size="sm" />
           <span class="text-sm">Itinéraire</span>
         </button>
         <button
-          class="flex flex-1 flex-col items-center rounded-lg border-2 border-gray-300 hover:bg-gray-100 p-2 h-full"
-          title="Explorer les points d'intérêts aux alentours"
-          @click="onExploreClick"
+          :class="[
+            'flex flex-1 flex-col items-center rounded-lg border-2 p-2 h-full',
+            isModeExplorer && 'bg-blue-600 text-white hover:bg-blue-500',
+            !isModeExplorer && 'border-gray-300 hover:bg-gray-100',
+          ]"
+          :title="
+            isModeExplorer
+              ? 'Désactiver l\'exploration aux alentours'
+              : 'Explorer les points d\'intérêts aux alentours'
+          "
+          @click.stop="onExploreClick"
         >
           <font-awesome-icon
             :icon="['far', 'compass']"
-            :color="color"
+            :color="isModeExplorer ? 'white' : color"
             size="sm"
           />
           <span class="text-sm">Explorer</span>
@@ -81,6 +91,7 @@
         <button
           class="flex flex-1 flex-col items-center rounded-lg border-2 border-gray-300 hover:bg-gray-100 p-2 h-full"
           title="Mettre en favori"
+          @click.stop
         >
           <font-awesome-icon :icon="['far', 'star']" :color="color" size="sm" />
           <span class="text-sm">Favori</span>
@@ -93,11 +104,12 @@
 <script lang="ts">
 import { MapboxGeoJSONFeature } from 'maplibre-gl'
 import Vue, { PropType } from 'vue'
+import { mapGetters } from 'vuex'
 
 import TeritorioIcon from '@/components/TeritorioIcon/TeritorioIcon.vue'
 import { getPoiById } from '@/utils/api'
 import { getContrastedTextColor } from '@/utils/picto'
-import { VidoFeature } from '@/utils/types'
+import { VidoFeature, Mode } from '@/utils/types'
 
 export default Vue.extend({
   components: {
@@ -122,6 +134,14 @@ export default Vue.extend({
   },
 
   computed: {
+    ...mapGetters({
+      mode: 'site/mode',
+    }),
+
+    isModeExplorer() {
+      return this.mode === Mode.EXPLORER
+    },
+
     hasFiche(): boolean {
       return this.poiMeta('hasfiche') === 'yes'
     },

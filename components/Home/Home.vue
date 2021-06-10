@@ -3,8 +3,9 @@
     <Map
       v-if="isMapConfigLoaded"
       ref="map"
-      class="absolute"
+      :small="isBottomMenuOpened"
       @click="onMapClick"
+      @change-mode="onMapChangeMode"
     />
 
     <header
@@ -81,8 +82,9 @@
 
     <button
       v-if="!isModeExplorer || selectedFeature"
+      v-touch:swipe.stop="onBottomMenuButtonClick"
       :class="[
-        'z-0 absolute sm:hidden right-1/3 left-1/3 w-1/3 h-8 transition-all rounded-t-lg text-sm font-medium px-5 space-x-1 shadow-lg outline-none focus:outline-none bg-white text-gray-800 hover:bg-gray-100 focus-visible:bg-gray-100',
+        'z-0 absolute sm:hidden right-3/8 left-3/8 w-1/4 h-12 transition-all rounded-t-lg text-sm font-medium px-5 space-x-1 shadow-lg outline-none focus:outline-none bg-white text-gray-800 hover:bg-gray-100 focus-visible:bg-gray-100',
         isBottomMenuOpened && 'bottom-3/5',
         !isBottomMenuOpened && 'bottom-0',
       ]"
@@ -144,6 +146,7 @@ export default Vue.extend({
     events: typeof HomeEvents
     service: Interpreter<HomeContext, HomeStateSchema, HomeEvent>
     states: typeof HomeStates
+    previousSubCategories: Category['id'][]
   } {
     const debouncedFetchFeatures = debounce(
       (selectedSubCategoriesIds) =>
@@ -171,6 +174,7 @@ export default Vue.extend({
         interpretOptions
       ),
       states: HomeStates,
+      previousSubCategories: [],
     }
   },
   head() {
@@ -217,9 +221,14 @@ export default Vue.extend({
     isModeExplorer() {
       return this.mode === Mode.EXPLORER
     },
+    isPoiToastVisible() {
+      return (
+        this.selectedFeature && this.$refs.map && this.$refs.map.showPoiToast
+      )
+    },
     isBottomMenuOpened() {
       return (
-        this.selectedFeature ||
+        this.isPoiToastVisible ||
         this.current.matches(this.states.Categories) ||
         this.current.matches(this.states.SubCategories) ||
         this.current.matches(this.states.SubCategoryFilters)
@@ -417,16 +426,31 @@ export default Vue.extend({
     onBottomMenuButtonClick() {
       if (this.isBottomMenuOpened) {
         if (this.selectedFeature) {
-          this.setSelectedFeature(null)
+          if (!this.isModeExplorer) {
+            this.setSelectedFeature(null)
+          } else {
+            this.$refs.map.setPoiToastVisibility(false)
+          }
         }
         this.goToHome()
       } else if (!this.isModeExplorer) {
         this.goToCategories()
+      } else if (this.selectedFeature && !this.isPoiToastVisible) {
+        this.$refs.map.setPoiToastVisibility(true)
       }
     },
     onMapClick() {
       if (this.$isMobile()) {
         this.goToHome()
+      }
+    },
+    onMapChangeMode(mode: Mode) {
+      if (mode === Mode.BROWSER) {
+        this.$store.dispatch('site/setMode', mode)
+        this.selectSubCategory(this.previousSubCategories)
+      } else if (mode === Mode.EXPLORER) {
+        this.previousSubCategories = this.context.selectedSubCategoriesIds
+        this.$store.dispatch('site/setMode', mode)
       }
     },
   },
@@ -461,5 +485,12 @@ export default Vue.extend({
 
 .bottom-3\/5 {
   bottom: 60%;
+}
+
+.right-3\/8 {
+  right: 37.5%;
+}
+.left-3\/8 {
+  left: 37.5%;
 }
 </style>

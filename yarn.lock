@@ -4694,6 +4694,7 @@ __metadata:
     vue-jest: ^3.0.7
     vue-mobile-detection: ^1.0.0
     vue-multiselect: ^2.1.6
+    vue2-touch-events: ^3.2.2
     wcag-contrast: ^3.0.0
     xstate: ^4.17.1
   languageName: unknown
@@ -23291,6 +23292,13 @@ typescript@~4.0:
   version: 1.9.1
   resolution: "vue-template-es2015-compiler@npm:1.9.1"
   checksum: e25c0d4603cafb76a2d2c2adbd5cc62f419377d23d65118bc19793320c6448ef80ae191a8d6ec88e62fdd7ecb33d54850b232b02110da94a1fcfac3e062e9e83
+  languageName: node
+  linkType: hard
+
+"vue2-touch-events@npm:^3.2.2":
+  version: 3.2.2
+  resolution: "vue2-touch-events@npm:3.2.2"
+  checksum: c69015aa0c4f07acce6b74f1a4d94514d1cffe7665611c9fe91744be695420e2faddfb2a37e7fa25789406c79dac034e54405550c72c05bacd7e27302acc41ad
   languageName: node
   linkType: hard
 

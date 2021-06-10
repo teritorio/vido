@@ -32,7 +32,7 @@
           aria-label="Visualiser la carte en 3D"
           type="button"
           :class="[
-            'text-sm font-bold rounded-full shadow-md w-11 h-11 outline-none focus:outline-none ',
+            'hidden sm:block text-sm font-bold rounded-full shadow-md w-11 h-11 outline-none focus:outline-none ',
             is3D &&
               'bg-blue-500 text-white hover:bg-blue-400 focus-visible:bg-blue-400',
             !is3D &&
@@ -60,7 +60,7 @@
           title="Basculer en mode Explore"
           type="button"
           :class="[
-            'text-sm font-bold rounded-full shadow-md w-11 h-11 outline-none focus:outline-none ',
+            'hidden sm:block text-sm font-bold rounded-full shadow-md w-11 h-11 outline-none focus:outline-none ',
             isModeExplorer &&
               'bg-blue-500 hover:bg-blue-400 focus-visible:bg-blue-400',
             !isModeExplorer &&

@@ -1,8 +1,15 @@
 <template>
   <div class="w-full h-full">
-    <div class="relative flex flex-col w-full h-full">
-      <div id="map" class="flex-grow overflow-hidden">
+    <div
+      :class="[
+        'relative flex flex-col w-full',
+        small && 'h-2/5',
+        !small && 'h-full',
+      ]"
+    >
+      <div class="flex-grow overflow-hidden">
         <mapbox
+          class="h-full"
           access-token=""
           :map-options="{
             center: [center.lng, center.lat],
@@ -43,10 +50,10 @@
       />
 
       <div
-        class="absolute flex justify-center pointer-events-none h-3/5 sm:h-auto overflow-y-auto inset-x-0 bottom-0 sm:inset-x-3 sm:bottom-3"
+        class="fixed flex justify-center pointer-events-none h-3/5 sm:h-auto overflow-y-auto inset-x-0 bottom-0 sm:inset-x-3 sm:bottom-3"
       >
         <MapPoiToast
-          v-if="selectedFeature"
+          v-if="selectedFeature && showPoiToast"
           :poi="selectedFeature"
           class="flex-grow-0"
           @click="goToSelectedPoi"
@@ -72,7 +79,13 @@ import MapPoiToast from '@/components/MapPoiToast.vue'
 import TeritorioIconBadge from '@/components/TeritorioIcon/TeritorioIconBadge.vue'
 import { State as MenuState } from '@/store/menu'
 import { getPoiById } from '@/utils/api'
-import { VidoFeature, VidoMglStyle, TupleLatLng, Mode } from '@/utils/types'
+import {
+  VidoFeature,
+  VidoMglStyle,
+  TupleLatLng,
+  Mode,
+  Category,
+} from '@/utils/types'
 import { getHashPart, setHashPart } from '@/utils/url'
 
 const POI_SOURCE = 'poi'
@@ -91,6 +104,13 @@ export default Vue.extend({
     MapPoiToast,
   },
 
+  props: {
+    small: {
+      type: Boolean,
+      default: false,
+    },
+  },
+
   data(): {
     map: mapboxgl.Map | null
     pitch: number
@@ -101,6 +121,8 @@ export default Vue.extend({
     selectedBackground: String
     featuresCoordinates: { [id: string]: TupleLatLng }
     allowRegionBackZoom: boolean
+    showPoiToast: boolean
+    previousCategories: Category['id'][]
   } {
     return {
       map: null,
@@ -112,6 +134,8 @@ export default Vue.extend({
       selectedBackground: 'tourism-proxy',
       featuresCoordinates: {},
       allowRegionBackZoom: false,
+      showPoiToast: false,
+      previousCategories: [],
     }
   },
 
@@ -203,6 +227,13 @@ export default Vue.extend({
   },
 
   watch: {
+    small() {
+      if (!this.map) {
+        return
+      }
+      setTimeout(() => this.map.resize(), 250)
+    },
+
     features(
       features: MenuState['features'],
       oldFeatures: MenuState['features']
@@ -276,7 +307,11 @@ export default Vue.extend({
 
       // Add new marker if a feature is selected
       if (feature) {
-        setHashPart('poi', feature.properties.PID || feature.id)
+        setHashPart(
+          'poi',
+          feature?.properties?.metadata?.PID || feature?.id?.toString() || null
+        )
+        this.showPoiToast = true
         this.selectedFeatureMarker = new mapboxgl.Marker({
           scale: 1.3,
           color: '#f44336',
@@ -287,6 +322,7 @@ export default Vue.extend({
           )
           .addTo(this.map)
       } else {
+        this.showPoiToast = false
         setHashPart('poi', null)
       }
     },
@@ -390,10 +426,21 @@ export default Vue.extend({
       cb()
     },
 
+    setPoiToastVisibility(visible: boolean) {
+      this.showPoiToast = visible
+    },
+
     exploreAroundSelectedPoi() {
-      this.goToSelectedPoi()
-      this.selectFeature(null)
-      this.$store.dispatch('site/setMode', Mode.EXPLORER)
+      if (this.isModeExplorer) {
+        this.allowRegionBackZoom = false
+        this.$emit('change-mode', Mode.BROWSER)
+      } else {
+        this.goToSelectedPoi()
+        if (this.$isMobile()) {
+          this.showPoiToast = false
+        }
+        this.$emit('change-mode', Mode.EXPLORER)
+      }
     },
 
     goToSelectedPoi() {

@@ -6,7 +6,7 @@
 
 <style>
 html {
-  @apply h-full w-full box-border;
+  @apply h-full w-full box-border overflow-hidden overscroll-none;
 }
 
 html,
@@ -25,7 +25,7 @@ html,
 body,
 #__nuxt,
 #__layout {
-  @apply h-full w-full;
+  @apply h-full w-full overflow-hidden overscroll-none;
 }
 
 *,
