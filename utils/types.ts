@@ -230,6 +230,12 @@ export type ApiSearchResult = {
   label: string
 }
 
+export type ApiAddrSearchResult = {
+  ID: string
+  label: string
+  geojson: MapboxGeoJSONFeature
+}
+
 export type ApiSearchResults = {
   classe: {
     idmenu: string
@@ -240,11 +246,8 @@ export type ApiSearchResults = {
   osm: string | ApiSearchResult[]
   tis: string | ApiSearchResult[]
   wp: string | ApiSearchResult[]
-  adress: {
-    ID: string
-    label: string
-    geojson: MapboxGeoJSONFeature
-  }[]
+  adress: string | ApiAddrSearchResult[]
+  municipality: string | ApiAddrSearchResult[]
 }
 
 export type SearchResult = {

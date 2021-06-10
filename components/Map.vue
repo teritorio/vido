@@ -408,10 +408,6 @@ export default Vue.extend({
       let bounds: mapboxgl.LngLatBounds
 
       switch (feature.geometry.type) {
-        case 'Point':
-          bounds = new mapboxgl.LngLatBounds([coords, coords])
-          break
-
         case 'LineString':
           bounds = coords.reduce(
             (bounds: mapboxgl.LngLatBounds, coord: mapboxgl.LngLat) => {
@@ -428,9 +424,14 @@ export default Vue.extend({
               return bounds.extend(coord)
             }, new mapboxgl.LngLatBounds(coords[0], coords[0]))
           break
+
+        case 'Point':
+        default:
+          bounds = new mapboxgl.LngLatBounds([coords, coords])
+          break
       }
 
-      this.map.fitBounds(bounds)
+      this.map.fitBounds(bounds, { maxZoom: 17 })
     },
 
     onClickChangeBackground(background: String) {

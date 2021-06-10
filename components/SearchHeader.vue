@@ -82,7 +82,12 @@
 import Vue from 'vue'
 
 import SearchResultBlock from '@/components/SearchResultBlock.vue'
-import { ApiSearchResults, SearchResult, Category } from '@/utils/types'
+import {
+  ApiSearchResults,
+  ApiAddrSearchResult,
+  SearchResult,
+  Category,
+} from '@/utils/types'
 
 export default Vue.extend({
   components: {
@@ -149,10 +154,29 @@ export default Vue.extend({
         : []
     },
 
-    itemsAddress(): SearchResult[] {
-      return this.searchResults && Array.isArray(this.searchResults.adress)
-        ? this.searchResults.adress.map((v) => ({ id: v.ID, label: v.label }))
+    addressResults(): ApiAddrSearchResult[] {
+      return this.searchResults
+        ? (Array.isArray(this.searchResults.municipality)
+            ? this.searchResults.municipality
+            : []
+          ).concat(
+            Array.isArray(this.searchResults.adress)
+              ? this.searchResults.adress
+              : []
+          )
         : []
+    },
+
+    itemsAddress(): SearchResult[] {
+      if (
+        !this.searchResults ||
+        (!Array.isArray(this.searchResults.adress) &&
+          !Array.isArray(this.searchResults.municipality))
+      ) {
+        return []
+      }
+
+      return this.addressResults.map((v) => ({ id: v.ID, label: v.label }))
     },
   },
 
@@ -178,13 +202,11 @@ export default Vue.extend({
     },
 
     onAddressClick(id: string) {
-      if (this.searchResults && this.searchResults.adress) {
-        this.$emit(
-          'feature-click',
-          this.searchResults.adress.find((a) => a.ID === id)?.geojson
-        )
-        this.reset()
-      }
+      this.$emit(
+        'feature-click',
+        this.addressResults.find((a) => a.ID === id)?.geojson
+      )
+      this.reset()
     },
 
     onSubmit() {
