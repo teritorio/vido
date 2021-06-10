@@ -11,12 +11,28 @@
     />
 
     <div class="p-8">
-      <p
-        class="block text-xl font-semibold leading-tight cursor-pointer"
-        :style="'color:' + color"
-      >
-        {{ name }}
-      </p>
+      <div class="flex items-center justify-between">
+        <p
+          class="block text-xl font-semibold leading-tight cursor-pointer"
+          :style="'color:' + color"
+        >
+          {{ name }}
+        </p>
+
+        <a
+          v-if="hasFiche"
+          :href="poiProp('teritorio:url')"
+          class="ml-2 rounded-lg px-2 py-1"
+          :style="'background-color: ' + color"
+          target="_blank"
+          @click.stop
+        >
+          <font-awesome-icon
+            icon="external-link-alt"
+            :color="contrastedColor"
+          />
+        </a>
+      </div>
 
       <div class="flex items-center text-sm text-gray-500 cursor-pointer">
         <TeritorioIcon
@@ -41,14 +57,34 @@
         </span>
       </p>
 
-      <div class="flex items-center justify-between mt-3">
-        <font-awesome-icon :icon="['far', 'star']" :color="color" />
-        <template v-if="hasFiche">
-          <a :href="poiProp('teritorio:url')" target="_blank" @click.stop>
-            <font-awesome-icon icon="external-link-alt" :color="color" />
-            Détail
-          </a>
-        </template>
+      <div class="flex items-center space-x-2 justify-between mt-3 relative">
+        <button
+          class="flex flex-1 flex-col items-center rounded-lg border-2 border-gray-300 hover:bg-gray-100 p-2 h-full"
+          title="Trouver la route pour venir jusqu'à ce lieu"
+          @click="onRouteClick"
+        >
+          <font-awesome-icon icon="route" :color="color" size="sm" />
+          <span class="text-sm">Itinéraire</span>
+        </button>
+        <button
+          class="flex flex-1 flex-col items-center rounded-lg border-2 border-gray-300 hover:bg-gray-100 p-2 h-full"
+          title="Explorer les points d'intérêts aux alentours"
+          @click="onExploreClick"
+        >
+          <font-awesome-icon
+            :icon="['far', 'compass']"
+            :color="color"
+            size="sm"
+          />
+          <span class="text-sm">Explorer</span>
+        </button>
+        <button
+          class="flex flex-1 flex-col items-center rounded-lg border-2 border-gray-300 hover:bg-gray-100 p-2 h-full"
+          title="Mettre en favori"
+        >
+          <font-awesome-icon :icon="['far', 'star']" :color="color" size="sm" />
+          <span class="text-sm">Favori</span>
+        </button>
       </div>
     </div>
   </div>
@@ -60,6 +96,7 @@ import Vue, { PropType } from 'vue'
 
 import TeritorioIcon from '@/components/TeritorioIcon/TeritorioIcon.vue'
 import { getPoiById } from '@/utils/api'
+import { getContrastedTextColor } from '@/utils/picto'
 import { VidoFeature } from '@/utils/types'
 
 export default Vue.extend({
@@ -104,6 +141,10 @@ export default Vue.extend({
       } else {
         return null
       }
+    },
+
+    contrastedColor(): string {
+      return getContrastedTextColor(this.color || 'black')
     },
 
     icon(): string {
@@ -183,6 +224,7 @@ export default Vue.extend({
 
   methods: {
     onPoiChange() {
+      // console.log("SELECTED POI", this.poi)
       this.sptags = null
       this.apiProps = null
       if (this.poi && this.poiProp('metadata')) {
@@ -242,6 +284,21 @@ export default Vue.extend({
             : word.replace(word[0], word[0].toUpperCase())
         })
         .join(' ')
+    },
+
+    onExploreClick() {
+      this.$emit('explore-click')
+    },
+
+    onRouteClick() {
+      if (this.$isMobile()) {
+        window.open(
+          'geo:' +
+            this.poi.geometry.coordinates[1] +
+            ',' +
+            this.poi.geometry.coordinates[0]
+        )
+      }
     },
   },
 })

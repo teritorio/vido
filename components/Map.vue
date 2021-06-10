@@ -50,6 +50,7 @@
           :poi="selectedFeature"
           class="flex-grow-0"
           @click="goToSelectedPoi"
+          @explore-click="exploreAroundSelectedPoi"
         />
       </div>
     </div>
@@ -387,6 +388,12 @@ export default Vue.extend({
         return cb()
       this.updateMarkers()
       cb()
+    },
+
+    exploreAroundSelectedPoi() {
+      this.goToSelectedPoi()
+      this.selectFeature(null)
+      this.$store.dispatch('site/setMode', Mode.EXPLORER)
     },
 
     goToSelectedPoi() {

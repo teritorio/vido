@@ -2,6 +2,7 @@ import { config, library } from '@fortawesome/fontawesome-svg-core'
 import {
   faCircle,
   faStar as farStar,
+  faCompass,
 } from '@fortawesome/free-regular-svg-icons'
 import {
   faArrowLeft,
@@ -24,6 +25,7 @@ import {
   faLayerGroup,
   faHome,
   faGripLines,
+  faRoute,
 } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import Vue from 'vue'
@@ -55,7 +57,9 @@ library.add(
   faMapMarkerAlt,
   faLayerGroup,
   faHome,
-  faGripLines
+  faGripLines,
+  faRoute,
+  faCompass
 )
 
 // Register the component globally
