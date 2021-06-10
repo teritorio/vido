@@ -2,7 +2,7 @@
   <div class="w-full h-full">
     <div
       :class="[
-        'relative flex flex-col w-full',
+        'relative flex flex-col w-full sm:h-full',
         small && 'h-2/5',
         !small && 'h-full',
       ]"
