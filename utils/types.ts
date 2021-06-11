@@ -228,6 +228,8 @@ export interface ApiPosts {
 export type ApiSearchResult = {
   postid: number
   label: string
+  commune: string | null
+  idmenu: number
 }
 
 export type ApiAddrSearchResult = {
@@ -240,8 +242,6 @@ export type ApiSearchResults = {
   classe: {
     idmenu: string
     label: string
-    // eslint-disable-next-line camelcase
-    poi_type: string
   }[]
   osm: string | ApiSearchResult[]
   tis: string | ApiSearchResult[]
@@ -253,6 +253,8 @@ export type ApiSearchResults = {
 export type SearchResult = {
   id: string
   label: string
+  icon?: string
+  small?: string
 }
 
 export type VidoMglStyle = Style & {

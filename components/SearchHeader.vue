@@ -87,9 +87,10 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
+import Vue, { PropType } from 'vue'
 
 import SearchResultBlock from '@/components/SearchResultBlock.vue'
+import { toTitleCase } from '@/utils/string'
 import {
   ApiSearchResults,
   ApiAddrSearchResult,
@@ -109,6 +110,10 @@ export default Vue.extend({
     },
     siteName: {
       type: String,
+      required: true,
+    },
+    menuToIcon: {
+      type: Object as PropType<{ [menuId: string]: string }>,
       required: true,
     },
   },
@@ -141,6 +146,7 @@ export default Vue.extend({
         ? this.searchResults.classe.map((v) => ({
             id: v.idmenu,
             label: v.label,
+            icon: this.menuToIcon[v.idmenu],
           }))
         : []
     },
@@ -150,6 +156,8 @@ export default Vue.extend({
         ? this.searchResults.osm.map((v) => ({
             id: v.postid.toString(),
             label: v.label,
+            icon: this.menuToIcon[v.idmenu],
+            small: v.commune && toTitleCase(v.commune),
           }))
         : []
     },
@@ -159,6 +167,8 @@ export default Vue.extend({
         ? this.searchResults.tis.map((v) => ({
             id: v.postid.toString(),
             label: v.label,
+            icon: this.menuToIcon[v.idmenu],
+            small: v.commune && toTitleCase(v.commune),
           }))
         : []
     },

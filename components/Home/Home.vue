@@ -59,6 +59,7 @@
             <SearchHeader
               :site-name="siteName"
               :logo-url="logoUrl"
+              :menu-to-icon="categoriesToIcons"
               @go-back-click="goToHome"
               @category-click="onSearchCategory"
               @poi-click="onSearchPoi"
@@ -274,6 +275,13 @@ export default Vue.extend({
     },
     filteredSubCategories(): Category['id'][] {
       return Object.keys(this.filters)
+    },
+    categoriesToIcons(): { [category: Category['id']]: string } {
+      const res = {}
+      this.subCategories.forEach((sc) => {
+        res[sc.id] = sc.metadata.picto
+      })
+      return res
     },
   },
   watch: {

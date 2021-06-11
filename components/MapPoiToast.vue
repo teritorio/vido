@@ -109,6 +109,7 @@ import { mapGetters } from 'vuex'
 import TeritorioIcon from '@/components/TeritorioIcon/TeritorioIcon.vue'
 import { getPoiById } from '@/utils/api'
 import { getContrastedTextColor } from '@/utils/picto'
+import { toTitleCase } from '@/utils/string'
 import { VidoFeature, Mode } from '@/utils/types'
 
 export default Vue.extend({
@@ -190,8 +191,7 @@ export default Vue.extend({
       }
 
       return [
-        this.poiProp('addr:street') &&
-          this.titleCase(this.poiProp('addr:street')),
+        this.poiProp('addr:street') && toTitleCase(this.poiProp('addr:street')),
         this.poiProp('addr:postcode'),
         this.poiProp('addr:city') && this.poiProp('addr:city').toUpperCase(),
       ]
@@ -290,20 +290,6 @@ export default Vue.extend({
       )
         .then((data) => data.json())
         .then((data) => (this.sptags = data))
-    },
-
-    titleCase(str: string) {
-      const ignoredWords = ['la', 'le', 'les', 'du', 'des', 'de', 'à', 'aux']
-      return str
-        .toLowerCase()
-        .split(' ')
-        .filter((word) => word.length > 0)
-        .map(function (word) {
-          return ignoredWords.includes(word.toLowerCase())
-            ? word
-            : word.replace(word[0], word[0].toUpperCase())
-        })
-        .join(' ')
     },
 
     onExploreClick() {
