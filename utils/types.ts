@@ -266,3 +266,10 @@ export enum Mode {
   BROWSER = 'BROWSER', // User browses by category
   EXPLORER = 'EXPLORER', // User explores around
 }
+
+export type NavMenuEntry = {
+  // eslint-disable-next-line camelcase
+  post_id: number
+  title: string
+  url: string
+}

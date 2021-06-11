@@ -1,84 +1,92 @@
 <template>
   <aside :class="['pointer-events-none', dense && 'hidden sm:block']">
     <div
-      class="absolute flex items-top justify-end space-x-3 pointer-events-auto inset-x-3 top-3"
+      class="flex flex-col absolute items-end justify-between top-24 sm:top-2 inset-x-2 bottom-0"
     >
-      <button
-        v-if="map"
-        aria-label="Favoris"
-        type="button"
-        class="hidden sm:block text-sm font-medium px-5 space-x-1 rounded-full shadow-md h-11 outline-none focus:outline-none bg-white text-gray-800 hover:bg-gray-100 focus-visible:bg-gray-100"
+      <div
+        class="flex flex-shrink-0 h-12 items-top justify-end space-x-3 pointer-events-auto"
       >
-        <font-awesome-icon icon="star" class="text-yellow-500" size="sm" />
-        <span>Favoris</span>
-      </button>
-
-      <button
-        v-if="map"
-        aria-label="Navigation"
-        type="button"
-        class="hidden sm:block text-sm rounded-full shadow-md w-11 h-11 outline-none focus:outline-none bg-white text-gray-800 hover:bg-gray-100 focus-visible:bg-gray-100"
-      >
-        <font-awesome-icon icon="bars" class="text-gray-800" size="sm" />
-      </button>
-    </div>
-
-    <div class="absolute flex flex-col justify-center inset-y-3 right-3">
-      <div class="flex flex-col space-y-3 pointer-events-auto">
-        <div ref="navigationControlContainer"></div>
-        <div ref="geolocateControlContainer" class="sm:hidden"></div>
+        <NavMenu v-if="showNavMenu" @close-click="toggleNavMenu" />
 
         <button
           v-if="map"
-          aria-label="Visualiser la carte en 3D"
+          aria-label="Favoris"
           type="button"
-          :class="[
-            'hidden sm:block text-sm font-bold rounded-full shadow-md w-11 h-11 outline-none focus:outline-none ',
-            is3D &&
-              'bg-blue-500 text-white hover:bg-blue-400 focus-visible:bg-blue-400',
-            !is3D &&
-              'bg-white text-gray-800 hover:bg-gray-100 focus-visible:bg-gray-100',
-          ]"
-          @click="toggle3D"
+          class="text-sm font-medium sm:px-5 space-x-1 rounded-full shadow-md w-11 sm:w-auto h-11 outline-none focus:outline-none bg-white text-gray-800 hover:bg-gray-100 focus-visible:bg-gray-100"
         >
-          3D
-        </button>
-
-        <button
-          v-if="map && !isModeExplorer"
-          aria-label="Changer le fond de carte"
-          :title="`Changer le fond de carte (actuellement ${backgrounds[background]})`"
-          type="button"
-          class="text-sm font-bold text-gray-800 bg-white rounded-full shadow-md outline-none w-11 h-11 focus:outline-none hover:bg-gray-100 focus-visible:bg-gray-100"
-          @click="nextBackground"
-        >
-          <font-awesome-icon icon="map" class="text-gray-800" size="lg" />
+          <font-awesome-icon icon="star" class="text-yellow-500" size="sm" />
+          <span class="hidden sm:inline">Favoris</span>
         </button>
 
         <button
           v-if="map"
-          aria-label="Mode Explore"
-          title="Basculer en mode Explore"
+          aria-label="Navigation"
           type="button"
-          :class="[
-            'hidden sm:block text-sm font-bold rounded-full shadow-md w-11 h-11 outline-none focus:outline-none ',
-            isModeExplorer &&
-              'bg-blue-500 hover:bg-blue-400 focus-visible:bg-blue-400',
-            !isModeExplorer &&
-              'bg-white hover:bg-gray-100 focus-visible:bg-gray-100',
-          ]"
-          @click="toggleMode"
+          class="text-sm rounded-full shadow-md w-11 h-11 outline-none focus:outline-none bg-white text-gray-800 hover:bg-gray-100 focus-visible:bg-gray-100"
+          @click="toggleNavMenu"
         >
-          <font-awesome-icon
-            icon="eye"
-            :class="[
-              isModeExplorer && 'text-white',
-              !isModeExplorer && 'text-gray-800',
-            ]"
-            size="lg"
-          />
+          <font-awesome-icon icon="bars" class="text-gray-800" size="sm" />
         </button>
       </div>
+
+      <div class="flex flex-col justify-center">
+        <div class="flex flex-col space-y-3 pointer-events-auto">
+          <div ref="navigationControlContainer"></div>
+          <div ref="geolocateControlContainer" class="sm:hidden"></div>
+
+          <button
+            v-if="map"
+            aria-label="Visualiser la carte en 3D"
+            type="button"
+            :class="[
+              'hidden sm:block text-sm font-bold rounded-full shadow-md w-11 h-11 outline-none focus:outline-none ',
+              is3D &&
+                'bg-blue-500 text-white hover:bg-blue-400 focus-visible:bg-blue-400',
+              !is3D &&
+                'bg-white text-gray-800 hover:bg-gray-100 focus-visible:bg-gray-100',
+            ]"
+            @click="toggle3D"
+          >
+            3D
+          </button>
+
+          <button
+            v-if="map && !isModeExplorer"
+            aria-label="Changer le fond de carte"
+            :title="`Changer le fond de carte (actuellement ${backgrounds[background]})`"
+            type="button"
+            class="text-sm font-bold text-gray-800 bg-white rounded-full shadow-md outline-none w-11 h-11 focus:outline-none hover:bg-gray-100 focus-visible:bg-gray-100"
+            @click="nextBackground"
+          >
+            <font-awesome-icon icon="map" class="text-gray-800" size="lg" />
+          </button>
+
+          <button
+            v-if="map"
+            aria-label="Mode Explore"
+            title="Basculer en mode Explore"
+            type="button"
+            :class="[
+              'hidden sm:block text-sm font-bold rounded-full shadow-md w-11 h-11 outline-none focus:outline-none ',
+              isModeExplorer &&
+                'bg-blue-500 hover:bg-blue-400 focus-visible:bg-blue-400',
+              !isModeExplorer &&
+                'bg-white hover:bg-gray-100 focus-visible:bg-gray-100',
+            ]"
+            @click="toggleMode"
+          >
+            <font-awesome-icon
+              icon="eye"
+              :class="[
+                isModeExplorer && 'text-white',
+                !isModeExplorer && 'text-gray-800',
+              ]"
+              size="lg"
+            />
+          </button>
+        </div>
+      </div>
+      <div class="h-12"><!-- Keep this as a spacer --></div>
     </div>
   </aside>
 </template>
@@ -89,10 +97,15 @@ import mapboxgl from 'maplibre-gl'
 import Vue from 'vue'
 import { mapGetters } from 'vuex'
 
+import NavMenu from '@/components/NavMenu.vue'
 import { Mode } from '@/utils/types'
 import { getHashPart, setHashPart } from '@/utils/url'
 
 export default Vue.extend({
+  components: {
+    NavMenu,
+  },
+
   props: {
     map: {
       type: Object,
@@ -120,11 +133,13 @@ export default Vue.extend({
     building3d: Building3d | null
     is3D: boolean
     background: string | null
+    showNavMenu: boolean
   } {
     return {
       building3d: null,
       is3D: false,
       background: null,
+      showNavMenu: false,
     }
   },
 
@@ -221,6 +236,9 @@ export default Vue.extend({
         'site/setMode',
         this.isModeExplorer ? Mode.BROWSER : Mode.EXPLORER
       )
+    },
+    toggleNavMenu() {
+      this.showNavMenu = !this.showNavMenu
     },
   },
 })
