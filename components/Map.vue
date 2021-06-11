@@ -177,6 +177,8 @@ export default Vue.extend({
                   'https://c.tiles.teritorio.xyz/styles/osm/{z}/{x}/{y}.png',
                 ],
                 tileSize: 256,
+                attribution:
+                  '<a href="https://www.openstreetmap.org/copyright" target="_blank">© OpenStreetMap contributors</a> <a href="https://www.teritorio.fr/" target="_blank">© Teritorio</a>',
               },
             },
             layers: [
@@ -204,6 +206,8 @@ export default Vue.extend({
                   `https://wxs.ign.fr/${this.$config.IGN_TOKEN}/geoportail/wmts?SERVICE=WMTS&REQUEST=GetTile&VERSION=1.0.0&LAYER=ORTHOIMAGERY.ORTHOPHOTOS&TILEMATRIXSET=PM&TILEMATRIX={z}&TILECOL={x}&TILEROW={y}&STYLE=normal&FORMAT=image/jpeg`,
                 ],
                 tileSize: 256,
+                attribution:
+                  '<a href="https://ign.fr/" target="_blank">© IGN</a>',
               },
             },
             layers: [
