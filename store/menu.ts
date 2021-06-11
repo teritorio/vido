@@ -78,7 +78,9 @@ function keepFeature(feature: VidoFeature, filters: FiltreValues): boolean {
         ) {
           const values = feature.properties[key].split('#')
           if (
-            !values.find((v: string) => filters.checkboxFiltre[key].includes(v))
+            !values.find((v: string) =>
+              (filters.checkboxFiltre || {})[key].includes(v)
+            )
           ) {
             return false
           }
