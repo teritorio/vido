@@ -90,6 +90,7 @@ import { getHashPart, setHashPart } from '@/utils/url'
 
 const POI_SOURCE = 'poi'
 const POI_LAYER_MARKER = 'poi-simple-marker'
+const MAP_STYLE_FOR_EXPLORER = 'tourism-proxy'
 const MAP_STYLES = {
   'tourism-0.9': 'Teritorio Tourisme (0.9)',
   'tourism-proxy': 'Teritorio Tourisme (proxy)',
@@ -340,6 +341,12 @@ export default Vue.extend({
         ) {
           this.poiFilter.remove(true)
         }
+        if (
+          this.isModeExplorer &&
+          this.selectedBackground === MAP_STYLE_FOR_EXPLORER
+        ) {
+          this.poiFilter.reset()
+        }
         this.initPoiLayer(this.features)
       })
     },
@@ -347,7 +354,12 @@ export default Vue.extend({
     mode() {
       switch (this.mode) {
         case Mode.EXPLORER:
-          this.poiFilter.reset()
+          if (this.selectedBackground !== MAP_STYLE_FOR_EXPLORER) {
+            this.selectedBackground = MAP_STYLE_FOR_EXPLORER
+            setHashPart('bg', this.selectedBackground)
+          } else {
+            this.poiFilter.reset()
+          }
           break
         case Mode.BROWSER:
           this.poiFilter.remove(true)

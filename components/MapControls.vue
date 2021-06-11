@@ -44,7 +44,7 @@
         </button>
 
         <button
-          v-if="map"
+          v-if="map && !isModeExplorer"
           aria-label="Changer le fond de carte"
           :title="`Changer le fond de carte (actuellement ${backgrounds[background]})`"
           type="button"
