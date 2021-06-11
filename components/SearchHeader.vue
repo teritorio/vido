@@ -50,6 +50,14 @@
       />
 
       <SearchResultBlock
+        v-if="itemsCities.length > 0"
+        label="Communes"
+        icon="city"
+        :items="itemsCities"
+        @item-click="onAddressClick"
+      />
+
+      <SearchResultBlock
         v-if="itemsTis.length > 0"
         label="Points d'intérêts (TIS)"
         icon="map-marker-alt"
@@ -123,7 +131,8 @@ export default Vue.extend({
         this.itemsClasse.length === 0 &&
         this.itemsOsm.length === 0 &&
         this.itemsTis.length === 0 &&
-        this.itemsAddress.length === 0
+        this.itemsAddress.length === 0 &&
+        this.itemsCities.length === 0
       )
     },
 
@@ -154,6 +163,31 @@ export default Vue.extend({
         : []
     },
 
+    itemsCities(): SearchResult[] {
+      if (
+        !this.searchResults ||
+        !Array.isArray(this.searchResults.municipality)
+      ) {
+        return []
+      }
+
+      return this.searchResults.municipality.map((v) => ({
+        id: v.ID,
+        label: v.label,
+      }))
+    },
+
+    itemsAddress(): SearchResult[] {
+      if (!this.searchResults || !Array.isArray(this.searchResults.adress)) {
+        return []
+      }
+
+      return this.searchResults.adress.map((v) => ({
+        id: v.ID,
+        label: v.label,
+      }))
+    },
+
     addressResults(): ApiAddrSearchResult[] {
       return this.searchResults
         ? (Array.isArray(this.searchResults.municipality)
@@ -165,18 +199,6 @@ export default Vue.extend({
               : []
           )
         : []
-    },
-
-    itemsAddress(): SearchResult[] {
-      if (
-        !this.searchResults ||
-        (!Array.isArray(this.searchResults.adress) &&
-          !Array.isArray(this.searchResults.municipality))
-      ) {
-        return []
-      }
-
-      return this.addressResults.map((v) => ({ id: v.ID, label: v.label }))
     },
   },
 
