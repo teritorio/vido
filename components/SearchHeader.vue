@@ -22,11 +22,14 @@
       >
         <section class="relative w-full">
           <input
-            v-model="searchText"
+            :value="searchText"
             class="w-full px-5 py-3 font-medium text-gray-700 placeholder-gray-500 bg-gray-100 border-none rounded-full outline-none appearance-none focus:outline-none focus:ring focus:ring-gray-300"
             placeholder="Recherche"
             type="text"
-            @input="onSubmit"
+            @input="
+              searchText = $event.target.value
+              onSubmit()
+            "
           />
           <button
             class="absolute inset-y-0 right-0 px-5 text-gray-800 rounded-r-full outline-none focus:outline-none"
