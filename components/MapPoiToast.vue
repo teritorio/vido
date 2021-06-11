@@ -38,11 +38,20 @@
 
       <div class="flex items-center text-sm text-gray-500 cursor-pointer">
         <TeritorioIcon
+          v-if="icon"
           :category-color="color"
           class="mr-2"
           :picto="icon"
           :use-category-color="true"
           :use-native-alignment="true"
+        />
+
+        <font-awesome-icon
+          v-if="faIcon"
+          :icon="faIcon"
+          :color="color"
+          class="mr-2"
+          size="sm"
         />
 
         {{ category }}
@@ -160,7 +169,7 @@ export default Vue.extend({
           tc.g * 255
         ).toFixed(0)}, ${Math.round(tc.b * 255).toFixed(0)}, ${tc.a})`
       } else {
-        return null
+        return 'black'
       }
     },
 
@@ -179,6 +188,10 @@ export default Vue.extend({
       } else {
         return ''
       }
+    },
+
+    faIcon() {
+      return this.poiProp('faIcon')
     },
 
     category(): string {

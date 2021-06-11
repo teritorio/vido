@@ -461,7 +461,7 @@ export default Vue.extend({
       }
       this.map.flyTo({
         center: this.selectedFeature.geometry.coordinates,
-        zoom: 15,
+        zoom: Math.max(this.map.getZoom(), 17),
       })
     },
 

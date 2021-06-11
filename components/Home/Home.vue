@@ -426,10 +426,11 @@ export default Vue.extend({
       })
     },
     onFeatureClick(feature: MapboxGeoJSONFeature) {
-      this.setSelectedFeature(null)
-      if (this.$refs.map) {
-        this.$refs.map.goTo(feature)
-      }
+      this.setSelectedFeature(feature).then(() => {
+        if (this.$refs.map) {
+          this.$refs.map.goToSelectedPoi()
+        }
+      })
     },
     onBottomMenuButtonClick() {
       if (this.isBottomMenuOpened) {

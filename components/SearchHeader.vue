@@ -87,6 +87,7 @@
 </template>
 
 <script lang="ts">
+import copy from 'fast-copy'
 import Vue, { PropType } from 'vue'
 
 import SearchResultBlock from '@/components/SearchResultBlock.vue'
@@ -234,10 +235,16 @@ export default Vue.extend({
     },
 
     onAddressClick(id: string) {
-      this.$emit(
-        'feature-click',
-        this.addressResults.find((a) => a.ID === id)?.geojson
-      )
+      let feature = this.addressResults.find((a) => a.ID === id)?.geojson
+      if (feature) {
+        feature = copy(feature)
+        if (!feature.properties) {
+          feature.properties = {}
+        }
+        feature.properties.faIcon = 'home'
+        feature.properties.class = 'Adresse'
+        this.$emit('feature-click', feature)
+      }
       this.reset()
     },
 
