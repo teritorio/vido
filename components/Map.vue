@@ -46,6 +46,7 @@
         :pitch="pitch"
         :backgrounds="availableStyles"
         :initial-background="selectedBackground"
+        :dense="small"
         @changeBackground="onClickChangeBackground"
       />
 

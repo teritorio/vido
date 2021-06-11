@@ -1,5 +1,5 @@
 <template>
-  <aside class="pointer-events-none">
+  <aside :class="['pointer-events-none', dense && 'hidden sm:block']">
     <div
       class="absolute flex items-top justify-end space-x-3 pointer-events-auto inset-x-3 top-3"
     >
@@ -26,6 +26,7 @@
     <div class="absolute flex flex-col justify-center inset-y-3 right-3">
       <div class="flex flex-col space-y-3 pointer-events-auto">
         <div ref="navigationControlContainer"></div>
+        <div ref="geolocateControlContainer" class="sm:hidden"></div>
 
         <button
           v-if="map"
@@ -109,6 +110,10 @@ export default Vue.extend({
       type: String,
       default: null,
     },
+    dense: {
+      type: Boolean,
+      default: false,
+    },
   },
 
   data(): {
@@ -144,6 +149,15 @@ export default Vue.extend({
 
         ;(this.$refs.navigationControlContainer as HTMLDivElement).appendChild(
           navigationControl.onAdd(this.map)
+        )
+
+        const geolocateControl = new mapboxgl.GeolocateControl({
+          positionOptions: { enableHighAccuracy: true },
+          trackUserLocation: true,
+        })
+
+        ;(this.$refs.geolocateControlContainer as HTMLDivElement).appendChild(
+          geolocateControl.onAdd(this.map)
         )
 
         this.building3d = new Building3d({
