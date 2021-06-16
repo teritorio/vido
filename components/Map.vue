@@ -61,6 +61,17 @@
           @explore-click="exploreAroundSelectedPoi"
         />
       </div>
+
+      <div
+        v-if="isLoadingFeatures"
+        class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-80"
+      >
+        <font-awesome-icon
+          icon="spinner"
+          class="text-gray-400 animate-spin"
+          size="3x"
+        />
+      </div>
     </div>
   </div>
 </template>
@@ -149,6 +160,7 @@ export default Vue.extend({
       zoom: 'map/zoom',
       mode: 'site/mode',
       selectedFeature: 'map/selectedFeature',
+      isLoadingFeatures: 'menu/isLoadingFeatures',
     }),
 
     isModeExplorer() {

@@ -7,6 +7,7 @@ enum Mutation {
   SET_CONFIG = 'SET_CONFIG',
   SET_FEATURES = 'SET_FEATURES',
   SET_FILTERS = 'SET_FILTERS',
+  SET_FEATURES_LOADING = 'SET_FEATURES_LOADING',
 }
 
 interface FetchConfigPayload {
@@ -27,6 +28,7 @@ export interface State {
     [categoryId: string]: VidoFeature[]
   }
   filters: { [subcat: string]: FiltreValues }
+  isLoadingFeatures: boolean
 }
 
 export const state = (): State => ({
@@ -34,6 +36,7 @@ export const state = (): State => ({
   isLoaded: false,
   features: {},
   filters: {},
+  isLoadingFeatures: false,
 })
 
 export const mutations = {
@@ -48,6 +51,11 @@ export const mutations = {
 
   [Mutation.SET_FEATURES](state: State, payload: State) {
     state.features = payload.features
+    state.isLoadingFeatures = false
+  },
+
+  [Mutation.SET_FEATURES_LOADING](state: State, payload: State) {
+    state.isLoadingFeatures = payload.isLoadingFeatures
   },
 }
 
@@ -149,6 +157,8 @@ export const actions = {
     store: Store<State>,
     { apiEndpoint, categoryIds }: FetchFeaturesPayload
   ) {
+    store.commit(Mutation.SET_FEATURES_LOADING, { isLoadingFeatures: true })
+
     try {
       const posts: ApiPosts[] = await Promise.all(
         categoryIds.map((categoryId) =>
@@ -185,6 +195,7 @@ export const actions = {
         'Vido error: Unable to fetch the features from the API',
         error
       )
+      store.commit(Mutation.SET_FEATURES_LOADING, { isLoadingFeatures: false })
     }
   },
 
@@ -208,6 +219,7 @@ export const actions = {
 export const getters = {
   categories: (state: State) => state.categories,
   isLoaded: (state: State) => state.isLoaded,
+  isLoadingFeatures: (state: State) => state.isLoadingFeatures,
   filters: (state: State) => state.filters,
   features: (state: State) => state.features,
 
