@@ -71,6 +71,10 @@ export interface ApiCategoryBase {
     hide: boolean
     label: { [lang: string]: string }
     picto: string
+    // eslint-disable-next-line camelcase
+    tourism_style_merge: boolean
+    // eslint-disable-next-line camelcase
+    tourism_style_class: string | string[]
   }
   order: number
 }

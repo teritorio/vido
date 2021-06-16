@@ -350,7 +350,7 @@ export default Vue.extend({
           this.isModeExplorer &&
           this.selectedBackground === MAP_STYLE_FOR_EXPLORER
         ) {
-          this.poiFilter.reset()
+          this.poiFilterForExplorer()
         }
         this.initPoiLayer(this.features)
       })
@@ -363,7 +363,7 @@ export default Vue.extend({
             this.selectedBackground = MAP_STYLE_FOR_EXPLORER
             setHashPart('bg', this.selectedBackground)
           } else {
-            this.poiFilter.reset()
+            this.poiFilterForExplorer()
           }
           break
         case Mode.BROWSER:
@@ -400,6 +400,8 @@ export default Vue.extend({
       this.map.on('load', () => {
         if (!this.isModeExplorer) {
           this.poiFilter?.remove(true)
+        } else {
+          this.poiFilterForExplorer()
         }
       })
       this.map.on('click', () => {
@@ -503,6 +505,18 @@ export default Vue.extend({
       }
 
       this.map.fitBounds(bounds, { maxZoom: 17 })
+    },
+
+    poiFilterForExplorer() {
+      this.poiFilter.reset()
+      const filters = Object.values(this.categories)
+        .filter(
+          (c: Category) =>
+            c.metadata.tourism_style_merge &&
+            Array.isArray(c.metadata.tourism_style_class)
+        )
+        .map((c: Category) => c.metadata.tourism_style_class)
+      this.poiFilter.setIncludeFilter(filters)
     },
 
     onClickChangeBackground(background: String) {
