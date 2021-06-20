@@ -33,7 +33,7 @@
 
           <SubCategoryHeader
             v-if="!isModeExplorer && state.matches(states.SubCategories)"
-            :categories="context.selectedRootCategory.subCategories"
+            :categories="state.context.selectedRootCategory.subCategories"
             :filtered-categories="filteredSubCategories"
             :is-sub-category-selected="isSubCategorySelected"
             :categories-activesubs-count="subCategoriesCounts"
@@ -300,7 +300,6 @@ export default Vue.extend({
     this.service
       .onTransition((state) => {
         this.state = state
-        this.state.context = state.context
 
         if (
           typeof location !== 'undefined' &&

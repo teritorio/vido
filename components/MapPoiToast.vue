@@ -148,7 +148,7 @@ export default Vue.extend({
       mode: 'site/mode',
     }),
 
-    isModeExplorer() {
+    isModeExplorer(): boolean {
       return this.mode === Mode.EXPLORER
     },
 
@@ -260,6 +260,7 @@ export default Vue.extend({
       // console.log("SELECTED POI", this.poi)
       this.sptags = null
       this.apiProps = null
+
       if (this.poi && this.poiProp('metadata')) {
         this.fetchSpTags()
       } else {
@@ -268,9 +269,7 @@ export default Vue.extend({
     },
 
     poiProp(name: string) {
-      return this.apiProps
-        ? this.apiProps[name]
-        : this.poi.properties && this.poi.properties[name]
+      return this.apiProps?.[name] || this.poi.properties?.[name]
     },
 
     poiMeta(name: string) {
@@ -311,7 +310,7 @@ export default Vue.extend({
 
     onRouteClick(): void {
       // @ts-ignore
-      if (this.$isMobile) {
+      if (this.$isMobile()) {
         window.open(
           'geo:' +
             this.poi.geometry.coordinates[1] +

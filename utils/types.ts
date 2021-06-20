@@ -1,4 +1,7 @@
-import { Style, MapboxGeoJSONFeature } from 'maplibre-gl'
+import type { GeoJSON } from 'geojson'
+import type { MapboxGeoJSONFeature, Style } from 'maplibre-gl'
+
+/// <reference types="geojson" />
 
 export interface LatLng {
   lat: number
@@ -106,16 +109,11 @@ export interface SiteInfos {
   }
 }
 
-export type GeometryType = 'Point'
-
 export type OsmPoiType = 'node' | 'way' | 'relation'
 
 export interface FeatureBase extends MapboxGeoJSONFeature {
   // eslint-disable-next-line camelcase
-  geometry: {
-    coordinates: TupleLatLng
-    type: GeometryType
-  }
+  geometry: GeoJSON.Geometry
   properties: {
     [key: string]: any
 

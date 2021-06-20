@@ -82,11 +82,7 @@ import { PoiFilter } from '@teritorio/map'
 import { deepEqual } from 'fast-equals'
 import throttle from 'lodash.throttle'
 import Mapbox from 'mapbox-gl-vue'
-import mapboxgl, {
-  MapboxGeoJSONFeature,
-  MapLayerMouseEvent,
-  MapLayerTouchEvent,
-} from 'maplibre-gl'
+import mapboxgl, { MapLayerMouseEvent, MapLayerTouchEvent } from 'maplibre-gl'
 import Vue from 'vue'
 import { mapGetters, mapActions } from 'vuex'
 
@@ -158,7 +154,6 @@ export default Vue.extend({
 
   computed: {
     ...mapGetters({
-      categories: 'menu/categories',
       center: 'map/center',
       features: 'menu/features',
       zoom: 'map/zoom',
@@ -166,6 +161,10 @@ export default Vue.extend({
       selectedFeature: 'map/selectedFeature',
       isLoadingFeatures: 'menu/isLoadingFeatures',
     }),
+
+    categories(): Record<Category['id'], Category> {
+      return this.$store.getters['menu/categories']
+    },
 
     isModeExplorer(): boolean {
       return this.mode === Mode.EXPLORER
@@ -487,7 +486,7 @@ export default Vue.extend({
       } else {
         this.goToSelectedPoi()
         // @ts-ignore
-        if (this.$isMobile) {
+        if (this.$isMobile()) {
           this.showPoiToast = false
         }
         this.$emit('change-mode', Mode.EXPLORER)
@@ -508,8 +507,8 @@ export default Vue.extend({
       })
     },
 
-    goTo(feature: MapboxGeoJSONFeature) {
-      if (!this.map || !feature) {
+    goTo(feature: VidoFeature) {
+      if (!this.map || !feature || !('coordinates' in feature.geometry)) {
         return
       }
 
@@ -544,16 +543,17 @@ export default Vue.extend({
     },
 
     poiFilterForExplorer() {
-      this.poiFilter.reset()
+      this.poiFilter?.reset()
 
       const filters = Object.values(this.categories)
         .filter(
-          (c: Category) =>
+          (c) =>
             c.metadata.tourism_style_merge &&
             Array.isArray(c.metadata.tourism_style_class)
         )
-        .map((c: Category) => c.metadata.tourism_style_class)
-      this.poiFilter.setIncludeFilter(filters)
+        .map((c) => c.metadata.tourism_style_class)
+
+      this.poiFilter?.setIncludeFilter(filters)
     },
 
     onClickChangeBackground(background: string) {
@@ -567,6 +567,7 @@ export default Vue.extend({
 
       // Create cluster properties, which will contain count of features per category
       const clusterProps: { [category: string]: object } = {}
+
       Object.keys(this.categories).forEach((category) => {
         clusterProps[category] = [
           '+',
@@ -584,7 +585,7 @@ export default Vue.extend({
           type: 'FeatureCollection',
           features: Object.values(features)
             .flat()
-            .filter((f: VidoFeature) => f.properties.vido_visible),
+            .filter((f) => f.properties.vido_visible),
         },
       })
 
@@ -748,7 +749,7 @@ export default Vue.extend({
       this.markersOnScreen = newMarkers
 
       // Put selected feature marker above
-      if (this.selectedFeature) {
+      if (this.selectedFeatureMarker) {
         this.selectedFeatureMarker.remove()
         this.selectedFeatureMarker.addTo(this.map)
       }
@@ -760,6 +761,7 @@ export default Vue.extend({
       const offsets = []
 
       const countPerColor: { [color: string]: number } = {}
+
       Object.keys(this.categories)
         .filter((categoryId) => ((props && props[categoryId]) || 0) > 0)
         .forEach((categoryId) => {
