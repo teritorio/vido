@@ -10,79 +10,79 @@
       alt=""
     />
 
-    <div class="p-8">
-      <div class="flex items-center justify-between">
-        <p
-          class="block text-xl font-semibold leading-tight cursor-pointer"
-          :style="'color:' + color"
-          title="Zoomer sur le lieu"
-        >
-          {{ name }}
-        </p>
+    <div class="px-8 py-6">
+      <h2
+        class="block text-xl font-semibold leading-tight cursor-pointer"
+        :style="'color:' + color"
+        title="Zoomer sur le lieu"
+      >
+        {{ name }}
+      </h2>
+
+      <div class="flex items-center justify-between mt-2 text-sm text-gray-500">
+        <div class="flex items-center">
+          <TeritorioIcon
+            v-if="icon"
+            :category-color="color"
+            class="mr-2"
+            :picto="icon"
+            :use-category-color="true"
+            :use-native-alignment="false"
+          />
+
+          <font-awesome-icon
+            v-if="faIcon"
+            :icon="faIcon"
+            :color="color"
+            class="mr-2"
+            size="sm"
+          />
+
+          {{ category }}
+        </div>
 
         <a
           v-if="hasFiche"
+          class="hover:underline focus:underline"
           :href="poiProp('teritorio:url')"
-          class="px-2 py-1 ml-2 rounded-lg"
-          :style="'background-color: ' + color"
+          rel="noopener noreferrer"
           target="_blank"
-          title="Voir les détails du lieu"
           @click.stop
         >
-          <font-awesome-icon
-            icon="external-link-alt"
-            :color="contrastedColor"
-          />
+          Voir les détails du lieu
         </a>
       </div>
 
-      <div class="flex items-center text-sm text-gray-500 cursor-pointer">
-        <TeritorioIcon
-          v-if="icon"
-          :category-color="color"
-          class="mr-2"
-          :picto="icon"
-          :use-category-color="true"
-          :use-native-alignment="true"
-        />
-
-        <font-awesome-icon
-          v-if="faIcon"
-          :icon="faIcon"
-          :color="color"
-          class="mr-2"
-          size="sm"
-        />
-
-        {{ category }}
-      </div>
-
-      <p class="mt-2">
+      <p class="mt-6 text-sm">
         <template v-if="address">
           {{ address }}
-          <br />
         </template>
-
-        <span v-for="field in listFields" :key="encodeURIComponent(field)">
-          {{ field }} <br />
-        </span>
       </p>
 
-      <div class="relative flex items-center justify-between mt-3 space-x-2">
+      <p
+        v-for="field in listFields"
+        :key="encodeURIComponent(field)"
+        class="text-sm"
+      >
+        {{ field }}
+      </p>
+
+      <div class="relative flex items-center mt-6 space-x-2 justify-evenly">
         <a
-          v-if="$isMobile()"
-          class="flex flex-col items-center flex-1 h-full p-2 border-2 border-gray-300 rounded-lg hover:bg-gray-100"
+          v-if="!$isMobile()"
+          class="flex flex-col items-center flex-1 h-full p-2 space-y-2 rounded-lg hover:bg-gray-100"
           :href="routeHref"
           title="Trouver la route pour venir jusqu'à ce lieu"
         >
           <font-awesome-icon icon="route" :color="color" size="sm" />
           <span class="text-sm">Itinéraire</span>
         </a>
+
         <button
           :class="[
-            'flex flex-1 flex-col items-center rounded-lg border-2 p-2 h-full',
+            'flex flex-1 flex-col items-center space-y-2 rounded-lg p-2 h-full',
             isModeExplorer && 'bg-blue-600 text-white hover:bg-blue-500',
-            !isModeExplorer && 'border-gray-300 hover:bg-gray-100',
+            !isModeExplorer && 'hover:bg-gray-100',
           ]"
           :title="
             isModeExplorer
@@ -98,8 +98,9 @@
           />
           <span class="text-sm">Explorer</span>
         </button>
+
         <button
-          class="flex flex-col items-center flex-1 h-full p-2 border-2 border-gray-300 rounded-lg hover:bg-gray-100"
+          class="flex flex-col items-center flex-1 h-full p-2 space-y-2 rounded-lg hover:bg-gray-100"
           title="Mettre en favori"
           @click.stop
         >
