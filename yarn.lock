@@ -4662,7 +4662,6 @@ __metadata:
     babel-core: 7.0.0-bridge.0
     babel-eslint: ^10.1.0
     babel-jest: ^26.6.3
-    bottleneck: ^2.19.5
     core-js: ^3.8.2
     eslint: ^7.17.0
     eslint-config-prettier: ^7.1.0
@@ -7423,13 +7422,6 @@ __metadata:
   version: 1.0.0
   resolution: "boolbase@npm:1.0.0"
   checksum: e827963c416fdb1dbcd57e066a43c40829518f4dcdc9f58ed04519daeebb610adacbb6cf102518bda9f08be593c5b1b49a83e36bf6b7d91b3403f7e35510eeae
-  languageName: node
-  linkType: hard
-
-"bottleneck@npm:^2.19.5":
-  version: 2.19.5
-  resolution: "bottleneck@npm:2.19.5"
-  checksum: 712d8cf9edabdc0ed02ac03c45f0fc1f033b9e57855584d86b64510adabee7ceb18658d712e2bb6f8c11facda85bfcba01e8df3d05b01dfbbe8f81ca4ab610d5
   languageName: node
   linkType: hard
 

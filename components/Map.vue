@@ -29,15 +29,15 @@
           }"
           @map-init="onMapInit"
           @map-pitchend="onMapPitchEnd"
-          @map-data="onMapRenderLimited"
-          @map-dataloading="onMapRenderLimited"
-          @map-drag="onMapRenderLimited"
-          @map-move="onMapRenderLimited"
-          @map-pitch="onMapRenderLimited"
-          @map-resize="onMapRenderLimited"
-          @map-rotate="onMapRenderLimited"
-          @map-touchmove="onMapRenderLimited"
-          @map-zoom="onMapRenderLimited"
+          @map-data="onMapRender"
+          @map-dataloading="onMapRender"
+          @map-drag="onMapRender"
+          @map-move="onMapRender"
+          @map-pitch="onMapRender"
+          @map-resize="onMapRender"
+          @map-rotate="onMapRender"
+          @map-touchmove="onMapRender"
+          @map-zoom="onMapRender"
         />
       </div>
 
@@ -79,7 +79,6 @@
 
 <script lang="ts">
 import { PoiFilter } from '@teritorio/map'
-import Bottleneck from 'bottleneck'
 import { deepEqual } from 'fast-equals'
 import throttle from 'lodash.throttle'
 import Mapbox from 'mapbox-gl-vue'
@@ -395,13 +394,7 @@ export default Vue.extend({
     this.pitch = this.$store.getters['map/pitch']
 
     this.onMapPitchEnd = throttle(this.onMapPitchEnd, 300)
-    const limiter = new Bottleneck({
-      maxConcurrent: 1,
-      minTime: 1000,
-      highWater: 1,
-      strategy: Bottleneck.strategy.OVERFLOW,
-    })
-    this.onMapRenderLimited = () => limiter.submit(this.onMapRender, null)
+    this.onMapRender = throttle(this.onMapRender, 1000)
   },
 
   methods: {
@@ -468,15 +461,14 @@ export default Vue.extend({
       this.pitch = map.getPitch()
     },
 
-    onMapRender(cb: Function) {
+    onMapRender() {
       if (
-        !this.map ||
-        !this.map.getSource(POI_SOURCE) ||
-        !this.map.isSourceLoaded(POI_SOURCE)
-      )
-        return cb()
-      this.updateMarkers()
-      cb()
+        this.map &&
+        this.map.getSource(POI_SOURCE) &&
+        this.map.isSourceLoaded(POI_SOURCE)
+      ) {
+        this.updateMarkers()
+      }
     },
 
     onControlChangeMode(mode: Mode) {
