@@ -1,6 +1,6 @@
 <template>
   <aside
-    class="absolute sm:relative inset-x-0 bottom-0 sm:inset-auto h-3/5 sm:h-auto overflow-y-auto sm:overflow-y-visible flex flex-col px-5 py-4 space-y-6 bg-white shadow-md pointer-events-auto rounded-t-lg rounded-b-none sm:rounded-xl"
+    class="absolute inset-x-0 bottom-0 flex flex-col px-5 py-4 space-y-6 overflow-y-auto bg-white shadow-md pointer-events-auto sm:relative sm:inset-auto h-3/5 sm:h-auto sm:overflow-y-visible sm:rounded-xl"
     style="min-width: 200px"
   >
     <div class="flex justify-between">
@@ -22,7 +22,7 @@
         >
           <input
             type="checkbox"
-            class="text-green-500 focus:ring-0 focus:ring-transparent rounded-full"
+            class="text-green-500 rounded-full focus:ring-0 focus:ring-transparent"
             :name="'bf_' + bf.datasourceId + '_' + v"
             :checked="
               (((filtersValues || {}).booleanFiltre || {})[v] || []).includes(
@@ -71,7 +71,7 @@
       >
         <input
           type="checkbox"
-          class="text-green-500 focus:ring-0 focus:ring-transparent rounded-full"
+          class="text-green-500 rounded-full focus:ring-0 focus:ring-transparent"
           :name="'cf_' + cf.tag + '_' + v"
           :checked="
             (

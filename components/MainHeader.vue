@@ -1,8 +1,8 @@
 <template>
   <aside
-    class="absolute sm:relative inset-x-0 bottom-0 sm:inset-auto h-3/5 sm:h-auto overflow-y-auto px-5 py-4 sm:space-y-10 bg-white shadow-md pointer-events-auto rounded-t-lg rounded-b-none sm:rounded-xl"
+    class="absolute inset-x-0 bottom-0 px-5 py-4 overflow-y-auto bg-white shadow-md pointer-events-auto sm:relative sm:inset-auto h-3/5 sm:h-auto sm:space-y-10 sm:rounded-xl"
   >
-    <div class="hidden sm:flex items-center justify-between">
+    <div class="items-center justify-between hidden sm:flex">
       <h1>
         <img :aria-label="siteName" :src="logoUrl" class="w-40 h-auto" />
       </h1>
