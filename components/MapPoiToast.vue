@@ -69,14 +69,15 @@
       </p>
 
       <div class="relative flex items-center justify-between mt-3 space-x-2">
-        <button
+        <a
+          v-if="$isMobile()"
           class="flex flex-col items-center flex-1 h-full p-2 border-2 border-gray-300 rounded-lg hover:bg-gray-100"
+          :href="routeHref"
           title="Trouver la route pour venir jusqu'à ce lieu"
-          @click.stop="onRouteClick"
         >
           <font-awesome-icon icon="route" :color="color" size="sm" />
           <span class="text-sm">Itinéraire</span>
-        </button>
+        </a>
         <button
           :class="[
             'flex flex-1 flex-col items-center rounded-lg border-2 p-2 h-full',
@@ -117,6 +118,7 @@ import { mapGetters } from 'vuex'
 
 import TeritorioIcon from '@/components/TeritorioIcon/TeritorioIcon.vue'
 import { getPoiById } from '@/utils/api'
+import { isIOS } from '@/utils/isIOS'
 import { getContrastedTextColor } from '@/utils/picto'
 import { toTitleCase } from '@/utils/string'
 import { VidoFeature, Mode } from '@/utils/types'
@@ -243,6 +245,18 @@ export default Vue.extend({
         })
         .filter((f: string) => f && f.trim().length > 0)
     },
+
+    routeHref(): string {
+      const lat = this.poi.geometry.coordinates[1]
+      const lng = this.poi.geometry.coordinates[0]
+      const latLng = `${lat},${lng}`
+
+      if (isIOS()) {
+        return `maps://?q=${latLng}`
+      }
+
+      return `geo:${latLng}`
+    },
   },
 
   watch: {
@@ -306,18 +320,6 @@ export default Vue.extend({
 
     onExploreClick() {
       this.$emit('explore-click')
-    },
-
-    onRouteClick(): void {
-      // @ts-ignore
-      if (this.$isMobile()) {
-        window.open(
-          'geo:' +
-            this.poi.geometry.coordinates[1] +
-            ',' +
-            this.poi.geometry.coordinates[0]
-        )
-      }
     },
   },
 })
