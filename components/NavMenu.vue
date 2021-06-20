@@ -1,6 +1,6 @@
 <template>
   <div
-    class="pointer-events-auto z-20 fixed inset-0 flex justify-end items-start p-4 bg-gray-900 bg-opacity-70"
+    class="fixed inset-0 z-20 flex items-start justify-end p-4 bg-gray-900 pointer-events-auto bg-opacity-70"
     @click.stop="onCloseClick"
   >
     <div
@@ -20,6 +20,7 @@
         :key="entry.post_id"
         class="w-full px-5 py-3 rounded-lg outline-none focus:outline-none hover:bg-gray-100"
         :href="entry.url"
+        rel="noopener noreferrer"
         target="_blank"
         @click.stop
       >

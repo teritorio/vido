@@ -193,7 +193,7 @@ export default Vue.extend({
                 ],
                 tileSize: 256,
                 attribution:
-                  '<a href="https://www.openstreetmap.org/copyright" target="_blank">© OpenStreetMap contributors</a> <a href="https://www.teritorio.fr/" target="_blank">© Teritorio</a>',
+                  '<a href="https://www.openstreetmap.org/copyright" rel="noopener noreferrer" target="_blank">&copy; OpenStreetMap contributors</a> <a href="https://www.teritorio.fr/" rel="noopener noreferrer" target="_blank">&copy; Teritorio</a>',
               },
             },
             layers: [
@@ -222,7 +222,7 @@ export default Vue.extend({
                 ],
                 tileSize: 256,
                 attribution:
-                  '<a href="https://ign.fr/" target="_blank">© IGN</a>',
+                  '<a href="https://ign.fr/" rel="noopener noreferrer" target="_blank">&copy; IGN</a>',
               },
             },
             layers: [
