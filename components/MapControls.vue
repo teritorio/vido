@@ -1,10 +1,10 @@
 <template>
   <aside :class="['pointer-events-none', dense && 'hidden sm:block']">
     <div
-      class="flex flex-col absolute items-end justify-between top-24 sm:top-2 inset-x-2 bottom-0"
+      class="absolute bottom-0 flex flex-col items-end justify-between top-24 sm:top-2 inset-x-2"
     >
       <div
-        class="flex flex-shrink-0 h-12 items-top justify-end space-x-3 pointer-events-auto"
+        class="flex justify-end flex-shrink-0 h-12 space-x-3 pointer-events-auto items-top"
       >
         <NavMenu v-if="showNavMenu" @close-click="toggleNavMenu" />
 
@@ -12,7 +12,7 @@
           v-if="map"
           aria-label="Favoris"
           type="button"
-          class="text-sm font-medium sm:px-5 space-x-1 rounded-full shadow-md w-11 sm:w-auto h-11 outline-none focus:outline-none bg-white text-gray-800 hover:bg-gray-100 focus-visible:bg-gray-100"
+          class="space-x-1 text-sm font-medium text-gray-800 bg-white rounded-full shadow-md outline-none sm:px-5 w-11 sm:w-auto h-11 focus:outline-none hover:bg-gray-100 focus-visible:bg-gray-100"
         >
           <font-awesome-icon icon="star" class="text-yellow-500" size="sm" />
           <span class="hidden sm:inline">Favoris</span>
@@ -22,7 +22,7 @@
           v-if="map"
           aria-label="Navigation"
           type="button"
-          class="text-sm rounded-full shadow-md w-11 h-11 outline-none focus:outline-none bg-white text-gray-800 hover:bg-gray-100 focus-visible:bg-gray-100"
+          class="text-sm text-gray-800 bg-white rounded-full shadow-md outline-none w-11 h-11 focus:outline-none hover:bg-gray-100 focus-visible:bg-gray-100"
           @click="toggleNavMenu"
         >
           <font-awesome-icon icon="bars" class="text-gray-800" size="sm" />
@@ -259,6 +259,21 @@ export default Vue.extend({
 }
 
 .mapboxgl-ctrl.mapboxgl-ctrl-attrib {
-  @apply text-xs px-1 py-0.5;
+  @apply text-xs px-1 py-0.5 rounded-tl-sm;
+}
+
+.mapboxgl-ctrl.mapboxgl-ctrl-attrib.mapboxgl-compact {
+  min-height: 24px;
+
+  @apply pl-2 pr-8 py-1 rounded-sm;
+}
+
+.mapboxgl-ctrl.mapboxgl-ctrl-attrib.mapboxgl-compact:not(.mapboxgl-compact-show) {
+  @apply bg-transparent;
+}
+
+.mapboxgl-ctrl.mapboxgl-ctrl-attrib.mapboxgl-compact.mapboxgl-compact-show
+  .mapboxgl-ctrl-attrib-button {
+  @apply bg-transparent;
 }
 </style>
