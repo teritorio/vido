@@ -1,6 +1,6 @@
 <template>
   <div
-    class="z-10 flex flex-col sm:flex-row max-w-xl mx-0 w-full sm:w-auto sm:mx-auto overflow-y-auto bg-white shadow-md pointer-events-auto rounded-t-xl sm:rounded-xl"
+    class="z-10 flex flex-col w-full max-w-xl mx-0 overflow-y-auto bg-white shadow-md pointer-events-auto sm:flex-row sm:w-auto sm:mx-auto rounded-t-xl sm:rounded-xl"
     @click="() => $emit('click')"
   >
     <img
@@ -23,7 +23,7 @@
         <a
           v-if="hasFiche"
           :href="poiProp('teritorio:url')"
-          class="ml-2 rounded-lg px-2 py-1"
+          class="px-2 py-1 ml-2 rounded-lg"
           :style="'background-color: ' + color"
           target="_blank"
           title="Voir les détails du lieu"
@@ -68,9 +68,9 @@
         </span>
       </p>
 
-      <div class="flex items-center space-x-2 justify-between mt-3 relative">
+      <div class="relative flex items-center justify-between mt-3 space-x-2">
         <button
-          class="flex flex-1 flex-col items-center rounded-lg border-2 border-gray-300 hover:bg-gray-100 p-2 h-full"
+          class="flex flex-col items-center flex-1 h-full p-2 border-2 border-gray-300 rounded-lg hover:bg-gray-100"
           title="Trouver la route pour venir jusqu'à ce lieu"
           @click.stop="onRouteClick"
         >
@@ -98,7 +98,7 @@
           <span class="text-sm">Explorer</span>
         </button>
         <button
-          class="flex flex-1 flex-col items-center rounded-lg border-2 border-gray-300 hover:bg-gray-100 p-2 h-full"
+          class="flex flex-col items-center flex-1 h-full p-2 border-2 border-gray-300 rounded-lg hover:bg-gray-100"
           title="Mettre en favori"
           @click.stop
         >
@@ -309,8 +309,9 @@ export default Vue.extend({
       this.$emit('explore-click')
     },
 
-    onRouteClick() {
-      if (this.$isMobile()) {
+    onRouteClick(): void {
+      // @ts-ignore
+      if (this.$isMobile) {
         window.open(
           'geo:' +
             this.poi.geometry.coordinates[1] +

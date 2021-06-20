@@ -9,7 +9,7 @@
     />
 
     <header
-      class="z-10 fixed top-0 bottom-0 w-full sm:w-auto flex flex-row h-full sm:p-4 space-x-4 pointer-events-none"
+      class="fixed top-0 bottom-0 z-10 flex flex-row w-full h-full space-x-4 pointer-events-none sm:w-auto sm:p-4"
     >
       <div
         :class="[
@@ -20,7 +20,7 @@
       >
         <transition name="headers" appear mode="out-in">
           <MainHeader
-            v-if="current.matches(states.Categories) && isMenuConfigLoaded"
+            v-if="state.matches(states.Categories) && isMenuConfigLoaded"
             :highlighted-categories="highlightedRootCategories"
             :logo-url="logoUrl"
             :non-highlighted-categories="nonHighlightedRootCategories"
@@ -32,7 +32,7 @@
           />
 
           <SubCategoryHeader
-            v-if="!isModeExplorer && current.matches(states.SubCategories)"
+            v-if="!isModeExplorer && state.matches(states.SubCategories)"
             :categories="context.selectedRootCategory.subCategories"
             :filtered-categories="filteredSubCategories"
             :is-sub-category-selected="isSubCategorySelected"
@@ -45,7 +45,7 @@
           />
 
           <SubCategoryFilterHeader
-            v-if="!isModeExplorer && current.matches(states.SubCategoryFilters)"
+            v-if="!isModeExplorer && state.matches(states.SubCategoryFilters)"
             :subcategory="subCategoryForFilter"
             :filters-values="subCategoryFilters"
             @filter-changed="onSubCategoryFilterChange"
@@ -53,7 +53,7 @@
           />
 
           <div
-            v-if="current.matches(states.Search)"
+            v-if="state.matches(states.Search)"
             :class="['max-h-full', isBottomMenuOpened && 'hidden sm:block']"
           >
             <SearchHeader
@@ -126,9 +126,7 @@ const interpretOptions = { devTools: false }
 
 // if (typeof window !== 'undefined' && process.env.NODE_ENV === 'development') {
 //   const { inspect } = require('@xstate/inspect')
-
 //   inspect({ iframe: false })
-
 //   interpretOptions.devTools = true
 // }
 
@@ -142,11 +140,8 @@ export default Vue.extend({
     SubCategoryFilterHeader,
   },
   data(): {
-    context: HomeContext
-    current: State<HomeContext, HomeEvent, HomeStateSchema>
-    events: typeof HomeEvents
     service: Interpreter<HomeContext, HomeStateSchema, HomeEvent>
-    states: typeof HomeStates
+    state: State<HomeContext, HomeEvent, HomeStateSchema>
     previousSubCategories: Category['id'][]
   } {
     const debouncedFetchFeatures = debounce(
@@ -159,9 +154,7 @@ export default Vue.extend({
     )
 
     return {
-      context: homeMachine.context,
-      current: homeMachine.initialState,
-      events: HomeEvents,
+      previousSubCategories: [],
       service: interpret(
         homeMachine.withConfig({
           services: {
@@ -174,8 +167,7 @@ export default Vue.extend({
         }),
         interpretOptions
       ),
-      states: HomeStates,
-      previousSubCategories: [],
+      state: homeMachine.initialState,
     }
   },
   head() {
@@ -196,51 +188,57 @@ export default Vue.extend({
   computed: {
     ...mapGetters({
       getSubCategoriesFromCategoryId: 'menu/getSubCategoriesFromCategoryId',
-      highlightedRootCategories: 'menu/highlightedRootCategories',
       isMapConfigLoaded: 'map/isLoaded',
       isMenuConfigLoaded: 'menu/isLoaded',
-      nonHighlightedRootCategories: 'menu/nonHighlightedRootCategories',
       siteInfos: 'site/infos',
-      subCategories: 'menu/subCategories',
       filters: 'menu/filters',
       mode: 'site/mode',
       selectedFeature: 'map/selectedFeature',
     }),
-    logoUrl() {
+    events: () => HomeEvents,
+    logoUrl(): string {
       return this.siteInfos('fr')?.logo || ''
     },
+    highlightedRootCategories(): Category[] {
+      return this.$store.getters['menu/highlightedRootCategories']
+    },
+    nonHighlightedRootCategories(): Category[] {
+      return this.$store.getters['menu/nonHighlightedRootCategories']
+    },
     selectedSubCategories(): Category[] {
-      const categories: Category[] = this.subCategories
+      const categories = this.subCategories
 
       return categories.filter((category) =>
-        this.context.selectedSubCategoriesIds.includes(category.id)
+        this.state.context.selectedSubCategoriesIds.includes(category.id)
       )
     },
-    siteName() {
+    siteName(): string {
       return this.siteInfos('fr')?.name || ''
     },
-    isModeExplorer() {
+    isModeExplorer(): boolean {
       return this.mode === Mode.EXPLORER
     },
-    isPoiToastVisible() {
-      return (
-        this.selectedFeature && this.$refs.map && this.$refs.map.showPoiToast
-      )
+    isPoiToastVisible(): boolean {
+      return this.selectedFeature && this.$refs.map?.showPoiToast
     },
-    isBottomMenuOpened() {
+    isBottomMenuOpened(): boolean {
       return (
         this.isPoiToastVisible ||
-        this.current.matches(this.states.Categories) ||
-        this.current.matches(this.states.SubCategories) ||
-        this.current.matches(this.states.SubCategoryFilters)
+        this.state.matches(this.states.Categories) ||
+        this.state.matches(this.states.SubCategories) ||
+        this.state.matches(this.states.SubCategoryFilters)
       )
     },
-    rootCategories() {
+    rootCategories(): Category[] {
       return this.highlightedRootCategories.concat(
         this.nonHighlightedRootCategories
       )
     },
-    subCategoriesCounts(): { [id: string]: number } {
+    states: () => HomeStates,
+    subCategories(): Category[] {
+      return this.$store.getters['menu/subCategories']
+    },
+    subCategoriesCounts(): Record<Category['id'], number> {
       const counts: { [id: string]: number } = {}
       const addCount = (cat: Category) => {
         if (counts[cat.parent]) {
@@ -250,7 +248,7 @@ export default Vue.extend({
         }
         if (cat.parent !== '0') {
           const parent =
-            this.subCategories.find((sc: Category) => sc.id === cat.parent) ||
+            this.subCategories.find((sc) => sc.id === cat.parent) ||
             this.rootCategories.find((sc: Category) => sc.id === cat.parent)
           if (parent) {
             addCount(parent)
@@ -262,51 +260,56 @@ export default Vue.extend({
       )
       return counts
     },
-    subCategoryForFilter(): Category {
+    subCategoryForFilter(): Category | undefined {
       return this.subCategories.find(
-        (sc: Category) => sc.id === this.context.selectedSubCategoryForFilters
+        (sc) => sc.id === this.state.context.selectedSubCategoryForFilters
       )
     },
     subCategoryFilters(): FiltreValues {
       return (
-        this.context.selectedSubCategoryForFilters &&
-        this.filters[this.context.selectedSubCategoryForFilters]
+        this.state.context.selectedSubCategoryForFilters &&
+        this.filters[this.state.context.selectedSubCategoryForFilters]
       )
     },
     filteredSubCategories(): Category['id'][] {
       return Object.keys(this.filters)
     },
-    categoriesToIcons(): { [category: Category['id']]: string } {
-      const res = {}
+    categoriesToIcons(): Record<Category['id'], string> {
+      const resources: Record<Category['id'], string> = {}
+
       this.subCategories.forEach((sc) => {
-        res[sc.id] = sc.metadata.picto
+        resources[sc.id] = sc.metadata.picto
       })
-      return res
+
+      return resources
     },
   },
   watch: {
-    current(val, oldVal) {
+    state(val, oldVal) {
       if (val.matches(this.states.Home) && !oldVal.matches(this.states.Home)) {
         this.goToHome()
       }
     },
     mode() {
       if (this.isModeExplorer) {
-        this.unselectSubCategory(this.context.selectedSubCategoriesIds)
+        this.unselectSubCategory(this.state.context.selectedSubCategoriesIds)
       }
     },
   },
   created() {
     this.service
       .onTransition((state) => {
-        this.current = state
-        this.context = state.context
+        this.state = state
+        this.state.context = state.context
 
         if (
           typeof location !== 'undefined' &&
           state.event.type !== HomeEvents.Init
         ) {
-          setHashPart('cat', this.context.selectedSubCategoriesIds.join('.'))
+          setHashPart(
+            'cat',
+            this.state.context.selectedSubCategoriesIds.join('.')
+          )
         }
       })
       .start()
@@ -325,6 +328,7 @@ export default Vue.extend({
     }),
     goToHome() {
       this.service.send(HomeEvents.GoToHome)
+      // @ts-ignore
       if (this.$isMobile()) {
         this.goToSearch()
       } else {
@@ -332,10 +336,11 @@ export default Vue.extend({
       }
     },
     goToParentFromSubCategory() {
-      if (this.context.selectedRootCategory) {
+      if (this.state.context.selectedRootCategory) {
         const rootCat = this.subCategories.find(
-          (sc: Category) => sc.id === this.context.selectedRootCategory?.id
+          (sc) => sc.id === this.state.context.selectedRootCategory?.id
         )
+
         if (rootCat && rootCat.level >= 2) {
           this.onRootCategoryClick(rootCat.parent)
         } else {
@@ -352,7 +357,7 @@ export default Vue.extend({
       this.service.send(HomeEvents.GoToCategories)
     },
     isSubCategorySelected(subCategoryId: Category['id']) {
-      return this.context.selectedSubCategoriesIds.includes(subCategoryId)
+      return this.state.context.selectedSubCategoriesIds.includes(subCategoryId)
     },
     onRootCategoryClick(rootCategoryId: Category['id']) {
       this.service.send(HomeEvents.GoToSubCategories, {
@@ -361,7 +366,8 @@ export default Vue.extend({
       })
     },
     onSubCategoryClick(categoryId: Category['id']) {
-      const sc = this.subCategories.find((sc: Category) => sc.id === categoryId)
+      const sc = this.subCategories.find((sc) => sc.id === categoryId)
+
       if (sc && sc.vido_children && sc.vido_children.length > 0) {
         this.onRootCategoryClick(categoryId)
       } else {
@@ -375,8 +381,9 @@ export default Vue.extend({
     },
     onBackToSubCategoryClick() {
       const rootCatId = this.subCategories.find(
-        (sc: Category) => sc.id === this.context.selectedSubCategoryForFilters
+        (sc) => sc.id === this.state.context.selectedSubCategoryForFilters
       )?.parent
+
       this.service.send(HomeEvents.GoToSubCategories, {
         rootCategoryId: rootCatId,
         subCategories: this.getSubCategoriesFromCategoryId(rootCatId),
@@ -401,12 +408,12 @@ export default Vue.extend({
       })
     },
     onSubCategoryFilterChange(filters: FiltreValues) {
-      if (this.context.selectedSubCategoryForFilters) {
+      if (this.state.context.selectedSubCategoryForFilters) {
         const newFilters = Object.assign({}, this.filters)
         if (Object.keys(filters).length > 0) {
-          newFilters[this.context.selectedSubCategoryForFilters] = filters
+          newFilters[this.state.context.selectedSubCategoryForFilters] = filters
         } else {
-          delete newFilters[this.context.selectedSubCategoryForFilters]
+          delete newFilters[this.state.context.selectedSubCategoryForFilters]
         }
         this.setCategoriesFilters(newFilters)
       }
@@ -448,7 +455,8 @@ export default Vue.extend({
         this.$refs.map.setPoiToastVisibility(true)
       }
     },
-    onMapClick() {
+    onMapClick(): void {
+      // @ts-ignore
       if (this.$isMobile()) {
         this.goToHome()
       }
@@ -458,7 +466,7 @@ export default Vue.extend({
         this.$store.dispatch('site/setMode', mode)
         this.selectSubCategory(this.previousSubCategories)
       } else if (mode === Mode.EXPLORER) {
-        this.previousSubCategories = this.context.selectedSubCategoriesIds
+        this.previousSubCategories = this.state.context.selectedSubCategoriesIds
         this.$store.dispatch('site/setMode', mode)
       }
     },

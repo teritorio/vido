@@ -83,7 +83,11 @@ import Bottleneck from 'bottleneck'
 import { deepEqual } from 'fast-equals'
 import throttle from 'lodash.throttle'
 import Mapbox from 'mapbox-gl-vue'
-import mapboxgl, { MapboxGeoJSONFeature } from 'maplibre-gl'
+import mapboxgl, {
+  MapboxGeoJSONFeature,
+  MapLayerMouseEvent,
+  MapLayerTouchEvent,
+} from 'maplibre-gl'
 import Vue from 'vue'
 import { mapGetters, mapActions } from 'vuex'
 
@@ -132,7 +136,7 @@ export default Vue.extend({
     markersOnScreen: { [id: string]: mapboxgl.Marker }
     poiFilter: PoiFilter | null
     selectedFeatureMarker: mapboxgl.Marker | null
-    selectedBackground: String
+    selectedBackground: string
     featuresCoordinates: { [id: string]: TupleLatLng }
     allowRegionBackZoom: boolean
     showPoiToast: boolean
@@ -164,7 +168,7 @@ export default Vue.extend({
       isLoadingFeatures: 'menu/isLoadingFeatures',
     }),
 
-    isModeExplorer() {
+    isModeExplorer(): boolean {
       return this.mode === Mode.EXPLORER
     },
 
@@ -240,17 +244,14 @@ export default Vue.extend({
       }
     },
 
-    availableStyles() {
+    availableStyles(): typeof MAP_STYLES {
       return MAP_STYLES
     },
   },
 
   watch: {
     small() {
-      if (!this.map) {
-        return
-      }
-      setTimeout(() => this.map.resize(), 250)
+      setTimeout(() => this.map?.resize(), 250)
     },
 
     features(
@@ -350,7 +351,9 @@ export default Vue.extend({
       if (!this.map) {
         return
       }
+
       this.map.setStyle(this.mapStyle)
+
       this.map.once('styledata', () => {
         if (
           this.poiFilter &&
@@ -359,12 +362,14 @@ export default Vue.extend({
         ) {
           this.poiFilter.remove(true)
         }
+
         if (
           this.isModeExplorer &&
           this.selectedBackground === MAP_STYLE_FOR_EXPLORER
         ) {
           this.poiFilterForExplorer()
         }
+
         this.initPoiLayer(this.features)
       })
     },
@@ -380,7 +385,7 @@ export default Vue.extend({
           }
           break
         case Mode.BROWSER:
-          this.poiFilter.remove(true)
+          this.poiFilter?.remove(true)
           break
       }
     },
@@ -408,7 +413,9 @@ export default Vue.extend({
       this.map = map
 
       this.poiFilter = new PoiFilter()
+
       this.map.addControl(this.poiFilter)
+
       this.map.on('load', () => {
         if (!this.isModeExplorer) {
           this.poiFilter?.remove(true)
@@ -416,21 +423,36 @@ export default Vue.extend({
           this.poiFilterForExplorer()
         }
       })
+
       this.map.on('click', () => {
         this.selectFeature(null)
         this.$emit('click')
       })
 
       // Listen to click on POI from vector tiles (explorer mode)
-      this.map.on('click', 'poi-level-1', (e: Event) => {
-        this.selectFeature(e.features.pop())
-      })
-      this.map.on('click', 'poi-level-2', (e: Event) => {
-        this.selectFeature(e.features.pop())
-      })
-      this.map.on('click', 'poi-level-3', (e: Event) => {
-        this.selectFeature(e.features.pop())
-      })
+      this.map.on(
+        'click',
+        'poi-level-1',
+        (event: MapLayerMouseEvent | MapLayerTouchEvent) => {
+          this.selectFeature(event.features?.pop())
+        }
+      )
+
+      this.map.on(
+        'click',
+        'poi-level-2',
+        (event: MapLayerMouseEvent | MapLayerTouchEvent) => {
+          this.selectFeature(event.features?.pop())
+        }
+      )
+
+      this.map.on(
+        'click',
+        'poi-level-3',
+        (event: MapLayerMouseEvent | MapLayerTouchEvent) => {
+          this.selectFeature(event.features?.pop())
+        }
+      )
 
       const poiHash = getHashPart('poi')
       if (poiHash && !this.selectedFeature) {
@@ -472,7 +494,8 @@ export default Vue.extend({
         this.$emit('change-mode', Mode.BROWSER)
       } else {
         this.goToSelectedPoi()
-        if (this.$isMobile()) {
+        // @ts-ignore
+        if (this.$isMobile) {
           this.showPoiToast = false
         }
         this.$emit('change-mode', Mode.EXPLORER)
@@ -530,6 +553,7 @@ export default Vue.extend({
 
     poiFilterForExplorer() {
       this.poiFilter.reset()
+
       const filters = Object.values(this.categories)
         .filter(
           (c: Category) =>
@@ -540,7 +564,7 @@ export default Vue.extend({
       this.poiFilter.setIncludeFilter(filters)
     },
 
-    onClickChangeBackground(background: String) {
+    onClickChangeBackground(background: string) {
       this.selectedBackground = background
     },
 
