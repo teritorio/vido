@@ -51,7 +51,7 @@
       />
 
       <div
-        class="fixed flex justify-center pointer-events-none h-3/5 sm:h-auto overflow-y-auto inset-x-0 bottom-0 sm:inset-x-3 sm:bottom-3"
+        class="fixed inset-x-0 bottom-0 flex justify-center overflow-y-auto pointer-events-none h-3/5 sm:h-auto sm:inset-x-3 sm:bottom-3"
       >
         <MapPoiToast
           v-if="selectedFeature && showPoiToast"
@@ -401,7 +401,6 @@ export default Vue.extend({
   methods: {
     ...mapActions({
       resetMapview: 'map/resetMapview',
-      selectFeature: 'map/selectFeature',
     }),
 
     onMapInit(map: mapboxgl.Map) {
@@ -624,6 +623,18 @@ export default Vue.extend({
           'text-allow-overlap': false,
         },
       })
+    },
+
+    selectFeature(feature: VidoFeature) {
+      this.$store.dispatch('map/selectFeature', feature)
+
+      if (feature) {
+        setTimeout(() => {
+          this.map?.flyTo({
+            center: feature.geometry.coordinates,
+          })
+        }, 500)
+      }
     },
 
     updateMarkers() {
