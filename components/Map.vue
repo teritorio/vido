@@ -42,11 +42,12 @@
       </div>
 
       <MapControls
+        :backgrounds="availableStyles"
+        :dense="small"
+        :initial-background="selectedBackground"
         :map="map"
         :pitch="pitch"
-        :backgrounds="availableStyles"
-        :initial-background="selectedBackground"
-        :dense="small"
+        :styles="mapStyles"
         @changeBackground="onClickChangeBackground"
         @change-mode="onControlChangeMode"
       />
@@ -89,6 +90,11 @@ import { mapGetters, mapActions } from 'vuex'
 import MapControls from '@/components/MapControls.vue'
 import MapPoiToast from '@/components/MapPoiToast.vue'
 import TeritorioIconBadge from '@/components/TeritorioIcon/TeritorioIconBadge.vue'
+import {
+  DEFAULT_MAP_STYLE,
+  EXPLORER_MAP_STYLE,
+  MAP_STYLES,
+} from '@/lib/constants'
 import { State as MenuState } from '@/store/menu'
 import { getPoiById } from '@/utils/api'
 import {
@@ -102,13 +108,6 @@ import { getHashPart, setHashPart } from '@/utils/url'
 
 const POI_SOURCE = 'poi'
 const POI_LAYER_MARKER = 'poi-simple-marker'
-const MAP_STYLE_FOR_EXPLORER = 'tourism-proxy'
-const MAP_STYLES = {
-  'tourism-0.9': 'Teritorio Tourisme (0.9)',
-  'tourism-proxy': 'Teritorio Tourisme (proxy)',
-  mapnik: 'OpenStreetMap',
-  aerial: 'Imagerie aérienne IGN',
-}
 
 export default Vue.extend({
   components: {
@@ -131,7 +130,7 @@ export default Vue.extend({
     markersOnScreen: { [id: string]: mapboxgl.Marker }
     poiFilter: PoiFilter | null
     selectedFeatureMarker: mapboxgl.Marker | null
-    selectedBackground: string
+    selectedBackground: keyof typeof MAP_STYLES
     featuresCoordinates: { [id: string]: TupleLatLng }
     allowRegionBackZoom: boolean
     showPoiToast: boolean
@@ -171,74 +170,72 @@ export default Vue.extend({
     },
 
     mapStyle(): string | VidoMglStyle {
-      switch (this.selectedBackground) {
-        case 'tourism-0.9':
-          return `https://vecto-dev.teritorio.xyz/styles/teritorio-tourism-0.9/style.json?key=${this.$config.TILES_TOKEN}`
+      const styles = this.mapStyles
 
-        case 'mapnik':
-          return {
-            version: 8,
-            name: 'Teritorio Mapnik',
-            sprite: `https://vecto-dev.teritorio.xyz/styles/teritorio-tourism-proxy/sprite?key=${this.$config.TILES_TOKEN}`,
-            glyphs: `https://vecto-dev.teritorio.xyz/fonts/{fontstack}/{range}.pbf?key=${this.$config.TILES_TOKEN}`,
-            vido_israster: true,
-            sources: {
-              mapnik: {
-                type: 'raster',
-                tiles: [
-                  // 'https://tile.openstreetmap.org/{z}/{x}/{y}.png' // Main OSM tiles
-                  'https://a.tiles.teritorio.xyz/styles/osm/{z}/{x}/{y}.png',
-                  'https://b.tiles.teritorio.xyz/styles/osm/{z}/{x}/{y}.png',
-                  'https://c.tiles.teritorio.xyz/styles/osm/{z}/{x}/{y}.png',
-                ],
-                tileSize: 256,
-                attribution:
-                  '<a href="https://www.openstreetmap.org/copyright" rel="noopener noreferrer" target="_blank">&copy; OpenStreetMap contributors</a> <a href="https://www.teritorio.fr/" rel="noopener noreferrer" target="_blank">&copy; Teritorio</a>',
-              },
+      return styles[this.selectedBackground] || styles[DEFAULT_MAP_STYLE]
+    },
+
+    mapStyles(): Record<string, string | VidoMglStyle> {
+      return {
+        'tourism-proxy': `https://vecto-dev.teritorio.xyz/styles/teritorio-tourism-proxy/style.json?key=${this.$config.TILES_TOKEN}`,
+        'tourism-0.9': `https://vecto-dev.teritorio.xyz/styles/teritorio-tourism-0.9/style.json?key=${this.$config.TILES_TOKEN}`,
+        mapnik: {
+          version: 8,
+          name: 'Teritorio Mapnik',
+          sprite: `https://vecto-dev.teritorio.xyz/styles/teritorio-tourism-proxy/sprite?key=${this.$config.TILES_TOKEN}`,
+          glyphs: `https://vecto-dev.teritorio.xyz/fonts/{fontstack}/{range}.pbf?key=${this.$config.TILES_TOKEN}`,
+          vido_israster: true,
+          sources: {
+            mapnik: {
+              type: 'raster',
+              tiles: [
+                // 'https://tile.openstreetmap.org/{z}/{x}/{y}.png' // Main OSM tiles
+                'https://a.tiles.teritorio.xyz/styles/osm/{z}/{x}/{y}.png',
+                'https://b.tiles.teritorio.xyz/styles/osm/{z}/{x}/{y}.png',
+                'https://c.tiles.teritorio.xyz/styles/osm/{z}/{x}/{y}.png',
+              ],
+              tileSize: 256,
+              attribution:
+                '<a href="https://www.openstreetmap.org/copyright" rel="noopener noreferrer" target="_blank">&copy; OpenStreetMap contributors</a> <a href="https://www.teritorio.fr/" rel="noopener noreferrer" target="_blank">&copy; Teritorio</a>',
             },
-            layers: [
-              {
-                id: 'mapnik',
-                type: 'raster',
-                source: 'mapnik',
-                minzoom: 1,
-                maxzoom: 20,
-              },
-            ],
-          }
-
-        case 'aerial':
-          return {
-            version: 8,
-            name: 'Imagerie aérienne IGN',
-            sprite: `https://vecto-dev.teritorio.xyz/styles/teritorio-tourism-proxy/sprite?key=${this.$config.TILES_TOKEN}`,
-            glyphs: `https://vecto-dev.teritorio.xyz/fonts/{fontstack}/{range}.pbf?key=${this.$config.TILES_TOKEN}`,
-            vido_israster: true,
-            sources: {
-              aerial: {
-                type: 'raster',
-                tiles: [
-                  `https://wxs.ign.fr/${this.$config.IGN_TOKEN}/geoportail/wmts?SERVICE=WMTS&REQUEST=GetTile&VERSION=1.0.0&LAYER=ORTHOIMAGERY.ORTHOPHOTOS&TILEMATRIXSET=PM&TILEMATRIX={z}&TILECOL={x}&TILEROW={y}&STYLE=normal&FORMAT=image/jpeg`,
-                ],
-                tileSize: 256,
-                attribution:
-                  '<a href="https://ign.fr/" rel="noopener noreferrer" target="_blank">&copy; IGN</a>',
-              },
+          },
+          layers: [
+            {
+              id: 'mapnik',
+              type: 'raster',
+              source: 'mapnik',
+              minzoom: 1,
+              maxzoom: 20,
             },
-            layers: [
-              {
-                id: 'aerial',
-                type: 'raster',
-                source: 'aerial',
-                minzoom: 1,
-                maxzoom: 21,
-              },
-            ],
-          }
-
-        case 'tourism-proxy':
-        default:
-          return `https://vecto-dev.teritorio.xyz/styles/teritorio-tourism-proxy/style.json?key=${this.$config.TILES_TOKEN}`
+          ],
+        },
+        aerial: {
+          version: 8,
+          name: 'Imagerie aérienne IGN',
+          sprite: `https://vecto-dev.teritorio.xyz/styles/teritorio-tourism-proxy/sprite?key=${this.$config.TILES_TOKEN}`,
+          glyphs: `https://vecto-dev.teritorio.xyz/fonts/{fontstack}/{range}.pbf?key=${this.$config.TILES_TOKEN}`,
+          vido_israster: true,
+          sources: {
+            aerial: {
+              type: 'raster',
+              tiles: [
+                `https://wxs.ign.fr/${this.$config.IGN_TOKEN}/geoportail/wmts?SERVICE=WMTS&REQUEST=GetTile&VERSION=1.0.0&LAYER=ORTHOIMAGERY.ORTHOPHOTOS&TILEMATRIXSET=PM&TILEMATRIX={z}&TILECOL={x}&TILEROW={y}&STYLE=normal&FORMAT=image/jpeg`,
+              ],
+              tileSize: 256,
+              attribution:
+                '<a href="https://ign.fr/" rel="noopener noreferrer" target="_blank">&copy; IGN</a>',
+            },
+          },
+          layers: [
+            {
+              id: 'aerial',
+              type: 'raster',
+              source: 'aerial',
+              minzoom: 1,
+              maxzoom: 21,
+            },
+          ],
+        },
       }
     },
 
@@ -350,12 +347,14 @@ export default Vue.extend({
         return
       }
 
-      this.map.setStyle(this.mapStyle)
+      const style = this.mapStyle
+
+      this.map.setStyle(style)
 
       this.map.once('styledata', () => {
         if (
           this.poiFilter &&
-          (typeof this.mapStyle !== 'object' || !this.mapStyle.vido_israster) &&
+          (typeof style !== 'object' || !style.vido_israster) &&
           !this.isModeExplorer
         ) {
           this.poiFilter.remove(true)
@@ -363,7 +362,7 @@ export default Vue.extend({
 
         if (
           this.isModeExplorer &&
-          this.selectedBackground === MAP_STYLE_FOR_EXPLORER
+          this.selectedBackground === EXPLORER_MAP_STYLE
         ) {
           this.poiFilterForExplorer()
         }
@@ -375,8 +374,8 @@ export default Vue.extend({
     mode() {
       switch (this.mode) {
         case Mode.EXPLORER:
-          if (this.selectedBackground !== MAP_STYLE_FOR_EXPLORER) {
-            this.selectedBackground = MAP_STYLE_FOR_EXPLORER
+          if (this.selectedBackground !== EXPLORER_MAP_STYLE) {
+            this.selectedBackground = EXPLORER_MAP_STYLE
             setHashPart('bg', this.selectedBackground)
           } else {
             this.poiFilterForExplorer()

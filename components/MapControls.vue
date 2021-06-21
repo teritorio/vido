@@ -39,7 +39,7 @@
             aria-label="Visualiser la carte en 3D"
             type="button"
             :class="[
-              'hidden sm:block text-sm font-bold rounded-full shadow-md w-11 h-11 outline-none focus:outline-none ',
+              'hidden items-center justify-center leading-none sm:flex text-sm font-bold rounded-full shadow-md w-11 h-11 outline-none focus:outline-none ',
               is3D &&
                 'bg-blue-500 text-white hover:bg-blue-400 focus-visible:bg-blue-400',
               !is3D &&
@@ -52,13 +52,28 @@
 
           <button
             v-if="map && !isModeExplorer"
+            id="background-selector-map"
             aria-label="Changer le fond de carte"
+            class="border-4 border-white rounded-full shadow-md outline-none w-11 h-11 focus:outline-none hover:bg-gray-100 focus-visible:bg-gray-100"
             :title="`Changer le fond de carte (actuellement ${backgrounds[background]})`"
             type="button"
-            class="text-sm font-bold text-gray-800 bg-white rounded-full shadow-md outline-none w-11 h-11 focus:outline-none hover:bg-gray-100 focus-visible:bg-gray-100"
             @click="nextBackground"
           >
-            <font-awesome-icon icon="map" class="text-gray-800" size="lg" />
+            <mapbox
+              class="h-full"
+              access-token=""
+              :nav-control="{
+                show: false,
+              }"
+              :map-options="{
+                attributionControl: false,
+                container: 'background-selector-map',
+                interactive: false,
+                style: styles[background],
+                zoom: 8,
+              }"
+              @map-init="onMapInit"
+            />
           </button>
 
           <button
@@ -93,7 +108,8 @@
 
 <script lang="ts">
 import { Building3d } from '@teritorio/map'
-import mapboxgl from 'maplibre-gl'
+import Mapbox from 'mapbox-gl-vue'
+import mapboxgl, { MapboxEvent } from 'maplibre-gl'
 import Vue from 'vue'
 import { mapGetters } from 'vuex'
 
@@ -103,10 +119,23 @@ import { getHashPart, setHashPart } from '@/utils/url'
 
 export default Vue.extend({
   components: {
+    Mapbox,
     NavMenu,
   },
 
   props: {
+    backgrounds: {
+      type: Object,
+      default: null,
+    },
+    dense: {
+      type: Boolean,
+      default: false,
+    },
+    initialBackground: {
+      type: String,
+      default: null,
+    },
     map: {
       type: Object,
       default: null,
@@ -115,27 +144,21 @@ export default Vue.extend({
       type: Number,
       default: 0,
     },
-    backgrounds: {
+    styles: {
       type: Object,
       default: null,
-    },
-    initialBackground: {
-      type: String,
-      default: null,
-    },
-    dense: {
-      type: Boolean,
-      default: false,
     },
   },
 
   data(): {
+    backgroundSelectorMap: mapboxgl.Map | null
     building3d: Building3d | null
     is3D: boolean
     background: string | null
     showNavMenu: boolean
   } {
     return {
+      backgroundSelectorMap: null,
       building3d: null,
       is3D: false,
       background: null,
@@ -148,7 +171,7 @@ export default Vue.extend({
       mode: 'site/mode',
     }),
 
-    isModeExplorer() {
+    isModeExplorer(): boolean {
       return this.mode === Mode.EXPLORER
     },
   },
@@ -180,6 +203,13 @@ export default Vue.extend({
         })
 
         this.map.addControl(this.building3d)
+
+        this.map.on('moveend', (event: MapboxEvent) => {
+          if (this.backgroundSelectorMap) {
+            const center = event.target.getCenter()
+            this.backgroundSelectorMap.jumpTo({ center })
+          }
+        })
       }
     },
     pitch(value) {
@@ -210,6 +240,9 @@ export default Vue.extend({
   },
 
   methods: {
+    onMapInit(map: mapboxgl.Map) {
+      this.backgroundSelectorMap = map
+    },
     setIs3D(value: boolean) {
       this.is3D = value
     },
