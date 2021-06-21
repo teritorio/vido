@@ -75,6 +75,8 @@ export interface ApiCategoryBase {
     tourism_style_merge: boolean
     // eslint-disable-next-line camelcase
     tourism_style_class: string | string[]
+    // eslint-disable-next-line camelcase
+    selection_zoom: number
   }
   order: number
 }
