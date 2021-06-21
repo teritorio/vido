@@ -232,8 +232,8 @@ export default Vue.extend({
       this.background = backs[(lastId + 1) % backs.length]
     },
     toggleMode() {
-      this.$store.dispatch(
-        'site/setMode',
+      this.$emit(
+        'change-mode',
         this.isModeExplorer ? Mode.BROWSER : Mode.EXPLORER
       )
     },

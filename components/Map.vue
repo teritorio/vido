@@ -48,6 +48,7 @@
         :initial-background="selectedBackground"
         :dense="small"
         @changeBackground="onClickChangeBackground"
+        @change-mode="onControlChangeMode"
       />
 
       <div
@@ -454,6 +455,11 @@ export default Vue.extend({
         return cb()
       this.updateMarkers()
       cb()
+    },
+
+    onControlChangeMode(mode: Mode) {
+      this.allowRegionBackZoom = false
+      this.$emit('change-mode', mode)
     },
 
     setPoiToastVisibility(visible: boolean) {
