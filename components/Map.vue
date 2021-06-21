@@ -525,7 +525,7 @@ export default Vue.extend({
           break
       }
 
-      this.map.fitBounds(bounds, { maxZoom: 17 })
+      this.map.fitBounds(bounds, { maxZoom: 13 })
     },
 
     poiFilterForExplorer() {
