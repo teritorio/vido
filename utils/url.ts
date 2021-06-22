@@ -3,6 +3,7 @@
  */
 export function setHashPart(key: string, val: string | null) {
   const params = new URLSearchParams(location.hash.substring(1))
+
   if (
     val === null ||
     val === undefined ||
@@ -15,7 +16,8 @@ export function setHashPart(key: string, val: string | null) {
     params.set(key, val)
   }
 
-  const newHash = '#' + params.toString().replace(/%2F/g, '/') // Replace is for keeping map param working with mapboxgl
+  // Replace is for keeping map param working with mapboxgl
+  const newHash = '#' + params.toString().replace(/%2F/g, '/')
 
   if (newHash !== location.hash) {
     if (history.pushState) {

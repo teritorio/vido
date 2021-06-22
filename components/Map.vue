@@ -98,11 +98,12 @@ import {
 import { State as MenuState } from '@/store/menu'
 import { getPoiById } from '@/utils/api'
 import {
+  Category,
+  MapStyle,
+  Mode,
+  TupleLatLng,
   VidoFeature,
   VidoMglStyle,
-  TupleLatLng,
-  Mode,
-  Category,
 } from '@/utils/types'
 import { getHashPart, setHashPart } from '@/utils/url'
 
@@ -130,7 +131,7 @@ export default Vue.extend({
     markersOnScreen: { [id: string]: mapboxgl.Marker }
     poiFilter: PoiFilter | null
     selectedFeatureMarker: mapboxgl.Marker | null
-    selectedBackground: keyof typeof MAP_STYLES
+    selectedBackground: keyof typeof MapStyle
     featuresCoordinates: { [id: string]: TupleLatLng }
     allowRegionBackZoom: boolean
     showPoiToast: boolean
@@ -143,7 +144,7 @@ export default Vue.extend({
       markersOnScreen: {},
       poiFilter: null,
       selectedFeatureMarker: null,
-      selectedBackground: 'tourism-proxy',
+      selectedBackground: DEFAULT_MAP_STYLE,
       featuresCoordinates: {},
       allowRegionBackZoom: false,
       showPoiToast: false,
@@ -177,9 +178,10 @@ export default Vue.extend({
 
     mapStyles(): Record<string, string | VidoMglStyle> {
       return {
-        'tourism-proxy': `https://vecto-dev.teritorio.xyz/styles/teritorio-tourism-proxy/style.json?key=${this.$config.TILES_TOKEN}`,
-        'tourism-0.9': `https://vecto-dev.teritorio.xyz/styles/teritorio-tourism-0.9/style.json?key=${this.$config.TILES_TOKEN}`,
-        mapnik: {
+        [MapStyle.teritorio]: this.isModeExplorer
+          ? `https://vecto-dev.teritorio.xyz/styles/teritorio-tourism-proxy/style.json?key=${this.$config.TILES_TOKEN}`
+          : `https://vecto-dev.teritorio.xyz/styles/teritorio-tourism-0.9/style.json?key=${this.$config.TILES_TOKEN}`,
+        [MapStyle.mapnik]: {
           version: 8,
           name: 'Teritorio Mapnik',
           sprite: `https://vecto-dev.teritorio.xyz/styles/teritorio-tourism-proxy/sprite?key=${this.$config.TILES_TOKEN}`,
@@ -209,7 +211,7 @@ export default Vue.extend({
             },
           ],
         },
-        aerial: {
+        [MapStyle.aerial]: {
           version: 8,
           name: 'Imagerie aérienne IGN',
           sprite: `https://vecto-dev.teritorio.xyz/styles/teritorio-tourism-proxy/sprite?key=${this.$config.TILES_TOKEN}`,
@@ -374,12 +376,12 @@ export default Vue.extend({
     mode() {
       switch (this.mode) {
         case Mode.EXPLORER:
-          if (this.selectedBackground !== EXPLORER_MAP_STYLE) {
-            this.selectedBackground = EXPLORER_MAP_STYLE
-            setHashPart('bg', this.selectedBackground)
-          } else {
-            this.poiFilterForExplorer()
-          }
+          this.selectedBackground = EXPLORER_MAP_STYLE
+          this.map?.setStyle(this.mapStyle)
+
+          setHashPart('bg', this.selectedBackground)
+
+          this.poiFilterForExplorer()
           break
         case Mode.BROWSER:
           this.poiFilter?.remove(true)
@@ -555,8 +557,9 @@ export default Vue.extend({
       this.poiFilter?.setIncludeFilter(filters)
     },
 
-    onClickChangeBackground(background: string) {
+    onClickChangeBackground(background: keyof typeof MapStyle) {
       this.selectedBackground = background
+      this.map?.setStyle(this.mapStyle)
     },
 
     initPoiLayer(features: MenuState['features']) {

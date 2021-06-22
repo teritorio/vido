@@ -271,6 +271,12 @@ export enum Mode {
   EXPLORER = 'EXPLORER', // User explores around
 }
 
+export enum MapStyle {
+  teritorio = 'teritorio',
+  mapnik = 'mapnik',
+  aerial = 'aerial',
+}
+
 export type NavMenuEntry = {
   // eslint-disable-next-line camelcase
   post_id: number

@@ -49,10 +49,10 @@
           v-if="map && !isModeExplorer"
           id="background-selector-map"
           aria-label="Changer le fond de carte"
-          class="border-4 border-white rounded-full shadow-md outline-none w-11 h-11 focus:outline-none hover:bg-gray-100 focus-visible:bg-gray-100"
+          class="bg-gray-100 border-4 border-white rounded-full shadow-md outline-none w-11 h-11 focus:outline-none hover:bg-gray-100 focus-visible:bg-gray-100"
           :title="`Changer le fond de carte (actuellement ${backgrounds[background]})`"
           type="button"
-          @click="nextBackground"
+          @click="displayNextBackground"
         >
           <mapbox
             class="h-full"
@@ -64,7 +64,7 @@
               attributionControl: false,
               container: 'background-selector-map',
               interactive: false,
-              style: styles[background],
+              style: backgroundSelectorMapStyle,
               zoom: 8,
             }"
             @map-init="onMapInit"
@@ -109,7 +109,7 @@ import Vue from 'vue'
 import { mapGetters } from 'vuex'
 
 import NavMenu from '@/components/NavMenu.vue'
-import { Mode } from '@/utils/types'
+import { Mode, VidoMglStyle } from '@/utils/types'
 import { getHashPart, setHashPart } from '@/utils/url'
 
 export default Vue.extend({
@@ -165,6 +165,14 @@ export default Vue.extend({
       mode: 'site/mode',
     }),
 
+    backgroundSelectorMapStyle(): string | VidoMglStyle | undefined {
+      if (!this.background) {
+        return
+      }
+
+      return this.styles[this.nextBackgroundName(this.background)]
+    },
+
     isModeExplorer(): boolean {
       return this.mode === Mode.EXPLORER
     },
@@ -213,10 +221,6 @@ export default Vue.extend({
 
       this.setIs3D(value !== 0)
     },
-    background() {
-      setHashPart('bg', this.background || '')
-      this.$emit('changeBackground', this.background)
-    },
   },
 
   created() {
@@ -229,7 +233,7 @@ export default Vue.extend({
     } else if (this.initialBackground) {
       this.background = this.initialBackground
     } else {
-      this.nextBackground()
+      this.displayNextBackground()
     }
   },
 
@@ -251,12 +255,37 @@ export default Vue.extend({
         this.setIs3D(!this.is3D)
       }
     },
-    nextBackground() {
-      const backs = Object.keys(this.backgrounds)
-      const lastId = this.background
-        ? backs.findIndex((b) => b === this.background)
-        : -1
-      this.background = backs[(lastId + 1) % backs.length]
+    displayNextBackground() {
+      if (!this.background) {
+        return
+      }
+
+      const nextBackgroundName = this.nextBackgroundName(this.background)
+      const nextSelectorBackgroundName = this.nextBackgroundName(
+        nextBackgroundName
+      )
+
+      this.background = nextBackgroundName
+
+      setHashPart('bg', nextBackgroundName)
+      this.$emit('changeBackground', nextBackgroundName)
+
+      this.backgroundSelectorMap?.setStyle(
+        this.styles[nextSelectorBackgroundName]
+      )
+    },
+    nextBackgroundName(backgroundNameReference: string): string {
+      const styleNames = Object.keys(this.styles)
+      const backgroundReferenceIndex = styleNames.findIndex(
+        (styleName) => styleName === backgroundNameReference
+      )
+      let styleIndex = backgroundReferenceIndex + 1
+
+      if (styleIndex > styleNames.length - 1) {
+        styleIndex = 0
+      }
+
+      return styleNames[styleIndex]
     },
     toggleMode() {
       this.$emit(
