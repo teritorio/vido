@@ -121,7 +121,6 @@ import TeritorioIcon from '@/components/TeritorioIcon/TeritorioIcon.vue'
 import { getPoiById } from '@/utils/api'
 import { isIOS } from '@/utils/isIOS'
 import { getContrastedTextColor } from '@/utils/picto'
-import { toTitleCase } from '@/utils/string'
 import { VidoFeature, Mode } from '@/utils/types'
 
 export default Vue.extend({
@@ -207,9 +206,9 @@ export default Vue.extend({
       }
 
       return [
-        this.poiProp('addr:street') && toTitleCase(this.poiProp('addr:street')),
+        this.poiProp('addr:street'),
         this.poiProp('addr:postcode'),
-        this.poiProp('addr:city') && this.poiProp('addr:city').toUpperCase(),
+        this.poiProp('addr:city'),
       ]
         .filter((f) => f && f.trim().length > 0)
         .join(' ')
