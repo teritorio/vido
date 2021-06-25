@@ -60,6 +60,7 @@
               :site-name="siteName"
               :logo-url="logoUrl"
               :menu-to-icon="categoriesToIcons"
+              :selection-zoom="selectionZoom"
               @go-back-click="goToHome"
               @category-click="onSearchCategory"
               @poi-click="onSearchPoi"
@@ -194,6 +195,7 @@ export default Vue.extend({
       filters: 'menu/filters',
       mode: 'site/mode',
       selectedFeature: 'map/selectedFeature',
+      selectionZoom: 'map/selectionZoom',
     }),
     events: () => HomeEvents,
     logoUrl(): string {

@@ -23,6 +23,19 @@ interface State {
     min: ZoomLevel
   }
   selectedFeature: string | null
+  // eslint-disable-next-line camelcase
+  selection_zoom: {
+    // eslint-disable-next-line camelcase
+    zoom_tis: number
+    // eslint-disable-next-line camelcase
+    zoom_osm: number
+    // eslint-disable-next-line camelcase
+    zoom_wp: number
+    // eslint-disable-next-line camelcase
+    zoom_ban: number
+    // eslint-disable-next-line camelcase
+    zoom_commune: number
+  }
 }
 
 const getInitialMapview: Function = () => ({
@@ -34,6 +47,13 @@ const getInitialMapview: Function = () => ({
     default: 8,
     max: 20,
     min: 1,
+  },
+  selection_zoom: {
+    zoom_tis: 10,
+    zoom_osm: 10,
+    zoom_wp: 10,
+    zoom_ban: 10,
+    zoom_commune: 10,
   },
 })
 
@@ -54,6 +74,7 @@ export const mutations = {
     state.center = payload.center
     state.pitch = payload.pitch || 0
     state.zoom = payload.zoom
+    state.selection_zoom = payload.selection_zoom
 
     state.isLoaded = true
   },
@@ -98,6 +119,7 @@ export const getters = {
   isLoaded: (state: State) => state.isLoaded,
   pitch: (state: State) => state.pitch,
   zoom: (state: State) => state.zoom,
+  selectionZoom: (state: State) => state.selection_zoom,
   selectedFeature: (state: State) =>
     state.selectedFeature && JSON.parse(state.selectedFeature),
 }

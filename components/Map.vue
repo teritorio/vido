@@ -498,10 +498,13 @@ export default Vue.extend({
       if (!this.map || !this.selectedFeature) {
         return
       }
-      const zoom = this.selectedFeature.properties.vido_cat
-        ? this.categories[this.selectedFeature.properties.vido_cat].metadata
-            .selection_zoom
-        : undefined
+      let zoom
+      if (this.selectedFeature.properties.vido_zoom) {
+        zoom = this.selectedFeature.properties.vido_zoom
+      } else if (this.selectedFeature.properties.vido_cat) {
+        zoom = this.categories[this.selectedFeature.properties.vido_cat]
+          .metadata.selection_zoom
+      }
       this.map.flyTo({
         center: this.selectedFeature.geometry.coordinates,
         zoom: zoom === undefined ? Math.max(this.map.getZoom(), 17) : zoom,

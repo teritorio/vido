@@ -120,6 +120,10 @@ export default Vue.extend({
       type: Object as PropType<{ [menuId: string]: string }>,
       required: true,
     },
+    selectionZoom: {
+      type: Object as PropType<{ [selection: string]: number }>,
+      required: true,
+    },
   },
 
   data(): {
@@ -239,6 +243,11 @@ export default Vue.extend({
 
     onAddressClick(id: string) {
       let feature = this.addressResults.find((a) => a.ID === id)?.geojson
+      const isCity =
+        (this.searchResults && Array.isArray(this.searchResults.municipality)
+          ? this.searchResults.municipality
+          : []
+        ).find((a) => a.ID === id) !== undefined
       if (feature) {
         feature = copy(feature)
         if (!feature.properties) {
@@ -246,6 +255,9 @@ export default Vue.extend({
         }
         feature.properties.faIcon = 'home'
         feature.properties.class = 'Adresse'
+        feature.properties.vido_zoom = isCity
+          ? this.selectionZoom.zoom_commune
+          : this.selectionZoom.zoom_ban
         this.$emit('feature-click', feature)
       }
       this.reset()
