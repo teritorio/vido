@@ -64,7 +64,17 @@
         :key="encodeURIComponent(field)"
         class="text-sm"
       >
-        {{ field }}
+        <a
+          v-if="field.k === 'phone' && $isMobile()"
+          class="text-blue-400"
+          :href="'tel:' + field.v"
+          title="Appeler ce numéro"
+        >
+          {{ field.v }}
+        </a>
+        <template v-else>
+          {{ field.v }}
+        </template>
       </p>
 
       <div class="relative flex items-center mt-6 space-x-2 justify-evenly">
@@ -227,23 +237,26 @@ export default Vue.extend({
             this.sptags[f] &&
             this.sptags[f][this.poiProp(f)]
           ) {
-            return this.sptags[f][this.poiProp(f)]
+            return { k: f, v: this.sptags[f][this.poiProp(f)] }
           } else if (
             this.sptags !== null &&
             this.sptags[f] &&
             this.poiProp(f) &&
             this.poiProp(f).includes(';')
           ) {
-            return this.poiProp(f)
-              .split(';')
-              .map((p: string) => this.sptags !== null && this.sptags[f][p])
-              .filter((f: string) => f && f.trim().length > 0)
-              .join(', ')
+            return {
+              k: f,
+              v: this.poiProp(f)
+                .split(';')
+                .map((p: string) => this.sptags !== null && this.sptags[f][p])
+                .filter((f: string) => f && f.trim().length > 0)
+                .join(', '),
+            }
           } else {
-            return this.poiProp(f)
+            return { k: f, v: this.poiProp(f) }
           }
         })
-        .filter((f: string) => f && f.trim().length > 0)
+        .filter((f: { k: string; v: string }) => f.v && f.v.trim().length > 0)
     },
 
     routeHref(): string {
