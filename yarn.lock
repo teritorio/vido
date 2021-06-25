@@ -3741,6 +3741,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@nuxtjs/gtm@npm:^2.4.0":
+  version: 2.4.0
+  resolution: "@nuxtjs/gtm@npm:2.4.0"
+  dependencies:
+    chalk: ^4.1.0
+    semver: ^7.3.2
+  checksum: d843047f881a77371d08dad97824929bd0fec4d26853d1834e431bea89b7a7599f14d6040f4320bfcbc1dbe74635f46883ce8a20765d3f205744671fdf22e544
+  languageName: node
+  linkType: hard
+
 "@nuxtjs/proxy@npm:^2.1.0":
   version: 2.1.0
   resolution: "@nuxtjs/proxy@npm:2.1.0"
@@ -4639,6 +4649,7 @@ __metadata:
     "@nuxtjs/eslint-config": ^5.0.0
     "@nuxtjs/eslint-config-typescript": ^5.0.0
     "@nuxtjs/eslint-module": ^3.0.2
+    "@nuxtjs/gtm": ^2.4.0
     "@nuxtjs/pwa": ^3.3.4
     "@nuxtjs/storybook": ^3.3.1
     "@nuxtjs/stylelint-module": ^4.0.0

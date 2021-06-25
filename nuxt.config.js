@@ -77,6 +77,7 @@ export default {
     '@nuxtjs/pwa',
     // https://go.nuxtjs.dev/content
     '@nuxt/content',
+    '@nuxtjs/gtm',
   ],
 
   // Axios module configuration (https://go.nuxtjs.dev/config-axios)
@@ -105,5 +106,12 @@ export default {
     port: 4000,
     // addons: ['@storybook/addon-controls', '@storybook/addon-notes'],
     stories: ['@/pages/**/*.stories.js', '@/components/**/*.stories.js'],
+  },
+
+  // Google Tag Manager config
+  gtm: {
+    id: 'GTM-5J5XBKJ',
+    enabled: true,
+    pageTracking: true,
   },
 }
