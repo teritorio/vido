@@ -202,7 +202,7 @@ export default Vue.extend({
       }
     },
 
-    faIcon() {
+    faIcon(): string {
       return this.poiProp('faIcon')
     },
 
