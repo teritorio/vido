@@ -136,6 +136,7 @@ export default Vue.extend({
     allowRegionBackZoom: boolean
     showPoiToast: boolean
     previousCategories: Category['id'][]
+    tourismStyleWithProxyTiles: VidoMglStyle | null
   } {
     return {
       map: null,
@@ -149,6 +150,17 @@ export default Vue.extend({
       allowRegionBackZoom: false,
       showPoiToast: false,
       previousCategories: [],
+      tourismStyleWithProxyTiles: null,
+    }
+  },
+  async fetch() {
+    this.tourismStyleWithProxyTiles = await fetch(
+      'https://vecto.teritorio.xyz/styles/teritorio-tourism-0.9/style.json'
+    ).then((res) => res.json())
+
+    if (this.tourismStyleWithProxyTiles?.sources?.openmaptiles.url) {
+      this.tourismStyleWithProxyTiles.sources.openmaptiles.url =
+        'https://vecto-dev.teritorio.xyz/data/teritorio-proxy.json'
     }
   },
 
@@ -178,9 +190,9 @@ export default Vue.extend({
 
     mapStyles(): Record<string, string | VidoMglStyle> {
       return {
-        [MapStyle.teritorio]: this.isModeExplorer
-          ? `https://vecto-dev.teritorio.xyz/styles/teritorio-tourism-proxy/style.json?key=${this.$config.TILES_TOKEN}`
-          : `https://vecto-dev.teritorio.xyz/styles/teritorio-tourism-0.9/style.json?key=${this.$config.TILES_TOKEN}`,
+        [MapStyle.teritorio]:
+          this.tourismStyleWithProxyTiles ||
+          'https://vecto.teritorio.xyz/styles/teritorio-tourism-0.9/style.json',
         [MapStyle.mapnik]: {
           version: 8,
           name: 'Teritorio Mapnik',

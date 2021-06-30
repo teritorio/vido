@@ -262,6 +262,11 @@ export type SearchResult = {
 }
 
 export type VidoMglStyle = Style & {
+  sources: {
+    openmaptiles: {
+      url: string
+    }
+  }
   // eslint-disable-next-line camelcase
   vido_israster: boolean
 }
