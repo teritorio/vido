@@ -11,46 +11,46 @@
     />
 
     <div class="px-8 py-6">
-      <h2
-        class="block text-xl font-semibold leading-tight cursor-pointer"
-        :style="'color:' + color"
-        title="Zoomer sur le lieu"
-      >
-        {{ name }}
-      </h2>
-
-      <div class="flex items-center justify-between mt-2 text-sm text-gray-500">
-        <div class="flex items-center">
-          <TeritorioIcon
-            v-if="icon"
-            :category-color="color"
-            class="mr-2"
-            :picto="icon"
-            :use-category-color="true"
-            :use-native-alignment="false"
-          />
-
-          <font-awesome-icon
-            v-if="faIcon"
-            :icon="faIcon"
-            :color="color"
-            class="mr-2"
-            size="sm"
-          />
-
-          {{ category }}
-        </div>
+      <div class="flex items-center justify-between">
+        <h2
+          class="block text-xl font-semibold leading-tight cursor-pointer"
+          :style="'color:' + color"
+          title="Zoomer sur le lieu"
+        >
+          {{ name }}
+        </h2>
 
         <a
           v-if="hasFiche"
-          class="hover:underline focus:underline"
+          class="ml-6 md:ml-8 px-3 py-1.5 text-xs text-gray-800 bg-gray-100 hover:bg-gray-200 focus:bg-gray-200 transition transition-colors rounded-md"
           :href="poiProp('teritorio:url')"
           rel="noopener noreferrer"
           target="_blank"
           @click.stop
         >
-          Voir les détails du lieu
+          Détails
         </a>
+      </div>
+
+      <div class="flex items-center mt-2 text-sm text-gray-500">
+        <TeritorioIcon
+          v-if="icon"
+          :category-color="color"
+          class="mr-2"
+          :picto="icon"
+          :use-category-color="true"
+          :use-native-alignment="false"
+        />
+
+        <font-awesome-icon
+          v-if="faIcon"
+          :icon="faIcon"
+          :color="color"
+          class="mr-2"
+          size="sm"
+        />
+
+        {{ category }}
       </div>
 
       <p class="mt-6 text-sm">
