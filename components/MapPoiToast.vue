@@ -79,7 +79,7 @@
 
       <div class="relative flex items-center mt-6 space-x-2 justify-evenly">
         <a
-          v-if="!$isMobile()"
+          v-if="$isMobile()"
           class="flex flex-col items-center flex-1 h-full p-2 space-y-2 rounded-lg hover:bg-gray-100"
           :href="routeHref"
           title="Trouver la route pour venir jusqu'à ce lieu"
