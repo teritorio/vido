@@ -159,8 +159,7 @@ export default Vue.extend({
     ).then((res) => res.json())
 
     if (this.tourismStyleWithProxyTiles?.sources?.openmaptiles.url) {
-      this.tourismStyleWithProxyTiles.sources.openmaptiles.url =
-        'https://vecto-dev.teritorio.xyz/data/teritorio-proxy.json'
+      this.tourismStyleWithProxyTiles.sources.openmaptiles.url = `https://vecto-dev.teritorio.xyz/data/teritorio-proxy.json?key=${this.$config.TILES_TOKEN}`
     }
   },
 
