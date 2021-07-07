@@ -1,7 +1,11 @@
 <template>
   <aside
-    class="absolute inset-x-0 bottom-0 flex flex-col px-5 py-4 space-y-6 overflow-y-auto bg-white shadow-md pointer-events-auto sm:relative sm:inset-auto h-3/5 sm:h-auto sm:overflow-y-visible sm:rounded-xl"
-    style="min-width: 200px"
+    :class="{
+      'absolute inset-x-0 bottom-0 flex flex-col px-5 py-4 space-y-6 bg-white shadow-md pointer-events-auto sm:relative sm:inset-auto h-3/5 sm:h-auto sm:rounded-xl': true,
+      'overflow-y-visible': selectionFiltres.length,
+      'overflow-y-auto': checkboxFiltres.length || booleanFiltres.length,
+      'min-w-96': !$isMobile(),
+    }"
   >
     <div class="flex justify-between">
       <button
@@ -44,9 +48,9 @@
       }}</label>
       <Multiselect
         placeholder="Recherchez ou ajoutez une valeur"
-        select-label="Appuyez sur entrée pour ajouter"
+        :select-label="!$isMobile() ? 'Appuyez sur entrée pour ajouter' : ''"
+        :deselect-label="!$isMobile() ? 'Appuyez sur entrée pour retirer' : ''"
         selected-label="Sélectionné"
-        deselect-label="Appuyez sur entrée pour retirer"
         label="name"
         track-by="code"
         :options="
