@@ -216,6 +216,7 @@ export default Vue.extend({
       }
 
       return [
+        this.poiProp('addr:housenumber'),
         this.poiProp('addr:street'),
         this.poiProp('addr:postcode'),
         this.poiProp('addr:city'),
