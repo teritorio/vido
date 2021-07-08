@@ -1,6 +1,6 @@
 <template>
   <aside
-    class="absolute inset-x-0 bottom-0 px-5 py-4 overflow-y-auto bg-white shadow-md pointer-events-auto sm:relative sm:inset-auto h-3/5 sm:h-auto sm:space-y-10 sm:rounded-xl"
+    class="flex flex-col max-h-full px-5 py-4 space-y-6 bg-white shadow-md pointer-events-auto sm:rounded-xl md:w-96"
   >
     <div class="flex flex-row sm:flex-col items-center sm:items-start">
       <h1 class="flex-none sm:hidden mr-2">
@@ -17,7 +17,7 @@
 
       <form
         ref="searchform"
-        class="flex-grow relative pointer-events-auto w-96"
+        class="flex-grow relative pointer-events-auto w-full"
         @submit.prevent="onSubmit"
       >
         <section class="relative w-full">

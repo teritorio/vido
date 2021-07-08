@@ -1,7 +1,7 @@
 <template>
   <aside :class="['pointer-events-none', dense && 'hidden sm:block']">
     <div
-      class="absolute flex justify-end space-x-3 pointer-events-auto items-top inset-x-3 top-3"
+      class="absolute flex justify-end space-x-3 pointer-events-auto items-top inset-x-3 top-20 sm:top-3 pt-4 sm:pt-0"
     >
       <button
         v-if="map"

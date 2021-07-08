@@ -1,11 +1,6 @@
 <template>
   <aside
-    :class="{
-      'absolute inset-x-0 bottom-0 flex flex-col px-5 py-4 space-y-6 bg-white shadow-md pointer-events-auto sm:relative sm:inset-auto h-3/5 sm:h-auto sm:rounded-xl': true,
-      'overflow-y-visible': selectionFiltres.length,
-      'overflow-y-auto': checkboxFiltres.length || booleanFiltres.length,
-      'min-w-96': !$isMobile(),
-    }"
+    class="absolute inset-x-0 bottom-0 flex flex-col px-5 py-4 space-y-6 bg-white shadow-md pointer-events-auto sm:relative sm:inset-auto h-3/5 sm:h-auto sm:rounded-xl overflow-y-visible md:w-96"
   >
     <div class="flex justify-between">
       <button
@@ -48,8 +43,8 @@
       }}</label>
       <Multiselect
         placeholder="Recherchez ou ajoutez une valeur"
-        :select-label="!$isMobile() ? 'Appuyez sur entrée pour ajouter' : ''"
-        :deselect-label="!$isMobile() ? 'Appuyez sur entrée pour retirer' : ''"
+        :select-label="!$isMobile() ? `Appuyez sur entrée pour ajouter` : ''"
+        :deselect-label="!$isMobile() ? `Appuyez sur entrée pour retirer` : ''"
         selected-label="Sélectionné"
         label="name"
         track-by="code"
@@ -66,26 +61,28 @@
       />
     </div>
 
-    <div v-for="cf in checkboxFiltres" :key="cf.tag">
-      <p class="mb-2 text-gray-500">{{ cf.label }}</p>
-      <label
-        v-for="v in Object.keys(cf.values)"
-        :key="v"
-        class="block mb-1 text-gray-800"
-      >
-        <input
-          type="checkbox"
-          class="text-green-500 rounded-full focus:ring-0 focus:ring-transparent"
-          :name="'cf_' + cf.tag + '_' + v"
-          :checked="
-            (
-              ((filtersValues || {}).checkboxFiltre || {})[cf.tag] || []
-            ).includes(v)
-          "
-          @change="(e) => onCheckboxFiltreChange(cf.tag, v, e.target.checked)"
-        />
-        {{ cf.values[v] }}
-      </label>
+    <div class="overflow-y-auto">
+      <div v-for="cf in checkboxFiltres" :key="cf.tag">
+        <p class="mb-2 text-gray-500">{{ cf.label }}</p>
+        <label
+          v-for="v in Object.keys(cf.values)"
+          :key="v"
+          class="block mb-1 text-gray-800"
+        >
+          <input
+            type="checkbox"
+            class="text-green-500 rounded-full focus:ring-0 focus:ring-transparent"
+            :name="'cf_' + cf.tag + '_' + v"
+            :checked="
+              (
+                ((filtersValues || {}).checkboxFiltre || {})[cf.tag] || []
+              ).includes(v)
+            "
+            @change="(e) => onCheckboxFiltreChange(cf.tag, v, e.target.checked)"
+          />
+          {{ cf.values[v] }}
+        </label>
+      </div>
     </div>
   </aside>
 </template>
