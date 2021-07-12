@@ -43,6 +43,15 @@
       </form>
     </div>
 
+    <button
+      v-if="searchResults"
+      type="button"
+      class="sm:hidden flex-shrink-0 w-10 h-10 text-2xl font-bold transition-all rounded-full outline-none cursor-pointer focus:outline-none hover:bg-gray-100 focus:bg-gray-100"
+      @click="reset"
+    >
+      <font-awesome-icon icon="arrow-left" class="text-gray-800" size="xs" />
+    </button>
+
     <div v-if="searchResults" class="overflow-y-auto">
       <SearchResultBlock
         v-if="itemsClasse.length > 0"
