@@ -430,6 +430,7 @@ export default Vue.extend({
 
       this.map.on('click', () => {
         this.selectFeature(null)
+        this.$emit('click')
       })
 
       // Listen to click on POI from vector tiles (explorer mode)
