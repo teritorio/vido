@@ -505,7 +505,6 @@ export default Vue.extend({
     },
 
     goToSelectedPoi() {
-      console.log('coool')
       if (!this.map || !this.selectedFeature) {
         return
       }
@@ -520,7 +519,6 @@ export default Vue.extend({
         center: this.selectedFeature.geometry.coordinates,
         zoom: zoom === undefined ? Math.max(this.map.getZoom(), 17) : zoom,
       })
-      this.$emit('select-poi', true)
     },
 
     goTo(feature: VidoFeature) {
@@ -679,7 +677,6 @@ export default Vue.extend({
           })
         }, 500)
       }
-      this.$emit('select-poi', Boolean(feature))
     },
 
     updateMarkers() {

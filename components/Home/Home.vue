@@ -301,7 +301,6 @@ export default Vue.extend({
     },
   },
   created() {
-    this.poiSelected = false
     this.service
       .onTransition((state) => {
         this.state = state
