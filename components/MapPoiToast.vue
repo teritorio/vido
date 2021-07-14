@@ -1,6 +1,6 @@
 <template>
   <div
-    class="z-10 flex flex-col w-full max-w-xl mx-0 overflow-y-auto bg-white shadow-md pointer-events-auto sm:flex-row sm:w-auto sm:mx-auto sm:rounded-xl"
+    class="z-10 flex flex-col w-full max-w-xl mx-0 overflow-y-auto bg-white shadow-md pointer-events-auto sm:flex-row sm:w-auto sm:mx-auto sm:rounded-xl max-h-90"
     @click="() => $emit('click')"
   >
     <img
@@ -10,8 +10,10 @@
       alt=""
     />
 
-    <div class="px-8 py-6">
-      <div class="flex items-center justify-between">
+    <div
+      class="px-8 py-6 flex-col justify-between sm:overflow-y-auto h-40 max-h-full w-full sm:w-72 md:h-72 md:w-96"
+    >
+      <div class="flex items-center justify-between flex-shrink-0">
         <h2
           class="block text-xl font-semibold leading-tight cursor-pointer"
           :style="'color:' + color"
@@ -32,7 +34,7 @@
         </a>
       </div>
 
-      <div class="flex items-center mt-2 text-sm text-gray-500">
+      <div class="flex items-center mt-2 text-sm text-gray-500 flex-shrink-0">
         <TeritorioIcon
           v-if="icon"
           :category-color="color"
@@ -53,31 +55,35 @@
         {{ category }}
       </div>
 
-      <p class="mt-6 text-sm">
-        <template v-if="address">
-          {{ address }}
-        </template>
-      </p>
+      <div class="h-12 min-h-0 flex-grow flex-shrink-0">
+        <p class="mt-6 text-sm">
+          <template v-if="address">
+            {{ address }}
+          </template>
+        </p>
 
-      <p
-        v-for="field in listFields"
-        :key="encodeURIComponent(field)"
-        class="text-sm"
-      >
-        <a
-          v-if="field.k === 'phone' && $isMobile()"
-          class="text-blue-400"
-          :href="'tel:' + field.v"
-          title="Appeler ce numéro"
+        <p
+          v-for="field in listFields"
+          :key="encodeURIComponent(field)"
+          class="text-sm"
         >
-          {{ field.v }}
-        </a>
-        <template v-else>
-          {{ field.v }}
-        </template>
-      </p>
+          <a
+            v-if="field.k === 'phone' && $isMobile()"
+            class="text-blue-400"
+            :href="'tel:' + field.v"
+            title="Appeler ce numéro"
+          >
+            {{ field.v }}
+          </a>
+          <template v-else>
+            {{ field.v }}
+          </template>
+        </p>
+      </div>
 
-      <div class="relative flex items-center mt-6 space-x-2 justify-evenly">
+      <div
+        class="relative flex items-center mt-6 space-x-2 justify-evenly flex-shrink-0"
+      >
         <a
           v-if="$isMobile()"
           class="flex flex-col items-center flex-1 h-full p-2 space-y-2 rounded-lg hover:bg-gray-100"
