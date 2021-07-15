@@ -8,3 +8,5 @@ export const MAP_STYLES = {
 
 export const DEFAULT_MAP_STYLE: keyof typeof MapStyle = 'teritorio'
 export const EXPLORER_MAP_STYLE: keyof typeof MapStyle = 'teritorio'
+
+export const LOCAL_STORAGE = { favorites: 'vido:favorites' }

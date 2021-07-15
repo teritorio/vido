@@ -118,9 +118,13 @@
         <button
           class="flex flex-col items-center flex-1 h-full p-2 space-y-2 rounded-lg hover:bg-gray-100"
           title="Mettre en favori"
-          @click.stop
+          @click.stop="onFavoriteClick"
         >
-          <font-awesome-icon :icon="['far', 'star']" :color="color" size="sm" />
+          <font-awesome-icon
+            :icon="[`${isFavorite ? 'fas' : 'far'}`, 'star']"
+            :color="isFavorite ? '#f59e0b' : color"
+            size="sm"
+          />
           <span class="text-sm">Favori</span>
         </button>
       </div>
@@ -164,10 +168,17 @@ export default Vue.extend({
   computed: {
     ...mapGetters({
       mode: 'site/mode',
+      favoritesIds: 'favorite/favoritesIds',
     }),
 
     isModeExplorer(): boolean {
       return this.mode === Mode.EXPLORER
+    },
+
+    isFavorite(): boolean {
+      const id = this.poiMeta('PID') || this.poiProp('id')
+      const currentFavorites = this.$store.getters['favorite/favoritesIds']
+      return currentFavorites.includes(id)
     },
 
     hasFiche(): boolean {
@@ -291,7 +302,6 @@ export default Vue.extend({
 
   methods: {
     onPoiChange() {
-      // console.log("SELECTED POI", this.poi)
       this.sptags = null
       this.apiProps = null
 
@@ -340,6 +350,9 @@ export default Vue.extend({
 
     onExploreClick() {
       this.$emit('explore-click')
+    },
+    onFavoriteClick() {
+      this.$emit('favorite-click')
     },
   },
 })

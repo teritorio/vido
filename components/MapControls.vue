@@ -8,8 +8,13 @@
         aria-label="Favoris"
         type="button"
         class="space-x-1 text-sm font-medium text-gray-800 bg-white rounded-full shadow-md outline-none sm:px-5 w-11 sm:w-auto h-11 focus:outline-none hover:bg-gray-100 focus-visible:bg-gray-100"
+        @click="toggleFavorite"
       >
-        <font-awesome-icon icon="star" class="text-yellow-500" size="sm" />
+        <font-awesome-icon
+          :icon="[`${isFavorite ? 'fas' : 'far'}`, 'star']"
+          class="text-yellow-500"
+          size="sm"
+        />
         <span class="hidden sm:inline">Favoris</span>
       </button>
 
@@ -123,6 +128,10 @@ export default Vue.extend({
       default: null,
     },
     dense: {
+      type: Boolean,
+      default: false,
+    },
+    isFavorite: {
       type: Boolean,
       default: false,
     },
@@ -295,6 +304,17 @@ export default Vue.extend({
     },
     toggleNavMenu() {
       this.showNavMenu = !this.showNavMenu
+    },
+    toggleFavorite() {
+      const isFav = getHashPart('fav') === 'y'
+      if (!isFav) {
+        setHashPart('fav', 'y')
+        // setHashPart('cat', null)
+        this.$store.dispatch('favorite/handleFavoriteLayer', true)
+      } else {
+        setHashPart('fav', null)
+        this.$store.dispatch('favorite/handleFavoriteLayer', false)
+      }
     },
   },
 })
