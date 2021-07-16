@@ -121,8 +121,9 @@
           @click.stop="onFavoriteClick"
         >
           <font-awesome-icon
-            :icon="[`${isFavorite ? 'fas' : 'far'}`, 'star']"
-            :color="isFavorite ? '#f59e0b' : color"
+            :icon="[`${isModeFavorite ? 'fas' : 'far'}`, 'star']"
+            :class="isModeFavorite && 'text-yellow-500'"
+            :color="!isModeFavorite && color"
             size="sm"
           />
           <span class="text-sm">Favori</span>
@@ -175,7 +176,7 @@ export default Vue.extend({
       return this.mode === Mode.EXPLORER
     },
 
-    isFavorite(): boolean {
+    isModeFavorite(): boolean {
       const id = this.poiMeta('PID') || this.poiProp('id')
       const currentFavorites = this.$store.getters['favorite/favoritesIds']
       return currentFavorites.includes(id)

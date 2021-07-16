@@ -1,4 +1,4 @@
-export const layer = (source: string, id: string) => ({
+export const markerLayerFactory = (source: string, id: string) => ({
   id,
   type: 'symbol',
   source,

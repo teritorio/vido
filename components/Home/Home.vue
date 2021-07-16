@@ -27,7 +27,7 @@
             :logo-url="logoUrl"
             :non-highlighted-categories="nonHighlightedRootCategories"
             :site-name="siteName"
-            :show-categories="!isModeExplorer && !isFavorite"
+            :show-categories="!isModeExplorer && !isModeFavorite"
             :categories-activesubs-count="subCategoriesCounts"
             @category-click="onRootCategoryClick"
             @search-click="goToSearch"
@@ -37,7 +37,7 @@
             <SubCategoryHeader
               v-if="
                 !isModeExplorer &&
-                !isFavorite &&
+                !isModeFavorite &&
                 state.matches(states.SubCategories)
               "
               :categories="state.context.selectedRootCategory.subCategories"
@@ -79,7 +79,9 @@
       </div>
 
       <div
-        v-if="!isModeExplorer && selectedSubCategories.length && !isFavorite"
+        v-if="
+          !isModeExplorer && selectedSubCategories.length && !isModeFavorite
+        "
         class="hidden sm:block"
       >
         <SelectedSubCategoriesDense
@@ -204,7 +206,7 @@ export default Vue.extend({
       mode: 'site/mode',
       selectedFeature: 'map/selectedFeature',
       selectionZoom: 'map/selectionZoom',
-      isFavorite: 'favorite/isFavorite',
+      isModeFavorite: 'favorite/isModeFavorite',
     }),
     events: () => HomeEvents,
     logoUrl(): string {

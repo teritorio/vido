@@ -44,7 +44,7 @@
       <MapControls
         :backgrounds="availableStyles"
         :dense="small"
-        :is-favorite="isFavorite"
+        :is-mode-favorite="isModeFavorite"
         :initial-background="selectedBackground"
         :map="map"
         :pitch="pitch"
@@ -62,7 +62,7 @@
           class="flex-grow-0"
           @click="goToSelectedPoi"
           @explore-click="exploreAroundSelectedPoi"
-          @favorite-click="toggleFavorite"
+          @favorite-click="toggleFavoriteMode"
         />
       </div>
 
@@ -92,13 +92,13 @@ import { mapGetters, mapActions } from 'vuex'
 import MapControls from '@/components/MapControls.vue'
 import MapPoiToast from '@/components/MapPoiToast.vue'
 import TeritorioIconBadge from '@/components/TeritorioIcon/TeritorioIconBadge.vue'
-import { layer } from '@/lib/configLayer'
 import {
   DEFAULT_MAP_STYLE,
   EXPLORER_MAP_STYLE,
   MAP_STYLES,
   LOCAL_STORAGE,
 } from '@/lib/constants'
+import { markerLayerFactory } from '@/lib/markerLayerFactory'
 import { State as MenuState } from '@/store/menu'
 import { getPoiById, getPoiByIds } from '@/utils/api'
 import {
@@ -134,7 +134,7 @@ export default Vue.extend({
     },
     selectedCategories: {
       type: Array as PropType<Category['id'][]>,
-      default: [],
+      default: () => [],
     },
   },
 
@@ -188,7 +188,7 @@ export default Vue.extend({
       selectedFeature: 'map/selectedFeature',
       isLoadingFeatures: 'menu/isLoadingFeatures',
       favoritesIds: 'favorite/favoritesIds',
-      isFavorite: 'favorite/isFavorite',
+      isModeFavorite: 'favorite/isModeFavorite',
     }),
 
     categories(): Record<Category['id'], Category> {
@@ -284,7 +284,7 @@ export default Vue.extend({
       await this.handleFavorites()
     },
 
-    async isFavorite() {
+    async isModeFavorite() {
       await this.handleFavorites()
     },
 
@@ -292,7 +292,7 @@ export default Vue.extend({
       features: MenuState['features'],
       oldFeatures: MenuState['features']
     ) {
-      if (!this.map || this.isFavorite) {
+      if (!this.map || this.isModeFavorite) {
         return
       }
 
@@ -436,7 +436,7 @@ export default Vue.extend({
       localStorage.getItem(LOCAL_STORAGE.favorites) || '{ "favorites": "[]" }'
 
     this.$store.dispatch(
-      'favorite/toggleFavorites',
+      'favorite/toggleFavoriteModes',
       JSON.parse(favorites).favorites
     )
 
@@ -511,7 +511,7 @@ export default Vue.extend({
     },
 
     onMapRender() {
-      const source = this.isFavorite ? FAVORITE_SOURCE : POI_SOURCE
+      const source = this.isModeFavorite ? FAVORITE_SOURCE : POI_SOURCE
       if (
         this.map &&
         this.map.getSource(source) &&
@@ -544,15 +544,15 @@ export default Vue.extend({
       }
     },
 
-    toggleFavorite() {
+    toggleFavoriteMode() {
       try {
         const props = this.selectedFeature?.properties
         const id = props?.metadata?.PID || props?.id
-        const currentFavorite = localStorage.getItem(LOCAL_STORAGE.favorites)
+        const currentFavorites = localStorage.getItem(LOCAL_STORAGE.favorites)
         let newFavorite
 
-        if (currentFavorite) {
-          const parsedFavorites = JSON.parse(currentFavorite).favorites
+        if (currentFavorites) {
+          const parsedFavorites = JSON.parse(currentFavorites).favorites
           if (!parsedFavorites.includes(id)) {
             newFavorite = [...parsedFavorites, id]
           } else {
@@ -566,8 +566,9 @@ export default Vue.extend({
           LOCAL_STORAGE.favorites,
           JSON.stringify({ favorites: newFavorite, version: 1 })
         )
-        this.$store.dispatch('favorite/toggleFavorites', newFavorite)
+        this.$store.dispatch('favorite/toggleFavoriteModes', newFavorite)
       } catch (e) {
+        // eslint-disable-next-line no-console
         console.error('Vido error:', e.message)
       }
     },
@@ -577,7 +578,7 @@ export default Vue.extend({
         return
       }
 
-      if (this.isFavorite) {
+      if (this.isModeFavorite) {
         this.resetMapview().then(() => {
           this.map?.flyTo({
             center: [this.center.lng, this.center.lat],
@@ -619,7 +620,9 @@ export default Vue.extend({
             },
           })
           if (!this.map.getLayer(FAVORITE_LAYER_MARKER))
-            this.map.addLayer(layer(FAVORITE_SOURCE, FAVORITE_LAYER_MARKER))
+            this.map.addLayer(
+              markerLayerFactory(FAVORITE_SOURCE, FAVORITE_LAYER_MARKER)
+            )
         }
       } else {
         this.getSubCategory(this.selectedCategories)
@@ -731,7 +734,7 @@ export default Vue.extend({
 
       // Add individual markers
       if (!this.map.getLayer(POI_LAYER_MARKER))
-        this.map.addLayer(layer(POI_SOURCE, POI_LAYER_MARKER))
+        this.map.addLayer(markerLayerFactory(POI_SOURCE, POI_LAYER_MARKER))
     },
 
     selectFeature(feature: VidoFeature) {
