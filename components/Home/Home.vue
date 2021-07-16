@@ -20,10 +20,9 @@
           showPoi && 'overflow-y-auto max-h-full sm:h-3/6',
         ]"
       >
-        <transition name="headers" appear mode="out-in" tag="div">
+        <transition name="headers" appear mode="out-in">
           <MainHeader
             v-if="state.matches(states.Categories) && isMenuConfigLoaded"
-            key="header"
             :highlighted-categories="highlightedRootCategories"
             :logo-url="logoUrl"
             :non-highlighted-categories="nonHighlightedRootCategories"
