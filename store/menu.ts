@@ -193,7 +193,15 @@ export const actions = {
         const categoryId = categoryIds[j]
 
         if (existingFeatures[j]) {
-          features[categoryId] = previousFeatures[categoryId]
+          features[categoryId] = previousFeatures[categoryId].map(
+            (f: VidoFeature) => ({
+              ...f,
+              properties: {
+                ...f.properties,
+                vido_visible: keepFeature(f, store.getters.filters[categoryId]),
+              },
+            })
+          )
         } else {
           const post = posts[i]
 
