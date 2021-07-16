@@ -8,6 +8,7 @@
       :get-sub-category="selectSubCategory"
       @click="onMapClick"
       @change-mode="onMapChangeMode"
+      @show-poi="onShowPoi"
     />
 
     <header
@@ -18,6 +19,7 @@
           'flex-col justify-between w-full sm:w-auto sm:max-w-md space-y-4',
           selectedFeature && 'hidden sm:flex',
           !selectedFeature && 'flex',
+          showPoi && 'overflow-y-auto max-h-full sm:h-3/6',
         ]"
       >
         <transition name="headers" appear mode="out-in">
@@ -154,6 +156,7 @@ export default Vue.extend({
     service: Interpreter<HomeContext, HomeStateSchema, HomeEvent>
     state: State<HomeContext, HomeEvent, HomeStateSchema>
     previousSubCategories: Category['id'][]
+    showPoi: boolean
   } {
     const debouncedFetchFeatures = debounce(
       (selectedSubCategoriesIds) =>
@@ -179,6 +182,7 @@ export default Vue.extend({
         interpretOptions
       ),
       state: homeMachine.initialState,
+      showPoi: false,
     }
   },
   head() {
@@ -483,6 +487,9 @@ export default Vue.extend({
         this.previousSubCategories = this.state.context.selectedSubCategoriesIds
         this.$store.dispatch('site/setMode', mode)
       }
+    },
+    onShowPoi(show: boolean) {
+      this.showPoi = show
     },
   },
 })
