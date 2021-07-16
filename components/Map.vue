@@ -399,6 +399,10 @@ export default Vue.extend({
           break
       }
     },
+
+    showPoiToast(val) {
+      this.$emit('show-poi', val)
+    },
   },
 
   created() {

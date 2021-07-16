@@ -6,6 +6,7 @@
       :small="isBottomMenuOpened"
       @click="onMapClick"
       @change-mode="onMapChangeMode"
+      @show-poi="onShowPoi"
     />
 
     <header
@@ -16,11 +17,13 @@
           'flex-col justify-between w-full sm:w-auto sm:max-w-md space-y-4',
           selectedFeature && 'hidden sm:flex',
           !selectedFeature && 'flex',
+          showPoi && 'overflow-y-auto max-h-full sm:h-3/6',
         ]"
       >
-        <transition name="headers" appear mode="out-in">
+        <transition name="headers" appear mode="out-in" tag="div">
           <MainHeader
             v-if="state.matches(states.Categories) && isMenuConfigLoaded"
+            key="header"
             :highlighted-categories="highlightedRootCategories"
             :logo-url="logoUrl"
             :non-highlighted-categories="nonHighlightedRootCategories"
@@ -31,43 +34,41 @@
             @search-click="goToSearch"
           />
 
-          <div :class="[selectedFeature && 'overflow-y-auto max-h-full h-3/6']">
-            <SubCategoryHeader
-              v-if="!isModeExplorer && state.matches(states.SubCategories)"
-              :categories="state.context.selectedRootCategory.subCategories"
-              :filtered-categories="filteredSubCategories"
-              :is-sub-category-selected="isSubCategorySelected"
-              :categories-activesubs-count="subCategoriesCounts"
-              @category-click="onSubCategoryClick"
-              @filter-click="onSubCategoryFilterClick"
-              @go-back-click="goToParentFromSubCategory"
-              @select-all-categories="selectSubCategory"
-              @unselect-all-categories="unselectSubCategory"
-            />
+          <SubCategoryHeader
+            v-if="!isModeExplorer && state.matches(states.SubCategories)"
+            :categories="state.context.selectedRootCategory.subCategories"
+            :filtered-categories="filteredSubCategories"
+            :is-sub-category-selected="isSubCategorySelected"
+            :categories-activesubs-count="subCategoriesCounts"
+            @category-click="onSubCategoryClick"
+            @filter-click="onSubCategoryFilterClick"
+            @go-back-click="goToParentFromSubCategory"
+            @select-all-categories="selectSubCategory"
+            @unselect-all-categories="unselectSubCategory"
+          />
 
-            <SubCategoryFilterHeader
-              v-if="!isModeExplorer && state.matches(states.SubCategoryFilters)"
-              :subcategory="subCategoryForFilter"
-              :filters-values="subCategoryFilters"
-              @filter-changed="onSubCategoryFilterChange"
-              @go-back-click="onBackToSubCategoryClick"
-            />
+          <SubCategoryFilterHeader
+            v-if="!isModeExplorer && state.matches(states.SubCategoryFilters)"
+            :subcategory="subCategoryForFilter"
+            :filters-values="subCategoryFilters"
+            @filter-changed="onSubCategoryFilterChange"
+            @go-back-click="onBackToSubCategoryClick"
+          />
 
-            <div
-              v-if="state.matches(states.Search)"
-              :class="['max-h-full', isBottomMenuOpened && 'hidden sm:block']"
-            >
-              <SearchHeader
-                :site-name="siteName"
-                :logo-url="logoUrl"
-                :menu-to-icon="categoriesToIcons"
-                :selection-zoom="selectionZoom"
-                @go-back-click="goToHome"
-                @category-click="onSearchCategory"
-                @poi-click="onSearchPoi"
-                @feature-click="onFeatureClick"
-              />
-            </div>
+          <div
+            v-if="state.matches(states.Search)"
+            :class="['max-h-full', isBottomMenuOpened && 'hidden sm:block']"
+          >
+            <SearchHeader
+              :site-name="siteName"
+              :logo-url="logoUrl"
+              :menu-to-icon="categoriesToIcons"
+              :selection-zoom="selectionZoom"
+              @go-back-click="goToHome"
+              @category-click="onSearchCategory"
+              @poi-click="onSearchPoi"
+              @feature-click="onFeatureClick"
+            />
           </div>
         </transition>
       </div>
@@ -146,6 +147,7 @@ export default Vue.extend({
     service: Interpreter<HomeContext, HomeStateSchema, HomeEvent>
     state: State<HomeContext, HomeEvent, HomeStateSchema>
     previousSubCategories: Category['id'][]
+    showPoi: boolean
   } {
     const debouncedFetchFeatures = debounce(
       (selectedSubCategoriesIds) =>
@@ -171,6 +173,7 @@ export default Vue.extend({
         interpretOptions
       ),
       state: homeMachine.initialState,
+      showPoi: false,
     }
   },
   head() {
@@ -472,6 +475,9 @@ export default Vue.extend({
         this.previousSubCategories = this.state.context.selectedSubCategoriesIds
         this.$store.dispatch('site/setMode', mode)
       }
+    },
+    onShowPoi(show: boolean) {
+      this.showPoi = show
     },
   },
 })

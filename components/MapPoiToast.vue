@@ -11,7 +11,7 @@
     />
 
     <div
-      class="px-8 py-6 flex-col justify-between sm:overflow-y-auto h-40 max-h-full w-full sm:w-72 md:h-72 md:w-96"
+      class="px-8 py-6 flex-col justify-between sm:overflow-y-auto h-50 max-h-full w-full sm:w-80 md:h-auto md:w-96"
     >
       <div class="flex items-center justify-between flex-shrink-0">
         <h2
@@ -55,7 +55,7 @@
         {{ category }}
       </div>
 
-      <div class="h-12 min-h-0 flex-grow flex-shrink-0">
+      <div class="h-auto flex-grow flex-shrink-0" style="min-height: 60px">
         <p class="mt-6 text-sm">
           <template v-if="address">
             {{ address }}
@@ -82,7 +82,7 @@
       </div>
 
       <div
-        class="relative flex items-center mt-6 space-x-2 justify-evenly flex-shrink-0"
+        class="relative flex items-center mt-6 space-x-2 justify-evenly flex-shrink-0 mt-6"
       >
         <a
           v-if="$isMobile()"
