@@ -44,6 +44,7 @@
       <MapControls
         :backgrounds="availableStyles"
         :dense="small"
+        :is-mode-favorite="isModeFavorite"
         :initial-background="selectedBackground"
         :map="map"
         :pitch="pitch"
@@ -61,6 +62,7 @@
           class="flex-grow-0"
           @click="goToSelectedPoi"
           @explore-click="exploreAroundSelectedPoi"
+          @favorite-click="toggleFavoriteMode"
         />
       </div>
 
@@ -84,7 +86,7 @@ import { deepEqual } from 'fast-equals'
 import throttle from 'lodash.throttle'
 import Mapbox from 'mapbox-gl-vue'
 import mapboxgl, { MapLayerMouseEvent, MapLayerTouchEvent } from 'maplibre-gl'
-import Vue from 'vue'
+import Vue, { PropType } from 'vue'
 import { mapGetters, mapActions } from 'vuex'
 
 import MapControls from '@/components/MapControls.vue'
@@ -94,9 +96,11 @@ import {
   DEFAULT_MAP_STYLE,
   EXPLORER_MAP_STYLE,
   MAP_STYLES,
+  LOCAL_STORAGE,
 } from '@/lib/constants'
+import { markerLayerFactory } from '@/lib/markerLayerFactory'
 import { State as MenuState } from '@/store/menu'
-import { getPoiById } from '@/utils/api'
+import { getPoiById, getPoiByIds } from '@/utils/api'
 import {
   Category,
   MapStyle,
@@ -108,7 +112,9 @@ import {
 import { getHashPart, setHashPart } from '@/utils/url'
 
 const POI_SOURCE = 'poi'
+const FAVORITE_SOURCE = 'favorite-source'
 const POI_LAYER_MARKER = 'poi-simple-marker'
+const FAVORITE_LAYER_MARKER = 'favorite-layer-marker'
 
 export default Vue.extend({
   components: {
@@ -122,10 +128,19 @@ export default Vue.extend({
       type: Boolean,
       default: false,
     },
+    getSubCategory: {
+      type: Function,
+      default: null,
+    },
+    selectedCategories: {
+      type: Array as PropType<Category['id'][]>,
+      default: () => [],
+    },
   },
 
   data(): {
     map: mapboxgl.Map | null
+    source: string
     pitch: number
     markers: { [id: string]: mapboxgl.Marker }
     markersOnScreen: { [id: string]: mapboxgl.Marker }
@@ -140,6 +155,7 @@ export default Vue.extend({
   } {
     return {
       map: null,
+      source: POI_SOURCE,
       pitch: 0,
       markers: {},
       markersOnScreen: {},
@@ -171,6 +187,8 @@ export default Vue.extend({
       mode: 'site/mode',
       selectedFeature: 'map/selectedFeature',
       isLoadingFeatures: 'menu/isLoadingFeatures',
+      favoritesIds: 'favorite/favoritesIds',
+      isModeFavorite: 'favorite/isModeFavorite',
     }),
 
     categories(): Record<Category['id'], Category> {
@@ -262,11 +280,19 @@ export default Vue.extend({
       setTimeout(() => this.map?.resize(), 250)
     },
 
+    async favoritesIds() {
+      await this.handleFavorites()
+    },
+
+    async isModeFavorite() {
+      await this.handleFavorites()
+    },
+
     features(
       features: MenuState['features'],
       oldFeatures: MenuState['features']
     ) {
-      if (!this.map) {
+      if (!this.map || this.isModeFavorite) {
         return
       }
 
@@ -277,7 +303,6 @@ export default Vue.extend({
             feature.geometry.coordinates
         })
       })
-
       // Change visible data
       if (this.map.getSource(POI_SOURCE)) {
         // Clean-up previous cluster markers
@@ -287,7 +312,6 @@ export default Vue.extend({
 
         // Change data
         const source = this.map.getSource(POI_SOURCE)
-
         if ('setData' in source) {
           source.setData({
             type: 'FeatureCollection',
@@ -379,7 +403,6 @@ export default Vue.extend({
         ) {
           this.poiFilterForExplorer()
         }
-
         this.initPoiLayer(this.features)
       })
     },
@@ -412,6 +435,21 @@ export default Vue.extend({
     this.onMapRender = throttle(this.onMapRender, 1000)
   },
 
+  beforeMount() {
+    const favorites =
+      localStorage.getItem(LOCAL_STORAGE.favorites) || '{ "favorites": "[]" }'
+
+    this.$store.dispatch(
+      'favorite/toggleFavoriteModes',
+      JSON.parse(favorites).favorites
+    )
+
+    this.$store.dispatch(
+      'favorite/handleFavoriteLayer',
+      getHashPart('fav') === 'y'
+    )
+  },
+
   methods: {
     ...mapActions({
       resetMapview: 'map/resetMapview',
@@ -421,7 +459,6 @@ export default Vue.extend({
       this.map = map
 
       this.poiFilter = new PoiFilter()
-
       this.map.addControl(this.poiFilter)
 
       this.map.on('load', () => {
@@ -463,6 +500,7 @@ export default Vue.extend({
       )
 
       const poiHash = getHashPart('poi')
+
       if (poiHash && !this.selectedFeature) {
         getPoiById(this.$config.API_ENDPOINT, poiHash).then((poi) => {
           if (poi) {
@@ -477,12 +515,13 @@ export default Vue.extend({
     },
 
     onMapRender() {
+      const source = this.isModeFavorite ? FAVORITE_SOURCE : POI_SOURCE
       if (
         this.map &&
-        this.map.getSource(POI_SOURCE) &&
-        this.map.isSourceLoaded(POI_SOURCE)
+        this.map.getSource(source) &&
+        this.map.isSourceLoaded(source)
       ) {
-        this.updateMarkers()
+        this.updateMarkers(source)
       }
     },
 
@@ -507,6 +546,95 @@ export default Vue.extend({
         }
         this.$emit('change-mode', Mode.EXPLORER)
       }
+    },
+
+    toggleFavoriteMode() {
+      try {
+        const props = this.selectedFeature?.properties
+        const id = props?.metadata?.PID || props?.id
+        const currentFavorites = localStorage.getItem(LOCAL_STORAGE.favorites)
+        let newFavorite
+
+        if (currentFavorites) {
+          const parsedFavorites = JSON.parse(currentFavorites).favorites
+          if (!parsedFavorites.includes(id)) {
+            newFavorite = [...parsedFavorites, id]
+          } else {
+            newFavorite = parsedFavorites.filter((f: string) => f !== id)
+          }
+        } else {
+          newFavorite = [id]
+        }
+
+        localStorage.setItem(
+          LOCAL_STORAGE.favorites,
+          JSON.stringify({ favorites: newFavorite, version: 1 })
+        )
+        this.$store.dispatch('favorite/toggleFavoriteModes', newFavorite)
+      } catch (e) {
+        // eslint-disable-next-line no-console
+        console.error('Vido error:', e.message)
+      }
+    },
+
+    async handleFavorites() {
+      if (!this.map) {
+        return
+      }
+
+      if (this.isModeFavorite) {
+        this.resetMapview().then(() => {
+          this.map?.flyTo({
+            center: [this.center.lng, this.center.lat],
+            zoom: this.zoom.default,
+          })
+        })
+
+        const allFavorites = await this.fetchFavorites(this.favoritesIds)
+
+        allFavorites.forEach((feature) => {
+          this.featuresCoordinates[feature.properties.metadata.PID] =
+            feature.geometry.coordinates
+        })
+
+        const currentSource = this.map.getSource(FAVORITE_SOURCE)
+
+        if (currentSource) {
+          // Clean-up previous cluster markers
+          this.markers = {}
+          Object.values(this.markersOnScreen).forEach((marker) =>
+            marker.remove()
+          )
+          this.markersOnScreen = {}
+
+          // Change data
+          const source = this.map.getSource(FAVORITE_SOURCE)
+          if ('setData' in source) {
+            source.setData({
+              type: 'FeatureCollection',
+              features: allFavorites,
+            })
+          }
+        } else {
+          this.map.addSource(FAVORITE_SOURCE, {
+            type: 'geojson',
+            data: {
+              type: 'FeatureCollection',
+              features: allFavorites,
+            },
+          })
+          if (!this.map.getLayer(FAVORITE_LAYER_MARKER))
+            this.map.addLayer(
+              markerLayerFactory(FAVORITE_SOURCE, FAVORITE_LAYER_MARKER)
+            )
+        }
+      } else {
+        this.getSubCategory(this.selectedCategories)
+      }
+    },
+
+    async fetchFavorites(ids) {
+      return await getPoiByIds(this.$config.API_ENDPOINT, ids)
     },
 
     goToSelectedPoi() {
@@ -594,7 +722,6 @@ export default Vue.extend({
           ['case', ['==', ['get', 'vido_cat'], parseInt(category, 10)], 1, 0],
         ]
       })
-
       this.map.addSource(POI_SOURCE, {
         type: 'geojson',
         cluster: true,
@@ -610,66 +737,8 @@ export default Vue.extend({
       })
 
       // Add individual markers
-      this.map.addLayer({
-        id: POI_LAYER_MARKER,
-        type: 'symbol',
-        source: POI_SOURCE,
-        filter: ['!=', 'cluster', true],
-        paint: {
-          'text-color': [
-            'match',
-            [
-              'at',
-              0,
-              [
-                'array',
-                ['get', 'tourism_style_class', ['object', ['get', 'metadata']]],
-              ],
-            ],
-            'products',
-            '#F25C05',
-            'convenience',
-            '#00a0a4',
-            'services',
-            '#2a62ac',
-            'safety',
-            '#e42224',
-            'mobility',
-            '#3b74b9',
-            'amenity',
-            '#2a62ac',
-            'remarkable',
-            '#e50980',
-            'culture',
-            '#76009e',
-            'hosting',
-            '#99163a',
-            'catering',
-            '#f09007',
-            'leisure',
-            '#00A757',
-            'public_landmark',
-            '#1D1D1B',
-            'shopping',
-            '#808080',
-            '#666',
-          ],
-          'text-halo-blur': 0.5,
-          'text-halo-color': '#ffffff',
-          'text-halo-width': 1,
-          'text-opacity': ['interpolate', ['linear'], ['zoom'], 14, 0, 15, 1],
-        },
-        layout: {
-          'text-anchor': 'top',
-          'text-field': ['get', 'name'],
-          'text-max-width': 9,
-          'text-offset': [0, 1.3],
-          'text-padding': 2,
-          'text-size': 12,
-          'text-optional': true,
-          'text-allow-overlap': false,
-        },
-      })
+      if (!this.map.getLayer(POI_LAYER_MARKER))
+        this.map.addLayer(markerLayerFactory(POI_SOURCE, POI_LAYER_MARKER))
     },
 
     selectFeature(feature: VidoFeature) {
@@ -684,13 +753,12 @@ export default Vue.extend({
       }
     },
 
-    updateMarkers() {
+    updateMarkers(src) {
       if (!this.map) {
         return
       }
       const newMarkers: { [id: string]: mapboxgl.Marker } = {}
-      const features = this.map.querySourceFeatures(POI_SOURCE) as VidoFeature[]
-
+      const features = this.map.querySourceFeatures(src) as VidoFeature[]
       // for every cluster on the screen, create an HTML marker for it (if we didn't yet),
       // and add it to the map if it's not there already
       for (let i = 0; i < features.length; i++) {
@@ -698,6 +766,7 @@ export default Vue.extend({
         const props = features[i].properties
         let id: string | null = null
         let marker: mapboxgl.Marker | null = null
+
         if (props && props.cluster) {
           id = 'c' + props.cluster_id
           marker = this.markers[id]
@@ -710,7 +779,7 @@ export default Vue.extend({
               e.stopPropagation()
               if (!this.map) return
 
-              const source = this.map.getSource(POI_SOURCE)
+              const source = this.map.getSource(src)
 
               if ('getClusterExpansionZoom' in source) {
                 source.getClusterExpansionZoom(
@@ -781,7 +850,6 @@ export default Vue.extend({
       const offsets = []
 
       const countPerColor: { [color: string]: number } = {}
-
       Object.keys(this.categories)
         .filter((categoryId) => ((props && props[categoryId]) || 0) > 0)
         .forEach((categoryId) => {
@@ -792,14 +860,15 @@ export default Vue.extend({
             countPerColor[color] = (props && props[categoryId]) || 0
           }
         })
+
       const counts: number[] = Object.values(countPerColor)
       const colors = Object.keys(countPerColor)
-
       let total = 0
       for (let i = 0; i < counts.length; i++) {
         offsets.push(total)
         total += counts[i]
       }
+
       const r = total >= 1000 ? 40 : total >= 100 ? 32 : total >= 10 ? 24 : 16
       const r0 = r - 5
       const w = r * 2

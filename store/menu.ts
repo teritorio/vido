@@ -1,5 +1,6 @@
 import copy from 'fast-copy'
 import { Store } from 'vuex'
+// import { interpret, Interpreter, State } from 'xstate'
 
 import { ApiPosts, Category, VidoFeature, FiltreValues } from '@/utils/types'
 
@@ -8,6 +9,7 @@ enum Mutation {
   SET_FEATURES = 'SET_FEATURES',
   SET_FILTERS = 'SET_FILTERS',
   SET_FEATURES_LOADING = 'SET_FEATURES_LOADING',
+  SET_ALL_FEATURES = 'SET_ALL_FEATURES',
 }
 
 interface FetchConfigPayload {
@@ -27,6 +29,9 @@ export interface State {
   features: {
     [categoryId: string]: VidoFeature[]
   }
+  allFeatures: {
+    [categoryId: string]: VidoFeature[]
+  }
   filters: { [subcat: string]: FiltreValues }
   isLoadingFeatures: boolean
 }
@@ -36,6 +41,7 @@ export const state = (): State => ({
   isLoaded: false,
   features: {},
   filters: {},
+  allFeatures: {},
   isLoadingFeatures: false,
 })
 
@@ -52,6 +58,10 @@ export const mutations = {
   [Mutation.SET_FEATURES](state: State, payload: State) {
     state.features = payload.features
     state.isLoadingFeatures = false
+  },
+
+  [Mutation.SET_ALL_FEATURES](state: State, payload: State) {
+    state.allFeatures = { ...state.allFeatures, ...payload.features }
   },
 
   [Mutation.SET_FEATURES_LOADING](state: State, payload: State) {
@@ -160,35 +170,61 @@ export const actions = {
     store.commit(Mutation.SET_FEATURES_LOADING, { isLoadingFeatures: true })
 
     try {
+      const previousFeatures = store.getters.allFeatures
+      const existingFeatures = categoryIds.map((categoryId) =>
+        Boolean(previousFeatures[categoryId])
+      )
+
       const posts: ApiPosts[] = await Promise.all(
-        categoryIds.map((categoryId) =>
-          fetch(
-            `${apiEndpoint}/geodata/v1/posts?idmenu=${categoryId}`
-          ).then((res) => res.json())
-        )
+        categoryIds
+          .filter((categoryId) => !previousFeatures[categoryId])
+          .map((categoryId) =>
+            fetch(
+              `${apiEndpoint}/geodata/v1/posts?idmenu=${categoryId}`
+            ).then((res) => res.json())
+          )
       )
 
       const features: State['features'] = {}
 
-      posts.forEach((post, index) => {
-        const categoryId = categoryIds[index]
+      let i = 0
 
-        features[categoryId] = [
-          ...((post.osm?.[0].FeaturesCollection.features ||
-            []) as VidoFeature[]),
-          ...((post.tis?.[0].FeaturesCollection.features ||
-            []) as VidoFeature[]),
-        ].map((f) => {
-          f.properties.vido_cat = parseInt(categoryId, 10)
-          f.properties.vido_visible = keepFeature(
-            f,
-            store.getters.filters[categoryId]
+      for (let j = 0; j < categoryIds.length; j++) {
+        const categoryId = categoryIds[j]
+
+        if (existingFeatures[j]) {
+          features[categoryId] = previousFeatures[categoryId].map(
+            (f: VidoFeature) => ({
+              ...f,
+              properties: {
+                ...f.properties,
+                vido_visible: keepFeature(f, store.getters.filters[categoryId]),
+              },
+            })
           )
-          return f
-        })
-      })
+        } else {
+          const post = posts[i]
+
+          features[categoryId] = [
+            ...((post.osm?.[0].FeaturesCollection.features ||
+              []) as VidoFeature[]),
+            ...((post.tis?.[0].FeaturesCollection.features ||
+              []) as VidoFeature[]),
+          ].map((f) => {
+            f.properties.vido_cat = parseInt(categoryId, 10)
+            f.properties.vido_visible = keepFeature(
+              f,
+              store.getters.filters[categoryId]
+            )
+            return f
+          })
+
+          i++
+        }
+      }
 
       store.commit(Mutation.SET_FEATURES, { features })
+      store.commit(Mutation.SET_ALL_FEATURES, { features })
     } catch (error) {
       // eslint-disable-next-line no-console
       console.error(
@@ -218,6 +254,7 @@ export const actions = {
 
 export const getters = {
   categories: (state: State) => state.categories,
+  allFeatures: (state: State) => state.allFeatures,
   isLoaded: (state: State) => state.isLoaded,
   isLoadingFeatures: (state: State) => state.isLoadingFeatures,
   filters: (state: State) => state.filters,

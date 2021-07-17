@@ -4,6 +4,8 @@
       v-if="isMapConfigLoaded"
       ref="map"
       :small="isBottomMenuOpened"
+      :selected-categories="state.context.selectedSubCategoriesIds"
+      :get-sub-category="selectSubCategory"
       @click="onMapClick"
       @change-mode="onMapChangeMode"
       @show-poi="onShowPoi"
@@ -27,53 +29,61 @@
             :logo-url="logoUrl"
             :non-highlighted-categories="nonHighlightedRootCategories"
             :site-name="siteName"
-            :show-categories="!isModeExplorer"
+            :show-categories="!isModeExplorer && !isModeFavorite"
             :categories-activesubs-count="subCategoriesCounts"
             @category-click="onRootCategoryClick"
             @search-click="goToSearch"
           />
 
-          <SubCategoryHeader
-            v-if="!isModeExplorer && state.matches(states.SubCategories)"
-            :categories="state.context.selectedRootCategory.subCategories"
-            :filtered-categories="filteredSubCategories"
-            :is-sub-category-selected="isSubCategorySelected"
-            :categories-activesubs-count="subCategoriesCounts"
-            @category-click="onSubCategoryClick"
-            @filter-click="onSubCategoryFilterClick"
-            @go-back-click="goToParentFromSubCategory"
-            @select-all-categories="selectSubCategory"
-            @unselect-all-categories="unselectSubCategory"
-          />
-
-          <SubCategoryFilterHeader
-            v-if="!isModeExplorer && state.matches(states.SubCategoryFilters)"
-            :subcategory="subCategoryForFilter"
-            :filters-values="subCategoryFilters"
-            @filter-changed="onSubCategoryFilterChange"
-            @go-back-click="onBackToSubCategoryClick"
-          />
-
-          <div
-            v-if="state.matches(states.Search)"
-            :class="['max-h-full', isBottomMenuOpened && 'hidden sm:block']"
-          >
-            <SearchHeader
-              :site-name="siteName"
-              :logo-url="logoUrl"
-              :menu-to-icon="categoriesToIcons"
-              :selection-zoom="selectionZoom"
-              @go-back-click="goToHome"
-              @category-click="onSearchCategory"
-              @poi-click="onSearchPoi"
-              @feature-click="onFeatureClick"
+          <div :class="[selectedFeature && 'overflow-y-auto max-h-full h-3/6']">
+            <SubCategoryHeader
+              v-if="
+                !isModeExplorer &&
+                !isModeFavorite &&
+                state.matches(states.SubCategories)
+              "
+              :categories="state.context.selectedRootCategory.subCategories"
+              :filtered-categories="filteredSubCategories"
+              :is-sub-category-selected="isSubCategorySelected"
+              :categories-activesubs-count="subCategoriesCounts"
+              @category-click="onSubCategoryClick"
+              @filter-click="onSubCategoryFilterClick"
+              @go-back-click="goToParentFromSubCategory"
+              @select-all-categories="selectSubCategory"
+              @unselect-all-categories="unselectSubCategory"
             />
+
+            <SubCategoryFilterHeader
+              v-if="!isModeExplorer && state.matches(states.SubCategoryFilters)"
+              :subcategory="subCategoryForFilter"
+              :filters-values="subCategoryFilters"
+              @filter-changed="onSubCategoryFilterChange"
+              @go-back-click="onBackToSubCategoryClick"
+            />
+
+            <div
+              v-if="state.matches(states.Search)"
+              :class="['max-h-full', isBottomMenuOpened && 'hidden sm:block']"
+            >
+              <SearchHeader
+                :site-name="siteName"
+                :logo-url="logoUrl"
+                :menu-to-icon="categoriesToIcons"
+                :selection-zoom="selectionZoom"
+                @go-back-click="goToHome"
+                @category-click="onSearchCategory"
+                @poi-click="onSearchPoi"
+                @feature-click="onFeatureClick"
+              />
+            </div>
           </div>
         </transition>
       </div>
 
       <div
-        v-if="!isModeExplorer && selectedSubCategories.length"
+        v-if="
+          !isModeExplorer && selectedSubCategories.length && !isModeFavorite
+        "
         class="hidden sm:block"
       >
         <SelectedSubCategoriesDense
@@ -200,6 +210,7 @@ export default Vue.extend({
       mode: 'site/mode',
       selectedFeature: 'map/selectedFeature',
       selectionZoom: 'map/selectionZoom',
+      isModeFavorite: 'favorite/isModeFavorite',
     }),
     events: () => HomeEvents,
     logoUrl(): string {
@@ -424,6 +435,8 @@ export default Vue.extend({
       }
     },
     onSearchCategory(subcategoryId: Category['id']) {
+      setHashPart('fav', null)
+      this.$store.dispatch('favorite/handleFavoriteLayer', false)
       this.selectSubCategory([subcategoryId])
     },
     onSearchPoi(poiId: string) {
