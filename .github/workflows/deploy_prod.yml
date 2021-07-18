@@ -49,8 +49,10 @@ jobs:
       - name: Build
         env:
           API_ENDPOINT: https://cdt40.carto.guide/api.teritorio
-          TILES_TOKEN: ${{secrets.TILES_TOKEN_PROD}}
           IGN_TOKEN: ${{secrets.IGN_TOKEN_PROD}}
+          TILES_TOKEN: ${{secrets.TILES_TOKEN_PROD}}
+          VECTO_STYLE_URL: ${{secrets.VECTO_STYLE_URL_PROD}}
+          VECTO_TILES_URL: ${{secrets.VECTO_TILES_URL_PROD}}
         run: yarn build
 
       - name: Deploy
