@@ -10,14 +10,18 @@ function checkEnvVariable(variableName) {
 }
 
 checkEnvVariable('API_ENDPOINT')
-checkEnvVariable('TILES_TOKEN')
 checkEnvVariable('IGN_TOKEN')
+checkEnvVariable('TILES_TOKEN')
+checkEnvVariable('VECTO_STYLE_URL')
+checkEnvVariable('VECTO_TILES_URL')
 
 export default {
   publicRuntimeConfig: {
     API_ENDPOINT: process.env.API_ENDPOINT || '',
-    TILES_TOKEN: process.env.TILES_TOKEN || '',
     IGN_TOKEN: process.env.IGN_TOKEN || '',
+    TILES_TOKEN: process.env.TILES_TOKEN || '',
+    VECTO_STYLE_URL: process.env.VECTO_STYLE_URL || '',
+    VECTO_TILES_URL: process.env.VECTO_TILES_URL || '',
   },
 
   // Global page headers (https://go.nuxtjs.dev/config-head)
