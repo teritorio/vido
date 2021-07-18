@@ -1,28 +1,27 @@
 <template>
-  <div class="w-full h-full">
-    <Map class="absolute" />
-
-    <div
-      class="fixed top-0 bottom-0 flex flex-col w-full h-full p-4 space-y-4 pointer-events-none md:w-1/2 xl:w-1/3"
-    >
-      <header-search class="flex-none pointer-events-auto" />
-      <categories class="flex-1 pointer-events-auto" />
-    </div>
-  </div>
+  <Home />
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
 
-import Categories from '@/components/Categories.vue'
-import HeaderSearch from '@/components/HeaderSearch.vue'
-import Map from '@/components/Map.vue'
+import Home from '@/components/Home/Home.vue'
 
 export default Vue.extend({
   components: {
-    Map,
-    Categories,
-    HeaderSearch,
+    Home,
+  },
+  // fetchOnServer: false,
+  async fetch() {
+    await this.$store.dispatch('map/fetchConfig', {
+      apiEndpoint: this.$config.API_ENDPOINT,
+    })
+    await this.$store.dispatch('menu/fetchConfig', {
+      apiEndpoint: this.$config.API_ENDPOINT,
+    })
+    await this.$store.dispatch('site/fetchConfig', {
+      apiEndpoint: this.$config.API_ENDPOINT,
+    })
   },
 })
 </script>

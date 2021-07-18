@@ -1,4 +1,5 @@
 import dotenv from 'dotenv'
+import webpack from 'webpack'
 
 dotenv.config()
 
@@ -8,9 +9,17 @@ function checkEnvVariable(variableName) {
   }
 }
 
+checkEnvVariable('API_ENDPOINT')
 checkEnvVariable('TILES_TOKEN')
+checkEnvVariable('IGN_TOKEN')
 
 export default {
+  publicRuntimeConfig: {
+    API_ENDPOINT: process.env.API_ENDPOINT || '',
+    TILES_TOKEN: process.env.TILES_TOKEN || '',
+    IGN_TOKEN: process.env.IGN_TOKEN || '',
+  },
+
   // Global page headers (https://go.nuxtjs.dev/config-head)
   head: {
     title: '@teritorio/vido',
@@ -23,19 +32,35 @@ export default {
   },
 
   // Global CSS (https://go.nuxtjs.dev/config-css)
-  css: [],
+  css: [
+    '@fortawesome/fontawesome-svg-core/styles.css',
+    '@teritorio/font-teritorio-tourism/teritorio-tourism/teritorio-tourism.css',
+    'maplibre-gl/dist/maplibre-gl.css',
+    'vue-multiselect/dist/vue-multiselect.min.css',
+  ],
+
+  purgeCSS: {
+    whitelistPatterns: [/svg.*/, /fa.*/, /multiselect.*/],
+  },
 
   // Plugins to run before rendering page (https://go.nuxtjs.dev/config-plugins)
-  plugins: [],
+  plugins: ['@/plugins/fontawesome.ts', '@/plugins/mobile.ts'],
 
   // Auto import components (https://go.nuxtjs.dev/config-components)
   components: false,
 
   // Modules for dev and build (recommended) (https://go.nuxtjs.dev/config-modules)
   buildModules: [
-    ['@nuxtjs/dotenv', { only: ['TILES_TOKEN'] }],
     // https://go.nuxtjs.dev/typescript
-    '@nuxt/typescript-build',
+    [
+      '@nuxt/typescript-build',
+      // Workaround : https://github.com/nuxt/typescript/issues/145#issuecomment-710755252
+      {
+        typeCheck: {
+          typescript: require.resolve('typescript'),
+        },
+      },
+    ],
     // https://go.nuxtjs.dev/stylelint
     '@nuxtjs/stylelint-module',
     // https://go.nuxtjs.dev/tailwindcss
@@ -52,6 +77,7 @@ export default {
     '@nuxtjs/pwa',
     // https://go.nuxtjs.dev/content
     '@nuxt/content',
+    '@nuxtjs/gtm',
   ],
 
   // Axios module configuration (https://go.nuxtjs.dev/config-axios)
@@ -61,5 +87,31 @@ export default {
   content: {},
 
   // Build Configuration (https://go.nuxtjs.dev/config-build)
-  build: {},
+  build: {
+    plugins: [
+      new webpack.ProvidePlugin({
+        mapboxgl: 'maplibre-gl',
+      }),
+    ],
+  },
+
+  // Server config (allow listening to local network)
+  server: {
+    host: '0.0.0.0',
+  },
+
+  // Storybook module configuration (https://storybook.nuxtjs.org/setup)
+  storybook: {
+    typescript: { check: false },
+    port: 4000,
+    // addons: ['@storybook/addon-controls', '@storybook/addon-notes'],
+    stories: ['@/pages/**/*.stories.js', '@/components/**/*.stories.js'],
+  },
+
+  // Google Tag Manager config
+  gtm: {
+    id: 'GTM-5J5XBKJ',
+    enabled: true,
+    pageTracking: true,
+  },
 }

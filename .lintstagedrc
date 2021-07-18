@@ -1,5 +1,5 @@
 {
-  "*.{js,vue}": "yarn eslint --fix",
+  "*.{js,ts,vue}": "yarn eslint --fix",
   "*.{css,vue}": "yarn stylelint",
   "*.svg": "yarn svgo --disable=removeViewBox --enable=removeOffCanvasPaths"
 }

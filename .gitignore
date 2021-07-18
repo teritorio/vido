@@ -100,5 +100,8 @@ sw.*
 *.swp
 
 # VS Code
-
 .vscode/settings.json
+
+# Storybook
+.nuxt-storybook
+storybook-static
