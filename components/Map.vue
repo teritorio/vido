@@ -171,11 +171,11 @@ export default Vue.extend({
   },
   async fetch() {
     this.tourismStyleWithProxyTiles = await fetch(
-      'https://vecto.teritorio.xyz/styles/teritorio-tourism-0.9/style.json'
+      this.$config.VECTO_STYLE_URL
     ).then((res) => res.json())
 
     if (this.tourismStyleWithProxyTiles?.sources?.openmaptiles.url) {
-      this.tourismStyleWithProxyTiles.sources.openmaptiles.url = `https://vecto-dev.teritorio.xyz/data/teritorio-proxy.json?key=${this.$config.TILES_TOKEN}`
+      this.tourismStyleWithProxyTiles.sources.openmaptiles.url = this.$config.VECTO_TILES_URL
     }
   },
 
@@ -208,13 +208,10 @@ export default Vue.extend({
     mapStyles(): Record<string, string | VidoMglStyle> {
       return {
         [MapStyle.teritorio]:
-          this.tourismStyleWithProxyTiles ||
-          'https://vecto.teritorio.xyz/styles/teritorio-tourism-0.9/style.json',
+          this.tourismStyleWithProxyTiles || this.$config.VECTO_STYLE_URL,
         [MapStyle.mapnik]: {
           version: 8,
           name: 'Teritorio Mapnik',
-          sprite: `https://vecto-dev.teritorio.xyz/styles/teritorio-tourism-proxy/sprite?key=${this.$config.TILES_TOKEN}`,
-          glyphs: `https://vecto-dev.teritorio.xyz/fonts/{fontstack}/{range}.pbf?key=${this.$config.TILES_TOKEN}`,
           vido_israster: true,
           sources: {
             mapnik: {
@@ -243,8 +240,9 @@ export default Vue.extend({
         [MapStyle.aerial]: {
           version: 8,
           name: 'Imagerie aérienne IGN',
-          sprite: `https://vecto-dev.teritorio.xyz/styles/teritorio-tourism-proxy/sprite?key=${this.$config.TILES_TOKEN}`,
-          glyphs: `https://vecto-dev.teritorio.xyz/fonts/{fontstack}/{range}.pbf?key=${this.$config.TILES_TOKEN}`,
+          // TODO: To re-enable for https://github.com/teritorio/vido/issues/67
+          // sprite: `https://vecto-dev.teritorio.xyz/styles/teritorio-tourism-proxy/sprite?key=${this.$config.TILES_TOKEN}`,
+          // glyphs: `https://vecto-dev.teritorio.xyz/fonts/{fontstack}/{range}.pbf?key=${this.$config.TILES_TOKEN}`,
           vido_israster: true,
           sources: {
             aerial: {

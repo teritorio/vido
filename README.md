@@ -18,3 +18,13 @@ $ yarn generate
 ```
 
 For detailed explanation on how things work, check out [Nuxt.js docs](https://nuxtjs.org).
+
+## Release
+
+```bash
+$ git checkout develop
+$ npm version minor -m "chore: release %s"
+$ git push --follow-tags
+```
+
+Then, create a PR from `develop` to `main`, it will launch the continuous development.

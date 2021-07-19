@@ -1,0 +1,77 @@
+name: Deploy to https://carte.tourismelandes.com/
+
+on:
+  workflow_run:
+    workflows:
+      - 'Continuous Integration'
+    types:
+      - completed
+    branches:
+      - main
+
+jobs:
+  deploy:
+    name: Deploy
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      matrix:
+        os:
+          - ubuntu-latest
+        node:
+          - 14
+
+    steps:
+      - name: Checkout 🛎
+        uses: actions/checkout@master
+
+      - name: Setup node env 🏗
+        uses: actions/setup-node@v2.1.2
+        with:
+          node-version: ${{ matrix.node }}
+
+      - name: Get yarn cache directory path 🛠
+        id: yarn-cache-dir-path
+        run: echo "::set-output name=dir::$(yarn cache dir)"
+
+      - name: Cache node_modules 📦
+        uses: actions/cache@v2
+        id: yarn-cache # use this to check for `cache-hit` (`steps.yarn-cache.outputs.cache-hit != 'true'`)
+        with:
+          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
+          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-yarn-
+
+      - name: Install dependencies 👨🏻‍💻
+        run: yarn
+
+      - name: Build
+        env:
+          API_ENDPOINT: https://cdt40.carto.guide/api.teritorio
+          IGN_TOKEN: ${{secrets.IGN_TOKEN_PROD}}
+          TILES_TOKEN: ${{secrets.TILES_TOKEN_PROD}}
+          VECTO_STYLE_URL: ${{secrets.VECTO_STYLE_URL_PROD}}
+          VECTO_TILES_URL: ${{secrets.VECTO_TILES_URL_PROD}}
+        run: yarn build
+
+      - name: Deploy
+        uses: up9cloud/action-rsync@master
+        env:
+          HOST: 146.59.177.9
+          KEY: ${{secrets.DEPLOY_SSH_KEY_PROD}}
+          TARGET: /var/www/clients/client1/web1/web/vido
+
+          VERBOSE: false
+          USER: vido
+          ARGS: -az --exclude=/.git/
+          SSH_ARGS: '-p 2222 -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no'
+          SOURCE: .
+
+          PRE_SCRIPT: |
+            echo -n 'VIDO: Deployment started at: '
+            date -u
+          POST_SCRIPT: |
+            pm2 restart 0
+            echo -n 'VIDO: Deployment completed at: '
+            date -u
