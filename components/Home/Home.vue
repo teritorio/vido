@@ -19,9 +19,8 @@
           'flex-col justify-between w-full sm:w-auto sm:max-w-md space-y-4',
           selectedFeature && 'hidden sm:flex',
           !selectedFeature && 'flex',
-          showPoi && 'max-h-full sm:h-4/6',
+          showPoi && 'max-h-full sm:h-4/6 2xl:h-auto',
         ]"
-        :style="showPoi && 'max-height: 450px;'"
       >
         <transition name="headers" appear mode="out-in">
           <MainHeader
