@@ -48,7 +48,7 @@ jobs:
 
       - name: Build
         env:
-          API_ENDPOINT: https://cdt40.carto.guide/api.teritorio
+          API_ENDPOINT: https://carte.tourismelandes.com/content/api.teritorio
           IGN_TOKEN: ${{secrets.IGN_TOKEN_PROD}}
           TILES_TOKEN: ${{secrets.TILES_TOKEN_PROD}}
           VECTO_STYLE_URL: ${{secrets.VECTO_STYLE_URL_PROD}}
@@ -58,7 +58,7 @@ jobs:
       - name: Deploy
         uses: up9cloud/action-rsync@master
         env:
-          HOST: 146.59.177.9
+          HOST: 217.182.183.187
           KEY: ${{secrets.DEPLOY_SSH_KEY_PROD}}
           TARGET: /var/www/clients/client1/web1/web/vido
 
