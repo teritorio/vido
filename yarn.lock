@@ -4615,10 +4615,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@teritorio/font-teritorio-tourism@npm:^1.5.0":
-  version: 1.5.0
-  resolution: "@teritorio/font-teritorio-tourism@npm:1.5.0"
-  checksum: b5b08e358c283cea4de5868b77e4c5103b792451b46e31b0e63c4ffbaf92c00d686a9c688701f36acfb5fa3e0826e30dded505448ee3e548b90845008f4d7691
+"@teritorio/font-teritorio-tourism@npm:^1.6.0":
+  version: 1.6.0
+  resolution: "@teritorio/font-teritorio-tourism@npm:1.6.0"
+  checksum: 4b5c20bd550de9218d2c99c7929c22a3e1ba3fe6aa59bc07d855f553f22c53b686089f683c31f5da0b85ce3f852e790abbe242686cab75143ee2ed419d341b09
   languageName: node
   linkType: hard
 
@@ -4656,7 +4656,7 @@ __metadata:
     "@nuxtjs/svg": ^0.1.12
     "@nuxtjs/tailwindcss": ^3.4.2
     "@tailwindcss/forms": ^0.3.2
-    "@teritorio/font-teritorio-tourism": ^1.5.0
+    "@teritorio/font-teritorio-tourism": ^1.6.0
     "@teritorio/map": ^0.10.0
     "@types/lodash.debounce": ^4.0.6
     "@types/lodash.memoize": ^4.1.6
