@@ -459,6 +459,14 @@ export default Vue.extend({
       this.poiFilter = new PoiFilter()
       this.map.addControl(this.poiFilter)
 
+      this.map.on('styledata', () => {
+        if (!this.isModeExplorer) {
+          this.poiFilter?.remove(true)
+        } else {
+          this.poiFilterForExplorer()
+        }
+      })
+
       this.map.on('load', () => {
         if (!this.isModeExplorer) {
           this.poiFilter?.remove(true)
