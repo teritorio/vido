@@ -457,25 +457,27 @@ export default Vue.extend({
       this.map = map
 
       this.poiFilter = new PoiFilter()
-      this.map.addControl(this.poiFilter)
+      map.addControl(this.poiFilter)
 
-      this.map.on('styledata', () => {
-        if (!this.isModeExplorer) {
-          this.poiFilter?.remove(true)
-        } else {
-          this.poiFilterForExplorer()
+      map.on('styledata', () => {
+        if (!map?.getLayer) {
+          if (!this.isModeExplorer) {
+            this.poiFilter?.remove(true)
+          } else {
+            this.poiFilterForExplorer()
+          }
         }
       })
 
-      this.map.on('load', () => {
-        if (!this.isModeExplorer) {
-          this.poiFilter?.remove(true)
-        } else {
-          this.poiFilterForExplorer()
-        }
-      })
+      // this.map.on('load', () => {
+      //   if (!this.isModeExplorer) {
+      //     this.poiFilter?.remove(true)
+      //   } else {
+      //     this.poiFilterForExplorer()
+      //   }
+      // })
 
-      this.map.on('click', () => {
+      map.on('click', () => {
         this.selectFeature(null)
         this.$emit('click')
       })
@@ -489,7 +491,7 @@ export default Vue.extend({
         }
       )
 
-      this.map.on(
+      map.on(
         'click',
         'poi-level-2',
         (event: MapLayerMouseEvent | MapLayerTouchEvent) => {
@@ -497,7 +499,7 @@ export default Vue.extend({
         }
       )
 
-      this.map.on(
+      map.on(
         'click',
         'poi-level-3',
         (event: MapLayerMouseEvent | MapLayerTouchEvent) => {
