@@ -461,7 +461,6 @@ export default Vue.extend({
 
       map.on('styledata', () => {
         if (!map?.getLayer) {
-          console.log('isGood')
           if (!this.isModeExplorer) {
             this.poiFilter?.remove(true)
           } else {
