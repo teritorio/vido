@@ -460,7 +460,7 @@ export default Vue.extend({
       map.addControl(this.poiFilter)
 
       map.on('styledata', () => {
-        if (!map?.getLayer) {
+        if (map?.getLayer) {
           if (!this.isModeExplorer) {
             this.poiFilter?.remove(true)
           } else {
@@ -469,7 +469,7 @@ export default Vue.extend({
         }
       })
 
-      // this.map.on('load', () => {
+      // map.on('load', () => {
       //   if (!this.isModeExplorer) {
       //     this.poiFilter?.remove(true)
       //   } else {
