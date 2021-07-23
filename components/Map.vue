@@ -218,7 +218,7 @@ export default Vue.extend({
             mapnik: {
               type: 'raster',
               tiles: [
-                'https://tile.openstreetmap.org/{z}/{x}/{y}.png', // Main OSM tiles
+                // 'https://tile.openstreetmap.org/{z}/{x}/{y}.png', // Main OSM tiles
                 'https://a.tiles.teritorio.xyz/styles/osm/{z}/{x}/{y}.png',
                 'https://b.tiles.teritorio.xyz/styles/osm/{z}/{x}/{y}.png',
                 'https://c.tiles.teritorio.xyz/styles/osm/{z}/{x}/{y}.png',
