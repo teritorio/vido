@@ -461,9 +461,9 @@ export default Vue.extend({
       this.map = map
 
       this.poiFilter = new PoiFilter()
-      map.addControl(this.poiFilter)
+      this.map.addControl(this.poiFilter)
 
-      map.on('styledata', () => {
+      this.map.on('styledata', () => {
         if (!this.isModeExplorer) {
           this.poiFilter?.remove(true)
         } else {
@@ -471,11 +471,11 @@ export default Vue.extend({
         }
       })
 
-      map.on('load', () => {
+      this.map.on('load', () => {
         this.initPoiLayer(this.features)
       })
 
-      map.on('click', () => {
+      this.map.on('click', () => {
         this.selectFeature(null)
         this.$emit('click')
       })
@@ -489,7 +489,7 @@ export default Vue.extend({
         }
       )
 
-      map.on(
+      this.map.on(
         'click',
         'poi-level-2',
         (event: MapLayerMouseEvent | MapLayerTouchEvent) => {
@@ -497,7 +497,7 @@ export default Vue.extend({
         }
       )
 
-      map.on(
+      this.map.on(
         'click',
         'poi-level-3',
         (event: MapLayerMouseEvent | MapLayerTouchEvent) => {
@@ -728,19 +728,21 @@ export default Vue.extend({
           ['case', ['==', ['get', 'vido_cat'], parseInt(category, 10)], 1, 0],
         ]
       })
-      this.map.addSource(POI_SOURCE, {
-        type: 'geojson',
-        cluster: true,
-        clusterRadius: 64,
-        clusterProperties: clusterProps,
-        clusterMaxZoom: 15,
-        data: {
-          type: 'FeatureCollection',
-          features: Object.values(features)
-            .flat()
-            .filter((f) => f.properties.vido_visible),
-        },
-      })
+
+      if (!this.map.getSource(POI_SOURCE))
+        this.map.addSource(POI_SOURCE, {
+          type: 'geojson',
+          cluster: true,
+          clusterRadius: 64,
+          clusterProperties: clusterProps,
+          clusterMaxZoom: 15,
+          data: {
+            type: 'FeatureCollection',
+            features: Object.values(features)
+              .flat()
+              .filter((f) => f.properties.vido_visible),
+          },
+        })
 
       // Add individual markers
       if (!this.map.getLayer(POI_LAYER_MARKER))
