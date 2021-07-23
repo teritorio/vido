@@ -213,11 +213,12 @@ export default Vue.extend({
           version: 8,
           name: 'Teritorio Mapnik',
           vido_israster: true,
+          glyphs: 'https://vecto.teritorio.xyz/fonts/{fontstack}/{range}.pbf',
           sources: {
             mapnik: {
               type: 'raster',
               tiles: [
-                // 'https://tile.openstreetmap.org/{z}/{x}/{y}.png' // Main OSM tiles
+                'https://tile.openstreetmap.org/{z}/{x}/{y}.png', // Main OSM tiles
                 'https://a.tiles.teritorio.xyz/styles/osm/{z}/{x}/{y}.png',
                 'https://b.tiles.teritorio.xyz/styles/osm/{z}/{x}/{y}.png',
                 'https://c.tiles.teritorio.xyz/styles/osm/{z}/{x}/{y}.png',
@@ -244,6 +245,7 @@ export default Vue.extend({
           // sprite: `https://vecto-dev.teritorio.xyz/styles/teritorio-tourism-proxy/sprite?key=${this.$config.TILES_TOKEN}`,
           // glyphs: `https://vecto-dev.teritorio.xyz/fonts/{fontstack}/{range}.pbf?key=${this.$config.TILES_TOKEN}`,
           vido_israster: true,
+          glyphs: 'https://vecto.teritorio.xyz/fonts/{fontstack}/{range}.pbf',
           sources: {
             aerial: {
               type: 'raster',
@@ -446,6 +448,8 @@ export default Vue.extend({
       'favorite/handleFavoriteLayer',
       getHashPart('fav') === 'y'
     )
+
+    this.selectedBackground = getHashPart('bg') || DEFAULT_MAP_STYLE
   },
 
   methods: {
@@ -460,22 +464,16 @@ export default Vue.extend({
       map.addControl(this.poiFilter)
 
       map.on('styledata', () => {
-        if (map?.getLayer) {
-          if (!this.isModeExplorer) {
-            this.poiFilter?.remove(true)
-          } else {
-            this.poiFilterForExplorer()
-          }
+        if (!this.isModeExplorer) {
+          this.poiFilter?.remove(true)
+        } else {
+          this.poiFilterForExplorer()
         }
       })
 
-      // map.on('load', () => {
-      //   if (!this.isModeExplorer) {
-      //     this.poiFilter?.remove(true)
-      //   } else {
-      //     this.poiFilterForExplorer()
-      //   }
-      // })
+      map.on('load', () => {
+        this.initPoiLayer(this.features)
+      })
 
       map.on('click', () => {
         this.selectFeature(null)
