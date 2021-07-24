@@ -557,7 +557,7 @@ export default Vue.extend({
     toggleFavoriteMode() {
       try {
         const props = this.selectedFeature?.properties
-        const id = props?.metadata?.PID || props?.id
+        const id = props?.metadata?.PID || `${this.selectedFeature?.id}`
         const currentFavorites = localStorage.getItem(LOCAL_STORAGE.favorites)
         let newFavorite
 
@@ -596,7 +596,10 @@ export default Vue.extend({
           })
         })
 
-        const allFavorites = await this.fetchFavorites(this.favoritesIds)
+        const allFavorites =
+          this.favoritesIds?.length > 0
+            ? await this.fetchFavorites(this.favoritesIds)
+            : []
 
         allFavorites.forEach((feature) => {
           this.featuresCoordinates[feature.properties.metadata.PID] =
