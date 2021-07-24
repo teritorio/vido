@@ -7,7 +7,10 @@
         v-if="map"
         aria-label="Favoris"
         type="button"
-        class="space-x-1 text-sm font-medium text-gray-800 bg-white rounded-full shadow-md outline-none sm:px-5 w-11 sm:w-auto h-11 focus:outline-none hover:bg-gray-100 focus-visible:bg-gray-100"
+        :class="[
+          'space-x-1 text-sm font-medium text-gray-800 bg-white rounded-full shadow-md outline-none sm:px-5 w-11 sm:w-auto h-11 focus:outline-none hover:bg-gray-100 focus-visible:bg-gray-100',
+          hasFavorites && isModeFavorite && 'z-10',
+        ]"
         @click="toggleFavoriteMode"
       >
         <font-awesome-icon
@@ -132,6 +135,10 @@ export default Vue.extend({
       default: false,
     },
     isModeFavorite: {
+      type: Boolean,
+      default: false,
+    },
+    hasFavorites: {
       type: Boolean,
       default: false,
     },

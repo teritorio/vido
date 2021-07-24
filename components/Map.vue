@@ -42,6 +42,7 @@
       </div>
 
       <MapControls
+        :has-favorites="favoritesIds.length === 0"
         :backgrounds="availableStyles"
         :dense="small"
         :is-mode-favorite="isModeFavorite"
@@ -75,6 +76,12 @@
           class="text-gray-400 animate-spin"
           size="3x"
         />
+      </div>
+      <div
+        v-if="isModeFavorite && favoritesIds.length === 0"
+        class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-80 text-white"
+      >
+        Vous n'avez pas encore de lieux en favoris. Vous pouvez le faire en sélectionnant un lieu sur la carte, puis en le mémorisant comme favoris.
       </div>
     </div>
   </div>
@@ -437,7 +444,7 @@ export default Vue.extend({
 
   beforeMount() {
     const favorites =
-      localStorage.getItem(LOCAL_STORAGE.favorites) || '{ "favorites": "[]" }'
+      localStorage.getItem(LOCAL_STORAGE.favorites) || '{ "favorites": [] }'
 
     this.$store.dispatch(
       'favorite/toggleFavoriteModes',
@@ -588,18 +595,21 @@ export default Vue.extend({
         return
       }
 
+      const hasFavorites = this.favoritesIds?.length > 0
+
       if (this.isModeFavorite) {
         this.resetMapview().then(() => {
-          this.map?.flyTo({
-            center: [this.center.lng, this.center.lat],
-            zoom: this.zoom.default,
-          })
+          if (hasFavorites) {
+            this.map?.flyTo({
+              center: [this.center.lng, this.center.lat],
+              zoom: this.zoom.default,
+            })
+          }
         })
 
-        const allFavorites =
-          this.favoritesIds?.length > 0
-            ? await this.fetchFavorites(this.favoritesIds)
-            : []
+        const allFavorites = hasFavorites
+          ? await this.fetchFavorites(this.favoritesIds)
+          : []
 
         allFavorites.forEach((feature) => {
           this.featuresCoordinates[feature.properties.metadata.PID] =
