@@ -81,7 +81,7 @@
         v-if="
           isModeFavorite &&
           favoritesIds.length === 0 &&
-          favoritesAction != 'delete'
+          favoritesAction !== 'delete'
         "
       />
     </div>
@@ -459,9 +459,11 @@ export default Vue.extend({
       'favorite/handleFavoriteLayer',
       getHashPart('fav') === 'y'
     )
+
     if (getHashPart('fav') === 'y') {
       this.$store.dispatch('favorite/setFavoritesAction', 'open')
     }
+
     this.selectedBackground = getHashPart('bg') || DEFAULT_MAP_STYLE
   },
 

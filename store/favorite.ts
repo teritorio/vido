@@ -9,7 +9,7 @@ enum Mutation {
 export interface State {
   favoritesIds: [string?]
   isModeFavorite: boolean
-  favoritesAction: String | null
+  favoritesAction: 'add' | 'close' | 'delete' | 'open' | null
 }
 
 export const state = (): State => ({
