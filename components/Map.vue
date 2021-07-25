@@ -77,12 +77,13 @@
           size="3x"
         />
       </div>
-      <div
-        v-if="isModeFavorite && favoritesIds.length === 0"
-        class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-80 text-white"
-      >
-        Vous n'avez pas encore de lieux en favoris. Vous pouvez le faire en sélectionnant un lieu sur la carte, puis en le mémorisant comme favoris.
-      </div>
+      <FavoritesOverlay
+        v-if="
+          isModeFavorite &&
+          favoritesIds.length === 0 &&
+          favoritesAction != 'delete'
+        "
+      />
     </div>
   </div>
 </template>
@@ -96,6 +97,7 @@ import mapboxgl, { MapLayerMouseEvent, MapLayerTouchEvent } from 'maplibre-gl'
 import Vue, { PropType } from 'vue'
 import { mapGetters, mapActions } from 'vuex'
 
+import FavoritesOverlay from '@/components/FavoritesOverlay.vue'
 import MapControls from '@/components/MapControls.vue'
 import MapPoiToast from '@/components/MapPoiToast.vue'
 import TeritorioIconBadge from '@/components/TeritorioIcon/TeritorioIconBadge.vue'
@@ -128,6 +130,7 @@ export default Vue.extend({
     Mapbox,
     MapControls,
     MapPoiToast,
+    FavoritesOverlay,
   },
 
   props: {
@@ -196,6 +199,7 @@ export default Vue.extend({
       isLoadingFeatures: 'menu/isLoadingFeatures',
       favoritesIds: 'favorite/favoritesIds',
       isModeFavorite: 'favorite/isModeFavorite',
+      favoritesAction: 'favorite/favoritesAction',
     }),
 
     categories(): Record<Category['id'], Category> {
@@ -455,7 +459,9 @@ export default Vue.extend({
       'favorite/handleFavoriteLayer',
       getHashPart('fav') === 'y'
     )
-
+    if (getHashPart('fav') === 'y') {
+      this.$store.dispatch('favorite/setFavoritesAction', 'open')
+    }
     this.selectedBackground = getHashPart('bg') || DEFAULT_MAP_STYLE
   },
 
@@ -572,11 +578,14 @@ export default Vue.extend({
           const parsedFavorites = JSON.parse(currentFavorites).favorites
           if (!parsedFavorites.includes(id)) {
             newFavorite = [...parsedFavorites, id]
+            this.$store.dispatch('favorite/setFavoritesAction', 'add')
           } else {
             newFavorite = parsedFavorites.filter((f: string) => f !== id)
+            this.$store.dispatch('favorite/setFavoritesAction', 'delete')
           }
         } else {
           newFavorite = [id]
+          this.$store.dispatch('favorite/setFavoritesAction', 'add')
         }
 
         localStorage.setItem(
@@ -596,6 +605,12 @@ export default Vue.extend({
       }
 
       const hasFavorites = this.favoritesIds?.length > 0
+
+      if (!hasFavorites && this.favoritesAction === 'delete') {
+        setHashPart('fav', null)
+        this.$store.dispatch('favorite/handleFavoriteLayer', false)
+        this.$store.dispatch('favorite/setFavoritesAction', 'close')
+      }
 
       if (this.isModeFavorite) {
         this.resetMapview().then(() => {
