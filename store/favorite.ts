@@ -28,7 +28,10 @@ export const mutations = {
   [Mutation.TOGGLE_FAVORITES](state: State, payload: [string]) {
     state.favoritesIds = payload
   },
-  [Mutation.SET_FAVORITES_ACTION](state: State, payload: string) {
+  [Mutation.SET_FAVORITES_ACTION](
+    state: State,
+    payload: 'add' | 'close' | 'delete' | 'open' | null
+  ) {
     state.favoritesAction = payload
   },
   [Mutation.TOGGLE_FAVORITE_LAYER](state: State, payload: boolean) {

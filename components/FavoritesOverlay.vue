@@ -4,7 +4,7 @@
     :click="onOverlayClick"
     class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-80 z-20 cursor-pointer"
   >
-    <p class="p-8 max-w-md text-center text-white">
+    <p class="p-8 max-w-sm text-center text-white">
       Vous n'avez pas encore de lieux en favoris. Vous pouvez le faire en
       sélectionnant un lieu sur la carte, puis en le mémorisant comme favoris.
     </p>
