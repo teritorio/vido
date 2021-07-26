@@ -435,6 +435,7 @@ export default Vue.extend({
     onSearchCategory(subcategoryId: Category['id']) {
       setHashPart('fav', null)
       this.$store.dispatch('favorite/handleFavoriteLayer', false)
+      this.$store.dispatch('favorite/setFavoritesAction', 'close')
       this.selectSubCategory([subcategoryId])
     },
     onSearchPoi(poiId: string) {

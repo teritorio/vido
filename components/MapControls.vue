@@ -7,10 +7,7 @@
         v-if="map"
         aria-label="Favoris"
         type="button"
-        :class="[
-          'space-x-1 text-sm font-medium text-gray-800 bg-white rounded-full shadow-md outline-none sm:px-5 w-11 sm:w-auto h-11 focus:outline-none hover:bg-gray-100 focus-visible:bg-gray-100',
-          hasFavorites && isModeFavorite && 'z-10',
-        ]"
+        class="space-x-1 text-sm font-medium text-gray-800 bg-white rounded-full shadow-md outline-none sm:px-5 w-11 sm:w-auto h-11 focus:outline-none hover:bg-gray-100 focus-visible:bg-gray-100"
         @click="toggleFavoriteMode"
       >
         <font-awesome-icon
@@ -135,10 +132,6 @@ export default Vue.extend({
       default: false,
     },
     isModeFavorite: {
-      type: Boolean,
-      default: false,
-    },
-    hasFavorites: {
       type: Boolean,
       default: false,
     },
@@ -317,9 +310,11 @@ export default Vue.extend({
       if (!isFav) {
         setHashPart('fav', '1')
         this.$store.dispatch('favorite/handleFavoriteLayer', true)
+        this.$store.dispatch('favorite/setFavoritesAction', 'open')
       } else {
         setHashPart('fav', null)
         this.$store.dispatch('favorite/handleFavoriteLayer', false)
+        this.$store.dispatch('favorite/setFavoritesAction', 'close')
       }
     },
   },
