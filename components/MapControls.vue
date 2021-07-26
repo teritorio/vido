@@ -310,9 +310,11 @@ export default Vue.extend({
       if (!isFav) {
         setHashPart('fav', '1')
         this.$store.dispatch('favorite/handleFavoriteLayer', true)
+        this.$store.dispatch('favorite/setFavoritesAction', 'open')
       } else {
         setHashPart('fav', null)
         this.$store.dispatch('favorite/handleFavoriteLayer', false)
+        this.$store.dispatch('favorite/setFavoritesAction', 'close')
       }
     },
   },

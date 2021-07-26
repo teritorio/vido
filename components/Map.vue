@@ -42,6 +42,7 @@
       </div>
 
       <MapControls
+        :has-favorites="favoritesIds.length === 0"
         :backgrounds="availableStyles"
         :dense="small"
         :is-mode-favorite="isModeFavorite"
@@ -76,6 +77,13 @@
           size="3x"
         />
       </div>
+      <FavoritesOverlay
+        v-if="
+          isModeFavorite &&
+          favoritesIds.length === 0 &&
+          favoritesAction !== 'delete'
+        "
+      />
     </div>
   </div>
 </template>
@@ -89,6 +97,7 @@ import mapboxgl, { MapLayerMouseEvent, MapLayerTouchEvent } from 'maplibre-gl'
 import Vue, { PropType } from 'vue'
 import { mapGetters, mapActions } from 'vuex'
 
+import FavoritesOverlay from '@/components/FavoritesOverlay.vue'
 import MapControls from '@/components/MapControls.vue'
 import MapPoiToast from '@/components/MapPoiToast.vue'
 import TeritorioIconBadge from '@/components/TeritorioIcon/TeritorioIconBadge.vue'
@@ -121,6 +130,7 @@ export default Vue.extend({
     Mapbox,
     MapControls,
     MapPoiToast,
+    FavoritesOverlay,
   },
 
   props: {
@@ -189,6 +199,7 @@ export default Vue.extend({
       isLoadingFeatures: 'menu/isLoadingFeatures',
       favoritesIds: 'favorite/favoritesIds',
       isModeFavorite: 'favorite/isModeFavorite',
+      favoritesAction: 'favorite/favoritesAction',
     }),
 
     categories(): Record<Category['id'], Category> {
@@ -213,11 +224,12 @@ export default Vue.extend({
           version: 8,
           name: 'Teritorio Mapnik',
           vido_israster: true,
+          glyphs: 'https://vecto.teritorio.xyz/fonts/{fontstack}/{range}.pbf',
           sources: {
             mapnik: {
               type: 'raster',
               tiles: [
-                // 'https://tile.openstreetmap.org/{z}/{x}/{y}.png' // Main OSM tiles
+                // 'https://tile.openstreetmap.org/{z}/{x}/{y}.png', // Main OSM tiles
                 'https://a.tiles.teritorio.xyz/styles/osm/{z}/{x}/{y}.png',
                 'https://b.tiles.teritorio.xyz/styles/osm/{z}/{x}/{y}.png',
                 'https://c.tiles.teritorio.xyz/styles/osm/{z}/{x}/{y}.png',
@@ -244,6 +256,7 @@ export default Vue.extend({
           // sprite: `https://vecto-dev.teritorio.xyz/styles/teritorio-tourism-proxy/sprite?key=${this.$config.TILES_TOKEN}`,
           // glyphs: `https://vecto-dev.teritorio.xyz/fonts/{fontstack}/{range}.pbf?key=${this.$config.TILES_TOKEN}`,
           vido_israster: true,
+          glyphs: 'https://vecto.teritorio.xyz/fonts/{fontstack}/{range}.pbf',
           sources: {
             aerial: {
               type: 'raster',
@@ -435,7 +448,7 @@ export default Vue.extend({
 
   beforeMount() {
     const favorites =
-      localStorage.getItem(LOCAL_STORAGE.favorites) || '{ "favorites": "[]" }'
+      localStorage.getItem(LOCAL_STORAGE.favorites) || '{ "favorites": [] }'
 
     this.$store.dispatch(
       'favorite/toggleFavoriteModes',
@@ -446,6 +459,12 @@ export default Vue.extend({
       'favorite/handleFavoriteLayer',
       getHashPart('fav') === 'y'
     )
+
+    if (getHashPart('fav') === 'y') {
+      this.$store.dispatch('favorite/setFavoritesAction', 'open')
+    }
+
+    this.selectedBackground = getHashPart('bg') || DEFAULT_MAP_STYLE
   },
 
   methods: {
@@ -459,12 +478,16 @@ export default Vue.extend({
       this.poiFilter = new PoiFilter()
       this.map.addControl(this.poiFilter)
 
-      this.map.on('load', () => {
+      this.map.on('styledata', () => {
         if (!this.isModeExplorer) {
           this.poiFilter?.remove(true)
         } else {
           this.poiFilterForExplorer()
         }
+      })
+
+      this.map.on('load', () => {
+        this.initPoiLayer(this.features)
       })
 
       this.map.on('click', () => {
@@ -549,7 +572,7 @@ export default Vue.extend({
     toggleFavoriteMode() {
       try {
         const props = this.selectedFeature?.properties
-        const id = props?.metadata?.PID || props?.id
+        const id = props?.metadata?.PID || `${this.selectedFeature?.id}`
         const currentFavorites = localStorage.getItem(LOCAL_STORAGE.favorites)
         let newFavorite
 
@@ -557,11 +580,14 @@ export default Vue.extend({
           const parsedFavorites = JSON.parse(currentFavorites).favorites
           if (!parsedFavorites.includes(id)) {
             newFavorite = [...parsedFavorites, id]
+            this.$store.dispatch('favorite/setFavoritesAction', 'add')
           } else {
             newFavorite = parsedFavorites.filter((f: string) => f !== id)
+            this.$store.dispatch('favorite/setFavoritesAction', 'delete')
           }
         } else {
           newFavorite = [id]
+          this.$store.dispatch('favorite/setFavoritesAction', 'add')
         }
 
         localStorage.setItem(
@@ -580,15 +606,27 @@ export default Vue.extend({
         return
       }
 
+      const hasFavorites = this.favoritesIds?.length > 0
+
+      if (!hasFavorites && this.favoritesAction === 'delete') {
+        setHashPart('fav', null)
+        this.$store.dispatch('favorite/handleFavoriteLayer', false)
+        this.$store.dispatch('favorite/setFavoritesAction', 'close')
+      }
+
       if (this.isModeFavorite) {
         this.resetMapview().then(() => {
-          this.map?.flyTo({
-            center: [this.center.lng, this.center.lat],
-            zoom: this.zoom.default,
-          })
+          if (hasFavorites) {
+            this.map?.flyTo({
+              center: [this.center.lng, this.center.lat],
+              zoom: this.zoom.default,
+            })
+          }
         })
 
-        const allFavorites = await this.fetchFavorites(this.favoritesIds)
+        const allFavorites = hasFavorites
+          ? await this.fetchFavorites(this.favoritesIds)
+          : []
 
         allFavorites.forEach((feature) => {
           this.featuresCoordinates[feature.properties.metadata.PID] =
@@ -720,19 +758,21 @@ export default Vue.extend({
           ['case', ['==', ['get', 'vido_cat'], parseInt(category, 10)], 1, 0],
         ]
       })
-      this.map.addSource(POI_SOURCE, {
-        type: 'geojson',
-        cluster: true,
-        clusterRadius: 64,
-        clusterProperties: clusterProps,
-        clusterMaxZoom: 15,
-        data: {
-          type: 'FeatureCollection',
-          features: Object.values(features)
-            .flat()
-            .filter((f) => f.properties.vido_visible),
-        },
-      })
+
+      if (!this.map.getSource(POI_SOURCE))
+        this.map.addSource(POI_SOURCE, {
+          type: 'geojson',
+          cluster: true,
+          clusterRadius: 64,
+          clusterProperties: clusterProps,
+          clusterMaxZoom: 15,
+          data: {
+            type: 'FeatureCollection',
+            features: Object.values(features)
+              .flat()
+              .filter((f) => f.properties.vido_visible),
+          },
+        })
 
       // Add individual markers
       if (!this.map.getLayer(POI_LAYER_MARKER))

@@ -23,9 +23,16 @@ export default {
     VECTO_STYLE_URL: process.env.VECTO_STYLE_URL || '',
     VECTO_TILES_URL: process.env.VECTO_TILES_URL || '',
   },
-
+  pwa: {
+    meta: {
+      lang: 'fr',
+    },
+  },
   // Global page headers (https://go.nuxtjs.dev/config-head)
   head: {
+    htmlAttrs: {
+      lang: 'fr',
+    },
     title: '@teritorio/vido',
     meta: [
       { charset: 'utf-8' },

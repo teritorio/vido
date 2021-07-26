@@ -116,6 +116,7 @@
         </button>
 
         <button
+          v-if="poiMeta('PID')"
           class="flex flex-col items-center flex-1 h-full p-2 space-y-2 rounded-lg hover:bg-gray-100"
           title="Mettre en favori"
           @click.stop="onFavoriteClick"
