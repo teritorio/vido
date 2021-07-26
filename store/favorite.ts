@@ -30,7 +30,7 @@ export const mutations = {
   },
   [Mutation.SET_FAVORITES_ACTION](
     state: State,
-    payload: 'add' | 'close' | 'delete' | 'open' | null
+    payload: State['favoritesAction']
   ) {
     state.favoritesAction = payload
   },
