@@ -6,7 +6,7 @@
   >
     <p class="p-8 max-w-sm text-center text-white">
       Vous n'avez pas encore de lieux en favoris. Vous pouvez le faire en
-      sélectionnant un lieu sur la carte, puis en le mémorisant comme favoris.
+      sélectionnant un lieu sur la carte, puis en le mémorisant comme favori.
     </p>
   </div>
 </template>
