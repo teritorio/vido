@@ -478,13 +478,27 @@ export default Vue.extend({
       this.poiFilter = new PoiFilter()
       this.map.addControl(this.poiFilter)
 
-      this.map.on('styledata', () => {
-        if (!this.isModeExplorer) {
-          this.poiFilter?.remove(true)
-        } else {
-          this.poiFilterForExplorer()
+      // Looks faster 1
+      this.map.on('sourcedataloading', () => {
+        if (this.map?.getLayer(POI_LAYER_MARKER)) {
+          if (!this.isModeExplorer) {
+            this.poiFilter?.remove(true)
+          } else {
+            this.poiFilterForExplorer()
+          }
         }
       })
+
+      // Looks faster 2
+      // this.map.on('dataloading', () => {
+      //   if (this.map?.getLayer(POI_LAYER_MARKER)) {
+      //     if (!this.isModeExplorer) {
+      //       this.poiFilter?.remove(true)
+      //     } else {
+      //       this.poiFilterForExplorer()
+      //     }
+      //   }
+      // })
 
       this.map.on('load', () => {
         this.initPoiLayer(this.features)
@@ -726,17 +740,19 @@ export default Vue.extend({
     },
 
     poiFilterForExplorer() {
-      this.poiFilter?.reset()
+      if (this.map?.getLayer(POI_LAYER_MARKER)) {
+        this.poiFilter?.reset()
 
-      const filters = Object.values(this.categories)
-        .filter(
-          (c) =>
-            c.metadata.tourism_style_merge &&
-            Array.isArray(c.metadata.tourism_style_class)
-        )
-        .map((c) => c.metadata.tourism_style_class)
+        const filters = Object.values(this.categories)
+          .filter(
+            (c) =>
+              c.metadata.tourism_style_merge &&
+              Array.isArray(c.metadata.tourism_style_class)
+          )
+          .map((c) => c.metadata.tourism_style_class)
 
-      this.poiFilter?.setIncludeFilter(filters)
+        this.poiFilter?.setIncludeFilter(filters)
+      }
     },
 
     onClickChangeBackground(background: keyof typeof MapStyle) {
