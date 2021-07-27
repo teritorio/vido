@@ -399,23 +399,23 @@ export default Vue.extend({
 
       this.map.setStyle(style)
 
-      this.map.once('styledata', () => {
-        if (
-          this.poiFilter &&
-          (typeof style !== 'object' || !style.vido_israster) &&
-          !this.isModeExplorer
-        ) {
-          this.poiFilter.remove(true)
-        }
-
-        if (
-          this.isModeExplorer &&
-          this.selectedBackground === EXPLORER_MAP_STYLE
-        ) {
-          this.poiFilterForExplorer()
-        }
-        this.initPoiLayer(this.features)
-      })
+      // this.map.once('styledata', () => {
+      //   if (
+      //     this.poiFilter &&
+      //     (typeof style !== 'object' || !style.vido_israster) &&
+      //     !this.isModeExplorer
+      //   ) {
+      //     this.poiFilter.remove(true)
+      //   }
+      //
+      //   if (
+      //     this.isModeExplorer &&
+      //     this.selectedBackground === EXPLORER_MAP_STYLE
+      //   ) {
+      //     this.poiFilterForExplorer()
+      //   }
+      //   this.initPoiLayer(this.features)
+      // })
     },
 
     mode() {
@@ -483,9 +483,10 @@ export default Vue.extend({
         if (this.map?.getLayer(POI_LAYER_MARKER)) {
           if (!this.isModeExplorer) {
             this.poiFilter?.remove(true)
-          } else {
-            this.poiFilterForExplorer()
           }
+          // else {
+          // this.poiFilterForExplorer()
+          // }
         }
       })
 
@@ -741,7 +742,7 @@ export default Vue.extend({
 
     poiFilterForExplorer() {
       if (this.map?.getLayer(POI_LAYER_MARKER)) {
-        this.poiFilter?.reset()
+        // this.poiFilter?.remove(true) // reset()
 
         const filters = Object.values(this.categories)
           .filter(
