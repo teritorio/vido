@@ -398,24 +398,6 @@ export default Vue.extend({
       const style = this.mapStyle
 
       this.map.setStyle(style)
-
-      // this.map.once('styledata', () => {
-      //   if (
-      //     this.poiFilter &&
-      //     (typeof style !== 'object' || !style.vido_israster) &&
-      //     !this.isModeExplorer
-      //   ) {
-      //     this.poiFilter.remove(true)
-      //   }
-      //
-      //   if (
-      //     this.isModeExplorer &&
-      //     this.selectedBackground === EXPLORER_MAP_STYLE
-      //   ) {
-      //     this.poiFilterForExplorer()
-      //   }
-      //   this.initPoiLayer(this.features)
-      // })
     },
 
     mode() {
@@ -484,22 +466,8 @@ export default Vue.extend({
           if (!this.isModeExplorer) {
             this.poiFilter?.remove(true)
           }
-          // else {
-          // this.poiFilterForExplorer()
-          // }
         }
       })
-
-      // Looks faster 2
-      // this.map.on('dataloading', () => {
-      //   if (this.map?.getLayer(POI_LAYER_MARKER)) {
-      //     if (!this.isModeExplorer) {
-      //       this.poiFilter?.remove(true)
-      //     } else {
-      //       this.poiFilterForExplorer()
-      //     }
-      //   }
-      // })
 
       this.map.on('load', () => {
         this.initPoiLayer(this.features)
@@ -742,8 +710,6 @@ export default Vue.extend({
 
     poiFilterForExplorer() {
       if (this.map?.getLayer(POI_LAYER_MARKER)) {
-        // this.poiFilter?.remove(true) // reset()
-
         const filters = Object.values(this.categories)
           .filter(
             (c) =>
