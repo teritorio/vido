@@ -206,6 +206,16 @@ export default Vue.extend({
       return this.$store.getters['menu/categories']
     },
 
+    filters(): Array<string[]> {
+      return Object.values(this.categories)
+        .filter(
+          (c) =>
+            c.metadata.tourism_style_merge &&
+            Array.isArray(c.metadata.tourism_style_class)
+        )
+        .map((c) => c.metadata.tourism_style_class)
+    },
+
     isModeExplorer(): boolean {
       return this.mode === Mode.EXPLORER
     },
@@ -402,14 +412,20 @@ export default Vue.extend({
 
     mode() {
       switch (this.mode) {
-        case Mode.EXPLORER:
+        case Mode.EXPLORER: {
+          const alreadyOnExplorerMapStyle =
+            this.selectedBackground === EXPLORER_MAP_STYLE
+
           this.selectedBackground = EXPLORER_MAP_STYLE
           this.map?.setStyle(this.mapStyle)
 
           setHashPart('bg', this.selectedBackground)
 
-          this.poiFilterForExplorer()
+          if (alreadyOnExplorerMapStyle) {
+            this.poiFilterForExplorer()
+          }
           break
+        }
         case Mode.BROWSER:
           this.poiFilter?.remove(true)
           break
@@ -460,12 +476,18 @@ export default Vue.extend({
       this.poiFilter = new PoiFilter()
       this.map.addControl(this.poiFilter)
 
-      // Looks faster 1
-      this.map.on('sourcedataloading', () => {
-        if (this.map?.getLayer(POI_LAYER_MARKER)) {
-          if (!this.isModeExplorer) {
-            this.poiFilter?.remove(true)
-          }
+      this.map.on('data', () => {
+        if (
+          this.selectedBackground === DEFAULT_MAP_STYLE &&
+          !this.isModeExplorer
+        ) {
+          this.poiFilter?.remove(true)
+        }
+        if (
+          this.selectedBackground === DEFAULT_MAP_STYLE &&
+          this.isModeExplorer
+        ) {
+          this.poiFilterForExplorer()
         }
       })
 
@@ -709,17 +731,8 @@ export default Vue.extend({
     },
 
     poiFilterForExplorer() {
-      if (this.map?.getLayer(POI_LAYER_MARKER)) {
-        const filters = Object.values(this.categories)
-          .filter(
-            (c) =>
-              c.metadata.tourism_style_merge &&
-              Array.isArray(c.metadata.tourism_style_class)
-          )
-          .map((c) => c.metadata.tourism_style_class)
-
-        this.poiFilter?.setIncludeFilter(filters)
-      }
+      this.poiFilter?.setIncludeFilter(this.filters)
+      this.map?.triggerRepaint()
     },
 
     onClickChangeBackground(background: keyof typeof MapStyle) {
@@ -732,17 +745,17 @@ export default Vue.extend({
         return
       }
 
-      // Create cluster properties, which will contain count of features per category
-      const clusterProps: { [category: string]: object } = {}
+      if (!this.map.getSource(POI_SOURCE)) {
+        // Create cluster properties, which will contain count of features per category
+        const clusterProps: { [category: string]: object } = {}
 
-      Object.keys(this.categories).forEach((category) => {
-        clusterProps[category] = [
-          '+',
-          ['case', ['==', ['get', 'vido_cat'], parseInt(category, 10)], 1, 0],
-        ]
-      })
+        Object.keys(this.categories).forEach((category) => {
+          clusterProps[category] = [
+            '+',
+            ['case', ['==', ['get', 'vido_cat'], parseInt(category, 10)], 1, 0],
+          ]
+        })
 
-      if (!this.map.getSource(POI_SOURCE))
         this.map.addSource(POI_SOURCE, {
           type: 'geojson',
           cluster: true,
@@ -756,6 +769,7 @@ export default Vue.extend({
               .filter((f) => f.properties.vido_visible),
           },
         })
+      }
 
       // Add individual markers
       if (!this.map.getLayer(POI_LAYER_MARKER))
