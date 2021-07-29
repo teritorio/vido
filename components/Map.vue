@@ -77,13 +77,8 @@
           size="3x"
         />
       </div>
-      <FavoritesOverlay
-        v-if="
-          isModeFavorite &&
-          favoritesIds.length === 0 &&
-          favoritesAction !== 'delete'
-        "
-      />
+      <FavoritesOverlay v-if="showFavoritesOverlay" />
+      <SnackBar />
     </div>
   </div>
 </template>
@@ -100,6 +95,7 @@ import { mapGetters, mapActions } from 'vuex'
 import FavoritesOverlay from '@/components/FavoritesOverlay.vue'
 import MapControls from '@/components/MapControls.vue'
 import MapPoiToast from '@/components/MapPoiToast.vue'
+import SnackBar from '@/components/SnackBar.vue'
 import TeritorioIconBadge from '@/components/TeritorioIcon/TeritorioIconBadge.vue'
 import {
   DEFAULT_MAP_STYLE,
@@ -119,6 +115,7 @@ import {
   VidoMglStyle,
 } from '@/utils/types'
 import { getHashPart, setHashPart } from '@/utils/url'
+import { flattenFeatures } from '@/utils/utilities'
 
 const POI_SOURCE = 'poi'
 const FAVORITE_SOURCE = 'favorite-source'
@@ -131,6 +128,7 @@ export default Vue.extend({
     MapControls,
     MapPoiToast,
     FavoritesOverlay,
+    SnackBar,
   },
 
   props: {
@@ -160,6 +158,7 @@ export default Vue.extend({
     featuresCoordinates: { [id: string]: TupleLatLng }
     allowRegionBackZoom: boolean
     showPoiToast: boolean
+    showFavoritesOverlay: boolean
     previousCategories: Category['id'][]
     tourismStyleWithProxyTiles: VidoMglStyle | null
   } {
@@ -174,6 +173,7 @@ export default Vue.extend({
       selectedBackground: DEFAULT_MAP_STYLE,
       featuresCoordinates: {},
       allowRegionBackZoom: false,
+      showFavoritesOverlay: false,
       showPoiToast: false,
       previousCategories: [],
       tourismStyleWithProxyTiles: null,
@@ -324,6 +324,8 @@ export default Vue.extend({
             feature.geometry.coordinates
         })
       })
+
+      const vidoFeatures = flattenFeatures(features)
       // Change visible data
       if (this.map.getSource(POI_SOURCE)) {
         // Clean-up previous cluster markers
@@ -336,30 +338,28 @@ export default Vue.extend({
         if ('setData' in source) {
           source.setData({
             type: 'FeatureCollection',
-            features: Object.values(features)
-              .flat()
-              .filter((f: VidoFeature) => f.properties.vido_visible),
+            features: vidoFeatures,
           })
         }
       }
       // Create POI source + layer
       else {
-        this.initPoiLayer(features)
+        this.initPoiLayer(vidoFeatures)
       }
 
       // Zoom back to whole region if a new category is selected
       const oldCategories: string[] = Object.keys(oldFeatures)
       const newCategories: string[] = Object.keys(features)
+
       if (
         this.allowRegionBackZoom &&
-        !deepEqual(newCategories, oldCategories) &&
-        newCategories.find((c) => !oldCategories.includes(c))
+        ((!deepEqual(newCategories, oldCategories) &&
+          newCategories.find((c) => !oldCategories.includes(c))) ||
+          this.favoritesAction === 'close')
       ) {
         this.resetMapview().then(() => {
-          this.map?.flyTo({
-            center: [this.center.lng, this.center.lat],
-            zoom: this.zoom.default,
-          })
+          const vidoFeartures = flattenFeatures(features)
+          this.handleResetMapZoom(vidoFeartures)
         })
       } else {
         // Made to avoid back zoom on categories reload
@@ -455,10 +455,10 @@ export default Vue.extend({
 
     this.$store.dispatch(
       'favorite/handleFavoriteLayer',
-      getHashPart('fav') === 'y'
+      getHashPart('fav') === '1'
     )
 
-    if (getHashPart('fav') === 'y') {
+    if (getHashPart('fav') === '1') {
       this.$store.dispatch('favorite/setFavoritesAction', 'open')
     }
 
@@ -492,7 +492,9 @@ export default Vue.extend({
       })
 
       this.map.on('load', () => {
-        this.initPoiLayer(this.features)
+        const vidoFeatures = flattenFeatures(this.features)
+
+        this.initPoiLayer(vidoFeatures)
       })
 
       this.map.on('click', () => {
@@ -613,6 +615,11 @@ export default Vue.extend({
 
       const hasFavorites = this.favoritesIds?.length > 0
 
+      this.showFavoritesOverlay =
+        this.isModeFavorite &&
+        !hasFavorites &&
+        this.favoritesAction !== 'delete'
+
       if (!hasFavorites && this.favoritesAction === 'delete') {
         setHashPart('fav', null)
         this.$store.dispatch('favorite/handleFavoriteLayer', false)
@@ -620,18 +627,15 @@ export default Vue.extend({
       }
 
       if (this.isModeFavorite) {
-        this.resetMapview().then(() => {
-          if (hasFavorites) {
-            this.map?.flyTo({
-              center: [this.center.lng, this.center.lat],
-              zoom: this.zoom.default,
-            })
-          }
-        })
-
         const allFavorites = hasFavorites
           ? await this.fetchFavorites(this.favoritesIds)
           : []
+
+        this.resetMapview().then(() => {
+          if (hasFavorites) {
+            this.handleResetMapZoom(allFavorites)
+          }
+        })
 
         allFavorites.forEach((feature) => {
           this.featuresCoordinates[feature.properties.metadata.PID] =
@@ -676,6 +680,18 @@ export default Vue.extend({
 
     async fetchFavorites(ids) {
       return await getPoiByIds(this.$config.API_ENDPOINT, ids)
+    },
+
+    showZoomSnack() {
+      this.$store.dispatch('snack/showSnack', {
+        time: 5000,
+        text: 'Pas de résultat correspondant.',
+        btnAction: () => {
+          this.resetZoom()
+          this.$store.dispatch('snack/showSnack', null)
+        },
+        textBtn: 'Voir des lieux plus éloignés ?',
+      })
     },
 
     goToSelectedPoi() {
@@ -730,6 +746,29 @@ export default Vue.extend({
       this.map.fitBounds(bounds, { maxZoom: 13 })
     },
 
+    resetZoom() {
+      this.map?.flyTo({
+        center: [this.center.lng, this.center.lat],
+        zoom: this.zoom.default,
+      })
+    },
+
+    handleResetMapZoom(features) {
+      const mapBounds = this.map.getBounds()
+      const isAllInView = features.every((feature) =>
+        mapBounds.contains(feature.geometry.coordinates)
+      )
+
+      const currentZoom = this.map.getZoom()
+
+      if (!isAllInView && currentZoom > this.zoom.default) {
+        this.showZoomSnack()
+      }
+      if (currentZoom < this.zoom.default) {
+        this.resetZoom()
+      }
+    },
+
     poiFilterForExplorer() {
       this.poiFilter?.setIncludeFilter(this.filters)
       this.map?.triggerRepaint()
@@ -764,9 +803,7 @@ export default Vue.extend({
           clusterMaxZoom: 15,
           data: {
             type: 'FeatureCollection',
-            features: Object.values(features)
-              .flat()
-              .filter((f) => f.properties.vido_visible),
+            features,
           },
         })
       }
@@ -834,13 +871,14 @@ export default Vue.extend({
           }
           id = 'm' + props.metadata.PID
           marker = this.markers[id]
-          if (!marker) {
+          const markerCoords = this.featuresCoordinates[props.metadata.PID]
+          if (!marker && markerCoords) {
             // Marker
             const el: HTMLElement = document.createElement('div')
             el.classList.add('mapboxgl-marker')
             marker = this.markers[id] = new mapboxgl.Marker({
               element: el,
-            }).setLngLat(this.featuresCoordinates[props.metadata.PID]) // Using this to avoid misplaced marker
+            }).setLngLat(markerCoords) // Using this to avoid misplaced marker
 
             // Teritorio badge
             const instance = new TeritorioIconBadge({
