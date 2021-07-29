@@ -761,7 +761,7 @@ export default Vue.extend({
 
       const currentZoom = this.map.getZoom()
 
-      if (!isAllInView && currentZoom > this.zoom.default) {
+      if (!isAllInView && currentZoom >= this.zoom.default) {
         this.showZoomSnack()
       }
       if (currentZoom < this.zoom.default) {
