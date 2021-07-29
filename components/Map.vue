@@ -755,13 +755,13 @@ export default Vue.extend({
 
     handleResetMapZoom(features) {
       const mapBounds = this.map.getBounds()
-      const isAllInView = features.every((feature) =>
+      const isOneInView = features.some((feature) =>
         mapBounds.contains(feature.geometry.coordinates)
       )
 
       const currentZoom = this.map.getZoom()
 
-      if (!isAllInView && currentZoom >= this.zoom.default) {
+      if (!isOneInView && currentZoom >= this.zoom.default) {
         this.showZoomSnack()
       }
       if (currentZoom < this.zoom.default) {
