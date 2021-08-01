@@ -353,9 +353,8 @@ export default Vue.extend({
 
       if (
         this.allowRegionBackZoom &&
-        ((!deepEqual(newCategories, oldCategories) &&
-          newCategories.find((c) => !oldCategories.includes(c))) ||
-          this.favoritesAction === 'close')
+        !deepEqual(newCategories, oldCategories) &&
+        newCategories.find((c) => !oldCategories.includes(c))
       ) {
         this.resetMapview().then(() => {
           const vidoFeartures = flattenFeatures(features)
