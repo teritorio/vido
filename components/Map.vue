@@ -49,7 +49,6 @@
         :initial-background="selectedBackground"
         :map="map"
         :pitch="pitch"
-        :styles="mapStyles"
         @changeBackground="onClickChangeBackground"
         @change-mode="onControlChangeMode"
       />
