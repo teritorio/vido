@@ -47,7 +47,7 @@ export default Vue.extend({
 
   methods: {
     callback() {
-      this.snack && this.snack.btnAction()
+      this.snack && this.$emit('snack-action-click')
     },
   },
 })

@@ -78,7 +78,7 @@
         />
       </div>
       <FavoritesOverlay v-if="showFavoritesOverlay" />
-      <SnackBar />
+      <SnackBar @snack-action-click="handleSnackAction" />
     </div>
   </div>
 </template>
@@ -359,7 +359,11 @@ export default Vue.extend({
       ) {
         this.resetMapview().then(() => {
           const vidoFeartures = flattenFeatures(features)
-          this.handleResetMapZoom(vidoFeartures)
+          this.handleResetMapZoom(
+            vidoFeartures,
+            'Pas de résultat correspondant.',
+            'Voir des lieux plus éloignés ?'
+          )
         })
       } else {
         // Made to avoid back zoom on categories reload
@@ -608,6 +612,11 @@ export default Vue.extend({
       }
     },
 
+    handleSnackAction() {
+      this.resetZoom()
+      this.$store.dispatch('snack/showSnack', null)
+    },
+
     async handleFavorites() {
       if (!this.map) {
         return
@@ -633,7 +642,11 @@ export default Vue.extend({
 
         this.resetMapview().then(() => {
           if (hasFavorites) {
-            this.handleResetMapZoom(allFavorites)
+            this.handleResetMapZoom(
+              allFavorites,
+              'Pas de favori ici.',
+              'Voir tous les favoris ?'
+            )
           }
         })
 
@@ -682,15 +695,11 @@ export default Vue.extend({
       return await getPoiByIds(this.$config.API_ENDPOINT, ids)
     },
 
-    showZoomSnack() {
+    showZoomSnack(text, textBtn) {
       this.$store.dispatch('snack/showSnack', {
         time: 5000,
-        text: 'Pas de résultat correspondant.',
-        btnAction: () => {
-          this.resetZoom()
-          this.$store.dispatch('snack/showSnack', null)
-        },
-        textBtn: 'Voir des lieux plus éloignés ?',
+        text,
+        textBtn,
       })
     },
 
@@ -753,7 +762,7 @@ export default Vue.extend({
       })
     },
 
-    handleResetMapZoom(features) {
+    handleResetMapZoom(features, text, textBtn) {
       const mapBounds = this.map.getBounds()
       const isOneInView = features.some((feature) =>
         mapBounds.contains(feature.geometry.coordinates)
@@ -761,8 +770,12 @@ export default Vue.extend({
 
       const currentZoom = this.map.getZoom()
 
-      if (!isOneInView && currentZoom >= this.zoom.default) {
-        this.showZoomSnack()
+      if (
+        !isOneInView &&
+        currentZoom >= this.zoom.default &&
+        features.length > 0
+      ) {
+        this.showZoomSnack(text, textBtn)
       }
       if (currentZoom < this.zoom.default) {
         this.resetZoom()

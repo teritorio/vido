@@ -8,7 +8,6 @@ export interface Snack {
   time: number
   text: string
   textBtn: string
-  btnAction: Function
 }
 
 export interface State {
@@ -20,7 +19,6 @@ export const state = (): State => ({
     time: 3000,
     text: '',
     textBtn: '',
-    btnAction: () => null,
   },
 })
 
