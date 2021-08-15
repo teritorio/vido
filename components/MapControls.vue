@@ -59,20 +59,10 @@
           type="button"
           @click="displayNextBackground"
         >
-          <mapbox
-            class="h-full"
-            access-token=""
-            :nav-control="{
-              show: false,
-            }"
-            :map-options="{
-              attributionControl: false,
-              container: 'background-selector-map',
-              interactive: false,
-              style: backgroundSelectorMapStyle,
-              zoom: 8,
-            }"
-            @map-init="onMapInit"
+          <img
+            class="h-full rounded-full"
+            alt="fond de carte"
+            :src="require(`~/assets/${nextBackgroundName(background)}.png`)"
           />
         </button>
 
@@ -108,18 +98,16 @@
 
 <script lang="ts">
 import { Building3d } from '@teritorio/map'
-import Mapbox from 'mapbox-gl-vue'
-import mapboxgl, { MapboxEvent } from 'maplibre-gl'
+import mapboxgl from 'maplibre-gl'
 import Vue from 'vue'
 import { mapGetters } from 'vuex'
 
 import NavMenu from '@/components/NavMenu.vue'
-import { Mode, VidoMglStyle } from '@/utils/types'
+import { Mode } from '@/utils/types'
 import { getHashPart, setHashPart } from '@/utils/url'
 
 export default Vue.extend({
   components: {
-    Mapbox,
     NavMenu,
   },
   props: {
@@ -147,21 +135,15 @@ export default Vue.extend({
       type: Number,
       default: 0,
     },
-    styles: {
-      type: Object,
-      default: null,
-    },
   },
 
   data(): {
-    backgroundSelectorMap: mapboxgl.Map | null
     building3d: Building3d | null
     is3D: boolean
     background: string | null
     showNavMenu: boolean
   } {
     return {
-      backgroundSelectorMap: null,
       building3d: null,
       is3D: false,
       background: null,
@@ -173,14 +155,6 @@ export default Vue.extend({
     ...mapGetters({
       mode: 'site/mode',
     }),
-
-    backgroundSelectorMapStyle(): string | VidoMglStyle | undefined {
-      if (!this.background) {
-        return
-      }
-
-      return this.styles[this.nextBackgroundName(this.background)]
-    },
 
     isModeExplorer(): boolean {
       return this.mode === Mode.EXPLORER
@@ -214,13 +188,6 @@ export default Vue.extend({
         })
 
         this.map.addControl(this.building3d)
-
-        this.map.on('moveend', (event: MapboxEvent) => {
-          if (this.backgroundSelectorMap) {
-            const center = event.target.getCenter()
-            this.backgroundSelectorMap.jumpTo({ center })
-          }
-        })
       }
     },
     pitch(value) {
@@ -247,9 +214,6 @@ export default Vue.extend({
   },
 
   methods: {
-    onMapInit(map: mapboxgl.Map) {
-      this.backgroundSelectorMap = map
-    },
     setIs3D(value: boolean) {
       this.is3D = value
     },
@@ -270,29 +234,20 @@ export default Vue.extend({
       }
 
       const nextBackgroundName = this.nextBackgroundName(this.background)
-      const nextSelectorBackgroundName = this.nextBackgroundName(
-        nextBackgroundName
-      )
-
       this.background = nextBackgroundName
-
       setHashPart('bg', nextBackgroundName)
       this.$emit('changeBackground', nextBackgroundName)
-
-      this.backgroundSelectorMap?.setStyle(
-        this.styles[nextSelectorBackgroundName]
-      )
     },
     nextBackgroundName(backgroundNameReference: string): string {
-      const styleNames = Object.keys(this.styles)
+      const styleNames = ['teritorio', 'mapnik', 'aerial']
+
       const backgroundReferenceIndex = styleNames.findIndex(
         (styleName) => styleName === backgroundNameReference
       )
-      let styleIndex = backgroundReferenceIndex + 1
-
-      if (styleIndex > styleNames.length - 1) {
-        styleIndex = 0
-      }
+      const styleIndex =
+        backgroundReferenceIndex + 1 > styleNames.length - 1
+          ? 0
+          : backgroundReferenceIndex + 1
 
       return styleNames[styleIndex]
     },
