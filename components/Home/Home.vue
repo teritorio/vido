@@ -16,7 +16,7 @@
     >
       <div
         :class="[
-          'flex-col justify-between w-full sm:w-auto sm:max-w-md space-y-4',
+          'flex-col justify-between w-full sm:w-auto sm:max-w-md sm:space-y-4',
           selectedFeature && 'sm:hidden sm:flex',
           !selectedFeature && 'flex',
           showPoi && 'max-h-full sm:h-4/6 2xl:h-auto',
@@ -59,12 +59,11 @@
             @filter-changed="onSubCategoryFilterChange"
             @go-back-click="onBackToSubCategoryClick"
           />
-        </transition>
-        <div
-          v-if="state.matches(states.Search)"
-          :class="['max-h-full', isBottomMenuOpened && 'hidden sm:block']"
-        >
-          <transition name="headers" appear mode="out-in">
+
+          <div
+            v-if="state.matches(states.Search)"
+            class="max-h-full hidden sm:block"
+          >
             <SearchHeader
               :site-name="siteName"
               :logo-url="logoUrl"
@@ -75,7 +74,22 @@
               @poi-click="onSearchPoi"
               @feature-click="onFeatureClick"
             />
-          </transition>
+          </div>
+        </transition>
+        <div
+          v-if="state.matches(states.Search)"
+          :class="['max-h-full sm:hidden', isBottomMenuOpened && 'hidden']"
+        >
+          <SearchHeader
+            :site-name="siteName"
+            :logo-url="logoUrl"
+            :menu-to-icon="categoriesToIcons"
+            :selection-zoom="selectionZoom"
+            @go-back-click="goToHome"
+            @category-click="onSearchCategory"
+            @poi-click="onSearchPoi"
+            @feature-click="onFeatureClick"
+          />
         </div>
       </div>
 
