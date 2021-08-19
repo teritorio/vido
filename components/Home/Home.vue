@@ -19,7 +19,7 @@
       <div
         :class="[
           'flex-col justify-between w-full sm:w-auto sm:max-w-md space-y-4',
-          selectedFeature && 'hidden sm:flex',
+          selectedFeature && 'sm:hidden sm:flex',
           !selectedFeature && 'flex',
           showPoi && 'max-h-full sm:h-4/6 2xl:h-auto',
         ]"
@@ -84,6 +84,7 @@
         v-if="
           !isModeExplorer && selectedSubCategories.length && !isModeFavorite
         "
+        style="min-width: 64px; max-width: calc(100% - 650px)"
         class="hidden sm:block"
       >
         <SelectedSubCategoriesDense

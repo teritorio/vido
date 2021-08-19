@@ -7,7 +7,12 @@
         !small && 'h-full',
       ]"
     >
-      <div class="flex-grow overflow-hidden">
+      <div
+        :class="[
+          'flex-grow overflow-hidden',
+          !small && !isModeExplorer && 'mt-20 sm:mt-0 h-4/5 sm:h-full',
+        ]"
+      >
         <mapbox
           class="h-full"
           access-token=""
