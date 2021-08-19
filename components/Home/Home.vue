@@ -59,11 +59,12 @@
             @filter-changed="onSubCategoryFilterChange"
             @go-back-click="onBackToSubCategoryClick"
           />
-
-          <div
-            v-if="state.matches(states.Search)"
-            :class="['max-h-full', isBottomMenuOpened && 'hidden sm:block']"
-          >
+        </transition>
+        <div
+          v-if="state.matches(states.Search)"
+          :class="['max-h-full', isBottomMenuOpened && 'hidden sm:block']"
+        >
+          <transition name="headers" appear mode="out-in">
             <SearchHeader
               :site-name="siteName"
               :logo-url="logoUrl"
@@ -74,8 +75,8 @@
               @poi-click="onSearchPoi"
               @feature-click="onFeatureClick"
             />
-          </div>
-        </transition>
+          </transition>
+        </div>
       </div>
 
       <div
