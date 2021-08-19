@@ -82,8 +82,8 @@
         v-if="
           !isModeExplorer && selectedSubCategories.length && !isModeFavorite
         "
-        style="min-width: 64px; max-width: calc(100% - 650px)"
         class="hidden sm:block"
+        style="max-width: calc(100vw - 670px)"
       >
         <SelectedSubCategoriesDense
           :categories="selectedSubCategories"
