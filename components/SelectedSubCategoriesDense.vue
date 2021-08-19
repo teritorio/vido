@@ -1,7 +1,7 @@
 <template>
   <div
     v-if="selectedCategories.length > 0"
-    class="flex flex-row p-2 flex-wrap bg-white shadow-md pointer-events-auto rounded-xl max-w-xl"
+    class="flex flex-row p-2 flex-wrap bg-white shadow-md pointer-events-auto rounded-xl"
   >
     <div
       v-for="category in selectedCategories"
