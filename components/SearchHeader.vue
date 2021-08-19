@@ -2,7 +2,7 @@
   <aside
     class="flex flex-col max-h-full px-5 py-4 space-y-6 bg-white shadow-md pointer-events-auto sm:rounded-xl md:w-96"
   >
-    <div class="flex flex-row sm:flex-col items-center sm:items-start">
+    <div class="flex flex-row sm:flex-col items-center sm:items-start h-1/5">
       <h1 class="flex-none sm:hidden mr-2">
         <img :aria-label="siteName" :src="logoUrl" class="w-20 h-auto" />
       </h1>
