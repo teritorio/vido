@@ -457,19 +457,27 @@ export default Vue.extend({
       })
     },
     onBottomMenuButtonClick() {
-      if (this.isBottomMenuOpened) {
-        if (this.selectedFeature) {
-          if (!this.isModeExplorer) {
-            this.setSelectedFeature(null)
-          } else {
-            this.$refs.map.setPoiToastVisibility(false)
+      if (!this.isModeFavorite) {
+        if (this.isBottomMenuOpened) {
+          if (this.selectedFeature) {
+            if (!this.isModeExplorer) {
+              this.setSelectedFeature(null)
+            } else {
+              this.$refs.map.setPoiToastVisibility(false)
+            }
           }
+          this.goToHome()
+        } else if (!this.isModeExplorer) {
+          this.goToCategories()
+        } else if (this.selectedFeature && !this.isPoiToastVisible) {
+          this.$refs.map.setPoiToastVisibility(true)
         }
-        this.goToHome()
-      } else if (!this.isModeExplorer) {
-        this.goToCategories()
-      } else if (this.selectedFeature && !this.isPoiToastVisible) {
-        this.$refs.map.setPoiToastVisibility(true)
+      } else if (this.selectedFeature) {
+        if (!this.isModeExplorer) {
+          this.setSelectedFeature(null)
+        } else {
+          this.$refs.map.setPoiToastVisibility(false)
+        }
       }
     },
     onMapClick(): void {
