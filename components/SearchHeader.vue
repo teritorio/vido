@@ -22,6 +22,7 @@
       >
         <section class="relative w-full">
           <input
+            ref="search"
             :value="searchText"
             class="w-full px-5 py-3 font-medium text-gray-700 placeholder-gray-500 bg-gray-100 border-none rounded-full outline-none appearance-none focus:outline-none focus:ring focus:ring-gray-300"
             placeholder="Recherche"
@@ -246,6 +247,10 @@ export default Vue.extend({
           )
         : []
     },
+  },
+
+  mounted() {
+    this.$refs.search.focus()
   },
 
   methods: {
