@@ -439,7 +439,7 @@ export default Vue.extend({
     },
   },
 
-  created() {
+  mounted() {
     this.pitch = this.$store.getters['map/pitch']
 
     this.onMapPitchEnd = throttle(this.onMapPitchEnd, 300)
