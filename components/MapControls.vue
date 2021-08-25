@@ -66,6 +66,8 @@
           />
         </button>
 
+        <div v-if="map && isModeExplorer" class="w-11 h-11" />
+
         <button
           v-if="map"
           aria-label="Mode Explore"
