@@ -17,7 +17,7 @@
       <div
         :class="[
           'flex-col justify-between w-full sm:w-auto sm:max-w-md sm:space-y-4',
-          selectedFeature && 'sm:hidden sm:flex',
+          selectedFeature && 'hidden sm:flex',
           !selectedFeature && 'flex',
           showPoi && 'max-h-full sm:h-4/6 2xl:h-auto',
         ]"
