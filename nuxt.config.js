@@ -16,14 +16,6 @@ checkEnvVariable('VECTO_STYLE_URL')
 checkEnvVariable('VECTO_TILES_URL')
 
 export default {
-  /**
-   * FIXME
-   * Disabling the SSR for now, as the rendering/loading time of the page is awful as of today.
-   * We're talking about waiting 5 seconds before getting the full page.
-   * A quick digging shows that we render too much things server side (eg: the map itself).
-   * We should only render the skeleton, the root content (eg: title, categories).
-   */
-  ssr: false,
   publicRuntimeConfig: {
     API_ENDPOINT: process.env.API_ENDPOINT || '',
     IGN_TOKEN: process.env.IGN_TOKEN || '',
