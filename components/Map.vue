@@ -35,7 +35,6 @@
           @map-init="onMapInit"
           @map-pitchend="onMapPitchEnd"
           @map-data="onMapRender"
-          @map-dataloading="onMapRender"
           @map-drag="onMapRender"
           @map-move="onMapRender"
           @map-pitch="onMapRender"
@@ -444,7 +443,7 @@ export default Vue.extend({
     },
   },
 
-  mounted() {
+  created() {
     this.pitch = this.$store.getters['map/pitch']
 
     this.onMapPitchEnd = throttle(this.onMapPitchEnd, 300)
@@ -855,7 +854,7 @@ export default Vue.extend({
         let id: string | null = null
         let marker: mapboxgl.Marker | null = null
 
-        if (props && props.cluster) {
+        if (props?.cluster) {
           id = 'c' + props.cluster_id
           marker = this.markers[id]
           if (!marker) {

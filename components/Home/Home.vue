@@ -1,15 +1,17 @@
 <template>
   <div class="fixed w-full h-full overflow-hidden">
-    <Map
-      v-if="isMapConfigLoaded"
-      ref="map"
-      :small="isBottomMenuOpened"
-      :selected-categories="state.context.selectedSubCategoriesIds"
-      :get-sub-category="selectSubCategory"
-      @click="onMapClick"
-      @change-mode="onMapChangeMode"
-      @show-poi="onShowPoi"
-    />
+    <client-only>
+      <Map
+        v-if="isMapConfigLoaded"
+        ref="map"
+        :small="isBottomMenuOpened"
+        :selected-categories="state.context.selectedSubCategoriesIds"
+        :get-sub-category="selectSubCategory"
+        @click="onMapClick"
+        @change-mode="onMapChangeMode"
+        @show-poi="onShowPoi"
+      />
+    </client-only>
 
     <header
       class="fixed top-0 bottom-0 z-10 flex flex-row w-full h-full space-x-4 pointer-events-none sm:w-auto sm:p-4"
