@@ -13,36 +13,38 @@
           !small && !isModeExplorer && 'mt-20 sm:mt-0 h-4/5 sm:h-full',
         ]"
       >
-        <mapbox
-          class="h-full"
-          access-token=""
-          :map-options="{
-            center: [center.lng, center.lat],
-            hash: 'map',
-            maxZoom: zoom.max,
-            minZoom: zoom.min,
-            pitch,
-            style: mapStyle,
-            zoom: zoom.default,
-          }"
-          :nav-control="{
-            show: false,
-          }"
-          :attribution-control="{
-            position: 'bottom-right',
-            show: true,
-          }"
-          @map-init="onMapInit"
-          @map-pitchend="onMapPitchEnd"
-          @map-data="onMapRender"
-          @map-drag="onMapRender"
-          @map-move="onMapRender"
-          @map-pitch="onMapRender"
-          @map-resize="onMapRender"
-          @map-rotate="onMapRender"
-          @map-touchmove="onMapRender"
-          @map-zoom="onMapRender"
-        />
+        <client-only>
+          <mapbox
+            class="h-full"
+            access-token=""
+            :map-options="{
+              center: [center.lng, center.lat],
+              hash: 'map',
+              maxZoom: zoom.max,
+              minZoom: zoom.min,
+              pitch,
+              style: mapStyle,
+              zoom: zoom.default,
+            }"
+            :nav-control="{
+              show: false,
+            }"
+            :attribution-control="{
+              position: 'bottom-right',
+              show: true,
+            }"
+            @map-init="onMapInit"
+            @map-pitchend="onMapPitchEnd"
+            @map-data="onMapRender"
+            @map-drag="onMapRender"
+            @map-move="onMapRender"
+            @map-pitch="onMapRender"
+            @map-resize="onMapRender"
+            @map-rotate="onMapRender"
+            @map-touchmove="onMapRender"
+            @map-zoom="onMapRender"
+          />
+        </client-only>
       </div>
 
       <MapControls
@@ -471,6 +473,10 @@ export default Vue.extend({
     this.selectedBackground = getHashPart('bg') || DEFAULT_MAP_STYLE
   },
 
+  // mounted() {
+  //   this.selectedBackground = getHashPart('bg') || DEFAULT_MAP_STYLE
+  // },
+
   methods: {
     ...mapActions({
       resetMapview: 'map/resetMapview',
@@ -481,6 +487,8 @@ export default Vue.extend({
 
       this.poiFilter = new PoiFilter()
       this.map.addControl(this.poiFilter)
+
+      this.map.setStyle(this.mapStyle)
 
       this.map.on('data', () => {
         if (
