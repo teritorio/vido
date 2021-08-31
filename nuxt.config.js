@@ -39,7 +39,14 @@ export default {
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
       { hid: 'description', name: 'description', content: '' },
     ],
-    link: [{ rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }],
+    link: [
+      { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
+      {
+        rel: 'stylesheet',
+        href:
+          'https://cdt40.carto.guide/wp-content/plugins/font-teritorio-tourism/dist/teritorio-tourism.css?ver=1.7.0',
+      },
+    ],
   },
 
   // Global CSS (https://go.nuxtjs.dev/config-css)
