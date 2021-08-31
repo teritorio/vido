@@ -473,10 +473,6 @@ export default Vue.extend({
     this.selectedBackground = getHashPart('bg') || DEFAULT_MAP_STYLE
   },
 
-  // mounted() {
-  //   this.selectedBackground = getHashPart('bg') || DEFAULT_MAP_STYLE
-  // },
-
   methods: {
     ...mapActions({
       resetMapview: 'map/resetMapview',
@@ -487,8 +483,6 @@ export default Vue.extend({
 
       this.poiFilter = new PoiFilter()
       this.map.addControl(this.poiFilter)
-
-      this.map.setStyle(this.mapStyle)
 
       this.map.on('data', () => {
         if (
