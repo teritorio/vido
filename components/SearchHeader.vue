@@ -251,7 +251,9 @@ export default Vue.extend({
   },
 
   mounted() {
-    this.focusSearch()
+    if (!this.$isMobile()) {
+      this.focusSearch()
+    }
   },
 
   methods: {
