@@ -62,10 +62,10 @@
           </template>
         </p>
 
-        <p
+        <div
           v-for="field in listFields"
           :key="encodeURIComponent(field)"
-          class="text-sm"
+          class="text-sm mt-2"
         >
           <a
             v-if="field.k === 'phone' && $isMobile()"
@@ -75,10 +75,35 @@
           >
             {{ field.v }}
           </a>
-          <template v-else>
+
+          <ul v-else-if="field.k === 'opening_hours' && field.v">
+            <li v-for="item in field.v" :key="item">
+              <p v-show="Boolean(item.label)" class="text-sm mt-1">
+                <b>{{ item.label }}</b>
+              </p>
+              <p
+                v-for="sub in item.opening_hours"
+                v-show="item.opening_hours"
+                :key="sub"
+                class="text-sm"
+              >
+                {{ sub }}
+              </p>
+            </li>
+          </ul>
+
+          <ul v-else-if="Array.isArray(field.v)">
+            <li v-for="item in field.v" :key="item">
+              <p class="text-sm mt-1">
+                {{ item }}
+              </p>
+            </li>
+          </ul>
+
+          <p v-else class="text-sm">
             {{ field.v }}
-          </template>
-        </p>
+          </p>
+        </div>
       </div>
 
       <div
@@ -269,14 +294,24 @@ export default Vue.extend({
               v: this.poiProp(f)
                 .split(';')
                 .map((p: string) => this.sptags !== null && this.sptags[f][p])
-                .filter((f: string) => f && f.trim().length > 0)
+                .filter(
+                  (f: string | string[]) =>
+                    f &&
+                    ((typeof f === 'string' && f.trim().length > 0) ||
+                      (Array.isArray(f) && f.length > 0))
+                )
                 .join(', '),
             }
           } else {
             return { k: f, v: this.poiProp(f) }
           }
         })
-        .filter((f: { k: string; v: string }) => f.v && f.v.trim().length > 0)
+        .filter(
+          (f: { k: string; v: string | string[] }) =>
+            f.v &&
+            ((typeof f.v === 'string' && f.v.trim().length > 0) ||
+              (Array.isArray(f.v) && f.v.length > 0))
+        )
     },
 
     routeHref(): string {

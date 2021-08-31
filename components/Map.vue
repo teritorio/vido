@@ -831,14 +831,25 @@ export default Vue.extend({
     },
 
     selectFeature(feature: VidoFeature) {
-      this.$store.dispatch('map/selectFeature', feature)
+      if (feature?.properties?.vido_cat) {
+        const selFeature =
+          this.features[feature.properties.vido_cat].find(
+            (e: VidoFeature) =>
+              (Boolean(e.properties?.metadata?.PID) &&
+                e.properties.metadata.PID ===
+                  feature?.properties?.metadata?.PID) ||
+              (Boolean(e.id) && e.id === feature.id)
+          ) || null
 
-      if (feature) {
-        setTimeout(() => {
-          this.map?.flyTo({
-            center: feature.geometry.coordinates,
-          })
-        }, 500)
+        this.$store.dispatch('map/selectFeature', selFeature)
+
+        if (feature) {
+          setTimeout(() => {
+            this.map?.flyTo({
+              center: selFeature.geometry.coordinates,
+            })
+          }, 500)
+        }
       }
     },
 
