@@ -50,7 +50,6 @@ export default {
   },
 
   // Global CSS (https://go.nuxtjs.dev/config-css)
-  // '@teritorio/font-teritorio-tourism/teritorio-tourism/teritorio-tourism.css',
   css: [
     '@fortawesome/fontawesome-svg-core/styles.css',
     'maplibre-gl/dist/maplibre-gl.css',
