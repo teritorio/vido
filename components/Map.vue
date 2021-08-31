@@ -485,6 +485,9 @@ export default Vue.extend({
       this.map.addControl(this.poiFilter)
 
       this.map.on('data', () => {
+        // if (!this.map.getSource(POI_SOURCE)) {
+        //   this.initPoiLayer(vidoFeatures)
+        // }
         if (
           this.selectedBackground === DEFAULT_MAP_STYLE &&
           !this.isModeExplorer
