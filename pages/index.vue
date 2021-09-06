@@ -11,7 +11,11 @@ export default Vue.extend({
   components: {
     Home,
   },
-  // fetchOnServer: false,
+  data() {
+    return {
+      cssUrl: 'territorio',
+    }
+  },
   async fetch() {
     await this.$store.dispatch('map/fetchConfig', {
       apiEndpoint: this.$config.API_ENDPOINT,
@@ -22,6 +26,25 @@ export default Vue.extend({
     await this.$store.dispatch('site/fetchConfig', {
       apiEndpoint: this.$config.API_ENDPOINT,
     })
+
+    this.cssUrl = await fetch(
+      'https://cdt40.carto.guide/api.teritorio/geodata/v1/site'
+    )
+      .then((res) => res.json())
+      .then((json) => {
+        return json?.fr?.['teritorio-font']
+      })
+  },
+  // fetchOnServer: false,
+  head() {
+    return {
+      link: [
+        {
+          rel: 'stylesheet',
+          href: this.cssUrl,
+        },
+      ],
+    }
   },
 })
 </script>
