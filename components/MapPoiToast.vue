@@ -67,14 +67,17 @@
           :key="encodeURIComponent(field)"
           class="text-sm mt-2"
         >
-          <a
-            v-if="field.k === 'phone' && $isMobile()"
-            class="text-blue-400"
-            :href="'tel:' + field.v"
-            title="Appeler ce numéro"
-          >
-            {{ field.v }}
-          </a>
+          <ul v-if="field.k === 'phone' && $isMobile()">
+            <li v-for="item in field.v" :key="item">
+              <a
+                class="text-blue-400"
+                :href="'tel:' + field.v"
+                title="Appeler ce numéro"
+              >
+                {{ item }}
+              </a>
+            </li>
+          </ul>
 
           <ul v-else-if="field.k === 'opening_hours' && field.v">
             <li v-for="item in field.v" :key="item">
