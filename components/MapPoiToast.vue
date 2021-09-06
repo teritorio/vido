@@ -71,7 +71,7 @@
             <li v-for="item in field.v" :key="item">
               <a
                 class="text-blue-400"
-                :href="'tel:' + field.v"
+                :href="'tel:' + item"
                 title="Appeler ce numéro"
               >
                 {{ item }}
