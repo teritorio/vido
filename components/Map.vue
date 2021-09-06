@@ -831,8 +831,10 @@ export default Vue.extend({
     },
 
     selectFeature(feature: VidoFeature) {
+      let goodFeature = feature
+
       if (feature?.properties?.vido_cat) {
-        const selFeature =
+        goodFeature =
           this.features[feature.properties.vido_cat].find(
             (e: VidoFeature) =>
               (Boolean(e.properties?.metadata?.PID) &&
@@ -840,16 +842,16 @@ export default Vue.extend({
                   feature?.properties?.metadata?.PID) ||
               (Boolean(e.id) && e.id === feature.id)
           ) || null
+      }
 
-        this.$store.dispatch('map/selectFeature', selFeature)
+      this.$store.dispatch('map/selectFeature', goodFeature)
 
-        if (feature) {
-          setTimeout(() => {
-            this.map?.flyTo({
-              center: selFeature.geometry.coordinates,
-            })
-          }, 500)
-        }
+      if (goodFeature) {
+        setTimeout(() => {
+          this.map?.flyTo({
+            center: goodFeature.geometry.coordinates,
+          })
+        }, 500)
       }
     },
 
