@@ -78,6 +78,17 @@
               </a>
             </li>
           </ul>
+          <ul v-else-if="field.k === 'mobile' && $isMobile()">
+            <li v-for="item in field.v" :key="item">
+              <a
+                class="text-blue-400"
+                :href="'tel:' + item"
+                title="Appeler ce numéro"
+              >
+                {{ item }}
+              </a>
+            </li>
+          </ul>
 
           <ul v-else-if="field.k === 'opening_hours' && field.v">
             <li v-for="item in field.v" :key="item">
