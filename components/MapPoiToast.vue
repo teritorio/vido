@@ -11,7 +11,7 @@
     />
 
     <div
-      class="px-8 py-6 flex flex-col justify-between sm:overflow-y-auto h-50 min-h-full sm:min-h-none max-h-full w-full sm:w-80 md:h-auto md:w-96"
+      class="px-8 py-6 flex flex-col justify-between sm:overflow-y-auto h-50 min-h-full sm:min-h-none max-h-full w-full sm:w-80 md:h-80 md:max-h-full md:w-96"
     >
       <div class="flex items-center justify-between flex-shrink-0">
         <h2
