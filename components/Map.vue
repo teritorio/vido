@@ -692,6 +692,13 @@ export default Vue.extend({
         }
       } else {
         this.getSubCategory(this.selectedCategories)
+
+        if (this.map.getLayer(FAVORITE_LAYER_MARKER)) {
+          this.map.removeLayer(FAVORITE_LAYER_MARKER)
+        }
+        if (this.map.getSource(FAVORITE_SOURCE)) {
+          this.map.removeSource(FAVORITE_SOURCE)
+        }
       }
     },
 
