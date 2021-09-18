@@ -846,17 +846,29 @@ export default Vue.extend({
     },
 
     selectFeature(feature: VidoFeature) {
-      let goodFeature = feature
+      const goodFeature = feature
 
-      if (feature?.properties?.vido_cat) {
-        goodFeature =
-          this.features[feature.properties.vido_cat].find(
-            (e: VidoFeature) =>
-              (Boolean(e.properties?.metadata?.PID) &&
-                e.properties.metadata.PID ===
-                  feature?.properties?.metadata?.PID) ||
-              (Boolean(e.id) && e.id === feature.id)
-          ) || null
+      const IsJsonString = (str: string) => {
+        try {
+          JSON.parse(str)
+        } catch (e) {
+          return false
+        }
+        return true
+      }
+
+      if (feature?.properties) {
+        const cleanProperties = {}
+
+        Object.keys(feature.properties).forEach((key) => {
+          if (IsJsonString(feature.properties[key])) {
+            cleanProperties[key] = JSON.parse(feature.properties[key])
+          } else {
+            cleanProperties[key] = feature.properties[key]
+          }
+        })
+
+        goodFeature.properties = cleanProperties
       }
 
       this.$store.dispatch('map/selectFeature', goodFeature)

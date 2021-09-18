@@ -279,7 +279,7 @@ export default Vue.extend({
         this.poiProp('addr:postcode'),
         this.poiProp('addr:city'),
       ]
-        .filter((f) => f && f.trim().length > 0)
+        .filter((f) => f && f.toString().trim().length > 0)
         .join(' ')
     },
 
