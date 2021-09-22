@@ -1,9 +1,7 @@
 <template>
   <aside :class="['pointer-events-none', dense && 'hidden sm:block']">
     <div
-      :class="[
-        'absolute flex justify-end space-x-3 pointer-events-auto items-top pt-4 right-3 sm:pt-0 w-28 sm:w-48 sm:top-3 top-20',
-      ]"
+      class="absolute flex justify-end space-x-3 pointer-events-auto items-top pt-4 right-3 sm:pt-0 w-28 sm:w-48 sm:top-3 top-20"
     >
       <button
         v-if="map"
@@ -38,6 +36,30 @@
 
         <button
           v-if="map"
+          aria-label="Mode Explore"
+          title="Basculer en mode Explore"
+          type="button"
+          :class="[
+            'hidden sm:block text-sm font-bold rounded-full shadow-md w-11 h-11 outline-none focus:outline-none ',
+            isModeExplorer &&
+              'bg-blue-500 hover:bg-blue-400 focus-visible:bg-blue-400',
+            !isModeExplorer &&
+              'bg-white hover:bg-gray-100 focus-visible:bg-gray-100',
+          ]"
+          @click="toggleMode"
+        >
+          <font-awesome-icon
+            icon="eye"
+            :class="[
+              isModeExplorer && 'text-white',
+              !isModeExplorer && 'text-gray-800',
+            ]"
+            size="lg"
+          />
+        </button>
+
+        <button
+          v-if="map"
           aria-label="Visualiser la carte en 3D"
           type="button"
           :class="[
@@ -68,29 +90,7 @@
           />
         </button>
 
-        <button
-          v-if="map"
-          aria-label="Mode Explore"
-          title="Basculer en mode Explore"
-          type="button"
-          :class="[
-            'hidden sm:block text-sm font-bold rounded-full shadow-md w-11 h-11 outline-none focus:outline-none ',
-            isModeExplorer &&
-              'bg-blue-500 hover:bg-blue-400 focus-visible:bg-blue-400',
-            !isModeExplorer &&
-              'bg-white hover:bg-gray-100 focus-visible:bg-gray-100',
-          ]"
-          @click="toggleMode"
-        >
-          <font-awesome-icon
-            icon="eye"
-            :class="[
-              isModeExplorer && 'text-white',
-              !isModeExplorer && 'text-gray-800',
-            ]"
-            size="lg"
-          />
-        </button>
+        <div v-if="map && isModeExplorer" class="w-11 h-11" />
       </div>
     </div>
 

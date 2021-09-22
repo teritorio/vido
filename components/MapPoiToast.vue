@@ -11,7 +11,7 @@
     />
 
     <div
-      class="px-8 py-6 flex-col justify-between sm:overflow-y-auto h-50 max-h-full w-full sm:w-80 md:h-auto md:w-96"
+      class="px-8 py-6 flex flex-col justify-between sm:overflow-y-auto h-50 min-h-full sm:min-h-none max-h-full w-full sm:w-80 md:h-80 md:max-h-full md:w-96"
     >
       <div class="flex items-center justify-between flex-shrink-0">
         <h2
@@ -62,23 +62,62 @@
           </template>
         </p>
 
-        <p
+        <div
           v-for="field in listFields"
           :key="encodeURIComponent(field)"
-          class="text-sm"
+          class="text-sm mt-2"
         >
-          <a
-            v-if="field.k === 'phone' && $isMobile()"
-            class="text-blue-400"
-            :href="'tel:' + field.v"
-            title="Appeler ce numéro"
-          >
+          <ul v-if="field.k === 'phone' && $isMobile()">
+            <li v-for="item in field.v" :key="item">
+              <a
+                class="text-blue-400"
+                :href="'tel:' + item"
+                title="Appeler ce numéro"
+              >
+                {{ item }}
+              </a>
+            </li>
+          </ul>
+          <ul v-else-if="field.k === 'mobile' && $isMobile()">
+            <li v-for="item in field.v" :key="item">
+              <a
+                class="text-blue-400"
+                :href="'tel:' + item"
+                title="Appeler ce numéro"
+              >
+                {{ item }}
+              </a>
+            </li>
+          </ul>
+
+          <ul v-else-if="field.k === 'opening_hours' && field.v">
+            <li v-for="item in field.v" :key="item">
+              <p v-show="Boolean(item.label)" class="text-sm mt-1">
+                <b>{{ item.label }}</b>
+              </p>
+              <p
+                v-for="sub in item.opening_hours"
+                v-show="item.opening_hours"
+                :key="sub"
+                class="text-sm"
+              >
+                {{ sub }}
+              </p>
+            </li>
+          </ul>
+
+          <ul v-else-if="Array.isArray(field.v)">
+            <li v-for="item in field.v" :key="item">
+              <p class="text-sm mt-1">
+                {{ item }}
+              </p>
+            </li>
+          </ul>
+
+          <p v-else class="text-sm">
             {{ field.v }}
-          </a>
-          <template v-else>
-            {{ field.v }}
-          </template>
-        </p>
+          </p>
+        </div>
       </div>
 
       <div
@@ -240,7 +279,7 @@ export default Vue.extend({
         this.poiProp('addr:postcode'),
         this.poiProp('addr:city'),
       ]
-        .filter((f) => f && f.trim().length > 0)
+        .filter((f) => f && f.toString().trim().length > 0)
         .join(' ')
     },
 
@@ -269,14 +308,24 @@ export default Vue.extend({
               v: this.poiProp(f)
                 .split(';')
                 .map((p: string) => this.sptags !== null && this.sptags[f][p])
-                .filter((f: string) => f && f.trim().length > 0)
+                .filter(
+                  (f: string | string[]) =>
+                    f &&
+                    ((typeof f === 'string' && f.trim().length > 0) ||
+                      (Array.isArray(f) && f.length > 0))
+                )
                 .join(', '),
             }
           } else {
             return { k: f, v: this.poiProp(f) }
           }
         })
-        .filter((f: { k: string; v: string }) => f.v && f.v.trim().length > 0)
+        .filter(
+          (f: { k: string; v: string | string[] }) =>
+            f.v &&
+            ((typeof f.v === 'string' && f.v.trim().length > 0) ||
+              (Array.isArray(f.v) && f.v.length > 0))
+        )
     },
 
     routeHref(): string {

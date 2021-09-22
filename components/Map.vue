@@ -685,13 +685,28 @@ export default Vue.extend({
               features: allFavorites,
             },
           })
-          if (!this.map.getLayer(FAVORITE_LAYER_MARKER))
+
+          if (this.map.getLayer(POI_LAYER_MARKER))
+            this.map.removeLayer(POI_LAYER_MARKER)
+
+          if (!this.map.getLayer(FAVORITE_LAYER_MARKER)) {
             this.map.addLayer(
               markerLayerFactory(FAVORITE_SOURCE, FAVORITE_LAYER_MARKER)
             )
+          }
         }
       } else {
         this.getSubCategory(this.selectedCategories)
+
+        if (!this.map.getLayer(POI_LAYER_MARKER))
+          this.map.addLayer(markerLayerFactory(POI_SOURCE, POI_LAYER_MARKER))
+
+        if (this.map.getLayer(FAVORITE_LAYER_MARKER)) {
+          this.map.removeLayer(FAVORITE_LAYER_MARKER)
+        }
+        if (this.map.getSource(FAVORITE_SOURCE)) {
+          this.map.removeSource(FAVORITE_SOURCE)
+        }
       }
     },
 
@@ -831,12 +846,37 @@ export default Vue.extend({
     },
 
     selectFeature(feature: VidoFeature) {
-      this.$store.dispatch('map/selectFeature', feature)
+      const goodFeature = feature
 
-      if (feature) {
+      const IsJsonString = (str: string) => {
+        try {
+          JSON.parse(str)
+        } catch (e) {
+          return false
+        }
+        return true
+      }
+
+      if (feature?.properties) {
+        const cleanProperties = {}
+
+        Object.keys(feature.properties).forEach((key) => {
+          if (IsJsonString(feature.properties[key])) {
+            cleanProperties[key] = JSON.parse(feature.properties[key])
+          } else {
+            cleanProperties[key] = feature.properties[key]
+          }
+        })
+
+        goodFeature.properties = cleanProperties
+      }
+
+      this.$store.dispatch('map/selectFeature', goodFeature)
+
+      if (goodFeature) {
         setTimeout(() => {
           this.map?.flyTo({
-            center: feature.geometry.coordinates,
+            center: goodFeature.geometry.coordinates,
           })
         }, 500)
       }

@@ -22,6 +22,7 @@
       >
         <section class="relative w-full">
           <input
+            ref="search"
             :value="searchText"
             class="w-full px-5 py-3 font-medium text-gray-700 placeholder-gray-500 bg-gray-100 border-none rounded-full outline-none appearance-none focus:outline-none focus:ring focus:ring-gray-300"
             placeholder="Recherche"
@@ -35,6 +36,7 @@
             class="absolute inset-y-0 right-0 px-5 text-gray-800 rounded-r-full outline-none focus:outline-none"
             type="submit"
             :disabled="isLoading"
+            @click="focusSearch"
           >
             <font-awesome-icon v-if="!isLoading" icon="search" />
             <font-awesome-icon v-else icon="spinner" class="animate-spin" />
@@ -248,6 +250,12 @@ export default Vue.extend({
     },
   },
 
+  mounted() {
+    if (!this.$isMobile()) {
+      this.focusSearch()
+    }
+  },
+
   methods: {
     reset() {
       this.isLoading = false
@@ -267,6 +275,10 @@ export default Vue.extend({
     onPoiClick(id: string) {
       this.$emit('poi-click', id)
       this.reset()
+    },
+
+    focusSearch() {
+      this.$refs.search.focus()
     },
 
     onAddressClick(id: string) {

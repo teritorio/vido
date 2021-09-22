@@ -16,8 +16,8 @@
     >
       <div
         :class="[
-          'flex-col justify-between w-full sm:w-auto sm:max-w-md space-y-4',
-          selectedFeature && 'sm:hidden sm:flex',
+          'flex-col justify-between w-full sm:w-auto sm:max-w-md sm:space-y-4',
+          selectedFeature && 'hidden sm:flex',
           !selectedFeature && 'flex',
           showPoi && 'max-h-full sm:h-4/6 2xl:h-auto',
         ]"
@@ -62,7 +62,7 @@
 
           <div
             v-if="state.matches(states.Search)"
-            :class="['max-h-full', isBottomMenuOpened && 'hidden sm:block']"
+            class="max-h-full hidden sm:block"
           >
             <SearchHeader
               :site-name="siteName"
@@ -76,14 +76,29 @@
             />
           </div>
         </transition>
+        <div
+          v-if="state.matches(states.Search)"
+          :class="['max-h-full sm:hidden', isBottomMenuOpened && 'hidden']"
+        >
+          <SearchHeader
+            :site-name="siteName"
+            :logo-url="logoUrl"
+            :menu-to-icon="categoriesToIcons"
+            :selection-zoom="selectionZoom"
+            @go-back-click="goToHome"
+            @category-click="onSearchCategory"
+            @poi-click="onSearchPoi"
+            @feature-click="onFeatureClick"
+          />
+        </div>
       </div>
 
       <div
         v-if="
           !isModeExplorer && selectedSubCategories.length && !isModeFavorite
         "
-        style="min-width: 64px; max-width: calc(100% - 650px)"
         class="hidden sm:block"
+        style="max-width: calc(100vw - 670px)"
       >
         <SelectedSubCategoriesDense
           :categories="selectedSubCategories"
@@ -458,19 +473,27 @@ export default Vue.extend({
       })
     },
     onBottomMenuButtonClick() {
-      if (this.isBottomMenuOpened) {
-        if (this.selectedFeature) {
-          if (!this.isModeExplorer) {
-            this.setSelectedFeature(null)
-          } else {
-            this.$refs.map.setPoiToastVisibility(false)
+      if (!this.isModeFavorite) {
+        if (this.isBottomMenuOpened) {
+          if (this.selectedFeature) {
+            if (!this.isModeExplorer) {
+              this.setSelectedFeature(null)
+            } else {
+              this.$refs.map.setPoiToastVisibility(false)
+            }
           }
+          this.goToHome()
+        } else if (!this.isModeExplorer) {
+          this.goToCategories()
+        } else if (this.selectedFeature && !this.isPoiToastVisible) {
+          this.$refs.map.setPoiToastVisibility(true)
         }
-        this.goToHome()
-      } else if (!this.isModeExplorer) {
-        this.goToCategories()
-      } else if (this.selectedFeature && !this.isPoiToastVisible) {
-        this.$refs.map.setPoiToastVisibility(true)
+      } else if (this.selectedFeature) {
+        if (!this.isModeExplorer) {
+          this.setSelectedFeature(null)
+        } else {
+          this.$refs.map.setPoiToastVisibility(false)
+        }
       }
     },
     onMapClick(): void {
