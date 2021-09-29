@@ -14,6 +14,8 @@ export default Vue.extend({
   data() {
     return {
       cssUrl: 'territorio',
+      favicon: '',
+      title: '@teritorio/vido',
     }
   },
   async fetch() {
@@ -27,21 +29,26 @@ export default Vue.extend({
       apiEndpoint: this.$config.API_ENDPOINT,
     })
 
-    this.cssUrl = await fetch(
-      'https://cdt40.carto.guide/api.teritorio/geodata/v1/site'
-    )
+    await fetch('https://cdt40.carto.guide/api.teritorio/geodata/v1/site')
       .then((res) => res.json())
       .then((json) => {
-        return json?.fr?.['teritorio-font']
+        this.cssUrl = json?.fr?.['teritorio-font']
+        this.favicon = json?.fr?.site1?.favicon
+        this.title = json?.fr?.site2?.title
       })
   },
   // fetchOnServer: false,
   head() {
     return {
+      title: this.title,
       link: [
         {
           rel: 'stylesheet',
           href: this.cssUrl,
+        },
+        {
+          rel: 'icon',
+          href: this.favicon,
         },
       ],
     }
