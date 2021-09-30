@@ -29,12 +29,12 @@ export default Vue.extend({
       apiEndpoint: this.$config.API_ENDPOINT,
     })
 
-    await fetch('https://cdt40.carto.guide/api.teritorio/geodata/v1/site')
+    await fetch(`${this.$config.API_ENDPOINT}/geodata/v1/site`)
       .then((res) => res.json())
       .then((json) => {
         this.cssUrl = json?.fr?.['teritorio-font']
         this.favicon = json?.fr?.site1?.favicon
-        this.title = json?.fr?.site2?.title
+        this.title = json?.fr?.site1?.title
       })
   },
   // fetchOnServer: false,
