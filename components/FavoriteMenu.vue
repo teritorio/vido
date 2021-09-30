@@ -68,7 +68,7 @@ export default Vue.extend({
       try {
         localStorage.removeItem(LOCAL_STORAGE.favorites)
 
-        this.$store.dispatch('favorite/toggleFavoriteModes', { favorites: [] })
+        this.$store.dispatch('favorite/toggleFavoriteModes', [])
       } catch (e) {
         // eslint-disable-next-line no-console
         console.error('Vido error:', e.message)
