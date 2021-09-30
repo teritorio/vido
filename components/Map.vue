@@ -353,13 +353,16 @@ export default Vue.extend({
       }
 
       // Zoom back to whole region if a new category is selected
-      const oldCategories: string[] = Object.keys(oldFeatures)
-      const newCategories: string[] = Object.keys(features)
+      const oldCategories: string[] = flattenFeatures(oldFeatures).map(
+        (e) => e?.properties?.metadata?.PID
+      )
+      const newCategories: string[] = flattenFeatures(features).map(
+        (e) => e?.properties?.metadata?.PID
+      )
 
       if (
         this.allowRegionBackZoom &&
-        !deepEqual(newCategories, oldCategories) &&
-        newCategories.find((c) => !oldCategories.includes(c))
+        !deepEqual(newCategories, oldCategories)
       ) {
         this.resetMapview().then(() => {
           const vidoFeartures = flattenFeatures(features)
