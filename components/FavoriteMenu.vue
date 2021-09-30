@@ -1,11 +1,12 @@
 <template>
-  <section class="dropDownMenuWrapper rounded-r-lg">
+  <section class="relative border-l-2 border-grey bg-white rounded-r-lg">
     <button
       ref="menu"
-      class="px-3 h-full focus:outline-none focus-visible:bg-gray-100 hover:bg-gray-100 rounded-r-lg"
+      class="px-3 h-full focus:outline-none focus-visible:bg-gray-100 hover:bg-gray-100 rounded-r-lg shadow-md"
       @click="openClose"
     >
       <font-awesome-icon
+        ref="menu_icon"
         :icon="isOpen ? 'chevron-up' : 'chevron-down'"
         class="text-grey-100"
         size="sm"
@@ -38,12 +39,12 @@ export default Vue.extend({
   methods: {
     catchOutsideClick(event, dropdown) {
       // When user clicks menu — do nothing
-      if (dropdown === event.target) {
+      if (dropdown.includes(event.target)) {
         return false
       }
 
       // When user clicks outside of the menu — close the menu
-      if (this.isOpen && dropdown !== event.target) {
+      if (this.isOpen && !dropdown.includes(event.target)) {
         return true
       }
     },
@@ -51,7 +52,9 @@ export default Vue.extend({
       const _this = this
 
       const closeListerner = (e) => {
-        if (_this.catchOutsideClick(e, _this.$refs.menu)) {
+        if (
+          _this.catchOutsideClick(e, [_this.$refs.menu, _this.$refs.menu_icon])
+        ) {
           window.removeEventListener('click', closeListerner)
           _this.isOpen = false
         }
@@ -62,22 +65,20 @@ export default Vue.extend({
       this.isOpen = !this.isOpen
     },
     removeFavorites() {
-      localStorage.removeItem(LOCAL_STORAGE.favorites)
+      try {
+        localStorage.removeItem(LOCAL_STORAGE.favorites)
 
-      this.$store.dispatch('favorite/toggleFavoriteModes', { favorites: [] })
+        this.$store.dispatch('favorite/toggleFavoriteModes', { favorites: [] })
+      } catch (e) {
+        // eslint-disable-next-line no-console
+        console.error('Vido error:', e.message)
+      }
     },
   },
 })
 </script>
 
 <style>
-.dropDownMenuWrapper {
-  border-left: 1px solid lightgrey;
-  position: relative;
-  width: 80px;
-  background: white;
-}
-
 .dropdownMenu {
   position: absolute;
   top: 100%;

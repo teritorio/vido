@@ -48,7 +48,7 @@
       </div>
 
       <MapControls
-        :has-favorites="favoritesIds.length === 0"
+        :has-favorites="favoritesIds.length !== 0"
         :backgrounds="availableStyles"
         :dense="small"
         :is-mode-favorite="isModeFavorite"
