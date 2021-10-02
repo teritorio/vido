@@ -10,14 +10,12 @@ function checkEnvVariable(variableName) {
 }
 
 checkEnvVariable('API_ENDPOINT')
-checkEnvVariable('TILES_TOKEN')
 checkEnvVariable('VECTO_STYLE_URL')
 checkEnvVariable('VECTO_TILES_URL')
 
 export default {
   publicRuntimeConfig: {
     API_ENDPOINT: process.env.API_ENDPOINT || '',
-    TILES_TOKEN: process.env.TILES_TOKEN || '',
     VECTO_STYLE_URL: process.env.VECTO_STYLE_URL || '',
     VECTO_TILES_URL: process.env.VECTO_TILES_URL || '',
   },
