@@ -358,10 +358,6 @@ export default Vue.extend({
           }
         }
       }
-      // Create POI source + layer
-      else {
-        this.initPoiLayer(vidoFeatures)
-      }
 
       // Zoom back to whole region if a new category is selected
       if (
@@ -369,9 +365,9 @@ export default Vue.extend({
         !deepEqual(newCategories, oldCategories)
       ) {
         this.resetMapview().then(() => {
-          const vidoFeartures = flattenFeatures(features)
+          const vidoFeatures = flattenFeatures(features)
           this.handleResetMapZoom(
-            vidoFeartures,
+            vidoFeatures,
             'Pas de résultat correspondant.',
             'Voir des lieux plus éloignés ?'
           )
@@ -506,9 +502,8 @@ export default Vue.extend({
         }
       })
 
-      this.map.on('load', () => {
+      this.map.on('styledata', () => {
         const vidoFeatures = flattenFeatures(this.features)
-
         this.initPoiLayer(vidoFeatures)
       })
 
@@ -678,7 +673,7 @@ export default Vue.extend({
 
           // Change data
           const source = this.map.getSource(FAVORITE_SOURCE)
-          if ('setData' in source) {
+          if (source && 'setData' in source) {
             source.setData({
               type: 'FeatureCollection',
               features: allFavorites,
@@ -815,7 +810,6 @@ export default Vue.extend({
 
     onClickChangeBackground(background: keyof typeof MapStyle) {
       this.selectedBackground = background
-      this.map?.setStyle(this.mapStyle)
     },
 
     initPoiLayer(features: MenuState['features']) {
@@ -917,7 +911,7 @@ export default Vue.extend({
 
               const source = this.map.getSource(src)
 
-              if ('getClusterExpansionZoom' in source) {
+              if (source && 'getClusterExpansionZoom' in source) {
                 source.getClusterExpansionZoom(
                   props.cluster_id,
                   (err: Error, zoom: number) => {
