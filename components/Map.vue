@@ -322,6 +322,13 @@ export default Vue.extend({
         return
       }
 
+      const oldCategories: string[] = flattenFeatures(oldFeatures).map(
+        (e) => e?.properties?.metadata?.PID
+      )
+      const newCategories: string[] = flattenFeatures(features).map(
+        (e) => e?.properties?.metadata?.PID
+      )
+
       // Add exact coordinates to a store to avoid rounding from Mapbox GL
       Object.keys(features).forEach((categoryId) => {
         features[categoryId].forEach((feature) => {
@@ -333,18 +340,22 @@ export default Vue.extend({
       const vidoFeatures = flattenFeatures(features)
       // Change visible data
       if (this.map.getSource(POI_SOURCE)) {
-        // Clean-up previous cluster markers
-        this.markers = {}
-        Object.values(this.markersOnScreen).forEach((marker) => marker.remove())
-        this.markersOnScreen = {}
+        if (!deepEqual(newCategories, oldCategories)) {
+          // Clean-up previous cluster markers
+          this.markers = {}
+          Object.values(this.markersOnScreen).forEach((marker) =>
+            marker.remove()
+          )
+          this.markersOnScreen = {}
 
-        // Change data
-        const source = this.map.getSource(POI_SOURCE)
-        if ('setData' in source) {
-          source.setData({
-            type: 'FeatureCollection',
-            features: vidoFeatures,
-          })
+          // Change data
+          const source = this.map.getSource(POI_SOURCE)
+          if ('setData' in source) {
+            source.setData({
+              type: 'FeatureCollection',
+              features: vidoFeatures,
+            })
+          }
         }
       }
       // Create POI source + layer
@@ -353,13 +364,6 @@ export default Vue.extend({
       }
 
       // Zoom back to whole region if a new category is selected
-      const oldCategories: string[] = flattenFeatures(oldFeatures).map(
-        (e) => e?.properties?.metadata?.PID
-      )
-      const newCategories: string[] = flattenFeatures(features).map(
-        (e) => e?.properties?.metadata?.PID
-      )
-
       if (
         this.allowRegionBackZoom &&
         !deepEqual(newCategories, oldCategories)
