@@ -167,6 +167,7 @@ export default Vue.extend({
     showFavoritesOverlay: boolean
     previousCategories: Category['id'][]
     tourismStyleWithProxyTiles: VidoMglStyle | null
+    satellitetyleWithProxyTiles: VidoMglStyle | null
     mapStyle: string | VidoMglStyle | null
   } {
     return {
@@ -184,18 +185,26 @@ export default Vue.extend({
       showPoiToast: false,
       previousCategories: [],
       tourismStyleWithProxyTiles: null,
+      satellitetyleWithProxyTiles: null,
       mapStyle: null,
     }
   },
   async fetch() {
-    const style = await fetch(this.$config.VECTO_STYLE_URL).then((res) =>
+    const vectoStyle = await fetch(this.$config.VECTO_STYLE_URL).then((res) =>
       res.json()
     )
-
-    if (style?.sources?.openmaptiles.url) {
-      style.sources.openmaptiles.url = this.$config.VECTO_TILES_URL
+    if (vectoStyle?.sources?.openmaptiles.url) {
+      vectoStyle.sources.openmaptiles.url = this.$config.VECTO_TILES_URL
     }
-    this.tourismStyleWithProxyTiles = style
+    this.tourismStyleWithProxyTiles = vectoStyle
+
+    const satelliteStyle = await fetch(
+      this.$config.SATELLITE_STYLE_URL
+    ).then((res) => res.json())
+    if (satelliteStyle?.sources?.openmaptiles.url) {
+      satelliteStyle.sources.openmaptiles.url = this.$config.VECTO_TILES_URL
+    }
+    this.satellitetyleWithProxyTiles = satelliteStyle
 
     const styles = this.mapStyles
     this.mapStyle = styles[this.selectedBackground] || styles[DEFAULT_MAP_STYLE]
@@ -264,35 +273,7 @@ export default Vue.extend({
             },
           ],
         },
-        [MapStyle.aerial]: {
-          version: 8,
-          name: 'Imagerie aérienne IGN',
-          // TODO: To re-enable for https://github.com/teritorio/vido/issues/67
-          // sprite: `https://vecto-dev.teritorio.xyz/styles/teritorio-tourism-proxy/sprite?key=${this.$config.TILES_TOKEN}`,
-          // glyphs: `https://vecto-dev.teritorio.xyz/fonts/{fontstack}/{range}.pbf?key=${this.$config.TILES_TOKEN}`,
-          vido_israster: true,
-          glyphs: 'https://vecto.teritorio.xyz/fonts/{fontstack}/{range}.pbf',
-          sources: {
-            aerial: {
-              type: 'raster',
-              tiles: [
-                `https://wxs.ign.fr/pratique/geoportail/wmts?SERVICE=WMTS&REQUEST=GetTile&VERSION=1.0.0&LAYER=ORTHOIMAGERY.ORTHOPHOTOS&TILEMATRIXSET=PM&TILEMATRIX={z}&TILECOL={x}&TILEROW={y}&STYLE=normal&FORMAT=image/jpeg`,
-              ],
-              tileSize: 256,
-              attribution:
-                '<a href="https://ign.fr/" rel="noopener noreferrer" target="_blank">&copy; IGN</a>',
-            },
-          },
-          layers: [
-            {
-              id: 'aerial',
-              type: 'raster',
-              source: 'aerial',
-              minzoom: 1,
-              maxzoom: 21,
-            },
-          ],
-        },
+        [MapStyle.aerial]: this.satellitetyleWithProxyTiles,
       }
     },
 

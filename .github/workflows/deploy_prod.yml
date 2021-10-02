@@ -50,6 +50,7 @@ jobs:
         env:
           API_ENDPOINT: https://carte.tourismelandes.com/content/api.teritorio
           VECTO_STYLE_URL: ${{secrets.VECTO_STYLE_URL_PROD}}
+          SATELLITE_STYLE_URL: ${{secrets.SATELLITE_STYLE_URL_PROD}}
           VECTO_TILES_URL: ${{secrets.VECTO_TILES_URL_PROD}}
         run: yarn build
 

@@ -50,6 +50,7 @@ jobs:
         env:
           API_ENDPOINT: https://cdt40.carto.guide/api.teritorio
           VECTO_STYLE_URL: ${{secrets.VECTO_STYLE_URL_DEV}}
+          SATELLITE_STYLE_URL: ${{secrets.SATELLITE_STYLE_URL_DEV}}
           VECTO_TILES_URL: ${{secrets.VECTO_TILES_URL_DEV}}
         run: yarn build
 
