@@ -49,7 +49,6 @@ jobs:
       - name: Build
         env:
           API_ENDPOINT: https://carte.tourismelandes.com/content/api.teritorio
-          IGN_TOKEN: ${{secrets.IGN_TOKEN_PROD}}
           TILES_TOKEN: ${{secrets.TILES_TOKEN_PROD}}
           VECTO_STYLE_URL: ${{secrets.VECTO_STYLE_URL_PROD}}
           VECTO_TILES_URL: ${{secrets.VECTO_TILES_URL_PROD}}
