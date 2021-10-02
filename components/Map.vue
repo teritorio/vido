@@ -15,6 +15,7 @@
       >
         <client-only>
           <mapbox
+            v-if="mapStyle"
             class="h-full"
             access-token=""
             :map-options="{
@@ -166,6 +167,7 @@ export default Vue.extend({
     showFavoritesOverlay: boolean
     previousCategories: Category['id'][]
     tourismStyleWithProxyTiles: VidoMglStyle | null
+    mapStyle: string | VidoMglStyle | null
   } {
     return {
       map: null,
@@ -182,16 +184,21 @@ export default Vue.extend({
       showPoiToast: false,
       previousCategories: [],
       tourismStyleWithProxyTiles: null,
+      mapStyle: null,
     }
   },
   async fetch() {
-    this.tourismStyleWithProxyTiles = await fetch(
-      this.$config.VECTO_STYLE_URL
-    ).then((res) => res.json())
+    const style = await fetch(this.$config.VECTO_STYLE_URL).then((res) =>
+      res.json()
+    )
 
-    if (this.tourismStyleWithProxyTiles?.sources?.openmaptiles.url) {
-      this.tourismStyleWithProxyTiles.sources.openmaptiles.url = this.$config.VECTO_TILES_URL
+    if (style?.sources?.openmaptiles.url) {
+      style.sources.openmaptiles.url = this.$config.VECTO_TILES_URL
     }
+    this.tourismStyleWithProxyTiles = style
+
+    const styles = this.mapStyles
+    this.mapStyle = styles[this.selectedBackground] || styles[DEFAULT_MAP_STYLE]
   },
 
   computed: {
@@ -225,16 +232,9 @@ export default Vue.extend({
       return this.mode === Mode.EXPLORER
     },
 
-    mapStyle(): string | VidoMglStyle {
-      const styles = this.mapStyles
-
-      return styles[this.selectedBackground] || styles[DEFAULT_MAP_STYLE]
-    },
-
     mapStyles(): Record<string, string | VidoMglStyle> {
       return {
-        [MapStyle.teritorio]:
-          this.tourismStyleWithProxyTiles || this.$config.VECTO_STYLE_URL,
+        [MapStyle.teritorio]: this.tourismStyleWithProxyTiles,
         [MapStyle.mapnik]: {
           version: 8,
           name: 'Teritorio Mapnik',
@@ -416,9 +416,8 @@ export default Vue.extend({
         return
       }
 
-      const style = this.mapStyle
-
-      this.map.setStyle(style)
+      this.mapStyle = this.mapStyles[this.selectedBackground]
+      this.map.setStyle(this.mapStyle)
     },
 
     mode() {
