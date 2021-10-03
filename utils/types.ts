@@ -77,7 +77,7 @@ export interface ApiCategoryBase {
     // eslint-disable-next-line camelcase
     tourism_style_merge: boolean
     // eslint-disable-next-line camelcase
-    tourism_style_class: string | string[]
+    tourism_style_class: string[]
     // eslint-disable-next-line camelcase
     selection_zoom: number
   }
@@ -262,11 +262,7 @@ export type SearchResult = {
 }
 
 export type VidoMglStyle = Style & {
-  sources: {
-    openmaptiles: {
-      url: string
-    }
-  }
+  sources: {}
   // eslint-disable-next-line camelcase
   vido_israster: boolean
 }

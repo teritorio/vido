@@ -166,9 +166,9 @@ export default Vue.extend({
     showPoiToast: boolean
     showFavoritesOverlay: boolean
     previousCategories: Category['id'][]
-    tourismStyleWithProxyTiles: VidoMglStyle | null
-    satellitetyleWithProxyTiles: VidoMglStyle | null
-    mapStyle: string | VidoMglStyle | null
+    tourismStyleWithProxyTiles: string | VidoMglStyle
+    satellitetyleWithProxyTiles: string | VidoMglStyle
+    mapStyle: string | VidoMglStyle
   } {
     return {
       map: null,
@@ -184,9 +184,9 @@ export default Vue.extend({
       showFavoritesOverlay: false,
       showPoiToast: false,
       previousCategories: [],
-      tourismStyleWithProxyTiles: null,
-      satellitetyleWithProxyTiles: null,
-      mapStyle: null,
+      tourismStyleWithProxyTiles: '',
+      satellitetyleWithProxyTiles: '',
+      mapStyle: '',
     }
   },
   async fetch() {
