@@ -114,6 +114,19 @@
             </li>
           </ul>
 
+          <p v-else-if="field.v.length > textLimit" class="text-sm">
+            {{ handleText(field.v) }}
+            <a
+              v-if="hasFiche"
+              class="underline"
+              :href="poiProp('teritorio:url')"
+              rel="noopener noreferrer"
+              target="_blank"
+              @click.stop
+            >
+              Voir le detail
+            </a>
+          </p>
           <p v-else class="text-sm">
             {{ field.v }}
           </p>
@@ -199,10 +212,12 @@ export default Vue.extend({
   data(): {
     sptags: { [key: string]: any } | null
     apiProps: { [key: string]: any } | null
+    textLimit: number
   } {
     return {
       sptags: null,
       apiProps: null,
+      textLimit: 160,
     }
   },
 
@@ -404,6 +419,12 @@ export default Vue.extend({
     },
     onFavoriteClick() {
       this.$emit('favorite-click')
+    },
+
+    handleText(text: string) {
+      if (text.length < this.textLimit) return text
+
+      return text.substring(0, this.textLimit) + ' ...'
     },
   },
 })
