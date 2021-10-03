@@ -765,6 +765,10 @@ export default Vue.extend({
     },
 
     handleResetMapZoom(features: VidoFeature[], text: string, textBtn: string) {
+      if (!this.map) {
+        return
+      }
+
       const mapBounds = this.map.getBounds()
       const isOneInView = features.some((feature) =>
         mapBounds.contains(feature.geometry.coordinates)
