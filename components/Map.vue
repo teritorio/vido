@@ -453,7 +453,8 @@ export default Vue.extend({
       this.$store.dispatch('favorite/setFavoritesAction', 'open')
     }
 
-    this.selectedBackground = getHashPart('bg') || DEFAULT_MAP_STYLE
+    this.selectedBackground =
+      (getHashPart('bg') as keyof typeof MapStyle) || DEFAULT_MAP_STYLE
   },
 
   methods: {
