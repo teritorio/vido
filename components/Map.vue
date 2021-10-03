@@ -793,7 +793,7 @@ export default Vue.extend({
       this.selectedBackground = background
     },
 
-    initPoiLayer(features: MenuState['features']) {
+    initPoiLayer(features: VidoFeature[]) {
       if (!this.map) {
         return
       }
