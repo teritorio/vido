@@ -697,7 +697,7 @@ export default Vue.extend({
       return await getPoiByIds(this.$config.API_ENDPOINT, ids)
     },
 
-    showZoomSnack(text, textBtn) {
+    showZoomSnack(text: string, textBtn: string) {
       this.$store.dispatch('snack/showSnack', {
         time: 5000,
         text,
@@ -764,7 +764,7 @@ export default Vue.extend({
       })
     },
 
-    handleResetMapZoom(features, text, textBtn) {
+    handleResetMapZoom(features: VidoFeature[], text: string, textBtn: string) {
       const mapBounds = this.map.getBounds()
       const isOneInView = features.some((feature) =>
         mapBounds.contains(feature.geometry.coordinates)
