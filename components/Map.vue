@@ -489,7 +489,7 @@ export default Vue.extend({
       })
 
       this.map.on('click', () => {
-        this.selectFeature(null)
+        this.unselectFeature()
         this.$emit('click')
       })
 
@@ -862,6 +862,10 @@ export default Vue.extend({
           })
         }, 500)
       }
+    },
+
+    unselectFeature() {
+      this.$store.dispatch('map/selectFeature', null)
     },
 
     updateMarkers(src) {
