@@ -115,7 +115,7 @@
           </ul>
 
           <p v-else-if="field.v.length > textLimit" class="text-sm">
-            {{ handleText(field.v) }}
+            {{ field.v.substring(0, textLimit) + ' ...' }}
             <a
               v-if="hasFiche"
               class="underline"
@@ -419,12 +419,6 @@ export default Vue.extend({
     },
     onFavoriteClick() {
       this.$emit('favorite-click')
-    },
-
-    handleText(text: string) {
-      if (text.length < this.textLimit) return text
-
-      return text.substring(0, this.textLimit) + ' ...'
     },
   },
 })
