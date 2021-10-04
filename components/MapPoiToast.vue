@@ -90,22 +90,6 @@
             </li>
           </ul>
 
-          <ul v-else-if="field.k === 'opening_hours' && field.v">
-            <li v-for="item in field.v" :key="item">
-              <p v-show="Boolean(item.label)" class="text-sm mt-1">
-                <b>{{ item.label }}</b>
-              </p>
-              <p
-                v-for="sub in item.opening_hours"
-                v-show="item.opening_hours"
-                :key="sub"
-                class="text-sm"
-              >
-                {{ sub }}
-              </p>
-            </li>
-          </ul>
-
           <ul v-else-if="Array.isArray(field.v)">
             <li v-for="item in field.v" :key="item">
               <p class="text-sm mt-1">

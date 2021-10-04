@@ -2291,6 +2291,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@babel/runtime@npm:^7.12.0, @babel/runtime@npm:^7.14.6":
+  version: 7.15.4
+  resolution: "@babel/runtime@npm:7.15.4"
+  dependencies:
+    regenerator-runtime: ^0.13.4
+  checksum: 64b6c250fd02a664f40835b7bfc3ec0b473d251bf4881b06b689b60662bf2ae17adc6fa32fb0e0de308de5d4bc383738c6030ad93d823066fb9fd7c18f552b56
+  languageName: node
+  linkType: hard
+
 "@babel/template@npm:^7.10.4, @babel/template@npm:^7.12.7, @babel/template@npm:^7.3.3":
   version: 7.12.7
   resolution: "@babel/template@npm:7.12.7"
@@ -4685,6 +4694,7 @@ __metadata:
     mapbox-gl-vue: ^2.0.4
     maplibre-gl: ^1.14.0
     nuxt: ^2.14.12
+    opening_hours: ^3.7.0
     postcss: ^7.0.35
     prettier: ^2.2.1
     stylelint: ^13.8.0
@@ -12851,6 +12861,24 @@ fsevents@^1.2.7:
   languageName: node
   linkType: hard
 
+"i18next-browser-languagedetector@npm:^6.1.2":
+  version: 6.1.2
+  resolution: "i18next-browser-languagedetector@npm:6.1.2"
+  dependencies:
+    "@babel/runtime": ^7.14.6
+  checksum: b5e8b79040e92cf767aa98375b45e9534feb32f7794ef3c572659abafde571f51c77115a1db7fa9a0707601d393a52bffd686e0b0df1c84332f90525ee7a30d6
+  languageName: node
+  linkType: hard
+
+"i18next@npm:^20.3.4":
+  version: 20.6.1
+  resolution: "i18next@npm:20.6.1"
+  dependencies:
+    "@babel/runtime": ^7.12.0
+  checksum: bda0e31294da052dbc04fec6c19c264c12a1f54faa7481775351265e1227f4ef9e0061660ce24d836000da0605aeddc633a840cbf0af70c7b468db889b60eaf5
+  languageName: node
+  linkType: hard
+
 "iconv-lite@npm:0.4.24, iconv-lite@npm:^0.4.24":
   version: 0.4.24
   resolution: "iconv-lite@npm:0.4.24"
@@ -16812,6 +16840,17 @@ fsevents@^1.2.7:
   bin:
     opener: bin/opener-bin.js
   checksum: 855420de4ffbfed1a25f000e7d146c4194aa678cc113d428572de67f9491f6721183ffdeb705af3b08404e29f7ec451b88da9ae19347a515872803dfabef471c
+  languageName: node
+  linkType: hard
+
+"opening_hours@npm:^3.7.0":
+  version: 3.7.0
+  resolution: "opening_hours@npm:3.7.0"
+  dependencies:
+    i18next: ^20.3.4
+    i18next-browser-languagedetector: ^6.1.2
+    suncalc: ^1.8.0
+  checksum: f650692e7c40a845da4718c96458897e4ab34f78733549ff4b00e0109b27e842dfcbc41a81b75ed76b95dbf40e9270ddea017bc567961115cfc3420f0c09501a
   languageName: node
   linkType: hard
 
@@ -21563,6 +21602,13 @@ fsevents@^1.2.7:
   dependencies:
     postcss: ^7.0.2
   checksum: fd3c61168784e63bcd149291cce1668c437165688cc96a403e013d1f31e22fd10beff7e08c6cc33afa8b69fa2ed8db236a352ace92fe9e861396b69a73c2f7f4
+  languageName: node
+  linkType: hard
+
+"suncalc@npm:^1.8.0":
+  version: 1.8.0
+  resolution: "suncalc@npm:1.8.0"
+  checksum: 26313f0864023629541b63fd5f562176b20cfdf74f229ac0a5233aa98eea46d5971c02676cb149d0237b5ff2bd463dae4ce0c691b413358248b706c9e47912b0
   languageName: node
   linkType: hard
 
