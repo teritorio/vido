@@ -15,6 +15,7 @@ checkEnvVariable('SATELLITE_STYLE_URL')
 checkEnvVariable('VECTO_TILES_URL')
 
 export default {
+  target: 'static',
   publicRuntimeConfig: {
     API_ENDPOINT: process.env.API_ENDPOINT || '',
     VECTO_STYLE_URL: process.env.VECTO_STYLE_URL || '',
