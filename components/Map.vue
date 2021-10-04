@@ -37,13 +37,12 @@
             @map-init="onMapInit"
             @map-pitchend="onMapPitchEnd"
             @map-data="onMapRender"
-            @map-drag="onMapRender"
-            @map-move="onMapRender"
-            @map-pitch="onMapRender"
+            @map-dragend="onMapRender"
+            @map-moveend="onMapRender"
             @map-resize="onMapRender"
-            @map-rotate="onMapRender"
+            @map-rotateend="onMapRender"
             @map-touchmove="onMapRender"
-            @map-zoom="onMapRender"
+            @map-zoomend="onMapRender"
           />
         </client-only>
       </div>
@@ -438,8 +437,8 @@ export default Vue.extend({
   created() {
     this.pitch = this.$store.getters['map/pitch']
 
-    this.onMapPitchEnd = throttle(this.onMapPitchEnd, 300)
-    this.onMapRender = throttle(this.onMapRender, 1000)
+    this.onMapPitchEnd = throttle(this.onMapPitchEnd, 200)
+    this.onMapRender = throttle(this.onMapRender, 200)
   },
 
   beforeMount() {
