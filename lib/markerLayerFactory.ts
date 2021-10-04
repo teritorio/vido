@@ -1,4 +1,6 @@
-export const markerLayerFactory = (source: string, id: string) => ({
+import { AnyLayer } from 'maplibre-gl'
+
+export const markerLayerFactory = (source: string, id: string): AnyLayer => ({
   id,
   type: 'symbol',
   source,
