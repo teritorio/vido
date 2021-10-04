@@ -500,29 +500,14 @@ export default Vue.extend({
       })
 
       // Listen to click on POI from vector tiles (explorer mode)
-      this.map.on(
-        'click',
-        'poi-level-1',
-        (event: MapLayerMouseEvent | MapLayerTouchEvent) => {
-          this.selectFeature(event.features?.pop())
-        }
-      )
-
-      this.map.on(
-        'click',
-        'poi-level-2',
-        (event: MapLayerMouseEvent | MapLayerTouchEvent) => {
-          this.selectFeature(event.features?.pop())
-        }
-      )
-
-      this.map.on(
-        'click',
-        'poi-level-3',
-        (event: MapLayerMouseEvent | MapLayerTouchEvent) => {
-          this.selectFeature(event.features?.pop())
-        }
-      )
+      const selectFeature = (
+        event: MapLayerMouseEvent | MapLayerTouchEvent
+      ) => {
+        this.selectFeature(event.features?.pop())
+      }
+      this.map.on('click', 'poi-level-1', selectFeature)
+      this.map.on('click', 'poi-level-2', selectFeature)
+      this.map.on('click', 'poi-level-3', selectFeature)
 
       const poiHash = getHashPart('poi')
 
