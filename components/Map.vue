@@ -167,9 +167,8 @@ export default Vue.extend({
     showPoiToast: boolean
     showFavoritesOverlay: boolean
     previousCategories: Category['id'][]
-    tourismStyleWithProxyTiles: string | VidoMglStyle
-    satellitetyleWithProxyTiles: string | VidoMglStyle
-    mapStyle: string | VidoMglStyle
+    mapStyles: Record<string, string | VidoMglStyle>
+    mapStyle: string | VidoMglStyle | null
   } {
     return {
       map: null,
@@ -185,30 +184,71 @@ export default Vue.extend({
       showFavoritesOverlay: false,
       showPoiToast: false,
       previousCategories: [],
-      tourismStyleWithProxyTiles: '',
-      satellitetyleWithProxyTiles: '',
-      mapStyle: '',
+      mapStyles: {},
+      mapStyle: null,
     }
   },
   async fetch() {
-    const vectoStyle = await fetch(this.$config.VECTO_STYLE_URL).then((res) =>
-      res.json()
-    )
-    if (vectoStyle?.sources?.openmaptiles.url) {
-      vectoStyle.sources.openmaptiles.url = this.$config.VECTO_TILES_URL
-    }
-    this.tourismStyleWithProxyTiles = vectoStyle
+    const vectoFetch = fetch(this.$config.VECTO_STYLE_URL)
+      .then((res) => res.json())
+      .then((vectoStyle) => {
+        if (vectoStyle?.sources?.openmaptiles.url) {
+          vectoStyle.sources.openmaptiles.url = this.$config.VECTO_TILES_URL
+        }
+        return vectoStyle
+      })
 
-    const satelliteStyle = await fetch(
-      this.$config.SATELLITE_STYLE_URL
-    ).then((res) => res.json())
-    if (satelliteStyle?.sources?.openmaptiles.url) {
-      satelliteStyle.sources.openmaptiles.url = this.$config.VECTO_TILES_URL
-    }
-    this.satellitetyleWithProxyTiles = satelliteStyle
+    const satelliteFetch = fetch(this.$config.SATELLITE_STYLE_URL)
+      .then((res) => res.json())
+      .then((satelliteStyle) => {
+        if (satelliteStyle?.sources?.openmaptiles.url) {
+          satelliteStyle.sources.openmaptiles.url = this.$config.VECTO_TILES_URL
+        }
+        return satelliteStyle
+      })
 
-    const styles = this.mapStyles
-    this.mapStyle = styles[this.selectedBackground] || styles[DEFAULT_MAP_STYLE]
+    const [vectoStyle, satelliteStyle] = await Promise.all([
+      vectoFetch,
+      satelliteFetch,
+    ])
+
+    this.mapStyles = {
+      [MapStyle.teritorio]: vectoStyle,
+      [MapStyle.mapnik]: {
+        version: 8,
+        name: 'Teritorio Mapnik',
+        vido_israster: true,
+        glyphs: 'https://vecto.teritorio.xyz/fonts/{fontstack}/{range}.pbf',
+        sources: {
+          mapnik: {
+            type: 'raster',
+            tiles: [
+              // 'https://tile.openstreetmap.org/{z}/{x}/{y}.png', // Main OSM tiles
+              'https://a.tiles.teritorio.xyz/styles/osm/{z}/{x}/{y}.png',
+              'https://b.tiles.teritorio.xyz/styles/osm/{z}/{x}/{y}.png',
+              'https://c.tiles.teritorio.xyz/styles/osm/{z}/{x}/{y}.png',
+            ],
+            tileSize: 256,
+            attribution:
+              '<a href="https://www.openstreetmap.org/copyright" rel="noopener noreferrer" target="_blank">&copy; OpenStreetMap contributors</a> <a href="https://www.teritorio.fr/" rel="noopener noreferrer" target="_blank">&copy; Teritorio</a>',
+          },
+        },
+        layers: [
+          {
+            id: 'mapnik',
+            type: 'raster',
+            source: 'mapnik',
+            minzoom: 1,
+            maxzoom: 20,
+          },
+        ],
+      },
+      [MapStyle.aerial]: satelliteStyle,
+    }
+
+    this.mapStyle =
+      this.mapStyles[this.selectedBackground] ||
+      this.mapStyles[DEFAULT_MAP_STYLE]
   },
 
   computed: {
@@ -240,42 +280,6 @@ export default Vue.extend({
 
     isModeExplorer(): boolean {
       return this.mode === Mode.EXPLORER
-    },
-
-    mapStyles(): Record<string, string | VidoMglStyle> {
-      return {
-        [MapStyle.teritorio]: this.tourismStyleWithProxyTiles,
-        [MapStyle.mapnik]: {
-          version: 8,
-          name: 'Teritorio Mapnik',
-          vido_israster: true,
-          glyphs: 'https://vecto.teritorio.xyz/fonts/{fontstack}/{range}.pbf',
-          sources: {
-            mapnik: {
-              type: 'raster',
-              tiles: [
-                // 'https://tile.openstreetmap.org/{z}/{x}/{y}.png', // Main OSM tiles
-                'https://a.tiles.teritorio.xyz/styles/osm/{z}/{x}/{y}.png',
-                'https://b.tiles.teritorio.xyz/styles/osm/{z}/{x}/{y}.png',
-                'https://c.tiles.teritorio.xyz/styles/osm/{z}/{x}/{y}.png',
-              ],
-              tileSize: 256,
-              attribution:
-                '<a href="https://www.openstreetmap.org/copyright" rel="noopener noreferrer" target="_blank">&copy; OpenStreetMap contributors</a> <a href="https://www.teritorio.fr/" rel="noopener noreferrer" target="_blank">&copy; Teritorio</a>',
-            },
-          },
-          layers: [
-            {
-              id: 'mapnik',
-              type: 'raster',
-              source: 'mapnik',
-              minzoom: 1,
-              maxzoom: 20,
-            },
-          ],
-        },
-        [MapStyle.aerial]: this.satellitetyleWithProxyTiles,
-      }
     },
 
     availableStyles(): typeof MAP_STYLES {
@@ -409,7 +413,9 @@ export default Vue.extend({
             this.selectedBackground === EXPLORER_MAP_STYLE
 
           this.selectedBackground = EXPLORER_MAP_STYLE
-          this.map?.setStyle(this.mapStyle)
+          if (this.mapStyle) {
+            this.map?.setStyle(this.mapStyle)
+          }
 
           setHashPart('bg', this.selectedBackground)
 
