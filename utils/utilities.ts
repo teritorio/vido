@@ -21,16 +21,10 @@ export const displayTime = (dateGMT: Date | string) => {
   if (dateGMT) {
     const date = new Date(dateGMT)
 
-    let hh = date.getHours()
-    let mm = date.getMinutes()
-    if (hh < 10) {
-      hh = '0' + hh
-    }
-    if (mm < 10) {
-      mm = '0' + mm
-    }
+    const hh = date.getHours()
+    const mm = date.getMinutes()
 
-    return `${hh}:${mm}`
+    return `${hh < 10 ? `0${hh}` : hh}:${mm < 10 ? `0${mm}` : mm}`
   }
   return ''
 }
