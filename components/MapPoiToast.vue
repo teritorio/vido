@@ -1,6 +1,7 @@
 <template>
   <div
-    class="z-10 flex flex-col w-full max-w-xl mx-0 overflow-y-auto bg-white shadow-md pointer-events-auto sm:flex-row sm:w-auto sm:mx-auto sm:rounded-xl max-h-90"
+    class="z-10 flex flex-col w-full max-w-xl mx-0 overflow-y-auto bg-white shadow-md pointer-events-auto sm:flex-row sm:w-auto sm:mx-auto sm:rounded-xl"
+    style="max-height: 30vh"
     @click="() => $emit('click')"
   >
     <img
