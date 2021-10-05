@@ -91,6 +91,7 @@
 <script lang="ts">
 import { PoiFilter } from '@teritorio/map'
 import { deepEqual } from 'fast-equals'
+import GeoJSON from 'geojson'
 import throttle from 'lodash.throttle'
 import Mapbox from 'mapbox-gl-vue'
 import mapboxgl, { MapLayerMouseEvent, MapLayerTouchEvent } from 'maplibre-gl'
@@ -718,11 +719,7 @@ export default Vue.extend({
       })
     },
 
-    goTo(feature: VidoFeature) {
-      if (!this.map || !feature || !('coordinates' in feature.geometry)) {
-        return
-      }
-
+    getBBox(feature: GeoJSON.Feature): mapboxgl.LngLatBoundsLike {
       const coords = feature.geometry.coordinates
       let bounds: mapboxgl.LngLatBounds
 
@@ -750,7 +747,15 @@ export default Vue.extend({
           break
       }
 
-      this.map.fitBounds(bounds, { maxZoom: 13 })
+      return bounds
+    },
+
+    goTo(feature: VidoFeature) {
+      if (!this.map || !feature || !('coordinates' in feature.geometry)) {
+        return
+      }
+
+      this.map.fitBounds(this.getBBox(feature), { maxZoom: 13 })
     },
 
     resetZoom() {
@@ -936,13 +941,25 @@ export default Vue.extend({
 
               const source = this.map.getSource(src)
 
-              if (source && 'getClusterExpansionZoom' in source) {
-                source.getClusterExpansionZoom(
+              if (source && 'getClusterLeaves' in source) {
+                source.getClusterLeaves(
                   props.cluster_id,
-                  (err: Error, zoom: number) => {
-                    if (err) return
-                    if (!this.map) return
-                    this.map.easeTo({ center: coords, zoom: zoom + 2 })
+                  100,
+                  0,
+                  (error, features) => {
+                    if (!error && this.map) {
+                      const bounds = features.reduce(
+                        (
+                          bounds: mapboxgl.LngLatBounds,
+                          coord: GeoJSON.Feature<GeoJSON.Geometry>
+                        ) => {
+                          return bounds.extend(this.getBBox(coord))
+                        },
+                        new mapboxgl.LngLatBounds(coords, coords)
+                      )
+
+                      this.map.fitBounds(bounds, { padding: 50 })
+                    }
                   }
                 )
               }
