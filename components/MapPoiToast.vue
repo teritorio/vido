@@ -1,7 +1,6 @@
 <template>
   <div
-    class="z-10 flex flex-col w-full max-w-xl mx-0 overflow-y-auto bg-white shadow-md pointer-events-auto sm:flex-row sm:w-auto sm:mx-auto sm:rounded-xl"
-    style="max-height: 30vh"
+    class="z-10 flex flex-col w-full max-w-xl mx-0 overflow-y-auto bg-white shadow-md pointer-events-auto sm:flex-row sm:w-auto sm:mx-auto sm:rounded-xl poiDescription"
     @click="() => $emit('click')"
   >
     <img
@@ -408,3 +407,10 @@ export default Vue.extend({
   },
 })
 </script>
+<style>
+@media screen and (min-width: 640px) {
+  .poiDescription {
+    max-height: 30vh;
+  }
+}
+</style>
