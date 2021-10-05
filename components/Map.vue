@@ -902,14 +902,6 @@ export default Vue.extend({
       }
 
       this.$store.dispatch('map/selectFeature', goodFeature)
-
-      if (goodFeature) {
-        setTimeout(() => {
-          this.map?.flyTo({
-            center: goodFeature.geometry.coordinates,
-          })
-        }, 500)
-      }
     },
 
     unselectFeature() {
