@@ -66,7 +66,6 @@
           v-if="selectedFeature && showPoiToast"
           :poi="selectedFeature"
           class="flex-grow-0"
-          @click="goToSelectedPoi"
           @explore-click="exploreAroundSelectedPoi"
           @favorite-click="toggleFavoriteMode"
         />
