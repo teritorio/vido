@@ -14,7 +14,7 @@
     >
       <div class="flex items-center justify-between flex-shrink-0">
         <h2
-          class="block text-xl font-semibold leading-tight cursor-pointer"
+          class="block text-xl font-semibold leading-tight"
           :style="'color:' + color"
           title="Zoomer sur le lieu"
         >
