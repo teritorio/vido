@@ -464,6 +464,22 @@ export default Vue.extend({
       this.$store.dispatch('favorite/setFavoritesAction', 'open')
     }
 
+    const favs = getHashPart('favs')
+    if (favs) {
+      try {
+        const newFavorite = favs.split(',')
+
+        localStorage.setItem(
+          LOCAL_STORAGE.favorites,
+          JSON.stringify({ favorites: newFavorite, version: 1 })
+        )
+        this.$store.dispatch('favorite/toggleFavoriteModes', newFavorite)
+      } catch (e) {
+        // eslint-disable-next-line no-console
+        console.error('Vido error:', e.message)
+      }
+    }
+
     this.selectedBackground =
       (getHashPart('bg') as keyof typeof MapStyle) || DEFAULT_MAP_STYLE
   },

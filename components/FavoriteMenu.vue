@@ -16,12 +16,33 @@
     <section v-if="isOpen" class="dropdownMenu rounded-md">
       <div class="menuArrow" />
       <button
+        class="whitespace-nowrap py-2 px-4 text-sm focus-visible:bg-gray-100 hover:bg-gray-100 w-full"
+        @click="shareFavorites"
+      >
+        Partager les favoris
+      </button>
+      <button
         class="whitespace-nowrap py-2 px-4 text-sm focus-visible:bg-gray-100 hover:bg-gray-100"
         @click="removeFavorites"
       >
         Supprimer les favoris
       </button>
     </section>
+
+    <modal name="shareModal" height="auto" adaptive>
+      <div class="p-4 flex flex-col">
+        <p class="text-xl mb-4">Partager le lien</p>
+        <p class="text-gray-500 mb-4">
+          {{ shareLink }}
+        </p>
+        <button
+          class="self-end focus:outline-none focus-visible:bg-gray-100 hover:bg-gray-100 py-2 px-4 rounded-full"
+          @click="copyLink"
+        >
+          Copier
+        </button>
+      </div>
+    </modal>
   </section>
 </template>
 
@@ -31,9 +52,15 @@ import Vue from 'vue'
 import { LOCAL_STORAGE } from '@/lib/constants'
 
 export default Vue.extend({
-  data() {
+  data(): {
+    isOpen: boolean
+    shareLink: string
+    dialog: boolean
+  } {
     return {
       isOpen: false, // Variable if the menu is open or closed
+      shareLink: '',
+      dialog: false,
     }
   },
   methods: {
@@ -74,10 +101,37 @@ export default Vue.extend({
         console.error('Vido error:', e.message)
       }
     },
+    shareFavorites() {
+      try {
+        let favs =
+          localStorage.getItem(LOCAL_STORAGE.favorites) || '{ "favorites": [] }'
+        favs = JSON.parse(favs).favorites
+
+        this.shareLink = `${location}&favs=${favs.join(',')}`
+
+        this.$modal.show('shareModal')
+      } catch (e) {
+        // eslint-disable-next-line no-console
+        console.error('Vido error:', e.message)
+      }
+    },
+    closeModal() {
+      this.$modal.hide('shareModal')
+    },
+    copyLink() {
+      if (!navigator.clipboard) {
+        return
+      }
+      navigator.clipboard.writeText(this.shareLink).then(
+        () => {},
+        (err) => {
+          console.error('Vido error: ', err)
+        }
+      )
+    },
   },
 })
 </script>
-
 <style>
 .dropdownMenu {
   position: absolute;

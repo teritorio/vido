@@ -4704,6 +4704,7 @@ __metadata:
     tailwindcss: "npm:@tailwindcss/postcss7-compat@^2.0.2"
     ts-jest: ^26.4.4
     vue-jest: ^3.0.7
+    vue-js-modal: ^2.0.1
     vue-mobile-detection: ^1.0.0
     vue-multiselect: ^2.1.6
     vue2-touch-events: ^3.2.2
@@ -20027,6 +20028,13 @@ fsevents@^1.2.7:
   languageName: node
   linkType: hard
 
+"resize-observer-polyfill@npm:^1.5.1":
+  version: 1.5.1
+  resolution: "resize-observer-polyfill@npm:1.5.1"
+  checksum: ba14bfaf584eda299eafd6a06233a65c76586bc2bab3cdfdd1edd25fc6479f4270788ddd082e65390049b3ed542558f02bdf1f123bd912624de5b11d48857ac8
+  languageName: node
+  linkType: hard
+
 "resolve-cwd@npm:^3.0.0":
   version: 3.0.0
   resolution: "resolve-cwd@npm:3.0.0"
@@ -23218,6 +23226,17 @@ typescript@~4.0:
     vue: ^2.x
     vue-template-compiler: ^2.x
   checksum: 2c66ea43c0be14d5c4c65fc205fb1f25374632b39465816395cbf4ea9616e938dcf51453b8f8df905dc699ed5f62689713c8da1779a16f47bc401e84e5076288
+  languageName: node
+  linkType: hard
+
+"vue-js-modal@npm:^2.0.1":
+  version: 2.0.1
+  resolution: "vue-js-modal@npm:2.0.1"
+  dependencies:
+    resize-observer-polyfill: ^1.5.1
+  peerDependencies:
+    vue: ^2.6.11
+  checksum: 616c39cdf2633f60072235f2686bc6c6219b0db537065a1a9d2dd9d58c9e3d94fb7550ccb824632a1d3173ece685a64c020b240facb749b4ade3eba76a5907b3
   languageName: node
   linkType: hard
 
