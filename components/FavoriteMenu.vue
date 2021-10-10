@@ -109,9 +109,9 @@ export default Vue.extend({
     },
     shareFavorites() {
       try {
-        let favs =
+        const favsString =
           localStorage.getItem(LOCAL_STORAGE.favorites) || '{ "favorites": [] }'
-        favs = JSON.parse(favs).favorites
+        const favs = JSON.parse(favsString).favorites
 
         this.shareLink = `${
           location.origin
