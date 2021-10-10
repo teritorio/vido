@@ -279,7 +279,7 @@ export default Vue.extend({
     },
 
     focusSearch() {
-      this.$refs.search.focus()
+      ;(this.$refs.search as HTMLInputElement).focus()
     },
 
     onAddressClick(id: string) {
