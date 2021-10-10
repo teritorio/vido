@@ -28,6 +28,7 @@ import {
   faGripLines,
   faRoute,
   faCity,
+  faShareAlt,
 } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import Vue from 'vue'
@@ -63,7 +64,8 @@ library.add(
   faGripLines,
   faRoute,
   faCompass,
-  faCity
+  faCity,
+  faShareAlt
 )
 
 // Register the component globally

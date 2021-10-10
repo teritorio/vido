@@ -8,7 +8,7 @@
       <font-awesome-icon
         ref="menu_icon"
         :icon="isOpen ? 'chevron-up' : 'chevron-down'"
-        class="text-grey-100"
+        class="text-gray-500"
         size="sm"
       />
     </button>
@@ -19,10 +19,16 @@
         class="whitespace-nowrap py-2 px-4 text-sm focus-visible:bg-gray-100 hover:bg-gray-100 w-full"
         @click="shareFavorites"
       >
+        <font-awesome-icon
+          ref="menu_icon"
+          icon="share-alt"
+          class="text-gray-500 mr-2"
+          size="sm"
+        />
         Partager les favoris
       </button>
       <button
-        class="whitespace-nowrap py-2 px-4 text-sm focus-visible:bg-gray-100 hover:bg-gray-100"
+        class="whitespace-nowrap py-2 px-4 text-sm focus-visible:bg-gray-100 hover:bg-gray-100 w-full"
         @click="removeFavorites"
       >
         Supprimer les favoris
@@ -31,7 +37,7 @@
 
     <modal name="shareModal" height="auto" adaptive>
       <div class="p-4 flex flex-col">
-        <p class="text-xl mb-4">Partager le lien</p>
+        <p class="text-xl mb-4">Partager le lien des favoris</p>
         <p class="text-gray-500 mb-4">
           {{ shareLink }}
         </p>
@@ -107,7 +113,9 @@ export default Vue.extend({
           localStorage.getItem(LOCAL_STORAGE.favorites) || '{ "favorites": [] }'
         favs = JSON.parse(favs).favorites
 
-        this.shareLink = `${location}&favs=${favs.join(',')}`
+        this.shareLink = `${
+          location.origin
+        }/#map=7/44.055/0.056&favs=${favs.join(',')}`
 
         this.$modal.show('shareModal')
       } catch (e) {
