@@ -13,38 +13,36 @@
           !small && !isModeExplorer && 'mt-20 sm:mt-0 h-4/5 sm:h-full',
         ]"
       >
-        <client-only>
-          <mapbox
-            v-if="mapStyle"
-            class="h-full"
-            access-token=""
-            :map-options="{
-              center: [center.lng, center.lat],
-              hash: 'map',
-              maxZoom: zoom.max,
-              minZoom: zoom.min,
-              pitch,
-              style: mapStyle,
-              zoom: zoom.default,
-            }"
-            :nav-control="{
-              show: false,
-            }"
-            :attribution-control="{
-              position: 'bottom-right',
-              show: true,
-            }"
-            @map-init="onMapInit"
-            @map-pitchend="onMapPitchEnd"
-            @map-data="onMapRender"
-            @map-dragend="onMapRender"
-            @map-moveend="onMapRender"
-            @map-resize="onMapRender"
-            @map-rotateend="onMapRender"
-            @map-touchmove="onMapRender"
-            @map-zoomend="onMapRender"
-          />
-        </client-only>
+        <mapbox
+          v-if="mapStyle"
+          class="h-full"
+          access-token=""
+          :map-options="{
+            center: [center.lng, center.lat],
+            hash: 'map',
+            maxZoom: zoom.max,
+            minZoom: zoom.min,
+            pitch,
+            style: mapStyle,
+            zoom: zoom.default,
+          }"
+          :nav-control="{
+            show: false,
+          }"
+          :attribution-control="{
+            position: 'bottom-right',
+            show: true,
+          }"
+          @map-init="onMapInit"
+          @map-pitchend="onMapPitchEnd"
+          @map-data="onMapRender"
+          @map-dragend="onMapRender"
+          @map-moveend="onMapRender"
+          @map-resize="onMapRender"
+          @map-rotateend="onMapRender"
+          @map-touchmove="onMapRender"
+          @map-zoomend="onMapRender"
+        />
       </div>
 
       <MapControls
