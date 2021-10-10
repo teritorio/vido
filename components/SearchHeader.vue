@@ -195,7 +195,7 @@ export default Vue.extend({
             id: v.postid.toString(),
             label: v.label,
             icon: this.menuToIcon[v.idmenu],
-            small: v.commune && toTitleCase(v.commune),
+            small: (v.commune && toTitleCase(v.commune)) || undefined,
           }))
         : []
     },
@@ -206,7 +206,7 @@ export default Vue.extend({
             id: v.postid.toString(),
             label: v.label,
             icon: this.menuToIcon[v.idmenu],
-            small: v.commune && toTitleCase(v.commune),
+            small: (v.commune && toTitleCase(v.commune)) || undefined,
           }))
         : []
     },
