@@ -95,7 +95,18 @@
         @item-click="onAddressClick"
       />
 
-      <p v-if="hasNoResults">Aucun résultat</p>
+      <p
+        v-if="
+          itemsClasse.length +
+            itemsOsm.length +
+            itemsTis.length +
+            itemsAddress.length +
+            itemsCities.length ==
+          0
+        "
+      >
+        Aucun résultat
+      </p>
     </div>
   </aside>
 </template>
@@ -169,16 +180,6 @@ export default Vue.extend({
   },
 
   computed: {
-    hasNoResults() {
-      return (
-        this.itemsClasse.length === 0 &&
-        this.itemsOsm.length === 0 &&
-        this.itemsTis.length === 0 &&
-        this.itemsAddress.length === 0 &&
-        this.itemsCities.length === 0
-      )
-    },
-
     itemsClasse(): SearchResult[] {
       return this.searchResults && Array.isArray(this.searchResults.classe)
         ? this.searchResults.classe.map((v) => ({
