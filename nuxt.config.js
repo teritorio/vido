@@ -65,15 +65,7 @@ export default {
   // Modules for dev and build (recommended) (https://go.nuxtjs.dev/config-modules)
   buildModules: [
     // https://go.nuxtjs.dev/typescript
-    [
-      '@nuxt/typescript-build',
-      // Workaround : https://github.com/nuxt/typescript/issues/145#issuecomment-710755252
-      {
-        typeCheck: {
-          typescript: require.resolve('typescript'),
-        },
-      },
-    ],
+    ['@nuxt/typescript-build'],
     // https://go.nuxtjs.dev/stylelint
     '@nuxtjs/stylelint-module',
     // https://go.nuxtjs.dev/tailwindcss
