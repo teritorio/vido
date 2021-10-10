@@ -113,9 +113,7 @@ export default Vue.extend({
           localStorage.getItem(LOCAL_STORAGE.favorites) || '{ "favorites": [] }'
         const favs = JSON.parse(favsString).favorites
 
-        this.shareLink = `${
-          location.origin
-        }/#map=7/44.055/0.056&favs=${favs.join(',')}`
+        this.shareLink = `${location.origin}/#favs=${favs.join(',')}`
 
         this.$modal.show('shareModal')
       } catch (e) {
