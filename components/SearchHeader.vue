@@ -153,29 +153,11 @@ export default Vue.extend({
     searchText: string
     searchResults: null | ApiSearchResults
     isLoading: boolean
-    debouncedSearch: Function
   } {
     return {
       searchText: '',
       searchResults: null,
       isLoading: false,
-      debouncedSearch: debounce(() => {
-        if (
-          !this.isLoading &&
-          this.searchText &&
-          this.searchText.trim().length >= 3
-        ) {
-          this.isLoading = true
-          fetch(
-            `${this.$config.API_ENDPOINT}/geodata/v1/search?q=${this.searchText}`
-          )
-            .then((data) => data.json())
-            .then((data) => {
-              this.searchResults = data
-              this.isLoading = false
-            })
-        }
-      }, 1000),
     }
   },
 
@@ -251,6 +233,10 @@ export default Vue.extend({
     },
   },
 
+  created() {
+    this.search = debounce(this.search, 1000)
+  },
+
   mounted() {
     if (!this.$isMobile()) {
       this.focusSearch()
@@ -314,7 +300,25 @@ export default Vue.extend({
       }
 
       // Launch search if not already loading + search text length >= 3
-      this.debouncedSearch()
+      this.search()
+    },
+
+    search() {
+      if (
+        !this.isLoading &&
+        this.searchText &&
+        this.searchText.trim().length >= 3
+      ) {
+        this.isLoading = true
+        fetch(
+          `${this.$config.API_ENDPOINT}/geodata/v1/search?q=${this.searchText}`
+        )
+          .then((data) => data.json())
+          .then((data) => {
+            this.searchResults = data
+            this.isLoading = false
+          })
+      }
     },
   },
 })
