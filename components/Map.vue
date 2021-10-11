@@ -526,7 +526,10 @@ export default Vue.extend({
       const selectFeature = (
         event: MapLayerMouseEvent | MapLayerTouchEvent
       ) => {
-        this.selectFeature(event.features?.pop())
+        const feature = event.features?.pop()
+        if (feature) {
+          this.selectFeature(feature as VidoFeature)
+        }
       }
       this.map.on('click', 'poi-level-1', selectFeature)
       this.map.on('click', 'poi-level-2', selectFeature)
@@ -707,7 +710,7 @@ export default Vue.extend({
       }
     },
 
-    async fetchFavorites(ids) {
+    async fetchFavorites(ids: [string]) {
       return await getPoiByIds(this.$config.API_ENDPOINT, ids)
     },
 
