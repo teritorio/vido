@@ -120,7 +120,7 @@
         class="relative flex items-center mt-6 space-x-2 justify-evenly flex-shrink-0 mt-6"
       >
         <a
-          v-if="$isMobile()"
+          v-if="$isMobile() && routeHref"
           class="flex flex-col items-center flex-1 h-full p-2 space-y-2 rounded-lg hover:bg-gray-100"
           :href="routeHref"
           title="Trouver la route pour venir jusqu'à ce lieu"
@@ -326,16 +326,20 @@ export default Vue.extend({
         )
     },
 
-    routeHref(): string {
-      const lat = this.poi.geometry.coordinates[1]
-      const lng = this.poi.geometry.coordinates[0]
-      const latLng = `${lat},${lng}`
+    routeHref(): string | null {
+      if (this.poi.geometry.type === 'Point') {
+        const lat = this.poi.geometry.coordinates[1]
+        const lng = this.poi.geometry.coordinates[0]
+        const latLng = `${lat},${lng}`
 
-      if (isIOS()) {
-        return `maps://?q=${latLng}`
+        if (isIOS()) {
+          return `maps://?q=${latLng}`
+        }
+
+        return `geo:${latLng}`
+      } else {
+        return null
       }
-
-      return `geo:${latLng}`
     },
   },
 
