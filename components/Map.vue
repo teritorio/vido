@@ -322,8 +322,10 @@ export default Vue.extend({
       // Add exact coordinates to a store to avoid rounding from Mapbox GL
       Object.keys(features).forEach((categoryId) => {
         features[categoryId].forEach((feature) => {
-          this.featuresCoordinates[feature.properties.metadata.PID] =
-            feature.geometry.coordinates
+          if (feature.geometry.type === 'Point') {
+            this.featuresCoordinates[feature.properties.metadata.PID] = feature
+              .geometry.coordinates as [number, number]
+          }
         })
       })
 
@@ -380,7 +382,7 @@ export default Vue.extend({
       }
 
       // Add new marker if a feature is selected
-      if (feature) {
+      if (feature && feature.geometry.type === 'Point') {
         setHashPart(
           'poi',
           feature?.properties?.metadata?.PID || feature?.id?.toString() || null
@@ -392,7 +394,7 @@ export default Vue.extend({
         })
           .setLngLat(
             this.featuresCoordinates[feature.properties.metadata?.PID] ||
-              feature.geometry.coordinates
+              (feature.geometry.coordinates as [number, number])
           )
           .addTo(this.map)
       } else {
@@ -735,34 +737,38 @@ export default Vue.extend({
     },
 
     getBBox(feature: GeoJSON.Feature): mapboxgl.LngLatBoundsLike {
-      const coords = feature.geometry.coordinates
-      let bounds: mapboxgl.LngLatBounds
-
       switch (feature.geometry.type) {
         case 'LineString':
-          bounds = coords.reduce(
-            (bounds: mapboxgl.LngLatBounds, coord: mapboxgl.LngLat) => {
+          return (feature.geometry.coordinates as [[number, number]]).reduce(
+            (bounds: mapboxgl.LngLatBounds, coord: [number, number]) => {
               return bounds.extend(coord)
             },
-            new mapboxgl.LngLatBounds(coords[0], coords[0])
+            new mapboxgl.LngLatBounds(
+              feature.geometry.coordinates[0] as [number, number],
+              feature.geometry.coordinates[0] as [number, number]
+            )
           )
-          break
 
         case 'Polygon':
-          bounds = coords
-            .flat(2)
-            .reduce((bounds: mapboxgl.LngLatBounds, coord: mapboxgl.LngLat) => {
+          return (feature.geometry.coordinates[0] as [[number, number]]).reduce(
+            (bounds: mapboxgl.LngLatBounds, coord: [number, number]) => {
               return bounds.extend(coord)
-            }, new mapboxgl.LngLatBounds(coords[0], coords[0]))
-          break
+            },
+            new mapboxgl.LngLatBounds(
+              feature.geometry.coordinates[0][0] as [number, number],
+              feature.geometry.coordinates[0][0] as [number, number]
+            )
+          )
 
         case 'Point':
-        default:
-          bounds = new mapboxgl.LngLatBounds([coords, coords])
-          break
-      }
+          return new mapboxgl.LngLatBounds(
+            feature.geometry.coordinates as [number, number],
+            feature.geometry.coordinates as [number, number]
+          )
 
-      return bounds
+        default:
+          return new mapboxgl.LngLatBounds([-180, -90], [180, 90])
+      }
     },
 
     goTo(feature: VidoFeature) {
@@ -786,8 +792,10 @@ export default Vue.extend({
       }
 
       const mapBounds = this.map.getBounds()
-      const isOneInView = features.some((feature) =>
-        mapBounds.contains(feature.geometry.coordinates)
+      const isOneInView = features.some(
+        (feature) =>
+          feature.geometry.type === 'Point' &&
+          mapBounds.contains(feature.geometry.coordinates as [number, number])
       )
 
       const currentZoom = this.map.getZoom()
