@@ -863,7 +863,10 @@ export default Vue.extend({
         const cleanProperties = {}
 
         Object.keys(feature.properties).forEach((key) => {
-          if (key === 'opening_hours') {
+          if (
+            key === 'opening_hours' &&
+            typeof feature.properties[key] === 'string'
+          ) {
             const days = [
               'Dim.',
               'Lun.',
