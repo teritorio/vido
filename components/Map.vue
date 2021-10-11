@@ -943,93 +943,99 @@ export default Vue.extend({
       if (!this.map) {
         return
       }
+
       const newMarkers: { [id: string]: mapboxgl.Marker } = {}
       const features = this.map.querySourceFeatures(src) as VidoFeature[]
       // for every cluster on the screen, create an HTML marker for it (if we didn't yet),
       // and add it to the map if it's not there already
-      for (let i = 0; i < features.length; i++) {
-        const coords = features[i].geometry.coordinates
-        const props = features[i].properties
-        let id: string | null = null
-        let marker: mapboxgl.Marker | null = null
+      features
+        .filter((feature) => feature.geometry.type === 'Point')
+        .forEach((feature) => {
+          const coords = (feature.geometry as GeoJSON.Point).coordinates as [
+            number,
+            number
+          ]
+          const props = feature.properties
+          let id: string | null = null
+          let marker: mapboxgl.Marker | null = null
 
-        if (props?.cluster) {
-          id = 'c' + props.cluster_id
-          marker = this.markers[id]
-          if (!marker) {
-            const el = createMarkerDonutChart(this.categories, props)
-            marker = this.markers[id] = new mapboxgl.Marker({
-              element: el,
-            }).setLngLat(coords)
-            el.addEventListener('click', (e) => {
-              e.stopPropagation()
-              if (!this.map) return
-
-              const source = this.map.getSource(src)
-
-              if (source && 'getClusterLeaves' in source) {
-                source.getClusterLeaves(
-                  props.cluster_id,
-                  100,
-                  0,
-                  (error, features) => {
-                    if (!error && this.map) {
-                      const bounds = features.reduce(
-                        (
-                          bounds: mapboxgl.LngLatBounds,
-                          coord: GeoJSON.Feature<GeoJSON.Geometry>
-                        ) => {
-                          return bounds.extend(this.getBBox(coord))
-                        },
-                        new mapboxgl.LngLatBounds(coords, coords)
-                      )
-
-                      this.map.fitBounds(bounds, { padding: 50 })
-                    }
-                  }
-                )
-              }
-            })
-          }
-        } else if (props) {
-          if (typeof props.metadata === 'string') {
-            props.metadata = JSON.parse(props.metadata)
-          }
-          id = 'm' + props.metadata.PID
-          marker = this.markers[id]
-          const markerCoords = this.featuresCoordinates[props.metadata.PID]
-          if (!marker && markerCoords) {
-            // Marker
-            const el: HTMLElement = document.createElement('div')
-            el.classList.add('mapboxgl-marker')
-            marker = this.markers[id] = new mapboxgl.Marker({
-              element: el,
-            }).setLngLat(markerCoords) // Using this to avoid misplaced marker
-
-            // Teritorio badge
-            const instance = new TeritorioIconBadge({
-              propsData: {
-                color: props.metadata.color,
-                picto: props.metadata.icon,
-              },
-            }).$mount()
-            el.appendChild(instance.$el)
-
-            // Click handler
-            if (props.metadata.HasPopup === 'yes') {
+          if (props?.cluster) {
+            id = 'c' + props.cluster_id
+            marker = this.markers[id]
+            if (!marker) {
+              const el = createMarkerDonutChart(this.categories, props)
+              marker = this.markers[id] = new mapboxgl.Marker({
+                element: el,
+              }).setLngLat(coords)
               el.addEventListener('click', (e) => {
                 e.stopPropagation()
-                this.selectFeature(features[i])
+                if (!this.map) return
+
+                const source = this.map.getSource(src)
+
+                if (source && 'getClusterLeaves' in source) {
+                  source.getClusterLeaves(
+                    props.cluster_id,
+                    100,
+                    0,
+                    (error, features) => {
+                      if (!error && this.map) {
+                        const bounds = features.reduce(
+                          (
+                            bounds: mapboxgl.LngLatBounds,
+                            coord: GeoJSON.Feature<GeoJSON.Geometry>
+                          ) => {
+                            return bounds.extend(this.getBBox(coord))
+                          },
+                          new mapboxgl.LngLatBounds(coords, coords)
+                        )
+
+                        this.map.fitBounds(bounds, { padding: 50 })
+                      }
+                    }
+                  )
+                }
               })
             }
-          }
-        }
+          } else if (props) {
+            if (typeof props.metadata === 'string') {
+              props.metadata = JSON.parse(props.metadata)
+            }
+            id = 'm' + props.metadata.PID
+            marker = this.markers[id]
+            const markerCoords = this.featuresCoordinates[props.metadata.PID]
+            if (!marker && markerCoords) {
+              // Marker
+              const el: HTMLElement = document.createElement('div')
+              el.classList.add('mapboxgl-marker')
+              marker = this.markers[id] = new mapboxgl.Marker({
+                element: el,
+              }).setLngLat(markerCoords) // Using this to avoid misplaced marker
 
-        if (marker && id) {
-          newMarkers[id] = marker
-          if (!this.markersOnScreen[id]) marker.addTo(this.map)
-        }
-      }
+              // Teritorio badge
+              const instance = new TeritorioIconBadge({
+                propsData: {
+                  color: props.metadata.color,
+                  picto: props.metadata.icon,
+                },
+              }).$mount()
+              el.appendChild(instance.$el)
+
+              // Click handler
+              if (props.metadata.HasPopup === 'yes') {
+                el.addEventListener('click', (e) => {
+                  e.stopPropagation()
+                  this.selectFeature(feature)
+                })
+              }
+            }
+          }
+
+          if (marker && id && this.map) {
+            newMarkers[id] = marker
+            if (!this.markersOnScreen[id]) marker.addTo(this.map)
+          }
+        })
       // for every marker we've added previously, remove those that are no longer visible
       for (const id in this.markersOnScreen) {
         if (!newMarkers[id]) this.markersOnScreen[id].remove()
