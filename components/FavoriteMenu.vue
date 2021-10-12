@@ -1,55 +1,77 @@
 <template>
-  <section class="relative border-l-2 border-grey bg-white rounded-r-lg">
+  <div>
     <button
-      ref="menu"
-      class="px-3 h-full focus:outline-none focus-visible:bg-gray-100 hover:bg-gray-100 rounded-r-lg shadow-md"
-      @click="openClose"
+      aria-label="Favoris"
+      type="button"
+      :class="[
+        'space-x-1 text-sm font-medium text-gray-800 bg-white shadow-md outline-none sm:px-5 w-11 sm:w-auto h-11 focus:outline-none hover:bg-gray-100 focus-visible:bg-gray-100 flex-shrink-0',
+        hasFavorites ? 'rounded-l-lg' : 'rounded-full',
+      ]"
+      v-on="$listeners"
     >
       <font-awesome-icon
-        ref="menu_icon"
-        :icon="isOpen ? 'chevron-up' : 'chevron-down'"
-        class="text-gray-500"
+        :icon="[`${isModeFavorite ? 'fas' : 'far'}`, 'star']"
+        class="text-yellow-500"
         size="sm"
       />
+      <span class="hidden sm:inline">Favoris</span>
     </button>
 
-    <section v-if="isOpen" class="dropdownMenu rounded-md">
-      <div class="menuArrow" />
+    <section
+      v-if="hasFavorites"
+      class="relative border-l-2 border-grey bg-white rounded-r-lg"
+    >
       <button
-        class="whitespace-nowrap py-2 px-4 text-sm focus-visible:bg-gray-100 hover:bg-gray-100 w-full"
-        @click="shareFavorites"
+        ref="menu"
+        class="px-3 h-full focus:outline-none focus-visible:bg-gray-100 hover:bg-gray-100 rounded-r-lg shadow-md"
+        @click="openClose"
       >
         <font-awesome-icon
           ref="menu_icon"
-          icon="share-alt"
-          class="text-gray-500 mr-2"
+          :icon="isOpen ? 'chevron-up' : 'chevron-down'"
+          class="text-gray-500"
           size="sm"
         />
-        Partager les favoris
       </button>
-      <button
-        class="whitespace-nowrap py-2 px-4 text-sm focus-visible:bg-gray-100 hover:bg-gray-100 w-full"
-        @click="removeFavorites"
-      >
-        Supprimer les favoris
-      </button>
-    </section>
 
-    <modal name="shareModal" height="auto" adaptive>
-      <div class="p-4 flex flex-col">
-        <p class="text-xl mb-4">Partager le lien des favoris</p>
-        <p class="text-gray-500 mb-4">
-          {{ shareLink }}
-        </p>
+      <section v-if="isOpen" class="dropdownMenu rounded-md">
+        <div class="menuArrow" />
         <button
-          class="self-end focus:outline-none focus-visible:bg-gray-100 hover:bg-gray-100 py-2 px-4 rounded-full"
-          @click="copyLink"
+          class="whitespace-nowrap py-2 px-4 text-sm focus-visible:bg-gray-100 hover:bg-gray-100 w-full"
+          @click="shareFavorites"
         >
-          Copier
+          <font-awesome-icon
+            ref="menu_icon"
+            icon="share-alt"
+            class="text-gray-500 mr-2"
+            size="sm"
+          />
+          Partager les favoris
         </button>
-      </div>
-    </modal>
-  </section>
+        <button
+          class="whitespace-nowrap py-2 px-4 text-sm focus-visible:bg-gray-100 hover:bg-gray-100 w-full"
+          @click="removeFavorites"
+        >
+          Supprimer les favoris
+        </button>
+      </section>
+
+      <modal name="shareModal" height="auto" adaptive>
+        <div class="p-4 flex flex-col">
+          <p class="text-xl mb-4">Partager le lien des favoris</p>
+          <p class="text-gray-500 mb-4">
+            {{ shareLink }}
+          </p>
+          <button
+            class="self-end focus:outline-none focus-visible:bg-gray-100 hover:bg-gray-100 py-2 px-4 rounded-full"
+            @click="copyLink"
+          >
+            Copier
+          </button>
+        </div>
+      </modal>
+    </section>
+  </div>
 </template>
 
 <script lang="ts">
@@ -58,6 +80,16 @@ import Vue from 'vue'
 import { LOCAL_STORAGE } from '@/lib/constants'
 
 export default Vue.extend({
+  props: {
+    hasFavorites: {
+      type: Boolean,
+      default: false,
+    },
+    isModeFavorite: {
+      type: Boolean,
+      default: false,
+    },
+  },
   data(): {
     isOpen: boolean
     shareLink: string

@@ -3,24 +3,12 @@
     <div
       class="absolute flex justify-end pointer-events-auto items-top pt-4 right-3 sm:pt-0 w-40 sm:w-48 sm:top-3 top-20"
     >
-      <button
+      <FavoriteMenu
         v-if="map"
-        aria-label="Favoris"
-        type="button"
-        :class="[
-          'space-x-1 text-sm font-medium text-gray-800 bg-white shadow-md outline-none sm:px-5 w-11 sm:w-auto h-11 focus:outline-none hover:bg-gray-100 focus-visible:bg-gray-100 flex-shrink-0',
-          hasFavorites ? 'rounded-l-lg' : 'rounded-full',
-        ]"
+        :has-favorites="hasFavorites"
+        :is-mode-favorite="isModeFavorite"
         @click="toggleFavoriteMode"
-      >
-        <font-awesome-icon
-          :icon="[`${isModeFavorite ? 'fas' : 'far'}`, 'star']"
-          class="text-yellow-500"
-          size="sm"
-        />
-        <span class="hidden sm:inline">Favoris</span>
-      </button>
-      <FavoriteMenu v-if="map && hasFavorites" />
+      />
 
       <button
         v-if="map"
