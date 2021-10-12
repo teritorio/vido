@@ -1,10 +1,7 @@
 <template>
   <aside :class="['pointer-events-none', dense && 'hidden sm:block']">
     <div
-      :class="[
-        'absolute flex justify-end pointer-events-auto items-top pt-4 right-3 sm:pt-0 w-40 sm:w-48 sm:top-3',
-        !isModeExplorer ? 'top-20' : 'top-0',
-      ]"
+      class="absolute flex justify-end pointer-events-auto items-top pt-4 right-3 sm:pt-0 w-40 sm:w-48 sm:top-3 top-20"
     >
       <button
         v-if="map"
