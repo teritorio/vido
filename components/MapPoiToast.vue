@@ -54,7 +54,7 @@
         {{ category }}
       </div>
 
-      <div class="h-auto flex-grow flex-shrink-0" style="min-height: 60px">
+      <div class="h-auto flex-grow flex-shrink-0">
         <p class="mt-6 text-sm">
           <template v-if="address">
             {{ address }}
