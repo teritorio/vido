@@ -1,44 +1,51 @@
 <template>
-  <div>
-    <button
-      aria-label="Favoris"
-      type="button"
-      :class="[
-        'space-x-1 text-sm font-medium text-gray-800 bg-white shadow-md outline-none sm:px-5 w-11 sm:w-auto h-11 focus:outline-none hover:bg-gray-100 focus-visible:bg-gray-100 flex-shrink-0',
-        hasFavorites ? 'rounded-l-lg' : 'rounded-full',
-      ]"
-      v-on="$listeners"
-    >
-      <font-awesome-icon
-        :icon="[`${isModeFavorite ? 'fas' : 'far'}`, 'star']"
-        class="text-yellow-500"
-        size="sm"
-      />
-      <span class="hidden sm:inline">Favoris</span>
-    </button>
-
-    <section
-      v-if="hasFavorites"
-      class="relative border-l-2 border-grey bg-white rounded-r-lg"
-    >
-      <button
-        ref="menu"
-        class="px-3 h-full focus:outline-none focus-visible:bg-gray-100 hover:bg-gray-100 rounded-r-lg shadow-md"
-        @click="openClose"
+  <section>
+    <TDropdown text="Menu des favoris">
+      <div
+        slot="trigger"
+        slot-scope="{
+          mousedownHandler,
+          focusHandler,
+          blurHandler,
+          keydownHandler,
+          isShown,
+        }"
+        class="flex"
       >
-        <font-awesome-icon
-          ref="menu_icon"
-          :icon="isOpen ? 'chevron-up' : 'chevron-down'"
-          class="text-gray-500"
-          size="sm"
-        />
-      </button>
-
-      <section v-if="isOpen" class="dropdownMenu rounded-md">
-        <div class="menuArrow" />
         <button
-          class="whitespace-nowrap py-2 px-4 text-sm focus-visible:bg-gray-100 hover:bg-gray-100 w-full"
-          @click="shareFavorites"
+          ref="menu"
+          class="space-x-1 text-sm font-medium text-gray-800 bg-white shadow-md outline-none sm:px-5 w-11 sm:w-auto hh-11 focus:outline-none hover:bg-gray-100 focus-visible:bg-gray-100 flex-shrink-0 border-r border-gray-400 rounded-l-full"
+          v-on="$listeners"
+        >
+          <font-awesome-icon
+            :icon="[`${isModeFavorite ? 'fas' : 'far'}`, 'star']"
+            class="text-yellow-500"
+            size="sm"
+          />
+          <span class="hidden sm:inline">Favoris</span>
+        </button>
+        <button
+          class="flex h-11 items-center justify-center flex-shrink-0 px-3 py-2 bg-white border-l border-gray-00 rounded-r-full hover:bg-gray-100"
+          @mousedown="mousedownHandler"
+          @focus="focusHandler"
+          @blur="blurHandler"
+          @keydown="keydownHandler"
+        >
+          <font-awesome-icon
+            ref="menu_icon"
+            :icon="isShown ? 'chevron-up' : 'chevron-down'"
+            class="text-gray-500"
+            size="sm"
+          />
+        </button>
+      </div>
+
+      <div slot-scope="{ hide, blurHandler }" class="py-1 rounded-md shadow-xs">
+        <button
+          class="block w-full px-4 py-2 text-sm leading-5 text-gray-700 transition duration-150 ease-in-out hover:bg-gray-100 focus:outline-none focus:bg-gray-100"
+          role="menuitem"
+          @blur="blurHandler"
+          @click="$refs.shareModal.show()"
         >
           <font-awesome-icon
             ref="menu_icon"
@@ -49,37 +56,49 @@
           Partager les favoris
         </button>
         <button
-          class="whitespace-nowrap py-2 px-4 text-sm focus-visible:bg-gray-100 hover:bg-gray-100 w-full"
-          @click="removeFavorites"
+          class="block w-full px-4 py-2 text-sm leading-5 text-gray-700 transition duration-150 ease-in-out hover:bg-gray-100 focus:outline-none focus:bg-gray-100"
+          role="menuitem"
+          @blur="blurHandler"
+          @click="
+            removeFavorites()
+            hide()
+          "
         >
           Supprimer les favoris
         </button>
-      </section>
+      </div>
+    </TDropdown>
 
-      <modal name="shareModal" height="auto" adaptive>
-        <div class="p-4 flex flex-col">
-          <p class="text-xl mb-4">Partager le lien des favoris</p>
-          <p class="text-gray-500 mb-4">
-            {{ shareLink }}
-          </p>
-          <button
-            class="self-end focus:outline-none focus-visible:bg-gray-100 hover:bg-gray-100 py-2 px-4 rounded-full"
-            @click="copyLink"
-          >
-            Copier
-          </button>
-        </div>
-      </modal>
-    </section>
-  </div>
+    <TModal
+      ref="shareModal"
+      header="Partager le lien des favoris"
+      :hide-close-button="true"
+      @before-open="setShareLink"
+    >
+      <p class="text-gray-500 mb-4">
+        {{ shareLink }}
+      </p>
+      <button
+        class="self-end focus:outline-none focus-visible:bg-gray-100 hover:bg-gray-100 py-2 px-4 rounded-full"
+        @click="copyLink"
+      >
+        Copier
+      </button>
+    </TModal>
+  </section>
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
+import { TModal, TDropdown } from 'vue-tailwind/dist/components'
 
 import { LOCAL_STORAGE } from '@/lib/constants'
 
 export default Vue.extend({
+  components: {
+    TModal,
+    TDropdown,
+  },
   props: {
     hasFavorites: {
       type: Boolean,
@@ -91,44 +110,13 @@ export default Vue.extend({
     },
   },
   data(): {
-    isOpen: boolean
     shareLink: string
-    dialog: boolean
   } {
     return {
-      isOpen: false, // Variable if the menu is open or closed
       shareLink: '',
-      dialog: false,
     }
   },
   methods: {
-    catchOutsideClick(event, dropdown) {
-      // When user clicks menu — do nothing
-      if (dropdown.includes(event.target)) {
-        return false
-      }
-
-      // When user clicks outside of the menu — close the menu
-      if (this.isOpen && !dropdown.includes(event.target)) {
-        return true
-      }
-    },
-    openClose() {
-      const _this = this
-
-      const closeListerner = (e) => {
-        if (
-          _this.catchOutsideClick(e, [_this.$refs.menu, _this.$refs.menu_icon])
-        ) {
-          window.removeEventListener('click', closeListerner)
-          _this.isOpen = false
-        }
-      }
-
-      window.addEventListener('click', closeListerner)
-
-      this.isOpen = !this.isOpen
-    },
     removeFavorites() {
       try {
         localStorage.removeItem(LOCAL_STORAGE.favorites)
@@ -139,22 +127,18 @@ export default Vue.extend({
         console.error('Vido error:', e.message)
       }
     },
-    shareFavorites() {
+    setShareLink() {
       try {
         const favsString =
           localStorage.getItem(LOCAL_STORAGE.favorites) || '{ "favorites": [] }'
         const favs = JSON.parse(favsString).favorites
 
         this.shareLink = `${location.origin}/#favs=${favs.join(',')}`
-
-        this.$modal.show('shareModal')
       } catch (e) {
         // eslint-disable-next-line no-console
         console.error('Vido error:', e.message)
+        this.shareLink = ''
       }
-    },
-    closeModal() {
-      this.$modal.hide('shareModal')
     },
     copyLink() {
       if (!navigator.clipboard) {
@@ -170,37 +154,3 @@ export default Vue.extend({
   },
 })
 </script>
-<style>
-.dropdownMenu {
-  position: absolute;
-  top: 100%;
-  right: 0;
-  margin-top: -8px;
-  width: auto;
-  background: white;
-  padding: 15px 0;
-  animation: menu 0.3s ease forwards;
-}
-
-.menuArrow {
-  width: 20px;
-  height: 20px;
-  position: absolute;
-  top: -10px;
-  right: 7px;
-  border-left: 1px solid #eee;
-  border-top: 1px solid #eee;
-  background: white;
-  transform: rotate(45deg);
-  border-radius: 4px 0 0 0;
-}
-
-@keyframes menu {
-  from {
-    transform: translate3d(0, 30px, 0);
-  }
-  to {
-    transform: translate3d(0, 20px, 0);
-  }
-}
-</style>

@@ -56,7 +56,7 @@ export default {
   plugins: [
     '@/plugins/fontawesome.ts',
     '@/plugins/mobile.ts',
-    '@/plugins/modal.ts',
+    '@/plugins/vue-tailwind.ts',
   ],
 
   // Auto import components (https://go.nuxtjs.dev/config-components)
