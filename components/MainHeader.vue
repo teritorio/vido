@@ -4,7 +4,11 @@
   >
     <div class="items-center justify-between hidden sm:flex">
       <h1>
-        <img :aria-label="siteName" :src="logoUrl" class="w-40 h-auto" />
+        <img
+          :aria-label="siteName"
+          :src="logoUrl"
+          class="w-auto h-auto max-w-2xl max-h-16"
+        />
       </h1>
 
       <button
