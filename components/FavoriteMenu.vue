@@ -1,6 +1,12 @@
 <template>
   <section>
-    <TDropdown text="Menu des favoris">
+    <TDropdown
+      text="Menu des favoris"
+      :classes="{
+        dropdown:
+          'origin-top-right absolute right-16 rounded shadow bg-white mt-1',
+      }"
+    >
       <div
         slot="trigger"
         slot-scope="{
@@ -10,7 +16,7 @@
           keydownHandler,
           isShown,
         }"
-        class="flex"
+        class="flex right-10"
       >
         <button
           ref="menu"
@@ -25,7 +31,7 @@
           <span class="hidden sm:inline">Favoris</span>
         </button>
         <button
-          class="flex h-11 items-center justify-center flex-shrink-0 px-3 py-2 bg-white border-l border-gray-00 rounded-r-full hover:bg-gray-100"
+          class="flex h-11 items-center justify-center flex-shrink-0 px-3 py-2 bg-white border-l border-gray-00 rounded-r-full hover:bg-gray-100 shadow-md focus:outline-none"
           @mousedown="mousedownHandler"
           @focus="focusHandler"
           @blur="blurHandler"
@@ -40,9 +46,12 @@
         </button>
       </div>
 
-      <div slot-scope="{ hide, blurHandler }" class="py-1 rounded-md shadow-xs">
+      <div
+        slot-scope="{ hide, blurHandler }"
+        class="py-1 rounded-md shadow-xs flex flex-col min-w-max"
+      >
         <button
-          class="block w-full px-4 py-2 text-sm leading-5 text-gray-700 transition duration-150 ease-in-out hover:bg-gray-100 focus:outline-none focus:bg-gray-100"
+          class="block w-full px-4 py-2 text-sm leading-5 text-left text-gray-700 transition duration-150 ease-in-out hover:bg-gray-100 focus:outline-none focus:bg-gray-100"
           role="menuitem"
           @blur="blurHandler"
           @click="$refs.shareModal.show()"
@@ -56,7 +65,7 @@
           Partager les favoris
         </button>
         <button
-          class="block w-full px-4 py-2 text-sm leading-5 text-gray-700 transition duration-150 ease-in-out hover:bg-gray-100 focus:outline-none focus:bg-gray-100"
+          class="block w-full px-4 py-2 text-sm leading-5 text-left text-gray-700 transition duration-150 ease-in-out hover:bg-gray-100 focus:outline-none focus:bg-gray-100"
           role="menuitem"
           @blur="blurHandler"
           @click="
@@ -75,15 +84,17 @@
       :hide-close-button="true"
       @before-open="setShareLink"
     >
-      <p class="text-gray-500 mb-4">
-        {{ shareLink }}
-      </p>
-      <button
-        class="self-end focus:outline-none focus-visible:bg-gray-100 hover:bg-gray-100 py-2 px-4 rounded-full"
-        @click="copyLink"
-      >
-        Copier
-      </button>
+      <div class="flex flex-col">
+        <p class="text-gray-500 mb-4">
+          {{ shareLink }}
+        </p>
+        <button
+          class="self-end focus:outline-none focus-visible:bg-gray-100 hover:bg-gray-100 py-2 px-4 rounded-full"
+          @click="copyLink"
+        >
+          Copier
+        </button>
+      </div>
     </TModal>
   </section>
 </template>

@@ -14,7 +14,7 @@
         v-if="map"
         aria-label="Navigation"
         type="button"
-        class="text-sm text-gray-800 bg-white rounded-full shadow-md outline-none w-11 h-11 focus:outline-none hover:bg-gray-100 focus-visible:bg-gray-100 flex-shrink-0 ml-5"
+        class="text-sm text-gray-800 bg-white rounded-full shadow-md outline-none w-11 h-11 focus:outline-none hover:bg-gray-100 focus-visible:bg-gray-100 flex-shrink-0 ml-10"
         @click="toggleNavMenu"
       >
         <font-awesome-icon icon="bars" class="text-gray-800" size="sm" />
