@@ -9,16 +9,7 @@
         :is-mode-favorite="isModeFavorite"
         @click="toggleFavoriteMode"
       />
-
-      <button
-        v-if="map"
-        aria-label="Navigation"
-        type="button"
-        class="text-sm text-gray-800 bg-white rounded-full shadow-md outline-none w-11 h-11 focus:outline-none hover:bg-gray-100 focus-visible:bg-gray-100 flex-shrink-0 ml-10"
-        @click="toggleNavMenu"
-      >
-        <font-awesome-icon icon="bars" class="text-gray-800" size="sm" />
-      </button>
+      <NavMenu v-if="map" class="ml-10" />
     </div>
 
     <div class="absolute flex flex-col justify-center inset-y-3 right-3">
@@ -85,8 +76,6 @@
         <div v-if="map && isModeExplorer" class="w-11 h-11" />
       </div>
     </div>
-
-    <NavMenu v-if="showNavMenu" @close-click="toggleNavMenu" />
   </aside>
 </template>
 
@@ -141,13 +130,11 @@ export default Vue.extend({
     building3d: Building3d | null
     is3D: boolean
     background: string | null
-    showNavMenu: boolean
   } {
     return {
       building3d: null,
       is3D: false,
       background: null,
-      showNavMenu: false,
     }
   },
 
@@ -256,9 +243,6 @@ export default Vue.extend({
         'change-mode',
         this.isModeExplorer ? Mode.BROWSER : Mode.EXPLORER
       )
-    },
-    toggleNavMenu() {
-      this.showNavMenu = !this.showNavMenu
     },
     toggleFavoriteMode() {
       const isFav = getHashPart('fav') === '1'
