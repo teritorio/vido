@@ -4,7 +4,11 @@
   >
     <div class="flex flex-row sm:flex-col items-center sm:items-start">
       <h1 class="flex-none sm:hidden mr-2">
-        <img :aria-label="siteName" :src="logoUrl" class="w-20 h-auto" />
+        <img
+          :aria-label="siteName"
+          :src="logoUrl"
+          class="w-auto h-auto max-w-2xl max-h-12 sm:max-h-16"
+        />
       </h1>
 
       <button
