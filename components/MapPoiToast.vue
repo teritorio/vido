@@ -89,6 +89,14 @@
             </li>
           </ul>
 
+          <ul v-else-if="field.k === 'opening_hours'">
+            <li v-for="item in opening_hours" :key="item">
+              <p class="text-sm mt-1">
+                {{ item }}
+              </p>
+            </li>
+          </ul>
+
           <ul v-else-if="Array.isArray(field.v)">
             <li v-for="item in field.v" :key="item">
               <p class="text-sm mt-1">
@@ -171,6 +179,7 @@
 
 <script lang="ts">
 import { MapboxGeoJSONFeature } from 'maplibre-gl'
+import OpeningHours from 'opening_hours'
 import Vue, { PropType } from 'vue'
 import { mapGetters } from 'vuex'
 
@@ -179,6 +188,7 @@ import { getPoiById } from '@/utils/api'
 import { isIOS } from '@/utils/isIOS'
 import { getContrastedTextColor } from '@/utils/picto'
 import { VidoFeature, Mode } from '@/utils/types'
+import { getPreviousMonday, displayTime } from '@/utils/utilities'
 
 export default Vue.extend({
   components: {
@@ -279,6 +289,53 @@ export default Vue.extend({
       ]
         .filter((f) => f && f.toString().trim().length > 0)
         .join(' ')
+    },
+
+    opening_hours(): string[] | null {
+      const openingHours = this.poiProp('opening_hours')
+      if (!openingHours) {
+        return null
+      }
+
+      const days = ['Dim.', 'Lun.', 'Mar.', 'Mer.', 'Jeu.', 'Ven.', 'Sam.']
+      const prevMonday = new Date(getPreviousMonday())
+      const oneWeek = new Date(prevMonday)
+      oneWeek.setDate(oneWeek.getDate() + 7)
+
+      const oh = new OpeningHours(openingHours)
+      const iterator = oh.getIterator(prevMonday)
+      const openingString: string[] = []
+      const ranges = []
+      let date = { range: [] }
+
+      while (iterator.advance(oneWeek)) {
+        const intDate = iterator.getDate()
+        const day = intDate.getDay()
+
+        if (days[day] === date.day) {
+          date.range.push(displayTime(intDate))
+        } else {
+          if (date.range.length > 0) {
+            ranges.push(date)
+          }
+          date = { day: days[day], range: [displayTime(intDate)] }
+        }
+      }
+
+      ranges.forEach((range) => {
+        const timeRanges = ['', '']
+          .map((_, i) => range.range.slice(i * 2, (i + 1) * 2))
+          .map((e) => e.join('-'))
+          .filter((e) => Boolean(e))
+
+        openingString.push(
+          `${range.day} ${timeRanges[0]}${
+            timeRanges.length > 1 ? `  ${timeRanges[1]}` : ''
+          }`
+        )
+      })
+
+      return openingString
     },
 
     listFields(): string[] {

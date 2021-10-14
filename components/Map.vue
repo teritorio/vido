@@ -92,7 +92,6 @@ import GeoJSON from 'geojson'
 import throttle from 'lodash.throttle'
 import Mapbox from 'mapbox-gl-vue'
 import mapboxgl, { MapLayerMouseEvent, MapLayerTouchEvent } from 'maplibre-gl'
-import OpeningHours from 'opening_hours'
 import Vue, { PropType } from 'vue'
 import { mapGetters, mapActions } from 'vuex'
 
@@ -120,11 +119,7 @@ import {
   VidoMglStyle,
 } from '@/utils/types'
 import { getHashPart, setHashPart } from '@/utils/url'
-import {
-  flattenFeatures,
-  getPreviousMonday,
-  displayTime,
-} from '@/utils/utilities'
+import { flattenFeatures } from '@/utils/utilities'
 
 const POI_SOURCE = 'poi'
 const FAVORITE_SOURCE = 'favorite-source'
@@ -889,58 +884,7 @@ export default Vue.extend({
         const cleanProperties = {}
 
         Object.keys(feature.properties).forEach((key) => {
-          if (
-            key === 'opening_hours' &&
-            typeof feature.properties[key] === 'string'
-          ) {
-            const days = [
-              'Dim.',
-              'Lun.',
-              'Mar.',
-              'Mer.',
-              'Jeu.',
-              'Ven.',
-              'Sam.',
-            ]
-            const prevMonday = new Date(getPreviousMonday())
-            const oneWeek = new Date(prevMonday)
-            oneWeek.setDate(oneWeek.getDate() + 7)
-
-            const oh = new OpeningHours(feature.properties[key])
-            const iterator = oh.getIterator(prevMonday)
-            const openingString = []
-            const ranges = []
-            let date = { range: [] }
-
-            while (iterator.advance(oneWeek)) {
-              const intDate = iterator.getDate()
-              const day = intDate.getDay()
-
-              if (days[day] === date.day) {
-                date.range.push(displayTime(intDate))
-              } else {
-                if (date.range.length > 0) {
-                  ranges.push(date)
-                }
-                date = { day: days[day], range: [displayTime(intDate)] }
-              }
-            }
-
-            ranges.forEach((range) => {
-              const timeRanges = ['', '']
-                .map((_, i) => range.range.slice(i * 2, (i + 1) * 2))
-                .map((e) => e.join('-'))
-                .filter((e) => Boolean(e))
-
-              openingString.push(
-                `${range.day} ${timeRanges[0]}${
-                  timeRanges.length > 1 ? `  ${timeRanges[1]}` : ''
-                }`
-              )
-            })
-
-            cleanProperties[key] = openingString
-          } else if (IsJsonString(feature.properties[key])) {
+          if (IsJsonString(feature.properties[key])) {
             cleanProperties[key] = JSON.parse(feature.properties[key])
           } else {
             cleanProperties[key] = feature.properties[key]
