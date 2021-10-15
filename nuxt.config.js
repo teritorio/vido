@@ -123,8 +123,8 @@ export default {
 
   // Google Tag Manager config
   gtm: {
-    id: 'GTM-5J5XBKJ',
-    enabled: true,
+    id: process.env.GOOGLE_TAG_MANAGER_ID,
+    enabled: Boolean(process.env.GOOGLE_TAG_MANAGER_ID),
     pageTracking: true,
   },
 }
