@@ -6,6 +6,7 @@ enum Mutation {
   SET_CONFIG = 'SET_CONFIG',
   RESET_MAPVIEW = 'RESET_MAPVIEW',
   SELECT_FEATURE = 'SELECT_FEATURE',
+  SET_CENTER = 'SET_CENTER',
 }
 
 interface FetchConfigPayload {
@@ -87,6 +88,9 @@ export const mutations = {
     state.selectedFeature =
       payload.selectedFeature && JSON.stringify(payload.selectedFeature)
   },
+  [Mutation.SET_CENTER](state: State, payload: State) {
+    state.center = payload.center
+  },
 }
 
 export const actions = {
@@ -109,6 +113,9 @@ export const actions = {
   },
   selectFeature(store: Store<State>, feature: VidoFeature) {
     store.commit(Mutation.SELECT_FEATURE, { selectedFeature: feature })
+  },
+  setCenter(store: Store<State>, center: LatLng) {
+    store.commit(Mutation.SET_CENTER, { center })
   },
 }
 

@@ -737,7 +737,7 @@ export default Vue.extend({
       })
     },
 
-    getBBox(feature: GeoJSON.Feature): mapboxgl.LngLatBoundsLike {
+    getBBox(feature: GeoJSON.Feature): mapboxgl.LngLatBounds {
       switch (feature.geometry.type) {
         case 'LineString':
           return (feature.geometry.coordinates as [[number, number]]).reduce(
@@ -770,6 +770,21 @@ export default Vue.extend({
         default:
           return new mapboxgl.LngLatBounds([-180, -90], [180, 90])
       }
+    },
+
+    getBBoxFeatures(features: GeoJSON.Feature[]): mapboxgl.LngLatBounds {
+      return features.reduce(
+        (
+          bounds: mapboxgl.LngLatBounds,
+          coord: GeoJSON.Feature<GeoJSON.Geometry>
+        ) => {
+          return bounds.extend(this.getBBox(coord))
+        },
+        new mapboxgl.LngLatBounds(
+          features[0].geometry.coordinates,
+          features[0].geometry.coordinates
+        )
+      )
     },
 
     goTo(feature: VidoFeature) {
@@ -806,6 +821,8 @@ export default Vue.extend({
         currentZoom >= this.zoom.default &&
         features.length > 0
       ) {
+        const bounds = this.getBBoxFeatures(features)
+        this.$store.dispatch('map/setCenter', bounds.getCenter())
         this.showZoomSnack(text, textBtn)
       }
       if (currentZoom < this.zoom.default) {
@@ -981,16 +998,7 @@ export default Vue.extend({
                     0,
                     (error, features) => {
                       if (!error && this.map) {
-                        const bounds = features.reduce(
-                          (
-                            bounds: mapboxgl.LngLatBounds,
-                            coord: GeoJSON.Feature<GeoJSON.Geometry>
-                          ) => {
-                            return bounds.extend(this.getBBox(coord))
-                          },
-                          new mapboxgl.LngLatBounds(coords, coords)
-                        )
-
+                        const bounds = this.getBBoxFeatures(features)
                         this.map.fitBounds(bounds, { padding: 50 })
                       }
                     }
