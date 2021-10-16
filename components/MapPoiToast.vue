@@ -242,6 +242,7 @@ export default Vue.extend({
       if (this.poiMeta('color')) {
         return this.poiMeta('color')
       } else if (this.poi && this.poi.layer && this.poi.layer.paint) {
+        // @ts-ignore
         const tc = this.poi.layer.paint['text-color']
         return `rgba(${Math.round(tc.r * 255).toFixed(0)}, ${Math.round(
           tc.g * 255
@@ -258,9 +259,11 @@ export default Vue.extend({
     icon(): string {
       if (this.poiMeta('icon')) {
         return this.poiMeta('icon')
+        // @ts-ignore
       } else if (this.poi.layer?.layout['icon-image']?.name) {
         return (
           'teritorio teritorio-tourism-' +
+          // @ts-ignore
           this.poi.layer?.layout['icon-image']?.name.replace(/[•◯⬤]/g, '')
         )
       } else {
