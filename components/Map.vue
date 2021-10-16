@@ -305,17 +305,20 @@ export default Vue.extend({
         return
       }
 
-      const oldCategories: string[] = flattenFeatures(oldFeatures).map(
-        (e) => e?.properties?.metadata?.PID
-      )
-      const newCategories: string[] = flattenFeatures(features).map(
-        (e) => e?.properties?.metadata?.PID
-      )
+      const oldCategories: (string | undefined)[] = flattenFeatures(
+        oldFeatures
+      ).map((e) => e.properties.metadata?.PID)
+      const newCategories: (string | undefined)[] = flattenFeatures(
+        features
+      ).map((e) => e.properties.metadata?.PID)
 
       // Add exact coordinates to a store to avoid rounding from Mapbox GL
       Object.keys(features).forEach((categoryId) => {
         features[categoryId].forEach((feature) => {
-          if (feature.geometry.type === 'Point') {
+          if (
+            feature.geometry.type === 'Point' &&
+            feature.properties?.metadata?.PID
+          ) {
             this.featuresCoordinates[feature.properties.metadata.PID] = feature
               .geometry.coordinates as [number, number]
           }
@@ -375,7 +378,11 @@ export default Vue.extend({
       }
 
       // Add new marker if a feature is selected
-      if (feature && feature.geometry.type === 'Point') {
+      if (
+        feature &&
+        feature.geometry.type === 'Point' &&
+        feature.properties.metadata?.PID
+      ) {
         setHashPart(
           'poi',
           feature?.properties?.metadata?.PID || feature?.id?.toString() || null
