@@ -306,7 +306,10 @@ export default Vue.extend({
       const iterator = oh.getIterator(prevMonday)
       const openingString: string[] = []
       const ranges = []
-      let date = { range: [] }
+      let date: { day: null | String; range: (Date | string)[] } = {
+        day: null,
+        range: [],
+      }
 
       while (iterator.advance(oneWeek)) {
         const intDate = iterator.getDate()
