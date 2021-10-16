@@ -117,47 +117,42 @@ export interface FeatureBase extends MapboxGeoJSONFeature {
   properties: {
     [key: string]: any
 
-    'addr:city': string
-    'addr:housenumber': string
-    'addr:postcode': string
-    'addr:street': string
-    metadata: {
-      HasPopup: string
-      PID: string
-      PopupAdress: string
-      PopupListField: string
-      classe: string
-      color: string
-      hasfiche: string
-      icon: string
+    'addr:city'?: string
+    'addr:housenumber'?: string
+    'addr:postcode'?: string
+    'addr:street'?: string
+    metadata?: {
+      HasPopup?: string
+      PID?: string
+      PopupAdress?: string
+      PopupListField?: string
+      classe?: string
+      color?: string
+      hasfiche?: string
+      icon?: string
       // eslint-disable-next-line camelcase
-      label_infobulle: string
+      label_infobulle?: string
       // eslint-disable-next-line camelcase
-      tourism_style_class: string | string[]
-      wkt: string
+      tourism_style_class?: string | string[]
+      wkt?: string
     }
-    name: string
+    name?: string
   }
   type: 'Feature'
 }
 
 export type OsmFeature = FeatureBase & {
   properties: {
-    'addr:city': string
-    'addr:housenumber': string
-    'addr:postcode': string
-    'addr:street': string
-    metadata: {
-      idosm: string
+    metadata?: {
+      idosm?: string
       // eslint-disable-next-line camelcase
-      osm_poi_type: OsmPoiType
-      timestamp: string
-      user: string
+      osm_poi_type?: OsmPoiType
+      timestamp?: string
+      user?: string
     }
-    name: string
   }
   // eslint-disable-next-line camelcase
-  wp_tags: {
+  wp_tags?: {
     [key: string]: unknown[]
   }
 }
@@ -165,34 +160,34 @@ export type OsmFeature = FeatureBase & {
 export type TisFeature = FeatureBase & {
   properties: {
     // eslint-disable-next-line camelcase
-    tis_COMMUNE: string
+    tis_COMMUNE?: string
     // eslint-disable-next-line camelcase
-    tis_COMMUNEINSEE: string
+    tis_COMMUNEINSEE?: string
     // eslint-disable-next-line camelcase
-    tis_CP: string
+    tis_CP?: string
     // eslint-disable-next-line camelcase
-    tis_id: string
+    tis_id?: string
     // eslint-disable-next-line camelcase
-    tis_LOCALISATION: string
+    tis_LOCALISATION?: string
     // eslint-disable-next-line camelcase
-    tis_ObjectTypeName: string
+    tis_ObjectTypeName?: string
     // eslint-disable-next-line camelcase
-    tis_PHOTO: string[]
+    tis_PHOTO?: string[]
     // eslint-disable-next-line camelcase
-    tis_SyndicObjectID: string
+    tis_SyndicObjectID?: string
     // eslint-disable-next-line camelcase
-    tis_SyndicObjectName: string
+    tis_SyndicObjectName?: string
     // eslint-disable-next-line camelcase
-    tis_TEL: string
+    tis_TEL?: string
     // eslint-disable-next-line camelcase
-    tis_URL: string
+    tis_URL?: string
   }
 }
 
 export type VidoFeature = (TisFeature | OsmFeature) & {
   properties: {
     // eslint-disable-next-line camelcase
-    vido_cat: number | null
+    vido_cat?: number | null
   }
 }
 

@@ -881,7 +881,7 @@ export default Vue.extend({
       }
 
       if (feature?.properties) {
-        const cleanProperties = {}
+        const cleanProperties: VidoFeature['properties'] = {}
 
         Object.keys(feature.properties).forEach((key) => {
           if (IsJsonString(feature.properties[key])) {
@@ -950,36 +950,38 @@ export default Vue.extend({
                 }
               })
             }
-          } else if (props) {
+          } else if (props?.metadata) {
             if (typeof props.metadata === 'string') {
               props.metadata = JSON.parse(props.metadata)
             }
-            id = 'm' + props.metadata.PID
-            marker = this.markers[id]
-            const markerCoords = this.featuresCoordinates[props.metadata.PID]
-            if (!marker && markerCoords) {
-              // Marker
-              const el: HTMLElement = document.createElement('div')
-              el.classList.add('mapboxgl-marker')
-              marker = this.markers[id] = new mapboxgl.Marker({
-                element: el,
-              }).setLngLat(markerCoords) // Using this to avoid misplaced marker
+            if (props?.metadata?.PID) {
+              id = 'm' + props.metadata.PID
+              marker = this.markers[id]
+              const markerCoords = this.featuresCoordinates[props.metadata.PID]
+              if (!marker && markerCoords) {
+                // Marker
+                const el: HTMLElement = document.createElement('div')
+                el.classList.add('mapboxgl-marker')
+                marker = this.markers[id] = new mapboxgl.Marker({
+                  element: el,
+                }).setLngLat(markerCoords) // Using this to avoid misplaced marker
 
-              // Teritorio badge
-              const instance = new TeritorioIconBadge({
-                propsData: {
-                  color: props.metadata.color,
-                  picto: props.metadata.icon,
-                },
-              }).$mount()
-              el.appendChild(instance.$el)
+                // Teritorio badge
+                const instance = new TeritorioIconBadge({
+                  propsData: {
+                    color: props.metadata.color,
+                    picto: props.metadata.icon,
+                  },
+                }).$mount()
+                el.appendChild(instance.$el)
 
-              // Click handler
-              if (props.metadata.HasPopup === 'yes') {
-                el.addEventListener('click', (e) => {
-                  e.stopPropagation()
-                  this.selectFeature(feature)
-                })
+                // Click handler
+                if (props.metadata.HasPopup === 'yes') {
+                  el.addEventListener('click', (e) => {
+                    e.stopPropagation()
+                    this.selectFeature(feature)
+                  })
+                }
               }
             }
           }
