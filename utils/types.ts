@@ -126,36 +126,22 @@ export interface FeatureBase extends MapboxGeoJSONFeature {
       PID: string
       PopupAdress: string
       PopupListField: string
-      // eslint-disable-next-line camelcase
-      acf_groups: string
       classe: string
       color: string
       hasfiche: string
       icon: string
-      idmn1: string | null
-      idmn3: string | null
       // eslint-disable-next-line camelcase
       label_infobulle: string
-      // eslint-disable-next-line camelcase
-      mn3_slug: string
-      // eslint-disable-next-line camelcase
-      post_name: string
       // eslint-disable-next-line camelcase
       tourism_style_class: string | string[]
       wkt: string
     }
     name: string
-    // eslint-disable-next-line camelcase
-    post_title: string
-    // eslint-disable-next-line camelcase
-    url_fiche: string
   }
   type: 'Feature'
 }
 
 export type OsmFeature = FeatureBase & {
-  // eslint-disable-next-line camelcase
-  covid19_fields: unknown[]
   properties: {
     'addr:city': string
     'addr:housenumber': string
@@ -169,10 +155,6 @@ export type OsmFeature = FeatureBase & {
       user: string
     }
     name: string
-    // eslint-disable-next-line camelcase
-    post_title: string
-    // eslint-disable-next-line camelcase
-    url_fiche: string
   }
   // eslint-disable-next-line camelcase
   wp_tags: {
