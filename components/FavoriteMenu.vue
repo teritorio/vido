@@ -1,7 +1,7 @@
 <template>
   <section>
     <TDropdown
-      text="Menu des favoris"
+      :text="$tc('favorites.menu_label')"
       :classes="{
         dropdown:
           'origin-top-right absolute right-16 rounded shadow bg-white mt-1',
@@ -28,7 +28,7 @@
             class="text-yellow-500"
             size="sm"
           />
-          <span class="hidden sm:inline">Favoris</span>
+          <span class="hidden sm:inline">{{ $tc('favorites.title') }}</span>
         </button>
         <button
           class="flex h-11 items-center justify-center flex-shrink-0 px-3 py-2 bg-white border-l border-gray-00 rounded-r-full hover:bg-gray-100 shadow-md focus:outline-none"
@@ -62,7 +62,7 @@
             class="text-gray-500 mr-2"
             size="sm"
           />
-          Partager les favoris
+          {{ $tc('favorites.menu_share') }}
         </button>
         <button
           class="block w-full px-4 py-2 text-sm leading-5 text-left text-gray-700 transition duration-150 ease-in-out hover:bg-gray-100 focus:outline-none focus:bg-gray-100"
@@ -73,14 +73,14 @@
             hide()
           "
         >
-          Supprimer les favoris
+          {{ $tc('favorites.menu_clear') }}
         </button>
       </div>
     </TDropdown>
 
     <TModal
       ref="shareModal"
-      header="Partager le lien des favoris"
+      :header="$tc('favorites.modal.title')"
       :hide-close-button="true"
       @before-open="setShareLink"
     >
@@ -92,7 +92,7 @@
           class="self-end focus:outline-none focus-visible:bg-gray-100 hover:bg-gray-100 py-2 px-4 rounded-full"
           @click="copyLink"
         >
-          Copier
+          {{ $tc('favorites.modal.copy') }}
         </button>
       </div>
     </TModal>

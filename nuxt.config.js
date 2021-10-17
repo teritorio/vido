@@ -83,6 +83,7 @@ export default {
     // https://go.nuxtjs.dev/content
     '@nuxt/content',
     '@nuxtjs/gtm',
+    '@nuxtjs/i18n',
   ],
 
   // Axios module configuration (https://go.nuxtjs.dev/config-axios)
@@ -90,6 +91,20 @@ export default {
 
   // Content module configuration (https://go.nuxtjs.dev/config-content)
   content: {},
+
+  i18n: {
+    strategy: 'no_prefix',
+    lazy: true,
+    detectBrowserLanguage: {
+      useCookie: false,
+    },
+    locales: [
+      { code: 'en', name: 'English', iso: 'en-US', file: 'en.js' },
+      { code: 'fr', name: 'Français', iso: 'fr-FR', file: 'fr.js' },
+    ],
+    defaultLocale: 'en',
+    langDir: '~/locales/',
+  },
 
   // Build Configuration (https://go.nuxtjs.dev/config-build)
   build: {

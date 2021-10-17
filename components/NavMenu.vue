@@ -1,7 +1,7 @@
 <template>
   <section>
     <button
-      aria-label="Navigation"
+      :aria-label="$tc('navMenu.label')"
       type="button"
       class="text-sm text-gray-800 bg-white rounded-full shadow-md outline-none w-11 h-11 focus:outline-none hover:bg-gray-100 focus-visible:bg-gray-100 flex-shrink-0"
       @click="$refs.menuModal.show()"
@@ -44,6 +44,23 @@
         >
           {{ entry.title }}
         </a>
+
+        <template v-if="$i18n.locales.length > 1">
+          <a
+            v-for="locale in $i18n.locales"
+            :key="locale.code"
+            class="w-full px-5 py-3 rounded-lg outline-none focus:outline-none hover:bg-gray-100"
+            @click="$i18n.setLocale(locale.code)"
+          >
+            <font-awesome-icon
+              v-if="locale.code === $i18n.locale"
+              icon="times"
+              class="text-gray-800"
+              size="xs"
+            />
+            {{ locale.name }}
+          </a>
+        </template>
       </div>
     </TModal>
   </section>

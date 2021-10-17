@@ -213,7 +213,7 @@ export default Vue.extend({
       [MapStyle.teritorio]: vectoStyle,
       [MapStyle.mapnik]: {
         version: 8,
-        name: 'Teritorio Mapnik',
+        name: this.$tc('map.mapnik.name'),
         vido_israster: true,
         glyphs: 'https://vecto.teritorio.xyz/fonts/{fontstack}/{range}.pbf',
         sources: {
@@ -226,8 +226,7 @@ export default Vue.extend({
               'https://c.tiles.teritorio.xyz/styles/osm/{z}/{x}/{y}.png',
             ],
             tileSize: 256,
-            attribution:
-              '<a href="https://www.openstreetmap.org/copyright" rel="noopener noreferrer" target="_blank">&copy; OpenStreetMap contributors</a> <a href="https://www.teritorio.fr/" rel="noopener noreferrer" target="_blank">&copy; Teritorio</a>',
+            attribution: this.$tc('map.mapnik.attribution'),
           },
         },
         layers: [
@@ -356,8 +355,8 @@ export default Vue.extend({
           const vidoFeatures = flattenFeatures(features)
           this.handleResetMapZoom(
             vidoFeatures,
-            'Pas de résultat correspondant.',
-            'Voir des lieux plus éloignés ?'
+            this.$tc('snack.noPoi.issue'),
+            this.$tc('snack.noPoi.action')
           )
         })
       } else {
@@ -648,8 +647,8 @@ export default Vue.extend({
           if (hasFavorites) {
             this.handleResetMapZoom(
               allFavorites,
-              'Pas de favori ici.',
-              'Voir tous les favoris ?'
+              this.$tc('snack.noFavorites.issue'),
+              this.$tc('snack.noFavorites.action')
             )
           }
         })
