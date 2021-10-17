@@ -29,7 +29,7 @@
             ref="search"
             :value="searchText"
             class="w-full px-5 py-3 font-medium text-gray-700 placeholder-gray-500 bg-gray-100 border-none rounded-full outline-none appearance-none focus:outline-none focus:ring focus:ring-gray-300"
-            placeholder="Recherche"
+            :placeholder="$tc('headerMenu.search')"
             type="text"
             @input="
               searchText = $event.target.value
@@ -61,7 +61,7 @@
     <div v-if="searchResults" class="overflow-y-auto">
       <SearchResultBlock
         v-if="itemsClasse.length > 0"
-        label="Catégories"
+        :label="$tc('headerMenu.categories')"
         icon="layer-group"
         :items="itemsClasse"
         @item-click="onCategoryClick"
@@ -69,7 +69,7 @@
 
       <SearchResultBlock
         v-if="itemsCities.length > 0"
-        label="Communes"
+        :label="$tc('headerMenu.cities')"
         icon="city"
         :items="itemsCities"
         @item-click="onAddressClick"
@@ -77,7 +77,7 @@
 
       <SearchResultBlock
         v-if="itemsTis.length > 0"
-        label="Points d'intérêts (TIS)"
+        :label="$tc('headerMenu.poisTis')"
         icon="map-marker-alt"
         :items="itemsTis"
         @item-click="onPoiClick"
@@ -85,7 +85,7 @@
 
       <SearchResultBlock
         v-if="itemsOsm.length > 0"
-        label="Points d'intérêts (OSM)"
+        :label="$tc('headerMenu.poisOsm')"
         icon="map-marker-alt"
         :items="itemsOsm"
         @item-click="onPoiClick"
@@ -93,7 +93,7 @@
 
       <SearchResultBlock
         v-if="itemsAddress.length > 0"
-        label="Adresses"
+        :label="$tc('headerMenu.addresses')"
         icon="home"
         :items="itemsAddress"
         @item-click="onAddressClick"
@@ -109,7 +109,7 @@
           0
         "
       >
-        Aucun résultat
+        {{ $tc('headerMenu.noResult') }}
       </p>
     </div>
   </aside>

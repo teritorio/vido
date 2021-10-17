@@ -19,8 +19,8 @@
 
         <button
           v-if="map"
-          aria-label="Mode Explore"
-          title="Basculer en mode Explore"
+          :aria-label="$tc('mapControls.exploreAriaLabel')"
+          :title="$tc('mapControls.exploreButton')"
           type="button"
           :class="[
             'hidden sm:block text-sm font-bold rounded-full shadow-md w-11 h-11 outline-none focus:outline-none ',
@@ -43,7 +43,7 @@
 
         <button
           v-if="map"
-          aria-label="Visualiser la carte en 3D"
+          :aria-label="$tc('mapControls.threeDAriaLabel')"
           type="button"
           :class="[
             'hidden items-center justify-center leading-none sm:flex text-sm font-bold rounded-full shadow-md w-11 h-11 outline-none focus:outline-none ',
@@ -62,7 +62,9 @@
           id="background-selector-map"
           aria-label="Changer le fond de carte"
           class="bg-gray-100 border-4 border-white rounded-full shadow-md outline-none w-11 h-11 focus:outline-none hover:bg-gray-100 focus-visible:bg-gray-100"
-          :title="`Changer le fond de carte (actuellement ${backgrounds[background]})`"
+          :title="`${$tc('mapControls.backgroundButton')} ${
+            backgrounds[background]
+          })`"
           type="button"
           @click="displayNextBackground"
         >

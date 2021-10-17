@@ -29,4 +29,7 @@ export default {
       action: 'See all favorites?',
     },
   },
+  menu: {
+    search: 'Search',
+  },
 }

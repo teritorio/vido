@@ -16,7 +16,7 @@
         <h2
           class="block text-xl font-semibold leading-tight"
           :style="'color:' + color"
-          title="Zoomer sur le lieu"
+          :title="$tc('toast.loactionZoom')"
         >
           {{ name }}
         </h2>
@@ -29,7 +29,7 @@
           target="_blank"
           @click.stop
         >
-          Détails
+          {{ $tc('toast.details') }}
         </a>
       </div>
 
@@ -71,7 +71,7 @@
               <a
                 class="text-blue-400"
                 :href="'tel:' + item"
-                title="Appeler ce numéro"
+                :title="$tc('toast.callNumber')"
               >
                 {{ item }}
               </a>
@@ -82,7 +82,7 @@
               <a
                 class="text-blue-400"
                 :href="'tel:' + item"
-                title="Appeler ce numéro"
+                :title="$tc('toast.callNumber')"
               >
                 {{ item }}
               </a>
@@ -115,7 +115,7 @@
               target="_blank"
               @click.stop
             >
-              Voir le detail
+              {{ $tc('toast.seeDetail') }}
             </a>
           </p>
           <p v-else class="text-sm">
@@ -131,10 +131,10 @@
           v-if="$isMobile() && routeHref"
           class="flex flex-col items-center flex-1 h-full p-2 space-y-2 rounded-lg hover:bg-gray-100"
           :href="routeHref"
-          title="Trouver la route pour venir jusqu'à ce lieu"
+          :title="$tc('toast.findItinary')"
         >
           <font-awesome-icon icon="route" :color="color" size="sm" />
-          <span class="text-sm">Itinéraire</span>
+          <span class="text-sm">{{ $tc('toast.itinary') }}</span>
         </a>
 
         <button
@@ -145,8 +145,8 @@
           ]"
           :title="
             isModeExplorer
-              ? 'Désactiver l\'exploration aux alentours'
-              : 'Explorer les points d\'intérêts aux alentours'
+              ? $tc('toast.unactivateExplore')
+              : $tc('toast.activateExplore')
           "
           @click.stop="onExploreClick"
         >
@@ -155,7 +155,7 @@
             :color="isModeExplorer ? 'white' : color"
             size="sm"
           />
-          <span class="text-sm">Explorer</span>
+          <span class="text-sm">{{ $tc('toast.explore') }}</span>
         </button>
 
         <button
@@ -170,7 +170,7 @@
             :color="!isModeFavorite && color"
             size="sm"
           />
-          <span class="text-sm">Favori</span>
+          <span class="text-sm">{{ $tc('toast.favorite') }}</span>
         </button>
       </div>
     </div>

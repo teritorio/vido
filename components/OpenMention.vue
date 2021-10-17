@@ -1,6 +1,6 @@
 <template>
   <div class="flex items-center text-sm text-gray-500">
-    Ouvert
+    {{ $tc('mentions.opened') }}
     <span class="fill-current text-green-500 ml-1">
       <svg
         class="h-4 w-4"

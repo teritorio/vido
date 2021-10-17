@@ -61,7 +61,7 @@
       @click="onFilterClick"
     >
       <font-awesome-icon icon="filter" size="sm" class="ml-16" />
-      {{ filtered ? 'Modifier les filtres' : 'Filtrer' }}
+      {{ filtered ? $tc('headerMenu.editFilters') : $tc('headerMenu.filter') }}
     </button>
   </div>
 </template>

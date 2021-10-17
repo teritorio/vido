@@ -18,7 +18,7 @@
       />
       <button
         class="flex items-center justify-center text-white text-center rounded-full absolute -top-1 -right-1 w-5 h-5 border-2 border-white bg-red-600"
-        title="Masquer cette catégorie"
+        :title="$tc('headerMenu.hideCategory')"
         @click="() => unselectCategory(category.id)"
       >
         <font-awesome-icon icon="times" class="text-white" size="sm" />

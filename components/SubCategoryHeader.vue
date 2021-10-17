@@ -17,7 +17,7 @@
         class="px-3 py-2 font-medium transition-all rounded-md outline-none focus:outline-none hover:bg-gray-100 focus:bg-gray-100"
         @click="onClickSelectAll"
       >
-        Tout sélectionner
+        {{ $tc('headerMenu.selectAll') }}
       </button>
 
       <button
@@ -26,7 +26,7 @@
         class="px-3 py-2 font-medium transition-all rounded-md outline-none focus:outline-none hover:bg-gray-100 focus:bg-gray-100"
         @click="onClickUnselectAll"
       >
-        Tout désélectionner
+        {{ $tc('headerMenu.unselectAll') }}
       </button>
     </div>
 
