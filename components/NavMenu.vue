@@ -13,7 +13,7 @@
       :hide-close-button="true"
       :classes="{
         overlay: 'z-40 bg-black bg-opacity-50',
-        wrapper: 'z-50 pr-3 pt-3',
+        wrapper: 'z-50 mt-3 mr-3 max-w-max',
         modal: 'bg-white shadow rounded max-w-max ml-auto self-end',
         body: 'p-3',
         overlayEnterClass: 'opacity-0',
