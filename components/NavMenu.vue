@@ -1,5 +1,5 @@
 <template>
-  <section>
+  <section v-if="entries.length + $i18n.locales.length > 0">
     <button
       :aria-label="$tc('navMenu.label')"
       type="button"
@@ -24,7 +24,7 @@
         overlayLeaveToClass: 'opacity-0',
       }"
     >
-      <div v-if="entries.length > 0" class="flex flex-col items-end">
+      <div class="flex flex-col items-end">
         <button
           type="button"
           class="flex items-center justify-center w-10 h-10 text-2xl font-bold transition-all rounded-full outline-none cursor-pointer focus:outline-none hover:bg-gray-100 focus:bg-gray-100"
@@ -45,22 +45,20 @@
           {{ entry.title }}
         </a>
 
-        <template v-if="$i18n.locales.length > 1">
-          <a
-            v-for="locale in $i18n.locales"
-            :key="locale.code"
-            class="w-full px-5 py-3 rounded-lg outline-none focus:outline-none hover:bg-gray-100"
-            @click="$i18n.setLocale(locale.code)"
-          >
-            <font-awesome-icon
-              v-if="locale.code === $i18n.locale"
-              icon="times"
-              class="text-gray-800"
-              size="xs"
-            />
-            {{ locale.name }}
-          </a>
-        </template>
+        <a
+          v-for="locale in $i18n.locales"
+          :key="locale.code"
+          class="w-full px-5 py-3 rounded-lg outline-none focus:outline-none hover:bg-gray-100"
+          @click="$i18n.setLocale(locale.code)"
+        >
+          <font-awesome-icon
+            v-if="locale.code === $i18n.locale"
+            icon="times"
+            class="text-gray-800"
+            size="xs"
+          />
+          {{ locale.name }}
+        </a>
       </div>
     </TModal>
   </section>
