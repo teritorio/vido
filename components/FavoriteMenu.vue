@@ -89,6 +89,7 @@
           {{ shareLink }}
         </p>
         <button
+          v-if="hasClipboard"
           class="self-end focus:outline-none focus-visible:bg-gray-100 hover:bg-gray-100 py-2 px-4 rounded-full"
           @click="copyLink"
         >
@@ -122,9 +123,11 @@ export default Vue.extend({
   },
   data(): {
     shareLink: string
+    hasClipboard: boolean
   } {
     return {
       shareLink: '',
+      hasClipboard: Boolean(navigator.clipboard),
     }
   },
   methods: {
