@@ -13,6 +13,7 @@
           focusHandler,
           blurHandler,
           keydownHandler,
+          isShown,
         }"
         :aria-label="$tc('navMenu.label')"
         type="button"
@@ -22,7 +23,11 @@
         @blur="blurHandler"
         @keydown="keydownHandler"
       >
-        <font-awesome-icon icon="bars" class="text-gray-800" size="sm" />
+        <font-awesome-icon
+          :icon="isShown ? 'times' : 'bars'"
+          class="text-gray-800"
+          size="sm"
+        />
       </button>
 
       <div class="py-1 rounded-md shadow-xs flex flex-col min-w-max">
