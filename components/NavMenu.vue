@@ -46,7 +46,8 @@
           v-for="locale in $i18n.locales"
           :key="locale.code"
           class="w-full px-5 py-3 rounded-lg outline-none focus:outline-none hover:bg-gray-100"
-          @click="$i18n.setLocale(locale.code)"
+          href="#"
+          @click.prevent="$i18n.setLocale(locale.code)"
         >
           <font-awesome-icon
             v-if="locale.code === $i18n.locale"
@@ -54,6 +55,7 @@
             class="text-gray-800"
             size="xs"
           />
+          <span v-else>{{ locale.flag }}</span>
           {{ locale.name }}
         </a>
       </div>
