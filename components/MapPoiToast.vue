@@ -131,10 +131,10 @@
           v-if="$isMobile() && routeHref"
           class="flex flex-col items-center flex-1 h-full p-2 space-y-2 rounded-lg hover:bg-gray-100"
           :href="routeHref"
-          :title="$tc('toast.findItinary')"
+          :title="$tc('toast.findRoute')"
         >
           <font-awesome-icon icon="route" :color="color" size="sm" />
-          <span class="text-sm">{{ $tc('toast.itinary') }}</span>
+          <span class="text-sm">{{ $tc('toast.route') }}</span>
         </a>
 
         <button

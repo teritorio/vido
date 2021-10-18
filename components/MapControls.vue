@@ -62,9 +62,11 @@
           id="background-selector-map"
           aria-label="Changer le fond de carte"
           class="bg-gray-100 border-4 border-white rounded-full shadow-md outline-none w-11 h-11 focus:outline-none hover:bg-gray-100 focus-visible:bg-gray-100"
-          :title="`${$tc('mapControls.backgroundButton')} ${
-            backgrounds[background]
-          })`"
+          :title="
+            $t('mapControls.backgroundButton', {
+              current: backgrounds[background],
+            })
+          "
           type="button"
           @click="displayNextBackground"
         >

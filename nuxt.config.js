@@ -100,6 +100,7 @@ export default {
     },
     locales: [
       { code: 'en', name: 'English', iso: 'en-US', file: 'en.js' },
+      { code: 'es', name: 'Español', iso: 'es-ES', file: 'es.js' },
       { code: 'fr', name: 'Français', iso: 'fr-FR', file: 'fr.js' },
     ],
     defaultLocale: 'en',
