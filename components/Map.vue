@@ -80,7 +80,7 @@
         />
       </div>
       <FavoritesOverlay v-if="showFavoritesOverlay" />
-      <SnackBar @snack-action-click="handleSnackAction" />
+      <SnackBar @click="handleSnackAction" />
     </div>
   </div>
 </template>
@@ -616,8 +616,31 @@ export default Vue.extend({
     },
 
     handleSnackAction() {
+      this.$store.dispatch('snack/showSnack')
+      if (!this.map) {
+        return
+      }
+
       this.resetZoom()
-      this.$store.dispatch('snack/showSnack', null)
+      if (this.isModeFavorite) {
+        const coordinates = Object.values(this.featuresCoordinates) as [
+          [number, number]
+        ]
+        const bbox = coordinates.reduce(
+          (bounds: mapboxgl.LngLatBounds, coord: [number, number]) => {
+            return bounds
+              ? bounds.extend(coord)
+              : new mapboxgl.LngLatBounds(coord, coord)
+          },
+          (null as unknown) as mapboxgl.LngLatBounds
+        )
+        this.map.fitBounds(bbox, { maxZoom: 13 })
+      } else {
+        const flatten = flattenFeatures(this.features)
+        if (flatten) {
+          this.map.fitBounds(this.getBBoxFeatures(flatten), { maxZoom: 13 })
+        }
+      }
     },
 
     async handleFavorites() {
@@ -821,8 +844,6 @@ export default Vue.extend({
         currentZoom >= this.zoom.default &&
         features.length > 0
       ) {
-        const bounds = this.getBBoxFeatures(features)
-        this.$store.dispatch('map/setCenter', bounds.getCenter())
         this.showZoomSnack(text, textBtn)
       }
       if (currentZoom < this.zoom.default) {
