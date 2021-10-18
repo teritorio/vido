@@ -776,15 +776,14 @@ export default Vue.extend({
     getBBoxFeatures(features: GeoJSON.Feature[]): mapboxgl.LngLatBounds {
       return features.reduce(
         (
-          bounds: mapboxgl.LngLatBounds,
+          bounds: mapboxgl.LngLatBounds | null,
           coord: GeoJSON.Feature<GeoJSON.Geometry>
         ) => {
-          return bounds.extend(this.getBBox(coord))
+          return bounds
+            ? bounds.extend(this.getBBox(coord))
+            : this.getBBox(coord)
         },
-        new mapboxgl.LngLatBounds(
-          features[0].geometry.coordinates,
-          features[0].geometry.coordinates
-        )
+        (null as unknown) as mapboxgl.LngLatBounds
       )
     },
 
