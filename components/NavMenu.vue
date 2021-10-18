@@ -1,38 +1,31 @@
 <template>
   <section v-if="entries.length + $i18n.locales.length > 0">
-    <button
-      :aria-label="$tc('navMenu.label')"
-      type="button"
-      class="text-sm text-gray-800 bg-white rounded-full shadow-md outline-none w-11 h-11 focus:outline-none hover:bg-gray-100 focus-visible:bg-gray-100 flex-shrink-0"
-      @click="$refs.menuModal.show()"
-    >
-      <font-awesome-icon icon="bars" class="text-gray-800" size="sm" />
-    </button>
-    <TModal
-      ref="menuModal"
-      :hide-close-button="true"
+    <TDropdown
       :classes="{
-        overlay: 'z-40 bg-black bg-opacity-50',
-        wrapper: 'z-50 mt-3 mr-3 max-w-max',
-        modal: 'bg-white shadow rounded max-w-max ml-auto self-end',
-        body: 'p-3',
-        overlayEnterClass: 'opacity-0',
-        overlayEnterActiveClass: 'transition ease-out duration-100',
-        overlayEnterToClass: 'opacity-100',
-        overlayLeaveClass: 'opacity-100',
-        overlayLeaveActiveClass: 'transition ease-in duration-75',
-        overlayLeaveToClass: 'opacity-0',
+        dropdown:
+          'origin-top-right absolute right-0 rounded shadow bg-white mt-1',
       }"
     >
-      <div class="flex flex-col items-end">
-        <button
-          type="button"
-          class="flex items-center justify-center w-10 h-10 text-2xl font-bold transition-all rounded-full outline-none cursor-pointer focus:outline-none hover:bg-gray-100 focus:bg-gray-100"
-          @click="$refs.menuModal.hide()"
-        >
-          <font-awesome-icon icon="times" class="text-gray-800" size="xs" />
-        </button>
+      <button
+        slot="trigger"
+        slot-scope="{
+          mousedownHandler,
+          focusHandler,
+          blurHandler,
+          keydownHandler,
+        }"
+        :aria-label="$tc('navMenu.label')"
+        type="button"
+        class="text-sm text-gray-800 bg-white rounded-full shadow-md outline-none w-11 h-11 focus:outline-none hover:bg-gray-100 focus-visible:bg-gray-100 flex-shrink-0"
+        @mousedown="mousedownHandler"
+        @focus="focusHandler"
+        @blur="blurHandler"
+        @keydown="keydownHandler"
+      >
+        <font-awesome-icon icon="bars" class="text-gray-800" size="sm" />
+      </button>
 
+      <div class="py-1 rounded-md shadow-xs flex flex-col min-w-max">
         <a
           v-for="entry in entries"
           :key="entry.post_id"
@@ -44,7 +37,6 @@
         >
           {{ entry.title }}
         </a>
-
         <a
           v-for="locale in $i18n.locales"
           :key="locale.code"
@@ -60,19 +52,19 @@
           {{ locale.name }}
         </a>
       </div>
-    </TModal>
+    </TDropdown>
   </section>
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
-import { TModal } from 'vue-tailwind/dist/components'
+import { TDropdown } from 'vue-tailwind/dist/components'
 
 import { NavMenuEntry } from '@/utils/types'
 
 export default Vue.extend({
   components: {
-    TModal,
+    TDropdown,
   },
 
   data(): {
