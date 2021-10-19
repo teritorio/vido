@@ -100,6 +100,7 @@ import MapControls from '@/components/MapControls.vue'
 import MapPoiToast from '@/components/MapPoiToast.vue'
 import SnackBar from '@/components/SnackBar.vue'
 import TeritorioIconBadge from '@/components/TeritorioIcon/TeritorioIconBadge.vue'
+import { getBBoxFeatures, getBBoxFeature, getBBoxCoordList } from '@/lib/bbox'
 import { createMarkerDonutChart } from '@/lib/clusters'
 import {
   DEFAULT_MAP_STYLE,
@@ -626,19 +627,11 @@ export default Vue.extend({
         const coordinates = Object.values(this.featuresCoordinates) as [
           [number, number]
         ]
-        const bbox = coordinates.reduce(
-          (bounds: mapboxgl.LngLatBounds, coord: [number, number]) => {
-            return bounds
-              ? bounds.extend(coord)
-              : new mapboxgl.LngLatBounds(coord, coord)
-          },
-          (null as unknown) as mapboxgl.LngLatBounds
-        )
-        this.map.fitBounds(bbox, { maxZoom: 13 })
+        this.map.fitBounds(getBBoxCoordList(coordinates), { maxZoom: 13 })
       } else {
         const flatten = flattenFeatures(this.features)
         if (flatten) {
-          this.map.fitBounds(this.getBBoxFeatures(flatten), { maxZoom: 13 })
+          this.map.fitBounds(getBBoxFeatures(flatten), { maxZoom: 13 })
         }
       }
     },
@@ -761,61 +754,12 @@ export default Vue.extend({
       })
     },
 
-    getBBox(feature: GeoJSON.Feature): mapboxgl.LngLatBounds {
-      switch (feature.geometry.type) {
-        case 'LineString':
-          return (feature.geometry.coordinates as [[number, number]]).reduce(
-            (bounds: mapboxgl.LngLatBounds, coord: [number, number]) => {
-              return bounds.extend(coord)
-            },
-            new mapboxgl.LngLatBounds(
-              feature.geometry.coordinates[0] as [number, number],
-              feature.geometry.coordinates[0] as [number, number]
-            )
-          )
-
-        case 'Polygon':
-          return (feature.geometry.coordinates[0] as [[number, number]]).reduce(
-            (bounds: mapboxgl.LngLatBounds, coord: [number, number]) => {
-              return bounds.extend(coord)
-            },
-            new mapboxgl.LngLatBounds(
-              feature.geometry.coordinates[0][0] as [number, number],
-              feature.geometry.coordinates[0][0] as [number, number]
-            )
-          )
-
-        case 'Point':
-          return new mapboxgl.LngLatBounds(
-            feature.geometry.coordinates as [number, number],
-            feature.geometry.coordinates as [number, number]
-          )
-
-        default:
-          return new mapboxgl.LngLatBounds([-180, -90], [180, 90])
-      }
-    },
-
-    getBBoxFeatures(features: GeoJSON.Feature[]): mapboxgl.LngLatBounds {
-      return features.reduce(
-        (
-          bounds: mapboxgl.LngLatBounds | null,
-          coord: GeoJSON.Feature<GeoJSON.Geometry>
-        ) => {
-          return bounds
-            ? bounds.extend(this.getBBox(coord))
-            : this.getBBox(coord)
-        },
-        (null as unknown) as mapboxgl.LngLatBounds
-      )
-    },
-
     goTo(feature: VidoFeature) {
       if (!this.map || !feature || !('coordinates' in feature.geometry)) {
         return
       }
 
-      this.map.fitBounds(this.getBBox(feature), { maxZoom: 13 })
+      this.map.fitBounds(getBBoxFeature(feature), { maxZoom: 13 })
     },
 
     resetZoom() {
@@ -968,7 +912,7 @@ export default Vue.extend({
                     0,
                     (error, features) => {
                       if (!error && this.map) {
-                        const bounds = this.getBBoxFeatures(features)
+                        const bounds = getBBoxFeatures(features)
                         this.map.fitBounds(bounds, { padding: 50 })
                       }
                     }
