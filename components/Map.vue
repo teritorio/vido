@@ -91,7 +91,7 @@ import { deepEqual } from 'fast-equals'
 import GeoJSON from 'geojson'
 import throttle from 'lodash.throttle'
 import Mapbox from 'mapbox-gl-vue'
-import mapboxgl, { MapLayerMouseEvent, MapLayerTouchEvent } from 'maplibre-gl'
+import maplibregl, { MapLayerMouseEvent, MapLayerTouchEvent } from 'maplibre-gl'
 import Vue, { PropType } from 'vue'
 import { mapGetters, mapActions } from 'vuex'
 
@@ -152,13 +152,13 @@ export default Vue.extend({
   },
 
   data(): {
-    map: mapboxgl.Map | null
+    map: maplibregl.Map | null
     source: string
     pitch: number
-    markers: { [id: string]: mapboxgl.Marker }
-    markersOnScreen: { [id: string]: mapboxgl.Marker }
+    markers: { [id: string]: maplibregl.Marker }
+    markersOnScreen: { [id: string]: maplibregl.Marker }
     poiFilter: PoiFilter | null
-    selectedFeatureMarker: mapboxgl.Marker | null
+    selectedFeatureMarker: maplibregl.Marker | null
     selectedBackground: keyof typeof MapStyle
     featuresCoordinates: { [id: string]: TupleLatLng }
     allowRegionBackZoom: boolean
@@ -388,7 +388,7 @@ export default Vue.extend({
           feature?.properties?.metadata?.PID || feature?.id?.toString() || null
         )
         this.showPoiToast = true
-        this.selectedFeatureMarker = new mapboxgl.Marker({
+        this.selectedFeatureMarker = new maplibregl.Marker({
           scale: 1.3,
           color: '#f44336',
         })
@@ -491,7 +491,7 @@ export default Vue.extend({
       resetMapview: 'map/resetMapview',
     }),
 
-    onMapInit(map: mapboxgl.Map) {
+    onMapInit(map: maplibregl.Map) {
       this.map = map
 
       this.poiFilter = new PoiFilter()
@@ -546,7 +546,7 @@ export default Vue.extend({
       }
     },
 
-    onMapPitchEnd(map: mapboxgl.Map) {
+    onMapPitchEnd(map: maplibregl.Map) {
       this.pitch = map.getPitch()
     },
 
@@ -876,7 +876,7 @@ export default Vue.extend({
         return
       }
 
-      const newMarkers: { [id: string]: mapboxgl.Marker } = {}
+      const newMarkers: { [id: string]: maplibregl.Marker } = {}
       const features = this.map.querySourceFeatures(src) as VidoFeature[]
       // for every cluster on the screen, create an HTML marker for it (if we didn't yet),
       // and add it to the map if it's not there already
@@ -889,14 +889,14 @@ export default Vue.extend({
           ]
           const props = feature.properties
           let id: string | null = null
-          let marker: mapboxgl.Marker | null = null
+          let marker: maplibregl.Marker | null = null
 
           if (props?.cluster) {
             id = 'c' + props.cluster_id
             marker = this.markers[id]
             if (!marker) {
               const el = createMarkerDonutChart(this.categories, props)
-              marker = this.markers[id] = new mapboxgl.Marker({
+              marker = this.markers[id] = new maplibregl.Marker({
                 element: el,
               }).setLngLat(coords)
               el.addEventListener('click', (e) => {
@@ -931,8 +931,8 @@ export default Vue.extend({
               if (!marker && markerCoords) {
                 // Marker
                 const el: HTMLElement = document.createElement('div')
-                el.classList.add('mapboxgl-marker')
-                marker = this.markers[id] = new mapboxgl.Marker({
+                el.classList.add('maplibregl-marker')
+                marker = this.markers[id] = new maplibregl.Marker({
                   element: el,
                 }).setLngLat(markerCoords) // Using this to avoid misplaced marker
 

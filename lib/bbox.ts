@@ -1,28 +1,28 @@
-import mapboxgl from 'maplibre-gl'
+import maplibregl from 'maplibre-gl'
 
 export const getBBoxFeatures = (
   features: GeoJSON.Feature[]
-): mapboxgl.LngLatBounds => {
+): maplibregl.LngLatBounds => {
   return features.reduce(
     (
-      bounds: mapboxgl.LngLatBounds | null,
+      bounds: maplibregl.LngLatBounds | null,
       coord: GeoJSON.Feature<GeoJSON.Geometry>
     ) =>
       bounds ? bounds.extend(getBBoxFeature(coord)) : getBBoxFeature(coord),
-    (null as unknown) as mapboxgl.LngLatBounds
+    (null as unknown) as maplibregl.LngLatBounds
   )
 }
 
 export const getBBoxFeature = (
   feature: GeoJSON.Feature
-): mapboxgl.LngLatBounds => {
+): maplibregl.LngLatBounds => {
   switch (feature.geometry.type) {
     case 'LineString':
       return (feature.geometry.coordinates as [[number, number]]).reduce(
-        (bounds: mapboxgl.LngLatBounds, coord: [number, number]) => {
+        (bounds: maplibregl.LngLatBounds, coord: [number, number]) => {
           return bounds.extend(coord)
         },
-        new mapboxgl.LngLatBounds(
+        new maplibregl.LngLatBounds(
           feature.geometry.coordinates[0] as [number, number],
           feature.geometry.coordinates[0] as [number, number]
         )
@@ -30,33 +30,33 @@ export const getBBoxFeature = (
 
     case 'Polygon':
       return (feature.geometry.coordinates[0] as [[number, number]]).reduce(
-        (bounds: mapboxgl.LngLatBounds, coord: [number, number]) => {
+        (bounds: maplibregl.LngLatBounds, coord: [number, number]) => {
           return bounds.extend(coord)
         },
-        new mapboxgl.LngLatBounds(
+        new maplibregl.LngLatBounds(
           feature.geometry.coordinates[0][0] as [number, number],
           feature.geometry.coordinates[0][0] as [number, number]
         )
       )
 
     case 'Point':
-      return new mapboxgl.LngLatBounds(
+      return new maplibregl.LngLatBounds(
         feature.geometry.coordinates as [number, number],
         feature.geometry.coordinates as [number, number]
       )
 
     default:
-      return new mapboxgl.LngLatBounds([-180, -90], [180, 90])
+      return new maplibregl.LngLatBounds([-180, -90], [180, 90])
   }
 }
 
 export const getBBoxCoordList = (coordinates: [[number, number]]) => {
   return coordinates.reduce(
-    (bounds: mapboxgl.LngLatBounds, coord: [number, number]) => {
+    (bounds: maplibregl.LngLatBounds, coord: [number, number]) => {
       return bounds
         ? bounds.extend(coord)
-        : new mapboxgl.LngLatBounds(coord, coord)
+        : new maplibregl.LngLatBounds(coord, coord)
     },
-    (null as unknown) as mapboxgl.LngLatBounds
+    (null as unknown) as maplibregl.LngLatBounds
   )
 }

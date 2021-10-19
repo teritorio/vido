@@ -85,7 +85,7 @@
 
 <script lang="ts">
 import { Building3d } from '@teritorio/map'
-import mapboxgl from 'maplibre-gl'
+import maplibregl from 'maplibre-gl'
 import Vue from 'vue'
 import { mapGetters } from 'vuex'
 
@@ -155,7 +155,7 @@ export default Vue.extend({
   watch: {
     map(value, oldValue) {
       if (!oldValue && value) {
-        const navigationControl = new mapboxgl.NavigationControl({
+        const navigationControl = new maplibregl.NavigationControl({
           showCompass: true,
           showZoom: true,
           visualizePitch: true,
@@ -165,7 +165,7 @@ export default Vue.extend({
           navigationControl.onAdd(this.map)
         )
 
-        const geolocateControl = new mapboxgl.GeolocateControl({
+        const geolocateControl = new maplibregl.GeolocateControl({
           positionOptions: { enableHighAccuracy: true },
           trackUserLocation: true,
         })

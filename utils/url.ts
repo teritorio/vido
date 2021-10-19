@@ -16,7 +16,7 @@ export function setHashPart(key: string, val: string | null) {
     params.set(key, val)
   }
 
-  // Replace is for keeping map param working with mapboxgl
+  // Replace is for keeping map param working with maplibregl
   const newHash = '#' + params.toString().replace(/%2F/g, '/')
 
   if (newHash !== location.hash) {

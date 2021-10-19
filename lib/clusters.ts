@@ -1,4 +1,4 @@
-import mapboxgl from 'maplibre-gl'
+import maplibregl from 'maplibre-gl'
 
 import { Category } from '@/utils/types'
 
@@ -50,7 +50,7 @@ const getMarkerDonutSegment = (
 
 export const createMarkerDonutChart = (
   categories: Record<Category['id'], Category>,
-  props: mapboxgl.MapboxGeoJSONFeature['properties']
+  props: maplibregl.MapboxGeoJSONFeature['properties']
 ): HTMLElement => {
   const offsets = []
 
