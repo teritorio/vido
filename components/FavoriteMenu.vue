@@ -58,7 +58,7 @@
         >
           <font-awesome-icon
             ref="menu_icon"
-            icon="share-alt"
+            icon="link"
             class="text-gray-500 mr-2"
             size="sm"
           />
@@ -73,6 +73,12 @@
             hide()
           "
         >
+          <font-awesome-icon
+            ref="menu_icon"
+            icon="trash"
+            class="text-gray-500 mr-2"
+            size="sm"
+          />
           {{ $tc('favorites.menu_clear') }}
         </button>
       </div>
@@ -85,15 +91,35 @@
       @before-open="setShareLink"
     >
       <div class="flex flex-col">
-        <p class="text-gray-500 mb-4">
-          {{ shareLink }}
-        </p>
+        <div class="flex items-center mb-4">
+          <font-awesome-icon
+            ref="menu_icon"
+            icon="link"
+            class="text-gray-500 mr-4"
+            size="md"
+          />
+          <p class="text-gray-500">
+            {{ shareLink }}
+          </p>
+          <button
+            v-if="hasClipboard"
+            class="focus:outline-none focus-visible:bg-gray-100 hover:bg-gray-100 py-2 px-4 rounded-full ml-2"
+            @click="copyLink"
+          >
+            <font-awesome-icon
+              v-if="isCopied"
+              ref="menu_icon"
+              icon="clipboard-check"
+              class="text-green-500"
+            />
+            {{ !isCopied ? $tc('favorites.modal.copy') : '' }}
+          </button>
+        </div>
         <button
-          v-if="hasClipboard"
           class="self-end focus:outline-none focus-visible:bg-gray-100 hover:bg-gray-100 py-2 px-4 rounded-full"
-          @click="copyLink"
+          @click="$refs.shareModal.hide()"
         >
-          {{ $tc('favorites.modal.copy') }}
+          {{ $tc('favorites.modal.close') }}
         </button>
       </div>
     </TModal>
@@ -124,10 +150,12 @@ export default Vue.extend({
   data(): {
     shareLink: string
     hasClipboard: boolean
+    isCopied: boolean
   } {
     return {
       shareLink: '',
       hasClipboard: Boolean(navigator.clipboard),
+      isCopied: false,
     }
   },
   methods: {
@@ -159,7 +187,12 @@ export default Vue.extend({
         return
       }
       navigator.clipboard.writeText(this.shareLink).then(
-        () => {},
+        () => {
+          this.isCopied = true
+          setTimeout(() => {
+            this.isCopied = false
+          }, 5000)
+        },
         (err) => {
           console.error('Vido error: ', err)
         }

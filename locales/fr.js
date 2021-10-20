@@ -7,6 +7,7 @@ export default {
     modal: {
       title: 'Partager le lien des favoris',
       copy: 'Copier',
+      close: 'Fermer',
     },
     noFavs:
       "Vous n'avez pas encore de lieux en favoris. Vous pouvez le faire en sélectionnant un lieu sur la carte, puis en le mémorisant comme favori.",
