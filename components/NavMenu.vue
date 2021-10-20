@@ -4,6 +4,7 @@
       :classes="{
         dropdown:
           'origin-top-right absolute right-0 rounded shadow bg-white mt-1',
+        dropdownWrapper: 'relative z-40',
       }"
     >
       <button
@@ -30,32 +31,35 @@
         />
       </button>
 
-      <div class="py-1 rounded-md shadow-xs flex flex-col min-w-max">
+      <div class="py-1 rounded-md shadow-xs flex flex-col w-max">
         <a
           v-for="entry in entries"
           :key="entry.post_id"
-          class="w-full px-5 py-3 rounded-lg outline-none focus:outline-none hover:bg-gray-100"
+          class="w-full px-5 py-3 outline-none focus:outline-none hover:bg-gray-100"
           :href="entry.url"
           rel="noopener noreferrer"
           target="_blank"
           @click.stop
         >
+          <font-awesome-icon
+            icon="external-link-alt"
+            class="text-gray-500 mr-2"
+            size="sm"
+          />
           {{ entry.title }}
         </a>
+        <hr v-if="Boolean(entries.length)" class="" />
         <a
           v-for="locale in $i18n.locales"
           :key="locale.code"
-          class="w-full px-5 py-3 rounded-lg outline-none focus:outline-none hover:bg-gray-100"
+          :class="[
+            'w-full px-5 py-3 outline-none focus:outline-none hover:bg-gray-100',
+            locale.code === $i18n.locale && 'bg-gray-200',
+          ]"
           href="#"
           @click.prevent="$i18n.setLocale(locale.code)"
         >
-          <font-awesome-icon
-            v-if="locale.code === $i18n.locale"
-            icon="times"
-            class="text-gray-800"
-            size="xs"
-          />
-          <span v-else>{{ locale.flag }}</span>
+          <span class="mr-2">{{ locale.flag }}</span>
           {{ locale.name }}
         </a>
       </div>
