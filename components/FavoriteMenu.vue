@@ -84,7 +84,7 @@
       </div>
     </TDropdown>
 
-    <TModal
+    <t-modal
       ref="shareModal"
       :header="$tc('favorites.modal.title')"
       :hide-close-button="true"
@@ -122,19 +122,18 @@
           {{ $tc('favorites.modal.close') }}
         </button>
       </div>
-    </TModal>
+    </t-modal>
   </section>
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
-import { TModal, TDropdown } from 'vue-tailwind/dist/components'
+import { TDropdown } from 'vue-tailwind/dist/components'
 
 import { LOCAL_STORAGE } from '@/lib/constants'
 
 export default Vue.extend({
   components: {
-    TModal,
     TDropdown,
   },
   props: {
