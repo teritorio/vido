@@ -96,7 +96,6 @@
             ref="menu_icon"
             icon="link"
             class="text-gray-500 mr-4"
-            size="md"
           />
           <p class="text-gray-500">
             {{ shareLink }}
