@@ -10,17 +10,16 @@ function checkEnvVariable(variableName) {
 }
 
 checkEnvVariable('API_ENDPOINT')
-checkEnvVariable('IGN_TOKEN')
-checkEnvVariable('TILES_TOKEN')
 checkEnvVariable('VECTO_STYLE_URL')
+checkEnvVariable('SATELLITE_STYLE_URL')
 checkEnvVariable('VECTO_TILES_URL')
 
 export default {
+  target: 'static',
   publicRuntimeConfig: {
     API_ENDPOINT: process.env.API_ENDPOINT || '',
-    IGN_TOKEN: process.env.IGN_TOKEN || '',
-    TILES_TOKEN: process.env.TILES_TOKEN || '',
     VECTO_STYLE_URL: process.env.VECTO_STYLE_URL || '',
+    SATELLITE_STYLE_URL: process.env.SATELLITE_STYLE_URL || '',
     VECTO_TILES_URL: process.env.VECTO_TILES_URL || '',
   },
   pwa: {
@@ -45,7 +44,6 @@ export default {
   // Global CSS (https://go.nuxtjs.dev/config-css)
   css: [
     '@fortawesome/fontawesome-svg-core/styles.css',
-    '@teritorio/font-teritorio-tourism/teritorio-tourism/teritorio-tourism.css',
     'maplibre-gl/dist/maplibre-gl.css',
     'vue-multiselect/dist/vue-multiselect.min.css',
   ],
@@ -55,7 +53,11 @@ export default {
   },
 
   // Plugins to run before rendering page (https://go.nuxtjs.dev/config-plugins)
-  plugins: ['@/plugins/fontawesome.ts', '@/plugins/mobile.ts'],
+  plugins: [
+    '@/plugins/fontawesome.ts',
+    '@/plugins/mobile.ts',
+    '@/plugins/modal.ts',
+  ],
 
   // Auto import components (https://go.nuxtjs.dev/config-components)
   components: false,
@@ -121,8 +123,8 @@ export default {
 
   // Google Tag Manager config
   gtm: {
-    id: 'GTM-5J5XBKJ',
-    enabled: true,
+    id: process.env.GOOGLE_TAG_MANAGER_ID,
+    enabled: Boolean(process.env.GOOGLE_TAG_MANAGER_ID),
     pageTracking: true,
   },
 }

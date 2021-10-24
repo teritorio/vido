@@ -1,13 +1,16 @@
 <template>
   <aside :class="['pointer-events-none', dense && 'hidden sm:block']">
     <div
-      class="absolute flex justify-end space-x-3 pointer-events-auto items-top pt-4 right-3 sm:pt-0 w-28 sm:w-48 sm:top-3 top-20"
+      class="absolute flex justify-end pointer-events-auto items-top pt-4 right-3 sm:pt-0 w-40 sm:w-48 sm:top-3 top-20"
     >
       <button
         v-if="map"
         aria-label="Favoris"
         type="button"
-        class="space-x-1 text-sm font-medium text-gray-800 bg-white rounded-full shadow-md outline-none sm:px-5 w-11 sm:w-auto h-11 focus:outline-none hover:bg-gray-100 focus-visible:bg-gray-100"
+        :class="[
+          'space-x-1 text-sm font-medium text-gray-800 bg-white shadow-md outline-none sm:px-5 w-11 sm:w-auto h-11 focus:outline-none hover:bg-gray-100 focus-visible:bg-gray-100 flex-shrink-0',
+          hasFavorites ? 'rounded-l-lg' : 'rounded-full',
+        ]"
         @click="toggleFavoriteMode"
       >
         <font-awesome-icon
@@ -17,12 +20,13 @@
         />
         <span class="hidden sm:inline">Favoris</span>
       </button>
+      <FavoriteMenu v-if="map && hasFavorites" />
 
       <button
         v-if="map"
         aria-label="Navigation"
         type="button"
-        class="text-sm text-gray-800 bg-white rounded-full shadow-md outline-none w-11 h-11 focus:outline-none hover:bg-gray-100 focus-visible:bg-gray-100"
+        class="text-sm text-gray-800 bg-white rounded-full shadow-md outline-none w-11 h-11 focus:outline-none hover:bg-gray-100 focus-visible:bg-gray-100 flex-shrink-0 ml-5"
         @click="toggleNavMenu"
       >
         <font-awesome-icon icon="bars" class="text-gray-800" size="sm" />
@@ -104,6 +108,7 @@ import mapboxgl from 'maplibre-gl'
 import Vue from 'vue'
 import { mapGetters } from 'vuex'
 
+import FavoriteMenu from '@/components/FavoriteMenu.vue'
 import NavMenu from '@/components/NavMenu.vue'
 import { Mode } from '@/utils/types'
 import { getHashPart, setHashPart } from '@/utils/url'
@@ -111,8 +116,13 @@ import { getHashPart, setHashPart } from '@/utils/url'
 export default Vue.extend({
   components: {
     NavMenu,
+    FavoriteMenu,
   },
   props: {
+    hasFavorites: {
+      type: Boolean,
+      default: false,
+    },
     backgrounds: {
       type: Object,
       default: null,
@@ -241,7 +251,7 @@ export default Vue.extend({
       this.$emit('changeBackground', nextBackgroundName)
     },
     nextBackgroundName(backgroundNameReference: string): string {
-      const styleNames = ['teritorio', 'mapnik', 'aerial']
+      const styleNames = ['teritorio', 'aerial', 'mapnik']
 
       const backgroundReferenceIndex = styleNames.findIndex(
         (styleName) => styleName === backgroundNameReference

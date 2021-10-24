@@ -74,8 +74,15 @@ function keepFeature(feature: VidoFeature, filters: FiltreValues): boolean {
     return true
   }
 
-  const filterExist = (filterToTest: string[], featureToTest: string[]) => {
-    return featureToTest.find(feature => filterToTest.includes(feature));
+  const filterExist = (
+    filterToTest: string[],
+    featureToTest: string[] | string
+  ) => {
+    if (Array.isArray(featureToTest)) {
+      return featureToTest.find((feature) => filterToTest.includes(feature))
+    } else {
+      return filterToTest.includes(featureToTest)
+    }
   }
 
   for (const key in filters.selectionFiltre) {

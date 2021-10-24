@@ -1,7 +1,6 @@
 <template>
   <div
-    class="z-10 flex flex-col w-full max-w-xl mx-0 overflow-y-auto bg-white shadow-md pointer-events-auto sm:flex-row sm:w-auto sm:mx-auto sm:rounded-xl max-h-90"
-    @click="() => $emit('click')"
+    class="z-10 flex flex-col w-full max-w-xl mx-0 overflow-y-auto bg-white shadow-md pointer-events-auto sm:flex-row sm:w-auto sm:mx-auto sm:rounded-xl poiDescription"
   >
     <img
       v-if="poiProp('teritorio:image')"
@@ -11,11 +10,11 @@
     />
 
     <div
-      class="px-8 py-6 flex flex-col justify-between sm:overflow-y-auto h-50 min-h-full sm:min-h-none max-h-full w-full sm:w-80 md:h-80 md:max-h-full md:w-96"
+      class="px-8 py-6 flex flex-col sm:overflow-y-auto flex-grow sm:h-50 h-auto sm:max-h-full box-border w-full sm:w-80 md:h-80 md:max-h-full md:w-96"
     >
       <div class="flex items-center justify-between flex-shrink-0">
         <h2
-          class="block text-xl font-semibold leading-tight cursor-pointer"
+          class="block text-xl font-semibold leading-tight"
           :style="'color:' + color"
           title="Zoomer sur le lieu"
         >
@@ -55,7 +54,7 @@
         {{ category }}
       </div>
 
-      <div class="h-auto flex-grow flex-shrink-0" style="min-height: 60px">
+      <div class="h-auto flex-grow flex-shrink-0">
         <p class="mt-6 text-sm">
           <template v-if="address">
             {{ address }}
@@ -90,22 +89,6 @@
             </li>
           </ul>
 
-          <ul v-else-if="field.k === 'opening_hours' && field.v">
-            <li v-for="item in field.v" :key="item">
-              <p v-show="Boolean(item.label)" class="text-sm mt-1">
-                <b>{{ item.label }}</b>
-              </p>
-              <p
-                v-for="sub in item.opening_hours"
-                v-show="item.opening_hours"
-                :key="sub"
-                class="text-sm"
-              >
-                {{ sub }}
-              </p>
-            </li>
-          </ul>
-
           <ul v-else-if="Array.isArray(field.v)">
             <li v-for="item in field.v" :key="item">
               <p class="text-sm mt-1">
@@ -114,6 +97,19 @@
             </li>
           </ul>
 
+          <p v-else-if="field.v.length > textLimit" class="text-sm">
+            {{ field.v.substring(0, textLimit) + ' ...' }}
+            <a
+              v-if="hasFiche"
+              class="underline"
+              :href="poiProp('teritorio:url')"
+              rel="noopener noreferrer"
+              target="_blank"
+              @click.stop
+            >
+              Voir le detail
+            </a>
+          </p>
           <p v-else class="text-sm">
             {{ field.v }}
           </p>
@@ -124,7 +120,7 @@
         class="relative flex items-center mt-6 space-x-2 justify-evenly flex-shrink-0 mt-6"
       >
         <a
-          v-if="$isMobile()"
+          v-if="$isMobile() && routeHref"
           class="flex flex-col items-center flex-1 h-full p-2 space-y-2 rounded-lg hover:bg-gray-100"
           :href="routeHref"
           title="Trouver la route pour venir jusqu'à ce lieu"
@@ -199,10 +195,12 @@ export default Vue.extend({
   data(): {
     sptags: { [key: string]: any } | null
     apiProps: { [key: string]: any } | null
+    textLimit: number
   } {
     return {
       sptags: null,
       apiProps: null,
+      textLimit: 160,
     }
   },
 
@@ -328,16 +326,20 @@ export default Vue.extend({
         )
     },
 
-    routeHref(): string {
-      const lat = this.poi.geometry.coordinates[1]
-      const lng = this.poi.geometry.coordinates[0]
-      const latLng = `${lat},${lng}`
+    routeHref(): string | null {
+      if (this.poi.geometry.type === 'Point') {
+        const lat = this.poi.geometry.coordinates[1]
+        const lng = this.poi.geometry.coordinates[0]
+        const latLng = `${lat},${lng}`
 
-      if (isIOS()) {
-        return `maps://?q=${latLng}`
+        if (isIOS()) {
+          return `maps://?q=${latLng}`
+        }
+
+        return `geo:${latLng}`
+      } else {
+        return null
       }
-
-      return `geo:${latLng}`
     },
   },
 
@@ -408,3 +410,10 @@ export default Vue.extend({
   },
 })
 </script>
+<style>
+@media screen and (min-width: 640px) {
+  .poiDescription {
+    max-height: 30vh;
+  }
+}
+</style>

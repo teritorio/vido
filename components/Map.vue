@@ -13,42 +13,40 @@
           !small && !isModeExplorer && 'mt-20 sm:mt-0 h-4/5 sm:h-full',
         ]"
       >
-        <client-only>
-          <mapbox
-            class="h-full"
-            access-token=""
-            :map-options="{
-              center: [center.lng, center.lat],
-              hash: 'map',
-              maxZoom: zoom.max,
-              minZoom: zoom.min,
-              pitch,
-              style: mapStyle,
-              zoom: zoom.default,
-            }"
-            :nav-control="{
-              show: false,
-            }"
-            :attribution-control="{
-              position: 'bottom-right',
-              show: true,
-            }"
-            @map-init="onMapInit"
-            @map-pitchend="onMapPitchEnd"
-            @map-data="onMapRender"
-            @map-drag="onMapRender"
-            @map-move="onMapRender"
-            @map-pitch="onMapRender"
-            @map-resize="onMapRender"
-            @map-rotate="onMapRender"
-            @map-touchmove="onMapRender"
-            @map-zoom="onMapRender"
-          />
-        </client-only>
+        <mapbox
+          v-if="mapStyle"
+          class="h-full"
+          access-token=""
+          :map-options="{
+            center: [center.lng, center.lat],
+            hash: 'map',
+            maxZoom: zoom.max,
+            minZoom: zoom.min,
+            pitch,
+            style: mapStyle,
+            zoom: zoom.default,
+          }"
+          :nav-control="{
+            show: false,
+          }"
+          :attribution-control="{
+            position: 'bottom-right',
+            show: true,
+          }"
+          @map-init="onMapInit"
+          @map-pitchend="onMapPitchEnd"
+          @map-data="onMapRender"
+          @map-dragend="onMapRender"
+          @map-moveend="onMapRender"
+          @map-resize="onMapRender"
+          @map-rotateend="onMapRender"
+          @map-touchmove="onMapRender"
+          @map-zoomend="onMapRender"
+        />
       </div>
 
       <MapControls
-        :has-favorites="favoritesIds.length === 0"
+        :has-favorites="favoritesIds.length !== 0"
         :backgrounds="availableStyles"
         :dense="small"
         :is-mode-favorite="isModeFavorite"
@@ -66,7 +64,6 @@
           v-if="selectedFeature && showPoiToast"
           :poi="selectedFeature"
           class="flex-grow-0"
-          @click="goToSelectedPoi"
           @explore-click="exploreAroundSelectedPoi"
           @favorite-click="toggleFavoriteMode"
         />
@@ -91,9 +88,11 @@
 <script lang="ts">
 import { PoiFilter } from '@teritorio/map'
 import { deepEqual } from 'fast-equals'
+import GeoJSON from 'geojson'
 import throttle from 'lodash.throttle'
 import Mapbox from 'mapbox-gl-vue'
 import mapboxgl, { MapLayerMouseEvent, MapLayerTouchEvent } from 'maplibre-gl'
+import OpeningHours from 'opening_hours'
 import Vue, { PropType } from 'vue'
 import { mapGetters, mapActions } from 'vuex'
 
@@ -102,6 +101,7 @@ import MapControls from '@/components/MapControls.vue'
 import MapPoiToast from '@/components/MapPoiToast.vue'
 import SnackBar from '@/components/SnackBar.vue'
 import TeritorioIconBadge from '@/components/TeritorioIcon/TeritorioIconBadge.vue'
+import { createMarkerDonutChart } from '@/lib/clusters'
 import {
   DEFAULT_MAP_STYLE,
   EXPLORER_MAP_STYLE,
@@ -120,7 +120,11 @@ import {
   VidoMglStyle,
 } from '@/utils/types'
 import { getHashPart, setHashPart } from '@/utils/url'
-import { flattenFeatures } from '@/utils/utilities'
+import {
+  flattenFeatures,
+  getPreviousMonday,
+  displayTime,
+} from '@/utils/utilities'
 
 const POI_SOURCE = 'poi'
 const FAVORITE_SOURCE = 'favorite-source'
@@ -165,7 +169,8 @@ export default Vue.extend({
     showPoiToast: boolean
     showFavoritesOverlay: boolean
     previousCategories: Category['id'][]
-    tourismStyleWithProxyTiles: VidoMglStyle | null
+    mapStyles: Record<string, string | VidoMglStyle>
+    mapStyle: string | VidoMglStyle | null
   } {
     return {
       map: null,
@@ -181,17 +186,71 @@ export default Vue.extend({
       showFavoritesOverlay: false,
       showPoiToast: false,
       previousCategories: [],
-      tourismStyleWithProxyTiles: null,
+      mapStyles: {},
+      mapStyle: null,
     }
   },
   async fetch() {
-    this.tourismStyleWithProxyTiles = await fetch(
-      this.$config.VECTO_STYLE_URL
-    ).then((res) => res.json())
+    const vectoFetch = fetch(this.$config.VECTO_STYLE_URL)
+      .then((res) => res.json())
+      .then((vectoStyle) => {
+        if (vectoStyle?.sources?.openmaptiles.url) {
+          vectoStyle.sources.openmaptiles.url = this.$config.VECTO_TILES_URL
+        }
+        return vectoStyle
+      })
 
-    if (this.tourismStyleWithProxyTiles?.sources?.openmaptiles.url) {
-      this.tourismStyleWithProxyTiles.sources.openmaptiles.url = this.$config.VECTO_TILES_URL
+    const satelliteFetch = fetch(this.$config.SATELLITE_STYLE_URL)
+      .then((res) => res.json())
+      .then((satelliteStyle) => {
+        if (satelliteStyle?.sources?.openmaptiles.url) {
+          satelliteStyle.sources.openmaptiles.url = this.$config.VECTO_TILES_URL
+        }
+        return satelliteStyle
+      })
+
+    const [vectoStyle, satelliteStyle] = await Promise.all([
+      vectoFetch,
+      satelliteFetch,
+    ])
+
+    this.mapStyles = {
+      [MapStyle.teritorio]: vectoStyle,
+      [MapStyle.mapnik]: {
+        version: 8,
+        name: 'Teritorio Mapnik',
+        vido_israster: true,
+        glyphs: 'https://vecto.teritorio.xyz/fonts/{fontstack}/{range}.pbf',
+        sources: {
+          mapnik: {
+            type: 'raster',
+            tiles: [
+              // 'https://tile.openstreetmap.org/{z}/{x}/{y}.png', // Main OSM tiles
+              'https://a.tiles.teritorio.xyz/styles/osm/{z}/{x}/{y}.png',
+              'https://b.tiles.teritorio.xyz/styles/osm/{z}/{x}/{y}.png',
+              'https://c.tiles.teritorio.xyz/styles/osm/{z}/{x}/{y}.png',
+            ],
+            tileSize: 256,
+            attribution:
+              '<a href="https://www.openstreetmap.org/copyright" rel="noopener noreferrer" target="_blank">&copy; OpenStreetMap contributors</a> <a href="https://www.teritorio.fr/" rel="noopener noreferrer" target="_blank">&copy; Teritorio</a>',
+          },
+        },
+        layers: [
+          {
+            id: 'mapnik',
+            type: 'raster',
+            source: 'mapnik',
+            minzoom: 1,
+            maxzoom: 20,
+          },
+        ],
+      },
+      [MapStyle.aerial]: satelliteStyle,
     }
+
+    this.mapStyle =
+      this.mapStyles[this.selectedBackground] ||
+      this.mapStyles[DEFAULT_MAP_STYLE]
   },
 
   computed: {
@@ -225,77 +284,6 @@ export default Vue.extend({
       return this.mode === Mode.EXPLORER
     },
 
-    mapStyle(): string | VidoMglStyle {
-      const styles = this.mapStyles
-
-      return styles[this.selectedBackground] || styles[DEFAULT_MAP_STYLE]
-    },
-
-    mapStyles(): Record<string, string | VidoMglStyle> {
-      return {
-        [MapStyle.teritorio]:
-          this.tourismStyleWithProxyTiles || this.$config.VECTO_STYLE_URL,
-        [MapStyle.mapnik]: {
-          version: 8,
-          name: 'Teritorio Mapnik',
-          vido_israster: true,
-          glyphs: 'https://vecto.teritorio.xyz/fonts/{fontstack}/{range}.pbf',
-          sources: {
-            mapnik: {
-              type: 'raster',
-              tiles: [
-                // 'https://tile.openstreetmap.org/{z}/{x}/{y}.png', // Main OSM tiles
-                'https://a.tiles.teritorio.xyz/styles/osm/{z}/{x}/{y}.png',
-                'https://b.tiles.teritorio.xyz/styles/osm/{z}/{x}/{y}.png',
-                'https://c.tiles.teritorio.xyz/styles/osm/{z}/{x}/{y}.png',
-              ],
-              tileSize: 256,
-              attribution:
-                '<a href="https://www.openstreetmap.org/copyright" rel="noopener noreferrer" target="_blank">&copy; OpenStreetMap contributors</a> <a href="https://www.teritorio.fr/" rel="noopener noreferrer" target="_blank">&copy; Teritorio</a>',
-            },
-          },
-          layers: [
-            {
-              id: 'mapnik',
-              type: 'raster',
-              source: 'mapnik',
-              minzoom: 1,
-              maxzoom: 20,
-            },
-          ],
-        },
-        [MapStyle.aerial]: {
-          version: 8,
-          name: 'Imagerie aérienne IGN',
-          // TODO: To re-enable for https://github.com/teritorio/vido/issues/67
-          // sprite: `https://vecto-dev.teritorio.xyz/styles/teritorio-tourism-proxy/sprite?key=${this.$config.TILES_TOKEN}`,
-          // glyphs: `https://vecto-dev.teritorio.xyz/fonts/{fontstack}/{range}.pbf?key=${this.$config.TILES_TOKEN}`,
-          vido_israster: true,
-          glyphs: 'https://vecto.teritorio.xyz/fonts/{fontstack}/{range}.pbf',
-          sources: {
-            aerial: {
-              type: 'raster',
-              tiles: [
-                `https://wxs.ign.fr/${this.$config.IGN_TOKEN}/geoportail/wmts?SERVICE=WMTS&REQUEST=GetTile&VERSION=1.0.0&LAYER=ORTHOIMAGERY.ORTHOPHOTOS&TILEMATRIXSET=PM&TILEMATRIX={z}&TILECOL={x}&TILEROW={y}&STYLE=normal&FORMAT=image/jpeg`,
-              ],
-              tileSize: 256,
-              attribution:
-                '<a href="https://ign.fr/" rel="noopener noreferrer" target="_blank">&copy; IGN</a>',
-            },
-          },
-          layers: [
-            {
-              id: 'aerial',
-              type: 'raster',
-              source: 'aerial',
-              minzoom: 1,
-              maxzoom: 21,
-            },
-          ],
-        },
-      }
-    },
-
     availableStyles(): typeof MAP_STYLES {
       return MAP_STYLES
     },
@@ -322,49 +310,54 @@ export default Vue.extend({
         return
       }
 
+      const oldCategories: string[] = flattenFeatures(oldFeatures).map(
+        (e) => e?.properties?.metadata?.PID
+      )
+      const newCategories: string[] = flattenFeatures(features).map(
+        (e) => e?.properties?.metadata?.PID
+      )
+
       // Add exact coordinates to a store to avoid rounding from Mapbox GL
       Object.keys(features).forEach((categoryId) => {
         features[categoryId].forEach((feature) => {
-          this.featuresCoordinates[feature.properties.metadata.PID] =
-            feature.geometry.coordinates
+          if (feature.geometry.type === 'Point') {
+            this.featuresCoordinates[feature.properties.metadata.PID] = feature
+              .geometry.coordinates as [number, number]
+          }
         })
       })
 
       const vidoFeatures = flattenFeatures(features)
       // Change visible data
       if (this.map.getSource(POI_SOURCE)) {
-        // Clean-up previous cluster markers
-        this.markers = {}
-        Object.values(this.markersOnScreen).forEach((marker) => marker.remove())
-        this.markersOnScreen = {}
+        if (!deepEqual(newCategories, oldCategories)) {
+          // Clean-up previous cluster markers
+          this.markers = {}
+          Object.values(this.markersOnScreen).forEach((marker) =>
+            marker.remove()
+          )
+          this.markersOnScreen = {}
 
-        // Change data
-        const source = this.map.getSource(POI_SOURCE)
-        if ('setData' in source) {
-          source.setData({
-            type: 'FeatureCollection',
-            features: vidoFeatures,
-          })
+          // Change data
+          const source = this.map.getSource(POI_SOURCE)
+          if ('setData' in source) {
+            source.setData({
+              type: 'FeatureCollection',
+              features: vidoFeatures,
+            })
+          }
         }
-      }
-      // Create POI source + layer
-      else {
-        this.initPoiLayer(vidoFeatures)
       }
 
       // Zoom back to whole region if a new category is selected
-      const oldCategories: string[] = Object.keys(oldFeatures)
-      const newCategories: string[] = Object.keys(features)
-
       if (
         this.allowRegionBackZoom &&
-        !deepEqual(newCategories, oldCategories) &&
-        newCategories.find((c) => !oldCategories.includes(c))
+        !deepEqual(newCategories, oldCategories)
       ) {
         this.resetMapview().then(() => {
-          const vidoFeartures = flattenFeatures(features)
+          const vidoFeatures = flattenFeatures(features)
           this.handleResetMapZoom(
-            vidoFeartures,
+            vidoFeatures,
             'Pas de résultat correspondant.',
             'Voir des lieux plus éloignés ?'
           )
@@ -387,7 +380,7 @@ export default Vue.extend({
       }
 
       // Add new marker if a feature is selected
-      if (feature) {
+      if (feature && feature.geometry.type === 'Point') {
         setHashPart(
           'poi',
           feature?.properties?.metadata?.PID || feature?.id?.toString() || null
@@ -399,7 +392,7 @@ export default Vue.extend({
         })
           .setLngLat(
             this.featuresCoordinates[feature.properties.metadata?.PID] ||
-              feature.geometry.coordinates
+              (feature.geometry.coordinates as [number, number])
           )
           .addTo(this.map)
       } else {
@@ -413,9 +406,8 @@ export default Vue.extend({
         return
       }
 
-      const style = this.mapStyle
-
-      this.map.setStyle(style)
+      this.mapStyle = this.mapStyles[this.selectedBackground]
+      this.map.setStyle(this.mapStyle)
     },
 
     mode() {
@@ -425,7 +417,9 @@ export default Vue.extend({
             this.selectedBackground === EXPLORER_MAP_STYLE
 
           this.selectedBackground = EXPLORER_MAP_STYLE
-          this.map?.setStyle(this.mapStyle)
+          if (this.mapStyle) {
+            this.map?.setStyle(this.mapStyle)
+          }
 
           setHashPart('bg', this.selectedBackground)
 
@@ -448,8 +442,8 @@ export default Vue.extend({
   created() {
     this.pitch = this.$store.getters['map/pitch']
 
-    this.onMapPitchEnd = throttle(this.onMapPitchEnd, 300)
-    this.onMapRender = throttle(this.onMapRender, 1000)
+    this.onMapPitchEnd = throttle(this.onMapPitchEnd, 200)
+    this.onMapRender = throttle(this.onMapRender, 200)
   },
 
   beforeMount() {
@@ -470,7 +464,24 @@ export default Vue.extend({
       this.$store.dispatch('favorite/setFavoritesAction', 'open')
     }
 
-    this.selectedBackground = getHashPart('bg') || DEFAULT_MAP_STYLE
+    const favs = getHashPart('favs')
+    if (favs) {
+      try {
+        const newFavorite = favs.split(',')
+
+        localStorage.setItem(
+          LOCAL_STORAGE.favorites,
+          JSON.stringify({ favorites: newFavorite, version: 1 })
+        )
+        this.$store.dispatch('favorite/toggleFavoriteModes', newFavorite)
+      } catch (e) {
+        // eslint-disable-next-line no-console
+        console.error('Vido error:', e.message)
+      }
+    }
+
+    this.selectedBackground =
+      (getHashPart('bg') as keyof typeof MapStyle) || DEFAULT_MAP_STYLE
   },
 
   methods: {
@@ -499,41 +510,28 @@ export default Vue.extend({
         }
       })
 
-      this.map.on('load', () => {
+      this.map.on('styledata', () => {
         const vidoFeatures = flattenFeatures(this.features)
-
         this.initPoiLayer(vidoFeatures)
       })
 
       this.map.on('click', () => {
-        this.selectFeature(null)
+        this.unselectFeature()
         this.$emit('click')
       })
 
       // Listen to click on POI from vector tiles (explorer mode)
-      this.map.on(
-        'click',
-        'poi-level-1',
-        (event: MapLayerMouseEvent | MapLayerTouchEvent) => {
-          this.selectFeature(event.features?.pop())
+      const selectFeature = (
+        event: MapLayerMouseEvent | MapLayerTouchEvent
+      ) => {
+        const feature = event.features?.pop()
+        if (feature) {
+          this.selectFeature(feature as VidoFeature)
         }
-      )
-
-      this.map.on(
-        'click',
-        'poi-level-2',
-        (event: MapLayerMouseEvent | MapLayerTouchEvent) => {
-          this.selectFeature(event.features?.pop())
-        }
-      )
-
-      this.map.on(
-        'click',
-        'poi-level-3',
-        (event: MapLayerMouseEvent | MapLayerTouchEvent) => {
-          this.selectFeature(event.features?.pop())
-        }
-      )
+      }
+      this.map.on('click', 'poi-level-1', selectFeature)
+      this.map.on('click', 'poi-level-2', selectFeature)
+      this.map.on('click', 'poi-level-3', selectFeature)
 
       const poiHash = getHashPart('poi')
 
@@ -671,7 +669,7 @@ export default Vue.extend({
 
           // Change data
           const source = this.map.getSource(FAVORITE_SOURCE)
-          if ('setData' in source) {
+          if (source && 'setData' in source) {
             source.setData({
               type: 'FeatureCollection',
               features: allFavorites,
@@ -710,11 +708,11 @@ export default Vue.extend({
       }
     },
 
-    async fetchFavorites(ids) {
+    async fetchFavorites(ids: [string]) {
       return await getPoiByIds(this.$config.API_ENDPOINT, ids)
     },
 
-    showZoomSnack(text, textBtn) {
+    showZoomSnack(text: string, textBtn: string) {
       this.$store.dispatch('snack/showSnack', {
         time: 5000,
         text,
@@ -739,39 +737,62 @@ export default Vue.extend({
       })
     },
 
+    getBBox(feature: GeoJSON.Feature): mapboxgl.LngLatBounds {
+      switch (feature.geometry.type) {
+        case 'LineString':
+          return (feature.geometry.coordinates as [[number, number]]).reduce(
+            (bounds: mapboxgl.LngLatBounds, coord: [number, number]) => {
+              return bounds.extend(coord)
+            },
+            new mapboxgl.LngLatBounds(
+              feature.geometry.coordinates[0] as [number, number],
+              feature.geometry.coordinates[0] as [number, number]
+            )
+          )
+
+        case 'Polygon':
+          return (feature.geometry.coordinates[0] as [[number, number]]).reduce(
+            (bounds: mapboxgl.LngLatBounds, coord: [number, number]) => {
+              return bounds.extend(coord)
+            },
+            new mapboxgl.LngLatBounds(
+              feature.geometry.coordinates[0][0] as [number, number],
+              feature.geometry.coordinates[0][0] as [number, number]
+            )
+          )
+
+        case 'Point':
+          return new mapboxgl.LngLatBounds(
+            feature.geometry.coordinates as [number, number],
+            feature.geometry.coordinates as [number, number]
+          )
+
+        default:
+          return new mapboxgl.LngLatBounds([-180, -90], [180, 90])
+      }
+    },
+
+    getBBoxFeatures(features: GeoJSON.Feature[]): mapboxgl.LngLatBounds {
+      return features.reduce(
+        (
+          bounds: mapboxgl.LngLatBounds,
+          coord: GeoJSON.Feature<GeoJSON.Geometry>
+        ) => {
+          return bounds.extend(this.getBBox(coord))
+        },
+        new mapboxgl.LngLatBounds(
+          features[0].geometry.coordinates,
+          features[0].geometry.coordinates
+        )
+      )
+    },
+
     goTo(feature: VidoFeature) {
       if (!this.map || !feature || !('coordinates' in feature.geometry)) {
         return
       }
 
-      const coords = feature.geometry.coordinates
-      let bounds: mapboxgl.LngLatBounds
-
-      switch (feature.geometry.type) {
-        case 'LineString':
-          bounds = coords.reduce(
-            (bounds: mapboxgl.LngLatBounds, coord: mapboxgl.LngLat) => {
-              return bounds.extend(coord)
-            },
-            new mapboxgl.LngLatBounds(coords[0], coords[0])
-          )
-          break
-
-        case 'Polygon':
-          bounds = coords
-            .flat(2)
-            .reduce((bounds: mapboxgl.LngLatBounds, coord: mapboxgl.LngLat) => {
-              return bounds.extend(coord)
-            }, new mapboxgl.LngLatBounds(coords[0], coords[0]))
-          break
-
-        case 'Point':
-        default:
-          bounds = new mapboxgl.LngLatBounds([coords, coords])
-          break
-      }
-
-      this.map.fitBounds(bounds, { maxZoom: 13 })
+      this.map.fitBounds(this.getBBox(feature), { maxZoom: 13 })
     },
 
     resetZoom() {
@@ -781,10 +802,16 @@ export default Vue.extend({
       })
     },
 
-    handleResetMapZoom(features, text, textBtn) {
+    handleResetMapZoom(features: VidoFeature[], text: string, textBtn: string) {
+      if (!this.map) {
+        return
+      }
+
       const mapBounds = this.map.getBounds()
-      const isOneInView = features.some((feature) =>
-        mapBounds.contains(feature.geometry.coordinates)
+      const isOneInView = features.some(
+        (feature) =>
+          feature.geometry.type === 'Point' &&
+          mapBounds.contains(feature.geometry.coordinates as [number, number])
       )
 
       const currentZoom = this.map.getZoom()
@@ -794,6 +821,8 @@ export default Vue.extend({
         currentZoom >= this.zoom.default &&
         features.length > 0
       ) {
+        const bounds = this.getBBoxFeatures(features)
+        this.$store.dispatch('map/setCenter', bounds.getCenter())
         this.showZoomSnack(text, textBtn)
       }
       if (currentZoom < this.zoom.default) {
@@ -808,10 +837,9 @@ export default Vue.extend({
 
     onClickChangeBackground(background: keyof typeof MapStyle) {
       this.selectedBackground = background
-      this.map?.setStyle(this.mapStyle)
     },
 
-    initPoiLayer(features: MenuState['features']) {
+    initPoiLayer(features: VidoFeature[]) {
       if (!this.map) {
         return
       }
@@ -861,7 +889,58 @@ export default Vue.extend({
         const cleanProperties = {}
 
         Object.keys(feature.properties).forEach((key) => {
-          if (IsJsonString(feature.properties[key])) {
+          if (
+            key === 'opening_hours' &&
+            typeof feature.properties[key] === 'string'
+          ) {
+            const days = [
+              'Dim.',
+              'Lun.',
+              'Mar.',
+              'Mer.',
+              'Jeu.',
+              'Ven.',
+              'Sam.',
+            ]
+            const prevMonday = new Date(getPreviousMonday())
+            const oneWeek = new Date(prevMonday)
+            oneWeek.setDate(oneWeek.getDate() + 7)
+
+            const oh = new OpeningHours(feature.properties[key])
+            const iterator = oh.getIterator(prevMonday)
+            const openingString = []
+            const ranges = []
+            let date = { range: [] }
+
+            while (iterator.advance(oneWeek)) {
+              const intDate = iterator.getDate()
+              const day = intDate.getDay()
+
+              if (days[day] === date.day) {
+                date.range.push(displayTime(intDate))
+              } else {
+                if (date.range.length > 0) {
+                  ranges.push(date)
+                }
+                date = { day: days[day], range: [displayTime(intDate)] }
+              }
+            }
+
+            ranges.forEach((range) => {
+              const timeRanges = ['', '']
+                .map((_, i) => range.range.slice(i * 2, (i + 1) * 2))
+                .map((e) => e.join('-'))
+                .filter((e) => Boolean(e))
+
+              openingString.push(
+                `${range.day} ${timeRanges[0]}${
+                  timeRanges.length > 1 ? `  ${timeRanges[1]}` : ''
+                }`
+              )
+            })
+
+            cleanProperties[key] = openingString
+          } else if (IsJsonString(feature.properties[key])) {
             cleanProperties[key] = JSON.parse(feature.properties[key])
           } else {
             cleanProperties[key] = feature.properties[key]
@@ -872,95 +951,100 @@ export default Vue.extend({
       }
 
       this.$store.dispatch('map/selectFeature', goodFeature)
-
-      if (goodFeature) {
-        setTimeout(() => {
-          this.map?.flyTo({
-            center: goodFeature.geometry.coordinates,
-          })
-        }, 500)
-      }
     },
 
-    updateMarkers(src) {
+    unselectFeature() {
+      this.$store.dispatch('map/selectFeature', null)
+    },
+
+    updateMarkers(src: string) {
       if (!this.map) {
         return
       }
+
       const newMarkers: { [id: string]: mapboxgl.Marker } = {}
       const features = this.map.querySourceFeatures(src) as VidoFeature[]
       // for every cluster on the screen, create an HTML marker for it (if we didn't yet),
       // and add it to the map if it's not there already
-      for (let i = 0; i < features.length; i++) {
-        const coords = features[i].geometry.coordinates
-        const props = features[i].properties
-        let id: string | null = null
-        let marker: mapboxgl.Marker | null = null
+      features
+        .filter((feature) => feature.geometry.type === 'Point')
+        .forEach((feature) => {
+          const coords = (feature.geometry as GeoJSON.Point).coordinates as [
+            number,
+            number
+          ]
+          const props = feature.properties
+          let id: string | null = null
+          let marker: mapboxgl.Marker | null = null
 
-        if (props?.cluster) {
-          id = 'c' + props.cluster_id
-          marker = this.markers[id]
-          if (!marker) {
-            const el = this.createMarkerDonutChart(props)
-            marker = this.markers[id] = new mapboxgl.Marker({
-              element: el,
-            }).setLngLat(coords)
-            el.addEventListener('click', (e) => {
-              e.stopPropagation()
-              if (!this.map) return
-
-              const source = this.map.getSource(src)
-
-              if ('getClusterExpansionZoom' in source) {
-                source.getClusterExpansionZoom(
-                  props.cluster_id,
-                  (err: Error, zoom: number) => {
-                    if (err) return
-                    if (!this.map) return
-                    this.map.easeTo({ center: coords, zoom: zoom + 2 })
-                  }
-                )
-              }
-            })
-          }
-        } else if (props) {
-          if (typeof props.metadata === 'string') {
-            props.metadata = JSON.parse(props.metadata)
-          }
-          id = 'm' + props.metadata.PID
-          marker = this.markers[id]
-          const markerCoords = this.featuresCoordinates[props.metadata.PID]
-          if (!marker && markerCoords) {
-            // Marker
-            const el: HTMLElement = document.createElement('div')
-            el.classList.add('mapboxgl-marker')
-            marker = this.markers[id] = new mapboxgl.Marker({
-              element: el,
-            }).setLngLat(markerCoords) // Using this to avoid misplaced marker
-
-            // Teritorio badge
-            const instance = new TeritorioIconBadge({
-              propsData: {
-                color: props.metadata.color,
-                picto: props.metadata.icon,
-              },
-            }).$mount()
-            el.appendChild(instance.$el)
-
-            // Click handler
-            if (props.metadata.HasPopup === 'yes') {
+          if (props?.cluster) {
+            id = 'c' + props.cluster_id
+            marker = this.markers[id]
+            if (!marker) {
+              const el = createMarkerDonutChart(this.categories, props)
+              marker = this.markers[id] = new mapboxgl.Marker({
+                element: el,
+              }).setLngLat(coords)
               el.addEventListener('click', (e) => {
                 e.stopPropagation()
-                this.selectFeature(features[i])
+                if (!this.map) return
+
+                const source = this.map.getSource(src)
+
+                if (source && 'getClusterLeaves' in source) {
+                  source.getClusterLeaves(
+                    props.cluster_id,
+                    100,
+                    0,
+                    (error, features) => {
+                      if (!error && this.map) {
+                        const bounds = this.getBBoxFeatures(features)
+                        this.map.fitBounds(bounds, { padding: 50 })
+                      }
+                    }
+                  )
+                }
               })
             }
-          }
-        }
+          } else if (props) {
+            if (typeof props.metadata === 'string') {
+              props.metadata = JSON.parse(props.metadata)
+            }
+            id = 'm' + props.metadata.PID
+            marker = this.markers[id]
+            const markerCoords = this.featuresCoordinates[props.metadata.PID]
+            if (!marker && markerCoords) {
+              // Marker
+              const el: HTMLElement = document.createElement('div')
+              el.classList.add('mapboxgl-marker')
+              marker = this.markers[id] = new mapboxgl.Marker({
+                element: el,
+              }).setLngLat(markerCoords) // Using this to avoid misplaced marker
 
-        if (marker && id) {
-          newMarkers[id] = marker
-          if (!this.markersOnScreen[id]) marker.addTo(this.map)
-        }
-      }
+              // Teritorio badge
+              const instance = new TeritorioIconBadge({
+                propsData: {
+                  color: props.metadata.color,
+                  picto: props.metadata.icon,
+                },
+              }).$mount()
+              el.appendChild(instance.$el)
+
+              // Click handler
+              if (props.metadata.HasPopup === 'yes') {
+                el.addEventListener('click', (e) => {
+                  e.stopPropagation()
+                  this.selectFeature(feature)
+                })
+              }
+            }
+          }
+
+          if (marker && id && this.map) {
+            newMarkers[id] = marker
+            if (!this.markersOnScreen[id]) marker.addTo(this.map)
+          }
+        })
       // for every marker we've added previously, remove those that are no longer visible
       for (const id in this.markersOnScreen) {
         if (!newMarkers[id]) this.markersOnScreen[id].remove()
@@ -972,103 +1056,6 @@ export default Vue.extend({
         this.selectedFeatureMarker.remove()
         this.selectedFeatureMarker.addTo(this.map)
       }
-    },
-
-    createMarkerDonutChart(
-      props: mapboxgl.MapboxGeoJSONFeature['properties']
-    ): HTMLElement {
-      const offsets = []
-
-      const countPerColor: { [color: string]: number } = {}
-      Object.keys(this.categories)
-        .filter((categoryId) => ((props && props[categoryId]) || 0) > 0)
-        .forEach((categoryId) => {
-          const color = this.categories[categoryId].metadata.color
-          if (countPerColor[color]) {
-            countPerColor[color] += (props && props[categoryId]) || 0
-          } else {
-            countPerColor[color] = (props && props[categoryId]) || 0
-          }
-        })
-
-      const counts: number[] = Object.values(countPerColor)
-      const colors = Object.keys(countPerColor)
-      let total = 0
-      for (let i = 0; i < counts.length; i++) {
-        offsets.push(total)
-        total += counts[i]
-      }
-
-      const r = total >= 1000 ? 40 : total >= 100 ? 32 : total >= 10 ? 24 : 16
-      const r0 = r - 5
-      const w = r * 2
-
-      let html = `<svg width="${w}" height="${w}" viewbox="0 0 ${w} ${w}" text-anchor="middle" class="cluster-donut">`
-
-      for (let i = 0; i < counts.length; i++) {
-        html += this.getMarkerDonutSegment(
-          offsets[i] / total,
-          (offsets[i] + counts[i]) / total,
-          r,
-          r0,
-          colors[i]
-        )
-      }
-      html += `<circle cx="${r}" cy="${r}" r="${r0}" fill="white" />
-        <text dominant-baseline="central" transform="translate(${r}, ${r})">
-          ${total.toLocaleString()}
-        </text>
-      </svg>`
-
-      const el = document.createElement('div')
-      el.innerHTML = html
-      return el
-    },
-
-    getMarkerDonutSegment(
-      start: number,
-      end: number,
-      r: number,
-      r0: number,
-      color: string
-    ): string {
-      if (end - start === 1) end -= 0.00001
-      const a0 = 2 * Math.PI * (start - 0.25)
-      const a1 = 2 * Math.PI * (end - 0.25)
-      const x0 = Math.cos(a0)
-      const y0 = Math.sin(a0)
-      const x1 = Math.cos(a1)
-      const y1 = Math.sin(a1)
-      const largeArc = end - start > 0.5 ? 1 : 0
-
-      return [
-        '<path d="M',
-        r + r0 * x0,
-        r + r0 * y0,
-        'L',
-        r + r * x0,
-        r + r * y0,
-        'A',
-        r,
-        r,
-        0,
-        largeArc,
-        1,
-        r + r * x1,
-        r + r * y1,
-        'L',
-        r + r0 * x1,
-        r + r0 * y1,
-        'A',
-        r0,
-        r0,
-        0,
-        largeArc,
-        0,
-        r + r0 * x0,
-        r + r0 * y0,
-        '" fill="' + color + '" />',
-      ].join(' ')
     },
   },
 })

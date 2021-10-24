@@ -4,7 +4,11 @@
   >
     <div class="flex flex-row sm:flex-col items-center sm:items-start h-1/5">
       <h1 class="flex-none sm:hidden mr-2">
-        <img :aria-label="siteName" :src="logoUrl" class="w-20 h-auto" />
+        <img
+          :aria-label="siteName"
+          :src="logoUrl"
+          class="w-auto h-auto max-w-2xl max-h-12 sm:max-h-16"
+        />
       </h1>
 
       <button
@@ -95,7 +99,18 @@
         @item-click="onAddressClick"
       />
 
-      <p v-if="hasNoResults">Aucun résultat</p>
+      <p
+        v-if="
+          itemsClasse.length +
+            itemsOsm.length +
+            itemsTis.length +
+            itemsAddress.length +
+            itemsCities.length ==
+          0
+        "
+      >
+        Aucun résultat
+      </p>
     </div>
   </aside>
 </template>
@@ -142,43 +157,15 @@ export default Vue.extend({
     searchText: string
     searchResults: null | ApiSearchResults
     isLoading: boolean
-    debouncedSearch: Function
   } {
     return {
       searchText: '',
       searchResults: null,
       isLoading: false,
-      debouncedSearch: debounce(() => {
-        if (
-          !this.isLoading &&
-          this.searchText &&
-          this.searchText.trim().length >= 3
-        ) {
-          this.isLoading = true
-          fetch(
-            `${this.$config.API_ENDPOINT}/geodata/v1/search?q=${this.searchText}`
-          )
-            .then((data) => data.json())
-            .then((data) => {
-              this.searchResults = data
-              this.isLoading = false
-            })
-        }
-      }, 1000),
     }
   },
 
   computed: {
-    hasNoResults() {
-      return (
-        this.itemsClasse.length === 0 &&
-        this.itemsOsm.length === 0 &&
-        this.itemsTis.length === 0 &&
-        this.itemsAddress.length === 0 &&
-        this.itemsCities.length === 0
-      )
-    },
-
     itemsClasse(): SearchResult[] {
       return this.searchResults && Array.isArray(this.searchResults.classe)
         ? this.searchResults.classe.map((v) => ({
@@ -195,7 +182,7 @@ export default Vue.extend({
             id: v.postid.toString(),
             label: v.label,
             icon: this.menuToIcon[v.idmenu],
-            small: v.commune && toTitleCase(v.commune),
+            small: (v.commune && toTitleCase(v.commune)) || undefined,
           }))
         : []
     },
@@ -206,7 +193,7 @@ export default Vue.extend({
             id: v.postid.toString(),
             label: v.label,
             icon: this.menuToIcon[v.idmenu],
-            small: v.commune && toTitleCase(v.commune),
+            small: (v.commune && toTitleCase(v.commune)) || undefined,
           }))
         : []
     },
@@ -250,7 +237,12 @@ export default Vue.extend({
     },
   },
 
+  created() {
+    this.search = debounce(this.search, 1000)
+  },
+
   mounted() {
+    // @ts-ignore
     if (!this.$isMobile()) {
       this.focusSearch()
     }
@@ -278,7 +270,7 @@ export default Vue.extend({
     },
 
     focusSearch() {
-      this.$refs.search.focus()
+      ;(this.$refs.search as HTMLInputElement).focus()
     },
 
     onAddressClick(id: string) {
@@ -313,7 +305,25 @@ export default Vue.extend({
       }
 
       // Launch search if not already loading + search text length >= 3
-      this.debouncedSearch()
+      this.search()
+    },
+
+    search() {
+      if (
+        !this.isLoading &&
+        this.searchText &&
+        this.searchText.trim().length >= 3
+      ) {
+        this.isLoading = true
+        fetch(
+          `${this.$config.API_ENDPOINT}/geodata/v1/search?q=${this.searchText}`
+        )
+          .then((data) => data.json())
+          .then((data) => {
+            this.searchResults = data
+            this.isLoading = false
+          })
+      }
     },
   },
 })
