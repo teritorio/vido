@@ -5298,6 +5298,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@teritorio/openmaptiles-gl-language@npm:^1.1.0":
+  version: 1.1.0
+  resolution: "@teritorio/openmaptiles-gl-language@npm:1.1.0"
+  peerDependencies:
+    mapbox-gl: ">=0.29.0 <2.0.0"
+  checksum: a38cf45ccb5fb12fd00287adc514cba4db611edb1261c3edff1945a114a862f7f1e691d50e05b2d93cc9e5d20e14d5297be9f778f5d1ed83138ca56d2f8b9176
+  languageName: node
+  linkType: hard
+
 "@teritorio/vido@workspace:.":
   version: 0.0.0-use.local
   resolution: "@teritorio/vido@workspace:."
@@ -5325,6 +5334,7 @@ __metadata:
     "@nuxtjs/tailwindcss": ^3.4.3
     "@tailwindcss/forms": ^0.3.2
     "@teritorio/map": ^0.10.0
+    "@teritorio/openmaptiles-gl-language": ^1.1.0
     "@types/lodash.debounce": ^4.0.6
     "@types/lodash.memoize": ^4.1.6
     "@types/lodash.throttle": ^4.1.6

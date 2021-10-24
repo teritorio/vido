@@ -55,6 +55,7 @@
         :pitch="pitch"
         @changeBackground="onClickChangeBackground"
         @change-mode="onControlChangeMode"
+        @locale="languageControl.setLanguage($event)"
       />
 
       <div
@@ -87,6 +88,7 @@
 
 <script lang="ts">
 import { PoiFilter } from '@teritorio/map'
+import { OpenMapTilesLanguage } from '@teritorio/openmaptiles-gl-language'
 import { deepEqual } from 'fast-equals'
 import GeoJSON from 'geojson'
 import throttle from 'lodash.throttle'
@@ -153,6 +155,7 @@ export default Vue.extend({
 
   data(): {
     map: maplibregl.Map | null
+    languageControl: OpenMapTilesLanguage | null
     source: string
     pitch: number
     markers: { [id: string]: maplibregl.Marker }
@@ -170,6 +173,7 @@ export default Vue.extend({
   } {
     return {
       map: null,
+      languageControl: null,
       source: POI_SOURCE,
       pitch: 0,
       markers: {},
@@ -496,6 +500,9 @@ export default Vue.extend({
 
       this.poiFilter = new PoiFilter()
       this.map.addControl(this.poiFilter)
+
+      this.languageControl = new OpenMapTilesLanguage()
+      this.map.addControl(this.languageControl)
 
       this.map.on('data', () => {
         if (

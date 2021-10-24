@@ -57,7 +57,7 @@
             locale.code === $i18n.locale && 'bg-gray-200',
           ]"
           href="#"
-          @click.prevent="$i18n.setLocale(locale.code)"
+          @click.prevent="setLocale(locale.code)"
         >
           <span class="mr-2">{{ locale.flag }}</span>
           {{ locale.name }}
@@ -95,6 +95,10 @@ export default Vue.extend({
       fetch(`${this.$config.API_ENDPOINT}/geodata/v1/articles?slug=non-classe`)
         .then((data) => data.json())
         .then((data) => (this.entries = data))
+    },
+    setLocale(locale: string) {
+      this.$i18n.setLocale(locale)
+      this.$emit('locale', locale)
     },
   },
 })
