@@ -97,7 +97,7 @@
             icon="link"
             class="text-gray-500 mr-4"
           />
-          <p class="text-gray-500">
+          <p class="text-gray-500 truncate">
             {{ shareLink }}
           </p>
           <button
