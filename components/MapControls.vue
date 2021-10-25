@@ -181,6 +181,11 @@ export default Vue.extend({
         this.map.addControl(this.building3d)
       }
     },
+    mode() {
+      if (this.building3d) {
+        this.building3d.set3d(this.is3D)
+      }
+    },
     pitch(value) {
       if (this.building3d) {
         this.building3d.set3d(value !== 0)
