@@ -83,6 +83,7 @@ export default {
     '@nuxt/content',
     '@nuxtjs/gtm',
     '@nuxtjs/i18n',
+    '@nuxtjs/sentry',
   ],
 
   // Axios module configuration (https://go.nuxtjs.dev/config-axios)
@@ -104,6 +105,14 @@ export default {
     ],
     defaultLocale: 'en',
     langDir: '~/locales/',
+  },
+
+  sentry: {
+    dsn: process.env.SENTRY_DSN || '',
+    // https://sentry.nuxtjs.org/sentry/options
+    config: {
+      // https://docs.sentry.io/platforms/javascript/guides/vue/configuration/options/
+    },
   },
 
   // Build Configuration (https://go.nuxtjs.dev/config-build)

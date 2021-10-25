@@ -52,6 +52,7 @@ jobs:
           VECTO_STYLE_URL: ${{secrets.VECTO_STYLE_URL_PROD}}
           SATELLITE_STYLE_URL: ${{secrets.SATELLITE_STYLE_URL_PROD}}
           VECTO_TILES_URL: ${{secrets.VECTO_TILES_URL_PROD}}
+          SENTRY_DSN: ${{secrets.SENTRY_DSN_PROD}}
         run: yarn generate
 
       - name: Deploy
