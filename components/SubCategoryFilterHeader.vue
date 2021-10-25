@@ -41,22 +41,16 @@
       <label :for="'sf_' + sf.tag" class="block mb-2 text-gray-500">{{
         sf.label
       }}</label>
-      <Multiselect
+      <t-rich-select
         placeholder="Recherchez ou ajoutez une valeur"
-        :select-label="!$isMobile() ? `Appuyez sur entrée pour ajouter` : ''"
-        :deselect-label="!$isMobile() ? `Appuyez sur entrée pour retirer` : ''"
-        selected-label="Sélectionné"
-        label="name"
-        track-by="code"
+        search-box-placeholder="Rechercher ..."
+        text-attribute="name"
+        value-attribute="code"
+        multiple
         :options="
           Object.keys(sf.values).map((k) => ({ name: sf.values[k], code: k }))
         "
-        :value="
-          (
-            ((filtersValues || {}).selectionFiltre || {})[sf.tag] || []
-          ).map((k) => ({ name: sf.values[k], code: k }))
-        "
-        :multiple="true"
+        :value="((filtersValues || {}).selectionFiltre || {})[sf.tag] || []"
         @input="(val) => onSelectionFiltreChange(sf.tag, val)"
       />
     </div>
@@ -90,7 +84,6 @@
 <script lang="ts">
 import copy from 'fast-copy'
 import Vue, { PropType } from 'vue'
-import Multiselect from 'vue-multiselect'
 
 import {
   Category,
@@ -102,10 +95,6 @@ import {
 } from '@/utils/types'
 
 export default Vue.extend({
-  components: {
-    Multiselect,
-  },
-
   props: {
     subcategory: {
       type: Object as PropType<Category>,
@@ -195,16 +184,14 @@ export default Vue.extend({
       this.$emit('filter-changed', newFilters)
     },
 
-    onSelectionFiltreChange(
-      tag: string,
-      values: { code: string; name: string }[] | null
-    ) {
+    onSelectionFiltreChange(tag: string, values: string[] | null) {
       const newFilters = this.filtersValues ? copy(this.filtersValues) : {}
+
       if (values && values.length > 0) {
         if (!newFilters.selectionFiltre) {
           newFilters.selectionFiltre = {}
         }
-        newFilters.selectionFiltre[tag] = values.map((v) => v.code)
+        newFilters.selectionFiltre[tag] = values
       } else {
         if (newFilters.selectionFiltre && newFilters.selectionFiltre[tag]) {
           delete newFilters.selectionFiltre[tag]
@@ -268,21 +255,3 @@ export default Vue.extend({
   },
 })
 </script>
-
-<style>
-.multiselect__tag {
-  @apply bg-gray-500;
-}
-.multiselect__tag span {
-  @apply mr-1;
-}
-.multiselect__tag-icon,
-.multiselect__tag-icon:hover {
-  @apply bg-red-600;
-}
-.multiselect__tag-icon::after,
-.multiselect__tag-icon:hover::after {
-  @apply text-white;
-  @apply font-extrabold;
-}
-</style>

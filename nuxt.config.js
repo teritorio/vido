@@ -45,11 +45,10 @@ export default {
   css: [
     '@fortawesome/fontawesome-svg-core/styles.css',
     'maplibre-gl/dist/maplibre-gl.css',
-    'vue-multiselect/dist/vue-multiselect.min.css',
   ],
 
   purgeCSS: {
-    whitelistPatterns: [/svg.*/, /fa.*/, /multiselect.*/],
+    whitelistPatterns: [/svg.*/, /fa.*/],
   },
 
   // Plugins to run before rendering page (https://go.nuxtjs.dev/config-plugins)

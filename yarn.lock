@@ -5381,7 +5381,6 @@ __metadata:
     ts-jest: ^26.4.4
     vue-jest: ^3.0.7
     vue-mobile-detection: ^1.0.0
-    vue-multiselect: ^2.1.6
     vue-tailwind: ^2.5.0
     vue2-touch-events: ^3.2.2
     wcag-contrast: ^3.0.0
@@ -25272,13 +25271,6 @@ typescript@~4.2:
   dependencies:
     vue: ^2.6.10
   checksum: fdfe6b47b1a120fd4c22a953fede3bc6f0c63f416402c3e75432f08c033b472e5f967d25d24dc6db0ff31a5b36b25ee1808f4c024ab8b4ab09f46ecb06e6ca26
-  languageName: node
-  linkType: hard
-
-"vue-multiselect@npm:^2.1.6":
-  version: 2.1.6
-  resolution: "vue-multiselect@npm:2.1.6"
-  checksum: d0704d3667a4cd93da8d50573c49a5f097738e0bb775dce8f0b40326d9ab3f0d4bf6a6e0ad7b69ef9937323c2fe6b888f808f7aab1c1ac65813edcb83718a640
   languageName: node
   linkType: hard
 
