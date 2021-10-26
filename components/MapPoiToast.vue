@@ -89,13 +89,19 @@
             </li>
           </ul>
 
-          <ul v-else-if="field.k === 'opening_hours'">
+          <ul v-else-if="opening_hours && Array.isArray(opening_hours)">
             <li v-for="item in opening_hours" :key="item">
               <p class="text-sm mt-1">
                 {{ item }}
               </p>
             </li>
           </ul>
+          <p
+            v-else-if="opening_hours && typeof opening_hours === 'string'"
+            class="text-sm"
+          >
+            {{ opening_hours }}
+          </p>
 
           <ul v-else-if="Array.isArray(field.v)">
             <li v-for="item in field.v" :key="item">
@@ -294,54 +300,66 @@ export default Vue.extend({
         .join(' ')
     },
 
-    opening_hours(): string[] | null {
+    opening_hours(): string | string[] | null {
       const openingHours = this.poiProp('opening_hours')
+
       if (!openingHours) {
         return null
       }
 
-      const days = ['Dim.', 'Lun.', 'Mar.', 'Mer.', 'Jeu.', 'Ven.', 'Sam.']
-      const prevMonday = new Date(getPreviousMonday())
-      const oneWeek = new Date(prevMonday)
-      oneWeek.setDate(oneWeek.getDate() + 7)
+      try {
+        const oh = new OpeningHours(openingHours)
 
-      const oh = new OpeningHours(openingHours)
-      const iterator = oh.getIterator(prevMonday)
-      const openingString: string[] = []
-      const ranges = []
-      let date: { day: null | String; range: (Date | string)[] } = {
-        day: null,
-        range: [],
-      }
-
-      while (iterator.advance(oneWeek)) {
-        const intDate = iterator.getDate()
-        const day = intDate.getDay()
-
-        if (days[day] === date.day) {
-          date.range.push(displayTime(intDate))
-        } else {
-          if (date.range.length > 0) {
-            ranges.push(date)
-          }
-          date = { day: days[day], range: [displayTime(intDate)] }
+        if (oh.getState()) {
+          return this.$tc('toast.opened')
         }
+
+        const days = [
+          this.$tc('toast.sunday'),
+          this.$tc('toast.monday'),
+          this.$tc('toast.tuesday'),
+          this.$tc('toast.wednesday'),
+          this.$tc('toast.thursday'),
+          this.$tc('toast.friday'),
+          this.$tc('toast.saturday'),
+        ]
+        const prevMonday = new Date(getPreviousMonday())
+        const oneWeek = new Date(prevMonday)
+        oneWeek.setDate(oneWeek.getDate() + 7)
+        const iterator = oh.getIterator(prevMonday)
+        const openingString: string[] = []
+        const ranges: { day?: string; range: string[] }[] = []
+        let date: { day?: string; range: string[] } = { range: [] }
+
+        while (iterator.advance(oneWeek)) {
+          const intDate = iterator.getDate()
+          const day = intDate.getDay()
+          if (days[day] === date.day) {
+            date.range.push(displayTime(intDate))
+          } else {
+            if (date.range.length > 0) {
+              ranges.push(date)
+            }
+            date = { day: days[day], range: [displayTime(intDate)] }
+          }
+        }
+        ranges.forEach((range) => {
+          const timeRanges = ['', '']
+            .map((_, i) => range.range.slice(i * 2, (i + 1) * 2))
+            .map((e) => e.join('-'))
+            .filter((e) => Boolean(e))
+          openingString.push(
+            `${range.day} ${timeRanges[0]}${
+              timeRanges.length > 1 ? `  ${timeRanges[1]}` : ''
+            }`
+          )
+        })
+
+        return openingString
+      } catch (e) {
+        console.log('Vido error', e)
+        return null
       }
-
-      ranges.forEach((range) => {
-        const timeRanges = ['', '']
-          .map((_, i) => range.range.slice(i * 2, (i + 1) * 2))
-          .map((e) => e.join('-'))
-          .filter((e) => Boolean(e))
-
-        openingString.push(
-          `${range.day} ${timeRanges[0]}${
-            timeRanges.length > 1 ? `  ${timeRanges[1]}` : ''
-          }`
-        )
-      })
-
-      return openingString
     },
 
     listFields(): string[] {

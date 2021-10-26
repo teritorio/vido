@@ -64,5 +64,13 @@ export default {
     findRoute: "Trouver la route pour venir jusqu'à ce lieu",
     unactivateExplore: "Désactiver l'exploration aux alentours",
     activateExplore: "Explorer les points d'intérêts aux alentours",
+    monday: 'Lun.',
+    tuesday: 'Mar.',
+    wednesday: 'Mer.',
+    thursday: 'Jeu.',
+    friday: 'Ven.',
+    saturday: 'Sam.',
+    sunday: 'Dim.',
+    opened: 'Actuellement ouvert',
   },
 }
