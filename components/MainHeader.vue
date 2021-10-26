@@ -4,11 +4,19 @@
   >
     <div class="items-center justify-between hidden sm:flex">
       <h1>
-        <img
+        <a
+          :href="mainUrl"
+          rel="noopener noreferrer"
           :aria-label="siteName"
-          :src="logoUrl"
-          class="w-auto h-auto max-w-2xl max-h-16"
-        />
+          :title="siteName"
+          target="_blank"
+        >
+          <img
+            :aria-label="siteName"
+            :src="logoUrl"
+            class="w-auto h-auto max-w-2xl max-h-16"
+          />
+        </a>
       </h1>
 
       <button
@@ -47,6 +55,10 @@ export default Vue.extend({
       required: true,
     },
     logoUrl: {
+      type: String,
+      required: true,
+    },
+    mainUrl: {
       type: String,
       required: true,
     },

@@ -26,6 +26,7 @@
             v-if="state.matches(states.Categories) && isMenuConfigLoaded"
             :highlighted-categories="highlightedRootCategories"
             :logo-url="logoUrl"
+            :main-url="mainUrl"
             :non-highlighted-categories="nonHighlightedRootCategories"
             :site-name="siteName"
             :show-categories="!isModeExplorer && !isModeFavorite"
@@ -244,6 +245,9 @@ export default Vue.extend({
     },
     siteName(): string {
       return this.siteInfos('fr')?.name || ''
+    },
+    mainUrl(): string {
+      return this.siteInfos('fr')?.site1?.main_url || ''
     },
     isModeExplorer(): boolean {
       return this.mode === Mode.EXPLORER
