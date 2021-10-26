@@ -711,10 +711,7 @@ export default Vue.extend({
           if (this.map.getLayer(POI_LAYER_MARKER))
             this.map.removeLayer(POI_LAYER_MARKER)
 
-          if (
-            !this.map.getLayer(FAVORITE_LAYER_MARKER) &&
-            this.map.isStyleLoaded()
-          ) {
+          if (!this.map.getLayer(FAVORITE_LAYER_MARKER)) {
             this.map.addLayer(
               markerLayerFactory(FAVORITE_SOURCE, FAVORITE_LAYER_MARKER)
             )
@@ -844,7 +841,7 @@ export default Vue.extend({
       }
 
       // Add individual markers
-      if (!this.map.getLayer(POI_LAYER_MARKER) && this.map.isStyleLoaded())
+      if (!this.map.getLayer(POI_LAYER_MARKER))
         this.map.addLayer(markerLayerFactory(POI_SOURCE, POI_LAYER_MARKER))
     },
 
