@@ -173,7 +173,7 @@ export default Vue.extend({
           localStorage.getItem(LOCAL_STORAGE.favorites) || '{ "favorites": [] }'
         const favs = JSON.parse(favsString).favorites
 
-        this.shareLink = `${location.origin}/#favs=${favs.join(',')}`
+        this.shareLink = `${location.origin}/#fav=1&favs=${favs.join(',')}`
       } catch (e) {
         // eslint-disable-next-line no-console
         console.error('Vido error:', e.message)
