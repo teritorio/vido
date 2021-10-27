@@ -385,7 +385,7 @@ export default Vue.extend({
       if (
         feature &&
         feature.geometry.type === 'Point' &&
-        feature.properties.metadata?.PID
+        (feature.properties?.metadata?.PID || feature?.id)
       ) {
         setHashPart(
           'poi',
@@ -397,7 +397,10 @@ export default Vue.extend({
           color: '#f44336',
         })
           .setLngLat(
-            this.featuresCoordinates[feature.properties.metadata?.PID] ||
+            (Boolean(feature?.properties?.metadata?.PID) &&
+              this.featuresCoordinates[
+                feature?.properties?.metadata?.PID || ''
+              ]) ||
               (feature.geometry.coordinates as [number, number])
           )
           .addTo(this.map)
