@@ -157,7 +157,7 @@
           @click.stop="onExploreClick"
         >
           <font-awesome-icon
-            :icon="['far', 'compass']"
+            icon="eye"
             :color="isModeExplorer ? 'white' : color"
             size="sm"
           />
