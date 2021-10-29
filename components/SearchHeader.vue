@@ -99,12 +99,21 @@
         @item-click="onAddressClick"
       />
 
+      <SearchResultBlock
+        v-if="itemsCartocode.length > 0"
+        :label="$tc('headerMenu.cartocode')"
+        icon="map-marker-alt"
+        :items="itemsCartocode"
+        @item-click="onPoiClick"
+      />
+
       <p
         v-if="
           itemsClasse.length +
             itemsOsm.length +
             itemsTis.length +
             itemsAddress.length +
+            itemsCartocode.length +
             itemsCities.length ==
           0
         "
@@ -223,6 +232,21 @@ export default Vue.extend({
       }))
     },
 
+    itemsCartocode(): SearchResult[] {
+      if (!this.searchResults?.cartocode) {
+        return []
+      }
+
+      const goodCartocode = Array.isArray(this.searchResults.cartocode)
+        ? this.searchResults.cartocode
+        : [this.searchResults.cartocode]
+
+      return goodCartocode.map((v) => ({
+        id: v.postid.toString(),
+        label: v.label,
+      }))
+    },
+
     addressResults(): ApiAddrSearchResult[] {
       return this.searchResults
         ? (Array.isArray(this.searchResults.municipality)
@@ -312,7 +336,7 @@ export default Vue.extend({
       if (
         !this.isLoading &&
         this.searchText &&
-        this.searchText.trim().length >= 3
+        this.searchText.trim().length >= 2
       ) {
         this.isLoading = true
         fetch(

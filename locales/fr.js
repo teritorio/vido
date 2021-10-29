@@ -50,6 +50,7 @@ export default {
     poisTis: "Points d'intérêts (TIS)",
     poisOsm: "Points d'intérêts (OSM)",
     addresses: 'Adresses',
+    cartocode: 'Cartocode',
     noResult: 'Aucun résultat',
     hideCategory: 'Masquer cette catégorie',
   },

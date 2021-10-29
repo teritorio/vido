@@ -219,6 +219,11 @@ export type ApiAddrSearchResult = {
   geojson: MapboxGeoJSONFeature
 }
 
+export type ApiCartocodeSearchResult = {
+  postid: number
+  label: string
+}
+
 export type ApiSearchResults = {
   classe: {
     idmenu: string
@@ -229,6 +234,7 @@ export type ApiSearchResults = {
   wp: string | ApiSearchResult[]
   adress: string | ApiAddrSearchResult[]
   municipality: string | ApiAddrSearchResult[]
+  cartocode: ApiCartocodeSearchResult | ApiCartocodeSearchResult[]
 }
 
 export type SearchResult = {
