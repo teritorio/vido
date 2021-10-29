@@ -100,6 +100,14 @@
       />
 
       <SearchResultBlock
+        v-if="itemsFilters.length > 0"
+        label="Filtres"
+        icon="filter"
+        :items="itemsFilters"
+        @item-click="onFilterClick"
+      />
+
+      <SearchResultBlock
         v-if="itemsCartocode.length > 0"
         :label="$tc('headerMenu.cartocode')"
         icon="map-marker-alt"
@@ -114,6 +122,7 @@
             itemsTis.length +
             itemsAddress.length +
             itemsCartocode.length +
+            itemsFilters.length +
             itemsCities.length ==
           0
         "
@@ -247,6 +256,17 @@ export default Vue.extend({
       }))
     },
 
+    itemsFilters(): SearchResult[] {
+      if (!this.searchResults || !Array.isArray(this.searchResults.filter)) {
+        return []
+      }
+
+      return this.searchResults.filter.map((v) => ({
+        id: `${v.filterid}`,
+        label: v.label,
+      }))
+    },
+
     addressResults(): ApiAddrSearchResult[] {
       return this.searchResults
         ? (Array.isArray(this.searchResults.municipality)
@@ -317,6 +337,16 @@ export default Vue.extend({
         this.$emit('feature-click', feature)
       }
       this.reset()
+    },
+
+    onFilterClick(id: string) {
+      if (this.searchResults?.filter) {
+        const filter = this.searchResults.filter.find(
+          (a) => `${a.filterid}` === id
+        )
+        this.$emit('filter-click', filter)
+        this.reset()
+      }
     },
 
     onSubmit() {

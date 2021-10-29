@@ -73,6 +73,7 @@
               @category-click="onSearchCategory"
               @poi-click="onSearchPoi"
               @feature-click="onFeatureClick"
+              @filter-click="onSearchFilter"
             />
           </div>
         </transition>
@@ -89,6 +90,7 @@
             @category-click="onSearchCategory"
             @poi-click="onSearchPoi"
             @feature-click="onFeatureClick"
+            @filter-click="onSearchFilter"
           />
         </div>
       </div>
@@ -137,7 +139,12 @@ import SelectedSubCategoriesDense from '@/components/SelectedSubCategoriesDense.
 import SubCategoryFilterHeader from '@/components/SubCategoryFilterHeader.vue'
 import SubCategoryHeader from '@/components/SubCategoryHeader.vue'
 import { getPoiById } from '@/utils/api'
-import { Category, Mode, FiltreValues } from '@/utils/types'
+import {
+  Category,
+  Mode,
+  FiltreValues,
+  ApiFilterSearchResult,
+} from '@/utils/types'
 import { getHashPart, setHashPart } from '@/utils/url'
 
 import {
@@ -467,6 +474,18 @@ export default Vue.extend({
           })
         }
       })
+    },
+    onSearchFilter(newFilter: ApiFilterSearchResult) {
+      const newFilters = Object.assign({}, this.filters)
+
+      newFilters[`${newFilter.menuid}`] = {
+        selectionFiltre: {
+          [newFilter.tag]: [`${newFilter.filter}`],
+        },
+      }
+
+      this.selectSubCategory([`${newFilter.menuid}`])
+      this.setCategoriesFilters(newFilters)
     },
     onFeatureClick(feature: MapboxGeoJSONFeature) {
       this.setSelectedFeature(feature).then(() => {

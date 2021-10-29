@@ -45,7 +45,7 @@
         placeholder="Recherchez ou ajoutez une valeur"
         search-box-placeholder="Rechercher ..."
         text-attribute="name"
-        value-attribute="code"
+        value-attribute="name"
         multiple
         :options="
           Object.keys(sf.values).map((k) => ({ name: sf.values[k], code: k }))

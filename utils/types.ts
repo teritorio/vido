@@ -224,6 +224,14 @@ export type ApiCartocodeSearchResult = {
   label: string
 }
 
+export type ApiFilterSearchResult = {
+  filter: string
+  filterid: number
+  label: string
+  menuid: number
+  tag: string
+}
+
 export type ApiSearchResults = {
   classe: {
     idmenu: string
@@ -235,6 +243,7 @@ export type ApiSearchResults = {
   adress: string | ApiAddrSearchResult[]
   municipality: string | ApiAddrSearchResult[]
   cartocode: ApiCartocodeSearchResult | ApiCartocodeSearchResult[]
+  filter: ApiFilterSearchResult[]
 }
 
 export type SearchResult = {
