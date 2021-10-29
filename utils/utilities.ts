@@ -17,7 +17,7 @@ export const getPreviousMonday = () => {
   return new Date().setDate(date.getDate() - date.getDate() - 6)
 }
 
-export const displayTime = (dateGMT: Date | string) => {
+export const displayTime = (dateGMT: Date | string | undefined) => {
   if (dateGMT) {
     const date = new Date(dateGMT)
 

@@ -73,5 +73,9 @@ export default {
     saturday: 'Sam.',
     sunday: 'Dim.',
     opened: 'Actuellement ouvert',
+    closeAt: 'Ferme à',
+    closed: 'Actuellement fermé',
+    open: 'Ouvre',
+    openAt: 'Ouvre à',
   },
 }

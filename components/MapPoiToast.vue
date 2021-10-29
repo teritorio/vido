@@ -89,20 +89,6 @@
             </li>
           </ul>
 
-          <ul v-else-if="opening_hours && Array.isArray(opening_hours)">
-            <li v-for="item in opening_hours" :key="item">
-              <p class="text-sm mt-1">
-                {{ item }}
-              </p>
-            </li>
-          </ul>
-          <p
-            v-else-if="opening_hours && typeof opening_hours === 'string'"
-            class="text-sm"
-          >
-            {{ opening_hours }}
-          </p>
-
           <ul v-else-if="Array.isArray(field.v)">
             <li v-for="item in field.v" :key="item">
               <p class="text-sm mt-1">
@@ -194,7 +180,7 @@ import { getPoiById } from '@/utils/api'
 import { isIOS } from '@/utils/isIOS'
 import { getContrastedTextColor } from '@/utils/picto'
 import { VidoFeature, Mode } from '@/utils/types'
-import { getPreviousMonday, displayTime } from '@/utils/utilities'
+import { displayTime } from '@/utils/utilities'
 
 export default Vue.extend({
   components: {
@@ -309,10 +295,19 @@ export default Vue.extend({
 
       try {
         const oh = new OpeningHours(openingHours)
+        const nextchange = oh.getNextChange()
 
         if (oh.getState()) {
-          return this.$tc('toast.opened')
+          return [
+            this.$tc('toast.opened'),
+            `${this.$tc('toast.closeAt')} ${displayTime(nextchange)}`,
+          ]
         }
+
+        const nextChange = new Date(nextchange || '')
+        const today = new Date()
+        const todayDay = today.getDay()
+        const day = nextChange.getDay()
 
         const days = [
           this.$tc('toast.sunday'),
@@ -323,41 +318,17 @@ export default Vue.extend({
           this.$tc('toast.friday'),
           this.$tc('toast.saturday'),
         ]
-        const prevMonday = new Date(getPreviousMonday())
-        const oneWeek = new Date(prevMonday)
-        oneWeek.setDate(oneWeek.getDate() + 7)
-        const iterator = oh.getIterator(prevMonday)
-        const openingString: string[] = []
-        const ranges: { day?: string; range: string[] }[] = []
-        let date: { day?: string; range: string[] } = { range: [] }
 
-        while (iterator.advance(oneWeek)) {
-          const intDate = iterator.getDate()
-          const day = intDate.getDay()
-          if (days[day] === date.day) {
-            date.range.push(displayTime(intDate))
-          } else {
-            if (date.range.length > 0) {
-              ranges.push(date)
-            }
-            date = { day: days[day], range: [displayTime(intDate)] }
-          }
-        }
-        ranges.forEach((range) => {
-          const timeRanges = ['', '']
-            .map((_, i) => range.range.slice(i * 2, (i + 1) * 2))
-            .map((e) => e.join('-'))
-            .filter((e) => Boolean(e))
-          openingString.push(
-            `${range.day} ${timeRanges[0]}${
-              timeRanges.length > 1 ? `  ${timeRanges[1]}` : ''
-            }`
-          )
-        })
+        const openTrad =
+          todayDay === day
+            ? `${this.$tc('toast.openAt')} ${displayTime(nextchange)}`
+            : `${this.$tc('toast.open')} ${days[day]} ${displayTime(
+                nextchange
+              )}`
 
-        return openingString
+        return [this.$tc('toast.closed'), openTrad]
       } catch (e) {
-        console.log('Vido error', e)
+        console.log('Vido error:', e)
         return null
       }
     },
@@ -365,6 +336,10 @@ export default Vue.extend({
     listFields(): string[] {
       if (!this.sptags) {
         return []
+      }
+
+      const getValue = (field: string, value: string | string[]) => {
+        return field === 'opening_hours' ? this.opening_hours : value
       }
 
       return (this.poiMeta('PopupListField') || '')
@@ -375,7 +350,10 @@ export default Vue.extend({
             this.sptags[f] &&
             this.sptags[f][this.poiProp(f)]
           ) {
-            return { k: f, v: this.sptags[f][this.poiProp(f)] }
+            return {
+              k: f,
+              v: getValue(f, this.sptags[f][this.poiProp(f)]),
+            }
           } else if (
             this.sptags !== null &&
             this.sptags[f] &&
@@ -384,19 +362,25 @@ export default Vue.extend({
           ) {
             return {
               k: f,
-              v: this.poiProp(f)
-                .split(';')
-                .map((p: string) => this.sptags !== null && this.sptags[f][p])
-                .filter(
-                  (f: string | string[]) =>
-                    f &&
-                    ((typeof f === 'string' && f.trim().length > 0) ||
-                      (Array.isArray(f) && f.length > 0))
-                )
-                .join(', '),
+              v: getValue(
+                f,
+                this.poiProp(f)
+                  .split(';')
+                  .map((p: string) => this.sptags !== null && this.sptags[f][p])
+                  .filter(
+                    (f: string | string[]) =>
+                      f &&
+                      ((typeof f === 'string' && f.trim().length > 0) ||
+                        (Array.isArray(f) && f.length > 0))
+                  )
+                  .join(', ')
+              ),
             }
           } else {
-            return { k: f, v: this.poiProp(f) }
+            return {
+              k: f,
+              v: getValue(f, this.poiProp(f)),
+            }
           }
         })
         .filter(
