@@ -60,7 +60,6 @@ export default {
     route: 'Itinéraire',
     explore: 'Explorer',
     favorite: 'Favori',
-    loactionZoom: 'Zoomer sur le lieu',
     callNumber: 'Appeler ce numéro',
     findRoute: "Trouver la route pour venir jusqu'à ce lieu",
     unactivateExplore: "Désactiver l'exploration aux alentours",

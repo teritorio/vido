@@ -581,16 +581,20 @@ export default Vue.extend({
     },
 
     exploreAroundSelectedPoi() {
-      if (this.isModeExplorer) {
-        this.allowRegionBackZoom = false
-        this.$emit('change-mode', Mode.BROWSER)
-      } else {
+      if (!this.isModeExplorer) {
+        this.map?.once('moveend', () => {
+          this.$emit('change-mode', Mode.EXPLORER)
+        })
+
         this.goToSelectedPoi()
+
         // @ts-ignore
         if (this.$isMobile()) {
           this.showPoiToast = false
         }
-        this.$emit('change-mode', Mode.EXPLORER)
+      } else {
+        this.allowRegionBackZoom = false
+        this.$emit('change-mode', Mode.BROWSER)
       }
     },
 

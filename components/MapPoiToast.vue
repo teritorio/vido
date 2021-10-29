@@ -16,7 +16,6 @@
         <h2
           class="block text-xl font-semibold leading-tight"
           :style="'color:' + color"
-          :title="$tc('toast.loactionZoom')"
         >
           {{ name }}
         </h2>
