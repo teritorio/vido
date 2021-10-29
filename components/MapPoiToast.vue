@@ -110,7 +110,18 @@
               {{ $tc('toast.seeDetail') }}
             </a>
           </p>
-          <p v-else class="text-sm">
+          <p
+            v-else
+            :class="[
+              'text-sm',
+              field.k === 'opening_hours' &&
+                field.v.includes($tc('toast.opened')) &&
+                'text-green-500',
+              field.k === 'opening_hours' &&
+                field.v.includes($tc('toast.closed')) &&
+                'text-red-500',
+            ]"
+          >
             {{ field.v }}
           </p>
         </div>
@@ -298,10 +309,9 @@ export default Vue.extend({
         const nextchange = oh.getNextChange()
 
         if (oh.getState()) {
-          return [
-            this.$tc('toast.opened'),
-            `${this.$tc('toast.closeAt')} ${displayTime(nextchange)}`,
-          ]
+          return `${this.$tc('toast.opened')} - ${this.$tc(
+            'toast.closeAt'
+          )} ${displayTime(nextchange)}`
         }
 
         const nextChange = new Date(nextchange || '')
@@ -326,7 +336,7 @@ export default Vue.extend({
                 nextchange
               )}`
 
-        return [this.$tc('toast.closed'), openTrad]
+        return `${this.$tc('toast.closed')} - ${openTrad}`
       } catch (e) {
         console.log('Vido error:', e)
         return null
