@@ -6,6 +6,7 @@
       :small="isBottomMenuOpened"
       :selected-categories="state.context.selectedSubCategoriesIds"
       :get-sub-category="selectSubCategory"
+      :class="[showPoi && 'max-h-screen-2/5 sm:max-h-full']"
       @click="onMapClick"
       @change-mode="onMapChangeMode"
       @show-poi="onShowPoi"
@@ -113,7 +114,7 @@
     </header>
 
     <div
-      class="z-10 relative flex-shrink-0 sm:hidden text-center bottom-0 w-full"
+      class="z-0 relative flex-shrink-0 sm:hidden text-center bottom-0 w-full"
     >
       <button
         v-if="!isModeExplorer || selectedFeature"
@@ -124,7 +125,9 @@
         <font-awesome-icon icon="grip-lines" size="lg" />
       </button>
       <div
-        v-if="isBottomMenuOpened && !isModeExplorer && !isModeFavorite"
+        v-if="
+          isBottomMenuOpened && !showPoi && !isModeExplorer && !isModeFavorite
+        "
         class="relative justify-between w-full bg-white shadow-md pointer-events-auto"
       >
         <transition name="headers" appear mode="out-in">

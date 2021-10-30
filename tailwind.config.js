@@ -6,6 +6,7 @@ module.exports = {
       maxHeight: () => ({
         'screen-1/4': '25vh',
         'screen-1/2': '50vh',
+        'screen-2/5': '40vh',
         'screen-3/5': '60vh',
         'screen-4/6': '65vh',
       }),
