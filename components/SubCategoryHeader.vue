@@ -1,6 +1,6 @@
 <template>
   <aside
-    class="absolute inset-x-0 bottom-0 flex flex-col max-h-full px-5 py-4 space-y-6 overflow-y-auto bg-white shadow-md pointer-events-auto sm:relative sm:inset-auto h-3/5 sm:h-auto sm:rounded-xl"
+    class="relative flex flex-col px-5 py-4 space-y-6 overflow-y-auto bg-white shadow-md pointer-events-auto inset-auto max-h-screen-3/5 sm:max-h-screen-4/6 sm:rounded-xl"
   >
     <div class="flex justify-between">
       <button
@@ -31,7 +31,7 @@
     </div>
 
     <HeaderSubCategories
-      class="flex-1 max-h-full overflow-y-auto pointer-events-auto"
+      class="flex-1 h-full overflow-y-auto pointer-events-auto"
       :categories="categories"
       :filtered-categories="filteredCategories"
       :is-sub-category-selected="isSubCategorySelected"

@@ -1,5 +1,5 @@
 <template>
-  <div class="fixed w-full h-full overflow-hidden">
+  <div class="fixed w-full h-full overflow-hidden flex flex-col">
     <Map
       v-if="isMapConfigLoaded"
       ref="map"
@@ -18,7 +18,7 @@
         :class="[
           'flex-col justify-between w-full sm:w-auto sm:max-w-md sm:space-y-4',
           !selectedFeature && 'flex',
-          showPoi && 'max-h-full sm:h-4/6 2xl:h-auto',
+          showPoi && 'max-h-screen-4/6 md:max-h-screen 2xl:h-auto',
         ]"
       >
         <transition name="headers" appear mode="out-in">
@@ -41,6 +41,7 @@
               !isModeFavorite &&
               state.matches(states.SubCategories)
             "
+            class="hidden sm:flex"
             :categories="state.context.selectedRootCategory.subCategories"
             :filtered-categories="filteredSubCategories"
             :is-sub-category-selected="isSubCategorySelected"
@@ -54,6 +55,7 @@
 
           <SubCategoryFilterHeader
             v-if="!isModeExplorer && state.matches(states.SubCategoryFilters)"
+            class="hidden sm:flex"
             :subcategory="subCategoryForFilter"
             :filters-values="subCategoryFilters"
             @filter-changed="onSubCategoryFilterChange"
@@ -62,7 +64,7 @@
 
           <div
             v-if="state.matches(states.Search)"
-            class="max-h-full hidden sm:block"
+            class="max-h-full hidden sm:flex"
           >
             <SearchHeader
               :site-name="siteName"
@@ -110,18 +112,58 @@
       </div>
     </header>
 
-    <button
-      v-if="!isModeExplorer || selectedFeature"
-      v-touch:swipe.stop="onBottomMenuButtonClick"
-      :class="[
-        'z-0 absolute sm:hidden right-3/8 left-3/8 w-1/4 h-12 transition-all rounded-t-lg text-sm font-medium px-5 space-x-1 shadow-lg outline-none focus:outline-none bg-white text-gray-800 hover:bg-gray-100 focus-visible:bg-gray-100',
-        isBottomMenuOpened && 'bottom-3/5',
-        !isBottomMenuOpened && 'bottom-0',
-      ]"
-      @click="onBottomMenuButtonClick"
+    <div
+      class="z-10 relative flex-shrink-0 sm:hidden text-center bottom-0 w-full"
     >
-      <font-awesome-icon icon="grip-lines" size="lg" />
-    </button>
+      <button
+        v-if="!isModeExplorer || selectedFeature"
+        v-touch:swipe.stop="onBottomMenuButtonClick"
+        class="-top-12 z-0 absolute sm:hidden right-3/8 left-3/8 w-1/4 h-12 transition-all rounded-t-lg text-sm font-medium px-5 space-x-1 shadow-lg outline-none focus:outline-none bg-white text-gray-800 hover:bg-gray-100 focus-visible:bg-gray-100"
+        @click="onBottomMenuButtonClick"
+      >
+        <font-awesome-icon icon="grip-lines" size="lg" />
+      </button>
+      <div
+        v-if="isBottomMenuOpened && !isModeExplorer && !isModeFavorite"
+        class="relative justify-between w-full bg-white shadow-md pointer-events-auto"
+      >
+        <transition name="headers" appear mode="out-in">
+          <HeaderRootCategories
+            v-if="state.matches(states.Categories) && isMenuConfigLoaded"
+            class="flex-1 pointer-events-auto px-5 py-4 h-full overflow-y-auto max-h-screen-3/5"
+            :highlighted-categories="highlightedRootCategories"
+            :non-highlighted-categories="nonHighlightedRootCategories"
+            :categories-activesubs-count="subCategoriesCounts"
+            @category-click="onRootCategoryClick"
+          />
+          <SubCategoryHeader
+            v-if="
+              !isModeExplorer &&
+              !isModeFavorite &&
+              state.matches(states.SubCategories)
+            "
+            :categories="state.context.selectedRootCategory.subCategories"
+            :filtered-categories="filteredSubCategories"
+            :is-sub-category-selected="isSubCategorySelected"
+            :categories-activesubs-count="subCategoriesCounts"
+            @category-click="onSubCategoryClick"
+            @filter-click="onSubCategoryFilterClick"
+            @go-back-click="goToParentFromSubCategory"
+            @select-all-categories="selectSubCategory"
+            @unselect-all-categories="unselectSubCategory"
+          />
+
+          <SubCategoryFilterHeader
+            v-if="!isModeExplorer && state.matches(states.SubCategoryFilters)"
+            class="relative min-h-screen-3/5 max-h-screen-3/5 text-left"
+            :subcategory="subCategoryForFilter"
+            :filters-values="subCategoryFilters"
+            @filter-changed="onSubCategoryFilterChange"
+            @go-back-click="onBackToSubCategoryClick"
+          />
+        </transition>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -132,6 +174,7 @@ import Vue from 'vue'
 import { mapGetters, mapActions } from 'vuex'
 import { interpret, Interpreter, State } from 'xstate'
 
+import HeaderRootCategories from '@/components/HeaderRootCategories.vue'
 import MainHeader from '@/components/MainHeader.vue'
 import Map from '@/components/Map.vue'
 import SearchHeader from '@/components/SearchHeader.vue'
@@ -172,6 +215,7 @@ export default Vue.extend({
     SelectedSubCategoriesDense,
     SubCategoryHeader,
     SubCategoryFilterHeader,
+    HeaderRootCategories,
   },
   data(): {
     service: Interpreter<HomeContext, HomeStateSchema, HomeEvent>
@@ -329,6 +373,13 @@ export default Vue.extend({
     state(val, oldVal) {
       if (val.matches(this.states.Home) && !oldVal.matches(this.states.Home)) {
         this.goToHome()
+      }
+      if (
+        val.matches(this.states.SubCategoryFilters) ||
+        val.matches(this.states.SubCategories) ||
+        val.matches(this.states.Categories)
+      ) {
+        this.$refs.map.resizeMap()
       }
     },
     mode() {

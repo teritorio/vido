@@ -2,8 +2,7 @@
   <div class="w-full h-full">
     <div
       :class="[
-        'relative flex flex-col w-full sm:h-full',
-        small && 'h-2/5',
+        'relative flex flex-col w-full h-full sm:h-full',
         !small && 'h-full',
       ]"
     >
@@ -59,7 +58,7 @@
       />
 
       <div
-        class="fixed inset-x-0 bottom-0 flex justify-center overflow-y-auto pointer-events-none h-3/5 sm:h-auto sm:inset-x-3 sm:bottom-3"
+        class="fixed inset-x-0 bottom-0 flex justify-center overflow-y-auto pointer-events-none h-auto sm:inset-x-3 sm:bottom-3"
       >
         <MapPoiToast
           v-if="selectedFeature && showPoiToast"
@@ -290,7 +289,7 @@ export default Vue.extend({
 
   watch: {
     small() {
-      setTimeout(() => this.map?.resize(), 250)
+      this.resizeMap()
     },
 
     async favoritesIds() {
@@ -554,6 +553,10 @@ export default Vue.extend({
           }
         })
       }
+    },
+
+    resizeMap() {
+      setTimeout(() => this.map?.resize(), 250)
     },
 
     onMapPitchEnd(map: maplibregl.Map) {

@@ -1,6 +1,6 @@
 <template>
   <aside
-    class="absolute inset-x-0 bottom-0 px-5 py-4 overflow-y-auto bg-white shadow-md pointer-events-auto sm:relative sm:inset-auto h-3/5 sm:h-auto sm:space-y-10 sm:rounded-xl"
+    class="hidden sm:block absolute bottom-0 px-5 py-4 overflow-y-auto bg-white shadow-md pointer-events-auto relative inset-auto h-auto space-y-10 rounded-xl"
   >
     <div class="items-center justify-between hidden sm:flex">
       <h1>
@@ -30,7 +30,7 @@
 
     <HeaderRootCategories
       v-if="showCategories"
-      class="flex-1 pointer-events-auto"
+      class="flex-1 pointer-events-auto max-h-screen-1/2 2xl:max-h-screen overflow-y-auto"
       :highlighted-categories="highlightedCategories"
       :non-highlighted-categories="nonHighlightedCategories"
       :categories-activesubs-count="categoriesActivesubsCount"
