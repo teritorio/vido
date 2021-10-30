@@ -422,7 +422,6 @@ export default Vue.extend({
     }),
     goToHome() {
       this.service.send(HomeEvents.GoToHome)
-      // @ts-ignore
       if (this.$isMobile()) {
         this.goToSearch()
       } else {
@@ -573,7 +572,6 @@ export default Vue.extend({
       }
     },
     onMapClick(): void {
-      // @ts-ignore
       if (this.$isMobile()) {
         this.goToHome()
       }

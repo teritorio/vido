@@ -591,7 +591,6 @@ export default Vue.extend({
 
         this.goToSelectedPoi()
 
-        // @ts-ignore
         if (this.$isMobile()) {
           this.showPoiToast = false
         }

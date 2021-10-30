@@ -4,3 +4,9 @@ import Vue2TouchEvents from 'vue2-touch-events'
 
 Vue.use(VueMobileDetection)
 Vue.use(Vue2TouchEvents)
+
+declare module 'vue/types/vue' {
+  interface Vue {
+    $isMobile: () => Boolean
+  }
+}
