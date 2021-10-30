@@ -69,7 +69,6 @@ export default {
     '@nuxtjs/stylelint-module',
     // https://go.nuxtjs.dev/tailwindcss
     '@nuxtjs/tailwindcss',
-
     '@nuxtjs/svg',
   ],
 
@@ -81,9 +80,9 @@ export default {
     '@nuxtjs/pwa',
     // https://go.nuxtjs.dev/content
     '@nuxt/content',
-    '@nuxtjs/gtm',
     '@nuxtjs/i18n',
-    '@nuxtjs/sentry',
+    ...(process.env.GOOGLE_TAG_MANAGER_ID ? ['@nuxtjs/gtm'] : []),
+    ...(process.env.SENTRY_DSN ? ['@nuxtjs/sentry'] : []),
   ],
 
   // Axios module configuration (https://go.nuxtjs.dev/config-axios)
