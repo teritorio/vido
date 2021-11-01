@@ -58,7 +58,7 @@
       />
 
       <div
-        class="fixed inset-x-0 bottom-0 flex justify-center overflow-y-auto pointer-events-none h-3/5 sm:h-auto sm:inset-x-3 sm:bottom-3"
+        class="fixed inset-x-0 bottom-0 flex justify-center overflow-y-auto pointer-events-none h-screen-3/5 sm:h-auto sm:inset-x-3 sm:bottom-3"
       >
         <MapPoiToast
           v-if="selectedFeature && showPoiToast"

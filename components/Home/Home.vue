@@ -6,7 +6,7 @@
       :small="isBottomMenuOpened"
       :selected-categories="state.context.selectedSubCategoriesIds"
       :get-sub-category="selectSubCategory"
-      :class="[showPoi && 'max-h-screen-2/5 sm:max-h-full']"
+      :class="[showPoi && 'max-h-screen-1/3 sm:max-h-full']"
       @click="onMapClick"
       @change-mode="onMapChangeMode"
       @show-poi="onShowPoi"
@@ -388,6 +388,11 @@ export default Vue.extend({
     mode() {
       if (this.isModeExplorer) {
         this.unselectSubCategory(this.state.context.selectedSubCategoriesIds)
+      }
+    },
+    showPoi(val) {
+      if (this.$isMobile() && val) {
+        this.$refs.map.resizeMap()
       }
     },
   },
