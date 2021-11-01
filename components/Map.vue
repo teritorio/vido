@@ -499,6 +499,15 @@ const Map = Vue.extend({
       (getHashPart('bg') as keyof typeof MapStyle) || DEFAULT_MAP_STYLE
   },
 
+  mounted() {
+    this.$tracking({
+      type: 'page',
+      title: this.$meta().refresh().metaInfo.title,
+      location: window.location.href,
+      path: this.$route.path,
+    })
+  },
+
   methods: {
     ...mapActions({
       resetMapview: 'map/resetMapview',

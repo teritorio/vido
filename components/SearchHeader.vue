@@ -35,6 +35,7 @@
               searchText = $event.target.value
               onSubmit()
             "
+            @focus="$tracking({ type: 'search' })"
           />
           <button
             class="absolute inset-y-0 right-0 px-5 text-gray-800 rounded-r-full outline-none focus:outline-none"
@@ -69,6 +70,7 @@
 
       <SearchResultBlock
         v-if="itemsClasse.length > 0"
+        type="category"
         :label="$tc('headerMenu.categories')"
         icon="layer-group"
         :items="itemsClasse"
@@ -77,6 +79,7 @@
 
       <SearchResultBlock
         v-if="itemsCities.length > 0"
+        type="city"
         :label="$tc('headerMenu.cities')"
         icon="city"
         :items="itemsCities"
@@ -85,6 +88,7 @@
 
       <SearchResultBlock
         v-if="itemsTis.length > 0"
+        type="poiTIS"
         :label="$tc('headerMenu.poisTis')"
         icon="map-marker-alt"
         :items="itemsTis"
@@ -93,6 +97,7 @@
 
       <SearchResultBlock
         v-if="itemsOsm.length > 0"
+        type="poiOSM"
         :label="$tc('headerMenu.poisOsm')"
         icon="map-marker-alt"
         :items="itemsOsm"
@@ -101,6 +106,7 @@
 
       <SearchResultBlock
         v-if="itemsAddress.length > 0"
+        type="addresse"
         :label="$tc('headerMenu.addresses')"
         icon="home"
         :items="itemsAddress"
@@ -109,6 +115,7 @@
 
       <SearchResultBlock
         v-if="itemsCartocode.length > 0"
+        type="cartocode"
         :label="$tc('headerMenu.cartocode')"
         icon="map-marker-alt"
         :items="itemsCartocode"

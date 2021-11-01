@@ -10,7 +10,7 @@
         :key="item.id"
         class="flex flex-row items-baseline justify-start gap-x-1 mb-1 hover:bg-gray-100 cursor-pointer rounded-xl ml-2 px-2"
         :data-item="item.id"
-        @click="() => onItemClick(item.id)"
+        @click="onItemClick(item)"
       >
         <teritorio-icon
           v-if="item.icon"
@@ -45,6 +45,10 @@ export default Vue.extend({
       type: String,
       required: true,
     },
+    type: {
+      type: String,
+      required: true,
+    },
     items: {
       type: Array as PropType<SearchResult[]>,
       required: true,
@@ -56,8 +60,14 @@ export default Vue.extend({
   },
 
   methods: {
-    onItemClick(id: string) {
-      this.$emit('item-click', id)
+    onItemClick(searchResult: SearchResult) {
+      this.$tracking({
+        type: 'search_result_event',
+        event: 'select',
+        resultType: this.type,
+        title: searchResult.label,
+      })
+      this.$emit('item-click', searchResult.id)
     },
   },
 })

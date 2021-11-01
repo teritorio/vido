@@ -201,6 +201,7 @@ export default Vue.extend({
       }
     },
     copyLink() {
+      this.$tracking({ type: 'favorites_event', event: 'copy_link' })
       if (!navigator.clipboard) {
         return
       }

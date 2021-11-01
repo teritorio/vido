@@ -26,7 +26,7 @@
           :href="poiProp('teritorio:url')"
           rel="noopener noreferrer"
           target="_blank"
-          @click.stop
+          @click.stop="tracking('details')"
         >
           {{ $tc('toast.details') }}
         </a>
@@ -104,7 +104,7 @@
               :href="poiProp('teritorio:url')"
               rel="noopener noreferrer"
               target="_blank"
-              @click.stop
+              @click.stop="tracking('details')"
             >
               {{ $tc('toast.seeDetail') }}
             </a>
@@ -134,6 +134,7 @@
           class="flex flex-col items-center flex-1 h-full p-2 space-y-2 rounded-lg hover:bg-gray-100"
           :href="routeHref"
           :title="$tc('toast.findRoute')"
+          @click="tracking('route')"
         >
           <font-awesome-icon icon="route" :color="color" size="sm" />
           <span class="text-sm">{{ $tc('toast.route') }}</span>
@@ -223,6 +224,16 @@ export default Vue.extend({
       apiProps: null,
       textLimit: 160,
     }
+  },
+
+  mounted() {
+    this.$tracking({
+      type: 'popup',
+      poiId: this.poiMeta('PID'),
+      title: this.poi.properties?.name,
+      location: window.location.href,
+      path: this.$route.path,
+    })
   },
 
   computed: {
@@ -485,13 +496,29 @@ export default Vue.extend({
     },
 
     onZoomClick() {
+      this.tracking('zoom')
       this.$emit('zoom-click')
     },
     onExploreClick() {
+      if (!this.isModeExplorer) {
+        this.tracking('explore')
+      }
       this.$emit('explore-click')
     },
     onFavoriteClick() {
+      if (!this.isModeFavorite) {
+        this.tracking('favorite')
+      }
       this.$emit('favorite-click')
+    },
+    tracking(event: 'details' | 'route' | 'explore' | 'favorite' | 'zoom') {
+      this.$tracking({
+        type: 'popup_event',
+        event,
+        poiId: this.poiMeta('PID'),
+        category: this.category,
+        title: this.poi.properties?.name,
+      })
     },
   },
 })

@@ -33,7 +33,7 @@
           :label="category.metadata.label.fr"
           :picto="category.metadata.picto"
           :active-sub-categories="categoriesActivesubsCount[category.id] || 0"
-          @click="onCategoryClick"
+          @click="onCategoryClick(category)"
         />
       </div>
     </transition>
@@ -75,8 +75,13 @@ export default Vue.extend({
     onCollapseButtonClick() {
       this.collapsed = !this.collapsed
     },
-    onCategoryClick(categoryId: Category['id']) {
-      this.$emit('category-click', categoryId)
+    onCategoryClick(category: Category) {
+      this.$tracking({
+        type: 'category',
+        categoryId: category.id,
+        title: category.metadata.label.fr,
+      })
+      this.$emit('category-click', category.id)
     },
   },
 })

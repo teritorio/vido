@@ -101,9 +101,21 @@ export default Vue.extend({
   },
   methods: {
     onClick() {
+      this.$tracking({
+        type: 'category_event',
+        event: 'enable',
+        categoryId: this.category.id,
+        title: this.category.metadata.label.fr,
+      })
       this.$emit('click', this.category.id)
     },
     onFilterClick() {
+      this.$tracking({
+        type: 'category_event',
+        event: 'filter',
+        categoryId: this.category.id,
+        title: this.category.metadata.label.fr,
+      })
       this.$emit('filter-click', this.category.id)
     },
   },

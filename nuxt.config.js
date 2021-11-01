@@ -21,6 +21,7 @@ export default {
     VECTO_STYLE_URL: process.env.VECTO_STYLE_URL || '',
     SATELLITE_STYLE_URL: process.env.SATELLITE_STYLE_URL || '',
     VECTO_TILES_URL: process.env.VECTO_TILES_URL || '',
+    GOOGLE_TAG_MANAGER_ID: process.env.GOOGLE_TAG_MANAGER_ID || '',
   },
   pwa: {
     meta: {
@@ -56,6 +57,7 @@ export default {
     '@/plugins/fontawesome.ts',
     '@/plugins/mobile.ts',
     '@/plugins/vue-tailwind.ts',
+    '@/plugins/tracking.ts',
   ],
 
   // Auto import components (https://go.nuxtjs.dev/config-components)
@@ -146,6 +148,6 @@ export default {
   gtm: {
     id: process.env.GOOGLE_TAG_MANAGER_ID,
     enabled: Boolean(process.env.GOOGLE_TAG_MANAGER_ID),
-    pageTracking: true,
+    pageTracking: false,
   },
 }

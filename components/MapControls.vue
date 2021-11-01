@@ -225,6 +225,7 @@ export default Vue.extend({
       this.is3D = value
     },
     toggle3D() {
+      this.tracking('3d')
       if (this.building3d) {
         if (this.is3D) {
           this.building3d.set3d(false, 0)
@@ -236,6 +237,7 @@ export default Vue.extend({
       }
     },
     displayNextBackground() {
+      this.tracking('background')
       if (!this.background) {
         return
       }
@@ -259,12 +261,14 @@ export default Vue.extend({
       return styleNames[styleIndex]
     },
     toggleMode() {
+      this.tracking('explorer')
       this.$emit(
         'change-mode',
         this.isModeExplorer ? Mode.BROWSER : Mode.EXPLORER
       )
     },
     toggleFavoriteMode() {
+      this.tracking('favorite')
       const isFav = getHashPart('fav') === '1'
       if (!isFav) {
         setHashPart('fav', '1')
@@ -275,6 +279,9 @@ export default Vue.extend({
         this.$store.dispatch('favorite/handleFavoriteLayer', false)
         this.$store.dispatch('favorite/setFavoritesAction', 'close')
       }
+    },
+    tracking(event: '3d' | 'background' | 'explorer' | 'favorite') {
+      this.$tracking({ type: 'map_control_event', event })
     },
   },
 })
