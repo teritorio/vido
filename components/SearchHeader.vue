@@ -60,6 +60,14 @@
 
     <div v-if="searchResults" class="overflow-y-auto">
       <SearchResultBlock
+        v-if="itemsFilters.length > 0"
+        label="Filtres"
+        icon="filter"
+        :items="itemsFilters"
+        @item-click="onFilterClick"
+      />
+
+      <SearchResultBlock
         v-if="itemsClasse.length > 0"
         :label="$tc('headerMenu.categories')"
         icon="layer-group"
@@ -97,14 +105,6 @@
         icon="home"
         :items="itemsAddress"
         @item-click="onAddressClick"
-      />
-
-      <SearchResultBlock
-        v-if="itemsFilters.length > 0"
-        label="Filtres"
-        icon="filter"
-        :items="itemsFilters"
-        @item-click="onFilterClick"
       />
 
       <SearchResultBlock
