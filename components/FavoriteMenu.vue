@@ -20,15 +20,29 @@
       >
         <button
           ref="menu"
-          class="space-x-1 text-sm font-medium text-gray-800 bg-white shadow-md outline-none sm:px-5 w-11 sm:w-auto hh-11 focus:outline-none hover:bg-gray-100 focus-visible:bg-gray-100 flex-shrink-0 border-r border-gray-400 rounded-l-full"
+          :class="[
+            'relative space-x-1 text-sm font-medium bg-white shadow-md outline-none sm:px-5 w-11 sm:w-auto h-11 focus:outline-none hover:bg-gray-100 focus-visible:bg-gray-100 flex-shrink-0 border-r border-gray-400 rounded-l-full',
+            isModeFavorite &&
+              'bg-blue-500 hover:bg-blue-400 focus-visible:bg-blue-400 text-white',
+            !isModeFavorite && 'text-gray-800',
+          ]"
           v-on="$listeners"
         >
           <font-awesome-icon
-            :icon="[`${isModeFavorite ? 'fas' : 'far'}`, 'star']"
-            class="text-yellow-500"
+            :icon="[`${hasFavorites ? 'fas' : 'far'}`, 'star']"
+            :class="[
+              isModeFavorite && 'text-white',
+              !isModeFavorite && 'text-yellow-500',
+            ]"
             size="sm"
           />
           <span class="hidden sm:inline">{{ $tc('favorites.title') }}</span>
+          <div
+            v-if="hasFavorites"
+            class="flex items-center justify-center text-white text-center rounded-full absolute top-0 right-0 w-5 h-5 border-2 border-white bg-red-600"
+          >
+            <p class="text-xs">{{ favoritesIds.length }}</p>
+          </div>
         </button>
         <button
           class="flex h-11 items-center justify-center flex-shrink-0 px-3 py-2 bg-white border-l border-gray-00 rounded-r-full hover:bg-gray-100 shadow-md focus:outline-none"
@@ -128,6 +142,7 @@
 <script lang="ts">
 import Vue from 'vue'
 import { TDropdown } from 'vue-tailwind/dist/components'
+import { mapGetters } from 'vuex'
 
 import { LOCAL_STORAGE } from '@/lib/constants'
 
@@ -155,6 +170,11 @@ export default Vue.extend({
       hasClipboard: Boolean(navigator.clipboard),
       isCopied: false,
     }
+  },
+  computed: {
+    ...mapGetters({
+      favoritesIds: 'favorite/favoritesIds',
+    }),
   },
   methods: {
     removeFavorites() {
