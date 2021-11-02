@@ -30,7 +30,10 @@
 
     <HeaderRootCategories
       v-if="showCategories"
-      class="flex-1 pointer-events-auto max-h-screen-1/2 2xl:max-h-screen overflow-y-auto"
+      :class="[
+        'flex-1 pointer-events-auto 2xl:max-h-screen overflow-y-auto',
+        showPoi && 'max-h-screen-1/2',
+      ]"
       :highlighted-categories="highlightedCategories"
       :non-highlighted-categories="nonHighlightedCategories"
       :categories-activesubs-count="categoriesActivesubsCount"
@@ -50,6 +53,10 @@ export default Vue.extend({
     HeaderRootCategories,
   },
   props: {
+    showPoi: {
+      type: Boolean,
+      default: false,
+    },
     highlightedCategories: {
       type: Array,
       required: true,

@@ -58,7 +58,7 @@
       />
 
       <div
-        class="fixed inset-x-0 bottom-0 flex justify-center overflow-y-auto pointer-events-none h-screen-3/5 sm:h-auto sm:inset-x-3 sm:bottom-3"
+        class="fixed inset-x-0 bottom-0 flex justify-center overflow-y-auto pointer-events-none h-auto sm:inset-x-3 sm:bottom-3"
       >
         <MapPoiToast
           v-if="selectedFeature && showPoiToast"
@@ -128,7 +128,7 @@ const FAVORITE_SOURCE = 'favorite-source'
 const POI_LAYER_MARKER = 'poi-simple-marker'
 const FAVORITE_LAYER_MARKER = 'favorite-layer-marker'
 
-export default Vue.extend({
+const Map = Vue.extend({
   components: {
     Mapbox,
     MapControls,
@@ -991,6 +991,10 @@ export default Vue.extend({
     },
   },
 })
+
+export type MapRef = InstanceType<typeof Map>
+
+export default Map
 </script>
 
 <style>

@@ -6,7 +6,6 @@
       :small="isBottomMenuOpened"
       :selected-categories="state.context.selectedSubCategoriesIds"
       :get-sub-category="selectSubCategory"
-      :class="[showPoi && 'max-h-screen-1/3 sm:max-h-full']"
       @click="onMapClick"
       @change-mode="onMapChangeMode"
       @show-poi="onShowPoi"
@@ -26,6 +25,7 @@
           <MainHeader
             v-if="state.matches(states.Categories) && isMenuConfigLoaded"
             :highlighted-categories="highlightedRootCategories"
+            :show-poi="showPoi"
             :logo-url="logoUrl"
             :main-url="mainUrl"
             :non-highlighted-categories="nonHighlightedRootCategories"
@@ -112,61 +112,39 @@
         />
       </div>
     </header>
-
-    <div
-      class="z-0 relative flex-shrink-0 sm:hidden text-center bottom-0 w-full"
-    >
-      <button
-        v-if="!isModeExplorer || selectedFeature"
-        v-touch:swipe.stop="onBottomMenuButtonClick"
-        class="-top-12 z-0 absolute sm:hidden right-3/8 left-3/8 w-1/4 h-12 transition-all rounded-t-lg text-sm font-medium px-5 space-x-1 shadow-lg outline-none focus:outline-none bg-white text-gray-800 hover:bg-gray-100 focus-visible:bg-gray-100"
-        @click="onBottomMenuButtonClick"
-      >
-        <font-awesome-icon icon="grip-lines" size="lg" />
-      </button>
-      <div
-        v-if="
-          isBottomMenuOpened && !showPoi && !isModeExplorer && !isModeFavorite
-        "
-        class="relative justify-between w-full bg-white shadow-md pointer-events-auto"
-      >
-        <transition name="headers" appear mode="out-in">
-          <HeaderRootCategories
-            v-if="state.matches(states.Categories) && isMenuConfigLoaded"
-            class="flex-1 pointer-events-auto px-5 py-4 h-full overflow-y-auto max-h-screen-3/5"
-            :highlighted-categories="highlightedRootCategories"
-            :non-highlighted-categories="nonHighlightedRootCategories"
-            :categories-activesubs-count="subCategoriesCounts"
-            @category-click="onRootCategoryClick"
-          />
-          <SubCategoryHeader
-            v-if="
-              !isModeExplorer &&
-              !isModeFavorite &&
-              state.matches(states.SubCategories)
-            "
-            :categories="state.context.selectedRootCategory.subCategories"
-            :filtered-categories="filteredSubCategories"
-            :is-sub-category-selected="isSubCategorySelected"
-            :categories-activesubs-count="subCategoriesCounts"
-            @category-click="onSubCategoryClick"
-            @filter-click="onSubCategoryFilterClick"
-            @go-back-click="goToParentFromSubCategory"
-            @select-all-categories="selectSubCategory"
-            @unselect-all-categories="unselectSubCategory"
-          />
-
-          <SubCategoryFilterHeader
-            v-if="!isModeExplorer && state.matches(states.SubCategoryFilters)"
-            class="relative min-h-screen-3/5 max-h-screen-3/5 text-left"
-            :subcategory="subCategoryForFilter"
-            :filters-values="subCategoryFilters"
-            @filter-changed="onSubCategoryFilterChange"
-            @go-back-click="onBackToSubCategoryClick"
-          />
-        </transition>
-      </div>
-    </div>
+    <BottomMenu
+      class="sm:hidden"
+      :selected-feature="selectedFeature"
+      :is-mode-explorer="isModeExplorer"
+      :is-bottom-menu-opened="isBottomMenuOpened"
+      :show-poi="showPoi"
+      :states="states"
+      :state="state"
+      :is-menu-config-loaded="isMenuConfigLoaded"
+      :is-mode-favorite="isModeFavorite"
+      :highlighted-categories="highlightedRootCategories"
+      :non-highlighted-categories="nonHighlightedRootCategories"
+      :categories-activesubs-count="subCategoriesCounts"
+      :categories="
+        state.context.selectedRootCategory
+          ? state.context.selectedRootCategory.subCategories
+          : []
+      "
+      :subcategory="subCategoryForFilter"
+      :filters-values="subCategoryFilters"
+      :filtered-categories="filteredSubCategories"
+      :is-sub-category-selected="isSubCategorySelected"
+      :map="$refs.map"
+      :on-bottom-menu-button-click="onBottomMenuButtonClick"
+      :on-go-back-click="goToParentFromSubCategory"
+      :on-select-all-categories="selectSubCategory"
+      :on-unselect-all-categories="unselectSubCategory"
+      :on-filter-click="onSubCategoryFilterClick"
+      :on-filter-changed="onSubCategoryFilterChange"
+      :on-go-back-click-filter="onBackToSubCategoryClick"
+      @category-click="onRootCategoryClick"
+      @sub-category-click="onSubCategoryClick"
+    />
   </div>
 </template>
 
@@ -177,7 +155,7 @@ import Vue from 'vue'
 import { mapGetters, mapActions } from 'vuex'
 import { interpret, Interpreter, State } from 'xstate'
 
-import HeaderRootCategories from '@/components/HeaderRootCategories.vue'
+import BottomMenu from '@/components/BottomMenu.vue'
 import MainHeader from '@/components/MainHeader.vue'
 import Map from '@/components/Map.vue'
 import SearchHeader from '@/components/SearchHeader.vue'
@@ -218,7 +196,7 @@ export default Vue.extend({
     SelectedSubCategoriesDense,
     SubCategoryHeader,
     SubCategoryFilterHeader,
-    HeaderRootCategories,
+    BottomMenu,
   },
   data(): {
     service: Interpreter<HomeContext, HomeStateSchema, HomeEvent>
