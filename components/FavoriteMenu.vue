@@ -4,7 +4,7 @@
       :text="$tc('favorites.menu_label')"
       :classes="{
         dropdown:
-          'origin-top-right absolute right-16 rounded shadow bg-white mt-1',
+          'origin-top-right absolute right-14 sm:rigth-16 rounded shadow bg-white mt-1',
       }"
     >
       <div

@@ -9,7 +9,11 @@
         :is-mode-favorite="isModeFavorite"
         @click="toggleFavoriteMode"
       />
-      <NavMenu v-if="map" class="ml-10" @locale="$emit('locale', $event)" />
+      <NavMenu
+        v-if="map"
+        class="ml-3 sm:ml-9"
+        @locale="$emit('locale', $event)"
+      />
     </div>
 
     <div class="absolute flex flex-col justify-center inset-y-3 right-3">
