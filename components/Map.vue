@@ -839,9 +839,10 @@ const Map = Vue.extend({
         this.map.addSource(POI_SOURCE, {
           type: 'geojson',
           cluster: true,
-          clusterRadius: 64,
+          clusterRadius: 32,
           clusterProperties: clusterProps,
           clusterMaxZoom: 15,
+          tolerance: 0.6,
           data: {
             type: 'FeatureCollection',
             features,
