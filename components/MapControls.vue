@@ -211,6 +211,13 @@ export default Vue.extend({
     } else {
       this.displayNextBackground()
     }
+
+    const mapParams: string | null = getHashPart('map')
+    const params: string[] | undefined = mapParams?.split('/')
+
+    if (params && params.length > 4) {
+      this.setIs3D(true)
+    }
   },
 
   methods: {
