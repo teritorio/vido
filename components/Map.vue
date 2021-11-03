@@ -430,6 +430,7 @@ const Map = Vue.extend({
           }
 
           setHashPart('bg', this.selectedBackground)
+          setHashPart('explorer', '1')
 
           if (alreadyOnExplorerMapStyle) {
             this.poiFilterForExplorer()
@@ -437,6 +438,7 @@ const Map = Vue.extend({
           break
         }
         case Mode.BROWSER:
+          setHashPart('explorer', null)
           this.poiFilter?.remove(true)
           break
       }
@@ -472,6 +474,10 @@ const Map = Vue.extend({
       this.$store.dispatch('favorite/setFavoritesAction', 'open')
     }
 
+    if (getHashPart('explorer') === '1') {
+      this.setMode(Mode.EXPLORER)
+    }
+
     const favs = getHashPart('favs')
     if (favs) {
       try {
@@ -495,6 +501,7 @@ const Map = Vue.extend({
   methods: {
     ...mapActions({
       resetMapview: 'map/resetMapview',
+      setMode: 'site/setMode',
     }),
 
     onMapInit(map: maplibregl.Map) {
@@ -812,8 +819,12 @@ const Map = Vue.extend({
     },
 
     poiFilterForExplorer() {
-      this.poiFilter?.setIncludeFilter(this.filters)
-      this.map?.triggerRepaint()
+      if (this.map) {
+        this.map.once('styledata', () => {
+          this.poiFilter?.setIncludeFilter(this.filters)
+          this.map?.triggerRepaint()
+        })
+      }
     },
 
     onClickChangeBackground(background: keyof typeof MapStyle) {
