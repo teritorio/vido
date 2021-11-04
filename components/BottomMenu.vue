@@ -9,7 +9,7 @@
       <font-awesome-icon icon="grip-lines" size="lg" />
     </button>
     <div
-      v-if="isBottomMenuOpened && !isModeExplorer && !isModeFavorite"
+      v-if="isBottomMenuOpened"
       class="relative justify-between w-full bg-white shadow-md pointer-events-auto h-auto"
     >
       <transition name="headers" appear mode="out-in">
