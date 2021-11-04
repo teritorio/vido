@@ -76,5 +76,6 @@ export default {
     closed: 'Actuellement fermé',
     open: 'Ouvre',
     openAt: 'Ouvre à',
+    zoom: 'Zoomer',
   },
 }

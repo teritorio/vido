@@ -140,6 +140,15 @@
         </a>
 
         <button
+          class="flex flex-1 flex-col items-center space-y-2 rounded-lg p-2 h-full hover:bg-gray-100"
+          :title="$tc('toast.zoom')"
+          @click.stop="onZoomClick"
+        >
+          <font-awesome-icon icon="plus" :color="color" size="sm" />
+          <span class="text-sm">{{ $tc('toast.zoom') }}</span>
+        </button>
+
+        <button
           :class="[
             'flex flex-1 flex-col items-center space-y-2 rounded-lg p-2 h-full',
             isModeExplorer && 'bg-blue-600 text-white hover:bg-blue-500',
@@ -475,6 +484,9 @@ export default Vue.extend({
         .then((data) => (this.sptags = data))
     },
 
+    onZoomClick() {
+      this.$emit('zoom-click')
+    },
     onExploreClick() {
       this.$emit('explore-click')
     },

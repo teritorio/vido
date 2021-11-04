@@ -53,6 +53,7 @@
           class="flex-grow-0 text-left max-h-screen-3/5"
           @explore-click="exploreAroundSelectedPoi"
           @favorite-click="toggleFavoriteMode"
+          @zoom-click="goToSelectedPoi"
         />
       </transition>
     </div>
@@ -140,6 +141,9 @@ export default Vue.extend({
     },
     toggleFavoriteMode() {
       this.map.toggleFavoriteMode()
+    },
+    goToSelectedPoi() {
+      this.map.goToSelectedPoi()
     },
   },
 })

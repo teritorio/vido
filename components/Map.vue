@@ -66,6 +66,7 @@
           class="flex-grow-0"
           @explore-click="exploreAroundSelectedPoi"
           @favorite-click="toggleFavoriteMode"
+          @zoom-click="goToSelectedPoi"
         />
       </div>
 
