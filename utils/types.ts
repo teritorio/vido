@@ -80,6 +80,8 @@ export interface ApiCategoryBase {
     tourism_style_class: string[]
     // eslint-disable-next-line camelcase
     selection_zoom: number
+    // eslint-disable-next-line camelcase
+    enabled_by_default: boolean
   }
   order: number
 }

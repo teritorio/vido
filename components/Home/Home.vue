@@ -251,6 +251,7 @@ export default Vue.extend({
   },
   computed: {
     ...mapGetters({
+      categories: 'menu/categories',
       getSubCategoriesFromCategoryId: 'menu/getSubCategoriesFromCategoryId',
       isMapConfigLoaded: 'map/isLoaded',
       isMenuConfigLoaded: 'menu/isLoaded',
@@ -399,6 +400,15 @@ export default Vue.extend({
       this.selectSubCategory(getHashPart('cat')?.split('.') || [])
     }
 
+    const enabledCategories: Category['id'][] = []
+
+    Object.keys(this.categories).forEach((categoryId) => {
+      if (this.categories[categoryId].metadata?.enabled_by_default) {
+        enabledCategories.push(categoryId)
+      }
+    })
+
+    this.selectSubCategory(enabledCategories)
     this.goToHome()
   },
   methods: {
