@@ -477,6 +477,7 @@ const Map = Vue.extend({
 
     if (getHashPart('explorer') === '1') {
       this.setMode(Mode.EXPLORER)
+      this.resizeMap()
     }
 
     const favs = getHashPart('favs')
