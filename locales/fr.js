@@ -4,6 +4,8 @@ export default {
     menu_label: 'Menu des favoris',
     menu_share: 'Partager les favoris',
     menu_clear: 'Supprimer les favoris',
+    export_pdf: 'Exporter la liste en PDF',
+    export_csv: 'Exporter la liste en CSV',
     modal: {
       title: 'Partager le lien des favoris',
       copy: 'Copier',

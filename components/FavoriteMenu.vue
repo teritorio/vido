@@ -78,6 +78,36 @@
           />
           {{ $tc('favorites.menu_share') }}
         </button>
+        <a
+          :href="pdfLink"
+          target="_blank"
+          class="block w-full px-4 py-2 text-sm leading-5 text-left text-gray-700 transition duration-150 ease-in-out hover:bg-gray-100 focus:outline-none focus:bg-gray-100"
+          role="menuitem"
+          @blur="blurHandler"
+        >
+          <font-awesome-icon
+            ref="menu_icon"
+            icon="file-download"
+            class="text-gray-500 mr-2"
+            size="sm"
+          />
+          {{ $tc('favorites.export_pdf') }}
+        </a>
+        <a
+          :href="csvLink"
+          target="_blank"
+          class="block w-full px-4 py-2 text-sm leading-5 text-left text-gray-700 transition duration-150 ease-in-out hover:bg-gray-100 focus:outline-none focus:bg-gray-100"
+          role="menuitem"
+          @blur="blurHandler"
+        >
+          <font-awesome-icon
+            ref="menu_icon"
+            icon="file-download"
+            class="text-gray-500 mr-2"
+            size="sm"
+          />
+          {{ $tc('favorites.export_csv') }}
+        </a>
         <button
           class="block w-full px-4 py-2 text-sm leading-5 text-left text-gray-700 transition duration-150 ease-in-out hover:bg-gray-100 focus:outline-none focus:bg-gray-100"
           role="menuitem"
@@ -175,6 +205,16 @@ export default Vue.extend({
     ...mapGetters({
       favoritesIds: 'favorite/favoritesIds',
     }),
+    pdfLink(): string {
+      return `${
+        this.$config.API_ENDPOINT
+      }/geodata/v1/allposts.pdf?post_ids=${this.favoritesIds.join(',')}`
+    },
+    csvLink(): string {
+      return `${
+        this.$config.API_ENDPOINT
+      }/geodata/v1/allposts.csv?post_ids=${this.favoritesIds.join(',')}`
+    },
   },
   methods: {
     removeFavorites() {
