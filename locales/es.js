@@ -4,6 +4,8 @@ export default {
     menu_label: 'Menú de favoritos',
     menu_share: 'Compartir favoritos',
     menu_clear: 'Eliminar favoritos',
+    export_pdf: 'Exportar la lista como PDF',
+    export_csv: 'Exportar lista como CSV',
     modal: {
       title: 'Compartir enlace de favoritos',
       copy: 'Copiar',
@@ -12,9 +14,9 @@ export default {
     noFavs:
       'Todavía no tienes ningún lugar marcado. Puedes hacerlo seleccionando un lugar en el mapa y guardándolo como favorito',
   },
-  mapa: {
+  map: {
     mapnik: {
-      nombre: 'Teritorio Mapnik',
+      name: 'Teritorio Mapnik',
       attribution:
         '<a href="https://www.openstreetmap.org/copyright" rel="noopener noreferrer" target="_blank">&copy; OpenStreetMap contributors</a> <a href="https://www.teritorio.fr/" rel="noopener noreferrer" target="_blank">&copy; Teritorio</a>',
     },
@@ -34,7 +36,7 @@ export default {
       issue: 'No hay resultados que coincidan',
       action: '¿Ves lugares más lejanos?',
     },
-    noFavoritos: {
+    noFavorites: {
       issue: 'Aquí no hay favoritos',
       action: '¿Ver todos los favoritos?',
     },
@@ -50,6 +52,7 @@ export default {
     poisTis: 'Puntos de interés (TIS)',
     poisOsm: 'Puntos de interés (OSM)',
     addresses: 'Direcciones',
+    cartocode: 'Cartocode',
     noResult: 'No hay resultados',
     hideCategory: 'Ocultar esta categoría',
   },
@@ -75,5 +78,6 @@ export default {
     closed: 'Actualmente cerrado',
     open: 'Abierto el',
     openAt: 'Abre a las',
+    zoom: 'Acercarse',
   },
 }

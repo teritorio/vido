@@ -4,6 +4,8 @@ export default {
     menu_label: 'Favorites menu',
     menu_share: 'Share favorites',
     menu_clear: 'Clear favorites',
+    export_pdf: 'Export liste as PDF',
+    export_csv: 'Export liste as CSV',
     modal: {
       title: 'Share link of favorites',
       copy: 'Copy',
@@ -50,6 +52,7 @@ export default {
     poisTis: 'Points of interest (TIS)',
     poisOsm: 'Points of interest (OSM)',
     addresses: 'Addresses',
+    cartocode: 'Cartocode',
     noResult: 'No results',
     hideCategory: 'Hide this category',
   },
@@ -75,5 +78,6 @@ export default {
     closed: 'Currently closed',
     open: 'Opens',
     openAt: 'Opens at',
+    zoom: 'Zoom',
   },
 }
