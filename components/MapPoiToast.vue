@@ -32,7 +32,10 @@
         </a>
       </div>
 
-      <div class="flex items-center mt-2 text-sm text-gray-500 flex-shrink-0">
+      <div
+        v-if="!unavoidable"
+        class="flex items-center mt-2 text-sm text-gray-500 flex-shrink-0"
+      >
         <TeritorioIcon
           v-if="icon"
           :category-color="color"
@@ -53,7 +56,14 @@
         {{ category }}
       </div>
 
-      <div class="h-auto flex-grow flex-shrink-0">
+      <p
+        v-if="unavoidable && Boolean(description)"
+        class="text-sm flex-grow flex-shrink-0 mt-6"
+      >
+        {{ description }}
+      </p>
+
+      <div v-else class="h-auto flex-grow flex-shrink-0">
         <p class="mt-6 text-sm">
           <template v-if="address">
             {{ address }}
@@ -301,6 +311,10 @@ export default Vue.extend({
       return this.poiMeta('label_infobulle') || this.poiProp('class')
     },
 
+    description(): string | null {
+      return this.poiProp('description')
+    },
+
     address(): string | null {
       if (this.poiMeta('PopupAdress') !== 'yes') {
         return null
@@ -434,6 +448,10 @@ export default Vue.extend({
       } else {
         return null
       }
+    },
+
+    unavoidable(): boolean {
+      return Boolean(this.poiMeta('unavoidable'))
     },
   },
 
