@@ -137,6 +137,7 @@ export interface FeatureBase extends MapboxGeoJSONFeature {
       // eslint-disable-next-line camelcase
       tourism_style_class?: string | string[]
       wkt?: string
+      'image:thumbnail'?: string
     }
     name?: string
   }

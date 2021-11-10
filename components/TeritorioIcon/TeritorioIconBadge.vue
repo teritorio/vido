@@ -3,10 +3,16 @@
     :class="[
       'flex items-center justify-center flex-shrink-0 text-white rounded-full border-2 border-white',
       iconDim,
+      Boolean(image) && 'shadow-md',
     ]"
     :style="{ backgroundColor: color }"
   >
-    <TeritorioIcon :category-color="color" :class="iconSize" :picto="picto" />
+    <TeritorioIcon
+      :category-color="color"
+      :class="iconSize"
+      :picto="picto"
+      :image="image"
+    />
   </div>
 </template>
 
@@ -33,6 +39,10 @@ export default Vue.extend({
       type: String,
       default: 'md',
     },
+    image: {
+      type: String,
+      required: false,
+    },
   },
 
   computed: {
@@ -54,7 +64,7 @@ export default Vue.extend({
         lg: 'w-10 h-10',
         xl: 'w-12 h-12',
       }
-      return values[this.size]
+      return this.image ? values.xl : values[this.size]
     },
   },
 })

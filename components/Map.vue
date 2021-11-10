@@ -971,6 +971,7 @@ const Map = Vue.extend({
                 // Marker
                 const el: HTMLElement = document.createElement('div')
                 el.classList.add('maplibregl-marker')
+
                 marker = this.markers[id] = new maplibregl.Marker({
                   element: el,
                 }).setLngLat(markerCoords) // Using this to avoid misplaced marker
@@ -980,6 +981,7 @@ const Map = Vue.extend({
                   propsData: {
                     color: props.metadata.color,
                     picto: props.metadata.icon,
+                    image: props.metadata['image:thumbnail'],
                   },
                 }).$mount()
                 el.appendChild(instance.$el)
