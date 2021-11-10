@@ -989,6 +989,10 @@ const Map = Vue.extend({
                   el.addEventListener('click', (e) => {
                     e.stopPropagation()
                     this.selectFeature(feature)
+
+                    if (this.$isMobile()) {
+                      this.resizeMap()
+                    }
                   })
                 }
               }
