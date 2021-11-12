@@ -65,7 +65,10 @@
 
           <div
             v-if="state.matches(states.Search)"
-            class="max-h-full hidden sm:flex"
+            :class="[
+              'max-h-full hidden sm:flex',
+              showPoi && 'max-h-screen-4/6',
+            ]"
           >
             <SearchHeader
               :site-name="siteName"
