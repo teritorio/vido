@@ -398,17 +398,18 @@ export default Vue.extend({
   mounted() {
     if (typeof location !== 'undefined' && getHashPart('cat')) {
       this.selectSubCategory(getHashPart('cat')?.split('.') || [])
+    } else if (!getHashPart('favs')) {
+      const enabledCategories: Category['id'][] = []
+
+      Object.keys(this.categories).forEach((categoryId) => {
+        if (this.categories[categoryId].metadata?.enabled_by_default) {
+          enabledCategories.push(categoryId)
+        }
+      })
+
+      this.selectSubCategory(enabledCategories)
     }
 
-    const enabledCategories: Category['id'][] = []
-
-    Object.keys(this.categories).forEach((categoryId) => {
-      if (this.categories[categoryId].metadata?.enabled_by_default) {
-        enabledCategories.push(categoryId)
-      }
-    })
-
-    this.selectSubCategory(enabledCategories)
     this.goToHome()
   },
   methods: {
