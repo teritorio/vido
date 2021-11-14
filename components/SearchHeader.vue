@@ -122,18 +122,7 @@
         @item-click="onPoiClick"
       />
 
-      <p
-        v-if="
-          itemsClasse.length +
-            itemsOsm.length +
-            itemsTis.length +
-            itemsAddress.length +
-            itemsCartocode.length +
-            itemsFilters.length +
-            itemsCities.length ==
-          0
-        "
-      >
+      <p v-if="results == 0">
         {{ $tc('headerMenu.noResult') }}
       </p>
     </div>
@@ -285,6 +274,26 @@ export default Vue.extend({
               : []
           )
         : []
+    },
+
+    results(): Number {
+      return (
+        this.itemsClasse.length +
+        this.itemsOsm.length +
+        this.itemsTis.length +
+        this.itemsAddress.length +
+        this.itemsCartocode.length +
+        this.itemsFilters.length +
+        this.itemsCities.length
+      )
+    },
+  },
+
+  watch: {
+    itemsCartocode(val) {
+      if (val.length === 1 && this.results === 1) {
+        this.onPoiClick(val[0].id)
+      }
     },
   },
 
