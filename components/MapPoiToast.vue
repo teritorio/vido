@@ -501,7 +501,7 @@ export default Vue.extend({
     },
 
     fetchSpTags() {
-      if (!this.poiMeta('PopupListField')) {
+      if (!this.poiMeta('PopupListField') || !this.poiMeta('osm_poi_type')) {
         return
       }
       return fetch(
