@@ -385,13 +385,17 @@ const Map = Vue.extend({
       if (
         feature &&
         feature.geometry.type === 'Point' &&
-        (feature.properties?.metadata?.PID || feature?.id)
+        (feature.properties?.metadata?.PID ||
+          feature?.id ||
+          feature?.properties?.id)
       ) {
         setHashPart(
           'poi',
           feature?.properties?.metadata?.PID || feature?.id?.toString() || null
         )
-        this.showPoiToast = true
+        this.showPoiToast = Boolean(
+          feature?.properties?.metadata?.PID || feature?.id?.toString()
+        )
         this.selectedFeatureMarker = new maplibregl.Marker({
           scale: 1.3,
           color: '#f44336',
