@@ -507,7 +507,7 @@ export default Vue.extend({
       return fetch(
         `${
           this.$config.API_ENDPOINT
-        }/geodata/v1/sptags?PopupListField=${this.poiMeta('PopupListField')}`
+        }/geodata/v0.1/sptags?PopupListField=${this.poiMeta('PopupListField')}`
       )
         .then((data) => data.json())
         .then((data) => (this.sptags = data))

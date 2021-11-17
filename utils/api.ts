@@ -7,15 +7,13 @@ const handlePoiData = (data: any) =>
     .filter((v) => v !== null)
 
 export function getPoiById(apiEndpoint: string, poiId: string) {
-  return fetch(`${apiEndpoint}/geodata/v1/allposts?post_id=${poiId}`)
-    .then((data) => data.json())
-    .then((data) => handlePoiData(data).pop())
+  return fetch(`${apiEndpoint}/geodata/v0.1/poi/${poiId}`).then((data) =>
+    data.json()
+  )
 }
 
 export function getPoiByIds(apiEndpoint: string, poiIds: [string]) {
-  return fetch(
-    `${apiEndpoint}/geodata/v1/allposts?post_ids=${poiIds.join(',')}`
-  )
+  return fetch(`${apiEndpoint}/geodata/v0.1/pois?ids=${poiIds.join(',')}`)
     .then((data) => data.json())
     .then((data) => handlePoiData(data))
 }

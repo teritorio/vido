@@ -316,7 +316,7 @@ export default Vue.extend({
         } else {
           counts[cat.parent] = 1
         }
-        if (cat.parent !== '0') {
+        if (cat.parent !== 0) {
           const parent =
             this.subCategories.find((sc) => sc.id === cat.parent) ||
             this.rootCategories.find((sc: Category) => sc.id === cat.parent)
@@ -342,7 +342,7 @@ export default Vue.extend({
       )
     },
     filteredSubCategories(): Category['id'][] {
-      return Object.keys(this.filters)
+      return Object.keys(this.filters).map((i) => parseInt(i, 10))
     },
     categoriesToIcons(): Record<Category['id'], string> {
       const resources: Record<Category['id'], string> = {}
@@ -397,11 +397,16 @@ export default Vue.extend({
   },
   mounted() {
     if (typeof location !== 'undefined' && getHashPart('cat')) {
-      this.selectSubCategory(getHashPart('cat')?.split('.') || [])
+      this.selectSubCategory(
+        getHashPart('cat')
+          ?.split('.')
+          .map((i) => parseInt(i, 10)) || []
+      )
     } else if (!getHashPart('favs')) {
       const enabledCategories: Category['id'][] = []
 
-      Object.keys(this.categories).forEach((categoryId) => {
+      Object.keys(this.categories).forEach((categoryIdString) => {
+        const categoryId = parseInt(categoryIdString, 10)
         if (this.categories[categoryId].metadata?.enabled_by_default) {
           enabledCategories.push(categoryId)
         }
@@ -534,7 +539,7 @@ export default Vue.extend({
         },
       }
 
-      this.selectSubCategory([`${newFilter.menuid}`])
+      this.selectSubCategory([newFilter.menuid])
       this.setCategoriesFilters(newFilters)
     },
     onFeatureClick(feature: MapboxGeoJSONFeature) {

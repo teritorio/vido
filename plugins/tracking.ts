@@ -1,5 +1,7 @@
 import { Plugin, NuxtAppOptions } from '@nuxt/types'
 
+import { Category } from '@/utils/types'
+
 // Also Update README.md according to tracking changes.
 
 type Event =
@@ -11,13 +13,13 @@ type Event =
     }
   | {
       type: 'category'
-      categoryId: string
+      categoryId: Category['id']
       title: string
     }
   | {
       type: 'category_event'
       event: 'enable' | 'filter'
-      categoryId: string
+      categoryId: Category['id']
       title: string
     }
   | {

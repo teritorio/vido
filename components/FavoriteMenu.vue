@@ -208,12 +208,12 @@ export default Vue.extend({
     pdfLink(): string {
       return `${
         this.$config.API_ENDPOINT
-      }/geodata/v1/allposts.pdf?post_ids=${this.favoritesIds.join(',')}`
+      }/geodata/v0.1/pois.pdf?ids=${this.favoritesIds.join(',')}`
     },
     csvLink(): string {
       return `${
         this.$config.API_ENDPOINT
-      }/geodata/v1/allposts.csv?post_ids=${this.favoritesIds.join(',')}`
+      }/geodata/v0.1/pois.csv?ids=${this.favoritesIds.join(',')}`
     },
   },
   methods: {

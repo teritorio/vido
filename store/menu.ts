@@ -23,16 +23,16 @@ interface FetchFeaturesPayload {
 
 export interface State {
   categories: {
-    [categoryId: string]: Category
+    [categoryId: number]: Category
   }
   isLoaded: boolean
   features: {
-    [categoryId: string]: VidoFeature[]
+    [categoryId: number]: VidoFeature[]
   }
   allFeatures: {
-    [categoryId: string]: VidoFeature[]
+    [categoryId: number]: VidoFeature[]
   }
-  filters: { [subcat: string]: FiltreValues }
+  filters: { [subcat: number]: FiltreValues }
   isLoadingFeatures: boolean
 }
 
@@ -136,10 +136,10 @@ function keepFeature(feature: VidoFeature, filters: FiltreValues): boolean {
 export const actions = {
   async fetchConfig(store: Store<State>, { apiEndpoint }: FetchConfigPayload) {
     try {
-      const configPromise = await fetch(`${apiEndpoint}/geodata/v1/menu`)
+      const configPromise = await fetch(`${apiEndpoint}/geodata/v0.1/menu`)
 
       const config: {
-        [id: string]: Category
+        [id: number]: Category
       } = await configPromise.json()
 
       const categories: State['categories'] = {}
@@ -153,7 +153,7 @@ export const actions = {
         .forEach((category) => {
           // Separated from previous map to allow batch processing and make sure parent category is always there
           // Associate to parent
-          if (category.parent && category.parent !== '0') {
+          if (category.parent && category.parent !== 0) {
             const parent = categories[category.parent]
             if (parent) {
               if (!parent.vido_children) {
@@ -191,7 +191,7 @@ export const actions = {
           .filter((categoryId) => !previousFeatures[categoryId])
           .map((categoryId) =>
             fetch(
-              `${apiEndpoint}/geodata/v1/posts?idmenu=${categoryId}`
+              `${apiEndpoint}/geodata/v0.1/pois?idmenu=${categoryId}`
             ).then((res) => res.json())
           )
       )
@@ -222,7 +222,7 @@ export const actions = {
             ...((post.tis?.[0].FeaturesCollection.features ||
               []) as VidoFeature[]),
           ].map((f) => {
-            f.properties.vido_cat = parseInt(categoryId, 10)
+            f.properties.vido_cat = categoryId
             f.properties.vido_visible = keepFeature(
               f,
               store.getters.filters[categoryId]
@@ -246,14 +246,15 @@ export const actions = {
     }
   },
 
-  setFilters(store: Store<State>, filters: { [subcat: string]: FiltreValues }) {
+  setFilters(store: Store<State>, filters: { [subcat: number]: FiltreValues }) {
     store.commit(Mutation.SET_FILTERS, { filters })
 
     // Update features visibility
-    const features: { [categoryId: string]: VidoFeature[] } = copy(
+    const features: { [categoryId: number]: VidoFeature[] } = copy(
       store.getters.features
     )
-    Object.keys(features).forEach((categoryId: string) => {
+    Object.keys(features).forEach((categoryIdString: string) => {
+      const categoryId = parseInt(categoryIdString, 10)
       features[categoryId] = features[categoryId].map((f: VidoFeature) => {
         f.properties.vido_visible = keepFeature(f, filters[categoryId])
         return f
@@ -271,7 +272,7 @@ export const getters = {
   filters: (state: State) => state.filters,
   features: (state: State) => state.features,
 
-  getSubCategoriesFromCategoryId: (state: State) => (categoryId: string) =>
+  getSubCategoriesFromCategoryId: (state: State) => (categoryId: number) =>
     Object.values(state.categories)
       .filter((c) => c.parent === categoryId)
       .sort((a, b) => (a.order || 0) - (b.order || 0)),

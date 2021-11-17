@@ -62,8 +62,8 @@ export type FiltreValues = {
 }
 
 export interface ApiCategoryBase {
-  id: string
-  parent: string
+  id: number
+  parent: ApiCategoryBase['id']
   level: 1 | 2 | 3
   datasources: DataSource[]
   isDataItem: string | boolean

@@ -54,7 +54,7 @@ export default Vue.extend({
       required: true,
     },
     id: {
-      type: String,
+      type: Number,
       required: true,
     },
     label: {

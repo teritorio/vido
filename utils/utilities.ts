@@ -1,7 +1,7 @@
 import { VidoFeature } from '@/utils/types'
 
 export const flattenFeatures = (features: {
-  [categoryId: string]: VidoFeature[]
+  [categoryId: number]: VidoFeature[]
 }) =>
   Object.values(features)
     .flat()

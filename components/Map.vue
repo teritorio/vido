@@ -317,7 +317,8 @@ const Map = Vue.extend({
       ).map((e) => e.properties.metadata?.PID)
 
       // Add exact coordinates to a store to avoid rounding from Mapbox GL
-      Object.keys(features).forEach((categoryId) => {
+      Object.keys(features).forEach((categoryIdString) => {
+        const categoryId = parseInt(categoryIdString, 10)
         features[categoryId].forEach((feature) => {
           if (
             feature.geometry.type === 'Point' &&
