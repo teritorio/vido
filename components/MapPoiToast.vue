@@ -363,10 +363,6 @@ export default Vue.extend({
     },
 
     listFields(): string[] {
-      if (!this.sptags) {
-        return []
-      }
-
       const getValue = (field: string, value: string | string[]) => {
         return field === 'opening_hours' ? this.opening_hours : value
       }
