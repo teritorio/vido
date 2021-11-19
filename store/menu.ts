@@ -96,27 +96,12 @@ function keepFeature(feature: VidoFeature, filters: FiltreValues): boolean {
   }
 
   for (const key in filters.checkboxFiltre) {
-    if (filters.checkboxFiltre[key].length > 0) {
-      if (
-        !feature.properties[key] ||
-        !filters.checkboxFiltre[key].includes(feature.properties[key])
-      ) {
-        if (
-          typeof feature.properties[key] === 'string' &&
-          feature.properties[key].includes('#')
-        ) {
-          const values = feature.properties[key].split('#')
-          if (
-            !values.find((v: string) =>
-              (filters.checkboxFiltre || {})[key].includes(v)
-            )
-          ) {
-            return false
-          }
-        } else {
-          return false
-        }
-      }
+    if (
+      filters.checkboxFiltre[key].length > 0 &&
+      (!feature.properties[key] ||
+        !filterExist(filters.checkboxFiltre[key], feature.properties[key]))
+    ) {
+      return false
     }
   }
 
