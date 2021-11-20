@@ -2,7 +2,7 @@ import copy from 'fast-copy'
 import { Store } from 'vuex'
 // import { interpret, Interpreter, State } from 'xstate'
 
-import { ApiPosts, Category, VidoFeature, FiltreValues } from '@/utils/types'
+import { ApiPois, Category, VidoFeature, FiltreValues } from '@/utils/types'
 
 enum Mutation {
   SET_CONFIG = 'SET_CONFIG',
@@ -171,7 +171,7 @@ export const actions = {
         Boolean(previousFeatures[categoryId])
       )
 
-      const posts: ApiPosts[] = await Promise.all(
+      const posts: ApiPois[] = await Promise.all(
         categoryIds
           .filter((categoryId) => !previousFeatures[categoryId])
           .map((categoryId) =>
@@ -201,12 +201,7 @@ export const actions = {
         } else {
           const post = posts[i]
 
-          features[categoryId] = [
-            ...((post.osm?.[0].FeaturesCollection.features ||
-              []) as VidoFeature[]),
-            ...((post.tis?.[0].FeaturesCollection.features ||
-              []) as VidoFeature[]),
-          ].map((f) => {
+          features[categoryId] = post.features.map((f) => {
             f.properties.vido_cat = categoryId
             f.properties.vido_visible = keepFeature(
               f,

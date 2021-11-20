@@ -709,8 +709,13 @@ const Map = Vue.extend({
         })
 
         allFavorites.forEach((feature) => {
-          this.featuresCoordinates[feature.properties.metadata.PID] =
-            feature.geometry.coordinates
+          if (
+            feature.properties?.metadata?.PID &&
+            feature.geometry.type === 'Point'
+          ) {
+            this.featuresCoordinates[feature.properties.metadata.PID] = feature
+              .geometry.coordinates as TupleLatLng
+          }
         })
 
         const currentSource = this.map.getSource(FAVORITE_SOURCE)
@@ -765,7 +770,9 @@ const Map = Vue.extend({
     },
 
     async fetchFavorites(ids: [string]) {
-      return await getPoiByIds(this.$config.API_ENDPOINT, ids)
+      return await getPoiByIds(this.$config.API_ENDPOINT, ids).then(
+        (pois) => pois.features
+      )
     },
 
     showZoomSnack(text: string, textBtn: string) {

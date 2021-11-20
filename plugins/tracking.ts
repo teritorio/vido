@@ -34,7 +34,7 @@ type Event =
   | {
       type: 'popup'
       poiId: string
-      title: string
+      title?: string
       location: string
       path: string
     }
@@ -43,7 +43,7 @@ type Event =
       event: 'details' | 'route' | 'explore' | 'favorite' | 'zoom'
       poiId: string
       category: string
-      title: string
+      title?: string
     }
   | {
       type: 'map_control_event'

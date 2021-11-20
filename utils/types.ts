@@ -1,4 +1,3 @@
-import type { GeoJSON } from 'geojson'
 import type { MapboxGeoJSONFeature, Style } from 'maplibre-gl'
 
 /// <reference types="geojson" />
@@ -113,7 +112,7 @@ export interface SiteInfos {
 
 export type OsmPoiType = 'node' | 'way' | 'relation'
 
-export interface FeatureBase extends MapboxGeoJSONFeature {
+export interface VidoFeature extends MapboxGeoJSONFeature {
   // eslint-disable-next-line camelcase
   geometry: GeoJSON.Geometry
   properties: {
@@ -124,6 +123,7 @@ export interface FeatureBase extends MapboxGeoJSONFeature {
     'addr:postcode'?: string
     'addr:street'?: string
     metadata?: {
+      source?: string
       HasPopup?: string
       PID?: string
       PopupAdress?: string
@@ -144,69 +144,9 @@ export interface FeatureBase extends MapboxGeoJSONFeature {
   type: 'Feature'
 }
 
-export type OsmFeature = FeatureBase & {
-  properties: {
-    metadata?: {
-      idosm?: string
-      // eslint-disable-next-line camelcase
-      osm_poi_type?: OsmPoiType
-      timestamp?: string
-      user?: string
-    }
-  }
-  // eslint-disable-next-line camelcase
-  wp_tags?: {
-    [key: string]: unknown[]
-  }
-}
-
-export type TisFeature = FeatureBase & {
-  properties: {
-    // eslint-disable-next-line camelcase
-    tis_COMMUNE?: string
-    // eslint-disable-next-line camelcase
-    tis_COMMUNEINSEE?: string
-    // eslint-disable-next-line camelcase
-    tis_CP?: string
-    // eslint-disable-next-line camelcase
-    tis_id?: string
-    // eslint-disable-next-line camelcase
-    tis_LOCALISATION?: string
-    // eslint-disable-next-line camelcase
-    tis_ObjectTypeName?: string
-    // eslint-disable-next-line camelcase
-    tis_PHOTO?: string[]
-    // eslint-disable-next-line camelcase
-    tis_SyndicObjectID?: string
-    // eslint-disable-next-line camelcase
-    tis_SyndicObjectName?: string
-    // eslint-disable-next-line camelcase
-    tis_TEL?: string
-    // eslint-disable-next-line camelcase
-    tis_URL?: string
-  }
-}
-
-export type VidoFeature = (TisFeature | OsmFeature) & {
-  properties: {
-    // eslint-disable-next-line camelcase
-    vido_cat?: number | null
-  }
-}
-
-export interface ApiPosts {
-  osm?: Array<{
-    FeaturesCollection: {
-      features: OsmFeature[]
-      type: 'FeatureCollection'
-    }
-  }>
-  tis?: Array<{
-    FeaturesCollection: {
-      features: TisFeature[]
-      type: 'FeatureCollection'
-    }
-  }>
+export interface ApiPois {
+  type: 'FeaturesCollection'
+  features: VidoFeature[]
 }
 
 export type ApiSearchResult = {

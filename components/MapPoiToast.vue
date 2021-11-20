@@ -200,7 +200,6 @@
 </template>
 
 <script lang="ts">
-import { MapboxGeoJSONFeature } from 'maplibre-gl'
 import OpeningHours from 'opening_hours'
 import Vue, { PropType } from 'vue'
 import { mapGetters } from 'vuex'
@@ -219,7 +218,7 @@ export default Vue.extend({
 
   props: {
     poi: {
-      type: Object as PropType<VidoFeature | MapboxGeoJSONFeature>,
+      type: Object as PropType<VidoFeature>,
       required: true,
     },
   },

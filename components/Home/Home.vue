@@ -153,7 +153,6 @@
 
 <script lang="ts">
 import debounce from 'lodash.debounce'
-import { MapboxGeoJSONFeature } from 'maplibre-gl'
 import Vue from 'vue'
 import { mapGetters, mapActions } from 'vuex'
 import { interpret, Interpreter, State } from 'xstate'
@@ -167,6 +166,7 @@ import SubCategoryFilterHeader from '@/components/SubCategoryFilterHeader.vue'
 import SubCategoryHeader from '@/components/SubCategoryHeader.vue'
 import { getPoiById } from '@/utils/api'
 import {
+  VidoFeature,
   Category,
   Mode,
   FiltreValues,
@@ -542,7 +542,7 @@ export default Vue.extend({
       this.selectSubCategory([newFilter.menuid])
       this.setCategoriesFilters(newFilters)
     },
-    onFeatureClick(feature: MapboxGeoJSONFeature) {
+    onFeatureClick(feature: VidoFeature) {
       this.setSelectedFeature(feature).then(() => {
         if (this.$refs.map) {
           this.$refs.map.goToSelectedPoi()
