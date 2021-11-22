@@ -55,6 +55,9 @@ export default {
     cartocode: 'Cartocode',
     noResult: 'Aucun résultat',
     hideCategory: 'Masquer cette catégorie',
+    myFavorites: 'Vos favoris',
+    exploration:
+      'Exploration de la carte. Toutes les informations sont visibles sur la carte, explorez.',
   },
   toast: {
     details: 'Détails',

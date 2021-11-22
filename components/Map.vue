@@ -9,7 +9,7 @@
       <div
         :class="[
           'flex-grow overflow-hidden',
-          !small && !isModeExplorer && 'mt-20 sm:mt-0 h-4/5 sm:h-full',
+          !small && !isModeExplorer && 'sm:mt-20 sm:mt-0 h-4/5 sm:h-full',
         ]"
       >
         <mapbox

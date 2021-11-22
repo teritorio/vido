@@ -1,18 +1,7 @@
 <template>
   <div class="fixed w-full h-full overflow-hidden flex flex-col">
-    <Map
-      v-if="isMapConfigLoaded"
-      ref="map"
-      :small="isBottomMenuOpened"
-      :selected-categories="state.context.selectedSubCategoriesIds"
-      :get-sub-category="selectSubCategory"
-      @click="onMapClick"
-      @change-mode="onMapChangeMode"
-      @show-poi="onShowPoi"
-    />
-
     <header
-      class="fixed top-0 bottom-0 z-10 flex flex-row w-full h-full space-x-4 pointer-events-none sm:w-auto sm:p-4"
+      class="relative sm:fixed top-0 bottom-0 z-10 flex flex-row w-full sm:h-full space-x-4 pointer-events-none sm:w-auto sm:p-4"
     >
       <div
         :class="[
@@ -30,10 +19,13 @@
             :main-url="mainUrl"
             :non-highlighted-categories="nonHighlightedRootCategories"
             :site-name="siteName"
+            :is-explorer-favorite="isModeExplorer || isModeFavorite"
             :show-categories="!isModeExplorer && !isModeFavorite"
+            :is-favorite="isModeFavorite"
             :categories-activesubs-count="subCategoriesCounts"
             @category-click="onRootCategoryClick"
             @search-click="goToSearch"
+            @go-to-categories="onQuitExplorerFavoriteMode"
           />
 
           <SubCategoryHeader
@@ -75,6 +67,7 @@
               :logo-url="logoUrl"
               :menu-to-icon="categoriesToIcons"
               :selection-zoom="selectionZoom"
+              :is-explorer-favorite="isModeExplorer || isModeFavorite"
               @go-back-click="goToHome"
               @category-click="onSearchCategory"
               @poi-click="onSearchPoi"
@@ -92,6 +85,9 @@
             :logo-url="logoUrl"
             :menu-to-icon="categoriesToIcons"
             :selection-zoom="selectionZoom"
+            :is-explorer-favorite="isModeExplorer || isModeFavorite"
+            :is-favorite="isModeFavorite"
+            @go-to-categories="onQuitExplorerFavoriteMode"
             @go-back-click="goToHome"
             @category-click="onSearchCategory"
             @poi-click="onSearchPoi"
@@ -115,6 +111,16 @@
         />
       </div>
     </header>
+    <Map
+      v-if="isMapConfigLoaded"
+      ref="map"
+      :small="isBottomMenuOpened"
+      :selected-categories="state.context.selectedSubCategoriesIds"
+      :get-sub-category="selectSubCategory"
+      @click="onMapClick"
+      @change-mode="onMapChangeMode"
+      @show-poi="onShowPoi"
+    />
     <BottomMenu
       class="sm:hidden"
       :selected-feature="selectedFeature"
@@ -444,6 +450,13 @@ export default Vue.extend({
       } else {
         this.service.send(HomeEvents.GoToCategories)
       }
+    },
+    onQuitExplorerFavoriteMode() {
+      this.onMapChangeMode(Mode.BROWSER)
+      setHashPart('fav', null)
+      this.$store.dispatch('favorite/handleFavoriteLayer', false)
+      this.$store.dispatch('favorite/setFavoritesAction', 'close')
+      this.setSelectedFeature(null)
     },
     goToSearch() {
       this.service.send(HomeEvents.GoToSearch)
