@@ -990,6 +990,9 @@ const Map = Vue.extend({
 
                 marker = this.markers[id] = new maplibregl.Marker({
                   element: el,
+                  ...(props.metadata['image:thumbnail'] && {
+                    offset: [0, -10],
+                  }),
                 }).setLngLat(markerCoords) // Using this to avoid misplaced marker
 
                 // Teritorio badge
