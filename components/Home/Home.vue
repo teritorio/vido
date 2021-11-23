@@ -117,6 +117,7 @@
       :small="isBottomMenuOpened"
       :selected-categories="state.context.selectedSubCategoriesIds"
       :get-sub-category="selectSubCategory"
+      :is-explorer-favorite="isModeExplorer || isModeFavorite"
       @click="onMapClick"
       @change-mode="onMapChangeMode"
       @show-poi="onShowPoi"

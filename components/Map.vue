@@ -9,7 +9,7 @@
       <div
         :class="[
           'flex-grow overflow-hidden',
-          !small && !isModeExplorer && 'sm:mt-20 sm:mt-0 h-4/5 sm:h-full',
+          !small && isExplorerFavorite && 'sm:mt-20 sm:mt-0 h-4/5 sm:h-full',
         ]"
       >
         <mapbox
@@ -150,6 +150,10 @@ const Map = Vue.extend({
     selectedCategories: {
       type: Array as PropType<Category['id'][]>,
       default: () => [],
+    },
+    isExplorerFavorite: {
+      type: Boolean,
+      default: false,
     },
   },
 
