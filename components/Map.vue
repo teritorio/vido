@@ -24,6 +24,7 @@
             pitch,
             style: mapStyle,
             zoom: zoom.default,
+            locale: locale,
           }"
           :nav-control="{
             show: false,
@@ -174,6 +175,7 @@ const Map = Vue.extend({
     previousCategories: Category['id'][]
     mapStyles: Record<string, string | VidoMglStyle>
     mapStyle: string | VidoMglStyle | null
+    locale: Record<string, string>
   } {
     return {
       map: null,
@@ -192,6 +194,7 @@ const Map = Vue.extend({
       previousCategories: [],
       mapStyles: {},
       mapStyle: null,
+      locale: {},
     }
   },
   async fetch() {
@@ -507,6 +510,14 @@ const Map = Vue.extend({
 
     this.selectedBackground =
       (getHashPart('bg') as keyof typeof MapStyle) || DEFAULT_MAP_STYLE
+
+    this.locale = {
+      'NavigationControl.ResetBearing':
+        this.$tc('mapControls.resetBearing') || 'Reset bearing to north',
+      'NavigationControl.ZoomIn': this.$tc('mapControls.zoomIn') || 'Zoom in',
+      'NavigationControl.ZoomOut':
+        this.$tc('mapControls.zoomOut') || 'Zoom out',
+    }
   },
 
   mounted() {

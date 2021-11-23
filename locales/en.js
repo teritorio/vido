@@ -27,6 +27,9 @@ export default {
     threeDAriaLabel: 'View the map in 3D',
     backgroundAriaLabel: 'Switch the map background',
     backgroundButton: 'Switch the map background (currently "{current}")',
+    resetBearing: 'Reset bearing to north',
+    zoomIn: 'Zoom In',
+    zoomOut: 'Zoom Out',
   },
   navMenu: {
     label: 'Navigation',

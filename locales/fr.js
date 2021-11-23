@@ -27,6 +27,9 @@ export default {
     threeDAriaLabel: 'Visualiser la carte en 3D',
     backgroundAriaLabel: 'Changer le fond de carte',
     backgroundButton: 'Changer le fond de carte (actuellement "{current}")',
+    resetBearing: 'Remettre la carte vers le nord',
+    zoomIn: 'Zoomer avant',
+    zoomOut: 'Zoomer arriere',
   },
   navMenu: {
     label: 'Navigation',
