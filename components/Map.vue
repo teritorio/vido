@@ -53,6 +53,7 @@
         :initial-background="selectedBackground"
         :map="map"
         :pitch="pitch"
+        :resize-map="resizeMap"
         @changeBackground="onClickChangeBackground"
         @change-mode="onControlChangeMode"
         @locale="languageControl.setLanguage($event)"

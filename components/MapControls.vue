@@ -132,6 +132,9 @@ export default Vue.extend({
       type: Number,
       default: 0,
     },
+    resizeMap: {
+      type: Function,
+    },
   },
 
   data(): {
@@ -279,6 +282,7 @@ export default Vue.extend({
         this.$store.dispatch('favorite/handleFavoriteLayer', false)
         this.$store.dispatch('favorite/setFavoritesAction', 'close')
       }
+      this.resizeMap()
     },
     tracking(event: '3d' | 'background' | 'explorer' | 'favorite') {
       this.$tracking({ type: 'map_control_event', event })
