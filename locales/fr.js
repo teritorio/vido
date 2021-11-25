@@ -2,6 +2,7 @@ export default {
   favorites: {
     title: 'Favoris',
     menu_label: 'Menu des favoris',
+    menu_notebook: 'Voir le carnet',
     menu_share: 'Partager les favoris',
     menu_clear: 'Supprimer les favoris',
     export_pdf: 'Exporter la liste en PDF',

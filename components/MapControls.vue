@@ -7,6 +7,7 @@
         v-if="map"
         :has-favorites="hasFavorites"
         :is-mode-favorite="isModeFavorite"
+        :toggle-favorite-mode="toggleFavoriteMode"
         @click="toggleFavoriteMode"
       />
       <NavMenu
@@ -270,10 +271,10 @@ export default Vue.extend({
         this.isModeExplorer ? Mode.BROWSER : Mode.EXPLORER
       )
     },
-    toggleFavoriteMode() {
+    toggleFavoriteMode(value: string) {
       this.tracking('favorite')
       const isFav = getHashPart('fav') === '1'
-      if (!isFav) {
+      if (!isFav || value) {
         setHashPart('fav', '1')
         this.$store.dispatch('favorite/handleFavoriteLayer', true)
         this.$store.dispatch('favorite/setFavoritesAction', 'open')
