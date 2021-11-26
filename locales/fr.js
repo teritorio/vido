@@ -64,7 +64,7 @@ export default {
     hideCategory: 'Masquer cette catégorie',
     myFavorites: 'Vos favoris',
     exploration:
-      'Exploration de la carte. Toutes les informations sont visibles sur la carte, explorez.',
+      'Toutes les informations sont visibles sur la carte, selon le niveau de zoom.',
   },
   toast: {
     details: 'Détails',
