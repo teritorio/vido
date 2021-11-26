@@ -21,7 +21,7 @@
         </h2>
 
         <a
-          v-if="hasFiche"
+          v-if="poiProp('teritorio:url')"
           class="ml-6 md:ml-8 px-3 py-1.5 text-xs text-gray-800 bg-gray-100 hover:bg-gray-200 focus:bg-gray-200 transition transition-colors rounded-md"
           :href="poiProp('teritorio:url')"
           rel="noopener noreferrer"
@@ -109,7 +109,7 @@
           <p v-else-if="field.v.length > textLimit" class="text-sm">
             {{ field.v.substring(0, textLimit) + ' ...' }}
             <a
-              v-if="hasFiche"
+              v-if="poiProp('teritorio:url')"
               class="underline"
               :href="poiProp('teritorio:url')"
               rel="noopener noreferrer"
@@ -259,10 +259,6 @@ export default Vue.extend({
       const id = this.poiMeta('PID') || this.poiProp('id')
       const currentFavorites = this.$store.getters['favorite/favoritesIds']
       return currentFavorites.includes(id)
-    },
-
-    hasFiche(): boolean {
-      return this.poiMeta('hasfiche') === 'yes'
     },
 
     name(): string {
