@@ -274,7 +274,7 @@ export default Vue.extend({
     toggleFavoriteMode(value: string) {
       this.tracking('favorite')
       const isFav = getHashPart('fav') === '1'
-      if (!isFav || value) {
+      if (!isFav || value === 'on') {
         setHashPart('fav', '1')
         this.$store.dispatch('favorite/handleFavoriteLayer', true)
         this.$store.dispatch('favorite/setFavoritesAction', 'open')
