@@ -201,7 +201,7 @@
             class="text-gray-500 sm:mr-2"
             size="sm"
           />
-          <p class="hidden sm:block">Close</p>
+          <p class="hidden sm:block">{{ $tc('favorites.modal.close') }}</p>
         </button>
       </div>
       <div class="flex justify-between flex-wrap max-h-full overflow-y-auto">
