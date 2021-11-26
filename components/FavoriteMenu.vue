@@ -190,7 +190,7 @@
       <div
         class="flex justify-between items-center py-4 px-1 sm:px-6 sticky top-0 z-50 bg-white"
       >
-        <p class="text-lg">{{ $tc('favorites.menu_notebook') }}</p>
+        <p class="text-lg">{{ $tc('favorites.notebook.title') }}</p>
         <button
           class="flex items-center border-solid border-gray-300 border-2 bg-white focus:outline-none focus-visible:bg-gray-100 hover:bg-gray-100 py-2 px-4 rounded-full"
           @click="$refs.notebookModal.hide()"
