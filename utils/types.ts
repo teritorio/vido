@@ -153,7 +153,7 @@ export type ApiSearchResult = {
   postid: number
   label: string
   commune: string | null
-  idmenu: number
+  menuId: number
 }
 
 export type ApiAddrSearchResult = {
@@ -171,26 +171,22 @@ export type ApiFilterSearchResult = {
   filter: string
   filterid: number
   label: string
-  menuid: number
+  menuId: number
   tag: string
 }
 
 export type ApiSearchResults = {
-  classe: {
-    idmenu: string
-    label: string
-  }[]
+  classe: ApiFilterSearchResult[]
   osm: string | ApiSearchResult[]
   tis: string | ApiSearchResult[]
   wp: string | ApiSearchResult[]
   adress: string | ApiAddrSearchResult[]
   municipality: string | ApiAddrSearchResult[]
   cartocode: ApiCartocodeSearchResult | ApiCartocodeSearchResult[]
-  filter: ApiFilterSearchResult[]
 }
 
 export type SearchResult = {
-  id: string
+  id: number
   label: string
   icon?: string
   small?: string

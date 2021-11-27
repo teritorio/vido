@@ -72,7 +72,6 @@
               @category-click="onSearchCategory"
               @poi-click="onSearchPoi"
               @feature-click="onFeatureClick"
-              @filter-click="onSearchFilter"
             />
           </div>
         </transition>
@@ -92,7 +91,6 @@
             @category-click="onSearchCategory"
             @poi-click="onSearchPoi"
             @feature-click="onFeatureClick"
-            @filter-click="onSearchFilter"
           />
         </div>
       </div>
@@ -527,14 +525,8 @@ export default Vue.extend({
         this.setCategoriesFilters(newFilters)
       }
     },
-    onSearchCategory(subcategoryId: Category['id']) {
-      setHashPart('fav', null)
-      this.$store.dispatch('favorite/handleFavoriteLayer', false)
-      this.$store.dispatch('favorite/setFavoritesAction', 'close')
-      this.selectSubCategory([subcategoryId])
-    },
-    onSearchPoi(poiId: string) {
-      getPoiById(this.$config.API_ENDPOINT, poiId).then((poi) => {
+    onSearchPoi(poiId: number) {
+      getPoiById(this.$config.API_ENDPOINT, poiId.toString()).then((poi) => {
         if (poi) {
           this.setSelectedFeature(poi).then(() => {
             if (this.$refs.map) {
@@ -544,17 +536,23 @@ export default Vue.extend({
         }
       })
     },
-    onSearchFilter(newFilter: ApiFilterSearchResult) {
-      const newFilters = Object.assign({}, this.filters)
+    onSearchCategory(newFilter: ApiFilterSearchResult) {
+      if (newFilter.filterid) {
+        const newFilters = Object.assign({}, this.filters)
 
-      newFilters[`${newFilter.menuid}`] = {
-        selectionFiltre: {
-          [newFilter.tag]: [`${newFilter.filter}`],
-        },
+        newFilters[`${newFilter.menuId}`] = {
+          selectionFiltre: {
+            [newFilter.tag]: [`${newFilter.filter}`],
+          },
+        }
+
+        this.setCategoriesFilters(newFilters)
       }
 
-      this.selectSubCategory([newFilter.menuid])
-      this.setCategoriesFilters(newFilters)
+      setHashPart('fav', null)
+      this.$store.dispatch('favorite/handleFavoriteLayer', false)
+      this.$store.dispatch('favorite/setFavoritesAction', 'close')
+      this.selectSubCategory([newFilter.menuId])
     },
     onFeatureClick(feature: VidoFeature) {
       this.setSelectedFeature(feature).then(() => {

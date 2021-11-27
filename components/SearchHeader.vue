@@ -82,14 +82,6 @@
 
     <div v-if="searchResults" class="overflow-y-auto">
       <SearchResultBlock
-        v-if="itemsFilters.length > 0"
-        label="Filtres"
-        icon="filter"
-        :items="itemsFilters"
-        @item-click="onFilterClick"
-      />
-
-      <SearchResultBlock
         v-if="itemsClasse.length > 0"
         type="category"
         :label="$tc('headerMenu.categories')"
@@ -161,7 +153,6 @@ import {
   ApiSearchResults,
   ApiAddrSearchResult,
   SearchResult,
-  Category,
 } from '@/utils/types'
 
 export default Vue.extend({
@@ -212,9 +203,9 @@ export default Vue.extend({
     itemsClasse(): SearchResult[] {
       return this.searchResults && Array.isArray(this.searchResults.classe)
         ? this.searchResults.classe.map((v) => ({
-            id: v.idmenu,
+            id: v.filterid || v.menuId,
             label: v.label,
-            icon: this.menuToIcon[v.idmenu],
+            icon: this.menuToIcon[v.menuId],
           }))
         : []
     },
@@ -224,7 +215,7 @@ export default Vue.extend({
         ? this.searchResults.osm.map((v) => ({
             id: v.postid.toString(),
             label: v.label,
-            icon: this.menuToIcon[v.idmenu],
+            icon: this.menuToIcon[v.menuId],
             small: (v.commune && toTitleCase(v.commune)) || undefined,
           }))
         : []
@@ -235,7 +226,7 @@ export default Vue.extend({
         ? this.searchResults.tis.map((v) => ({
             id: v.postid.toString(),
             label: v.label,
-            icon: this.menuToIcon[v.idmenu],
+            icon: this.menuToIcon[v.menuId],
             small: (v.commune && toTitleCase(v.commune)) || undefined,
           }))
         : []
@@ -281,17 +272,6 @@ export default Vue.extend({
       }))
     },
 
-    itemsFilters(): SearchResult[] {
-      if (!this.searchResults || !Array.isArray(this.searchResults.filter)) {
-        return []
-      }
-
-      return this.searchResults.filter.map((v) => ({
-        id: `${v.filterid}`,
-        label: v.label,
-      }))
-    },
-
     addressResults(): ApiAddrSearchResult[] {
       return this.searchResults
         ? (Array.isArray(this.searchResults.municipality)
@@ -312,7 +292,6 @@ export default Vue.extend({
         this.itemsTis.length +
         this.itemsAddress.length +
         this.itemsCartocode.length +
-        this.itemsFilters.length +
         this.itemsCities.length
       )
     },
@@ -351,9 +330,15 @@ export default Vue.extend({
       this.$emit('go-to-categories')
     },
 
-    onCategoryClick(id: Category['id']) {
-      this.$emit('category-click', id)
-      this.reset()
+    onCategoryClick(id: number) {
+      if (this.searchResults?.classe) {
+        const filter = this.searchResults.classe.find(
+          (a) => a.filterid === id || a.menuId === id
+        )
+
+        this.$emit('category-click', filter)
+        this.reset()
+      }
     },
 
     onPoiClick(id: string) {
@@ -385,16 +370,6 @@ export default Vue.extend({
         this.$emit('feature-click', feature)
       }
       this.reset()
-    },
-
-    onFilterClick(id: string) {
-      if (this.searchResults?.filter) {
-        const filter = this.searchResults.filter.find(
-          (a) => `${a.filterid}` === id
-        )
-        this.$emit('filter-click', filter)
-        this.reset()
-      }
     },
 
     onSubmit() {
