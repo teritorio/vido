@@ -213,7 +213,7 @@ export default Vue.extend({
     itemsOsm(): SearchResult[] {
       return this.searchResults && Array.isArray(this.searchResults.osm)
         ? this.searchResults.osm.map((v) => ({
-            id: v.postid.toString(),
+            id: v.postid,
             label: v.label,
             icon: this.menuToIcon[v.menuId],
             small: (v.commune && toTitleCase(v.commune)) || undefined,
@@ -224,7 +224,7 @@ export default Vue.extend({
     itemsTis(): SearchResult[] {
       return this.searchResults && Array.isArray(this.searchResults.tis)
         ? this.searchResults.tis.map((v) => ({
-            id: v.postid.toString(),
+            id: v.postid,
             label: v.label,
             icon: this.menuToIcon[v.menuId],
             small: (v.commune && toTitleCase(v.commune)) || undefined,
@@ -267,7 +267,7 @@ export default Vue.extend({
         : [this.searchResults.cartocode]
 
       return goodCartocode.map((v) => ({
-        id: v.postid.toString(),
+        id: v.postid,
         label: v.label,
       }))
     },
@@ -350,7 +350,7 @@ export default Vue.extend({
       ;(this.$refs.search as HTMLInputElement).focus()
     },
 
-    onAddressClick(id: string) {
+    onAddressClick(id: number) {
       let feature = this.addressResults.find((a) => a.ID === id)?.geojson
       const isCity =
         (this.searchResults && Array.isArray(this.searchResults.municipality)

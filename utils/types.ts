@@ -157,7 +157,7 @@ export type ApiSearchResult = {
 }
 
 export type ApiAddrSearchResult = {
-  ID: string
+  ID: number
   label: string
   geojson: MapboxGeoJSONFeature
 }
