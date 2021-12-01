@@ -45,7 +45,11 @@
           </div>
         </button>
         <button
-          class="flex h-11 items-center justify-center flex-shrink-0 px-3 py-2 bg-white border-l border-gray-00 rounded-r-full hover:bg-gray-100 shadow-md focus:outline-none"
+          :class="[
+            'flex h-11 items-center justify-center flex-shrink-0 px-3 py-2 bg-white border-l border-gray-00 rounded-r-full hover:bg-gray-100 shadow-md focus:outline-none',
+            !hasFavorites && 'bg-gray-100 cursor-not-allowed',
+          ]"
+          :disabled="!hasFavorites"
           @mousedown="mousedownHandler"
           @focus="focusHandler"
           @blur="blurHandler"
