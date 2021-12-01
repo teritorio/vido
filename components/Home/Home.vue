@@ -382,6 +382,11 @@ export default Vue.extend({
         this.$refs.map.resizeMap()
       }
     },
+    selectedFeature(val) {
+      if (this.$isMobile() && val) {
+        this.$refs.map.resizeMap()
+      }
+    },
   },
   created() {
     this.service
