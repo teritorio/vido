@@ -533,6 +533,7 @@ export default Vue.extend({
     onSearchPoi(poiId: number) {
       getPoiById(this.$config.API_ENDPOINT, poiId.toString()).then((poi) => {
         if (poi) {
+          this.service.send(HomeEvents.GoToCategories)
           this.setSelectedFeature(poi).then(() => {
             if (this.$refs.map) {
               this.$refs.map.goToSelectedPoi()
@@ -554,6 +555,7 @@ export default Vue.extend({
         this.setCategoriesFilters(newFilters)
       }
 
+      this.service.send(HomeEvents.GoToCategories)
       setHashPart('fav', null)
       this.$store.dispatch('favorite/handleFavoriteLayer', false)
       this.$store.dispatch('favorite/setFavoritesAction', 'close')
@@ -561,6 +563,8 @@ export default Vue.extend({
     },
     onFeatureClick(feature: VidoFeature) {
       this.setSelectedFeature(feature).then(() => {
+        this.service.send(HomeEvents.GoToCategories)
+
         if (this.$refs.map) {
           this.$refs.map.goToSelectedPoi()
         }
