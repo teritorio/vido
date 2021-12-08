@@ -1,4 +1,3 @@
-import type { GeoJSON } from 'geojson'
 import type { MapboxGeoJSONFeature, Style } from 'maplibre-gl'
 
 /// <reference types="geojson" />
@@ -62,8 +61,8 @@ export type FiltreValues = {
 }
 
 export interface ApiCategoryBase {
-  id: string
-  parent: string
+  id: number
+  parent: ApiCategoryBase['id']
   level: 1 | 2 | 3
   datasources: DataSource[]
   isDataItem: string | boolean
@@ -80,6 +79,8 @@ export interface ApiCategoryBase {
     tourism_style_class: string[]
     // eslint-disable-next-line camelcase
     selection_zoom: number
+    // eslint-disable-next-line camelcase
+    enabled_by_default: boolean
   }
   order: number
 }
@@ -111,7 +112,7 @@ export interface SiteInfos {
 
 export type OsmPoiType = 'node' | 'way' | 'relation'
 
-export interface FeatureBase extends MapboxGeoJSONFeature {
+export interface VidoFeature extends MapboxGeoJSONFeature {
   // eslint-disable-next-line camelcase
   geometry: GeoJSON.Geometry
   properties: {
@@ -122,6 +123,7 @@ export interface FeatureBase extends MapboxGeoJSONFeature {
     'addr:postcode'?: string
     'addr:street'?: string
     metadata?: {
+      source?: string
       HasPopup?: string
       PID?: string
       PopupAdress?: string
@@ -135,86 +137,27 @@ export interface FeatureBase extends MapboxGeoJSONFeature {
       // eslint-disable-next-line camelcase
       tourism_style_class?: string | string[]
       wkt?: string
+      'image:thumbnail'?: string
     }
     name?: string
   }
   type: 'Feature'
 }
 
-export type OsmFeature = FeatureBase & {
-  properties: {
-    metadata?: {
-      idosm?: string
-      // eslint-disable-next-line camelcase
-      osm_poi_type?: OsmPoiType
-      timestamp?: string
-      user?: string
-    }
-  }
-  // eslint-disable-next-line camelcase
-  wp_tags?: {
-    [key: string]: unknown[]
-  }
-}
-
-export type TisFeature = FeatureBase & {
-  properties: {
-    // eslint-disable-next-line camelcase
-    tis_COMMUNE?: string
-    // eslint-disable-next-line camelcase
-    tis_COMMUNEINSEE?: string
-    // eslint-disable-next-line camelcase
-    tis_CP?: string
-    // eslint-disable-next-line camelcase
-    tis_id?: string
-    // eslint-disable-next-line camelcase
-    tis_LOCALISATION?: string
-    // eslint-disable-next-line camelcase
-    tis_ObjectTypeName?: string
-    // eslint-disable-next-line camelcase
-    tis_PHOTO?: string[]
-    // eslint-disable-next-line camelcase
-    tis_SyndicObjectID?: string
-    // eslint-disable-next-line camelcase
-    tis_SyndicObjectName?: string
-    // eslint-disable-next-line camelcase
-    tis_TEL?: string
-    // eslint-disable-next-line camelcase
-    tis_URL?: string
-  }
-}
-
-export type VidoFeature = (TisFeature | OsmFeature) & {
-  properties: {
-    // eslint-disable-next-line camelcase
-    vido_cat?: number | null
-  }
-}
-
-export interface ApiPosts {
-  osm?: Array<{
-    FeaturesCollection: {
-      features: OsmFeature[]
-      type: 'FeatureCollection'
-    }
-  }>
-  tis?: Array<{
-    FeaturesCollection: {
-      features: TisFeature[]
-      type: 'FeatureCollection'
-    }
-  }>
+export interface ApiPois {
+  type: 'FeaturesCollection'
+  features: VidoFeature[]
 }
 
 export type ApiSearchResult = {
   postid: number
   label: string
   commune: string | null
-  idmenu: number
+  menuId: number
 }
 
 export type ApiAddrSearchResult = {
-  ID: string
+  ID: number
   label: string
   geojson: MapboxGeoJSONFeature
 }
@@ -228,26 +171,22 @@ export type ApiFilterSearchResult = {
   filter: string
   filterid: number
   label: string
-  menuid: number
+  menuId: number
   tag: string
 }
 
 export type ApiSearchResults = {
-  classe: {
-    idmenu: string
-    label: string
-  }[]
+  classe: ApiFilterSearchResult[]
   osm: string | ApiSearchResult[]
   tis: string | ApiSearchResult[]
   wp: string | ApiSearchResult[]
   adress: string | ApiAddrSearchResult[]
   municipality: string | ApiAddrSearchResult[]
   cartocode: ApiCartocodeSearchResult | ApiCartocodeSearchResult[]
-  filter: ApiFilterSearchResult[]
 }
 
 export type SearchResult = {
-  id: string
+  id: number
   label: string
   icon?: string
   small?: string

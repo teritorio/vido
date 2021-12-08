@@ -1,12 +1,13 @@
 <template>
   <aside :class="['pointer-events-none', dense && 'hidden sm:block']">
     <div
-      class="absolute flex justify-end pointer-events-auto items-top pt-4 right-3 sm:pt-0 w-40 sm:w-48 sm:top-3 top-20"
+      class="absolute flex justify-end pointer-events-auto items-top pt-4 right-3 sm:pt-0 w-40 sm:w-48 top-3"
     >
       <FavoriteMenu
         v-if="map"
         :has-favorites="hasFavorites"
         :is-mode-favorite="isModeFavorite"
+        :toggle-favorite-mode="toggleFavoriteMode"
         @click="toggleFavoriteMode"
       />
       <NavMenu
@@ -131,6 +132,9 @@ export default Vue.extend({
     pitch: {
       type: Number,
       default: 0,
+    },
+    resizeMap: {
+      type: Function,
     },
   },
 
@@ -267,10 +271,10 @@ export default Vue.extend({
         this.isModeExplorer ? Mode.BROWSER : Mode.EXPLORER
       )
     },
-    toggleFavoriteMode() {
+    toggleFavoriteMode(value: string) {
       this.tracking('favorite')
       const isFav = getHashPart('fav') === '1'
-      if (!isFav) {
+      if (!isFav || value === 'on') {
         setHashPart('fav', '1')
         this.$store.dispatch('favorite/handleFavoriteLayer', true)
         this.$store.dispatch('favorite/setFavoritesAction', 'open')
@@ -279,6 +283,7 @@ export default Vue.extend({
         this.$store.dispatch('favorite/handleFavoriteLayer', false)
         this.$store.dispatch('favorite/setFavoritesAction', 'close')
       }
+      this.resizeMap()
     },
     tracking(event: '3d' | 'background' | 'explorer' | 'favorite') {
       this.$tracking({ type: 'map_control_event', event })

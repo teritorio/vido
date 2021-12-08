@@ -38,7 +38,7 @@ export const mutations = {
 export const actions = {
   async fetchConfig(store: Store<State>, { apiEndpoint }: FetchConfigPayload) {
     try {
-      const configPromise = await fetch(`${apiEndpoint}/geodata/v1/site`)
+      const configPromise = await fetch(`${apiEndpoint}/geodata/v0.1/site`)
       const config = await configPromise.json()
 
       store.commit(Mutation.SET_CONFIG, config)

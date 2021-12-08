@@ -33,7 +33,7 @@ export default Vue.extend({
       apiEndpoint: this.$config.API_ENDPOINT,
     })
 
-    await fetch(`${this.$config.API_ENDPOINT}/geodata/v1/site`)
+    await fetch(`${this.$config.API_ENDPOINT}/geodata/v0.1/site`)
       .then((res) => res.json())
       .then((json) => {
         // @ts-ignore - Look ok, unable to fix the issue

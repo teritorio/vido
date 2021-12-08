@@ -1,5 +1,7 @@
 import { Plugin, NuxtAppOptions } from '@nuxt/types'
 
+import { Category } from '@/utils/types'
+
 // Also Update README.md according to tracking changes.
 
 type Event =
@@ -11,13 +13,13 @@ type Event =
     }
   | {
       type: 'category'
-      categoryId: string
+      categoryId: Category['id']
       title: string
     }
   | {
       type: 'category_event'
       event: 'enable' | 'filter'
-      categoryId: string
+      categoryId: Category['id']
       title: string
     }
   | {
@@ -32,7 +34,7 @@ type Event =
   | {
       type: 'popup'
       poiId: string
-      title: string
+      title?: string
       location: string
       path: string
     }
@@ -41,7 +43,7 @@ type Event =
       event: 'details' | 'route' | 'explore' | 'favorite' | 'zoom'
       poiId: string
       category: string
-      title: string
+      title?: string
     }
   | {
       type: 'map_control_event'

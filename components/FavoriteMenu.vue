@@ -78,6 +78,21 @@
           />
           {{ $tc('favorites.menu_share') }}
         </button>
+        <button
+          v-if="$config.NOTEBOOK_ENABLED"
+          class="block w-full px-4 py-2 text-sm leading-5 text-left text-gray-700 transition duration-150 ease-in-out hover:bg-gray-100 focus:outline-none focus:bg-gray-100"
+          role="menuitem"
+          @blur="blurHandler"
+          @click="$refs.notebookModal.show()"
+        >
+          <font-awesome-icon
+            ref="menu_icon"
+            icon="book-open"
+            class="text-gray-500 mr-2"
+            size="sm"
+          />
+          {{ $tc('favorites.menu_notebook') }}
+        </button>
         <a
           :href="pdfLink"
           target="_blank"
@@ -166,6 +181,41 @@
         </button>
       </div>
     </t-modal>
+
+    <t-modal-notebook
+      ref="notebookModal"
+      :hide-close-button="true"
+      @before-open="getFavs"
+    >
+      <div
+        class="flex justify-between items-center py-4 px-1 sm:px-6 sticky top-0 z-50 bg-white"
+      >
+        <p class="text-lg">{{ $tc('favorites.notebook.title') }}</p>
+        <button
+          class="flex items-center border-solid border-gray-300 border-2 bg-white focus:outline-none focus-visible:bg-gray-100 hover:bg-gray-100 py-2 px-4 rounded-full"
+          @click="$refs.notebookModal.hide()"
+        >
+          <font-awesome-icon
+            ref="menu_icon"
+            icon="times"
+            class="text-gray-500 sm:mr-2"
+            size="sm"
+          />
+          <p class="hidden sm:block">{{ $tc('favorites.modal.close') }}</p>
+        </button>
+      </div>
+      <div class="flex justify-between flex-wrap max-h-full overflow-y-auto">
+        <MapPoiToast
+          v-for="item in favs"
+          :key="item.id"
+          :poi="item"
+          class="flex-grow-0 flex-shrink-0 m-2"
+          @explore-click="exploreAroundSelectedPoi"
+          @favorite-click="toggleFavoriteMode"
+          @zoom-click="goToSelectedPoi"
+        />
+      </div>
+    </t-modal-notebook>
   </section>
 </template>
 
@@ -174,11 +224,15 @@ import Vue from 'vue'
 import { TDropdown } from 'vue-tailwind/dist/components'
 import { mapGetters } from 'vuex'
 
+import MapPoiToast from '@/components/MapPoiToast.vue'
 import { LOCAL_STORAGE } from '@/lib/constants'
+import { getPoiByIds } from '@/utils/api'
+import { VidoFeature } from '@/utils/types'
 
 export default Vue.extend({
   components: {
     TDropdown,
+    MapPoiToast,
   },
   props: {
     hasFavorites: {
@@ -189,16 +243,21 @@ export default Vue.extend({
       type: Boolean,
       default: false,
     },
+    toggleFavoriteMode: {
+      type: Function,
+    },
   },
   data(): {
     shareLink: string
     hasClipboard: boolean
     isCopied: boolean
+    favs: VidoFeature[]
   } {
     return {
       shareLink: '',
       hasClipboard: Boolean(navigator.clipboard),
       isCopied: false,
+      favs: [],
     }
   },
   computed: {
@@ -208,15 +267,20 @@ export default Vue.extend({
     pdfLink(): string {
       return `${
         this.$config.API_ENDPOINT
-      }/geodata/v1/allposts.pdf?post_ids=${this.favoritesIds.join(',')}`
+      }/geodata/v0.1/pois.pdf?ids=${this.favoritesIds.join(',')}`
     },
     csvLink(): string {
       return `${
         this.$config.API_ENDPOINT
-      }/geodata/v1/allposts.csv?post_ids=${this.favoritesIds.join(',')}`
+      }/geodata/v0.1/pois.csv?ids=${this.favoritesIds.join(',')}`
     },
   },
   methods: {
+    async fetchFavorites(ids: [string]) {
+      return await getPoiByIds(this.$config.API_ENDPOINT, ids).then(
+        (pois) => pois.features
+      )
+    },
     removeFavorites() {
       try {
         localStorage.removeItem(LOCAL_STORAGE.favorites)
@@ -256,6 +320,21 @@ export default Vue.extend({
           console.error('Vido error: ', err)
         }
       )
+    },
+    async getFavs() {
+      try {
+        const favsString =
+          localStorage.getItem(LOCAL_STORAGE.favorites) || '{ "favorites": [] }'
+        const favs = JSON.parse(favsString).favorites
+
+        this.favs = await this.fetchFavorites(favs)
+      } catch (e) {
+        // eslint-disable-next-line no-console
+        console.error('Vido error:', e.message)
+        this.shareLink = ''
+      }
+
+      this.toggleFavoriteMode('on')
     },
   },
 })

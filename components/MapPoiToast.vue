@@ -21,7 +21,7 @@
         </h2>
 
         <a
-          v-if="hasFiche"
+          v-if="poiProp('teritorio:url')"
           class="ml-6 md:ml-8 px-3 py-1.5 text-xs text-gray-800 bg-gray-100 hover:bg-gray-200 focus:bg-gray-200 transition transition-colors rounded-md"
           :href="poiProp('teritorio:url')"
           rel="noopener noreferrer"
@@ -32,7 +32,10 @@
         </a>
       </div>
 
-      <div class="flex items-center mt-2 text-sm text-gray-500 flex-shrink-0">
+      <div
+        v-if="!unavoidable"
+        class="flex items-center mt-2 text-sm text-gray-500 flex-shrink-0"
+      >
         <TeritorioIcon
           v-if="icon"
           :category-color="color"
@@ -53,7 +56,14 @@
         {{ category }}
       </div>
 
-      <div class="h-auto flex-grow flex-shrink-0">
+      <p
+        v-if="unavoidable && Boolean(description)"
+        class="text-sm flex-grow flex-shrink-0 mt-6"
+      >
+        {{ description }}
+      </p>
+
+      <div v-else class="h-auto flex-grow flex-shrink-0">
         <p class="mt-6 text-sm">
           <template v-if="address">
             {{ address }}
@@ -99,7 +109,7 @@
           <p v-else-if="field.v.length > textLimit" class="text-sm">
             {{ field.v.substring(0, textLimit) + ' ...' }}
             <a
-              v-if="hasFiche"
+              v-if="poiProp('teritorio:url')"
               class="underline"
               :href="poiProp('teritorio:url')"
               rel="noopener noreferrer"
@@ -190,7 +200,6 @@
 </template>
 
 <script lang="ts">
-import { MapboxGeoJSONFeature } from 'maplibre-gl'
 import OpeningHours from 'opening_hours'
 import Vue, { PropType } from 'vue'
 import { mapGetters } from 'vuex'
@@ -209,7 +218,7 @@ export default Vue.extend({
 
   props: {
     poi: {
-      type: Object as PropType<VidoFeature | MapboxGeoJSONFeature>,
+      type: Object as PropType<VidoFeature>,
       required: true,
     },
   },
@@ -250,10 +259,6 @@ export default Vue.extend({
       const id = this.poiMeta('PID') || this.poiProp('id')
       const currentFavorites = this.$store.getters['favorite/favoritesIds']
       return currentFavorites.includes(id)
-    },
-
-    hasFiche(): boolean {
-      return this.poiMeta('hasfiche') === 'yes'
     },
 
     name(): string {
@@ -299,6 +304,10 @@ export default Vue.extend({
 
     category(): string {
       return this.poiMeta('label_infobulle') || this.poiProp('class')
+    },
+
+    description(): string | null {
+      return this.poiProp('description')
     },
 
     address(): string | null {
@@ -431,6 +440,10 @@ export default Vue.extend({
         return null
       }
     },
+
+    unavoidable(): boolean {
+      return Boolean(this.poiMeta('unavoidable'))
+    },
   },
 
   watch: {
@@ -479,13 +492,13 @@ export default Vue.extend({
     },
 
     fetchSpTags() {
-      if (!this.poiMeta('PopupListField')) {
+      if (!this.poiMeta('PopupListField') || !this.poiMeta('osm_poi_type')) {
         return
       }
       return fetch(
         `${
           this.$config.API_ENDPOINT
-        }/geodata/v1/sptags?PopupListField=${this.poiMeta('PopupListField')}`
+        }/geodata/v0.1/sptags?PopupListField=${this.poiMeta('PopupListField')}`
       )
         .then((data) => data.json())
         .then((data) => (this.sptags = data))

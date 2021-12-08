@@ -2,6 +2,7 @@ export default {
   favorites: {
     title: 'Favoritos',
     menu_label: 'Menú de favoritos',
+    menu_notebook: 'Ver cuaderno',
     menu_share: 'Compartir favoritos',
     menu_clear: 'Eliminar favoritos',
     export_pdf: 'Exportar la lista como PDF',
@@ -10,6 +11,9 @@ export default {
       title: 'Compartir enlace de favoritos',
       copy: 'Copiar',
       close: 'Cerrar',
+    },
+    notebook: {
+      title: 'Cuaderno de favoritos',
     },
     noFavs:
       'Todavía no tienes ningún lugar marcado. Puedes hacerlo seleccionando un lugar en el mapa y guardándolo como favorito',
@@ -27,6 +31,9 @@ export default {
     threeDAriaLabel: 'Ver el mapa en 3D',
     backgroundAriaLabel: 'Cambiar el fondo de mapa',
     backgroundButton: 'Cambiar el fondo de mapa (actualmente "{actual}")',
+    resetBearing: 'Restablecer el mapa al norte',
+    zoomIn: 'Ampliar el zoom',
+    zoomOut: 'Alejar el zoom',
   },
   navMenu: {
     label: 'Navegación',
@@ -55,6 +62,9 @@ export default {
     cartocode: 'Cartocode',
     noResult: 'No hay resultados',
     hideCategory: 'Ocultar esta categoría',
+    myFavorites: 'Sus favoritos',
+    exploration:
+      'Toda la información es visible en el mapa, dependiendo del nivel de zoom.',
   },
   toast: {
     details: 'Detalles',

@@ -1,18 +1,7 @@
 <template>
   <div class="fixed w-full h-full overflow-hidden flex flex-col">
-    <Map
-      v-if="isMapConfigLoaded"
-      ref="map"
-      :small="isBottomMenuOpened"
-      :selected-categories="state.context.selectedSubCategoriesIds"
-      :get-sub-category="selectSubCategory"
-      @click="onMapClick"
-      @change-mode="onMapChangeMode"
-      @show-poi="onShowPoi"
-    />
-
     <header
-      class="fixed top-0 bottom-0 z-10 flex flex-row w-full h-full space-x-4 pointer-events-none sm:w-auto sm:p-4"
+      class="relative sm:fixed top-0 bottom-0 z-10 flex flex-row w-full sm:h-full space-x-4 pointer-events-none sm:w-auto sm:p-4"
     >
       <div
         :class="[
@@ -30,10 +19,13 @@
             :main-url="mainUrl"
             :non-highlighted-categories="nonHighlightedRootCategories"
             :site-name="siteName"
+            :is-explorer-favorite="isModeExplorer || isModeFavorite"
             :show-categories="!isModeExplorer && !isModeFavorite"
+            :is-favorite="isModeFavorite"
             :categories-activesubs-count="subCategoriesCounts"
             @category-click="onRootCategoryClick"
             @search-click="goToSearch"
+            @go-to-categories="onQuitExplorerFavoriteMode"
           />
 
           <SubCategoryHeader
@@ -75,11 +67,11 @@
               :logo-url="logoUrl"
               :menu-to-icon="categoriesToIcons"
               :selection-zoom="selectionZoom"
+              :is-explorer-favorite="isModeExplorer || isModeFavorite"
               @go-back-click="goToHome"
               @category-click="onSearchCategory"
               @poi-click="onSearchPoi"
               @feature-click="onFeatureClick"
-              @filter-click="onSearchFilter"
             />
           </div>
         </transition>
@@ -92,11 +84,13 @@
             :logo-url="logoUrl"
             :menu-to-icon="categoriesToIcons"
             :selection-zoom="selectionZoom"
+            :is-explorer-favorite="isModeExplorer || isModeFavorite"
+            :is-favorite="isModeFavorite"
+            @go-to-categories="onQuitExplorerFavoriteMode"
             @go-back-click="goToHome"
             @category-click="onSearchCategory"
             @poi-click="onSearchPoi"
             @feature-click="onFeatureClick"
-            @filter-click="onSearchFilter"
           />
         </div>
       </div>
@@ -115,6 +109,17 @@
         />
       </div>
     </header>
+    <Map
+      v-if="isMapConfigLoaded"
+      ref="map"
+      :small="isBottomMenuOpened"
+      :selected-categories="state.context.selectedSubCategoriesIds"
+      :get-sub-category="selectSubCategory"
+      :is-explorer-favorite="isModeExplorer || isModeFavorite"
+      @click="onMapClick"
+      @change-mode="onMapChangeMode"
+      @show-poi="onShowPoi"
+    />
     <BottomMenu
       class="sm:hidden"
       :selected-feature="selectedFeature"
@@ -153,7 +158,6 @@
 
 <script lang="ts">
 import debounce from 'lodash.debounce'
-import { MapboxGeoJSONFeature } from 'maplibre-gl'
 import Vue from 'vue'
 import { mapGetters, mapActions } from 'vuex'
 import { interpret, Interpreter, State } from 'xstate'
@@ -167,6 +171,7 @@ import SubCategoryFilterHeader from '@/components/SubCategoryFilterHeader.vue'
 import SubCategoryHeader from '@/components/SubCategoryHeader.vue'
 import { getPoiById } from '@/utils/api'
 import {
+  VidoFeature,
   Category,
   Mode,
   FiltreValues,
@@ -251,6 +256,7 @@ export default Vue.extend({
   },
   computed: {
     ...mapGetters({
+      categories: 'menu/categories',
       getSubCategoriesFromCategoryId: 'menu/getSubCategoriesFromCategoryId',
       isMapConfigLoaded: 'map/isLoaded',
       isMenuConfigLoaded: 'menu/isLoaded',
@@ -315,7 +321,7 @@ export default Vue.extend({
         } else {
           counts[cat.parent] = 1
         }
-        if (cat.parent !== '0') {
+        if (cat.parent !== 0) {
           const parent =
             this.subCategories.find((sc) => sc.id === cat.parent) ||
             this.rootCategories.find((sc: Category) => sc.id === cat.parent)
@@ -341,7 +347,7 @@ export default Vue.extend({
       )
     },
     filteredSubCategories(): Category['id'][] {
-      return Object.keys(this.filters)
+      return Object.keys(this.filters).map((i) => parseInt(i, 10))
     },
     categoriesToIcons(): Record<Category['id'], string> {
       const resources: Record<Category['id'], string> = {}
@@ -376,6 +382,11 @@ export default Vue.extend({
         this.$refs.map.resizeMap()
       }
     },
+    selectedFeature(val) {
+      if (this.$isMobile() && val) {
+        this.$refs.map.resizeMap()
+      }
+    },
   },
   created() {
     this.service
@@ -396,7 +407,22 @@ export default Vue.extend({
   },
   mounted() {
     if (typeof location !== 'undefined' && getHashPart('cat')) {
-      this.selectSubCategory(getHashPart('cat')?.split('.') || [])
+      this.selectSubCategory(
+        getHashPart('cat')
+          ?.split('.')
+          .map((i) => parseInt(i, 10)) || []
+      )
+    } else if (!getHashPart('favs')) {
+      const enabledCategories: Category['id'][] = []
+
+      Object.keys(this.categories).forEach((categoryIdString) => {
+        const categoryId = parseInt(categoryIdString, 10)
+        if (this.categories[categoryId].metadata?.enabled_by_default) {
+          enabledCategories.push(categoryId)
+        }
+      })
+
+      this.selectSubCategory(enabledCategories)
     }
 
     this.goToHome()
@@ -428,6 +454,13 @@ export default Vue.extend({
       } else {
         this.service.send(HomeEvents.GoToCategories)
       }
+    },
+    onQuitExplorerFavoriteMode() {
+      this.onMapChangeMode(Mode.BROWSER)
+      setHashPart('fav', null)
+      this.$store.dispatch('favorite/handleFavoriteLayer', false)
+      this.$store.dispatch('favorite/setFavoritesAction', 'close')
+      this.setSelectedFeature(null)
     },
     goToSearch() {
       this.service.send(HomeEvents.GoToSearch)
@@ -497,14 +530,8 @@ export default Vue.extend({
         this.setCategoriesFilters(newFilters)
       }
     },
-    onSearchCategory(subcategoryId: Category['id']) {
-      setHashPart('fav', null)
-      this.$store.dispatch('favorite/handleFavoriteLayer', false)
-      this.$store.dispatch('favorite/setFavoritesAction', 'close')
-      this.selectSubCategory([subcategoryId])
-    },
-    onSearchPoi(poiId: string) {
-      getPoiById(this.$config.API_ENDPOINT, poiId).then((poi) => {
+    onSearchPoi(poiId: number) {
+      getPoiById(this.$config.API_ENDPOINT, poiId.toString()).then((poi) => {
         if (poi) {
           this.setSelectedFeature(poi).then(() => {
             if (this.$refs.map) {
@@ -514,19 +541,25 @@ export default Vue.extend({
         }
       })
     },
-    onSearchFilter(newFilter: ApiFilterSearchResult) {
-      const newFilters = Object.assign({}, this.filters)
+    onSearchCategory(newFilter: ApiFilterSearchResult) {
+      if (newFilter.filterid) {
+        const newFilters = Object.assign({}, this.filters)
 
-      newFilters[`${newFilter.menuid}`] = {
-        selectionFiltre: {
-          [newFilter.tag]: [`${newFilter.filter}`],
-        },
+        newFilters[`${newFilter.menuId}`] = {
+          selectionFiltre: {
+            [newFilter.tag]: [`${newFilter.filter}`],
+          },
+        }
+
+        this.setCategoriesFilters(newFilters)
       }
 
-      this.selectSubCategory([`${newFilter.menuid}`])
-      this.setCategoriesFilters(newFilters)
+      setHashPart('fav', null)
+      this.$store.dispatch('favorite/handleFavoriteLayer', false)
+      this.$store.dispatch('favorite/setFavoritesAction', 'close')
+      this.selectSubCategory([newFilter.menuId])
     },
-    onFeatureClick(feature: MapboxGeoJSONFeature) {
+    onFeatureClick(feature: VidoFeature) {
       this.setSelectedFeature(feature).then(() => {
         if (this.$refs.map) {
           this.$refs.map.goToSelectedPoi()

@@ -61,7 +61,6 @@
 </template>
 
 <script lang="ts">
-import type { MapboxGeoJSONFeature } from 'maplibre-gl'
 import Vue, { PropType } from 'vue'
 
 import HeaderRootCategories from '@/components/HeaderRootCategories.vue'
@@ -87,7 +86,7 @@ export default Vue.extend({
   },
   props: {
     selectedFeature: {
-      type: Object as PropType<VidoFeature | MapboxGeoJSONFeature>,
+      type: Object as PropType<VidoFeature>,
       default: null,
     },
     states: {

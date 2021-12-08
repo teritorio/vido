@@ -33,6 +33,7 @@ import {
   faShareAlt,
   faClipboardCheck,
   faFileDownload,
+  faBookOpen,
 } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import Vue from 'vue'
@@ -73,7 +74,8 @@ library.add(
   faCity,
   faShareAlt,
   faClipboardCheck,
-  faFileDownload
+  faFileDownload,
+  faBookOpen
 )
 
 // Register the component globally

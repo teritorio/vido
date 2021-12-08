@@ -244,13 +244,15 @@ export default Vue.extend({
           .forEach((k) => tags.add(k))
       )
 
-      fetch(
-        `${this.$config.API_ENDPOINT}/geodata/v1/sptags?PopupListField=${[
-          ...tags,
-        ].join(';')}`
-      )
-        .then((data) => data.json())
-        .then((data) => (this.sptags = data))
+      if (tags) {
+        fetch(
+          `${this.$config.API_ENDPOINT}/geodata/v0.1/sptags?PopupListField=${[
+            ...tags,
+          ].join(';')}`
+        )
+          .then((data) => data.json())
+          .then((data) => (this.sptags = data))
+      }
     },
   },
 })

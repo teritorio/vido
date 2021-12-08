@@ -57,7 +57,8 @@ export const createMarkerDonutChart = (
   const countPerColor: { [color: string]: number } = {}
   Object.keys(categories)
     .filter((categoryId) => ((props && props[categoryId]) || 0) > 0)
-    .forEach((categoryId) => {
+    .forEach((categoryIdString) => {
+      const categoryId = parseInt(categoryIdString, 10)
       const color = categories[categoryId].metadata.color
       if (countPerColor[color]) {
         countPerColor[color] += (props && props[categoryId]) || 0

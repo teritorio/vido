@@ -1,11 +1,13 @@
 <template>
   <i
+    v-if="!Boolean(image)"
     :class="[
       !useNativeAlignment && 'flex items-center justify-center',
       pictoClassName,
     ]"
     :style="{ color: textColor }"
   />
+  <img v-else-if="Boolean(image)" class="rounded-full" :src="image" />
 </template>
 
 <script lang="ts">
@@ -29,6 +31,10 @@ export default Vue.extend({
     },
     useNativeAlignment: {
       type: Boolean,
+      required: false,
+    },
+    image: {
+      type: String,
       required: false,
     },
   },

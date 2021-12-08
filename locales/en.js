@@ -2,6 +2,7 @@ export default {
   favorites: {
     title: 'Favorites',
     menu_label: 'Favorites menu',
+    menu_notebook: 'Show notebook',
     menu_share: 'Share favorites',
     menu_clear: 'Clear favorites',
     export_pdf: 'Export liste as PDF',
@@ -10,6 +11,9 @@ export default {
       title: 'Share link of favorites',
       copy: 'Copy',
       close: 'Close',
+    },
+    notebook: {
+      title: 'Favorites notebook',
     },
     noFavs:
       'You do not have any favorite places yet. You can do this by selecting a location on the map, then saving it as a favorite.',
@@ -27,6 +31,9 @@ export default {
     threeDAriaLabel: 'View the map in 3D',
     backgroundAriaLabel: 'Switch the map background',
     backgroundButton: 'Switch the map background (currently "{current}")',
+    resetBearing: 'Reset bearing to north',
+    zoomIn: 'Zoom In',
+    zoomOut: 'Zoom Out',
   },
   navMenu: {
     label: 'Navigation',
@@ -55,6 +62,9 @@ export default {
     cartocode: 'Cartocode',
     noResult: 'No results',
     hideCategory: 'Hide this category',
+    myFavorites: 'Yours favorites',
+    exploration:
+      'All information is visible on the map, depending on the zoom level.',
   },
   toast: {
     details: 'Details',

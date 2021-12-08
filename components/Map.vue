@@ -9,7 +9,7 @@
       <div
         :class="[
           'flex-grow overflow-hidden',
-          !small && !isModeExplorer && 'mt-20 sm:mt-0 h-4/5 sm:h-full',
+          !small && isExplorerFavorite && 'sm:mt-20 sm:mt-0 h-4/5 sm:h-full',
         ]"
       >
         <mapbox
@@ -24,6 +24,7 @@
             pitch,
             style: mapStyle,
             zoom: zoom.default,
+            locale: locale,
           }"
           :nav-control="{
             show: false,
@@ -52,6 +53,7 @@
         :initial-background="selectedBackground"
         :map="map"
         :pitch="pitch"
+        :resize-map="resizeMap"
         @changeBackground="onClickChangeBackground"
         @change-mode="onControlChangeMode"
         @locale="languageControl.setLanguage($event)"
@@ -151,6 +153,10 @@ const Map = Vue.extend({
       type: Array as PropType<Category['id'][]>,
       default: () => [],
     },
+    isExplorerFavorite: {
+      type: Boolean,
+      default: false,
+    },
   },
 
   data(): {
@@ -170,6 +176,7 @@ const Map = Vue.extend({
     previousCategories: Category['id'][]
     mapStyles: Record<string, string | VidoMglStyle>
     mapStyle: string | VidoMglStyle | null
+    locale: Record<string, string>
   } {
     return {
       map: null,
@@ -188,6 +195,7 @@ const Map = Vue.extend({
       previousCategories: [],
       mapStyles: {},
       mapStyle: null,
+      locale: {},
     }
   },
   async fetch() {
@@ -317,7 +325,8 @@ const Map = Vue.extend({
       ).map((e) => e.properties.metadata?.PID)
 
       // Add exact coordinates to a store to avoid rounding from Mapbox GL
-      Object.keys(features).forEach((categoryId) => {
+      Object.keys(features).forEach((categoryIdString) => {
+        const categoryId = parseInt(categoryIdString, 10)
         features[categoryId].forEach((feature) => {
           if (
             feature.geometry.type === 'Point' &&
@@ -502,6 +511,14 @@ const Map = Vue.extend({
 
     this.selectedBackground =
       (getHashPart('bg') as keyof typeof MapStyle) || DEFAULT_MAP_STYLE
+
+    this.locale = {
+      'NavigationControl.ResetBearing':
+        this.$tc('mapControls.resetBearing') || 'Reset bearing to north',
+      'NavigationControl.ZoomIn': this.$tc('mapControls.zoomIn') || 'Zoom in',
+      'NavigationControl.ZoomOut':
+        this.$tc('mapControls.zoomOut') || 'Zoom out',
+    }
   },
 
   mounted() {
@@ -708,8 +725,13 @@ const Map = Vue.extend({
         })
 
         allFavorites.forEach((feature) => {
-          this.featuresCoordinates[feature.properties.metadata.PID] =
-            feature.geometry.coordinates
+          if (
+            feature.properties?.metadata?.PID &&
+            feature.geometry.type === 'Point'
+          ) {
+            this.featuresCoordinates[feature.properties.metadata.PID] = feature
+              .geometry.coordinates as TupleLatLng
+          }
         })
 
         const currentSource = this.map.getSource(FAVORITE_SOURCE)
@@ -764,7 +786,9 @@ const Map = Vue.extend({
     },
 
     async fetchFavorites(ids: [string]) {
-      return await getPoiByIds(this.$config.API_ENDPOINT, ids)
+      return await getPoiByIds(this.$config.API_ENDPOINT, ids).then(
+        (pois) => pois.features
+      )
     },
 
     showZoomSnack(text: string, textBtn: string) {
@@ -975,8 +999,12 @@ const Map = Vue.extend({
                 // Marker
                 const el: HTMLElement = document.createElement('div')
                 el.classList.add('maplibregl-marker')
+
                 marker = this.markers[id] = new maplibregl.Marker({
                   element: el,
+                  ...(props.metadata['image:thumbnail'] && {
+                    offset: [0, -10],
+                  }),
                 }).setLngLat(markerCoords) // Using this to avoid misplaced marker
 
                 // Teritorio badge
@@ -984,6 +1012,7 @@ const Map = Vue.extend({
                   propsData: {
                     color: props.metadata.color,
                     picto: props.metadata.icon,
+                    image: props.metadata['image:thumbnail'],
                   },
                 }).$mount()
                 el.appendChild(instance.$el)

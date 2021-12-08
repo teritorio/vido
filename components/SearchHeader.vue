@@ -3,7 +3,7 @@
     class="flex flex-col max-h-full px-5 py-4 space-y-6 bg-white shadow-md pointer-events-auto sm:rounded-xl md:w-96"
   >
     <div class="flex flex-row sm:flex-col items-center sm:items-start">
-      <h1 class="flex-none sm:hidden mr-2">
+      <h1 v-if="!isExplorerFavorite" class="flex-none sm:hidden mr-2">
         <img
           :aria-label="siteName"
           :src="logoUrl"
@@ -20,6 +20,7 @@
       </button>
 
       <form
+        v-if="!isExplorerFavorite"
         ref="searchform"
         class="flex-grow relative pointer-events-auto w-full"
         @submit.prevent="onSubmit"
@@ -48,6 +49,26 @@
           </button>
         </section>
       </form>
+      <div v-else class="flex items-center ml-2">
+        <button
+          type="button"
+          class="flex flex-shrink-0 items-center justify-center w-10 h-10 text-2xl font-bold transition-all rounded-full outline-none cursor-pointer focus:outline-none hover:bg-gray-100 focus:bg-gray-100"
+          @click="goToCategories"
+        >
+          <font-awesome-icon
+            icon="arrow-left"
+            class="text-gray-800"
+            size="xs"
+          />
+        </button>
+        <p class="ml-2">
+          {{
+            $tc(
+              isFavorite ? 'headerMenu.myFavorites' : 'headerMenu.exploration'
+            )
+          }}
+        </p>
+      </div>
     </div>
 
     <button
@@ -60,14 +81,6 @@
     </button>
 
     <div v-if="searchResults" class="overflow-y-auto">
-      <SearchResultBlock
-        v-if="itemsFilters.length > 0"
-        label="Filtres"
-        icon="filter"
-        :items="itemsFilters"
-        @item-click="onFilterClick"
-      />
-
       <SearchResultBlock
         v-if="itemsClasse.length > 0"
         type="category"
@@ -122,18 +135,7 @@
         @item-click="onPoiClick"
       />
 
-      <p
-        v-if="
-          itemsClasse.length +
-            itemsOsm.length +
-            itemsTis.length +
-            itemsAddress.length +
-            itemsCartocode.length +
-            itemsFilters.length +
-            itemsCities.length ==
-          0
-        "
-      >
+      <p v-if="results == 0">
         {{ $tc('headerMenu.noResult') }}
       </p>
     </div>
@@ -151,7 +153,6 @@ import {
   ApiSearchResults,
   ApiAddrSearchResult,
   SearchResult,
-  Category,
 } from '@/utils/types'
 
 export default Vue.extend({
@@ -176,6 +177,14 @@ export default Vue.extend({
       type: Object as PropType<{ [selection: string]: number }>,
       required: true,
     },
+    isExplorerFavorite: {
+      type: Boolean,
+      default: false,
+    },
+    isFavorite: {
+      type: Boolean,
+      default: false,
+    },
   },
 
   data(): {
@@ -194,9 +203,9 @@ export default Vue.extend({
     itemsClasse(): SearchResult[] {
       return this.searchResults && Array.isArray(this.searchResults.classe)
         ? this.searchResults.classe.map((v) => ({
-            id: v.idmenu,
+            id: v.filterid || v.menuId,
             label: v.label,
-            icon: this.menuToIcon[v.idmenu],
+            icon: this.menuToIcon[v.menuId],
           }))
         : []
     },
@@ -204,9 +213,9 @@ export default Vue.extend({
     itemsOsm(): SearchResult[] {
       return this.searchResults && Array.isArray(this.searchResults.osm)
         ? this.searchResults.osm.map((v) => ({
-            id: v.postid.toString(),
+            id: v.postid,
             label: v.label,
-            icon: this.menuToIcon[v.idmenu],
+            icon: this.menuToIcon[v.menuId],
             small: (v.commune && toTitleCase(v.commune)) || undefined,
           }))
         : []
@@ -215,9 +224,9 @@ export default Vue.extend({
     itemsTis(): SearchResult[] {
       return this.searchResults && Array.isArray(this.searchResults.tis)
         ? this.searchResults.tis.map((v) => ({
-            id: v.postid.toString(),
+            id: v.postid,
             label: v.label,
-            icon: this.menuToIcon[v.idmenu],
+            icon: this.menuToIcon[v.menuId],
             small: (v.commune && toTitleCase(v.commune)) || undefined,
           }))
         : []
@@ -258,18 +267,7 @@ export default Vue.extend({
         : [this.searchResults.cartocode]
 
       return goodCartocode.map((v) => ({
-        id: v.postid.toString(),
-        label: v.label,
-      }))
-    },
-
-    itemsFilters(): SearchResult[] {
-      if (!this.searchResults || !Array.isArray(this.searchResults.filter)) {
-        return []
-      }
-
-      return this.searchResults.filter.map((v) => ({
-        id: `${v.filterid}`,
+        id: v.postid,
         label: v.label,
       }))
     },
@@ -285,6 +283,25 @@ export default Vue.extend({
               : []
           )
         : []
+    },
+
+    results(): Number {
+      return (
+        this.itemsClasse.length +
+        this.itemsOsm.length +
+        this.itemsTis.length +
+        this.itemsAddress.length +
+        this.itemsCartocode.length +
+        this.itemsCities.length
+      )
+    },
+  },
+
+  watch: {
+    itemsCartocode(val) {
+      if (val.length === 1 && this.results === 1) {
+        this.onPoiClick(val[0].id)
+      }
     },
   },
 
@@ -309,9 +326,19 @@ export default Vue.extend({
       this.$emit('go-back-click')
     },
 
-    onCategoryClick(id: Category['id']) {
-      this.$emit('category-click', id)
-      this.reset()
+    goToCategories() {
+      this.$emit('go-to-categories')
+    },
+
+    onCategoryClick(id: number) {
+      if (this.searchResults?.classe) {
+        const filter = this.searchResults.classe.find(
+          (a) => a.filterid === id || a.menuId === id
+        )
+
+        this.$emit('category-click', filter)
+        this.reset()
+      }
     },
 
     onPoiClick(id: string) {
@@ -323,7 +350,7 @@ export default Vue.extend({
       ;(this.$refs.search as HTMLInputElement).focus()
     },
 
-    onAddressClick(id: string) {
+    onAddressClick(id: number) {
       let feature = this.addressResults.find((a) => a.ID === id)?.geojson
       const isCity =
         (this.searchResults && Array.isArray(this.searchResults.municipality)
@@ -343,16 +370,6 @@ export default Vue.extend({
         this.$emit('feature-click', feature)
       }
       this.reset()
-    },
-
-    onFilterClick(id: string) {
-      if (this.searchResults?.filter) {
-        const filter = this.searchResults.filter.find(
-          (a) => `${a.filterid}` === id
-        )
-        this.$emit('filter-click', filter)
-        this.reset()
-      }
     },
 
     onSubmit() {
@@ -376,7 +393,7 @@ export default Vue.extend({
       ) {
         this.isLoading = true
         fetch(
-          `${this.$config.API_ENDPOINT}/geodata/v1/search?q=${this.searchText}`
+          `${this.$config.API_ENDPOINT}/geodata/v0.1/search?q=${this.searchText}`
         )
           .then((data) => data.json())
           .then((data) => {
