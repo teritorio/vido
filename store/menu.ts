@@ -135,7 +135,7 @@ export const actions = {
       const categories: State['categories'] = {}
 
       Object.values(config)
-        .filter((category) => category.isDataItem && !category.metadata.hide)
+        .filter((category) => !category.metadata.hide)
         .map((category) => {
           categories[category.id] = category
           return category

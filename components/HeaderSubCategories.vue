@@ -43,9 +43,10 @@ export default Vue.extend({
         color: category.metadata.color,
         label: category.metadata.label.fr,
         picto: category.metadata.picto,
-        filtres: category.datasources
-          .filter((ds) => ds.HasFiltre)
-          .map((ds) => ({ idsrc: ds.idsrc, filtre: ds.filtre })),
+        filtres: category.datasources.map((ds) => ({
+          idsrc: ds.idsrc,
+          filtre: ds.filtre,
+        })),
         selected: this.$props.isSubCategorySelected(category.id),
       }))
     },

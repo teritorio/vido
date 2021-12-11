@@ -46,7 +46,6 @@ export type DataSource = {
   // eslint-disable-next-line camelcase
   poi_type: PoiType
   slug: string
-  HasFiltre: boolean
   filtre: null | {
     selectionFiltre: null | SelectionFiltre[]
     booleanFiltre: null | BooleanFiltre
@@ -65,10 +64,8 @@ export interface ApiCategoryBase {
   parent: ApiCategoryBase['id']
   level: 1 | 2 | 3
   datasources: DataSource[]
-  isDataItem: string | boolean
   metadata: {
     color: string
-    count: number
     description: { [lang: string]: string }
     hide: boolean
     label: { [lang: string]: string }
