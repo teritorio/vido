@@ -586,7 +586,11 @@ const Map = Vue.extend({
       const poiHash = getHashPart('poi')
 
       if (poiHash && !this.selectedFeature) {
-        getPoiById(this.$config.API_ENDPOINT, poiHash).then((poi) => {
+        getPoiById(
+          this.$config.API_ENDPOINT,
+          this.$config.API_POIS_SET,
+          poiHash
+        ).then((poi) => {
           if (poi) {
             this.selectFeature(poi)
           }
@@ -786,9 +790,11 @@ const Map = Vue.extend({
     },
 
     async fetchFavorites(ids: [string]) {
-      return await getPoiByIds(this.$config.API_ENDPOINT, ids).then(
-        (pois) => pois.features
-      )
+      return await getPoiByIds(
+        this.$config.API_ENDPOINT,
+        this.$config.API_POIS_SET,
+        ids
+      ).then((pois) => pois.features)
     },
 
     showZoomSnack(text: string, textBtn: string) {

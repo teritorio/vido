@@ -93,7 +93,7 @@ export default Vue.extend({
   methods: {
     fetchConfig() {
       fetch(
-        `${this.$config.API_ENDPOINT}/geodata/v0.1/articles?slug=non-classe`
+        `${this.$config.API_ENDPOINT}/${this.$config.API_POIS_SET}/articles?slug=non-classe`
       )
         .then((data) => data.json())
         .then((data) => (this.entries = data))

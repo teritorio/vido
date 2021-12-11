@@ -246,9 +246,9 @@ export default Vue.extend({
 
       if (tags) {
         fetch(
-          `${this.$config.API_ENDPOINT}/geodata/v0.1/sptags?PopupListField=${[
-            ...tags,
-          ].join(';')}`
+          `${this.$config.API_ENDPOINT}/sptags?PopupListField=${[...tags].join(
+            ';'
+          )}`
         )
           .then((data) => data.json())
           .then((data) => (this.sptags = data))

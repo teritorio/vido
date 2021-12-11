@@ -269,21 +269,23 @@ export default Vue.extend({
       favoritesIds: 'favorite/favoritesIds',
     }),
     pdfLink(): string {
-      return `${
-        this.$config.API_ENDPOINT
-      }/geodata/v0.1/pois.pdf?ids=${this.favoritesIds.join(',')}`
+      return `${this.$config.API_ENDPOINT}/${
+        this.$config.API_POIS_SET
+      }/pois.pdf?ids=${this.favoritesIds.join(',')}`
     },
     csvLink(): string {
-      return `${
-        this.$config.API_ENDPOINT
-      }/geodata/v0.1/pois.csv?ids=${this.favoritesIds.join(',')}`
+      return `${this.$config.API_ENDPOINT}/${
+        this.$config.API_POIS_SET
+      }/pois.csv?ids=${this.favoritesIds.join(',')}`
     },
   },
   methods: {
     async fetchFavorites(ids: [string]) {
-      return await getPoiByIds(this.$config.API_ENDPOINT, ids).then(
-        (pois) => pois.features
-      )
+      return await getPoiByIds(
+        this.$config.API_ENDPOINT,
+        this.$config.API_POIS_SET,
+        ids
+      ).then((pois) => pois.features)
     },
     removeFavorites() {
       try {

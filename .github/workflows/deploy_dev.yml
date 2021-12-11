@@ -48,7 +48,8 @@ jobs:
 
       - name: Build
         env:
-          API_ENDPOINT: https://cdt40.carto.guide/api.teritorio
+          API_ENDPOINT: https://cdt40.carto.guide/api.teritorio/geodata/v0.1
+          API_POIS_SET: ${{secrets.API_POIS_SET_DEV}}
           VECTO_STYLE_URL: ${{secrets.VECTO_STYLE_URL_DEV}}
           SATELLITE_STYLE_URL: ${{secrets.SATELLITE_STYLE_URL_DEV}}
           VECTO_TILES_URL: ${{secrets.VECTO_TILES_URL_DEV}}

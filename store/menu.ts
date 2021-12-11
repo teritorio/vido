@@ -14,10 +14,12 @@ enum Mutation {
 
 interface FetchConfigPayload {
   apiEndpoint: string
+  apiPoisSet: string
 }
 
 interface FetchFeaturesPayload {
   apiEndpoint: string
+  apiPoisSet: string
   categoryIds: Category['id'][]
 }
 
@@ -119,9 +121,12 @@ function keepFeature(feature: VidoFeature, filters: FiltreValues): boolean {
 }
 
 export const actions = {
-  async fetchConfig(store: Store<State>, { apiEndpoint }: FetchConfigPayload) {
+  async fetchConfig(
+    store: Store<State>,
+    { apiEndpoint, apiPoisSet }: FetchConfigPayload
+  ) {
     try {
-      const configPromise = await fetch(`${apiEndpoint}/geodata/v0.1/menu`)
+      const configPromise = await fetch(`${apiEndpoint}/${apiPoisSet}/menu`)
 
       const config: {
         [id: number]: Category
@@ -161,7 +166,7 @@ export const actions = {
 
   async fetchFeatures(
     store: Store<State>,
-    { apiEndpoint, categoryIds }: FetchFeaturesPayload
+    { apiEndpoint, apiPoisSet, categoryIds }: FetchFeaturesPayload
   ) {
     store.commit(Mutation.SET_FEATURES_LOADING, { isLoadingFeatures: true })
 
@@ -176,7 +181,7 @@ export const actions = {
           .filter((categoryId) => !previousFeatures[categoryId])
           .map((categoryId) =>
             fetch(
-              `${apiEndpoint}/geodata/v0.1/pois?idmenu=${categoryId}`
+              `${apiEndpoint}/${apiPoisSet}/pois?idmenu=${categoryId}`
             ).then((res) => res.json())
           )
       )

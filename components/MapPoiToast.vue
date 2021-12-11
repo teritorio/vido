@@ -483,6 +483,7 @@ export default Vue.extend({
 
       return getPoiById(
         this.$config.API_ENDPOINT,
+        this.$config.API_POIS_SET,
         this.poiProp('PID') || this.poi.id
       ).then((apiPoi) => {
         if (apiPoi) {
@@ -496,9 +497,9 @@ export default Vue.extend({
         return
       }
       return fetch(
-        `${
-          this.$config.API_ENDPOINT
-        }/geodata/v0.1/sptags?PopupListField=${this.poiMeta('PopupListField')}`
+        `${this.$config.API_ENDPOINT}/sptags?PopupListField=${this.poiMeta(
+          'PopupListField'
+        )}`
       )
         .then((data) => data.json())
         .then((data) => (this.sptags = data))

@@ -216,6 +216,7 @@ export default Vue.extend({
       (selectedSubCategoriesIds) =>
         this.$store.dispatch('menu/fetchFeatures', {
           apiEndpoint: this.$config.API_ENDPOINT,
+          apiPoisSet: this.$config.API_POIS_SET,
           categoryIds: selectedSubCategoriesIds,
         }),
       500
@@ -531,7 +532,11 @@ export default Vue.extend({
       }
     },
     onSearchPoi(poiId: number) {
-      getPoiById(this.$config.API_ENDPOINT, poiId.toString()).then((poi) => {
+      getPoiById(
+        this.$config.API_ENDPOINT,
+        this.$config.API_POIS_SET,
+        poiId.toString()
+      ).then((poi) => {
         if (poi) {
           this.service.send(HomeEvents.GoToCategories)
           this.setSelectedFeature(poi).then(() => {

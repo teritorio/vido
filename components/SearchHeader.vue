@@ -393,7 +393,7 @@ export default Vue.extend({
       ) {
         this.isLoading = true
         fetch(
-          `${this.$config.API_ENDPOINT}/geodata/v0.1/search?q=${this.searchText}`
+          `${this.$config.API_ENDPOINT}/${this.$config.API_POIS_SET}/search?q=${this.searchText}`
         )
           .then((data) => data.json())
           .then((data) => {

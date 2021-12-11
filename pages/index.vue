@@ -25,15 +25,20 @@ export default Vue.extend({
   async fetch() {
     await this.$store.dispatch('map/fetchConfig', {
       apiEndpoint: this.$config.API_ENDPOINT,
+      apiPoisSet: this.$config.API_POIS_SET,
     })
     await this.$store.dispatch('menu/fetchConfig', {
       apiEndpoint: this.$config.API_ENDPOINT,
+      apiPoisSet: this.$config.API_POIS_SET,
     })
     await this.$store.dispatch('site/fetchConfig', {
       apiEndpoint: this.$config.API_ENDPOINT,
+      apiPoisSet: this.$config.API_POIS_SET,
     })
 
-    await fetch(`${this.$config.API_ENDPOINT}/geodata/v0.1/site`)
+    await fetch(
+      `${this.$config.API_ENDPOINT}/${this.$config.API_POIS_SET}/site`
+    )
       .then((res) => res.json())
       .then((json) => {
         // @ts-ignore - Look ok, unable to fix the issue
