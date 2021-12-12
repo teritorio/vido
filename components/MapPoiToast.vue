@@ -235,14 +235,10 @@ export default Vue.extend({
     }
   },
 
-  mounted() {
-    this.$tracking({
-      type: 'popup',
-      poiId: this.poiMeta('id'),
-      title: this.poi.properties?.name,
-      location: window.location.href,
-      path: this.$route.path,
-    })
+  watch: {
+    poi() {
+      this.onPoiChange()
+    },
   },
 
   computed: {
@@ -446,10 +442,14 @@ export default Vue.extend({
     },
   },
 
-  watch: {
-    poi() {
-      this.onPoiChange()
-    },
+  mounted() {
+    this.$tracking({
+      type: 'popup',
+      poiId: this.poiMeta('id'),
+      title: this.poi.properties?.name,
+      location: window.location.href,
+      path: this.$route.path,
+    })
   },
 
   created() {
