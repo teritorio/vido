@@ -115,26 +115,34 @@ export interface VidoFeature extends MapboxGeoJSONFeature {
   properties: {
     [key: string]: any
 
+    name?: string
+
+    // eslint-disable-next-line camelcase
+    'image:thumbnail'?: string
+
     'addr:city'?: string
     'addr:housenumber'?: string
     'addr:postcode'?: string
     'addr:street'?: string
+
     metadata?: {
-      source?: string
-      HasPopup?: string
       id?: number
+      source?: string
+    }
+    display?: {
+      icon?: string
+      color?: string
+      // eslint-disable-next-line camelcase
+      tourism_style_class?: string[]
+    }
+    editorial?: {
+      HasPopup?: string
       PopupAdress?: string
       PopupListField?: string
-      color?: string
       hasfiche?: string
-      icon?: string
       // eslint-disable-next-line camelcase
       label_infobulle?: string
-      // eslint-disable-next-line camelcase
-      tourism_style_class?: string | string[]
-      'image:thumbnail'?: string
     }
-    name?: string
   }
   type: 'Feature'
 }

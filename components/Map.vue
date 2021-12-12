@@ -1000,6 +1000,12 @@ const Map = Vue.extend({
             if (typeof props.metadata === 'string') {
               props.metadata = JSON.parse(props.metadata)
             }
+            if (typeof props.display === 'string') {
+              props.display = JSON.parse(props.display)
+            }
+            if (typeof props.editorial === 'string') {
+              props.editorial = JSON.parse(props.editorial)
+            }
             if (props?.metadata?.id) {
               id = 'm' + props.metadata.id
               marker = this.markers[id]
@@ -1011,7 +1017,7 @@ const Map = Vue.extend({
 
                 marker = this.markers[id] = new maplibregl.Marker({
                   element: el,
-                  ...(props.metadata['image:thumbnail'] && {
+                  ...(props['image:thumbnail'] && {
                     offset: [0, -10],
                   }),
                 }).setLngLat(markerCoords) // Using this to avoid misplaced marker
@@ -1019,15 +1025,15 @@ const Map = Vue.extend({
                 // Teritorio badge
                 const instance = new TeritorioIconBadge({
                   propsData: {
-                    color: props.metadata.color,
-                    picto: props.metadata.icon,
-                    image: props.metadata['image:thumbnail'],
+                    color: props.display?.color,
+                    picto: props.display?.icon,
+                    image: props['image:thumbnail'],
                   },
                 }).$mount()
                 el.appendChild(instance.$el)
 
                 // Click handler
-                if (props.metadata.HasPopup === 'yes') {
+                if (props.editorial?.HasPopup === 'yes') {
                   el.addEventListener('click', (e) => {
                     e.stopPropagation()
                     this.selectFeature(feature)

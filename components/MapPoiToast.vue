@@ -262,12 +262,12 @@ export default Vue.extend({
     },
 
     name(): string {
-      return this.poiProp('name') || this.poiMeta('label_infobulle')
+      return this.poiProp('name') || this.poiEditorial('label_infobulle')
     },
 
     color(): string | null {
-      if (this.poiMeta('color')) {
-        return this.poiMeta('color')
+      if (this.poiDisplay('color')) {
+        return this.poiDisplay('color')
       } else if (this.poi && this.poi.layer && this.poi.layer.paint) {
         // @ts-ignore
         const tc = this.poi.layer.paint['text-color']
@@ -284,8 +284,8 @@ export default Vue.extend({
     },
 
     icon(): string {
-      if (this.poiMeta('icon')) {
-        return this.poiMeta('icon')
+      if (this.poiDisplay('icon')) {
+        return this.poiDisplay('icon')
         // @ts-ignore
       } else if (this.poi.layer?.layout['icon-image']?.name) {
         return (
@@ -303,7 +303,7 @@ export default Vue.extend({
     },
 
     category(): string {
-      return this.poiMeta('label_infobulle') || this.poiProp('class')
+      return this.poiEditorial('label_infobulle') || this.poiProp('class')
     },
 
     description(): string | null {
@@ -311,7 +311,7 @@ export default Vue.extend({
     },
 
     address(): string | null {
-      if (this.poiMeta('PopupAdress') !== 'yes') {
+      if (this.poiEditorial('PopupAdress') !== 'yes') {
         return null
       }
 
@@ -376,7 +376,7 @@ export default Vue.extend({
         return field === 'opening_hours' ? this.opening_hours : value
       }
 
-      return (this.poiMeta('PopupListField') || '')
+      return (this.poiEditorial('PopupListField') || '')
         .split(';')
         .map((f: string) => {
           if (
@@ -442,7 +442,7 @@ export default Vue.extend({
     },
 
     unavoidable(): boolean {
-      return Boolean(this.poiMeta('unavoidable'))
+      return Boolean(this.poiEditorial('unavoidable'))
     },
   },
 
@@ -476,6 +476,14 @@ export default Vue.extend({
       return this.poiProp('metadata') && this.poiProp('metadata')[name]
     },
 
+    poiDisplay(name: string) {
+      return this.poiProp('display') && this.poiProp('display')[name]
+    },
+
+    poiEditorial(name: string) {
+      return this.poiProp('editorial') && this.poiProp('editorial')[name]
+    },
+
     fetchMetadata(): Promise<void> {
       if (!this.poiProp('id') && !this.poi.id) {
         return Promise.resolve()
@@ -493,11 +501,14 @@ export default Vue.extend({
     },
 
     fetchSpTags() {
-      if (!this.poiMeta('PopupListField') || !this.poiMeta('osm_poi_type')) {
+      if (
+        !this.poiEditorial('PopupListField') ||
+        !this.poiEditorial('osm_poi_type')
+      ) {
         return
       }
       return fetch(
-        `${this.$config.API_ENDPOINT}/sptags?PopupListField=${this.poiMeta(
+        `${this.$config.API_ENDPOINT}/sptags?PopupListField=${this.poiEditorial(
           'PopupListField'
         )}`
       )

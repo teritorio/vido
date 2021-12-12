@@ -13,7 +13,7 @@ export const markerLayerFactory = (source: string, id: string): AnyLayer => ({
         0,
         [
           'array',
-          ['get', 'tourism_style_class', ['object', ['get', 'metadata']]],
+          ['get', 'tourism_style_class', ['object', ['get', 'display']]],
         ],
       ],
       'products',
