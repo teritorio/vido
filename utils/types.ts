@@ -125,7 +125,6 @@ export interface VidoFeature extends MapboxGeoJSONFeature {
       PID?: string
       PopupAdress?: string
       PopupListField?: string
-      classe?: string
       color?: string
       hasfiche?: string
       icon?: string
@@ -133,7 +132,6 @@ export interface VidoFeature extends MapboxGeoJSONFeature {
       label_infobulle?: string
       // eslint-disable-next-line camelcase
       tourism_style_class?: string | string[]
-      wkt?: string
       'image:thumbnail'?: string
     }
     name?: string
