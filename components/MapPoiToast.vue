@@ -181,7 +181,7 @@
         </button>
 
         <button
-          v-if="poiMeta('PID')"
+          v-if="poiMeta('id')"
           class="flex flex-col items-center flex-1 h-full p-2 space-y-2 rounded-lg hover:bg-gray-100"
           title="Mettre en favori"
           @click.stop="onFavoriteClick"
@@ -238,7 +238,7 @@ export default Vue.extend({
   mounted() {
     this.$tracking({
       type: 'popup',
-      poiId: this.poiMeta('PID'),
+      poiId: this.poiMeta('id'),
       title: this.poi.properties?.name,
       location: window.location.href,
       path: this.$route.path,
@@ -256,7 +256,7 @@ export default Vue.extend({
     },
 
     isModeFavorite(): boolean {
-      const id = this.poiMeta('PID') || this.poiProp('id')
+      const id = this.poiMeta('id') || this.poiProp('id')
       const currentFavorites = this.$store.getters['favorite/favoritesIds']
       return currentFavorites.includes(id)
     },
@@ -477,14 +477,14 @@ export default Vue.extend({
     },
 
     fetchMetadata(): Promise<void> {
-      if (!this.poiProp('PID') && !this.poi.id) {
+      if (!this.poiProp('id') && !this.poi.id) {
         return Promise.resolve()
       }
 
       return getPoiById(
         this.$config.API_ENDPOINT,
         this.$config.API_POIS_SET,
-        this.poiProp('PID') || this.poi.id
+        this.poiProp('id') || this.poi.id
       ).then((apiPoi) => {
         if (apiPoi) {
           this.apiProps = apiPoi.properties
@@ -525,7 +525,7 @@ export default Vue.extend({
       this.$tracking({
         type: 'popup_event',
         event,
-        poiId: this.poiMeta('PID'),
+        poiId: this.poiMeta('id'),
         category: this.category,
         title: this.poi.properties?.name,
       })

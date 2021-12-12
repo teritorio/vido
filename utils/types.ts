@@ -122,7 +122,7 @@ export interface VidoFeature extends MapboxGeoJSONFeature {
     metadata?: {
       source?: string
       HasPopup?: string
-      PID?: string
+      id?: number
       PopupAdress?: string
       PopupListField?: string
       color?: string

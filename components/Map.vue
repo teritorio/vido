@@ -317,12 +317,12 @@ const Map = Vue.extend({
         return
       }
 
-      const oldCategories: (string | undefined)[] = flattenFeatures(
+      const oldCategories: (number | undefined)[] = flattenFeatures(
         oldFeatures
-      ).map((e) => e.properties.metadata?.PID)
-      const newCategories: (string | undefined)[] = flattenFeatures(
+      ).map((e) => e.properties.metadata?.id)
+      const newCategories: (number | undefined)[] = flattenFeatures(
         features
-      ).map((e) => e.properties.metadata?.PID)
+      ).map((e) => e.properties.metadata?.id)
 
       // Add exact coordinates to a store to avoid rounding from Mapbox GL
       Object.keys(features).forEach((categoryIdString) => {
@@ -330,9 +330,9 @@ const Map = Vue.extend({
         features[categoryId].forEach((feature) => {
           if (
             feature.geometry.type === 'Point' &&
-            feature.properties?.metadata?.PID
+            feature.properties?.metadata?.id
           ) {
-            this.featuresCoordinates[feature.properties.metadata.PID] = feature
+            this.featuresCoordinates[feature.properties.metadata.id] = feature
               .geometry.coordinates as [number, number]
           }
         })
@@ -394,25 +394,28 @@ const Map = Vue.extend({
       if (
         feature &&
         feature.geometry.type === 'Point' &&
-        (feature.properties?.metadata?.PID ||
+        (feature.properties?.metadata?.id ||
           feature?.id ||
           feature?.properties?.id)
       ) {
         setHashPart(
           'poi',
-          feature?.properties?.metadata?.PID || feature?.id?.toString() || null
+          feature?.properties?.metadata?.id?.toString() ||
+            feature?.id?.toString() ||
+            null
         )
         this.showPoiToast = Boolean(
-          feature?.properties?.metadata?.PID || feature?.id?.toString()
+          feature?.properties?.metadata?.id?.toString() ||
+            feature?.id?.toString()
         )
         this.selectedFeatureMarker = new maplibregl.Marker({
           scale: 1.3,
           color: '#f44336',
         })
           .setLngLat(
-            (Boolean(feature?.properties?.metadata?.PID) &&
+            (Boolean(feature?.properties?.metadata?.id) &&
               this.featuresCoordinates[
-                feature?.properties?.metadata?.PID || ''
+                feature?.properties?.metadata?.id || ''
               ]) ||
               (feature.geometry.coordinates as [number, number])
           )
@@ -646,7 +649,7 @@ const Map = Vue.extend({
     toggleFavoriteMode() {
       try {
         const props = this.selectedFeature?.properties
-        const id = props?.metadata?.PID || `${this.selectedFeature?.id}`
+        const id = props?.metadata?.id || `${this.selectedFeature?.id}`
         const currentFavorites = localStorage.getItem(LOCAL_STORAGE.favorites)
         let newFavorite
 
@@ -730,10 +733,10 @@ const Map = Vue.extend({
 
         allFavorites.forEach((feature) => {
           if (
-            feature.properties?.metadata?.PID &&
+            feature.properties?.metadata?.id &&
             feature.geometry.type === 'Point'
           ) {
-            this.featuresCoordinates[feature.properties.metadata.PID] = feature
+            this.featuresCoordinates[feature.properties.metadata.id] = feature
               .geometry.coordinates as TupleLatLng
           }
         })
@@ -997,10 +1000,10 @@ const Map = Vue.extend({
             if (typeof props.metadata === 'string') {
               props.metadata = JSON.parse(props.metadata)
             }
-            if (props?.metadata?.PID) {
-              id = 'm' + props.metadata.PID
+            if (props?.metadata?.id) {
+              id = 'm' + props.metadata.id
               marker = this.markers[id]
-              const markerCoords = this.featuresCoordinates[props.metadata.PID]
+              const markerCoords = this.featuresCoordinates[props.metadata.id]
               if (!marker && markerCoords) {
                 // Marker
                 const el: HTMLElement = document.createElement('div')
