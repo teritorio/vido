@@ -15,6 +15,7 @@ interface FetchConfigPayload {
 
 interface State {
   // attribution: { [lang: string]: string }
+  attribution: string[]
   center: LatLng
   isLoaded: boolean
   pitch: Pitch
@@ -40,6 +41,7 @@ interface State {
 }
 
 const getInitialMapview: Function = () => ({
+  attribution: [],
   center: {
     lat: 44.0122,
     lng: -0.6984,
@@ -76,6 +78,7 @@ export const mutations = {
     state.pitch = payload.pitch || 0
     state.zoom = payload.zoom
     state.selection_zoom = payload.selection_zoom
+    state.attribution = payload.attribution
 
     state.isLoaded = true
   },
@@ -118,7 +121,7 @@ export const actions = {
 
 export const getters = {
   all: (state: State) => state,
-  // attribution: (state: State) => state.attribution,
+  attribution: (state: State) => state.attribution,
   center: (state: State) => state.center,
   isLoaded: (state: State) => state.isLoaded,
   pitch: (state: State) => state.pitch,

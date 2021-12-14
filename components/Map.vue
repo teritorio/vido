@@ -217,10 +217,57 @@ const Map = Vue.extend({
         return satelliteStyle
       })
 
-    const [vectoStyle, satelliteStyle] = await Promise.all([
+    let [vectoStyle, satelliteStyle] = await Promise.all([
       vectoFetch,
       satelliteFetch,
     ])
+
+    const updateStyle = async (style: any) => {
+      const vectoSources: {
+        url: string
+        attribution: string
+      }[] = Object.values(style.sources)
+      const vectoSourceUrl: string[] = vectoSources.map((src: any) => src.url)
+
+      const vectoSourceAttribution = await Promise.all(
+        vectoSourceUrl.map((url) => {
+          if (!url) return null
+
+          return fetch(url)
+            .then((res) => res.json())
+            .then((res) => res.attribution)
+        })
+      )
+
+      let nuAttribution = ''
+
+      vectoSourceAttribution.forEach((attr, i) => {
+        if (attr) {
+          const existingAttributions = this.attribution.filter(
+            (att: string) => !attr.includes(att)
+          )
+
+          nuAttribution += [attr].concat(existingAttributions).join(' ')
+        } else if (vectoSources[i]?.attribution) {
+          nuAttribution += ' ' + vectoSources[i]?.attribution
+        }
+      })
+
+      const nuStyle = { ...style }
+
+      Object.keys(style.sources).forEach((key) => {
+        nuStyle.sources[key] = {
+          ...style.sources[key],
+          attribution: nuAttribution,
+        }
+      })
+
+      return nuStyle
+    }
+
+    vectoStyle = await updateStyle(vectoStyle)
+    satelliteStyle = await updateStyle(satelliteStyle)
+    const mapnikAttribution = this.attribution.join(' ')
 
     this.mapStyles = {
       [MapStyle.teritorio]: vectoStyle,
@@ -239,7 +286,7 @@ const Map = Vue.extend({
               'https://c.tiles.teritorio.xyz/styles/osm/{z}/{x}/{y}.png',
             ],
             tileSize: 256,
-            attribution: this.$tc('map.mapnik.attribution'),
+            attribution: mapnikAttribution,
           },
         },
         layers: [
@@ -262,6 +309,7 @@ const Map = Vue.extend({
 
   computed: {
     ...mapGetters({
+      attribution: 'map/attribution',
       center: 'map/center',
       features: 'menu/features',
       zoom: 'map/zoom',
