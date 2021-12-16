@@ -550,7 +550,10 @@ const Map = Vue.extend({
     const favs = getHashPart('favs')
     if (favs) {
       try {
-        const newFavorite = favs.split(',')
+        const newFavorite = favs
+          .split(',')
+          .map((e) => (!isNaN(Number(e)) ? Number(e) : null))
+          .filter((e) => !!e)
 
         localStorage.setItem(
           LOCAL_STORAGE.favorites,
@@ -706,7 +709,7 @@ const Map = Vue.extend({
       }
       try {
         const props = this.selectedFeature?.properties
-        const id = props?.metadata?.id || `${this.selectedFeature?.id}`
+        const id = props?.metadata?.id || this.selectedFeature?.id
         const currentFavorites = localStorage.getItem(LOCAL_STORAGE.favorites)
         let newFavorite
 
