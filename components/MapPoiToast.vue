@@ -235,12 +235,6 @@ export default Vue.extend({
     }
   },
 
-  watch: {
-    poi() {
-      this.onPoiChange()
-    },
-  },
-
   computed: {
     ...mapGetters({
       mode: 'site/mode',
@@ -362,6 +356,7 @@ export default Vue.extend({
 
         return `${this.$tc('toast.closed')} - ${openTrad}`
       } catch (e) {
+        // eslint-disable-next-line no-console
         console.log('Vido error:', e)
         return null
       }
@@ -442,6 +437,12 @@ export default Vue.extend({
     },
   },
 
+  watch: {
+    poi() {
+      this.onPoiChange()
+    },
+  },
+
   mounted() {
     this.$tracking({
       type: 'popup',
@@ -518,19 +519,19 @@ export default Vue.extend({
 
     onZoomClick() {
       this.tracking('zoom')
-      this.$emit('zoom-click')
+      this.$emit('zoom-click', this.poi)
     },
     onExploreClick() {
       if (!this.isModeExplorer) {
         this.tracking('explore')
       }
-      this.$emit('explore-click')
+      this.$emit('explore-click', this.poi)
     },
     onFavoriteClick() {
       if (!this.isModeFavorite) {
         this.tracking('favorite')
       }
-      this.$emit('favorite-click')
+      this.$emit('favorite-click', this.poi)
     },
     tracking(event: 'details' | 'route' | 'explore' | 'favorite' | 'zoom') {
       this.$tracking({

@@ -54,6 +54,9 @@
         :map="map"
         :pitch="pitch"
         :resize-map="resizeMap"
+        :explore-around-selected-poi="exploreAroundSelectedPoi"
+        :go-to-selected-poi="goToSelectedPoi"
+        :toggle-favorite="toggleFavoriteMode"
         @changeBackground="onClickChangeBackground"
         @change-mode="onControlChangeMode"
         @locale="languageControl.setLanguage($event)"
@@ -677,7 +680,10 @@ const Map = Vue.extend({
       this.showPoiToast = visible
     },
 
-    exploreAroundSelectedPoi() {
+    exploreAroundSelectedPoi(feature?: VidoFeature) {
+      if (feature) {
+        this.selectFeature(feature)
+      }
       if (!this.isModeExplorer) {
         this.map?.once('moveend', () => {
           this.$emit('change-mode', Mode.EXPLORER)
@@ -694,7 +700,10 @@ const Map = Vue.extend({
       }
     },
 
-    toggleFavoriteMode() {
+    toggleFavoriteMode(feature?: VidoFeature) {
+      if (feature) {
+        this.selectFeature(feature)
+      }
       try {
         const props = this.selectedFeature?.properties
         const id = props?.metadata?.id || `${this.selectedFeature?.id}`
@@ -856,7 +865,10 @@ const Map = Vue.extend({
       })
     },
 
-    goToSelectedPoi() {
+    goToSelectedPoi(feature?: VidoFeature) {
+      if (feature) {
+        this.selectFeature(feature)
+      }
       if (!this.map || !this.selectedFeature) {
         return
       }
