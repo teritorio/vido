@@ -32,6 +32,7 @@
           :color="category.metadata.color"
           :label="category.metadata.label.fr"
           :picto="category.metadata.picto"
+          :type="category.metadata.type"
           :active-sub-categories="categoriesActivesubsCount[category.id] || 0"
           @click="onCategoryClick(category)"
         />
