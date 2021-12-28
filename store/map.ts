@@ -1,6 +1,6 @@
 import { Store } from 'vuex'
 
-import { LatLng, Pitch, ZoomLevel, VidoFeature } from '@/utils/types'
+import { LatLng, Pitch, ZoomLevel, VidoFeature, SiteInfos } from '@/utils/types'
 
 enum Mutation {
   SET_CONFIG = 'SET_CONFIG',
@@ -9,9 +9,7 @@ enum Mutation {
 }
 
 interface FetchConfigPayload {
-  apiEndpoint: string
-  apiProject: string
-  apiTheme: string
+  config: SiteInfos
 }
 
 interface State {
@@ -95,23 +93,27 @@ export const mutations = {
 }
 
 export const actions = {
-  async fetchConfig(
-    store: Store<State>,
-    { apiEndpoint, apiProject, apiTheme }: FetchConfigPayload
-  ) {
+  fetchConfig(store: Store<State>, { config }: FetchConfigPayload) {
     try {
-      const configPromise = await fetch(
-        `${apiEndpoint}/${apiProject}/${apiTheme}/map`
+      store.commit(
+        Mutation.SET_CONFIG,
+        Object.assign(store.state, {
+          center: config.bbox_line && {
+            lng:
+              (config.bbox_line.coordinates[0][0] +
+                config.bbox_line.coordinates[1][0]) /
+              2,
+            lat:
+              (config.bbox_line.coordinates[0][1] +
+                config.bbox_line.coordinates[1][1]) /
+              2,
+          },
+          attribution: config.attributions || [],
+        })
       )
-      const config = await configPromise.json()
-
-      store.commit(Mutation.SET_CONFIG, config)
     } catch (error) {
       // eslint-disable-next-line no-console
-      console.error(
-        'Vido error: Unable to fetch the map config from the API',
-        error
-      )
+      console.error('Vido error: Unable to fetch the map config', error)
     }
   },
   resetMapview(store: Store<State>) {

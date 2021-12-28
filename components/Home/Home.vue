@@ -242,16 +242,16 @@ export default Vue.extend({
     }
   },
   head() {
-    const infos = this.siteInfos('fr')
+    const infos = this.siteInfos
 
     return {
-      title: infos?.name,
+      title: infos?.themes[0]?.name,
       meta: [
         {
           // https://nuxtjs.org/docs/2.x/features/meta-tags-seo#local-settings
           hid: 'index',
-          name: infos?.name,
-          content: infos?.description,
+          name: infos?.themes[0]?.name,
+          content: infos?.themes[0]?.description,
         },
       ],
     }
@@ -271,7 +271,7 @@ export default Vue.extend({
     }),
     events: () => HomeEvents,
     logoUrl(): string {
-      return this.siteInfos('fr')?.logo || ''
+      return this.siteInfos?.themes[0]?.logo_url || ''
     },
     highlightedRootCategories(): Category[] {
       return this.$store.getters['menu/highlightedRootCategories']
@@ -287,10 +287,10 @@ export default Vue.extend({
       )
     },
     siteName(): string {
-      return this.siteInfos('fr')?.name || ''
+      return this.siteInfos?.themes[0]?.name || ''
     },
     mainUrl(): string {
-      return this.siteInfos('fr')?.site1?.main_url || ''
+      return this.siteInfos?.themes[0]?.main_url || ''
     },
     isModeExplorer(): boolean {
       return this.mode === Mode.EXPLORER

@@ -2,6 +2,10 @@ import type { MapboxGeoJSONFeature, Style } from 'maplibre-gl'
 
 /// <reference types="geojson" />
 
+export interface MultilingualString {
+  [lang: string]: string
+}
+
 export interface LatLng {
   lat: number
   lng: number
@@ -100,10 +104,28 @@ export interface SubCategory extends CategoryBase {
 export type Category = CategoryBase & (RootCategory | SubCategory)
 
 export interface SiteInfos {
-  [lang: string]: {
-    name: string
-    description: string
-    logo: string
+  id?: number
+  slug?: string
+  name?: string
+  attributions?: string[]
+  // eslint-disable-next-line camelcase
+  teritorio_font_css_url?: string
+  // eslint-disable-next-line camelcase
+  bbox_line?: GeoJSON.LineString
+
+  themes?: {
+    id: number
+    slug: string
+    title: MultilingualString
+    description: MultilingualString
+    // eslint-disable-next-line camelcase
+    site_url: string
+    // eslint-disable-next-line camelcase
+    main_url: string
+    // eslint-disable-next-line camelcase
+    logo_url: string
+    // eslint-disable-next-line camelcase
+    favicon_url: string
   }
 }
 

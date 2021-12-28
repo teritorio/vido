@@ -23,11 +23,6 @@ export default Vue.extend({
     }
   },
   async fetch() {
-    await this.$store.dispatch('map/fetchConfig', {
-      apiEndpoint: this.$config.API_ENDPOINT,
-      apiProject: this.$config.API_PROJECT,
-      apiTheme: this.$config.API_THEME,
-    })
     await this.$store.dispatch('menu/fetchConfig', {
       apiEndpoint: this.$config.API_ENDPOINT,
       apiProject: this.$config.API_PROJECT,
@@ -35,18 +30,19 @@ export default Vue.extend({
     })
 
     await fetch(
-      `${this.$config.API_ENDPOINT}/${this.$config.API_PROJECT}/${this.$config.API_THEME}/site`
+      `${this.$config.API_ENDPOINT}/${this.$config.API_PROJECT}/${this.$config.API_THEME}`
     )
       .then((res) => res.json())
       .then((json) => {
         this.$store.dispatch('site/fetchConfig', { config: json })
+        this.$store.dispatch('map/fetchConfig', { config: json })
 
         // @ts-ignore - Look ok, unable to fix the issue
-        this.cssUrl = json?.fr?.['teritorio-font']
+        this.cssUrl = json?.teritorio_font_css_url
         // @ts-ignore - Look ok, unable to fix the issue
-        this.favicon = json?.fr?.site1?.favicon
+        this.favicon_url = json?.favicon_url
         // @ts-ignore - Look ok, unable to fix the issue
-        this.title = json?.fr?.site1?.title
+        this.title = json?.title
       })
   },
   // fetchOnServer: false,

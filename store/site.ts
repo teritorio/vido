@@ -52,7 +52,7 @@ export const actions = {
 
 export const getters = {
   all: (state: State) => state,
-  infos: (state: State) => (lang: string) => state.infos[lang],
+  infos: (state: State) => state.infos,
   isLoaded: (state: State) => state.isLoaded,
   mode: (state: State) => state.mode,
 }
