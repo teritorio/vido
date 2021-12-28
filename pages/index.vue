@@ -31,16 +31,14 @@ export default Vue.extend({
       apiEndpoint: this.$config.API_ENDPOINT,
       apiPoisSet: this.$config.API_POIS_SET,
     })
-    await this.$store.dispatch('site/fetchConfig', {
-      apiEndpoint: this.$config.API_ENDPOINT,
-      apiPoisSet: this.$config.API_POIS_SET,
-    })
 
     await fetch(
       `${this.$config.API_ENDPOINT}/${this.$config.API_POIS_SET}/site`
     )
       .then((res) => res.json())
       .then((json) => {
+        this.$store.dispatch('site/fetchConfig', { config: json })
+
         // @ts-ignore - Look ok, unable to fix the issue
         this.cssUrl = json?.fr?.['teritorio-font']
         // @ts-ignore - Look ok, unable to fix the issue

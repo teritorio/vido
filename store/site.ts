@@ -8,8 +8,7 @@ enum Mutation {
 }
 
 interface FetchConfigPayload {
-  apiEndpoint: string
-  apiPoisSet: string
+  config: SiteInfos
 }
 
 interface State {
@@ -37,21 +36,12 @@ export const mutations = {
 }
 
 export const actions = {
-  async fetchConfig(
-    store: Store<State>,
-    { apiEndpoint, apiPoisSet }: FetchConfigPayload
-  ) {
+  fetchConfig(store: Store<State>, { config }: FetchConfigPayload) {
     try {
-      const configPromise = await fetch(`${apiEndpoint}/${apiPoisSet}/site`)
-      const config = await configPromise.json()
-
       store.commit(Mutation.SET_CONFIG, config)
     } catch (error) {
       // eslint-disable-next-line no-console
-      console.error(
-        'Vido error: Unable to fetch the site config from the API',
-        error
-      )
+      console.error('Vido error: Unable to fetch the site config', error)
     }
   },
 
