@@ -25,15 +25,17 @@ export default Vue.extend({
   async fetch() {
     await this.$store.dispatch('map/fetchConfig', {
       apiEndpoint: this.$config.API_ENDPOINT,
-      apiPoisSet: this.$config.API_POIS_SET,
+      apiProject: this.$config.API_PROJECT,
+      apiTheme: this.$config.API_THEME,
     })
     await this.$store.dispatch('menu/fetchConfig', {
       apiEndpoint: this.$config.API_ENDPOINT,
-      apiPoisSet: this.$config.API_POIS_SET,
+      apiProject: this.$config.API_PROJECT,
+      apiTheme: this.$config.API_THEME,
     })
 
     await fetch(
-      `${this.$config.API_ENDPOINT}/${this.$config.API_POIS_SET}/site`
+      `${this.$config.API_ENDPOINT}/${this.$config.API_PROJECT}/${this.$config.API_THEME}/site`
     )
       .then((res) => res.json())
       .then((json) => {

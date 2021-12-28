@@ -10,7 +10,8 @@ enum Mutation {
 
 interface FetchConfigPayload {
   apiEndpoint: string
-  apiPoisSet: string
+  apiProject: string
+  apiTheme: string
 }
 
 interface State {
@@ -96,10 +97,12 @@ export const mutations = {
 export const actions = {
   async fetchConfig(
     store: Store<State>,
-    { apiEndpoint, apiPoisSet }: FetchConfigPayload
+    { apiEndpoint, apiProject, apiTheme }: FetchConfigPayload
   ) {
     try {
-      const configPromise = await fetch(`${apiEndpoint}/${apiPoisSet}/map`)
+      const configPromise = await fetch(
+        `${apiEndpoint}/${apiProject}/${apiTheme}/map`
+      )
       const config = await configPromise.json()
 
       store.commit(Mutation.SET_CONFIG, config)

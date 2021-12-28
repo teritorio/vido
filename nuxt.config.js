@@ -10,7 +10,8 @@ function checkEnvVariable(variableName) {
 }
 
 checkEnvVariable('API_ENDPOINT')
-checkEnvVariable('API_POIS_SET')
+checkEnvVariable('API_PROJECT')
+checkEnvVariable('API_THEME')
 checkEnvVariable('VECTO_STYLE_URL')
 checkEnvVariable('SATELLITE_STYLE_URL')
 checkEnvVariable('VECTO_TILES_URL')
@@ -19,7 +20,8 @@ export default {
   target: 'static',
   publicRuntimeConfig: {
     API_ENDPOINT: process.env.API_ENDPOINT || '',
-    API_POIS_SET: process.env.API_POIS_SET || '',
+    API_PROJECT: process.env.API_PROJECT || '',
+    API_THEME: process.env.API_THEME || '',
     VECTO_STYLE_URL: process.env.VECTO_STYLE_URL || '',
     SATELLITE_STYLE_URL: process.env.SATELLITE_STYLE_URL || '',
     VECTO_TILES_URL: process.env.VECTO_TILES_URL || '',

@@ -492,7 +492,8 @@ export default Vue.extend({
 
       return getPoiById(
         this.$config.API_ENDPOINT,
-        this.$config.API_POIS_SET,
+        this.$config.API_PROJECT,
+        this.$config.API_THEME,
         this.poiProp('id') || this.poi.id
       ).then((apiPoi) => {
         if (apiPoi) {

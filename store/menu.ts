@@ -14,12 +14,14 @@ enum Mutation {
 
 interface FetchConfigPayload {
   apiEndpoint: string
-  apiPoisSet: string
+  apiProject: string
+  apiTheme: string
 }
 
 interface FetchFeaturesPayload {
   apiEndpoint: string
-  apiPoisSet: string
+  apiProject: string
+  apiTheme: string
   categoryIds: Category['id'][]
 }
 
@@ -123,10 +125,12 @@ function keepFeature(feature: VidoFeature, filters: FiltreValues): boolean {
 export const actions = {
   async fetchConfig(
     store: Store<State>,
-    { apiEndpoint, apiPoisSet }: FetchConfigPayload
+    { apiEndpoint, apiProject, apiTheme }: FetchConfigPayload
   ) {
     try {
-      const configPromise = await fetch(`${apiEndpoint}/${apiPoisSet}/menu`)
+      const configPromise = await fetch(
+        `${apiEndpoint}/${apiProject}/${apiTheme}/menu`
+      )
 
       const config: {
         [id: number]: Category
@@ -166,7 +170,7 @@ export const actions = {
 
   async fetchFeatures(
     store: Store<State>,
-    { apiEndpoint, apiPoisSet, categoryIds }: FetchFeaturesPayload
+    { apiEndpoint, apiProject, apiTheme, categoryIds }: FetchFeaturesPayload
   ) {
     store.commit(Mutation.SET_FEATURES_LOADING, { isLoadingFeatures: true })
 
@@ -181,7 +185,7 @@ export const actions = {
           .filter((categoryId) => !previousFeatures[categoryId])
           .map((categoryId) =>
             fetch(
-              `${apiEndpoint}/${apiPoisSet}/pois?idmenu=${categoryId}`
+              `${apiEndpoint}/${apiProject}/${apiTheme}/pois?idmenu=${categoryId}`
             ).then((res) => res.json())
           )
       )

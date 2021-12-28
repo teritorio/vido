@@ -261,13 +261,13 @@ export default Vue.extend({
       favoritesIds: 'favorite/favoritesIds',
     }),
     pdfLink(): string {
-      return `${this.$config.API_ENDPOINT}/${
-        this.$config.API_POIS_SET
+      return `${this.$config.API_ENDPOINT}/${this.$config.API_PROJECT}/${
+        this.$config.API_THEME
       }/pois.pdf?ids=${this.favoritesIds.join(',')}`
     },
     csvLink(): string {
-      return `${this.$config.API_ENDPOINT}/${
-        this.$config.API_POIS_SET
+      return `${this.$config.API_ENDPOINT}/${this.$config.API_PROJECT}/${
+        this.$config.API_THEME
       }/pois.csv?ids=${this.favoritesIds.join(',')}`
     },
   },
@@ -275,7 +275,8 @@ export default Vue.extend({
     async fetchFavorites(ids: [string]) {
       return await getPoiByIds(
         this.$config.API_ENDPOINT,
-        this.$config.API_POIS_SET,
+        this.$config.API_PROJECT,
+        this.$config.API_THEME,
         ids
       ).then((pois) => pois.features)
     },

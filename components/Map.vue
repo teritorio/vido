@@ -645,7 +645,8 @@ const Map = Vue.extend({
       if (poiHash && !this.selectedFeature) {
         getPoiById(
           this.$config.API_ENDPOINT,
-          this.$config.API_POIS_SET,
+          this.$config.API_PROJECT,
+          this.$config.API_THEME,
           poiHash
         ).then((poi) => {
           if (poi) {
@@ -855,7 +856,8 @@ const Map = Vue.extend({
     async fetchFavorites(ids: [string]) {
       return await getPoiByIds(
         this.$config.API_ENDPOINT,
-        this.$config.API_POIS_SET,
+        this.$config.API_PROJECT,
+        this.$config.API_THEME,
         ids
       ).then((pois) => pois.features)
     },
