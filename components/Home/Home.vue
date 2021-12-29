@@ -318,17 +318,17 @@ export default Vue.extend({
     subCategoriesCounts(): Record<Category['id'], number> {
       const counts: { [id: string]: number } = {}
       const addCount = (cat: Category) => {
-        if (counts[cat.parent]) {
-          counts[cat.parent]++
+        if (counts[cat.parent_id || 'null']) {
+          counts[cat.parent_id || 'null']++
         } else {
-          counts[cat.parent] = 1
+          counts[cat.parent_id || 'null'] = 1
         }
-        if (cat.parent !== 0) {
-          const parent =
-            this.subCategories.find((sc) => sc.id === cat.parent) ||
-            this.rootCategories.find((sc: Category) => sc.id === cat.parent)
-          if (parent) {
-            addCount(parent)
+        if (cat.parent_id !== null) {
+          const parentId =
+            this.subCategories.find((sc) => sc.id === cat.parent_id) ||
+            this.rootCategories.find((sc: Category) => sc.id === cat.parent_id)
+          if (parentId) {
+            addCount(parentId)
           }
         }
       }
@@ -448,8 +448,8 @@ export default Vue.extend({
           (sc) => sc.id === this.state.context.selectedRootCategory?.id
         )
 
-        if (rootCat && rootCat.level >= 2) {
-          this.onRootCategoryClick(rootCat.parent)
+        if (rootCat && rootCat.parent_id !== null) {
+          this.onRootCategoryClick(rootCat.parent_id)
         } else {
           this.service.send(HomeEvents.GoToCategories)
         }
@@ -496,7 +496,7 @@ export default Vue.extend({
     onBackToSubCategoryClick() {
       const rootCatId = this.subCategories.find(
         (sc) => sc.id === this.state.context.selectedSubCategoryForFilters
-      )?.parent
+      )?.parent_id
 
       this.service.send(HomeEvents.GoToSubCategories, {
         rootCategoryId: rootCatId,

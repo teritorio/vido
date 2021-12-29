@@ -146,9 +146,9 @@ export const actions = {
         })
         .forEach((category) => {
           // Separated from previous map to allow batch processing and make sure parent category is always there
-          // Associate to parent
-          if (category.parent && category.parent !== 0) {
-            const parent = categories[category.parent]
+          // Associate to parent_id
+          if (category.parent_id && category.parent_id !== null) {
+            const parent = categories[category.parent_id]
             if (parent) {
               if (!parent.vido_children) {
                 parent.vido_children = []
@@ -263,26 +263,26 @@ export const getters = {
 
   getSubCategoriesFromCategoryId: (state: State) => (categoryId: number) =>
     Object.values(state.categories)
-      .filter((c) => c.parent === categoryId)
+      .filter((c) => c.parent_id === categoryId)
       .sort((a, b) => (a.order || 0) - (b.order || 0)),
 
   highlightedRootCategories: (state: State) =>
     Object.values(state.categories)
-      .filter((c) => c.level === 1 && c.highlighted)
+      .filter((c) => c.parent_id === null && c.highlighted)
       .sort((a, b) => (a.order || 0) - (b.order || 0)),
 
   nonHighlightedRootCategories: (state: State) =>
     Object.values(state.categories)
-      .filter((c) => c.level === 1 && !c.highlighted)
+      .filter((c) => c.parent_id === null && !c.highlighted)
       .sort((a, b) => (a.order || 0) - (b.order || 0)),
 
   rootCategories: (state: State) =>
     Object.values(state.categories)
-      .filter((c) => c.level === 1)
+      .filter((c) => c.parent_id === null)
       .sort((a, b) => (a.order || 0) - (b.order || 0)),
 
   subCategories: (state: State) =>
     Object.values(state.categories)
-      .filter((c) => c.level > 1)
+      .filter((c) => c.parent_id !== null)
       .sort((a, b) => (a.order || 0) - (b.order || 0)),
 }

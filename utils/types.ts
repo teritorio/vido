@@ -65,8 +65,6 @@ export type FiltreValues = {
 
 export interface ApiCategoryBase {
   id: number
-  parent: ApiCategoryBase['id']
-  level: 1 | 2 | 3
   datasources: DataSource[]
   metadata: {
     color: string
@@ -93,12 +91,14 @@ export type CategoryBase = ApiCategoryBase & {
 
 // Only first level classes can be highlighted
 export interface RootCategory extends CategoryBase {
+  // eslint-disable-next-line camelcase
+  parent_id: null
   highlighted: boolean
-  level: 1
 }
 
 export interface SubCategory extends CategoryBase {
-  level: 2 | 3
+  // eslint-disable-next-line camelcase
+  parent_id: ApiCategoryBase['id']
 }
 
 export type Category = CategoryBase & (RootCategory | SubCategory)
