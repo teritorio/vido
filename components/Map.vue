@@ -176,7 +176,6 @@ const Map = Vue.extend({
     allowRegionBackZoom: boolean
     showPoiToast: boolean
     showFavoritesOverlay: boolean
-    previousCategories: Category['id'][]
     mapStyles: Record<string, string | VidoMglStyle>
     mapStyle: string | VidoMglStyle | null
     locale: Record<string, string>
@@ -195,7 +194,6 @@ const Map = Vue.extend({
       allowRegionBackZoom: false,
       showFavoritesOverlay: false,
       showPoiToast: false,
-      previousCategories: [],
       mapStyles: {},
       mapStyle: null,
       locale: {},
