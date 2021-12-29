@@ -1,25 +1,5 @@
 <template>
   <div class="flex flex-col space-y-6">
-    <!-- <div class="grid items-start grid-cols-4 gap-3">
-      <CategoryButton
-        v-for="category in highlightedCategories"
-        :id="category.id"
-        :key="category.id"
-        :color="category.metadata.color"
-        :label="category.metadata.label.fr"
-        :picto="category.metadata.picto"
-        @click="onCategoryClick"
-      />
-    </div>
-
-    <button
-      class="flex items-center justify-start gap-3 px-3 py-2 font-medium text-gray-800 rounded-md outline-none focus:outline-none hover:bg-gray-100 focus:bg-gray-100"
-      @click="onCollapseButtonClick"
-    >
-      <font-awesome-icon icon="chevron-down" />
-      <span>Plus de choix</span>
-    </button> -->
-
     <transition name="non-highlighted" appear>
       <div
         v-if="!collapsed"
