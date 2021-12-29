@@ -9,10 +9,10 @@
           v-for="category in nonHighlightedCategories"
           :id="category.id"
           :key="category.id"
-          :color="category.metadata.color"
-          :label="category.metadata.label.fr"
-          :picto="category.metadata.picto"
-          :type="category.metadata.type"
+          :color="(category.menu_group || category.category).color"
+          :label="(category.menu_group || category.category).name.fr"
+          :picto="(category.menu_group || category.category).icon"
+          :type="(category.menu_group || category.category).display_mode"
           :active-sub-categories="categoriesActivesubsCount[category.id] || 0"
           @click="onCategoryClick(category)"
         />
@@ -60,7 +60,7 @@ export default Vue.extend({
       this.$tracking({
         type: 'category',
         categoryId: category.id,
-        title: category.metadata.label.fr,
+        title: (category.menu_group || category.category).name.fr,
       })
       this.$emit('category-click', category.id)
     },

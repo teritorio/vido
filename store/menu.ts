@@ -139,7 +139,7 @@ export const actions = {
       const categories: State['categories'] = {}
 
       Object.values(config)
-        .filter((category) => !category.metadata.hide)
+        .filter((category) => !category.hidden)
         .map((category) => {
           categories[category.id] = category
           return category
@@ -264,25 +264,25 @@ export const getters = {
   getSubCategoriesFromCategoryId: (state: State) => (categoryId: number) =>
     Object.values(state.categories)
       .filter((c) => c.parent_id === categoryId)
-      .sort((a, b) => (a.order || 0) - (b.order || 0)),
+      .sort((a, b) => a.index_order - b.index_order),
 
   highlightedRootCategories: (state: State) =>
     Object.values(state.categories)
       .filter((c) => c.parent_id === null && c.highlighted)
-      .sort((a, b) => (a.order || 0) - (b.order || 0)),
+      .sort((a, b) => a.index_order - b.index_order),
 
   nonHighlightedRootCategories: (state: State) =>
     Object.values(state.categories)
       .filter((c) => c.parent_id === null && !c.highlighted)
-      .sort((a, b) => (a.order || 0) - (b.order || 0)),
+      .sort((a, b) => a.index_order - b.index_order),
 
   rootCategories: (state: State) =>
     Object.values(state.categories)
       .filter((c) => c.parent_id === null)
-      .sort((a, b) => (a.order || 0) - (b.order || 0)),
+      .sort((a, b) => a.index_order - b.index_order),
 
   subCategories: (state: State) =>
     Object.values(state.categories)
       .filter((c) => c.parent_id !== null)
-      .sort((a, b) => (a.order || 0) - (b.order || 0)),
+      .sort((a, b) => a.index_order - b.index_order),
 }

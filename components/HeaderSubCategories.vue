@@ -40,9 +40,9 @@ export default Vue.extend({
     listItems() {
       return this.$props.categories.map((category: Category) => ({
         ...category,
-        color: category.metadata.color,
-        label: category.metadata.label.fr,
-        picto: category.metadata.picto,
+        color: (category.menu_group || category.category).color,
+        label: (category.menu_group || category.category).name.fr,
+        picto: (category.menu_group || category.category).icon,
         filtres: category.datasources.map((ds) => ({
           idsrc: ds.idsrc,
           filtre: ds.filtre,

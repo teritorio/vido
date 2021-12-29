@@ -119,7 +119,7 @@ import { markerLayerFactory } from '@/lib/markerLayerFactory'
 import { State as MenuState } from '@/store/menu'
 import { getPoiById, getPoiByIds } from '@/utils/api'
 import {
-  Category,
+  ApiMenuCategory,
   MapStyle,
   Mode,
   TupleLatLng,
@@ -153,7 +153,7 @@ const Map = Vue.extend({
       default: null,
     },
     selectedCategories: {
-      type: Array as PropType<Category['id'][]>,
+      type: Array as PropType<ApiMenuCategory['id'][]>,
       default: () => [],
     },
     isExplorerFavorite: {
@@ -322,7 +322,7 @@ const Map = Vue.extend({
       favoritesAction: 'favorite/favoritesAction',
     }),
 
-    categories(): Record<Category['id'], Category> {
+    categories(): Record<ApiMenuCategory['id'], ApiMenuCategory> {
       return this.$store.getters['menu/categories']
     },
 
@@ -330,10 +330,10 @@ const Map = Vue.extend({
       return Object.values(this.categories)
         .filter(
           (c) =>
-            c.metadata.tourism_style_merge &&
-            Array.isArray(c.metadata.tourism_style_class)
+            c.category.tourism_style_merge &&
+            Array.isArray(c.category.tourism_style_class)
         )
-        .map((c) => c.metadata.tourism_style_class)
+        .map((c) => (c.menu_group || c.category).tourism_style_class)
     },
 
     isModeExplorer(): boolean {
@@ -880,7 +880,7 @@ const Map = Vue.extend({
         zoom = this.selectedFeature.properties.vido_zoom
       } else if (this.selectedFeature.properties.vido_cat) {
         zoom = this.categories[this.selectedFeature.properties.vido_cat]
-          .metadata.selection_zoom
+          .category.zoom
       }
       this.map.flyTo({
         center: this.selectedFeature.geometry.coordinates,

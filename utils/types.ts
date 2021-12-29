@@ -63,45 +63,64 @@ export type FiltreValues = {
   selectionFiltre?: { [key: string]: string[] }
 }
 
-export interface ApiCategoryBase {
+export interface ApiMenuItem {
   id: number
+  // eslint-disable-next-line camelcase
+  parent_id: ApiMenuItem['id'] | null
+  // eslint-disable-next-line camelcase
+  index_order: number
+  hidden: boolean
+  // eslint-disable-next-line camelcase
+  selected_by_default: boolean
+  // eslint-disable-next-line camelcase
+
   datasources: DataSource[]
-  metadata: {
+}
+
+export interface ApiMenuGroup extends ApiMenuItem {
+  // eslint-disable-next-line camelcase
+  menu_group: {
+    name: { [lang: string]: string }
+    icon: string
     color: string
-    description: { [lang: string]: string }
-    hide: boolean
-    label: { [lang: string]: string }
-    picto: string
-    // eslint-disable-next-line camelcase
-    tourism_style_merge: boolean
     // eslint-disable-next-line camelcase
     tourism_style_class: string[]
     // eslint-disable-next-line camelcase
-    selection_zoom: number
-    // eslint-disable-next-line camelcase
-    enabled_by_default: boolean
+    display_mode: 'large' | 'compact'
   }
-  order: number
+  category: undefined
 }
 
-export type CategoryBase = ApiCategoryBase & {
+export interface ApiMenuCategory extends ApiMenuItem {
   // eslint-disable-next-line camelcase
-  vido_children: null | ApiCategoryBase['id'][]
+  menu_group: undefined
+  category: {
+    name: { [lang: string]: string }
+    icon: string
+    color: string
+    // eslint-disable-next-line camelcase
+    tourism_style_class: string[]
+    // eslint-disable-next-line camelcase
+    tourism_style_merge: boolean
+    // eslint-disable-next-line camelcase
+    display_mode: 'large' | 'compact'
+    zoom: number
+  }
 }
 
-// Only first level classes can be highlighted
-export interface RootCategory extends CategoryBase {
+export interface MenuGroup extends ApiMenuGroup {
   // eslint-disable-next-line camelcase
-  parent_id: null
+  vido_children: null | ApiMenuItem['id'][]
   highlighted: boolean
 }
 
-export interface SubCategory extends CategoryBase {
+export interface MenuCategory extends ApiMenuCategory {
   // eslint-disable-next-line camelcase
-  parent_id: ApiCategoryBase['id']
+  vido_children: null | ApiMenuItem['id'][]
+  highlighted: boolean
 }
 
-export type Category = CategoryBase & (RootCategory | SubCategory)
+export type Category = MenuGroup | MenuCategory
 
 export interface SiteInfos {
   id?: number

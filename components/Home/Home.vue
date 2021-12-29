@@ -355,7 +355,7 @@ export default Vue.extend({
       const resources: Record<Category['id'], string> = {}
 
       this.subCategories.forEach((sc) => {
-        resources[sc.id] = sc.metadata.picto
+        resources[sc.id] = (sc.menu_group || sc.category).icon
       })
 
       return resources
@@ -419,7 +419,7 @@ export default Vue.extend({
 
       Object.keys(this.categories).forEach((categoryIdString) => {
         const categoryId = parseInt(categoryIdString, 10)
-        if (this.categories[categoryId].metadata?.enabled_by_default) {
+        if (this.categories[categoryId].selected_by_default) {
           enabledCategories.push(categoryId)
         }
       })
