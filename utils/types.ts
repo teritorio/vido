@@ -74,7 +74,7 @@ export interface ApiMenuItem {
   selected_by_default: boolean
   // eslint-disable-next-line camelcase
 
-  datasources: DataSource[]
+  datasources?: DataSource[]
 }
 
 export interface ApiMenuGroup extends ApiMenuItem {

@@ -117,7 +117,7 @@ export default Vue.extend({
   computed: {
     selectionFiltres(): SelectionFiltreDS[] {
       let filtres: SelectionFiltreDS[] = []
-      this.subcategory.datasources.forEach((ds: DataSource) => {
+      this.subcategory.datasources?.forEach((ds: DataSource) => {
         filtres = filtres.concat(
           ds.filtre?.selectionFiltre?.map((sf) =>
             Object.assign({ datasourceId: ds.idsrc }, sf)
@@ -128,7 +128,7 @@ export default Vue.extend({
     },
     checkboxFiltres(): CheckboxFiltreDS[] {
       let filtres: CheckboxFiltreDS[] = []
-      this.subcategory.datasources.forEach((ds: DataSource) => {
+      this.subcategory.datasources?.forEach((ds: DataSource) => {
         filtres = filtres.concat(
           ds.filtre?.checkboxFiltre?.map((sf) =>
             Object.assign({ datasourceId: ds.idsrc }, sf)
@@ -139,7 +139,7 @@ export default Vue.extend({
     },
     booleanFiltres(): BooleanFiltreDS[] {
       const filtres: BooleanFiltreDS[] = []
-      this.subcategory.datasources.forEach((ds: DataSource) => {
+      this.subcategory.datasources?.forEach((ds: DataSource) => {
         if (ds.filtre?.booleanFiltre) {
           filtres.push(
             Object.assign({
