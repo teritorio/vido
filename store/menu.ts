@@ -132,13 +132,11 @@ export const actions = {
         `${apiEndpoint}/${apiProject}/${apiTheme}/menu`
       )
 
-      const config: {
-        [id: number]: Category
-      } = await configPromise.json()
+      const config: [Category] = await configPromise.json()
 
       const categories: State['categories'] = {}
 
-      Object.values(config)
+      config
         .filter((category) => !category.hidden)
         .map((category) => {
           categories[category.id] = category
