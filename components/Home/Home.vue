@@ -245,13 +245,13 @@ export default Vue.extend({
     const infos = this.siteInfos
 
     return {
-      title: infos?.themes[0]?.name,
+      title: infos?.themes[0]?.name.fr,
       meta: [
         {
           // https://nuxtjs.org/docs/2.x/features/meta-tags-seo#local-settings
           hid: 'index',
-          name: infos?.themes[0]?.name,
-          content: infos?.themes[0]?.description,
+          name: infos?.themes[0]?.name.fr,
+          content: infos?.themes[0]?.description.fr,
         },
       ],
     }
@@ -287,7 +287,7 @@ export default Vue.extend({
       )
     },
     siteName(): string {
-      return this.siteInfos?.themes[0]?.name || ''
+      return this.siteInfos?.themes[0]?.name.fr || ''
     },
     mainUrl(): string {
       return this.siteInfos?.themes[0]?.main_url || ''

@@ -80,7 +80,7 @@ export interface ApiMenuItem {
 export interface ApiMenuGroup extends ApiMenuItem {
   // eslint-disable-next-line camelcase
   menu_group: {
-    name: { [lang: string]: string }
+    name: MultilingualString
     icon: string
     color: string
     // eslint-disable-next-line camelcase
@@ -95,7 +95,7 @@ export interface ApiMenuCategory extends ApiMenuItem {
   // eslint-disable-next-line camelcase
   menu_group: undefined
   category: {
-    name: { [lang: string]: string }
+    name: MultilingualString
     icon: string
     color: string
     // eslint-disable-next-line camelcase
