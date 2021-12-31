@@ -13,28 +13,32 @@
     </div>
 
     <template v-if="sptags">
-      <div v-for="bf in booleanFiltres" :key="bf.datasourceId">
-        <label
-          v-for="v in Object.keys(bf).filter((k) => k !== 'datasourceId')"
-          :key="v"
-          class="block mb-1 text-gray-800"
-        >
-          <input
-            type="checkbox"
-            class="text-green-500 rounded-full focus:ring-0 focus:ring-transparent"
-            :name="'bf_' + bf.datasourceId + '_' + v"
-            :checked="
-              (((filtersValues || {}).booleanFiltre || {})[v] || []).includes(
-                bf[v]
+      <label
+        v-for="v in Object.keys(booleanFiltre).filter(
+          (k) => k !== 'datasourceId'
+        )"
+        :key="v"
+        class="block mb-1 text-gray-800"
+      >
+        <input
+          type="checkbox"
+          class="text-green-500 rounded-full focus:ring-0 focus:ring-transparent"
+          :name="'bf_' + v"
+          :checked="
+            (((filtersValues || {}).booleanFiltre || {})[v] || []).includes(
+              booleanFiltre[v]
+            )
+          "
+          @change="
+            (e) =>
+              onBooleanFiltreChange(
+                v,
+                e.target.checked ? booleanFiltre[v] : null
               )
-            "
-            @change="
-              (e) => onBooleanFiltreChange(v, e.target.checked ? bf[v] : null)
-            "
-          />
-          {{ (sptags && sptags[v] && sptags[v][bf[v]]) || v }}
-        </label>
-      </div>
+          "
+        />
+        {{ (sptags && sptags[v] && sptags[v][booleanFiltre[v]]) || v }}
+      </label>
     </template>
 
     <div v-for="sf in selectionFiltres" :key="sf.tag">
@@ -87,10 +91,9 @@ import Vue, { PropType } from 'vue'
 
 import {
   Category,
-  DataSource,
-  SelectionFiltreDS,
-  CheckboxFiltreDS,
-  BooleanFiltreDS,
+  SelectionFiltre,
+  CheckboxFiltre,
+  BooleanFiltre,
   FiltreValues,
 } from '@/utils/types'
 
@@ -115,41 +118,14 @@ export default Vue.extend({
   },
 
   computed: {
-    selectionFiltres(): SelectionFiltreDS[] {
-      let filtres: SelectionFiltreDS[] = []
-      this.subcategory.datasources?.forEach((ds: DataSource) => {
-        filtres = filtres.concat(
-          ds.filtre?.selectionFiltre?.map((sf) =>
-            Object.assign({ datasourceId: ds.idsrc }, sf)
-          ) || []
-        )
-      })
-      return filtres
+    selectionFiltres(): SelectionFiltre[] {
+      return this.subcategory.datasources?.selectionFiltre || []
     },
-    checkboxFiltres(): CheckboxFiltreDS[] {
-      let filtres: CheckboxFiltreDS[] = []
-      this.subcategory.datasources?.forEach((ds: DataSource) => {
-        filtres = filtres.concat(
-          ds.filtre?.checkboxFiltre?.map((sf) =>
-            Object.assign({ datasourceId: ds.idsrc }, sf)
-          ) || []
-        )
-      })
-      return filtres
+    checkboxFiltres(): CheckboxFiltre[] {
+      return this.subcategory.datasources?.checkboxFiltre || []
     },
-    booleanFiltres(): BooleanFiltreDS[] {
-      const filtres: BooleanFiltreDS[] = []
-      this.subcategory.datasources?.forEach((ds: DataSource) => {
-        if (ds.filtre?.booleanFiltre) {
-          filtres.push(
-            Object.assign({
-              datasourceId: ds.idsrc,
-              ...ds.filtre.booleanFiltre,
-            })
-          )
-        }
-      })
-      return filtres
+    booleanFiltre(): BooleanFiltre {
+      return this.subcategory.datasources?.booleanFiltre || {}
     },
   },
 
@@ -238,11 +214,9 @@ export default Vue.extend({
 
     fetchSpTags() {
       const tags = new Set()
-      this.booleanFiltres.forEach((bf) =>
-        Object.keys(bf)
-          .filter((k) => k !== 'datasourceId')
-          .forEach((k) => tags.add(k))
-      )
+      Object.keys(this.booleanFiltre)
+        .filter((k) => k !== 'datasourceId')
+        .forEach((k) => tags.add(k))
 
       if (tags) {
         fetch(

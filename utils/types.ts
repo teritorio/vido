@@ -25,15 +25,7 @@ export type SelectionFiltre = {
   values: { [val: string]: string }
 }
 
-export type SelectionFiltreDS = SelectionFiltre & {
-  datasourceId: string
-}
-
 export type BooleanFiltre = { [val: string]: string }
-
-export type BooleanFiltreDS = BooleanFiltre & {
-  datasourceId: string
-}
 
 export type CheckboxFiltre = {
   tag: string
@@ -41,20 +33,10 @@ export type CheckboxFiltre = {
   values: string
 }
 
-export type CheckboxFiltreDS = CheckboxFiltre & {
-  datasourceId: string
-}
-
 export type DataSource = {
-  idsrc: string
-  // eslint-disable-next-line camelcase
-  poi_type: PoiType
-  slug: string
-  filtre: null | {
-    selectionFiltre: null | SelectionFiltre[]
-    booleanFiltre: null | BooleanFiltre
-    checkboxFiltre: null | CheckboxFiltre[]
-  }
+  selectionFiltre?: null | SelectionFiltre[]
+  booleanFiltre?: null | BooleanFiltre
+  checkboxFiltre?: null | CheckboxFiltre[]
 }
 
 export type FiltreValues = {
@@ -74,7 +56,7 @@ export interface ApiMenuItem {
   selected_by_default: boolean
   // eslint-disable-next-line camelcase
 
-  datasources?: DataSource[]
+  datasources?: DataSource
 }
 
 export interface ApiMenuGroup extends ApiMenuItem {
