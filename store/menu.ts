@@ -109,17 +109,7 @@ function keepFeature(feature: VidoFeature, filters: FiltreValues): boolean {
     }
   }
 
-  for (const key in filters.booleanFiltre) {
-    if (
-      filters.booleanFiltre[key].length > 0 &&
-      (!feature.properties[key] ||
-        !filters.booleanFiltre[key].includes(feature.properties[key]))
-    ) {
-      return false
-    }
-  }
-
-  return true
+  return (filters.booleanFiltres || []).length > 0
 }
 
 export const actions = {

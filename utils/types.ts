@@ -25,7 +25,7 @@ export type SelectionFiltre = {
   values: { [val: string]: string }
 }
 
-export type BooleanFiltre = { [val: string]: string }
+export type BooleanFiltres = string[]
 
 export type CheckboxFiltre = {
   tag: string
@@ -34,13 +34,13 @@ export type CheckboxFiltre = {
 }
 
 export type DataSource = {
-  selectionFiltre?: null | SelectionFiltre[]
-  booleanFiltre?: null | BooleanFiltre
-  checkboxFiltre?: null | CheckboxFiltre[]
+  selectionFiltre?: SelectionFiltre[]
+  booleanFiltres?: BooleanFiltres
+  checkboxFiltre?: CheckboxFiltre[]
 }
 
 export type FiltreValues = {
-  booleanFiltre?: { [key: string]: string[] }
+  booleanFiltres?: string[]
   checkboxFiltre?: { [key: string]: string[] }
   selectionFiltre?: { [key: string]: string[] }
 }

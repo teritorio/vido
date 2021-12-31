@@ -14,7 +14,7 @@
 
     <template v-if="sptags">
       <label
-        v-for="(v, key) in booleanFiltre"
+        v-for="key in booleanFiltres"
         :key="key"
         class="block mb-1 text-gray-800"
       >
@@ -22,7 +22,7 @@
           type="checkbox"
           class="text-green-500 rounded-full focus:ring-0 focus:ring-transparent"
           :name="key"
-          :checked="((filtersValues || {}).booleanFiltre || []).includes(key)"
+          :checked="((filtersValues || {}).booleanFiltres || []).includes(key)"
           @change="
             (e) => onBooleanFiltreChange(v, e.target.checked ? key : null)
           "
@@ -83,7 +83,7 @@ import {
   Category,
   SelectionFiltre,
   CheckboxFiltre,
-  BooleanFiltre,
+  BooleanFiltres,
   FiltreValues,
 } from '@/utils/types'
 
@@ -114,8 +114,8 @@ export default Vue.extend({
     checkboxFiltres(): CheckboxFiltre[] {
       return this.subcategory.datasources?.checkboxFiltre || []
     },
-    booleanFiltre(): BooleanFiltre {
-      return this.subcategory.datasources?.booleanFiltre || {}
+    booleanFiltres(): BooleanFiltres {
+      return this.subcategory.datasources?.booleanFiltres || []
     },
   },
 
@@ -137,17 +137,19 @@ export default Vue.extend({
 
     onBooleanFiltreChange(tag: string, value: string | null) {
       const newFilters = this.filtersValues ? copy(this.filtersValues) : {}
-      if (value === null) {
-        if (newFilters.booleanFiltre && newFilters.booleanFiltre[tag]) {
-          delete newFilters.booleanFiltre[tag]
+      if (newFilters.booleanFiltres) {
+        if (value === null) {
+          if (newFilters.booleanFiltres.includes(tag)) {
+            newFilters.booleanFiltres = newFilters.booleanFiltres.splice(
+              newFilters.booleanFiltres.indexOf(tag),
+              1
+            )
+          }
+        } else {
+          newFilters.booleanFiltres.push(value)
         }
-      } else {
-        newFilters.booleanFiltre = Object.assign(
-          newFilters.booleanFiltre || {},
-          { [tag]: [value] }
-        )
+        this.$emit('filter-changed', newFilters)
       }
-      this.$emit('filter-changed', newFilters)
     },
 
     onSelectionFiltreChange(tag: string, values: string[] | null) {
@@ -203,14 +205,11 @@ export default Vue.extend({
     },
 
     fetchSpTags() {
-      const tags = new Set()
-      Object.keys(this.booleanFiltre).forEach((k) => tags.add(k))
-
-      if (tags) {
+      if (this.booleanFiltres) {
         fetch(
-          `${this.$config.API_ENDPOINT}/sptags?PopupListField=${[...tags].join(
-            ';'
-          )}`
+          `${
+            this.$config.API_ENDPOINT
+          }/sptags?PopupListField=${this.booleanFiltres.join(';')}`
         )
           .then((data) => data.json())
           .then((data) => (this.sptags = data))
