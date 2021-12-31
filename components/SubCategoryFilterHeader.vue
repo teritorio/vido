@@ -14,30 +14,20 @@
 
     <template v-if="sptags">
       <label
-        v-for="v in Object.keys(booleanFiltre).filter(
-          (k) => k !== 'datasourceId'
-        )"
-        :key="v"
+        v-for="(v, key) in booleanFiltre"
+        :key="key"
         class="block mb-1 text-gray-800"
       >
         <input
           type="checkbox"
           class="text-green-500 rounded-full focus:ring-0 focus:ring-transparent"
-          :name="'bf_' + v"
-          :checked="
-            (((filtersValues || {}).booleanFiltre || {})[v] || []).includes(
-              booleanFiltre[v]
-            )
-          "
+          :name="key"
+          :checked="((filtersValues || {}).booleanFiltre || []).includes(key)"
           @change="
-            (e) =>
-              onBooleanFiltreChange(
-                v,
-                e.target.checked ? booleanFiltre[v] : null
-              )
+            (e) => onBooleanFiltreChange(v, e.target.checked ? key : null)
           "
         />
-        {{ (sptags && sptags[v] && sptags[v][booleanFiltre[v]]) || v }}
+        {{ (sptags && sptags[v] && sptags[v][key]) || v }}
       </label>
     </template>
 
@@ -214,9 +204,7 @@ export default Vue.extend({
 
     fetchSpTags() {
       const tags = new Set()
-      Object.keys(this.booleanFiltre)
-        .filter((k) => k !== 'datasourceId')
-        .forEach((k) => tags.add(k))
+      Object.keys(this.booleanFiltre).forEach((k) => tags.add(k))
 
       if (tags) {
         fetch(
