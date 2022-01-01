@@ -73,43 +73,33 @@ export const mutations = {
   },
 }
 
+function filterExist(
+  filterToTest: string[],
+  featureToTest: string[] | string
+): boolean {
+  if (Array.isArray(featureToTest)) {
+    return featureToTest.some((feature) => filterToTest.includes(feature))
+  } else {
+    return filterToTest.includes(featureToTest)
+  }
+}
+
 function keepFeature(feature: VidoFeature, filters: FilterValues): boolean {
   if (!filters || Object.keys(filters).length === 0) {
     return true
   }
 
-  const filterExist = (
-    filterToTest: string[],
-    featureToTest: string[] | string
-  ) => {
-    if (Array.isArray(featureToTest)) {
-      return featureToTest.find((feature) => filterToTest.includes(feature))
-    } else {
-      return filterToTest.includes(featureToTest)
-    }
-  }
-
-  for (const key in filters.selectionFilter) {
+  for (const key in filters) {
     if (
-      filters.selectionFilter[key].length > 0 &&
+      filters[key].length > 0 &&
       (!feature.properties[key] ||
-        !filterExist(filters.selectionFilter[key], feature.properties[key]))
+        !filterExist(filters[key], feature.properties[key]))
     ) {
       return false
     }
   }
 
-  for (const key in filters.checkboxFilter) {
-    if (
-      filters.checkboxFilter[key].length > 0 &&
-      (!feature.properties[key] ||
-        !filterExist(filters.checkboxFilter[key], feature.properties[key]))
-    ) {
-      return false
-    }
-  }
-
-  return (filters.booleanFilters || []).length > 0
+  return true
 }
 
 export const actions = {

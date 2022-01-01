@@ -19,30 +19,18 @@ export type Pitch = number
 
 export type PoiType = 'tis' | 'osm' | 'zone'
 
-export type SelectionFilter = {
-  tag: string
-  label: string
-  values: { [val: string]: string }
-}
-
-export type BooleanFilters = string[]
-
-export type CheckboxFilter = {
-  tag: string
-  label: string
-  values: string
-}
-
-export type DataSource = {
-  selectionFilter?: SelectionFilter[]
-  booleanFilters?: BooleanFilters
-  checkboxFilter?: CheckboxFilter[]
+export type Filter = {
+  type: 'multiselection' | 'checkboxes_list' | 'boolean'
+  property: MultilingualString
+  label: MultilingualString
+  values: {
+    value: string
+    name: MultilingualString[]
+  }
 }
 
 export type FilterValues = {
-  booleanFilters?: string[]
-  checkboxFilter?: { [key: string]: string[] }
-  selectionFilter?: { [key: string]: string[] }
+  [key: string]: string[]
 }
 
 export interface ApiMenuItem {
@@ -56,7 +44,7 @@ export interface ApiMenuItem {
   selected_by_default: boolean
   // eslint-disable-next-line camelcase
 
-  datasources?: DataSource
+  filters?: Filter[]
 }
 
 export interface ApiMenuGroup extends ApiMenuItem {

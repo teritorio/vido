@@ -12,66 +12,75 @@
       </button>
     </div>
 
-    <template v-if="sptags">
-      <label
-        v-for="key in booleanFilters"
-        :key="key"
-        class="block mb-1 text-gray-800"
-      >
-        <input
-          type="checkbox"
-          class="text-green-500 rounded-full focus:ring-0 focus:ring-transparent"
-          :name="key"
-          :checked="((filtersValues || {}).booleanFilters || []).includes(key)"
-          @change="
-            (e) => onBooleanFilterChange(v, e.target.checked ? key : null)
+    <template v-for="filter in filters">
+      <div v-if="filter.type == 'boolean'" :key="filter.property">
+        <label :key="filter.property" class="block mb-1 text-gray-800">
+          <input
+            type="checkbox"
+            class="text-green-500 rounded-full focus:ring-0 focus:ring-transparent"
+            :name="filter.property"
+            :checked="filtersValues && filter.property in filtersValues"
+            @change="
+              (e) => onBooleanFilterChange(filter.property, e.target.checked)
+            "
+          />
+          {{ filter.name.fr }}
+        </label>
+      </div>
+      <div v-else-if="filter.type == 'multiselection'" :key="filter.property">
+        <label :for="filter.property" class="block mb-2 text-gray-500">{{
+          filter.label
+        }}</label>
+        <t-rich-select
+          placeholder="Recherchez ou ajoutez une valeur"
+          search-box-placeholder="Rechercher ..."
+          text-attribute="name"
+          value-attribute="name"
+          multiple
+          :options="
+            Object.keys(filter.values).map((k) => ({
+              name: filter.values[k].name.fr,
+              code: k,
+            }))
           "
+          :value="(filtersValues && filtersValues[filter.property]) || []"
+          @input="(val) => onSelectionFilterChange(filter.property, val)"
         />
-        {{ (sptags && sptags[v] && sptags[v][key]) || v }}
-      </label>
-    </template>
-
-    <div v-for="sf in selectionFilters" :key="sf.tag">
-      <label :for="'sf_' + sf.tag" class="block mb-2 text-gray-500">{{
-        sf.label
-      }}</label>
-      <t-rich-select
-        placeholder="Recherchez ou ajoutez une valeur"
-        search-box-placeholder="Rechercher ..."
-        text-attribute="name"
-        value-attribute="name"
-        multiple
-        :options="
-          Object.keys(sf.values).map((k) => ({ name: sf.values[k], code: k }))
-        "
-        :value="((filtersValues || {}).selectionFilter || {})[sf.tag] || []"
-        @input="(val) => onSelectionFilterChange(sf.tag, val)"
-      />
-    </div>
-
-    <div class="overflow-y-auto">
-      <div v-for="cf in checkboxFilters" :key="cf.tag">
-        <p class="mb-2 text-gray-500">{{ cf.label }}</p>
+      </div>
+      <div
+        v-else-if="filter.type == 'checkboxes_list'"
+        :key="filter.property"
+        class="overflow-y-auto"
+      >
+        <p class="mb-2 text-gray-500">{{ filter.name.fr }}</p>
         <label
-          v-for="v in Object.keys(cf.values)"
-          :key="v"
+          v-for="value in filter.values"
+          :key="value.value"
           class="block mb-1 text-gray-800"
         >
           <input
             type="checkbox"
             class="text-green-500 rounded-full focus:ring-0 focus:ring-transparent"
-            :name="'cf_' + cf.tag + '_' + v"
+            :name="filter.property + '_' + value.value"
             :checked="
               (
-                ((filtersValues || {}).checkboxFilter || {})[cf.tag] || []
-              ).includes(v)
+                (filtersValues && filtersValues[filter.property]) ||
+                []
+              ).includes(value.value)
             "
-            @change="(e) => onCheckboxFilterChange(cf.tag, v, e.target.checked)"
+            @change="
+              (e) =>
+                onCheckboxFilterChange(
+                  filter.property,
+                  value.value,
+                  e.target.checked
+                )
+            "
           />
-          {{ cf.values[v] }}
+          {{ value.name.fr }}
         </label>
       </div>
-    </div>
+    </template>
   </aside>
 </template>
 
@@ -79,13 +88,7 @@
 import copy from 'fast-copy'
 import Vue, { PropType } from 'vue'
 
-import {
-  Category,
-  SelectionFilter,
-  CheckboxFilter,
-  BooleanFilters,
-  FilterValues,
-} from '@/utils/types'
+import { Category, Filter, FilterValues } from '@/utils/types'
 
 export default Vue.extend({
   props: {
@@ -99,35 +102,10 @@ export default Vue.extend({
     },
   },
 
-  data(): {
-    sptags: { [key: string]: any } | null
-  } {
-    return {
-      sptags: null,
-    }
-  },
-
   computed: {
-    selectionFilters(): SelectionFilter[] {
-      return this.subcategory.datasources?.selectionFilter || []
+    filters(): Filter[] {
+      return this.subcategory.filters || []
     },
-    checkboxFilters(): CheckboxFilter[] {
-      return this.subcategory.datasources?.checkboxFilter || []
-    },
-    booleanFilters(): BooleanFilters {
-      return this.subcategory.datasources?.booleanFilters || []
-    },
-  },
-
-  watch: {
-    subcategory() {
-      this.sptags = null
-      this.fetchSpTags()
-    },
-  },
-
-  created() {
-    this.fetchSpTags()
   },
 
   methods: {
@@ -135,85 +113,49 @@ export default Vue.extend({
       this.$emit('go-back-click')
     },
 
-    onBooleanFilterChange(tag: string, value: string | null) {
-      const newFilters = this.filtersValues ? copy(this.filtersValues) : {}
-      if (newFilters.booleanFilters) {
-        if (value === null) {
-          if (newFilters.booleanFilters.includes(tag)) {
-            newFilters.booleanFilters = newFilters.booleanFilters.splice(
-              newFilters.booleanFilters.indexOf(tag),
-              1
-            )
-          }
-        } else {
-          newFilters.booleanFilters.push(value)
-        }
-        this.$emit('filter-changed', newFilters)
-      }
-    },
-
-    onSelectionFilterChange(tag: string, values: string[] | null) {
+    onBooleanFilterChange(property: string, value: boolean) {
       const newFilters = this.filtersValues ? copy(this.filtersValues) : {}
 
-      if (values && values.length > 0) {
-        if (!newFilters.selectionFilter) {
-          newFilters.selectionFilter = {}
-        }
-        newFilters.selectionFilter[tag] = values
-      } else {
-        if (newFilters.selectionFilter && newFilters.selectionFilter[tag]) {
-          delete newFilters.selectionFilter[tag]
-        }
-        if (
-          newFilters.selectionFilter &&
-          Object.keys(newFilters.selectionFilter).length === 0
-        ) {
-          delete newFilters.selectionFilter
-        }
+      if (value) {
+        newFilters[property] = ['yes']
+      } else if (newFilters[property]) {
+        delete newFilters[property]
       }
       this.$emit('filter-changed', newFilters)
     },
 
-    onCheckboxFilterChange(tag: string, val: string, checked: true) {
+    onSelectionFilterChange(property: string, values: string[] | null) {
       const newFilters = this.filtersValues ? copy(this.filtersValues) : {}
 
-      if (!newFilters.checkboxFilter) {
-        newFilters.checkboxFilter = {}
+      if (values && values.length > 0) {
+        newFilters[property] = values
+      } else if (newFilters[property]) {
+        delete newFilters[property]
       }
-      if (!newFilters.checkboxFilter[tag]) {
-        newFilters.checkboxFilter[tag] = []
+      this.$emit('filter-changed', newFilters)
+    },
+
+    onCheckboxFilterChange(property: string, val: string, checked: boolean) {
+      const newFilters = this.filtersValues ? copy(this.filtersValues) : {}
+
+      if (!newFilters[property]) {
+        newFilters[property] = []
       }
 
       if (checked) {
-        if (!newFilters.checkboxFilter[tag].includes(val)) {
-          newFilters.checkboxFilter[tag].push(val)
+        if (!newFilters[property].includes(val)) {
+          newFilters[property].push(val)
         }
-      } else if (newFilters.checkboxFilter[tag].includes(val)) {
-        newFilters.checkboxFilter[tag] = newFilters.checkboxFilter[tag].filter(
+      } else if (newFilters[property].includes(val)) {
+        newFilters[property] = newFilters[property].filter(
           (k: string) => k !== val
         )
       }
 
-      if (newFilters.checkboxFilter[tag].length === 0) {
-        delete newFilters.checkboxFilter[tag]
+      if (newFilters[property].length === 0) {
+        delete newFilters[property]
       }
-      if (Object.keys(newFilters.checkboxFilter).length === 0) {
-        delete newFilters.checkboxFilter
-      }
-
       this.$emit('filter-changed', newFilters)
-    },
-
-    fetchSpTags() {
-      if (this.booleanFilters) {
-        fetch(
-          `${
-            this.$config.API_ENDPOINT
-          }/sptags?PopupListField=${this.booleanFilters.join(';')}`
-        )
-          .then((data) => data.json())
-          .then((data) => (this.sptags = data))
-      }
     },
   },
 })
