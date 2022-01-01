@@ -43,7 +43,7 @@ export default Vue.extend({
         color: (category.menu_group || category.category).color,
         label: (category.menu_group || category.category).name.fr,
         picto: (category.menu_group || category.category).icon,
-        filtres: category.datasources || {},
+        filters: category.datasources || {},
         selected: this.$props.isSubCategorySelected(category.id),
       }))
     },

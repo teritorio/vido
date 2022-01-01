@@ -52,7 +52,7 @@
       </template>
     </button>
     <button
-      v-if="Object.keys(category.filtres).length > 0 && selected"
+      v-if="Object.keys(category.filters).length > 0 && selected"
       :class="[
         'w-full h-12 sm:h-8 text-left rounded-lg outline-none focus:outline-none hover:bg-gray-100',
         filtered && 'text-green-500',

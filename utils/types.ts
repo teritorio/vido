@@ -19,30 +19,30 @@ export type Pitch = number
 
 export type PoiType = 'tis' | 'osm' | 'zone'
 
-export type SelectionFiltre = {
+export type SelectionFilter = {
   tag: string
   label: string
   values: { [val: string]: string }
 }
 
-export type BooleanFiltres = string[]
+export type BooleanFilters = string[]
 
-export type CheckboxFiltre = {
+export type CheckboxFilter = {
   tag: string
   label: string
   values: string
 }
 
 export type DataSource = {
-  selectionFiltre?: SelectionFiltre[]
-  booleanFiltres?: BooleanFiltres
-  checkboxFiltre?: CheckboxFiltre[]
+  selectionFilter?: SelectionFilter[]
+  booleanFilters?: BooleanFilters
+  checkboxFilter?: CheckboxFilter[]
 }
 
-export type FiltreValues = {
-  booleanFiltres?: string[]
-  checkboxFiltre?: { [key: string]: string[] }
-  selectionFiltre?: { [key: string]: string[] }
+export type FilterValues = {
+  booleanFilters?: string[]
+  checkboxFilter?: { [key: string]: string[] }
+  selectionFilter?: { [key: string]: string[] }
 }
 
 export interface ApiMenuItem {

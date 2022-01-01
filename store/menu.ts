@@ -2,7 +2,7 @@ import copy from 'fast-copy'
 import { Store } from 'vuex'
 // import { interpret, Interpreter, State } from 'xstate'
 
-import { ApiPois, Category, VidoFeature, FiltreValues } from '@/utils/types'
+import { ApiPois, Category, VidoFeature, FilterValues } from '@/utils/types'
 
 enum Mutation {
   SET_CONFIG = 'SET_CONFIG',
@@ -36,7 +36,7 @@ export interface State {
   allFeatures: {
     [categoryId: number]: VidoFeature[]
   }
-  filters: { [subcat: number]: FiltreValues }
+  filters: { [subcat: number]: FilterValues }
   isLoadingFeatures: boolean
 }
 
@@ -73,7 +73,7 @@ export const mutations = {
   },
 }
 
-function keepFeature(feature: VidoFeature, filters: FiltreValues): boolean {
+function keepFeature(feature: VidoFeature, filters: FilterValues): boolean {
   if (!filters || Object.keys(filters).length === 0) {
     return true
   }
@@ -89,27 +89,27 @@ function keepFeature(feature: VidoFeature, filters: FiltreValues): boolean {
     }
   }
 
-  for (const key in filters.selectionFiltre) {
+  for (const key in filters.selectionFilter) {
     if (
-      filters.selectionFiltre[key].length > 0 &&
+      filters.selectionFilter[key].length > 0 &&
       (!feature.properties[key] ||
-        !filterExist(filters.selectionFiltre[key], feature.properties[key]))
+        !filterExist(filters.selectionFilter[key], feature.properties[key]))
     ) {
       return false
     }
   }
 
-  for (const key in filters.checkboxFiltre) {
+  for (const key in filters.checkboxFilter) {
     if (
-      filters.checkboxFiltre[key].length > 0 &&
+      filters.checkboxFilter[key].length > 0 &&
       (!feature.properties[key] ||
-        !filterExist(filters.checkboxFiltre[key], feature.properties[key]))
+        !filterExist(filters.checkboxFilter[key], feature.properties[key]))
     ) {
       return false
     }
   }
 
-  return (filters.booleanFiltres || []).length > 0
+  return (filters.booleanFilters || []).length > 0
 }
 
 export const actions = {
@@ -223,7 +223,7 @@ export const actions = {
     }
   },
 
-  setFilters(store: Store<State>, filters: { [subcat: number]: FiltreValues }) {
+  setFilters(store: Store<State>, filters: { [subcat: number]: FilterValues }) {
     store.commit(Mutation.SET_FILTERS, { filters })
 
     // Update features visibility

@@ -174,7 +174,7 @@ import {
   VidoFeature,
   Category,
   Mode,
-  FiltreValues,
+  FilterValues,
   ApiFilterSearchResult,
 } from '@/utils/types'
 import { getHashPart, setHashPart } from '@/utils/url'
@@ -342,7 +342,7 @@ export default Vue.extend({
         (sc) => sc.id === this.state.context.selectedSubCategoryForFilters
       )
     },
-    subCategoryFilters(): FiltreValues {
+    subCategoryFilters(): FilterValues {
       return (
         this.state.context.selectedSubCategoryForFilters &&
         this.filters[this.state.context.selectedSubCategoryForFilters]
@@ -521,7 +521,7 @@ export default Vue.extend({
         subCategoriesIds,
       })
     },
-    onSubCategoryFilterChange(filters: FiltreValues) {
+    onSubCategoryFilterChange(filters: FilterValues) {
       if (this.state.context.selectedSubCategoryForFilters) {
         const newFilters = Object.assign({}, this.filters)
         if (Object.keys(filters).length > 0) {
@@ -554,7 +554,7 @@ export default Vue.extend({
         const newFilters = Object.assign({}, this.filters)
 
         newFilters[`${newFilter.menuId}`] = {
-          selectionFiltre: {
+          selectionFilter: {
             [newFilter.tag]: [`${newFilter.filter}`],
           },
         }
