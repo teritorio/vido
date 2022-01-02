@@ -252,7 +252,11 @@ export default Vue.extend({
     },
 
     name(): string {
-      return this.poiProp('name') || this.poiEditorial('popup_default_label')
+      return (
+        this.poiProp('name') ||
+        this.poiEditorial('class_label_popup')?.fr ||
+        this.poiEditorial('class_label')?.fr
+      )
     },
 
     color(): string | null {
@@ -293,7 +297,10 @@ export default Vue.extend({
     },
 
     category(): string {
-      return this.poiEditorial('popup_default_label') || this.poiProp('class')
+      return (
+        this.poiEditorial('class_label_popup')?.fr ||
+        this.poiEditorial('class_label')?.fr
+      )
     },
 
     description(): string | null {
