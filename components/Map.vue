@@ -1096,7 +1096,7 @@ const Map = Vue.extend({
                 el.appendChild(instance.$el)
 
                 // Click handler
-                if (props.editorial?.HasPopup === 'yes') {
+                if ((props.editorial?.popup_properties || []).length > 0) {
                   el.addEventListener('click', (e) => {
                     e.stopPropagation()
                     this.selectFeature(feature)
