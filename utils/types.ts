@@ -128,6 +128,7 @@ export interface VidoFeature extends MapboxGeoJSONFeature {
 
     name?: string
 
+    image?: string[]
     // eslint-disable-next-line camelcase
     'image:thumbnail'?: string
 

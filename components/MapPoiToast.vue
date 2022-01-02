@@ -3,9 +3,9 @@
     class="z-10 flex flex-col w-full sm:max-w-xl mx-0 overflow-y-auto bg-white shadow-md pointer-events-auto sm:flex-row sm:w-auto sm:mx-auto sm:rounded-xl poiDescription"
   >
     <img
-      v-if="poiProp('teritorio:image')"
+      v-if="poiProp('image') && poiProp('image').length > 0"
       class="object-cover w-full h-auto max-h-44 sm:max-h-full sm:w-52"
-      :src="poiProp('teritorio:image')"
+      :src="poiProp('image')[0]"
       alt=""
     />
 
