@@ -72,7 +72,7 @@
 
         <div
           v-for="field in listFields"
-          :key="encodeURIComponent(field)"
+          :key="'_' + field.k"
           class="text-sm mt-2"
         >
           <ul v-if="field.k === 'phone' && $isMobile()">
