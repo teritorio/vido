@@ -367,8 +367,7 @@ export default Vue.extend({
         return field === 'opening_hours' ? this.opening_hours : value
       }
 
-      return (this.poiEditorial('PopupListField') || '')
-        .split(';')
+      return (this.poiEditorial('popup_properties') || [])
         .map((f: string) => {
           if (
             this.sptags !== null &&
@@ -503,12 +502,14 @@ export default Vue.extend({
     },
 
     fetchSpTags() {
-      if (!this.poiEditorial('PopupListField')) {
+      if (!this.poiEditorial('popup_properties')) {
         return
       }
       return fetch(
-        `${this.$config.API_ENDPOINT}/sptags?PopupListField=${this.poiEditorial(
-          'PopupListField'
+        `${
+          this.$config.API_ENDPOINT
+        }/sptags?popup_properties=${this.poiEditorial('popup_properties').join(
+          ';'
         )}`
       )
         .then((data) => data.json())
