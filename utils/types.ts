@@ -148,7 +148,6 @@ export interface VidoFeature extends MapboxGeoJSONFeature {
     }
     editorial?: {
       HasPopup?: string
-      PopupAdress?: string
       // eslint-disable-next-line camelcase
       popup_properties?: string[]
       // eslint-disable-next-line camelcase

@@ -301,18 +301,18 @@ export default Vue.extend({
     },
 
     address(): string | null {
-      if (this.poiEditorial('PopupAdress') !== 'yes') {
+      if ((this.poiEditorial('popup_properties') || []).includes('addr:*')) {
+        return [
+          this.poiProp('addr:housenumber'),
+          this.poiProp('addr:street'),
+          this.poiProp('addr:postcode'),
+          this.poiProp('addr:city'),
+        ]
+          .filter((f) => f && f.toString().trim().length > 0)
+          .join(' ')
+      } else {
         return null
       }
-
-      return [
-        this.poiProp('addr:housenumber'),
-        this.poiProp('addr:street'),
-        this.poiProp('addr:postcode'),
-        this.poiProp('addr:city'),
-      ]
-        .filter((f) => f && f.toString().trim().length > 0)
-        .join(' ')
     },
 
     opening_hours(): string | string[] | null {
