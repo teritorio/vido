@@ -503,10 +503,7 @@ export default Vue.extend({
     },
 
     fetchSpTags() {
-      if (
-        !this.poiEditorial('PopupListField') ||
-        !this.poiEditorial('osm_poi_type')
-      ) {
+      if (!this.poiEditorial('PopupListField')) {
         return
       }
       return fetch(
