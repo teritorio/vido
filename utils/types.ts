@@ -98,7 +98,7 @@ export interface SiteInfos {
   name?: string
   attributions?: string[]
   // eslint-disable-next-line camelcase
-  teritorio_font_css_url?: string
+  icon_font_css_url?: string
   // eslint-disable-next-line camelcase
   bbox_line?: GeoJSON.LineString
 

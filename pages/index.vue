@@ -38,7 +38,7 @@ export default Vue.extend({
         this.$store.dispatch('map/fetchConfig', { config: json })
 
         // @ts-ignore - Look ok, unable to fix the issue
-        this.cssUrl = json?.teritorio_font_css_url
+        this.cssUrl = json?.icon_font_css_url
         // @ts-ignore - Look ok, unable to fix the issue
         this.favicon_url = json?.favicon_url
         // @ts-ignore - Look ok, unable to fix the issue
