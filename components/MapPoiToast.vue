@@ -21,9 +21,9 @@
         </h2>
 
         <a
-          v-if="poiProp('teritorio:url')"
+          v-if="poiEditorial('website:details')"
           class="ml-6 md:ml-8 px-3 py-1.5 text-xs text-gray-800 bg-gray-100 hover:bg-gray-200 focus:bg-gray-200 transition transition-colors rounded-md"
-          :href="poiProp('teritorio:url')"
+          :href="poiEditorial('website:details')"
           rel="noopener noreferrer"
           target="_blank"
           @click.stop="tracking('details')"
@@ -109,9 +109,9 @@
           <p v-else-if="field.v.length > textLimit" class="text-sm">
             {{ field.v.substring(0, textLimit) + ' ...' }}
             <a
-              v-if="poiProp('teritorio:url')"
+              v-if="poiEditorial('website:details')"
               class="underline"
-              :href="poiProp('teritorio:url')"
+              :href="poiEditorial('website:details')"
               rel="noopener noreferrer"
               target="_blank"
               @click.stop="tracking('details')"
