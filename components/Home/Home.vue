@@ -250,8 +250,8 @@ export default Vue.extend({
         {
           // https://nuxtjs.org/docs/2.x/features/meta-tags-seo#local-settings
           hid: 'index',
-          name: infos?.themes[0]?.name.fr,
-          content: infos?.themes[0]?.description.fr,
+          name: infos?.themes[0]?.name?.fr,
+          content: infos?.themes[0]?.description?.fr,
         },
       ],
     }

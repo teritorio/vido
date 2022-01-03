@@ -24,7 +24,7 @@
               (e) => onBooleanFilterChange(filter.property, e.target.checked)
             "
           />
-          {{ filter.name.fr }}
+          {{ (filter.name && filter.name.fr) || filter.property }}
         </label>
       </div>
       <div v-else-if="filter.type == 'multiselection'" :key="filter.property">
@@ -52,7 +52,9 @@
         :key="filter.property"
         class="overflow-y-auto"
       >
-        <p class="mb-2 text-gray-500">{{ filter.name.fr }}</p>
+        <p class="mb-2 text-gray-500">
+          {{ (filter.name && filter.name.fr) || filter.property }}
+        </p>
         <label
           v-for="value in filter.values"
           :key="value.value"
@@ -77,7 +79,7 @@
                 )
             "
           />
-          {{ value.name.fr }}
+          {{ (value.name && value.name.fr) || value.value }}
         </label>
       </div>
     </template>
