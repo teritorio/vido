@@ -38,9 +38,9 @@
           value-attribute="name"
           multiple
           :options="
-            Object.keys(filter.values).map((k) => ({
-              name: filter.values[k].name.fr,
-              code: k,
+            filter.values.map((value) => ({
+              name: (value.name && value.name.fr) || value.value,
+              code: value.value,
             }))
           "
           :value="(filtersValues && filtersValues[filter.property]) || []"
@@ -106,7 +106,7 @@ export default Vue.extend({
 
   computed: {
     filters(): Filter[] {
-      return this.subcategory.filters || []
+      return this.subcategory.category?.filters || []
     },
   },
 

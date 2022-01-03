@@ -43,8 +43,6 @@ export interface ApiMenuItem {
   // eslint-disable-next-line camelcase
   selected_by_default: boolean
   // eslint-disable-next-line camelcase
-
-  filters?: Filter[]
 }
 
 export interface ApiMenuGroup extends ApiMenuItem {
@@ -75,6 +73,8 @@ export interface ApiMenuCategory extends ApiMenuItem {
     // eslint-disable-next-line camelcase
     display_mode: 'large' | 'compact'
     zoom: number
+
+    filters?: Filter[]
   }
 }
 
