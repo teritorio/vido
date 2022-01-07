@@ -195,8 +195,7 @@ export type ApiFilterSearchResult = {
 
 export type ApiSearchResults = {
   classe: ApiFilterSearchResult[]
-  osm: string | ApiSearchResult[]
-  tis: string | ApiSearchResult[]
+  pois: string | ApiSearchResult[]
   wp: string | ApiSearchResult[]
   adress: string | ApiAddrSearchResult[]
   municipality: string | ApiAddrSearchResult[]
