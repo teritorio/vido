@@ -51,8 +51,7 @@ const settings = {
       classes: {
         overlay: 'z-40',
         wrapper: 'z-50 max-w-7xl',
-        modal:
-          'bg-white shadow my-0 sm:mx-0 max-h-full sm:bg-opacity-75 w-full',
+        modal: 'bg-white shadow my-0 sm:mx-0 max-h-full w-full',
         body: 'p-3 sm:p-0',
         header: 'border-b border-gray-100 p-3 rounded-t',
         footer: 'bg-gray-100 p-3 rounded-b',
