@@ -1,6 +1,9 @@
 <template>
   <div
-    class="z-10 flex flex-col w-full sm:max-w-xl mx-0 overflow-y-auto bg-white shadow-md pointer-events-auto sm:flex-row sm:w-auto sm:mx-auto sm:rounded-xl poiDescription"
+    :class="[
+      'z-10 flex flex-col w-full sm:max-w-xl mx-0 overflow-y-auto shadow-md pointer-events-auto sm:flex-row sm:w-auto sm:mx-auto sm:rounded-xl poiDescription',
+      !isModeFavorite && notebook ? 'bg-gray-200 opacity-70' : 'bg-white',
+    ]"
   >
     <img
       v-if="poiProp('image') && poiProp('image').length > 0"
@@ -217,6 +220,10 @@ export default Vue.extend({
   },
 
   props: {
+    notebook: {
+      type: Boolean,
+      default: false,
+    },
     poi: {
       type: Object as PropType<VidoFeature>,
       required: true,
@@ -537,7 +544,7 @@ export default Vue.extend({
       if (!this.isModeFavorite) {
         this.tracking('favorite')
       }
-      this.$emit('favorite-click', this.poi)
+      this.$emit('favorite-click', this.poi, this.notebook)
     },
     tracking(event: 'details' | 'route' | 'explore' | 'favorite' | 'zoom') {
       this.$tracking({

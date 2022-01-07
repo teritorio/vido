@@ -22,6 +22,7 @@
         v-for="item in favs"
         :key="item.id"
         :poi="item"
+        :notebook="true"
         class="flex-grow-0 flex-shrink-0 m-2"
         @explore-click="exploreAroundSelectedPoi"
         @favorite-click="toggleFavorite"

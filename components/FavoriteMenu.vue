@@ -347,8 +347,8 @@ export default Vue.extend({
       this.closeNoteBook()
       this.goToSelectedPoi(poi)
     },
-    handleFavorite(poi?: VidoFeature) {
-      this.toggleFavorite(poi)
+    handleFavorite(poi?: VidoFeature, isNotebook?: Boolean) {
+      this.toggleFavorite(poi, isNotebook)
     },
   },
 })

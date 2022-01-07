@@ -702,35 +702,37 @@ const Map = Vue.extend({
       }
     },
 
-    toggleFavoriteMode(feature?: VidoFeature) {
-      if (feature) {
+    toggleFavoriteMode(feature?: VidoFeature, isNotebook?: boolean) {
+      if (feature && !isNotebook) {
         this.selectFeature(feature)
       }
       try {
-        const props = this.selectedFeature?.properties
-        const id = props?.metadata?.id || this.selectedFeature?.id
+        const props = feature?.properties
+        const id = props?.metadata?.id || feature?.id
         const currentFavorites = localStorage.getItem(LOCAL_STORAGE.favorites)
         let newFavorite
 
-        if (currentFavorites) {
-          const parsedFavorites = JSON.parse(currentFavorites).favorites
-          if (!parsedFavorites.includes(id)) {
-            newFavorite = [...parsedFavorites, id]
-            this.$store.dispatch('favorite/setFavoritesAction', 'add')
+        if (id) {
+          if (currentFavorites) {
+            const parsedFavorites = JSON.parse(currentFavorites).favorites
+            if (!parsedFavorites.includes(id)) {
+              newFavorite = [...parsedFavorites, id]
+              this.$store.dispatch('favorite/setFavoritesAction', 'add')
+            } else {
+              newFavorite = parsedFavorites.filter((f: string) => f !== id)
+              this.$store.dispatch('favorite/setFavoritesAction', 'delete')
+            }
           } else {
-            newFavorite = parsedFavorites.filter((f: string) => f !== id)
-            this.$store.dispatch('favorite/setFavoritesAction', 'delete')
+            newFavorite = [id]
+            this.$store.dispatch('favorite/setFavoritesAction', 'add')
           }
-        } else {
-          newFavorite = [id]
-          this.$store.dispatch('favorite/setFavoritesAction', 'add')
-        }
 
-        localStorage.setItem(
-          LOCAL_STORAGE.favorites,
-          JSON.stringify({ favorites: newFavorite, version: 1 })
-        )
-        this.$store.dispatch('favorite/toggleFavoriteModes', newFavorite)
+          localStorage.setItem(
+            LOCAL_STORAGE.favorites,
+            JSON.stringify({ favorites: newFavorite, version: 1 })
+          )
+          this.$store.dispatch('favorite/toggleFavoriteModes', newFavorite)
+        }
       } catch (e) {
         // eslint-disable-next-line no-console
         console.error('Vido error:', e.message)
