@@ -244,23 +244,52 @@ export const getters = {
       .filter((c) => c.parent_id === categoryId)
       .sort((a, b) => a.index_order - b.index_order),
 
-  highlightedRootCategories: (state: State) =>
+  getHighlightedRootCategoriesFromCategoryId: (state: State) => (
+    categoryId: number
+  ) =>
     Object.values(state.categories)
-      .filter((c) => c.parent_id === null && c.highlighted)
+      .filter(
+        (c) =>
+          c.parent_id !== null &&
+          state.categories[c.parent_id]?.parent_id === null &&
+          c.highlighted &&
+          c.parent_id === categoryId
+      )
       .sort((a, b) => a.index_order - b.index_order),
 
-  nonHighlightedRootCategories: (state: State) =>
+  getNonHighlightedRootCategoriesFromCategoryId: (state: State) => (
+    categoryId: number
+  ) =>
     Object.values(state.categories)
-      .filter((c) => c.parent_id === null && !c.highlighted)
+      .filter(
+        (c) =>
+          c.parent_id !== null &&
+          state.categories[c.parent_id]?.parent_id === null &&
+          !c.highlighted &&
+          c.parent_id === categoryId
+      )
+      .sort((a, b) => a.index_order - b.index_order),
+
+  categoryRootCategories: (state: State) =>
+    Object.values(state.categories)
+      .filter((c) => c.parent_id === null && c.vido_children)
       .sort((a, b) => a.index_order - b.index_order),
 
   rootCategories: (state: State) =>
     Object.values(state.categories)
-      .filter((c) => c.parent_id === null)
+      .filter(
+        (c) =>
+          c.parent_id !== null &&
+          state.categories[c.parent_id]?.parent_id === null
+      )
       .sort((a, b) => a.index_order - b.index_order),
 
   subCategories: (state: State) =>
     Object.values(state.categories)
-      .filter((c) => c.parent_id !== null)
+      .filter(
+        (c) =>
+          c.parent_id !== null &&
+          state.categories[c.parent_id]?.parent_id !== null
+      )
       .sort((a, b) => a.index_order - b.index_order),
 }

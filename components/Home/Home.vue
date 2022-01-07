@@ -13,11 +13,9 @@
         <transition name="headers" appear mode="out-in">
           <MainHeader
             v-if="state.matches(states.Categories) && isMenuConfigLoaded"
-            :highlighted-categories="highlightedRootCategories"
             :show-poi="showPoi"
             :logo-url="logoUrl"
             :main-url="mainUrl"
-            :non-highlighted-categories="nonHighlightedRootCategories"
             :site-name="siteName"
             :is-explorer-favorite="isModeExplorer || isModeFavorite"
             :show-categories="!isModeExplorer && !isModeFavorite"
@@ -38,7 +36,6 @@
             :categories="state.context.selectedRootCategory.subCategories"
             :filtered-categories="filteredSubCategories"
             :is-sub-category-selected="isSubCategorySelected"
-            :categories-activesubs-count="subCategoriesCounts"
             @category-click="onSubCategoryClick"
             @filter-click="onSubCategoryFilterClick"
             @go-back-click="goToParentFromSubCategory"
@@ -130,8 +127,6 @@
       :state="state"
       :is-menu-config-loaded="isMenuConfigLoaded"
       :is-mode-favorite="isModeFavorite"
-      :highlighted-categories="highlightedRootCategories"
-      :non-highlighted-categories="nonHighlightedRootCategories"
       :categories-activesubs-count="subCategoriesCounts"
       :categories="
         state.context.selectedRootCategory
@@ -259,6 +254,7 @@ export default Vue.extend({
   computed: {
     ...mapGetters({
       categories: 'menu/categories',
+      rootCategories: 'menu/rootCategories',
       getSubCategoriesFromCategoryId: 'menu/getSubCategoriesFromCategoryId',
       isMapConfigLoaded: 'map/isLoaded',
       isMenuConfigLoaded: 'menu/isLoaded',
@@ -272,12 +268,6 @@ export default Vue.extend({
     events: () => HomeEvents,
     logoUrl(): string {
       return this.siteInfos?.themes[0]?.logo_url || ''
-    },
-    highlightedRootCategories(): Category[] {
-      return this.$store.getters['menu/highlightedRootCategories']
-    },
-    nonHighlightedRootCategories(): Category[] {
-      return this.$store.getters['menu/nonHighlightedRootCategories']
     },
     selectedSubCategories(): Category[] {
       const categories = this.subCategories
@@ -304,11 +294,6 @@ export default Vue.extend({
         this.state.matches(this.states.Categories) ||
         this.state.matches(this.states.SubCategories) ||
         this.state.matches(this.states.SubCategoryFilters)
-      )
-    },
-    rootCategories(): Category[] {
-      return this.highlightedRootCategories.concat(
-        this.nonHighlightedRootCategories
       )
     },
     states: () => HomeStates,

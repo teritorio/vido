@@ -13,14 +13,21 @@
       class="relative justify-between w-full bg-white shadow-md pointer-events-auto h-auto"
     >
       <transition name="headers" appear mode="out-in">
-        <HeaderRootCategories
+        <div
           v-if="
             !showPoi && state.matches(states.Categories) && isMenuConfigLoaded
           "
-          class="flex-1 pointer-events-auto px-5 py-4 h-full overflow-y-auto max-h-screen-3/5"
-          v-bind="$attrs"
-          @category-click="onCategoryClick"
-        />
+          class="flex-1 h-full overflow-y-auto max-h-screen-3/5 divide-y"
+        >
+          <HeaderRootCategories
+            v-for="category in categoryRootCategories"
+            :key="category.id"
+            :category-id="category.id"
+            class="flex-1 pointer-events-auto px-5 py-4"
+            v-bind="$attrs"
+            @category-click="onCategoryClick"
+          />
+        </div>
         <SubCategoryHeader
           v-if="
             !showPoi &&
@@ -62,6 +69,7 @@
 
 <script lang="ts">
 import Vue, { PropType } from 'vue'
+import { mapGetters } from 'vuex'
 
 import HeaderRootCategories from '@/components/HeaderRootCategories.vue'
 import { MapRef } from '@/components/Map.vue'
@@ -127,6 +135,11 @@ export default Vue.extend({
     onGoBackClickFilter: {
       type: Function,
     },
+  },
+  computed: {
+    ...mapGetters({
+      categoryRootCategories: 'menu/categoryRootCategories',
+    }),
   },
   methods: {
     onCategoryClick(categoryId: Category['id']) {

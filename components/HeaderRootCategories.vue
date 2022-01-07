@@ -13,7 +13,7 @@
           :label="(category.menu_group || category.category).name.fr"
           :picto="(category.menu_group || category.category).icon"
           :type="(category.menu_group || category.category).display_mode"
-          :active-sub-categories="categoriesActivesubsCount[category.id] || 0"
+          :active-sub-categories="getCategoryCount(category.id)"
           @click="onCategoryClick(category)"
         />
       </div>
@@ -23,6 +23,7 @@
 
 <script lang="ts">
 import Vue, { PropType } from 'vue'
+import { mapGetters } from 'vuex'
 
 import CategoryButton from '@/components/CategoryButton/CategoryButton.vue'
 import { Category } from '@/utils/types'
@@ -32,12 +33,8 @@ export default Vue.extend({
     CategoryButton,
   },
   props: {
-    highlightedCategories: {
-      type: Array,
-      required: true,
-    },
-    nonHighlightedCategories: {
-      type: Array,
+    categoryId: {
+      type: Number,
       required: true,
     },
     categoriesActivesubsCount: {
@@ -52,6 +49,17 @@ export default Vue.extend({
       collapsed: false,
     }
   },
+  computed: {
+    ...mapGetters({
+      getHighlightedRootCategoriesFromCategoryId:
+        'menu/getHighlightedRootCategoriesFromCategoryId',
+      getNonHighlightedRootCategoriesFromCategoryId:
+        'menu/getNonHighlightedRootCategoriesFromCategoryId',
+    }),
+    nonHighlightedCategories(): Category[] {
+      return this.getNonHighlightedRootCategoriesFromCategoryId(this.categoryId)
+    },
+  },
   methods: {
     onCollapseButtonClick() {
       this.collapsed = !this.collapsed
@@ -63,6 +71,9 @@ export default Vue.extend({
         title: (category.menu_group || category.category).name.fr,
       })
       this.$emit('category-click', category.id)
+    },
+    getCategoryCount(id: Category['id']) {
+      return this.categoriesActivesubsCount[id] || 0
     },
   },
 })
