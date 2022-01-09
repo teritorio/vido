@@ -100,7 +100,7 @@ export default Vue.extend({
     },
     filtersValues: {
       type: Object as PropType<FilterValues>,
-      default: () => {},
+      default: () => ({}),
     },
   },
 
