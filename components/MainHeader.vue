@@ -1,6 +1,6 @@
 <template>
   <aside
-    class="hidden sm:block absolute bottom-0 overflow-y-auto pointer-events-auto relative inset-auto h-full space-y-4"
+    class="hidden sm:block absolute bottom-0 overflow-y-auto pointer-events-auto relative inset-auto h-auto space-y-4 p-2"
   >
     <div
       class="items-center justify-between hidden sm:flex bg-white rounded-xl shadow-md px-5 py-4"
