@@ -151,8 +151,8 @@ export default Vue.extend({
     exploreAroundSelectedPoi() {
       this.map.exploreAroundSelectedPoi()
     },
-    toggleFavoriteMode() {
-      this.map.toggleFavoriteMode()
+    toggleFavoriteMode(feature?: VidoFeature) {
+      this.map.toggleFavoriteMode(feature)
     },
     goToSelectedPoi() {
       this.map.goToSelectedPoi()
