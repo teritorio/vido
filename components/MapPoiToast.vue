@@ -564,4 +564,7 @@ export default Vue.extend({
     max-height: 30vh;
   }
 }
+button {
+  @apply focus:outline-none;
+}
 </style>
