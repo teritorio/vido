@@ -28,14 +28,14 @@
         </label>
       </div>
       <div v-else-if="filter.type == 'multiselection'" :key="filter.property">
-        <label :for="filter.property" class="block mb-2 text-gray-500">{{
-          filter.label
-        }}</label>
+        <label :for="filter.property" class="block mb-2 text-gray-500">
+          {{ (filter.name && filter.name.fr) || filter.property }}
+        </label>
         <t-rich-select
           placeholder="Recherchez ou ajoutez une valeur"
           search-box-placeholder="Rechercher ..."
           text-attribute="name"
-          value-attribute="name"
+          value-attribute="code"
           multiple
           :options="
             filter.values.map((value) => ({
