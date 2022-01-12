@@ -330,7 +330,7 @@ const Map = Vue.extend({
       return Object.values(this.categories)
         .filter(
           (c) =>
-            c.category.tourism_style_merge &&
+            c.category?.tourism_style_merge &&
             Array.isArray(c.category.tourism_style_class)
         )
         .map((c) => (c.menu_group || c.category).tourism_style_class)
