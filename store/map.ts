@@ -31,12 +31,6 @@ interface State {
   // eslint-disable-next-line camelcase
   selection_zoom: {
     // eslint-disable-next-line camelcase
-    zoom_tis: number
-    // eslint-disable-next-line camelcase
-    zoom_osm: number
-    // eslint-disable-next-line camelcase
-    zoom_wp: number
-    // eslint-disable-next-line camelcase
     zoom_ban: number
     // eslint-disable-next-line camelcase
     zoom_commune: number
@@ -56,11 +50,8 @@ const getInitialMapview: Function = () => ({
     min: 1,
   },
   selection_zoom: {
-    zoom_tis: 10,
-    zoom_osm: 10,
-    zoom_wp: 10,
-    zoom_ban: 10,
-    zoom_commune: 10,
+    zoom_ban: 15,
+    zoom_commune: 12,
   },
 })
 
