@@ -45,7 +45,11 @@
           </div>
         </button>
         <button
-          class="flex h-11 items-center justify-center flex-shrink-0 px-3 py-2 bg-white border-l border-gray-00 rounded-r-full hover:bg-gray-100 shadow-md focus:outline-none"
+          :class="[
+            'flex h-11 items-center justify-center flex-shrink-0 px-3 py-2 bg-white border-l border-gray-00 rounded-r-full hover:bg-gray-100 shadow-md focus:outline-none',
+            !hasFavorites && 'bg-gray-100 cursor-not-allowed',
+          ]"
+          :disabled="!hasFavorites"
           @mousedown="mousedownHandler"
           @focus="focusHandler"
           @blur="blurHandler"
@@ -187,34 +191,13 @@
       :hide-close-button="true"
       @before-open="getFavs"
     >
-      <div
-        class="flex justify-between items-center py-4 px-1 sm:px-6 sticky top-0 z-50 bg-white"
-      >
-        <p class="text-lg">{{ $tc('favorites.notebook.title') }}</p>
-        <button
-          class="flex items-center border-solid border-gray-300 border-2 bg-white focus:outline-none focus-visible:bg-gray-100 hover:bg-gray-100 py-2 px-4 rounded-full"
-          @click="$refs.notebookModal.hide()"
-        >
-          <font-awesome-icon
-            ref="menu_icon"
-            icon="times"
-            class="text-gray-500 sm:mr-2"
-            size="sm"
-          />
-          <p class="hidden sm:block">{{ $tc('favorites.modal.close') }}</p>
-        </button>
-      </div>
-      <div class="flex justify-between flex-wrap max-h-full overflow-y-auto">
-        <MapPoiToast
-          v-for="item in favs"
-          :key="item.id"
-          :poi="item"
-          class="flex-grow-0 flex-shrink-0 m-2"
-          @explore-click="exploreAroundSelectedPoi"
-          @favorite-click="toggleFavoriteMode"
-          @zoom-click="goToSelectedPoi"
-        />
-      </div>
+      <FavoriteNoteBook
+        :favs="favs"
+        :on-close="closeNoteBook"
+        :explore-around-selected-poi="explore"
+        :toggle-favorite="handleFavorite"
+        :go-to-selected-poi="goTo"
+      />
     </t-modal-notebook>
   </section>
 </template>
@@ -224,7 +207,7 @@ import Vue from 'vue'
 import { TDropdown } from 'vue-tailwind/dist/components'
 import { mapGetters } from 'vuex'
 
-import MapPoiToast from '@/components/MapPoiToast.vue'
+import FavoriteNoteBook from '@/components/FavoriteNoteBook.vue'
 import { LOCAL_STORAGE } from '@/lib/constants'
 import { getPoiByIds } from '@/utils/api'
 import { VidoFeature } from '@/utils/types'
@@ -232,7 +215,7 @@ import { VidoFeature } from '@/utils/types'
 export default Vue.extend({
   components: {
     TDropdown,
-    MapPoiToast,
+    FavoriteNoteBook,
   },
   props: {
     hasFavorites: {
@@ -245,6 +228,19 @@ export default Vue.extend({
     },
     toggleFavoriteMode: {
       type: Function,
+      default: undefined,
+    },
+    exploreAroundSelectedPoi: {
+      type: Function,
+      default: undefined,
+    },
+    goToSelectedPoi: {
+      type: Function,
+      default: undefined,
+    },
+    toggleFavorite: {
+      type: Function,
+      default: undefined,
     },
   },
   data(): {
@@ -265,21 +261,24 @@ export default Vue.extend({
       favoritesIds: 'favorite/favoritesIds',
     }),
     pdfLink(): string {
-      return `${
-        this.$config.API_ENDPOINT
-      }/geodata/v0.1/pois.pdf?ids=${this.favoritesIds.join(',')}`
+      return `${this.$config.API_ENDPOINT}/${this.$config.API_PROJECT}/${
+        this.$config.API_THEME
+      }/pois.pdf?ids=${this.favoritesIds.join(',')}`
     },
     csvLink(): string {
-      return `${
-        this.$config.API_ENDPOINT
-      }/geodata/v0.1/pois.csv?ids=${this.favoritesIds.join(',')}`
+      return `${this.$config.API_ENDPOINT}/${this.$config.API_PROJECT}/${
+        this.$config.API_THEME
+      }/pois.csv?ids=${this.favoritesIds.join(',')}`
     },
   },
   methods: {
     async fetchFavorites(ids: [string]) {
-      return await getPoiByIds(this.$config.API_ENDPOINT, ids).then(
-        (pois) => pois.features
-      )
+      return await getPoiByIds(
+        this.$config.API_ENDPOINT,
+        this.$config.API_PROJECT,
+        this.$config.API_THEME,
+        ids
+      ).then((pois) => pois.features)
     },
     removeFavorites() {
       try {
@@ -317,9 +316,13 @@ export default Vue.extend({
           }, 5000)
         },
         (err) => {
+          // eslint-disable-next-line no-console
           console.error('Vido error: ', err)
         }
       )
+    },
+    closeNoteBook() {
+      ;(this.$refs.notebookModal as Vue & { hide: () => void }).hide()
     },
     async getFavs() {
       try {
@@ -335,6 +338,17 @@ export default Vue.extend({
       }
 
       this.toggleFavoriteMode('on')
+    },
+    explore(poi?: VidoFeature) {
+      this.closeNoteBook()
+      this.exploreAroundSelectedPoi(poi)
+    },
+    goTo(poi?: VidoFeature) {
+      this.closeNoteBook()
+      this.goToSelectedPoi(poi)
+    },
+    handleFavorite(poi?: VidoFeature, isNotebook?: Boolean) {
+      this.toggleFavorite(poi, isNotebook)
     },
   },
 })

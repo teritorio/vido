@@ -33,19 +33,17 @@ export default Vue.extend({
     },
     categoriesActivesubsCount: {
       type: Object as PropType<{ [id: string]: number }>,
-      default: {},
+      default: () => ({}),
     },
   },
   computed: {
     listItems() {
       return this.$props.categories.map((category: Category) => ({
         ...category,
-        color: category.metadata.color,
-        label: category.metadata.label.fr,
-        picto: category.metadata.picto,
-        filtres: category.datasources
-          .filter((ds) => ds.HasFiltre)
-          .map((ds) => ({ idsrc: ds.idsrc, filtre: ds.filtre })),
+        color: (category.menu_group || category.category).color,
+        label: (category.menu_group || category.category).name.fr,
+        picto: (category.menu_group || category.category).icon,
+        filters: category.category?.filters || {},
         selected: this.$props.isSubCategorySelected(category.id),
       }))
     },

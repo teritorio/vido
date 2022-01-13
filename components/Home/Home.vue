@@ -1,7 +1,7 @@
 <template>
   <div class="fixed w-full h-full overflow-hidden flex flex-col">
     <header
-      class="relative sm:fixed top-0 bottom-0 z-10 flex flex-row w-full sm:h-full space-x-4 pointer-events-none sm:w-auto sm:p-4"
+      class="relative sm:fixed top-0 bottom-0 z-10 flex flex-row w-full sm:h-full space-x-4 pointer-events-none sm:w-auto sm:p-2"
     >
       <div
         :class="[
@@ -13,11 +13,9 @@
         <transition name="headers" appear mode="out-in">
           <MainHeader
             v-if="state.matches(states.Categories) && isMenuConfigLoaded"
-            :highlighted-categories="highlightedRootCategories"
             :show-poi="showPoi"
             :logo-url="logoUrl"
             :main-url="mainUrl"
-            :non-highlighted-categories="nonHighlightedRootCategories"
             :site-name="siteName"
             :is-explorer-favorite="isModeExplorer || isModeFavorite"
             :show-categories="!isModeExplorer && !isModeFavorite"
@@ -38,7 +36,6 @@
             :categories="state.context.selectedRootCategory.subCategories"
             :filtered-categories="filteredSubCategories"
             :is-sub-category-selected="isSubCategorySelected"
-            :categories-activesubs-count="subCategoriesCounts"
             @category-click="onSubCategoryClick"
             @filter-click="onSubCategoryFilterClick"
             @go-back-click="goToParentFromSubCategory"
@@ -130,8 +127,6 @@
       :state="state"
       :is-menu-config-loaded="isMenuConfigLoaded"
       :is-mode-favorite="isModeFavorite"
-      :highlighted-categories="highlightedRootCategories"
-      :non-highlighted-categories="nonHighlightedRootCategories"
       :categories-activesubs-count="subCategoriesCounts"
       :categories="
         state.context.selectedRootCategory
@@ -174,7 +169,7 @@ import {
   VidoFeature,
   Category,
   Mode,
-  FiltreValues,
+  FilterValues,
   ApiFilterSearchResult,
 } from '@/utils/types'
 import { getHashPart, setHashPart } from '@/utils/url'
@@ -216,6 +211,8 @@ export default Vue.extend({
       (selectedSubCategoriesIds) =>
         this.$store.dispatch('menu/fetchFeatures', {
           apiEndpoint: this.$config.API_ENDPOINT,
+          apiProject: this.$config.API_PROJECT,
+          apiTheme: this.$config.API_THEME,
           categoryIds: selectedSubCategoriesIds,
         }),
       500
@@ -240,16 +237,16 @@ export default Vue.extend({
     }
   },
   head() {
-    const infos = this.siteInfos('fr')
+    const infos = this.siteInfos
 
     return {
-      title: infos?.name,
+      title: infos?.themes[0]?.name.fr,
       meta: [
         {
           // https://nuxtjs.org/docs/2.x/features/meta-tags-seo#local-settings
           hid: 'index',
-          name: infos?.name,
-          content: infos?.description,
+          name: infos?.themes[0]?.name?.fr,
+          content: infos?.themes[0]?.description?.fr,
         },
       ],
     }
@@ -257,6 +254,7 @@ export default Vue.extend({
   computed: {
     ...mapGetters({
       categories: 'menu/categories',
+      rootCategories: 'menu/rootCategories',
       getSubCategoriesFromCategoryId: 'menu/getSubCategoriesFromCategoryId',
       isMapConfigLoaded: 'map/isLoaded',
       isMenuConfigLoaded: 'menu/isLoaded',
@@ -269,13 +267,7 @@ export default Vue.extend({
     }),
     events: () => HomeEvents,
     logoUrl(): string {
-      return this.siteInfos('fr')?.logo || ''
-    },
-    highlightedRootCategories(): Category[] {
-      return this.$store.getters['menu/highlightedRootCategories']
-    },
-    nonHighlightedRootCategories(): Category[] {
-      return this.$store.getters['menu/nonHighlightedRootCategories']
+      return this.siteInfos?.themes[0]?.logo_url || ''
     },
     selectedSubCategories(): Category[] {
       const categories = this.subCategories
@@ -285,10 +277,10 @@ export default Vue.extend({
       )
     },
     siteName(): string {
-      return this.siteInfos('fr')?.name || ''
+      return this.siteInfos?.themes[0]?.name.fr || ''
     },
     mainUrl(): string {
-      return this.siteInfos('fr')?.site1?.main_url || ''
+      return this.siteInfos?.themes[0]?.main_url || ''
     },
     isModeExplorer(): boolean {
       return this.mode === Mode.EXPLORER
@@ -304,11 +296,6 @@ export default Vue.extend({
         this.state.matches(this.states.SubCategoryFilters)
       )
     },
-    rootCategories(): Category[] {
-      return this.highlightedRootCategories.concat(
-        this.nonHighlightedRootCategories
-      )
-    },
     states: () => HomeStates,
     subCategories(): Category[] {
       return this.$store.getters['menu/subCategories']
@@ -316,17 +303,17 @@ export default Vue.extend({
     subCategoriesCounts(): Record<Category['id'], number> {
       const counts: { [id: string]: number } = {}
       const addCount = (cat: Category) => {
-        if (counts[cat.parent]) {
-          counts[cat.parent]++
+        if (counts[cat.parent_id || 'null']) {
+          counts[cat.parent_id || 'null']++
         } else {
-          counts[cat.parent] = 1
+          counts[cat.parent_id || 'null'] = 1
         }
-        if (cat.parent !== 0) {
-          const parent =
-            this.subCategories.find((sc) => sc.id === cat.parent) ||
-            this.rootCategories.find((sc: Category) => sc.id === cat.parent)
-          if (parent) {
-            addCount(parent)
+        if (cat.parent_id !== null) {
+          const parentId =
+            this.subCategories.find((sc) => sc.id === cat.parent_id) ||
+            this.rootCategories.find((sc: Category) => sc.id === cat.parent_id)
+          if (parentId) {
+            addCount(parentId)
           }
         }
       }
@@ -340,7 +327,7 @@ export default Vue.extend({
         (sc) => sc.id === this.state.context.selectedSubCategoryForFilters
       )
     },
-    subCategoryFilters(): FiltreValues {
+    subCategoryFilters(): FilterValues {
       return (
         this.state.context.selectedSubCategoryForFilters &&
         this.filters[this.state.context.selectedSubCategoryForFilters]
@@ -353,7 +340,7 @@ export default Vue.extend({
       const resources: Record<Category['id'], string> = {}
 
       this.subCategories.forEach((sc) => {
-        resources[sc.id] = sc.metadata.picto
+        resources[sc.id] = (sc.menu_group || sc.category).icon
       })
 
       return resources
@@ -417,7 +404,7 @@ export default Vue.extend({
 
       Object.keys(this.categories).forEach((categoryIdString) => {
         const categoryId = parseInt(categoryIdString, 10)
-        if (this.categories[categoryId].metadata?.enabled_by_default) {
+        if (this.categories[categoryId].selected_by_default) {
           enabledCategories.push(categoryId)
         }
       })
@@ -446,8 +433,8 @@ export default Vue.extend({
           (sc) => sc.id === this.state.context.selectedRootCategory?.id
         )
 
-        if (rootCat && rootCat.level >= 2) {
-          this.onRootCategoryClick(rootCat.parent)
+        if (rootCat && rootCat.parent_id !== null) {
+          this.onRootCategoryClick(rootCat.parent_id)
         } else {
           this.service.send(HomeEvents.GoToCategories)
         }
@@ -494,7 +481,7 @@ export default Vue.extend({
     onBackToSubCategoryClick() {
       const rootCatId = this.subCategories.find(
         (sc) => sc.id === this.state.context.selectedSubCategoryForFilters
-      )?.parent
+      )?.parent_id
 
       this.service.send(HomeEvents.GoToSubCategories, {
         rootCategoryId: rootCatId,
@@ -519,7 +506,7 @@ export default Vue.extend({
         subCategoriesIds,
       })
     },
-    onSubCategoryFilterChange(filters: FiltreValues) {
+    onSubCategoryFilterChange(filters: FilterValues) {
       if (this.state.context.selectedSubCategoryForFilters) {
         const newFilters = Object.assign({}, this.filters)
         if (Object.keys(filters).length > 0) {
@@ -531,8 +518,14 @@ export default Vue.extend({
       }
     },
     onSearchPoi(poiId: number) {
-      getPoiById(this.$config.API_ENDPOINT, poiId.toString()).then((poi) => {
+      getPoiById(
+        this.$config.API_ENDPOINT,
+        this.$config.API_PROJECT,
+        this.$config.API_THEME,
+        poiId.toString()
+      ).then((poi) => {
         if (poi) {
+          this.service.send(HomeEvents.GoToCategories)
           this.setSelectedFeature(poi).then(() => {
             if (this.$refs.map) {
               this.$refs.map.goToSelectedPoi()
@@ -546,7 +539,7 @@ export default Vue.extend({
         const newFilters = Object.assign({}, this.filters)
 
         newFilters[`${newFilter.menuId}`] = {
-          selectionFiltre: {
+          selectionFilter: {
             [newFilter.tag]: [`${newFilter.filter}`],
           },
         }
@@ -554,6 +547,7 @@ export default Vue.extend({
         this.setCategoriesFilters(newFilters)
       }
 
+      this.service.send(HomeEvents.GoToCategories)
       setHashPart('fav', null)
       this.$store.dispatch('favorite/handleFavoriteLayer', false)
       this.$store.dispatch('favorite/setFavoritesAction', 'close')
@@ -561,6 +555,8 @@ export default Vue.extend({
     },
     onFeatureClick(feature: VidoFeature) {
       this.setSelectedFeature(feature).then(() => {
+        this.service.send(HomeEvents.GoToCategories)
+
         if (this.$refs.map) {
           this.$refs.map.goToSelectedPoi()
         }

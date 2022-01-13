@@ -1,11 +1,14 @@
 <template>
   <div
-    class="z-10 flex flex-col w-full sm:max-w-xl mx-0 overflow-y-auto bg-white shadow-md pointer-events-auto sm:flex-row sm:w-auto sm:mx-auto sm:rounded-xl poiDescription"
+    :class="[
+      'z-10 flex flex-col w-full sm:max-w-xl mx-0 overflow-y-auto shadow-md pointer-events-auto sm:flex-row sm:w-auto sm:mx-auto sm:rounded-xl poiDescription',
+      !isModeFavorite && notebook ? 'bg-gray-200 opacity-70' : 'bg-white',
+    ]"
   >
     <img
-      v-if="poiProp('teritorio:image')"
+      v-if="poiProp('image') && poiProp('image').length > 0"
       class="object-cover w-full h-auto max-h-44 sm:max-h-full sm:w-52"
-      :src="poiProp('teritorio:image')"
+      :src="poiProp('image')[0]"
       alt=""
     />
 
@@ -21,9 +24,9 @@
         </h2>
 
         <a
-          v-if="poiProp('teritorio:url')"
+          v-if="poiEditorial('website:details')"
           class="ml-6 md:ml-8 px-3 py-1.5 text-xs text-gray-800 bg-gray-100 hover:bg-gray-200 focus:bg-gray-200 transition transition-colors rounded-md"
-          :href="poiProp('teritorio:url')"
+          :href="poiEditorial('website:details')"
           rel="noopener noreferrer"
           target="_blank"
           @click.stop="tracking('details')"
@@ -72,7 +75,7 @@
 
         <div
           v-for="field in listFields"
-          :key="encodeURIComponent(field)"
+          :key="'_' + field.k"
           class="text-sm mt-2"
         >
           <ul v-if="field.k === 'phone' && $isMobile()">
@@ -109,9 +112,9 @@
           <p v-else-if="field.v.length > textLimit" class="text-sm">
             {{ field.v.substring(0, textLimit) + ' ...' }}
             <a
-              v-if="poiProp('teritorio:url')"
+              v-if="poiEditorial('website:details')"
               class="underline"
-              :href="poiProp('teritorio:url')"
+              :href="poiEditorial('website:details')"
               rel="noopener noreferrer"
               target="_blank"
               @click.stop="tracking('details')"
@@ -181,7 +184,7 @@
         </button>
 
         <button
-          v-if="poiMeta('PID')"
+          v-if="poiMeta('id')"
           class="flex flex-col items-center flex-1 h-full p-2 space-y-2 rounded-lg hover:bg-gray-100"
           title="Mettre en favori"
           @click.stop="onFavoriteClick"
@@ -217,6 +220,10 @@ export default Vue.extend({
   },
 
   props: {
+    notebook: {
+      type: Boolean,
+      default: false,
+    },
     poi: {
       type: Object as PropType<VidoFeature>,
       required: true,
@@ -235,16 +242,6 @@ export default Vue.extend({
     }
   },
 
-  mounted() {
-    this.$tracking({
-      type: 'popup',
-      poiId: this.poiMeta('PID'),
-      title: this.poi.properties?.name,
-      location: window.location.href,
-      path: this.$route.path,
-    })
-  },
-
   computed: {
     ...mapGetters({
       mode: 'site/mode',
@@ -256,18 +253,22 @@ export default Vue.extend({
     },
 
     isModeFavorite(): boolean {
-      const id = this.poiMeta('PID') || this.poiProp('id')
+      const id = this.poiMeta('id') || this.poiProp('id')
       const currentFavorites = this.$store.getters['favorite/favoritesIds']
       return currentFavorites.includes(id)
     },
 
     name(): string {
-      return this.poiProp('name') || this.poiMeta('label_infobulle')
+      return (
+        this.poiProp('name') ||
+        this.poiEditorial('class_label_popup')?.fr ||
+        this.poiEditorial('class_label')?.fr
+      )
     },
 
     color(): string | null {
-      if (this.poiMeta('color')) {
-        return this.poiMeta('color')
+      if (this.poiDisplay('color')) {
+        return this.poiDisplay('color')
       } else if (this.poi && this.poi.layer && this.poi.layer.paint) {
         // @ts-ignore
         const tc = this.poi.layer.paint['text-color']
@@ -284,8 +285,8 @@ export default Vue.extend({
     },
 
     icon(): string {
-      if (this.poiMeta('icon')) {
-        return this.poiMeta('icon')
+      if (this.poiDisplay('icon')) {
+        return this.poiDisplay('icon')
         // @ts-ignore
       } else if (this.poi.layer?.layout['icon-image']?.name) {
         return (
@@ -303,7 +304,10 @@ export default Vue.extend({
     },
 
     category(): string {
-      return this.poiMeta('label_infobulle') || this.poiProp('class')
+      return (
+        this.poiEditorial('class_label_popup')?.fr ||
+        this.poiEditorial('class_label')?.fr
+      )
     },
 
     description(): string | null {
@@ -311,18 +315,18 @@ export default Vue.extend({
     },
 
     address(): string | null {
-      if (this.poiMeta('PopupAdress') !== 'yes') {
+      if ((this.poiEditorial('popup_properties') || []).includes('addr:*')) {
+        return [
+          this.poiProp('addr:housenumber'),
+          this.poiProp('addr:street'),
+          this.poiProp('addr:postcode'),
+          this.poiProp('addr:city'),
+        ]
+          .filter((f) => f && f.toString().trim().length > 0)
+          .join(' ')
+      } else {
         return null
       }
-
-      return [
-        this.poiProp('addr:housenumber'),
-        this.poiProp('addr:street'),
-        this.poiProp('addr:postcode'),
-        this.poiProp('addr:city'),
-      ]
-        .filter((f) => f && f.toString().trim().length > 0)
-        .join(' ')
     },
 
     opening_hours(): string | string[] | null {
@@ -366,6 +370,7 @@ export default Vue.extend({
 
         return `${this.$tc('toast.closed')} - ${openTrad}`
       } catch (e) {
+        // eslint-disable-next-line no-console
         console.log('Vido error:', e)
         return null
       }
@@ -376,8 +381,7 @@ export default Vue.extend({
         return field === 'opening_hours' ? this.opening_hours : value
       }
 
-      return (this.poiMeta('PopupListField') || '')
-        .split(';')
+      return (this.poiEditorial('popup_properties') || [])
         .map((f: string) => {
           if (
             this.sptags !== null &&
@@ -442,7 +446,7 @@ export default Vue.extend({
     },
 
     unavoidable(): boolean {
-      return Boolean(this.poiMeta('unavoidable'))
+      return Boolean(this.poiEditorial('unavoidable'))
     },
   },
 
@@ -450,6 +454,16 @@ export default Vue.extend({
     poi() {
       this.onPoiChange()
     },
+  },
+
+  mounted() {
+    this.$tracking({
+      type: 'popup',
+      poiId: this.poiMeta('id'),
+      title: this.poi.properties?.name,
+      location: window.location.href,
+      path: this.$route.path,
+    })
   },
 
   created() {
@@ -476,14 +490,24 @@ export default Vue.extend({
       return this.poiProp('metadata') && this.poiProp('metadata')[name]
     },
 
+    poiDisplay(name: string) {
+      return this.poiProp('display') && this.poiProp('display')[name]
+    },
+
+    poiEditorial(name: string) {
+      return this.poiProp('editorial') && this.poiProp('editorial')[name]
+    },
+
     fetchMetadata(): Promise<void> {
-      if (!this.poiProp('PID') && !this.poi.id) {
+      if (!this.poiProp('id') && !this.poi.id) {
         return Promise.resolve()
       }
 
       return getPoiById(
         this.$config.API_ENDPOINT,
-        this.poiProp('PID') || this.poi.id
+        this.$config.API_PROJECT,
+        this.$config.API_THEME,
+        this.poiProp('id') || this.poi.id
       ).then((apiPoi) => {
         if (apiPoi) {
           this.apiProps = apiPoi.properties
@@ -492,13 +516,15 @@ export default Vue.extend({
     },
 
     fetchSpTags() {
-      if (!this.poiMeta('PopupListField') || !this.poiMeta('osm_poi_type')) {
+      if (!this.poiEditorial('popup_properties')) {
         return
       }
       return fetch(
         `${
           this.$config.API_ENDPOINT
-        }/geodata/v0.1/sptags?PopupListField=${this.poiMeta('PopupListField')}`
+        }/sptags?popup_properties=${this.poiEditorial('popup_properties').join(
+          ';'
+        )}`
       )
         .then((data) => data.json())
         .then((data) => (this.sptags = data))
@@ -506,25 +532,25 @@ export default Vue.extend({
 
     onZoomClick() {
       this.tracking('zoom')
-      this.$emit('zoom-click')
+      this.$emit('zoom-click', this.poi)
     },
     onExploreClick() {
       if (!this.isModeExplorer) {
         this.tracking('explore')
       }
-      this.$emit('explore-click')
+      this.$emit('explore-click', this.poi)
     },
     onFavoriteClick() {
       if (!this.isModeFavorite) {
         this.tracking('favorite')
       }
-      this.$emit('favorite-click')
+      this.$emit('favorite-click', this.poi, this.notebook)
     },
     tracking(event: 'details' | 'route' | 'explore' | 'favorite' | 'zoom') {
       this.$tracking({
         type: 'popup_event',
         event,
-        poiId: this.poiMeta('PID'),
+        poiId: this.poiMeta('id'),
         category: this.category,
         title: this.poi.properties?.name,
       })
@@ -537,5 +563,8 @@ export default Vue.extend({
   .poiDescription {
     max-height: 30vh;
   }
+}
+button {
+  @apply focus:outline-none;
 }
 </style>

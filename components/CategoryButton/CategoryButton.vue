@@ -1,15 +1,17 @@
 <template>
   <button
     :class="[
-      'flex focus:outline-none outline-none flex-col items-center self-stretch justify-start pt-4 pb-2 leading-none transition-colors rounded-lg p-4',
+      'flex focus:outline-none outline-none items-center self-stretch justify-start pt-4 pb-2 leading-none transition-colors rounded-lg p-4',
       !selected && 'hover:bg-gray-100',
       selected && 'selected bg-gray-100 hover:bg-transparent',
+      type === 'compact' && 'flex-col',
+      type === 'large' && 'col-span-3 sm:col-span-4',
     ]"
     @click="onClick"
   >
     <div
       class="relative flex items-center justify-center w-12 h-12 mb-2 text-white rounded-full"
-      :style="{ backgroundColor: color }"
+      :style="{ backgroundColor: color, flexShrink: 0 }"
     >
       <TeritorioIcon :category-color="color" class="text-2xl" :picto="picto" />
 
@@ -35,7 +37,20 @@
       </div>
     </div>
 
-    <div class="text-xs">{{ label }}</div>
+    <div
+      :class="[
+        'text-xs',
+        type === 'large' && 'mx-4 grow text-sm w-full text-left',
+      ]"
+    >
+      {{ label }}
+    </div>
+    <font-awesome-icon
+      v-if="type === 'large'"
+      icon="chevron-right"
+      class="text-gray-700 shrink-0"
+      size="sm"
+    />
   </button>
 </template>
 
@@ -72,6 +87,9 @@ export default Vue.extend({
     activeSubCategories: {
       type: Number,
       default: 0,
+    },
+    type: {
+      type: String,
     },
   },
   methods: {

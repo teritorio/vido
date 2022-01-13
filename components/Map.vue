@@ -54,6 +54,9 @@
         :map="map"
         :pitch="pitch"
         :resize-map="resizeMap"
+        :explore-around-selected-poi="exploreAroundSelectedPoi"
+        :go-to-selected-poi="goToSelectedPoi"
+        :toggle-favorite="toggleFavoriteMode"
         @changeBackground="onClickChangeBackground"
         @change-mode="onControlChangeMode"
         @locale="languageControl.setLanguage($event)"
@@ -116,7 +119,7 @@ import { markerLayerFactory } from '@/lib/markerLayerFactory'
 import { State as MenuState } from '@/store/menu'
 import { getPoiById, getPoiByIds } from '@/utils/api'
 import {
-  Category,
+  ApiMenuCategory,
   MapStyle,
   Mode,
   TupleLatLng,
@@ -150,7 +153,7 @@ const Map = Vue.extend({
       default: null,
     },
     selectedCategories: {
-      type: Array as PropType<Category['id'][]>,
+      type: Array as PropType<ApiMenuCategory['id'][]>,
       default: () => [],
     },
     isExplorerFavorite: {
@@ -173,7 +176,6 @@ const Map = Vue.extend({
     allowRegionBackZoom: boolean
     showPoiToast: boolean
     showFavoritesOverlay: boolean
-    previousCategories: Category['id'][]
     mapStyles: Record<string, string | VidoMglStyle>
     mapStyle: string | VidoMglStyle | null
     locale: Record<string, string>
@@ -192,7 +194,6 @@ const Map = Vue.extend({
       allowRegionBackZoom: false,
       showFavoritesOverlay: false,
       showPoiToast: false,
-      previousCategories: [],
       mapStyles: {},
       mapStyle: null,
       locale: {},
@@ -217,10 +218,57 @@ const Map = Vue.extend({
         return satelliteStyle
       })
 
-    const [vectoStyle, satelliteStyle] = await Promise.all([
+    let [vectoStyle, satelliteStyle] = await Promise.all([
       vectoFetch,
       satelliteFetch,
     ])
+
+    const updateStyle = async (style: any) => {
+      const vectoSources: {
+        url: string
+        attribution: string
+      }[] = Object.values(style.sources)
+      const vectoSourceUrl: string[] = vectoSources.map((src: any) => src.url)
+
+      const vectoSourceAttribution = await Promise.all(
+        vectoSourceUrl.map((url) => {
+          if (!url) return null
+
+          return fetch(url)
+            .then((res) => res.json())
+            .then((res) => res.attribution)
+        })
+      )
+
+      let nuAttribution = ''
+
+      vectoSourceAttribution.forEach((attr, i) => {
+        if (attr) {
+          const existingAttributions = this.attribution.filter(
+            (att: string) => !attr.includes(att)
+          )
+
+          nuAttribution += [attr].concat(existingAttributions).join(' ')
+        } else if (vectoSources[i]?.attribution) {
+          nuAttribution += ' ' + vectoSources[i]?.attribution
+        }
+      })
+
+      const nuStyle = { ...style }
+
+      Object.keys(style.sources).forEach((key) => {
+        nuStyle.sources[key] = {
+          ...style.sources[key],
+          attribution: nuAttribution,
+        }
+      })
+
+      return nuStyle
+    }
+
+    vectoStyle = await updateStyle(vectoStyle)
+    satelliteStyle = await updateStyle(satelliteStyle)
+    const mapnikAttribution = this.attribution.join(' ')
 
     this.mapStyles = {
       [MapStyle.teritorio]: vectoStyle,
@@ -239,7 +287,7 @@ const Map = Vue.extend({
               'https://c.tiles.teritorio.xyz/styles/osm/{z}/{x}/{y}.png',
             ],
             tileSize: 256,
-            attribution: this.$tc('map.mapnik.attribution'),
+            attribution: mapnikAttribution,
           },
         },
         layers: [
@@ -262,6 +310,7 @@ const Map = Vue.extend({
 
   computed: {
     ...mapGetters({
+      attribution: 'map/attribution',
       center: 'map/center',
       features: 'menu/features',
       zoom: 'map/zoom',
@@ -273,7 +322,7 @@ const Map = Vue.extend({
       favoritesAction: 'favorite/favoritesAction',
     }),
 
-    categories(): Record<Category['id'], Category> {
+    categories(): Record<ApiMenuCategory['id'], ApiMenuCategory> {
       return this.$store.getters['menu/categories']
     },
 
@@ -281,10 +330,10 @@ const Map = Vue.extend({
       return Object.values(this.categories)
         .filter(
           (c) =>
-            c.metadata.tourism_style_merge &&
-            Array.isArray(c.metadata.tourism_style_class)
+            c.category?.tourism_style_merge &&
+            Array.isArray(c.category.tourism_style_class)
         )
-        .map((c) => c.metadata.tourism_style_class)
+        .map((c) => (c.menu_group || c.category).tourism_style_class)
     },
 
     isModeExplorer(): boolean {
@@ -317,12 +366,12 @@ const Map = Vue.extend({
         return
       }
 
-      const oldCategories: (string | undefined)[] = flattenFeatures(
+      const oldCategories: (number | undefined)[] = flattenFeatures(
         oldFeatures
-      ).map((e) => e.properties.metadata?.PID)
-      const newCategories: (string | undefined)[] = flattenFeatures(
+      ).map((e) => e.properties.metadata?.id)
+      const newCategories: (number | undefined)[] = flattenFeatures(
         features
-      ).map((e) => e.properties.metadata?.PID)
+      ).map((e) => e.properties.metadata?.id)
 
       // Add exact coordinates to a store to avoid rounding from Mapbox GL
       Object.keys(features).forEach((categoryIdString) => {
@@ -330,9 +379,9 @@ const Map = Vue.extend({
         features[categoryId].forEach((feature) => {
           if (
             feature.geometry.type === 'Point' &&
-            feature.properties?.metadata?.PID
+            feature.properties?.metadata?.id
           ) {
-            this.featuresCoordinates[feature.properties.metadata.PID] = feature
+            this.featuresCoordinates[feature.properties.metadata.id] = feature
               .geometry.coordinates as [number, number]
           }
         })
@@ -394,25 +443,28 @@ const Map = Vue.extend({
       if (
         feature &&
         feature.geometry.type === 'Point' &&
-        (feature.properties?.metadata?.PID ||
+        (feature.properties?.metadata?.id ||
           feature?.id ||
           feature?.properties?.id)
       ) {
         setHashPart(
           'poi',
-          feature?.properties?.metadata?.PID || feature?.id?.toString() || null
+          feature?.properties?.metadata?.id?.toString() ||
+            feature?.id?.toString() ||
+            null
         )
         this.showPoiToast = Boolean(
-          feature?.properties?.metadata?.PID || feature?.id?.toString()
+          feature?.properties?.metadata?.id?.toString() ||
+            feature?.id?.toString()
         )
         this.selectedFeatureMarker = new maplibregl.Marker({
           scale: 1.3,
           color: '#f44336',
         })
           .setLngLat(
-            (Boolean(feature?.properties?.metadata?.PID) &&
+            (Boolean(feature?.properties?.metadata?.id) &&
               this.featuresCoordinates[
-                feature?.properties?.metadata?.PID || ''
+                feature?.properties?.metadata?.id || ''
               ]) ||
               (feature.geometry.coordinates as [number, number])
           )
@@ -496,7 +548,10 @@ const Map = Vue.extend({
     const favs = getHashPart('favs')
     if (favs) {
       try {
-        const newFavorite = favs.split(',')
+        const newFavorite = favs
+          .split(',')
+          .map((e) => (!isNaN(Number(e)) ? Number(e) : null))
+          .filter((e) => !!e)
 
         localStorage.setItem(
           LOCAL_STORAGE.favorites,
@@ -586,7 +641,12 @@ const Map = Vue.extend({
       const poiHash = getHashPart('poi')
 
       if (poiHash && !this.selectedFeature) {
-        getPoiById(this.$config.API_ENDPOINT, poiHash).then((poi) => {
+        getPoiById(
+          this.$config.API_ENDPOINT,
+          this.$config.API_PROJECT,
+          this.$config.API_THEME,
+          poiHash
+        ).then((poi) => {
           if (poi) {
             this.selectFeature(poi)
           }
@@ -622,7 +682,10 @@ const Map = Vue.extend({
       this.showPoiToast = visible
     },
 
-    exploreAroundSelectedPoi() {
+    exploreAroundSelectedPoi(feature?: VidoFeature) {
+      if (feature) {
+        this.selectFeature(feature)
+      }
       if (!this.isModeExplorer) {
         this.map?.once('moveend', () => {
           this.$emit('change-mode', Mode.EXPLORER)
@@ -639,32 +702,37 @@ const Map = Vue.extend({
       }
     },
 
-    toggleFavoriteMode() {
+    toggleFavoriteMode(feature?: VidoFeature, isNotebook?: boolean) {
+      if (feature && !isNotebook) {
+        this.selectFeature(feature)
+      }
       try {
-        const props = this.selectedFeature?.properties
-        const id = props?.metadata?.PID || `${this.selectedFeature?.id}`
+        const props = feature?.properties
+        const id = props?.metadata?.id || feature?.id
         const currentFavorites = localStorage.getItem(LOCAL_STORAGE.favorites)
         let newFavorite
 
-        if (currentFavorites) {
-          const parsedFavorites = JSON.parse(currentFavorites).favorites
-          if (!parsedFavorites.includes(id)) {
-            newFavorite = [...parsedFavorites, id]
-            this.$store.dispatch('favorite/setFavoritesAction', 'add')
+        if (id) {
+          if (currentFavorites) {
+            const parsedFavorites = JSON.parse(currentFavorites).favorites
+            if (!parsedFavorites.includes(id)) {
+              newFavorite = [...parsedFavorites, id]
+              this.$store.dispatch('favorite/setFavoritesAction', 'add')
+            } else {
+              newFavorite = parsedFavorites.filter((f: string) => f !== id)
+              this.$store.dispatch('favorite/setFavoritesAction', 'delete')
+            }
           } else {
-            newFavorite = parsedFavorites.filter((f: string) => f !== id)
-            this.$store.dispatch('favorite/setFavoritesAction', 'delete')
+            newFavorite = [id]
+            this.$store.dispatch('favorite/setFavoritesAction', 'add')
           }
-        } else {
-          newFavorite = [id]
-          this.$store.dispatch('favorite/setFavoritesAction', 'add')
-        }
 
-        localStorage.setItem(
-          LOCAL_STORAGE.favorites,
-          JSON.stringify({ favorites: newFavorite, version: 1 })
-        )
-        this.$store.dispatch('favorite/toggleFavoriteModes', newFavorite)
+          localStorage.setItem(
+            LOCAL_STORAGE.favorites,
+            JSON.stringify({ favorites: newFavorite, version: 1 })
+          )
+          this.$store.dispatch('favorite/toggleFavoriteModes', newFavorite)
+        }
       } catch (e) {
         // eslint-disable-next-line no-console
         console.error('Vido error:', e.message)
@@ -726,10 +794,10 @@ const Map = Vue.extend({
 
         allFavorites.forEach((feature) => {
           if (
-            feature.properties?.metadata?.PID &&
+            feature.properties?.metadata?.id &&
             feature.geometry.type === 'Point'
           ) {
-            this.featuresCoordinates[feature.properties.metadata.PID] = feature
+            this.featuresCoordinates[feature.properties.metadata.id] = feature
               .geometry.coordinates as TupleLatLng
           }
         })
@@ -786,9 +854,12 @@ const Map = Vue.extend({
     },
 
     async fetchFavorites(ids: [string]) {
-      return await getPoiByIds(this.$config.API_ENDPOINT, ids).then(
-        (pois) => pois.features
-      )
+      return await getPoiByIds(
+        this.$config.API_ENDPOINT,
+        this.$config.API_PROJECT,
+        this.$config.API_THEME,
+        ids
+      ).then((pois) => pois.features)
     },
 
     showZoomSnack(text: string, textBtn: string) {
@@ -799,7 +870,10 @@ const Map = Vue.extend({
       })
     },
 
-    goToSelectedPoi() {
+    goToSelectedPoi(feature?: VidoFeature) {
+      if (feature) {
+        this.selectFeature(feature)
+      }
       if (!this.map || !this.selectedFeature) {
         return
       }
@@ -808,7 +882,7 @@ const Map = Vue.extend({
         zoom = this.selectedFeature.properties.vido_zoom
       } else if (this.selectedFeature.properties.vido_cat) {
         zoom = this.categories[this.selectedFeature.properties.vido_cat]
-          .metadata.selection_zoom
+          .category.zoom
       }
       this.map.flyTo({
         center: this.selectedFeature.geometry.coordinates,
@@ -991,10 +1065,16 @@ const Map = Vue.extend({
             if (typeof props.metadata === 'string') {
               props.metadata = JSON.parse(props.metadata)
             }
-            if (props?.metadata?.PID) {
-              id = 'm' + props.metadata.PID
+            if (typeof props.display === 'string') {
+              props.display = JSON.parse(props.display)
+            }
+            if (typeof props.editorial === 'string') {
+              props.editorial = JSON.parse(props.editorial)
+            }
+            if (props?.metadata?.id) {
+              id = 'm' + props.metadata.id
               marker = this.markers[id]
-              const markerCoords = this.featuresCoordinates[props.metadata.PID]
+              const markerCoords = this.featuresCoordinates[props.metadata.id]
               if (!marker && markerCoords) {
                 // Marker
                 const el: HTMLElement = document.createElement('div')
@@ -1002,7 +1082,7 @@ const Map = Vue.extend({
 
                 marker = this.markers[id] = new maplibregl.Marker({
                   element: el,
-                  ...(props.metadata['image:thumbnail'] && {
+                  ...(props['image:thumbnail'] && {
                     offset: [0, -10],
                   }),
                 }).setLngLat(markerCoords) // Using this to avoid misplaced marker
@@ -1010,15 +1090,15 @@ const Map = Vue.extend({
                 // Teritorio badge
                 const instance = new TeritorioIconBadge({
                   propsData: {
-                    color: props.metadata.color,
-                    picto: props.metadata.icon,
-                    image: props.metadata['image:thumbnail'],
+                    color: props.display?.color,
+                    picto: props.display?.icon,
+                    image: props['image:thumbnail'],
                   },
                 }).$mount()
                 el.appendChild(instance.$el)
 
                 // Click handler
-                if (props.metadata.HasPopup === 'yes') {
+                if ((props.editorial?.popup_properties || []).length > 0) {
                   el.addEventListener('click', (e) => {
                     e.stopPropagation()
                     this.selectFeature(feature)

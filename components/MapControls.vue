@@ -8,6 +8,9 @@
         :has-favorites="hasFavorites"
         :is-mode-favorite="isModeFavorite"
         :toggle-favorite-mode="toggleFavoriteMode"
+        :explore-around-selected-poi="exploreAroundSelectedPoi"
+        :go-to-selected-poi="goToSelectedPoi"
+        :toggle-favorite="toggleFavorite"
         @click="toggleFavoriteMode"
       />
       <NavMenu
@@ -135,6 +138,19 @@ export default Vue.extend({
     },
     resizeMap: {
       type: Function,
+      default: undefined,
+    },
+    exploreAroundSelectedPoi: {
+      type: Function,
+      default: undefined,
+    },
+    goToSelectedPoi: {
+      type: Function,
+      default: undefined,
+    },
+    toggleFavorite: {
+      type: Function,
+      default: undefined,
     },
   },
 

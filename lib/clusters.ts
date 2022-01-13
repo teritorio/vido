@@ -1,6 +1,6 @@
 import maplibregl from 'maplibre-gl'
 
-import { Category } from '@/utils/types'
+import { ApiMenuCategory } from '@/utils/types'
 
 const getMarkerDonutSegment = (
   start: number,
@@ -49,7 +49,7 @@ const getMarkerDonutSegment = (
 }
 
 export const createMarkerDonutChart = (
-  categories: Record<Category['id'], Category>,
+  categories: Record<ApiMenuCategory['id'], ApiMenuCategory>,
   props: maplibregl.MapboxGeoJSONFeature['properties']
 ): HTMLElement => {
   const offsets = []
@@ -59,7 +59,7 @@ export const createMarkerDonutChart = (
     .filter((categoryId) => ((props && props[categoryId]) || 0) > 0)
     .forEach((categoryIdString) => {
       const categoryId = parseInt(categoryIdString, 10)
-      const color = categories[categoryId].metadata.color
+      const color = categories[categoryId].category.color
       if (countPerColor[color]) {
         countPerColor[color] += (props && props[categoryId]) || 0
       } else {

@@ -2,6 +2,10 @@ import type { MapboxGeoJSONFeature, Style } from 'maplibre-gl'
 
 /// <reference types="geojson" />
 
+export interface MultilingualString {
+  [lang: string]: string
+}
+
 export interface LatLng {
   lat: number
   lng: number
@@ -15,98 +19,102 @@ export type Pitch = number
 
 export type PoiType = 'tis' | 'osm' | 'zone'
 
-export type SelectionFiltre = {
-  tag: string
-  label: string
-  values: { [val: string]: string }
-}
-
-export type SelectionFiltreDS = SelectionFiltre & {
-  datasourceId: string
-}
-
-export type BooleanFiltre = { [val: string]: string }
-
-export type BooleanFiltreDS = BooleanFiltre & {
-  datasourceId: string
-}
-
-export type CheckboxFiltre = {
-  tag: string
-  label: string
-  values: string
-}
-
-export type CheckboxFiltreDS = CheckboxFiltre & {
-  datasourceId: string
-}
-
-export type DataSource = {
-  idsrc: string
-  // eslint-disable-next-line camelcase
-  poi_type: PoiType
-  slug: string
-  HasFiltre: boolean
-  filtre: null | {
-    selectionFiltre: null | SelectionFiltre[]
-    booleanFiltre: null | BooleanFiltre
-    checkboxFiltre: null | CheckboxFiltre[]
+export type Filter = {
+  type: 'multiselection' | 'checkboxes_list' | 'boolean'
+  property: MultilingualString
+  label: MultilingualString
+  values: {
+    value: string
+    name: MultilingualString[]
   }
 }
 
-export type FiltreValues = {
-  booleanFiltre?: { [key: string]: string[] }
-  checkboxFiltre?: { [key: string]: string[] }
-  selectionFiltre?: { [key: string]: string[] }
+export type FilterValues = {
+  [key: string]: string[]
 }
 
-export interface ApiCategoryBase {
+export interface ApiMenuItem {
   id: number
-  parent: ApiCategoryBase['id']
-  level: 1 | 2 | 3
-  datasources: DataSource[]
-  isDataItem: string | boolean
-  metadata: {
+  // eslint-disable-next-line camelcase
+  parent_id: ApiMenuItem['id'] | null
+  // eslint-disable-next-line camelcase
+  index_order: number
+  hidden: boolean
+  // eslint-disable-next-line camelcase
+  selected_by_default: boolean
+  // eslint-disable-next-line camelcase
+}
+
+export interface ApiMenuGroup extends ApiMenuItem {
+  // eslint-disable-next-line camelcase
+  menu_group: {
+    name: MultilingualString
+    icon: string
     color: string
-    count: number
-    description: { [lang: string]: string }
-    hide: boolean
-    label: { [lang: string]: string }
-    picto: string
-    // eslint-disable-next-line camelcase
-    tourism_style_merge: boolean
     // eslint-disable-next-line camelcase
     tourism_style_class: string[]
     // eslint-disable-next-line camelcase
-    selection_zoom: number
-    // eslint-disable-next-line camelcase
-    enabled_by_default: boolean
+    display_mode: 'large' | 'compact'
   }
-  order: number
+  category: undefined
 }
 
-export type CategoryBase = ApiCategoryBase & {
+export interface ApiMenuCategory extends ApiMenuItem {
   // eslint-disable-next-line camelcase
-  vido_children: null | ApiCategoryBase['id'][]
+  menu_group: undefined
+  category: {
+    name: MultilingualString
+    icon: string
+    color: string
+    // eslint-disable-next-line camelcase
+    tourism_style_class: string[]
+    // eslint-disable-next-line camelcase
+    tourism_style_merge: boolean
+    // eslint-disable-next-line camelcase
+    display_mode: 'large' | 'compact'
+    zoom: number
+
+    filters?: Filter[]
+  }
 }
 
-// Only first level classes can be highlighted
-export interface RootCategory extends CategoryBase {
+export interface MenuGroup extends ApiMenuGroup {
+  // eslint-disable-next-line camelcase
+  vido_children: null | ApiMenuItem['id'][]
   highlighted: boolean
-  level: 1
 }
 
-export interface SubCategory extends CategoryBase {
-  level: 2 | 3
+export interface MenuCategory extends ApiMenuCategory {
+  // eslint-disable-next-line camelcase
+  vido_children: null | ApiMenuItem['id'][]
+  highlighted: boolean
 }
 
-export type Category = CategoryBase & (RootCategory | SubCategory)
+export type Category = MenuGroup | MenuCategory
 
 export interface SiteInfos {
-  [lang: string]: {
-    name: string
-    description: string
-    logo: string
+  id?: number
+  slug?: string
+  name?: string
+  attributions?: string[]
+  // eslint-disable-next-line camelcase
+  icon_font_css_url?: string
+  // eslint-disable-next-line camelcase
+  bbox_line?: GeoJSON.LineString
+
+  themes?: {
+    id: number
+    slug: string
+    title: MultilingualString
+    description: MultilingualString
+    // eslint-disable-next-line camelcase
+    site_url: string
+    // eslint-disable-next-line camelcase
+    main_url: string
+    // eslint-disable-next-line camelcase
+    logo_url: string
+    // eslint-disable-next-line camelcase
+    favicon_url: string
   }
 }
 
@@ -118,28 +126,38 @@ export interface VidoFeature extends MapboxGeoJSONFeature {
   properties: {
     [key: string]: any
 
+    name?: string
+
+    image?: string[]
+    // eslint-disable-next-line camelcase
+    'image:thumbnail'?: string
+
     'addr:city'?: string
     'addr:housenumber'?: string
     'addr:postcode'?: string
     'addr:street'?: string
+
     metadata?: {
+      id?: number
       source?: string
-      HasPopup?: string
-      PID?: string
-      PopupAdress?: string
-      PopupListField?: string
-      classe?: string
-      color?: string
-      hasfiche?: string
-      icon?: string
-      // eslint-disable-next-line camelcase
-      label_infobulle?: string
-      // eslint-disable-next-line camelcase
-      tourism_style_class?: string | string[]
-      wkt?: string
-      'image:thumbnail'?: string
     }
-    name?: string
+    display?: {
+      icon?: string
+      color?: string
+      // eslint-disable-next-line camelcase
+      tourism_style_class?: string[]
+    }
+    editorial?: {
+      // eslint-disable-next-line camelcase
+      popup_properties?: string[]
+      // eslint-disable-next-line camelcase
+      class_label?: MultilingualString
+      // eslint-disable-next-line camelcase
+      class_label_popup?: MultilingualString
+      // eslint-disable-next-line camelcase
+      class_label_details?: MultilingualString
+      'website:details'?: string
+    }
   }
   type: 'Feature'
 }
@@ -177,8 +195,7 @@ export type ApiFilterSearchResult = {
 
 export type ApiSearchResults = {
   classe: ApiFilterSearchResult[]
-  osm: string | ApiSearchResult[]
-  tis: string | ApiSearchResult[]
+  pois: string | ApiSearchResult[]
   wp: string | ApiSearchResult[]
   adress: string | ApiAddrSearchResult[]
   municipality: string | ApiAddrSearchResult[]

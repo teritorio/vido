@@ -1,8 +1,10 @@
 <template>
   <aside
-    class="hidden sm:block absolute bottom-0 px-5 py-4 overflow-y-auto bg-white shadow-md pointer-events-auto relative inset-auto h-auto space-y-10 rounded-xl"
+    class="hidden sm:block absolute bottom-0 overflow-y-auto pointer-events-auto relative inset-auto h-auto space-y-4 p-2"
   >
-    <div class="items-center justify-between hidden sm:flex">
+    <div
+      class="items-center justify-between hidden sm:flex bg-white rounded-xl shadow-md px-5 py-4"
+    >
       <h1 v-if="!isExplorerFavorite">
         <a
           :href="mainUrl"
@@ -50,22 +52,25 @@
       </div>
     </div>
 
-    <HeaderRootCategories
-      v-if="showCategories"
-      :class="[
-        'flex-1 pointer-events-auto 2xl:max-h-screen overflow-y-auto',
-        showPoi && 'max-h-screen-1/2',
-      ]"
-      :highlighted-categories="highlightedCategories"
-      :non-highlighted-categories="nonHighlightedCategories"
-      :categories-activesubs-count="categoriesActivesubsCount"
-      @category-click="onCategoryClick"
-    />
+    <div v-if="showCategories">
+      <HeaderRootCategories
+        v-for="category in categoryRootCategories"
+        :key="category.id"
+        :class="[
+          'flex-1 pointer-events-auto 2xl:max-h-screen overflow-y-auto bg-white rounded-xl shadow-md px-5 py-4 mb-4',
+          showPoi && 'max-h-screen-1/2',
+        ]"
+        :categories-activesubs-count="categoriesActivesubsCount"
+        :category-id="category.id"
+        @category-click="onCategoryClick"
+      />
+    </div>
   </aside>
 </template>
 
 <script lang="ts">
 import Vue, { PropType } from 'vue'
+import { mapGetters } from 'vuex'
 
 import HeaderRootCategories from '@/components/HeaderRootCategories.vue'
 import { Category } from '@/utils/types'
@@ -79,20 +84,12 @@ export default Vue.extend({
       type: Boolean,
       default: false,
     },
-    highlightedCategories: {
-      type: Array,
-      required: true,
-    },
     logoUrl: {
       type: String,
       required: true,
     },
     mainUrl: {
       type: String,
-      required: true,
-    },
-    nonHighlightedCategories: {
-      type: Array,
       required: true,
     },
     siteName: {
@@ -115,6 +112,11 @@ export default Vue.extend({
       type: Boolean,
       default: false,
     },
+  },
+  computed: {
+    ...mapGetters({
+      categoryRootCategories: 'menu/categoryRootCategories',
+    }),
   },
   methods: {
     onCategoryClick(categoryId: Category['id']) {

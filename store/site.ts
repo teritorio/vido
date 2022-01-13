@@ -8,7 +8,7 @@ enum Mutation {
 }
 
 interface FetchConfigPayload {
-  apiEndpoint: string
+  config: SiteInfos
 }
 
 interface State {
@@ -36,18 +36,12 @@ export const mutations = {
 }
 
 export const actions = {
-  async fetchConfig(store: Store<State>, { apiEndpoint }: FetchConfigPayload) {
+  fetchConfig(store: Store<State>, { config }: FetchConfigPayload) {
     try {
-      const configPromise = await fetch(`${apiEndpoint}/geodata/v0.1/site`)
-      const config = await configPromise.json()
-
       store.commit(Mutation.SET_CONFIG, config)
     } catch (error) {
       // eslint-disable-next-line no-console
-      console.error(
-        'Vido error: Unable to fetch the site config from the API',
-        error
-      )
+      console.error('Vido error: Unable to fetch the site config', error)
     }
   },
 
@@ -58,7 +52,7 @@ export const actions = {
 
 export const getters = {
   all: (state: State) => state,
-  infos: (state: State) => (lang: string) => state.infos[lang],
+  infos: (state: State) => state.infos,
   isLoaded: (state: State) => state.isLoaded,
   mode: (state: State) => state.mode,
 }

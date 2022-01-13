@@ -1,25 +1,5 @@
 <template>
   <div class="flex flex-col space-y-6">
-    <!-- <div class="grid items-start grid-cols-4 gap-3">
-      <CategoryButton
-        v-for="category in highlightedCategories"
-        :id="category.id"
-        :key="category.id"
-        :color="category.metadata.color"
-        :label="category.metadata.label.fr"
-        :picto="category.metadata.picto"
-        @click="onCategoryClick"
-      />
-    </div>
-
-    <button
-      class="flex items-center justify-start gap-3 px-3 py-2 font-medium text-gray-800 rounded-md outline-none focus:outline-none hover:bg-gray-100 focus:bg-gray-100"
-      @click="onCollapseButtonClick"
-    >
-      <font-awesome-icon icon="chevron-down" />
-      <span>Plus de choix</span>
-    </button> -->
-
     <transition name="non-highlighted" appear>
       <div
         v-if="!collapsed"
@@ -29,10 +9,11 @@
           v-for="category in nonHighlightedCategories"
           :id="category.id"
           :key="category.id"
-          :color="category.metadata.color"
-          :label="category.metadata.label.fr"
-          :picto="category.metadata.picto"
-          :active-sub-categories="categoriesActivesubsCount[category.id] || 0"
+          :color="(category.menu_group || category.category).color"
+          :label="(category.menu_group || category.category).name.fr"
+          :picto="(category.menu_group || category.category).icon"
+          :type="(category.menu_group || category.category).display_mode"
+          :active-sub-categories="getCategoryCount(category.id)"
           @click="onCategoryClick(category)"
         />
       </div>
@@ -42,6 +23,7 @@
 
 <script lang="ts">
 import Vue, { PropType } from 'vue'
+import { mapGetters } from 'vuex'
 
 import CategoryButton from '@/components/CategoryButton/CategoryButton.vue'
 import { Category } from '@/utils/types'
@@ -51,12 +33,8 @@ export default Vue.extend({
     CategoryButton,
   },
   props: {
-    highlightedCategories: {
-      type: Array,
-      required: true,
-    },
-    nonHighlightedCategories: {
-      type: Array,
+    categoryId: {
+      type: Number,
       required: true,
     },
     categoriesActivesubsCount: {
@@ -71,6 +49,17 @@ export default Vue.extend({
       collapsed: false,
     }
   },
+  computed: {
+    ...mapGetters({
+      getHighlightedRootCategoriesFromCategoryId:
+        'menu/getHighlightedRootCategoriesFromCategoryId',
+      getNonHighlightedRootCategoriesFromCategoryId:
+        'menu/getNonHighlightedRootCategoriesFromCategoryId',
+    }),
+    nonHighlightedCategories(): Category[] {
+      return this.getNonHighlightedRootCategoriesFromCategoryId(this.categoryId)
+    },
+  },
   methods: {
     onCollapseButtonClick() {
       this.collapsed = !this.collapsed
@@ -79,9 +68,12 @@ export default Vue.extend({
       this.$tracking({
         type: 'category',
         categoryId: category.id,
-        title: category.metadata.label.fr,
+        title: (category.menu_group || category.category).name.fr,
       })
       this.$emit('category-click', category.id)
+    },
+    getCategoryCount(id: Category['id']) {
+      return this.categoriesActivesubsCount[id] || 0
     },
   },
 })

@@ -100,20 +100,11 @@
       />
 
       <SearchResultBlock
-        v-if="itemsTis.length > 0"
-        type="poiTIS"
-        :label="$tc('headerMenu.poisTis')"
+        v-if="itemsPois.length > 0"
+        type="pois"
+        :label="$tc('headerMenu.pois')"
         icon="map-marker-alt"
-        :items="itemsTis"
-        @item-click="onPoiClick"
-      />
-
-      <SearchResultBlock
-        v-if="itemsOsm.length > 0"
-        type="poiOSM"
-        :label="$tc('headerMenu.poisOsm')"
-        icon="map-marker-alt"
-        :items="itemsOsm"
+        :items="itemsPois"
         @item-click="onPoiClick"
       />
 
@@ -210,20 +201,9 @@ export default Vue.extend({
         : []
     },
 
-    itemsOsm(): SearchResult[] {
-      return this.searchResults && Array.isArray(this.searchResults.osm)
-        ? this.searchResults.osm.map((v) => ({
-            id: v.postid,
-            label: v.label,
-            icon: this.menuToIcon[v.menuId],
-            small: (v.commune && toTitleCase(v.commune)) || undefined,
-          }))
-        : []
-    },
-
-    itemsTis(): SearchResult[] {
-      return this.searchResults && Array.isArray(this.searchResults.tis)
-        ? this.searchResults.tis.map((v) => ({
+    itemsPois(): SearchResult[] {
+      return this.searchResults && Array.isArray(this.searchResults.pois)
+        ? this.searchResults.pois.map((v) => ({
             id: v.postid,
             label: v.label,
             icon: this.menuToIcon[v.menuId],
@@ -288,8 +268,7 @@ export default Vue.extend({
     results(): Number {
       return (
         this.itemsClasse.length +
-        this.itemsOsm.length +
-        this.itemsTis.length +
+        this.itemsPois.length +
         this.itemsAddress.length +
         this.itemsCartocode.length +
         this.itemsCities.length
@@ -393,7 +372,7 @@ export default Vue.extend({
       ) {
         this.isLoading = true
         fetch(
-          `${this.$config.API_ENDPOINT}/geodata/v0.1/search?q=${this.searchText}`
+          `${this.$config.API_ENDPOINT}/${this.$config.API_PROJECT}/${this.$config.API_THEME}/search?q=${this.searchText}`
         )
           .then((data) => data.json())
           .then((data) => {

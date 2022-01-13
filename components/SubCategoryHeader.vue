@@ -67,7 +67,7 @@ export default Vue.extend({
     },
     categoriesActivesubsCount: {
       type: Object as PropType<{ [id: string]: number }>,
-      default: {},
+      default: () => ({}),
     },
   },
   computed: {

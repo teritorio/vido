@@ -1,6 +1,6 @@
 import { Store } from 'vuex'
 
-import { LatLng, Pitch, ZoomLevel, VidoFeature } from '@/utils/types'
+import { LatLng, Pitch, ZoomLevel, VidoFeature, SiteInfos } from '@/utils/types'
 
 enum Mutation {
   SET_CONFIG = 'SET_CONFIG',
@@ -9,11 +9,12 @@ enum Mutation {
 }
 
 interface FetchConfigPayload {
-  apiEndpoint: string
+  config: SiteInfos
 }
 
 interface State {
   // attribution: { [lang: string]: string }
+  attribution: string[]
   center: LatLng
   isLoaded: boolean
   pitch: Pitch
@@ -39,6 +40,7 @@ interface State {
 }
 
 const getInitialMapview: Function = () => ({
+  attribution: [],
   center: {
     lat: 44.0122,
     lng: -0.6984,
@@ -75,6 +77,7 @@ export const mutations = {
     state.pitch = payload.pitch || 0
     state.zoom = payload.zoom
     state.selection_zoom = payload.selection_zoom
+    state.attribution = payload.attribution
 
     state.isLoaded = true
   },
@@ -90,18 +93,27 @@ export const mutations = {
 }
 
 export const actions = {
-  async fetchConfig(store: Store<State>, { apiEndpoint }: FetchConfigPayload) {
+  fetchConfig(store: Store<State>, { config }: FetchConfigPayload) {
     try {
-      const configPromise = await fetch(`${apiEndpoint}/geodata/v0.1/map`)
-      const config = await configPromise.json()
-
-      store.commit(Mutation.SET_CONFIG, config)
+      store.commit(
+        Mutation.SET_CONFIG,
+        Object.assign(store.state, {
+          center: config.bbox_line && {
+            lng:
+              (config.bbox_line.coordinates[0][0] +
+                config.bbox_line.coordinates[1][0]) /
+              2,
+            lat:
+              (config.bbox_line.coordinates[0][1] +
+                config.bbox_line.coordinates[1][1]) /
+              2,
+          },
+          attribution: config.attributions || [],
+        })
+      )
     } catch (error) {
       // eslint-disable-next-line no-console
-      console.error(
-        'Vido error: Unable to fetch the map config from the API',
-        error
-      )
+      console.error('Vido error: Unable to fetch the map config', error)
     }
   },
   resetMapview(store: Store<State>) {
@@ -114,7 +126,7 @@ export const actions = {
 
 export const getters = {
   all: (state: State) => state,
-  // attribution: (state: State) => state.attribution,
+  attribution: (state: State) => state.attribution,
   center: (state: State) => state.center,
   isLoaded: (state: State) => state.isLoaded,
   pitch: (state: State) => state.pitch,
