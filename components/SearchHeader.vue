@@ -82,21 +82,12 @@
 
     <div v-if="searchResults" class="overflow-y-auto">
       <SearchResultBlock
-        v-if="itemsClasse.length > 0"
+        v-if="itemsMenuItems.length > 0"
         type="category"
         :label="$tc('headerMenu.categories')"
         icon="layer-group"
-        :items="itemsClasse"
+        :items="itemsMenuItems"
         @item-click="onCategoryClick"
-      />
-
-      <SearchResultBlock
-        v-if="itemsCities.length > 0"
-        type="city"
-        :label="$tc('headerMenu.cities')"
-        icon="city"
-        :items="itemsCities"
-        @item-click="onAddressClick"
       />
 
       <SearchResultBlock
@@ -134,17 +125,11 @@
 </template>
 
 <script lang="ts">
-import copy from 'fast-copy'
 import debounce from 'lodash.debounce'
 import Vue, { PropType } from 'vue'
 
 import SearchResultBlock from '@/components/SearchResultBlock.vue'
-import { toTitleCase } from '@/utils/string'
-import {
-  ApiSearchResults,
-  ApiAddrSearchResult,
-  SearchResult,
-} from '@/utils/types'
+import { ApiSearchResults, SearchResult } from '@/utils/types'
 
 export default Vue.extend({
   components: {
@@ -161,7 +146,7 @@ export default Vue.extend({
       required: true,
     },
     menuToIcon: {
-      type: Object as PropType<{ [menuId: string]: string }>,
+      type: Object as PropType<{ [id: string]: string }>,
       required: true,
     },
     selectionZoom: {
@@ -191,50 +176,34 @@ export default Vue.extend({
   },
 
   computed: {
-    itemsClasse(): SearchResult[] {
-      return this.searchResults && Array.isArray(this.searchResults.classe)
-        ? this.searchResults.classe.map((v) => ({
-            id: v.filterid || v.menuId,
-            label: v.label,
-            icon: this.menuToIcon[v.menuId],
-          }))
-        : []
+    itemsMenuItems(): SearchResult[] {
+      return (
+        this.searchResults?.menu_items.features?.map((v) => ({
+          id: v.properties.id,
+          label: v.properties.label,
+          icon: this.menuToIcon[v.properties.id],
+        })) || []
+      )
     },
 
     itemsPois(): SearchResult[] {
-      return this.searchResults && Array.isArray(this.searchResults.pois)
-        ? this.searchResults.pois.map((v) => ({
-            id: v.postid,
-            label: v.label,
-            icon: this.menuToIcon[v.menuId],
-            small: (v.commune && toTitleCase(v.commune)) || undefined,
-          }))
-        : []
-    },
-
-    itemsCities(): SearchResult[] {
-      if (
-        !this.searchResults ||
-        !Array.isArray(this.searchResults.municipality)
-      ) {
-        return []
-      }
-
-      return this.searchResults.municipality.map((v) => ({
-        id: v.ID,
-        label: v.label,
-      }))
+      return (
+        this.searchResults?.pois.features?.map((v) => ({
+          id: v.properties.id,
+          label: v.properties.label,
+          icon: v.properties.icon,
+          small: v.properties.city,
+        })) || []
+      )
     },
 
     itemsAddress(): SearchResult[] {
-      if (!this.searchResults || !Array.isArray(this.searchResults.adress)) {
-        return []
-      }
-
-      return this.searchResults.adress.map((v) => ({
-        id: v.ID,
-        label: v.label,
-      }))
+      return (
+        this.searchResults?.addresses.features?.map((v) => ({
+          id: v.properties.id,
+          label: v.properties.label,
+        })) || []
+      )
     },
 
     itemsCartocode(): SearchResult[] {
@@ -252,26 +221,12 @@ export default Vue.extend({
       }))
     },
 
-    addressResults(): ApiAddrSearchResult[] {
-      return this.searchResults
-        ? (Array.isArray(this.searchResults.municipality)
-            ? this.searchResults.municipality
-            : []
-          ).concat(
-            Array.isArray(this.searchResults.adress)
-              ? this.searchResults.adress
-              : []
-          )
-        : []
-    },
-
     results(): Number {
       return (
-        this.itemsClasse.length +
+        this.itemsMenuItems.length +
         this.itemsPois.length +
         this.itemsAddress.length +
-        this.itemsCartocode.length +
-        this.itemsCities.length
+        this.itemsCartocode.length
       )
     },
   },
@@ -310,9 +265,9 @@ export default Vue.extend({
     },
 
     onCategoryClick(id: number) {
-      if (this.searchResults?.classe) {
-        const filter = this.searchResults.classe.find(
-          (a) => a.filterid === id || a.menuId === id
+      if (this.searchResults?.menu_items) {
+        const filter = this.searchResults.menu_items.features.find(
+          (a) => a.properties.id === id
         )
 
         this.$emit('category-click', filter)
@@ -330,23 +285,19 @@ export default Vue.extend({
     },
 
     onAddressClick(id: number) {
-      let feature = this.addressResults.find((a) => a.ID === id)?.geojson
-      const isCity =
-        (this.searchResults && Array.isArray(this.searchResults.municipality)
-          ? this.searchResults.municipality
-          : []
-        ).find((a) => a.ID === id) !== undefined
+      const feature = (this.searchResults?.addresses.features || []).find(
+        (a) => a.properties.id === id
+      )
       if (feature) {
-        feature = copy(feature)
-        if (!feature.properties) {
-          feature.properties = {}
-        }
-        feature.properties.faIcon = 'home'
-        feature.properties.class = 'Adresse'
-        feature.properties.vido_zoom = isCity
-          ? this.selectionZoom.zoom_commune
-          : this.selectionZoom.zoom_ban
-        this.$emit('feature-click', feature)
+        const f = Object.assign({}, feature, {
+          faIcon: 'home',
+          class: 'Adresse',
+          vido_zoom:
+            feature.properties.type === 'municipality'
+              ? this.selectionZoom.zoom_commune
+              : this.selectionZoom.zoom_ban,
+        })
+        this.$emit('feature-click', f)
       }
       this.reset()
     },

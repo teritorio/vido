@@ -170,7 +170,7 @@ import {
   Category,
   Mode,
   FilterValues,
-  ApiFilterSearchResult,
+  ApiMenuItemSearchResult,
 } from '@/utils/types'
 import { getHashPart, setHashPart } from '@/utils/url'
 
@@ -534,13 +534,13 @@ export default Vue.extend({
         }
       })
     },
-    onSearchCategory(newFilter: ApiFilterSearchResult) {
-      if (newFilter.filterid) {
+    onSearchCategory(newFilter: ApiMenuItemSearchResult) {
+      if (newFilter.filter_property) {
         const newFilters = Object.assign({}, this.filters)
 
-        newFilters[`${newFilter.menuId}`] = {
+        newFilters[`${newFilter.id}`] = {
           selectionFilter: {
-            [newFilter.tag]: [`${newFilter.filter}`],
+            [newFilter.filter_property]: [`${newFilter.id}`],
           },
         }
 
@@ -551,7 +551,7 @@ export default Vue.extend({
       setHashPart('fav', null)
       this.$store.dispatch('favorite/handleFavoriteLayer', false)
       this.$store.dispatch('favorite/setFavoritesAction', 'close')
-      this.selectSubCategory([newFilter.menuId])
+      this.selectSubCategory([newFilter.id])
     },
     onFeatureClick(feature: VidoFeature) {
       this.setSelectedFeature(feature).then(() => {
