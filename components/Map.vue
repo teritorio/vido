@@ -98,7 +98,11 @@ import { deepEqual } from 'fast-equals'
 import GeoJSON from 'geojson'
 import throttle from 'lodash.throttle'
 import Mapbox from 'mapbox-gl-vue'
-import maplibregl, { MapLayerMouseEvent, MapLayerTouchEvent } from 'maplibre-gl'
+import maplibregl, {
+  MapLayerMouseEvent,
+  MapLayerTouchEvent,
+  Layer,
+} from 'maplibre-gl'
 import Vue, { PropType } from 'vue'
 import { mapGetters, mapActions } from 'vuex'
 
@@ -269,6 +273,45 @@ const Map = Vue.extend({
     vectoStyle = await updateStyle(vectoStyle)
     satelliteStyle = await updateStyle(satelliteStyle)
     const mapnikAttribution = this.attribution.join(' ')
+
+    const insertIntex = vectoStyle.layers.findIndex(
+      (layer: Layer) => layer.id === 'waterway-name'
+    )
+    vectoStyle.layers.splice(
+      insertIntex,
+      0,
+      {
+        id: 'route_tourism-casing',
+        type: 'line',
+        source: 'openmaptiles',
+        'source-layer': 'route_tourism',
+        paint: {
+          'line-width': 5,
+          'line-color': 'rgb(235, 235, 235)',
+        },
+        layout: {
+          'line-join': 'round',
+          'line-cap': 'round',
+        },
+        filter: false,
+      },
+      {
+        id: 'route_tourism',
+        type: 'line',
+        source: 'openmaptiles',
+        'source-layer': 'route_tourism',
+        paint: {
+          'line-width': 3,
+          'line-color': ['coalesce', ['get', 'color'], 'rgb(215, 0, 0)'],
+          'line-dasharray': [3, 2],
+        },
+        layout: {
+          'line-join': 'round',
+          'line-cap': 'round',
+        },
+        filter: false,
+      }
+    )
 
     this.mapStyles = {
       [MapStyle.teritorio]: vectoStyle,
@@ -447,6 +490,13 @@ const Map = Vue.extend({
           feature?.id ||
           feature?.properties?.id)
       ) {
+        const id =
+          feature.properties?.metadata?.id ||
+          feature?.id ||
+          feature?.properties?.id
+        this.map.setFilter('route_tourism-casing', ['==', ['id'], id])
+        this.map.setFilter('route_tourism', ['==', ['id'], id])
+
         setHashPart(
           'poi',
           feature?.properties?.metadata?.id?.toString() ||
@@ -470,6 +520,9 @@ const Map = Vue.extend({
           )
           .addTo(this.map)
       } else {
+        this.map.setFilter('route_tourism-casing', false)
+        this.map.setFilter('route_tourism', false)
+
         this.showPoiToast = false
         setHashPart('poi', null)
       }
