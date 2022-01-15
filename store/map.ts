@@ -1,6 +1,7 @@
+import type { LngLatBoundsLike } from 'maplibre-gl'
 import { Store } from 'vuex'
 
-import { LatLng, Pitch, ZoomLevel, VidoFeature, SiteInfos } from '@/utils/types'
+import { Pitch, ZoomLevel, VidoFeature, SiteInfos } from '@/utils/types'
 
 enum Mutation {
   SET_CONFIG = 'SET_CONFIG',
@@ -15,7 +16,8 @@ interface FetchConfigPayload {
 interface State {
   // attribution: { [lang: string]: string }
   attribution: string[]
-  center: LatLng
+  // eslint-disable-next-line camelcase
+  default_bounds: LngLatBoundsLike
   isLoaded: boolean
   pitch: Pitch
   zoom: {
@@ -41,10 +43,10 @@ interface State {
 
 const getInitialMapview: Function = () => ({
   attribution: [],
-  center: {
-    lat: 44.0122,
-    lng: -0.6984,
-  },
+  default_bounds: [
+    [1.43862, 42.41845],
+    [1.68279, 42.6775],
+  ],
   zoom: {
     default: 8,
     max: 20,
@@ -73,7 +75,7 @@ export const state = (): State | null =>
 export const mutations = {
   [Mutation.SET_CONFIG](state: State, payload: State) {
     // state.attribution = payload.attribution
-    state.center = payload.center
+    state.default_bounds = payload.default_bounds
     state.pitch = payload.pitch || 0
     state.zoom = payload.zoom
     state.selection_zoom = payload.selection_zoom
@@ -82,8 +84,7 @@ export const mutations = {
     state.isLoaded = true
   },
   [Mutation.RESET_MAPVIEW](state: State) {
-    state.center = getInitialMapview().center
-    state.zoom = getInitialMapview().zoom
+    state.default_bounds = getInitialMapview().default_bounds
   },
   [Mutation.SELECT_FEATURE](state: State, payload: State) {
     // JSON conversion necessary to have map watcher working
@@ -98,16 +99,7 @@ export const actions = {
       store.commit(
         Mutation.SET_CONFIG,
         Object.assign(store.state, {
-          center: config.bbox_line && {
-            lng:
-              (config.bbox_line.coordinates[0][0] +
-                config.bbox_line.coordinates[1][0]) /
-              2,
-            lat:
-              (config.bbox_line.coordinates[0][1] +
-                config.bbox_line.coordinates[1][1]) /
-              2,
-          },
+          default_bounds: config.bbox_line?.coordinates || [],
           attribution: config.attributions || [],
         })
       )
@@ -127,7 +119,7 @@ export const actions = {
 export const getters = {
   all: (state: State) => state,
   attribution: (state: State) => state.attribution,
-  center: (state: State) => state.center,
+  default_bounds: (state: State) => state.default_bounds,
   isLoaded: (state: State) => state.isLoaded,
   pitch: (state: State) => state.pitch,
   zoom: (state: State) => state.zoom,

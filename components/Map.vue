@@ -17,7 +17,7 @@
           class="h-full"
           access-token=""
           :map-options="{
-            center: [center.lng, center.lat],
+            bounds: default_bounds,
             hash: 'map',
             maxZoom: zoom.max,
             minZoom: zoom.min,
@@ -311,7 +311,7 @@ const Map = Vue.extend({
   computed: {
     ...mapGetters({
       attribution: 'map/attribution',
-      center: 'map/center',
+      default_bounds: 'map/default_bounds',
       features: 'menu/features',
       zoom: 'map/zoom',
       mode: 'site/mode',
@@ -899,9 +899,8 @@ const Map = Vue.extend({
     },
 
     resetZoom() {
-      this.map?.flyTo({
-        center: [this.center.lng, this.center.lat],
-        zoom: this.zoom.default,
+      this.map?.fitBounds(this.default_bounds, {
+        linear: false,
       })
     },
 
