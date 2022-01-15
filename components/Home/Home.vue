@@ -65,6 +65,7 @@
               :menu-to-icon="categoriesToIcons"
               :selection-zoom="selectionZoom"
               :is-explorer-favorite="isModeExplorer || isModeFavorite"
+              :map-center="map_center"
               @go-back-click="goToHome"
               @category-click="onSearchCategory"
               @poi-click="onSearchPoi"
@@ -83,6 +84,7 @@
             :selection-zoom="selectionZoom"
             :is-explorer-favorite="isModeExplorer || isModeFavorite"
             :is-favorite="isModeFavorite"
+            :map-center="map_center"
             @go-to-categories="onQuitExplorerFavoriteMode"
             @go-back-click="goToHome"
             @category-click="onSearchCategory"
@@ -263,6 +265,7 @@ export default Vue.extend({
       mode: 'site/mode',
       selectedFeature: 'map/selectedFeature',
       selectionZoom: 'map/selectionZoom',
+      map_center: 'map/center',
       isModeFavorite: 'favorite/isModeFavorite',
     }),
     events: () => HomeEvents,

@@ -201,16 +201,8 @@ export type ApiAddrSearchResult = {
 }
 
 export type ApiCartocodeSearchResult = {
-  postid: number
+  id: number
   label: string
-}
-
-export type ApiSearchResults = {
-  // eslint-disable-next-line camelcase
-  menu_items: ApiSearchResult<ApiMenuItemSearchResult>
-  pois: ApiSearchResult<ApiPoisSearchResult>
-  addresses: ApiSearchResult<ApiAddrSearchResult>
-  cartocode: ApiCartocodeSearchResult | ApiCartocodeSearchResult[]
 }
 
 export type SearchResult = {
@@ -218,6 +210,10 @@ export type SearchResult = {
   label: string
   icon?: string
   small?: string
+  // eslint-disable-next-line camelcase
+  filter_property?: string
+  // eslint-disable-next-line camelcase
+  filter_value?: string
 }
 
 export type VidoMglStyle = Style & {

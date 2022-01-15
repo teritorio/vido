@@ -7,7 +7,7 @@
     <ul>
       <li
         v-for="item in items"
-        :key="item.id"
+        :key="`${item.id}-${item.filter_property}-${item.filter_value}`"
         class="flex flex-row items-baseline justify-start gap-x-1 mb-1 hover:bg-gray-100 cursor-pointer rounded-xl ml-2 px-2"
         :data-item="item.id"
         @click="onItemClick(item)"

@@ -72,7 +72,7 @@
     </div>
 
     <button
-      v-if="searchResults"
+      v-if="results > 0"
       type="button"
       class="sm:hidden flex-shrink-0 w-10 h-10 text-2xl font-bold transition-all rounded-full outline-none cursor-pointer focus:outline-none hover:bg-gray-100 focus:bg-gray-100"
       @click="reset"
@@ -80,7 +80,7 @@
       <font-awesome-icon icon="arrow-left" class="text-gray-800" size="xs" />
     </button>
 
-    <div v-if="searchResults" class="overflow-y-auto">
+    <div v-if="results > 0" class="overflow-y-auto">
       <SearchResultBlock
         v-if="itemsMenuItems.length > 0"
         type="category"
@@ -100,11 +100,11 @@
       />
 
       <SearchResultBlock
-        v-if="itemsAddress.length > 0"
+        v-if="itemsAddresses.length > 0"
         type="addresse"
         :label="$tc('headerMenu.addresses')"
         icon="home"
-        :items="itemsAddress"
+        :items="itemsAddresses"
         @item-click="onAddressClick"
       />
 
@@ -117,7 +117,7 @@
         @item-click="onPoiClick"
       />
 
-      <p v-if="results == 0">
+      <p v-if="results === 0">
         {{ $tc('headerMenu.noResult') }}
       </p>
     </div>
@@ -129,7 +129,14 @@ import debounce from 'lodash.debounce'
 import Vue, { PropType } from 'vue'
 
 import SearchResultBlock from '@/components/SearchResultBlock.vue'
-import { ApiSearchResults, SearchResult } from '@/utils/types'
+import {
+  ApiPoisSearchResult,
+  ApiMenuItemSearchResult,
+  ApiAddrSearchResult,
+  SearchResult,
+  ApiSearchResult,
+  ApiCartocodeSearchResult,
+} from '@/utils/types'
 
 export default Vue.extend({
   components: {
@@ -161,34 +168,48 @@ export default Vue.extend({
       type: Boolean,
       default: false,
     },
+    mapCenter: {
+      type: Object as PropType<{ lng: number; lat: number }>,
+      default: { lng: 0, lat: 0 },
+    },
   },
 
   data(): {
     searchText: string
-    searchResults: null | ApiSearchResults
+    searchMenuItemsResults: null | ApiSearchResult<ApiMenuItemSearchResult>
+    searchPoisResults: null | ApiSearchResult<ApiPoisSearchResult>
+    searchAddressesResults: null | ApiSearchResult<ApiAddrSearchResult>
+    searchCartocodeResults: null | ApiSearchResult<ApiCartocodeSearchResult>
     isLoading: boolean
+    search: null | Function
   } {
     return {
       searchText: '',
-      searchResults: null,
+      searchMenuItemsResults: null,
+      searchPoisResults: null,
+      searchAddressesResults: null,
+      searchCartocodeResults: null,
       isLoading: false,
+      search: null,
     }
   },
 
   computed: {
     itemsMenuItems(): SearchResult[] {
       return (
-        this.searchResults?.menu_items.features?.map((v) => ({
+        this.searchMenuItemsResults?.features?.map((v) => ({
           id: v.properties.id,
           label: v.properties.label,
           icon: this.menuToIcon[v.properties.id],
+          filter_property: v.properties.filter_property,
+          filter_value: v.properties.filter_value,
         })) || []
       )
     },
 
     itemsPois(): SearchResult[] {
       return (
-        this.searchResults?.pois.features?.map((v) => ({
+        this.searchPoisResults?.features?.map((v) => ({
           id: v.properties.id,
           label: v.properties.label,
           icon: v.properties.icon,
@@ -197,9 +218,9 @@ export default Vue.extend({
       )
     },
 
-    itemsAddress(): SearchResult[] {
+    itemsAddresses(): SearchResult[] {
       return (
-        this.searchResults?.addresses.features?.map((v) => ({
+        this.searchAddressesResults?.features?.map((v) => ({
           id: v.properties.id,
           label: v.properties.label,
         })) || []
@@ -207,25 +228,19 @@ export default Vue.extend({
     },
 
     itemsCartocode(): SearchResult[] {
-      if (!this.searchResults?.cartocode) {
-        return []
-      }
-
-      const goodCartocode = Array.isArray(this.searchResults.cartocode)
-        ? this.searchResults.cartocode
-        : [this.searchResults.cartocode]
-
-      return goodCartocode.map((v) => ({
-        id: v.postid,
-        label: v.label,
-      }))
+      return (
+        this.searchCartocodeResults?.features?.map((v) => ({
+          id: v.properties.id,
+          label: v.properties.label,
+        })) || []
+      )
     },
 
     results(): Number {
       return (
         this.itemsMenuItems.length +
         this.itemsPois.length +
-        this.itemsAddress.length +
+        this.itemsAddresses.length +
         this.itemsCartocode.length
       )
     },
@@ -233,14 +248,14 @@ export default Vue.extend({
 
   watch: {
     itemsCartocode(val) {
-      if (val.length === 1 && this.results === 1) {
+      if (val && val.length === 1 && this.results === 1) {
         this.onPoiClick(val[0].id)
       }
     },
   },
 
   created() {
-    this.search = debounce(this.search, 1000)
+    this.search = debounce(this.search_, 300)
   },
 
   mounted() {
@@ -252,7 +267,10 @@ export default Vue.extend({
   methods: {
     reset() {
       this.isLoading = false
-      this.searchResults = null
+      this.searchMenuItemsResults = null
+      this.searchPoisResults = null
+      this.searchAddressesResults = null
+      this.searchCartocodeResults = null
       this.searchText = ''
     },
 
@@ -265,8 +283,8 @@ export default Vue.extend({
     },
 
     onCategoryClick(id: number) {
-      if (this.searchResults?.menu_items) {
-        const filter = this.searchResults.menu_items.features.find(
+      if (this.searchMenuItemsResults) {
+        const filter = this.searchMenuItemsResults.features.find(
           (a) => a.properties.id === id
         )
 
@@ -285,7 +303,7 @@ export default Vue.extend({
     },
 
     onAddressClick(id: number) {
-      const feature = (this.searchResults?.addresses.features || []).find(
+      const feature = (this.searchAddressesResults?.features || []).find(
         (a) => a.properties.id === id
       )
       if (feature) {
@@ -308,28 +326,71 @@ export default Vue.extend({
         !this.isLoading &&
         (!this.searchText || this.searchText.trim().length === 0)
       ) {
-        this.searchResults = null
+        this.searchMenuItemsResults = null
+        this.searchPoisResults = null
+        this.searchAddressesResults = null
+        this.searchCartocodeResults = null
       }
 
       // Launch search if not already loading + search text length >= 3
-      this.search()
+      if (this.search) {
+        this.search()
+      }
     },
 
-    search() {
-      if (
-        !this.isLoading &&
-        this.searchText &&
-        this.searchText.trim().length >= 2
-      ) {
-        this.isLoading = true
-        fetch(
-          `${this.$config.API_ENDPOINT}/${this.$config.API_PROJECT}/${this.$config.API_THEME}/search?q=${this.searchText}`
-        )
-          .then((data) => data.json())
-          .then((data) => {
-            this.searchResults = data
-            this.isLoading = false
-          })
+    async search_() {
+      if (!this.isLoading && this.searchText) {
+        const searchText = this.searchText.trim()
+        if (searchText.length === 2) {
+          this.isLoading = true
+
+          const cartocodeFetch: Promise<
+            ApiSearchResult<ApiCartocodeSearchResult>
+          > = fetch(
+            `${this.$config.API_ENDPOINT}/${this.$config.API_PROJECT}/${this.$config.API_THEME}/search?type=cartocode&q=${this.searchText}`
+          ).then((data) => (data.ok ? data.json() : null))
+
+          const [searchCartocodeResults] = await Promise.all([cartocodeFetch])
+
+          this.searchMenuItemsResults = null
+          this.searchPoisResults = null
+          this.searchAddressesResults = null
+          this.searchCartocodeResults = searchCartocodeResults
+          this.isLoading = false
+        } else if (searchText.length > 2) {
+          this.isLoading = true
+
+          const query = `q=${this.searchText}&lon=${this.mapCenter.lng}&lat=${this.mapCenter.lat}`
+
+          const MenuItemsFetch: Promise<
+            ApiSearchResult<ApiMenuItemSearchResult>
+          > = fetch(
+            `${this.$config.API_ENDPOINT}/${this.$config.API_PROJECT}/${this.$config.API_THEME}/search?type=menu_item&${query}`
+          ).then((data) => (data.ok ? data.json() : null))
+
+          const poisFetch: Promise<
+            ApiSearchResult<ApiPoisSearchResult>
+          > = fetch(
+            `${this.$config.API_ENDPOINT}/${this.$config.API_PROJECT}/${this.$config.API_THEME}/search?type=poi&${query}`
+          ).then((data) => (data.ok ? data.json() : null))
+
+          const addressesFetch: Promise<
+            ApiSearchResult<ApiAddrSearchResult>
+          > = fetch(
+            `https://api-adresse.data.gouv.fr/search/?${query}`
+          ).then((data) => (data.ok ? data.json() : null))
+
+          const [
+            searchMenuItemsResults,
+            searchPoisResults,
+            searchAddressesResults,
+          ] = await Promise.all([MenuItemsFetch, poisFetch, addressesFetch])
+          this.searchMenuItemsResults = searchMenuItemsResults
+          this.searchPoisResults = searchPoisResults
+          this.searchAddressesResults = searchAddressesResults
+          this.searchCartocodeResults = null
+          this.isLoading = false
+        }
       }
     },
   },
