@@ -49,6 +49,8 @@ jobs:
       - name: Build
         env:
           API_ENDPOINT: https://cdt40.carto.guide/api.teritorio/geodata/v0.1
+          API_SEARCH: https://cdt40.carto.guide/api.teritorio/geodata/v0.1/search
+          API_SEARCH_ADDR: https://api-adresse.data.gouv.fr/search/
           API_PROJECT: ${{secrets.API_PROJECT_DEV}}
           API_THEME: ${{secrets.API_THEME_DEV}}
           VECTO_STYLE_URL: ${{secrets.VECTO_STYLE_URL_DEV}}

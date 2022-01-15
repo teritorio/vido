@@ -340,6 +340,7 @@ export default Vue.extend({
 
     async search_() {
       if (!this.isLoading && this.searchText) {
+        const projectTheme = `project_theme=${this.$config.API_PROJECT}-${this.$config.API_THEME}`
         const searchText = this.searchText.trim()
         if (searchText.length === 2) {
           this.isLoading = true
@@ -347,7 +348,7 @@ export default Vue.extend({
           const cartocodeFetch: Promise<
             ApiSearchResult<ApiCartocodeSearchResult>
           > = fetch(
-            `${this.$config.API_ENDPOINT}/${this.$config.API_PROJECT}/${this.$config.API_THEME}/search?type=cartocode&q=${this.searchText}`
+            `${this.$config.API_SEARCH}?${projectTheme}&type=cartocode&q=${this.searchText}`
           ).then((data) => (data.ok ? data.json() : null))
 
           const [searchCartocodeResults] = await Promise.all([cartocodeFetch])
@@ -365,20 +366,20 @@ export default Vue.extend({
           const MenuItemsFetch: Promise<
             ApiSearchResult<ApiMenuItemSearchResult>
           > = fetch(
-            `${this.$config.API_ENDPOINT}/${this.$config.API_PROJECT}/${this.$config.API_THEME}/search?type=menu_item&${query}`
+            `${this.$config.API_SEARCH}?${projectTheme}&type=menu_item&${query}`
           ).then((data) => (data.ok ? data.json() : null))
 
           const poisFetch: Promise<
             ApiSearchResult<ApiPoisSearchResult>
           > = fetch(
-            `${this.$config.API_ENDPOINT}/${this.$config.API_PROJECT}/${this.$config.API_THEME}/search?type=poi&${query}`
+            `${this.$config.API_SEARCH}?${projectTheme}&type=poi&${query}`
           ).then((data) => (data.ok ? data.json() : null))
 
           const addressesFetch: Promise<
             ApiSearchResult<ApiAddrSearchResult>
-          > = fetch(
-            `https://api-adresse.data.gouv.fr/search/?${query}`
-          ).then((data) => (data.ok ? data.json() : null))
+          > = fetch(`${this.$config.API_SEARCH_ADDR}?${query}`).then((data) =>
+            data.ok ? data.json() : null
+          )
 
           const [
             searchMenuItemsResults,
