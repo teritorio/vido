@@ -88,5 +88,15 @@ export default {
     open: 'Opens',
     openAt: 'Opens at',
     zoom: 'Zoom',
+    routePopup: {
+      hiking: 'Hiking',
+      bicycle: 'Bicycle',
+      road: 'Car',
+      min: 'min',
+      km: 'km',
+      easy: 'easy',
+      normal: 'normal',
+      hard: 'hard',
+    },
   },
 }
