@@ -204,28 +204,22 @@ const Map = Vue.extend({
     }
   },
   async fetch() {
-    const vectoFetch = fetch(this.$config.VECTO_STYLE_URL)
-      .then((res) => res.json())
-      .then((vectoStyle) => {
-        if (vectoStyle?.sources?.openmaptiles.url) {
-          vectoStyle.sources.openmaptiles.url = this.$config.VECTO_TILES_URL
-        }
-        return vectoStyle
+    let [vectoStyle, satelliteStyle, rasterStyle] = await Promise.all(
+      [
+        this.$config.VECTO_STYLE_URL,
+        this.$config.SATELLITE_STYLE_URL,
+        this.$config.RASTER_STYLE_URL,
+      ].map((styleUrl) => {
+        return fetch(styleUrl)
+          .then((res) => res.json())
+          .then((vectoStyle) => {
+            if (vectoStyle?.sources?.openmaptiles?.url) {
+              vectoStyle.sources.openmaptiles.url = this.$config.VECTO_TILES_URL
+            }
+            return vectoStyle
+          })
       })
-
-    const satelliteFetch = fetch(this.$config.SATELLITE_STYLE_URL)
-      .then((res) => res.json())
-      .then((satelliteStyle) => {
-        if (satelliteStyle?.sources?.openmaptiles.url) {
-          satelliteStyle.sources.openmaptiles.url = this.$config.VECTO_TILES_URL
-        }
-        return satelliteStyle
-      })
-
-    let [vectoStyle, satelliteStyle] = await Promise.all([
-      vectoFetch,
-      satelliteFetch,
-    ])
+    )
 
     const updateStyle = async (style: any) => {
       const vectoSources: {
@@ -272,7 +266,7 @@ const Map = Vue.extend({
 
     vectoStyle = await updateStyle(vectoStyle)
     satelliteStyle = await updateStyle(satelliteStyle)
-    const mapnikAttribution = this.attribution.join(' ')
+    rasterStyle = await updateStyle(rasterStyle)
 
     const insertIntex = vectoStyle.layers.findIndex(
       (layer: Layer) => layer.id === 'waterway-name'
@@ -315,35 +309,8 @@ const Map = Vue.extend({
 
     this.mapStyles = {
       [MapStyle.teritorio]: vectoStyle,
-      [MapStyle.mapnik]: {
-        version: 8,
-        name: this.$tc('map.mapnik.name'),
-        vido_israster: true,
-        glyphs: 'https://vecto.teritorio.xyz/fonts/{fontstack}/{range}.pbf',
-        sources: {
-          mapnik: {
-            type: 'raster',
-            tiles: [
-              // 'https://tile.openstreetmap.org/{z}/{x}/{y}.png', // Main OSM tiles
-              'https://a.tiles.teritorio.xyz/styles/osm/{z}/{x}/{y}.png',
-              'https://b.tiles.teritorio.xyz/styles/osm/{z}/{x}/{y}.png',
-              'https://c.tiles.teritorio.xyz/styles/osm/{z}/{x}/{y}.png',
-            ],
-            tileSize: 256,
-            attribution: mapnikAttribution,
-          },
-        },
-        layers: [
-          {
-            id: 'mapnik',
-            type: 'raster',
-            source: 'mapnik',
-            minzoom: 1,
-            maxzoom: 20,
-          },
-        ],
-      },
       [MapStyle.aerial]: satelliteStyle,
+      [MapStyle.mapnik]: rasterStyle,
     }
 
     this.mapStyle =

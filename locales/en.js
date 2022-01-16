@@ -18,13 +18,6 @@ export default {
     noFavs:
       'You do not have any favorite places yet. You can do this by selecting a location on the map, then saving it as a favorite.',
   },
-  map: {
-    mapnik: {
-      name: 'Teritorio Mapnik',
-      attribution:
-        '<a href="https://www.openstreetmap.org/copyright" rel="noopener noreferrer" target="_blank">&copy; OpenStreetMap contributors</a> <a href="https://www.teritorio.fr/" rel="noopener noreferrer" target="_blank">&copy; Teritorio</a>',
-    },
-  },
   mapControls: {
     exploreAriaLabel: 'Explore Mode',
     exploreButton: 'Switch to Explore mode',

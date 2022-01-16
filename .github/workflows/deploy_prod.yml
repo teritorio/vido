@@ -53,6 +53,7 @@ jobs:
           API_THEME: ${{secrets.API_THEME_PROD}}
           VECTO_STYLE_URL: ${{secrets.VECTO_STYLE_URL_PROD}}
           SATELLITE_STYLE_URL: ${{secrets.SATELLITE_STYLE_URL_PROD}}
+          RASTER_STYLE_URL: ${{secrets.RASTER_STYLE_URL_PROD}}
           VECTO_TILES_URL: ${{secrets.VECTO_TILES_URL_PROD}}
           SENTRY_DSN: ${{secrets.SENTRY_DSN_PROD}}
           NOTEBOOK_ENABLED: ${{secrets.NOTEBOOK_ENABLED_PROD}}
