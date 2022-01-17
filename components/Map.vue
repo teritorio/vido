@@ -102,6 +102,7 @@ import maplibregl, {
   MapLayerMouseEvent,
   MapLayerTouchEvent,
   Layer,
+  MapDataEvent,
 } from 'maplibre-gl'
 import Vue, { PropType } from 'vue'
 import { mapGetters, mapActions } from 'vuex'
@@ -518,6 +519,26 @@ const Map = Vue.extend({
 
       this.mapStyle = this.mapStyles[this.selectedBackground]
       this.map.setStyle(this.mapStyle)
+
+      // Re-enable route highlight after style change
+      const styledataCallBack = (e: MapDataEvent) => {
+        if (this.map && e.dataType === 'style') {
+          this.map.off('styledata', styledataCallBack)
+
+          const feature = this.selectedFeature
+          if (feature && feature.geometry.type === 'Point') {
+            const id =
+              feature.properties?.metadata?.id ||
+              feature?.id ||
+              feature?.properties?.id
+            if (this.map.getLayer('route_tourism-casing')) {
+              this.map.setFilter('route_tourism-casing', ['==', ['id'], id])
+              this.map.setFilter('route_tourism', ['==', ['id'], id])
+            }
+          }
+        }
+      }
+      this.map.on('styledata', styledataCallBack)
     },
 
     mode() {
