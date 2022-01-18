@@ -32,7 +32,7 @@
               !isModeFavorite &&
               state.matches(states.SubCategories)
             "
-            class="hidden sm:flex"
+            class="hidden sm:flex m-2"
             :categories="state.context.selectedRootCategory.subCategories"
             :filtered-categories="filteredSubCategories"
             :is-sub-category-selected="isSubCategorySelected"
@@ -45,7 +45,7 @@
 
           <SubCategoryFilterHeader
             v-if="!isModeExplorer && state.matches(states.SubCategoryFilters)"
-            class="hidden sm:flex"
+            class="hidden sm:flex m-2"
             :subcategory="subCategoryForFilter"
             :filters-values="subCategoryFilters"
             @filter-changed="onSubCategoryFilterChange"
