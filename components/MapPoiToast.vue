@@ -73,6 +73,12 @@
           </template>
         </p>
 
+        <template v-for="(route, activity) in routes">
+          <p :key="activity" class="text-sm mt-2">
+            {{ $tc(`toast.routePopup.${activity}`) }} : {{ route }}
+          </p>
+        </template>
+
         <div
           v-for="field in listFields"
           :key="'_' + field.k"
@@ -378,7 +384,10 @@ export default Vue.extend({
 
     listFields(): string[] {
       const getValue = (field: string, value: string | string[]) => {
-        return field === 'opening_hours' ? this.opening_hours : value
+        if (field === 'opening_hours') return this.opening_hours
+        if (field === 'route:*') return null
+
+        return value
       }
 
       return (this.poiEditorial('popup_properties') || [])
@@ -447,6 +456,40 @@ export default Vue.extend({
 
     unavoidable(): boolean {
       return Boolean(this.poiEditorial('unavoidable'))
+    },
+
+    routes(): { [key: string]: string } {
+      const activitiesStruct: { [key: string]: { [key: string]: string } } = {}
+      Object.entries(this.poi.properties)
+        .filter(([key, _value]) => key.startsWith('route:'))
+        .map(([key, value]) => [key.split(':'), value])
+        .filter(([key, _value]) => key.length === 3)
+        .forEach(([[_, activity, property], value]) => {
+          if (activitiesStruct[activity]) {
+            activitiesStruct[activity][property] = value
+          } else {
+            activitiesStruct[activity] = {}
+            activitiesStruct[activity][property] = value
+          }
+        })
+
+      const ret: { [key: string]: string } = {}
+      Object.entries(activitiesStruct).forEach(([acivity, properties]) => {
+        const result = []
+        if (properties.length) {
+          result.push(`${properties.length} ${this.$tc('toast.routePopup.km')}`)
+        }
+        if (properties.duration) {
+          result.push(
+            `${properties.duration} ${this.$tc('toast.routePopup.min')}`
+          )
+        }
+        if (properties.difficulty && properties.difficulty !== 'normal') {
+          result.push(this.$tc(`toast.routePopup.${properties.difficulty}`))
+        }
+        ret[acivity] = result.join(', ')
+      })
+      return ret
     },
   },
 

@@ -32,7 +32,7 @@
               !isModeFavorite &&
               state.matches(states.SubCategories)
             "
-            class="hidden sm:flex"
+            class="hidden sm:flex m-2"
             :categories="state.context.selectedRootCategory.subCategories"
             :filtered-categories="filteredSubCategories"
             :is-sub-category-selected="isSubCategorySelected"
@@ -45,7 +45,7 @@
 
           <SubCategoryFilterHeader
             v-if="!isModeExplorer && state.matches(states.SubCategoryFilters)"
-            class="hidden sm:flex"
+            class="hidden sm:flex m-2"
             :subcategory="subCategoryForFilter"
             :filters-values="subCategoryFilters"
             @filter-changed="onSubCategoryFilterChange"
@@ -55,7 +55,7 @@
           <div
             v-if="state.matches(states.Search)"
             :class="[
-              'max-h-full hidden sm:flex',
+              'max-h-full hidden sm:flex p-2',
               showPoi && 'max-h-screen-4/6',
             ]"
           >
@@ -74,7 +74,7 @@
         </transition>
         <div
           v-if="state.matches(states.Search)"
-          :class="['max-h-full sm:hidden', isBottomMenuOpened && 'hidden']"
+          :class="['max-h-full sm:hidden p-2', isBottomMenuOpened && 'hidden']"
         >
           <SearchHeader
             :site-name="siteName"
@@ -96,7 +96,7 @@
         v-if="
           !isModeExplorer && selectedSubCategories.length && !isModeFavorite
         "
-        class="hidden sm:block"
+        class="hidden sm:block py-2"
         style="max-width: calc(100vw - 670px)"
       >
         <SelectedSubCategoriesDense

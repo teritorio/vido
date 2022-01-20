@@ -98,7 +98,12 @@ import { deepEqual } from 'fast-equals'
 import GeoJSON from 'geojson'
 import throttle from 'lodash.throttle'
 import Mapbox from 'mapbox-gl-vue'
-import maplibregl, { MapLayerMouseEvent, MapLayerTouchEvent } from 'maplibre-gl'
+import maplibregl, {
+  MapLayerMouseEvent,
+  MapLayerTouchEvent,
+  Layer,
+  MapDataEvent,
+} from 'maplibre-gl'
 import Vue, { PropType } from 'vue'
 import { mapGetters, mapActions } from 'vuex'
 
@@ -200,35 +205,31 @@ const Map = Vue.extend({
     }
   },
   async fetch() {
-    const vectoFetch = fetch(this.$config.VECTO_STYLE_URL)
-      .then((res) => res.json())
-      .then((vectoStyle) => {
-        if (vectoStyle?.sources?.openmaptiles.url) {
-          vectoStyle.sources.openmaptiles.url = this.$config.VECTO_TILES_URL
-        }
-        return vectoStyle
+    let [vectoStyle, satelliteStyle, rasterStyle] = await Promise.all(
+      [
+        this.$config.VECTO_STYLE_URL,
+        this.$config.SATELLITE_STYLE_URL,
+        this.$config.RASTER_STYLE_URL,
+      ].map((styleUrl) => {
+        return fetch(styleUrl)
+          .then((res) => res.json())
+          .then((vectoStyle) => {
+            if (vectoStyle?.sources?.openmaptiles?.url) {
+              vectoStyle.sources.openmaptiles.url = this.$config.VECTO_TILES_URL
+            }
+            return vectoStyle
+          })
       })
-
-    const satelliteFetch = fetch(this.$config.SATELLITE_STYLE_URL)
-      .then((res) => res.json())
-      .then((satelliteStyle) => {
-        if (satelliteStyle?.sources?.openmaptiles.url) {
-          satelliteStyle.sources.openmaptiles.url = this.$config.VECTO_TILES_URL
-        }
-        return satelliteStyle
-      })
-
-    let [vectoStyle, satelliteStyle] = await Promise.all([
-      vectoFetch,
-      satelliteFetch,
-    ])
+    )
 
     const updateStyle = async (style: any) => {
       const vectoSources: {
         url: string
         attribution: string
       }[] = Object.values(style.sources)
-      const vectoSourceUrl: string[] = vectoSources.map((src: any) => src.url)
+      const vectoSourceUrl: string[] = vectoSources
+        .map((src: any) => src.url)
+        .filter((url) => url)
 
       const vectoSourceAttribution = await Promise.all(
         vectoSourceUrl.map((url) => {
@@ -236,7 +237,60 @@ const Map = Vue.extend({
 
           return fetch(url)
             .then((res) => res.json())
-            .then((res) => res.attribution)
+            .then((res) => {
+              // Add route layers only to style having route_tourism as source data layer
+              if (
+                res.vector_layers?.some(
+                  (vectorLayer: { id: string }) =>
+                    vectorLayer.id === 'route_tourism'
+                )
+              ) {
+                const insertIntex = style.layers.findIndex(
+                  (layer: Layer) => layer.id === 'waterway-name'
+                )
+                style.layers.splice(
+                  insertIntex,
+                  0,
+                  {
+                    id: 'route_tourism-casing',
+                    type: 'line',
+                    source: 'openmaptiles',
+                    'source-layer': 'route_tourism',
+                    paint: {
+                      'line-width': 5,
+                      'line-color': 'rgb(235, 235, 235)',
+                    },
+                    layout: {
+                      'line-join': 'round',
+                      'line-cap': 'round',
+                    },
+                    filter: false,
+                  },
+                  {
+                    id: 'route_tourism',
+                    type: 'line',
+                    source: 'openmaptiles',
+                    'source-layer': 'route_tourism',
+                    paint: {
+                      'line-width': 3,
+                      'line-color': [
+                        'coalesce',
+                        ['get', 'color'],
+                        'rgb(215, 0, 0)',
+                      ],
+                      'line-dasharray': [3, 2],
+                    },
+                    layout: {
+                      'line-join': 'round',
+                      'line-cap': 'round',
+                    },
+                    filter: false,
+                  }
+                )
+              }
+
+              return res.attribution
+            })
         })
       )
 
@@ -268,39 +322,12 @@ const Map = Vue.extend({
 
     vectoStyle = await updateStyle(vectoStyle)
     satelliteStyle = await updateStyle(satelliteStyle)
-    const mapnikAttribution = this.attribution.join(' ')
+    rasterStyle = await updateStyle(rasterStyle)
 
     this.mapStyles = {
       [MapStyle.teritorio]: vectoStyle,
-      [MapStyle.mapnik]: {
-        version: 8,
-        name: this.$tc('map.mapnik.name'),
-        vido_israster: true,
-        glyphs: 'https://vecto.teritorio.xyz/fonts/{fontstack}/{range}.pbf',
-        sources: {
-          mapnik: {
-            type: 'raster',
-            tiles: [
-              // 'https://tile.openstreetmap.org/{z}/{x}/{y}.png', // Main OSM tiles
-              'https://a.tiles.teritorio.xyz/styles/osm/{z}/{x}/{y}.png',
-              'https://b.tiles.teritorio.xyz/styles/osm/{z}/{x}/{y}.png',
-              'https://c.tiles.teritorio.xyz/styles/osm/{z}/{x}/{y}.png',
-            ],
-            tileSize: 256,
-            attribution: mapnikAttribution,
-          },
-        },
-        layers: [
-          {
-            id: 'mapnik',
-            type: 'raster',
-            source: 'mapnik',
-            minzoom: 1,
-            maxzoom: 20,
-          },
-        ],
-      },
       [MapStyle.aerial]: satelliteStyle,
+      [MapStyle.mapnik]: rasterStyle,
     }
 
     this.mapStyle =
@@ -447,6 +474,15 @@ const Map = Vue.extend({
           feature?.id ||
           feature?.properties?.id)
       ) {
+        if (this.map.getLayer('route_tourism-casing')) {
+          const id =
+            feature.properties?.metadata?.id ||
+            feature?.id ||
+            feature?.properties?.id
+          this.map.setFilter('route_tourism-casing', ['==', ['id'], id])
+          this.map.setFilter('route_tourism', ['==', ['id'], id])
+        }
+
         setHashPart(
           'poi',
           feature?.properties?.metadata?.id?.toString() ||
@@ -470,6 +506,11 @@ const Map = Vue.extend({
           )
           .addTo(this.map)
       } else {
+        if (this.map.getLayer('route_tourism-casing')) {
+          this.map.setFilter('route_tourism-casing', false)
+          this.map.setFilter('route_tourism', false)
+        }
+
         this.showPoiToast = false
         setHashPart('poi', null)
       }
@@ -482,6 +523,26 @@ const Map = Vue.extend({
 
       this.mapStyle = this.mapStyles[this.selectedBackground]
       this.map.setStyle(this.mapStyle)
+
+      // Re-enable route highlight after style change
+      const styledataCallBack = (e: MapDataEvent) => {
+        if (this.map && e.dataType === 'style') {
+          this.map.off('styledata', styledataCallBack)
+
+          const feature = this.selectedFeature
+          if (feature && feature.geometry.type === 'Point') {
+            const id =
+              feature.properties?.metadata?.id ||
+              feature?.id ||
+              feature?.properties?.id
+            if (this.map.getLayer('route_tourism-casing')) {
+              this.map.setFilter('route_tourism-casing', ['==', ['id'], id])
+              this.map.setFilter('route_tourism', ['==', ['id'], id])
+            }
+          }
+        }
+      }
+      this.map.on('styledata', styledataCallBack)
     },
 
     mode() {
