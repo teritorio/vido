@@ -474,12 +474,14 @@ const Map = Vue.extend({
           feature?.id ||
           feature?.properties?.id)
       ) {
-        const id =
-          feature.properties?.metadata?.id ||
-          feature?.id ||
-          feature?.properties?.id
-        this.map.setFilter('route_tourism-casing', ['==', ['id'], id])
-        this.map.setFilter('route_tourism', ['==', ['id'], id])
+        if (this.map.getLayer('route_tourism-casing')) {
+          const id =
+            feature.properties?.metadata?.id ||
+            feature?.id ||
+            feature?.properties?.id
+          this.map.setFilter('route_tourism-casing', ['==', ['id'], id])
+          this.map.setFilter('route_tourism', ['==', ['id'], id])
+        }
 
         setHashPart(
           'poi',
@@ -504,8 +506,10 @@ const Map = Vue.extend({
           )
           .addTo(this.map)
       } else {
-        this.map.setFilter('route_tourism-casing', false)
-        this.map.setFilter('route_tourism', false)
+        if (this.map.getLayer('route_tourism-casing')) {
+          this.map.setFilter('route_tourism-casing', false)
+          this.map.setFilter('route_tourism', false)
+        }
 
         this.showPoiToast = false
         setHashPart('poi', null)
