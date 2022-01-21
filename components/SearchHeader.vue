@@ -161,7 +161,7 @@ export default Vue.extend({
     },
     mapCenter: {
       type: Object as PropType<{ lng: number; lat: number }>,
-      default: { lng: 0, lat: 0 },
+      default: () => ({ lng: 0, lat: 0 }),
     },
   },
 
@@ -269,8 +269,10 @@ export default Vue.extend({
           (a) => a.properties.id === id
         )
 
-        this.$emit('category-click', filter)
-        this.reset()
+        if (filter?.properties) {
+          this.$emit('category-click', filter.properties)
+          this.reset()
+        }
       }
     },
 
