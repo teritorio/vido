@@ -108,15 +108,6 @@
         @item-click="onAddressClick"
       />
 
-      <SearchResultBlock
-        v-if="itemsCartocode.length > 0"
-        type="cartocode"
-        :label="$tc('headerMenu.cartocode')"
-        icon="map-marker-alt"
-        :items="itemsCartocode"
-        @item-click="onPoiClick"
-      />
-
       <p v-if="results === 0">
         {{ $tc('headerMenu.noResult') }}
       </p>
@@ -135,7 +126,7 @@ import {
   ApiAddrSearchResult,
   SearchResult,
   ApiSearchResult,
-  ApiCartocodeSearchResult,
+  VidoFeature,
 } from '@/utils/types'
 
 export default Vue.extend({
@@ -179,7 +170,7 @@ export default Vue.extend({
     searchMenuItemsResults: null | ApiSearchResult<ApiMenuItemSearchResult>
     searchPoisResults: null | ApiSearchResult<ApiPoisSearchResult>
     searchAddressesResults: null | ApiSearchResult<ApiAddrSearchResult>
-    searchCartocodeResults: null | ApiSearchResult<ApiCartocodeSearchResult>
+    searchCartocodeResult: null | VidoFeature
     isLoading: boolean
     search: null | Function
   } {
@@ -188,7 +179,7 @@ export default Vue.extend({
       searchMenuItemsResults: null,
       searchPoisResults: null,
       searchAddressesResults: null,
-      searchCartocodeResults: null,
+      searchCartocodeResult: null,
       isLoading: false,
       search: null,
     }
@@ -227,29 +218,19 @@ export default Vue.extend({
       )
     },
 
-    itemsCartocode(): SearchResult[] {
-      return (
-        this.searchCartocodeResults?.features?.map((v) => ({
-          id: v.properties.id,
-          label: v.properties.label,
-        })) || []
-      )
-    },
-
     results(): Number {
       return (
         this.itemsMenuItems.length +
         this.itemsPois.length +
-        this.itemsAddresses.length +
-        this.itemsCartocode.length
+        this.itemsAddresses.length
       )
     },
   },
 
   watch: {
-    itemsCartocode(val) {
-      if (val && val.length === 1 && this.results === 1) {
-        this.onPoiClick(val[0].id)
+    searchCartocodeResult(val: null | VidoFeature) {
+      if (val && val.properties?.metadata?.id) {
+        this.onPoiClick(val.properties.metadata.id)
       }
     },
   },
@@ -270,7 +251,7 @@ export default Vue.extend({
       this.searchMenuItemsResults = null
       this.searchPoisResults = null
       this.searchAddressesResults = null
-      this.searchCartocodeResults = null
+      this.searchCartocodeResult = null
       this.searchText = ''
     },
 
@@ -293,7 +274,7 @@ export default Vue.extend({
       }
     },
 
-    onPoiClick(id: string) {
+    onPoiClick(id: number) {
       this.$emit('poi-click', id)
       this.reset()
     },
@@ -329,7 +310,7 @@ export default Vue.extend({
         this.searchMenuItemsResults = null
         this.searchPoisResults = null
         this.searchAddressesResults = null
-        this.searchCartocodeResults = null
+        this.searchCartocodeResult = null
       }
 
       // Launch search if not already loading + search text length >= 3
@@ -345,18 +326,17 @@ export default Vue.extend({
         if (searchText.length === 2) {
           this.isLoading = true
 
-          const cartocodeFetch: Promise<
-            ApiSearchResult<ApiCartocodeSearchResult>
-          > = fetch(
-            `${this.$config.API_SEARCH}?${projectTheme}&type=cartocode&q=${this.searchText}`
+          const cartocode = this.searchText
+          const searchPoi: Promise<VidoFeature> = fetch(
+            `${this.$config.API_ENDPOINT}/${this.$config.API_PROJECT}/${this.$config.API_THEME}/poi/cartocode:${cartocode}`
           ).then((data) => (data.ok ? data.json() : null))
 
-          const [searchCartocodeResults] = await Promise.all([cartocodeFetch])
+          const [poi] = await Promise.all([searchPoi])
 
           this.searchMenuItemsResults = null
           this.searchPoisResults = null
           this.searchAddressesResults = null
-          this.searchCartocodeResults = searchCartocodeResults
+          this.searchCartocodeResult = poi
           this.isLoading = false
         } else if (searchText.length > 2) {
           this.isLoading = true
@@ -389,7 +369,7 @@ export default Vue.extend({
           this.searchMenuItemsResults = searchMenuItemsResults
           this.searchPoisResults = searchPoisResults
           this.searchAddressesResults = searchAddressesResults
-          this.searchCartocodeResults = null
+          this.searchCartocodeResult = null
           this.isLoading = false
         }
       }
