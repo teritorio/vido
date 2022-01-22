@@ -354,7 +354,7 @@ export default Vue.extend({
           const poisFetch: Promise<
             ApiSearchResult<ApiPoisSearchResult>
           > = fetch(
-            `${this.$config.API_SEARCH}?${projectTheme}&type=poi&${query}`
+            `${this.$config.API_SEARCH}?${projectTheme}&type=poi&${query}&limit=10`
           ).then((data) => (data.ok ? data.json() : null))
 
           const addressesFetch: Promise<
