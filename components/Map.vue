@@ -686,6 +686,12 @@ const Map = Vue.extend({
         this.$emit('click')
       })
 
+      this.map.on('moveend', () => {
+        if (this.map) {
+          this.$store.dispatch('map/center', this.map.getCenter())
+        }
+      })
+
       // Listen to click on POI from vector tiles (explorer mode)
       const selectFeature = (
         event: MapLayerMouseEvent | MapLayerTouchEvent
