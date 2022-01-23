@@ -45,13 +45,14 @@ const settings = {
         overlay:
           'overflow-auto scrolling-touch left-0 top-0 bottom-0 right-0 w-full h-full fixed',
         wrapper: 'relative mx-auto',
-        modal: 'overflow-visible relative',
+        modal: 'relative',
         close: 'flex items-center justify-center',
       },
       classes: {
         overlay: 'z-40',
         wrapper: 'z-50 max-w-7xl',
-        modal: 'bg-white shadow my-0 sm:mx-0 max-h-full w-full',
+        modal:
+          'bg-white shadow my-0 sm:mx-0 h-screen h-screen w-full overflow-auto',
         body: 'p-3 sm:p-0',
         header: 'border-b border-gray-100 p-3 rounded-t',
         footer: 'bg-gray-100 p-3 rounded-b',
