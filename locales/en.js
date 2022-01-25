@@ -54,9 +54,8 @@ export default {
     cartocode: 'Cartocode',
     noResult: 'No results',
     hideCategory: 'Hide this category',
-    myFavorites: 'Yours favorites',
-    exploration:
-      'All information is visible on the map, depending on the zoom level.',
+    backToMenuFavorites: 'Show menu',
+    backToMenuExplorer: 'Back to menu',
   },
   toast: {
     details: 'Details',

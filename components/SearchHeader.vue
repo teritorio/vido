@@ -64,7 +64,9 @@
         <p class="ml-2">
           {{
             $tc(
-              isFavorite ? 'headerMenu.myFavorites' : 'headerMenu.exploration'
+              isFavorite
+                ? 'headerMenu.backToMenuFavorites'
+                : 'headerMenu.backToMenuExplorer'
             )
           }}
         </p>
