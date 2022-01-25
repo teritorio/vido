@@ -542,9 +542,11 @@ export default Vue.extend({
         const newFilters = Object.assign({}, this.filters)
 
         newFilters[`${newFilter.id}`] = {
-          selectionFilter: {
-            [newFilter.filter_property]: [`${newFilter.id}`],
-          },
+          [newFilter.filter_property]: [
+            `${newFilter.filter_value}`,
+            ...(newFilters[`${newFilter.id}`]?.[newFilter.filter_property] ||
+              []),
+          ],
         }
 
         this.setCategoriesFilters(newFilters)

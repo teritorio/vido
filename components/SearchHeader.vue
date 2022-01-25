@@ -265,10 +265,13 @@ export default Vue.extend({
       this.$emit('go-to-categories')
     },
 
-    onCategoryClick(id: number) {
+    onCategoryClick(category: SearchResult) {
       if (this.searchMenuItemsResults) {
         const filter = this.searchMenuItemsResults.features.find(
-          (a) => a.properties.id === id
+          (a) =>
+            a.properties.filter_property === category.filter_property &&
+            a.properties.filter_value === category.filter_value &&
+            a.properties.id === category.id
         )
 
         if (filter?.properties) {

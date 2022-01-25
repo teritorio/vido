@@ -67,7 +67,10 @@ export default Vue.extend({
         resultType: this.type,
         title: searchResult.label,
       })
-      this.$emit('item-click', searchResult.id)
+      this.$emit(
+        'item-click',
+        this.type === 'category' ? searchResult : searchResult.id
+      )
     },
   },
 })
