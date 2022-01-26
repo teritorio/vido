@@ -215,6 +215,8 @@ export default Vue.extend({
         this.searchAddressesResults?.features?.map((v) => ({
           id: v.properties.id,
           label: v.properties.label,
+          icon:
+            v.properties.type === 'municipality' ? 'city' : 'map-marker-alt',
         })) || []
       )
     },

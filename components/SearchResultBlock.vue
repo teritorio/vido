@@ -13,10 +13,16 @@
         @click="onItemClick(item)"
       >
         <teritorio-icon
-          v-if="item.icon"
+          v-if="item.icon && item.icon.includes('item.icon')"
           :picto="item.icon"
           category-color="#6B7280"
           use-category-color
+        />
+        <font-awesome-icon
+          v-elsif="item.icon"
+          :icon="item.icon"
+          color="#6B7280"
+          size="sm"
         />
         <span>
           {{ item.label }}
