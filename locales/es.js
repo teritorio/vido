@@ -79,6 +79,7 @@ export default {
     closed: 'Actualmente cerrado',
     open: 'Abierto el',
     openAt: 'Abre a las',
+    '24_7': 'Abierto 24h/24, 7j/7',
     zoom: 'Acercarse',
   },
 }

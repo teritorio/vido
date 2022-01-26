@@ -133,7 +133,8 @@
             :class="[
               'text-sm',
               field.k === 'opening_hours' &&
-                field.v.includes($tc('toast.opened')) &&
+                (field.v.includes($tc('toast.opened')) ||
+                  field.v === $tc('toast.24_7')) &&
                 'text-green-500',
               field.k === 'opening_hours' &&
                 field.v.includes($tc('toast.closed')) &&
@@ -346,7 +347,9 @@ export default Vue.extend({
         const oh = new OpeningHours(openingHours)
         const nextchange = oh.getNextChange()
 
-        if (oh.getState()) {
+        if (oh.getState() && nextchange === undefined) {
+          return this.$tc('toast.24_7')
+        } else if (oh.getState()) {
           return `${this.$tc('toast.opened')} - ${this.$tc(
             'toast.closeAt'
           )} ${displayTime(nextchange)}`

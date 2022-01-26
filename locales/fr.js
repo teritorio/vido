@@ -79,6 +79,7 @@ export default {
     closed: 'Actuellement fermé',
     open: 'Ouvre',
     openAt: 'Ouvre à',
+    '24_7': 'Ouvert 24h/24, 7j/7',
     zoom: 'Zoomer',
     routePopup: {
       hiking: 'À pieds',
