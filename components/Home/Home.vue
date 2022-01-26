@@ -75,7 +75,10 @@
         </transition>
         <div
           v-if="state.matches(states.Search)"
-          :class="['max-h-full sm:hidden p-2', isBottomMenuOpened && 'hidden']"
+          :class="[
+            'max-h-full sm:hidden sm:p-2',
+            isBottomMenuOpened && 'hidden',
+          ]"
         >
           <SearchHeader
             :site-name="siteName"

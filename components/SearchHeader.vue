@@ -1,6 +1,9 @@
 <template>
   <aside
-    class="flex flex-col max-h-full px-5 py-4 space-y-6 bg-white shadow-md pointer-events-auto sm:rounded-xl md:w-96"
+    :class="[
+      'flex flex-col max-h-full px-5 py-4 space-y-6 shadow-md pointer-events-auto sm:rounded-xl md:w-96',
+      isExplorerFavorite ? 'bg-blue-500 sm:bg-white text-white' : 'bg-white',
+    ]"
   >
     <div class="flex flex-row sm:flex-col items-center sm:items-start">
       <h1 v-if="!isExplorerFavorite" class="flex-none sm:hidden mr-2">
@@ -55,11 +58,7 @@
           class="flex flex-shrink-0 items-center justify-center w-10 h-10 text-2xl font-bold transition-all rounded-full outline-none cursor-pointer focus:outline-none hover:bg-gray-100 focus:bg-gray-100"
           @click="goToCategories"
         >
-          <font-awesome-icon
-            icon="arrow-left"
-            class="text-gray-800"
-            size="xs"
-          />
+          <font-awesome-icon icon="arrow-left" class="text-inherit" size="xs" />
         </button>
         <p class="ml-2">
           {{
