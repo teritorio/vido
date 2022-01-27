@@ -13,7 +13,7 @@
         @click="onItemClick(item)"
       >
         <teritorio-icon
-          v-if="item.icon && item.icon.includes('item.icon')"
+          v-if="item.icon && item.icon.indexOf('teritorio') != -1"
           :picto="item.icon"
           category-color="#6B7280"
           use-category-color
