@@ -17,7 +17,6 @@ checkEnvVariable('API_THEME')
 checkEnvVariable('VECTO_STYLE_URL')
 checkEnvVariable('SATELLITE_STYLE_URL')
 checkEnvVariable('RASTER_STYLE_URL')
-checkEnvVariable('VECTO_TILES_URL')
 
 export default {
   target: 'static',
@@ -30,7 +29,6 @@ export default {
     VECTO_STYLE_URL: process.env.VECTO_STYLE_URL || '',
     SATELLITE_STYLE_URL: process.env.SATELLITE_STYLE_URL || '',
     RASTER_STYLE_URL: process.env.RASTER_STYLE_URL || '',
-    VECTO_TILES_URL: process.env.VECTO_TILES_URL || '',
     GOOGLE_TAG_MANAGER_ID: process.env.GOOGLE_TAG_MANAGER_ID || '',
     NOTEBOOK_ENABLED: process.env.NOTEBOOK_ENABLED || '',
   },

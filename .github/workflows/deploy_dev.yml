@@ -56,7 +56,6 @@ jobs:
           VECTO_STYLE_URL: ${{secrets.VECTO_STYLE_URL_DEV}}
           SATELLITE_STYLE_URL: ${{secrets.SATELLITE_STYLE_URL_DEV}}
           RASTER_STYLE_URL: ${{secrets.RASTER_STYLE_URL_DEV}}
-          VECTO_TILES_URL: ${{secrets.VECTO_TILES_URL_DEV}}
           SENTRY_DSN: ${{secrets.SENTRY_DSN_DEV}}
           NOTEBOOK_ENABLED: ${{secrets.NOTEBOOK_ENABLED_DEV}}
         run: yarn generate

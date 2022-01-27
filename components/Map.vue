@@ -211,14 +211,7 @@ const Map = Vue.extend({
         this.$config.SATELLITE_STYLE_URL,
         this.$config.RASTER_STYLE_URL,
       ].map((styleUrl) => {
-        return fetch(styleUrl)
-          .then((res) => res.json())
-          .then((vectoStyle) => {
-            if (vectoStyle?.sources?.openmaptiles?.url) {
-              vectoStyle.sources.openmaptiles.url = this.$config.VECTO_TILES_URL
-            }
-            return vectoStyle
-          })
+        return fetch(styleUrl).then((res) => res.json())
       })
     )
 
