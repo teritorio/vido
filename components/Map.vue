@@ -101,7 +101,6 @@ import Mapbox from 'mapbox-gl-vue'
 import maplibregl, {
   MapLayerMouseEvent,
   MapLayerTouchEvent,
-  Layer,
   MapDataEvent,
 } from 'maplibre-gl'
 import Vue, { PropType } from 'vue'
@@ -231,57 +230,6 @@ const Map = Vue.extend({
           return fetch(url)
             .then((res) => res.json())
             .then((res) => {
-              // Add route layers only to style having route_tourism as source data layer
-              if (
-                res.vector_layers?.some(
-                  (vectorLayer: { id: string }) =>
-                    vectorLayer.id === 'route_tourism'
-                )
-              ) {
-                const insertIntex = style.layers.findIndex(
-                  (layer: Layer) => layer.id === 'waterway-name'
-                )
-                style.layers.splice(
-                  insertIntex,
-                  0,
-                  {
-                    id: 'route_tourism-casing',
-                    type: 'line',
-                    source: 'openmaptiles',
-                    'source-layer': 'route_tourism',
-                    paint: {
-                      'line-width': 5,
-                      'line-color': 'rgb(235, 235, 235)',
-                    },
-                    layout: {
-                      'line-join': 'round',
-                      'line-cap': 'round',
-                    },
-                    filter: false,
-                  },
-                  {
-                    id: 'route_tourism',
-                    type: 'line',
-                    source: 'openmaptiles',
-                    'source-layer': 'route_tourism',
-                    paint: {
-                      'line-width': 3,
-                      'line-color': [
-                        'coalesce',
-                        ['get', 'color'],
-                        'rgb(215, 0, 0)',
-                      ],
-                      'line-dasharray': [3, 2],
-                    },
-                    layout: {
-                      'line-join': 'round',
-                      'line-cap': 'round',
-                    },
-                    filter: false,
-                  }
-                )
-              }
-
               return res.attribution
             })
         })
