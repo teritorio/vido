@@ -466,6 +466,10 @@ export default Vue.extend({
     },
 
     routes(): { [key: string]: string } {
+      if (!(this.poiEditorial('popup_properties') || []).includes('route:*')) {
+        return {}
+      }
+
       const activitiesStruct: { [key: string]: { [key: string]: string } } = {}
       Object.entries(this.poi.properties)
         .filter(([key, _value]) => key.startsWith('route:'))
