@@ -82,9 +82,6 @@ export default {
     '24_7': 'Ouvert 24h/24, 7j/7',
     zoom: 'Zoomer',
     routePopup: {
-      hiking: 'À pieds',
-      bicycle: 'À vélo',
-      road: 'En voiture',
       min: 'min',
       km: 'km',
       easy: 'facile',

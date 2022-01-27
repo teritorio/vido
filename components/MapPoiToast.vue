@@ -75,7 +75,11 @@
 
         <template v-for="(route, activity) in routes">
           <p :key="activity" class="text-sm mt-2">
-            {{ $tc(`toast.routePopup.${activity}`) }} : {{ route }}
+            {{
+              (sptags && sptags['route:*'] && sptags['route:*'][activity]) ||
+              activity
+            }}
+            : {{ route }}
           </p>
         </template>
 
