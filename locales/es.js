@@ -81,5 +81,12 @@ export default {
     openAt: 'Abre a las',
     '24_7': 'Abierto 24h/24, 7j/7',
     zoom: 'Acercarse',
+    routePopup: {
+      min: 'min',
+      km: 'km',
+      easy: 'fácil',
+      normal: 'normal',
+      hard: 'difícil',
+    },
   },
 }
