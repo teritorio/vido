@@ -213,66 +213,65 @@ const Map = Vue.extend({
     }
   },
   async fetch() {
-    let [vectoStyle, satelliteStyle, rasterStyle] = await Promise.all(
+    const [
+      vectoStyle,
+      satelliteStyle,
+      rasterStyle,
+    ] = await Promise.all<VidoMglStyle>(
       [
         this.$config.VECTO_STYLE_URL,
         this.$config.SATELLITE_STYLE_URL,
         this.$config.RASTER_STYLE_URL,
-      ].map((styleUrl) => {
-        return fetch(styleUrl).then((res) => res.json())
-      })
-    )
+      ].map((styleUrl) =>
+        fetch(styleUrl)
+          .then((res) => res.json())
+          .then(async (style: any) => {
+            const vectoSources: {
+              url: string
+              attribution: string
+            }[] = Object.values(style.sources)
+            const vectoSourceUrl: string[] = vectoSources
+              .map((src: any) => src.url)
+              .filter((url) => url)
 
-    const updateStyle = async (style: any) => {
-      const vectoSources: {
-        url: string
-        attribution: string
-      }[] = Object.values(style.sources)
-      const vectoSourceUrl: string[] = vectoSources
-        .map((src: any) => src.url)
-        .filter((url) => url)
+            const vectoSourceAttribution = await Promise.all(
+              vectoSourceUrl.map((url) => {
+                if (!url) return null
 
-      const vectoSourceAttribution = await Promise.all(
-        vectoSourceUrl.map((url) => {
-          if (!url) return null
+                return fetch(url)
+                  .then((res) => res.json())
+                  .then((res) => {
+                    return res.attribution
+                  })
+              })
+            )
 
-          return fetch(url)
-            .then((res) => res.json())
-            .then((res) => {
-              return res.attribution
+            let nuAttribution = ''
+
+            vectoSourceAttribution.forEach((attr, i) => {
+              if (attr) {
+                const existingAttributions = this.attributions.filter(
+                  (att: string) => !attr.includes(att)
+                )
+
+                nuAttribution += [attr].concat(existingAttributions).join(' ')
+              } else if (vectoSources[i]?.attribution) {
+                nuAttribution += ' ' + vectoSources[i]?.attribution
+              }
             })
-        })
+
+            const nuStyle = { ...style }
+
+            Object.keys(style.sources).forEach((key) => {
+              nuStyle.sources[key] = {
+                ...style.sources[key],
+                attribution: nuAttribution,
+              }
+            })
+
+            return nuStyle
+          })
       )
-
-      let nuAttribution = ''
-
-      vectoSourceAttribution.forEach((attr, i) => {
-        if (attr) {
-          const existingAttributions = this.attributions.filter(
-            (att: string) => !attr.includes(att)
-          )
-
-          nuAttribution += [attr].concat(existingAttributions).join(' ')
-        } else if (vectoSources[i]?.attribution) {
-          nuAttribution += ' ' + vectoSources[i]?.attribution
-        }
-      })
-
-      const nuStyle = { ...style }
-
-      Object.keys(style.sources).forEach((key) => {
-        nuStyle.sources[key] = {
-          ...style.sources[key],
-          attribution: nuAttribution,
-        }
-      })
-
-      return nuStyle
-    }
-
-    vectoStyle = await updateStyle(vectoStyle)
-    satelliteStyle = await updateStyle(satelliteStyle)
-    rasterStyle = await updateStyle(rasterStyle)
 
     this.mapStyles = {
       [MapStyle.teritorio]: vectoStyle,
