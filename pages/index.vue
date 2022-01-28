@@ -26,13 +26,13 @@ export default Vue.extend({
     }
   },
   async fetch() {
-    await this.$store.dispatch('menu/fetchConfig', {
+    const menuFetchConfigPromise = this.$store.dispatch('menu/fetchConfig', {
       apiEndpoint: this.$config.API_ENDPOINT,
       apiProject: this.$config.API_PROJECT,
       apiTheme: this.$config.API_THEME,
     })
 
-    await fetch(
+    const configFetchPromose = fetch(
       `${this.$config.API_ENDPOINT}/${this.$config.API_PROJECT}/${this.$config.API_THEME}`
     )
       .then((res) => res.json())
@@ -58,6 +58,8 @@ export default Vue.extend({
         // @ts-ignore - Look ok, unable to fix the issue
         this.title = json.title
       })
+
+    await Promise.all([menuFetchConfigPromise, configFetchPromose])
   },
   // fetchOnServer: false,
   head() {
