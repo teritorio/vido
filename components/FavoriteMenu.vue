@@ -278,7 +278,7 @@ export default Vue.extend({
         this.$config.API_PROJECT,
         this.$config.API_THEME,
         ids
-      ).then((pois) => pois.features)
+      ).then((pois) => (pois && pois.features) || [])
     },
     removeFavorites() {
       try {

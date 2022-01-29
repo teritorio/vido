@@ -539,7 +539,7 @@ export default (Vue as VueConstructor<
         this.$config.API_ENDPOINT,
         this.$config.API_PROJECT,
         this.$config.API_THEME,
-        poiId.toString()
+        poiId
       ).then((poi) => {
         if (poi) {
           this.service.send(HomeEvents.GoToCategories)

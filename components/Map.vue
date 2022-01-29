@@ -667,7 +667,7 @@ const Map = Vue.extend({
           this.$config.API_ENDPOINT,
           this.$config.API_PROJECT,
           this.$config.API_THEME,
-          poiHash
+          parseInt(poiHash)
         ).then((poi) => {
           if (poi) {
             this.selectFeature(poi)
@@ -885,7 +885,7 @@ const Map = Vue.extend({
         this.$config.API_PROJECT,
         this.$config.API_THEME,
         ids
-      ).then((pois) => pois.features)
+      ).then((pois) => (pois && pois.features) || [])
     },
 
     showZoomSnack(text: string, textBtn: string) {
