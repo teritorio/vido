@@ -109,6 +109,7 @@ import maplibregl, {
   MapLayerMouseEvent,
   MapLayerTouchEvent,
   MapDataEvent,
+  StyleSpecification,
 } from 'maplibre-gl'
 import type { LngLatBoundsLike } from 'maplibre-gl'
 import Vue, { PropType } from 'vue'
@@ -138,7 +139,6 @@ import {
   Mode,
   TupleLatLng,
   VidoFeature,
-  VidoMglStyle,
 } from '@/utils/types'
 import { getHashPart, setHashPart } from '@/utils/url'
 import { flattenFeatures } from '@/utils/utilities'
@@ -200,8 +200,8 @@ const MainMap = Vue.extend({
     allowRegionBackZoom: boolean
     showPoiToast: boolean
     showFavoritesOverlay: boolean
-    mapStyles: Record<string, VidoMglStyle>
-    mapStyle: VidoMglStyle | null
+    mapStyles: Record<string, StyleSpecification>
+    mapStyle: StyleSpecification | null
     locale: Record<string, string>
   } {
     return {
@@ -228,7 +228,7 @@ const MainMap = Vue.extend({
       vectoStyle,
       satelliteStyle,
       rasterStyle,
-    ] = await Promise.all<VidoMglStyle>(
+    ] = await Promise.all<StyleSpecification>(
       [
         this.$config.VECTO_STYLE_URL,
         this.$config.SATELLITE_STYLE_URL,

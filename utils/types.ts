@@ -1,5 +1,4 @@
 import GeoJSON from 'geojson'
-import type { StyleSpecification } from 'maplibre-gl'
 
 /// <reference types="geojson" />
 
@@ -217,12 +216,6 @@ export type SearchResult = {
   filter_property?: string
   // eslint-disable-next-line camelcase
   filter_value?: string
-}
-
-export type VidoMglStyle = StyleSpecification & {
-  sources: {}
-  // eslint-disable-next-line camelcase
-  vido_israster: boolean
 }
 
 export enum Mode {
