@@ -420,6 +420,12 @@ const Map = Vue.extend({
             feature.properties?.metadata?.id ||
             feature?.id ||
             feature?.properties?.id
+          this.map.setLayoutProperty(
+            'route_tourism-casing',
+            'visibility',
+            'visible'
+          )
+          this.map.setLayoutProperty('route_tourism', 'visibility', 'visible')
           this.map.setFilter('route_tourism-casing', ['==', ['id'], id])
           this.map.setFilter('route_tourism', ['==', ['id'], id])
         }
@@ -448,8 +454,12 @@ const Map = Vue.extend({
           .addTo(this.map)
       } else {
         if (this.map.getLayer('route_tourism-casing')) {
-          this.map.setFilter('route_tourism-casing', false)
-          this.map.setFilter('route_tourism', false)
+          this.map.setLayoutProperty(
+            'route_tourism-casing',
+            'visibility',
+            'none'
+          )
+          this.map.setLayoutProperty('route_tourism', 'visibility', 'none')
         }
 
         this.showPoiToast = false
