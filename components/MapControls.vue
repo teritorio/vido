@@ -1,5 +1,5 @@
 <template>
-  <aside :class="['pointer-events-none', dense && 'hidden sm:block']">
+  <aside class="pointer-events-none hidden sm:block">
     <div
       class="absolute flex justify-end pointer-events-auto items-top pt-4 right-3 sm:pt-0 w-40 sm:w-48 top-3"
     >
@@ -115,10 +115,6 @@ export default Vue.extend({
     backgrounds: {
       type: Object,
       default: null,
-    },
-    dense: {
-      type: Boolean,
-      default: false,
     },
     isModeFavorite: {
       type: Boolean,

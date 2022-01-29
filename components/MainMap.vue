@@ -44,7 +44,6 @@
       <MapControls
         :has-favorites="favoritesIds.length !== 0"
         :backgrounds="availableStyles"
-        :dense="small"
         :is-mode-favorite="isModeFavorite"
         :initial-background="selectedBackground"
         :map="map"
