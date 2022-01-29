@@ -135,7 +135,7 @@ const FAVORITE_SOURCE = 'favorite-source'
 const POI_LAYER_MARKER = 'poi-simple-marker'
 const FAVORITE_LAYER_MARKER = 'favorite-layer-marker'
 
-const Map = Vue.extend({
+const MainMap = Vue.extend({
   components: {
     Mapbox,
     MapControls,
@@ -1156,9 +1156,9 @@ const Map = Vue.extend({
   },
 })
 
-export type MapRef = InstanceType<typeof Map>
+export type MapRef = InstanceType<typeof MainMap>
 
-export default Map
+export default MainMap
 </script>
 
 <style>

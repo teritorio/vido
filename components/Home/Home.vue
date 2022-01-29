@@ -111,8 +111,8 @@
         />
       </div>
     </header>
-    <Map
-      ref="map"
+    <MainMap
+      ref="mainMap"
       :default-bounds="siteInfos.bbox_line.coordinates"
       :small="isBottomMenuOpened"
       :selected-categories="state.context.selectedSubCategoriesIds"
@@ -142,7 +142,7 @@
       :filters-values="subCategoryFilters"
       :filtered-categories="filteredSubCategories"
       :is-sub-category-selected="isSubCategorySelected"
-      :map="$refs.map"
+      :map="$refs.mainMap"
       :on-bottom-menu-button-click="onBottomMenuButtonClick"
       :on-go-back-click="goToParentFromSubCategory"
       :on-select-all-categories="selectSubCategory"
@@ -164,7 +164,7 @@ import { interpret, Interpreter, State } from 'xstate'
 
 import BottomMenu from '@/components/BottomMenu.vue'
 import MainHeader from '@/components/MainHeader.vue'
-import Map from '@/components/Map.vue'
+import MainMap from '@/components/MainMap.vue'
 import SearchHeader from '@/components/SearchHeader.vue'
 import SelectedSubCategoriesDense from '@/components/SelectedSubCategoriesDense.vue'
 import SubCategoryFilterHeader from '@/components/SubCategoryFilterHeader.vue'
@@ -200,13 +200,13 @@ const interpretOptions = { devTools: false }
 export default (Vue as VueConstructor<
   Vue & {
     $refs: {
-      map: InstanceType<typeof Map>
+      mainMap: InstanceType<typeof MainMap>
     }
   }
 >).extend({
   components: {
     MainHeader,
-    Map,
+    MainMap,
     SearchHeader,
     SelectedSubCategoriesDense,
     SubCategoryHeader,
@@ -303,7 +303,7 @@ export default (Vue as VueConstructor<
       return this.mode === Mode.EXPLORER
     },
     isPoiToastVisible(): boolean {
-      return this.selectedFeature && this.$refs.map?.showPoiToast
+      return this.selectedFeature && this.$refs.mainMap?.showPoiToast
     },
     isBottomMenuOpened(): boolean {
       return (
@@ -373,7 +373,7 @@ export default (Vue as VueConstructor<
         val.matches(this.states.SubCategories) ||
         val.matches(this.states.Categories)
       ) {
-        this.$refs.map.resizeMap()
+        this.$refs.mainMap.resizeMap()
       }
     },
     mode() {
@@ -383,12 +383,12 @@ export default (Vue as VueConstructor<
     },
     showPoi(val) {
       if (this.$isMobile() && val) {
-        this.$refs.map.resizeMap()
+        this.$refs.mainMap.resizeMap()
       }
     },
     selectedFeature(val) {
       if (this.$isMobile() && val) {
-        this.$refs.map.resizeMap()
+        this.$refs.mainMap.resizeMap()
       }
     },
   },
@@ -544,8 +544,8 @@ export default (Vue as VueConstructor<
         if (poi) {
           this.service.send(HomeEvents.GoToCategories)
           this.setSelectedFeature(poi).then(() => {
-            if (this.$refs.map) {
-              this.$refs.map.goToSelectedPoi()
+            if (this.$refs.mainMap) {
+              this.$refs.mainMap.goToSelectedPoi()
             }
           })
         }
@@ -576,8 +576,8 @@ export default (Vue as VueConstructor<
       this.setSelectedFeature(feature).then(() => {
         this.service.send(HomeEvents.GoToCategories)
 
-        if (this.$refs.map) {
-          this.$refs.map.goToSelectedPoi()
+        if (this.$refs.mainMap) {
+          this.$refs.mainMap.goToSelectedPoi()
         }
       })
     },
@@ -588,20 +588,20 @@ export default (Vue as VueConstructor<
             if (!this.isModeExplorer) {
               this.setSelectedFeature(null)
             } else {
-              this.$refs.map.setPoiToastVisibility(false)
+              this.$refs.mainMap.setPoiToastVisibility(false)
             }
           }
           this.goToHome()
         } else if (!this.isModeExplorer) {
           this.goToCategories()
         } else if (this.selectedFeature && !this.isPoiToastVisible) {
-          this.$refs.map.setPoiToastVisibility(true)
+          this.$refs.mainMap.setPoiToastVisibility(true)
         }
       } else if (this.selectedFeature) {
         if (!this.isModeExplorer) {
           this.setSelectedFeature(null)
         } else {
-          this.$refs.map.setPoiToastVisibility(false)
+          this.$refs.mainMap.setPoiToastVisibility(false)
         }
       }
     },

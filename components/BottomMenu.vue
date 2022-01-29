@@ -72,7 +72,7 @@ import Vue, { PropType } from 'vue'
 import { mapGetters } from 'vuex'
 
 import HeaderRootCategories from '@/components/HeaderRootCategories.vue'
-import { MapRef } from '@/components/Map.vue'
+import { MapRef } from '@/components/MainMap.vue'
 import MapPoiToast from '@/components/MapPoiToast.vue'
 import SubCategoryFilterHeader from '@/components/SubCategoryFilterHeader.vue'
 import SubCategoryHeader from '@/components/SubCategoryHeader.vue'
