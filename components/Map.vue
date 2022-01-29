@@ -29,10 +29,6 @@
           :nav-control="{
             show: false,
           }"
-          :attribution-control="{
-            position: 'bottom-right',
-            show: true,
-          }"
           @map-init="onMapInit"
           @map-pitchend="onMapPitchEnd"
           @map-data="onMapRender"
