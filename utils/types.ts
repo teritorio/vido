@@ -1,4 +1,5 @@
-import type { MapboxGeoJSONFeature, Style } from 'maplibre-gl'
+import GeoJSON from 'geojson'
+import type { StyleSpecification } from 'maplibre-gl'
 
 /// <reference types="geojson" />
 
@@ -120,7 +121,7 @@ export interface SiteInfos {
 
 export type OsmPoiType = 'node' | 'way' | 'relation'
 
-export interface VidoFeature extends MapboxGeoJSONFeature {
+export interface VidoFeature extends GeoJSON.Feature {
   // eslint-disable-next-line camelcase
   geometry: GeoJSON.Geometry
   properties: {
@@ -218,7 +219,7 @@ export type SearchResult = {
   filter_value?: string
 }
 
-export type VidoMglStyle = Style & {
+export type VidoMglStyle = StyleSpecification & {
   sources: {}
   // eslint-disable-next-line camelcase
   vido_israster: boolean

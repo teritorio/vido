@@ -280,6 +280,7 @@ export default Vue.extend({
     color(): string | null {
       if (this.poiDisplay('color')) {
         return this.poiDisplay('color')
+        // @ts-ignore
       } else if (this.poi && this.poi.layer && this.poi.layer.paint) {
         // @ts-ignore
         const tc = this.poi.layer.paint['text-color']

@@ -1,15 +1,16 @@
+import GeoJSON from 'geojson'
 import maplibregl from 'maplibre-gl'
 
 export const getBBoxFeatures = (
   features: GeoJSON.Feature[]
-): maplibregl.LngLatBounds => {
+): maplibregl.LngLatBounds | null => {
   return features.reduce(
     (
       bounds: maplibregl.LngLatBounds | null,
       coord: GeoJSON.Feature<GeoJSON.Geometry>
     ) =>
       bounds ? bounds.extend(getBBoxFeature(coord)) : getBBoxFeature(coord),
-    (null as unknown) as maplibregl.LngLatBounds
+    null
   )
 }
 

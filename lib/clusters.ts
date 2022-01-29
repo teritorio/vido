@@ -1,4 +1,4 @@
-import maplibregl from 'maplibre-gl'
+import GeoJSON from 'geojson'
 
 import { ApiMenuCategory } from '@/utils/types'
 
@@ -50,7 +50,7 @@ const getMarkerDonutSegment = (
 
 export const createMarkerDonutChart = (
   categories: Record<ApiMenuCategory['id'], ApiMenuCategory>,
-  props: maplibregl.MapboxGeoJSONFeature['properties']
+  props: GeoJSON.Feature['properties']
 ): HTMLElement => {
   const offsets = []
 

@@ -189,8 +189,8 @@ const Map = Vue.extend({
     allowRegionBackZoom: boolean
     showPoiToast: boolean
     showFavoritesOverlay: boolean
-    mapStyles: Record<string, string | VidoMglStyle>
-    mapStyle: string | VidoMglStyle | null
+    mapStyles: Record<string, VidoMglStyle>
+    mapStyle: VidoMglStyle | null
     locale: Record<string, string>
   } {
     return {
@@ -374,7 +374,8 @@ const Map = Vue.extend({
 
           // Change data
           const source = this.map.getSource(POI_SOURCE)
-          if ('setData' in source) {
+          if (source && 'setData' in source) {
+            // @ts-ignore
             source.setData({
               type: 'FeatureCollection',
               features: vidoFeatures,
@@ -740,7 +741,9 @@ const Map = Vue.extend({
               newFavorite = [...parsedFavorites, id]
               this.$store.dispatch('favorite/setFavoritesAction', 'add')
             } else {
-              newFavorite = parsedFavorites.filter((f: string) => f !== id)
+              newFavorite = parsedFavorites.filter(
+                (f: string) => `${f}` !== `${id}`
+              )
               this.$store.dispatch('favorite/setFavoritesAction', 'delete')
             }
           } else {
@@ -775,7 +778,10 @@ const Map = Vue.extend({
       } else {
         const flatten = flattenFeatures(this.features)
         if (flatten) {
-          this.map.fitBounds(getBBoxFeatures(flatten), { maxZoom: 13 })
+          const bounds = getBBoxFeatures(flatten)
+          if (bounds) {
+            this.map.fitBounds(bounds, { maxZoom: 13 })
+          }
         }
       }
     },
@@ -834,6 +840,7 @@ const Map = Vue.extend({
           // Change data
           const source = this.map.getSource(FAVORITE_SOURCE)
           if (source && 'setData' in source) {
+            // @ts-ignore
             source.setData({
               type: 'FeatureCollection',
               features: allFavorites,
@@ -1065,14 +1072,17 @@ const Map = Vue.extend({
                 const source = this.map.getSource(src)
 
                 if (source && 'getClusterLeaves' in source) {
+                  // @ts-ignore
                   source.getClusterLeaves(
                     props.cluster_id,
                     100,
                     0,
-                    (error, features) => {
+                    (error: any, features: GeoJSON.Feature[]) => {
                       if (!error && this.map) {
                         const bounds = getBBoxFeatures(features)
-                        this.map.fitBounds(bounds, { padding: 50 })
+                        if (bounds) {
+                          this.map.fitBounds(bounds, { padding: 50 })
+                        }
                       }
                     }
                   )
