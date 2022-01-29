@@ -26,7 +26,7 @@
               'bg-blue-500 hover:bg-blue-400 focus-visible:bg-blue-400 text-white',
             !isModeFavorite && 'text-gray-800',
           ]"
-          v-on="$listeners"
+          @click="toggleFavoriteMode"
         >
           <font-awesome-icon
             :icon="[`${hasFavorites ? 'fas' : 'far'}`, 'star']"
@@ -211,6 +211,7 @@ import FavoriteNoteBook from '@/components/FavoriteNoteBook.vue'
 import { LOCAL_STORAGE } from '@/lib/constants'
 import { getPoiByIds } from '@/utils/api'
 import { VidoFeature } from '@/utils/types'
+import { getHashPart, setHashPart } from '@/utils/url'
 
 export default Vue.extend({
   components: {
@@ -225,10 +226,6 @@ export default Vue.extend({
     isModeFavorite: {
       type: Boolean,
       default: false,
-    },
-    toggleFavoriteMode: {
-      type: Function,
-      default: undefined,
     },
     exploreAroundSelectedPoi: {
       type: Function,
@@ -336,8 +333,19 @@ export default Vue.extend({
         console.error('Vido error:', e.message)
         this.shareLink = ''
       }
-
-      this.toggleFavoriteMode('on')
+    },
+    toggleFavoriteMode() {
+      this.$tracking({ type: 'map_control_event', event: 'favorite' })
+      const isFav = getHashPart('fav') === '1'
+      if (!isFav) {
+        setHashPart('fav', '1')
+        this.$store.dispatch('favorite/handleFavoriteLayer', true)
+        this.$store.dispatch('favorite/setFavoritesAction', 'open')
+      } else {
+        setHashPart('fav', null)
+        this.$store.dispatch('favorite/handleFavoriteLayer', false)
+        this.$store.dispatch('favorite/setFavoritesAction', 'close')
+      }
     },
     explore(poi?: VidoFeature) {
       this.closeNoteBook()

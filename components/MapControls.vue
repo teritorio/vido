@@ -1,25 +1,5 @@
 <template>
   <aside class="pointer-events-none hidden sm:block">
-    <div
-      class="absolute flex justify-end pointer-events-auto items-top pt-4 right-3 sm:pt-0 w-40 sm:w-48 top-3"
-    >
-      <FavoriteMenu
-        v-if="map"
-        :has-favorites="hasFavorites"
-        :is-mode-favorite="isModeFavorite"
-        :toggle-favorite-mode="toggleFavoriteMode"
-        :explore-around-selected-poi="exploreAroundSelectedPoi"
-        :go-to-selected-poi="goToSelectedPoi"
-        :toggle-favorite="toggleFavorite"
-        @click="toggleFavoriteMode"
-      />
-      <NavMenu
-        v-if="map"
-        class="ml-3 sm:ml-9"
-        @locale="$emit('locale', $event)"
-      />
-    </div>
-
     <div class="absolute flex flex-col justify-center inset-y-3 right-3">
       <div class="flex flex-col space-y-3 pointer-events-auto">
         <div ref="navigationControlContainer"></div>
@@ -97,16 +77,10 @@ import maplibregl from 'maplibre-gl'
 import Vue from 'vue'
 import { mapGetters } from 'vuex'
 
-import FavoriteMenu from '@/components/FavoriteMenu.vue'
-import NavMenu from '@/components/NavMenu.vue'
 import { Mode } from '@/utils/types'
 import { getHashPart, setHashPart } from '@/utils/url'
 
 export default Vue.extend({
-  components: {
-    NavMenu,
-    FavoriteMenu,
-  },
   props: {
     hasFavorites: {
       type: Boolean,
@@ -133,18 +107,6 @@ export default Vue.extend({
       default: 0,
     },
     resizeMap: {
-      type: Function,
-      default: undefined,
-    },
-    exploreAroundSelectedPoi: {
-      type: Function,
-      default: undefined,
-    },
-    goToSelectedPoi: {
-      type: Function,
-      default: undefined,
-    },
-    toggleFavorite: {
       type: Function,
       default: undefined,
     },
@@ -283,21 +245,7 @@ export default Vue.extend({
         this.isModeExplorer ? Mode.BROWSER : Mode.EXPLORER
       )
     },
-    toggleFavoriteMode(value: string) {
-      this.tracking('favorite')
-      const isFav = getHashPart('fav') === '1'
-      if (!isFav || value === 'on') {
-        setHashPart('fav', '1')
-        this.$store.dispatch('favorite/handleFavoriteLayer', true)
-        this.$store.dispatch('favorite/setFavoritesAction', 'open')
-      } else {
-        setHashPart('fav', null)
-        this.$store.dispatch('favorite/handleFavoriteLayer', false)
-        this.$store.dispatch('favorite/setFavoritesAction', 'close')
-      }
-      this.resizeMap()
-    },
-    tracking(event: '3d' | 'background' | 'explorer' | 'favorite') {
+    tracking(event: '3d' | 'background' | 'explorer') {
       this.$tracking({ type: 'map_control_event', event })
     },
   },

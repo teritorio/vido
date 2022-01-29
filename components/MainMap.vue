@@ -41,20 +41,32 @@
         />
       </div>
 
+      <aside v-if="map" class="pointer-events-none hidden sm:block">
+        <div
+          class="absolute flex justify-end pointer-events-auto items-top pt-4 right-3 sm:pt-0 w-40 sm:w-48 top-3"
+        >
+          <FavoriteMenu
+            :has-favorites="favoritesIds.length !== 0"
+            :is-mode-favorite="isModeFavorite"
+            :explore-around-selected-poi="exploreAroundSelectedPoi"
+            :go-to-selected-poi="goToSelectedPoi"
+          />
+          <NavMenu
+            class="ml-3 sm:ml-9"
+            @locale="languageControl.setLanguage($event)"
+          />
+        </div>
+      </aside>
+
       <MapControls
-        :has-favorites="favoritesIds.length !== 0"
         :backgrounds="availableStyles"
         :is-mode-favorite="isModeFavorite"
         :initial-background="selectedBackground"
         :map="map"
         :pitch="pitch"
         :resize-map="resizeMap"
-        :explore-around-selected-poi="exploreAroundSelectedPoi"
-        :go-to-selected-poi="goToSelectedPoi"
-        :toggle-favorite="toggleFavoriteMode"
         @changeBackground="onClickChangeBackground"
         @change-mode="onControlChangeMode"
-        @locale="languageControl.setLanguage($event)"
       />
 
       <div
@@ -102,9 +114,11 @@ import type { LngLatBoundsLike } from 'maplibre-gl'
 import Vue, { PropType } from 'vue'
 import { mapGetters, mapActions } from 'vuex'
 
+import FavoriteMenu from '@/components/FavoriteMenu.vue'
 import FavoritesOverlay from '@/components/FavoritesOverlay.vue'
 import MapControls from '@/components/MapControls.vue'
 import MapPoiToast from '@/components/MapPoiToast.vue'
+import NavMenu from '@/components/NavMenu.vue'
 import SnackBar from '@/components/SnackBar.vue'
 import TeritorioIconBadge from '@/components/TeritorioIcon/TeritorioIconBadge.vue'
 import { getBBoxFeatures, getBBoxFeature, getBBoxCoordList } from '@/lib/bbox'
@@ -141,6 +155,8 @@ const MainMap = Vue.extend({
     MapPoiToast,
     FavoritesOverlay,
     SnackBar,
+    NavMenu,
+    FavoriteMenu,
   },
 
   props: {
