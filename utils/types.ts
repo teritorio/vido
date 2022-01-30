@@ -114,64 +114,52 @@ export interface SiteInfos {
   }[]
 }
 
-export interface VidoFeature extends GeoJSON.Feature {
+interface VidoFeatureProperties {
+  [key: string]: any
+
+  name?: string
+
+  image?: string[]
   // eslint-disable-next-line camelcase
-  geometry: GeoJSON.Geometry
-  properties: {
-    [key: string]: any
+  'image:thumbnail'?: string
 
-    name?: string
+  'addr:city'?: string
+  'addr:housenumber'?: string
+  'addr:postcode'?: string
+  'addr:street'?: string
 
-    image?: string[]
+  metadata?: {
+    id?: number
+    source?: string
     // eslint-disable-next-line camelcase
-    'image:thumbnail'?: string
-
-    'addr:city'?: string
-    'addr:housenumber'?: string
-    'addr:postcode'?: string
-    'addr:street'?: string
-
-    metadata?: {
-      id?: number
-      source?: string
-      // eslint-disable-next-line camelcase
-      category_ids?: Array<number>
-    }
-    display?: {
-      icon?: string
-      color?: string
-      // eslint-disable-next-line camelcase
-      tourism_style_class?: string[]
-    }
-    editorial?: {
-      // eslint-disable-next-line camelcase
-      popup_properties?: string[]
-      // eslint-disable-next-line camelcase
-      class_label?: MultilingualString
-      // eslint-disable-next-line camelcase
-      class_label_popup?: MultilingualString
-      // eslint-disable-next-line camelcase
-      class_label_details?: MultilingualString
-      'website:details'?: string
-    }
+    category_ids?: Array<number>
   }
-  type: 'Feature'
+  display?: {
+    icon?: string
+    color?: string
+    // eslint-disable-next-line camelcase
+    tourism_style_class?: string[]
+  }
+  editorial?: {
+    // eslint-disable-next-line camelcase
+    popup_properties?: string[]
+    // eslint-disable-next-line camelcase
+    class_label?: MultilingualString
+    // eslint-disable-next-line camelcase
+    class_label_popup?: MultilingualString
+    // eslint-disable-next-line camelcase
+    class_label_details?: MultilingualString
+    'website:details'?: string
+  }
 }
+export interface VidoFeature
+  extends GeoJSON.Feature<GeoJSON.Geometry, VidoFeatureProperties> {}
 
-export interface ApiPois {
-  type: 'FeaturesCollection'
-  features: VidoFeature[]
-}
+export interface ApiPois
+  extends GeoJSON.FeatureCollection<GeoJSON.Geometry, VidoFeatureProperties> {}
 
-export interface ApiSearchResult<T> {
-  type: 'FeaturesCollection'
-  geometry: GeoJSON.Point
-  features: [
-    {
-      properties: T
-    }
-  ]
-}
+export interface ApiSearchResult<T>
+  extends GeoJSON.FeatureCollection<GeoJSON.Point, T> {}
 
 export type ApiPoisSearchResult = {
   id: number
