@@ -222,7 +222,7 @@ import TeritorioIcon from '@/components/TeritorioIcon/TeritorioIcon.vue'
 import { getPoiById } from '@/utils/api'
 import { isIOS } from '@/utils/isIOS'
 import { getContrastedTextColor } from '@/utils/picto'
-import { VidoFeature, Mode } from '@/utils/types'
+import { VidoFeature, Mode, VidoFeatureProperties } from '@/utils/types'
 import { displayTime } from '@/utils/utilities'
 
 export default Vue.extend({
@@ -243,7 +243,7 @@ export default Vue.extend({
 
   data(): {
     sptags: { [key: string]: any } | null
-    apiProps: { [key: string]: any } | null
+    apiProps: VidoFeatureProperties | null
     textLimit: number
   } {
     return {

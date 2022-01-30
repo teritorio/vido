@@ -114,7 +114,7 @@ export interface SiteInfos {
   }[]
 }
 
-interface VidoFeatureProperties {
+export interface VidoFeatureProperties {
   [key: string]: any
 
   name?: string
