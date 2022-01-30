@@ -1,7 +1,5 @@
 import GeoJSON from 'geojson'
 
-/// <reference types="geojson" />
-
 export interface MultilingualString {
   [lang: string]: string
 }
@@ -16,8 +14,6 @@ export type TupleLatLng = [number, number]
 
 export type ZoomLevel = number
 export type Pitch = number
-
-export type PoiType = 'tis' | 'osm' | 'zone'
 
 export type Filter = {
   type: 'multiselection' | 'checkboxes_list' | 'boolean'
@@ -118,8 +114,6 @@ export interface SiteInfos {
   }[]
 }
 
-export type OsmPoiType = 'node' | 'way' | 'relation'
-
 export interface VidoFeature extends GeoJSON.Feature {
   // eslint-disable-next-line camelcase
   geometry: GeoJSON.Geometry
@@ -200,11 +194,6 @@ export type ApiAddrSearchResult = {
   id: number
   label: string
   type: 'street' | 'municipality'
-}
-
-export type ApiCartocodeSearchResult = {
-  id: number
-  label: string
 }
 
 export type SearchResult = {
