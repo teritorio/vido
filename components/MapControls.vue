@@ -82,17 +82,9 @@ import { getHashPart, setHashPart } from '@/utils/url'
 
 export default Vue.extend({
   props: {
-    hasFavorites: {
-      type: Boolean,
-      default: false,
-    },
     backgrounds: {
       type: Object,
       default: null,
-    },
-    isModeFavorite: {
-      type: Boolean,
-      default: false,
     },
     initialBackground: {
       type: String,

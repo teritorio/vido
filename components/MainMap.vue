@@ -60,7 +60,6 @@
 
       <MapControls
         :backgrounds="availableStyles"
-        :is-mode-favorite="isModeFavorite"
         :initial-background="selectedBackground"
         :map="map"
         :pitch="pitch"
