@@ -130,7 +130,7 @@ import { createMarkerDonutChart } from '@/lib/clusters'
 import {
   DEFAULT_MAP_STYLE,
   EXPLORER_MAP_STYLE,
-  MAP_STYLES,
+  MAP_STYLE_NAMES,
   LOCAL_STORAGE,
 } from '@/lib/constants'
 import { markerLayerFactory } from '@/lib/markerLayerFactory'
@@ -331,8 +331,8 @@ const MainMap = Vue.extend({
       return this.mode === Mode.EXPLORER
     },
 
-    availableStyles(): typeof MAP_STYLES {
-      return MAP_STYLES
+    availableStyles(): typeof MAP_STYLE_NAMES {
+      return MAP_STYLE_NAMES
     },
   },
 

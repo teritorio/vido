@@ -1,6 +1,6 @@
 import { MapStyleEnum } from '@/utils/types'
 
-export const MAP_STYLES = {
+export const MAP_STYLE_NAMES = {
   [MapStyleEnum.teritorio]: 'Teritorio',
   [MapStyleEnum.mapnik]: 'OpenStreetMap',
   [MapStyleEnum.aerial]: 'Imagerie aérienne IGN',
