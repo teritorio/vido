@@ -138,7 +138,7 @@ import { State as MenuState } from '@/store/menu'
 import { getPoiById, getPoiByIds } from '@/utils/api'
 import {
   ApiMenuCategory,
-  MapStyle,
+  MapStyleEnum,
   Mode,
   TupleLatLng,
   VidoFeature,
@@ -201,7 +201,7 @@ const MainMap = Vue.extend({
     markersOnScreen: { [id: string]: maplibregl.Marker }
     poiFilter: PoiFilter | null
     selectedFeatureMarker: maplibregl.Marker | null
-    selectedBackground: keyof typeof MapStyle
+    selectedBackground: keyof typeof MapStyleEnum
     featuresCoordinates: { [id: string]: TupleLatLng }
     allowRegionBackZoom: boolean
     showPoiToast: boolean
@@ -291,9 +291,9 @@ const MainMap = Vue.extend({
       )
 
     this.mapStyles = {
-      [MapStyle.teritorio]: vectoStyle,
-      [MapStyle.aerial]: satelliteStyle,
-      [MapStyle.mapnik]: rasterStyle,
+      [MapStyleEnum.teritorio]: vectoStyle,
+      [MapStyleEnum.aerial]: satelliteStyle,
+      [MapStyleEnum.mapnik]: rasterStyle,
     }
 
     this.mapStyle =
@@ -599,7 +599,7 @@ const MainMap = Vue.extend({
     }
 
     this.selectedBackground =
-      (getHashPart('bg') as keyof typeof MapStyle) || DEFAULT_MAP_STYLE
+      (getHashPart('bg') as keyof typeof MapStyleEnum) || DEFAULT_MAP_STYLE
 
     this.locale = {
       'NavigationControl.ResetBearing':
@@ -982,7 +982,7 @@ const MainMap = Vue.extend({
       }
     },
 
-    onClickChangeBackground(background: keyof typeof MapStyle) {
+    onClickChangeBackground(background: keyof typeof MapStyleEnum) {
       this.selectedBackground = background
     },
 

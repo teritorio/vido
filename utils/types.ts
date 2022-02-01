@@ -200,7 +200,7 @@ export enum Mode {
   EXPLORER = 'EXPLORER', // User explores around
 }
 
-export enum MapStyle {
+export enum MapStyleEnum {
   teritorio = 'teritorio',
   mapnik = 'mapnik',
   aerial = 'aerial',
