@@ -76,7 +76,7 @@ export default Vue.extend({
     },
 
     nextBackgroundName(backgroundNameReference: string): string {
-      const styleNames = ['teritorio', 'aerial', 'mapnik']
+      const styleNames = ['vector', 'aerial', 'raster']
 
       const backgroundReferenceIndex = styleNames.findIndex(
         (styleName) => styleName === backgroundNameReference

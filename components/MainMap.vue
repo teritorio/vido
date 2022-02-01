@@ -291,9 +291,9 @@ const MainMap = Vue.extend({
       )
 
     this.mapStyles = {
-      [MapStyleEnum.teritorio]: vectoStyle,
+      [MapStyleEnum.vector]: vectoStyle,
       [MapStyleEnum.aerial]: satelliteStyle,
-      [MapStyleEnum.mapnik]: rasterStyle,
+      [MapStyleEnum.raster]: rasterStyle,
     }
 
     this.mapStyle =

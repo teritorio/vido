@@ -201,8 +201,8 @@ export enum Mode {
 }
 
 export enum MapStyleEnum {
-  teritorio = 'teritorio',
-  mapnik = 'mapnik',
+  vector = 'vector',
+  raster = 'raster',
   aerial = 'aerial',
 }
 
