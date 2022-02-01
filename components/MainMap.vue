@@ -136,6 +136,7 @@ import {
 import { markerLayerFactory } from '@/lib/markerLayerFactory'
 import { State as MenuState } from '@/store/menu'
 import { getPoiById, getPoiByIds } from '@/utils/api'
+import { fetchStyle } from '@/utils/styles'
 import {
   ApiMenuCategory,
   MapStyleEnum,
@@ -234,61 +235,13 @@ const MainMap = Vue.extend({
       vectoStyle,
       satelliteStyle,
       rasterStyle,
-    ] = await Promise.all<StyleSpecification>(
+    ]: StyleSpecification[] = await Promise.all<StyleSpecification>(
       [
         this.$config.VECTO_STYLE_URL,
         this.$config.SATELLITE_STYLE_URL,
         this.$config.RASTER_STYLE_URL,
-      ].map((styleUrl) =>
-        fetch(styleUrl)
-          .then((res) => res.json())
-          .then(async (style: any) => {
-            const vectoSources: {
-              url: string
-              attribution: string
-            }[] = Object.values(style.sources)
-            const vectoSourceUrl: string[] = vectoSources
-              .map((src: any) => src.url)
-              .filter((url) => url)
-
-            const vectoSourceAttribution = await Promise.all(
-              vectoSourceUrl.map((url) => {
-                if (!url) return null
-
-                return fetch(url)
-                  .then((res) => res.json())
-                  .then((res) => {
-                    return res.attribution
-                  })
-              })
-            )
-
-            let nuAttribution = ''
-
-            vectoSourceAttribution.forEach((attr, i) => {
-              if (attr) {
-                const existingAttributions = this.attributions.filter(
-                  (att: string) => !attr.includes(att)
-                )
-
-                nuAttribution += [attr].concat(existingAttributions).join(' ')
-              } else if (vectoSources[i]?.attribution) {
-                nuAttribution += ' ' + vectoSources[i]?.attribution
-              }
-            })
-
-            const nuStyle = { ...style }
-
-            Object.keys(style.sources).forEach((key) => {
-              nuStyle.sources[key] = {
-                ...style.sources[key],
-                attribution: nuAttribution,
-              }
-            })
-
-            return nuStyle
-          })
-      )
+      ].map((styleUrl) => fetchStyle(styleUrl, this.attributions))
+    )
 
     this.mapStyles = {
       [MapStyleEnum.vector]: vectoStyle,
