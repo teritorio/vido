@@ -59,14 +59,18 @@
       </aside>
 
       <MapControls
-        :backgrounds="availableStyles"
-        :initial-background="selectedBackground"
         :map="map"
         :pitch="pitch"
         :resize-map="resizeMap"
-        @changeBackground="onClickChangeBackground"
         @change-mode="onControlChangeMode"
-      />
+      >
+        <MapControlsBackground
+          :backgrounds="availableStyles"
+          :initial-background="selectedBackground"
+          :hidden="isExplorerFavorite"
+          @changeBackground="onClickChangeBackground"
+        />
+      </MapControls>
 
       <div
         class="hidden fixed inset-x-0 bottom-0 sm:flex justify-center overflow-y-auto pointer-events-none h-auto sm:inset-x-3 sm:bottom-3"
@@ -116,6 +120,7 @@ import { mapGetters, mapActions } from 'vuex'
 
 import FavoriteMenu from '@/components/FavoriteMenu.vue'
 import FavoritesOverlay from '@/components/FavoritesOverlay.vue'
+import MapControlsBackground from '@/components/Map/MapControlsBackground.vue'
 import MapControls from '@/components/MapControls.vue'
 import MapPoiToast from '@/components/MapPoiToast.vue'
 import NavMenu from '@/components/NavMenu.vue'
@@ -151,6 +156,7 @@ const MainMap = Vue.extend({
   components: {
     Mapbox,
     MapControls,
+    MapControlsBackground,
     MapPoiToast,
     FavoritesOverlay,
     SnackBar,

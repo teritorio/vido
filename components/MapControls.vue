@@ -45,27 +45,7 @@
           3D
         </button>
 
-        <button
-          v-if="map && !isModeExplorer"
-          id="background-selector-map"
-          aria-label="Changer le fond de carte"
-          class="bg-gray-100 border-4 border-white rounded-full shadow-md outline-none w-11 h-11 focus:outline-none hover:bg-gray-100 focus-visible:bg-gray-100"
-          :title="
-            $t('mapControls.backgroundButton', {
-              current: backgrounds[background],
-            })
-          "
-          type="button"
-          @click="displayNextBackground"
-        >
-          <img
-            class="h-full rounded-full"
-            alt="fond de carte"
-            :src="require(`~/assets/${nextBackgroundName(background)}.png`)"
-          />
-        </button>
-
-        <div v-if="map && isModeExplorer" class="w-11 h-11" />
+        <slot v-if="map"></slot>
       </div>
     </div>
   </aside>
@@ -78,18 +58,10 @@ import Vue from 'vue'
 import { mapGetters } from 'vuex'
 
 import { Mode } from '@/utils/types'
-import { getHashPart, setHashPart } from '@/utils/url'
+import { getHashPart } from '@/utils/url'
 
 export default Vue.extend({
   props: {
-    backgrounds: {
-      type: Object,
-      default: null,
-    },
-    initialBackground: {
-      type: String,
-      default: null,
-    },
     map: {
       type: Object,
       default: null,
@@ -107,12 +79,10 @@ export default Vue.extend({
   data(): {
     building3d: Building3d | null
     is3D: boolean
-    background: string | null
   } {
     return {
       building3d: null,
       is3D: false,
-      background: null,
     }
   },
 
@@ -174,14 +144,6 @@ export default Vue.extend({
   },
 
   mounted() {
-    if (getHashPart('bg') && this.backgrounds[getHashPart('bg') || '']) {
-      this.background = getHashPart('bg')
-    } else if (this.initialBackground) {
-      this.background = this.initialBackground
-    } else {
-      this.displayNextBackground()
-    }
-
     const mapParams: string | null = getHashPart('map')
     const params: string[] | undefined = mapParams?.split('/')
 
@@ -206,30 +168,6 @@ export default Vue.extend({
         this.setIs3D(!this.is3D)
       }
     },
-    displayNextBackground() {
-      this.tracking('background')
-      if (!this.background) {
-        return
-      }
-
-      const nextBackgroundName = this.nextBackgroundName(this.background)
-      this.background = nextBackgroundName
-      setHashPart('bg', nextBackgroundName)
-      this.$emit('changeBackground', nextBackgroundName)
-    },
-    nextBackgroundName(backgroundNameReference: string): string {
-      const styleNames = ['teritorio', 'aerial', 'mapnik']
-
-      const backgroundReferenceIndex = styleNames.findIndex(
-        (styleName) => styleName === backgroundNameReference
-      )
-      const styleIndex =
-        backgroundReferenceIndex + 1 > styleNames.length - 1
-          ? 0
-          : backgroundReferenceIndex + 1
-
-      return styleNames[styleIndex]
-    },
     toggleMode() {
       this.tracking('explorer')
       this.$emit(
@@ -237,7 +175,7 @@ export default Vue.extend({
         this.isModeExplorer ? Mode.BROWSER : Mode.EXPLORER
       )
     },
-    tracking(event: '3d' | 'background' | 'explorer') {
+    tracking(event: '3d' | 'explorer') {
       this.$tracking({ type: 'map_control_event', event })
     },
   },
