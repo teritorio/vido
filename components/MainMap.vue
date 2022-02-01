@@ -58,7 +58,7 @@
         </div>
       </aside>
 
-      <MapControls :map="map" :resize-map="resizeMap">
+      <MapControls :map="map">
         <MapControlsExplore @change-mode="onControlChangeMode" />
         <MapControls3D :map="map" :pitch="pitch" />
         <MapControlsBackground

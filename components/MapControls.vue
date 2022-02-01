@@ -20,10 +20,6 @@ export default Vue.extend({
       type: Object,
       default: null,
     },
-    resizeMap: {
-      type: Function,
-      default: undefined,
-    },
   },
 
   watch: {
