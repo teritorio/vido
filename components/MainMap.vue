@@ -60,10 +60,10 @@
 
       <MapControls
         :map="map"
-        :pitch="pitch"
         :resize-map="resizeMap"
         @change-mode="onControlChangeMode"
       >
+        <MapControls3D :map="map" :pitch="pitch" />
         <MapControlsBackground
           :backgrounds="availableStyles"
           :initial-background="selectedBackground"
@@ -120,6 +120,7 @@ import { mapGetters, mapActions } from 'vuex'
 
 import FavoriteMenu from '@/components/FavoriteMenu.vue'
 import FavoritesOverlay from '@/components/FavoritesOverlay.vue'
+import MapControls3D from '@/components/Map/MapControls3D.vue'
 import MapControlsBackground from '@/components/Map/MapControlsBackground.vue'
 import MapControls from '@/components/MapControls.vue'
 import MapPoiToast from '@/components/MapPoiToast.vue'
@@ -156,6 +157,7 @@ const MainMap = Vue.extend({
   components: {
     Mapbox,
     MapControls,
+    MapControls3D,
     MapControlsBackground,
     MapPoiToast,
     FavoritesOverlay,
