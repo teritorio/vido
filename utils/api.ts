@@ -4,7 +4,7 @@ export function getPoiById(
   apiEndpoint: string,
   apiProject: string,
   apiTheme: string,
-  poiId: Number
+  poiId: Number | string
 ): Promise<VidoFeature | null> {
   return fetch(
     `${apiEndpoint}/${apiProject}/${apiTheme}/poi/${poiId}`

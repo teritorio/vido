@@ -18,7 +18,7 @@ export default Vue.extend({
   },
 
   validate({ params }) {
-    return /^[-:_a-z0-9]+$/.test(params.id)
+    return /^[-_:a-zA-Z0-9]+$/.test(params.id)
   },
 
   data(): {
@@ -40,7 +40,7 @@ export default Vue.extend({
       this.$config.API_ENDPOINT,
       this.$config.API_PROJECT,
       this.$config.API_THEME,
-      parseInt(this.$route.params.id)
+      this.$route.params.id
     ).then((poi) => {
       this.poi = poi
     })
