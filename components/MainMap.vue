@@ -12,23 +12,11 @@
           !small && isExplorerFavorite && 'sm:mt-20 sm:mt-0 h-4/5 sm:h-full',
         ]"
       >
-        <mapbox
-          v-if="mapStyle"
-          class="h-full"
-          access-token=""
-          :map-options="{
-            bounds: defaultBounds,
-            hash: 'map',
-            maxZoom: zoom.max,
-            minZoom: zoom.min,
-            pitch,
-            style: mapStyle,
-            zoom: zoom.default,
-            locale: locale,
-          }"
-          :nav-control="{
-            show: false,
-          }"
+        <Map
+          :defaultBounds="defaultBounds"
+          :attributions="attributions"
+          :map-style-enum="selectedBackground"
+          :pitch="pitch"
           @map-init="onMapInit"
           @map-pitchend="onMapPitchEnd"
           @map-data="onMapRender"
@@ -38,7 +26,18 @@
           @map-rotateend="onMapRender"
           @map-touchmove="onMapRender"
           @map-zoomend="onMapRender"
-        />
+        >
+          <template #controls>
+            <MapControlsExplore @change-mode="onControlChangeMode" />
+            <MapControls3D :map="map" :pitch="pitch" />
+            <MapControlsBackground
+              :backgrounds="availableStyles"
+              :initial-background="selectedBackground"
+              :hidden="isExplorerFavorite"
+              @changeBackground="onClickChangeBackground"
+            />
+          </template>
+        </Map>
       </div>
 
       <aside v-if="map" class="pointer-events-none hidden sm:block">
@@ -57,17 +56,6 @@
           />
         </div>
       </aside>
-
-      <MapControls :map="map">
-        <MapControlsExplore @change-mode="onControlChangeMode" />
-        <MapControls3D :map="map" :pitch="pitch" />
-        <MapControlsBackground
-          :backgrounds="availableStyles"
-          :initial-background="selectedBackground"
-          :hidden="isExplorerFavorite"
-          @changeBackground="onClickChangeBackground"
-        />
-      </MapControls>
 
       <div
         class="hidden fixed inset-x-0 bottom-0 sm:flex justify-center overflow-y-auto pointer-events-none h-auto sm:inset-x-3 sm:bottom-3"
@@ -104,12 +92,10 @@ import { OpenMapTilesLanguage } from '@teritorio/openmaptiles-gl-language'
 import { deepEqual } from 'fast-equals'
 import GeoJSON from 'geojson'
 import throttle from 'lodash.throttle'
-import Mapbox from 'mapbox-gl-vue'
 import maplibregl, {
   MapLayerMouseEvent,
   MapLayerTouchEvent,
   MapDataEvent,
-  StyleSpecification,
 } from 'maplibre-gl'
 import type { LngLatBoundsLike } from 'maplibre-gl'
 import Vue, { PropType } from 'vue'
@@ -118,9 +104,9 @@ import { mapGetters, mapActions } from 'vuex'
 import FavoriteMenu from '@/components/FavoriteMenu.vue'
 import FavoritesOverlay from '@/components/FavoritesOverlay.vue'
 import MapControlsExplore from '@/components/MainMap/MapControlsExplore.vue'
+import Map from '@/components/Map/Map.vue'
 import MapControls3D from '@/components/Map/MapControls3D.vue'
 import MapControlsBackground from '@/components/Map/MapControlsBackground.vue'
-import MapControls from '@/components/MapControls.vue'
 import MapPoiToast from '@/components/MapPoiToast.vue'
 import NavMenu from '@/components/NavMenu.vue'
 import SnackBar from '@/components/SnackBar.vue'
@@ -136,7 +122,6 @@ import {
 import { markerLayerFactory } from '@/lib/markerLayerFactory'
 import { State as MenuState } from '@/store/menu'
 import { getPoiById, getPoiByIds } from '@/utils/api'
-import { fetchStyle } from '@/utils/styles'
 import {
   ApiMenuCategory,
   MapStyleEnum,
@@ -154,8 +139,7 @@ const FAVORITE_LAYER_MARKER = 'favorite-layer-marker'
 
 const MainMap = Vue.extend({
   components: {
-    Mapbox,
-    MapControls,
+    Map,
     MapControlsExplore,
     MapControls3D,
     MapControlsBackground,
@@ -207,9 +191,6 @@ const MainMap = Vue.extend({
     allowRegionBackZoom: boolean
     showPoiToast: boolean
     showFavoritesOverlay: boolean
-    mapStyles: Record<string, StyleSpecification>
-    mapStyle: StyleSpecification | null
-    locale: Record<string, string>
   } {
     return {
       map: null,
@@ -225,33 +206,7 @@ const MainMap = Vue.extend({
       allowRegionBackZoom: false,
       showFavoritesOverlay: false,
       showPoiToast: false,
-      mapStyles: {},
-      mapStyle: null,
-      locale: {},
     }
-  },
-  async fetch() {
-    const [
-      vectoStyle,
-      satelliteStyle,
-      rasterStyle,
-    ]: StyleSpecification[] = await Promise.all<StyleSpecification>(
-      [
-        this.$config.VECTO_STYLE_URL,
-        this.$config.SATELLITE_STYLE_URL,
-        this.$config.RASTER_STYLE_URL,
-      ].map((styleUrl) => fetchStyle(styleUrl, this.attributions))
-    )
-
-    this.mapStyles = {
-      [MapStyleEnum.vector]: vectoStyle,
-      [MapStyleEnum.aerial]: satelliteStyle,
-      [MapStyleEnum.raster]: rasterStyle,
-    }
-
-    this.mapStyle =
-      this.mapStyles[this.selectedBackground] ||
-      this.mapStyles[DEFAULT_MAP_STYLE]
   },
 
   computed: {
@@ -447,9 +402,6 @@ const MainMap = Vue.extend({
         return
       }
 
-      this.mapStyle = this.mapStyles[this.selectedBackground]
-      this.map.setStyle(this.mapStyle)
-
       // Re-enable route highlight after style change
       const styledataCallBack = (e: MapDataEvent) => {
         if (this.map && e.dataType === 'style') {
@@ -474,20 +426,16 @@ const MainMap = Vue.extend({
     mode() {
       switch (this.mode) {
         case Mode.EXPLORER: {
-          const alreadyOnExplorerMapStyle =
-            this.selectedBackground === EXPLORER_MAP_STYLE
-
-          this.selectedBackground = EXPLORER_MAP_STYLE
-          if (this.mapStyle) {
-            this.map?.setStyle(this.mapStyle)
+          if (this.selectedBackground === EXPLORER_MAP_STYLE) {
+            this.poiFilter?.setIncludeFilter(this.filters)
+          } else {
+            this.poiFilterForExplorer()
+            this.selectedBackground = EXPLORER_MAP_STYLE
           }
 
           setHashPart('bg', this.selectedBackground)
           setHashPart('explorer', '1')
 
-          if (alreadyOnExplorerMapStyle) {
-            this.poiFilterForExplorer()
-          }
           break
         }
         case Mode.BROWSER:
@@ -553,14 +501,6 @@ const MainMap = Vue.extend({
 
     this.selectedBackground =
       (getHashPart('bg') as keyof typeof MapStyleEnum) || DEFAULT_MAP_STYLE
-
-    this.locale = {
-      'NavigationControl.ResetBearing':
-        this.$tc('mapControls.resetBearing') || 'Reset bearing to north',
-      'NavigationControl.ZoomIn': this.$tc('mapControls.zoomIn') || 'Zoom in',
-      'NavigationControl.ZoomOut':
-        this.$tc('mapControls.zoomOut') || 'Zoom out',
-    }
   },
 
   mounted() {
@@ -1139,5 +1079,14 @@ export default MainMap
 <style>
 .cluster-donut {
   @apply text-sm leading-none font-medium block text-gray-800;
+}
+</style>
+
+<style>
+#map {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 100%;
 }
 </style>
