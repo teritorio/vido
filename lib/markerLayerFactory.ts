@@ -63,3 +63,36 @@ export const markerLayerTextFactory = (
     'text-allow-overlap': false,
   },
 })
+
+export const markerLayerFactory = (
+  source: string,
+  id: string
+): LayerSpecification => {
+  const layer = markerLayerTextFactory(source, id)
+  const tourismStyleClass = [
+    'array',
+    ['get', 'tourism_style_class', ['object', ['get', 'display']]],
+  ]
+  const superClass = ['at', 0, tourismStyleClass]
+  const class_ = ['at', 1, tourismStyleClass]
+  const subclass = ['at', 2, tourismStyleClass]
+  // @ts-ignore
+  layer.layout['icon-image'] = [
+    'concat',
+    superClass,
+    [
+      'case',
+      ['>=', ['length', tourismStyleClass], 2],
+      ['concat', '-', class_],
+      '',
+    ],
+    [
+      'case',
+      ['>=', ['length', tourismStyleClass], 3],
+      ['concat', '-', subclass],
+      '',
+    ],
+    '⬤',
+  ]
+  return layer
+}
