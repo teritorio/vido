@@ -71,11 +71,13 @@ export default Vue.extend({
   data(): {
     map: maplibregl.Map | null
     mapStyle: StyleSpecification | null
+    mapStyleCache: { [key: string]: StyleSpecification }
     locale: Record<string, string>
   } {
     return {
       map: null,
       mapStyle: null,
+      mapStyleCache: {},
       locale: {},
     }
   },
@@ -111,15 +113,28 @@ export default Vue.extend({
     },
 
     setStyle(mapStyleEnum: MapStyleEnum) {
-      const styleURLs = {
-        [MapStyleEnum.vector]: this.$config.VECTO_STYLE_URL,
-        [MapStyleEnum.aerial]: this.$config.SATELLITE_STYLE_URL,
-        [MapStyleEnum.raster]: this.$config.RASTER_STYLE_URL,
-      }
-      fetchStyle(styleURLs[mapStyleEnum], this.attributions).then((style) => {
+      this.getStyle(mapStyleEnum).then((style) => {
         this.mapStyle = style
         this.map?.setStyle(style)
       })
+    },
+
+    async getStyle(mapStyleEnum: MapStyleEnum): Promise<StyleSpecification> {
+      if (this.mapStyleCache[mapStyleEnum]) {
+        return this.mapStyleCache[mapStyleEnum]
+      } else {
+        const styleURLs = {
+          [MapStyleEnum.vector]: this.$config.VECTO_STYLE_URL,
+          [MapStyleEnum.aerial]: this.$config.SATELLITE_STYLE_URL,
+          [MapStyleEnum.raster]: this.$config.RASTER_STYLE_URL,
+        }
+        const style = await fetchStyle(
+          styleURLs[mapStyleEnum],
+          this.attributions
+        )
+        this.mapStyleCache[mapStyleEnum] = style
+        return style
+      }
     },
   },
 })
