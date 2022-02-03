@@ -119,7 +119,7 @@ import {
   MAP_STYLE_NAMES,
   LOCAL_STORAGE,
 } from '@/lib/constants'
-import { markerLayerFactory } from '@/lib/markerLayerFactory'
+import { markerLayerTextFactory } from '@/lib/markerLayerFactory'
 import { State as MenuState } from '@/store/menu'
 import { getPoiById, getPoiByIds } from '@/utils/api'
 import {
@@ -771,7 +771,7 @@ const MainMap = Vue.extend({
 
           if (!this.map.getLayer(FAVORITE_LAYER_MARKER)) {
             this.map.addLayer(
-              markerLayerFactory(FAVORITE_SOURCE, FAVORITE_LAYER_MARKER)
+              markerLayerTextFactory(FAVORITE_SOURCE, FAVORITE_LAYER_MARKER)
             )
           }
         }
@@ -779,7 +779,9 @@ const MainMap = Vue.extend({
         this.getSubCategory(this.selectedCategories)
 
         if (!this.map.getLayer(POI_LAYER_MARKER) && this.map.isStyleLoaded())
-          this.map.addLayer(markerLayerFactory(POI_SOURCE, POI_LAYER_MARKER))
+          this.map.addLayer(
+            markerLayerTextFactory(POI_SOURCE, POI_LAYER_MARKER)
+          )
 
         if (this.map.getLayer(FAVORITE_LAYER_MARKER)) {
           this.map.removeLayer(FAVORITE_LAYER_MARKER)
@@ -912,7 +914,7 @@ const MainMap = Vue.extend({
 
       // Add individual markers
       if (!this.map.getLayer(POI_LAYER_MARKER))
-        this.map.addLayer(markerLayerFactory(POI_SOURCE, POI_LAYER_MARKER))
+        this.map.addLayer(markerLayerTextFactory(POI_SOURCE, POI_LAYER_MARKER))
     },
 
     selectFeature(feature: VidoFeature) {

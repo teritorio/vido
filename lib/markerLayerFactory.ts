@@ -1,6 +1,6 @@
 import { LayerSpecification } from 'maplibre-gl'
 
-export const markerLayerFactory = (
+export const markerLayerTextFactory = (
   source: string,
   id: string
 ): LayerSpecification => ({
