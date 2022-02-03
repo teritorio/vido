@@ -579,6 +579,7 @@ const MainMap = Vue.extend({
 
     onMapInit(map: maplibregl.Map) {
       this.map = map
+      this.pitch = this.map.getPitch()
 
       this.poiFilter = new PoiFilter()
       this.map.addControl(this.poiFilter)
