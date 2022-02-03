@@ -5,6 +5,7 @@
       access-token=""
       :map-options="{
         bounds: bounds,
+        center: center,
         hash: 'map',
         maxZoom: defaultZoom.max,
         minZoom: defaultZoom.min,
@@ -64,6 +65,9 @@ export default Vue.extend({
     attributions: {
       type: Array as PropType<string[]>,
       default: () => [],
+    },
+    center: {
+      type: [Array, Object], // as PropType<maplibregl.LngLatLike>,
     },
     pitch: {
       type: Number,
