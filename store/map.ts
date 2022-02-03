@@ -34,6 +34,7 @@ const getInitialMapview: Function = () => ({
     min: 1,
   },
   selection_zoom: {
+    zoom_poi: 17,
     zoom_ban: 15,
     zoom_commune: 12,
   },

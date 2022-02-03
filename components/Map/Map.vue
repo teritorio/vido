@@ -11,7 +11,7 @@
         minZoom: defaultZoom.min,
         pitch,
         style: mapStyle,
-        zoom: defaultZoom.default,
+        zoom: zoom,
         locale: locale,
       }"
       :nav-control="{
@@ -69,6 +69,10 @@ export default Vue.extend({
     center: {
       type: [Array, Object], // as PropType<maplibregl.LngLatLike>,
     },
+    zoom: {
+      type: Number,
+      default: null,
+    },
     pitch: {
       type: Number,
       default: 0,
@@ -91,7 +95,6 @@ export default Vue.extend({
 
   computed: {
     ...mapGetters({
-      zoom: 'map/zoom',
       defaultZoom: 'map/zoom',
     }),
   },
