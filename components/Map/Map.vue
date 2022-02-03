@@ -6,11 +6,11 @@
       :map-options="{
         bounds: bounds,
         hash: 'map',
-        maxZoom: zoom.max,
-        minZoom: zoom.min,
+        maxZoom: defaultZoom.max,
+        minZoom: defaultZoom.min,
         pitch,
         style: mapStyle,
-        zoom: zoom.default,
+        zoom: defaultZoom.default,
         locale: locale,
       }"
       :nav-control="{
@@ -88,6 +88,7 @@ export default Vue.extend({
   computed: {
     ...mapGetters({
       zoom: 'map/zoom',
+      defaultZoom: 'map/zoom',
     }),
   },
 
