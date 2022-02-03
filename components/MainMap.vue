@@ -13,7 +13,7 @@
         ]"
       >
         <Map
-          :defaultBounds="defaultBounds"
+          :bounds="defaultBounds"
           :attributions="attributions"
           :map-style-enum="selectedBackground"
           :pitch="pitch"

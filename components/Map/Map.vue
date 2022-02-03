@@ -4,7 +4,7 @@
       v-if="mapStyle"
       access-token=""
       :map-options="{
-        bounds: default_bounds,
+        bounds: bounds,
         hash: 'map',
         maxZoom: zoom.max,
         minZoom: zoom.min,
@@ -58,6 +58,9 @@ export default Vue.extend({
       type: String as PropType<MapStyleEnum>,
       default: DEFAULT_MAP_STYLE as MapStyleEnum,
     },
+    bounds: {
+      type: [Array, Object], // as PropType<maplibregl.LngLatBoundsLike>
+    },
     attributions: {
       type: Array as PropType<string[]>,
       default: () => [],
@@ -84,7 +87,6 @@ export default Vue.extend({
 
   computed: {
     ...mapGetters({
-      default_bounds: 'map/default_bounds',
       zoom: 'map/zoom',
     }),
   },
