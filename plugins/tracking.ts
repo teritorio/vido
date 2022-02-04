@@ -38,6 +38,7 @@ type Event =
       title?: string
       location: string
       path: string
+      categoryIds: Array<Number>
     }
   | {
       type: 'popup_event'
@@ -111,6 +112,7 @@ function google(app: NuxtAppOptions, event: Event) {
         pageLocation: event.location,
         pagePath: event.path,
         poiId: event.poiId,
+        categoryIds: event.categoryIds,
       })
       break
     }

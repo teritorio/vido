@@ -517,6 +517,7 @@ export default Vue.extend({
       title: this.poi.properties?.name,
       location: window.location.href,
       path: this.$route.path,
+      categoryIds: this.poi.properties?.metadata?.category_ids || [],
     })
   },
 

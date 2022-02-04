@@ -140,6 +140,8 @@ export interface VidoFeature extends MapboxGeoJSONFeature {
     metadata?: {
       id?: number
       source?: string
+      // eslint-disable-next-line camelcase
+      category_ids?: Array<number>
     }
     display?: {
       icon?: string
