@@ -43,7 +43,7 @@ import { StyleSpecification } from 'maplibre-gl'
 import Vue, { PropType } from 'vue'
 import { mapGetters } from 'vuex'
 
-import MapControls from '@/components/MapControls.vue'
+import MapControls from '@/components/Map/MapControls.vue'
 import { DEFAULT_MAP_STYLE } from '@/lib/constants'
 import { fetchStyle } from '@/utils/styles'
 import { MapStyleEnum } from '@/utils/types'

@@ -25,7 +25,7 @@
 import Vue, { PropType } from 'vue'
 import { mapGetters } from 'vuex'
 
-import CategoryButton from '@/components/CategoryButton/CategoryButton.vue'
+import CategoryButton from '@/components/Categories/CategoryButton/CategoryButton.vue'
 import { Category } from '@/utils/types'
 
 export default Vue.extend({

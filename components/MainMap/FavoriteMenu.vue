@@ -207,7 +207,7 @@ import Vue from 'vue'
 import { TDropdown } from 'vue-tailwind/dist/components'
 import { mapGetters } from 'vuex'
 
-import FavoriteNoteBook from '@/components/FavoriteNoteBook.vue'
+import FavoriteNoteBook from '@/components/MainMap/FavoriteNoteBook.vue'
 import { LOCAL_STORAGE } from '@/lib/constants'
 import { getPoiByIds } from '@/utils/api'
 import { VidoFeature } from '@/utils/types'

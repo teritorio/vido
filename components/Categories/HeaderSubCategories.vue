@@ -11,7 +11,7 @@
 <script lang="ts">
 import Vue, { PropType } from 'vue'
 
-import CategoryList from '@/components/CategoryList/CategoryList.vue'
+import CategoryList from '@/components/Categories/CategoryList/CategoryList.vue'
 import { Category } from '@/utils/types'
 
 export default Vue.extend({

@@ -73,7 +73,7 @@
 import Vue, { PropType } from 'vue'
 import { mapGetters } from 'vuex'
 
-import HeaderRootCategories from '@/components/HeaderRootCategories.vue'
+import HeaderRootCategories from '@/components/Categories/HeaderRootCategories.vue'
 import { Category } from '@/utils/types'
 
 export default Vue.extend({

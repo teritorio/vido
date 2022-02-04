@@ -71,11 +71,11 @@
 import Vue, { PropType } from 'vue'
 import { mapGetters } from 'vuex'
 
-import HeaderRootCategories from '@/components/HeaderRootCategories.vue'
-import { MapRef } from '@/components/MainMap.vue'
-import MapPoiToast from '@/components/MapPoiToast.vue'
-import SubCategoryFilterHeader from '@/components/SubCategoryFilterHeader.vue'
-import SubCategoryHeader from '@/components/SubCategoryHeader.vue'
+import HeaderRootCategories from '@/components/Categories/HeaderRootCategories.vue'
+import SubCategoryFilterHeader from '@/components/Categories/SubCategoryFilterHeader.vue'
+import SubCategoryHeader from '@/components/Categories/SubCategoryHeader.vue'
+import { MapRef } from '@/components/MainMap/MainMap.vue'
+import MapPoiToast from '@/components/MainMap/MapPoiToast.vue'
 import { Category, VidoFeature } from '@/utils/types'
 
 import {
@@ -83,7 +83,7 @@ import {
   HomeEvent,
   HomeStates,
   HomeStateSchema,
-} from './Home/Home.machine'
+} from '../Home/Home.machine'
 
 export default Vue.extend({
   components: {

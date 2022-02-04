@@ -120,7 +120,7 @@
 import debounce from 'lodash.debounce'
 import Vue, { PropType } from 'vue'
 
-import SearchResultBlock from '@/components/SearchResultBlock.vue'
+import SearchResultBlock from '@/components/Search/SearchResultBlock.vue'
 import {
   ApiPoisSearchResult,
   ApiMenuItemSearchResult,
