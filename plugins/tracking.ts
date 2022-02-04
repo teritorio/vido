@@ -1,4 +1,5 @@
 import { Plugin, NuxtAppOptions } from '@nuxt/types'
+import urlSlug from 'url-slug'
 
 import { Category } from '@/utils/types'
 
@@ -71,7 +72,7 @@ function google(app: NuxtAppOptions, event: Event) {
         event: 'pageview',
         pageType: 'PageView',
         pageTitle: event.title,
-        pagePath: `/${event.title}`,
+        pagePath: `/${urlSlug(event.title)}`,
       })
       break
     }
@@ -89,7 +90,7 @@ function google(app: NuxtAppOptions, event: Event) {
         event: 'pageview',
         pageType: 'PageView',
         pageTitle: event.type,
-        pagePath: `/${event.type}`,
+        pagePath: `/${urlSlug(event.type)}`,
       })
       break
     }
