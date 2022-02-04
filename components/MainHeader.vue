@@ -3,7 +3,10 @@
     class="hidden sm:block absolute bottom-0 overflow-y-auto pointer-events-auto relative inset-auto h-auto space-y-4 p-2"
   >
     <div
-      class="items-center justify-between hidden sm:flex bg-white rounded-xl shadow-md px-5 py-4"
+      :class="[
+        'items-center justify-between hidden sm:flex rounded-xl shadow-md px-5 py-4',
+        isExplorerFavorite ? 'bg-blue-500 text-white' : 'bg-white',
+      ]"
     >
       <h1 v-if="!isExplorerFavorite">
         <a
@@ -33,19 +36,17 @@
       <div v-else class="flex items-center ml-2">
         <button
           type="button"
-          class="flex flex-shrink-0 items-center justify-center w-10 h-10 text-2xl font-bold transition-all rounded-full outline-none cursor-pointer focus:outline-none hover:bg-gray-100 focus:bg-gray-100"
+          class="flex flex-shrink-0 items-center justify-center w-10 h-10 text-2xl font-bold transition-all rounded-full outline-none cursor-pointer focus:outline-none hover:bg-blue-700 focus:bg-blue-700"
           @click="goToCategories"
         >
-          <font-awesome-icon
-            icon="arrow-left"
-            class="text-gray-800"
-            size="xs"
-          />
+          <font-awesome-icon icon="arrow-left" class="text-white" size="xs" />
         </button>
         <p class="ml-2">
           {{
             $tc(
-              isFavorite ? 'headerMenu.myFavorites' : 'headerMenu.exploration'
+              isFavorite
+                ? 'headerMenu.backToMenuFavorites'
+                : 'headerMenu.backToMenuExplorer'
             )
           }}
         </p>

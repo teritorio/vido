@@ -65,6 +65,7 @@
               :menu-to-icon="categoriesToIcons"
               :selection-zoom="selectionZoom"
               :is-explorer-favorite="isModeExplorer || isModeFavorite"
+              :map-center="map_center"
               @go-back-click="goToHome"
               @category-click="onSearchCategory"
               @poi-click="onSearchPoi"
@@ -74,7 +75,10 @@
         </transition>
         <div
           v-if="state.matches(states.Search)"
-          :class="['max-h-full sm:hidden p-2', isBottomMenuOpened && 'hidden']"
+          :class="[
+            'max-h-full sm:hidden sm:p-2',
+            isBottomMenuOpened && 'hidden',
+          ]"
         >
           <SearchHeader
             :site-name="siteName"
@@ -83,6 +87,7 @@
             :selection-zoom="selectionZoom"
             :is-explorer-favorite="isModeExplorer || isModeFavorite"
             :is-favorite="isModeFavorite"
+            :map-center="map_center"
             @go-to-categories="onQuitExplorerFavoriteMode"
             @go-back-click="goToHome"
             @category-click="onSearchCategory"
@@ -170,7 +175,7 @@ import {
   Category,
   Mode,
   FilterValues,
-  ApiFilterSearchResult,
+  ApiMenuItemSearchResult,
 } from '@/utils/types'
 import { getHashPart, setHashPart } from '@/utils/url'
 
@@ -263,6 +268,7 @@ export default Vue.extend({
       mode: 'site/mode',
       selectedFeature: 'map/selectedFeature',
       selectionZoom: 'map/selectionZoom',
+      map_center: 'map/center',
       isModeFavorite: 'favorite/isModeFavorite',
     }),
     events: () => HomeEvents,
@@ -534,14 +540,16 @@ export default Vue.extend({
         }
       })
     },
-    onSearchCategory(newFilter: ApiFilterSearchResult) {
-      if (newFilter.filterid) {
+    onSearchCategory(newFilter: ApiMenuItemSearchResult) {
+      if (newFilter.filter_property) {
         const newFilters = Object.assign({}, this.filters)
 
-        newFilters[`${newFilter.menuId}`] = {
-          selectionFilter: {
-            [newFilter.tag]: [`${newFilter.filter}`],
-          },
+        newFilters[`${newFilter.id}`] = {
+          [newFilter.filter_property]: [
+            `${newFilter.filter_value}`,
+            ...(newFilters[`${newFilter.id}`]?.[newFilter.filter_property] ||
+              []),
+          ],
         }
 
         this.setCategoriesFilters(newFilters)
@@ -551,7 +559,7 @@ export default Vue.extend({
       setHashPart('fav', null)
       this.$store.dispatch('favorite/handleFavoriteLayer', false)
       this.$store.dispatch('favorite/setFavoritesAction', 'close')
-      this.selectSubCategory([newFilter.menuId])
+      this.selectSubCategory([newFilter.id])
     },
     onFeatureClick(feature: VidoFeature) {
       this.setSelectedFeature(feature).then(() => {

@@ -1,4 +1,5 @@
 import { Plugin, NuxtAppOptions } from '@nuxt/types'
+import urlSlug from 'url-slug'
 
 import { Category } from '@/utils/types'
 
@@ -37,6 +38,7 @@ type Event =
       title?: string
       location: string
       path: string
+      categoryIds: Array<Number>
     }
   | {
       type: 'popup_event'
@@ -71,7 +73,7 @@ function google(app: NuxtAppOptions, event: Event) {
         event: 'pageview',
         pageType: 'PageView',
         pageTitle: event.title,
-        pagePath: `/${event.title}`,
+        pagePath: `/${urlSlug(event.title)}`,
       })
       break
     }
@@ -89,7 +91,7 @@ function google(app: NuxtAppOptions, event: Event) {
         event: 'pageview',
         pageType: 'PageView',
         pageTitle: event.type,
-        pagePath: `/${event.type}`,
+        pagePath: `/${urlSlug(event.type)}`,
       })
       break
     }
@@ -110,6 +112,7 @@ function google(app: NuxtAppOptions, event: Event) {
         pageLocation: event.location,
         pagePath: event.path,
         poiId: event.poiId,
+        categoryIds: event.categoryIds,
       })
       break
     }

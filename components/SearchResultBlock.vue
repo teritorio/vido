@@ -7,16 +7,22 @@
     <ul>
       <li
         v-for="item in items"
-        :key="item.id"
+        :key="`${item.id}-${item.filter_property}-${item.filter_value}`"
         class="flex flex-row items-baseline justify-start gap-x-1 mb-1 hover:bg-gray-100 cursor-pointer rounded-xl ml-2 px-2"
         :data-item="item.id"
         @click="onItemClick(item)"
       >
         <teritorio-icon
-          v-if="item.icon"
+          v-if="item.icon && item.icon.indexOf('teritorio') != -1"
           :picto="item.icon"
           category-color="#6B7280"
           use-category-color
+        />
+        <font-awesome-icon
+          v-elsif="item.icon"
+          :icon="item.icon"
+          color="#6B7280"
+          size="sm"
         />
         <span>
           {{ item.label }}
@@ -67,7 +73,10 @@ export default Vue.extend({
         resultType: this.type,
         title: searchResult.label,
       })
-      this.$emit('item-click', searchResult.id)
+      this.$emit(
+        'item-click',
+        this.type === 'category' ? searchResult : searchResult.id
+      )
     },
   },
 })

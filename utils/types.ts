@@ -140,6 +140,8 @@ export interface VidoFeature extends MapboxGeoJSONFeature {
     metadata?: {
       id?: number
       source?: string
+      // eslint-disable-next-line camelcase
+      category_ids?: Array<number>
     }
     display?: {
       icon?: string
@@ -167,39 +169,42 @@ export interface ApiPois {
   features: VidoFeature[]
 }
 
-export type ApiSearchResult = {
-  postid: number
+export interface ApiSearchResult<T> {
+  type: 'FeaturesCollection'
+  geometry: GeoJSON.Point
+  features: [
+    {
+      properties: T
+    }
+  ]
+}
+
+export type ApiPoisSearchResult = {
+  id: number
   label: string
-  commune: string | null
-  menuId: number
+  icon?: string
+  city?: string
+}
+
+export type ApiMenuItemSearchResult = {
+  id: number
+  label: string
+  icon?: string
+  // eslint-disable-next-line camelcase
+  filter_property?: string
+  // eslint-disable-next-line camelcase
+  filter_value?: string
 }
 
 export type ApiAddrSearchResult = {
-  ID: number
+  id: number
   label: string
-  geojson: MapboxGeoJSONFeature
+  type: 'street' | 'municipality'
 }
 
 export type ApiCartocodeSearchResult = {
-  postid: number
+  id: number
   label: string
-}
-
-export type ApiFilterSearchResult = {
-  filter: string
-  filterid: number
-  label: string
-  menuId: number
-  tag: string
-}
-
-export type ApiSearchResults = {
-  classe: ApiFilterSearchResult[]
-  pois: string | ApiSearchResult[]
-  wp: string | ApiSearchResult[]
-  adress: string | ApiAddrSearchResult[]
-  municipality: string | ApiAddrSearchResult[]
-  cartocode: ApiCartocodeSearchResult | ApiCartocodeSearchResult[]
 }
 
 export type SearchResult = {
@@ -207,6 +212,10 @@ export type SearchResult = {
   label: string
   icon?: string
   small?: string
+  // eslint-disable-next-line camelcase
+  filter_property?: string
+  // eslint-disable-next-line camelcase
+  filter_value?: string
 }
 
 export type VidoMglStyle = Style & {

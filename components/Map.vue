@@ -101,7 +101,6 @@ import Mapbox from 'mapbox-gl-vue'
 import maplibregl, {
   MapLayerMouseEvent,
   MapLayerTouchEvent,
-  Layer,
   MapDataEvent,
 } from 'maplibre-gl'
 import Vue, { PropType } from 'vue'
@@ -211,14 +210,7 @@ const Map = Vue.extend({
         this.$config.SATELLITE_STYLE_URL,
         this.$config.RASTER_STYLE_URL,
       ].map((styleUrl) => {
-        return fetch(styleUrl)
-          .then((res) => res.json())
-          .then((vectoStyle) => {
-            if (vectoStyle?.sources?.openmaptiles?.url) {
-              vectoStyle.sources.openmaptiles.url = this.$config.VECTO_TILES_URL
-            }
-            return vectoStyle
-          })
+        return fetch(styleUrl).then((res) => res.json())
       })
     )
 
@@ -238,57 +230,6 @@ const Map = Vue.extend({
           return fetch(url)
             .then((res) => res.json())
             .then((res) => {
-              // Add route layers only to style having route_tourism as source data layer
-              if (
-                res.vector_layers?.some(
-                  (vectorLayer: { id: string }) =>
-                    vectorLayer.id === 'route_tourism'
-                )
-              ) {
-                const insertIntex = style.layers.findIndex(
-                  (layer: Layer) => layer.id === 'waterway-name'
-                )
-                style.layers.splice(
-                  insertIntex,
-                  0,
-                  {
-                    id: 'route_tourism-casing',
-                    type: 'line',
-                    source: 'openmaptiles',
-                    'source-layer': 'route_tourism',
-                    paint: {
-                      'line-width': 5,
-                      'line-color': 'rgb(235, 235, 235)',
-                    },
-                    layout: {
-                      'line-join': 'round',
-                      'line-cap': 'round',
-                    },
-                    filter: false,
-                  },
-                  {
-                    id: 'route_tourism',
-                    type: 'line',
-                    source: 'openmaptiles',
-                    'source-layer': 'route_tourism',
-                    paint: {
-                      'line-width': 3,
-                      'line-color': [
-                        'coalesce',
-                        ['get', 'color'],
-                        'rgb(215, 0, 0)',
-                      ],
-                      'line-dasharray': [3, 2],
-                    },
-                    layout: {
-                      'line-join': 'round',
-                      'line-cap': 'round',
-                    },
-                    filter: false,
-                  }
-                )
-              }
-
               return res.attribution
             })
         })
@@ -479,6 +420,12 @@ const Map = Vue.extend({
             feature.properties?.metadata?.id ||
             feature?.id ||
             feature?.properties?.id
+          this.map.setLayoutProperty(
+            'route_tourism-casing',
+            'visibility',
+            'visible'
+          )
+          this.map.setLayoutProperty('route_tourism', 'visibility', 'visible')
           this.map.setFilter('route_tourism-casing', ['==', ['id'], id])
           this.map.setFilter('route_tourism', ['==', ['id'], id])
         }
@@ -507,8 +454,12 @@ const Map = Vue.extend({
           .addTo(this.map)
       } else {
         if (this.map.getLayer('route_tourism-casing')) {
-          this.map.setFilter('route_tourism-casing', false)
-          this.map.setFilter('route_tourism', false)
+          this.map.setLayoutProperty(
+            'route_tourism-casing',
+            'visibility',
+            'none'
+          )
+          this.map.setLayoutProperty('route_tourism', 'visibility', 'none')
         }
 
         this.showPoiToast = false
@@ -684,6 +635,12 @@ const Map = Vue.extend({
       this.map.on('click', () => {
         this.unselectFeature()
         this.$emit('click')
+      })
+
+      this.map.on('moveend', () => {
+        if (this.map) {
+          this.$store.dispatch('map/center', this.map.getCenter())
+        }
       })
 
       // Listen to click on POI from vector tiles (explorer mode)

@@ -10,23 +10,25 @@ function checkEnvVariable(variableName) {
 }
 
 checkEnvVariable('API_ENDPOINT')
+checkEnvVariable('API_SEARCH')
+checkEnvVariable('API_SEARCH_ADDR')
 checkEnvVariable('API_PROJECT')
 checkEnvVariable('API_THEME')
 checkEnvVariable('VECTO_STYLE_URL')
 checkEnvVariable('SATELLITE_STYLE_URL')
 checkEnvVariable('RASTER_STYLE_URL')
-checkEnvVariable('VECTO_TILES_URL')
 
 export default {
   target: 'static',
   publicRuntimeConfig: {
     API_ENDPOINT: process.env.API_ENDPOINT || '',
+    API_SEARCH: process.env.API_SEARCH || '',
+    API_SEARCH_ADDR: process.env.API_SEARCH_ADDR || '',
     API_PROJECT: process.env.API_PROJECT || '',
     API_THEME: process.env.API_THEME || '',
     VECTO_STYLE_URL: process.env.VECTO_STYLE_URL || '',
     SATELLITE_STYLE_URL: process.env.SATELLITE_STYLE_URL || '',
     RASTER_STYLE_URL: process.env.RASTER_STYLE_URL || '',
-    VECTO_TILES_URL: process.env.VECTO_TILES_URL || '',
     GOOGLE_TAG_MANAGER_ID: process.env.GOOGLE_TAG_MANAGER_ID || '',
     NOTEBOOK_ENABLED: process.env.NOTEBOOK_ENABLED || '',
   },

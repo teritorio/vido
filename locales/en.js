@@ -54,9 +54,8 @@ export default {
     cartocode: 'Cartocode',
     noResult: 'No results',
     hideCategory: 'Hide this category',
-    myFavorites: 'Yours favorites',
-    exploration:
-      'All information is visible on the map, depending on the zoom level.',
+    backToMenuFavorites: 'Show menu',
+    backToMenuExplorer: 'Back to menu',
   },
   toast: {
     details: 'Details',
@@ -80,11 +79,9 @@ export default {
     closed: 'Currently closed',
     open: 'Opens',
     openAt: 'Opens at',
+    '24_7': 'Opened 24/7',
     zoom: 'Zoom',
     routePopup: {
-      hiking: 'Hiking',
-      bicycle: 'Bicycle',
-      road: 'Car',
       min: 'min',
       km: 'km',
       easy: 'easy',

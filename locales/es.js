@@ -54,9 +54,8 @@ export default {
     cartocode: 'Cartocode',
     noResult: 'No hay resultados',
     hideCategory: 'Ocultar esta categoría',
-    myFavorites: 'Sus favoritos',
-    exploration:
-      'Toda la información es visible en el mapa, dependiendo del nivel de zoom.',
+    backToMenuFavorites: 'Ver el menú',
+    backToMenuExplorer: 'Regresar al menú',
   },
   toast: {
     details: 'Detalles',
@@ -80,6 +79,14 @@ export default {
     closed: 'Actualmente cerrado',
     open: 'Abierto el',
     openAt: 'Abre a las',
+    '24_7': 'Abierto 24h/24, 7j/7',
     zoom: 'Acercarse',
+    routePopup: {
+      min: 'min',
+      km: 'km',
+      easy: 'fácil',
+      normal: 'normal',
+      hard: 'difícil',
+    },
   },
 }

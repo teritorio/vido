@@ -49,12 +49,13 @@ jobs:
       - name: Build
         env:
           API_ENDPOINT: https://cdt40.carto.guide/api.teritorio/geodata/v0.1
+          API_SEARCH: ${{secrets.API_SEARCH_DEV}}
+          API_SEARCH_ADDR: ${{secrets.API_SEARCH_ADDR_DEV}}
           API_PROJECT: ${{secrets.API_PROJECT_DEV}}
           API_THEME: ${{secrets.API_THEME_DEV}}
           VECTO_STYLE_URL: ${{secrets.VECTO_STYLE_URL_DEV}}
           SATELLITE_STYLE_URL: ${{secrets.SATELLITE_STYLE_URL_DEV}}
           RASTER_STYLE_URL: ${{secrets.RASTER_STYLE_URL_DEV}}
-          VECTO_TILES_URL: ${{secrets.VECTO_TILES_URL_DEV}}
           SENTRY_DSN: ${{secrets.SENTRY_DSN_DEV}}
           NOTEBOOK_ENABLED: ${{secrets.NOTEBOOK_ENABLED_DEV}}
         run: yarn generate

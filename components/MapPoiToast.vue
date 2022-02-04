@@ -75,7 +75,11 @@
 
         <template v-for="(route, activity) in routes">
           <p :key="activity" class="text-sm mt-2">
-            {{ $tc(`toast.routePopup.${activity}`) }} : {{ route }}
+            {{
+              (sptags && sptags['route:*'] && sptags['route:*'][activity]) ||
+              activity
+            }}
+            : {{ route }}
           </p>
         </template>
 
@@ -133,7 +137,8 @@
             :class="[
               'text-sm',
               field.k === 'opening_hours' &&
-                field.v.includes($tc('toast.opened')) &&
+                (field.v.includes($tc('toast.opened')) ||
+                  field.v === $tc('toast.24_7')) &&
                 'text-green-500',
               field.k === 'opening_hours' &&
                 field.v.includes($tc('toast.closed')) &&
@@ -346,7 +351,9 @@ export default Vue.extend({
         const oh = new OpeningHours(openingHours)
         const nextchange = oh.getNextChange()
 
-        if (oh.getState()) {
+        if (oh.getState() && nextchange === undefined) {
+          return this.$tc('toast.24_7')
+        } else if (oh.getState()) {
           return `${this.$tc('toast.opened')} - ${this.$tc(
             'toast.closeAt'
           )} ${displayTime(nextchange)}`
@@ -459,6 +466,10 @@ export default Vue.extend({
     },
 
     routes(): { [key: string]: string } {
+      if (!(this.poiEditorial('popup_properties') || []).includes('route:*')) {
+        return {}
+      }
+
       const activitiesStruct: { [key: string]: { [key: string]: string } } = {}
       Object.entries(this.poi.properties)
         .filter(([key, _value]) => key.startsWith('route:'))
@@ -506,6 +517,7 @@ export default Vue.extend({
       title: this.poi.properties?.name,
       location: window.location.href,
       path: this.$route.path,
+      categoryIds: this.poi.properties?.metadata?.category_ids || [],
     })
   },
 

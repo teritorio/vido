@@ -1,12 +1,13 @@
 import type { LngLatBoundsLike } from 'maplibre-gl'
 import { Store } from 'vuex'
 
-import { Pitch, ZoomLevel, VidoFeature, SiteInfos } from '@/utils/types'
+import { LatLng, Pitch, ZoomLevel, VidoFeature, SiteInfos } from '@/utils/types'
 
 enum Mutation {
   SET_CONFIG = 'SET_CONFIG',
   RESET_MAPVIEW = 'RESET_MAPVIEW',
   SELECT_FEATURE = 'SELECT_FEATURE',
+  SET_CENTER = 'SET_CENTER',
 }
 
 interface FetchConfigPayload {
@@ -19,6 +20,7 @@ interface State {
   // eslint-disable-next-line camelcase
   default_bounds: LngLatBoundsLike
   isLoaded: boolean
+  center: LatLng
   pitch: Pitch
   zoom: {
     default: ZoomLevel
@@ -28,12 +30,6 @@ interface State {
   selectedFeature: string | null
   // eslint-disable-next-line camelcase
   selection_zoom: {
-    // eslint-disable-next-line camelcase
-    zoom_tis: number
-    // eslint-disable-next-line camelcase
-    zoom_osm: number
-    // eslint-disable-next-line camelcase
-    zoom_wp: number
     // eslint-disable-next-line camelcase
     zoom_ban: number
     // eslint-disable-next-line camelcase
@@ -47,17 +43,15 @@ const getInitialMapview: Function = () => ({
     [1.43862, 42.41845],
     [1.68279, 42.6775],
   ],
+  center: [0, 0],
   zoom: {
     default: 8,
     max: 20,
     min: 1,
   },
   selection_zoom: {
-    zoom_tis: 10,
-    zoom_osm: 10,
-    zoom_wp: 10,
-    zoom_ban: 10,
-    zoom_commune: 10,
+    zoom_ban: 15,
+    zoom_commune: 12,
   },
 })
 
@@ -76,6 +70,7 @@ export const mutations = {
   [Mutation.SET_CONFIG](state: State, payload: State) {
     // state.attribution = payload.attribution
     state.default_bounds = payload.default_bounds
+    state.center = payload.center
     state.pitch = payload.pitch || 0
     state.zoom = payload.zoom
     state.selection_zoom = payload.selection_zoom
@@ -90,6 +85,10 @@ export const mutations = {
     // JSON conversion necessary to have map watcher working
     state.selectedFeature =
       payload.selectedFeature && JSON.stringify(payload.selectedFeature)
+  },
+  [Mutation.SET_CENTER](state: State, payload: State) {
+    // JSON conversion necessary to have map watcher working
+    state.center = payload.center
   },
 }
 
@@ -114,6 +113,9 @@ export const actions = {
   selectFeature(store: Store<State>, feature: VidoFeature) {
     store.commit(Mutation.SELECT_FEATURE, { selectedFeature: feature })
   },
+  center(store: Store<State>, center: LatLng) {
+    store.commit(Mutation.SET_CENTER, { center })
+  },
 }
 
 export const getters = {
@@ -121,6 +123,7 @@ export const getters = {
   attribution: (state: State) => state.attribution,
   default_bounds: (state: State) => state.default_bounds,
   isLoaded: (state: State) => state.isLoaded,
+  center: (state: State) => state.center,
   pitch: (state: State) => state.pitch,
   zoom: (state: State) => state.zoom,
   selectionZoom: (state: State) => state.selection_zoom,
