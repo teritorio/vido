@@ -324,6 +324,8 @@ const MainMap = Vue.extend({
         // Made to avoid back zoom on categories reload
         this.allowRegionBackZoom = true
       }
+
+      this.filterRouteByCategories()
     },
 
     selectedFeature(feature: VidoFeature) {
@@ -345,20 +347,11 @@ const MainMap = Vue.extend({
           feature?.id ||
           feature?.properties?.id)
       ) {
-        if (this.map.getLayer('route_tourism-casing')) {
-          const id =
-            feature.properties?.metadata?.id ||
+        this.filterRouteByPoiId(
+          feature.properties?.metadata?.id ||
             feature?.id ||
             feature?.properties?.id
-          this.map.setLayoutProperty(
-            'route_tourism-casing',
-            'visibility',
-            'visible'
-          )
-          this.map.setLayoutProperty('route_tourism', 'visibility', 'visible')
-          this.map.setFilter('route_tourism-casing', ['==', ['id'], id])
-          this.map.setFilter('route_tourism', ['==', ['id'], id])
-        }
+        )
 
         setHashPart(
           'poi',
@@ -383,15 +376,7 @@ const MainMap = Vue.extend({
           )
           .addTo(this.map)
       } else {
-        if (this.map.getLayer('route_tourism-casing')) {
-          this.map.setLayoutProperty(
-            'route_tourism-casing',
-            'visibility',
-            'none'
-          )
-          this.map.setLayoutProperty('route_tourism', 'visibility', 'none')
-        }
-
+        this.filterRouteByCategories()
         this.showPoiToast = false
         setHashPart('poi', null)
       }
@@ -1068,6 +1053,40 @@ const MainMap = Vue.extend({
       if (this.selectedFeatureMarker) {
         this.selectedFeatureMarker.remove()
         this.selectedFeatureMarker.addTo(this.map)
+      }
+    },
+
+    filterRouteByCategories() {
+      if (this.map && this.map.getLayer('route_tourism-casing')) {
+        const categorieIdsCond = Object.keys(
+          this.features
+        ).map((categorieId) => [
+          'in',
+          `;${categorieId};`,
+          ['get', 'category_ids'],
+        ])
+        const filter = ['any', ...categorieIdsCond]
+        this.map.setLayoutProperty(
+          'route_tourism-casing',
+          'visibility',
+          'visible'
+        )
+        this.map.setLayoutProperty('route_tourism', 'visibility', 'visible')
+        this.map.setFilter('route_tourism-casing', filter)
+        this.map.setFilter('route_tourism', filter)
+      }
+    },
+
+    filterRouteByPoiId(id: number) {
+      if (this.map && this.map.getLayer('route_tourism-casing')) {
+        this.map.setLayoutProperty(
+          'route_tourism-casing',
+          'visibility',
+          'visible'
+        )
+        this.map.setLayoutProperty('route_tourism', 'visibility', 'visible')
+        this.map.setFilter('route_tourism-casing', ['==', ['id'], id])
+        this.map.setFilter('route_tourism', ['==', ['id'], id])
       }
     },
   },
