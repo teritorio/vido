@@ -552,9 +552,17 @@ const MainMap = Vue.extend({
           this.selectFeature(feature as VidoFeature)
         }
       }
-      this.map.on('click', 'poi-level-1', selectFeature)
-      this.map.on('click', 'poi-level-2', selectFeature)
-      this.map.on('click', 'poi-level-3', selectFeature)
+      ;['poi-level-1', 'poi-level-2', 'poi-level-3'].forEach((layer) => {
+        if (this.map) {
+          this.map.on('click', layer, selectFeature)
+          map.on('mouseenter', layer, () => {
+            map.getCanvas().style.cursor = 'pointer'
+          })
+          map.on('mouseleave', layer, () => {
+            map.getCanvas().style.cursor = ''
+          })
+        }
+      })
 
       const poiHash = getHashPart('poi')
 
@@ -960,6 +968,7 @@ const MainMap = Vue.extend({
             marker = this.markers[id]
             if (!marker) {
               const el = createMarkerDonutChart(this.categories, props)
+              el.classList.add('cluster-item')
               marker = this.markers[id] = new maplibregl.Marker({
                 element: el,
               }).setLngLat(coords)
@@ -1005,6 +1014,7 @@ const MainMap = Vue.extend({
                 // Marker
                 const el: HTMLElement = document.createElement('div')
                 el.classList.add('maplibregl-marker')
+                el.classList.add('cluster-item')
 
                 marker = this.markers[id] = new maplibregl.Marker({
                   element: el,
@@ -1098,6 +1108,9 @@ export default MainMap
 </script>
 
 <style>
+.cluster-item {
+  cursor: pointer;
+}
 .cluster-donut {
   @apply text-sm leading-none font-medium block text-gray-800;
 }
