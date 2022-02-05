@@ -285,8 +285,13 @@ export default Vue.extend({
         return this.poiDisplay('color')
         // @ts-ignore
       } else if (this.poi && this.poi.layer && this.poi.layer.paint) {
-        // @ts-ignore
-        const tc = this.poi.layer.paint['text-color']
+        const tc =
+          // @ts-ignore
+          this.poi.layer.paint['text-color'] ||
+          // @ts-ignore
+          this.poi.layer.paint['line-color'] ||
+          // @ts-ignore
+          this.poi.layer.paint['fill-color']
         return `rgba(${Math.round(tc.r * 255).toFixed(0)}, ${Math.round(
           tc.g * 255
         ).toFixed(0)}, ${Math.round(tc.b * 255).toFixed(0)}, ${tc.a})`

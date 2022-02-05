@@ -342,7 +342,6 @@ const MainMap = Vue.extend({
       // Add new marker if a feature is selected
       if (
         feature &&
-        feature.geometry.type === 'Point' &&
         (feature.properties?.metadata?.id ||
           feature?.id ||
           feature?.properties?.id)
@@ -363,18 +362,20 @@ const MainMap = Vue.extend({
           feature?.properties?.metadata?.id?.toString() ||
             feature?.id?.toString()
         )
-        this.selectedFeatureMarker = new maplibregl.Marker({
-          scale: 1.3,
-          color: '#f44336',
-        })
-          .setLngLat(
-            (Boolean(feature?.properties?.metadata?.id) &&
-              this.featuresCoordinates[
-                feature?.properties?.metadata?.id || ''
-              ]) ||
-              (feature.geometry.coordinates as [number, number])
-          )
-          .addTo(this.map)
+        if (feature.geometry.type === 'Point') {
+          this.selectedFeatureMarker = new maplibregl.Marker({
+            scale: 1.3,
+            color: '#f44336',
+          })
+            .setLngLat(
+              (Boolean(feature?.properties?.metadata?.id) &&
+                this.featuresCoordinates[
+                  feature?.properties?.metadata?.id || ''
+                ]) ||
+                (feature.geometry.coordinates as [number, number])
+            )
+            .addTo(this.map)
+        }
       } else {
         this.filterRouteByCategories()
         this.showPoiToast = false
@@ -393,7 +394,7 @@ const MainMap = Vue.extend({
           this.map.off('styledata', styledataCallBack)
 
           const feature = this.selectedFeature
-          if (feature && feature.geometry.type === 'Point') {
+          if (feature) {
             const id =
               feature.properties?.metadata?.id ||
               feature?.id ||
@@ -552,17 +553,19 @@ const MainMap = Vue.extend({
           this.selectFeature(feature as VidoFeature)
         }
       }
-      ;['poi-level-1', 'poi-level-2', 'poi-level-3'].forEach((layer) => {
-        if (this.map) {
-          this.map.on('click', layer, selectFeature)
-          map.on('mouseenter', layer, () => {
-            map.getCanvas().style.cursor = 'pointer'
-          })
-          map.on('mouseleave', layer, () => {
-            map.getCanvas().style.cursor = ''
-          })
+      ;['poi-level-1', 'poi-level-2', 'poi-level-3', 'route_tourism'].forEach(
+        (layer) => {
+          if (this.map) {
+            this.map.on('click', layer, selectFeature)
+            map.on('mouseenter', layer, () => {
+              map.getCanvas().style.cursor = 'pointer'
+            })
+            map.on('mouseleave', layer, () => {
+              map.getCanvas().style.cursor = ''
+            })
+          }
         }
-      })
+      )
 
       const poiHash = getHashPart('poi')
 
