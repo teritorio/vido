@@ -195,7 +195,7 @@
         </button>
 
         <button
-          v-if="poiMeta('id')"
+          v-if="id"
           class="flex flex-col items-center flex-1 h-full p-2 space-y-2 rounded-lg hover:bg-gray-100"
           title="Mettre en favori"
           @click.stop="onFavoriteClick"
@@ -259,14 +259,17 @@ export default Vue.extend({
       favoritesIds: 'favorite/favoritesIds',
     }),
 
+    id(): number {
+      return this.poiMeta('id') || this.poi.id
+    },
+
     isModeExplorer(): boolean {
       return this.mode === Mode.EXPLORER
     },
 
     isModeFavorite(): boolean {
-      const id = this.poiMeta('id') || this.poiProp('id')
       const currentFavorites = this.$store.getters['favorite/favoritesIds']
-      return currentFavorites.includes(id)
+      return currentFavorites.includes(this.id)
     },
 
     name(): string {
@@ -514,7 +517,7 @@ export default Vue.extend({
   mounted() {
     this.$tracking({
       type: 'popup',
-      poiId: this.poiMeta('id'),
+      poiId: this.id,
       title: this.poi.properties?.name,
       location: window.location.href,
       path: this.$route.path,
@@ -555,7 +558,7 @@ export default Vue.extend({
     },
 
     fetchMetadata(): Promise<void> {
-      if (!this.poiProp('id') && !this.poi.id) {
+      if (!this.id) {
         return Promise.resolve()
       }
 
@@ -563,7 +566,7 @@ export default Vue.extend({
         this.$config.API_ENDPOINT,
         this.$config.API_PROJECT,
         this.$config.API_THEME,
-        this.poiProp('id') || this.poi.id
+        this.id
       ).then((apiPoi) => {
         if (apiPoi) {
           this.apiProps = apiPoi.properties
@@ -606,7 +609,7 @@ export default Vue.extend({
       this.$tracking({
         type: 'popup_event',
         event,
-        poiId: this.poiMeta('id'),
+        poiId: this.id,
         category: this.category,
         title: this.poi.properties?.name,
       })
