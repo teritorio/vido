@@ -60,6 +60,7 @@ export default Vue.extend({
     },
     bounds: {
       type: [Array, Object], // as PropType<maplibregl.LngLatBoundsLike>
+      default: undefined,
     },
     attributions: {
       type: Array as PropType<string[]>,
@@ -67,6 +68,7 @@ export default Vue.extend({
     },
     center: {
       type: [Array, Object], // as PropType<maplibregl.LngLatLike>,
+      default: undefined,
     },
     zoom: {
       type: Number,
