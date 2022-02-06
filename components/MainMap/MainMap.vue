@@ -118,6 +118,7 @@ import {
   EXPLORER_MAP_STYLE,
   MAP_STYLE_NAMES,
   LOCAL_STORAGE,
+  MAP_ZOOM,
 } from '@/lib/constants'
 import { markerLayerTextFactory } from '@/lib/markerLayerFactory'
 import { State as MenuState } from '@/store/menu'
@@ -855,12 +856,12 @@ const MainMap = Vue.extend({
 
       if (
         !isOneInView &&
-        currentZoom >= this.zoom.default &&
+        currentZoom >= MAP_ZOOM.zoom.default &&
         features.length > 0
       ) {
         this.showZoomSnack(text, textBtn)
       }
-      if (currentZoom < this.zoom.default) {
+      if (currentZoom < MAP_ZOOM.zoom.default) {
         this.resetZoom()
       }
     },

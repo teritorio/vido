@@ -41,10 +41,9 @@
 import Mapbox from 'mapbox-gl-vue'
 import { StyleSpecification } from 'maplibre-gl'
 import Vue, { PropType } from 'vue'
-import { mapGetters } from 'vuex'
 
 import MapControls from '@/components/Map/MapControls.vue'
-import { DEFAULT_MAP_STYLE } from '@/lib/constants'
+import { DEFAULT_MAP_STYLE, MAP_ZOOM } from '@/lib/constants'
 import { fetchStyle } from '@/utils/styles'
 import { MapStyleEnum } from '@/utils/types'
 
@@ -94,9 +93,9 @@ export default Vue.extend({
   },
 
   computed: {
-    ...mapGetters({
-      defaultZoom: 'map/zoom',
-    }),
+    defaultZoom() {
+      return MAP_ZOOM.zoom
+    },
   },
 
   watch: {

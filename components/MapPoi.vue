@@ -3,7 +3,7 @@
     <Map
       v-if="poi.geometry.coordinates"
       :center="poi.geometry.coordinates"
-      :zoom="selectionZoom.zoom_poi"
+      :zoom="selectionZoom.poi"
       @map-init="onMapInit"
     />
   </div>
@@ -12,9 +12,9 @@
 <script lang="ts">
 import { PoiFilter } from '@teritorio/map'
 import Vue, { PropType } from 'vue'
-import { mapGetters } from 'vuex'
 
 import Map from '@/components/Map/Map.vue'
+import { MAP_ZOOM } from '@/lib/constants'
 import { markerLayerFactory } from '@/lib/markerLayerFactory'
 
 import { VidoFeature } from '~/utils/types'
@@ -32,9 +32,9 @@ export default Vue.extend({
   },
 
   computed: {
-    ...mapGetters({
-      selectionZoom: 'map/selectionZoom',
-    }),
+    selectionZoom() {
+      return MAP_ZOOM.selectionZoom
+    },
   },
 
   methods: {

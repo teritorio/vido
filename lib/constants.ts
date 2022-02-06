@@ -10,3 +10,16 @@ export const DEFAULT_MAP_STYLE: keyof typeof MapStyleEnum = MapStyleEnum.vector
 export const EXPLORER_MAP_STYLE: keyof typeof MapStyleEnum = MapStyleEnum.vector
 
 export const LOCAL_STORAGE = { favorites: 'vido:favorites' }
+
+export const MAP_ZOOM = {
+  zoom: {
+    default: 8,
+    max: 20,
+    min: 1,
+  },
+  selectionZoom: {
+    poi: 17,
+    streetNumber: 15,
+    municipality: 12,
+  },
+}

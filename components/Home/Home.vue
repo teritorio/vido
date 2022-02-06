@@ -63,7 +63,6 @@
               :site-name="siteName"
               :logo-url="logoUrl"
               :menu-to-icon="categoriesToIcons"
-              :selection-zoom="selectionZoom"
               :is-explorer-favorite="isModeExplorer || isModeFavorite"
               :map-center="map_center"
               @go-back-click="goToHome"
@@ -84,7 +83,6 @@
             :site-name="siteName"
             :logo-url="logoUrl"
             :menu-to-icon="categoriesToIcons"
-            :selection-zoom="selectionZoom"
             :is-explorer-favorite="isModeExplorer || isModeFavorite"
             :is-favorite="isModeFavorite"
             :map-center="map_center"
@@ -278,7 +276,6 @@ export default (Vue as VueConstructor<
       filters: 'menu/filters',
       mode: 'site/mode',
       selectedFeature: 'map/selectedFeature',
-      selectionZoom: 'map/selectionZoom',
       map_center: 'map/center',
       isModeFavorite: 'favorite/isModeFavorite',
     }),
