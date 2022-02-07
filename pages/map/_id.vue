@@ -50,9 +50,6 @@ export default Vue.extend({
     )
       .then((res) => res.json())
       .then((json) => {
-        this.$store.dispatch('site/fetchConfig', { config: json })
-        this.$store.dispatch('map/fetchConfig', { config: json })
-
         // @ts-ignore - Look ok, unable to fix the issue
         this.cssUrl = json?.icon_font_css_url
         // @ts-ignore - Look ok, unable to fix the issue

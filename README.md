@@ -29,6 +29,12 @@ $ git push --follow-tags
 
 Then, create a PR from `develop` to `main`, it will launch the continuous development.
 
+## Entry points
+
+* Main Map: `/`
+* One POI one map: `/map/{id}`
+* POI details: `/details/{id}`
+
 ## Users tracking
 
 ## Google Tag Manager optional tracking configuration
