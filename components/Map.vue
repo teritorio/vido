@@ -17,7 +17,7 @@
           class="h-full"
           access-token=""
           :map-options="{
-            bounds: default_bounds,
+            bounds: defaultBounds,
             hash: 'map',
             maxZoom: zoom.max,
             minZoom: zoom.min,
@@ -103,6 +103,7 @@ import maplibregl, {
   MapLayerTouchEvent,
   MapDataEvent,
 } from 'maplibre-gl'
+import type { LngLatBoundsLike } from 'maplibre-gl'
 import Vue, { PropType } from 'vue'
 import { mapGetters, mapActions } from 'vuex'
 
@@ -148,6 +149,10 @@ const Map = Vue.extend({
   },
 
   props: {
+    defaultBounds: {
+      type: Object as PropType<LngLatBoundsLike>,
+      default: null,
+    },
     small: {
       type: Boolean,
       default: false,
@@ -279,7 +284,6 @@ const Map = Vue.extend({
   computed: {
     ...mapGetters({
       attribution: 'map/attribution',
-      default_bounds: 'map/default_bounds',
       features: 'menu/features',
       zoom: 'map/zoom',
       mode: 'site/mode',
@@ -917,7 +921,7 @@ const Map = Vue.extend({
     },
 
     resetZoom() {
-      this.map?.fitBounds(this.default_bounds, {
+      this.map?.fitBounds(this.defaultBounds, {
         linear: false,
       })
     },

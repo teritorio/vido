@@ -1,8 +1,9 @@
 <template>
-  <Home />
+  <Home :default-bounds="defaultBounds" />
 </template>
 
 <script lang="ts">
+import type { LngLatBoundsLike } from 'maplibre-gl'
 import Vue from 'vue'
 
 import Home from '@/components/Home/Home.vue'
@@ -15,11 +16,13 @@ export default Vue.extend({
     cssUrl: string
     favicon: string
     title: string
+    defaultBounds: LngLatBoundsLike | null
   } {
     return {
       cssUrl: 'territorio',
       favicon: '',
       title: '@teritorio/vido',
+      defaultBounds: null,
     }
   },
   async fetch() {
@@ -34,6 +37,10 @@ export default Vue.extend({
     )
       .then((res) => res.json())
       .then((json) => {
+        this.defaultBounds = json.bbox_line?.coordinates || [
+          [1.43862, 42.41845],
+          [1.68279, 42.6775],
+        ]
         this.$store.dispatch('site/fetchConfig', { config: json })
         this.$store.dispatch('map/fetchConfig', { config: json })
 

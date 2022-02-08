@@ -114,6 +114,7 @@
     <Map
       v-if="isMapConfigLoaded"
       ref="map"
+      :default-bounds="defaultBounds"
       :small="isBottomMenuOpened"
       :selected-categories="state.context.selectedSubCategoriesIds"
       :get-sub-category="selectSubCategory"
@@ -158,7 +159,8 @@
 
 <script lang="ts">
 import debounce from 'lodash.debounce'
-import Vue from 'vue'
+import type { LngLatBoundsLike } from 'maplibre-gl'
+import Vue, { PropType, VueConstructor } from 'vue'
 import { mapGetters, mapActions } from 'vuex'
 import { interpret, Interpreter, State } from 'xstate'
 
@@ -196,7 +198,13 @@ const interpretOptions = { devTools: false }
 //   interpretOptions.devTools = true
 // }
 
-export default Vue.extend({
+export default (Vue as VueConstructor<
+  Vue & {
+    $refs: {
+      map: InstanceType<typeof Map>
+    }
+  }
+>).extend({
   components: {
     MainHeader,
     Map,
@@ -205,6 +213,12 @@ export default Vue.extend({
     SubCategoryHeader,
     SubCategoryFilterHeader,
     BottomMenu,
+  },
+  props: {
+    defaultBounds: {
+      type: Object as PropType<LngLatBoundsLike>,
+      default: null,
+    },
   },
   data(): {
     service: Interpreter<HomeContext, HomeStateSchema, HomeEvent>
