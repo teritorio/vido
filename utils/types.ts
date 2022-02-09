@@ -93,16 +93,16 @@ export interface MenuCategory extends ApiMenuCategory {
 export type Category = MenuGroup | MenuCategory
 
 export interface SiteInfos {
-  id?: number
-  slug?: string
-  name?: string
-  attributions?: string[]
+  id: number
+  slug: string
+  name: string
+  attributions: string[]
   // eslint-disable-next-line camelcase
-  icon_font_css_url?: string
+  icon_font_css_url: string
   // eslint-disable-next-line camelcase
-  bbox_line?: GeoJSON.LineString
+  bbox_line: GeoJSON.LineString
 
-  themes?: {
+  themes: {
     id: number
     slug: string
     title: MultilingualString
@@ -115,7 +115,7 @@ export interface SiteInfos {
     logo_url: string
     // eslint-disable-next-line camelcase
     favicon_url: string
-  }
+  }[]
 }
 
 export type OsmPoiType = 'node' | 'way' | 'relation'

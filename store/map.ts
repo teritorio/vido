@@ -1,25 +1,14 @@
-import type { LngLatBoundsLike } from 'maplibre-gl'
 import { Store } from 'vuex'
 
-import { LatLng, Pitch, ZoomLevel, VidoFeature, SiteInfos } from '@/utils/types'
+import { LatLng, Pitch, ZoomLevel, VidoFeature } from '@/utils/types'
 
 enum Mutation {
   SET_CONFIG = 'SET_CONFIG',
-  RESET_MAPVIEW = 'RESET_MAPVIEW',
   SELECT_FEATURE = 'SELECT_FEATURE',
   SET_CENTER = 'SET_CENTER',
 }
 
-interface FetchConfigPayload {
-  config: SiteInfos
-}
-
 interface State {
-  // attribution: { [lang: string]: string }
-  attribution: string[]
-  // eslint-disable-next-line camelcase
-  default_bounds: LngLatBoundsLike
-  isLoaded: boolean
   center: LatLng
   pitch: Pitch
   zoom: {
@@ -38,11 +27,6 @@ interface State {
 }
 
 const getInitialMapview: Function = () => ({
-  attribution: [],
-  default_bounds: [
-    [1.43862, 42.41845],
-    [1.68279, 42.6775],
-  ],
   center: [0, 0],
   zoom: {
     default: 8,
@@ -58,8 +42,6 @@ const getInitialMapview: Function = () => ({
 export const state = (): State | null =>
   Object.assign(
     {
-      // attribution: {},
-      isLoaded: false,
       pitch: 0,
       selectedFeature: null,
     },
@@ -68,18 +50,10 @@ export const state = (): State | null =>
 
 export const mutations = {
   [Mutation.SET_CONFIG](state: State, payload: State) {
-    // state.attribution = payload.attribution
-    state.default_bounds = payload.default_bounds
     state.center = payload.center
     state.pitch = payload.pitch || 0
     state.zoom = payload.zoom
     state.selection_zoom = payload.selection_zoom
-    state.attribution = payload.attribution
-
-    state.isLoaded = true
-  },
-  [Mutation.RESET_MAPVIEW](state: State) {
-    state.default_bounds = getInitialMapview().default_bounds
   },
   [Mutation.SELECT_FEATURE](state: State, payload: State) {
     // JSON conversion necessary to have map watcher working
@@ -93,23 +67,6 @@ export const mutations = {
 }
 
 export const actions = {
-  fetchConfig(store: Store<State>, { config }: FetchConfigPayload) {
-    try {
-      store.commit(
-        Mutation.SET_CONFIG,
-        Object.assign(store.state, {
-          default_bounds: config.bbox_line?.coordinates || [],
-          attribution: config.attributions || [],
-        })
-      )
-    } catch (error) {
-      // eslint-disable-next-line no-console
-      console.error('Vido error: Unable to fetch the map config', error)
-    }
-  },
-  resetMapview(store: Store<State>) {
-    store.commit(Mutation.RESET_MAPVIEW)
-  },
   selectFeature(store: Store<State>, feature: VidoFeature) {
     store.commit(Mutation.SELECT_FEATURE, { selectedFeature: feature })
   },
@@ -120,9 +77,6 @@ export const actions = {
 
 export const getters = {
   all: (state: State) => state,
-  attribution: (state: State) => state.attribution,
-  default_bounds: (state: State) => state.default_bounds,
-  isLoaded: (state: State) => state.isLoaded,
   center: (state: State) => state.center,
   pitch: (state: State) => state.pitch,
   zoom: (state: State) => state.zoom,

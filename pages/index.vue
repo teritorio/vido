@@ -1,12 +1,12 @@
 <template>
-  <Home :default-bounds="defaultBounds" />
+  <Home v-if="siteInfos" :site-infos="siteInfos" />
 </template>
 
 <script lang="ts">
-import type { LngLatBoundsLike } from 'maplibre-gl'
 import Vue from 'vue'
 
 import Home from '@/components/Home/Home.vue'
+import { SiteInfos } from '@/utils/types'
 
 export default Vue.extend({
   components: {
@@ -16,13 +16,13 @@ export default Vue.extend({
     cssUrl: string
     favicon: string
     title: string
-    defaultBounds: LngLatBoundsLike | null
+    siteInfos: SiteInfos | null
   } {
     return {
       cssUrl: 'territorio',
       favicon: '',
       title: '@teritorio/vido',
-      defaultBounds: null,
+      siteInfos: null,
     }
   },
   async fetch() {
@@ -37,19 +37,26 @@ export default Vue.extend({
     )
       .then((res) => res.json())
       .then((json) => {
-        this.defaultBounds = json.bbox_line?.coordinates || [
-          [1.43862, 42.41845],
-          [1.68279, 42.6775],
-        ]
-        this.$store.dispatch('site/fetchConfig', { config: json })
-        this.$store.dispatch('map/fetchConfig', { config: json })
+        this.siteInfos = Object.assign(
+          {
+            attribution: [],
+            bbox_line: {
+              type: 'LineString',
+              coordinates: [
+                [1.43862, 42.41845],
+                [1.68279, 42.6775],
+              ],
+            },
+          },
+          json
+        )
 
         // @ts-ignore - Look ok, unable to fix the issue
-        this.cssUrl = json?.icon_font_css_url
+        this.cssUrl = json.icon_font_css_url
         // @ts-ignore - Look ok, unable to fix the issue
-        this.favicon_url = json?.favicon_url
+        this.favicon_url = json.favicon_url
         // @ts-ignore - Look ok, unable to fix the issue
-        this.title = json?.title
+        this.title = json.title
       })
   },
   // fetchOnServer: false,

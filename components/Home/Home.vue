@@ -112,9 +112,8 @@
       </div>
     </header>
     <Map
-      v-if="isMapConfigLoaded"
       ref="map"
-      :default-bounds="defaultBounds"
+      :default-bounds="siteInfos.bbox_line.coordinates"
       :small="isBottomMenuOpened"
       :selected-categories="state.context.selectedSubCategoriesIds"
       :get-sub-category="selectSubCategory"
@@ -159,7 +158,6 @@
 
 <script lang="ts">
 import debounce from 'lodash.debounce'
-import type { LngLatBoundsLike } from 'maplibre-gl'
 import Vue, { PropType, VueConstructor } from 'vue'
 import { mapGetters, mapActions } from 'vuex'
 import { interpret, Interpreter, State } from 'xstate'
@@ -178,6 +176,7 @@ import {
   Mode,
   FilterValues,
   ApiMenuItemSearchResult,
+  SiteInfos,
 } from '@/utils/types'
 import { getHashPart, setHashPart } from '@/utils/url'
 
@@ -215,9 +214,9 @@ export default (Vue as VueConstructor<
     BottomMenu,
   },
   props: {
-    defaultBounds: {
-      type: Object as PropType<LngLatBoundsLike>,
-      default: null,
+    siteInfos: {
+      type: Object as PropType<SiteInfos>,
+      required: true,
     },
   },
   data(): {
@@ -259,13 +258,13 @@ export default (Vue as VueConstructor<
     const infos = this.siteInfos
 
     return {
-      title: infos?.themes[0]?.name.fr,
+      title: infos.themes[0]?.title.fr,
       meta: [
         {
           // https://nuxtjs.org/docs/2.x/features/meta-tags-seo#local-settings
           hid: 'index',
-          name: infos?.themes[0]?.name?.fr,
-          content: infos?.themes[0]?.description?.fr,
+          name: infos.themes[0]?.title?.fr,
+          content: infos.themes[0]?.description?.fr,
         },
       ],
     }
@@ -275,9 +274,7 @@ export default (Vue as VueConstructor<
       categories: 'menu/categories',
       rootCategories: 'menu/rootCategories',
       getSubCategoriesFromCategoryId: 'menu/getSubCategoriesFromCategoryId',
-      isMapConfigLoaded: 'map/isLoaded',
       isMenuConfigLoaded: 'menu/isLoaded',
-      siteInfos: 'site/infos',
       filters: 'menu/filters',
       mode: 'site/mode',
       selectedFeature: 'map/selectedFeature',
@@ -287,7 +284,7 @@ export default (Vue as VueConstructor<
     }),
     events: () => HomeEvents,
     logoUrl(): string {
-      return this.siteInfos?.themes[0]?.logo_url || ''
+      return this.siteInfos.themes[0]?.logo_url || ''
     },
     selectedSubCategories(): Category[] {
       const categories = this.subCategories
@@ -297,10 +294,10 @@ export default (Vue as VueConstructor<
       )
     },
     siteName(): string {
-      return this.siteInfos?.themes[0]?.name.fr || ''
+      return this.siteInfos.themes[0]?.title.fr || ''
     },
     mainUrl(): string {
-      return this.siteInfos?.themes[0]?.main_url || ''
+      return this.siteInfos.themes[0]?.main_url || ''
     },
     isModeExplorer(): boolean {
       return this.mode === Mode.EXPLORER

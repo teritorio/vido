@@ -153,6 +153,10 @@ const Map = Vue.extend({
       type: Object as PropType<LngLatBoundsLike>,
       default: null,
     },
+    attributions: {
+      type: Array as PropType<string[]>,
+      default: () => [],
+    },
     small: {
       type: Boolean,
       default: false,
@@ -244,7 +248,7 @@ const Map = Vue.extend({
 
       vectoSourceAttribution.forEach((attr, i) => {
         if (attr) {
-          const existingAttributions = this.attribution.filter(
+          const existingAttributions = this.attributions.filter(
             (att: string) => !attr.includes(att)
           )
 
@@ -283,7 +287,6 @@ const Map = Vue.extend({
 
   computed: {
     ...mapGetters({
-      attribution: 'map/attribution',
       features: 'menu/features',
       zoom: 'map/zoom',
       mode: 'site/mode',
@@ -386,14 +389,12 @@ const Map = Vue.extend({
         this.allowRegionBackZoom &&
         !deepEqual(newCategories, oldCategories)
       ) {
-        this.resetMapview().then(() => {
-          const vidoFeatures = flattenFeatures(features)
-          this.handleResetMapZoom(
-            vidoFeatures,
-            this.$tc('snack.noPoi.issue'),
-            this.$tc('snack.noPoi.action')
-          )
-        })
+        const vidoFeatures = flattenFeatures(features)
+        this.handleResetMapZoom(
+          vidoFeatures,
+          this.$tc('snack.noPoi.issue'),
+          this.$tc('snack.noPoi.action')
+        )
       } else {
         // Made to avoid back zoom on categories reload
         this.allowRegionBackZoom = true
@@ -603,7 +604,6 @@ const Map = Vue.extend({
 
   methods: {
     ...mapActions({
-      resetMapview: 'map/resetMapview',
       setMode: 'site/setMode',
     }),
 
@@ -804,15 +804,13 @@ const Map = Vue.extend({
           ? await this.fetchFavorites(this.favoritesIds)
           : []
 
-        this.resetMapview().then(() => {
-          if (hasFavorites) {
-            this.handleResetMapZoom(
-              allFavorites,
-              this.$tc('snack.noFavorites.issue'),
-              this.$tc('snack.noFavorites.action')
-            )
-          }
-        })
+        if (hasFavorites) {
+          this.handleResetMapZoom(
+            allFavorites,
+            this.$tc('snack.noFavorites.issue'),
+            this.$tc('snack.noFavorites.action')
+          )
+        }
 
         allFavorites.forEach((feature) => {
           if (
