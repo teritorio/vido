@@ -59,7 +59,7 @@ export default Vue.extend({
       default: DEFAULT_MAP_STYLE as MapStyleEnum,
     },
     bounds: {
-      type: [Array, Object], // as PropType<maplibregl.LngLatBoundsLike>
+      type: Array, // as PropType<TupleLatLngBounds>,
       default: undefined,
     },
     attributions: {
