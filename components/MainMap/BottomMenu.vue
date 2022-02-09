@@ -74,7 +74,6 @@ import { mapGetters } from 'vuex'
 import HeaderRootCategories from '@/components/Categories/HeaderRootCategories.vue'
 import SubCategoryFilterHeader from '@/components/Categories/SubCategoryFilterHeader.vue'
 import SubCategoryHeader from '@/components/Categories/SubCategoryHeader.vue'
-import { MapRef } from '@/components/MainMap/MainMap.vue'
 import MapPoiToast from '@/components/MainMap/MapPoiToast.vue'
 import { Category, VidoFeature } from '@/utils/types'
 
@@ -106,10 +105,6 @@ export default Vue.extend({
     showPoi: Boolean,
     isMenuConfigLoaded: Boolean,
     isModeFavorite: Boolean,
-    map: {
-      type: Object as PropType<MapRef>,
-      default: undefined,
-    },
     state: {
       type: Object as PropType<HomeContext | HomeEvent | HomeStateSchema>,
       default: undefined,
@@ -149,13 +144,13 @@ export default Vue.extend({
       this.$emit('sub-category-click', categoryId)
     },
     exploreAroundSelectedPoi() {
-      this.map.exploreAroundSelectedPoi()
+      this.$emit('exploreAroundSelectedPoi')
     },
     toggleFavoriteMode(feature?: VidoFeature) {
-      this.map.toggleFavoriteMode(feature)
+      this.$emit('toggleFavoriteMode', feature)
     },
     goToSelectedPoi() {
-      this.map.goToSelectedPoi()
+      this.$emit('goToSelectedPoi')
     },
   },
 })

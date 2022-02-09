@@ -140,7 +140,6 @@
       :filters-values="subCategoryFilters"
       :filtered-categories="filteredSubCategories"
       :is-sub-category-selected="isSubCategorySelected"
-      :map="$refs.mainMap"
       :on-bottom-menu-button-click="onBottomMenuButtonClick"
       :on-go-back-click="goToParentFromSubCategory"
       :on-select-all-categories="selectSubCategory"
@@ -150,6 +149,9 @@
       :on-go-back-click-filter="onBackToSubCategoryClick"
       @category-click="onRootCategoryClick"
       @sub-category-click="onSubCategoryClick"
+      @exploreAroundSelectedPoi="$refs.mainMap.exploreAroundSelectedPoi()"
+      @toggleFavoriteMode="$refs.mainMap.toggleFavoriteMode($event)"
+      @goToSelectedPoi="$refs.mainMap.goToSelectedPoi()"
     />
   </div>
 </template>
