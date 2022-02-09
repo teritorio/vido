@@ -399,9 +399,18 @@ export default Vue.extend({
               feature.properties?.metadata?.id ||
               feature?.id ||
               feature?.properties?.id
-            if (this.map.getLayer('route_tourism-casing')) {
-              this.map.setFilter('route_tourism-casing', ['==', ['id'], id])
-              this.map.setFilter('route_tourism', ['==', ['id'], id])
+            if (this.map.getLayer('features_tourism-line-casing')) {
+              const isLineString = ['==', ['geometry-type'], 'LineString']
+              this.map.setFilter('features_tourism-line-casing', [
+                'all',
+                ['==', ['id'], id],
+                isLineString,
+              ])
+              this.map.setFilter('features_tourism-line', [
+                'all',
+                ['==', ['id'], id],
+                isLineString,
+              ])
             }
           }
         }
@@ -553,19 +562,22 @@ export default Vue.extend({
           this.selectFeature(feature as VidoFeature)
         }
       }
-      ;['poi-level-1', 'poi-level-2', 'poi-level-3', 'route_tourism'].forEach(
-        (layer) => {
-          if (this.map) {
-            this.map.on('click', layer, selectFeature)
-            map.on('mouseenter', layer, () => {
-              map.getCanvas().style.cursor = 'pointer'
-            })
-            map.on('mouseleave', layer, () => {
-              map.getCanvas().style.cursor = ''
-            })
-          }
+      ;[
+        'poi-level-1',
+        'poi-level-2',
+        'poi-level-3',
+        'features_tourism-line',
+      ].forEach((layer) => {
+        if (this.map) {
+          this.map.on('click', layer, selectFeature)
+          map.on('mouseenter', layer, () => {
+            map.getCanvas().style.cursor = 'pointer'
+          })
+          map.on('mouseleave', layer, () => {
+            map.getCanvas().style.cursor = ''
+          })
         }
-      )
+      })
 
       const poiHash = getHashPart('poi')
 
@@ -1071,7 +1083,7 @@ export default Vue.extend({
     },
 
     filterRouteByCategories() {
-      if (this.map && this.map.getLayer('route_tourism-casing')) {
+      if (this.map && this.map.getLayer('features_tourism-line-casing')) {
         const categorieIdsCond = Object.keys(
           this.features
         ).map((categorieId) => [
@@ -1081,26 +1093,57 @@ export default Vue.extend({
         ])
         const filter = ['any', ...categorieIdsCond]
         this.map.setLayoutProperty(
-          'route_tourism-casing',
+          'features_tourism-line-casing',
           'visibility',
           'visible'
         )
-        this.map.setLayoutProperty('route_tourism', 'visibility', 'visible')
-        this.map.setFilter('route_tourism-casing', filter)
-        this.map.setFilter('route_tourism', filter)
+        this.map.setLayoutProperty(
+          'features_tourism-line',
+          'visibility',
+          'visible'
+        )
+        const isLineString = ['==', ['geometry-type'], 'LineString']
+        this.map.setFilter('features_tourism-line-casing', [
+          'all',
+          filter,
+          isLineString,
+        ])
+        this.map.setFilter('features_tourism-line', [
+          'all',
+          filter,
+          isLineString,
+        ])
       }
     },
 
     filterRouteByPoiId(id: number) {
-      if (this.map && this.map.getLayer('route_tourism-casing')) {
+      if (this.map && this.map.getLayer('features_tourism-line-casing')) {
         this.map.setLayoutProperty(
-          'route_tourism-casing',
+          'features_tourism-line-casing',
           'visibility',
           'visible'
         )
-        this.map.setLayoutProperty('route_tourism', 'visibility', 'visible')
-        this.map.setFilter('route_tourism-casing', ['==', ['id'], id])
-        this.map.setFilter('route_tourism', ['==', ['id'], id])
+        this.map.setLayoutProperty(
+          'features_tourism-line',
+          'visibility',
+          'visible'
+        )
+        this.map.setLayoutProperty(
+          'features_tourism-fill',
+          'visibility',
+          'visible'
+        )
+        const isLineString = ['==', ['geometry-type'], 'LineString']
+        this.map.setFilter('features_tourism-line-casing', [
+          'all',
+          ['==', ['id'], id],
+          isLineString,
+        ])
+        this.map.setFilter('features_tourism-line', [
+          'all',
+          ['==', ['id'], id],
+          isLineString,
+        ])
       }
     },
   },
