@@ -401,6 +401,7 @@ export default Vue.extend({
               feature?.properties?.id
             if (this.map.getLayer('features_tourism-line-casing')) {
               const isLineString = ['==', ['geometry-type'], 'LineString']
+              const isPolygon = ['==', ['geometry-type'], 'Polygon']
               this.map.setFilter('features_tourism-line-casing', [
                 'all',
                 ['==', ['id'], id],
@@ -410,6 +411,16 @@ export default Vue.extend({
                 'all',
                 ['==', ['id'], id],
                 isLineString,
+              ])
+              this.map.setFilter('features_tourism-fill', [
+                'all',
+                ['==', ['id'], id],
+                isPolygon,
+              ])
+              this.map.setFilter('features_tourism-outline', [
+                'all',
+                ['==', ['id'], id],
+                isPolygon,
               ])
             }
           }
@@ -567,6 +578,7 @@ export default Vue.extend({
         'poi-level-2',
         'poi-level-3',
         'features_tourism-line',
+        'features_tourism-fill',
       ].forEach((layer) => {
         if (this.map) {
           this.map.on('click', layer, selectFeature)
@@ -1102,7 +1114,18 @@ export default Vue.extend({
           'visibility',
           'visible'
         )
+        this.map.setLayoutProperty(
+          'features_tourism-fill',
+          'visibility',
+          'visible'
+        )
+        this.map.setLayoutProperty(
+          'features_tourism-outline',
+          'visibility',
+          'visible'
+        )
         const isLineString = ['==', ['geometry-type'], 'LineString']
+        const isPolygon = ['==', ['geometry-type'], 'Polygon']
         this.map.setFilter('features_tourism-line-casing', [
           'all',
           filter,
@@ -1112,6 +1135,12 @@ export default Vue.extend({
           'all',
           filter,
           isLineString,
+        ])
+        this.map.setFilter('features_tourism-fill', ['all', filter, isPolygon])
+        this.map.setFilter('features_tourism-outline', [
+          'all',
+          filter,
+          isPolygon,
         ])
       }
     },
@@ -1133,7 +1162,13 @@ export default Vue.extend({
           'visibility',
           'visible'
         )
+        this.map.setLayoutProperty(
+          'features_tourism-outline',
+          'visibility',
+          'visible'
+        )
         const isLineString = ['==', ['geometry-type'], 'LineString']
+        const isPolygon = ['==', ['geometry-type'], 'Polygon']
         this.map.setFilter('features_tourism-line-casing', [
           'all',
           ['==', ['id'], id],
@@ -1143,6 +1178,16 @@ export default Vue.extend({
           'all',
           ['==', ['id'], id],
           isLineString,
+        ])
+        this.map.setFilter('features_tourism-fill', [
+          'all',
+          ['==', ['id'], id],
+          isPolygon,
+        ])
+        this.map.setFilter('features_tourism-outline', [
+          'all',
+          ['==', ['id'], id],
+          isPolygon,
         ])
       }
     },
