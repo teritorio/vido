@@ -296,7 +296,7 @@ export default (Vue as VueConstructor<
       return this.siteInfos.themes[0]?.title.fr || ''
     },
     mainUrl(): string {
-      return this.siteInfos.themes[0]?.main_url || ''
+      return this.siteInfos.themes[0]?.main_url.fr || ''
     },
     isModeExplorer(): boolean {
       return this.mode === Mode.EXPLORER

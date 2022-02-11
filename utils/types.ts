@@ -91,7 +91,7 @@ export type Category = MenuGroup | MenuCategory
 export interface SiteInfos {
   id: number
   slug: string
-  name: string
+  name: MultilingualString
   attributions: string[]
   // eslint-disable-next-line camelcase
   icon_font_css_url: string
@@ -104,9 +104,9 @@ export interface SiteInfos {
     title: MultilingualString
     description: MultilingualString
     // eslint-disable-next-line camelcase
-    site_url: string
+    site_url: MultilingualString
     // eslint-disable-next-line camelcase
-    main_url: string
+    main_url: MultilingualString
     // eslint-disable-next-line camelcase
     logo_url: string
     // eslint-disable-next-line camelcase
