@@ -4,6 +4,7 @@
 
 <script lang="ts">
 import Vue from 'vue'
+import { MetaInfo } from 'vue-meta'
 
 import Home from '@/components/Home/Home.vue'
 import { SiteInfos } from '@/utils/types'
@@ -12,19 +13,21 @@ export default Vue.extend({
   components: {
     Home,
   },
+
   data(): {
     cssUrl: string
-    favicon: string
+    faviconUrl: string
     title: string
     siteInfos: SiteInfos | null
   } {
     return {
       cssUrl: 'territorio',
-      favicon: '',
+      faviconUrl: '',
       title: '@teritorio/vido',
       siteInfos: null,
     }
   },
+
   async fetch() {
     const menuFetchConfigPromise = this.$store.dispatch('menu/fetchConfig', {
       apiEndpoint: this.$config.API_ENDPOINT,
@@ -51,31 +54,26 @@ export default Vue.extend({
           json
         )
 
-        // @ts-ignore - Look ok, unable to fix the issue
         this.cssUrl = json.icon_font_css_url
-        // @ts-ignore - Look ok, unable to fix the issue
-        this.favicon_url = json.favicon_url
-        // @ts-ignore - Look ok, unable to fix the issue
+        this.faviconUrl = json.favicon_url
         this.title = json.title
       })
 
     await Promise.all([menuFetchConfigPromise, configFetchPromose])
   },
   // fetchOnServer: false,
-  head() {
+
+  head(): MetaInfo {
     return {
-      // @ts-ignore - Look ok, unable to fix the issue
       title: this.title,
       link: [
         {
           rel: 'stylesheet',
-          // @ts-ignore - Look ok, unable to fix the issue
           href: this.cssUrl,
         },
         {
           rel: 'icon',
-          // @ts-ignore - Look ok, unable to fix the issue
-          href: this.favicon,
+          href: this.faviconUrl,
         },
       ],
     }
