@@ -119,6 +119,10 @@
             </li>
           </ul>
 
+          <p v-else-if="field.k === 'opening_hours'" class="text-sm">
+            <OpeningHours :opening-hours="field.v" />
+          </p>
+
           <p v-else-if="field.v.length > textLimit" class="text-sm">
             {{ field.v.substring(0, textLimit) + ' ...' }}
             <a
@@ -132,19 +136,7 @@
               {{ $tc('toast.seeDetail') }}
             </a>
           </p>
-          <p
-            v-else
-            :class="[
-              'text-sm',
-              field.k === 'opening_hours' &&
-                (field.v.includes($tc('toast.opened')) ||
-                  field.v === $tc('toast.24_7')) &&
-                'text-green-500',
-              field.k === 'opening_hours' &&
-                field.v.includes($tc('toast.closed')) &&
-                'text-red-500',
-            ]"
-          >
+          <p v-else class="text-sm">
             {{ field.v }}
           </p>
         </div>
@@ -214,20 +206,20 @@
 </template>
 
 <script lang="ts">
-import OpeningHours from 'opening_hours'
 import Vue, { PropType } from 'vue'
 import { mapGetters } from 'vuex'
 
+import OpeningHours from '@/components/Fields/OpeningHours.vue'
 import TeritorioIcon from '@/components/TeritorioIcon/TeritorioIcon.vue'
 import { getPoiById } from '@/utils/api'
 import { isIOS } from '@/utils/isIOS'
 import { getContrastedTextColor } from '@/utils/picto'
 import { VidoFeature, Mode, VidoFeatureProperties } from '@/utils/types'
-import { displayTime } from '@/utils/utilities'
 
 export default Vue.extend({
   components: {
     TeritorioIcon,
+    OpeningHours,
   },
 
   props: {
@@ -349,58 +341,8 @@ export default Vue.extend({
       }
     },
 
-    opening_hours(): string | string[] | null {
-      const openingHours = this.poiProp('opening_hours')
-
-      if (!openingHours) {
-        return null
-      }
-
-      try {
-        const oh = new OpeningHours(openingHours)
-        const nextchange = oh.getNextChange()
-
-        if (oh.getState() && nextchange === undefined) {
-          return this.$tc('toast.24_7')
-        } else if (oh.getState()) {
-          return `${this.$tc('toast.opened')} - ${this.$tc(
-            'toast.closeAt'
-          )} ${displayTime(nextchange)}`
-        }
-
-        const nextChange = new Date(nextchange || '')
-        const today = new Date()
-        const todayDay = today.getDay()
-        const day = nextChange.getDay()
-
-        const days = [
-          this.$tc('toast.sunday'),
-          this.$tc('toast.monday'),
-          this.$tc('toast.tuesday'),
-          this.$tc('toast.wednesday'),
-          this.$tc('toast.thursday'),
-          this.$tc('toast.friday'),
-          this.$tc('toast.saturday'),
-        ]
-
-        const openTrad =
-          todayDay === day
-            ? `${this.$tc('toast.openAt')} ${displayTime(nextchange)}`
-            : `${this.$tc('toast.open')} ${days[day]} ${displayTime(
-                nextchange
-              )}`
-
-        return `${this.$tc('toast.closed')} - ${openTrad}`
-      } catch (e) {
-        // eslint-disable-next-line no-console
-        console.log('Vido error:', e)
-        return null
-      }
-    },
-
     listFields(): string[] {
       const getValue = (field: string, value: string | string[]) => {
-        if (field === 'opening_hours') return this.opening_hours
         if (field === 'route:*') return null
 
         return value
