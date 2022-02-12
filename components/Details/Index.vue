@@ -50,7 +50,7 @@
 
         <div class="detail-right">
           <Carousel v-if="p.image" :images="p.image" />
-          <MapPoi :poi="poi" />
+          <MapPoi :poi="poi" class="relative" />
           <p>
             Dernière
             <a href="https://www.openstreetmap.org/" target="_blank">
