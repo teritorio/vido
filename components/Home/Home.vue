@@ -12,7 +12,11 @@
       >
         <transition name="headers" appear mode="out-in">
           <MainHeader
-            v-if="state.matches(states.Categories) && isMenuConfigLoaded"
+            v-if="
+              (state.matches(states.Categories) && isMenuConfigLoaded) ||
+              isModeExplorer ||
+              isModeFavorite
+            "
             :show-poi="showPoi"
             :logo-url="logoUrl"
             :main-url="mainUrl"
