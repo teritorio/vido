@@ -5505,7 +5505,7 @@ __metadata:
     lodash.uniqby: ^4.7.0
     lodash.without: ^4.4.0
     mapbox-gl-vue: ^2.0.4
-    maplibre-gl: ^2.1.1
+    maplibre-gl: ^2.1.6
     nuxt: ^2.15.8
     opening_hours: ^3.7.0
     postcss: ^7.0.35
@@ -17048,9 +17048,9 @@ fsevents@~2.3.2:
   languageName: node
   linkType: hard
 
-"maplibre-gl@npm:^2.1.1":
-  version: 2.1.1
-  resolution: "maplibre-gl@npm:2.1.1"
+"maplibre-gl@npm:^2.1.6":
+  version: 2.1.6
+  resolution: "maplibre-gl@npm:2.1.6"
   dependencies:
     "@mapbox/geojson-rewind": ^0.5.1
     "@mapbox/jsonlint-lines-primitives": ^2.0.2
@@ -17071,7 +17071,7 @@ fsevents@~2.3.2:
     supercluster: ^7.1.4
     tinyqueue: ^2.0.3
     vt-pbf: ^3.1.3
-  checksum: cca6d6c21937b840a4bc4533c5d6d65e55680908c6e0013818af665d34b7cce447498844b46b16f67a7de2c2adee68719dc82a2ae549dc07dbb635327faead8f
+  checksum: 2b606876e9f06086b655dc75b8b7c02fea85295e94049bdde5f634c97b634b5df60941c692dfd59ad3c31e6ba387b6a7350ddc0998d3f092c462e28cbdd58aa4
   languageName: node
   linkType: hard
 
