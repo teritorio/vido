@@ -10,8 +10,8 @@
     </span>
     <span>
       <a href="https://www.openstreetmap.org/copyright" target="_blank">
-        &copy; OpenStreetMap contributors</a
-      >
+        &copy; OpenStreetMap contributors
+      </a>
     </span>
     <span>
       Réalisation
@@ -29,19 +29,7 @@
 <script lang="ts">
 import Vue from 'vue'
 
-export default Vue.extend({
-  data(): {
-    cssUrl: string
-    favicon: string
-    title: string
-  } {
-    return {
-      cssUrl: 'territorio',
-      favicon: '',
-      title: '@teritorio/vido',
-    }
-  },
-})
+export default Vue.extend({})
 </script>
 
 <style lang="scss" scoped>
