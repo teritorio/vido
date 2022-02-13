@@ -91,4 +91,17 @@ export default {
       hard: 'hard',
     },
   },
+  details: {
+    headerDescription: 'Description',
+    headerOpeningHours: 'Opening hours',
+    lastUpdate: 'Last change',
+    headerContacts: 'Contact',
+    headerLocation: 'Location & Address',
+    location: 'GPS coordinates (Lat, Lon):',
+    shareFacebook: 'Share on Facebook',
+    shareTwitter: 'Share on Twitter',
+    shareWhatsApp: 'Share on WhatsApp',
+    print: 'Print',
+    link: 'Share link',
+  },
 }

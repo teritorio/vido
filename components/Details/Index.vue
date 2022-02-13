@@ -40,14 +40,14 @@
           </div>
 
           <div v-if="p.description" class="detail-left-block">
-            <h2>Descriptif</h2>
+            <h2>{{ $tc('details.headerDescription') }}</h2>
             <p>{{ p.description }}</p>
           </div>
 
           <Contact :p="p" :color="color" />
 
           <div v-if="p.opening_hours" class="detail-left-block">
-            <h2>Horaires d’ouverture</h2>
+            <h2>{{ $tc('details.headerOpeningHours') }}</h2>
             <OpeningHours :opening-hours="p.opening_hours" :details="true" />
           </div>
 
@@ -58,11 +58,10 @@
           <Carousel v-if="p.image" :images="p.image" />
           <MapPoi :poi="poi" class="relative" />
           <p>
-            Dernière
+            {{ $tc('details.lastUpdate') }}
             <a href="https://www.openstreetmap.org/" target="_blank">
-              modification
+              du 06/02/2022 à 16h 02min 12s
             </a>
-            du 06/02/2022 à 16h 02min 12s
           </p>
         </div>
       </div>

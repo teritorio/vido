@@ -4,7 +4,7 @@
       <li>
         <a
           v-if="href"
-          aria-label="Partager sur Facebook"
+          :aria-label="$tc('details.shareFacebook')"
           type="button"
           class="text-sm text-gray-800 bg-white rounded-full shadow-md outline-none w-8 h-8 focus:outline-none hover:bg-gray-100 focus-visible:bg-gray-100 flex-shrink-0"
           :href="shareFacebook"
@@ -19,7 +19,7 @@
       <li>
         <a
           v-if="title && href"
-          aria-label="Partager sur Twitter"
+          :aria-label="$tc('details.shareTwitter')"
           type="button"
           class="text-sm text-gray-800 bg-white rounded-full shadow-md outline-none w-8 h-8 focus:outline-none hover:bg-gray-100 focus-visible:bg-gray-100 flex-shrink-0"
           :href="shareTwitter"
@@ -34,7 +34,7 @@
       <li>
         <a
           v-if="title && href"
-          aria-label="Partager sur WhatsApp"
+          :aria-label="$tc('details.shareWhatsApp')"
           type="button"
           class="text-sm text-gray-800 bg-white rounded-full shadow-md outline-none w-8 h-8 focus:outline-none hover:bg-gray-100 focus-visible:bg-gray-100 flex-shrink-0"
           :href="shareWhatsApp"
@@ -48,7 +48,7 @@
       </li>
       <li>
         <button
-          aria-label="Imprimer"
+          :aria-label="$tc('details.print')"
           type="button"
           class="text-sm text-gray-800 bg-white rounded-full shadow-md outline-none w-8 h-8 focus:outline-none hover:bg-gray-100 focus-visible:bg-gray-100 flex-shrink-0"
           @click="print"
@@ -59,7 +59,7 @@
       <li>
         <button
           v-if="href"
-          aria-label="Copier le lien"
+          :aria-label="$tc('details.link')"
           type="button"
           class="text-sm text-gray-800bg-whiterounded-fullshadow-mdoutline-nonew-8h-8focus:outline-nonehover:bg-gray-100focus-visible:bg-gray-100flex-shrink-0"
           @click="shareUrl"
@@ -69,7 +69,7 @@
       </li>
     </ul>
     <ShareLinkModal
-      title="Partager le lien"
+      :title="$tc('details.link')"
       :link="shareLink"
       @close="shareLink = null"
     />

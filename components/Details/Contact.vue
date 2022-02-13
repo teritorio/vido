@@ -5,7 +5,7 @@
     class="detail-left-block"
     :style="`background-color: ${color}`"
   >
-    <h2>Contact</h2>
+    <h2>{{ $tc('details.headerContacts') }}</h2>
     <p
       v-for="phone in p.phone || []"
       :key="phone"

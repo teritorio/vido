@@ -4,7 +4,7 @@
     id="location"
     class="detail-left-block"
   >
-    <h2>Localisation &amp; Adresse</h2>
+    <h2>{{ $tc('details.headerLocation') }}</h2>
     <p v-if="p.name">{{ p.name }}</p>
     <p>
       {{ p['addr:street'] }}
@@ -13,7 +13,7 @@
     </p>
 
     <p v-if="geom.type === 'Point'">
-      <span>Coordonnées GPS (Lat, Lon)&nbsp;:</span>
+      <span>{{ $tc('details.location') }}</span>
       {{ geom.coordinates[1] }},&nbsp;{{ geom.coordinates[0] }}
     </p>
   </div>

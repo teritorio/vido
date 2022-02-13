@@ -91,4 +91,17 @@ export default {
       hard: 'difícil',
     },
   },
+  details: {
+    headerDescription: 'Descripción',
+    headerOpeningHours: 'Horario de apertura',
+    lastUpdate: 'Último cambio',
+    headerContacts: 'Contacto',
+    headerLocation: 'Ubicación y Dirección',
+    location: 'Coordenadas GPS (Lat, Lon):',
+    shareFacebook: 'Compartir en Facebook',
+    shareTwitter: 'Compartir en Twitter',
+    shareWhatsApp: 'Compartir en WhatsApp',
+    print: 'Imprimir',
+    link: 'Compartir enlace',
+  },
 }
