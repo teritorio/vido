@@ -1,9 +1,9 @@
 <template>
   <header id="header">
-    <div v-if="theme && theme.logo_url" id="logo">
-      <a :href="theme.mail_url">
+    <div id="logo">
+      <a :href="theme && theme.mail_url">
         <p class="img-logo">
-          <img :src="theme.logo_url" alt="theme.title" />
+          <img :src="theme && theme.logo_url" :alt="theme && theme.title.fr" />
         </p>
       </a>
     </div>
@@ -16,9 +16,11 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
+import Vue, { PropType } from 'vue'
 
 import NavMenu from '@/components/MainMap/NavMenu.vue'
+
+import { SiteInfosTheme } from '~/utils/types'
 
 export default Vue.extend({
   components: {
@@ -26,7 +28,7 @@ export default Vue.extend({
   },
   props: {
     theme: {
-      type: Object, // as PropType<SiteInfos.theme>,
+      type: Object as PropType<SiteInfosTheme>,
       default: null,
     },
   },

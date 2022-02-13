@@ -88,6 +88,21 @@ export interface MenuCategory extends ApiMenuCategory {
 
 export type Category = MenuGroup | MenuCategory
 
+export interface SiteInfosTheme {
+  id: number
+  slug: string
+  title: MultilingualString
+  description: MultilingualString
+  // eslint-disable-next-line camelcase
+  site_url: MultilingualString
+  // eslint-disable-next-line camelcase
+  main_url: MultilingualString
+  // eslint-disable-next-line camelcase
+  logo_url: string
+  // eslint-disable-next-line camelcase
+  favicon_url: string
+}
+
 export interface SiteInfos {
   id: number
   slug: string
@@ -98,20 +113,7 @@ export interface SiteInfos {
   // eslint-disable-next-line camelcase
   bbox_line: GeoJSON.LineString
 
-  themes: {
-    id: number
-    slug: string
-    title: MultilingualString
-    description: MultilingualString
-    // eslint-disable-next-line camelcase
-    site_url: MultilingualString
-    // eslint-disable-next-line camelcase
-    main_url: MultilingualString
-    // eslint-disable-next-line camelcase
-    logo_url: string
-    // eslint-disable-next-line camelcase
-    favicon_url: string
-  }[]
+  themes: SiteInfosTheme[]
 }
 
 export interface VidoFeatureProperties {
