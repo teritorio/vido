@@ -103,5 +103,6 @@ export default {
     shareWhatsApp: 'Partager sur WhatsApp',
     print: 'Imprimer',
     link: 'Partager le lien',
+    poweredBy: 'Propulsé par',
   },
 }

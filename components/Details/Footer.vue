@@ -1,17 +1,10 @@
 <template>
   <footer class="footer">
-    <span>
-      <a
-        href="https://www.sirtaqui-aquitaine.com/les-donnees-du-sirtaqui/"
-        target="_blank"
-      >
-        &copy; Sirtaqui
-      </a>
-    </span>
-    <span>
-      <a href="https://www.openstreetmap.org/copyright" target="_blank">
-        &copy; OpenStreetMap contributors
-      </a>
+    <span
+      v-for="attribution in attributions"
+      :key="attribution"
+      v-html="attribution"
+    >
     </span>
     <span>
       Réalisation
@@ -27,9 +20,16 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
+import Vue, { PropType } from 'vue'
 
-export default Vue.extend({})
+export default Vue.extend({
+  props: {
+    attributions: {
+      type: Array as PropType<String[]>,
+      default: null,
+    },
+  },
+})
 </script>
 
 <style lang="scss" scoped>

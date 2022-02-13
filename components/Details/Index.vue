@@ -67,7 +67,7 @@
       </div>
     </div>
 
-    <Footer />
+    <Footer :attributions="siteInfos && siteInfos.attributions" />
   </div>
 </template>
 
