@@ -72,7 +72,7 @@
           class="block w-full px-4 py-2 text-sm leading-5 text-left text-gray-700 transition duration-150 ease-in-out hover:bg-gray-100 focus:outline-none focus:bg-gray-100"
           role="menuitem"
           @blur="blurHandler"
-          @click="$refs.shareModal.show()"
+          @click="setShareLink()"
         >
           <font-awesome-icon
             ref="menu_icon"
@@ -147,44 +147,11 @@
       </div>
     </TDropdown>
 
-    <t-modal
-      ref="shareModal"
-      :header="$tc('favorites.modal.title')"
-      :hide-close-button="true"
-      @before-open="setShareLink"
-    >
-      <div class="flex flex-col">
-        <div class="flex items-center mb-4">
-          <font-awesome-icon
-            ref="menu_icon"
-            icon="link"
-            class="text-gray-500 mr-4"
-          />
-          <p class="text-gray-500 truncate">
-            {{ shareLink }}
-          </p>
-          <button
-            v-if="hasClipboard"
-            class="focus:outline-none focus-visible:bg-gray-100 hover:bg-gray-100 py-2 px-4 rounded-full ml-2"
-            @click="copyLink"
-          >
-            <font-awesome-icon
-              v-if="isCopied"
-              ref="menu_icon"
-              icon="clipboard-check"
-              class="text-green-500"
-            />
-            {{ !isCopied ? $tc('favorites.modal.copy') : '' }}
-          </button>
-        </div>
-        <button
-          class="self-end focus:outline-none focus-visible:bg-gray-100 hover:bg-gray-100 py-2 px-4 rounded-full"
-          @click="$refs.shareModal.hide()"
-        >
-          {{ $tc('favorites.modal.close') }}
-        </button>
-      </div>
-    </t-modal>
+    <ShareLinkModal
+      :title="$tc('favorites.share_link')"
+      :link="shareLink"
+      @close="shareLink = null"
+    />
 
     <t-modal-notebook
       ref="notebookModal"
@@ -208,6 +175,7 @@ import { TDropdown } from 'vue-tailwind/dist/components'
 import { mapGetters } from 'vuex'
 
 import FavoriteNoteBook from '@/components/MainMap/FavoriteNoteBook.vue'
+import ShareLinkModal from '@/components/ShareLinkModal.vue'
 import { LOCAL_STORAGE } from '@/lib/constants'
 import { getPoiByIds } from '@/utils/api'
 import { VidoFeature } from '@/utils/types'
@@ -216,6 +184,7 @@ import { getHashPart, setHashPart } from '@/utils/url'
 export default Vue.extend({
   components: {
     TDropdown,
+    ShareLinkModal,
     FavoriteNoteBook,
   },
   props: {
@@ -241,14 +210,12 @@ export default Vue.extend({
     },
   },
   data(): {
-    shareLink: string
-    hasClipboard: boolean
+    shareLink: string | null
     isCopied: boolean
     favs: VidoFeature[]
   } {
     return {
-      shareLink: '',
-      hasClipboard: Boolean(navigator.clipboard),
+      shareLink: null,
       isCopied: false,
       favs: [],
     }
@@ -299,24 +266,6 @@ export default Vue.extend({
         console.error('Vido error:', e.message)
         this.shareLink = ''
       }
-    },
-    copyLink() {
-      this.$tracking({ type: 'favorites_event', event: 'copy_link' })
-      if (!navigator.clipboard) {
-        return
-      }
-      navigator.clipboard.writeText(this.shareLink).then(
-        () => {
-          this.isCopied = true
-          setTimeout(() => {
-            this.isCopied = false
-          }, 5000)
-        },
-        (err) => {
-          // eslint-disable-next-line no-console
-          console.error('Vido error: ', err)
-        }
-      )
     },
     closeNoteBook() {
       ;(this.$refs.notebookModal as Vue & { hide: () => void }).hide()

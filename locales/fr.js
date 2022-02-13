@@ -1,4 +1,8 @@
 export default {
+  shareLink: {
+    copy: 'Copier',
+    close: 'Fermer',
+  },
   favorites: {
     title: 'Favoris',
     menu_label: 'Menu des favoris',
@@ -7,11 +11,7 @@ export default {
     menu_clear: 'Supprimer les favoris',
     export_pdf: 'Exporter la liste en PDF',
     export_csv: 'Exporter la liste en CSV',
-    modal: {
-      title: 'Partager le lien des favoris',
-      copy: 'Copier',
-      close: 'Fermer',
-    },
+    share_link: 'Partager le lien des favoris',
     notebook: {
       title: 'Carnet des favoris',
     },

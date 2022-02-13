@@ -1,4 +1,8 @@
 export default {
+  shareLink: {
+    copy: 'Copy',
+    close: 'Close',
+  },
   favorites: {
     title: 'Favorites',
     menu_label: 'Favorites menu',
@@ -7,11 +11,7 @@ export default {
     menu_clear: 'Clear favorites',
     export_pdf: 'Export liste as PDF',
     export_csv: 'Export liste as CSV',
-    modal: {
-      title: 'Share link of favorites',
-      copy: 'Copy',
-      close: 'Close',
-    },
+    share_link: 'Share link of favorites',
     notebook: {
       title: 'Favorites notebook',
     },
