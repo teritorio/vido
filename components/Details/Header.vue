@@ -8,10 +8,7 @@
       </a>
     </div>
 
-    <NavMenu
-      class="ml-3 sm:ml-9"
-      @locale="languageControl.setLanguage($event)"
-    />
+    <NavMenu class="ml-3 sm:ml-9" />
   </header>
 </template>
 
