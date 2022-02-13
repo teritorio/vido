@@ -74,6 +74,7 @@
 
 <script lang="ts">
 import Vue, { PropType } from 'vue'
+import { MetaInfo } from 'vue-meta'
 
 import OpeningHours from '@/components/Fields/OpeningHours.vue'
 import MapPoi from '@/components/MapPoi.vue'
@@ -86,7 +87,7 @@ import Footer from '~/components/Details/Footer.vue'
 import Header from '~/components/Details/Header.vue'
 import Location from '~/components/Details/Location.vue'
 import Share from '~/components/Details/Share.vue'
-import { VidoFeature, SiteInfos } from '~/utils/types'
+import { VidoFeatureProperties, VidoFeature, SiteInfos } from '~/utils/types'
 
 export default Vue.extend({
   components: {
@@ -124,20 +125,17 @@ export default Vue.extend({
   },
 
   // fetchOnServer: false,
-  head() {
+  head(): MetaInfo {
     if (this.siteInfos?.themes) {
       return {
-        // @ts-ignore - Look ok, unable to fix the issue
         title: `${this.siteInfos.themes[0].title.fr} - ${this.p.name}`,
         link: [
           {
             rel: 'stylesheet',
-            // @ts-ignore - Look ok, unable to fix the issue
             href: this.siteInfos.icon_font_css_url,
           },
           {
             rel: 'icon',
-            // @ts-ignore - Look ok, unable to fix the issue
             href: this.siteInfos.themes[0].favicon_url,
           },
         ],
@@ -148,10 +146,10 @@ export default Vue.extend({
   },
 
   computed: {
-    p() {
+    p(): VidoFeatureProperties {
       return this.poi.properties
     },
-    color() {
+    color(): string {
       return this.poi.properties.display?.color || '#76009E'
     },
   },
