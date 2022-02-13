@@ -45,6 +45,12 @@
           </div>
 
           <Contact :p="p" :color="color" />
+
+          <div v-if="p.opening_hours" class="detail-left-block">
+            <h2>Horaires d’ouverture</h2>
+            <OpeningHours :opening-hours="p.opening_hours" :details="true" />
+          </div>
+
           <Location :p="p" :geom="poi.geometry" />
         </div>
 
@@ -69,6 +75,7 @@
 <script lang="ts">
 import Vue, { PropType } from 'vue'
 
+import OpeningHours from '@/components/Fields/OpeningHours.vue'
 import MapPoi from '@/components/MapPoi.vue'
 import TeritorioIcon from '@/components/TeritorioIcon/TeritorioIcon.vue'
 
@@ -87,6 +94,7 @@ export default Vue.extend({
     TeritorioIcon,
     Breadcrumb,
     Contact,
+    OpeningHours,
     Location,
     Share,
     Carousel,
