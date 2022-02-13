@@ -163,4 +163,10 @@ ul {
     border-radius: 50%;
   }
 }
+
+@media (max-width: 991px) {
+  ul {
+    text-align: center;
+  }
+}
 </style>

@@ -213,51 +213,17 @@ h1 {
   }
 }
 
-// @media (max-width: 1200px) {
-//   h1 {
-//     font-size: 2.7rem;
-//   }
-// }
-
 @media (max-width: 991px) {
-  //   h1 {
-  //     font-size: 2.1rem;
-  //   }
-  //   .detail-wrapper {
-  //     flex-direction: column;
-  //   }
-  //   .detail-right {
-  //     margin-bottom: 2.9rem;
+  .detail-wrapper {
+    flex-direction: column;
 
-  //     .detail-left-block {
-  //       padding: 0 1.6rem;
-  //     }
-  //   }
-
-  .detail-left,
-  .detail-right {
-    width: 100%;
-    padding-left: 0;
-    padding-right: 0;
+    .detail-left,
+    .detail-right {
+      width: 100%;
+      padding-left: 0;
+      padding-right: 0;
+    }
   }
-
-  .share {
-    text-align: center;
-  }
-
-  /deep/ .detail-left-block {
-    margin-bottom: 2.7rem;
-  }
-}
-
-@media (max-width: 768px) {
-  //   h1 {
-  //     font-size: 1.7rem;
-  //     margin-bottom: 0.7rem;
-  //   }
-  //   .detail-left-block h2 {
-  //     font-size: 1.6rem;
-  //   }
 }
 
 /deep/ #map {
