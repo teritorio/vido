@@ -47,6 +47,11 @@ export default Vue.extend({
         ;(this.$refs.geolocateControlContainer as HTMLDivElement).appendChild(
           geolocateControl.onAdd(this.map)
         )
+
+        const scale = new mapboxgl.ScaleControl({
+          maxWidth: 80,
+        })
+        this.map.addControl(scale)
       }
     },
   },
