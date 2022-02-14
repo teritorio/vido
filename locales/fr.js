@@ -104,5 +104,6 @@ export default {
     print: 'Imprimer',
     link: 'Partager le lien',
     poweredBy: 'Propulsé par',
+    mapillaryExplore: 'Explorer sur Mapillary',
   },
 }

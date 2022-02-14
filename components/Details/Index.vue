@@ -56,6 +56,7 @@
 
         <div class="detail-right">
           <Carousel v-if="p.image" :images="p.image" />
+          <Mapillary v-if="p.mapillary" :image-id="p.mapillary" />
           <MapPoi :poi="poi" class="relative" />
           <p>
             {{ $tc('details.lastUpdate') }}
@@ -85,6 +86,7 @@ import Contact from '~/components/Details/Contact.vue'
 import Footer from '~/components/Details/Footer.vue'
 import Header from '~/components/Details/Header.vue'
 import Location from '~/components/Details/Location.vue'
+import Mapillary from '~/components/Details/Mapillary.vue'
 import Share from '~/components/Details/Share.vue'
 import { VidoFeatureProperties, VidoFeature, SiteInfos } from '~/utils/types'
 
@@ -98,6 +100,7 @@ export default Vue.extend({
     Location,
     Share,
     Carousel,
+    Mapillary,
     MapPoi,
     Footer,
   },

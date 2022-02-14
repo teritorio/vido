@@ -104,5 +104,6 @@ export default {
     print: 'Imprimir',
     link: 'Compartir enlace',
     poweredBy: 'Con la tecnología de',
+    mapillaryExplore: 'Explorar en Mapillary',
   },
 }
