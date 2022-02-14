@@ -3,7 +3,7 @@
     <button
       v-if="!hidden"
       id="background-selector-map"
-      aria-label="Changer le fond de carte"
+      aria-label="$tc('mapControls.backgroundAriaLabel')"
       class="bg-gray-100 border-4 border-white rounded-full shadow-md outline-none w-11 h-11 focus:outline-none hover:bg-gray-100 focus-visible:bg-gray-100"
       :title="
         $t('mapControls.backgroundButton', {

@@ -16,11 +16,7 @@
           :title="siteName"
           target="_blank"
         >
-          <img
-            :aria-label="siteName"
-            :src="logoUrl"
-            class="w-auto h-auto max-w-2xl max-h-16"
-          />
+          <img :src="logoUrl" class="w-auto h-auto max-w-2xl max-h-16" />
         </a>
       </h1>
 
