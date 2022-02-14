@@ -12,6 +12,8 @@
         pitch,
         style: mapStyle,
         zoom: zoom,
+        dragRotate: rotate,
+        touchPitch: rotate,
         locale: locale,
       }"
       :nav-control="{
@@ -29,7 +31,7 @@
       @map-zoomend="$emit('map-zoomend', $event)"
     />
 
-    <MapControls :map="map">
+    <MapControls :map="map" :show-compass="rotate">
       <slot name="controls"></slot>
     </MapControls>
 
@@ -77,6 +79,10 @@ export default Vue.extend({
     pitch: {
       type: Number,
       default: 0,
+    },
+    rotate: {
+      type: Boolean,
+      default: false,
     },
   },
 

@@ -17,6 +17,7 @@
           :attributions="attributions"
           :map-style-enum="selectedBackground"
           :pitch="pitch"
+          :rotate="true"
           @map-init="onMapInit"
           @map-pitchend="onMapPitchEnd"
           @map-data="onMapRender"

@@ -20,14 +20,18 @@ export default Vue.extend({
       type: Object,
       default: null,
     },
+    showCompass: {
+      type: Boolean,
+      default: false,
+    },
   },
 
   watch: {
     map(value, oldValue) {
       if (!oldValue && value) {
         const navigationControl = new maplibregl.NavigationControl({
-          showCompass: true,
           showZoom: true,
+          showCompass: this.showCompass,
           visualizePitch: true,
         })
 
