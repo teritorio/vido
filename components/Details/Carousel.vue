@@ -7,12 +7,12 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
+import Vue, { PropType } from 'vue'
 
 export default Vue.extend({
   props: {
     images: {
-      type: Array, // as string[],
+      type: Array as PropType<string[]>,
       required: true,
     },
   },
