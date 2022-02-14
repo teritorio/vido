@@ -61,7 +61,7 @@
           v-if="href"
           :aria-label="$tc('details.link')"
           type="button"
-          class="text-sm text-gray-800bg-whiterounded-fullshadow-mdoutline-nonew-8h-8focus:outline-nonehover:bg-gray-100focus-visible:bg-gray-100flex-shrink-0"
+          class="text-sm text-gray-800 bg-white rounded-full shadow-md outline-none w-8 h-8 focus:outline-none hover:bg-gray-100 focus-visible:bg-gray-100 flex-shrink-0"
           @click="shareUrl"
         >
           <font-awesome-icon icon="link" :style="{ color: color }" />
