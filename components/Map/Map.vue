@@ -5,6 +5,9 @@
       access-token=""
       :map-options="{
         bounds: bounds,
+        fitBoundsOptions: {
+          padding: 50,
+        },
         center: center,
         hash: 'map',
         maxZoom: defaultZoom.max,

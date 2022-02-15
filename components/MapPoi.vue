@@ -2,7 +2,10 @@
   <div>
     <Map
       v-if="poi.geometry.coordinates"
-      :center="poi.geometry.coordinates"
+      :center="
+        (poi.geometry.type === 'Point' && poi.geometry.coordinates) || undefined
+      "
+      :bounds="(poi.geometry.type !== 'Point' && bounds()) || undefined"
       :zoom="selectionZoom.poi"
       @map-init="onMapInit"
     />
@@ -15,6 +18,7 @@ import Vue, { PropType } from 'vue'
 
 import Map from '@/components/Map/Map.vue'
 import { VidoFeature } from '@/lib/apiPois'
+import { getBBoxFeature } from '@/lib/bbox'
 import { MAP_ZOOM } from '@/lib/constants'
 import { makerHtmlFactory } from '@/lib/markerLayerFactory'
 import { filterRouteByPoiId } from '@/utils/styles'
@@ -58,6 +62,10 @@ export default Vue.extend({
           filterRouteByPoiId(map, this.poi.properties.metadata?.id)
         }
       })
+    },
+
+    bounds() {
+      return getBBoxFeature(this.poi)
     },
   },
 })
