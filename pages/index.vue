@@ -1,5 +1,5 @@
 <template>
-  <Home v-if="siteInfos" :site-infos="siteInfos" />
+  <Home v-if="settings" :settings="settings" />
 </template>
 
 <script lang="ts">
@@ -8,7 +8,7 @@ import { MetaInfo } from 'vue-meta'
 
 import Home from '@/components/Home/Home.vue'
 import { fetchSettings, headerFromSettings } from '@/lib/fetchSettings'
-import { SiteInfos } from '@/utils/types'
+import { Settings } from '@/utils/types'
 
 export default Vue.extend({
   components: {
@@ -16,10 +16,10 @@ export default Vue.extend({
   },
 
   data(): {
-    siteInfos: SiteInfos | null
+    settings: Settings | null
   } {
     return {
-      siteInfos: null,
+      settings: null,
     }
   },
 
@@ -34,12 +34,12 @@ export default Vue.extend({
       fetchSettings(this.$config),
       menuFetchConfigPromise,
     ])
-    this.siteInfos = v[0]
+    this.settings = v[0]
   },
   // fetchOnServer: false,
 
   head(): MetaInfo {
-    return headerFromSettings(this.siteInfos)
+    return headerFromSettings(this.settings)
   },
 })
 </script>

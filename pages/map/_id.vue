@@ -12,7 +12,7 @@ import MapPoi from '@/components/MapPoi.vue'
 import { fetchSettings, headerFromSettings } from '@/lib/fetchSettings'
 import { getPoiById } from '@/utils/api'
 
-import { VidoFeature, SiteInfos } from '~/utils/types'
+import { VidoFeature, Settings } from '~/utils/types'
 
 export default Vue.extend({
   components: {
@@ -25,11 +25,11 @@ export default Vue.extend({
 
   data(): {
     poi: VidoFeature | null
-    siteInfos: SiteInfos | null
+    settings: Settings | null
   } {
     return {
       poi: null,
-      siteInfos: null,
+      settings: null,
     }
   },
 
@@ -42,13 +42,13 @@ export default Vue.extend({
     )
 
     const v = await Promise.all([fetchSettings(this.$config), getPoiPromise])
-    this.siteInfos = v[0]
+    this.settings = v[0]
     this.poi = v[1]
   },
 
   // fetchOnServer: false,
   head(): MetaInfo {
-    return headerFromSettings(this.siteInfos)
+    return headerFromSettings(this.settings)
   },
 })
 </script>

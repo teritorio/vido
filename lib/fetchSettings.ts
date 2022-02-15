@@ -1,13 +1,13 @@
 import { MetaInfo } from 'vue-meta'
 
-import { SiteInfos } from '~/utils/types'
+import { Settings } from '~/utils/types'
 
-export function fetchSettings(config: any): Promise<SiteInfos | null> {
+export function fetchSettings(config: any): Promise<Settings | null> {
   return fetch(
     `${config.API_ENDPOINT}/${config.API_PROJECT}/${config.API_THEME}`
   )
     .then((res) => res.json())
-    .then((json: SiteInfos) => {
+    .then((json: Settings) => {
       return Object.assign(
         {
           id: 0,
@@ -30,7 +30,7 @@ export function fetchSettings(config: any): Promise<SiteInfos | null> {
 }
 
 export function headerFromSettings(
-  settings: SiteInfos | null,
+  settings: Settings | null,
   options: any = null
 ): MetaInfo {
   return {

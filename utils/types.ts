@@ -103,7 +103,7 @@ export interface SiteInfosTheme {
   favicon_url: string
 }
 
-export interface SiteInfos {
+export interface Settings {
   id: number
   slug: string
   name: MultilingualString

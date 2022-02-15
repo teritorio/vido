@@ -1,7 +1,7 @@
 <template>
   <div class="page-template-template-fiche">
     <div>
-      <Header :theme="siteInfos.themes[0]" />
+      <Header :theme="settings.themes[0]" />
 
       <div class="h1-icon" :style="`background-color:${color}`">
         <TeritorioIcon
@@ -61,7 +61,7 @@
       </div>
     </div>
 
-    <Footer :attributions="siteInfos.attributions" />
+    <Footer :attributions="settings.attributions" />
   </div>
 </template>
 
@@ -80,7 +80,7 @@ import Header from '~/components/Details/Header.vue'
 import Location from '~/components/Details/Location.vue'
 import Mapillary from '~/components/Details/Mapillary.vue'
 import Share from '~/components/Details/Share.vue'
-import { VidoFeatureProperties, VidoFeature, SiteInfos } from '~/utils/types'
+import { VidoFeatureProperties, VidoFeature, Settings } from '~/utils/types'
 
 export default Vue.extend({
   components: {
@@ -98,8 +98,8 @@ export default Vue.extend({
   },
 
   props: {
-    siteInfos: {
-      type: Object as PropType<SiteInfos>,
+    settings: {
+      type: Object as PropType<Settings>,
       required: true,
     },
     poi: {

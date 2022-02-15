@@ -115,7 +115,7 @@
     </header>
     <MainMap
       ref="mainMap"
-      :default-bounds="siteInfos.bbox_line.coordinates"
+      :default-bounds="settings.bbox_line.coordinates"
       :small="isBottomMenuOpened"
       :selected-categories="state.context.selectedSubCategoriesIds"
       :get-sub-category="selectSubCategory"
@@ -180,7 +180,7 @@ import {
   Mode,
   FilterValues,
   ApiMenuItemSearchResult,
-  SiteInfos,
+  Settings,
 } from '@/utils/types'
 import { getHashPart, setHashPart } from '@/utils/url'
 
@@ -218,8 +218,8 @@ export default (Vue as VueConstructor<
     BottomMenu,
   },
   props: {
-    siteInfos: {
-      type: Object as PropType<SiteInfos>,
+    settings: {
+      type: Object as PropType<Settings>,
       required: true,
     },
   },
@@ -259,7 +259,7 @@ export default (Vue as VueConstructor<
     }
   },
   head() {
-    const infos = this.siteInfos
+    const infos = this.settings
 
     return {
       title: infos.themes[0]?.title.fr,
@@ -287,7 +287,7 @@ export default (Vue as VueConstructor<
     }),
     events: () => HomeEvents,
     logoUrl(): string {
-      return this.siteInfos.themes[0]?.logo_url || ''
+      return this.settings.themes[0]?.logo_url || ''
     },
     selectedSubCategories(): Category[] {
       const categories = this.subCategories
@@ -297,10 +297,10 @@ export default (Vue as VueConstructor<
       )
     },
     siteName(): string {
-      return this.siteInfos.themes[0]?.title.fr || ''
+      return this.settings.themes[0]?.title.fr || ''
     },
     mainUrl(): string {
-      return this.siteInfos.themes[0]?.main_url.fr || ''
+      return this.settings.themes[0]?.main_url.fr || ''
     },
     isModeExplorer(): boolean {
       return this.mode === Mode.EXPLORER

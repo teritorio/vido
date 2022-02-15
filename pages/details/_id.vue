@@ -1,5 +1,5 @@
 <template>
-  <Index v-if="siteInfos && poi" :site-infos="siteInfos" :poi="poi" />
+  <Index v-if="settings && poi" :settings="settings" :poi="poi" />
 </template>
 
 <script lang="ts">
@@ -10,7 +10,7 @@ import { fetchSettings, headerFromSettings } from '@/lib/fetchSettings'
 import { getPoiById } from '@/utils/api'
 
 import Index from '~/components/Details/Index.vue'
-import { VidoFeature, SiteInfos } from '~/utils/types'
+import { VidoFeature, Settings } from '~/utils/types'
 
 export default Vue.extend({
   components: {
@@ -22,12 +22,12 @@ export default Vue.extend({
   },
 
   data(): {
-    siteInfos: SiteInfos | null
+    settings: Settings | null
     poi: VidoFeature | null
   } {
     return {
       poi: null,
-      siteInfos: null,
+      settings: null,
     }
   },
 
@@ -40,12 +40,12 @@ export default Vue.extend({
     )
 
     const v = await Promise.all([fetchSettings(this.$config), getPoiPromise])
-    this.siteInfos = v[0]
+    this.settings = v[0]
     this.poi = v[1]
   },
 
   head(): MetaInfo {
-    return headerFromSettings(this.siteInfos, {
+    return headerFromSettings(this.settings, {
       title: this.poi?.properties.name,
     })
   },
