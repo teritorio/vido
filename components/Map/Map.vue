@@ -9,7 +9,7 @@
           padding: 50,
         },
         center: center,
-        hash: 'map',
+        hash: hash,
         maxZoom: defaultZoom.max,
         minZoom: defaultZoom.min,
         pitch,
@@ -86,6 +86,10 @@ export default Vue.extend({
     rotate: {
       type: Boolean,
       default: false,
+    },
+    hash: {
+      type: String,
+      default: undefined,
     },
   },
 
