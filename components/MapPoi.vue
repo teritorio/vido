@@ -14,10 +14,9 @@ import { PoiFilter } from '@teritorio/map'
 import Vue, { PropType } from 'vue'
 
 import Map from '@/components/Map/Map.vue'
+import { VidoFeature } from '@/lib/apiPois'
 import { MAP_ZOOM } from '@/lib/constants'
 import { markerLayerFactory } from '@/lib/markerLayerFactory'
-
-import { VidoFeature } from '~/utils/types'
 
 export default Vue.extend({
   components: {

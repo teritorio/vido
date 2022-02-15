@@ -211,10 +211,10 @@ import { mapGetters } from 'vuex'
 
 import OpeningHours from '@/components/Fields/OpeningHours.vue'
 import TeritorioIcon from '@/components/TeritorioIcon/TeritorioIcon.vue'
-import { getPoiById } from '@/utils/api'
+import { getPoiById, VidoFeature, VidoFeatureProperties } from '@/lib/apiPois'
 import { isIOS } from '@/utils/isIOS'
 import { getContrastedTextColor } from '@/utils/picto'
-import { VidoFeature, Mode, VidoFeatureProperties } from '@/utils/types'
+import { Mode } from '@/utils/types'
 
 export default Vue.extend({
   components: {

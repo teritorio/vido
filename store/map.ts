@@ -1,6 +1,7 @@
 import { Store } from 'vuex'
 
-import { LatLng, Pitch, VidoFeature } from '@/utils/types'
+import { VidoFeature } from '@/lib/apiPois'
+import { LatLng, Pitch } from '@/utils/types'
 
 enum Mutation {
   SET_CONFIG = 'SET_CONFIG',

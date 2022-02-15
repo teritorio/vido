@@ -9,10 +9,11 @@ import Vue from 'vue'
 import { MetaInfo } from 'vue-meta'
 
 import MapPoi from '@/components/MapPoi.vue'
-import { fetchSettings, headerFromSettings } from '@/lib/fetchSettings'
-import { getPoiById } from '@/utils/api'
+import { getPoiById } from '@/lib/apiPois'
+import { fetchSettings, headerFromSettings } from '@/lib/apiSettings'
 
-import { VidoFeature, Settings } from '~/utils/types'
+import { VidoFeature } from '~/lib/apiPois'
+import { Settings } from '~/lib/apiSettings'
 
 export default Vue.extend({
   components: {

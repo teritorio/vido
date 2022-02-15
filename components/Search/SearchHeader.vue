@@ -121,6 +121,7 @@ import debounce from 'lodash.debounce'
 import Vue, { PropType } from 'vue'
 
 import SearchResultBlock from '@/components/Search/SearchResultBlock.vue'
+import { VidoFeature } from '@/lib/apiPois'
 import { MAP_ZOOM } from '@/lib/constants'
 import {
   ApiPoisSearchResult,
@@ -128,7 +129,6 @@ import {
   ApiAddrSearchResult,
   SearchResult,
   ApiSearchResult,
-  VidoFeature,
 } from '@/utils/types'
 
 export default Vue.extend({

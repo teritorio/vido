@@ -111,6 +111,7 @@ import Map from '@/components/Map/Map.vue'
 import MapControls3D from '@/components/Map/MapControls3D.vue'
 import MapControlsBackground from '@/components/Map/MapControlsBackground.vue'
 import TeritorioIconBadge from '@/components/TeritorioIcon/TeritorioIconBadge.vue'
+import { getPoiById, getPoiByIds, VidoFeature } from '@/lib/apiPois'
 import { getBBoxFeatures, getBBoxFeature, getBBoxCoordList } from '@/lib/bbox'
 import { createMarkerDonutChart } from '@/lib/clusters'
 import {
@@ -122,14 +123,7 @@ import {
 } from '@/lib/constants'
 import { markerLayerTextFactory } from '@/lib/markerLayerFactory'
 import { State as MenuState } from '@/store/menu'
-import { getPoiById, getPoiByIds } from '@/utils/api'
-import {
-  ApiMenuCategory,
-  MapStyleEnum,
-  Mode,
-  TupleLatLng,
-  VidoFeature,
-} from '@/utils/types'
+import { ApiMenuCategory, MapStyleEnum, Mode, TupleLatLng } from '@/utils/types'
 import { getHashPart, setHashPart } from '@/utils/url'
 import { flattenFeatures } from '@/utils/utilities'
 

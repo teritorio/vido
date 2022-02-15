@@ -176,9 +176,8 @@ import { mapGetters } from 'vuex'
 
 import FavoriteNoteBook from '@/components/MainMap/FavoriteNoteBook.vue'
 import ShareLinkModal from '@/components/ShareLinkModal.vue'
+import { getPoiByIds, VidoFeature } from '@/lib/apiPois'
 import { LOCAL_STORAGE } from '@/lib/constants'
-import { getPoiByIds } from '@/utils/api'
-import { VidoFeature } from '@/utils/types'
 import { getHashPart, setHashPart } from '@/utils/url'
 
 export default Vue.extend({

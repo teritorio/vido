@@ -1,4 +1,4 @@
-import { VidoFeature } from '@/utils/types'
+import { VidoFeature } from '@/lib/apiPois'
 
 export const flattenFeatures = (features: {
   [categoryId: number]: VidoFeature[]

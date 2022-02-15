@@ -16,8 +16,7 @@
 import Vue, { PropType } from 'vue'
 
 import NavMenu from '@/components/MainMap/NavMenu.vue'
-
-import { SiteInfosTheme } from '~/utils/types'
+import { SiteInfosTheme } from '@/lib/apiSettings'
 
 export default Vue.extend({
   components: {

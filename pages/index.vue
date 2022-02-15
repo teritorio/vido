@@ -7,8 +7,7 @@ import Vue from 'vue'
 import { MetaInfo } from 'vue-meta'
 
 import Home from '@/components/Home/Home.vue'
-import { fetchSettings, headerFromSettings } from '@/lib/fetchSettings'
-import { Settings } from '@/utils/types'
+import { fetchSettings, headerFromSettings, Settings } from '@/lib/apiSettings'
 
 export default Vue.extend({
   components: {

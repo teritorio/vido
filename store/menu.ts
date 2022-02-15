@@ -2,7 +2,8 @@ import copy from 'fast-copy'
 import { Store } from 'vuex'
 // import { interpret, Interpreter, State } from 'xstate'
 
-import { ApiPois, Category, VidoFeature, FilterValues } from '@/utils/types'
+import { VidoFeature, ApiPois } from '@/lib/apiPois'
+import { Category, FilterValues } from '@/utils/types'
 
 enum Mutation {
   SET_CONFIG = 'SET_CONFIG',

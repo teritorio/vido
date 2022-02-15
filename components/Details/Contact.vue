@@ -37,7 +37,7 @@
 <script lang="ts">
 import Vue, { PropType } from 'vue'
 
-import { VidoFeatureProperties } from '~/utils/types'
+import { VidoFeatureProperties } from '@/lib/apiPois'
 
 export default Vue.extend({
   props: {

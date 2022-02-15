@@ -1,6 +1,34 @@
 import { MetaInfo } from 'vue-meta'
 
-import { Settings } from '~/utils/types'
+import { MultilingualString } from '~/utils/types'
+
+export interface SiteInfosTheme {
+  id: number
+  slug: string
+  title: MultilingualString
+  description: MultilingualString
+  // eslint-disable-next-line camelcase
+  site_url: MultilingualString
+  // eslint-disable-next-line camelcase
+  main_url: MultilingualString
+  // eslint-disable-next-line camelcase
+  logo_url: string
+  // eslint-disable-next-line camelcase
+  favicon_url: string
+}
+
+export interface Settings {
+  id: number
+  slug: string
+  name: MultilingualString
+  attributions: string[]
+  // eslint-disable-next-line camelcase
+  icon_font_css_url: string
+  // eslint-disable-next-line camelcase
+  bbox_line: GeoJSON.LineString
+
+  themes: SiteInfosTheme[]
+}
 
 export function fetchSettings(config: any): Promise<Settings | null> {
   return fetch(

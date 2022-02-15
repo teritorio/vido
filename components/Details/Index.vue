@@ -71,6 +71,8 @@ import Vue, { PropType } from 'vue'
 import OpeningHours from '@/components/Fields/OpeningHours.vue'
 import MapPoi from '@/components/MapPoi.vue'
 import TeritorioIcon from '@/components/TeritorioIcon/TeritorioIcon.vue'
+import { VidoFeature, VidoFeatureProperties } from '@/lib/apiPois'
+import { Settings } from '@/lib/apiSettings'
 
 import Breadcrumb from '~/components/Details/Breadcrumb.vue'
 import Carousel from '~/components/Details/Carousel.vue'
@@ -80,7 +82,6 @@ import Header from '~/components/Details/Header.vue'
 import Location from '~/components/Details/Location.vue'
 import Mapillary from '~/components/Details/Mapillary.vue'
 import Share from '~/components/Details/Share.vue'
-import { VidoFeatureProperties, VidoFeature, Settings } from '~/utils/types'
 
 export default Vue.extend({
   components: {
