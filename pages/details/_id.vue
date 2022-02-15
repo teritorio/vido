@@ -1,14 +1,16 @@
 <template>
-  <Index v-if="poi" :poi="poi" />
+  <Index v-if="siteInfos && poi" :site-infos="siteInfos" :poi="poi" />
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
+import { MetaInfo } from 'vue-meta'
 
+import { fetchSettings, headerFromSettings } from '@/lib/fetchSettings'
 import { getPoiById } from '@/utils/api'
 
 import Index from '~/components/Details/Index.vue'
-import { VidoFeature } from '~/utils/types'
+import { VidoFeature, SiteInfos } from '~/utils/types'
 
 export default Vue.extend({
   components: {
@@ -20,20 +22,32 @@ export default Vue.extend({
   },
 
   data(): {
+    siteInfos: SiteInfos | null
     poi: VidoFeature | null
   } {
     return {
       poi: null,
+      siteInfos: null,
     }
   },
 
   async fetch() {
-    this.poi = await getPoiById(
+    const getPoiPromise = getPoiById(
       this.$config.API_ENDPOINT,
       this.$config.API_PROJECT,
       this.$config.API_THEME,
       this.$route.params.id
     )
+
+    const v = await Promise.all([fetchSettings(this.$config), getPoiPromise])
+    this.siteInfos = v[0]
+    this.poi = v[1]
+  },
+
+  head(): MetaInfo {
+    return headerFromSettings(this.siteInfos, {
+      title: this.poi?.properties.name,
+    })
   },
 })
 </script>

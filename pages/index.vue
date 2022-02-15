@@ -7,6 +7,7 @@ import Vue from 'vue'
 import { MetaInfo } from 'vue-meta'
 
 import Home from '@/components/Home/Home.vue'
+import { fetchSettings, headerFromSettings } from '@/lib/fetchSettings'
 import { SiteInfos } from '@/utils/types'
 
 export default Vue.extend({
@@ -15,15 +16,9 @@ export default Vue.extend({
   },
 
   data(): {
-    cssUrl: string
-    faviconUrl: string
-    title: string
     siteInfos: SiteInfos | null
   } {
     return {
-      cssUrl: 'territorio',
-      faviconUrl: '',
-      title: '@teritorio/vido',
       siteInfos: null,
     }
   },
@@ -35,48 +30,16 @@ export default Vue.extend({
       apiTheme: this.$config.API_THEME,
     })
 
-    const configFetchPromose = fetch(
-      `${this.$config.API_ENDPOINT}/${this.$config.API_PROJECT}/${this.$config.API_THEME}`
-    )
-      .then((res) => res.json())
-      .then((json) => {
-        this.siteInfos = Object.assign(
-          {
-            attribution: [],
-            bbox_line: {
-              type: 'LineString',
-              coordinates: [
-                [1.43862, 42.41845],
-                [1.68279, 42.6775],
-              ],
-            },
-          },
-          json
-        )
-
-        this.cssUrl = json.icon_font_css_url
-        this.faviconUrl = json.favicon_url
-        this.title = json.title
-      })
-
-    await Promise.all([menuFetchConfigPromise, configFetchPromose])
+    const v = await Promise.all([
+      fetchSettings(this.$config),
+      menuFetchConfigPromise,
+    ])
+    this.siteInfos = v[0]
   },
   // fetchOnServer: false,
 
   head(): MetaInfo {
-    return {
-      title: this.title,
-      link: [
-        {
-          rel: 'stylesheet',
-          href: this.cssUrl,
-        },
-        {
-          rel: 'icon',
-          href: this.faviconUrl,
-        },
-      ],
-    }
+    return headerFromSettings(this.siteInfos)
   },
 })
 </script>

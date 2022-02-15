@@ -1,7 +1,7 @@
 <template>
   <div class="page-template-template-fiche">
     <div>
-      <Header :theme="siteInfos && siteInfos.themes && siteInfos.themes[0]" />
+      <Header :theme="siteInfos.themes[0]" />
 
       <div class="h1-icon" :style="`background-color:${color}`">
         <TeritorioIcon
@@ -26,16 +26,9 @@
       />
       <div class="detail-wrapper">
         <div class="detail-left">
-          <div
-            v-if="
-              p.editorial.class_label_details.fr || p.editorial.class_label.fr
-            "
-            class="detail-left-block"
-          >
+          <div v-if="class_label" class="detail-left-block">
             <h2>
-              {{
-                p.editorial.class_label_details.fr || p.editorial.class_label.fr
-              }}
+              {{ class_label }}
             </h2>
           </div>
 
@@ -68,13 +61,12 @@
       </div>
     </div>
 
-    <Footer :attributions="siteInfos && siteInfos.attributions" />
+    <Footer :attributions="siteInfos.attributions" />
   </div>
 </template>
 
 <script lang="ts">
 import Vue, { PropType } from 'vue'
-import { MetaInfo } from 'vue-meta'
 
 import OpeningHours from '@/components/Fields/OpeningHours.vue'
 import MapPoi from '@/components/MapPoi.vue'
@@ -106,45 +98,14 @@ export default Vue.extend({
   },
 
   props: {
+    siteInfos: {
+      type: Object as PropType<SiteInfos>,
+      required: true,
+    },
     poi: {
       type: Object as PropType<VidoFeature>,
       required: true,
     },
-  },
-
-  data(): {
-    siteInfos: SiteInfos | null
-  } {
-    return {
-      siteInfos: null,
-    }
-  },
-
-  async fetch() {
-    this.siteInfos = await fetch(
-      `${this.$config.API_ENDPOINT}/${this.$config.API_PROJECT}/${this.$config.API_THEME}`
-    ).then((res) => res.json())
-  },
-
-  // fetchOnServer: false,
-  head(): MetaInfo {
-    if (this.siteInfos?.themes) {
-      return {
-        title: `${this.siteInfos.themes[0].title.fr} - ${this.p.name}`,
-        link: [
-          {
-            rel: 'stylesheet',
-            href: this.siteInfos.icon_font_css_url,
-          },
-          {
-            rel: 'icon',
-            href: this.siteInfos.themes[0].favicon_url,
-          },
-        ],
-      }
-    } else {
-      return {}
-    }
   },
 
   computed: {
@@ -153,6 +114,12 @@ export default Vue.extend({
     },
     color(): string {
       return this.poi.properties.display?.color || '#76009E'
+    },
+    class_label(): string | undefined {
+      return (
+        this.p.editorial?.class_label_details?.fr ||
+        this.p.editorial?.class_label?.fr
+      )
     },
   },
 })
