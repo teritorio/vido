@@ -125,6 +125,7 @@ import {
   makerHtmlFactory,
 } from '@/lib/markerLayerFactory'
 import { State as MenuState } from '@/store/menu'
+import { filterRouteByCategories, filterRouteByPoiId } from '@/utils/styles'
 import { ApiMenuCategory, MapStyleEnum, Mode, TupleLatLng } from '@/utils/types'
 import { getHashPart, setHashPart } from '@/utils/url'
 import { flattenFeatures } from '@/utils/utilities'
@@ -322,7 +323,7 @@ export default Vue.extend({
         this.allowRegionBackZoom = true
       }
 
-      this.filterRouteByCategories()
+      filterRouteByCategories(this.map, Object.keys(this.features))
     },
 
     selectedFeature(feature: VidoFeature) {
@@ -343,7 +344,8 @@ export default Vue.extend({
           feature?.id ||
           feature?.properties?.id)
       ) {
-        this.filterRouteByPoiId(
+        filterRouteByPoiId(
+          this.map,
           feature.properties?.metadata?.id ||
             feature?.id ||
             feature?.properties?.id
@@ -374,7 +376,7 @@ export default Vue.extend({
             .addTo(this.map)
         }
       } else {
-        this.filterRouteByCategories()
+        filterRouteByCategories(this.map, Object.keys(this.features))
         this.showPoiToast = false
         setHashPart('poi', null)
       }
@@ -392,34 +394,12 @@ export default Vue.extend({
 
           const feature = this.selectedFeature
           if (feature) {
-            const id =
+            filterRouteByPoiId(
+              this.map,
               feature.properties?.metadata?.id ||
-              feature?.id ||
-              feature?.properties?.id
-            if (this.map.getLayer('features_tourism-line-casing')) {
-              const isLineString = ['==', ['geometry-type'], 'LineString']
-              const isPolygon = ['==', ['geometry-type'], 'Polygon']
-              this.map.setFilter('features_tourism-line-casing', [
-                'all',
-                ['==', ['id'], id],
-                isLineString,
-              ])
-              this.map.setFilter('features_tourism-line', [
-                'all',
-                ['==', ['id'], id],
-                isLineString,
-              ])
-              this.map.setFilter('features_tourism-fill', [
-                'all',
-                ['==', ['id'], id],
-                isPolygon,
-              ])
-              this.map.setFilter('features_tourism-outline', [
-                'all',
-                ['==', ['id'], id],
-                isPolygon,
-              ])
-            }
+                feature?.id ||
+                feature?.properties?.id
+            )
           }
         }
       }
@@ -1076,104 +1056,6 @@ export default Vue.extend({
       if (this.selectedFeatureMarker) {
         this.selectedFeatureMarker.remove()
         this.selectedFeatureMarker.addTo(this.map)
-      }
-    },
-
-    filterRouteByCategories() {
-      if (this.map && this.map.getLayer('features_tourism-line-casing')) {
-        const categorieIdsCond = Object.keys(
-          this.features
-        ).map((categorieId) => [
-          'in',
-          `;${categorieId};`,
-          ['get', 'category_ids'],
-        ])
-        const filter = ['any', ...categorieIdsCond]
-        this.map.setLayoutProperty(
-          'features_tourism-line-casing',
-          'visibility',
-          'visible'
-        )
-        this.map.setLayoutProperty(
-          'features_tourism-line',
-          'visibility',
-          'visible'
-        )
-        this.map.setLayoutProperty(
-          'features_tourism-fill',
-          'visibility',
-          'visible'
-        )
-        this.map.setLayoutProperty(
-          'features_tourism-outline',
-          'visibility',
-          'visible'
-        )
-        const isLineString = ['==', ['geometry-type'], 'LineString']
-        const isPolygon = ['==', ['geometry-type'], 'Polygon']
-        this.map.setFilter('features_tourism-line-casing', [
-          'all',
-          filter,
-          isLineString,
-        ])
-        this.map.setFilter('features_tourism-line', [
-          'all',
-          filter,
-          isLineString,
-        ])
-        this.map.setFilter('features_tourism-fill', ['all', filter, isPolygon])
-        this.map.setFilter('features_tourism-outline', [
-          'all',
-          filter,
-          isPolygon,
-        ])
-      }
-    },
-
-    filterRouteByPoiId(id: number) {
-      if (this.map && this.map.getLayer('features_tourism-line-casing')) {
-        this.map.setLayoutProperty(
-          'features_tourism-line-casing',
-          'visibility',
-          'visible'
-        )
-        this.map.setLayoutProperty(
-          'features_tourism-line',
-          'visibility',
-          'visible'
-        )
-        this.map.setLayoutProperty(
-          'features_tourism-fill',
-          'visibility',
-          'visible'
-        )
-        this.map.setLayoutProperty(
-          'features_tourism-outline',
-          'visibility',
-          'visible'
-        )
-        const isLineString = ['==', ['geometry-type'], 'LineString']
-        const isPolygon = ['==', ['geometry-type'], 'Polygon']
-        this.map.setFilter('features_tourism-line-casing', [
-          'all',
-          ['==', ['id'], id],
-          isLineString,
-        ])
-        this.map.setFilter('features_tourism-line', [
-          'all',
-          ['==', ['id'], id],
-          isLineString,
-        ])
-        this.map.setFilter('features_tourism-fill', [
-          'all',
-          ['==', ['id'], id],
-          isPolygon,
-        ])
-        this.map.setFilter('features_tourism-outline', [
-          'all',
-          ['==', ['id'], id],
-          isPolygon,
-        ])
       }
     },
   },

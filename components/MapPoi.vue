@@ -17,6 +17,7 @@ import Map from '@/components/Map/Map.vue'
 import { VidoFeature } from '@/lib/apiPois'
 import { MAP_ZOOM } from '@/lib/constants'
 import { makerHtmlFactory } from '@/lib/markerLayerFactory'
+import { filterRouteByPoiId } from '@/utils/styles'
 
 import { TupleLatLng } from '~/utils/types'
 
@@ -51,6 +52,10 @@ export default Vue.extend({
             this.poi.properties['image:thumbnail'],
             'lg'
           ).addTo(map)
+        }
+
+        if (this.poi.properties.metadata?.id) {
+          filterRouteByPoiId(map, this.poi.properties.metadata?.id)
         }
       })
     },
