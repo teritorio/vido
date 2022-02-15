@@ -1,5 +1,5 @@
 <template>
-  <div class="page-template-template-fiche">
+  <div class="flex justify-center">
     <div>
       <Header :theme="settings.themes[0]" />
 
@@ -59,9 +59,9 @@
           </p>
         </div>
       </div>
-    </div>
 
-    <Footer :attributions="settings.attributions" />
+      <Footer :attributions="settings.attributions" />
+    </div>
   </div>
 </template>
 

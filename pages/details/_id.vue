@@ -60,14 +60,10 @@ body {
   color: $color-text;
   font-family: $font-ubuntu-light;
   background-color: #fefefe;
-  margin: 0;
   padding: 1rem 1rem;
   min-width: 21rem;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
-  height: 100%;
-  max-width: 84rem;
-  font-size: 1rem;
   line-height: 1.3;
   word-wrap: break-word;
 }
