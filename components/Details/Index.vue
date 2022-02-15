@@ -2,13 +2,8 @@
   <div class="flex justify-center">
     <div>
       <Header :theme="settings.themes[0]" />
-
-      <div class="h1-icon" :style="`background-color:${color}`">
-        <TeritorioIcon
-          :category-color="color"
-          class="text-2xl"
-          :picto="p.display.icon"
-        />
+      <div class="flex justify-center">
+        <TeritorioIconBadge :color="color" size="2xl" :picto="p.display.icon" />
       </div>
       <h1>{{ p.name }}</h1>
       <Breadcrumb
@@ -70,7 +65,7 @@ import Vue, { PropType } from 'vue'
 
 import OpeningHours from '@/components/Fields/OpeningHours.vue'
 import MapPoi from '@/components/MapPoi.vue'
-import TeritorioIcon from '@/components/TeritorioIcon/TeritorioIcon.vue'
+import TeritorioIconBadge from '@/components/TeritorioIcon/TeritorioIconBadge.vue'
 import { VidoFeature, VidoFeatureProperties } from '@/lib/apiPois'
 import { Settings } from '@/lib/apiSettings'
 
@@ -86,7 +81,7 @@ import Share from '~/components/Details/Share.vue'
 export default Vue.extend({
   components: {
     Header,
-    TeritorioIcon,
+    TeritorioIconBadge,
     Breadcrumb,
     Contact,
     OpeningHours,
@@ -128,20 +123,6 @@ export default Vue.extend({
 
 <style lang="scss" scoped>
 @import '@/assets/details.scss';
-
-.h1-icon {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 3.3rem;
-  height: 3.3rem;
-  margin: auto;
-  border-radius: 50%;
-
-  i {
-    color: #fff;
-  }
-}
 
 h1 {
   font-size: 2.4rem;

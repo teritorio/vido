@@ -53,6 +53,7 @@ export default Vue.extend({
         md: 'lg',
         lg: 'lg',
         xl: 'xl',
+        '2xl': '2xl',
       }
       return values[this.size || 'md']
     },
@@ -63,6 +64,7 @@ export default Vue.extend({
         md: 'w-8 h-8',
         lg: 'w-10 h-10',
         xl: 'w-12 h-12',
+        '2xl': 'w-14 h-14',
       }
       return this.image ? values.xl : values[this.size || 'md']
     },
