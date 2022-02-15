@@ -16,7 +16,9 @@ import Vue, { PropType } from 'vue'
 import Map from '@/components/Map/Map.vue'
 import { VidoFeature } from '@/lib/apiPois'
 import { MAP_ZOOM } from '@/lib/constants'
-import { markerLayerFactory } from '@/lib/markerLayerFactory'
+import { makerHtmlFactory } from '@/lib/markerLayerFactory'
+
+import { TupleLatLng } from '~/utils/types'
 
 export default Vue.extend({
   components: {
@@ -41,11 +43,15 @@ export default Vue.extend({
       map.addControl(new PoiFilter({ filter: [] }))
 
       map.once('styledata', () => {
-        map.addSource('poi', {
-          type: 'geojson',
-          data: this.poi,
-        })
-        map.addLayer(markerLayerFactory('poi', 'poi'))
+        if (this.poi.geometry.type === 'Point') {
+          makerHtmlFactory(
+            this.poi.geometry.coordinates as TupleLatLng,
+            this.poi.properties.display?.color,
+            this.poi.properties.display?.icon,
+            this.poi.properties['image:thumbnail'],
+            'lg'
+          ).addTo(map)
+        }
       })
     },
   },

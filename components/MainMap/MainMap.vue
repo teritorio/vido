@@ -110,7 +110,6 @@ import SnackBar from '@/components/MainMap/SnackBar.vue'
 import Map from '@/components/Map/Map.vue'
 import MapControls3D from '@/components/Map/MapControls3D.vue'
 import MapControlsBackground from '@/components/Map/MapControlsBackground.vue'
-import TeritorioIconBadge from '@/components/TeritorioIcon/TeritorioIconBadge.vue'
 import { getPoiById, getPoiByIds, VidoFeature } from '@/lib/apiPois'
 import { getBBoxFeatures, getBBoxFeature, getBBoxCoordList } from '@/lib/bbox'
 import { createMarkerDonutChart } from '@/lib/clusters'
@@ -121,7 +120,10 @@ import {
   LOCAL_STORAGE,
   MAP_ZOOM,
 } from '@/lib/constants'
-import { markerLayerTextFactory } from '@/lib/markerLayerFactory'
+import {
+  markerLayerTextFactory,
+  makerHtmlFactory,
+} from '@/lib/markerLayerFactory'
 import { State as MenuState } from '@/store/menu'
 import { ApiMenuCategory, MapStyleEnum, Mode, TupleLatLng } from '@/utils/types'
 import { getHashPart, setHashPart } from '@/utils/url'
@@ -1035,26 +1037,14 @@ export default Vue.extend({
               const markerCoords = this.featuresCoordinates[props.metadata.id]
               if (!marker && markerCoords) {
                 // Marker
-                const el: HTMLElement = document.createElement('div')
-                el.classList.add('maplibregl-marker')
-                el.classList.add('cluster-item')
-
-                marker = this.markers[id] = new maplibregl.Marker({
-                  element: el,
-                  ...(props['image:thumbnail'] && {
-                    offset: [0, -10],
-                  }),
-                }).setLngLat(markerCoords) // Using this to avoid misplaced marker
-
-                // Teritorio badge
-                const instance = new TeritorioIconBadge({
-                  propsData: {
-                    color: props.display?.color,
-                    picto: props.display?.icon,
-                    image: props['image:thumbnail'],
-                  },
-                }).$mount()
-                el.appendChild(instance.$el)
+                const marker = makerHtmlFactory(
+                  markerCoords, // Using this to avoid misplaced marker
+                  props.display?.color,
+                  props.display?.icon,
+                  props['image:thumbnail']
+                )
+                this.markers[id] = marker
+                const el = marker.getElement()
 
                 // Click handler
                 if ((props.editorial?.popup_properties || []).length > 0) {

@@ -1,4 +1,8 @@
-import { LayerSpecification } from 'maplibre-gl'
+import maplibregl, { LayerSpecification } from 'maplibre-gl'
+
+import TeritorioIconBadge from '@/components/TeritorioIcon/TeritorioIconBadge.vue'
+
+import { TupleLatLng } from '~/utils/types'
 
 export const markerLayerTextFactory = (
   source: string,
@@ -64,35 +68,35 @@ export const markerLayerTextFactory = (
   },
 })
 
-export const markerLayerFactory = (
-  source: string,
-  id: string
-): LayerSpecification => {
-  const layer = markerLayerTextFactory(source, id)
-  const tourismStyleClass = [
-    'array',
-    ['get', 'tourism_style_class', ['object', ['get', 'display']]],
-  ]
-  const superClass = ['at', 0, tourismStyleClass]
-  const class_ = ['at', 1, tourismStyleClass]
-  const subclass = ['at', 2, tourismStyleClass]
-  // @ts-ignore
-  layer.layout['icon-image'] = [
-    'concat',
-    superClass,
-    [
-      'case',
-      ['>=', ['length', tourismStyleClass], 2],
-      ['concat', '-', class_],
-      '',
-    ],
-    [
-      'case',
-      ['>=', ['length', tourismStyleClass], 3],
-      ['concat', '-', subclass],
-      '',
-    ],
-    '⬤',
-  ]
-  return layer
+export function makerHtmlFactory(
+  latLng: TupleLatLng,
+  color: string | undefined,
+  icon: string | undefined,
+  thumbnail: string | undefined,
+  size: string | null = null
+): maplibregl.Marker {
+  // Marker
+  const el: HTMLElement = document.createElement('div')
+  el.classList.add('maplibregl-marker')
+  el.classList.add('cluster-item')
+
+  const marker = new maplibregl.Marker({
+    element: el,
+    ...(thumbnail && {
+      offset: [0, -10],
+    }),
+  }).setLngLat(latLng) // Using this to avoid misplaced marker
+
+  // Teritorio badge
+  const instance = new TeritorioIconBadge({
+    propsData: {
+      color,
+      picto: icon,
+      image: thumbnail,
+      size,
+    },
+  }).$mount()
+  el.appendChild(instance.$el)
+
+  return marker
 }
