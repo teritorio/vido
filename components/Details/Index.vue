@@ -26,19 +26,32 @@
               {{ class_label }}
             </h2>
           </div>
+          <template v-for="property in detailsProperties">
+            <div
+              v-if="property == 'description' && p.description"
+              :key="property"
+              class="detail-left-block"
+            >
+              <h2>{{ $tc('details.headerDescription') }}</h2>
+              <p>{{ p.description }}</p>
+            </div>
 
-          <div v-if="p.description" class="detail-left-block">
-            <h2>{{ $tc('details.headerDescription') }}</h2>
-            <p>{{ p.description }}</p>
-          </div>
+            <Contact
+              v-if="property == 'first_contact'"
+              :key="property"
+              :p="p"
+              :color="color"
+            />
 
-          <Contact :p="p" :color="color" />
-
-          <div v-if="p.opening_hours" class="detail-left-block">
-            <h2>{{ $tc('details.headerOpeningHours') }}</h2>
-            <OpeningHours :opening-hours="p.opening_hours" :details="true" />
-          </div>
-
+            <div
+              v-if="property == 'opening_hours' && p.opening_hours"
+              :key="property"
+              class="detail-left-block"
+            >
+              <h2>{{ $tc('details.headerOpeningHours') }}</h2>
+              <OpeningHours :opening-hours="p.opening_hours" :details="true" />
+            </div>
+          </template>
           <Location :p="p" :geom="poi.geometry" />
         </div>
 
@@ -107,6 +120,23 @@ export default Vue.extend({
   computed: {
     p(): VidoFeatureProperties {
       return this.poi.properties
+    },
+    detailsProperties(): string[] {
+      let firstContact = false
+      return (this.p.editorial?.details_properties || [])
+        .map((p) => {
+          if (['addr:*', 'phone', 'mobile'].includes(p)) {
+            if (!firstContact) {
+              firstContact = true
+              return 'first_contact'
+            } else {
+              return undefined
+            }
+          } else {
+            return p
+          }
+        })
+        .filter((e) => e !== undefined) as string[]
     },
     color(): string {
       return this.poi.properties.display?.color || '#76009E'

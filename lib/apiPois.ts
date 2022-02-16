@@ -30,6 +30,8 @@ export interface VidoFeatureProperties {
     // eslint-disable-next-line camelcase
     popup_properties?: string[]
     // eslint-disable-next-line camelcase
+    details_properties?: string[]
+    // eslint-disable-next-line camelcase
     class_label?: MultilingualString
     // eslint-disable-next-line camelcase
     class_label_popup?: MultilingualString
