@@ -17,12 +17,13 @@
 
 <script lang="ts">
 import { Building3d } from '@teritorio/map'
-import Vue from 'vue'
+import { Map } from 'maplibre-gl'
+import Vue, { PropType } from 'vue'
 
 export default Vue.extend({
   props: {
     map: {
-      type: Object,
+      type: Object as PropType<Map>,
       default: null,
     },
     pitch: {

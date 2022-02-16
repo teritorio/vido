@@ -11,13 +11,13 @@
 </template>
 
 <script lang="ts">
-import maplibregl from 'maplibre-gl'
-import Vue from 'vue'
+import maplibregl, { Map } from 'maplibre-gl'
+import Vue, { PropType } from 'vue'
 
 export default Vue.extend({
   props: {
     map: {
-      type: Object,
+      type: Object as PropType<Map>,
       default: null,
     },
     showCompass: {
