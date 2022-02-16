@@ -49,7 +49,9 @@ export default Vue.extend({
 
   // fetchOnServer: false,
   head(): MetaInfo {
-    return headerFromSettings(this.settings)
+    return headerFromSettings(this.settings, {
+      title: this.poi?.properties.name,
+    })
   },
 })
 </script>
