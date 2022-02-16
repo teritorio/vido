@@ -17,7 +17,7 @@
         zoom: zoom,
         dragRotate: rotate,
         touchPitch: rotate,
-        locale: locale,
+        locale: locales,
       }"
       :nav-control="{
         show: false,
@@ -43,6 +43,7 @@
 </template>
 
 <script lang="ts">
+import { OpenMapTilesLanguage } from '@teritorio/openmaptiles-gl-language'
 import Mapbox from 'mapbox-gl-vue'
 import { StyleSpecification } from 'maplibre-gl'
 import Vue, { PropType } from 'vue'
@@ -97,13 +98,15 @@ export default Vue.extend({
     map: maplibregl.Map | null
     mapStyle: StyleSpecification | null
     mapStyleCache: { [key: string]: StyleSpecification }
-    locale: Record<string, string>
+    locales: Record<string, string>
+    languageControl: OpenMapTilesLanguage
   } {
     return {
       map: null,
       mapStyle: null,
       mapStyleCache: {},
-      locale: {},
+      locales: {},
+      languageControl: new OpenMapTilesLanguage(),
     }
   },
 
@@ -122,7 +125,7 @@ export default Vue.extend({
   beforeMount() {
     this.setStyle(this.mapStyleEnum)
 
-    this.locale = {
+    this.locales = {
       'NavigationControl.ResetBearing':
         this.$tc('mapControls.resetBearing') || 'Reset bearing to north',
       'NavigationControl.ZoomIn': this.$tc('mapControls.zoomIn') || 'Zoom in',
@@ -134,6 +137,7 @@ export default Vue.extend({
   methods: {
     onMapInit(map: maplibregl.Map) {
       this.map = map
+      this.map.addControl(this.languageControl)
     },
 
     setStyle(mapStyleEnum: MapStyleEnum) {
@@ -159,6 +163,10 @@ export default Vue.extend({
         this.mapStyleCache[mapStyleEnum] = style
         return style
       }
+    },
+
+    setLanguage(locale: string) {
+      this.languageControl.setLanguage(locale)
     },
   },
 })

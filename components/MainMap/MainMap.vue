@@ -13,6 +13,7 @@
         ]"
       >
         <Map
+          ref="map"
           :bounds="defaultBounds"
           :attributions="attributions"
           :map-style-enum="selectedBackground"
@@ -54,7 +55,7 @@
           />
           <NavMenu
             class="ml-3 sm:ml-9"
-            @locale="languageControl.setLanguage($event)"
+            @locale="$refs.map.setLanguage($event)"
           />
         </div>
       </aside>
@@ -90,7 +91,6 @@
 
 <script lang="ts">
 import { PoiFilter } from '@teritorio/map'
-import { OpenMapTilesLanguage } from '@teritorio/openmaptiles-gl-language'
 import { deepEqual } from 'fast-equals'
 import GeoJSON from 'geojson'
 import throttle from 'lodash.throttle'
@@ -99,7 +99,7 @@ import maplibregl, {
   MapLayerTouchEvent,
   MapDataEvent,
 } from 'maplibre-gl'
-import Vue, { PropType } from 'vue'
+import Vue, { PropType, VueConstructor } from 'vue'
 import { mapGetters, mapActions } from 'vuex'
 
 import FavoriteMenu from '@/components/MainMap/FavoriteMenu.vue'
@@ -136,7 +136,13 @@ const FAVORITE_SOURCE = 'favorite-source'
 const POI_LAYER_MARKER = 'poi-simple-marker'
 const FAVORITE_LAYER_MARKER = 'favorite-layer-marker'
 
-export default Vue.extend({
+export default (Vue as VueConstructor<
+  Vue & {
+    $refs: {
+      mainMap: InstanceType<typeof Map>
+    }
+  }
+>).extend({
   components: {
     Map,
     MapControlsExplore,
@@ -178,7 +184,6 @@ export default Vue.extend({
 
   data(): {
     map: maplibregl.Map | null
-    languageControl: OpenMapTilesLanguage | null
     source: string
     pitch: number
     markers: { [id: string]: maplibregl.Marker }
@@ -193,7 +198,6 @@ export default Vue.extend({
   } {
     return {
       map: null,
-      languageControl: null,
       source: POI_SOURCE,
       pitch: 0,
       markers: {},
@@ -507,9 +511,6 @@ export default Vue.extend({
 
       this.poiFilter = new PoiFilter()
       this.map.addControl(this.poiFilter)
-
-      this.languageControl = new OpenMapTilesLanguage()
-      this.map.addControl(this.languageControl)
 
       this.map.on('data', () => {
         if (
