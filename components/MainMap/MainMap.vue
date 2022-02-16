@@ -13,7 +13,6 @@
         ]"
       >
         <Map
-          ref="map"
           :bounds="defaultBounds"
           :attributions="attributions"
           :map-style-enum="selectedBackground"
@@ -53,10 +52,7 @@
             :explore-around-selected-poi="exploreAroundSelectedPoi"
             :go-to-selected-poi="goToSelectedPoi"
           />
-          <NavMenu
-            class="ml-3 sm:ml-9"
-            @locale="$refs.map.setLanguage($event)"
-          />
+          <NavMenu class="ml-3 sm:ml-9" />
         </div>
       </aside>
 
@@ -99,7 +95,7 @@ import maplibregl, {
   MapLayerTouchEvent,
   MapDataEvent,
 } from 'maplibre-gl'
-import Vue, { PropType, VueConstructor } from 'vue'
+import Vue, { PropType } from 'vue'
 import { mapGetters, mapActions } from 'vuex'
 
 import FavoriteMenu from '@/components/MainMap/FavoriteMenu.vue'
@@ -136,13 +132,7 @@ const FAVORITE_SOURCE = 'favorite-source'
 const POI_LAYER_MARKER = 'poi-simple-marker'
 const FAVORITE_LAYER_MARKER = 'favorite-layer-marker'
 
-export default (Vue as VueConstructor<
-  Vue & {
-    $refs: {
-      mainMap: InstanceType<typeof Map>
-    }
-  }
->).extend({
+export default Vue.extend({
   components: {
     Map,
     MapControlsExplore,

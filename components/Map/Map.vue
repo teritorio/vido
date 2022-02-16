@@ -47,6 +47,7 @@ import { OpenMapTilesLanguage } from '@teritorio/openmaptiles-gl-language'
 import Mapbox from 'mapbox-gl-vue'
 import { StyleSpecification } from 'maplibre-gl'
 import Vue, { PropType } from 'vue'
+import { mapGetters } from 'vuex'
 
 import MapControls from '@/components/Map/MapControls.vue'
 import { DEFAULT_MAP_STYLE, MAP_ZOOM } from '@/lib/constants'
@@ -111,6 +112,9 @@ export default Vue.extend({
   },
 
   computed: {
+    ...mapGetters({
+      locale: 'site/locale',
+    }),
     defaultZoom() {
       return MAP_ZOOM.zoom
     },
@@ -119,6 +123,9 @@ export default Vue.extend({
   watch: {
     mapStyleEnum(value: MapStyleEnum) {
       this.setStyle(value)
+    },
+    locale(locale: string) {
+      this.languageControl.setLanguage(locale)
     },
   },
 

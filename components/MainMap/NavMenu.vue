@@ -70,6 +70,7 @@
 <script lang="ts">
 import Vue from 'vue'
 import { TDropdown } from 'vue-tailwind/dist/components'
+import { mapActions } from 'vuex'
 
 import { NavMenuEntry } from '@/utils/types'
 
@@ -91,6 +92,9 @@ export default Vue.extend({
   },
 
   methods: {
+    ...mapActions({
+      setSiteLocale: 'site/setLocale',
+    }),
     fetchConfig() {
       fetch(
         `${this.$config.API_ENDPOINT}/${this.$config.API_PROJECT}/${this.$config.API_THEME}/articles?slug=non-classe`
@@ -100,7 +104,7 @@ export default Vue.extend({
     },
     setLocale(locale: string) {
       this.$i18n.setLocale(locale)
-      this.$emit('locale', locale)
+      this.setSiteLocale(locale)
     },
   },
 })
