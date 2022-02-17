@@ -64,6 +64,8 @@ export function getPoiByIds(
   poiIds: [string]
 ): Promise<ApiPois | null> {
   return fetch(
-    `${apiEndpoint}/${apiProject}/${apiTheme}/pois?ids=${poiIds.join(',')}`
+    `${apiEndpoint}/${apiProject}/${apiTheme}/pois?ids=${poiIds.join(
+      ','
+    )}&as_point=true`
   ).then((data) => (data.ok ? ((data.json() as unknown) as ApiPois) : null))
 }

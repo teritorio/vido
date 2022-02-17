@@ -162,7 +162,7 @@ export const actions = {
           .filter((categoryId) => !previousFeatures[categoryId])
           .map((categoryId) =>
             fetch(
-              `${apiEndpoint}/${apiProject}/${apiTheme}/pois?idmenu=${categoryId}`
+              `${apiEndpoint}/${apiProject}/${apiTheme}/pois?idmenu=${categoryId}&as_point=true`
             ).then((res) => res.json())
           )
       )
