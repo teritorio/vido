@@ -69,3 +69,14 @@ export function getPoiByIds(
     )}&as_point=true`
   ).then((data) => (data.ok ? ((data.json() as unknown) as ApiPois) : null))
 }
+
+export function getPoiByCategoryId(
+  apiEndpoint: string,
+  apiProject: string,
+  apiTheme: string,
+  categoryId: number | string
+): Promise<ApiPois | null> {
+  return fetch(
+    `${apiEndpoint}/${apiProject}/${apiTheme}/pois?idmenu=${categoryId}&as_point=true`
+  ).then((data) => (data.ok ? ((data.json() as unknown) as ApiPois) : null))
+}

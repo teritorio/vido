@@ -2,7 +2,7 @@ import copy from 'fast-copy'
 import { Store } from 'vuex'
 // import { interpret, Interpreter, State } from 'xstate'
 
-import { VidoFeature, ApiPois } from '@/lib/apiPois'
+import { VidoFeature, ApiPois, getPoiByCategoryId } from '@/lib/apiPois'
 import { Category, FilterValues } from '@/utils/types'
 
 enum Mutation {
@@ -157,15 +157,15 @@ export const actions = {
         Boolean(previousFeatures[categoryId])
       )
 
-      const posts: ApiPois[] = await Promise.all(
-        categoryIds
-          .filter((categoryId) => !previousFeatures[categoryId])
-          .map((categoryId) =>
-            fetch(
-              `${apiEndpoint}/${apiProject}/${apiTheme}/pois?idmenu=${categoryId}&as_point=true`
-            ).then((res) => res.json())
-          )
-      )
+      const posts: ApiPois[] = (
+        await Promise.all(
+          categoryIds
+            .filter((categoryId) => !previousFeatures[categoryId])
+            .map((categoryId) =>
+              getPoiByCategoryId(apiEndpoint, apiProject, apiTheme, categoryId)
+            )
+        )
+      ).filter((e) => e) as ApiPois[]
 
       const features: State['features'] = {}
 
