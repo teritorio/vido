@@ -49,7 +49,7 @@ export default Vue.extend({
 
   p {
     margin-bottom: 0.5rem;
-    font-family: $font-ubuntu-bold;
+    @extend .font-ubuntu-bold;
   }
 }
 </style>

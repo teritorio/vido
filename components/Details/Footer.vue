@@ -37,7 +37,6 @@ export default Vue.extend({
 
 .footer {
   position: relative;
-  font-family: $font-ubuntu-medium;
   font-size: 0.9rem;
   padding-top: 4rem;
   padding-bottom: 1rem;
@@ -65,6 +64,7 @@ export default Vue.extend({
     width: 3.4rem;
     vertical-align: baseline;
   }
+  @extend .font-ubuntu-medium;
 
   @media (max-width: 991px) {
     .site-footer__bottom .copyright {

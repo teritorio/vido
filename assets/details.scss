@@ -16,12 +16,18 @@ $large-only: '#{$screen} and (min-width:#{($large-range)})' !default;
 $white-color: #ffff;
 
 // $font-ubuntu: 'Ubuntu', arial, sans-serif;
-// TODO fix weight
-$font-ubuntu-light: ubuntu, arial, sans-serif;
-// TODO fix weight
-$font-ubuntu-medium: ubuntu, arial, sans-serif;
-// TODO fix weight
-$font-ubuntu-bold: ubuntu, arial, sans-serif;
+.font-ubuntu-light {
+  font-family: ubuntu, arial, sans-serif;
+  font-weight: 300;
+}
+.font-ubuntu-medium {
+  font-family: ubuntu, arial, sans-serif;
+  font-weight: 400;
+}
+.font-ubuntu-bold {
+  font-family: ubuntu, arial, sans-serif;
+  font-weight: bold;
+}
 
 $color-primary: #4d4d4d;
 $color-secondary: #67baba;

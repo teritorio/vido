@@ -5540,6 +5540,7 @@ __metadata:
     stylelint: ^13.8.0
     stylelint-config-prettier: ^8.0.2
     stylelint-config-standard: ^20.0.0
+    stylelint-scss: ^4.1.0
     svgo: ^1.3.2
     tailwindcss: "npm:@tailwindcss/postcss7-compat@^2.0.2"
     ts-jest: ^26.4.4
@@ -20328,6 +20329,16 @@ fsevents@~2.3.2:
   languageName: node
   linkType: hard
 
+"postcss-selector-parser@npm:^6.0.6":
+  version: 6.0.9
+  resolution: "postcss-selector-parser@npm:6.0.9"
+  dependencies:
+    cssesc: ^3.0.0
+    util-deprecate: ^1.0.2
+  checksum: 1114c7bc0e8cf59f096bb62ded8ec619e1b17aa4c7e4d9b2340d581c3a698c82deccd1cdf03c0282628f026826456bd62b0f1e8553a25f8d372ee35f5bb3dc58
+  languageName: node
+  linkType: hard
+
 "postcss-svgo@npm:^4.0.2":
   version: 4.0.2
   resolution: "postcss-svgo@npm:4.0.2"
@@ -23761,6 +23772,21 @@ resolve@^1.20.0:
   peerDependencies:
     stylelint: ">=10.1.0"
   checksum: 3d70090294bad0ce2841a64feb97cd3985be8f51cdf4ed5e67c1f1c1578a15755a22dd2f8d63dce0f7db46607005b5a321fcbc2b0cbf4c636b9fd48ec35e82b2
+  languageName: node
+  linkType: hard
+
+"stylelint-scss@npm:^4.1.0":
+  version: 4.1.0
+  resolution: "stylelint-scss@npm:4.1.0"
+  dependencies:
+    lodash: ^4.17.21
+    postcss-media-query-parser: ^0.2.3
+    postcss-resolve-nested-selector: ^0.1.1
+    postcss-selector-parser: ^6.0.6
+    postcss-value-parser: ^4.1.0
+  peerDependencies:
+    stylelint: ^14.0.0
+  checksum: 3a186f47a232cdb9ce3b1106684caf32e890fee09a6a50046dfe137a354c84dc2be1ec7c4702639c1bebf1e901145b47190ad62c4eea8b6c17e8e98a9b06f635
   languageName: node
   linkType: hard
 
