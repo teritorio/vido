@@ -121,7 +121,7 @@ import debounce from 'lodash.debounce'
 import Vue, { PropType } from 'vue'
 
 import SearchResultBlock from '@/components/Search/SearchResultBlock.vue'
-import { VidoFeature } from '@/lib/apiPois'
+import { VidoFeature, getPoiById } from '@/lib/apiPois'
 import { MAP_ZOOM } from '@/lib/constants'
 import {
   ApiPoisSearchResult,
@@ -332,9 +332,12 @@ export default Vue.extend({
           this.isLoading = true
 
           const cartocode = this.searchText
-          const searchPoi: Promise<VidoFeature> = fetch(
-            `${this.$config.API_ENDPOINT}/${this.$config.API_PROJECT}/${this.$config.API_THEME}/poi/cartocode:${cartocode}`
-          ).then((data) => (data.ok ? data.json() : null))
+          const searchPoi = getPoiById(
+            this.$config.API_ENDPOINT,
+            this.$config.API_PROJECT,
+            this.$config.API_THEME,
+            `cartocode:${cartocode}`
+          )
 
           const [poi] = await Promise.all([searchPoi])
 

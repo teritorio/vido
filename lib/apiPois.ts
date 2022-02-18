@@ -50,7 +50,7 @@ export function getPoiById(
   apiEndpoint: string,
   apiProject: string,
   apiTheme: string,
-  poiId: Number | string
+  poiId: number | string
 ): Promise<VidoFeature | null> {
   return fetch(
     `${apiEndpoint}/${apiProject}/${apiTheme}/poi/${poiId}`
@@ -61,7 +61,7 @@ export function getPoiByIds(
   apiEndpoint: string,
   apiProject: string,
   apiTheme: string,
-  poiIds: [string]
+  poiIds: [number | string]
 ): Promise<ApiPois | null> {
   return fetch(
     `${apiEndpoint}/${apiProject}/${apiTheme}/pois?ids=${poiIds.join(
