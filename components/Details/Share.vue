@@ -6,7 +6,7 @@
           v-if="href"
           :aria-label="$tc('details.shareFacebook')"
           type="button"
-          class="text-sm text-gray-800 bg-white rounded-full shadow-md outline-none w-8 h-8 focus:outline-none hover:bg-gray-100 focus-visible:bg-gray-100 flex-shrink-0"
+          class="text-sm text-gray-800 bg-white rounded-full shadow-md outline-none w-8 h-8 focus:outline-none hover:bg-gray-100 focus-visible:bg-gray-100 flex-shrink-0 flex items-center justify-center"
           :href="shareFacebook"
           target="_black"
         >
@@ -21,7 +21,7 @@
           v-if="title && href"
           :aria-label="$tc('details.shareTwitter')"
           type="button"
-          class="text-sm text-gray-800 bg-white rounded-full shadow-md outline-none w-8 h-8 focus:outline-none hover:bg-gray-100 focus-visible:bg-gray-100 flex-shrink-0"
+          class="text-sm text-gray-800 bg-white rounded-full shadow-md outline-none w-8 h-8 focus:outline-none hover:bg-gray-100 focus-visible:bg-gray-100 flex-shrink-0 flex items-center justify-center"
           :href="shareTwitter"
           target="_black"
         >
@@ -36,7 +36,7 @@
           v-if="title && href"
           :aria-label="$tc('details.shareWhatsApp')"
           type="button"
-          class="text-sm text-gray-800 bg-white rounded-full shadow-md outline-none w-8 h-8 focus:outline-none hover:bg-gray-100 focus-visible:bg-gray-100 flex-shrink-0"
+          class="text-sm text-gray-800 bg-white rounded-full shadow-md outline-none w-8 h-8 focus:outline-none hover:bg-gray-100 focus-visible:bg-gray-100 flex-shrink-0 flex items-center justify-center"
           :href="shareWhatsApp"
           target="_black"
         >
@@ -50,7 +50,7 @@
         <button
           :aria-label="$tc('details.print')"
           type="button"
-          class="text-sm text-gray-800 bg-white rounded-full shadow-md outline-none w-8 h-8 focus:outline-none hover:bg-gray-100 focus-visible:bg-gray-100 flex-shrink-0"
+          class="text-sm text-gray-800 bg-white rounded-full shadow-md outline-none w-8 h-8 focus:outline-none hover:bg-gray-100 focus-visible:bg-gray-100 flex-shrink-0 flex items-center justify-center"
           @click="print"
         >
           <font-awesome-icon icon="print" :style="{ color: color }" />
@@ -61,7 +61,7 @@
           v-if="href"
           :aria-label="$tc('details.link')"
           type="button"
-          class="text-sm text-gray-800 bg-white rounded-full shadow-md outline-none w-8 h-8 focus:outline-none hover:bg-gray-100 focus-visible:bg-gray-100 flex-shrink-0"
+          class="text-sm text-gray-800 bg-white rounded-full shadow-md outline-none w-8 h-8 focus:outline-none hover:bg-gray-100 focus-visible:bg-gray-100 flex-shrink-0 flex items-center justify-center"
           @click="shareUrl"
         >
           <font-awesome-icon icon="link" :style="{ color: color }" />
