@@ -574,6 +574,10 @@ export default Vue.extend({
           }
         })
       }
+
+      if (this.isModeFavorite) {
+        this.handleFavorites()
+      }
     },
 
     resizeMap() {
