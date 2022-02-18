@@ -33,7 +33,7 @@
               class="detail-left-block"
             >
               <h2>{{ $tc('details.headerDescription') }}</h2>
-              <p>{{ p.description }}</p>
+              <div v-html="p.description"></div>
             </div>
 
             <Contact
