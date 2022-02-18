@@ -270,7 +270,7 @@ export default Vue.extend({
         const categoryId = parseInt(categoryIdString, 10)
         features[categoryId].forEach((feature) => {
           if (
-            feature.geometry.type === 'Point' &&
+            feature.geometry?.type === 'Point' &&
             feature.properties?.metadata?.id
           ) {
             this.featuresCoordinates[feature.properties.metadata.id] = feature
