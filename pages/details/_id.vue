@@ -37,7 +37,10 @@ export default Vue.extend({
       this.$config.API_ENDPOINT,
       this.$config.API_PROJECT,
       this.$config.API_THEME,
-      this.$route.params.id
+      this.$route.params.id,
+      {
+        short_description: false,
+      }
     )
 
     const v = await Promise.all([fetchSettings(this.$config), getPoiPromise])

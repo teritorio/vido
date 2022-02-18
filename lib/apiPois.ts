@@ -46,27 +46,50 @@ export interface VidoFeature
 export interface ApiPois
   extends GeoJSON.FeatureCollection<GeoJSON.Geometry, VidoFeatureProperties> {}
 
+export interface apiPoisOptions {
+  // eslint-disable-next-line camelcase
+  as_point?: boolean
+  // eslint-disable-next-line camelcase
+  short_description?: boolean
+}
+
+const defaultOptions: apiPoisOptions = {
+  as_point: true,
+  short_description: true,
+}
+
+function stringifyOptions(options: apiPoisOptions): string[][] {
+  return Object.entries(
+    Object.assign({}, defaultOptions, options)
+  ).map(([k, v]) => [k, `${v}`])
+}
+
 export function getPoiById(
   apiEndpoint: string,
   apiProject: string,
   apiTheme: string,
-  poiId: number | string
+  poiId: number | string,
+  options: apiPoisOptions = {}
 ): Promise<VidoFeature | null> {
   return fetch(
-    `${apiEndpoint}/${apiProject}/${apiTheme}/poi/${poiId}`
-  ).then((data) => (data.ok ? data.json() : null))
+    `${apiEndpoint}/${apiProject}/${apiTheme}/poi/${poiId}?` +
+      new URLSearchParams(stringifyOptions(options))
+  ).then((data) => (data.ok ? ((data.json() as unknown) as VidoFeature) : null))
 }
 
 export function getPoiByIds(
   apiEndpoint: string,
   apiProject: string,
   apiTheme: string,
-  poiIds: [number | string]
+  poiIds: [number | string],
+  options: apiPoisOptions = {}
 ): Promise<ApiPois | null> {
   return fetch(
-    `${apiEndpoint}/${apiProject}/${apiTheme}/pois?ids=${poiIds.join(
-      ','
-    )}&as_point=true`
+    `${apiEndpoint}/${apiProject}/${apiTheme}/pois?` +
+      new URLSearchParams([
+        ['ids', poiIds.join(',')],
+        ...stringifyOptions(options),
+      ])
   ).then((data) => (data.ok ? ((data.json() as unknown) as ApiPois) : null))
 }
 
@@ -74,9 +97,14 @@ export function getPoiByCategoryId(
   apiEndpoint: string,
   apiProject: string,
   apiTheme: string,
-  categoryId: number | string
+  categoryId: number | string,
+  options: apiPoisOptions = {}
 ): Promise<ApiPois | null> {
   return fetch(
-    `${apiEndpoint}/${apiProject}/${apiTheme}/pois?idmenu=${categoryId}&as_point=true`
+    `${apiEndpoint}/${apiProject}/${apiTheme}/pois?` +
+      new URLSearchParams([
+        ['idmenu', `${categoryId}`],
+        ...stringifyOptions(options),
+      ])
   ).then((data) => (data.ok ? ((data.json() as unknown) as ApiPois) : null))
 }
