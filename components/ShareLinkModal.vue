@@ -54,28 +54,18 @@ export default (Vue as VueConstructor<
       type: String,
       required: true,
     },
-    link: {
-      type: String,
-      default: null,
-    },
   },
 
   data(): {
+    link: string | null
     hasClipboard: boolean
     isCopied: boolean
   } {
     return {
+      link: null,
       hasClipboard: true,
       isCopied: false,
     }
-  },
-
-  watch: {
-    link(value) {
-      if (value) {
-        this.$refs.modal.show()
-      }
-    },
   },
 
   mounted() {
@@ -83,27 +73,30 @@ export default (Vue as VueConstructor<
   },
 
   methods: {
+    open(link: string) {
+      this.link = link
+      this.$refs.modal.show()
+    },
     copyLink() {
       this.$tracking({ type: 'favorites_event', event: 'copy_link' })
-      if (!this.hasClipboard) {
-        return
+      if (this.hasClipboard && this.link) {
+        navigator.clipboard.writeText(this.link).then(
+          () => {
+            this.isCopied = true
+            setTimeout(() => {
+              this.isCopied = false
+            }, 5000)
+          },
+          (err) => {
+            // eslint-disable-next-line no-console
+            console.error('Vido error: ', err)
+          }
+        )
       }
-      navigator.clipboard.writeText(this.link).then(
-        () => {
-          this.isCopied = true
-          setTimeout(() => {
-            this.isCopied = false
-          }, 5000)
-        },
-        (err) => {
-          // eslint-disable-next-line no-console
-          console.error('Vido error: ', err)
-        }
-      )
     },
     close() {
+      this.link = null
       this.$refs.modal.hide()
-      this.$emit('close')
     },
   },
 })

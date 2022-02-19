@@ -147,11 +147,7 @@
       </div>
     </TDropdown>
 
-    <ShareLinkModal
-      :title="$tc('favorites.share_link')"
-      :link="shareLink"
-      @close="shareLink = null"
-    />
+    <ShareLinkModal ref="shareModal" :title="$tc('favorites.share_link')" />
 
     <t-modal-notebook
       ref="notebookModal"
@@ -170,7 +166,7 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
+import Vue, { VueConstructor } from 'vue'
 import { TDropdown } from 'vue-tailwind/dist/components'
 import { mapGetters } from 'vuex'
 
@@ -180,7 +176,13 @@ import { getPoiByIds, VidoFeature } from '@/lib/apiPois'
 import { LOCAL_STORAGE } from '@/lib/constants'
 import { getHashPart, setHashPart } from '@/utils/url'
 
-export default Vue.extend({
+export default (Vue as VueConstructor<
+  Vue & {
+    $refs: {
+      shareModal: InstanceType<typeof ShareLinkModal>
+    }
+  }
+>).extend({
   components: {
     TDropdown,
     ShareLinkModal,
@@ -209,12 +211,10 @@ export default Vue.extend({
     },
   },
   data(): {
-    shareLink: string | null
     isCopied: boolean
     favs: VidoFeature[]
   } {
     return {
-      shareLink: null,
       isCopied: false,
       favs: [],
     }
@@ -259,11 +259,12 @@ export default Vue.extend({
           localStorage.getItem(LOCAL_STORAGE.favorites) || '{ "favorites": [] }'
         const favs = JSON.parse(favsString).favorites
 
-        this.shareLink = `${location.origin}/#fav=1&favs=${favs.join(',')}`
+        this.$refs.shareModal.open(
+          `${location.origin}/#fav=1&favs=${favs.join(',')}`
+        )
       } catch (e) {
         // eslint-disable-next-line no-console
         console.error('Vido error:', e.message)
-        this.shareLink = ''
       }
     },
     closeNoteBook() {
@@ -279,7 +280,6 @@ export default Vue.extend({
       } catch (e) {
         // eslint-disable-next-line no-console
         console.error('Vido error:', e.message)
-        this.shareLink = ''
       }
     },
     toggleFavoriteMode() {

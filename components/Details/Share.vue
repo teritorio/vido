@@ -68,20 +68,22 @@
         </button>
       </li>
     </ul>
-    <ShareLinkModal
-      :title="$tc('details.link')"
-      :link="shareLink"
-      @close="shareLink = null"
-    />
+    <ShareLinkModal ref="shareModal" :title="$tc('details.link')" />
   </div>
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
+import Vue, { VueConstructor } from 'vue'
 
 import ShareLinkModal from '@/components/ShareLinkModal.vue'
 
-export default Vue.extend({
+export default (Vue as VueConstructor<
+  Vue & {
+    $refs: {
+      shareModal: InstanceType<typeof ShareLinkModal>
+    }
+  }
+>).extend({
   components: {
     ShareLinkModal,
   },
@@ -105,13 +107,11 @@ export default Vue.extend({
     shareFacebook: string | null
     shareTwitter: string | null
     shareWhatsApp: string | null
-    shareLink: string | null
   } {
     return {
       shareFacebook: null,
       shareTwitter: null,
       shareWhatsApp: null,
-      shareLink: null,
     }
   },
 
@@ -140,7 +140,7 @@ export default Vue.extend({
       window.print()
     },
     shareUrl() {
-      this.shareLink = window.location.href
+      this.$refs.shareModal.open(window.location.href)
     },
   },
 })
