@@ -1,14 +1,22 @@
 import { MultilingualString } from '@/utils/types'
 
-export type Filter = {
-  type: 'multiselection' | 'checkboxes_list' | 'boolean'
-  property: MultilingualString
-  label: MultilingualString
+export type FilterList = {
+  type: 'multiselection' | 'checkboxes_list'
+  property: string
+  name: MultilingualString
   values: {
     value: string
     name: MultilingualString[]
   }
 }
+
+export type FilterBoolean = {
+  type: 'boolean'
+  property: string
+  name: MultilingualString
+}
+
+export type Filter = FilterList | FilterBoolean
 
 export interface ApiMenuItem {
   id: number
