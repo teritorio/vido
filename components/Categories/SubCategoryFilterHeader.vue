@@ -90,7 +90,8 @@
 import copy from 'fast-copy'
 import Vue, { PropType } from 'vue'
 
-import { Category, Filter, FilterValues } from '@/utils/types'
+import { Category, Filter } from '@/lib/apiMenu'
+import { FilterValues } from '@/utils/types'
 
 export default Vue.extend({
   props: {

@@ -12,7 +12,7 @@
 import Vue, { PropType } from 'vue'
 
 import CategoryList from '@/components/Categories/CategoryList/CategoryList.vue'
-import { Category } from '@/utils/types'
+import { Category } from '@/lib/apiMenu'
 
 export default Vue.extend({
   components: {

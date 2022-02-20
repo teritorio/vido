@@ -1,7 +1,7 @@
 import { Plugin, NuxtAppOptions } from '@nuxt/types'
 import urlSlug from 'url-slug'
 
-import { Category } from '@/utils/types'
+import { Category } from '@/lib/apiMenu'
 
 // Also Update README.md according to tracking changes.
 

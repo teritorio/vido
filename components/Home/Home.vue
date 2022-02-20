@@ -173,14 +173,10 @@ import BottomMenu from '@/components/MainMap/BottomMenu.vue'
 import MainHeader from '@/components/MainMap/MainHeader.vue'
 import MainMap from '@/components/MainMap/MainMap.vue'
 import SearchHeader from '@/components/Search/SearchHeader.vue'
+import { Category } from '@/lib/apiMenu'
 import { getPoiById, VidoFeature } from '@/lib/apiPois'
 import { Settings } from '@/lib/apiSettings'
-import {
-  Category,
-  Mode,
-  FilterValues,
-  ApiMenuItemSearchResult,
-} from '@/utils/types'
+import { Mode, FilterValues, ApiMenuItemSearchResult } from '@/utils/types'
 import { getHashPart, setHashPart } from '@/utils/url'
 
 import {

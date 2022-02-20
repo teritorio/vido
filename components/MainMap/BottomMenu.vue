@@ -75,8 +75,8 @@ import HeaderRootCategories from '@/components/Categories/HeaderRootCategories.v
 import SubCategoryFilterHeader from '@/components/Categories/SubCategoryFilterHeader.vue'
 import SubCategoryHeader from '@/components/Categories/SubCategoryHeader.vue'
 import MapPoiToast from '@/components/MainMap/MapPoiToast.vue'
+import { Category } from '@/lib/apiMenu'
 import { VidoFeature } from '@/lib/apiPois'
-import { Category } from '@/utils/types'
 
 import {
   HomeContext,

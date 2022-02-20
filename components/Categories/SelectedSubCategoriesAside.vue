@@ -14,7 +14,7 @@
 import Vue, { PropType } from 'vue'
 
 import HeaderSubCategories from '@/components/Categories/HeaderSubCategories.vue'
-import { Category } from '@/utils/types'
+import { Category } from '@/lib/apiMenu'
 
 export default Vue.extend({
   components: {
