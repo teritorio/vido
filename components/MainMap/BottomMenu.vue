@@ -76,7 +76,7 @@ import SubCategoryFilterHeader from '@/components/Categories/SubCategoryFilterHe
 import SubCategoryHeader from '@/components/Categories/SubCategoryHeader.vue'
 import MapPoiToast from '@/components/MainMap/MapPoiToast.vue'
 import { Category } from '@/lib/apiMenu'
-import { VidoFeature } from '@/lib/apiPois'
+import { ApiPoi } from '@/lib/apiPois'
 
 import {
   HomeContext,
@@ -94,7 +94,7 @@ export default Vue.extend({
   },
   props: {
     selectedFeature: {
-      type: Object as PropType<VidoFeature>,
+      type: Object as PropType<ApiPoi>,
       default: null,
     },
     states: {
@@ -147,7 +147,7 @@ export default Vue.extend({
     exploreAroundSelectedPoi() {
       this.$emit('exploreAroundSelectedPoi')
     },
-    toggleFavoriteMode(feature?: VidoFeature) {
+    toggleFavoriteMode(feature?: ApiPoi) {
       this.$emit('toggleFavoriteMode', feature)
     },
     goToSelectedPoi() {

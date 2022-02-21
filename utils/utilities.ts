@@ -1,11 +1,9 @@
-import { VidoFeature } from '@/lib/apiPois'
+import { ApiPoi } from '@/lib/apiPois'
 
-export const flattenFeatures = (features: {
-  [categoryId: number]: VidoFeature[]
-}) =>
+export const flattenFeatures = (features: { [categoryId: number]: ApiPoi[] }) =>
   Object.values(features)
     .flat()
-    .filter((f: VidoFeature) => f.properties.vido_visible)
+    .filter((f: ApiPoi) => f.properties.vido_visible)
 
 export const getPreviousMonday = () => {
   const date = new Date()

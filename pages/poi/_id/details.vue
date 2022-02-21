@@ -10,7 +10,7 @@ import { getPoiById } from '@/lib/apiPois'
 import { fetchSettings, headerFromSettings } from '@/lib/apiSettings'
 
 import Index from '~/components/Details/Index.vue'
-import { VidoFeature } from '~/lib/apiPois'
+import { ApiPoi } from '~/lib/apiPois'
 import { Settings } from '~/lib/apiSettings'
 
 export default Vue.extend({
@@ -24,7 +24,7 @@ export default Vue.extend({
 
   data(): {
     settings: Settings | null
-    poi: VidoFeature | null
+    poi: ApiPoi | null
   } {
     return {
       poi: null,

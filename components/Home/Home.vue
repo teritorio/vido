@@ -174,7 +174,7 @@ import MainHeader from '@/components/MainMap/MainHeader.vue'
 import MainMap from '@/components/MainMap/MainMap.vue'
 import SearchHeader from '@/components/Search/SearchHeader.vue'
 import { Category } from '@/lib/apiMenu'
-import { getPoiById, VidoFeature } from '@/lib/apiPois'
+import { getPoiById, ApiPoi } from '@/lib/apiPois'
 import { Settings } from '@/lib/apiSettings'
 import { Mode, FilterValues, ApiMenuItemSearchResult } from '@/utils/types'
 import { getHashPart, setHashPart } from '@/utils/url'
@@ -570,7 +570,7 @@ export default (Vue as VueConstructor<
       this.$store.dispatch('favorite/setFavoritesAction', 'close')
       this.selectSubCategory([newFilter.id])
     },
-    onFeatureClick(feature: VidoFeature) {
+    onFeatureClick(feature: ApiPoi) {
       this.setSelectedFeature(feature).then(() => {
         this.service.send(HomeEvents.GoToCategories)
 

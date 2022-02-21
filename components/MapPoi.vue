@@ -17,7 +17,7 @@ import { PoiFilter } from '@teritorio/map'
 import Vue, { PropType } from 'vue'
 
 import Map from '@/components/Map/Map.vue'
-import { VidoFeature } from '@/lib/apiPois'
+import { ApiPoi } from '@/lib/apiPois'
 import { getBBoxFeature } from '@/lib/bbox'
 import { MAP_ZOOM } from '@/lib/constants'
 import { makerHtmlFactory } from '@/lib/markerLayerFactory'
@@ -32,7 +32,7 @@ export default Vue.extend({
 
   props: {
     poi: {
-      type: Object as PropType<VidoFeature>,
+      type: Object as PropType<ApiPoi>,
       default: null,
     },
   },

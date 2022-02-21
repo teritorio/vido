@@ -211,7 +211,7 @@ import { mapGetters } from 'vuex'
 
 import OpeningHours from '@/components/Fields/OpeningHours.vue'
 import TeritorioIcon from '@/components/TeritorioIcon/TeritorioIcon.vue'
-import { getPoiById, VidoFeature, VidoFeatureProperties } from '@/lib/apiPois'
+import { getPoiById, ApiPoi, ApiPoiProperties } from '@/lib/apiPois'
 import { isIOS } from '@/utils/isIOS'
 import { getContrastedTextColor } from '@/utils/picto'
 import { Mode } from '@/utils/types'
@@ -228,14 +228,14 @@ export default Vue.extend({
       default: false,
     },
     poi: {
-      type: Object as PropType<VidoFeature>,
+      type: Object as PropType<ApiPoi>,
       required: true,
     },
   },
 
   data(): {
     sptags: { [key: string]: any } | null
-    apiProps: VidoFeatureProperties | null
+    apiProps: ApiPoiProperties | null
     textLimit: number
   } {
     return {

@@ -108,7 +108,7 @@ import Map from '@/components/Map/Map.vue'
 import MapControls3D from '@/components/Map/MapControls3D.vue'
 import MapControlsBackground from '@/components/Map/MapControlsBackground.vue'
 import { ApiMenuCategory } from '@/lib/apiMenu'
-import { getPoiById, getPoiByIds, VidoFeature } from '@/lib/apiPois'
+import { getPoiById, getPoiByIds, ApiPoi } from '@/lib/apiPois'
 import { getBBoxFeatures, getBBoxFeature, getBBoxCoordList } from '@/lib/bbox'
 import { createMarkerDonutChart } from '@/lib/clusters'
 import {
@@ -280,7 +280,7 @@ export default Vue.extend({
         })
       })
 
-      const vidoFeatures = flattenFeatures(features)
+      const ApiPois = flattenFeatures(features)
       // Change visible data
       if (this.map.getSource(POI_SOURCE)) {
         if (!deepEqual(newCategories, oldCategories)) {
@@ -297,7 +297,7 @@ export default Vue.extend({
             // @ts-ignore
             source.setData({
               type: 'FeatureCollection',
-              features: vidoFeatures,
+              features: ApiPois,
             })
           }
         }
@@ -308,9 +308,9 @@ export default Vue.extend({
         this.allowRegionBackZoom &&
         !deepEqual(newCategories, oldCategories)
       ) {
-        const vidoFeatures = flattenFeatures(features)
+        const ApiPois = flattenFeatures(features)
         this.handleResetMapZoom(
-          vidoFeatures,
+          ApiPois,
           this.$tc('snack.noPoi.issue'),
           this.$tc('snack.noPoi.action')
         )
@@ -322,7 +322,7 @@ export default Vue.extend({
       filterRouteByCategories(this.map, Object.keys(this.features))
     },
 
-    selectedFeature(feature: VidoFeature) {
+    selectedFeature(feature: ApiPoi) {
       if (!this.map) {
         return
       }
@@ -519,8 +519,8 @@ export default Vue.extend({
       })
 
       this.map.on('styledata', () => {
-        const vidoFeatures = flattenFeatures(this.features)
-        this.initPoiLayer(vidoFeatures)
+        const ApiPois = flattenFeatures(this.features)
+        this.initPoiLayer(ApiPois)
       })
 
       this.map.on('click', () => {
@@ -540,7 +540,7 @@ export default Vue.extend({
       ) => {
         const feature = event.features?.pop()
         if (feature) {
-          this.selectFeature(feature as VidoFeature)
+          this.selectFeature(feature as ApiPoi)
         }
       }
       ;[
@@ -609,7 +609,7 @@ export default Vue.extend({
       this.showPoiToast = visible
     },
 
-    exploreAroundSelectedPoi(feature?: VidoFeature) {
+    exploreAroundSelectedPoi(feature?: ApiPoi) {
       if (feature) {
         this.selectFeature(feature)
       }
@@ -629,7 +629,7 @@ export default Vue.extend({
       }
     },
 
-    toggleFavoriteMode(feature?: VidoFeature, isNotebook?: boolean) {
+    toggleFavoriteMode(feature?: ApiPoi, isNotebook?: boolean) {
       if (feature && !isNotebook) {
         this.selectFeature(feature)
       }
@@ -803,7 +803,7 @@ export default Vue.extend({
       })
     },
 
-    goToSelectedPoi(feature?: VidoFeature) {
+    goToSelectedPoi(feature?: ApiPoi) {
       if (feature) {
         this.selectFeature(feature)
       }
@@ -823,7 +823,7 @@ export default Vue.extend({
       })
     },
 
-    goTo(feature: VidoFeature) {
+    goTo(feature: ApiPoi) {
       if (!this.map || !feature || !('coordinates' in feature.geometry)) {
         return
       }
@@ -838,7 +838,7 @@ export default Vue.extend({
       })
     },
 
-    handleResetMapZoom(features: VidoFeature[], text: string, textBtn: string) {
+    handleResetMapZoom(features: ApiPoi[], text: string, textBtn: string) {
       if (!this.map) {
         return
       }
@@ -877,7 +877,7 @@ export default Vue.extend({
       this.selectedBackground = background
     },
 
-    initPoiLayer(features: VidoFeature[]) {
+    initPoiLayer(features: ApiPoi[]) {
       if (!this.map) {
         return
       }
@@ -912,7 +912,7 @@ export default Vue.extend({
         this.map.addLayer(markerLayerTextFactory(POI_SOURCE, POI_LAYER_MARKER))
     },
 
-    selectFeature(feature: VidoFeature) {
+    selectFeature(feature: ApiPoi) {
       const goodFeature = feature
 
       const IsJsonString = (str: string) => {
@@ -925,7 +925,7 @@ export default Vue.extend({
       }
 
       if (feature?.properties) {
-        const cleanProperties: VidoFeature['properties'] = {}
+        const cleanProperties: ApiPoi['properties'] = {}
 
         Object.keys(feature.properties).forEach((key) => {
           if (IsJsonString(feature.properties[key])) {
@@ -951,7 +951,7 @@ export default Vue.extend({
       }
 
       const newMarkers: { [id: string]: maplibregl.Marker } = {}
-      const features = this.map.querySourceFeatures(src) as VidoFeature[]
+      const features = this.map.querySourceFeatures(src) as ApiPoi[]
       // for every cluster on the screen, create an HTML marker for it (if we didn't yet),
       // and add it to the map if it's not there already
       features

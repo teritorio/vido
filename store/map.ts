@@ -1,6 +1,6 @@
 import { Store } from 'vuex'
 
-import { VidoFeature } from '@/lib/apiPois'
+import { ApiPoi } from '@/lib/apiPois'
 import { LatLng, Pitch } from '@/utils/types'
 
 enum Mutation {
@@ -46,7 +46,7 @@ export const mutations = {
 }
 
 export const actions = {
-  selectFeature(store: Store<State>, feature: VidoFeature) {
+  selectFeature(store: Store<State>, feature: ApiPoi) {
     store.commit(Mutation.SELECT_FEATURE, { selectedFeature: feature })
   },
   center(store: Store<State>, center: LatLng) {

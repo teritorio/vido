@@ -1,6 +1,6 @@
 import { MultilingualString } from '@/utils/types'
 
-export interface VidoFeatureProperties {
+export interface ApiPoiProperties {
   [key: string]: any
 
   name?: string
@@ -40,11 +40,11 @@ export interface VidoFeatureProperties {
     'website:details'?: string
   }
 }
-export interface VidoFeature
-  extends GeoJSON.Feature<GeoJSON.Geometry, VidoFeatureProperties> {}
+export interface ApiPoi
+  extends GeoJSON.Feature<GeoJSON.Geometry, ApiPoiProperties> {}
 
 export interface ApiPois
-  extends GeoJSON.FeatureCollection<GeoJSON.Geometry, VidoFeatureProperties> {}
+  extends GeoJSON.FeatureCollection<GeoJSON.Geometry, ApiPoiProperties> {}
 
 export interface apiPoisOptions {
   // eslint-disable-next-line camelcase
@@ -70,11 +70,11 @@ export function getPoiById(
   apiTheme: string,
   poiId: number | string,
   options: apiPoisOptions = {}
-): Promise<VidoFeature | null> {
+): Promise<ApiPoi | null> {
   return fetch(
     `${apiEndpoint}/${apiProject}/${apiTheme}/poi/${poiId}?` +
       new URLSearchParams(stringifyOptions(options))
-  ).then((data) => (data.ok ? ((data.json() as unknown) as VidoFeature) : null))
+  ).then((data) => (data.ok ? ((data.json() as unknown) as ApiPoi) : null))
 }
 
 export function getPoiByIds(

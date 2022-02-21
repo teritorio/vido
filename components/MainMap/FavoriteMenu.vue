@@ -172,7 +172,7 @@ import { mapGetters } from 'vuex'
 
 import FavoriteNoteBook from '@/components/MainMap/FavoriteNoteBook.vue'
 import ShareLinkModal from '@/components/ShareLinkModal.vue'
-import { getPoiByIds, VidoFeature } from '@/lib/apiPois'
+import { getPoiByIds, ApiPoi } from '@/lib/apiPois'
 import { LOCAL_STORAGE } from '@/lib/constants'
 import { getHashPart, setHashPart } from '@/utils/url'
 
@@ -212,7 +212,7 @@ export default (Vue as VueConstructor<
   },
   data(): {
     isCopied: boolean
-    favs: VidoFeature[]
+    favs: ApiPoi[]
   } {
     return {
       isCopied: false,
@@ -295,15 +295,15 @@ export default (Vue as VueConstructor<
         this.$store.dispatch('favorite/setFavoritesAction', 'close')
       }
     },
-    explore(poi?: VidoFeature) {
+    explore(poi?: ApiPoi) {
       this.closeNoteBook()
       this.exploreAroundSelectedPoi(poi)
     },
-    goTo(poi?: VidoFeature) {
+    goTo(poi?: ApiPoi) {
       this.closeNoteBook()
       this.goToSelectedPoi(poi)
     },
-    handleFavorite(poi?: VidoFeature, isNotebook?: Boolean) {
+    handleFavorite(poi?: ApiPoi, isNotebook?: Boolean) {
       this.toggleFavorite(poi, isNotebook)
     },
   },

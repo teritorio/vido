@@ -37,12 +37,12 @@
 <script lang="ts">
 import Vue, { PropType } from 'vue'
 
-import { VidoFeatureProperties } from '@/lib/apiPois'
+import { ApiPoiProperties } from '@/lib/apiPois'
 
 export default Vue.extend({
   props: {
     p: {
-      type: Object as PropType<VidoFeatureProperties>,
+      type: Object as PropType<ApiPoiProperties>,
       required: true,
     },
     color: {

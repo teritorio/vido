@@ -121,7 +121,7 @@ import debounce from 'lodash.debounce'
 import Vue, { PropType } from 'vue'
 
 import SearchResultBlock from '@/components/Search/SearchResultBlock.vue'
-import { VidoFeature, getPoiById } from '@/lib/apiPois'
+import { ApiPoi, getPoiById } from '@/lib/apiPois'
 import { MAP_ZOOM } from '@/lib/constants'
 import {
   ApiPoisSearchResult,
@@ -168,7 +168,7 @@ export default Vue.extend({
     searchMenuItemsResults: null | ApiSearchResult<ApiMenuItemSearchResult>
     searchPoisResults: null | ApiSearchResult<ApiPoisSearchResult>
     searchAddressesResults: null | ApiSearchResult<ApiAddrSearchResult>
-    searchCartocodeResult: null | VidoFeature
+    searchCartocodeResult: null | ApiPoi
     isLoading: boolean
     search: null | Function
   } {
@@ -228,7 +228,7 @@ export default Vue.extend({
   },
 
   watch: {
-    searchCartocodeResult(val: null | VidoFeature) {
+    searchCartocodeResult(val: null | ApiPoi) {
       if (val && val.properties?.metadata?.id) {
         this.onPoiClick(val.properties.metadata.id)
       }

@@ -79,7 +79,7 @@ import Vue, { PropType } from 'vue'
 import OpeningHours from '@/components/Fields/OpeningHours.vue'
 import MapPoi from '@/components/MapPoi.vue'
 import TeritorioIconBadge from '@/components/TeritorioIcon/TeritorioIconBadge.vue'
-import { VidoFeature, VidoFeatureProperties } from '@/lib/apiPois'
+import { ApiPoi, ApiPoiProperties } from '@/lib/apiPois'
 import { Settings } from '@/lib/apiSettings'
 
 import Breadcrumb from '~/components/Details/Breadcrumb.vue'
@@ -112,13 +112,13 @@ export default Vue.extend({
       required: true,
     },
     poi: {
-      type: Object as PropType<VidoFeature>,
+      type: Object as PropType<ApiPoi>,
       required: true,
     },
   },
 
   computed: {
-    p(): VidoFeatureProperties {
+    p(): ApiPoiProperties {
       return this.poi.properties
     },
     detailsProperties(): string[] {

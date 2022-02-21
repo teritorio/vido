@@ -3,7 +3,7 @@ import { Store } from 'vuex'
 // import { interpret, Interpreter, State } from 'xstate'
 
 import { Category } from '@/lib/apiMenu'
-import { VidoFeature, ApiPois, getPoiByCategoryId } from '@/lib/apiPois'
+import { ApiPoi, ApiPois, getPoiByCategoryId } from '@/lib/apiPois'
 import { FilterValues } from '@/utils/types'
 
 enum Mutation {
@@ -33,10 +33,10 @@ export interface State {
   }
   isLoaded: boolean
   features: {
-    [categoryId: number]: VidoFeature[]
+    [categoryId: number]: ApiPoi[]
   }
   allFeatures: {
-    [categoryId: number]: VidoFeature[]
+    [categoryId: number]: ApiPoi[]
   }
   filters: { [subcat: number]: FilterValues }
   isLoadingFeatures: boolean
@@ -86,7 +86,7 @@ function filterExist(
   }
 }
 
-function keepFeature(feature: VidoFeature, filters: FilterValues): boolean {
+function keepFeature(feature: ApiPoi, filters: FilterValues): boolean {
   if (!filters || Object.keys(filters).length === 0) {
     return true
   }
@@ -177,7 +177,7 @@ export const actions = {
 
         if (existingFeatures[j]) {
           features[categoryId] = previousFeatures[categoryId].map(
-            (f: VidoFeature) => ({
+            (f: ApiPoi) => ({
               ...f,
               properties: {
                 ...f.properties,
@@ -217,12 +217,12 @@ export const actions = {
     store.commit(Mutation.SET_FILTERS, { filters })
 
     // Update features visibility
-    const features: { [categoryId: number]: VidoFeature[] } = copy(
+    const features: { [categoryId: number]: ApiPoi[] } = copy(
       store.getters.features
     )
     Object.keys(features).forEach((categoryIdString: string) => {
       const categoryId = parseInt(categoryIdString, 10)
-      features[categoryId] = features[categoryId].map((f: VidoFeature) => {
+      features[categoryId] = features[categoryId].map((f: ApiPoi) => {
         f.properties.vido_visible = keepFeature(f, filters[categoryId])
         return f
       })
