@@ -45,7 +45,7 @@
 <script lang="ts">
 import { OpenMapTilesLanguage } from '@teritorio/openmaptiles-gl-language'
 import Mapbox from 'mapbox-gl-vue'
-import { StyleSpecification } from 'maplibre-gl'
+import { StyleSpecification, LngLatBoundsLike, LngLatLike } from 'maplibre-gl'
 import Vue, { PropType } from 'vue'
 import { mapGetters } from 'vuex'
 
@@ -66,7 +66,7 @@ export default Vue.extend({
       default: DEFAULT_MAP_STYLE as MapStyleEnum,
     },
     bounds: {
-      type: Array, // as PropType<TupleLatLngBounds>,
+      type: [Array, Object] as PropType<LngLatBoundsLike>,
       default: undefined,
     },
     attributions: {
@@ -74,7 +74,7 @@ export default Vue.extend({
       default: () => [],
     },
     center: {
-      type: [Array, Object], // as PropType<maplibregl.LngLatLike>,
+      type: [Array, Object] as PropType<LngLatLike>,
       default: undefined,
     },
     zoom: {

@@ -94,6 +94,7 @@ import maplibregl, {
   MapLayerMouseEvent,
   MapLayerTouchEvent,
   MapDataEvent,
+  LngLatBoundsLike,
 } from 'maplibre-gl'
 import Vue, { PropType } from 'vue'
 import { mapGetters, mapActions } from 'vuex'
@@ -148,7 +149,7 @@ export default Vue.extend({
 
   props: {
     defaultBounds: {
-      type: Array, // as PropType<TupleLatLngBounds>,
+      type: [Array, Object] as PropType<LngLatBoundsLike>,
       default: null,
     },
     attributions: {
