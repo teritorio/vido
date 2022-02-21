@@ -30,10 +30,12 @@ export interface Settings {
   themes: SiteInfosTheme[]
 }
 
-export function fetchSettings(config: any): Promise<Settings | null> {
-  return fetch(
-    `${config.API_ENDPOINT}/${config.API_PROJECT}/${config.API_THEME}`
-  )
+export function getSettings(
+  apiEndpoint: string,
+  apiProject: string,
+  apiTheme: string
+): Promise<Settings | null> {
+  return fetch(`${apiEndpoint}/${apiProject}/${apiTheme}`)
     .then((res) => res.json())
     .then((json: Settings) => {
       return Object.assign(

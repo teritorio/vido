@@ -10,7 +10,7 @@ import { MetaInfo } from 'vue-meta'
 
 import MapPois from '@/components/MapPois.vue'
 import { getPoiByIds } from '@/lib/apiPois'
-import { fetchSettings, headerFromSettings } from '@/lib/apiSettings'
+import { getSettings, headerFromSettings } from '@/lib/apiSettings'
 
 import { ApiPois } from '~/lib/apiPois'
 import { Settings } from '~/lib/apiSettings'
@@ -33,6 +33,12 @@ export default Vue.extend({
 
   async fetch() {
     if (this.$route.query.ids && typeof this.$route.query.ids === 'string') {
+      const getSettingsPromise = getSettings(
+        this.$config.API_ENDPOINT,
+        this.$config.API_PROJECT,
+        this.$config.API_THEME
+      )
+
       const ids = this.$route.query.ids.split(',')
       const getPoiPromise = getPoiByIds(
         this.$config.API_ENDPOINT,
@@ -44,7 +50,7 @@ export default Vue.extend({
         }
       )
 
-      const v = await Promise.all([fetchSettings(this.$config), getPoiPromise])
+      const v = await Promise.all([getSettingsPromise, getPoiPromise])
       this.settings = v[0]
       this.pois = v[1]
     }

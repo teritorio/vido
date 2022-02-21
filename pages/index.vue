@@ -7,7 +7,7 @@ import Vue from 'vue'
 import { MetaInfo } from 'vue-meta'
 
 import Home from '@/components/Home/Home.vue'
-import { fetchSettings, headerFromSettings, Settings } from '@/lib/apiSettings'
+import { getSettings, headerFromSettings, Settings } from '@/lib/apiSettings'
 
 export default Vue.extend({
   components: {
@@ -23,16 +23,18 @@ export default Vue.extend({
   },
 
   async fetch() {
+    const getSettingPromise = getSettings(
+      this.$config.API_ENDPOINT,
+      this.$config.API_PROJECT,
+      this.$config.API_THEME
+    )
     const menuFetchConfigPromise = this.$store.dispatch('menu/fetchConfig', {
       apiEndpoint: this.$config.API_ENDPOINT,
       apiProject: this.$config.API_PROJECT,
       apiTheme: this.$config.API_THEME,
     })
 
-    const v = await Promise.all([
-      fetchSettings(this.$config),
-      menuFetchConfigPromise,
-    ])
+    const v = await Promise.all([getSettingPromise, menuFetchConfigPromise])
     this.settings = v[0]
   },
   // fetchOnServer: false,
