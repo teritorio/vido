@@ -32,8 +32,11 @@ Then, create a PR from `develop` to `main`, it will launch the continuous develo
 ## Entry points
 
 * Main Map: `/`
-* POI details: `/poi/{id}/details`
-* POI on map only: `/poi/{id}/map`
+* POI
+  * details: `/poi/{id}/details`
+  * map only: `/poi/{id}/map`
+* POIs
+  * map only: `/pois/map?ids=[1,2,3]`
 
 ## Users tracking
 
