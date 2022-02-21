@@ -1,6 +1,6 @@
 <template>
   <div class="relative flex flex-col w-full h-full">
-    <map-poi :poi="poi" />
+    <MapPois :pois="{ features: [poi] }" />
   </div>
 </template>
 
@@ -8,16 +8,17 @@
 import Vue from 'vue'
 import { MetaInfo } from 'vue-meta'
 
-import MapPoi from '@/components/MapPoi.vue'
+import MapPois from '@/components/MapPois.vue'
 import { getPoiById } from '@/lib/apiPois'
 import { fetchSettings, headerFromSettings } from '@/lib/apiSettings'
 
 import { ApiPoi } from '~/lib/apiPois'
 import { Settings } from '~/lib/apiSettings'
+import '@/assets/fullmap.css'
 
 export default Vue.extend({
   components: {
-    MapPoi,
+    MapPois,
   },
 
   validate({ params }) {
@@ -39,7 +40,10 @@ export default Vue.extend({
       this.$config.API_ENDPOINT,
       this.$config.API_PROJECT,
       this.$config.API_THEME,
-      this.$route.params.id
+      this.$route.params.id,
+      {
+        as_point: false,
+      }
     )
 
     const v = await Promise.all([fetchSettings(this.$config), getPoiPromise])
@@ -55,43 +59,3 @@ export default Vue.extend({
   },
 })
 </script>
-
-<style>
-html {
-  @apply h-full w-full box-border overflow-hidden overscroll-none;
-}
-
-html,
-.mapboxgl-map {
-  font-family: 'Source Sans Pro', -apple-system, BlinkMacSystemFont, 'Segoe UI',
-    Roboto, 'Helvetica Neue', Arial, sans-serif;
-  font-size: 16px;
-  word-spacing: 1px;
-  -ms-text-size-adjust: 100%;
-  -webkit-text-size-adjust: 100%;
-  -moz-osx-font-smoothing: grayscale;
-  -webkit-font-smoothing: antialiased;
-  @apply text-gray-900;
-}
-
-body,
-#__nuxt,
-#__layout {
-  @apply h-full w-full overflow-hidden overscroll-none;
-}
-
-*,
-*::before,
-*::after {
-  @apply m-0 box-border;
-}
-</style>
-
-<style>
-#map {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  width: 100%;
-}
-</style>

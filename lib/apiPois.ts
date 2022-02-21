@@ -81,7 +81,7 @@ export function getPoiByIds(
   apiEndpoint: string,
   apiProject: string,
   apiTheme: string,
-  poiIds: [number | string],
+  poiIds: (number | string)[],
   options: apiPoisOptions = {}
 ): Promise<ApiPois | null> {
   return fetch(

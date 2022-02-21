@@ -58,7 +58,7 @@
         <div class="detail-right">
           <Carousel v-if="p.image" :images="p.image" />
           <Mapillary v-if="p.mapillary" :image-id="p.mapillary" />
-          <MapPoi :poi="poi" class="relative" />
+          <MapPois :poi="poi" class="relative" />
           <p>
             {{ $tc('details.lastUpdate') }}
             <a href="https://www.openstreetmap.org/" target="_blank">
@@ -77,7 +77,7 @@
 import Vue, { PropType } from 'vue'
 
 import OpeningHours from '@/components/Fields/OpeningHours.vue'
-import MapPoi from '@/components/MapPoi.vue'
+import MapPois from '@/components/MapPois.vue'
 import TeritorioIconBadge from '@/components/TeritorioIcon/TeritorioIconBadge.vue'
 import { ApiPoi, ApiPoiProperties } from '@/lib/apiPois'
 import { Settings } from '@/lib/apiSettings'
@@ -102,7 +102,7 @@ export default Vue.extend({
     Share,
     Carousel,
     Mapillary,
-    MapPoi,
+    MapPois,
     Footer,
   },
 
