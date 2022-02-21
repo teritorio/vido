@@ -15,9 +15,7 @@ enum Mutation {
 }
 
 interface FetchConfigPayload {
-  apiEndpoint: string
-  apiProject: string
-  apiTheme: string
+  categories: Category[]
 }
 
 interface FetchFeaturesPayload {
@@ -105,38 +103,31 @@ function keepFeature(feature: ApiPoi, filters: FilterValues): boolean {
 }
 
 export const actions = {
-  async fetchConfig(
-    store: Store<State>,
-    { apiEndpoint, apiProject, apiTheme }: FetchConfigPayload
-  ) {
+  fetchConfig(store: Store<State>, { categories }: FetchConfigPayload) {
     try {
-      await fetch(`${apiEndpoint}/${apiProject}/${apiTheme}/menu`)
-        .then((data) => data.json())
-        .then((config: [Category]) => {
-          const categories: State['categories'] = {}
+      const stateCategories: State['categories'] = {}
 
-          config
-            .filter((category) => !category.hidden)
-            .map((category) => {
-              categories[category.id] = category
-              return category
-            })
-            .forEach((category) => {
-              // Separated from previous map to allow batch processing and make sure parent category is always there
-              // Associate to parent_id
-              if (category.parent_id && category.parent_id !== null) {
-                const parent = categories[category.parent_id]
-                if (parent) {
-                  if (!parent.vido_children) {
-                    parent.vido_children = []
-                  }
-                  parent.vido_children.push(category.id)
-                }
-              }
-            })
-
-          store.commit(Mutation.SET_CONFIG, { categories })
+      store.commit(Mutation.SET_CONFIG, { categories: null }) // Hack, release from store before edit and reappend
+      categories
+        .filter((category) => !category.hidden)
+        .map((category) => {
+          stateCategories[category.id] = category
+          return category
         })
+        .forEach((category) => {
+          // Separated from previous map to allow batch processing and make sure parent category is always there
+          // Associate to parent_id
+          if (category.parent_id && category.parent_id !== null) {
+            const parent = stateCategories[category.parent_id]
+            if (parent) {
+              if (!parent.vido_children) {
+                parent.vido_children = []
+              }
+              parent.vido_children.push(category.id)
+            }
+          }
+        })
+      store.commit(Mutation.SET_CONFIG, { categories: stateCategories })
     } catch (error) {
       // eslint-disable-next-line no-console
       console.error(
