@@ -21,6 +21,10 @@ export default Vue.extend({
     MapPois,
   },
 
+  validate({ params }) {
+    return /^[,-_:a-zA-Z0-9]+$/.test(params.ids)
+  },
+
   async asyncData({
     env,
     params,
