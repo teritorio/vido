@@ -569,7 +569,7 @@ export default Vue.extend({
           this.$config.API_ENDPOINT,
           this.$config.API_PROJECT,
           this.$config.API_THEME,
-          parseInt(poiHash)
+          poiHash
         ).then((poi) => {
           if (poi) {
             this.selectFeature(poi)
