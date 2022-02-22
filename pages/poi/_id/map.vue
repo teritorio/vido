@@ -25,6 +25,35 @@ export default Vue.extend({
     return /^[-_:a-zA-Z0-9]+$/.test(params.id)
   },
 
+  async asyncData({
+    env,
+    params,
+  }): Promise<{
+    poi: ApiPoi | null
+    settings: Settings | null
+  }> {
+    const getSettingsPromise = getSettings(
+      env.API_ENDPOINT,
+      env.API_PROJECT,
+      env.API_THEME
+    )
+    const getPoiPromise = getPoiById(
+      env.API_ENDPOINT,
+      env.API_PROJECT,
+      env.API_THEME,
+      params.id,
+      {
+        as_point: false,
+      }
+    )
+
+    const v = await Promise.all([getSettingsPromise, getPoiPromise])
+    return Promise.resolve({
+      settings: v[0],
+      poi: v[1],
+    })
+  },
+
   data(): {
     poi: ApiPoi | null
     settings: Settings | null
@@ -35,28 +64,6 @@ export default Vue.extend({
     }
   },
 
-  async fetch() {
-    const getSettingsPromise = getSettings(
-      this.$config.API_ENDPOINT,
-      this.$config.API_PROJECT,
-      this.$config.API_THEME
-    )
-    const getPoiPromise = getPoiById(
-      this.$config.API_ENDPOINT,
-      this.$config.API_PROJECT,
-      this.$config.API_THEME,
-      this.$route.params.id,
-      {
-        as_point: false,
-      }
-    )
-
-    const v = await Promise.all([getSettingsPromise, getPoiPromise])
-    this.settings = v[0]
-    this.poi = v[1]
-  },
-
-  // fetchOnServer: false,
   head(): MetaInfo {
     return headerFromSettings(this.settings, {
       title: this.poi?.properties.name,

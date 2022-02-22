@@ -21,6 +21,46 @@ export default Vue.extend({
     MapPois,
   },
 
+  async asyncData({
+    env,
+    params,
+  }): Promise<{
+    pois: ApiPois | null
+    settings: Settings | null
+  }> {
+    if (params.ids) {
+      const getSettingsPromise = getSettings(
+        env.API_ENDPOINT,
+        env.API_PROJECT,
+        env.API_THEME
+      )
+
+      const ids = params.ids.split(',')
+      const getPoiPromise = getPoiByIds(
+        env.API_ENDPOINT,
+        env.API_PROJECT,
+        env.API_THEME,
+        ids,
+        {
+          as_point: false,
+        }
+      )
+
+      const v = await Promise.all([getSettingsPromise, getPoiPromise])
+      const settings = v[0]
+      const pois = v[1]
+      return Promise.resolve({
+        pois,
+        settings,
+      })
+    } else {
+      return Promise.resolve({
+        pois: null,
+        settings: null,
+      })
+    }
+  },
+
   data(): {
     pois: ApiPois | null
     settings: Settings | null
@@ -31,32 +71,6 @@ export default Vue.extend({
     }
   },
 
-  async fetch() {
-    if (this.$route.query.ids && typeof this.$route.query.ids === 'string') {
-      const getSettingsPromise = getSettings(
-        this.$config.API_ENDPOINT,
-        this.$config.API_PROJECT,
-        this.$config.API_THEME
-      )
-
-      const ids = this.$route.query.ids.split(',')
-      const getPoiPromise = getPoiByIds(
-        this.$config.API_ENDPOINT,
-        this.$config.API_PROJECT,
-        this.$config.API_THEME,
-        ids,
-        {
-          as_point: false,
-        }
-      )
-
-      const v = await Promise.all([getSettingsPromise, getPoiPromise])
-      this.settings = v[0]
-      this.pois = v[1]
-    }
-  },
-
-  // fetchOnServer: false,
   head(): MetaInfo {
     return headerFromSettings(this.settings)
   },

@@ -7,7 +7,7 @@ import Vue from 'vue'
 import { MetaInfo } from 'vue-meta'
 
 import Home from '@/components/Home/Home.vue'
-import { getMenu } from '@/lib/apiMenu'
+import { Category, getMenu } from '@/lib/apiMenu'
 import { getSettings, headerFromSettings, Settings } from '@/lib/apiSettings'
 
 export default Vue.extend({
@@ -15,37 +15,49 @@ export default Vue.extend({
     Home,
   },
 
-  data(): {
+  async asyncData({
+    env,
+  }): Promise<{
     settings: Settings | null
-  } {
-    return {
-      settings: null,
-    }
-  },
-
-  async fetch() {
+    categories: Category[] | null
+  }> {
     const fetchSettings = getSettings(
-      this.$config.API_ENDPOINT,
-      this.$config.API_PROJECT,
-      this.$config.API_THEME
+      env.API_ENDPOINT,
+      env.API_PROJECT,
+      env.API_THEME
     )
     const fetchCategories = getMenu(
-      this.$config.API_ENDPOINT,
-      this.$config.API_PROJECT,
-      this.$config.API_THEME
+      env.API_ENDPOINT,
+      env.API_PROJECT,
+      env.API_THEME
     )
 
     const v = await Promise.all([fetchSettings, fetchCategories])
-    await this.$store.dispatch('menu/fetchConfig', {
+
+    return Promise.resolve({
+      settings: v[0],
       categories: v[1],
     })
-
-    this.settings = v[0]
   },
-  // fetchOnServer: false,
+
+  data(): {
+    settings: Settings | null
+    categories: Category[] | null
+  } {
+    return {
+      settings: null,
+      categories: null,
+    }
+  },
 
   head(): MetaInfo {
     return headerFromSettings(this.settings)
+  },
+
+  created() {
+    this.$store.dispatch('menu/fetchConfig', {
+      categories: this.categories,
+    })
   },
 })
 </script>
