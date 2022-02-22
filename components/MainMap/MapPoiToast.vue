@@ -247,7 +247,7 @@ export default Vue.extend({
 
   computed: {
     ...mapGetters({
-      mode: 'site/mode',
+      mode: 'map/mode',
       favoritesIds: 'favorite/favoritesIds',
     }),
 

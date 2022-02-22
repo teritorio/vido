@@ -31,7 +31,7 @@ import { Mode } from '@/utils/types'
 export default Vue.extend({
   computed: {
     ...mapGetters({
-      mode: 'site/mode',
+      mode: 'map/mode',
     }),
 
     isModeExplorer(): boolean {

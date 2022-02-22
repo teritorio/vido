@@ -275,7 +275,7 @@ export default (Vue as VueConstructor<
       getSubCategoriesFromCategoryId: 'menu/getSubCategoriesFromCategoryId',
       isMenuConfigLoaded: 'menu/isLoaded',
       filters: 'menu/filters',
-      mode: 'site/mode',
+      mode: 'map/mode',
       selectedFeature: 'map/selectedFeature',
       map_center: 'map/center',
       isModeFavorite: 'favorite/isModeFavorite',

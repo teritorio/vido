@@ -1,12 +1,13 @@
 import { Store } from 'vuex'
 
 import { ApiPoi } from '@/lib/apiPois'
-import { LatLng, Pitch } from '@/utils/types'
+import { LatLng, Pitch, Mode } from '@/utils/types'
 
 enum Mutation {
   SET_CONFIG = 'SET_CONFIG',
   SELECT_FEATURE = 'SELECT_FEATURE',
   SET_CENTER = 'SET_CENTER',
+  SET_MODE = 'SET_MODE',
 }
 
 interface State {
@@ -14,6 +15,7 @@ interface State {
   pitch: Pitch
   selectedFeature: string | null
   // eslint-disable-next-line camelcase
+  mode: Mode
 }
 
 const getInitialMapview: Function = () => ({
@@ -25,6 +27,7 @@ export const state = (): State | null =>
     {
       pitch: 0,
       selectedFeature: null,
+      mode: Mode.BROWSER,
     },
     getInitialMapview()
   )
@@ -43,6 +46,9 @@ export const mutations = {
     // JSON conversion necessary to have map watcher working
     state.center = payload.center
   },
+  [Mutation.SET_MODE](state: State, mode: Mode) {
+    state.mode = mode
+  },
 }
 
 export const actions = {
@@ -52,6 +58,9 @@ export const actions = {
   center(store: Store<State>, center: LatLng) {
     store.commit(Mutation.SET_CENTER, { center })
   },
+  setMode(store: Store<State>, mode: Mode) {
+    store.commit(Mutation.SET_MODE, mode)
+  },
 }
 
 export const getters = {
@@ -60,4 +69,5 @@ export const getters = {
   pitch: (state: State) => state.pitch,
   selectedFeature: (state: State) =>
     state.selectedFeature && JSON.parse(state.selectedFeature),
+  mode: (state: State) => state.mode,
 }

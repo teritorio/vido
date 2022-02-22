@@ -208,7 +208,7 @@ export default Vue.extend({
     ...mapGetters({
       features: 'menu/features',
       zoom: 'map/zoom',
-      mode: 'site/mode',
+      mode: 'map/mode',
       selectedFeature: 'map/selectedFeature',
       isLoadingFeatures: 'menu/isLoadingFeatures',
       favoritesIds: 'favorite/favoritesIds',
