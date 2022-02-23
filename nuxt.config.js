@@ -109,9 +109,9 @@ export default {
       useCookie: false,
     },
     locales: [
-      { code: 'en', name: 'English', flag: '🇬🇧', iso: 'en-US', file: 'en.js' },
-      { code: 'es', name: 'Español', flag: '🇪🇸', iso: 'es-ES', file: 'es.js' },
-      { code: 'fr', name: 'Français', flag: '🇫🇷', iso: 'fr-FR', file: 'fr.js' },
+      { code: 'en', name: 'English', flag: 'UK', iso: 'en-US', file: 'en.js' },
+      { code: 'es', name: 'Español', flag: 'ES', iso: 'es-ES', file: 'es.js' },
+      { code: 'fr', name: 'Français', flag: 'FR', iso: 'fr-FR', file: 'fr.js' },
     ],
     defaultLocale: 'en',
     langDir: '~/locales/',

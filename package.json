@@ -30,6 +30,7 @@
     "@types/geojson": "^7946.0.8",
     "@xstate/vue": "^0.5.0",
     "core-js": "^3.8.2",
+    "country-flag-icons": "^1.4.21",
     "fast-copy": "^2.1.1",
     "fast-equals": "^2.0.3",
     "lodash.debounce": "^4.0.8",

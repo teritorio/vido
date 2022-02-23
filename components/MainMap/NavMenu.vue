@@ -59,7 +59,7 @@
           href="#"
           @click.prevent="setLocale(locale.code)"
         >
-          <span class="mr-2">{{ locale.flag }}</span>
+          <span class="mr-2" :class="`flag:${locale.flag}`"></span>
           {{ locale.name }}
         </a>
       </div>
@@ -73,6 +73,7 @@ import { TDropdown } from 'vue-tailwind/dist/components'
 import { mapActions } from 'vuex'
 
 import { NavMenuEntry } from '@/utils/types'
+import 'country-flag-icons/3x2/flags.css'
 
 export default Vue.extend({
   components: {
@@ -109,3 +110,10 @@ export default Vue.extend({
   },
 })
 </script>
+
+<style scoped>
+[class*=' flag:'],
+[class^='flag:'] {
+  font-size: 0.7rem;
+}
+</style>
