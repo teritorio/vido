@@ -540,7 +540,7 @@ export default Vue.extend({
         event: MapLayerMouseEvent | MapLayerTouchEvent
       ) => {
         const feature = event.features?.pop()
-        if (feature?.properties?.editorial?.popup_properties) {
+        if (feature?.properties?.popup_properties) {
           this.selectFeature(feature as ApiPoi)
         }
       }
