@@ -540,7 +540,7 @@ export default Vue.extend({
         event: MapLayerMouseEvent | MapLayerTouchEvent
       ) => {
         const feature = event.features?.pop()
-        if (feature) {
+        if (feature?.properties?.editorial?.popup_properties) {
           this.selectFeature(feature as ApiPoi)
         }
       }
@@ -1025,7 +1025,7 @@ export default Vue.extend({
                 const el = marker.getElement()
 
                 // Click handler
-                if ((props.editorial?.popup_properties || []).length > 0) {
+                if (props.editorial?.popup_properties) {
                   el.addEventListener('click', (e) => {
                     e.stopPropagation()
                     this.selectFeature(feature)
