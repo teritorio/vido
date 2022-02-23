@@ -1,5 +1,5 @@
 <template>
-  <div class="flex justify-center">
+  <div class="w-full container">
     <div>
       <Header :theme="settings.themes[0]" />
       <div class="flex justify-center">
@@ -172,17 +172,18 @@ h1 {
 .detail-wrapper {
   position: relative;
   display: flex;
+  box-sizing: border-box;
   flex-direction: row;
-  justify-content: flex-start;
   justify-content: space-between;
+  width: 100%;
 
   .detail-left {
     width: 34%;
+    box-sizing: border-box;
     padding-right: 0;
 
     .detail-left-block {
-      margin: 0;
-      margin-bottom: 4rem;
+      margin: 0 0 4rem;
       padding: 0 1.6rem;
       font-size: 1.2rem;
       color: $color-text;
@@ -193,6 +194,12 @@ h1 {
     width: 66%;
     padding-left: 3.3rem;
   }
+}
+
+.container {
+  width: 100%;
+  max-width: 1200px;
+  margin: auto;
 }
 
 @media (max-width: 991px) {
