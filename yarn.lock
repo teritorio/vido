@@ -4417,23 +4417,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@nuxtjs/pwa@npm:^3.3.5":
-  version: 3.3.5
-  resolution: "@nuxtjs/pwa@npm:3.3.5"
-  dependencies:
-    clone-deep: ^4.0.1
-    defu: ^3.2.2
-    execa: ^5.0.0
-    fs-extra: ^9.1.0
-    hasha: ^5.2.2
-    jimp-compact: ^0.16.1
-    lodash.template: ^4.5.0
-    serve-static: ^1.14.1
-    workbox-cdn: ^5.1.4
-  checksum: 515efff03f6e71115f792289591594eaca2e08281b55f237b174478fafaeeee698a321e348eebfb1bc579b2ea73264927cfee4ec422b24d490decd164c117cf8
-  languageName: node
-  linkType: hard
-
 "@nuxtjs/sentry@npm:^5.1.4":
   version: 5.1.4
   resolution: "@nuxtjs/sentry@npm:5.1.4"
@@ -5465,7 +5448,6 @@ __metadata:
     "@nuxtjs/eslint-module": ^3.0.2
     "@nuxtjs/gtm": ^2.4.0
     "@nuxtjs/i18n": ^7.0.3
-    "@nuxtjs/pwa": ^3.3.5
     "@nuxtjs/sentry": ^5.1.4
     "@nuxtjs/storybook": ^3.3.2
     "@nuxtjs/stylelint-module": ^4.0.0
@@ -9385,17 +9367,6 @@ __metadata:
     strip-ansi: ^6.0.0
     wrap-ansi: ^6.2.0
   checksum: e59d0642946dd300b1b002e69f43b32d55e682c84f6f2073705ffe77477b400aeabd4f4795467db0771a21d35ee070071f6a31925e4f83b52a7fe1f5c8e6e860
-  languageName: node
-  linkType: hard
-
-"clone-deep@npm:^4.0.1":
-  version: 4.0.1
-  resolution: "clone-deep@npm:4.0.1"
-  dependencies:
-    is-plain-object: ^2.0.4
-    kind-of: ^6.0.2
-    shallow-clone: ^3.0.0
-  checksum: b0146d66cabc7e609d23d10155dcc88e2f74b03539b3b65f8a05f889500e2a78b6c6265a744445d009d512a1afa16836f62aa5737d462027142984c2d41130c8
   languageName: node
   linkType: hard
 
@@ -15910,13 +15881,6 @@ fsevents@~2.3.2:
   bin:
     jest: bin/jest.js
   checksum: 4ffcfefa2b30999a71c205e1aacf2b3d7af10f36c17ba1baf45677684116ad5aa6a5bb162ad2dd418f9ea99d18f24b70d8c83fb317b765a3acac361a50e9db9f
-  languageName: node
-  linkType: hard
-
-"jimp-compact@npm:^0.16.1":
-  version: 0.16.1
-  resolution: "jimp-compact@npm:0.16.1"
-  checksum: 00447f4011d4af8e459a633523cefee92aa2a81757f60171309f4118103537c491d8f887bd9320c84fe6a740e625ebe3403707789cea31352b2841cfc70817ff
   languageName: node
   linkType: hard
 
@@ -22693,15 +22657,6 @@ resolve@^1.20.0:
   languageName: node
   linkType: hard
 
-"shallow-clone@npm:^3.0.0":
-  version: 3.0.1
-  resolution: "shallow-clone@npm:3.0.1"
-  dependencies:
-    kind-of: ^6.0.2
-  checksum: e329e054c286f0681fd8a9e5c353999519332f12510a99e189ea9cfa0337adb6f1414639d44493418ef6790a693b78c354525269f5db25a9feddd8b4d7891a62
-  languageName: node
-  linkType: hard
-
 "shallowequal@npm:^1.1.0":
   version: 1.1.0
   resolution: "shallowequal@npm:1.1.0"
@@ -26106,13 +26061,6 @@ typescript@~4.2:
   version: 1.2.3
   resolution: "word-wrap@npm:1.2.3"
   checksum: 6526abd75d4409c76d1989cf2fbf6080b903db29824be3d17d0a0b8f6221486c76a021174eda2616cf311199787983c34bae3c5e7b51d2ad7476f2066cddb75a
-  languageName: node
-  linkType: hard
-
-"workbox-cdn@npm:^5.1.4":
-  version: 5.1.4
-  resolution: "workbox-cdn@npm:5.1.4"
-  checksum: dad9ec31c4441abdd9efeab6eef4e0a4a49e72d3ed10d4e61221b5f28523750b67565e7b753d5f63aaeefec01fa7b86dbbf21b7e97708c3a71a448c136b06db2
   languageName: node
   linkType: hard
 

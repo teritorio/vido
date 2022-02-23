@@ -24,7 +24,6 @@
     "@nuxt/typescript-runtime": "^2.1.0",
     "@nuxtjs/gtm": "^2.4.0",
     "@nuxtjs/i18n": "^7.0.3",
-    "@nuxtjs/pwa": "^3.3.5",
     "@nuxtjs/sentry": "^5.1.4",
     "@nuxtjs/storybook": "^3.3.2",
     "@teritorio/map": "^0.10.0",
