@@ -610,11 +610,11 @@ export default (Vue as VueConstructor<
     },
     onMapChangeMode(mode: Mode) {
       if (mode === Mode.BROWSER) {
-        this.$store.dispatch('site/setMode', mode)
+        this.$store.dispatch('map/setMode', mode)
         this.selectSubCategory(this.previousSubCategories)
       } else if (mode === Mode.EXPLORER) {
         this.previousSubCategories = this.state.context.selectedSubCategoriesIds
-        this.$store.dispatch('site/setMode', mode)
+        this.$store.dispatch('map/setMode', mode)
       }
     },
     onShowPoi(show: boolean) {

@@ -494,7 +494,7 @@ export default Vue.extend({
 
   methods: {
     ...mapActions({
-      setMode: 'site/setMode',
+      setMode: 'map/setMode',
     }),
 
     onMapInit(map: maplibregl.Map) {
