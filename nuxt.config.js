@@ -97,8 +97,6 @@ export default {
 
   // Modules (https://go.nuxtjs.dev/config-modules)
   modules: [
-    // https://go.nuxtjs.dev/axios
-    '@nuxtjs/axios',
     // https://go.nuxtjs.dev/pwa
     '@nuxtjs/pwa',
     // https://go.nuxtjs.dev/content
@@ -107,9 +105,6 @@ export default {
     ...(process.env.GOOGLE_TAG_MANAGER_ID ? ['@nuxtjs/gtm'] : []),
     ...(process.env.SENTRY_DSN ? ['@nuxtjs/sentry'] : []),
   ],
-
-  // Axios module configuration (https://go.nuxtjs.dev/config-axios)
-  axios: {},
 
   // Content module configuration (https://go.nuxtjs.dev/config-content)
   content: {},

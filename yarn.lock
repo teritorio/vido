@@ -4344,19 +4344,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@nuxtjs/axios@npm:^5.13.6":
-  version: 5.13.6
-  resolution: "@nuxtjs/axios@npm:5.13.6"
-  dependencies:
-    "@nuxtjs/proxy": ^2.1.0
-    axios: ^0.21.1
-    axios-retry: ^3.1.9
-    consola: ^2.15.3
-    defu: ^5.0.0
-  checksum: 0d88d5f3c8ef6e317af4cb2a8457e3a7276950cde1ae4cc241e31c4d534a1fa1d9cc83339891982ff9cc3e30f1993ef0a36034662681fcd81a138299a0a59fed
-  languageName: node
-  linkType: hard
-
 "@nuxtjs/eslint-config-typescript@npm:^6.0.1":
   version: 6.0.1
   resolution: "@nuxtjs/eslint-config-typescript@npm:6.0.1"
@@ -4427,15 +4414,6 @@ __metadata:
     ufo: ^0.7.9
     vue-i18n: ^8.25.0
   checksum: c049836ca27c43e01ce992a262f3b902fd7cece9576af57979748cb208d98cbf6c66196180309333579ba7f59093325e702e082777ad50154624779572392011
-  languageName: node
-  linkType: hard
-
-"@nuxtjs/proxy@npm:^2.1.0":
-  version: 2.1.0
-  resolution: "@nuxtjs/proxy@npm:2.1.0"
-  dependencies:
-    http-proxy-middleware: ^1.0.6
-  checksum: f89497fc82cb15854d04a8f4f8e3e0ca50adc27907058dd416ab9a673080e58902c24aa24a9565a7c79c418989d4847ebcd6ba6e728b15efe533397a5b460439
   languageName: node
   linkType: hard
 
@@ -5482,7 +5460,6 @@ __metadata:
     "@nuxt/types": ^2.15.8
     "@nuxt/typescript-build": ^2.1.0
     "@nuxt/typescript-runtime": ^2.1.0
-    "@nuxtjs/axios": ^5.13.6
     "@nuxtjs/eslint-config": ^6.0.1
     "@nuxtjs/eslint-config-typescript": ^6.0.1
     "@nuxtjs/eslint-module": ^3.0.2
@@ -5792,15 +5769,6 @@ __metadata:
     "@types/relateurl": "*"
     "@types/uglify-js": "*"
   checksum: 857211bbb548dfba3e27a333ade0620e8e7b0199eac04523be356d2d328237a505ff90d438315a333c03a176aee3c6344d6ad514f56aeeb739d7e71e7318974b
-  languageName: node
-  linkType: hard
-
-"@types/http-proxy@npm:^1.17.4":
-  version: 1.17.4
-  resolution: "@types/http-proxy@npm:1.17.4"
-  dependencies:
-    "@types/node": "*"
-  checksum: 9f5ba01f1031010f686f628d1b7f8b0989cd0562436675eff13f944ae2ffbaa90be0d2a7f89a6caf5763e00822080ae28c58ce0e1cde138322decb636641e568
   languageName: node
   linkType: hard
 
@@ -7720,24 +7688,6 @@ __metadata:
   version: 1.11.0
   resolution: "aws4@npm:1.11.0"
   checksum: d30dce2b73839974894d8283a06c53e8374b74d643d3b08340d84c364e01158be011fcfd1a88f8462be946d69055313a3038202f2eafd155b039aaab3549ba21
-  languageName: node
-  linkType: hard
-
-"axios-retry@npm:^3.1.9":
-  version: 3.1.9
-  resolution: "axios-retry@npm:3.1.9"
-  dependencies:
-    is-retry-allowed: ^1.1.0
-  checksum: 1e6a4df3089bd08377734e2dcb58a6895b272ca9facd6e8b2d0388c342b31d39a1ec4592abe171d9f596bbab374fbc4de6e845d4eb6d7440c874e97933f29888
-  languageName: node
-  linkType: hard
-
-"axios@npm:^0.21.1":
-  version: 0.21.1
-  resolution: "axios@npm:0.21.1"
-  dependencies:
-    follow-redirects: ^1.10.0
-  checksum: 864fb7b5d077d236737f10adca53bf451a93f35a15271f56fba8da07265a02d26b7d881b935a6697dc6adb0549ea3e56d2eecb403edaa3bb78f6479901c10f69
   languageName: node
   linkType: hard
 
@@ -12180,7 +12130,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eventemitter3@npm:^4.0.0, eventemitter3@npm:^4.0.4":
+"eventemitter3@npm:^4.0.4":
   version: 4.0.7
   resolution: "eventemitter3@npm:4.0.7"
   checksum: 1fc12c7bc3b4194c50975827e72d56ff57c32b75a4c7dbf4d5eebf3c8371f6f1aad6799150b609de1b867c0d8a9885c08b6ca5e7e0dc437d6152f3063b2607dd
@@ -12792,16 +12742,6 @@ __metadata:
     inherits: ^2.0.3
     readable-stream: ^2.3.6
   checksum: b8fa1fbfadd5c4b6df3cf2c34b3c408fe508a2899c536bafa339f679de545689997e907bd4ff61dd292942f8044fb2f293a5956dd8b601f6a5601617842d0dda
-  languageName: node
-  linkType: hard
-
-"follow-redirects@npm:^1.0.0, follow-redirects@npm:^1.10.0":
-  version: 1.13.1
-  resolution: "follow-redirects@npm:1.13.1"
-  peerDependenciesMeta:
-    debug:
-      optional: true
-  checksum: c7c6c905876b939af04a1b27afa70e9c0ab5015d96f5ee49dd80db6952dc8c960b96a229647504468615d8a1a400da9bec9449e2aea9f9c6da6fdca0ba17d4c2
   languageName: node
   linkType: hard
 
@@ -14305,30 +14245,6 @@ fsevents@~2.3.2:
   languageName: node
   linkType: hard
 
-"http-proxy-middleware@npm:^1.0.6":
-  version: 1.0.6
-  resolution: "http-proxy-middleware@npm:1.0.6"
-  dependencies:
-    "@types/http-proxy": ^1.17.4
-    http-proxy: ^1.18.1
-    is-glob: ^4.0.1
-    lodash: ^4.17.20
-    micromatch: ^4.0.2
-  checksum: 46385b03f1a2c5895e6ed054ebb966ac6e8929405bbe8690db78dce460ec19f4cd892fcb12f99f869a047ef888409d0fe7db703d936d853c2c22ea17dddba27b
-  languageName: node
-  linkType: hard
-
-"http-proxy@npm:^1.18.1":
-  version: 1.18.1
-  resolution: "http-proxy@npm:1.18.1"
-  dependencies:
-    eventemitter3: ^4.0.0
-    follow-redirects: ^1.0.0
-    requires-port: ^1.0.0
-  checksum: fc2062718d77868eff0d2707652d7e0d302a0f85d90f317daa410df5c41fbe009589c80bc73cc72a44368bb37d071c8f52aaa5b3ce82a08f3524a79ddf178b9b
-  languageName: node
-  linkType: hard
-
 "http-signature@npm:~1.2.0":
   version: 1.2.0
   resolution: "http-signature@npm:1.2.0"
@@ -15253,13 +15169,6 @@ fsevents@~2.3.2:
   version: 1.1.0
   resolution: "is-resolvable@npm:1.1.0"
   checksum: ef1a289c54e1115f668cd4fbfd6dc53d6bfa02c2c12e812a578aefbe795b72339cde37e9ee5709d15a21009cadadba2c61cf810f2dd1da29e3c651776c98dda8
-  languageName: node
-  linkType: hard
-
-"is-retry-allowed@npm:^1.1.0":
-  version: 1.2.0
-  resolution: "is-retry-allowed@npm:1.2.0"
-  checksum: 739384d2662f38fe0edd1bcdf7f88551c6f1b1fdc7fde3ba86442cd675d337f14100d6479bcbb4635f7e38d11e1a2c2e173a52ba39547631960641d9fbe65531
   languageName: node
   linkType: hard
 
@@ -22078,13 +21987,6 @@ fsevents@~2.3.2:
   version: 2.0.0
   resolution: "require-main-filename@npm:2.0.0"
   checksum: 8d3633149a7fef67d14613146247137fe1dc4cc969bf2d1adcd40e3c28056de503229f41e78cba5efebad3a223cbfb4215fd220d879148df10c6d9a877099dbd
-  languageName: node
-  linkType: hard
-
-"requires-port@npm:^1.0.0":
-  version: 1.0.0
-  resolution: "requires-port@npm:1.0.0"
-  checksum: 0db25fb2ac9b4f2345a350846b7ba99d1f25a6686b1728246d14f05450c8f2fc066bdfae4561b4be2627c184a030a27e17268cfefdf46836e271db13734bc49e
   languageName: node
   linkType: hard
 
