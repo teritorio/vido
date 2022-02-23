@@ -100,14 +100,14 @@ export default Vue.extend({
     mapStyle: StyleSpecification | null
     mapStyleCache: { [key: string]: StyleSpecification }
     locales: Record<string, string>
-    languageControl: OpenMapTilesLanguage
+    languageControl: OpenMapTilesLanguage | null
   } {
     return {
       map: null,
       mapStyle: null,
       mapStyleCache: {},
       locales: {},
-      languageControl: new OpenMapTilesLanguage(),
+      languageControl: null,
     }
   },
 
@@ -125,7 +125,7 @@ export default Vue.extend({
       this.setStyle(value)
     },
     locale(locale: string) {
-      this.languageControl.setLanguage(locale)
+      this.setLanguage(locale)
     },
   },
 
@@ -144,6 +144,9 @@ export default Vue.extend({
   methods: {
     onMapInit(map: maplibregl.Map) {
       this.map = map
+      this.languageControl = new OpenMapTilesLanguage({
+        defaultLanguage: this.locale,
+      })
       this.map.addControl(this.languageControl)
     },
 
@@ -173,7 +176,7 @@ export default Vue.extend({
     },
 
     setLanguage(locale: string) {
-      this.languageControl.setLanguage(locale)
+      this.languageControl?.setLanguage(locale)
     },
   },
 })

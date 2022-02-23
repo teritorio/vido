@@ -7,6 +7,7 @@
 <script lang="ts">
 import Vue from 'vue'
 import { MetaInfo } from 'vue-meta'
+import { mapActions } from 'vuex'
 
 import MapPois from '@/components/MapPois.vue'
 import { getPoiByIds } from '@/lib/apiPois'
@@ -77,6 +78,16 @@ export default Vue.extend({
 
   head(): MetaInfo {
     return headerFromSettings(this.settings)
+  },
+
+  mounted() {
+    this.setSiteLocale(this.$i18n.locale)
+  },
+
+  methods: {
+    ...mapActions({
+      setSiteLocale: 'site/setLocale',
+    }),
   },
 })
 </script>

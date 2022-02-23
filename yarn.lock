@@ -5351,12 +5351,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@teritorio/openmaptiles-gl-language@npm:^1.1.0":
-  version: 1.1.0
-  resolution: "@teritorio/openmaptiles-gl-language@npm:1.1.0"
+"@teritorio/openmaptiles-gl-language@npm:^1.2.0":
+  version: 1.2.0
+  resolution: "@teritorio/openmaptiles-gl-language@npm:1.2.0"
   peerDependencies:
     mapbox-gl: ">=0.29.0 <2.0.0"
-  checksum: a38cf45ccb5fb12fd00287adc514cba4db611edb1261c3edff1945a114a862f7f1e691d50e05b2d93cc9e5d20e14d5297be9f778f5d1ed83138ca56d2f8b9176
+  checksum: da2aa7afabd5f9205a7e7e3158eaf1b37f28e6db2d3d4c4629630430214ce8554b56cbedf4666fdce8edc11861ac39dc4eec9297114a81387cd3ebb77d350c56
   languageName: node
   linkType: hard
 
@@ -5387,7 +5387,7 @@ __metadata:
     "@nuxtjs/tailwindcss": ^3.4.3
     "@tailwindcss/forms": ^0.3.2
     "@teritorio/map": ^0.10.0
-    "@teritorio/openmaptiles-gl-language": ^1.1.0
+    "@teritorio/openmaptiles-gl-language": ^1.2.0
     "@types/geojson": ^7946.0.8
     "@types/lodash.debounce": ^4.0.6
     "@types/lodash.memoize": ^4.1.6

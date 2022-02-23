@@ -5,6 +5,7 @@
 <script lang="ts">
 import Vue from 'vue'
 import { MetaInfo } from 'vue-meta'
+import { mapActions } from 'vuex'
 
 import { getPoiById } from '@/lib/apiPois'
 import { getSettings, headerFromSettings } from '@/lib/apiSettings'
@@ -65,6 +66,16 @@ export default Vue.extend({
     return headerFromSettings(this.settings, {
       title: this.poi?.properties.name,
     })
+  },
+
+  mounted() {
+    this.setSiteLocale(this.$i18n.locale)
+  },
+
+  methods: {
+    ...mapActions({
+      setSiteLocale: 'site/setLocale',
+    }),
   },
 })
 </script>

@@ -5,6 +5,7 @@
 <script lang="ts">
 import Vue from 'vue'
 import { MetaInfo } from 'vue-meta'
+import { mapActions } from 'vuex'
 
 import Home from '@/components/Home/Home.vue'
 import { Category, getMenu } from '@/lib/apiMenu'
@@ -58,6 +59,16 @@ export default Vue.extend({
     this.$store.dispatch('menu/fetchConfig', {
       categories: this.categories,
     })
+  },
+
+  mounted() {
+    this.setSiteLocale(this.$i18n.locale)
+  },
+
+  methods: {
+    ...mapActions({
+      setSiteLocale: 'site/setLocale',
+    }),
   },
 })
 </script>
