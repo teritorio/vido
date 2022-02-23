@@ -76,6 +76,9 @@ export default (Vue as VueConstructor<
     open(link: string) {
       this.link = link
       this.$refs.modal.show()
+
+      const scrollWidth = window.innerWidth - document.body.clientWidth
+      document.body.style.marginRight = `${scrollWidth}px`
     },
     copyLink() {
       this.$tracking({ type: 'favorites_event', event: 'copy_link' })
@@ -97,6 +100,7 @@ export default (Vue as VueConstructor<
     close() {
       this.link = null
       this.$refs.modal.hide()
+      document.body.style.marginRight = '0'
     },
   },
 })
