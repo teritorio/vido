@@ -109,7 +109,7 @@ export default {
       useCookie: false,
     },
     locales: [
-      { code: 'en', name: 'English', flag: 'UK', iso: 'en-US', file: 'en.js' },
+      { code: 'en', name: 'English', flag: 'GB', iso: 'en-US', file: 'en.js' },
       { code: 'es', name: 'Español', flag: 'ES', iso: 'es-ES', file: 'es.js' },
       { code: 'fr', name: 'Français', flag: 'FR', iso: 'fr-FR', file: 'fr.js' },
     ],
