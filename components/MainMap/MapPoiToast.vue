@@ -119,6 +119,13 @@
             </li>
           </ul>
 
+          <p
+            v-else-if="['start_date', 'end_date'].indexOf(field.k) >= 0"
+            class="text-sm"
+          >
+            {{ $d(new Date(field.v)) }}
+          </p>
+
           <p v-else-if="field.k === 'opening_hours'" class="text-sm">
             <OpeningHours :opening-hours="field.v" />
           </p>
