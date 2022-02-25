@@ -51,13 +51,10 @@ export default Vue.extend({
   },
   computed: {
     ...mapGetters({
-      getHighlightedRootCategoriesFromCategoryId:
-        'menu/getHighlightedRootCategoriesFromCategoryId',
-      getNonHighlightedRootCategoriesFromCategoryId:
-        'menu/getNonHighlightedRootCategoriesFromCategoryId',
+      getRootCategoriesFromCategoryId: 'menu/getRootCategoriesFromCategoryId',
     }),
     nonHighlightedCategories(): Category[] {
-      return this.getNonHighlightedRootCategoriesFromCategoryId(this.categoryId)
+      return this.getRootCategoriesFromCategoryId(this.categoryId)
     },
   },
   methods: {

@@ -66,14 +66,9 @@ export interface MenuGroup extends ApiMenuGroup {
     // eslint-disable-next-line camelcase
     vido_children: null | ApiMenuItem['id'][]
   }
-  highlighted: boolean
 }
 
-export interface MenuCategory extends ApiMenuCategory {
-  highlighted: boolean
-}
-
-export type Category = MenuGroup | MenuCategory
+export type Category = MenuGroup | ApiMenuCategory
 
 export function getMenu(
   apiEndpoint: string,

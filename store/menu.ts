@@ -235,28 +235,12 @@ export const getters = {
       .filter((c) => c.parent_id === categoryId)
       .sort((a, b) => a.index_order - b.index_order),
 
-  getHighlightedRootCategoriesFromCategoryId: (state: State) => (
-    categoryId: number
-  ) =>
+  getRootCategoriesFromCategoryId: (state: State) => (categoryId: number) =>
     Object.values(state.categories)
       .filter(
         (c) =>
           c.parent_id !== null &&
           state.categories[c.parent_id]?.parent_id === null &&
-          c.highlighted &&
-          c.parent_id === categoryId
-      )
-      .sort((a, b) => a.index_order - b.index_order),
-
-  getNonHighlightedRootCategoriesFromCategoryId: (state: State) => (
-    categoryId: number
-  ) =>
-    Object.values(state.categories)
-      .filter(
-        (c) =>
-          c.parent_id !== null &&
-          state.categories[c.parent_id]?.parent_id === null &&
-          !c.highlighted &&
           c.parent_id === categoryId
       )
       .sort((a, b) => a.index_order - b.index_order),
