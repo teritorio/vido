@@ -227,7 +227,7 @@ export default Vue.extend({
             c.category?.tourism_style_merge &&
             Array.isArray(c.category.tourism_style_class)
         )
-        .map((c) => (c.menu_group || c.category).tourism_style_class)
+        .map((c) => (c.menu_group || c.link || c.category).tourism_style_class)
     },
 
     isModeExplorer(): boolean {

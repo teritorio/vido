@@ -7,8 +7,12 @@
       <div class="flex items-center space-x-4">
         <div class="relative">
           <TeritorioIconBadge
-            :color="(category.menu_group || category.category).color"
-            :picto="(category.menu_group || category.category).icon"
+            :color="
+              (category.menu_group || category.link || category.category).color
+            "
+            :picto="
+              (category.menu_group || category.link || category.category).icon
+            "
             size="lg"
           />
 
@@ -108,7 +112,11 @@ export default Vue.extend({
         type: 'category_event',
         event: 'enable',
         categoryId: this.category.id,
-        title: (this.category.menu_group || this.category.category).name.fr,
+        title: (
+          this.category.menu_group ||
+          this.category.link ||
+          this.category.category
+        ).name.fr,
       })
       this.$emit('click', this.category.id)
     },
@@ -117,7 +125,11 @@ export default Vue.extend({
         type: 'category_event',
         event: 'filter',
         categoryId: this.category.id,
-        title: (this.category.menu_group || this.category.category).name.fr,
+        title: (
+          this.category.menu_group ||
+          this.category.link ||
+          this.category.category
+        ).name.fr,
       })
       this.$emit('filter-click', this.category.id)
     },

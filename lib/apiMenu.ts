@@ -38,12 +38,28 @@ export interface ApiMenuGroup extends ApiMenuItem {
     // eslint-disable-next-line camelcase
     display_mode: 'large' | 'compact'
   }
+  link: undefined
+  category: undefined
+}
+
+export interface ApiMenuLink extends ApiMenuItem {
+  // eslint-disable-next-line camelcase
+  menu_group: undefined
+  link: {
+    href: string
+    name: MultilingualString
+    icon: string
+    color: string
+    // eslint-disable-next-line camelcase
+    display_mode: 'large' | 'compact'
+  }
   category: undefined
 }
 
 export interface ApiMenuCategory extends ApiMenuItem {
   // eslint-disable-next-line camelcase
   menu_group: undefined
+  link: undefined
   category: {
     name: MultilingualString
     icon: string
@@ -68,7 +84,7 @@ export interface MenuGroup extends ApiMenuGroup {
   }
 }
 
-export type Category = MenuGroup | ApiMenuCategory
+export type Category = MenuGroup | ApiMenuLink | ApiMenuCategory
 
 export function getMenu(
   apiEndpoint: string,

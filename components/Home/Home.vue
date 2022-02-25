@@ -355,7 +355,7 @@ export default (Vue as VueConstructor<
       const resources: Record<Category['id'], string> = {}
 
       this.subCategories.forEach((sc) => {
-        resources[sc.id] = (sc.menu_group || sc.category).icon
+        resources[sc.id] = (sc.menu_group || sc.link || sc.category).icon
       })
 
       return resources

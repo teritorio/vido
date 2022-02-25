@@ -40,9 +40,11 @@ export default Vue.extend({
     listItems() {
       return this.$props.categories.map((category: Category) => ({
         ...category,
-        color: (category.menu_group || category.category).color,
-        label: (category.menu_group || category.category).name.fr,
-        picto: (category.menu_group || category.category).icon,
+        color: (category.menu_group || category.link || category.category)
+          .color,
+        label: (category.menu_group || category.link || category.category).name
+          .fr,
+        picto: (category.menu_group || category.link || category.category).icon,
         filters: category.category?.filters || {},
         selected: this.$props.isSubCategorySelected(category.id),
       }))

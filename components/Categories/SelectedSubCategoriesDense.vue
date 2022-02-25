@@ -8,12 +8,18 @@
       v-for="category in selectedCategories"
       :key="category.id"
       class="m-1 relative"
-      :title="(category.menu_group || category.category).name.fr"
+      :title="
+        (category.menu_group || category.link || category.category).name.fr
+      "
     >
       <TeritorioIconBadge
         :id="category.id"
-        :color="(category.menu_group || category.category).color"
-        :picto="(category.menu_group || category.category).icon"
+        :color="
+          (category.menu_group || category.link || category.category).color
+        "
+        :picto="
+          (category.menu_group || category.link || category.category).icon
+        "
         size="lg"
       />
       <button

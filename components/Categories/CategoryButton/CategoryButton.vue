@@ -1,5 +1,8 @@
 <template>
   <button
+    :is="href ? 'a' : 'button'"
+    :href="href"
+    target="black_"
     :class="[
       'flex focus:outline-none outline-none items-center self-stretch justify-start pt-4 pb-2 leading-none transition-colors rounded-lg p-4',
       !selected && 'hover:bg-gray-100',
@@ -7,7 +10,7 @@
       type === 'compact' && 'flex-col',
       type === 'large' && 'col-span-3 sm:col-span-4',
     ]"
-    @click="onClick"
+    @click="!href && onClick()"
   >
     <div
       class="relative flex items-center justify-center w-12 h-12 mb-2 text-white rounded-full"
@@ -46,9 +49,15 @@
       {{ label }}
     </div>
     <font-awesome-icon
-      v-if="type === 'large'"
+      v-if="type === 'large' && !href"
       icon="chevron-right"
       class="text-gray-700 shrink-0"
+      size="sm"
+    />
+    <font-awesome-icon
+      v-else-if="type === 'large' && href"
+      icon="external-link-alt"
+      class="text-gray-700"
       size="sm"
     />
   </button>
@@ -90,6 +99,10 @@ export default Vue.extend({
     },
     type: {
       type: String,
+    },
+    href: {
+      type: String,
+      default: null,
     },
   },
   methods: {

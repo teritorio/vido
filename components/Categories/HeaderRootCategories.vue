@@ -9,10 +9,20 @@
           v-for="category in nonHighlightedCategories"
           :id="category.id"
           :key="category.id"
-          :color="(category.menu_group || category.category).color"
-          :label="(category.menu_group || category.category).name.fr"
-          :picto="(category.menu_group || category.category).icon"
-          :type="(category.menu_group || category.category).display_mode"
+          :color="
+            (category.menu_group || category.link || category.category).color
+          "
+          :label="
+            (category.menu_group || category.link || category.category).name.fr
+          "
+          :picto="
+            (category.menu_group || category.link || category.category).icon
+          "
+          :type="
+            (category.menu_group || category.link || category.category)
+              .display_mode
+          "
+          :href="category.link && category.link.href"
           :active-sub-categories="getCategoryCount(category.id)"
           @click="onCategoryClick(category)"
         />
@@ -65,7 +75,8 @@ export default Vue.extend({
       this.$tracking({
         type: 'category',
         categoryId: category.id,
-        title: (category.menu_group || category.category).name.fr,
+        title: (category.menu_group || category.link || category.category).name
+          .fr,
       })
       this.$emit('category-click', category.id)
     },
