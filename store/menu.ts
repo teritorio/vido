@@ -119,11 +119,11 @@ export const actions = {
           // Associate to parent_id
           if (category.parent_id && category.parent_id !== null) {
             const parent = stateCategories[category.parent_id]
-            if (parent) {
-              if (!parent.vido_children) {
-                parent.vido_children = []
+            if (parent?.menu_group) {
+              if (!parent.menu_group.vido_children) {
+                parent.menu_group.vido_children = []
               }
-              parent.vido_children.push(category.id)
+              parent.menu_group.vido_children.push(category.id)
             }
           }
         })
@@ -263,7 +263,7 @@ export const getters = {
 
   categoryRootCategories: (state: State) =>
     Object.values(state.categories)
-      .filter((c) => c.parent_id === null && c.vido_children)
+      .filter((c) => c.parent_id === null && c?.menu_group?.vido_children)
       .sort((a, b) => a.index_order - b.index_order),
 
   rootCategories: (state: State) =>

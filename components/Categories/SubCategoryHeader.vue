@@ -74,8 +74,11 @@ export default Vue.extend({
     allCategoriesId(): Category['id'][] {
       let ids: Category['id'][] = []
       this.categories.forEach((c: Category) => {
-        if (c.vido_children && c.vido_children.length > 0) {
-          ids = ids.concat(c.vido_children)
+        if (
+          c?.menu_group?.vido_children &&
+          c.menu_group.vido_children.length > 0
+        ) {
+          ids = ids.concat(c.menu_group.vido_children)
         } else {
           ids.push(c.id)
         }
@@ -86,8 +89,11 @@ export default Vue.extend({
       let hasNotSelected = false
 
       for (const c of this.categories) {
-        if (c.vido_children && c.vido_children.length > 0) {
-          for (const sc of c.vido_children) {
+        if (
+          c?.menu_group?.vido_children &&
+          c.menu_group.vido_children.length > 0
+        ) {
+          for (const sc of c.menu_group.vido_children) {
             if (!this.isSubCategorySelected(sc)) {
               hasNotSelected = true
               break

@@ -99,7 +99,7 @@ export default Vue.extend({
   },
   computed: {
     hasChildren(): boolean {
-      return (this.category.vido_children || []).length > 0
+      return (this.category?.menu_group?.vido_children || []).length > 0
     },
   },
   methods: {

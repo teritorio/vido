@@ -482,7 +482,11 @@ export default (Vue as VueConstructor<
     onSubCategoryClick(categoryId: Category['id']) {
       const sc = this.subCategories.find((sc) => sc.id === categoryId)
 
-      if (sc && sc.vido_children && sc.vido_children.length > 0) {
+      if (
+        sc &&
+        sc?.menu_group?.vido_children &&
+        sc.menu_group.vido_children.length > 0
+      ) {
         this.onRootCategoryClick(categoryId)
       } else {
         this.toggleSubCategorySelection(categoryId)

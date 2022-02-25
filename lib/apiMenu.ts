@@ -25,9 +25,6 @@ export interface ApiMenuItem {
   // eslint-disable-next-line camelcase
   index_order: number
   hidden: boolean
-  // eslint-disable-next-line camelcase
-  selected_by_default: boolean
-  // eslint-disable-next-line camelcase
 }
 
 export interface ApiMenuGroup extends ApiMenuItem {
@@ -65,13 +62,14 @@ export interface ApiMenuCategory extends ApiMenuItem {
 
 export interface MenuGroup extends ApiMenuGroup {
   // eslint-disable-next-line camelcase
-  vido_children: null | ApiMenuItem['id'][]
+  menu_group: ApiMenuGroup['menu_group'] & {
+    // eslint-disable-next-line camelcase
+    vido_children: null | ApiMenuItem['id'][]
+  }
   highlighted: boolean
 }
 
 export interface MenuCategory extends ApiMenuCategory {
-  // eslint-disable-next-line camelcase
-  vido_children: null | ApiMenuItem['id'][]
   highlighted: boolean
 }
 
