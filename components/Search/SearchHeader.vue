@@ -81,7 +81,7 @@
       <font-awesome-icon icon="arrow-left" class="text-gray-800" size="xs" />
     </button>
 
-    <div v-if="results > 0" class="overflow-y-auto">
+    <div v-if="results > 0" class="search-results">
       <SearchResultBlock
         v-if="itemsMenuItems.length > 0"
         type="category"
@@ -385,3 +385,11 @@ export default Vue.extend({
   },
 })
 </script>
+
+<style>
+.search-results {
+  height: auto;
+  overflow-y: auto;
+  max-height: calc(100vh - 168px);
+}
+</style>
