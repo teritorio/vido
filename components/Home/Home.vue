@@ -114,8 +114,9 @@
       </div>
     </header>
     <MainMap
+      v-if="initialBbox"
       ref="mainMap"
-      :default-bounds="settings.bbox_line.coordinates"
+      :default-bounds="initialBbox"
       :small="isBottomMenuOpened"
       :selected-categories="state.context.selectedSubCategoriesIds"
       :get-sub-category="selectSubCategory"
@@ -153,15 +154,20 @@
       :on-go-back-click-filter="onBackToSubCategoryClick"
       @category-click="onRootCategoryClick"
       @sub-category-click="onSubCategoryClick"
-      @exploreAroundSelectedPoi="$refs.mainMap.exploreAroundSelectedPoi()"
-      @toggleFavoriteMode="$refs.mainMap.toggleFavoriteMode($event)"
-      @goToSelectedPoi="$refs.mainMap.goToSelectedPoi()"
+      @exploreAroundSelectedPoi="
+        $refs.mainMap && $refs.mainMap.exploreAroundSelectedPoi()
+      "
+      @toggleFavoriteMode="
+        $refs.mainMap && $refs.mainMap.toggleFavoriteMode($event)
+      "
+      @goToSelectedPoi="$refs.mainMap && $refs.mainMap.goToSelectedPoi()"
     />
   </div>
 </template>
 
 <script lang="ts">
 import debounce from 'lodash.debounce'
+import { LngLatBoundsLike } from 'maplibre-gl'
 import Vue, { PropType, VueConstructor } from 'vue'
 import { mapGetters, mapActions } from 'vuex'
 import { interpret, Interpreter, State } from 'xstate'
@@ -176,6 +182,7 @@ import SearchHeader from '@/components/Search/SearchHeader.vue'
 import { Category } from '@/lib/apiMenu'
 import { getPoiById, ApiPoi } from '@/lib/apiPois'
 import { Settings } from '@/lib/apiSettings'
+import { getBBoxFeature } from '@/lib/bbox'
 import { Mode, FilterValues, ApiMenuItemSearchResult } from '@/utils/types'
 import { getHashPart, setHashPart } from '@/utils/url'
 
@@ -199,7 +206,7 @@ const interpretOptions = { devTools: false }
 export default (Vue as VueConstructor<
   Vue & {
     $refs: {
-      mainMap: InstanceType<typeof MainMap>
+      mainMap: InstanceType<typeof MainMap> | null
     }
   }
 >).extend({
@@ -223,6 +230,7 @@ export default (Vue as VueConstructor<
     state: State<HomeContext, HomeEvent, HomeStateSchema>
     previousSubCategories: Category['id'][]
     showPoi: boolean
+    initialBbox: LngLatBoundsLike | null
   } {
     const debouncedFetchFeatures = debounce(
       (selectedSubCategoriesIds) =>
@@ -251,6 +259,7 @@ export default (Vue as VueConstructor<
       ),
       state: homeMachine.initialState,
       showPoi: false,
+      initialBbox: null,
     }
   },
   head() {
@@ -371,7 +380,7 @@ export default (Vue as VueConstructor<
         val.matches(this.states.SubCategories) ||
         val.matches(this.states.Categories)
       ) {
-        this.$refs.mainMap.resizeMap()
+        this.$refs.mainMap?.resizeMap()
       }
     },
     mode() {
@@ -381,12 +390,12 @@ export default (Vue as VueConstructor<
     },
     showPoi(val) {
       if (this.$isMobile() && val) {
-        this.$refs.mainMap.resizeMap()
+        this.$refs.mainMap?.resizeMap()
       }
     },
     selectedFeature(val) {
       if (this.$isMobile() && val) {
-        this.$refs.mainMap.resizeMap()
+        this.$refs.mainMap?.resizeMap()
       }
     },
   },
@@ -408,23 +417,49 @@ export default (Vue as VueConstructor<
       .start()
   },
   mounted() {
-    if (typeof location !== 'undefined' && getHashPart('cat')) {
-      this.selectSubCategory(
-        getHashPart('cat')
-          ?.split('.')
-          .map((i) => parseInt(i, 10)) || []
-      )
-    } else if (!getHashPart('favs')) {
-      const enabledCategories: Category['id'][] = []
+    if (typeof location !== 'undefined') {
+      if (getHashPart('cat')) {
+        this.selectSubCategory(
+          getHashPart('cat')
+            ?.split('.')
+            .map((i) => parseInt(i, 10)) || []
+        )
+      } else if (!getHashPart('favs')) {
+        const enabledCategories: Category['id'][] = []
 
-      Object.keys(this.categories).forEach((categoryIdString) => {
-        const categoryId = parseInt(categoryIdString, 10)
-        if (this.categories[categoryId].selected_by_default) {
-          enabledCategories.push(categoryId)
-        }
-      })
+        Object.keys(this.categories).forEach((categoryIdString) => {
+          const categoryId = parseInt(categoryIdString, 10)
+          if (this.categories[categoryId].selected_by_default) {
+            enabledCategories.push(categoryId)
+          }
+        })
 
-      this.selectSubCategory(enabledCategories)
+        this.selectSubCategory(enabledCategories)
+      }
+
+      const poiId = getHashPart('poi')
+      if (poiId) {
+        getPoiById(
+          this.$config.API_ENDPOINT,
+          this.$config.API_PROJECT,
+          this.$config.API_THEME,
+          poiId,
+          {
+            as_point: false,
+          }
+        ).then((poi) => {
+          if (poi) {
+            this.initialBbox = getBBoxFeature(poi)
+          }
+          if (!this.initialBbox) {
+            // @ts-ignore
+            this.initialBbox = this.settings.bbox_line.coordinates
+          }
+        })
+      } else {
+        // @ts-ignore
+        this.initialBbox = this.settings.bbox_line.coordinates
+      }
     }
 
     this.goToHome()
@@ -578,9 +613,7 @@ export default (Vue as VueConstructor<
       this.setSelectedFeature(feature).then(() => {
         this.service.send(HomeEvents.GoToCategories)
 
-        if (this.$refs.mainMap) {
-          this.$refs.mainMap.goToSelectedPoi()
-        }
+        this.$refs.mainMap?.goToSelectedPoi()
       })
     },
     onBottomMenuButtonClick() {
@@ -590,20 +623,20 @@ export default (Vue as VueConstructor<
             if (!this.isModeExplorer) {
               this.setSelectedFeature(null)
             } else {
-              this.$refs.mainMap.setPoiToastVisibility(false)
+              this.$refs.mainMap?.setPoiToastVisibility(false)
             }
           }
           this.goToHome()
         } else if (!this.isModeExplorer) {
           this.goToCategories()
         } else if (this.selectedFeature && !this.isPoiToastVisible) {
-          this.$refs.mainMap.setPoiToastVisibility(true)
+          this.$refs.mainMap?.setPoiToastVisibility(true)
         }
       } else if (this.selectedFeature) {
         if (!this.isModeExplorer) {
           this.setSelectedFeature(null)
         } else {
-          this.$refs.mainMap.setPoiToastVisibility(false)
+          this.$refs.mainMap?.setPoiToastVisibility(false)
         }
       }
     },

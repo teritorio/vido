@@ -7,6 +7,7 @@
         bounds: bounds,
         fitBoundsOptions: {
           padding: 50,
+          maxZoom: 17,
         },
         center: center,
         hash: hash,
