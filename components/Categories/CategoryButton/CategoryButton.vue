@@ -4,7 +4,7 @@
     :href="href"
     target="black_"
     :class="[
-      'flex focus:outline-none outline-none items-center self-stretch justify-start pt-4 pb-2 leading-none transition-colors rounded-lg p-4',
+      'flex focus:outline-none outline-none items-center self-stretch justify-start pt-4 pb-2 leading-none transition-colors rounded-lg p-4 relative',
       !selected && 'hover:bg-gray-100',
       selected && 'selected bg-gray-100 hover:bg-transparent',
       type === 'compact' && 'flex-col',
@@ -43,7 +43,8 @@
     <div
       :class="[
         'text-xs',
-        type === 'large' && 'mx-4 grow text-sm w-full text-left',
+        type === 'large' && 'mx-4  text-sm text-left',
+        type === 'large' && !href && 'grow w-full',
       ]"
     >
       {{ label }}
@@ -55,9 +56,13 @@
       size="sm"
     />
     <font-awesome-icon
-      v-else-if="type === 'large' && href"
+      v-else-if="href"
       icon="external-link-alt"
-      class="text-gray-700"
+      :class="[
+        'text-gray-700',
+        type === 'compact' &&
+          'absolute top-4 right-4 z-10 rounded-md bg-white fill-current ring-2 border-2 border-white ring-white',
+      ]"
       size="sm"
     />
   </button>
