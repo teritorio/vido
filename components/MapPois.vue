@@ -5,6 +5,7 @@
       :center="center()"
       :bounds="bounds()"
       :zoom="selectionZoom.poi"
+      :attributions="attributions"
       @map-init="onMapInit"
     />
   </div>
@@ -29,6 +30,10 @@ export default Vue.extend({
   },
 
   props: {
+    attributions: {
+      type: Array as PropType<string[]>,
+      required: true,
+    },
     pois: {
       type: Object as PropType<ApiPois>,
       default: null,

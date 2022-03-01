@@ -2,7 +2,7 @@ import { StyleSpecification, Map } from 'maplibre-gl'
 
 export const fetchStyle = (
   styleUrl: string,
-  attributions: string[]
+  extraAttributions: string[]
 ): Promise<StyleSpecification> => {
   return fetch(styleUrl)
     .then((res) => res.json())
@@ -31,7 +31,7 @@ export const fetchStyle = (
 
       vectoSourceAttribution.forEach((attr, i) => {
         if (attr) {
-          const existingAttributions = attributions.filter(
+          const existingAttributions = extraAttributions.filter(
             (att: string) => !attr.includes(att)
           )
 

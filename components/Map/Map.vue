@@ -70,7 +70,7 @@ export default Vue.extend({
       type: [Array, Object] as PropType<LngLatBoundsLike>,
       default: undefined,
     },
-    attributions: {
+    extraAttributions: {
       type: Array as PropType<string[]>,
       default: () => [],
     },
@@ -169,7 +169,7 @@ export default Vue.extend({
         }
         const style = await fetchStyle(
           styleURLs[mapStyleEnum],
-          this.attributions
+          this.extraAttributions
         )
         this.mapStyleCache[mapStyleEnum] = style
         return style

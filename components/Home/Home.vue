@@ -117,6 +117,7 @@
       v-if="initialBbox"
       ref="mainMap"
       :default-bounds="initialBbox"
+      :attributions="settings.attributions"
       :small="isBottomMenuOpened"
       :selected-categories="state.context.selectedSubCategoriesIds"
       :get-sub-category="selectSubCategory"

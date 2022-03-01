@@ -1,6 +1,6 @@
 <template>
   <div class="relative flex flex-col w-full h-full">
-    <MapPois :pois="pois" />
+    <MapPois :extra-attributions="settings.attributions" :pois="pois" />
   </div>
 </template>
 

@@ -58,7 +58,11 @@
         <div class="detail-right">
           <Carousel v-if="p.image" :images="p.image" />
           <Mapillary v-if="p.mapillary" :image-id="p.mapillary" />
-          <MapPois :pois="{ features: [poi] }" class="relative" />
+          <MapPois
+            :extra-attributions="settings.attributions"
+            :pois="{ features: [poi] }"
+            class="relative"
+          />
           <p>
             {{ $tc('details.lastUpdate') }}
             <a href="https://www.openstreetmap.org/" target="_blank">

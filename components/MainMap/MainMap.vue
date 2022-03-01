@@ -14,7 +14,7 @@
       >
         <Map
           :bounds="defaultBounds"
-          :attributions="attributions"
+          :extra-attributions="extraAttributions"
           :map-style-enum="selectedBackground"
           :pitch="pitch"
           :rotate="true"
@@ -152,7 +152,7 @@ export default Vue.extend({
       type: [Array, Object] as PropType<LngLatBoundsLike>,
       default: null,
     },
-    attributions: {
+    extraAttributions: {
       type: Array as PropType<string[]>,
       default: () => [],
     },
