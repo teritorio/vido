@@ -42,7 +42,7 @@
         </Map>
       </div>
 
-      <aside v-if="map" class="pointer-events-none hidden sm:block">
+      <aside v-if="map" class="pointer-events-none">
         <div
           class="absolute flex justify-end pointer-events-auto items-top pt-4 right-3 sm:pt-0 w-40 sm:w-48 top-3"
         >
