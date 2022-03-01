@@ -224,12 +224,8 @@ export default Vue.extend({
 
     filters(): Array<string[]> {
       return Object.values(this.categories)
-        .filter(
-          (c) =>
-            c.category?.tourism_style_merge &&
-            Array.isArray(c.category.tourism_style_class)
-        )
-        .map((c) => (c.menu_group || c.link || c.category).tourism_style_class)
+        .map((c) => c.category?.tourism_style_class)
+        .filter((s) => s && Array.isArray(s))
     },
 
     isModeExplorer(): boolean {
