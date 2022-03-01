@@ -205,7 +205,7 @@ export default Vue.extend({
 .mapboxgl-ctrl.mapboxgl-ctrl-attrib.mapboxgl-compact {
   min-height: 24px;
 
-  @apply pl-2 pr-8 py-1 rounded-sm hidden sm:block;
+  @apply pl-2 pr-8 py-1 rounded-sm;
 }
 
 .mapboxgl-ctrl.mapboxgl-ctrl-attrib.mapboxgl-compact:not(.mapboxgl-compact-show) {
