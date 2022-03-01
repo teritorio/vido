@@ -182,3 +182,24 @@ export default Vue.extend({
   },
 })
 </script>
+
+<style>
+.mapboxgl-ctrl.mapboxgl-ctrl-attrib {
+  @apply text-xs px-1 py-0.5 rounded-tl-sm;
+}
+
+.mapboxgl-ctrl.mapboxgl-ctrl-attrib.mapboxgl-compact {
+  min-height: 24px;
+
+  @apply pl-2 pr-8 py-1 rounded-sm;
+}
+
+.mapboxgl-ctrl.mapboxgl-ctrl-attrib.mapboxgl-compact:not(.mapboxgl-compact-show) {
+  @apply bg-transparent;
+}
+
+.mapboxgl-ctrl.mapboxgl-ctrl-attrib.mapboxgl-compact.mapboxgl-compact-show
+  .mapboxgl-ctrl-attrib-button {
+  @apply bg-transparent;
+}
+</style>
