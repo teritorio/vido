@@ -10,12 +10,6 @@
     </button>
 
     <div
-      v-if="map && attributions"
-      class="text-xs p-2 text-right"
-      v-html="attributions"
-    ></div>
-
-    <div
       v-if="isBottomMenuOpened"
       class="relative justify-between w-full bg-white shadow-md pointer-events-auto h-auto"
     >
@@ -81,7 +75,6 @@ import { mapGetters } from 'vuex'
 import HeaderRootCategories from '@/components/Categories/HeaderRootCategories.vue'
 import SubCategoryFilterHeader from '@/components/Categories/SubCategoryFilterHeader.vue'
 import SubCategoryHeader from '@/components/Categories/SubCategoryHeader.vue'
-import MainMap from '@/components/MainMap/MainMap.vue'
 import MapPoiToast from '@/components/MainMap/MapPoiToast.vue'
 import { Category } from '@/lib/apiMenu'
 import { ApiPoi } from '@/lib/apiPois'
@@ -108,10 +101,6 @@ export default Vue.extend({
     states: {
       type: Object as PropType<HomeStates>,
       default: {},
-    },
-    map: {
-      type: Object as PropType<typeof MainMap>,
-      default: null,
     },
     isModeExplorer: Boolean,
     isBottomMenuOpened: Boolean,
@@ -148,12 +137,6 @@ export default Vue.extend({
     ...mapGetters({
       categoryRootCategories: 'menu/categoryRootCategories',
     }),
-    attributions() {
-      type MapAttribution = typeof MainMap & { attributions: string }
-      const attrMap = this.map as MapAttribution
-
-      return attrMap.attributions || null
-    },
   },
   methods: {
     onCategoryClick(categoryId: Category['id']) {

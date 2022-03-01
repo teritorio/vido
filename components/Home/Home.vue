@@ -125,6 +125,7 @@
       @click="onMapClick"
       @change-mode="onMapChangeMode"
       @show-poi="onShowPoi"
+      @full-attribution="setFullAttributions($event)"
     />
     <BottomMenu
       class="sm:hidden"
@@ -134,7 +135,6 @@
       :show-poi="showPoi"
       :states="states"
       :state="state"
-      :map="$refs.mainMap"
       :is-menu-config-loaded="isMenuConfigLoaded"
       :is-mode-favorite="isModeFavorite"
       :categories-activesubs-count="subCategoriesCounts"
@@ -164,6 +164,7 @@
       "
       @goToSelectedPoi="$refs.mainMap && $refs.mainMap.goToSelectedPoi()"
     />
+    <Attribution :attributions="fullAttributions" />
   </div>
 </template>
 
@@ -177,6 +178,7 @@ import { interpret, Interpreter, State } from 'xstate'
 import SelectedSubCategoriesDense from '@/components/Categories/SelectedSubCategoriesDense.vue'
 import SubCategoryFilterHeader from '@/components/Categories/SubCategoryFilterHeader.vue'
 import SubCategoryHeader from '@/components/Categories/SubCategoryHeader.vue'
+import Attribution from '@/components/MainMap/Attribution.vue'
 import BottomMenu from '@/components/MainMap/BottomMenu.vue'
 import MainHeader from '@/components/MainMap/MainHeader.vue'
 import MainMap from '@/components/MainMap/MainMap.vue'
@@ -220,6 +222,7 @@ export default (Vue as VueConstructor<
     SubCategoryHeader,
     SubCategoryFilterHeader,
     BottomMenu,
+    Attribution,
   },
   props: {
     settings: {
@@ -233,6 +236,7 @@ export default (Vue as VueConstructor<
     previousSubCategories: Category['id'][]
     showPoi: boolean
     initialBbox: LngLatBoundsLike | null
+    fullAttributions: string
   } {
     const debouncedFetchFeatures = debounce(
       (selectedSubCategoriesIds) =>
@@ -262,6 +266,7 @@ export default (Vue as VueConstructor<
       state: homeMachine.initialState,
       showPoi: false,
       initialBbox: null,
+      fullAttributions: '',
     }
   },
   head() {
@@ -658,6 +663,9 @@ export default (Vue as VueConstructor<
     },
     onShowPoi(show: boolean) {
       this.showPoi = show
+    },
+    setFullAttributions(fullAttributions: string) {
+      this.fullAttributions = fullAttributions
     },
   },
 })

@@ -46,12 +46,7 @@
 <script lang="ts">
 import { OpenMapTilesLanguage } from '@teritorio/openmaptiles-gl-language'
 import Mapbox from 'mapbox-gl-vue'
-import {
-  StyleSpecification,
-  LngLatBoundsLike,
-  LngLatLike,
-  SourceSpecification,
-} from 'maplibre-gl'
+import { StyleSpecification, LngLatBoundsLike, LngLatLike } from 'maplibre-gl'
 import Vue, { PropType } from 'vue'
 import { mapGetters } from 'vuex'
 
@@ -99,6 +94,10 @@ export default Vue.extend({
       type: String,
       default: undefined,
     },
+    showAttribution: {
+      type: Boolean,
+      default: true,
+    },
   },
 
   data(): {
@@ -107,7 +106,6 @@ export default Vue.extend({
     mapStyleCache: { [key: string]: StyleSpecification }
     locales: Record<string, string>
     languageControl: OpenMapTilesLanguage | null
-    attributions: string[]
   } {
     return {
       map: null,
@@ -115,7 +113,6 @@ export default Vue.extend({
       mapStyleCache: {},
       locales: {},
       languageControl: null,
-      attributions: [],
     }
   },
 
@@ -160,6 +157,15 @@ export default Vue.extend({
 
     setStyle(mapStyleEnum: MapStyleEnum) {
       this.getStyle(mapStyleEnum).then((style) => {
+        const vectorSource = Object.values(style.sources).find(
+          (source) => ['vector', 'raster'].lastIndexOf(source.type) >= 0
+        ) as
+          | maplibregl.VectorSourceSpecification
+          | maplibregl.RasterSourceSpecification
+        if (vectorSource) {
+          this.$emit('full-attribution', vectorSource.attribution)
+        }
+
         this.mapStyle = style
         this.map?.setStyle(style)
       })
@@ -179,14 +185,6 @@ export default Vue.extend({
           this.extraAttributions
         )
         this.mapStyleCache[mapStyleEnum] = style
-
-        type SourceAttribution = SourceSpecification & { attribution: string }
-        const sources = style.sources as { [key: string]: SourceAttribution }
-
-        this.attributions = Object.values(sources).reduce<string[]>(
-          (acc, val) => (val?.attribution ? [val.attribution] : acc),
-          []
-        )
 
         return style
       }
