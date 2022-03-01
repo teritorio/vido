@@ -46,7 +46,12 @@
 <script lang="ts">
 import { OpenMapTilesLanguage } from '@teritorio/openmaptiles-gl-language'
 import Mapbox from 'mapbox-gl-vue'
-import { StyleSpecification, LngLatBoundsLike, LngLatLike } from 'maplibre-gl'
+import {
+  StyleSpecification,
+  LngLatBoundsLike,
+  LngLatLike,
+  SourceSpecification,
+} from 'maplibre-gl'
 import Vue, { PropType } from 'vue'
 import { mapGetters } from 'vuex'
 
@@ -102,6 +107,7 @@ export default Vue.extend({
     mapStyleCache: { [key: string]: StyleSpecification }
     locales: Record<string, string>
     languageControl: OpenMapTilesLanguage | null
+    attributions: string[]
   } {
     return {
       map: null,
@@ -109,6 +115,7 @@ export default Vue.extend({
       mapStyleCache: {},
       locales: {},
       languageControl: null,
+      attributions: [],
     }
   },
 
@@ -172,6 +179,15 @@ export default Vue.extend({
           this.extraAttributions
         )
         this.mapStyleCache[mapStyleEnum] = style
+
+        type SourceAttribution = SourceSpecification & { attribution: string }
+        const sources = style.sources as { [key: string]: SourceAttribution }
+
+        this.attributions = Object.values(sources).reduce<string[]>(
+          (acc, val) => (val?.attribution ? [val.attribution] : acc),
+          []
+        )
+
         return style
       }
     },
@@ -191,7 +207,7 @@ export default Vue.extend({
 .mapboxgl-ctrl.mapboxgl-ctrl-attrib.mapboxgl-compact {
   min-height: 24px;
 
-  @apply pl-2 pr-8 py-1 rounded-sm;
+  @apply pl-2 pr-8 py-1 rounded-sm hidden sm:block;
 }
 
 .mapboxgl-ctrl.mapboxgl-ctrl-attrib.mapboxgl-compact:not(.mapboxgl-compact-show) {

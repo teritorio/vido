@@ -13,6 +13,7 @@
         ]"
       >
         <Map
+          ref="mapComponent"
           :bounds="defaultBounds"
           :extra-attributions="extraAttributions"
           :map-style-enum="selectedBackground"
@@ -236,6 +237,13 @@ export default Vue.extend({
 
     availableStyles(): typeof MAP_STYLE_NAMES {
       return MAP_STYLE_NAMES
+    },
+
+    attributions() {
+      type MapAttribution = Vue & { attributions: string[] }
+      const attrs = this.$refs.mapComponent as MapAttribution
+
+      return attrs.attributions[0] || null
     },
   },
 

@@ -134,6 +134,7 @@
       :show-poi="showPoi"
       :states="states"
       :state="state"
+      :map="$refs.mainMap"
       :is-menu-config-loaded="isMenuConfigLoaded"
       :is-mode-favorite="isModeFavorite"
       :categories-activesubs-count="subCategoriesCounts"
