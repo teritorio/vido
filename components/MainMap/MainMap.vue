@@ -18,6 +18,7 @@
           :map-style-enum="selectedBackground"
           :pitch="pitch"
           :rotate="true"
+          :show-attribution="!$isMobile()"
           hash="map"
           @map-init="onMapInit"
           @map-pitchend="onMapPitchEnd"

@@ -164,7 +164,7 @@
       "
       @goToSelectedPoi="$refs.mainMap && $refs.mainMap.goToSelectedPoi()"
     />
-    <Attribution :attributions="fullAttributions" />
+    <Attribution v-if="!isBottomMenuOpened" :attributions="fullAttributions" />
   </div>
 </template>
 

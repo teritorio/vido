@@ -19,6 +19,7 @@
         dragRotate: rotate,
         touchPitch: rotate,
         locale: locales,
+        attributionControl: showAttribution,
       }"
       :nav-control="{
         show: false,
