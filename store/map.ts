@@ -70,4 +70,5 @@ export const getters = {
   selectedFeature: (state: State) =>
     state.selectedFeature && JSON.parse(state.selectedFeature),
   mode: (state: State) => state.mode,
+  isModeExplorer: (state: State) => state.mode === Mode.EXPLORER,
 }

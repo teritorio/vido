@@ -130,7 +130,6 @@
     <BottomMenu
       class="sm:hidden"
       :selected-feature="selectedFeature"
-      :is-mode-explorer="isModeExplorer"
       :is-bottom-menu-opened="isBottomMenuOpened"
       :show-poi="showPoi"
       :states="states"
@@ -291,7 +290,7 @@ export default (Vue as VueConstructor<
       getSubCategoriesFromCategoryId: 'menu/getSubCategoriesFromCategoryId',
       isMenuConfigLoaded: 'menu/isLoaded',
       filters: 'menu/filters',
-      mode: 'map/mode',
+      isModeExplorer: 'map/isModeExplorer',
       selectedFeature: 'map/selectedFeature',
       map_center: 'map/center',
       isModeFavorites: 'favorite/isModeFavorites',
@@ -312,9 +311,6 @@ export default (Vue as VueConstructor<
     },
     mainUrl(): string {
       return this.settings.themes[0]?.main_url.fr || ''
-    },
-    isModeExplorer(): boolean {
-      return this.mode === Mode.EXPLORER
     },
     isPoiToastVisible(): boolean {
       return this.selectedFeature && this.$refs.mainMap?.showPoiToast
@@ -390,7 +386,7 @@ export default (Vue as VueConstructor<
         this.$refs.mainMap?.resizeMap()
       }
     },
-    mode() {
+    isModeExplorer() {
       if (this.isModeExplorer) {
         this.unselectSubCategory(this.state.context.selectedSubCategoriesIds)
       }

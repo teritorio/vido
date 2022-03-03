@@ -221,7 +221,6 @@ import TeritorioIcon from '@/components/TeritorioIcon/TeritorioIcon.vue'
 import { getPoiById, ApiPoi, ApiPoiProperties } from '@/lib/apiPois'
 import { isIOS } from '@/utils/isIOS'
 import { getContrastedTextColor } from '@/utils/picto'
-import { Mode } from '@/utils/types'
 
 export default Vue.extend({
   components: {
@@ -254,16 +253,12 @@ export default Vue.extend({
 
   computed: {
     ...mapGetters({
-      mode: 'map/mode',
+      isModeExplorer: 'map/isModeExplorer',
       favoritesIds: 'favorite/favoritesIds',
     }),
 
     id(): number {
       return this.poiMeta('id') || this.poi.id
-    },
-
-    isModeExplorer(): boolean {
-      return this.mode === Mode.EXPLORER
     },
 
     isModeFavorites(): boolean {

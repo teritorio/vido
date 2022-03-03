@@ -211,6 +211,7 @@ export default Vue.extend({
       features: 'menu/features',
       zoom: 'map/zoom',
       mode: 'map/mode',
+      isModeExplorer: 'map/isModeExplorer',
       selectedFeature: 'map/selectedFeature',
       isLoadingFeatures: 'menu/isLoadingFeatures',
       favoritesIds: 'favorite/favoritesIds',
@@ -226,10 +227,6 @@ export default Vue.extend({
       return Object.values(this.categories)
         .map((c) => c.category?.tourism_style_class)
         .filter((s) => s && Array.isArray(s))
-    },
-
-    isModeExplorer(): boolean {
-      return this.mode === Mode.EXPLORER
     },
 
     availableStyles(): typeof MAP_STYLE_NAMES {

@@ -102,7 +102,6 @@ export default Vue.extend({
       type: Object as PropType<HomeStates>,
       default: {},
     },
-    isModeExplorer: Boolean,
     isBottomMenuOpened: Boolean,
     showPoi: Boolean,
     isMenuConfigLoaded: Boolean,
@@ -136,6 +135,7 @@ export default Vue.extend({
   computed: {
     ...mapGetters({
       categoryRootCategories: 'menu/categoryRootCategories',
+      isModeExplorer: 'map/isModeExplorer',
     }),
   },
   methods: {
