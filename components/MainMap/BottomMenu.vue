@@ -33,7 +33,7 @@
           v-if="
             !showPoi &&
             !isModeExplorer &&
-            !isModeFavorite &&
+            !isModeFavorites &&
             state.matches(states.SubCategories)
           "
           v-bind="$attrs"
@@ -106,7 +106,7 @@ export default Vue.extend({
     isBottomMenuOpened: Boolean,
     showPoi: Boolean,
     isMenuConfigLoaded: Boolean,
-    isModeFavorite: Boolean,
+    isModeFavorites: Boolean,
     state: {
       type: Object as PropType<HomeContext | HomeEvent | HomeStateSchema>,
       default: undefined,

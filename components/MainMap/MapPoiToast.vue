@@ -2,7 +2,7 @@
   <div
     :class="[
       'z-10 flex flex-col w-full sm:max-w-xl mx-0 overflow-y-auto shadow-md pointer-events-auto sm:flex-row sm:w-auto sm:mx-auto sm:rounded-xl poiDescription',
-      !isModeFavorite && notebook ? 'bg-gray-200 opacity-70' : 'bg-white',
+      !isModeFavorites && notebook ? 'bg-gray-200 opacity-70' : 'bg-white',
     ]"
   >
     <img
@@ -200,9 +200,9 @@
           @click.stop="onFavoriteClick"
         >
           <font-awesome-icon
-            :icon="[`${isModeFavorite ? 'fas' : 'far'}`, 'star']"
-            :class="isModeFavorite && 'text-yellow-500'"
-            :color="!isModeFavorite && color"
+            :icon="[`${isModeFavorites ? 'fas' : 'far'}`, 'star']"
+            :class="isModeFavorites && 'text-yellow-500'"
+            :color="!isModeFavorites && color"
             size="sm"
           />
           <span class="text-sm">{{ $tc('toast.favorite') }}</span>
@@ -266,7 +266,7 @@ export default Vue.extend({
       return this.mode === Mode.EXPLORER
     },
 
-    isModeFavorite(): boolean {
+    isModeFavorites(): boolean {
       const currentFavorites = this.$store.getters['favorite/favoritesIds']
       return currentFavorites.includes(this.id)
     },
@@ -554,7 +554,7 @@ export default Vue.extend({
       this.$emit('explore-click', this.poi)
     },
     onFavoriteClick() {
-      if (!this.isModeFavorite) {
+      if (!this.isModeFavorites) {
         this.tracking('favorite')
       }
       this.$emit('favorite-click', this.poi, this.notebook)

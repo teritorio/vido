@@ -50,7 +50,7 @@
         >
           <FavoriteMenu
             :has-favorites="favoritesIds.length !== 0"
-            :is-mode-favorite="isModeFavorite"
+            :is-mode-favorites="isModeFavorites"
             :explore-around-selected-poi="exploreAroundSelectedPoi"
             :go-to-selected-poi="goToSelectedPoi"
           />
@@ -214,7 +214,7 @@ export default Vue.extend({
       selectedFeature: 'map/selectedFeature',
       isLoadingFeatures: 'menu/isLoadingFeatures',
       favoritesIds: 'favorite/favoritesIds',
-      isModeFavorite: 'favorite/isModeFavorite',
+      isModeFavorites: 'favorite/isModeFavorites',
       favoritesAction: 'favorite/favoritesAction',
     }),
 
@@ -246,7 +246,7 @@ export default Vue.extend({
       await this.handleFavorites()
     },
 
-    async isModeFavorite() {
+    async isModeFavorites() {
       await this.handleFavorites()
     },
 
@@ -254,7 +254,7 @@ export default Vue.extend({
       features: MenuState['features'],
       oldFeatures: MenuState['features']
     ) {
-      if (!this.map || this.isModeFavorite) {
+      if (!this.map || this.isModeFavorites) {
         return
       }
 
@@ -575,7 +575,7 @@ export default Vue.extend({
         })
       }
 
-      if (this.isModeFavorite) {
+      if (this.isModeFavorites) {
         this.handleFavorites()
       }
     },
@@ -589,7 +589,7 @@ export default Vue.extend({
     },
 
     onMapRender() {
-      const source = this.isModeFavorite ? FAVORITE_SOURCE : POI_SOURCE
+      const source = this.isModeFavorites ? FAVORITE_SOURCE : POI_SOURCE
       if (
         this.map &&
         this.map.getSource(source) &&
@@ -674,7 +674,7 @@ export default Vue.extend({
       }
 
       this.resetZoom()
-      if (this.isModeFavorite) {
+      if (this.isModeFavorites) {
         const coordinates = Object.values(this.featuresCoordinates) as [
           [number, number]
         ]
@@ -698,7 +698,7 @@ export default Vue.extend({
       const hasFavorites = this.favoritesIds?.length > 0
 
       this.showFavoritesOverlay =
-        this.isModeFavorite &&
+        this.isModeFavorites &&
         !hasFavorites &&
         this.favoritesAction !== 'delete'
 
@@ -708,7 +708,7 @@ export default Vue.extend({
         this.$store.dispatch('favorite/setFavoritesAction', 'close')
       }
 
-      if (this.isModeFavorite) {
+      if (this.isModeFavorites) {
         const allFavorites = hasFavorites
           ? await this.fetchFavorites(this.favoritesIds)
           : []

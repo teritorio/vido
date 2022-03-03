@@ -22,17 +22,17 @@
           ref="menu"
           :class="[
             'relative space-x-1 text-sm font-medium bg-white shadow-md outline-none sm:px-5 w-11 sm:w-auto h-11 focus:outline-none hover:bg-gray-100 focus-visible:bg-gray-100 flex-shrink-0 border-r border-gray-400 rounded-l-full',
-            isModeFavorite &&
+            isModeFavorites &&
               'bg-blue-500 hover:bg-blue-400 focus-visible:bg-blue-400 text-white',
-            !isModeFavorite && 'text-gray-800',
+            !isModeFavorites && 'text-gray-800',
           ]"
           @click="toggleFavoriteMode"
         >
           <font-awesome-icon
             :icon="[`${hasFavorites ? 'fas' : 'far'}`, 'star']"
             :class="[
-              isModeFavorite && 'text-white',
-              !isModeFavorite && 'text-yellow-500',
+              isModeFavorites && 'text-white',
+              !isModeFavorites && 'text-yellow-500',
             ]"
             size="sm"
           />
@@ -193,7 +193,7 @@ export default (Vue as VueConstructor<
       type: Boolean,
       default: false,
     },
-    isModeFavorite: {
+    isModeFavorites: {
       type: Boolean,
       default: false,
     },

@@ -8,19 +8,19 @@ enum Mutation {
 
 export interface State {
   favoritesIds: [string?]
-  isModeFavorite: boolean
+  isModeFavorites: boolean
   favoritesAction: 'add' | 'close' | 'delete' | 'open' | null
 }
 
 export const state = (): State => ({
   favoritesIds: [],
-  isModeFavorite: false,
+  isModeFavorites: false,
   favoritesAction: null,
 })
 
 export const getters = {
   favoritesIds: (state: State) => state.favoritesIds,
-  isModeFavorite: (state: State) => state.isModeFavorite,
+  isModeFavorites: (state: State) => state.isModeFavorites,
   favoritesAction: (state: State) => state.favoritesAction,
 }
 
@@ -35,7 +35,7 @@ export const mutations = {
     state.favoritesAction = payload
   },
   [Mutation.TOGGLE_FAVORITE_LAYER](state: State, payload: boolean) {
-    state.isModeFavorite = payload
+    state.isModeFavorites = payload
   },
 }
 

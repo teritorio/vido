@@ -15,15 +15,15 @@
             v-if="
               (state.matches(states.Categories) && isMenuConfigLoaded) ||
               isModeExplorer ||
-              isModeFavorite
+              isModeFavorites
             "
             :show-poi="showPoi"
             :logo-url="logoUrl"
             :main-url="mainUrl"
             :site-name="siteName"
-            :is-explorer-favorite="isModeExplorer || isModeFavorite"
-            :show-categories="!isModeExplorer && !isModeFavorite"
-            :is-favorite="isModeFavorite"
+            :is-explorer-favorite="isModeExplorer || isModeFavorites"
+            :show-categories="!isModeExplorer && !isModeFavorites"
+            :is-favorite="isModeFavorites"
             :categories-activesubs-count="subCategoriesCounts"
             @category-click="onRootCategoryClick"
             @search-click="goToSearch"
@@ -33,7 +33,7 @@
           <SubCategoryHeader
             v-if="
               !isModeExplorer &&
-              !isModeFavorite &&
+              !isModeFavorites &&
               state.matches(states.SubCategories)
             "
             class="hidden sm:flex m-2"
@@ -67,7 +67,7 @@
               :site-name="siteName"
               :logo-url="logoUrl"
               :menu-to-icon="categoriesToIcons"
-              :is-explorer-favorite="isModeExplorer || isModeFavorite"
+              :is-explorer-favorite="isModeExplorer || isModeFavorites"
               :map-center="map_center"
               @go-back-click="goToHome"
               @category-click="onSearchCategory"
@@ -87,8 +87,8 @@
             :site-name="siteName"
             :logo-url="logoUrl"
             :menu-to-icon="categoriesToIcons"
-            :is-explorer-favorite="isModeExplorer || isModeFavorite"
-            :is-favorite="isModeFavorite"
+            :is-explorer-favorite="isModeExplorer || isModeFavorites"
+            :is-favorite="isModeFavorites"
             :map-center="map_center"
             @go-to-categories="onQuitExplorerFavoriteMode"
             @go-back-click="goToHome"
@@ -101,7 +101,7 @@
 
       <div
         v-if="
-          !isModeExplorer && selectedSubCategories.length && !isModeFavorite
+          !isModeExplorer && selectedSubCategories.length && !isModeFavorites
         "
         class="hidden sm:block py-2"
         style="max-width: calc(100vw - 670px)"
@@ -121,7 +121,7 @@
       :small="isBottomMenuOpened"
       :selected-categories="state.context.selectedSubCategoriesIds"
       :get-sub-category="selectSubCategory"
-      :is-explorer-favorite="isModeExplorer || isModeFavorite"
+      :is-explorer-favorite="isModeExplorer || isModeFavorites"
       @click="onMapClick"
       @change-mode="onMapChangeMode"
       @show-poi="onShowPoi"
@@ -136,7 +136,7 @@
       :states="states"
       :state="state"
       :is-menu-config-loaded="isMenuConfigLoaded"
-      :is-mode-favorite="isModeFavorite"
+      :is-mode-favorites="isModeFavorites"
       :categories-activesubs-count="subCategoriesCounts"
       :categories="
         state.context.selectedRootCategory
@@ -294,7 +294,7 @@ export default (Vue as VueConstructor<
       mode: 'map/mode',
       selectedFeature: 'map/selectedFeature',
       map_center: 'map/center',
-      isModeFavorite: 'favorite/isModeFavorite',
+      isModeFavorites: 'favorite/isModeFavorites',
     }),
     events: () => HomeEvents,
     logoUrl(): string {
@@ -624,7 +624,7 @@ export default (Vue as VueConstructor<
       })
     },
     onBottomMenuButtonClick() {
-      if (!this.isModeFavorite) {
+      if (!this.isModeFavorites) {
         if (this.isBottomMenuOpened) {
           if (this.selectedFeature) {
             if (!this.isModeExplorer) {
