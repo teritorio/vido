@@ -435,18 +435,12 @@ export default Vue.extend({
     const favorites =
       localStorage.getItem(LOCAL_STORAGE.favorites) || '{ "favorites": [] }'
 
-    this.$store.dispatch(
-      'favorite/toggleFavoriteModes',
-      JSON.parse(favorites).favorites
-    )
+    this.toggleFavoriteModes(JSON.parse(favorites).favorites)
 
-    this.$store.dispatch(
-      'map/setMode',
-      getHashPart('fav') === '1' ? Mode.FAVORITES : Mode.BROWSER
-    )
+    this.setMode(getHashPart('fav') === '1' ? Mode.FAVORITES : Mode.BROWSER)
 
     if (getHashPart('fav') === '1') {
-      this.$store.dispatch('favorite/setFavoritesAction', 'open')
+      this.setFavoritesAction('open')
     }
 
     if (getHashPart('explorer') === '1') {
@@ -466,7 +460,7 @@ export default Vue.extend({
           LOCAL_STORAGE.favorites,
           JSON.stringify({ favorites: newFavorite, version: 1 })
         )
-        this.$store.dispatch('favorite/toggleFavoriteModes', newFavorite)
+        this.toggleFavoriteModes(newFavorite)
       } catch (e) {
         // eslint-disable-next-line no-console
         console.error('Vido error:', e.message)
@@ -489,6 +483,8 @@ export default Vue.extend({
   methods: {
     ...mapActions({
       setMode: 'map/setMode',
+      setFavoritesAction: 'favorite/setFavoritesAction',
+      toggleFavoriteModes: 'favorite/toggleFavoriteModes',
     }),
 
     onMapInit(map: maplibregl.Map) {
@@ -639,23 +635,23 @@ export default Vue.extend({
             const parsedFavorites = JSON.parse(currentFavorites).favorites
             if (!parsedFavorites.includes(id)) {
               newFavorite = [...parsedFavorites, id]
-              this.$store.dispatch('favorite/setFavoritesAction', 'add')
+              this.setFavoritesAction('add')
             } else {
               newFavorite = parsedFavorites.filter(
                 (f: string) => `${f}` !== `${id}`
               )
-              this.$store.dispatch('favorite/setFavoritesAction', 'delete')
+              this.setFavoritesAction('delete')
             }
           } else {
             newFavorite = [id]
-            this.$store.dispatch('favorite/setFavoritesAction', 'add')
+            this.setFavoritesAction('add')
           }
 
           localStorage.setItem(
             LOCAL_STORAGE.favorites,
             JSON.stringify({ favorites: newFavorite, version: 1 })
           )
-          this.$store.dispatch('favorite/toggleFavoriteModes', newFavorite)
+          this.toggleFavoriteModes(newFavorite)
         }
       } catch (e) {
         // eslint-disable-next-line no-console
@@ -700,8 +696,8 @@ export default Vue.extend({
 
       if (!hasFavorites && this.favoritesAction === 'delete') {
         setHashPart('fav', null)
-        this.$store.dispatch('map/setMode', Mode.BROWSER)
-        this.$store.dispatch('favorite/setFavoritesAction', 'close')
+        this.setMode(Mode.BROWSER)
+        this.setFavoritesAction('close')
       }
 
       if (this.isModeFavorites) {
