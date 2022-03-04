@@ -14,6 +14,7 @@ export default {
     share_link: 'Share link of favorites',
     notebook: {
       title: 'Favorites notebook',
+      close: 'Close',
     },
     noFavs:
       'You do not have any favorite places yet. You can do this by selecting a location on the map, then saving it as a favorite.',
