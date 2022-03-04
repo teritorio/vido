@@ -429,7 +429,7 @@ export default (Vue as VueConstructor<
         ) {
           setHashPart(
             'cat',
-            this.state.context.selectedSubCategoriesIds.join('.')
+            this.state.context.selectedSubCategoriesIds.join(',')
           )
         }
       })
@@ -440,7 +440,7 @@ export default (Vue as VueConstructor<
       if (getHashPart('cat')) {
         this.selectSubCategory(
           getHashPart('cat')
-            ?.split('.')
+            ?.split(',')
             .map((i) => parseInt(i, 10)) || []
         )
       } else if (!getHashPart('favs')) {
