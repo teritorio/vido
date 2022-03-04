@@ -67,6 +67,7 @@ export default {
   css: [
     '@fortawesome/fontawesome-svg-core/styles.css',
     'maplibre-gl/dist/maplibre-gl.css',
+    '@fontsource/ubuntu',
   ],
 
   purgeCSS: {
