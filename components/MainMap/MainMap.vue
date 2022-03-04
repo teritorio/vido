@@ -50,7 +50,6 @@
         >
           <FavoriteMenu
             :has-favorites="favoritesIds.length !== 0"
-            :is-mode-favorites="isModeFavorites"
             :explore-around-selected-poi="exploreAroundSelectedPoi"
             :go-to-selected-poi="goToSelectedPoi"
           />

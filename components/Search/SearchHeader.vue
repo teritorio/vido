@@ -63,7 +63,7 @@
         <p class="ml-2">
           {{
             $tc(
-              isFavorite
+              isModeFavorites
                 ? 'headerMenu.backToMenuFavorites'
                 : 'headerMenu.backToMenuExplorer'
             )
@@ -119,6 +119,7 @@
 <script lang="ts">
 import debounce from 'lodash.debounce'
 import Vue, { PropType } from 'vue'
+import { mapGetters } from 'vuex'
 
 import SearchResultBlock from '@/components/Search/SearchResultBlock.vue'
 import { ApiPoi, getPoiById } from '@/lib/apiPois'
@@ -153,10 +154,6 @@ export default Vue.extend({
       type: Boolean,
       default: false,
     },
-    isFavorite: {
-      type: Boolean,
-      default: false,
-    },
     mapCenter: {
       type: Object as PropType<{ lng: number; lat: number }>,
       default: () => ({ lng: 0, lat: 0 }),
@@ -184,6 +181,9 @@ export default Vue.extend({
   },
 
   computed: {
+    ...mapGetters({
+      isModeFavorites: 'favorite/isModeFavorites',
+    }),
     itemsMenuItems(): SearchResult[] {
       return (
         this.searchMenuItemsResults?.features?.map((v) => ({

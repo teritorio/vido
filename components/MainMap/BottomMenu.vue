@@ -105,7 +105,6 @@ export default Vue.extend({
     isBottomMenuOpened: Boolean,
     showPoi: Boolean,
     isMenuConfigLoaded: Boolean,
-    isModeFavorites: Boolean,
     state: {
       type: Object as PropType<HomeContext | HomeEvent | HomeStateSchema>,
       default: undefined,
@@ -136,6 +135,7 @@ export default Vue.extend({
     ...mapGetters({
       categoryRootCategories: 'menu/categoryRootCategories',
       isModeExplorer: 'map/isModeExplorer',
+      isModeFavorites: 'favorite/isModeFavorites',
     }),
   },
   methods: {

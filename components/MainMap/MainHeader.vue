@@ -40,7 +40,7 @@
         <p class="ml-2">
           {{
             $tc(
-              isFavorite
+              isModeFavorites
                 ? 'headerMenu.backToMenuFavorites'
                 : 'headerMenu.backToMenuExplorer'
             )
@@ -105,13 +105,10 @@ export default Vue.extend({
       type: Object as PropType<{ [id: string]: number }>,
       default: {},
     },
-    isFavorite: {
-      type: Boolean,
-      default: false,
-    },
   },
   computed: {
     ...mapGetters({
+      isModeFavorites: 'favorite/isModeFavorites',
       categoryRootCategories: 'menu/categoryRootCategories',
     }),
   },

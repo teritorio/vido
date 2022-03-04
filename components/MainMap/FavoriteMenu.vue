@@ -193,10 +193,6 @@ export default (Vue as VueConstructor<
       type: Boolean,
       default: false,
     },
-    isModeFavorites: {
-      type: Boolean,
-      default: false,
-    },
     exploreAroundSelectedPoi: {
       type: Function,
       default: undefined,
@@ -221,6 +217,7 @@ export default (Vue as VueConstructor<
   },
   computed: {
     ...mapGetters({
+      isModeFavorites: 'favorite/isModeFavorites',
       favoritesIds: 'favorite/favoritesIds',
     }),
     pdfLink(): string {

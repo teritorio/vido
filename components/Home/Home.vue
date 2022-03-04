@@ -23,7 +23,6 @@
             :site-name="siteName"
             :is-explorer-favorite="isModeExplorer || isModeFavorites"
             :show-categories="!isModeExplorer && !isModeFavorites"
-            :is-favorite="isModeFavorites"
             :categories-activesubs-count="subCategoriesCounts"
             @category-click="onRootCategoryClick"
             @search-click="goToSearch"
@@ -88,7 +87,6 @@
             :logo-url="logoUrl"
             :menu-to-icon="categoriesToIcons"
             :is-explorer-favorite="isModeExplorer || isModeFavorites"
-            :is-favorite="isModeFavorites"
             :map-center="map_center"
             @go-to-categories="onQuitExplorerFavoriteMode"
             @go-back-click="goToHome"
@@ -135,7 +133,6 @@
       :states="states"
       :state="state"
       :is-menu-config-loaded="isMenuConfigLoaded"
-      :is-mode-favorites="isModeFavorites"
       :categories-activesubs-count="subCategoriesCounts"
       :categories="
         state.context.selectedRootCategory
