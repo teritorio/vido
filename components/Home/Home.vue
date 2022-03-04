@@ -288,9 +288,9 @@ export default (Vue as VueConstructor<
       isMenuConfigLoaded: 'menu/isLoaded',
       filters: 'menu/filters',
       isModeExplorer: 'map/isModeExplorer',
+      isModeFavorites: 'map/isModeFavorites',
       selectedFeature: 'map/selectedFeature',
       map_center: 'map/center',
-      isModeFavorites: 'favorite/isModeFavorites',
     }),
     events: () => HomeEvents,
     logoUrl(): string {
@@ -495,7 +495,6 @@ export default (Vue as VueConstructor<
     onQuitExplorerFavoriteMode() {
       this.onMapChangeMode(Mode.BROWSER)
       setHashPart('fav', null)
-      this.$store.dispatch('favorite/handleFavoriteLayer', false)
       this.$store.dispatch('favorite/setFavoritesAction', 'close')
       this.setSelectedFeature(null)
     },
@@ -605,7 +604,7 @@ export default (Vue as VueConstructor<
 
       this.service.send(HomeEvents.GoToCategories)
       setHashPart('fav', null)
-      this.$store.dispatch('favorite/handleFavoriteLayer', false)
+      this.$store.dispatch('map/setMode', Mode.BROWSER)
       this.$store.dispatch('favorite/setFavoritesAction', 'close')
       this.selectSubCategory([newFilter.id])
     },

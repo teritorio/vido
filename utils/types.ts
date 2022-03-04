@@ -59,6 +59,7 @@ export type SearchResult = {
 export enum Mode {
   BROWSER = 'BROWSER', // User browses by category
   EXPLORER = 'EXPLORER', // User explores around
+  FAVORITES = 'FAVORITES', // User favorites
 }
 
 export enum MapStyleEnum {

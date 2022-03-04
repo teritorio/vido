@@ -108,7 +108,7 @@ export default Vue.extend({
   },
   computed: {
     ...mapGetters({
-      isModeFavorites: 'favorite/isModeFavorites',
+      isModeFavorites: 'map/isModeFavorites',
       categoryRootCategories: 'menu/categoryRootCategories',
     }),
   },

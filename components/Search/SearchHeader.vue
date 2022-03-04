@@ -182,7 +182,7 @@ export default Vue.extend({
 
   computed: {
     ...mapGetters({
-      isModeFavorites: 'favorite/isModeFavorites',
+      isModeFavorites: 'map/isModeFavorites',
     }),
     itemsMenuItems(): SearchResult[] {
       return (

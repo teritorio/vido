@@ -15,11 +15,13 @@ import Vue from 'vue'
 
 import { setHashPart } from '@/utils/url'
 
+import { Mode } from '~/utils/types'
+
 export default Vue.extend({
   methods: {
     onOverlayClick() {
       setHashPart('fav', null)
-      this.$store.dispatch('favorite/handleFavoriteLayer', false)
+      this.$store.dispatch('map/setMode', Mode.BROWSER)
       this.$store.dispatch('favorite/setFavoritesAction', 'close')
     },
   },

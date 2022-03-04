@@ -211,10 +211,10 @@ export default Vue.extend({
       zoom: 'map/zoom',
       mode: 'map/mode',
       isModeExplorer: 'map/isModeExplorer',
+      isModeFavorites: 'map/isModeFavorites',
       selectedFeature: 'map/selectedFeature',
       isLoadingFeatures: 'menu/isLoadingFeatures',
       favoritesIds: 'favorite/favoritesIds',
-      isModeFavorites: 'favorite/isModeFavorites',
       favoritesAction: 'favorite/favoritesAction',
     }),
 
@@ -441,8 +441,8 @@ export default Vue.extend({
     )
 
     this.$store.dispatch(
-      'favorite/handleFavoriteLayer',
-      getHashPart('fav') === '1'
+      'map/setMode',
+      getHashPart('fav') === '1' ? Mode.FAVORITES : Mode.BROWSER
     )
 
     if (getHashPart('fav') === '1') {
@@ -700,7 +700,7 @@ export default Vue.extend({
 
       if (!hasFavorites && this.favoritesAction === 'delete') {
         setHashPart('fav', null)
-        this.$store.dispatch('favorite/handleFavoriteLayer', false)
+        this.$store.dispatch('map/setMode', Mode.BROWSER)
         this.$store.dispatch('favorite/setFavoritesAction', 'close')
       }
 

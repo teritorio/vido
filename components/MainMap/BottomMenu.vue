@@ -135,7 +135,7 @@ export default Vue.extend({
     ...mapGetters({
       categoryRootCategories: 'menu/categoryRootCategories',
       isModeExplorer: 'map/isModeExplorer',
-      isModeFavorites: 'favorite/isModeFavorites',
+      isModeFavorites: 'map/isModeFavorites',
     }),
   },
   methods: {

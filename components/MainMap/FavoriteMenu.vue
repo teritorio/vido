@@ -176,6 +176,8 @@ import { getPoiByIds, ApiPoi } from '@/lib/apiPois'
 import { LOCAL_STORAGE } from '@/lib/constants'
 import { getHashPart, setHashPart } from '@/utils/url'
 
+import { Mode } from '~/utils/types'
+
 export default (Vue as VueConstructor<
   Vue & {
     $refs: {
@@ -217,7 +219,7 @@ export default (Vue as VueConstructor<
   },
   computed: {
     ...mapGetters({
-      isModeFavorites: 'favorite/isModeFavorites',
+      isModeFavorites: 'map/isModeFavorites',
       favoritesIds: 'favorite/favoritesIds',
     }),
     pdfLink(): string {
@@ -284,11 +286,11 @@ export default (Vue as VueConstructor<
       const isFav = getHashPart('fav') === '1'
       if (!isFav) {
         setHashPart('fav', '1')
-        this.$store.dispatch('favorite/handleFavoriteLayer', true)
+        this.$store.dispatch('map/setMode', Mode.FAVORITES)
         this.$store.dispatch('favorite/setFavoritesAction', 'open')
       } else {
         setHashPart('fav', null)
-        this.$store.dispatch('favorite/handleFavoriteLayer', false)
+        this.$store.dispatch('map/setMode', Mode.BROWSER)
         this.$store.dispatch('favorite/setFavoritesAction', 'close')
       }
     },
