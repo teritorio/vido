@@ -408,12 +408,9 @@ export default Vue.extend({
           }
 
           setHashPart('bg', this.selectedBackground)
-          setHashPart('explorer', '1')
-
           break
         }
         case Mode.BROWSER:
-          setHashPart('explorer', null)
           this.poiFilter?.remove(true)
           break
       }
@@ -437,15 +434,20 @@ export default Vue.extend({
 
     this.toggleFavoriteModes(JSON.parse(favorites).favorites)
 
-    this.setMode(getHashPart('fav') === '1' ? Mode.FAVORITES : Mode.BROWSER)
-
-    if (getHashPart('fav') === '1') {
-      this.setFavoritesAction('open')
-    }
-
-    if (getHashPart('explorer') === '1') {
-      this.setMode(Mode.EXPLORER)
-      this.resizeMap()
+    const mode = getHashPart('mode')
+    this.setMode(mode)
+    switch (mode) {
+      case Mode.FAVORITES: {
+        this.setFavoritesAction('open')
+        break
+      }
+      case Mode.EXPLORER: {
+        this.resizeMap()
+        break
+      }
+      case Mode.BROWSER: {
+        break
+      }
     }
 
     const favs = getHashPart('favs')
@@ -695,7 +697,6 @@ export default Vue.extend({
         this.favoritesAction !== 'delete'
 
       if (!hasFavorites && this.favoritesAction === 'delete') {
-        setHashPart('fav', null)
         this.setMode(Mode.BROWSER)
         this.setFavoritesAction('close')
       }

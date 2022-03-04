@@ -287,6 +287,7 @@ export default (Vue as VueConstructor<
       getSubCategoriesFromCategoryId: 'menu/getSubCategoriesFromCategoryId',
       isMenuConfigLoaded: 'menu/isLoaded',
       filters: 'menu/filters',
+      mode: 'map/mode',
       isModeExplorer: 'map/isModeExplorer',
       isModeFavorites: 'map/isModeFavorites',
       selectedFeature: 'map/selectedFeature',
@@ -398,7 +399,25 @@ export default (Vue as VueConstructor<
         this.$refs.mainMap?.resizeMap()
       }
     },
+
+    mode() {
+      switch (this.mode) {
+        case Mode.BROWSER: {
+          setHashPart('mode', null)
+          break
+        }
+        case Mode.EXPLORER: {
+          setHashPart('mode', this.mode)
+          break
+        }
+        case Mode.FAVORITES: {
+          setHashPart('mode', this.mode)
+          break
+        }
+      }
+    },
   },
+
   created() {
     this.service
       .onTransition((state) => {
@@ -494,7 +513,6 @@ export default (Vue as VueConstructor<
     },
     onQuitExplorerFavoriteMode() {
       this.onMapChangeMode(Mode.BROWSER)
-      setHashPart('fav', null)
       this.$store.dispatch('favorite/setFavoritesAction', 'close')
       this.setSelectedFeature(null)
     },
@@ -603,7 +621,6 @@ export default (Vue as VueConstructor<
       }
 
       this.service.send(HomeEvents.GoToCategories)
-      setHashPart('fav', null)
       this.$store.dispatch('map/setMode', Mode.BROWSER)
       this.$store.dispatch('favorite/setFavoritesAction', 'close')
       this.selectSubCategory([newFilter.id])

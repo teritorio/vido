@@ -174,7 +174,6 @@ import FavoriteNoteBook from '@/components/MainMap/FavoriteNoteBook.vue'
 import ShareLinkModal from '@/components/ShareLinkModal.vue'
 import { getPoiByIds, ApiPoi } from '@/lib/apiPois'
 import { LOCAL_STORAGE } from '@/lib/constants'
-import { getHashPart, setHashPart } from '@/utils/url'
 
 import { Mode } from '~/utils/types'
 
@@ -283,13 +282,10 @@ export default (Vue as VueConstructor<
     },
     toggleFavoriteMode() {
       this.$tracking({ type: 'map_control_event', event: 'favorite' })
-      const isFav = getHashPart('fav') === '1'
-      if (!isFav) {
-        setHashPart('fav', '1')
+      if (!this.isModeFavorites) {
         this.$store.dispatch('map/setMode', Mode.FAVORITES)
         this.$store.dispatch('favorite/setFavoritesAction', 'open')
       } else {
-        setHashPart('fav', null)
         this.$store.dispatch('map/setMode', Mode.BROWSER)
         this.$store.dispatch('favorite/setFavoritesAction', 'close')
       }
