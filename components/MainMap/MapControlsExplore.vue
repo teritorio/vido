@@ -24,7 +24,7 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { mapGetters } from 'vuex'
+import { mapGetters, mapActions } from 'vuex'
 
 import { Mode } from '@/utils/types'
 
@@ -36,12 +36,12 @@ export default Vue.extend({
   },
 
   methods: {
+    ...mapActions({
+      setMode: 'map/setMode',
+    }),
     toggleMode() {
       this.$tracking({ type: 'map_control_event', event: 'explorer' })
-      this.$emit(
-        'change-mode',
-        this.isModeExplorer ? Mode.BROWSER : Mode.EXPLORER
-      )
+      this.setMode(this.isModeExplorer ? Mode.BROWSER : Mode.EXPLORER)
     },
   },
 })

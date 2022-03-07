@@ -32,7 +32,7 @@
           @full-attribution="$emit('full-attribution', $event)"
         >
           <template #controls>
-            <MapControlsExplore @change-mode="onControlChangeMode" />
+            <MapControlsExplore />
             <MapControls3D :map="map" :pitch="pitch" />
             <MapControlsBackground
               :backgrounds="availableStyles"
@@ -398,6 +398,8 @@ export default Vue.extend({
     },
 
     mode() {
+      this.allowRegionBackZoom = false
+
       switch (this.mode) {
         case Mode.EXPLORER: {
           if (this.selectedBackground === EXPLORER_MAP_STYLE) {
@@ -593,11 +595,6 @@ export default Vue.extend({
       }
     },
 
-    onControlChangeMode(mode: Mode) {
-      this.allowRegionBackZoom = false
-      this.$emit('change-mode', mode)
-    },
-
     setPoiToastVisibility(visible: boolean) {
       this.showPoiToast = visible
     },
@@ -607,9 +604,7 @@ export default Vue.extend({
         this.selectFeature(feature)
       }
       if (!this.isModeExplorer) {
-        this.map?.once('moveend', () => {
-          this.$emit('change-mode', Mode.EXPLORER)
-        })
+        this.map?.once('moveend', () => this.setMode(Mode.EXPLORER))
 
         this.goToSelectedPoi()
 
@@ -618,7 +613,7 @@ export default Vue.extend({
         }
       } else {
         this.allowRegionBackZoom = false
-        this.$emit('change-mode', Mode.BROWSER)
+        this.setMode(Mode.BROWSER)
       }
     },
 

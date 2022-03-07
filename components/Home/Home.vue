@@ -121,7 +121,6 @@
       :get-sub-category="selectSubCategory"
       :is-explorer-favorite="isModeExplorer || isModeFavorites"
       @click="onMapClick"
-      @change-mode="onMapChangeMode"
       @show-poi="onShowPoi"
       @full-attribution="setFullAttributions($event)"
     />
@@ -384,11 +383,6 @@ export default (Vue as VueConstructor<
         this.$refs.mainMap?.resizeMap()
       }
     },
-    isModeExplorer() {
-      if (this.isModeExplorer) {
-        this.unselectSubCategory(this.state.context.selectedSubCategoriesIds)
-      }
-    },
     showPoi(val) {
       if (this.$isMobile() && val) {
         this.$refs.mainMap?.resizeMap()
@@ -403,14 +397,18 @@ export default (Vue as VueConstructor<
     mode() {
       switch (this.mode) {
         case Mode.BROWSER: {
+          this.selectSubCategory(this.previousSubCategories)
           setHashPart('mode', null)
           break
         }
         case Mode.EXPLORER: {
+          this.previousSubCategories = this.state.context.selectedSubCategoriesIds
+          this.unselectSubCategory(this.state.context.selectedSubCategoriesIds)
           setHashPart('mode', this.mode)
           break
         }
         case Mode.FAVORITES: {
+          this.previousSubCategories = this.state.context.selectedSubCategoriesIds
           setHashPart('mode', this.mode)
           break
         }
@@ -512,7 +510,7 @@ export default (Vue as VueConstructor<
       }
     },
     onQuitExplorerFavoriteMode() {
-      this.onMapChangeMode(Mode.BROWSER)
+      this.$store.dispatch('map/setMode', Mode.BROWSER)
       this.$store.dispatch('favorite/setFavoritesAction', 'close')
       this.setSelectedFeature(null)
     },
@@ -661,15 +659,7 @@ export default (Vue as VueConstructor<
         this.goToHome()
       }
     },
-    onMapChangeMode(mode: Mode) {
-      if (mode === Mode.BROWSER) {
-        this.$store.dispatch('map/setMode', mode)
-        this.selectSubCategory(this.previousSubCategories)
-      } else if (mode === Mode.EXPLORER) {
-        this.previousSubCategories = this.state.context.selectedSubCategoriesIds
-        this.$store.dispatch('map/setMode', mode)
-      }
-    },
+
     onShowPoi(show: boolean) {
       this.showPoi = show
     },
