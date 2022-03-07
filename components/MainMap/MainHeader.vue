@@ -5,10 +5,10 @@
     <div
       :class="[
         'items-center justify-between hidden sm:flex rounded-xl shadow-md px-5 py-4',
-        isExplorerFavorite ? 'bg-blue-500 text-white' : 'bg-white',
+        isModeExplorerOrFavorites ? 'bg-blue-500 text-white' : 'bg-white',
       ]"
     >
-      <h1 v-if="!isExplorerFavorite">
+      <h1 v-if="!isModeExplorerOrFavorites">
         <a
           :href="mainUrl"
           rel="noopener noreferrer"
@@ -21,7 +21,7 @@
       </h1>
 
       <button
-        v-if="showCategories"
+        v-if="!isModeExplorerOrFavorites"
         type="button"
         class="flex items-center justify-center w-10 h-10 text-2xl font-bold transition-all rounded-full outline-none cursor-pointer focus:outline-none hover:bg-gray-100 focus:bg-gray-100"
         @click="onSearchClick"
@@ -49,7 +49,7 @@
       </div>
     </div>
 
-    <div v-if="showCategories">
+    <div v-if="!isModeExplorerOrFavorites">
       <HeaderRootCategories
         v-for="category in categoryRootCategories"
         :key="category.id"
@@ -93,14 +93,6 @@ export default Vue.extend({
       type: String,
       required: true,
     },
-    showCategories: {
-      type: Boolean,
-      default: true,
-    },
-    isExplorerFavorite: {
-      type: Boolean,
-      default: false,
-    },
     categoriesActivesubsCount: {
       type: Object as PropType<{ [id: string]: number }>,
       default: {},
@@ -109,6 +101,7 @@ export default Vue.extend({
   computed: {
     ...mapGetters({
       isModeFavorites: 'map/isModeFavorites',
+      isModeExplorerOrFavorites: 'map/isModeExplorerOrFavorites',
       categoryRootCategories: 'menu/categoryRootCategories',
     }),
   },

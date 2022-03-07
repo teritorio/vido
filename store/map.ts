@@ -72,4 +72,6 @@ export const getters = {
   mode: (state: State) => state.mode,
   isModeExplorer: (state: State) => state.mode === Mode.EXPLORER,
   isModeFavorites: (state: State) => state.mode === Mode.FAVORITES,
+  isModeExplorerOrFavorites: (state: State) =>
+    state.mode === Mode.EXPLORER || state.mode === Mode.FAVORITES,
 }

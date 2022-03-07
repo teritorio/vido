@@ -9,7 +9,9 @@
       <div
         :class="[
           'flex-grow overflow-hidden',
-          !small && isExplorerFavorite && 'sm:mt-20 sm:mt-0 h-4/5 sm:h-full',
+          !small &&
+            isModeExplorerOrFavorites &&
+            'sm:mt-20 sm:mt-0 h-4/5 sm:h-full',
         ]"
       >
         <Map
@@ -37,7 +39,7 @@
             <MapControlsBackground
               :backgrounds="availableStyles"
               :initial-background="selectedBackground"
-              :hidden="isExplorerFavorite"
+              :hidden="isModeExplorerOrFavorites"
               @changeBackground="onClickChangeBackground"
             />
           </template>
@@ -169,10 +171,6 @@ export default Vue.extend({
       type: Array as PropType<ApiMenuCategory['id'][]>,
       default: () => [],
     },
-    isExplorerFavorite: {
-      type: Boolean,
-      default: false,
-    },
   },
 
   data(): {
@@ -212,6 +210,7 @@ export default Vue.extend({
       mode: 'map/mode',
       isModeExplorer: 'map/isModeExplorer',
       isModeFavorites: 'map/isModeFavorites',
+      isModeExplorerOrFavorites: 'map/isModeExplorerOrFavorites',
       selectedFeature: 'map/selectedFeature',
       isLoadingFeatures: 'menu/isLoadingFeatures',
       favoritesIds: 'favorite/favoritesIds',

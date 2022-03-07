@@ -2,11 +2,13 @@
   <aside
     :class="[
       'flex flex-col max-h-full px-5 py-4 space-y-6 shadow-md pointer-events-auto sm:rounded-xl md:w-96',
-      isExplorerFavorite ? 'bg-blue-500 sm:bg-white text-white' : 'bg-white',
+      isModeExplorerOrFavorites
+        ? 'bg-blue-500 sm:bg-white text-white'
+        : 'bg-white',
     ]"
   >
     <div class="flex flex-row sm:flex-col items-center sm:items-start">
-      <h1 v-if="!isExplorerFavorite" class="flex-none sm:hidden mr-2">
+      <h1 v-if="!isModeExplorerOrFavorites" class="flex-none sm:hidden mr-2">
         <img
           :aria-label="siteName"
           :src="logoUrl"
@@ -23,7 +25,7 @@
       </button>
 
       <form
-        v-if="!isExplorerFavorite"
+        v-if="!isModeExplorerOrFavorites"
         ref="searchform"
         class="flex-grow relative pointer-events-auto w-full"
         @submit.prevent="onSubmit"
@@ -150,10 +152,6 @@ export default Vue.extend({
       type: Object as PropType<{ [id: string]: string }>,
       required: true,
     },
-    isExplorerFavorite: {
-      type: Boolean,
-      default: false,
-    },
     mapCenter: {
       type: Object as PropType<{ lng: number; lat: number }>,
       default: () => ({ lng: 0, lat: 0 }),
@@ -183,6 +181,7 @@ export default Vue.extend({
   computed: {
     ...mapGetters({
       isModeFavorites: 'map/isModeFavorites',
+      isModeExplorerOrFavorites: 'map/isModeExplorerOrFavorites',
     }),
     itemsMenuItems(): SearchResult[] {
       return (
