@@ -37,9 +37,20 @@ Then, create a PR from `develop` to `main`, it will launch the continuous develo
 * POIs
   * map only: `/pois/{ids}/map`
 
+## Settings
+
+Popup and details special fields support:
+* `addr:*`: combined all address fields.
+* `route:*`: all routes activity types and fields.
+* `start_end_date`: combined `start_date` and `end_date` fields.
+
+Spetial formatting support:
+* `opening_hours`
+* `phone` and `mobile`
+
 ## Users tracking
 
-## Google Tag Manager optional tracking configuration
+### Google Tag Manager optional tracking configuration
 
 |                                | event               | pageType | pageTitle | pageLocation | pagePath | action                                  | type | title | poiId | category | categoryId |
 | ------------------------------ | ------------------- | -------- | --------- | ------------ | -------- | --------------------------------------- | ---- | ----- | ----- | -------- | ---------- |
