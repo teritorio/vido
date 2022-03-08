@@ -975,12 +975,6 @@ export default Vue.extend({
             feature?.properties?.id
         )
 
-        setHashPart(
-          'poi',
-          feature?.properties?.metadata?.id?.toString() ||
-            feature?.id?.toString() ||
-            null
-        )
         this.showPoiToast = Boolean(
           feature?.properties?.metadata?.id?.toString() ||
             feature?.id?.toString()
@@ -1002,7 +996,6 @@ export default Vue.extend({
       } else {
         filterRouteByCategories(this.map, Object.keys(this.features))
         this.showPoiToast = false
-        setHashPart('poi', null)
       }
     },
   },

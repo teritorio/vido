@@ -383,10 +383,17 @@ export default (Vue as VueConstructor<
         this.$refs.mainMap?.resizeMap()
       }
     },
-    selectedFeature(val) {
-      if (this.$isMobile() && val) {
+    selectedFeature() {
+      if (this.$isMobile() && this.selectedFeature) {
         this.$refs.mainMap?.resizeMap()
       }
+
+      setHashPart(
+        'poi',
+        this.selectedFeature?.properties?.metadata?.id?.toString() ||
+          this.selectedFeature?.id?.toString() ||
+          null
+      )
     },
 
     mode() {
