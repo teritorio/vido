@@ -529,12 +529,12 @@ export default Vue.extend({
       })
 
       // Listen to click on POI from vector tiles (explorer mode)
-      const selectFeature = (
+      const setSelectedFeature = (
         event: MapLayerMouseEvent | MapLayerTouchEvent
       ) => {
         const feature = event.features?.pop()
         if (feature?.properties?.popup_properties) {
-          this.selectFeature(feature as ApiPoi)
+          this.setSelectedFeature(feature as ApiPoi)
         }
       }
       ;[
@@ -545,7 +545,7 @@ export default Vue.extend({
         'features_tourism-fill',
       ].forEach((layer) => {
         if (this.map) {
-          this.map.on('click', layer, selectFeature)
+          this.map.on('click', layer, setSelectedFeature)
           map.on('mouseenter', layer, () => {
             map.getCanvas().style.cursor = 'pointer'
           })
@@ -565,7 +565,7 @@ export default Vue.extend({
           poiHash
         ).then((poi) => {
           if (poi) {
-            this.selectFeature(poi)
+            this.setSelectedFeature(poi)
           }
         })
       }
@@ -600,7 +600,7 @@ export default Vue.extend({
 
     exploreAroundSelectedPoi(feature?: ApiPoi) {
       if (feature) {
-        this.selectFeature(feature)
+        this.setSelectedFeature(feature)
       }
       if (!this.isModeExplorer) {
         this.map?.once('moveend', () => this.setMode(Mode.EXPLORER))
@@ -618,7 +618,7 @@ export default Vue.extend({
 
     toggleFavoriteMode(feature?: ApiPoi, isNotebook?: boolean) {
       if (feature && !isNotebook) {
-        this.selectFeature(feature)
+        this.setSelectedFeature(feature)
       }
       try {
         const props = feature?.properties
@@ -791,7 +791,7 @@ export default Vue.extend({
 
     goToSelectedPoi(feature?: ApiPoi) {
       if (feature) {
-        this.selectFeature(feature)
+        this.setSelectedFeature(feature)
       }
       if (!this.map || !this.selectedFeature) {
         return
@@ -898,7 +898,7 @@ export default Vue.extend({
         this.map.addLayer(markerLayerTextFactory(POI_SOURCE, POI_LAYER_MARKER))
     },
 
-    selectFeature(feature: ApiPoi) {
+    setSelectedFeature(feature: ApiPoi) {
       const goodFeature = feature
 
       const IsJsonString = (str: string) => {
@@ -924,11 +924,11 @@ export default Vue.extend({
         goodFeature.properties = cleanProperties
       }
 
-      this.$store.dispatch('map/selectFeature', goodFeature)
+      this.$store.dispatch('map/setSelectedFeature', goodFeature)
     },
 
     unselectFeature() {
-      this.$store.dispatch('map/selectFeature', null)
+      this.$store.dispatch('map/setSelectedFeature', null)
     },
 
     updateMarkers(src: string) {
@@ -1013,7 +1013,7 @@ export default Vue.extend({
                 if (props.editorial?.popup_properties) {
                   el.addEventListener('click', (e) => {
                     e.stopPropagation()
-                    this.selectFeature(feature)
+                    this.setSelectedFeature(feature)
 
                     if (this.$isMobile()) {
                       this.resizeMap()

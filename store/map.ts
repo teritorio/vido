@@ -5,7 +5,7 @@ import { LatLng, Pitch, Mode } from '@/utils/types'
 
 enum Mutation {
   SET_CONFIG = 'SET_CONFIG',
-  SELECT_FEATURE = 'SELECT_FEATURE',
+  SET_SELECTED_FEATURE = 'SET_SELECTED_FEATURE',
   SET_CENTER = 'SET_CENTER',
   SET_MODE = 'SET_MODE',
 }
@@ -37,7 +37,7 @@ export const mutations = {
     state.center = payload.center
     state.pitch = payload.pitch || 0
   },
-  [Mutation.SELECT_FEATURE](state: State, payload: State) {
+  [Mutation.SET_SELECTED_FEATURE](state: State, payload: State) {
     // JSON conversion necessary to have map watcher working
     state.selectedFeature =
       payload.selectedFeature && JSON.stringify(payload.selectedFeature)
@@ -52,8 +52,8 @@ export const mutations = {
 }
 
 export const actions = {
-  selectFeature(store: Store<State>, feature: ApiPoi) {
-    store.commit(Mutation.SELECT_FEATURE, { selectedFeature: feature })
+  setSelectedFeature(store: Store<State>, feature: ApiPoi) {
+    store.commit(Mutation.SET_SELECTED_FEATURE, { selectedFeature: feature })
   },
   center(store: Store<State>, center: LatLng) {
     store.commit(Mutation.SET_CENTER, { center })

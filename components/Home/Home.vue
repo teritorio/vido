@@ -479,7 +479,7 @@ export default (Vue as VueConstructor<
   methods: {
     ...mapActions({
       setCategoriesFilters: 'menu/setFilters',
-      setSelectedFeature: 'map/selectFeature',
+      setSelectedFeature: 'map/setSelectedFeature',
     }),
     goToHome() {
       this.service.send(HomeEvents.GoToHome)
