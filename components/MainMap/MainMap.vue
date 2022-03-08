@@ -488,6 +488,8 @@ export default Vue.extend({
       setMode: 'map/setMode',
       setFavoritesAction: 'favorite/setFavoritesAction',
       toggleFavoriteModes: 'favorite/toggleFavoriteModes',
+      setSelectedFeature: 'map/setSelectedFeature',
+      unselectFeature: 'map/unselectFeature',
     }),
 
     onMapInit(map: maplibregl.Map) {
@@ -896,39 +898,6 @@ export default Vue.extend({
       // Add individual markers
       if (!this.map.getLayer(POI_LAYER_MARKER))
         this.map.addLayer(markerLayerTextFactory(POI_SOURCE, POI_LAYER_MARKER))
-    },
-
-    setSelectedFeature(feature: ApiPoi) {
-      const goodFeature = feature
-
-      const IsJsonString = (str: string) => {
-        try {
-          JSON.parse(str)
-        } catch (e) {
-          return false
-        }
-        return true
-      }
-
-      if (feature?.properties) {
-        const cleanProperties: ApiPoi['properties'] = {}
-
-        Object.keys(feature.properties).forEach((key) => {
-          if (IsJsonString(feature.properties[key])) {
-            cleanProperties[key] = JSON.parse(feature.properties[key])
-          } else {
-            cleanProperties[key] = feature.properties[key]
-          }
-        })
-
-        goodFeature.properties = cleanProperties
-      }
-
-      this.$store.dispatch('map/setSelectedFeature', goodFeature)
-    },
-
-    unselectFeature() {
-      this.$store.dispatch('map/setSelectedFeature', null)
     },
 
     updateMarkers(src: string) {
