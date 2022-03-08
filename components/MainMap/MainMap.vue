@@ -112,7 +112,7 @@ import Map from '@/components/Map/Map.vue'
 import MapControls3D from '@/components/Map/MapControls3D.vue'
 import MapControlsBackground from '@/components/Map/MapControlsBackground.vue'
 import { ApiMenuCategory } from '@/lib/apiMenu'
-import { getPoiById, getPoiByIds, ApiPoi } from '@/lib/apiPois'
+import { getPoiByIds, ApiPoi } from '@/lib/apiPois'
 import { getBBoxFeatures, getBBoxFeature, getBBoxCoordList } from '@/lib/bbox'
 import { createMarkerDonutChart } from '@/lib/clusters'
 import {
@@ -317,59 +317,7 @@ export default Vue.extend({
     },
 
     selectedFeature(feature: ApiPoi) {
-      if (!this.map) {
-        return
-      }
-
-      // Clean-up previous marker
-      if (this.selectedFeatureMarker) {
-        this.selectedFeatureMarker.remove()
-        this.selectedFeatureMarker = null
-      }
-
-      // Add new marker if a feature is selected
-      if (
-        feature &&
-        (feature.properties?.metadata?.id ||
-          feature?.id ||
-          feature?.properties?.id)
-      ) {
-        filterRouteByPoiId(
-          this.map,
-          feature.properties?.metadata?.id ||
-            feature?.id ||
-            feature?.properties?.id
-        )
-
-        setHashPart(
-          'poi',
-          feature?.properties?.metadata?.id?.toString() ||
-            feature?.id?.toString() ||
-            null
-        )
-        this.showPoiToast = Boolean(
-          feature?.properties?.metadata?.id?.toString() ||
-            feature?.id?.toString()
-        )
-        if (feature.geometry.type === 'Point') {
-          this.selectedFeatureMarker = new maplibregl.Marker({
-            scale: 1.3,
-            color: '#f44336',
-          })
-            .setLngLat(
-              (Boolean(feature?.properties?.metadata?.id) &&
-                this.featuresCoordinates[
-                  feature?.properties?.metadata?.id || ''
-                ]) ||
-                (feature.geometry.coordinates as [number, number])
-            )
-            .addTo(this.map)
-        }
-      } else {
-        filterRouteByCategories(this.map, Object.keys(this.features))
-        this.showPoiToast = false
-        setHashPart('poi', null)
-      }
+      this.onSelectedFeature(feature)
     },
 
     selectedBackground() {
@@ -557,20 +505,11 @@ export default Vue.extend({
         }
       })
 
-      const poiHash = getHashPart('poi')
-
-      if (poiHash && !this.selectedFeature) {
-        getPoiById(
-          this.$config.API_ENDPOINT,
-          this.$config.API_PROJECT,
-          this.$config.API_THEME,
-          poiHash
-        ).then((poi) => {
-          if (poi) {
-            this.setSelectedFeature(poi)
-          }
-        })
-      }
+      this.map.once('load', () => {
+        if (this.map && this.selectedFeature) {
+          this.onSelectedFeature(this.selectedFeature)
+        }
+      })
 
       if (this.isModeFavorites) {
         this.handleFavorites()
@@ -1008,6 +947,62 @@ export default Vue.extend({
       if (this.selectedFeatureMarker) {
         this.selectedFeatureMarker.remove()
         this.selectedFeatureMarker.addTo(this.map)
+      }
+    },
+
+    onSelectedFeature(feature: ApiPoi) {
+      if (!this.map) {
+        return
+      }
+
+      // Clean-up previous marker
+      if (this.selectedFeatureMarker) {
+        this.selectedFeatureMarker.remove()
+        this.selectedFeatureMarker = null
+      }
+
+      // Add new marker if a feature is selected
+      if (
+        feature &&
+        (feature.properties?.metadata?.id ||
+          feature?.id ||
+          feature?.properties?.id)
+      ) {
+        filterRouteByPoiId(
+          this.map,
+          feature.properties?.metadata?.id ||
+            feature?.id ||
+            feature?.properties?.id
+        )
+
+        setHashPart(
+          'poi',
+          feature?.properties?.metadata?.id?.toString() ||
+            feature?.id?.toString() ||
+            null
+        )
+        this.showPoiToast = Boolean(
+          feature?.properties?.metadata?.id?.toString() ||
+            feature?.id?.toString()
+        )
+        if (feature.geometry.type === 'Point') {
+          this.selectedFeatureMarker = new maplibregl.Marker({
+            scale: 1.3,
+            color: '#f44336',
+          })
+            .setLngLat(
+              (Boolean(feature?.properties?.metadata?.id) &&
+                this.featuresCoordinates[
+                  feature?.properties?.metadata?.id || ''
+                ]) ||
+                (feature.geometry.coordinates as [number, number])
+            )
+            .addTo(this.map)
+        }
+      } else {
+        filterRouteByCategories(this.map, Object.keys(this.features))
+        this.showPoiToast = false
+        setHashPart('poi', null)
       }
     },
   },

@@ -461,6 +461,7 @@ export default (Vue as VueConstructor<
           }
         ).then((poi) => {
           if (poi) {
+            this.setSelectedFeature(poi)
             this.initialBbox = getBBoxFeature(poi)
           }
           if (!this.initialBbox) {
