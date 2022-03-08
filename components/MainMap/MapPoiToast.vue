@@ -120,11 +120,11 @@
             </li>
           </ul>
 
-          <p
-            v-else-if="['start_date', 'end_date'].indexOf(property) >= 0"
-            class="text-sm"
-          >
-            {{ $d(new Date(poiProp(property))) }}
+          <p v-else-if="property == 'start_end_date'" class="text-sm">
+            <DateRange
+              :start="poiProp('start_date')"
+              :end="poiProp('end_date')"
+            />
           </p>
 
           <p v-else-if="property === 'opening_hours'" class="text-sm">
@@ -223,6 +223,7 @@ import Vue, { PropType } from 'vue'
 import { mapGetters } from 'vuex'
 
 import AddressField from '@/components/Fields/AddressField.vue'
+import DateRange from '@/components/Fields/DateRange.vue'
 import OpeningHours from '@/components/Fields/OpeningHours.vue'
 import TeritorioIcon from '@/components/TeritorioIcon/TeritorioIcon.vue'
 import { getPoiById, ApiPoi, ApiPoiProperties } from '@/lib/apiPois'
@@ -234,6 +235,7 @@ export default Vue.extend({
     TeritorioIcon,
     AddressField,
     OpeningHours,
+    DateRange,
   },
 
   props: {

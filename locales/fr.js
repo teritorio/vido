@@ -58,6 +58,11 @@ export default {
     backToMenuFavorites: 'Afficher le menu',
     backToMenuExplorer: 'Retour au menu',
   },
+  dateRange: {
+    from_to: 'Du {from} au {to}',
+    from: 'À partir du {from}',
+    to: "Jusqu'au {to}",
+  },
   openingHours: {
     monday: 'Lun.',
     tuesday: 'Mar.',
