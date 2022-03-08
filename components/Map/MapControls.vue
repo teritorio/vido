@@ -1,5 +1,5 @@
 <template>
-  <aside class="pointer-events-none hidden sm:block">
+  <aside class="pointer-events-none">
     <div class="absolute flex flex-col justify-center inset-y-3 right-3">
       <div class="flex flex-col space-y-3 pointer-events-auto">
         <div ref="navigationControlContainer"></div>

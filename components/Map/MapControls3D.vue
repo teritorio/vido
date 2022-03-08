@@ -3,7 +3,7 @@
     :aria-label="$tc('mapControls.threeDAriaLabel')"
     type="button"
     :class="[
-      'hidden items-center justify-center leading-none sm:flex text-sm font-bold rounded-full shadow-md w-11 h-11 outline-none focus:outline-none ',
+      'hidden sm:block items-center justify-center leading-none sm:flex text-sm font-bold rounded-full shadow-md w-11 h-11 outline-none focus:outline-none ',
       pitch != 0 &&
         'bg-blue-500 text-white hover:bg-blue-400 focus-visible:bg-blue-400',
       pitch == 0 &&
