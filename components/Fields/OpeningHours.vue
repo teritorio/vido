@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-if="openingHours">
     <span
       v-if="format"
       :class="[

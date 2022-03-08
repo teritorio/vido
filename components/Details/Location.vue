@@ -7,9 +7,7 @@
     <h2>{{ $tc('details.headerLocation') }}</h2>
     <p v-if="p.name">{{ p.name }}</p>
     <p>
-      {{ p['addr:street'] }}
-      {{ p['addr:postcode'] }}
-      {{ p['addr:city'] }}
+      <AddressField :properties="p"></AddressField>
     </p>
 
     <p v-if="geom.type === 'Point'">
@@ -23,9 +21,14 @@
 import GeoJSON from 'geojson'
 import Vue, { PropType } from 'vue'
 
+import AddressField from '@/components/Fields/AddressField.vue'
 import { ApiPoiProperties } from '@/lib/apiPois'
 
 export default Vue.extend({
+  components: {
+    AddressField,
+  },
+
   props: {
     geom: {
       type: Object as PropType<GeoJSON.Geometry>,

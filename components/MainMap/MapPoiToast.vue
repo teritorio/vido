@@ -67,29 +67,30 @@
       </p>
 
       <div v-else class="h-auto flex-grow flex-shrink-0">
-        <p class="mt-6 text-sm">
-          <template v-if="address">
-            {{ address }}
-          </template>
-        </p>
-
-        <template v-for="(route, activity) in routes">
-          <p :key="activity" class="text-sm mt-2">
-            {{
-              (sptags && sptags['route:*'] && sptags['route:*'][activity]) ||
-              activity
-            }}
-            : {{ route }}
-          </p>
-        </template>
-
         <div
-          v-for="field in listFields"
-          :key="'_' + field.k"
+          v-for="property in poiEditorial('popup_properties') || []"
+          :key="'_' + property"
           class="text-sm mt-2"
         >
-          <ul v-if="field.k === 'phone' && $isMobile()">
-            <li v-for="item in field.v" :key="item">
+          <p v-if="property === 'addr:*'" class="mt-6 text-sm">
+            <AddressField :properties="poiProps()"></AddressField>
+          </p>
+
+          <template
+            v-for="(route, activity) in routes"
+            v-else-if="property === 'route:*'"
+          >
+            <p :key="activity" class="text-sm mt-2">
+              {{
+                (sptags && sptags['route:*'] && sptags['route:*'][activity]) ||
+                activity
+              }}
+              : {{ route }}
+            </p>
+          </template>
+
+          <ul v-if="property === 'phone' && $isMobile()">
+            <li v-for="item in poiProp(property)" :key="item">
               <a
                 class="text-blue-400"
                 :href="'tel:' + item"
@@ -99,8 +100,8 @@
               </a>
             </li>
           </ul>
-          <ul v-else-if="field.k === 'mobile' && $isMobile()">
-            <li v-for="item in field.v" :key="item">
+          <ul v-else-if="property === 'mobile' && $isMobile()">
+            <li v-for="item in poiProp(property)" :key="item">
               <a
                 class="text-blue-400"
                 :href="'tel:' + item"
@@ -111,8 +112,8 @@
             </li>
           </ul>
 
-          <ul v-else-if="Array.isArray(field.v)">
-            <li v-for="item in field.v" :key="item">
+          <ul v-else-if="Array.isArray(poiProp(property))">
+            <li v-for="item in poiProp(property)" :key="item">
               <p class="text-sm mt-1">
                 {{ item }}
               </p>
@@ -120,18 +121,23 @@
           </ul>
 
           <p
-            v-else-if="['start_date', 'end_date'].indexOf(field.k) >= 0"
+            v-else-if="['start_date', 'end_date'].indexOf(property) >= 0"
             class="text-sm"
           >
-            {{ $d(new Date(field.v)) }}
+            {{ $d(new Date(poiProp(property))) }}
           </p>
 
-          <p v-else-if="field.k === 'opening_hours'" class="text-sm">
-            <OpeningHours :opening-hours="field.v" />
+          <p v-else-if="property === 'opening_hours'" class="text-sm">
+            <OpeningHours :opening-hours="poiProp(property)" />
           </p>
 
-          <p v-else-if="field.v.length > textLimit" class="text-sm">
-            {{ field.v.substring(0, textLimit) + ' ...' }}
+          <p
+            v-else-if="
+              poiProp(property) && poiProp(property).length > textLimit
+            "
+            class="text-sm"
+          >
+            {{ poiProp(property).substring(0, textLimit) + ' ...' }}
             <a
               v-if="poiEditorial('website:details')"
               class="underline"
@@ -144,7 +150,7 @@
             </a>
           </p>
           <p v-else class="text-sm">
-            {{ field.v }}
+            {{ poiProp(property) }}
           </p>
         </div>
       </div>
@@ -216,6 +222,7 @@
 import Vue, { PropType } from 'vue'
 import { mapGetters } from 'vuex'
 
+import AddressField from '@/components/Fields/AddressField.vue'
 import OpeningHours from '@/components/Fields/OpeningHours.vue'
 import TeritorioIcon from '@/components/TeritorioIcon/TeritorioIcon.vue'
 import { getPoiById, ApiPoi, ApiPoiProperties } from '@/lib/apiPois'
@@ -225,6 +232,7 @@ import { getContrastedTextColor } from '@/utils/picto'
 export default Vue.extend({
   components: {
     TeritorioIcon,
+    AddressField,
     OpeningHours,
   },
 
@@ -328,76 +336,6 @@ export default Vue.extend({
       return this.poiProp('description')
     },
 
-    address(): string | null {
-      if ((this.poiEditorial('popup_properties') || []).includes('addr:*')) {
-        return [
-          this.poiProp('addr:housenumber'),
-          this.poiProp('addr:street'),
-          this.poiProp('addr:postcode'),
-          this.poiProp('addr:city'),
-        ]
-          .filter((f) => f && f.toString().trim().length > 0)
-          .join(' ')
-      } else {
-        return null
-      }
-    },
-
-    listFields(): string[] {
-      const getValue = (field: string, value: string | string[]) => {
-        if (field === 'route:*') return null
-
-        return value
-      }
-
-      return (this.poiEditorial('popup_properties') || [])
-        .map((f: string) => {
-          if (
-            this.sptags !== null &&
-            this.sptags[f] &&
-            this.sptags[f][this.poiProp(f)]
-          ) {
-            return {
-              k: f,
-              v: getValue(f, this.sptags[f][this.poiProp(f)]),
-            }
-          } else if (
-            this.sptags !== null &&
-            this.sptags[f] &&
-            this.poiProp(f) &&
-            this.poiProp(f).includes(';')
-          ) {
-            return {
-              k: f,
-              v: getValue(
-                f,
-                this.poiProp(f)
-                  .split(';')
-                  .map((p: string) => this.sptags !== null && this.sptags[f][p])
-                  .filter(
-                    (f: string | string[]) =>
-                      f &&
-                      ((typeof f === 'string' && f.trim().length > 0) ||
-                        (Array.isArray(f) && f.length > 0))
-                  )
-                  .join(', ')
-              ),
-            }
-          } else {
-            return {
-              k: f,
-              v: getValue(f, this.poiProp(f)),
-            }
-          }
-        })
-        .filter(
-          (f: { k: string; v: string | string[] }) =>
-            f.v &&
-            ((typeof f.v === 'string' && f.v.trim().length > 0) ||
-              (Array.isArray(f.v) && f.v.length > 0))
-        )
-    },
-
     routeHref(): string | null {
       if (this.poi.geometry.type === 'Point') {
         const lat = this.poi.geometry.coordinates[1]
@@ -490,8 +428,30 @@ export default Vue.extend({
       }
     },
 
+    poiProps(): ApiPoiProperties {
+      return {
+        ...((this.poi.properties &&
+          Object.fromEntries(
+            Object.entries(this.poi.properties).map(([key, value]) => [
+              key,
+              (value &&
+                typeof value === 'string' &&
+                value.includes(';') &&
+                value
+                  .split(';')
+                  .filter((s: string) => s)
+                  .map((s: string) => s.trim())
+                  .filter((s: string) => s)) ||
+                value,
+            ])
+          )) ||
+          {}),
+        ...(this.apiProps || {}),
+      }
+    },
+
     poiProp(name: string) {
-      return this.apiProps?.[name] || this.poi.properties?.[name]
+      return this.poiProps()?.[name]
     },
 
     poiMeta(name: string) {
