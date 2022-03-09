@@ -1,5 +1,5 @@
 <template>
-  <Home v-if="settings" :settings="settings" />
+  <Home v-if="settings" :settings="settings" :poi-id="initialPoiId" />
 </template>
 
 <script lang="ts">
@@ -18,9 +18,11 @@ export default Vue.extend({
 
   async asyncData({
     env,
+    params,
   }): Promise<{
     settings: Settings | null
     categories: Category[] | null
+    initialPoiId: Number | null
   }> {
     const fetchSettings = getSettings(
       env.API_ENDPOINT,
@@ -38,6 +40,7 @@ export default Vue.extend({
     return Promise.resolve({
       settings: v[0],
       categories: v[1],
+      initialPoiId: (params.poiId && parseInt(params.poiId)) || null,
     })
   },
 

@@ -219,6 +219,10 @@ export default (Vue as VueConstructor<
       type: Object as PropType<Settings>,
       required: true,
     },
+    poiId: {
+      type: Number,
+      default: null,
+    },
   },
   data(): {
     service: Interpreter<HomeContext, HomeStateSchema, HomeEvent>
@@ -388,12 +392,15 @@ export default (Vue as VueConstructor<
         this.$refs.mainMap?.resizeMap()
       }
 
-      setHashPart(
-        'poi',
+      const id =
         this.selectedFeature?.properties?.metadata?.id?.toString() ||
-          this.selectedFeature?.id?.toString() ||
-          null
-      )
+        this.selectedFeature?.id?.toString() ||
+        null
+      this.$router.push({
+        path: id ? `/${id}` : '/',
+        query: this.$router.currentRoute.query,
+        hash: this.$router.currentRoute.hash,
+      })
     },
 
     mode() {
@@ -456,13 +463,12 @@ export default (Vue as VueConstructor<
         this.selectSubCategory(enabledCategories)
       }
 
-      const poiId = getHashPart('poi')
-      if (poiId) {
+      if (this.poiId) {
         getPoiById(
           this.$config.API_ENDPOINT,
           this.$config.API_PROJECT,
           this.$config.API_THEME,
-          poiId,
+          this.poiId,
           {
             as_point: false,
           }
