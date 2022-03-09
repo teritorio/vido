@@ -42,12 +42,24 @@ export default Vue.extend({
       env.API_THEME
     )
 
-    const categoryIds =
-      (params.categoryIds &&
-        params.categoryIds.split(',').map((id) => parseInt(id))) ||
-      null
+    let categoryIdsJoin: string | null
+    let poiId: string | null
+    // Workaround Nuxt missing feature to simple respect trialling slash meaning
+    if (params.poiId) {
+      categoryIdsJoin = params.p1
+      poiId = params.poiId
+    } else if (route.path.endsWith('/')) {
+      categoryIdsJoin = params.p1
+      poiId = null
+    } else {
+      categoryIdsJoin = null
+      poiId = params.p1
+    }
 
-    const poiId = (params.poiId && params.poiId) || null
+    const categoryIds =
+      (categoryIdsJoin &&
+        categoryIdsJoin.split(',').map((id) => parseInt(id))) ||
+      null
     let fetchPoi: Promise<ApiPoi | null> = Promise.resolve(null)
     if (poiId) {
       fetchPoi = getPoiById(
