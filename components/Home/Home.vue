@@ -219,6 +219,10 @@ export default (Vue as VueConstructor<
       type: Object as PropType<Settings>,
       required: true,
     },
+    initialCategoryIds: {
+      type: Array as PropType<number[]>,
+      default: null,
+    },
     initialPoi: {
       type: Object as PropType<ApiPoi>,
       default: null,
@@ -391,16 +395,7 @@ export default (Vue as VueConstructor<
       if (this.$isMobile() && this.selectedFeature) {
         this.$refs.mainMap?.resizeMap()
       }
-
-      const id =
-        this.selectedFeature?.properties?.metadata?.id?.toString() ||
-        this.selectedFeature?.id?.toString() ||
-        null
-      this.$router.push({
-        path: id ? `/${id}` : '/',
-        query: this.$router.currentRoute.query,
-        hash: this.$router.currentRoute.hash,
-      })
+      this.routerPushUrl()
     },
 
     mode() {
@@ -434,34 +429,25 @@ export default (Vue as VueConstructor<
           typeof location !== 'undefined' &&
           state.event.type !== HomeEvents.Init
         ) {
-          setHashPart(
-            'cat',
-            this.state.context.selectedSubCategoriesIds.join(',')
-          )
+          this.routerPushUrl()
         }
       })
       .start()
   },
   mounted() {
-    if (typeof location !== 'undefined') {
-      if (getHashPart('cat')) {
-        this.selectSubCategory(
-          getHashPart('cat')
-            ?.split(',')
-            .map((i) => parseInt(i, 10)) || []
-        )
-      } else if (!getHashPart('favs')) {
-        const enabledCategories: Category['id'][] = []
+    if (this.initialCategoryIds) {
+      this.selectSubCategory(this.initialCategoryIds)
+    } else if (typeof location !== 'undefined' && !getHashPart('favs')) {
+      const enabledCategories: Category['id'][] = []
 
-        Object.keys(this.categories).forEach((categoryIdString) => {
-          const categoryId = parseInt(categoryIdString, 10)
-          if (this.categories[categoryId].selected_by_default) {
-            enabledCategories.push(categoryId)
-          }
-        })
+      Object.keys(this.categories).forEach((categoryIdString) => {
+        const categoryId = parseInt(categoryIdString, 10)
+        if (this.categories[categoryId].selected_by_default) {
+          enabledCategories.push(categoryId)
+        }
+      })
 
-        this.selectSubCategory(enabledCategories)
-      }
+      this.selectSubCategory(enabledCategories)
     }
 
     if (this.initialPoi) {
@@ -480,6 +466,20 @@ export default (Vue as VueConstructor<
       setCategoriesFilters: 'menu/setFilters',
       setSelectedFeature: 'map/setSelectedFeature',
     }),
+    routerPushUrl() {
+      const categoryIds = this.state.context.selectedSubCategoriesIds
+        .sort()
+        .join(',')
+      const id =
+        this.selectedFeature?.properties?.metadata?.id?.toString() ||
+        this.selectedFeature?.id?.toString() ||
+        null
+      this.$router.push({
+        path: (categoryIds ? `/${categoryIds}/` : '/') + (id ? `${id}` : ''),
+        query: this.$router.currentRoute.query,
+        hash: this.$router.currentRoute.hash,
+      })
+    },
     goToHome() {
       this.service.send(HomeEvents.GoToHome)
       if (this.$isMobile()) {

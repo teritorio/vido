@@ -1,5 +1,10 @@
 <template>
-  <Home v-if="settings" :settings="settings" :initial-poi="initialPoi" />
+  <Home
+    v-if="settings"
+    :settings="settings"
+    :initial-category-ids="categoryIds"
+    :initial-poi="initialPoi"
+  />
 </template>
 
 <script lang="ts">
@@ -23,6 +28,7 @@ export default Vue.extend({
   }): Promise<{
     settings: Settings | null
     categories: Category[] | null
+    categoryIds: Number[] | null
     initialPoi: ApiPoi | null
   }> {
     const fetchSettings = getSettings(
@@ -35,6 +41,11 @@ export default Vue.extend({
       env.API_PROJECT,
       env.API_THEME
     )
+
+    const categoryIds =
+      (params.categoryIds &&
+        params.categoryIds.split(',').map((id) => parseInt(id))) ||
+      null
 
     const poiId = (params.poiId && parseInt(params.poiId)) || null
     let fetchPoi: Promise<ApiPoi | null> = Promise.resolve(null)
@@ -52,6 +63,7 @@ export default Vue.extend({
     return Promise.resolve({
       settings: v[0],
       categories: v[1],
+      categoryIds,
       initialPoi: v[2],
     })
   },
