@@ -28,7 +28,7 @@ export default Vue.extend({
   }): Promise<{
     settings: Settings | null
     categories: Category[] | null
-    categoryIds: Number[] | null
+    categoryIds: number[] | null
     initialPoi: ApiPoi | null
   }> {
     const fetchSettings = getSettings(
@@ -47,7 +47,7 @@ export default Vue.extend({
         params.categoryIds.split(',').map((id) => parseInt(id))) ||
       null
 
-    const poiId = (params.poiId && parseInt(params.poiId)) || null
+    const poiId = (params.poiId && params.poiId) || null
     let fetchPoi: Promise<ApiPoi | null> = Promise.resolve(null)
     if (poiId) {
       fetchPoi = getPoiById(
