@@ -39,6 +39,23 @@ Then, create a PR from `develop` to `main`, it will launch the continuous develo
 
 Full entry points documentation available on [api.yml](static/api.yaml) and on server at [http://localhost:3000/api.yaml](http://localhost:3000/api.yaml).
 
+## Production configuration
+
+Require server allows CORS on:
+* `/api.yaml`: the swagger specification
+Require server allows iframe usage on:
+* `/pois/{ids}/map`: map intended to be used as iframe.
+
+Apache2 configuration
+```
+  <Location "/api.yaml">
+    Header set Access-Control-Allow-Origin "*"
+  </Location>
+  <LocationMatch "^/pois/.*/map$">
+    Header set Content-Security-Policy "frame-ancestors *"
+  </LocationMatch>
+```
+
 ## Settings
 
 Popup and details special fields support:
