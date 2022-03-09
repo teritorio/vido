@@ -31,11 +31,13 @@ Then, create a PR from `develop` to `main`, it will launch the continuous develo
 
 ## Entry points
 
-* Main Map: `/`
-* POI
-  * details: `/poi/{id}/details`
-* POIs
-  * map only: `/pois/{ids}/map`
+* Main Map: `/`, `/{poi_Id}`, `/{category_ids}/` and `/{category_ids}/{poi_id}`.
+* POI:
+  * details: `/poi/{id}/details`.
+* POIs:
+  * map only: `/pois/{ids}/map`.
+
+Full entry points documentation available on [api.yml](static/api.yaml) and on server at [http://localhost:3000/api.yaml](http://localhost:3000/api.yaml).
 
 ## Settings
 
