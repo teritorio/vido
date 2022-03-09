@@ -219,8 +219,8 @@ export default (Vue as VueConstructor<
       type: Object as PropType<Settings>,
       required: true,
     },
-    poiId: {
-      type: Number,
+    initialPoi: {
+      type: Object as PropType<ApiPoi>,
       default: null,
     },
   },
@@ -462,30 +462,15 @@ export default (Vue as VueConstructor<
 
         this.selectSubCategory(enabledCategories)
       }
+    }
 
-      if (this.poiId) {
-        getPoiById(
-          this.$config.API_ENDPOINT,
-          this.$config.API_PROJECT,
-          this.$config.API_THEME,
-          this.poiId,
-          {
-            as_point: false,
-          }
-        ).then((poi) => {
-          if (poi) {
-            this.setSelectedFeature(poi)
-            this.initialBbox = getBBoxFeature(poi)
-          }
-          if (!this.initialBbox) {
-            // @ts-ignore
-            this.initialBbox = this.settings.bbox_line.coordinates
-          }
-        })
-      } else {
-        // @ts-ignore
-        this.initialBbox = this.settings.bbox_line.coordinates
-      }
+    if (this.initialPoi) {
+      this.setSelectedFeature(this.initialPoi)
+      this.initialBbox = getBBoxFeature(this.initialPoi)
+    }
+    if (!this.initialBbox) {
+      // @ts-ignore
+      this.initialBbox = this.settings.bbox_line.coordinates
     }
 
     this.goToHome()

@@ -1,5 +1,5 @@
 <template>
-  <Home v-if="settings" :settings="settings" :poi-id="initialPoiId" />
+  <Home v-if="settings" :settings="settings" :initial-poi="initialPoi" />
 </template>
 
 <script lang="ts">
@@ -9,6 +9,7 @@ import { mapActions } from 'vuex'
 
 import Home from '@/components/Home/Home.vue'
 import { Category, getMenu } from '@/lib/apiMenu'
+import { getPoiById, ApiPoi } from '@/lib/apiPois'
 import { getSettings, headerFromSettings, Settings } from '@/lib/apiSettings'
 
 export default Vue.extend({
@@ -22,7 +23,7 @@ export default Vue.extend({
   }): Promise<{
     settings: Settings | null
     categories: Category[] | null
-    initialPoiId: Number | null
+    initialPoi: ApiPoi | null
   }> {
     const fetchSettings = getSettings(
       env.API_ENDPOINT,
@@ -35,12 +36,23 @@ export default Vue.extend({
       env.API_THEME
     )
 
-    const v = await Promise.all([fetchSettings, fetchCategories])
+    const poiId = (params.poiId && parseInt(params.poiId)) || null
+    let fetchPoi: Promise<ApiPoi | null> = Promise.resolve(null)
+    if (poiId) {
+      fetchPoi = getPoiById(
+        env.API_ENDPOINT,
+        env.API_PROJECT,
+        env.API_THEME,
+        poiId
+      )
+    }
+
+    const v = await Promise.all([fetchSettings, fetchCategories, fetchPoi])
 
     return Promise.resolve({
       settings: v[0],
       categories: v[1],
-      initialPoiId: (params.poiId && parseInt(params.poiId)) || null,
+      initialPoi: v[2],
     })
   },
 
