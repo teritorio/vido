@@ -25,6 +25,7 @@ export default Vue.extend({
   async asyncData({
     env,
     params,
+    route,
   }): Promise<{
     settings: Settings | null
     categories: Category[] | null
