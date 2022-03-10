@@ -120,7 +120,7 @@
       @full-attribution="setFullAttributions($event)"
     />
     <BottomMenu
-      class="sm:hidden"
+      :class="['sm:hidden', isModeFavorites && 'hidden']"
       :selected-feature="selectedFeature"
       :is-bottom-menu-opened="isBottomMenuOpened"
       :show-poi="showPoi"
@@ -414,6 +414,7 @@ export default (Vue as VueConstructor<
         case Mode.FAVORITES: {
           this.previousSubCategories = this.state.context.selectedSubCategoriesIds
           setHashPart('mode', this.mode)
+          this.$refs.mainMap?.resizeMap()
           break
         }
       }
