@@ -82,6 +82,23 @@
           {{ (value.name && value.name.fr) || value.value }}
         </label>
       </div>
+      <div v-else-if="filter.type == 'date_range'" :key="filter.property_begin">
+        <t-rich-select
+          value-attribute="label"
+          :placeholder="filter.name.fr"
+          :hide-search-box="true"
+          :options="dateFilters"
+          :clearable="true"
+          :value="
+            filtersValues &&
+            getDateFilter(
+              filtersValues[String(filter.property_begin)],
+              filtersValues[String(filter.property_end)]
+            )
+          "
+          @input="(val) => onSelectionFilterDateChange(filter, val)"
+        />
+      </div>
     </template>
   </aside>
 </template>
@@ -90,8 +107,8 @@
 import copy from 'fast-copy'
 import Vue, { PropType } from 'vue'
 
-import { Category, Filter } from '@/lib/apiMenu'
-import { FilterValues } from '@/utils/types'
+import { Category, Filter, FilterDate } from '@/lib/apiMenu'
+import { DateFilterLabel, DateFilterOption, FilterValues } from '@/utils/types'
 
 export default Vue.extend({
   props: {
@@ -103,6 +120,60 @@ export default Vue.extend({
       type: Object as PropType<FilterValues>,
       default: () => ({}),
     },
+  },
+  data(): {
+    dateFilters: DateFilterOption[]
+  } {
+    const today = new Date()
+    today.setHours(0, 0, 0, 0)
+
+    const tomorrow = new Date(today)
+    tomorrow.setDate(tomorrow.getDate() + 1)
+
+    const afterTomorrow = new Date(tomorrow)
+    afterTomorrow.setDate(afterTomorrow.getDate() + 1)
+
+    const saturday = new Date()
+    saturday.setDate(saturday.getDate() + (7 - (saturday.getDay() % 5 || 6)))
+
+    const monday = new Date()
+    monday.setDate(monday.getDate() + (7 - (monday.getDay() % 7 || 7)))
+
+    const nextWeek = new Date(today)
+    nextWeek.setDate(nextWeek.getDate() + 7)
+
+    const nextMonth = new Date(today)
+    nextMonth.setMonth(nextMonth.getMonth() + 1)
+
+    return {
+      dateFilters: [
+        {
+          label: this.$tc(DateFilterLabel.TODAY),
+          begin: today.toDateString(),
+          end: tomorrow.toDateString(),
+        },
+        {
+          label: this.$tc(DateFilterLabel.TOMORROW),
+          begin: tomorrow.toDateString(),
+          end: afterTomorrow.toDateString(),
+        },
+        {
+          label: this.$tc(DateFilterLabel.THIS_WEEKEND),
+          begin: saturday.toDateString(),
+          end: monday.toDateString(),
+        },
+        {
+          label: this.$tc(DateFilterLabel.NEXT_WEEK),
+          begin: today.toDateString(),
+          end: nextWeek.toDateString(),
+        },
+        {
+          label: this.$tc(DateFilterLabel.NEXT_MONTH),
+          begin: today.toDateString(),
+          end: nextMonth.toDateString(),
+        },
+      ],
+    }
   },
 
   computed: {
@@ -138,6 +209,28 @@ export default Vue.extend({
       this.$emit('filter-changed', newFilters)
     },
 
+    onSelectionFilterDateChange(filter: FilterDate, value: string | null) {
+      const newFilters = this.filtersValues ? copy(this.filtersValues) : {}
+
+      if (value) {
+        const dateRange = this.dateFilters.find(
+          (e: DateFilterOption) => e.label === value
+        )
+
+        if (dateRange) {
+          newFilters[filter.property_begin] = [dateRange.begin]
+          newFilters[filter.property_end] = [dateRange.end]
+        }
+      } else if (
+        newFilters[filter.property_begin] ||
+        newFilters[filter.property_end]
+      ) {
+        delete newFilters[filter.property_begin]
+        delete newFilters[filter.property_end]
+      }
+      this.$emit('filter-changed', newFilters)
+    },
+
     onCheckboxFilterChange(property: string, val: string, checked: boolean) {
       const newFilters = this.filtersValues ? copy(this.filtersValues) : {}
 
@@ -145,20 +238,27 @@ export default Vue.extend({
         newFilters[property] = []
       }
 
+      const filterValue = newFilters[property] as string[]
+
       if (checked) {
-        if (!newFilters[property].includes(val)) {
-          newFilters[property].push(val)
+        if (!filterValue.includes(val)) {
+          filterValue.push(val)
         }
       } else if (newFilters[property].includes(val)) {
-        newFilters[property] = newFilters[property].filter(
-          (k: string) => k !== val
-        )
+        newFilters[property] = filterValue.filter((k: string) => k !== val)
       }
 
       if (newFilters[property].length === 0) {
         delete newFilters[property]
       }
       this.$emit('filter-changed', newFilters)
+    },
+
+    getDateFilter(begin: string[], end: string[]) {
+      const dateRange = this.dateFilters.find(
+        (e: DateFilterOption) => e.begin === begin?.[0] && e.end === end?.[0]
+      )
+      return dateRange?.label
     },
   },
 })

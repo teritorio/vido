@@ -16,7 +16,16 @@ export type FilterBoolean = {
   name: MultilingualString
 }
 
-export type Filter = FilterList | FilterBoolean
+export type FilterDate = {
+  type: 'date_range'
+  // eslint-disable-next-line camelcase
+  property_begin: string
+  // eslint-disable-next-line camelcase
+  property_end: string
+  name: MultilingualString
+}
+
+export type Filter = FilterList | FilterBoolean | FilterDate
 
 export interface ApiMenuItem {
   id: number

@@ -74,7 +74,7 @@ export const mutations = {
 }
 
 function filterExist(
-  filterToTest: string[],
+  filterToTest: string[] | string,
   featureToTest: string[] | string
 ): boolean {
   if (Array.isArray(featureToTest)) {
@@ -89,7 +89,35 @@ function keepFeature(feature: ApiPoi, filters: FilterValues): boolean {
     return true
   }
 
-  for (const key in filters) {
+  const dateKeys = Object.keys(filters).filter((key) => key.includes('date'))
+  const otherKeys = Object.keys(filters).filter((key) => !key.includes('date'))
+
+  if (dateKeys.length > 0) {
+    const isFeatureSelected = dateKeys.reduce((acc, key) => {
+      if (key.includes('start')) {
+        const featureKey = key.replace('start', 'end')
+
+        return (
+          new Date(feature.properties[featureKey]).getTime() >=
+          new Date(filters[key][0]).getTime()
+        )
+      }
+      if (key.includes('end')) {
+        const featureKey = key.replace('end', 'start')
+
+        return (
+          new Date(feature.properties[featureKey]).getTime() <=
+          new Date(filters[key][0]).getTime()
+        )
+      }
+      return acc
+    }, true)
+
+    if (!isFeatureSelected) return false
+  }
+
+  for (let i = 0; i < otherKeys.length; i++) {
+    const key = otherKeys[i]
     if (
       filters[key].length > 0 &&
       (!feature.properties[key] ||
