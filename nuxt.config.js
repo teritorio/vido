@@ -19,7 +19,6 @@ checkEnvVariable('SATELLITE_STYLE_URL')
 checkEnvVariable('RASTER_STYLE_URL')
 
 export default {
-  target: 'static',
   publicRuntimeConfig: {
     API_ENDPOINT: process.env.API_ENDPOINT || '',
     API_SEARCH: process.env.API_SEARCH || '',
