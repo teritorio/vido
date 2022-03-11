@@ -112,4 +112,11 @@ export default {
     poweredBy: 'Con la tecnología de',
     mapillaryExplore: 'Explorar en Mapillary',
   },
+  dateFilter: {
+    today: 'Hoy',
+    tomorrow: 'Mañana',
+    thisWeekend: 'Este fin de semana',
+    nextWeek: 'Semana siguiente',
+    nextMonth: 'Mes siguiente',
+  },
 }

@@ -112,9 +112,11 @@ export default {
     poweredBy: 'Powered by',
     mapillaryExplore: 'Explore on Mapillary',
   },
-  today: `Today`,
-  tomorrow: 'Tomorrow',
-  thisWeekend: 'Coming week-end',
-  nextWeek: 'Coming week',
-  nextMonth: 'Coming month',
+  dateFilter: {
+    today: 'Today',
+    tomorrow: 'Tomorrow',
+    thisWeekend: 'Coming week-end',
+    nextWeek: 'Coming week',
+    nextMonth: 'Coming month',
+  },
 }

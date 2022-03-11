@@ -112,9 +112,11 @@ export default {
     poweredBy: 'Propulsé par',
     mapillaryExplore: 'Explorer sur Mapillary',
   },
-  today: `Aujourd'hui`,
-  tomorrow: 'Demain',
-  thisWeekend: 'Ce week-end',
-  nextWeek: 'Semaine à venir',
-  nextMonth: 'Mois à venir',
+  dateFilter: {
+    today: "Aujourd'hui",
+    tomorrow: 'Demain',
+    thisWeekend: 'Ce week-end',
+    nextWeek: 'Semaine à venir',
+    nextMonth: 'Mois à venir',
+  },
 }

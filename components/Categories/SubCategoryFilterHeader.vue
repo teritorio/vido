@@ -85,7 +85,7 @@
       <div v-else-if="filter.type == 'date_range'" :key="filter.property_begin">
         <t-rich-select
           value-attribute="label"
-          :placeholder="filter.name.fr"
+          :placeholder="filter.name && filter.name.fr"
           :hide-search-box="true"
           :options="dateFilters"
           :clearable="true"
@@ -148,27 +148,27 @@ export default Vue.extend({
     return {
       dateFilters: [
         {
-          label: this.$tc(DateFilterLabel.TODAY),
+          label: this.$tc('dateFilter.' + DateFilterLabel.TODAY),
           begin: today.toDateString(),
           end: tomorrow.toDateString(),
         },
         {
-          label: this.$tc(DateFilterLabel.TOMORROW),
+          label: this.$tc('dateFilter.' + DateFilterLabel.TOMORROW),
           begin: tomorrow.toDateString(),
           end: afterTomorrow.toDateString(),
         },
         {
-          label: this.$tc(DateFilterLabel.THIS_WEEKEND),
+          label: this.$tc('dateFilter.' + DateFilterLabel.THIS_WEEKEND),
           begin: saturday.toDateString(),
           end: monday.toDateString(),
         },
         {
-          label: this.$tc(DateFilterLabel.NEXT_WEEK),
+          label: this.$tc('dateFilter.' + DateFilterLabel.NEXT_WEEK),
           begin: today.toDateString(),
           end: nextWeek.toDateString(),
         },
         {
-          label: this.$tc(DateFilterLabel.NEXT_MONTH),
+          label: this.$tc('dateFilter.' + DateFilterLabel.NEXT_MONTH),
           begin: today.toDateString(),
           end: nextMonth.toDateString(),
         },
