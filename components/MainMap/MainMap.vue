@@ -857,15 +857,13 @@ export default Vue.extend({
           ]
           const props = feature.properties
           let id: string | null = null
-          let marker: maplibregl.Marker | null = null
 
           if (props?.cluster) {
             id = 'c' + props.cluster_id
-            marker = this.markers[id]
-            if (!marker) {
+            if (!this.markers[id]) {
               const el = createMarkerDonutChart(this.categories, props)
               el.classList.add('cluster-item')
-              marker = this.markers[id] = new maplibregl.Marker({
+              this.markers[id] = new maplibregl.Marker({
                 element: el,
               }).setLngLat(coords)
               el.addEventListener('click', (e) => {
@@ -904,18 +902,16 @@ export default Vue.extend({
             }
             if (props?.metadata?.id) {
               id = 'm' + props.metadata.id
-              marker = this.markers[id]
               const markerCoords = this.featuresCoordinates[props.metadata.id]
-              if (!marker && markerCoords) {
+              if (!this.markers[id] && markerCoords) {
                 // Marker
-                const marker = makerHtmlFactory(
+                this.markers[id] = makerHtmlFactory(
                   markerCoords, // Using this to avoid misplaced marker
                   props.display?.color,
                   props.display?.icon,
                   props['image:thumbnail']
                 )
-                this.markers[id] = marker
-                const el = marker.getElement()
+                const el = this.markers[id].getElement()
 
                 // Click handler
                 if (props.editorial?.popup_properties) {
@@ -932,9 +928,11 @@ export default Vue.extend({
             }
           }
 
-          if (marker && id && this.map) {
-            newMarkers[id] = marker
-            if (!this.markersOnScreen[id]) marker.addTo(this.map)
+          if (id && this.markers[id] && this.map) {
+            newMarkers[id] = this.markers[id]
+            if (!this.markersOnScreen[id]) {
+              this.markers[id].addTo(this.map)
+            }
           }
         })
       // for every marker we've added previously, remove those that are no longer visible
