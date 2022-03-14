@@ -85,43 +85,34 @@ function filterExist(
 }
 
 function keepFeature(feature: ApiPoi, filters: FilterValues): boolean {
-  if (!filters || Object.keys(filters).length === 0) {
+  if (
+    !filters ||
+    (Object.keys(filters.values).length === 0 && !filters.dateRange)
+  ) {
     return true
   }
 
-  const dateKeys = Object.keys(filters).filter((key) => key.includes('date'))
-  const otherKeys = Object.keys(filters).filter((key) => !key.includes('date'))
-
-  if (dateKeys.length > 0) {
-    const isFeatureSelected = dateKeys.reduce((acc, key) => {
-      if (key.includes('start')) {
-        const featureKey = key.replace('start', 'end')
-
-        return (
-          new Date(feature.properties[featureKey]).getTime() >=
-          new Date(filters[key][0]).getTime()
-        )
-      }
-      if (key.includes('end')) {
-        const featureKey = key.replace('end', 'start')
-
-        return (
-          new Date(feature.properties[featureKey]).getTime() <=
-          new Date(filters[key][0]).getTime()
-        )
-      }
-      return acc
-    }, true)
-
-    if (!isFeatureSelected) return false
+  if (filters.dateRange) {
+    if (
+      !filters.dateRange.propertyStart ||
+      !filters.dateRange.value[1] ||
+      new Date(feature.properties[filters.dateRange.propertyStart]) >
+        filters.dateRange.value[1] ||
+      !filters.dateRange.propertyEnd ||
+      !filters.dateRange.value[0] ||
+      new Date(feature.properties[filters.dateRange.propertyEnd]) <
+        filters.dateRange.value[0]
+    ) {
+      return false
+    }
   }
 
-  for (let i = 0; i < otherKeys.length; i++) {
-    const key = otherKeys[i]
+  for (let i = 0; i < Object.keys(filters.values).length; i++) {
+    const key = Object.keys(filters.values)[i]
     if (
-      filters[key].length > 0 &&
+      filters.values[key].length > 0 &&
       (!feature.properties[key] ||
-        !filterExist(filters[key], feature.properties[key]))
+        !filterExist(filters.values[key], feature.properties[key]))
     ) {
       return false
     }

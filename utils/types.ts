@@ -16,7 +16,14 @@ export type ZoomLevel = number
 export type Pitch = number
 
 export type FilterValues = {
-  [key: string]: string[] | string
+  values: {
+    [key: string]: string[]
+  }
+  dateRange?: {
+    propertyStart?: string
+    propertyEnd?: string
+    value: [Date, Date]
+  }
 }
 
 export interface ApiSearchResult<T>

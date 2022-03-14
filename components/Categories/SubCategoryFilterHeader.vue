@@ -188,29 +188,35 @@ export default Vue.extend({
     },
 
     onBooleanFilterChange(property: string, value: boolean) {
-      const newFilters = this.filtersValues ? copy(this.filtersValues) : {}
+      const newFilters: FilterValues = {
+        values: this.filtersValues ? copy(this.filtersValues) : {},
+      }
 
       if (value) {
-        newFilters[property] = ['yes']
-      } else if (newFilters[property]) {
-        delete newFilters[property]
+        newFilters.values[property] = ['yes']
+      } else if (newFilters.values[property]) {
+        delete newFilters.values[property]
       }
       this.$emit('filter-changed', newFilters)
     },
 
     onSelectionFilterChange(property: string, values: string[] | null) {
-      const newFilters = this.filtersValues ? copy(this.filtersValues) : {}
+      const newFilters: FilterValues = {
+        values: this.filtersValues ? copy(this.filtersValues) : {},
+      }
 
       if (values && values.length > 0) {
-        newFilters[property] = values
-      } else if (newFilters[property]) {
-        delete newFilters[property]
+        newFilters.values[property] = values
+      } else if (newFilters.values[property]) {
+        delete newFilters.values[property]
       }
       this.$emit('filter-changed', newFilters)
     },
 
     onSelectionFilterDateChange(filter: FilterDate, value: string | null) {
-      const newFilters = this.filtersValues ? copy(this.filtersValues) : {}
+      const newFilters: FilterValues = {
+        values: this.filtersValues ? copy(this.filtersValues) : {},
+      }
 
       if (value) {
         const dateRange = this.dateFilters.find(
@@ -218,38 +224,42 @@ export default Vue.extend({
         )
 
         if (dateRange) {
-          newFilters[filter.property_begin] = [dateRange.begin]
-          newFilters[filter.property_end] = [dateRange.end]
+          newFilters.dateRange = {
+            propertyStart: filter.property_begin,
+            propertyEnd: filter.property_end,
+            value: [new Date(dateRange.begin), new Date(dateRange.end)],
+          }
         }
-      } else if (
-        newFilters[filter.property_begin] ||
-        newFilters[filter.property_end]
-      ) {
-        delete newFilters[filter.property_begin]
-        delete newFilters[filter.property_end]
+      } else if (newFilters.dateRange) {
+        delete newFilters.dateRange
+        delete newFilters.dateRange
       }
       this.$emit('filter-changed', newFilters)
     },
 
     onCheckboxFilterChange(property: string, val: string, checked: boolean) {
-      const newFilters = this.filtersValues ? copy(this.filtersValues) : {}
-
-      if (!newFilters[property]) {
-        newFilters[property] = []
+      const newFilters: FilterValues = {
+        values: this.filtersValues ? copy(this.filtersValues) : {},
       }
 
-      const filterValue = newFilters[property] as string[]
+      if (!newFilters.values[property]) {
+        newFilters.values[property] = []
+      }
+
+      const filterValue = newFilters.values[property] as string[]
 
       if (checked) {
         if (!filterValue.includes(val)) {
           filterValue.push(val)
         }
-      } else if (newFilters[property].includes(val)) {
-        newFilters[property] = filterValue.filter((k: string) => k !== val)
+      } else if (newFilters.values[property].includes(val)) {
+        newFilters.values[property] = filterValue.filter(
+          (k: string) => k !== val
+        )
       }
 
-      if (newFilters[property].length === 0) {
-        delete newFilters[property]
+      if (newFilters.values[property].length === 0) {
+        delete newFilters.values[property]
       }
       this.$emit('filter-changed', newFilters)
     },
