@@ -133,11 +133,12 @@
 
           <p
             v-else-if="
-              poiProp(property) && poiProp(property).length > textLimit
+              poiPropTranslate(property) &&
+              poiPropTranslate(property).length > textLimit
             "
             class="text-sm"
           >
-            {{ poiProp(property).substring(0, textLimit) + ' ...' }}
+            {{ poiPropTranslate(property).substring(0, textLimit) + ' ...' }}
             <a
               v-if="poiEditorial('website:details')"
               class="underline"
@@ -150,7 +151,7 @@
             </a>
           </p>
           <p v-else class="text-sm">
-            {{ poiProp(property) }}
+            {{ poiPropTranslate(property) }}
           </p>
         </div>
       </div>
@@ -454,6 +455,16 @@ export default Vue.extend({
 
     poiProp(name: string) {
       return this.poiProps()?.[name]
+    },
+
+    poiPropTranslate(property: string) {
+      const poiProp = this.poiProp(property)
+      return (
+        (this.sptags &&
+          this.sptags[property] &&
+          this.sptags[property][poiProp]) ||
+        poiProp
+      )
     },
 
     poiMeta(name: string) {
