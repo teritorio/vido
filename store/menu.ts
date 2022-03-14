@@ -107,15 +107,15 @@ function keepFeature(feature: ApiPoi, filters: FilterValues): boolean {
     }
   }
 
-  for (let i = 0; i < Object.keys(filters.values).length; i++) {
-    const key = Object.keys(filters.values)[i]
-    if (
-      filters.values[key].length > 0 &&
-      (!feature.properties[key] ||
-        !filterExist(filters.values[key], feature.properties[key]))
-    ) {
-      return false
-    }
+  if (
+    !Object.entries(filters.values).find(
+      ([key, filterValues]) =>
+        filterValues &&
+        feature.properties[key] &&
+        filterExist(filterValues, feature.properties[key])
+    )
+  ) {
+    return false
   }
 
   return true
