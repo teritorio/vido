@@ -575,7 +575,7 @@ export default (Vue as VueConstructor<
     onSubCategoryFilterChange(filters: FilterValues) {
       if (this.state.context.selectedSubCategoryForFilters) {
         const newFilters = Object.assign({}, this.filters)
-        if (Object.keys(filters).length > 0) {
+        if (Object.keys(filters.values).length > 0 || filters.dateRange) {
           newFilters[this.state.context.selectedSubCategoryForFilters] = filters
         } else {
           delete newFilters[this.state.context.selectedSubCategoryForFilters]
