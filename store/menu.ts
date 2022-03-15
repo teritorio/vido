@@ -84,11 +84,8 @@ function filterExist(
   }
 }
 
-function keepFeature(feature: ApiPoi, filters: FilterValues): boolean {
-  if (
-    !filters ||
-    (Object.keys(filters.values).length === 0 && !filters.dateRange)
-  ) {
+function keepFeature(feature: ApiPoi, filters: FilterValues | null): boolean {
+  if (!filters) {
     return true
   }
 
@@ -108,6 +105,7 @@ function keepFeature(feature: ApiPoi, filters: FilterValues): boolean {
   }
 
   if (
+    Object.keys(filters.values).length > 0 &&
     !Object.entries(filters.values).find(
       ([key, filterValues]) =>
         filterValues &&
