@@ -118,7 +118,7 @@ export default Vue.extend({
     },
     filtersValues: {
       type: Object as PropType<FilterValues>,
-      default: () => ({}),
+      required: true,
     },
   },
   data(): {

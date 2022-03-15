@@ -356,8 +356,10 @@ export default (Vue as VueConstructor<
     },
     subCategoryFilters(): FilterValues {
       return (
-        this.state.context.selectedSubCategoryForFilters &&
-        this.filters[this.state.context.selectedSubCategoryForFilters]
+        (this.state.context.selectedSubCategoryForFilters &&
+          this.filters[this.state.context.selectedSubCategoryForFilters]) || {
+          values: [],
+        }
       )
     },
     filteredSubCategories(): Category['id'][] {
