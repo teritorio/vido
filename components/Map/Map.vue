@@ -36,7 +36,11 @@
       @map-zoomend="$emit('map-zoomend', $event)"
     />
 
-    <MapControls :map="map" :show-compass="rotate">
+    <MapControls
+      :map="map"
+      :show-compass="rotate"
+      :class="hideControl && 'hidden'"
+    >
       <slot name="controls"></slot>
     </MapControls>
 
@@ -98,6 +102,10 @@ export default Vue.extend({
     showAttribution: {
       type: Boolean,
       default: true,
+    },
+    hideControl: {
+      type: Boolean,
+      default: false,
     },
   },
 

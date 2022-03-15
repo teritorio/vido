@@ -120,7 +120,7 @@
       @full-attribution="setFullAttributions($event)"
     />
     <BottomMenu
-      :class="['sm:hidden', isModeFavorites && 'hidden']"
+      :class="['sm:hidden', (isModeFavorites || isModeExplorer) && 'hidden']"
       :selected-feature="selectedFeature"
       :is-bottom-menu-opened="isBottomMenuOpened"
       :show-poi="showPoi"

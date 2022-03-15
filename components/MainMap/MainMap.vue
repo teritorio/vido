@@ -21,6 +21,7 @@
           :pitch="pitch"
           :rotate="true"
           :show-attribution="!$isMobile()"
+          :hide-control="small"
           hash="map"
           @map-init="onMapInit"
           @map-pitchend="onMapPitchEnd"
@@ -48,7 +49,10 @@
 
       <aside v-if="map" class="pointer-events-none">
         <div
-          class="absolute flex justify-end pointer-events-auto items-top pt-4 right-3 sm:pt-0 w-40 sm:w-48 top-3"
+          :class="[
+            'absolute flex justify-end pointer-events-auto items-top pt-4 right-3 sm:pt-0 w-40 sm:w-48 top-3',
+            small && 'hidden',
+          ]"
         >
           <FavoriteMenu
             :has-favorites="favoritesIds.length !== 0"
