@@ -19,7 +19,7 @@
             type="checkbox"
             class="text-green-500 rounded-full focus:ring-0 focus:ring-transparent"
             :name="filter.property"
-            :checked="filtersValues && filter.property in filtersValues"
+            :checked="filtersValues && filter.property in filtersValues.values"
             @change="
               (e) => onBooleanFilterChange(filter.property, e.target.checked)
             "
@@ -43,7 +43,9 @@
               code: value.value,
             }))
           "
-          :value="(filtersValues && filtersValues[filter.property]) || []"
+          :value="
+            (filtersValues && filtersValues.values[filter.property]) || []
+          "
           @input="(val) => onSelectionFilterChange(filter.property, val)"
         />
       </div>
@@ -66,7 +68,7 @@
             :name="filter.property + '_' + value.value"
             :checked="
               (
-                (filtersValues && filtersValues[filter.property]) ||
+                (filtersValues && filtersValues.values[filter.property]) ||
                 []
               ).includes(value.value)
             "
@@ -104,7 +106,6 @@
 </template>
 
 <script lang="ts">
-import copy from 'fast-copy'
 import Vue, { PropType } from 'vue'
 
 import { Category, Filter, FilterDate } from '@/lib/apiMenu'
@@ -188,35 +189,37 @@ export default Vue.extend({
     },
 
     onBooleanFilterChange(property: string, value: boolean) {
-      const newFilters: FilterValues = {
-        values: this.filtersValues ? copy(this.filtersValues) : {},
-      }
+      const newFilters: FilterValues = this.filtersValues
+        ? { values: this.filtersValues.values }
+        : { values: {} }
 
       if (value) {
         newFilters.values[property] = ['yes']
+        this.$emit('filter-changed', newFilters)
       } else if (newFilters.values[property]) {
         delete newFilters.values[property]
+        this.$emit('filter-changed', newFilters)
       }
-      this.$emit('filter-changed', newFilters)
     },
 
     onSelectionFilterChange(property: string, values: string[] | null) {
-      const newFilters: FilterValues = {
-        values: this.filtersValues ? copy(this.filtersValues) : {},
-      }
+      const newFilters: FilterValues = this.filtersValues
+        ? { values: this.filtersValues.values }
+        : { values: {} }
 
       if (values && values.length > 0) {
         newFilters.values[property] = values
+        this.$emit('filter-changed', newFilters)
       } else if (newFilters.values[property]) {
         delete newFilters.values[property]
+        this.$emit('filter-changed', newFilters)
       }
-      this.$emit('filter-changed', newFilters)
     },
 
     onSelectionFilterDateChange(filter: FilterDate, value: string | null) {
-      const newFilters: FilterValues = {
-        values: this.filtersValues ? copy(this.filtersValues) : {},
-      }
+      const newFilters: FilterValues = this.filtersValues
+        ? { values: this.filtersValues.values }
+        : { values: {} }
 
       if (value) {
         const dateRange = this.dateFilters.find(
@@ -238,9 +241,9 @@ export default Vue.extend({
     },
 
     onCheckboxFilterChange(property: string, val: string, checked: boolean) {
-      const newFilters: FilterValues = {
-        values: this.filtersValues ? copy(this.filtersValues) : {},
-      }
+      const newFilters: FilterValues = this.filtersValues
+        ? { values: this.filtersValues.values }
+        : { values: {} }
 
       if (!newFilters.values[property]) {
         newFilters.values[property] = []

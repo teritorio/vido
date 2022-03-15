@@ -605,11 +605,14 @@ export default (Vue as VueConstructor<
         const newFilters = Object.assign({}, this.filters)
 
         newFilters[`${newFilter.id}`] = {
-          [newFilter.filter_property]: [
-            `${newFilter.filter_value}`,
-            ...(newFilters[`${newFilter.id}`]?.[newFilter.filter_property] ||
-              []),
-          ],
+          values: {
+            [newFilter.filter_property]: [
+              `${newFilter.filter_value}`,
+              ...(newFilters[`${newFilter.id}`]?.values[
+                newFilter.filter_property
+              ] || []),
+            ],
+          },
         }
 
         this.setCategoriesFilters(newFilters)
