@@ -88,13 +88,7 @@
           :hide-search-box="true"
           :options="dateFilters"
           :clearable="true"
-          :value="
-            filtersValues &&
-            getDateFilter(
-              filtersValues[String(filter.property_begin)],
-              filtersValues[String(filter.property_end)]
-            )
-          "
+          :value="getDateFilter()"
           @input="(val) => onSelectionFilterDateChange(filter, val)"
         />
       </div>
@@ -119,8 +113,8 @@ export enum DateFilterLabel {
 export type DateFilterOption = {
   text: string
   value: string
-  begin: string
-  end: string
+  begin: Date
+  end: Date
 }
 
 export default Vue.extend({
@@ -163,32 +157,32 @@ export default Vue.extend({
         {
           text: this.$tc('dateFilter.' + DateFilterLabel.TODAY),
           value: DateFilterLabel.TODAY,
-          begin: today.toDateString(),
-          end: tomorrow.toDateString(),
+          begin: today,
+          end: tomorrow,
         },
         {
           text: this.$tc('dateFilter.' + DateFilterLabel.TOMORROW),
           value: DateFilterLabel.TOMORROW,
-          begin: tomorrow.toDateString(),
-          end: afterTomorrow.toDateString(),
+          begin: tomorrow,
+          end: afterTomorrow,
         },
         {
           text: this.$tc('dateFilter.' + DateFilterLabel.THIS_WEEKEND),
           value: DateFilterLabel.THIS_WEEKEND,
-          begin: saturday.toDateString(),
-          end: monday.toDateString(),
+          begin: saturday,
+          end: monday,
         },
         {
           text: this.$tc('dateFilter.' + DateFilterLabel.NEXT_WEEK),
           value: DateFilterLabel.NEXT_WEEK,
-          begin: today.toDateString(),
-          end: nextWeek.toDateString(),
+          begin: today,
+          end: nextWeek,
         },
         {
           text: this.$tc('dateFilter.' + DateFilterLabel.NEXT_MONTH),
           value: DateFilterLabel.NEXT_MONTH,
-          begin: today.toDateString(),
-          end: nextMonth.toDateString(),
+          begin: today,
+          end: nextMonth,
         },
       ],
     }
@@ -284,11 +278,14 @@ export default Vue.extend({
       this.$emit('filter-changed', newFilters)
     },
 
-    getDateFilter(begin: string[], end: string[]) {
-      const dateRange = this.dateFilters.find(
-        (e: DateFilterOption) => e.begin === begin?.[0] && e.end === end?.[0]
-      )
-      return dateRange?.text
+    getDateFilter() {
+      if (this.filtersValues.dateRange) {
+        const dateRange = this.dateFilters.find(
+          (e: DateFilterOption) =>
+            [e.begin, e.end] === this.filtersValues.dateRange?.value
+        )
+        return dateRange?.value
+      }
     },
   },
 })
