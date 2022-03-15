@@ -258,7 +258,7 @@ export default (Vue as VueConstructor<
         const favs = JSON.parse(favsString).favorites
 
         this.$refs.shareModal.open(
-          `${location.origin}/#fav=1&favs=${favs.join(',')}`
+          `${location.origin}/#mode=favorites&favs=${favs.join(',')}`
         )
       } catch (e) {
         // eslint-disable-next-line no-console
