@@ -34,13 +34,11 @@
         <t-rich-select
           placeholder="Recherchez ou ajoutez une valeur"
           search-box-placeholder="Rechercher ..."
-          text-attribute="name"
-          value-attribute="code"
           multiple
           :options="
             filter.values.map((value) => ({
-              name: (value.name && value.name.fr) || value.value,
-              code: value.value,
+              text: (value.name && value.name.fr) || value.value,
+              value: value.value,
             }))
           "
           :value="
@@ -86,7 +84,6 @@
       </div>
       <div v-else-if="filter.type == 'date_range'" :key="filter.property_begin">
         <t-rich-select
-          value-attribute="label"
           :placeholder="filter.name && filter.name.fr"
           :hide-search-box="true"
           :options="dateFilters"
@@ -109,7 +106,22 @@
 import Vue, { PropType } from 'vue'
 
 import { Category, Filter, FilterDate } from '@/lib/apiMenu'
-import { DateFilterLabel, DateFilterOption, FilterValues } from '@/utils/types'
+import { FilterValues } from '@/utils/types'
+
+export enum DateFilterLabel {
+  TODAY = 'today',
+  TOMORROW = 'tomorrow',
+  THIS_WEEKEND = 'thisWeekend',
+  NEXT_WEEK = 'nextWeek',
+  NEXT_MONTH = 'nextMonth',
+}
+
+export type DateFilterOption = {
+  text: string
+  value: string
+  begin: string
+  end: string
+}
 
 export default Vue.extend({
   props: {
@@ -149,27 +161,32 @@ export default Vue.extend({
     return {
       dateFilters: [
         {
-          label: this.$tc('dateFilter.' + DateFilterLabel.TODAY),
+          text: this.$tc('dateFilter.' + DateFilterLabel.TODAY),
+          value: DateFilterLabel.TODAY,
           begin: today.toDateString(),
           end: tomorrow.toDateString(),
         },
         {
-          label: this.$tc('dateFilter.' + DateFilterLabel.TOMORROW),
+          text: this.$tc('dateFilter.' + DateFilterLabel.TOMORROW),
+          value: DateFilterLabel.TOMORROW,
           begin: tomorrow.toDateString(),
           end: afterTomorrow.toDateString(),
         },
         {
-          label: this.$tc('dateFilter.' + DateFilterLabel.THIS_WEEKEND),
+          text: this.$tc('dateFilter.' + DateFilterLabel.THIS_WEEKEND),
+          value: DateFilterLabel.THIS_WEEKEND,
           begin: saturday.toDateString(),
           end: monday.toDateString(),
         },
         {
-          label: this.$tc('dateFilter.' + DateFilterLabel.NEXT_WEEK),
+          text: this.$tc('dateFilter.' + DateFilterLabel.NEXT_WEEK),
+          value: DateFilterLabel.NEXT_WEEK,
           begin: today.toDateString(),
           end: nextWeek.toDateString(),
         },
         {
-          label: this.$tc('dateFilter.' + DateFilterLabel.NEXT_MONTH),
+          text: this.$tc('dateFilter.' + DateFilterLabel.NEXT_MONTH),
+          value: DateFilterLabel.NEXT_MONTH,
           begin: today.toDateString(),
           end: nextMonth.toDateString(),
         },
@@ -223,7 +240,7 @@ export default Vue.extend({
 
       if (value) {
         const dateRange = this.dateFilters.find(
-          (e: DateFilterOption) => e.label === value
+          (e: DateFilterOption) => e.value === value
         )
 
         if (dateRange) {
@@ -271,7 +288,7 @@ export default Vue.extend({
       const dateRange = this.dateFilters.find(
         (e: DateFilterOption) => e.begin === begin?.[0] && e.end === end?.[0]
       )
-      return dateRange?.label
+      return dateRange?.text
     },
   },
 })

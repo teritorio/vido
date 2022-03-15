@@ -81,18 +81,3 @@ export type NavMenuEntry = {
   title: string
   url: string
 }
-
-export enum DateFilterLabel {
-  TODAY = 'today',
-  TOMORROW = 'tomorrow',
-  THIS_WEEKEND = 'thisWeekend',
-  NEXT_WEEK = 'nextWeek',
-  NEXT_MONTH = 'nextMonth',
-}
-
-export type DateFilterOption = {
-  // eslint-disable-next-line camelcase
-  label: string
-  begin: string
-  end: string
-}
