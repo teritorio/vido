@@ -22,7 +22,7 @@ export type FilterValues = {
   dateRange?: {
     propertyStart?: string
     propertyEnd?: string
-    value: [Date, Date]
+    value: [string, string]
   }
 }
 

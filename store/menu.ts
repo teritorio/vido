@@ -93,11 +93,11 @@ function keepFeature(feature: ApiPoi, filters: FilterValues | null): boolean {
     if (
       !filters.dateRange.propertyStart ||
       !filters.dateRange.value[1] ||
-      new Date(feature.properties[filters.dateRange.propertyStart]) >
+      feature.properties[filters.dateRange.propertyStart] >
         filters.dateRange.value[1] ||
       !filters.dateRange.propertyEnd ||
       !filters.dateRange.value[0] ||
-      new Date(feature.properties[filters.dateRange.propertyEnd]) <
+      feature.properties[filters.dateRange.propertyEnd] <
         filters.dateRange.value[0]
     ) {
       return false

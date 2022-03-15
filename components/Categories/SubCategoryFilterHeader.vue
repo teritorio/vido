@@ -113,8 +113,8 @@ export enum DateFilterLabel {
 export type DateFilterOption = {
   text: string
   value: string
-  begin: Date
-  end: Date
+  begin: string
+  end: string
 }
 
 export default Vue.extend({
@@ -157,32 +157,32 @@ export default Vue.extend({
         {
           text: this.$tc('dateFilter.' + DateFilterLabel.TODAY),
           value: DateFilterLabel.TODAY,
-          begin: today,
-          end: tomorrow,
+          begin: today.toISOString().substring(0, 10),
+          end: tomorrow.toISOString().substring(0, 10),
         },
         {
           text: this.$tc('dateFilter.' + DateFilterLabel.TOMORROW),
           value: DateFilterLabel.TOMORROW,
-          begin: tomorrow,
-          end: afterTomorrow,
+          begin: tomorrow.toISOString().substring(0, 10),
+          end: afterTomorrow.toISOString().substring(0, 10),
         },
         {
           text: this.$tc('dateFilter.' + DateFilterLabel.THIS_WEEKEND),
           value: DateFilterLabel.THIS_WEEKEND,
-          begin: saturday,
-          end: monday,
+          begin: saturday.toISOString().substring(0, 10),
+          end: monday.toISOString().substring(0, 10),
         },
         {
           text: this.$tc('dateFilter.' + DateFilterLabel.NEXT_WEEK),
           value: DateFilterLabel.NEXT_WEEK,
-          begin: today,
-          end: nextWeek,
+          begin: today.toISOString().substring(0, 10),
+          end: nextWeek.toISOString().substring(0, 10),
         },
         {
           text: this.$tc('dateFilter.' + DateFilterLabel.NEXT_MONTH),
           value: DateFilterLabel.NEXT_MONTH,
-          begin: today,
-          end: nextMonth,
+          begin: today.toISOString().substring(0, 10),
+          end: nextMonth.toISOString().substring(0, 10),
         },
       ],
     }
@@ -241,11 +241,10 @@ export default Vue.extend({
           newFilters.dateRange = {
             propertyStart: filter.property_begin,
             propertyEnd: filter.property_end,
-            value: [new Date(dateRange.begin), new Date(dateRange.end)],
+            value: [dateRange.begin, dateRange.end],
           }
         }
       } else if (newFilters.dateRange) {
-        delete newFilters.dateRange
         delete newFilters.dateRange
       }
       this.$emit('filter-changed', newFilters)
@@ -281,8 +280,9 @@ export default Vue.extend({
     getDateFilter() {
       if (this.filtersValues.dateRange) {
         const dateRange = this.dateFilters.find(
-          (e: DateFilterOption) =>
-            [e.begin, e.end] === this.filtersValues.dateRange?.value
+          (e) =>
+            e.begin === this.filtersValues.dateRange?.value[0] &&
+            e.end === this.filtersValues.dateRange?.value[1]
         )
         return dateRange?.value
       }
