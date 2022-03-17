@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="w-11 h-11">
     <button
       v-if="!hidden"
       id="background-selector-map"
@@ -19,7 +19,6 @@
         :src="require(`~/assets/${nextBackgroundName(background)}.png`)"
       />
     </button>
-    <div v-else class="w-11 h-11" />
   </div>
 </template>
 
