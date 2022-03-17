@@ -317,10 +317,11 @@ export default (Vue as VueConstructor<
     },
     isBottomMenuOpened(): boolean {
       return (
-        this.isPoiToastVisible ||
-        this.state.matches(this.states.Categories) ||
-        this.state.matches(this.states.SubCategories) ||
-        this.state.matches(this.states.SubCategoryFilters)
+        (typeof navigator === 'undefined' || this.$isMobile()) &&
+        (this.isPoiToastVisible ||
+          this.state.matches(this.states.Categories) ||
+          this.state.matches(this.states.SubCategories) ||
+          this.state.matches(this.states.SubCategoryFilters))
       )
     },
     states: () => HomeStates,
