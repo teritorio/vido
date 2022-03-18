@@ -278,7 +278,7 @@ export default Vue.extend({
         })
       })
 
-      const ApiPois = flattenFeatures(features)
+      const apiPois = flattenFeatures(features)
       // Change visible data
       if (this.map.getSource(POI_SOURCE)) {
         if (!deepEqual(newCategories, oldCategories)) {
@@ -295,7 +295,7 @@ export default Vue.extend({
             // @ts-ignore
             source.setData({
               type: 'FeatureCollection',
-              features: ApiPois,
+              features: apiPois,
             })
           }
         }
@@ -306,9 +306,9 @@ export default Vue.extend({
         this.allowRegionBackZoom &&
         !deepEqual(newCategories, oldCategories)
       ) {
-        const ApiPois = flattenFeatures(features)
+        const apiPois = flattenFeatures(features)
         this.handleResetMapZoom(
-          ApiPois,
+          apiPois,
           this.$tc('snack.noPoi.issue'),
           this.$tc('snack.noPoi.action')
         )
@@ -467,8 +467,8 @@ export default Vue.extend({
       })
 
       this.map.on('styledata', () => {
-        const ApiPois = flattenFeatures(this.features)
-        this.initPoiLayer(ApiPois)
+        const apiPois = flattenFeatures(this.features)
+        this.initPoiLayer(apiPois)
       })
 
       this.map.on('click', () => {
