@@ -342,6 +342,8 @@ export default Vue.extend({
                 feature?.id ||
                 feature?.properties?.id
             )
+          } else {
+            filterRouteByCategories(this.map, Object.keys(this.features))
           }
         }
       }
