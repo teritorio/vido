@@ -60,7 +60,7 @@
           :poi="selectedFeature"
           class="flex-grow-0 text-left max-h-screen-3/5"
           @explore-click="exploreAroundSelectedPoi"
-          @favorite-click="toggleFavoriteMode"
+          @favorite-click="toggleFavoritesMode"
           @zoom-click="goToSelectedPoi"
         />
       </transition>
@@ -148,8 +148,8 @@ export default Vue.extend({
     exploreAroundSelectedPoi() {
       this.$emit('exploreAroundSelectedPoi')
     },
-    toggleFavoriteMode(feature?: ApiPoi) {
-      this.$emit('toggleFavoriteMode', feature)
+    toggleFavoritesMode(feature?: ApiPoi) {
+      this.$emit('toggleFavoritesMode', feature)
     },
     goToSelectedPoi() {
       this.$emit('goToSelectedPoi')

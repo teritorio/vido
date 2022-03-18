@@ -58,7 +58,7 @@
             :has-favorites="favoritesIds.length !== 0"
             :explore-around-selected-poi="exploreAroundSelectedPoi"
             :go-to-selected-poi="goToSelectedPoi"
-            :toggle-favorite="toggleFavoriteMode"
+            :toggle-favorite="toggleFavorite"
           />
           <NavMenu class="ml-3 sm:ml-9" />
         </div>
@@ -72,7 +72,7 @@
           :poi="selectedFeature"
           class="flex-grow-0"
           @explore-click="exploreAroundSelectedPoi"
-          @favorite-click="toggleFavoriteMode"
+          @favorite-click="toggleFavorite"
           @zoom-click="goToSelectedPoi"
         />
       </div>
@@ -388,7 +388,7 @@ export default Vue.extend({
     const favorites =
       localStorage.getItem(LOCAL_STORAGE.favorites) || '{ "favorites": [] }'
 
-    this.toggleFavoriteModes(JSON.parse(favorites).favorites)
+    this.toggleFavoritesMode(JSON.parse(favorites).favorites)
 
     const mode = getHashPart('mode')
     this.setMode(mode)
@@ -418,7 +418,7 @@ export default Vue.extend({
           LOCAL_STORAGE.favorites,
           JSON.stringify({ favorites: newFavorite, version: 1 })
         )
-        this.toggleFavoriteModes(newFavorite)
+        this.toggleFavoritesMode(newFavorite)
       } catch (e) {
         // eslint-disable-next-line no-console
         console.error('Vido error:', e.message)
@@ -442,7 +442,7 @@ export default Vue.extend({
     ...mapActions({
       setMode: 'map/setMode',
       setFavoritesAction: 'favorite/setFavoritesAction',
-      toggleFavoriteModes: 'favorite/toggleFavoriteModes',
+      toggleFavoritesMode: 'favorite/toggleFavoritesMode',
       setSelectedFeature: 'map/setSelectedFeature',
       unselectFeature: 'map/unselectFeature',
     }),
@@ -564,7 +564,7 @@ export default Vue.extend({
       }
     },
 
-    toggleFavoriteMode(feature?: ApiPoi, isNotebook?: boolean) {
+    toggleFavorite(feature?: ApiPoi, isNotebook?: boolean) {
       if (feature && !isNotebook) {
         this.setSelectedFeature(feature)
       }
@@ -595,7 +595,7 @@ export default Vue.extend({
             LOCAL_STORAGE.favorites,
             JSON.stringify({ favorites: newFavorite, version: 1 })
           )
-          this.toggleFavoriteModes(newFavorite)
+          this.toggleFavoritesMode(newFavorite)
         }
       } catch (e) {
         // eslint-disable-next-line no-console

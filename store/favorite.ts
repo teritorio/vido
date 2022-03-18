@@ -33,7 +33,7 @@ export const mutations = {
 }
 
 export const actions = {
-  toggleFavoriteModes(store: Store<State>, data: [string?]) {
+  toggleFavoritesMode(store: Store<State>, data: [string?]) {
     store.commit(Mutation.TOGGLE_FAVORITES, data)
   },
   setFavoritesAction(store: Store<State>, action: string) {

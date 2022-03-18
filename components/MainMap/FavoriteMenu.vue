@@ -26,7 +26,7 @@
               'bg-blue-500 hover:bg-blue-400 focus-visible:bg-blue-400 text-white',
             !isModeFavorites && 'text-gray-800',
           ]"
-          @click="toggleFavoriteMode"
+          @click="toggleFavoritesMode"
         >
           <font-awesome-icon
             :icon="[`${hasFavorites ? 'fas' : 'far'}`, 'star']"
@@ -245,7 +245,7 @@ export default (Vue as VueConstructor<
       try {
         localStorage.removeItem(LOCAL_STORAGE.favorites)
 
-        this.$store.dispatch('favorite/toggleFavoriteModes', [])
+        this.$store.dispatch('favorite/toggleFavoritesMode', [])
       } catch (e) {
         // eslint-disable-next-line no-console
         console.error('Vido error:', e.message)
@@ -280,7 +280,7 @@ export default (Vue as VueConstructor<
         console.error('Vido error:', e.message)
       }
     },
-    toggleFavoriteMode() {
+    toggleFavoritesMode() {
       this.$tracking({ type: 'map_control_event', event: 'favorite' })
       if (!this.isModeFavorites) {
         this.$store.dispatch('map/setMode', Mode.FAVORITES)
