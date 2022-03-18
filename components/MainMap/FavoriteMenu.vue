@@ -196,15 +196,15 @@ export default (Vue as VueConstructor<
     },
     exploreAroundSelectedPoi: {
       type: Function,
-      default: undefined,
+      required: true,
     },
     goToSelectedPoi: {
       type: Function,
-      default: undefined,
+      required: true,
     },
     toggleFavorite: {
       type: Function,
-      default: undefined,
+      required: true,
     },
   },
   data(): {

@@ -58,6 +58,7 @@
             :has-favorites="favoritesIds.length !== 0"
             :explore-around-selected-poi="exploreAroundSelectedPoi"
             :go-to-selected-poi="goToSelectedPoi"
+            :toggle-favorite="toggleFavoriteMode"
           />
           <NavMenu class="ml-3 sm:ml-9" />
         </div>

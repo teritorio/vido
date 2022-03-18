@@ -48,19 +48,19 @@ export default Vue.extend({
     },
     onClose: {
       type: Function,
-      default: undefined,
+      required: true,
     },
     exploreAroundSelectedPoi: {
       type: Function,
-      default: undefined,
+      required: true,
     },
     toggleFavorite: {
       type: Function,
-      default: undefined,
+      required: true,
     },
     goToSelectedPoi: {
       type: Function,
-      default: undefined,
+      required: true,
     },
   },
 })
