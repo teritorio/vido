@@ -73,6 +73,7 @@ export function headerFromSettings(
         href: settings?.icon_font_css_url || '',
       },
       {
+        hid: 'icon',
         rel: 'icon',
         href: settings?.themes[0].favicon_url || '',
       },
