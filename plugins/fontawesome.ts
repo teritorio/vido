@@ -1,5 +1,10 @@
 import { config, library } from '@fortawesome/fontawesome-svg-core'
 import {
+  faFacebook,
+  faWhatsapp,
+  faTwitter,
+} from '@fortawesome/free-brands-svg-icons'
+import {
   faCircle,
   faStar as farStar,
   faCompass,
@@ -36,6 +41,7 @@ import {
   faClipboardCheck,
   faFileDownload,
   faBookOpen,
+  faPrint,
 } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import Vue from 'vue'
@@ -79,7 +85,11 @@ library.add(
   faShareAlt,
   faClipboardCheck,
   faFileDownload,
-  faBookOpen
+  faBookOpen,
+  faPrint,
+  faFacebook,
+  faWhatsapp,
+  faTwitter
 )
 
 // Register the component globally

@@ -1,4 +1,8 @@
 export default {
+  shareLink: {
+    copy: 'Copier',
+    close: 'Fermer',
+  },
   favorites: {
     title: 'Favoris',
     menu_label: 'Menu des favoris',
@@ -7,13 +11,10 @@ export default {
     menu_clear: 'Supprimer les favoris',
     export_pdf: 'Exporter la liste en PDF',
     export_csv: 'Exporter la liste en CSV',
-    modal: {
-      title: 'Partager le lien des favoris',
-      copy: 'Copier',
-      close: 'Fermer',
-    },
+    share_link: 'Partager le lien des favoris',
     notebook: {
       title: 'Carnet des favoris',
+      close: 'Fermer',
     },
     noFavs:
       "Vous n'avez pas encore de lieux en favoris. Vous pouvez le faire en sélectionnant un lieu sur la carte, puis en le mémorisant comme favori.",
@@ -57,16 +58,12 @@ export default {
     backToMenuFavorites: 'Afficher le menu',
     backToMenuExplorer: 'Retour au menu',
   },
-  toast: {
-    details: 'Détails',
-    seeDetail: 'Voir le detail',
-    route: 'Itinéraire',
-    explore: 'Explorer',
-    favorite: 'Favori',
-    callNumber: 'Appeler ce numéro',
-    findRoute: "Trouver la route pour venir jusqu'à ce lieu",
-    unactivateExplore: "Désactiver l'exploration aux alentours",
-    activateExplore: "Explorer les points d'intérêts aux alentours",
+  dateRange: {
+    from_to: 'Du {from} au {to}',
+    from: 'À partir du {from}',
+    to: "Jusqu'au {to}",
+  },
+  openingHours: {
     monday: 'Lun.',
     tuesday: 'Mar.',
     wednesday: 'Mer.',
@@ -80,6 +77,17 @@ export default {
     open: 'Ouvre',
     openAt: 'Ouvre à',
     '24_7': 'Ouvert 24h/24, 7j/7',
+  },
+  toast: {
+    details: 'Détails',
+    seeDetail: 'Voir le detail',
+    route: 'Itinéraire',
+    explore: 'Explorer',
+    favorite: 'Favori',
+    callNumber: 'Appeler ce numéro',
+    findRoute: "Trouver la route pour venir jusqu'à ce lieu",
+    unactivateExplore: "Désactiver l'exploration aux alentours",
+    activateExplore: "Explorer les points d'intérêts aux alentours",
     zoom: 'Zoomer',
     routePopup: {
       min: 'min',
@@ -88,5 +96,27 @@ export default {
       normal: 'normal',
       hard: 'dur',
     },
+  },
+  details: {
+    headerDescription: 'Descriptif',
+    headerOpeningHours: 'Horaires d’ouverture',
+    lastUpdate: 'Dernière modification',
+    headerContacts: 'Contact',
+    headerLocation: 'Localisation & Adresse',
+    location: 'Coordonnées GPS (Lat, Lon) :',
+    shareFacebook: 'Partager sur Facebook',
+    shareTwitter: 'Partager sur Twitter',
+    shareWhatsApp: 'Partager sur WhatsApp',
+    print: 'Imprimer',
+    link: 'Partager le lien',
+    poweredBy: 'Propulsé par',
+    mapillaryExplore: 'Explorer sur Mapillary',
+  },
+  dateFilter: {
+    today: "Aujourd'hui",
+    tomorrow: 'Demain',
+    thisWeekend: 'Ce week-end',
+    nextWeek: 'Semaine à venir',
+    nextMonth: 'Mois à venir',
   },
 }

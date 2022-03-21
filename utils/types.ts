@@ -1,6 +1,4 @@
-import type { MapboxGeoJSONFeature, Style } from 'maplibre-gl'
-
-/// <reference types="geojson" />
+import GeoJSON from 'geojson'
 
 export interface MultilingualString {
   [lang: string]: string
@@ -17,167 +15,19 @@ export type TupleLatLng = [number, number]
 export type ZoomLevel = number
 export type Pitch = number
 
-export type PoiType = 'tis' | 'osm' | 'zone'
-
-export type Filter = {
-  type: 'multiselection' | 'checkboxes_list' | 'boolean'
-  property: MultilingualString
-  label: MultilingualString
-  values: {
-    value: string
-    name: MultilingualString[]
-  }
-}
-
 export type FilterValues = {
-  [key: string]: string[]
-}
-
-export interface ApiMenuItem {
-  id: number
-  // eslint-disable-next-line camelcase
-  parent_id: ApiMenuItem['id'] | null
-  // eslint-disable-next-line camelcase
-  index_order: number
-  hidden: boolean
-  // eslint-disable-next-line camelcase
-  selected_by_default: boolean
-  // eslint-disable-next-line camelcase
-}
-
-export interface ApiMenuGroup extends ApiMenuItem {
-  // eslint-disable-next-line camelcase
-  menu_group: {
-    name: MultilingualString
-    icon: string
-    color: string
-    // eslint-disable-next-line camelcase
-    tourism_style_class: string[]
-    // eslint-disable-next-line camelcase
-    display_mode: 'large' | 'compact'
+  values: {
+    [key: string]: string[]
   }
-  category: undefined
-}
-
-export interface ApiMenuCategory extends ApiMenuItem {
-  // eslint-disable-next-line camelcase
-  menu_group: undefined
-  category: {
-    name: MultilingualString
-    icon: string
-    color: string
-    // eslint-disable-next-line camelcase
-    tourism_style_class: string[]
-    // eslint-disable-next-line camelcase
-    tourism_style_merge: boolean
-    // eslint-disable-next-line camelcase
-    display_mode: 'large' | 'compact'
-    zoom: number
-
-    filters?: Filter[]
+  dateRange?: {
+    propertyStart?: string
+    propertyEnd?: string
+    value: [string, string]
   }
 }
 
-export interface MenuGroup extends ApiMenuGroup {
-  // eslint-disable-next-line camelcase
-  vido_children: null | ApiMenuItem['id'][]
-  highlighted: boolean
-}
-
-export interface MenuCategory extends ApiMenuCategory {
-  // eslint-disable-next-line camelcase
-  vido_children: null | ApiMenuItem['id'][]
-  highlighted: boolean
-}
-
-export type Category = MenuGroup | MenuCategory
-
-export interface SiteInfos {
-  id?: number
-  slug?: string
-  name?: string
-  attributions?: string[]
-  // eslint-disable-next-line camelcase
-  icon_font_css_url?: string
-  // eslint-disable-next-line camelcase
-  bbox_line?: GeoJSON.LineString
-
-  themes?: {
-    id: number
-    slug: string
-    title: MultilingualString
-    description: MultilingualString
-    // eslint-disable-next-line camelcase
-    site_url: string
-    // eslint-disable-next-line camelcase
-    main_url: string
-    // eslint-disable-next-line camelcase
-    logo_url: string
-    // eslint-disable-next-line camelcase
-    favicon_url: string
-  }
-}
-
-export type OsmPoiType = 'node' | 'way' | 'relation'
-
-export interface VidoFeature extends MapboxGeoJSONFeature {
-  // eslint-disable-next-line camelcase
-  geometry: GeoJSON.Geometry
-  properties: {
-    [key: string]: any
-
-    name?: string
-
-    image?: string[]
-    // eslint-disable-next-line camelcase
-    'image:thumbnail'?: string
-
-    'addr:city'?: string
-    'addr:housenumber'?: string
-    'addr:postcode'?: string
-    'addr:street'?: string
-
-    metadata?: {
-      id?: number
-      source?: string
-      // eslint-disable-next-line camelcase
-      category_ids?: Array<number>
-    }
-    display?: {
-      icon?: string
-      color?: string
-      // eslint-disable-next-line camelcase
-      tourism_style_class?: string[]
-    }
-    editorial?: {
-      // eslint-disable-next-line camelcase
-      popup_properties?: string[]
-      // eslint-disable-next-line camelcase
-      class_label?: MultilingualString
-      // eslint-disable-next-line camelcase
-      class_label_popup?: MultilingualString
-      // eslint-disable-next-line camelcase
-      class_label_details?: MultilingualString
-      'website:details'?: string
-    }
-  }
-  type: 'Feature'
-}
-
-export interface ApiPois {
-  type: 'FeaturesCollection'
-  features: VidoFeature[]
-}
-
-export interface ApiSearchResult<T> {
-  type: 'FeaturesCollection'
-  geometry: GeoJSON.Point
-  features: [
-    {
-      properties: T
-    }
-  ]
-}
+export interface ApiSearchResult<T>
+  extends GeoJSON.FeatureCollection<GeoJSON.Point, T> {}
 
 export type ApiPoisSearchResult = {
   id: number
@@ -202,11 +52,6 @@ export type ApiAddrSearchResult = {
   type: 'street' | 'municipality'
 }
 
-export type ApiCartocodeSearchResult = {
-  id: number
-  label: string
-}
-
 export type SearchResult = {
   id: number
   label: string
@@ -218,20 +63,15 @@ export type SearchResult = {
   filter_value?: string
 }
 
-export type VidoMglStyle = Style & {
-  sources: {}
-  // eslint-disable-next-line camelcase
-  vido_israster: boolean
-}
-
 export enum Mode {
-  BROWSER = 'BROWSER', // User browses by category
-  EXPLORER = 'EXPLORER', // User explores around
+  BROWSER = 'browser', // User browses by category
+  EXPLORER = 'explorer', // User explores around
+  FAVORITES = 'favorites', // User favorites
 }
 
-export enum MapStyle {
-  teritorio = 'teritorio',
-  mapnik = 'mapnik',
+export enum MapStyleEnum {
+  vector = 'vector',
+  raster = 'raster',
   aerial = 'aerial',
 }
 

@@ -1,87 +1,43 @@
-import type { LngLatBoundsLike } from 'maplibre-gl'
 import { Store } from 'vuex'
 
-import { LatLng, Pitch, ZoomLevel, VidoFeature, SiteInfos } from '@/utils/types'
+import { ApiPoi } from '@/lib/apiPois'
+import { LatLng, Pitch, Mode } from '@/utils/types'
 
 enum Mutation {
   SET_CONFIG = 'SET_CONFIG',
-  RESET_MAPVIEW = 'RESET_MAPVIEW',
-  SELECT_FEATURE = 'SELECT_FEATURE',
+  SET_SELECTED_FEATURE = 'SET_SELECTED_FEATURE',
   SET_CENTER = 'SET_CENTER',
-}
-
-interface FetchConfigPayload {
-  config: SiteInfos
+  SET_MODE = 'SET_MODE',
 }
 
 interface State {
-  // attribution: { [lang: string]: string }
-  attribution: string[]
-  // eslint-disable-next-line camelcase
-  default_bounds: LngLatBoundsLike
-  isLoaded: boolean
   center: LatLng
   pitch: Pitch
-  zoom: {
-    default: ZoomLevel
-    max: ZoomLevel
-    min: ZoomLevel
-  }
   selectedFeature: string | null
   // eslint-disable-next-line camelcase
-  selection_zoom: {
-    // eslint-disable-next-line camelcase
-    zoom_ban: number
-    // eslint-disable-next-line camelcase
-    zoom_commune: number
-  }
+  mode: Mode
 }
 
 const getInitialMapview: Function = () => ({
-  attribution: [],
-  default_bounds: [
-    [1.43862, 42.41845],
-    [1.68279, 42.6775],
-  ],
   center: [0, 0],
-  zoom: {
-    default: 8,
-    max: 20,
-    min: 1,
-  },
-  selection_zoom: {
-    zoom_ban: 15,
-    zoom_commune: 12,
-  },
 })
 
 export const state = (): State | null =>
   Object.assign(
     {
-      // attribution: {},
-      isLoaded: false,
       pitch: 0,
       selectedFeature: null,
+      mode: Mode.BROWSER,
     },
     getInitialMapview()
   )
 
 export const mutations = {
   [Mutation.SET_CONFIG](state: State, payload: State) {
-    // state.attribution = payload.attribution
-    state.default_bounds = payload.default_bounds
     state.center = payload.center
     state.pitch = payload.pitch || 0
-    state.zoom = payload.zoom
-    state.selection_zoom = payload.selection_zoom
-    state.attribution = payload.attribution
-
-    state.isLoaded = true
   },
-  [Mutation.RESET_MAPVIEW](state: State) {
-    state.default_bounds = getInitialMapview().default_bounds
-  },
-  [Mutation.SELECT_FEATURE](state: State, payload: State) {
+  [Mutation.SET_SELECTED_FEATURE](state: State, payload: State) {
     // JSON conversion necessary to have map watcher working
     state.selectedFeature =
       payload.selectedFeature && JSON.stringify(payload.selectedFeature)
@@ -90,43 +46,62 @@ export const mutations = {
     // JSON conversion necessary to have map watcher working
     state.center = payload.center
   },
+  [Mutation.SET_MODE](state: State, mode: Mode) {
+    state.mode = mode
+  },
 }
 
 export const actions = {
-  fetchConfig(store: Store<State>, { config }: FetchConfigPayload) {
-    try {
-      store.commit(
-        Mutation.SET_CONFIG,
-        Object.assign(store.state, {
-          default_bounds: config.bbox_line?.coordinates || [],
-          attribution: config.attributions || [],
-        })
-      )
-    } catch (error) {
-      // eslint-disable-next-line no-console
-      console.error('Vido error: Unable to fetch the map config', error)
+  setSelectedFeature(store: Store<State>, feature: ApiPoi) {
+    const goodFeature = feature
+
+    const IsJsonString = (str: string) => {
+      try {
+        JSON.parse(str)
+      } catch (e) {
+        return false
+      }
+      return true
     }
+
+    if (feature?.properties) {
+      const cleanProperties: ApiPoi['properties'] = {}
+
+      Object.keys(feature.properties).forEach((key) => {
+        if (IsJsonString(feature.properties[key])) {
+          cleanProperties[key] = JSON.parse(feature.properties[key])
+        } else {
+          cleanProperties[key] = feature.properties[key]
+        }
+      })
+
+      goodFeature.properties = cleanProperties
+    }
+
+    store.commit(Mutation.SET_SELECTED_FEATURE, {
+      selectedFeature: goodFeature,
+    })
   },
-  resetMapview(store: Store<State>) {
-    store.commit(Mutation.RESET_MAPVIEW)
-  },
-  selectFeature(store: Store<State>, feature: VidoFeature) {
-    store.commit(Mutation.SELECT_FEATURE, { selectedFeature: feature })
+  unselectFeature(store: Store<State>) {
+    store.commit(Mutation.SET_SELECTED_FEATURE, { selectedFeature: null })
   },
   center(store: Store<State>, center: LatLng) {
     store.commit(Mutation.SET_CENTER, { center })
+  },
+  setMode(store: Store<State>, mode: Mode) {
+    store.commit(Mutation.SET_MODE, mode)
   },
 }
 
 export const getters = {
   all: (state: State) => state,
-  attribution: (state: State) => state.attribution,
-  default_bounds: (state: State) => state.default_bounds,
-  isLoaded: (state: State) => state.isLoaded,
   center: (state: State) => state.center,
   pitch: (state: State) => state.pitch,
-  zoom: (state: State) => state.zoom,
-  selectionZoom: (state: State) => state.selection_zoom,
   selectedFeature: (state: State) =>
     state.selectedFeature && JSON.parse(state.selectedFeature),
+  mode: (state: State) => state.mode,
+  isModeExplorer: (state: State) => state.mode === Mode.EXPLORER,
+  isModeFavorites: (state: State) => state.mode === Mode.FAVORITES,
+  isModeExplorerOrFavorites: (state: State) =>
+    state.mode === Mode.EXPLORER || state.mode === Mode.FAVORITES,
 }

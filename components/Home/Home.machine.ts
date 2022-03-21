@@ -2,7 +2,7 @@ import uniq from 'lodash.uniq'
 import without from 'lodash.without'
 import { assign, Machine } from 'xstate'
 
-import { Category } from '@/utils/types'
+import { Category } from '@/lib/apiMenu'
 
 export interface HomeContext {
   selectedSubCategoriesIds: Category['id'][]

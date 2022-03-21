@@ -15,15 +15,12 @@
             v-if="
               (state.matches(states.Categories) && isMenuConfigLoaded) ||
               isModeExplorer ||
-              isModeFavorite
+              isModeFavorites
             "
             :show-poi="showPoi"
             :logo-url="logoUrl"
             :main-url="mainUrl"
             :site-name="siteName"
-            :is-explorer-favorite="isModeExplorer || isModeFavorite"
-            :show-categories="!isModeExplorer && !isModeFavorite"
-            :is-favorite="isModeFavorite"
             :categories-activesubs-count="subCategoriesCounts"
             @category-click="onRootCategoryClick"
             @search-click="goToSearch"
@@ -33,7 +30,7 @@
           <SubCategoryHeader
             v-if="
               !isModeExplorer &&
-              !isModeFavorite &&
+              !isModeFavorites &&
               state.matches(states.SubCategories)
             "
             class="hidden sm:flex m-2"
@@ -67,8 +64,6 @@
               :site-name="siteName"
               :logo-url="logoUrl"
               :menu-to-icon="categoriesToIcons"
-              :selection-zoom="selectionZoom"
-              :is-explorer-favorite="isModeExplorer || isModeFavorite"
               :map-center="map_center"
               @go-back-click="goToHome"
               @category-click="onSearchCategory"
@@ -88,9 +83,6 @@
             :site-name="siteName"
             :logo-url="logoUrl"
             :menu-to-icon="categoriesToIcons"
-            :selection-zoom="selectionZoom"
-            :is-explorer-favorite="isModeExplorer || isModeFavorite"
-            :is-favorite="isModeFavorite"
             :map-center="map_center"
             @go-to-categories="onQuitExplorerFavoriteMode"
             @go-back-click="goToHome"
@@ -103,7 +95,7 @@
 
       <div
         v-if="
-          !isModeExplorer && selectedSubCategories.length && !isModeFavorite
+          !isModeExplorer && selectedSubCategories.length && !isModeFavorites
         "
         class="hidden sm:block py-2"
         style="max-width: calc(100vw - 670px)"
@@ -115,28 +107,26 @@
         />
       </div>
     </header>
-    <Map
-      v-if="isMapConfigLoaded"
-      ref="map"
-      :default-bounds="defaultBounds"
+    <MainMap
+      v-if="initialBbox"
+      ref="mainMap"
+      :default-bounds="initialBbox"
+      :attributions="settings.attributions"
       :small="isBottomMenuOpened"
       :selected-categories="state.context.selectedSubCategoriesIds"
       :get-sub-category="selectSubCategory"
-      :is-explorer-favorite="isModeExplorer || isModeFavorite"
       @click="onMapClick"
-      @change-mode="onMapChangeMode"
       @show-poi="onShowPoi"
+      @full-attribution="setFullAttributions($event)"
     />
     <BottomMenu
-      class="sm:hidden"
+      :class="['sm:hidden', (isModeFavorites || isModeExplorer) && 'hidden']"
       :selected-feature="selectedFeature"
-      :is-mode-explorer="isModeExplorer"
       :is-bottom-menu-opened="isBottomMenuOpened"
       :show-poi="showPoi"
       :states="states"
       :state="state"
       :is-menu-config-loaded="isMenuConfigLoaded"
-      :is-mode-favorite="isModeFavorite"
       :categories-activesubs-count="subCategoriesCounts"
       :categories="
         state.context.selectedRootCategory
@@ -147,7 +137,6 @@
       :filters-values="subCategoryFilters"
       :filtered-categories="filteredSubCategories"
       :is-sub-category-selected="isSubCategorySelected"
-      :map="$refs.map"
       :on-bottom-menu-button-click="onBottomMenuButtonClick"
       :on-go-back-click="goToParentFromSubCategory"
       :on-select-all-categories="selectSubCategory"
@@ -157,32 +146,38 @@
       :on-go-back-click-filter="onBackToSubCategoryClick"
       @category-click="onRootCategoryClick"
       @sub-category-click="onSubCategoryClick"
+      @exploreAroundSelectedPoi="
+        $refs.mainMap && $refs.mainMap.exploreAroundSelectedPoi()
+      "
+      @toggleFavoritesMode="
+        $refs.mainMap && $refs.mainMap.toggleFavoritesMode($event)
+      "
+      @goToSelectedPoi="$refs.mainMap && $refs.mainMap.goToSelectedPoi()"
     />
+    <Attribution v-if="!isBottomMenuOpened" :attributions="fullAttributions" />
   </div>
 </template>
 
 <script lang="ts">
 import debounce from 'lodash.debounce'
-import type { LngLatBoundsLike } from 'maplibre-gl'
+import { LngLatBoundsLike } from 'maplibre-gl'
 import Vue, { PropType, VueConstructor } from 'vue'
 import { mapGetters, mapActions } from 'vuex'
 import { interpret, Interpreter, State } from 'xstate'
 
-import BottomMenu from '@/components/BottomMenu.vue'
-import MainHeader from '@/components/MainHeader.vue'
-import Map from '@/components/Map.vue'
-import SearchHeader from '@/components/SearchHeader.vue'
-import SelectedSubCategoriesDense from '@/components/SelectedSubCategoriesDense.vue'
-import SubCategoryFilterHeader from '@/components/SubCategoryFilterHeader.vue'
-import SubCategoryHeader from '@/components/SubCategoryHeader.vue'
-import { getPoiById } from '@/utils/api'
-import {
-  VidoFeature,
-  Category,
-  Mode,
-  FilterValues,
-  ApiMenuItemSearchResult,
-} from '@/utils/types'
+import SelectedSubCategoriesDense from '@/components/Categories/SelectedSubCategoriesDense.vue'
+import SubCategoryFilterHeader from '@/components/Categories/SubCategoryFilterHeader.vue'
+import SubCategoryHeader from '@/components/Categories/SubCategoryHeader.vue'
+import Attribution from '@/components/MainMap/Attribution.vue'
+import BottomMenu from '@/components/MainMap/BottomMenu.vue'
+import MainHeader from '@/components/MainMap/MainHeader.vue'
+import MainMap from '@/components/MainMap/MainMap.vue'
+import SearchHeader from '@/components/Search/SearchHeader.vue'
+import { Category } from '@/lib/apiMenu'
+import { getPoiById, ApiPoi } from '@/lib/apiPois'
+import { Settings } from '@/lib/apiSettings'
+import { getBBoxFeature } from '@/lib/bbox'
+import { Mode, FilterValues, ApiMenuItemSearchResult } from '@/utils/types'
 import { getHashPart, setHashPart } from '@/utils/url'
 
 import {
@@ -205,22 +200,31 @@ const interpretOptions = { devTools: false }
 export default (Vue as VueConstructor<
   Vue & {
     $refs: {
-      map: InstanceType<typeof Map>
+      mainMap: InstanceType<typeof MainMap> | null
     }
   }
 >).extend({
   components: {
     MainHeader,
-    Map,
+    MainMap,
     SearchHeader,
     SelectedSubCategoriesDense,
     SubCategoryHeader,
     SubCategoryFilterHeader,
     BottomMenu,
+    Attribution,
   },
   props: {
-    defaultBounds: {
-      type: Object as PropType<LngLatBoundsLike>,
+    settings: {
+      type: Object as PropType<Settings>,
+      required: true,
+    },
+    initialCategoryIds: {
+      type: Array as PropType<number[]>,
+      default: null,
+    },
+    initialPoi: {
+      type: Object as PropType<ApiPoi>,
       default: null,
     },
   },
@@ -229,6 +233,8 @@ export default (Vue as VueConstructor<
     state: State<HomeContext, HomeEvent, HomeStateSchema>
     previousSubCategories: Category['id'][]
     showPoi: boolean
+    initialBbox: LngLatBoundsLike | null
+    fullAttributions: string
   } {
     const debouncedFetchFeatures = debounce(
       (selectedSubCategoriesIds) =>
@@ -257,19 +263,21 @@ export default (Vue as VueConstructor<
       ),
       state: homeMachine.initialState,
       showPoi: false,
+      initialBbox: null,
+      fullAttributions: '',
     }
   },
   head() {
-    const infos = this.siteInfos
+    const infos = this.settings
 
     return {
-      title: infos?.themes[0]?.name.fr,
+      title: infos.themes[0]?.title.fr,
       meta: [
         {
           // https://nuxtjs.org/docs/2.x/features/meta-tags-seo#local-settings
           hid: 'index',
-          name: infos?.themes[0]?.name?.fr,
-          content: infos?.themes[0]?.description?.fr,
+          name: infos.themes[0]?.title?.fr,
+          content: infos.themes[0]?.description?.fr,
         },
       ],
     }
@@ -279,19 +287,17 @@ export default (Vue as VueConstructor<
       categories: 'menu/categories',
       rootCategories: 'menu/rootCategories',
       getSubCategoriesFromCategoryId: 'menu/getSubCategoriesFromCategoryId',
-      isMapConfigLoaded: 'map/isLoaded',
       isMenuConfigLoaded: 'menu/isLoaded',
-      siteInfos: 'site/infos',
       filters: 'menu/filters',
-      mode: 'site/mode',
+      mode: 'map/mode',
+      isModeExplorer: 'map/isModeExplorer',
+      isModeFavorites: 'map/isModeFavorites',
       selectedFeature: 'map/selectedFeature',
-      selectionZoom: 'map/selectionZoom',
       map_center: 'map/center',
-      isModeFavorite: 'favorite/isModeFavorite',
     }),
     events: () => HomeEvents,
     logoUrl(): string {
-      return this.siteInfos?.themes[0]?.logo_url || ''
+      return this.settings.themes[0]?.logo_url || ''
     },
     selectedSubCategories(): Category[] {
       const categories = this.subCategories
@@ -301,23 +307,21 @@ export default (Vue as VueConstructor<
       )
     },
     siteName(): string {
-      return this.siteInfos?.themes[0]?.name.fr || ''
+      return this.settings.themes[0]?.title.fr || ''
     },
     mainUrl(): string {
-      return this.siteInfos?.themes[0]?.main_url || ''
-    },
-    isModeExplorer(): boolean {
-      return this.mode === Mode.EXPLORER
+      return this.settings.themes[0]?.main_url.fr || ''
     },
     isPoiToastVisible(): boolean {
-      return this.selectedFeature && this.$refs.map?.showPoiToast
+      return this.selectedFeature && this.$refs.mainMap?.showPoiToast
     },
     isBottomMenuOpened(): boolean {
       return (
-        this.isPoiToastVisible ||
-        this.state.matches(this.states.Categories) ||
-        this.state.matches(this.states.SubCategories) ||
-        this.state.matches(this.states.SubCategoryFilters)
+        (typeof navigator === 'undefined' || this.$isMobile()) &&
+        (this.isPoiToastVisible ||
+          this.state.matches(this.states.Categories) ||
+          this.state.matches(this.states.SubCategories) ||
+          this.state.matches(this.states.SubCategoryFilters))
       )
     },
     states: () => HomeStates,
@@ -353,8 +357,10 @@ export default (Vue as VueConstructor<
     },
     subCategoryFilters(): FilterValues {
       return (
-        this.state.context.selectedSubCategoryForFilters &&
-        this.filters[this.state.context.selectedSubCategoryForFilters]
+        (this.state.context.selectedSubCategoryForFilters &&
+          this.filters[this.state.context.selectedSubCategoryForFilters]) || {
+          values: [],
+        }
       )
     },
     filteredSubCategories(): Category['id'][] {
@@ -364,7 +370,7 @@ export default (Vue as VueConstructor<
       const resources: Record<Category['id'], string> = {}
 
       this.subCategories.forEach((sc) => {
-        resources[sc.id] = (sc.menu_group || sc.category).icon
+        resources[sc.id] = (sc.menu_group || sc.link || sc.category).icon
       })
 
       return resources
@@ -380,25 +386,44 @@ export default (Vue as VueConstructor<
         val.matches(this.states.SubCategories) ||
         val.matches(this.states.Categories)
       ) {
-        this.$refs.map.resizeMap()
-      }
-    },
-    mode() {
-      if (this.isModeExplorer) {
-        this.unselectSubCategory(this.state.context.selectedSubCategoriesIds)
+        this.$refs.mainMap?.resizeMap()
       }
     },
     showPoi(val) {
       if (this.$isMobile() && val) {
-        this.$refs.map.resizeMap()
+        this.$refs.mainMap?.resizeMap()
       }
     },
-    selectedFeature(val) {
-      if (this.$isMobile() && val) {
-        this.$refs.map.resizeMap()
+    selectedFeature() {
+      if (this.$isMobile() && this.selectedFeature) {
+        this.$refs.mainMap?.resizeMap()
+      }
+      this.routerPushUrl()
+    },
+
+    mode() {
+      switch (this.mode) {
+        case Mode.BROWSER: {
+          this.selectSubCategory(this.previousSubCategories)
+          setHashPart('mode', null)
+          break
+        }
+        case Mode.EXPLORER: {
+          this.previousSubCategories = this.state.context.selectedSubCategoriesIds
+          this.unselectSubCategory(this.state.context.selectedSubCategoriesIds)
+          setHashPart('mode', this.mode)
+          break
+        }
+        case Mode.FAVORITES: {
+          this.previousSubCategories = this.state.context.selectedSubCategoriesIds
+          setHashPart('mode', this.mode)
+          this.$refs.mainMap?.resizeMap()
+          break
+        }
       }
     },
   },
+
   created() {
     this.service
       .onTransition((state) => {
@@ -408,22 +433,15 @@ export default (Vue as VueConstructor<
           typeof location !== 'undefined' &&
           state.event.type !== HomeEvents.Init
         ) {
-          setHashPart(
-            'cat',
-            this.state.context.selectedSubCategoriesIds.join('.')
-          )
+          this.routerPushUrl()
         }
       })
       .start()
   },
   mounted() {
-    if (typeof location !== 'undefined' && getHashPart('cat')) {
-      this.selectSubCategory(
-        getHashPart('cat')
-          ?.split('.')
-          .map((i) => parseInt(i, 10)) || []
-      )
-    } else if (!getHashPart('favs')) {
+    if (this.initialCategoryIds) {
+      this.selectSubCategory(this.initialCategoryIds)
+    } else if (typeof location !== 'undefined' && !getHashPart('favs')) {
       const enabledCategories: Category['id'][] = []
 
       Object.keys(this.categories).forEach((categoryIdString) => {
@@ -436,13 +454,36 @@ export default (Vue as VueConstructor<
       this.selectSubCategory(enabledCategories)
     }
 
+    if (this.initialPoi) {
+      this.setSelectedFeature(this.initialPoi)
+      this.initialBbox = getBBoxFeature(this.initialPoi)
+    }
+    if (!this.initialBbox) {
+      // @ts-ignore
+      this.initialBbox = this.settings.bbox_line.coordinates
+    }
+
     this.goToHome()
   },
   methods: {
     ...mapActions({
       setCategoriesFilters: 'menu/setFilters',
-      setSelectedFeature: 'map/selectFeature',
+      setSelectedFeature: 'map/setSelectedFeature',
     }),
+    routerPushUrl() {
+      const categoryIds = this.state.context.selectedSubCategoriesIds
+        .sort()
+        .join(',')
+      const id =
+        this.selectedFeature?.properties?.metadata?.id?.toString() ||
+        this.selectedFeature?.id?.toString() ||
+        null
+      this.$router.push({
+        path: (categoryIds ? `/${categoryIds}/` : '/') + (id ? `${id}` : ''),
+        query: this.$router.currentRoute.query,
+        hash: this.$router.currentRoute.hash,
+      })
+    },
     goToHome() {
       this.service.send(HomeEvents.GoToHome)
       if (this.$isMobile()) {
@@ -467,9 +508,7 @@ export default (Vue as VueConstructor<
       }
     },
     onQuitExplorerFavoriteMode() {
-      this.onMapChangeMode(Mode.BROWSER)
-      setHashPart('fav', null)
-      this.$store.dispatch('favorite/handleFavoriteLayer', false)
+      this.$store.dispatch('map/setMode', Mode.BROWSER)
       this.$store.dispatch('favorite/setFavoritesAction', 'close')
       this.setSelectedFeature(null)
     },
@@ -491,7 +530,11 @@ export default (Vue as VueConstructor<
     onSubCategoryClick(categoryId: Category['id']) {
       const sc = this.subCategories.find((sc) => sc.id === categoryId)
 
-      if (sc && sc.vido_children && sc.vido_children.length > 0) {
+      if (
+        sc &&
+        sc?.menu_group?.vido_children &&
+        sc.menu_group.vido_children.length > 0
+      ) {
         this.onRootCategoryClick(categoryId)
       } else {
         this.toggleSubCategorySelection(categoryId)
@@ -533,7 +576,7 @@ export default (Vue as VueConstructor<
     onSubCategoryFilterChange(filters: FilterValues) {
       if (this.state.context.selectedSubCategoryForFilters) {
         const newFilters = Object.assign({}, this.filters)
-        if (Object.keys(filters).length > 0) {
+        if (Object.keys(filters.values).length > 0 || filters.dateRange) {
           newFilters[this.state.context.selectedSubCategoryForFilters] = filters
         } else {
           delete newFilters[this.state.context.selectedSubCategoryForFilters]
@@ -546,13 +589,13 @@ export default (Vue as VueConstructor<
         this.$config.API_ENDPOINT,
         this.$config.API_PROJECT,
         this.$config.API_THEME,
-        poiId.toString()
+        poiId
       ).then((poi) => {
         if (poi) {
           this.service.send(HomeEvents.GoToCategories)
           this.setSelectedFeature(poi).then(() => {
-            if (this.$refs.map) {
-              this.$refs.map.goToSelectedPoi()
+            if (this.$refs.mainMap) {
+              this.$refs.mainMap.goToSelectedPoi()
             }
           })
         }
@@ -563,52 +606,52 @@ export default (Vue as VueConstructor<
         const newFilters = Object.assign({}, this.filters)
 
         newFilters[`${newFilter.id}`] = {
-          [newFilter.filter_property]: [
-            `${newFilter.filter_value}`,
-            ...(newFilters[`${newFilter.id}`]?.[newFilter.filter_property] ||
-              []),
-          ],
+          values: {
+            [newFilter.filter_property]: [
+              `${newFilter.filter_value}`,
+              ...(newFilters[`${newFilter.id}`]?.values[
+                newFilter.filter_property
+              ] || []),
+            ],
+          },
         }
 
         this.setCategoriesFilters(newFilters)
       }
 
       this.service.send(HomeEvents.GoToCategories)
-      setHashPart('fav', null)
-      this.$store.dispatch('favorite/handleFavoriteLayer', false)
+      this.$store.dispatch('map/setMode', Mode.BROWSER)
       this.$store.dispatch('favorite/setFavoritesAction', 'close')
       this.selectSubCategory([newFilter.id])
     },
-    onFeatureClick(feature: VidoFeature) {
+    onFeatureClick(feature: ApiPoi) {
       this.setSelectedFeature(feature).then(() => {
         this.service.send(HomeEvents.GoToCategories)
 
-        if (this.$refs.map) {
-          this.$refs.map.goToSelectedPoi()
-        }
+        this.$refs.mainMap?.goToSelectedPoi()
       })
     },
     onBottomMenuButtonClick() {
-      if (!this.isModeFavorite) {
+      if (!this.isModeFavorites) {
         if (this.isBottomMenuOpened) {
           if (this.selectedFeature) {
             if (!this.isModeExplorer) {
               this.setSelectedFeature(null)
             } else {
-              this.$refs.map.setPoiToastVisibility(false)
+              this.$refs.mainMap?.setPoiToastVisibility(false)
             }
           }
           this.goToHome()
         } else if (!this.isModeExplorer) {
           this.goToCategories()
         } else if (this.selectedFeature && !this.isPoiToastVisible) {
-          this.$refs.map.setPoiToastVisibility(true)
+          this.$refs.mainMap?.setPoiToastVisibility(true)
         }
       } else if (this.selectedFeature) {
         if (!this.isModeExplorer) {
           this.setSelectedFeature(null)
         } else {
-          this.$refs.map.setPoiToastVisibility(false)
+          this.$refs.mainMap?.setPoiToastVisibility(false)
         }
       }
     },
@@ -617,17 +660,12 @@ export default (Vue as VueConstructor<
         this.goToHome()
       }
     },
-    onMapChangeMode(mode: Mode) {
-      if (mode === Mode.BROWSER) {
-        this.$store.dispatch('site/setMode', mode)
-        this.selectSubCategory(this.previousSubCategories)
-      } else if (mode === Mode.EXPLORER) {
-        this.previousSubCategories = this.state.context.selectedSubCategoriesIds
-        this.$store.dispatch('site/setMode', mode)
-      }
-    },
+
     onShowPoi(show: boolean) {
       this.showPoi = show
+    },
+    setFullAttributions(fullAttributions: string) {
+      this.fullAttributions = fullAttributions
     },
   },
 })

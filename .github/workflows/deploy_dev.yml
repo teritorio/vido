@@ -58,7 +58,7 @@ jobs:
           RASTER_STYLE_URL: ${{secrets.RASTER_STYLE_URL_DEV}}
           SENTRY_DSN: ${{secrets.SENTRY_DSN_DEV}}
           NOTEBOOK_ENABLED: ${{secrets.NOTEBOOK_ENABLED_DEV}}
-        run: yarn generate
+        run: yarn build
 
       - name: Deploy
         uses: up9cloud/action-rsync@master

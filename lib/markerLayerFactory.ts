@@ -1,6 +1,13 @@
-import { AnyLayer } from 'maplibre-gl'
+import maplibregl, { LayerSpecification } from 'maplibre-gl'
 
-export const markerLayerFactory = (source: string, id: string): AnyLayer => ({
+import TeritorioIconBadge from '@/components/TeritorioIcon/TeritorioIconBadge.vue'
+
+import { TupleLatLng } from '~/utils/types'
+
+export const markerLayerTextFactory = (
+  source: string,
+  id: string
+): LayerSpecification => ({
   id,
   type: 'symbol',
   source,
@@ -60,3 +67,36 @@ export const markerLayerFactory = (source: string, id: string): AnyLayer => ({
     'text-allow-overlap': false,
   },
 })
+
+export function makerHtmlFactory(
+  latLng: TupleLatLng,
+  color: string | undefined,
+  icon: string | undefined,
+  thumbnail: string | undefined,
+  size: string | null = null
+): maplibregl.Marker {
+  // Marker
+  const el: HTMLElement = document.createElement('div')
+  el.classList.add('maplibregl-marker')
+  el.classList.add('cluster-item')
+
+  const marker = new maplibregl.Marker({
+    element: el,
+    ...(thumbnail && {
+      offset: [0, -10],
+    }),
+  }).setLngLat(latLng) // Using this to avoid misplaced marker
+
+  // Teritorio badge
+  const instance = new TeritorioIconBadge({
+    propsData: {
+      color,
+      picto: icon,
+      image: thumbnail,
+      size,
+    },
+  }).$mount()
+  el.appendChild(instance.$el)
+
+  return marker
+}

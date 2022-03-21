@@ -19,8 +19,19 @@ checkEnvVariable('SATELLITE_STYLE_URL')
 checkEnvVariable('RASTER_STYLE_URL')
 
 export default {
-  target: 'static',
   publicRuntimeConfig: {
+    API_ENDPOINT: process.env.API_ENDPOINT || '',
+    API_SEARCH: process.env.API_SEARCH || '',
+    API_SEARCH_ADDR: process.env.API_SEARCH_ADDR || '',
+    API_PROJECT: process.env.API_PROJECT || '',
+    API_THEME: process.env.API_THEME || '',
+    VECTO_STYLE_URL: process.env.VECTO_STYLE_URL || '',
+    SATELLITE_STYLE_URL: process.env.SATELLITE_STYLE_URL || '',
+    RASTER_STYLE_URL: process.env.RASTER_STYLE_URL || '',
+    GOOGLE_TAG_MANAGER_ID: process.env.GOOGLE_TAG_MANAGER_ID || '',
+    NOTEBOOK_ENABLED: process.env.NOTEBOOK_ENABLED || '',
+  },
+  env: {
     API_ENDPOINT: process.env.API_ENDPOINT || '',
     API_SEARCH: process.env.API_SEARCH || '',
     API_SEARCH_ADDR: process.env.API_SEARCH_ADDR || '',
@@ -55,6 +66,7 @@ export default {
   css: [
     '@fortawesome/fontawesome-svg-core/styles.css',
     'maplibre-gl/dist/maplibre-gl.css',
+    '@fontsource/ubuntu',
   ],
 
   purgeCSS: {
@@ -85,22 +97,10 @@ export default {
 
   // Modules (https://go.nuxtjs.dev/config-modules)
   modules: [
-    // https://go.nuxtjs.dev/axios
-    '@nuxtjs/axios',
-    // https://go.nuxtjs.dev/pwa
-    '@nuxtjs/pwa',
-    // https://go.nuxtjs.dev/content
-    '@nuxt/content',
     '@nuxtjs/i18n',
     ...(process.env.GOOGLE_TAG_MANAGER_ID ? ['@nuxtjs/gtm'] : []),
     ...(process.env.SENTRY_DSN ? ['@nuxtjs/sentry'] : []),
   ],
-
-  // Axios module configuration (https://go.nuxtjs.dev/config-axios)
-  axios: {},
-
-  // Content module configuration (https://go.nuxtjs.dev/config-content)
-  content: {},
 
   i18n: {
     strategy: 'no_prefix',
@@ -109,9 +109,9 @@ export default {
       useCookie: false,
     },
     locales: [
-      { code: 'en', name: 'English', flag: '🇬🇧', iso: 'en-US', file: 'en.js' },
-      { code: 'es', name: 'Español', flag: '🇪🇸', iso: 'es-ES', file: 'es.js' },
-      { code: 'fr', name: 'Français', flag: '🇫🇷', iso: 'fr-FR', file: 'fr.js' },
+      { code: 'en', name: 'English', flag: 'GB', iso: 'en-US', file: 'en.js' },
+      { code: 'es', name: 'Español', flag: 'ES', iso: 'es-ES', file: 'es.js' },
+      { code: 'fr', name: 'Français', flag: 'FR', iso: 'fr-FR', file: 'fr.js' },
     ],
     defaultLocale: 'en',
     langDir: '~/locales/',

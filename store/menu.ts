@@ -2,7 +2,9 @@ import copy from 'fast-copy'
 import { Store } from 'vuex'
 // import { interpret, Interpreter, State } from 'xstate'
 
-import { ApiPois, Category, VidoFeature, FilterValues } from '@/utils/types'
+import { Category } from '@/lib/apiMenu'
+import { ApiPoi, ApiPois, getPoiByCategoryId } from '@/lib/apiPois'
+import { FilterValues } from '@/utils/types'
 
 enum Mutation {
   SET_CONFIG = 'SET_CONFIG',
@@ -13,9 +15,7 @@ enum Mutation {
 }
 
 interface FetchConfigPayload {
-  apiEndpoint: string
-  apiProject: string
-  apiTheme: string
+  categories: Category[]
 }
 
 interface FetchFeaturesPayload {
@@ -31,10 +31,10 @@ export interface State {
   }
   isLoaded: boolean
   features: {
-    [categoryId: number]: VidoFeature[]
+    [categoryId: number]: ApiPoi[]
   }
   allFeatures: {
-    [categoryId: number]: VidoFeature[]
+    [categoryId: number]: ApiPoi[]
   }
   filters: { [subcat: number]: FilterValues }
   isLoadingFeatures: boolean
@@ -74,7 +74,7 @@ export const mutations = {
 }
 
 function filterExist(
-  filterToTest: string[],
+  filterToTest: string[] | string,
   featureToTest: string[] | string
 ): boolean {
   if (Array.isArray(featureToTest)) {
@@ -84,59 +84,67 @@ function filterExist(
   }
 }
 
-function keepFeature(feature: VidoFeature, filters: FilterValues): boolean {
-  if (!filters || Object.keys(filters).length === 0) {
+function keepFeature(feature: ApiPoi, filters: FilterValues | null): boolean {
+  if (!filters) {
     return true
   }
 
-  for (const key in filters) {
+  if (filters.dateRange) {
     if (
-      filters[key].length > 0 &&
-      (!feature.properties[key] ||
-        !filterExist(filters[key], feature.properties[key]))
+      !filters.dateRange.propertyStart ||
+      !filters.dateRange.value[1] ||
+      feature.properties[filters.dateRange.propertyStart] >
+        filters.dateRange.value[1] ||
+      !filters.dateRange.propertyEnd ||
+      !filters.dateRange.value[0] ||
+      feature.properties[filters.dateRange.propertyEnd] <
+        filters.dateRange.value[0]
     ) {
       return false
     }
+  }
+
+  if (
+    Object.keys(filters.values).length > 0 &&
+    !Object.entries(filters.values).find(
+      ([key, filterValues]) =>
+        filterValues &&
+        feature.properties[key] &&
+        filterExist(filterValues, feature.properties[key])
+    )
+  ) {
+    return false
   }
 
   return true
 }
 
 export const actions = {
-  async fetchConfig(
-    store: Store<State>,
-    { apiEndpoint, apiProject, apiTheme }: FetchConfigPayload
-  ) {
+  fetchConfig(store: Store<State>, { categories }: FetchConfigPayload) {
     try {
-      const configPromise = await fetch(
-        `${apiEndpoint}/${apiProject}/${apiTheme}/menu`
-      )
+      const stateCategories: State['categories'] = {}
 
-      const config: [Category] = await configPromise.json()
-
-      const categories: State['categories'] = {}
-
-      config
+      store.commit(Mutation.SET_CONFIG, { categories: null }) // Hack, release from store before edit and reappend
+      categories
         .filter((category) => !category.hidden)
         .map((category) => {
-          categories[category.id] = category
+          stateCategories[category.id] = category
           return category
         })
         .forEach((category) => {
           // Separated from previous map to allow batch processing and make sure parent category is always there
           // Associate to parent_id
           if (category.parent_id && category.parent_id !== null) {
-            const parent = categories[category.parent_id]
-            if (parent) {
-              if (!parent.vido_children) {
-                parent.vido_children = []
+            const parent = stateCategories[category.parent_id]
+            if (parent?.menu_group) {
+              if (!parent.menu_group.vido_children) {
+                parent.menu_group.vido_children = []
               }
-              parent.vido_children.push(category.id)
+              parent.menu_group.vido_children.push(category.id)
             }
           }
         })
-
-      store.commit(Mutation.SET_CONFIG, { categories })
+      store.commit(Mutation.SET_CONFIG, { categories: stateCategories })
     } catch (error) {
       // eslint-disable-next-line no-console
       console.error(
@@ -158,15 +166,15 @@ export const actions = {
         Boolean(previousFeatures[categoryId])
       )
 
-      const posts: ApiPois[] = await Promise.all(
-        categoryIds
-          .filter((categoryId) => !previousFeatures[categoryId])
-          .map((categoryId) =>
-            fetch(
-              `${apiEndpoint}/${apiProject}/${apiTheme}/pois?idmenu=${categoryId}`
-            ).then((res) => res.json())
-          )
-      )
+      const posts: ApiPois[] = (
+        await Promise.all(
+          categoryIds
+            .filter((categoryId) => !previousFeatures[categoryId])
+            .map((categoryId) =>
+              getPoiByCategoryId(apiEndpoint, apiProject, apiTheme, categoryId)
+            )
+        )
+      ).filter((e) => e) as ApiPois[]
 
       const features: State['features'] = {}
 
@@ -177,7 +185,7 @@ export const actions = {
 
         if (existingFeatures[j]) {
           features[categoryId] = previousFeatures[categoryId].map(
-            (f: VidoFeature) => ({
+            (f: ApiPoi) => ({
               ...f,
               properties: {
                 ...f.properties,
@@ -217,12 +225,12 @@ export const actions = {
     store.commit(Mutation.SET_FILTERS, { filters })
 
     // Update features visibility
-    const features: { [categoryId: number]: VidoFeature[] } = copy(
+    const features: { [categoryId: number]: ApiPoi[] } = copy(
       store.getters.features
     )
     Object.keys(features).forEach((categoryIdString: string) => {
       const categoryId = parseInt(categoryIdString, 10)
-      features[categoryId] = features[categoryId].map((f: VidoFeature) => {
+      features[categoryId] = features[categoryId].map((f: ApiPoi) => {
         f.properties.vido_visible = keepFeature(f, filters[categoryId])
         return f
       })
@@ -244,35 +252,19 @@ export const getters = {
       .filter((c) => c.parent_id === categoryId)
       .sort((a, b) => a.index_order - b.index_order),
 
-  getHighlightedRootCategoriesFromCategoryId: (state: State) => (
-    categoryId: number
-  ) =>
+  getRootCategoriesFromCategoryId: (state: State) => (categoryId: number) =>
     Object.values(state.categories)
       .filter(
         (c) =>
           c.parent_id !== null &&
           state.categories[c.parent_id]?.parent_id === null &&
-          c.highlighted &&
-          c.parent_id === categoryId
-      )
-      .sort((a, b) => a.index_order - b.index_order),
-
-  getNonHighlightedRootCategoriesFromCategoryId: (state: State) => (
-    categoryId: number
-  ) =>
-    Object.values(state.categories)
-      .filter(
-        (c) =>
-          c.parent_id !== null &&
-          state.categories[c.parent_id]?.parent_id === null &&
-          !c.highlighted &&
           c.parent_id === categoryId
       )
       .sort((a, b) => a.index_order - b.index_order),
 
   categoryRootCategories: (state: State) =>
     Object.values(state.categories)
-      .filter((c) => c.parent_id === null && c.vido_children)
+      .filter((c) => c.parent_id === null && c?.menu_group?.vido_children)
       .sort((a, b) => a.index_order - b.index_order),
 
   rootCategories: (state: State) =>

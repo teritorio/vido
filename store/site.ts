@@ -1,58 +1,30 @@
 import { Store } from 'vuex'
 
-import { SiteInfos, Mode } from '@/utils/types'
-
 enum Mutation {
-  SET_CONFIG = 'SET_CONFIG',
-  SET_MODE = 'SET_MODE',
-}
-
-interface FetchConfigPayload {
-  config: SiteInfos
+  SET_LOCALE = 'SET_LOCALE',
 }
 
 interface State {
-  infos: SiteInfos
-  isLoaded: boolean
-  mode: Mode
+  locale: string | null
 }
 
 export const state = (): State | null => ({
-  infos: {},
-  isLoaded: false,
-  mode: Mode.BROWSER,
+  locale: null,
 })
 
 export const mutations = {
-  [Mutation.SET_CONFIG](state: State, payload: SiteInfos) {
-    state.infos = payload
-
-    state.isLoaded = true
-  },
-
-  [Mutation.SET_MODE](state: State, mode: Mode) {
-    state.mode = mode
+  [Mutation.SET_LOCALE](state: State, locale: string) {
+    state.locale = locale
   },
 }
 
 export const actions = {
-  fetchConfig(store: Store<State>, { config }: FetchConfigPayload) {
-    try {
-      store.commit(Mutation.SET_CONFIG, config)
-    } catch (error) {
-      // eslint-disable-next-line no-console
-      console.error('Vido error: Unable to fetch the site config', error)
-    }
-  },
-
-  setMode(store: Store<State>, mode: Mode) {
-    store.commit(Mutation.SET_MODE, mode)
+  setLocale(store: Store<State>, locale: string) {
+    store.commit(Mutation.SET_LOCALE, locale)
   },
 }
 
 export const getters = {
   all: (state: State) => state,
-  infos: (state: State) => state.infos,
-  isLoaded: (state: State) => state.isLoaded,
-  mode: (state: State) => state.mode,
+  locale: (state: State) => state.locale,
 }

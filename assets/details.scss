@@ -1,0 +1,39 @@
+// Defining values
+$small-range: (767px);
+$medium-range: (1024px);
+$large-range: (1280px);
+
+$screen: 'only screen' !default;
+$landscape: '#{$screen} and (orientation: landscape)' !default;
+$portrait: '#{$screen} and (orientation: portrait)' !default;
+$small-up: $screen !default;
+$small-only: '#{$screen} and (max-width: #{($small-range)})' !default;
+$medium-and-small: '#{$screen} and (max-width: #{($medium-range)})' !default;
+$medium-only: '#{$screen} and (min-width:#{($small-range)}) and (max-width:#{($medium-range)})' !default;
+$x-medium-only: '#{$screen} and (min-width:#{($medium-range)}) and (max-width:#{($large-range)})' !default;
+$large-only: '#{$screen} and (min-width:#{($large-range)})' !default;
+
+$white-color: #ffff;
+
+// $font-ubuntu: 'Ubuntu', arial, sans-serif;
+.font-ubuntu-light {
+  font-family: "Ubuntu", arial, sans-serif;
+  font-weight: 300;
+}
+.font-ubuntu-medium {
+  font-family: "Ubuntu", arial, sans-serif;
+  font-weight: 400;
+}
+.font-ubuntu-bold {
+  font-family: "Ubuntu", arial, sans-serif;
+  font-weight: bold;
+}
+
+$color-primary: #4d4d4d;
+$color-secondary: #67baba;
+$color-tertiary: #15323a;
+$color-highlight: #ebeff0;
+$color-grey-light: #f2f2f2;
+$color-grey: #4d4d4d;
+$color-title: $color-grey;
+$color-text: $color-grey;

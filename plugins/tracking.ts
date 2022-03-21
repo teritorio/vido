@@ -1,7 +1,7 @@
 import { Plugin, NuxtAppOptions } from '@nuxt/types'
 import urlSlug from 'url-slug'
 
-import { Category } from '@/utils/types'
+import { Category } from '@/lib/apiMenu'
 
 // Also Update README.md according to tracking changes.
 
@@ -34,7 +34,7 @@ type Event =
     }
   | {
       type: 'popup'
-      poiId: string
+      poiId: number
       title?: string
       location: string
       path: string
@@ -43,7 +43,7 @@ type Event =
   | {
       type: 'popup_event'
       event: 'details' | 'route' | 'explore' | 'favorite' | 'zoom'
-      poiId: string
+      poiId: number
       category: string
       title?: string
     }

@@ -1,4 +1,8 @@
 export default {
+  shareLink: {
+    copy: 'Copy',
+    close: 'Close',
+  },
   favorites: {
     title: 'Favorites',
     menu_label: 'Favorites menu',
@@ -7,13 +11,10 @@ export default {
     menu_clear: 'Clear favorites',
     export_pdf: 'Export liste as PDF',
     export_csv: 'Export liste as CSV',
-    modal: {
-      title: 'Share link of favorites',
-      copy: 'Copy',
-      close: 'Close',
-    },
+    share_link: 'Share link of favorites',
     notebook: {
       title: 'Favorites notebook',
+      close: 'Close',
     },
     noFavs:
       'You do not have any favorite places yet. You can do this by selecting a location on the map, then saving it as a favorite.',
@@ -57,16 +58,12 @@ export default {
     backToMenuFavorites: 'Show menu',
     backToMenuExplorer: 'Back to menu',
   },
-  toast: {
-    details: 'Details',
-    seeDetail: 'See details',
-    route: 'Route',
-    explore: 'Explore',
-    favorite: 'Favorite',
-    callNumber: 'Call this number',
-    findRoute: 'Find the route to this place',
-    unactivateExplore: 'Deactivate exploration of the surroundings',
-    activateExplore: 'Explore nearby points of interest',
+  dateRange: {
+    from_to: 'From {from} to {to}',
+    from: 'From {from}',
+    to: 'Until {to}',
+  },
+  openingHours: {
     monday: 'Mon.',
     tuesday: 'Tue.',
     wednesday: 'Wed.',
@@ -80,6 +77,17 @@ export default {
     open: 'Opens',
     openAt: 'Opens at',
     '24_7': 'Opened 24/7',
+  },
+  toast: {
+    details: 'Details',
+    seeDetail: 'See details',
+    route: 'Route',
+    explore: 'Explore',
+    favorite: 'Favorite',
+    callNumber: 'Call this number',
+    findRoute: 'Find the route to this place',
+    unactivateExplore: 'Deactivate exploration of the surroundings',
+    activateExplore: 'Explore nearby points of interest',
     zoom: 'Zoom',
     routePopup: {
       min: 'min',
@@ -88,5 +96,27 @@ export default {
       normal: 'normal',
       hard: 'hard',
     },
+  },
+  details: {
+    headerDescription: 'Description',
+    headerOpeningHours: 'Opening hours',
+    lastUpdate: 'Last change',
+    headerContacts: 'Contact',
+    headerLocation: 'Location & Address',
+    location: 'GPS coordinates (Lat, Lon):',
+    shareFacebook: 'Share on Facebook',
+    shareTwitter: 'Share on Twitter',
+    shareWhatsApp: 'Share on WhatsApp',
+    print: 'Print',
+    link: 'Share link',
+    poweredBy: 'Powered by',
+    mapillaryExplore: 'Explore on Mapillary',
+  },
+  dateFilter: {
+    today: 'Today',
+    tomorrow: 'Tomorrow',
+    thisWeekend: 'Coming week-end',
+    nextWeek: 'Coming week',
+    nextMonth: 'Coming month',
   },
 }

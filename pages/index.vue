@@ -1,75 +1,145 @@
 <template>
-  <Home :default-bounds="defaultBounds" />
+  <Home
+    v-if="settings"
+    :settings="settings"
+    :initial-category-ids="categoryIds"
+    :initial-poi="initialPoi"
+  />
 </template>
 
 <script lang="ts">
-import type { LngLatBoundsLike } from 'maplibre-gl'
 import Vue from 'vue'
+import { MetaInfo } from 'vue-meta'
+import { mapActions } from 'vuex'
 
 import Home from '@/components/Home/Home.vue'
+import { Category, getMenu } from '@/lib/apiMenu'
+import { getPoiById, ApiPoi } from '@/lib/apiPois'
+import { getSettings, headerFromSettings, Settings } from '@/lib/apiSettings'
 
 export default Vue.extend({
   components: {
     Home,
   },
+
+  async asyncData({
+    env,
+    params,
+    route,
+  }): Promise<{
+    settings: Settings | null
+    categories: Category[] | null
+    categoryIds: number[] | null
+    initialPoi: ApiPoi | null
+  }> {
+    const fetchSettings = getSettings(
+      env.API_ENDPOINT,
+      env.API_PROJECT,
+      env.API_THEME
+    )
+    const fetchCategories = getMenu(
+      env.API_ENDPOINT,
+      env.API_PROJECT,
+      env.API_THEME
+    )
+
+    let categoryIdsJoin: string | null
+    let poiId: string | null
+    // Workaround Nuxt missing feature to simple respect trialling slash meaning
+    if (params.poiId) {
+      categoryIdsJoin = params.p1
+      poiId = params.poiId
+    } else if (route.path.endsWith('/')) {
+      categoryIdsJoin = params.p1
+      poiId = null
+    } else {
+      categoryIdsJoin = null
+      poiId = params.p1
+    }
+
+    const categoryIds =
+      (categoryIdsJoin &&
+        categoryIdsJoin.split(',').map((id) => parseInt(id))) ||
+      null
+    let fetchPoi: Promise<ApiPoi | null> = Promise.resolve(null)
+    if (poiId) {
+      fetchPoi = getPoiById(
+        env.API_ENDPOINT,
+        env.API_PROJECT,
+        env.API_THEME,
+        poiId
+      )
+    }
+
+    const v = await Promise.all([fetchSettings, fetchCategories, fetchPoi])
+
+    return Promise.resolve({
+      settings: v[0],
+      categories: v[1],
+      categoryIds,
+      initialPoi: v[2],
+    })
+  },
+
   data(): {
-    cssUrl: string
-    favicon: string
-    title: string
-    defaultBounds: LngLatBoundsLike | null
+    settings: Settings | null
+    categories: Category[] | null
   } {
     return {
-      cssUrl: 'territorio',
-      favicon: '',
-      title: '@teritorio/vido',
-      defaultBounds: null,
+      settings: null,
+      categories: null,
     }
   },
-  async fetch() {
-    await this.$store.dispatch('menu/fetchConfig', {
-      apiEndpoint: this.$config.API_ENDPOINT,
-      apiProject: this.$config.API_PROJECT,
-      apiTheme: this.$config.API_THEME,
+
+  head(): MetaInfo {
+    return headerFromSettings(this.settings)
+  },
+
+  created() {
+    this.$store.dispatch('menu/fetchConfig', {
+      categories: this.categories,
     })
-
-    await fetch(
-      `${this.$config.API_ENDPOINT}/${this.$config.API_PROJECT}/${this.$config.API_THEME}`
-    )
-      .then((res) => res.json())
-      .then((json) => {
-        this.defaultBounds = json.bbox_line?.coordinates || [
-          [1.43862, 42.41845],
-          [1.68279, 42.6775],
-        ]
-        this.$store.dispatch('site/fetchConfig', { config: json })
-        this.$store.dispatch('map/fetchConfig', { config: json })
-
-        // @ts-ignore - Look ok, unable to fix the issue
-        this.cssUrl = json?.icon_font_css_url
-        // @ts-ignore - Look ok, unable to fix the issue
-        this.favicon_url = json?.favicon_url
-        // @ts-ignore - Look ok, unable to fix the issue
-        this.title = json?.title
-      })
   },
-  // fetchOnServer: false,
-  head() {
-    return {
-      // @ts-ignore - Look ok, unable to fix the issue
-      title: this.title,
-      link: [
-        {
-          rel: 'stylesheet',
-          // @ts-ignore - Look ok, unable to fix the issue
-          href: this.cssUrl,
-        },
-        {
-          rel: 'icon',
-          // @ts-ignore - Look ok, unable to fix the issue
-          href: this.favicon,
-        },
-      ],
-    }
+
+  mounted() {
+    this.setSiteLocale(this.$i18n.locale)
+  },
+
+  methods: {
+    ...mapActions({
+      setSiteLocale: 'site/setLocale',
+    }),
   },
 })
 </script>
+
+<style>
+html {
+  @apply h-full w-full box-border overflow-hidden overscroll-none;
+}
+
+html,
+.mapboxgl-map {
+  font-family: 'Source Sans Pro', -apple-system, BlinkMacSystemFont, 'Segoe UI',
+    Roboto, 'Helvetica Neue', Arial, sans-serif;
+  font-size: 16px;
+  word-spacing: 1px;
+  -ms-text-size-adjust: 100%;
+  -webkit-text-size-adjust: 100%;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+  @apply text-gray-900;
+}
+
+body,
+#__nuxt,
+#__layout {
+  @apply h-full w-full overflow-hidden overscroll-none;
+}
+
+*,
+*::before,
+*::after {
+  @apply m-0 box-border;
+}
+</style>

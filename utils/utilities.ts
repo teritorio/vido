@@ -1,11 +1,9 @@
-import { VidoFeature } from '@/utils/types'
+import { ApiPoi } from '@/lib/apiPois'
 
-export const flattenFeatures = (features: {
-  [categoryId: number]: VidoFeature[]
-}) =>
+export const flattenFeatures = (features: { [categoryId: number]: ApiPoi[] }) =>
   Object.values(features)
     .flat()
-    .filter((f: VidoFeature) => f.properties.vido_visible)
+    .filter((f: ApiPoi) => f.properties.vido_visible)
 
 export const getPreviousMonday = () => {
   const date = new Date()
@@ -15,16 +13,4 @@ export const getPreviousMonday = () => {
   }
 
   return new Date().setDate(date.getDate() - date.getDate() - 6)
-}
-
-export const displayTime = (dateGMT: Date | string | undefined) => {
-  if (dateGMT) {
-    const date = new Date(dateGMT)
-
-    const hh = date.getHours()
-    const mm = date.getMinutes()
-
-    return `${hh < 10 ? `0${hh}` : hh}:${mm < 10 ? `0${mm}` : mm}`
-  }
-  return ''
 }

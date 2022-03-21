@@ -1,12 +1,25 @@
-import { MapStyle } from '@/utils/types'
+import { MapStyleEnum } from '@/utils/types'
 
-export const MAP_STYLES = {
-  [MapStyle.teritorio]: 'Teritorio',
-  [MapStyle.mapnik]: 'OpenStreetMap',
-  [MapStyle.aerial]: 'Imagerie aérienne IGN',
+export const MAP_STYLE_NAMES = {
+  [MapStyleEnum.vector]: 'Teritorio',
+  [MapStyleEnum.raster]: 'OpenStreetMap',
+  [MapStyleEnum.aerial]: 'Imagerie aérienne IGN',
 }
 
-export const DEFAULT_MAP_STYLE: keyof typeof MapStyle = 'teritorio'
-export const EXPLORER_MAP_STYLE: keyof typeof MapStyle = 'teritorio'
+export const DEFAULT_MAP_STYLE: keyof typeof MapStyleEnum = MapStyleEnum.vector
+export const EXPLORER_MAP_STYLE: keyof typeof MapStyleEnum = MapStyleEnum.vector
 
 export const LOCAL_STORAGE = { favorites: 'vido:favorites' }
+
+export const MAP_ZOOM = {
+  zoom: {
+    default: 8,
+    max: 20,
+    min: 1,
+  },
+  selectionZoom: {
+    poi: 17,
+    streetNumber: 15,
+    municipality: 12,
+  },
+}
