@@ -75,6 +75,7 @@ export function headerFromSettings(
       {
         hid: 'icon',
         rel: 'icon',
+        type: 'image/x-icon',
         href: settings?.themes[0].favicon_url || '',
       },
     ],
