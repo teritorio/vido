@@ -150,7 +150,7 @@
         $refs.mainMap && $refs.mainMap.exploreAroundSelectedPoi()
       "
       @toggleFavoritesMode="
-        $refs.mainMap && $refs.mainMap.toggleFavoritesMode($event)
+        $refs.mainMap && $refs.mainMap.toggleFavorite($event)
       "
       @goToSelectedPoi="$refs.mainMap && $refs.mainMap.goToSelectedPoi()"
     />
