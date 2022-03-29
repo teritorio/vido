@@ -437,7 +437,8 @@ export default Vue.extend({
           Object.fromEntries(
             Object.entries(this.poi.properties).map(([key, value]) => [
               key,
-              (value &&
+              (key !== 'opening_hours' &&
+                value &&
                 typeof value === 'string' &&
                 value.includes(';') &&
                 value

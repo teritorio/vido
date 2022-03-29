@@ -6,7 +6,7 @@ enum Mutation {
 }
 
 export interface State {
-  favoritesIds: [string?]
+  favoritesIds: [number?]
   favoritesAction: 'add' | 'close' | 'delete' | 'open' | null
 }
 
@@ -21,7 +21,7 @@ export const getters = {
 }
 
 export const mutations = {
-  [Mutation.TOGGLE_FAVORITES](state: State, payload: [string]) {
+  [Mutation.TOGGLE_FAVORITES](state: State, payload: [number]) {
     state.favoritesIds = payload
   },
   [Mutation.SET_FAVORITES_ACTION](
@@ -33,7 +33,7 @@ export const mutations = {
 }
 
 export const actions = {
-  toggleFavoritesMode(store: Store<State>, data: [string?]) {
+  toggleFavoritesMode(store: Store<State>, data: [number?]) {
     store.commit(Mutation.TOGGLE_FAVORITES, data)
   },
   setFavoritesAction(store: Store<State>, action: string) {

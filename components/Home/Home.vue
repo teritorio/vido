@@ -10,13 +10,14 @@
           showPoi && 'max-h-screen-4/6 md:max-h-screen 2xl:h-auto',
         ]"
       >
-        <transition name="headers" appear mode="out-in">
+        <transition-group name="headers" appear mode="out-in">
           <MainHeader
             v-if="
               (state.matches(states.Categories) && isMenuConfigLoaded) ||
               isModeExplorer ||
               isModeFavorites
             "
+            key="MainHeader"
             :show-poi="showPoi"
             :logo-url="logoUrl"
             :main-url="mainUrl"
@@ -33,6 +34,7 @@
               !isModeFavorites &&
               state.matches(states.SubCategories)
             "
+            key="SubCategoryHeader"
             class="hidden sm:flex m-2"
             :categories="state.context.selectedRootCategory.subCategories"
             :filtered-categories="filteredSubCategories"
@@ -46,6 +48,7 @@
 
           <SubCategoryFilterHeader
             v-if="!isModeExplorer && state.matches(states.SubCategoryFilters)"
+            key="SubCategoryFilterHeader"
             class="hidden sm:flex m-2"
             :subcategory="subCategoryForFilter"
             :filters-values="subCategoryFilters"
@@ -55,6 +58,7 @@
 
           <div
             v-if="state.matches(states.Search)"
+            key="SearchHeader"
             :class="[
               'max-h-full hidden sm:flex p-2',
               showPoi && 'max-h-screen-4/6',
@@ -71,7 +75,7 @@
               @feature-click="onFeatureClick"
             />
           </div>
-        </transition>
+        </transition-group>
         <div
           v-if="state.matches(states.Search)"
           :class="[
@@ -150,7 +154,7 @@
         $refs.mainMap && $refs.mainMap.exploreAroundSelectedPoi()
       "
       @toggleFavoritesMode="
-        $refs.mainMap && $refs.mainMap.toggleFavoritesMode($event)
+        $refs.mainMap && $refs.mainMap.toggleFavorite($event)
       "
       @goToSelectedPoi="$refs.mainMap && $refs.mainMap.goToSelectedPoi()"
     />
