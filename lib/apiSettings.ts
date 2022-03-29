@@ -10,7 +10,7 @@ export interface SiteInfosTheme {
   // eslint-disable-next-line camelcase
   site_url: MultilingualString
   // eslint-disable-next-line camelcase
-  main_url: MultilingualString
+  main_url?: MultilingualString
   // eslint-disable-next-line camelcase
   logo_url: string
   // eslint-disable-next-line camelcase

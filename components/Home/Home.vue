@@ -314,7 +314,7 @@ export default (Vue as VueConstructor<
       return this.settings.themes[0]?.title.fr || ''
     },
     mainUrl(): string {
-      return this.settings.themes[0]?.main_url.fr || ''
+      return this.settings.themes[0]?.main_url?.fr || ''
     },
     isPoiToastVisible(): boolean {
       return this.selectedFeature && this.$refs.mainMap?.showPoiToast
