@@ -5,7 +5,7 @@
       :center="center()"
       :bounds="bounds()"
       :zoom="selectionZoom.poi"
-      :attributions="attributions"
+      :extra-attributions="extraAttributions"
       @map-init="onMapInit"
     />
   </div>
@@ -30,7 +30,7 @@ export default Vue.extend({
   },
 
   props: {
-    attributions: {
+    extraAttributions: {
       type: Array as PropType<string[]>,
       required: true,
     },
