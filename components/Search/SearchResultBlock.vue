@@ -52,7 +52,7 @@ export default Vue.extend({
       required: true,
     },
     type: {
-      type: String,
+      type: String as PropType<'cartocode' | 'category' | 'pois' | 'addresse'>,
       required: true,
     },
     items: {
