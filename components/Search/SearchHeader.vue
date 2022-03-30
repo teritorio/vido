@@ -85,6 +85,15 @@
 
     <div v-if="results > 0" class="search-results">
       <SearchResultBlock
+        v-if="itemsCartocode.length > 0"
+        type="cartocode"
+        :label="$tc('headerMenu.cartocode')"
+        icon="layer-group"
+        :items="itemsCartocode"
+        @item-click="onCartocodeClick"
+      />
+
+      <SearchResultBlock
         v-if="itemsMenuItems.length > 0"
         type="category"
         :label="$tc('headerMenu.categories')"
@@ -183,6 +192,23 @@ export default Vue.extend({
       isModeFavorites: 'map/isModeFavorites',
       isModeExplorerOrFavorites: 'map/isModeExplorerOrFavorites',
     }),
+    itemsCartocode(): SearchResult[] {
+      const v = this.searchCartocodeResult
+      if (v && v.properties.metadata?.id) {
+        const label =
+          v.properties.name || v.properties.editorial?.class_label?.fr
+        if (label) {
+          return [
+            {
+              id: v.properties.metadata?.id,
+              label,
+            },
+          ]
+        }
+      }
+      return []
+    },
+
     itemsMenuItems(): SearchResult[] {
       return (
         this.searchMenuItemsResults?.features?.map((v) => ({
@@ -219,18 +245,11 @@ export default Vue.extend({
 
     results(): Number {
       return (
+        this.itemsCartocode.length +
         this.itemsMenuItems.length +
         this.itemsPois.length +
         this.itemsAddresses.length
       )
-    },
-  },
-
-  watch: {
-    searchCartocodeResult(val: null | ApiPoi) {
-      if (val && val.properties?.metadata?.id) {
-        this.onPoiClick(val.properties.metadata.id)
-      }
     },
   },
 
@@ -260,6 +279,13 @@ export default Vue.extend({
 
     goToCategories() {
       this.$emit('go-to-categories')
+    },
+
+    onCartocodeClick(id: number) {
+      const cartocodeId = this.searchCartocodeResult?.properties.metadata?.id
+      if (cartocodeId === id) {
+        this.onPoiClick(cartocodeId)
+      }
     },
 
     onCategoryClick(category: SearchResult) {
