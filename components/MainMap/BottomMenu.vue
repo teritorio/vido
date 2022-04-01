@@ -1,7 +1,7 @@
 <template>
   <div class="z-0 relative flex-shrink-0 sm:hidden text-center bottom-0 w-full">
     <button
-      v-if="!isModeExplorer || selectedFeature"
+      v-if="!(isModeExplorer || isModeFavorites) || selectedFeature"
       v-touch:swipe.stop="onBottomMenuButtonClick"
       class="-top-12 z-0 absolute sm:hidden right-3/8 left-3/8 w-1/4 h-12 transition-all rounded-t-lg text-sm font-medium px-5 space-x-1 shadow-lg outline-none focus:outline-none bg-white text-gray-800 hover:bg-gray-100 focus-visible:bg-gray-100"
       @click="onBottomMenuButtonClick"
