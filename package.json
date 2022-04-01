@@ -1,6 +1,6 @@
 {
   "name": "@teritorio/vido",
-  "version": "1.15.4",
+  "version": "1.15.5",
   "private": true,
   "scripts": {
     "dev": "yarn nuxt",
