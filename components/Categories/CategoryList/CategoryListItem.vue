@@ -1,8 +1,11 @@
 <template>
   <div class="flex flex-col items-start">
     <button
+      :is="href ? 'a' : 'button'"
+      :href="href"
+      target="black_"
       class="flex items-center justify-between w-full px-5 py-3 rounded-lg outline-none focus:outline-none hover:bg-gray-100"
-      @click="onClick"
+      @click="!href && onClick()"
     >
       <div class="flex items-center space-x-4">
         <div class="relative">
@@ -27,7 +30,15 @@
         <div class="text-left">{{ category.label }}</div>
       </div>
 
-      <template v-if="hasChildren">
+      <template v-if="href">
+        <font-awesome-icon
+          class="text-gray-700"
+          fixed-width
+          icon="external-link-alt"
+          size="sm"
+        />
+      </template>
+      <template v-else-if="hasChildren">
         <font-awesome-icon
           class="text-gray-800"
           fixed-width
@@ -99,6 +110,10 @@ export default Vue.extend({
     activeSubCategories: {
       type: Number,
       default: 0,
+    },
+    href: {
+      type: String,
+      default: null,
     },
   },
   computed: {

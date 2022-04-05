@@ -3,6 +3,7 @@
     <CategoryListItem
       v-for="category in categories"
       :key="category.id"
+      :href="category.href"
       :category="category"
       :selected="category.selected"
       :filtered="filteredCategories.includes(category.id)"

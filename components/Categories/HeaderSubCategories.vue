@@ -45,6 +45,7 @@ export default Vue.extend({
         label: (category.menu_group || category.link || category.category).name
           .fr,
         picto: (category.menu_group || category.link || category.category).icon,
+        href: category.link?.href,
         filters: category.category?.filters || {},
         selected: this.$props.isSubCategorySelected(category.id),
       }))
