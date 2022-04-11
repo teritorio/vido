@@ -19,7 +19,7 @@
           :extra-attributions="extraAttributions"
           :map-style-enum="selectedBackground"
           :pitch="pitch"
-          :rotate="true"
+          :rotate="!$isMobile()"
           :show-attribution="!$isMobile()"
           :hide-control="small"
           hash="map"
