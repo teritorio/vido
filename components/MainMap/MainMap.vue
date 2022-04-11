@@ -425,8 +425,14 @@ export default Vue.extend({
       }
     }
 
-    this.selectedBackground =
+    let bg =
       (getHashPart('bg') as keyof typeof MapStyleEnum) || DEFAULT_MAP_STYLE
+
+    if (this.$isMobile() && bg === MapStyleEnum.raster) {
+      bg = DEFAULT_MAP_STYLE
+    }
+
+    this.selectedBackground = bg
   },
 
   mounted() {

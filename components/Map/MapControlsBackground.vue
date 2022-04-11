@@ -75,7 +75,11 @@ export default Vue.extend({
     },
 
     nextBackgroundName(backgroundNameReference: string): string {
-      const styleNames = ['vector', 'aerial', 'raster']
+      const styleNames = [
+        'vector',
+        'aerial',
+        ...(!this.$isMobile() ? ['raster'] : []),
+      ]
 
       const backgroundReferenceIndex = styleNames.findIndex(
         (styleName) => styleName === backgroundNameReference
