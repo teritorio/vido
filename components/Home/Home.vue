@@ -191,6 +191,8 @@ import {
   homeMachine,
   HomeStates,
   HomeStateSchema,
+  HomeTypestate,
+  HomeResolvedTypesMeta,
 } from './Home.machine'
 
 const interpretOptions = { devTools: false }
@@ -201,13 +203,15 @@ const interpretOptions = { devTools: false }
 //   interpretOptions.devTools = true
 // }
 
-export default (Vue as VueConstructor<
-  Vue & {
-    $refs: {
-      mainMap: InstanceType<typeof MainMap> | null
+export default (
+  Vue as VueConstructor<
+    Vue & {
+      $refs: {
+        mainMap: InstanceType<typeof MainMap> | null
+      }
     }
-  }
->).extend({
+  >
+).extend({
   components: {
     MainHeader,
     MainMap,
@@ -233,8 +237,20 @@ export default (Vue as VueConstructor<
     },
   },
   data(): {
-    service: Interpreter<HomeContext, HomeStateSchema, HomeEvent>
-    state: State<HomeContext, HomeEvent, HomeStateSchema>
+    service: Interpreter<
+      HomeContext,
+      HomeStateSchema,
+      HomeEvent,
+      HomeTypestate,
+      HomeResolvedTypesMeta
+    >
+    state: State<
+      HomeContext,
+      HomeEvent,
+      HomeStateSchema,
+      HomeTypestate,
+      HomeResolvedTypesMeta
+    >
     previousSubCategories: Category['id'][]
     showPoi: boolean
     initialBbox: LngLatBoundsLike | null
@@ -413,13 +429,15 @@ export default (Vue as VueConstructor<
           break
         }
         case Mode.EXPLORER: {
-          this.previousSubCategories = this.state.context.selectedSubCategoriesIds
+          this.previousSubCategories =
+            this.state.context.selectedSubCategoriesIds
           this.unselectSubCategory(this.state.context.selectedSubCategoriesIds)
           setHashPart('mode', this.mode)
           break
         }
         case Mode.FAVORITES: {
-          this.previousSubCategories = this.state.context.selectedSubCategoriesIds
+          this.previousSubCategories =
+            this.state.context.selectedSubCategoriesIds
           setHashPart('mode', this.mode)
           this.$refs.mainMap?.resizeMap()
           break

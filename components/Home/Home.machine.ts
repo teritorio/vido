@@ -1,6 +1,13 @@
 import uniq from 'lodash.uniq'
 import without from 'lodash.without'
-import { assign, Machine } from 'xstate'
+import {
+  assign,
+  Machine,
+  ResolveTypegenMeta,
+  TypegenDisabled,
+  BaseActionObject,
+  ServiceMap,
+} from 'xstate'
 
 import { Category } from '@/lib/apiMenu'
 
@@ -282,3 +289,11 @@ export const homeMachine = Machine<HomeContext, HomeStateSchema, HomeEvent>(
     },
   }
 )
+
+export type HomeTypestate = any
+export type HomeResolvedTypesMeta = ResolveTypegenMeta<
+  TypegenDisabled,
+  HomeEvent,
+  BaseActionObject,
+  ServiceMap
+>
