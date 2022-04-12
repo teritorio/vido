@@ -1927,7 +1927,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@fontsource/ubuntu@npm:^4.5.2":
+"@fontsource/ubuntu@npm:^4.5.6":
   version: 4.5.6
   resolution: "@fontsource/ubuntu@npm:4.5.6"
   checksum: 7cd79724e27fc017e83267a9546f5548de134da71c01556afcee215907d157089c4a01d745a6d49c4fbe2ad3b9dd14ed5beaa09d792c734536f66ca2ceb87754
@@ -1941,7 +1941,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@fortawesome/fontawesome-svg-core@npm:^1.2.35":
+"@fortawesome/fontawesome-svg-core@npm:^1.2.36":
   version: 1.2.36
   resolution: "@fortawesome/fontawesome-svg-core@npm:1.2.36"
   dependencies:
@@ -1950,7 +1950,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@fortawesome/free-brands-svg-icons@npm:^5.15.3":
+"@fortawesome/free-brands-svg-icons@npm:^5.15.4":
   version: 5.15.4
   resolution: "@fortawesome/free-brands-svg-icons@npm:5.15.4"
   dependencies:
@@ -1959,7 +1959,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@fortawesome/free-regular-svg-icons@npm:^5.15.3":
+"@fortawesome/free-regular-svg-icons@npm:^5.15.4":
   version: 5.15.4
   resolution: "@fortawesome/free-regular-svg-icons@npm:5.15.4"
   dependencies:
@@ -1968,7 +1968,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@fortawesome/free-solid-svg-icons@npm:^5.15.3":
+"@fortawesome/free-solid-svg-icons@npm:^5.15.4":
   version: 5.15.4
   resolution: "@fortawesome/free-solid-svg-icons@npm:5.15.4"
   dependencies:
@@ -1977,7 +1977,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@fortawesome/vue-fontawesome@npm:^2.0.2":
+"@fortawesome/vue-fontawesome@npm:^2.0.6":
   version: 2.0.6
   resolution: "@fortawesome/vue-fontawesome@npm:2.0.6"
   peerDependencies:
@@ -3999,12 +3999,12 @@ __metadata:
   dependencies:
     "@commitlint/cli": ^11.0.0
     "@commitlint/config-conventional": ^11.0.0
-    "@fontsource/ubuntu": ^4.5.2
-    "@fortawesome/fontawesome-svg-core": ^1.2.35
-    "@fortawesome/free-brands-svg-icons": ^5.15.3
-    "@fortawesome/free-regular-svg-icons": ^5.15.3
-    "@fortawesome/free-solid-svg-icons": ^5.15.3
-    "@fortawesome/vue-fontawesome": ^2.0.2
+    "@fontsource/ubuntu": ^4.5.6
+    "@fortawesome/fontawesome-svg-core": ^1.2.36
+    "@fortawesome/free-brands-svg-icons": ^5.15.4
+    "@fortawesome/free-regular-svg-icons": ^5.15.4
+    "@fortawesome/free-solid-svg-icons": ^5.15.4
+    "@fortawesome/vue-fontawesome": ^2.0.6
     "@nuxt/types": ^2.15.8
     "@nuxt/typescript-build": ^2.1.0
     "@nuxt/typescript-runtime": ^2.1.0
