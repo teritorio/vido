@@ -100,7 +100,7 @@ export default Vue.extend({
     },
     states: {
       type: Object as PropType<HomeStates>,
-      default: {},
+      default: () => {},
     },
     isBottomMenuOpened: Boolean,
     showPoi: Boolean,
