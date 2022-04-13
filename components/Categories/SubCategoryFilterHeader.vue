@@ -5,19 +5,19 @@
     <div class="flex justify-between">
       <button
         type="button"
-        class="flex items-center justify-center w-10 h-10 text-2xl font-bold transition-all rounded-full outline-none cursor-pointer focus:outline-none hover:bg-gray-100 focus:bg-gray-100"
+        class="flex items-center justify-center w-10 h-10 text-2xl font-bold transition-all rounded-full outline-none cursor-pointer focus:outline-none hover:bg-zinc-100 focus:bg-zinc-100"
         @click="onGoBackClick"
       >
-        <font-awesome-icon icon="arrow-left" class="text-gray-800" size="xs" />
+        <font-awesome-icon icon="arrow-left" class="text-zinc-800" size="xs" />
       </button>
     </div>
 
     <template v-for="filter in filters">
       <div v-if="filter.type == 'boolean'" :key="filter.property">
-        <label :key="filter.property" class="block mb-1 text-gray-800">
+        <label :key="filter.property" class="block mb-1 text-zinc-800">
           <input
             type="checkbox"
-            class="text-green-500 rounded-full focus:ring-0 focus:ring-transparent"
+            class="text-emerald-500 rounded-full focus:ring-0 focus:ring-transparent"
             :name="filter.property"
             :checked="filtersValues && filter.property in filtersValues.values"
             @change="
@@ -28,7 +28,7 @@
         </label>
       </div>
       <div v-else-if="filter.type == 'multiselection'" :key="filter.property">
-        <label :for="filter.property" class="block mb-2 text-gray-500">
+        <label :for="filter.property" class="block mb-2 text-zinc-500">
           {{ (filter.name && filter.name.fr) || filter.property }}
         </label>
         <t-rich-select
@@ -52,17 +52,17 @@
         :key="filter.property"
         class="overflow-y-auto"
       >
-        <p class="mb-2 text-gray-500">
+        <p class="mb-2 text-zinc-500">
           {{ (filter.name && filter.name.fr) || filter.property }}
         </p>
         <label
           v-for="value in filter.values"
           :key="value.value"
-          class="block mb-1 text-gray-800"
+          class="block mb-1 text-zinc-800"
         >
           <input
             type="checkbox"
-            class="text-green-500 rounded-full focus:ring-0 focus:ring-transparent"
+            class="text-emerald-500 rounded-full focus:ring-0 focus:ring-transparent"
             :name="filter.property + '_' + value.value"
             :checked="
               (

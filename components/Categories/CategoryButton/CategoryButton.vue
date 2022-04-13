@@ -5,8 +5,8 @@
     target="black_"
     :class="[
       'flex focus:outline-none outline-none items-center self-stretch justify-start pt-4 pb-2 leading-none transition-colors rounded-lg p-4 relative',
-      !selected && 'hover:bg-gray-100',
-      selected && 'selected bg-gray-100 hover:bg-transparent',
+      !selected && 'hover:bg-zinc-100',
+      selected && 'selected bg-zinc-100 hover:bg-transparent',
       type === 'compact' && 'flex-col',
       type === 'large' && 'col-span-3 sm:col-span-4',
     ]"
@@ -27,14 +27,14 @@
 
       <div
         v-if="selected"
-        class="absolute -right-0.5 text-lg text-green-500 -top-1.5"
+        class="absolute -right-0.5 text-lg text-emerald-500 -top-1.5"
       >
         <font-awesome-icon
           icon="check-circle"
           :class="[
             'rounded-full bg-white fill-current ring-2 transition-colors',
             !selected && 'ring-white',
-            selected && 'ring-gray-100',
+            selected && 'ring-zinc-100',
           ]"
         />
       </div>
@@ -52,14 +52,14 @@
     <font-awesome-icon
       v-if="type === 'large' && !href"
       icon="chevron-right"
-      class="text-gray-700 shrink-0"
+      class="text-zinc-700 shrink-0"
       size="sm"
     />
     <font-awesome-icon
       v-else-if="href"
       icon="external-link-alt"
       :class="[
-        'text-gray-700',
+        'text-zinc-700',
         type === 'compact' &&
           'absolute top-4 right-4 z-10 rounded-md bg-white fill-current ring-2 border-2 border-white ring-white',
       ]"
@@ -120,7 +120,7 @@ export default Vue.extend({
 
 <style scoped>
 button:not(.selected):hover svg[data-icon='check-circle'] {
-  @apply ring-gray-100;
+  @apply ring-zinc-100;
 }
 
 button.selected:hover svg[data-icon='check-circle'] {

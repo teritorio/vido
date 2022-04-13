@@ -2,7 +2,7 @@
   <div
     :class="[
       'z-10 flex flex-col w-full sm:max-w-xl mx-0 overflow-y-auto shadow-md pointer-events-auto sm:flex-row sm:w-auto sm:mx-auto sm:rounded-xl poiDescription',
-      !isModeFavorites && notebook ? 'bg-gray-200 opacity-70' : 'bg-white',
+      !isModeFavorites && notebook ? 'bg-zinc-200 opacity-70' : 'bg-white',
     ]"
   >
     <img
@@ -15,7 +15,7 @@
     <div
       class="px-8 py-6 flex flex-col sm:overflow-y-auto flex-grow sm:h-50 h-auto sm:max-h-full box-border w-full sm:w-80 md:h-80 md:max-h-full md:w-96"
     >
-      <div class="flex items-center justify-between flex-shrink-0">
+      <div class="flex items-center justify-between shrink-0">
         <h2
           class="block text-xl font-semibold leading-tight"
           :style="'color:' + color"
@@ -25,7 +25,7 @@
 
         <a
           v-if="poiEditorial('website:details')"
-          class="ml-6 md:ml-8 px-3 py-1.5 text-xs text-gray-800 bg-gray-100 hover:bg-gray-200 focus:bg-gray-200 transition transition-colors rounded-md"
+          class="ml-6 md:ml-8 px-3 py-1.5 text-xs text-zinc-800 bg-zinc-100 hover:bg-zinc-200 focus:bg-zinc-200 transition transition-colors rounded-md"
           :href="poiEditorial('website:details')"
           rel="noopener noreferrer"
           target="_blank"
@@ -37,7 +37,7 @@
 
       <div
         v-if="!unavoidable"
-        class="flex items-center mt-2 text-sm text-gray-500 flex-shrink-0"
+        class="flex items-center mt-2 text-sm text-zinc-500 shrink-0"
       >
         <TeritorioIcon
           v-if="icon"
@@ -61,12 +61,12 @@
 
       <p
         v-if="unavoidable && Boolean(description)"
-        class="text-sm flex-grow flex-shrink-0 mt-6"
+        class="text-sm flex-grow shrink-0 mt-6"
       >
         {{ description }}
       </p>
 
-      <div v-else class="h-auto flex-grow flex-shrink-0">
+      <div v-else class="h-auto flex-grow shrink-0">
         <div
           v-for="property in poiEditorial('popup_properties') || []"
           :key="'_' + property"
@@ -157,11 +157,11 @@
       </div>
 
       <div
-        class="relative flex items-center mt-6 space-x-2 justify-evenly flex-shrink-0 mt-6"
+        class="relative flex items-center mt-6 space-x-2 justify-evenly shrink-0 mt-6"
       >
         <a
           v-if="$isMobile() && routeHref"
-          class="flex flex-col items-center flex-1 h-full p-2 space-y-2 rounded-lg hover:bg-gray-100"
+          class="flex flex-col items-center flex-1 h-full p-2 space-y-2 rounded-lg hover:bg-zinc-100"
           :href="routeHref"
           :title="$tc('toast.findRoute')"
           @click="tracking('route')"
@@ -171,7 +171,7 @@
         </a>
 
         <button
-          class="flex flex-1 flex-col items-center space-y-2 rounded-lg p-2 h-full hover:bg-gray-100"
+          class="flex flex-1 flex-col items-center space-y-2 rounded-lg p-2 h-full hover:bg-zinc-100"
           :title="$tc('toast.zoom')"
           @click.stop="onZoomClick"
         >
@@ -183,7 +183,7 @@
           :class="[
             'flex flex-1 flex-col items-center space-y-2 rounded-lg p-2 h-full',
             isModeExplorer && 'bg-blue-600 text-white hover:bg-blue-500',
-            !isModeExplorer && 'hover:bg-gray-100',
+            !isModeExplorer && 'hover:bg-zinc-100',
           ]"
           :title="
             isModeExplorer
@@ -202,13 +202,13 @@
 
         <button
           v-if="id"
-          class="flex flex-col items-center flex-1 h-full p-2 space-y-2 rounded-lg hover:bg-gray-100"
+          class="flex flex-col items-center flex-1 h-full p-2 space-y-2 rounded-lg hover:bg-zinc-100"
           title="Mettre en favori"
           @click.stop="onFavoriteClick"
         >
           <font-awesome-icon
             :icon="[`${isModeFavorites ? 'fas' : 'far'}`, 'star']"
-            :class="isModeFavorites && 'text-yellow-500'"
+            :class="isModeFavorites && 'text-amber-500'"
             :color="!isModeFavorites && color"
             size="sm"
           />

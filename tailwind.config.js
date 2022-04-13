@@ -1,6 +1,5 @@
 module.exports = {
-  purge: [],
-  darkMode: false, // or 'media' or 'class'
+  content: [],
   theme: {
     extend: {
       fontSize: () => ({
@@ -22,13 +21,6 @@ module.exports = {
         'screen-1/2': '50vh',
         'screen-3/5': '60vh',
       }),
-    },
-  },
-  variants: {
-    extend: {
-      backgroundColor: ['checked', 'focus-visible'],
-      borderColor: ['checked'],
-      borderRadius: ['focus'],
     },
   },
   plugins: [require('@tailwindcss/forms')],

@@ -7,7 +7,7 @@
       pitch != 0 &&
         'bg-blue-500 text-white hover:bg-blue-400 focus-visible:bg-blue-400',
       pitch == 0 &&
-        'bg-white text-gray-800 hover:bg-gray-100 focus-visible:bg-gray-100',
+        'bg-white text-zinc-800 hover:bg-zinc-100 focus-visible:bg-zinc-100',
     ]"
     @click="toggle3D"
   >

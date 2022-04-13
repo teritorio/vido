@@ -21,10 +21,10 @@
         <button
           ref="menu"
           :class="[
-            'relative space-x-1 text-sm font-medium bg-white shadow-md outline-none sm:px-5 w-11 sm:w-auto h-11 focus:outline-none hover:bg-gray-100 focus-visible:bg-gray-100 flex-shrink-0 border-r border-gray-400 rounded-l-full',
+            'relative space-x-1 text-sm font-medium bg-white shadow-md outline-none sm:px-5 w-11 sm:w-auto h-11 focus:outline-none hover:bg-zinc-100 focus-visible:bg-zinc-100 shrink-0 border-r border-zinc-400 rounded-l-full',
             isModeFavorites &&
               'bg-blue-500 hover:bg-blue-400 focus-visible:bg-blue-400 text-white',
-            !isModeFavorites && 'text-gray-800',
+            !isModeFavorites && 'text-zinc-800',
           ]"
           @click="toggleFavoritesMode"
         >
@@ -32,7 +32,7 @@
             :icon="[`${hasFavorites ? 'fas' : 'far'}`, 'star']"
             :class="[
               isModeFavorites && 'text-white',
-              !isModeFavorites && 'text-yellow-500',
+              !isModeFavorites && 'text-amber-500',
             ]"
             size="sm"
           />
@@ -46,8 +46,8 @@
         </button>
         <button
           :class="[
-            'flex h-11 items-center justify-center flex-shrink-0 px-3 py-2 bg-white border-l border-gray-00 rounded-r-full hover:bg-gray-100 shadow-md focus:outline-none',
-            !hasFavorites && 'bg-gray-100 cursor-not-allowed',
+            'flex h-11 items-center justify-center shrink-0 px-3 py-2 bg-white border-l border-zinc-00 rounded-r-full hover:bg-zinc-100 shadow-md focus:outline-none',
+            !hasFavorites && 'bg-zinc-100 cursor-not-allowed',
           ]"
           :disabled="!hasFavorites"
           @mousedown="mousedownHandler"
@@ -58,7 +58,7 @@
           <font-awesome-icon
             ref="menu_icon"
             :icon="isShown ? 'chevron-up' : 'chevron-down'"
-            class="text-gray-500"
+            class="text-zinc-500"
             size="sm"
           />
         </button>
@@ -69,7 +69,7 @@
         class="py-1 rounded-md shadow-xs flex flex-col min-w-max"
       >
         <button
-          class="block w-full px-4 py-2 text-sm leading-5 text-left text-gray-700 transition duration-150 ease-in-out hover:bg-gray-100 focus:outline-none focus:bg-gray-100"
+          class="block w-full px-4 py-2 text-sm leading-5 text-left text-zinc-700 transition duration-150 ease-in-out hover:bg-zinc-100 focus:outline-none focus:bg-zinc-100"
           role="menuitem"
           @blur="blurHandler"
           @click="setShareLink()"
@@ -77,14 +77,14 @@
           <font-awesome-icon
             ref="menu_icon"
             icon="link"
-            class="text-gray-500 mr-2"
+            class="text-zinc-500 mr-2"
             size="sm"
           />
           {{ $tc('favorites.menu_share') }}
         </button>
         <button
           v-if="$config.NOTEBOOK_ENABLED"
-          class="block w-full px-4 py-2 text-sm leading-5 text-left text-gray-700 transition duration-150 ease-in-out hover:bg-gray-100 focus:outline-none focus:bg-gray-100"
+          class="block w-full px-4 py-2 text-sm leading-5 text-left text-zinc-700 transition duration-150 ease-in-out hover:bg-zinc-100 focus:outline-none focus:bg-zinc-100"
           role="menuitem"
           @blur="blurHandler"
           @click="$refs.notebookModal.show()"
@@ -92,7 +92,7 @@
           <font-awesome-icon
             ref="menu_icon"
             icon="book-open"
-            class="text-gray-500 mr-2"
+            class="text-zinc-500 mr-2"
             size="sm"
           />
           {{ $tc('favorites.menu_notebook') }}
@@ -100,14 +100,14 @@
         <a
           :href="pdfLink"
           target="_blank"
-          class="block w-full px-4 py-2 text-sm leading-5 text-left text-gray-700 transition duration-150 ease-in-out hover:bg-gray-100 focus:outline-none focus:bg-gray-100"
+          class="block w-full px-4 py-2 text-sm leading-5 text-left text-zinc-700 transition duration-150 ease-in-out hover:bg-zinc-100 focus:outline-none focus:bg-zinc-100"
           role="menuitem"
           @blur="blurHandler"
         >
           <font-awesome-icon
             ref="menu_icon"
             icon="file-download"
-            class="text-gray-500 mr-2"
+            class="text-zinc-500 mr-2"
             size="sm"
           />
           {{ $tc('favorites.export_pdf') }}
@@ -115,20 +115,20 @@
         <a
           :href="csvLink"
           target="_blank"
-          class="block w-full px-4 py-2 text-sm leading-5 text-left text-gray-700 transition duration-150 ease-in-out hover:bg-gray-100 focus:outline-none focus:bg-gray-100"
+          class="block w-full px-4 py-2 text-sm leading-5 text-left text-zinc-700 transition duration-150 ease-in-out hover:bg-zinc-100 focus:outline-none focus:bg-zinc-100"
           role="menuitem"
           @blur="blurHandler"
         >
           <font-awesome-icon
             ref="menu_icon"
             icon="file-download"
-            class="text-gray-500 mr-2"
+            class="text-zinc-500 mr-2"
             size="sm"
           />
           {{ $tc('favorites.export_csv') }}
         </a>
         <button
-          class="block w-full px-4 py-2 text-sm leading-5 text-left text-gray-700 transition duration-150 ease-in-out hover:bg-gray-100 focus:outline-none focus:bg-gray-100"
+          class="block w-full px-4 py-2 text-sm leading-5 text-left text-zinc-700 transition duration-150 ease-in-out hover:bg-zinc-100 focus:outline-none focus:bg-zinc-100"
           role="menuitem"
           @blur="blurHandler"
           @click="
@@ -139,7 +139,7 @@
           <font-awesome-icon
             ref="menu_icon"
             icon="trash"
-            class="text-gray-500 mr-2"
+            class="text-zinc-500 mr-2"
             size="sm"
           />
           {{ $tc('favorites.menu_clear') }}
@@ -177,13 +177,15 @@ import { LOCAL_STORAGE } from '@/lib/constants'
 
 import { Mode } from '~/utils/types'
 
-export default (Vue as VueConstructor<
-  Vue & {
-    $refs: {
-      shareModal: InstanceType<typeof ShareLinkModal>
+export default (
+  Vue as VueConstructor<
+    Vue & {
+      $refs: {
+        shareModal: InstanceType<typeof ShareLinkModal>
+      }
     }
-  }
->).extend({
+  >
+).extend({
   components: {
     TDropdown,
     ShareLinkModal,

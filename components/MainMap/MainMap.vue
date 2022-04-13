@@ -70,7 +70,7 @@
         <MapPoiToast
           v-if="selectedFeature && showPoiToast"
           :poi="selectedFeature"
-          class="flex-grow-0"
+          class="grow-0"
           @explore-click="exploreAroundSelectedPoi"
           @favorite-click="toggleFavorite"
           @zoom-click="goToSelectedPoi"
@@ -83,7 +83,7 @@
       >
         <font-awesome-icon
           icon="spinner"
-          class="text-gray-400 animate-spin"
+          class="text-zinc-400 animate-spin"
           size="3x"
         />
       </div>
@@ -754,8 +754,9 @@ export default Vue.extend({
       if (this.selectedFeature.properties.vido_zoom) {
         zoom = this.selectedFeature.properties.vido_zoom
       } else if (this.selectedFeature.properties.vido_cat) {
-        zoom = this.categories[this.selectedFeature.properties.vido_cat]
-          .category.zoom
+        zoom =
+          this.categories[this.selectedFeature.properties.vido_cat].category
+            .zoom
       }
       this.map.flyTo({
         center: this.selectedFeature.geometry.coordinates,
@@ -1018,7 +1019,7 @@ export default Vue.extend({
   cursor: pointer;
 }
 .cluster-donut {
-  @apply text-sm leading-none font-medium block text-gray-800;
+  @apply text-sm leading-none font-medium block text-zinc-800;
 }
 </style>
 

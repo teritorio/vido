@@ -1,7 +1,7 @@
 <template>
   <div
     :class="[
-      'flex items-center justify-center flex-shrink-0 text-white rounded-full border-2 border-white',
+      'flex items-center justify-center shrink-0 text-white rounded-full border-2 border-white',
       iconDim,
       Boolean(image) && 'shadow-md',
     ]"

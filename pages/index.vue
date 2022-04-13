@@ -22,11 +22,7 @@ export default Vue.extend({
     Home,
   },
 
-  async asyncData({
-    env,
-    params,
-    route,
-  }): Promise<{
+  async asyncData({ env, params, route }): Promise<{
     settings: Settings | null
     categories: Category[] | null
     categoryIds: number[] | null
@@ -128,7 +124,7 @@ html,
   -webkit-text-size-adjust: 100%;
   -moz-osx-font-smoothing: grayscale;
   -webkit-font-smoothing: antialiased;
-  @apply text-gray-900;
+  @apply text-zinc-900;
 }
 
 body,

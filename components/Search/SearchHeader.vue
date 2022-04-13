@@ -18,10 +18,10 @@
 
       <button
         type="button"
-        class="hidden sm:flex flex-shrink-0 items-center justify-center w-10 h-10 text-2xl font-bold transition-all rounded-full outline-none cursor-pointer focus:outline-none hover:bg-gray-100 focus:bg-gray-100"
+        class="hidden sm:flex shrink-0 items-center justify-center w-10 h-10 text-2xl font-bold transition-all rounded-full outline-none cursor-pointer focus:outline-none hover:bg-zinc-100 focus:bg-zinc-100"
         @click="onGoBackClick"
       >
-        <font-awesome-icon icon="arrow-left" class="text-gray-800" size="xs" />
+        <font-awesome-icon icon="arrow-left" class="text-zinc-800" size="xs" />
       </button>
 
       <form
@@ -34,7 +34,7 @@
           <input
             ref="search"
             :value="searchText"
-            class="w-full px-5 py-3 font-medium text-gray-700 placeholder-gray-500 bg-gray-100 border-none rounded-full outline-none appearance-none focus:outline-none focus:ring focus:ring-gray-300"
+            class="w-full px-5 py-3 font-medium text-zinc-700 placeholder-zinc-500 bg-zinc-100 border-none rounded-full outline-none appearance-none focus:outline-none focus:ring focus:ring-zinc-300"
             :placeholder="$tc('headerMenu.search')"
             type="text"
             @input="
@@ -44,7 +44,7 @@
             @focus="$tracking({ type: 'search' })"
           />
           <button
-            class="absolute inset-y-0 right-0 px-5 text-gray-800 rounded-r-full outline-none focus:outline-none"
+            class="absolute inset-y-0 right-0 px-5 text-zinc-800 rounded-r-full outline-none focus:outline-none"
             type="submit"
             :disabled="isLoading"
             @click="focusSearch"
@@ -57,7 +57,7 @@
       <div v-else class="flex items-center ml-2">
         <button
           type="button"
-          class="flex flex-shrink-0 items-center justify-center w-10 h-10 text-2xl font-bold transition-all rounded-full outline-none cursor-pointer focus:outline-none hover:bg-gray-100 focus:bg-gray-100"
+          class="flex shrink-0 items-center justify-center w-10 h-10 text-2xl font-bold transition-all rounded-full outline-none cursor-pointer focus:outline-none hover:bg-zinc-100 focus:bg-zinc-100"
           @click="goToCategories"
         >
           <font-awesome-icon icon="arrow-left" class="text-inherit" size="xs" />
@@ -77,10 +77,10 @@
     <button
       v-if="results > 0"
       type="button"
-      class="sm:hidden flex-shrink-0 w-10 h-10 text-2xl font-bold transition-all rounded-full outline-none cursor-pointer focus:outline-none hover:bg-gray-100 focus:bg-gray-100"
+      class="sm:hidden shrink-0 w-10 h-10 text-2xl font-bold transition-all rounded-full outline-none cursor-pointer focus:outline-none hover:bg-zinc-100 focus:bg-zinc-100"
       @click="reset"
     >
-      <font-awesome-icon icon="arrow-left" class="text-gray-800" size="xs" />
+      <font-awesome-icon icon="arrow-left" class="text-zinc-800" size="xs" />
     </button>
 
     <div v-if="results > 0" class="search-results">
@@ -382,17 +382,15 @@ export default Vue.extend({
             `${this.$config.API_SEARCH}?${projectTheme}&type=menu_item&${query}`
           ).then((data) => (data.ok ? data.json() : null))
 
-          const poisFetch: Promise<
-            ApiSearchResult<ApiPoisSearchResult>
-          > = fetch(
-            `${this.$config.API_SEARCH}?${projectTheme}&type=poi&${query}&limit=10`
-          ).then((data) => (data.ok ? data.json() : null))
+          const poisFetch: Promise<ApiSearchResult<ApiPoisSearchResult>> =
+            fetch(
+              `${this.$config.API_SEARCH}?${projectTheme}&type=poi&${query}&limit=10`
+            ).then((data) => (data.ok ? data.json() : null))
 
-          const addressesFetch: Promise<
-            ApiSearchResult<ApiAddrSearchResult>
-          > = fetch(`${this.$config.API_SEARCH_ADDR}?${query}`).then((data) =>
-            data.ok ? data.json() : null
-          )
+          const addressesFetch: Promise<ApiSearchResult<ApiAddrSearchResult>> =
+            fetch(`${this.$config.API_SEARCH_ADDR}?${query}`).then((data) =>
+              data.ok ? data.json() : null
+            )
 
           const [
             searchMenuItemsResults,

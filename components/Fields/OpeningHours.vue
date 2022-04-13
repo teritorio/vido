@@ -5,7 +5,7 @@
       :class="[
         (format.includes($tc('openingHours.opened')) ||
           format === $tc('openingHours.24_7')) &&
-          'text-green-500',
+          'text-emerald-500',
         format.includes($tc('openingHours.closed')) && 'text-red-500',
       ]"
     >

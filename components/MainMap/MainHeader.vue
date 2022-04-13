@@ -23,16 +23,16 @@
       <button
         v-if="!isModeExplorerOrFavorites"
         type="button"
-        class="flex items-center justify-center w-10 h-10 text-2xl font-bold transition-all rounded-full outline-none cursor-pointer focus:outline-none hover:bg-gray-100 focus:bg-gray-100"
+        class="flex items-center justify-center w-10 h-10 text-2xl font-bold transition-all rounded-full outline-none cursor-pointer focus:outline-none hover:bg-zinc-100 focus:bg-zinc-100"
         @click="onSearchClick"
       >
-        <font-awesome-icon icon="search" class="text-gray-800" size="xs" />
+        <font-awesome-icon icon="search" class="text-zinc-800" size="xs" />
       </button>
 
       <div v-else class="flex items-center ml-2">
         <button
           type="button"
-          class="flex flex-shrink-0 items-center justify-center w-10 h-10 text-2xl font-bold transition-all rounded-full outline-none cursor-pointer focus:outline-none hover:bg-blue-700 focus:bg-blue-700"
+          class="flex shrink-0 items-center justify-center w-10 h-10 text-2xl font-bold transition-all rounded-full outline-none cursor-pointer focus:outline-none hover:bg-blue-700 focus:bg-blue-700"
           @click="goToCategories"
         >
           <font-awesome-icon icon="arrow-left" class="text-white" size="xs" />

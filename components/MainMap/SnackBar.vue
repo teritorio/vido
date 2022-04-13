@@ -3,11 +3,11 @@
     <transition name="snack">
       <div
         v-if="text"
-        class="bg-gray-600 text-white px-8 py-2 rounded-lg text-sm flex text-sm mx-4"
+        class="bg-zinc-600 text-white px-8 py-2 rounded-lg text-sm flex text-sm mx-4"
       >
         <p class="pr-10 self-center">{{ text }}</p>
         <button
-          class="font-medium text-gray-800 bg-white rounded-full shadow-md outline-none px-5 sm:w-auto h-11 focus:outline-none hover:bg-gray-100 focus-visible:bg-gray-100"
+          class="font-medium text-zinc-800 bg-white rounded-full shadow-md outline-none px-5 sm:w-auto h-11 focus:outline-none hover:bg-zinc-100 focus-visible:bg-zinc-100"
           @click="callback"
         >
           {{ textBtn }}

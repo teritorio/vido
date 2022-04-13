@@ -4,7 +4,7 @@
       :is="href ? 'a' : 'button'"
       :href="href"
       target="black_"
-      class="flex items-center justify-between w-full px-5 py-3 rounded-lg outline-none focus:outline-none hover:bg-gray-100"
+      class="flex items-center justify-between w-full px-5 py-3 rounded-lg outline-none focus:outline-none hover:bg-zinc-100"
       @click="!href && onClick()"
     >
       <div class="flex items-center space-x-4">
@@ -32,7 +32,7 @@
 
       <template v-if="href">
         <font-awesome-icon
-          class="text-gray-700"
+          class="text-zinc-700"
           fixed-width
           icon="external-link-alt"
           size="sm"
@@ -40,14 +40,14 @@
       </template>
       <template v-else-if="hasChildren">
         <font-awesome-icon
-          class="text-gray-800"
+          class="text-zinc-800"
           fixed-width
           icon="chevron-right"
           size="lg"
         />
       </template>
       <template v-else>
-        <div v-if="!selected" class="flex-shrink-0 text-gray-300">
+        <div v-if="!selected" class="shrink-0 text-zinc-300">
           <font-awesome-icon
             class="fill-current"
             fixed-width
@@ -56,7 +56,7 @@
           />
         </div>
 
-        <div v-if="selected" class="flex-shrink-0 text-green-500">
+        <div v-if="selected" class="shrink-0 text-emerald-500">
           <font-awesome-icon
             class="fill-current"
             fixed-width
@@ -72,9 +72,9 @@
           .length > 0 && selected
       "
       :class="[
-        'w-full h-12 sm:h-8 text-left rounded-lg outline-none focus:outline-none hover:bg-gray-100',
-        filtered && 'text-green-500',
-        !filtered && 'text-gray-500',
+        'w-full h-12 sm:h-8 text-left rounded-lg outline-none focus:outline-none hover:bg-zinc-100',
+        filtered && 'text-emerald-500',
+        !filtered && 'text-zinc-500',
       ]"
       @click="onFilterClick"
     >
@@ -154,7 +154,7 @@ export default Vue.extend({
 
 <style scoped>
 button:not(.selected):hover svg[data-icon='check-circle'] {
-  @apply ring-gray-100;
+  @apply ring-zinc-100;
 }
 
 button.selected:hover svg[data-icon='check-circle'] {

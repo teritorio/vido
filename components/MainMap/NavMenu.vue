@@ -18,7 +18,7 @@
         }"
         :aria-label="$tc('navMenu.label')"
         type="button"
-        class="text-sm text-gray-800 bg-white rounded-full shadow-md outline-none w-11 h-11 focus:outline-none hover:bg-gray-100 focus-visible:bg-gray-100 flex-shrink-0"
+        class="text-sm text-zinc-800 bg-white rounded-full shadow-md outline-none w-11 h-11 focus:outline-none hover:bg-zinc-100 focus-visible:bg-zinc-100 shrink-0"
         @mousedown="mousedownHandler"
         @focus="focusHandler"
         @blur="blurHandler"
@@ -26,7 +26,7 @@
       >
         <font-awesome-icon
           :icon="isShown ? 'times' : 'bars'"
-          class="text-gray-800"
+          class="text-zinc-800"
           size="sm"
         />
       </button>
@@ -35,7 +35,7 @@
         <a
           v-for="entry in entries"
           :key="entry.post_id"
-          class="w-full px-5 py-3 outline-none focus:outline-none hover:bg-gray-100"
+          class="w-full px-5 py-3 outline-none focus:outline-none hover:bg-zinc-100"
           :href="entry.url"
           rel="noopener noreferrer"
           target="_blank"
@@ -43,7 +43,7 @@
         >
           <font-awesome-icon
             icon="external-link-alt"
-            class="text-gray-500 mr-2"
+            class="text-zinc-500 mr-2"
             size="sm"
           />
           {{ entry.title }}
@@ -53,8 +53,8 @@
           v-for="locale in $i18n.locales"
           :key="locale.code"
           :class="[
-            'w-full px-5 py-3 outline-none focus:outline-none hover:bg-gray-100',
-            locale.code === $i18n.locale && 'bg-gray-200',
+            'w-full px-5 py-3 outline-none focus:outline-none hover:bg-zinc-100',
+            locale.code === $i18n.locale && 'bg-zinc-200',
           ]"
           href="#"
           @click.prevent="setLocale(locale.code)"

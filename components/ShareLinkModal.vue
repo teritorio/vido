@@ -5,27 +5,27 @@
         <font-awesome-icon
           ref="menu_icon"
           icon="link"
-          class="text-gray-500 mr-4"
+          class="text-zinc-500 mr-4"
         />
-        <p class="text-gray-500 truncate">
+        <p class="text-zinc-500 truncate">
           {{ link }}
         </p>
         <button
           v-if="hasClipboard"
-          class="focus:outline-none focus-visible:bg-gray-100 hover:bg-gray-100 py-2 px-4 rounded-full ml-2"
+          class="focus:outline-none focus-visible:bg-zinc-100 hover:bg-zinc-100 py-2 px-4 rounded-full ml-2"
           @click="copyLink"
         >
           <font-awesome-icon
             v-if="isCopied"
             ref="menu_icon"
             icon="clipboard-check"
-            class="text-green-500"
+            class="text-emerald-500"
           />
           {{ !isCopied ? $tc('shareLink.copy') : '' }}
         </button>
       </div>
       <button
-        class="self-end focus:outline-none focus-visible:bg-gray-100 hover:bg-gray-100 py-2 px-4 rounded-full"
+        class="self-end focus:outline-none focus-visible:bg-zinc-100 hover:bg-zinc-100 py-2 px-4 rounded-full"
         @click="close"
       >
         {{ $tc('shareLink.close') }}
@@ -38,13 +38,15 @@
 import Vue, { VueConstructor } from 'vue'
 import { TModal } from 'vue-tailwind/dist/components'
 
-export default (Vue as VueConstructor<
-  Vue & {
-    $refs: {
-      modal: InstanceType<typeof TModal>
+export default (
+  Vue as VueConstructor<
+    Vue & {
+      $refs: {
+        modal: InstanceType<typeof TModal>
+      }
     }
-  }
->).extend({
+  >
+).extend({
   components: {
     TModal,
   },
