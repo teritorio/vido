@@ -59,6 +59,17 @@
       <li>
         <button
           v-if="href"
+          :aria-label="$tc('details.qrcode')"
+          type="button"
+          class="text-sm text-zinc-800 bg-white rounded-full shadow-md outline-none w-8 h-8 focus:outline-none hover:bg-zinc-100 focus-visible:bg-zinc-100 shrink-0 flex items-center justify-center"
+          @click="shareUrl"
+        >
+          <font-awesome-icon icon="qrcode" :style="{ color: color }" />
+        </button>
+      </li>
+      <li>
+        <button
+          v-if="href"
           :aria-label="$tc('details.link')"
           type="button"
           class="text-sm text-zinc-800 bg-white rounded-full shadow-md outline-none w-8 h-8 focus:outline-none hover:bg-zinc-100 focus-visible:bg-zinc-100 shrink-0 flex items-center justify-center"

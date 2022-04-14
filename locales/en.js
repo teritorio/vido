@@ -1,6 +1,7 @@
 export default {
   shareLink: {
     copy: 'Copy',
+    qrcode: 'QR-Code',
     close: 'Close',
   },
   favorites: {
@@ -108,6 +109,7 @@ export default {
     shareTwitter: 'Share on Twitter',
     shareWhatsApp: 'Share on WhatsApp',
     print: 'Print',
+    qrcode: 'Share with QR-Code',
     link: 'Share link',
     poweredBy: 'Powered by',
     mapillaryExplore: 'Explore on Mapillary',

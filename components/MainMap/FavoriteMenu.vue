@@ -76,7 +76,7 @@
         >
           <font-awesome-icon
             ref="menu_icon"
-            icon="link"
+            icon="share-alt"
             class="text-zinc-500 mr-2"
             size="sm"
           />
@@ -224,9 +224,9 @@ export default (
       favoritesIds: 'favorite/favoritesIds',
     }),
     pdfLink(): string {
-      return `${this.$config.API_ENDPOINT}/${this.$config.API_PROJECT}/${
+      return `${this.$config.API_EXPORT}/${this.$config.API_PROJECT}/${
         this.$config.API_THEME
-      }/pois.pdf?ids=${this.favoritesIds.join(',')}`
+      }/pois/favorites.pdf?ids=${this.favoritesIds.join(',')}`
     },
     csvLink(): string {
       return `${this.$config.API_ENDPOINT}/${this.$config.API_PROJECT}/${

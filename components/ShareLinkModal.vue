@@ -24,6 +24,9 @@
           {{ !isCopied ? $tc('shareLink.copy') : '' }}
         </button>
       </div>
+      <div v-if="qrCodeUrl" class="flex items-center mb-4 justify-center">
+        <img :src="qrCodeUrl()" class="w-1/2" :alt="$tc('shareLink.qrcode')" />
+      </div>
       <button
         class="self-end focus:outline-none focus-visible:bg-zinc-100 hover:bg-zinc-100 py-2 px-4 rounded-full"
         @click="close"
@@ -82,6 +85,7 @@ export default (
       const scrollWidth = window.innerWidth - document.body.clientWidth
       document.body.style.marginRight = `${scrollWidth}px`
     },
+
     copyLink() {
       this.$tracking({ type: 'favorites_event', event: 'copy_link' })
       if (this.hasClipboard && this.link) {
@@ -99,10 +103,21 @@ export default (
         )
       }
     },
+
     close() {
       this.link = null
       this.$refs.modal.hide()
       document.body.style.marginRight = '0'
+    },
+
+    qrCodeUrl() {
+      if (this.link) {
+        return (
+          this.$config.API_QR_SHORTENER +
+          '/qrcode.svg?url=' +
+          encodeURIComponent(this.link)
+        )
+      }
     },
   },
 })

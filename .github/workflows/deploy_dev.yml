@@ -53,6 +53,8 @@ jobs:
           API_SEARCH_ADDR: ${{secrets.API_SEARCH_ADDR_DEV}}
           API_PROJECT: ${{secrets.API_PROJECT_DEV}}
           API_THEME: ${{secrets.API_THEME_DEV}}
+          API_EXPORT: ${{secrets.API_EXPORT}}
+          API_QR_SHORTENER: ${{secrets.API_QR_SHORTENER}}
           VECTO_STYLE_URL: ${{secrets.VECTO_STYLE_URL_DEV}}
           SATELLITE_STYLE_URL: ${{secrets.SATELLITE_STYLE_URL_DEV}}
           RASTER_STYLE_URL: ${{secrets.RASTER_STYLE_URL_DEV}}
