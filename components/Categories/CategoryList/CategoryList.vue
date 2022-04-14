@@ -27,13 +27,11 @@ export default Vue.extend({
   props: {
     categories: {
       type: Array,
-      default() {
-        return []
-      },
+      default: () => [],
     },
     filteredCategories: {
       type: Array as PropType<Category['id'][]>,
-      default: [],
+      default: () => [],
     },
     categoriesActivesubsCount: {
       type: Object as PropType<{ [id: string]: number }>,

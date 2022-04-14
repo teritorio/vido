@@ -49,7 +49,7 @@ export default Vue.extend({
     },
     categoriesActivesubsCount: {
       type: Object as PropType<{ [id: string]: number }>,
-      default: {},
+      required: true,
     },
   },
   data(): {
@@ -81,7 +81,7 @@ export default Vue.extend({
       this.$emit('category-click', category.id)
     },
     getCategoryCount(id: Category['id']) {
-      return this.categoriesActivesubsCount[id] || 0
+      return this.categoriesActivesubsCount[id]
     },
   },
 })

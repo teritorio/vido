@@ -26,10 +26,7 @@ export default Vue.extend({
     return /^[,-_:a-zA-Z0-9]+$/.test(params.ids)
   },
 
-  async asyncData({
-    env,
-    params,
-  }): Promise<{
+  async asyncData({ env, params }): Promise<{
     pois: ApiPois | null
     settings: Settings | null
   }> {

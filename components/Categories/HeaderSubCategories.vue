@@ -25,7 +25,7 @@ export default Vue.extend({
     },
     filteredCategories: {
       type: Array as PropType<Category['id'][]>,
-      default: [],
+      default: () => [],
     },
     isSubCategorySelected: {
       type: Function,

@@ -18,7 +18,7 @@ export default Vue.extend({
   props: {
     entries: {
       type: Array as PropType<Array<{ text: string; href?: string }>>,
-      default: [],
+      default: () => [],
     },
     color: {
       type: String,

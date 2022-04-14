@@ -27,15 +27,15 @@ export default Vue.extend({
     },
     useCategoryColor: {
       type: Boolean,
-      required: false,
+      default: null,
     },
     useNativeAlignment: {
       type: Boolean,
-      required: false,
+      default: null,
     },
     image: {
       type: String,
-      required: false,
+      default: null,
     },
   },
   computed: {

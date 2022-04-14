@@ -41,7 +41,7 @@ export default Vue.extend({
     },
     image: {
       type: String,
-      required: false,
+      default: null,
     },
   },
 

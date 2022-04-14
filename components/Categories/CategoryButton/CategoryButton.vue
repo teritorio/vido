@@ -104,6 +104,7 @@ export default Vue.extend({
     },
     type: {
       type: String,
+      required: true,
     },
     href: {
       type: String,
