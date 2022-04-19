@@ -4,11 +4,10 @@
     :href="href"
     target="black_"
     :class="[
-      'flex focus:outline-none outline-none items-center self-stretch justify-start pt-4 pb-2 leading-none transition-colors rounded-lg p-4 relative',
+      'flex focus:outline-none outline-none items-center self-stretch justify-start leading-none transition-colors rounded-lg p-4 relative',
       !selected && 'hover:bg-zinc-100',
       selected && 'selected bg-zinc-100 hover:bg-transparent',
-      type === 'compact' && 'flex-col',
-      type === 'large' && 'col-span-3 sm:col-span-4',
+      type === 'large' ? 'col-span-4 pt-2 pb-0' : 'pt-4 pb-2 flex-col',
     ]"
     @click="!href && onClick()"
   >
@@ -43,7 +42,7 @@
     <div
       :class="[
         'text-xs',
-        type === 'large' && 'mx-4  text-sm text-left',
+        type === 'large' && 'sm:text-sm mx-4 text-left',
         type === 'large' && !href && 'grow w-full',
       ]"
     >
