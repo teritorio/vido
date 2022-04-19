@@ -58,6 +58,8 @@ export default {
     hideCategory: 'Hide this category',
     backToMenuFavorites: 'Show menu',
     backToMenuExplorer: 'Back to menu',
+    backToMenuFavoritesMobile: 'Exit Favorites',
+    backToMenuExplorerMobile: 'Exit Explorer mode',
   },
   dateRange: {
     from_to: 'From {from} to {to}',
