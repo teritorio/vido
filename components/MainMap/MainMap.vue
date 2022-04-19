@@ -65,8 +65,10 @@
       </aside>
 
       <div
-        class="hidden fixed inset-x-0 bottom-0 sm:flex justify-center overflow-y-auto pointer-events-none h-auto sm:inset-x-3 sm:bottom-3"
+        class="hidden fixed inset-x-0 bottom-0 sm:flex overflow-y-auto pointer-events-none h-auto sm:inset-x-3 sm:bottom-3"
       >
+        <div class="w-full max-w-md" />
+        <div class="grow-[1]" />
         <MapPoiToast
           v-if="selectedFeature && showPoiToast"
           :poi="selectedFeature"
@@ -75,6 +77,7 @@
           @favorite-click="toggleFavorite"
           @zoom-click="goToSelectedPoi"
         />
+        <div class="grow-[3]" />
       </div>
 
       <div
