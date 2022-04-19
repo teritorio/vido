@@ -13,8 +13,6 @@
         pitch,
         style: style,
         zoom: zoom,
-        dragRotate: rotate,
-        touchPitch: rotate,
         locale: locales,
         attributionControl: false,
       }"
@@ -188,6 +186,11 @@ export default Vue.extend({
         this.addAttribution()
       }
       this.map.addControl(this.languageControl)
+
+      if (!this.rotate) {
+        this.map.dragRotate.disable()
+        this.map.touchZoomRotate.disableRotation()
+      }
     },
 
     setStyle(mapStyle: MapStyleEnum) {
