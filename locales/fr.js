@@ -94,6 +94,7 @@ export default {
     zoom: 'Zoomer',
     routePopup: {
       min: 'min',
+      hours: 'h',
       km: 'km',
       easy: 'facile',
       normal: 'normal',

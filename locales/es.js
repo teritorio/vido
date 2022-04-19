@@ -94,6 +94,7 @@ export default {
     zoom: 'Acercarse',
     routePopup: {
       min: 'min',
+      hours: 'h',
       km: 'km',
       easy: 'fácil',
       normal: 'normal',

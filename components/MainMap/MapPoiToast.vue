@@ -81,11 +81,15 @@
             v-else-if="property === 'route:*'"
           >
             <p :key="activity" class="text-sm mt-2">
-              {{
-                (sptags && sptags['route:*'] && sptags['route:*'][activity]) ||
-                activity
-              }}
-              : {{ route }}
+              <RouteField
+                :activity="
+                  (sptags &&
+                    sptags['route:*'] &&
+                    sptags['route:*'][activity]) ||
+                  activity
+                "
+                :route="route"
+              />
             </p>
           </template>
 
@@ -231,8 +235,11 @@ import { getPoiById, ApiPoi, ApiPoiProperties } from '@/lib/apiPois'
 import { isIOS } from '@/utils/isIOS'
 import { getContrastedTextColor } from '@/utils/picto'
 
+import RouteField from '~/components/Fields/RouteField.vue'
+
 export default Vue.extend({
   components: {
+    RouteField,
     TeritorioIcon,
     AddressField,
     OpeningHours,
@@ -359,7 +366,7 @@ export default Vue.extend({
       return Boolean(this.poiEditorial('unavoidable'))
     },
 
-    routes(): { [key: string]: string } {
+    routes(): { [key: string]: Object } {
       if (!(this.poiEditorial('popup_properties') || []).includes('route:*')) {
         return {}
       }
@@ -378,21 +385,9 @@ export default Vue.extend({
           }
         })
 
-      const ret: { [key: string]: string } = {}
+      const ret: { [key: string]: Object } = {}
       Object.entries(activitiesStruct).forEach(([acivity, properties]) => {
-        const result = []
-        if (properties.length) {
-          result.push(`${properties.length} ${this.$tc('toast.routePopup.km')}`)
-        }
-        if (properties.duration) {
-          result.push(
-            `${properties.duration} ${this.$tc('toast.routePopup.min')}`
-          )
-        }
-        if (properties.difficulty && properties.difficulty !== 'normal') {
-          result.push(this.$tc(`toast.routePopup.${properties.difficulty}`))
-        }
-        ret[acivity] = result.join(', ')
+        ret[acivity] = properties
       })
       return ret
     },
