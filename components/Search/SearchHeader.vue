@@ -168,21 +168,23 @@ export default Vue.extend({
   },
 
   data(): {
+    searchQueryId: number
+    searchResultId: number
     searchText: string
     searchMenuItemsResults: null | ApiSearchResult<ApiMenuItemSearchResult>
     searchPoisResults: null | ApiSearchResult<ApiPoisSearchResult>
     searchAddressesResults: null | ApiSearchResult<ApiAddrSearchResult>
     searchCartocodeResult: null | ApiPoi
-    isLoading: boolean
     search: null | Function
   } {
     return {
+      searchQueryId: 0,
+      searchResultId: -1,
       searchText: '',
       searchMenuItemsResults: null,
       searchPoisResults: null,
       searchAddressesResults: null,
       searchCartocodeResult: null,
-      isLoading: false,
       search: null,
     }
   },
@@ -265,7 +267,6 @@ export default Vue.extend({
 
   methods: {
     reset() {
-      this.isLoading = false
       this.searchMenuItemsResults = null
       this.searchPoisResults = null
       this.searchAddressesResults = null
@@ -333,10 +334,7 @@ export default Vue.extend({
 
     onSubmit() {
       // Reset results if empty search text
-      if (
-        !this.isLoading &&
-        (!this.searchText || this.searchText.trim().length === 0)
-      ) {
+      if (!this.searchText || this.searchText.trim().length === 0) {
         this.searchMenuItemsResults = null
         this.searchPoisResults = null
         this.searchAddressesResults = null
@@ -349,31 +347,31 @@ export default Vue.extend({
       }
     },
 
-    async search_() {
-      if (!this.isLoading && this.searchText) {
+    search_() {
+      if (this.searchText) {
+        this.searchQueryId += 1
+        const currentSearchQueryId = this.searchQueryId
+
         const projectTheme = `project_theme=${this.$config.API_PROJECT}-${this.$config.API_THEME}`
         const searchText = this.searchText.trim()
         if (searchText.length === 2) {
-          this.isLoading = true
-
           const cartocode = this.searchText
-          const searchPoi = getPoiById(
+          getPoiById(
             this.$config.API_ENDPOINT,
             this.$config.API_PROJECT,
             this.$config.API_THEME,
             `cartocode:${cartocode}`
-          )
+          ).then((poi) => {
+            if (currentSearchQueryId > this.searchResultId) {
+              this.searchResultId = currentSearchQueryId
 
-          const [poi] = await Promise.all([searchPoi])
-
-          this.searchMenuItemsResults = null
-          this.searchPoisResults = null
-          this.searchAddressesResults = null
-          this.searchCartocodeResult = poi
-          this.isLoading = false
+              this.searchMenuItemsResults = null
+              this.searchPoisResults = null
+              this.searchAddressesResults = null
+              this.searchCartocodeResult = poi
+            }
+          })
         } else if (searchText.length > 2) {
-          this.isLoading = true
-
           const query = `q=${this.searchText}&lon=${this.mapCenter.lng}&lat=${this.mapCenter.lat}`
 
           const MenuItemsFetch: Promise<
@@ -394,16 +392,26 @@ export default Vue.extend({
             data.ok ? data.json() : null
           )
 
-          const [
-            searchMenuItemsResults,
-            searchPoisResults,
-            searchAddressesResults,
-          ] = await Promise.all([MenuItemsFetch, poisFetch, addressesFetch])
-          this.searchMenuItemsResults = searchMenuItemsResults
-          this.searchPoisResults = searchPoisResults
-          this.searchAddressesResults = searchAddressesResults
-          this.searchCartocodeResult = null
-          this.isLoading = false
+          Promise.all<
+            ApiSearchResult<ApiMenuItemSearchResult>,
+            ApiSearchResult<ApiPoisSearchResult>,
+            ApiSearchResult<ApiAddrSearchResult>
+          >([MenuItemsFetch, poisFetch, addressesFetch]).then(
+            ([
+              searchMenuItemsResults,
+              searchPoisResults,
+              searchAddressesResults,
+            ]) => {
+              if (currentSearchQueryId > this.searchResultId) {
+                this.searchResultId = currentSearchQueryId
+
+                this.searchMenuItemsResults = searchMenuItemsResults
+                this.searchPoisResults = searchPoisResults
+                this.searchAddressesResults = searchAddressesResults
+                this.searchCartocodeResult = null
+              }
+            }
+          )
         }
       }
     },
