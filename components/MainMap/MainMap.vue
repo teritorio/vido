@@ -530,6 +530,8 @@ export default Vue.extend({
       if (this.isModeFavorites) {
         this.handleFavorites()
       }
+
+      this.$store.dispatch('map/center', this.map.getCenter())
     },
 
     resizeMap() {
