@@ -731,9 +731,9 @@ export default Vue.extend({
 
     async fetchFavorites(ids: [string]) {
       return await getPoiByIds(
-        this.$config.API_ENDPOINT,
-        this.$config.API_PROJECT,
-        this.$config.API_THEME,
+        this.$vidoConfig.API_ENDPOINT,
+        this.$vidoConfig.API_PROJECT,
+        this.$vidoConfig.API_THEME,
         ids
       ).then((pois) => (pois && pois.features) || [])
     },

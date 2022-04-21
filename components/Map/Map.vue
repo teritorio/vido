@@ -185,9 +185,9 @@ export default Vue.extend({
         return this.mapStyleCache[mapStyleEnum]
       } else {
         const styleURLs = {
-          [MapStyleEnum.vector]: this.$config.VECTO_STYLE_URL,
-          [MapStyleEnum.aerial]: this.$config.SATELLITE_STYLE_URL,
-          [MapStyleEnum.raster]: this.$config.RASTER_STYLE_URL,
+          [MapStyleEnum.vector]: this.$vidoConfig.VECTO_STYLE_URL,
+          [MapStyleEnum.aerial]: this.$vidoConfig.SATELLITE_STYLE_URL,
+          [MapStyleEnum.raster]: this.$vidoConfig.RASTER_STYLE_URL,
         }
         const style = await fetchStyle(
           styleURLs[mapStyleEnum],

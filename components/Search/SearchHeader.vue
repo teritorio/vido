@@ -358,14 +358,14 @@ export default Vue.extend({
         this.searchQueryId += 1
         const currentSearchQueryId = this.searchQueryId
 
-        const projectTheme = `project_theme=${this.$config.API_PROJECT}-${this.$config.API_THEME}`
+        const projectTheme = `project_theme=${this.$vidoConfig.API_PROJECT}-${this.$vidoConfig.API_THEME}`
         const searchText = this.searchText.trim()
         if (searchText.length === 2) {
           const cartocode = this.searchText
           getPoiById(
-            this.$config.API_ENDPOINT,
-            this.$config.API_PROJECT,
-            this.$config.API_THEME,
+            this.$vidoConfig.API_ENDPOINT,
+            this.$vidoConfig.API_PROJECT,
+            this.$vidoConfig.API_THEME,
             `cartocode:${cartocode}`
           ).then((poi) => {
             if (currentSearchQueryId > this.searchResultId) {
@@ -383,16 +383,16 @@ export default Vue.extend({
           const MenuItemsFetch: Promise<
             ApiSearchResult<ApiMenuItemSearchResult>
           > = fetch(
-            `${this.$config.API_SEARCH}?${projectTheme}&type=menu_item&${query}`
+            `${this.$vidoConfig.API_SEARCH}?${projectTheme}&type=menu_item&${query}`
           ).then((data) => (data.ok ? data.json() : null))
 
           const poisFetch: Promise<ApiSearchResult<ApiPoisSearchResult>> =
             fetch(
-              `${this.$config.API_SEARCH}?${projectTheme}&type=poi&${query}&limit=10`
+              `${this.$vidoConfig.API_SEARCH}?${projectTheme}&type=poi&${query}&limit=10`
             ).then((data) => (data.ok ? data.json() : null))
 
           const addressesFetch: Promise<ApiSearchResult<ApiAddrSearchResult>> =
-            fetch(`${this.$config.API_SEARCH_ADDR}?${query}`).then((data) =>
+            fetch(`${this.$vidoConfig.API_SEARCH_ADDR}?${query}`).then((data) =>
               data.ok ? data.json() : null
             )
 

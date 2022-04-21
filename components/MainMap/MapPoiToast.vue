@@ -481,9 +481,9 @@ export default Vue.extend({
       }
 
       return getPoiById(
-        this.$config.API_ENDPOINT,
-        this.$config.API_PROJECT,
-        this.$config.API_THEME,
+        this.$vidoConfig.API_ENDPOINT,
+        this.$vidoConfig.API_PROJECT,
+        this.$vidoConfig.API_THEME,
         this.id
       ).then((apiPoi) => {
         if (apiPoi) {
@@ -498,7 +498,7 @@ export default Vue.extend({
       }
       return fetch(
         `${
-          this.$config.API_ENDPOINT
+          this.$vidoConfig.API_ENDPOINT
         }/sptags?popup_properties=${this.poiEditorial('popup_properties').join(
           ';'
         )}`

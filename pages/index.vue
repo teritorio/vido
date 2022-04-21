@@ -16,27 +16,28 @@ import Home from '@/components/Home/Home.vue'
 import { Category, getMenu } from '@/lib/apiMenu'
 import { getPoiById, ApiPoi } from '@/lib/apiPois'
 import { getSettings, headerFromSettings, Settings } from '@/lib/apiSettings'
+import { vidoConfig } from '@/plugins/vido-config'
 
 export default Vue.extend({
   components: {
     Home,
   },
 
-  async asyncData({ env, params, route }): Promise<{
+  async asyncData({ params, route, req }): Promise<{
     settings: Settings | null
     categories: Category[] | null
     categoryIds: number[] | null
     initialPoi: ApiPoi | null
   }> {
     const fetchSettings = getSettings(
-      env.API_ENDPOINT,
-      env.API_PROJECT,
-      env.API_THEME
+      vidoConfig(req).API_ENDPOINT,
+      vidoConfig(req).API_PROJECT,
+      vidoConfig(req).API_THEME
     )
     const fetchCategories = getMenu(
-      env.API_ENDPOINT,
-      env.API_PROJECT,
-      env.API_THEME
+      vidoConfig(req).API_ENDPOINT,
+      vidoConfig(req).API_PROJECT,
+      vidoConfig(req).API_THEME
     )
 
     let categoryIdsJoin: string | null
@@ -60,9 +61,9 @@ export default Vue.extend({
     let fetchPoi: Promise<ApiPoi | null> = Promise.resolve(null)
     if (poiId) {
       fetchPoi = getPoiById(
-        env.API_ENDPOINT,
-        env.API_PROJECT,
-        env.API_THEME,
+        vidoConfig(req).API_ENDPOINT,
+        vidoConfig(req).API_PROJECT,
+        vidoConfig(req).API_THEME,
         poiId
       )
     }

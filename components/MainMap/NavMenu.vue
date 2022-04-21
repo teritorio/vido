@@ -98,7 +98,7 @@ export default Vue.extend({
     }),
     fetchConfig() {
       fetch(
-        `${this.$config.API_ENDPOINT}/${this.$config.API_PROJECT}/${this.$config.API_THEME}/articles?slug=non-classe`
+        `${this.$vidoConfig.API_ENDPOINT}/${this.$vidoConfig.API_PROJECT}/${this.$vidoConfig.API_THEME}/articles?slug=non-classe`
       )
         .then((data) => data.json())
         .then((data) => (this.entries = data))

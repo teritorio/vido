@@ -2,6 +2,7 @@ import { Plugin, NuxtAppOptions } from '@nuxt/types'
 import urlSlug from 'url-slug'
 
 import { Category } from '@/lib/apiMenu'
+import { vidoConfig } from '@/plugins/vido-config'
 
 // Also Update README.md according to tracking changes.
 
@@ -137,17 +138,20 @@ function google(app: NuxtAppOptions, event: Event) {
   }
 }
 
-const trackingPlugin: Plugin = (
-  { app, $config: { GOOGLE_TAG_MANAGER_ID } },
-  inject
-) => {
-  inject('tracking', (event: Event) => {
-    if (app.$gtm && GOOGLE_TAG_MANAGER_ID) {
+const trackingPlugin: Plugin = ({ app, req }, inject) => {
+  const googleTagManagerId = vidoConfig(req).GOOGLE_TAG_MANAGER_ID
+  if (app.$gtm && googleTagManagerId) {
+    console.error(app.$gtm, googleTagManagerId)
+    app.$gtm.init(googleTagManagerId)
+
+    inject('tracking', (event: Event) => {
       google(app, event)
-    } else if (process.env.NODE_ENV === 'development') {
+    })
+  } else if (process.env.NODE_ENV === 'development') {
+    inject('tracking', (event: Event) => {
       console.error('Tracking event', event)
-    }
-  })
+    })
+  }
 }
 
 export default trackingPlugin

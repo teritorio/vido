@@ -259,9 +259,9 @@ export default (
     const debouncedFetchFeatures = debounce(
       (selectedSubCategoriesIds) =>
         this.$store.dispatch('menu/fetchFeatures', {
-          apiEndpoint: this.$config.API_ENDPOINT,
-          apiProject: this.$config.API_PROJECT,
-          apiTheme: this.$config.API_THEME,
+          apiEndpoint: this.$vidoConfig.API_ENDPOINT,
+          apiProject: this.$vidoConfig.API_PROJECT,
+          apiTheme: this.$vidoConfig.API_THEME,
           categoryIds: selectedSubCategoriesIds,
         }),
       500
@@ -608,9 +608,9 @@ export default (
     },
     onSearchPoi(poiId: number) {
       getPoiById(
-        this.$config.API_ENDPOINT,
-        this.$config.API_PROJECT,
-        this.$config.API_THEME,
+        this.$vidoConfig.API_ENDPOINT,
+        this.$vidoConfig.API_PROJECT,
+        this.$vidoConfig.API_THEME,
         poiId
       ).then((poi) => {
         if (poi) {

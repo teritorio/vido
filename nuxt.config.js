@@ -1,54 +1,6 @@
-import dotenv from 'dotenv'
 import webpack from 'webpack'
 
-dotenv.config()
-
-function checkEnvVariable(variableName) {
-  if (!process.env[variableName]) {
-    throw new Error(`Vido: The ${variableName} environment variable must exist`)
-  }
-}
-
-checkEnvVariable('API_ENDPOINT')
-checkEnvVariable('API_SEARCH')
-checkEnvVariable('API_SEARCH_ADDR')
-checkEnvVariable('API_PROJECT')
-checkEnvVariable('API_THEME')
-checkEnvVariable('API_EXPORT')
-checkEnvVariable('API_QR_SHORTENER')
-checkEnvVariable('VECTO_STYLE_URL')
-checkEnvVariable('SATELLITE_STYLE_URL')
-checkEnvVariable('RASTER_STYLE_URL')
-
 export default {
-  publicRuntimeConfig: {
-    API_ENDPOINT: process.env.API_ENDPOINT || '',
-    API_SEARCH: process.env.API_SEARCH || '',
-    API_SEARCH_ADDR: process.env.API_SEARCH_ADDR || '',
-    API_PROJECT: process.env.API_PROJECT || '',
-    API_THEME: process.env.API_THEME || '',
-    API_EXPORT: process.env.API_EXPORT || '',
-    API_QR_SHORTENER: process.env.API_QR_SHORTENER || '',
-    VECTO_STYLE_URL: process.env.VECTO_STYLE_URL || '',
-    SATELLITE_STYLE_URL: process.env.SATELLITE_STYLE_URL || '',
-    RASTER_STYLE_URL: process.env.RASTER_STYLE_URL || '',
-    GOOGLE_TAG_MANAGER_ID: process.env.GOOGLE_TAG_MANAGER_ID || '',
-    NOTEBOOK_ENABLED: process.env.NOTEBOOK_ENABLED || '',
-  },
-  env: {
-    API_ENDPOINT: process.env.API_ENDPOINT || '',
-    API_SEARCH: process.env.API_SEARCH || '',
-    API_SEARCH_ADDR: process.env.API_SEARCH_ADDR || '',
-    API_PROJECT: process.env.API_PROJECT || '',
-    API_THEME: process.env.API_THEME || '',
-    API_EXPORT: process.env.API_EXPORT || '',
-    API_QR_SHORTENER: process.env.API_QR_SHORTENER || '',
-    VECTO_STYLE_URL: process.env.VECTO_STYLE_URL || '',
-    SATELLITE_STYLE_URL: process.env.SATELLITE_STYLE_URL || '',
-    RASTER_STYLE_URL: process.env.RASTER_STYLE_URL || '',
-    GOOGLE_TAG_MANAGER_ID: process.env.GOOGLE_TAG_MANAGER_ID || '',
-    NOTEBOOK_ENABLED: process.env.NOTEBOOK_ENABLED || '',
-  },
   pwa: {
     meta: {
       lang: 'fr',
@@ -81,6 +33,7 @@ export default {
 
   // Plugins to run before rendering page (https://go.nuxtjs.dev/config-plugins)
   plugins: [
+    '@/plugins/vido-config.ts',
     '@/plugins/fontawesome.ts',
     '@/plugins/mobile.ts',
     '@/plugins/vue-tailwind.ts',
@@ -104,7 +57,7 @@ export default {
   // Modules (https://go.nuxtjs.dev/config-modules)
   modules: [
     '@nuxtjs/i18n',
-    ...(process.env.GOOGLE_TAG_MANAGER_ID ? ['@nuxtjs/gtm'] : []),
+    '@nuxtjs/gtm',
     ...(process.env.SENTRY_DSN ? ['@nuxtjs/sentry'] : []),
   ],
 
@@ -161,8 +114,6 @@ export default {
 
   // Google Tag Manager config
   gtm: {
-    id: process.env.GOOGLE_TAG_MANAGER_ID,
-    enabled: Boolean(process.env.GOOGLE_TAG_MANAGER_ID),
     pageTracking: false,
   },
 }

@@ -9,6 +9,7 @@ import { mapActions } from 'vuex'
 
 import { getPoiById } from '@/lib/apiPois'
 import { getSettings, headerFromSettings } from '@/lib/apiSettings'
+import { vidoConfig } from '@/plugins/vido-config'
 
 import Index from '~/components/Details/Index.vue'
 import { ApiPoi } from '~/lib/apiPois'
@@ -23,19 +24,19 @@ export default Vue.extend({
     return /^[-_:a-zA-Z0-9]+$/.test(params.id)
   },
 
-  async asyncData({ env, params }): Promise<{
+  async asyncData({ params, req }): Promise<{
     settings: Settings | null
     poi: ApiPoi | null
   }> {
     const getSettingsPromise = getSettings(
-      env.API_ENDPOINT,
-      env.API_PROJECT,
-      env.API_THEME
+      vidoConfig(req).API_ENDPOINT,
+      vidoConfig(req).API_PROJECT,
+      vidoConfig(req).API_THEME
     )
     const getPoiPromise = getPoiById(
-      env.API_ENDPOINT,
-      env.API_PROJECT,
-      env.API_THEME,
+      vidoConfig(req).API_ENDPOINT,
+      vidoConfig(req).API_PROJECT,
+      vidoConfig(req).API_THEME,
       params.id,
       {
         short_description: false,
