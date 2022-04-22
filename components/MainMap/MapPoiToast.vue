@@ -118,7 +118,8 @@
 
           <ul v-else-if="Array.isArray(poiProp(property))">
             <li v-for="item in poiProp(property)" :key="item">
-              <p class="text-sm mt-1">
+              <Website v-if="property === 'website'" :url="item" />
+              <p v-else class="text-sm mt-1">
                 {{ item }}
               </p>
             </li>
@@ -230,6 +231,7 @@ import { mapGetters } from 'vuex'
 import AddressField from '@/components/Fields/AddressField.vue'
 import DateRange from '@/components/Fields/DateRange.vue'
 import OpeningHours from '@/components/Fields/OpeningHours.vue'
+import Website from '@/components/Fields/Website.vue'
 import TeritorioIcon from '@/components/TeritorioIcon/TeritorioIcon.vue'
 import { getPoiById, ApiPoi, ApiPoiProperties } from '@/lib/apiPois'
 import { isIOS } from '@/utils/isIOS'
@@ -242,6 +244,7 @@ export default Vue.extend({
     RouteField,
     TeritorioIcon,
     AddressField,
+    Website,
     OpeningHours,
     DateRange,
   },
