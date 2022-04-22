@@ -43,6 +43,9 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-yarn-
 
+      - name: Setup configuration
+        run: echo "${{secrets.CONFIGURATION_DEV}}" > vidos.config.ts
+
       - name: Install dependencies 👨🏻‍💻
         run: yarn
 
