@@ -1,16 +1,20 @@
 <template>
   <div v-if="openingHours">
-    <span
-      v-if="format"
-      :class="[
-        (format.includes($tc('openingHours.opened')) ||
-          format === $tc('openingHours.24_7')) &&
-          'text-emerald-500',
-        format.includes($tc('openingHours.closed')) && 'text-red-500',
-      ]"
-    >
-      {{ format }}
-    </span>
+    <template v-if="format">
+      <span v-if="format.type === '24_7'" class="text-emerald-500">
+        {{ $tc('openingHours.24_7') }}
+      </span>
+      <span v-else-if="format.type === 'opened'" class="text-emerald-500">
+        {{ $tc('openingHours.opened') }} -
+        {{ $tc('openingHours.closeAt') }}
+        {{ displayTime(format.nextChange) }}
+      </span>
+      <span v-else-if="format.type === 'openAt'" class="text-red-500">
+        {{ $tc('openingHours.closed') }} -
+        {{ $tc('openingHours.openAt') }}
+        {{ displayTime(format.nextChange) }}
+      </span>
+    </template>
     <ul v-if="details">
       <li v-for="(timeline, i) in schedule" :key="`timeline_${i}`" class="mt-1">
         {{ timeline }}
@@ -48,34 +52,23 @@ export default Vue.extend({
     }
   },
   computed: {
-    format(): string | null {
+    format(): null | {
+      type: '24_7' | 'opened' | 'openAt'
+      nextChange?: Date
+    } {
       try {
         const oh = new OpeningHours(this.openingHours)
-        const nextchange = oh.getNextChange()
+        const nextChange = oh.getNextChange()
 
-        if (oh.getState() && nextchange === undefined) {
-          return this.$tc('openingHours.24_7')
-        } else if (oh.getState()) {
-          return `${this.$tc('openingHours.opened')} - ${this.$tc(
-            'openingHours.closeAt'
-          )} ${this.displayTime(nextchange)}`
+        if (oh.getState()) {
+          if (nextChange === undefined) {
+            return { type: '24_7' }
+          } else {
+            return { type: 'opened', nextChange }
+          }
+        } else {
+          return { type: 'openAt', nextChange }
         }
-
-        const nextChange = new Date(nextchange || '')
-        const today = new Date()
-        const todayDay = today.getDay()
-        const day = nextChange.getDay()
-
-        const openTrad =
-          todayDay === day
-            ? `${this.$tc('openingHours.openAt')} ${this.displayTime(
-                nextchange
-              )}`
-            : `${this.$tc('openingHours.open')} ${
-                this.days[day]
-              } ${this.displayTime(nextchange)}`
-
-        return `${this.$tc('openingHours.closed')} - ${openTrad}`
       } catch (e) {
         // eslint-disable-next-line no-console
         console.log('Vido error:', e)
@@ -124,17 +117,24 @@ export default Vue.extend({
   },
 
   methods: {
-    displayTime(dateGMT: Date | string | undefined): string {
+    displayTime(dateGMT: Date): string {
+      let ret = ''
       if (dateGMT) {
         const date = new Date(dateGMT)
 
+        const today = new Date()
+        const todayDay = today.getDay()
+        const day = date.getDay()
+
+        if (todayDay !== day) {
+          ret += this.days[day] + ' '
+        }
+
         const hh = date.getHours()
         const mm = date.getMinutes()
-
-        return `${hh < 10 ? `0${hh}` : hh}:${mm < 10 ? `0${mm}` : mm}`
-      } else {
-        return ''
+        ret += `${hh < 10 ? `0${hh}` : hh}:${mm < 10 ? `0${mm}` : mm}`
       }
+      return ret
     },
   },
 })

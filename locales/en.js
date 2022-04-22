@@ -77,7 +77,6 @@ export default {
     opened: 'Currently open',
     closeAt: 'Closes at',
     closed: 'Currently closed',
-    open: 'Opens',
     openAt: 'Opens at',
     '24_7': 'Opened 24/7',
   },

@@ -77,7 +77,6 @@ export default {
     opened: 'Actualmente abierto',
     closeAt: 'Cierra a las',
     closed: 'Actualmente cerrado',
-    open: 'Abierto el',
     openAt: 'Abre a las',
     '24_7': 'Abierto 24h/24, 7j/7',
   },
