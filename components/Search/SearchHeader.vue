@@ -46,7 +46,6 @@
           <button
             class="absolute inset-y-0 right-0 px-5 text-zinc-800 rounded-r-full outline-none focus:outline-none"
             type="submit"
-            :disabled="isLoading"
             @click="focusSearch"
           >
             <font-awesome-icon v-if="!isLoading" icon="search" />
@@ -185,7 +184,7 @@ export default Vue.extend({
   } {
     return {
       searchQueryId: 0,
-      searchResultId: -1,
+      searchResultId: 0,
       searchText: '',
       searchMenuItemsResults: null,
       searchPoisResults: null,
@@ -200,6 +199,11 @@ export default Vue.extend({
       isModeFavorites: 'map/isModeFavorites',
       isModeExplorerOrFavorites: 'map/isModeExplorerOrFavorites',
     }),
+
+    isLoading(): boolean {
+      return this.searchResultId !== this.searchQueryId
+    },
+
     itemsCartocode(): SearchResult[] {
       const v = this.searchCartocodeResult
       if (v && v.properties.metadata?.id) {
