@@ -141,7 +141,6 @@ function google(app: NuxtAppOptions, event: Event) {
 const trackingPlugin: Plugin = ({ app, req }, inject) => {
   const googleTagManagerId = vidoConfig(req).GOOGLE_TAG_MANAGER_ID
   if (app.$gtm && googleTagManagerId) {
-    console.error(app.$gtm, googleTagManagerId)
     app.$gtm.init(googleTagManagerId)
 
     inject('tracking', (event: Event) => {
