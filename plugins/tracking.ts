@@ -146,9 +146,11 @@ const trackingPlugin: Plugin = ({ app, req }, inject) => {
     inject('tracking', (event: Event) => {
       google(app, event)
     })
-  } else if (process.env.NODE_ENV === 'development') {
+  } else {
     inject('tracking', (event: Event) => {
-      console.error('Tracking event', event)
+      if (process.env.NODE_ENV === 'development') {
+        console.error('Tracking event', event)
+      }
     })
   }
 }
