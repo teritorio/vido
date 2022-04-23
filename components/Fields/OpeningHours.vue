@@ -1,31 +1,45 @@
 <template>
   <div v-if="openingHours">
-    <template v-if="format">
-      <span v-if="format.type === '24_7'" class="text-emerald-500">
+    <template v-if="nextChange">
+      <span v-if="nextChange.type === '24_7'" class="text-emerald-500">
         {{ $tc('openingHours.24_7') }}
       </span>
-      <span v-else-if="format.type === 'opened'" class="text-emerald-500">
+      <span v-else-if="nextChange.type === 'opened'" class="text-emerald-500">
         {{ $tc('openingHours.opened') }} -
         {{ $tc('openingHours.closeAt') }}
-        {{ displayTime(format.nextChange) }}
+        {{ displayTime(nextChange.nextChange) }}
       </span>
-      <span v-else-if="format.type === 'openAt'" class="text-red-500">
+      <span v-else-if="nextChange.type === 'openAt'" class="text-red-500">
         {{ $tc('openingHours.closed') }} -
         {{ $tc('openingHours.openAt') }}
-        {{ displayTime(format.nextChange) }}
+        {{ displayTime(nextChange.nextChange) }}
       </span>
     </template>
     <ul v-if="details">
-      <li v-for="(timeline, i) in schedule" :key="`timeline_${i}`" class="mt-1">
-        {{ timeline }}
+      <template v-if="schedule.length > 0">
+        <li
+          v-for="(timeline, i) in schedule"
+          :key="`timeline_${i}`"
+          class="mt-1"
+        >
+          {{ timeline }}
+        </li>
+      </template>
+      <li v-else>
+        {{ $tc('openingHours.notOpenedInNextDays') }}
       </li>
     </ul>
   </div>
 </template>
 
 <script lang="ts">
+import { format, formatRelative } from 'date-fns'
+import { enGB, fr, es } from 'date-fns/locale'
 import OpeningHours from 'opening_hours'
 import Vue from 'vue'
+import { mapGetters } from 'vuex'
+
+const DateFormatLocales: { [key: string]: Locale } = { en: enGB, fr, es }
 
 export default Vue.extend({
   props: {
@@ -38,21 +52,19 @@ export default Vue.extend({
       default: false,
     },
   },
-  data() {
-    return {
-      days: [
-        this.$tc('openingHours.sunday'),
-        this.$tc('openingHours.monday'),
-        this.$tc('openingHours.tuesday'),
-        this.$tc('openingHours.wednesday'),
-        this.$tc('openingHours.thursday'),
-        this.$tc('openingHours.friday'),
-        this.$tc('openingHours.saturday'),
-      ],
-    }
-  },
+
   computed: {
-    format(): null | {
+    ...mapGetters({
+      locale: 'site/locale',
+    }),
+
+    formatLocale(): { locale: Locale } {
+      return {
+        locale: DateFormatLocales?.[this.locale] || enGB,
+      }
+    },
+
+    nextChange(): null | {
       type: '24_7' | 'opened' | 'openAt'
       nextChange?: Date
     } {
@@ -75,6 +87,7 @@ export default Vue.extend({
         return null
       }
     },
+
     schedule(): string[] {
       try {
         const oh = new OpeningHours(this.openingHours)
@@ -83,7 +96,7 @@ export default Vue.extend({
         from.setDate(from.getDate() + ((7 - from.getDay()) % 7 || 7))
 
         const to = new Date(from)
-        to.setDate(to.getDate() + 7)
+        to.setDate(to.getDate() + 14)
 
         const intervals = oh.getOpenIntervals(from, to)
         const sortedIntervals: string[] = []
@@ -93,16 +106,22 @@ export default Vue.extend({
             i > 0 &&
             interval[0].getDate() === intervals[i - 1][0].getDate()
           ) {
-            sortedIntervals[
-              sortedIntervals.length - 1
-            ] += ` / ${this.displayTime(interval[0])}-${this.displayTime(
-              interval[1]
-            )}`
+            sortedIntervals[sortedIntervals.length - 1] +=
+              ' / ' +
+              format(interval[0], 'HH:mm', this.formatLocale) +
+              ' - ' +
+              format(interval[1], 'HH:mm', this.formatLocale)
           } else {
             sortedIntervals.push(
-              `${this.days[interval[0].getDay()]} ${this.displayTime(
-                interval[0]
-              )}-${this.displayTime(interval[1])}`
+              format(
+                interval[0],
+                this.$tc('openingHours.formatDayAndDayInMonth'),
+                this.formatLocale
+              ) +
+                ' ' +
+                format(interval[0], 'HH:mm', this.formatLocale) +
+                '-' +
+                format(interval[1], 'HH:mm', this.formatLocale)
             )
           }
         })
@@ -117,24 +136,14 @@ export default Vue.extend({
   },
 
   methods: {
-    displayTime(dateGMT: Date): string {
-      let ret = ''
+    displayTime(dateGMT: Date): null | string {
       if (dateGMT) {
         const date = new Date(dateGMT)
-
         const today = new Date()
-        const todayDay = today.getDay()
-        const day = date.getDay()
 
-        if (todayDay !== day) {
-          ret += this.days[day] + ' '
-        }
-
-        const hh = date.getHours()
-        const mm = date.getMinutes()
-        ret += `${hh < 10 ? `0${hh}` : hh}:${mm < 10 ? `0${mm}` : mm}`
+        return formatRelative(date, today, this.formatLocale)
       }
-      return ret
+      return null
     },
   },
 })
