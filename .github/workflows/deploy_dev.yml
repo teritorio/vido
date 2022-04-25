@@ -57,12 +57,12 @@ jobs:
       - name: Deploy
         uses: up9cloud/action-rsync@master
         env:
-          HOST: 146.59.177.9
+          HOST: dev.appcarto.teritorio.xyz
           KEY: ${{secrets.DEPLOY_SSH_KEY_DEV}}
-          TARGET: /var/www/clients/client1/web1/web/vido
+          TARGET: /var/www/clients/client3/web3/web/vido
 
           VERBOSE: false
-          USER: vido
+          USER: devappcarto
           ARGS: -az --exclude=/.git/
           SSH_ARGS: '-p 2222 -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no'
           SOURCE: .
