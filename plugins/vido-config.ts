@@ -6,6 +6,7 @@ import vidos from '@/vidos.config'
 
 export function vidoConfig(req: createServer.IncomingMessage): VidoConfig {
   let { host } = process.server ? req.headers : window.location
+  host = host?.split(':')[0]
   if (host && !(host in vidos)) {
     host = undefined
   }
