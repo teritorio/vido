@@ -5,7 +5,12 @@ import { VidoConfig } from '@/utils/types'
 import vidos from '@/vidos.config'
 
 export function vidoConfig(req: createServer.IncomingMessage): VidoConfig {
-  let { host } = process.server ? req.headers : window.location
+  let host: string | undefined
+  if (process.server) {
+    host = (req.headers['x-forwarded-host'] as string) || req.headers.host
+  } else {
+    host = window.location.host
+  }
   host = host?.split(':')[0]
   if (host && !(host in vidos)) {
     host = undefined
