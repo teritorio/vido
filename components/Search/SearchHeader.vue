@@ -63,17 +63,11 @@
         </button>
         <p class="ml-2">
           {{
-            $isMobile()
-              ? $tc(
-                  isModeFavorites
-                    ? 'headerMenu.backToMenuFavoritesMobile'
-                    : 'headerMenu.backToMenuExplorerMobile'
-                )
-              : $tc(
-                  isModeFavorites
-                    ? 'headerMenu.backToMenuFavorites'
-                    : 'headerMenu.backToMenuExplorer'
-                )
+            $tc(
+              isModeFavorites
+                ? 'headerMenu.backToMenuFavoritesMobile'
+                : 'headerMenu.backToMenuExplorerMobile'
+            )
           }}
         </p>
       </div>
