@@ -63,7 +63,7 @@ jobs:
 
           VERBOSE: false
           USER: devappcarto
-          ARGS: -az --exclude=/.git/
+          ARGS: -az --exclude=/.git/ --exclude=vidos.config.ts
           SSH_ARGS: '-p 2222 -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no'
           SOURCE: .
 
