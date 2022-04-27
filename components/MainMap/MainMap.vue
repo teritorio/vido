@@ -478,9 +478,12 @@ export default Vue.extend({
         }
       })
 
-      this.map.on('styledata', () => {
-        const apiPois = flattenFeatures(this.features)
-        this.initPoiLayer(apiPois)
+      this.map.on('styledata', async () => {
+        const features = this.isModeFavorites
+          ? await this.fetchFavorites(this.favoritesIds)
+          : flattenFeatures(this.features)
+
+        this.initPoiLayer(features)
       })
 
       this.map.on('click', () => {
@@ -697,22 +700,7 @@ export default Vue.extend({
             })
           }
         } else {
-          this.map.addSource(FAVORITE_SOURCE, {
-            type: 'geojson',
-            data: {
-              type: 'FeatureCollection',
-              features: allFavorites,
-            },
-          })
-
-          if (this.map.getLayer(POI_LAYER_MARKER))
-            this.map.removeLayer(POI_LAYER_MARKER)
-
-          if (!this.map.getLayer(FAVORITE_LAYER_MARKER)) {
-            this.map.addLayer(
-              markerLayerTextFactory(FAVORITE_SOURCE, FAVORITE_LAYER_MARKER)
-            )
-          }
+          this.initPoiLayer(allFavorites)
         }
       } else {
         this.getSubCategory(this.selectedCategories)
@@ -721,23 +709,24 @@ export default Vue.extend({
           this.map.addLayer(
             markerLayerTextFactory(POI_SOURCE, POI_LAYER_MARKER)
           )
-
-        if (this.map.getLayer(FAVORITE_LAYER_MARKER)) {
-          this.map.removeLayer(FAVORITE_LAYER_MARKER)
-        }
-        if (this.map.getSource(FAVORITE_SOURCE)) {
-          this.map.removeSource(FAVORITE_SOURCE)
-        }
       }
     },
 
     async fetchFavorites(ids: [string]) {
-      return await getPoiByIds(
+      const favorites = await getPoiByIds(
         this.$vidoConfig.API_ENDPOINT,
         this.$vidoConfig.API_PROJECT,
         this.$vidoConfig.API_THEME,
         ids
       ).then((pois) => (pois && pois.features) || [])
+
+      return favorites.map((feature) => ({
+        ...feature,
+        properties: {
+          ...feature.properties,
+          vido_cat: feature.properties.metadata?.category_ids?.[0],
+        },
+      }))
     },
 
     showZoomSnack(text: string, textBtn: string) {
@@ -828,7 +817,9 @@ export default Vue.extend({
         return
       }
 
-      if (!this.map.getSource(POI_SOURCE)) {
+      const source = this.isModeFavorites ? FAVORITE_SOURCE : POI_SOURCE
+
+      if (!this.map.getSource(source)) {
         // Create cluster properties, which will contain count of features per category
         const clusterProps: { [category: string]: object } = {}
 
@@ -839,7 +830,7 @@ export default Vue.extend({
           ]
         })
 
-        this.map.addSource(POI_SOURCE, {
+        this.map.addSource(source, {
           type: 'geojson',
           cluster: true,
           clusterRadius: 32,
@@ -853,9 +844,13 @@ export default Vue.extend({
         })
       }
 
+      const layer = this.isModeFavorites
+        ? FAVORITE_LAYER_MARKER
+        : POI_LAYER_MARKER
+
       // Add individual markers
-      if (!this.map.getLayer(POI_LAYER_MARKER))
-        this.map.addLayer(markerLayerTextFactory(POI_SOURCE, POI_LAYER_MARKER))
+      if (!this.map.getLayer(layer))
+        this.map.addLayer(markerLayerTextFactory(source, layer))
     },
 
     updateMarkers(src: string) {
