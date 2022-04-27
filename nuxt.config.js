@@ -35,7 +35,8 @@ export default {
   plugins: [
     '@/plugins/vido-config.ts',
     '@/plugins/fontawesome.ts',
-    '@/plugins/mobile.ts',
+    '@/plugins/touch.ts',
+    '@/plugins/screen.ts',
     '@/plugins/vue-tailwind.ts',
     '@/plugins/tracking.ts',
   ],

@@ -78,7 +78,7 @@ export default Vue.extend({
       const styleNames = [
         'vector',
         'aerial',
-        ...(!this.$isMobile() ? ['raster'] : []),
+        ...(!this.$screen.smallScreen ? ['raster'] : []),
       ]
 
       const backgroundReferenceIndex = styleNames.findIndex(

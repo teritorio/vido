@@ -165,7 +165,7 @@
         class="relative flex items-center mt-6 space-x-2 justify-evenly shrink-0 mt-6"
       >
         <a
-          v-if="$isMobile() && routeHref"
+          v-if="$screen.smallScreen && routeHref"
           class="flex flex-col items-center flex-1 h-full p-2 space-y-2 rounded-lg hover:bg-zinc-100"
           :href="routeHref"
           :title="$tc('toast.findRoute')"

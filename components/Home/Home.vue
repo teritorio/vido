@@ -337,7 +337,7 @@ export default (
     },
     isBottomMenuOpened(): boolean {
       return (
-        (typeof navigator === 'undefined' || this.$isMobile()) &&
+        this.$screen.smallScreen &&
         (this.isPoiToastVisible ||
           this.state.matches(this.states.Categories) ||
           this.state.matches(this.states.SubCategories) ||
@@ -410,12 +410,12 @@ export default (
       }
     },
     showPoi(val) {
-      if (this.$isMobile() && val) {
+      if (this.$screen.smallScreen && val) {
         this.$refs.mainMap?.resizeMap()
       }
     },
     selectedFeature() {
-      if (this.$isMobile() && this.selectedFeature) {
+      if (this.$screen.smallScreen && this.selectedFeature) {
         this.$refs.mainMap?.resizeMap()
       }
       this.routerPushUrl()
@@ -508,7 +508,7 @@ export default (
     },
     goToHome() {
       this.service.send(HomeEvents.GoToHome)
-      if (this.$isMobile()) {
+      if (this.$screen.smallScreen) {
         this.goToSearch()
       } else {
         this.goToCategories()
@@ -678,7 +678,7 @@ export default (
       }
     },
     onMapClick(): void {
-      if (this.$isMobile()) {
+      if (this.$screen.smallScreen) {
         this.goToHome()
       }
     },

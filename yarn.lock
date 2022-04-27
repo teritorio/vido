@@ -4186,7 +4186,7 @@ __metadata:
     ts-jest: ^27.1.4
     url-slug: ^3.0.3
     vue-jest: ^3.0.7
-    vue-mobile-detection: ^1.0.0
+    vue-screen: ^1.5.6
     vue-tailwind: ^2.5.0
     vue2-touch-events: ^3.2.2
     wcag-contrast: ^3.0.0
@@ -23703,15 +23703,6 @@ typescript@~4.2:
   languageName: node
   linkType: hard
 
-"vue-mobile-detection@npm:^1.0.0":
-  version: 1.0.0
-  resolution: "vue-mobile-detection@npm:1.0.0"
-  dependencies:
-    vue: ^2.6.10
-  checksum: fdfe6b47b1a120fd4c22a953fede3bc6f0c63f416402c3e75432f08c033b472e5f967d25d24dc6db0ff31a5b36b25ee1808f4c024ab8b4ab09f46ecb06e6ca26
-  languageName: node
-  linkType: hard
-
 "vue-no-ssr@npm:^1.1.1":
   version: 1.1.1
   resolution: "vue-no-ssr@npm:1.1.1"
@@ -23723,6 +23714,13 @@ typescript@~4.2:
   version: 3.5.3
   resolution: "vue-router@npm:3.5.3"
   checksum: fa6c290ca43d2107f42b7d030ecb21a89baa2d18ee8dcee1aa8ba2c814d83acb02be21ba5c54915b46e21ad3a675d37d9392263a8ec3b1b1b688587992e1c824
+  languageName: node
+  linkType: hard
+
+"vue-screen@npm:^1.5.6":
+  version: 1.5.6
+  resolution: "vue-screen@npm:1.5.6"
+  checksum: 66e5fd1b3b5c1555ab48547c7a841505390bdd84e622e52e30ffe9a48e9f2a5edd5414d15f6dee072d59b8974f3a00b6225eba5dc95baf45464bfde1e1480c87
   languageName: node
   linkType: hard
 
@@ -23809,7 +23807,7 @@ typescript@~4.2:
   languageName: node
   linkType: hard
 
-"vue@npm:^2.6.10, vue@npm:^2.6.12":
+"vue@npm:^2.6.12":
   version: 2.6.14
   resolution: "vue@npm:2.6.14"
   checksum: 542787dc830efc5cb8285a8046bba5a81e6f952e70e4e1a308cc8d51c68f152fd02da5edbd47b6a14908437d76fdee048aa3f64341d4777fb37ce231e2d845df

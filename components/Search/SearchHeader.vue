@@ -264,7 +264,7 @@ export default Vue.extend({
   },
 
   mounted() {
-    if (!this.$isMobile()) {
+    if (!this.$screen.touch) {
       this.focusSearch()
     }
   },

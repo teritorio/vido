@@ -19,8 +19,8 @@
           :extra-attributions="extraAttributions"
           :map-style-enum="selectedBackground"
           :pitch="pitch"
-          :rotate="!$isMobile()"
-          :show-attribution="!$isMobile()"
+          :rotate="!$screen.touch"
+          :show-attribution="!$screen.smallScreen"
           :hide-control="small"
           hash="map"
           @map-init="onMapInit"
@@ -431,7 +431,7 @@ export default Vue.extend({
     let bg =
       (getHashPart('bg') as keyof typeof MapStyleEnum) || DEFAULT_MAP_STYLE
 
-    if (this.$isMobile() && bg === MapStyleEnum.raster) {
+    if (this.$screen.smallScreen && bg === MapStyleEnum.raster) {
       bg = DEFAULT_MAP_STYLE
     }
 
@@ -566,7 +566,7 @@ export default Vue.extend({
 
         this.goToSelectedPoi()
 
-        if (this.$isMobile()) {
+        if (this.$screen.smallScreen) {
           this.showPoiToast = false
         }
       } else {
@@ -938,7 +938,7 @@ export default Vue.extend({
                     e.stopPropagation()
                     this.setSelectedFeature(feature)
 
-                    if (this.$isMobile()) {
+                    if (this.$screen.smallScreen) {
                       this.resizeMap()
                     }
                   })
