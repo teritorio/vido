@@ -51,7 +51,14 @@
 <script lang="ts">
 import { OpenMapTilesLanguage } from '@teritorio/openmaptiles-gl-language'
 import Mapbox from 'mapbox-gl-vue'
-import { StyleSpecification, LngLatBoundsLike, LngLatLike } from 'maplibre-gl'
+import {
+  Map,
+  RasterSourceSpecification,
+  VectorSourceSpecification,
+  StyleSpecification,
+  LngLatBoundsLike,
+  LngLatLike,
+} from 'maplibre-gl'
 import Vue, { PropType } from 'vue'
 import { mapGetters } from 'vuex'
 
@@ -110,7 +117,7 @@ export default Vue.extend({
   },
 
   data(): {
-    map: maplibregl.Map | null
+    map: Map | null
     mapStyle: StyleSpecification | null
     mapStyleCache: { [key: string]: StyleSpecification }
     locales: Record<string, string>
@@ -156,7 +163,7 @@ export default Vue.extend({
   },
 
   methods: {
-    onMapInit(map: maplibregl.Map) {
+    onMapInit(map: Map) {
       this.map = map
       this.languageControl = new OpenMapTilesLanguage({
         defaultLanguage: this.locale,
@@ -168,9 +175,7 @@ export default Vue.extend({
       this.getStyle(mapStyleEnum).then((style) => {
         const vectorSource = Object.values(style.sources).find(
           (source) => ['vector', 'raster'].lastIndexOf(source.type) >= 0
-        ) as
-          | maplibregl.VectorSourceSpecification
-          | maplibregl.RasterSourceSpecification
+        ) as VectorSourceSpecification | RasterSourceSpecification
         if (vectorSource) {
           this.$emit('full-attribution', vectorSource.attribution)
         }
