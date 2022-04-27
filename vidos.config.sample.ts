@@ -8,7 +8,6 @@ const configDefault = {
   NOTEBOOK_ENABLED: true,
   MAPILLARY_ACCESS_TOKEN: null,
   GOOGLE_TAG_MANAGER_ID: null,
-  SENTRY_DSN: null,
 }
 
 const config: VidosConfig = {
