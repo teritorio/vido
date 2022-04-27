@@ -19,7 +19,7 @@
         dragRotate: rotate,
         touchPitch: rotate,
         locale: locales,
-        attributionControl: showAttribution,
+        attributionControl: false,
       }"
       :nav-control="{
         show: false,
@@ -58,6 +58,7 @@ import {
   StyleSpecification,
   LngLatBoundsLike,
   LngLatLike,
+  AttributionControl,
 } from 'maplibre-gl'
 import Vue, { PropType } from 'vue'
 import { mapGetters } from 'vuex'
@@ -120,6 +121,7 @@ export default Vue.extend({
     map: Map | null
     mapStyle: StyleSpecification | null
     mapStyleCache: { [key: string]: StyleSpecification }
+    attributionControl: AttributionControl | null
     locales: Record<string, string>
     languageControl: OpenMapTilesLanguage | null
   } {
@@ -127,6 +129,7 @@ export default Vue.extend({
       map: null,
       mapStyle: null,
       mapStyleCache: {},
+      attributionControl: null,
       locales: {},
       languageControl: null,
     }
@@ -144,6 +147,13 @@ export default Vue.extend({
   watch: {
     mapStyleEnum(value: MapStyleEnum) {
       this.setStyle(value)
+    },
+    showAttribution(enable: boolean) {
+      if (enable) {
+        this.addAttribution()
+      } else {
+        this.removeAttribution()
+      }
     },
     locale(locale: string) {
       this.setLanguage(locale)
@@ -168,6 +178,10 @@ export default Vue.extend({
       this.languageControl = new OpenMapTilesLanguage({
         defaultLanguage: this.locale,
       })
+
+      if (this.showAttribution) {
+        this.addAttribution()
+      }
       this.map.addControl(this.languageControl)
     },
 
@@ -201,6 +215,20 @@ export default Vue.extend({
         this.mapStyleCache[mapStyleEnum] = style
 
         return style
+      }
+    },
+
+    addAttribution() {
+      if (this.map && !this.attributionControl) {
+        this.attributionControl = new AttributionControl()
+        this.map.addControl(this.attributionControl)
+      }
+    },
+
+    removeAttribution() {
+      if (this.map && this.attributionControl) {
+        this.map.removeControl(this.attributionControl)
+        this.attributionControl = null
       }
     },
 
