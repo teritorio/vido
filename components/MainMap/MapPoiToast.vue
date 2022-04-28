@@ -93,7 +93,7 @@
             </p>
           </template>
 
-          <ul v-if="property === 'phone' && $isMobile()">
+          <ul v-if="property === 'phone' && $screen.phone">
             <li v-for="item in poiProp(property)" :key="item">
               <a
                 class="text-blue-400"
@@ -104,7 +104,7 @@
               </a>
             </li>
           </ul>
-          <ul v-else-if="property === 'mobile' && $isMobile()">
+          <ul v-else-if="property === 'mobile' && $screen.phone">
             <li v-for="item in poiProp(property)" :key="item">
               <a
                 class="text-blue-400"
