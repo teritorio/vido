@@ -31,6 +31,6 @@ export default vidosConfigPlugin
 
 declare module 'vue/types/vue' {
   interface Vue {
-    $vidoConfig: VidoConfig
+    readonly $vidoConfig: VidoConfig
   }
 }

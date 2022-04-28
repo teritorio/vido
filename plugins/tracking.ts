@@ -159,6 +159,6 @@ export default trackingPlugin
 
 declare module 'vue/types/vue' {
   interface Vue {
-    $tracking: (event: Event) => undefined
+    readonly $tracking: (event: Event) => undefined
   }
 }
