@@ -11,7 +11,12 @@
       :key="phone"
       class="contact-item contact-phone"
     >
-      {{ phone }}
+      <a v-if="$screen.phone" :href="`tel:${phone}`">
+        {{ phone }}
+      </a>
+      <template v-else>
+        {{ phone }}
+      </template>
     </p>
     <p
       v-for="email in p.email || []"
