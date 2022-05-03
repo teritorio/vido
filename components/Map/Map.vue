@@ -258,4 +258,8 @@ export default Vue.extend({
   .mapboxgl-ctrl-attrib-button {
   @apply bg-transparent;
 }
+
+.maplibregl-ctrl-attrib {
+  margin-left: 100px;
+}
 </style>
