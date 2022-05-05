@@ -1,11 +1,11 @@
 <template>
   <div class="fixed w-full h-full overflow-hidden flex flex-col">
     <header
-      class="relative sm:fixed top-0 bottom-0 z-10 flex flex-row w-full sm:h-full space-x-4 pointer-events-none sm:w-auto sm:p-2"
+      class="relative md:fixed top-0 bottom-0 z-10 flex flex-row w-full md:h-full space-x-4 pointer-events-none md:w-auto md:p-2"
     >
       <div
         :class="[
-          'flex-col justify-between w-full sm:w-auto sm:max-w-md sm:space-y-4',
+          'flex-col justify-between w-full md:w-auto md:max-w-md md:space-y-4',
           !selectedFeature && 'flex',
           showPoi && 'max-h-screen-4/6 md:max-h-screen 2xl:h-auto',
         ]"
@@ -35,7 +35,7 @@
               state.matches(states.SubCategories)
             "
             key="SubCategoryHeader"
-            class="hidden sm:flex m-2"
+            class="hidden md:flex m-2"
             :categories="state.context.selectedRootCategory.subCategories"
             :filters="filters"
             :is-sub-category-selected="isSubCategorySelected"
@@ -49,7 +49,7 @@
           <SubCategoryFilterHeader
             v-if="!isModeExplorer && state.matches(states.SubCategoryFilters)"
             key="SubCategoryFilterHeader"
-            class="hidden sm:flex m-2"
+            class="hidden md:flex m-2"
             :subcategory="subCategoryForFilter"
             :filters-values="subCategoryFilters"
             @go-back-click="onBackToSubCategoryClick"
@@ -59,7 +59,7 @@
             v-if="state.matches(states.Search)"
             key="SearchHeader"
             :class="[
-              'max-h-full hidden sm:flex p-2',
+              'max-h-full hidden md:flex p-2',
               showPoi && 'max-h-screen-4/6',
             ]"
           >
@@ -78,7 +78,7 @@
         <div
           v-if="state.matches(states.Search)"
           :class="[
-            'max-h-full sm:hidden sm:p-2',
+            'max-h-full md:hidden md:p-2',
             isBottomMenuOpened && 'hidden',
           ]"
         >
@@ -100,7 +100,7 @@
         v-if="
           !isModeExplorer && selectedSubCategories.length && !isModeFavorites
         "
-        class="hidden sm:block py-2"
+        class="hidden md:block py-2"
         style="max-width: calc(100vw - 670px)"
       >
         <SelectedSubCategoriesDense
@@ -123,7 +123,7 @@
       @full-attribution="setFullAttributions($event)"
     />
     <BottomMenu
-      class="sm:hidden"
+      class="md:hidden"
       :show-grip="!(isModeExplorer || isModeFavorites) || selectedFeature"
       :is-open="isBottomMenuOpened"
       @on-grip-click="onBottomMenuButtonClick"

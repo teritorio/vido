@@ -1,19 +1,19 @@
 <template>
   <div
     :class="[
-      'z-10 flex flex-col w-full sm:max-w-xl mx-0 overflow-y-auto shadow-md pointer-events-auto sm:flex-row sm:w-auto sm:mx-auto sm:rounded-xl poiDescription',
+      'z-10 flex flex-col w-full md:max-w-xl mx-0 overflow-y-auto shadow-md pointer-events-auto md:flex-row md:w-auto md:mx-auto md:rounded-xl poiDescription',
       !isModeFavorites && notebook ? 'bg-zinc-200 opacity-70' : 'bg-white',
     ]"
   >
     <img
       v-if="poiProp('image') && poiProp('image').length > 0"
-      class="object-cover w-full h-auto max-h-44 sm:max-h-full sm:w-52"
+      class="object-cover w-full h-auto max-h-44 md:max-h-full md:w-52"
       :src="poiProp('image')[0]"
       alt=""
     />
 
     <div
-      class="px-8 py-6 flex flex-col sm:overflow-y-auto flex-grow sm:h-50 h-auto sm:max-h-full box-border w-full sm:w-80 md:h-80 md:max-h-full md:w-96"
+      class="px-8 py-6 flex flex-col md:overflow-y-auto flex-grow md:h-50 h-auto md:max-h-full box-border w-full md:w-80 md:h-80 md:max-h-full md:w-96"
     >
       <div class="flex items-center justify-between shrink-0">
         <h2
@@ -558,11 +558,6 @@ export default Vue.extend({
 })
 </script>
 <style>
-@media screen and (min-width: 640px) {
-  .poiDescription {
-    max-height: 30vh;
-  }
-}
 button {
   @apply focus:outline-none;
 }

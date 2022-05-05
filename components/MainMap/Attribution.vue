@@ -1,7 +1,7 @@
 <template>
   <div
     v-if="attributions"
-    class="text-2xs p-2 text-right sm:hidden bg-white z-10"
+    class="text-2xs p-2 text-right md:hidden bg-white z-10"
     v-html="attributions"
   ></div>
 </template>

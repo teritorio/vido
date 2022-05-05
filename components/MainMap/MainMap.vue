@@ -2,7 +2,7 @@
   <div class="w-full h-full">
     <div
       :class="[
-        'relative flex flex-col w-full h-full sm:h-full',
+        'relative flex flex-col w-full h-full md:h-full',
         !small && 'h-full',
       ]"
     >
@@ -11,7 +11,7 @@
           'flex-grow overflow-hidden',
           !small &&
             isModeExplorerOrFavorites &&
-            'sm:mt-20 sm:mt-0 h-4/5 sm:h-full',
+            'md:mt-20 md:mt-0 h-4/5 md:h-full',
         ]"
       >
         <Map
@@ -51,7 +51,7 @@
       <aside v-if="map" class="pointer-events-none">
         <div
           :class="[
-            'absolute flex justify-end pointer-events-auto items-top pt-4 right-3 sm:pt-0 w-40 sm:w-48 top-3',
+            'absolute flex justify-end pointer-events-auto items-top pt-4 right-3 md:pt-0 w-40 md:w-48 top-4',
             small && 'hidden',
           ]"
         >
@@ -66,7 +66,7 @@
       </aside>
 
       <div
-        class="hidden fixed inset-x-0 bottom-0 sm:flex overflow-y-auto pointer-events-none h-auto sm:inset-x-3 sm:bottom-3"
+        class="hidden fixed inset-x-0 bottom-0 md:flex overflow-y-auto pointer-events-none h-auto md:inset-x-3 md:bottom-3"
       >
         <div class="w-full max-w-md" />
         <div class="grow-[1]" />

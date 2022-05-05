@@ -4,7 +4,7 @@
       :text="$tc('favorites.menu_label')"
       :classes="{
         dropdown:
-          'origin-top-right absolute right-14 sm:rigth-16 rounded shadow bg-white mt-1',
+          'origin-top-right absolute right-14 md:rigth-16 rounded shadow bg-white mt-1',
       }"
     >
       <div
@@ -21,7 +21,7 @@
         <button
           ref="menu"
           :class="[
-            'relative space-x-1 text-sm font-medium bg-white shadow-md outline-none sm:px-5 w-11 sm:w-auto h-11 focus:outline-none hover:bg-zinc-100 focus-visible:bg-zinc-100 shrink-0 border-r border-zinc-400 rounded-l-full',
+            'relative space-x-1 text-sm font-medium bg-white shadow-md outline-none md:px-5 w-11 md:w-auto h-11 focus:outline-none hover:bg-zinc-100 focus-visible:bg-zinc-100 shrink-0 border-r border-zinc-400 rounded-l-full',
             isModeFavorites &&
               'bg-blue-500 hover:bg-blue-400 focus-visible:bg-blue-400 text-white',
             !isModeFavorites && 'text-zinc-800',
@@ -36,7 +36,9 @@
             ]"
             size="sm"
           />
-          <span class="hidden sm:inline">{{ $tc('favorites.title') }}</span>
+          <span class="hidden md:inline favoriteTitle">{{
+            $tc('favorites.title')
+          }}</span>
           <div
             v-if="hasFavorites"
             class="flex items-center justify-center text-white text-center rounded-full absolute top-0 right-0 w-5 h-5 border-2 border-white bg-red-600"
@@ -307,3 +309,11 @@ export default (
   },
 })
 </script>
+
+<style lang="scss" scoped>
+.favoriteTitle {
+  @media (max-width: 860px) {
+    @apply hidden;
+  }
+}
+</style>

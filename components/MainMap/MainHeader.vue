@@ -1,10 +1,10 @@
 <template>
   <aside
-    class="hidden sm:block absolute bottom-0 overflow-y-auto pointer-events-auto relative inset-auto h-auto space-y-4 p-2"
+    class="hidden md:block absolute bottom-0 overflow-y-auto pointer-events-auto relative inset-auto h-auto space-y-4 p-2"
   >
     <div
       :class="[
-        'items-center justify-between hidden sm:flex rounded-xl shadow-md px-5 py-4',
+        'items-center justify-between hidden md:flex rounded-xl shadow-md px-5 py-4',
         isModeExplorerOrFavorites ? 'bg-blue-500 text-white' : 'bg-white',
       ]"
     >
