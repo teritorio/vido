@@ -24,7 +24,7 @@ export interface ApiPoiProperties {
     icon?: string
     color?: string
     // eslint-disable-next-line camelcase
-    tourism_style_class?: string[]
+    style_class?: string[]
   }
   editorial?: {
     // eslint-disable-next-line camelcase
@@ -59,9 +59,9 @@ const defaultOptions: apiPoisOptions = {
 }
 
 function stringifyOptions(options: apiPoisOptions): string[][] {
-  return Object.entries(
-    Object.assign({}, defaultOptions, options)
-  ).map(([k, v]) => [k, `${v}`])
+  return Object.entries(Object.assign({}, defaultOptions, options)).map(
+    ([k, v]) => [k, `${v}`]
+  )
 }
 
 export function getPoiById(
@@ -74,7 +74,7 @@ export function getPoiById(
   return fetch(
     `${apiEndpoint}/${apiProject}/${apiTheme}/poi/${poiId}?` +
       new URLSearchParams(stringifyOptions(options))
-  ).then((data) => (data.ok ? ((data.json() as unknown) as ApiPoi) : null))
+  ).then((data) => (data.ok ? (data.json() as unknown as ApiPoi) : null))
 }
 
 export function getPoiByIds(
@@ -90,7 +90,7 @@ export function getPoiByIds(
         ['ids', poiIds.join(',')],
         ...stringifyOptions(options),
       ])
-  ).then((data) => (data.ok ? ((data.json() as unknown) as ApiPois) : null))
+  ).then((data) => (data.ok ? (data.json() as unknown as ApiPois) : null))
 }
 
 export function getPoiByCategoryId(
@@ -106,5 +106,5 @@ export function getPoiByCategoryId(
         ['idmenu', `${categoryId}`],
         ...stringifyOptions(options),
       ])
-  ).then((data) => (data.ok ? ((data.json() as unknown) as ApiPois) : null))
+  ).then((data) => (data.ok ? (data.json() as unknown as ApiPois) : null))
 }

@@ -43,7 +43,7 @@ export interface ApiMenuGroup extends ApiMenuItem {
     icon: string
     color: string
     // eslint-disable-next-line camelcase
-    tourism_style_class: string[]
+    style_class: string[]
     // eslint-disable-next-line camelcase
     display_mode: 'large' | 'compact'
   }
@@ -74,9 +74,9 @@ export interface ApiMenuCategory extends ApiMenuItem {
     icon: string
     color: string
     // eslint-disable-next-line camelcase
-    tourism_style_class: string[]
+    style_class: string[]
     // eslint-disable-next-line camelcase
-    tourism_style_merge: boolean
+    style_merge: boolean
     // eslint-disable-next-line camelcase
     display_mode: 'large' | 'compact'
     zoom: number
@@ -101,6 +101,6 @@ export function getMenu(
   apiTheme: string
 ): Promise<[Category] | null> {
   return fetch(`${apiEndpoint}/${apiProject}/${apiTheme}/menu`).then((data) =>
-    data.ok ? ((data.json() as unknown) as [Category]) : null
+    data.ok ? (data.json() as unknown as [Category]) : null
   )
 }

@@ -18,10 +18,7 @@ export const markerLayerTextFactory = (
       [
         'at',
         0,
-        [
-          'array',
-          ['get', 'tourism_style_class', ['object', ['get', 'display']]],
-        ],
+        ['array', ['get', 'style_class', ['object', ['get', 'display']]]],
       ],
       'products',
       '#F25C05',

@@ -231,7 +231,7 @@ export default Vue.extend({
 
     filters(): Array<string[]> {
       return Object.values(this.categories)
-        .map((c) => c.category?.tourism_style_class)
+        .map((c) => c.category?.style_class)
         .filter((s) => s && Array.isArray(s))
     },
 
