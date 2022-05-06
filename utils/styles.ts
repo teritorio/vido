@@ -58,61 +58,41 @@ export const filterRouteByCategories = (
   map: Map,
   categorieIds: (number | string)[]
 ) => {
-  if (map && map.getLayer('features_tourism-line-casing')) {
+  if (map && map.getLayer('features-line-casing')) {
     const categorieIdsCond = categorieIds.map((categorieId) => [
       'in',
       `;${categorieId};`,
       ['get', 'category_ids'],
     ])
     const filter = ['any', ...categorieIdsCond]
-    map.setLayoutProperty(
-      'features_tourism-line-casing',
-      'visibility',
-      'visible'
-    )
-    map.setLayoutProperty('features_tourism-line', 'visibility', 'visible')
-    map.setLayoutProperty('features_tourism-fill', 'visibility', 'visible')
-    map.setLayoutProperty('features_tourism-outline', 'visibility', 'visible')
+    map.setLayoutProperty('features-line-casing', 'visibility', 'visible')
+    map.setLayoutProperty('features-line', 'visibility', 'visible')
+    map.setLayoutProperty('features-fill', 'visibility', 'visible')
+    map.setLayoutProperty('features-outline', 'visibility', 'visible')
     const isLineString = ['==', ['geometry-type'], 'LineString']
     const isPolygon = ['==', ['geometry-type'], 'Polygon']
-    map.setFilter('features_tourism-line-casing', ['all', filter, isLineString])
-    map.setFilter('features_tourism-line', ['all', filter, isLineString])
-    map.setFilter('features_tourism-fill', ['all', filter, isPolygon])
-    map.setFilter('features_tourism-outline', ['all', filter, isPolygon])
+    map.setFilter('features-line-casing', ['all', filter, isLineString])
+    map.setFilter('features-line', ['all', filter, isLineString])
+    map.setFilter('features-fill', ['all', filter, isPolygon])
+    map.setFilter('features-outline', ['all', filter, isPolygon])
   }
 }
 
 export const filterRouteByPoiId = (map: Map, id: number) => {
-  if (map && map.getLayer('features_tourism-line-casing')) {
-    map.setLayoutProperty(
-      'features_tourism-line-casing',
-      'visibility',
-      'visible'
-    )
-    map.setLayoutProperty('features_tourism-line', 'visibility', 'visible')
-    map.setLayoutProperty('features_tourism-fill', 'visibility', 'visible')
-    map.setLayoutProperty('features_tourism-outline', 'visibility', 'visible')
+  if (map && map.getLayer('features-line-casing')) {
+    map.setLayoutProperty('features-line-casing', 'visibility', 'visible')
+    map.setLayoutProperty('features-line', 'visibility', 'visible')
+    map.setLayoutProperty('features-fill', 'visibility', 'visible')
+    map.setLayoutProperty('features-outline', 'visibility', 'visible')
     const isLineString = ['==', ['geometry-type'], 'LineString']
     const isPolygon = ['==', ['geometry-type'], 'Polygon']
-    map.setFilter('features_tourism-line-casing', [
+    map.setFilter('features-line-casing', [
       'all',
       ['==', ['id'], id],
       isLineString,
     ])
-    map.setFilter('features_tourism-line', [
-      'all',
-      ['==', ['id'], id],
-      isLineString,
-    ])
-    map.setFilter('features_tourism-fill', [
-      'all',
-      ['==', ['id'], id],
-      isPolygon,
-    ])
-    map.setFilter('features_tourism-outline', [
-      'all',
-      ['==', ['id'], id],
-      isPolygon,
-    ])
+    map.setFilter('features-line', ['all', ['==', ['id'], id], isLineString])
+    map.setFilter('features-fill', ['all', ['==', ['id'], id], isPolygon])
+    map.setFilter('features-outline', ['all', ['==', ['id'], id], isPolygon])
   }
 }

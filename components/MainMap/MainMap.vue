@@ -510,8 +510,8 @@ export default Vue.extend({
         'poi-level-1',
         'poi-level-2',
         'poi-level-3',
-        'features_tourism-line',
-        'features_tourism-fill',
+        'features-line',
+        'features-fill',
       ].forEach((layer) => {
         if (this.map) {
           this.map.on('click', layer, setSelectedFeature)

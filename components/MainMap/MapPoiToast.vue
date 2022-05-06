@@ -325,7 +325,7 @@ export default Vue.extend({
         // @ts-ignore
       } else if (this.poi.layer?.layout['icon-image']?.name) {
         return (
-          'teritorio teritorio-tourism-' +
+          'teritorio teritorio-' +
           // @ts-ignore
           this.poi.layer?.layout['icon-image']?.name.replace(/[•◯⬤]/g, '')
         )
