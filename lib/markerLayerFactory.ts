@@ -1,69 +1,55 @@
-import maplibregl, { LayerSpecification } from 'maplibre-gl'
+import maplibregl, {
+  LayerSpecification,
+  SymbolLayerSpecification,
+} from 'maplibre-gl'
 
 import TeritorioIconBadge from '@/components/TeritorioIcon/TeritorioIconBadge.vue'
 
 import { TupleLatLng } from '~/utils/types'
 
 export const markerLayerTextFactory = (
-  source: string,
-  id: string
-): LayerSpecification => ({
-  id,
-  type: 'symbol',
-  source,
-  filter: ['!=', 'cluster', true],
-  paint: {
-    'text-color': [
-      'match',
-      [
-        'at',
-        0,
-        ['array', ['get', 'style_class', ['object', ['get', 'display']]]],
-      ],
-      'products',
-      '#F25C05',
-      'convenience',
-      '#00a0a4',
-      'services',
-      '#2a62ac',
-      'safety',
-      '#e42224',
-      'mobility',
-      '#3b74b9',
-      'amenity',
-      '#2a62ac',
-      'remarkable',
-      '#e50980',
-      'culture',
-      '#76009e',
-      'hosting',
-      '#99163a',
-      'catering',
-      '#f09007',
-      'leisure',
-      '#00A757',
-      'public_landmark',
-      '#1D1D1B',
-      'shopping',
-      '#808080',
-      '#666',
-    ],
-    'text-halo-blur': 0.5,
-    'text-halo-color': '#ffffff',
-    'text-halo-width': 1,
-    'text-opacity': ['interpolate', ['linear'], ['zoom'], 14, 0, 15, 1],
-  },
-  layout: {
-    'text-anchor': 'top',
-    'text-field': ['get', 'name'],
-    'text-max-width': 9,
-    'text-offset': [0, 1.3],
-    'text-padding': 2,
-    'text-size': 12,
-    'text-optional': true,
-    'text-allow-overlap': false,
-  },
-})
+  layerTemplate: LayerSpecification,
+  id: string,
+  source: string
+): LayerSpecification => {
+  if (layerTemplate.type !== 'symbol') {
+    return layerTemplate
+  } else {
+    const layer: SymbolLayerSpecification = {
+      id,
+      type: layerTemplate.type,
+      source,
+      filter: ['!=', 'cluster', true],
+      layout: {
+        ...layerTemplate.layout,
+        'text-field': ['get', 'name'],
+        'text-offset': [0, 1.3],
+      },
+      paint: {
+        ...layerTemplate.paint,
+        'text-opacity': ['interpolate', ['linear'], ['zoom'], 14, 0, 15, 1],
+      },
+    }
+
+    if (
+      layer?.paint &&
+      'text-color' in layer?.paint &&
+      Array.isArray(layer.paint['text-color']) &&
+      layer.paint['text-color'][0] === 'let'
+    ) {
+      const superclass = layer.paint['text-color'].indexOf('superclass')
+      if (superclass) {
+        layer.paint['text-color'][superclass + 1] = [
+          'at',
+          0,
+          ['array', ['get', 'style_class', ['object', ['get', 'display']]]],
+        ]
+      }
+    }
+
+    return layer
+  }
+}
 
 export function makerHtmlFactory(
   latLng: TupleLatLng,

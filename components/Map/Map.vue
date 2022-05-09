@@ -194,6 +194,7 @@ export default Vue.extend({
           this.$emit('full-attribution', vectorSource.attribution)
         }
 
+        this.$emit('map-style-load', style)
         this.style = style
         this.map?.setStyle(style)
       })

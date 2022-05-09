@@ -32,6 +32,7 @@
           @map-rotateend="onMapRender"
           @map-touchmove="onMapRender"
           @map-zoomend="onMapRender"
+          @map-style-load="onMapStyleLoad"
           @full-attribution="$emit('full-attribution', $event)"
         >
           <template #controls>
@@ -184,6 +185,7 @@ export default Vue.extend({
   data(): {
     map: maplibregl.Map | null
     source: string
+    poiLayerTemplate: maplibregl.LayerSpecification | undefined
     pitch: number
     markers: { [id: string]: maplibregl.Marker }
     markersOnScreen: { [id: string]: maplibregl.Marker }
@@ -198,6 +200,7 @@ export default Vue.extend({
     return {
       map: null,
       source: POI_SOURCE,
+      poiLayerTemplate: undefined,
       pitch: 0,
       markers: {},
       markersOnScreen: {},
@@ -558,6 +561,12 @@ export default Vue.extend({
       }
     },
 
+    onMapStyleLoad(style: maplibregl.StyleSpecification) {
+      this.poiLayerTemplate = style.layers.find(
+        (layer) => layer.id === 'poi-level-1'
+      )
+    },
+
     setPoiToastVisibility(visible: boolean) {
       this.showPoiToast = visible
     },
@@ -707,9 +716,17 @@ export default Vue.extend({
       } else {
         this.getSubCategory(this.selectedCategories)
 
-        if (!this.map.getLayer(POI_LAYER_MARKER) && this.map.isStyleLoaded())
+        if (
+          !this.map.getLayer(POI_LAYER_MARKER) &&
+          this.map.isStyleLoaded() &&
+          this.poiLayerTemplate
+        )
           this.map.addLayer(
-            markerLayerTextFactory(POI_SOURCE, POI_LAYER_MARKER)
+            markerLayerTextFactory(
+              this.poiLayerTemplate,
+              POI_LAYER_MARKER,
+              POI_SOURCE
+            )
           )
       }
     },
@@ -851,8 +868,10 @@ export default Vue.extend({
         : POI_LAYER_MARKER
 
       // Add individual markers
-      if (!this.map.getLayer(layer))
-        this.map.addLayer(markerLayerTextFactory(source, layer))
+      if (!this.map.getLayer(layer) && this.poiLayerTemplate)
+        this.map.addLayer(
+          markerLayerTextFactory(this.poiLayerTemplate, layer, source)
+        )
     },
 
     updateMarkers(src: string) {
