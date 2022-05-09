@@ -1,7 +1,7 @@
 <template>
   <div>
     <mapbox
-      v-if="mapStyle"
+      v-if="style"
       access-token=""
       :map-options="{
         bounds: bounds,
@@ -14,7 +14,7 @@
         maxZoom: defaultZoom.max,
         minZoom: defaultZoom.min,
         pitch,
-        style: mapStyle,
+        style: style,
         zoom: zoom,
         dragRotate: rotate,
         touchPitch: rotate,
@@ -75,7 +75,7 @@ export default Vue.extend({
   },
 
   props: {
-    mapStyleEnum: {
+    mapStyle: {
       type: String as PropType<MapStyleEnum>,
       default: DEFAULT_MAP_STYLE as MapStyleEnum,
     },
@@ -119,7 +119,7 @@ export default Vue.extend({
 
   data(): {
     map: Map | null
-    mapStyle: StyleSpecification | null
+    style: StyleSpecification | null
     mapStyleCache: { [key: string]: StyleSpecification }
     attributionControl: AttributionControl | null
     locales: Record<string, string>
@@ -127,7 +127,7 @@ export default Vue.extend({
   } {
     return {
       map: null,
-      mapStyle: null,
+      style: null,
       mapStyleCache: {},
       attributionControl: null,
       locales: {},
@@ -145,7 +145,7 @@ export default Vue.extend({
   },
 
   watch: {
-    mapStyleEnum(value: MapStyleEnum) {
+    mapStyle(value: MapStyleEnum) {
       this.setStyle(value)
     },
     showAttribution(enable: boolean) {
@@ -161,7 +161,7 @@ export default Vue.extend({
   },
 
   beforeMount() {
-    this.setStyle(this.mapStyleEnum)
+    this.setStyle(this.mapStyle)
 
     this.locales = {
       'NavigationControl.ResetBearing':
@@ -185,8 +185,8 @@ export default Vue.extend({
       this.map.addControl(this.languageControl)
     },
 
-    setStyle(mapStyleEnum: MapStyleEnum) {
-      this.getStyle(mapStyleEnum).then((style) => {
+    setStyle(mapStyle: MapStyleEnum) {
+      this.getStyle(mapStyle).then((style) => {
         const vectorSource = Object.values(style.sources).find(
           (source) => ['vector', 'raster'].lastIndexOf(source.type) >= 0
         ) as VectorSourceSpecification | RasterSourceSpecification
@@ -194,14 +194,14 @@ export default Vue.extend({
           this.$emit('full-attribution', vectorSource.attribution)
         }
 
-        this.mapStyle = style
+        this.style = style
         this.map?.setStyle(style)
       })
     },
 
-    async getStyle(mapStyleEnum: MapStyleEnum): Promise<StyleSpecification> {
-      if (this.mapStyleCache[mapStyleEnum]) {
-        return this.mapStyleCache[mapStyleEnum]
+    async getStyle(mapStyle: MapStyleEnum): Promise<StyleSpecification> {
+      if (this.mapStyleCache[mapStyle]) {
+        return this.mapStyleCache[mapStyle]
       } else {
         const styleURLs = {
           [MapStyleEnum.vector]: this.$vidoConfig.VECTO_STYLE_URL,
@@ -209,10 +209,10 @@ export default Vue.extend({
           [MapStyleEnum.raster]: this.$vidoConfig.RASTER_STYLE_URL,
         }
         const style = await fetchStyle(
-          styleURLs[mapStyleEnum],
+          styleURLs[mapStyle],
           this.extraAttributions
         )
-        this.mapStyleCache[mapStyleEnum] = style
+        this.mapStyleCache[mapStyle] = style
 
         return style
       }

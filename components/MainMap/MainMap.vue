@@ -17,7 +17,7 @@
         <Map
           :bounds="defaultBounds"
           :extra-attributions="extraAttributions"
-          :map-style-enum="selectedBackground"
+          :map-style="selectedBackground"
           :pitch="pitch"
           :rotate="!$screen.touch"
           :show-attribution="!$screen.smallScreen"
