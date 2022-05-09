@@ -478,12 +478,14 @@ export default Vue.extend({
         }
       })
 
-      this.map.on('styledata', async () => {
-        const features = this.isModeFavorites
-          ? await this.fetchFavorites(this.favoritesIds)
-          : flattenFeatures(this.features)
+      this.map.on('styledata', async (e: MapDataEvent) => {
+        if (e.dataType === 'style') {
+          const features = this.isModeFavorites
+            ? await this.fetchFavorites(this.favoritesIds)
+            : flattenFeatures(this.features)
 
-        this.initPoiLayer(features)
+          this.initPoiLayer(features)
+        }
       })
 
       this.map.on('click', () => {
