@@ -14,17 +14,17 @@ import { getContrastedTextColor } from '@/utils/picto'
 
 export default Vue.extend({
   props: {
-    categoryColor: {
+    colorBackground: {
       type: String,
-      required: true,
+      default: null,
+    },
+    colorText: {
+      type: String,
+      default: null,
     },
     picto: {
       type: String,
       required: true,
-    },
-    useCategoryColor: {
-      type: Boolean,
-      default: null,
     },
     useNativeAlignment: {
       type: Boolean,
@@ -37,11 +37,7 @@ export default Vue.extend({
   },
   computed: {
     textColor() {
-      if (this.useCategoryColor) {
-        return this.categoryColor
-      }
-
-      return getContrastedTextColor(this.categoryColor)
+      return this.colorText || getContrastedTextColor(this.colorBackground)
     },
   },
 })

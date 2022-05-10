@@ -21,8 +21,11 @@ export interface ApiPoiProperties {
     category_ids?: Array<number>
   }
   display?: {
-    icon?: string
-    color?: string
+    icon: string
+    // eslint-disable-next-line camelcase
+    color_fill: string
+    // eslint-disable-next-line camelcase
+    color_line: string
     // eslint-disable-next-line camelcase
     style_class?: string[]
   }

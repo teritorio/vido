@@ -6,8 +6,9 @@
           v-for="category in nonHighlightedCategories"
           :id="category.id"
           :key="category.id"
-          :color="
-            (category.menu_group || category.link || category.category).color
+          :color-fill="
+            (category.menu_group || category.link || category.category)
+              .color_fill
           "
           :label="
             (category.menu_group || category.link || category.category).name.fr

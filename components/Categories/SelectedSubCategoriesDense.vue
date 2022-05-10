@@ -14,8 +14,8 @@
     >
       <TeritorioIconBadge
         :id="category.id"
-        :color="
-          (category.menu_group || category.link || category.category).color
+        :color-fill="
+          (category.menu_group || category.link || category.category).color_fill
         "
         :picto="
           (category.menu_group || category.link || category.category).icon

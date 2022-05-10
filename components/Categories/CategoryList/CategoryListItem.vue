@@ -10,8 +10,9 @@
       <div class="flex items-center space-x-4">
         <div class="relative">
           <TeritorioIconBadge
-            :color="
-              (category.menu_group || category.link || category.category).color
+            :color-fill="
+              (category.menu_group || category.link || category.category)
+                .color_fill
             "
             :picto="
               (category.menu_group || category.link || category.category).icon

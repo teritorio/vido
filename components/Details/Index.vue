@@ -3,11 +3,15 @@
     <div>
       <Header :theme="settings.themes[0]" />
       <div class="flex justify-center">
-        <TeritorioIconBadge :color="color" size="2xl" :picto="p.display.icon" />
+        <TeritorioIconBadge
+          :color-fill="colorFill"
+          size="2xl"
+          :picto="p.display.icon"
+        />
       </div>
       <h1>{{ p.name }}</h1>
       <Breadcrumb
-        :color="color"
+        :color-line="colorLine"
         :entries="[
           { text: 'Carte', href: '/' },
           { text: 'todo ' },
@@ -17,7 +21,7 @@
       <Share
         :title="p.name"
         :href="p.editorial && p.editorial['website:details']"
-        :color="color"
+        :color-line="colorLine"
       />
       <div class="detail-wrapper">
         <div class="detail-left">
@@ -40,7 +44,7 @@
               v-if="property == 'first_contact'"
               :key="property"
               :p="p"
-              :color="color"
+              :color-fill="colorFill"
             />
 
             <div
@@ -142,8 +146,11 @@ export default Vue.extend({
         })
         .filter((e) => e !== undefined) as string[]
     },
-    color(): string {
-      return this.poi.properties.display?.color || '#76009E'
+    colorFill(): string {
+      return this.poi.properties.display?.color_fill || '#76009E'
+    },
+    colorLine(): string {
+      return this.poi.properties.display?.color_line || '#76009E'
     },
     class_label(): string | undefined {
       return (

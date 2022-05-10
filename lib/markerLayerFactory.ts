@@ -53,8 +53,8 @@ export const markerLayerTextFactory = (
 
 export function makerHtmlFactory(
   latLng: TupleLatLng,
-  color: string | undefined,
-  icon: string | undefined,
+  colorFill: string,
+  icon: string,
   thumbnail: string | undefined,
   size: string | null = null
 ): maplibregl.Marker {
@@ -73,7 +73,7 @@ export function makerHtmlFactory(
   // Teritorio badge
   const instance = new TeritorioIconBadge({
     propsData: {
-      color,
+      colorFill,
       picto: icon,
       image: thumbnail,
       size,

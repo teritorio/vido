@@ -12,7 +12,7 @@
         >
           <font-awesome-icon
             :icon="['fab', 'facebook']"
-            :style="{ color: color }"
+            :style="{ color: colorLine }"
           />
         </a>
       </li>
@@ -27,7 +27,7 @@
         >
           <font-awesome-icon
             :icon="['fab', 'twitter']"
-            :style="{ color: color }"
+            :style="{ color: colorLine }"
           />
         </a>
       </li>
@@ -42,7 +42,7 @@
         >
           <font-awesome-icon
             :icon="['fab', 'whatsapp']"
-            :style="{ color: color }"
+            :style="{ color: colorLine }"
           />
         </a>
       </li>
@@ -53,7 +53,7 @@
           class="text-sm text-zinc-800 bg-white rounded-full shadow-md outline-none w-8 h-8 focus:outline-none hover:bg-zinc-100 focus-visible:bg-zinc-100 shrink-0 flex items-center justify-center"
           @click="print"
         >
-          <font-awesome-icon icon="print" :style="{ color: color }" />
+          <font-awesome-icon icon="print" :style="{ color: colorLine }" />
         </button>
       </li>
       <li>
@@ -64,7 +64,7 @@
           class="text-sm text-zinc-800 bg-white rounded-full shadow-md outline-none w-8 h-8 focus:outline-none hover:bg-zinc-100 focus-visible:bg-zinc-100 shrink-0 flex items-center justify-center"
           @click="shareUrl"
         >
-          <font-awesome-icon icon="qrcode" :style="{ color: color }" />
+          <font-awesome-icon icon="qrcode" :style="{ color: colorLine }" />
         </button>
       </li>
       <li>
@@ -75,7 +75,7 @@
           class="text-sm text-zinc-800 bg-white rounded-full shadow-md outline-none w-8 h-8 focus:outline-none hover:bg-zinc-100 focus-visible:bg-zinc-100 shrink-0 flex items-center justify-center"
           @click="shareUrl"
         >
-          <font-awesome-icon icon="link" :style="{ color: color }" />
+          <font-awesome-icon icon="link" :style="{ color: colorLine }" />
         </button>
       </li>
     </ul>
@@ -110,7 +110,7 @@ export default (
       type: String,
       default: null,
     },
-    color: {
+    colorLine: {
       type: String,
       required: true,
     },

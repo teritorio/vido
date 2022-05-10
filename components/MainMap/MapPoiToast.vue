@@ -18,7 +18,7 @@
       <div class="flex items-center justify-between shrink-0">
         <h2
           class="block text-xl font-semibold leading-tight"
-          :style="'color:' + color"
+          :style="'color:' + colorLine"
         >
           {{ name }}
         </h2>
@@ -41,17 +41,16 @@
       >
         <TeritorioIcon
           v-if="icon"
-          :category-color="color"
+          :color-text="colorLine"
           class="mr-2"
           :picto="icon"
-          :use-category-color="true"
           :use-native-alignment="false"
         />
 
         <font-awesome-icon
           v-if="faIcon"
           :icon="faIcon"
-          :color="color"
+          :color="colorLine"
           class="mr-2"
           size="sm"
         />
@@ -171,7 +170,7 @@
           :title="$tc('toast.findRoute')"
           @click="tracking('route')"
         >
-          <font-awesome-icon icon="route" :color="color" size="sm" />
+          <font-awesome-icon icon="route" :color="colorLine" size="sm" />
           <span class="text-sm">{{ $tc('toast.route') }}</span>
         </a>
 
@@ -180,7 +179,7 @@
           :title="$tc('toast.zoom')"
           @click.stop="onZoomClick"
         >
-          <font-awesome-icon icon="plus" :color="color" size="sm" />
+          <font-awesome-icon icon="plus" :color="colorLine" size="sm" />
           <span class="text-sm">{{ $tc('toast.zoom') }}</span>
         </button>
 
@@ -199,7 +198,7 @@
         >
           <font-awesome-icon
             icon="eye"
-            :color="isModeExplorer ? 'white' : color"
+            :color="isModeExplorer ? 'white' : colorLine"
             size="sm"
           />
           <span class="text-sm">{{ $tc('toast.explore') }}</span>
@@ -214,7 +213,7 @@
           <font-awesome-icon
             :icon="[`${isModeFavorites ? 'fas' : 'far'}`, 'star']"
             :class="isModeFavorites && 'text-amber-500'"
-            :color="!isModeFavorites && color"
+            :color="!isModeFavorites && colorLine"
             size="sm"
           />
           <span class="text-sm">{{ $tc('toast.favorite') }}</span>
@@ -235,7 +234,6 @@ import Website from '@/components/Fields/Website.vue'
 import TeritorioIcon from '@/components/TeritorioIcon/TeritorioIcon.vue'
 import { getPoiById, ApiPoi, ApiPoiProperties } from '@/lib/apiPois'
 import { isIOS } from '@/utils/isIOS'
-import { getContrastedTextColor } from '@/utils/picto'
 
 import RouteField from '~/components/Fields/RouteField.vue'
 
@@ -295,18 +293,19 @@ export default Vue.extend({
       )
     },
 
-    color(): string | null {
-      if (this.poiDisplay('color')) {
-        return this.poiDisplay('color')
+    colorFill(): string | null {
+      if (this.poiDisplay('color_fill')) {
+        return this.poiDisplay('color_fill')
         // @ts-ignore
       } else if (this.poi && this.poi.layer && this.poi.layer.paint) {
         const tc =
           // @ts-ignore
+          this.poi.layer.paint['fill-color'] ||
+          // and then
+          // @ts-ignore
           this.poi.layer.paint['text-color'] ||
           // @ts-ignore
-          this.poi.layer.paint['line-color'] ||
-          // @ts-ignore
-          this.poi.layer.paint['fill-color']
+          this.poi.layer.paint['line-color']
         return `rgba(${Math.round(tc.r * 255).toFixed(0)}, ${Math.round(
           tc.g * 255
         ).toFixed(0)}, ${Math.round(tc.b * 255).toFixed(0)}, ${tc.a})`
@@ -315,8 +314,25 @@ export default Vue.extend({
       }
     },
 
-    contrastedColor(): string {
-      return getContrastedTextColor(this.color || 'black')
+    colorLine(): string | null {
+      if (this.poiDisplay('color_line')) {
+        return this.poiDisplay('color_line')
+        // @ts-ignore
+      } else if (this.poi && this.poi.layer && this.poi.layer.paint) {
+        const tc =
+          // @ts-ignore
+          this.poi.layer.paint['text-color'] ||
+          // @ts-ignore
+          this.poi.layer.paint['line-color'] ||
+          // and then
+          // @ts-ignore
+          this.poi.layer.paint['fill-color']
+        return `rgba(${Math.round(tc.r * 255).toFixed(0)}, ${Math.round(
+          tc.g * 255
+        ).toFixed(0)}, ${Math.round(tc.b * 255).toFixed(0)}, ${tc.a})`
+      } else {
+        return 'black'
+      }
     },
 
     icon(): string {

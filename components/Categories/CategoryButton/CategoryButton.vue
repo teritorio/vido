@@ -13,9 +13,13 @@
   >
     <div
       class="relative flex items-center justify-center w-12 h-12 mb-2 text-white rounded-full"
-      :style="{ backgroundColor: color, flexShrink: 0 }"
+      :style="{ backgroundColor: colorFill, flexShrink: 0 }"
     >
-      <TeritorioIcon :category-color="color" class="text-2xl" :picto="picto" />
+      <TeritorioIcon
+        :color-background="colorFill"
+        class="text-2xl"
+        :picto="picto"
+      />
 
       <div
         v-if="activeSubCategories > 0"
@@ -77,7 +81,7 @@ export default Vue.extend({
     TeritorioIcon,
   },
   props: {
-    color: {
+    colorFill: {
       type: String,
       required: true,
     },

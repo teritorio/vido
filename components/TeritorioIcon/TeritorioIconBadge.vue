@@ -5,10 +5,10 @@
       iconDim,
       Boolean(image) && 'shadow-md',
     ]"
-    :style="{ backgroundColor: color }"
+    :style="{ backgroundColor: colorFill }"
   >
     <TeritorioIcon
-      :category-color="color"
+      :color-background="colorFill"
       :class="`text-${iconSize}`"
       :picto="picto"
       :image="image"
@@ -27,7 +27,7 @@ export default Vue.extend({
   },
 
   props: {
-    color: {
+    colorFill: {
       type: String,
       required: true,
     },

@@ -15,8 +15,7 @@
         <teritorio-icon
           v-if="item.icon && item.icon.indexOf('teritorio') != -1"
           :picto="item.icon"
-          category-color="#6B7280"
-          use-category-color
+          color-text="#6B7280"
         />
         <font-awesome-icon
           v-elsif="item.icon"

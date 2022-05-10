@@ -938,12 +938,12 @@ export default Vue.extend({
             if (props?.metadata?.id) {
               id = 'm' + props.metadata.id
               const markerCoords = this.featuresCoordinates[props.metadata.id]
-              if (!this.markers[id] && markerCoords) {
+              if (!this.markers[id] && markerCoords && props.display) {
                 // Marker
                 this.markers[id] = makerHtmlFactory(
                   markerCoords, // Using this to avoid misplaced marker
-                  props.display?.color,
-                  props.display?.icon,
+                  props.display.color_fill,
+                  props.display.icon,
                   props['image:thumbnail']
                 )
                 const el = this.markers[id].getElement()

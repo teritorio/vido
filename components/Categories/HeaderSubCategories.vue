@@ -40,8 +40,10 @@ export default Vue.extend({
     listItems() {
       return this.$props.categories.map((category: Category) => ({
         ...category,
-        color: (category.menu_group || category.link || category.category)
-          .color,
+        colorFill: (category.menu_group || category.link || category.category)
+          .color_fill,
+        colorLine: (category.menu_group || category.link || category.category)
+          .color_line,
         label: (category.menu_group || category.link || category.category).name
           .fr,
         picto: (category.menu_group || category.link || category.category).icon,

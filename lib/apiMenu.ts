@@ -41,7 +41,10 @@ export interface ApiMenuGroup extends ApiMenuItem {
   menu_group: {
     name: MultilingualString
     icon: string
-    color: string
+    // eslint-disable-next-line camelcase
+    color_fill: string
+    // eslint-disable-next-line camelcase
+    color_line: string
     // eslint-disable-next-line camelcase
     style_class: string[]
     // eslint-disable-next-line camelcase
@@ -58,7 +61,10 @@ export interface ApiMenuLink extends ApiMenuItem {
     href: string
     name: MultilingualString
     icon: string
-    color: string
+    // eslint-disable-next-line camelcase
+    color_fill: string
+    // eslint-disable-next-line camelcase
+    color_line: string
     // eslint-disable-next-line camelcase
     display_mode: 'large' | 'compact'
   }
@@ -72,7 +78,10 @@ export interface ApiMenuCategory extends ApiMenuItem {
   category: {
     name: MultilingualString
     icon: string
-    color: string
+    // eslint-disable-next-line camelcase
+    color_fill: string
+    // eslint-disable-next-line camelcase
+    color_line: string
     // eslint-disable-next-line camelcase
     style_class: string[]
     // eslint-disable-next-line camelcase
