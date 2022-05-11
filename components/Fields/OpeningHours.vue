@@ -90,7 +90,20 @@ export default Vue.extend({
 
     schedule(): string[] {
       try {
-        const oh = new OpeningHours(this.openingHours)
+        const oh = new OpeningHours(this.openingHours, {
+          lon:
+            (this.$settings.bbox_line.coordinates[0][1] +
+              this.$settings.bbox_line.coordinates[1][1]) /
+            2,
+          lat:
+            (this.$settings.bbox_line.coordinates[0][0] +
+              this.$settings.bbox_line.coordinates[1][0]) /
+            2,
+          address: {
+            country_code: this.$settings.default_country,
+            state: '',
+          },
+        })
 
         const from = new Date()
         from.setDate(from.getDate() + ((7 - from.getDay()) % 7 || 7))

@@ -131,7 +131,10 @@
             />
           </p>
 
-          <p v-else-if="property === 'opening_hours'" class="text-sm">
+          <p
+            v-else-if="property === 'opening_hours' && poiProp(property)"
+            class="text-sm"
+          >
             <OpeningHours :opening-hours="poiProp(property)" />
           </p>
 

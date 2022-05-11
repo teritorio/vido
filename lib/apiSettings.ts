@@ -26,6 +26,8 @@ export interface Settings {
   icon_font_css_url: string
   // eslint-disable-next-line camelcase
   bbox_line: GeoJSON.LineString
+  // eslint-disable-next-line camelcase
+  default_country: string
 
   themes: SiteInfosTheme[]
 }

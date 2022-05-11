@@ -67,6 +67,7 @@ export default Vue.extend({
   },
 
   mounted() {
+    this.$settings.set(this.settings)
     this.setSiteLocale(this.$i18n.locale)
   },
 
