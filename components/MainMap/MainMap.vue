@@ -138,7 +138,7 @@ import {
 import { State as MenuState } from '@/store/menu'
 import { filterRouteByCategories, filterRouteByPoiId } from '@/utils/styles'
 import { MapStyleEnum, Mode, TupleLatLng } from '@/utils/types'
-import { getHashPart, setHashPart } from '@/utils/url'
+import { getHashPart } from '@/utils/url'
 import { flattenFeatures } from '@/utils/utilities'
 
 const POI_SOURCE = 'poi'
@@ -369,7 +369,6 @@ export default Vue.extend({
             this.selectedBackground = EXPLORER_MAP_STYLE
           }
 
-          setHashPart('bg', this.selectedBackground)
           break
         }
         case Mode.BROWSER:
@@ -396,7 +395,7 @@ export default Vue.extend({
 
     this.toggleFavoritesMode(JSON.parse(favorites).favorites)
 
-    const mode = getHashPart('mode')
+    const mode = getHashPart(this.$router, 'mode')
     this.setMode(mode)
     switch (mode) {
       case Mode.FAVORITES: {
@@ -412,7 +411,7 @@ export default Vue.extend({
       }
     }
 
-    const favs = getHashPart('favs')
+    const favs = getHashPart(this.$router, 'favs')
     if (favs) {
       try {
         const newFavorite = favs
@@ -432,7 +431,8 @@ export default Vue.extend({
     }
 
     let bg =
-      (getHashPart('bg') as keyof typeof MapStyleEnum) || DEFAULT_MAP_STYLE
+      (getHashPart(this.$router, 'bg') as keyof typeof MapStyleEnum) ||
+      DEFAULT_MAP_STYLE
 
     if (this.$screen.smallScreen && bg === MapStyleEnum.raster) {
       bg = DEFAULT_MAP_STYLE

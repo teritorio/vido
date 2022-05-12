@@ -25,7 +25,8 @@
 <script lang="ts">
 import Vue from 'vue'
 
-import { getHashPart, setHashPart } from '@/utils/url'
+import { DEFAULT_MAP_STYLE } from '@/lib/constants'
+import { getHashPart, routerPushHashUpdate } from '@/utils/url'
 
 export default Vue.extend({
   props: {
@@ -52,8 +53,11 @@ export default Vue.extend({
   },
 
   mounted() {
-    if (getHashPart('bg') && this.backgrounds[getHashPart('bg') || '']) {
-      this.background = getHashPart('bg')
+    if (
+      getHashPart(this.$router, 'bg') &&
+      this.backgrounds[getHashPart(this.$router, 'bg') || '']
+    ) {
+      this.background = getHashPart(this.$router, 'bg')
     } else if (this.initialBackground) {
       this.background = this.initialBackground
     } else {
@@ -70,7 +74,10 @@ export default Vue.extend({
 
       const nextBackgroundName = this.nextBackgroundName(this.background)
       this.background = nextBackgroundName
-      setHashPart('bg', nextBackgroundName)
+      routerPushHashUpdate(this.$router, {
+        bg:
+          nextBackgroundName !== DEFAULT_MAP_STYLE ? nextBackgroundName : null,
+      })
       this.$emit('changeBackground', nextBackgroundName)
     },
 

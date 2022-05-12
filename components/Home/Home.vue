@@ -181,8 +181,9 @@ import { Category } from '@/lib/apiMenu'
 import { getPoiById, ApiPoi } from '@/lib/apiPois'
 import { Settings } from '@/lib/apiSettings'
 import { getBBoxFeature } from '@/lib/bbox'
+import { DEFAULT_MAP_STYLE, EXPLORER_MAP_STYLE } from '@/lib/constants'
 import { Mode, FilterValues, ApiMenuItemSearchResult } from '@/utils/types'
-import { getHashPart, setHashPart } from '@/utils/url'
+import { getHashPart, setHashParts } from '@/utils/url'
 
 import {
   HomeContext,
@@ -422,27 +423,31 @@ export default (
     },
 
     mode() {
+      const hash: { [key: string]: string | null } = {
+        mode: this.mode !== Mode.BROWSER ? this.mode : null,
+      }
       switch (this.mode) {
         case Mode.BROWSER: {
           this.selectSubCategory(this.previousSubCategories)
-          setHashPart('mode', null)
           break
         }
         case Mode.EXPLORER: {
           this.previousSubCategories =
             this.state.context.selectedSubCategoriesIds
           this.unselectSubCategory(this.state.context.selectedSubCategoriesIds)
-          setHashPart('mode', this.mode)
+
+          hash.bg =
+            EXPLORER_MAP_STYLE !== DEFAULT_MAP_STYLE ? EXPLORER_MAP_STYLE : null
           break
         }
         case Mode.FAVORITES: {
           this.previousSubCategories =
             this.state.context.selectedSubCategoriesIds
-          setHashPart('mode', this.mode)
           this.$refs.mainMap?.resizeMap()
           break
         }
       }
+      this.routerPushUrl(hash)
     },
   },
 
@@ -450,20 +455,16 @@ export default (
     this.service
       .onTransition((state) => {
         this.state = state
-
-        if (
-          typeof location !== 'undefined' &&
-          state.event.type !== HomeEvents.Init
-        ) {
-          this.routerPushUrl()
-        }
       })
       .start()
   },
   mounted() {
     if (this.initialCategoryIds) {
       this.selectSubCategory(this.initialCategoryIds)
-    } else if (typeof location !== 'undefined' && !getHashPart('favs')) {
+    } else if (
+      typeof location !== 'undefined' &&
+      !getHashPart(this.$router, 'favs')
+    ) {
       const enabledCategories: Category['id'][] = []
 
       Object.keys(this.categories).forEach((categoryIdString) => {
@@ -492,7 +493,7 @@ export default (
       setCategoriesFilters: 'menu/setFilters',
       setSelectedFeature: 'map/setSelectedFeature',
     }),
-    routerPushUrl() {
+    routerPushUrl(hashUpdate: { [key: string]: string | null } = {}) {
       const categoryIds = this.state.context.selectedSubCategoriesIds
         .sort()
         .join(',')
@@ -500,10 +501,19 @@ export default (
         this.selectedFeature?.properties?.metadata?.id?.toString() ||
         this.selectedFeature?.id?.toString() ||
         null
+
+      let hash = this.$router.currentRoute.hash
+      if (hashUpdate) {
+        hash = setHashParts(hash, hashUpdate)
+      }
+
       this.$router.push({
-        path: (categoryIds ? `/${categoryIds}/` : '/') + (id ? `${id}` : ''),
+        path:
+          this.mode !== Mode.BROWSER
+            ? '/'
+            : (categoryIds ? `/${categoryIds}/` : '/') + (id ? `${id}` : ''),
         query: this.$router.currentRoute.query,
-        hash: this.$router.currentRoute.hash,
+        hash,
       })
     },
     goToHome() {
