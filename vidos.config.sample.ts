@@ -8,6 +8,8 @@ const configDefault = {
   NOTEBOOK_ENABLED: true,
   MAPILLARY_ACCESS_TOKEN: null,
   GOOGLE_TAG_MANAGER_ID: null,
+  MATOMO_URL: null,
+  MATOMO_SITEID: null,
 }
 
 const config: VidosConfig = {

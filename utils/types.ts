@@ -14,6 +14,8 @@ export interface VidoConfig {
   RASTER_STYLE_URL: string
   MAPILLARY_ACCESS_TOKEN: string | null
   GOOGLE_TAG_MANAGER_ID: string | null
+  MATOMO_URL: string | null
+  MATOMO_SITEID: string | null
 }
 
 export interface VidosConfig {
