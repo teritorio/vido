@@ -24,6 +24,10 @@ export type Event =
       type: 'search'
     }
   | {
+      type: 'search_query'
+      query: string
+    }
+  | {
       type: 'search_result_event'
       event: 'select'
       resultType: string

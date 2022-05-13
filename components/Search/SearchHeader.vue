@@ -353,6 +353,8 @@ export default Vue.extend({
 
     search_() {
       if (this.searchText) {
+        this.$tracking({ type: 'search_query', query: this.searchText })
+
         this.searchQueryId += 1
         const currentSearchQueryId = this.searchQueryId
 

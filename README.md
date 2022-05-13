@@ -77,6 +77,7 @@ Spetial formatting support:
 | Consultation of a category     | pageview            | PageView | x         |              | x        |                                         |      |       |       |          |            |
 | Enable or disable a category   | category_event      |          |           |              |          | enable, filter                          |      |       |       |          | x          |
 | Focus on the search area       | pageview            | PageView | x         |              | x        |                                         |      |       |       |          |            |
+| Seach query                    |                     |          |           |              |          |                                         |      |       |       |          |            |
 | Selecting a search result      | search_result_event |          |           |              |          |                                         | x    | x     |       |          |            |
 | Opening the popup              | pageview            | PageView | x         | x            | x        |                                         |      |       | x     |          |            |
 | Action on the popup            | popup_event         |          |           |              |          | details, route, explore, favorite, zoom |      | x     | x     | x        |            |

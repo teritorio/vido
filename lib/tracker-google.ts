@@ -49,6 +49,7 @@ export default class Google implements Tracker {
         })
         break
       }
+      // case 'search_query': {}
       case 'search_result_event': {
         this.gtm.push({
           event: event.type,
