@@ -155,10 +155,10 @@
     >
       <FavoriteNoteBook
         :favs="favs"
-        :on-close="closeNoteBook"
         :explore-around-selected-poi="explore"
         :toggle-favorite="handleFavorite"
         :go-to-selected-poi="goTo"
+        @on-close="closeNoteBook"
       />
     </t-modal-notebook>
   </section>

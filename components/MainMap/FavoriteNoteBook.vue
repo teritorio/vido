@@ -6,7 +6,7 @@
       <p class="text-lg">{{ $tc('favorites.notebook.title') }}</p>
       <button
         class="flex items-center border-solid border-zinc-300 border-2 bg-white focus:outline-none focus-visible:bg-zinc-100 hover:bg-zinc-100 py-2 px-4 rounded-full"
-        @click="onClose"
+        @click="$emit('on-close')"
       >
         <font-awesome-icon
           ref="menu_icon"
@@ -45,10 +45,6 @@ export default Vue.extend({
     favs: {
       type: Array,
       default: undefined,
-    },
-    onClose: {
-      type: Function,
-      required: true,
     },
     exploreAroundSelectedPoi: {
       type: Function,
