@@ -421,6 +421,11 @@ export default (
       }
       this.routerPushUrl()
     },
+    'state.context.selectedSubCategoriesIds'(a, b) {
+      if (a !== b) {
+        this.routerPushUrl()
+      }
+    },
 
     mode() {
       const hash: { [key: string]: string | null } = {

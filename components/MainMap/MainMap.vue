@@ -395,7 +395,7 @@ export default Vue.extend({
 
     this.toggleFavoritesMode(JSON.parse(favorites).favorites)
 
-    const mode = getHashPart(this.$router, 'mode')
+    const mode = getHashPart(this.$router, 'mode') || Mode.BROWSER
     this.setMode(mode)
     switch (mode) {
       case Mode.FAVORITES: {
