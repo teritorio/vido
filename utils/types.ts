@@ -5,7 +5,6 @@ export interface VidoConfig {
   API_SEARCH_ADDR: string
   API_EXPORT: string
   API_QR_SHORTENER: string
-  NOTEBOOK_ENABLED: boolean
   API_ENDPOINT: string
   API_PROJECT: string
   API_THEME: string

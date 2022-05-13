@@ -83,7 +83,6 @@
           {{ $tc('favorites.menu_share') }}
         </button>
         <button
-          v-if="$config.NOTEBOOK_ENABLED"
           class="block w-full px-4 py-2 text-sm leading-5 text-left text-zinc-700 transition duration-150 ease-in-out hover:bg-zinc-100 focus:outline-none focus:bg-zinc-100"
           role="menuitem"
           @blur="blurHandler"
