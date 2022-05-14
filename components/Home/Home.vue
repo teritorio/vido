@@ -645,7 +645,10 @@ export default (
     },
     onSubCategoryFilterChange(filters: FilterValues) {
       if (this.state.context.selectedSubCategoryForFilters) {
-        const newFilters = Object.assign({}, this.filters)
+        const newFilters: { [subcat: number]: FilterValues } = Object.assign(
+          {},
+          this.filters
+        )
         if (Object.keys(filters.values).length > 0 || filters.dateRange) {
           newFilters[this.state.context.selectedSubCategoryForFilters] = filters
         } else {
@@ -673,15 +676,17 @@ export default (
     },
     onSearchCategory(newFilter: ApiMenuItemSearchResult) {
       if (newFilter.filter_property) {
-        const newFilters = Object.assign({}, this.filters)
+        const newFilters: { [subcat: number]: FilterValues } = Object.assign(
+          {},
+          this.filters
+        )
 
-        newFilters[`${newFilter.id}`] = {
+        newFilters[newFilter.id] = {
           values: {
             [newFilter.filter_property]: [
               `${newFilter.filter_value}`,
-              ...(newFilters[`${newFilter.id}`]?.values[
-                newFilter.filter_property
-              ] || []),
+              ...(newFilters[newFilter.id]?.values[newFilter.filter_property] ||
+                []),
             ],
           },
         }

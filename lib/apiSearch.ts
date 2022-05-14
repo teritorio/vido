@@ -17,7 +17,7 @@ export type ApiMenuItemSearchResult = {
   // eslint-disable-next-line camelcase
   filter_property?: string
   // eslint-disable-next-line camelcase
-  filter_value?: string
+  filter_value?: string | boolean
 }
 
 export type ApiAddrSearchResult = {
@@ -34,5 +34,5 @@ export type SearchResult = {
   // eslint-disable-next-line camelcase
   filter_property?: string
   // eslint-disable-next-line camelcase
-  filter_value?: string
+  filter_value?: string | boolean
 }
