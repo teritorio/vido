@@ -125,39 +125,64 @@
     />
     <BottomMenu
       class="sm:hidden"
-      :selected-feature="selectedFeature"
-      :is-bottom-menu-opened="isBottomMenuOpened"
-      :show-poi="showPoi"
-      :states="states"
-      :state="state"
-      :is-menu-config-loaded="isMenuConfigLoaded"
-      :categories-activesubs-count="subCategoriesCounts"
-      :categories="
-        state.context.selectedRootCategory
-          ? state.context.selectedRootCategory.subCategories
-          : []
-      "
-      :subcategory="subCategoryForFilter"
-      :filters-values="subCategoryFilters"
-      :filtered-categories="filteredSubCategories"
-      :is-sub-category-selected="isSubCategorySelected"
-      :on-bottom-menu-button-click="onBottomMenuButtonClick"
-      :on-go-back-click="goToParentFromSubCategory"
-      :on-select-all-categories="selectSubCategory"
-      :on-unselect-all-categories="unselectSubCategory"
-      :on-filter-click="onSubCategoryFilterClick"
-      :on-filter-changed="onSubCategoryFilterChange"
-      :on-go-back-click-filter="onBackToSubCategoryClick"
-      @category-click="onRootCategoryClick"
-      @sub-category-click="onSubCategoryClick"
-      @exploreAroundSelectedPoi="
-        $refs.mainMap && $refs.mainMap.exploreAroundSelectedPoi()
-      "
-      @toggleFavoritesMode="
-        $refs.mainMap && $refs.mainMap.toggleFavorite($event)
-      "
-      @goToSelectedPoi="$refs.mainMap && $refs.mainMap.goToSelectedPoi()"
-    />
+      :show-grip="!(isModeExplorer || isModeFavorites) || selectedFeature"
+      :is-open="isBottomMenuOpened"
+      @on-grip-click="onBottomMenuButtonClick"
+    >
+      <div
+        v-if="
+          !showPoi && state.matches(states.Categories) && isMenuConfigLoaded
+        "
+        class="flex-1 h-full overflow-y-auto max-h-screen-3/5 divide-y"
+      >
+        <HeaderRootCategories
+          v-for="category in categoryRootCategories"
+          :key="category.id"
+          :category-id="category.id"
+          :categories-activesubs-count="subCategoriesCounts"
+          class="flex-1 pointer-events-auto px-5 py-4"
+          @category-click="onRootCategoryClick"
+        />
+      </div>
+      <SubCategoryHeader
+        v-if="
+          !showPoi &&
+          !isModeExplorer &&
+          !isModeFavorites &&
+          state.matches(states.SubCategories)
+        "
+        :categories="state.context.selectedRootCategory.subCategories"
+        :filtered-categories="filteredSubCategories"
+        :is-sub-category-selected="isSubCategorySelected"
+        @category-click="onSubCategoryClick"
+        @go-back-click="goToParentFromSubCategory"
+        @select-all-categories="selectSubCategory"
+        @unselect-all-categories="unselectSubCategory"
+        @filter-click="onSubCategoryFilterClick"
+      />
+      <SubCategoryFilterHeader
+        v-if="
+          !showPoi &&
+          !isModeExplorer &&
+          state.matches(states.SubCategoryFilters)
+        "
+        class="relative min-h-screen-3/5 max-h-screen-3/5 text-left"
+        :subcategory="subCategoryForFilter"
+        :filters-values="subCategoryFilters"
+        @filter-changed="onSubCategoryFilterChange"
+        @go-back-click="onBackToSubCategoryClick"
+      />
+      <MapPoiToast
+        v-if="selectedFeature && showPoi"
+        :poi="selectedFeature"
+        class="grow-0 text-left max-h-screen-3/5"
+        @explore-click="
+          $refs.mainMap && $refs.mainMap.exploreAroundSelectedPoi()
+        "
+        @favorite-click="$refs.mainMap && $refs.mainMap.toggleFavorite($event)"
+        @zoom-click="$refs.mainMap && $refs.mainMap.goToSelectedPoi()"
+      />
+    </BottomMenu>
     <Attribution v-if="!isBottomMenuOpened" :attributions="fullAttributions" />
   </div>
 </template>
@@ -169,6 +194,7 @@ import Vue, { PropType, VueConstructor } from 'vue'
 import { mapGetters, mapActions } from 'vuex'
 import { interpret, Interpreter, State } from 'xstate'
 
+import HeaderRootCategories from '@/components/Categories/HeaderRootCategories.vue'
 import SelectedSubCategoriesDense from '@/components/Categories/SelectedSubCategoriesDense.vue'
 import SubCategoryFilterHeader from '@/components/Categories/SubCategoryFilterHeader.vue'
 import SubCategoryHeader from '@/components/Categories/SubCategoryHeader.vue'
@@ -176,6 +202,7 @@ import Attribution from '@/components/MainMap/Attribution.vue'
 import BottomMenu from '@/components/MainMap/BottomMenu.vue'
 import MainHeader from '@/components/MainMap/MainHeader.vue'
 import MainMap from '@/components/MainMap/MainMap.vue'
+import MapPoiToast from '@/components/MainMap/MapPoiToast.vue'
 import SearchHeader from '@/components/Search/SearchHeader.vue'
 import { Category } from '@/lib/apiMenu'
 import { getPoiById, ApiPoi } from '@/lib/apiPois'
@@ -218,11 +245,14 @@ export default (
     MainMap,
     SearchHeader,
     SelectedSubCategoriesDense,
+    HeaderRootCategories,
     SubCategoryHeader,
     SubCategoryFilterHeader,
     BottomMenu,
+    MapPoiToast,
     Attribution,
   },
+
   props: {
     settings: {
       type: Object as PropType<Settings>,
@@ -306,6 +336,7 @@ export default (
   computed: {
     ...mapGetters({
       categories: 'menu/categories',
+      categoryRootCategories: 'menu/categoryRootCategories',
       rootCategories: 'menu/rootCategories',
       getSubCategoriesFromCategoryId: 'menu/getSubCategoriesFromCategoryId',
       isMenuConfigLoaded: 'menu/isLoaded',
