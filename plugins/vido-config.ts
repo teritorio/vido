@@ -1,7 +1,7 @@
 import { Plugin } from '@nuxt/types'
 import createServer from 'connect'
 
-import { VidoConfig } from '@/utils/types'
+import { VidoConfig } from '@/utils/types-config'
 import vidos from '@/vidos.config'
 
 export function vidoConfig(req: createServer.IncomingMessage): VidoConfig {

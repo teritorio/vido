@@ -100,7 +100,7 @@
 import Vue, { PropType } from 'vue'
 
 import { Category, Filter, FilterDate } from '@/lib/apiMenu'
-import { FilterValues } from '@/utils/types'
+import { FilterValues } from '@/utils/types-filters'
 
 export enum DateFilterLabel {
   TODAY = 'today',

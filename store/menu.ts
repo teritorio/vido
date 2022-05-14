@@ -4,7 +4,7 @@ import { Store } from 'vuex'
 
 import { Category } from '@/lib/apiMenu'
 import { ApiPoi, ApiPois, getPoiByCategoryId } from '@/lib/apiPois'
-import { FilterValues } from '@/utils/types'
+import { FilterValues } from '@/utils/types-filters'
 
 enum Mutation {
   SET_CONFIG = 'SET_CONFIG',

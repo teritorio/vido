@@ -133,14 +133,14 @@ import { mapGetters } from 'vuex'
 
 import SearchResultBlock from '@/components/Search/SearchResultBlock.vue'
 import { ApiPoi, getPoiById } from '@/lib/apiPois'
-import { MAP_ZOOM } from '@/lib/constants'
 import {
   ApiPoisSearchResult,
   ApiMenuItemSearchResult,
   ApiAddrSearchResult,
   SearchResult,
   ApiSearchResult,
-} from '@/utils/types'
+} from '@/lib/apiSearch'
+import { MAP_ZOOM } from '@/lib/constants'
 
 export default Vue.extend({
   components: {

@@ -206,10 +206,12 @@ import MapPoiToast from '@/components/MainMap/MapPoiToast.vue'
 import SearchHeader from '@/components/Search/SearchHeader.vue'
 import { Category } from '@/lib/apiMenu'
 import { getPoiById, ApiPoi } from '@/lib/apiPois'
+import { ApiMenuItemSearchResult } from '@/lib/apiSearch'
 import { Settings } from '@/lib/apiSettings'
 import { getBBoxFeature } from '@/lib/bbox'
 import { DEFAULT_MAP_STYLE, EXPLORER_MAP_STYLE } from '@/lib/constants'
-import { Mode, FilterValues, ApiMenuItemSearchResult } from '@/utils/types'
+import { Mode } from '@/utils/types'
+import { FilterValues } from '@/utils/types-filters'
 import { getHashPart, setHashParts } from '@/utils/url'
 
 import {
