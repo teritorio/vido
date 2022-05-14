@@ -66,7 +66,7 @@
       </aside>
 
       <div
-        class="hidden fixed inset-x-0 bottom-0 md:flex overflow-y-auto pointer-events-none h-auto md:inset-x-3 md:bottom-3"
+        class="hidden fixed inset-x-0 bottom-0 md:flex overflow-y-auto pointer-events-none h-auto md:inset-x-3 md:bottom-5"
       >
         <div class="w-full max-w-md" />
         <div class="grow-[1]" />
