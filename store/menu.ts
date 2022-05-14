@@ -221,7 +221,10 @@ export const actions = {
     }
   },
 
-  setFilters(store: Store<State>, filters: { [subcat: number]: FilterValues }) {
+  applyFilters(
+    store: Store<State>,
+    filters: { [subcat: number]: FilterValues }
+  ) {
     store.commit(Mutation.SET_FILTERS, { filters })
 
     // Update features visibility

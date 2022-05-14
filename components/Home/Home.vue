@@ -528,7 +528,7 @@ export default (
   },
   methods: {
     ...mapActions({
-      setCategoriesFilters: 'menu/setFilters',
+      applyCategoriesFilters: 'menu/applyFilters',
       setSelectedFeature: 'map/setSelectedFeature',
     }),
     routerPushUrl(hashUpdate: { [key: string]: string | null } = {}) {
@@ -654,7 +654,7 @@ export default (
         } else {
           delete newFilters[this.state.context.selectedSubCategoryForFilters]
         }
-        this.setCategoriesFilters(newFilters)
+        this.applyCategoriesFilters(newFilters)
       }
     },
     onSearchPoi(poiId: number) {
@@ -691,7 +691,7 @@ export default (
           },
         }
 
-        this.setCategoriesFilters(newFilters)
+        this.applyCategoriesFilters(newFilters)
       }
 
       this.service.send(HomeEvents.GoToCategories)
