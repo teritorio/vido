@@ -74,13 +74,15 @@
       "
       :class="[
         'w-full h-12 sm:h-8 text-left rounded-lg outline-none focus:outline-none hover:bg-zinc-100',
-        filtered && 'text-emerald-500',
-        !filtered && 'text-zinc-500',
+        isFiltered && 'text-emerald-500',
+        !isFiltered && 'text-zinc-500',
       ]"
       @click="onFilterClick"
     >
       <font-awesome-icon icon="filter" size="sm" class="ml-16" />
-      {{ filtered ? $tc('headerMenu.editFilters') : $tc('headerMenu.filter') }}
+      {{
+        isFiltered ? $tc('headerMenu.editFilters') : $tc('headerMenu.filter')
+      }}
     </button>
   </div>
 </template>
@@ -90,6 +92,8 @@ import Vue, { PropType } from 'vue'
 
 import TeritorioIconBadge from '@/components/TeritorioIcon/TeritorioIconBadge.vue'
 import { Category } from '@/lib/apiMenu'
+
+import { FilterValues, filterValuesIsSet } from '~/utils/types-filters'
 
 export default Vue.extend({
   components: {
@@ -104,9 +108,9 @@ export default Vue.extend({
       type: Boolean,
       default: false,
     },
-    filtered: {
-      type: Boolean,
-      default: false,
+    filters: {
+      type: Array as unknown as PropType<FilterValues>,
+      default: null,
     },
     activeSubCategories: {
       type: Number,
@@ -120,6 +124,9 @@ export default Vue.extend({
   computed: {
     hasChildren(): boolean {
       return (this.category?.menu_group?.vido_children || []).length > 0
+    },
+    isFiltered(): boolean {
+      return this.filters && filterValuesIsSet(this.filters)
     },
   },
   methods: {

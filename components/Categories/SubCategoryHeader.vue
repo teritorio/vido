@@ -33,7 +33,7 @@
     <HeaderSubCategories
       class="flex-1 h-full overflow-y-auto pointer-events-auto"
       :categories="categories"
-      :filtered-categories="filteredCategories"
+      :filters="filters"
       :is-sub-category-selected="isSubCategorySelected"
       :categories-activesubs-count="categoriesActivesubsCount"
       @category-click="onCategoryClick"
@@ -48,6 +48,8 @@ import Vue, { PropType } from 'vue'
 import HeaderSubCategories from '@/components/Categories/HeaderSubCategories.vue'
 import { Category } from '@/lib/apiMenu'
 
+import { FilterValues } from '~/utils/types-filters'
+
 export default Vue.extend({
   components: {
     HeaderSubCategories,
@@ -57,9 +59,9 @@ export default Vue.extend({
       type: Array as PropType<Category[]>,
       required: true,
     },
-    filteredCategories: {
-      type: Array as PropType<Category['id'][]>,
-      default: () => [],
+    filters: {
+      type: Object as PropType<{ [subcat: number]: FilterValues }>,
+      required: true,
     },
     isSubCategorySelected: {
       type: Function,

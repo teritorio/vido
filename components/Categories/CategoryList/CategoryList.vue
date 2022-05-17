@@ -6,7 +6,7 @@
       :href="category.href"
       :category="category"
       :selected="category.selected"
-      :filtered="filteredCategories.includes(category.id)"
+      :filters="filters[category.id]"
       :active-sub-categories="categoriesActivesubsCount[category.id] || 0"
       @click="onCategoryClick"
       @filter-click="onFilterClick"
@@ -20,6 +20,8 @@ import Vue, { PropType } from 'vue'
 import CategoryListItem from '@/components/Categories/CategoryList/CategoryListItem.vue'
 import { Category } from '@/lib/apiMenu'
 
+import { FilterValues } from '~/utils/types-filters'
+
 export default Vue.extend({
   components: {
     CategoryListItem,
@@ -29,9 +31,9 @@ export default Vue.extend({
       type: Array,
       default: () => [],
     },
-    filteredCategories: {
-      type: Array as PropType<Category['id'][]>,
-      default: () => [],
+    filters: {
+      type: Object as PropType<{ [subcat: number]: FilterValues }>,
+      required: true,
     },
     categoriesActivesubsCount: {
       type: Object as PropType<{ [id: string]: number }>,

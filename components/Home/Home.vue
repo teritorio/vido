@@ -37,7 +37,7 @@
             key="SubCategoryHeader"
             class="hidden sm:flex m-2"
             :categories="state.context.selectedRootCategory.subCategories"
-            :filtered-categories="filteredSubCategories"
+            :filters="filters"
             :is-sub-category-selected="isSubCategorySelected"
             @category-click="onSubCategoryClick"
             @filter-click="onSubCategoryFilterClick"
@@ -52,7 +52,6 @@
             class="hidden sm:flex m-2"
             :subcategory="subCategoryForFilter"
             :filters-values="subCategoryFilters"
-            @filter-changed="onSubCategoryFilterChange"
             @go-back-click="onBackToSubCategoryClick"
           />
 
@@ -152,7 +151,7 @@
           state.matches(states.SubCategories)
         "
         :categories="state.context.selectedRootCategory.subCategories"
-        :filtered-categories="filteredSubCategories"
+        :filters="filters"
         :is-sub-category-selected="isSubCategorySelected"
         @category-click="onSubCategoryClick"
         @go-back-click="goToParentFromSubCategory"
@@ -169,7 +168,6 @@
         class="relative min-h-screen-3/5 max-h-screen-3/5 text-left"
         :subcategory="subCategoryForFilter"
         :filters-values="subCategoryFilters"
-        @filter-changed="onSubCategoryFilterChange"
         @go-back-click="onBackToSubCategoryClick"
       />
       <MapPoiToast
@@ -188,6 +186,7 @@
 </template>
 
 <script lang="ts">
+import copy from 'fast-copy'
 import debounce from 'lodash.debounce'
 import { LngLatBoundsLike } from 'maplibre-gl'
 import Vue, { PropType, VueConstructor } from 'vue'
@@ -211,7 +210,7 @@ import { Settings } from '@/lib/apiSettings'
 import { getBBoxFeature } from '@/lib/bbox'
 import { DEFAULT_MAP_STYLE, EXPLORER_MAP_STYLE } from '@/lib/constants'
 import { Mode } from '@/utils/types'
-import { FilterValues } from '@/utils/types-filters'
+import { FilterValue, FilterValues } from '@/utils/types-filters'
 import { getHashPart, setHashParts } from '@/utils/url'
 
 import {
@@ -412,13 +411,9 @@ export default (
     subCategoryFilters(): FilterValues {
       return (
         (this.state.context.selectedSubCategoryForFilters &&
-          this.filters[this.state.context.selectedSubCategoryForFilters]) || {
-          values: [],
-        }
+          this.filters[this.state.context.selectedSubCategoryForFilters]) ||
+        []
       )
-    },
-    filteredSubCategories(): Category['id'][] {
-      return Object.keys(this.filters).map((i) => parseInt(i, 10))
     },
     categoriesToIcons(): Record<Category['id'], string> {
       const resources: Record<Category['id'], string> = {}
@@ -643,20 +638,6 @@ export default (
         subCategoriesIds,
       })
     },
-    onSubCategoryFilterChange(filters: FilterValues) {
-      if (this.state.context.selectedSubCategoryForFilters) {
-        const newFilters: { [subcat: number]: FilterValues } = Object.assign(
-          {},
-          this.filters
-        )
-        if (Object.keys(filters.values).length > 0 || filters.dateRange) {
-          newFilters[this.state.context.selectedSubCategoryForFilters] = filters
-        } else {
-          delete newFilters[this.state.context.selectedSubCategoryForFilters]
-        }
-        this.applyCategoriesFilters(newFilters)
-      }
-    },
     onSearchPoi(poiId: number) {
       getPoiById(
         this.$vidoConfig.API_ENDPOINT,
@@ -676,22 +657,32 @@ export default (
     },
     onSearchCategory(newFilter: ApiMenuItemSearchResult) {
       if (newFilter.filter_property) {
-        const newFilters: { [subcat: number]: FilterValues } = Object.assign(
-          {},
-          this.filters
+        const filters = copy(this.filters[newFilter.id])
+        const filter = filters.find(
+          (filter: FilterValue) =>
+            (filter.type === 'boolean' ||
+              filter.type === 'multiselection' ||
+              filter.type === 'checkboxes_list') &&
+            filter.def.property === newFilter.filter_property
         )
+        if (filter) {
+          switch (filter?.type) {
+            case 'boolean':
+              if (newFilter.filter_value === true) {
+                filter.filterValue = newFilter.filter_value
+              }
+              break
+            case 'multiselection':
+            case 'checkboxes_list':
+              filter.filterValues = [newFilter.filter_value]
+              break
+          }
 
-        newFilters[newFilter.id] = {
-          values: {
-            [newFilter.filter_property]: [
-              `${newFilter.filter_value}`,
-              ...(newFilters[newFilter.id]?.values[newFilter.filter_property] ||
-                []),
-            ],
-          },
+          this.applyCategoriesFilters({
+            categoryId: newFilter.id,
+            filterValues: filters,
+          })
         }
-
-        this.applyCategoriesFilters(newFilters)
       }
 
       this.service.send(HomeEvents.GoToCategories)

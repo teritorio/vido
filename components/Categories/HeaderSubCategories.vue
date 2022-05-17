@@ -1,7 +1,7 @@
 <template>
   <CategoryList
     :categories="listItems"
-    :filtered-categories="filteredCategories"
+    :filters="filters"
     :categories-activesubs-count="categoriesActivesubsCount"
     @click="onCategoryClick"
     @filter-click="onFilterClick"
@@ -14,6 +14,8 @@ import Vue, { PropType } from 'vue'
 import CategoryList from '@/components/Categories/CategoryList/CategoryList.vue'
 import { Category } from '@/lib/apiMenu'
 
+import { FilterValues } from '~/utils/types-filters'
+
 export default Vue.extend({
   components: {
     CategoryList,
@@ -23,9 +25,9 @@ export default Vue.extend({
       type: Array,
       required: true,
     },
-    filteredCategories: {
-      type: Array as PropType<Category['id'][]>,
-      default: () => [],
+    filters: {
+      type: Object as PropType<{ [subcat: number]: FilterValues }>,
+      required: true,
     },
     isSubCategorySelected: {
       type: Function,

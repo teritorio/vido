@@ -12,19 +12,19 @@
       </button>
     </div>
 
-    <template v-for="filter in filters">
+    <template v-for="(filter, filterIndex) in filtersSafeCopy">
       <div v-if="filter.type == 'boolean'" :key="filter.property">
-        <label :key="filter.property" class="block mb-1 text-zinc-800">
+        <label :key="filter.def.property" class="block mb-1 text-zinc-800">
           <input
             type="checkbox"
             class="text-emerald-500 rounded-full focus:ring-0 focus:ring-transparent"
-            :name="filter.property"
-            :checked="filtersValues && filter.property in filtersValues.values"
+            :name="filter.def.property"
+            :checked="filter.filterValue"
             @change="
-              (e) => onBooleanFilterChange(filter.property, e.target.checked)
+              (e) => onBooleanFilterChange(filterIndex, e.target.checked)
             "
           />
-          {{ (filter.name && filter.name.fr) || filter.property }}
+          {{ (filter.def.name && filter.def.name.fr) || filter.def.property }}
         </label>
       </div>
       <div v-else-if="filter.type == 'multiselection'" :key="filter.property">
@@ -36,44 +36,37 @@
           search-box-placeholder="Rechercher ..."
           multiple
           :options="
-            filter.values.map((value) => ({
+            filter.def.values.map((value) => ({
               text: (value.name && value.name.fr) || value.value,
               value: value.value,
             }))
           "
-          :value="
-            (filtersValues && filtersValues.values[filter.property]) || []
-          "
-          @input="(val) => onSelectionFilterChange(filter.property, val)"
+          :value="filter.filterValues"
+          @input="(val) => onSelectionFilterChange(filterIndex, val)"
         />
       </div>
       <div
         v-else-if="filter.type == 'checkboxes_list'"
-        :key="filter.property"
+        :key="filter.def.property"
         class="overflow-y-auto"
       >
         <p class="mb-2 text-zinc-500">
-          {{ (filter.name && filter.name.fr) || filter.property }}
+          {{ (filter.def.name && filter.def.name.fr) || filter.def.property }}
         </p>
         <label
-          v-for="value in filter.values"
+          v-for="value in filter.def.values"
           :key="value.value"
           class="block mb-1 text-zinc-800"
         >
           <input
             type="checkbox"
             class="text-emerald-500 rounded-full focus:ring-0 focus:ring-transparent"
-            :name="filter.property + '_' + value.value"
-            :checked="
-              (
-                (filtersValues && filtersValues.values[filter.property]) ||
-                []
-              ).includes(value.value)
-            "
+            :name="filter.def.property + '_' + value.value"
+            :checked="filter.filterValues.includes(value.value)"
             @change="
               (e) =>
                 onCheckboxFilterChange(
-                  filter.property,
+                  filterIndex,
                   value.value,
                   e.target.checked
                 )
@@ -84,12 +77,12 @@
       </div>
       <div v-else-if="filter.type == 'date_range'" :key="filter.property_begin">
         <t-rich-select
-          :placeholder="filter.name && filter.name.fr"
+          :placeholder="filter.def.name && filter.def.name.fr"
           :hide-search-box="true"
           :options="dateFilters"
           :clearable="true"
-          :value="getDateFilter()"
-          @input="(val) => onSelectionFilterDateChange(filter, val)"
+          :value="getDateFilter(filter)"
+          @input="(val) => onSelectionFilterDateChange(filterIndex, val)"
         />
       </div>
     </template>
@@ -97,10 +90,17 @@
 </template>
 
 <script lang="ts">
+import copy from 'fast-copy'
 import Vue, { PropType } from 'vue'
+import { mapActions } from 'vuex'
 
-import { Category, Filter, FilterDate } from '@/lib/apiMenu'
-import { FilterValues } from '@/utils/types-filters'
+import { Category } from '@/lib/apiMenu'
+import {
+  FilterValueBoolean,
+  FilterValueDate,
+  FilterValueList,
+  FilterValues,
+} from '@/utils/types-filters'
 
 export enum DateFilterLabel {
   TODAY = 'today',
@@ -124,10 +124,11 @@ export default Vue.extend({
       required: true,
     },
     filtersValues: {
-      type: Object as PropType<FilterValues>,
+      type: Array as PropType<FilterValues>,
       required: true,
     },
   },
+
   data(): {
     dateFilters: DateFilterOption[]
   } {
@@ -189,48 +190,45 @@ export default Vue.extend({
   },
 
   computed: {
-    filters(): Filter[] {
-      return this.subcategory.category?.filters || []
+    filtersSafeCopy() {
+      return copy(this.filtersValues)
     },
   },
 
   methods: {
+    ...mapActions({
+      applyCategorieFilters: 'menu/applyFilters',
+    }),
+
     onGoBackClick() {
       this.$emit('go-back-click')
     },
 
-    onBooleanFilterChange(property: string, value: boolean) {
-      const newFilters: FilterValues = this.filtersValues
-        ? { values: this.filtersValues.values }
-        : { values: {} }
+    onBooleanFilterChange(filterIndex: number, value: boolean) {
+      const filters = this.filtersSafeCopy
+      const filter = filters[filterIndex] as FilterValueBoolean
 
-      if (value) {
-        newFilters.values[property] = ['yes']
-        this.$emit('filter-changed', newFilters)
-      } else if (newFilters.values[property]) {
-        delete newFilters.values[property]
-        this.$emit('filter-changed', newFilters)
-      }
+      filter.filterValue = value
+      this.applyCategorieFilters({
+        categoryId: this.subcategory.id,
+        filterValues: filters,
+      })
     },
 
-    onSelectionFilterChange(property: string, values: string[] | null) {
-      const newFilters: FilterValues = this.filtersValues
-        ? { values: this.filtersValues.values }
-        : { values: {} }
+    onSelectionFilterChange(filterIndex: number, values: string[] | null) {
+      const filters = this.filtersSafeCopy
+      const filter = filters[filterIndex] as FilterValueList
 
-      if (values && values.length > 0) {
-        newFilters.values[property] = values
-        this.$emit('filter-changed', newFilters)
-      } else if (newFilters.values[property]) {
-        delete newFilters.values[property]
-        this.$emit('filter-changed', newFilters)
-      }
+      filter.filterValues = values || []
+      this.applyCategorieFilters({
+        categoryId: this.subcategory.id,
+        filterValues: filters,
+      })
     },
 
-    onSelectionFilterDateChange(filter: FilterDate, value: string | null) {
-      const newFilters: FilterValues = this.filtersValues
-        ? { values: this.filtersValues.values }
-        : { values: {} }
+    onSelectionFilterDateChange(filterIndex: number, value: string | null) {
+      const filters = this.filtersSafeCopy
+      const filter = filters[filterIndex] as FilterValueDate
 
       if (value) {
         const dateRange = this.dateFilters.find(
@@ -238,54 +236,41 @@ export default Vue.extend({
         )
 
         if (dateRange) {
-          newFilters.dateRange = {
-            propertyStart: filter.property_begin,
-            propertyEnd: filter.property_end,
-            value: [dateRange.begin, dateRange.end],
-          }
+          filter.filterValueBegin = dateRange.begin
+          filter.filterValueEnd = dateRange.end
         }
-      } else if (newFilters.dateRange) {
-        delete newFilters.dateRange
+      } else {
+        filter.filterValueBegin = null
+        filter.filterValueEnd = null
       }
-      this.$emit('filter-changed', newFilters)
+
+      this.applyCategorieFilters({
+        categoryId: this.subcategory.id,
+        filterValues: filters,
+      })
     },
 
-    onCheckboxFilterChange(property: string, val: string, checked: boolean) {
-      const newFilters: FilterValues = this.filtersValues
-        ? { values: this.filtersValues.values }
-        : { values: {} }
+    onCheckboxFilterChange(filterIndex: number, val: string, checked: boolean) {
+      const filters = this.filtersSafeCopy
+      const filter = filters[filterIndex] as FilterValueList
 
-      if (!newFilters.values[property]) {
-        newFilters.values[property] = []
+      if (checked && !filter.filterValues.includes(val)) {
+        filter.filterValues.push(val)
+      } else if (!checked) {
+        filter.filterValues = filter.filterValues.filter((k) => k !== val)
       }
 
-      const filterValue = newFilters.values[property] as string[]
-
-      if (checked) {
-        if (!filterValue.includes(val)) {
-          filterValue.push(val)
-        }
-      } else if (newFilters.values[property].includes(val)) {
-        newFilters.values[property] = filterValue.filter(
-          (k: string) => k !== val
-        )
-      }
-
-      if (newFilters.values[property].length === 0) {
-        delete newFilters.values[property]
-      }
-      this.$emit('filter-changed', newFilters)
+      this.applyCategorieFilters({
+        categoryId: this.subcategory.id,
+        filterValues: filters,
+      })
     },
 
-    getDateFilter() {
-      if (this.filtersValues.dateRange) {
-        const dateRange = this.dateFilters.find(
-          (e) =>
-            e.begin === this.filtersValues.dateRange?.value[0] &&
-            e.end === this.filtersValues.dateRange?.value[1]
-        )
-        return dateRange?.value
-      }
+    getDateFilter(filter: FilterValueDate) {
+      return this.dateFilters.find(
+        (e) =>
+          e.begin === filter.filterValueBegin && e.end === filter.filterValueEnd
+      )?.value
     },
   },
 })

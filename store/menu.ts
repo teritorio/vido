@@ -1,10 +1,14 @@
 import copy from 'fast-copy'
+import { deepEqual } from 'fast-equals'
 import { Store } from 'vuex'
-// import { interpret, Interpreter, State } from 'xstate'
 
 import { Category } from '@/lib/apiMenu'
 import { ApiPoi, ApiPois, getPoiByCategoryId } from '@/lib/apiPois'
-import { FilterValues } from '@/utils/types-filters'
+import {
+  FilterValues,
+  filterValueFactory,
+  filterValuesIsSet,
+} from '@/utils/types-filters'
 
 enum Mutation {
   SET_CONFIG = 'SET_CONFIG',
@@ -73,56 +77,15 @@ export const mutations = {
   },
 }
 
-function filterExist(
-  filterToTest: string[] | string,
-  featureToTest: string[] | string
-): boolean {
-  if (Array.isArray(featureToTest)) {
-    return featureToTest.some((feature) => filterToTest.includes(feature))
-  } else {
-    return filterToTest.includes(featureToTest)
-  }
-}
-
-function keepFeature(feature: ApiPoi, filters: FilterValues | null): boolean {
-  if (!filters) {
-    return true
-  }
-
-  if (filters.dateRange) {
-    if (
-      !filters.dateRange.propertyStart ||
-      !filters.dateRange.value[1] ||
-      feature.properties[filters.dateRange.propertyStart] >
-        filters.dateRange.value[1] ||
-      !filters.dateRange.propertyEnd ||
-      !filters.dateRange.value[0] ||
-      feature.properties[filters.dateRange.propertyEnd] <
-        filters.dateRange.value[0]
-    ) {
-      return false
-    }
-  }
-
-  if (
-    Object.keys(filters.values).length > 0 &&
-    !Object.entries(filters.values).find(
-      ([key, filterValues]) =>
-        filterValues &&
-        feature.properties[key] &&
-        filterExist(filterValues, feature.properties[key])
-    )
-  ) {
-    return false
-  }
-
-  return true
+function keepFeature(filters: FilterValues, feature: ApiPoi): boolean {
+  return filters.some((filter) => filter.isMatch(feature.properties))
 }
 
 export const actions = {
   fetchConfig(store: Store<State>, { categories }: FetchConfigPayload) {
     try {
       const stateCategories: State['categories'] = {}
+      const filters: { [subcat: number]: FilterValues } = {}
 
       store.commit(Mutation.SET_CONFIG, { categories: null }) // Hack, release from store before edit and reappend
       categories
@@ -143,8 +106,15 @@ export const actions = {
               parent.menu_group.vido_children.push(category.id)
             }
           }
+
+          if (category.category?.filters) {
+            filters[category.id] = category.category?.filters.map((filter) =>
+              filterValueFactory(filter)
+            )
+          }
         })
       store.commit(Mutation.SET_CONFIG, { categories: stateCategories })
+      store.commit(Mutation.SET_FILTERS, { filters })
     } catch (error) {
       // eslint-disable-next-line no-console
       console.error(
@@ -183,13 +153,18 @@ export const actions = {
       for (let j = 0; j < categoryIds.length; j++) {
         const categoryId = categoryIds[j]
 
+        const filterIsSet =
+          store.getters.filters[categoryId] &&
+          filterValuesIsSet(store.getters.filters[categoryId])
         if (existingFeatures[j]) {
           features[categoryId] = previousFeatures[categoryId].map(
             (f: ApiPoi) => ({
               ...f,
               properties: {
                 ...f.properties,
-                vido_visible: keepFeature(f, store.getters.filters[categoryId]),
+                vido_visible:
+                  !filterIsSet ||
+                  keepFeature(store.getters.filters[categoryId], f),
               },
             })
           )
@@ -198,10 +173,8 @@ export const actions = {
 
           features[categoryId] = post.features.map((f) => {
             f.properties.vido_cat = categoryId
-            f.properties.vido_visible = keepFeature(
-              f,
-              store.getters.filters[categoryId]
-            )
+            f.properties.vido_visible =
+              !filterIsSet || keepFeature(store.getters.filters[categoryId], f)
             return f
           })
 
@@ -223,22 +196,31 @@ export const actions = {
 
   applyFilters(
     store: Store<State>,
-    filters: { [subcat: number]: FilterValues }
+    {
+      categoryId,
+      filterValues,
+    }: { categoryId: number; filterValues: FilterValues }
   ) {
-    store.commit(Mutation.SET_FILTERS, { filters })
+    const newFilters = copy(store.state.filters)
+    if (!deepEqual(newFilters[categoryId], filterValues)) {
+      newFilters[categoryId] = filterValues
+      store.commit(Mutation.SET_FILTERS, { filters: newFilters })
 
-    // Update features visibility
-    const features: { [categoryId: number]: ApiPoi[] } = copy(
-      store.getters.features
-    )
-    Object.keys(features).forEach((categoryIdString: string) => {
-      const categoryId = parseInt(categoryIdString, 10)
-      features[categoryId] = features[categoryId].map((f: ApiPoi) => {
-        f.properties.vido_visible = keepFeature(f, filters[categoryId])
-        return f
+      // Update features visibility
+      const features: { [categoryId: number]: ApiPoi[] } = copy(
+        store.getters.features
+      )
+      const filterIsSet = filterValuesIsSet(filterValues)
+      Object.keys(features).forEach((categoryIdString: string) => {
+        const categoryId = parseInt(categoryIdString, 10)
+        features[categoryId] = features[categoryId].map((feature: ApiPoi) => {
+          feature.properties.vido_visible =
+            !filterIsSet || keepFeature(filterValues, feature)
+          return feature
+        })
       })
-    })
-    store.commit(Mutation.SET_FEATURES, { features })
+      store.commit(Mutation.SET_FEATURES, { features })
+    }
   },
 }
 
