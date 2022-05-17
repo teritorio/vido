@@ -18,7 +18,7 @@
           color-text="#6B7280"
         />
         <font-awesome-icon
-          v-elsif="item.icon"
+          v-else-if="item.icon"
           :icon="item.icon"
           color="#6B7280"
           size="sm"
