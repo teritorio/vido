@@ -10,7 +10,6 @@ export default class Matomo implements Tracker {
     Vue.use(VueMatomo, {
       host: url,
       siteId,
-      // DoNotTrack
       /** Other configuration options **/
     })
   }
