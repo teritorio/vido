@@ -76,13 +76,12 @@
         </label>
       </div>
       <div v-else-if="filter.type == 'date_range'" :key="filter.property_begin">
-        <t-rich-select
-          :placeholder="filter.def.name && filter.def.name.fr"
-          :hide-search-box="true"
-          :options="dateFilters"
-          :clearable="true"
-          :value="getDateFilter(filter)"
-          @input="(val) => onSelectionFilterDateChange(filterIndex, val)"
+        <DateRange
+          :filter="filter"
+          @change="
+            (filterValue) =>
+              onSelectionFilterDateChange(filterIndex, filterValue)
+          "
         />
       </div>
     </template>
@@ -94,6 +93,7 @@ import copy from 'fast-copy'
 import Vue, { PropType } from 'vue'
 import { mapActions } from 'vuex'
 
+import DateRange from '@/components/Filters/DateRange.vue'
 import { Category } from '@/lib/apiMenu'
 import {
   FilterValueBoolean,
@@ -102,22 +102,11 @@ import {
   FilterValues,
 } from '@/utils/types-filters'
 
-export enum DateFilterLabel {
-  TODAY = 'today',
-  TOMORROW = 'tomorrow',
-  THIS_WEEKEND = 'thisWeekend',
-  NEXT_WEEK = 'nextWeek',
-  NEXT_MONTH = 'nextMonth',
-}
-
-export type DateFilterOption = {
-  text: string
-  value: string
-  begin: string
-  end: string
-}
-
 export default Vue.extend({
+  components: {
+    DateRange,
+  },
+
   props: {
     subcategory: {
       type: Object as PropType<Category>,
@@ -127,66 +116,6 @@ export default Vue.extend({
       type: Array as PropType<FilterValues>,
       required: true,
     },
-  },
-
-  data(): {
-    dateFilters: DateFilterOption[]
-  } {
-    const today = new Date()
-    today.setHours(0, 0, 0, 0)
-
-    const tomorrow = new Date(today)
-    tomorrow.setDate(tomorrow.getDate() + 1)
-
-    const afterTomorrow = new Date(tomorrow)
-    afterTomorrow.setDate(afterTomorrow.getDate() + 1)
-
-    const saturday = new Date()
-    saturday.setDate(saturday.getDate() + (7 - (saturday.getDay() % 5 || 6)))
-
-    const monday = new Date()
-    monday.setDate(monday.getDate() + (7 - (monday.getDay() % 7 || 7)))
-
-    const nextWeek = new Date(today)
-    nextWeek.setDate(nextWeek.getDate() + 7)
-
-    const nextMonth = new Date(today)
-    nextMonth.setMonth(nextMonth.getMonth() + 1)
-
-    return {
-      dateFilters: [
-        {
-          text: this.$tc('dateFilter.' + DateFilterLabel.TODAY),
-          value: DateFilterLabel.TODAY,
-          begin: today.toISOString().substring(0, 10),
-          end: tomorrow.toISOString().substring(0, 10),
-        },
-        {
-          text: this.$tc('dateFilter.' + DateFilterLabel.TOMORROW),
-          value: DateFilterLabel.TOMORROW,
-          begin: tomorrow.toISOString().substring(0, 10),
-          end: afterTomorrow.toISOString().substring(0, 10),
-        },
-        {
-          text: this.$tc('dateFilter.' + DateFilterLabel.THIS_WEEKEND),
-          value: DateFilterLabel.THIS_WEEKEND,
-          begin: saturday.toISOString().substring(0, 10),
-          end: monday.toISOString().substring(0, 10),
-        },
-        {
-          text: this.$tc('dateFilter.' + DateFilterLabel.NEXT_WEEK),
-          value: DateFilterLabel.NEXT_WEEK,
-          begin: today.toISOString().substring(0, 10),
-          end: nextWeek.toISOString().substring(0, 10),
-        },
-        {
-          text: this.$tc('dateFilter.' + DateFilterLabel.NEXT_MONTH),
-          value: DateFilterLabel.NEXT_MONTH,
-          begin: today.toISOString().substring(0, 10),
-          end: nextMonth.toISOString().substring(0, 10),
-        },
-      ],
-    }
   },
 
   computed: {
@@ -226,23 +155,12 @@ export default Vue.extend({
       })
     },
 
-    onSelectionFilterDateChange(filterIndex: number, value: string | null) {
+    onSelectionFilterDateChange(
+      filterIndex: number,
+      filterValue: FilterValueDate
+    ) {
       const filters = this.filtersSafeCopy
-      const filter = filters[filterIndex] as FilterValueDate
-
-      if (value) {
-        const dateRange = this.dateFilters.find(
-          (e: DateFilterOption) => e.value === value
-        )
-
-        if (dateRange) {
-          filter.filterValueBegin = dateRange.begin
-          filter.filterValueEnd = dateRange.end
-        }
-      } else {
-        filter.filterValueBegin = null
-        filter.filterValueEnd = null
-      }
+      filters[filterIndex] = filterValue
 
       this.applyCategorieFilters({
         categoryId: this.subcategory.id,
@@ -264,13 +182,6 @@ export default Vue.extend({
         categoryId: this.subcategory.id,
         filterValues: filters,
       })
-    },
-
-    getDateFilter(filter: FilterValueDate) {
-      return this.dateFilters.find(
-        (e) =>
-          e.begin === filter.filterValueBegin && e.end === filter.filterValueEnd
-      )?.value
     },
   },
 })
