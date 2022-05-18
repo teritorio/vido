@@ -4,9 +4,7 @@
     :href="href"
     target="black_"
     :class="[
-      'flex focus:outline-none outline-none items-center self-stretch justify-start leading-none transition-colors rounded-lg p-4 relative',
-      !selected && 'hover:bg-zinc-100',
-      selected && 'selected bg-zinc-100 hover:bg-transparent',
+      'flex focus:outline-none outline-none items-center self-stretch justify-start leading-none transition-colors rounded-lg p-4 relative hover:bg-zinc-100',
       type === 'large' ? 'col-span-4 pt-2 pb-0' : 'pt-4 pb-2 flex-col',
     ]"
     @click="!href && onClick()"
@@ -26,20 +24,6 @@
         class="text-white text-xs font-semibold font-sans text-center rounded-full absolute -top-1 -right-1 w-5 h-5 border-2 border-white bg-red-600"
       >
         {{ activeSubCategories }}
-      </div>
-
-      <div
-        v-if="selected"
-        class="absolute -right-0.5 text-lg text-emerald-500 -top-1.5"
-      >
-        <font-awesome-icon
-          icon="check-circle"
-          :class="[
-            'rounded-full bg-white fill-current ring-2 transition-colors',
-            !selected && 'ring-white',
-            selected && 'ring-zinc-100',
-          ]"
-        />
       </div>
     </div>
 
@@ -72,9 +56,11 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
+import Vue, { PropType } from 'vue'
 
 import TeritorioIcon from '@/components/TeritorioIcon/TeritorioIcon.vue'
+
+import { ApiMenuGroup } from '~/lib/apiMenu'
 
 export default Vue.extend({
   components: {
@@ -85,7 +71,7 @@ export default Vue.extend({
       type: String,
       required: true,
     },
-    id: {
+    categoryId: {
       type: Number,
       required: true,
     },
@@ -97,16 +83,12 @@ export default Vue.extend({
       type: String,
       required: true,
     },
-    selected: {
-      type: Boolean,
-      default: false,
-    },
     activeSubCategories: {
       type: Number,
       default: 0,
     },
     type: {
-      type: String,
+      type: String as PropType<ApiMenuGroup['menu_group']['display_mode']>,
       required: true,
     },
     href: {
@@ -116,18 +98,8 @@ export default Vue.extend({
   },
   methods: {
     onClick() {
-      this.$emit('click', this.$props.id)
+      this.$emit('click', this.$props.categoryId)
     },
   },
 })
 </script>
-
-<style scoped>
-button:not(.selected):hover svg[data-icon='check-circle'] {
-  @apply ring-zinc-100;
-}
-
-button.selected:hover svg[data-icon='check-circle'] {
-  @apply ring-white;
-}
-</style>

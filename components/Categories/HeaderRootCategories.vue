@@ -4,8 +4,8 @@
       <div v-if="!collapsed" class="grid items-start grid-cols-4 gap-3">
         <CategoryButton
           v-for="category in nonHighlightedCategories"
-          :id="category.id"
           :key="category.id"
+          :category-id="category.id"
           :color-fill="
             (category.menu_group || category.link || category.category)
               .color_fill
