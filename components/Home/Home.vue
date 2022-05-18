@@ -190,6 +190,7 @@ import copy from 'fast-copy'
 import debounce from 'lodash.debounce'
 import { LngLatBoundsLike } from 'maplibre-gl'
 import Vue, { PropType, VueConstructor } from 'vue'
+import { MetaInfo } from 'vue-meta'
 import { mapGetters, mapActions } from 'vuex'
 import { interpret, Interpreter, State } from 'xstate'
 
@@ -206,7 +207,7 @@ import SearchHeader from '@/components/Search/SearchHeader.vue'
 import { Category } from '@/lib/apiMenu'
 import { getPoiById, ApiPoi } from '@/lib/apiPois'
 import { ApiMenuItemSearchResult } from '@/lib/apiSearch'
-import { Settings } from '@/lib/apiSettings'
+import { headerFromSettings, Settings } from '@/lib/apiSettings'
 import { getBBoxFeature } from '@/lib/bbox'
 import { DEFAULT_MAP_STYLE, EXPLORER_MAP_STYLE } from '@/lib/constants'
 import { Mode } from '@/utils/types'
@@ -319,20 +320,10 @@ export default (
       fullAttributions: '',
     }
   },
-  head() {
-    const infos = this.settings
-
-    return {
-      title: infos.themes[0]?.title.fr,
-      meta: [
-        {
-          // https://nuxtjs.org/docs/2.x/features/meta-tags-seo#local-settings
-          hid: 'index',
-          name: infos.themes[0]?.title?.fr,
-          content: infos.themes[0]?.description?.fr,
-        },
-      ],
-    }
+  head(): MetaInfo {
+    return headerFromSettings(this.settings, {
+      title: this.settings.themes[0]?.title.fr,
+    })
   },
   computed: {
     ...mapGetters({

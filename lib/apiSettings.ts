@@ -7,6 +7,7 @@ export interface SiteInfosTheme {
   slug: string
   title: MultilingualString
   description: MultilingualString
+  keywords: MultilingualString
   // eslint-disable-next-line camelcase
   site_url: MultilingualString
   // eslint-disable-next-line camelcase
@@ -62,24 +63,37 @@ export function getSettings(
 }
 
 export function headerFromSettings(
-  settings: Settings | null,
+  settings: Settings,
   options: any = null
 ): MetaInfo {
   return {
-    title: [settings?.themes[0].title.fr, options?.title]
+    title: [settings.themes[0].title.fr, options?.title]
       .filter((o) => o)
       .join(' - '),
     link: [
       {
         rel: 'stylesheet',
-        href: settings?.icon_font_css_url || '',
+        href: settings.icon_font_css_url,
       },
       {
         hid: 'icon',
         rel: 'icon',
         type: 'image/x-icon',
-        href: settings?.themes[0].favicon_url || '',
+        href: settings.themes[0].favicon_url,
       },
-    ],
+    ].filter((meta) => meta.href),
+    meta: [
+      {
+        // https://nuxtjs.org/docs/2.x/features/meta-tags-seo#local-settings
+        hid: 'description',
+        name: 'description',
+        content: settings.themes[0]?.description?.fr,
+      },
+      {
+        hid: 'keywords',
+        name: 'keywords',
+        content: settings.themes[0]?.keywords?.fr,
+      },
+    ].filter((meta) => meta.content),
   }
 }
