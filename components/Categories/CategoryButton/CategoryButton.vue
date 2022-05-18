@@ -1,13 +1,12 @@
 <template>
-  <button
-    :is="href ? 'a' : 'button'"
-    :href="href"
+  <a
+    :href="href || `/${categoryId}`"
     target="black_"
     :class="[
-      'flex focus:outline-none outline-none items-center self-stretch justify-start leading-none transition-colors rounded-lg p-4 relative hover:bg-zinc-100',
+      'flex focus:outline-none outline-none items-center text-center self-stretch justify-start leading-none transition-colors rounded-lg p-4 relative hover:bg-zinc-100',
       type === 'large' ? 'col-span-4 pt-2 pb-0' : 'pt-4 pb-2 flex-col',
     ]"
-    @click="!href && onClick()"
+    @click="!href && onClick($event)"
   >
     <div
       class="relative flex items-center justify-center w-12 h-12 mb-2 text-white rounded-full"
@@ -52,7 +51,7 @@
       ]"
       size="sm"
     />
-  </button>
+  </a>
 </template>
 
 <script lang="ts">
@@ -97,7 +96,10 @@ export default Vue.extend({
     },
   },
   methods: {
-    onClick() {
+    onClick(event: Event) {
+      if (!this.href) {
+        event.preventDefault()
+      }
       this.$emit('click', this.$props.categoryId)
     },
   },
