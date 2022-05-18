@@ -99,6 +99,13 @@ export default {
         mapboxgl: 'maplibre-gl',
       }),
     ],
+    babel: {
+      plugins: [
+        ['@babel/plugin-proposal-class-properties', { loose: true }],
+        ['@babel/plugin-proposal-private-methods', { loose: true }],
+        ['@babel/plugin-proposal-private-property-in-object', { loose: true }],
+      ],
+    },
   },
 
   // Server config (allow listening to local network)
@@ -111,7 +118,6 @@ export default {
     typescript: { check: false },
     port: 4000,
     // addons: ['@storybook/addon-controls', '@storybook/addon-notes'],
-    stories: ['@/pages/**/*.stories.js', '@/components/**/*.stories.js'],
   },
 
   // Google Tag Manager config

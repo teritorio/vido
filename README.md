@@ -56,6 +56,13 @@ Apache2 configuration
   </LocationMatch>
 ```
 
+## Dev with Storybook
+
+Run Storybook with
+```
+yarn start:storybook
+```
+
 ## Settings
 
 Popup and details special fields support:
