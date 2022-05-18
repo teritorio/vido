@@ -24,8 +24,8 @@ export default Vue.extend({
   },
 
   async asyncData({ params, route, req }): Promise<{
-    settings: Settings | null
-    categories: Category[] | null
+    settings: Settings
+    categories: Category[]
     categoryIds: number[] | null
     initialPoi: ApiPoi | null
   }> {
@@ -68,22 +68,31 @@ export default Vue.extend({
       )
     }
 
-    const v = await Promise.all([fetchSettings, fetchCategories, fetchPoi])
+    const [settings, categories, initialPoi] = await Promise.all([
+      fetchSettings,
+      fetchCategories,
+      fetchPoi,
+    ])
+    if (!settings || !categories) {
+      throw new Error('Not found')
+    }
 
     return Promise.resolve({
-      settings: v[0],
-      categories: v[1],
+      settings,
+      categories,
       categoryIds,
-      initialPoi: v[2],
+      initialPoi,
     })
   },
 
   data(): {
-    settings: Settings | null
-    categories: Category[] | null
+    settings: Settings
+    categories: Category[]
   } {
     return {
+      // @ts-ignore
       settings: null,
+      // @ts-ignore
       categories: null,
     }
   },

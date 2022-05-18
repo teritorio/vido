@@ -25,8 +25,8 @@ export default Vue.extend({
   },
 
   async asyncData({ params, req }): Promise<{
-    settings: Settings | null
-    poi: ApiPoi | null
+    settings: Settings
+    poi: ApiPoi
   }> {
     const getSettingsPromise = getSettings(
       vidoConfig(req).API_ENDPOINT,
@@ -43,20 +43,29 @@ export default Vue.extend({
       }
     )
 
-    const v = await Promise.all([getSettingsPromise, getPoiPromise])
+    const [settings, poi] = await Promise.all([
+      getSettingsPromise,
+      getPoiPromise,
+    ])
+    if (!settings || !poi) {
+      throw new Error('Not found')
+    }
+
     return Promise.resolve({
-      settings: v[0],
-      poi: v[1],
+      settings,
+      poi,
     })
   },
 
   data(): {
-    settings: Settings | null
-    poi: ApiPoi | null
+    settings: Settings
+    poi: ApiPoi
   } {
     return {
-      poi: null,
+      // @ts-ignore
       settings: null,
+      // @ts-ignore
+      poi: null,
     }
   },
 

@@ -28,16 +28,18 @@ export default Vue.extend({
   },
 
   async asyncData({ params, req }): Promise<{
+    settings: Settings
     pois: ApiPois | null
-    settings: Settings | null
   }> {
-    if (params.ids) {
-      const getSettingsPromise = getSettings(
-        vidoConfig(req).API_ENDPOINT,
-        vidoConfig(req).API_PROJECT,
-        vidoConfig(req).API_THEME
-      )
+    const getSettingsPromise = getSettings(
+      vidoConfig(req).API_ENDPOINT,
+      vidoConfig(req).API_PROJECT,
+      vidoConfig(req).API_THEME
+    )
 
+    let settings: Settings | null
+    let pois: ApiPois | null
+    if (params.ids) {
       const ids = params.ids.split(',')
       const getPoiPromise = getPoiByIds(
         vidoConfig(req).API_ENDPOINT,
@@ -48,29 +50,31 @@ export default Vue.extend({
           as_point: false,
         }
       )
-
-      const v = await Promise.all([getSettingsPromise, getPoiPromise])
-      const settings = v[0]
-      const pois = v[1]
-      return Promise.resolve({
-        pois,
-        settings,
-      })
+      ;[settings, pois] = await Promise.all([getSettingsPromise, getPoiPromise])
     } else {
-      return Promise.resolve({
-        pois: null,
-        settings: null,
-      })
+      ;[settings] = await Promise.all([getSettingsPromise])
+      pois = null
     }
+
+    if (!settings || !pois) {
+      throw new Error('Not found')
+    }
+
+    return Promise.resolve({
+      settings,
+      pois,
+    })
   },
 
   data(): {
-    pois: ApiPois | null
-    settings: Settings | null
+    settings: Settings
+    pois: ApiPois
   } {
     return {
-      pois: null,
+      // @ts-ignore
       settings: null,
+      // @ts-ignore
+      poi: null,
     }
   },
 
