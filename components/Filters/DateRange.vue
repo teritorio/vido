@@ -30,6 +30,16 @@ export type DateFilterOption = {
   end: string
 }
 
+function formatDate(date: Date): string {
+  return (
+    date.getFullYear().toString() +
+    '-' +
+    (date.getMonth() + 1).toString().padStart(2, '0') +
+    '-' +
+    date.getDate().toString().padStart(2, '0')
+  )
+}
+
 export default Vue.extend({
   props: {
     filter: {
@@ -47,52 +57,49 @@ export default Vue.extend({
     const tomorrow = new Date(today)
     tomorrow.setDate(tomorrow.getDate() + 1)
 
-    const afterTomorrow = new Date(tomorrow)
-    afterTomorrow.setDate(afterTomorrow.getDate() + 1)
+    const saturday = new Date(today)
+    saturday.setDate(saturday.getDate() + ((6 + (7 - saturday.getDay())) % 7))
 
-    const saturday = new Date()
-    saturday.setDate(saturday.getDate() + (7 - (saturday.getDay() % 5 || 6)))
+    const sunday = new Date(today)
+    sunday.setDate(saturday.getDate() + 1)
 
-    const monday = new Date()
-    monday.setDate(monday.getDate() + (7 - (monday.getDay() % 7 || 7)))
+    const in7days = new Date(today)
+    in7days.setDate(in7days.getDate() + 7)
 
-    const nextWeek = new Date(today)
-    nextWeek.setDate(nextWeek.getDate() + 7)
-
-    const nextMonth = new Date(today)
-    nextMonth.setMonth(nextMonth.getMonth() + 1)
+    const in1month = new Date(today)
+    in1month.setMonth(in1month.getMonth() + 1)
 
     return {
       dateFilters: [
         {
           text: this.$tc('dateFilter.' + DateFilterLabel.TODAY),
           value: DateFilterLabel.TODAY,
-          begin: today.toISOString().substring(0, 10),
-          end: tomorrow.toISOString().substring(0, 10),
+          begin: formatDate(today),
+          end: formatDate(today),
         },
         {
           text: this.$tc('dateFilter.' + DateFilterLabel.TOMORROW),
           value: DateFilterLabel.TOMORROW,
-          begin: tomorrow.toISOString().substring(0, 10),
-          end: afterTomorrow.toISOString().substring(0, 10),
+          begin: formatDate(tomorrow),
+          end: formatDate(tomorrow),
         },
         {
           text: this.$tc('dateFilter.' + DateFilterLabel.THIS_WEEKEND),
           value: DateFilterLabel.THIS_WEEKEND,
-          begin: saturday.toISOString().substring(0, 10),
-          end: monday.toISOString().substring(0, 10),
+          begin: formatDate(saturday),
+          end: formatDate(sunday),
         },
         {
           text: this.$tc('dateFilter.' + DateFilterLabel.NEXT_WEEK),
           value: DateFilterLabel.NEXT_WEEK,
-          begin: today.toISOString().substring(0, 10),
-          end: nextWeek.toISOString().substring(0, 10),
+          begin: formatDate(today),
+          end: formatDate(in7days),
         },
         {
           text: this.$tc('dateFilter.' + DateFilterLabel.NEXT_MONTH),
           value: DateFilterLabel.NEXT_MONTH,
-          begin: today.toISOString().substring(0, 10),
-          end: nextMonth.toISOString().substring(0, 10),
+          begin: formatDate(today),
+          end: formatDate(in1month),
         },
       ],
     }
