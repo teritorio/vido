@@ -25,7 +25,7 @@ export default {
     exploreButton: 'Cambiar al modo explorar',
     threeDAriaLabel: 'Ver el mapa en 3D',
     backgroundAriaLabel: 'Cambiar el fondo de mapa',
-    backgroundButton: 'Cambiar el fondo de mapa (actualmente "{actual}")',
+    backgroundButton: 'Cambiar el fondo de mapa a "{background}"',
     resetBearing: 'Restablecer el mapa al norte',
     zoomIn: 'Ampliar el zoom',
     zoomOut: 'Alejar el zoom',

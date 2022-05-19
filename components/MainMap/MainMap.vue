@@ -42,7 +42,7 @@
               :backgrounds="availableStyles"
               :initial-background="selectedBackground"
               :hidden="isModeExplorerOrFavorites"
-              @changeBackground="onClickChangeBackground"
+              @changeBackground="selectedBackground = $event"
             />
           </template>
         </Map>
@@ -127,7 +127,6 @@ import { createMarkerDonutChart } from '@/lib/clusters'
 import {
   DEFAULT_MAP_STYLE,
   EXPLORER_MAP_STYLE,
-  MAP_STYLE_NAMES,
   LOCAL_STORAGE,
   MAP_ZOOM,
 } from '@/lib/constants'
@@ -238,8 +237,12 @@ export default Vue.extend({
         .filter((s) => s && Array.isArray(s))
     },
 
-    availableStyles(): typeof MAP_STYLE_NAMES {
-      return MAP_STYLE_NAMES
+    availableStyles(): MapStyleEnum[] {
+      return [
+        MapStyleEnum.vector,
+        MapStyleEnum.aerial,
+        ...(!this.$screen.smallScreen ? [MapStyleEnum.raster] : []),
+      ]
     },
   },
 
@@ -825,10 +828,6 @@ export default Vue.extend({
           this.map?.triggerRepaint()
         })
       }
-    },
-
-    onClickChangeBackground(background: keyof typeof MapStyleEnum) {
-      this.selectedBackground = background
     },
 
     initPoiLayer(features: ApiPoi[]) {

@@ -1,42 +1,51 @@
 <template>
-  <div class="w-11 h-11">
-    <button
-      v-if="!hidden"
-      id="background-selector-map"
-      aria-label="$tc('mapControls.backgroundAriaLabel')"
-      class="bg-zinc-100 border-4 border-white rounded-full shadow-md outline-none w-11 h-11 focus:outline-none hover:bg-zinc-100 focus-visible:bg-zinc-100"
-      :title="
-        $t('mapControls.backgroundButton', {
-          current: backgrounds[background],
-        })
-      "
-      type="button"
-      @click="displayNextBackground"
-    >
-      <img
-        class="h-full rounded-full"
-        alt="fond de carte"
-        :src="require(`~/assets/${nextBackgroundName(background)}.png`)"
-      />
-    </button>
+  <div>
+    <div v-for="background in backgrounds" :key="background" class="w-11 h-11">
+      <button
+        v-if="!hidden"
+        id="background-selector-map"
+        aria-label="$tc('mapControls.backgroundAriaLabel')"
+        :class="[
+          'bg-white border-4 rounded-full shadow-md outline-none w-11 h-11 focus:outline-none ',
+          activeBackground == background && 'border-blue-500',
+          activeBackground != background &&
+            'border-white hover:border-zinc-100',
+        ]"
+        :title="
+          $t('mapControls.backgroundButton', {
+            current: name(background),
+          })
+        "
+        type="button"
+        @click="changeBackground(background)"
+      >
+        <img
+          class="h-full rounded-full"
+          alt="fond de carte"
+          :src="require(`~/assets/${background}.png`)"
+        />
+      </button>
+    </div>
   </div>
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
+import Vue, { PropType } from 'vue'
 
-import { DEFAULT_MAP_STYLE } from '@/lib/constants'
+import { DEFAULT_MAP_STYLE, MAP_STYLE_NAMES } from '@/lib/constants'
 import { getHashPart, routerPushHashUpdate } from '@/utils/url'
+
+import { MapStyleEnum } from '~/utils/types'
 
 export default Vue.extend({
   props: {
     backgrounds: {
-      type: Object,
-      default: null,
+      type: Array as PropType<MapStyleEnum[]>,
+      required: true,
     },
     initialBackground: {
-      type: String,
-      default: null,
+      type: String as PropType<MapStyleEnum>,
+      required: true,
     },
     hidden: {
       type: Boolean,
@@ -45,58 +54,37 @@ export default Vue.extend({
   },
 
   data(): {
-    background: string | null
+    activeBackground: MapStyleEnum | null
   } {
     return {
-      background: null,
+      activeBackground: null,
     }
   },
 
   mounted() {
-    if (
-      getHashPart(this.$router, 'bg') &&
-      this.backgrounds[getHashPart(this.$router, 'bg') || '']
-    ) {
-      this.background = getHashPart(this.$router, 'bg')
-    } else if (this.initialBackground) {
-      this.background = this.initialBackground
+    const bgString = getHashPart(this.$router, 'bg')
+    const bg = MapStyleEnum[bgString as keyof typeof MapStyleEnum]
+    if (bg && this.backgrounds.includes(bg)) {
+      this.activeBackground = bg
     } else {
-      this.displayNextBackground()
+      this.activeBackground = this.initialBackground
     }
   },
 
   methods: {
-    displayNextBackground() {
-      this.$tracking({ type: 'map_control_event', event: 'background' })
-      if (!this.background) {
-        return
-      }
-
-      const nextBackgroundName = this.nextBackgroundName(this.background)
-      this.background = nextBackgroundName
-      routerPushHashUpdate(this.$router, {
-        bg:
-          nextBackgroundName !== DEFAULT_MAP_STYLE ? nextBackgroundName : null,
-      })
-      this.$emit('changeBackground', nextBackgroundName)
+    name(background: keyof typeof MapStyleEnum) {
+      return MAP_STYLE_NAMES[background]
     },
 
-    nextBackgroundName(backgroundNameReference: string): string {
-      const styleNames = [
-        'vector',
-        'aerial',
-        ...(!this.$screen.smallScreen ? ['raster'] : []),
-      ]
+    changeBackground(background: MapStyleEnum) {
+      // TODO mettre le background selectioné
+      this.$tracking({ type: 'map_control_event', event: 'background' })
 
-      const backgroundReferenceIndex = styleNames.findIndex(
-        (styleName) => styleName === backgroundNameReference
-      )
-      const styleIndex =
-        backgroundReferenceIndex + 1 > styleNames.length - 1
-          ? 0
-          : backgroundReferenceIndex + 1
-
-      return styleNames[styleIndex]
+      this.activeBackground = background
+      routerPushHashUpdate(this.$router, {
+        bg: background !== DEFAULT_MAP_STYLE ? background : null,
+      })
+      this.$emit('changeBackground', background)
     },
   },
 })

@@ -25,7 +25,7 @@ export default {
     exploreButton: 'Switch to Explore mode',
     threeDAriaLabel: 'View the map in 3D',
     backgroundAriaLabel: 'Switch the map background',
-    backgroundButton: 'Switch the map background (currently "{current}")',
+    backgroundButton: 'Switch the map background to "{background}"',
     resetBearing: 'Reset bearing to north',
     zoomIn: 'Zoom In',
     zoomOut: 'Zoom Out',

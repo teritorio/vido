@@ -25,7 +25,7 @@ export default {
     exploreButton: 'Basculer en mode explorer',
     threeDAriaLabel: 'Visualiser la carte en 3D',
     backgroundAriaLabel: 'Changer le fond de carte',
-    backgroundButton: 'Changer le fond de carte (actuellement "{current}")',
+    backgroundButton: 'Changer le fond de carte vers "{background}"',
     resetBearing: 'Remettre la carte vers le nord',
     zoomIn: 'Zoomer avant',
     zoomOut: 'Zoomer arriere',
