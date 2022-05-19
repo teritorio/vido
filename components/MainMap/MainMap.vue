@@ -242,6 +242,7 @@ export default Vue.extend({
         MapStyleEnum.vector,
         MapStyleEnum.aerial,
         ...(!this.$screen.smallScreen ? [MapStyleEnum.raster] : []),
+        MapStyleEnum.bicycle,
       ]
     },
   },
@@ -374,7 +375,7 @@ export default Vue.extend({
 
           break
         }
-        case Mode.BROWSER:
+        default:
           this.poiFilter?.remove(true)
           break
       }

@@ -23,6 +23,7 @@ export enum MapStyleEnum {
   vector = 'vector',
   raster = 'raster',
   aerial = 'aerial',
+  bicycle = 'bicycle',
 }
 
 export type NavMenuEntry = {

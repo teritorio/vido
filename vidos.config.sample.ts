@@ -5,6 +5,8 @@ const configDefault = {
   API_SEARCH_ADDR: 'https://api-adresse.data.gouv.fr/search',
   API_EXPORT: 'https://print-dev.teritorio.xyz/v0.1',
   API_QR_SHORTENER: 'https://qr-shortener-dev.teritorio.xyz',
+  BICYCLE_STYLE_URL:
+    'https://vecto.teritorio.xyz/styles/teritorio-tourism-bicycle-0.9/style.json',
   NOTEBOOK_ENABLED: true,
   MAPILLARY_ACCESS_TOKEN: null,
   GOOGLE_TAG_MANAGER_ID: null,
@@ -24,6 +26,8 @@ const config: VidosConfig = {
       'https://merge-proxy-dev.teritorio.xyz/styles/satellite-hybrid/style.json?key=###',
     RASTER_STYLE_URL:
       'https://merge-proxy-dev.teritorio.xyz/styles/openstreetmap-carto/style.json?key=###',
+    BICYCLE_STYLE_URL:
+      'https://merge-proxy-dev.teritorio.xyz/styles/teritorio-tourism-bicycle-0.9/style.json?key=###',
   },
 }
 

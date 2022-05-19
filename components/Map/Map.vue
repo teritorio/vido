@@ -208,6 +208,7 @@ export default Vue.extend({
           [MapStyleEnum.vector]: this.$vidoConfig.VECTO_STYLE_URL,
           [MapStyleEnum.aerial]: this.$vidoConfig.SATELLITE_STYLE_URL,
           [MapStyleEnum.raster]: this.$vidoConfig.RASTER_STYLE_URL,
+          [MapStyleEnum.bicycle]: this.$vidoConfig.BICYCLE_STYLE_URL,
         }
         const style = await fetchStyle(
           styleURLs[mapStyle],
