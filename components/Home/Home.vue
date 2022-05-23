@@ -209,7 +209,6 @@ import { getPoiById, ApiPoi } from '@/lib/apiPois'
 import { ApiMenuItemSearchResult } from '@/lib/apiSearch'
 import { headerFromSettings, Settings } from '@/lib/apiSettings'
 import { getBBoxFeature } from '@/lib/bbox'
-import { DEFAULT_MAP_STYLE, EXPLORER_MAP_STYLE } from '@/lib/constants'
 import { Mode } from '@/utils/types'
 import { FilterValue, FilterValues } from '@/utils/types-filters'
 import { getHashPart, setHashParts } from '@/utils/url'
@@ -459,9 +458,6 @@ export default (
           this.previousSubCategories =
             this.state.context.selectedSubCategoriesIds
           this.unselectSubCategory(this.state.context.selectedSubCategoriesIds)
-
-          hash.bg =
-            EXPLORER_MAP_STYLE !== DEFAULT_MAP_STYLE ? EXPLORER_MAP_STYLE : null
           break
         }
         case Mode.FAVORITES: {

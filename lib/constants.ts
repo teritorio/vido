@@ -8,7 +8,6 @@ export const MAP_STYLE_NAMES = {
 }
 
 export const DEFAULT_MAP_STYLE: keyof typeof MapStyleEnum = MapStyleEnum.vector
-export const EXPLORER_MAP_STYLE: keyof typeof MapStyleEnum = MapStyleEnum.vector
 
 export const LOCAL_STORAGE = { favorites: 'vido:favorites' }
 

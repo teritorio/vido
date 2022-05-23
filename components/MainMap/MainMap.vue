@@ -41,7 +41,6 @@
             <MapControlsBackground
               :backgrounds="availableStyles"
               :initial-background="selectedBackground"
-              :hidden="isModeExplorerOrFavorites"
               @changeBackground="selectedBackground = $event"
             />
           </template>
@@ -124,12 +123,7 @@ import { ApiMenuCategory } from '@/lib/apiMenu'
 import { getPoiByIds, ApiPoi } from '@/lib/apiPois'
 import { getBBoxFeatures, getBBoxFeature, getBBoxCoordList } from '@/lib/bbox'
 import { createMarkerDonutChart } from '@/lib/clusters'
-import {
-  DEFAULT_MAP_STYLE,
-  EXPLORER_MAP_STYLE,
-  LOCAL_STORAGE,
-  MAP_ZOOM,
-} from '@/lib/constants'
+import { DEFAULT_MAP_STYLE, LOCAL_STORAGE, MAP_ZOOM } from '@/lib/constants'
 import {
   markerLayerTextFactory,
   makerHtmlFactory,
@@ -363,21 +357,10 @@ export default Vue.extend({
 
     mode() {
       this.allowRegionBackZoom = false
-
-      switch (this.mode) {
-        case Mode.EXPLORER: {
-          if (this.selectedBackground === EXPLORER_MAP_STYLE) {
-            this.poiFilter?.setIncludeFilter(this.filters)
-          } else {
-            this.poiFilterForExplorer()
-            this.selectedBackground = EXPLORER_MAP_STYLE
-          }
-
-          break
-        }
-        default:
-          this.poiFilter?.remove(true)
-          break
+      if (this.isModeExplorer) {
+        this.poiFilter?.setIncludeFilter(this.filters)
+      } else {
+        this.poiFilter?.remove(true)
       }
     },
 
@@ -470,18 +453,11 @@ export default Vue.extend({
       this.poiFilter = new PoiFilter()
       this.map.addControl(this.poiFilter)
 
-      this.map.on('data', () => {
-        if (
-          this.selectedBackground === DEFAULT_MAP_STYLE &&
-          !this.isModeExplorer
-        ) {
-          this.poiFilter?.remove(true)
-        }
-        if (
-          this.selectedBackground === DEFAULT_MAP_STYLE &&
-          this.isModeExplorer
-        ) {
+      this.map.on('styledata', () => {
+        if (this.isModeExplorer) {
           this.poiFilterForExplorer()
+        } else {
+          this.poiFilter?.remove(true)
         }
       })
 
