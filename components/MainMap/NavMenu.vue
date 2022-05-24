@@ -39,7 +39,7 @@
           :href="entry.url"
           rel="noopener noreferrer"
           target="_blank"
-          @click.stop
+          @click="openLink(entry.title, entry.url)"
         >
           <font-awesome-icon
             icon="external-link-alt"
@@ -106,6 +106,13 @@ export default Vue.extend({
     setLocale(locale: string) {
       this.$i18n.setLocale(locale)
       this.setSiteLocale(locale)
+    },
+    openLink(title: string, url: string) {
+      this.$tracking({
+        type: 'external_link',
+        url,
+        title,
+      })
     },
   },
 })

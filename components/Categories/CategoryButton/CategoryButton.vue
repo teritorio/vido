@@ -1,12 +1,12 @@
 <template>
   <a
     :href="href || `/${categoryId}`"
-    target="black_"
+    target="_blank"
     :class="[
       'flex focus:outline-none outline-none items-center text-center self-stretch justify-start leading-none transition-colors rounded-lg p-4 relative hover:bg-zinc-100',
       type === 'large' ? 'col-span-4 pt-2 pb-0' : 'pt-4 pb-2 flex-col',
     ]"
-    @click="!href && onClick($event)"
+    @click="onClick"
   >
     <div
       class="relative flex items-center justify-center w-12 h-12 mb-2 text-white rounded-full"
@@ -97,10 +97,25 @@ export default Vue.extend({
   },
   methods: {
     onClick(event: Event) {
+      if (this.href) {
+        this.$tracking({
+          type: 'external_link',
+          url: this.href,
+          title: this.label,
+        })
+      } else {
+        this.$tracking({
+          type: 'category_event',
+          event: 'enable',
+          categoryId: this.categoryId,
+          title: this.label,
+        })
+      }
+
       if (!this.href) {
         event.preventDefault()
+        this.$emit('click', this.categoryId)
       }
-      this.$emit('click', this.$props.categoryId)
     },
   },
 })

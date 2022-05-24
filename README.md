@@ -87,4 +87,6 @@ Spetial formatting support:
 | Opening the popup            | popup               |                                         | pageview            | pageTitle, pageLocation, pagePath, poiId | trackPageView   | SetCustomTtitle, setCustomUrl    |
 | Action on the popup          | popup_event         | details, route, explore, favorite, zoom | popup_event         | action, title, poiId, category           | trackEvent      | event, action, title, poiId      |
 | Action on the map control    | map_control_event   | 3d, background, explorer, favorite      | map_control_event   | action                                   | trackEvent      | event, action                    |
-| Action on favorites          | favorites_event     | copy_link                               | favorites_event     | action                                   | trackEvent      | event, action                    |
+| Action on favorites          | favorites_event     | copy_link, exportPDF, exportCSV         | favorites_event     | action                                   | trackEvent      | event, action                    |
+| Notebook                     | notebook_event      | open                                    | pageview            | pageTitle, pagePath                      | trackPageView   | SetCustomTtitle, setCustomUrl    |
+| External links               | external_link       |                                         | external_link       | Url, title                               | trackLink       | Url                              |

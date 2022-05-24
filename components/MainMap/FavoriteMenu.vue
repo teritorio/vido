@@ -88,7 +88,7 @@
           class="block w-full px-4 py-2 text-sm leading-5 text-left text-zinc-700 transition duration-150 ease-in-out hover:bg-zinc-100 focus:outline-none focus:bg-zinc-100"
           role="menuitem"
           @blur="blurHandler"
-          @click="$refs.notebookModal.show()"
+          @click="openNotebookModal"
         >
           <font-awesome-icon
             ref="menu_icon"
@@ -104,6 +104,7 @@
           class="block w-full px-4 py-2 text-sm leading-5 text-left text-zinc-700 transition duration-150 ease-in-out hover:bg-zinc-100 focus:outline-none focus:bg-zinc-100"
           role="menuitem"
           @blur="blurHandler"
+          @click="exportLink('export_pdf')"
         >
           <font-awesome-icon
             ref="menu_icon"
@@ -119,6 +120,7 @@
           class="block w-full px-4 py-2 text-sm leading-5 text-left text-zinc-700 transition duration-150 ease-in-out hover:bg-zinc-100 focus:outline-none focus:bg-zinc-100"
           role="menuitem"
           @blur="blurHandler"
+          @click="exportLink('export_csv')"
         >
           <font-awesome-icon
             ref="menu_icon"
@@ -168,7 +170,7 @@
 
 <script lang="ts">
 import Vue, { VueConstructor } from 'vue'
-import { TDropdown } from 'vue-tailwind/dist/components'
+import { TDropdown, TModal } from 'vue-tailwind/dist/components'
 import { mapGetters } from 'vuex'
 
 import FavoriteNoteBook from '@/components/MainMap/FavoriteNoteBook.vue'
@@ -183,6 +185,7 @@ export default (
     Vue & {
       $refs: {
         shareModal: InstanceType<typeof ShareLinkModal>
+        notebookModal: InstanceType<typeof TModal>
       }
     }
   >
@@ -305,6 +308,20 @@ export default (
     },
     handleFavorite(poi?: ApiPoi, isNotebook?: Boolean) {
       this.toggleFavorite(poi, isNotebook)
+    },
+    openNotebookModal() {
+      this.$tracking({
+        type: 'notebook_event',
+        event: 'open',
+      })
+
+      this.$refs.notebookModal?.show()
+    },
+    exportLink(w: 'export_pdf' | 'export_csv') {
+      this.$tracking({
+        type: 'favorites_event',
+        event: w,
+      })
     },
   },
 })

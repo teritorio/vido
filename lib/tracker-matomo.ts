@@ -43,6 +43,7 @@ export default class Matomo implements Tracker {
         ])
         break
       }
+      case 'notebook_event':
       case 'search': {
         _paq.push(['setCustomUrl', `/${urlSlug(event.type)}`])
         _paq.push(['trackPageView', event.type])
@@ -106,6 +107,15 @@ export default class Matomo implements Tracker {
           event.type,
           // action
           event.event,
+        ])
+        break
+      }
+      case 'external_link': {
+        _paq.push([
+          'trackLink',
+          // url
+          event.url,
+          // event.title,
         ])
         break
       }

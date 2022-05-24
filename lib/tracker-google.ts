@@ -40,6 +40,7 @@ export default class Google implements Tracker {
         })
         break
       }
+      case 'notebook_event':
       case 'search': {
         this.gtm.push({
           event: 'pageview',
@@ -87,6 +88,10 @@ export default class Google implements Tracker {
       }
       case 'favorites_event': {
         this.gtm.push({ event: event.type, action: event.event })
+        break
+      }
+      case 'external_link': {
+        this.gtm.push({ event: event.type, url: event.url, title: event.title })
         break
       }
     }

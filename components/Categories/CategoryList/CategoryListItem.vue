@@ -3,9 +3,9 @@
     <button
       :is="href ? 'a' : 'button'"
       :href="href"
-      target="black_"
+      target="_blank"
       class="flex items-center justify-between w-full px-5 py-3 rounded-lg outline-none focus:outline-none hover:bg-zinc-100"
-      @click="!href && onClick()"
+      @click="onClick"
     >
       <div class="flex items-center space-x-4">
         <div class="relative">
@@ -131,16 +131,29 @@ export default Vue.extend({
   },
   methods: {
     onClick() {
-      this.$tracking({
-        type: 'category_event',
-        event: 'enable',
-        categoryId: this.category.id,
-        title: (
-          this.category.menu_group ||
-          this.category.link ||
-          this.category.category
-        ).name.fr,
-      })
+      if (this.href) {
+        this.$tracking({
+          type: 'external_link',
+          url: this.href,
+          title: (
+            this.category.menu_group ||
+            this.category.link ||
+            this.category.category
+          ).name.fr,
+        })
+      } else {
+        this.$tracking({
+          type: 'category_event',
+          event: 'enable',
+          categoryId: this.category.id,
+          title: (
+            this.category.menu_group ||
+            this.category.link ||
+            this.category.category
+          ).name.fr,
+        })
+      }
+
       this.$emit('click', this.category.id)
     },
     onFilterClick() {

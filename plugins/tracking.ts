@@ -22,7 +22,7 @@ const trackingPlugin: Plugin = ({ app, req }, inject) => {
   }
 
   inject('tracking', (event: Event) => {
-    if (!trackers) {
+    if (trackers.length === 0) {
       if (process.env.NODE_ENV === 'development') {
         console.error('Tracking event', event)
       }

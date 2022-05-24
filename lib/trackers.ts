@@ -54,7 +54,16 @@ export type Event =
     }
   | {
       type: 'favorites_event'
-      event: 'copy_link'
+      event: 'copy_link' | 'export_pdf' | 'export_csv'
+    }
+  | {
+      type: 'notebook_event'
+      event: 'open'
+    }
+  | {
+      type: 'external_link'
+      title: string
+      url: string
     }
 
 export interface Tracker {
