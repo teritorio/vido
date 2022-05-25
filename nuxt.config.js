@@ -21,11 +21,7 @@ export default {
   },
 
   // Global CSS (https://go.nuxtjs.dev/config-css)
-  css: [
-    '@fortawesome/fontawesome-svg-core/styles.css',
-    'maplibre-gl/dist/maplibre-gl.css',
-    '@fontsource/ubuntu',
-  ],
+  css: ['@fortawesome/fontawesome-svg-core/styles.css', '@fontsource/ubuntu'],
 
   purgeCSS: {
     whitelistPatterns: [/svg.*/, /fa.*/],

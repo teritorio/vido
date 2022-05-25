@@ -13,6 +13,7 @@
 <script lang="ts">
 import maplibregl, { Map } from 'maplibre-gl'
 import Vue, { PropType } from 'vue'
+import 'maplibre-gl/dist/maplibre-gl.css'
 
 export default Vue.extend({
   props: {
