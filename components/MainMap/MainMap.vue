@@ -181,7 +181,6 @@ export default Vue.extend({
 
   data(): {
     map: maplibregl.Map | null
-    source: string
     poiLayerTemplate: maplibregl.LayerSpecification | undefined
     pitch: number
     markers: { [id: string]: maplibregl.Marker }
@@ -196,7 +195,6 @@ export default Vue.extend({
   } {
     return {
       map: null,
-      source: POI_SOURCE,
       poiLayerTemplate: undefined,
       pitch: 0,
       markers: {},
