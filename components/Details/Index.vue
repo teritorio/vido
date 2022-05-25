@@ -98,6 +98,7 @@ import Header from '~/components/Details/Header.vue'
 import Location from '~/components/Details/Location.vue'
 import Mapillary from '~/components/Details/Mapillary.vue'
 import Share from '~/components/Details/Share.vue'
+import { OriginEnum } from '~/utils/types'
 
 export default Vue.extend({
   components: {
@@ -158,6 +159,19 @@ export default Vue.extend({
         this.p.editorial?.class_label?.fr
       )
     },
+  },
+
+  mounted() {
+    this.$tracking({
+      type: 'page',
+      title: this.$meta().refresh().metaInfo.title,
+      location: window.location.href,
+      path: this.$route.path,
+      origin:
+        OriginEnum[
+          this.$router.currentRoute.query.origin as keyof typeof OriginEnum
+        ],
+    })
   },
 })
 </script>
