@@ -105,8 +105,7 @@ export default Vue.extend({
         })
       } else {
         this.$tracking({
-          type: 'category_event',
-          event: 'enable',
+          type: 'category',
           categoryId: this.categoryId,
           title: this.label,
         })

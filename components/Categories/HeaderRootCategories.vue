@@ -70,12 +70,6 @@ export default Vue.extend({
       this.collapsed = !this.collapsed
     },
     onCategoryClick(category: Category) {
-      this.$tracking({
-        type: 'category',
-        categoryId: category.id,
-        title: (category.menu_group || category.link || category.category).name
-          .fr,
-      })
       this.$emit('category-click', category.id)
     },
     getCategoryCount(id: Category['id']) {

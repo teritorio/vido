@@ -141,6 +141,16 @@ export default Vue.extend({
             this.category.category
           ).name.fr,
         })
+      } else if (this.hasChildren) {
+        this.$tracking({
+          type: 'category',
+          categoryId: this.category.id,
+          title: (
+            this.category.menu_group ||
+            this.category.link ||
+            this.category.category
+          ).name.fr,
+        })
       } else {
         this.$tracking({
           type: 'category_event',
