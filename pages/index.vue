@@ -88,12 +88,16 @@ export default Vue.extend({
   data(): {
     settings: Settings
     categories: Category[]
+    categoryIds: number[] | null
+    initialPoi: ApiPoi | null
   } {
     return {
       // @ts-ignore
       settings: null,
       // @ts-ignore
       categories: null,
+      categoryIds: null,
+      initialPoi: null,
     }
   },
 
