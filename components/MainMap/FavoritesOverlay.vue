@@ -19,7 +19,7 @@ export default Vue.extend({
   methods: {
     onOverlayClick() {
       this.$store.dispatch('map/setMode', Mode.BROWSER)
-      this.$store.dispatch('favorite/setFavoritesAction', 'close')
+      this.$emit('discard')
     },
   },
 })

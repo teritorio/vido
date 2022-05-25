@@ -573,7 +573,6 @@ export default (
     },
     onQuitExplorerFavoriteMode() {
       this.$store.dispatch('map/setMode', Mode.BROWSER)
-      this.$store.dispatch('favorite/setFavoritesAction', 'close')
       this.setSelectedFeature(null)
     },
     goToSearch() {
@@ -686,7 +685,6 @@ export default (
 
       this.service.send(HomeEvents.GoToCategories)
       this.$store.dispatch('map/setMode', Mode.BROWSER)
-      this.$store.dispatch('favorite/setFavoritesAction', 'close')
       this.selectSubCategory([newFilter.id])
     },
     onFeatureClick(feature: ApiPoi) {

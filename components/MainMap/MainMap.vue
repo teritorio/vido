@@ -59,6 +59,7 @@
             :explore-around-selected-poi="exploreAroundSelectedPoi"
             :go-to-selected-poi="goToSelectedPoi"
             :toggle-favorite="toggleFavorite"
+            @toggle-favorites="onToggleFavoritesMode"
           />
           <NavMenu class="ml-3 sm:ml-9" />
         </div>
@@ -90,7 +91,10 @@
           size="3x"
         />
       </div>
-      <FavoritesOverlay v-if="showFavoritesOverlay" />
+      <FavoritesOverlay
+        v-if="showFavoritesOverlay"
+        @discard="showFavoritesOverlay = false"
+      />
       <SnackBar @click="handleSnackAction" />
     </div>
   </div>
@@ -218,7 +222,6 @@ export default Vue.extend({
       selectedFeature: 'map/selectedFeature',
       isLoadingFeatures: 'menu/isLoadingFeatures',
       favoritesIds: 'favorite/favoritesIds',
-      favoritesAction: 'favorite/favoritesAction',
     }),
 
     categories(): Record<ApiMenuCategory['id'], ApiMenuCategory> {
@@ -386,7 +389,6 @@ export default Vue.extend({
     this.setMode(mode)
     switch (mode) {
       case Mode.FAVORITES: {
-        this.setFavoritesAction('open')
         break
       }
       case Mode.EXPLORER: {
@@ -431,7 +433,6 @@ export default Vue.extend({
   methods: {
     ...mapActions({
       setMode: 'map/setMode',
-      setFavoritesAction: 'favorite/setFavoritesAction',
       toggleFavoritesMode: 'favorite/toggleFavoritesMode',
       setSelectedFeature: 'map/setSelectedFeature',
       unselectFeature: 'map/unselectFeature',
@@ -575,16 +576,13 @@ export default Vue.extend({
             const parsedFavorites = JSON.parse(currentFavorites).favorites
             if (!parsedFavorites.includes(id)) {
               newFavorite = [...parsedFavorites, id]
-              this.setFavoritesAction('add')
             } else {
               newFavorite = parsedFavorites.filter(
                 (f: string) => `${f}` !== `${id}`
               )
-              this.setFavoritesAction('delete')
             }
           } else {
             newFavorite = [id]
-            this.setFavoritesAction('add')
           }
 
           localStorage.setItem(
@@ -627,24 +625,13 @@ export default Vue.extend({
         return
       }
 
-      const hasFavorites = this.favoritesIds?.length > 0
-
-      this.showFavoritesOverlay =
-        this.isModeFavorites &&
-        !hasFavorites &&
-        this.favoritesAction !== 'delete'
-
-      if (!hasFavorites && this.favoritesAction === 'delete') {
-        this.setMode(Mode.BROWSER)
-        this.setFavoritesAction('close')
-      }
-
       if (this.isModeFavorites) {
-        const allFavorites = hasFavorites
-          ? await this.fetchFavorites(this.favoritesIds)
-          : []
+        const allFavorites =
+          this.favoritesIds?.length > 0
+            ? await this.fetchFavorites(this.favoritesIds)
+            : []
 
-        if (hasFavorites) {
+        if (allFavorites.length > 0) {
           this.handleResetMapZoom(
             allFavorites,
             this.$tc('snack.noFavorites.issue'),
@@ -996,6 +983,18 @@ export default Vue.extend({
       } else {
         filterRouteByCategories(this.map, Object.keys(this.features))
         this.showPoiToast = false
+      }
+    },
+    onToggleFavoritesMode() {
+      if (this.favoritesIds?.length > 0) {
+        this.$tracking({ type: 'map_control_event', event: 'favorite' })
+        if (!this.isModeFavorites) {
+          this.setMode(Mode.FAVORITES)
+        } else {
+          this.setMode(Mode.BROWSER)
+        }
+      } else {
+        this.showFavoritesOverlay = true
       }
     },
   },

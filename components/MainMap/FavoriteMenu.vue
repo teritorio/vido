@@ -26,7 +26,7 @@
               'bg-blue-500 hover:bg-blue-400 focus-visible:bg-blue-400 text-white',
             !isModeFavorites && 'text-zinc-800',
           ]"
-          @click="toggleFavoritesMode"
+          @click="$emit('toggle-favorites')"
         >
           <font-awesome-icon
             :icon="[`${hasFavorites ? 'fas' : 'far'}`, 'star']"
@@ -178,8 +178,6 @@ import ShareLinkModal from '@/components/ShareLinkModal.vue'
 import { getPoiByIds, ApiPoi } from '@/lib/apiPois'
 import { LOCAL_STORAGE } from '@/lib/constants'
 
-import { Mode } from '~/utils/types'
-
 export default (
   Vue as VueConstructor<
     Vue & {
@@ -286,16 +284,6 @@ export default (
       } catch (e) {
         // eslint-disable-next-line no-console
         console.error('Vido error:', e.message)
-      }
-    },
-    toggleFavoritesMode() {
-      this.$tracking({ type: 'map_control_event', event: 'favorite' })
-      if (!this.isModeFavorites) {
-        this.$store.dispatch('map/setMode', Mode.FAVORITES)
-        this.$store.dispatch('favorite/setFavoritesAction', 'open')
-      } else {
-        this.$store.dispatch('map/setMode', Mode.BROWSER)
-        this.$store.dispatch('favorite/setFavoritesAction', 'close')
       }
     },
     explore(poi?: ApiPoi) {
