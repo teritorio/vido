@@ -209,7 +209,7 @@ import { getPoiById, ApiPoi } from '@/lib/apiPois'
 import { ApiMenuItemSearchResult } from '@/lib/apiSearch'
 import { headerFromSettings, Settings } from '@/lib/apiSettings'
 import { getBBoxFeature } from '@/lib/bbox'
-import { Mode } from '@/utils/types'
+import { Mode, OriginEnum } from '@/utils/types'
 import { FilterValue, FilterValues } from '@/utils/types-filters'
 import { getHashPart, setHashParts } from '@/utils/url'
 
@@ -478,7 +478,19 @@ export default (
       })
       .start()
   },
+
   mounted() {
+    this.$tracking({
+      type: 'page',
+      title: this.$meta().refresh().metaInfo.title,
+      location: window.location.href,
+      path: this.$route.path,
+      origin:
+        OriginEnum[
+          this.$router.currentRoute.query.origin as keyof typeof OriginEnum
+        ],
+    })
+
     if (this.initialCategoryIds) {
       this.selectSubCategory(this.initialCategoryIds)
     } else if (

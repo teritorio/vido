@@ -19,6 +19,7 @@ export default class Google implements Tracker {
           pageTitle: event.title,
           pageLocation: event.location,
           pagePath: event.path,
+          origin: event.origin,
         })
         break
       }

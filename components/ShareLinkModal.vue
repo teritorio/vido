@@ -8,7 +8,7 @@
           class="text-zinc-500 mr-4"
         />
         <p class="text-zinc-500 truncate">
-          {{ link }}
+          {{ linkShare }}
         </p>
         <button
           v-if="hasClipboard"
@@ -40,6 +40,9 @@
 <script lang="ts">
 import Vue, { VueConstructor } from 'vue'
 import { TModal } from 'vue-tailwind/dist/components'
+
+import { OriginEnum } from '~/utils/types'
+import { urlAddTrackOrigin } from '~/utils/url'
 
 export default (
   Vue as VueConstructor<
@@ -73,6 +76,17 @@ export default (
     }
   },
 
+  computed: {
+    linkShare(): string | null {
+      return this.link
+        ? urlAddTrackOrigin(this.link, OriginEnum.link_share)
+        : null
+    },
+    linkQrCode(): string | null {
+      return this.link ? urlAddTrackOrigin(this.link, OriginEnum.qr_code) : null
+    },
+  },
+
   mounted() {
     this.hasClipboard = Boolean(navigator.clipboard)
   },
@@ -88,8 +102,8 @@ export default (
 
     copyLink() {
       this.$tracking({ type: 'favorites_event', event: 'copy_link' })
-      if (this.hasClipboard && this.link) {
-        navigator.clipboard.writeText(this.link).then(
+      if (this.hasClipboard && this.linkShare) {
+        navigator.clipboard.writeText(this.linkShare).then(
           () => {
             this.isCopied = true
             setTimeout(() => {
@@ -111,11 +125,11 @@ export default (
     },
 
     qrCodeUrl() {
-      if (this.link) {
+      if (this.linkQrCode) {
         return (
           this.$vidoConfig.API_QR_SHORTENER +
           '/qrcode.svg?url=' +
-          encodeURIComponent(this.link)
+          encodeURIComponent(this.linkQrCode)
         )
       }
     },

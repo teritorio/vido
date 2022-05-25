@@ -428,15 +428,6 @@ export default Vue.extend({
     this.selectedBackground = bg
   },
 
-  mounted() {
-    this.$tracking({
-      type: 'page',
-      title: this.$meta().refresh().metaInfo.title,
-      location: window.location.href,
-      path: this.$route.path,
-    })
-  },
-
   methods: {
     ...mapActions({
       setMode: 'map/setMode',

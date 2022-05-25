@@ -20,6 +20,7 @@ export default class Matomo implements Tracker {
     switch (event.type) {
       case 'page': {
         // pagePath: event.path,
+        _paq.push(['setCustomDimension', 1, event.origin])
         _paq.push(['setCustomUrl', event.location])
         _paq.push(['trackPageView', event.title])
         break

@@ -88,6 +88,9 @@ import Vue, { VueConstructor } from 'vue'
 
 import ShareLinkModal from '@/components/ShareLinkModal.vue'
 
+import { OriginEnum } from '~/utils/types'
+import { urlAddTrackOrigin } from '~/utils/url'
+
 export default (
   Vue as VueConstructor<
     Vue & {
@@ -132,19 +135,23 @@ export default (
     this.shareFacebook =
       'https://www.facebook.com/share.php?' +
       new URLSearchParams({
-        u: window.location.href,
+        u: urlAddTrackOrigin(window.location.href, OriginEnum.facebook),
       }).toString()
 
     this.shareTwitter =
       'https://twitter.com/intent/tweet?' +
       new URLSearchParams({
-        text: `${this.title}\n${window.location.href}`,
+        text:
+          `${this.title}\n` +
+          urlAddTrackOrigin(window.location.href, OriginEnum.twitter),
       }).toString()
 
     this.shareWhatsApp =
       'https://api.whatsapp.com/send?' +
       new URLSearchParams({
-        text: `${this.title}\n${window.location.href}`,
+        text:
+          `${this.title}\n` +
+          urlAddTrackOrigin(window.location.href, OriginEnum.whatsapp),
       }).toString()
   },
 

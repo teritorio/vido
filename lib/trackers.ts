@@ -1,5 +1,7 @@
 import { Category } from '@/lib/apiMenu'
 
+import { OriginEnum } from '~/utils/types'
+
 // Also Update README.md according to tracking changes.
 
 export type Event =
@@ -8,6 +10,7 @@ export type Event =
       title?: string
       location: string
       path: string
+      origin: OriginEnum
     }
   | {
       type: 'category'

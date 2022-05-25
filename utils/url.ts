@@ -1,5 +1,7 @@
 import VueRouter from 'vue-router'
 
+import { OriginEnum } from './types'
+
 type HashParts = { [key: string]: string | null }
 
 export function setHashParts(hash: string, hashParts: HashParts) {
@@ -48,4 +50,10 @@ export function routerPushHashUpdate(router: VueRouter, hashParts: HashParts) {
 export function getHashPart(router: VueRouter, key: string): string | null {
   const params = new URLSearchParams(router.currentRoute.hash.substring(1))
   return params.get(key)
+}
+
+export function urlAddTrackOrigin(url: string, origin: OriginEnum): string {
+  const parsed = new URL(url)
+  parsed.searchParams.set('origin', origin)
+  return parsed.toString()
 }
