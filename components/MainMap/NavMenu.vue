@@ -73,7 +73,6 @@ import { TDropdown } from 'vue-tailwind/dist/components'
 import { mapActions } from 'vuex'
 
 import { NavMenuEntry } from '@/utils/types'
-import 'country-flag-icons/3x2/flags.css'
 
 export default Vue.extend({
   components: {
@@ -121,6 +120,20 @@ export default Vue.extend({
 <style scoped>
 [class*=' flag:'],
 [class^='flag:'] {
+  display: inline-block;
+  background-size: cover;
+  height: 1em;
+  width: 1.5em;
   font-size: 0.7rem;
+}
+
+.flag\:ES {
+  background-image: url('~country-flag-icons/3x2/ES.svg');
+}
+.flag\:FR {
+  background-image: url('~country-flag-icons/3x2/FR.svg');
+}
+.flag\:GB {
+  background-image: url('~country-flag-icons/3x2/GB.svg');
 }
 </style>
