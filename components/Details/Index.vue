@@ -84,7 +84,6 @@
 <script lang="ts">
 import Vue, { PropType } from 'vue'
 
-import OpeningHours from '@/components/Fields/OpeningHours.vue'
 import MapPois from '@/components/MapPois.vue'
 import TeritorioIconBadge from '@/components/TeritorioIcon/TeritorioIconBadge.vue'
 import { ApiPoi, ApiPoiProperties } from '@/lib/apiPois'
@@ -106,7 +105,7 @@ export default Vue.extend({
     TeritorioIconBadge,
     Breadcrumb,
     Contact,
-    OpeningHours,
+    OpeningHours: () => import('@/components/Fields/OpeningHours.vue'),
     Location,
     Share,
     Carousel,

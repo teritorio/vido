@@ -232,7 +232,6 @@ import { mapGetters } from 'vuex'
 
 import AddressField from '@/components/Fields/AddressField.vue'
 import DateRange from '@/components/Fields/DateRange.vue'
-import OpeningHours from '@/components/Fields/OpeningHours.vue'
 import Website from '@/components/Fields/Website.vue'
 import TeritorioIcon from '@/components/TeritorioIcon/TeritorioIcon.vue'
 import { getPoiById, ApiPoi, ApiPoiProperties } from '@/lib/apiPois'
@@ -246,7 +245,7 @@ export default Vue.extend({
     TeritorioIcon,
     AddressField,
     Website,
-    OpeningHours,
+    OpeningHours: () => import('@/components/Fields/OpeningHours.vue'),
     DateRange,
   },
 
