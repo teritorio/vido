@@ -6,48 +6,23 @@
         !small && 'h-full',
       ]"
     >
-      <div
-        :class="[
-          'flex-grow overflow-hidden',
-          !small &&
-            isModeExplorerOrFavorites &&
-            'md:mt-20 md:mt-0 h-4/5 md:h-full',
-        ]"
-      >
-        <Map
-          :bounds="defaultBounds"
-          :extra-attributions="extraAttributions"
-          :map-style="selectedBackground"
-          :pitch="pitch"
-          :rotate="!$screen.touch"
-          :show-attribution="!$screen.smallScreen"
-          :hide-control="small"
-          hash="map"
-          @map-init="onMapInit"
-          @map-pitchend="onMapPitchEnd"
-          @map-data="onMapRender"
-          @map-dragend="onMapRender"
-          @map-moveend="onMapRender"
-          @map-resize="onMapRender"
-          @map-rotateend="onMapRender"
-          @map-touchmove="onMapRender"
-          @map-zoomend="onMapRender"
-          @map-style-load="onMapStyleLoad"
-          @full-attribution="$emit('full-attribution', $event)"
-        >
-          <template #controls>
-            <MapControlsExplore />
-            <MapControls3D :map="map" :pitch="pitch" />
-            <MapControlsBackground
-              :backgrounds="availableStyles"
-              :initial-background="selectedBackground"
-              @changeBackground="selectedBackground = $event"
-            />
-          </template>
-        </Map>
-      </div>
-
-      <aside v-if="map" class="pointer-events-none">
+      <MapFeatures
+        ref="mapFeatures"
+        :default-bounds="defaultBounds"
+        :extra-attributions="extraAttributions"
+        :small="small"
+        :categories="categories"
+        :features="mapFeatures"
+        :selected-feature="selectedFeature"
+        :selected-categories="mapCategories"
+        :style-icon-filter="(isModeExplorer && poiFilters) || null"
+        @on-select-feature="
+          (feature) =>
+            feature ? setSelectedFeature(feature) : unselectFeature()
+        "
+        @full-attribution="$emit('full-attribution', $event)"
+      />
+      <aside class="pointer-events-none">
         <div
           :class="[
             'absolute flex justify-end pointer-events-auto items-top pt-4 right-3 md:pt-0 w-40 md:w-48 top-4',
@@ -57,7 +32,7 @@
           <FavoriteMenu
             :has-favorites="favoritesIds.length !== 0"
             :explore-around-selected-poi="exploreAroundSelectedPoi"
-            :go-to-selected-poi="goToSelectedPoi"
+            :go-to-selected-poi="goToSelectedFeature"
             :toggle-favorite="toggleFavorite"
             @toggle-favorites="onToggleFavoritesMode"
           />
@@ -76,7 +51,7 @@
           class="grow-0"
           @explore-click="exploreAroundSelectedPoi"
           @favorite-click="toggleFavorite"
-          @zoom-click="goToSelectedPoi"
+          @zoom-click="goToSelectedFeature"
         />
         <div class="grow-[3]" />
       </div>
@@ -95,63 +70,41 @@
         v-if="showFavoritesOverlay"
         @discard="showFavoritesOverlay = false"
       />
-      <SnackBar @click="handleSnackAction" />
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import { PoiFilter } from '@teritorio/map'
-import { deepEqual } from 'fast-equals'
-import GeoJSON from 'geojson'
-import throttle from 'lodash.throttle'
-import maplibregl, {
-  MapLayerMouseEvent,
-  MapLayerTouchEvent,
-  MapDataEvent,
-  LngLatBoundsLike,
-} from 'maplibre-gl'
-import Vue, { PropType } from 'vue'
+import { LngLatBoundsLike } from 'maplibre-gl'
+import Vue, { PropType, VueConstructor } from 'vue'
 import { mapGetters, mapActions } from 'vuex'
 
 import FavoriteMenu from '@/components/MainMap/FavoriteMenu.vue'
 import FavoritesOverlay from '@/components/MainMap/FavoritesOverlay.vue'
-import MapControlsExplore from '@/components/MainMap/MapControlsExplore.vue'
+import MapFeatures from '@/components/MainMap/MapFeatures.vue'
 import MapPoiToast from '@/components/MainMap/MapPoiToast.vue'
 import NavMenu from '@/components/MainMap/NavMenu.vue'
-import SnackBar from '@/components/MainMap/SnackBar.vue'
-import Map from '@/components/Map/Map.vue'
-import MapControls3D from '@/components/Map/MapControls3D.vue'
-import MapControlsBackground from '@/components/Map/MapControlsBackground.vue'
 import { ApiMenuCategory } from '@/lib/apiMenu'
 import { getPoiByIds, ApiPoi } from '@/lib/apiPois'
-import { getBBoxFeatures, getBBoxFeature, getBBoxCoordList } from '@/lib/bbox'
-import { createMarkerDonutChart } from '@/lib/clusters'
-import { DEFAULT_MAP_STYLE, LOCAL_STORAGE, MAP_ZOOM } from '@/lib/constants'
-import {
-  markerLayerTextFactory,
-  makerHtmlFactory,
-} from '@/lib/markerLayerFactory'
-import { State as MenuState } from '@/store/menu'
-import { filterRouteByCategories, filterRouteByPoiId } from '@/utils/styles'
-import { MapStyleEnum, Mode, TupleLatLng } from '@/utils/types'
+import { LOCAL_STORAGE } from '@/lib/constants'
+import { Mode } from '@/utils/types'
 import { getHashPart } from '@/utils/url'
-import { flattenFeatures } from '@/utils/utilities'
 
-const POI_SOURCE = 'poi'
-const FAVORITE_SOURCE = 'favorite-source'
-const POI_LAYER_MARKER = 'poi-simple-marker'
-const FAVORITE_LAYER_MARKER = 'favorite-layer-marker'
+import { flattenFeatures } from '~/utils/utilities'
 
-export default Vue.extend({
+export default (
+  Vue as VueConstructor<
+    Vue & {
+      $refs: {
+        mapFeatures: InstanceType<typeof MapFeatures>
+      }
+    }
+  >
+).extend({
   components: {
-    Map,
-    MapControlsExplore,
-    MapControls3D,
-    MapControlsBackground,
+    MapFeatures,
     MapPoiToast,
     FavoritesOverlay,
-    SnackBar,
     NavMenu,
     FavoriteMenu,
   },
@@ -180,201 +133,88 @@ export default Vue.extend({
   },
 
   data(): {
-    map: maplibregl.Map | null
-    poiLayerTemplate: maplibregl.LayerSpecification | undefined
-    pitch: number
-    markers: { [id: string]: maplibregl.Marker }
-    markersOnScreen: { [id: string]: maplibregl.Marker }
-    poiFilter: PoiFilter | null
-    selectedFeatureMarker: maplibregl.Marker | null
-    selectedBackground: keyof typeof MapStyleEnum
-    featuresCoordinates: { [id: string]: TupleLatLng }
     allowRegionBackZoom: boolean
     showPoiToast: boolean
     showFavoritesOverlay: boolean
+    favorites: ApiPoi[] | null
   } {
     return {
-      map: null,
-      poiLayerTemplate: undefined,
-      pitch: 0,
-      markers: {},
-      markersOnScreen: {},
-      poiFilter: null,
-      selectedFeatureMarker: null,
-      selectedBackground: DEFAULT_MAP_STYLE,
-      featuresCoordinates: {},
       allowRegionBackZoom: false,
       showFavoritesOverlay: false,
       showPoiToast: false,
+      favorites: null,
     }
   },
 
   computed: {
     ...mapGetters({
-      features: 'menu/features',
-      zoom: 'map/zoom',
+      pois: 'menu/features',
       mode: 'map/mode',
       isModeExplorer: 'map/isModeExplorer',
       isModeFavorites: 'map/isModeFavorites',
-      isModeExplorerOrFavorites: 'map/isModeExplorerOrFavorites',
-      selectedFeature: 'map/selectedFeature',
       isLoadingFeatures: 'menu/isLoadingFeatures',
       favoritesIds: 'favorite/favoritesIds',
+      selectedFeature: 'map/selectedFeature',
     }),
 
     categories(): Record<ApiMenuCategory['id'], ApiMenuCategory> {
       return this.$store.getters['menu/categories']
     },
 
-    filters(): Array<string[]> {
+    poiFilters(): Array<string[]> {
       return Object.values(this.categories)
         .map((c) => c.category?.style_class)
         .filter((s) => s && Array.isArray(s))
     },
 
-    availableStyles(): MapStyleEnum[] {
-      return [
-        MapStyleEnum.vector,
-        MapStyleEnum.aerial,
-        ...(!this.$screen.smallScreen ? [MapStyleEnum.raster] : []),
-        MapStyleEnum.bicycle,
-      ]
+    mapFeatures(): ApiPoi[] {
+      let feature: ApiPoi[]
+      switch (this.mode as Mode) {
+        case Mode.BROWSER:
+          feature = flattenFeatures(this.pois)
+          break
+        case Mode.FAVORITES:
+          feature = this.favorites || []
+          break
+        case Mode.EXPLORER:
+          feature = []
+          break
+      }
+      return feature
+    },
+
+    mapCategories(): string[] {
+      return (
+        (!this.isModeExplorer &&
+          !this.isModeFavorites &&
+          Object.keys(this.pois)) ||
+        []
+      )
     },
   },
 
   watch: {
-    small() {
-      this.resizeMap()
+    favoritesIds() {
+      this.handleFavorites()
     },
 
-    async favoritesIds() {
-      await this.handleFavorites()
-    },
-
-    async isModeFavorites() {
-      await this.handleFavorites()
-    },
-
-    features(
-      features: MenuState['features'],
-      oldFeatures: MenuState['features']
-    ) {
-      if (!this.map || this.isModeFavorites) {
-        return
-      }
-
-      const oldCategories: (number | undefined)[] = flattenFeatures(
-        oldFeatures
-      ).map((e) => e.properties.metadata?.id)
-      const newCategories: (number | undefined)[] = flattenFeatures(
-        features
-      ).map((e) => e.properties.metadata?.id)
-
-      // Add exact coordinates to a store to avoid rounding from Mapbox GL
-      Object.keys(features).forEach((categoryIdString) => {
-        const categoryId = parseInt(categoryIdString, 10)
-        features[categoryId].forEach((feature) => {
-          if (
-            feature.geometry?.type === 'Point' &&
-            feature.properties?.metadata?.id
-          ) {
-            this.featuresCoordinates[feature.properties.metadata.id] = feature
-              .geometry.coordinates as [number, number]
-          }
-        })
-      })
-
-      const apiPois = flattenFeatures(features)
-      // Change visible data
-      if (this.map.getSource(POI_SOURCE)) {
-        if (!deepEqual(newCategories, oldCategories)) {
-          // Clean-up previous cluster markers
-          this.markers = {}
-          Object.values(this.markersOnScreen).forEach((marker) =>
-            marker.remove()
-          )
-          this.markersOnScreen = {}
-
-          // Change data
-          const source = this.map.getSource(POI_SOURCE)
-          if (source && 'setData' in source) {
-            // @ts-ignore
-            source.setData({
-              type: 'FeatureCollection',
-              features: apiPois,
-            })
-          }
-        }
-      }
-
-      // Zoom back to whole region if a new category is selected
-      if (
-        this.allowRegionBackZoom &&
-        !deepEqual(newCategories, oldCategories)
-      ) {
-        const apiPois = flattenFeatures(features)
-        this.handleResetMapZoom(
-          apiPois,
-          this.$tc('snack.noPoi.issue'),
-          this.$tc('snack.noPoi.action')
-        )
-      } else {
-        // Made to avoid back zoom on categories reload
-        this.allowRegionBackZoom = true
-      }
-
-      filterRouteByCategories(this.map, Object.keys(this.features))
-    },
-
-    selectedFeature(feature: ApiPoi) {
-      this.onSelectedFeature(feature)
-    },
-
-    selectedBackground() {
-      if (!this.map) {
-        return
-      }
-
-      // Re-enable route highlight after style change
-      const styledataCallBack = (e: MapDataEvent) => {
-        if (this.map && e.dataType === 'style') {
-          this.map.off('styledata', styledataCallBack)
-
-          const feature = this.selectedFeature
-          if (feature) {
-            filterRouteByPoiId(
-              this.map,
-              feature.properties?.metadata?.id ||
-                feature?.id ||
-                feature?.properties?.id
-            )
-          } else {
-            filterRouteByCategories(this.map, Object.keys(this.features))
-          }
-        }
-      }
-      this.map.on('styledata', styledataCallBack)
+    isModeFavorites() {
+      this.handleFavorites()
     },
 
     mode() {
       this.allowRegionBackZoom = false
-      if (this.isModeExplorer) {
-        this.poiFilter?.setIncludeFilter(this.filters)
-      } else {
-        this.poiFilter?.remove(true)
-      }
     },
 
     showPoiToast(val) {
       this.$emit('show-poi', val)
     },
-  },
 
-  created() {
-    this.pitch = this.$store.getters['map/pitch']
-
-    this.onMapPitchEnd = throttle(this.onMapPitchEnd, 200)
-    this.onMapRender = throttle(this.onMapRender, 200)
+    selectedFeature() {
+      if (this.selectedFeature) {
+        this.showPoiToast = true
+      }
+    },
   },
 
   beforeMount() {
@@ -385,18 +225,6 @@ export default Vue.extend({
 
     const mode = getHashPart(this.$router, 'mode') || Mode.BROWSER
     this.setMode(mode)
-    switch (mode) {
-      case Mode.FAVORITES: {
-        break
-      }
-      case Mode.EXPLORER: {
-        this.resizeMap()
-        break
-      }
-      case Mode.BROWSER: {
-        break
-      }
-    }
 
     const favs = getHashPart(this.$router, 'favs')
     if (favs) {
@@ -411,21 +239,12 @@ export default Vue.extend({
           JSON.stringify({ favorites: newFavorite, version: 1 })
         )
         this.toggleFavoritesMode(newFavorite)
+        this.handleFavorites()
       } catch (e) {
         // eslint-disable-next-line no-console
         console.error('Vido error:', e.message)
       }
     }
-
-    let bg =
-      (getHashPart(this.$router, 'bg') as keyof typeof MapStyleEnum) ||
-      DEFAULT_MAP_STYLE
-
-    if (this.$screen.smallScreen && bg === MapStyleEnum.raster) {
-      bg = DEFAULT_MAP_STYLE
-    }
-
-    this.selectedBackground = bg
   },
 
   methods: {
@@ -436,107 +255,6 @@ export default Vue.extend({
       unselectFeature: 'map/unselectFeature',
     }),
 
-    onMapInit(map: maplibregl.Map) {
-      this.map = map
-      this.pitch = this.map.getPitch()
-
-      this.poiFilter = new PoiFilter()
-      this.map.addControl(this.poiFilter)
-
-      this.map.on('styledata', () => {
-        if (this.isModeExplorer) {
-          this.poiFilterForExplorer()
-        } else {
-          this.poiFilter?.remove(true)
-        }
-      })
-
-      this.map.on('styledata', async (e: MapDataEvent) => {
-        if (e.dataType === 'style') {
-          const features = this.isModeFavorites
-            ? await this.fetchFavorites(this.favoritesIds)
-            : flattenFeatures(this.features)
-
-          this.initPoiLayer(features)
-        }
-      })
-
-      this.map.on('click', () => {
-        this.unselectFeature()
-        this.$emit('click')
-      })
-
-      this.map.on('moveend', () => {
-        if (this.map) {
-          this.$store.dispatch('map/center', this.map.getCenter())
-        }
-      })
-
-      // Listen to click on POI from vector tiles (explorer mode)
-      const setSelectedFeature = (
-        event: MapLayerMouseEvent | MapLayerTouchEvent
-      ) => {
-        const feature = event.features?.pop()
-        if (feature?.properties?.popup_properties) {
-          this.setSelectedFeature(feature as ApiPoi)
-        }
-      }
-      ;[
-        'poi-level-1',
-        'poi-level-2',
-        'poi-level-3',
-        'features-line',
-        'features-fill',
-      ].forEach((layer) => {
-        if (this.map) {
-          this.map.on('click', layer, setSelectedFeature)
-          map.on('mouseenter', layer, () => {
-            map.getCanvas().style.cursor = 'pointer'
-          })
-          map.on('mouseleave', layer, () => {
-            map.getCanvas().style.cursor = ''
-          })
-        }
-      })
-
-      this.map.once('load', () => {
-        if (this.map && this.selectedFeature) {
-          this.onSelectedFeature(this.selectedFeature)
-        }
-      })
-
-      if (this.isModeFavorites) {
-        this.handleFavorites()
-      }
-
-      this.$store.dispatch('map/center', this.map.getCenter())
-    },
-
-    resizeMap() {
-      setTimeout(() => this.map?.resize(), 250)
-    },
-
-    onMapPitchEnd(map: maplibregl.Map) {
-      this.pitch = map.getPitch()
-    },
-
-    onMapRender() {
-      const source = this.isModeFavorites ? FAVORITE_SOURCE : POI_SOURCE
-      if (
-        this.map &&
-        this.map.getSource(source) &&
-        this.map.isSourceLoaded(source)
-      ) {
-        this.updateMarkers(source)
-      }
-    },
-
-    onMapStyleLoad(style: maplibregl.StyleSpecification) {
-      this.poiLayerTemplate = style.layers.find(
-        (layer) => layer.id === 'poi-level-1'
-      )
-    },
-
     setPoiToastVisibility(visible: boolean) {
       this.showPoiToast = visible
     },
@@ -546,9 +264,8 @@ export default Vue.extend({
         this.setSelectedFeature(feature)
       }
       if (!this.isModeExplorer) {
-        this.map?.once('moveend', () => this.setMode(Mode.EXPLORER))
-
-        this.goToSelectedPoi()
+        this.setMode(Mode.EXPLORER)
+        this.goToSelectedFeature()
 
         if (this.$screen.smallScreen) {
           this.showPoiToast = false
@@ -595,394 +312,31 @@ export default Vue.extend({
       }
     },
 
-    handleSnackAction() {
-      this.$store.dispatch('snack/showSnack')
-      if (!this.map) {
-        return
-      }
-
-      this.resetZoom()
-      if (this.isModeFavorites) {
-        const coordinates = Object.values(this.featuresCoordinates) as [
-          [number, number]
-        ]
-        this.map.fitBounds(getBBoxCoordList(coordinates), { maxZoom: 13 })
-      } else {
-        const flatten = flattenFeatures(this.features)
-        if (flatten) {
-          const bounds = getBBoxFeatures(flatten)
-          if (bounds) {
-            this.map.fitBounds(bounds, { maxZoom: 13 })
-          }
-        }
-      }
+    handleFavorites() {
+      this.fetchFavorites(this.favoritesIds).then((favorites) => {
+        this.favorites = favorites
+      })
     },
 
-    async handleFavorites() {
-      if (!this.map) {
-        return
-      }
-
-      if (this.isModeFavorites) {
-        const allFavorites =
-          this.favoritesIds?.length > 0
-            ? await this.fetchFavorites(this.favoritesIds)
-            : []
-
-        if (allFavorites.length > 0) {
-          this.handleResetMapZoom(
-            allFavorites,
-            this.$tc('snack.noFavorites.issue'),
-            this.$tc('snack.noFavorites.action')
-          )
-        }
-
-        allFavorites.forEach((feature) => {
-          if (
-            feature.properties?.metadata?.id &&
-            feature.geometry.type === 'Point'
-          ) {
-            this.featuresCoordinates[feature.properties.metadata.id] = feature
-              .geometry.coordinates as TupleLatLng
-          }
-        })
-
-        const currentSource = this.map.getSource(FAVORITE_SOURCE)
-
-        if (currentSource) {
-          // Clean-up previous cluster markers
-          this.markers = {}
-          Object.values(this.markersOnScreen).forEach((marker) =>
-            marker.remove()
-          )
-          this.markersOnScreen = {}
-
-          // Change data
-          const source = this.map.getSource(FAVORITE_SOURCE)
-          if (source && 'setData' in source) {
-            // @ts-ignore
-            source.setData({
-              type: 'FeatureCollection',
-              features: allFavorites,
-            })
-          }
-        } else {
-          this.initPoiLayer(allFavorites)
-        }
-      } else {
-        this.getSubCategory(this.selectedCategories)
-
-        if (
-          !this.map.getLayer(POI_LAYER_MARKER) &&
-          this.map.isStyleLoaded() &&
-          this.poiLayerTemplate
-        )
-          this.map.addLayer(
-            markerLayerTextFactory(
-              this.poiLayerTemplate,
-              POI_LAYER_MARKER,
-              POI_SOURCE
-            )
-          )
-      }
-    },
-
-    async fetchFavorites(ids: [string]) {
-      const favorites = await getPoiByIds(
+    fetchFavorites(ids: [string]): Promise<ApiPoi[]> {
+      return getPoiByIds(
         this.$vidoConfig.API_ENDPOINT,
         this.$vidoConfig.API_PROJECT,
         this.$vidoConfig.API_THEME,
         ids
-      ).then((pois) => (pois && pois.features) || [])
-
-      return favorites.map((feature) => ({
-        ...feature,
-        properties: {
-          ...feature.properties,
-          vido_cat: feature.properties.metadata?.category_ids?.[0],
-        },
-      }))
-    },
-
-    showZoomSnack(text: string, textBtn: string) {
-      this.$store.dispatch('snack/showSnack', {
-        time: 5000,
-        text,
-        textBtn,
-      })
-    },
-
-    goToSelectedPoi(feature?: ApiPoi) {
-      if (feature) {
-        this.setSelectedFeature(feature)
-      }
-      if (!this.map || !this.selectedFeature) {
-        return
-      }
-      let zoom
-      if (this.selectedFeature.properties.vido_zoom) {
-        zoom = this.selectedFeature.properties.vido_zoom
-      } else if (this.selectedFeature.properties.vido_cat) {
-        zoom =
-          this.categories[this.selectedFeature.properties.vido_cat].category
-            .zoom
-      }
-      this.map.flyTo({
-        center: this.selectedFeature.geometry.coordinates,
-        zoom: zoom === undefined ? Math.max(this.map.getZoom(), 17) : zoom,
-      })
-    },
-
-    goTo(feature: ApiPoi) {
-      if (!this.map || !feature || !('coordinates' in feature.geometry)) {
-        return
-      }
-
-      this.map.fitBounds(getBBoxFeature(feature), { maxZoom: 13 })
-    },
-
-    resetZoom() {
-      // @ts-ignore
-      this.map?.fitBounds(this.defaultBounds, {
-        linear: false,
-      })
-    },
-
-    handleResetMapZoom(features: ApiPoi[], text: string, textBtn: string) {
-      if (!this.map) {
-        return
-      }
-
-      const mapBounds = this.map.getBounds()
-      const isOneInView = features.some(
-        (feature) =>
-          feature.geometry.type === 'Point' &&
-          mapBounds.contains(feature.geometry.coordinates as [number, number])
       )
-
-      const currentZoom = this.map.getZoom()
-
-      if (
-        !isOneInView &&
-        currentZoom >= MAP_ZOOM.zoom.default &&
-        features.length > 0
-      ) {
-        this.showZoomSnack(text, textBtn)
-      }
-      if (currentZoom < MAP_ZOOM.zoom.default) {
-        this.resetZoom()
-      }
-    },
-
-    poiFilterForExplorer() {
-      if (this.map) {
-        this.map.once('styledata', () => {
-          this.poiFilter?.setIncludeFilter(this.filters)
-          this.map?.triggerRepaint()
-        })
-      }
-    },
-
-    initPoiLayer(features: ApiPoi[]) {
-      if (!this.map) {
-        return
-      }
-
-      const source = this.isModeFavorites ? FAVORITE_SOURCE : POI_SOURCE
-
-      if (!this.map.getSource(source)) {
-        // Create cluster properties, which will contain count of features per category
-        const clusterProps: { [category: string]: object } = {}
-
-        Object.keys(this.categories).forEach((category) => {
-          clusterProps[category] = [
-            '+',
-            ['case', ['==', ['get', 'vido_cat'], parseInt(category, 10)], 1, 0],
-          ]
-        })
-
-        this.map.addSource(source, {
-          type: 'geojson',
-          cluster: true,
-          clusterRadius: 32,
-          clusterProperties: clusterProps,
-          clusterMaxZoom: 15,
-          tolerance: 0.6,
-          data: {
-            type: 'FeatureCollection',
-            features,
-          },
-        })
-      }
-
-      const layer = this.isModeFavorites
-        ? FAVORITE_LAYER_MARKER
-        : POI_LAYER_MARKER
-
-      // Add individual markers
-      if (!this.map.getLayer(layer) && this.poiLayerTemplate)
-        this.map.addLayer(
-          markerLayerTextFactory(this.poiLayerTemplate, layer, source)
+        .then((pois) => (pois && pois.features) || [])
+        .then((pois) =>
+          pois.map((poi) => ({
+            ...poi,
+            properties: {
+              ...poi.properties,
+              vido_cat: poi.properties.metadata?.category_ids?.[0],
+            },
+          }))
         )
     },
 
-    updateMarkers(src: string) {
-      if (!this.map) {
-        return
-      }
-
-      const newMarkers: { [id: string]: maplibregl.Marker } = {}
-      const features = this.map.querySourceFeatures(src) as ApiPoi[]
-      // for every cluster on the screen, create an HTML marker for it (if we didn't yet),
-      // and add it to the map if it's not there already
-      features
-        .filter((feature) => feature.geometry.type === 'Point')
-        .forEach((feature) => {
-          const coords = (feature.geometry as GeoJSON.Point).coordinates as [
-            number,
-            number
-          ]
-          const props = feature.properties
-          let id: string | null = null
-
-          if (props?.cluster) {
-            id = 'c' + props.cluster_id
-            if (!this.markers[id]) {
-              const el = createMarkerDonutChart(this.categories, props)
-              el.classList.add('cluster-item')
-              this.markers[id] = new maplibregl.Marker({
-                element: el,
-              }).setLngLat(coords)
-              el.addEventListener('click', (e) => {
-                e.stopPropagation()
-                if (!this.map) return
-
-                const source = this.map.getSource(src)
-
-                if (source && 'getClusterLeaves' in source) {
-                  // @ts-ignore
-                  source.getClusterLeaves(
-                    props.cluster_id,
-                    100,
-                    0,
-                    (error: any, features: GeoJSON.Feature[]) => {
-                      if (!error && this.map) {
-                        const bounds = getBBoxFeatures(features)
-                        if (bounds) {
-                          this.map.fitBounds(bounds, { padding: 50 })
-                        }
-                      }
-                    }
-                  )
-                }
-              })
-            }
-          } else if (props?.metadata) {
-            if (typeof props.metadata === 'string') {
-              props.metadata = JSON.parse(props.metadata)
-            }
-            if (typeof props.display === 'string') {
-              props.display = JSON.parse(props.display)
-            }
-            if (typeof props.editorial === 'string') {
-              props.editorial = JSON.parse(props.editorial)
-            }
-            if (props?.metadata?.id) {
-              id = 'm' + props.metadata.id
-              const markerCoords = this.featuresCoordinates[props.metadata.id]
-              if (!this.markers[id] && markerCoords && props.display) {
-                // Marker
-                this.markers[id] = makerHtmlFactory(
-                  markerCoords, // Using this to avoid misplaced marker
-                  props.display.color_fill,
-                  props.display.icon,
-                  props['image:thumbnail']
-                )
-                const el = this.markers[id].getElement()
-
-                // Click handler
-                if (props.editorial?.popup_properties) {
-                  el.addEventListener('click', (e) => {
-                    e.stopPropagation()
-                    this.setSelectedFeature(feature)
-
-                    if (this.$screen.smallScreen) {
-                      this.resizeMap()
-                    }
-                  })
-                }
-              }
-            }
-          }
-
-          if (id && this.markers[id] && this.map) {
-            newMarkers[id] = this.markers[id]
-            if (!this.markersOnScreen[id]) {
-              this.markers[id].addTo(this.map)
-            }
-          }
-        })
-      // for every marker we've added previously, remove those that are no longer visible
-      for (const id in this.markersOnScreen) {
-        if (!newMarkers[id]) this.markersOnScreen[id].remove()
-      }
-      this.markersOnScreen = newMarkers
-
-      // Put selected feature marker above
-      if (this.selectedFeatureMarker) {
-        this.selectedFeatureMarker.remove()
-        this.selectedFeatureMarker.addTo(this.map)
-      }
-    },
-
-    onSelectedFeature(feature: ApiPoi) {
-      if (!this.map) {
-        return
-      }
-
-      // Clean-up previous marker
-      if (this.selectedFeatureMarker) {
-        this.selectedFeatureMarker.remove()
-        this.selectedFeatureMarker = null
-      }
-
-      // Add new marker if a feature is selected
-      if (
-        feature &&
-        (feature.properties?.metadata?.id ||
-          feature?.id ||
-          feature?.properties?.id)
-      ) {
-        filterRouteByPoiId(
-          this.map,
-          feature.properties?.metadata?.id ||
-            feature?.id ||
-            feature?.properties?.id
-        )
-
-        this.showPoiToast = Boolean(
-          feature?.properties?.metadata?.id?.toString() ||
-            feature?.id?.toString()
-        )
-        if (feature.geometry.type === 'Point') {
-          this.selectedFeatureMarker = new maplibregl.Marker({
-            scale: 1.3,
-            color: '#f44336',
-          })
-            .setLngLat(
-              (Boolean(feature?.properties?.metadata?.id) &&
-                this.featuresCoordinates[
-                  feature?.properties?.metadata?.id || ''
-                ]) ||
-                (feature.geometry.coordinates as [number, number])
-            )
-            .addTo(this.map)
-        }
-      } else {
-        filterRouteByCategories(this.map, Object.keys(this.features))
-        this.showPoiToast = false
-      }
-    },
     onToggleFavoritesMode() {
       if (this.favoritesIds?.length > 0) {
         this.$tracking({ type: 'map_control_event', event: 'favorite' })
@@ -995,24 +349,10 @@ export default Vue.extend({
         this.showFavoritesOverlay = true
       }
     },
+
+    goToSelectedFeature() {
+      this.$refs.mapFeatures.goToSelectedFeature()
+    },
   },
 })
 </script>
-
-<style>
-.cluster-item {
-  cursor: pointer;
-}
-.cluster-donut {
-  @apply text-sm leading-none font-medium block text-zinc-800;
-}
-</style>
-
-<style>
-#map {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  width: 100%;
-}
-</style>

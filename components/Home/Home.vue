@@ -118,13 +118,14 @@
       :small="isBottomMenuOpened"
       :selected-categories="state.context.selectedSubCategoriesIds"
       :get-sub-category="selectSubCategory"
-      @click="onMapClick"
       @show-poi="onShowPoi"
       @full-attribution="setFullAttributions($event)"
     />
     <BottomMenu
       class="md:hidden"
-      :show-grip="!(isModeExplorer || isModeFavorites) || selectedFeature"
+      :show-grip="
+        !(isModeExplorer || isModeFavorites) || Boolean(selectedFeature)
+      "
       :is-open="isBottomMenuOpened"
       @on-grip-click="onBottomMenuButtonClick"
     >
@@ -178,7 +179,7 @@
           $refs.mainMap && $refs.mainMap.exploreAroundSelectedPoi()
         "
         @favorite-click="$refs.mainMap && $refs.mainMap.toggleFavorite($event)"
-        @zoom-click="$refs.mainMap && $refs.mainMap.goToSelectedPoi()"
+        @zoom-click="$refs.mainMap && $refs.mainMap.goToSelectedFeature()"
       />
     </BottomMenu>
     <Attribution v-if="!isBottomMenuOpened" :attributions="fullAttributions" />
@@ -225,12 +226,6 @@ import {
 } from './Home.machine'
 
 const interpretOptions = { devTools: false }
-
-// if (typeof window !== 'undefined' && process.env.NODE_ENV === 'development') {
-//   const { inspect } = require('@xstate/inspect')
-//   inspect({ iframe: false })
-//   interpretOptions.devTools = true
-// }
 
 export default (
   Vue as VueConstructor<
@@ -420,22 +415,12 @@ export default (
       if (val.matches(this.states.Home) && !oldVal.matches(this.states.Home)) {
         this.goToHome()
       }
-      if (
-        val.matches(this.states.SubCategoryFilters) ||
-        val.matches(this.states.SubCategories) ||
-        val.matches(this.states.Categories)
-      ) {
-        this.$refs.mainMap?.resizeMap()
-      }
-    },
-    showPoi(val) {
-      if (this.$screen.smallScreen && val) {
-        this.$refs.mainMap?.resizeMap()
-      }
     },
     selectedFeature() {
-      if (this.$screen.smallScreen && this.selectedFeature) {
-        this.$refs.mainMap?.resizeMap()
+      if (!this.selectedFeature) {
+        this.showPoi = false
+      } else {
+        this.showPoi = true
       }
       this.routerPushUrl()
     },
@@ -463,7 +448,6 @@ export default (
         case Mode.FAVORITES: {
           this.previousSubCategories =
             this.state.context.selectedSubCategoriesIds
-          this.$refs.mainMap?.resizeMap()
           break
         }
       }
@@ -645,14 +629,11 @@ export default (
       ).then((poi) => {
         if (poi) {
           this.service.send(HomeEvents.GoToCategories)
-          this.setSelectedFeature(poi).then(() => {
-            if (this.$refs.mainMap) {
-              this.$refs.mainMap.goToSelectedPoi()
-            }
-          })
+          this.setSelectedFeature(poi)
         }
       })
     },
+
     onSearchCategory(newFilter: ApiMenuItemSearchResult) {
       if (newFilter.filter_property) {
         const filters = copy(this.filters[newFilter.id])
@@ -690,10 +671,9 @@ export default (
     onFeatureClick(feature: ApiPoi) {
       this.setSelectedFeature(feature).then(() => {
         this.service.send(HomeEvents.GoToCategories)
-
-        this.$refs.mainMap?.goToSelectedPoi()
       })
     },
+
     onBottomMenuButtonClick() {
       if (!this.isModeFavorites) {
         if (this.isBottomMenuOpened) {
@@ -716,11 +696,6 @@ export default (
         } else {
           this.$refs.mainMap?.setPoiToastVisibility(false)
         }
-      }
-    },
-    onMapClick(): void {
-      if (this.$screen.smallScreen) {
-        this.goToHome()
       }
     },
 
