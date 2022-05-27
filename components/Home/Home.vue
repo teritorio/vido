@@ -114,6 +114,7 @@
       v-if="initialBbox"
       ref="mainMap"
       :default-bounds="initialBbox"
+      :fit-bounds-padding-options="fitBoundsPaddingOptions"
       :attributions="settings.attributions"
       :small="isBottomMenuOpened"
       :selected-categories="state.context.selectedSubCategoriesIds"
@@ -189,7 +190,7 @@
 <script lang="ts">
 import copy from 'fast-copy'
 import debounce from 'lodash.debounce'
-import { LngLatBoundsLike } from 'maplibre-gl'
+import { FitBoundsOptions, LngLatBoundsLike } from 'maplibre-gl'
 import Vue, { PropType, VueConstructor } from 'vue'
 import { MetaInfo } from 'vue-meta'
 import { mapGetters, mapActions } from 'vuex'
@@ -408,6 +409,18 @@ export default (
       })
 
       return resources
+    },
+    fitBoundsPaddingOptions(): FitBoundsOptions['padding'] {
+      if (this.$screen.smallScreen) {
+        return 50
+      } else {
+        return {
+          top: 100,
+          bottom: this.isPoiToastVisible ? 400 : 100,
+          right: 100,
+          left: 500,
+        }
+      }
     },
   },
   watch: {

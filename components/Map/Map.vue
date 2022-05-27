@@ -5,10 +5,7 @@
       access-token=""
       :map-options="{
         bounds: bounds,
-        fitBoundsOptions: {
-          padding: 50,
-          maxZoom: 17,
-        },
+        fitBoundsOptions: fitBoundsOptions,
         center: center,
         hash: hash,
         maxZoom: defaultZoom.max,
@@ -59,6 +56,7 @@ import {
   LngLatBoundsLike,
   LngLatLike,
   AttributionControl,
+  FitBoundsOptions,
 } from 'maplibre-gl'
 import Vue, { PropType } from 'vue'
 import { mapGetters } from 'vuex'
@@ -82,6 +80,13 @@ export default Vue.extend({
     bounds: {
       type: [Array, Object] as PropType<LngLatBoundsLike>,
       default: undefined,
+    },
+    fitBoundsOptions: {
+      type: Object as PropType<FitBoundsOptions>,
+      default: () => ({
+        padding: 50,
+        maxZoom: 17,
+      }),
     },
     extraAttributions: {
       type: Array as PropType<string[]>,

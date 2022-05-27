@@ -9,6 +9,7 @@
       <MapFeatures
         ref="mapFeatures"
         :default-bounds="defaultBounds"
+        :fit-bounds-padding-options="fitBoundsPaddingOptions"
         :extra-attributions="extraAttributions"
         :small="small"
         :categories="categories"
@@ -75,7 +76,7 @@
 </template>
 
 <script lang="ts">
-import { LngLatBoundsLike } from 'maplibre-gl'
+import { FitBoundsOptions, LngLatBoundsLike } from 'maplibre-gl'
 import Vue, { PropType, VueConstructor } from 'vue'
 import { mapGetters, mapActions } from 'vuex'
 
@@ -113,6 +114,10 @@ export default (
     defaultBounds: {
       type: [Array, Object] as PropType<LngLatBoundsLike>,
       default: null,
+    },
+    fitBoundsPaddingOptions: {
+      type: [Number, Object] as PropType<FitBoundsOptions['padding']>,
+      default: 50,
     },
     extraAttributions: {
       type: Array as PropType<string[]>,

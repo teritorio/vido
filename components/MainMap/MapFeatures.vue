@@ -2,6 +2,10 @@
   <div class="w-full h-full">
     <Map
       :bounds="defaultBounds"
+      :fit-bounds-options="{
+        maxZoom: 17,
+        padding: fitBoundsPaddingOptions,
+      }"
       :extra-attributions="extraAttributions"
       :map-style="selectedBackground"
       :pitch="pitch"
@@ -43,6 +47,7 @@ import maplibregl, {
   MapDataEvent,
   LngLatBoundsLike,
   MapMouseEvent,
+  FitBoundsOptions,
 } from 'maplibre-gl'
 import Vue, { PropType } from 'vue'
 
@@ -84,6 +89,10 @@ export default Vue.extend({
     defaultBounds: {
       type: [Array, Object] as PropType<LngLatBoundsLike>,
       default: null,
+    },
+    fitBoundsPaddingOptions: {
+      type: [Number, Object] as PropType<FitBoundsOptions['padding']>,
+      default: 50,
     },
     extraAttributions: {
       type: Array as PropType<string[]>,
@@ -380,6 +389,7 @@ export default Vue.extend({
           this.categories,
           this.markers,
           POI_SOURCE,
+          this.fitBounds,
           this.updateSelectedFeature
         )
 
@@ -396,7 +406,7 @@ export default Vue.extend({
         return
       }
 
-      this.map.fitBounds(getBBoxFeature(feature), { maxZoom: 13, padding: 50 })
+      this.fitBounds(getBBoxFeature(feature))
     },
 
     goToSelectedFeature() {
@@ -442,17 +452,13 @@ export default Vue.extend({
       if (this.features) {
         const bounds = getBBoxFeatures(this.features)
         if (bounds) {
-          this.map.fitBounds(bounds, { maxZoom: 13, padding: 50 })
+          this.fitBounds(bounds)
         }
       }
     },
 
     resetZoom() {
-      // @ts-ignore
-      this.map?.fitBounds(this.defaultBounds, {
-        linear: false,
-        padding: 50,
-      })
+      this.fitBounds(this.defaultBounds, { linear: false })
     },
 
     handleResetMapZoom(features: ApiPoi[], text: string, textBtn: string) {
@@ -515,6 +521,14 @@ export default Vue.extend({
       } else {
         filterRouteByCategories(this.map, this.selectedCategories)
       }
+    },
+
+    fitBounds(bounds: LngLatBoundsLike, options: FitBoundsOptions = {}) {
+      this.map.fitBounds(bounds, {
+        maxZoom: 13,
+        padding: this.fitBoundsPaddingOptions,
+        ...options,
+      })
     },
   },
 })

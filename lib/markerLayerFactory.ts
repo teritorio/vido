@@ -3,6 +3,8 @@ import maplibregl, {
   SymbolLayerSpecification,
   Map,
   Marker,
+  LngLatBoundsLike,
+  FitBoundsOptions,
 } from 'maplibre-gl'
 
 import TeritorioIconBadge from '@/components/TeritorioIcon/TeritorioIconBadge.vue'
@@ -96,6 +98,7 @@ export function updateMarkers(
   categories: Record<ApiMenuCategory['id'], ApiMenuCategory>,
   markers: { [id: string]: maplibregl.Marker },
   src: string,
+  fitBounds: (bounds: LngLatBoundsLike, options: FitBoundsOptions) => void,
   markerClickCallBack: (feature: ApiPoi) => void
 ) {
   const markerIdPrevious = Object.keys(markers)
@@ -136,7 +139,7 @@ export function updateMarkers(
                   if (!error && map) {
                     const bounds = getBBoxFeatures(features)
                     if (bounds) {
-                      map.fitBounds(bounds, { padding: 50 })
+                      fitBounds(bounds, {})
                     }
                   }
                 }
