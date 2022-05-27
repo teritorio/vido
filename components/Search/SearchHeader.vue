@@ -128,7 +128,7 @@
 
 <script lang="ts">
 import debounce from 'lodash.debounce'
-import Vue, { PropType } from 'vue'
+import Vue, { PropType, VueConstructor } from 'vue'
 import { mapGetters } from 'vuex'
 
 import SearchResultBlock from '@/components/Search/SearchResultBlock.vue'
@@ -142,7 +142,15 @@ import {
 } from '@/lib/apiSearch'
 import { MAP_ZOOM } from '@/lib/constants'
 
-export default Vue.extend({
+export default (
+  Vue as VueConstructor<
+    Vue & {
+      $refs: {
+        search: InstanceType<typeof HTMLInputElement> | null
+      }
+    }
+  >
+).extend({
   components: {
     SearchResultBlock,
   },
@@ -315,7 +323,7 @@ export default Vue.extend({
     },
 
     focusSearch() {
-      ;(this.$refs.search as HTMLInputElement).focus()
+      this.$refs.search?.focus()
     },
 
     onAddressClick(id: number) {
