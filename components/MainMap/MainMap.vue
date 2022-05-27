@@ -42,22 +42,6 @@
       </aside>
 
       <div
-        class="hidden fixed inset-x-0 bottom-0 md:flex overflow-y-auto pointer-events-none h-auto md:inset-x-3 md:bottom-5"
-      >
-        <div class="w-full max-w-md" />
-        <div class="grow-[1]" />
-        <MapPoiToast
-          v-if="selectedFeature && showPoiToast"
-          :poi="selectedFeature"
-          class="grow-0"
-          @explore-click="exploreAroundSelectedPoi"
-          @favorite-click="toggleFavorite"
-          @zoom-click="goToSelectedFeature"
-        />
-        <div class="grow-[3]" />
-      </div>
-
-      <div
         v-if="isLoadingFeatures"
         class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-80"
       >
@@ -83,7 +67,6 @@ import { mapGetters, mapActions } from 'vuex'
 import FavoriteMenu from '@/components/MainMap/FavoriteMenu.vue'
 import FavoritesOverlay from '@/components/MainMap/FavoritesOverlay.vue'
 import MapFeatures from '@/components/MainMap/MapFeatures.vue'
-import MapPoiToast from '@/components/MainMap/MapPoiToast.vue'
 import NavMenu from '@/components/MainMap/NavMenu.vue'
 import { ApiMenuCategory } from '@/lib/apiMenu'
 import { getPoiByIds, ApiPoi } from '@/lib/apiPois'
@@ -104,7 +87,6 @@ export default (
 ).extend({
   components: {
     MapFeatures,
-    MapPoiToast,
     FavoritesOverlay,
     NavMenu,
     FavoriteMenu,

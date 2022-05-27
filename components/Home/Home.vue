@@ -122,6 +122,23 @@
       @show-poi="onShowPoi"
       @full-attribution="setFullAttributions($event)"
     />
+    <div
+      class="hidden fixed inset-x-0 bottom-0 md:flex overflow-y-auto pointer-events-none h-auto md:inset-x-3 md:bottom-5"
+    >
+      <div class="w-full max-w-md" />
+      <div class="grow-[1]" />
+      <MapPoiToast
+        v-if="selectedFeature && showPoi"
+        :poi="selectedFeature"
+        class="grow-0"
+        @explore-click="
+          $refs.mainMap && $refs.mainMap.exploreAroundSelectedPoi()
+        "
+        @favorite-click="$refs.mainMap && $refs.mainMap.toggleFavorite($event)"
+        @zoom-click="$refs.mainMap && $refs.mainMap.goToSelectedFeature()"
+      />
+      <div class="grow-[3]" />
+    </div>
     <BottomMenu
       class="md:hidden"
       :show-grip="
