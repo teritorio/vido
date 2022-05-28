@@ -60,7 +60,7 @@ import { getBBoxFeatures, getBBoxFeature } from '@/lib/bbox'
 import { DEFAULT_MAP_STYLE, MAP_ZOOM } from '@/lib/constants'
 import { markerLayerTextFactory, updateMarkers } from '@/lib/markerLayerFactory'
 import { filterRouteByCategories, filterRouteByPoiId } from '@/utils/styles'
-import { LatLng, MapStyleEnum, TupleLatLng } from '@/utils/types'
+import { LatLng, MapStyleEnum } from '@/utils/types'
 import { getHashPart } from '@/utils/url'
 
 import { ApiMenuCategory } from '~/lib/apiMenu'
@@ -132,7 +132,6 @@ export default Vue.extend({
     markers: { [id: string]: maplibregl.Marker }
     selectedFeatureMarker: maplibregl.Marker | null
     selectedBackground: keyof typeof MapStyleEnum
-    featuresCoordinates: { [id: string]: TupleLatLng }
     allowRegionBackZoom: boolean
   } {
     return {
@@ -143,7 +142,6 @@ export default Vue.extend({
       markers: {},
       selectedFeatureMarker: null,
       selectedBackground: DEFAULT_MAP_STYLE,
-      featuresCoordinates: {},
       allowRegionBackZoom: false,
     }
   },
@@ -179,18 +177,6 @@ export default Vue.extend({
       const newCategories: (number | undefined)[] = features.map(
         (e) => e.properties.metadata?.id
       )
-
-      // Add exact coordinates to a store to avoid rounding from Mapbox GL
-      this.featuresCoordinates = {}
-      this.features.forEach((feature: ApiPoi) => {
-        if (
-          feature.geometry?.type === 'Point' &&
-          feature.properties?.metadata?.id
-        ) {
-          this.featuresCoordinates[feature.properties.metadata.id] = feature
-            .geometry.coordinates as [number, number]
-        }
-      })
 
       // Change visible data
       if (this.map.getSource(POI_SOURCE)) {
@@ -505,17 +491,25 @@ export default Vue.extend({
         )
 
         if (feature.geometry.type === 'Point') {
+          // Get original coords to set axact marker position
+          const originalFeature = this.features.find(
+            (originalFeature) =>
+              originalFeature.properties?.metadata?.id &&
+              feature?.properties?.metadata?.id &&
+              originalFeature.properties?.metadata?.id ===
+                feature?.properties?.metadata?.id
+          )
+          const lngLat = (
+            originalFeature && originalFeature.geometry.type === 'Point'
+              ? originalFeature.geometry.coordinates
+              : feature.geometry.coordinates
+          ) as [number, number]
+
           this.selectedFeatureMarker = new maplibregl.Marker({
             scale: 1.3,
             color: '#f44336',
           })
-            .setLngLat(
-              (Boolean(feature?.properties?.metadata?.id) &&
-                this.featuresCoordinates[
-                  feature?.properties?.metadata?.id || ''
-                ]) ||
-                (feature.geometry.coordinates as [number, number])
-            )
+            .setLngLat(lngLat)
             .addTo(this.map)
         }
       } else {
