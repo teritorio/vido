@@ -110,17 +110,59 @@
         />
       </div>
     </header>
-    <MainMap
-      v-if="initialBbox"
-      ref="mainMap"
-      :default-bounds="initialBbox"
-      :fit-bounds-padding-options="fitBoundsPaddingOptions"
-      :attributions="settings.attributions"
-      :small="isBottomMenuOpened"
-      :selected-categories="state.context.selectedSubCategoriesIds"
-      :get-sub-category="selectSubCategory"
-      @show-poi="onShowPoi"
-      @full-attribution="setFullAttributions($event)"
+
+    <div v-if="initialBbox" class="w-full h-full">
+      <div
+        :class="[
+          'relative flex flex-col w-full h-full md:h-full',
+          !isBottomMenuOpened && 'h-full',
+        ]"
+      >
+        <MapFeatures
+          ref="mapFeatures"
+          :default-bounds="initialBbox"
+          :fit-bounds-padding-options="fitBoundsPaddingOptions"
+          :extra-attributions="settings.attributions"
+          :small="isBottomMenuOpened"
+          :categories="categories"
+          :features="mapFeatures"
+          :selected-feature="selectedFeature"
+          :selected-categories="state.context.selectedSubCategoriesIds"
+          :style-icon-filter="(isModeExplorer && poiFilters) || null"
+          @on-select-feature="setSelectedFeature($event)"
+          @full-attribution="setFullAttributions($event)"
+        />
+        <div
+          v-if="isLoadingFeatures"
+          class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-80"
+        >
+          <font-awesome-icon
+            icon="spinner"
+            class="text-zinc-400 animate-spin"
+            size="3x"
+          />
+        </div>
+        <div
+          :class="[
+            'absolute flex justify-end pointer-events-auto items-top pt-4 right-3 md:pt-0 w-40 md:w-48 top-4',
+            isBottomMenuOpened && 'hidden',
+          ]"
+        >
+          <FavoriteMenu
+            :has-favorites="favoritesIds.length !== 0"
+            :explore-around-selected-poi="exploreAroundSelectedPoi"
+            :go-to-selected-poi="goToSelectedFeature"
+            :toggle-favorite="toggleFavorite"
+            @toggle-favorites="onToggleFavoritesMode"
+          />
+          <NavMenu class="ml-3 sm:ml-9" />
+        </div>
+      </div>
+    </div>
+
+    <FavoritesOverlay
+      v-if="showFavoritesOverlay"
+      @discard="showFavoritesOverlay = false"
     />
     <div
       class="hidden fixed inset-x-0 bottom-0 md:flex overflow-y-auto pointer-events-none h-auto md:inset-x-3 md:bottom-5"
@@ -131,11 +173,9 @@
         v-if="selectedFeature && showPoi"
         :poi="selectedFeature"
         class="grow-0"
-        @explore-click="
-          $refs.mainMap && $refs.mainMap.exploreAroundSelectedPoi()
-        "
-        @favorite-click="$refs.mainMap && $refs.mainMap.toggleFavorite($event)"
-        @zoom-click="$refs.mainMap && $refs.mainMap.goToSelectedFeature()"
+        @explore-click="exploreAroundSelectedPoi"
+        @favorite-click="toggleFavorite($event)"
+        @zoom-click="goToSelectedFeature"
       />
       <div class="grow-[3]" />
     </div>
@@ -193,11 +233,9 @@
         v-if="selectedFeature && showPoi"
         :poi="selectedFeature"
         class="grow-0 text-left max-h-screen-3/5"
-        @explore-click="
-          $refs.mainMap && $refs.mainMap.exploreAroundSelectedPoi()
-        "
-        @favorite-click="$refs.mainMap && $refs.mainMap.toggleFavorite($event)"
-        @zoom-click="$refs.mainMap && $refs.mainMap.goToSelectedFeature()"
+        @explore-click="exploreAroundSelectedPoi"
+        @favorite-click="toggleFavorite($event)"
+        @zoom-click="goToSelectedFeature"
       />
     </BottomMenu>
     <Attribution v-if="!isBottomMenuOpened" :attributions="fullAttributions" />
@@ -219,15 +257,19 @@ import SubCategoryFilterHeader from '@/components/Categories/SubCategoryFilterHe
 import SubCategoryHeader from '@/components/Categories/SubCategoryHeader.vue'
 import Attribution from '@/components/MainMap/Attribution.vue'
 import BottomMenu from '@/components/MainMap/BottomMenu.vue'
+import FavoriteMenu from '@/components/MainMap/FavoriteMenu.vue'
+import FavoritesOverlay from '@/components/MainMap/FavoritesOverlay.vue'
 import MainHeader from '@/components/MainMap/MainHeader.vue'
-import MainMap from '@/components/MainMap/MainMap.vue'
+import MapFeatures from '@/components/MainMap/MapFeatures.vue'
 import MapPoiToast from '@/components/MainMap/MapPoiToast.vue'
+import NavMenu from '@/components/MainMap/NavMenu.vue'
 import SearchHeader from '@/components/Search/SearchHeader.vue'
-import { Category } from '@/lib/apiMenu'
-import { getPoiById, ApiPoi } from '@/lib/apiPois'
+import { ApiMenuCategory, Category } from '@/lib/apiMenu'
+import { getPoiById, ApiPoi, getPoiByIds } from '@/lib/apiPois'
 import { ApiMenuItemSearchResult } from '@/lib/apiSearch'
 import { headerFromSettings, Settings } from '@/lib/apiSettings'
 import { getBBoxFeature } from '@/lib/bbox'
+import { LOCAL_STORAGE } from '@/lib/constants'
 import { Mode, OriginEnum } from '@/utils/types'
 import { FilterValue, FilterValues } from '@/utils/types-filters'
 import { getHashPart, setHashParts } from '@/utils/url'
@@ -243,20 +285,25 @@ import {
   HomeResolvedTypesMeta,
 } from './Home.machine'
 
+import { flattenFeatures } from '~/utils/utilities'
+
 const interpretOptions = { devTools: false }
 
 export default (
   Vue as VueConstructor<
     Vue & {
       $refs: {
-        mainMap: InstanceType<typeof MainMap> | null
+        mapFeatures: InstanceType<typeof MapFeatures>
       }
     }
   >
 ).extend({
   components: {
     MainHeader,
-    MainMap,
+    FavoriteMenu,
+    FavoritesOverlay,
+    NavMenu,
+    MapFeatures,
     SearchHeader,
     SelectedSubCategoriesDense,
     HeaderRootCategories,
@@ -300,6 +347,9 @@ export default (
     showPoi: boolean
     initialBbox: LngLatBoundsLike | null
     fullAttributions: string
+    showFavoritesOverlay: boolean
+    allowRegionBackZoom: boolean
+    favorites: ApiPoi[] | null
   } {
     const debouncedFetchFeatures = debounce(
       (selectedSubCategoriesIds) =>
@@ -330,6 +380,9 @@ export default (
       showPoi: false,
       initialBbox: null,
       fullAttributions: '',
+      showFavoritesOverlay: false,
+      allowRegionBackZoom: false,
+      favorites: null,
     }
   },
   head(): MetaInfo {
@@ -344,12 +397,15 @@ export default (
       rootCategories: 'menu/rootCategories',
       getSubCategoriesFromCategoryId: 'menu/getSubCategoriesFromCategoryId',
       isMenuConfigLoaded: 'menu/isLoaded',
+      pois: 'menu/features',
       filters: 'menu/filters',
       mode: 'map/mode',
       isModeExplorer: 'map/isModeExplorer',
       isModeFavorites: 'map/isModeFavorites',
       selectedFeature: 'map/selectedFeature',
       map_center: 'map/center',
+      favoritesIds: 'favorite/favoritesIds',
+      isLoadingFeatures: 'menu/isLoadingFeatures',
     }),
     events: () => HomeEvents,
     logoUrl(): string {
@@ -369,7 +425,7 @@ export default (
       return this.settings.themes[0]?.main_url?.fr || ''
     },
     isPoiToastVisible(): boolean {
-      return this.selectedFeature && this.$refs.mainMap?.showPoiToast
+      return this.selectedFeature && this.showPoi
     },
     isBottomMenuOpened(): boolean {
       return (
@@ -439,6 +495,31 @@ export default (
         }
       }
     },
+    categories(): Record<ApiMenuCategory['id'], ApiMenuCategory> {
+      return this.$store.getters['menu/categories']
+    },
+
+    poiFilters(): Array<string[]> {
+      return Object.values(this.categories)
+        .map((c) => c.category?.style_class)
+        .filter((s) => s && Array.isArray(s))
+    },
+
+    mapFeatures(): ApiPoi[] {
+      let feature: ApiPoi[]
+      switch (this.mode as Mode) {
+        case Mode.BROWSER:
+          feature = flattenFeatures(this.pois)
+          break
+        case Mode.FAVORITES:
+          feature = this.favorites || []
+          break
+        case Mode.EXPLORER:
+          feature = []
+          break
+      }
+      return feature
+    },
   },
   watch: {
     state(val, oldVal) {
@@ -461,6 +542,8 @@ export default (
     },
 
     mode() {
+      this.allowRegionBackZoom = false
+
       const hash: { [key: string]: string | null } = {
         mode: this.mode !== Mode.BROWSER ? this.mode : null,
       }
@@ -483,6 +566,14 @@ export default (
       }
       this.routerPushUrl(hash)
     },
+
+    favoritesIds() {
+      this.handleFavorites()
+    },
+
+    isModeFavorites() {
+      this.handleFavorites()
+    },
   },
 
   created() {
@@ -491,6 +582,36 @@ export default (
         this.state = state
       })
       .start()
+  },
+
+  beforeMount() {
+    const favorites =
+      localStorage.getItem(LOCAL_STORAGE.favorites) || '{ "favorites": [] }'
+
+    this.toggleFavoritesMode(JSON.parse(favorites).favorites)
+
+    const mode = getHashPart(this.$router, 'mode') || Mode.BROWSER
+    this.setMode(mode)
+
+    const favs = getHashPart(this.$router, 'favs')
+    if (favs) {
+      try {
+        const newFavorite = favs
+          .split(',')
+          .map((e) => (!isNaN(Number(e)) ? Number(e) : null))
+          .filter((e) => !!e)
+
+        localStorage.setItem(
+          LOCAL_STORAGE.favorites,
+          JSON.stringify({ favorites: newFavorite, version: 1 })
+        )
+        this.toggleFavoritesMode(newFavorite)
+        this.handleFavorites()
+      } catch (e) {
+        // eslint-disable-next-line no-console
+        console.error('Vido error:', e.message)
+      }
+    }
   },
 
   mounted() {
@@ -538,6 +659,8 @@ export default (
     ...mapActions({
       applyCategoriesFilters: 'menu/applyFilters',
       setSelectedFeature: 'map/setSelectedFeature',
+      setMode: 'map/setMode',
+      toggleFavoritesMode: 'favorite/toggleFavoritesMode',
     }),
     routerPushUrl(hashUpdate: { [key: string]: string | null } = {}) {
       const categoryIds = this.state.context.selectedSubCategoriesIds
@@ -711,20 +834,20 @@ export default (
             if (!this.isModeExplorer) {
               this.setSelectedFeature(null)
             } else {
-              this.$refs.mainMap?.setPoiToastVisibility(false)
+              this.setPoiVisibility(false)
             }
           }
           this.goToHome()
         } else if (!this.isModeExplorer) {
           this.goToCategories()
         } else if (this.selectedFeature && !this.isPoiToastVisible) {
-          this.$refs.mainMap?.setPoiToastVisibility(true)
+          this.setPoiVisibility(true)
         }
       } else if (this.selectedFeature) {
         if (!this.isModeExplorer) {
           this.setSelectedFeature(null)
         } else {
-          this.$refs.mainMap?.setPoiToastVisibility(false)
+          this.setPoiVisibility(false)
         }
       }
     },
@@ -734,6 +857,105 @@ export default (
     },
     setFullAttributions(fullAttributions: string) {
       this.fullAttributions = fullAttributions
+    },
+
+    exploreAroundSelectedPoi(feature?: ApiPoi) {
+      if (feature) {
+        this.setSelectedFeature(feature)
+      }
+      if (!this.isModeExplorer) {
+        this.setMode(Mode.EXPLORER)
+        this.goToSelectedFeature()
+
+        if (this.$screen.smallScreen) {
+          this.showPoi = false
+        }
+      } else {
+        this.allowRegionBackZoom = false
+        this.setMode(Mode.BROWSER)
+      }
+    },
+
+    toggleFavorite(feature?: ApiPoi, isNotebook?: boolean) {
+      if (feature && !isNotebook) {
+        this.setSelectedFeature(feature)
+      }
+      try {
+        const props = feature?.properties
+        const id = props?.metadata?.id || feature?.id
+        const currentFavorites = localStorage.getItem(LOCAL_STORAGE.favorites)
+        let newFavorite
+
+        if (id) {
+          if (currentFavorites) {
+            const parsedFavorites = JSON.parse(currentFavorites).favorites
+            if (!parsedFavorites.includes(id)) {
+              newFavorite = [...parsedFavorites, id]
+            } else {
+              newFavorite = parsedFavorites.filter(
+                (f: string) => `${f}` !== `${id}`
+              )
+            }
+          } else {
+            newFavorite = [id]
+          }
+
+          localStorage.setItem(
+            LOCAL_STORAGE.favorites,
+            JSON.stringify({ favorites: newFavorite, version: 1 })
+          )
+          this.toggleFavoritesMode(newFavorite)
+        }
+      } catch (e) {
+        // eslint-disable-next-line no-console
+        console.error('Vido error:', e.message)
+      }
+    },
+
+    setPoiVisibility(visible: boolean) {
+      this.showPoi = visible
+    },
+
+    onToggleFavoritesMode() {
+      if (this.favoritesIds?.length > 0) {
+        this.$tracking({ type: 'map_control_event', event: 'favorite' })
+        if (!this.isModeFavorites) {
+          this.setMode(Mode.FAVORITES)
+        } else {
+          this.setMode(Mode.BROWSER)
+        }
+      } else {
+        this.showFavoritesOverlay = true
+      }
+    },
+
+    goToSelectedFeature() {
+      this.$refs.mapFeatures?.goToSelectedFeature()
+    },
+
+    handleFavorites() {
+      this.fetchFavorites(this.favoritesIds).then((favorites) => {
+        this.favorites = favorites
+      })
+    },
+
+    fetchFavorites(ids: [string]): Promise<ApiPoi[]> {
+      return getPoiByIds(
+        this.$vidoConfig.API_ENDPOINT,
+        this.$vidoConfig.API_PROJECT,
+        this.$vidoConfig.API_THEME,
+        ids
+      )
+        .then((pois) => (pois && pois.features) || [])
+        .then((pois) =>
+          pois.map((poi) => ({
+            ...poi,
+            properties: {
+              ...poi.properties,
+              vido_cat: poi.properties.metadata?.category_ids?.[0],
+            },
+          }))
+        )
     },
   },
 })
