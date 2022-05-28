@@ -22,6 +22,7 @@ const defaultProps = {
       hidden: false,
       menu_group: undefined,
       link: undefined,
+      selected_by_default: false,
       category: {
         name: { en: 'foo' },
         icon: '',

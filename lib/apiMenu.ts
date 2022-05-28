@@ -34,6 +34,8 @@ export interface ApiMenuItem {
   // eslint-disable-next-line camelcase
   index_order: number
   hidden: boolean
+  // eslint-disable-next-line camelcase
+  selected_by_default: boolean
 }
 
 export interface ApiMenuGroup extends ApiMenuItem {
