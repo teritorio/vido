@@ -13,7 +13,7 @@
         <transition-group name="headers" appear mode="out-in">
           <MainHeader
             v-if="
-              (state.matches(states.Categories) && isMenuConfigLoaded) ||
+              state.matches(states.Categories) ||
               isModeExplorer ||
               isModeFavorites
             "
@@ -188,9 +188,7 @@
       @on-grip-click="onBottomMenuButtonClick"
     >
       <div
-        v-if="
-          !showPoi && state.matches(states.Categories) && isMenuConfigLoaded
-        "
+        v-if="!showPoi && state.matches(states.Categories)"
         class="flex-1 h-full overflow-y-auto max-h-screen-3/5 divide-y"
       >
         <HeaderRootCategories
@@ -396,7 +394,6 @@ export default (
       categoryRootCategories: 'menu/categoryRootCategories',
       rootCategories: 'menu/rootCategories',
       getSubCategoriesFromCategoryId: 'menu/getSubCategoriesFromCategoryId',
-      isMenuConfigLoaded: 'menu/isLoaded',
       pois: 'menu/features',
       filters: 'menu/filters',
       mode: 'map/mode',

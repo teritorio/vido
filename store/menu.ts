@@ -33,7 +33,6 @@ export interface State {
   categories: {
     [categoryId: number]: Category
   }
-  isLoaded: boolean
   features: {
     [categoryId: number]: ApiPoi[]
   }
@@ -46,7 +45,6 @@ export interface State {
 
 export const state = (): State => ({
   categories: {},
-  isLoaded: false,
   features: {},
   filters: {},
   allFeatures: {},
@@ -56,7 +54,6 @@ export const state = (): State => ({
 export const mutations = {
   [Mutation.SET_CONFIG](state: State, payload: State) {
     state.categories = payload.categories
-    state.isLoaded = true
   },
 
   [Mutation.SET_FILTERS](state: State, payload: State) {
@@ -227,7 +224,6 @@ export const actions = {
 export const getters = {
   categories: (state: State) => state.categories,
   allFeatures: (state: State) => state.allFeatures,
-  isLoaded: (state: State) => state.isLoaded,
   isLoadingFeatures: (state: State) => state.isLoadingFeatures,
   filters: (state: State) => state.filters,
   features: (state: State) => state.features,
