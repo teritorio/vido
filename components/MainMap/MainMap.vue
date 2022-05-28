@@ -17,10 +17,7 @@
         :selected-feature="selectedFeature"
         :selected-categories="mapCategories"
         :style-icon-filter="(isModeExplorer && poiFilters) || null"
-        @on-select-feature="
-          (feature) =>
-            feature ? setSelectedFeature(feature) : unselectFeature()
-        "
+        @on-select-feature="setSelectedFeature($event)"
         @full-attribution="$emit('full-attribution', $event)"
       />
       <aside class="pointer-events-none">
@@ -239,7 +236,6 @@ export default (
       setMode: 'map/setMode',
       toggleFavoritesMode: 'favorite/toggleFavoritesMode',
       setSelectedFeature: 'map/setSelectedFeature',
-      unselectFeature: 'map/unselectFeature',
     }),
 
     setPoiToastVisibility(visible: boolean) {

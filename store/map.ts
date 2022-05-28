@@ -53,37 +53,38 @@ export const mutations = {
 
 export const actions = {
   setSelectedFeature(store: Store<State>, feature: ApiPoi) {
-    const goodFeature = feature
+    if (!feature) {
+      store.commit(Mutation.SET_SELECTED_FEATURE, { selectedFeature: null })
+    } else {
+      const goodFeature = feature
 
-    const IsJsonString = (str: string) => {
-      try {
-        JSON.parse(str)
-      } catch (e) {
-        return false
-      }
-      return true
-    }
-
-    if (feature?.properties) {
-      const cleanProperties: ApiPoi['properties'] = {}
-
-      Object.keys(feature.properties).forEach((key) => {
-        if (IsJsonString(feature.properties[key])) {
-          cleanProperties[key] = JSON.parse(feature.properties[key])
-        } else {
-          cleanProperties[key] = feature.properties[key]
+      const IsJsonString = (str: string) => {
+        try {
+          JSON.parse(str)
+        } catch (e) {
+          return false
         }
+        return true
+      }
+
+      if (feature?.properties) {
+        const cleanProperties: ApiPoi['properties'] = {}
+
+        Object.keys(feature.properties).forEach((key) => {
+          if (IsJsonString(feature.properties[key])) {
+            cleanProperties[key] = JSON.parse(feature.properties[key])
+          } else {
+            cleanProperties[key] = feature.properties[key]
+          }
+        })
+
+        goodFeature.properties = cleanProperties
+      }
+
+      store.commit(Mutation.SET_SELECTED_FEATURE, {
+        selectedFeature: goodFeature,
       })
-
-      goodFeature.properties = cleanProperties
     }
-
-    store.commit(Mutation.SET_SELECTED_FEATURE, {
-      selectedFeature: goodFeature,
-    })
-  },
-  unselectFeature(store: Store<State>) {
-    store.commit(Mutation.SET_SELECTED_FEATURE, { selectedFeature: null })
   },
   center(store: Store<State>, center: LatLng) {
     store.commit(Mutation.SET_CENTER, { center })
