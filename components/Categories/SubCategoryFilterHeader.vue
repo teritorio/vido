@@ -108,8 +108,8 @@ export default Vue.extend({
   },
 
   props: {
-    subcategory: {
-      type: Object as PropType<Category>,
+    subcategoryId: {
+      type: Number as PropType<Category['id']>,
       required: true,
     },
     filtersValues: {
@@ -139,7 +139,7 @@ export default Vue.extend({
 
       filter.filterValue = value
       this.applyCategorieFilters({
-        categoryId: this.subcategory.id,
+        categoryId: this.subcategoryId,
         filterValues: filters,
       })
     },
@@ -150,7 +150,7 @@ export default Vue.extend({
 
       filter.filterValues = values || []
       this.applyCategorieFilters({
-        categoryId: this.subcategory.id,
+        categoryId: this.subcategoryId,
         filterValues: filters,
       })
     },
@@ -163,7 +163,7 @@ export default Vue.extend({
       filters[filterIndex] = filterValue
 
       this.applyCategorieFilters({
-        categoryId: this.subcategory.id,
+        categoryId: this.subcategoryId,
         filterValues: filters,
       })
     },
@@ -179,7 +179,7 @@ export default Vue.extend({
       }
 
       this.applyCategorieFilters({
-        categoryId: this.subcategory.id,
+        categoryId: this.subcategoryId,
         filterValues: filters,
       })
     },

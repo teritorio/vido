@@ -36,7 +36,7 @@
             "
             key="SubCategoryHeader"
             class="hidden md:flex m-2"
-            :categories="state.context.selectedRootCategory.subCategories"
+            :categories="navigationSubCategories"
             :filters="filters"
             :is-sub-category-selected="isSubCategorySelected"
             @category-click="onSubCategoryClick"
@@ -50,7 +50,7 @@
             v-if="!isModeExplorer && state.matches(states.SubCategoryFilters)"
             key="SubCategoryFilterHeader"
             class="hidden md:flex m-2"
-            :subcategory="subCategoryForFilter"
+            :subcategory-id="categoryIdFilter"
             :filters-values="subCategoryFilters"
             @go-back-click="onBackToSubCategoryClick"
           />
@@ -127,7 +127,7 @@
           :categories="categories"
           :features="mapFeatures"
           :selected-feature="selectedFeature"
-          :selected-categories="state.context.selectedSubCategoriesIds"
+          :selected-categories-ids="selectedCategoriesIds"
           :style-icon-filter="(isModeExplorer && poiFilters) || null"
           @on-select-feature="setSelectedFeature($event)"
           @full-attribution="setFullAttributions($event)"
@@ -207,7 +207,7 @@
           !isModeFavorites &&
           state.matches(states.SubCategories)
         "
-        :categories="state.context.selectedRootCategory.subCategories"
+        :categories="navigationSubCategories"
         :filters="filters"
         :is-sub-category-selected="isSubCategorySelected"
         @category-click="onSubCategoryClick"
@@ -223,7 +223,7 @@
           state.matches(states.SubCategoryFilters)
         "
         class="relative min-h-screen-3/5 max-h-screen-3/5 text-left"
-        :subcategory="subCategoryForFilter"
+        :subcategory-id="categoryIdFilter"
         :filters-values="subCategoryFilters"
         @go-back-click="onBackToSubCategoryClick"
       />
@@ -242,12 +242,11 @@
 
 <script lang="ts">
 import copy from 'fast-copy'
-import debounce from 'lodash.debounce'
 import { FitBoundsOptions, LngLatBoundsLike } from 'maplibre-gl'
 import Vue, { PropType, VueConstructor } from 'vue'
 import { MetaInfo } from 'vue-meta'
 import { mapGetters, mapActions } from 'vuex'
-import { interpret, Interpreter, State } from 'xstate'
+import { interpret } from 'xstate'
 
 import HeaderRootCategories from '@/components/Categories/HeaderRootCategories.vue'
 import SelectedSubCategoriesDense from '@/components/Categories/SelectedSubCategoriesDense.vue'
@@ -273,14 +272,11 @@ import { FilterValue, FilterValues } from '@/utils/types-filters'
 import { getHashPart, setHashParts } from '@/utils/url'
 
 import {
-  HomeContext,
-  HomeEvent,
+  HomeState,
+  HomeInterpreter,
   HomeEvents,
-  homeMachine,
   HomeStates,
-  HomeStateSchema,
-  HomeTypestate,
-  HomeResolvedTypesMeta,
+  homeMachine,
 } from './Home.machine'
 
 import { flattenFeatures } from '~/utils/utilities'
@@ -327,21 +323,11 @@ export default (
     },
   },
   data(): {
-    service: Interpreter<
-      HomeContext,
-      HomeStateSchema,
-      HomeEvent,
-      HomeTypestate,
-      HomeResolvedTypesMeta
-    >
-    state: State<
-      HomeContext,
-      HomeEvent,
-      HomeStateSchema,
-      HomeTypestate,
-      HomeResolvedTypesMeta
-    >
-    previousSubCategories: Category['id'][]
+    service: HomeInterpreter
+    state: HomeState
+    categoryNavigationStackIds: Category['id'][]
+    selectedCategoriesIds: Category['id'][]
+    categoryIdFilter: Category['id'] | null
     showPoi: boolean
     initialBbox: LngLatBoundsLike | null
     fullAttributions: string
@@ -349,31 +335,11 @@ export default (
     allowRegionBackZoom: boolean
     favorites: ApiPoi[] | null
   } {
-    const debouncedFetchFeatures = debounce(
-      (selectedSubCategoriesIds) =>
-        this.$store.dispatch('menu/fetchFeatures', {
-          apiEndpoint: this.$vidoConfig.API_ENDPOINT,
-          apiProject: this.$vidoConfig.API_PROJECT,
-          apiTheme: this.$vidoConfig.API_THEME,
-          categoryIds: selectedSubCategoriesIds,
-        }),
-      500
-    )
-
     return {
-      previousSubCategories: [],
-      service: interpret(
-        homeMachine.withConfig({
-          services: {
-            fetchFeatures: (context: HomeContext) => {
-              debouncedFetchFeatures(context.selectedSubCategoriesIds)
-
-              return Promise.resolve()
-            },
-          },
-        }),
-        interpretOptions
-      ),
+      categoryNavigationStackIds: [],
+      selectedCategoriesIds: [],
+      categoryIdFilter: null,
+      service: interpret(homeMachine, interpretOptions),
       state: homeMachine.initialState,
       showPoi: false,
       initialBbox: null,
@@ -390,10 +356,8 @@ export default (
   },
   computed: {
     ...mapGetters({
-      categories: 'menu/categories',
       categoryRootCategories: 'menu/categoryRootCategories',
       rootCategories: 'menu/rootCategories',
-      getSubCategoriesFromCategoryId: 'menu/getSubCategoriesFromCategoryId',
       pois: 'menu/features',
       filters: 'menu/filters',
       mode: 'map/mode',
@@ -404,15 +368,24 @@ export default (
       favoritesIds: 'favorite/favoritesIds',
       isLoadingFeatures: 'menu/isLoadingFeatures',
     }),
+
+    subCategories(): Category[] {
+      return this.$store.getters['menu/subCategories']
+    },
+    navigationSubCategories(): Category[] {
+      return this.subCategories.filter(
+        (category) =>
+          category.parent_id === this.categoryNavigationStackIds.at(-1)
+      )
+    },
+
     events: () => HomeEvents,
     logoUrl(): string {
       return this.settings.themes[0]?.logo_url || ''
     },
     selectedSubCategories(): Category[] {
-      const categories = this.subCategories
-
-      return categories.filter((category) =>
-        this.state.context.selectedSubCategoriesIds.includes(category.id)
+      return this.subCategories.filter((category) =>
+        this.selectedCategoriesIds.includes(category.id)
       )
     },
     siteName(): string {
@@ -434,41 +407,20 @@ export default (
       )
     },
     states: () => HomeStates,
-    subCategories(): Category[] {
-      return this.$store.getters['menu/subCategories']
-    },
     subCategoriesCounts(): Record<Category['id'], number> {
       const counts: { [id: string]: number } = {}
-      const addCount = (cat: Category) => {
-        if (counts[cat.parent_id || 'null']) {
-          counts[cat.parent_id || 'null']++
-        } else {
-          counts[cat.parent_id || 'null'] = 1
+      this.selectedCategoriesIds.forEach((categoryId) => {
+        let parentId = this.categories[categoryId].parent_id
+        while (parentId) {
+          counts[parentId] = (counts[parentId] || 0) + 1
+          parentId = this.categories[parentId].parent_id
         }
-        if (cat.parent_id !== null) {
-          const parentId =
-            this.subCategories.find((sc) => sc.id === cat.parent_id) ||
-            this.rootCategories.find((sc: Category) => sc.id === cat.parent_id)
-          if (parentId) {
-            addCount(parentId)
-          }
-        }
-      }
-      this.selectedSubCategories.forEach((subcategory: Category) =>
-        addCount(subcategory)
-      )
+      })
       return counts
-    },
-    subCategoryForFilter(): Category | undefined {
-      return this.subCategories.find(
-        (sc) => sc.id === this.state.context.selectedSubCategoryForFilters
-      )
     },
     subCategoryFilters(): FilterValues {
       return (
-        (this.state.context.selectedSubCategoryForFilters &&
-          this.filters[this.state.context.selectedSubCategoryForFilters]) ||
-        []
+        (this.categoryIdFilter && this.filters[this.categoryIdFilter]) || []
       )
     },
     categoriesToIcons(): Record<Category['id'], string> {
@@ -519,11 +471,12 @@ export default (
     },
   },
   watch: {
-    state(val, oldVal) {
+    state(val: HomeState, oldVal: HomeState) {
       if (val.matches(this.states.Home) && !oldVal.matches(this.states.Home)) {
         this.goToHome()
       }
     },
+
     selectedFeature() {
       if (!this.selectedFeature) {
         this.showPoi = false
@@ -532,9 +485,18 @@ export default (
       }
       this.routerPushUrl()
     },
-    'state.context.selectedSubCategoriesIds'(a, b) {
+
+    selectedCategoriesIds(a, b) {
       if (a !== b) {
         this.routerPushUrl()
+
+        this.$store.dispatch('menu/fetchFeatures', {
+          apiEndpoint: this.$vidoConfig.API_ENDPOINT,
+          apiProject: this.$vidoConfig.API_PROJECT,
+          apiTheme: this.$vidoConfig.API_THEME,
+          categoryIds: this.selectedCategoriesIds,
+        })
+        this.allowRegionBackZoom = true
       }
     },
 
@@ -543,23 +505,6 @@ export default (
 
       const hash: { [key: string]: string | null } = {
         mode: this.mode !== Mode.BROWSER ? this.mode : null,
-      }
-      switch (this.mode) {
-        case Mode.BROWSER: {
-          this.selectSubCategory(this.previousSubCategories)
-          break
-        }
-        case Mode.EXPLORER: {
-          this.previousSubCategories =
-            this.state.context.selectedSubCategoriesIds
-          this.unselectSubCategory(this.state.context.selectedSubCategoriesIds)
-          break
-        }
-        case Mode.FAVORITES: {
-          this.previousSubCategories =
-            this.state.context.selectedSubCategoriesIds
-          break
-        }
       }
       this.routerPushUrl(hash)
     },
@@ -660,9 +605,7 @@ export default (
       toggleFavoritesMode: 'favorite/toggleFavoritesMode',
     }),
     routerPushUrl(hashUpdate: { [key: string]: string | null } = {}) {
-      const categoryIds = this.state.context.selectedSubCategoriesIds
-        .sort()
-        .join(',')
+      const categoryIds = this.selectedCategoriesIds.sort().join(',')
       const id =
         this.selectedFeature?.properties?.metadata?.id?.toString() ||
         this.selectedFeature?.id?.toString() ||
@@ -691,18 +634,13 @@ export default (
       }
     },
     goToParentFromSubCategory() {
-      if (this.state.context.selectedRootCategory) {
-        const rootCat = this.subCategories.find(
-          (sc) => sc.id === this.state.context.selectedRootCategory?.id
-        )
-
-        if (rootCat && rootCat.parent_id !== null) {
-          this.onRootCategoryClick(rootCat.parent_id)
+      if (this.categoryNavigationStackIds.length > 0) {
+        this.categoryNavigationStackIds.pop()
+        if (this.categoryNavigationStackIds.length > 0) {
+          this.service.send(HomeEvents.GoToSubCategories)
         } else {
           this.service.send(HomeEvents.GoToCategories)
         }
-      } else {
-        this.service.send(HomeEvents.GoToCategories)
       }
     },
     onQuitExplorerFavoriteMode() {
@@ -716,60 +654,61 @@ export default (
       this.service.send(HomeEvents.GoToCategories)
     },
     isSubCategorySelected(subCategoryId: Category['id']) {
-      return this.state.context.selectedSubCategoriesIds.includes(subCategoryId)
+      return this.selectedCategoriesIds.includes(subCategoryId)
     },
-    onRootCategoryClick(rootCategoryId: Category['id']) {
-      this.service.send(HomeEvents.GoToSubCategories, {
-        rootCategoryId,
-        subCategories: this.getSubCategoriesFromCategoryId(rootCategoryId),
-      })
+
+    onRootCategoryClick(categoryId: Category['id']) {
+      this.categoryNavigationStackIds.push(categoryId)
+      this.service.send(HomeEvents.GoToSubCategories)
     },
     onSubCategoryClick(categoryId: Category['id']) {
-      const sc = this.subCategories.find((sc) => sc.id === categoryId)
+      const sc = this.navigationSubCategories.find((sc) => sc.id === categoryId)
 
       if (
         sc &&
         sc?.menu_group?.vido_children &&
         sc.menu_group.vido_children.length > 0
       ) {
-        this.onRootCategoryClick(categoryId)
+        this.categoryNavigationStackIds.push(categoryId)
+        this.service.send(HomeEvents.GoToSubCategories)
       } else {
         this.toggleSubCategorySelection(categoryId)
       }
     },
-    onSubCategoryFilterClick(subCategoryId: Category['id']) {
-      this.service.send(HomeEvents.GoToSubCategoryFilters, {
-        subCategoryId,
-      })
+    onSubCategoryFilterClick(categoryId: Category['id']) {
+      this.categoryIdFilter = categoryId
+      this.service.send(HomeEvents.GoToSubCategoryFilters)
     },
     onBackToSubCategoryClick() {
-      const rootCatId = this.subCategories.find(
-        (sc) => sc.id === this.state.context.selectedSubCategoryForFilters
-      )?.parent_id
-
-      this.service.send(HomeEvents.GoToSubCategories, {
-        rootCategoryId: rootCatId,
-        subCategories: this.getSubCategoriesFromCategoryId(rootCatId),
-      })
+      this.service.send(HomeEvents.GoToSubCategories)
     },
     selectSubCategory(subCategoriesIds: Category['id'][]) {
-      this.service.send(HomeEvents.SelectSubCategories, {
-        subCategoriesIds,
-      })
+      this.selectedCategoriesIds = [
+        ...this.selectedCategoriesIds,
+        ...subCategoriesIds,
+      ]
+      this.service.send(HomeEvents.SelectSubCategories)
     },
     send(event: HomeEvents) {
       this.service.send(event)
     },
-    toggleSubCategorySelection(subCategoryId: Category['id']) {
-      this.service.send(HomeEvents.ToggleSubCategorySelection, {
-        subCategoryId,
-      })
+    toggleSubCategorySelection(categoryId: Category['id']) {
+      if (this.selectedCategoriesIds.includes(categoryId)) {
+        this.selectedCategoriesIds = this.selectedCategoriesIds.filter(
+          (id) => id !== categoryId
+        )
+      } else {
+        this.selectedCategoriesIds = [...this.selectedCategoriesIds, categoryId]
+      }
+      this.service.send(HomeEvents.ToggleSubCategorySelection)
     },
-    unselectSubCategory(subCategoriesIds: Category['id'][]) {
-      this.service.send(HomeEvents.UnselectSubCategories, {
-        subCategoriesIds,
-      })
+    unselectSubCategory(categoriesIds: Category['id'][]) {
+      this.selectedCategoriesIds = this.selectedCategoriesIds.filter(
+        (categoryId) => !categoriesIds.includes(categoryId)
+      )
+      this.service.send(HomeEvents.UnselectSubCategories)
     },
+
     onSearchPoi(poiId: number) {
       getPoiById(
         this.$vidoConfig.API_ENDPOINT,

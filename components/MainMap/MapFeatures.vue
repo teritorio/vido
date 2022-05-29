@@ -41,7 +41,6 @@
 
 <script lang="ts">
 import { PoiFilter } from '@teritorio/map'
-import { deepEqual } from 'fast-equals'
 import throttle from 'lodash.throttle'
 import maplibregl, {
   MapDataEvent,
@@ -114,7 +113,7 @@ export default Vue.extend({
       type: Object as PropType<ApiPoi | null>,
       default: null,
     },
-    selectedCategories: {
+    selectedCategoriesIds: {
       type: Array as PropType<string[]>,
       default: null,
     },
@@ -132,7 +131,6 @@ export default Vue.extend({
     markers: { [id: string]: maplibregl.Marker }
     selectedFeatureMarker: maplibregl.Marker | null
     selectedBackground: keyof typeof MapStyleEnum
-    allowRegionBackZoom: boolean
   } {
     return {
       map: null!,
@@ -142,7 +140,6 @@ export default Vue.extend({
       markers: {},
       selectedFeatureMarker: null,
       selectedBackground: DEFAULT_MAP_STYLE,
-      allowRegionBackZoom: false,
     }
   },
 
@@ -166,49 +163,32 @@ export default Vue.extend({
       this.setPoiFilter()
     },
 
-    features(features: ApiPoi[], oldFeatures: ApiPoi[]) {
+    features() {
       if (!this.map) {
         return
       }
 
-      const oldCategories: (number | undefined)[] = oldFeatures.map(
-        (e) => e.properties.metadata?.id
-      )
-      const newCategories: (number | undefined)[] = features.map(
-        (e) => e.properties.metadata?.id
-      )
-
       // Change visible data
       if (this.map.getSource(POI_SOURCE)) {
-        if (!deepEqual(newCategories, oldCategories)) {
-          // Change data
-          const source = this.map.getSource(POI_SOURCE)
-          if (source && 'setData' in source) {
-            // @ts-ignore
-            source.setData({
-              type: 'FeatureCollection',
-              features,
-            })
-          }
+        // Change data
+        const source = this.map.getSource(POI_SOURCE)
+        if (source && 'setData' in source) {
+          // @ts-ignore
+          source.setData({
+            type: 'FeatureCollection',
+            features: this.features,
+          })
         }
       }
 
-      // Zoom back to whole region if a new category is selected
-      if (
-        this.allowRegionBackZoom &&
-        !deepEqual(newCategories, oldCategories)
-      ) {
-        this.handleResetMapZoom(
-          this.features,
-          this.$tc('snack.noPoi.issue'),
-          this.$tc('snack.noPoi.action')
-        )
-      } else {
-        // Made to avoid back zoom on categories reload
-        this.allowRegionBackZoom = true
-      }
+      this.handleResetMapZoom(
+        this.$tc('snack.noPoi.issue'),
+        this.$tc('snack.noPoi.action')
+      )
+    },
 
-      filterRouteByCategories(this.map, Object.keys(this.features))
+    selectedCategoriesIds() {
+      this.showSelectedFeature()
     },
 
     selectedBackground() {
@@ -216,18 +196,7 @@ export default Vue.extend({
       const styledataCallBack = (e: MapDataEvent) => {
         if (e.dataType === 'style') {
           this.map.off('styledata', styledataCallBack)
-
-          const feature = this.selectedFeature
-          if (feature) {
-            filterRouteByPoiId(
-              this.map,
-              feature.properties?.metadata?.id ||
-                feature?.id ||
-                feature?.properties?.id
-            )
-          } else {
-            filterRouteByCategories(this.map, Object.keys(this.features))
-          }
+          this.showSelectedFeature()
         }
       }
       this.map.on('styledata', styledataCallBack)
@@ -296,7 +265,7 @@ export default Vue.extend({
           this.map.getCanvas().style.cursor = ''
         })
       })
-      this.showSelectedFeature(this.selectedFeature)
+      this.showSelectedFeature()
     },
 
     initPoiLayer(features: ApiPoi[]) {
@@ -357,7 +326,6 @@ export default Vue.extend({
 
     updateSelectedFeature(feature: ApiPoi | null) {
       if (this.selectedFeature !== feature) {
-        this.showSelectedFeature(feature)
         this.$emit('on-select-feature', feature)
       }
     },
@@ -447,9 +415,9 @@ export default Vue.extend({
       this.fitBounds(this.defaultBounds, { linear: false })
     },
 
-    handleResetMapZoom(features: ApiPoi[], text: string, textBtn: string) {
+    handleResetMapZoom(text: string, textBtn: string) {
       const mapBounds = this.map.getBounds()
-      const isOneInView = features.some(
+      const isOneInView = this.features.some(
         (feature) =>
           feature.geometry.type === 'Point' &&
           mapBounds.contains(feature.geometry.coordinates as [number, number])
@@ -460,7 +428,7 @@ export default Vue.extend({
       if (
         !isOneInView &&
         currentZoom >= MAP_ZOOM.zoom.default &&
-        features.length > 0
+        this.features.length > 0
       ) {
         this.showZoomSnack(text, textBtn)
       }
@@ -469,7 +437,7 @@ export default Vue.extend({
       }
     },
 
-    showSelectedFeature(feature: ApiPoi | null) {
+    showSelectedFeature() {
       // Clean-up previous marker
       if (this.selectedFeatureMarker) {
         this.selectedFeatureMarker.remove()
@@ -478,31 +446,31 @@ export default Vue.extend({
 
       // Add new marker if a feature is selected
       if (
-        feature &&
-        (feature.properties?.metadata?.id ||
-          feature?.id ||
-          feature?.properties?.id)
+        this.selectedFeature &&
+        (this.selectedFeature.properties?.metadata?.id ||
+          this.selectedFeature?.id ||
+          this.selectedFeature?.properties?.id)
       ) {
         filterRouteByPoiId(
           this.map,
-          feature.properties?.metadata?.id ||
-            feature?.id ||
-            feature?.properties?.id
+          this.selectedFeature.properties?.metadata?.id ||
+            this.selectedFeature?.id ||
+            this.selectedFeature?.properties?.id
         )
 
-        if (feature.geometry.type === 'Point') {
+        if (this.selectedFeature.geometry.type === 'Point') {
           // Get original coords to set axact marker position
           const originalFeature = this.features.find(
             (originalFeature) =>
               originalFeature.properties?.metadata?.id &&
-              feature?.properties?.metadata?.id &&
+              this.selectedFeature?.properties?.metadata?.id &&
               originalFeature.properties?.metadata?.id ===
-                feature?.properties?.metadata?.id
+                this.selectedFeature?.properties?.metadata?.id
           )
           const lngLat = (
             originalFeature && originalFeature.geometry.type === 'Point'
               ? originalFeature.geometry.coordinates
-              : feature.geometry.coordinates
+              : this.selectedFeature.geometry.coordinates
           ) as [number, number]
 
           this.selectedFeatureMarker = new maplibregl.Marker({
@@ -513,7 +481,7 @@ export default Vue.extend({
             .addTo(this.map)
         }
       } else {
-        filterRouteByCategories(this.map, this.selectedCategories)
+        filterRouteByCategories(this.map, this.selectedCategoriesIds)
       }
     },
 

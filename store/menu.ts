@@ -228,11 +228,6 @@ export const getters = {
   filters: (state: State) => state.filters,
   features: (state: State) => state.features,
 
-  getSubCategoriesFromCategoryId: (state: State) => (categoryId: number) =>
-    Object.values(state.categories)
-      .filter((c) => c.parent_id === categoryId)
-      .sort((a, b) => a.index_order - b.index_order),
-
   getRootCategoriesFromCategoryId: (state: State) => (categoryId: number) =>
     Object.values(state.categories)
       .filter(
