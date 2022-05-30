@@ -434,7 +434,12 @@ export default (
     },
     fitBoundsPaddingOptions(): FitBoundsOptions['padding'] {
       if (this.$screen.smallScreen) {
-        return 50
+        return {
+          top: 100,
+          bottom: 50,
+          right: 100,
+          left: 50,
+        }
       } else {
         return {
           top: 100,

@@ -487,7 +487,7 @@ export default Vue.extend({
 
     fitBounds(bounds: LngLatBoundsLike, options: FitBoundsOptions = {}) {
       this.map.fitBounds(bounds, {
-        maxZoom: 13,
+        maxZoom: 17,
         padding: this.fitBoundsPaddingOptions,
         ...options,
       })
