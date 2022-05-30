@@ -722,8 +722,10 @@ export default (
         poiId
       ).then((poi) => {
         if (poi) {
-          this.service.send(HomeEvents.GoToCategories)
-          this.setSelectedFeature(poi)
+          this.setSelectedFeature(poi).then(() => {
+            this.service.send(HomeEvents.GoToCategories)
+            this.$refs.mapFeatures.goToSelectedFeature()
+          })
         }
       })
     },
@@ -765,6 +767,7 @@ export default (
     onFeatureClick(feature: ApiPoi) {
       this.setSelectedFeature(feature).then(() => {
         this.service.send(HomeEvents.GoToCategories)
+        this.$refs.mapFeatures.goToSelectedFeature()
       })
     },
 
