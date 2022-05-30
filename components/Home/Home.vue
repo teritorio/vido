@@ -187,54 +187,54 @@
       :is-open="isBottomMenuOpened"
       @on-grip-click="onBottomMenuButtonClick"
     >
-      <div
-        v-if="!showPoi && state.matches(states.Categories)"
-        class="flex-1 h-full overflow-y-auto max-h-screen-3/5 divide-y"
-      >
-        <HeaderRootCategories
-          v-for="category in categoryRootCategories"
-          :key="category.id"
-          :category-id="category.id"
-          :categories-activesubs-count="subCategoriesCounts"
-          class="flex-1 pointer-events-auto px-5 py-4"
-          @category-click="onRootCategoryClick"
+      <div class="flex-1 h-full overflow-y-auto h-screen-3/5 divide-y">
+        <div v-if="!showPoi && state.matches(states.Categories)">
+          <HeaderRootCategories
+            v-for="category in categoryRootCategories"
+            :key="category.id"
+            :category-id="category.id"
+            :categories-activesubs-count="subCategoriesCounts"
+            class="flex-1 pointer-events-auto px-5 py-4 h-full"
+            @category-click="onRootCategoryClick"
+          />
+        </div>
+        <SubCategoryHeader
+          v-if="
+            !showPoi &&
+            !isModeExplorer &&
+            !isModeFavorites &&
+            state.matches(states.SubCategories)
+          "
+          class="h-full"
+          :categories="navigationSubCategories"
+          :filters="filters"
+          :is-sub-category-selected="isSubCategorySelected"
+          @category-click="onSubCategoryClick"
+          @go-back-click="goToParentFromSubCategory"
+          @select-all-categories="selectSubCategory"
+          @unselect-all-categories="unselectSubCategory"
+          @filter-click="onSubCategoryFilterClick"
+        />
+        <SubCategoryFilterHeader
+          v-if="
+            !showPoi &&
+            !isModeExplorer &&
+            state.matches(states.SubCategoryFilters)
+          "
+          class="relative text-left h-full"
+          :subcategory-id="categoryIdFilter"
+          :filters-values="subCategoryFilters"
+          @go-back-click="onBackToSubCategoryClick"
+        />
+        <MapPoiToast
+          v-if="selectedFeature && showPoi"
+          :poi="selectedFeature"
+          class="grow-0 text-left h-full"
+          @explore-click="exploreAroundSelectedPoi"
+          @favorite-click="toggleFavorite($event)"
+          @zoom-click="goToSelectedFeature"
         />
       </div>
-      <SubCategoryHeader
-        v-if="
-          !showPoi &&
-          !isModeExplorer &&
-          !isModeFavorites &&
-          state.matches(states.SubCategories)
-        "
-        :categories="navigationSubCategories"
-        :filters="filters"
-        :is-sub-category-selected="isSubCategorySelected"
-        @category-click="onSubCategoryClick"
-        @go-back-click="goToParentFromSubCategory"
-        @select-all-categories="selectSubCategory"
-        @unselect-all-categories="unselectSubCategory"
-        @filter-click="onSubCategoryFilterClick"
-      />
-      <SubCategoryFilterHeader
-        v-if="
-          !showPoi &&
-          !isModeExplorer &&
-          state.matches(states.SubCategoryFilters)
-        "
-        class="relative min-h-screen-3/5 max-h-screen-3/5 text-left"
-        :subcategory-id="categoryIdFilter"
-        :filters-values="subCategoryFilters"
-        @go-back-click="onBackToSubCategoryClick"
-      />
-      <MapPoiToast
-        v-if="selectedFeature && showPoi"
-        :poi="selectedFeature"
-        class="grow-0 text-left max-h-screen-3/5"
-        @explore-click="exploreAroundSelectedPoi"
-        @favorite-click="toggleFavorite($event)"
-        @zoom-click="goToSelectedFeature"
-      />
     </BottomMenu>
     <Attribution v-if="!isBottomMenuOpened" :attributions="fullAttributions" />
   </div>
@@ -927,18 +927,7 @@ export default (
   transform: translateX(-10px);
 }
 
-.bottom-2\/5 {
-  bottom: 40%;
-}
-
-.bottom-3\/5 {
-  bottom: 60%;
-}
-
 .right-3\/8 {
   right: 37.5%;
-}
-.left-3\/8 {
-  left: 37.5%;
 }
 </style>
