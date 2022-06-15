@@ -12,7 +12,7 @@
     "lint:style": "yarn stylelint **/*.{vue,css} --ignore-path .gitignore",
     "lint": "yarn lint:js && yarn lint:style",
     "test": "yarn jest",
-    "postinstall": "husky install"
+    "postinstall": "[[ -d '.git' ]] && husky install || true"
   },
   "dependencies": {
     "@fontsource/ubuntu": "^4.5.6",
