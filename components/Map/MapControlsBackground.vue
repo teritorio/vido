@@ -13,7 +13,7 @@
         ]"
         :title="
           $t('mapControls.backgroundButton', {
-            current: name(background),
+            background: name(background),
           })
         "
         type="button"
