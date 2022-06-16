@@ -283,7 +283,7 @@ export default Vue.extend({
     },
 
     isModeFavorites(): boolean {
-      const currentFavorites = this.$store.getters['favorite/favoritesIds']
+      const currentFavorites = this.favoritesIds
       return currentFavorites.includes(this.id)
     },
 
