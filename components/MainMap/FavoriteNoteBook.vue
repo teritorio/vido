@@ -33,9 +33,11 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
+import Vue, { PropType } from 'vue'
 
 import MapPoiToast from '@/components/MainMap/MapPoiToast.vue'
+
+import { ApiPoi } from '~/lib/apiPois'
 
 export default Vue.extend({
   components: {
@@ -43,7 +45,7 @@ export default Vue.extend({
   },
   props: {
     favs: {
-      type: Array,
+      type: Array as PropType<ApiPoi[]>,
       default: undefined,
     },
     exploreAroundSelectedPoi: {
