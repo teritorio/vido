@@ -421,14 +421,16 @@ export default Vue.extend({
   },
 
   mounted() {
-    this.$tracking({
-      type: 'popup',
-      poiId: this.id,
-      title: this.poi.properties?.name,
-      location: window.location.href,
-      path: this.$route.path,
-      categoryIds: this.poi.properties?.metadata?.category_ids || [],
-    })
+    if (!this.notebook) {
+      this.$tracking({
+        type: 'popup',
+        poiId: this.id,
+        title: this.poi.properties?.name,
+        location: window.location.href,
+        path: this.$route.path,
+        categoryIds: this.poi.properties?.metadata?.category_ids || [],
+      })
+    }
   },
 
   created() {
