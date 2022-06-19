@@ -1,4 +1,5 @@
 import { FilterBoolean, FilterList, FilterDate, Filter } from '~/lib/apiMenu'
+import { ApiPoi } from '~/lib/apiPois'
 
 abstract class FilterValueDef<Type extends Filter> {
   def: Type
@@ -10,7 +11,7 @@ abstract class FilterValueDef<Type extends Filter> {
   }
 
   abstract isSet(): boolean
-  abstract isMatch(properties: { [key: string]: string }): boolean
+  abstract isMatch(properties: ApiPoi['properties']): boolean
   toJSON() {
     return { ...this }
   }
@@ -23,7 +24,7 @@ export class FilterValueList extends FilterValueDef<FilterList> {
     return this.filterValues.length > 0
   }
 
-  isMatch(properties: { [key: string]: string | string[] }) {
+  isMatch(properties: ApiPoi['properties']) {
     const propertyValues = properties[this.def.property]
     if (propertyValues instanceof Array) {
       return this.filterValues.some((filterValue) =>
@@ -42,7 +43,7 @@ export class FilterValueBoolean extends FilterValueDef<FilterBoolean> {
     return this.filterValue
   }
 
-  isMatch(properties: { [key: string]: string }) {
+  isMatch(properties: ApiPoi['properties']) {
     return Boolean(properties[this.def.property])
   }
 }
@@ -55,7 +56,7 @@ export class FilterValueDate extends FilterValueDef<FilterDate> {
     return this.filterValueBegin !== null || this.filterValueEnd !== null
   }
 
-  isMatch(properties: { [key: string]: string }) {
+  isMatch(properties: ApiPoi['properties']) {
     return Boolean(
       (!this.def.property_begin ||
         !this.filterValueEnd ||
