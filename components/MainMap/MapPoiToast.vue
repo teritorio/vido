@@ -164,7 +164,7 @@
       </div>
 
       <div
-        class="flex items-center space-x-2 justify-evenly shrink-0 bottom-0 bg-white pt-2 shrink-0"
+        class="flex items-center space-x-2 justify-evenly shrink-0 bottom-0 pt-2 shrink-0"
       >
         <a
           v-if="$screen.smallScreen && routeHref"
