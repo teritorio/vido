@@ -75,7 +75,9 @@ export const mutations = {
 }
 
 function keepFeature(filters: FilterValues, feature: ApiPoi): boolean {
-  return filters.some((filter) => filter.isMatch(feature.properties))
+  return filters.some(
+    (filter) => filter.isSet() && filter.isMatch(feature.properties)
+  )
 }
 
 export const actions = {
