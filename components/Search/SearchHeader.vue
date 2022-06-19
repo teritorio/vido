@@ -132,7 +132,7 @@ import Vue, { PropType, VueConstructor } from 'vue'
 import { mapGetters } from 'vuex'
 
 import SearchResultBlock from '@/components/Search/SearchResultBlock.vue'
-import { ApiPoi, getPoiById } from '@/lib/apiPois'
+import { ApiPoi, ApiPoiId, getPoiById } from '@/lib/apiPois'
 import {
   ApiPoisSearchResult,
   ApiMenuItemSearchResult,
@@ -317,7 +317,7 @@ export default (
       }
     },
 
-    onPoiClick(id: number) {
+    onPoiClick(id: ApiPoiId) {
       this.$emit('poi-click', id)
       this.reset()
     },

@@ -1,5 +1,7 @@
 import { MultilingualString } from '@/utils/types'
 
+export interface ApiPoiId extends Number {}
+
 export interface ApiPoiProperties {
   [key: string]: any
 
@@ -15,7 +17,7 @@ export interface ApiPoiProperties {
   'addr:street'?: string
 
   metadata?: {
-    id?: number
+    id?: ApiPoiId
     source?: string
     // eslint-disable-next-line camelcase
     category_ids?: Array<number>

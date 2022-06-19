@@ -1,5 +1,7 @@
 import { StyleSpecification, Map } from 'maplibre-gl'
 
+import { ApiPoiId } from '~/lib/apiPois'
+
 export const fetchStyle = (
   styleUrl: string,
   extraAttributions: string[]
@@ -78,7 +80,7 @@ export const filterRouteByCategories = (
   }
 }
 
-export const filterRouteByPoiId = (map: Map, id: number) => {
+export const filterRouteByPoiId = (map: Map, id: ApiPoiId) => {
   if (map && map.getLayer('features-line-casing')) {
     map.setLayoutProperty('features-line-casing', 'visibility', 'visible')
     map.setLayoutProperty('features-line', 'visibility', 'visible')
@@ -86,13 +88,14 @@ export const filterRouteByPoiId = (map: Map, id: number) => {
     map.setLayoutProperty('features-outline', 'visibility', 'visible')
     const isLineString = ['==', ['geometry-type'], 'LineString']
     const isPolygon = ['==', ['geometry-type'], 'Polygon']
+    const id_ = id as number
     map.setFilter('features-line-casing', [
       'all',
-      ['==', ['id'], id],
+      ['==', ['id'], id_],
       isLineString,
     ])
-    map.setFilter('features-line', ['all', ['==', ['id'], id], isLineString])
-    map.setFilter('features-fill', ['all', ['==', ['id'], id], isPolygon])
-    map.setFilter('features-outline', ['all', ['==', ['id'], id], isPolygon])
+    map.setFilter('features-line', ['all', ['==', ['id'], id_], isLineString])
+    map.setFilter('features-fill', ['all', ['==', ['id'], id_], isPolygon])
+    map.setFilter('features-outline', ['all', ['==', ['id'], id_], isPolygon])
   }
 }
