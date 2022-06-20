@@ -10,14 +10,6 @@
         />
       </div>
       <h1>{{ p.name }}</h1>
-      <Breadcrumb
-        :color-line="colorLine"
-        :entries="[
-          { text: 'Carte', href: '/' },
-          { text: 'todo ' },
-          { text: 'todo' },
-        ]"
-      />
       <Share
         :title="p.name"
         :href="p.editorial && p.editorial['website:details']"
@@ -89,7 +81,6 @@ import TeritorioIconBadge from '@/components/TeritorioIcon/TeritorioIconBadge.vu
 import { ApiPoi, ApiPoiProperties } from '@/lib/apiPois'
 import { Settings } from '@/lib/apiSettings'
 
-import Breadcrumb from '~/components/Details/Breadcrumb.vue'
 import Carousel from '~/components/Details/Carousel.vue'
 import Contact from '~/components/Details/Contact.vue'
 import Footer from '~/components/Details/Footer.vue'
@@ -103,7 +94,6 @@ export default Vue.extend({
   components: {
     Header,
     TeritorioIconBadge,
-    Breadcrumb,
     Contact,
     OpeningHours: () => import('@/components/Fields/OpeningHours.vue'),
     Location,
