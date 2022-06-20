@@ -115,7 +115,7 @@ export default {
     today: 'Today',
     tomorrow: 'Tomorrow',
     thisWeekend: 'Coming week-end',
-    nextWeek: 'Coming week',
-    nextMonth: 'Coming month',
+    nextWeek: 'Next 7 days',
+    nextMonth: 'Next 30 days',
   },
 }

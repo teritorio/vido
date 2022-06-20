@@ -115,7 +115,7 @@ export default {
     today: 'Hoy',
     tomorrow: 'Mañana',
     thisWeekend: 'Este fin de semana',
-    nextWeek: 'Semana siguiente',
-    nextMonth: 'Mes siguiente',
+    nextWeek: 'Próximos 7 días',
+    nextMonth: 'Próximos 30 días',
   },
 }
