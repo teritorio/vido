@@ -213,12 +213,7 @@
           title="Mettre en favori"
           @click.stop="onFavoriteClick"
         >
-          <font-awesome-icon
-            :icon="[`${isModeFavorites ? 'fas' : 'far'}`, 'star']"
-            :class="isModeFavorites && 'text-amber-500'"
-            :color="!isModeFavorites && colorLine"
-            size="sm"
-          />
+          <FavoriteIcon :is-active="isModeFavorites" :color-line="colorLine" />
           <span class="text-sm">{{ $tc('toast.favorite') }}</span>
         </button>
       </div>
@@ -233,6 +228,7 @@ import { mapGetters } from 'vuex'
 import AddressField from '@/components/Fields/AddressField.vue'
 import DateRange from '@/components/Fields/DateRange.vue'
 import Website from '@/components/Fields/Website.vue'
+import FavoriteIcon from '@/components/TeritorioIcon/FavoriteIcon.vue'
 import TeritorioIcon from '@/components/TeritorioIcon/TeritorioIcon.vue'
 import { getPoiById, ApiPoi, ApiPoiProperties } from '@/lib/apiPois'
 import { isIOS } from '@/utils/isIOS'
@@ -247,6 +243,7 @@ export default Vue.extend({
     Website,
     OpeningHours: () => import('@/components/Fields/OpeningHours.vue'),
     DateRange,
+    FavoriteIcon,
   },
 
   props: {

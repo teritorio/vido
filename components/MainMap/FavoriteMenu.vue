@@ -28,14 +28,7 @@
           ]"
           @click="$emit('toggle-favorites')"
         >
-          <font-awesome-icon
-            :icon="[`${hasFavorites ? 'fas' : 'far'}`, 'star']"
-            :class="[
-              isModeFavorites && 'text-white',
-              !isModeFavorites && 'text-amber-500',
-            ]"
-            size="sm"
-          />
+          <FavoriteIcon :is-active="isModeFavorites" />
           <span class="hidden md:inline favoriteTitle">{{
             $tc('favorites.title')
           }}</span>
@@ -175,6 +168,7 @@ import { mapGetters } from 'vuex'
 
 import FavoriteNoteBook from '@/components/MainMap/FavoriteNoteBook.vue'
 import ShareLinkModal from '@/components/ShareLinkModal.vue'
+import FavoriteIcon from '@/components/TeritorioIcon/FavoriteIcon.vue'
 import { getPoiByIds, ApiPoi } from '@/lib/apiPois'
 import { LOCAL_STORAGE } from '@/lib/constants'
 
@@ -192,6 +186,7 @@ export default (
     TDropdown,
     ShareLinkModal,
     FavoriteNoteBook,
+    FavoriteIcon,
   },
   props: {
     hasFavorites: {
