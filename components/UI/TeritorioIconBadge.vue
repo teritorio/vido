@@ -19,7 +19,7 @@
 <script lang="ts">
 import Vue from 'vue'
 
-import TeritorioIcon from '@/components/TeritorioIcon/TeritorioIcon.vue'
+import TeritorioIcon from '@/components/UI/TeritorioIcon.vue'
 
 export default Vue.extend({
   components: {

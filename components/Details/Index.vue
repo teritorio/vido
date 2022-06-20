@@ -77,7 +77,7 @@
 import Vue, { PropType } from 'vue'
 
 import MapPois from '@/components/MapPois.vue'
-import TeritorioIconBadge from '@/components/TeritorioIcon/TeritorioIconBadge.vue'
+import TeritorioIconBadge from '@/components/UI/TeritorioIconBadge.vue'
 import { ApiPoi, ApiPoiProperties } from '@/lib/apiPois'
 import { Settings } from '@/lib/apiSettings'
 

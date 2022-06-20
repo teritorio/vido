@@ -168,7 +168,7 @@ import { mapGetters } from 'vuex'
 
 import FavoriteNoteBook from '@/components/MainMap/FavoriteNoteBook.vue'
 import ShareLinkModal from '@/components/ShareLinkModal.vue'
-import FavoriteIcon from '@/components/TeritorioIcon/FavoriteIcon.vue'
+import FavoriteIcon from '@/components/UI/FavoriteIcon.vue'
 import { getPoiByIds, ApiPoi } from '@/lib/apiPois'
 import { LOCAL_STORAGE } from '@/lib/constants'
 

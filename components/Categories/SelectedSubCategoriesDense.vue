@@ -36,7 +36,7 @@
 <script lang="ts">
 import Vue, { PropType } from 'vue'
 
-import TeritorioIconBadge from '@/components/TeritorioIcon/TeritorioIconBadge.vue'
+import TeritorioIconBadge from '@/components/UI/TeritorioIconBadge.vue'
 import { Category } from '@/lib/apiMenu'
 
 export default Vue.extend({
