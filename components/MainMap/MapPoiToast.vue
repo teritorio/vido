@@ -1,31 +1,31 @@
 <template>
   <div
     :class="[
-      'z-10 flex flex-col w-full sm:max-w-xl mx-0 overflow-y-auto shadow-md pointer-events-auto sm:flex-row sm:w-auto sm:mx-auto sm:rounded-xl poiDescription',
-      !isModeFavorites && notebook ? 'bg-gray-200 opacity-70' : 'bg-white',
+      'z-10 flex flex-col w-full md:max-w-xl mx-0 overflow-y-auto shadow-md pointer-events-auto md:flex-row md:w-auto md:mx-auto md:rounded-xl poiDescription',
+      !isModeFavorites && notebook ? 'bg-zinc-200 opacity-70' : 'bg-white',
     ]"
   >
     <img
       v-if="poiProp('image') && poiProp('image').length > 0"
-      class="object-cover w-full h-auto max-h-44 sm:max-h-full sm:w-52"
+      class="object-cover w-full h-auto max-h-44 md:max-h-full md:w-52"
       :src="poiProp('image')[0]"
       alt=""
     />
 
     <div
-      class="px-8 py-6 flex flex-col sm:overflow-y-auto flex-grow sm:h-50 h-auto sm:max-h-full box-border w-full sm:w-80 md:h-80 md:max-h-full md:w-96"
+      class="px-4 py-5 flex flex-col md:overflow-y-auto flex-grow sm:max-h-60 md:h-50 h-auto md:max-h-full box-border w-full md:w-80 md:h-80 md:max-h-full md:w-96"
     >
-      <div class="flex items-center justify-between flex-shrink-0">
+      <div class="flex items-center justify-between shrink-0">
         <h2
           class="block text-xl font-semibold leading-tight"
-          :style="'color:' + color"
+          :style="'color:' + colorLine"
         >
           {{ name }}
         </h2>
 
         <a
           v-if="poiEditorial('website:details')"
-          class="ml-6 md:ml-8 px-3 py-1.5 text-xs text-gray-800 bg-gray-100 hover:bg-gray-200 focus:bg-gray-200 transition transition-colors rounded-md"
+          class="ml-6 md:ml-8 px-3 py-1.5 text-xs text-zinc-800 bg-zinc-100 hover:bg-zinc-200 focus:bg-zinc-200 transition transition-colors rounded-md"
           :href="poiEditorial('website:details')"
           rel="noopener noreferrer"
           target="_blank"
@@ -37,21 +37,20 @@
 
       <div
         v-if="!unavoidable"
-        class="flex items-center mt-2 text-sm text-gray-500 flex-shrink-0"
+        class="flex items-center mt-2 text-sm text-zinc-500 shrink-0"
       >
         <TeritorioIcon
           v-if="icon"
-          :category-color="color"
+          :color-text="colorLine"
           class="mr-2"
           :picto="icon"
-          :use-category-color="true"
           :use-native-alignment="false"
         />
 
         <font-awesome-icon
           v-if="faIcon"
           :icon="faIcon"
-          :color="color"
+          :color="colorLine"
           class="mr-2"
           size="sm"
         />
@@ -61,12 +60,12 @@
 
       <p
         v-if="unavoidable && Boolean(description)"
-        class="text-sm flex-grow flex-shrink-0 mt-6"
+        class="text-sm flex-grow shrink-0 mt-6"
       >
         {{ description }}
       </p>
 
-      <div v-else class="h-auto flex-grow flex-shrink-0">
+      <div v-else class="h-auto flex-grow shrink-0">
         <div
           v-for="property in poiEditorial('popup_properties') || []"
           :key="'_' + property"
@@ -81,15 +80,19 @@
             v-else-if="property === 'route:*'"
           >
             <p :key="activity" class="text-sm mt-2">
-              {{
-                (sptags && sptags['route:*'] && sptags['route:*'][activity]) ||
-                activity
-              }}
-              : {{ route }}
+              <RouteField
+                :activity="
+                  (sptags &&
+                    sptags['route:*'] &&
+                    sptags['route:*'][activity]) ||
+                  activity
+                "
+                :route="route"
+              />
             </p>
           </template>
 
-          <ul v-if="property === 'phone' && $isMobile()">
+          <ul v-if="property === 'phone' && $screen.phone">
             <li v-for="item in poiProp(property)" :key="item">
               <a
                 class="text-blue-400"
@@ -100,7 +103,7 @@
               </a>
             </li>
           </ul>
-          <ul v-else-if="property === 'mobile' && $isMobile()">
+          <ul v-else-if="property === 'mobile' && $screen.phone">
             <li v-for="item in poiProp(property)" :key="item">
               <a
                 class="text-blue-400"
@@ -128,7 +131,10 @@
             />
           </p>
 
-          <p v-else-if="property === 'opening_hours'" class="text-sm">
+          <p
+            v-else-if="property === 'opening_hours' && poiProp(property)"
+            class="text-sm"
+          >
             <OpeningHours :opening-hours="poiProp(property)" />
           </p>
 
@@ -158,25 +164,25 @@
       </div>
 
       <div
-        class="relative flex items-center mt-6 space-x-2 justify-evenly flex-shrink-0 mt-6"
+        class="flex items-center space-x-2 justify-evenly shrink-0 bottom-0 pt-2 shrink-0"
       >
         <a
-          v-if="$isMobile() && routeHref"
-          class="flex flex-col items-center flex-1 h-full p-2 space-y-2 rounded-lg hover:bg-gray-100"
+          v-if="$screen.smallScreen && routeHref"
+          class="flex flex-col items-center flex-1 h-full p-2 space-y-2 rounded-lg hover:bg-zinc-100"
           :href="routeHref"
           :title="$tc('toast.findRoute')"
           @click="tracking('route')"
         >
-          <font-awesome-icon icon="route" :color="color" size="sm" />
+          <font-awesome-icon icon="route" :color="colorLine" size="sm" />
           <span class="text-sm">{{ $tc('toast.route') }}</span>
         </a>
 
         <button
-          class="flex flex-1 flex-col items-center space-y-2 rounded-lg p-2 h-full hover:bg-gray-100"
+          class="flex flex-1 flex-col items-center space-y-2 rounded-lg p-2 h-full hover:bg-zinc-100"
           :title="$tc('toast.zoom')"
           @click.stop="onZoomClick"
         >
-          <font-awesome-icon icon="plus" :color="color" size="sm" />
+          <font-awesome-icon icon="plus" :color="colorLine" size="sm" />
           <span class="text-sm">{{ $tc('toast.zoom') }}</span>
         </button>
 
@@ -184,7 +190,7 @@
           :class="[
             'flex flex-1 flex-col items-center space-y-2 rounded-lg p-2 h-full',
             isModeExplorer && 'bg-blue-600 text-white hover:bg-blue-500',
-            !isModeExplorer && 'hover:bg-gray-100',
+            !isModeExplorer && 'hover:bg-zinc-100',
           ]"
           :title="
             isModeExplorer
@@ -195,7 +201,7 @@
         >
           <font-awesome-icon
             icon="eye"
-            :color="isModeExplorer ? 'white' : color"
+            :color="isModeExplorer ? 'white' : colorLine"
             size="sm"
           />
           <span class="text-sm">{{ $tc('toast.explore') }}</span>
@@ -203,14 +209,14 @@
 
         <button
           v-if="id"
-          class="flex flex-col items-center flex-1 h-full p-2 space-y-2 rounded-lg hover:bg-gray-100"
+          class="flex flex-col items-center flex-1 h-full p-2 space-y-2 rounded-lg hover:bg-zinc-100"
           title="Mettre en favori"
           @click.stop="onFavoriteClick"
         >
           <font-awesome-icon
             :icon="[`${isModeFavorites ? 'fas' : 'far'}`, 'star']"
-            :class="isModeFavorites && 'text-yellow-500'"
-            :color="!isModeFavorites && color"
+            :class="isModeFavorites && 'text-amber-500'"
+            :color="!isModeFavorites && colorLine"
             size="sm"
           />
           <span class="text-sm">{{ $tc('toast.favorite') }}</span>
@@ -226,19 +232,20 @@ import { mapGetters } from 'vuex'
 
 import AddressField from '@/components/Fields/AddressField.vue'
 import DateRange from '@/components/Fields/DateRange.vue'
-import OpeningHours from '@/components/Fields/OpeningHours.vue'
 import Website from '@/components/Fields/Website.vue'
 import TeritorioIcon from '@/components/TeritorioIcon/TeritorioIcon.vue'
 import { getPoiById, ApiPoi, ApiPoiProperties } from '@/lib/apiPois'
 import { isIOS } from '@/utils/isIOS'
-import { getContrastedTextColor } from '@/utils/picto'
+
+import RouteField from '~/components/Fields/RouteField.vue'
 
 export default Vue.extend({
   components: {
+    RouteField,
     TeritorioIcon,
     AddressField,
     Website,
-    OpeningHours,
+    OpeningHours: () => import('@/components/Fields/OpeningHours.vue'),
     DateRange,
   },
 
@@ -276,7 +283,7 @@ export default Vue.extend({
     },
 
     isModeFavorites(): boolean {
-      const currentFavorites = this.$store.getters['favorite/favoritesIds']
+      const currentFavorites = this.favoritesIds
       return currentFavorites.includes(this.id)
     },
 
@@ -288,9 +295,30 @@ export default Vue.extend({
       )
     },
 
-    color(): string | null {
-      if (this.poiDisplay('color')) {
-        return this.poiDisplay('color')
+    colorFill(): string | null {
+      if (this.poiDisplay('color_fill')) {
+        return this.poiDisplay('color_fill')
+        // @ts-ignore
+      } else if (this.poi && this.poi.layer && this.poi.layer.paint) {
+        const tc =
+          // @ts-ignore
+          this.poi.layer.paint['fill-color'] ||
+          // and then
+          // @ts-ignore
+          this.poi.layer.paint['text-color'] ||
+          // @ts-ignore
+          this.poi.layer.paint['line-color']
+        return `rgba(${Math.round(tc.r * 255).toFixed(0)}, ${Math.round(
+          tc.g * 255
+        ).toFixed(0)}, ${Math.round(tc.b * 255).toFixed(0)}, ${tc.a})`
+      } else {
+        return 'black'
+      }
+    },
+
+    colorLine(): string | null {
+      if (this.poiDisplay('color_line')) {
+        return this.poiDisplay('color_line')
         // @ts-ignore
       } else if (this.poi && this.poi.layer && this.poi.layer.paint) {
         const tc =
@@ -298,6 +326,7 @@ export default Vue.extend({
           this.poi.layer.paint['text-color'] ||
           // @ts-ignore
           this.poi.layer.paint['line-color'] ||
+          // and then
           // @ts-ignore
           this.poi.layer.paint['fill-color']
         return `rgba(${Math.round(tc.r * 255).toFixed(0)}, ${Math.round(
@@ -308,17 +337,13 @@ export default Vue.extend({
       }
     },
 
-    contrastedColor(): string {
-      return getContrastedTextColor(this.color || 'black')
-    },
-
     icon(): string {
       if (this.poiDisplay('icon')) {
         return this.poiDisplay('icon')
         // @ts-ignore
       } else if (this.poi.layer?.layout['icon-image']?.name) {
         return (
-          'teritorio teritorio-tourism-' +
+          'teritorio teritorio-' +
           // @ts-ignore
           this.poi.layer?.layout['icon-image']?.name.replace(/[•◯⬤]/g, '')
         )
@@ -362,7 +387,7 @@ export default Vue.extend({
       return Boolean(this.poiEditorial('unavoidable'))
     },
 
-    routes(): { [key: string]: string } {
+    routes(): { [key: string]: Object } {
       if (!(this.poiEditorial('popup_properties') || []).includes('route:*')) {
         return {}
       }
@@ -381,21 +406,9 @@ export default Vue.extend({
           }
         })
 
-      const ret: { [key: string]: string } = {}
+      const ret: { [key: string]: Object } = {}
       Object.entries(activitiesStruct).forEach(([acivity, properties]) => {
-        const result = []
-        if (properties.length) {
-          result.push(`${properties.length} ${this.$tc('toast.routePopup.km')}`)
-        }
-        if (properties.duration) {
-          result.push(
-            `${properties.duration} ${this.$tc('toast.routePopup.min')}`
-          )
-        }
-        if (properties.difficulty && properties.difficulty !== 'normal') {
-          result.push(this.$tc(`toast.routePopup.${properties.difficulty}`))
-        }
-        ret[acivity] = result.join(', ')
+        ret[acivity] = properties
       })
       return ret
     },
@@ -408,14 +421,16 @@ export default Vue.extend({
   },
 
   mounted() {
-    this.$tracking({
-      type: 'popup',
-      poiId: this.id,
-      title: this.poi.properties?.name,
-      location: window.location.href,
-      path: this.$route.path,
-      categoryIds: this.poi.properties?.metadata?.category_ids || [],
-    })
+    if (!this.notebook) {
+      this.$tracking({
+        type: 'popup',
+        poiId: this.id,
+        title: this.poi.properties?.name,
+        location: window.location.href,
+        path: this.$route.path,
+        categoryIds: this.poi.properties?.metadata?.category_ids || [],
+      })
+    }
   },
 
   created() {
@@ -489,9 +504,9 @@ export default Vue.extend({
       }
 
       return getPoiById(
-        this.$config.API_ENDPOINT,
-        this.$config.API_PROJECT,
-        this.$config.API_THEME,
+        this.$vidoConfig.API_ENDPOINT,
+        this.$vidoConfig.API_PROJECT,
+        this.$vidoConfig.API_THEME,
         this.id
       ).then((apiPoi) => {
         if (apiPoi) {
@@ -506,7 +521,7 @@ export default Vue.extend({
       }
       return fetch(
         `${
-          this.$config.API_ENDPOINT
+          this.$vidoConfig.API_ENDPOINT
         }/sptags?popup_properties=${this.poiEditorial('popup_properties').join(
           ';'
         )}`
@@ -544,11 +559,6 @@ export default Vue.extend({
 })
 </script>
 <style>
-@media screen and (min-width: 640px) {
-  .poiDescription {
-    max-height: 30vh;
-  }
-}
 button {
   @apply focus:outline-none;
 }

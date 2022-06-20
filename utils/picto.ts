@@ -1,10 +1,6 @@
 import memoize from 'lodash.memoize'
 import { hex } from 'wcag-contrast'
 
-export function getPictoClassName(picto: string) {
-  return picto.replace(/^teritorio icon/, 'teritorio-tourism')
-}
-
 /**
  * Given a background color, it returns the better contrasted color between black-ish and white
  */

@@ -34,6 +34,8 @@ export interface ApiMenuItem {
   // eslint-disable-next-line camelcase
   index_order: number
   hidden: boolean
+  // eslint-disable-next-line camelcase
+  selected_by_default: boolean
 }
 
 export interface ApiMenuGroup extends ApiMenuItem {
@@ -41,9 +43,12 @@ export interface ApiMenuGroup extends ApiMenuItem {
   menu_group: {
     name: MultilingualString
     icon: string
-    color: string
     // eslint-disable-next-line camelcase
-    tourism_style_class: string[]
+    color_fill: string
+    // eslint-disable-next-line camelcase
+    color_line: string
+    // eslint-disable-next-line camelcase
+    style_class: string[]
     // eslint-disable-next-line camelcase
     display_mode: 'large' | 'compact'
   }
@@ -58,7 +63,10 @@ export interface ApiMenuLink extends ApiMenuItem {
     href: string
     name: MultilingualString
     icon: string
-    color: string
+    // eslint-disable-next-line camelcase
+    color_fill: string
+    // eslint-disable-next-line camelcase
+    color_line: string
     // eslint-disable-next-line camelcase
     display_mode: 'large' | 'compact'
   }
@@ -72,11 +80,14 @@ export interface ApiMenuCategory extends ApiMenuItem {
   category: {
     name: MultilingualString
     icon: string
-    color: string
     // eslint-disable-next-line camelcase
-    tourism_style_class: string[]
+    color_fill: string
     // eslint-disable-next-line camelcase
-    tourism_style_merge: boolean
+    color_line: string
+    // eslint-disable-next-line camelcase
+    style_class: string[]
+    // eslint-disable-next-line camelcase
+    style_merge: boolean
     // eslint-disable-next-line camelcase
     display_mode: 'large' | 'compact'
     zoom: number
@@ -101,6 +112,6 @@ export function getMenu(
   apiTheme: string
 ): Promise<[Category] | null> {
   return fetch(`${apiEndpoint}/${apiProject}/${apiTheme}/menu`).then((data) =>
-    data.ok ? ((data.json() as unknown) as [Category]) : null
+    data.ok ? (data.json() as unknown as [Category]) : null
   )
 }

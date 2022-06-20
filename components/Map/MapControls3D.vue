@@ -3,11 +3,11 @@
     :aria-label="$tc('mapControls.threeDAriaLabel')"
     type="button"
     :class="[
-      'hidden sm:block items-center justify-center leading-none sm:flex text-sm font-bold rounded-full shadow-md w-11 h-11 outline-none focus:outline-none ',
+      'hidden md:block items-center justify-center leading-none md:flex text-sm font-bold rounded-full shadow-md w-11 h-11 outline-none focus:outline-none ',
       pitch != 0 &&
         'bg-blue-500 text-white hover:bg-blue-400 focus-visible:bg-blue-400',
       pitch == 0 &&
-        'bg-white text-gray-800 hover:bg-gray-100 focus-visible:bg-gray-100',
+        'bg-white text-zinc-800 hover:bg-zinc-100 focus-visible:bg-zinc-100',
     ]"
     @click="toggle3D"
   >

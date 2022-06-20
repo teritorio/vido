@@ -6,13 +6,13 @@
           v-if="href"
           :aria-label="$tc('details.shareFacebook')"
           type="button"
-          class="text-sm text-gray-800 bg-white rounded-full shadow-md outline-none w-8 h-8 focus:outline-none hover:bg-gray-100 focus-visible:bg-gray-100 flex-shrink-0 flex items-center justify-center"
+          class="text-sm text-zinc-800 bg-white rounded-full shadow-md outline-none w-8 h-8 focus:outline-none hover:bg-zinc-100 focus-visible:bg-zinc-100 shrink-0 flex items-center justify-center"
           :href="shareFacebook"
           target="_black"
         >
           <font-awesome-icon
             :icon="['fab', 'facebook']"
-            :style="{ color: color }"
+            :style="{ color: colorLine }"
           />
         </a>
       </li>
@@ -21,13 +21,13 @@
           v-if="title && href"
           :aria-label="$tc('details.shareTwitter')"
           type="button"
-          class="text-sm text-gray-800 bg-white rounded-full shadow-md outline-none w-8 h-8 focus:outline-none hover:bg-gray-100 focus-visible:bg-gray-100 flex-shrink-0 flex items-center justify-center"
+          class="text-sm text-zinc-800 bg-white rounded-full shadow-md outline-none w-8 h-8 focus:outline-none hover:bg-zinc-100 focus-visible:bg-zinc-100 shrink-0 flex items-center justify-center"
           :href="shareTwitter"
           target="_black"
         >
           <font-awesome-icon
             :icon="['fab', 'twitter']"
-            :style="{ color: color }"
+            :style="{ color: colorLine }"
           />
         </a>
       </li>
@@ -36,13 +36,13 @@
           v-if="title && href"
           :aria-label="$tc('details.shareWhatsApp')"
           type="button"
-          class="text-sm text-gray-800 bg-white rounded-full shadow-md outline-none w-8 h-8 focus:outline-none hover:bg-gray-100 focus-visible:bg-gray-100 flex-shrink-0 flex items-center justify-center"
+          class="text-sm text-zinc-800 bg-white rounded-full shadow-md outline-none w-8 h-8 focus:outline-none hover:bg-zinc-100 focus-visible:bg-zinc-100 shrink-0 flex items-center justify-center"
           :href="shareWhatsApp"
           target="_black"
         >
           <font-awesome-icon
             :icon="['fab', 'whatsapp']"
-            :style="{ color: color }"
+            :style="{ color: colorLine }"
           />
         </a>
       </li>
@@ -50,10 +50,21 @@
         <button
           :aria-label="$tc('details.print')"
           type="button"
-          class="text-sm text-gray-800 bg-white rounded-full shadow-md outline-none w-8 h-8 focus:outline-none hover:bg-gray-100 focus-visible:bg-gray-100 flex-shrink-0 flex items-center justify-center"
+          class="text-sm text-zinc-800 bg-white rounded-full shadow-md outline-none w-8 h-8 focus:outline-none hover:bg-zinc-100 focus-visible:bg-zinc-100 shrink-0 flex items-center justify-center"
           @click="print"
         >
-          <font-awesome-icon icon="print" :style="{ color: color }" />
+          <font-awesome-icon icon="print" :style="{ color: colorLine }" />
+        </button>
+      </li>
+      <li>
+        <button
+          v-if="href"
+          :aria-label="$tc('details.qrcode')"
+          type="button"
+          class="text-sm text-zinc-800 bg-white rounded-full shadow-md outline-none w-8 h-8 focus:outline-none hover:bg-zinc-100 focus-visible:bg-zinc-100 shrink-0 flex items-center justify-center"
+          @click="shareUrl"
+        >
+          <font-awesome-icon icon="qrcode" :style="{ color: colorLine }" />
         </button>
       </li>
       <li>
@@ -61,10 +72,10 @@
           v-if="href"
           :aria-label="$tc('details.link')"
           type="button"
-          class="text-sm text-gray-800 bg-white rounded-full shadow-md outline-none w-8 h-8 focus:outline-none hover:bg-gray-100 focus-visible:bg-gray-100 flex-shrink-0 flex items-center justify-center"
+          class="text-sm text-zinc-800 bg-white rounded-full shadow-md outline-none w-8 h-8 focus:outline-none hover:bg-zinc-100 focus-visible:bg-zinc-100 shrink-0 flex items-center justify-center"
           @click="shareUrl"
         >
-          <font-awesome-icon icon="link" :style="{ color: color }" />
+          <font-awesome-icon icon="link" :style="{ color: colorLine }" />
         </button>
       </li>
     </ul>
@@ -77,13 +88,18 @@ import Vue, { VueConstructor } from 'vue'
 
 import ShareLinkModal from '@/components/ShareLinkModal.vue'
 
-export default (Vue as VueConstructor<
-  Vue & {
-    $refs: {
-      shareModal: InstanceType<typeof ShareLinkModal>
+import { OriginEnum } from '~/utils/types'
+import { urlAddTrackOrigin } from '~/utils/url'
+
+export default (
+  Vue as VueConstructor<
+    Vue & {
+      $refs: {
+        shareModal: InstanceType<typeof ShareLinkModal>
+      }
     }
-  }
->).extend({
+  >
+).extend({
   components: {
     ShareLinkModal,
   },
@@ -97,7 +113,7 @@ export default (Vue as VueConstructor<
       type: String,
       default: null,
     },
-    color: {
+    colorLine: {
       type: String,
       required: true,
     },
@@ -119,19 +135,23 @@ export default (Vue as VueConstructor<
     this.shareFacebook =
       'https://www.facebook.com/share.php?' +
       new URLSearchParams({
-        u: window.location.href,
+        u: urlAddTrackOrigin(window.location.href, OriginEnum.facebook),
       }).toString()
 
     this.shareTwitter =
       'https://twitter.com/intent/tweet?' +
       new URLSearchParams({
-        text: `${this.title}\n${window.location.href}`,
+        text:
+          `${this.title}\n` +
+          urlAddTrackOrigin(window.location.href, OriginEnum.twitter),
       }).toString()
 
     this.shareWhatsApp =
       'https://api.whatsapp.com/send?' +
       new URLSearchParams({
-        text: `${this.title}\n${window.location.href}`,
+        text:
+          `${this.title}\n` +
+          urlAddTrackOrigin(window.location.href, OriginEnum.whatsapp),
       }).toString()
   },
 

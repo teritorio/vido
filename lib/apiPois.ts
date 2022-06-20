@@ -1,5 +1,7 @@
 import { MultilingualString } from '@/utils/types'
 
+export interface ApiPoiId extends Number {}
+
 export interface ApiPoiProperties {
   [key: string]: any
 
@@ -15,16 +17,19 @@ export interface ApiPoiProperties {
   'addr:street'?: string
 
   metadata?: {
-    id?: number
+    id?: ApiPoiId
     source?: string
     // eslint-disable-next-line camelcase
     category_ids?: Array<number>
   }
   display?: {
-    icon?: string
-    color?: string
+    icon: string
     // eslint-disable-next-line camelcase
-    tourism_style_class?: string[]
+    color_fill: string
+    // eslint-disable-next-line camelcase
+    color_line: string
+    // eslint-disable-next-line camelcase
+    style_class?: string[]
   }
   editorial?: {
     // eslint-disable-next-line camelcase
@@ -59,9 +64,9 @@ const defaultOptions: apiPoisOptions = {
 }
 
 function stringifyOptions(options: apiPoisOptions): string[][] {
-  return Object.entries(
-    Object.assign({}, defaultOptions, options)
-  ).map(([k, v]) => [k, `${v}`])
+  return Object.entries(Object.assign({}, defaultOptions, options)).map(
+    ([k, v]) => [k, `${v}`]
+  )
 }
 
 export function getPoiById(
@@ -74,7 +79,7 @@ export function getPoiById(
   return fetch(
     `${apiEndpoint}/${apiProject}/${apiTheme}/poi/${poiId}?` +
       new URLSearchParams(stringifyOptions(options))
-  ).then((data) => (data.ok ? ((data.json() as unknown) as ApiPoi) : null))
+  ).then((data) => (data.ok ? (data.json() as unknown as ApiPoi) : null))
 }
 
 export function getPoiByIds(
@@ -90,7 +95,7 @@ export function getPoiByIds(
         ['ids', poiIds.join(',')],
         ...stringifyOptions(options),
       ])
-  ).then((data) => (data.ok ? ((data.json() as unknown) as ApiPois) : null))
+  ).then((data) => (data.ok ? (data.json() as unknown as ApiPois) : null))
 }
 
 export function getPoiByCategoryId(
@@ -106,5 +111,5 @@ export function getPoiByCategoryId(
         ['idmenu', `${categoryId}`],
         ...stringifyOptions(options),
       ])
-  ).then((data) => (data.ok ? ((data.json() as unknown) as ApiPois) : null))
+  ).then((data) => (data.ok ? (data.json() as unknown as ApiPois) : null))
 }

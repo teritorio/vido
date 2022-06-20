@@ -1,10 +1,10 @@
 <template>
   <aside
-    class="hidden sm:block absolute bottom-0 overflow-y-auto pointer-events-auto relative inset-auto h-auto space-y-4 p-2"
+    class="hidden md:block absolute bottom-0 overflow-y-auto pointer-events-auto relative inset-auto h-auto space-y-4 p-2"
   >
     <div
       :class="[
-        'items-center justify-between hidden sm:flex rounded-xl shadow-md px-5 py-4',
+        'items-center justify-between hidden md:flex rounded-xl shadow-md px-5 py-4',
         isModeExplorerOrFavorites ? 'bg-blue-500 text-white' : 'bg-white',
       ]"
     >
@@ -23,16 +23,28 @@
       <button
         v-if="!isModeExplorerOrFavorites"
         type="button"
-        class="flex items-center justify-center w-10 h-10 text-2xl font-bold transition-all rounded-full outline-none cursor-pointer focus:outline-none hover:bg-gray-100 focus:bg-gray-100"
+        class="flex-grow relative pointer-events-auto w-full ml-6"
         @click="onSearchClick"
       >
-        <font-awesome-icon icon="search" class="text-gray-800" size="xs" />
+        <div class="relative w-full">
+          <input
+            ref="search"
+            value=""
+            class="w-full px-5 py-3 font-medium text-zinc-700 placeholder-zinc-500 bg-zinc-100 border-none rounded-full outline-none appearance-none focus:outline-none focus:ring focus:ring-zinc-300"
+            :placeholder="$tc('headerMenu.search')"
+            type="text"
+            @focus="$tracking({ type: 'search' })"
+          />
+          <div class="absolute inset-y-0 right-0 px-5 py-3 text-zinc-800">
+            <font-awesome-icon icon="search" />
+          </div>
+        </div>
       </button>
 
       <div v-else class="flex items-center ml-2">
         <button
           type="button"
-          class="flex flex-shrink-0 items-center justify-center w-10 h-10 text-2xl font-bold transition-all rounded-full outline-none cursor-pointer focus:outline-none hover:bg-blue-700 focus:bg-blue-700"
+          class="flex shrink-0 items-center justify-center w-10 h-10 text-2xl font-bold transition-all rounded-full outline-none cursor-pointer focus:outline-none hover:bg-blue-700 focus:bg-blue-700"
           @click="goToCategories"
         >
           <font-awesome-icon icon="arrow-left" class="text-white" size="xs" />
@@ -95,7 +107,7 @@ export default Vue.extend({
     },
     categoriesActivesubsCount: {
       type: Object as PropType<{ [id: string]: number }>,
-      default: {},
+      default: () => {},
     },
   },
   computed: {

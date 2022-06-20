@@ -12,6 +12,7 @@ import { mapActions } from 'vuex'
 import MapPois from '@/components/MapPois.vue'
 import { getPoiByIds } from '@/lib/apiPois'
 import { getSettings, headerFromSettings } from '@/lib/apiSettings'
+import { vidoConfig } from '@/plugins/vido-config'
 
 import { ApiPois } from '~/lib/apiPois'
 import { Settings } from '~/lib/apiSettings'
@@ -26,53 +27,54 @@ export default Vue.extend({
     return /^[,-_:a-zA-Z0-9]+$/.test(params.ids)
   },
 
-  async asyncData({
-    env,
-    params,
-  }): Promise<{
+  async asyncData({ params, req }): Promise<{
+    settings: Settings
     pois: ApiPois | null
-    settings: Settings | null
   }> {
-    if (params.ids) {
-      const getSettingsPromise = getSettings(
-        env.API_ENDPOINT,
-        env.API_PROJECT,
-        env.API_THEME
-      )
+    const getSettingsPromise = getSettings(
+      vidoConfig(req).API_ENDPOINT,
+      vidoConfig(req).API_PROJECT,
+      vidoConfig(req).API_THEME
+    )
 
+    let settings: Settings | null
+    let pois: ApiPois | null
+    if (params.ids) {
       const ids = params.ids.split(',')
       const getPoiPromise = getPoiByIds(
-        env.API_ENDPOINT,
-        env.API_PROJECT,
-        env.API_THEME,
+        vidoConfig(req).API_ENDPOINT,
+        vidoConfig(req).API_PROJECT,
+        vidoConfig(req).API_THEME,
         ids,
         {
           as_point: false,
         }
       )
-
-      const v = await Promise.all([getSettingsPromise, getPoiPromise])
-      const settings = v[0]
-      const pois = v[1]
-      return Promise.resolve({
-        pois,
-        settings,
-      })
+      ;[settings, pois] = await Promise.all([getSettingsPromise, getPoiPromise])
     } else {
-      return Promise.resolve({
-        pois: null,
-        settings: null,
-      })
+      ;[settings] = await Promise.all([getSettingsPromise])
+      pois = null
     }
+
+    if (!settings || !pois) {
+      throw new Error('Not found')
+    }
+
+    return Promise.resolve({
+      settings,
+      pois,
+    })
   },
 
   data(): {
-    pois: ApiPois | null
-    settings: Settings | null
+    settings: Settings
+    pois: ApiPois
   } {
     return {
-      pois: null,
+      // @ts-ignore
       settings: null,
+      // @ts-ignore
+      poi: null,
     }
   },
 
@@ -81,6 +83,7 @@ export default Vue.extend({
   },
 
   mounted() {
+    this.$settings.set(this.settings)
     this.setSiteLocale(this.$i18n.locale)
   },
 

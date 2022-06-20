@@ -4,10 +4,10 @@
     :title="$tc('mapControls.exploreButton')"
     type="button"
     :class="[
-      'hidden sm:block text-sm font-bold rounded-full shadow-md w-11 h-11 outline-none focus:outline-none ',
+      'hidden md:block text-sm font-bold rounded-full shadow-md w-11 h-11 outline-none focus:outline-none ',
       isModeExplorer &&
         'bg-blue-500 hover:bg-blue-400 focus-visible:bg-blue-400',
-      !isModeExplorer && 'bg-white hover:bg-gray-100 focus-visible:bg-gray-100',
+      !isModeExplorer && 'bg-white hover:bg-zinc-100 focus-visible:bg-zinc-100',
     ]"
     @click="toggleMode"
   >
@@ -15,7 +15,7 @@
       icon="eye"
       :class="[
         isModeExplorer && 'text-white',
-        !isModeExplorer && 'text-gray-800',
+        !isModeExplorer && 'text-zinc-800',
       ]"
       size="lg"
     />

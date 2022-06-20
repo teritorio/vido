@@ -1,48 +1,6 @@
-import dotenv from 'dotenv'
 import webpack from 'webpack'
 
-dotenv.config()
-
-function checkEnvVariable(variableName) {
-  if (!process.env[variableName]) {
-    throw new Error(`Vido: The ${variableName} environment variable must exist`)
-  }
-}
-
-checkEnvVariable('API_ENDPOINT')
-checkEnvVariable('API_SEARCH')
-checkEnvVariable('API_SEARCH_ADDR')
-checkEnvVariable('API_PROJECT')
-checkEnvVariable('API_THEME')
-checkEnvVariable('VECTO_STYLE_URL')
-checkEnvVariable('SATELLITE_STYLE_URL')
-checkEnvVariable('RASTER_STYLE_URL')
-
 export default {
-  publicRuntimeConfig: {
-    API_ENDPOINT: process.env.API_ENDPOINT || '',
-    API_SEARCH: process.env.API_SEARCH || '',
-    API_SEARCH_ADDR: process.env.API_SEARCH_ADDR || '',
-    API_PROJECT: process.env.API_PROJECT || '',
-    API_THEME: process.env.API_THEME || '',
-    VECTO_STYLE_URL: process.env.VECTO_STYLE_URL || '',
-    SATELLITE_STYLE_URL: process.env.SATELLITE_STYLE_URL || '',
-    RASTER_STYLE_URL: process.env.RASTER_STYLE_URL || '',
-    GOOGLE_TAG_MANAGER_ID: process.env.GOOGLE_TAG_MANAGER_ID || '',
-    NOTEBOOK_ENABLED: process.env.NOTEBOOK_ENABLED || '',
-  },
-  env: {
-    API_ENDPOINT: process.env.API_ENDPOINT || '',
-    API_SEARCH: process.env.API_SEARCH || '',
-    API_SEARCH_ADDR: process.env.API_SEARCH_ADDR || '',
-    API_PROJECT: process.env.API_PROJECT || '',
-    API_THEME: process.env.API_THEME || '',
-    VECTO_STYLE_URL: process.env.VECTO_STYLE_URL || '',
-    SATELLITE_STYLE_URL: process.env.SATELLITE_STYLE_URL || '',
-    RASTER_STYLE_URL: process.env.RASTER_STYLE_URL || '',
-    GOOGLE_TAG_MANAGER_ID: process.env.GOOGLE_TAG_MANAGER_ID || '',
-    NOTEBOOK_ENABLED: process.env.NOTEBOOK_ENABLED || '',
-  },
   pwa: {
     meta: {
       lang: 'fr',
@@ -63,11 +21,7 @@ export default {
   },
 
   // Global CSS (https://go.nuxtjs.dev/config-css)
-  css: [
-    '@fortawesome/fontawesome-svg-core/styles.css',
-    'maplibre-gl/dist/maplibre-gl.css',
-    '@fontsource/ubuntu',
-  ],
+  css: ['@fortawesome/fontawesome-svg-core/styles.css', '@fontsource/ubuntu'],
 
   purgeCSS: {
     whitelistPatterns: [/svg.*/, /fa.*/],
@@ -75,10 +29,13 @@ export default {
 
   // Plugins to run before rendering page (https://go.nuxtjs.dev/config-plugins)
   plugins: [
+    '@/plugins/vido-config.ts',
+    '@/plugins/settings.ts',
     '@/plugins/fontawesome.ts',
-    '@/plugins/mobile.ts',
+    '@/plugins/touch.ts',
+    '@/plugins/screen.ts',
     '@/plugins/vue-tailwind.ts',
-    '@/plugins/tracking.ts',
+    { src: '@/plugins/tracking.ts', mode: 'client' },
   ],
 
   // Auto import components (https://go.nuxtjs.dev/config-components)
@@ -98,7 +55,7 @@ export default {
   // Modules (https://go.nuxtjs.dev/config-modules)
   modules: [
     '@nuxtjs/i18n',
-    ...(process.env.GOOGLE_TAG_MANAGER_ID ? ['@nuxtjs/gtm'] : []),
+    '@nuxtjs/gtm',
     ...(process.env.SENTRY_DSN ? ['@nuxtjs/sentry'] : []),
   ],
 
@@ -138,6 +95,13 @@ export default {
         mapboxgl: 'maplibre-gl',
       }),
     ],
+    babel: {
+      plugins: [
+        ['@babel/plugin-proposal-class-properties', { loose: true }],
+        ['@babel/plugin-proposal-private-methods', { loose: true }],
+        ['@babel/plugin-proposal-private-property-in-object', { loose: true }],
+      ],
+    },
   },
 
   // Server config (allow listening to local network)
@@ -150,13 +114,10 @@ export default {
     typescript: { check: false },
     port: 4000,
     // addons: ['@storybook/addon-controls', '@storybook/addon-notes'],
-    stories: ['@/pages/**/*.stories.js', '@/components/**/*.stories.js'],
   },
 
   // Google Tag Manager config
   gtm: {
-    id: process.env.GOOGLE_TAG_MANAGER_ID,
-    enabled: Boolean(process.env.GOOGLE_TAG_MANAGER_ID),
     pageTracking: false,
   },
 }

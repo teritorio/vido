@@ -1,14 +1,14 @@
 <template>
   <div
     :class="[
-      'flex items-center justify-center flex-shrink-0 text-white rounded-full border-2 border-white',
+      'flex items-center justify-center shrink-0 text-white rounded-full border-2 border-white',
       iconDim,
       Boolean(image) && 'shadow-md',
     ]"
-    :style="{ backgroundColor: color }"
+    :style="{ backgroundColor: colorFill }"
   >
     <TeritorioIcon
-      :category-color="color"
+      :color-background="colorFill"
       :class="`text-${iconSize}`"
       :picto="picto"
       :image="image"
@@ -27,7 +27,7 @@ export default Vue.extend({
   },
 
   props: {
-    color: {
+    colorFill: {
       type: String,
       required: true,
     },
@@ -41,7 +41,7 @@ export default Vue.extend({
     },
     image: {
       type: String,
-      required: false,
+      default: null,
     },
   },
 

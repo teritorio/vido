@@ -1,5 +1,3 @@
-import GeoJSON from 'geojson'
-
 export interface MultilingualString {
   [lang: string]: string
 }
@@ -15,54 +13,6 @@ export type TupleLatLng = [number, number]
 export type ZoomLevel = number
 export type Pitch = number
 
-export type FilterValues = {
-  values: {
-    [key: string]: string[]
-  }
-  dateRange?: {
-    propertyStart?: string
-    propertyEnd?: string
-    value: [string, string]
-  }
-}
-
-export interface ApiSearchResult<T>
-  extends GeoJSON.FeatureCollection<GeoJSON.Point, T> {}
-
-export type ApiPoisSearchResult = {
-  id: number
-  label: string
-  icon?: string
-  city?: string
-}
-
-export type ApiMenuItemSearchResult = {
-  id: number
-  label: string
-  icon?: string
-  // eslint-disable-next-line camelcase
-  filter_property?: string
-  // eslint-disable-next-line camelcase
-  filter_value?: string
-}
-
-export type ApiAddrSearchResult = {
-  id: number
-  label: string
-  type: 'street' | 'municipality'
-}
-
-export type SearchResult = {
-  id: number
-  label: string
-  icon?: string
-  small?: string
-  // eslint-disable-next-line camelcase
-  filter_property?: string
-  // eslint-disable-next-line camelcase
-  filter_value?: string
-}
-
 export enum Mode {
   BROWSER = 'browser', // User browses by category
   EXPLORER = 'explorer', // User explores around
@@ -73,6 +23,7 @@ export enum MapStyleEnum {
   vector = 'vector',
   raster = 'raster',
   aerial = 'aerial',
+  bicycle = 'bicycle',
 }
 
 export type NavMenuEntry = {
@@ -80,4 +31,14 @@ export type NavMenuEntry = {
   post_id: number
   title: string
   url: string
+}
+
+export enum OriginEnum {
+  // eslint-disable-next-line camelcase
+  link_share = 'link_share',
+  // eslint-disable-next-line camelcase
+  qr_code = 'qr_code',
+  facebook = 'facebook',
+  twitter = 'twitter',
+  whatsapp = 'whatsapp',
 }

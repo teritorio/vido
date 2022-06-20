@@ -2,10 +2,10 @@
   <div id="breadcrumb">
     <ul>
       <li v-for="(entry, i) in entries" :key="i">
-        <a v-if="entry.href" :style="`color: ${color}`" :href="entry.href">
+        <a v-if="entry.href" :style="`color: ${colorLine}`" :href="entry.href">
           {{ entry.text }}
         </a>
-        <span v-else :style="`color: ${color}`">{{ entry.text }}</span>
+        <span v-else :style="`color: ${colorLine}`">{{ entry.text }}</span>
       </li>
     </ul>
   </div>
@@ -18,9 +18,9 @@ export default Vue.extend({
   props: {
     entries: {
       type: Array as PropType<Array<{ text: string; href?: string }>>,
-      default: [],
+      default: () => [],
     },
-    color: {
+    colorLine: {
       type: String,
       default: '#ff0000',
     },

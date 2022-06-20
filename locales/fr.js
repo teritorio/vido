@@ -1,6 +1,7 @@
 export default {
   shareLink: {
     copy: 'Copier',
+    qrcode: 'QR-Code',
     close: 'Fermer',
   },
   favorites: {
@@ -24,7 +25,7 @@ export default {
     exploreButton: 'Basculer en mode explorer',
     threeDAriaLabel: 'Visualiser la carte en 3D',
     backgroundAriaLabel: 'Changer le fond de carte',
-    backgroundButton: 'Changer le fond de carte (actuellement "{current}")',
+    backgroundButton: 'Changer le fond de carte vers "{background}"',
     resetBearing: 'Remettre la carte vers le nord',
     zoomIn: 'Zoomer avant',
     zoomOut: 'Zoomer arriere',
@@ -57,6 +58,8 @@ export default {
     hideCategory: 'Masquer cette catégorie',
     backToMenuFavorites: 'Afficher le menu',
     backToMenuExplorer: 'Retour au menu',
+    backToMenuFavoritesMobile: 'Quitter les favoris',
+    backToMenuExplorerMobile: 'Quitter le mode explorer',
   },
   dateRange: {
     from_to: 'Du {from} au {to}',
@@ -64,19 +67,13 @@ export default {
     to: "Jusqu'au {to}",
   },
   openingHours: {
-    monday: 'Lun.',
-    tuesday: 'Mar.',
-    wednesday: 'Mer.',
-    thursday: 'Jeu.',
-    friday: 'Ven.',
-    saturday: 'Sam.',
-    sunday: 'Dim.',
     opened: 'Actuellement ouvert',
-    closeAt: 'Ferme à',
+    closeAt: 'Fermeture',
     closed: 'Actuellement fermé',
-    open: 'Ouvre',
-    openAt: 'Ouvre à',
+    openAt: 'Ouverture',
     '24_7': 'Ouvert 24h/24, 7j/7',
+    formatDayAndDayInMonth: 'EEE d :',
+    notOpenedInNextDays: "N'ouvre pas dans les prochains jours.",
   },
   toast: {
     details: 'Détails',
@@ -91,6 +88,7 @@ export default {
     zoom: 'Zoomer',
     routePopup: {
       min: 'min',
+      hours: 'h',
       km: 'km',
       easy: 'facile',
       normal: 'normal',
@@ -109,6 +107,7 @@ export default {
     shareWhatsApp: 'Partager sur WhatsApp',
     print: 'Imprimer',
     link: 'Partager le lien',
+    qrcode: 'Partager en QR-Code',
     poweredBy: 'Propulsé par',
     mapillaryExplore: 'Explorer sur Mapillary',
   },
@@ -116,7 +115,7 @@ export default {
     today: "Aujourd'hui",
     tomorrow: 'Demain',
     thisWeekend: 'Ce week-end',
-    nextWeek: 'Semaine à venir',
-    nextMonth: 'Mois à venir',
+    nextWeek: '7 prochains jours',
+    nextMonth: '30 prochain jours',
   },
 }

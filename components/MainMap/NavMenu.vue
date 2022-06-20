@@ -18,7 +18,7 @@
         }"
         :aria-label="$tc('navMenu.label')"
         type="button"
-        class="text-sm text-gray-800 bg-white rounded-full shadow-md outline-none w-11 h-11 focus:outline-none hover:bg-gray-100 focus-visible:bg-gray-100 flex-shrink-0"
+        class="text-sm text-zinc-800 bg-white rounded-full shadow-md outline-none w-11 h-11 focus:outline-none hover:bg-zinc-100 focus-visible:bg-zinc-100 shrink-0"
         @mousedown="mousedownHandler"
         @focus="focusHandler"
         @blur="blurHandler"
@@ -26,7 +26,7 @@
       >
         <font-awesome-icon
           :icon="isShown ? 'times' : 'bars'"
-          class="text-gray-800"
+          class="text-zinc-800"
           size="sm"
         />
       </button>
@@ -35,15 +35,15 @@
         <a
           v-for="entry in entries"
           :key="entry.post_id"
-          class="w-full px-5 py-3 outline-none focus:outline-none hover:bg-gray-100"
+          class="w-full px-5 py-3 outline-none focus:outline-none hover:bg-zinc-100"
           :href="entry.url"
           rel="noopener noreferrer"
           target="_blank"
-          @click.stop
+          @click="openLink(entry.title, entry.url)"
         >
           <font-awesome-icon
             icon="external-link-alt"
-            class="text-gray-500 mr-2"
+            class="text-zinc-500 mr-2"
             size="sm"
           />
           {{ entry.title }}
@@ -53,8 +53,8 @@
           v-for="locale in $i18n.locales"
           :key="locale.code"
           :class="[
-            'w-full px-5 py-3 outline-none focus:outline-none hover:bg-gray-100',
-            locale.code === $i18n.locale && 'bg-gray-200',
+            'w-full px-5 py-3 outline-none focus:outline-none hover:bg-zinc-100',
+            locale.code === $i18n.locale && 'bg-zinc-200',
           ]"
           href="#"
           @click.prevent="setLocale(locale.code)"
@@ -73,7 +73,6 @@ import { TDropdown } from 'vue-tailwind/dist/components'
 import { mapActions } from 'vuex'
 
 import { NavMenuEntry } from '@/utils/types'
-import 'country-flag-icons/3x2/flags.css'
 
 export default Vue.extend({
   components: {
@@ -98,7 +97,7 @@ export default Vue.extend({
     }),
     fetchConfig() {
       fetch(
-        `${this.$config.API_ENDPOINT}/${this.$config.API_PROJECT}/${this.$config.API_THEME}/articles?slug=non-classe`
+        `${this.$vidoConfig.API_ENDPOINT}/${this.$vidoConfig.API_PROJECT}/${this.$vidoConfig.API_THEME}/articles?slug=non-classe`
       )
         .then((data) => data.json())
         .then((data) => (this.entries = data))
@@ -107,6 +106,13 @@ export default Vue.extend({
       this.$i18n.setLocale(locale)
       this.setSiteLocale(locale)
     },
+    openLink(title: string, url: string) {
+      this.$tracking({
+        type: 'external_link',
+        url,
+        title,
+      })
+    },
   },
 })
 </script>
@@ -114,6 +120,20 @@ export default Vue.extend({
 <style scoped>
 [class*=' flag:'],
 [class^='flag:'] {
+  display: inline-block;
+  background-size: cover;
+  height: 1em;
+  width: 1.5em;
   font-size: 0.7rem;
+}
+
+.flag\:ES {
+  background-image: url('~country-flag-icons/3x2/ES.svg');
+}
+.flag\:FR {
+  background-image: url('~country-flag-icons/3x2/FR.svg');
+}
+.flag\:GB {
+  background-image: url('~country-flag-icons/3x2/GB.svg');
 }
 </style>

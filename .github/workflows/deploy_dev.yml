@@ -43,33 +43,27 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-yarn-
 
+      - name: Setup configuration
+        run: echo "${{secrets.CONFIGURATION_DEV}}" > vidos.config.ts
+
       - name: Install dependencies 👨🏻‍💻
         run: yarn
 
       - name: Build
         env:
-          API_ENDPOINT: https://cdt40.carto.guide/api.teritorio/geodata/v0.1
-          API_SEARCH: ${{secrets.API_SEARCH_DEV}}
-          API_SEARCH_ADDR: ${{secrets.API_SEARCH_ADDR_DEV}}
-          API_PROJECT: ${{secrets.API_PROJECT_DEV}}
-          API_THEME: ${{secrets.API_THEME_DEV}}
-          VECTO_STYLE_URL: ${{secrets.VECTO_STYLE_URL_DEV}}
-          SATELLITE_STYLE_URL: ${{secrets.SATELLITE_STYLE_URL_DEV}}
-          RASTER_STYLE_URL: ${{secrets.RASTER_STYLE_URL_DEV}}
           SENTRY_DSN: ${{secrets.SENTRY_DSN_DEV}}
-          NOTEBOOK_ENABLED: ${{secrets.NOTEBOOK_ENABLED_DEV}}
         run: yarn build
 
       - name: Deploy
         uses: up9cloud/action-rsync@master
         env:
-          HOST: 146.59.177.9
+          HOST: dev.appcarto.teritorio.xyz
           KEY: ${{secrets.DEPLOY_SSH_KEY_DEV}}
-          TARGET: /var/www/clients/client1/web1/web/vido
+          TARGET: /var/www/clients/client3/web3/web/vido
 
           VERBOSE: false
-          USER: vido
-          ARGS: -az --exclude=/.git/
+          USER: devappcarto
+          ARGS: -az --exclude=/.git/ --exclude=vidos.config.ts
           SSH_ARGS: '-p 2222 -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no'
           SOURCE: .
 

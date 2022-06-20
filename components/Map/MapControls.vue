@@ -3,7 +3,7 @@
     <div class="absolute flex flex-col justify-center inset-y-3 right-3">
       <div class="flex flex-col space-y-3 pointer-events-auto">
         <div ref="navigationControlContainer"></div>
-        <div ref="geolocateControlContainer" class="sm:hidden"></div>
+        <div ref="geolocateControlContainer" class="md:hidden"></div>
         <slot v-if="map"></slot>
       </div>
     </div>
@@ -13,6 +13,7 @@
 <script lang="ts">
 import maplibregl, { Map } from 'maplibre-gl'
 import Vue, { PropType } from 'vue'
+import 'maplibre-gl/dist/maplibre-gl.css'
 
 export default Vue.extend({
   props: {
@@ -65,7 +66,7 @@ export default Vue.extend({
 
 .mapboxgl-ctrl-group > button,
 .mapboxgl-ctrl-group > button:not(:disabled) {
-  @apply text-sm font-bold text-gray-800 bg-white rounded-full focus:rounded-full shadow-md focus:shadow-md outline-none w-11 h-11 focus:outline-none hover:bg-gray-100 focus-visible:bg-gray-100;
+  @apply text-sm font-bold text-zinc-800 bg-white rounded-full focus:rounded-full shadow-md focus:shadow-md outline-none w-11 h-11 focus:outline-none hover:bg-zinc-100 focus-visible:bg-zinc-100;
 }
 
 .mapboxgl-ctrl-compass {

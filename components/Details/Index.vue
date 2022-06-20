@@ -3,11 +3,15 @@
     <div>
       <Header :theme="settings.themes[0]" />
       <div class="flex justify-center">
-        <TeritorioIconBadge :color="color" size="2xl" :picto="p.display.icon" />
+        <TeritorioIconBadge
+          :color-fill="colorFill"
+          size="2xl"
+          :picto="p.display.icon"
+        />
       </div>
       <h1>{{ p.name }}</h1>
       <Breadcrumb
-        :color="color"
+        :color-line="colorLine"
         :entries="[
           { text: 'Carte', href: '/' },
           { text: 'todo ' },
@@ -17,7 +21,7 @@
       <Share
         :title="p.name"
         :href="p.editorial && p.editorial['website:details']"
-        :color="color"
+        :color-line="colorLine"
       />
       <div class="detail-wrapper">
         <div class="detail-left">
@@ -40,7 +44,7 @@
               v-if="property == 'first_contact'"
               :key="property"
               :p="p"
-              :color="color"
+              :color-fill="colorFill"
             />
 
             <div
@@ -80,7 +84,6 @@
 <script lang="ts">
 import Vue, { PropType } from 'vue'
 
-import OpeningHours from '@/components/Fields/OpeningHours.vue'
 import MapPois from '@/components/MapPois.vue'
 import TeritorioIconBadge from '@/components/TeritorioIcon/TeritorioIconBadge.vue'
 import { ApiPoi, ApiPoiProperties } from '@/lib/apiPois'
@@ -94,6 +97,7 @@ import Header from '~/components/Details/Header.vue'
 import Location from '~/components/Details/Location.vue'
 import Mapillary from '~/components/Details/Mapillary.vue'
 import Share from '~/components/Details/Share.vue'
+import { OriginEnum } from '~/utils/types'
 
 export default Vue.extend({
   components: {
@@ -101,7 +105,7 @@ export default Vue.extend({
     TeritorioIconBadge,
     Breadcrumb,
     Contact,
-    OpeningHours,
+    OpeningHours: () => import('@/components/Fields/OpeningHours.vue'),
     Location,
     Share,
     Carousel,
@@ -142,8 +146,11 @@ export default Vue.extend({
         })
         .filter((e) => e !== undefined) as string[]
     },
-    color(): string {
-      return this.poi.properties.display?.color || '#76009E'
+    colorFill(): string {
+      return this.poi.properties.display?.color_fill || '#76009E'
+    },
+    colorLine(): string {
+      return this.poi.properties.display?.color_line || '#76009E'
     },
     class_label(): string | undefined {
       return (
@@ -151,6 +158,19 @@ export default Vue.extend({
         this.p.editorial?.class_label?.fr
       )
     },
+  },
+
+  mounted() {
+    this.$tracking({
+      type: 'page',
+      title: this.$meta().refresh().metaInfo.title,
+      location: window.location.href,
+      path: this.$route.path,
+      origin:
+        OriginEnum[
+          this.$router.currentRoute.query.origin as keyof typeof OriginEnum
+        ],
+    })
   },
 })
 </script>

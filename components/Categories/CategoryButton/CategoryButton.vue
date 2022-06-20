@@ -1,22 +1,22 @@
 <template>
-  <button
-    :is="href ? 'a' : 'button'"
-    :href="href"
-    target="black_"
+  <a
+    :href="href || `/${categoryId}`"
+    target="_blank"
     :class="[
-      'flex focus:outline-none outline-none items-center self-stretch justify-start pt-4 pb-2 leading-none transition-colors rounded-lg p-4 relative',
-      !selected && 'hover:bg-gray-100',
-      selected && 'selected bg-gray-100 hover:bg-transparent',
-      type === 'compact' && 'flex-col',
-      type === 'large' && 'col-span-3 sm:col-span-4',
+      'flex focus:outline-none outline-none items-center text-center self-stretch justify-start leading-none transition-colors rounded-lg p-4 relative hover:bg-zinc-100',
+      type === 'large' ? 'col-span-4 pt-2 pb-0' : 'pt-4 pb-2 flex-col',
     ]"
-    @click="!href && onClick()"
+    @click="onClick"
   >
     <div
       class="relative flex items-center justify-center w-12 h-12 mb-2 text-white rounded-full"
-      :style="{ backgroundColor: color, flexShrink: 0 }"
+      :style="{ backgroundColor: colorFill, flexShrink: 0 }"
     >
-      <TeritorioIcon :category-color="color" class="text-2xl" :picto="picto" />
+      <TeritorioIcon
+        :color-background="colorFill"
+        class="text-2xl"
+        :picto="picto"
+      />
 
       <div
         v-if="activeSubCategories > 0"
@@ -24,26 +24,12 @@
       >
         {{ activeSubCategories }}
       </div>
-
-      <div
-        v-if="selected"
-        class="absolute -right-0.5 text-lg text-green-500 -top-1.5"
-      >
-        <font-awesome-icon
-          icon="check-circle"
-          :class="[
-            'rounded-full bg-white fill-current ring-2 transition-colors',
-            !selected && 'ring-white',
-            selected && 'ring-gray-100',
-          ]"
-        />
-      </div>
     </div>
 
     <div
       :class="[
         'text-xs',
-        type === 'large' && 'mx-4  text-sm text-left',
+        type === 'large' && 'sm:text-sm mx-4 text-left',
         type === 'large' && !href && 'grow w-full',
       ]"
     >
@@ -52,37 +38,39 @@
     <font-awesome-icon
       v-if="type === 'large' && !href"
       icon="chevron-right"
-      class="text-gray-700 shrink-0"
+      class="text-zinc-700 shrink-0"
       size="sm"
     />
     <font-awesome-icon
       v-else-if="href"
       icon="external-link-alt"
       :class="[
-        'text-gray-700',
+        'text-zinc-700',
         type === 'compact' &&
           'absolute top-4 right-4 z-10 rounded-md bg-white fill-current ring-2 border-2 border-white ring-white',
       ]"
       size="sm"
     />
-  </button>
+  </a>
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
+import Vue, { PropType } from 'vue'
 
 import TeritorioIcon from '@/components/TeritorioIcon/TeritorioIcon.vue'
+
+import { ApiMenuGroup } from '~/lib/apiMenu'
 
 export default Vue.extend({
   components: {
     TeritorioIcon,
   },
   props: {
-    color: {
+    colorFill: {
       type: String,
       required: true,
     },
-    id: {
+    categoryId: {
       type: Number,
       required: true,
     },
@@ -94,16 +82,13 @@ export default Vue.extend({
       type: String,
       required: true,
     },
-    selected: {
-      type: Boolean,
-      default: false,
-    },
     activeSubCategories: {
       type: Number,
       default: 0,
     },
     type: {
-      type: String,
+      type: String as PropType<ApiMenuGroup['menu_group']['display_mode']>,
+      required: true,
     },
     href: {
       type: String,
@@ -111,19 +96,26 @@ export default Vue.extend({
     },
   },
   methods: {
-    onClick() {
-      this.$emit('click', this.$props.id)
+    onClick(event: Event) {
+      if (this.href) {
+        this.$tracking({
+          type: 'external_link',
+          url: this.href,
+          title: this.label,
+        })
+      } else {
+        this.$tracking({
+          type: 'category',
+          categoryId: this.categoryId,
+          title: this.label,
+        })
+      }
+
+      if (!this.href) {
+        event.preventDefault()
+        this.$emit('click', this.categoryId)
+      }
     },
   },
 })
 </script>
-
-<style scoped>
-button:not(.selected):hover svg[data-icon='check-circle'] {
-  @apply ring-gray-100;
-}
-
-button.selected:hover svg[data-icon='check-circle'] {
-  @apply ring-white;
-}
-</style>

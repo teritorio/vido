@@ -1,6 +1,7 @@
 export default {
   shareLink: {
     copy: 'Copy',
+    qrcode: 'QR-Code',
     close: 'Close',
   },
   favorites: {
@@ -24,7 +25,7 @@ export default {
     exploreButton: 'Switch to Explore mode',
     threeDAriaLabel: 'View the map in 3D',
     backgroundAriaLabel: 'Switch the map background',
-    backgroundButton: 'Switch the map background (currently "{current}")',
+    backgroundButton: 'Switch the map background to "{background}"',
     resetBearing: 'Reset bearing to north',
     zoomIn: 'Zoom In',
     zoomOut: 'Zoom Out',
@@ -57,6 +58,8 @@ export default {
     hideCategory: 'Hide this category',
     backToMenuFavorites: 'Show menu',
     backToMenuExplorer: 'Back to menu',
+    backToMenuFavoritesMobile: 'Exit Favorites',
+    backToMenuExplorerMobile: 'Exit Explorer mode',
   },
   dateRange: {
     from_to: 'From {from} to {to}',
@@ -64,19 +67,13 @@ export default {
     to: 'Until {to}',
   },
   openingHours: {
-    monday: 'Mon.',
-    tuesday: 'Tue.',
-    wednesday: 'Wed.',
-    thursday: 'Thu.',
-    friday: 'Fri.',
-    saturday: 'Sat.',
-    sunday: 'Sun.',
     opened: 'Currently open',
-    closeAt: 'Closes at',
+    closeAt: 'Closes',
     closed: 'Currently closed',
-    open: 'Opens',
-    openAt: 'Opens at',
+    openAt: 'Opens',
     '24_7': 'Opened 24/7',
+    formatDayAndDayInMonth: "EEE do':'",
+    notOpenedInNextDays: 'Do not open in the coming days.',
   },
   toast: {
     details: 'Details',
@@ -91,6 +88,7 @@ export default {
     zoom: 'Zoom',
     routePopup: {
       min: 'min',
+      hours: 'h',
       km: 'km',
       easy: 'easy',
       normal: 'normal',
@@ -108,6 +106,7 @@ export default {
     shareTwitter: 'Share on Twitter',
     shareWhatsApp: 'Share on WhatsApp',
     print: 'Print',
+    qrcode: 'Share with QR-Code',
     link: 'Share link',
     poweredBy: 'Powered by',
     mapillaryExplore: 'Explore on Mapillary',
@@ -116,7 +115,7 @@ export default {
     today: 'Today',
     tomorrow: 'Tomorrow',
     thisWeekend: 'Coming week-end',
-    nextWeek: 'Coming week',
-    nextMonth: 'Coming month',
+    nextWeek: 'Next 7 days',
+    nextMonth: 'Next 30 days',
   },
 }

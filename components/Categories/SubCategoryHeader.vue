@@ -5,16 +5,16 @@
     <div class="flex justify-between">
       <button
         type="button"
-        class="flex items-center justify-center w-10 h-10 text-2xl font-bold transition-all rounded-full outline-none cursor-pointer focus:outline-none hover:bg-gray-100 focus:bg-gray-100"
+        class="flex items-center justify-center w-10 h-10 text-2xl font-bold transition-all rounded-full outline-none cursor-pointer focus:outline-none hover:bg-zinc-100 focus:bg-zinc-100"
         @click="onGoBackClick"
       >
-        <font-awesome-icon icon="arrow-left" class="text-gray-800" size="xs" />
+        <font-awesome-icon icon="arrow-left" class="text-zinc-800" size="xs" />
       </button>
 
       <button
         v-if="!isAllSelected"
         type="button"
-        class="px-3 py-2 font-medium transition-all rounded-md outline-none focus:outline-none hover:bg-gray-100 focus:bg-gray-100"
+        class="px-3 py-2 font-medium transition-all rounded-md outline-none focus:outline-none hover:bg-zinc-100 focus:bg-zinc-100"
         @click="onClickSelectAll"
       >
         {{ $tc('headerMenu.selectAll') }}
@@ -23,7 +23,7 @@
       <button
         v-if="isAllSelected"
         type="button"
-        class="px-3 py-2 font-medium transition-all rounded-md outline-none focus:outline-none hover:bg-gray-100 focus:bg-gray-100"
+        class="px-3 py-2 font-medium transition-all rounded-md outline-none focus:outline-none hover:bg-zinc-100 focus:bg-zinc-100"
         @click="onClickUnselectAll"
       >
         {{ $tc('headerMenu.unselectAll') }}
@@ -33,7 +33,7 @@
     <HeaderSubCategories
       class="flex-1 h-full overflow-y-auto pointer-events-auto"
       :categories="categories"
-      :filtered-categories="filteredCategories"
+      :filters="filters"
       :is-sub-category-selected="isSubCategorySelected"
       :categories-activesubs-count="categoriesActivesubsCount"
       @category-click="onCategoryClick"
@@ -48,6 +48,8 @@ import Vue, { PropType } from 'vue'
 import HeaderSubCategories from '@/components/Categories/HeaderSubCategories.vue'
 import { Category } from '@/lib/apiMenu'
 
+import { FilterValues } from '~/utils/types-filters'
+
 export default Vue.extend({
   components: {
     HeaderSubCategories,
@@ -57,9 +59,9 @@ export default Vue.extend({
       type: Array as PropType<Category[]>,
       required: true,
     },
-    filteredCategories: {
-      type: Array as PropType<Category['id'][]>,
-      default: [],
+    filters: {
+      type: Object as PropType<{ [subcat: number]: FilterValues }>,
+      required: true,
     },
     isSubCategorySelected: {
       type: Function,

@@ -1,16 +1,14 @@
 <template>
   <div class="flex flex-col space-y-6">
     <transition name="non-highlighted" appear>
-      <div
-        v-if="!collapsed"
-        class="grid items-start grid-cols-3 sm:grid-cols-4 gap-3"
-      >
+      <div v-if="!collapsed" class="grid items-start grid-cols-4 gap-3">
         <CategoryButton
           v-for="category in nonHighlightedCategories"
-          :id="category.id"
           :key="category.id"
-          :color="
-            (category.menu_group || category.link || category.category).color
+          :category-id="category.id"
+          :color-fill="
+            (category.menu_group || category.link || category.category)
+              .color_fill
           "
           :label="
             (category.menu_group || category.link || category.category).name.fr
@@ -49,7 +47,7 @@ export default Vue.extend({
     },
     categoriesActivesubsCount: {
       type: Object as PropType<{ [id: string]: number }>,
-      default: {},
+      required: true,
     },
   },
   data(): {
@@ -72,16 +70,10 @@ export default Vue.extend({
       this.collapsed = !this.collapsed
     },
     onCategoryClick(category: Category) {
-      this.$tracking({
-        type: 'category',
-        categoryId: category.id,
-        title: (category.menu_group || category.link || category.category).name
-          .fr,
-      })
       this.$emit('category-click', category.id)
     },
     getCategoryCount(id: Category['id']) {
-      return this.categoriesActivesubsCount[id] || 0
+      return this.categoriesActivesubsCount[id]
     },
   },
 })

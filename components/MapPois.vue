@@ -52,11 +52,11 @@ export default Vue.extend({
 
       map.once('styledata', () => {
         this.pois.features.forEach((poi) => {
-          if (poi.geometry.type === 'Point') {
+          if (poi.geometry.type === 'Point' && poi.properties.display) {
             makerHtmlFactory(
               poi.geometry.coordinates as TupleLatLng,
-              poi.properties.display?.color,
-              poi.properties.display?.icon,
+              poi.properties.display.color_fill,
+              poi.properties.display.icon,
               poi.properties['image:thumbnail'],
               'lg'
             ).addTo(map)

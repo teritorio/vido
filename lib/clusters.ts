@@ -7,7 +7,7 @@ const getMarkerDonutSegment = (
   end: number,
   r: number,
   r0: number,
-  color: string
+  colorFill: string
 ): string => {
   if (end - start === 1) end -= 0.00001
   const a0 = 2 * Math.PI * (start - 0.25)
@@ -44,7 +44,7 @@ const getMarkerDonutSegment = (
     0,
     r + r0 * x0,
     r + r0 * y0,
-    '" fill="' + color + '" />',
+    '" fill="' + colorFill + '" />',
   ].join(' ')
 }
 
@@ -54,16 +54,16 @@ export const createMarkerDonutChart = (
 ): HTMLElement => {
   const offsets = []
 
-  const countPerColor: { [color: string]: number } = {}
+  const countPerColor: { [colorFill: string]: number } = {}
   Object.keys(categories)
     .filter((categoryId) => ((props && props[categoryId]) || 0) > 0)
     .forEach((categoryIdString) => {
       const categoryId = parseInt(categoryIdString, 10)
-      const color = categories[categoryId].category.color
-      if (countPerColor[color]) {
-        countPerColor[color] += (props && props[categoryId]) || 0
+      const colorFill = categories[categoryId].category.color_fill
+      if (countPerColor[colorFill]) {
+        countPerColor[colorFill] += (props && props[categoryId]) || 0
       } else {
-        countPerColor[color] = (props && props[categoryId]) || 0
+        countPerColor[colorFill] = (props && props[categoryId]) || 0
       }
     })
 

@@ -1,6 +1,7 @@
 export default {
   shareLink: {
     copy: 'Copiar',
+    qrcode: 'QR-Code',
     close: 'Cerrar',
   },
   favorites: {
@@ -24,7 +25,7 @@ export default {
     exploreButton: 'Cambiar al modo explorar',
     threeDAriaLabel: 'Ver el mapa en 3D',
     backgroundAriaLabel: 'Cambiar el fondo de mapa',
-    backgroundButton: 'Cambiar el fondo de mapa (actualmente "{actual}")',
+    backgroundButton: 'Cambiar el fondo de mapa a "{background}"',
     resetBearing: 'Restablecer el mapa al norte',
     zoomIn: 'Ampliar el zoom',
     zoomOut: 'Alejar el zoom',
@@ -57,6 +58,8 @@ export default {
     hideCategory: 'Ocultar esta categoría',
     backToMenuFavorites: 'Ver el menú',
     backToMenuExplorer: 'Regresar al menú',
+    backToMenuFavoritesMobile: 'Salir de los favoritos',
+    backToMenuExplorerMobile: 'Salir del modo explorar',
   },
   dateRange: {
     from_to: 'Desde {from} hasta {to}',
@@ -64,19 +67,13 @@ export default {
     to: 'Hasta {to}',
   },
   openingHours: {
-    monday: 'Lun.',
-    tuesday: 'Mar.',
-    wednesday: 'Mié.',
-    thursday: 'Jue.',
-    friday: 'Vie.',
-    saturday: 'Sáb.',
-    sunday: 'Dom.',
     opened: 'Actualmente abierto',
-    closeAt: 'Cierra a las',
+    closeAt: 'Cierra',
     closed: 'Actualmente cerrado',
-    open: 'Abierto el',
-    openAt: 'Abre a las',
+    openAt: 'Abre',
     '24_7': 'Abierto 24h/24, 7j/7',
+    formatDayAndDayInMonth: 'EEE d :',
+    notOpenedInNextDays: 'No abra en los próximos días',
   },
   toast: {
     details: 'Detalles',
@@ -91,6 +88,7 @@ export default {
     zoom: 'Acercarse',
     routePopup: {
       min: 'min',
+      hours: 'h',
       km: 'km',
       easy: 'fácil',
       normal: 'normal',
@@ -108,6 +106,7 @@ export default {
     shareTwitter: 'Compartir en Twitter',
     shareWhatsApp: 'Compartir en WhatsApp',
     print: 'Imprimir',
+    qrcode: 'Compartir en QR-Code',
     link: 'Compartir enlace',
     poweredBy: 'Con la tecnología de',
     mapillaryExplore: 'Explorar en Mapillary',
@@ -116,7 +115,7 @@ export default {
     today: 'Hoy',
     tomorrow: 'Mañana',
     thisWeekend: 'Este fin de semana',
-    nextWeek: 'Semana siguiente',
-    nextMonth: 'Mes siguiente',
+    nextWeek: 'Próximos 7 días',
+    nextMonth: 'Próximos 30 días',
   },
 }

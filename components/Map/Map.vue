@@ -1,25 +1,20 @@
 <template>
   <div>
     <mapbox
-      v-if="mapStyle"
+      v-if="style"
       access-token=""
       :map-options="{
         bounds: bounds,
-        fitBoundsOptions: {
-          padding: 50,
-          maxZoom: 17,
-        },
+        fitBoundsOptions: fitBoundsOptions,
         center: center,
         hash: hash,
         maxZoom: defaultZoom.max,
         minZoom: defaultZoom.min,
         pitch,
-        style: mapStyle,
+        style: style,
         zoom: zoom,
-        dragRotate: rotate,
-        touchPitch: rotate,
         locale: locales,
-        attributionControl: showAttribution,
+        attributionControl: false,
       }"
       :nav-control="{
         show: false,
@@ -51,7 +46,16 @@
 <script lang="ts">
 import { OpenMapTilesLanguage } from '@teritorio/openmaptiles-gl-language'
 import Mapbox from 'mapbox-gl-vue'
-import { StyleSpecification, LngLatBoundsLike, LngLatLike } from 'maplibre-gl'
+import {
+  Map,
+  RasterSourceSpecification,
+  VectorSourceSpecification,
+  StyleSpecification,
+  LngLatBoundsLike,
+  LngLatLike,
+  AttributionControl,
+  FitBoundsOptions,
+} from 'maplibre-gl'
 import Vue, { PropType } from 'vue'
 import { mapGetters } from 'vuex'
 
@@ -67,13 +71,20 @@ export default Vue.extend({
   },
 
   props: {
-    mapStyleEnum: {
+    mapStyle: {
       type: String as PropType<MapStyleEnum>,
       default: DEFAULT_MAP_STYLE as MapStyleEnum,
     },
     bounds: {
       type: [Array, Object] as PropType<LngLatBoundsLike>,
       default: undefined,
+    },
+    fitBoundsOptions: {
+      type: Object as PropType<FitBoundsOptions>,
+      default: () => ({
+        padding: 50,
+        maxZoom: 17,
+      }),
     },
     extraAttributions: {
       type: Array as PropType<string[]>,
@@ -110,16 +121,18 @@ export default Vue.extend({
   },
 
   data(): {
-    map: maplibregl.Map | null
-    mapStyle: StyleSpecification | null
+    map: Map | null
+    style: StyleSpecification | null
     mapStyleCache: { [key: string]: StyleSpecification }
+    attributionControl: AttributionControl | null
     locales: Record<string, string>
     languageControl: OpenMapTilesLanguage | null
   } {
     return {
       map: null,
-      mapStyle: null,
+      style: null,
       mapStyleCache: {},
+      attributionControl: null,
       locales: {},
       languageControl: null,
     }
@@ -135,8 +148,15 @@ export default Vue.extend({
   },
 
   watch: {
-    mapStyleEnum(value: MapStyleEnum) {
+    mapStyle(value: MapStyleEnum) {
       this.setStyle(value)
+    },
+    showAttribution(enable: boolean) {
+      if (enable) {
+        this.addAttribution()
+      } else {
+        this.removeAttribution()
+      }
     },
     locale(locale: string) {
       this.setLanguage(locale)
@@ -144,7 +164,7 @@ export default Vue.extend({
   },
 
   beforeMount() {
-    this.setStyle(this.mapStyleEnum)
+    this.setStyle(this.mapStyle)
 
     this.locales = {
       'NavigationControl.ResetBearing':
@@ -156,46 +176,69 @@ export default Vue.extend({
   },
 
   methods: {
-    onMapInit(map: maplibregl.Map) {
+    onMapInit(map: Map) {
       this.map = map
       this.languageControl = new OpenMapTilesLanguage({
         defaultLanguage: this.locale,
       })
+
+      if (this.showAttribution) {
+        this.addAttribution()
+      }
       this.map.addControl(this.languageControl)
+
+      if (!this.rotate) {
+        this.map.dragRotate.disable()
+        this.map.touchZoomRotate.disableRotation()
+      }
     },
 
-    setStyle(mapStyleEnum: MapStyleEnum) {
-      this.getStyle(mapStyleEnum).then((style) => {
+    setStyle(mapStyle: MapStyleEnum) {
+      this.getStyle(mapStyle).then((style) => {
         const vectorSource = Object.values(style.sources).find(
           (source) => ['vector', 'raster'].lastIndexOf(source.type) >= 0
-        ) as
-          | maplibregl.VectorSourceSpecification
-          | maplibregl.RasterSourceSpecification
+        ) as VectorSourceSpecification | RasterSourceSpecification
         if (vectorSource) {
           this.$emit('full-attribution', vectorSource.attribution)
         }
 
-        this.mapStyle = style
+        this.$emit('map-style-load', style)
+        this.style = style
         this.map?.setStyle(style)
       })
     },
 
-    async getStyle(mapStyleEnum: MapStyleEnum): Promise<StyleSpecification> {
-      if (this.mapStyleCache[mapStyleEnum]) {
-        return this.mapStyleCache[mapStyleEnum]
+    async getStyle(mapStyle: MapStyleEnum): Promise<StyleSpecification> {
+      if (this.mapStyleCache[mapStyle]) {
+        return this.mapStyleCache[mapStyle]
       } else {
         const styleURLs = {
-          [MapStyleEnum.vector]: this.$config.VECTO_STYLE_URL,
-          [MapStyleEnum.aerial]: this.$config.SATELLITE_STYLE_URL,
-          [MapStyleEnum.raster]: this.$config.RASTER_STYLE_URL,
+          [MapStyleEnum.vector]: this.$vidoConfig.VECTO_STYLE_URL,
+          [MapStyleEnum.aerial]: this.$vidoConfig.SATELLITE_STYLE_URL,
+          [MapStyleEnum.raster]: this.$vidoConfig.RASTER_STYLE_URL,
+          [MapStyleEnum.bicycle]: this.$vidoConfig.BICYCLE_STYLE_URL,
         }
         const style = await fetchStyle(
-          styleURLs[mapStyleEnum],
+          styleURLs[mapStyle],
           this.extraAttributions
         )
-        this.mapStyleCache[mapStyleEnum] = style
+        this.mapStyleCache[mapStyle] = style
 
         return style
+      }
+    },
+
+    addAttribution() {
+      if (this.map && !this.attributionControl) {
+        this.attributionControl = new AttributionControl()
+        this.map.addControl(this.attributionControl)
+      }
+    },
+
+    removeAttribution() {
+      if (this.map && this.attributionControl) {
+        this.map.removeControl(this.attributionControl)
+        this.attributionControl = null
       }
     },
 
@@ -224,5 +267,9 @@ export default Vue.extend({
 .mapboxgl-ctrl.mapboxgl-ctrl-attrib.mapboxgl-compact.mapboxgl-compact-show
   .mapboxgl-ctrl-attrib-button {
   @apply bg-transparent;
+}
+
+.maplibregl-ctrl-attrib {
+  margin-left: 100px;
 }
 </style>

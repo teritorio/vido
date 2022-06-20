@@ -16,31 +16,28 @@ import Home from '@/components/Home/Home.vue'
 import { Category, getMenu } from '@/lib/apiMenu'
 import { getPoiById, ApiPoi } from '@/lib/apiPois'
 import { getSettings, headerFromSettings, Settings } from '@/lib/apiSettings'
+import { vidoConfig } from '@/plugins/vido-config'
 
 export default Vue.extend({
   components: {
     Home,
   },
 
-  async asyncData({
-    env,
-    params,
-    route,
-  }): Promise<{
-    settings: Settings | null
-    categories: Category[] | null
+  async asyncData({ params, route, req }): Promise<{
+    settings: Settings
+    categories: Category[]
     categoryIds: number[] | null
     initialPoi: ApiPoi | null
   }> {
     const fetchSettings = getSettings(
-      env.API_ENDPOINT,
-      env.API_PROJECT,
-      env.API_THEME
+      vidoConfig(req).API_ENDPOINT,
+      vidoConfig(req).API_PROJECT,
+      vidoConfig(req).API_THEME
     )
     const fetchCategories = getMenu(
-      env.API_ENDPOINT,
-      env.API_PROJECT,
-      env.API_THEME
+      vidoConfig(req).API_ENDPOINT,
+      vidoConfig(req).API_PROJECT,
+      vidoConfig(req).API_THEME
     )
 
     let categoryIdsJoin: string | null
@@ -64,30 +61,43 @@ export default Vue.extend({
     let fetchPoi: Promise<ApiPoi | null> = Promise.resolve(null)
     if (poiId) {
       fetchPoi = getPoiById(
-        env.API_ENDPOINT,
-        env.API_PROJECT,
-        env.API_THEME,
+        vidoConfig(req).API_ENDPOINT,
+        vidoConfig(req).API_PROJECT,
+        vidoConfig(req).API_THEME,
         poiId
       )
     }
 
-    const v = await Promise.all([fetchSettings, fetchCategories, fetchPoi])
+    const [settings, categories, initialPoi] = await Promise.all([
+      fetchSettings,
+      fetchCategories,
+      fetchPoi,
+    ])
+    if (!settings || !categories) {
+      throw new Error('Not found')
+    }
 
     return Promise.resolve({
-      settings: v[0],
-      categories: v[1],
+      settings,
+      categories,
       categoryIds,
-      initialPoi: v[2],
+      initialPoi,
     })
   },
 
   data(): {
-    settings: Settings | null
-    categories: Category[] | null
+    settings: Settings
+    categories: Category[]
+    categoryIds: number[] | null
+    initialPoi: ApiPoi | null
   } {
     return {
+      // @ts-ignore
       settings: null,
+      // @ts-ignore
       categories: null,
+      categoryIds: null,
+      initialPoi: null,
     }
   },
 
@@ -102,6 +112,7 @@ export default Vue.extend({
   },
 
   mounted() {
+    this.$settings.set(this.settings)
     this.setSiteLocale(this.$i18n.locale)
   },
 
@@ -128,7 +139,7 @@ html,
   -webkit-text-size-adjust: 100%;
   -moz-osx-font-smoothing: grayscale;
   -webkit-font-smoothing: antialiased;
-  @apply text-gray-900;
+  @apply text-zinc-900;
 }
 
 body,

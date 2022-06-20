@@ -3,7 +3,7 @@
     v-if="p.website || p.phone || p.email"
     id="contact"
     class="detail-left-block"
-    :style="`background-color: ${color}`"
+    :style="`background-color: ${colorFill}`"
   >
     <h2>{{ $tc('details.headerContacts') }}</h2>
     <p
@@ -11,7 +11,12 @@
       :key="phone"
       class="contact-item contact-phone"
     >
-      {{ phone }}
+      <a v-if="$screen.phone" :href="`tel:${phone}`">
+        {{ phone }}
+      </a>
+      <template v-else>
+        {{ phone }}
+      </template>
     </p>
     <p
       v-for="email in p.email || []"
@@ -45,7 +50,7 @@ export default Vue.extend({
       type: Object as PropType<ApiPoiProperties>,
       required: true,
     },
-    color: {
+    colorFill: {
       type: String,
       required: true,
     },

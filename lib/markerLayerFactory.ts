@@ -1,77 +1,69 @@
-import maplibregl, { LayerSpecification } from 'maplibre-gl'
+import maplibregl, {
+  LayerSpecification,
+  SymbolLayerSpecification,
+  Map,
+  Marker,
+  LngLatBoundsLike,
+  FitBoundsOptions,
+} from 'maplibre-gl'
 
 import TeritorioIconBadge from '@/components/TeritorioIcon/TeritorioIconBadge.vue'
+
+import { ApiMenuCategory } from './apiMenu'
+import { ApiPoi } from './apiPois'
+import { getBBoxFeatures } from './bbox'
+import { createMarkerDonutChart } from './clusters'
 
 import { TupleLatLng } from '~/utils/types'
 
 export const markerLayerTextFactory = (
-  source: string,
-  id: string
-): LayerSpecification => ({
-  id,
-  type: 'symbol',
-  source,
-  filter: ['!=', 'cluster', true],
-  paint: {
-    'text-color': [
-      'match',
-      [
-        'at',
-        0,
-        [
-          'array',
-          ['get', 'tourism_style_class', ['object', ['get', 'display']]],
-        ],
-      ],
-      'products',
-      '#F25C05',
-      'convenience',
-      '#00a0a4',
-      'services',
-      '#2a62ac',
-      'safety',
-      '#e42224',
-      'mobility',
-      '#3b74b9',
-      'amenity',
-      '#2a62ac',
-      'remarkable',
-      '#e50980',
-      'culture',
-      '#76009e',
-      'hosting',
-      '#99163a',
-      'catering',
-      '#f09007',
-      'leisure',
-      '#00A757',
-      'public_landmark',
-      '#1D1D1B',
-      'shopping',
-      '#808080',
-      '#666',
-    ],
-    'text-halo-blur': 0.5,
-    'text-halo-color': '#ffffff',
-    'text-halo-width': 1,
-    'text-opacity': ['interpolate', ['linear'], ['zoom'], 14, 0, 15, 1],
-  },
-  layout: {
-    'text-anchor': 'top',
-    'text-field': ['get', 'name'],
-    'text-max-width': 9,
-    'text-offset': [0, 1.3],
-    'text-padding': 2,
-    'text-size': 12,
-    'text-optional': true,
-    'text-allow-overlap': false,
-  },
-})
+  layerTemplate: LayerSpecification,
+  id: string,
+  source: string
+): LayerSpecification => {
+  if (layerTemplate.type !== 'symbol') {
+    return layerTemplate
+  } else {
+    const layer: SymbolLayerSpecification = {
+      id,
+      type: layerTemplate.type,
+      source,
+      filter: ['!=', 'cluster', true],
+      layout: {
+        ...layerTemplate.layout,
+        'text-field': ['get', 'name'],
+        'text-offset': [0, 1.3],
+      },
+      paint: {
+        ...layerTemplate.paint,
+        'text-opacity': ['interpolate', ['linear'], ['zoom'], 14, 0, 15, 1],
+      },
+    }
+
+    if (
+      layer?.paint &&
+      'text-color' in layer?.paint &&
+      Array.isArray(layer.paint['text-color']) &&
+      layer.paint['text-color'][0] === 'let'
+    ) {
+      const superclass = layer.paint['text-color'].indexOf('superclass')
+      if (superclass) {
+        layer.paint['text-color'][superclass + 1] = [
+          'at',
+          0,
+          ['array', ['get', 'style_class', ['object', ['get', 'display']]]],
+        ]
+      }
+    }
+
+    return layer
+  }
+}
 
 export function makerHtmlFactory(
   latLng: TupleLatLng,
-  color: string | undefined,
-  icon: string | undefined,
+  colorFill: string,
+  icon: string,
   thumbnail: string | undefined,
   size: string | null = null
 ): maplibregl.Marker {
@@ -90,7 +82,7 @@ export function makerHtmlFactory(
   // Teritorio badge
   const instance = new TeritorioIconBadge({
     propsData: {
-      color,
+      colorFill,
       picto: icon,
       image: thumbnail,
       size,
@@ -99,4 +91,113 @@ export function makerHtmlFactory(
   el.appendChild(instance.$el)
 
   return marker
+}
+
+export function updateMarkers(
+  map: Map,
+  categories: Record<ApiMenuCategory['id'], ApiMenuCategory>,
+  markers: { [id: string]: maplibregl.Marker },
+  src: string,
+  fitBounds: (bounds: LngLatBoundsLike, options: FitBoundsOptions) => void,
+  markerClickCallBack: (feature: ApiPoi) => void
+) {
+  const markerIdPrevious = Object.keys(markers)
+  const markerIdcurrent: string[] = []
+
+  const features = map.querySourceFeatures(src) as ApiPoi[]
+  // for every cluster on the screen, create an HTML marker for it (if we didn't yet),
+  // and add it to the map if it's not there already
+  features
+    .filter((feature) => feature.geometry.type === 'Point')
+    .forEach((feature) => {
+      const coords = (feature.geometry as GeoJSON.Point).coordinates as [
+        number,
+        number
+      ]
+      const props = feature.properties
+      if (props?.cluster) {
+        const id = 'c' + props.cluster_id
+        markerIdcurrent.push(id)
+        if (!markers[id]) {
+          const el = createMarkerDonutChart(categories, props)
+          el.classList.add('cluster-item')
+          markers[id] = new Marker({
+            element: el,
+          }).setLngLat(coords)
+          el.addEventListener('click', (e) => {
+            e.stopPropagation()
+            // if (!map) return
+            const source = map.getSource(src)
+
+            if (source && 'getClusterLeaves' in source) {
+              // @ts-ignore
+              source.getClusterLeaves(
+                props.cluster_id,
+                100,
+                0,
+                (error: any, features: GeoJSON.Feature[]) => {
+                  if (!error && map) {
+                    const bounds = getBBoxFeatures(features)
+                    if (bounds) {
+                      fitBounds(bounds, {})
+                    }
+                  }
+                }
+              )
+            }
+          })
+          markers[id].addTo(map)
+        }
+      } else if (props?.metadata) {
+        if (typeof props.metadata === 'string') {
+          props.metadata = JSON.parse(props.metadata)
+        }
+        if (props?.metadata?.id) {
+          const id = 'm' + props.metadata.id
+          markerIdcurrent.push(id)
+          if (!markers[id]) {
+            // const markerCoords = this.featuresCoordinates[props.metadata.id]
+            const markerCoords =
+              feature.geometry.type === 'Point' &&
+              (feature.geometry.coordinates as TupleLatLng)
+            if (markerCoords && props.display) {
+              if (typeof props.display === 'string') {
+                props.display = JSON.parse(props.display)
+              }
+              // Marker
+              markers[id] = makerHtmlFactory(
+                markerCoords, // Using this to avoid misplaced marker
+                props.display?.color_fill || '#ff0000',
+                props.display?.icon || '#ff0000',
+                props['image:thumbnail']
+              )
+              const el = markers[id].getElement()
+
+              // Click handler
+              if (typeof props.editorial === 'string') {
+                props.editorial = JSON.parse(props.editorial)
+              }
+              if (props.editorial?.popup_properties) {
+                el.addEventListener('click', (e: MouseEvent) => {
+                  e.stopPropagation()
+                  markerClickCallBack(feature)
+                })
+              }
+              markers[id].addTo(map)
+            }
+          }
+        }
+      }
+    })
+
+  // for every marker we've added previously, remove those that are no longer visible
+  const markerIdcurrentSet = new Set(markerIdcurrent)
+  markerIdPrevious.forEach((id) => {
+    if (!markerIdcurrentSet.has(id)) {
+      markers[id].remove()
+      delete markers[id]
+    }
+  })
+
+  return markers
 }

@@ -1,27 +1,27 @@
 <template>
   <aside
     :class="[
-      'flex flex-col max-h-full px-5 py-4 space-y-6 shadow-md pointer-events-auto sm:rounded-xl md:w-96',
+      'flex flex-col max-h-full px-5 py-4 space-y-6 shadow-md pointer-events-auto md:rounded-xl md:w-96',
       isModeExplorerOrFavorites
-        ? 'bg-blue-500 sm:bg-white text-white'
+        ? 'bg-blue-500 md:bg-white text-white'
         : 'bg-white',
     ]"
   >
-    <div class="flex flex-row sm:flex-col items-center sm:items-start">
-      <h1 v-if="!isModeExplorerOrFavorites" class="flex-none sm:hidden mr-2">
+    <div class="flex flex-row md:flex-col items-center md:items-start">
+      <h1 v-if="!isModeExplorerOrFavorites" class="flex-none md:hidden mr-2">
         <img
           :aria-label="siteName"
           :src="logoUrl"
-          class="w-auto h-auto max-w-2xl max-h-12 sm:max-h-16"
+          class="w-auto h-auto max-w-2xl max-h-12 md:max-h-16"
         />
       </h1>
 
       <button
         type="button"
-        class="hidden sm:flex flex-shrink-0 items-center justify-center w-10 h-10 text-2xl font-bold transition-all rounded-full outline-none cursor-pointer focus:outline-none hover:bg-gray-100 focus:bg-gray-100"
+        class="hidden md:flex shrink-0 items-center justify-center w-10 h-10 text-2xl font-bold transition-all rounded-full outline-none cursor-pointer focus:outline-none hover:bg-zinc-100 focus:bg-zinc-100"
         @click="onGoBackClick"
       >
-        <font-awesome-icon icon="arrow-left" class="text-gray-800" size="xs" />
+        <font-awesome-icon icon="arrow-left" class="text-zinc-800" size="xs" />
       </button>
 
       <form
@@ -34,7 +34,7 @@
           <input
             ref="search"
             :value="searchText"
-            class="w-full px-5 py-3 font-medium text-gray-700 placeholder-gray-500 bg-gray-100 border-none rounded-full outline-none appearance-none focus:outline-none focus:ring focus:ring-gray-300"
+            class="w-full px-5 py-3 font-medium text-zinc-700 placeholder-zinc-500 bg-zinc-100 border-none rounded-full outline-none appearance-none focus:outline-none focus:ring focus:ring-zinc-300"
             :placeholder="$tc('headerMenu.search')"
             type="text"
             @input="
@@ -44,7 +44,7 @@
             @focus="$tracking({ type: 'search' })"
           />
           <button
-            class="absolute inset-y-0 right-0 px-5 text-gray-800 rounded-r-full outline-none focus:outline-none"
+            class="absolute inset-y-0 right-0 px-5 text-zinc-800 rounded-r-full outline-none focus:outline-none"
             type="submit"
             @click="focusSearch"
           >
@@ -56,7 +56,7 @@
       <div v-else class="flex items-center ml-2">
         <button
           type="button"
-          class="flex flex-shrink-0 items-center justify-center w-10 h-10 text-2xl font-bold transition-all rounded-full outline-none cursor-pointer focus:outline-none hover:bg-gray-100 focus:bg-gray-100"
+          class="flex shrink-0 items-center justify-center w-10 h-10 text-2xl font-bold transition-all rounded-full outline-none cursor-pointer focus:outline-none hover:bg-zinc-100 focus:bg-zinc-100"
           @click="goToCategories"
         >
           <font-awesome-icon icon="arrow-left" class="text-inherit" size="xs" />
@@ -65,8 +65,8 @@
           {{
             $tc(
               isModeFavorites
-                ? 'headerMenu.backToMenuFavorites'
-                : 'headerMenu.backToMenuExplorer'
+                ? 'headerMenu.backToMenuFavoritesMobile'
+                : 'headerMenu.backToMenuExplorerMobile'
             )
           }}
         </p>
@@ -76,10 +76,10 @@
     <button
       v-if="results > 0"
       type="button"
-      class="sm:hidden flex-shrink-0 w-10 h-10 text-2xl font-bold transition-all rounded-full outline-none cursor-pointer focus:outline-none hover:bg-gray-100 focus:bg-gray-100"
+      class="md:hidden shrink-0 w-10 h-10 text-2xl font-bold transition-all rounded-full outline-none cursor-pointer focus:outline-none hover:bg-zinc-100 focus:bg-zinc-100"
       @click="reset"
     >
-      <font-awesome-icon icon="arrow-left" class="text-gray-800" size="xs" />
+      <font-awesome-icon icon="arrow-left" class="text-zinc-800" size="xs" />
     </button>
 
     <div v-if="results > 0" class="search-results">
@@ -128,21 +128,29 @@
 
 <script lang="ts">
 import debounce from 'lodash.debounce'
-import Vue, { PropType } from 'vue'
+import Vue, { PropType, VueConstructor } from 'vue'
 import { mapGetters } from 'vuex'
 
 import SearchResultBlock from '@/components/Search/SearchResultBlock.vue'
-import { ApiPoi, getPoiById } from '@/lib/apiPois'
-import { MAP_ZOOM } from '@/lib/constants'
+import { ApiPoi, ApiPoiId, getPoiById } from '@/lib/apiPois'
 import {
   ApiPoisSearchResult,
   ApiMenuItemSearchResult,
   ApiAddrSearchResult,
   SearchResult,
   ApiSearchResult,
-} from '@/utils/types'
+} from '@/lib/apiSearch'
+import { MAP_ZOOM } from '@/lib/constants'
 
-export default Vue.extend({
+export default (
+  Vue as VueConstructor<
+    Vue & {
+      $refs: {
+        search: InstanceType<typeof HTMLInputElement> | null
+      }
+    }
+  >
+).extend({
   components: {
     SearchResultBlock,
   },
@@ -264,7 +272,7 @@ export default Vue.extend({
   },
 
   mounted() {
-    if (!this.$isMobile()) {
+    if (!this.$screen.touch) {
       this.focusSearch()
     }
   },
@@ -309,13 +317,13 @@ export default Vue.extend({
       }
     },
 
-    onPoiClick(id: number) {
+    onPoiClick(id: ApiPoiId) {
       this.$emit('poi-click', id)
       this.reset()
     },
 
     focusSearch() {
-      ;(this.$refs.search as HTMLInputElement).focus()
+      this.$refs.search?.focus()
     },
 
     onAddressClick(id: number) {
@@ -353,17 +361,19 @@ export default Vue.extend({
 
     search_() {
       if (this.searchText) {
+        this.$tracking({ type: 'search_query', query: this.searchText })
+
         this.searchQueryId += 1
         const currentSearchQueryId = this.searchQueryId
 
-        const projectTheme = `project_theme=${this.$config.API_PROJECT}-${this.$config.API_THEME}`
+        const projectTheme = `project_theme=${this.$vidoConfig.API_PROJECT}-${this.$vidoConfig.API_THEME}`
         const searchText = this.searchText.trim()
         if (searchText.length === 2) {
           const cartocode = this.searchText
           getPoiById(
-            this.$config.API_ENDPOINT,
-            this.$config.API_PROJECT,
-            this.$config.API_THEME,
+            this.$vidoConfig.API_ENDPOINT,
+            this.$vidoConfig.API_PROJECT,
+            this.$vidoConfig.API_THEME,
             `cartocode:${cartocode}`
           ).then((poi) => {
             if (currentSearchQueryId > this.searchResultId) {
@@ -381,20 +391,18 @@ export default Vue.extend({
           const MenuItemsFetch: Promise<
             ApiSearchResult<ApiMenuItemSearchResult>
           > = fetch(
-            `${this.$config.API_SEARCH}?${projectTheme}&type=menu_item&${query}`
+            `${this.$vidoConfig.API_SEARCH}?${projectTheme}&type=menu_item&${query}`
           ).then((data) => (data.ok ? data.json() : null))
 
-          const poisFetch: Promise<
-            ApiSearchResult<ApiPoisSearchResult>
-          > = fetch(
-            `${this.$config.API_SEARCH}?${projectTheme}&type=poi&${query}&limit=10`
-          ).then((data) => (data.ok ? data.json() : null))
+          const poisFetch: Promise<ApiSearchResult<ApiPoisSearchResult>> =
+            fetch(
+              `${this.$vidoConfig.API_SEARCH}?${projectTheme}&type=poi&${query}&limit=10`
+            ).then((data) => (data.ok ? data.json() : null))
 
-          const addressesFetch: Promise<
-            ApiSearchResult<ApiAddrSearchResult>
-          > = fetch(`${this.$config.API_SEARCH_ADDR}?${query}`).then((data) =>
-            data.ok ? data.json() : null
-          )
+          const addressesFetch: Promise<ApiSearchResult<ApiAddrSearchResult>> =
+            fetch(`${this.$vidoConfig.API_SEARCH_ADDR}?${query}`).then((data) =>
+              data.ok ? data.json() : null
+            )
 
           Promise.all<
             ApiSearchResult<ApiMenuItemSearchResult>,
