@@ -1,7 +1,7 @@
 import { Store } from 'vuex'
 
 enum Mutation {
-  TOGGLE_FAVORITES = 'TOGGLE_FAVORITES',
+  SET_FAVORITES = 'SET_FAVORITES',
 }
 
 export interface State {
@@ -17,13 +17,13 @@ export const getters = {
 }
 
 export const mutations = {
-  [Mutation.TOGGLE_FAVORITES](state: State, payload: [number]) {
+  [Mutation.SET_FAVORITES](state: State, payload: [number]) {
     state.favoritesIds = payload
   },
 }
 
 export const actions = {
-  toggleFavoritesMode(store: Store<State>, data: [number?]) {
-    store.commit(Mutation.TOGGLE_FAVORITES, data)
+  setFavorites(store: Store<State>, data: [number?]) {
+    store.commit(Mutation.SET_FAVORITES, data)
   },
 }

@@ -246,7 +246,7 @@ export default (
       try {
         localStorage.removeItem(LOCAL_STORAGE.favorites)
 
-        this.$store.dispatch('favorite/toggleFavoritesMode', [])
+        this.$store.dispatch('favorite/setFavorites', [])
       } catch (e) {
         // eslint-disable-next-line no-console
         console.error('Vido error:', e.message)

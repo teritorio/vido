@@ -535,7 +535,7 @@ export default (
     const favorites =
       localStorage.getItem(LOCAL_STORAGE.favorites) || '{ "favorites": [] }'
 
-    this.toggleFavoritesMode(JSON.parse(favorites).favorites)
+    this.setFavorites(JSON.parse(favorites).favorites)
 
     const mode = getHashPart(this.$router, 'mode') || Mode.BROWSER
     this.setMode(mode)
@@ -552,7 +552,7 @@ export default (
           LOCAL_STORAGE.favorites,
           JSON.stringify({ favorites: newFavorite, version: 1 })
         )
-        this.toggleFavoritesMode(newFavorite)
+        this.setFavorites(newFavorite)
         this.handleFavorites()
       } catch (e) {
         // eslint-disable-next-line no-console
@@ -607,7 +607,7 @@ export default (
       applyCategoriesFilters: 'menu/applyFilters',
       setSelectedFeature: 'map/setSelectedFeature',
       setMode: 'map/setMode',
-      toggleFavoritesMode: 'favorite/toggleFavoritesMode',
+      setFavorites: 'favorite/setFavorites',
     }),
     routerPushUrl(hashUpdate: { [key: string]: string | null } = {}) {
       const categoryIds = this.selectedCategoriesIds.sort().join(',')
@@ -848,7 +848,7 @@ export default (
             LOCAL_STORAGE.favorites,
             JSON.stringify({ favorites: newFavorite, version: 1 })
           )
-          this.toggleFavoritesMode(newFavorite)
+          this.setFavorites(newFavorite)
         }
       } catch (e) {
         // eslint-disable-next-line no-console
