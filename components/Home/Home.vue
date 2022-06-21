@@ -266,7 +266,6 @@ import { getPoiById, ApiPoi, getPoiByIds } from '@/lib/apiPois'
 import { ApiMenuItemSearchResult } from '@/lib/apiSearch'
 import { headerFromSettings, Settings } from '@/lib/apiSettings'
 import { getBBoxFeature } from '@/lib/bbox'
-import { LOCAL_STORAGE } from '@/lib/constants'
 import { Mode, OriginEnum } from '@/utils/types'
 import { FilterValue, FilterValues } from '@/utils/types-filters'
 import { getHashPart, setHashParts } from '@/utils/url'
@@ -279,6 +278,7 @@ import {
   homeMachine,
 } from './Home.machine'
 
+import { LOCAL_STORAGE } from '~/store/favorite'
 import { flattenFeatures } from '~/utils/utilities'
 
 const interpretOptions = { devTools: false }
@@ -532,11 +532,6 @@ export default (
   },
 
   beforeMount() {
-    const favorites =
-      localStorage.getItem(LOCAL_STORAGE.favorites) || '{ "favorites": [] }'
-
-    this.setFavorites(JSON.parse(favorites).favorites)
-
     const mode = getHashPart(this.$router, 'mode') || Mode.BROWSER
     this.setMode(mode)
 
@@ -548,15 +543,16 @@ export default (
           .map((e) => (!isNaN(Number(e)) ? Number(e) : null))
           .filter((e) => !!e)
 
-        localStorage.setItem(
-          LOCAL_STORAGE.favorites,
-          JSON.stringify({ favorites: newFavorite, version: 1 })
-        )
         this.setFavorites(newFavorite)
         this.handleFavorites()
       } catch (e) {
         // eslint-disable-next-line no-console
         console.error('Vido error:', e.message)
+      }
+    } else {
+      const local = localStorage.getItem(LOCAL_STORAGE.favorites)
+      if (local) {
+        this.setFavorites(JSON.parse(local).favorites)
       }
     }
   },
@@ -825,31 +821,7 @@ export default (
         this.setSelectedFeature(feature)
       }
       try {
-        const props = feature?.properties
-        const id = props?.metadata?.id || feature?.id
-        const currentFavorites = localStorage.getItem(LOCAL_STORAGE.favorites)
-        let newFavorite
-
-        if (id) {
-          if (currentFavorites) {
-            const parsedFavorites = JSON.parse(currentFavorites).favorites
-            if (!parsedFavorites.includes(id)) {
-              newFavorite = [...parsedFavorites, id]
-            } else {
-              newFavorite = parsedFavorites.filter(
-                (f: string) => `${f}` !== `${id}`
-              )
-            }
-          } else {
-            newFavorite = [id]
-          }
-
-          localStorage.setItem(
-            LOCAL_STORAGE.favorites,
-            JSON.stringify({ favorites: newFavorite, version: 1 })
-          )
-          this.setFavorites(newFavorite)
-        }
+        this.$store.dispatch('favorite/toggleFavorite', feature)
       } catch (e) {
         // eslint-disable-next-line no-console
         console.error('Vido error:', e.message)

@@ -170,7 +170,6 @@ import FavoriteNoteBook from '@/components/MainMap/FavoriteNoteBook.vue'
 import ShareLinkModal from '@/components/ShareLinkModal.vue'
 import FavoriteIcon from '@/components/UI/FavoriteIcon.vue'
 import { getPoiByIds, ApiPoi } from '@/lib/apiPois'
-import { LOCAL_STORAGE } from '@/lib/constants'
 
 export default (
   Vue as VueConstructor<
@@ -244,8 +243,6 @@ export default (
     },
     removeFavorites() {
       try {
-        localStorage.removeItem(LOCAL_STORAGE.favorites)
-
         this.$store.dispatch('favorite/setFavorites', [])
       } catch (e) {
         // eslint-disable-next-line no-console
@@ -254,12 +251,10 @@ export default (
     },
     setShareLink() {
       try {
-        const favsString =
-          localStorage.getItem(LOCAL_STORAGE.favorites) || '{ "favorites": [] }'
-        const favs = JSON.parse(favsString).favorites
-
         this.$refs.shareModal.open(
-          `${location.origin}/#mode=favorites&favs=${favs.join(',')}`
+          `${location.origin}/#mode=favorites&favs=${this.favoritesIds.join(
+            ','
+          )}`
         )
       } catch (e) {
         // eslint-disable-next-line no-console
@@ -271,11 +266,7 @@ export default (
     },
     async getFavs() {
       try {
-        const favsString =
-          localStorage.getItem(LOCAL_STORAGE.favorites) || '{ "favorites": [] }'
-        const favs = JSON.parse(favsString).favorites
-
-        this.favs = await this.fetchFavorites(favs)
+        this.favs = await this.fetchFavorites(this.favoritesIds)
       } catch (e) {
         // eslint-disable-next-line no-console
         console.error('Vido error:', e.message)
