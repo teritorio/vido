@@ -7,57 +7,57 @@
           'origin-top-right absolute right-14 md:rigth-16 rounded shadow bg-white mt-1',
       }"
     >
-      <div
-        slot="trigger"
-        slot-scope="{
+      <template
+        #trigger="{
           mousedownHandler,
           focusHandler,
           blurHandler,
           keydownHandler,
           isShown,
         }"
-        class="flex right-10"
       >
-        <button
-          ref="menu"
-          :class="[
-            'relative space-x-1 text-sm font-medium bg-white shadow-md outline-none md:px-5 w-11 md:w-auto h-11 focus:outline-none hover:bg-zinc-100 focus-visible:bg-zinc-100 shrink-0 border-r border-zinc-400 rounded-l-full',
-            isModeFavorites &&
-              'bg-blue-500 hover:bg-blue-400 focus-visible:bg-blue-400 text-white',
-            !isModeFavorites && 'text-zinc-800',
-          ]"
-          @click="$emit('toggle-favorites')"
-        >
-          <FavoriteIcon :is-active="isModeFavorites" />
-          <span class="hidden md:inline favoriteTitle">{{
-            $tc('favorites.title')
-          }}</span>
-          <div
-            v-if="hasFavorites"
-            class="flex items-center justify-center text-white text-center rounded-full absolute top-0 right-0 w-5 h-5 border-2 border-white bg-red-600"
+        <div class="flex right-10">
+          <button
+            ref="menu"
+            :class="[
+              'relative space-x-1 text-sm font-medium bg-white shadow-md outline-none md:px-5 w-11 md:w-auto h-11 focus:outline-none hover:bg-zinc-100 focus-visible:bg-zinc-100 shrink-0 border-r border-zinc-400 rounded-l-full',
+              isModeFavorites &&
+                'bg-blue-500 hover:bg-blue-400 focus-visible:bg-blue-400 text-white',
+              !isModeFavorites && 'text-zinc-800',
+            ]"
+            @click="$emit('toggle-favorites')"
           >
-            <p class="text-xs">{{ favoritesIds.length }}</p>
-          </div>
-        </button>
-        <button
-          :class="[
-            'flex h-11 items-center justify-center shrink-0 px-3 py-2 bg-white border-l border-zinc-00 rounded-r-full hover:bg-zinc-100 shadow-md focus:outline-none',
-            !hasFavorites && 'bg-zinc-100 cursor-not-allowed',
-          ]"
-          :disabled="!hasFavorites"
-          @mousedown="mousedownHandler"
-          @focus="focusHandler"
-          @blur="blurHandler"
-          @keydown="keydownHandler"
-        >
-          <font-awesome-icon
-            ref="menu_icon"
-            :icon="isShown ? 'chevron-up' : 'chevron-down'"
-            class="text-zinc-500"
-            size="sm"
-          />
-        </button>
-      </div>
+            <FavoriteIcon :is-active="isModeFavorites" />
+            <span class="hidden md:inline favoriteTitle">{{
+              $tc('favorites.title')
+            }}</span>
+            <div
+              v-if="hasFavorites"
+              class="flex items-center justify-center text-white text-center rounded-full absolute top-0 right-0 w-5 h-5 border-2 border-white bg-red-600"
+            >
+              <p class="text-xs">{{ favoritesIds.length }}</p>
+            </div>
+          </button>
+          <button
+            :class="[
+              'flex h-11 items-center justify-center shrink-0 px-3 py-2 bg-white border-l border-zinc-00 rounded-r-full hover:bg-zinc-100 shadow-md focus:outline-none',
+              !hasFavorites && 'bg-zinc-100 cursor-not-allowed',
+            ]"
+            :disabled="!hasFavorites"
+            @mousedown="mousedownHandler"
+            @focus="focusHandler"
+            @blur="blurHandler"
+            @keydown="keydownHandler"
+          >
+            <font-awesome-icon
+              ref="menu_icon"
+              :icon="isShown ? 'chevron-up' : 'chevron-down'"
+              class="text-zinc-500"
+              size="sm"
+            />
+          </button>
+        </div>
+      </template>
 
       <div
         slot-scope="{ hide, blurHandler }"

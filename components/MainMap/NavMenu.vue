@@ -7,29 +7,31 @@
         dropdownWrapper: 'relative z-40',
       }"
     >
-      <button
-        slot="trigger"
-        slot-scope="{
+      <template
+        #trigger="{
           mousedownHandler,
           focusHandler,
           blurHandler,
           keydownHandler,
           isShown,
         }"
-        :aria-label="$tc('navMenu.label')"
-        type="button"
-        class="text-sm text-zinc-800 bg-white rounded-full shadow-md outline-none w-11 h-11 focus:outline-none hover:bg-zinc-100 focus-visible:bg-zinc-100 shrink-0"
-        @mousedown="mousedownHandler"
-        @focus="focusHandler"
-        @blur="blurHandler"
-        @keydown="keydownHandler"
       >
-        <font-awesome-icon
-          :icon="isShown ? 'times' : 'bars'"
-          class="text-zinc-800"
-          size="sm"
-        />
-      </button>
+        <button
+          :aria-label="$tc('navMenu.label')"
+          type="button"
+          class="text-sm text-zinc-800 bg-white rounded-full shadow-md outline-none w-11 h-11 focus:outline-none hover:bg-zinc-100 focus-visible:bg-zinc-100 shrink-0"
+          @mousedown="mousedownHandler"
+          @focus="focusHandler"
+          @blur="blurHandler"
+          @keydown="keydownHandler"
+        >
+          <font-awesome-icon
+            :icon="isShown ? 'times' : 'bars'"
+            class="text-zinc-800"
+            size="sm"
+          />
+        </button>
+      </template>
 
       <div class="py-1 rounded-md shadow-xs flex flex-col w-max">
         <a
