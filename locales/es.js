@@ -81,6 +81,8 @@ export default {
     route: 'Ruta',
     explore: 'Explorar',
     favorite: 'Favorito',
+    favoriteOn: 'Poner como favorito',
+    favoriteOff: 'Eliminar favorito',
     callNumber: 'Llama a este número',
     findRoute: 'Buscar la ruta a este lugar',
     unactivateExplore: 'Desactivar la exploración en los alrededores',

@@ -80,6 +80,8 @@ export default {
     seeDetail: 'Voir le detail',
     route: 'Itinéraire',
     explore: 'Explorer',
+    favoriteOn: 'Mettre en favori',
+    favoriteOff: 'Retirer le favori',
     favorite: 'Favori',
     callNumber: 'Appeler ce numéro',
     findRoute: "Trouver la route pour venir jusqu'à ce lieu",

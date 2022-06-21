@@ -210,7 +210,9 @@
         <button
           v-if="id"
           class="flex flex-col items-center flex-1 h-full p-2 space-y-2 rounded-lg hover:bg-zinc-100"
-          title="Mettre en favori"
+          :title="
+            isModeFavorites ? $tc('toast.favoriteOn') : $tc('toast.favoriteOff')
+          "
           @click.stop="onFavoriteClick"
         >
           <FavoriteIcon :is-active="isModeFavorites" :color-line="colorLine" />
