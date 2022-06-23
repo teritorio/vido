@@ -1,7 +1,19 @@
 <template>
   <div class="w-full container">
     <div>
-      <Header :theme="settings.themes[0]" />
+      <Header :theme="settings.themes[0]" :color-line="colorLine">
+        <div class="flex right-10">
+          <button
+            :aria-label="
+              isFavorite ? $tc('toast.favoriteOn') : $tc('toast.favoriteOff')
+            "
+            class="text-sm text-zinc-800 bg-white rounded-full shadow-md outline-none w-11 h-11 focus:outline-none hover:bg-zinc-100 focus-visible:bg-zinc-100 shrink-0"
+            @click.stop="toggleFavorite"
+          >
+            <FavoriteIcon :is-active="isFavorite" :color-line="colorLine" />
+          </button>
+        </div>
+      </Header>
       <div class="flex justify-center">
         <TeritorioIconBadge
           :color-fill="colorFill"
@@ -75,8 +87,10 @@
 
 <script lang="ts">
 import Vue, { PropType } from 'vue'
+import { mapGetters } from 'vuex'
 
 import MapPois from '@/components/MapPois.vue'
+import FavoriteIcon from '@/components/UI/FavoriteIcon.vue'
 import TeritorioIconBadge from '@/components/UI/TeritorioIconBadge.vue'
 import { ApiPoi, ApiPoiProperties } from '@/lib/apiPois'
 import { Settings } from '@/lib/apiSettings'
@@ -93,6 +107,7 @@ import { OriginEnum } from '~/utils/types'
 export default Vue.extend({
   components: {
     Header,
+    FavoriteIcon,
     TeritorioIconBadge,
     Contact,
     OpeningHours: () => import('@/components/Fields/OpeningHours.vue'),
@@ -116,6 +131,9 @@ export default Vue.extend({
   },
 
   computed: {
+    ...mapGetters({
+      favoritesIds: 'favorite/favoritesIds',
+    }),
     p(): ApiPoiProperties {
       return this.poi.properties
     },
@@ -148,6 +166,9 @@ export default Vue.extend({
         this.p.editorial?.class_label?.fr
       )
     },
+    isFavorite(): boolean {
+      return this.favoritesIds.includes(this.poi.properties.metadata?.id)
+    },
   },
 
   mounted() {
@@ -161,6 +182,20 @@ export default Vue.extend({
           this.$router.currentRoute.query.origin as keyof typeof OriginEnum
         ],
     })
+  },
+
+  methods: {
+    toggleFavorite() {
+      if (this.poi.properties.metadata?.id) {
+        this.$tracking({
+          type: 'details_event',
+          event: 'favorite',
+          poiId: this.poi.properties.metadata?.id,
+          title: this.poi.properties.name,
+        })
+        this.$store.dispatch('favorite/toggleFavorite', this.poi)
+      }
+    },
   },
 })
 </script>

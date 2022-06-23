@@ -1,5 +1,7 @@
 import { Category } from '@/lib/apiMenu'
 
+import { ApiPoiId } from './apiPois'
+
 import { OriginEnum } from '~/utils/types'
 
 // Also Update README.md according to tracking changes.
@@ -38,7 +40,7 @@ export type Event =
     }
   | {
       type: 'popup'
-      poiId: number
+      poiId: ApiPoiId
       title?: string
       location: string
       path: string
@@ -47,7 +49,7 @@ export type Event =
   | {
       type: 'popup_event'
       event: 'details' | 'route' | 'explore' | 'favorite' | 'zoom'
-      poiId: number
+      poiId: ApiPoiId
       category: string
       title?: string
     }
@@ -67,6 +69,12 @@ export type Event =
       type: 'external_link'
       title: string
       url: string
+    }
+  | {
+      type: 'details_event'
+      event: 'favorite'
+      poiId: ApiPoiId
+      title?: string
     }
 
 export interface Tracker {

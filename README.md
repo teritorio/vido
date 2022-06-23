@@ -90,6 +90,7 @@ Spetial formatting support:
 | Action on favorites              | favorites_event     | copy_link, exportPDF, exportCSV         | favorites_event     | action                                   | trackEvent      | event, action                    |
 | Notebook                         | notebook_event      | open                                    | pageview            | pageTitle, pagePath                      | trackPageView   | title, Url                       |
 | External links                   | external_link       |                                         | external_link       | Url, title                               | trackLink       | Url                              |
+| Action on details page           | details_event       | favorite                                | details_event       | action, title, poiId                     | trackEvent      | event, action, title, poiId      |
 
 
 Note on Matomo. `Origin` is a set as dimension `1` and shoud be configured as is on Matomo.

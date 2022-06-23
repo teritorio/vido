@@ -8,6 +8,7 @@
       </a>
     </div>
 
+    <slot />
     <NavMenu class="ml-3 sm:ml-9" />
   </header>
 </template>

@@ -120,6 +120,20 @@ export default class Matomo implements Tracker {
         ])
         break
       }
+      case 'details_event': {
+        _paq.push([
+          'trackEvent',
+          // category
+          event.type,
+          // action
+          event.event,
+          // name
+          event.title,
+          // value
+          event.poiId,
+        ])
+        break
+      }
     }
   }
 }

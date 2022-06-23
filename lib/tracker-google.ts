@@ -95,6 +95,15 @@ export default class Google implements Tracker {
         this.gtm.push({ event: event.type, url: event.url, title: event.title })
         break
       }
+      case 'details_event': {
+        this.gtm.push({
+          event: event.type,
+          action: event.event,
+          poiId: event.poiId,
+          title: event.title,
+        })
+        break
+      }
     }
   }
 }
