@@ -82,17 +82,14 @@
             <p :key="activity" class="text-sm mt-2">
               <RouteField
                 :activity="
-                  (sptags &&
-                    sptags['route:*'] &&
-                    sptags['route:*'][activity]) ||
-                  activity
+                  $propertyTranslations.pv('route:*', activity, 'popup')
                 "
                 :route="route"
               />
             </p>
           </template>
 
-          <ul v-if="property === 'phone' && $screen.phone">
+          <ul v-else-if="property === 'phone' && $screen.phone">
             <li v-for="item in poiProp(property)" :key="item">
               <a
                 class="text-blue-400"
@@ -157,7 +154,7 @@
               {{ $tc('toast.seeDetail') }}
             </a>
           </p>
-          <p v-else class="text-sm">
+          <p v-else-if="poiProps[property]" class="text-sm">
             {{ poiPropTranslate(property) }}
           </p>
         </div>
@@ -236,6 +233,7 @@ import { getPoiById, ApiPoi, ApiPoiProperties } from '@/lib/apiPois'
 import { isIOS } from '@/utils/isIOS'
 
 import RouteField from '~/components/Fields/RouteField.vue'
+import { PropertyTranslationsContextEnum } from '~/plugins/property-translations'
 
 export default Vue.extend({
   components: {
@@ -260,12 +258,10 @@ export default Vue.extend({
   },
 
   data(): {
-    sptags: { [key: string]: any } | null
     apiProps: ApiPoiProperties | null
     textLimit: number
   } {
     return {
-      sptags: null,
       apiProps: null,
       textLimit: 160,
     }
@@ -438,13 +434,10 @@ export default Vue.extend({
 
   methods: {
     onPoiChange() {
-      this.sptags = null
       this.apiProps = null
 
-      if (this.poi && this.poiProp('metadata')) {
-        this.fetchSpTags()
-      } else {
-        this.fetchMetadata().then(this.fetchSpTags)
+      if (!this.poi || !this.poiProp('metadata')) {
+        this.fetchMetadata()
       }
     },
 
@@ -476,12 +469,10 @@ export default Vue.extend({
     },
 
     poiPropTranslate(property: string) {
-      const poiProp = this.poiProp(property)
-      return (
-        (this.sptags &&
-          this.sptags[property] &&
-          this.sptags[property][poiProp]) ||
-        poiProp
+      return this.$propertyTranslations.pv(
+        property,
+        this.poiProp(property),
+        PropertyTranslationsContextEnum.Popup
       )
     },
 
@@ -512,21 +503,6 @@ export default Vue.extend({
           this.apiProps = apiPoi.properties
         }
       })
-    },
-
-    fetchSpTags() {
-      if (!this.poiEditorial('popup_properties')) {
-        return
-      }
-      return fetch(
-        `${
-          this.$vidoConfig.API_ENDPOINT
-        }/sptags?popup_properties=${this.poiEditorial('popup_properties').join(
-          ';'
-        )}`
-      )
-        .then((data) => data.json())
-        .then((data) => (this.sptags = data))
     },
 
     onZoomClick() {

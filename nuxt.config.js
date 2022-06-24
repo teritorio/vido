@@ -36,6 +36,7 @@ export default {
     '@/plugins/screen.ts',
     '@/plugins/vue-tailwind.ts',
     { src: '@/plugins/tracking.ts', mode: 'client' },
+    '@/plugins/property-translations.ts',
   ],
 
   // Auto import components (https://go.nuxtjs.dev/config-components)

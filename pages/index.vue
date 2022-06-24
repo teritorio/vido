@@ -15,6 +15,10 @@ import { mapActions } from 'vuex'
 import Home from '@/components/Home/Home.vue'
 import { Category, getMenu } from '@/lib/apiMenu'
 import { getPoiById, ApiPoi } from '@/lib/apiPois'
+import {
+  getPropertyTranslations,
+  PropertyTranslations,
+} from '@/lib/apiPropertyTranslations'
 import { getSettings, headerFromSettings, Settings } from '@/lib/apiSettings'
 import { vidoConfig } from '@/plugins/vido-config'
 
@@ -25,11 +29,17 @@ export default Vue.extend({
 
   async asyncData({ params, route, req }): Promise<{
     settings: Settings
+    propertyTranslations: PropertyTranslations
     categories: Category[]
     categoryIds: number[] | null
     initialPoi: ApiPoi | null
   }> {
     const fetchSettings = getSettings(
+      vidoConfig(req).API_ENDPOINT,
+      vidoConfig(req).API_PROJECT,
+      vidoConfig(req).API_THEME
+    )
+    const fetchPropertyTranslations = getPropertyTranslations(
       vidoConfig(req).API_ENDPOINT,
       vidoConfig(req).API_PROJECT,
       vidoConfig(req).API_THEME
@@ -68,17 +78,20 @@ export default Vue.extend({
       )
     }
 
-    const [settings, categories, initialPoi] = await Promise.all([
-      fetchSettings,
-      fetchCategories,
-      fetchPoi,
-    ])
-    if (!settings || !categories) {
+    const [settings, propertyTranslations, categories, initialPoi] =
+      await Promise.all([
+        fetchSettings,
+        fetchPropertyTranslations,
+        fetchCategories,
+        fetchPoi,
+      ])
+    if (!settings || !propertyTranslations || !categories) {
       throw new Error('Not found')
     }
 
     return Promise.resolve({
       settings,
+      propertyTranslations,
       categories,
       categoryIds,
       initialPoi,
@@ -87,6 +100,7 @@ export default Vue.extend({
 
   data(): {
     settings: Settings
+    propertyTranslations: PropertyTranslations
     categories: Category[]
     categoryIds: number[] | null
     initialPoi: ApiPoi | null
@@ -94,6 +108,8 @@ export default Vue.extend({
     return {
       // @ts-ignore
       settings: null,
+      // @ts-ignore
+      propertyTranslations: null,
       // @ts-ignore
       categories: null,
       categoryIds: null,
@@ -113,6 +129,7 @@ export default Vue.extend({
 
   mounted() {
     this.$settings.set(this.settings)
+    this.$propertyTranslations.set(this.propertyTranslations)
     this.setSiteLocale(this.$i18n.locale)
   },
 
