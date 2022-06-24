@@ -22,16 +22,6 @@ import Vue from 'vue'
 import { mapGetters } from 'vuex'
 
 export default Vue.extend({
-  data(): {
-    sptags: { [key: string]: any } | null
-    apiProps: { [key: string]: any } | null
-  } {
-    return {
-      sptags: null,
-      apiProps: null,
-    }
-  },
-
   computed: {
     ...mapGetters({
       snack: 'snack/snack',
