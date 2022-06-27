@@ -332,7 +332,6 @@ export default (
       )
       if (feature) {
         const f = Object.assign({}, feature, {
-          faIcon: 'home',
           class: 'Adresse',
           vido_zoom:
             feature.properties.type === 'municipality'

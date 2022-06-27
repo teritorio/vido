@@ -47,14 +47,6 @@
           :use-native-alignment="false"
         />
 
-        <font-awesome-icon
-          v-if="faIcon"
-          :icon="faIcon"
-          :color="colorLine"
-          class="mr-2"
-          size="sm"
-        />
-
         {{ category }}
       </div>
 
@@ -345,10 +337,6 @@ export default Vue.extend({
       } else {
         return ''
       }
-    },
-
-    faIcon(): string {
-      return this.poiProp('faIcon')
     },
 
     category(): string {
