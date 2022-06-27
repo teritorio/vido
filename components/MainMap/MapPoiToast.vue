@@ -6,9 +6,9 @@
     ]"
   >
     <img
-      v-if="poiProp('image') && poiProp('image').length > 0"
+      v-if="poiProps.image && poiProps.image.length > 0"
       class="object-cover w-full h-auto max-h-44 md:max-h-full md:w-52"
-      :src="poiProp('image')[0]"
+      :src="poiProps.image[0]"
       alt=""
     />
 
@@ -24,9 +24,9 @@
         </h2>
 
         <a
-          v-if="poiEditorial('website:details')"
+          v-if="poiProps.editorial && poiProps.editorial['website:details']"
           class="ml-6 md:ml-8 px-3 py-1.5 text-xs text-zinc-800 bg-zinc-100 hover:bg-zinc-200 focus:bg-zinc-200 transition transition-colors rounded-md"
-          :href="poiEditorial('website:details')"
+          :href="poiProps.editorial['website:details']"
           rel="noopener noreferrer"
           target="_blank"
           @click.stop="tracking('details')"
@@ -59,12 +59,14 @@
 
       <div v-else class="h-auto flex-grow shrink-0">
         <div
-          v-for="property in poiEditorial('popup_properties') || []"
+          v-for="property in (poiProps.editorial &&
+            poiProps.editorial.popup_properties) ||
+          []"
           :key="'_' + property"
           class="text-sm mt-2"
         >
           <p v-if="property === 'addr:*'" class="mt-6 text-sm">
-            <AddressField :properties="poiProps()"></AddressField>
+            <AddressField :properties="poiProps"></AddressField>
           </p>
 
           <template
@@ -82,7 +84,7 @@
           </template>
 
           <ul v-else-if="property === 'phone' && $screen.phone">
-            <li v-for="item in poiProp(property)" :key="item">
+            <li v-for="item in poiProps[property]" :key="item">
               <a
                 class="text-blue-400"
                 :href="'tel:' + item"
@@ -93,7 +95,7 @@
             </li>
           </ul>
           <ul v-else-if="property === 'mobile' && $screen.phone">
-            <li v-for="item in poiProp(property)" :key="item">
+            <li v-for="item in poiProps[property]" :key="item">
               <a
                 class="text-blue-400"
                 :href="'tel:' + item"
@@ -104,8 +106,8 @@
             </li>
           </ul>
 
-          <ul v-else-if="Array.isArray(poiProp(property))">
-            <li v-for="item in poiProp(property)" :key="item">
+          <ul v-else-if="Array.isArray(poiProps[property])">
+            <li v-for="item in poiProps[property]" :key="item">
               <Website v-if="property === 'website'" :url="item" />
               <p v-else class="text-sm mt-1">
                 {{ item }}
@@ -114,17 +116,14 @@
           </ul>
 
           <p v-else-if="property == 'start_end_date'" class="text-sm">
-            <DateRange
-              :start="poiProp('start_date')"
-              :end="poiProp('end_date')"
-            />
+            <DateRange :start="poiProps.start_date" :end="poiProps.end_date" />
           </p>
 
           <p
-            v-else-if="property === 'opening_hours' && poiProp(property)"
+            v-else-if="property === 'opening_hours' && poiProps[property]"
             class="text-sm"
           >
-            <OpeningHours :opening-hours="poiProp(property)" />
+            <OpeningHours :opening-hours="poiProps[property]" />
           </p>
 
           <p
@@ -136,9 +135,9 @@
           >
             {{ poiPropTranslate(property).substring(0, textLimit) + ' ...' }}
             <a
-              v-if="poiEditorial('website:details')"
+              v-if="poiProps.editorial && poiProps.editorial['website:details']"
               class="underline"
-              :href="poiEditorial('website:details')"
+              :href="poiProps.editorial['website:details']"
               rel="noopener noreferrer"
               target="_blank"
               @click.stop="tracking('details')"
@@ -221,7 +220,7 @@ import DateRange from '@/components/Fields/DateRange.vue'
 import Website from '@/components/Fields/Website.vue'
 import FavoriteIcon from '@/components/UI/FavoriteIcon.vue'
 import TeritorioIcon from '@/components/UI/TeritorioIcon.vue'
-import { getPoiById, ApiPoi, ApiPoiProperties } from '@/lib/apiPois'
+import { getPoiById, ApiPoi, ApiPoiProperties, ApiPoiId } from '@/lib/apiPois'
 import { isIOS } from '@/utils/isIOS'
 
 import RouteField from '~/components/Fields/RouteField.vue'
@@ -265,8 +264,31 @@ export default Vue.extend({
       favoritesIds: 'favorite/favoritesIds',
     }),
 
-    id(): number {
-      return this.poiMeta('id') || this.poi.id
+    poiProps(): ApiPoiProperties {
+      return {
+        ...((this.poi.properties &&
+          Object.fromEntries(
+            Object.entries(this.poi.properties).map(([key, value]) => [
+              key,
+              (key !== 'opening_hours' &&
+                value &&
+                typeof value === 'string' &&
+                value.includes(';') &&
+                value
+                  .split(';')
+                  .filter((s: string) => s)
+                  .map((s: string) => s.trim())
+                  .filter((s: string) => s)) ||
+                value,
+            ])
+          )) ||
+          {}),
+        ...(this.apiProps || {}),
+      }
+    },
+
+    id(): ApiPoiId | undefined {
+      return this.poiProps.metadata?.id
     },
 
     isModeFavorites(): boolean {
@@ -274,17 +296,18 @@ export default Vue.extend({
       return currentFavorites.includes(this.id)
     },
 
-    name(): string {
+    name(): string | undefined {
       return (
-        this.poiProp('name') ||
-        this.poiEditorial('class_label_popup')?.fr ||
-        this.poiEditorial('class_label')?.fr
+        this.poiProps.name ||
+        this.poiProps.editorial?.class_label_popup?.fr ||
+        this.poiProps.editorial?.class_label?.fr
       )
     },
 
     colorFill(): string | null {
-      if (this.poiDisplay('color_fill')) {
-        return this.poiDisplay('color_fill')
+      const colorFill = this.poiProps.display?.color_fill
+      if (colorFill) {
+        return colorFill
         // @ts-ignore
       } else if (this.poi && this.poi.layer && this.poi.layer.paint) {
         const tc =
@@ -304,8 +327,9 @@ export default Vue.extend({
     },
 
     colorLine(): string | null {
-      if (this.poiDisplay('color_line')) {
-        return this.poiDisplay('color_line')
+      const colorLine = this.poiProps.display?.color_line
+      if (colorLine) {
+        return colorLine
         // @ts-ignore
       } else if (this.poi && this.poi.layer && this.poi.layer.paint) {
         const tc =
@@ -325,8 +349,9 @@ export default Vue.extend({
     },
 
     icon(): string {
-      if (this.poiDisplay('icon')) {
-        return this.poiDisplay('icon')
+      const icon = this.poiProps.display?.icon
+      if (icon) {
+        return icon
         // @ts-ignore
       } else if (this.poi.layer?.layout['icon-image']?.name) {
         return (
@@ -339,15 +364,15 @@ export default Vue.extend({
       }
     },
 
-    category(): string {
+    category(): string | undefined {
       return (
-        this.poiEditorial('class_label_popup')?.fr ||
-        this.poiEditorial('class_label')?.fr
+        this.poiProps.editorial?.class_label_popup?.fr ||
+        this.poiProps.editorial?.class_label?.fr
       )
     },
 
     description(): string | null {
-      return this.poiProp('description')
+      return this.poiProps.description
     },
 
     routeHref(): string | null {
@@ -367,11 +392,13 @@ export default Vue.extend({
     },
 
     unavoidable(): boolean {
-      return Boolean(this.poiEditorial('unavoidable'))
+      return Boolean(this.poiProps.editorial?.unavoidable)
     },
 
     routes(): { [key: string]: Object } {
-      if (!(this.poiEditorial('popup_properties') || []).includes('route:*')) {
+      if (
+        !(this.poiProps.editorial?.popup_properties || []).includes('route:*')
+      ) {
         return {}
       }
 
@@ -404,7 +431,7 @@ export default Vue.extend({
   },
 
   mounted() {
-    if (!this.notebook) {
+    if (!this.notebook && this.id) {
       this.$tracking({
         type: 'popup',
         poiId: this.id,
@@ -424,56 +451,17 @@ export default Vue.extend({
     onPoiChange() {
       this.apiProps = null
 
-      if (!this.poi || !this.poiProp('metadata')) {
+      if (!this.poiProps.metadata) {
         this.fetchMetadata()
       }
-    },
-
-    poiProps(): ApiPoiProperties {
-      return {
-        ...((this.poi.properties &&
-          Object.fromEntries(
-            Object.entries(this.poi.properties).map(([key, value]) => [
-              key,
-              (key !== 'opening_hours' &&
-                value &&
-                typeof value === 'string' &&
-                value.includes(';') &&
-                value
-                  .split(';')
-                  .filter((s: string) => s)
-                  .map((s: string) => s.trim())
-                  .filter((s: string) => s)) ||
-                value,
-            ])
-          )) ||
-          {}),
-        ...(this.apiProps || {}),
-      }
-    },
-
-    poiProp(name: string) {
-      return this.poiProps()?.[name]
     },
 
     poiPropTranslate(property: string) {
       return this.$propertyTranslations.pv(
         property,
-        this.poiProp(property),
+        this.poiProps[property],
         PropertyTranslationsContextEnum.Popup
       )
-    },
-
-    poiMeta(name: string) {
-      return this.poiProp('metadata') && this.poiProp('metadata')[name]
-    },
-
-    poiDisplay(name: string) {
-      return this.poiProp('display') && this.poiProp('display')[name]
-    },
-
-    poiEditorial(name: string) {
-      return this.poiProp('editorial') && this.poiProp('editorial')[name]
     },
 
     fetchMetadata(): Promise<void> {
@@ -510,13 +498,15 @@ export default Vue.extend({
       this.$emit('favorite-click', this.poi, this.notebook)
     },
     tracking(event: 'details' | 'route' | 'explore' | 'favorite' | 'zoom') {
-      this.$tracking({
-        type: 'popup_event',
-        event,
-        poiId: this.id,
-        category: this.category,
-        title: this.poi.properties?.name,
-      })
+      if (this.id) {
+        this.$tracking({
+          type: 'popup_event',
+          event,
+          poiId: this.id,
+          category: this.category || '',
+          title: this.poi.properties?.name,
+        })
+      }
     },
   },
 })

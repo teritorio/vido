@@ -17,7 +17,7 @@ export interface ApiPoiProperties {
   'addr:street'?: string
 
   metadata?: {
-    id?: ApiPoiId
+    id: ApiPoiId
     source?: string
     // eslint-disable-next-line camelcase
     category_ids?: Array<number>
@@ -43,6 +43,7 @@ export interface ApiPoiProperties {
     // eslint-disable-next-line camelcase
     class_label_details?: MultilingualString
     'website:details'?: string
+    unavoidable?: boolean
   }
 }
 export interface ApiPoi
@@ -73,7 +74,7 @@ export function getPoiById(
   apiEndpoint: string,
   apiProject: string,
   apiTheme: string,
-  poiId: number | string,
+  poiId: ApiPoiId | string,
   options: apiPoisOptions = {}
 ): Promise<ApiPoi | null> {
   return fetch(
@@ -86,7 +87,7 @@ export function getPoiByIds(
   apiEndpoint: string,
   apiProject: string,
   apiTheme: string,
-  poiIds: (number | string)[],
+  poiIds: (ApiPoiId | string)[],
   options: apiPoisOptions = {}
 ): Promise<ApiPois | null> {
   return fetch(
