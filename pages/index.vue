@@ -122,11 +122,11 @@ export default Vue.extend({
     this.$store.dispatch('menu/fetchConfig', {
       categories: this.categories,
     })
+    this.$settings.set(this.settings)
+    this.$propertyTranslations.set(this.propertyTranslations)
   },
 
   mounted() {
-    this.$settings.set(this.settings)
-    this.$propertyTranslations.set(this.propertyTranslations)
     this.setSiteLocale(this.$i18n.locale)
   },
 
