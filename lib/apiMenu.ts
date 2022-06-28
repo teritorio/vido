@@ -110,8 +110,14 @@ export function getMenu(
   apiEndpoint: string,
   apiProject: string,
   apiTheme: string
-): Promise<[Category] | null> {
-  return fetch(`${apiEndpoint}/${apiProject}/${apiTheme}/menu`).then((data) =>
-    data.ok ? (data.json() as unknown as [Category]) : null
-  )
+): Promise<[Category]> {
+  return fetch(`${apiEndpoint}/${apiProject}/${apiTheme}/menu`).then((data) => {
+    if (data.ok) {
+      return data.json() as unknown as [Category]
+    } else {
+      return Promise.reject(
+        new Error([data.url, data.status, data.statusText].join(' '))
+      )
+    }
+  })
 }

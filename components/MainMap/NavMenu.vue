@@ -101,7 +101,7 @@ export default Vue.extend({
       fetch(
         `${this.$vidoConfig.API_ENDPOINT}/${this.$vidoConfig.API_PROJECT}/${this.$vidoConfig.API_THEME}/articles?slug=non-classe`
       )
-        .then((data) => data.json())
+        .then((data) => (data.ok ? data.json() : []))
         .then((data) => (this.entries = data))
     },
     setLocale(locale: string) {

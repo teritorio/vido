@@ -85,9 +85,6 @@ export default Vue.extend({
         fetchCategories,
         fetchPoi,
       ])
-    if (!settings || !propertyTranslations || !categories) {
-      throw new Error('Not found')
-    }
 
     return Promise.resolve({
       settings,

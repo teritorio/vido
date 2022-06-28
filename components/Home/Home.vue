@@ -717,12 +717,10 @@ export default (
         this.$vidoConfig.API_THEME,
         poiId
       ).then((poi) => {
-        if (poi) {
-          this.setSelectedFeature(poi).then(() => {
-            this.service.send(HomeEvents.GoToCategories)
-            this.$refs.mapFeatures.goToSelectedFeature()
-          })
-        }
+        this.setSelectedFeature(poi).then(() => {
+          this.service.send(HomeEvents.GoToCategories)
+          this.$refs.mapFeatures.goToSelectedFeature()
+        })
       })
     },
 

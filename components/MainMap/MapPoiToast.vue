@@ -467,9 +467,7 @@ export default Vue.extend({
         this.$vidoConfig.API_THEME,
         this.id
       ).then((apiPoi) => {
-        if (apiPoi) {
-          this.apiProps = apiPoi.properties
-        }
+        this.apiProps = apiPoi.properties
       })
     },
 

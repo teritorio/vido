@@ -47,9 +47,6 @@ export default Vue.extend({
       getSettingsPromise,
       getPoiPromise,
     ])
-    if (!settings || !poi) {
-      throw new Error('Not found')
-    }
 
     return Promise.resolve({
       settings,

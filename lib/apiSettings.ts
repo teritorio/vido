@@ -39,9 +39,17 @@ export function getSettings(
   apiEndpoint: string,
   apiProject: string,
   apiTheme: string
-): Promise<Settings | null> {
+): Promise<Settings> {
   return fetch(`${apiEndpoint}/${apiProject}/${apiTheme}`)
-    .then((res) => res.json())
+    .then((data) => {
+      if (data.ok) {
+        return data.json() as unknown as Settings
+      } else {
+        return Promise.reject(
+          new Error([data.url, data.status, data.statusText].join(' '))
+        )
+      }
+    })
     .then((json: Settings) => {
       return Object.assign(
         {

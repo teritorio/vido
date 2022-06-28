@@ -76,11 +76,19 @@ export function getPoiById(
   apiTheme: string,
   poiId: ApiPoiId | string,
   options: apiPoisOptions = {}
-): Promise<ApiPoi | null> {
+): Promise<ApiPoi> {
   return fetch(
     `${apiEndpoint}/${apiProject}/${apiTheme}/poi/${poiId}?` +
       new URLSearchParams(stringifyOptions(options))
-  ).then((data) => (data.ok ? (data.json() as unknown as ApiPoi) : null))
+  ).then((data) => {
+    if (data.ok) {
+      return data.json() as unknown as ApiPoi
+    } else {
+      return Promise.reject(
+        new Error([data.url, data.status, data.statusText].join(' '))
+      )
+    }
+  })
 }
 
 export function getPoiByIds(
@@ -89,14 +97,22 @@ export function getPoiByIds(
   apiTheme: string,
   poiIds: (ApiPoiId | string)[],
   options: apiPoisOptions = {}
-): Promise<ApiPois | null> {
+): Promise<ApiPois> {
   return fetch(
     `${apiEndpoint}/${apiProject}/${apiTheme}/pois?` +
       new URLSearchParams([
         ['ids', poiIds.join(',')],
         ...stringifyOptions(options),
       ])
-  ).then((data) => (data.ok ? (data.json() as unknown as ApiPois) : null))
+  ).then((data) => {
+    if (data.ok) {
+      return data.json() as unknown as ApiPois
+    } else {
+      return Promise.reject(
+        new Error([data.url, data.status, data.statusText].join(' '))
+      )
+    }
+  })
 }
 
 export function getPoiByCategoryId(
@@ -105,12 +121,20 @@ export function getPoiByCategoryId(
   apiTheme: string,
   categoryId: number | string,
   options: apiPoisOptions = {}
-): Promise<ApiPois | null> {
+): Promise<ApiPois> {
   return fetch(
     `${apiEndpoint}/${apiProject}/${apiTheme}/pois?` +
       new URLSearchParams([
         ['idmenu', `${categoryId}`],
         ...stringifyOptions(options),
       ])
-  ).then((data) => (data.ok ? (data.json() as unknown as ApiPois) : null))
+  ).then((data) => {
+    if (data.ok) {
+      return data.json() as unknown as ApiPois
+    } else {
+      return Promise.reject(
+        new Error([data.url, data.status, data.statusText].join(' '))
+      )
+    }
+  })
 }
