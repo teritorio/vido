@@ -112,6 +112,7 @@ export default {
     qrcode: 'Partager en QR-Code',
     poweredBy: 'Propulsé par',
     mapillaryExplore: 'Explorer sur Mapillary',
+    informations: 'Informations',
   },
   dateFilter: {
     today: "Aujourd'hui",

@@ -8,6 +8,10 @@ import { MetaInfo } from 'vue-meta'
 import { mapActions } from 'vuex'
 
 import { getPoiById } from '@/lib/apiPois'
+import {
+  getPropertyTranslations,
+  PropertyTranslations,
+} from '@/lib/apiPropertyTranslations'
 import { getSettings, headerFromSettings } from '@/lib/apiSettings'
 import { vidoConfig } from '@/plugins/vido-config'
 
@@ -26,9 +30,15 @@ export default Vue.extend({
 
   async asyncData({ params, req }): Promise<{
     settings: Settings
+    propertyTranslations: PropertyTranslations
     poi: ApiPoi
   }> {
     const getSettingsPromise = getSettings(
+      vidoConfig(req).API_ENDPOINT,
+      vidoConfig(req).API_PROJECT,
+      vidoConfig(req).API_THEME
+    )
+    const fetchPropertyTranslations = getPropertyTranslations(
       vidoConfig(req).API_ENDPOINT,
       vidoConfig(req).API_PROJECT,
       vidoConfig(req).API_THEME
@@ -43,24 +53,29 @@ export default Vue.extend({
       }
     )
 
-    const [settings, poi] = await Promise.all([
+    const [settings, propertyTranslations, poi] = await Promise.all([
       getSettingsPromise,
+      fetchPropertyTranslations,
       getPoiPromise,
     ])
 
     return Promise.resolve({
       settings,
+      propertyTranslations,
       poi,
     })
   },
 
   data(): {
     settings: Settings
+    propertyTranslations: PropertyTranslations
     poi: ApiPoi
   } {
     return {
       // @ts-ignore
       settings: null,
+      // @ts-ignore
+      propertyTranslations: null,
       // @ts-ignore
       poi: null,
     }
@@ -74,6 +89,7 @@ export default Vue.extend({
 
   created() {
     this.$settings.set(this.settings)
+    this.$propertyTranslations.set(this.propertyTranslations)
   },
 
   mounted() {

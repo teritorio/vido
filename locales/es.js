@@ -112,6 +112,7 @@ export default {
     link: 'Compartir enlace',
     poweredBy: 'Con la tecnología de',
     mapillaryExplore: 'Explorar en Mapillary',
+    informations: 'Informaciones',
   },
   dateFilter: {
     today: 'Hoy',

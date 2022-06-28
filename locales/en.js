@@ -112,6 +112,7 @@ export default {
     link: 'Share link',
     poweredBy: 'Powered by',
     mapillaryExplore: 'Explore on Mapillary',
+    informations: 'Informations',
   },
   dateFilter: {
     today: 'Today',

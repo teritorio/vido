@@ -59,6 +59,15 @@
               <h2>{{ $tc('details.headerOpeningHours') }}</h2>
               <OpeningHours :opening-hours="p.opening_hours" :details="true" />
             </div>
+
+            <div
+              v-if="property == 'route:*'"
+              :key="property"
+              class="detail-left-block"
+            >
+              <h2>{{ $tc('details.informations') }}</h2>
+              <RoutesField :properties="p" />
+            </div>
           </template>
           <Location :p="p" :geom="poi.geometry" />
         </div>
@@ -102,6 +111,7 @@ import Header from '~/components/Details/Header.vue'
 import Location from '~/components/Details/Location.vue'
 import Mapillary from '~/components/Details/Mapillary.vue'
 import Share from '~/components/Details/Share.vue'
+import RoutesField from '~/components/Fields/RoutesField.vue'
 import { OriginEnum } from '~/utils/types'
 
 export default Vue.extend({
@@ -117,6 +127,7 @@ export default Vue.extend({
     Mapillary,
     MapPois,
     Footer,
+    RoutesField,
   },
 
   props: {
