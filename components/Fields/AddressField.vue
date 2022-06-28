@@ -5,15 +5,18 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
+import Vue, { PropType } from 'vue'
+
+import { ApiPoiProperties } from '~/lib/apiPois'
 
 export default Vue.extend({
   props: {
     properties: {
-      type: Object,
+      type: Object as PropType<ApiPoiProperties>,
       default: null,
     },
   },
+
   computed: {
     address(): string | null {
       return [
@@ -22,8 +25,7 @@ export default Vue.extend({
         this.properties['addr:postcode'],
         this.properties['addr:city'],
       ]
-        .filter((f) => f)
-        .map((f) => f.toString().trim())
+        .map((f) => (f || '').toString().trim())
         .filter((f) => f)
         .join(' ')
     },
