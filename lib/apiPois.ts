@@ -16,7 +16,7 @@ export interface ApiPoiProperties {
   'addr:postcode'?: string
   'addr:street'?: string
 
-  metadata?: {
+  metadata: {
     id: ApiPoiId
     source?: string
     // eslint-disable-next-line camelcase

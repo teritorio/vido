@@ -104,7 +104,7 @@ export function updateMarkers(
   const markerIdPrevious = Object.keys(markers)
   const markerIdcurrent: string[] = []
 
-  const features = map.querySourceFeatures(src) as ApiPoi[]
+  const features = map.querySourceFeatures(src)
   // for every cluster on the screen, create an HTML marker for it (if we didn't yet),
   // and add it to the map if it's not there already
   features
@@ -180,7 +180,7 @@ export function updateMarkers(
               if (props.editorial?.popup_properties) {
                 el.addEventListener('click', (e: MouseEvent) => {
                   e.stopPropagation()
-                  markerClickCallBack(feature)
+                  markerClickCallBack(feature as unknown as ApiPoi)
                 })
               }
               markers[id].addTo(map)

@@ -64,6 +64,7 @@ import { getHashPart } from '@/utils/url'
 
 import { ApiMenuCategory } from '~/lib/apiMenu'
 import { ApiPoi } from '~/lib/apiPois'
+import { MapPoi, mapPoi2ApiPoi } from '~/lib/mapPois'
 
 const STYLE_LAYERS = [
   'poi-level-1',
@@ -315,10 +316,10 @@ export default Vue.extend({
       const selectedFeatures = STYLE_LAYERS.map((layerId) => {
         return this.map.queryRenderedFeatures(e.point, {
           layers: [layerId],
-        }) as ApiPoi[]
+        }) as unknown as MapPoi[]
       }).flat()
       if (selectedFeatures.length > 0) {
-        this.updateSelectedFeature(selectedFeatures[0])
+        this.updateSelectedFeature(mapPoi2ApiPoi(selectedFeatures[0]))
       } else {
         this.updateSelectedFeature(null)
       }

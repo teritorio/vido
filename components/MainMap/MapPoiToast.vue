@@ -258,23 +258,7 @@ export default Vue.extend({
 
     poiProps(): ApiPoiProperties {
       return {
-        ...((this.poi.properties &&
-          Object.fromEntries(
-            Object.entries(this.poi.properties).map(([key, value]) => [
-              key,
-              (key !== 'opening_hours' &&
-                value &&
-                typeof value === 'string' &&
-                value.includes(';') &&
-                value
-                  .split(';')
-                  .filter((s: string) => s)
-                  .map((s: string) => s.trim())
-                  .filter((s: string) => s)) ||
-                value,
-            ])
-          )) ||
-          {}),
+        ...(this.poi.properties || {}),
         ...(this.apiProps || {}),
       }
     },
@@ -296,64 +280,16 @@ export default Vue.extend({
       )
     },
 
-    colorFill(): string | null {
-      const colorFill = this.poiProps.display?.color_fill
-      if (colorFill) {
-        return colorFill
-        // @ts-ignore
-      } else if (this.poi && this.poi.layer && this.poi.layer.paint) {
-        const tc =
-          // @ts-ignore
-          this.poi.layer.paint['fill-color'] ||
-          // and then
-          // @ts-ignore
-          this.poi.layer.paint['text-color'] ||
-          // @ts-ignore
-          this.poi.layer.paint['line-color']
-        return `rgba(${Math.round(tc.r * 255).toFixed(0)}, ${Math.round(
-          tc.g * 255
-        ).toFixed(0)}, ${Math.round(tc.b * 255).toFixed(0)}, ${tc.a})`
-      } else {
-        return 'black'
-      }
+    colorFill(): string {
+      return this.poiProps.display?.color_fill || 'black'
     },
 
-    colorLine(): string | null {
-      const colorLine = this.poiProps.display?.color_line
-      if (colorLine) {
-        return colorLine
-        // @ts-ignore
-      } else if (this.poi && this.poi.layer && this.poi.layer.paint) {
-        const tc =
-          // @ts-ignore
-          this.poi.layer.paint['text-color'] ||
-          // @ts-ignore
-          this.poi.layer.paint['line-color'] ||
-          // and then
-          // @ts-ignore
-          this.poi.layer.paint['fill-color']
-        return `rgba(${Math.round(tc.r * 255).toFixed(0)}, ${Math.round(
-          tc.g * 255
-        ).toFixed(0)}, ${Math.round(tc.b * 255).toFixed(0)}, ${tc.a})`
-      } else {
-        return 'black'
-      }
+    colorLine(): string {
+      return this.poiProps.display?.color_line || 'black'
     },
 
-    icon(): string {
-      const icon = this.poiProps.display?.icon
-      if (icon) {
-        return icon
-        // @ts-ignore
-      } else if (this.poi.layer?.layout['icon-image']?.name) {
-        return (
-          'teritorio teritorio-' +
-          // @ts-ignore
-          this.poi.layer?.layout['icon-image']?.name.replace(/[•◯⬤]/g, '')
-        )
-      } else {
-        return ''
-      }
+    icon(): string | undefined {
+      return this.poiProps.display?.icon
     },
 
     category(): string | undefined {

@@ -1,7 +1,8 @@
 import { Store } from 'vuex'
 
-import { ApiPoi } from '@/lib/apiPois'
 import { LatLng, Pitch, Mode } from '@/utils/types'
+
+import { ApiPoi, ApiPoiProperties } from '~/lib/apiPois'
 
 enum Mutation {
   SET_CONFIG = 'SET_CONFIG',
@@ -68,7 +69,7 @@ export const actions = {
       }
 
       if (feature?.properties) {
-        const cleanProperties: ApiPoi['properties'] = {}
+        const cleanProperties: { [key: string]: any } = {}
 
         Object.keys(feature.properties).forEach((key) => {
           if (IsJsonString(feature.properties[key])) {
@@ -78,7 +79,7 @@ export const actions = {
           }
         })
 
-        goodFeature.properties = cleanProperties
+        goodFeature.properties = cleanProperties as ApiPoiProperties
       }
 
       store.commit(Mutation.SET_SELECTED_FEATURE, {
