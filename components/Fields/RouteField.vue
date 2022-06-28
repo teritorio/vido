@@ -1,5 +1,5 @@
 <template>
-  <span v-if="activity && detail"> {{ activity }} : {{ detail }} </span>
+  <span>{{ activity }} : {{ detail }}</span>
 </template>
 
 <script lang="ts">
@@ -16,6 +16,7 @@ export default Vue.extend({
       default: null,
     },
   },
+
   computed: {
     detail(): string | null {
       const result = []

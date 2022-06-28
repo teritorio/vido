@@ -69,19 +69,11 @@
             <AddressField :properties="poiProps"></AddressField>
           </p>
 
-          <template
-            v-for="(route, activity) in routes"
+          <RoutesField
             v-else-if="property === 'route:*'"
-          >
-            <p :key="activity" class="text-sm mt-2">
-              <RouteField
-                :activity="
-                  $propertyTranslations.pv('route:*', activity, 'popup')
-                "
-                :route="route"
-              />
-            </p>
-          </template>
+            :properties="poiProps"
+            class="text-sm mt-2"
+          />
 
           <ul v-else-if="property === 'phone' && $screen.phone">
             <li v-for="item in poiProps[property]" :key="item">
@@ -223,12 +215,12 @@ import TeritorioIcon from '@/components/UI/TeritorioIcon.vue'
 import { getPoiById, ApiPoi, ApiPoiProperties, ApiPoiId } from '@/lib/apiPois'
 import { isIOS } from '@/utils/isIOS'
 
-import RouteField from '~/components/Fields/RouteField.vue'
+import RoutesField from '~/components/Fields/RoutesField.vue'
 import { PropertyTranslationsContextEnum } from '~/plugins/property-translations'
 
 export default Vue.extend({
   components: {
-    RouteField,
+    RoutesField,
     TeritorioIcon,
     AddressField,
     Website,
