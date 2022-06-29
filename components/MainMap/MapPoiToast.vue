@@ -212,7 +212,7 @@ import DateRange from '@/components/Fields/DateRange.vue'
 import Website from '@/components/Fields/Website.vue'
 import FavoriteIcon from '@/components/UI/FavoriteIcon.vue'
 import TeritorioIcon from '@/components/UI/TeritorioIcon.vue'
-import { getPoiById, ApiPoi, ApiPoiProperties, ApiPoiId } from '@/lib/apiPois'
+import { ApiPoi, ApiPoiProperties, ApiPoiId } from '@/lib/apiPois'
 import { isIOS } from '@/utils/isIOS'
 
 import RoutesField from '~/components/Fields/RoutesField.vue'
@@ -241,11 +241,9 @@ export default Vue.extend({
   },
 
   data(): {
-    apiProps: ApiPoiProperties | null
     textLimit: number
   } {
     return {
-      apiProps: null,
       textLimit: 160,
     }
   },
@@ -257,10 +255,7 @@ export default Vue.extend({
     }),
 
     poiProps(): ApiPoiProperties {
-      return {
-        ...(this.poi.properties || {}),
-        ...(this.apiProps || {}),
-      }
+      return this.poi.properties
     },
 
     id(): ApiPoiId | undefined {
@@ -352,12 +347,6 @@ export default Vue.extend({
     },
   },
 
-  watch: {
-    poi() {
-      this.onPoiChange()
-    },
-  },
-
   mounted() {
     if (!this.notebook && this.id) {
       this.$tracking({
@@ -371,40 +360,13 @@ export default Vue.extend({
     }
   },
 
-  created() {
-    this.onPoiChange()
-  },
-
   methods: {
-    onPoiChange() {
-      this.apiProps = null
-
-      if (!this.poiProps.metadata) {
-        this.fetchMetadata()
-      }
-    },
-
     poiPropTranslate(property: string) {
       return this.$propertyTranslations.pv(
         property,
         this.poiProps[property],
         PropertyTranslationsContextEnum.Popup
       )
-    },
-
-    fetchMetadata(): Promise<void> {
-      if (!this.id) {
-        return Promise.resolve()
-      }
-
-      return getPoiById(
-        this.$vidoConfig.API_ENDPOINT,
-        this.$vidoConfig.API_PROJECT,
-        this.$vidoConfig.API_THEME,
-        this.id
-      ).then((apiPoi) => {
-        this.apiProps = apiPoi.properties
-      })
     },
 
     onZoomClick() {

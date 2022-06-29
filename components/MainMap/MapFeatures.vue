@@ -41,6 +41,7 @@
 
 <script lang="ts">
 import { PoiFilter } from '@teritorio/map'
+import debounce from 'lodash.debounce'
 import throttle from 'lodash.throttle'
 import maplibregl, {
   MapDataEvent,
@@ -63,7 +64,7 @@ import { LatLng, MapStyleEnum } from '@/utils/types'
 import { getHashPart } from '@/utils/url'
 
 import { ApiMenuCategory } from '~/lib/apiMenu'
-import { ApiPoi } from '~/lib/apiPois'
+import { ApiPoi, getPoiById } from '~/lib/apiPois'
 import { MapPoi, mapPoi2ApiPoi } from '~/lib/mapPois'
 
 const STYLE_LAYERS = [
@@ -210,6 +211,8 @@ export default Vue.extend({
       leading: true,
       trailing: true,
     })
+
+    this.updateSelectedFeature = debounce(this.updateSelectedFeature, 300)
   },
 
   beforeMount() {
@@ -313,21 +316,41 @@ export default Vue.extend({
     // Map interactions
 
     onClick(e: MapMouseEvent) {
-      const selectedFeatures = STYLE_LAYERS.map((layerId) => {
+      let selectedFeatures = STYLE_LAYERS.map((layerId) => {
         return this.map.queryRenderedFeatures(e.point, {
           layers: [layerId],
         }) as unknown as MapPoi[]
       }).flat()
+      selectedFeatures = selectedFeatures.filter(
+        (feature) => feature.properties.popup_properties
+      )
       if (selectedFeatures.length > 0) {
-        this.updateSelectedFeature(mapPoi2ApiPoi(selectedFeatures[0]))
+        // Set temp partial data from vector tiles. Then fetch full data
+        this.updateSelectedFeature(mapPoi2ApiPoi(selectedFeatures[0]), true)
       } else {
         this.updateSelectedFeature(null)
       }
     },
 
-    updateSelectedFeature(feature: ApiPoi | null) {
+    updateSelectedFeature(feature: ApiPoi | null, fetch: boolean = false) {
       if (this.selectedFeature !== feature) {
         this.$emit('on-select-feature', feature)
+
+        if (feature && fetch && feature.properties.metadata.id) {
+          // Seted temp partial data from vector tiles.
+          // Now fetch full data.
+          return getPoiById(
+            this.$vidoConfig.API_ENDPOINT,
+            this.$vidoConfig.API_PROJECT,
+            this.$vidoConfig.API_THEME,
+            feature.properties.metadata.id
+          ).then((apiPoi) => {
+            // Overide geometry.
+            // Keep same original location to avoid side effect on moving selected object.
+            apiPoi.geometry = feature.geometry
+            this.$emit('on-select-feature', apiPoi)
+          })
+        }
       }
     },
 

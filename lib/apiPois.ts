@@ -16,6 +16,10 @@ export interface ApiPoiProperties {
   'addr:postcode'?: string
   'addr:street'?: string
 
+  phone?: string[]
+  email?: string[]
+  website?: string[]
+
   metadata: {
     id: ApiPoiId
     source?: string
@@ -48,6 +52,8 @@ export interface ApiPoiProperties {
 }
 export interface ApiPoi
   extends GeoJSON.Feature<GeoJSON.Geometry, ApiPoiProperties> {}
+
+export const ApiPoiPropertiesArray = ['image', 'phone', 'email', 'website']
 
 export interface ApiPois
   extends GeoJSON.FeatureCollection<GeoJSON.Geometry, ApiPoiProperties> {}

@@ -1,85 +1,54 @@
 import { MapGeoJSONFeature } from 'maplibre-gl'
 
-import { ApiPoi, ApiPoiId } from './apiPois'
+import { ApiPoi, ApiPoiId, ApiPoiPropertiesArray } from './apiPois'
 
 export interface MapPoi extends MapGeoJSONFeature {}
 
-function colorFill(poi: MapPoi): string | undefined {
-  if (poi.layer.paint) {
-    const tc =
-      poi.layer.type === 'fill'
-        ? // @ts-ignore
-          poi.layer.paint['fill-color']
-        : poi.layer.type === 'symbol'
-        ? // and then
-          // @ts-ignore
-          poi.layer.paint['text-color']
-        : poi.layer.type === 'line'
-        ? // @ts-ignore
-          poi.layer.paint['line-color']
-        : undefined
-    if (tc) {
-      return `rgba(${Math.round(tc.r * 255).toFixed(0)}, ${Math.round(
-        tc.g * 255
-      ).toFixed(0)}, ${Math.round(tc.b * 255).toFixed(0)}, ${tc.a})`
-    }
-  }
-}
-
-function colorLine(poi: MapPoi): string | undefined {
-  if (poi.layer.paint) {
-    const tc =
-      poi.layer.type === 'symbol'
-        ? // @ts-ignore
-          poi.layer.paint['text-color']
-        : poi.layer.type === 'line'
-        ? // @ts-ignore
-          poi.layer.paint['line-color']
-        : // and then
-        poi.layer.type === 'fill'
-        ? // @ts-ignore
-          poi.layer.paint['fill-color']
-        : undefined
-    if (tc) {
-      return `rgba(${Math.round(tc.r * 255).toFixed(0)}, ${Math.round(
-        tc.g * 255
-      ).toFixed(0)}, ${Math.round(tc.b * 255).toFixed(0)}, ${tc.a})`
-    }
-  }
-}
-
-function icon(poi: MapPoi): string | undefined {
-  if (poi.layer.type === 'symbol') {
-    // @ts-ignore
-    const name = poi.layer.layout?.['icon-image']?.name
-    if (name) {
-      return 'teritorio teritorio-' + name.replace(/[•◯⬤]/g, '')
-    }
-  }
+function split(value: string | undefined): string[] | undefined {
+  return value
+    ? value
+        .split(';')
+        .map((s: string) => s.trim())
+        .filter((s: string) => s)
+    : undefined
 }
 
 export function mapPoi2ApiPoi(mapPoi: MapPoi): ApiPoi {
   const props = Object.fromEntries(
     Object.entries(mapPoi.properties).map(([key, value]) => [
       key,
-      (key !== 'opening_hours' &&
-        value &&
-        typeof value === 'string' &&
-        value.includes(';') &&
-        value
-          .split(';')
-          .filter((s: string) => s)
-          .map((s: string) => s.trim())
-          .filter((s: string) => s)) ||
-        value,
+      value && ApiPoiPropertiesArray.includes(key) ? split(value) : value,
     ])
   )
-  props.metadata = { id: mapPoi.id as ApiPoiId }
-  props.display = {
-    icon: icon(mapPoi),
-    color_fill: colorFill(mapPoi),
-    color_line: colorLine(mapPoi),
+
+  props.metadata = {
+    id: mapPoi.id as ApiPoiId,
+    category_ids: split(props.category_ids),
   }
+  delete props.category_ids
+
+  props.display = {
+    icon: props.subclass || props.class || props.superclass,
+    color_fill: props.color_fill,
+    color_line: props.color_line,
+    style_class: [props.superclass, props.class, props.subclass],
+  }
+  delete props.subclass
+  delete props.class
+  delete props.superclass
+  delete props.color_fill
+  delete props.color_line
+
+  props.editorial = {
+    popup_properties: split(props.popup_properties),
+  }
+  delete props.popup_properties
+
+  delete props.priority
+  delete props.rank
+  delete props.style
+  delete props.zoom
+
   mapPoi.properties = props
   return mapPoi as unknown as ApiPoi
 }
