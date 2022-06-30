@@ -60,7 +60,7 @@ export default Vue.extend({
     const saturday = new Date(today)
     saturday.setDate(saturday.getDate() + ((6 + (7 - saturday.getDay())) % 7))
 
-    const sunday = new Date(today)
+    const sunday = new Date(saturday)
     sunday.setDate(saturday.getDate() + 1)
 
     const in7days = new Date(today)
