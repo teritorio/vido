@@ -848,9 +848,14 @@ export default (
     },
 
     handleFavorites() {
-      this.fetchFavorites(this.favoritesIds).then((favorites) => {
-        this.favorites = favorites
-      })
+      this.fetchFavorites(this.favoritesIds)
+        .then((favorites) => {
+          this.favorites = favorites
+        })
+        .catch((e) => {
+          // eslint-disable-next-line no-console
+          console.error('Vido error:', e.message)
+        })
     },
 
     fetchFavorites(ids: [string]): Promise<ApiPoi[]> {

@@ -194,18 +194,23 @@ export default Vue.extend({
     },
 
     setStyle(mapStyle: MapStyleEnum) {
-      this.getStyle(mapStyle).then((style) => {
-        const vectorSource = Object.values(style.sources).find(
-          (source) => ['vector', 'raster'].lastIndexOf(source.type) >= 0
-        ) as VectorSourceSpecification | RasterSourceSpecification
-        if (vectorSource) {
-          this.$emit('full-attribution', vectorSource.attribution)
-        }
+      this.getStyle(mapStyle)
+        .then((style) => {
+          const vectorSource = Object.values(style.sources).find(
+            (source) => ['vector', 'raster'].lastIndexOf(source.type) >= 0
+          ) as VectorSourceSpecification | RasterSourceSpecification
+          if (vectorSource) {
+            this.$emit('full-attribution', vectorSource.attribution)
+          }
 
-        this.$emit('map-style-load', style)
-        this.style = style
-        this.map?.setStyle(style)
-      })
+          this.$emit('map-style-load', style)
+          this.style = style
+          this.map?.setStyle(style)
+        })
+        .catch((e) => {
+          // eslint-disable-next-line no-console
+          console.error('Vido error:', e.message)
+        })
     },
 
     async getStyle(mapStyle: MapStyleEnum): Promise<StyleSpecification> {

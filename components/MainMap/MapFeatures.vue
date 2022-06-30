@@ -337,19 +337,24 @@ export default Vue.extend({
         this.$emit('on-select-feature', feature)
 
         if (feature && fetch && feature.properties.metadata.id) {
-          // Seted temp partial data from vector tiles.
-          // Now fetch full data.
-          return getPoiById(
-            this.$vidoConfig.API_ENDPOINT,
-            this.$vidoConfig.API_PROJECT,
-            this.$vidoConfig.API_THEME,
-            feature.properties.metadata.id
-          ).then((apiPoi) => {
-            // Overide geometry.
-            // Keep same original location to avoid side effect on moving selected object.
-            apiPoi.geometry = feature.geometry
-            this.$emit('on-select-feature', apiPoi)
-          })
+          try {
+            // Seted temp partial data from vector tiles.
+            // Now fetch full data.
+            return getPoiById(
+              this.$vidoConfig.API_ENDPOINT,
+              this.$vidoConfig.API_PROJECT,
+              this.$vidoConfig.API_THEME,
+              feature.properties.metadata.id
+            ).then((apiPoi) => {
+              // Overide geometry.
+              // Keep same original location to avoid side effect on moving selected object.
+              apiPoi.geometry = feature.geometry
+              this.$emit('on-select-feature', apiPoi)
+            })
+          } catch (e) {
+            // eslint-disable-next-line no-console
+            console.error('Vido error:', e.message)
+          }
         }
       }
     },
