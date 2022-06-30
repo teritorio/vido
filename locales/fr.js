@@ -116,6 +116,6 @@ export default {
     tomorrow: 'Demain',
     thisWeekend: 'Ce week-end',
     nextWeek: '7 prochains jours',
-    nextMonth: '30 prochain jours',
+    nextMonth: '30 prochains jours',
   },
 }

@@ -2237,12 +2237,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/runtime@npm:^7.0.0, @babel/runtime@npm:^7.10.2, @babel/runtime@npm:^7.11.2, @babel/runtime@npm:^7.12.0, @babel/runtime@npm:^7.12.5, @babel/runtime@npm:^7.14.0, @babel/runtime@npm:^7.14.6, @babel/runtime@npm:^7.14.8, @babel/runtime@npm:^7.17.8, @babel/runtime@npm:^7.3.1, @babel/runtime@npm:^7.5.0, @babel/runtime@npm:^7.5.5, @babel/runtime@npm:^7.7.2, @babel/runtime@npm:^7.7.6, @babel/runtime@npm:^7.8.4":
+"@babel/runtime@npm:^7.0.0, @babel/runtime@npm:^7.10.2, @babel/runtime@npm:^7.11.2, @babel/runtime@npm:^7.12.5, @babel/runtime@npm:^7.14.0, @babel/runtime@npm:^7.14.6, @babel/runtime@npm:^7.14.8, @babel/runtime@npm:^7.17.8, @babel/runtime@npm:^7.3.1, @babel/runtime@npm:^7.5.0, @babel/runtime@npm:^7.5.5, @babel/runtime@npm:^7.7.2, @babel/runtime@npm:^7.7.6, @babel/runtime@npm:^7.8.4":
   version: 7.17.9
   resolution: "@babel/runtime@npm:7.17.9"
   dependencies:
     regenerator-runtime: ^0.13.4
   checksum: 69455c26017d0bd8e269c073c9da73238b25115f6eb655433f5411707ed6fe5f714f9b698cd1fcb7e89f5822e7b994db0bce394e54a89e6900fd7f0fb2c9927a
+  languageName: node
+  linkType: hard
+
+"@babel/runtime@npm:^7.17.2":
+  version: 7.18.6
+  resolution: "@babel/runtime@npm:7.18.6"
+  dependencies:
+    regenerator-runtime: ^0.13.4
+  checksum: e26ebe35005da79d4add737c7fcd4600cd754c8f20606a8f28d38c2e9fc65b5669f5f6e739e4272649c74cb909378bd1519a521452430da9d64a1f8378567e9c
   languageName: node
   linkType: hard
 
@@ -5374,7 +5383,7 @@ __metadata:
     maplibre-gl: ^2.1.9
     node-sass: ^6.0.1
     nuxt: ^2.15.8
-    opening_hours: ^3.7.0
+    opening_hours: ^3.8.0
     postcss: ^8.4.12
     prettier: ^2.6.2
     sass-loader: ^10.2.1
@@ -13515,7 +13524,7 @@ fsevents@^1.2.7:
   languageName: node
   linkType: hard
 
-"i18next-browser-languagedetector@npm:^6.1.2":
+"i18next-browser-languagedetector@npm:^6.1.4":
   version: 6.1.4
   resolution: "i18next-browser-languagedetector@npm:6.1.4"
   dependencies:
@@ -13524,12 +13533,12 @@ fsevents@^1.2.7:
   languageName: node
   linkType: hard
 
-"i18next@npm:^20.3.4":
-  version: 20.6.1
-  resolution: "i18next@npm:20.6.1"
+"i18next@npm:^21.8.3":
+  version: 21.8.11
+  resolution: "i18next@npm:21.8.11"
   dependencies:
-    "@babel/runtime": ^7.12.0
-  checksum: bda0e31294da052dbc04fec6c19c264c12a1f54faa7481775351265e1227f4ef9e0061660ce24d836000da0605aeddc633a840cbf0af70c7b468db889b60eaf5
+    "@babel/runtime": ^7.17.2
+  checksum: 69527569eec7a9b2398211dc184e17dc72fbc3b9a7cabd8cabd4dce369bd39ae3a2187b2a1056649daa8cdee6ed58da79a342e441fdd7f67bc1a80a506e495dc
   languageName: node
   linkType: hard
 
@@ -17734,14 +17743,14 @@ fsevents@^1.2.7:
   languageName: node
   linkType: hard
 
-"opening_hours@npm:^3.7.0":
-  version: 3.7.0
-  resolution: "opening_hours@npm:3.7.0"
+"opening_hours@npm:^3.8.0":
+  version: 3.8.0
+  resolution: "opening_hours@npm:3.8.0"
   dependencies:
-    i18next: ^20.3.4
-    i18next-browser-languagedetector: ^6.1.2
-    suncalc: ^1.8.0
-  checksum: f650692e7c40a845da4718c96458897e4ab34f78733549ff4b00e0109b27e842dfcbc41a81b75ed76b95dbf40e9270ddea017bc567961115cfc3420f0c09501a
+    i18next: ^21.8.3
+    i18next-browser-languagedetector: ^6.1.4
+    suncalc: ^1.9.0
+  checksum: f45c9106492f9067cdb092b514383619a42e60668326667fc001379f90b7a37475857d4247e0596ce188687102f3fd2358f6b019d65ece85722a498dff2c1fb7
   languageName: node
   linkType: hard
 
@@ -22518,7 +22527,7 @@ fsevents@^1.2.7:
   languageName: node
   linkType: hard
 
-"suncalc@npm:^1.8.0":
+"suncalc@npm:^1.9.0":
   version: 1.9.0
   resolution: "suncalc@npm:1.9.0"
   checksum: aab97f73d6a774e11de0f13053ce0d902753449c1c4c36649ff9898216f99ed74d870f1a82369291867177b526c698c0108fce53d455e13ed9660c1cbd19163c

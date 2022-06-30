@@ -1,6 +1,6 @@
 {
   "name": "@teritorio/vido",
-  "version": "1.16.1",
+  "version": "1.16.2",
   "private": true,
   "scripts": {
     "dev": "yarn nuxt",
@@ -43,7 +43,7 @@
     "mapbox-gl-vue": "^2.0.4",
     "maplibre-gl": "^2.1.9",
     "nuxt": "^2.15.8",
-    "opening_hours": "^3.7.0",
+    "opening_hours": "^3.8.0",
     "url-slug": "^3.0.3",
     "vue-matomo": "^4.1.0",
     "vue-screen": "^1.5.6",
