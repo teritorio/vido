@@ -29,6 +29,8 @@ export interface Settings {
   bbox_line: GeoJSON.LineString
   // eslint-disable-next-line camelcase
   default_country: string
+  // eslint-disable-next-line camelcase
+  default_country_state_opening_hours: string
 
   themes: SiteInfosTheme[]
 }
