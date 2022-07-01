@@ -69,8 +69,7 @@
               :key="property"
               class="detail-left-block"
             >
-              <h2>{{ $tc('details.informations') }}</h2>
-              <RoutesField :properties="p" />
+              <RoutesField :context="context" :properties="p" />
             </div>
 
             <Download
@@ -125,6 +124,7 @@ import Mapillary from '~/components/Details/Mapillary.vue'
 import Share from '~/components/Details/Share.vue'
 import RoutesField from '~/components/Fields/RoutesField.vue'
 import { ContentEntry } from '~/lib/apiContent'
+import { PropertyTranslationsContextEnum } from '~/plugins/property-translations'
 import { OriginEnum } from '~/utils/types'
 
 export default Vue.extend({
@@ -163,6 +163,9 @@ export default Vue.extend({
     ...mapGetters({
       favoritesIds: 'favorite/favoritesIds',
     }),
+    context(): PropertyTranslationsContextEnum {
+      return PropertyTranslationsContextEnum.Details
+    },
     p(): ApiPoiProperties {
       return this.poi.properties
     },

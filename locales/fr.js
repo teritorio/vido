@@ -122,6 +122,9 @@ export default {
   },
   fields: {
     route: {
+      difficulty: 'Difficulté :',
+      lenght: 'Distance :',
+      duration: 'Durée :',
       difficulties: {
         easy: 'facile',
         normal: 'normal',

@@ -1,19 +1,17 @@
 <template>
   <div>
     <div v-for="(route, activity) in routes" :key="activity">
-      <RouteField
-        :activity="$propertyTranslations.pv('route:*', activity, 'popup')"
-        :route="route"
-      />
+      <RouteField :context="context" :activity="activity" :route="route" />
     </div>
   </div>
 </template>
 
 <script lang="ts">
 import Vue, { PropType } from 'vue'
-import { ApiPoiProperties } from '~/lib/apiPois'
 
 import RouteField from '~/components/Fields/RouteField.vue'
+import { ApiPoiProperties } from '~/lib/apiPois'
+import { PropertyTranslationsContextEnum } from '~/plugins/property-translations'
 
 export default Vue.extend({
   components: {
@@ -21,6 +19,10 @@ export default Vue.extend({
   },
 
   props: {
+    context: {
+      type: String as PropType<PropertyTranslationsContextEnum>,
+      required: true,
+    },
     properties: {
       type: Object as PropType<ApiPoiProperties>,
       required: true,

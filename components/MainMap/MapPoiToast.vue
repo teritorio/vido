@@ -71,6 +71,7 @@
 
           <RoutesField
             v-else-if="property === 'route:*'"
+            :context="context"
             :properties="poiProps"
             class="text-sm mt-2"
           />
@@ -253,6 +254,10 @@ export default Vue.extend({
       isModeExplorer: 'map/isModeExplorer',
       favoritesIds: 'favorite/favoritesIds',
     }),
+
+    context(): PropertyTranslationsContextEnum {
+      return PropertyTranslationsContextEnum.Popup
+    },
 
     poiProps(): ApiPoiProperties {
       return this.poi.properties
