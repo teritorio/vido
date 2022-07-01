@@ -9,6 +9,8 @@ export enum PropertyTranslationsContextEnum {
   List = 'label_list',
 }
 
+const Default = PropertyTranslationsContextEnum.Default
+
 export interface PropertyTranslationsPlugin {
   // @ts-ignore
   set(propertyTranslations: PropertyTranslations): void
@@ -32,31 +34,23 @@ const plugin: Plugin = (_, inject) => {
     },
     p(
       propertyName: string,
-      context: PropertyTranslationsContextEnum = PropertyTranslationsContextEnum.Default
+      context: PropertyTranslationsContextEnum = Default
     ): string {
       const pn = pt.propertyTranslations[propertyName]
       return (
-        (pn &&
-          ((context && pn[context].fr) ||
-            pn[PropertyTranslationsContextEnum.Default].fr)) ||
-        propertyName
+        // When context exists, does not use default
+        (pn?.[context] ? pn?.[context]?.fr : pn?.[Default]?.fr) || propertyName
       )
     },
     pv(
       propertyName: string,
       valueName: string,
-      context: PropertyTranslationsContextEnum = PropertyTranslationsContextEnum.Default
+      context: PropertyTranslationsContextEnum = Default
     ): string {
-      const pn = pt.propertyTranslations[propertyName]
+      const pn = pt.propertyTranslations[propertyName]?.values?.[valueName]
       return (
-        (pn?.values &&
-          ((context &&
-            pn.values[valueName] &&
-            pn.values[valueName][context]?.fr) ||
-            (pn.values[valueName] &&
-              pn.values[valueName][PropertyTranslationsContextEnum.Default]
-                ?.fr))) ||
-        valueName
+        // When context exists, does not use default
+        (pn?.[context] ? pn?.[context]?.fr : pn?.[Default]?.fr) || valueName
       )
     },
   }
