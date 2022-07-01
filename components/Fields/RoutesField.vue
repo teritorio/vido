@@ -1,8 +1,12 @@
 <template>
   <div>
-    <div v-for="(route, activity) in routes" :key="activity">
-      <RouteField :context="context" :activity="activity" :route="route" />
-    </div>
+    <RouteField
+      v-for="(route, activity) in routes"
+      :key="activity"
+      :context="context"
+      :activity="activity"
+      :route="route"
+    />
   </div>
 </template>
 

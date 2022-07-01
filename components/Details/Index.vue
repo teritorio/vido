@@ -67,13 +67,13 @@
               />
             </div>
 
-            <div
+            <RoutesField
               v-if="property == 'route:*'"
               :key="property"
               class="detail-left-block"
-            >
-              <RoutesField :context="context" :properties="p" />
-            </div>
+              :context="context"
+              :properties="p"
+            />
 
             <Download
               v-if="property == 'first_download'"
