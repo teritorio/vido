@@ -2,6 +2,7 @@
   <Home
     v-if="settings"
     :settings="settings"
+    :nav-menu-entries="contents"
     :initial-category-ids="categoryIds"
     :initial-poi="initialPoi"
   />
@@ -13,6 +14,7 @@ import { MetaInfo } from 'vue-meta'
 import { mapActions } from 'vuex'
 
 import Home from '@/components/Home/Home.vue'
+import { ContentEntry, getContents } from '@/lib/apiContent'
 import { Category, getMenu } from '@/lib/apiMenu'
 import { getPoiById, ApiPoi } from '@/lib/apiPois'
 import {
@@ -29,12 +31,18 @@ export default Vue.extend({
 
   async asyncData({ params, route, req }): Promise<{
     settings: Settings
+    contents: ContentEntry[]
     propertyTranslations: PropertyTranslations
     categories: Category[]
     categoryIds: number[] | null
     initialPoi: ApiPoi | null
   }> {
     const fetchSettings = getSettings(
+      vidoConfig(req).API_ENDPOINT,
+      vidoConfig(req).API_PROJECT,
+      vidoConfig(req).API_THEME
+    )
+    const fetchContents = getContents(
       vidoConfig(req).API_ENDPOINT,
       vidoConfig(req).API_PROJECT,
       vidoConfig(req).API_THEME
@@ -78,9 +86,10 @@ export default Vue.extend({
       )
     }
 
-    const [settings, propertyTranslations, categories, initialPoi] =
+    const [settings, contents, propertyTranslations, categories, initialPoi] =
       await Promise.all([
         fetchSettings,
+        fetchContents,
         fetchPropertyTranslations,
         fetchCategories,
         fetchPoi,
@@ -88,6 +97,7 @@ export default Vue.extend({
 
     return Promise.resolve({
       settings,
+      contents,
       propertyTranslations,
       categories,
       categoryIds,
@@ -97,6 +107,7 @@ export default Vue.extend({
 
   data(): {
     settings: Settings
+    contents: ContentEntry[]
     propertyTranslations: PropertyTranslations
     categories: Category[]
     categoryIds: number[] | null
@@ -105,6 +116,8 @@ export default Vue.extend({
     return {
       // @ts-ignore
       settings: null,
+      // @ts-ignore
+      contents: null,
       // @ts-ignore
       propertyTranslations: null,
       // @ts-ignore

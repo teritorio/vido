@@ -70,40 +70,29 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
+import Vue, { PropType } from 'vue'
 import { TDropdown } from 'vue-tailwind/dist/components'
 import { mapActions } from 'vuex'
 
-import { NavMenuEntry } from '@/utils/types'
+import { ContentEntry } from '@/lib/apiContent'
 
 export default Vue.extend({
   components: {
     TDropdown,
   },
 
-  data(): {
-    entries: NavMenuEntry[]
-  } {
-    return {
-      entries: [],
-    }
-  },
-
-  mounted() {
-    this.fetchConfig()
+  props: {
+    entries: {
+      type: Array as PropType<ContentEntry[]>,
+      required: true,
+    },
   },
 
   methods: {
     ...mapActions({
       setSiteLocale: 'site/setLocale',
     }),
-    fetchConfig() {
-      fetch(
-        `${this.$vidoConfig.API_ENDPOINT}/${this.$vidoConfig.API_PROJECT}/${this.$vidoConfig.API_THEME}/articles?slug=non-classe`
-      )
-        .then((data) => (data.ok ? data.json() : []))
-        .then((data) => (this.entries = data))
-    },
+
     setLocale(locale: string) {
       this.$i18n.setLocale(locale)
       this.setSiteLocale(locale)

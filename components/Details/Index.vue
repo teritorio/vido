@@ -1,7 +1,11 @@
 <template>
   <div class="w-full container">
     <div>
-      <Header :theme="settings.themes[0]" :color-line="colorLine">
+      <Header
+        :theme="settings.themes[0]"
+        :nav-menu-entries="navMenuEntries"
+        :color-line="colorLine"
+      >
         <div class="flex right-10">
           <button
             :aria-label="
@@ -112,6 +116,7 @@ import Location from '~/components/Details/Location.vue'
 import Mapillary from '~/components/Details/Mapillary.vue'
 import Share from '~/components/Details/Share.vue'
 import RoutesField from '~/components/Fields/RoutesField.vue'
+import { ContentEntry } from '~/lib/apiContent'
 import { OriginEnum } from '~/utils/types'
 
 export default Vue.extend({
@@ -133,6 +138,10 @@ export default Vue.extend({
   props: {
     settings: {
       type: Object as PropType<Settings>,
+      required: true,
+    },
+    navMenuEntries: {
+      type: Array as PropType<ContentEntry[]>,
       required: true,
     },
     poi: {

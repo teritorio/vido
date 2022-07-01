@@ -9,7 +9,7 @@
     </div>
 
     <slot />
-    <NavMenu class="ml-3 sm:ml-9" />
+    <NavMenu :entries="navMenuEntries" class="ml-3 sm:ml-9" />
   </header>
 </template>
 
@@ -19,6 +19,8 @@ import Vue, { PropType } from 'vue'
 import NavMenu from '@/components/MainMap/NavMenu.vue'
 import { SiteInfosTheme } from '@/lib/apiSettings'
 
+import { ContentEntry } from '~/lib/apiContent'
+
 export default Vue.extend({
   components: {
     NavMenu,
@@ -27,6 +29,10 @@ export default Vue.extend({
     theme: {
       type: Object as PropType<SiteInfosTheme>,
       default: null,
+    },
+    navMenuEntries: {
+      type: Array as PropType<ContentEntry[]>,
+      required: true,
     },
   },
 })

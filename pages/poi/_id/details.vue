@@ -1,5 +1,10 @@
 <template>
-  <Index v-if="settings && poi" :settings="settings" :poi="poi" />
+  <Index
+    v-if="settings && poi"
+    :settings="settings"
+    :nav-menu-entries="contents"
+    :poi="poi"
+  />
 </template>
 
 <script lang="ts">
@@ -7,6 +12,7 @@ import Vue from 'vue'
 import { MetaInfo } from 'vue-meta'
 import { mapActions } from 'vuex'
 
+import { ContentEntry, getContents } from '@/lib/apiContent'
 import { getPoiById } from '@/lib/apiPois'
 import {
   getPropertyTranslations,
@@ -30,10 +36,16 @@ export default Vue.extend({
 
   async asyncData({ params, req }): Promise<{
     settings: Settings
+    contents: ContentEntry[]
     propertyTranslations: PropertyTranslations
     poi: ApiPoi
   }> {
     const getSettingsPromise = getSettings(
+      vidoConfig(req).API_ENDPOINT,
+      vidoConfig(req).API_PROJECT,
+      vidoConfig(req).API_THEME
+    )
+    const fetchContents = getContents(
       vidoConfig(req).API_ENDPOINT,
       vidoConfig(req).API_PROJECT,
       vidoConfig(req).API_THEME
@@ -53,14 +65,16 @@ export default Vue.extend({
       }
     )
 
-    const [settings, propertyTranslations, poi] = await Promise.all([
+    const [settings, contents, propertyTranslations, poi] = await Promise.all([
       getSettingsPromise,
+      fetchContents,
       fetchPropertyTranslations,
       getPoiPromise,
     ])
 
     return Promise.resolve({
       settings,
+      contents,
       propertyTranslations,
       poi,
     })
@@ -68,12 +82,15 @@ export default Vue.extend({
 
   data(): {
     settings: Settings
+    contents: ContentEntry[]
     propertyTranslations: PropertyTranslations
     poi: ApiPoi
   } {
     return {
       // @ts-ignore
       settings: null,
+      // @ts-ignore
+      contents: null,
       // @ts-ignore
       propertyTranslations: null,
       // @ts-ignore

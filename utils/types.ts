@@ -26,13 +26,6 @@ export enum MapStyleEnum {
   bicycle = 'bicycle',
 }
 
-export type NavMenuEntry = {
-  // eslint-disable-next-line camelcase
-  post_id: number
-  title: string
-  url: string
-}
-
 export enum OriginEnum {
   // eslint-disable-next-line camelcase
   link_share = 'link_share',

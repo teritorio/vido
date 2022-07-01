@@ -155,7 +155,7 @@
             :toggle-favorite="toggleFavorite"
             @toggle-favorites="onToggleFavoritesMode"
           />
-          <NavMenu class="ml-3 sm:ml-9" />
+          <NavMenu :entries="navMenuEntries" class="ml-3 sm:ml-9" />
         </div>
       </div>
     </div>
@@ -278,6 +278,7 @@ import {
   homeMachine,
 } from './Home.machine'
 
+import { ContentEntry } from '~/lib/apiContent'
 import { LOCAL_STORAGE } from '~/store/favorite'
 import { flattenFeatures } from '~/utils/utilities'
 
@@ -311,6 +312,10 @@ export default (
   props: {
     settings: {
       type: Object as PropType<Settings>,
+      required: true,
+    },
+    navMenuEntries: {
+      type: Array as PropType<ContentEntry[]>,
       required: true,
     },
     initialCategoryIds: {
