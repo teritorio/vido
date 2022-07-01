@@ -1,4 +1,9 @@
 export default {
+  units: {
+    min: 'min',
+    hours: 'h',
+    km: 'km',
+  },
   shareLink: {
     copy: 'Copy',
     qrcode: 'QR-Code',
@@ -88,14 +93,6 @@ export default {
     unactivateExplore: 'Deactivate exploration of the surroundings',
     activateExplore: 'Explore nearby points of interest',
     zoom: 'Zoom',
-    routePopup: {
-      min: 'min',
-      hours: 'h',
-      km: 'km',
-      easy: 'easy',
-      normal: 'normal',
-      hard: 'hard',
-    },
   },
   details: {
     headerDescription: 'Description',
@@ -122,5 +119,14 @@ export default {
     thisWeekend: 'Coming week-end',
     nextWeek: 'Next 7 days',
     nextMonth: 'Next 30 days',
+  },
+  fields: {
+    route: {
+      difficulties: {
+        easy: 'easy',
+        normal: 'normal',
+        hard: 'hard',
+      },
+    },
   },
 }

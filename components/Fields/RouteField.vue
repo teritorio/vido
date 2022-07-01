@@ -21,7 +21,7 @@ export default Vue.extend({
     detail(): string | null {
       const result = []
       if (this.route.length) {
-        result.push(`${this.route.length} ${this.$tc('toast.routePopup.km')}`)
+        result.push(`${this.route.length} ${this.$tc('units.km')}`)
       }
       if (this.route.duration) {
         const hours = Math.floor(this.route.duration / 60)
@@ -30,18 +30,16 @@ export default Vue.extend({
         let string = ''
 
         if (hours > 0) {
-          string += `${hours} ${this.$tc('toast.routePopup.hours')}`
+          string += `${hours} ${this.$tc('units.hours')}`
         }
         if (minutes > 0) {
-          string += `${hours > 0 ? ' ' : ''}${minutes} ${this.$tc(
-            'toast.routePopup.min'
-          )}`
+          string += `${hours > 0 ? ' ' : ''}${minutes} ${this.$tc('units.min')}`
         }
 
         result.push(string)
       }
       if (this.route.difficulty && this.route.difficulty !== 'normal') {
-        result.push(this.$tc(`toast.routePopup.${this.route.difficulty}`))
+        result.push(this.$tc(`fields.route.${this.route.difficulty}`))
       }
 
       return result.length > 0 ? result.join(', ') : null

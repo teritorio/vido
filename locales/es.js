@@ -1,4 +1,9 @@
 export default {
+  units: {
+    min: 'min',
+    hours: 'h',
+    km: 'km',
+  },
   shareLink: {
     copy: 'Copiar',
     qrcode: 'QR-Code',
@@ -88,14 +93,6 @@ export default {
     unactivateExplore: 'Desactivar la exploración en los alrededores',
     activateExplore: 'Explora los puntos de interés cercanos',
     zoom: 'Acercarse',
-    routePopup: {
-      min: 'min',
-      hours: 'h',
-      km: 'km',
-      easy: 'fácil',
-      normal: 'normal',
-      hard: 'difícil',
-    },
   },
   details: {
     headerDescription: 'Descripción',
@@ -122,5 +119,14 @@ export default {
     thisWeekend: 'Este fin de semana',
     nextWeek: 'Próximos 7 días',
     nextMonth: 'Próximos 30 días',
+  },
+  fields: {
+    route: {
+      difficulties: {
+        easy: 'fácil',
+        normal: 'normal',
+        hard: 'difícil',
+      },
+    },
   },
 }
