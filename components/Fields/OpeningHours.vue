@@ -15,7 +15,7 @@
         {{ displayTime(nextChange.nextChange) }}
       </span>
     </template>
-    <ul v-if="details">
+    <ul v-if="!isCompact">
       <template v-if="schedule.length > 0">
         <li
           v-for="(timeline, i) in schedule"
@@ -36,20 +36,22 @@
 import { format, formatRelative } from 'date-fns'
 import { enGB, fr, es } from 'date-fns/locale'
 import OpeningHours from 'opening_hours'
-import Vue from 'vue'
+import Vue, { PropType } from 'vue'
 import { mapGetters } from 'vuex'
+
+import { PropertyTranslationsContextEnum } from '~/plugins/property-translations'
 
 const DateFormatLocales: { [key: string]: Locale } = { en: enGB, fr, es }
 
 export default Vue.extend({
   props: {
+    context: {
+      type: String as PropType<PropertyTranslationsContextEnum>,
+      required: true,
+    },
     openingHours: {
       type: String,
       required: true,
-    },
-    details: {
-      type: Boolean,
-      default: false,
     },
   },
 
@@ -57,6 +59,10 @@ export default Vue.extend({
     ...mapGetters({
       locale: 'site/locale',
     }),
+
+    isCompact(): boolean {
+      return this.context === PropertyTranslationsContextEnum.Popup
+    },
 
     formatLocale(): { locale: Locale } {
       return {

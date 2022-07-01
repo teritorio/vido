@@ -61,7 +61,10 @@
               class="detail-left-block"
             >
               <h2>{{ $tc('details.headerOpeningHours') }}</h2>
-              <OpeningHours :opening-hours="p.opening_hours" :details="true" />
+              <OpeningHours
+                :opening-hours="p.opening_hours"
+                :context="context"
+              />
             </div>
 
             <div
