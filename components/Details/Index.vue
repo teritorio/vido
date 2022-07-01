@@ -72,6 +72,13 @@
               <h2>{{ $tc('details.informations') }}</h2>
               <RoutesField :properties="p" />
             </div>
+
+            <Download
+              v-if="property == 'first_download'"
+              :key="property"
+              :p="p"
+              :color-fill="colorFill"
+            />
           </template>
           <Location :p="p" :geom="poi.geometry" />
         </div>
@@ -110,6 +117,7 @@ import { Settings } from '@/lib/apiSettings'
 
 import Carousel from '~/components/Details/Carousel.vue'
 import Contact from '~/components/Details/Contact.vue'
+import Download from '~/components/Details/Download.vue'
 import Footer from '~/components/Details/Footer.vue'
 import Header from '~/components/Details/Header.vue'
 import Location from '~/components/Details/Location.vue'
@@ -127,6 +135,7 @@ export default Vue.extend({
     Contact,
     OpeningHours: () => import('@/components/Fields/OpeningHours.vue'),
     Location,
+    Download,
     Share,
     Carousel,
     Mapillary,
@@ -159,12 +168,20 @@ export default Vue.extend({
     },
     detailsProperties(): string[] {
       let firstContact = false
+      const firstDownload = false
       return (this.p.editorial?.details_properties || [])
         .map((p) => {
           if (['addr:*', 'phone', 'mobile'].includes(p)) {
             if (!firstContact) {
               firstContact = true
               return 'first_contact'
+            } else {
+              return undefined
+            }
+          } else if (['route:gpx_trace'].includes(p)) {
+            if (!firstDownload) {
+              firstContact = true
+              return 'first_download'
             } else {
               return undefined
             }

@@ -43,6 +43,7 @@ import {
   faBookOpen,
   faPrint,
   faQrcode,
+  faArrowCircleDown,
 } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import Vue from 'vue'
@@ -92,7 +93,8 @@ library.add(
   faFacebook,
   faWhatsapp,
   faTwitter,
-  faQrcode
+  faQrcode,
+  faArrowCircleDown
 )
 
 // Register the component globally

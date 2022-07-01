@@ -100,6 +100,7 @@ export default {
   details: {
     headerDescription: 'Description',
     headerOpeningHours: 'Opening hours',
+    headerDownload: 'Files to download',
     lastUpdate: 'Last change',
     headerContacts: 'Contact',
     headerLocation: 'Location & Address',
@@ -113,6 +114,7 @@ export default {
     poweredBy: 'Powered by',
     mapillaryExplore: 'Explore on Mapillary',
     informations: 'Informations',
+    downloadGPX: 'The route (GPS track) in GPX format',
   },
   dateFilter: {
     today: 'Today',
