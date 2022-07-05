@@ -9,7 +9,7 @@ export default {
 }
 
 const defaultProps = {
-  backgrounds: [MapStyleEnum.vector, MapStyleEnum.aerial, MapStyleEnum.raster],
+  backgrounds: [MapStyleEnum.vector, MapStyleEnum.aerial, MapStyleEnum.bicycle],
   initialBackground: MapStyleEnum.vector,
 }
 

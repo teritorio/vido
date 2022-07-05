@@ -2,7 +2,6 @@ import { MapStyleEnum } from '@/utils/types'
 
 export const MAP_STYLE_NAMES = {
   [MapStyleEnum.vector]: 'Teritorio',
-  [MapStyleEnum.raster]: 'OpenStreetMap',
   [MapStyleEnum.aerial]: 'Imagerie aérienne IGN',
   [MapStyleEnum.bicycle]: 'Teritorio - Vélo',
 }

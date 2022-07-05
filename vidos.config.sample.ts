@@ -24,8 +24,6 @@ const config: VidosConfig = {
       'https://merge-proxy-dev.teritorio.xyz/styles/teritorio-tourism-0.9/style.json?key=###',
     SATELLITE_STYLE_URL:
       'https://merge-proxy-dev.teritorio.xyz/styles/satellite-hybrid/style.json?key=###',
-    RASTER_STYLE_URL:
-      'https://merge-proxy-dev.teritorio.xyz/styles/openstreetmap-carto/style.json?key=###',
     BICYCLE_STYLE_URL:
       'https://merge-proxy-dev.teritorio.xyz/styles/teritorio-tourism-bicycle-0.9/style.json?key=###',
   },

@@ -147,12 +147,7 @@ export default Vue.extend({
 
   computed: {
     availableStyles(): MapStyleEnum[] {
-      return [
-        MapStyleEnum.vector,
-        MapStyleEnum.aerial,
-        ...(!this.$screen.smallScreen ? [MapStyleEnum.raster] : []),
-        MapStyleEnum.bicycle,
-      ]
+      return [MapStyleEnum.vector, MapStyleEnum.aerial, MapStyleEnum.bicycle]
     },
   },
 
@@ -216,13 +211,9 @@ export default Vue.extend({
   },
 
   beforeMount() {
-    let bg =
+    const bg =
       (getHashPart(this.$router, 'bg') as keyof typeof MapStyleEnum) ||
       DEFAULT_MAP_STYLE
-
-    if (this.$screen.smallScreen && bg === MapStyleEnum.raster) {
-      bg = DEFAULT_MAP_STYLE
-    }
 
     this.selectedBackground = bg
   },
