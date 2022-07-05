@@ -10,6 +10,7 @@ export interface VidoConfig {
   SATELLITE_STYLE_URL: string
   RASTER_STYLE_URL: string
   BICYCLE_STYLE_URL: string
+  IMAGE_PROXY: string[] | null
   MAPILLARY_ACCESS_TOKEN: string | null
   GOOGLE_TAG_MANAGER_ID: string | null
   MATOMO_URL: string | null

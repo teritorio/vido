@@ -7,6 +7,7 @@ const configDefault = {
   API_QR_SHORTENER: 'https://qr-shortener-dev.teritorio.xyz',
   BICYCLE_STYLE_URL:
     'https://vecto.teritorio.xyz/styles/teritorio-tourism-bicycle-0.9/style.json',
+  IMAGE_PROXY: null,
   MAPILLARY_ACCESS_TOKEN: null,
   GOOGLE_TAG_MANAGER_ID: null,
   MATOMO_URL: null,

@@ -5,7 +5,7 @@
       !isModeFavorites && notebook ? 'bg-zinc-200 opacity-70' : 'bg-white',
     ]"
   >
-    <img
+    <nuxt-picture
       v-if="poiProps.image && poiProps.image.length > 0"
       class="object-cover w-full h-auto max-h-44 md:max-h-full md:w-52"
       :src="poiProps.image[0]"

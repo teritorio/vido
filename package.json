@@ -21,6 +21,7 @@
     "@fortawesome/free-regular-svg-icons": "^5.15.4",
     "@fortawesome/free-solid-svg-icons": "^5.15.4",
     "@fortawesome/vue-fontawesome": "^2.0.6",
+    "@nuxt/image": "^0.7.1",
     "@nuxt/typescript-runtime": "^2.1.0",
     "@nuxtjs/gtm": "^2.4.0",
     "@nuxtjs/i18n": "^7.2.1",

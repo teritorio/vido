@@ -1,5 +1,7 @@
 import webpack from 'webpack'
 
+import { configuredApi, configuredImageProxy } from './plugins/vido-config.ts'
+
 export default {
   pwa: {
     meta: {
@@ -58,6 +60,7 @@ export default {
   // Modules (https://go.nuxtjs.dev/config-modules)
   modules: [
     '@nuxtjs/i18n',
+    '@nuxt/image',
     '@nuxtjs/gtm',
     ...(process.env.SENTRY_DSN ? ['@nuxtjs/sentry'] : []),
   ],
@@ -75,6 +78,10 @@ export default {
     ],
     defaultLocale: 'en',
     langDir: '~/locales/',
+  },
+
+  image: {
+    domains: [...configuredApi(), ...configuredImageProxy()],
   },
 
   sentry: {
