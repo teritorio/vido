@@ -29,7 +29,7 @@
     "@teritorio/map": "^0.11.2",
     "@teritorio/openmaptiles-gl-language": "^1.5.4",
     "@types/geojson": "^7946.0.8",
-    "@xstate/vue": "^0.5.0",
+    "@xstate/vue": "^2.0.0",
     "core-js": "^3.23.3",
     "country-flag-icons": "^1.5.5",
     "date-fns": "^2.28.0",
@@ -51,7 +51,7 @@
     "vue-tailwind": "^2.5.1",
     "vue2-touch-events": "^3.2.2",
     "wcag-contrast": "^3.0.0",
-    "xstate": "^4.31.0"
+    "xstate": "^4.32.1"
   },
   "devDependencies": {
     "@commitlint/cli": "^11.0.0",
@@ -74,7 +74,7 @@
     "@types/lodash.without": "^4.4.7",
     "@types/wcag-contrast": "^3.0.0",
     "@vue/test-utils": "^2.0.2",
-    "@xstate/inspect": "^0.6.5",
+    "@xstate/inspect": "^0.7.0",
     "autoprefixer": "^10.4.7",
     "babel-core": "6.26.3",
     "babel-eslint": "^10.1.0",

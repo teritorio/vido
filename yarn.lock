@@ -5585,8 +5585,8 @@ __metadata:
     "@types/lodash.without": ^4.4.7
     "@types/wcag-contrast": ^3.0.0
     "@vue/test-utils": ^2.0.2
-    "@xstate/inspect": ^0.6.5
-    "@xstate/vue": ^0.5.0
+    "@xstate/inspect": ^0.7.0
+    "@xstate/vue": ^2.0.0
     autoprefixer: ^10.4.7
     babel-core: 6.26.3
     babel-eslint: ^10.1.0
@@ -5632,7 +5632,7 @@ __metadata:
     vue-tailwind: ^2.5.1
     vue2-touch-events: ^3.2.2
     wcag-contrast: ^3.0.0
-    xstate: ^4.31.0
+    xstate: ^4.32.1
   languageName: unknown
   linkType: soft
 
@@ -7109,35 +7109,35 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@xstate/inspect@npm:^0.6.5":
-  version: 0.6.5
-  resolution: "@xstate/inspect@npm:0.6.5"
+"@xstate/inspect@npm:^0.7.0":
+  version: 0.7.0
+  resolution: "@xstate/inspect@npm:0.7.0"
   dependencies:
     fast-safe-stringify: ^2.1.1
   peerDependencies:
     "@types/ws": ^8.0.0
     ws: ^8.0.0
-    xstate: ^4.31.0
+    xstate: ^4.32.0
   peerDependenciesMeta:
     "@types/ws":
       optional: true
-  checksum: 4bac3fb791080202032f3631fcdc22458268bc9b9b7c6a936dfb7f0b1a3d41f8819a863bc5228d1d8a2eecfdd236b8ae9af46c4db2fb98390e15e422247e38d1
+  checksum: 94f4141e8ba25da698abee61d9e326d8bed0d6402e05ccabbdb1497f55e4c976451acc5f87be1c4b756ca8185faa04afcb6968c5003e93f6362a55a588472c4d
   languageName: node
   linkType: hard
 
-"@xstate/vue@npm:^0.5.0":
-  version: 0.5.0
-  resolution: "@xstate/vue@npm:0.5.0"
+"@xstate/vue@npm:^2.0.0":
+  version: 2.0.0
+  resolution: "@xstate/vue@npm:2.0.0"
   peerDependencies:
-    "@xstate/fsm": ^1.0.0
+    "@xstate/fsm": ^2.0.0
     vue: ^3.0.0
-    xstate: ^4.7.8
+    xstate: ^4.31.0
   peerDependenciesMeta:
     "@xstate/fsm":
       optional: true
     xstate:
       optional: true
-  checksum: b7a664411f474857f7a627530d0ecd6a2e834e5d27dd7436aacf5cfa962dc260cbbfab1347d762956d8d5ea536ec3f7920cd35228ec9ef317d83aa3ec891124e
+  checksum: fe33ac5ccadfe02b0b8f7a613e93a0c22e899c395582dfe6c66f461dc52f7b3b4d41022c05ca735acce9bbb5b5ded5d1c7d42a3d20d084c38b5dd516a31870ec
   languageName: node
   linkType: hard
 
@@ -25933,10 +25933,10 @@ typescript@~4.2:
   languageName: node
   linkType: hard
 
-"xstate@npm:^4.31.0":
-  version: 4.31.0
-  resolution: "xstate@npm:4.31.0"
-  checksum: 9cedd972a9f6d9d1ab7de7e3fb85d4ff2697ef8b9480c246f9bdb40fd3b35330a9a258eed3ee192b9b042c0519a8ce0f1ac682d9aa78f52384df2b14a0fac359
+"xstate@npm:^4.32.1":
+  version: 4.32.1
+  resolution: "xstate@npm:4.32.1"
+  checksum: 8be4c0091ba6a167aa3bc401e8194afb0d6099dc6ebe8ca423909a516c9d6820488e4e72f01018078de5d3701b4121aee1272b6b56970e8c497ab0b4e0fab6d7
   languageName: node
   linkType: hard
 
