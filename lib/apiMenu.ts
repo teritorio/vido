@@ -1,4 +1,4 @@
-import { MultilingualString } from '@/utils/types'
+import { MultilingualString } from '~/utils/types'
 
 export type FilterList = {
   type: 'multiselection' | 'checkboxes_list'

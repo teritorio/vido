@@ -12,18 +12,15 @@ import Vue from 'vue'
 import { MetaInfo } from 'vue-meta'
 import { mapActions } from 'vuex'
 
-import { ContentEntry, getContents } from '@/lib/apiContent'
-import { getPoiById } from '@/lib/apiPois'
+import Index from '~/components/Details/Index.vue'
+import { ContentEntry, getContents } from '~/lib/apiContent'
+import { getPoiById, ApiPoi } from '~/lib/apiPois'
 import {
   getPropertyTranslations,
   PropertyTranslations,
-} from '@/lib/apiPropertyTranslations'
-import { getSettings, headerFromSettings } from '@/lib/apiSettings'
-import { vidoConfig } from '@/plugins/vido-config'
-
-import Index from '~/components/Details/Index.vue'
-import { ApiPoi } from '~/lib/apiPois'
-import { Settings } from '~/lib/apiSettings'
+} from '~/lib/apiPropertyTranslations'
+import { getSettings, headerFromSettings, Settings } from '~/lib/apiSettings'
+import { vidoConfig } from '~/plugins/vido-config'
 
 export default Vue.extend({
   components: {
@@ -122,7 +119,7 @@ export default Vue.extend({
 </script>
 
 <style lang="scss">
-@import '@/assets/details.scss';
+@import '~/assets/details.scss';
 
 body {
   color: $color-text;

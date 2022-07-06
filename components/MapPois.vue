@@ -15,13 +15,12 @@
 import { PoiFilter } from '@teritorio/map'
 import Vue, { PropType } from 'vue'
 
-import Map from '@/components/Map/Map.vue'
-import { ApiPois } from '@/lib/apiPois'
-import { getBBoxFeatures } from '@/lib/bbox'
-import { MAP_ZOOM } from '@/lib/constants'
-import { makerHtmlFactory } from '@/lib/markerLayerFactory'
-import { filterRouteByPoiId } from '@/utils/styles'
-
+import Map from '~/components/Map/Map.vue'
+import { ApiPois } from '~/lib/apiPois'
+import { getBBoxFeatures } from '~/lib/bbox'
+import { MAP_ZOOM } from '~/lib/constants'
+import { makerHtmlFactory } from '~/lib/markerLayerFactory'
+import { filterRouteByPoiId } from '~/utils/styles'
 import { TupleLatLng } from '~/utils/types'
 
 export default Vue.extend({

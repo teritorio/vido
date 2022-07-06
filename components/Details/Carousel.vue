@@ -20,7 +20,7 @@ export default Vue.extend({
 </script>
 
 <style lang="scss" scoped>
-@import '@/assets/details.scss';
+@import '~/assets/details.scss';
 
 ul,
 li {

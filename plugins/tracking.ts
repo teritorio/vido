@@ -1,9 +1,9 @@
 import { Plugin } from '@nuxt/types'
 
-import Google from '@/lib/tracker-google'
-import Matomo from '@/lib/tracker-matomo'
-import { Event, Tracker } from '@/lib/trackers'
-import { vidoConfig } from '@/plugins/vido-config'
+import Google from '~/lib/tracker-google'
+import Matomo from '~/lib/tracker-matomo'
+import { Event, Tracker } from '~/lib/trackers'
+import { vidoConfig } from '~/plugins/vido-config'
 
 const trackingPlugin: Plugin = ({ app, req }, inject) => {
   const trackers: Tracker[] = []

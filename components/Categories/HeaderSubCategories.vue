@@ -11,9 +11,8 @@
 <script lang="ts">
 import Vue, { PropType } from 'vue'
 
-import CategoryList from '@/components/Categories/CategoryList/CategoryList.vue'
-import { Category } from '@/lib/apiMenu'
-
+import CategoryList from '~/components/Categories/CategoryList/CategoryList.vue'
+import { Category } from '~/lib/apiMenu'
 import { FilterValues } from '~/utils/types-filters'
 
 export default Vue.extend({

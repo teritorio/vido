@@ -51,21 +51,20 @@ import maplibregl, {
 } from 'maplibre-gl'
 import Vue, { PropType } from 'vue'
 
-import MapControlsExplore from '@/components/MainMap/MapControlsExplore.vue'
-import SnackBar from '@/components/MainMap/SnackBar.vue'
-import Map from '@/components/Map/Map.vue'
-import MapControls3D from '@/components/Map/MapControls3D.vue'
-import MapControlsBackground from '@/components/Map/MapControlsBackground.vue'
-import { getBBoxFeatures, getBBoxFeature } from '@/lib/bbox'
-import { DEFAULT_MAP_STYLE, MAP_ZOOM } from '@/lib/constants'
-import { markerLayerTextFactory, updateMarkers } from '@/lib/markerLayerFactory'
-import { filterRouteByCategories, filterRouteByPoiId } from '@/utils/styles'
-import { LatLng, MapStyleEnum } from '@/utils/types'
-import { getHashPart } from '@/utils/url'
-
+import MapControlsExplore from '~/components/MainMap/MapControlsExplore.vue'
+import SnackBar from '~/components/MainMap/SnackBar.vue'
+import Map from '~/components/Map/Map.vue'
+import MapControls3D from '~/components/Map/MapControls3D.vue'
+import MapControlsBackground from '~/components/Map/MapControlsBackground.vue'
 import { ApiMenuCategory } from '~/lib/apiMenu'
 import { ApiPoi, getPoiById } from '~/lib/apiPois'
+import { getBBoxFeatures, getBBoxFeature } from '~/lib/bbox'
+import { DEFAULT_MAP_STYLE, MAP_ZOOM } from '~/lib/constants'
 import { MapPoi, mapPoi2ApiPoi } from '~/lib/mapPois'
+import { markerLayerTextFactory, updateMarkers } from '~/lib/markerLayerFactory'
+import { filterRouteByCategories, filterRouteByPoiId } from '~/utils/styles'
+import { LatLng, MapStyleEnum } from '~/utils/types'
+import { getHashPart } from '~/utils/url'
 
 const STYLE_LAYERS = [
   'poi-level-1',

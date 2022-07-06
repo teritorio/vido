@@ -1,6 +1,6 @@
 import { Plugin } from '@nuxt/types'
 
-import { Settings } from '@/lib/apiSettings'
+import { Settings } from '~/lib/apiSettings'
 
 interface SettingsSetPlugin {
   set(settings: Settings): void

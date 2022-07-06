@@ -16,10 +16,9 @@
 <script lang="ts">
 import Vue, { PropType } from 'vue'
 
-import NavMenu from '@/components/MainMap/NavMenu.vue'
-import { SiteInfosTheme } from '@/lib/apiSettings'
-
+import NavMenu from '~/components/MainMap/NavMenu.vue'
 import { ContentEntry } from '~/lib/apiContent'
+import { SiteInfosTheme } from '~/lib/apiSettings'
 
 export default Vue.extend({
   components: {
@@ -39,7 +38,7 @@ export default Vue.extend({
 </script>
 
 <style lang="scss" scoped>
-@import '@/assets/details.scss';
+@import '~/assets/details.scss';
 
 #header {
   display: flex;

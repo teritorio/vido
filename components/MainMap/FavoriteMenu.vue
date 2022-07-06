@@ -166,10 +166,10 @@ import Vue, { VueConstructor } from 'vue'
 import { TDropdown, TModal } from 'vue-tailwind/dist/components'
 import { mapGetters } from 'vuex'
 
-import FavoriteNoteBook from '@/components/MainMap/FavoriteNoteBook.vue'
-import ShareLinkModal from '@/components/ShareLinkModal.vue'
-import FavoriteIcon from '@/components/UI/FavoriteIcon.vue'
-import { getPoiByIds, ApiPoi } from '@/lib/apiPois'
+import FavoriteNoteBook from '~/components/MainMap/FavoriteNoteBook.vue'
+import ShareLinkModal from '~/components/ShareLinkModal.vue'
+import FavoriteIcon from '~/components/UI/FavoriteIcon.vue'
+import { getPoiByIds, ApiPoi } from '~/lib/apiPois'
 
 export default (
   Vue as VueConstructor<

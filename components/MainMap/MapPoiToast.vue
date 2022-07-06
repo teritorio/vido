@@ -211,16 +211,15 @@
 import Vue, { PropType } from 'vue'
 import { mapGetters } from 'vuex'
 
-import AddressField from '@/components/Fields/AddressField.vue'
-import DateRange from '@/components/Fields/DateRange.vue'
-import Website from '@/components/Fields/Website.vue'
-import FavoriteIcon from '@/components/UI/FavoriteIcon.vue'
-import TeritorioIcon from '@/components/UI/TeritorioIcon.vue'
-import { ApiPoi, ApiPoiProperties, ApiPoiId } from '@/lib/apiPois'
-import { isIOS } from '@/utils/isIOS'
-
+import AddressField from '~/components/Fields/AddressField.vue'
+import DateRange from '~/components/Fields/DateRange.vue'
 import RoutesField from '~/components/Fields/RoutesField.vue'
+import Website from '~/components/Fields/Website.vue'
+import FavoriteIcon from '~/components/UI/FavoriteIcon.vue'
+import TeritorioIcon from '~/components/UI/TeritorioIcon.vue'
+import { ApiPoi, ApiPoiProperties, ApiPoiId } from '~/lib/apiPois'
 import { PropertyTranslationsContextEnum } from '~/plugins/property-translations'
+import { isIOS } from '~/utils/isIOS'
 
 export default Vue.extend({
   components: {
@@ -228,7 +227,7 @@ export default Vue.extend({
     TeritorioIcon,
     AddressField,
     Website,
-    OpeningHours: () => import('@/components/Fields/OpeningHours.vue'),
+    OpeningHours: () => import('~/components/Fields/OpeningHours.vue'),
     DateRange,
     FavoriteIcon,
   },

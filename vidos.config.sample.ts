@@ -1,4 +1,4 @@
-import { VidosConfig } from '@/utils/types-config'
+import { VidosConfig } from '~/utils/types-config'
 
 const configDefault = {
   API_SEARCH: 'https://search-dev.teritorio.xyz/search',

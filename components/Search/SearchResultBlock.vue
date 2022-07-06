@@ -37,8 +37,8 @@
 <script lang="ts">
 import Vue, { PropType } from 'vue'
 
-import TeritorioIcon from '@/components/UI/TeritorioIcon.vue'
-import { SearchResult } from '@/lib/apiSearch'
+import TeritorioIcon from '~/components/UI/TeritorioIcon.vue'
+import { SearchResult } from '~/lib/apiSearch'
 
 export default Vue.extend({
   components: {

@@ -57,8 +57,7 @@
 <script lang="ts">
 import Vue, { PropType } from 'vue'
 
-import TeritorioIcon from '@/components/UI/TeritorioIcon.vue'
-
+import TeritorioIcon from '~/components/UI/TeritorioIcon.vue'
 import { ApiMenuGroup } from '~/lib/apiMenu'
 
 export default Vue.extend({

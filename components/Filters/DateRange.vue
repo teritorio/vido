@@ -13,7 +13,7 @@
 import copy from 'fast-copy'
 import Vue, { PropType } from 'vue'
 
-import { FilterValueDate } from '@/utils/types-filters'
+import { FilterValueDate } from '~/utils/types-filters'
 
 export enum DateFilterLabel {
   TODAY = 'today',

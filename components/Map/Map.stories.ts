@@ -1,5 +1,4 @@
-import Map from '@/components/Map/Map.vue'
-
+import Map from '~/components/Map/Map.vue'
 import { bind } from '~/lib/storybook-types'
 
 export default {

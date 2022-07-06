@@ -3,7 +3,7 @@ import Vue from 'vue'
 // @ts-ignore
 import VueMatomo from 'vue-matomo'
 
-import { Event, Tracker } from '@/lib/trackers'
+import { Event, Tracker } from '~/lib/trackers'
 
 export default class Matomo implements Tracker {
   constructor(url: string, siteId: string) {

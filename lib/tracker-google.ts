@@ -1,6 +1,6 @@
 import urlSlug from 'url-slug'
 
-import { Event, Tracker } from '@/lib/trackers'
+import { Event, Tracker } from '~/lib/trackers'
 
 export default class Google implements Tracker {
   gtm: any

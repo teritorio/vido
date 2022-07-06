@@ -1,4 +1,4 @@
-import { MapStyleEnum } from '@/utils/types'
+import { MapStyleEnum } from '~/utils/types'
 
 export const MAP_STYLE_NAMES = {
   [MapStyleEnum.vector]: 'Teritorio',

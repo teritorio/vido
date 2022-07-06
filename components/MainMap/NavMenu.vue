@@ -74,7 +74,7 @@ import Vue, { PropType } from 'vue'
 import { TDropdown } from 'vue-tailwind/dist/components'
 import { mapActions } from 'vuex'
 
-import { ContentEntry } from '@/lib/apiContent'
+import { ContentEntry } from '~/lib/apiContent'
 
 export default Vue.extend({
   components: {

@@ -1,9 +1,9 @@
 import { Plugin } from '@nuxt/types'
 import createServer from 'connect'
 
-import { VidoConfig } from '@/utils/types-config'
-
 import vidos from '../vidos.config'
+
+import { VidoConfig } from '~/utils/types-config'
 
 export function configuredApi(): string[] {
   return Object.values(vidos)

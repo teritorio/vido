@@ -1,4 +1,4 @@
-import { MultilingualString } from '@/utils/types'
+import { MultilingualString } from '~/utils/types'
 
 export interface ApiPoiId extends Number {}
 

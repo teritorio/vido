@@ -10,7 +10,7 @@
 <script lang="ts">
 import Vue from 'vue'
 
-import { getContrastedTextColor } from '@/utils/picto'
+import { getContrastedTextColor } from '~/utils/picto'
 
 export default Vue.extend({
   props: {

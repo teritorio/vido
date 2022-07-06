@@ -9,14 +9,12 @@ import Vue from 'vue'
 import { MetaInfo } from 'vue-meta'
 import { mapActions } from 'vuex'
 
-import MapPois from '@/components/MapPois.vue'
-import { getPoiByIds } from '@/lib/apiPois'
-import { getSettings, headerFromSettings } from '@/lib/apiSettings'
-import { vidoConfig } from '@/plugins/vido-config'
+import MapPois from '~/components/MapPois.vue'
+import { getPoiByIds, ApiPois } from '~/lib/apiPois'
+import { getSettings, headerFromSettings, Settings } from '~/lib/apiSettings'
+import { vidoConfig } from '~/plugins/vido-config'
 
-import { ApiPois } from '~/lib/apiPois'
-import { Settings } from '~/lib/apiSettings'
-import '@/assets/fullmap.css'
+import '~/assets/fullmap.css'
 
 export default Vue.extend({
   components: {

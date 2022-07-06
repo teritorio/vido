@@ -1,8 +1,7 @@
 import { Store } from 'vuex'
 
-import { LatLng, Pitch, Mode } from '@/utils/types'
-
 import { ApiPoi, ApiPoiProperties } from '~/lib/apiPois'
+import { LatLng, Pitch, Mode } from '~/utils/types'
 
 enum Mutation {
   SET_CONFIG = 'SET_CONFIG',

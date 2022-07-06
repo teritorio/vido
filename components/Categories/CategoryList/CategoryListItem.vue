@@ -90,9 +90,8 @@
 <script lang="ts">
 import Vue, { PropType } from 'vue'
 
-import TeritorioIconBadge from '@/components/UI/TeritorioIconBadge.vue'
-import { Category } from '@/lib/apiMenu'
-
+import TeritorioIconBadge from '~/components/UI/TeritorioIconBadge.vue'
+import { Category } from '~/lib/apiMenu'
 import { FilterValues, filterValuesIsSet } from '~/utils/types-filters'
 
 export default Vue.extend({

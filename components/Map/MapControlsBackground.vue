@@ -32,10 +32,9 @@
 <script lang="ts">
 import Vue, { PropType } from 'vue'
 
-import { DEFAULT_MAP_STYLE, MAP_STYLE_NAMES } from '@/lib/constants'
-import { getHashPart, routerPushHashUpdate } from '@/utils/url'
-
+import { DEFAULT_MAP_STYLE, MAP_STYLE_NAMES } from '~/lib/constants'
 import { MapStyleEnum } from '~/utils/types'
+import { getHashPart, routerPushHashUpdate } from '~/utils/url'
 
 export default Vue.extend({
   props: {

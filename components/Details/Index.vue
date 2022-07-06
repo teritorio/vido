@@ -111,12 +111,6 @@
 import Vue, { PropType } from 'vue'
 import { mapGetters } from 'vuex'
 
-import MapPois from '@/components/MapPois.vue'
-import FavoriteIcon from '@/components/UI/FavoriteIcon.vue'
-import TeritorioIconBadge from '@/components/UI/TeritorioIconBadge.vue'
-import { ApiPoi, ApiPoiProperties } from '@/lib/apiPois'
-import { Settings } from '@/lib/apiSettings'
-
 import Carousel from '~/components/Details/Carousel.vue'
 import Contact from '~/components/Details/Contact.vue'
 import Download from '~/components/Details/Download.vue'
@@ -126,7 +120,12 @@ import Location from '~/components/Details/Location.vue'
 import Mapillary from '~/components/Details/Mapillary.vue'
 import Share from '~/components/Details/Share.vue'
 import RoutesField from '~/components/Fields/RoutesField.vue'
+import MapPois from '~/components/MapPois.vue'
+import FavoriteIcon from '~/components/UI/FavoriteIcon.vue'
+import TeritorioIconBadge from '~/components/UI/TeritorioIconBadge.vue'
 import { ContentEntry } from '~/lib/apiContent'
+import { ApiPoi, ApiPoiProperties } from '~/lib/apiPois'
+import { Settings } from '~/lib/apiSettings'
 import { PropertyTranslationsContextEnum } from '~/plugins/property-translations'
 import { OriginEnum } from '~/utils/types'
 
@@ -136,7 +135,7 @@ export default Vue.extend({
     FavoriteIcon,
     TeritorioIconBadge,
     Contact,
-    OpeningHours: () => import('@/components/Fields/OpeningHours.vue'),
+    OpeningHours: () => import('~/components/Fields/OpeningHours.vue'),
     Location,
     Download,
     Share,
@@ -244,7 +243,7 @@ export default Vue.extend({
 </script>
 
 <style lang="scss" scoped>
-@import '@/assets/details.scss';
+@import '~/assets/details.scss';
 
 h1 {
   font-size: 2.4rem;

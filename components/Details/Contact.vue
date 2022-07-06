@@ -29,8 +29,8 @@
 <script lang="ts">
 import Vue, { PropType } from 'vue'
 
-import Block from '@/components/Details/Block.vue'
-import { ApiPoiProperties } from '@/lib/apiPois'
+import Block from '~/components/Details/Block.vue'
+import { ApiPoiProperties } from '~/lib/apiPois'
 
 export default Vue.extend({
   components: {

@@ -7,13 +7,12 @@ import maplibregl, {
   FitBoundsOptions,
 } from 'maplibre-gl'
 
-import TeritorioIconBadge from '@/components/UI/TeritorioIconBadge.vue'
-
 import { ApiMenuCategory } from './apiMenu'
 import { ApiPoi } from './apiPois'
 import { getBBoxFeatures } from './bbox'
 import { createMarkerDonutChart } from './clusters'
 
+import TeritorioIconBadge from '~/components/UI/TeritorioIconBadge.vue'
 import { TupleLatLng } from '~/utils/types'
 
 export const markerLayerTextFactory = (

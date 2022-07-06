@@ -1,7 +1,6 @@
-import { Category } from '@/lib/apiMenu'
-
 import { ApiPoiId } from './apiPois'
 
+import { Category } from '~/lib/apiMenu'
 import { OriginEnum } from '~/utils/types'
 
 // Also Update README.md according to tracking changes.

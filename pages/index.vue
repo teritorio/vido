@@ -13,16 +13,16 @@ import Vue from 'vue'
 import { MetaInfo } from 'vue-meta'
 import { mapActions } from 'vuex'
 
-import Home from '@/components/Home/Home.vue'
-import { ContentEntry, getContents } from '@/lib/apiContent'
-import { Category, getMenu } from '@/lib/apiMenu'
-import { getPoiById, ApiPoi } from '@/lib/apiPois'
+import Home from '~/components/Home/Home.vue'
+import { ContentEntry, getContents } from '~/lib/apiContent'
+import { Category, getMenu } from '~/lib/apiMenu'
+import { getPoiById, ApiPoi } from '~/lib/apiPois'
 import {
   getPropertyTranslations,
   PropertyTranslations,
-} from '@/lib/apiPropertyTranslations'
-import { getSettings, headerFromSettings, Settings } from '@/lib/apiSettings'
-import { vidoConfig } from '@/plugins/vido-config'
+} from '~/lib/apiPropertyTranslations'
+import { getSettings, headerFromSettings, Settings } from '~/lib/apiSettings'
+import { vidoConfig } from '~/plugins/vido-config'
 
 export default Vue.extend({
   components: {

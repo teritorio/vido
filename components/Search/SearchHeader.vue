@@ -131,16 +131,16 @@ import debounce from 'lodash.debounce'
 import Vue, { PropType, VueConstructor } from 'vue'
 import { mapGetters } from 'vuex'
 
-import SearchResultBlock from '@/components/Search/SearchResultBlock.vue'
-import { ApiPoi, ApiPoiId, getPoiById } from '@/lib/apiPois'
+import SearchResultBlock from '~/components/Search/SearchResultBlock.vue'
+import { ApiPoi, ApiPoiId, getPoiById } from '~/lib/apiPois'
 import {
   ApiPoisSearchResult,
   ApiMenuItemSearchResult,
   ApiAddrSearchResult,
   SearchResult,
   ApiSearchResult,
-} from '@/lib/apiSearch'
-import { MAP_ZOOM } from '@/lib/constants'
+} from '~/lib/apiSearch'
+import { MAP_ZOOM } from '~/lib/constants'
 
 export default (
   Vue as VueConstructor<

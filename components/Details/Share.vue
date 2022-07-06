@@ -86,8 +86,7 @@
 <script lang="ts">
 import Vue, { VueConstructor } from 'vue'
 
-import ShareLinkModal from '@/components/ShareLinkModal.vue'
-
+import ShareLinkModal from '~/components/ShareLinkModal.vue'
 import { OriginEnum } from '~/utils/types'
 import { urlAddTrackOrigin } from '~/utils/url'
 
@@ -167,7 +166,7 @@ export default (
 </script>
 
 <style lang="scss" scoped>
-@import '@/assets/details.scss';
+@import '~/assets/details.scss';
 
 ul {
   position: relative;
