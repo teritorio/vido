@@ -2772,46 +2772,46 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@fortawesome/fontawesome-common-types@npm:^0.2.36":
-  version: 0.2.36
-  resolution: "@fortawesome/fontawesome-common-types@npm:0.2.36"
-  checksum: a923cb94def9ac6e7965c6078f9ff2a9ffed9fe3847077c7a845def4d9e30b5b72ed215aab22c8d106c085bf1df18f0db2c74c4bf99d4e944aafa70ee953ff17
+"@fortawesome/fontawesome-common-types@npm:6.1.1":
+  version: 6.1.1
+  resolution: "@fortawesome/fontawesome-common-types@npm:6.1.1"
+  checksum: 7b31262c6d1540d6a8940e7628eb4d06ea693b744cdcbc304e819507bddcbabb88a9cf5421ee29e9ac2e121742ea6f870af9235ba1aaa0f4c390f6a47c86194e
   languageName: node
   linkType: hard
 
-"@fortawesome/fontawesome-svg-core@npm:^1.2.36":
-  version: 1.2.36
-  resolution: "@fortawesome/fontawesome-svg-core@npm:1.2.36"
+"@fortawesome/fontawesome-svg-core@npm:^6.1.1":
+  version: 6.1.1
+  resolution: "@fortawesome/fontawesome-svg-core@npm:6.1.1"
   dependencies:
-    "@fortawesome/fontawesome-common-types": ^0.2.36
-  checksum: cf3bca5bfecd140f15c276ba4d5297816bd9b0028b700b3fec24d5a0b6ec8f75d5a40dbf6142d1c9d342aa9210aff65cdf729c92be71246e3cdb7fa3ae7b59bd
+    "@fortawesome/fontawesome-common-types": 6.1.1
+  checksum: e59f6118834392a0053fcc1fa7663e90f9db365232c82540c490ca13aee2ba8e186e7d33af8d64e55736a35e0f1f1fd894af6b9abeb4e4734f400dad1030f353
   languageName: node
   linkType: hard
 
-"@fortawesome/free-brands-svg-icons@npm:^5.15.4":
-  version: 5.15.4
-  resolution: "@fortawesome/free-brands-svg-icons@npm:5.15.4"
+"@fortawesome/free-brands-svg-icons@npm:^6.1.1":
+  version: 6.1.1
+  resolution: "@fortawesome/free-brands-svg-icons@npm:6.1.1"
   dependencies:
-    "@fortawesome/fontawesome-common-types": ^0.2.36
-  checksum: 4f4924900c5bcb938bbdc256ab52c988c412f325cde2d29c1ee445d5a481b5b7a62bb7e6b2bbceca282d7579660444422e10c2e1083d20110065e2c4e033398a
+    "@fortawesome/fontawesome-common-types": 6.1.1
+  checksum: fc9472f3c0ed22e8950ff26968a86ad5cc21b6f57cb5b40f32b3109b401fa7542acf3bb01c1f7ca34faf08c2f6bcfeb105d2e45e1c2db1643ec401cd33503296
   languageName: node
   linkType: hard
 
-"@fortawesome/free-regular-svg-icons@npm:^5.15.4":
-  version: 5.15.4
-  resolution: "@fortawesome/free-regular-svg-icons@npm:5.15.4"
+"@fortawesome/free-regular-svg-icons@npm:^6.1.1":
+  version: 6.1.1
+  resolution: "@fortawesome/free-regular-svg-icons@npm:6.1.1"
   dependencies:
-    "@fortawesome/fontawesome-common-types": ^0.2.36
-  checksum: 96bcdfbfa1a0c2694bd7c55ba0a821e6910ea296e429ffc46a1725ccbc9c57f48084b84e4ec60e047c537a3f11a6dfe7cf3e4e79df58b32e934880bc410c098c
+    "@fortawesome/fontawesome-common-types": 6.1.1
+  checksum: 9c1c7ad7416f933896fab6bd16b1bec44adfd9c525c8ab5db5571f0b97aadf504853b2fbcfbf84a7a9ab30d5ba426e31b7528e0271fe61d1dfd75613375165fb
   languageName: node
   linkType: hard
 
-"@fortawesome/free-solid-svg-icons@npm:^5.15.4":
-  version: 5.15.4
-  resolution: "@fortawesome/free-solid-svg-icons@npm:5.15.4"
+"@fortawesome/free-solid-svg-icons@npm:^6.1.1":
+  version: 6.1.1
+  resolution: "@fortawesome/free-solid-svg-icons@npm:6.1.1"
   dependencies:
-    "@fortawesome/fontawesome-common-types": ^0.2.36
-  checksum: 65c3d375875d27590fdf29110ec141e0c0c5ccd2e11cb18dbe5dc22d716dbde52a55cf1fd95eb2cfbb1f91b2d2d80275e12d3eae5b8dba68cca279c774307cbe
+    "@fortawesome/fontawesome-common-types": 6.1.1
+  checksum: 6f7fb1d6770aab2490c555ec4b673142134dae205a13791f13c74389d5b4cadf04e1f2e9d77a11fa787d24498731f27b9aa4ba6c53967a0b5fbac76a70207825
   languageName: node
   linkType: hard
 
@@ -5404,10 +5404,10 @@ __metadata:
     "@commitlint/cli": ^11.0.0
     "@commitlint/config-conventional": ^11.0.0
     "@fontsource/ubuntu": ^4.5.10
-    "@fortawesome/fontawesome-svg-core": ^1.2.36
-    "@fortawesome/free-brands-svg-icons": ^5.15.4
-    "@fortawesome/free-regular-svg-icons": ^5.15.4
-    "@fortawesome/free-solid-svg-icons": ^5.15.4
+    "@fortawesome/fontawesome-svg-core": ^6.1.1
+    "@fortawesome/free-brands-svg-icons": ^6.1.1
+    "@fortawesome/free-regular-svg-icons": ^6.1.1
+    "@fortawesome/free-solid-svg-icons": ^6.1.1
     "@fortawesome/vue-fontawesome": ^2.0.8
     "@nuxt/image": ^0.7.1
     "@nuxt/types": ^2.15.8
