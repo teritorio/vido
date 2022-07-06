@@ -7,7 +7,6 @@ module.exports = {
   extends: [
     '@nuxtjs/eslint-config-typescript',
     'prettier',
-    'prettier/vue',
     'plugin:prettier/recommended',
     'plugin:nuxt/recommended',
     'plugin:import/warnings',
@@ -16,6 +15,7 @@ module.exports = {
   plugins: ['prettier', 'import'],
   // add your custom rules here
   rules: {
+    'vue/multi-word-component-names': 'off',
     'import/order': [
       'error',
       {

@@ -5578,10 +5578,10 @@ __metadata:
     country-flag-icons: ^1.5.5
     date-fns: ^2.28.0
     eslint: ^7.32.0
-    eslint-config-prettier: ^7.2.0
+    eslint-config-prettier: ^8.5.0
     eslint-plugin-import: ^2.26.0
-    eslint-plugin-nuxt: ^2.0.0
-    eslint-plugin-prettier: ^3.4.1
+    eslint-plugin-nuxt: ^3.2.0
+    eslint-plugin-prettier: ^4.2.1
     fast-copy: ^2.1.3
     fast-equals: ^3.0.3
     husky: ^7.0.4
@@ -5599,7 +5599,7 @@ __metadata:
     nuxt: ^2.15.8
     opening_hours: ^3.8.0
     postcss: ^8.4.14
-    prettier: ^2.6.2
+    prettier: ^2.7.1
     sass-loader: ^13.0.2
     stylelint: ^13.13.1
     stylelint-config-prettier: ^8.0.2
@@ -7181,7 +7181,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"acorn-jsx@npm:^5.2.0, acorn-jsx@npm:^5.3.1":
+"acorn-jsx@npm:^5.2.0, acorn-jsx@npm:^5.3.1, acorn-jsx@npm:^5.3.2":
   version: 5.3.2
   resolution: "acorn-jsx@npm:5.3.2"
   peerDependencies:
@@ -11400,14 +11400,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-config-prettier@npm:^7.2.0":
-  version: 7.2.0
-  resolution: "eslint-config-prettier@npm:7.2.0"
+"eslint-config-prettier@npm:^8.5.0":
+  version: 8.5.0
+  resolution: "eslint-config-prettier@npm:8.5.0"
   peerDependencies:
     eslint: ">=7.0.0"
   bin:
     eslint-config-prettier: bin/cli.js
-  checksum: 6812150ea49703cd64035527205b4905bc1edcd34646e71f71665e1acff9ab4648f872598389bdb209964093ad73993830a2c821ba12642764a5293513b92a58
+  checksum: ed43f6bfba9459c577e45c82cc38a17b55d3ad0329fd368fa625d6b8bf83afbb0f3eba875a02d336f0e8365526b459d68f1375f6236dbb45586cb4201f2730db
   languageName: node
   linkType: hard
 
@@ -11509,29 +11509,29 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-plugin-nuxt@npm:^2.0.0":
-  version: 2.0.0
-  resolution: "eslint-plugin-nuxt@npm:2.0.0"
+"eslint-plugin-nuxt@npm:^3.2.0":
+  version: 3.2.0
+  resolution: "eslint-plugin-nuxt@npm:3.2.0"
   dependencies:
-    eslint-plugin-vue: ^7.1.0
-    semver: ^7.3.2
-    vue-eslint-parser: ^7.1.1
-  checksum: 2194a62658f1ae8628db9f8f7ffeb4d36af0f77aaf86715dc4ea9161f1bfc4d3ccaec7504b37170556e841d3d6abe36f3cde1cf8f446cc3c4ced050b64ba90d4
+    eslint-plugin-vue: ^8.5.0
+    semver: ^7.3.5
+    vue-eslint-parser: ^8.3.0
+  checksum: 2a1e6b2c1c38507aaffa587ef230b944d9bd08355cb7be8b75c45552f7222884d7bccc7616c4ca7a1c5d732c96cdff8e21093d0db416d75188373ec355b71733
   languageName: node
   linkType: hard
 
-"eslint-plugin-prettier@npm:^3.4.1":
-  version: 3.4.1
-  resolution: "eslint-plugin-prettier@npm:3.4.1"
+"eslint-plugin-prettier@npm:^4.2.1":
+  version: 4.2.1
+  resolution: "eslint-plugin-prettier@npm:4.2.1"
   dependencies:
     prettier-linter-helpers: ^1.0.0
   peerDependencies:
-    eslint: ">=5.0.0"
-    prettier: ">=1.13.0"
+    eslint: ">=7.28.0"
+    prettier: ">=2.0.0"
   peerDependenciesMeta:
     eslint-config-prettier:
       optional: true
-  checksum: 191173e52fafb168af6ac65a9b882f2fc1b2dc979d7c893cec26637c612c7b62dc69df22faf4e80d4e17e5320ba061fc627b59d29512e5ddb42dedcd72966613
+  checksum: ff1b4155f247f09e1560ec13981ea6f512e858af13b9378f9d80fb1fe9fa89d0ffbc031c1f8390492e4579e79c278a34f361f2a7d4ffd80e677b4b80afb96056
   languageName: node
   linkType: hard
 
@@ -11576,7 +11576,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-plugin-vue@npm:^7.1.0, eslint-plugin-vue@npm:^7.9.0":
+"eslint-plugin-vue@npm:^7.9.0":
   version: 7.20.0
   resolution: "eslint-plugin-vue@npm:7.20.0"
   dependencies:
@@ -11587,6 +11587,22 @@ __metadata:
   peerDependencies:
     eslint: ^6.2.0 || ^7.0.0 || ^8.0.0
   checksum: b755e8b8ab9700cbde366b3bc3a5b3ca35a3f2eb2076e91dc48f46b7ac17772180eac683de87e97776bc8057cbfc5a8b27f977a7b4fc5c98e8cea111eb0a62fa
+  languageName: node
+  linkType: hard
+
+"eslint-plugin-vue@npm:^8.5.0":
+  version: 8.7.1
+  resolution: "eslint-plugin-vue@npm:8.7.1"
+  dependencies:
+    eslint-utils: ^3.0.0
+    natural-compare: ^1.4.0
+    nth-check: ^2.0.1
+    postcss-selector-parser: ^6.0.9
+    semver: ^7.3.5
+    vue-eslint-parser: ^8.0.1
+  peerDependencies:
+    eslint: ^6.2.0 || ^7.0.0 || ^8.0.0
+  checksum: 5bcf02774652624bd3a4d3bac9e4ff138ce34ca2e66b89acbd1aec44828cdb04dfd2b301b92cf2b97b493aeb3485658a095f7451b416ed9279ad2606ba56b2fc
   languageName: node
   linkType: hard
 
@@ -11607,6 +11623,16 @@ __metadata:
     esrecurse: ^4.1.0
     estraverse: ^4.1.1
   checksum: 49635cf9d936af317b9fa89cf98f30719ec9e287e5532c300cbab8015a1920b7ace495ffadaefd0ac86617ce85c17717f0ef1899f66536dca12aa85f1899899d
+  languageName: node
+  linkType: hard
+
+"eslint-scope@npm:^7.0.0":
+  version: 7.1.1
+  resolution: "eslint-scope@npm:7.1.1"
+  dependencies:
+    esrecurse: ^4.3.0
+    estraverse: ^5.2.0
+  checksum: 86c4f451b36f0074692bc298291a01cc39b4da2df20bf14fc0bea72c2a86c14b22c6da79a01eb686b612752af124079b31fea9761a8f678de785dced7081e4a7
   languageName: node
   linkType: hard
 
@@ -11656,6 +11682,13 @@ __metadata:
   version: 2.1.0
   resolution: "eslint-visitor-keys@npm:2.1.0"
   checksum: 75eaae9006f5bcb9d1e09641719b840b83c4758f5f25bc06a0e94918d78658d0f19691bdc2e3b100604d0fe2d1eb94a2aab287ba24ad2f02f87cacdccb86c2e4
+  languageName: node
+  linkType: hard
+
+"eslint-visitor-keys@npm:^3.1.0, eslint-visitor-keys@npm:^3.3.0":
+  version: 3.3.0
+  resolution: "eslint-visitor-keys@npm:3.3.0"
+  checksum: dd2991ba803154def4bc16eed8990360268e54ae48d6acce467cec71d8e670d494097e568eed3be2028c6e56aea1e2be57c90c536f7a94eb5bcf33f86098d9f2
   languageName: node
   linkType: hard
 
@@ -11752,6 +11785,17 @@ __metadata:
     acorn-jsx: ^5.3.1
     eslint-visitor-keys: ^1.3.0
   checksum: ff8e0f73939e1e76529b630cba65b6128e4d18ed7bf0b16af62022cadc73ddb950c7e5aa629cca74e8abebdf76f6dcd1cf873dbc819f10599827c6019e2f8e91
+  languageName: node
+  linkType: hard
+
+"espree@npm:^9.0.0":
+  version: 9.3.2
+  resolution: "espree@npm:9.3.2"
+  dependencies:
+    acorn: ^8.7.1
+    acorn-jsx: ^5.3.2
+    eslint-visitor-keys: ^3.3.0
+  checksum: a76617771d996f843f777eda4d9f51c51f0fb6f9dff6f3c0cb4770ee8c05de42d47df721a1197b6e28d4abf5b1e1f49470ecc24a44c5fdbbdf46535cd444ab7f
   languageName: node
   linkType: hard
 
@@ -19928,7 +19972,7 @@ fsevents@^1.2.7:
   languageName: node
   linkType: hard
 
-"postcss-selector-parser@npm:^6.0.0, postcss-selector-parser@npm:^6.0.10, postcss-selector-parser@npm:^6.0.2, postcss-selector-parser@npm:^6.0.4, postcss-selector-parser@npm:^6.0.5, postcss-selector-parser@npm:^6.0.6":
+"postcss-selector-parser@npm:^6.0.0, postcss-selector-parser@npm:^6.0.10, postcss-selector-parser@npm:^6.0.2, postcss-selector-parser@npm:^6.0.4, postcss-selector-parser@npm:^6.0.5, postcss-selector-parser@npm:^6.0.6, postcss-selector-parser@npm:^6.0.9":
   version: 6.0.10
   resolution: "postcss-selector-parser@npm:6.0.10"
   dependencies:
@@ -20174,12 +20218,21 @@ fsevents@^1.2.7:
   languageName: node
   linkType: hard
 
-"prettier@npm:^1.18.2 || ^2.0.0, prettier@npm:^2.6.2":
+"prettier@npm:^1.18.2 || ^2.0.0":
   version: 2.6.2
   resolution: "prettier@npm:2.6.2"
   bin:
     prettier: bin-prettier.js
   checksum: 10af3147eeb6e7038d6bb4cab48bace7095c4f35e9da45215a8fd3aa8785b4ca6e6cc2cc2fee073a19e230ec0271bae0660031b9252c5263eae7c08113aa8f50
+  languageName: node
+  linkType: hard
+
+"prettier@npm:^2.7.1":
+  version: 2.7.1
+  resolution: "prettier@npm:2.7.1"
+  bin:
+    prettier: bin-prettier.js
+  checksum: 74e646bf9416eaf01d2aaf3e63f0227bc956eae5901bc0701885e790ea28fba5a68216a4bc766b916b48a9c0637f6a48181d6c995a2e4173bdff90bcf64b6bcf
   languageName: node
   linkType: hard
 
@@ -24895,7 +24948,7 @@ typescript@~4.2:
   languageName: node
   linkType: hard
 
-"vue-eslint-parser@npm:^7.1.1, vue-eslint-parser@npm:^7.10.0":
+"vue-eslint-parser@npm:^7.10.0":
   version: 7.11.0
   resolution: "vue-eslint-parser@npm:7.11.0"
   dependencies:
@@ -24909,6 +24962,23 @@ typescript@~4.2:
   peerDependencies:
     eslint: ">=5.0.0"
   checksum: 4a27398cff4235abd9fb59baa16bcf7c43b126eed7a3a966be97cd607cdc3295a1da845b3bf5bf4f9d6b3787f550735aef6b08d5c824af01213e7492781dddf1
+  languageName: node
+  linkType: hard
+
+"vue-eslint-parser@npm:^8.0.1, vue-eslint-parser@npm:^8.3.0":
+  version: 8.3.0
+  resolution: "vue-eslint-parser@npm:8.3.0"
+  dependencies:
+    debug: ^4.3.2
+    eslint-scope: ^7.0.0
+    eslint-visitor-keys: ^3.1.0
+    espree: ^9.0.0
+    esquery: ^1.4.0
+    lodash: ^4.17.21
+    semver: ^7.3.5
+  peerDependencies:
+    eslint: ">=6.0.0"
+  checksum: 3d5c7a8d05fc0cb99603051022bf1cfec05314f59f58ec64d57edb48a9398f61afbbcf41c19727a52e455b5b56743a8e694ecc4ea552230d2063b8e380760065
   languageName: node
   linkType: hard
 
