@@ -4,18 +4,28 @@ module.exports = {
     browser: true,
     node: true,
   },
+  parser: 'vue-eslint-parser',
+  parserOptions: {
+    parser: '@typescript-eslint/parser',
+    sourceType: 'module',
+  },
   extends: [
-    '@nuxtjs/eslint-config-typescript',
-    'prettier',
+    // '@nuxtjs/eslint-config-typescript',
+    'plugin:vue/vue3-recommended',
     'plugin:prettier/recommended',
     'plugin:nuxt/recommended',
     'plugin:import/warnings',
     'plugin:import/typescript',
+    // Make sure "prettier" is the last element in this list.
+    'prettier',
   ],
-  plugins: ['prettier', 'import'],
+  plugins: ['prettier', 'import', '@typescript-eslint', 'vue'],
   // add your custom rules here
   rules: {
     'vue/multi-word-component-names': 'off',
+    'vue/require-explicit-emits': 'off',
+    'vue/no-deprecated-slot-scope-attribute': 'off',
+    'vue/no-deprecated-html-element-is': 'off',
     'import/order': [
       'error',
       {
