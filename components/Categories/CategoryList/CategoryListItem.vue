@@ -1,6 +1,6 @@
 <template>
   <div class="flex flex-col items-start">
-    <button
+    <component
       :is="href ? 'a' : 'button'"
       :href="href"
       target="_blank"
@@ -66,7 +66,7 @@
           />
         </div>
       </template>
-    </button>
+    </component>
     <button
       v-if="
         Object.keys((category.category && category.category.filters) || [])

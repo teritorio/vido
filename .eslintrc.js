@@ -25,7 +25,6 @@ module.exports = {
     'vue/multi-word-component-names': 'off',
     'vue/require-explicit-emits': 'off',
     'vue/no-deprecated-slot-scope-attribute': 'off',
-    'vue/no-deprecated-html-element-is': 'off',
     'import/order': [
       'error',
       {
