@@ -5584,14 +5584,14 @@ __metadata:
     "@types/lodash.uniqby": ^4.7.7
     "@types/lodash.without": ^4.4.7
     "@types/wcag-contrast": ^3.0.0
-    "@vue/test-utils": ^1.3.0
+    "@vue/test-utils": ^2.0.2
     "@xstate/inspect": ^0.6.5
     "@xstate/vue": ^0.5.0
     autoprefixer: ^10.4.7
     babel-core: 6.26.3
     babel-eslint: ^10.1.0
     babel-jest: ^28.1.2
-    core-js: ^3.21.1
+    core-js: ^3.23.3
     country-flag-icons: ^1.5.5
     date-fns: ^2.28.0
     eslint: ^7.32.0
@@ -5600,7 +5600,7 @@ __metadata:
     eslint-plugin-nuxt: ^3.2.0
     eslint-plugin-prettier: ^4.2.1
     fast-copy: ^2.1.3
-    fast-equals: ^3.0.3
+    fast-equals: ^4.0.1
     husky: ^7.0.4
     jest: ^28.1.2
     lint-staged: ^10.5.4
@@ -6768,17 +6768,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@vue/test-utils@npm:^1.3.0":
-  version: 1.3.0
-  resolution: "@vue/test-utils@npm:1.3.0"
-  dependencies:
-    dom-event-types: ^1.0.0
-    lodash: ^4.17.15
-    pretty: ^2.0.0
+"@vue/test-utils@npm:^2.0.2":
+  version: 2.0.2
+  resolution: "@vue/test-utils@npm:2.0.2"
   peerDependencies:
-    vue: 2.x
-    vue-template-compiler: ^2.x
-  checksum: 3bf4f3db65722719fd56871cfd11165b55b3758e1b748220d43eed8cc1c90756f9b81a3032b126696ec6c1ee204e774fbe520d4e228742b77cc7b5ddea71ae19
+    vue: ^3.0.1
+  checksum: ec6cc925253caa289bd1a0987d8e9c330b04f0fc2cd22e1585459f9420c12564cbfb72bf01f298caa2665f956779778d957e88165ceb64a8b76d325e0ceb75b8
   languageName: node
   linkType: hard
 
@@ -9681,17 +9676,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"condense-newlines@npm:^0.2.1":
-  version: 0.2.1
-  resolution: "condense-newlines@npm:0.2.1"
-  dependencies:
-    extend-shallow: ^2.0.1
-    is-whitespace: ^0.3.0
-    kind-of: ^3.0.2
-  checksum: 1d3885d4552933d6b354350e87fc6ab04f221be8d2f748ab9de9999e512305c1d158b5ec3e51893651f8c3b5f999f044973ceeb8092feb26cd37164859396b0d
-  languageName: node
-  linkType: hard
-
 "config-chain@npm:^1.1.13":
   version: 1.1.13
   resolution: "config-chain@npm:1.1.13"
@@ -9909,10 +9893,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"core-js@npm:^3.0.4, core-js@npm:^3.21.1, core-js@npm:^3.6.1, core-js@npm:^3.6.5":
+"core-js@npm:^3.0.4, core-js@npm:^3.6.1, core-js@npm:^3.6.5":
   version: 3.21.1
   resolution: "core-js@npm:3.21.1"
   checksum: 570507f158d022b11b688e6c4a2ec17226181016bf15962b95576182ba69fd8a47d8bc378ab5d83934302f28c2cc7efbb78f404619f3560b55cc2978bdd78ddd
+  languageName: node
+  linkType: hard
+
+"core-js@npm:^3.23.3":
+  version: 3.23.3
+  resolution: "core-js@npm:3.23.3"
+  checksum: b878a06d549d094f04e8cccc4ec7cd4cde024729b12862d09dcdacaecbfdb7e0bb92304b141232313f5fbfd531cb854fd9431385eeab84ee4988037693298934
   languageName: node
   linkType: hard
 
@@ -10917,13 +10908,6 @@ __metadata:
   dependencies:
     utila: ~0.4
   checksum: 437b4464bd3c5e654decf855f9263e939d633d7bb720512f9a400b3e1005d870eb4a5fbead7d9ccb7849f7df5ee30c62f9a56b68143c13575ae5fef16007742c
-  languageName: node
-  linkType: hard
-
-"dom-event-types@npm:^1.0.0":
-  version: 1.1.0
-  resolution: "dom-event-types@npm:1.1.0"
-  checksum: a80fa4cbef10b1b91c97d8250927ffcab4af40fe7f4f6bd9edf0fe50ecc091a0c3aebb921190c9dd6efc586381aa48bbc698ded8222cd815d48632786d042b3a
   languageName: node
   linkType: hard
 
@@ -12259,10 +12243,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"fast-equals@npm:^3.0.3":
-  version: 3.0.3
-  resolution: "fast-equals@npm:3.0.3"
-  checksum: 386dfc3785182bf632c4a48605db999704328930d7ae60b0de5626977470558b56a73c7dfc827b657567a929d8ea2e9bf01e5542d6a289f9bb8f0744206482cc
+"fast-equals@npm:^4.0.1":
+  version: 4.0.1
+  resolution: "fast-equals@npm:4.0.1"
+  checksum: 60bc175d92177d93b99a0e292957c22a90bd29992f4a9584910960ec7a331a80a0e3e5924facf4e3e009b314bc9fa3c08a562651f3fdb40dfee92583a23f769a
   languageName: node
   linkType: hard
 
@@ -15025,13 +15009,6 @@ fsevents@^1.2.7:
   languageName: node
   linkType: hard
 
-"is-whitespace@npm:^0.3.0":
-  version: 0.3.0
-  resolution: "is-whitespace@npm:0.3.0"
-  checksum: defe0fe74842763d219065a677ff22aaef5a2dd48affac18d0a8cb2cb82030712badaed08a85f2a22406e245d9a625396117bb36d84a71f7b4cb1dbc62306793
-  languageName: node
-  linkType: hard
-
 "is-window@npm:^1.0.2":
   version: 1.0.2
   resolution: "is-window@npm:1.0.2"
@@ -15741,7 +15718,7 @@ fsevents@^1.2.7:
   languageName: node
   linkType: hard
 
-"js-beautify@npm:^1.6.12, js-beautify@npm:^1.6.14":
+"js-beautify@npm:^1.6.14":
   version: 1.14.3
   resolution: "js-beautify@npm:1.14.3"
   dependencies:
@@ -20409,17 +20386,6 @@ fsevents@^1.2.7:
   version: 1.1.0
   resolution: "pretty-time@npm:1.1.0"
   checksum: 1467cfb88f0478c277dd4b47419d536f92e417ce17da927390145f9e69ba3ac5c36e54b2a5244538c64e3ed8d299c604117c3018b3a15772c5d030030adbdef6
-  languageName: node
-  linkType: hard
-
-"pretty@npm:^2.0.0":
-  version: 2.0.0
-  resolution: "pretty@npm:2.0.0"
-  dependencies:
-    condense-newlines: ^0.2.1
-    extend-shallow: ^2.0.1
-    js-beautify: ^1.6.12
-  checksum: 18e4738abd12f1cd195ba3b1b85b339bbaf9d0b2408ddbcc102cb31a62a57e5090894c5c29ede59dc5845c0e3d58933edb4825f380bc27d07ee74a751465d80e
   languageName: node
   linkType: hard
 
