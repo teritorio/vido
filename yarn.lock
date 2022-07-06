@@ -2765,10 +2765,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@fontsource/ubuntu@npm:^4.5.6":
-  version: 4.5.6
-  resolution: "@fontsource/ubuntu@npm:4.5.6"
-  checksum: 7cd79724e27fc017e83267a9546f5548de134da71c01556afcee215907d157089c4a01d745a6d49c4fbe2ad3b9dd14ed5beaa09d792c734536f66ca2ceb87754
+"@fontsource/ubuntu@npm:^4.5.10":
+  version: 4.5.10
+  resolution: "@fontsource/ubuntu@npm:4.5.10"
+  checksum: 5d5a8a936afff8beb5b6e3da2c80af87b146dfc88e19d63a02cb28b78be689c436e433a34ac0087abe996734ef903eaddd799e56c2efb3ee3868821bbe8e069c
   languageName: node
   linkType: hard
 
@@ -5368,23 +5368,23 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@tailwindcss/forms@npm:^0.5.0":
-  version: 0.5.0
-  resolution: "@tailwindcss/forms@npm:0.5.0"
+"@tailwindcss/forms@npm:^0.5.2":
+  version: 0.5.2
+  resolution: "@tailwindcss/forms@npm:0.5.2"
   dependencies:
     mini-svg-data-uri: ^1.2.3
   peerDependencies:
     tailwindcss: ">=3.0.0 || >= 3.0.0-alpha.1"
-  checksum: 31419e23312252d9d9dfd23bba9deb2427f33c0768cf2e78847f418fcfe545093afd9761e9e4d2ec32f2732bbcce27b38ee13c2c39ea0880f60d9a81d1f8c494
+  checksum: 31cf1d934b62d03b5c21aef39c1a0cb7620350757bae235b5f65cf84f39494f7fc3b40cf6653d9b4c850b61053ee562d0faa749b6c82fad9373e868fbfe5415b
   languageName: node
   linkType: hard
 
-"@teritorio/map@npm:^0.11.1":
-  version: 0.11.1
-  resolution: "@teritorio/map@npm:0.11.1"
+"@teritorio/map@npm:^0.11.2":
+  version: 0.11.2
+  resolution: "@teritorio/map@npm:0.11.2"
   peerDependencies:
     mapbox-gl: ^1.10.1
-  checksum: 0df484e689d40edc0a154c86aef667910d55ad75d0c8da7495157109c55abf95bfe234cacf8f528b4a1f05bccbb400cc34f7f69e8ef96c849ced325103bca576
+  checksum: 39e4886cb4b17f3ac665705031615829f1253bd1c74937cb8d363d346b63016e8dd746dd743559efcb763606783d186e6f3a196631d6b0dc010a8b2d4df3037a
   languageName: node
   linkType: hard
 
@@ -5403,7 +5403,7 @@ __metadata:
   dependencies:
     "@commitlint/cli": ^11.0.0
     "@commitlint/config-conventional": ^11.0.0
-    "@fontsource/ubuntu": ^4.5.6
+    "@fontsource/ubuntu": ^4.5.10
     "@fortawesome/fontawesome-svg-core": ^1.2.36
     "@fortawesome/free-brands-svg-icons": ^5.15.4
     "@fortawesome/free-regular-svg-icons": ^5.15.4
@@ -5423,8 +5423,8 @@ __metadata:
     "@nuxtjs/stylelint-module": ^4.1.0
     "@nuxtjs/svg": ^0.4.0
     "@nuxtjs/tailwindcss": ^5.1.3
-    "@tailwindcss/forms": ^0.5.0
-    "@teritorio/map": ^0.11.1
+    "@tailwindcss/forms": ^0.5.2
+    "@teritorio/map": ^0.11.2
     "@teritorio/openmaptiles-gl-language": ^1.5.4
     "@types/geojson": ^7946.0.8
     "@types/lodash.debounce": ^4.0.7
@@ -5437,12 +5437,12 @@ __metadata:
     "@vue/test-utils": ^1.3.0
     "@xstate/inspect": ^0.6.5
     "@xstate/vue": ^0.5.0
-    autoprefixer: ^10.4.4
+    autoprefixer: ^10.4.7
     babel-core: 6.26.3
     babel-eslint: ^10.1.0
     babel-jest: ^27.5.1
     core-js: ^3.21.1
-    country-flag-icons: ^1.4.25
+    country-flag-icons: ^1.5.5
     date-fns: ^2.28.0
     eslint: ^7.32.0
     eslint-config-prettier: ^7.2.0
@@ -5450,7 +5450,7 @@ __metadata:
     eslint-plugin-nuxt: ^2.0.0
     eslint-plugin-prettier: ^3.4.1
     fast-copy: ^2.1.3
-    fast-equals: ^3.0.1
+    fast-equals: ^3.0.3
     husky: ^7.0.4
     jest: ^27.5.1
     lint-staged: ^10.5.4
@@ -5465,7 +5465,7 @@ __metadata:
     node-sass: ^6.0.1
     nuxt: ^2.15.8
     opening_hours: ^3.8.0
-    postcss: ^8.4.12
+    postcss: ^8.4.14
     prettier: ^2.6.2
     sass-loader: ^10.2.1
     stylelint: ^13.13.1
@@ -5474,8 +5474,8 @@ __metadata:
     stylelint-scss: ^4.2.0
     svgo: ^2.8.0
     tailwindcss: ^3.0.24
-    ts-jest: ^27.1.4
-    url-slug: ^3.0.3
+    ts-jest: ^27.1.5
+    url-slug: ^3.0.4
     vue-jest: ^3.0.7
     vue-matomo: ^4.1.0
     vue-screen: ^1.5.6
@@ -7723,7 +7723,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"autoprefixer@npm:^10.2.5, autoprefixer@npm:^10.4.4":
+"autoprefixer@npm:^10.2.5":
   version: 10.4.4
   resolution: "autoprefixer@npm:10.4.4"
   dependencies:
@@ -9852,10 +9852,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"country-flag-icons@npm:^1.4.25":
-  version: 1.4.25
-  resolution: "country-flag-icons@npm:1.4.25"
-  checksum: 85362f9ad90f222d88cee70258be88c01e16fd57b9eb5c743ad1cc0ac9be92344b3d75778400f1faf8af87b80487ac28d89f16d8585fef320d49df4c20020677
+"country-flag-icons@npm:^1.5.5":
+  version: 1.5.5
+  resolution: "country-flag-icons@npm:1.5.5"
+  checksum: 62fdb31736a3eb7f7fbd6f011dec5fc21d9b54640517e78317fa6ab3765c8fbc2440473fb806bcc3346980dd98185ec22127b53e2f04b45eaaf999e421c4461c
   languageName: node
   linkType: hard
 
@@ -12105,10 +12105,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"fast-equals@npm:^3.0.1":
-  version: 3.0.1
-  resolution: "fast-equals@npm:3.0.1"
-  checksum: 4fce5f6d25cbe9a600fab9270b4100282db5fc290801b0df8634be96c203f89f1e2af65d10b7931e28ff23317555e9745f058a047284d22aa78010d14ae4caa4
+"fast-equals@npm:^3.0.3":
+  version: 3.0.3
+  resolution: "fast-equals@npm:3.0.3"
+  checksum: 386dfc3785182bf632c4a48605db999704328930d7ae60b0de5626977470558b56a73c7dfc827b657567a929d8ea2e9bf01e5542d6a289f9bb8f0744206482cc
   languageName: node
   linkType: hard
 
@@ -24036,9 +24036,9 @@ fsevents@^1.2.7:
   languageName: node
   linkType: hard
 
-"ts-jest@npm:^27.1.4":
-  version: 27.1.4
-  resolution: "ts-jest@npm:27.1.4"
+"ts-jest@npm:^27.1.5":
+  version: 27.1.5
+  resolution: "ts-jest@npm:27.1.5"
   dependencies:
     bs-logger: 0.x
     fast-json-stable-stringify: 2.x
@@ -24065,7 +24065,7 @@ fsevents@^1.2.7:
       optional: true
   bin:
     ts-jest: cli.js
-  checksum: 13899fcdcf43820b657eb687d3623b6d381e2e89d425320ee490fc9f2794cb7b2f17026f476bc246ed4fcd2e7100db1c30e6efc57c4a394d6e671401e5e3a5a4
+  checksum: e5026ec46afb9fe0ff6fe44335f64fd600c7001f3cf5f7eafc9259db481f40178bc66b29c7d4a0c1a7d14ccb4ec503b06040828bc97f7f3d38d987173a48c188
   languageName: node
   linkType: hard
 
@@ -24825,10 +24825,10 @@ typescript@~4.2:
   languageName: node
   linkType: hard
 
-"url-slug@npm:^3.0.3":
-  version: 3.0.3
-  resolution: "url-slug@npm:3.0.3"
-  checksum: 74d2ada6988d054eaca17b8fd3ee4d81b015b226d77dc12bf2e93cb38f965acbdcc1286b1c5cde600f2715d8cd9ad4bc61a1e530263673527564eb70a84da5a7
+"url-slug@npm:^3.0.4":
+  version: 3.0.4
+  resolution: "url-slug@npm:3.0.4"
+  checksum: f1129c8a351ca7b2b37159177ccbeaa8f725d2d9bb684f29987d82c574e47ba5d913fc555728096ed7755c3bbbeca576b9e9a133d686858bde6a8036ef659de0
   languageName: node
   linkType: hard
 
