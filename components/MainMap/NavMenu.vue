@@ -121,9 +121,11 @@ export default Vue.extend({
 .flag\:ES {
   background-image: url('~country-flag-icons/3x2/ES.svg');
 }
+
 .flag\:FR {
   background-image: url('~country-flag-icons/3x2/FR.svg');
 }
+
 .flag\:GB {
   background-image: url('~country-flag-icons/3x2/GB.svg');
 }
