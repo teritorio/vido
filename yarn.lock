@@ -5373,12 +5373,12 @@ __metadata:
     "@teritorio/map": ^0.11.1
     "@teritorio/openmaptiles-gl-language": ^1.5.4
     "@types/geojson": ^7946.0.8
-    "@types/lodash.debounce": ^4.0.6
-    "@types/lodash.memoize": ^4.1.6
-    "@types/lodash.throttle": ^4.1.6
-    "@types/lodash.uniq": ^4.5.6
-    "@types/lodash.uniqby": ^4.7.6
-    "@types/lodash.without": ^4.4.6
+    "@types/lodash.debounce": ^4.0.7
+    "@types/lodash.memoize": ^4.1.7
+    "@types/lodash.throttle": ^4.1.7
+    "@types/lodash.uniq": ^4.5.7
+    "@types/lodash.uniqby": ^4.7.7
+    "@types/lodash.without": ^4.4.7
     "@types/wcag-contrast": ^3.0.0
     "@vue/test-utils": ^1.3.0
     "@xstate/inspect": ^0.6.5
@@ -5758,57 +5758,57 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/lodash.debounce@npm:^4.0.6":
-  version: 4.0.6
-  resolution: "@types/lodash.debounce@npm:4.0.6"
+"@types/lodash.debounce@npm:^4.0.7":
+  version: 4.0.7
+  resolution: "@types/lodash.debounce@npm:4.0.7"
   dependencies:
     "@types/lodash": "*"
-  checksum: 64952797f594f4068d2edd1e178a553647ca4ed5716c9b7673f9187d012fe5b5a0141c15ffc82c8f4d29bf13040c53001634a5b43b51a9efdfb6d4fa77ae24aa
+  checksum: 207ff017dbd30318d762fcaf9da2d2310ceb1a4f95e433f81d1e0804300e486a26ac8025def45bb681ddb312974e3260ab0ee6a1a46a28bbe8f9ab7b10ebf65c
   languageName: node
   linkType: hard
 
-"@types/lodash.memoize@npm:^4.1.6":
-  version: 4.1.6
-  resolution: "@types/lodash.memoize@npm:4.1.6"
+"@types/lodash.memoize@npm:^4.1.7":
+  version: 4.1.7
+  resolution: "@types/lodash.memoize@npm:4.1.7"
   dependencies:
     "@types/lodash": "*"
-  checksum: 54ab7a3013960018913c7ad57dc5a7d82540070fd8e36c80d2464166981b2e75a3e746e26bd478740abd8097df2bc95446e4d3275c85a64cc739b9c5095edd7e
+  checksum: 71258377fcc5e570d6aec5d96f8cc7b8b7404148674fda60e601c65f534d550bca00790d82ba83c2c9a708e1833d288ea570f252df824f53b528e1fe0d952bff
   languageName: node
   linkType: hard
 
-"@types/lodash.throttle@npm:^4.1.6":
-  version: 4.1.6
-  resolution: "@types/lodash.throttle@npm:4.1.6"
+"@types/lodash.throttle@npm:^4.1.7":
+  version: 4.1.7
+  resolution: "@types/lodash.throttle@npm:4.1.7"
   dependencies:
     "@types/lodash": "*"
-  checksum: 6ee4ca706681cb561b96f0b7a14da2f637783d0fe9af0b68efa8f29bff3b2caa1ad4e13d59ed139a4e4ef10098c825447045145b1b8f63410cdb5dc256b33082
+  checksum: 3148bcb17eb6c11f82b963142394ed7cd926a1aaf1067fde4ab341f7f3f5fe41ff6b104f3ca649d2038f045aad3f9e836fec80e3d3a3be6161a91cd31be13bcf
   languageName: node
   linkType: hard
 
-"@types/lodash.uniq@npm:^4.5.6":
-  version: 4.5.6
-  resolution: "@types/lodash.uniq@npm:4.5.6"
+"@types/lodash.uniq@npm:^4.5.7":
+  version: 4.5.7
+  resolution: "@types/lodash.uniq@npm:4.5.7"
   dependencies:
     "@types/lodash": "*"
-  checksum: 1f25cfeeef528a6da8921098d390dcef9caf1713ed7cdeb32af7da82486e81e62d2d046dd069f3a68981b2e4397b42400a441c5343e2a2de492aea635a1004b9
+  checksum: 10f66205be8675337884cfe71935ce60e87dd9a18711219e5443d59bcb5c8ad52a1e716a9e291b22f00013de89c0a6ca8608c269db3f4382f30fa5e7f9029758
   languageName: node
   linkType: hard
 
-"@types/lodash.uniqby@npm:^4.7.6":
-  version: 4.7.6
-  resolution: "@types/lodash.uniqby@npm:4.7.6"
+"@types/lodash.uniqby@npm:^4.7.7":
+  version: 4.7.7
+  resolution: "@types/lodash.uniqby@npm:4.7.7"
   dependencies:
     "@types/lodash": "*"
-  checksum: 87f6623baf2fea8cd2ce51cb2e779d141e935a7a49c1724acb1d60fc20206b506e434fc4065328cd8539c48b31bbf7029d7b6c6e570a7011a8537bcf6749316c
+  checksum: 596d514e2d0af686f92c073afde98b1e8d5d9d25225a58e922a46c319789bb6fa7a73845b750044f3b0f67bd707daed530871b48c32e244a75de628aaf60778f
   languageName: node
   linkType: hard
 
-"@types/lodash.without@npm:^4.4.6":
-  version: 4.4.6
-  resolution: "@types/lodash.without@npm:4.4.6"
+"@types/lodash.without@npm:^4.4.7":
+  version: 4.4.7
+  resolution: "@types/lodash.without@npm:4.4.7"
   dependencies:
     "@types/lodash": "*"
-  checksum: 4085af29eb3903eb6db1f1844f76a8fed2a96bd47ea1871db5c98dba7d5215ba9010391b67c8d3f439f5d5002a131dd99b7eec6291296981868b950583cdf683
+  checksum: 77bdc326a908005fb38e6b24779c7acc9c5e45828bdd6e7c61dcbe1cbb93b4cae5cf5136dd9a8a668dd6cab5b86ab41b26ae555aff963b18f60dcc9136171134
   languageName: node
   linkType: hard
 
