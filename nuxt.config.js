@@ -130,4 +130,6 @@ export default {
   gtm: {
     pageTracking: false,
   },
+
+  devServerHandlers: [], // Workaround issue https://github.com/nuxt-community/tailwindcss-module/issues/480
 }
