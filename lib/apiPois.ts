@@ -84,7 +84,7 @@ export function getPoiById(
   options: apiPoisOptions = {}
 ): Promise<ApiPoi> {
   return fetch(
-    `${apiEndpoint}/${apiProject}/${apiTheme}/poi/${poiId}?` +
+    `${apiEndpoint}/${apiProject}/${apiTheme}/poi/${poiId}.geojson?` +
       new URLSearchParams(stringifyOptions(options))
   ).then((data) => {
     if (data.ok) {
@@ -105,7 +105,7 @@ export function getPoiByIds(
   options: apiPoisOptions = {}
 ): Promise<ApiPois> {
   return fetch(
-    `${apiEndpoint}/${apiProject}/${apiTheme}/pois?` +
+    `${apiEndpoint}/${apiProject}/${apiTheme}/pois.geojson?` +
       new URLSearchParams([
         ['ids', poiIds.join(',')],
         ...stringifyOptions(options),
@@ -129,7 +129,7 @@ export function getPoiByCategoryId(
   options: apiPoisOptions = {}
 ): Promise<ApiPois> {
   return fetch(
-    `${apiEndpoint}/${apiProject}/${apiTheme}/pois?` +
+    `${apiEndpoint}/${apiProject}/${apiTheme}/pois.geojson?` +
       new URLSearchParams([
         ['idmenu', `${categoryId}`],
         ...stringifyOptions(options),

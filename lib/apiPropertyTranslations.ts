@@ -1,6 +1,5 @@
 import { MultilingualString } from '~/utils/types'
 
-
 export interface PropertyValueTranslation {
   label: MultilingualString
   label_popup: MultilingualString
@@ -29,16 +28,15 @@ export function getPropertyTranslations(
   apiProject: string,
   apiTheme: string
 ): Promise<PropertyTranslations> {
-  return fetch(`${apiEndpoint}/${apiProject}/${apiTheme}/attribute_translations/fr`)
-    .then((data) => {
-      if (data.ok) {
-        return data.json() as unknown as PropertyTranslations
-      } else {
-        return Promise.reject(new Error([
-          data.url,
-          data.status,
-          data.statusText,
-        ].join(' ')))
-      }
-    })
+  return fetch(
+    `${apiEndpoint}/${apiProject}/${apiTheme}/attribute_translations/fr.json`
+  ).then((data) => {
+    if (data.ok) {
+      return data.json() as unknown as PropertyTranslations
+    } else {
+      return Promise.reject(
+        new Error([data.url, data.status, data.statusText].join(' '))
+      )
+    }
+  })
 }

@@ -111,13 +111,15 @@ export function getMenu(
   apiProject: string,
   apiTheme: string
 ): Promise<[Category]> {
-  return fetch(`${apiEndpoint}/${apiProject}/${apiTheme}/menu`).then((data) => {
-    if (data.ok) {
-      return data.json() as unknown as [Category]
-    } else {
-      return Promise.reject(
-        new Error([data.url, data.status, data.statusText].join(' '))
-      )
+  return fetch(`${apiEndpoint}/${apiProject}/${apiTheme}/menu.json`).then(
+    (data) => {
+      if (data.ok) {
+        return data.json() as unknown as [Category]
+      } else {
+        return Promise.reject(
+          new Error([data.url, data.status, data.statusText].join(' '))
+        )
+      }
     }
-  })
+  )
 }

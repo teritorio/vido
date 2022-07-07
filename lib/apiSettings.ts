@@ -40,7 +40,7 @@ export function getSettings(
   apiProject: string,
   apiTheme: string
 ): Promise<Settings> {
-  return fetch(`${apiEndpoint}/${apiProject}/${apiTheme}`)
+  return fetch(`${apiEndpoint}/${apiProject}/${apiTheme}/settings.json`)
     .then((data) => {
       if (data.ok) {
         return data.json() as unknown as Settings
