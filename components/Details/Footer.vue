@@ -16,13 +16,20 @@
         />
       </a>
     </span>
+    <CookiesConsent />
   </footer>
 </template>
 
 <script lang="ts">
 import Vue, { PropType } from 'vue'
 
+import CookiesConsent from '~/components/UI/CookiesConsent.vue'
+
 export default Vue.extend({
+  components: {
+    CookiesConsent,
+  },
+
   props: {
     attributions: {
       type: Array as PropType<String[]>,

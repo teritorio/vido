@@ -1,13 +1,26 @@
+import { NuxtAppOptions } from '@nuxt/types/app'
 import urlSlug from 'url-slug'
 
 import { Event, Tracker } from '~/lib/trackers'
 
 export default class Google implements Tracker {
+  waitForConsent: boolean
   gtm: any
+  googleTagManagerId: string
 
-  constructor(gtm: any, googleTagManagerId: string) {
+  constructor(waitForConsent: boolean, gtm: any, googleTagManagerId: string) {
+    this.waitForConsent = waitForConsent
     this.gtm = gtm
-    gtm.init(googleTagManagerId)
+    this.googleTagManagerId = googleTagManagerId
+    if (!waitForConsent) {
+      this.gtm.init(googleTagManagerId)
+    }
+  }
+
+  consent(app: NuxtAppOptions) {
+    if (this.waitForConsent) {
+      this.gtm.init(this.googleTagManagerId)
+    }
   }
 
   track(event: Event) {

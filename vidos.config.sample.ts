@@ -9,6 +9,8 @@ const configDefault = {
     'https://vecto.teritorio.xyz/styles/teritorio-tourism-bicycle-0.9/style.json',
   IMAGE_PROXY: null,
   MAPILLARY_ACCESS_TOKEN: null,
+  COOKIES_CONSENT: null,
+  COOKIES_LINK: null,
   GOOGLE_TAG_MANAGER_ID: null,
   MATOMO_URL: null,
   MATOMO_SITEID: null,

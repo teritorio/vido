@@ -236,7 +236,13 @@
         />
       </div>
     </BottomMenu>
-    <Attribution v-if="!isBottomMenuOpened" :attributions="fullAttributions" />
+    <footer>
+      <Attribution
+        v-if="!isBottomMenuOpened"
+        :attributions="fullAttributions"
+      />
+      <CookiesConsent />
+    </footer>
   </div>
 </template>
 
@@ -269,6 +275,7 @@ import MapFeatures from '~/components/MainMap/MapFeatures.vue'
 import MapPoiToast from '~/components/MainMap/MapPoiToast.vue'
 import NavMenu from '~/components/MainMap/NavMenu.vue'
 import SearchHeader from '~/components/Search/SearchHeader.vue'
+import CookiesConsent from '~/components/UI/CookiesConsent.vue'
 import { ContentEntry } from '~/lib/apiContent'
 import { ApiMenuCategory, Category } from '~/lib/apiMenu'
 import { getPoiById, ApiPoi, getPoiByIds } from '~/lib/apiPois'
@@ -306,6 +313,7 @@ export default (
     BottomMenu,
     MapPoiToast,
     Attribution,
+    CookiesConsent,
   },
 
   props: {

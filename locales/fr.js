@@ -132,4 +132,9 @@ export default {
       },
     },
   },
+  cookiesConsent: {
+    accept: 'Accepter',
+    details: 'En savoir plus',
+    decline: 'Refuser',
+  },
 }

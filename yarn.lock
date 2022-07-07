@@ -5573,6 +5573,7 @@ __metadata:
     tailwindcss: ^3.1.4
     ts-jest: ^28.0.5
     url-slug: ^3.0.4
+    vue-cookie-law: ^1.13.3
     vue-jest: ^3.0.7
     vue-matomo: ^4.1.0
     vue-screen: ^1.5.6
@@ -23747,6 +23748,13 @@ fsevents@^1.2.7:
   languageName: node
   linkType: hard
 
+"tiny-cookie@npm:^2.1.1":
+  version: 2.3.2
+  resolution: "tiny-cookie@npm:2.3.2"
+  checksum: 6fe3562fa84762556990121826f3e94632393dee24fc18c9007d2098c59eca950bfa17ae37d82bfdbfeaf652dd07af2499ef17bbffd0027c7dbebb54ab2e2c19
+  languageName: node
+  linkType: hard
+
 "tinyqueue@npm:^2.0.3":
   version: 2.0.3
   resolution: "tinyqueue@npm:2.0.3"
@@ -24923,6 +24931,15 @@ typescript@~4.2:
   version: 2.1.0
   resolution: "vue-client-only@npm:2.1.0"
   checksum: 14bccd3d53125ffe45fee1c65affd67aac419c31c3f1480c1669c54b861d9ad0036c884d6d63d0873b83169b4c61df1763f47be6d5367a1de7888af1fca7b5c9
+  languageName: node
+  linkType: hard
+
+"vue-cookie-law@npm:^1.13.3":
+  version: 1.13.3
+  resolution: "vue-cookie-law@npm:1.13.3"
+  dependencies:
+    tiny-cookie: ^2.1.1
+  checksum: 5aadbdb8ccbb4b4df80d02eecfbb68c9e541c1fc1b5c709d18069ca5bc72f1f3bfec4c2677839935d6eb2b6adbb7379fcc3f20e168beee2f7dc6cd430247c714
   languageName: node
   linkType: hard
 

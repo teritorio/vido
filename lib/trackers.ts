@@ -1,3 +1,5 @@
+import { NuxtAppOptions } from '@nuxt/types/app'
+
 import { ApiPoiId } from './apiPois'
 
 import { Category } from '~/lib/apiMenu'
@@ -77,5 +79,6 @@ export type Event =
     }
 
 export interface Tracker {
+  consent(app: NuxtAppOptions): void
   track(event: Event): void
 }
