@@ -83,7 +83,7 @@ export default Vue.extend({
       routerPushHashUpdate(this.$router, {
         bg: background !== DEFAULT_MAP_STYLE ? background : null,
       })
-      this.$emit('changeBackground', background)
+      this.$emit('change-background', background)
     },
   },
 })

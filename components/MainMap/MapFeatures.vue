@@ -31,7 +31,7 @@
         <MapControlsBackground
           :backgrounds="availableStyles"
           :initial-background="selectedBackground"
-          @changeBackground="selectedBackground = $event"
+          @change-background="selectedBackground = $event"
         />
       </template>
     </Map>
