@@ -1,22 +1,48 @@
 <template>
   <div v-if="openingHours">
+    <span hidden>{{ openingHours }}</span>
     <template v-if="nextChange">
-      <span v-if="nextChange.type === '24_7'" class="text-emerald-500">
+      <span
+        v-if="nextChange.type === '24_7'"
+        id="_24_7"
+        class="text-emerald-500"
+      >
         {{ $tc('openingHours.24_7') }}
       </span>
-      <span v-else-if="nextChange.type === 'opened'" class="text-emerald-500">
-        {{ $tc('openingHours.opened') }} -
-        {{ $tc('openingHours.closeAt') }}
-        {{ displayTime(nextChange.nextChange) }}
+      <span
+        v-else-if="nextChange.type === 'opened'"
+        id="opened"
+        class="text-emerald-500"
+      >
+        {{ $tc('openingHours.opened') }}
+        <template v-if="nextChange.nextChange">
+          -
+          {{ $tc('openingHours.closeAt') }}
+          {{ displayTime(nextChange.nextChange) }}
+        </template>
       </span>
-      <span v-else-if="nextChange.type === 'openAt'" class="text-red-500">
-        {{ $tc('openingHours.closed') }} -
-        {{ $tc('openingHours.openAt') }}
-        {{ displayTime(nextChange.nextChange) }}
+      <span
+        v-else-if="nextChange.type === 'openAt'"
+        id="openAt"
+        class="text-red-500"
+      >
+        {{ $tc('openingHours.closed') }}
+
+        <template v-if="nextChange.nextChange">
+          -
+          {{ $tc('openingHours.openAt') }}
+          {{ displayTime(nextChange.nextChange) }}
+        </template>
       </span>
     </template>
     <ul v-if="!isCompact">
-      <template v-if="schedule.length > 0">
+      <li
+        v-if="typeof schedule !== 'undefined' && schedule.length === 0"
+        id="notOpenedInNextDays"
+      >
+        {{ $tc('openingHours.notOpenedInNextDays') }}
+      </li>
+      <template v-else-if="nextChange && nextChange.type !== '24_7'">
         <li
           v-for="(timeline, i) in schedule"
           :key="`timeline_${i}`"
@@ -25,9 +51,6 @@
           {{ timeline }}
         </li>
       </template>
-      <li v-else>
-        {{ $tc('openingHours.notOpenedInNextDays') }}
-      </li>
     </ul>
   </div>
 </template>
@@ -53,12 +76,25 @@ export default Vue.extend({
       type: String,
       required: true,
     },
+    baseDate: {
+      type: Date as PropType<Date>,
+      default: () => new Date(),
+    },
   },
 
   computed: {
     ...mapGetters({
       locale: 'site/locale',
     }),
+
+    fromMidnightBaseDate(): Date {
+      const d = new Date(this.baseDate)
+      d.setHours(0)
+      d.setMinutes(0)
+      d.setSeconds(0)
+      d.setMilliseconds(0)
+      return d
+    },
 
     isCompact(): boolean {
       return this.context === PropertyTranslationsContextEnum.Popup
@@ -70,15 +106,17 @@ export default Vue.extend({
       }
     },
 
-    nextChange(): null | {
-      type: '24_7' | 'opened' | 'openAt'
-      nextChange?: Date
-    } {
-      try {
-        const oh = this.OpeningHoursFactory()
-        const nextChange = oh.getNextChange()
+    nextChange():
+      | undefined
+      | {
+          type: '24_7' | 'opened' | 'openAt'
+          nextChange?: Date
+        } {
+      const oh = this.OpeningHoursFactory()
+      if (oh) {
+        const nextChange = oh.getNextChange(this.fromMidnightBaseDate)
 
-        if (oh.getState()) {
+        if (oh.getState(this.fromMidnightBaseDate)) {
           if (nextChange === undefined) {
             return { type: '24_7' }
           } else {
@@ -87,18 +125,20 @@ export default Vue.extend({
         } else {
           return { type: 'openAt', nextChange }
         }
-      } catch (e) {
-        // eslint-disable-next-line no-console
-        console.log('Vido error:', e)
-        return null
+      } else {
+        return undefined
       }
     },
 
-    schedule(): string[] {
-      try {
-        const oh = this.OpeningHoursFactory()
+    schedule(): string[] | undefined {
+      const oh = this.OpeningHoursFactory()
+      if (oh) {
+        const nextChange = oh.getNextChange(this.fromMidnightBaseDate)
+        if (!nextChange && oh.getState(this.fromMidnightBaseDate)) {
+          return undefined
+        }
 
-        const from = new Date()
+        const from = this.fromMidnightBaseDate
         from.setDate(from.getDate() + ((7 - from.getDay()) % 7 || 7))
 
         const to = new Date(from)
@@ -133,10 +173,8 @@ export default Vue.extend({
         })
 
         return sortedIntervals
-      } catch (e) {
-        // eslint-disable-next-line no-console
-        console.log('Vido error:', e)
-        return []
+      } else {
+        return undefined
       }
     },
   },
@@ -152,21 +190,25 @@ export default Vue.extend({
       return null
     },
 
-    OpeningHoursFactory(): OpeningHours {
-      return new OpeningHours(this.openingHours, {
-        lon:
-          (this.$settings.bbox_line.coordinates[0][1] +
-            this.$settings.bbox_line.coordinates[1][1]) /
-          2,
-        lat:
-          (this.$settings.bbox_line.coordinates[0][0] +
-            this.$settings.bbox_line.coordinates[1][0]) /
-          2,
-        address: {
-          country_code: this.$settings.default_country,
-          state: this.$settings.default_country_state_opening_hours,
-        },
-      })
+    OpeningHoursFactory(): OpeningHours | undefined {
+      try {
+        return new OpeningHours(this.openingHours, {
+          lon:
+            (this.$settings.bbox_line.coordinates[0][1] +
+              this.$settings.bbox_line.coordinates[1][1]) /
+            2,
+          lat:
+            (this.$settings.bbox_line.coordinates[0][0] +
+              this.$settings.bbox_line.coordinates[1][0]) /
+            2,
+          address: {
+            country_code: this.$settings.default_country,
+            state: this.$settings.default_country_state_opening_hours,
+          },
+        })
+      } catch (e) {
+        console.log('Vido error:', e)
+      }
     },
   },
 })

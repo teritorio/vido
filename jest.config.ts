@@ -20,7 +20,7 @@ const config: Config.InitialOptions = {
     '<rootDir>/components/**/*.vue',
     '<rootDir>/pages/**/*.vue',
   ],
-  setupFiles: ['<rootDir>/components/default.jest.ts'],
+  setupFiles: ['<rootDir>/tests/default.jest.ts'],
   testEnvironment: 'jsdom',
   testEnvironmentOptions: {
     customExportConditions: ['node', 'node-addons'],

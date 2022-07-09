@@ -1,0 +1,81 @@
+[
+    {
+        "id": 1,
+        "menu_group": {
+            "id": 1,
+            "name": {
+                "fr": "Bloc Recherche"
+            },
+            "icon": "teritorio teritorio-camp_site"
+        },
+        "link": null,
+        "category": null,
+        "index_order": 1
+    },
+    {
+        "id": 11,
+        "parent_id": 1,
+        "menu_group": {
+            "id": 11,
+            "name": {
+                "fr": "Recherche"
+            },
+            "icon": "glyphicons glyphicons-search"
+        },
+        "link": null,
+        "category": null,
+        "index_order": 2
+    },
+    {
+        "id": 2,
+        "parent_id": null,
+        "menu_group": {
+            "id": 2,
+            "name": {
+                "fr": "Bloc POI"
+            },
+            "icon": "teritorio teritorio-camp_site"
+        },
+        "link": null,
+        "category": null,
+        "index_order": 4
+    },
+    {
+        "id": 21,
+        "parent_id": 2,
+        "menu_group": {
+            "id": 21,
+            "name": {
+                "fr": "Hébergement"
+            },
+            "icon": "teritorio teritorio-hosting",
+            "color_fill": "#99163a",
+            "color_line": "#99163a",
+            "display_mode": "compact"
+        },
+        "link": null,
+        "category": null,
+        "index_order": 5
+    },
+    {
+        "id": 211,
+        "parent_id": 21,
+        "menu_group": null,
+        "link": null,
+        "category": {
+            "id": 211,
+            "slug": "",
+            "name": {
+                "en": "Tourism",
+                "fr": "Tourisme"
+            },
+            "search_indexed": true,
+            "icon": "teritorio teritorio-artwork",
+            "color_fill": "#ec0029",
+            "color_line": "#ec0029",
+            "style_merge": false,
+            "zoom": "16"
+        },
+        "index_order": 6
+    }
+]
