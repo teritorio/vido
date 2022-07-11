@@ -252,7 +252,7 @@ h1 {
   text-transform: uppercase;
 }
 
-/deep/ h2 {
+:deep(h2) {
   font-size: 1.8rem;
   margin-top: 0;
   margin-bottom: 0.7rem;
@@ -306,7 +306,7 @@ h1 {
   }
 }
 
-/deep/ #map {
+:deep(#map) {
   width: 100%;
   height: 346px;
 }
