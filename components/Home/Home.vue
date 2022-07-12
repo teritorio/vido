@@ -57,13 +57,13 @@
 
           <div
             v-if="state.matches(states.Search)"
-            key="SearchHeader"
+            key="Search"
             :class="[
               'max-h-full hidden md:flex p-2',
               showPoi && 'max-h-screen-4/6',
             ]"
           >
-            <SearchHeader
+            <Search
               :site-name="siteName"
               :logo-url="logoUrl"
               :menu-to-icon="categoriesToIcons"
@@ -82,7 +82,7 @@
             isBottomMenuOpened && 'hidden',
           ]"
         >
-          <SearchHeader
+          <Search
             :site-name="siteName"
             :logo-url="logoUrl"
             :menu-to-icon="categoriesToIcons"
@@ -274,7 +274,7 @@ import MainHeader from '~/components/MainMap/MainHeader.vue'
 import MapFeatures from '~/components/MainMap/MapFeatures.vue'
 import MapPoiToast from '~/components/MainMap/MapPoiToast.vue'
 import NavMenu from '~/components/MainMap/NavMenu.vue'
-import SearchHeader from '~/components/Search/SearchHeader.vue'
+import Search from '~/components/Search/Search.vue'
 import CookiesConsent from '~/components/UI/CookiesConsent.vue'
 import { ContentEntry } from '~/lib/apiContent'
 import { ApiMenuCategory, Category } from '~/lib/apiMenu'
@@ -305,7 +305,7 @@ export default (
     FavoritesOverlay,
     NavMenu,
     MapFeatures,
-    SearchHeader,
+    Search,
     SelectedSubCategoriesDense,
     HeaderRootCategories,
     SubCategoryHeader,
