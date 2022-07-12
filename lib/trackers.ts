@@ -60,7 +60,7 @@ export type Event =
     }
   | {
       type: 'favorites_event'
-      event: 'copy_link' | 'export_pdf' | 'export_csv'
+      event: 'open_share' | 'copy_link' | 'export_pdf' | 'export_csv'
     }
   | {
       type: 'notebook_event'
