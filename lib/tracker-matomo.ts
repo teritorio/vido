@@ -18,8 +18,27 @@ export default class Matomo implements Tracker {
   }
 
   consent(app: NuxtAppOptions) {
-    // @ts-ignore
-    app.$matomo && app.$matomo.setConsentGiven()
+    let delai = 1000
+    const timeout = () => {
+      setTimeout(function () {
+        set()
+      }, delai)
+      delai = delai * 2
+    }
+
+    const set = () => {
+      // @ts-ignore
+      if (window.Matomo && window.Matomo.getTracker()) {
+        // @ts-ignore
+        window.Matomo.getTracker().setConsentGiven()
+        // @ts-ignore
+        window.Matomo.getTracker().setCookieConsentGiven()
+      } else {
+        timeout()
+      }
+    }
+
+    set()
   }
 
   track(event: Event) {
