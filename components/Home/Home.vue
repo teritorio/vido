@@ -526,10 +526,6 @@ export default (
       this.routerPushUrl(hash)
     },
 
-    favoritesIds() {
-      this.handleFavorites()
-    },
-
     isModeFavorites() {
       this.handleFavorites()
     },
