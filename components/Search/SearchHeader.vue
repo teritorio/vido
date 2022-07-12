@@ -127,7 +127,7 @@
 </template>
 
 <script lang="ts">
-import debounce from 'lodash.debounce'
+import { debounce, DebouncedFunc } from 'lodash'
 import Vue, { PropType, VueConstructor } from 'vue'
 import { mapGetters } from 'vuex'
 
@@ -182,7 +182,8 @@ export default (
     searchPoisResults: null | ApiSearchResult<ApiPoisSearchResult>
     searchAddressesResults: null | ApiSearchResult<ApiAddrSearchResult>
     searchCartocodeResult: null | ApiPoi
-    search: null | Function
+    search: null | DebouncedFunc<() => void>
+    trackSearchQuery: null | DebouncedFunc<(query: string) => void>
   } {
     return {
       searchQueryId: 0,
@@ -193,6 +194,7 @@ export default (
       searchAddressesResults: null,
       searchCartocodeResult: null,
       search: null,
+      trackSearchQuery: null,
     }
   },
 
@@ -269,6 +271,7 @@ export default (
 
   created() {
     this.search = debounce(this.search_, 300)
+    this.trackSearchQuery = debounce(this.trackSearchQuery_, 3000)
   },
 
   mounted() {
@@ -360,7 +363,10 @@ export default (
 
     search_() {
       if (this.searchText) {
-        this.$tracking({ type: 'search_query', query: this.searchText })
+        if (this.trackSearchQuery) {
+          this.trackSearchQuery.cancel()
+          this.trackSearchQuery(this.searchText)
+        }
 
         this.searchQueryId += 1
         const currentSearchQueryId = this.searchQueryId
@@ -425,6 +431,10 @@ export default (
           )
         }
       }
+    },
+
+    trackSearchQuery_(searchText: string) {
+      this.$tracking({ type: 'search_query', query: searchText })
     },
   },
 })
