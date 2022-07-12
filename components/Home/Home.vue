@@ -422,7 +422,7 @@ export default (
     subCategoriesCounts(): Record<Category['id'], number> {
       const counts: { [id: string]: number } = {}
       this.selectedCategoriesIds.forEach((categoryId) => {
-        let parentId = this.categories[categoryId].parent_id
+        let parentId = this.categories[categoryId]?.parent_id
         while (parentId) {
           counts[parentId] = (counts[parentId] || 0) + 1
           parentId = this.categories[parentId].parent_id
