@@ -1,7 +1,6 @@
 <template>
-  <client-only>
+  <client-only v-if="doNotTrack && $vidoConfig.COOKIES_CONSENT">
     <CookieLaw
-      v-if="doNotTrack && $vidoConfig.COOKIES_CONSENT"
       :button-text="$tc('cookiesConsent.accept')"
       :button-link="$vidoConfig.COOKIES_LINK"
       :button-link-text="$tc('cookiesConsent.details')"
