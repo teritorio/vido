@@ -614,7 +614,9 @@ export default (
       setFavorites: 'favorite/setFavorites',
     }),
     routerPushUrl(hashUpdate: { [key: string]: string | null } = {}) {
-      const categoryIds = this.selectedCategoriesIds.sort().join(',')
+      const categoryIds = [...new Set(this.selectedCategoriesIds)]
+        .sort()
+        .join(',')
       const id =
         this.selectedFeature?.properties?.metadata?.id?.toString() ||
         this.selectedFeature?.id?.toString() ||
