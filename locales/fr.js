@@ -17,7 +17,6 @@ export default {
     menu_clear: 'Supprimer les favoris',
     export_pdf: 'Exporter la liste en PDF',
     export_csv: 'Exporter la liste en CSV',
-    share_link: 'Partager le lien des favoris',
     notebook: {
       title: 'Carnet des favoris',
       close: 'Fermer',
@@ -76,9 +75,9 @@ export default {
     closeAt: 'Fermeture',
     closed: 'Actuellement fermé',
     openAt: 'Ouverture',
-    '24_7': 'Ouvert 24h/24, 7j/7',
+    next: 'Prochain',
     formatDayAndDayInMonth: 'EEE d :',
-    notOpenedInNextDays: "N'ouvre pas dans les prochains jours.",
+    variableWeek: "Les horaires peuvent varier d'une semaine sur l'autre.",
   },
   toast: {
     details: 'Détails',
@@ -96,7 +95,6 @@ export default {
   },
   details: {
     headerDescription: 'Descriptif',
-    headerOpeningHours: 'Horaires d’ouverture',
     headerDownload: 'Fichiers à télécharger',
     lastUpdate: 'Dernière modification',
     headerContacts: 'Contact',

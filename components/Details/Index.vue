@@ -61,7 +61,7 @@
                 :key="property"
                 class="detail-left-block"
               >
-                <h2>{{ $tc('details.headerOpeningHours') }}</h2>
+                <h2>{{ $propertyTranslations.p(property) }}</h2>
                 <OpeningHours
                   :tag-key="property"
                   :opening-hours="p[property]"

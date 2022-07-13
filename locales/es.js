@@ -76,9 +76,9 @@ export default {
     closeAt: 'Cierra',
     closed: 'Actualmente cerrado',
     openAt: 'Abre',
-    '24_7': 'Abierto 24h/24, 7j/7',
+    next: 'Siguiente',
     formatDayAndDayInMonth: 'EEE d :',
-    notOpenedInNextDays: 'No abra en los próximos días',
+    variableWeek: 'Los horarios pueden variar de una semana a otra.',
   },
   toast: {
     details: 'Detalles',
@@ -96,7 +96,6 @@ export default {
   },
   details: {
     headerDescription: 'Descripción',
-    headerOpeningHours: 'Horario de apertura',
     headerDownload: 'Archivos a descargar',
     lastUpdate: 'Último cambio',
     headerContacts: 'Contacto',

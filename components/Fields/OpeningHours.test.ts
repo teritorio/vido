@@ -38,9 +38,6 @@ function factory(props = {}) {
 
 test('opening_hours', () => {
   let wrapper
-  wrapper = factory()
-  expect(wrapper.find('#_24_7').exists()).toBeTruthy()
-
   wrapper = factory({ openingHours: 'Su 00:00-24:00' })
   expect(wrapper.find('#opened').exists()).toBeTruthy()
 
@@ -48,31 +45,19 @@ test('opening_hours', () => {
   expect(wrapper.find('#openAt').exists()).toBeTruthy()
 
   wrapper = factory({ openingHours: 'k; fjlk-gj; lrjglkregm' })
-  expect(wrapper.find('#_24_7').exists()).toBe(false)
-  expect(wrapper.find('#opened').exists()).toBe(false)
-  expect(wrapper.find('#openAt').exists()).toBe(false)
-  expect(wrapper.find('#notOpenedInNextDays').exists()).toBe(false)
-
-  wrapper = factory({ openingHours: '1999-2000 Sa 00:00-24:00' })
-  expect(wrapper.find('#notOpenedInNextDays').exists()).toBeTruthy()
+  expect(wrapper.find('#_24_7').exists()).toBeFalsy()
+  expect(wrapper.find('#opened').exists()).toBeFalsy()
+  expect(wrapper.find('#openAt').exists()).toBeFalsy()
 })
 
 test('collection_times', () => {
   let wrapper
   wrapper = factory({ tagKey: 'collection_times', openingHours: 'Su 00:00' })
-  expect(wrapper.find('#opened').exists()).toBeTruthy()
+  expect(wrapper.find('#next').exists()).toBeTruthy()
 
   wrapper = factory({
     tagKey: 'collection_times',
     openingHours: 'k; fjlk-gj; lrjglkregm',
   })
-  expect(wrapper.find('#opened').exists()).toBe(false)
-  expect(wrapper.find('#openAt').exists()).toBe(false)
-  expect(wrapper.find('#notOpenedInNextDays').exists()).toBe(false)
-
-  wrapper = factory({
-    tagKey: 'collection_times',
-    openingHours: '1999-2000 Sa 00:00',
-  })
-  expect(wrapper.find('#notOpenedInNextDays').exists()).toBeTruthy()
+  expect(wrapper.find('#next').exists()).toBeFalsy()
 })

@@ -76,9 +76,9 @@ export default {
     closeAt: 'Closes',
     closed: 'Currently closed',
     openAt: 'Opens',
-    '24_7': 'Opened 24/7',
+    next: 'Next',
     formatDayAndDayInMonth: "EEE do':'",
-    notOpenedInNextDays: 'Do not open in the coming days.',
+    variableWeek: 'The hours may vary from week to week.',
   },
   toast: {
     details: 'Details',
@@ -96,7 +96,6 @@ export default {
   },
   details: {
     headerDescription: 'Description',
-    headerOpeningHours: 'Opening hours',
     headerDownload: 'Files to download',
     lastUpdate: 'Last change',
     headerContacts: 'Contact',
