@@ -58,93 +58,99 @@
       </p>
 
       <div v-else class="h-auto flex-grow shrink-0">
-        <div
+        <template
           v-for="property in (poiProps.editorial &&
             poiProps.editorial.popup_properties) ||
           []"
-          :key="'_' + property"
-          class="text-sm mt-2"
         >
-          <p v-if="property === 'addr:*'" class="mt-6 text-sm">
-            <AddressField :properties="poiProps"></AddressField>
-          </p>
-
-          <RoutesField
-            v-else-if="property === 'route:*'"
-            :context="context"
-            :properties="poiProps"
+          <div
+            v-if="poiProps[property]"
+            :key="'_' + property"
             class="text-sm mt-2"
-          />
-
-          <ul v-else-if="property === 'phone' && $screen.phone">
-            <li v-for="item in poiProps[property]" :key="item">
-              <a
-                class="text-blue-400"
-                :href="'tel:' + item"
-                :title="$tc('toast.callNumber')"
-              >
-                {{ item }}
-              </a>
-            </li>
-          </ul>
-          <ul v-else-if="property === 'mobile' && $screen.phone">
-            <li v-for="item in poiProps[property]" :key="item">
-              <a
-                class="text-blue-400"
-                :href="'tel:' + item"
-                :title="$tc('toast.callNumber')"
-              >
-                {{ item }}
-              </a>
-            </li>
-          </ul>
-
-          <ul v-else-if="Array.isArray(poiProps[property])">
-            <li v-for="item in poiProps[property]" :key="item">
-              <Website v-if="property === 'website'" :url="item" />
-              <p v-else class="text-sm mt-1">
-                {{ item }}
-              </p>
-            </li>
-          </ul>
-
-          <p v-else-if="property == 'start_end_date'" class="text-sm">
-            <DateRange :start="poiProps.start_date" :end="poiProps.end_date" />
-          </p>
-
-          <p
-            v-else-if="property === 'opening_hours' && poiProps[property]"
-            class="text-sm"
           >
-            <OpeningHours
-              :opening-hours="poiProps[property]"
+            <p v-if="property === 'addr:*'" class="mt-6 text-sm">
+              <AddressField :properties="poiProps"></AddressField>
+            </p>
+
+            <RoutesField
+              v-else-if="property === 'route:*'"
               :context="context"
+              :properties="poiProps"
+              class="text-sm mt-2"
             />
-          </p>
 
-          <p
-            v-else-if="
-              poiPropTranslate(property) &&
-              poiPropTranslate(property).length > textLimit
-            "
-            class="text-sm"
-          >
-            {{ poiPropTranslate(property).substring(0, textLimit) + ' ...' }}
-            <a
-              v-if="poiProps.editorial && poiProps.editorial['website:details']"
-              class="underline"
-              :href="poiProps.editorial['website:details']"
-              rel="noopener noreferrer"
-              target="_blank"
-              @click.stop="tracking('details')"
+            <ul v-else-if="property === 'phone' && $screen.phone">
+              <li v-for="item in poiProps[property]" :key="item">
+                <a
+                  class="text-blue-400"
+                  :href="'tel:' + item"
+                  :title="$tc('toast.callNumber')"
+                >
+                  {{ item }}
+                </a>
+              </li>
+            </ul>
+            <ul v-else-if="property === 'mobile' && $screen.phone">
+              <li v-for="item in poiProps[property]" :key="item">
+                <a
+                  class="text-blue-400"
+                  :href="'tel:' + item"
+                  :title="$tc('toast.callNumber')"
+                >
+                  {{ item }}
+                </a>
+              </li>
+            </ul>
+
+            <ul v-else-if="Array.isArray(poiProps[property])">
+              <li v-for="item in poiProps[property]" :key="item">
+                <Website v-if="property === 'website'" :url="item" />
+                <p v-else class="text-sm mt-1">
+                  {{ item }}
+                </p>
+              </li>
+            </ul>
+
+            <p v-else-if="property == 'start_end_date'" class="text-sm">
+              <DateRange
+                :start="poiProps.start_date"
+                :end="poiProps.end_date"
+              />
+            </p>
+
+            <p v-else-if="property === 'opening_hours'" class="text-sm">
+              <OpeningHours
+                :opening-hours="poiProps[property]"
+                :context="context"
+              />
+            </p>
+
+            <p
+              v-else-if="
+                poiPropTranslate(property) &&
+                poiPropTranslate(property).length > textLimit
+              "
+              class="text-sm"
             >
-              {{ $tc('toast.seeDetail') }}
-            </a>
-          </p>
-          <p v-else-if="poiProps[property]" class="text-sm">
-            {{ poiPropTranslate(property) }}
-          </p>
-        </div>
+              {{ poiPropTranslate(property).substring(0, textLimit) + ' ...' }}
+              <a
+                v-if="
+                  poiProps.editorial && poiProps.editorial['website:details']
+                "
+                class="underline"
+                :href="poiProps.editorial['website:details']"
+                rel="noopener noreferrer"
+                target="_blank"
+                @click.stop="tracking('details')"
+              >
+                {{ $tc('toast.seeDetail') }}
+              </a>
+            </p>
+            <p v-else class="text-sm">
+              {{ poiPropTranslate(property) }}
+            </p>
+          </div>
+        </template>
       </div>
 
       <div

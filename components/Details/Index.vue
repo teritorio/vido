@@ -39,48 +39,50 @@
             </h2>
           </div>
           <template v-for="property in detailsProperties">
-            <div
-              v-if="property == 'description' && p.description"
-              :key="property"
-              class="detail-left-block"
-            >
-              <h2>{{ $tc('details.headerDescription') }}</h2>
-              <div v-html="p.description"></div>
-            </div>
+            <template v-if="p[property]">
+              <div
+                v-if="property == 'description'"
+                :key="property"
+                class="detail-left-block"
+              >
+                <h2>{{ $tc('details.headerDescription') }}</h2>
+                <div v-html="p.description"></div>
+              </div>
 
-            <Contact
-              v-if="property == 'first_contact'"
-              :key="property"
-              :p="p"
-              :color-fill="colorFill"
-            />
-
-            <div
-              v-if="property == 'opening_hours' && p.opening_hours"
-              :key="property"
-              class="detail-left-block"
-            >
-              <h2>{{ $tc('details.headerOpeningHours') }}</h2>
-              <OpeningHours
-                :opening-hours="p.opening_hours"
-                :context="context"
+              <Contact
+                v-if="property == 'first_contact'"
+                :key="property"
+                :p="p"
+                :color-fill="colorFill"
               />
-            </div>
 
-            <RoutesField
-              v-if="property == 'route:*'"
-              :key="property"
-              class="detail-left-block"
-              :context="context"
-              :properties="p"
-            />
+              <div
+                v-if="property == 'opening_hours'"
+                :key="property"
+                class="detail-left-block"
+              >
+                <h2>{{ $tc('details.headerOpeningHours') }}</h2>
+                <OpeningHours
+                  :opening-hours="p.opening_hours"
+                  :context="context"
+                />
+              </div>
 
-            <Download
-              v-if="property == 'first_download'"
-              :key="property"
-              :p="p"
-              :color-fill="colorFill"
-            />
+              <RoutesField
+                v-if="property == 'route:*'"
+                :key="property"
+                class="detail-left-block"
+                :context="context"
+                :properties="p"
+              />
+
+              <Download
+                v-if="property == 'first_download'"
+                :key="property"
+                :p="p"
+                :color-fill="colorFill"
+              />
+            </template>
           </template>
           <Location :p="p" :geom="poi.geometry" />
         </div>
