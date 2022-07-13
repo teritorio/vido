@@ -28,8 +28,7 @@ function factory(props = {}) {
     store,
     propsData: {
       context: PropertyTranslationsContextEnum.Default,
-      lon: 0,
-      lat: 45, // France
+      tagKey: 'opening_hours',
       openingHours: '24/7',
       baseDate: new Date('2022-01-02 11:00:00'), // Sunday
       ...props,
@@ -37,7 +36,7 @@ function factory(props = {}) {
   })
 }
 
-test('Hello', () => {
+test('opening_hours', () => {
   let wrapper
   wrapper = factory()
   expect(wrapper.find('#_24_7').exists()).toBeTruthy()
@@ -55,5 +54,25 @@ test('Hello', () => {
   expect(wrapper.find('#notOpenedInNextDays').exists()).toBe(false)
 
   wrapper = factory({ openingHours: '1999-2000 Sa 00:00-24:00' })
+  expect(wrapper.find('#notOpenedInNextDays').exists()).toBeTruthy()
+})
+
+test('collection_times', () => {
+  let wrapper
+  wrapper = factory({ tagKey: 'collection_times', openingHours: 'Su 00:00' })
+  expect(wrapper.find('#opened').exists()).toBeTruthy()
+
+  wrapper = factory({
+    tagKey: 'collection_times',
+    openingHours: 'k; fjlk-gj; lrjglkregm',
+  })
+  expect(wrapper.find('#opened').exists()).toBe(false)
+  expect(wrapper.find('#openAt').exists()).toBe(false)
+  expect(wrapper.find('#notOpenedInNextDays').exists()).toBe(false)
+
+  wrapper = factory({
+    tagKey: 'collection_times',
+    openingHours: '1999-2000 Sa 00:00',
+  })
   expect(wrapper.find('#notOpenedInNextDays').exists()).toBeTruthy()
 })

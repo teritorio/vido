@@ -58,7 +58,7 @@
 <script lang="ts">
 import { format, formatRelative } from 'date-fns'
 import { enGB, fr, es } from 'date-fns/locale'
-import OpeningHours from 'opening_hours'
+import OpeningHours, { optional_conf } from 'opening_hours'
 import Vue, { PropType } from 'vue'
 import { mapGetters } from 'vuex'
 
@@ -66,10 +66,31 @@ import { PropertyTranslationsContextEnum } from '~/plugins/property-translations
 
 const DateFormatLocales: { [key: string]: Locale } = { en: enGB, fr, es }
 
+// List of tag keys regex copied from opening_hours.js
+const SupportedOsmKeys = [
+  /opening_hours/,
+  /collection_times/,
+  /opening_hours:.+/,
+  /.+:opening_hours/,
+  /.+:opening_hours:.+/,
+  /smoking_hours/,
+  /service_times/,
+  /happy_hours/,
+  /lit/,
+]
+
+export function isOpeningHoursSupportedOsmTags(key: string): boolean {
+  return SupportedOsmKeys.some((regexKey) => regexKey.test(key))
+}
+
 export default Vue.extend({
   props: {
     context: {
       type: String as PropType<PropertyTranslationsContextEnum>,
+      required: true,
+    },
+    tagKey: {
+      type: String,
       required: true,
     },
     openingHours: {
@@ -192,20 +213,29 @@ export default Vue.extend({
 
     OpeningHoursFactory(): OpeningHours | undefined {
       try {
-        return new OpeningHours(this.openingHours, {
-          lon:
-            (this.$settings.bbox_line.coordinates[0][1] +
-              this.$settings.bbox_line.coordinates[1][1]) /
-            2,
-          lat:
-            (this.$settings.bbox_line.coordinates[0][0] +
-              this.$settings.bbox_line.coordinates[1][0]) /
-            2,
-          address: {
-            country_code: this.$settings.default_country,
-            state: this.$settings.default_country_state_opening_hours,
+        // https://github.com/opening-hours/opening_hours.js/issues/428
+        // @ts-ignore
+        const optionalConf: optional_conf = {
+          tag_key: this.tagKey,
+        }
+        return new OpeningHours(
+          this.openingHours,
+          {
+            lon:
+              (this.$settings.bbox_line.coordinates[0][1] +
+                this.$settings.bbox_line.coordinates[1][1]) /
+              2,
+            lat:
+              (this.$settings.bbox_line.coordinates[0][0] +
+                this.$settings.bbox_line.coordinates[1][0]) /
+              2,
+            address: {
+              country_code: this.$settings.default_country,
+              state: this.$settings.default_country_state_opening_hours,
+            },
           },
-        })
+          optionalConf
+        )
       } catch (e) {
         console.log('Vido error:', e)
       }

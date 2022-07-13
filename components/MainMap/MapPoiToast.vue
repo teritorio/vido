@@ -118,8 +118,12 @@
               />
             </p>
 
-            <p v-else-if="property === 'opening_hours'" class="text-sm">
+            <p
+              v-else-if="isOpeningHoursSupportedOsmTags(property)"
+              class="text-sm"
+            >
               <OpeningHours
+                :tag-key="property"
                 :opening-hours="poiProps[property]"
                 :context="context"
               />
@@ -219,6 +223,7 @@ import { mapGetters } from 'vuex'
 
 import AddressField from '~/components/Fields/AddressField.vue'
 import DateRange from '~/components/Fields/DateRange.vue'
+import { isOpeningHoursSupportedOsmTags } from '~/components/Fields/OpeningHours.vue'
 import RoutesField from '~/components/Fields/RoutesField.vue'
 import Website from '~/components/Fields/Website.vue'
 import FavoriteIcon from '~/components/UI/FavoriteIcon.vue'
@@ -398,6 +403,11 @@ export default Vue.extend({
       }
       this.$emit('favorite-click', this.poi, this.notebook)
     },
+
+    isOpeningHoursSupportedOsmTags(key: string) {
+      return isOpeningHoursSupportedOsmTags(key)
+    },
+
     tracking(event: 'details' | 'route' | 'explore' | 'favorite' | 'zoom') {
       if (this.id) {
         this.$tracking({

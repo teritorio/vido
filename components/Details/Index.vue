@@ -57,13 +57,14 @@
               />
 
               <div
-                v-if="property == 'opening_hours'"
+                v-if="isOpeningHoursSupportedOsmTags(property)"
                 :key="property"
                 class="detail-left-block"
               >
                 <h2>{{ $tc('details.headerOpeningHours') }}</h2>
                 <OpeningHours
-                  :opening-hours="p.opening_hours"
+                  :tag-key="property"
+                  :opening-hours="p[property]"
                   :context="context"
                 />
               </div>
@@ -121,6 +122,7 @@ import Header from '~/components/Details/Header.vue'
 import Location from '~/components/Details/Location.vue'
 import Mapillary from '~/components/Details/Mapillary.vue'
 import Share from '~/components/Details/Share.vue'
+import { isOpeningHoursSupportedOsmTags } from '~/components/Fields/OpeningHours.vue'
 import RoutesField from '~/components/Fields/RoutesField.vue'
 import MapPois from '~/components/MapPois.vue'
 import FavoriteIcon from '~/components/UI/FavoriteIcon.vue'
@@ -239,6 +241,10 @@ export default Vue.extend({
         })
         this.$store.dispatch('favorite/toggleFavorite', this.poi)
       }
+    },
+
+    isOpeningHoursSupportedOsmTags(key: string) {
+      return isOpeningHoursSupportedOsmTags(key)
     },
   },
 })
