@@ -1,7 +1,7 @@
 <template>
   <ul v-if="images">
     <li v-for="(image, i) in images" :key="i">
-      <img :src="image" />
+      <nuxt-picture :src="image" />
     </li>
   </ul>
 </template>
