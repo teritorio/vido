@@ -614,9 +614,7 @@ export default (
       setFavorites: 'favorite/setFavorites',
     }),
     routerPushUrl(hashUpdate: { [key: string]: string | null } = {}) {
-      const categoryIds = [...new Set(this.selectedCategoriesIds)]
-        .sort()
-        .join(',')
+      const categoryIds = this.selectedCategoriesIds.join(',')
       const id =
         this.selectedFeature?.properties?.metadata?.id?.toString() ||
         this.selectedFeature?.id?.toString() ||
@@ -693,11 +691,14 @@ export default (
     onBackToSubCategoryClick() {
       this.service.send(HomeEvents.GoToSubCategories)
     },
+    sortedUniq<T>(a: T[]): T[] {
+      return [...new Set(a)].sort()
+    },
     selectSubCategory(subCategoriesIds: Category['id'][]) {
-      this.selectedCategoriesIds = [
+      this.selectedCategoriesIds = this.sortedUniq([
         ...this.selectedCategoriesIds,
         ...subCategoriesIds,
-      ]
+      ])
       this.service.send(HomeEvents.SelectSubCategories)
     },
     send(event: HomeEvents) {
@@ -709,7 +710,10 @@ export default (
           (id) => id !== categoryId
         )
       } else {
-        this.selectedCategoriesIds = [...this.selectedCategoriesIds, categoryId]
+        this.selectedCategoriesIds = this.sortedUniq([
+          ...this.selectedCategoriesIds,
+          categoryId,
+        ])
       }
       this.service.send(HomeEvents.ToggleSubCategorySelection)
     },

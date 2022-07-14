@@ -183,7 +183,7 @@ export default Vue.extend({
       )
     },
 
-    selectedCategoriesIds() {
+    selectedFeature() {
       this.showSelectedFeature()
     },
 
