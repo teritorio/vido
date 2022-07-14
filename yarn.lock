@@ -4490,7 +4490,6 @@ __metadata:
     jest-environment-jsdom: ^28.1.2
     lint-staged: ^13.0.3
     lodash.debounce: ^4.0.8
-    lodash.memoize: ^4.1.2
     lodash.throttle: ^4.1.1
     lodash.uniq: ^4.5.0
     lodash.uniqby: ^4.7.0
@@ -4517,7 +4516,6 @@ __metadata:
     vue-screen: ^1.5.6
     vue-tailwind: ^2.5.1
     vue2-touch-events: ^3.2.2
-    wcag-contrast: ^3.0.0
     xstate: ^4.32.1
   languageName: unknown
   linkType: soft
@@ -10642,13 +10640,6 @@ __metadata:
   bin:
     eslint: bin/eslint.js
   checksum: 0f392375b853693d805ca919bc19d86b4603f7bb03a9f34ba5c0bc594600ec48830df68e6e6060f0f11c13ca035370b18391cc519f6be83f1e597bafed355f6d
-  languageName: node
-  linkType: hard
-
-"esm@npm:^3.0.84":
-  version: 3.2.25
-  resolution: "esm@npm:3.2.25"
-  checksum: 12a0272aaa15ce4bc07e52cbb66d471cf56ad81ad1a3c1d9f6fa1e29e8c2712716333825e2572f9dbdfdc787e5717a75cb00ce2846e2a50e2bba6971c24402f3
   languageName: node
   linkType: hard
 
@@ -20032,15 +20023,6 @@ fsevents@^1.2.7:
   languageName: node
   linkType: hard
 
-"relative-luminance@npm:^2.0.0":
-  version: 2.0.1
-  resolution: "relative-luminance@npm:2.0.1"
-  dependencies:
-    esm: ^3.0.84
-  checksum: a9deff0aec0bf030efc830b185a0b9cf716b0e0ddcbdc6e6aa89ba0d88bc2db5c11ebb3c702427af213e95df8b5d04e14ed18076f6485ba9edcec08069ad456d
-  languageName: node
-  linkType: hard
-
 "remark-external-links@npm:^8.0.0":
   version: 8.0.0
   resolution: "remark-external-links@npm:8.0.0"
@@ -24062,15 +24044,6 @@ typescript@~4.2:
     glob-to-regexp: ^0.4.1
     graceful-fs: ^4.1.2
   checksum: 089870a1f111157784283764b92a9660e73b9707c767dc8a3c992a1bd9994208fd2ca7bf051a3070f4d91a0f20ffab21e7f318284efac1b8b072b6f234e61766
-  languageName: node
-  linkType: hard
-
-"wcag-contrast@npm:^3.0.0":
-  version: 3.0.0
-  resolution: "wcag-contrast@npm:3.0.0"
-  dependencies:
-    relative-luminance: ^2.0.0
-  checksum: a0064903163aaa31514c715ad415ae7972e8bdffb45a89416affcf487e183fc5e60d6ed905aa75a403ef5ad63e0669ffef94d17c2f185198b159ab143f2bdeb1
   languageName: node
   linkType: hard
 

@@ -10,8 +10,6 @@
 <script lang="ts">
 import Vue from 'vue'
 
-import { getContrastedTextColor } from '~/utils/picto'
-
 export default Vue.extend({
   props: {
     colorBackground: {
@@ -37,7 +35,7 @@ export default Vue.extend({
   },
   computed: {
     textColor() {
-      return this.colorText || getContrastedTextColor(this.colorBackground)
+      return this.colorText || '#ffffff'
     },
   },
 })
