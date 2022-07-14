@@ -122,7 +122,9 @@ import Header from '~/components/Details/Header.vue'
 import Location from '~/components/Details/Location.vue'
 import Mapillary from '~/components/Details/Mapillary.vue'
 import Share from '~/components/Details/Share.vue'
-import { isOpeningHoursSupportedOsmTags } from '~/components/Fields/OpeningHours.vue'
+import OpeningHours, {
+  isOpeningHoursSupportedOsmTags,
+} from '~/components/Fields/OpeningHours.vue'
 import RoutesField from '~/components/Fields/RoutesField.vue'
 import MapPois from '~/components/MapPois.vue'
 import FavoriteIcon from '~/components/UI/FavoriteIcon.vue'
@@ -139,7 +141,7 @@ export default Vue.extend({
     FavoriteIcon,
     TeritorioIconBadge,
     Contact,
-    OpeningHours: () => import('~/components/Fields/OpeningHours.vue'),
+    OpeningHours,
     Location,
     Download,
     Share,

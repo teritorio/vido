@@ -223,7 +223,9 @@ import { mapGetters } from 'vuex'
 
 import AddressField from '~/components/Fields/AddressField.vue'
 import DateRange from '~/components/Fields/DateRange.vue'
-import { isOpeningHoursSupportedOsmTags } from '~/components/Fields/OpeningHours.vue'
+import OpeningHours, {
+  isOpeningHoursSupportedOsmTags,
+} from '~/components/Fields/OpeningHours.vue'
 import RoutesField from '~/components/Fields/RoutesField.vue'
 import Website from '~/components/Fields/Website.vue'
 import FavoriteIcon from '~/components/UI/FavoriteIcon.vue'
@@ -238,7 +240,7 @@ export default Vue.extend({
     TeritorioIcon,
     AddressField,
     Website,
-    OpeningHours: () => import('~/components/Fields/OpeningHours.vue'),
+    OpeningHours,
     DateRange,
     FavoriteIcon,
   },
