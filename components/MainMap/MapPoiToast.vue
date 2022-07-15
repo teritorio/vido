@@ -7,7 +7,7 @@
   >
     <nuxt-picture
       v-if="poiProps.image && poiProps.image.length > 0"
-      class="object-cover w-full h-auto max-h-44 md:max-h-full md:w-52"
+      class="md:w-48 h-auto max-h-44 md:max-h-full"
       :src="poiProps.image[0]"
       alt=""
     />
@@ -427,5 +427,9 @@ export default Vue.extend({
 <style>
 button {
   @apply focus:outline-none;
+}
+
+img {
+  @apply object-cover w-full h-full;
 }
 </style>
