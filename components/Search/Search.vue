@@ -380,16 +380,28 @@ export default (
             this.$vidoConfig.API_PROJECT,
             this.$vidoConfig.API_THEME,
             `cartocode:${cartocode}`
-          ).then((poi) => {
-            if (currentSearchQueryId > this.searchResultId) {
-              this.searchResultId = currentSearchQueryId
+          )
+            .then((poi) => {
+              if (currentSearchQueryId > this.searchResultId) {
+                this.searchResultId = currentSearchQueryId
 
-              this.searchMenuItemsResults = null
-              this.searchPoisResults = null
-              this.searchAddressesResults = null
-              this.searchCartocodeResult = poi
-            }
-          })
+                this.searchMenuItemsResults = null
+                this.searchPoisResults = null
+                this.searchAddressesResults = null
+                this.searchCartocodeResult = poi
+              }
+            })
+            .catch(() => {
+              // Deals with 404 and error from API
+              if (currentSearchQueryId > this.searchResultId) {
+                this.searchResultId = currentSearchQueryId
+
+                this.searchMenuItemsResults = null
+                this.searchPoisResults = null
+                this.searchAddressesResults = null
+                this.searchCartocodeResult = null
+              }
+            })
         } else if (searchText.length > 2) {
           const query = `q=${this.searchText}&lon=${this.mapCenter.lng}&lat=${this.mapCenter.lat}`
 
@@ -413,22 +425,34 @@ export default (
             ApiSearchResult<ApiMenuItemSearchResult>,
             ApiSearchResult<ApiPoisSearchResult>,
             ApiSearchResult<ApiAddrSearchResult>
-          >([MenuItemsFetch, poisFetch, addressesFetch]).then(
-            ([
-              searchMenuItemsResults,
-              searchPoisResults,
-              searchAddressesResults,
-            ]) => {
+          >([MenuItemsFetch, poisFetch, addressesFetch])
+            .then(
+              ([
+                searchMenuItemsResults,
+                searchPoisResults,
+                searchAddressesResults,
+              ]) => {
+                if (currentSearchQueryId > this.searchResultId) {
+                  this.searchResultId = currentSearchQueryId
+
+                  this.searchMenuItemsResults = searchMenuItemsResults
+                  this.searchPoisResults = searchPoisResults
+                  this.searchAddressesResults = searchAddressesResults
+                  this.searchCartocodeResult = null
+                }
+              }
+            )
+            .catch(() => {
+              // Deals with error from API
               if (currentSearchQueryId > this.searchResultId) {
                 this.searchResultId = currentSearchQueryId
 
-                this.searchMenuItemsResults = searchMenuItemsResults
-                this.searchPoisResults = searchPoisResults
-                this.searchAddressesResults = searchAddressesResults
+                this.searchMenuItemsResults = null
+                this.searchPoisResults = null
+                this.searchAddressesResults = null
                 this.searchCartocodeResult = null
               }
-            }
-          )
+            })
         }
       }
     },
