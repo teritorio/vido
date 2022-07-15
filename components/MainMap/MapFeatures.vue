@@ -192,14 +192,17 @@ export default Vue.extend({
     },
 
     selectedBackground() {
-      // Re-enable route highlight after style change
-      const styledataCallBack = (e: MapDataEvent) => {
-        if (e.dataType === 'style') {
-          this.map.off('styledata', styledataCallBack)
-          this.showSelectedFeature()
+      // Only once map is loaded. Can be called from beforeMount().
+      if (this.map) {
+        // Re-enable route highlight after style change
+        const styledataCallBack = (e: MapDataEvent) => {
+          if (e.dataType === 'style') {
+            this.map.off('styledata', styledataCallBack)
+            this.showSelectedFeature()
+          }
         }
+        this.map.on('styledata', styledataCallBack)
       }
-      this.map.on('styledata', styledataCallBack)
     },
   },
 
