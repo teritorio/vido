@@ -17,6 +17,7 @@ export default {
     menu_clear: 'Supprimer les favoris',
     export_pdf: 'Exporter la liste en PDF',
     export_csv: 'Exporter la liste en CSV',
+    share_link: 'Partager le lien des favoris',
     notebook: {
       title: 'Carnet des favoris',
       close: 'Fermer',
