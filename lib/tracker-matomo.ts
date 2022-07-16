@@ -28,11 +28,11 @@ export default class Matomo implements Tracker {
 
     const set = () => {
       // @ts-ignore
-      if (window.Matomo && window.Matomo.getTracker()) {
+      if (window.Matomo && window.Matomo.getAsyncTracker()) {
         // @ts-ignore
-        window.Matomo.getTracker().setConsentGiven()
+        window.Matomo.getAsyncTracker().setConsentGiven()
         // @ts-ignore
-        window.Matomo.getTracker().setCookieConsentGiven()
+        window.Matomo.getAsyncTracker().setCookieConsentGiven()
       } else {
         timeout()
       }
