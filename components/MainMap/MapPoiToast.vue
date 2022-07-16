@@ -328,7 +328,7 @@ export default Vue.extend({
           return `maps://?q=${latLng}`
         }
 
-        return `geo:${latLng}`
+        return `geo:${latLng}?q=${latLng}`
       } else {
         return null
       }
