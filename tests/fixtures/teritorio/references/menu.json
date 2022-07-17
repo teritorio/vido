@@ -6,7 +6,10 @@
             "name": {
                 "fr": "Bloc Recherche"
             },
-            "icon": "teritorio teritorio-camp_site"
+            "icon": "teritorio teritorio-camp_site",
+            "color_fill": "#99163a",
+            "color_line": "#99163a",
+            "display_mode": "compact"
         },
         "link": null,
         "category": null,
@@ -20,7 +23,10 @@
             "name": {
                 "fr": "Recherche"
             },
-            "icon": "glyphicons glyphicons-search"
+            "icon": "glyphicons glyphicons-search",
+            "color_fill": "#99163a",
+            "color_line": "#99163a",
+            "display_mode": "compact"
         },
         "link": null,
         "category": null,
@@ -34,7 +40,10 @@
             "name": {
                 "fr": "Bloc POI"
             },
-            "icon": "teritorio teritorio-camp_site"
+            "icon": "teritorio teritorio-camp_site",
+            "color_fill": "#99163a",
+            "color_line": "#99163a",
+            "display_mode": "compact"
         },
         "link": null,
         "category": null,

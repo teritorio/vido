@@ -33,9 +33,9 @@ export interface ApiMenuItem {
   parent_id: ApiMenuItem['id'] | null
   // eslint-disable-next-line camelcase
   index_order: number
-  hidden: boolean
+  hidden?: boolean
   // eslint-disable-next-line camelcase
-  selected_by_default: boolean
+  selected_by_default?: boolean
 }
 
 export interface ApiMenuGroup extends ApiMenuItem {
@@ -48,7 +48,7 @@ export interface ApiMenuGroup extends ApiMenuItem {
     // eslint-disable-next-line camelcase
     color_line: string
     // eslint-disable-next-line camelcase
-    style_class: string[]
+    style_class?: string[]
     // eslint-disable-next-line camelcase
     display_mode: 'large' | 'compact'
   }
