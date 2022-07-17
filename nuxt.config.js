@@ -1,3 +1,4 @@
+import { cypressMockMiddleware } from '@cypress/mock-ssr'
 import webpack from 'webpack'
 
 import { configuredApi, configuredImageProxy } from './plugins/vido-config.ts'
@@ -23,6 +24,10 @@ export default {
   },
 
   loading: false,
+
+  serverMiddleware: [
+    ...(process.env.NODE_ENV != 'production' ? [cypressMockMiddleware()] : []),
+  ],
 
   // Global CSS (https://go.nuxtjs.dev/config-css)
   css: ['@fortawesome/fontawesome-svg-core/styles.css', '@fontsource/ubuntu'],
@@ -89,6 +94,28 @@ export default {
     // https://sentry.nuxtjs.org/sentry/options
     config: {
       // https://docs.sentry.io/platforms/javascript/guides/vue/configuration/options/
+    },
+  },
+
+  watchers: {
+    chokidar: {
+      ignored: (f) =>
+        [
+          /\.git/,
+          /\.yarn/,
+          /cypress/,
+          /.*\.stories\.ts$/,
+          /.*\.jest\.ts$/,
+        ].some((r) => r.test(f)),
+    },
+    webpack: {
+      ignored: [
+        /\.git/,
+        /\.yarn/,
+        /cypress/,
+        /.*\.stories\.ts$/,
+        /.*\.jest\.ts$/,
+      ],
     },
   },
 

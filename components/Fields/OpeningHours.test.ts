@@ -1,3 +1,4 @@
+import { expect } from '@jest/globals'
 import { shallowMount } from '@vue/test-utils'
 import { Store } from 'vuex'
 

@@ -19,6 +19,26 @@ $ yarn generate
 
 For detailed explanation on how things work, check out [Nuxt.js docs](https://nuxtjs.org).
 
+## Tests
+
+Run unitary tests with:
+```
+yarn test:jest
+```
+
+Run end to end tests with dev server or build:
+```
+# With dev
+yarn dev
+
+# Alternatively with build
+yarn build
+yarn start
+
+# The run end to end tests
+yarn test:cypress
+```
+
 ## Release
 
 ```bash
