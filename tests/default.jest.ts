@@ -2,8 +2,8 @@ import { config } from '@vue/test-utils'
 import Vue from 'vue'
 import Vuex from 'vuex'
 
+import settings from '~/cypress/fixtures/teritorio/references/settings.json'
 import fr from '~/locales/fr.js'
-import settings from '~/tests/fixtures/teritorio/references/settings.json'
 
 Vue.use(Vuex)
 

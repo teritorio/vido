@@ -3,7 +3,7 @@
     <div v-for="background in backgrounds" :key="background" class="w-11 h-11">
       <button
         v-if="!hidden"
-        id="background-selector-map"
+        :id="`background-selector-map-${background}`"
         aria-label="$tc('mapControls.backgroundAriaLabel')"
         :class="[
           'bg-white border-4 rounded-full shadow-md outline-none w-11 h-11 focus:outline-none ',

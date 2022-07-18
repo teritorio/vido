@@ -157,7 +157,11 @@
             :toggle-favorite="toggleFavorite"
             @toggle-favorites="onToggleFavoritesMode"
           />
-          <NavMenu :entries="navMenuEntries" class="ml-3 sm:ml-9" />
+          <NavMenu
+            id="nav-menu"
+            :entries="navMenuEntries"
+            class="ml-3 sm:ml-9"
+          />
         </div>
       </div>
     </div>
