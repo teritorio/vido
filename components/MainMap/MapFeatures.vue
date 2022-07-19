@@ -48,6 +48,7 @@ import maplibregl, {
   LngLatBoundsLike,
   MapMouseEvent,
   FitBoundsOptions,
+  GeoJSONSource,
 } from 'maplibre-gl'
 import Vue, { PropType } from 'vue'
 
@@ -165,16 +166,12 @@ export default Vue.extend({
       }
 
       // Change visible data
-      if (this.map.getSource(POI_SOURCE)) {
-        // Change data
-        const source = this.map.getSource(POI_SOURCE)
-        if (source && 'setData' in source) {
-          // @ts-ignore
-          source.setData({
-            type: 'FeatureCollection',
-            features: this.features,
-          })
-        }
+      const source = this.map.getSource(POI_SOURCE)
+      if (source?.type == 'geojson' && 'setData' in source) {
+        ;(source as GeoJSONSource).setData({
+          type: 'FeatureCollection',
+          features: this.features,
+        })
       }
 
       this.handleResetMapZoom(
