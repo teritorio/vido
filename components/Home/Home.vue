@@ -66,6 +66,7 @@
             <Search
               :site-name="siteName"
               :logo-url="logoUrl"
+              :main-url="mainUrl"
               :menu-to-icon="categoriesToIcons"
               :map-center="map_center"
               @go-back-click="goToHome"
@@ -85,6 +86,7 @@
           <Search
             :site-name="siteName"
             :logo-url="logoUrl"
+            :main-url="mainUrl"
             :menu-to-icon="categoriesToIcons"
             :map-center="map_center"
             @go-to-categories="onQuitExplorerFavoriteMode"

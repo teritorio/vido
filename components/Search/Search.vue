@@ -9,11 +9,19 @@
   >
     <div class="flex flex-row md:flex-col items-center md:items-start">
       <h1 v-if="!isModeExplorerOrFavorites" class="flex-none md:hidden mr-2">
-        <img
+        <a
+          :href="mainUrl"
+          rel="noopener noreferrer"
           :aria-label="siteName"
-          :src="logoUrl"
-          class="w-auto h-auto max-w-2xl max-h-12 md:max-h-16"
-        />
+          :title="siteName"
+          target="_blank"
+        >
+          <img
+            :aria-label="siteName"
+            :src="logoUrl"
+            class="w-auto h-auto max-w-2xl max-h-12 md:max-h-16"
+          />
+        </a>
       </h1>
 
       <button
@@ -156,6 +164,10 @@ export default (
   },
 
   props: {
+    mainUrl: {
+      type: String,
+      required: true,
+    },
     logoUrl: {
       type: String,
       required: true,
