@@ -172,6 +172,7 @@ export default Vue.extend({
           type: 'FeatureCollection',
           features: this.features,
         })
+        this.showSelectedFeature()
       }
 
       this.handleResetMapZoom(
@@ -227,12 +228,6 @@ export default Vue.extend({
       this.poiFilter = new PoiFilter()
       this.map.addControl(this.poiFilter)
 
-      this.map.on('styledata', (e: MapDataEvent) => {
-        if (e.dataType === 'style') {
-          this.onStyleInit()
-        }
-      })
-
       this.map.on('click', this.onClick)
 
       this.$store.dispatch('map/center', this.map.getCenter())
@@ -245,6 +240,10 @@ export default Vue.extend({
       this.poiLayerTemplate = style.layers.find(
         (layer) => layer.id === 'poi-level-1'
       )
+
+      if (this.map) {
+        this.onStyleInit()
+      }
     },
 
     onStyleInit() {

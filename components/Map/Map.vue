@@ -55,6 +55,7 @@ import {
   LngLatLike,
   AttributionControl,
   FitBoundsOptions,
+  MapDataEvent,
 } from 'maplibre-gl'
 import Vue, { PropType } from 'vue'
 import { mapGetters } from 'vuex'
@@ -191,6 +192,8 @@ export default Vue.extend({
         this.map.dragRotate.disable()
         this.map.touchZoomRotate.disableRotation()
       }
+
+      this.emitStyleLoad()
     },
 
     setStyle(mapStyle: MapStyleEnum) {
@@ -203,14 +206,29 @@ export default Vue.extend({
             this.$emit('full-attribution', vectorSource.attribution)
           }
 
-          this.$emit('map-style-load', style)
           this.style = style
-          this.map?.setStyle(style)
+          if (this.map) {
+            // Use no diff mode to avoid issue with added layers
+            this.map.setStyle(style, { diff: false })
+            this.emitStyleLoad()
+          }
         })
         .catch((e) => {
           // eslint-disable-next-line no-console
           console.error('Vido error:', e.message)
         })
+    },
+
+    emitStyleLoad() {
+      if (this.map) {
+        const styleEvent = (e: MapDataEvent) => {
+          if (this.map && e.dataType === 'style') {
+            this.map.off('styledata', styleEvent)
+            this.$emit('map-style-load', this.style)
+          }
+        }
+        this.map.on('styledata', styleEvent)
+      }
     },
 
     async getStyle(mapStyle: MapStyleEnum): Promise<StyleSpecification> {
