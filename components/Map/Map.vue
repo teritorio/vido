@@ -294,4 +294,8 @@ export default Vue.extend({
 .maplibregl-ctrl-attrib {
   margin-left: 100px;
 }
+
+.mapboxgl-ctrl-bottom-right {
+  @apply pl-24;
+}
 </style>
