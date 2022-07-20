@@ -37,7 +37,29 @@
             </h2>
           </div>
           <template v-for="property in detailsProperties">
-            <template v-if="p[property]">
+            <Contact
+              v-if="property == 'first_contact'"
+              :key="property"
+              :p="p"
+              :color-fill="colorFill"
+            />
+
+            <Download
+              v-else-if="property == 'first_download'"
+              :key="property"
+              :p="p"
+              :color-fill="colorFill"
+            />
+
+            <RoutesField
+              v-else-if="property == 'route:*'"
+              :key="property"
+              class="detail-left-block"
+              :context="context"
+              :properties="p"
+            />
+
+            <template v-else-if="p[property]">
               <div
                 v-if="property == 'description'"
                 :key="property"
@@ -46,13 +68,6 @@
                 <h2>{{ $tc('details.headerDescription') }}</h2>
                 <div v-html="p.description"></div>
               </div>
-
-              <Contact
-                v-if="property == 'first_contact'"
-                :key="property"
-                :p="p"
-                :color-fill="colorFill"
-              />
 
               <div
                 v-if="isOpeningHoursSupportedOsmTags(property)"
@@ -66,21 +81,6 @@
                   :context="context"
                 />
               </div>
-
-              <RoutesField
-                v-if="property == 'route:*'"
-                :key="property"
-                class="detail-left-block"
-                :context="context"
-                :properties="p"
-              />
-
-              <Download
-                v-if="property == 'first_download'"
-                :key="property"
-                :p="p"
-                :color-fill="colorFill"
-              />
             </template>
           </template>
           <Location :p="p" :geom="poi.geometry" />
