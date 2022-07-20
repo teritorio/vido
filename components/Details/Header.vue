@@ -8,8 +8,10 @@
       </a>
     </div>
 
-    <slot />
-    <NavMenu :entries="navMenuEntries" class="ml-3 sm:ml-9" />
+    <div class="flex justify-end">
+      <slot />
+      <NavMenu :entries="navMenuEntries" class="ml-3 sm:ml-9" />
+    </div>
   </header>
 </template>
 

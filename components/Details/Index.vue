@@ -6,17 +6,15 @@
         :nav-menu-entries="navMenuEntries"
         :color-line="colorLine"
       >
-        <div class="flex right-10">
-          <button
-            :aria-label="
-              isFavorite ? $tc('toast.favoriteOn') : $tc('toast.favoriteOff')
-            "
-            class="text-sm text-zinc-800 bg-white rounded-full shadow-md outline-none w-11 h-11 focus:outline-none hover:bg-zinc-100 focus-visible:bg-zinc-100 shrink-0"
-            @click.stop="toggleFavorite"
-          >
-            <FavoriteIcon :is-active="isFavorite" :color-line="colorLine" />
-          </button>
-        </div>
+        <button
+          :aria-label="
+            isFavorite ? $tc('toast.favoriteOn') : $tc('toast.favoriteOff')
+          "
+          class="text-sm text-zinc-800 bg-white rounded-full shadow-md outline-none w-11 h-11 focus:outline-none hover:bg-zinc-100 focus-visible:bg-zinc-100 shrink-0"
+          @click.stop="toggleFavorite"
+        >
+          <FavoriteIcon :is-active="isFavorite" :color-line="colorLine" />
+        </button>
       </Header>
       <div class="flex justify-center">
         <TeritorioIconBadge
