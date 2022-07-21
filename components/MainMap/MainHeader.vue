@@ -1,6 +1,6 @@
 <template>
   <aside
-    class="hidden md:block absolute bottom-0 overflow-y-auto pointer-events-auto relative inset-auto h-auto space-y-4 p-2"
+    class="hidden md:flex flex-col absolute bottom-0 overflow-y-hidden pointer-events-auto sm:relative inset-auto h-full box-border space-y-4 p-2 box-border"
   >
     <div
       :class="[
@@ -61,19 +61,20 @@
       </div>
     </div>
 
-    <div v-if="!isModeExplorerOrFavorites">
+    <template v-if="!isModeExplorerOrFavorites">
       <HeaderRootCategories
-        v-for="category in categoryRootCategories"
+        v-for="(category, index) in categoryRootCategories"
         :key="category.id"
         :class="[
-          'flex-1 pointer-events-auto 2xl:max-h-screen overflow-y-auto bg-white rounded-xl shadow-md px-5 py-4 mb-4',
-          showPoi && 'max-h-screen-1/2',
+          'pointer-events-auto 2xl:max-h-screen overflow-y-auto bg-white rounded-xl shadow-md px-5 py-4 shrink-0',
+          (index > 0 || categoryRootCategories.length < 2) &&
+            'shrink basis-max',
         ]"
         :categories-activesubs-count="categoriesActivesubsCount"
         :category-id="category.id"
         @category-click="onCategoryClick"
       />
-    </div>
+    </template>
   </aside>
 </template>
 

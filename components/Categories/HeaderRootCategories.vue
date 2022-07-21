@@ -1,32 +1,29 @@
 <template>
-  <div class="flex flex-col space-y-6">
-    <transition name="non-highlighted" appear>
-      <div v-if="!collapsed" class="grid items-start grid-cols-4 gap-3">
-        <CategoryButton
-          v-for="category in nonHighlightedCategories"
-          :key="category.id"
-          :category-id="category.id"
-          :color-fill="
-            (category.menu_group || category.link || category.category)
-              .color_fill
-          "
-          :label="
-            (category.menu_group || category.link || category.category).name.fr
-          "
-          :picto="
-            (category.menu_group || category.link || category.category).icon
-          "
-          :type="
-            (category.menu_group || category.link || category.category)
-              .display_mode
-          "
-          :href="category.link && category.link.href"
-          :active-sub-categories="getCategoryCount(category.id)"
-          @click="onCategoryClick(category)"
-        />
-      </div>
-    </transition>
-  </div>
+  <transition name="non-highlighted" appear>
+    <div v-if="!collapsed" class="grid items-start grid-cols-4 gap-3">
+      <CategoryButton
+        v-for="category in nonHighlightedCategories"
+        :key="category.id"
+        :category-id="category.id"
+        :color-fill="
+          (category.menu_group || category.link || category.category).color_fill
+        "
+        :label="
+          (category.menu_group || category.link || category.category).name.fr
+        "
+        :picto="
+          (category.menu_group || category.link || category.category).icon
+        "
+        :type="
+          (category.menu_group || category.link || category.category)
+            .display_mode
+        "
+        :href="category.link && category.link.href"
+        :active-sub-categories="getCategoryCount(category.id)"
+        @click="onCategoryClick(category)"
+      />
+    </div>
+  </transition>
 </template>
 
 <script lang="ts">

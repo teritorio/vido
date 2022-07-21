@@ -1,6 +1,6 @@
 <template>
   <aside
-    class="relative flex flex-col px-5 py-4 space-y-6 overflow-y-auto bg-white shadow-md pointer-events-auto inset-auto max-h-screen-3/5 sm:max-h-screen-4/6 sm:rounded-xl"
+    class="relative flex flex-col px-5 py-4 space-y-6 overflow-y-auto bg-white shadow-md pointer-events-auto inset-auto max-h-screen-3/5 h-max sm:max-h-full sm:rounded-xl"
   >
     <div class="flex justify-between">
       <button

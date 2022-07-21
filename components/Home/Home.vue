@@ -5,12 +5,12 @@
     >
       <div
         :class="[
-          'flex-col justify-between w-full md:w-auto md:max-w-md md:space-y-4',
+          'flex-col justify-between w-full md:w-auto md:max-w-md md:space-y-4 sm:pb-10',
           !selectedFeature && 'flex',
           showPoi && 'max-h-screen-4/6 md:max-h-screen 2xl:h-auto',
         ]"
       >
-        <transition-group name="headers" appear mode="out-in">
+        <transition-group name="headers" appear mode="out-in" class="sm:h-full">
           <MainHeader
             v-if="
               state.matches(states.Categories) ||

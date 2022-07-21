@@ -1,6 +1,6 @@
 <template>
   <aside
-    class="absolute inset-x-0 bottom-0 flex flex-col px-5 py-4 space-y-6 bg-white shadow-md pointer-events-auto sm:relative sm:inset-auto h-3/5 sm:h-auto sm:rounded-xl overflow-y-visible md:w-96"
+    class="relative flex flex-col px-5 py-4 space-y-6 bg-white shadow-md pointer-events-auto inset-auto max-h-screen-3/5 sm:h-max sm:max-h-full sm:rounded-xl overflow-y-visible md:w-96"
   >
     <div class="flex justify-between">
       <button
@@ -12,79 +12,83 @@
       </button>
     </div>
 
-    <template v-for="(filter, filterIndex) in filtersSafeCopy">
-      <div v-if="filter.type == 'boolean'" :key="filter.property">
-        <label :key="filter.def.property" class="block mb-1 text-zinc-800">
-          <input
-            type="checkbox"
-            class="text-emerald-500 rounded-full focus:ring-0 focus:ring-transparent"
-            :name="filter.def.property"
-            :checked="filter.filterValue"
-            @change="
-              (e) => onBooleanFilterChange(filterIndex, e.target.checked)
+    <div class="basis-max shrink flex flex-col gap-4 overflow-y-auto flex-1">
+      <template v-for="(filter, filterIndex) in filtersSafeCopy">
+        <div v-if="filter.type == 'boolean'" :key="filter.property">
+          <label :key="filter.def.property" class="block mb-1 text-zinc-800">
+            <input
+              type="checkbox"
+              class="text-emerald-500 rounded-full focus:ring-0 focus:ring-transparent"
+              :name="filter.def.property"
+              :checked="filter.filterValue"
+              @change="
+                (e) => onBooleanFilterChange(filterIndex, e.target.checked)
+              "
+            />
+            {{ (filter.def.name && filter.def.name.fr) || filter.def.property }}
+          </label>
+        </div>
+        <div v-else-if="filter.type == 'multiselection'" :key="filter.property">
+          <label :for="filter.property" class="block mb-2 text-zinc-500">
+            {{ (filter.name && filter.name.fr) || filter.property }}
+          </label>
+          <t-rich-select
+            placeholder="Recherchez ou ajoutez une valeur"
+            search-box-placeholder="Rechercher ..."
+            multiple
+            :options="
+              filter.def.values.map((value) => ({
+                text: (value.name && value.name.fr) || value.value,
+                value: value.value,
+              }))
             "
+            :value="filter.filterValues"
+            @input="(val) => onSelectionFilterChange(filterIndex, val)"
           />
-          {{ (filter.def.name && filter.def.name.fr) || filter.def.property }}
-        </label>
-      </div>
-      <div v-else-if="filter.type == 'multiselection'" :key="filter.property">
-        <label :for="filter.property" class="block mb-2 text-zinc-500">
-          {{ (filter.name && filter.name.fr) || filter.property }}
-        </label>
-        <t-rich-select
-          placeholder="Recherchez ou ajoutez une valeur"
-          search-box-placeholder="Rechercher ..."
-          multiple
-          :options="
-            filter.def.values.map((value) => ({
-              text: (value.name && value.name.fr) || value.value,
-              value: value.value,
-            }))
-          "
-          :value="filter.filterValues"
-          @input="(val) => onSelectionFilterChange(filterIndex, val)"
-        />
-      </div>
-      <div
-        v-else-if="filter.type == 'checkboxes_list'"
-        :key="filter.def.property"
-        class="overflow-y-auto"
-      >
-        <p class="mb-2 text-zinc-500">
-          {{ (filter.def.name && filter.def.name.fr) || filter.def.property }}
-        </p>
-        <label
-          v-for="value in filter.def.values"
-          :key="value.value"
-          class="block mb-1 text-zinc-800"
+        </div>
+        <div
+          v-else-if="filter.type == 'checkboxes_list'"
+          :key="filter.def.property"
         >
-          <input
-            type="checkbox"
-            class="text-emerald-500 rounded-full focus:ring-0 focus:ring-transparent"
-            :name="filter.def.property + '_' + value.value"
-            :checked="filter.filterValues.includes(value.value)"
+          <p class="mb-2 text-zinc-500">
+            {{ (filter.def.name && filter.def.name.fr) || filter.def.property }}
+          </p>
+          <label
+            v-for="value in filter.def.values"
+            :key="value.value"
+            class="block mb-1 text-zinc-800"
+          >
+            <input
+              type="checkbox"
+              class="text-emerald-500 rounded-full focus:ring-0 focus:ring-transparent"
+              :name="filter.def.property + '_' + value.value"
+              :checked="filter.filterValues.includes(value.value)"
+              @change="
+                (e) =>
+                  onCheckboxFilterChange(
+                    filterIndex,
+                    value.value,
+                    e.target.checked
+                  )
+              "
+            />
+            {{ (value.name && value.name.fr) || value.value }}
+          </label>
+        </div>
+        <div
+          v-else-if="filter.type == 'date_range'"
+          :key="filter.property_begin"
+        >
+          <DateRange
+            :filter="filter"
             @change="
-              (e) =>
-                onCheckboxFilterChange(
-                  filterIndex,
-                  value.value,
-                  e.target.checked
-                )
+              (filterValue) =>
+                onSelectionFilterDateChange(filterIndex, filterValue)
             "
           />
-          {{ (value.name && value.name.fr) || value.value }}
-        </label>
-      </div>
-      <div v-else-if="filter.type == 'date_range'" :key="filter.property_begin">
-        <DateRange
-          :filter="filter"
-          @change="
-            (filterValue) =>
-              onSelectionFilterDateChange(filterIndex, filterValue)
-          "
-        />
-      </div>
-    </template>
+        </div>
+      </template>
+    </div>
   </aside>
 </template>
 
