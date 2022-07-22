@@ -18,7 +18,7 @@
       </button>
     </div>
     <div class="flex justify-between flex-wrap max-h-full overflow-y-auto">
-      <MapPoiToast
+      <PoiCard
         v-for="item in favs"
         :key="item.id"
         :poi="item"
@@ -35,12 +35,12 @@
 <script lang="ts">
 import Vue, { PropType } from 'vue'
 
-import MapPoiToast from '~/components/MainMap/MapPoiToast.vue'
+import PoiCard from '~/components/PoisCard/PoiCard.vue'
 import { ApiPoi } from '~/lib/apiPois'
 
 export default Vue.extend({
   components: {
-    MapPoiToast,
+    PoiCard,
   },
   props: {
     favs: {

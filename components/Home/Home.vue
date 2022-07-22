@@ -175,7 +175,7 @@
     >
       <div class="w-full max-w-md" />
       <div class="grow-[1]" />
-      <MapPoiToast
+      <PoiCard
         v-if="selectedFeature && showPoi"
         :poi="selectedFeature"
         class="grow-0"
@@ -232,7 +232,7 @@
           :filters-values="subCategoryFilters"
           @go-back-click="onBackToSubCategoryClick"
         />
-        <MapPoiToast
+        <PoiCard
           v-if="selectedFeature && showPoi"
           :poi="selectedFeature"
           class="grow-0 text-left h-full"
@@ -278,8 +278,8 @@ import FavoriteMenu from '~/components/MainMap/FavoriteMenu.vue'
 import FavoritesOverlay from '~/components/MainMap/FavoritesOverlay.vue'
 import MainHeader from '~/components/MainMap/MainHeader.vue'
 import MapFeatures from '~/components/MainMap/MapFeatures.vue'
-import MapPoiToast from '~/components/MainMap/MapPoiToast.vue'
 import NavMenu from '~/components/MainMap/NavMenu.vue'
+import PoiCard from '~/components/PoisCard/PoiCard.vue'
 import Search from '~/components/Search/Search.vue'
 import CookiesConsent from '~/components/UI/CookiesConsent.vue'
 import { ContentEntry } from '~/lib/apiContent'
@@ -317,7 +317,7 @@ export default (
     SubCategoryHeader,
     SubCategoryFilterHeader,
     BottomMenu,
-    MapPoiToast,
+    PoiCard,
     Attribution,
     CookiesConsent,
   },
