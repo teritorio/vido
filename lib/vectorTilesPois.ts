@@ -2,7 +2,7 @@ import { MapGeoJSONFeature } from 'maplibre-gl'
 
 import { ApiPoi, ApiPoiId, ApiPoiPropertiesArray } from './apiPois'
 
-export interface MapPoi extends MapGeoJSONFeature {}
+export interface VectorTilesPoi extends MapGeoJSONFeature {}
 
 function split(value: string | undefined): string[] | undefined {
   return value
@@ -13,7 +13,7 @@ function split(value: string | undefined): string[] | undefined {
     : undefined
 }
 
-export function mapPoi2ApiPoi(mapPoi: MapPoi): ApiPoi {
+export function vectorTilesPoi2ApiPoi(mapPoi: VectorTilesPoi): ApiPoi {
   const props = Object.fromEntries(
     Object.entries(mapPoi.properties).map(([key, value]) => [
       key,

@@ -61,8 +61,8 @@ import { ApiMenuCategory } from '~/lib/apiMenu'
 import { ApiPoi, getPoiById } from '~/lib/apiPois'
 import { getBBoxFeatures, getBBoxFeature } from '~/lib/bbox'
 import { DEFAULT_MAP_STYLE, MAP_ZOOM } from '~/lib/constants'
-import { MapPoi, mapPoi2ApiPoi } from '~/lib/mapPois'
 import { markerLayerTextFactory, updateMarkers } from '~/lib/markerLayerFactory'
+import { VectorTilesPoi, vectorTilesPoi2ApiPoi } from '~/lib/vectorTilesPois'
 import { filterRouteByCategories, filterRouteByPoiId } from '~/utils/styles'
 import { LatLng, MapStyleEnum } from '~/utils/types'
 import { getHashPart } from '~/utils/url'
@@ -308,14 +308,17 @@ export default Vue.extend({
       let selectedFeatures = STYLE_LAYERS.map((layerId) => {
         return this.map.queryRenderedFeatures(e.point, {
           layers: [layerId],
-        }) as unknown as MapPoi[]
+        }) as unknown as VectorTilesPoi[]
       }).flat()
       selectedFeatures = selectedFeatures.filter(
         (feature) => feature.properties.popup_properties
       )
       if (selectedFeatures.length > 0) {
         // Set temp partial data from vector tiles. Then fetch full data
-        this.updateSelectedFeature(mapPoi2ApiPoi(selectedFeatures[0]), true)
+        this.updateSelectedFeature(
+          vectorTilesPoi2ApiPoi(selectedFeatures[0]),
+          true
+        )
       } else {
         this.updateSelectedFeature(null)
       }
