@@ -1,15 +1,13 @@
+import { MapPoiProperties } from './mapPois'
+
 import { MultilingualString } from '~/utils/types'
 
 export interface ApiPoiId extends Number {}
 
-export interface ApiPoiProperties {
+export type ApiPoiProperties = MapPoiProperties & {
   [key: string]: any
 
-  name?: string
-
   image?: string[]
-  // eslint-disable-next-line camelcase
-  'image:thumbnail'?: string
 
   'addr:city'?: string
   'addr:housenumber'?: string
@@ -27,11 +25,6 @@ export interface ApiPoiProperties {
     category_ids?: Array<number>
   }
   display?: {
-    icon: string
-    // eslint-disable-next-line camelcase
-    color_fill: string
-    // eslint-disable-next-line camelcase
-    color_line: string
     // eslint-disable-next-line camelcase
     style_class?: string[]
   }

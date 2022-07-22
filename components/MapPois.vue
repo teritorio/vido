@@ -16,9 +16,9 @@ import { PoiFilter } from '@teritorio/map'
 import Vue, { PropType } from 'vue'
 
 import Map from '~/components/Map/Map.vue'
-import { ApiPois } from '~/lib/apiPois'
 import { getBBoxFeatures } from '~/lib/bbox'
 import { MAP_ZOOM } from '~/lib/constants'
+import { ApiPoiId, MapPoiCollection } from '~/lib/mapPois'
 import { makerHtmlFactory } from '~/lib/markerLayerFactory'
 import { filterRouteByPoiId } from '~/utils/styles'
 import { TupleLatLng } from '~/utils/types'
@@ -34,7 +34,7 @@ export default Vue.extend({
       required: true,
     },
     pois: {
-      type: Object as PropType<ApiPois>,
+      type: Object as PropType<MapPoiCollection>,
       default: null,
     },
   },
@@ -54,15 +54,17 @@ export default Vue.extend({
           if (poi.geometry.type === 'Point' && poi.properties.display) {
             makerHtmlFactory(
               poi.geometry.coordinates as TupleLatLng,
-              poi.properties.display.color_fill,
+              poi.properties.display.color_fill || '#000000',
               poi.properties.display.icon,
               poi.properties['image:thumbnail'],
               'lg'
             ).addTo(map)
           }
 
-          if (poi.properties.metadata?.id) {
-            filterRouteByPoiId(map, poi.properties.metadata?.id)
+          // @ts-ignore
+          const id: ApiPoiId = poi.properties.metadata?.id
+          if (id) {
+            filterRouteByPoiId(map, id)
           }
         })
       })

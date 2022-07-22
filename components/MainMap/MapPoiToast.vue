@@ -320,7 +320,7 @@ export default Vue.extend({
       )
     },
 
-    description(): string | null {
+    description(): string | undefined {
       return this.poiProps.description
     },
 
