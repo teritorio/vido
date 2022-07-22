@@ -24,9 +24,9 @@
         :poi="item"
         :notebook="true"
         class="grow-0 shrink-0 m-2"
-        @explore-click="exploreAroundSelectedPoi"
-        @favorite-click="toggleFavorite"
-        @zoom-click="goToSelectedPoi"
+        @explore-click="$emit('explore-click', $event)"
+        @favorite-click="$emit('favorite-click', $event)"
+        @zoom-click="$emit('zoom-click', $event)"
       />
     </div>
   </div>
@@ -46,18 +46,6 @@ export default Vue.extend({
     favs: {
       type: Array as PropType<ApiPoi[]>,
       default: undefined,
-    },
-    exploreAroundSelectedPoi: {
-      type: Function,
-      required: true,
-    },
-    toggleFavorite: {
-      type: Function,
-      required: true,
-    },
-    goToSelectedPoi: {
-      type: Function,
-      required: true,
     },
   },
 })

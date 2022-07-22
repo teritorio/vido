@@ -152,9 +152,9 @@
     >
       <FavoriteNoteBook
         :favs="favs"
-        :explore-around-selected-poi="explore"
-        :toggle-favorite="handleFavorite"
-        :go-to-selected-poi="goTo"
+        @explore-click="explore"
+        @favorite-click="handleFavorite"
+        @zoom-click="goTo"
         @on-close="closeNoteBook"
       />
     </t-modal-notebook>
