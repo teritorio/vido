@@ -17,30 +17,25 @@
         <p class="hidden sm:block">{{ $tc('favorites.notebook.close') }}</p>
       </button>
     </div>
-    <div class="flex justify-between flex-wrap max-h-full overflow-y-auto">
-      <PoiCard
-        v-for="item in favs"
-        :key="item.id"
-        :poi="item"
-        :notebook="true"
-        class="grow-0 shrink-0 m-2"
-        @explore-click="$emit('explore-click', $event)"
-        @favorite-click="$emit('favorite-click', $event)"
-        @zoom-click="$emit('zoom-click', $event)"
-      />
-    </div>
+    <PoisDeck
+      :pois="favs"
+      :notebook="true"
+      @explore-click="$emit('explore-click', $event)"
+      @favorite-click="$emit('favorite-click', $event)"
+      @zoom-click="$emit('zoom-click', $event)"
+    />
   </div>
 </template>
 
 <script lang="ts">
 import Vue, { PropType } from 'vue'
 
-import PoiCard from '~/components/PoisCard/PoiCard.vue'
+import PoisDeck from '~/components/PoisCard/PoisDeck.vue'
 import { ApiPoi } from '~/lib/apiPois'
 
 export default Vue.extend({
   components: {
-    PoiCard,
+    PoisDeck,
   },
   props: {
     favs: {
