@@ -177,7 +177,7 @@ export default Vue.extend({
     },
     detailsProperties(): string[] {
       let firstContact = false
-      const firstDownload = false
+      let firstDownload = false
       return (this.p.editorial?.details_properties || [])
         .map((p) => {
           if (['addr:*', 'phone', 'mobile'].includes(p)) {
@@ -187,9 +187,9 @@ export default Vue.extend({
             } else {
               return undefined
             }
-          } else if (['route:gpx_trace'].includes(p)) {
+          } else if (['route:gpx_trace', 'route:pdf'].includes(p)) {
             if (!firstDownload) {
-              firstContact = true
+              firstDownload = true
               return 'first_download'
             } else {
               return undefined

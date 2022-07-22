@@ -11,6 +11,12 @@
         {{ $tc('details.downloadGPX') }}
       </a>
     </p>
+    <p v-if="p['route:pdf']" class="item">
+      <a :href="p['route:pdf']">
+        <font-awesome-icon prefix="fa" icon="file-pdf" />
+        {{ $tc('details.downloadPDF') }}
+      </a>
+    </p>
   </Block>
 </template>
 

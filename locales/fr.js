@@ -111,6 +111,7 @@ export default {
     mapillaryExplore: 'Explorer sur Mapillary',
     informations: 'Informations',
     downloadGPX: 'Le parcours (trace GPS) au format GPX',
+    downloadPDF: 'La fiche complète au format PDF',
   },
   dateFilter: {
     today: "Aujourd'hui",

@@ -111,6 +111,7 @@ export default {
     mapillaryExplore: 'Explorar en Mapillary',
     informations: 'Informaciones',
     downloadGPX: 'La ruta (pista GPS) en formato GPX',
+    downloadPDF: 'La hoja completa en formato PDF',
   },
   dateFilter: {
     today: 'Hoy',
