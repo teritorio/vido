@@ -1,20 +1,12 @@
-import CategoryList from './CategoryList'
+import CategoryList from '~/components/Categories/CategoryList/CategoryList.vue'
+import { bind } from '~/lib/storybook-types'
 
 export default {
-  title: 'Components/CategoryList',
+  title: 'Categories/CategoryList',
   component: CategoryList,
 }
 
-const DefaultTemplate = (_, { args }) => ({
-  components: { CategoryList },
-  props: Object.keys(args),
-  template: `
-    <CategoryList class="w-96" v-bind="$props" v-on="$props" />`,
-})
-
-export const Default = DefaultTemplate.bind({})
-
-Default.args = {
+const defaultProps = {
   categories: [
     {
       color: 'rebeccapurple',
@@ -31,4 +23,9 @@ Default.args = {
       selected: true,
     },
   ],
+  filters: {},
 }
+
+export const Default = bind(CategoryList, {
+  ...defaultProps,
+})

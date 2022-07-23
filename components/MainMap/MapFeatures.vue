@@ -117,10 +117,10 @@ export default Vue.extend({
     },
     selectedCategoriesIds: {
       type: Array as PropType<string[]>,
-      default: null,
+      default: () => [],
     },
     styleIconFilter: {
-      type: Array as PropType<Array<string[]>>,
+      type: Array as PropType<Array<string[]> | null>,
       default: null,
     },
   },

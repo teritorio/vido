@@ -1,4 +1,4 @@
-import CategoryButton from '~/component/Categories/CategoryButton/CategoryButton.vue'
+import CategoryButton from '~/components/Categories/CategoryButton/CategoryButton.vue'
 import { bind } from '~/lib/storybook-types'
 
 export default {
