@@ -71,16 +71,28 @@
             class="text-sm mt-2"
           />
 
+          <p
+            v-if="property === 'addr:*'"
+            :key="'_' + property"
+            class="mt-6 text-sm"
+          >
+            <AddressField :properties="poiProps" />
+          </p>
+
+          <p
+            v-else-if="property == 'start_end_date'"
+            :key="'_' + property"
+            class="text-sm"
+          >
+            <DateRange :start="poiProps.start_date" :end="poiProps.end_date" />
+          </p>
+
           <div
             v-else-if="poiProps[property]"
             :key="'_' + property"
             class="text-sm mt-2"
           >
-            <p v-if="property === 'addr:*'" class="mt-6 text-sm">
-              <AddressField :properties="poiProps"></AddressField>
-            </p>
-
-            <ul v-else-if="property === 'phone' && $screen.phone">
+            <ul v-if="property === 'phone' && $screen.phone">
               <li v-for="item in poiProps[property]" :key="item">
                 <a
                   class="text-blue-400"
@@ -111,13 +123,6 @@
                 </p>
               </li>
             </ul>
-
-            <p v-else-if="property == 'start_end_date'" class="text-sm">
-              <DateRange
-                :start="poiProps.start_date"
-                :end="poiProps.end_date"
-              />
-            </p>
 
             <p
               v-else-if="isOpeningHoursSupportedOsmTags(property)"
