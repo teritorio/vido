@@ -27,7 +27,7 @@ export default Vue.extend({
   },
   props: {
     categories: {
-      type: Array,
+      type: Array as PropType<Category[]>,
       default: () => [],
     },
     filters: {
