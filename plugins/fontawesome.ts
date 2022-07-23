@@ -42,7 +42,6 @@ import {
   faFileDownload,
   faBookOpen,
   faPrint,
-  faQrcode,
   faArrowCircleDown,
   faPhone,
   faFilePdf,
@@ -95,7 +94,6 @@ library.add(
   faFacebook,
   faWhatsapp,
   faTwitter,
-  faQrcode,
   faArrowCircleDown,
   faPhone,
   faFilePdf
