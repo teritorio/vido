@@ -1,8 +1,13 @@
 <template>
   <i
-    v-if="!Boolean(image)"
-    :class="[!useNativeAlignment && 'flex items-center justify-center', picto]"
-    :style="{ color: textColor }"
+    v-if="!Boolean(image) && picto.startsWith('teritorio')"
+    :class="[picto, !useNativeAlignment && 'flex items-center justify-center']"
+    :style="{ color: colorText }"
+  />
+  <font-awesome-icon
+    v-else-if="!Boolean(image)"
+    :icon="picto"
+    :color="colorText"
   />
   <img v-else-if="Boolean(image)" class="rounded-full" :src="image" />
 </template>
@@ -12,13 +17,9 @@ import Vue from 'vue'
 
 export default Vue.extend({
   props: {
-    colorBackground: {
-      type: String,
-      default: null,
-    },
     colorText: {
       type: String,
-      default: null,
+      default: '#ffffff',
     },
     picto: {
       type: String,
@@ -31,11 +32,6 @@ export default Vue.extend({
     image: {
       type: String,
       default: null,
-    },
-  },
-  computed: {
-    textColor() {
-      return this.colorText || '#ffffff'
     },
   },
 })

@@ -12,11 +12,7 @@
       class="relative flex items-center justify-center w-12 h-12 mb-2 text-white rounded-full"
       :style="{ backgroundColor: colorFill, flexShrink: 0 }"
     >
-      <TeritorioIcon
-        :color-background="colorFill"
-        class="text-2xl"
-        :picto="picto"
-      />
+      <TeritorioIcon class="text-2xl" :picto="picto" />
 
       <div
         v-if="activeSubCategories > 0"
