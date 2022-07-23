@@ -63,21 +63,22 @@
             poiProps.editorial.popup_properties) ||
           []"
         >
+          <RoutesField
+            v-if="property === 'route:*'"
+            :key="'_' + property"
+            :context="context"
+            :properties="poiProps"
+            class="text-sm mt-2"
+          />
+
           <div
-            v-if="poiProps[property]"
+            v-else-if="poiProps[property]"
             :key="'_' + property"
             class="text-sm mt-2"
           >
             <p v-if="property === 'addr:*'" class="mt-6 text-sm">
               <AddressField :properties="poiProps"></AddressField>
             </p>
-
-            <RoutesField
-              v-else-if="property === 'route:*'"
-              :context="context"
-              :properties="poiProps"
-              class="text-sm mt-2"
-            />
 
             <ul v-else-if="property === 'phone' && $screen.phone">
               <li v-for="item in poiProps[property]" :key="item">

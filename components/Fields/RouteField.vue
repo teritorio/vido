@@ -1,8 +1,8 @@
 <template>
-  <span v-if="isCompact">
+  <p v-if="isCompact">
     {{ $propertyTranslations.pv('route:*', activity, context) }} :
-    {{ formatNoDetails }}</span
-  >
+    {{ formatNoDetails }}
+  </p>
   <div v-else>
     <h2>{{ $propertyTranslations.pv('route:*', activity, context) }}</h2>
     <ul>
