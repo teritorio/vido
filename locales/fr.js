@@ -80,7 +80,7 @@ export default {
     formatDayAndDayInMonth: 'EEE d :',
     variableWeek: "Les horaires peuvent varier d'une semaine sur l'autre.",
   },
-  toast: {
+  poiCard: {
     details: 'Détails',
     seeDetail: 'Voir le detail',
     route: 'Itinéraire',
@@ -125,6 +125,9 @@ export default {
     nextMonth: '30 prochains jours',
   },
   fields: {
+    phone: {
+      callNumber: 'Appeler ce numéro',
+    },
     route: {
       difficulty: 'Difficulté :',
       lenght: 'Distance :',

@@ -80,7 +80,7 @@ export default {
     formatDayAndDayInMonth: "EEE do':'",
     variableWeek: 'The hours may vary from week to week.',
   },
-  toast: {
+  poiCard: {
     details: 'Details',
     seeDetail: 'See details',
     route: 'Route',
@@ -88,7 +88,6 @@ export default {
     favorite: 'Favorite',
     favoriteOn: 'Set as favorite',
     favoriteOff: 'Remove favorite',
-    callNumber: 'Call this number',
     findRoute: 'Find the route to this place',
     unactivateExplore: 'Deactivate exploration of the surroundings',
     activateExplore: 'Explore nearby points of interest',
@@ -125,6 +124,9 @@ export default {
     nextMonth: 'Next 30 days',
   },
   fields: {
+    phone: {
+      callNumber: 'Call this number',
+    },
     route: {
       difficulty: 'Difficulty:',
       lenght: 'Distance:',

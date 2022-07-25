@@ -2,7 +2,7 @@
   <a
     v-if="$screen.phone"
     :href="`tel:${number}`"
-    :title="$tc('toast.callNumber')"
+    :title="$tc('fields.phone.callNumber')"
   >
     {{ number }}
   </a>

@@ -73,7 +73,7 @@
             target="_blank"
             @click.stop="$emit('click-details')"
           >
-            {{ $tc('toast.seeDetail') }}
+            {{ $tc('poiCard.seeDetail') }}
           </a>
         </p>
         <p v-else class="text-sm">

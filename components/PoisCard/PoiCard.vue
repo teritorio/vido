@@ -43,7 +43,7 @@
           target="_blank"
           @click.stop="tracking('details')"
         >
-          {{ $tc('toast.details') }}
+          {{ $tc('poiCard.details') }}
         </a>
       </div>
 
@@ -84,20 +84,20 @@
           v-if="$screen.smallScreen && routeHref"
           class="flex flex-col items-center flex-1 h-full p-2 space-y-2 rounded-lg hover:bg-zinc-100"
           :href="routeHref"
-          :title="$tc('toast.findRoute')"
+          :title="$tc('poiCard.findRoute')"
           @click="tracking('route')"
         >
           <font-awesome-icon icon="route" :color="colorLine" size="sm" />
-          <span class="text-sm">{{ $tc('toast.route') }}</span>
+          <span class="text-sm">{{ $tc('poiCard.route') }}</span>
         </a>
 
         <button
           class="flex flex-1 flex-col items-center space-y-2 rounded-lg p-2 h-full hover:bg-zinc-100"
-          :title="$tc('toast.zoom')"
+          :title="$tc('poiCard.zoom')"
           @click.stop="onZoomClick"
         >
           <font-awesome-icon icon="plus" :color="colorLine" size="sm" />
-          <span class="text-sm">{{ $tc('toast.zoom') }}</span>
+          <span class="text-sm">{{ $tc('poiCard.zoom') }}</span>
         </button>
 
         <button
@@ -108,8 +108,8 @@
           ]"
           :title="
             isModeExplorer
-              ? $tc('toast.unactivateExplore')
-              : $tc('toast.activateExplore')
+              ? $tc('poiCard.unactivateExplore')
+              : $tc('poiCard.activateExplore')
           "
           @click.stop="onExploreClick"
         >
@@ -118,19 +118,21 @@
             :color="isModeExplorer ? 'white' : colorLine"
             size="sm"
           />
-          <span class="text-sm">{{ $tc('toast.explore') }}</span>
+          <span class="text-sm">{{ $tc('poiCard.explore') }}</span>
         </button>
 
         <button
           v-if="id"
           class="flex flex-col items-center flex-1 h-full p-2 space-y-2 rounded-lg hover:bg-zinc-100"
           :title="
-            isModeFavorites ? $tc('toast.favoriteOn') : $tc('toast.favoriteOff')
+            isModeFavorites
+              ? $tc('poiCard.favoriteOn')
+              : $tc('poiCard.favoriteOff')
           "
           @click.stop="onFavoriteClick"
         >
           <FavoriteIcon :is-active="isModeFavorites" :color-line="colorLine" />
-          <span class="text-sm">{{ $tc('toast.favorite') }}</span>
+          <span class="text-sm">{{ $tc('poiCard.favorite') }}</span>
         </button>
       </div>
     </div>

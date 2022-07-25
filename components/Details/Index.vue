@@ -8,7 +8,7 @@
       >
         <button
           :aria-label="
-            isFavorite ? $tc('toast.favoriteOn') : $tc('toast.favoriteOff')
+            isFavorite ? $tc('poiCard.favoriteOn') : $tc('poiCard.favoriteOff')
           "
           class="text-sm text-zinc-800 bg-white rounded-full shadow-md outline-none w-11 h-11 focus:outline-none hover:bg-zinc-100 focus-visible:bg-zinc-100 shrink-0"
           @click.stop="toggleFavorite"
