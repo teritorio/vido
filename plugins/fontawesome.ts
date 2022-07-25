@@ -45,6 +45,9 @@ import {
   faArrowCircleDown,
   faPhone,
   faFilePdf,
+  faSquareParking,
+  faHouseFlag,
+  faFlagCheckered,
 } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import Vue from 'vue'
@@ -96,7 +99,10 @@ library.add(
   faTwitter,
   faArrowCircleDown,
   faPhone,
-  faFilePdf
+  faFilePdf,
+  faSquareParking,
+  faHouseFlag,
+  faFlagCheckered
 )
 
 // Register the component globally

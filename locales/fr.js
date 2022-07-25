@@ -112,6 +112,10 @@ export default {
     informations: 'Informations',
     downloadGPX: 'Le parcours (trace GPS) au format GPX',
     downloadPDF: 'La fiche complète au format PDF',
+    routes: {
+      waypoints: 'Points guides',
+      pois: 'Points d’intérêts',
+    },
   },
   dateFilter: {
     today: "Aujourd'hui",

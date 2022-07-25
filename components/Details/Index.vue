@@ -89,19 +89,28 @@
         <div class="detail-right">
           <Carousel v-if="p.image" :images="p.image" />
           <Mapillary v-if="p.mapillary" :image-id="p.mapillary" />
-          <MapPois
-            :extra-attributions="settings.attributions"
-            :pois="{ features: [poi] }"
-            class="relative"
-          />
-          <p>
-            {{ $tc('details.lastUpdate') }}
-            <a href="https://www.openstreetmap.org/" target="_blank">
-              du 06/02/2022 à 16h 02min 12s
-            </a>
-          </p>
+          <template v-if="!isRoute">
+            <MapPois
+              :extra-attributions="settings.attributions"
+              :pois="{ features: [poi] }"
+              class="relative"
+            />
+            <p>
+              {{ $tc('details.lastUpdate') }}
+              <a href="https://www.openstreetmap.org/" target="_blank">
+                du 06/02/2022 à 16h 02min 12s
+              </a>
+            </p>
+          </template>
         </div>
       </div>
+
+      <RouteMap
+        v-if="isRoute"
+        id="route-map"
+        :poi-id="poi.properties.metadata.id"
+        :color-fill="colorFill"
+      />
 
       <Footer :attributions="settings.attributions" />
     </div>
@@ -119,6 +128,7 @@ import Footer from '~/components/Details/Footer.vue'
 import Header from '~/components/Details/Header.vue'
 import Location from '~/components/Details/Location.vue'
 import Mapillary from '~/components/Details/Mapillary.vue'
+import RouteMap from '~/components/Details/Route/RouteMap.vue'
 import Share from '~/components/Details/Share.vue'
 import OpeningHours, {
   isOpeningHoursSupportedOsmTags,
@@ -148,6 +158,7 @@ export default Vue.extend({
     MapPois,
     Footer,
     RoutesField,
+    RouteMap,
   },
 
   props: {
@@ -215,6 +226,11 @@ export default Vue.extend({
     isFavorite(): boolean {
       return this.favoritesIds.includes(this.poi.properties.metadata?.id)
     },
+    isRoute(): boolean {
+      return Object.keys(this.poi.properties).some((p) =>
+        p.startsWith('route:')
+      )
+    },
   },
 
   mounted() {
@@ -266,6 +282,13 @@ h1 {
   margin-bottom: 0.7rem;
   color: $color-title;
   text-transform: uppercase;
+}
+
+:deep(h3) {
+  font-size: 1.2rem;
+  margin-top: 0;
+  margin-bottom: 0.7rem;
+  color: $color-title;
 }
 
 .detail-wrapper {
