@@ -80,16 +80,16 @@
       <div
         class="flex items-center space-x-2 justify-evenly shrink-0 bottom-0 pt-2 shrink-0"
       >
-        <a
-          v-if="$screen.smallScreen && routeHref"
+        <CoordinateAction
+          v-if="$screen.smallScreen"
+          :geometry="poi.geometry"
           class="flex flex-col items-center flex-1 h-full p-2 space-y-2 rounded-lg hover:bg-zinc-100"
-          :href="routeHref"
           :title="$tc('poiCard.findRoute')"
           @click="tracking('route')"
         >
           <font-awesome-icon icon="route" :color="colorLine" size="sm" />
           <span class="text-sm">{{ $tc('poiCard.route') }}</span>
-        </a>
+        </CoordinateAction>
 
         <button
           class="flex flex-1 flex-col items-center space-y-2 rounded-lg p-2 h-full hover:bg-zinc-100"
@@ -143,17 +143,19 @@
 import Vue, { PropType } from 'vue'
 import { mapGetters } from 'vuex'
 
+import CoordinateAction from '../Fields/CoordinateAction.vue'
+
 import PoiCardFields from '~/components/PoisCard/PoiCardFields.vue'
 import FavoriteIcon from '~/components/UI/FavoriteIcon.vue'
 import TeritorioIcon from '~/components/UI/TeritorioIcon.vue'
 import { ApiPoi, ApiPoiId } from '~/lib/apiPois'
-import { isIOS } from '~/utils/isIOS'
 
 export default Vue.extend({
   components: {
     TeritorioIcon,
     FavoriteIcon,
     PoiCardFields,
+    CoordinateAction,
   },
 
   props: {
@@ -219,22 +221,6 @@ export default Vue.extend({
 
     description(): string | undefined {
       return this.poi.properties.description
-    },
-
-    routeHref(): string | null {
-      if (this.poi.geometry.type === 'Point') {
-        const lat = this.poi.geometry.coordinates[1]
-        const lng = this.poi.geometry.coordinates[0]
-        const latLng = `${lat},${lng}`
-
-        if (isIOS()) {
-          return `maps://?q=${latLng}`
-        }
-
-        return `geo:${latLng}?q=${latLng}`
-      } else {
-        return null
-      }
     },
 
     unavoidable(): boolean {

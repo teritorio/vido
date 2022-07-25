@@ -12,7 +12,9 @@
 
     <p v-if="geom.type === 'Point'">
       <span>{{ $tc('details.location') }}</span>
-      {{ geom.coordinates[1] }},&nbsp;{{ geom.coordinates[0] }}
+      <CoordinateAction :geometry="geom">
+        {{ geom.coordinates[1] }},&nbsp;{{ geom.coordinates[0] }}
+      </CoordinateAction>
     </p>
   </div>
 </template>
@@ -21,12 +23,15 @@
 import GeoJSON from 'geojson'
 import Vue, { PropType } from 'vue'
 
+import CoordinateAction from '../Fields/CoordinateAction.vue'
+
 import AddressField from '~/components/Fields/AddressField.vue'
 import { ApiPoiProperties } from '~/lib/apiPois'
 
 export default Vue.extend({
   components: {
     AddressField,
+    CoordinateAction,
   },
 
   props: {
