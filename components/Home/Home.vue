@@ -412,13 +412,13 @@ export default (
     mainUrl(): string {
       return this.settings.themes[0]?.main_url?.fr || ''
     },
-    isPoiToastVisible(): boolean {
+    isPoiCardVisible(): boolean {
       return this.selectedFeature && this.showPoi
     },
     isBottomMenuOpened(): boolean {
       return (
         this.$screen.smallScreen &&
-        (this.isPoiToastVisible ||
+        (this.isPoiCardVisible ||
           this.state.matches(this.states.Categories) ||
           this.state.matches(this.states.SubCategories) ||
           this.state.matches(this.states.SubCategoryFilters))
@@ -461,7 +461,7 @@ export default (
       } else {
         return {
           top: 100,
-          bottom: this.isPoiToastVisible ? 400 : 100,
+          bottom: this.isPoiCardVisible ? 400 : 100,
           right: 100,
           left: 500,
         }
@@ -798,7 +798,7 @@ export default (
           this.goToHome()
         } else if (!this.isModeExplorer) {
           this.goToCategories()
-        } else if (this.selectedFeature && !this.isPoiToastVisible) {
+        } else if (this.selectedFeature && !this.isPoiCardVisible) {
           this.setPoiVisibility(true)
         }
       } else if (this.selectedFeature) {
