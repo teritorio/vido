@@ -5,13 +5,12 @@
     icon="phone"
   >
     <h2>{{ $tc('details.headerContacts') }}</h2>
-    <p v-for="phone in p.phone || []" :key="phone" class="item">
-      <a v-if="$screen.phone" :href="`tel:${phone}`">
-        {{ phone }}
-      </a>
-      <template v-else>
-        {{ phone }}
-      </template>
+    <p
+      v-for="phone in (p.phone || []).concat(p.mobile || [])"
+      :key="phone"
+      class="item"
+    >
+      <Phone :number="phone" />
     </p>
     <p v-for="email in p.email || []" :key="email" class="item">
       <a :href="`mailto:${email}`">
@@ -30,11 +29,13 @@
 import Vue, { PropType } from 'vue'
 
 import Block from '~/components/Details/Block.vue'
+import Phone from '~/components/Fields/Phone.vue'
 import { ApiPoiProperties } from '~/lib/apiPois'
 
 export default Vue.extend({
   components: {
     Block,
+    Phone,
   },
 
   props: {

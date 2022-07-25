@@ -30,26 +30,13 @@
         :key="'_' + property"
         class="text-sm mt-2"
       >
-        <ul v-if="property === 'phone' && $screen.phone">
+        <ul
+          v-if="
+            (property === 'phone' || property === 'mobile') && $screen.phone
+          "
+        >
           <li v-for="item in properties[property]" :key="item">
-            <a
-              class="text-blue-400"
-              :href="'tel:' + item"
-              :title="$tc('toast.callNumber')"
-            >
-              {{ item }}
-            </a>
-          </li>
-        </ul>
-        <ul v-else-if="property === 'mobile' && $screen.phone">
-          <li v-for="item in properties[property]" :key="item">
-            <a
-              class="text-blue-400"
-              :href="'tel:' + item"
-              :title="$tc('toast.callNumber')"
-            >
-              {{ item }}
-            </a>
+            <Phone :number="item" />
           </li>
         </ul>
 
@@ -105,6 +92,7 @@ import DateRange from '~/components/Fields/DateRange.vue'
 import OpeningHours, {
   isOpeningHoursSupportedOsmTags,
 } from '~/components/Fields/OpeningHours.vue'
+import Phone from '~/components/Fields/Phone.vue'
 import RoutesField from '~/components/Fields/RoutesField.vue'
 import Website from '~/components/Fields/Website.vue'
 import { ApiPoiProperties } from '~/lib/apiPois'
@@ -117,6 +105,7 @@ export default Vue.extend({
     Website,
     OpeningHours,
     DateRange,
+    Phone,
   },
 
   props: {
