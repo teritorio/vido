@@ -57,15 +57,16 @@
 
           <div
             v-if="state.matches(states.Search)"
-            key="SearchHeader"
+            key="Search"
             :class="[
               'max-h-full hidden md:flex p-2',
               showPoi && 'max-h-screen-4/6',
             ]"
           >
-            <SearchHeader
+            <Search
               :site-name="siteName"
               :logo-url="logoUrl"
+              :main-url="mainUrl"
               :menu-to-icon="categoriesToIcons"
               :map-center="map_center"
               @go-back-click="goToHome"
@@ -82,9 +83,10 @@
             isBottomMenuOpened && 'hidden',
           ]"
         >
-          <SearchHeader
+          <Search
             :site-name="siteName"
             :logo-url="logoUrl"
+            :main-url="mainUrl"
             :menu-to-icon="categoriesToIcons"
             :map-center="map_center"
             @go-to-categories="onQuitExplorerFavoriteMode"
@@ -155,7 +157,11 @@
             :toggle-favorite="toggleFavorite"
             @toggle-favorites="onToggleFavoritesMode"
           />
-          <NavMenu class="ml-3 sm:ml-9" />
+          <NavMenu
+            id="nav-menu"
+            :entries="navMenuEntries"
+            class="ml-3 sm:ml-9"
+          />
         </div>
       </div>
     </div>
@@ -236,7 +242,13 @@
         />
       </div>
     </BottomMenu>
-    <Attribution v-if="!isBottomMenuOpened" :attributions="fullAttributions" />
+    <footer>
+      <Attribution
+        v-if="!isBottomMenuOpened"
+        :attributions="fullAttributions"
+      />
+      <CookiesConsent />
+    </footer>
   </div>
 </template>
 
@@ -248,29 +260,6 @@ import { MetaInfo } from 'vue-meta'
 import { mapGetters, mapActions } from 'vuex'
 import { interpret } from 'xstate'
 
-import HeaderRootCategories from '@/components/Categories/HeaderRootCategories.vue'
-import SelectedSubCategoriesDense from '@/components/Categories/SelectedSubCategoriesDense.vue'
-import SubCategoryFilterHeader from '@/components/Categories/SubCategoryFilterHeader.vue'
-import SubCategoryHeader from '@/components/Categories/SubCategoryHeader.vue'
-import Attribution from '@/components/MainMap/Attribution.vue'
-import BottomMenu from '@/components/MainMap/BottomMenu.vue'
-import FavoriteMenu from '@/components/MainMap/FavoriteMenu.vue'
-import FavoritesOverlay from '@/components/MainMap/FavoritesOverlay.vue'
-import MainHeader from '@/components/MainMap/MainHeader.vue'
-import MapFeatures from '@/components/MainMap/MapFeatures.vue'
-import MapPoiToast from '@/components/MainMap/MapPoiToast.vue'
-import NavMenu from '@/components/MainMap/NavMenu.vue'
-import SearchHeader from '@/components/Search/SearchHeader.vue'
-import { ApiMenuCategory, Category } from '@/lib/apiMenu'
-import { getPoiById, ApiPoi, getPoiByIds } from '@/lib/apiPois'
-import { ApiMenuItemSearchResult } from '@/lib/apiSearch'
-import { headerFromSettings, Settings } from '@/lib/apiSettings'
-import { getBBoxFeature } from '@/lib/bbox'
-import { LOCAL_STORAGE } from '@/lib/constants'
-import { Mode, OriginEnum } from '@/utils/types'
-import { FilterValue, FilterValues } from '@/utils/types-filters'
-import { getHashPart, setHashParts } from '@/utils/url'
-
 import {
   HomeState,
   HomeInterpreter,
@@ -279,6 +268,30 @@ import {
   homeMachine,
 } from './Home.machine'
 
+import HeaderRootCategories from '~/components/Categories/HeaderRootCategories.vue'
+import SelectedSubCategoriesDense from '~/components/Categories/SelectedSubCategoriesDense.vue'
+import SubCategoryFilterHeader from '~/components/Categories/SubCategoryFilterHeader.vue'
+import SubCategoryHeader from '~/components/Categories/SubCategoryHeader.vue'
+import Attribution from '~/components/MainMap/Attribution.vue'
+import BottomMenu from '~/components/MainMap/BottomMenu.vue'
+import FavoriteMenu from '~/components/MainMap/FavoriteMenu.vue'
+import FavoritesOverlay from '~/components/MainMap/FavoritesOverlay.vue'
+import MainHeader from '~/components/MainMap/MainHeader.vue'
+import MapFeatures from '~/components/MainMap/MapFeatures.vue'
+import MapPoiToast from '~/components/MainMap/MapPoiToast.vue'
+import NavMenu from '~/components/MainMap/NavMenu.vue'
+import Search from '~/components/Search/Search.vue'
+import CookiesConsent from '~/components/UI/CookiesConsent.vue'
+import { ContentEntry } from '~/lib/apiContent'
+import { ApiMenuCategory, Category } from '~/lib/apiMenu'
+import { getPoiById, ApiPoi, getPoiByIds } from '~/lib/apiPois'
+import { ApiMenuItemSearchResult } from '~/lib/apiSearch'
+import { headerFromSettings, Settings } from '~/lib/apiSettings'
+import { getBBoxFeature } from '~/lib/bbox'
+import { LOCAL_STORAGE } from '~/store/favorite'
+import { Mode, OriginEnum } from '~/utils/types'
+import { FilterValue, FilterValues } from '~/utils/types-filters'
+import { getHashPart, setHashParts } from '~/utils/url'
 import { flattenFeatures } from '~/utils/utilities'
 
 const interpretOptions = { devTools: false }
@@ -298,7 +311,7 @@ export default (
     FavoritesOverlay,
     NavMenu,
     MapFeatures,
-    SearchHeader,
+    Search,
     SelectedSubCategoriesDense,
     HeaderRootCategories,
     SubCategoryHeader,
@@ -306,11 +319,16 @@ export default (
     BottomMenu,
     MapPoiToast,
     Attribution,
+    CookiesConsent,
   },
 
   props: {
     settings: {
       type: Object as PropType<Settings>,
+      required: true,
+    },
+    navMenuEntries: {
+      type: Array as PropType<ContentEntry[]>,
       required: true,
     },
     initialCategoryIds: {
@@ -410,7 +428,7 @@ export default (
     subCategoriesCounts(): Record<Category['id'], number> {
       const counts: { [id: string]: number } = {}
       this.selectedCategoriesIds.forEach((categoryId) => {
-        let parentId = this.categories[categoryId].parent_id
+        let parentId = this.categories[categoryId]?.parent_id
         while (parentId) {
           counts[parentId] = (counts[parentId] || 0) + 1
           parentId = this.categories[parentId].parent_id
@@ -514,10 +532,6 @@ export default (
       this.routerPushUrl(hash)
     },
 
-    favoritesIds() {
-      this.handleFavorites()
-    },
-
     isModeFavorites() {
       this.handleFavorites()
     },
@@ -532,11 +546,6 @@ export default (
   },
 
   beforeMount() {
-    const favorites =
-      localStorage.getItem(LOCAL_STORAGE.favorites) || '{ "favorites": [] }'
-
-    this.toggleFavoritesMode(JSON.parse(favorites).favorites)
-
     const mode = getHashPart(this.$router, 'mode') || Mode.BROWSER
     this.setMode(mode)
 
@@ -548,15 +557,16 @@ export default (
           .map((e) => (!isNaN(Number(e)) ? Number(e) : null))
           .filter((e) => !!e)
 
-        localStorage.setItem(
-          LOCAL_STORAGE.favorites,
-          JSON.stringify({ favorites: newFavorite, version: 1 })
-        )
-        this.toggleFavoritesMode(newFavorite)
+        this.setFavorites(newFavorite)
         this.handleFavorites()
       } catch (e) {
         // eslint-disable-next-line no-console
         console.error('Vido error:', e.message)
+      }
+    } else {
+      const local = localStorage.getItem(LOCAL_STORAGE.favorites)
+      if (local) {
+        this.setFavorites(JSON.parse(local).favorites)
       }
     }
   },
@@ -607,10 +617,10 @@ export default (
       applyCategoriesFilters: 'menu/applyFilters',
       setSelectedFeature: 'map/setSelectedFeature',
       setMode: 'map/setMode',
-      toggleFavoritesMode: 'favorite/toggleFavoritesMode',
+      setFavorites: 'favorite/setFavorites',
     }),
     routerPushUrl(hashUpdate: { [key: string]: string | null } = {}) {
-      const categoryIds = this.selectedCategoriesIds.sort().join(',')
+      const categoryIds = this.selectedCategoriesIds.join(',')
       const id =
         this.selectedFeature?.properties?.metadata?.id?.toString() ||
         this.selectedFeature?.id?.toString() ||
@@ -687,11 +697,14 @@ export default (
     onBackToSubCategoryClick() {
       this.service.send(HomeEvents.GoToSubCategories)
     },
+    sortedUniq<T>(a: T[]): T[] {
+      return [...new Set(a)].sort()
+    },
     selectSubCategory(subCategoriesIds: Category['id'][]) {
-      this.selectedCategoriesIds = [
+      this.selectedCategoriesIds = this.sortedUniq([
         ...this.selectedCategoriesIds,
         ...subCategoriesIds,
-      ]
+      ])
       this.service.send(HomeEvents.SelectSubCategories)
     },
     send(event: HomeEvents) {
@@ -703,7 +716,10 @@ export default (
           (id) => id !== categoryId
         )
       } else {
-        this.selectedCategoriesIds = [...this.selectedCategoriesIds, categoryId]
+        this.selectedCategoriesIds = this.sortedUniq([
+          ...this.selectedCategoriesIds,
+          categoryId,
+        ])
       }
       this.service.send(HomeEvents.ToggleSubCategorySelection)
     },
@@ -721,12 +737,10 @@ export default (
         this.$vidoConfig.API_THEME,
         poiId
       ).then((poi) => {
-        if (poi) {
-          this.setSelectedFeature(poi).then(() => {
-            this.service.send(HomeEvents.GoToCategories)
-            this.$refs.mapFeatures.goToSelectedFeature()
-          })
-        }
+        this.setSelectedFeature(poi).then(() => {
+          this.service.send(HomeEvents.GoToCategories)
+          this.$refs.mapFeatures.goToSelectedFeature()
+        })
       })
     },
 
@@ -825,31 +839,7 @@ export default (
         this.setSelectedFeature(feature)
       }
       try {
-        const props = feature?.properties
-        const id = props?.metadata?.id || feature?.id
-        const currentFavorites = localStorage.getItem(LOCAL_STORAGE.favorites)
-        let newFavorite
-
-        if (id) {
-          if (currentFavorites) {
-            const parsedFavorites = JSON.parse(currentFavorites).favorites
-            if (!parsedFavorites.includes(id)) {
-              newFavorite = [...parsedFavorites, id]
-            } else {
-              newFavorite = parsedFavorites.filter(
-                (f: string) => `${f}` !== `${id}`
-              )
-            }
-          } else {
-            newFavorite = [id]
-          }
-
-          localStorage.setItem(
-            LOCAL_STORAGE.favorites,
-            JSON.stringify({ favorites: newFavorite, version: 1 })
-          )
-          this.toggleFavoritesMode(newFavorite)
-        }
+        this.$store.dispatch('favorite/toggleFavorite', feature)
       } catch (e) {
         // eslint-disable-next-line no-console
         console.error('Vido error:', e.message)
@@ -878,9 +868,14 @@ export default (
     },
 
     handleFavorites() {
-      this.fetchFavorites(this.favoritesIds).then((favorites) => {
-        this.favorites = favorites
-      })
+      this.fetchFavorites(this.favoritesIds)
+        .then((favorites) => {
+          this.favorites = favorites
+        })
+        .catch((e) => {
+          // eslint-disable-next-line no-console
+          console.error('Vido error:', e.message)
+        })
     },
 
     fetchFavorites(ids: [string]): Promise<ApiPoi[]> {

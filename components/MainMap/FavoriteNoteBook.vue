@@ -35,8 +35,7 @@
 <script lang="ts">
 import Vue, { PropType } from 'vue'
 
-import MapPoiToast from '@/components/MainMap/MapPoiToast.vue'
-
+import MapPoiToast from '~/components/MainMap/MapPoiToast.vue'
 import { ApiPoi } from '~/lib/apiPois'
 
 export default Vue.extend({

@@ -93,14 +93,14 @@ import copy from 'fast-copy'
 import Vue, { PropType } from 'vue'
 import { mapActions } from 'vuex'
 
-import DateRange from '@/components/Filters/DateRange.vue'
-import { Category } from '@/lib/apiMenu'
+import DateRange from '~/components/Filters/DateRange.vue'
+import { Category } from '~/lib/apiMenu'
 import {
   FilterValueBoolean,
   FilterValueDate,
   FilterValueList,
   FilterValues,
-} from '@/utils/types-filters'
+} from '~/utils/types-filters'
 
 export default Vue.extend({
   components: {

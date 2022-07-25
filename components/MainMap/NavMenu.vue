@@ -7,29 +7,31 @@
         dropdownWrapper: 'relative z-40',
       }"
     >
-      <button
-        slot="trigger"
-        slot-scope="{
+      <template
+        #trigger="{
           mousedownHandler,
           focusHandler,
           blurHandler,
           keydownHandler,
           isShown,
         }"
-        :aria-label="$tc('navMenu.label')"
-        type="button"
-        class="text-sm text-zinc-800 bg-white rounded-full shadow-md outline-none w-11 h-11 focus:outline-none hover:bg-zinc-100 focus-visible:bg-zinc-100 shrink-0"
-        @mousedown="mousedownHandler"
-        @focus="focusHandler"
-        @blur="blurHandler"
-        @keydown="keydownHandler"
       >
-        <font-awesome-icon
-          :icon="isShown ? 'times' : 'bars'"
-          class="text-zinc-800"
-          size="sm"
-        />
-      </button>
+        <button
+          :aria-label="$tc('navMenu.label')"
+          type="button"
+          class="text-sm text-zinc-800 bg-white rounded-full shadow-md outline-none w-11 h-11 focus:outline-none hover:bg-zinc-100 focus-visible:bg-zinc-100 shrink-0"
+          @mousedown="mousedownHandler"
+          @focus="focusHandler"
+          @blur="blurHandler"
+          @keydown="keydownHandler"
+        >
+          <font-awesome-icon
+            :icon="isShown ? 'times' : 'bars'"
+            class="text-zinc-800"
+            size="sm"
+          />
+        </button>
+      </template>
 
       <div class="py-1 rounded-md shadow-xs flex flex-col w-max">
         <a
@@ -68,40 +70,29 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
+import Vue, { PropType } from 'vue'
 import { TDropdown } from 'vue-tailwind/dist/components'
 import { mapActions } from 'vuex'
 
-import { NavMenuEntry } from '@/utils/types'
+import { ContentEntry } from '~/lib/apiContent'
 
 export default Vue.extend({
   components: {
     TDropdown,
   },
 
-  data(): {
-    entries: NavMenuEntry[]
-  } {
-    return {
-      entries: [],
-    }
-  },
-
-  mounted() {
-    this.fetchConfig()
+  props: {
+    entries: {
+      type: Array as PropType<ContentEntry[]>,
+      required: true,
+    },
   },
 
   methods: {
     ...mapActions({
       setSiteLocale: 'site/setLocale',
     }),
-    fetchConfig() {
-      fetch(
-        `${this.$vidoConfig.API_ENDPOINT}/${this.$vidoConfig.API_PROJECT}/${this.$vidoConfig.API_THEME}/articles?slug=non-classe`
-      )
-        .then((data) => data.json())
-        .then((data) => (this.entries = data))
-    },
+
     setLocale(locale: string) {
       this.$i18n.setLocale(locale)
       this.setSiteLocale(locale)
@@ -130,9 +121,11 @@ export default Vue.extend({
 .flag\:ES {
   background-image: url('~country-flag-icons/3x2/ES.svg');
 }
+
 .flag\:FR {
   background-image: url('~country-flag-icons/3x2/FR.svg');
 }
+
 .flag\:GB {
   background-image: url('~country-flag-icons/3x2/GB.svg');
 }

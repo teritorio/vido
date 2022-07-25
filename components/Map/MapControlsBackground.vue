@@ -3,7 +3,7 @@
     <div v-for="background in backgrounds" :key="background" class="w-11 h-11">
       <button
         v-if="!hidden"
-        id="background-selector-map"
+        :id="`background-selector-map-${background}`"
         aria-label="$tc('mapControls.backgroundAriaLabel')"
         :class="[
           'bg-white border-4 rounded-full shadow-md outline-none w-11 h-11 focus:outline-none ',
@@ -32,10 +32,9 @@
 <script lang="ts">
 import Vue, { PropType } from 'vue'
 
-import { DEFAULT_MAP_STYLE, MAP_STYLE_NAMES } from '@/lib/constants'
-import { getHashPart, routerPushHashUpdate } from '@/utils/url'
-
+import { DEFAULT_MAP_STYLE, MAP_STYLE_NAMES } from '~/lib/constants'
 import { MapStyleEnum } from '~/utils/types'
+import { getHashPart, routerPushHashUpdate } from '~/utils/url'
 
 export default Vue.extend({
   props: {
@@ -84,7 +83,7 @@ export default Vue.extend({
       routerPushHashUpdate(this.$router, {
         bg: background !== DEFAULT_MAP_STYLE ? background : null,
       })
-      this.$emit('changeBackground', background)
+      this.$emit('change-background', background)
     },
   },
 })

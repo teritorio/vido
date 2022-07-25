@@ -1,4 +1,9 @@
 export default {
+  units: {
+    min: 'min',
+    hours: 'h',
+    km: 'km',
+  },
   shareLink: {
     copy: 'Copier',
     qrcode: 'QR-Code',
@@ -71,33 +76,27 @@ export default {
     closeAt: 'Fermeture',
     closed: 'Actuellement fermé',
     openAt: 'Ouverture',
-    '24_7': 'Ouvert 24h/24, 7j/7',
+    next: 'Prochain',
     formatDayAndDayInMonth: 'EEE d :',
-    notOpenedInNextDays: "N'ouvre pas dans les prochains jours.",
+    variableWeek: "Les horaires peuvent varier d'une semaine sur l'autre.",
   },
   toast: {
     details: 'Détails',
     seeDetail: 'Voir le detail',
     route: 'Itinéraire',
     explore: 'Explorer',
+    favoriteOn: 'Mettre en favori',
+    favoriteOff: 'Retirer le favori',
     favorite: 'Favori',
     callNumber: 'Appeler ce numéro',
     findRoute: "Trouver la route pour venir jusqu'à ce lieu",
     unactivateExplore: "Désactiver l'exploration aux alentours",
     activateExplore: "Explorer les points d'intérêts aux alentours",
     zoom: 'Zoomer',
-    routePopup: {
-      min: 'min',
-      hours: 'h',
-      km: 'km',
-      easy: 'facile',
-      normal: 'normal',
-      hard: 'dur',
-    },
   },
   details: {
     headerDescription: 'Descriptif',
-    headerOpeningHours: 'Horaires d’ouverture',
+    headerDownload: 'Fichiers à télécharger',
     lastUpdate: 'Dernière modification',
     headerContacts: 'Contact',
     headerLocation: 'Localisation & Adresse',
@@ -110,6 +109,8 @@ export default {
     qrcode: 'Partager en QR-Code',
     poweredBy: 'Propulsé par',
     mapillaryExplore: 'Explorer sur Mapillary',
+    informations: 'Informations',
+    downloadGPX: 'Le parcours (trace GPS) au format GPX',
   },
   dateFilter: {
     today: "Aujourd'hui",
@@ -117,5 +118,22 @@ export default {
     thisWeekend: 'Ce week-end',
     nextWeek: '7 prochains jours',
     nextMonth: '30 prochains jours',
+  },
+  fields: {
+    route: {
+      difficulty: 'Difficulté :',
+      lenght: 'Distance :',
+      duration: 'Durée :',
+      difficulties: {
+        easy: 'facile',
+        normal: 'normal',
+        hard: 'dur',
+      },
+    },
+  },
+  cookiesConsent: {
+    accept: 'Accepter',
+    details: 'En savoir plus',
+    decline: 'Refuser',
   },
 }

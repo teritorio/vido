@@ -1,7 +1,21 @@
 <template>
   <div class="w-full container">
     <div>
-      <Header :theme="settings.themes[0]" />
+      <Header
+        :theme="settings.themes[0]"
+        :nav-menu-entries="navMenuEntries"
+        :color-line="colorLine"
+      >
+        <button
+          :aria-label="
+            isFavorite ? $tc('toast.favoriteOn') : $tc('toast.favoriteOff')
+          "
+          class="text-sm text-zinc-800 bg-white rounded-full shadow-md outline-none w-11 h-11 focus:outline-none hover:bg-zinc-100 focus-visible:bg-zinc-100 shrink-0"
+          @click.stop="toggleFavorite"
+        >
+          <FavoriteIcon :is-active="isFavorite" :color-line="colorLine" />
+        </button>
+      </Header>
       <div class="flex justify-center">
         <TeritorioIconBadge
           :color-fill="colorFill"
@@ -10,14 +24,6 @@
         />
       </div>
       <h1>{{ p.name }}</h1>
-      <Breadcrumb
-        :color-line="colorLine"
-        :entries="[
-          { text: 'Carte', href: '/' },
-          { text: 'todo ' },
-          { text: 'todo' },
-        ]"
-      />
       <Share
         :title="p.name"
         :href="p.editorial && p.editorial['website:details']"
@@ -31,15 +37,6 @@
             </h2>
           </div>
           <template v-for="property in detailsProperties">
-            <div
-              v-if="property == 'description' && p.description"
-              :key="property"
-              class="detail-left-block"
-            >
-              <h2>{{ $tc('details.headerDescription') }}</h2>
-              <div v-html="p.description"></div>
-            </div>
-
             <Contact
               v-if="property == 'first_contact'"
               :key="property"
@@ -47,14 +44,44 @@
               :color-fill="colorFill"
             />
 
-            <div
-              v-if="property == 'opening_hours' && p.opening_hours"
+            <Download
+              v-else-if="property == 'first_download'"
+              :key="property"
+              :p="p"
+              :color-fill="colorFill"
+            />
+
+            <RoutesField
+              v-else-if="property == 'route:*'"
               :key="property"
               class="detail-left-block"
-            >
-              <h2>{{ $tc('details.headerOpeningHours') }}</h2>
-              <OpeningHours :opening-hours="p.opening_hours" :details="true" />
-            </div>
+              :context="context"
+              :properties="p"
+            />
+
+            <template v-else-if="p[property]">
+              <div
+                v-if="property == 'description'"
+                :key="property"
+                class="detail-left-block"
+              >
+                <h2>{{ $tc('details.headerDescription') }}</h2>
+                <div v-html="p.description"></div>
+              </div>
+
+              <div
+                v-if="isOpeningHoursSupportedOsmTags(property)"
+                :key="property"
+                class="detail-left-block"
+              >
+                <h2>{{ $propertyTranslations.p(property) }}</h2>
+                <OpeningHours
+                  :tag-key="property"
+                  :opening-hours="p[property]"
+                  :context="context"
+                />
+              </div>
+            </template>
           </template>
           <Location :p="p" :geom="poi.geometry" />
         </div>
@@ -83,40 +110,53 @@
 
 <script lang="ts">
 import Vue, { PropType } from 'vue'
+import { mapGetters } from 'vuex'
 
-import MapPois from '@/components/MapPois.vue'
-import TeritorioIconBadge from '@/components/TeritorioIcon/TeritorioIconBadge.vue'
-import { ApiPoi, ApiPoiProperties } from '@/lib/apiPois'
-import { Settings } from '@/lib/apiSettings'
-
-import Breadcrumb from '~/components/Details/Breadcrumb.vue'
 import Carousel from '~/components/Details/Carousel.vue'
 import Contact from '~/components/Details/Contact.vue'
+import Download from '~/components/Details/Download.vue'
 import Footer from '~/components/Details/Footer.vue'
 import Header from '~/components/Details/Header.vue'
 import Location from '~/components/Details/Location.vue'
 import Mapillary from '~/components/Details/Mapillary.vue'
 import Share from '~/components/Details/Share.vue'
+import OpeningHours, {
+  isOpeningHoursSupportedOsmTags,
+} from '~/components/Fields/OpeningHours.vue'
+import RoutesField from '~/components/Fields/RoutesField.vue'
+import MapPois from '~/components/MapPois.vue'
+import FavoriteIcon from '~/components/UI/FavoriteIcon.vue'
+import TeritorioIconBadge from '~/components/UI/TeritorioIconBadge.vue'
+import { ContentEntry } from '~/lib/apiContent'
+import { ApiPoi, ApiPoiProperties } from '~/lib/apiPois'
+import { Settings } from '~/lib/apiSettings'
+import { PropertyTranslationsContextEnum } from '~/plugins/property-translations'
 import { OriginEnum } from '~/utils/types'
 
 export default Vue.extend({
   components: {
     Header,
+    FavoriteIcon,
     TeritorioIconBadge,
-    Breadcrumb,
     Contact,
-    OpeningHours: () => import('@/components/Fields/OpeningHours.vue'),
+    OpeningHours,
     Location,
+    Download,
     Share,
     Carousel,
     Mapillary,
     MapPois,
     Footer,
+    RoutesField,
   },
 
   props: {
     settings: {
       type: Object as PropType<Settings>,
+      required: true,
+    },
+    navMenuEntries: {
+      type: Array as PropType<ContentEntry[]>,
       required: true,
     },
     poi: {
@@ -126,17 +166,31 @@ export default Vue.extend({
   },
 
   computed: {
+    ...mapGetters({
+      favoritesIds: 'favorite/favoritesIds',
+    }),
+    context(): PropertyTranslationsContextEnum {
+      return PropertyTranslationsContextEnum.Details
+    },
     p(): ApiPoiProperties {
       return this.poi.properties
     },
     detailsProperties(): string[] {
       let firstContact = false
+      const firstDownload = false
       return (this.p.editorial?.details_properties || [])
         .map((p) => {
           if (['addr:*', 'phone', 'mobile'].includes(p)) {
             if (!firstContact) {
               firstContact = true
               return 'first_contact'
+            } else {
+              return undefined
+            }
+          } else if (['route:gpx_trace'].includes(p)) {
+            if (!firstDownload) {
+              firstContact = true
+              return 'first_download'
             } else {
               return undefined
             }
@@ -158,6 +212,9 @@ export default Vue.extend({
         this.p.editorial?.class_label?.fr
       )
     },
+    isFavorite(): boolean {
+      return this.favoritesIds.includes(this.poi.properties.metadata?.id)
+    },
   },
 
   mounted() {
@@ -172,11 +229,29 @@ export default Vue.extend({
         ],
     })
   },
+
+  methods: {
+    toggleFavorite() {
+      if (this.poi.properties.metadata?.id) {
+        this.$tracking({
+          type: 'details_event',
+          event: 'favorite',
+          poiId: this.poi.properties.metadata?.id,
+          title: this.poi.properties.name,
+        })
+        this.$store.dispatch('favorite/toggleFavorite', this.poi)
+      }
+    },
+
+    isOpeningHoursSupportedOsmTags(key: string) {
+      return isOpeningHoursSupportedOsmTags(key)
+    },
+  },
 })
 </script>
 
 <style lang="scss" scoped>
-@import '@/assets/details.scss';
+@import '~/assets/details.scss';
 
 h1 {
   font-size: 2.4rem;
@@ -185,7 +260,7 @@ h1 {
   text-transform: uppercase;
 }
 
-/deep/ h2 {
+:deep(h2) {
   font-size: 1.8rem;
   margin-top: 0;
   margin-bottom: 0.7rem;
@@ -239,7 +314,7 @@ h1 {
   }
 }
 
-/deep/ #map {
+:deep(#map) {
   width: 100%;
   height: 346px;
 }

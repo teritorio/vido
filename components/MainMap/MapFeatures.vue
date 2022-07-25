@@ -31,7 +31,7 @@
         <MapControlsBackground
           :backgrounds="availableStyles"
           :initial-background="selectedBackground"
-          @changeBackground="selectedBackground = $event"
+          @change-background="selectedBackground = $event"
         />
       </template>
     </Map>
@@ -41,29 +41,31 @@
 
 <script lang="ts">
 import { PoiFilter } from '@teritorio/map'
+import debounce from 'lodash.debounce'
 import throttle from 'lodash.throttle'
 import maplibregl, {
   MapDataEvent,
   LngLatBoundsLike,
   MapMouseEvent,
   FitBoundsOptions,
+  GeoJSONSource,
 } from 'maplibre-gl'
 import Vue, { PropType } from 'vue'
 
-import MapControlsExplore from '@/components/MainMap/MapControlsExplore.vue'
-import SnackBar from '@/components/MainMap/SnackBar.vue'
-import Map from '@/components/Map/Map.vue'
-import MapControls3D from '@/components/Map/MapControls3D.vue'
-import MapControlsBackground from '@/components/Map/MapControlsBackground.vue'
-import { getBBoxFeatures, getBBoxFeature } from '@/lib/bbox'
-import { DEFAULT_MAP_STYLE, MAP_ZOOM } from '@/lib/constants'
-import { markerLayerTextFactory, updateMarkers } from '@/lib/markerLayerFactory'
-import { filterRouteByCategories, filterRouteByPoiId } from '@/utils/styles'
-import { LatLng, MapStyleEnum } from '@/utils/types'
-import { getHashPart } from '@/utils/url'
-
+import MapControlsExplore from '~/components/MainMap/MapControlsExplore.vue'
+import SnackBar from '~/components/MainMap/SnackBar.vue'
+import Map from '~/components/Map/Map.vue'
+import MapControls3D from '~/components/Map/MapControls3D.vue'
+import MapControlsBackground from '~/components/Map/MapControlsBackground.vue'
 import { ApiMenuCategory } from '~/lib/apiMenu'
-import { ApiPoi } from '~/lib/apiPois'
+import { ApiPoi, getPoiById } from '~/lib/apiPois'
+import { getBBoxFeatures, getBBoxFeature } from '~/lib/bbox'
+import { DEFAULT_MAP_STYLE, MAP_ZOOM } from '~/lib/constants'
+import { MapPoi, mapPoi2ApiPoi } from '~/lib/mapPois'
+import { markerLayerTextFactory, updateMarkers } from '~/lib/markerLayerFactory'
+import { filterRouteByCategories, filterRouteByPoiId } from '~/utils/styles'
+import { LatLng, MapStyleEnum } from '~/utils/types'
+import { getHashPart } from '~/utils/url'
 
 const STYLE_LAYERS = [
   'poi-level-1',
@@ -145,12 +147,7 @@ export default Vue.extend({
 
   computed: {
     availableStyles(): MapStyleEnum[] {
-      return [
-        MapStyleEnum.vector,
-        MapStyleEnum.aerial,
-        ...(!this.$screen.smallScreen ? [MapStyleEnum.raster] : []),
-        MapStyleEnum.bicycle,
-      ]
+      return [MapStyleEnum.vector, MapStyleEnum.aerial, MapStyleEnum.bicycle]
     },
   },
 
@@ -169,16 +166,13 @@ export default Vue.extend({
       }
 
       // Change visible data
-      if (this.map.getSource(POI_SOURCE)) {
-        // Change data
-        const source = this.map.getSource(POI_SOURCE)
-        if (source && 'setData' in source) {
-          // @ts-ignore
-          source.setData({
-            type: 'FeatureCollection',
-            features: this.features,
-          })
-        }
+      const source = this.map.getSource(POI_SOURCE)
+      if (source?.type == 'geojson' && 'setData' in source) {
+        ;(source as GeoJSONSource).setData({
+          type: 'FeatureCollection',
+          features: this.features,
+        })
+        this.showSelectedFeature()
       }
 
       this.handleResetMapZoom(
@@ -187,7 +181,7 @@ export default Vue.extend({
       )
     },
 
-    selectedCategoriesIds() {
+    selectedFeature() {
       this.showSelectedFeature()
     },
 
@@ -212,16 +206,14 @@ export default Vue.extend({
       leading: true,
       trailing: true,
     })
+
+    this.updateSelectedFeature = debounce(this.updateSelectedFeature, 300)
   },
 
   beforeMount() {
-    let bg =
+    const bg =
       (getHashPart(this.$router, 'bg') as keyof typeof MapStyleEnum) ||
       DEFAULT_MAP_STYLE
-
-    if (this.$screen.smallScreen && bg === MapStyleEnum.raster) {
-      bg = DEFAULT_MAP_STYLE
-    }
 
     this.selectedBackground = bg
   },
@@ -236,12 +228,6 @@ export default Vue.extend({
       this.poiFilter = new PoiFilter()
       this.map.addControl(this.poiFilter)
 
-      this.map.on('styledata', (e: MapDataEvent) => {
-        if (e.dataType === 'style') {
-          this.onStyleInit()
-        }
-      })
-
       this.map.on('click', this.onClick)
 
       this.$store.dispatch('map/center', this.map.getCenter())
@@ -254,6 +240,10 @@ export default Vue.extend({
       this.poiLayerTemplate = style.layers.find(
         (layer) => layer.id === 'poi-level-1'
       )
+
+      if (this.map) {
+        this.onStyleInit()
+      }
     },
 
     onStyleInit() {
@@ -315,21 +305,46 @@ export default Vue.extend({
     // Map interactions
 
     onClick(e: MapMouseEvent) {
-      const selectedFeatures = STYLE_LAYERS.map((layerId) => {
+      let selectedFeatures = STYLE_LAYERS.map((layerId) => {
         return this.map.queryRenderedFeatures(e.point, {
           layers: [layerId],
-        }) as ApiPoi[]
+        }) as unknown as MapPoi[]
       }).flat()
+      selectedFeatures = selectedFeatures.filter(
+        (feature) => feature.properties.popup_properties
+      )
       if (selectedFeatures.length > 0) {
-        this.updateSelectedFeature(selectedFeatures[0])
+        // Set temp partial data from vector tiles. Then fetch full data
+        this.updateSelectedFeature(mapPoi2ApiPoi(selectedFeatures[0]), true)
       } else {
         this.updateSelectedFeature(null)
       }
     },
 
-    updateSelectedFeature(feature: ApiPoi | null) {
+    updateSelectedFeature(feature: ApiPoi | null, fetch: boolean = false) {
       if (this.selectedFeature !== feature) {
         this.$emit('on-select-feature', feature)
+
+        if (feature && fetch && feature.properties.metadata.id) {
+          try {
+            // Seted temp partial data from vector tiles.
+            // Now fetch full data.
+            return getPoiById(
+              this.$vidoConfig.API_ENDPOINT,
+              this.$vidoConfig.API_PROJECT,
+              this.$vidoConfig.API_THEME,
+              feature.properties.metadata.id
+            ).then((apiPoi) => {
+              // Overide geometry.
+              // Keep same original location to avoid side effect on moving selected object.
+              apiPoi.geometry = feature.geometry
+              this.$emit('on-select-feature', apiPoi)
+            })
+          } catch (e) {
+            // eslint-disable-next-line no-console
+            console.error('Vido error:', e.message)
+          }
+        }
       }
     },
 
@@ -503,6 +518,7 @@ export default Vue.extend({
 .cluster-item {
   cursor: pointer;
 }
+
 .cluster-donut {
   @apply text-sm leading-none font-medium block text-zinc-800;
 }

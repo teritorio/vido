@@ -1,0 +1,59 @@
+{
+    "type": "FeatureCollection",
+    "features": [
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -0.4855917,
+                    43.9045952
+                ]
+            },
+            "properties": {
+                "name": "Aire de Moyen Passage des Gens du Voyage",
+                "tourism": "caravan_site",
+                "addr:postcode": "40000",
+                "addr:city": "Mont-de-Marsan",
+                "metadata": {
+                    "id": 1,
+                    "cartocode": "A1",
+                    "category_ids": [
+                        211
+                    ],
+                    "source": "osm",
+                    "osm_id": 583477748,
+                    "osm_type": "node",
+                    "updated_at": "2009-12-09T06:34:45Z"
+                },
+                "display": {
+                    "icon": "teritorio teritorio-caravan_site",
+                    "color_fill": "#99163a",
+                    "color_line": "#99163a"
+                },
+                "editorial": {
+                    "details_properties": [
+                        "description",
+                        "addr:*",
+                        "phone",
+                        "mobile",
+                        "opening_hours"
+                    ],
+                    "popup_properties": [
+                        "addr:*"
+                    ],
+                    "class_label": {
+                        "fr": "Aires de camping-cars"
+                    },
+                    "class_label_popup": {
+                        "fr": "Aire de camping-cars"
+                    },
+                    "class_label_details": {
+                        "fr": "Aire de camping-cars"
+                    },
+                    "website:details": "https:\/\/dev.appcarto.teritorio.xyz\/content\/osm_poi\/aire-de-moyen-passage-des-gens-du-voyage\/?site=cdt40"
+                }
+            }
+        }
+    ]
+}

@@ -16,13 +16,20 @@
         />
       </a>
     </span>
+    <CookiesConsent />
   </footer>
 </template>
 
 <script lang="ts">
 import Vue, { PropType } from 'vue'
 
+import CookiesConsent from '~/components/UI/CookiesConsent.vue'
+
 export default Vue.extend({
+  components: {
+    CookiesConsent,
+  },
+
   props: {
     attributions: {
       type: Array as PropType<String[]>,
@@ -33,7 +40,7 @@ export default Vue.extend({
 </script>
 
 <style lang="scss" scoped>
-@import '@/assets/details.scss';
+@import '~/assets/details.scss';
 
 .footer {
   position: relative;

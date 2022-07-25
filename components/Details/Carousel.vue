@@ -1,7 +1,7 @@
 <template>
   <ul v-if="images">
     <li v-for="(image, i) in images" :key="i">
-      <img :src="image" />
+      <nuxt-picture :src="image" />
     </li>
   </ul>
 </template>
@@ -20,7 +20,7 @@ export default Vue.extend({
 </script>
 
 <style lang="scss" scoped>
-@import '@/assets/details.scss';
+@import '~/assets/details.scss';
 
 ul,
 li {

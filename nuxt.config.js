@@ -1,4 +1,7 @@
+import { cypressMockMiddleware } from '@cypress/mock-ssr'
 import webpack from 'webpack'
+
+import { configuredApi, configuredImageProxy } from './plugins/vido-config.ts'
 
 export default {
   pwa: {
@@ -20,6 +23,12 @@ export default {
     link: [{ rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }],
   },
 
+  loading: false,
+
+  serverMiddleware: [
+    ...(process.env.NODE_ENV != 'production' ? [cypressMockMiddleware()] : []),
+  ],
+
   // Global CSS (https://go.nuxtjs.dev/config-css)
   css: ['@fortawesome/fontawesome-svg-core/styles.css', '@fontsource/ubuntu'],
 
@@ -36,6 +45,7 @@ export default {
     '@/plugins/screen.ts',
     '@/plugins/vue-tailwind.ts',
     { src: '@/plugins/tracking.ts', mode: 'client' },
+    '@/plugins/property-translations.ts',
   ],
 
   // Auto import components (https://go.nuxtjs.dev/config-components)
@@ -55,6 +65,7 @@ export default {
   // Modules (https://go.nuxtjs.dev/config-modules)
   modules: [
     '@nuxtjs/i18n',
+    '@nuxt/image',
     '@nuxtjs/gtm',
     ...(process.env.SENTRY_DSN ? ['@nuxtjs/sentry'] : []),
   ],
@@ -74,11 +85,37 @@ export default {
     langDir: '~/locales/',
   },
 
+  image: {
+    domains: [...configuredApi(), ...configuredImageProxy()],
+  },
+
   sentry: {
     dsn: process.env.SENTRY_DSN || '',
     // https://sentry.nuxtjs.org/sentry/options
     config: {
       // https://docs.sentry.io/platforms/javascript/guides/vue/configuration/options/
+    },
+  },
+
+  watchers: {
+    chokidar: {
+      ignored: (f) =>
+        [
+          /\.git/,
+          /\.yarn/,
+          /cypress/,
+          /.*\.stories\.ts$/,
+          /.*\.jest\.ts$/,
+        ].some((r) => r.test(f)),
+    },
+    webpack: {
+      ignored: [
+        /\.git/,
+        /\.yarn/,
+        /cypress/,
+        /.*\.stories\.ts$/,
+        /.*\.jest\.ts$/,
+      ],
     },
   },
 
@@ -120,4 +157,6 @@ export default {
   gtm: {
     pageTracking: false,
   },
+
+  devServerHandlers: [], // Workaround issue https://github.com/nuxt-community/tailwindcss-module/issues/480
 }

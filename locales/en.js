@@ -1,4 +1,9 @@
 export default {
+  units: {
+    min: 'min',
+    hours: 'h',
+    km: 'km',
+  },
   shareLink: {
     copy: 'Copy',
     qrcode: 'QR-Code',
@@ -71,9 +76,9 @@ export default {
     closeAt: 'Closes',
     closed: 'Currently closed',
     openAt: 'Opens',
-    '24_7': 'Opened 24/7',
+    next: 'Next',
     formatDayAndDayInMonth: "EEE do':'",
-    notOpenedInNextDays: 'Do not open in the coming days.',
+    variableWeek: 'The hours may vary from week to week.',
   },
   toast: {
     details: 'Details',
@@ -81,23 +86,17 @@ export default {
     route: 'Route',
     explore: 'Explore',
     favorite: 'Favorite',
+    favoriteOn: 'Set as favorite',
+    favoriteOff: 'Remove favorite',
     callNumber: 'Call this number',
     findRoute: 'Find the route to this place',
     unactivateExplore: 'Deactivate exploration of the surroundings',
     activateExplore: 'Explore nearby points of interest',
     zoom: 'Zoom',
-    routePopup: {
-      min: 'min',
-      hours: 'h',
-      km: 'km',
-      easy: 'easy',
-      normal: 'normal',
-      hard: 'hard',
-    },
   },
   details: {
     headerDescription: 'Description',
-    headerOpeningHours: 'Opening hours',
+    headerDownload: 'Files to download',
     lastUpdate: 'Last change',
     headerContacts: 'Contact',
     headerLocation: 'Location & Address',
@@ -110,6 +109,8 @@ export default {
     link: 'Share link',
     poweredBy: 'Powered by',
     mapillaryExplore: 'Explore on Mapillary',
+    informations: 'Informations',
+    downloadGPX: 'The route (GPS track) in GPX format',
   },
   dateFilter: {
     today: 'Today',
@@ -117,5 +118,22 @@ export default {
     thisWeekend: 'Coming week-end',
     nextWeek: 'Next 7 days',
     nextMonth: 'Next 30 days',
+  },
+  fields: {
+    route: {
+      difficulty: 'Difficulty:',
+      lenght: 'Distance:',
+      duration: ' Duration:',
+      difficulties: {
+        easy: 'easy',
+        normal: 'normal',
+        hard: 'hard',
+      },
+    },
+  },
+  cookiesConsent: {
+    accept: 'Agree',
+    details: 'More information',
+    decline: 'Decline',
   },
 }

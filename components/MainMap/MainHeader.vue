@@ -81,8 +81,8 @@
 import Vue, { PropType } from 'vue'
 import { mapGetters } from 'vuex'
 
-import HeaderRootCategories from '@/components/Categories/HeaderRootCategories.vue'
-import { Category } from '@/lib/apiMenu'
+import HeaderRootCategories from '~/components/Categories/HeaderRootCategories.vue'
+import { Category } from '~/lib/apiMenu'
 
 export default Vue.extend({
   components: {

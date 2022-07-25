@@ -2,6 +2,7 @@
   <Home
     v-if="settings"
     :settings="settings"
+    :nav-menu-entries="contents"
     :initial-category-ids="categoryIds"
     :initial-poi="initialPoi"
   />
@@ -12,11 +13,16 @@ import Vue from 'vue'
 import { MetaInfo } from 'vue-meta'
 import { mapActions } from 'vuex'
 
-import Home from '@/components/Home/Home.vue'
-import { Category, getMenu } from '@/lib/apiMenu'
-import { getPoiById, ApiPoi } from '@/lib/apiPois'
-import { getSettings, headerFromSettings, Settings } from '@/lib/apiSettings'
-import { vidoConfig } from '@/plugins/vido-config'
+import Home from '~/components/Home/Home.vue'
+import { ContentEntry, getContents } from '~/lib/apiContent'
+import { Category, getMenu } from '~/lib/apiMenu'
+import { getPoiById, ApiPoi } from '~/lib/apiPois'
+import {
+  getPropertyTranslations,
+  PropertyTranslations,
+} from '~/lib/apiPropertyTranslations'
+import { getSettings, headerFromSettings, Settings } from '~/lib/apiSettings'
+import { vidoConfig } from '~/plugins/vido-config'
 
 export default Vue.extend({
   components: {
@@ -25,11 +31,23 @@ export default Vue.extend({
 
   async asyncData({ params, route, req }): Promise<{
     settings: Settings
+    contents: ContentEntry[]
+    propertyTranslations: PropertyTranslations
     categories: Category[]
     categoryIds: number[] | null
     initialPoi: ApiPoi | null
   }> {
     const fetchSettings = getSettings(
+      vidoConfig(req).API_ENDPOINT,
+      vidoConfig(req).API_PROJECT,
+      vidoConfig(req).API_THEME
+    )
+    const fetchContents = getContents(
+      vidoConfig(req).API_ENDPOINT,
+      vidoConfig(req).API_PROJECT,
+      vidoConfig(req).API_THEME
+    )
+    const fetchPropertyTranslations = getPropertyTranslations(
       vidoConfig(req).API_ENDPOINT,
       vidoConfig(req).API_PROJECT,
       vidoConfig(req).API_THEME
@@ -68,17 +86,19 @@ export default Vue.extend({
       )
     }
 
-    const [settings, categories, initialPoi] = await Promise.all([
-      fetchSettings,
-      fetchCategories,
-      fetchPoi,
-    ])
-    if (!settings || !categories) {
-      throw new Error('Not found')
-    }
+    const [settings, contents, propertyTranslations, categories, initialPoi] =
+      await Promise.all([
+        fetchSettings,
+        fetchContents,
+        fetchPropertyTranslations,
+        fetchCategories,
+        fetchPoi,
+      ])
 
     return Promise.resolve({
       settings,
+      contents,
+      propertyTranslations,
       categories,
       categoryIds,
       initialPoi,
@@ -87,6 +107,8 @@ export default Vue.extend({
 
   data(): {
     settings: Settings
+    contents: ContentEntry[]
+    propertyTranslations: PropertyTranslations
     categories: Category[]
     categoryIds: number[] | null
     initialPoi: ApiPoi | null
@@ -94,6 +116,10 @@ export default Vue.extend({
     return {
       // @ts-ignore
       settings: null,
+      // @ts-ignore
+      contents: null,
+      // @ts-ignore
+      propertyTranslations: null,
       // @ts-ignore
       categories: null,
       categoryIds: null,
@@ -109,10 +135,11 @@ export default Vue.extend({
     this.$store.dispatch('menu/fetchConfig', {
       categories: this.categories,
     })
+    this.$settings.set(this.settings)
+    this.$propertyTranslations.set(this.propertyTranslations)
   },
 
   mounted() {
-    this.$settings.set(this.settings)
     this.setSiteLocale(this.$i18n.locale)
   },
 

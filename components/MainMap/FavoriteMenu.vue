@@ -7,64 +7,57 @@
           'origin-top-right absolute right-14 md:rigth-16 rounded shadow bg-white mt-1',
       }"
     >
-      <div
-        slot="trigger"
-        slot-scope="{
+      <template
+        #trigger="{
           mousedownHandler,
           focusHandler,
           blurHandler,
           keydownHandler,
           isShown,
         }"
-        class="flex right-10"
       >
-        <button
-          ref="menu"
-          :class="[
-            'relative space-x-1 text-sm font-medium bg-white shadow-md outline-none md:px-5 w-11 md:w-auto h-11 focus:outline-none hover:bg-zinc-100 focus-visible:bg-zinc-100 shrink-0 border-r border-zinc-400 rounded-l-full',
-            isModeFavorites &&
-              'bg-blue-500 hover:bg-blue-400 focus-visible:bg-blue-400 text-white',
-            !isModeFavorites && 'text-zinc-800',
-          ]"
-          @click="$emit('toggle-favorites')"
-        >
-          <font-awesome-icon
-            :icon="[`${hasFavorites ? 'fas' : 'far'}`, 'star']"
+        <div class="flex right-10">
+          <button
+            ref="menu"
             :class="[
-              isModeFavorites && 'text-white',
-              !isModeFavorites && 'text-amber-500',
+              'relative space-x-1 text-sm font-medium bg-white shadow-md outline-none md:px-5 w-11 md:w-auto h-11 focus:outline-none hover:bg-zinc-100 focus-visible:bg-zinc-100 shrink-0 border-r border-zinc-400 rounded-l-full',
+              isModeFavorites &&
+                'bg-blue-500 hover:bg-blue-400 focus-visible:bg-blue-400 text-white',
+              !isModeFavorites && 'text-zinc-800',
             ]"
-            size="sm"
-          />
-          <span class="hidden md:inline favoriteTitle">{{
-            $tc('favorites.title')
-          }}</span>
-          <div
-            v-if="hasFavorites"
-            class="flex items-center justify-center text-white text-center rounded-full absolute top-0 right-0 w-5 h-5 border-2 border-white bg-red-600"
+            @click="$emit('toggle-favorites')"
           >
-            <p class="text-xs">{{ favoritesIds.length }}</p>
-          </div>
-        </button>
-        <button
-          :class="[
-            'flex h-11 items-center justify-center shrink-0 px-3 py-2 bg-white border-l border-zinc-00 rounded-r-full hover:bg-zinc-100 shadow-md focus:outline-none',
-            !hasFavorites && 'bg-zinc-100 cursor-not-allowed',
-          ]"
-          :disabled="!hasFavorites"
-          @mousedown="mousedownHandler"
-          @focus="focusHandler"
-          @blur="blurHandler"
-          @keydown="keydownHandler"
-        >
-          <font-awesome-icon
-            ref="menu_icon"
-            :icon="isShown ? 'chevron-up' : 'chevron-down'"
-            class="text-zinc-500"
-            size="sm"
-          />
-        </button>
-      </div>
+            <FavoriteIcon :is-active="isModeFavorites" />
+            <span class="hidden md:inline favoriteTitle">{{
+              $tc('favorites.title')
+            }}</span>
+            <div
+              v-if="hasFavorites"
+              class="flex items-center justify-center text-white text-center rounded-full absolute top-0 right-0 w-5 h-5 border-2 border-white bg-red-600"
+            >
+              <p class="text-xs">{{ favoritesIds.length }}</p>
+            </div>
+          </button>
+          <button
+            :class="[
+              'flex h-11 items-center justify-center shrink-0 px-3 py-2 bg-white border-l border-zinc-00 rounded-r-full hover:bg-zinc-100 shadow-md focus:outline-none',
+              !hasFavorites && 'bg-zinc-100 cursor-not-allowed',
+            ]"
+            :disabled="!hasFavorites"
+            @mousedown="mousedownHandler"
+            @focus="focusHandler"
+            @blur="blurHandler"
+            @keydown="keydownHandler"
+          >
+            <font-awesome-icon
+              ref="menu_icon"
+              :icon="isShown ? 'chevron-up' : 'chevron-down'"
+              class="text-zinc-500"
+              size="sm"
+            />
+          </button>
+        </div>
+      </template>
 
       <div
         slot-scope="{ hide, blurHandler }"
@@ -173,10 +166,10 @@ import Vue, { VueConstructor } from 'vue'
 import { TDropdown, TModal } from 'vue-tailwind/dist/components'
 import { mapGetters } from 'vuex'
 
-import FavoriteNoteBook from '@/components/MainMap/FavoriteNoteBook.vue'
-import ShareLinkModal from '@/components/ShareLinkModal.vue'
-import { getPoiByIds, ApiPoi } from '@/lib/apiPois'
-import { LOCAL_STORAGE } from '@/lib/constants'
+import FavoriteNoteBook from '~/components/MainMap/FavoriteNoteBook.vue'
+import ShareLinkModal from '~/components/ShareLinkModal.vue'
+import FavoriteIcon from '~/components/UI/FavoriteIcon.vue'
+import { getPoiByIds, ApiPoi } from '~/lib/apiPois'
 
 export default (
   Vue as VueConstructor<
@@ -192,6 +185,7 @@ export default (
     TDropdown,
     ShareLinkModal,
     FavoriteNoteBook,
+    FavoriteIcon,
   },
   props: {
     hasFavorites: {
@@ -249,9 +243,7 @@ export default (
     },
     removeFavorites() {
       try {
-        localStorage.removeItem(LOCAL_STORAGE.favorites)
-
-        this.$store.dispatch('favorite/toggleFavoritesMode', [])
+        this.$store.dispatch('favorite/setFavorites', [])
       } catch (e) {
         // eslint-disable-next-line no-console
         console.error('Vido error:', e.message)
@@ -259,12 +251,10 @@ export default (
     },
     setShareLink() {
       try {
-        const favsString =
-          localStorage.getItem(LOCAL_STORAGE.favorites) || '{ "favorites": [] }'
-        const favs = JSON.parse(favsString).favorites
-
         this.$refs.shareModal.open(
-          `${location.origin}/#mode=favorites&favs=${favs.join(',')}`
+          `${location.origin}/#mode=favorites&favs=${this.favoritesIds.join(
+            ','
+          )}`
         )
       } catch (e) {
         // eslint-disable-next-line no-console
@@ -276,11 +266,7 @@ export default (
     },
     async getFavs() {
       try {
-        const favsString =
-          localStorage.getItem(LOCAL_STORAGE.favorites) || '{ "favorites": [] }'
-        const favs = JSON.parse(favsString).favorites
-
-        this.favs = await this.fetchFavorites(favs)
+        this.favs = await this.fetchFavorites(this.favoritesIds)
       } catch (e) {
         // eslint-disable-next-line no-console
         console.error('Vido error:', e.message)

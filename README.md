@@ -19,6 +19,26 @@ $ yarn generate
 
 For detailed explanation on how things work, check out [Nuxt.js docs](https://nuxtjs.org).
 
+## Tests
+
+Run unitary tests with:
+```
+yarn test:jest
+```
+
+Run end to end tests with dev server or build:
+```
+# With dev
+yarn dev
+
+# Alternatively with build
+yarn build
+yarn start
+
+# The run end to end tests
+yarn test:cypress
+```
+
 ## Release
 
 ```bash
@@ -76,20 +96,21 @@ Spetial formatting support:
 
 ## Users tracking
 
-| Event                            | Vido event          | Vido actions                            | Google event        | Google params                            | Matomo          | Matomo params                    |
-|----------------------------------|---------------------|-----------------------------------------|---------------------|------------------------------------------|-----------------|----------------------------------|
-| Page loading (homepage, details) | page                |                                         | pageview            | pageTitle, pageLocation, pagePath        | trackPageView   | title, Url, Origin               |
-| Consultation of a category       | category            |                                         | pageview            | pageTitle, pagePath                      | trackPageView   | title, Url                       |
-| Enable or disable a category     | category_event      | enable, filter                          | category_event      | action, categoryId                       | trackEvent      | event, action, title, categoryId |
-| Focus on the search area         | search              |                                         | pageview            | pageTitle, pagePath                      | trackPageView   | title, Url                       |
-| Seach query                      | search_query        |                                         |                     |                                          | trackSiteSearch | query                            |
-| Selecting a search result        | search_result_event |                                         | search_result_event | type, title                              | trackEvent      | event, action, title, resultType |
-| Opening the popup                | popup               |                                         | pageview            | pageTitle, pageLocation, pagePath, poiId | trackPageView   | title, Url                       |
-| Action on the popup              | popup_event         | details, route, explore, favorite, zoom | popup_event         | action, title, poiId, category           | trackEvent      | event, action, title, poiId      |
-| Action on the map control        | map_control_event   | 3d, background, explorer, favorite      | map_control_event   | action                                   | trackEvent      | event, action                    |
-| Action on favorites              | favorites_event     | copy_link, exportPDF, exportCSV         | favorites_event     | action                                   | trackEvent      | event, action                    |
-| Notebook                         | notebook_event      | open                                    | pageview            | pageTitle, pagePath                      | trackPageView   | title, Url                       |
-| External links                   | external_link       |                                         | external_link       | Url, title                               | trackLink       | Url                              |
+| Event                            | Vido event          | Vido actions                                | Google event        | Google params                            | Matomo          | Matomo params                    |
+|----------------------------------|---------------------|---------------------------------------------|---------------------|------------------------------------------|-----------------|----------------------------------|
+| Page loading (homepage, details) | page                |                                             | pageview            | pageTitle, pageLocation, pagePath        | trackPageView   | title, Url, Origin               |
+| Consultation of a category       | category            |                                             | pageview            | pageTitle, pagePath                      | trackPageView   | title, Url                       |
+| Enable or disable a category     | category_event      | enable, filter                              | category_event      | action, categoryId                       | trackEvent      | event, action, title, categoryId |
+| Focus on the search area         | search              |                                             | pageview            | pageTitle, pagePath                      | trackPageView   | title, Url                       |
+| Seach query                      | search_query        |                                             |                     |                                          | trackSiteSearch | query                            |
+| Selecting a search result        | search_result_event |                                             | search_result_event | type, title                              | trackEvent      | event, action, title, resultType |
+| Opening the popup                | popup               |                                             | pageview            | pageTitle, pageLocation, pagePath, poiId | trackPageView   | title, Url                       |
+| Action on the popup              | popup_event         | details, route, explore, favorite, zoom     | popup_event         | action, title, poiId, category           | trackEvent      | event, action, title, poiId      |
+| Action on the map control        | map_control_event   | 3d, background, explorer, favorite          | map_control_event   | action                                   | trackEvent      | event, action                    |
+| Action on favorites              | favorites_event     | open_share, copy_link, exportPDF, exportCSV | favorites_event     | action                                   | trackEvent      | event, action                    |
+| Notebook                         | notebook_event      | open                                        | pageview            | pageTitle, pagePath                      | trackPageView   | title, Url                       |
+| External links                   | external_link       |                                             | external_link       | Url, title                               | trackLink       | Url                              |
+| Action on details page           | details_event       | favorite                                    | details_event       | action, title, poiId                     | trackEvent      | event, action, title, poiId      |
 
 
 Note on Matomo. `Origin` is a set as dimension `1` and shoud be configured as is on Matomo.

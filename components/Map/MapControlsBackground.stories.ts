@@ -1,5 +1,4 @@
-import MapControlsBackground from '@/components/Map/MapControlsBackground.vue'
-
+import MapControlsBackground from '~/components/Map/MapControlsBackground.vue'
 import { bind } from '~/lib/storybook-types'
 import { MapStyleEnum } from '~/utils/types'
 
@@ -9,7 +8,7 @@ export default {
 }
 
 const defaultProps = {
-  backgrounds: [MapStyleEnum.vector, MapStyleEnum.aerial, MapStyleEnum.raster],
+  backgrounds: [MapStyleEnum.vector, MapStyleEnum.aerial, MapStyleEnum.bicycle],
   initialBackground: MapStyleEnum.vector,
 }
 

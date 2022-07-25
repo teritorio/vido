@@ -1,4 +1,9 @@
 export default {
+  units: {
+    min: 'min',
+    hours: 'h',
+    km: 'km',
+  },
   shareLink: {
     copy: 'Copiar',
     qrcode: 'QR-Code',
@@ -71,9 +76,9 @@ export default {
     closeAt: 'Cierra',
     closed: 'Actualmente cerrado',
     openAt: 'Abre',
-    '24_7': 'Abierto 24h/24, 7j/7',
+    next: 'Siguiente',
     formatDayAndDayInMonth: 'EEE d :',
-    notOpenedInNextDays: 'No abra en los próximos días',
+    variableWeek: 'Los horarios pueden variar de una semana a otra.',
   },
   toast: {
     details: 'Detalles',
@@ -81,23 +86,17 @@ export default {
     route: 'Ruta',
     explore: 'Explorar',
     favorite: 'Favorito',
+    favoriteOn: 'Poner como favorito',
+    favoriteOff: 'Eliminar favorito',
     callNumber: 'Llama a este número',
     findRoute: 'Buscar la ruta a este lugar',
     unactivateExplore: 'Desactivar la exploración en los alrededores',
     activateExplore: 'Explora los puntos de interés cercanos',
     zoom: 'Acercarse',
-    routePopup: {
-      min: 'min',
-      hours: 'h',
-      km: 'km',
-      easy: 'fácil',
-      normal: 'normal',
-      hard: 'difícil',
-    },
   },
   details: {
     headerDescription: 'Descripción',
-    headerOpeningHours: 'Horario de apertura',
+    headerDownload: 'Archivos a descargar',
     lastUpdate: 'Último cambio',
     headerContacts: 'Contacto',
     headerLocation: 'Ubicación y Dirección',
@@ -110,6 +109,8 @@ export default {
     link: 'Compartir enlace',
     poweredBy: 'Con la tecnología de',
     mapillaryExplore: 'Explorar en Mapillary',
+    informations: 'Informaciones',
+    downloadGPX: 'La ruta (pista GPS) en formato GPX',
   },
   dateFilter: {
     today: 'Hoy',
@@ -117,5 +118,22 @@ export default {
     thisWeekend: 'Este fin de semana',
     nextWeek: 'Próximos 7 días',
     nextMonth: 'Próximos 30 días',
+  },
+  fields: {
+    route: {
+      difficulty: 'Dificultad:',
+      lenght: 'Distancia:',
+      duration: 'Duración:',
+      difficulties: {
+        easy: 'fácil',
+        normal: 'normal',
+        hard: 'difícil',
+      },
+    },
+  },
+  cookiesConsent: {
+    accept: 'Aceptar',
+    details: 'Más información',
+    decline: 'Descenso',
   },
 }

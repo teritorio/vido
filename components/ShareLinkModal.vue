@@ -93,6 +93,7 @@ export default (
 
   methods: {
     open(link: string) {
+      this.$tracking({ type: 'favorites_event', event: 'open_share' })
       this.link = link
       this.$refs.modal.show()
 

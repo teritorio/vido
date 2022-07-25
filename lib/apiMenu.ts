@@ -1,4 +1,4 @@
-import { MultilingualString } from '@/utils/types'
+import { MultilingualString } from '~/utils/types'
 
 export type FilterList = {
   type: 'multiselection' | 'checkboxes_list'
@@ -33,9 +33,9 @@ export interface ApiMenuItem {
   parent_id: ApiMenuItem['id'] | null
   // eslint-disable-next-line camelcase
   index_order: number
-  hidden: boolean
+  hidden?: boolean
   // eslint-disable-next-line camelcase
-  selected_by_default: boolean
+  selected_by_default?: boolean
 }
 
 export interface ApiMenuGroup extends ApiMenuItem {
@@ -48,7 +48,7 @@ export interface ApiMenuGroup extends ApiMenuItem {
     // eslint-disable-next-line camelcase
     color_line: string
     // eslint-disable-next-line camelcase
-    style_class: string[]
+    style_class?: string[]
     // eslint-disable-next-line camelcase
     display_mode: 'large' | 'compact'
   }
@@ -110,8 +110,16 @@ export function getMenu(
   apiEndpoint: string,
   apiProject: string,
   apiTheme: string
-): Promise<[Category] | null> {
-  return fetch(`${apiEndpoint}/${apiProject}/${apiTheme}/menu`).then((data) =>
-    data.ok ? (data.json() as unknown as [Category]) : null
+): Promise<[Category]> {
+  return fetch(`${apiEndpoint}/${apiProject}/${apiTheme}/menu.json`).then(
+    (data) => {
+      if (data.ok) {
+        return data.json() as unknown as [Category]
+      } else {
+        return Promise.reject(
+          new Error([data.url, data.status, data.statusText].join(' '))
+        )
+      }
+    }
   )
 }

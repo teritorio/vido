@@ -21,8 +21,8 @@
 import GeoJSON from 'geojson'
 import Vue, { PropType } from 'vue'
 
-import AddressField from '@/components/Fields/AddressField.vue'
-import { ApiPoiProperties } from '@/lib/apiPois'
+import AddressField from '~/components/Fields/AddressField.vue'
+import { ApiPoiProperties } from '~/lib/apiPois'
 
 export default Vue.extend({
   components: {
@@ -43,7 +43,7 @@ export default Vue.extend({
 </script>
 
 <style lang="scss" scoped>
-@import '@/assets/details.scss';
+@import '~/assets/details.scss';
 
 #location {
   display: block;

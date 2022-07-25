@@ -1,6 +1,6 @@
 <template>
   <div class="flex flex-col items-start">
-    <button
+    <component
       :is="href ? 'a' : 'button'"
       :href="href"
       target="_blank"
@@ -66,7 +66,7 @@
           />
         </div>
       </template>
-    </button>
+    </component>
     <button
       v-if="
         Object.keys((category.category && category.category.filters) || [])
@@ -90,9 +90,8 @@
 <script lang="ts">
 import Vue, { PropType } from 'vue'
 
-import TeritorioIconBadge from '@/components/TeritorioIcon/TeritorioIconBadge.vue'
-import { Category } from '@/lib/apiMenu'
-
+import TeritorioIconBadge from '~/components/UI/TeritorioIconBadge.vue'
+import { Category } from '~/lib/apiMenu'
 import { FilterValues, filterValuesIsSet } from '~/utils/types-filters'
 
 export default Vue.extend({

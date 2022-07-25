@@ -9,11 +9,19 @@
   >
     <div class="flex flex-row md:flex-col items-center md:items-start">
       <h1 v-if="!isModeExplorerOrFavorites" class="flex-none md:hidden mr-2">
-        <img
+        <a
+          :href="mainUrl"
+          rel="noopener noreferrer"
           :aria-label="siteName"
-          :src="logoUrl"
-          class="w-auto h-auto max-w-2xl max-h-12 md:max-h-16"
-        />
+          :title="siteName"
+          target="_blank"
+        >
+          <img
+            :aria-label="siteName"
+            :src="logoUrl"
+            class="w-auto h-auto max-w-2xl max-h-12 md:max-h-16"
+          />
+        </a>
       </h1>
 
       <button
@@ -127,20 +135,20 @@
 </template>
 
 <script lang="ts">
-import debounce from 'lodash.debounce'
+import { debounce, DebouncedFunc } from 'lodash'
 import Vue, { PropType, VueConstructor } from 'vue'
 import { mapGetters } from 'vuex'
 
-import SearchResultBlock from '@/components/Search/SearchResultBlock.vue'
-import { ApiPoi, ApiPoiId, getPoiById } from '@/lib/apiPois'
+import SearchResultBlock from '~/components/Search/SearchResultBlock.vue'
+import { ApiPoi, ApiPoiId, getPoiById } from '~/lib/apiPois'
 import {
   ApiPoisSearchResult,
   ApiMenuItemSearchResult,
   ApiAddrSearchResult,
   SearchResult,
   ApiSearchResult,
-} from '@/lib/apiSearch'
-import { MAP_ZOOM } from '@/lib/constants'
+} from '~/lib/apiSearch'
+import { MAP_ZOOM } from '~/lib/constants'
 
 export default (
   Vue as VueConstructor<
@@ -156,6 +164,10 @@ export default (
   },
 
   props: {
+    mainUrl: {
+      type: String,
+      required: true,
+    },
     logoUrl: {
       type: String,
       required: true,
@@ -182,7 +194,8 @@ export default (
     searchPoisResults: null | ApiSearchResult<ApiPoisSearchResult>
     searchAddressesResults: null | ApiSearchResult<ApiAddrSearchResult>
     searchCartocodeResult: null | ApiPoi
-    search: null | Function
+    search: null | DebouncedFunc<() => void>
+    trackSearchQuery: null | DebouncedFunc<(query: string) => void>
   } {
     return {
       searchQueryId: 0,
@@ -193,6 +206,7 @@ export default (
       searchAddressesResults: null,
       searchCartocodeResult: null,
       search: null,
+      trackSearchQuery: null,
     }
   },
 
@@ -269,6 +283,7 @@ export default (
 
   created() {
     this.search = debounce(this.search_, 300)
+    this.trackSearchQuery = debounce(this.trackSearchQuery_, 3000)
   },
 
   mounted() {
@@ -332,7 +347,6 @@ export default (
       )
       if (feature) {
         const f = Object.assign({}, feature, {
-          faIcon: 'home',
           class: 'Adresse',
           vido_zoom:
             feature.properties.type === 'municipality'
@@ -361,7 +375,10 @@ export default (
 
     search_() {
       if (this.searchText) {
-        this.$tracking({ type: 'search_query', query: this.searchText })
+        if (this.trackSearchQuery) {
+          this.trackSearchQuery.cancel()
+          this.trackSearchQuery(this.searchText)
+        }
 
         this.searchQueryId += 1
         const currentSearchQueryId = this.searchQueryId
@@ -375,16 +392,28 @@ export default (
             this.$vidoConfig.API_PROJECT,
             this.$vidoConfig.API_THEME,
             `cartocode:${cartocode}`
-          ).then((poi) => {
-            if (currentSearchQueryId > this.searchResultId) {
-              this.searchResultId = currentSearchQueryId
+          )
+            .then((poi) => {
+              if (currentSearchQueryId > this.searchResultId) {
+                this.searchResultId = currentSearchQueryId
 
-              this.searchMenuItemsResults = null
-              this.searchPoisResults = null
-              this.searchAddressesResults = null
-              this.searchCartocodeResult = poi
-            }
-          })
+                this.searchMenuItemsResults = null
+                this.searchPoisResults = null
+                this.searchAddressesResults = null
+                this.searchCartocodeResult = poi
+              }
+            })
+            .catch(() => {
+              // Deals with 404 and error from API
+              if (currentSearchQueryId > this.searchResultId) {
+                this.searchResultId = currentSearchQueryId
+
+                this.searchMenuItemsResults = null
+                this.searchPoisResults = null
+                this.searchAddressesResults = null
+                this.searchCartocodeResult = null
+              }
+            })
         } else if (searchText.length > 2) {
           const query = `q=${this.searchText}&lon=${this.mapCenter.lng}&lat=${this.mapCenter.lat}`
 
@@ -408,24 +437,40 @@ export default (
             ApiSearchResult<ApiMenuItemSearchResult>,
             ApiSearchResult<ApiPoisSearchResult>,
             ApiSearchResult<ApiAddrSearchResult>
-          >([MenuItemsFetch, poisFetch, addressesFetch]).then(
-            ([
-              searchMenuItemsResults,
-              searchPoisResults,
-              searchAddressesResults,
-            ]) => {
+          >([MenuItemsFetch, poisFetch, addressesFetch])
+            .then(
+              ([
+                searchMenuItemsResults,
+                searchPoisResults,
+                searchAddressesResults,
+              ]) => {
+                if (currentSearchQueryId > this.searchResultId) {
+                  this.searchResultId = currentSearchQueryId
+
+                  this.searchMenuItemsResults = searchMenuItemsResults
+                  this.searchPoisResults = searchPoisResults
+                  this.searchAddressesResults = searchAddressesResults
+                  this.searchCartocodeResult = null
+                }
+              }
+            )
+            .catch(() => {
+              // Deals with error from API
               if (currentSearchQueryId > this.searchResultId) {
                 this.searchResultId = currentSearchQueryId
 
-                this.searchMenuItemsResults = searchMenuItemsResults
-                this.searchPoisResults = searchPoisResults
-                this.searchAddressesResults = searchAddressesResults
+                this.searchMenuItemsResults = null
+                this.searchPoisResults = null
+                this.searchAddressesResults = null
                 this.searchCartocodeResult = null
               }
-            }
-          )
+            })
         }
       }
+    },
+
+    trackSearchQuery_(searchText: string) {
+      this.$tracking({ type: 'search_query', query: searchText })
     },
   },
 })

@@ -55,14 +55,15 @@ import {
   LngLatLike,
   AttributionControl,
   FitBoundsOptions,
+  MapDataEvent,
 } from 'maplibre-gl'
 import Vue, { PropType } from 'vue'
 import { mapGetters } from 'vuex'
 
-import MapControls from '@/components/Map/MapControls.vue'
-import { DEFAULT_MAP_STYLE, MAP_ZOOM } from '@/lib/constants'
-import { fetchStyle } from '@/utils/styles'
-import { MapStyleEnum } from '@/utils/types'
+import MapControls from '~/components/Map/MapControls.vue'
+import { DEFAULT_MAP_STYLE, MAP_ZOOM } from '~/lib/constants'
+import { fetchStyle } from '~/utils/styles'
+import { MapStyleEnum } from '~/utils/types'
 
 export default Vue.extend({
   components: {
@@ -191,21 +192,43 @@ export default Vue.extend({
         this.map.dragRotate.disable()
         this.map.touchZoomRotate.disableRotation()
       }
+
+      this.emitStyleLoad()
     },
 
     setStyle(mapStyle: MapStyleEnum) {
-      this.getStyle(mapStyle).then((style) => {
-        const vectorSource = Object.values(style.sources).find(
-          (source) => ['vector', 'raster'].lastIndexOf(source.type) >= 0
-        ) as VectorSourceSpecification | RasterSourceSpecification
-        if (vectorSource) {
-          this.$emit('full-attribution', vectorSource.attribution)
-        }
+      this.getStyle(mapStyle)
+        .then((style) => {
+          const vectorSource = Object.values(style.sources).find(
+            (source) => ['vector', 'raster'].lastIndexOf(source.type) >= 0
+          ) as VectorSourceSpecification | RasterSourceSpecification
+          if (vectorSource) {
+            this.$emit('full-attribution', vectorSource.attribution)
+          }
 
-        this.$emit('map-style-load', style)
-        this.style = style
-        this.map?.setStyle(style)
-      })
+          this.style = style
+          if (this.map) {
+            // Use no diff mode to avoid issue with added layers
+            this.map.setStyle(style, { diff: false })
+            this.emitStyleLoad()
+          }
+        })
+        .catch((e) => {
+          // eslint-disable-next-line no-console
+          console.error('Vido error:', e.message)
+        })
+    },
+
+    emitStyleLoad() {
+      if (this.map) {
+        const styleEvent = (e: MapDataEvent) => {
+          if (this.map && e.dataType === 'style') {
+            this.map.off('styledata', styleEvent)
+            this.$emit('map-style-load', this.style)
+          }
+        }
+        this.map.on('styledata', styleEvent)
+      }
     },
 
     async getStyle(mapStyle: MapStyleEnum): Promise<StyleSpecification> {
@@ -215,7 +238,6 @@ export default Vue.extend({
         const styleURLs = {
           [MapStyleEnum.vector]: this.$vidoConfig.VECTO_STYLE_URL,
           [MapStyleEnum.aerial]: this.$vidoConfig.SATELLITE_STYLE_URL,
-          [MapStyleEnum.raster]: this.$vidoConfig.RASTER_STYLE_URL,
           [MapStyleEnum.bicycle]: this.$vidoConfig.BICYCLE_STYLE_URL,
         }
         const style = await fetchStyle(
@@ -271,5 +293,9 @@ export default Vue.extend({
 
 .maplibregl-ctrl-attrib {
   margin-left: 100px;
+}
+
+.mapboxgl-ctrl-bottom-right {
+  @apply pl-24;
 }
 </style>

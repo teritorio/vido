@@ -1,0 +1,46 @@
+<template>
+  <Block
+    v-if="p['route:gpx_trace']"
+    :color-fill="colorFill"
+    icon="arrow-circle-down"
+  >
+    <h2>{{ $tc('details.headerDownload') }}</h2>
+    <p v-if="p['route:gpx_trace']" class="item">
+      <a :href="p['route:gpx_trace']">
+        <font-awesome-icon prefix="fa" icon="arrow-circle-down" />
+        {{ $tc('details.downloadGPX') }}
+      </a>
+    </p>
+  </Block>
+</template>
+
+<script lang="ts">
+import Vue, { PropType } from 'vue'
+
+import Block from '~/components/Details/Block.vue'
+import { ApiPoiProperties } from '~/lib/apiPois'
+
+export default Vue.extend({
+  components: {
+    Block,
+  },
+
+  props: {
+    p: {
+      type: Object as PropType<ApiPoiProperties>,
+      required: true,
+    },
+    colorFill: {
+      type: String,
+      required: true,
+    },
+  },
+})
+</script>
+
+<style lang="css" scoped>
+.item {
+  font-size: 1rem;
+  margin-bottom: 0.27rem;
+}
+</style>

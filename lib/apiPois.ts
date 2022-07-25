@@ -1,4 +1,4 @@
-import { MultilingualString } from '@/utils/types'
+import { MultilingualString } from '~/utils/types'
 
 export interface ApiPoiId extends Number {}
 
@@ -16,8 +16,12 @@ export interface ApiPoiProperties {
   'addr:postcode'?: string
   'addr:street'?: string
 
-  metadata?: {
-    id?: ApiPoiId
+  phone?: string[]
+  email?: string[]
+  website?: string[]
+
+  metadata: {
+    id: ApiPoiId
     source?: string
     // eslint-disable-next-line camelcase
     category_ids?: Array<number>
@@ -43,10 +47,13 @@ export interface ApiPoiProperties {
     // eslint-disable-next-line camelcase
     class_label_details?: MultilingualString
     'website:details'?: string
+    unavoidable?: boolean
   }
 }
 export interface ApiPoi
   extends GeoJSON.Feature<GeoJSON.Geometry, ApiPoiProperties> {}
+
+export const ApiPoiPropertiesArray = ['image', 'phone', 'email', 'website']
 
 export interface ApiPois
   extends GeoJSON.FeatureCollection<GeoJSON.Geometry, ApiPoiProperties> {}
@@ -73,29 +80,45 @@ export function getPoiById(
   apiEndpoint: string,
   apiProject: string,
   apiTheme: string,
-  poiId: number | string,
+  poiId: ApiPoiId | string,
   options: apiPoisOptions = {}
-): Promise<ApiPoi | null> {
+): Promise<ApiPoi> {
   return fetch(
-    `${apiEndpoint}/${apiProject}/${apiTheme}/poi/${poiId}?` +
+    `${apiEndpoint}/${apiProject}/${apiTheme}/poi/${poiId}.geojson?` +
       new URLSearchParams(stringifyOptions(options))
-  ).then((data) => (data.ok ? (data.json() as unknown as ApiPoi) : null))
+  ).then((data) => {
+    if (data.ok) {
+      return data.json() as unknown as ApiPoi
+    } else {
+      return Promise.reject(
+        new Error([data.url, data.status, data.statusText].join(' '))
+      )
+    }
+  })
 }
 
 export function getPoiByIds(
   apiEndpoint: string,
   apiProject: string,
   apiTheme: string,
-  poiIds: (number | string)[],
+  poiIds: (ApiPoiId | string)[],
   options: apiPoisOptions = {}
-): Promise<ApiPois | null> {
+): Promise<ApiPois> {
   return fetch(
-    `${apiEndpoint}/${apiProject}/${apiTheme}/pois?` +
+    `${apiEndpoint}/${apiProject}/${apiTheme}/pois.geojson?` +
       new URLSearchParams([
         ['ids', poiIds.join(',')],
         ...stringifyOptions(options),
       ])
-  ).then((data) => (data.ok ? (data.json() as unknown as ApiPois) : null))
+  ).then((data) => {
+    if (data.ok) {
+      return data.json() as unknown as ApiPois
+    } else {
+      return Promise.reject(
+        new Error([data.url, data.status, data.statusText].join(' '))
+      )
+    }
+  })
 }
 
 export function getPoiByCategoryId(
@@ -104,12 +127,20 @@ export function getPoiByCategoryId(
   apiTheme: string,
   categoryId: number | string,
   options: apiPoisOptions = {}
-): Promise<ApiPois | null> {
+): Promise<ApiPois> {
   return fetch(
-    `${apiEndpoint}/${apiProject}/${apiTheme}/pois?` +
+    `${apiEndpoint}/${apiProject}/${apiTheme}/pois.geojson?` +
       new URLSearchParams([
         ['idmenu', `${categoryId}`],
         ...stringifyOptions(options),
       ])
-  ).then((data) => (data.ok ? (data.json() as unknown as ApiPois) : null))
+  ).then((data) => {
+    if (data.ok) {
+      return data.json() as unknown as ApiPois
+    } else {
+      return Promise.reject(
+        new Error([data.url, data.status, data.statusText].join(' '))
+      )
+    }
+  })
 }

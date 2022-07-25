@@ -1,17 +1,44 @@
+import { NuxtAppOptions } from '@nuxt/types/app'
 import urlSlug from 'url-slug'
 import Vue from 'vue'
 // @ts-ignore
 import VueMatomo from 'vue-matomo'
 
-import { Event, Tracker } from '@/lib/trackers'
+import { Event, Tracker } from '~/lib/trackers'
 
 export default class Matomo implements Tracker {
-  constructor(url: string, siteId: string) {
+  constructor(waitForConsent: boolean, url: string, siteId: string) {
     Vue.use(VueMatomo, {
       host: url,
       siteId,
+      requireConsent: waitForConsent,
+      requireCookieConsent: waitForConsent,
       /** Other configuration options **/
     })
+  }
+
+  consent(app: NuxtAppOptions) {
+    let delai = 1000
+    const timeout = () => {
+      setTimeout(function () {
+        set()
+      }, delai)
+      delai = delai * 2
+    }
+
+    const set = () => {
+      // @ts-ignore
+      if (window.Matomo && window.Matomo.getAsyncTracker()) {
+        // @ts-ignore
+        window.Matomo.getAsyncTracker().setConsentGiven()
+        // @ts-ignore
+        window.Matomo.getAsyncTracker().setCookieConsentGiven()
+      } else {
+        timeout()
+      }
+    }
+
+    set()
   }
 
   track(event: Event) {
@@ -117,6 +144,20 @@ export default class Matomo implements Tracker {
           // url
           event.url,
           // event.title,
+        ])
+        break
+      }
+      case 'details_event': {
+        _paq.push([
+          'trackEvent',
+          // category
+          event.type,
+          // action
+          event.event,
+          // name
+          event.title,
+          // value
+          event.poiId,
         ])
         break
       }

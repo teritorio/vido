@@ -5,10 +5,10 @@
       !isModeFavorites && notebook ? 'bg-zinc-200 opacity-70' : 'bg-white',
     ]"
   >
-    <img
-      v-if="poiProp('image') && poiProp('image').length > 0"
-      class="object-cover w-full h-auto max-h-44 md:max-h-full md:w-52"
-      :src="poiProp('image')[0]"
+    <nuxt-picture
+      v-if="poiProps.image && poiProps.image.length > 0"
+      class="md:w-48 h-auto max-h-44 md:max-h-full"
+      :src="poiProps.image[0]"
       alt=""
     />
 
@@ -24,9 +24,9 @@
         </h2>
 
         <a
-          v-if="poiEditorial('website:details')"
+          v-if="poiProps.editorial && poiProps.editorial['website:details']"
           class="ml-6 md:ml-8 px-3 py-1.5 text-xs text-zinc-800 bg-zinc-100 hover:bg-zinc-200 focus:bg-zinc-200 transition transition-colors rounded-md"
-          :href="poiEditorial('website:details')"
+          :href="poiProps.editorial['website:details']"
           rel="noopener noreferrer"
           target="_blank"
           @click.stop="tracking('details')"
@@ -47,14 +47,6 @@
           :use-native-alignment="false"
         />
 
-        <font-awesome-icon
-          v-if="faIcon"
-          :icon="faIcon"
-          :color="colorLine"
-          class="mr-2"
-          size="sm"
-        />
-
         {{ category }}
       </div>
 
@@ -66,101 +58,109 @@
       </p>
 
       <div v-else class="h-auto flex-grow shrink-0">
-        <div
-          v-for="property in poiEditorial('popup_properties') || []"
-          :key="'_' + property"
-          class="text-sm mt-2"
+        <template
+          v-for="property in (poiProps.editorial &&
+            poiProps.editorial.popup_properties) ||
+          []"
         >
-          <p v-if="property === 'addr:*'" class="mt-6 text-sm">
-            <AddressField :properties="poiProps()"></AddressField>
+          <RoutesField
+            v-if="property === 'route:*'"
+            :key="'_' + property"
+            :context="context"
+            :properties="poiProps"
+            class="text-sm mt-2"
+          />
+
+          <p
+            v-if="property === 'addr:*'"
+            :key="'_' + property"
+            class="mt-6 text-sm"
+          >
+            <AddressField :properties="poiProps" />
           </p>
 
-          <template
-            v-for="(route, activity) in routes"
-            v-else-if="property === 'route:*'"
+          <p
+            v-else-if="property == 'start_end_date'"
+            :key="'_' + property"
+            class="text-sm"
           >
-            <p :key="activity" class="text-sm mt-2">
-              <RouteField
-                :activity="
-                  (sptags &&
-                    sptags['route:*'] &&
-                    sptags['route:*'][activity]) ||
-                  activity
-                "
-                :route="route"
+            <DateRange :start="poiProps.start_date" :end="poiProps.end_date" />
+          </p>
+
+          <div
+            v-else-if="poiProps[property]"
+            :key="'_' + property"
+            class="text-sm mt-2"
+          >
+            <ul v-if="property === 'phone' && $screen.phone">
+              <li v-for="item in poiProps[property]" :key="item">
+                <a
+                  class="text-blue-400"
+                  :href="'tel:' + item"
+                  :title="$tc('toast.callNumber')"
+                >
+                  {{ item }}
+                </a>
+              </li>
+            </ul>
+            <ul v-else-if="property === 'mobile' && $screen.phone">
+              <li v-for="item in poiProps[property]" :key="item">
+                <a
+                  class="text-blue-400"
+                  :href="'tel:' + item"
+                  :title="$tc('toast.callNumber')"
+                >
+                  {{ item }}
+                </a>
+              </li>
+            </ul>
+
+            <ul v-else-if="Array.isArray(poiProps[property])">
+              <li v-for="item in poiProps[property]" :key="item">
+                <Website v-if="property === 'website'" :url="item" />
+                <p v-else class="text-sm mt-1">
+                  {{ item }}
+                </p>
+              </li>
+            </ul>
+
+            <p
+              v-else-if="isOpeningHoursSupportedOsmTags(property)"
+              class="text-sm"
+            >
+              <OpeningHours
+                :tag-key="property"
+                :opening-hours="poiProps[property]"
+                :context="context"
               />
             </p>
-          </template>
 
-          <ul v-if="property === 'phone' && $screen.phone">
-            <li v-for="item in poiProp(property)" :key="item">
-              <a
-                class="text-blue-400"
-                :href="'tel:' + item"
-                :title="$tc('toast.callNumber')"
-              >
-                {{ item }}
-              </a>
-            </li>
-          </ul>
-          <ul v-else-if="property === 'mobile' && $screen.phone">
-            <li v-for="item in poiProp(property)" :key="item">
-              <a
-                class="text-blue-400"
-                :href="'tel:' + item"
-                :title="$tc('toast.callNumber')"
-              >
-                {{ item }}
-              </a>
-            </li>
-          </ul>
-
-          <ul v-else-if="Array.isArray(poiProp(property))">
-            <li v-for="item in poiProp(property)" :key="item">
-              <Website v-if="property === 'website'" :url="item" />
-              <p v-else class="text-sm mt-1">
-                {{ item }}
-              </p>
-            </li>
-          </ul>
-
-          <p v-else-if="property == 'start_end_date'" class="text-sm">
-            <DateRange
-              :start="poiProp('start_date')"
-              :end="poiProp('end_date')"
-            />
-          </p>
-
-          <p
-            v-else-if="property === 'opening_hours' && poiProp(property)"
-            class="text-sm"
-          >
-            <OpeningHours :opening-hours="poiProp(property)" />
-          </p>
-
-          <p
-            v-else-if="
-              poiPropTranslate(property) &&
-              poiPropTranslate(property).length > textLimit
-            "
-            class="text-sm"
-          >
-            {{ poiPropTranslate(property).substring(0, textLimit) + ' ...' }}
-            <a
-              v-if="poiEditorial('website:details')"
-              class="underline"
-              :href="poiEditorial('website:details')"
-              rel="noopener noreferrer"
-              target="_blank"
-              @click.stop="tracking('details')"
+            <p
+              v-else-if="
+                poiPropTranslate(property) &&
+                poiPropTranslate(property).length > textLimit
+              "
+              class="text-sm"
             >
-              {{ $tc('toast.seeDetail') }}
-            </a>
-          </p>
-          <p v-else class="text-sm">
-            {{ poiPropTranslate(property) }}
-          </p>
-        </div>
+              {{ poiPropTranslate(property).substring(0, textLimit) + ' ...' }}
+              <a
+                v-if="
+                  poiProps.editorial && poiProps.editorial['website:details']
+                "
+                class="underline"
+                :href="poiProps.editorial['website:details']"
+                rel="noopener noreferrer"
+                target="_blank"
+                @click.stop="tracking('details')"
+              >
+                {{ $tc('toast.seeDetail') }}
+              </a>
+            </p>
+            <p v-else class="text-sm">
+              {{ poiPropTranslate(property) }}
+            </p>
+          </div>
+        </template>
       </div>
 
       <div
@@ -210,15 +210,12 @@
         <button
           v-if="id"
           class="flex flex-col items-center flex-1 h-full p-2 space-y-2 rounded-lg hover:bg-zinc-100"
-          title="Mettre en favori"
+          :title="
+            isModeFavorites ? $tc('toast.favoriteOn') : $tc('toast.favoriteOff')
+          "
           @click.stop="onFavoriteClick"
         >
-          <font-awesome-icon
-            :icon="[`${isModeFavorites ? 'fas' : 'far'}`, 'star']"
-            :class="isModeFavorites && 'text-amber-500'"
-            :color="!isModeFavorites && colorLine"
-            size="sm"
-          />
+          <FavoriteIcon :is-active="isModeFavorites" :color-line="colorLine" />
           <span class="text-sm">{{ $tc('toast.favorite') }}</span>
         </button>
       </div>
@@ -230,23 +227,28 @@
 import Vue, { PropType } from 'vue'
 import { mapGetters } from 'vuex'
 
-import AddressField from '@/components/Fields/AddressField.vue'
-import DateRange from '@/components/Fields/DateRange.vue'
-import Website from '@/components/Fields/Website.vue'
-import TeritorioIcon from '@/components/TeritorioIcon/TeritorioIcon.vue'
-import { getPoiById, ApiPoi, ApiPoiProperties } from '@/lib/apiPois'
-import { isIOS } from '@/utils/isIOS'
-
-import RouteField from '~/components/Fields/RouteField.vue'
+import AddressField from '~/components/Fields/AddressField.vue'
+import DateRange from '~/components/Fields/DateRange.vue'
+import OpeningHours, {
+  isOpeningHoursSupportedOsmTags,
+} from '~/components/Fields/OpeningHours.vue'
+import RoutesField from '~/components/Fields/RoutesField.vue'
+import Website from '~/components/Fields/Website.vue'
+import FavoriteIcon from '~/components/UI/FavoriteIcon.vue'
+import TeritorioIcon from '~/components/UI/TeritorioIcon.vue'
+import { ApiPoi, ApiPoiProperties, ApiPoiId } from '~/lib/apiPois'
+import { PropertyTranslationsContextEnum } from '~/plugins/property-translations'
+import { isIOS } from '~/utils/isIOS'
 
 export default Vue.extend({
   components: {
-    RouteField,
+    RoutesField,
     TeritorioIcon,
     AddressField,
     Website,
-    OpeningHours: () => import('@/components/Fields/OpeningHours.vue'),
+    OpeningHours,
     DateRange,
+    FavoriteIcon,
   },
 
   props: {
@@ -261,13 +263,9 @@ export default Vue.extend({
   },
 
   data(): {
-    sptags: { [key: string]: any } | null
-    apiProps: ApiPoiProperties | null
     textLimit: number
   } {
     return {
-      sptags: null,
-      apiProps: null,
       textLimit: 160,
     }
   },
@@ -278,8 +276,16 @@ export default Vue.extend({
       favoritesIds: 'favorite/favoritesIds',
     }),
 
-    id(): number {
-      return this.poiMeta('id') || this.poi.id
+    context(): PropertyTranslationsContextEnum {
+      return PropertyTranslationsContextEnum.Popup
+    },
+
+    poiProps(): ApiPoiProperties {
+      return this.poi.properties
+    },
+
+    id(): ApiPoiId | undefined {
+      return this.poiProps.metadata?.id
     },
 
     isModeFavorites(): boolean {
@@ -287,84 +293,35 @@ export default Vue.extend({
       return currentFavorites.includes(this.id)
     },
 
-    name(): string {
+    name(): string | undefined {
       return (
-        this.poiProp('name') ||
-        this.poiEditorial('class_label_popup')?.fr ||
-        this.poiEditorial('class_label')?.fr
+        this.poiProps.name ||
+        this.poiProps.editorial?.class_label_popup?.fr ||
+        this.poiProps.editorial?.class_label?.fr
       )
     },
 
-    colorFill(): string | null {
-      if (this.poiDisplay('color_fill')) {
-        return this.poiDisplay('color_fill')
-        // @ts-ignore
-      } else if (this.poi && this.poi.layer && this.poi.layer.paint) {
-        const tc =
-          // @ts-ignore
-          this.poi.layer.paint['fill-color'] ||
-          // and then
-          // @ts-ignore
-          this.poi.layer.paint['text-color'] ||
-          // @ts-ignore
-          this.poi.layer.paint['line-color']
-        return `rgba(${Math.round(tc.r * 255).toFixed(0)}, ${Math.round(
-          tc.g * 255
-        ).toFixed(0)}, ${Math.round(tc.b * 255).toFixed(0)}, ${tc.a})`
-      } else {
-        return 'black'
-      }
+    colorFill(): string {
+      return this.poiProps.display?.color_fill || 'black'
     },
 
-    colorLine(): string | null {
-      if (this.poiDisplay('color_line')) {
-        return this.poiDisplay('color_line')
-        // @ts-ignore
-      } else if (this.poi && this.poi.layer && this.poi.layer.paint) {
-        const tc =
-          // @ts-ignore
-          this.poi.layer.paint['text-color'] ||
-          // @ts-ignore
-          this.poi.layer.paint['line-color'] ||
-          // and then
-          // @ts-ignore
-          this.poi.layer.paint['fill-color']
-        return `rgba(${Math.round(tc.r * 255).toFixed(0)}, ${Math.round(
-          tc.g * 255
-        ).toFixed(0)}, ${Math.round(tc.b * 255).toFixed(0)}, ${tc.a})`
-      } else {
-        return 'black'
-      }
+    colorLine(): string {
+      return this.poiProps.display?.color_line || 'black'
     },
 
-    icon(): string {
-      if (this.poiDisplay('icon')) {
-        return this.poiDisplay('icon')
-        // @ts-ignore
-      } else if (this.poi.layer?.layout['icon-image']?.name) {
-        return (
-          'teritorio teritorio-' +
-          // @ts-ignore
-          this.poi.layer?.layout['icon-image']?.name.replace(/[•◯⬤]/g, '')
-        )
-      } else {
-        return ''
-      }
+    icon(): string | undefined {
+      return this.poiProps.display?.icon
     },
 
-    faIcon(): string {
-      return this.poiProp('faIcon')
-    },
-
-    category(): string {
+    category(): string | undefined {
       return (
-        this.poiEditorial('class_label_popup')?.fr ||
-        this.poiEditorial('class_label')?.fr
+        this.poiProps.editorial?.class_label_popup?.fr ||
+        this.poiProps.editorial?.class_label?.fr
       )
     },
 
     description(): string | null {
-      return this.poiProp('description')
+      return this.poiProps.description
     },
 
     routeHref(): string | null {
@@ -377,18 +334,20 @@ export default Vue.extend({
           return `maps://?q=${latLng}`
         }
 
-        return `geo:${latLng}`
+        return `geo:${latLng}?q=${latLng}`
       } else {
         return null
       }
     },
 
     unavoidable(): boolean {
-      return Boolean(this.poiEditorial('unavoidable'))
+      return Boolean(this.poiProps.editorial?.unavoidable)
     },
 
     routes(): { [key: string]: Object } {
-      if (!(this.poiEditorial('popup_properties') || []).includes('route:*')) {
+      if (
+        !(this.poiProps.editorial?.popup_properties || []).includes('route:*')
+      ) {
         return {}
       }
 
@@ -414,14 +373,8 @@ export default Vue.extend({
     },
   },
 
-  watch: {
-    poi() {
-      this.onPoiChange()
-    },
-  },
-
   mounted() {
-    if (!this.notebook) {
+    if (!this.notebook && this.id) {
       this.$tracking({
         type: 'popup',
         poiId: this.id,
@@ -433,101 +386,13 @@ export default Vue.extend({
     }
   },
 
-  created() {
-    this.onPoiChange()
-  },
-
   methods: {
-    onPoiChange() {
-      this.sptags = null
-      this.apiProps = null
-
-      if (this.poi && this.poiProp('metadata')) {
-        this.fetchSpTags()
-      } else {
-        this.fetchMetadata().then(this.fetchSpTags)
-      }
-    },
-
-    poiProps(): ApiPoiProperties {
-      return {
-        ...((this.poi.properties &&
-          Object.fromEntries(
-            Object.entries(this.poi.properties).map(([key, value]) => [
-              key,
-              (key !== 'opening_hours' &&
-                value &&
-                typeof value === 'string' &&
-                value.includes(';') &&
-                value
-                  .split(';')
-                  .filter((s: string) => s)
-                  .map((s: string) => s.trim())
-                  .filter((s: string) => s)) ||
-                value,
-            ])
-          )) ||
-          {}),
-        ...(this.apiProps || {}),
-      }
-    },
-
-    poiProp(name: string) {
-      return this.poiProps()?.[name]
-    },
-
     poiPropTranslate(property: string) {
-      const poiProp = this.poiProp(property)
-      return (
-        (this.sptags &&
-          this.sptags[property] &&
-          this.sptags[property][poiProp]) ||
-        poiProp
+      return this.$propertyTranslations.pv(
+        property,
+        this.poiProps[property],
+        PropertyTranslationsContextEnum.Popup
       )
-    },
-
-    poiMeta(name: string) {
-      return this.poiProp('metadata') && this.poiProp('metadata')[name]
-    },
-
-    poiDisplay(name: string) {
-      return this.poiProp('display') && this.poiProp('display')[name]
-    },
-
-    poiEditorial(name: string) {
-      return this.poiProp('editorial') && this.poiProp('editorial')[name]
-    },
-
-    fetchMetadata(): Promise<void> {
-      if (!this.id) {
-        return Promise.resolve()
-      }
-
-      return getPoiById(
-        this.$vidoConfig.API_ENDPOINT,
-        this.$vidoConfig.API_PROJECT,
-        this.$vidoConfig.API_THEME,
-        this.id
-      ).then((apiPoi) => {
-        if (apiPoi) {
-          this.apiProps = apiPoi.properties
-        }
-      })
-    },
-
-    fetchSpTags() {
-      if (!this.poiEditorial('popup_properties')) {
-        return
-      }
-      return fetch(
-        `${
-          this.$vidoConfig.API_ENDPOINT
-        }/sptags?popup_properties=${this.poiEditorial('popup_properties').join(
-          ';'
-        )}`
-      )
-        .then((data) => data.json())
-        .then((data) => (this.sptags = data))
     },
 
     onZoomClick() {
@@ -546,14 +411,21 @@ export default Vue.extend({
       }
       this.$emit('favorite-click', this.poi, this.notebook)
     },
+
+    isOpeningHoursSupportedOsmTags(key: string) {
+      return isOpeningHoursSupportedOsmTags(key)
+    },
+
     tracking(event: 'details' | 'route' | 'explore' | 'favorite' | 'zoom') {
-      this.$tracking({
-        type: 'popup_event',
-        event,
-        poiId: this.id,
-        category: this.category,
-        title: this.poi.properties?.name,
-      })
+      if (this.id) {
+        this.$tracking({
+          type: 'popup_event',
+          event,
+          poiId: this.id,
+          category: this.category || '',
+          title: this.poi.properties?.name,
+        })
+      }
     },
   },
 })
@@ -561,5 +433,9 @@ export default Vue.extend({
 <style>
 button {
   @apply focus:outline-none;
+}
+
+img {
+  @apply object-cover w-full h-full;
 }
 </style>

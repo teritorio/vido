@@ -1,8 +1,21 @@
 import { Plugin } from '@nuxt/types'
 import createServer from 'connect'
 
-import { VidoConfig } from '@/utils/types-config'
-import vidos from '@/vidos.config'
+import vidos from '../vidos.config'
+
+import { VidoConfig } from '~/utils/types-config'
+
+export function configuredApi(): string[] {
+  return Object.values(vidos)
+    .map((vido) => vido.API_ENDPOINT || [])
+    .flat()
+}
+
+export function configuredImageProxy(): string[] {
+  return Object.values(vidos)
+    .map((vido) => vido.IMAGE_PROXY || [])
+    .flat()
+}
 
 export function vidoConfig(req: createServer.IncomingMessage): VidoConfig {
   let host: string

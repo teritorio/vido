@@ -1,5 +1,8 @@
-import { Category } from '@/lib/apiMenu'
+import { NuxtAppOptions } from '@nuxt/types/app'
 
+import { ApiPoiId } from './apiPois'
+
+import { Category } from '~/lib/apiMenu'
 import { OriginEnum } from '~/utils/types'
 
 // Also Update README.md according to tracking changes.
@@ -38,7 +41,7 @@ export type Event =
     }
   | {
       type: 'popup'
-      poiId: number
+      poiId: ApiPoiId
       title?: string
       location: string
       path: string
@@ -47,7 +50,7 @@ export type Event =
   | {
       type: 'popup_event'
       event: 'details' | 'route' | 'explore' | 'favorite' | 'zoom'
-      poiId: number
+      poiId: ApiPoiId
       category: string
       title?: string
     }
@@ -57,7 +60,7 @@ export type Event =
     }
   | {
       type: 'favorites_event'
-      event: 'copy_link' | 'export_pdf' | 'export_csv'
+      event: 'open_share' | 'copy_link' | 'export_pdf' | 'export_csv'
     }
   | {
       type: 'notebook_event'
@@ -68,7 +71,14 @@ export type Event =
       title: string
       url: string
     }
+  | {
+      type: 'details_event'
+      event: 'favorite'
+      poiId: ApiPoiId
+      title?: string
+    }
 
 export interface Tracker {
+  consent(app: NuxtAppOptions): void
   track(event: Event): void
 }

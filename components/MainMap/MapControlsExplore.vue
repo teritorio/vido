@@ -26,7 +26,7 @@
 import Vue from 'vue'
 import { mapGetters, mapActions } from 'vuex'
 
-import { Mode } from '@/utils/types'
+import { Mode } from '~/utils/types'
 
 export default Vue.extend({
   computed: {

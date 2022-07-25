@@ -1,0 +1,67 @@
+{
+    "id": 1,
+    "name": {
+        "fr": "Teritorio"
+    },
+    "attributions": [
+        "<a href=\"https://teritorio.fr\" target=\"_blank\">&copy; Teritorio<\/a>"
+    ],
+    "default_country": "fr",
+    "default_country_state_opening_hours": "Nouvelle-Aquitaine",
+    "slug": "teritorio",
+    "polygon": {
+        "type": "Polygon",
+        "coordinates": [
+            [
+                [
+                    -1.5408,
+                    43.5306
+                ],
+                [
+                    -1.4207,
+                    43.4938
+                ],
+                [
+                    -1.5408,
+                    43.5306
+                ]
+            ]
+        ]
+    },
+    "bbox_line": {
+        "type": "LineString",
+        "coordinates": [
+            [
+                -1.5408,
+                43.4823
+            ],
+            [
+                0.1655,
+                44.852
+            ]
+        ]
+    },
+    "icon_font_css_url": "https://unpkg.com/@teritorio/font-teritorio/teritorio/teritorio.css",
+    "themes": [
+        {
+            "id": 1,
+            "slug": "references",
+            "description": {
+                "fr": "Références clients",
+                "en": "Customers references"
+            },
+            "logo_url": "https://www.teritorio.fr/wp-content/themes/teritorio/img/favicon/favicon-194x194.png",
+            "title": {
+                "fr": "Références Teritorio",
+                "en": "Teritorio References"
+            },
+            "favicon_url": "https://www.teritorio.fr/wp-content/themes/teritorio/img/favicon/favicon-194x194.png",
+            "site_url": {
+                "en": "https://references.teritorio.fr"
+            },
+            "main_url": {
+                "en": "https://teritorio.fr"
+            }
+        }
+    ]
+}

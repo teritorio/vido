@@ -9,14 +9,12 @@ import Vue from 'vue'
 import { MetaInfo } from 'vue-meta'
 import { mapActions } from 'vuex'
 
-import MapPois from '@/components/MapPois.vue'
-import { getPoiByIds } from '@/lib/apiPois'
-import { getSettings, headerFromSettings } from '@/lib/apiSettings'
-import { vidoConfig } from '@/plugins/vido-config'
+import MapPois from '~/components/MapPois.vue'
+import { getPoiByIds, ApiPois } from '~/lib/apiPois'
+import { getSettings, headerFromSettings, Settings } from '~/lib/apiSettings'
+import { vidoConfig } from '~/plugins/vido-config'
 
-import { ApiPois } from '~/lib/apiPois'
-import { Settings } from '~/lib/apiSettings'
-import '@/assets/fullmap.css'
+import '~/assets/fullmap.css'
 
 export default Vue.extend({
   components: {
@@ -56,10 +54,6 @@ export default Vue.extend({
       pois = null
     }
 
-    if (!settings || !pois) {
-      throw new Error('Not found')
-    }
-
     return Promise.resolve({
       settings,
       pois,
@@ -82,8 +76,11 @@ export default Vue.extend({
     return headerFromSettings(this.settings)
   },
 
-  mounted() {
+  created() {
     this.$settings.set(this.settings)
+  },
+
+  mounted() {
     this.setSiteLocale(this.$i18n.locale)
   },
 

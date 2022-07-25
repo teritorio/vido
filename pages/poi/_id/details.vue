@@ -1,5 +1,10 @@
 <template>
-  <Index v-if="settings && poi" :settings="settings" :poi="poi" />
+  <Index
+    v-if="settings && poi"
+    :settings="settings"
+    :nav-menu-entries="contents"
+    :poi="poi"
+  />
 </template>
 
 <script lang="ts">
@@ -7,13 +12,15 @@ import Vue from 'vue'
 import { MetaInfo } from 'vue-meta'
 import { mapActions } from 'vuex'
 
-import { getPoiById } from '@/lib/apiPois'
-import { getSettings, headerFromSettings } from '@/lib/apiSettings'
-import { vidoConfig } from '@/plugins/vido-config'
-
 import Index from '~/components/Details/Index.vue'
-import { ApiPoi } from '~/lib/apiPois'
-import { Settings } from '~/lib/apiSettings'
+import { ContentEntry, getContents } from '~/lib/apiContent'
+import { getPoiById, ApiPoi } from '~/lib/apiPois'
+import {
+  getPropertyTranslations,
+  PropertyTranslations,
+} from '~/lib/apiPropertyTranslations'
+import { getSettings, headerFromSettings, Settings } from '~/lib/apiSettings'
+import { vidoConfig } from '~/plugins/vido-config'
 
 export default Vue.extend({
   components: {
@@ -26,9 +33,21 @@ export default Vue.extend({
 
   async asyncData({ params, req }): Promise<{
     settings: Settings
+    contents: ContentEntry[]
+    propertyTranslations: PropertyTranslations
     poi: ApiPoi
   }> {
     const getSettingsPromise = getSettings(
+      vidoConfig(req).API_ENDPOINT,
+      vidoConfig(req).API_PROJECT,
+      vidoConfig(req).API_THEME
+    )
+    const fetchContents = getContents(
+      vidoConfig(req).API_ENDPOINT,
+      vidoConfig(req).API_PROJECT,
+      vidoConfig(req).API_THEME
+    )
+    const fetchPropertyTranslations = getPropertyTranslations(
       vidoConfig(req).API_ENDPOINT,
       vidoConfig(req).API_PROJECT,
       vidoConfig(req).API_THEME
@@ -43,27 +62,34 @@ export default Vue.extend({
       }
     )
 
-    const [settings, poi] = await Promise.all([
+    const [settings, contents, propertyTranslations, poi] = await Promise.all([
       getSettingsPromise,
+      fetchContents,
+      fetchPropertyTranslations,
       getPoiPromise,
     ])
-    if (!settings || !poi) {
-      throw new Error('Not found')
-    }
 
     return Promise.resolve({
       settings,
+      contents,
+      propertyTranslations,
       poi,
     })
   },
 
   data(): {
     settings: Settings
+    contents: ContentEntry[]
+    propertyTranslations: PropertyTranslations
     poi: ApiPoi
   } {
     return {
       // @ts-ignore
       settings: null,
+      // @ts-ignore
+      contents: null,
+      // @ts-ignore
+      propertyTranslations: null,
       // @ts-ignore
       poi: null,
     }
@@ -75,8 +101,12 @@ export default Vue.extend({
     })
   },
 
-  mounted() {
+  created() {
     this.$settings.set(this.settings)
+    this.$propertyTranslations.set(this.propertyTranslations)
+  },
+
+  mounted() {
     this.setSiteLocale(this.$i18n.locale)
   },
 
@@ -89,7 +119,7 @@ export default Vue.extend({
 </script>
 
 <style lang="scss">
-@import '@/assets/details.scss';
+@import '~/assets/details.scss';
 
 body {
   color: $color-text;

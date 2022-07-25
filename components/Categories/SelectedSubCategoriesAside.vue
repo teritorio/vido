@@ -13,8 +13,8 @@
 <script lang="ts">
 import Vue, { PropType } from 'vue'
 
-import HeaderSubCategories from '@/components/Categories/HeaderSubCategories.vue'
-import { Category } from '@/lib/apiMenu'
+import HeaderSubCategories from '~/components/Categories/HeaderSubCategories.vue'
+import { Category } from '~/lib/apiMenu'
 
 export default Vue.extend({
   components: {

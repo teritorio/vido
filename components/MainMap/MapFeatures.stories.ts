@@ -1,5 +1,4 @@
-import MapFeatures from '@/components/MainMap/MapFeatures.vue'
-
+import MapFeatures from '~/components/MainMap/MapFeatures.vue'
 import { ApiMenuCategory } from '~/lib/apiMenu'
 import { ApiPoi } from '~/lib/apiPois'
 import { bind } from '~/lib/storybook-types'

@@ -1,4 +1,4 @@
-import { ApiPoi } from '@/lib/apiPois'
+import { ApiPoi } from '~/lib/apiPois'
 
 export const flattenFeatures = (features: { [categoryId: number]: ApiPoi[] }) =>
   Object.values(features)

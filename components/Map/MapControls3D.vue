@@ -1,5 +1,6 @@
 <template>
   <button
+    id="3D-selector-map"
     :aria-label="$tc('mapControls.threeDAriaLabel')"
     type="button"
     :class="[

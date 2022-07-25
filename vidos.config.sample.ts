@@ -1,4 +1,4 @@
-import { VidosConfig } from '@/utils/types-config'
+import { VidosConfig } from '~/utils/types-config'
 
 const configDefault = {
   API_SEARCH: 'https://search-dev.teritorio.xyz/search',
@@ -7,7 +7,10 @@ const configDefault = {
   API_QR_SHORTENER: 'https://qr-shortener-dev.teritorio.xyz',
   BICYCLE_STYLE_URL:
     'https://vecto.teritorio.xyz/styles/teritorio-tourism-bicycle-0.9/style.json',
+  IMAGE_PROXY: null,
   MAPILLARY_ACCESS_TOKEN: null,
+  COOKIES_CONSENT: null,
+  COOKIES_LINK: null,
   GOOGLE_TAG_MANAGER_ID: null,
   MATOMO_URL: null,
   MATOMO_SITEID: null,
@@ -23,8 +26,6 @@ const config: VidosConfig = {
       'https://merge-proxy-dev.teritorio.xyz/styles/teritorio-tourism-0.9/style.json?key=###',
     SATELLITE_STYLE_URL:
       'https://merge-proxy-dev.teritorio.xyz/styles/satellite-hybrid/style.json?key=###',
-    RASTER_STYLE_URL:
-      'https://merge-proxy-dev.teritorio.xyz/styles/openstreetmap-carto/style.json?key=###',
     BICYCLE_STYLE_URL:
       'https://merge-proxy-dev.teritorio.xyz/styles/teritorio-tourism-bicycle-0.9/style.json?key=###',
   },

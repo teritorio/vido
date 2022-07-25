@@ -4,7 +4,7 @@ enum Mutation {
   SET_LOCALE = 'SET_LOCALE',
 }
 
-interface State {
+export interface State {
   locale: string | null
 }
 

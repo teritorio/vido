@@ -21,16 +21,8 @@ export enum Mode {
 
 export enum MapStyleEnum {
   vector = 'vector',
-  raster = 'raster',
   aerial = 'aerial',
   bicycle = 'bicycle',
-}
-
-export type NavMenuEntry = {
-  // eslint-disable-next-line camelcase
-  post_id: number
-  title: string
-  url: string
 }
 
 export enum OriginEnum {

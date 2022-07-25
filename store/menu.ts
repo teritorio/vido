@@ -2,13 +2,13 @@ import copy from 'fast-copy'
 import { deepEqual } from 'fast-equals'
 import { Store } from 'vuex'
 
-import { Category } from '@/lib/apiMenu'
-import { ApiPoi, ApiPois, getPoiByCategoryId } from '@/lib/apiPois'
+import { Category } from '~/lib/apiMenu'
+import { ApiPoi, ApiPois, getPoiByCategoryId } from '~/lib/apiPois'
 import {
   FilterValues,
   filterValueFactory,
   filterValuesIsSet,
-} from '@/utils/types-filters'
+} from '~/utils/types-filters'
 
 enum Mutation {
   SET_CONFIG = 'SET_CONFIG',

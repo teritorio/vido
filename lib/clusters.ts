@@ -1,6 +1,6 @@
 import GeoJSON from 'geojson'
 
-import { ApiMenuCategory } from '@/lib/apiMenu'
+import { ApiMenuCategory } from '~/lib/apiMenu'
 
 const getMarkerDonutSegment = (
   start: number,
