@@ -4,10 +4,12 @@
     :settings="settings"
     :nav-menu-entries="contents"
     :poi="poi"
+    :route="route"
   />
 </template>
 
 <script lang="ts">
+import { groupBy } from 'lodash'
 import Vue from 'vue'
 import { MetaInfo } from 'vue-meta'
 import { mapActions } from 'vuex'
@@ -19,6 +21,7 @@ import {
   getPropertyTranslations,
   PropertyTranslations,
 } from '~/lib/apiPropertyTranslations'
+import { ApiRoute, getRouteById } from '~/lib/apiRoutes'
 import { getSettings, headerFromSettings, Settings } from '~/lib/apiSettings'
 import { vidoConfig } from '~/plugins/vido-config'
 
@@ -28,14 +31,18 @@ export default Vue.extend({
   },
 
   validate({ params }) {
-    return /^[-_:a-zA-Z0-9]+$/.test(params.id)
+    return (
+      /^[-_:a-zA-Z0-9]+$/.test(params.id) &&
+      ['details', 'route'].includes(params.mode)
+    )
   },
 
   async asyncData({ params, req }): Promise<{
     settings: Settings
     contents: ContentEntry[]
     propertyTranslations: PropertyTranslations
-    poi: ApiPoi
+    poi: ApiPoi | undefined
+    route: ApiRoute | undefined
   }> {
     const getSettingsPromise = getSettings(
       vidoConfig(req).API_ENDPOINT,
@@ -52,28 +59,62 @@ export default Vue.extend({
       vidoConfig(req).API_PROJECT,
       vidoConfig(req).API_THEME
     )
-    const getPoiPromise = getPoiById(
-      vidoConfig(req).API_ENDPOINT,
-      vidoConfig(req).API_PROJECT,
-      vidoConfig(req).API_THEME,
-      params.id,
-      {
-        short_description: false,
-      }
-    )
+    let getPoiPromise
+    let getRoutePromose
+    switch (params.mode) {
+      case 'route':
+        getRoutePromose = getRouteById(
+          vidoConfig(req).API_ENDPOINT,
+          vidoConfig(req).API_PROJECT,
+          vidoConfig(req).API_THEME,
+          params.id,
+          {
+            short_description: false,
+          }
+        )
+        break
+      default:
+        getPoiPromise = getPoiById(
+          vidoConfig(req).API_ENDPOINT,
+          vidoConfig(req).API_PROJECT,
+          vidoConfig(req).API_THEME,
+          params.id,
+          {
+            short_description: false,
+          }
+        )
+        break
+    }
 
-    const [settings, contents, propertyTranslations, poi] = await Promise.all([
-      getSettingsPromise,
-      fetchContents,
-      fetchPropertyTranslations,
-      getPoiPromise,
-    ])
+    let [settings, contents, propertyTranslations, poi, route] =
+      await Promise.all([
+        getSettingsPromise,
+        fetchContents,
+        fetchPropertyTranslations,
+        getPoiPromise,
+        getRoutePromose,
+      ])
+
+    if (route) {
+      const g = groupBy(route.features, (feature) =>
+        Object.keys(feature.properties).some(
+          (k) => k.startsWith('route:') && k !== 'route:point:type'
+        )
+      )
+      poi = g['true'] && (g['true'][0] as ApiPoi)
+      route.features = g['false'] || []
+    }
+
+    if (!poi) {
+      throw new Error('Missing main route data.')
+    }
 
     return Promise.resolve({
       settings,
       contents,
       propertyTranslations,
       poi,
+      route,
     })
   },
 
@@ -82,6 +123,7 @@ export default Vue.extend({
     contents: ContentEntry[]
     propertyTranslations: PropertyTranslations
     poi: ApiPoi
+    route: ApiRoute | undefined
   } {
     return {
       // @ts-ignore
@@ -92,6 +134,8 @@ export default Vue.extend({
       propertyTranslations: null,
       // @ts-ignore
       poi: null,
+      // @ts-ignore
+      route: null,
     }
   },
 

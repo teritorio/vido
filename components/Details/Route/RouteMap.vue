@@ -27,12 +27,8 @@ import Vue, { PropType } from 'vue'
 import WayPoint from '~/components/Details/Route/WayPoint.vue'
 import MapPois from '~/components/MapPois.vue'
 import PoisDeck from '~/components/PoisCard/PoisDeck.vue'
-import { ApiPoi, ApiPoiId } from '~/lib/apiPois'
-import {
-  ApiRoutePoint,
-  ApiRouteWaypointType,
-  getRouteById,
-} from '~/lib/apiRoutes'
+import { ApiPoi } from '~/lib/apiPois'
+import { ApiRoute, ApiRoutePoint, ApiRouteWaypointType } from '~/lib/apiRoutes'
 import { MapPoi, MapPoiCollection } from '~/lib/mapPois'
 
 export const iconMap: { [key: string]: string } = {
@@ -50,8 +46,8 @@ export default Vue.extend({
   },
 
   props: {
-    poiId: {
-      type: [String, Number] as PropType<ApiPoiId>,
+    route: {
+      type: Object as PropType<ApiRoute>,
       required: true,
     },
     colorFill: {
@@ -72,17 +68,10 @@ export default Vue.extend({
     }
   },
 
-  async beforeMount() {
-    const routeCollection = await getRouteById(
-      this.$vidoConfig.API_ENDPOINT,
-      this.$vidoConfig.API_PROJECT,
-      this.$vidoConfig.API_THEME,
-      this.poiId
-    )
-
+  mounted() {
     this.routeCollection = {
       type: 'FeatureCollection',
-      features: routeCollection.features.map((feature) => {
+      features: this.route.features.map((feature) => {
         if (feature.properties['route:point:type']) {
           const featurePoint = feature as ApiRoutePoint
           // Convert to MapPoi

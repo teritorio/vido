@@ -58,12 +58,12 @@ export interface apiPoisOptions {
   short_description?: boolean
 }
 
-const defaultOptions: apiPoisOptions = {
+export const defaultOptions: apiPoisOptions = {
   as_point: true,
   short_description: true,
 }
 
-function stringifyOptions(options: apiPoisOptions): string[][] {
+export function stringifyOptions(options: apiPoisOptions): string[][] {
   return Object.entries(Object.assign({}, defaultOptions, options)).map(
     ([k, v]) => [k, `${v}`]
   )

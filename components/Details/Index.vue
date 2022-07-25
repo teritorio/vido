@@ -89,7 +89,7 @@
         <div class="detail-right">
           <Carousel v-if="p.image" :images="p.image" />
           <Mapillary v-if="p.mapillary" :image-id="p.mapillary" />
-          <template v-if="!isRoute">
+          <template v-if="!Boolean(route)">
             <MapPois
               :extra-attributions="settings.attributions"
               :pois="{ features: [poi] }"
@@ -106,9 +106,9 @@
       </div>
 
       <RouteMap
-        v-if="isRoute"
+        v-if="Boolean(route)"
         id="route-map"
-        :poi-id="poi.properties.metadata.id"
+        :route="route"
         :color-fill="colorFill"
       />
 
@@ -139,6 +139,7 @@ import FavoriteIcon from '~/components/UI/FavoriteIcon.vue'
 import TeritorioIconBadge from '~/components/UI/TeritorioIconBadge.vue'
 import { ContentEntry } from '~/lib/apiContent'
 import { ApiPoi, ApiPoiProperties } from '~/lib/apiPois'
+import { ApiRoute } from '~/lib/apiRoutes'
 import { Settings } from '~/lib/apiSettings'
 import { PropertyTranslationsContextEnum } from '~/plugins/property-translations'
 import { OriginEnum } from '~/utils/types'
@@ -173,6 +174,10 @@ export default Vue.extend({
     poi: {
       type: Object as PropType<ApiPoi>,
       required: true,
+    },
+    route: {
+      type: Object as PropType<ApiRoute>,
+      default: null,
     },
   },
 
@@ -225,11 +230,6 @@ export default Vue.extend({
     },
     isFavorite(): boolean {
       return this.favoritesIds.includes(this.poi.properties.metadata?.id)
-    },
-    isRoute(): boolean {
-      return Object.keys(this.poi.properties).some((p) =>
-        p.startsWith('route:')
-      )
     },
   },
 
