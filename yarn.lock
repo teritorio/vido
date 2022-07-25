@@ -1861,13 +1861,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@fontsource/ubuntu@npm:^4.5.10":
-  version: 4.5.10
-  resolution: "@fontsource/ubuntu@npm:4.5.10"
-  checksum: 5d5a8a936afff8beb5b6e3da2c80af87b146dfc88e19d63a02cb28b78be689c436e433a34ac0087abe996734ef903eaddd799e56c2efb3ee3868821bbe8e069c
-  languageName: node
-  linkType: hard
-
 "@fortawesome/fontawesome-common-types@npm:6.1.1":
   version: 6.1.1
   resolution: "@fortawesome/fontawesome-common-types@npm:6.1.1"
@@ -4490,7 +4483,6 @@ __metadata:
     "@commitlint/cli": ^11.0.0
     "@commitlint/config-conventional": ^11.0.0
     "@cypress/mock-ssr": "https://github.com/cypress-io/cypress-mock-ssr"
-    "@fontsource/ubuntu": ^4.5.10
     "@fortawesome/fontawesome-svg-core": ^6.1.1
     "@fortawesome/free-brands-svg-icons": ^6.1.1
     "@fortawesome/free-regular-svg-icons": ^6.1.1
