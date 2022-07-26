@@ -20,79 +20,40 @@
         <TeritorioIconBadge
           :color-fill="colorFill"
           size="2xl"
-          :picto="p.display.icon"
+          :picto="poi.properties.display.icon"
         />
       </div>
-      <h1>{{ p.name }}</h1>
+      <h1>{{ poi.properties.name }}</h1>
       <Share
-        :title="p.name"
-        :href="p.editorial && p.editorial['website:details']"
+        :title="poi.properties.name"
+        :href="
+          poi.properties.editorial &&
+          poi.properties.editorial['website:details']
+        "
         :color-line="colorLine"
       />
       <div class="detail-wrapper">
         <div class="detail-left">
-          <div v-if="class_label" class="detail-left-block">
+          <div v-if="classLabel" class="detail-left-block">
             <h2>
-              {{ class_label }}
+              {{ classLabel }}
             </h2>
           </div>
-          <template v-for="property in detailsProperties">
-            <Contact
-              v-if="property == 'first_contact'"
-              :key="property"
-              :p="p"
-              :color-fill="colorFill"
-            />
-
-            <Download
-              v-else-if="property == 'first_download'"
-              :key="property"
-              :p="p"
-              :color-fill="colorFill"
-            />
-
-            <RoutesField
-              v-else-if="property == 'route:*'"
-              :key="property"
-              class="detail-left-block"
-              :context="context"
-              :properties="p"
-            />
-
-            <div v-else-if="property == 'start_end_date'" :key="property">
-              <DateRange :start="p.start_date" :end="p.end_date" />
-            </div>
-
-            <template v-else-if="p[property]">
-              <div
-                v-if="property == 'description'"
-                :key="property"
-                class="detail-left-block"
-              >
-                <h2>{{ $tc('poiDetails.headerDescription') }}</h2>
-                <div v-html="p.description"></div>
-              </div>
-
-              <div
-                v-if="isOpeningHoursSupportedOsmTags(property)"
-                :key="property"
-                class="detail-left-block"
-              >
-                <h2>{{ $propertyTranslations.p(property) }}</h2>
-                <OpeningHours
-                  :tag-key="property"
-                  :opening-hours="p[property]"
-                  :context="context"
-                />
-              </div>
-            </template>
-          </template>
-          <Location :p="p" :geom="poi.geometry" />
+          <PoiDetailsFields
+            :properties="poi.properties"
+            :color-fill="colorFill"
+          />
         </div>
 
         <div class="detail-right">
-          <Carousel v-if="p.image" :images="p.image" />
-          <Mapillary v-if="p.mapillary" :image-id="p.mapillary" />
+          <Carousel
+            v-if="poi.properties.image"
+            :images="poi.properties.image"
+          />
+          <Mapillary
+            v-if="poi.properties.mapillary"
+            :image-id="poi.properties.mapillary"
+          />
           <template v-if="!Boolean(route)">
             <MapPois
               :extra-attributions="settings.attributions"
@@ -105,6 +66,7 @@
                 du 06/02/2022 à 16h 02min 12s
               </a>
             </p>
+            <Location :p="poi.properties" :geom="poi.geometry" />
           </template>
         </div>
       </div>
@@ -125,28 +87,21 @@
 import Vue, { PropType } from 'vue'
 import { mapGetters } from 'vuex'
 
-import DateRange from '~/components/Fields/DateRange.vue'
-import OpeningHours, {
-  isOpeningHoursSupportedOsmTags,
-} from '~/components/Fields/OpeningHours.vue'
-import RoutesField from '~/components/Fields/RoutesField.vue'
 import MapPois from '~/components/MapPois.vue'
 import Carousel from '~/components/PoisDetails/Carousel.vue'
-import Contact from '~/components/PoisDetails/Contact.vue'
-import Download from '~/components/PoisDetails/Download.vue'
 import Footer from '~/components/PoisDetails/Footer.vue'
 import Header from '~/components/PoisDetails/Header.vue'
 import Location from '~/components/PoisDetails/Location.vue'
 import Mapillary from '~/components/PoisDetails/Mapillary.vue'
+import PoiDetailsFields from '~/components/PoisDetails/PoiDetailsFields.vue'
 import RouteMap from '~/components/PoisDetails/Route/RouteMap.vue'
 import Share from '~/components/PoisDetails/Share.vue'
 import FavoriteIcon from '~/components/UI/FavoriteIcon.vue'
 import TeritorioIconBadge from '~/components/UI/TeritorioIconBadge.vue'
 import { ContentEntry } from '~/lib/apiContent'
-import { ApiPoi, ApiPoiProperties } from '~/lib/apiPois'
+import { ApiPoi } from '~/lib/apiPois'
 import { ApiRoute } from '~/lib/apiRoutes'
 import { Settings } from '~/lib/apiSettings'
-import { PropertyTranslationsContextEnum } from '~/plugins/property-translations'
 import { OriginEnum } from '~/utils/types'
 
 export default Vue.extend({
@@ -154,18 +109,14 @@ export default Vue.extend({
     Header,
     FavoriteIcon,
     TeritorioIconBadge,
-    Contact,
-    OpeningHours,
     Location,
-    Download,
     Share,
     Carousel,
     Mapillary,
     MapPois,
     Footer,
-    RoutesField,
     RouteMap,
-    DateRange,
+    PoiDetailsFields,
   },
 
   props: {
@@ -191,49 +142,22 @@ export default Vue.extend({
     ...mapGetters({
       favoritesIds: 'favorite/favoritesIds',
     }),
-    context(): PropertyTranslationsContextEnum {
-      return PropertyTranslationsContextEnum.Details
-    },
-    p(): ApiPoiProperties {
-      return this.poi.properties
-    },
-    detailsProperties(): string[] {
-      let firstContact = false
-      let firstDownload = false
-      return (this.p.editorial?.details_properties || [])
-        .map((p) => {
-          if (['addr:*', 'phone', 'mobile'].includes(p)) {
-            if (!firstContact) {
-              firstContact = true
-              return 'first_contact'
-            } else {
-              return undefined
-            }
-          } else if (['route:gpx_trace', 'route:pdf'].includes(p)) {
-            if (!firstDownload) {
-              firstDownload = true
-              return 'first_download'
-            } else {
-              return undefined
-            }
-          } else {
-            return p
-          }
-        })
-        .filter((e) => e !== undefined) as string[]
-    },
+
     colorFill(): string {
       return this.poi.properties.display?.color_fill || '#76009E'
     },
+
     colorLine(): string {
       return this.poi.properties.display?.color_line || '#76009E'
     },
-    class_label(): string | undefined {
+
+    classLabel(): string | undefined {
       return (
-        this.p.editorial?.class_label_details?.fr ||
-        this.p.editorial?.class_label?.fr
+        this.poi.properties.editorial?.class_label_details?.fr ||
+        this.poi.properties.editorial?.class_label?.fr
       )
     },
+
     isFavorite(): boolean {
       return this.favoritesIds.includes(this.poi.properties.metadata?.id)
     },
@@ -263,10 +187,6 @@ export default Vue.extend({
         })
         this.$store.dispatch('favorite/toggleFavorite', this.poi)
       }
-    },
-
-    isOpeningHoursSupportedOsmTags(key: string) {
-      return isOpeningHoursSupportedOsmTags(key)
     },
   },
 })

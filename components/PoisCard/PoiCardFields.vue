@@ -1,70 +1,54 @@
 <template>
   <div>
-    <template v-for="property in popup_properties">
+    <template v-for="field in fields">
       <RoutesField
-        v-if="property === 'route:*'"
-        :key="'_' + property"
+        v-if="field === 'route:*'"
+        :key="field"
         :context="context"
         :properties="properties"
         class="text-sm mt-2"
       />
 
-      <p
-        v-if="property === 'addr:*'"
-        :key="'_' + property"
-        class="mt-6 text-sm"
-      >
+      <p v-if="field === 'addr:*'" :key="field" class="mt-6 text-sm">
         <AddressField :properties="properties" />
       </p>
 
-      <p
-        v-else-if="property == 'start_end_date'"
-        :key="'_' + property"
-        class="text-sm"
-      >
+      <p v-else-if="field == 'start_end_date'" :key="field" class="text-sm">
         <DateRange :start="properties.start_date" :end="properties.end_date" />
       </p>
 
-      <div
-        v-else-if="properties[property]"
-        :key="'_' + property"
-        class="text-sm mt-2"
-      >
-        <ul
-          v-if="
-            (property === 'phone' || property === 'mobile') && $screen.phone
-          "
-        >
-          <li v-for="item in properties[property]" :key="item">
+      <div v-else-if="properties[field]" :key="field" class="text-sm mt-2">
+        <ul v-if="(field === 'phone' || field === 'mobile') && $screen.phone">
+          <li v-for="item in properties[field]" :key="item">
             <Phone :number="item" />
           </li>
         </ul>
 
-        <ul v-else-if="Array.isArray(properties[property])">
-          <li v-for="item in properties[property]" :key="item">
-            <Website v-if="property === 'website'" :url="item" />
+        <ul v-else-if="Array.isArray(properties[field])">
+          <li v-for="item in properties[field]" :key="item">
+            <Website v-if="field === 'website'" :url="item" />
             <p v-else class="text-sm mt-1">
               {{ item }}
             </p>
           </li>
         </ul>
 
-        <p v-else-if="isOpeningHoursSupportedOsmTags(property)" class="text-sm">
+        <p v-else-if="isOpeningHoursSupportedOsmTags(field)" class="text-sm">
           <OpeningHours
-            :tag-key="property"
-            :opening-hours="properties[property]"
+            :tag-key="field"
+            :opening-hours="properties[field]"
             :context="context"
           />
         </p>
 
         <p
           v-else-if="
-            poiPropTranslate(property) &&
-            poiPropTranslate(property).length > textLimit
+            poiPropTranslate(field) &&
+            poiPropTranslate(field).length > textLimit
           "
           class="text-sm"
         >
-          {{ poiPropTranslate(property).substring(0, textLimit) + ' ...' }}
+          {{ poiPropTranslate(field).substring(0, textLimit) + ' ...' }}
           <a
             v-if="Boolean(details)"
             class="underline"
@@ -77,7 +61,7 @@
           </a>
         </p>
         <p v-else class="text-sm">
-          {{ poiPropTranslate(property) }}
+          {{ poiPropTranslate(field) }}
         </p>
       </div>
     </template>
@@ -132,16 +116,16 @@ export default Vue.extend({
       return PropertyTranslationsContextEnum.Popup
     },
 
-    popup_properties(): string[] {
+    fields(): string[] {
       return this.properties.editorial?.popup_properties || []
     },
   },
 
   methods: {
-    poiPropTranslate(property: string) {
+    poiPropTranslate(field: string) {
       return this.$propertyTranslations.pv(
-        property,
-        this.properties[property],
+        field,
+        this.properties[field],
         PropertyTranslationsContextEnum.Popup
       )
     },
