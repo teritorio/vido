@@ -33,7 +33,7 @@ export default Vue.extend({
   validate({ params }) {
     return (
       /^[-_:a-zA-Z0-9]+$/.test(params.id) &&
-      ['details', 'route'].includes(params.mode)
+      ['details', 'route', 'zone'].includes(params.mode)
     )
   },
 
@@ -80,6 +80,7 @@ export default Vue.extend({
           vidoConfig(req).API_THEME,
           params.id,
           {
+            geometry_as: params.mode === 'zone' ? 'bbox' : 'point',
             short_description: false,
           }
         )

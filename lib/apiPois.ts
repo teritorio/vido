@@ -53,13 +53,13 @@ export interface ApiPois
 
 export interface apiPoisOptions {
   // eslint-disable-next-line camelcase
-  as_point?: boolean
+  geometry_as?: 'point' | 'bbox'
   // eslint-disable-next-line camelcase
   short_description?: boolean
 }
 
 export const defaultOptions: apiPoisOptions = {
-  as_point: true,
+  geometry_as: 'point',
   short_description: true,
 }
 
