@@ -59,6 +59,10 @@
               :properties="p"
             />
 
+            <div v-else-if="property == 'start_end_date'" :key="property">
+              <DateRange :start="p.start_date" :end="p.end_date" />
+            </div>
+
             <template v-else-if="p[property]">
               <div
                 v-if="property == 'description'"
@@ -130,6 +134,7 @@ import Location from '~/components/Details/Location.vue'
 import Mapillary from '~/components/Details/Mapillary.vue'
 import RouteMap from '~/components/Details/Route/RouteMap.vue'
 import Share from '~/components/Details/Share.vue'
+import DateRange from '~/components/Fields/DateRange.vue'
 import OpeningHours, {
   isOpeningHoursSupportedOsmTags,
 } from '~/components/Fields/OpeningHours.vue'
@@ -160,6 +165,7 @@ export default Vue.extend({
     Footer,
     RoutesField,
     RouteMap,
+    DateRange,
   },
 
   props: {
