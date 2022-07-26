@@ -4,7 +4,7 @@
       <li>
         <a
           v-if="href"
-          :aria-label="$tc('details.shareFacebook')"
+          :aria-label="$tc('poiDetails.shareFacebook')"
           type="button"
           class="text-sm text-zinc-800 bg-white rounded-full shadow-md outline-none w-8 h-8 focus:outline-none hover:bg-zinc-100 focus-visible:bg-zinc-100 shrink-0 flex items-center justify-center"
           :href="shareFacebook"
@@ -19,7 +19,7 @@
       <li>
         <a
           v-if="title && href"
-          :aria-label="$tc('details.shareTwitter')"
+          :aria-label="$tc('poiDetails.shareTwitter')"
           type="button"
           class="text-sm text-zinc-800 bg-white rounded-full shadow-md outline-none w-8 h-8 focus:outline-none hover:bg-zinc-100 focus-visible:bg-zinc-100 shrink-0 flex items-center justify-center"
           :href="shareTwitter"
@@ -34,7 +34,7 @@
       <li>
         <a
           v-if="title && href"
-          :aria-label="$tc('details.shareWhatsApp')"
+          :aria-label="$tc('poiDetails.shareWhatsApp')"
           type="button"
           class="text-sm text-zinc-800 bg-white rounded-full shadow-md outline-none w-8 h-8 focus:outline-none hover:bg-zinc-100 focus-visible:bg-zinc-100 shrink-0 flex items-center justify-center"
           :href="shareWhatsApp"
@@ -48,7 +48,7 @@
       </li>
       <li>
         <button
-          :aria-label="$tc('details.print')"
+          :aria-label="$tc('poiDetails.print')"
           type="button"
           class="text-sm text-zinc-800 bg-white rounded-full shadow-md outline-none w-8 h-8 focus:outline-none hover:bg-zinc-100 focus-visible:bg-zinc-100 shrink-0 flex items-center justify-center"
           @click="print"
@@ -59,7 +59,7 @@
       <li>
         <button
           v-if="href"
-          :aria-label="$tc('details.link')"
+          :aria-label="$tc('poiDetails.link')"
           type="button"
           class="text-sm text-zinc-800 bg-white rounded-full shadow-md outline-none w-8 h-8 focus:outline-none hover:bg-zinc-100 focus-visible:bg-zinc-100 shrink-0 flex items-center justify-center"
           @click="shareUrl"
@@ -68,7 +68,7 @@
         </button>
       </li>
     </ul>
-    <ShareLinkModal ref="shareModal" :title="$tc('details.link')" />
+    <ShareLinkModal ref="shareModal" :title="$tc('poiDetails.link')" />
   </div>
 </template>
 

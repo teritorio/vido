@@ -4,14 +4,14 @@
     id="location"
     class="detail-left-block"
   >
-    <h2>{{ $tc('details.headerLocation') }}</h2>
+    <h2>{{ $tc('poiDetails.headerLocation') }}</h2>
     <p v-if="p.name">{{ p.name }}</p>
     <p>
       <AddressField :properties="p"></AddressField>
     </p>
 
     <p v-if="geom.type === 'Point'">
-      <span>{{ $tc('details.location') }}</span>
+      <span>{{ $tc('poiDetails.location') }}</span>
       <CoordinateAction :geometry="geom">
         {{ geom.coordinates[1] }},&nbsp;{{ geom.coordinates[0] }}
       </CoordinateAction>

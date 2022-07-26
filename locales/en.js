@@ -93,7 +93,7 @@ export default {
     activateExplore: 'Explore nearby points of interest',
     zoom: 'Zoom',
   },
-  details: {
+  poiDetails: {
     headerDescription: 'Description',
     headerDownload: 'Files to download',
     lastUpdate: 'Last change',

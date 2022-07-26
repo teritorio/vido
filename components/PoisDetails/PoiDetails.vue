@@ -69,7 +69,7 @@
                 :key="property"
                 class="detail-left-block"
               >
-                <h2>{{ $tc('details.headerDescription') }}</h2>
+                <h2>{{ $tc('poiDetails.headerDescription') }}</h2>
                 <div v-html="p.description"></div>
               </div>
 
@@ -100,7 +100,7 @@
               class="relative"
             />
             <p>
-              {{ $tc('details.lastUpdate') }}
+              {{ $tc('poiDetails.lastUpdate') }}
               <a href="https://www.openstreetmap.org/" target="_blank">
                 du 06/02/2022 à 16h 02min 12s
               </a>
@@ -125,21 +125,21 @@
 import Vue, { PropType } from 'vue'
 import { mapGetters } from 'vuex'
 
-import Carousel from '~/components/Details/Carousel.vue'
-import Contact from '~/components/Details/Contact.vue'
-import Download from '~/components/Details/Download.vue'
-import Footer from '~/components/Details/Footer.vue'
-import Header from '~/components/Details/Header.vue'
-import Location from '~/components/Details/Location.vue'
-import Mapillary from '~/components/Details/Mapillary.vue'
-import RouteMap from '~/components/Details/Route/RouteMap.vue'
-import Share from '~/components/Details/Share.vue'
 import DateRange from '~/components/Fields/DateRange.vue'
 import OpeningHours, {
   isOpeningHoursSupportedOsmTags,
 } from '~/components/Fields/OpeningHours.vue'
 import RoutesField from '~/components/Fields/RoutesField.vue'
 import MapPois from '~/components/MapPois.vue'
+import Carousel from '~/components/PoisDetails/Carousel.vue'
+import Contact from '~/components/PoisDetails/Contact.vue'
+import Download from '~/components/PoisDetails/Download.vue'
+import Footer from '~/components/PoisDetails/Footer.vue'
+import Header from '~/components/PoisDetails/Header.vue'
+import Location from '~/components/PoisDetails/Location.vue'
+import Mapillary from '~/components/PoisDetails/Mapillary.vue'
+import RouteMap from '~/components/PoisDetails/Route/RouteMap.vue'
+import Share from '~/components/PoisDetails/Share.vue'
 import FavoriteIcon from '~/components/UI/FavoriteIcon.vue'
 import TeritorioIconBadge from '~/components/UI/TeritorioIconBadge.vue'
 import { ContentEntry } from '~/lib/apiContent'

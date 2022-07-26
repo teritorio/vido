@@ -14,7 +14,7 @@ import Vue from 'vue'
 import { MetaInfo } from 'vue-meta'
 import { mapActions } from 'vuex'
 
-import Index from '~/components/Details/Index.vue'
+import Index from '~/components/PoisDetails/PoiDetails.vue'
 import { ContentEntry, getContents } from '~/lib/apiContent'
 import { getPoiById, ApiPoi } from '~/lib/apiPois'
 import {

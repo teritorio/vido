@@ -3,13 +3,13 @@
     <MapPois class="map-pois" :pois="routeCollection" />
     <div class="detail-wrapper">
       <div class="detail-left">
-        <h2>{{ $tc('details.routes.waypoints') }}</h2>
+        <h2>{{ $tc('poiDetails.routes.waypoints') }}</h2>
         <div v-for="(point, index) in points" :key="index">
           <WayPoint :point="point" />
         </div>
       </div>
       <div class="detail-right">
-        <h2>{{ $tc('details.routes.pois') }}</h2>
+        <h2>{{ $tc('poiDetails.routes.pois') }}</h2>
         <PoisDeck
           :pois="pois"
           @explore-click="$emit('explore-click', $event)"
@@ -24,9 +24,9 @@
 <script lang="ts">
 import Vue, { PropType } from 'vue'
 
-import WayPoint from '~/components/Details/Route/WayPoint.vue'
 import MapPois from '~/components/MapPois.vue'
 import PoisDeck from '~/components/PoisCard/PoisDeck.vue'
+import WayPoint from '~/components/PoisDetails/Route/WayPoint.vue'
 import { ApiPoi } from '~/lib/apiPois'
 import { ApiRoute, ApiRoutePoint, ApiRouteWaypointType } from '~/lib/apiRoutes'
 import { MapPoi, MapPoiCollection } from '~/lib/mapPois'

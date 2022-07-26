@@ -4,17 +4,17 @@
     :color-fill="colorFill"
     icon="arrow-circle-down"
   >
-    <h2>{{ $tc('details.headerDownload') }}</h2>
+    <h2>{{ $tc('poiDetails.headerDownload') }}</h2>
     <p v-if="p['route:gpx_trace']" class="item">
       <a :href="p['route:gpx_trace']">
         <font-awesome-icon prefix="fa" icon="arrow-circle-down" />
-        {{ $tc('details.downloadGPX') }}
+        {{ $tc('poiDetails.downloadGPX') }}
       </a>
     </p>
     <p v-if="p['route:pdf']" class="item">
       <a :href="p['route:pdf']">
         <font-awesome-icon prefix="fa" icon="file-pdf" />
-        {{ $tc('details.downloadPDF') }}
+        {{ $tc('poiDetails.downloadPDF') }}
       </a>
     </p>
   </Block>
@@ -23,7 +23,7 @@
 <script lang="ts">
 import Vue, { PropType } from 'vue'
 
-import Block from '~/components/Details/Block.vue'
+import Block from '~/components/PoisDetails/Block.vue'
 import { ApiPoiProperties } from '~/lib/apiPois'
 
 export default Vue.extend({

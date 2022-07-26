@@ -4,7 +4,7 @@
     :color-fill="colorFill"
     icon="phone"
   >
-    <h2>{{ $tc('details.headerContacts') }}</h2>
+    <h2>{{ $tc('poiDetails.headerContacts') }}</h2>
     <p
       v-for="phone in (p.phone || []).concat(p.mobile || [])"
       :key="phone"
@@ -28,8 +28,8 @@
 <script lang="ts">
 import Vue, { PropType } from 'vue'
 
-import Block from '~/components/Details/Block.vue'
 import Phone from '~/components/Fields/Phone.vue'
+import Block from '~/components/PoisDetails/Block.vue'
 import { ApiPoiProperties } from '~/lib/apiPois'
 
 export default Vue.extend({

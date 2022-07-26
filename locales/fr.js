@@ -94,7 +94,7 @@ export default {
     activateExplore: "Explorer les points d'intérêts aux alentours",
     zoom: 'Zoomer',
   },
-  details: {
+  poiDetails: {
     headerDescription: 'Descriptif',
     headerDownload: 'Fichiers à télécharger',
     lastUpdate: 'Dernière modification',
