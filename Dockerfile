@@ -1,5 +1,7 @@
 FROM node:14-alpine3.16
 
+RUN apk --no-cache add git
+
 # Create app directory
 RUN mkdir -p /usr/src/app/.nuxt
 WORKDIR /usr/src/app
