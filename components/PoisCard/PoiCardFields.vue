@@ -43,12 +43,11 @@
 
         <p
           v-else-if="
-            poiPropTranslate(field) &&
-            poiPropTranslate(field).length > textLimit
+            propTranslateV(field) && propTranslateV(field).length > textLimit
           "
           class="text-sm"
         >
-          {{ poiPropTranslate(field).substring(0, textLimit) + ' ...' }}
+          {{ propTranslateV(field).substring(0, textLimit) + ' ...' }}
           <a
             v-if="Boolean(details)"
             class="underline"
@@ -61,7 +60,7 @@
           </a>
         </p>
         <p v-else class="text-sm">
-          {{ poiPropTranslate(field) }}
+          {{ propTranslateV(field) }}
         </p>
       </div>
     </template>
@@ -122,11 +121,15 @@ export default Vue.extend({
   },
 
   methods: {
-    poiPropTranslate(field: string) {
+    fieldTranslateK(field: string) {
+      return this.$propertyTranslations.p(field, this.context)
+    },
+
+    propTranslateV(field: string) {
       return this.$propertyTranslations.pv(
         field,
         this.properties[field],
-        PropertyTranslationsContextEnum.Popup
+        this.context
       )
     },
 

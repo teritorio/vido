@@ -33,21 +33,26 @@
           :key="field"
           class="detail-left-block"
         >
-          <h2>{{ $tc('poiDetails.headerDescription') }}</h2>
+          <h2>{{ fieldTranslateK(field) }}</h2>
           <div v-html="properties.description"></div>
         </div>
 
         <div
-          v-if="isOpeningHoursSupportedOsmTags(field)"
+          v-else-if="isOpeningHoursSupportedOsmTags(field)"
           :key="field"
           class="detail-left-block"
         >
-          <h2>{{ $propertyTranslations.p(field) }}</h2>
+          <h2>{{ fieldTranslateK(field) }}</h2>
           <OpeningHours
             :tag-key="field"
             :opening-hours="p[field]"
             :context="context"
           />
+        </div>
+
+        <div v-else :key="field">
+          <h2>{{ fieldTranslateK(field) }}</h2>
+          {{ propTranslateV(field) }}
         </div>
       </template>
     </template>
@@ -120,6 +125,18 @@ export default Vue.extend({
   },
 
   methods: {
+    fieldTranslateK(field: string) {
+      return this.$propertyTranslations.p(field, this.context)
+    },
+
+    propTranslateV(field: string) {
+      return this.$propertyTranslations.pv(
+        field,
+        this.properties[field],
+        this.context
+      )
+    },
+
     isOpeningHoursSupportedOsmTags(key: string) {
       return isOpeningHoursSupportedOsmTags(key)
     },
