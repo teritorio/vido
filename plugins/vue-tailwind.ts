@@ -123,7 +123,7 @@ const settings = {
         leaveToClass: 'opacity-0',
       },
       fixedClasses: {
-        wrapper: 'relative',
+        wrapper: '',
         buttonWrapper: 'inline-block relative w-full',
         selectButton: 'w-full flex text-left justify-between items-center',
         selectButtonLabel: 'block truncate',
@@ -139,7 +139,7 @@ const settings = {
         selectButtonClearButton:
           'flex shrink-0 items-center justify-center absolute right-0 top-0 m-2 h-6 w-6',
         selectButtonClearIcon: 'fill-current h-3 w-3',
-        dropdown: 'absolute w-full z-10',
+        dropdown: 'absolute w-full',
         dropdownFeedback: '',
         loadingMoreResults: '',
         optionsList: 'overflow-auto',
