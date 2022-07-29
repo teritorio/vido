@@ -11,6 +11,18 @@
       :src="poi.properties.image[0]"
       alt=""
     />
+    <div
+      v-else
+      class="md:w-48 h-auto max-h-44 md:max-h-full bg-gray-100 flex align-middle justify-center"
+    >
+      <TeritorioIcon
+        v-if="icon"
+        color-text="#AAA"
+        :picto="icon"
+        :use-native-alignment="false"
+        class="text-4xl"
+      />
+    </div>
 
     <div
       class="px-4 py-5 flex flex-col md:overflow-y-auto flex-grow sm:max-h-60 md:h-50 h-auto md:max-h-full box-border w-full md:w-80 md:h-80 md:max-h-full md:w-96"
