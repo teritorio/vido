@@ -1,18 +1,20 @@
 <template>
   <div
     id="block"
-    class="relative detail-left-block flex flex-col justify-end"
+    class="relative detail-left-block flex flex-col justify-end z-0"
     :style="`
       background-color: ${colorFill};
     `"
   >
+    <div class="relative z-10">
+      <slot id="block-content"></slot>
+    </div>
     <font-awesome-icon
       id="block-icon"
       prefix="fa"
       :icon="icon"
       class="absolute z-0"
     />
-    <slot id="block-content" class="relative z-10"></slot>
   </div>
 </template>
 
