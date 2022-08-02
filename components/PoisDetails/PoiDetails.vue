@@ -40,6 +40,11 @@
             </h2>
           </div>
           <PoiDetailsFields
+            v-if="
+              poi.properties.editorial &&
+              poi.properties.editorial.details_fields
+            "
+            :fields="poi.properties.editorial.details_fields"
             :properties="poi.properties"
             :color-fill="colorFill"
           />
@@ -231,7 +236,7 @@ h1 {
     padding-right: 0;
 
     .detail-left-block {
-      margin: 0 0 4rem;
+      margin: 0 0 3.3rem;
       padding: 0 1.6rem;
       font-size: 1.2rem;
       color: $color-text;

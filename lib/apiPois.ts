@@ -4,6 +4,20 @@ import { MultilingualString } from '~/utils/types'
 
 export interface ApiPoiId extends Number {}
 
+export type FieldsListItem = {
+  field: string
+}
+
+export type FieldsListGroup = {
+  group: string
+  fields: FieldsListItem[]
+  // eslint-disable-next-line camelcase
+  display_mode: 'standard' | 'card'
+  icon: string
+}
+
+export type FieldsList = (FieldsListItem | FieldsListGroup)[]
+
 export type ApiPoiProperties = MapPoiProperties & {
   [key: string]: any
 
@@ -30,9 +44,9 @@ export type ApiPoiProperties = MapPoiProperties & {
   }
   editorial?: {
     // eslint-disable-next-line camelcase
-    popup_properties?: string[]
+    popup_fields?: FieldsList
     // eslint-disable-next-line camelcase
-    details_properties?: string[]
+    details_fields?: FieldsList
     // eslint-disable-next-line camelcase
     class_label?: MultilingualString
     // eslint-disable-next-line camelcase

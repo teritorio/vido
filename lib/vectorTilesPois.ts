@@ -40,9 +40,9 @@ export function vectorTilesPoi2ApiPoi(mapPoi: VectorTilesPoi): ApiPoi {
   delete props.color_line
 
   props.editorial = {
-    popup_properties: split(props.popup_properties),
+    popup_fields: JSON.parse(props.popup_fields),
   }
-  delete props.popup_properties
+  delete props.popup_fields
 
   delete props.priority
   delete props.rank

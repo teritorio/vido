@@ -311,7 +311,7 @@ export default Vue.extend({
         }) as unknown as VectorTilesPoi[]
       }).flat()
       selectedFeatures = selectedFeatures.filter(
-        (feature) => feature.properties.popup_properties
+        (feature) => feature.properties.popup_fields
       )
       if (selectedFeatures.length > 0) {
         // Set temp partial data from vector tiles. Then fetch full data

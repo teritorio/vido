@@ -176,7 +176,7 @@ export function updateMarkers(
               if (typeof props.editorial === 'string') {
                 props.editorial = JSON.parse(props.editorial)
               }
-              if (props.editorial?.popup_properties) {
+              if (props.editorial?.popup_fields) {
                 el.addEventListener('click', (e: MouseEvent) => {
                   e.stopPropagation()
                   markerClickCallBack(feature as unknown as ApiPoi)

@@ -177,14 +177,4 @@ body {
   word-wrap: break-word;
   @extend .font-ubuntu-light;
 }
-
-a {
-  color: $color-text;
-  text-decoration: none;
-
-  &:hover,
-  &:visited {
-    color: $color-text;
-  }
-}
 </style>

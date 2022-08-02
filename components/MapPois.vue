@@ -31,7 +31,7 @@ export default Vue.extend({
   props: {
     extraAttributions: {
       type: Array as PropType<string[]>,
-      required: true,
+      default: () => [],
     },
     pois: {
       type: Object as PropType<MapPoiCollection>,

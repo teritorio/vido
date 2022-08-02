@@ -32,15 +32,34 @@
                     "color_line": "#99163a"
                 },
                 "editorial": {
-                    "details_properties": [
-                        "description",
-                        "addr:*",
-                        "phone",
-                        "mobile",
-                        "opening_hours"
+                    "details_fields": [
+                        {
+                            "field": "description"
+                        },
+                        {
+                            "group": "contact",
+                            "display_mode": "card",
+                            "icon": "phone",
+                            "fields": [
+                                {
+                                    "field": "addr"
+                                },
+                                {
+                                    "field": "phone"
+                                },
+                                {
+                                    "field": "mobile"
+                                }
+                            ]
+                        },
+                        {
+                            "field": "opening_hours"
+                        }
                     ],
-                    "popup_properties": [
-                        "addr:*"
+                    "popup_fields": [
+                        {
+                            "fields": "addr"
+                        }
                     ],
                     "class_label": {
                         "fr": "Aires de camping-cars"
@@ -94,19 +113,44 @@
                     "color_line": "#00a757"
                 },
                 "editorial": {
-                    "details_properties": [
-                        "route:*",
-                        "route:gpx_trace",
-                        "route:pdf",
-                        "description",
-                        "addr:*",
-                        "phone",
-                        "mobile",
-                        "opening_hours"
+                    "details_fields": [
+                        {
+                            "field": "route"
+                        },
+                        {
+                            "field": "route:gpx_trace"
+                        },
+                        {
+                            "field": "route:pdf"
+                        },
+                        {
+                            "field": "description"
+                        },
+                        {
+                            "group": "contact",
+                            "fields": [
+                                {
+                                    "field": "addr"
+                                },
+                                {
+                                    "field": "phone"
+                                },
+                                {
+                                    "field": "mobile"
+                                }
+                            ]
+                        },
+                        {
+                            "field": "opening_hours"
+                        }
                     ],
-                    "popup_properties": [
-                        "route:*",
-                        "addr:*"
+                    "popup_fields": [
+                        {
+                            "field": "route"
+                        },
+                        {
+                            "field": "addr"
+                        }
                     ],
                     "class_label": {
                         "fr": "Balades à pieds"

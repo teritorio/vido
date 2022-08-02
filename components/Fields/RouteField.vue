@@ -1,10 +1,10 @@
 <template>
   <p v-if="isCompact">
-    {{ $propertyTranslations.pv('route:*', activity, context) }} :
+    {{ $propertyTranslations.pv('route', activity, context) }} :
     {{ formatNoDetails }}
   </p>
   <div v-else>
-    <h2>{{ $propertyTranslations.pv('route:*', activity, context) }}</h2>
+    <h2>{{ $propertyTranslations.pv('route', activity, context) }}</h2>
     <ul>
       <li>{{ $tc('fields.route.difficulty') }} {{ difficulty }}</li>
       <li>{{ $tc('fields.route.lenght') }} {{ lenght }}</li>

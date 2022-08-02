@@ -2,52 +2,69 @@
   <div>
     <template v-for="field in fields">
       <RoutesField
-        v-if="field === 'route:*'"
-        :key="field"
+        v-if="field.field === 'route'"
+        :key="field.field"
         :context="context"
         :properties="properties"
         class="text-sm mt-2"
       />
 
-      <p v-if="field === 'addr:*'" :key="field" class="mt-6 text-sm">
+      <p v-if="field.field === 'addr'" :key="field.field" class="mt-6 text-sm">
         <AddressField :properties="properties" />
       </p>
 
-      <p v-else-if="field == 'start_end_date'" :key="field" class="text-sm">
+      <p
+        v-else-if="field.field == 'start_end_date'"
+        :key="field.field"
+        class="text-sm"
+      >
         <DateRange :start="properties.start_date" :end="properties.end_date" />
       </p>
 
-      <div v-else-if="properties[field]" :key="field" class="text-sm mt-2">
-        <ul v-if="(field === 'phone' || field === 'mobile') && $screen.phone">
-          <li v-for="item in properties[field]" :key="item">
+      <div
+        v-else-if="properties[field.field]"
+        :key="field.field"
+        class="text-sm mt-2"
+      >
+        <ul
+          v-if="
+            (field.field === 'phone' || field.field === 'mobile') &&
+            $screen.phone
+          "
+        >
+          <li v-for="item in properties[field.field]" :key="item">
             <Phone :number="item" />
           </li>
         </ul>
 
-        <ul v-else-if="Array.isArray(properties[field])">
-          <li v-for="item in properties[field]" :key="item">
-            <Website v-if="field === 'website'" :url="item" />
+        <ul v-else-if="Array.isArray(properties[field.field])">
+          <li v-for="item in properties[field.field]" :key="item">
+            <Website v-if="field.field === 'website'" :url="item" />
             <p v-else class="text-sm mt-1">
               {{ item }}
             </p>
           </li>
         </ul>
 
-        <p v-else-if="isOpeningHoursSupportedOsmTags(field)" class="text-sm">
+        <p
+          v-else-if="isOpeningHoursSupportedOsmTags(field.field)"
+          class="text-sm"
+        >
           <OpeningHours
-            :tag-key="field"
-            :opening-hours="properties[field]"
+            :tag-key="field.field"
+            :opening-hours="properties[field.field]"
             :context="context"
           />
         </p>
 
         <p
           v-else-if="
-            propTranslateV(field) && propTranslateV(field).length > textLimit
+            propTranslateV(field.field) &&
+            propTranslateV(field.field).length > textLimit
           "
           class="text-sm"
         >
-          {{ propTranslateV(field).substring(0, textLimit) + ' ...' }}
+          {{ propTranslateV(field.field).substring(0, textLimit) + ' ...' }}
           <a
             v-if="Boolean(details)"
             class="underline"
@@ -60,7 +77,7 @@
           </a>
         </p>
         <p v-else class="text-sm">
-          {{ propTranslateV(field) }}
+          {{ propTranslateV(field.field) }}
         </p>
       </div>
     </template>
@@ -78,7 +95,7 @@ import OpeningHours, {
 import Phone from '~/components/Fields/Phone.vue'
 import RoutesField from '~/components/Fields/RoutesField.vue'
 import Website from '~/components/Fields/Website.vue'
-import { ApiPoiProperties } from '~/lib/apiPois'
+import { ApiPoiProperties, FieldsList } from '~/lib/apiPois'
 import { PropertyTranslationsContextEnum } from '~/plugins/property-translations'
 
 export default Vue.extend({
@@ -115,8 +132,8 @@ export default Vue.extend({
       return PropertyTranslationsContextEnum.Popup
     },
 
-    fields(): string[] {
-      return this.properties.editorial?.popup_properties || []
+    fields(): FieldsList {
+      return this.properties.editorial?.popup_fields || []
     },
   },
 

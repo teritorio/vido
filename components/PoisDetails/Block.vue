@@ -38,7 +38,6 @@ export default Vue.extend({
 <style lang="css" scoped>
 #block {
   padding: 2.7rem 1.6rem;
-  margin-bottom: 4rem;
   min-height: 13rem;
 }
 
@@ -51,6 +50,5 @@ export default Vue.extend({
 
 #block * {
   color: white;
-  text-decoration: none;
 }
 </style>

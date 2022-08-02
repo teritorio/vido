@@ -26,7 +26,7 @@ export const Phone = bind(PoiCardFields, {
   properties: {
     ...defaultProps.properties,
     editorial: {
-      popup_properties: ['phone', 'mobile'],
+      popup_fields: [{ field: 'phone' }, { field: 'mobile' }],
     },
     phone: '+33676544',
     mobile: '+339750987766',
@@ -38,7 +38,7 @@ export const Route = bind(PoiCardFields, {
   properties: {
     ...defaultProps.properties,
     editorial: {
-      popup_properties: ['route:*'],
+      popup_fields: [{ field: 'route' }],
     },
     'route:hiking:difficulty': 'easy',
     'route:hiking:duration': 285,
@@ -59,7 +59,7 @@ export const Description = bind(PoiCardFields, {
   properties: {
     ...defaultProps.properties,
     editorial: {
-      popup_properties: ['description'],
+      popup_fields: [{ field: 'description' }],
     },
     description,
   },
@@ -70,7 +70,7 @@ export const DescriptionDetails = bind(PoiCardFields, {
   properties: {
     ...defaultProps.properties,
     editorial: {
-      popup_properties: ['description'],
+      popup_fields: [{ field: 'description' }],
     },
     description,
   },

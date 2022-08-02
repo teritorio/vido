@@ -69,7 +69,7 @@ const feature1: ApiPoi = {
       style_class: ['catering', 'catering_food', 'restaurant'],
     },
     editorial: {
-      popup_properties: ['foot'],
+      popup_fields: [{ field: 'foot' }],
     },
   },
 }
@@ -93,7 +93,7 @@ const feature2: ApiPoi = {
       style_class: ['safety', 'care', 'pharmacy'],
     },
     editorial: {
-      popup_properties: ['foot'],
+      popup_fields: [{ field: 'foot' }],
     },
   },
 }
