@@ -4536,6 +4536,7 @@ __metadata:
     husky: ^8.0.1
     jest: ^28.1.2
     jest-environment-jsdom: ^28.1.2
+    json-loader: ^0.5.7
     lint-staged: ^13.0.3
     lodash.debounce: ^4.0.8
     lodash.throttle: ^4.1.1
@@ -14958,6 +14959,13 @@ fsevents@^1.2.7:
   bin:
     jsesc: bin/jsesc
   checksum: 1e4574920d3c17c9167fdc14ca66197e8d5d96fb3f37c7473df7857822b7adbf2954d0e126131456f8fd72b6f6908c2367e7a12c18495a5393c37be99acbbb5a
+  languageName: node
+  linkType: hard
+
+"json-loader@npm:^0.5.7":
+  version: 0.5.7
+  resolution: "json-loader@npm:0.5.7"
+  checksum: 2c6102f9cd088dd1beca8e81d348209290a0167bae33bb4af843e5ac2e733c241f7c9b7728d84d17baa24a6a2c2edc4ea0c76b9dc86ee6871f38608cfc85d114
   languageName: node
   linkType: hard
 
