@@ -118,6 +118,13 @@ jobs:
       - name: Build Storybook 👀
         run: yarn build:storybook
 
+      - name: Deploy to gh-pages
+        if: github.ref == 'refs/heads/develop'
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./storybook-static
+
   deploy_dev:
     needs:
       - install_cache

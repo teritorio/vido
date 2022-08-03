@@ -83,6 +83,8 @@ Run Storybook with
 yarn start:storybook
 ```
 
+Storybook build also available on `gh-pages` branch built by CI and online at https://teritorio.github.io/vido/
+
 ## Settings
 
 Popup and details special fields support:
