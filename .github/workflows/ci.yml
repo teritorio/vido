@@ -3,7 +3,7 @@ name: Continuous Integration
 on: push
 
 jobs:
-  install:
+  install_cache:
     name: Instal code and deps
     runs-on: ${{ matrix.os }}
 
@@ -18,27 +18,10 @@ jobs:
       - name: Checkout 🛎
         uses: actions/checkout@master
 
-      - name: Setup node env 🏗
-        uses: actions/setup-node@v2.1.2
-        with:
-          node-version: ${{ matrix.node }}
-
-      - name: Get yarn cache directory path 🛠
-        id: yarn-cache-dir-path
-        run: echo "::set-output name=dir::$(yarn config get cacheFolder)"
-
-      - name: Cache node_modules 📦
-        uses: actions/cache@v3
-        id: yarn-cache # use this to check for `cache-hit` (`steps.yarn-cache.outputs.cache-hit != 'true'`)
-        with:
-          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
-          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
-
-      - name: Install dependencies 👨🏻‍💻
-        run: yarn install
+      - uses: ./.github/actions/install
 
   lint:
-    needs: install
+    needs: install_cache
     name: Lint code base
     runs-on: ${{ matrix.os }}
 
@@ -53,30 +36,13 @@ jobs:
       - name: Checkout 🛎
         uses: actions/checkout@master
 
-      - name: Setup node env 🏗
-        uses: actions/setup-node@v2.1.2
-        with:
-          node-version: ${{ matrix.node }}
-
-      - name: Get yarn cache directory path 🛠
-        id: yarn-cache-dir-path
-        run: echo "::set-output name=dir::$(yarn config get cacheFolder)"
-
-      - name: Cache node_modules 📦
-        uses: actions/cache@v3
-        id: yarn-cache # use this to check for `cache-hit` (`steps.yarn-cache.outputs.cache-hit != 'true'`)
-        with:
-          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
-          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
-
-      - name: Install dependencies 👨🏻‍💻
-        run: yarn install
+      - uses: ./.github/actions/install
 
       - name: Run linter 👀
         run: yarn lint
 
   tests:
-    needs: install
+    needs: install_cache
     name: Jest Test
     runs-on: ${{ matrix.os }}
 
@@ -91,30 +57,13 @@ jobs:
       - name: Checkout 🛎
         uses: actions/checkout@master
 
-      - name: Setup node env 🏗
-        uses: actions/setup-node@v2.1.2
-        with:
-          node-version: ${{ matrix.node }}
-
-      - name: Get yarn cache directory path 🛠
-        id: yarn-cache-dir-path
-        run: echo "::set-output name=dir::$(yarn config get cacheFolder)"
-
-      - name: Cache node_modules 📦
-        uses: actions/cache@v3
-        id: yarn-cache # use this to check for `cache-hit` (`steps.yarn-cache.outputs.cache-hit != 'true'`)
-        with:
-          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
-          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
-
-      - name: Install dependencies 👨🏻‍💻
-        run: yarn install
+      - uses: ./.github/actions/install
 
       - name: Run Jest tests 🧪
         run: yarn test:jest
 
   cypress:
-    needs: install
+    needs: install_cache
     name: Cypress
     runs-on: ${{ matrix.os }}
 
@@ -129,24 +78,7 @@ jobs:
       - name: Checkout 🛎
         uses: actions/checkout@master
 
-      - name: Setup node env 🏗
-        uses: actions/setup-node@v2.1.2
-        with:
-          node-version: ${{ matrix.node }}
-
-      - name: Get yarn cache directory path 🛠
-        id: yarn-cache-dir-path
-        run: echo "::set-output name=dir::$(yarn config get cacheFolder)"
-
-      - name: Cache node_modules 📦
-        uses: actions/cache@v3
-        id: yarn-cache # use this to check for `cache-hit` (`steps.yarn-cache.outputs.cache-hit != 'true'`)
-        with:
-          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
-          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
-
-      - name: Install dependencies 👨🏻‍💻
-        run: yarn install
+      - uses: ./.github/actions/install
 
       - name: Runtime configuration
         run: echo "${{secrets.CONFIGURATION_DEV}}" > vidos.config.ts
@@ -163,7 +95,7 @@ jobs:
           wait-on-timeout: 30
 
   storybook:
-    needs: install
+    needs: install_cache
     name: Storybook
     runs-on: ${{ matrix.os }}
 
@@ -178,24 +110,7 @@ jobs:
       - name: Checkout 🛎
         uses: actions/checkout@master
 
-      - name: Setup node env 🏗
-        uses: actions/setup-node@v2.1.2
-        with:
-          node-version: ${{ matrix.node }}
-
-      - name: Get yarn cache directory path 🛠
-        id: yarn-cache-dir-path
-        run: echo "::set-output name=dir::$(yarn config get cacheFolder)"
-
-      - name: Cache node_modules 📦
-        uses: actions/cache@v3
-        id: yarn-cache # use this to check for `cache-hit` (`steps.yarn-cache.outputs.cache-hit != 'true'`)
-        with:
-          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
-          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
-
-      - name: Install dependencies 👨🏻‍💻
-        run: yarn install
+      - uses: ./.github/actions/install
 
       - name: Runtime configuration
         run: echo "${{secrets.CONFIGURATION_DEV}}" > vidos.config.ts
