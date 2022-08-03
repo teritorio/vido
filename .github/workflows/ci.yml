@@ -45,8 +45,11 @@ jobs:
       - name: Run Jest tests 🧪
         run: yarn test:jest
 
-      - name: Setup configuration
+      - name: Runtime configuration
         run: echo "${{secrets.CONFIGURATION_DEV}}" > vidos.config.ts
+
+      - name: Build Storybook 👀
+        run: yarn build:storybook
 
       - name: Run Cypress Tests 🧪
         uses: cypress-io/github-action@v4
