@@ -5,6 +5,13 @@ import vidos from '../vidos.config'
 
 import { VidoConfig } from '~/utils/types-config'
 
+const vidoHostConfig: { [key: string]: VidoConfig } = {}
+Object.values(vidos).forEach((vido) => {
+  vido.HOSTS.forEach((host) => {
+    vidoHostConfig[host] = vido
+  })
+})
+
 export function configuredApi(): string[] {
   return Object.values(vidos)
     .map((vido) => vido.API_ENDPOINT || [])
@@ -31,11 +38,11 @@ export function vidoConfig(req: createServer.IncomingMessage): VidoConfig {
     host = window.location.host
   }
   host = host?.split(':')[0]
-  if (!(host in vidos)) {
+  if (!(host in vidoHostConfig)) {
     throw new Error(`Not configured host "${host}"`)
   }
   return {
-    ...vidos[host],
+    ...vidoHostConfig[host],
   }
 }
 

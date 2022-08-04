@@ -18,6 +18,7 @@ const configDefault = {
 
 const config: VidosConfig = {
   localhost: {
+    HOSTS: ['localhost'],
     ...configDefault,
     API_ENDPOINT: 'https://cdt40.carto.guide/api.teritorio/geodata/v0.1',
     API_PROJECT: 'cdt40',
