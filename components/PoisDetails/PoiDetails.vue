@@ -39,7 +39,7 @@
               {{ classLabel }}
             </h2>
           </div>
-          <PoiDetailsFields
+          <Fields
             v-if="
               poi.properties.editorial &&
               poi.properties.editorial.details_fields
@@ -94,11 +94,11 @@ import { mapGetters } from 'vuex'
 
 import MapPois from '~/components/MapPois.vue'
 import Carousel from '~/components/PoisDetails/Carousel.vue'
+import Fields from '~/components/PoisDetails/Fields.vue'
 import Footer from '~/components/PoisDetails/Footer.vue'
 import Header from '~/components/PoisDetails/Header.vue'
 import Location from '~/components/PoisDetails/Location.vue'
 import Mapillary from '~/components/PoisDetails/Mapillary.vue'
-import PoiDetailsFields from '~/components/PoisDetails/PoiDetailsFields.vue'
 import RouteMap from '~/components/PoisDetails/Route/RouteMap.vue'
 import Share from '~/components/PoisDetails/Share.vue'
 import FavoriteIcon from '~/components/UI/FavoriteIcon.vue'
@@ -121,7 +121,7 @@ export default Vue.extend({
     MapPois,
     Footer,
     RouteMap,
-    PoiDetailsFields,
+    Fields,
   },
 
   props: {

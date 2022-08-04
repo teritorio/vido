@@ -1,7 +1,7 @@
 <template>
   <div :class="[recursionLevel === 0 && 'fields-list']">
     <template v-for="field in fields">
-      <PoiDetailsFieldsGroup
+      <FieldsGroup
         v-if="field.group"
         :key="field.group"
         :recursion-level="recursionLevel + 1"
@@ -107,13 +107,13 @@ import OpeningHours, {
 } from '~/components/Fields/OpeningHours.vue'
 import Phone from '~/components/Fields/Phone.vue'
 import RoutesField from '~/components/Fields/RoutesField.vue'
-import PoiDetailsFieldsGroup from '~/components/PoisDetails/PoiDetailsFieldsGroup.vue'
+import FieldsGroup from '~/components/PoisDetails/FieldsGroup.vue'
 import { ApiPoiProperties, FieldsList } from '~/lib/apiPois'
 import { PropertyTranslationsContextEnum } from '~/plugins/property-translations'
 
 export default Vue.extend({
   components: {
-    PoiDetailsFieldsGroup,
+    FieldsGroup,
     OpeningHours,
     RoutesField,
     DateRange,

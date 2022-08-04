@@ -1,10 +1,10 @@
-import PoiCardFields from '~/components/PoisCard/PoiCardFields.vue'
+import Fields from '~/components/PoisCard/Fields.vue'
 import { ApiPoiProperties } from '~/lib/apiPois'
 import { bind } from '~/lib/storybook-types'
 
 export default {
-  title: 'PoisCard/PoiCardFields',
-  component: PoiCardFields,
+  title: 'PoisCard/Fields',
+  component: Fields,
 }
 
 const properties: ApiPoiProperties = {
@@ -17,11 +17,11 @@ const defaultProps = {
   properties,
 }
 
-export const DefaultEmpty = bind(PoiCardFields, {
+export const DefaultEmpty = bind(Fields, {
   ...defaultProps,
 })
 
-export const Phone = bind(PoiCardFields, {
+export const Phone = bind(Fields, {
   ...defaultProps,
   properties: {
     ...defaultProps.properties,
@@ -33,7 +33,7 @@ export const Phone = bind(PoiCardFields, {
   },
 })
 
-export const Route = bind(PoiCardFields, {
+export const Route = bind(Fields, {
   ...defaultProps,
   properties: {
     ...defaultProps.properties,
@@ -54,7 +54,7 @@ export const Route = bind(PoiCardFields, {
 const description =
   "Itinéraire très intéressant, d'une part pour sa variété paysagère accentuée par la traversée fréquente de cours d'eau et d'autre part, par la qualité du patrimoine bâti : maisons traditionnelles landaises, église en garluche. \n\nDistance : 10,2 km - Durée : 4h45 - Animaux tenus en laisse  - Sentier pédestre et VTT \nFiche rando disponible dans le topoguide du Département des Landes du Pays de Born n°15 (en vente : 2 €)"
 
-export const Description = bind(PoiCardFields, {
+export const Description = bind(Fields, {
   ...defaultProps,
   properties: {
     ...defaultProps.properties,
@@ -65,7 +65,7 @@ export const Description = bind(PoiCardFields, {
   },
 })
 
-export const DescriptionDetails = bind(PoiCardFields, {
+export const DescriptionDetails = bind(Fields, {
   ...defaultProps,
   properties: {
     ...defaultProps.properties,

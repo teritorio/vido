@@ -1,7 +1,7 @@
 <template>
   <Block v-if="group.fields" :color-fill="colorFill" :icon="group.icon">
     <h2>{{ title }}</h2>
-    <PoiDetailsFields
+    <Fields
       :recursion-level="recursionLevel + 1"
       :fields="group.fields"
       :properties="properties"
@@ -15,19 +15,19 @@ import Vue, { PropType } from 'vue'
 
 import Block from '~/components/PoisDetails/Block.vue'
 import { ApiPoiProperties, FieldsListGroup } from '~/lib/apiPois'
-// import PoiDetailsFields from '~/components/PoisDetails/PoiDetailsFields.vue'
+// import Fields from '~/components/PoisDetails/Fields.vue'
 
 export default Vue.extend({
   components: {
     Block,
-    // PoiDetailsFields,
+    // Fields,
   },
 
   beforeCreate: function () {
     // Break circular components dependcy
     // @ts-ignore
-    this.$options.components.PoiDetailsFields =
-      require('~/components/PoisDetails/PoiDetailsFields.vue').default
+    this.$options.components.Fields =
+      require('~/components/PoisDetails/Fields.vue').default
   },
 
   props: {

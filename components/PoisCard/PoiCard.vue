@@ -80,7 +80,7 @@
       </p>
 
       <div v-else class="h-auto flex-grow shrink-0">
-        <PoiCardFields
+        <Fields
           :properties="poi.properties"
           :details="websiteDetails"
           @click-detail="trackingPopupEvent('details')"
@@ -155,7 +155,7 @@ import { mapGetters } from 'vuex'
 
 import CoordinateAction from '../Fields/CoordinateAction.vue'
 
-import PoiCardFields from '~/components/PoisCard/PoiCardFields.vue'
+import Fields from '~/components/PoisCard/Fields.vue'
 import FavoriteIcon from '~/components/UI/FavoriteIcon.vue'
 import TeritorioIcon from '~/components/UI/TeritorioIcon.vue'
 import { ApiPoi, ApiPoiId } from '~/lib/apiPois'
@@ -164,7 +164,7 @@ export default Vue.extend({
   components: {
     TeritorioIcon,
     FavoriteIcon,
-    PoiCardFields,
+    Fields,
     CoordinateAction,
   },
 
