@@ -5,6 +5,8 @@ import webpack from 'webpack'
 
 import { configuredApi, configuredImageProxy } from './plugins/vido-config'
 
+const supportedLocales = ['en-GB', 'fr', 'es']
+
 const config: NuxtConfig = {
   pwa: {
     meta: {
@@ -133,6 +135,12 @@ const config: NuxtConfig = {
       new webpack.ProvidePlugin({
         mapboxgl: 'maplibre-gl',
       }),
+      // https://github.com/date-fns/date-fns/blob/main/docs/webpack.md
+      // /!\ Not woring. Has no effect.
+      new webpack.ContextReplacementPlugin(
+        /date-fns\/locale$/,
+        new RegExp('./(' + supportedLocales.join('|') + ')/index.js$')
+      ),
     ],
     babel: {
       plugins: [
