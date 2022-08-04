@@ -42,7 +42,7 @@
                 "editorial": {
                     "details_fields": [
                         {
-                            "field": "route:*"
+                            "field": "route"
                         },
                         {
                             "field": "opening_hours"
@@ -66,7 +66,7 @@
                             "icon": "phone",
                             "fields": [
                                 {
-                                    "field": "addr:*"
+                                    "field": "addr"
                                 },
                                 {
                                     "field": "phone"
@@ -82,7 +82,7 @@
                     ],
                     "popup_fields": [
                         {
-                            "fields": "addr:*"
+                            "fields": "addr"
                         }
                     ],
                             "class_label": {
@@ -143,13 +143,13 @@
                 "editorial": {
                     "details_properties": [
                         "description",
-                        "addr:*",
+                        "addr",
                         "phone",
                         "mobile",
                         "opening_hours"
                     ],
                     "popup_properties": [
-                        "addr:*"
+                        "addr"
                     ],
                     "class_label": {
                         "fr": "Aires de camping-cars"

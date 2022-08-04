@@ -29,15 +29,30 @@
             "color_line": "#99163a"
         },
         "editorial": {
-            "details_properties": [
-                "description",
-                "addr:*",
-                "phone",
-                "mobile",
-                "opening_hours"
+            "details_fields": [
+                {
+                    "field": "description"
+                },
+                {
+                    "field": "addr"
+                },
+                {
+                    "field": "phone"
+                },
+                {
+                    "field": "mobile"
+                },
+                {
+                    "field": "opening_hours"
+                }
             ],
             "popup_properties": [
-                "route:*;addr:*"
+                {
+                    "field": "description"
+                },
+                {
+                    "field": "addr"
+                }
             ],
             "class_label": {
                 "fr": "Aires de camping-cars"
