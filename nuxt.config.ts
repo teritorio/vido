@@ -1,9 +1,11 @@
+// @ts-ignore
 import { cypressMockMiddleware } from '@cypress/mock-ssr'
+import { NuxtConfig } from '@nuxt/types'
 import webpack from 'webpack'
 
-import { configuredApi, configuredImageProxy } from './plugins/vido-config.ts'
+import { configuredApi, configuredImageProxy } from './plugins/vido-config'
 
-export default {
+const config: NuxtConfig = {
   pwa: {
     meta: {
       lang: 'fr',
@@ -54,7 +56,7 @@ export default {
   // Modules for dev and build (recommended) (https://go.nuxtjs.dev/config-modules)
   buildModules: [
     // https://go.nuxtjs.dev/typescript
-    ['@nuxt/typescript-build'],
+    '@nuxt/typescript-build',
     // https://go.nuxtjs.dev/stylelint
     '@nuxtjs/stylelint-module',
     // https://go.nuxtjs.dev/tailwindcss
@@ -160,3 +162,5 @@ export default {
 
   devServerHandlers: [], // Workaround issue https://github.com/nuxt-community/tailwindcss-module/issues/480
 }
+
+export default config
