@@ -242,7 +242,7 @@
         />
       </div>
     </BottomMenu>
-    <footer>
+    <footer class="z-20">
       <Attribution
         v-if="!isBottomMenuOpened"
         :attributions="fullAttributions"
