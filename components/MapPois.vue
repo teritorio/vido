@@ -51,8 +51,12 @@ export default Vue.extend({
 
       map.once('styledata', () => {
         this.pois.features.forEach((poi) => {
+          // @ts-ignore
+          const id: ApiPoiId = poi.properties.metadata?.id
+
           if (poi.geometry.type === 'Point' && poi.properties.display) {
             makerHtmlFactory(
+              `m${id}`,
               poi.geometry.coordinates as TupleLatLng,
               poi.properties.display.color_fill || '#000000',
               poi.properties.display.icon,
@@ -61,8 +65,6 @@ export default Vue.extend({
             ).addTo(map)
           }
 
-          // @ts-ignore
-          const id: ApiPoiId = poi.properties.metadata?.id
           if (id) {
             filterRouteByPoiId(map, id)
           }

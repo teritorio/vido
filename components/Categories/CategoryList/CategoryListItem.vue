@@ -2,6 +2,7 @@
   <div class="flex flex-col items-start">
     <component
       :is="href ? 'a' : 'button'"
+      :id="`CategoryListItem-${category.id}`"
       :href="href"
       target="_blank"
       class="flex items-center justify-between w-full px-5 py-3 rounded-lg outline-none focus:outline-none hover:bg-zinc-100"

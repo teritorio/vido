@@ -1,5 +1,6 @@
 <template>
   <div
+    :id="`PoiCard-${id}`"
     :class="[
       'z-10 flex flex-col w-full md:max-w-xl mx-0 overflow-y-auto shadow-md pointer-events-auto md:flex-row md:w-auto md:mx-auto md:rounded-xl poiDescription',
       !isModeFavorites && notebook ? 'bg-zinc-200 opacity-70' : 'bg-white',

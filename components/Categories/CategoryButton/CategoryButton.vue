@@ -1,5 +1,6 @@
 <template>
   <a
+    :id="`CategoryButton-${categoryId}`"
     :href="href || `/${categoryId}`"
     target="_blank"
     :class="[

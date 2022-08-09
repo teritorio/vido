@@ -11,6 +11,7 @@ import { ApiMenuCategory } from './apiMenu'
 import { ApiPoi } from './apiPois'
 import { getBBoxFeatures } from './bbox'
 import { createMarkerDonutChart } from './clusters'
+import { ApiPoiId } from './mapPois'
 
 import TeritorioIconBadge from '~/components/UI/TeritorioIconBadge.vue'
 import { TupleLatLng } from '~/utils/types'
@@ -60,6 +61,7 @@ export const markerLayerTextFactory = (
 }
 
 export function makerHtmlFactory(
+  id: string,
   latLng: TupleLatLng,
   colorFill: string,
   icon: string,
@@ -68,6 +70,7 @@ export function makerHtmlFactory(
 ): maplibregl.Marker {
   // Marker
   const el: HTMLElement = document.createElement('div')
+  el.id = id
   el.classList.add('maplibregl-marker')
   el.classList.add('cluster-item')
 
@@ -165,6 +168,7 @@ export function updateMarkers(
               }
               // Marker
               markers[id] = makerHtmlFactory(
+                id,
                 markerCoords, // Using this to avoid misplaced marker
                 props.display?.color_fill || '#ff0000',
                 props.display?.icon || '#ff0000',
