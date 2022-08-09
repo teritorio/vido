@@ -1,7 +1,7 @@
 <template>
   <header id="header">
     <div id="logo">
-      <a :href="theme && theme.mail_url">
+      <a :href="logoUrl">
         <p class="img-logo">
           <img :src="theme && theme.logo_url" :alt="theme && theme.title.fr" />
         </p>
@@ -17,6 +17,7 @@
 
 <script lang="ts">
 import Vue, { PropType } from 'vue'
+import { mapGetters } from 'vuex'
 
 import NavMenu from '~/components/MainMap/NavMenu.vue'
 import { ContentEntry } from '~/lib/apiContent'
@@ -34,6 +35,14 @@ export default Vue.extend({
     navMenuEntries: {
       type: Array as PropType<ContentEntry[]>,
       required: true,
+    },
+  },
+  computed: {
+    ...mapGetters({
+      local: 'site/locale',
+    }),
+    logoUrl(): string {
+      return this.theme.main_url?.[this.local] || ''
     },
   },
 })
