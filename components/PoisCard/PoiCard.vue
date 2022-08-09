@@ -51,7 +51,7 @@
           :href="websiteDetails"
           rel="noopener noreferrer"
           target="_blank"
-          @click.stop="tracking('details')"
+          @click.stop="trackingPopupEvent('details')"
         >
           {{ $tc('poiCard.details') }}
         </a>
@@ -83,7 +83,7 @@
         <PoiCardFields
           :properties="poi.properties"
           :details="websiteDetails"
-          @click-detail="tracking('details')"
+          @click-detail="trackingPopupEvent('details')"
         />
       </div>
 
@@ -95,7 +95,7 @@
           :geometry="poi.geometry"
           class="flex flex-col items-center flex-1 h-full p-2 space-y-2 rounded-lg hover:bg-zinc-100"
           :title="$tc('poiCard.findRoute')"
-          @click="tracking('route')"
+          @click="trackingPopupEvent('route')"
         >
           <font-awesome-icon icon="route" :color="colorLine" size="sm" />
           <span class="text-sm">{{ $tc('poiCard.route') }}</span>
@@ -187,14 +187,20 @@ export default Vue.extend({
     }
   },
 
+  watch: {
+    poi() {
+      this.trackingPopup(this.notebook, this.id)
+    },
+  },
+
   computed: {
     ...mapGetters({
       isModeExplorer: 'map/isModeExplorer',
       favoritesIds: 'favorite/favoritesIds',
     }),
 
-    id(): ApiPoiId | undefined {
-      return this.poi.properties.metadata?.id
+    id(): ApiPoiId {
+      return this.poi.properties.metadata.id
     },
 
     isModeFavorites(): boolean {
@@ -246,48 +252,52 @@ export default Vue.extend({
   },
 
   mounted() {
-    if (!this.notebook && this.id) {
-      this.$tracking({
-        type: 'popup',
-        poiId: this.id,
-        title: this.poi.properties?.name,
-        location: window.location.href,
-        path: this.$route.path,
-        categoryIds: this.poi.properties?.metadata?.category_ids || [],
-      })
-    }
+    this.trackingPopup(this.notebook, this.id)
   },
 
   methods: {
     onZoomClick() {
-      this.tracking('zoom')
+      this.trackingPopupEvent('zoom')
       this.$emit('zoom-click', this.poi)
     },
 
     onExploreClick() {
       if (!this.isModeExplorer) {
-        this.tracking('explore')
+        this.trackingPopupEvent('explore')
       }
       this.$emit('explore-click', this.poi)
     },
 
     onFavoriteClick() {
       if (!this.isModeFavorites) {
-        this.tracking('favorite')
+        this.trackingPopupEvent('favorite')
       }
       this.$emit('favorite-click', this.poi, this.notebook)
     },
 
-    tracking(event: 'details' | 'route' | 'explore' | 'favorite' | 'zoom') {
-      if (this.id) {
+    trackingPopup(notebook: boolean, id: ApiPoiId) {
+      if (!notebook) {
         this.$tracking({
-          type: 'popup_event',
-          event,
-          poiId: this.id,
-          category: this.category || '',
+          type: 'popup',
+          poiId: id,
           title: this.poi.properties?.name,
+          location: window.location.href,
+          path: this.$route.path,
+          categoryIds: this.poi.properties?.metadata?.category_ids || [],
         })
       }
+    },
+
+    trackingPopupEvent(
+      event: 'details' | 'route' | 'explore' | 'favorite' | 'zoom'
+    ) {
+      this.$tracking({
+        type: 'popup_event',
+        event,
+        poiId: this.id,
+        category: this.category || '',
+        title: this.poi.properties?.name,
+      })
     },
   },
 })
