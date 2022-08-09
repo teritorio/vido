@@ -29,7 +29,7 @@
           :href="poiProps.editorial['website:details']"
           rel="noopener noreferrer"
           target="_blank"
-          @click.stop="tracking('details')"
+          @click.stop="trackingPopupEvent('details')"
         >
           {{ $tc('toast.details') }}
         </a>
@@ -151,7 +151,7 @@
                 :href="poiProps.editorial['website:details']"
                 rel="noopener noreferrer"
                 target="_blank"
-                @click.stop="tracking('details')"
+                @click.stop="trackingPopupEvent('details')"
               >
                 {{ $tc('toast.seeDetail') }}
               </a>
@@ -171,7 +171,7 @@
           class="flex flex-col items-center flex-1 h-full p-2 space-y-2 rounded-lg hover:bg-zinc-100"
           :href="routeHref"
           :title="$tc('toast.findRoute')"
-          @click="tracking('route')"
+          @click="trackingPopupEvent('route')"
         >
           <font-awesome-icon icon="route" :color="colorLine" size="sm" />
           <span class="text-sm">{{ $tc('toast.route') }}</span>
@@ -270,6 +270,12 @@ export default Vue.extend({
     }
   },
 
+  watch: {
+    poi() {
+      this.trackingPopup(this.notebook, this.id)
+    },
+  },
+
   computed: {
     ...mapGetters({
       isModeExplorer: 'map/isModeExplorer',
@@ -284,8 +290,8 @@ export default Vue.extend({
       return this.poi.properties
     },
 
-    id(): ApiPoiId | undefined {
-      return this.poiProps.metadata?.id
+    id(): ApiPoiId {
+      return this.poiProps.metadata.id
     },
 
     isModeFavorites(): boolean {
@@ -374,16 +380,7 @@ export default Vue.extend({
   },
 
   mounted() {
-    if (!this.notebook && this.id) {
-      this.$tracking({
-        type: 'popup',
-        poiId: this.id,
-        title: this.poi.properties?.name,
-        location: window.location.href,
-        path: this.$route.path,
-        categoryIds: this.poi.properties?.metadata?.category_ids || [],
-      })
-    }
+    this.trackingPopup(this.notebook, this.id)
   },
 
   methods: {
@@ -396,18 +393,18 @@ export default Vue.extend({
     },
 
     onZoomClick() {
-      this.tracking('zoom')
+      this.trackingPopupEvent('zoom')
       this.$emit('zoom-click', this.poi)
     },
     onExploreClick() {
       if (!this.isModeExplorer) {
-        this.tracking('explore')
+        this.trackingPopupEvent('explore')
       }
       this.$emit('explore-click', this.poi)
     },
     onFavoriteClick() {
       if (!this.isModeFavorites) {
-        this.tracking('favorite')
+        this.trackingPopupEvent('favorite')
       }
       this.$emit('favorite-click', this.poi, this.notebook)
     },
@@ -416,16 +413,29 @@ export default Vue.extend({
       return isOpeningHoursSupportedOsmTags(key)
     },
 
-    tracking(event: 'details' | 'route' | 'explore' | 'favorite' | 'zoom') {
-      if (this.id) {
+    trackingPopup(notebook: boolean, id: ApiPoiId) {
+      if (!notebook) {
         this.$tracking({
-          type: 'popup_event',
-          event,
-          poiId: this.id,
-          category: this.category || '',
+          type: 'popup',
+          poiId: id,
           title: this.poi.properties?.name,
+          location: window.location.href,
+          path: this.$route.path,
+          categoryIds: this.poi.properties?.metadata?.category_ids || [],
         })
       }
+    },
+
+    trackingPopupEvent(
+      event: 'details' | 'route' | 'explore' | 'favorite' | 'zoom'
+    ) {
+      this.$tracking({
+        type: 'popup_event',
+        event,
+        poiId: this.id,
+        category: this.category || '',
+        title: this.poi.properties?.name,
+      })
     },
   },
 })
