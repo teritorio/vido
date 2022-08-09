@@ -5,22 +5,31 @@
       !isModeFavorites && notebook ? 'bg-zinc-200 opacity-70' : 'bg-white',
     ]"
   >
-    <nuxt-picture
-      v-if="poi.properties.image && poi.properties.image.length > 0"
-      class="md:w-48 h-auto max-h-44 md:max-h-full"
-      :src="poi.properties.image[0]"
-      alt=""
-    />
     <div
-      v-else
-      class="md:w-48 h-auto max-h-44 md:max-h-full bg-gray-100 flex align-middle justify-center"
+      class="md:w-48 h-auto max-h-44 md:max-h-full bg-gray-100 flex align-middle justify-center relative"
     >
+      <div
+        class="md:w-48 h-full max-h-44 md:max-h-full flex align-middle justify-center absolute z-0"
+      >
+        <TeritorioIcon
+          :picto="icon"
+          :use-native-alignment="false"
+          class="text-8xl"
+          color-text="#AAA"
+        />
+      </div>
+      <nuxt-picture
+        v-if="poi.properties.image && poi.properties.image.length > 0"
+        class="md:w-48 h-auto max-h-44 md:max-h-full z-10"
+        :src="poi.properties.image[0]"
+        alt=""
+      />
       <TeritorioIcon
-        v-if="icon"
-        color-text="#AAA"
+        v-else-if="icon"
         :picto="icon"
         :use-native-alignment="false"
-        class="text-4xl"
+        class="text-8xl z-10"
+        :color-text="colorFill"
       />
     </div>
 
