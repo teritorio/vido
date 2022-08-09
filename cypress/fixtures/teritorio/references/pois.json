@@ -34,11 +34,8 @@
                 "editorial": {
                     "details_fields": [
                         {
-                            "field": "description"
-                        },
-                        {
                             "group": "contact",
-                            "display_mode": "card",
+                            "display_mode": "standard",
                             "icon": "phone",
                             "fields": [
                                 {
@@ -54,6 +51,9 @@
                         },
                         {
                             "field": "opening_hours"
+                        },
+                        {
+                            "field": "description"
                         }
                     ],
                     "popup_fields": [

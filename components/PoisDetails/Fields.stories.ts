@@ -1,9 +1,9 @@
-import Fields from '~/components/PoisCard/Fields.vue'
+import Fields from '~/components/PoisDetails/Fields.vue'
 import { ApiPoiProperties } from '~/lib/apiPois'
 import { bind } from '~/lib/storybook-types'
 
 export default {
-  title: 'PoisCard/Fields',
+  title: 'PoisDetails/Fields',
   component: Fields,
 }
 
@@ -28,8 +28,8 @@ export const Many = bind(Fields, {
   ...defaultProps,
   fields: [{ field: 'phone' }, { field: 'route' }, { field: 'description' }],
   properties: {
-    phone: '+33676544',
-    mobile: '+339750987766',
+    phone: ['+33676544'],
+    mobile: ['+339750987766'],
     'route:hiking:difficulty': 'easy',
     'route:hiking:duration': 285,
     'route:hiking:length': 10.2,

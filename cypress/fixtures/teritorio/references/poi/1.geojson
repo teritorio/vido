@@ -12,6 +12,9 @@
         "tourism": "caravan_site",
         "addr:postcode": "40000",
         "addr:city": "Mont-de-Marsan",
+        "phone": [
+            "+33 6757658"
+        ],
         "metadata": {
             "id": 1,
             "cartocode": "A1",
@@ -31,19 +34,48 @@
         "editorial": {
             "details_fields": [
                 {
-                    "field": "description"
+                    "field": "name"
                 },
                 {
-                    "field": "addr"
+                    "group": "contact_standard",
+                    "display_mode": "standard",
+                    "icon": "phone",
+                    "fields": [
+                        {
+                            "field": "name"
+                        },
+                        {
+                            "field": "addr"
+                        },
+                        {
+                            "field": "phone"
+                        },
+                        {
+                            "field": "mobile"
+                        }
+                    ]
                 },
                 {
-                    "field": "phone"
-                },
-                {
-                    "field": "mobile"
+                    "group": "contact_card",
+                    "display_mode": "card",
+                    "icon": "phone",
+                    "fields": [
+                        {
+                            "field": "addr"
+                        },
+                        {
+                            "field": "phone"
+                        },
+                        {
+                            "field": "mobile"
+                        }
+                    ]
                 },
                 {
                     "field": "opening_hours"
+                },
+                {
+                    "field": "description"
                 }
             ],
             "popup_properties": [

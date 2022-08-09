@@ -47,6 +47,7 @@
             :fields="poi.properties.editorial.details_fields"
             :properties="poi.properties"
             :color-fill="colorFill"
+            class="detail-left-block"
           />
         </div>
 
@@ -211,7 +212,6 @@ h1 {
   font-size: 1.8rem;
   margin-top: 0;
   margin-bottom: 0.7rem;
-  color: $color-title;
   text-transform: uppercase;
 }
 
@@ -219,7 +219,6 @@ h1 {
   font-size: 1.2rem;
   margin-top: 0;
   margin-bottom: 0.7rem;
-  color: $color-title;
 }
 
 .detail-wrapper {

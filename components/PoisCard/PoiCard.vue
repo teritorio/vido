@@ -81,6 +81,7 @@
 
       <div v-else class="h-auto flex-grow shrink-0">
         <Fields
+          :fields="poi.properties.editorial?.popup_fields || []"
           :properties="poi.properties"
           :details="websiteDetails"
           @click-detail="trackingPopupEvent('details')"
@@ -153,8 +154,7 @@
 import Vue, { PropType } from 'vue'
 import { mapGetters } from 'vuex'
 
-import CoordinateAction from '../Fields/CoordinateAction.vue'
-
+import CoordinateAction from '~/components/Fields/CoordinateAction.vue'
 import Fields from '~/components/PoisCard/Fields.vue'
 import FavoriteIcon from '~/components/UI/FavoriteIcon.vue'
 import TeritorioIcon from '~/components/UI/TeritorioIcon.vue'
@@ -185,12 +185,6 @@ export default Vue.extend({
     return {
       textLimit: 160,
     }
-  },
-
-  watch: {
-    poi() {
-      this.trackingPopup(this.notebook, this.id)
-    },
   },
 
   computed: {
@@ -248,6 +242,12 @@ export default Vue.extend({
         this.poi.properties.editorial &&
         this.poi.properties.editorial['website:details']
       )
+    },
+  },
+
+  watch: {
+    poi() {
+      this.trackingPopup(this.notebook, this.id)
     },
   },
 

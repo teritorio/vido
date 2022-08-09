@@ -38,6 +38,7 @@ module.exports = {
         'newlines-between': 'always',
       },
     ],
+    'vue/no-v-for-template-key-on-child': 'off',
   },
   settings: {
     'import/internal-regex': '^@/',
