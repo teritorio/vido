@@ -2,13 +2,13 @@
   <div v-if="routeCollection">
     <MapPois class="map-pois" :pois="routeCollection" />
     <div class="detail-wrapper">
-      <div class="detail-left">
+      <div v-if="points.length > 0" class="detail-left">
         <h2>{{ $tc('poiDetails.routes.waypoints') }}</h2>
         <div v-for="(point, index) in points" :key="index">
           <WayPoint :point="point" />
         </div>
       </div>
-      <div class="detail-right">
+      <div v-if="pois.length > 0" class="detail-right">
         <h2>{{ $tc('poiDetails.routes.pois') }}</h2>
         <PoisDeck
           :pois="pois"
