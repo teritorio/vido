@@ -92,7 +92,7 @@
         <OpeningHours
           v-else-if="isOpeningHoursSupportedOsmTags(field.field)"
           :tag-key="field.field"
-          :opening-hours="p[field.field]"
+          :opening-hours="properties[field.field]"
           :context="context"
         />
 
