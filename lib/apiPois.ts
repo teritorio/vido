@@ -37,6 +37,8 @@ export type ApiPoiProperties = MapPoiProperties & {
     source?: string
     // eslint-disable-next-line camelcase
     category_ids?: Array<number>
+    // eslint-disable-next-line camelcase
+    updated_at?: string
   }
   display?: {
     // eslint-disable-next-line camelcase

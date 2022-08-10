@@ -66,10 +66,11 @@
               :pois="{ features: [poi] }"
               class="relative"
             />
-            <p>
+            <p v-if="poi.properties.metadata.updated_at">
               {{ $tc('poiDetails.lastUpdate') }}
               <a href="https://www.openstreetmap.org/" target="_blank">
-                du 06/02/2022 à 16h 02min 12s
+                <RelativeDate :date="poi.properties.metadata.updated_at">
+                </RelativeDate>
               </a>
             </p>
             <Location :p="poi.properties" :geom="poi.geometry" />
@@ -103,6 +104,7 @@ import Mapillary from '~/components/PoisDetails/Mapillary.vue'
 import RouteMap from '~/components/PoisDetails/Route/RouteMap.vue'
 import Share from '~/components/PoisDetails/Share.vue'
 import FavoriteIcon from '~/components/UI/FavoriteIcon.vue'
+import RelativeDate from '~/components/UI/RelativeDate.vue'
 import TeritorioIconBadge from '~/components/UI/TeritorioIconBadge.vue'
 import { ContentEntry } from '~/lib/apiContent'
 import { ApiPoiDeps } from '~/lib/apiPoiDeps'
@@ -123,6 +125,7 @@ export default Vue.extend({
     Footer,
     RouteMap,
     Fields,
+    RelativeDate,
   },
 
   props: {
