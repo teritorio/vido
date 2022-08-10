@@ -52,14 +52,15 @@
         </div>
 
         <div class="detail-right">
-          <Carousel
-            v-if="poi.properties.image"
-            :images="poi.properties.image"
-          />
           <Mapillary
             v-if="poi.properties.mapillary"
             :image-id="poi.properties.mapillary"
           />
+          <Carousel
+            v-else-if="poi.properties.image"
+            :images="poi.properties.image"
+          />
+
           <template v-if="poiDeps.features.length === 0">
             <MapPois
               :extra-attributions="settings.attributions"
