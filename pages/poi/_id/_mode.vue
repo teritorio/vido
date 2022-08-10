@@ -97,10 +97,11 @@ export default Vue.extend({
       ])
 
     if (route) {
-      const g = groupBy(route.features, (feature) =>
-        Object.keys(feature.properties).some(
-          (k) => k.startsWith('route:') && k !== 'route:point:type'
-        )
+      const g = groupBy(
+        route.features,
+        (feature) =>
+          // @ts-ignore
+          feature.properties.metadata?.id == params.id
       )
       poi = g['true'] && (g['true'][0] as ApiPoi)
       route.features = g['false'] || []
