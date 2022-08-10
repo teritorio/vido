@@ -1,9 +1,8 @@
 <template>
   <div>
     <ul>
-      <li>
+      <li v-if="href">
         <a
-          v-if="href"
           :aria-label="$tc('poiDetails.shareFacebook')"
           type="button"
           class="text-sm text-zinc-800 bg-white rounded-full shadow-md outline-none w-8 h-8 focus:outline-none hover:bg-zinc-100 focus-visible:bg-zinc-100 shrink-0 flex items-center justify-center"
@@ -16,9 +15,8 @@
           />
         </a>
       </li>
-      <li>
+      <li v-if="title && href">
         <a
-          v-if="title && href"
           :aria-label="$tc('poiDetails.shareTwitter')"
           type="button"
           class="text-sm text-zinc-800 bg-white rounded-full shadow-md outline-none w-8 h-8 focus:outline-none hover:bg-zinc-100 focus-visible:bg-zinc-100 shrink-0 flex items-center justify-center"
@@ -31,9 +29,8 @@
           />
         </a>
       </li>
-      <li>
+      <li v-if="title && href">
         <a
-          v-if="title && href"
           :aria-label="$tc('poiDetails.shareWhatsApp')"
           type="button"
           class="text-sm text-zinc-800 bg-white rounded-full shadow-md outline-none w-8 h-8 focus:outline-none hover:bg-zinc-100 focus-visible:bg-zinc-100 shrink-0 flex items-center justify-center"
@@ -56,9 +53,8 @@
           <font-awesome-icon icon="print" :style="{ color: colorLine }" />
         </button>
       </li>
-      <li>
+      <li v-if="href">
         <button
-          v-if="href"
           :aria-label="$tc('poiDetails.link')"
           type="button"
           class="text-sm text-zinc-800 bg-white rounded-full shadow-md outline-none w-8 h-8 focus:outline-none hover:bg-zinc-100 focus-visible:bg-zinc-100 shrink-0 flex items-center justify-center"
