@@ -40,11 +40,8 @@
             </h2>
           </div>
           <Fields
-            v-if="
-              poi.properties.editorial &&
-              poi.properties.editorial.details_fields
-            "
-            :fields="poi.properties.editorial.details_fields"
+            v-if="detailsFields"
+            :fields="detailsFields"
             :properties="poi.properties"
             :color-fill="colorFill"
             class="detail-left-block"
@@ -61,7 +58,7 @@
             :images="poi.properties.image"
           />
 
-          <template v-if="poiDeps.features.length === 0">
+          <template v-if="!isLargeLayeout">
             <MapPois
               :extra-attributions="settings.attributions"
               :feature-id="id"
@@ -86,11 +83,18 @@
             </p>
             <Location :p="poi.properties" :geom="poi.geometry" />
           </template>
+
+          <Field
+            v-else
+            :field="{ field: 'description' }"
+            :properties="poi.properties"
+            :color-fill="colorFill"
+          ></Field>
         </div>
       </div>
 
       <RouteMap
-        v-if="poiDeps.features.length > 0"
+        v-if="isLargeLayeout"
         id="route-map"
         :poi-id="id"
         :route="poiDeps"
@@ -108,6 +112,7 @@ import { mapGetters } from 'vuex'
 
 import MapPois from '~/components/MapPois.vue'
 import Carousel from '~/components/PoisDetails/Carousel.vue'
+import Field from '~/components/PoisDetails/Field.vue'
 import Fields from '~/components/PoisDetails/Fields.vue'
 import Footer from '~/components/PoisDetails/Footer.vue'
 import Header from '~/components/PoisDetails/Header.vue'
@@ -120,7 +125,7 @@ import RelativeDate from '~/components/UI/RelativeDate.vue'
 import TeritorioIconBadge from '~/components/UI/TeritorioIconBadge.vue'
 import { ContentEntry } from '~/lib/apiContent'
 import { ApiPoiDeps } from '~/lib/apiPoiDeps'
-import { ApiPoi, ApiPoiId } from '~/lib/apiPois'
+import { ApiPoi, ApiPoiId, FieldsList } from '~/lib/apiPois'
 import { Settings } from '~/lib/apiSettings'
 import { OriginEnum } from '~/utils/types'
 
@@ -137,6 +142,7 @@ export default Vue.extend({
     Footer,
     RouteMap,
     Fields,
+    Field,
     RelativeDate,
   },
 
@@ -163,6 +169,20 @@ export default Vue.extend({
     ...mapGetters({
       favoritesIds: 'favorite/favoritesIds',
     }),
+
+    isLargeLayeout(): boolean {
+      return this.poiDeps.features.length > 0
+    },
+
+    detailsFields(): FieldsList | undefined {
+      const fields = this.poi.properties.editorial?.details_fields
+      if (!fields || !this.isLargeLayeout) {
+        return fields
+      } else {
+        // @ts-ignore
+        return fields.filter((field) => field.field != 'description')
+      }
+    },
 
     colorFill(): string {
       return this.poi.properties.display?.color_fill || '#76009E'
@@ -256,8 +276,6 @@ h1 {
     .detail-left-block {
       margin: 0 0 3.3rem;
       padding: 0 1.6rem;
-      font-size: 1.2rem;
-      color: $color-text;
     }
   }
 
