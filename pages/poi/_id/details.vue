@@ -4,7 +4,7 @@
     :settings="settings"
     :nav-menu-entries="contents"
     :poi="poi"
-    :route="route"
+    :poi-deps="poiDeps"
   />
 </template>
 
@@ -16,12 +16,12 @@ import { mapActions } from 'vuex'
 
 import Index from '~/components/PoisDetails/PoiDetails.vue'
 import { ContentEntry, getContents } from '~/lib/apiContent'
-import { getPoiById, ApiPoi } from '~/lib/apiPois'
+import { ApiPoiDeps, getPoiDepsById } from '~/lib/apiPoiDeps'
+import { ApiPoi } from '~/lib/apiPois'
 import {
   getPropertyTranslations,
   PropertyTranslations,
 } from '~/lib/apiPropertyTranslations'
-import { ApiRoute, getRouteById } from '~/lib/apiRoutes'
 import { getSettings, headerFromSettings, Settings } from '~/lib/apiSettings'
 import { vidoConfig } from '~/plugins/vido-config'
 
@@ -31,10 +31,7 @@ export default Vue.extend({
   },
 
   validate({ params }) {
-    return (
-      /^[-_:a-zA-Z0-9]+$/.test(params.id) &&
-      ['details', 'route', 'zone'].includes(params.mode)
-    )
+    return /^[-_:a-zA-Z0-9]+$/.test(params.id)
   },
 
   async asyncData({ params, req }): Promise<{
@@ -42,7 +39,7 @@ export default Vue.extend({
     contents: ContentEntry[]
     propertyTranslations: PropertyTranslations
     poi: ApiPoi | undefined
-    route: ApiRoute | undefined
+    poiDeps: ApiPoiDeps | undefined
   }> {
     const getSettingsPromise = getSettings(
       vidoConfig(req).API_ENDPOINT,
@@ -59,52 +56,35 @@ export default Vue.extend({
       vidoConfig(req).API_PROJECT,
       vidoConfig(req).API_THEME
     )
-    let getPoiPromise
-    let getRoutePromose
-    switch (params.mode) {
-      case 'route':
-        getRoutePromose = getRouteById(
-          vidoConfig(req).API_ENDPOINT,
-          vidoConfig(req).API_PROJECT,
-          vidoConfig(req).API_THEME,
-          params.id,
-          {
-            short_description: false,
-          }
-        )
-        break
-      default:
-        getPoiPromise = getPoiById(
-          vidoConfig(req).API_ENDPOINT,
-          vidoConfig(req).API_PROJECT,
-          vidoConfig(req).API_THEME,
-          params.id,
-          {
-            geometry_as: params.mode === 'zone' ? 'bbox' : 'point',
-            short_description: false,
-          }
-        )
-        break
-    }
+    const poiDepsPromise = getPoiDepsById(
+      vidoConfig(req).API_ENDPOINT,
+      vidoConfig(req).API_PROJECT,
+      vidoConfig(req).API_THEME,
+      params.id,
+      {
+        short_description: false,
+      }
+    )
 
-    let [settings, contents, propertyTranslations, poi, route] =
-      await Promise.all([
+    let [settings, contents, propertyTranslations, poiDeps] = await Promise.all(
+      [
         getSettingsPromise,
         fetchContents,
         fetchPropertyTranslations,
-        getPoiPromise,
-        getRoutePromose,
-      ])
+        poiDepsPromise,
+      ]
+    )
 
-    if (route) {
+    let poi: ApiPoi | undefined = undefined
+    if (poiDeps) {
       const g = groupBy(
-        route.features,
+        poiDeps.features,
         (feature) =>
           // @ts-ignore
           feature.properties.metadata?.id == params.id
       )
       poi = g['true'] && (g['true'][0] as ApiPoi)
-      route.features = g['false'] || []
+      poiDeps.features = g['false'] || []
     }
 
     if (!poi) {
@@ -116,7 +96,7 @@ export default Vue.extend({
       contents,
       propertyTranslations,
       poi,
-      route,
+      poiDeps,
     })
   },
 
@@ -125,7 +105,7 @@ export default Vue.extend({
     contents: ContentEntry[]
     propertyTranslations: PropertyTranslations
     poi: ApiPoi
-    route: ApiRoute | undefined
+    route: ApiPoiDeps | undefined
   } {
     return {
       // @ts-ignore

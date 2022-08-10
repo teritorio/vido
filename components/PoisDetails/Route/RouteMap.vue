@@ -27,8 +27,12 @@ import Vue, { PropType } from 'vue'
 import MapPois from '~/components/MapPois.vue'
 import PoisDeck from '~/components/PoisCard/PoisDeck.vue'
 import WayPoint from '~/components/PoisDetails/Route/WayPoint.vue'
+import {
+  ApiPoiDeps,
+  ApiRouteWaypoint,
+  ApiRouteWaypointType,
+} from '~/lib/apiPoiDeps'
 import { ApiPoi } from '~/lib/apiPois'
-import { ApiRoute, ApiRoutePoint, ApiRouteWaypointType } from '~/lib/apiRoutes'
 import { MapPoi, MapPoiCollection } from '~/lib/mapPois'
 
 export const iconMap: { [key: string]: string } = {
@@ -47,7 +51,7 @@ export default Vue.extend({
 
   props: {
     route: {
-      type: Object as PropType<ApiRoute>,
+      type: Object as PropType<ApiPoiDeps>,
       required: true,
     },
     colorFill: {
@@ -73,7 +77,7 @@ export default Vue.extend({
       type: 'FeatureCollection',
       features: this.route.features.map((feature) => {
         if (feature.properties['route:point:type']) {
-          const featurePoint = feature as ApiRoutePoint
+          const featurePoint = feature as ApiRouteWaypoint
           // Convert to MapPoi
           const mapPoi: MapPoi = {
             ...featurePoint,

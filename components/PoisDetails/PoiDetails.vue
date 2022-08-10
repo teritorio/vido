@@ -60,7 +60,7 @@
             v-if="poi.properties.mapillary"
             :image-id="poi.properties.mapillary"
           />
-          <template v-if="!Boolean(route)">
+          <template v-if="poiDeps.features.length === 0">
             <MapPois
               :extra-attributions="settings.attributions"
               :pois="{ features: [poi] }"
@@ -78,9 +78,9 @@
       </div>
 
       <RouteMap
-        v-if="Boolean(route)"
+        v-if="poiDeps.features.length > 0"
         id="route-map"
-        :route="route"
+        :route="poiDeps"
         :color-fill="colorFill"
       />
 
@@ -105,8 +105,8 @@ import Share from '~/components/PoisDetails/Share.vue'
 import FavoriteIcon from '~/components/UI/FavoriteIcon.vue'
 import TeritorioIconBadge from '~/components/UI/TeritorioIconBadge.vue'
 import { ContentEntry } from '~/lib/apiContent'
+import { ApiPoiDeps } from '~/lib/apiPoiDeps'
 import { ApiPoi } from '~/lib/apiPois'
-import { ApiRoute } from '~/lib/apiRoutes'
 import { Settings } from '~/lib/apiSettings'
 import { OriginEnum } from '~/utils/types'
 
@@ -138,8 +138,8 @@ export default Vue.extend({
       type: Object as PropType<ApiPoi>,
       required: true,
     },
-    route: {
-      type: Object as PropType<ApiRoute>,
+    poiDeps: {
+      type: Object as PropType<ApiPoiDeps>,
       default: null,
     },
   },

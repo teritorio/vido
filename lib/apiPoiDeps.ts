@@ -21,28 +21,28 @@ export interface ApiRouteWaypointProperties {
   'route:point:type': ApiRouteWaypointType
 }
 
-export interface ApiRoutePoint
+export interface ApiRouteWaypoint
   extends GeoJSON.Feature<GeoJSON.Point, ApiRouteWaypointProperties> {}
 
-export interface ApiRoute
+export interface ApiPoiDeps
   extends GeoJSON.FeatureCollection<
     GeoJSON.Geometry,
     ApiPoiProperties | ApiRouteWaypointProperties
   > {}
 
-export function getRouteById(
+export function getPoiDepsById(
   apiEndpoint: string,
   apiProject: string,
   apiTheme: string,
   poiId: ApiPoiId | string,
   options: apiPoisOptions = {}
-): Promise<ApiRoute> {
+): Promise<ApiPoiDeps> {
   return fetch(
-    `${apiEndpoint}/${apiProject}/${apiTheme}/route/${poiId}.geojson?` +
+    `${apiEndpoint}/${apiProject}/${apiTheme}/poi/${poiId}/deps.geojson?` +
       new URLSearchParams(stringifyOptions(options))
   ).then((data) => {
     if (data.ok) {
-      return data.json() as unknown as ApiRoute
+      return data.json() as unknown as ApiPoiDeps
     } else {
       return Promise.reject(
         new Error([data.url, data.status, data.statusText].join(' '))
