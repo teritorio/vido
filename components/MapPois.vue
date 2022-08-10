@@ -37,6 +37,10 @@ export default Vue.extend({
       type: Object as PropType<MapPoiCollection>,
       default: null,
     },
+    featureId: {
+      type: Number as PropType<ApiPoiId>,
+      default: null,
+    },
   },
 
   computed: {
@@ -50,6 +54,10 @@ export default Vue.extend({
       map.addControl(new PoiFilter({ filter: [] }))
 
       map.once('styledata', () => {
+        if (this.featureId) {
+          filterRouteByPoiId(map, this.featureId)
+        }
+
         this.pois.features.forEach((poi) => {
           // @ts-ignore
           const id: ApiPoiId = poi.properties.metadata?.id
@@ -63,10 +71,6 @@ export default Vue.extend({
               poi.properties['image:thumbnail'],
               'lg'
             ).addTo(map)
-          }
-
-          if (id) {
-            filterRouteByPoiId(map, id)
           }
         })
       })

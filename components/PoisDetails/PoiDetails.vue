@@ -64,6 +64,7 @@
           <template v-if="poiDeps.features.length === 0">
             <MapPois
               :extra-attributions="settings.attributions"
+              :feature-id="id"
               :pois="{ features: [poi] }"
               class="relative"
             />
@@ -91,6 +92,7 @@
       <RouteMap
         v-if="poiDeps.features.length > 0"
         id="route-map"
+        :poi-id="id"
         :route="poiDeps"
         :color-fill="colorFill"
       />
@@ -118,7 +120,7 @@ import RelativeDate from '~/components/UI/RelativeDate.vue'
 import TeritorioIconBadge from '~/components/UI/TeritorioIconBadge.vue'
 import { ContentEntry } from '~/lib/apiContent'
 import { ApiPoiDeps } from '~/lib/apiPoiDeps'
-import { ApiPoi } from '~/lib/apiPois'
+import { ApiPoi, ApiPoiId } from '~/lib/apiPois'
 import { Settings } from '~/lib/apiSettings'
 import { OriginEnum } from '~/utils/types'
 
@@ -177,8 +179,12 @@ export default Vue.extend({
       )
     },
 
+    id(): ApiPoiId {
+      return this.poi.properties.metadata.id
+    },
+
     isFavorite(): boolean {
-      return this.favoritesIds.includes(this.poi.properties.metadata?.id)
+      return this.favoritesIds.includes(this.id)
     },
   },
 
@@ -197,11 +203,11 @@ export default Vue.extend({
 
   methods: {
     toggleFavorite() {
-      if (this.poi.properties.metadata?.id) {
+      if (this.id) {
         this.$tracking({
           type: 'details_event',
           event: 'favorite',
-          poiId: this.poi.properties.metadata?.id,
+          poiId: this.id,
           title: this.poi.properties.name,
         })
         this.$store.dispatch('favorite/toggleFavorite', this.poi)

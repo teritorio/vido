@@ -1,6 +1,6 @@
 <template>
   <div v-if="routeCollection">
-    <MapPois class="map-pois" :pois="routeCollection" />
+    <MapPois class="map-pois" :pois="routeCollection" :feature-id="poiId" />
     <div class="detail-wrapper">
       <div v-if="points.length > 0" class="detail-left">
         <h2>{{ $tc('poiDetails.routes.waypoints') }}</h2>
@@ -32,7 +32,7 @@ import {
   ApiRouteWaypoint,
   ApiRouteWaypointType,
 } from '~/lib/apiPoiDeps'
-import { ApiPoi } from '~/lib/apiPois'
+import { ApiPoi, ApiPoiId } from '~/lib/apiPois'
 import { MapPoi, MapPoiCollection } from '~/lib/mapPois'
 
 export const iconMap: { [key: string]: string } = {
@@ -50,6 +50,10 @@ export default Vue.extend({
   },
 
   props: {
+    poiId: {
+      type: Number as PropType<ApiPoiId>,
+      required: true,
+    },
     route: {
       type: Object as PropType<ApiPoiDeps>,
       required: true,
