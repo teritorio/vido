@@ -34,6 +34,7 @@
       </template>
     </template>
     <template v-if="!isCompact">
+      <br />
       <template v-if="pretty">
         <ul>
           <li v-for="(row, i) in pretty" :key="i">{{ row }}</li>
