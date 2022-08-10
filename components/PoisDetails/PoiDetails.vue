@@ -68,10 +68,19 @@
             />
             <p v-if="poi.properties.metadata.updated_at">
               {{ $tc('poiDetails.lastUpdate') }}
-              <a href="https://www.openstreetmap.org/" target="_blank">
+              <a
+                v-if="
+                  poi.properties.metadata.osm_type &&
+                  poi.properties.metadata.osm_id
+                "
+                :href="`https://www.openstreetmap.org/${poi.properties.metadata.osm_type}/${poi.properties.metadata.osm_id}`"
+                target="_blank"
+              >
                 <RelativeDate :date="poi.properties.metadata.updated_at">
                 </RelativeDate>
               </a>
+              <RelativeDate v-else :date="poi.properties.metadata.updated_at">
+              </RelativeDate>
             </p>
             <Location :p="poi.properties" :geom="poi.geometry" />
           </template>
