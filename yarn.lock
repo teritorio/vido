@@ -2328,7 +2328,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@mapbox/geojson-rewind@npm:^0.5.1":
+"@mapbox/geojson-rewind@npm:^0.5.2":
   version: 0.5.2
   resolution: "@mapbox/geojson-rewind@npm:0.5.2"
   dependencies:
@@ -2361,7 +2361,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@mapbox/tiny-sdf@npm:^2.0.4":
+"@mapbox/tiny-sdf@npm:^2.0.5":
   version: 2.0.5
   resolution: "@mapbox/tiny-sdf@npm:2.0.5"
   checksum: 065266c221d889f4a344f582034d51f37f7cd04ebe0a78ea89a96755fb744f44f2e0cc3a3c489dfae83c95aae04582f0b7f0dcb2d0eac8ebb365bb0c99842570
@@ -4545,7 +4545,7 @@ __metadata:
     lodash.uniqby: ^4.7.0
     lodash.without: ^4.4.0
     mapbox-gl-vue: ^2.0.4
-    maplibre-gl: ^2.1.9
+    maplibre-gl: ^2.4.0
     node-sass: ^7.0.1
     nuxt: ^2.15.8
     opening_hours: ^3.8.0
@@ -4805,6 +4805,13 @@ __metadata:
   version: 7946.0.8
   resolution: "@types/geojson@npm:7946.0.8"
   checksum: 2d9628afd0caac21dd927c90a5be0a361634a2d3b55c78752a9f1754874cf3802aa5cf2248489ace40e97b29a25d718b0d10689ca8e1b42df350222c282a8ef0
+  languageName: node
+  linkType: hard
+
+"@types/geojson@npm:^7946.0.10":
+  version: 7946.0.10
+  resolution: "@types/geojson@npm:7946.0.10"
+  checksum: 7d03094fa247f371e05e02f12b42daa034c7a7a5c9de5b5b7d77aec3472a5c349b18f5b3bd10138dfa4b243b55c4ff8800522e4b16af77134ee9935eeef7e3eb
   languageName: node
   linkType: hard
 
@@ -10141,7 +10148,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"earcut@npm:^2.2.3":
+"earcut@npm:^2.2.4":
   version: 2.2.4
   resolution: "earcut@npm:2.2.4"
   checksum: a4171a41a3281b40c413e9958b52c338069342b6de52a01f4e24ad3f81524de70a5bd60074435cccd51e8e509724f6215b6225cca0bfa44f712f184300bd152a
@@ -16009,34 +16016,35 @@ fsevents@^1.2.7:
   languageName: node
   linkType: hard
 
-"maplibre-gl@npm:^2.1.9":
-  version: 2.1.9
-  resolution: "maplibre-gl@npm:2.1.9"
+"maplibre-gl@npm:^2.4.0":
+  version: 2.4.0
+  resolution: "maplibre-gl@npm:2.4.0"
   dependencies:
-    "@mapbox/geojson-rewind": ^0.5.1
+    "@mapbox/geojson-rewind": ^0.5.2
     "@mapbox/jsonlint-lines-primitives": ^2.0.2
     "@mapbox/mapbox-gl-supported": ^2.0.1
     "@mapbox/point-geometry": ^0.1.0
-    "@mapbox/tiny-sdf": ^2.0.4
+    "@mapbox/tiny-sdf": ^2.0.5
     "@mapbox/unitbezier": ^0.0.1
     "@mapbox/vector-tile": ^1.3.1
     "@mapbox/whoots-js": ^3.1.0
-    "@types/geojson": ^7946.0.8
+    "@types/geojson": ^7946.0.10
     "@types/mapbox__point-geometry": ^0.1.2
     "@types/mapbox__vector-tile": ^1.3.0
     "@types/pbf": ^3.0.2
     csscolorparser: ~1.0.3
-    earcut: ^2.2.3
+    earcut: ^2.2.4
     geojson-vt: ^3.2.1
     gl-matrix: ^3.4.3
+    global-prefix: ^3.0.0
     murmurhash-js: ^1.0.0
     pbf: ^3.2.1
     potpack: ^1.0.2
     quickselect: ^2.0.0
-    supercluster: ^7.1.4
+    supercluster: ^7.1.5
     tinyqueue: ^2.0.3
     vt-pbf: ^3.1.3
-  checksum: 72881e7438f70705b6ee68aa8728c927c068a15cd9828c5001bc2bd8e14fa60a5d28b6cf8f67112af163cbe29c4649a5869f839da2cd7af0405ac2dbe69c2735
+  checksum: 3c7ec0c5b4d425dd001b458ab498dfc71c33a25d3610d84a0bc5453f9f4acc0972f9fe493127ce48c2c01382f3919820d40bf7ca21e1e121f77729179dc53ee7
   languageName: node
   linkType: hard
 
@@ -22442,7 +22450,7 @@ fsevents@^1.2.7:
   languageName: node
   linkType: hard
 
-"supercluster@npm:^7.1.4":
+"supercluster@npm:^7.1.5":
   version: 7.1.5
   resolution: "supercluster@npm:7.1.5"
   dependencies:
