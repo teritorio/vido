@@ -1,6 +1,11 @@
 <template>
   <aside class="pointer-events-none">
-    <div class="fixed flex flex-col justify-center inset-y-3 right-3">
+    <div
+      :class="[
+        'flex flex-col justify-center inset-y-3 right-3',
+        fullScreenMap ? 'fixed' : 'absolute',
+      ]"
+    >
       <div class="flex flex-col space-y-3 pointer-events-auto">
         <div ref="navigationControlContainer"></div>
         <div ref="geolocateControlContainer" class="md:hidden"></div>
@@ -22,6 +27,10 @@ export default Vue.extend({
       default: null,
     },
     showCompass: {
+      type: Boolean,
+      default: false,
+    },
+    fullScreenMap: {
       type: Boolean,
       default: false,
     },

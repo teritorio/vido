@@ -1,6 +1,10 @@
 <template>
   <div v-if="routeCollection">
-    <MapPois class="map-pois" :pois="routeCollection" :feature-id="poiId" />
+    <MapPois
+      class="map-pois relative"
+      :pois="routeCollection"
+      :feature-id="poiId"
+    />
     <div class="detail-wrapper">
       <div v-if="points.length > 0" class="detail-left">
         <h2>{{ $tc('poiDetails.routes.waypoints') }}</h2>

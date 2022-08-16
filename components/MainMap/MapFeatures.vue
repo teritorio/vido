@@ -6,6 +6,7 @@
         maxZoom: 17,
         padding: fitBoundsPaddingOptions,
       }"
+      :full-screen-map="true"
       :extra-attributions="extraAttributions"
       :map-style="selectedBackground"
       :pitch="pitch"
