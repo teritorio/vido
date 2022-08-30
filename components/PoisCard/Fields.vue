@@ -2,7 +2,7 @@
   <div>
     <template v-for="field in fields">
       <Field
-        :key="field"
+        :key="field.field"
         :field="field"
         :properties="properties"
         :details="details"
