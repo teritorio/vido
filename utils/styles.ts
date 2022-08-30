@@ -1,4 +1,4 @@
-import { StyleSpecification, Map } from 'maplibre-gl'
+import { StyleSpecification, Map, ExpressionSpecification } from 'maplibre-gl'
 
 import { ApiPoiId } from '~/lib/apiPois'
 
@@ -61,21 +61,23 @@ export const filterRouteByCategories = (
   categorieIds: (number | string)[]
 ) => {
   if (map && map.getLayer('features-line-casing')) {
-    const categorieIdsCond = categorieIds.map((categorieId) => [
-      'in',
-      `;${categorieId};`,
-      ['get', 'category_ids'],
-    ])
-    const filter = ['any', ...categorieIdsCond]
+    const categorieIdsCond: ExpressionSpecification[] = categorieIds.map(
+      (categorieId) => ['in', `;${categorieId};`, ['get', 'category_ids']]
+    )
+    const filter: ExpressionSpecification = ['any', ...categorieIdsCond]
     map.setLayoutProperty('features-line-casing', 'visibility', 'visible')
     map.setLayoutProperty('features-line', 'visibility', 'visible')
     map.setLayoutProperty('features-fill', 'visibility', 'visible')
     map.setLayoutProperty('features-outline', 'visibility', 'visible')
     const isLineString = ['==', ['geometry-type'], 'LineString']
     const isPolygon = ['==', ['geometry-type'], 'Polygon']
+    // @ts-ignore Inchorent MapLibre type checking in 2.3
     map.setFilter('features-line-casing', ['all', filter, isLineString])
+    // @ts-ignore Inchorent MapLibre type checking in 2.3
     map.setFilter('features-line', ['all', filter, isLineString])
+    // @ts-ignore Inchorent MapLibre type checking in 2.3
     map.setFilter('features-fill', ['all', filter, isPolygon])
+    // @ts-ignore Inchorent MapLibre type checking in 2.3
     map.setFilter('features-outline', ['all', filter, isPolygon])
   }
 }
@@ -90,12 +92,16 @@ export const filterRouteByPoiId = (map: Map, id: ApiPoiId) => {
     const isPolygon = ['==', ['geometry-type'], 'Polygon']
     const id_ = id as number
     map.setFilter('features-line-casing', [
+      // @ts-ignore Inchorent MapLibre type checking in 2.3
       'all',
       ['==', ['id'], id_],
       isLineString,
     ])
+    // @ts-ignore Inchorent MapLibre type checking in 2.3
     map.setFilter('features-line', ['all', ['==', ['id'], id_], isLineString])
+    // @ts-ignore Inchorent MapLibre type checking in 2.3
     map.setFilter('features-fill', ['all', ['==', ['id'], id_], isPolygon])
+    // @ts-ignore Inchorent MapLibre type checking in 2.3
     map.setFilter('features-outline', ['all', ['==', ['id'], id_], isPolygon])
   }
 }
