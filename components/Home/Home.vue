@@ -129,7 +129,7 @@
           :categories="categories"
           :features="mapFeatures"
           :selected-feature="selectedFeature"
-          :selected-categories-ids="selectedCategoriesIds"
+          :selected-categories-ids="isModeExplorer ? [] : selectedCategoriesIds"
           :style-icon-filter="(isModeExplorer && poiFilters) || null"
           @on-select-feature="setSelectedFeature($event)"
           @full-attribution="setFullAttributions($event)"

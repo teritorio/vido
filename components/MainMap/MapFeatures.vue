@@ -186,6 +186,10 @@ export default Vue.extend({
       this.showSelectedFeature()
     },
 
+    selectedCategoriesIds(categories) {
+      filterRouteByCategories(this.map, categories)
+    },
+
     selectedBackground() {
       // Only once map is loaded. Can be called from beforeMount().
       if (this.map) {
