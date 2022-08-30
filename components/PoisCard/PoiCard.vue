@@ -13,6 +13,7 @@
         class="md:w-48 h-full max-h-44 md:max-h-full flex align-middle justify-center absolute z-0"
       >
         <TeritorioIcon
+          v-if="icon"
           :picto="icon"
           :use-native-alignment="false"
           class="text-8xl"
