@@ -55,7 +55,7 @@
         "menu_group": {
             "id": 21,
             "name": {
-                "fr": "Hébergement"
+                "fr": "Circuit"
             },
             "icon": "teritorio teritorio-hosting",
             "color_fill": "#99163a",
@@ -75,8 +75,8 @@
             "id": 211,
             "slug": "",
             "name": {
-                "en": "Tourism",
-                "fr": "Tourisme"
+                "en": "By Foot",
+                "fr": "À pied"
             },
             "search_indexed": true,
             "icon": "teritorio teritorio-artwork",
@@ -86,5 +86,26 @@
             "zoom": "16"
         },
         "index_order": 6
+    },
+    {
+        "id": 22,
+        "parent_id": 2,
+        "menu_group": null,
+        "link": null,
+        "category": {
+            "id": 22,
+            "slug": "",
+            "name": {
+                "en": "Camp site",
+                "fr": "Aire de passage"
+            },
+            "search_indexed": true,
+            "icon": "teritorio teritorio-artwork",
+            "color_fill": "#ec0029",
+            "color_line": "#ec0029",
+            "style_merge": false,
+            "zoom": "16"
+        },
+        "index_order": 7
     }
 ]

@@ -22,7 +22,7 @@
                     "id": 1,
                     "cartocode": "A1",
                     "category_ids": [
-                        211
+                        22
                     ],
                     "source": "osm",
                     "osm_id": 583477748,
