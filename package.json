@@ -9,13 +9,13 @@
     "generate": "yarn nuxt generate",
     "start": "yarn nuxt start",
     "start:storybook": "yarn nuxt storybook",
-    "start:cypress": "yarn run cypress open",
+    "start:cypress": "ruby poi_explode.rb cypress/fixtures/teritorio/references/pois.geojson && yarn run cypress open",
     "lint": "yarn lint:js && yarn lint:style",
     "lint:js": "yarn eslint --ext .js,.vue --ignore-path .gitignore .",
     "lint:style": "yarn stylelint **/*.{vue,css} --ignore-path .gitignore",
     "test": "yarn test:jest && yarn test:cypress",
     "test:jest": "yarn jest",
-    "test:cypress": "yarn run cypress run",
+    "test:cypress": "ruby poi_explode.rb cypress/fixtures/teritorio/references/pois.geojson && yarn run cypress run",
     "postinstall": "[[ -d '.git' ]] && husky install || true"
   },
   "dependencies": {

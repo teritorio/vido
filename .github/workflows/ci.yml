@@ -80,6 +80,9 @@ jobs:
 
       - uses: ./.github/actions/install
 
+      - name: Install ruby
+        run: sudo apt-get install -y ruby
+
       - name: Runtime configuration
         run: echo "${{secrets.CONFIGURATION_DEV}}" > vidos.config.ts
 

@@ -15,6 +15,9 @@
                 "tourism": "caravan_site",
                 "addr:postcode": "40000",
                 "addr:city": "Mont-de-Marsan",
+                "phone": [
+                    "+33 6757658"
+                ],
                 "metadata": {
                     "id": 1,
                     "cartocode": "A1",
@@ -34,8 +37,30 @@
                 "editorial": {
                     "details_fields": [
                         {
-                            "group": "contact",
+                            "field": "name"
+                        },
+                        {
+                            "group": "contact_standard",
                             "display_mode": "standard",
+                            "icon": "phone",
+                            "fields": [
+                                {
+                                    "field": "name"
+                                },
+                                {
+                                    "field": "addr"
+                                },
+                                {
+                                    "field": "phone"
+                                },
+                                {
+                                    "field": "mobile"
+                                }
+                            ]
+                        },
+                        {
+                            "group": "contact_card",
+                            "display_mode": "card",
                             "icon": "phone",
                             "fields": [
                                 {
@@ -58,7 +83,10 @@
                     ],
                     "popup_fields": [
                         {
-                            "fields": "addr"
+                            "field": "description"
+                        },
+                        {
+                            "field": "addr"
                         }
                     ],
                     "class_label": {
@@ -70,7 +98,7 @@
                     "class_label_details": {
                         "fr": "Aire de camping-cars"
                     },
-                    "website:details": "https:\/\/dev.appcarto.teritorio.xyz\/content\/osm_poi\/aire-de-moyen-passage-des-gens-du-voyage\/?site=cdt40"
+                    "website:details": "/poi/1/details"
                 }
             }
         },
@@ -118,16 +146,25 @@
                             "field": "route"
                         },
                         {
-                            "field": "route:gpx_trace"
+                            "field": "opening_hours"
                         },
                         {
-                            "field": "route:pdf"
-                        },
-                        {
-                            "field": "description"
+                            "group": "download",
+                            "display_mode": "card",
+                            "icon": "arrow-circle-down",
+                            "fields": [
+                                {
+                                    "field": "route:gpx_trace"
+                                },
+                                {
+                                    "field": "route:pdf"
+                                }
+                            ]
                         },
                         {
                             "group": "contact",
+                            "display_mode": "card",
+                            "icon": "phone",
                             "fields": [
                                 {
                                     "field": "addr"
@@ -141,7 +178,7 @@
                             ]
                         },
                         {
-                            "field": "opening_hours"
+                            "field": "description"
                         }
                     ],
                     "popup_fields": [
@@ -161,7 +198,7 @@
                     "class_label_details": {
                         "fr": "Balades à pieds"
                     },
-                    "website:details": "https://www.tourismelandes.com/wp-json/irisit/link/ITIAQU040V502MFU"
+                    "website:details": "/poi/2/details"
                 },
                 "description": "<div>Itinéraire très intéressant, d'une part pour sa variété paysagère accentuée par la traversée fréquente de cours d'eau et d'autre part, par la qualité du patrimoine bâti : maisons traditionnelles landaises, église en garluche. \n\nDistance : 10,2 km - Durée : 4h45 - Animaux tenus en laisse  - Sentier pédestre et VTT \nFiche rando disponible dans le topoguide du Département des Landes du Pays de Born n°15 (en vente : 2 €)</div><div><br /></div><div><span type=\"champSimple\" id=\"408feabd-c6ba-44fe-99e6-2dcb32b888b1\" data-champcoderef=\" \"></span><br /></div><br />",
                 "image": [
