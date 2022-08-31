@@ -1,5 +1,5 @@
 <template>
-  <span>
+  <div>
     <template v-if="field.field == 'route'">
       <FieldsHeader
         :key="'header_' + field.field"
@@ -47,7 +47,7 @@
         <div
           v-if="field.field == 'description'"
           v-html="properties.description"
-        ></div>
+        />
 
         <div
           v-for="phone in (properties.phone || []).concat(
@@ -101,7 +101,7 @@
         </template>
       </div>
     </template>
-  </span>
+  </div>
 </template>
 
 <script lang="ts">

@@ -72,6 +72,6 @@ export default Vue.extend({
 
 <style lang="scss" scoped>
 .fields-list > * {
-  margin: 3.3rem;
+  margin-bottom: 3.3rem;
 }
 </style>
