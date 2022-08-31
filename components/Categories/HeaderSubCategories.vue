@@ -1,9 +1,9 @@
 <template>
   <CategoryList
-    :categories="listItems"
+    :menu-items="listItems"
     :filters="filters"
     :categories-activesubs-count="categoriesActivesubsCount"
-    @click="onCategoryClick"
+    @click="onMenuItemClick"
     @filter-click="onFilterClick"
   />
 </template>
@@ -12,7 +12,7 @@
 import Vue, { PropType } from 'vue'
 
 import CategoryList from '~/components/Categories/CategoryList/CategoryList.vue'
-import { Category } from '~/lib/apiMenu'
+import { MenuItem } from '~/lib/apiMenu'
 import { FilterValues } from '~/utils/types-filters'
 
 export default Vue.extend({
@@ -20,7 +20,7 @@ export default Vue.extend({
     CategoryList,
   },
   props: {
-    categories: {
+    menuItems: {
       type: Array,
       required: true,
     },
@@ -39,26 +39,26 @@ export default Vue.extend({
   },
   computed: {
     listItems() {
-      return this.$props.categories.map((category: Category) => ({
-        ...category,
-        colorFill: (category.menu_group || category.link || category.category)
+      return this.$props.menuItems.map((menuItem: MenuItem) => ({
+        ...menuItem,
+        colorFill: (menuItem.menu_group || menuItem.link || menuItem.category)
           .color_fill,
-        colorLine: (category.menu_group || category.link || category.category)
+        colorLine: (menuItem.menu_group || menuItem.link || menuItem.category)
           .color_line,
-        label: (category.menu_group || category.link || category.category).name
+        label: (menuItem.menu_group || menuItem.link || menuItem.category).name
           .fr,
-        picto: (category.menu_group || category.link || category.category).icon,
-        href: category.link?.href,
-        filters: category.category?.filters || {},
-        selected: this.$props.isSubCategorySelected(category.id),
+        picto: (menuItem.menu_group || menuItem.link || menuItem.category).icon,
+        href: menuItem.link?.href,
+        filters: menuItem.category?.filters || {},
+        selected: this.$props.isSubCategorySelected(menuItem.id),
       }))
     },
   },
   methods: {
-    onCategoryClick(categoryId: Category['id']) {
-      this.$emit('category-click', categoryId)
+    onMenuItemClick(menuItemId: MenuItem['id']) {
+      this.$emit('menu-item-click', menuItemId)
     },
-    onFilterClick(categoryId: Category['id']) {
+    onFilterClick(categoryId: MenuItem['id']) {
       this.$emit('filter-click', categoryId)
     },
   },

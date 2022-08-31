@@ -2,25 +2,25 @@
   <transition name="non-highlighted" appear>
     <div v-if="!collapsed" class="grid items-start grid-cols-4 gap-3">
       <CategoryButton
-        v-for="category in nonHighlightedCategories"
-        :key="category.id"
-        :category-id="category.id"
+        v-for="menuItem in nonHighlightedMenuItems"
+        :key="menuItem.id"
+        :menu-item-id="menuItem.id"
         :color-fill="
-          (category.menu_group || category.link || category.category).color_fill
+          (menuItem.menu_group || menuItem.link || menuItem.category).color_fill
         "
         :label="
-          (category.menu_group || category.link || category.category).name.fr
+          (menuItem.menu_group || menuItem.link || menuItem.category).name.fr
         "
         :picto="
-          (category.menu_group || category.link || category.category).icon
+          (menuItem.menu_group || menuItem.link || menuItem.category).icon
         "
         :type="
-          (category.menu_group || category.link || category.category)
+          (menuItem.menu_group || menuItem.link || menuItem.category)
             .display_mode
         "
-        :href="category.link && category.link.href"
-        :active-sub-categories="getCategoryCount(category.id)"
-        @click="onCategoryClick(category)"
+        :href="menuItem.link && menuItem.link.href"
+        :active-sub-categories="getCategoryCount(menuItem.id)"
+        @click="onMenuItemClick(menuItem)"
       />
     </div>
   </transition>
@@ -31,14 +31,14 @@ import Vue, { PropType } from 'vue'
 import { mapGetters } from 'vuex'
 
 import CategoryButton from '~/components/Categories/CategoryButton/CategoryButton.vue'
-import { Category } from '~/lib/apiMenu'
+import { ApiMenuCategory, MenuItem } from '~/lib/apiMenu'
 
 export default Vue.extend({
   components: {
     CategoryButton,
   },
   props: {
-    categoryId: {
+    menuItemId: {
       type: Number,
       required: true,
     },
@@ -56,20 +56,20 @@ export default Vue.extend({
   },
   computed: {
     ...mapGetters({
-      getRootCategoriesFromCategoryId: 'menu/getRootCategoriesFromCategoryId',
+      getRootMenuItemFromCategoryId: 'menu/getRootMenuItemFromCategoryId',
     }),
-    nonHighlightedCategories(): Category[] {
-      return this.getRootCategoriesFromCategoryId(this.categoryId)
+    nonHighlightedMenuItems(): MenuItem[] {
+      return this.getRootMenuItemFromCategoryId(this.menuItemId)
     },
   },
   methods: {
     onCollapseButtonClick() {
       this.collapsed = !this.collapsed
     },
-    onCategoryClick(category: Category) {
-      this.$emit('category-click', category.id)
+    onMenuItemClick(menuItem: MenuItem) {
+      this.$emit('menu-item-click', menuItem.id)
     },
-    getCategoryCount(id: Category['id']) {
+    getCategoryCount(id: ApiMenuCategory['id']) {
       return this.categoriesActivesubsCount[id]
     },
   },

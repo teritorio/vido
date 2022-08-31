@@ -4,7 +4,7 @@
   >
     <HeaderSubCategories
       class="flex-1 pointer-events-auto"
-      :categories="categories"
+      :menu-items="menuItems"
       :is-sub-category-selected="isSubCategorySelected"
     />
   </aside>
@@ -14,15 +14,15 @@
 import Vue, { PropType } from 'vue'
 
 import HeaderSubCategories from '~/components/Categories/HeaderSubCategories.vue'
-import { Category } from '~/lib/apiMenu'
+import { MenuItem } from '~/lib/apiMenu'
 
 export default Vue.extend({
   components: {
     HeaderSubCategories,
   },
   props: {
-    categories: {
-      type: Array as PropType<Category[]>,
+    menuItems: {
+      type: Array as PropType<MenuItem[]>,
       required: true,
     },
     isSubCategorySelected: {
@@ -31,12 +31,12 @@ export default Vue.extend({
     },
   },
   computed: {
-    allCategoriesId(): Category['id'][] {
-      return this.categories.map((category) => category.id)
+    allMenuItemId(): MenuItem['id'][] {
+      return this.menuItems.map((menuItem) => menuItem.id)
     },
     isAllSelected(): boolean {
-      return !this.categories.find(
-        (category) => !this.isSubCategorySelected(category.id)
+      return !this.menuItems.find(
+        (menuItem) => !this.isSubCategorySelected(menuItem.id)
       )
     },
   },

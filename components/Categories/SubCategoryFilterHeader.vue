@@ -98,7 +98,7 @@ import Vue, { PropType } from 'vue'
 import { mapActions } from 'vuex'
 
 import DateRange from '~/components/Filters/DateRange.vue'
-import { Category } from '~/lib/apiMenu'
+import { ApiMenuCategory } from '~/lib/apiMenu'
 import {
   FilterValueBoolean,
   FilterValueDate,
@@ -112,8 +112,8 @@ export default Vue.extend({
   },
 
   props: {
-    subcategoryId: {
-      type: Number as PropType<Category['id']>,
+    categoryId: {
+      type: Number as PropType<ApiMenuCategory['id']>,
       required: true,
     },
     filtersValues: {
@@ -143,7 +143,7 @@ export default Vue.extend({
 
       filter.filterValue = value
       this.applyCategorieFilters({
-        categoryId: this.subcategoryId,
+        categoryId: this.categoryId,
         filterValues: filters,
       })
     },
@@ -154,7 +154,7 @@ export default Vue.extend({
 
       filter.filterValues = values || []
       this.applyCategorieFilters({
-        categoryId: this.subcategoryId,
+        categoryId: this.categoryId,
         filterValues: filters,
       })
     },
@@ -167,7 +167,7 @@ export default Vue.extend({
       filters[filterIndex] = filterValue
 
       this.applyCategorieFilters({
-        categoryId: this.subcategoryId,
+        categoryId: this.categoryId,
         filterValues: filters,
       })
     },
@@ -183,7 +183,7 @@ export default Vue.extend({
       }
 
       this.applyCategorieFilters({
-        categoryId: this.subcategoryId,
+        categoryId: this.categoryId,
         filterValues: filters,
       })
     },

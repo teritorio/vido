@@ -45,7 +45,7 @@
         <button
           type="button"
           class="flex shrink-0 items-center justify-center w-10 h-10 text-2xl font-bold transition-all rounded-full outline-none cursor-pointer focus:outline-none hover:bg-blue-700 focus:bg-blue-700"
-          @click="goToCategories"
+          @click="goToMenuItems"
         >
           <font-awesome-icon icon="arrow-left" class="text-white" size="xs" />
         </button>
@@ -63,16 +63,16 @@
 
     <template v-if="!isModeExplorerOrFavorites">
       <HeaderRootCategories
-        v-for="(category, index) in categoryRootCategories"
-        :key="category.id"
+        v-for="(menuItem, index) in firstLevelMenuItems"
+        :key="menuItem.id"
         :class="[
           'pointer-events-auto 2xl:max-h-screen overflow-y-auto bg-white rounded-xl shadow-md px-5 py-4',
-          !(index > 0 || categoryRootCategories.length < 2) && 'shrink-0',
-          (index > 0 || categoryRootCategories.length < 2) && 'max-h-full',
+          !(index > 0 || firstLevelMenuItems.length < 2) && 'shrink-0',
+          (index > 0 || firstLevelMenuItems.length < 2) && 'max-h-full',
         ]"
         :categories-activesubs-count="categoriesActivesubsCount"
-        :category-id="category.id"
-        @category-click="onCategoryClick"
+        :menu-item-id="menuItem.id"
+        @menu-item-click="onMenuItemClick"
       />
     </template>
   </aside>
@@ -83,7 +83,7 @@ import Vue, { PropType } from 'vue'
 import { mapGetters } from 'vuex'
 
 import HeaderRootCategories from '~/components/Categories/HeaderRootCategories.vue'
-import { Category } from '~/lib/apiMenu'
+import { MenuItem } from '~/lib/apiMenu'
 
 export default Vue.extend({
   components: {
@@ -115,18 +115,18 @@ export default Vue.extend({
     ...mapGetters({
       isModeFavorites: 'map/isModeFavorites',
       isModeExplorerOrFavorites: 'map/isModeExplorerOrFavorites',
-      categoryRootCategories: 'menu/categoryRootCategories',
+      firstLevelMenuItems: 'menu/firstLevelMenuItems',
     }),
   },
   methods: {
-    onCategoryClick(categoryId: Category['id']) {
-      this.$emit('category-click', categoryId)
+    onMenuItemClick(menuItemId: MenuItem['id']) {
+      this.$emit('menu-item-click', menuItemId)
     },
     onSearchClick() {
       this.$emit('search-click')
     },
-    goToCategories() {
-      this.$emit('go-to-categories')
+    goToMenuItems() {
+      this.$emit('go-to-menu-items')
     },
   },
 })

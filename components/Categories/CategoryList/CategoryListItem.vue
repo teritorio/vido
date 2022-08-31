@@ -2,7 +2,7 @@
   <div class="flex flex-col items-start">
     <component
       :is="href ? 'a' : 'button'"
-      :id="`CategoryListItem-${category.id}`"
+      :id="`MenuItemList-${menuItem.id}`"
       :href="href"
       target="_blank"
       class="flex items-center justify-between w-full px-5 py-3 rounded-lg outline-none focus:outline-none hover:bg-zinc-100"
@@ -12,11 +12,11 @@
         <div class="relative">
           <TeritorioIconBadge
             :color-fill="
-              (category.menu_group || category.link || category.category)
+              (menuItem.menu_group || menuItem.link || menuItem.category)
                 .color_fill
             "
             :picto="
-              (category.menu_group || category.link || category.category).icon
+              (menuItem.menu_group || menuItem.link || menuItem.category).icon
             "
             size="lg"
           />
@@ -29,7 +29,7 @@
           </div>
         </div>
 
-        <div class="text-left">{{ category.label }}</div>
+        <div class="text-left">{{ menuItem.label }}</div>
       </div>
 
       <template v-if="href">
@@ -70,7 +70,7 @@
     </component>
     <button
       v-if="
-        Object.keys((category.category && category.category.filters) || [])
+        Object.keys((menuItem.category && menuItem.category.filters) || [])
           .length > 0 && selected
       "
       :class="[
@@ -92,7 +92,7 @@
 import Vue, { PropType } from 'vue'
 
 import TeritorioIconBadge from '~/components/UI/TeritorioIconBadge.vue'
-import { Category } from '~/lib/apiMenu'
+import { MenuItem } from '~/lib/apiMenu'
 import { FilterValues, filterValuesIsSet } from '~/utils/types-filters'
 
 export default Vue.extend({
@@ -100,8 +100,8 @@ export default Vue.extend({
     TeritorioIconBadge,
   },
   props: {
-    category: {
-      type: Object as PropType<Category>,
+    menuItem: {
+      type: Object as PropType<MenuItem>,
       required: true,
     },
     selected: {
@@ -123,7 +123,7 @@ export default Vue.extend({
   },
   computed: {
     hasChildren(): boolean {
-      return (this.category?.menu_group?.vido_children || []).length > 0
+      return (this.menuItem?.menu_group?.vido_children || []).length > 0
     },
     isFiltered(): boolean {
       return this.filters && filterValuesIsSet(this.filters)
@@ -136,48 +136,48 @@ export default Vue.extend({
           type: 'external_link',
           url: this.href,
           title: (
-            this.category.menu_group ||
-            this.category.link ||
-            this.category.category
+            this.menuItem.menu_group ||
+            this.menuItem.link ||
+            this.menuItem.category
           ).name.fr,
         })
       } else if (this.hasChildren) {
         this.$tracking({
           type: 'menu',
-          menuItemId: this.category.id,
+          menuItemId: this.menuItem.id,
           title: (
-            this.category.menu_group ||
-            this.category.link ||
-            this.category.category
+            this.menuItem.menu_group ||
+            this.menuItem.link ||
+            this.menuItem.category
           ).name.fr,
         })
       } else {
         this.$tracking({
           type: 'category_event',
           event: 'enable',
-          categoryId: this.category.id,
+          categoryId: this.menuItem.id,
           title: (
-            this.category.menu_group ||
-            this.category.link ||
-            this.category.category
+            this.menuItem.menu_group ||
+            this.menuItem.link ||
+            this.menuItem.category
           ).name.fr,
         })
       }
 
-      this.$emit('click', this.category.id)
+      this.$emit('click', this.menuItem.id)
     },
     onFilterClick() {
       this.$tracking({
         type: 'category_event',
         event: 'filter',
-        categoryId: this.category.id,
+        categoryId: this.menuItem.id,
         title: (
-          this.category.menu_group ||
-          this.category.link ||
-          this.category.category
+          this.menuItem.menu_group ||
+          this.menuItem.link ||
+          this.menuItem.category
         ).name.fr,
       })
-      this.$emit('filter-click', this.category.id)
+      this.$emit('filter-click', this.menuItem.id)
     },
   },
 })

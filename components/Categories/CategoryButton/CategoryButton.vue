@@ -1,7 +1,7 @@
 <template>
   <a
-    :id="`CategoryButton-${categoryId}`"
-    :href="href || `/${categoryId}`"
+    :id="`MenuItemButton-${menuItemId}`"
+    :href="href || `/${menuItemId}`"
     target="_blank"
     :class="[
       'flex focus:outline-none outline-none items-center text-center self-stretch justify-start leading-none transition-colors rounded-lg p-4 relative hover:bg-zinc-100',
@@ -66,7 +66,7 @@ export default Vue.extend({
       type: String,
       required: true,
     },
-    categoryId: {
+    menuItemId: {
       type: Number,
       required: true,
     },
@@ -102,14 +102,14 @@ export default Vue.extend({
       } else {
         this.$tracking({
           type: 'menu',
-          menuItemId: this.categoryId,
+          menuItemId: this.menuItemId,
           title: this.label,
         })
       }
 
       if (!this.href) {
         event.preventDefault()
-        this.$emit('click', this.categoryId)
+        this.$emit('click', this.menuItemId)
       }
     },
   },

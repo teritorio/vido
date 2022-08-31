@@ -1,5 +1,5 @@
 import CategoryList from '~/components/Categories/CategoryList/CategoryList.vue'
-import { Category } from '~/lib/apiMenu'
+import { MenuItem } from '~/lib/apiMenu'
 import { bind } from '~/lib/storybook-types'
 
 export default {
@@ -7,7 +7,7 @@ export default {
   component: CategoryList,
 }
 
-const categories: Category[] = [
+const menuItems: MenuItem[] = [
   {
     id: 123,
     selected_by_default: false,
@@ -43,7 +43,7 @@ const categories: Category[] = [
 ]
 
 const defaultProps = {
-  categories,
+  menuItems,
   filters: {},
 }
 

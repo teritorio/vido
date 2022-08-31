@@ -32,11 +32,11 @@
 
     <HeaderSubCategories
       class="flex-1 h-full overflow-y-auto pointer-events-auto"
-      :categories="categories"
+      :menu-items="menuItems"
       :filters="filters"
       :is-sub-category-selected="isSubCategorySelected"
       :categories-activesubs-count="categoriesActivesubsCount"
-      @category-click="onCategoryClick"
+      @menu-item-click="onMenuItemClick"
       @filter-click="onFilterClick"
     />
   </aside>
@@ -46,7 +46,7 @@
 import Vue, { PropType } from 'vue'
 
 import HeaderSubCategories from '~/components/Categories/HeaderSubCategories.vue'
-import { Category } from '~/lib/apiMenu'
+import { MenuItem } from '~/lib/apiMenu'
 import { FilterValues } from '~/utils/types-filters'
 
 export default Vue.extend({
@@ -54,8 +54,8 @@ export default Vue.extend({
     HeaderSubCategories,
   },
   props: {
-    categories: {
-      type: Array as PropType<Category[]>,
+    menuItems: {
+      type: Array as PropType<MenuItem[]>,
       required: true,
     },
     filters: {
@@ -72,9 +72,9 @@ export default Vue.extend({
     },
   },
   computed: {
-    allCategoriesId(): Category['id'][] {
-      let ids: Category['id'][] = []
-      this.categories.forEach((c: Category) => {
+    allMenuItemIds(): MenuItem['id'][] {
+      let ids: MenuItem['id'][] = []
+      this.menuItems.forEach((c: MenuItem) => {
         if (
           c?.menu_group?.vido_children &&
           c.menu_group.vido_children.length > 0
@@ -89,7 +89,7 @@ export default Vue.extend({
     isAllSelected(): boolean {
       let hasNotSelected = false
 
-      for (const c of this.categories) {
+      for (const c of this.menuItems) {
         if (
           c?.menu_group?.vido_children &&
           c.menu_group.vido_children.length > 0
@@ -110,17 +110,17 @@ export default Vue.extend({
     },
   },
   methods: {
-    onCategoryClick(categoryId: Category['id']) {
-      this.$emit('category-click', categoryId)
+    onMenuItemClick(menuItemId: MenuItem['id']) {
+      this.$emit('menu-item-click', menuItemId)
     },
-    onFilterClick(categoryId: Category['id']) {
-      this.$emit('filter-click', categoryId)
+    onFilterClick(menuItemId: MenuItem['id']) {
+      this.$emit('filter-click', menuItemId)
     },
     onClickSelectAll(): void {
-      this.$emit('select-all-categories', this.allCategoriesId)
+      this.$emit('select-all-categories', this.allMenuItemIds)
     },
     onClickUnselectAll(): void {
-      this.$emit('unselect-all-categories', this.allCategoriesId)
+      this.$emit('unselect-all-categories', this.allMenuItemIds)
     },
     onGoBackClick() {
       this.$emit('go-back-click')
