@@ -143,8 +143,8 @@ export default Vue.extend({
         })
       } else if (this.hasChildren) {
         this.$tracking({
-          type: 'category',
-          categoryId: this.category.id,
+          type: 'menu',
+          menuItemId: this.category.id,
           title: (
             this.category.menu_group ||
             this.category.link ||

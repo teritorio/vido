@@ -36,7 +36,7 @@ export default class Google implements Tracker {
         })
         break
       }
-      case 'category': {
+      case 'menu': {
         this.gtm.push({
           event: 'pageview',
           pageType: 'PageView',

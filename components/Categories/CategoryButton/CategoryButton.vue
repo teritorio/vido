@@ -101,8 +101,8 @@ export default Vue.extend({
         })
       } else {
         this.$tracking({
-          type: 'category',
-          categoryId: this.categoryId,
+          type: 'menu',
+          menuItemId: this.categoryId,
           title: this.label,
         })
       }

@@ -52,7 +52,7 @@ export default class Matomo implements Tracker {
         _paq.push(['trackPageView', event.title])
         break
       }
-      case 'category': {
+      case 'menu': {
         _paq.push(['setCustomUrl', `/${urlSlug(event.title)}`])
         _paq.push(['trackPageView', event.title])
         break

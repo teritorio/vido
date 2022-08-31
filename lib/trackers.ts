@@ -16,8 +16,8 @@ export type Event =
       origin: OriginEnum
     }
   | {
-      type: 'category'
-      categoryId: Category['id']
+      type: 'menu'
+      menuItemId: Category['id']
       title: string
     }
   | {

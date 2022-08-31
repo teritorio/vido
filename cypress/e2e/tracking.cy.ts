@@ -37,7 +37,7 @@ describe('home content', () => {
     // Navigate into category group
     cy.get('#CategoryButton-21').click()
     asserts.push((event: Event) => {
-      assert(event.type === 'category', 'Navigate into category group')
+      assert(event.type === 'menu', 'Navigate into category group')
       // @ts-ignore
       assert(event.categoryId === 21, 'Navigate into category group')
     })
