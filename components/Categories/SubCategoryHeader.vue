@@ -29,30 +29,16 @@
         {{ $tc('headerMenu.unselectAll') }}
       </button>
     </div>
-
-    <HeaderSubCategories
-      class="flex-1 h-full overflow-y-auto pointer-events-auto"
-      :menu-items="menuItems"
-      :filters="filters"
-      :is-sub-category-selected="isSubCategorySelected"
-      :categories-activesubs-count="categoriesActivesubsCount"
-      @menu-item-click="onMenuItemClick"
-      @filter-click="onFilterClick"
-    />
   </aside>
 </template>
 
 <script lang="ts">
 import Vue, { PropType } from 'vue'
 
-import HeaderSubCategories from '~/components/Categories/HeaderSubCategories.vue'
 import { MenuItem } from '~/lib/apiMenu'
 import { FilterValues } from '~/utils/types-filters'
 
 export default Vue.extend({
-  components: {
-    HeaderSubCategories,
-  },
   props: {
     menuItems: {
       type: Array as PropType<MenuItem[]>,

@@ -60,21 +60,6 @@
         </p>
       </div>
     </div>
-
-    <template v-if="!isModeExplorerOrFavorites">
-      <HeaderRootCategories
-        v-for="(menuItem, index) in firstLevelMenuItems"
-        :key="menuItem.id"
-        :class="[
-          'pointer-events-auto 2xl:max-h-screen overflow-y-auto bg-white rounded-xl shadow-md px-5 py-4',
-          !(index > 0 || firstLevelMenuItems.length < 2) && 'shrink-0',
-          (index > 0 || firstLevelMenuItems.length < 2) && 'max-h-full',
-        ]"
-        :categories-activesubs-count="categoriesActivesubsCount"
-        :menu-item-id="menuItem.id"
-        @menu-item-click="onMenuItemClick"
-      />
-    </template>
   </aside>
 </template>
 
@@ -82,13 +67,9 @@
 import Vue, { PropType } from 'vue'
 import { mapGetters } from 'vuex'
 
-import HeaderRootCategories from '~/components/Categories/HeaderRootCategories.vue'
 import { MenuItem } from '~/lib/apiMenu'
 
 export default Vue.extend({
-  components: {
-    HeaderRootCategories,
-  },
   props: {
     showPoi: {
       type: Boolean,

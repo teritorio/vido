@@ -35,7 +35,7 @@ describe('home content', () => {
     })
 
     // Navigate into category group
-    cy.get('#MenuItemButton-21').click()
+    cy.get('#MenuGroup-21').click()
     asserts.push((event: Event) => {
       assert(event.type === 'menu', 'Navigate into category group')
       // @ts-ignore
@@ -43,7 +43,7 @@ describe('home content', () => {
     })
 
     // Enable category
-    cy.get('#MenuItemList-211').click()
+    cy.get('#Category-211').click()
     asserts.push((event: Event) => {
       assert(event.type === 'category_event', 'Enable category')
       // @ts-ignore

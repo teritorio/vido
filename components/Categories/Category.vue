@@ -1,24 +1,16 @@
 <template>
   <div class="flex flex-col items-start">
-    <component
-      :is="href ? 'a' : 'button'"
-      :id="`MenuItemList-${menuItem.id}`"
-      :href="href"
-      target="_blank"
+    <button
+      :id="`Category-${category.id}`"
       class="flex items-center justify-between w-full px-5 py-3 rounded-lg outline-none focus:outline-none hover:bg-zinc-100"
       @click="onClick"
     >
       <div class="flex items-center space-x-4">
         <div class="relative">
           <TeritorioIconBadge
-            :color-fill="
-              (menuItem.menu_group || menuItem.link || menuItem.category)
-                .color_fill
-            "
-            :picto="
-              (menuItem.menu_group || menuItem.link || menuItem.category).icon
-            "
-            size="lg"
+            :color-fill="category.category.color_fill"
+            :picto="category.category.icon"
+            :size="size"
           />
 
           <div
@@ -29,48 +21,29 @@
           </div>
         </div>
 
-        <div class="text-left">{{ menuItem.label }}</div>
+        <div class="text-left">{{ category.category.name.fr }}</div>
       </div>
 
-      <template v-if="href">
+      <div v-if="!selected" class="shrink-0 text-zinc-300">
         <font-awesome-icon
-          class="text-zinc-700"
+          class="fill-current"
           fixed-width
-          icon="external-link-alt"
-          size="sm"
+          :icon="['far', 'circle']"
+          :size="size"
         />
-      </template>
-      <template v-else-if="hasChildren">
+      </div>
+      <div v-else class="shrink-0 text-emerald-500">
         <font-awesome-icon
-          class="text-zinc-800"
+          class="fill-current"
           fixed-width
-          icon="chevron-right"
-          size="lg"
+          icon="check-circle"
+          :size="size"
         />
-      </template>
-      <template v-else>
-        <div v-if="!selected" class="shrink-0 text-zinc-300">
-          <font-awesome-icon
-            class="fill-current"
-            fixed-width
-            :icon="['far', 'circle']"
-            size="lg"
-          />
-        </div>
-
-        <div v-if="selected" class="shrink-0 text-emerald-500">
-          <font-awesome-icon
-            class="fill-current"
-            fixed-width
-            icon="check-circle"
-            size="lg"
-          />
-        </div>
-      </template>
-    </component>
+      </div>
+    </button>
     <button
       v-if="
-        Object.keys((menuItem.category && menuItem.category.filters) || [])
+        Object.keys((category.category && category.category.filters) || [])
           .length > 0 && selected
       "
       :class="[
@@ -92,7 +65,7 @@
 import Vue, { PropType } from 'vue'
 
 import TeritorioIconBadge from '~/components/UI/TeritorioIconBadge.vue'
-import { MenuItem } from '~/lib/apiMenu'
+import { ApiMenuCategory } from '~/lib/apiMenu'
 import { FilterValues, filterValuesIsSet } from '~/utils/types-filters'
 
 export default Vue.extend({
@@ -100,84 +73,47 @@ export default Vue.extend({
     TeritorioIconBadge,
   },
   props: {
-    menuItem: {
-      type: Object as PropType<MenuItem>,
+    category: {
+      type: Object as PropType<ApiMenuCategory>,
       required: true,
-    },
-    selected: {
-      type: Boolean,
-      default: false,
     },
     filters: {
       type: Array as unknown as PropType<FilterValues>,
       default: null,
     },
-    activeSubCategories: {
-      type: Number,
-      default: 0,
+    selected: {
+      type: Boolean,
+      required: true,
     },
-    href: {
+    size: {
       type: String,
-      default: null,
+      required: true,
     },
   },
   computed: {
-    hasChildren(): boolean {
-      return (this.menuItem?.menu_group?.vido_children || []).length > 0
-    },
     isFiltered(): boolean {
       return this.filters && filterValuesIsSet(this.filters)
     },
   },
   methods: {
     onClick() {
-      if (this.href) {
-        this.$tracking({
-          type: 'external_link',
-          url: this.href,
-          title: (
-            this.menuItem.menu_group ||
-            this.menuItem.link ||
-            this.menuItem.category
-          ).name.fr,
-        })
-      } else if (this.hasChildren) {
-        this.$tracking({
-          type: 'menu',
-          menuItemId: this.menuItem.id,
-          title: (
-            this.menuItem.menu_group ||
-            this.menuItem.link ||
-            this.menuItem.category
-          ).name.fr,
-        })
-      } else {
-        this.$tracking({
-          type: 'category_event',
-          event: 'enable',
-          categoryId: this.menuItem.id,
-          title: (
-            this.menuItem.menu_group ||
-            this.menuItem.link ||
-            this.menuItem.category
-          ).name.fr,
-        })
-      }
+      this.$tracking({
+        type: 'category_event',
+        event: 'enable',
+        categoryId: this.category.id,
+        title: this.category.category.name.fr,
+      })
 
-      this.$emit('click', this.menuItem.id)
+      this.$emit('click', this.category.id)
     },
     onFilterClick() {
       this.$tracking({
         type: 'category_event',
         event: 'filter',
-        categoryId: this.menuItem.id,
-        title: (
-          this.menuItem.menu_group ||
-          this.menuItem.link ||
-          this.menuItem.category
-        ).name.fr,
+        categoryId: this.category.id,
+        title: this.category.category.name.fr,
       })
-      this.$emit('filter-click', this.menuItem.id)
+      this.$emit('filter-click', this.category.id)
     },
   },
 })

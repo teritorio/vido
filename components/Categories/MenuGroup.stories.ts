@@ -1,52 +1,77 @@
-import MenuGroup from '~/components/Categories/MenuGroup.vue'
+import MenuGroupCompo from '~/components/Categories/MenuGroup.vue'
+import { MenuGroup } from '~/lib/apiMenu'
 import { bind } from '~/lib/storybook-types'
 
 export default {
   title: 'Categories/MenuGroup',
-  component: MenuGroup,
+  component: MenuGroupCompo,
+}
+
+const menuGroup: MenuGroup = {
+  id: 123,
+  selected_by_default: false,
+  parent_id: null,
+  index_order: 1,
+  menu_group: {
+    name: { fr: 'Leisure & Skiing' },
+    icon: 'teritorio teritorio-hosting',
+    color_fill: '#284627',
+    color_line: '#284627',
+    // style_class
+    display_mode: 'compact',
+    vido_children: [],
+  },
+  link: undefined,
+  category: undefined,
 }
 
 const defaultProps = {
-  colorFill: '#00ff00',
-  categoryId: 765,
-  label: 'Leisure & Skiing',
-  picto: 'teritorio teritorio-hosting',
+  menuGroup,
+  activeSubCategories: 0,
+  size: 'lg',
 }
 
-export const Default = bind(MenuGroup, {
+export const Default = bind(MenuGroupCompo, {
   ...defaultProps,
 })
 
-export const Large = bind(MenuGroup, {
+export const Large = bind(MenuGroupCompo, {
   ...defaultProps,
-  type: 'large',
+  menuGroup: {
+    ...defaultProps.menuGroup,
+    menu_group: {
+      ...defaultProps.menuGroup.menu_group,
+      display_mode: 'large',
+    },
+  },
 })
 
-export const Activities = bind(MenuGroup, {
+export const Activities = bind(MenuGroupCompo, {
   ...defaultProps,
   activeSubCategories: 33,
 })
 
-export const ActivitiesLarge = bind(MenuGroup, {
+export const ActivitiesLarge = bind(MenuGroupCompo, {
   ...defaultProps,
-  type: 'large',
+  menuGroup: {
+    ...defaultProps.menuGroup,
+    menu_group: {
+      ...defaultProps.menuGroup.menu_group,
+      display_mode: 'large',
+    },
+  },
   activeSubCategories: 33,
 })
 
-export const Link = bind(MenuGroup, {
+export const EdgeCases = bind(MenuGroupCompo, {
   ...defaultProps,
-  href: 'https://example.com',
-})
-
-export const LinkLarge = bind(MenuGroup, {
-  ...defaultProps,
-  type: 'large',
-  href: 'https://example.com',
-})
-
-export const EdgeCases = bind(MenuGroup, {
-  ...defaultProps,
-  type: 'compact',
+  menuGroup: {
+    ...defaultProps.menuGroup,
+    menu_group: {
+      ...defaultProps.menuGroup.menu_group,
+      name: { fr: 'Leisure & Skiing and misc Ananas' },
+      display_mode: 'large',
+    },
+  },
   activeSubCategories: 97647,
-  label: 'Leisure & Skiing and misc Ananas',
 })

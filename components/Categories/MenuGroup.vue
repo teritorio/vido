@@ -1,51 +1,47 @@
 <template>
   <a
-    :id="`MenuItemButton-${menuItemId}`"
-    :href="href || `/${menuItemId}`"
+    :id="`MenuGroup-${menuGroup.id}`"
+    :href="href || `/${menuGroup.id}`"
     target="_blank"
     :class="[
       'flex focus:outline-none outline-none items-center text-center self-stretch justify-start leading-none transition-colors rounded-lg p-4 relative hover:bg-zinc-100',
-      type === 'large' ? 'col-span-4 pt-2 pb-0' : 'pt-4 pb-2 flex-col',
+      menuGroup.menu_group.display_mode === 'large'
+        ? 'col-span-4 pt-2 pb-0'
+        : 'pt-4 pb-2 flex-col',
     ]"
-    @click="onClick"
+    @click.prevent="onClick"
   >
     <div
       class="relative flex items-center justify-center w-12 h-12 mb-2 text-white rounded-full"
-      :style="{ backgroundColor: colorFill, flexShrink: 0 }"
+      :style="{ flexShrink: 0 }"
     >
-      <TeritorioIcon class="text-2xl" :picto="picto" />
-
-      <div
-        v-if="activeSubCategories > 0"
-        class="text-white text-xs font-semibold font-sans text-center rounded-full absolute -top-1 -right-1 w-5 h-5 border-2 border-white bg-red-600"
+      <TeritorioIconBadge
+        :color-fill="menuGroup.menu_group.color_fill"
+        :picto="menuGroup.menu_group.icon"
+        :size="size"
       >
-        {{ activeSubCategories }}
-      </div>
+        <div
+          v-if="activeSubCategories > 0"
+          class="text-white text-xs font-semibold font-sans text-center rounded-full absolute -top-1 -right-1 w-5 h-5 border-2 border-white bg-red-600"
+        >
+          {{ activeSubCategories }}
+        </div>
+      </TeritorioIconBadge>
     </div>
 
     <div
       :class="[
         'text-xs',
-        type === 'large' && 'sm:text-sm mx-4 text-left',
-        type === 'large' && !href && 'grow w-full',
+        menuGroup.menu_group.display_mode === 'large' &&
+          'sm:text-sm mx-4 text-left grow w-full',
       ]"
     >
-      {{ label }}
+      {{ menuGroup.menu_group.name.fr }}
     </div>
     <font-awesome-icon
-      v-if="type === 'large' && !href"
+      v-if="menuGroup.menu_group.display_mode === 'large'"
       icon="chevron-right"
       class="text-zinc-700 shrink-0"
-      size="sm"
-    />
-    <font-awesome-icon
-      v-else-if="href"
-      icon="external-link-alt"
-      :class="[
-        'text-zinc-700',
-        type === 'compact' &&
-          'absolute top-4 right-4 z-10 rounded-md bg-white fill-current ring-2 border-2 border-white ring-white',
-      ]"
       size="sm"
     />
   </a>
@@ -54,63 +50,36 @@
 <script lang="ts">
 import Vue, { PropType } from 'vue'
 
-import TeritorioIcon from '~/components/UI/TeritorioIcon.vue'
+import TeritorioIconBadge from '~/components/UI/TeritorioIconBadge.vue'
 import { ApiMenuGroup } from '~/lib/apiMenu'
 
 export default Vue.extend({
   components: {
-    TeritorioIcon,
+    TeritorioIconBadge,
   },
   props: {
-    colorFill: {
-      type: String,
-      required: true,
-    },
-    menuItemId: {
-      type: Number,
-      required: true,
-    },
-    label: {
-      type: String,
-      required: true,
-    },
-    picto: {
-      type: String,
+    menuGroup: {
+      type: Object as PropType<ApiMenuGroup>,
       required: true,
     },
     activeSubCategories: {
       type: Number,
       default: 0,
     },
-    type: {
-      type: String as PropType<ApiMenuGroup['menu_group']['display_mode']>,
-      required: true,
-    },
-    href: {
+    size: {
       type: String,
-      default: null,
+      required: true,
     },
   },
   methods: {
     onClick(event: Event) {
-      if (this.href) {
-        this.$tracking({
-          type: 'external_link',
-          url: this.href,
-          title: this.label,
-        })
-      } else {
-        this.$tracking({
-          type: 'menu',
-          menuItemId: this.menuItemId,
-          title: this.label,
-        })
-      }
+      this.$tracking({
+        type: 'menu',
+        menuItemId: this.menuGroup.id,
+        title: this.menuGroup.menu_group.name.fr,
+      })
 
-      if (!this.href) {
-        event.preventDefault()
-        this.$emit('click', this.menuItemId)
-      }
+      this.$emit('click', this.menuGroup.id)
     },
   },
 })

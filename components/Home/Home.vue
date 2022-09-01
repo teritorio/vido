@@ -28,31 +28,16 @@
             @go-to-menu-items="onQuitExplorerFavoriteMode"
           />
 
-          <SubCategoryHeader
-            v-if="
-              !isModeExplorer &&
-              !isModeFavorites &&
-              state.matches(states.SubCategories)
-            "
-            key="SubCategoryHeader"
-            class="hidden md:flex m-2"
-            :menu-items="navigationSubMenuItems"
+          <MenuItemList
+            v-if="!isModeExplorer && !isModeFavorites"
+            :menu-items="firstLevelMenuItems"
             :filters="filters"
-            :is-sub-category-selected="isSubCategorySelected"
-            @menu-item-click="onSubMenuItemClick"
-            @filter-click="onSubCategoryFilterClick"
-            @go-back-click="goToParent"
+            :categories-activesubs-count="subCategoriesCounts"
+            class="flex-1 pointer-events-auto px-5 py-4 h-full"
+            @menu-item-click="onMenuItemClick"
             @select-all-categories="selectSubCategory"
             @unselect-all-categories="unselectSubCategory"
-          />
-
-          <SubCategoryFilterHeader
-            v-if="!isModeExplorer && state.matches(states.SubCategoryFilters)"
-            key="SubCategoryFilterHeader"
-            class="hidden md:flex m-2"
-            :category-id="categoryIdFilter"
-            :filters-values="subCategoryFilters"
-            @go-back-click="onBackToSubCategoryClick"
+            @filter-click="onSubCategoryFilterClick"
           />
 
           <div
@@ -194,43 +179,16 @@
       @on-grip-click="onBottomMenuButtonClick"
     >
       <div class="flex-1 h-full overflow-y-auto h-screen-3/5 divide-y">
-        <div v-if="!showPoi && state.matches(states.Categories)">
-          <HeaderRootCategories
-            v-for="menuItem in firstLevelMenuItems"
-            :key="menuItem.id"
-            :menu-item-id="menuItem.id"
-            :categories-activesubs-count="subCategoriesCounts"
-            class="flex-1 pointer-events-auto px-5 py-4 h-full"
-            @menu-item-click="onMenuItemClick"
-          />
-        </div>
-        <SubCategoryHeader
-          v-if="
-            !showPoi &&
-            !isModeExplorer &&
-            !isModeFavorites &&
-            state.matches(states.SubCategories)
-          "
-          class="h-full"
-          :menu-items="navigationSubMenuItems"
+        <MenuItemList
+          v-if="!showPoi && state.matches(states.Categories)"
+          :menu-items="firstLevelMenuItems"
           :filters="filters"
-          :is-sub-category-selected="isSubCategorySelected"
-          @menu-item-click="onSubMenuItemClick"
-          @go-back-click="goToParent"
+          :categories-activesubs-count="subCategoriesCounts"
+          class="flex-1 pointer-events-auto px-5 py-4 h-full"
+          @menu-item-click="onMenuItemClick"
           @select-all-categories="selectSubCategory"
           @unselect-all-categories="unselectSubCategory"
           @filter-click="onSubCategoryFilterClick"
-        />
-        <SubCategoryFilterHeader
-          v-if="
-            !showPoi &&
-            !isModeExplorer &&
-            state.matches(states.SubCategoryFilters)
-          "
-          class="relative text-left h-full"
-          :category-id="categoryIdFilter"
-          :filters-values="subCategoryFilters"
-          @go-back-click="onBackToSubCategoryClick"
         />
         <PoiCard
           v-if="selectedFeature && showPoi"
@@ -268,10 +226,8 @@ import {
   homeMachine,
 } from './Home.machine'
 
-import HeaderRootCategories from '~/components/Categories/HeaderRootCategories.vue'
+import MenuItemList from '~/components/Categories/MenuItemList.vue'
 import SelectedSubCategoriesDense from '~/components/Categories/SelectedSubCategoriesDense.vue'
-import SubCategoryFilterHeader from '~/components/Categories/SubCategoryFilterHeader.vue'
-import SubCategoryHeader from '~/components/Categories/SubCategoryHeader.vue'
 import Attribution from '~/components/MainMap/Attribution.vue'
 import BottomMenu from '~/components/MainMap/BottomMenu.vue'
 import FavoriteMenu from '~/components/MainMap/FavoriteMenu.vue'
@@ -313,9 +269,7 @@ export default (
     MapFeatures,
     Search,
     SelectedSubCategoriesDense,
-    HeaderRootCategories,
-    SubCategoryHeader,
-    SubCategoryFilterHeader,
+    MenuItemList,
     BottomMenu,
     PoiCard,
     Attribution,

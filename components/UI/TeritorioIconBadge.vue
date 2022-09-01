@@ -8,6 +8,7 @@
     :style="{ backgroundColor: colorFill }"
   >
     <TeritorioIcon :class="`text-${iconSize}`" :picto="picto" :image="image" />
+    <slot />
   </div>
 </template>
 
