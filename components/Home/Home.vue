@@ -90,7 +90,7 @@
         class="hidden md:block py-2"
         style="max-width: calc(100vw - 670px)"
       >
-        <SelectedSubCategoriesDense
+        <SelectedCategories
           :menu-items="selectedSubCategories"
           :is-category-selected="isCategorySelected"
           @category-unselect="unselectSubCategory"
@@ -227,7 +227,7 @@ import {
 } from './Home.machine'
 
 import MenuItemList from '~/components/Categories/MenuItemList.vue'
-import SelectedSubCategoriesDense from '~/components/Categories/SelectedSubCategoriesDense.vue'
+import SelectedCategories from '~/components/Home/SelectedCategories.vue'
 import Attribution from '~/components/MainMap/Attribution.vue'
 import BottomMenu from '~/components/MainMap/BottomMenu.vue'
 import FavoriteMenu from '~/components/MainMap/FavoriteMenu.vue'
@@ -268,7 +268,7 @@ export default (
     NavMenu,
     MapFeatures,
     Search,
-    SelectedSubCategoriesDense,
+    SelectedCategories,
     MenuItemList,
     BottomMenu,
     PoiCard,
