@@ -1,10 +1,10 @@
-import MenuGroupCompo from '~/components/Categories/MenuGroup.vue'
+import Group from '~/components/Menu/Group.vue'
 import { MenuGroup } from '~/lib/apiMenu'
 import { bind } from '~/lib/storybook-types'
 
 export default {
-  title: 'Categories/MenuGroup',
-  component: MenuGroupCompo,
+  title: 'Menu/Group',
+  component: Group,
 }
 
 const menuGroup: MenuGroup = {
@@ -31,27 +31,11 @@ const defaultProps = {
   size: 'lg',
 }
 
-export const Default = bind(MenuGroupCompo, {
+export const Default = bind(Group, {
   ...defaultProps,
 })
 
-export const Large = bind(MenuGroupCompo, {
-  ...defaultProps,
-  menuGroup: {
-    ...defaultProps.menuGroup,
-    menu_group: {
-      ...defaultProps.menuGroup.menu_group,
-      display_mode: 'large',
-    },
-  },
-})
-
-export const Activities = bind(MenuGroupCompo, {
-  ...defaultProps,
-  categoriesActivesCount: 33,
-})
-
-export const ActivitiesLarge = bind(MenuGroupCompo, {
+export const Large = bind(Group, {
   ...defaultProps,
   menuGroup: {
     ...defaultProps.menuGroup,
@@ -60,10 +44,26 @@ export const ActivitiesLarge = bind(MenuGroupCompo, {
       display_mode: 'large',
     },
   },
+})
+
+export const Activities = bind(Group, {
+  ...defaultProps,
   categoriesActivesCount: 33,
 })
 
-export const EdgeCases = bind(MenuGroupCompo, {
+export const ActivitiesLarge = bind(Group, {
+  ...defaultProps,
+  menuGroup: {
+    ...defaultProps.menuGroup,
+    menu_group: {
+      ...defaultProps.menuGroup.menu_group,
+      display_mode: 'large',
+    },
+  },
+  categoriesActivesCount: 33,
+})
+
+export const EdgeCases = bind(Group, {
   ...defaultProps,
   menuGroup: {
     ...defaultProps.menuGroup,

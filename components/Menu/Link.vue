@@ -21,7 +21,7 @@
 <script lang="ts">
 import Vue, { PropType } from 'vue'
 
-import MenuItem from '~/components/Categories/MenuItem.vue'
+import MenuItem from '~/components/Menu/Item.vue'
 import { ApiMenuLink } from '~/lib/apiMenu'
 
 export default Vue.extend({

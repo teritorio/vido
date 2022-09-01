@@ -29,7 +29,7 @@
       </button>
     </div>
 
-    <MenuItemList
+    <ItemList
       :menu-items="currentMenuItems"
       :filters="filters"
       :categories-actives-count-by-parent="categoriesActivesCountByParent"
@@ -47,13 +47,13 @@
 import Vue, { PropType } from 'vue'
 import { mapGetters, mapActions } from 'vuex'
 
-import MenuItemList from '~/components/Categories/MenuItemList.vue'
+import ItemList from '~/components/Menu/ItemList.vue'
 import { getMenuByParentId, MenuGroup, MenuItem } from '~/lib/apiMenu'
 import { FilterValues } from '~/utils/types-filters'
 
 export default Vue.extend({
   components: {
-    MenuItemList,
+    ItemList,
   },
 
   props: {

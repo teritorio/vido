@@ -37,9 +37,9 @@
 import Vue, { PropType } from 'vue'
 import { mapGetters } from 'vuex'
 
-import Category from '~/components/Categories/Category.vue'
-import Link from '~/components/Categories/Link.vue'
-import MenuGroup from '~/components/Categories/MenuGroup.vue'
+import Category from '~/components/Menu/Category.vue'
+import MenuGroup from '~/components/Menu/Group.vue'
+import Link from '~/components/Menu/Link.vue'
 import { ApiMenuCategory, MenuItem } from '~/lib/apiMenu'
 import { FilterValues } from '~/utils/types-filters'
 

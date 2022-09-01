@@ -64,7 +64,7 @@
 <script lang="ts">
 import Vue, { PropType } from 'vue'
 
-import MenuItem from '~/components/Categories/MenuItem.vue'
+import MenuItem from '~/components/Menu/Item.vue'
 import { ApiMenuCategory } from '~/lib/apiMenu'
 import { FilterValues, filterValuesIsSet } from '~/utils/types-filters'
 

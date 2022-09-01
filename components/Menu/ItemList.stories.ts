@@ -1,13 +1,13 @@
-import Menu from '~/components/Categories/Menu.vue'
+import ItemList from '~/components/Menu/ItemList.vue'
 import { ApiMenuCategory, ApiMenuLink, MenuGroup } from '~/lib/apiMenu'
 import { bind } from '~/lib/storybook-types'
 
 export default {
-  title: 'Categories/Menu',
-  component: Menu,
+  title: 'Menu/ItemList',
+  component: ItemList,
 }
 
-const menuGroup1: MenuGroup = {
+const menuGroup: MenuGroup = {
   id: 1,
   selected_by_default: false,
   parent_id: null,
@@ -25,28 +25,10 @@ const menuGroup1: MenuGroup = {
   category: undefined,
 }
 
-const menuGroup2: MenuGroup = {
-  id: 12,
-  selected_by_default: false,
-  parent_id: 1,
-  index_order: 1,
-  menu_group: {
-    name: { fr: 'Leisure & Skiing' },
-    icon: 'teritorio teritorio-hosting',
-    color_fill: '#284627',
-    color_line: '#284627',
-    // style_class
-    display_mode: 'large',
-    vido_children: [],
-  },
-  link: undefined,
-  category: undefined,
-}
-
 const menuLink: ApiMenuLink = {
-  id: 121,
+  id: 2,
   selected_by_default: false,
-  parent_id: 12,
+  parent_id: null,
   index_order: 1,
   menu_group: undefined,
   link: {
@@ -55,15 +37,15 @@ const menuLink: ApiMenuLink = {
     icon: 'teritorio teritorio-bar',
     color_fill: '#284627',
     color_line: '#284627',
-    display_mode: 'large',
+    display_mode: 'compact',
   },
   category: undefined,
 }
 
 const category: ApiMenuCategory = {
-  id: 122,
+  id: 3,
   selected_by_default: false,
-  parent_id: 12,
+  parent_id: null,
   index_order: 1,
   menu_group: undefined,
   link: undefined,
@@ -74,19 +56,62 @@ const category: ApiMenuCategory = {
     color_line: '#284627',
     style_class: [],
     style_merge: true,
-    display_mode: 'large',
+    display_mode: 'compact',
     zoom: 14,
     // filters
   },
 }
 
 const defaultProps = {
-  menuItems: [menuGroup1, menuGroup2, menuLink, category],
+  menuItems: [menuGroup, menuLink, category],
   filters: {},
-  isCategorySelected: () => false,
   categoriesActivesCountByParent: {},
+  isCategorySelected: () => false,
+  size: 'lg',
 }
 
-export const Default = bind(Menu, {
+export const Default = bind(ItemList, {
   ...defaultProps,
+})
+
+export const Large = bind(ItemList, {
+  ...defaultProps,
+  menuItems: [
+    {
+      ...defaultProps.menuItems[0],
+      menu_group: {
+        ...defaultProps.menuItems[0].menu_group,
+        display_mode: 'large',
+      },
+    },
+    {
+      ...defaultProps.menuItems[1],
+      link: {
+        ...defaultProps.menuItems[1].link,
+        display_mode: 'large',
+      },
+    },
+    {
+      ...defaultProps.menuItems[2],
+      category: {
+        ...defaultProps.menuItems[2].category,
+        display_mode: 'large',
+      },
+    },
+  ],
+})
+
+export const ManyGroups = bind(ItemList, {
+  ...defaultProps,
+  menuItems: [
+    menuGroup,
+    menuGroup,
+    menuGroup,
+    menuGroup,
+    menuGroup,
+    menuGroup,
+    menuGroup,
+    menuGroup,
+    menuGroup,
+  ],
 })

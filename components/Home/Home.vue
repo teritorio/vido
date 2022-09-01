@@ -28,7 +28,7 @@
             @go-to-menu-items="onQuitExplorerFavoriteMode"
           />
 
-          <MenuItemList
+          <ItemList
             v-if="!isModeExplorer && !isModeFavorites"
             :menu-items="firstLevelMenuItems"
             :filters="filters"
@@ -179,7 +179,7 @@
       @on-grip-click="onBottomMenuButtonClick"
     >
       <div class="flex-1 h-full overflow-y-auto h-screen-3/5 divide-y">
-        <MenuItemList
+        <ItemList
           v-if="!showPoi && state.matches(states.Categories)"
           :menu-items="firstLevelMenuItems"
           :filters="filters"
@@ -226,7 +226,6 @@ import {
   homeMachine,
 } from './Home.machine'
 
-import MenuItemList from '~/components/Categories/MenuItemList.vue'
 import SelectedCategories from '~/components/Home/SelectedCategories.vue'
 import Attribution from '~/components/MainMap/Attribution.vue'
 import BottomMenu from '~/components/MainMap/BottomMenu.vue'
@@ -235,6 +234,7 @@ import FavoritesOverlay from '~/components/MainMap/FavoritesOverlay.vue'
 import MainHeader from '~/components/MainMap/MainHeader.vue'
 import MapFeatures from '~/components/MainMap/MapFeatures.vue'
 import NavMenu from '~/components/MainMap/NavMenu.vue'
+import ItemList from '~/components/Menu/ItemList.vue'
 import PoiCard from '~/components/PoisCard/PoiCard.vue'
 import Search from '~/components/Search/Search.vue'
 import CookiesConsent from '~/components/UI/CookiesConsent.vue'
@@ -269,7 +269,7 @@ export default (
     MapFeatures,
     Search,
     SelectedCategories,
-    MenuItemList,
+    ItemList,
     BottomMenu,
     PoiCard,
     Attribution,
