@@ -27,7 +27,7 @@ const menuGroup: MenuGroup = {
 
 const defaultProps = {
   menuGroup,
-  activeSubCategories: 0,
+  categoriesActivesCount: 0,
   size: 'lg',
 }
 
@@ -48,7 +48,7 @@ export const Large = bind(MenuGroupCompo, {
 
 export const Activities = bind(MenuGroupCompo, {
   ...defaultProps,
-  activeSubCategories: 33,
+  categoriesActivesCount: 33,
 })
 
 export const ActivitiesLarge = bind(MenuGroupCompo, {
@@ -60,7 +60,7 @@ export const ActivitiesLarge = bind(MenuGroupCompo, {
       display_mode: 'large',
     },
   },
-  activeSubCategories: 33,
+  categoriesActivesCount: 33,
 })
 
 export const EdgeCases = bind(MenuGroupCompo, {
@@ -73,5 +73,5 @@ export const EdgeCases = bind(MenuGroupCompo, {
       display_mode: 'large',
     },
   },
-  activeSubCategories: 97647,
+  categoriesActivesCount: 97647,
 })

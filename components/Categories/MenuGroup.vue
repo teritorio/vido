@@ -1,68 +1,42 @@
 <template>
-  <a
-    :id="`MenuGroup-${menuGroup.id}`"
-    :href="href || `/${menuGroup.id}`"
-    target="_blank"
-    :class="[
-      'flex focus:outline-none outline-none items-center text-center self-stretch justify-start leading-none transition-colors rounded-lg p-4 relative hover:bg-zinc-100',
-      menuGroup.menu_group.display_mode === 'large'
-        ? 'col-span-4 pt-2 pb-0'
-        : 'pt-4 pb-2 flex-col',
-    ]"
+  <MenuItem
+    :id="menuGroup.id"
+    :href="`/${menuGroup.id}/`"
+    :display-mode="menuGroup.menu_group.display_mode"
+    :color-fill="menuGroup.menu_group.color_fill"
+    :icon="menuGroup.menu_group.icon"
+    :size="size"
+    :name="menuGroup.menu_group.name"
+    badge-class="bg-red-600"
     @click.prevent="onClick"
   >
-    <div
-      class="relative flex items-center justify-center w-12 h-12 mb-2 text-white rounded-full"
-      :style="{ flexShrink: 0 }"
-    >
-      <TeritorioIconBadge
-        :color-fill="menuGroup.menu_group.color_fill"
-        :picto="menuGroup.menu_group.icon"
-        :size="size"
-      >
-        <div
-          v-if="activeSubCategories > 0"
-          class="text-white text-xs font-semibold font-sans text-center rounded-full absolute -top-1 -right-1 w-5 h-5 border-2 border-white bg-red-600"
-        >
-          {{ activeSubCategories }}
-        </div>
-      </TeritorioIconBadge>
-    </div>
-
-    <div
-      :class="[
-        'text-xs',
-        menuGroup.menu_group.display_mode === 'large' &&
-          'sm:text-sm mx-4 text-left grow w-full',
-      ]"
-    >
-      {{ menuGroup.menu_group.name.fr }}
-    </div>
-    <font-awesome-icon
-      v-if="menuGroup.menu_group.display_mode === 'large'"
-      icon="chevron-right"
-      class="text-zinc-700 shrink-0"
-      size="sm"
-    />
-  </a>
+    <template v-if="categoriesActivesCount > 0" #badge>
+      <span class="text-white">
+        {{ categoriesActivesCount }}
+      </span>
+    </template>
+    <template #end-line-large>
+      <font-awesome-icon icon="chevron-right" />
+    </template>
+  </MenuItem>
 </template>
 
 <script lang="ts">
 import Vue, { PropType } from 'vue'
 
-import TeritorioIconBadge from '~/components/UI/TeritorioIconBadge.vue'
+import MenuItem from '~/components/Categories/MenuItem.vue'
 import { ApiMenuGroup } from '~/lib/apiMenu'
 
 export default Vue.extend({
   components: {
-    TeritorioIconBadge,
+    MenuItem,
   },
   props: {
     menuGroup: {
       type: Object as PropType<ApiMenuGroup>,
       required: true,
     },
-    activeSubCategories: {
+    categoriesActivesCount: {
       type: Number,
       default: 0,
     },
@@ -72,7 +46,7 @@ export default Vue.extend({
     },
   },
   methods: {
-    onClick(event: Event) {
+    onClick() {
       this.$tracking({
         type: 'menu',
         menuItemId: this.menuGroup.id,

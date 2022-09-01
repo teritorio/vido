@@ -48,14 +48,14 @@ export default Vue.extend({
       type: Array as PropType<MenuItem[]>,
       required: true,
     },
-    isSubCategorySelected: {
+    isCategorySelected: {
       type: Function,
       required: true,
     },
   },
   computed: {
     selectedMenuItems() {
-      return this.menuItems.filter((c) => this.isSubCategorySelected(c.id))
+      return this.menuItems.filter((c) => this.isCategorySelected(c.id))
     },
   },
   methods: {

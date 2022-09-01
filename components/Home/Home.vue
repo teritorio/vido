@@ -92,7 +92,7 @@
       >
         <SelectedSubCategoriesDense
           :menu-items="selectedSubCategories"
-          :is-sub-category-selected="isSubCategorySelected"
+          :is-category-selected="isCategorySelected"
           @category-unselect="unselectSubCategory"
         />
       </div>
@@ -622,7 +622,7 @@ export default (
     goToMenuItems() {
       this.service.send(HomeEvents.GoToCategories)
     },
-    isSubCategorySelected(subCategoryId: ApiMenuCategory['id']) {
+    isCategorySelected(subCategoryId: ApiMenuCategory['id']) {
       return this.selectedCategoriesIds.includes(subCategoryId)
     },
 

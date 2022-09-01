@@ -123,3 +123,10 @@ export function getMenu(
     }
   )
 }
+
+export function getMenuByParentId(
+  all: MenuItem[],
+  parentId: ApiMenuGroup['id'] | undefined
+): MenuItem[] {
+  return all.filter((menuItem) => menuItem.parent_id == (parentId || null))
+}

@@ -1,76 +1,76 @@
 <template>
-  <div class="flex flex-col items-start">
-    <button
-      :id="`Category-${category.id}`"
-      class="flex items-center justify-between w-full px-5 py-3 rounded-lg outline-none focus:outline-none hover:bg-zinc-100"
-      @click="onClick"
-    >
-      <div class="flex items-center space-x-4">
-        <div class="relative">
-          <TeritorioIconBadge
-            :color-fill="category.category.color_fill"
-            :picto="category.category.icon"
-            :size="size"
-          />
+  <MenuItem
+    :id="category.id"
+    :href="`/${category.id}`"
+    :display-mode="category.category.display_mode"
+    :color-fill="category.category.color_fill"
+    :icon="category.category.icon"
+    :size="size"
+    :name="category.category.name"
+    @click.prevent="onClick"
+  >
+    <template v-if="category.category.display_mode === 'compact'" #badge>
+      <font-awesome-icon
+        v-if="!selected"
+        class="text-zinc-300"
+        :icon="['far', 'circle']"
+        :size="size"
+      />
+      <font-awesome-icon
+        v-else
+        class="text-emerald-500"
+        icon="check-circle"
+        :size="size"
+      />
+    </template>
 
-          <div
-            v-if="activeSubCategories > 0"
-            class="text-white text-xs font-semibold font-sans text-center rounded-full absolute -top-1 -right-1 w-5 h-5 border-2 border-white bg-red-600"
-          >
-            {{ activeSubCategories }}
-          </div>
-        </div>
+    <template #end-line-large>
+      <font-awesome-icon
+        v-if="!selected"
+        class="text-zinc-300"
+        :icon="['far', 'circle']"
+        :size="size"
+      />
+      <font-awesome-icon
+        v-else
+        class="text-emerald-500"
+        icon="check-circle"
+        :size="size"
+      />
+    </template>
 
-        <div class="text-left">{{ category.category.name.fr }}</div>
-      </div>
-
-      <div v-if="!selected" class="shrink-0 text-zinc-300">
-        <font-awesome-icon
-          class="fill-current"
-          fixed-width
-          :icon="['far', 'circle']"
-          :size="size"
-        />
-      </div>
-      <div v-else class="shrink-0 text-emerald-500">
-        <font-awesome-icon
-          class="fill-current"
-          fixed-width
-          icon="check-circle"
-          :size="size"
-        />
-      </div>
-    </button>
-    <button
-      v-if="
-        Object.keys((category.category && category.category.filters) || [])
-          .length > 0 && selected
-      "
-      :class="[
-        'w-full h-12 sm:h-8 text-left rounded-lg outline-none focus:outline-none hover:bg-zinc-100',
-        isFiltered && 'text-emerald-500',
-        !isFiltered && 'text-zinc-500',
-      ]"
-      @click="onFilterClick"
-    >
-      <font-awesome-icon icon="filter" size="sm" class="ml-16" />
-      {{
-        isFiltered ? $tc('headerMenu.editFilters') : $tc('headerMenu.filter')
-      }}
-    </button>
-  </div>
+    <template #more>
+      <button
+        v-if="
+          Object.keys((category.category && category.category.filters) || [])
+            .length > 0 && selected
+        "
+        :class="[
+          'w-full h-12 sm:h-8 text-left rounded-lg outline-none focus:outline-none hover:bg-zinc-100',
+          isFiltered && 'text-emerald-500',
+          !isFiltered && 'text-zinc-500',
+        ]"
+        @click="onFilterClick"
+      >
+        <font-awesome-icon icon="filter" size="sm" class="ml-16" />
+        {{
+          isFiltered ? $tc('headerMenu.editFilters') : $tc('headerMenu.filter')
+        }}
+      </button>
+    </template>
+  </MenuItem>
 </template>
 
 <script lang="ts">
 import Vue, { PropType } from 'vue'
 
-import TeritorioIconBadge from '~/components/UI/TeritorioIconBadge.vue'
+import MenuItem from '~/components/Categories/MenuItem.vue'
 import { ApiMenuCategory } from '~/lib/apiMenu'
 import { FilterValues, filterValuesIsSet } from '~/utils/types-filters'
 
 export default Vue.extend({
   components: {
-    TeritorioIconBadge,
+    MenuItem,
   },
   props: {
     category: {

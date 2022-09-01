@@ -6,26 +6,26 @@
           v-if="menuItem.menu_group"
           :key="menuItem.id"
           :menu-group="menuItem"
-          :filters="filters"
-          :active-sub-categories="getCategoryCount(menuItem.id)"
+          :categories-actives-count="
+            categoriesActivesCountByParent[menuItem.id]
+          "
           :size="size"
-          @click="onMenuItemClick(menuItem)"
+          @click="onMenuGroupClick(menuItem)"
         />
         <Link
           v-else-if="menuItem.link"
           :key="menuItem.id"
           :menu-link="menuItem"
           :size="size"
-          @click="onMenuItemClick(menuItem)"
         />
         <Category
           v-else-if="menuItem.category"
           :key="menuItem.id"
           :category="menuItem"
-          :selected="isSubCategorySelected(menuItem.id)"
+          :selected="isCategorySelected(menuItem.id)"
           :filters="filters[menuItem.id]"
           :size="size"
-          @click="onMenuItemClick(categoryId)"
+          @click="onCategoryClick(menuItem)"
           @filter-click="onFilterClick"
         />
       </template>
@@ -55,14 +55,14 @@ export default Vue.extend({
       required: true,
     },
     filters: {
-      type: Object as PropType<{ [subcat: number]: FilterValues }>,
+      type: Object as PropType<{ [categoryId: number]: FilterValues }>,
       required: true,
     },
-    categoriesActivesubsCount: {
+    categoriesActivesCountByParent: {
       type: Object as PropType<{ [id: string]: number }>,
       required: true,
     },
-    isSubCategorySelected: {
+    isCategorySelected: {
       type: Function,
       required: true,
     },
@@ -84,17 +84,14 @@ export default Vue.extend({
     }),
   },
   methods: {
-    onCollapseButtonClick() {
-      this.collapsed = !this.collapsed
+    onMenuGroupClick(menuItem: MenuItem) {
+      this.$emit('menu-group-click', menuItem.id)
     },
-    onMenuItemClick(menuItem: MenuItem) {
-      this.$emit('menu-item-click', menuItem.id)
+    onCategoryClick(menuItem: MenuItem) {
+      this.$emit('category-click', menuItem.id)
     },
     onFilterClick(categoryId: ApiMenuCategory['id']) {
       this.$emit('filter-click', categoryId)
-    },
-    getCategoryCount(id: ApiMenuCategory['id']) {
-      return this.categoriesActivesubsCount[id]
     },
   },
 })

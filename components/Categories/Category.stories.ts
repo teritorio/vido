@@ -43,6 +43,29 @@ export const Selected = bind(Category, {
   selected: true,
 })
 
+export const DefaultCompact = bind(Category, {
+  ...defaultProps,
+  category: {
+    ...defaultProps.category,
+    category: {
+      ...defaultProps.category.category,
+      display_mode: 'compact',
+    },
+  },
+})
+
+export const SelectedCompact = bind(Category, {
+  ...defaultProps,
+  category: {
+    ...defaultProps.category,
+    category: {
+      ...defaultProps.category.category,
+      display_mode: 'compact',
+    },
+  },
+  selected: true,
+})
+
 // export const Filter = bind(Category, {
 //   ...defaultProps,
 //   filters:
