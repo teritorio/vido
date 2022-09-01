@@ -1,7 +1,7 @@
 <template>
   <transition name="non-highlighted" appear>
     <div v-if="!collapsed" class="grid items-start grid-cols-4 gap-3">
-      <CategoryButton
+      <MenuGroup
         v-for="menuItem in nonHighlightedMenuItems"
         :key="menuItem.id"
         :menu-item-id="menuItem.id"
@@ -30,12 +30,12 @@
 import Vue, { PropType } from 'vue'
 import { mapGetters } from 'vuex'
 
-import CategoryButton from '~/components/Categories/CategoryButton/CategoryButton.vue'
+import MenuGroup from '~/components/Categories/MenuGroup.vue'
 import { ApiMenuCategory, MenuItem } from '~/lib/apiMenu'
 
 export default Vue.extend({
   components: {
-    CategoryButton,
+    MenuGroup,
   },
   props: {
     menuItemId: {

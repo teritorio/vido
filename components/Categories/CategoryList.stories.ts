@@ -1,4 +1,4 @@
-import CategoryList from '~/components/Categories/CategoryList/CategoryList.vue'
+import CategoryList from '~/components/Categories/CategoryList.vue'
 import { MenuItem } from '~/lib/apiMenu'
 import { bind } from '~/lib/storybook-types'
 

@@ -1,9 +1,9 @@
-import CategoryButton from '~/components/Categories/CategoryButton/CategoryButton.vue'
+import MenuGroup from '~/components/Categories/MenuGroup.vue'
 import { bind } from '~/lib/storybook-types'
 
 export default {
-  title: 'Categories/CategoryButton',
-  component: CategoryButton,
+  title: 'Categories/MenuGroup',
+  component: MenuGroup,
 }
 
 const defaultProps = {
@@ -13,38 +13,38 @@ const defaultProps = {
   picto: 'teritorio teritorio-hosting',
 }
 
-export const Default = bind(CategoryButton, {
+export const Default = bind(MenuGroup, {
   ...defaultProps,
 })
 
-export const Large = bind(CategoryButton, {
+export const Large = bind(MenuGroup, {
   ...defaultProps,
   type: 'large',
 })
 
-export const Activities = bind(CategoryButton, {
+export const Activities = bind(MenuGroup, {
   ...defaultProps,
   activeSubCategories: 33,
 })
 
-export const ActivitiesLarge = bind(CategoryButton, {
+export const ActivitiesLarge = bind(MenuGroup, {
   ...defaultProps,
   type: 'large',
   activeSubCategories: 33,
 })
 
-export const Link = bind(CategoryButton, {
+export const Link = bind(MenuGroup, {
   ...defaultProps,
   href: 'https://example.com',
 })
 
-export const LinkLarge = bind(CategoryButton, {
+export const LinkLarge = bind(MenuGroup, {
   ...defaultProps,
   type: 'large',
   href: 'https://example.com',
 })
 
-export const EdgeCases = bind(CategoryButton, {
+export const EdgeCases = bind(MenuGroup, {
   ...defaultProps,
   type: 'compact',
   activeSubCategories: 97647,

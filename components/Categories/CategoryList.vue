@@ -1,6 +1,6 @@
 <template>
   <ul v-if="menuItems.length > 0">
-    <CategoryListItem
+    <Category
       v-for="menuItem in menuItems"
       :key="menuItem.id"
       :href="menuItem.href"
@@ -17,13 +17,13 @@
 <script lang="ts">
 import Vue, { PropType } from 'vue'
 
-import CategoryListItem from '~/components/Categories/CategoryList/CategoryListItem.vue'
+import Category from '~/components/Categories/Category.vue'
 import { ApiMenuCategory, MenuItem } from '~/lib/apiMenu'
 import { FilterValues } from '~/utils/types-filters'
 
 export default Vue.extend({
   components: {
-    CategoryListItem,
+    Category,
   },
   props: {
     menuItems: {

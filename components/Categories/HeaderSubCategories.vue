@@ -11,7 +11,7 @@
 <script lang="ts">
 import Vue, { PropType } from 'vue'
 
-import CategoryList from '~/components/Categories/CategoryList/CategoryList.vue'
+import CategoryList from '~/components/Categories/CategoryList.vue'
 import { MenuItem } from '~/lib/apiMenu'
 import { FilterValues } from '~/utils/types-filters'
 
