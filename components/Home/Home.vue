@@ -18,12 +18,9 @@
               isModeFavorites
             "
             key="MainHeader"
-            :show-poi="showPoi"
             :logo-url="logoUrl"
             :main-url="mainUrl"
             :site-name="siteName"
-            :categories-activesubs-count="subCategoriesCounts"
-            @menu-item-click="onMenuItemClick"
             @search-click="goToSearch"
             @go-to-menu-items="onQuitExplorerFavoriteMode"
           />
@@ -226,12 +223,12 @@ import {
   homeMachine,
 } from './Home.machine'
 
+import MainHeader from '~/components/Home/MainHeader.vue'
 import SelectedCategories from '~/components/Home/SelectedCategories.vue'
 import Attribution from '~/components/MainMap/Attribution.vue'
 import BottomMenu from '~/components/MainMap/BottomMenu.vue'
 import FavoriteMenu from '~/components/MainMap/FavoriteMenu.vue'
 import FavoritesOverlay from '~/components/MainMap/FavoritesOverlay.vue'
-import MainHeader from '~/components/MainMap/MainHeader.vue'
 import MapFeatures from '~/components/MainMap/MapFeatures.vue'
 import NavMenu from '~/components/MainMap/NavMenu.vue'
 import ItemList from '~/components/Menu/ItemList.vue'

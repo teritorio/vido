@@ -64,17 +64,11 @@
 </template>
 
 <script lang="ts">
-import Vue, { PropType } from 'vue'
+import Vue from 'vue'
 import { mapGetters } from 'vuex'
-
-import { MenuItem } from '~/lib/apiMenu'
 
 export default Vue.extend({
   props: {
-    showPoi: {
-      type: Boolean,
-      default: false,
-    },
     logoUrl: {
       type: String,
       required: true,
@@ -87,22 +81,14 @@ export default Vue.extend({
       type: String,
       required: true,
     },
-    categoriesActivesubsCount: {
-      type: Object as PropType<{ [id: string]: number }>,
-      default: () => {},
-    },
   },
   computed: {
     ...mapGetters({
       isModeFavorites: 'map/isModeFavorites',
       isModeExplorerOrFavorites: 'map/isModeExplorerOrFavorites',
-      firstLevelMenuItems: 'menu/firstLevelMenuItems',
     }),
   },
   methods: {
-    onMenuItemClick(menuItemId: MenuItem['id']) {
-      this.$emit('menu-item-click', menuItemId)
-    },
     onSearchClick() {
       this.$emit('search-click')
     },
