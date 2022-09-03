@@ -11,18 +11,19 @@
         ]"
       >
         <transition-group name="headers" appear mode="out-in" class="sm:h-full">
+          <ExplorerOrFavoritesBack
+            v-if="isModeExplorer || isModeFavorites"
+            key="ExplorerOrFavoritesBack"
+            @click="onQuitExplorerFavoriteMode"
+          />
+
           <MainHeader
-            v-if="
-              state.matches(states.Categories) ||
-              isModeExplorer ||
-              isModeFavorites
-            "
+            v-else-if="state.matches(states.Categories)"
             key="MainHeader"
             :logo-url="logoUrl"
             :main-url="mainUrl"
             :site-name="siteName"
             @search-click="goToSearch"
-            @go-to-menu-items="onQuitExplorerFavoriteMode"
           />
 
           <ItemList
@@ -215,6 +216,7 @@ import { MetaInfo } from 'vue-meta'
 import { mapGetters, mapActions } from 'vuex'
 import { interpret } from 'xstate'
 
+import ExplorerOrFavoritesBack from './ExplorerOrFavoritesBack.vue'
 import {
   HomeState,
   HomeInterpreter,
@@ -271,6 +273,7 @@ export default (
     PoiCard,
     Attribution,
     CookiesConsent,
+    ExplorerOrFavoritesBack,
   },
 
   props: {

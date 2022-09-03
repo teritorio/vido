@@ -3,25 +3,19 @@
     class="hidden md:flex flex-col absolute bottom-0 overflow-y-hidden pointer-events-auto sm:relative inset-auto h-max max-h-full box-border space-y-4 p-2 box-border"
   >
     <div
-      :class="[
-        'items-center justify-between hidden md:flex rounded-xl shadow-md px-5 py-4',
-        isModeExplorerOrFavorites ? 'bg-blue-500 text-white' : 'bg-white',
-      ]"
+      class="items-center justify-between hidden md:flex rounded-xl shadow-md px-5 py-4 bg-white"
     >
-      <h1 v-if="!isModeExplorerOrFavorites">
-        <a
-          :href="mainUrl"
-          rel="noopener noreferrer"
-          :aria-label="siteName"
-          :title="siteName"
-          target="_blank"
-        >
-          <img :src="logoUrl" class="w-auto h-auto max-w-2xl max-h-16" />
-        </a>
-      </h1>
+      <a
+        :href="mainUrl"
+        rel="noopener noreferrer"
+        :aria-label="siteName"
+        :title="siteName"
+        target="_blank"
+      >
+        <img :src="logoUrl" class="w-auto h-auto max-w-2xl max-h-16" />
+      </a>
 
       <button
-        v-if="!isModeExplorerOrFavorites"
         type="button"
         class="flex-grow relative pointer-events-auto w-full ml-6"
         @click="onSearchClick"
@@ -40,32 +34,12 @@
           </div>
         </div>
       </button>
-
-      <div v-else class="flex items-center ml-2">
-        <button
-          type="button"
-          class="flex shrink-0 items-center justify-center w-10 h-10 text-2xl font-bold transition-all rounded-full outline-none cursor-pointer focus:outline-none hover:bg-blue-700 focus:bg-blue-700"
-          @click="goToMenuItems"
-        >
-          <font-awesome-icon icon="arrow-left" class="text-white" size="xs" />
-        </button>
-        <p class="ml-2">
-          {{
-            $tc(
-              isModeFavorites
-                ? 'headerMenu.backToMenuFavorites'
-                : 'headerMenu.backToMenuExplorer'
-            )
-          }}
-        </p>
-      </div>
     </div>
   </aside>
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
-import { mapGetters } from 'vuex'
 
 export default Vue.extend({
   props: {
@@ -82,18 +56,10 @@ export default Vue.extend({
       required: true,
     },
   },
-  computed: {
-    ...mapGetters({
-      isModeFavorites: 'map/isModeFavorites',
-      isModeExplorerOrFavorites: 'map/isModeExplorerOrFavorites',
-    }),
-  },
+
   methods: {
     onSearchClick() {
       this.$emit('search-click')
-    },
-    goToMenuItems() {
-      this.$emit('go-to-menu-items')
     },
   },
 })
