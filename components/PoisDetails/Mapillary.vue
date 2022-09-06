@@ -4,19 +4,24 @@
       href=""
       :src="`https://www.mapillary.com/embed?image_key=${imageId}&style=photo`"
     />
-    <a
+    <ExternalLink
       :href="`https://www.mapillary.com/app/?pKey=${imageId}&focus=photo`"
-      targer="_blank"
+      target="_blank"
     >
       {{ $tc('poiDetails.mapillaryExplore') }}
-    </a>
+    </ExternalLink>
   </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
 
+import ExternalLink from '~/components/UI/ExternalLink.vue'
+
 export default Vue.extend({
+  components: {
+    ExternalLink,
+  },
   props: {
     imageId: {
       type: String,

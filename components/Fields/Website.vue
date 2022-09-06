@@ -1,13 +1,16 @@
 <template>
-  <a v-if="url" :href="url" target="_blank">
-    {{ url }}
-  </a>
+  <ExternalLink :href="url" target="_blank">{{ url }}</ExternalLink>
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
 
+import ExternalLink from '~/components/UI/ExternalLink.vue'
+
 export default Vue.extend({
+  components: {
+    ExternalLink,
+  },
   props: {
     url: {
       type: String,
@@ -16,9 +19,3 @@ export default Vue.extend({
   },
 })
 </script>
-
-<style scoped>
-a {
-  text-decoration: underline;
-}
-</style>

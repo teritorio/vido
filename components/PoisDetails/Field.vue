@@ -74,9 +74,9 @@
           v-else-if="field.field == 'website'"
           :key="field.field + '_' + website"
         >
-          <a :href="properties.website" target="_blank">
+          <ExternalLink :href="properties.website" target="_blank">
             {{ website }}
-          </a>
+          </ExternalLink>
         </div>
 
         <Facebook
@@ -120,6 +120,7 @@ import OpeningHours, {
 import Phone from '~/components/Fields/Phone.vue'
 import RoutesField from '~/components/Fields/RoutesField.vue'
 import FieldsHeader from '~/components/PoisDetails/FieldsHeader.vue'
+import ExternalLink from '~/components/UI/ExternalLink.vue'
 import { ApiPoiProperties, FieldsListItem } from '~/lib/apiPois'
 import { PropertyTranslationsContextEnum } from '~/plugins/property-translations'
 
@@ -131,6 +132,7 @@ export default Vue.extend({
     DateRange,
     Phone,
     Facebook,
+    ExternalLink,
   },
 
   props: {
