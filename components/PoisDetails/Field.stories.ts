@@ -74,6 +74,14 @@ export const Website = bind(Field, {
   },
 })
 
+export const Facebook = bind(Field, {
+  ...defaultProps,
+  field: { field: 'facebook' },
+  properties: {
+    facebook: 'https://www.facebook.com/',
+  },
+})
+
 export const RouteGpxTrace = bind(Field, {
   ...defaultProps,
   field: { field: 'route:gpx_trace' },

@@ -79,6 +79,11 @@
           </a>
         </div>
 
+        <Facebook
+          v-else-if="field.field === 'facebook'"
+          :url="properties[field.field]"
+        />
+
         <a
           v-else-if="
             field.field == 'route:gpx_trace' || field.field == 'route:pdf'
@@ -108,6 +113,7 @@
 import Vue, { PropType } from 'vue'
 
 import DateRange from '~/components/Fields/DateRange.vue'
+import Facebook from '~/components/Fields/Facebook.vue'
 import OpeningHours, {
   isOpeningHoursSupportedOsmTags,
 } from '~/components/Fields/OpeningHours.vue'
@@ -124,6 +130,7 @@ export default Vue.extend({
     RoutesField,
     DateRange,
     Phone,
+    Facebook,
   },
 
   props: {

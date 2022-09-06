@@ -46,6 +46,11 @@
       </li>
     </ul>
 
+    <Facebook
+      v-else-if="field.field === 'facebook'"
+      :url="properties[field.field]"
+    />
+
     <p v-else-if="isOpeningHoursSupportedOsmTags(field.field)" class="text-sm">
       <OpeningHours
         :tag-key="field.field"
@@ -84,6 +89,7 @@ import Vue, { PropType } from 'vue'
 
 import AddressField from '~/components/Fields/AddressField.vue'
 import DateRange from '~/components/Fields/DateRange.vue'
+import Facebook from '~/components/Fields/Facebook.vue'
 import OpeningHours, {
   isOpeningHoursSupportedOsmTags,
 } from '~/components/Fields/OpeningHours.vue'
@@ -98,6 +104,7 @@ export default Vue.extend({
     RoutesField,
     AddressField,
     Website,
+    Facebook,
     OpeningHours,
     DateRange,
     Phone,

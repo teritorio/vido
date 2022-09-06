@@ -66,6 +66,14 @@ export const Website = bind(Field, {
   },
 })
 
+export const Facebook = bind(Field, {
+  ...defaultProps,
+  field: { field: 'facebook' },
+  properties: {
+    facebook: 'https://www.facebook.com/',
+  },
+})
+
 // export const OpeningHours = bind(Field, {
 //   ...defaultProps,
 //   field: { field: 'opening_hours' },
