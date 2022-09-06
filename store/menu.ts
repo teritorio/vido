@@ -39,7 +39,7 @@ export interface State {
   allFeatures: {
     [key: number]: ApiPoi[]
   }
-  filters: { [subcat: number]: FilterValues }
+  filters: Record<ApiMenuCategory['id'], FilterValues>
   isLoadingFeatures: boolean
 }
 
@@ -84,7 +84,7 @@ export const actions = {
   fetchConfig(store: Store<State>, { menuItems }: FetchConfigPayload) {
     try {
       const stateMenuItems: State['menuItems'] = {}
-      const filters: { [subcat: number]: FilterValues } = {}
+      const filters: Record<ApiMenuCategory['id'], FilterValues> = {}
 
       store.commit(Mutation.SET_CONFIG, { menuItems: null }) // Hack, release from store before edit and reappend
       menuItems

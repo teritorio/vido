@@ -34,9 +34,9 @@
             :categories-actives-count-by-parent="categoriesActivesCountByParent"
             :is-category-selected="isCategorySelected"
             @search-click="goToSearch"
-            @category-click="toggleSubCategorySelection"
-            @select-all-categories="selectSubCategory"
-            @unselect-all-categories="unselectSubCategory"
+            @category-click="toggleCategorySelection"
+            @select-all-categories="selectCategory"
+            @unselect-all-categories="unselectCategory"
           />
 
           <div
@@ -60,16 +60,14 @@
       </div>
 
       <div
-        v-if="
-          !isModeExplorer && selectedSubCategories.length && !isModeFavorites
-        "
+        v-if="!isModeExplorer && selectedCategories.length && !isModeFavorites"
         class="py-2"
         style="max-width: calc(100vw - 670px)"
       >
         <SelectedCategories
-          :menu-items="selectedSubCategories"
+          :menu-items="selectedCategories"
           :is-category-selected="isCategorySelected"
-          @category-unselect="unselectSubCategory"
+          @category-unselect="unselectCategory"
         />
       </div>
     </header>
@@ -186,9 +184,9 @@
           :categories-actives-count-by-parent="categoriesActivesCountByParent"
           :is-category-selected="isCategorySelected"
           @search-click="goToSearch"
-          @category-click="toggleSubCategorySelection"
-          @select-all-categories="selectSubCategory"
-          @unselect-all-categories="unselectSubCategory"
+          @category-click="toggleCategorySelection"
+          @select-all-categories="selectCategory"
+          @unselect-all-categories="unselectCategory"
         />
         <PoiCard
           v-else-if="selectedFeature && showPoi"
@@ -343,7 +341,7 @@ export default (
     logoUrl(): string {
       return this.settings.themes[0]?.logo_url || ''
     },
-    selectedSubCategories(): ApiMenuCategory[] {
+    selectedCategories(): ApiMenuCategory[] {
       return this.selectedCategoriesIds.map(
         (selectedCategoriesId) => this.menuItems[selectedCategoriesId]
       ) as ApiMenuCategory[]
@@ -515,7 +513,7 @@ export default (
     })
 
     if (this.initialCategoryIds) {
-      this.selectSubCategory(this.initialCategoryIds)
+      this.selectCategory(this.initialCategoryIds)
     } else if (
       typeof location !== 'undefined' &&
       !getHashPart(this.$router, 'favs')
@@ -529,7 +527,7 @@ export default (
         }
       })
 
-      this.selectSubCategory(enabledCategories)
+      this.selectCategory(enabledCategories)
     }
 
     if (this.initialPoi) {
@@ -589,22 +587,22 @@ export default (
     goToMenuItems() {
       this.service.send(HomeEvents.GoToCategories)
     },
-    isCategorySelected(subCategoryId: ApiMenuCategory['id']) {
-      return this.selectedCategoriesIds.includes(subCategoryId)
+    isCategorySelected(categoryId: ApiMenuCategory['id']) {
+      return this.selectedCategoriesIds.includes(categoryId)
     },
     sortedUniq<T>(a: T[]): T[] {
       return [...new Set(a)].sort()
     },
-    selectSubCategory(subCategoriesIds: ApiMenuCategory['id'][]) {
+    selectCategory(categoriesIds: ApiMenuCategory['id'][]) {
       this.selectedCategoriesIds = this.sortedUniq([
         ...this.selectedCategoriesIds,
-        ...subCategoriesIds,
+        ...categoriesIds,
       ])
     },
     send(event: HomeEvents) {
       this.service.send(event)
     },
-    toggleSubCategorySelection(categoryId: ApiMenuCategory['id']) {
+    toggleCategorySelection(categoryId: ApiMenuCategory['id']) {
       if (this.selectedCategoriesIds.includes(categoryId)) {
         this.selectedCategoriesIds = this.selectedCategoriesIds.filter(
           (id) => id !== categoryId
@@ -616,7 +614,7 @@ export default (
         ])
       }
     },
-    unselectSubCategory(categoriesIds: ApiMenuCategory['id'][]) {
+    unselectCategory(categoriesIds: ApiMenuCategory['id'][]) {
       this.selectedCategoriesIds = this.selectedCategoriesIds.filter(
         (categoryId) => !categoriesIds.includes(categoryId)
       )
@@ -668,7 +666,7 @@ export default (
 
       this.service.send(HomeEvents.GoToCategories)
       this.$store.dispatch('map/setMode', Mode.BROWSER)
-      this.selectSubCategory([newFilter.id])
+      this.selectCategory([newFilter.id])
     },
     onFeatureClick(feature: ApiPoi) {
       this.setSelectedFeature(feature).then(() => {

@@ -8,7 +8,7 @@
       <button
         type="button"
         class="flex items-center justify-center w-10 h-10 text-2xl font-bold transition-all rounded-full outline-none cursor-pointer focus:outline-none hover:bg-zinc-100 focus:bg-zinc-100"
-        @click="onBackToSubCategoryClick"
+        @click="onBackToCategoryClick"
       >
         <font-awesome-icon icon="arrow-left" class="text-zinc-800" size="xs" />
       </button>
@@ -18,7 +18,7 @@
       key="Filter"
       :category-id="categoryIdFilter"
       :filters-values="categoryIdFilter ? filters[categoryIdFilter] : []"
-      @go-back-click="onBackToSubCategoryClick"
+      @go-back-click="onBackToCategoryClick"
     />
   </component>
 
@@ -49,7 +49,7 @@
         class="flex-1 pointer-events-auto h-full"
         @menu-group-click="onMenuGroupClick"
         @category-click="$emit('category-click', $event)"
-        @filter-click="onSubCategoryFilterClick"
+        @filter-click="onCategoryFilterClick"
       />
     </component>
   </div>
@@ -98,7 +98,7 @@
         class="flex-1 pointer-events-auto h-full"
         @menu-group-click="onMenuGroupClick"
         @category-click="$emit('category-click', $event)"
-        @filter-click="onSubCategoryFilterClick"
+        @filter-click="onCategoryFilterClick"
       />
     </component>
   </div>
@@ -251,11 +251,11 @@ export default Vue.extend({
       this.navigationParentIdStack.push(menuGroupId)
     },
 
-    onSubCategoryFilterClick(categoryId: ApiMenuCategory['id']) {
+    onCategoryFilterClick(categoryId: ApiMenuCategory['id']) {
       this.categoryIdFilter = categoryId
     },
 
-    onBackToSubCategoryClick() {
+    onBackToCategoryClick() {
       this.categoryIdFilter = null
     },
   },
