@@ -1,10 +1,33 @@
-import Menu from '~/components/Menu/Menu.vue'
-import { ApiMenuCategory, ApiMenuLink, MenuGroup } from '~/lib/apiMenu'
+import Menu from '~/components/Home/Menu.vue'
+import {
+  ApiMenuCategory,
+  ApiMenuLink,
+  MenuGroup,
+  MenuItem,
+} from '~/lib/apiMenu'
 import { bind } from '~/lib/storybook-types'
 
 export default {
-  title: 'Menu/Menu',
+  title: 'Home/Menu',
   component: Menu,
+}
+
+const search: MenuGroup = {
+  id: 1,
+  selected_by_default: false,
+  parent_id: null,
+  index_order: 1,
+  menu_group: {
+    name: { fr: 'Search' },
+    icon: 'teritorio teritorio-hosting',
+    color_fill: '#284627',
+    color_line: '#284627',
+    // style_class
+    display_mode: 'compact',
+    vido_children: [],
+  },
+  link: undefined,
+  category: undefined,
 }
 
 const menuGroup1: MenuGroup = {
@@ -81,7 +104,10 @@ const category: ApiMenuCategory = {
 }
 
 const defaultProps = {
-  menuItems: [menuGroup1, menuGroup2, menuLink, category],
+  logoUrl: '',
+  mainUrl: '',
+  siteName: '',
+  menuItems: [search, menuGroup1, menuGroup2, menuLink, category],
   filters: {},
   isCategorySelected: () => false,
   categoriesActivesCountByParent: {},

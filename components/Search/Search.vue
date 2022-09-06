@@ -8,7 +8,7 @@
     ]"
   >
     <div class="flex flex-row md:flex-col items-center md:items-start">
-      <h1 v-if="!isModeExplorerOrFavorites" class="flex-none md:hidden mr-2">
+      <h1 v-if="!isModeExplorerOrFavorites" class="flex-none md:hidden mr-4">
         <a
           :href="mainUrl"
           rel="noopener noreferrer"

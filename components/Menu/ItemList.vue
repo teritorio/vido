@@ -1,41 +1,52 @@
 <template>
-  <transition name="non-highlighted" appear>
-    <div v-if="!collapsed" class="grid items-start grid-cols-4 gap-3">
-      <template v-for="menuItem in menuItems">
-        <MenuGroup
-          v-if="menuItem.menu_group"
-          :key="menuItem.id"
-          :menu-group="menuItem"
-          :categories-actives-count="
-            categoriesActivesCountByParent[menuItem.id]
-          "
-          :size="size"
-          @click="onMenuGroupClick(menuItem)"
-        />
-        <Link
-          v-else-if="menuItem.link"
-          :key="menuItem.id"
-          :menu-link="menuItem"
-          :size="size"
-        />
-        <Category
-          v-else-if="menuItem.category"
-          :key="menuItem.id"
-          :category="menuItem"
-          :selected="isCategorySelected(menuItem.id)"
-          :filters="filters[menuItem.id]"
-          :size="size"
-          @click="onCategoryClick(menuItem)"
-          @filter-click="onFilterClick"
-        />
-      </template>
-    </div>
-  </transition>
+  <div class="grid items-start grid-cols-4">
+    <template v-for="menuItem in menuItems">
+      <MenuGroup
+        v-if="menuItem.menu_group"
+        :key="menuItem.id"
+        :menu-group="menuItem"
+        :categories-actives-count="categoriesActivesCountByParent[menuItem.id]"
+        :size="size"
+        :display-mode-default="displayModeDefault"
+        :class="
+          (menuItem.menu_group.display_mode || displayModeDefault) ===
+            'large' && ['col-start-1 col-span-4']
+        "
+        @click="onMenuGroupClick(menuItem)"
+      />
+      <Link
+        v-else-if="menuItem.link"
+        :key="menuItem.id"
+        :menu-link="menuItem"
+        :size="size"
+        :display-mode-default="displayModeDefault"
+        :class="
+          (menuItem.link.display_mode || displayModeDefault) === 'large' && [
+            'col-start-1 col-span-4',
+          ]
+        "
+      />
+      <Category
+        v-else-if="menuItem.category"
+        :key="menuItem.id"
+        :category="menuItem"
+        :selected="isCategorySelected(menuItem.id)"
+        :filters="filters[menuItem.id]"
+        :size="size"
+        :display-mode-default="displayModeDefault"
+        :class="
+          (menuItem.category.display_mode || displayModeDefault) ===
+            'large' && ['col-start-1 col-span-4']
+        "
+        @click="onCategoryClick(menuItem)"
+        @filter-click="onFilterClick($event)"
+      />
+    </template>
+  </div>
 </template>
 
 <script lang="ts">
 import Vue, { PropType } from 'vue'
-import { mapGetters } from 'vuex'
 
 import Category from '~/components/Menu/Category.vue'
 import MenuGroup from '~/components/Menu/Group.vue'
@@ -66,23 +77,16 @@ export default Vue.extend({
       type: Function,
       required: true,
     },
+    displayModeDefault: {
+      type: String,
+      required: true,
+    },
     size: {
       type: String,
       required: true,
     },
   },
-  data(): {
-    collapsed: boolean
-  } {
-    return {
-      collapsed: false,
-    }
-  },
-  computed: {
-    ...mapGetters({
-      getRootMenuItemFromCategoryId: 'menu/getRootMenuItemFromCategoryId',
-    }),
-  },
+
   methods: {
     onMenuGroupClick(menuItem: MenuItem) {
       this.$emit('menu-group-click', menuItem.id)

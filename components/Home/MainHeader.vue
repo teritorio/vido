@@ -1,18 +1,19 @@
 <template>
-  <MenuBlock>
+  <div class="flex">
     <a
       :href="mainUrl"
       rel="noopener noreferrer"
       :aria-label="siteName"
       :title="siteName"
       target="_blank"
+      class="mr-4"
     >
       <img :src="logoUrl" class="w-auto h-auto max-w-2xl max-h-16" />
     </a>
 
     <button
       type="button"
-      class="flex-grow relative pointer-events-auto w-full ml-6"
+      class="flex-grow relative pointer-events-auto w-full"
       @click="onSearchClick"
     >
       <div class="relative w-full">
@@ -29,19 +30,13 @@
         </div>
       </div>
     </button>
-  </MenuBlock>
+  </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
 
-import MenuBlock from '~/components/Home/MenuBlock.vue'
-
 export default Vue.extend({
-  components: {
-    MenuBlock,
-  },
-
   props: {
     logoUrl: {
       type: String,

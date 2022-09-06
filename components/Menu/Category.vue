@@ -2,7 +2,7 @@
   <MenuItem
     :id="category.id"
     :href="`/${category.id}`"
-    :display-mode="category.category.display_mode"
+    :display-mode="category.category.display_mode || displayModeDefault"
     :color-fill="category.category.color_fill"
     :icon="category.category.icon"
     :size="size"
@@ -86,6 +86,10 @@ export default Vue.extend({
       required: true,
     },
     size: {
+      type: String,
+      required: true,
+    },
+    displayModeDefault: {
       type: String,
       required: true,
     },

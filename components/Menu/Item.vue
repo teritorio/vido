@@ -5,13 +5,18 @@
       :href="href"
       target="_blank"
       :class="[
-        'flex focus:outline-none outline-none items-center text-center self-stretch justify-start leading-none transition-colors rounded-lg p-4 relative hover:bg-zinc-100',
-        displayMode === 'large' ? 'col-span-4 pt-2 pb-0' : 'pt-4 pb-2 flex-col',
+        'flex focus:outline-none outline-none items-center text-center self-stretch justify-start leading-none transition-colors rounded-lg relative hover:bg-zinc-100',
+        displayMode === 'large'
+          ? 'px-4 py-2 col-start-1 col-span-4'
+          : 'p-4 flex-col',
       ]"
       @click="$emit('click', $event)"
     >
       <div
-        class="relative flex items-center justify-center w-12 h-12 mb-2 text-white rounded-full"
+        :class="[
+          'relative flex items-center justify-center w-12 h-12 text-white rounded-full',
+          displayMode === 'compact' && 'mb-2',
+        ]"
         :style="{ flexShrink: 0 }"
       >
         <TeritorioIconBadge :color-fill="colorFill" :picto="icon" :size="size">
@@ -52,7 +57,7 @@
 import Vue, { PropType } from 'vue'
 
 import TeritorioIconBadge from '~/components/UI/TeritorioIconBadge.vue'
-import { ApiMenuGroup, MenuItem } from '~/lib/apiMenu'
+import { MenuItem } from '~/lib/apiMenu'
 import { MultilingualString } from '~/utils/types'
 
 export default Vue.extend({

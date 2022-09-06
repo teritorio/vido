@@ -1,50 +1,58 @@
 <template>
   <div class="fixed w-full h-full overflow-hidden flex flex-col">
     <header
-      class="relative md:fixed top-0 bottom-0 z-10 flex flex-row w-full md:h-full space-x-4 pointer-events-none md:w-auto md:p-2"
+      class="hidden md:flex relative md:fixed top-0 bottom-0 z-10 flex flex-row w-full md:h-full space-x-4 pointer-events-none md:w-auto md:p-2"
     >
       <div
         :class="[
-          'flex-col justify-between w-full md:w-auto md:max-w-md md:space-y-4 sm:pb-10',
+          'flex-col justify-between w-full w-auto max-w-md space-y-4 sm:pb-10',
           !selectedFeature && 'flex',
-          showPoi && 'max-h-screen-4/6 md:max-h-screen 2xl:h-auto',
+          showPoi && 'max-h-screen-4/6 max-h-screen 2xl:h-auto',
         ]"
       >
-        <transition-group name="headers" appear mode="out-in" class="sm:h-full">
+        <transition-group
+          name="headers"
+          appear
+          mode="out-in"
+          class="overflow-y-auto"
+        >
           <ExplorerOrFavoritesBack
             v-if="isModeExplorer || isModeFavorites"
             key="ExplorerOrFavoritesBack"
             @click="onQuitExplorerFavoriteMode"
           />
 
-          <MainHeader
+          <SubCategoryFilterHeader
+            v-else-if="categoryIdFilter"
+            key="SubCategoryFilterHeader"
+            class="hidden md:flex m-2"
+            :category-id="categoryIdFilter"
+            :filters-values="subCategoryFilters"
+            @go-back-click="onBackToSubCategoryClick"
+          />
+
+          <Menu
             v-else-if="state.matches(states.Categories)"
-            key="MainHeader"
+            key="Menu"
+            menu-block="MenuBlock"
             :logo-url="logoUrl"
             :main-url="mainUrl"
             :site-name="siteName"
-            @search-click="goToSearch"
-          />
-
-          <ItemList
-            v-if="!isModeExplorer && !isModeFavorites"
-            :menu-items="firstLevelMenuItems"
+            :menu-items="menuItems"
             :filters="filters"
-            :categories-activesubs-count="subCategoriesCounts"
-            class="flex-1 pointer-events-auto px-5 py-4 h-full"
-            @menu-item-click="onMenuItemClick"
+            :categories-actives-count-by-parent="categoriesActivesCountByParent"
+            :is-category-selected="isCategorySelected"
+            @search-click="goToSearch"
+            @category-click="toggleSubCategorySelection"
             @select-all-categories="selectSubCategory"
             @unselect-all-categories="unselectSubCategory"
             @filter-click="onSubCategoryFilterClick"
           />
 
           <div
-            v-if="state.matches(states.Search)"
+            v-else
             key="Search"
-            :class="[
-              'max-h-full hidden md:flex p-2',
-              showPoi && 'max-h-screen-4/6',
-            ]"
+            :class="['max-h-full flex p-2', showPoi && 'max-h-screen-4/6']"
           >
             <Search
               :site-name="siteName"
@@ -59,39 +67,38 @@
             />
           </div>
         </transition-group>
-        <div
-          v-if="state.matches(states.Search)"
-          :class="[
-            'max-h-full md:hidden md:p-2',
-            isBottomMenuOpened && 'hidden',
-          ]"
-        >
-          <Search
-            :site-name="siteName"
-            :logo-url="logoUrl"
-            :main-url="mainUrl"
-            :menu-to-icon="menuItemsToIcons"
-            :map-center="map_center"
-            @go-to-categories="onQuitExplorerFavoriteMode"
-            @go-back-click="goToHome"
-            @category-click="onSearchCategory"
-            @poi-click="onSearchPoi"
-            @feature-click="onFeatureClick"
-          />
-        </div>
       </div>
 
       <div
         v-if="
           !isModeExplorer && selectedSubCategories.length && !isModeFavorites
         "
-        class="hidden md:block py-2"
+        class="py-2"
         style="max-width: calc(100vw - 670px)"
       >
         <SelectedCategories
           :menu-items="selectedSubCategories"
           :is-category-selected="isCategorySelected"
           @category-unselect="unselectSubCategory"
+        />
+      </div>
+    </header>
+
+    <header
+      class="flex md:hidden relative fidex top-0 bottom-0 z-10 flex-row w-full space-x-4 pointer-events-none"
+    >
+      <div :class="['w-full', isBottomMenuOpened && 'hidden']">
+        <Search
+          :site-name="siteName"
+          :logo-url="logoUrl"
+          :main-url="mainUrl"
+          :menu-to-icon="menuItemsToIcons"
+          :map-center="map_center"
+          @go-to-categories="onQuitExplorerFavoriteMode"
+          @go-back-click="goToHome"
+          @category-click="onSearchCategory"
+          @poi-click="onSearchPoi"
+          @feature-click="onFeatureClick"
         />
       </div>
     </header>
@@ -109,7 +116,7 @@
           :fit-bounds-padding-options="fitBoundsPaddingOptions"
           :extra-attributions="settings.attributions"
           :small="isBottomMenuOpened"
-          :categories="categories"
+          :categories="menuItems"
           :features="mapFeatures"
           :selected-feature="selectedFeature"
           :selected-categories-ids="isModeExplorer ? [] : selectedCategoriesIds"
@@ -168,6 +175,7 @@
       />
       <div class="grow-[3]" />
     </div>
+
     <BottomMenu
       class="md:hidden"
       :show-grip="
@@ -177,19 +185,31 @@
       @on-grip-click="onBottomMenuButtonClick"
     >
       <div class="flex-1 h-full overflow-y-auto h-screen-3/5 divide-y">
-        <ItemList
-          v-if="!showPoi && state.matches(states.Categories)"
-          :menu-items="firstLevelMenuItems"
+        <SubCategoryFilterHeader
+          v-if="!showPoi && !isModeExplorer && categoryIdFilter"
+          class="relative text-left h-full"
+          :category-id="categoryIdFilter"
+          :filters-values="subCategoryFilters"
+          @go-back-click="onBackToSubCategoryClick"
+        />
+        <Menu
+          v-else-if="!showPoi && state.matches(states.Categories)"
+          menu-block="MenuBlockBottom"
+          :logo-url="logoUrl"
+          :main-url="mainUrl"
+          :site-name="siteName"
+          :menu-items="menuItems"
           :filters="filters"
-          :categories-activesubs-count="subCategoriesCounts"
-          class="flex-1 pointer-events-auto px-5 py-4 h-full"
-          @menu-item-click="onMenuItemClick"
+          :categories-actives-count-by-parent="categoriesActivesCountByParent"
+          :is-category-selected="isCategorySelected"
+          @search-click="goToSearch"
+          @category-click="toggleSubCategorySelection"
           @select-all-categories="selectSubCategory"
           @unselect-all-categories="unselectSubCategory"
           @filter-click="onSubCategoryFilterClick"
         />
         <PoiCard
-          v-if="selectedFeature && showPoi"
+          v-else-if="selectedFeature && showPoi"
           :poi="selectedFeature"
           class="grow-0 text-left h-full"
           @explore-click="exploreAroundSelectedPoi"
@@ -225,7 +245,7 @@ import {
   homeMachine,
 } from './Home.machine'
 
-import MainHeader from '~/components/Home/MainHeader.vue'
+import Menu from '~/components/Home/Menu.vue'
 import SelectedCategories from '~/components/Home/SelectedCategories.vue'
 import Attribution from '~/components/MainMap/Attribution.vue'
 import BottomMenu from '~/components/MainMap/BottomMenu.vue'
@@ -233,7 +253,7 @@ import FavoriteMenu from '~/components/MainMap/FavoriteMenu.vue'
 import FavoritesOverlay from '~/components/MainMap/FavoritesOverlay.vue'
 import MapFeatures from '~/components/MainMap/MapFeatures.vue'
 import NavMenu from '~/components/MainMap/NavMenu.vue'
-import ItemList from '~/components/Menu/ItemList.vue'
+import SubCategoryFilterHeader from '~/components/Menu/SubCategoryFilterHeader.vue'
 import PoiCard from '~/components/PoisCard/PoiCard.vue'
 import Search from '~/components/Search/Search.vue'
 import CookiesConsent from '~/components/UI/CookiesConsent.vue'
@@ -261,19 +281,19 @@ export default (
   >
 ).extend({
   components: {
-    MainHeader,
     FavoriteMenu,
     FavoritesOverlay,
     NavMenu,
     MapFeatures,
     Search,
     SelectedCategories,
-    ItemList,
+    Menu,
     BottomMenu,
     PoiCard,
     Attribution,
     CookiesConsent,
     ExplorerOrFavoritesBack,
+    SubCategoryFilterHeader,
   },
 
   props: {
@@ -297,7 +317,6 @@ export default (
   data(): {
     service: HomeInterpreter
     state: HomeState
-    menuItemNavigationStackIds: MenuItem['id'][]
     selectedCategoriesIds: ApiMenuCategory['id'][]
     categoryIdFilter: ApiMenuCategory['id'] | null
     showPoi: boolean
@@ -308,7 +327,6 @@ export default (
     favorites: ApiPoi[] | null
   } {
     return {
-      menuItemNavigationStackIds: [],
       selectedCategoriesIds: [],
       categoryIdFilter: null,
       service: interpret(homeMachine, interpretOptions),
@@ -328,8 +346,6 @@ export default (
   },
   computed: {
     ...mapGetters({
-      firstLevelMenuItems: 'menu/firstLevelMenuItems',
-      parentMenuItems: 'menu/parentMenuItems',
       pois: 'menu/features',
       filters: 'menu/filters',
       mode: 'map/mode',
@@ -341,14 +357,8 @@ export default (
       isLoadingFeatures: 'menu/isLoadingFeatures',
     }),
 
-    subMenuItems(): MenuItem[] {
-      return this.$store.getters['menu/subMenuItems']
-    },
-    navigationSubMenuItems(): MenuItem[] {
-      return this.subMenuItems.filter(
-        (menuItem) =>
-          menuItem.parent_id === this.menuItemNavigationStackIds.at(-1)
-      )
+    menuItems(): Record<ApiMenuCategory['id'], MenuItem> {
+      return this.$store.getters['menu/menuItems']
     },
 
     events: () => HomeEvents,
@@ -356,8 +366,8 @@ export default (
       return this.settings.themes[0]?.logo_url || ''
     },
     selectedSubCategories(): ApiMenuCategory[] {
-      return this.subMenuItems.filter((menuItem) =>
-        this.selectedCategoriesIds.includes(menuItem.id)
+      return this.selectedCategoriesIds.map(
+        (selectedCategoriesId) => this.menuItems[selectedCategoriesId]
       ) as ApiMenuCategory[]
     },
     siteName(): string {
@@ -372,20 +382,17 @@ export default (
     isBottomMenuOpened(): boolean {
       return (
         this.$screen.smallScreen &&
-        (this.isPoiCardVisible ||
-          this.state.matches(this.states.Categories) ||
-          this.state.matches(this.states.SubCategories) ||
-          this.state.matches(this.states.SubCategoryFilters))
+        (this.isPoiCardVisible || this.state.matches(this.states.Categories))
       )
     },
     states: () => HomeStates,
-    subCategoriesCounts(): Record<ApiMenuCategory['id'], number> {
+    categoriesActivesCountByParent(): Record<ApiMenuCategory['id'], number> {
       const counts: { [id: string]: number } = {}
       this.selectedCategoriesIds.forEach((categoryId) => {
-        let parentId = this.categories[categoryId]?.parent_id
+        let parentId = this.menuItems[categoryId]?.parent_id
         while (parentId) {
           counts[parentId] = (counts[parentId] || 0) + 1
-          parentId = this.categories[parentId].parent_id
+          parentId = this.menuItems[parentId].parent_id
         }
       })
       return counts
@@ -398,7 +405,7 @@ export default (
     menuItemsToIcons(): Record<MenuItem['id'], string> {
       const resources: Record<MenuItem['id'], string> = {}
 
-      this.subMenuItems.forEach((sc) => {
+      Object.values(this.menuItems).forEach((sc) => {
         resources[sc.id] = (sc.menu_group || sc.link || sc.category).icon
       })
 
@@ -421,14 +428,11 @@ export default (
         }
       }
     },
-    categories(): Record<ApiMenuCategory['id'], ApiMenuCategory> {
-      return this.$store.getters['menu/categories']
-    },
 
-    poiFilters(): Array<string[]> {
-      return Object.values(this.categories)
+    poiFilters(): string[][] {
+      return Object.values(this.menuItems)
         .map((c) => c.category?.style_class)
-        .filter((s) => s && Array.isArray(s))
+        .filter((s) => s !== undefined) as string[][]
     },
 
     mapFeatures(): ApiPoi[] {
@@ -545,9 +549,9 @@ export default (
     ) {
       const enabledCategories: ApiMenuCategory['id'][] = []
 
-      Object.keys(this.categories).forEach((categoryIdString) => {
+      Object.keys(this.menuItems).forEach((categoryIdString) => {
         const categoryId = parseInt(categoryIdString, 10)
-        if (this.categories[categoryId].selected_by_default) {
+        if (this.menuItems[categoryId].selected_by_default) {
           enabledCategories.push(categoryId)
         }
       })
@@ -602,16 +606,6 @@ export default (
         this.goToMenuItems()
       }
     },
-    goToParent() {
-      if (this.menuItemNavigationStackIds.length > 0) {
-        this.menuItemNavigationStackIds.pop()
-        if (this.menuItemNavigationStackIds.length > 0) {
-          this.service.send(HomeEvents.GoToSubCategories)
-        } else {
-          this.service.send(HomeEvents.GoToCategories)
-        }
-      }
-    },
     onQuitExplorerFavoriteMode() {
       this.$store.dispatch('map/setMode', Mode.BROWSER)
       this.setSelectedFeature(null)
@@ -625,31 +619,11 @@ export default (
     isCategorySelected(subCategoryId: ApiMenuCategory['id']) {
       return this.selectedCategoriesIds.includes(subCategoryId)
     },
-
-    onMenuItemClick(menuItemId: MenuItem['id']) {
-      this.menuItemNavigationStackIds.push(menuItemId)
-      this.service.send(HomeEvents.GoToSubCategories)
-    },
-    onSubMenuItemClick(menuItemId: MenuItem['id']) {
-      const sc = this.navigationSubMenuItems.find((sc) => sc.id === menuItemId)
-
-      if (
-        sc &&
-        sc?.menu_group?.vido_children &&
-        sc.menu_group.vido_children.length > 0
-      ) {
-        this.menuItemNavigationStackIds.push(menuItemId)
-        this.service.send(HomeEvents.GoToSubCategories)
-      } else {
-        this.toggleSubCategorySelection(menuItemId)
-      }
-    },
     onSubCategoryFilterClick(categoryId: ApiMenuCategory['id']) {
       this.categoryIdFilter = categoryId
-      this.service.send(HomeEvents.GoToSubCategoryFilters)
     },
     onBackToSubCategoryClick() {
-      this.service.send(HomeEvents.GoToSubCategories)
+      this.categoryIdFilter = null
     },
     sortedUniq<T>(a: T[]): T[] {
       return [...new Set(a)].sort()
@@ -659,7 +633,6 @@ export default (
         ...this.selectedCategoriesIds,
         ...subCategoriesIds,
       ])
-      this.service.send(HomeEvents.SelectSubCategories)
     },
     send(event: HomeEvents) {
       this.service.send(event)
@@ -675,13 +648,11 @@ export default (
           categoryId,
         ])
       }
-      this.service.send(HomeEvents.ToggleSubCategorySelection)
     },
     unselectSubCategory(categoriesIds: ApiMenuCategory['id'][]) {
       this.selectedCategoriesIds = this.selectedCategoriesIds.filter(
         (categoryId) => !categoriesIds.includes(categoryId)
       )
-      this.service.send(HomeEvents.UnselectSubCategories)
     },
 
     onSearchPoi(poiId: number) {

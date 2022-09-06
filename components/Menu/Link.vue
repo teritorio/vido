@@ -2,7 +2,7 @@
   <MenuItem
     :id="menuLink.id"
     :href="menuLink.link.href"
-    :display-mode="menuLink.link.display_mode"
+    :display-mode="menuLink.link.display_mode || displayModeDefault"
     :color-fill="menuLink.link.color_fill"
     :icon="menuLink.link.icon"
     :size="size"
@@ -34,6 +34,10 @@ export default Vue.extend({
       required: true,
     },
     size: {
+      type: String,
+      required: true,
+    },
+    displayModeDefault: {
       type: String,
       required: true,
     },

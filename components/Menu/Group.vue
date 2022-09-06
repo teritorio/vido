@@ -2,7 +2,7 @@
   <MenuItem
     :id="menuGroup.id"
     :href="`/${menuGroup.id}/`"
-    :display-mode="menuGroup.menu_group.display_mode"
+    :display-mode="menuGroup.menu_group.display_mode || displayModeDefault"
     :color-fill="menuGroup.menu_group.color_fill"
     :icon="menuGroup.menu_group.icon"
     :size="size"
@@ -41,6 +41,10 @@ export default Vue.extend({
       default: 0,
     },
     size: {
+      type: String,
+      required: true,
+    },
+    displayModeDefault: {
       type: String,
       required: true,
     },

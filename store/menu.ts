@@ -2,7 +2,7 @@ import copy from 'fast-copy'
 import { deepEqual } from 'fast-equals'
 import { Store } from 'vuex'
 
-import { ApiMenuCategory, MenuItem } from '~/lib/apiMenu'
+import { ApiMenuCategory, MenuGroup, MenuItem } from '~/lib/apiMenu'
 import { ApiPoi, ApiPois, getPoiByCategoryId } from '~/lib/apiPois'
 import {
   FilterValues,
@@ -224,42 +224,10 @@ export const actions = {
 }
 
 export const getters = {
-  categories: (state: State) => state.menuItems,
+  menuItems: (state: State): { [menuItemId: number]: MenuItem } =>
+    state.menuItems,
   allFeatures: (state: State) => state.allFeatures,
   isLoadingFeatures: (state: State) => state.isLoadingFeatures,
   filters: (state: State) => state.filters,
   features: (state: State) => state.features,
-
-  getRootMenuItemFromCategoryId: (state: State) => (categoryId: number) =>
-    Object.values(state.menuItems)
-      .filter(
-        (c) =>
-          c.parent_id !== null &&
-          state.menuItems[c.parent_id]?.parent_id === null &&
-          c.parent_id === categoryId
-      )
-      .sort((a, b) => a.index_order - b.index_order),
-
-  firstLevelMenuItems: (state: State) =>
-    Object.values(state.menuItems)
-      .filter((c) => c.parent_id === null && c?.menu_group?.vido_children)
-      .sort((a, b) => a.index_order - b.index_order),
-
-  parentMenuItems: (state: State) =>
-    Object.values(state.menuItems)
-      .filter(
-        (c) =>
-          c.parent_id !== null &&
-          state.menuItems[c.parent_id]?.parent_id === null
-      )
-      .sort((a, b) => a.index_order - b.index_order),
-
-  subMenuItems: (state: State) =>
-    Object.values(state.menuItems)
-      .filter(
-        (c) =>
-          c.parent_id !== null &&
-          state.menuItems[c.parent_id]?.parent_id !== null
-      )
-      .sort((a, b) => a.index_order - b.index_order),
 }
