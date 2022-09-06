@@ -1,7 +1,7 @@
 <template>
   <div
     id="block"
-    class="relative detail-left-block flex flex-col justify-end z-0"
+    class="relative detail-left-block flex flex-col justify-start z-0"
     :style="`
       background-color: ${colorFill};
     `"
