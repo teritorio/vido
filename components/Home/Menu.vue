@@ -1,5 +1,28 @@
 <template>
-  <div v-if="isRootMenu">
+  <component
+    :is="menuBlock"
+    v-if="categoryIdFilter"
+    :class="[index === 0 && 'hidden md:block']"
+  >
+    <div class="w-full flex justify-between pb-4">
+      <button
+        type="button"
+        class="flex items-center justify-center w-10 h-10 text-2xl font-bold transition-all rounded-full outline-none cursor-pointer focus:outline-none hover:bg-zinc-100 focus:bg-zinc-100"
+        @click="onBackToSubCategoryClick"
+      >
+        <font-awesome-icon icon="arrow-left" class="text-zinc-800" size="xs" />
+      </button>
+    </div>
+
+    <FilterCompo
+      key="Filter"
+      :category-id="categoryIdFilter"
+      :filters-values="categoryIdFilter ? filters[categoryIdFilter] : []"
+      @go-back-click="onBackToSubCategoryClick"
+    />
+  </component>
+
+  <div v-else-if="isRootMenu">
     <component
       :is="menuBlock"
       v-for="(menuItem, index) in currentMenuItems"
@@ -26,7 +49,7 @@
         class="flex-1 pointer-events-auto h-full"
         @menu-group-click="onMenuGroupClick"
         @category-click="$emit('category-click', $event)"
-        @filter-click="$emit('filter-click', $event)"
+        @filter-click="onSubCategoryFilterClick"
       />
     </component>
   </div>
@@ -75,7 +98,7 @@
         class="flex-1 pointer-events-auto h-full"
         @menu-group-click="onMenuGroupClick"
         @category-click="$emit('category-click', $event)"
-        @filter-click="$emit('filter-click', $event)"
+        @filter-click="onSubCategoryFilterClick"
       />
     </component>
   </div>
@@ -88,6 +111,7 @@ import { mapGetters, mapActions } from 'vuex'
 import MainHeader from '~/components/Home/MainHeader.vue'
 import MenuBlock from '~/components/Home/MenuBlock.vue'
 import MenuBlockBottom from '~/components/Home/MenuBlockBottom.vue'
+import FilterCompo from '~/components/Menu/Filter.vue'
 import ItemList from '~/components/Menu/ItemList.vue'
 import { ApiMenuCategory, MenuGroup, MenuItem } from '~/lib/apiMenu'
 import { FilterValues } from '~/utils/types-filters'
@@ -98,6 +122,7 @@ export default Vue.extend({
     MenuBlockBottom,
     ItemList,
     MainHeader,
+    FilterCompo,
   },
 
   props: {
@@ -137,9 +162,11 @@ export default Vue.extend({
 
   data(): {
     navigationParentIdStack: MenuItem['id'][]
+    categoryIdFilter: ApiMenuCategory['id'] | null
   } {
     return {
       navigationParentIdStack: [],
+      categoryIdFilter: null,
     }
   },
 
@@ -222,6 +249,14 @@ export default Vue.extend({
     onMenuGroupClick(menuGroupId: MenuGroup['id']) {
       console.error(menuGroupId)
       this.navigationParentIdStack.push(menuGroupId)
+    },
+
+    onSubCategoryFilterClick(categoryId: ApiMenuCategory['id']) {
+      this.categoryIdFilter = categoryId
+    },
+
+    onBackToSubCategoryClick() {
+      this.categoryIdFilter = null
     },
   },
 })

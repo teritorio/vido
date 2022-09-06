@@ -1,6 +1,6 @@
 <template>
   <aside
-    class="flex flex-col overflow-y-hidden pointer-events-auto sm:relative inset-auto h-max max-h-full box-border space-y-4 p-2 box-border"
+    class="flex flex-col overflow-y-hidden pointer-events-auto inset-auto h-max max-h-full box-border space-y-4 p-2 box-border"
   >
     <div
       :class="[
@@ -25,3 +25,9 @@ export default Vue.extend({
   },
 })
 </script>
+
+<style scoped>
+aside {
+  min-width: 432px;
+}
+</style>

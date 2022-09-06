@@ -22,15 +22,6 @@
             @click="onQuitExplorerFavoriteMode"
           />
 
-          <SubCategoryFilterHeader
-            v-else-if="categoryIdFilter"
-            key="SubCategoryFilterHeader"
-            class="hidden md:flex m-2"
-            :category-id="categoryIdFilter"
-            :filters-values="subCategoryFilters"
-            @go-back-click="onBackToSubCategoryClick"
-          />
-
           <Menu
             v-else-if="state.matches(states.Categories)"
             key="Menu"
@@ -46,7 +37,6 @@
             @category-click="toggleSubCategorySelection"
             @select-all-categories="selectSubCategory"
             @unselect-all-categories="unselectSubCategory"
-            @filter-click="onSubCategoryFilterClick"
           />
 
           <div
@@ -185,15 +175,8 @@
       @on-grip-click="onBottomMenuButtonClick"
     >
       <div class="flex-1 h-full overflow-y-auto h-screen-3/5 divide-y">
-        <SubCategoryFilterHeader
-          v-if="!showPoi && !isModeExplorer && categoryIdFilter"
-          class="relative text-left h-full"
-          :category-id="categoryIdFilter"
-          :filters-values="subCategoryFilters"
-          @go-back-click="onBackToSubCategoryClick"
-        />
         <Menu
-          v-else-if="!showPoi && state.matches(states.Categories)"
+          v-if="!showPoi && state.matches(states.Categories)"
           menu-block="MenuBlockBottom"
           :logo-url="logoUrl"
           :main-url="mainUrl"
@@ -206,7 +189,6 @@
           @category-click="toggleSubCategorySelection"
           @select-all-categories="selectSubCategory"
           @unselect-all-categories="unselectSubCategory"
-          @filter-click="onSubCategoryFilterClick"
         />
         <PoiCard
           v-else-if="selectedFeature && showPoi"
@@ -253,7 +235,6 @@ import FavoriteMenu from '~/components/MainMap/FavoriteMenu.vue'
 import FavoritesOverlay from '~/components/MainMap/FavoritesOverlay.vue'
 import MapFeatures from '~/components/MainMap/MapFeatures.vue'
 import NavMenu from '~/components/MainMap/NavMenu.vue'
-import SubCategoryFilterHeader from '~/components/Menu/SubCategoryFilterHeader.vue'
 import PoiCard from '~/components/PoisCard/PoiCard.vue'
 import Search from '~/components/Search/Search.vue'
 import CookiesConsent from '~/components/UI/CookiesConsent.vue'
@@ -293,7 +274,6 @@ export default (
     Attribution,
     CookiesConsent,
     ExplorerOrFavoritesBack,
-    SubCategoryFilterHeader,
   },
 
   props: {
@@ -318,7 +298,6 @@ export default (
     service: HomeInterpreter
     state: HomeState
     selectedCategoriesIds: ApiMenuCategory['id'][]
-    categoryIdFilter: ApiMenuCategory['id'] | null
     showPoi: boolean
     initialBbox: LngLatBoundsLike | null
     fullAttributions: string
@@ -328,7 +307,6 @@ export default (
   } {
     return {
       selectedCategoriesIds: [],
-      categoryIdFilter: null,
       service: interpret(homeMachine, interpretOptions),
       state: homeMachine.initialState,
       showPoi: false,
@@ -396,11 +374,6 @@ export default (
         }
       })
       return counts
-    },
-    subCategoryFilters(): FilterValues {
-      return (
-        (this.categoryIdFilter && this.filters[this.categoryIdFilter]) || []
-      )
     },
     menuItemsToIcons(): Record<MenuItem['id'], string> {
       const resources: Record<MenuItem['id'], string> = {}
@@ -618,12 +591,6 @@ export default (
     },
     isCategorySelected(subCategoryId: ApiMenuCategory['id']) {
       return this.selectedCategoriesIds.includes(subCategoryId)
-    },
-    onSubCategoryFilterClick(categoryId: ApiMenuCategory['id']) {
-      this.categoryIdFilter = categoryId
-    },
-    onBackToSubCategoryClick() {
-      this.categoryIdFilter = null
     },
     sortedUniq<T>(a: T[]): T[] {
       return [...new Set(a)].sort()
