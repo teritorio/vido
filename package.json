@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "yarn nuxt",
     "build": "yarn nuxt build",
-    "build:storybook": "yarn nuxt storybook build",
+    "build:storybook": "ruby poi_explode.rb cypress/fixtures/teritorio/references/pois.geojson && yarn nuxt storybook build",
     "generate": "yarn nuxt generate",
     "start": "yarn nuxt start",
     "start:storybook": "yarn nuxt storybook",
