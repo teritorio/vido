@@ -19,7 +19,7 @@ interface State {
 }
 
 const getInitialMapview: Function = () => ({
-  center: [0, 0],
+  center: { lng: 0, lat: 0 },
 })
 
 export const state = (): State | null =>
