@@ -20,10 +20,11 @@
           <button
             ref="menu"
             :class="[
-              'relative space-x-1 text-sm font-medium bg-white shadow-md outline-none md:px-5 w-11 md:w-auto h-11 focus:outline-none hover:bg-zinc-100 focus-visible:bg-zinc-100 shrink-0 border-r border-zinc-400 rounded-l-full',
+              'relative space-x-1 text-sm font-medium shadow-md outline-none md:px-5 w-11 md:w-auto h-11 focus:outline-none shrink-0 border-r border-zinc-400 rounded-l-full',
               isModeFavorites &&
                 'bg-blue-500 hover:bg-blue-400 focus-visible:bg-blue-400 text-white',
-              !isModeFavorites && 'text-zinc-800',
+              !isModeFavorites &&
+                'bg-white hover:bg-zinc-100 focus-visible:bg-zinc-100 text-zinc-800',
             ]"
             @click="$emit('toggle-favorites')"
           >
