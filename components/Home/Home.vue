@@ -45,9 +45,6 @@
             :class="['max-h-full flex p-2', showPoi && 'max-h-screen-4/6']"
           >
             <Search
-              :site-name="siteName"
-              :logo-url="logoUrl"
-              :main-url="mainUrl"
               :menu-to-icon="menuItemsToIcons"
               :map-center="map_center"
               @go-back-click="goToHome"
@@ -77,9 +74,6 @@
     >
       <div :class="['w-full', isBottomMenuOpened && 'hidden']">
         <Search
-          :site-name="siteName"
-          :logo-url="logoUrl"
-          :main-url="mainUrl"
           :menu-to-icon="menuItemsToIcons"
           :map-center="map_center"
           @go-to-categories="onQuitExplorerFavoriteMode"

@@ -8,22 +8,6 @@
     ]"
   >
     <div class="flex flex-row md:flex-col items-center md:items-start">
-      <h1 v-if="!isModeExplorerOrFavorites" class="flex-none md:hidden mr-4">
-        <a
-          :href="mainUrl"
-          rel="noopener noreferrer"
-          :aria-label="siteName"
-          :title="siteName"
-          target="_blank"
-        >
-          <img
-            :aria-label="siteName"
-            :src="logoUrl"
-            class="w-auto h-auto max-w-2xl max-h-12 md:max-h-16"
-          />
-        </a>
-      </h1>
-
       <button
         type="button"
         class="hidden md:flex shrink-0 items-center justify-center w-10 h-10 text-2xl font-bold transition-all rounded-full outline-none cursor-pointer focus:outline-none hover:bg-zinc-100 focus:bg-zinc-100"
@@ -61,24 +45,6 @@
           </button>
         </section>
       </form>
-      <div v-else class="flex items-center ml-2">
-        <button
-          type="button"
-          class="flex shrink-0 items-center justify-center w-10 h-10 text-2xl font-bold transition-all rounded-full outline-none cursor-pointer focus:outline-none hover:bg-zinc-100 focus:bg-zinc-100"
-          @click="goToCategories"
-        >
-          <font-awesome-icon icon="arrow-left" class="text-inherit" size="xs" />
-        </button>
-        <p class="ml-2">
-          {{
-            $tc(
-              isModeFavorites
-                ? 'headerMenu.backToMenuFavoritesMobile'
-                : 'headerMenu.backToMenuExplorerMobile'
-            )
-          }}
-        </p>
-      </div>
     </div>
 
     <button
@@ -164,18 +130,6 @@ export default (
   },
 
   props: {
-    mainUrl: {
-      type: String,
-      required: true,
-    },
-    logoUrl: {
-      type: String,
-      required: true,
-    },
-    siteName: {
-      type: String,
-      required: true,
-    },
     menuToIcon: {
       type: Object as PropType<{ [id: string]: string }>,
       required: true,
