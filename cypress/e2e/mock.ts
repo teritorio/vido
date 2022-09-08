@@ -6,7 +6,7 @@ export function mockSSRAPI(hostname: string, api: APIFixture) {
     'attribute_translations/fr.json': api.attribute_translations.fr,
     'articles.json?slug=non-classe': api.articles,
     'menu.json': api.menu,
-    'pois.geojson?idmenu=211&geometry_as=point&short_description=true':
+    'pois/category/211.geojson?geometry_as=point&short_description=true':
       api.pois,
   }
 

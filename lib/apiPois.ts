@@ -142,11 +142,8 @@ export function getPoiByCategoryId(
   options: apiPoisOptions = {}
 ): Promise<ApiPois> {
   return fetch(
-    `${apiEndpoint}/${apiProject}/${apiTheme}/pois.geojson?` +
-      new URLSearchParams([
-        ['idmenu', `${categoryId}`],
-        ...stringifyOptions(options),
-      ])
+    `${apiEndpoint}/${apiProject}/${apiTheme}/pois/category/${categoryId}.geojson?` +
+      new URLSearchParams(stringifyOptions(options))
   ).then((data) => {
     if (data.ok) {
       return data.json() as unknown as ApiPois
