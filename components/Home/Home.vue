@@ -103,6 +103,7 @@
           :selected-feature="selectedFeature"
           :selected-categories-ids="isModeExplorer ? [] : selectedCategoriesIds"
           :style-icon-filter="(isModeExplorer && poiFilters) || null"
+          :explorer-mode-enabled="explorerModeEnabled"
           @on-select-feature="setSelectedFeature($event)"
           @full-attribution="setFullAttributions($event)"
         />
@@ -123,10 +124,12 @@
           ]"
         >
           <FavoriteMenu
+            v-if="favoritesModeEnabled"
             :has-favorites="favoritesIds.length !== 0"
             :explore-around-selected-poi="exploreAroundSelectedPoi"
             :go-to-selected-poi="goToSelectedFeature"
             :toggle-favorite="toggleFavorite"
+            :explorer-mode-enabled="explorerModeEnabled"
             @toggle-favorites="onToggleFavoritesMode"
           />
           <NavMenu
@@ -151,6 +154,8 @@
         v-if="selectedFeature && showPoi"
         :poi="selectedFeature"
         class="grow-0"
+        :explorer-mode-enabled="explorerModeEnabled"
+        :favorites-mode-enabled="favoritesModeEnabled"
         @explore-click="exploreAroundSelectedPoi"
         @favorite-click="toggleFavorite($event)"
         @zoom-click="goToSelectedFeature"
@@ -186,6 +191,8 @@
           v-else-if="selectedFeature && showPoi"
           :poi="selectedFeature"
           class="grow-0 text-left h-full"
+          :explorer-mode-enabled="explorerModeEnabled"
+          :favorites-mode-enabled="favoritesModeEnabled"
           @explore-click="exploreAroundSelectedPoi"
           @favorite-click="toggleFavorite($event)"
           @zoom-click="goToSelectedFeature"
@@ -334,6 +341,12 @@ export default (
     events: () => HomeEvents,
     logoUrl(): string {
       return this.settings.themes[0]?.logo_url || ''
+    },
+    favoritesModeEnabled(): boolean {
+      return this.settings.themes[0]?.favorites_mode ?? true
+    },
+    explorerModeEnabled(): boolean {
+      return this.settings.themes[0]?.explorer_mode ?? true
     },
     selectedCategories(): ApiMenuCategory[] {
       return this.selectedCategoriesIds.map(

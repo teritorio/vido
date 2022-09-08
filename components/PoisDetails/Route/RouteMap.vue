@@ -16,6 +16,8 @@
         <h2>{{ $tc('poiDetails.routes.pois') }}</h2>
         <PoisDeck
           :pois="pois"
+          :explorer-mode-enabled="explorerModeEnabled"
+          :favorites-mode-enabled="favoritesModeEnabled"
           @explore-click="$emit('explore-click', $event)"
           @favorite-click="$emit('favorite-click', $event)"
           @zoom-click="$emit('zoom-click', $event)"
@@ -64,6 +66,14 @@ export default Vue.extend({
     },
     colorFill: {
       type: String,
+      required: true,
+    },
+    explorerModeEnabled: {
+      type: Boolean,
+      required: true,
+    },
+    favoritesModeEnabled: {
+      type: Boolean,
       required: true,
     },
   },

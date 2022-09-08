@@ -27,7 +27,7 @@
       @full-attribution="$emit('full-attribution', $event)"
     >
       <template #controls>
-        <MapControlsExplore />
+        <MapControlsExplore v-if="explorerModeEnabled" />
         <MapControls3D :map="map" :pitch="pitch" />
         <MapControlsBackground
           :backgrounds="availableStyles"
@@ -123,6 +123,10 @@ export default Vue.extend({
     styleIconFilter: {
       type: Array as PropType<Array<string[]> | null>,
       default: null,
+    },
+    explorerModeEnabled: {
+      type: Boolean,
+      required: true,
     },
   },
 

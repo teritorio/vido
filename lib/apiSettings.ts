@@ -16,6 +16,10 @@ export interface SiteInfosTheme {
   logo_url: string
   // eslint-disable-next-line camelcase
   favicon_url: string
+  // eslint-disable-next-line camelcase
+  favorites_mode: boolean
+  // eslint-disable-next-line camelcase
+  explorer_mode: boolean
 }
 
 export interface Settings {

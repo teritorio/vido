@@ -153,6 +153,7 @@
     >
       <FavoriteNoteBook
         :favs="favs"
+        :explorer-mode-enabled="explorerModeEnabled"
         @explore-click="explore"
         @favorite-click="handleFavorite"
         @zoom-click="goTo"
@@ -203,6 +204,10 @@ export default (
     },
     toggleFavorite: {
       type: Function,
+      required: true,
+    },
+    explorerModeEnabled: {
+      type: Boolean,
       required: true,
     },
   },

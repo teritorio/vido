@@ -20,6 +20,8 @@
     <PoisDeck
       :pois="favs"
       :notebook="true"
+      :explorer-mode-enabled="explorerModeEnabled"
+      :favorites-mode-enabled="true"
       @explore-click="$emit('explore-click', $event)"
       @favorite-click="$emit('favorite-click', $event)"
       @zoom-click="$emit('zoom-click', $event)"
@@ -41,6 +43,10 @@ export default Vue.extend({
     favs: {
       type: Array as PropType<ApiPoi[]>,
       default: undefined,
+    },
+    explorerModeEnabled: {
+      type: Boolean,
+      required: true,
     },
   },
 })

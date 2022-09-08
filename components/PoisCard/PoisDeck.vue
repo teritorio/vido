@@ -6,6 +6,8 @@
       :poi="item"
       :notebook="notebook"
       class="grow-0 shrink-0 m-2"
+      :explorer-mode-enabled="explorerModeEnabled"
+      :favorites-mode-enabled="favoritesModeEnabled"
       @explore-click="$emit('explore-click', $event)"
       @favorite-click="$emit('favorite-click', $event)"
       @zoom-click="$emit('zoom-click', $event)"
@@ -31,6 +33,14 @@ export default Vue.extend({
     notebook: {
       type: Boolean,
       default: false,
+    },
+    explorerModeEnabled: {
+      type: Boolean,
+      required: true,
+    },
+    favoritesModeEnabled: {
+      type: Boolean,
+      required: true,
     },
   },
 })

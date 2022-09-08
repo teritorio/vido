@@ -99,6 +99,8 @@
         :poi-id="id"
         :route="poiDeps"
         :color-fill="colorFill"
+        :explorer-mode-enabled="explorerModeEnabled"
+        :favorites-mode-enabled="favoritesModeEnabled"
       />
 
       <Footer :attributions="settings.attributions" />
@@ -169,6 +171,14 @@ export default Vue.extend({
     ...mapGetters({
       favoritesIds: 'favorite/favoritesIds',
     }),
+
+    favoritesModeEnabled(): boolean {
+      return this.settings.themes[0]?.favorites_mode ?? true
+    },
+
+    explorerModeEnabled(): boolean {
+      return this.settings.themes[0]?.explorer_mode ?? true
+    },
 
     isLargeLayeout(): boolean {
       return this.poiDeps.features.length > 0

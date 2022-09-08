@@ -113,6 +113,7 @@
         </button>
 
         <button
+          v-if="explorerModeEnabled"
           :class="[
             'flex flex-1 flex-col items-center space-y-2 rounded-lg p-2 h-full',
             isModeExplorer && 'bg-blue-600 text-white hover:bg-blue-500',
@@ -134,7 +135,7 @@
         </button>
 
         <button
-          v-if="id"
+          v-if="favoritesModeEnabled && id"
           class="flex flex-col items-center flex-1 h-full p-2 space-y-2 rounded-lg hover:bg-zinc-100"
           :title="
             isModeFavorites
@@ -176,6 +177,14 @@ export default Vue.extend({
     },
     poi: {
       type: Object as PropType<ApiPoi>,
+      required: true,
+    },
+    explorerModeEnabled: {
+      type: Boolean,
+      required: true,
+    },
+    favoritesModeEnabled: {
+      type: Boolean,
       required: true,
     },
   },
