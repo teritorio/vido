@@ -62,9 +62,9 @@ export default {
     noResult: 'No hay resultados',
     hideCategory: 'Ocultar esta categoría',
     backToMenuFavorites: 'Ver el menú',
-    backToMenuExplorer: 'Regresar al menú',
+    backToMenuExplorer: 'Buscar par categorías',
     backToMenuFavoritesMobile: 'Salir de los favoritos',
-    backToMenuExplorerMobile: 'Salir del modo explorar',
+    backToMenuExplorerMobile: 'Buscar par categorías',
   },
   dateRange: {
     from_to: 'Desde {from} hasta {to}',

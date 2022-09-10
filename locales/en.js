@@ -62,9 +62,9 @@ export default {
     noResult: 'No results',
     hideCategory: 'Hide this category',
     backToMenuFavorites: 'Show menu',
-    backToMenuExplorer: 'Back to menu',
+    backToMenuExplorer: 'Search by Categories',
     backToMenuFavoritesMobile: 'Exit Favorites',
-    backToMenuExplorerMobile: 'Exit Explorer mode',
+    backToMenuExplorerMobile: 'Search by Categories',
   },
   dateRange: {
     from_to: 'From {from} to {to}',
