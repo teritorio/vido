@@ -247,7 +247,6 @@ export default Vue.extend({
     },
 
     onMenuGroupClick(menuGroupId: MenuGroup['id']) {
-      console.error(menuGroupId)
       this.navigationParentIdStack.push(menuGroupId)
     },
 
