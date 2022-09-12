@@ -46,14 +46,17 @@ export default class Matomo implements Tracker {
     const _paq = window._paq
     switch (event.type) {
       case 'page': {
-        // pagePath: event.path,
+        // event.location,
         _paq.push(['setCustomDimension', 1, event.origin])
-        _paq.push(['setCustomUrl', event.location])
+        _paq.push(['setCustomUrl', event.path])
         _paq.push(['trackPageView', event.title])
         break
       }
       case 'menu': {
-        _paq.push(['setCustomUrl', `/${urlSlug(event.title)}`])
+        _paq.push([
+          'setCustomUrl',
+          `/${urlSlug(event.title)}-${event.menuItemId}/`,
+        ])
         _paq.push(['trackPageView', event.title])
         break
       }
@@ -96,10 +99,10 @@ export default class Matomo implements Tracker {
         break
       }
       case 'popup': {
-        // pagePath: event.path,
-        // poiId: event.poiId,
+        // event.location,
+        // event.path,
         // categoryIds: event.categoryIds,
-        _paq.push(['setCustomUrl', event.location])
+        _paq.push(['setCustomUrl', `/${event.title}-${event.poiId}`])
         _paq.push(['trackPageView', event.title])
         break
       }

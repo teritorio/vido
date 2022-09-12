@@ -41,7 +41,7 @@ export default class Google implements Tracker {
           event: 'pageview',
           pageType: 'PageView',
           pageTitle: event.title,
-          pagePath: `/${urlSlug(event.title)}`,
+          pagePath: `/${urlSlug(event.title)}-${event.menuItemId}/`,
         })
         break
       }
@@ -80,7 +80,7 @@ export default class Google implements Tracker {
           pageType: 'PageView',
           pageTitle: event.title,
           pageLocation: event.location,
-          pagePath: event.path,
+          pagePath: `/${event.title}-${event.poiId}`,
           poiId: event.poiId,
           categoryIds: event.categoryIds,
         })
