@@ -328,6 +328,7 @@ export default Vue.extend({
           vectorTilesPoi2ApiPoi(selectedFeatures[0]),
           true
         )
+        this.showSelectedFeature()
       } else {
         this.updateSelectedFeature(null)
       }
@@ -488,7 +489,11 @@ export default Vue.extend({
             this.selectedFeature?.properties?.id
         )
 
-        if (this.selectedFeature.geometry.type === 'Point') {
+        if (
+          ['Point', 'MultiLineString', 'LineString'].includes(
+            this.selectedFeature.geometry.type
+          )
+        ) {
           // Get original coords to set axact marker position
           const originalFeature = this.features.find(
             (originalFeature) =>
@@ -500,7 +505,9 @@ export default Vue.extend({
           const lngLat = (
             originalFeature && originalFeature.geometry.type === 'Point'
               ? originalFeature.geometry.coordinates
-              : this.selectedFeature.geometry.coordinates
+              : this.selectedFeature.geometry.type === 'Point'
+              ? this.selectedFeature.geometry?.coordinates
+              : this.defaultBounds
           ) as [number, number]
 
           this.selectedFeatureMarker = new maplibregl.Marker({
