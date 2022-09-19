@@ -79,7 +79,7 @@ export interface apiPoisOptions {
 }
 
 export const defaultOptions: apiPoisOptions = {
-  geometry_as: 'point',
+  geometry_as: 'bbox',
   short_description: true,
 }
 
