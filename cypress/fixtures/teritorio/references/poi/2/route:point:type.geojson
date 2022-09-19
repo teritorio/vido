@@ -14,7 +14,8 @@
                 "route:point:type": "parking",
                 "description": {
                     "fr": "Gratuit le weekend."
-                }
+                },
+                "id": 10001
             }
         },
         {
@@ -33,7 +34,8 @@
                 },
                 "description": {
                     "fr": "Prendre en direction du sud."
-                }
+                },
+                "id": 10002
             }
         },
         {
@@ -52,7 +54,8 @@
                 },
                 "description": {
                     "fr": "Point de vue sur les fougères."
-                }
+                },
+                "id": 10003
             }
         },
         {
@@ -71,7 +74,8 @@
                 },
                 "description": {
                     "fr": "Alors, elles ne sont pas belles nos fougères ?"
-                }
+                },
+                "id": 10004
             }
         }
     ]

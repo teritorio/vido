@@ -8,14 +8,21 @@
     <div class="detail-wrapper">
       <div v-if="points.length > 0" class="detail-left">
         <h2>{{ $tc('poiDetails.routes.waypoints') }}</h2>
-        <div v-for="(point, index) in points" :key="index">
-          <WayPoint :point="point" />
-        </div>
+        <PoisDeck
+          :pois="points"
+          pois-card="PoiCardLight"
+          :explorer-mode-enabled="explorerModeEnabled"
+          :favorites-mode-enabled="favoritesModeEnabled"
+          @explore-click="$emit('explore-click', $event)"
+          @favorite-click="$emit('favorite-click', $event)"
+          @zoom-click="$emit('zoom-click', $event)"
+        />
       </div>
       <div v-if="pois.length > 0" class="detail-right">
         <h2>{{ $tc('poiDetails.routes.pois') }}</h2>
         <PoisDeck
           :pois="pois"
+          pois-card="PoiCardLight"
           :explorer-mode-enabled="explorerModeEnabled"
           :favorites-mode-enabled="favoritesModeEnabled"
           @explore-click="$emit('explore-click', $event)"
@@ -32,26 +39,16 @@ import Vue, { PropType } from 'vue'
 
 import MapPois from '~/components/MapPois.vue'
 import PoisDeck from '~/components/PoisCard/PoisDeck.vue'
-import WayPoint from '~/components/PoisDetails/Route/WayPoint.vue'
 import {
   ApiPoiDeps,
   ApiRouteWaypoint,
-  ApiRouteWaypointType,
+  apiRouteWaypointToApiPoi,
 } from '~/lib/apiPoiDeps'
-import { ApiPoi, ApiPoiId } from '~/lib/apiPois'
-import { MapPoi, MapPoiCollection } from '~/lib/mapPois'
-
-export const iconMap: { [key: string]: string } = {
-  [ApiRouteWaypointType.parking]: 'square-parking',
-  [ApiRouteWaypointType.start]: 'house-flag',
-  [ApiRouteWaypointType.end]: 'flag-checkered',
-  [ApiRouteWaypointType.way_point]: 'map-marker-alt',
-}
+import { ApiPoi, ApiPoiId, ApiPois } from '~/lib/apiPois'
 
 export default Vue.extend({
   components: {
     MapPois,
-    WayPoint,
     PoisDeck,
   },
 
@@ -68,6 +65,10 @@ export default Vue.extend({
       type: String,
       required: true,
     },
+    colorLine: {
+      type: String,
+      required: true,
+    },
     explorerModeEnabled: {
       type: Boolean,
       required: true,
@@ -79,8 +80,8 @@ export default Vue.extend({
   },
 
   data(): {
-    routeCollection: MapPoiCollection | null
-    points: MapPoi[]
+    routeCollection: ApiPois | null
+    points: ApiPoi[]
     pois: ApiPoi[]
   } {
     return {
@@ -95,21 +96,11 @@ export default Vue.extend({
       type: 'FeatureCollection',
       features: this.route.features.map((feature) => {
         if (feature.properties['route:point:type']) {
-          const featurePoint = feature as ApiRouteWaypoint
-          // Convert to MapPoi
-          const mapPoi: MapPoi = {
-            ...featurePoint,
-            properties: {
-              ...featurePoint.properties,
-              name: featurePoint.properties.name?.fr,
-              description: featurePoint.properties.description?.fr,
-              display: {
-                icon: iconMap[feature.properties['route:point:type']],
-                color_fill: this.colorFill,
-              },
-            },
-          }
-
+          const mapPoi = apiRouteWaypointToApiPoi(
+            feature as ApiRouteWaypoint,
+            this.colorFill,
+            this.colorLine
+          )
           this.points.push(mapPoi)
           return mapPoi
         } else {

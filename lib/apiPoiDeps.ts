@@ -1,4 +1,5 @@
 import {
+  ApiPoi,
   ApiPoiId,
   ApiPoiProperties,
   apiPoisOptions,
@@ -15,6 +16,7 @@ export enum ApiRouteWaypointType {
 }
 
 export interface ApiRouteWaypointProperties {
+  id: ApiPoiId
   name?: MultilingualString
   description?: MultilingualString
 
@@ -49,4 +51,41 @@ export function getPoiDepsById(
       )
     }
   })
+}
+
+export const iconMap: { [key: string]: string } = {
+  [ApiRouteWaypointType.parking]: 'square-parking',
+  [ApiRouteWaypointType.start]: 'house-flag',
+  [ApiRouteWaypointType.end]: 'flag-checkered',
+  [ApiRouteWaypointType.way_point]: 'map-marker-alt',
+}
+
+export function apiRouteWaypointToApiPoi(
+  waypoint: ApiRouteWaypoint,
+  colorFill: string,
+  colorLine: string
+): ApiPoi {
+  return {
+    ...waypoint,
+    properties: {
+      ...waypoint.properties,
+      name: waypoint.properties.name?.fr,
+      description: waypoint.properties.description?.fr,
+      metadata: {
+        id: waypoint.properties.id,
+      },
+      display: {
+        icon: iconMap[waypoint.properties['route:point:type']],
+        color_fill: colorFill,
+        color_line: colorLine,
+      },
+      editorial: {
+        popup_fields: [
+          {
+            field: 'description',
+          },
+        ],
+      },
+    },
+  }
 }

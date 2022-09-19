@@ -1,11 +1,12 @@
 <template>
   <div class="flex justify-between flex-wrap max-h-full overflow-y-auto">
-    <PoiCard
+    <component
+      :is="poisCard"
       v-for="item in pois"
       :key="item.id"
       :poi="item"
       :notebook="notebook"
-      class="grow-0 shrink-0 m-2"
+      class="grow-0 m-2"
       :explorer-mode-enabled="explorerModeEnabled"
       :favorites-mode-enabled="favoritesModeEnabled"
       @explore-click="$emit('explore-click', $event)"
@@ -19,16 +20,22 @@
 import Vue, { PropType } from 'vue'
 
 import PoiCard from '~/components/PoisCard/PoiCard.vue'
+import PoiCardLight from '~/components/PoisCard/PoiCardLight.vue'
 import { ApiPoi } from '~/lib/apiPois'
 
 export default Vue.extend({
   components: {
     PoiCard,
+    PoiCardLight,
   },
   props: {
     pois: {
       type: Array as PropType<ApiPoi[]>,
-      default: undefined,
+      required: true,
+    },
+    poisCard: {
+      type: String as PropType<'PoiCard' | 'PoiCardLight'>,
+      default: 'PoiCard',
     },
     notebook: {
       type: Boolean,

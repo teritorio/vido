@@ -99,6 +99,7 @@
         :poi-id="id"
         :route="poiDeps"
         :color-fill="colorFill"
+        :color-line="colorLine"
         :explorer-mode-enabled="explorerModeEnabled"
         :favorites-mode-enabled="favoritesModeEnabled"
       />
