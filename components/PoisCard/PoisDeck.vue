@@ -1,12 +1,12 @@
 <template>
-  <div class="flex justify-between flex-wrap max-h-full overflow-y-auto">
+  <div class="flex justify-between flex-wrap max-h-full overflow-y-auto gap-6">
     <component
       :is="poisCard"
       v-for="item in pois"
       :key="item.id"
       :poi="item"
       :notebook="notebook"
-      class="grow-0 m-2"
+      class="grow-1"
       :explorer-mode-enabled="explorerModeEnabled"
       :favorites-mode-enabled="favoritesModeEnabled"
       @explore-click="$emit('explore-click', $event)"

@@ -1,45 +1,47 @@
 <template>
-  <div :id="`PoiCardLight-${id}`">
-    <div class="flex items-center justify-between shrink-0">
-      <h3
-        class="block text-xl font-semibold leading-tight"
-        :style="'color:' + colorLine"
-      >
-        <TeritorioIconBadge
-          :color-fill="colorFill"
-          :picto="icon"
-          size="lg"
-          :image="null"
-        />
-        {{ name }}
-      </h3>
+  <div
+    :id="`PoiCardLight-${id}`"
+    class="flex-col md:flex-row h-auto shrink-0 flex items-start gap-4 justify-between box-border w-full border-gray-300 border-t pt-4 first-of-type:border-t-0"
+  >
+    <div>
+      <div class="flex items-center shrink-0 mb-2">
+        <h3
+          class="block text-xl font-semibold leading-tight flex items-center gap-2"
+          :style="'color:' + colorLine"
+        >
+          <TeritorioIconBadge
+            :color-fill="colorFill"
+            :picto="icon"
+            size="lg"
+            :image="null"
+          />
+          {{ name }}
+        </h3>
 
-      <a
-        v-if="Boolean(websiteDetails)"
-        class="ml-6 md:ml-8 px-3 py-1.5 text-xs text-zinc-800 bg-zinc-100 hover:bg-zinc-200 focus:bg-zinc-200 transition transition-colors rounded-md"
-        :href="websiteDetails"
-        rel="noopener noreferrer"
-        target="_blank"
-        @click.stop="trackingPopupEvent('details')"
-      >
-        {{ $tc('poiCard.details') }}
-      </a>
-    </div>
-
-    <div class="h-auto flex-grow shrink-0">
+        <a
+          v-if="Boolean(websiteDetails)"
+          class="ml-6 md:ml-8 px-3 py-1.5 text-xs text-zinc-800 bg-zinc-100 hover:bg-zinc-200 focus:bg-zinc-200 transition transition-colors rounded-md"
+          :href="websiteDetails"
+          rel="noopener noreferrer"
+          target="_blank"
+          @click.stop="trackingPopupEvent('details')"
+        >
+          {{ $tc('poiCard.details') }}
+        </a>
+      </div>
       <Fields
         :fields="poi.properties.editorial?.popup_fields || []"
         :properties="poi.properties"
         :details="websiteDetails"
         @click-detail="trackingPopupEvent('details')"
       />
-      <nuxt-picture
-        v-if="poi.properties.image && poi.properties.image.length > 0"
-        class="md:w-48 h-auto max-h-44 md:max-h-full z-10"
-        :src="poi.properties.image[0]"
-        alt=""
-      />
     </div>
+    <nuxt-picture
+      v-if="poi.properties.image && poi.properties.image.length > 0"
+      class="w-full h-32 md:w-32 md:h-32 z-10"
+      :src="poi.properties.image[0]"
+      alt=""
+    />
   </div>
 </template>
 
@@ -119,3 +121,9 @@ export default Vue.extend({
   },
 })
 </script>
+
+<style scoped>
+h3 {
+  margin-bottom: 0 !important;
+}
+</style>
