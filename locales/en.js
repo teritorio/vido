@@ -49,7 +49,7 @@ export default {
     },
   },
   headerMenu: {
-    search: 'Search',
+    search: 'Point of interest, category, address',
     selectAll: 'Select all',
     unselectAll: 'Unselect all',
     filter: 'Filter',

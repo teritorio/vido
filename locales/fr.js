@@ -49,7 +49,7 @@ export default {
     },
   },
   headerMenu: {
-    search: 'Recherche',
+    search: "Points d'intérêt, catégorie, adresse",
     selectAll: 'Tout sélectionner',
     unselectAll: 'Tout désélectionner',
     filter: 'Filtrer',
