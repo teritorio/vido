@@ -12,11 +12,11 @@ export default {
   favorites: {
     title: 'Favoritos',
     menu_label: 'Menú de favoritos',
-    menu_notebook: 'Ver cuaderno',
-    menu_share: 'Compartir favoritos',
-    menu_clear: 'Eliminar favoritos',
-    export_pdf: 'Exportar la lista como PDF',
-    export_csv: 'Exportar lista como CSV',
+    menu_notebook: 'Cuaderno',
+    menu_share: 'Compartir',
+    menu_clear: 'Eliminar',
+    export_pdf: 'Exportación PDF',
+    export_csv: 'exportación CSV',
     share_link: 'Compartir enlace de favoritos',
     notebook: {
       title: 'Cuaderno de favoritos',
