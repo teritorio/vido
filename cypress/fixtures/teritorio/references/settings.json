@@ -41,7 +41,7 @@
             ]
         ]
     },
-    "icon_font_css_url": "https://unpkg.com/@teritorio/font-teritorio/teritorio/teritorio.css",
+    "icon_font_css_url": "https://teritorio.github.io/vido_static_projects/node_modules/@teritorio/font-teritorio/teritorio/teritorio.css",
     "themes": [
         {
             "id": 1,
