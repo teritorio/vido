@@ -349,9 +349,9 @@ export default (
       return this.settings.themes[0]?.explorer_mode ?? true
     },
     selectedCategories(): ApiMenuCategory[] {
-      return this.selectedCategoriesIds.map(
-        (selectedCategoriesId) => this.menuItems[selectedCategoriesId]
-      ) as ApiMenuCategory[]
+      return this.selectedCategoriesIds
+        .map((selectedCategoriesId) => this.menuItems[selectedCategoriesId])
+        .filter((menuItems) => menuItems !== undefined) as ApiMenuCategory[]
     },
     siteName(): string {
       return this.settings.themes[0]?.title.fr || ''
