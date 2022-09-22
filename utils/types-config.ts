@@ -1,4 +1,5 @@
 export interface VidoConfig {
+  HOSTS: string[]
   API_SEARCH: string
   API_SEARCH_ADDR: string
   API_EXPORT: string

@@ -2,7 +2,7 @@ import copy from 'fast-copy'
 import { deepEqual } from 'fast-equals'
 import { Store } from 'vuex'
 
-import { Category } from '~/lib/apiMenu'
+import { ApiMenuCategory, MenuGroup, MenuItem } from '~/lib/apiMenu'
 import { ApiPoi, ApiPois, getPoiByCategoryId } from '~/lib/apiPois'
 import {
   FilterValues,
@@ -19,32 +19,32 @@ enum Mutation {
 }
 
 interface FetchConfigPayload {
-  categories: Category[]
+  menuItems: MenuItem[]
 }
 
 interface FetchFeaturesPayload {
   apiEndpoint: string
   apiProject: string
   apiTheme: string
-  categoryIds: Category['id'][]
+  categoryIds: ApiMenuCategory['id'][]
 }
 
 export interface State {
-  categories: {
-    [categoryId: number]: Category
+  menuItems: {
+    [menuItemId: number]: MenuItem
   }
   features: {
-    [categoryId: number]: ApiPoi[]
+    [key: number]: ApiPoi[]
   }
   allFeatures: {
-    [categoryId: number]: ApiPoi[]
+    [key: number]: ApiPoi[]
   }
-  filters: { [subcat: number]: FilterValues }
+  filters: Record<ApiMenuCategory['id'], FilterValues>
   isLoadingFeatures: boolean
 }
 
 export const state = (): State => ({
-  categories: {},
+  menuItems: {},
   features: {},
   filters: {},
   allFeatures: {},
@@ -53,7 +53,7 @@ export const state = (): State => ({
 
 export const mutations = {
   [Mutation.SET_CONFIG](state: State, payload: State) {
-    state.categories = payload.categories
+    state.menuItems = payload.menuItems
   },
 
   [Mutation.SET_FILTERS](state: State, payload: State) {
@@ -75,44 +75,44 @@ export const mutations = {
 }
 
 function keepFeature(filters: FilterValues, feature: ApiPoi): boolean {
-  return filters.some(
-    (filter) => filter.isSet() && filter.isMatch(feature.properties)
-  )
+  return filters.reduce<boolean>((prevValue, filter) => {
+    return prevValue && (!filter.isSet() || filter.isMatch(feature.properties))
+  }, true)
 }
 
 export const actions = {
-  fetchConfig(store: Store<State>, { categories }: FetchConfigPayload) {
+  fetchConfig(store: Store<State>, { menuItems }: FetchConfigPayload) {
     try {
-      const stateCategories: State['categories'] = {}
-      const filters: { [subcat: number]: FilterValues } = {}
+      const stateMenuItems: State['menuItems'] = {}
+      const filters: Record<ApiMenuCategory['id'], FilterValues> = {}
 
-      store.commit(Mutation.SET_CONFIG, { categories: null }) // Hack, release from store before edit and reappend
-      categories
-        .filter((category) => !category.hidden)
-        .map((category) => {
-          stateCategories[category.id] = category
-          return category
+      store.commit(Mutation.SET_CONFIG, { menuItems: null }) // Hack, release from store before edit and reappend
+      menuItems
+        .filter((menuItem) => !menuItem.hidden)
+        .map((menuItem) => {
+          stateMenuItems[menuItem.id] = menuItem
+          return menuItem
         })
-        .forEach((category) => {
+        .forEach((menuItem) => {
           // Separated from previous map to allow batch processing and make sure parent category is always there
           // Associate to parent_id
-          if (category.parent_id && category.parent_id !== null) {
-            const parent = stateCategories[category.parent_id]
+          if (menuItem.parent_id && menuItem.parent_id !== null) {
+            const parent = stateMenuItems[menuItem.parent_id]
             if (parent?.menu_group) {
               if (!parent.menu_group.vido_children) {
                 parent.menu_group.vido_children = []
               }
-              parent.menu_group.vido_children.push(category.id)
+              parent.menu_group.vido_children.push(menuItem.id)
             }
           }
 
-          if (category.category?.filters) {
-            filters[category.id] = category.category?.filters.map((filter) =>
+          if (menuItem.category?.filters) {
+            filters[menuItem.id] = menuItem.category?.filters.map((filter) =>
               filterValueFactory(filter)
             )
           }
         })
-      store.commit(Mutation.SET_CONFIG, { categories: stateCategories })
+      store.commit(Mutation.SET_CONFIG, { menuItems: stateMenuItems })
       store.commit(Mutation.SET_FILTERS, { filters })
     } catch (error) {
       // eslint-disable-next-line no-console
@@ -224,42 +224,10 @@ export const actions = {
 }
 
 export const getters = {
-  categories: (state: State) => state.categories,
+  menuItems: (state: State): { [menuItemId: number]: MenuItem } =>
+    state.menuItems,
   allFeatures: (state: State) => state.allFeatures,
   isLoadingFeatures: (state: State) => state.isLoadingFeatures,
   filters: (state: State) => state.filters,
   features: (state: State) => state.features,
-
-  getRootCategoriesFromCategoryId: (state: State) => (categoryId: number) =>
-    Object.values(state.categories)
-      .filter(
-        (c) =>
-          c.parent_id !== null &&
-          state.categories[c.parent_id]?.parent_id === null &&
-          c.parent_id === categoryId
-      )
-      .sort((a, b) => a.index_order - b.index_order),
-
-  categoryRootCategories: (state: State) =>
-    Object.values(state.categories)
-      .filter((c) => c.parent_id === null && c?.menu_group?.vido_children)
-      .sort((a, b) => a.index_order - b.index_order),
-
-  rootCategories: (state: State) =>
-    Object.values(state.categories)
-      .filter(
-        (c) =>
-          c.parent_id !== null &&
-          state.categories[c.parent_id]?.parent_id === null
-      )
-      .sort((a, b) => a.index_order - b.index_order),
-
-  subCategories: (state: State) =>
-    Object.values(state.categories)
-      .filter(
-        (c) =>
-          c.parent_id !== null &&
-          state.categories[c.parent_id]?.parent_id !== null
-      )
-      .sort((a, b) => a.index_order - b.index_order),
 }

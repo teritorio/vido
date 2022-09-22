@@ -45,7 +45,7 @@ export default Vue.extend({
         vidoConfig(req).API_THEME,
         ids,
         {
-          as_point: false,
+          geometry_as: undefined,
         }
       )
       ;[settings, pois] = await Promise.all([getSettingsPromise, getPoiPromise])

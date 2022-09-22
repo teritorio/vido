@@ -104,17 +104,17 @@ export interface MenuGroup extends ApiMenuGroup {
   }
 }
 
-export type Category = MenuGroup | ApiMenuLink | ApiMenuCategory
+export type MenuItem = MenuGroup | ApiMenuLink | ApiMenuCategory
 
 export function getMenu(
   apiEndpoint: string,
   apiProject: string,
   apiTheme: string
-): Promise<[Category]> {
+): Promise<[MenuItem]> {
   return fetch(`${apiEndpoint}/${apiProject}/${apiTheme}/menu.json`).then(
     (data) => {
       if (data.ok) {
-        return data.json() as unknown as [Category]
+        return data.json() as unknown as [MenuItem]
       } else {
         return Promise.reject(
           new Error([data.url, data.status, data.statusText].join(' '))

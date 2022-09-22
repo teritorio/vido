@@ -2,7 +2,7 @@ import { NuxtAppOptions } from '@nuxt/types/app'
 
 import { ApiPoiId } from './apiPois'
 
-import { Category } from '~/lib/apiMenu'
+import { ApiMenuCategory, MenuItem } from '~/lib/apiMenu'
 import { OriginEnum } from '~/utils/types'
 
 // Also Update README.md according to tracking changes.
@@ -16,14 +16,14 @@ export type Event =
       origin: OriginEnum
     }
   | {
-      type: 'category'
-      categoryId: Category['id']
+      type: 'menu'
+      menuItemId: MenuItem['id']
       title: string
     }
   | {
       type: 'category_event'
       event: 'enable' | 'filter'
-      categoryId: Category['id']
+      categoryId: ApiMenuCategory['id']
       title: string
     }
   | {

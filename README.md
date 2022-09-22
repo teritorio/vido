@@ -83,6 +83,8 @@ Run Storybook with
 yarn start:storybook
 ```
 
+Storybook build also available on `gh-pages` branch built by CI and online at https://teritorio.github.io/vido/
+
 ## Settings
 
 Popup and details special fields support:
@@ -99,7 +101,7 @@ Spetial formatting support:
 | Event                            | Vido event          | Vido actions                                | Google event        | Google params                            | Matomo          | Matomo params                    |
 |----------------------------------|---------------------|---------------------------------------------|---------------------|------------------------------------------|-----------------|----------------------------------|
 | Page loading (homepage, details) | page                |                                             | pageview            | pageTitle, pageLocation, pagePath        | trackPageView   | title, Url, Origin               |
-| Consultation of a category       | category            |                                             | pageview            | pageTitle, pagePath                      | trackPageView   | title, Url                       |
+| Navigation on a menu item        | menu                |                                             | pageview            | pageTitle, pagePath                      | trackPageView   | title, Url                       |
 | Enable or disable a category     | category_event      | enable, filter                              | category_event      | action, categoryId                       | trackEvent      | event, action, title, categoryId |
 | Focus on the search area         | search              |                                             | pageview            | pageTitle, pagePath                      | trackPageView   | title, Url                       |
 | Seach query                      | search_query        |                                             |                     |                                          | trackSiteSearch | query                            |

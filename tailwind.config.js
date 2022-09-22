@@ -21,6 +21,9 @@ module.exports = {
         'screen-1/2': '50vh',
         'screen-3/5': '60vh',
       }),
+      flexBasis: {
+        max: 'max-content',
+      },
     },
   },
   plugins: [require('@tailwindcss/forms')],

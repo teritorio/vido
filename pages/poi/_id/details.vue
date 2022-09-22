@@ -4,17 +4,20 @@
     :settings="settings"
     :nav-menu-entries="contents"
     :poi="poi"
+    :poi-deps="poiDeps"
   />
 </template>
 
 <script lang="ts">
+import { groupBy } from 'lodash'
 import Vue from 'vue'
 import { MetaInfo } from 'vue-meta'
 import { mapActions } from 'vuex'
 
-import Index from '~/components/Details/Index.vue'
+import Index from '~/components/PoisDetails/PoiDetails.vue'
 import { ContentEntry, getContents } from '~/lib/apiContent'
-import { getPoiById, ApiPoi } from '~/lib/apiPois'
+import { ApiPoiDeps, getPoiDepsById } from '~/lib/apiPoiDeps'
+import { ApiPoi } from '~/lib/apiPois'
 import {
   getPropertyTranslations,
   PropertyTranslations,
@@ -35,7 +38,8 @@ export default Vue.extend({
     settings: Settings
     contents: ContentEntry[]
     propertyTranslations: PropertyTranslations
-    poi: ApiPoi
+    poi: ApiPoi | undefined
+    poiDeps: ApiPoiDeps | undefined
   }> {
     const getSettingsPromise = getSettings(
       vidoConfig(req).API_ENDPOINT,
@@ -52,7 +56,7 @@ export default Vue.extend({
       vidoConfig(req).API_PROJECT,
       vidoConfig(req).API_THEME
     )
-    const getPoiPromise = getPoiById(
+    const poiDepsPromise = getPoiDepsById(
       vidoConfig(req).API_ENDPOINT,
       vidoConfig(req).API_PROJECT,
       vidoConfig(req).API_THEME,
@@ -62,18 +66,37 @@ export default Vue.extend({
       }
     )
 
-    const [settings, contents, propertyTranslations, poi] = await Promise.all([
-      getSettingsPromise,
-      fetchContents,
-      fetchPropertyTranslations,
-      getPoiPromise,
-    ])
+    let [settings, contents, propertyTranslations, poiDeps] = await Promise.all(
+      [
+        getSettingsPromise,
+        fetchContents,
+        fetchPropertyTranslations,
+        poiDepsPromise,
+      ]
+    )
+
+    let poi: ApiPoi | undefined = undefined
+    if (poiDeps) {
+      const g = groupBy(
+        poiDeps.features,
+        (feature) =>
+          // @ts-ignore
+          feature.properties.metadata?.id == params.id
+      )
+      poi = g['true'] && (g['true'][0] as ApiPoi)
+      poiDeps.features = g['false'] || []
+    }
+
+    if (!poi) {
+      throw new Error('Missing main route data.')
+    }
 
     return Promise.resolve({
       settings,
       contents,
       propertyTranslations,
       poi,
+      poiDeps,
     })
   },
 
@@ -82,6 +105,7 @@ export default Vue.extend({
     contents: ContentEntry[]
     propertyTranslations: PropertyTranslations
     poi: ApiPoi
+    route: ApiPoiDeps | undefined
   } {
     return {
       // @ts-ignore
@@ -92,6 +116,8 @@ export default Vue.extend({
       propertyTranslations: null,
       // @ts-ignore
       poi: null,
+      // @ts-ignore
+      route: null,
     }
   },
 
@@ -131,15 +157,5 @@ body {
   line-height: 1.3;
   word-wrap: break-word;
   @extend .font-ubuntu-light;
-}
-
-a {
-  color: $color-text;
-  text-decoration: none;
-
-  &:hover,
-  &:visited {
-    color: $color-text;
-  }
 }
 </style>

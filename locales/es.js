@@ -12,11 +12,11 @@ export default {
   favorites: {
     title: 'Favoritos',
     menu_label: 'Menú de favoritos',
-    menu_notebook: 'Ver cuaderno',
-    menu_share: 'Compartir favoritos',
-    menu_clear: 'Eliminar favoritos',
-    export_pdf: 'Exportar la lista como PDF',
-    export_csv: 'Exportar lista como CSV',
+    menu_notebook: 'Cuaderno',
+    menu_share: 'Compartir',
+    menu_clear: 'Eliminar',
+    export_pdf: 'Exportación PDF',
+    export_csv: 'exportación CSV',
     share_link: 'Compartir enlace de favoritos',
     notebook: {
       title: 'Cuaderno de favoritos',
@@ -49,7 +49,7 @@ export default {
     },
   },
   headerMenu: {
-    search: 'Buscar',
+    search: 'Punto de interés, categoría, dirección',
     selectAll: 'Seleccionar todo',
     unselectAll: 'Deseleccionar todo',
     filter: 'Filtro',
@@ -62,9 +62,9 @@ export default {
     noResult: 'No hay resultados',
     hideCategory: 'Ocultar esta categoría',
     backToMenuFavorites: 'Ver el menú',
-    backToMenuExplorer: 'Regresar al menú',
+    backToMenuExplorer: 'Buscar par categorías',
     backToMenuFavoritesMobile: 'Salir de los favoritos',
-    backToMenuExplorerMobile: 'Salir del modo explorar',
+    backToMenuExplorerMobile: 'Buscar par categorías',
   },
   dateRange: {
     from_to: 'Desde {from} hasta {to}',
@@ -80,7 +80,7 @@ export default {
     formatDayAndDayInMonth: 'EEE d :',
     variableWeek: 'Los horarios pueden variar de una semana a otra.',
   },
-  toast: {
+  poiCard: {
     details: 'Detalles',
     seeDetail: 'Ver el detalle',
     route: 'Ruta',
@@ -88,13 +88,12 @@ export default {
     favorite: 'Favorito',
     favoriteOn: 'Poner como favorito',
     favoriteOff: 'Eliminar favorito',
-    callNumber: 'Llama a este número',
     findRoute: 'Buscar la ruta a este lugar',
     unactivateExplore: 'Desactivar la exploración en los alrededores',
     activateExplore: 'Explora los puntos de interés cercanos',
     zoom: 'Acercarse',
   },
-  details: {
+  poiDetails: {
     headerDescription: 'Descripción',
     headerDownload: 'Archivos a descargar',
     lastUpdate: 'Último cambio',
@@ -111,6 +110,11 @@ export default {
     mapillaryExplore: 'Explorar en Mapillary',
     informations: 'Informaciones',
     downloadGPX: 'La ruta (pista GPS) en formato GPX',
+    downloadPDF: 'La hoja completa en formato PDF',
+    routes: {
+      waypoints: 'Puntos de ruta',
+      pois: 'Puntos de interés',
+    },
   },
   dateFilter: {
     today: 'Hoy',
@@ -120,6 +124,9 @@ export default {
     nextMonth: 'Próximos 30 días',
   },
   fields: {
+    phone: {
+      callNumber: 'Llama a este número',
+    },
     route: {
       difficulty: 'Dificultad:',
       lenght: 'Distancia:',

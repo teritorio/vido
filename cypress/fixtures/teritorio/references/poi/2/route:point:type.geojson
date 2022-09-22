@@ -1,0 +1,82 @@
+{
+    "type": "FeatureCollection",
+    "features": [
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -1.22772216796875,
+                    44.040218713142146
+                ]
+            },
+            "properties": {
+                "route:point:type": "parking",
+                "description": {
+                    "fr": "Gratuit le weekend."
+                },
+                "id": 10001
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -1.138458251953125,
+                    44.05699861738566
+                ]
+            },
+            "properties": {
+                "route:point:type": "start",
+                "name": {
+                    "fr": "Départ"
+                },
+                "description": {
+                    "fr": "Prendre en direction du sud."
+                },
+                "id": 10002
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -1.20851,
+                    44.06808
+                ]
+            },
+            "properties": {
+                "route:point:type": "way_point",
+                "name": {
+                    "fr": "Petite Pause"
+                },
+                "description": {
+                    "fr": "Point de vue sur les fougères."
+                },
+                "id": 10003
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -1.18377685546875,
+                    44.04614157509527
+                ]
+            },
+            "properties": {
+                "route:point:type": "end",
+                "name": {
+                    "fr": "Arrivé"
+                },
+                "description": {
+                    "fr": "Alors, elles ne sont pas belles nos fougères ?"
+                },
+                "id": 10004
+            }
+        }
+    ]
+}

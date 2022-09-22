@@ -1,5 +1,5 @@
 <template>
-  <div class="z-0 relative shrink-0 md:hidden text-center bottom-0 w-full">
+  <div class="z-0 relative shrink-0 md:hidden bottom-0 w-full">
     <button
       v-if="showGrip"
       class="-top-12 z-0 absolute md:hidden right-3/8 left-3/8 w-1/4 h-12 transition-all rounded-t-lg text-sm font-medium px-5 space-x-1 shadow-lg outline-none focus:outline-none bg-white text-zinc-800 hover:bg-zinc-100 focus-visible:bg-zinc-100"

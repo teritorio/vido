@@ -4,7 +4,7 @@
     <template v-if="nextChange">
       <p v-if="isPointTime" id="next" class="text-emerald-500">
         {{ $tc('openingHours.next') }}
-        {{ displayTime(nextChange.nextChange) }}
+        <RelativeDate :date="nextChange.nextChange"></RelativeDate>
       </p>
       <template v-else>
         <p
@@ -16,7 +16,7 @@
           <template v-if="nextChange.nextChange">
             -
             {{ $tc('openingHours.closeAt') }}
-            {{ displayTime(nextChange.nextChange) }}
+            <RelativeDate :date="nextChange.nextChange"></RelativeDate>
           </template>
         </p>
         <p
@@ -28,12 +28,13 @@
           <template v-if="nextChange.nextChange">
             -
             {{ $tc('openingHours.openAt') }}
-            {{ displayTime(nextChange.nextChange) }}
+            <RelativeDate :date="nextChange.nextChange"></RelativeDate>
           </template>
         </p>
       </template>
     </template>
     <template v-if="!isCompact">
+      <br />
       <template v-if="pretty">
         <ul>
           <li v-for="(row, i) in pretty" :key="i">{{ row }}</li>
@@ -47,15 +48,12 @@
 </template>
 
 <script lang="ts">
-import { formatRelative } from 'date-fns'
-import { enGB, fr, es } from 'date-fns/locale'
 import OpeningHours, { optional_conf } from 'opening_hours'
 import Vue, { PropType } from 'vue'
 import { mapGetters } from 'vuex'
 
+import RelativeDate from '~/components/UI/RelativeDate.vue'
 import { PropertyTranslationsContextEnum } from '~/plugins/property-translations'
-
-const DateFormatLocales: { [key: string]: Locale } = { en: enGB, fr, es }
 
 const PointTime = [/collection_times/, /service_times/]
 
@@ -80,6 +78,10 @@ export function isOpeningHoursSupportedOsmTags(key: string): boolean {
 }
 
 export default Vue.extend({
+  components: {
+    RelativeDate,
+  },
+
   props: {
     context: {
       type: String as PropType<PropertyTranslationsContextEnum>,
@@ -110,12 +112,6 @@ export default Vue.extend({
 
     isCompact(): boolean {
       return this.context === PropertyTranslationsContextEnum.Popup
-    },
-
-    formatLocale(): { locale: Locale } {
-      return {
-        locale: DateFormatLocales?.[this.locale] || enGB,
-      }
     },
 
     pretty(): string[] | undefined {
@@ -163,16 +159,6 @@ export default Vue.extend({
   },
 
   methods: {
-    displayTime(dateGMT: Date): null | string {
-      if (dateGMT) {
-        const date = new Date(dateGMT)
-        const today = new Date()
-
-        return formatRelative(date, today, this.formatLocale)
-      }
-      return null
-    },
-
     OpeningHoursFactory(): OpeningHours | undefined {
       try {
         // https://github.com/opening-hours/opening_hours.js/issues/428

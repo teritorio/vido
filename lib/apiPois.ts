@@ -1,15 +1,27 @@
+import { MapPoiProperties } from './mapPois'
+
 import { MultilingualString } from '~/utils/types'
 
 export interface ApiPoiId extends Number {}
 
-export interface ApiPoiProperties {
+export type FieldsListItem = {
+  field: string
+}
+
+export type FieldsListGroup = {
+  group: string
+  fields: FieldsListItem[]
+  // eslint-disable-next-line camelcase
+  display_mode: 'standard' | 'card'
+  icon: string
+}
+
+export type FieldsList = (FieldsListItem | FieldsListGroup)[]
+
+export type ApiPoiProperties = MapPoiProperties & {
   [key: string]: any
 
-  name?: string
-
   image?: string[]
-  // eslint-disable-next-line camelcase
-  'image:thumbnail'?: string
 
   'addr:city'?: string
   'addr:housenumber'?: string
@@ -25,21 +37,22 @@ export interface ApiPoiProperties {
     source?: string
     // eslint-disable-next-line camelcase
     category_ids?: Array<number>
+    // eslint-disable-next-line camelcase
+    updated_at?: string
+    // eslint-disable-next-line camelcase
+    osm_id?: number
+    // eslint-disable-next-line camelcase
+    osm_type?: 'node' | 'way' | 'relation'
   }
   display?: {
-    icon: string
-    // eslint-disable-next-line camelcase
-    color_fill: string
-    // eslint-disable-next-line camelcase
-    color_line: string
     // eslint-disable-next-line camelcase
     style_class?: string[]
   }
   editorial?: {
     // eslint-disable-next-line camelcase
-    popup_properties?: string[]
+    popup_fields?: FieldsList
     // eslint-disable-next-line camelcase
-    details_properties?: string[]
+    details_fields?: FieldsList
     // eslint-disable-next-line camelcase
     class_label?: MultilingualString
     // eslint-disable-next-line camelcase
@@ -60,17 +73,17 @@ export interface ApiPois
 
 export interface apiPoisOptions {
   // eslint-disable-next-line camelcase
-  as_point?: boolean
+  geometry_as?: 'point' | 'bbox'
   // eslint-disable-next-line camelcase
   short_description?: boolean
 }
 
-const defaultOptions: apiPoisOptions = {
-  as_point: true,
+export const defaultOptions: apiPoisOptions = {
+  geometry_as: 'bbox',
   short_description: true,
 }
 
-function stringifyOptions(options: apiPoisOptions): string[][] {
+export function stringifyOptions(options: apiPoisOptions): string[][] {
   return Object.entries(Object.assign({}, defaultOptions, options)).map(
     ([k, v]) => [k, `${v}`]
   )
@@ -129,11 +142,8 @@ export function getPoiByCategoryId(
   options: apiPoisOptions = {}
 ): Promise<ApiPois> {
   return fetch(
-    `${apiEndpoint}/${apiProject}/${apiTheme}/pois.geojson?` +
-      new URLSearchParams([
-        ['idmenu', `${categoryId}`],
-        ...stringifyOptions(options),
-      ])
+    `${apiEndpoint}/${apiProject}/${apiTheme}/pois/category/${categoryId}.geojson?` +
+      new URLSearchParams(stringifyOptions(options))
   ).then((data) => {
     if (data.ok) {
       return data.json() as unknown as ApiPois

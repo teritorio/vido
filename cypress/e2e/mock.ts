@@ -1,48 +1,25 @@
 import { APIFixture } from '~/cypress/fixtures/APIFixture'
 
 export function mockSSRAPI(hostname: string, api: APIFixture) {
-  // @ts-ignore
-  cy.mockSSR({
-    hostname,
-    method: 'GET',
-    path: '/content/api.teritorio/geodata/v0.1/dev/tourism/settings.json',
-    statusCode: 200,
-    body: api.settings,
-  })
+  const routes: { [route: string]: any } = {
+    'settings.json': api.settings,
+    'attribute_translations/fr.json': api.attribute_translations.fr,
+    'articles.json?slug=non-classe': api.articles,
+    'menu.json': api.menu,
+    'pois/category/211.geojson?geometry_as=bbox&short_description=true':
+      api.pois,
+  }
 
-  // @ts-ignore
-  cy.mockSSR({
-    hostname,
-    method: 'GET',
-    path: '/content/api.teritorio/geodata/v0.1/dev/tourism/attribute_translations/fr.json',
-    statusCode: 200,
-    body: api.attribute_translations.fr,
-  })
+  Object.entries(routes).forEach(([route, json]) => {
+    cy.intercept(route, { body: json })
 
-  // @ts-ignore
-  cy.mockSSR({
-    hostname,
-    method: 'GET',
-    path: '/content/api.teritorio/geodata/v0.1/dev/tourism/articles.json?slug=non-classe',
-    statusCode: 200,
-    body: api.articles,
-  })
-
-  // @ts-ignore
-  cy.mockSSR({
-    hostname,
-    method: 'GET',
-    path: '/content/api.teritorio/geodata/v0.1/dev/tourism/menu.json',
-    statusCode: 200,
-    body: api.menu,
-  })
-
-  // @ts-ignore
-  cy.mockSSR({
-    hostname,
-    method: 'GET',
-    path: '/content/api.teritorio/geodata/v0.1/dev/tourism/pois.geojson?idmenu=144575&as_point=true&short_description=true',
-    statusCode: 200,
-    body: api.pois,
+    // @ts-ignore
+    cy.mockSSR({
+      hostname,
+      method: 'GET',
+      path: '/content/api.teritorio/geodata/v0.1/dev/tourism/' + route,
+      statusCode: 200,
+      body: json,
+    })
   })
 }

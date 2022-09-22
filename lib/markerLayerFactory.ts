@@ -60,6 +60,7 @@ export const markerLayerTextFactory = (
 }
 
 export function makerHtmlFactory(
+  id: string,
   latLng: TupleLatLng,
   colorFill: string,
   icon: string,
@@ -68,6 +69,7 @@ export function makerHtmlFactory(
 ): maplibregl.Marker {
   // Marker
   const el: HTMLElement = document.createElement('div')
+  el.id = id
   el.classList.add('maplibregl-marker')
   el.classList.add('cluster-item')
 
@@ -165,6 +167,7 @@ export function updateMarkers(
               }
               // Marker
               markers[id] = makerHtmlFactory(
+                id,
                 markerCoords, // Using this to avoid misplaced marker
                 props.display?.color_fill || '#ff0000',
                 props.display?.icon || '#ff0000',
@@ -176,7 +179,7 @@ export function updateMarkers(
               if (typeof props.editorial === 'string') {
                 props.editorial = JSON.parse(props.editorial)
               }
-              if (props.editorial?.popup_properties) {
+              if (props.editorial?.popup_fields) {
                 el.addEventListener('click', (e: MouseEvent) => {
                   e.stopPropagation()
                   markerClickCallBack(feature as unknown as ApiPoi)

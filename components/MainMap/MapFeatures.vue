@@ -6,6 +6,7 @@
         maxZoom: 17,
         padding: fitBoundsPaddingOptions,
       }"
+      :full-screen-map="true"
       :extra-attributions="extraAttributions"
       :map-style="selectedBackground"
       :pitch="pitch"
@@ -26,7 +27,7 @@
       @full-attribution="$emit('full-attribution', $event)"
     >
       <template #controls>
-        <MapControlsExplore />
+        <MapControlsExplore v-if="explorerModeEnabled" />
         <MapControls3D :map="map" :pitch="pitch" />
         <MapControlsBackground
           :backgrounds="availableStyles"
@@ -61,8 +62,8 @@ import { ApiMenuCategory } from '~/lib/apiMenu'
 import { ApiPoi, getPoiById } from '~/lib/apiPois'
 import { getBBoxFeatures, getBBoxFeature } from '~/lib/bbox'
 import { DEFAULT_MAP_STYLE, MAP_ZOOM } from '~/lib/constants'
-import { MapPoi, mapPoi2ApiPoi } from '~/lib/mapPois'
 import { markerLayerTextFactory, updateMarkers } from '~/lib/markerLayerFactory'
+import { VectorTilesPoi, vectorTilesPoi2ApiPoi } from '~/lib/vectorTilesPois'
 import { filterRouteByCategories, filterRouteByPoiId } from '~/utils/styles'
 import { LatLng, MapStyleEnum } from '~/utils/types'
 import { getHashPart } from '~/utils/url'
@@ -117,11 +118,15 @@ export default Vue.extend({
     },
     selectedCategoriesIds: {
       type: Array as PropType<string[]>,
-      default: null,
+      default: () => [],
     },
     styleIconFilter: {
-      type: Array as PropType<Array<string[]>>,
+      type: Array as PropType<Array<string[]> | null>,
       default: null,
+    },
+    explorerModeEnabled: {
+      type: Boolean,
+      required: true,
     },
   },
 
@@ -183,6 +188,10 @@ export default Vue.extend({
 
     selectedFeature() {
       this.showSelectedFeature()
+    },
+
+    selectedCategoriesIds(categories) {
+      filterRouteByCategories(this.map, categories)
     },
 
     selectedBackground() {
@@ -308,14 +317,18 @@ export default Vue.extend({
       let selectedFeatures = STYLE_LAYERS.map((layerId) => {
         return this.map.queryRenderedFeatures(e.point, {
           layers: [layerId],
-        }) as unknown as MapPoi[]
+        }) as unknown as VectorTilesPoi[]
       }).flat()
       selectedFeatures = selectedFeatures.filter(
-        (feature) => feature.properties.popup_properties
+        (feature) => feature.properties.popup_fields
       )
       if (selectedFeatures.length > 0) {
         // Set temp partial data from vector tiles. Then fetch full data
-        this.updateSelectedFeature(mapPoi2ApiPoi(selectedFeatures[0]), true)
+        this.updateSelectedFeature(
+          vectorTilesPoi2ApiPoi(selectedFeatures[0]),
+          true
+        )
+        this.showSelectedFeature()
       } else {
         this.updateSelectedFeature(null)
       }
@@ -476,7 +489,11 @@ export default Vue.extend({
             this.selectedFeature?.properties?.id
         )
 
-        if (this.selectedFeature.geometry.type === 'Point') {
+        if (
+          ['Point', 'MultiLineString', 'LineString'].includes(
+            this.selectedFeature.geometry.type
+          )
+        ) {
           // Get original coords to set axact marker position
           const originalFeature = this.features.find(
             (originalFeature) =>
@@ -488,7 +505,9 @@ export default Vue.extend({
           const lngLat = (
             originalFeature && originalFeature.geometry.type === 'Point'
               ? originalFeature.geometry.coordinates
-              : this.selectedFeature.geometry.coordinates
+              : this.selectedFeature.geometry.type === 'Point'
+              ? this.selectedFeature.geometry?.coordinates
+              : this.defaultBounds
           ) as [number, number]
 
           this.selectedFeatureMarker = new maplibregl.Marker({

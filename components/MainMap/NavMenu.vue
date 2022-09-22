@@ -34,22 +34,17 @@
       </template>
 
       <div class="py-1 rounded-md shadow-xs flex flex-col w-max">
-        <a
+        <ExternalLink
           v-for="entry in entries"
           :key="entry.post_id"
-          class="w-full px-5 py-3 outline-none focus:outline-none hover:bg-zinc-100"
+          class="w-full px-5 py-3 hover:bg-zinc-100"
           :href="entry.url"
           rel="noopener noreferrer"
           target="_blank"
           @click="openLink(entry.title, entry.url)"
         >
-          <font-awesome-icon
-            icon="external-link-alt"
-            class="text-zinc-500 mr-2"
-            size="sm"
-          />
           {{ entry.title }}
-        </a>
+        </ExternalLink>
         <hr v-if="Boolean(entries.length)" class="" />
         <a
           v-for="locale in $i18n.locales"
@@ -74,10 +69,12 @@ import Vue, { PropType } from 'vue'
 import { TDropdown } from 'vue-tailwind/dist/components'
 import { mapActions } from 'vuex'
 
+import ExternalLink from '~/components/UI/ExternalLink.vue'
 import { ContentEntry } from '~/lib/apiContent'
 
 export default Vue.extend({
   components: {
+    ExternalLink,
     TDropdown,
   },
 

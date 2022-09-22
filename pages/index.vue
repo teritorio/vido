@@ -15,7 +15,7 @@ import { mapActions } from 'vuex'
 
 import Home from '~/components/Home/Home.vue'
 import { ContentEntry, getContents } from '~/lib/apiContent'
-import { Category, getMenu } from '~/lib/apiMenu'
+import { ApiMenuItem, getMenu } from '~/lib/apiMenu'
 import { getPoiById, ApiPoi } from '~/lib/apiPois'
 import {
   getPropertyTranslations,
@@ -33,7 +33,7 @@ export default Vue.extend({
     settings: Settings
     contents: ContentEntry[]
     propertyTranslations: PropertyTranslations
-    categories: Category[]
+    menuItems: ApiMenuItem[]
     categoryIds: number[] | null
     initialPoi: ApiPoi | null
   }> {
@@ -52,7 +52,7 @@ export default Vue.extend({
       vidoConfig(req).API_PROJECT,
       vidoConfig(req).API_THEME
     )
-    const fetchCategories = getMenu(
+    const fetchMenuItems = getMenu(
       vidoConfig(req).API_ENDPOINT,
       vidoConfig(req).API_PROJECT,
       vidoConfig(req).API_THEME
@@ -86,12 +86,12 @@ export default Vue.extend({
       )
     }
 
-    const [settings, contents, propertyTranslations, categories, initialPoi] =
+    const [settings, contents, propertyTranslations, menuItems, initialPoi] =
       await Promise.all([
         fetchSettings,
         fetchContents,
         fetchPropertyTranslations,
-        fetchCategories,
+        fetchMenuItems,
         fetchPoi,
       ])
 
@@ -99,7 +99,7 @@ export default Vue.extend({
       settings,
       contents,
       propertyTranslations,
-      categories,
+      menuItems,
       categoryIds,
       initialPoi,
     })
@@ -109,7 +109,7 @@ export default Vue.extend({
     settings: Settings
     contents: ContentEntry[]
     propertyTranslations: PropertyTranslations
-    categories: Category[]
+    menuItems: ApiMenuItem[]
     categoryIds: number[] | null
     initialPoi: ApiPoi | null
   } {
@@ -121,7 +121,7 @@ export default Vue.extend({
       // @ts-ignore
       propertyTranslations: null,
       // @ts-ignore
-      categories: null,
+      menuItems: null,
       categoryIds: null,
       initialPoi: null,
     }
@@ -133,7 +133,7 @@ export default Vue.extend({
 
   created() {
     this.$store.dispatch('menu/fetchConfig', {
-      categories: this.categories,
+      menuItems: this.menuItems,
     })
     this.$settings.set(this.settings)
     this.$propertyTranslations.set(this.propertyTranslations)

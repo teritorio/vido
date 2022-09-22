@@ -12,11 +12,11 @@ export default {
   favorites: {
     title: 'Favorites',
     menu_label: 'Favorites menu',
-    menu_notebook: 'Show notebook',
-    menu_share: 'Share favorites',
-    menu_clear: 'Clear favorites',
-    export_pdf: 'Export liste as PDF',
-    export_csv: 'Export liste as CSV',
+    menu_notebook: 'Notebook',
+    menu_share: 'Share',
+    menu_clear: 'Clear',
+    export_pdf: 'PDF Export',
+    export_csv: 'CSV Export',
     share_link: 'Share link of favorites',
     notebook: {
       title: 'Favorites notebook',
@@ -49,7 +49,7 @@ export default {
     },
   },
   headerMenu: {
-    search: 'Search',
+    search: 'Point of interest, category, address',
     selectAll: 'Select all',
     unselectAll: 'Unselect all',
     filter: 'Filter',
@@ -62,9 +62,9 @@ export default {
     noResult: 'No results',
     hideCategory: 'Hide this category',
     backToMenuFavorites: 'Show menu',
-    backToMenuExplorer: 'Back to menu',
+    backToMenuExplorer: 'Search by Categories',
     backToMenuFavoritesMobile: 'Exit Favorites',
-    backToMenuExplorerMobile: 'Exit Explorer mode',
+    backToMenuExplorerMobile: 'Search by Categories',
   },
   dateRange: {
     from_to: 'From {from} to {to}',
@@ -80,7 +80,7 @@ export default {
     formatDayAndDayInMonth: "EEE do':'",
     variableWeek: 'The hours may vary from week to week.',
   },
-  toast: {
+  poiCard: {
     details: 'Details',
     seeDetail: 'See details',
     route: 'Route',
@@ -88,13 +88,12 @@ export default {
     favorite: 'Favorite',
     favoriteOn: 'Set as favorite',
     favoriteOff: 'Remove favorite',
-    callNumber: 'Call this number',
     findRoute: 'Find the route to this place',
     unactivateExplore: 'Deactivate exploration of the surroundings',
     activateExplore: 'Explore nearby points of interest',
     zoom: 'Zoom',
   },
-  details: {
+  poiDetails: {
     headerDescription: 'Description',
     headerDownload: 'Files to download',
     lastUpdate: 'Last change',
@@ -111,6 +110,11 @@ export default {
     mapillaryExplore: 'Explore on Mapillary',
     informations: 'Informations',
     downloadGPX: 'The route (GPS track) in GPX format',
+    downloadPDF: 'The complete card in PDF format',
+    routes: {
+      waypoints: 'Waypoints',
+      pois: 'Point of Interests',
+    },
   },
   dateFilter: {
     today: 'Today',
@@ -120,6 +124,9 @@ export default {
     nextMonth: 'Next 30 days',
   },
   fields: {
+    phone: {
+      callNumber: 'Call this number',
+    },
     route: {
       difficulty: 'Difficulty:',
       lenght: 'Distance:',
