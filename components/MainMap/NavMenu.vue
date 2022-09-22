@@ -37,7 +37,7 @@
         <ExternalLink
           v-for="entry in entries"
           :key="entry.post_id"
-          class="w-full px-5 py-3 outline-none focus:outline-none hover:bg-zinc-100"
+          class="w-full px-5 py-3 hover:bg-zinc-100"
           :href="entry.url"
           rel="noopener noreferrer"
           target="_blank"

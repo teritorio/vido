@@ -5,7 +5,7 @@
     :target="target"
     :rel="rel"
     :title="title"
-    class="flex flex-row items-center gap-x-2.5"
+    class="flex flex-row items-center gap-x-2.5 underline underline-offset-4"
   >
     <font-awesome-icon icon="external-link-alt" color="inherit" size="sm" />
     <slot />
@@ -37,9 +37,3 @@ export default Vue.extend({
   },
 })
 </script>
-
-<style scoped>
-a {
-  text-decoration: underline;
-}
-</style>
