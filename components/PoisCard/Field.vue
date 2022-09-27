@@ -12,6 +12,14 @@
   </p>
 
   <p
+    v-else-if="field.field === 'coordinates'"
+    :key="field.field"
+    class="mt-6 text-sm"
+  >
+    <Coordinates :geom="geom" />
+  </p>
+
+  <p
     v-else-if="field.field == 'start_end_date'"
     :key="field.field"
     class="text-sm"
@@ -88,6 +96,7 @@
 import Vue, { PropType } from 'vue'
 
 import AddressField from '~/components/Fields/AddressField.vue'
+import Coordinates from '~/components/Fields/Coordinates.vue'
 import DateRange from '~/components/Fields/DateRange.vue'
 import Facebook from '~/components/Fields/Facebook.vue'
 import OpeningHours, {
@@ -103,6 +112,7 @@ export default Vue.extend({
   components: {
     RoutesField,
     AddressField,
+    Coordinates,
     Website,
     Facebook,
     OpeningHours,

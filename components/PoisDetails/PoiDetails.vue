@@ -81,7 +81,6 @@
               <RelativeDate v-else :date="poi.properties.metadata.updated_at">
               </RelativeDate>
             </p>
-            <Location :p="poi.properties" :geom="poi.geometry" />
           </template>
 
           <Field
@@ -119,7 +118,6 @@ import Field from '~/components/PoisDetails/Field.vue'
 import Fields from '~/components/PoisDetails/Fields.vue'
 import Footer from '~/components/PoisDetails/Footer.vue'
 import Header from '~/components/PoisDetails/Header.vue'
-import Location from '~/components/PoisDetails/Location.vue'
 import Mapillary from '~/components/PoisDetails/Mapillary.vue'
 import RouteMap from '~/components/PoisDetails/Route/RouteMap.vue'
 import Share from '~/components/PoisDetails/Share.vue'
@@ -137,7 +135,6 @@ export default Vue.extend({
     Header,
     FavoriteIcon,
     TeritorioIconBadge,
-    Location,
     Share,
     Carousel,
     Mapillary,

@@ -98,8 +98,6 @@ export default {
     headerDownload: 'Files to download',
     lastUpdate: 'Last change',
     headerContacts: 'Contact',
-    headerLocation: 'Location & Address',
-    location: 'GPS coordinates (Lat, Lon):',
     shareFacebook: 'Share on Facebook',
     shareTwitter: 'Share on Twitter',
     shareWhatsApp: 'Share on WhatsApp',
