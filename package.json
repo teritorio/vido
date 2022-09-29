@@ -29,7 +29,7 @@
     "@nuxtjs/gtm": "^2.4.0",
     "@nuxtjs/i18n": "^7.2.2",
     "@nuxtjs/sentry": "^5.1.7",
-    "@teritorio/map": "^0.11.2",
+    "@teritorio/map": "^0.12.1",
     "@teritorio/openmaptiles-gl-language": "^1.5.4",
     "@types/geojson": "^7946.0.8",
     "@xstate/vue": "^2.0.0",
