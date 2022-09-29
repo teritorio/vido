@@ -1,0 +1,149 @@
+openapi: '3.0.0'
+info:
+  title: Web Pages API
+  description: |
+    Web Pages only. For the data API see the appropriate documentation.
+
+    All POIs `id` or `ids` could be internal id (like `163458`), cartocode (`cartocode:A1`), external data source reference (`ref:[source-slug]:224402` where `[source-slug]` must be replaced with the slug of the data source) or OpenStreetMap id (`osm:w122937626` where the first char is the type `n`, `w` or `r` and followed by the numeric identifier).
+  version: "v0.1.0"
+  contact:
+    email: contact@teritorio.fr
+
+servers:
+  - url: /
+
+paths:
+  /:
+    get:
+      tags:
+        - map
+      summary: Homepage.
+      parameters:
+        - &home_paramter_map
+          in: query
+          name: map
+          schema:
+            type: string
+          description: Map center location. Latitude, longitude, zoom.
+          example: "7/44.055/0.056"
+        - &home_paramter_mode
+          in: query
+          name: mode
+          schema:
+            type: string
+            enum: [browser, explorer, favorites]
+            default: browser
+          description: Map mode. Default browse categories from menu. Explore directly the map or show favourites.
+          example: browser
+        - &home_paramter_favs
+          in: query
+          name: favs
+          schema:
+            type: string
+          description: Comma-speparated list of POIs (id, ref...) to be set as favorites.
+          example: 543,765789
+        - &home_paramter_bg
+          in: query
+          name: bg
+          schema:
+            type: string
+            enum: [vector, raster, aerial]
+            default: vector
+          description: Background map.
+      responses:
+        '200':
+          description: OK
+
+  /{category_ids}/:
+    get:
+      tags:
+        - map
+      summary: Homepage with selected categories.
+      parameters:
+        - &home_paramter_category_ids
+          in: path
+          name: category_ids
+          schema:
+            type: array
+            items:
+              type: string
+          required: true
+          description: A comma-separated list of active categories ids.
+          example: 234,655,78
+        - *home_paramter_map
+        - *home_paramter_mode
+        - *home_paramter_favs
+        - *home_paramter_bg
+      responses:
+        '200':
+          description: OK
+
+  /{poi_id}:
+    get:
+      tags:
+        - map
+      summary: Homepage with pinned POI.
+      parameters:
+        - &home_paramter_poi_id
+          in: path
+          name: poi_id
+          schema:
+            type: string
+          required: true
+          description: The current highlighted POI.
+          example: 543
+        - *home_paramter_map
+        - *home_paramter_mode
+        - *home_paramter_favs
+        - *home_paramter_bg
+      responses:
+        '200':
+          description: OK
+
+  /{category_ids}/{poi_id}:
+    get:
+      tags:
+        - map
+      summary: Homepage with selected categories and pinned POI.
+      parameters:
+        - *home_paramter_poi_id
+        - *home_paramter_category_ids
+        - *home_paramter_map
+        - *home_paramter_mode
+        - *home_paramter_favs
+        - *home_paramter_bg
+      responses:
+        '200':
+          description: OK
+
+  /pois/{ids}/map:
+    get:
+      tags:
+        - map
+      summary: Full page map with POIs. Intended to be included as iframe.
+      parameters:
+        - in: path
+          name: ids
+          schema:
+            type: array
+            items:
+              type: string
+          required: true
+      responses:
+        '200':
+          description: OK
+
+  /poi/{id}/details:
+    get:
+      tags:
+        - details
+      summary: POI full details page with description, images, map...
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: OK
