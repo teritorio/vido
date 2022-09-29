@@ -6,12 +6,14 @@
         :field="field"
         :properties="properties"
         :details="details"
-      ></Field>
+        :geom="geom"
+      />
     </template>
   </div>
 </template>
 
 <script lang="ts">
+import GeoJSON from 'geojson'
 import Vue, { PropType } from 'vue'
 
 import Field from '~/components/PoisCard/Field.vue'
@@ -34,6 +36,10 @@ export default Vue.extend({
     details: {
       type: String,
       default: null,
+    },
+    geom: {
+      type: Object as PropType<GeoJSON.Geometry>,
+      required: true,
     },
   },
 })

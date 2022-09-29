@@ -93,6 +93,7 @@
 </template>
 
 <script lang="ts">
+import GeoJSON from 'geojson'
 import Vue, { PropType } from 'vue'
 
 import AddressField from '~/components/Fields/AddressField.vue'
@@ -132,6 +133,10 @@ export default Vue.extend({
     details: {
       type: String,
       default: null,
+    },
+    geom: {
+      type: Object as PropType<GeoJSON.Geometry>,
+      required: true,
     },
   },
 

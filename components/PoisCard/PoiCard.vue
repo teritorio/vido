@@ -85,6 +85,7 @@
           :fields="poi.properties.editorial?.popup_fields || []"
           :properties="poi.properties"
           :details="websiteDetails"
+          :geom="poi.geometry"
           @click-detail="trackingPopupEvent('details')"
         />
       </div>

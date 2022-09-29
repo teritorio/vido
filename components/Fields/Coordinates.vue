@@ -1,6 +1,8 @@
 <template>
   <CoordinateAction v-if="geom.type === 'Point'" :geometry="geom">
-    {{ geom.coordinates[1] }},&nbsp;{{ geom.coordinates[0] }}
+    {{ geom.coordinates[1].toFixed(6) }},&nbsp;{{
+      geom.coordinates[0].toFixed(6)
+    }}
   </CoordinateAction>
 </template>
 

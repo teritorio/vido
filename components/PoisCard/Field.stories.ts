@@ -11,6 +11,10 @@ const defaultProps = {
   properties: {
     name: 'foo',
   },
+  geom: {
+    type: 'Point',
+    coordinates: [0.123456789, 0.987654321],
+  }
 }
 
 export const Default = bind(Field, {
@@ -100,4 +104,9 @@ export const DescriptionDetails = bind(Field, {
     description,
   },
   details: true,
+})
+
+export const Coordinates = bind(Field, {
+  ...defaultProps,
+  field: { field: 'coordinates' },
 })
