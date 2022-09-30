@@ -217,15 +217,14 @@ import { MetaInfo } from 'vue-meta'
 import { mapGetters, mapActions } from 'vuex'
 import { interpret } from 'xstate'
 
-import ExplorerOrFavoritesBack from './ExplorerOrFavoritesBack.vue'
+import ExplorerOrFavoritesBack from '~/components/Home/ExplorerOrFavoritesBack.vue'
 import {
   HomeState,
   HomeInterpreter,
   HomeEvents,
   HomeStates,
   homeMachine,
-} from './Home.machine'
-
+} from '~/components/Home/Home.machine'
 import Menu from '~/components/Home/Menu.vue'
 import SelectedCategories from '~/components/Home/SelectedCategories.vue'
 import Attribution from '~/components/MainMap/Attribution.vue'
@@ -245,7 +244,7 @@ import { headerFromSettings, Settings } from '~/lib/apiSettings'
 import { getBBoxFeature } from '~/lib/bbox'
 import { LOCAL_STORAGE } from '~/store/favorite'
 import { Mode, OriginEnum } from '~/utils/types'
-import { FilterValue, FilterValues } from '~/utils/types-filters'
+import { FilterValue } from '~/utils/types-filters'
 import { getHashPart, setHashParts } from '~/utils/url'
 import { flattenFeatures } from '~/utils/utilities'
 

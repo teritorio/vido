@@ -10,7 +10,7 @@
 import GeoJSON from 'geojson'
 import Vue, { PropType } from 'vue'
 
-import CoordinateAction from '../Fields/CoordinateAction.vue'
+import CoordinateAction from '~/components/Fields/CoordinateAction.vue'
 
 export default Vue.extend({
   components: {

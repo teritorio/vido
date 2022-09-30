@@ -42,13 +42,6 @@ export default Vue.extend({
     // Fields,
   },
 
-  beforeCreate: function () {
-    // Break circular components dependcy
-    // @ts-ignore
-    this.$options.components.Fields =
-      require('~/components/PoisDetails/Fields.vue').default
-  },
-
   props: {
     recursionLevel: {
       type: Number,
@@ -70,6 +63,13 @@ export default Vue.extend({
       type: String,
       required: true,
     },
+  },
+
+  beforeCreate: function () {
+    // Break circular components dependcy
+    // @ts-ignore
+    this.$options.components.Fields =
+      require('~/components/PoisDetails/Fields.vue').default
   },
 })
 </script>
