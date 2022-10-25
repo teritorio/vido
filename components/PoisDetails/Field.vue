@@ -1,111 +1,109 @@
 <template>
-  <div>
-    <template v-if="field.field == 'route'">
-      <FieldsHeader
-        :key="'header_' + field.field"
-        :recursion-level="recursionLevel"
-        class="`field_header_level_${recursionLevel}`"
-      >
-        {{ fieldTranslateK(field.field) }}
-      </FieldsHeader>
-      <RoutesField
-        :key="'content_' + field.field"
-        class="field_content"
-        :context="context"
-        :properties="properties"
-      />
-    </template>
+  <div v-if="field.field == 'route'">
+    <FieldsHeader
+      :key="'header_' + field.field"
+      :recursion-level="recursionLevel"
+      class="`field_header_level_${recursionLevel}`"
+    >
+      {{ fieldTranslateK(field.field) }}
+    </FieldsHeader>
+    <RoutesField
+      :key="'content_' + field.field"
+      class="field_content"
+      :context="context"
+      :properties="properties"
+    />
+  </div>
 
-    <template v-else-if="field.field == 'start_end_date'">
-      <FieldsHeader
-        :key="'header_' + field.field"
-        :recursion-level="recursionLevel"
-        :class="`field_header_level_${recursionLevel}`"
-      >
-        {{ fieldTranslateK(field.field) }}
-      </FieldsHeader>
-      <DateRange
-        :key="'content_' + field.field"
-        :start="properties.start_date"
-        :end="properties.end_date"
-        :class="`field_content_level_${recursionLevel}`"
-      />
-    </template>
+  <div v-else-if="field.field == 'start_end_date'">
+    <FieldsHeader
+      :key="'header_' + field.field"
+      :recursion-level="recursionLevel"
+      :class="`field_header_level_${recursionLevel}`"
+    >
+      {{ fieldTranslateK(field.field) }}
+    </FieldsHeader>
+    <DateRange
+      :key="'content_' + field.field"
+      :start="properties.start_date"
+      :end="properties.end_date"
+      :class="`field_content_level_${recursionLevel}`"
+    />
+  </div>
 
-    <template v-else-if="properties[field.field]">
-      <FieldsHeader
-        :key="'header_' + field.field"
-        :recursion-level="recursionLevel"
-        :class="`field_header_level_${recursionLevel}`"
-      >
-        {{ fieldTranslateK(field.field) }}
-      </FieldsHeader>
+  <div v-else-if="properties[field.field]">
+    <FieldsHeader
+      :key="'header_' + field.field"
+      :recursion-level="recursionLevel"
+      :class="`field_header_level_${recursionLevel}`"
+    >
+      {{ fieldTranslateK(field.field) }}
+    </FieldsHeader>
+    <div
+      :key="'content_' + field.field"
+      :class="`field_content_level_${recursionLevel}`"
+    >
       <div
-        :key="'content_' + field.field"
-        :class="`field_content_level_${recursionLevel}`"
+        v-if="field.field == 'description'"
+        v-html="properties.description"
+      />
+
+      <div
+        v-for="phone in (properties.phone || []).concat(
+          properties.mobile || []
+        )"
+        v-else-if="field.field === 'phone' || field.field === 'mobile'"
+        :key="field.field + '_' + phone"
       >
-        <div
-          v-if="field.field == 'description'"
-          v-html="properties.description"
-        />
-
-        <div
-          v-for="phone in (properties.phone || []).concat(
-            properties.mobile || []
-          )"
-          v-else-if="field.field === 'phone' || field.field === 'mobile'"
-          :key="field.field + '_' + phone"
-        >
-          <Phone :number="phone" />
-        </div>
-
-        <div
-          v-for="email in properties.email || []"
-          v-else-if="field.field == 'email'"
-          :key="field.field + '_' + email"
-        >
-          <a :href="`mailto:${email}`">
-            {{ email }}
-          </a>
-        </div>
-
-        <div
-          v-for="website in properties.website || []"
-          v-else-if="field.field == 'website'"
-          :key="field.field + '_' + website"
-        >
-          <ExternalLink :href="properties.website" target="_blank">
-            {{ website }}
-          </ExternalLink>
-        </div>
-
-        <Facebook
-          v-else-if="field.field === 'facebook'"
-          :url="properties[field.field]"
-        />
-
-        <a
-          v-else-if="
-            field.field == 'route:gpx_trace' || field.field == 'route:pdf'
-          "
-          :href="properties[field.field]"
-        >
-          <font-awesome-icon prefix="fa" icon="arrow-circle-down" />
-          {{ fieldTranslateK(field.field) }}
-        </a>
-
-        <OpeningHours
-          v-else-if="isOpeningHoursSupportedOsmTags(field.field)"
-          :tag-key="field.field"
-          :opening-hours="properties[field.field]"
-          :context="context"
-        />
-
-        <template v-else>
-          {{ propTranslateV(field.field) }}
-        </template>
+        <Phone :number="phone" />
       </div>
-    </template>
+
+      <div
+        v-for="email in properties.email || []"
+        v-else-if="field.field == 'email'"
+        :key="field.field + '_' + email"
+      >
+        <a :href="`mailto:${email}`">
+          {{ email }}
+        </a>
+      </div>
+
+      <div
+        v-for="website in properties.website || []"
+        v-else-if="field.field == 'website'"
+        :key="field.field + '_' + website"
+      >
+        <ExternalLink :href="properties.website" target="_blank">
+          {{ website }}
+        </ExternalLink>
+      </div>
+
+      <Facebook
+        v-else-if="field.field === 'facebook'"
+        :url="properties[field.field]"
+      />
+
+      <a
+        v-else-if="
+          field.field == 'route:gpx_trace' || field.field == 'route:pdf'
+        "
+        :href="properties[field.field]"
+      >
+        <font-awesome-icon prefix="fa" icon="arrow-circle-down" />
+        {{ fieldTranslateK(field.field) }}
+      </a>
+
+      <OpeningHours
+        v-else-if="isOpeningHoursSupportedOsmTags(field.field)"
+        :tag-key="field.field"
+        :opening-hours="properties[field.field]"
+        :context="context"
+      />
+
+      <div v-else>
+        {{ propTranslateV(field.field) }}
+      </div>
+    </div>
   </div>
 </template>
 
