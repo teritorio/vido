@@ -17,6 +17,11 @@ export const Default = bind(Field, {
   ...defaultProps,
 })
 
+export const NoValue = bind(Field, {
+  ...defaultProps,
+  properties: {},
+})
+
 export const Route = bind(Field, {
   ...defaultProps,
   field: { field: 'route' },

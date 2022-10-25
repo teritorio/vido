@@ -1,41 +1,60 @@
 <template>
-  <div v-if="group.fields && group.display_mode === 'standard'">
-    <FieldsHeader :recursion-level="recursionLevel">
-      {{ title }}
-    </FieldsHeader>
+  <div v-if="group.fields">
     <Fields
+      v-show="false"
+      ref="fields"
       :recursion-level="recursionLevel + 1"
       :fields="group.fields"
       :properties="properties"
       :color-fill="colorFill"
     />
+
+    <div v-if="!empty && group.display_mode === 'standard'">
+      <FieldsHeader :recursion-level="recursionLevel">
+        {{ title }}
+      </FieldsHeader>
+      <Fields
+        :recursion-level="recursionLevel + 1"
+        :fields="group.fields"
+        :properties="properties"
+        :color-fill="colorFill"
+      />
+    </div>
+    <Block
+      v-else-if="!empty && group.display_mode === 'card'"
+      :color-fill="colorFill"
+      :icon="group.icon"
+    >
+      <FieldsHeader :recursion-level="recursionLevel">
+        {{ title }}
+      </FieldsHeader>
+      <Fields
+        :recursion-level="recursionLevel + 1"
+        :fields="group.fields"
+        :properties="properties"
+        :color-fill="colorFill"
+      />
+    </Block>
   </div>
-  <Block
-    v-else-if="group.fields && group.display_mode === 'card'"
-    :color-fill="colorFill"
-    :icon="group.icon"
-  >
-    <FieldsHeader :recursion-level="recursionLevel">
-      {{ title }}
-    </FieldsHeader>
-    <Fields
-      :recursion-level="recursionLevel + 1"
-      :fields="group.fields"
-      :properties="properties"
-      :color-fill="colorFill"
-    />
-  </Block>
 </template>
 
 <script lang="ts">
-import Vue, { PropType } from 'vue'
+import Vue, { VueConstructor, PropType } from 'vue'
 
 import Block from '~/components/PoisDetails/Block.vue'
 import FieldsHeader from '~/components/PoisDetails/FieldsHeader.vue'
 import { ApiPoiProperties, FieldsListGroup } from '~/lib/apiPois'
 // import Fields from '~/components/PoisDetails/Fields.vue'
 
-export default Vue.extend({
+export default (
+  Vue as VueConstructor<
+    Vue & {
+      $refs: {
+        fields: InstanceType<typeof Vue>
+      }
+    }
+  >
+).extend({
   components: {
     Block,
     FieldsHeader,
@@ -65,11 +84,24 @@ export default Vue.extend({
     },
   },
 
-  beforeCreate: function () {
+  data(): {
+    empty: any
+  } {
+    return {
+      empty: true,
+    }
+  },
+
+  beforeCreate() {
     // Break circular components dependcy
     // @ts-ignore
     this.$options.components.Fields =
       require('~/components/PoisDetails/Fields.vue').default
+  },
+
+  mounted() {
+    // Pre-render Fields with show=false. Then check for content before real rendering
+    this.empty = this.$refs.fields.$el.children.length === 0
   },
 })
 </script>

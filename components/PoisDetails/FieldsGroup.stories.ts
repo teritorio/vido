@@ -24,6 +24,11 @@ export const Sandart = bind(FieldsGroup, {
   ...defaultProps,
 })
 
+export const Empty = bind(FieldsGroup, {
+  ...defaultProps,
+  properties: {},
+})
+
 export const Card = bind(FieldsGroup, {
   ...defaultProps,
   group: {
