@@ -1,6 +1,7 @@
 <template>
   <div v-if="field.field == 'route'">
     <FieldsHeader
+      v-if="false"
       :key="'header_' + field.field"
       :recursion-level="recursionLevel"
       class="`field_header_level_${recursionLevel}`"
@@ -17,6 +18,7 @@
 
   <div v-else-if="field.field == 'start_end_date'">
     <FieldsHeader
+      v-if="false"
       :key="'header_' + field.field"
       :recursion-level="recursionLevel"
       :class="`field_header_level_${recursionLevel}`"
@@ -33,6 +35,7 @@
 
   <div v-else-if="properties[field.field]">
     <FieldsHeader
+      v-if="false"
       :key="'header_' + field.field"
       :recursion-level="recursionLevel"
       :class="`field_header_level_${recursionLevel}`"
