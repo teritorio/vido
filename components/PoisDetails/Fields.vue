@@ -1,5 +1,5 @@
 <template>
-  <div :class="[recursionLevel === 0 && 'fields-list']">
+  <div>
     <template v-for="field in fields">
       <FieldsGroup
         v-if="field.group"
@@ -10,6 +10,7 @@
         :properties="properties"
         :geom="geom"
         :color-fill="colorFill"
+        :class="[recursionLevel === 0 && 'fields-list']"
       />
 
       <Field
@@ -77,7 +78,7 @@ export default Vue.extend({
 </script>
 
 <style lang="scss" scoped>
-.fields-list > * {
-  margin-bottom: 3.3rem;
+.fields-list {
+  margin-top: 3.3rem;
 }
 </style>
