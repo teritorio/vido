@@ -6,6 +6,7 @@
       :recursion-level="recursionLevel + 1"
       :fields="group.fields"
       :properties="properties"
+      :geom="geom"
       :color-fill="colorFill"
     />
 
@@ -17,6 +18,7 @@
         :recursion-level="recursionLevel + 1"
         :fields="group.fields"
         :properties="properties"
+        :geom="geom"
         :color-fill="colorFill"
       />
     </div>
@@ -32,6 +34,7 @@
         :recursion-level="recursionLevel + 1"
         :fields="group.fields"
         :properties="properties"
+        :geom="geom"
         :color-fill="colorFill"
       />
     </Block>
@@ -76,6 +79,10 @@ export default (
     },
     properties: {
       type: Object as PropType<ApiPoiProperties>,
+      required: true,
+    },
+    geom: {
+      type: Object as PropType<GeoJSON.Geometry>,
       required: true,
     },
     colorFill: {

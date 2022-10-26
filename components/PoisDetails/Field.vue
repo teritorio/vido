@@ -16,6 +16,18 @@
     />
   </div>
 
+  <div v-else-if="field.field === 'addr'" :key="'header_' + field.field">
+    <FieldsHeader
+      v-if="false"
+      :key="'header_' + field.field"
+      :recursion-level="recursionLevel"
+      :class="`field_header_level_${recursionLevel}`"
+    >
+      {{ fieldTranslateK(field.field) }}
+    </FieldsHeader>
+    <AddressField :properties="properties" />
+  </div>
+
   <div v-else-if="field.field == 'start_end_date'">
     <FieldsHeader
       v-if="false"
@@ -31,6 +43,18 @@
       :end="properties.end_date"
       :class="`field_content_level_${recursionLevel}`"
     />
+  </div>
+
+  <div v-else-if="field.field === 'coordinates'">
+    <FieldsHeader
+      v-if="false"
+      :key="'header_' + field.field"
+      :recursion-level="recursionLevel"
+      :class="`field_header_level_${recursionLevel}`"
+    >
+      {{ fieldTranslateK(field.field) }}
+    </FieldsHeader>
+    <Coordinates :geom="geom" />
   </div>
 
   <div v-else-if="properties[field.field]">
@@ -113,6 +137,8 @@
 <script lang="ts">
 import Vue, { PropType } from 'vue'
 
+import AddressField from '~/components/Fields/AddressField.vue'
+import Coordinates from '~/components/Fields/Coordinates.vue'
 import DateRange from '~/components/Fields/DateRange.vue'
 import Facebook from '~/components/Fields/Facebook.vue'
 import OpeningHours, {
@@ -130,7 +156,9 @@ export default Vue.extend({
     FieldsHeader,
     OpeningHours,
     RoutesField,
+    AddressField,
     DateRange,
+    Coordinates,
     Phone,
     Facebook,
     ExternalLink,
@@ -147,6 +175,10 @@ export default Vue.extend({
     },
     properties: {
       type: Object as PropType<ApiPoiProperties>,
+      required: true,
+    },
+    geom: {
+      type: Object as PropType<GeoJSON.Geometry>,
       required: true,
     },
     colorFill: {

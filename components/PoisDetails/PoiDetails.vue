@@ -44,6 +44,7 @@
             :fields="detailsFields"
             :properties="poi.properties"
             :color-fill="colorFill"
+            :geom="poi.geometry"
             class="detail-left-block"
           />
         </div>
@@ -87,6 +88,7 @@
             v-else
             :field="{ field: 'description' }"
             :properties="poi.properties"
+            :geom="poi.geometry"
             :color-fill="colorFill"
           ></Field>
         </div>
