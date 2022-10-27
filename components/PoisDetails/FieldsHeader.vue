@@ -2,7 +2,7 @@
   <h2 v-if="recursionLevel === 0">
     <slot />
   </h2>
-  <span v-else><slot /></span>
+  <span v-else><slot />{{ $tc('ponctuation.colon') }}</span>
 </template>
 
 <script lang="ts">

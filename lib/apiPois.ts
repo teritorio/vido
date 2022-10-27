@@ -5,6 +5,7 @@ import { MultilingualString } from '~/utils/types'
 export interface ApiPoiId extends Number {}
 
 export type FieldsListItem = {
+  label?: boolean
   field: string
 }
 

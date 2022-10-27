@@ -22,6 +22,14 @@ export const NoValue = bind(Field, {
   properties: {},
 })
 
+export const Label = bind(Field, {
+  ...defaultProps,
+  field: {
+    ...defaultProps.field,
+    label: true,
+  },
+})
+
 export const Route = bind(Field, {
   ...defaultProps,
   field: { field: 'route' },

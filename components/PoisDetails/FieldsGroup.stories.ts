@@ -29,6 +29,19 @@ export const Empty = bind(FieldsGroup, {
   properties: {},
 })
 
+export const Label = bind(FieldsGroup, {
+  ...defaultProps,
+  group: {
+    ...defaultProps.group,
+    fields: [
+      {
+        label: true,
+        field: 'name',
+      },
+    ],
+  },
+})
+
 export const Card = bind(FieldsGroup, {
   ...defaultProps,
   group: {

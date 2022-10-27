@@ -4,6 +4,9 @@ export default {
     hours: 'h',
     km: 'km',
   },
+  ponctuation: {
+    colon: ' :',
+  },
   shareLink: {
     copy: 'Copiar',
     qrcode: 'QR-Code',

@@ -1,13 +1,12 @@
 <template>
   <div v-if="field.field == 'route'">
     <FieldsHeader
-      v-if="false"
+      v-if="field.label"
       :key="'header_' + field.field"
       :recursion-level="recursionLevel"
       class="`field_header_level_${recursionLevel}`"
+      >{{ fieldTranslateK(field.field) }}</FieldsHeader
     >
-      {{ fieldTranslateK(field.field) }}
-    </FieldsHeader>
     <RoutesField
       :key="'content_' + field.field"
       class="field_content"
@@ -18,25 +17,23 @@
 
   <div v-else-if="field.field === 'addr'" :key="'header_' + field.field">
     <FieldsHeader
-      v-if="false"
+      v-if="field.label"
       :key="'header_' + field.field"
       :recursion-level="recursionLevel"
       :class="`field_header_level_${recursionLevel}`"
+      >{{ fieldTranslateK(field.field) }}</FieldsHeader
     >
-      {{ fieldTranslateK(field.field) }}
-    </FieldsHeader>
     <AddressField :properties="properties" />
   </div>
 
   <div v-else-if="field.field == 'start_end_date'">
     <FieldsHeader
-      v-if="false"
+      v-if="field.label"
       :key="'header_' + field.field"
       :recursion-level="recursionLevel"
       :class="`field_header_level_${recursionLevel}`"
+      >{{ fieldTranslateK(field.field) }}</FieldsHeader
     >
-      {{ fieldTranslateK(field.field) }}
-    </FieldsHeader>
     <DateRange
       :key="'content_' + field.field"
       :start="properties.start_date"
@@ -47,26 +44,24 @@
 
   <div v-else-if="field.field === 'coordinates'">
     <FieldsHeader
-      v-if="false"
+      v-if="field.label"
       :key="'header_' + field.field"
       :recursion-level="recursionLevel"
       :class="`field_header_level_${recursionLevel}`"
+      >{{ fieldTranslateK(field.field) }}</FieldsHeader
     >
-      {{ fieldTranslateK(field.field) }}
-    </FieldsHeader>
     <Coordinates :geom="geom" />
   </div>
 
   <div v-else-if="properties[field.field]">
     <FieldsHeader
-      v-if="false"
+      v-if="field.label"
       :key="'header_' + field.field"
       :recursion-level="recursionLevel"
       :class="`field_header_level_${recursionLevel}`"
+      >{{ fieldTranslateK(field.field) }}</FieldsHeader
     >
-      {{ fieldTranslateK(field.field) }}
-    </FieldsHeader>
-    <div
+    <span
       :key="'content_' + field.field"
       :class="`field_content_level_${recursionLevel}`"
     >
@@ -75,35 +70,33 @@
         v-html="properties.description"
       />
 
-      <div
+      <Phone
         v-for="phone in (properties.phone || []).concat(
           properties.mobile || []
         )"
         v-else-if="field.field === 'phone' || field.field === 'mobile'"
         :key="field.field + '_' + phone"
-      >
-        <Phone :number="phone" />
-      </div>
+        :number="phone"
+      />
 
-      <div
+      <a
         v-for="email in properties.email || []"
         v-else-if="field.field == 'email'"
         :key="field.field + '_' + email"
+        :href="`mailto:${email}`"
       >
-        <a :href="`mailto:${email}`">
-          {{ email }}
-        </a>
-      </div>
+        {{ email }}
+      </a>
 
-      <div
+      <ExternalLink
         v-for="website in properties.website || []"
         v-else-if="field.field == 'website'"
         :key="field.field + '_' + website"
+        :href="properties.website"
+        target="_blank"
       >
-        <ExternalLink :href="properties.website" target="_blank">
-          {{ website }}
-        </ExternalLink>
-      </div>
+        {{ website }}
+      </ExternalLink>
 
       <Facebook
         v-else-if="field.field === 'facebook'"
@@ -127,10 +120,10 @@
         :context="context"
       />
 
-      <div v-else>
+      <span v-else>
         {{ propTranslateV(field.field) }}
-      </div>
-    </div>
+      </span>
+    </span>
   </div>
 </template>
 
