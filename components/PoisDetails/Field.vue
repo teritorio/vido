@@ -47,6 +47,10 @@
     <Coordinates :geom="geom" />
   </div>
 
+  <div v-else-if="field.field === 'start_end_date'">
+    <DateRange :start="properties.start_date" :end="properties.end_date" />
+  </div>
+
   <div v-else-if="properties[field.field]">
     <FieldsHeader
       v-if="field.label"
@@ -69,24 +73,30 @@
         :number="phone"
       />
 
-      <a
-        v-for="email in properties.email || []"
-        v-else-if="field.field == 'email'"
-        :key="field.field + '_' + email"
-        :href="`mailto:${email}`"
-      >
-        {{ email }}
-      </a>
+      <template v-else-if="Array.isArray(properties[field.field])">
+        <template v-for="item in properties[field.field]">
+          <ExternalLink
+            v-if="field.field == 'website'"
+            :key="field.field + '_' + item"
+            :href="item"
+            target="_blank"
+          >
+            {{ item }}
+          </ExternalLink>
 
-      <ExternalLink
-        v-for="website in properties.website || []"
-        v-else-if="field.field == 'website'"
-        :key="field.field + '_' + website"
-        :href="properties.website"
-        target="_blank"
-      >
-        {{ website }}
-      </ExternalLink>
+          <a
+            v-else-if="field.field == 'item'"
+            :key="field.field + '_' + item"
+            :href="`mailto:${item}`"
+          >
+            {{ item }}
+          </a>
+
+          <span v-else :key="item">
+            {{ item }}
+          </span>
+        </template>
+      </template>
 
       <Facebook
         v-else-if="field.field === 'facebook'"

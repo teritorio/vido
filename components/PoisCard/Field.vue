@@ -1,80 +1,103 @@
 <template>
-  <RoutesField
-    v-if="field.field === 'route'"
-    :context="context"
-    :properties="properties"
-    class="text-sm mt-2"
-  />
+  <div v-if="field.field == 'route'">
+    <RoutesField :context="context" :properties="properties" />
+  </div>
 
-  <p v-else-if="field.field === 'addr'" class="mt-6 text-sm">
+  <div v-else-if="field.field === 'addr'">
     <AddressField :properties="properties" />
-  </p>
+  </div>
 
-  <p v-else-if="field.field === 'coordinates'" class="mt-6 text-sm">
+  <div v-else-if="field.field === 'coordinates'">
     <Coordinates :geom="geom" />
-  </p>
+  </div>
 
-  <p v-else-if="field.field == 'start_end_date'" class="text-sm">
+  <div v-else-if="field.field === 'start_end_date'">
     <DateRange :start="properties.start_date" :end="properties.end_date" />
-  </p>
+  </div>
 
-  <div v-else-if="properties[field.field]" class="text-sm mt-2">
-    <ul
-      v-if="
-        (field.field === 'phone' || field.field === 'mobile') && $screen.phone
-      "
-    >
-      <li
-        v-for="item in (properties.phone || []).concat(properties.mobile || [])"
-        :key="item"
+  <div v-else-if="properties[field.field]">
+    <span>
+      <span v-if="field.field == 'description'">
+        <template v-if="Boolean(details)">
+          {{ propTranslateV(field.field).substring(0, textLimit) + ' ...' }}
+          <a
+            v-if="
+              propTranslateV(field.field) &&
+              propTranslateV(field.field).length > textLimit
+            "
+            class="underline"
+            :href="details"
+            rel="noopener noreferrer"
+            target="_blank"
+            @click.stop="$emit('click-details')"
+          >
+            {{ $tc('poiCard.seeDetail') }}
+          </a>
+        </template>
+        <div v-else v-html="properties.description" />
+      </span>
+
+      <Phone
+        v-for="phone in (properties.phone || []).concat(
+          properties.mobile || []
+        )"
+        v-else-if="
+          (field.field === 'phone' || field.field === 'mobile') && $screen.phone
+        "
+        :key="field.field + '_' + phone"
+        :number="phone"
+      />
+
+      <template v-else-if="Array.isArray(properties[field.field])">
+        <template v-for="item in properties[field.field]">
+          <ExternalLink
+            v-if="field.field == 'website'"
+            :key="field.field + '_' + item"
+            :href="item"
+            target="_blank"
+          >
+            {{ item }}
+          </ExternalLink>
+
+          <a
+            v-else-if="field.field == 'item'"
+            :key="field.field + '_' + item"
+            :href="`mailto:${item}`"
+          >
+            {{ item }}
+          </a>
+
+          <span v-else :key="item">
+            {{ item }}
+          </span>
+        </template>
+      </template>
+
+      <Facebook
+        v-else-if="field.field === 'facebook'"
+        :url="properties[field.field]"
+      />
+
+      <a
+        v-else-if="
+          field.field == 'route:gpx_trace' || field.field == 'route:pdf'
+        "
+        :href="properties[field.field]"
       >
-        <Phone :number="item" />
-      </li>
-    </ul>
+        <font-awesome-icon prefix="fa" icon="arrow-circle-down" />
+        {{ fieldTranslateK(field.field) }}
+      </a>
 
-    <ul v-else-if="Array.isArray(properties[field.field])">
-      <li v-for="item in properties[field.field]" :key="item">
-        <Website v-if="field.field === 'website'" :url="item" />
-        <p v-else class="text-sm mt-1">
-          {{ item }}
-        </p>
-      </li>
-    </ul>
-
-    <Facebook
-      v-else-if="field.field === 'facebook'"
-      :url="properties[field.field]"
-    />
-
-    <p v-else-if="isOpeningHoursSupportedOsmTags(field.field)" class="text-sm">
       <OpeningHours
+        v-else-if="isOpeningHoursSupportedOsmTags(field.field)"
         :opening-hours="properties[field.field]"
         :context="context"
       />
-    </p>
 
-    <p
-      v-else-if="
-        propTranslateV(field.field) &&
-        propTranslateV(field.field).length > textLimit
-      "
-      class="text-sm"
-    >
-      {{ propTranslateV(field.field).substring(0, textLimit) + ' ...' }}
-      <a
-        v-if="Boolean(details)"
-        class="underline"
-        :href="details"
-        rel="noopener noreferrer"
-        target="_blank"
-        @click.stop="$emit('click-details')"
-      >
-        {{ $tc('poiCard.seeDetail') }}
-      </a>
-    </p>
-    <p v-else class="text-sm">
-      {{ propTranslateV(field.field) }}
-    </p>
+      <span v-else>
+        {{ propTranslateV(field.field) }}
+      </span>
+    </span>
   </div>
 </template>
 
@@ -91,7 +114,7 @@ import OpeningHours, {
 } from '~/components/Fields/OpeningHours.vue'
 import Phone from '~/components/Fields/Phone.vue'
 import RoutesField from '~/components/Fields/RoutesField.vue'
-import Website from '~/components/Fields/Website.vue'
+import ExternalLink from '~/components/UI/ExternalLink.vue'
 import { ApiPoiProperties, FieldsListItem } from '~/lib/apiPois'
 import { PropertyTranslationsContextEnum } from '~/plugins/property-translations'
 
@@ -103,8 +126,8 @@ export default Vue.extend({
     DateRange,
     Coordinates,
     Phone,
-    Website,
     Facebook,
+    ExternalLink,
   },
 
   props: {

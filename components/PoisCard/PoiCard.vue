@@ -86,6 +86,7 @@
           :properties="poi.properties"
           :details="websiteDetails"
           :geom="poi.geometry"
+          class="mt-6 text-sm"
           @click-detail="trackingPopupEvent('details')"
         />
       </div>
