@@ -16,6 +16,7 @@
       <Field
         v-else
         :key="field.group"
+        :context="context"
         :recursion-level="recursionLevel"
         :field="field"
         :properties="properties"
@@ -28,7 +29,7 @@
 <script lang="ts">
 import Vue, { PropType } from 'vue'
 
-import Field from '~/components/PoisDetails/Field.vue'
+import Field from '~/components/Fields/Field.vue'
 import FieldsGroup from '~/components/PoisDetails/FieldsGroup.vue'
 import { ApiPoiProperties, FieldsList } from '~/lib/apiPois'
 import { PropertyTranslationsContextEnum } from '~/plugins/property-translations'
@@ -79,5 +80,14 @@ export default Vue.extend({
 <style lang="scss" scoped>
 .fields-list {
   margin-top: 3.3rem;
+}
+
+:deep(.field_header_level_1) {
+  display: inline;
+}
+
+:deep(.field_content_level_1) {
+  display: inline;
+  clear: right;
 }
 </style>

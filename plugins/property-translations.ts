@@ -4,7 +4,7 @@ import { PropertyTranslations } from '~/lib/apiPropertyTranslations'
 
 export enum PropertyTranslationsContextEnum {
   Default = 'label',
-  Popup = 'label_popup',
+  Card = 'label_popup',
   Details = 'label_details',
   List = 'label_list',
 }

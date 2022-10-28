@@ -1,8 +1,8 @@
-import Field from '~/components/PoisDetails/Field.vue'
+import Field from '~/components/Fields/Field.vue'
 import { bind } from '~/lib/storybook-types'
 
 export default {
-  title: 'PoisDetails/Field',
+  title: 'Fields/Field',
   component: Field,
 }
 
@@ -10,6 +10,10 @@ const defaultProps = {
   field: { field: 'name' },
   properties: {
     name: 'foo',
+  },
+  geom: {
+    type: 'Point',
+    coordinates: [0.123456789, 0.987654321],
   },
 }
 
@@ -52,6 +56,17 @@ export const StartEndDate = bind(Field, {
   },
 })
 
+export const Addr = bind(Field, {
+  ...defaultProps,
+  field: { field: 'addr' },
+  properties: {
+    'addr:housenumber': '33',
+    'addr:street': 'Rue du Nord',
+    'addr:postcode': 35677,
+    'addr:city': 'Le Grand Nord',
+  },
+})
+
 const description =
   "Itinéraire très intéressant, d'une part pour sa variété paysagère accentuée par la traversée fréquente de cours d'eau et d'autre part, par la qualité du patrimoine bâti : maisons traditionnelles landaises, église en garluche. \n\nDistance : 10,2 km - Durée : 4h45 - Animaux tenus en laisse  - Sentier pédestre et VTT \nFiche rando disponible dans le topoguide du Département des Landes du Pays de Born n°15 (en vente : 2 €)"
 
@@ -61,6 +76,15 @@ export const Description = bind(Field, {
   properties: {
     description,
   },
+})
+
+export const DescriptionDetails = bind(Field, {
+  ...defaultProps,
+  field: { field: 'description' },
+  properties: {
+    description,
+  },
+  details: true,
 })
 
 export const Phone = bind(Field, {
@@ -109,6 +133,11 @@ export const RoutePdf = bind(Field, {
   properties: {
     'route:pdf': 'https://cdt40.tourinsoft.com/upload/ITIAQU040V502MFU.pdf',
   },
+})
+
+export const Coordinates = bind(Field, {
+  ...defaultProps,
+  field: { field: 'coordinates' },
 })
 
 // export const OpeningHours = bind(Field, {

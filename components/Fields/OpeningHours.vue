@@ -111,7 +111,7 @@ export default Vue.extend({
     },
 
     isCompact(): boolean {
-      return this.context === PropertyTranslationsContextEnum.Popup
+      return this.context === PropertyTranslationsContextEnum.Card
     },
 
     pretty(): string[] | undefined {

@@ -1,13 +1,49 @@
 <template>
   <div v-if="field.field == 'route'">
-    <RoutesField :context="context" :properties="properties" />
+    <FieldsHeader
+      v-if="field.label"
+      :recursion-level="recursionLevel"
+      class="`field_header_level_${recursionLevel}`"
+      >{{ fieldTranslateK(field.field) }}</FieldsHeader
+    >
+    <RoutesField
+      class="field_content"
+      :context="context"
+      :properties="properties"
+    />
   </div>
 
   <div v-else-if="field.field === 'addr'">
+    <FieldsHeader
+      v-if="field.label"
+      :recursion-level="recursionLevel"
+      :class="`field_header_level_${recursionLevel}`"
+      >{{ fieldTranslateK(field.field) }}</FieldsHeader
+    >
     <AddressField :properties="properties" />
   </div>
 
+  <div v-else-if="field.field == 'start_end_date'">
+    <FieldsHeader
+      v-if="field.label"
+      :recursion-level="recursionLevel"
+      :class="`field_header_level_${recursionLevel}`"
+      >{{ fieldTranslateK(field.field) }}</FieldsHeader
+    >
+    <DateRange
+      :start="properties.start_date"
+      :end="properties.end_date"
+      :class="`field_content_level_${recursionLevel}`"
+    />
+  </div>
+
   <div v-else-if="field.field === 'coordinates'">
+    <FieldsHeader
+      v-if="field.label"
+      :recursion-level="recursionLevel"
+      :class="`field_header_level_${recursionLevel}`"
+      >{{ fieldTranslateK(field.field) }}</FieldsHeader
+    >
     <Coordinates :geom="geom" />
   </div>
 
@@ -16,7 +52,13 @@
   </div>
 
   <div v-else-if="properties[field.field]">
-    <span>
+    <FieldsHeader
+      v-if="field.label"
+      :recursion-level="recursionLevel"
+      :class="`field_header_level_${recursionLevel}`"
+      >{{ fieldTranslateK(field.field) }}</FieldsHeader
+    >
+    <span :class="`field_content_level_${recursionLevel}`">
       <span v-if="field.field == 'description'">
         <template v-if="Boolean(details)">
           {{ propTranslateV(field.field).substring(0, textLimit) + ' ...' }}
@@ -42,7 +84,7 @@
           properties.mobile || []
         )"
         v-else-if="
-          (field.field === 'phone' || field.field === 'mobile') && $screen.phone
+          (field.field === 'phone' || field.field === 'mobile') && showPhone
         "
         :key="field.field + '_' + phone"
         :number="phone"
@@ -114,12 +156,14 @@ import OpeningHours, {
 } from '~/components/Fields/OpeningHours.vue'
 import Phone from '~/components/Fields/Phone.vue'
 import RoutesField from '~/components/Fields/RoutesField.vue'
+import FieldsHeader from '~/components/PoisDetails/FieldsHeader.vue'
 import ExternalLink from '~/components/UI/ExternalLink.vue'
 import { ApiPoiProperties, FieldsListItem } from '~/lib/apiPois'
 import { PropertyTranslationsContextEnum } from '~/plugins/property-translations'
 
 export default Vue.extend({
   components: {
+    FieldsHeader,
     OpeningHours,
     RoutesField,
     AddressField,
@@ -131,6 +175,14 @@ export default Vue.extend({
   },
 
   props: {
+    context: {
+      type: String as PropType<PropertyTranslationsContextEnum>,
+      required: true,
+    },
+    recursionLevel: {
+      type: Number,
+      default: 0,
+    },
     field: {
       type: Object as PropType<FieldsListItem>,
       required: true,
@@ -158,8 +210,11 @@ export default Vue.extend({
   },
 
   computed: {
-    context(): PropertyTranslationsContextEnum {
-      return PropertyTranslationsContextEnum.Popup
+    showPhone(): boolean {
+      return (
+        this.context != PropertyTranslationsContextEnum.Card ||
+        this.$screen.phone
+      )
     },
   },
 

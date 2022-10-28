@@ -114,9 +114,9 @@
 import Vue, { PropType } from 'vue'
 import { mapGetters } from 'vuex'
 
+import Field from '~/components/Fields/Field.vue'
 import MapPois from '~/components/MapPois.vue'
 import Carousel from '~/components/PoisDetails/Carousel.vue'
-import Field from '~/components/PoisDetails/Field.vue'
 import Fields from '~/components/PoisDetails/Fields.vue'
 import Footer from '~/components/PoisDetails/Footer.vue'
 import Header from '~/components/PoisDetails/Header.vue'
