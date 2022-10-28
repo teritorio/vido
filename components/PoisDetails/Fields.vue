@@ -20,7 +20,6 @@
         :field="field"
         :properties="properties"
         :geom="geom"
-        :color-fill="colorFill"
       />
     </template>
   </div>

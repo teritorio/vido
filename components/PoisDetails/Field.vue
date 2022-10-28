@@ -2,23 +2,20 @@
   <div v-if="field.field == 'route'">
     <FieldsHeader
       v-if="field.label"
-      :key="'header_' + field.field"
       :recursion-level="recursionLevel"
       class="`field_header_level_${recursionLevel}`"
       >{{ fieldTranslateK(field.field) }}</FieldsHeader
     >
     <RoutesField
-      :key="'content_' + field.field"
       class="field_content"
       :context="context"
       :properties="properties"
     />
   </div>
 
-  <div v-else-if="field.field === 'addr'" :key="'header_' + field.field">
+  <div v-else-if="field.field === 'addr'">
     <FieldsHeader
       v-if="field.label"
-      :key="'header_' + field.field"
       :recursion-level="recursionLevel"
       :class="`field_header_level_${recursionLevel}`"
       >{{ fieldTranslateK(field.field) }}</FieldsHeader
@@ -29,13 +26,11 @@
   <div v-else-if="field.field == 'start_end_date'">
     <FieldsHeader
       v-if="field.label"
-      :key="'header_' + field.field"
       :recursion-level="recursionLevel"
       :class="`field_header_level_${recursionLevel}`"
       >{{ fieldTranslateK(field.field) }}</FieldsHeader
     >
     <DateRange
-      :key="'content_' + field.field"
       :start="properties.start_date"
       :end="properties.end_date"
       :class="`field_content_level_${recursionLevel}`"
@@ -45,7 +40,6 @@
   <div v-else-if="field.field === 'coordinates'">
     <FieldsHeader
       v-if="field.label"
-      :key="'header_' + field.field"
       :recursion-level="recursionLevel"
       :class="`field_header_level_${recursionLevel}`"
       >{{ fieldTranslateK(field.field) }}</FieldsHeader
@@ -56,15 +50,11 @@
   <div v-else-if="properties[field.field]">
     <FieldsHeader
       v-if="field.label"
-      :key="'header_' + field.field"
       :recursion-level="recursionLevel"
       :class="`field_header_level_${recursionLevel}`"
       >{{ fieldTranslateK(field.field) }}</FieldsHeader
     >
-    <span
-      :key="'content_' + field.field"
-      :class="`field_content_level_${recursionLevel}`"
-    >
+    <span :class="`field_content_level_${recursionLevel}`">
       <div
         v-if="field.field == 'description'"
         v-html="properties.description"
@@ -115,7 +105,6 @@
 
       <OpeningHours
         v-else-if="isOpeningHoursSupportedOsmTags(field.field)"
-        :tag-key="field.field"
         :opening-hours="properties[field.field]"
         :context="context"
       />
@@ -128,6 +117,7 @@
 </template>
 
 <script lang="ts">
+import GeoJSON from 'geojson'
 import Vue, { PropType } from 'vue'
 
 import AddressField from '~/components/Fields/AddressField.vue'
@@ -172,10 +162,6 @@ export default Vue.extend({
     },
     geom: {
       type: Object as PropType<GeoJSON.Geometry>,
-      required: true,
-    },
-    colorFill: {
-      type: String,
       required: true,
     },
   },

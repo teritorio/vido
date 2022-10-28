@@ -1,37 +1,24 @@
 <template>
   <RoutesField
     v-if="field.field === 'route'"
-    :key="field.field"
     :context="context"
     :properties="properties"
     class="text-sm mt-2"
   />
 
-  <p v-else-if="field.field === 'addr'" :key="field.field" class="mt-6 text-sm">
+  <p v-else-if="field.field === 'addr'" class="mt-6 text-sm">
     <AddressField :properties="properties" />
   </p>
 
-  <p
-    v-else-if="field.field === 'coordinates'"
-    :key="field.field"
-    class="mt-6 text-sm"
-  >
+  <p v-else-if="field.field === 'coordinates'" class="mt-6 text-sm">
     <Coordinates :geom="geom" />
   </p>
 
-  <p
-    v-else-if="field.field == 'start_end_date'"
-    :key="field.field"
-    class="text-sm"
-  >
+  <p v-else-if="field.field == 'start_end_date'" class="text-sm">
     <DateRange :start="properties.start_date" :end="properties.end_date" />
   </p>
 
-  <div
-    v-else-if="properties[field.field]"
-    :key="field.field"
-    class="text-sm mt-2"
-  >
+  <div v-else-if="properties[field.field]" class="text-sm mt-2">
     <ul
       v-if="
         (field.field === 'phone' || field.field === 'mobile') && $screen.phone
@@ -61,7 +48,6 @@
 
     <p v-else-if="isOpeningHoursSupportedOsmTags(field.field)" class="text-sm">
       <OpeningHours
-        :tag-key="field.field"
         :opening-hours="properties[field.field]"
         :context="context"
       />
@@ -106,19 +92,19 @@ import OpeningHours, {
 import Phone from '~/components/Fields/Phone.vue'
 import RoutesField from '~/components/Fields/RoutesField.vue'
 import Website from '~/components/Fields/Website.vue'
-import { ApiPoiProperties, FieldsList, FieldsListItem } from '~/lib/apiPois'
+import { ApiPoiProperties, FieldsListItem } from '~/lib/apiPois'
 import { PropertyTranslationsContextEnum } from '~/plugins/property-translations'
 
 export default Vue.extend({
   components: {
+    OpeningHours,
     RoutesField,
     AddressField,
+    DateRange,
     Coordinates,
+    Phone,
     Website,
     Facebook,
-    OpeningHours,
-    DateRange,
-    Phone,
   },
 
   props: {
@@ -151,10 +137,6 @@ export default Vue.extend({
   computed: {
     context(): PropertyTranslationsContextEnum {
       return PropertyTranslationsContextEnum.Popup
-    },
-
-    fields(): FieldsList {
-      return this.properties.editorial?.popup_fields || []
     },
   },
 
