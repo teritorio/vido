@@ -42,7 +42,7 @@
           <Fields
             v-if="detailsFields"
             :fields="detailsFields"
-            :properties="poi.properties"
+            :properties="properties"
             :color-fill="colorFill"
             :geom="poi.geometry"
             class="detail-left-block"
@@ -86,11 +86,12 @@
 
           <Field
             v-else
+            :context="context"
             :field="{ field: 'description' }"
             :properties="poi.properties"
             :geom="poi.geometry"
             :color-fill="colorFill"
-          ></Field>
+          />
         </div>
       </div>
 
@@ -130,6 +131,7 @@ import { ContentEntry } from '~/lib/apiContent'
 import { ApiPoiDeps } from '~/lib/apiPoiDeps'
 import { ApiPoi, ApiPoiId, FieldsList } from '~/lib/apiPois'
 import { Settings } from '~/lib/apiSettings'
+import { PropertyTranslationsContextEnum } from '~/plugins/property-translations'
 import { OriginEnum } from '~/utils/types'
 
 export default Vue.extend({
@@ -172,12 +174,25 @@ export default Vue.extend({
       favoritesIds: 'favorite/favoritesIds',
     }),
 
+    context(): PropertyTranslationsContextEnum {
+      return PropertyTranslationsContextEnum.Details
+    },
+
     favoritesModeEnabled(): boolean {
       return this.settings.themes[0]?.favorites_mode ?? true
     },
 
     explorerModeEnabled(): boolean {
       return this.settings.themes[0]?.explorer_mode ?? true
+    },
+
+    properties(): ApiPoi['properties'] {
+      if (!this.isLargeLayeout) {
+        return this.poi.properties
+      } else {
+        const { ['description']: omitted, ...rest } = this.poi.properties
+        return rest
+      }
     },
 
     isLargeLayeout(): boolean {
