@@ -86,6 +86,7 @@ export function apiRouteWaypointToApiPoi(
           },
           {
             field: 'coordinates',
+            label: true,
           },
         ],
       },
