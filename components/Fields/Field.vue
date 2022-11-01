@@ -76,7 +76,7 @@
             {{ $tc('poiCard.seeDetail') }}
           </a>
         </template>
-        <div v-else v-html="properties.description" />
+        <div v-else class="prose" v-html="properties.description" />
       </span>
 
       <Phone
