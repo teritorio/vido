@@ -109,6 +109,15 @@
             {{ item }}
           </a>
 
+          <a
+            v-else-if="field.field == 'download'"
+            :key="field.field + '_' + item"
+            :href="item"
+          >
+            <font-awesome-icon prefix="fa" icon="arrow-circle-down" />
+            {{ item }}
+          </a>
+
           <span v-else :key="item">
             {{ item }}
           </span>

@@ -135,6 +135,17 @@ export const RoutePdf = bind(Field, {
   },
 })
 
+export const Download = bind(Field, {
+  ...defaultProps,
+  field: { field: 'download' },
+  properties: {
+    download: [
+      'https://cdt40.tourinsoft.com/upload/ITIAQU040V502MFU.pdf',
+      'https://cdt41.tourinsoft.com/upload/ITIAQU040V502MFU.pdf',
+    ],
+  },
+})
+
 export const Coordinates = bind(Field, {
   ...defaultProps,
   field: { field: 'coordinates' },

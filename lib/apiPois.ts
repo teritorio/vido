@@ -32,6 +32,7 @@ export type ApiPoiProperties = MapPoiProperties & {
   phone?: string[]
   email?: string[]
   website?: string[]
+  download?: string[]
 
   metadata: {
     id: ApiPoiId
