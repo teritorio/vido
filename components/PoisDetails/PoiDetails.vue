@@ -34,11 +34,6 @@
       />
       <div class="detail-wrapper">
         <div class="detail-left">
-          <div v-if="classLabel" class="detail-left-block">
-            <h2>
-              {{ classLabel }}
-            </h2>
-          </div>
           <Fields
             v-if="detailsFields"
             :fields="detailsFields"

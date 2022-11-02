@@ -78,7 +78,7 @@ export default Vue.extend({
 </script>
 
 <style lang="scss" scoped>
-.fields-list {
+.fields-list:not(:first-child) {
   margin-top: 3.3rem;
 }
 
