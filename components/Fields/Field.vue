@@ -90,38 +90,39 @@
         :number="phone"
       />
 
-      <template v-else-if="Array.isArray(properties[field.field])">
-        <template v-for="item in properties[field.field]">
-          <ExternalLink
-            v-if="field.field == 'website'"
+      <template
+        v-else-if="
+          Array.isArray(properties[field.field]) &&
+          properties[field.field].length > 0
+        "
+      >
+        <ul>
+          <li
+            v-for="item in properties[field.field]"
             :key="field.field + '_' + item"
-            :href="item"
-            target="_blank"
           >
-            {{ item }}
-          </ExternalLink>
+            <ExternalLink
+              v-if="field.field == 'website'"
+              :href="item"
+              target="_blank"
+            >
+              {{ item }}
+            </ExternalLink>
 
-          <a
-            v-else-if="field.field == 'item'"
-            :key="field.field + '_' + item"
-            :href="`mailto:${item}`"
-          >
-            {{ item }}
-          </a>
+            <a v-else-if="field.field == 'item'" :href="`mailto:${item}`">
+              {{ item }}
+            </a>
 
-          <a
-            v-else-if="field.field == 'download'"
-            :key="field.field + '_' + item"
-            :href="item"
-          >
-            <font-awesome-icon prefix="fa" icon="arrow-circle-down" />
-            {{ item }}
-          </a>
+            <a v-else-if="field.field == 'download'" :href="item">
+              <font-awesome-icon prefix="fa" icon="arrow-circle-down" />
+              {{ item }}
+            </a>
 
-          <span v-else :key="item">
-            {{ item }}
-          </span>
-        </template>
+            <span v-else>
+              {{ item }}
+            </span>
+          </li>
+        </ul>
       </template>
 
       <Facebook
