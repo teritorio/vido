@@ -1,6 +1,6 @@
 <template>
   <a v-if="url" :href="url" target="_blank">
-    <font-awesome-icon icon="fa-brands fa-facebook" color="#4267B2" size="lg" />
+    <font-awesome-icon icon="fa-brands fa-facebook" size="lg" />
   </a>
 </template>
 
