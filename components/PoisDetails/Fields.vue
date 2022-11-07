@@ -21,6 +21,7 @@
         :field="field"
         :properties="properties"
         :geom="geom"
+        class="field"
       />
     </template>
   </div>
@@ -89,5 +90,9 @@ export default Vue.extend({
 :deep(.field_content_level_1) {
   display: inline;
   clear: right;
+}
+
+.field {
+  margin-bottom: 0.3rem;
 }
 </style>
