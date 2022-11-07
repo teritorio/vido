@@ -70,7 +70,7 @@ export default {
     backToMenuExplorerMobile: 'Search by Categories',
   },
   dateRange: {
-    from_to: 'From {from} to {to}',
+    from_to: 'From {from} to {to}, {duration} day(s)',
     from: 'From {from}',
     to: 'Until {to}',
   },

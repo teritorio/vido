@@ -70,7 +70,7 @@ export default {
     backToMenuExplorerMobile: 'Rechercher par catégories',
   },
   dateRange: {
-    from_to: 'Du {from} au {to}',
+    from_to: 'Du {from} au {to}, {duration} jour(s)',
     from: 'À partir du {from}',
     to: "Jusqu'au {to}",
   },
