@@ -1,55 +1,55 @@
 <template>
-  <div v-if="field.field == 'route'">
+  <RoutesField
+    v-if="field.field == 'route'"
+    class="field_content"
+    :context="context"
+    :properties="properties"
+  >
     <FieldsHeader
       v-if="field.label"
       :recursion-level="recursionLevel"
       class="`field_header_level_${recursionLevel}`"
       >{{ fieldTranslateK(field.field) }}</FieldsHeader
     >
-    <RoutesField
-      class="field_content"
-      :context="context"
-      :properties="properties"
-    />
-  </div>
+  </RoutesField>
 
-  <div v-else-if="field.field === 'addr'">
+  <AddressField v-else-if="field.field === 'addr'" :properties="properties">
     <FieldsHeader
       v-if="field.label"
       :recursion-level="recursionLevel"
       :class="`field_header_level_${recursionLevel}`"
       >{{ fieldTranslateK(field.field) }}</FieldsHeader
     >
-    <AddressField :properties="properties" />
-  </div>
+  </AddressField>
 
-  <div v-else-if="field.field == 'start_end_date'">
+  <DateRange
+    v-else-if="field.field == 'start_end_date'"
+    :start="properties.start_date"
+    :end="properties.end_date"
+    :class="`field_content_level_${recursionLevel}`"
+  >
     <FieldsHeader
       v-if="field.label"
       :recursion-level="recursionLevel"
       :class="`field_header_level_${recursionLevel}`"
       >{{ fieldTranslateK(field.field) }}</FieldsHeader
     >
-    <DateRange
-      :start="properties.start_date"
-      :end="properties.end_date"
-      :class="`field_content_level_${recursionLevel}`"
-    />
-  </div>
+  </DateRange>
 
-  <div v-else-if="field.field === 'coordinates'">
+  <Coordinates v-else-if="field.field === 'coordinates'" :geom="geom">
     <FieldsHeader
       v-if="field.label"
       :recursion-level="recursionLevel"
       :class="`field_header_level_${recursionLevel}`"
       >{{ fieldTranslateK(field.field) }}</FieldsHeader
     >
-    <Coordinates :geom="geom" />
-  </div>
+  </Coordinates>
 
-  <div v-else-if="field.field === 'start_end_date'">
-    <DateRange :start="properties.start_date" :end="properties.end_date" />
-  </div>
+  <DateRange
+    v-else-if="field.field === 'start_end_date'"
+    :start="properties.start_date"
+    :end="properties.end_date"
+  />
 
   <div v-else-if="properties[field.field]">
     <FieldsHeader

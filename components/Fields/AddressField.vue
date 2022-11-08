@@ -1,7 +1,10 @@
 <template>
-  <span v-if="address">
-    {{ address }}
-  </span>
+  <div v-if="address">
+    <slot />
+    <span>
+      {{ address }}
+    </span>
+  </div>
 </template>
 
 <script lang="ts">

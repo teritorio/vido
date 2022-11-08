@@ -1,9 +1,12 @@
 <template>
-  <CoordinateAction v-if="geom.type === 'Point'" :geometry="geom">
-    {{ geom.coordinates[1].toFixed(6) }},&nbsp;{{
-      geom.coordinates[0].toFixed(6)
-    }}
-  </CoordinateAction>
+  <div v-if="geom.type === 'Point'">
+    <slot />
+    <CoordinateAction :geometry="geom">
+      {{ geom.coordinates[1].toFixed(6) }},&nbsp;{{
+        geom.coordinates[0].toFixed(6)
+      }}
+    </CoordinateAction>
+  </div>
 </template>
 
 <script lang="ts">
