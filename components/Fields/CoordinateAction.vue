@@ -1,12 +1,12 @@
 <template>
-  <ExternalLink
+  <a
     v-if="isIOS !== undefined && href"
     :href="href"
     target="_blank"
     v-bind="$attrs"
   >
     <slot />
-  </ExternalLink>
+  </a>
   <span v-else>
     <slot />
   </span>
@@ -15,14 +15,9 @@
 <script lang="ts">
 import Vue, { PropType } from 'vue'
 
-import ExternalLink from '~/components/UI/ExternalLink.vue'
 import { isIOS } from '~/utils/isIOS'
 
 export default Vue.extend({
-  components: {
-    ExternalLink,
-  },
-
   props: {
     geometry: {
       type: Object as PropType<GeoJSON.Geometry>,
