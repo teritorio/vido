@@ -4575,6 +4575,7 @@ __metadata:
     tailwindcss: ^3.1.4
     ts-jest: ^28.0.5
     url-slug: ^3.0.4
+    vue-agile: 1
     vue-cookie-law: ^1.13.3
     vue-jest: ^2.0.0
     vue-matomo: ^4.1.0
@@ -15689,6 +15690,13 @@ fsevents@^1.2.7:
   languageName: node
   linkType: hard
 
+"lodash.orderby@npm:^4.6.0":
+  version: 4.6.0
+  resolution: "lodash.orderby@npm:4.6.0"
+  checksum: a25b51d29c8016be620da3c8e80792b717e5c8a16ff94bba799751d4a991e18884a2e0b22b55efb61371d115736a6fc38b91fddb8d1053389ae49bbaffbe60b4
+  languageName: node
+  linkType: hard
+
 "lodash.pick@npm:^4.4.0":
   version: 4.4.0
   resolution: "lodash.pick@npm:4.4.0"
@@ -24228,6 +24236,16 @@ typescript@~4.2:
     "@mapbox/vector-tile": ^1.3.1
     pbf: ^3.2.1
   checksum: 2e5cb50c1fd23e1390b4cdf81f4abce39ea2c65c99b68398dbe35b42d49da2732541d6a133c1bd8c9689acb0dab0a247c53b0a6c293edc1c72ab5aef1e3e6ebf
+  languageName: node
+  linkType: hard
+
+"vue-agile@npm:1":
+  version: 1.1.3
+  resolution: "vue-agile@npm:1.1.3"
+  dependencies:
+    lodash.orderby: ^4.6.0
+    lodash.throttle: ^4.1.1
+  checksum: 0fa8e172844a37bfdc1c61ddc6ed573eb61c4d5f6c3ac0d72d0639c3db2c32c83587c54fb91242f8f5b1611f0c685ec8dd973c58e224876402e023905ea4a243
   languageName: node
   linkType: hard
 
