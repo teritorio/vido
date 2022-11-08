@@ -115,7 +115,7 @@
 
             <a v-else-if="field.field == 'download'" :href="item">
               <font-awesome-icon prefix="fa" icon="arrow-circle-down" />
-              {{ item.split('/').at(-1) }}
+              {{ item.split('/').pop() }}
             </a>
 
             <span v-else>
