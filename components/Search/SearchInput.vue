@@ -4,7 +4,7 @@
       <input
         ref="search"
         :value="searchText"
-        class="w-full px-5 py-3 font-medium text-zinc-700 placeholder-zinc-500 bg-zinc-100 border-none rounded-full outline-none appearance-none focus:outline-none focus:ring focus:ring-zinc-300"
+        class="w-full px-5 py-3 font-medium text-zinc-700 placeholder-zinc-500 bg-zinc-100 border-none rounded-full outline-none appearance-none focus:outline-none focus:ring focus:ring-zinc-300 truncate pr-10"
         :placeholder="$tc('headerMenu.search')"
         type="text"
         @input="$emit('input', $event.target.value)"
