@@ -29,15 +29,20 @@
       :key="menuItem.id"
       :class="[index === 0 && 'hidden md:block']"
     >
-      <MainHeader
-        v-if="index === 0"
-        :logo-url="logoUrl"
-        :main-url="mainUrl"
-        :site-name="siteName"
-        @menu-item-click="$emit('menu-item-click', $event)"
-        @search-click="$emit('search-click', $event)"
-        @go-to-menu-items="$emit('go-to-menu-items', $event)"
-      />
+      <template v-if="index === 0">
+        <h1>
+          <a
+            :href="mainUrl"
+            rel="noopener noreferrer"
+            :aria-label="siteName"
+            :title="siteName"
+            target="_blank"
+          >
+            <img :src="logoUrl" class="w-auto h-auto max-w-2xl max-h-16" />
+          </a>
+        </h1>
+        <SearchInput @click="$emit('search-click', $event)" />
+      </template>
       <ItemList
         v-else
         :menu-items="getMenuItemByParentId(menuItem.id)"
@@ -113,6 +118,7 @@ import MenuBlock from '~/components/Home/MenuBlock.vue'
 import MenuBlockBottom from '~/components/Home/MenuBlockBottom.vue'
 import FilterCompo from '~/components/Menu/Filter.vue'
 import ItemList from '~/components/Menu/ItemList.vue'
+import SearchInput from '~/components/Search/SearchInput.vue'
 import { ApiMenuCategory, MenuGroup, MenuItem } from '~/lib/apiMenu'
 import { FilterValues } from '~/utils/types-filters'
 
@@ -123,6 +129,7 @@ export default Vue.extend({
     ItemList,
     MainHeader,
     FilterCompo,
+    SearchInput,
   },
 
   props: {

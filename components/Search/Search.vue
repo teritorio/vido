@@ -8,43 +8,12 @@
     ]"
   >
     <div class="flex flex-row md:flex-col items-center md:items-start">
-      <button
-        type="button"
-        class="hidden md:flex shrink-0 items-center justify-center w-10 h-10 text-2xl font-bold transition-all rounded-full outline-none cursor-pointer focus:outline-none hover:bg-zinc-100 focus:bg-zinc-100"
-        @click="onGoBackClick"
-      >
-        <font-awesome-icon icon="arrow-left" class="text-zinc-800" size="xs" />
-      </button>
-
-      <form
-        v-if="!isModeExplorerOrFavorites"
-        ref="searchform"
-        class="flex-grow relative pointer-events-auto w-full"
-        @submit.prevent="onSubmit"
-      >
-        <section class="relative w-full">
-          <input
-            ref="search"
-            :value="searchText"
-            class="w-full px-5 py-3 font-medium text-zinc-700 placeholder-zinc-500 bg-zinc-100 border-none rounded-full outline-none appearance-none focus:outline-none focus:ring focus:ring-zinc-300"
-            :placeholder="$tc('headerMenu.search')"
-            type="text"
-            @input="
-              searchText = $event.target.value
-              onSubmit()
-            "
-            @focus="$tracking({ type: 'search' })"
-          />
-          <button
-            class="absolute inset-y-0 right-0 px-5 text-zinc-800 rounded-r-full outline-none focus:outline-none"
-            type="submit"
-            @click="focusSearch"
-          >
-            <font-awesome-icon v-if="!isLoading" icon="search" />
-            <font-awesome-icon v-else icon="spinner" class="animate-spin" />
-          </button>
-        </section>
-      </form>
+      <slot />
+      <SearchInput
+        :search-text="searchText"
+        :is-loading="isLoading"
+        @input="onSubmit"
+      />
     </div>
 
     <button
@@ -102,9 +71,10 @@
 
 <script lang="ts">
 import { debounce, DebouncedFunc } from 'lodash'
-import Vue, { PropType, VueConstructor } from 'vue'
+import Vue, { PropType } from 'vue'
 import { mapGetters } from 'vuex'
 
+import SearchInput from '~/components/Search/SearchInput.vue'
 import SearchResultBlock from '~/components/Search/SearchResultBlock.vue'
 import { ApiPoi, ApiPoiId, getPoiById } from '~/lib/apiPois'
 import {
@@ -116,16 +86,9 @@ import {
 } from '~/lib/apiSearch'
 import { MAP_ZOOM } from '~/lib/constants'
 
-export default (
-  Vue as VueConstructor<
-    Vue & {
-      $refs: {
-        search: InstanceType<typeof HTMLInputElement> | null
-      }
-    }
-  >
-).extend({
+export default Vue.extend({
   components: {
+    SearchInput,
     SearchResultBlock,
   },
 
@@ -240,12 +203,6 @@ export default (
     this.trackSearchQuery = debounce(this.trackSearchQuery_, 3000)
   },
 
-  mounted() {
-    if (!this.$screen.touch) {
-      this.focusSearch()
-    }
-  },
-
   methods: {
     reset() {
       this.searchMenuItemsResults = null
@@ -253,10 +210,6 @@ export default (
       this.searchAddressesResults = null
       this.searchCartocodeResult = null
       this.searchText = ''
-    },
-
-    onGoBackClick() {
-      this.$emit('go-back-click')
     },
 
     goToCategories() {
@@ -291,10 +244,6 @@ export default (
       this.reset()
     },
 
-    focusSearch() {
-      this.$refs.search?.focus()
-    },
-
     onAddressClick(id: number) {
       const feature = (this.searchAddressesResults?.features || []).find(
         (a) => a.properties.id === id
@@ -312,7 +261,9 @@ export default (
       this.reset()
     },
 
-    onSubmit() {
+    onSubmit(searchText: string) {
+      this.searchText = searchText
+
       // Reset results if empty search text
       if (!this.searchText || this.searchText.trim().length === 0) {
         this.searchMenuItemsResults = null

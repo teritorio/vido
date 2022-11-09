@@ -47,11 +47,22 @@
             <Search
               :menu-to-icon="menuItemsToIcons"
               :map-center="map_center"
-              @go-back-click="goToHome"
               @category-click="onSearchCategory"
               @poi-click="onSearchPoi"
               @feature-click="onFeatureClick"
-            />
+            >
+              <button
+                type="button"
+                class="hidden md:flex shrink-0 items-center justify-center w-10 h-10 text-2xl font-bold transition-all rounded-full outline-none cursor-pointer focus:outline-none hover:bg-zinc-100 focus:bg-zinc-100"
+                @click="goToHome"
+              >
+                <font-awesome-icon
+                  icon="arrow-left"
+                  class="text-zinc-800"
+                  size="xs"
+                />
+              </button>
+            </Search>
           </div>
         </transition-group>
       </div>
@@ -77,11 +88,25 @@
           :menu-to-icon="menuItemsToIcons"
           :map-center="map_center"
           @go-to-categories="onQuitExplorerFavoriteMode"
-          @go-back-click="goToHome"
           @category-click="onSearchCategory"
           @poi-click="onSearchPoi"
           @feature-click="onFeatureClick"
-        />
+        >
+          <h1 class="flex-none md:hidden mr-2">
+            <a
+              :href="mainUrl"
+              rel="noopener noreferrer"
+              :aria-label="siteName"
+              :title="siteName"
+              target="_blank"
+            >
+              <img
+                :src="logoUrl"
+                class="w-auto h-auto max-w-2xl max-h-12 md:max-h-16"
+              />
+            </a>
+          </h1>
+        </Search>
       </div>
     </header>
 
