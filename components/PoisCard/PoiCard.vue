@@ -7,31 +7,24 @@
     ]"
   >
     <div
-      class="md:w-48 h-auto max-h-44 md:max-h-full bg-gray-100 flex align-middle justify-center relative"
+      class="md:w-48 h-44 md:h-auto md:max-h-full bg-gray-100 flex items-center align-middle justify-center relative"
     >
-      <div
-        class="md:w-48 h-full max-h-44 md:max-h-full flex align-middle justify-center absolute z-0"
-      >
-        <TeritorioIcon
-          v-if="icon"
-          :picto="icon"
-          :use-native-alignment="false"
-          class="text-8xl"
-          color-text="#AAA"
-        />
-      </div>
-      <nuxt-picture
-        v-if="poi.properties.image && poi.properties.image.length > 0"
-        class="md:w-48 h-auto max-h-44 md:max-h-full z-10"
-        :src="poi.properties.image[0]"
-        alt=""
-      />
       <TeritorioIcon
-        v-else-if="icon"
+        v-if="icon"
         :picto="icon"
         :use-native-alignment="false"
-        class="text-8xl z-10"
-        :color-text="colorFill"
+        class="text-8xl flex align-middle absolute z-0"
+        :color-text="
+          poi.properties.image && poi.properties.image.length > 0
+            ? '#AAA'
+            : colorFill
+        "
+      />
+      <nuxt-picture
+        v-if="poi.properties.image && poi.properties.image.length > 0"
+        __class="w-full h-44 md:w-auto md:h-full z-10"
+        class="object-cover h-44 w-full md:w-48 md:h-full z-10"
+        :src="poi.properties.image[0]"
       />
     </div>
 
