@@ -92,20 +92,13 @@
           @poi-click="onSearchPoi"
           @feature-click="onFeatureClick"
         >
-          <h1 class="flex-none md:hidden mr-2">
-            <a
-              :href="mainUrl"
-              rel="noopener noreferrer"
-              :aria-label="siteName"
-              :title="siteName"
-              target="_blank"
-            >
-              <img
-                :src="logoUrl"
-                class="w-auto h-auto max-w-2xl max-h-12 md:max-h-16"
-              />
-            </a>
-          </h1>
+          <Logo
+            :main-url="mainUrl"
+            :site-name="siteName"
+            :logo-url="logoUrl"
+            class="flex-none md:hidden mr-2"
+            image-class="max-w-2xl max-h-12 md:max-h-16"
+          />
         </Search>
       </div>
     </header>
@@ -261,6 +254,7 @@ import NavMenu from '~/components/MainMap/NavMenu.vue'
 import PoiCard from '~/components/PoisCard/PoiCard.vue'
 import Search from '~/components/Search/Search.vue'
 import CookiesConsent from '~/components/UI/CookiesConsent.vue'
+import Logo from '~/components/UI/Logo.vue'
 import { ContentEntry } from '~/lib/apiContent'
 import { ApiMenuCategory, MenuItem } from '~/lib/apiMenu'
 import { getPoiById, ApiPoi, getPoiByIds } from '~/lib/apiPois'
@@ -285,6 +279,7 @@ export default (
   >
 ).extend({
   components: {
+    Logo,
     FavoriteMenu,
     FavoritesOverlay,
     NavMenu,

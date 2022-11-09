@@ -30,17 +30,7 @@
       :class="[index === 0 && 'hidden md:block']"
     >
       <template v-if="index === 0">
-        <h1>
-          <a
-            :href="mainUrl"
-            rel="noopener noreferrer"
-            :aria-label="siteName"
-            :title="siteName"
-            target="_blank"
-          >
-            <img :src="logoUrl" class="w-auto h-auto max-w-2xl max-h-16" />
-          </a>
-        </h1>
+        <Logo :main-url="mainUrl" :site-name="siteName" :logo-url="logoUrl" />
         <SearchInput @click="$emit('search-click', $event)" />
       </template>
       <ItemList
@@ -113,21 +103,21 @@
 import Vue, { PropType } from 'vue'
 import { mapGetters, mapActions } from 'vuex'
 
-import MainHeader from '~/components/Home/MainHeader.vue'
 import MenuBlock from '~/components/Home/MenuBlock.vue'
 import MenuBlockBottom from '~/components/Home/MenuBlockBottom.vue'
 import FilterCompo from '~/components/Menu/Filter.vue'
 import ItemList from '~/components/Menu/ItemList.vue'
 import SearchInput from '~/components/Search/SearchInput.vue'
+import Logo from '~/components/UI/Logo.vue'
 import { ApiMenuCategory, MenuGroup, MenuItem } from '~/lib/apiMenu'
 import { FilterValues } from '~/utils/types-filters'
 
 export default Vue.extend({
   components: {
+    Logo,
     MenuBlock,
     MenuBlockBottom,
     ItemList,
-    MainHeader,
     FilterCompo,
     SearchInput,
   },
