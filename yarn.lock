@@ -4669,9 +4669,9 @@ __metadata:
     prettier: ^2.7.1
     sass-loader: ^10.1.1
     stylelint: ^13.13.1
-    stylelint-config-prettier: ^9.0.3
+    stylelint-config-prettier: ^9.0.4
     stylelint-config-standard: ^20.0.0
-    stylelint-scss: ^4.2.0
+    stylelint-scss: ^4.3.0
     svgo: ^3.0.0
     tailwindcss: ^3.1.4
     ts-jest: ^28.0.8
@@ -22527,15 +22527,15 @@ fsevents@^1.2.7:
   languageName: node
   linkType: hard
 
-"stylelint-config-prettier@npm:^9.0.3":
-  version: 9.0.3
-  resolution: "stylelint-config-prettier@npm:9.0.3"
+"stylelint-config-prettier@npm:^9.0.4":
+  version: 9.0.4
+  resolution: "stylelint-config-prettier@npm:9.0.4"
   peerDependencies:
     stylelint: ">=11.0.0"
   bin:
     stylelint-config-prettier: bin/check.js
     stylelint-config-prettier-check: bin/check.js
-  checksum: 2b76fdc0ee2742e74e28e6fe24b7ae085515b5f658d8dfb39b0e22b26d9519cc28ad4e9dcf5915eb4df07c2106be8421dce94deb5aa8178ccd7bd5cda33ded84
+  checksum: 3a70e7daefab43c6fb890849406e2cf3240ce11f4f41c9175dc03ceda881b2903ab2d8a2fd4c2a629d6e4c8d85ac8df54cc06b098b1bd8d832a1c00c519a23c1
   languageName: node
   linkType: hard
 
@@ -22559,9 +22559,9 @@ fsevents@^1.2.7:
   languageName: node
   linkType: hard
 
-"stylelint-scss@npm:^4.2.0":
-  version: 4.2.0
-  resolution: "stylelint-scss@npm:4.2.0"
+"stylelint-scss@npm:^4.3.0":
+  version: 4.3.0
+  resolution: "stylelint-scss@npm:4.3.0"
   dependencies:
     lodash: ^4.17.21
     postcss-media-query-parser: ^0.2.3
@@ -22570,7 +22570,7 @@ fsevents@^1.2.7:
     postcss-value-parser: ^4.1.0
   peerDependencies:
     stylelint: ^14.5.1
-  checksum: c3b45a562957d3a99e3fc90d47108f72cccfbc0319c21d1f2efa885e855e8dff30b46db1aeb907b2be808c315f795d534a2a492ed26dc2c5e53090fd939ab4bf
+  checksum: d4fcb0d9b02a55725d362d6b3e688020c418d1b92c2a2068558e08fa4cf4a86046d38b0bb85cfe5dfcfb7effd7ba61b498686b36f8aa2d1b0e4b07644452e6ad
   languageName: node
   linkType: hard
 
