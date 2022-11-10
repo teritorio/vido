@@ -4662,12 +4662,12 @@ __metadata:
     lodash.without: ^4.4.0
     mapbox-gl-vue: ^2.0.4
     maplibre-gl: ^2.4.0
-    node-sass: ^7.0.1
+    node-sass: ^7.0.3
     nuxt: ^2.15.8
     opening_hours: ^3.8.0
     postcss: ^8.4.14
     prettier: ^2.7.1
-    sass-loader: ^10.1.1
+    sass-loader: ^10.3.1
     stylelint: ^13.13.1
     stylelint-config-prettier: ^9.0.4
     stylelint-config-standard: ^20.0.0
@@ -14998,7 +14998,7 @@ fsevents@^1.2.7:
   languageName: node
   linkType: hard
 
-"js-base64@npm:^2.1.9, js-base64@npm:^2.4.3":
+"js-base64@npm:^2.1.9, js-base64@npm:^2.4.9":
   version: 2.6.4
   resolution: "js-base64@npm:2.6.4"
   checksum: f3fadb18c2feade451a42677d29ddac4e5d40f6561fce38454c0dbf8b5b937d47e65ca54ae109325db90baaab7443780ae071b7d8577273918e8407b01b83f88
@@ -17348,9 +17348,9 @@ fsevents@^1.2.7:
   languageName: node
   linkType: hard
 
-"node-sass@npm:^7.0.1":
-  version: 7.0.1
-  resolution: "node-sass@npm:7.0.1"
+"node-sass@npm:^7.0.3":
+  version: 7.0.3
+  resolution: "node-sass@npm:7.0.3"
   dependencies:
     async-foreach: ^0.1.3
     chalk: ^4.1.2
@@ -17364,12 +17364,12 @@ fsevents@^1.2.7:
     node-gyp: ^8.4.1
     npmlog: ^5.0.0
     request: ^2.88.0
-    sass-graph: 4.0.0
+    sass-graph: ^4.0.1
     stdout-stream: ^1.4.0
     true-case-path: ^1.0.2
   bin:
     node-sass: bin/node-sass
-  checksum: aab401053407b37e198e1b7b620b650a101036b416c5ba9c59d4be6a17a72bac8a46144a7b95d41560557fa7a172f0ca97b4fd4e6c4173b779880b77a245858d
+  checksum: 850834e1e085ce57d378cb7a622965fa47b7851b1b2de31ba68924e8b12a6ce258030b4d5ac193bd958881550b07754af82c7212bfbee8f338fefd77d4afb9f0
   languageName: node
   linkType: hard
 
@@ -21248,17 +21248,17 @@ fsevents@^1.2.7:
   languageName: node
   linkType: hard
 
-"sass-graph@npm:4.0.0":
-  version: 4.0.0
-  resolution: "sass-graph@npm:4.0.0"
+"sass-graph@npm:^4.0.1":
+  version: 4.0.1
+  resolution: "sass-graph@npm:4.0.1"
   dependencies:
     glob: ^7.0.0
     lodash: ^4.17.11
-    scss-tokenizer: ^0.3.0
+    scss-tokenizer: ^0.4.3
     yargs: ^17.2.1
   bin:
     sassgraph: bin/sassgraph
-  checksum: 552d4be3e6a67134151eeb28cbbdd4c24ba1173b241e1e60cb74752829376633addd0ebc81772d1a7c375321e8b3c30792ae570484939c5e13e5ee21b8d3d3a8
+  checksum: b608ce3228c058f6c6a8f8a8898e90b86c23ac2026a7f3762de29f9f02123f46e3154859dd92590b5d59498af5a136c3f4d1418ac73da982ca6204444a3f848c
   languageName: node
   linkType: hard
 
@@ -21287,7 +21287,7 @@ fsevents@^1.2.7:
   languageName: node
   linkType: hard
 
-"sass-loader@npm:^10.1.1":
+"sass-loader@npm:^10.3.1":
   version: 10.3.1
   resolution: "sass-loader@npm:10.3.1"
   dependencies:
@@ -21382,13 +21382,13 @@ fsevents@^1.2.7:
   languageName: node
   linkType: hard
 
-"scss-tokenizer@npm:^0.3.0":
-  version: 0.3.0
-  resolution: "scss-tokenizer@npm:0.3.0"
+"scss-tokenizer@npm:^0.4.3":
+  version: 0.4.3
+  resolution: "scss-tokenizer@npm:0.4.3"
   dependencies:
-    js-base64: ^2.4.3
-    source-map: ^0.7.1
-  checksum: 3540acecaa00ab61e8b8b24df4a83508f6d721ed42de87df7533d7da7fcf4379e0c258a049aa9abbaebda98a0fef664c5b77f6cfeba3cbcaafd59954b77613eb
+    js-base64: ^2.4.9
+    source-map: ^0.7.3
+  checksum: e2cbb10c992f7a536d5fc93621608de7a3219b9a00025896f244e40fffd93d1e610dbc4e0f33639fe56c38c16e26da1267c296cfd7bae52af929868c4e7529d3
   languageName: node
   linkType: hard
 
@@ -21952,7 +21952,7 @@ fsevents@^1.2.7:
   languageName: node
   linkType: hard
 
-"source-map@npm:^0.7.1, source-map@npm:^0.7.3":
+"source-map@npm:^0.7.3":
   version: 0.7.4
   resolution: "source-map@npm:0.7.4"
   checksum: 537ca237b2f0cfd5922e0f74166516e02deb871ac91f55d0fb28e08283b25e31501e0708ac8a939d67764c79eaefed1c0343be7307699c7a10f3fd9989c56fa7
