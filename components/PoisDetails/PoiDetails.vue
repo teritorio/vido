@@ -229,6 +229,7 @@ export default Vue.extend({
   },
 
   mounted() {
+    this.$store.dispatch('favorite/initFavoritesFromLocalStorage')
     this.$tracking({
       type: 'page',
       title: this.$meta().refresh().metaInfo.title,

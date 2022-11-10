@@ -278,7 +278,6 @@ import { getPoiById, ApiPoi, getPoiByIds } from '~/lib/apiPois'
 import { ApiMenuItemSearchResult } from '~/lib/apiSearch'
 import { headerFromSettings, Settings } from '~/lib/apiSettings'
 import { getBBoxFeature } from '~/lib/bbox'
-import { LOCAL_STORAGE } from '~/store/favorite'
 import { Mode, OriginEnum } from '~/utils/types'
 import { FilterValue } from '~/utils/types-filters'
 import { getHashPart, setHashParts } from '~/utils/url'
@@ -538,10 +537,7 @@ export default (
         console.error('Vido error:', e.message)
       }
     } else {
-      const local = localStorage.getItem(LOCAL_STORAGE.favorites)
-      if (local) {
-        this.setFavorites(JSON.parse(local).favorites)
-      }
+      this.$store.dispatch('favorite/initFavoritesFromLocalStorage')
     }
   },
 
