@@ -1791,7 +1791,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@cypress/mock-ssr@https://github.com/cypress-io/cypress-mock-ssr":
+"@cypress/mock-ssr@https://github.com/cypress-io/cypress-mock-ssr.git#commit=de67dfaa9fd0a88224fd723b9d07feb227db613d":
   version: 0.0.1
   resolution: "@cypress/mock-ssr@https://github.com/cypress-io/cypress-mock-ssr.git#commit=de67dfaa9fd0a88224fd723b9d07feb227db613d"
   dependencies:
@@ -4496,7 +4496,7 @@ __metadata:
     "@babel/core": ^7.18.6
     "@commitlint/cli": ^11.0.0
     "@commitlint/config-conventional": ^11.0.0
-    "@cypress/mock-ssr": "https://github.com/cypress-io/cypress-mock-ssr"
+    "@cypress/mock-ssr": "https://github.com/cypress-io/cypress-mock-ssr.git#commit=de67dfaa9fd0a88224fd723b9d07feb227db613d"
     "@fortawesome/fontawesome-svg-core": ^6.1.1
     "@fortawesome/free-brands-svg-icons": ^6.1.1
     "@fortawesome/free-regular-svg-icons": ^6.1.1
@@ -4539,7 +4539,7 @@ __metadata:
     babel-jest: ^28.1.2
     core-js: ^3.23.3
     country-flag-icons: ^1.5.5
-    cypress: ^10.3.0
+    cypress: ^10.11.0
     date-fns: ^2.28.0
     eslint: ^8.19.0
     eslint-config-prettier: ^8.5.0
@@ -9468,9 +9468,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"cypress@npm:^10.3.0":
-  version: 10.3.0
-  resolution: "cypress@npm:10.3.0"
+"cypress@npm:^10.11.0":
+  version: 10.11.0
+  resolution: "cypress@npm:10.11.0"
   dependencies:
     "@cypress/request": ^2.88.10
     "@cypress/xvfb": ^1.2.4
@@ -9491,7 +9491,7 @@ __metadata:
     dayjs: ^1.10.4
     debug: ^4.3.2
     enquirer: ^2.3.6
-    eventemitter2: ^6.4.3
+    eventemitter2: 6.4.7
     execa: 4.1.0
     executable: ^4.1.1
     extract-zip: 2.0.1
@@ -9516,7 +9516,7 @@ __metadata:
     yauzl: ^2.10.0
   bin:
     cypress: bin/cypress
-  checksum: 11df442ffec3da52981307f285a011ed0bdab5e1744076a0daf3c909be1d4c021827d957beb7272ae8b47734c14d0714fabef6f1db9c6c0816813e45e12d0c97
+  checksum: 486cd8be0f1a695d59bb2893d7daffa3ea39f9bd27a3a3537c51872a379dbcad43521dd5ac7a3a4568b274bf7d524c0152a34161f80a4241efa74cea00e2856e
   languageName: node
   linkType: hard
 
@@ -10945,10 +10945,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eventemitter2@npm:^6.4.3":
-  version: 6.4.6
-  resolution: "eventemitter2@npm:6.4.6"
-  checksum: 2102bcee9363543308ae1cd0bb0bf091799a9c338bf11dc3a565d78e3282b7ddd5c2f824d5ce07f37ce62ec9e8aa97ece386d75666cf4ac3e10070a167da3d96
+"eventemitter2@npm:6.4.7":
+  version: 6.4.7
+  resolution: "eventemitter2@npm:6.4.7"
+  checksum: 0814ff587de5d665091f76e9389a3d0156606e13a69625b0045bd8205d17a9c8b0ce59c46a479e55d98502bbdee61c65456130fcc5174bfe4e526560db5da823
   languageName: node
   linkType: hard
 
