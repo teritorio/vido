@@ -50,6 +50,7 @@ const config: NuxtConfig = {
     '@/plugins/vue-tailwind.ts',
     { src: '@/plugins/tracking.ts', mode: 'client' },
     '@/plugins/property-translations.ts',
+    { src: '~plugins/vuex-shared-mutations.js', ssr: false },
   ],
 
   // Auto import components (https://go.nuxtjs.dev/config-components)

@@ -4,7 +4,7 @@ import { ApiPoi, ApiPoiId } from '~/lib/apiPois'
 
 const LOCAL_STORAGE = { favorites: 'vido:favorites' }
 
-enum Mutation {
+export enum Mutation {
   SET_FAVORITES = 'SET_FAVORITES',
 }
 

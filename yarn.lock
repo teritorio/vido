@@ -4582,6 +4582,7 @@ __metadata:
     vue-screen: ^1.5.6
     vue-tailwind: ^2.5.1
     vue2-touch-events: ^3.2.2
+    vuex-shared-mutations: ^1.0.2
     xstate: ^4.32.1
   languageName: unknown
   linkType: soft
@@ -24521,6 +24522,13 @@ typescript@~4.2:
     "@vue/compiler-sfc": 2.7.4
     csstype: ^3.1.0
   checksum: bc9c7f7f355d00e9186623ab6a05de70a012d23c08fc9bc353e732b9a5a095480976f228870465dc2f23ea97be0845ea1eb4f25d7ddc7ebc37aced28df4467da
+  languageName: node
+  linkType: hard
+
+"vuex-shared-mutations@npm:^1.0.2":
+  version: 1.0.2
+  resolution: "vuex-shared-mutations@npm:1.0.2"
+  checksum: 4d180cbd2bf2e3c030a7ed2a318b29dd9abe9f3cb460f5ebd006b5a9d902483b8d96e3ce0de0b2489d7a3f2ce5a1b71f759eb5a5d801c1c80d7e7cc310b270ec
   languageName: node
   linkType: hard
 
