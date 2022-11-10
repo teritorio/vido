@@ -16,11 +16,13 @@
           mode="out-in"
           class="overflow-y-auto"
         >
-          <ExplorerOrFavoritesBack
-            v-if="isModeExplorer || isModeFavorites"
+          <MenuBlock
+            v-if="isModeExplorerOrFavorites"
             key="ExplorerOrFavoritesBack"
-            @click="onQuitExplorerFavoriteMode"
-          />
+            extra-class-text-background="bg-blue-500 text-white"
+          >
+            <ExplorerOrFavoritesBack @click="onQuitExplorerFavoriteMode" />
+          </MenuBlock>
 
           <Menu
             v-else-if="state.matches(states.Categories)"
@@ -39,10 +41,14 @@
             @unselect-all-categories="unselectCategory"
           />
 
-          <div
+          <aside
             v-else
             key="Search"
-            :class="['max-h-full flex p-2', showPoi && 'max-h-screen-4/6']"
+            :class="[
+              'max-h-full flex p-2',
+              showPoi && 'max-h-screen-4/6',
+              'flex flex-col max-h-full px-5 py-4 space-y-6 shadow-md pointer-events-auto md:rounded-xl md:w-96 bg-white',
+            ]"
           >
             <Search
               :menu-to-icon="menuItemsToIcons"
@@ -63,7 +69,7 @@
                 />
               </button>
             </Search>
-          </div>
+          </aside>
         </transition-group>
       </div>
 
@@ -84,22 +90,32 @@
       class="flex md:hidden relative fidex top-0 bottom-0 z-10 flex-row w-full space-x-4 pointer-events-none"
     >
       <div :class="['w-full', isBottomMenuOpened && 'hidden']">
-        <Search
-          :menu-to-icon="menuItemsToIcons"
-          :map-center="map_center"
-          @go-to-categories="onQuitExplorerFavoriteMode"
-          @category-click="onSearchCategory"
-          @poi-click="onSearchPoi"
-          @feature-click="onFeatureClick"
+        <aside
+          v-if="!isModeExplorerOrFavorites"
+          class="flex flex-col max-h-full px-5 py-4 space-y-6 shadow-md pointer-events-auto md:rounded-xl md:w-96 bg-white h-20"
         >
-          <Logo
-            :main-url="mainUrl"
-            :site-name="siteName"
-            :logo-url="logoUrl"
-            class="flex-none md:hidden mr-2"
-            image-class="max-w-2xl max-h-12 md:max-h-16"
-          />
-        </Search>
+          <Search
+            :menu-to-icon="menuItemsToIcons"
+            :map-center="map_center"
+            @category-click="onSearchCategory"
+            @poi-click="onSearchPoi"
+            @feature-click="onFeatureClick"
+          >
+            <Logo
+              :main-url="mainUrl"
+              :site-name="siteName"
+              :logo-url="logoUrl"
+              class="flex-none md:hidden mr-2"
+              image-class="max-w-2xl max-h-12 md:max-h-16"
+            />
+          </Search>
+        </aside>
+        <aside
+          v-else
+          class="flex flex-col max-h-full px-5 py-4 space-y-6 shadow-md pointer-events-auto md:rounded-xl md:w-96 bg-blue-500 md:bg-white text-white h-20"
+        >
+          <ExplorerOrFavoritesBack @click="onQuitExplorerFavoriteMode" />
+        </aside>
       </div>
     </header>
 
@@ -244,6 +260,7 @@ import {
   homeMachine,
 } from '~/components/Home/Home.machine'
 import Menu from '~/components/Home/Menu.vue'
+import MenuBlock from '~/components/Home/MenuBlock.vue'
 import SelectedCategories from '~/components/Home/SelectedCategories.vue'
 import Attribution from '~/components/MainMap/Attribution.vue'
 import BottomMenu from '~/components/MainMap/BottomMenu.vue'
@@ -287,6 +304,7 @@ export default (
     Search,
     SelectedCategories,
     Menu,
+    MenuBlock,
     BottomMenu,
     PoiCard,
     Attribution,
@@ -347,6 +365,7 @@ export default (
       mode: 'map/mode',
       isModeExplorer: 'map/isModeExplorer',
       isModeFavorites: 'map/isModeFavorites',
+      isModeExplorerOrFavorites: 'map/isModeExplorerOrFavorites',
       selectedFeature: 'map/selectedFeature',
       map_center: 'map/center',
       favoritesIds: 'favorite/favoritesIds',

@@ -1,12 +1,5 @@
 <template>
-  <aside
-    :class="[
-      'flex flex-col max-h-full px-5 py-4 space-y-6 shadow-md pointer-events-auto md:rounded-xl md:w-96',
-      isModeExplorerOrFavorites
-        ? 'bg-blue-500 md:bg-white text-white'
-        : 'bg-white',
-    ]"
-  >
+  <div>
     <div class="flex flex-row md:flex-col items-center md:items-start">
       <slot />
       <SearchInput
@@ -66,13 +59,12 @@
         {{ $tc('headerMenu.noResult') }}
       </p>
     </div>
-  </aside>
+  </div>
 </template>
 
 <script lang="ts">
 import { debounce, DebouncedFunc } from 'lodash'
 import Vue, { PropType } from 'vue'
-import { mapGetters } from 'vuex'
 
 import SearchInput from '~/components/Search/SearchInput.vue'
 import SearchResultBlock from '~/components/Search/SearchResultBlock.vue'
@@ -128,11 +120,6 @@ export default Vue.extend({
   },
 
   computed: {
-    ...mapGetters({
-      isModeFavorites: 'map/isModeFavorites',
-      isModeExplorerOrFavorites: 'map/isModeExplorerOrFavorites',
-    }),
-
     isLoading(): boolean {
       return this.searchResultId !== this.searchQueryId
     },
@@ -210,10 +197,6 @@ export default Vue.extend({
       this.searchAddressesResults = null
       this.searchCartocodeResult = null
       this.searchText = ''
-    },
-
-    goToCategories() {
-      this.$emit('go-to-categories')
     },
 
     onCartocodeClick(id: number) {
