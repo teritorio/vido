@@ -38,7 +38,6 @@ export const mutations = {
 export const actions = {
   initFavoritesFromLocalStorage(store: Store<State>) {
     const local = localStorage.getItem(LOCAL_STORAGE.favorites)
-    console.error(local)
     if (local) {
       actions.setFavorites(store, JSON.parse(local).favorites)
     }
