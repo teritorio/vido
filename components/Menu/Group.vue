@@ -1,6 +1,6 @@
 <template>
   <MenuItem
-    :id="menuGroup.id"
+    :id="`MenuGroup-${menuGroup.id}`"
     :href="`/${menuGroup.id}/`"
     :display-mode="menuGroup.menu_group.display_mode || displayModeDefault"
     :color-fill="menuGroup.menu_group.color_fill"
