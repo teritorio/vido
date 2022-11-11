@@ -13,8 +13,8 @@
       />
       <button
         class="absolute inset-y-0 right-0 px-5 text-zinc-800 rounded-r-full outline-none focus:outline-none"
+        style="pointer-events: none"
         type="submit"
-        @click="focusSearch"
       >
         <font-awesome-icon v-if="!isLoading" icon="search" />
         <font-awesome-icon v-else icon="spinner" class="animate-spin" />
@@ -43,18 +43,6 @@ export default (
     isLoading: {
       type: Boolean,
       default: false,
-    },
-  },
-
-  mounted() {
-    if (!this.$screen.touch) {
-      this.focusSearch()
-    }
-  },
-
-  methods: {
-    focusSearch() {
-      this.$refs.search?.focus()
     },
   },
 })
