@@ -14,6 +14,7 @@ const asserts: ((event: Event) => void)[] = []
 
 describe('home content', () => {
   before(() => {
+    localStorage.setItem('cookie:accepted', 'true')
     mockSSRAPI(hostname, teritorioReferenceAPIFixture)
     cy.visit('/')
   })
