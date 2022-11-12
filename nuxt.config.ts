@@ -8,6 +8,11 @@ import { configuredApi, configuredImageProxy } from './plugins/vido-config'
 const supportedLocales = ['en-GB', 'fr', 'es']
 
 const config: NuxtConfig = {
+  env: {
+    // Copy NODE_ENV to know to real setting when use `nuxt build`
+    environment: process.env.NODE_ENV as string,
+  },
+
   pwa: {
     meta: {
       lang: 'fr',
