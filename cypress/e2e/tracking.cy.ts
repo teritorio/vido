@@ -16,6 +16,7 @@ describe('home content', () => {
   before(() => {
     localStorage.setItem('cookie:accepted', 'true')
     mockSSRAPI(hostname, teritorioReferenceAPIFixture)
+    cy.viewport(1024, 768)
     cy.visit('/')
   })
 
@@ -56,7 +57,7 @@ describe('home content', () => {
     })
 
     // Click on map POI
-    cy.get('#m1').click()
+    cy.get('#m1', { timeout: 10000 }).click()
     asserts.push((event: Event) => {
       assert(event.type === 'popup' && event.poiId === 1, 'Click on map POI')
     })

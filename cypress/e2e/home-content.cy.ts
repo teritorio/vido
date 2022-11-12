@@ -7,6 +7,7 @@ const hostname = 'https://dev.appcarto.teritorio.xyz'
 describe('home content', () => {
   before(() => {
     mockSSRAPI(hostname, teritorioReferenceAPIFixture)
+    cy.viewport(1024, 768)
     cy.visit('/')
   })
 
