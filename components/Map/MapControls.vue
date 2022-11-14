@@ -7,8 +7,9 @@
       ]"
     >
       <div class="flex flex-col space-y-3 pointer-events-auto">
-        <div ref="navigationControlContainer"></div>
-        <div ref="geolocateControlContainer" class="md:hidden"></div>
+        <div ref="navigationControlContainer" />
+        <div ref="geolocateControlContainer" class="md:hidden" />
+        <div ref="fullscreenControlContainer" />
         <slot v-if="map"></slot>
       </div>
     </div>
@@ -30,6 +31,10 @@ export default Vue.extend({
       type: Boolean,
       default: false,
     },
+    fullscreenControl: {
+      type: Boolean,
+      default: false,
+    },
     fullPage: {
       type: Boolean,
       default: false,
@@ -44,7 +49,6 @@ export default Vue.extend({
           showCompass: this.showCompass,
           visualizePitch: true,
         })
-
         ;(this.$refs.navigationControlContainer as HTMLDivElement).appendChild(
           navigationControl.onAdd(this.map)
         )
@@ -53,10 +57,16 @@ export default Vue.extend({
           positionOptions: { enableHighAccuracy: true },
           trackUserLocation: true,
         })
-
         ;(this.$refs.geolocateControlContainer as HTMLDivElement).appendChild(
           geolocateControl.onAdd(this.map)
         )
+
+        if (this.fullscreenControl) {
+          const control = new maplibregl.FullscreenControl({})
+          ;(
+            this.$refs.fullscreenControlContainer as HTMLDivElement
+          ).appendChild(control.onAdd(this.map))
+        }
 
         const scale = new mapboxgl.ScaleControl({
           maxWidth: 80,

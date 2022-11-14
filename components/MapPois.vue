@@ -5,6 +5,7 @@
       :center="center()"
       :bounds="bounds()"
       :zoom="selectionZoom.poi"
+      :fullscreen-control="fullscreenControl"
       :extra-attributions="extraAttributions"
       @map-init="onMapInit"
     />
@@ -40,6 +41,10 @@ export default Vue.extend({
     featureId: {
       type: Number as PropType<ApiPoiId>,
       default: null,
+    },
+    fullscreenControl: {
+      type: Boolean,
+      default: false,
     },
   },
 

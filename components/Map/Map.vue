@@ -34,6 +34,7 @@
     <MapControls
       :map="map"
       :show-compass="rotate"
+      :fullscreen-control="fullscreenControl"
       :class="hideControl && 'hidden'"
       :full-page="fullPage"
     >
@@ -105,6 +106,10 @@ export default Vue.extend({
       default: 0,
     },
     rotate: {
+      type: Boolean,
+      default: false,
+    },
+    fullscreenControl: {
       type: Boolean,
       default: false,
     },

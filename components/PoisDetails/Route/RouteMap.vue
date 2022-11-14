@@ -4,6 +4,7 @@
       class="map-pois relative"
       :pois="routeCollection"
       :feature-id="poiId"
+      :fullscreen-control="true"
     />
     <div class="detail-wrapper">
       <div v-if="points.length > 0" class="detail-left">
