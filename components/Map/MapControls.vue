@@ -3,7 +3,7 @@
     <div
       :class="[
         'flex flex-col justify-center inset-y-3 right-3',
-        fullScreenMap ? 'fixed' : 'absolute',
+        fullPage ? 'fixed' : 'absolute',
       ]"
     >
       <div class="flex flex-col space-y-3 pointer-events-auto">
@@ -30,7 +30,7 @@ export default Vue.extend({
       type: Boolean,
       default: false,
     },
-    fullScreenMap: {
+    fullPage: {
       type: Boolean,
       default: false,
     },
