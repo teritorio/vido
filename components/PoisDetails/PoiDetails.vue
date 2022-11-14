@@ -79,10 +79,15 @@
             </p>
           </template>
 
-          <Field
+          <Fields
             v-else
-            :context="context"
-            :field="{ field: 'description' }"
+            :fields="[
+              {
+                group: 'description',
+                display_mode: 'standard',
+                fields: [{ field: 'description' }],
+              },
+            ]"
             :properties="poi.properties"
             :geom="poi.geometry"
             :color-fill="colorFill"
@@ -110,7 +115,6 @@
 import Vue, { PropType } from 'vue'
 import { mapGetters } from 'vuex'
 
-import Field from '~/components/Fields/Field.vue'
 import MapPois from '~/components/MapPois.vue'
 import Carousel from '~/components/PoisDetails/Carousel.vue'
 import Fields from '~/components/PoisDetails/Fields.vue'
@@ -141,7 +145,6 @@ export default Vue.extend({
     Footer,
     RouteMap,
     Fields,
-    Field,
     RelativeDate,
   },
 
