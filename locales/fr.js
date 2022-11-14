@@ -131,7 +131,7 @@ export default {
     },
     route: {
       difficulty: 'Difficulté :',
-      lenght: 'Distance :',
+      length: 'Distance :',
       duration: 'Durée :',
       difficulties: {
         easy: 'facile',

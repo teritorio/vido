@@ -130,7 +130,7 @@ export default {
     },
     route: {
       difficulty: 'Dificultad:',
-      lenght: 'Distancia:',
+      length: 'Distancia:',
       duration: 'Duración:',
       difficulties: {
         easy: 'fácil',
