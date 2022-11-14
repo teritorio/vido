@@ -168,8 +168,8 @@ import OpeningHours, {
 } from '~/components/Fields/OpeningHours.vue'
 import Phone from '~/components/Fields/Phone.vue'
 import RoutesField from '~/components/Fields/RoutesField.vue'
-import FieldsHeader from '~/components/PoisDetails/FieldsHeader.vue'
 import ExternalLink from '~/components/UI/ExternalLink.vue'
+import FieldsHeader from '~/components/UI/FieldsHeader.vue'
 import { ApiPoiProperties, FieldsListItem } from '~/lib/apiPois'
 import { PropertyTranslationsContextEnum } from '~/plugins/property-translations'
 

@@ -45,7 +45,7 @@
 import Vue, { VueConstructor, PropType } from 'vue'
 
 import Block from '~/components/PoisDetails/Block.vue'
-import FieldsHeader from '~/components/PoisDetails/FieldsHeader.vue'
+import FieldsHeader from '~/components/UI/FieldsHeader.vue'
 import { ApiPoiProperties, FieldsListGroup } from '~/lib/apiPois'
 // import Fields from '~/components/PoisDetails/Fields.vue'
 

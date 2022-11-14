@@ -25,7 +25,7 @@
 <script lang="ts">
 import Vue, { PropType } from 'vue'
 
-import FieldsHeader from '~/components/PoisDetails/FieldsHeader.vue'
+import FieldsHeader from '~/components/UI/FieldsHeader.vue'
 import { PropertyTranslationsContextEnum } from '~/plugins/property-translations'
 
 export default Vue.extend({
