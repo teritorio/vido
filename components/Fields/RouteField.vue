@@ -6,7 +6,13 @@
       {{ formatNoDetails }}
     </p>
     <div v-else>
-      <h2>{{ $propertyTranslations.pv('route', activity, context) }}</h2>
+      <FieldsHeader
+        :recursion-level="recursionLevel"
+        class="`field_header_level_${recursionLevel}`"
+        >{{
+          $propertyTranslations.pv('route', activity, context)
+        }}</FieldsHeader
+      >
       <ul>
         <li>{{ $tc('fields.route.difficulty') }} {{ difficulty }}</li>
         <li>{{ $tc('fields.route.lenght') }} {{ lenght }}</li>
@@ -19,13 +25,22 @@
 <script lang="ts">
 import Vue, { PropType } from 'vue'
 
+import FieldsHeader from '~/components/PoisDetails/FieldsHeader.vue'
 import { PropertyTranslationsContextEnum } from '~/plugins/property-translations'
 
 export default Vue.extend({
+  components: {
+    FieldsHeader,
+  },
+
   props: {
     context: {
       type: String as PropType<PropertyTranslationsContextEnum>,
       required: true,
+    },
+    recursionLevel: {
+      type: Number,
+      default: 0,
     },
     activity: {
       type: String,

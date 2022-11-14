@@ -3,6 +3,7 @@
     v-if="field.field == 'route'"
     class="field_content"
     :context="context"
+    :recursion-level="recursionLevel"
     :properties="properties"
   >
     <FieldsHeader

@@ -4,6 +4,7 @@
       v-for="(route, activity) in routes"
       :key="activity"
       :context="context"
+      :recursion-level="recursionLevel"
       :activity="activity"
       :route="route"
     />
@@ -26,6 +27,10 @@ export default Vue.extend({
     context: {
       type: String as PropType<PropertyTranslationsContextEnum>,
       required: true,
+    },
+    recursionLevel: {
+      type: Number,
+      default: 0,
     },
     properties: {
       type: Object as PropType<ApiPoiProperties>,
