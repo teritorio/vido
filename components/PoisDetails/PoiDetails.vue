@@ -328,6 +328,10 @@ h1 {
   }
 }
 
+.detail-wrapper :deep(ul) {
+  @apply list-disc ml-6;
+}
+
 :deep(#map) {
   width: 100%;
   height: 346px;

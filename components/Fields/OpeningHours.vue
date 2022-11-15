@@ -35,11 +35,20 @@
     </template>
     <template v-if="!isCompact">
       <br />
-      <template v-if="pretty">
-        <ul>
-          <li v-for="(row, i) in pretty" :key="i">{{ row }}</li>
-        </ul>
-      </template>
+      <div v-if="pretty && !pretty[0][0] && pretty[0][1].length == 1">
+        {{ pretty[0][1][0] }}
+      </div>
+      <ul v-else-if="pretty && !pretty[0][0]">
+        <li v-for="(row, i) in pretty[0][1]" :key="i">{{ row }}</li>
+      </ul>
+      <ul v-else-if="pretty">
+        <li v-for="[month, dates] in pretty" :key="month">
+          {{ month }}
+          <ul>
+            <li v-for="(row, i) in dates" :key="i">{{ row }}</li>
+          </ul>
+        </li>
+      </ul>
       <template v-if="variable">
         <p>{{ $tc('openingHours.variableWeek') }}</p>
       </template>
@@ -114,10 +123,10 @@ export default Vue.extend({
       return this.context === PropertyTranslationsContextEnum.Card
     },
 
-    pretty(): string[] | undefined {
+    pretty(): [string | undefined, string[]][] | undefined {
       const oh = this.OpeningHoursFactory()
       if (oh) {
-        return oh
+        const prettyString = oh
           .prettifyValue({
             // @ts-ignore
             conf: {
@@ -128,6 +137,26 @@ export default Vue.extend({
           })
           .replace(/(^\w|\s\w)/g, (c) => c.toUpperCase())
           .split('\n')
+        if (!this.variable) {
+          return [[undefined, prettyString]]
+        } else {
+          const ret: [string, string[]][] = []
+          prettyString
+            .map((row) => [
+              row.slice(0, row.indexOf(':')),
+              row.slice(row.indexOf(':') + 1),
+            ])
+            // Stable group by month
+            .forEach(([month, date]) => {
+              const i = ret.findIndex((r) => r[0] == month)
+              if (i >= 0) {
+                ret[i][1].push(date)
+              } else {
+                ret.push([month, [date]])
+              }
+            })
+          return ret
+        }
       } else {
         return undefined
       }
