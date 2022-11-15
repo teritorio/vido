@@ -97,33 +97,31 @@
           properties[field.field].length > 0
         "
       >
-        <ul>
-          <li
-            v-for="item in properties[field.field]"
-            :key="field.field + '_' + item"
+        <div
+          v-for="item in properties[field.field]"
+          :key="field.field + '_' + item"
+        >
+          <ExternalLink
+            v-if="field.field == 'website'"
+            :href="item"
+            target="_blank"
           >
-            <ExternalLink
-              v-if="field.field == 'website'"
-              :href="item"
-              target="_blank"
-            >
-              {{ item }}
-            </ExternalLink>
+            {{ item }}
+          </ExternalLink>
 
-            <a v-else-if="field.field == 'item'" :href="`mailto:${item}`">
-              {{ item }}
-            </a>
+          <a v-else-if="field.field == 'item'" :href="`mailto:${item}`">
+            {{ item }}
+          </a>
 
-            <a v-else-if="field.field == 'download'" :href="item">
-              <font-awesome-icon prefix="fa" icon="arrow-circle-down" />
-              {{ item.split('/').pop() }}
-            </a>
+          <a v-else-if="field.field == 'download'" :href="item">
+            <font-awesome-icon prefix="fa" icon="arrow-circle-down" />
+            {{ item.split('/').pop() }}
+          </a>
 
-            <span v-else>
-              {{ item }}
-            </span>
-          </li>
-        </ul>
+          <span v-else>
+            {{ item }}
+          </span>
+        </div>
       </template>
 
       <Facebook
