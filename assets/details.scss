@@ -15,20 +15,15 @@ $large-only: '#{$screen} and (min-width:#{($large-range)})' !default;
 
 $white-color: #ffff;
 
-@import '~/assets/fonts/Ubuntu/Ubuntu-Light.css';
-
-.font-ubuntu-light {
-  font-family: "Ubuntu-Light", arial, sans-serif;
+.font-light {
   font-weight: 300;
 }
 
-.font-ubuntu-medium {
-  font-family: "Ubuntu-Light", arial, sans-serif;
+.font-medium {
   font-weight: 400;
 }
 
-.font-ubuntu-bold {
-  font-family: "Ubuntu-Light", arial, sans-serif;
+.font-bold {
   font-weight: bold;
 }
 

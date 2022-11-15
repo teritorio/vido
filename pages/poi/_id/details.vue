@@ -156,6 +156,6 @@ body {
   text-rendering: optimizeLegibility;
   line-height: 1.3;
   word-wrap: break-word;
-  @extend .font-ubuntu-light;
+  @extend .font-light;
 }
 </style>
