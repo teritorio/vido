@@ -4,6 +4,7 @@
   </div>
   <agile
     v-else-if="images.length > 1"
+    id="agile"
     class="margin"
     :dots="dots"
     :nav-buttons="false"
@@ -53,7 +54,9 @@ export default Vue.extend({
 </style>
 
 <style lang="css">
-.agile__dots {
+#agile ul.agile__dots {
+  @apply list-none;
+
   bottom: 15px;
   left: 50%;
   position: absolute;
@@ -65,7 +68,7 @@ export default Vue.extend({
 }
 
 .agile__dot button {
-  background-color: transparent;
+  background-color: rgba(0, 0, 0, 0.3);
   border: 1px solid #fff;
   border-radius: 50%;
   cursor: pointer;
