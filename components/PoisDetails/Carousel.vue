@@ -1,8 +1,8 @@
 <template>
   <div v-if="images.length == 1" class="margin">
-    <nuxt-picture :src="images[0]" />
+    <NuxtPicture :src="images[0]" />
   </div>
-  <agile
+  <VueAgile
     v-else-if="images.length > 1"
     id="agile"
     class="margin"
@@ -10,18 +10,21 @@
     :nav-buttons="false"
   >
     <div v-for="(image, i) in images" :key="i" class="slide">
-      <nuxt-picture :key="i" :src="image" />
+      <NuxtPicture :key="i" :src="image" media-size="66vw" />
     </div>
-  </agile>
+  </VueAgile>
 </template>
 
 <script lang="ts">
 import Vue, { PropType } from 'vue'
 import VueAgile from 'vue-agile/src/Agile.vue'
 
+import NuxtPicture from '~/components/UI/NuxtPicture.vue'
+
 export default Vue.extend({
   components: {
-    agile: VueAgile,
+    VueAgile,
+    NuxtPicture,
   },
 
   props: {

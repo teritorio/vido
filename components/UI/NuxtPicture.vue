@@ -1,0 +1,118 @@
+<template>
+  <picture :key="nSources[0].src">
+    <source
+      v-if="nSources[1]"
+      :type="nSources[1].type"
+      :srcset="nSources[1].srcset"
+      :sizes="mediaSize"
+    />
+    <img
+      v-bind="{ ...nImgAttrs, ...imgAttrs, ...$attrs }"
+      :src="srcDefault"
+      :srcset="nSources[0].srcset"
+      :sizes="mediaSize"
+    />
+  </picture>
+</template>
+
+<script>
+// Monkey patch
+// Change stategy of source image size
+// Pass explicite size, not the default one based on view port size
+
+import { imageMixin } from '@nuxt/image/dist/runtime/components/image.mixin'
+import { getFileExtension } from '@nuxt/image/dist/runtime/utils/index.js'
+
+const defineComponent = (opts) => opts
+
+export default defineComponent({
+  mixins: [imageMixin],
+
+  props: {
+    legacyFormat: { type: String, default: null },
+    imgAttrs: { type: Object, default: null },
+    mediaSize: {
+      type: String,
+      required: true,
+    },
+  },
+
+  head() {
+    if (this.preload === true) {
+      const srcKey = typeof this.nSources[1] !== 'undefined' ? 1 : 0
+      const link = {
+        rel: 'preload',
+        as: 'image',
+        imagesrcset: this.nSources[srcKey].srcset,
+      }
+      if (typeof this.nSources[srcKey].sizes !== 'undefined') {
+        link.imagesizes = this.nSources[srcKey].sizes
+      }
+      return {
+        link: [link],
+      }
+    }
+    return {}
+  },
+
+  computed: {
+    isTransparent() {
+      return ['png', 'webp', 'gif'].includes(this.originalFormat)
+    },
+
+    originalFormat() {
+      return getFileExtension(this.src)
+    },
+
+    nFormat() {
+      return this.format || 'webp'
+    },
+
+    nLegacyFormat() {
+      if (this.legacyFormat) {
+        return this.legacyFormat
+      }
+      const formats = {
+        webp: this.isTransparent ? 'png' : 'jpeg',
+        svg: 'png',
+      }
+      return formats[this.nFormat] || this.originalFormat
+    },
+
+    srcDefault() {
+      // Get the smallest by default, not the biggest one
+      return this.nSources[0].srcset.split(' ')[0]
+    },
+
+    nSources() {
+      const formats =
+        this.nLegacyFormat !== this.nFormat
+          ? [this.nLegacyFormat, this.nFormat]
+          : [this.nFormat]
+      const sources = formats.map((format) => {
+        const { srcset, sizes, src } = this.$img.getSizes(this.src, {
+          ...this.nOptions,
+          sizes: this.sizes || this.$img.options.screens,
+          modifiers: {
+            ...this.nModifiers,
+            format,
+          },
+        })
+        return {
+          src,
+          type: `image/${format}`,
+          sizes,
+          srcset,
+        }
+      })
+      return sources
+    },
+  },
+
+  created() {
+    if (process.server && process.static) {
+      this.nSources
+    }
+  },
+})
+</script>

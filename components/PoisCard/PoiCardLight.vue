@@ -37,11 +37,11 @@
         @click-detail="trackingPopupEvent('details')"
       />
     </div>
-    <nuxt-picture
+    <NuxtPicture
       v-if="poi.properties.image && poi.properties.image.length > 0"
       class="w-full h-32 md:w-32 md:h-32 z-10"
       :src="poi.properties.image[0]"
-      alt=""
+      media-size="8rem"
     />
   </div>
 </template>
@@ -51,6 +51,7 @@ import Vue, { PropType } from 'vue'
 import { mapGetters } from 'vuex'
 
 import Fields from '~/components/PoisCard/Fields.vue'
+import NuxtPicture from '~/components/UI/NuxtPicture.vue'
 import TeritorioIconBadge from '~/components/UI/TeritorioIconBadge.vue'
 import { ApiPoi } from '~/lib/apiPois'
 import { ApiPoiId } from '~/lib/mapPois'
@@ -59,6 +60,7 @@ export default Vue.extend({
   components: {
     TeritorioIconBadge,
     Fields,
+    NuxtPicture,
   },
 
   props: {

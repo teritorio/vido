@@ -20,11 +20,12 @@
             : colorFill
         "
       />
-      <nuxt-picture
+      <NuxtPicture
         v-if="poi.properties.image && poi.properties.image.length > 0"
         __class="w-full h-44 md:w-auto md:h-full z-10"
         class="object-cover h-44 w-full md:w-48 md:h-full z-10"
         :src="poi.properties.image[0]"
+        media-size="12rem"
       />
     </div>
 
@@ -154,6 +155,7 @@ import { mapGetters } from 'vuex'
 import CoordinateAction from '~/components/Fields/CoordinateAction.vue'
 import Fields from '~/components/PoisCard/Fields.vue'
 import FavoriteIcon from '~/components/UI/FavoriteIcon.vue'
+import NuxtPicture from '~/components/UI/NuxtPicture.vue'
 import TeritorioIcon from '~/components/UI/TeritorioIcon.vue'
 import { ApiPoi, ApiPoiId } from '~/lib/apiPois'
 
@@ -163,6 +165,7 @@ export default Vue.extend({
     FavoriteIcon,
     Fields,
     CoordinateAction,
+    NuxtPicture,
   },
 
   props: {
