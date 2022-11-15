@@ -136,7 +136,6 @@ export default Vue.extend({
     box-sizing: border-box;
     margin: 0 0 4rem;
     padding: 0 1.6rem;
-    font-size: 1.2rem;
   }
 
   .detail-right {

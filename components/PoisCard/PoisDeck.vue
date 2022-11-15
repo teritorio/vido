@@ -1,5 +1,5 @@
 <template>
-  <div class="flex justify-between flex-wrap max-h-full overflow-y-auto gap-6">
+  <div class="flex justify-between flex-wrap gap-6">
     <component
       :is="poisCard"
       v-for="item in pois"
