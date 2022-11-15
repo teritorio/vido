@@ -2,10 +2,11 @@
   <div>
     <slot />
     <div v-if="isCompact">
-      <div v-for="(route, activity) in routes" :key="activity">
+      <span v-for="(route, activity) in routes" :key="activity">
         {{ $propertyTranslations.pv('route', activity, context) }} :
-        {{ formatNoDetails }}
-      </div>
+        {{ formatNoDetails(activity, route) }}.
+      </span>
+      {{ length }}.
     </div>
     <div v-else>
       <div>{{ $tc('fields.route.length') }} {{ length }}</div>
@@ -125,8 +126,8 @@ export default Vue.extend({
         : undefined
     },
 
-    formatNoDetails(): string {
-      return [this.duration, this.difficulty].map((e) => e).join(', ')
+    formatNoDetails(activity: string, route: Route): string {
+      return [this.duration(route), this.difficulty(activity, route)].join(', ')
     },
   },
 })
