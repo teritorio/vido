@@ -8,8 +8,11 @@
         :placeholder="$tc('headerMenu.search')"
         type="text"
         @input="$emit('input', $event.target.value)"
-        @focus="$tracking({ type: 'search' })"
-        @click="$emit('click')"
+        @focus="
+          $emit('focus', $event)
+          $tracking({ type: 'search' })
+        "
+        @blur="$emit('blur', $event)"
       />
       <button
         class="absolute inset-y-0 right-0 px-5 text-zinc-800 rounded-r-full outline-none focus:outline-none"

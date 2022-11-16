@@ -1,16 +1,23 @@
 <template>
   <div>
     <div class="flex flex-row md:flex-col items-center md:items-start">
-      <slot />
+      <template v-if="!focus">
+        <slot />
+      </template>
       <SearchInput
         :search-text="searchText"
         :is-loading="isLoading"
         @input="onSubmit"
+        @focus="
+          $emit('focus', $event)
+          focus = true
+        "
+        @blur="delayedFocusLose($event)"
       />
     </div>
 
     <button
-      v-if="results > 0"
+      v-if="focus && results > 0"
       type="button"
       class="md:hidden shrink-0 w-10 h-10 text-2xl font-bold transition-all rounded-full outline-none cursor-pointer focus:outline-none hover:bg-zinc-100 focus:bg-zinc-100"
       @click="reset"
@@ -18,7 +25,7 @@
       <font-awesome-icon icon="arrow-left" class="text-zinc-800" size="xs" />
     </button>
 
-    <div v-if="results > 0" class="search-results">
+    <div v-if="focus && results > 0" class="search-results">
       <SearchResultBlock
         v-if="itemsCartocode.length > 0"
         type="cartocode"
@@ -96,6 +103,7 @@ export default Vue.extend({
   },
 
   data(): {
+    focus: boolean
     searchQueryId: number
     searchResultId: number
     searchText: string
@@ -107,6 +115,7 @@ export default Vue.extend({
     trackSearchQuery: null | DebouncedFunc<(query: string) => void>
   } {
     return {
+      focus: false,
       searchQueryId: 0,
       searchResultId: 0,
       searchText: '',
@@ -197,6 +206,15 @@ export default Vue.extend({
       this.searchAddressesResults = null
       this.searchCartocodeResult = null
       this.searchText = ''
+      this.focus = false
+    },
+
+    delayedFocusLose(event: Event) {
+      // Let time to catch click on results before hiden
+      setTimeout(() => {
+        this.$emit('blur', event)
+        this.focus = false
+      }, 200)
     },
 
     onCartocodeClick(id: number) {

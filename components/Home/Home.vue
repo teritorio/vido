@@ -25,30 +25,17 @@
           </MenuBlock>
 
           <Menu
-            v-else-if="state.matches(states.Categories)"
+            v-else
             key="Menu"
             menu-block="MenuBlock"
-            :logo-url="logoUrl"
-            :main-url="mainUrl"
-            :site-name="siteName"
             :menu-items="menuItems"
             :filters="filters"
             :categories-actives-count-by-parent="categoriesActivesCountByParent"
             :is-category-selected="isCategorySelected"
-            @search-click="goToSearch"
+            :is-on-search="isOnSearch"
             @category-click="toggleCategorySelection"
             @select-all-categories="selectCategory"
             @unselect-all-categories="unselectCategory"
-          />
-
-          <aside
-            v-else
-            key="Search"
-            :class="[
-              'max-h-full flex p-2',
-              showPoi && 'max-h-screen-4/6',
-              'flex flex-col max-h-full px-5 py-4 space-y-6 shadow-md pointer-events-auto md:rounded-xl md:w-96 bg-white',
-            ]"
           >
             <Search
               :menu-to-icon="menuItemsToIcons"
@@ -56,20 +43,18 @@
               @category-click="onSearchCategory"
               @poi-click="onSearchPoi"
               @feature-click="onFeatureClick"
+              @focus="isOnSearch = true"
+              @blur="isOnSearch = false"
             >
-              <button
-                type="button"
-                class="hidden md:flex shrink-0 items-center justify-center w-10 h-10 text-2xl font-bold transition-all rounded-full outline-none cursor-pointer focus:outline-none hover:bg-zinc-100 focus:bg-zinc-100"
-                @click="goToHome"
-              >
-                <font-awesome-icon
-                  icon="arrow-left"
-                  class="text-zinc-800"
-                  size="xs"
-                />
-              </button>
+              <Logo
+                :main-url="mainUrl"
+                :site-name="siteName"
+                :logo-url="logoUrl"
+                class="flex-none mr-2"
+                image-class="max-w-2xl max-h-12 md:max-h-16"
+              />
             </Search>
-          </aside>
+          </Menu>
         </transition-group>
       </div>
 
@@ -92,7 +77,7 @@
       <div :class="['w-full', isBottomMenuOpened && 'hidden']">
         <aside
           v-if="!isModeExplorerOrFavorites"
-          class="flex flex-col max-h-full px-5 py-4 space-y-6 shadow-md pointer-events-auto md:rounded-xl md:w-96 bg-white h-20"
+          class="flex flex-col max-h-full px-5 py-4 space-y-6 shadow-md pointer-events-auto md:rounded-xl md:w-96 bg-white min-h-20"
         >
           <Search
             :menu-to-icon="menuItemsToIcons"
@@ -207,16 +192,12 @@
     >
       <div class="flex-1 h-full overflow-y-auto h-screen-3/5 divide-y">
         <Menu
-          v-if="!showPoi && state.matches(states.Categories)"
+          v-if="!showPoi"
           menu-block="MenuBlockBottom"
-          :logo-url="logoUrl"
-          :main-url="mainUrl"
-          :site-name="siteName"
           :menu-items="menuItems"
           :filters="filters"
           :categories-actives-count-by-parent="categoriesActivesCountByParent"
           :is-category-selected="isCategorySelected"
-          @search-click="goToSearch"
           @category-click="toggleCategorySelection"
           @select-all-categories="selectCategory"
           @unselect-all-categories="unselectCategory"
@@ -249,16 +230,8 @@ import { FitBoundsOptions, LngLatBoundsLike } from 'maplibre-gl'
 import Vue, { PropType, VueConstructor } from 'vue'
 import { MetaInfo } from 'vue-meta'
 import { mapGetters, mapActions } from 'vuex'
-import { interpret } from 'xstate'
 
 import ExplorerOrFavoritesBack from '~/components/Home/ExplorerOrFavoritesBack.vue'
-import {
-  HomeState,
-  HomeInterpreter,
-  HomeEvents,
-  HomeStates,
-  homeMachine,
-} from '~/components/Home/Home.machine'
 import Menu from '~/components/Home/Menu.vue'
 import MenuBlock from '~/components/Home/MenuBlock.vue'
 import SelectedCategories from '~/components/Home/SelectedCategories.vue'
@@ -282,8 +255,6 @@ import { Mode, OriginEnum } from '~/utils/types'
 import { FilterValue } from '~/utils/types-filters'
 import { getHashPart, setHashParts } from '~/utils/url'
 import { flattenFeatures } from '~/utils/utilities'
-
-const interpretOptions = { devTools: false }
 
 export default (
   Vue as VueConstructor<
@@ -330,8 +301,7 @@ export default (
     },
   },
   data(): {
-    service: HomeInterpreter
-    state: HomeState
+    isMenuItemOpen: boolean
     selectedCategoriesIds: ApiMenuCategory['id'][]
     showPoi: boolean
     initialBbox: LngLatBoundsLike | null
@@ -339,17 +309,18 @@ export default (
     showFavoritesOverlay: boolean
     allowRegionBackZoom: boolean
     favorites: ApiPoi[] | null
+    isOnSearch: boolean
   } {
     return {
+      isMenuItemOpen: false,
       selectedCategoriesIds: [],
-      service: interpret(homeMachine, interpretOptions),
-      state: homeMachine.initialState,
       showPoi: false,
       initialBbox: null,
       fullAttributions: '',
       showFavoritesOverlay: false,
       allowRegionBackZoom: false,
       favorites: null,
+      isOnSearch: false,
     }
   },
   head(): MetaInfo {
@@ -375,7 +346,6 @@ export default (
       return this.$store.getters['menu/menuItems']
     },
 
-    events: () => HomeEvents,
     logoUrl(): string {
       return this.settings.themes[0]?.logo_url || ''
     },
@@ -401,11 +371,10 @@ export default (
     },
     isBottomMenuOpened(): boolean {
       return (
-        this.$screen.smallScreen &&
-        (this.isPoiCardVisible || this.state.matches(this.states.Categories))
+        (this.$screen.smallScreen && this.isPoiCardVisible) ||
+        this.isMenuItemOpen
       )
     },
-    states: () => HomeStates,
     categoriesActivesCountByParent(): Record<ApiMenuCategory['id'], number> {
       const counts: { [id: string]: number } = {}
       this.selectedCategoriesIds.forEach((categoryId) => {
@@ -467,12 +436,6 @@ export default (
     },
   },
   watch: {
-    state(val: HomeState, oldVal: HomeState) {
-      if (val.matches(this.states.Home) && !oldVal.matches(this.states.Home)) {
-        this.goToHome()
-      }
-    },
-
     selectedFeature() {
       if (!this.selectedFeature) {
         this.showPoi = false
@@ -508,14 +471,6 @@ export default (
     isModeFavorites() {
       this.handleFavorites()
     },
-  },
-
-  created() {
-    this.service
-      .onTransition((state) => {
-        this.state = state
-      })
-      .start()
   },
 
   beforeMount() {
@@ -579,8 +534,6 @@ export default (
       // @ts-ignore
       this.initialBbox = this.settings.bbox_line.coordinates
     }
-
-    this.goToHome()
   },
   methods: {
     ...mapActions({
@@ -610,23 +563,9 @@ export default (
         hash,
       })
     },
-    goToHome() {
-      this.service.send(HomeEvents.GoToHome)
-      if (this.$screen.smallScreen) {
-        this.goToSearch()
-      } else {
-        this.goToMenuItems()
-      }
-    },
     onQuitExplorerFavoriteMode() {
       this.$store.dispatch('map/setMode', Mode.BROWSER)
       this.setSelectedFeature(null)
-    },
-    goToSearch() {
-      this.service.send(HomeEvents.GoToSearch)
-    },
-    goToMenuItems() {
-      this.service.send(HomeEvents.GoToCategories)
     },
     isCategorySelected(categoryId: ApiMenuCategory['id']) {
       return this.selectedCategoriesIds.includes(categoryId)
@@ -639,9 +578,6 @@ export default (
         ...this.selectedCategoriesIds,
         ...categoriesIds,
       ])
-    },
-    send(event: HomeEvents) {
-      this.service.send(event)
     },
     toggleCategorySelection(categoryId: ApiMenuCategory['id']) {
       if (this.selectedCategoriesIds.includes(categoryId)) {
@@ -669,7 +605,6 @@ export default (
         poiId
       ).then((poi) => {
         this.setSelectedFeature(poi).then(() => {
-          this.service.send(HomeEvents.GoToCategories)
           this.$refs.mapFeatures.goToSelectedFeature()
         })
       })
@@ -705,13 +640,11 @@ export default (
         }
       }
 
-      this.service.send(HomeEvents.GoToCategories)
       this.$store.dispatch('map/setMode', Mode.BROWSER)
       this.selectCategory([newFilter.id])
     },
     onFeatureClick(feature: ApiPoi) {
       this.setSelectedFeature(feature).then(() => {
-        this.service.send(HomeEvents.GoToCategories)
         this.$refs.mapFeatures.goToSelectedFeature()
       })
     },
@@ -726,9 +659,9 @@ export default (
               this.setPoiVisibility(false)
             }
           }
-          this.goToHome()
+          this.isMenuItemOpen = false
         } else if (!this.isModeExplorer) {
-          this.goToMenuItems()
+          this.isMenuItemOpen = true
         } else if (this.selectedFeature && !this.isPoiCardVisible) {
           this.setPoiVisibility(true)
         }

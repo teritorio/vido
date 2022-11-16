@@ -23,30 +23,35 @@
   </component>
 
   <div v-else-if="isRootMenu">
-    <component
-      :is="menuBlock"
-      v-for="(menuItem, index) in currentMenuItems"
-      :key="menuItem.id"
-      :class="[index === 0 && 'hidden md:block']"
-    >
-      <template v-if="index === 0">
-        <Logo :main-url="mainUrl" :site-name="siteName" :logo-url="logoUrl" />
-        <SearchInput @click="$emit('search-click', $event)" />
-      </template>
-      <ItemList
-        v-else
-        :menu-items="getMenuItemByParentId(menuItem.id)"
-        :filters="filters"
-        :categories-actives-count-by-parent="categoriesActivesCountByParent"
-        :is-category-selected="isCategorySelected"
-        :size="size"
-        display-mode-default="compact"
-        class="flex-1 pointer-events-auto h-full"
-        @menu-group-click="onMenuGroupClick"
-        @category-click="$emit('category-click', $event)"
-        @filter-click="onCategoryFilterClick"
-      />
-    </component>
+    <template v-for="(menuItem, index) in currentMenuItems">
+      <component
+        :is="menuBlock"
+        v-if="index === 0"
+        :key="menuItem.id"
+        :class="[index === 0 && 'hidden md:block']"
+      >
+        <slot />
+      </component>
+      <component
+        :is="menuBlock"
+        v-else-if="!isOnSearch"
+        :key="menuItem.id"
+        :class="[index === 0 && 'hidden md:block']"
+      >
+        <ItemList
+          :menu-items="getMenuItemByParentId(menuItem.id)"
+          :filters="filters"
+          :categories-actives-count-by-parent="categoriesActivesCountByParent"
+          :is-category-selected="isCategorySelected"
+          :size="size"
+          display-mode-default="compact"
+          class="flex-1 pointer-events-auto h-full"
+          @menu-group-click="onMenuGroupClick"
+          @category-click="$emit('category-click', $event)"
+          @filter-click="onCategoryFilterClick"
+        />
+      </component>
+    </template>
   </div>
 
   <div v-else>
@@ -107,7 +112,7 @@ import MenuBlock from '~/components/Home/MenuBlock.vue'
 import MenuBlockBottom from '~/components/Home/MenuBlockBottom.vue'
 import FilterCompo from '~/components/Menu/Filter.vue'
 import ItemList from '~/components/Menu/ItemList.vue'
-import SearchInput from '~/components/Search/SearchInput.vue'
+import Search from '~/components/Search/Search.vue'
 import Logo from '~/components/UI/Logo.vue'
 import { ApiMenuCategory, MenuGroup, MenuItem } from '~/lib/apiMenu'
 import { FilterValues } from '~/utils/types-filters'
@@ -119,24 +124,12 @@ export default Vue.extend({
     MenuBlockBottom,
     ItemList,
     FilterCompo,
-    SearchInput,
+    Search,
   },
 
   props: {
     menuBlock: {
       type: String as PropType<'MenuBlock' | 'MenuBlockBottom'>,
-      required: true,
-    },
-    logoUrl: {
-      type: String,
-      required: true,
-    },
-    mainUrl: {
-      type: String,
-      required: true,
-    },
-    siteName: {
-      type: String,
       required: true,
     },
     menuItems: {
@@ -154,6 +147,10 @@ export default Vue.extend({
     categoriesActivesCountByParent: {
       type: Object as PropType<{ [id: string]: number }>,
       required: true,
+    },
+    isOnSearch: {
+      type: Boolean,
+      default: false,
     },
   },
 

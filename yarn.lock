@@ -4720,8 +4720,6 @@ __metadata:
     "@typescript-eslint/eslint-plugin": ^5.42.1
     "@typescript-eslint/parser": ^5.42.1
     "@vue/test-utils": ^1.3.3
-    "@xstate/inspect": ^0.7.0
-    "@xstate/vue": ^2.0.0
     autoprefixer: ^10.4.13
     babel-eslint: ^10.1.0
     babel-jest: ^28.1.3
@@ -4772,7 +4770,6 @@ __metadata:
     vue-tailwind: ^2.5.1
     vue2-touch-events: ^3.2.2
     vuex-shared-mutations: ^1.0.2
-    xstate: ^4.34.0
   languageName: unknown
   linkType: soft
 
@@ -6365,38 +6362,6 @@ __metadata:
     "@webassemblyjs/wast-parser": 1.9.0
     "@xtuc/long": 4.2.2
   checksum: 9f013b27e28b60cb215011079a15c94d1a7b0784eb3b59ec4936f8c0635ecdb58875c6809485cff814e01df170f02c18676cf782826795dc08553b98e69c1049
-  languageName: node
-  linkType: hard
-
-"@xstate/inspect@npm:^0.7.0":
-  version: 0.7.0
-  resolution: "@xstate/inspect@npm:0.7.0"
-  dependencies:
-    fast-safe-stringify: ^2.1.1
-  peerDependencies:
-    "@types/ws": ^8.0.0
-    ws: ^8.0.0
-    xstate: ^4.32.0
-  peerDependenciesMeta:
-    "@types/ws":
-      optional: true
-  checksum: 94f4141e8ba25da698abee61d9e326d8bed0d6402e05ccabbdb1497f55e4c976451acc5f87be1c4b756ca8185faa04afcb6968c5003e93f6362a55a588472c4d
-  languageName: node
-  linkType: hard
-
-"@xstate/vue@npm:^2.0.0":
-  version: 2.0.0
-  resolution: "@xstate/vue@npm:2.0.0"
-  peerDependencies:
-    "@xstate/fsm": ^2.0.0
-    vue: ^3.0.0
-    xstate: ^4.31.0
-  peerDependenciesMeta:
-    "@xstate/fsm":
-      optional: true
-    xstate:
-      optional: true
-  checksum: fe33ac5ccadfe02b0b8f7a613e93a0c22e899c395582dfe6c66f461dc52f7b3b4d41022c05ca735acce9bbb5b5ded5d1c7d42a3d20d084c38b5dd516a31870ec
   languageName: node
   linkType: hard
 
@@ -11693,13 +11658,6 @@ __metadata:
   version: 2.0.6
   resolution: "fast-levenshtein@npm:2.0.6"
   checksum: a2d03af3088b0397633e007fb3010ecfa4f91cae2116d2385653c59396a1b31467641afa672a79e6f82218518670dc144128378124e711e35dbf90bc82846f22
-  languageName: node
-  linkType: hard
-
-"fast-safe-stringify@npm:^2.1.1":
-  version: 2.1.1
-  resolution: "fast-safe-stringify@npm:2.1.1"
-  checksum: 79c9940151284bcd46d5a46c6e93f3037aca0d151f65fa20dac6d914aeb755393dc1c7ef124f4813921c47b8c629af7638e765c2bfeb0127fad2a9f32c676b64
   languageName: node
   linkType: hard
 
@@ -25553,13 +25511,6 @@ typescript@~4.2:
   bin:
     xss: bin/xss
   checksum: a0240f20226f346279069a51cd2d9d823b17f90634fb38ca487ff4e079a641c87e9d4252486f065d6bca6e5e0d0ce307742bd02d1e2b4f1d69a8a53f24b1a368
-  languageName: node
-  linkType: hard
-
-"xstate@npm:^4.34.0":
-  version: 4.34.0
-  resolution: "xstate@npm:4.34.0"
-  checksum: b37a0c053095e03121086b693d9d491ffdd17b84869037f8eeb7e63ff46669255c912e21f9a23c00e8272a949834998a4bd11c1ac45e9d1b0b22b35aa25a9428
   languageName: node
   linkType: hard
 
