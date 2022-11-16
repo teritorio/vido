@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="flex flex-row md:flex-col items-center md:items-start">
+    <div class="flex flex-row items-center">
       <template v-if="!focus">
         <slot />
       </template>

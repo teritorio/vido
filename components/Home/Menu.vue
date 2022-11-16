@@ -24,12 +24,7 @@
 
   <div v-else-if="isRootMenu">
     <template v-for="(menuItem, index) in currentMenuItems">
-      <component
-        :is="menuBlock"
-        v-if="index === 0"
-        :key="menuItem.id"
-        :class="[index === 0 && 'hidden md:block']"
-      >
+      <component :is="menuBlock" v-if="index === 0" :key="menuItem.id">
         <slot />
       </component>
       <component
