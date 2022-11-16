@@ -4652,10 +4652,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@teritorio/font-teritorio@npm:^2.3.0":
-  version: 2.3.0
-  resolution: "@teritorio/font-teritorio@npm:2.3.0"
-  checksum: a3d0527c6ec49bc75398ebdb37fcad564b5b3c558f1a5b9ccad963b0a9b4abb6bfab50b8642d49e3de292e76fa49f0a48dae878e569944c733a5471cb3878fbb
+"@teritorio/font-teritorio@npm:^2.4.0":
+  version: 2.4.0
+  resolution: "@teritorio/font-teritorio@npm:2.4.0"
+  checksum: d620046f944b7b5ed632451160edcf69d3eecf49ba56d0a3bd5262d7943260ef818708dc0d38efdaf384a98f9f6c8a3cebf15d8b0cad6641694edba8ee1bbeac
   languageName: node
   linkType: hard
 
@@ -4705,7 +4705,7 @@ __metadata:
     "@nuxtjs/tailwindcss": ^5.3.5
     "@tailwindcss/forms": ^0.5.3
     "@tailwindcss/typography": ^0.5.8
-    "@teritorio/font-teritorio": ^2.3.0
+    "@teritorio/font-teritorio": ^2.4.0
     "@teritorio/map": ^0.12.2
     "@teritorio/openmaptiles-gl-language": ^1.5.4
     "@types/geojson": ^7946.0.10
