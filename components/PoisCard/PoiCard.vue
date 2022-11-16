@@ -22,7 +22,6 @@
       />
       <NuxtPicture
         v-if="poi.properties.image && poi.properties.image.length > 0"
-        __class="w-full h-44 md:w-auto md:h-full z-10"
         class="object-cover h-44 w-full md:w-48 md:h-full z-10"
         :src="poi.properties.image[0]"
         media-size="12rem"
