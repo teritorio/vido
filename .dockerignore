@@ -3,6 +3,7 @@
 # Yarn v2
 #.yarn
 .pnp.*
+.yarn/cache
 
 # Logs
 /logs
