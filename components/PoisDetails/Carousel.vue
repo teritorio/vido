@@ -1,6 +1,6 @@
 <template>
   <div v-if="images.length == 1" class="margin">
-    <NuxtPicture :src="images[0]" />
+    <NuxtPicture :src="images[0]" media-size="66vw" />
   </div>
   <VueAgile
     v-else-if="images.length > 1"
