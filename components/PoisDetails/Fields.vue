@@ -92,7 +92,7 @@ export default Vue.extend({
   clear: right;
 }
 
-.field {
+:deep(.field) {
   margin-bottom: 0.3rem;
 }
 </style>

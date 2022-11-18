@@ -9,8 +9,8 @@
       {{ length }}.
     </div>
     <div v-else>
-      <div>{{ $tc('fields.route.length') }} {{ length }}</div>
-      <div v-for="(route, activity) in routes" :key="activity">
+      <div class="field">{{ $tc('fields.route.length') }} {{ length }}</div>
+      <div v-for="(route, activity) in routes" :key="activity" class="field">
         <FieldsHeader
           :recursion-level="recursionLevel"
           class="`field_header_level_${recursionLevel}`"
