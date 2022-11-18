@@ -81,9 +81,7 @@
       </span>
 
       <Phone
-        v-for="phone in (properties.phone || []).concat(
-          properties.mobile || []
-        )"
+        v-for="phone in properties[field.field]"
         v-else-if="
           (field.field === 'phone' || field.field === 'mobile') && showPhone
         "
