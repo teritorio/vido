@@ -61,13 +61,11 @@
     >
     <span :class="`field_content_level_${recursionLevel}`">
       <span v-if="field.field == 'description'">
-        <template v-if="Boolean(details)">
-          {{ propTranslateV(field.field).substring(0, textLimit) + ' ...' }}
+        <template
+          v-if="Boolean(details) && properties.description.length > textLimit"
+        >
+          {{ properties.description.substring(0, textLimit) + '...' }}
           <a
-            v-if="
-              propTranslateV(field.field) &&
-              propTranslateV(field.field).length > textLimit
-            "
             class="underline"
             :href="details"
             rel="noopener noreferrer"
