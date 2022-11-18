@@ -13,7 +13,7 @@
       <div v-for="(route, activity) in routes" :key="activity" class="field">
         <FieldsHeader
           :recursion-level="recursionLevel"
-          class="`field_header_level_${recursionLevel}`"
+          :class="`field_header_level_${recursionLevel}`"
         >
           {{ $propertyTranslations.pv('route', activity, context) }}
         </FieldsHeader>
