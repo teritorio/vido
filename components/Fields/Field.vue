@@ -243,3 +243,9 @@ export default Vue.extend({
   },
 })
 </script>
+
+<style scoped>
+.prose {
+  max-width: none;
+}
+</style>
