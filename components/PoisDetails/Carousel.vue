@@ -64,6 +64,8 @@ export default Vue.extend({
   left: 50%;
   position: absolute;
   transform: translateX(-50%);
+  margin: 0;
+  padding: 0;
 }
 
 .agile__dot {
