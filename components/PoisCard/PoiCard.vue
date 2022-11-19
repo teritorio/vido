@@ -87,16 +87,16 @@
       <div
         class="flex items-center space-x-2 justify-evenly shrink-0 bottom-0 pt-2 shrink-0"
       >
-        <CoordinateAction
-          v-if="$screen.smallScreen"
-          :geometry="poi.geometry"
+        <a
+          v-if="$screen.smallScreen && coordinatesHref"
+          :href="coordinatesHref"
           class="flex flex-col items-center flex-1 h-full p-2 space-y-2 rounded-lg hover:bg-zinc-100"
           :title="$tc('poiCard.findRoute')"
           @click="trackingPopupEvent('route')"
         >
           <font-awesome-icon icon="route" :color="colorLine" size="sm" />
           <span class="text-sm">{{ $tc('poiCard.route') }}</span>
-        </CoordinateAction>
+        </a>
 
         <button
           class="flex flex-1 flex-col items-center space-y-2 rounded-lg p-2 h-full hover:bg-zinc-100"
@@ -151,19 +151,19 @@
 import Vue, { PropType } from 'vue'
 import { mapGetters } from 'vuex'
 
-import CoordinateAction from '~/components/Fields/CoordinateAction.vue'
 import Fields from '~/components/PoisCard/Fields.vue'
 import FavoriteIcon from '~/components/UI/FavoriteIcon.vue'
 import NuxtPicture from '~/components/UI/NuxtPicture.vue'
 import TeritorioIcon from '~/components/UI/TeritorioIcon.vue'
 import { ApiPoi, ApiPoiId } from '~/lib/apiPois'
+import { coordinatesHref } from '~/lib/coordinates'
+import { isIOS } from '~/utils/isIOS'
 
 export default Vue.extend({
   components: {
     TeritorioIcon,
     FavoriteIcon,
     Fields,
-    CoordinateAction,
     NuxtPicture,
   },
 
@@ -249,6 +249,12 @@ export default Vue.extend({
         this.poi.properties.editorial &&
         this.poi.properties.editorial['website:details']
       )
+    },
+
+    coordinatesHref(): string | undefined {
+      return isIOS !== undefined
+        ? coordinatesHref(this.poi.geometry, isIOS())
+        : undefined
     },
   },
 
