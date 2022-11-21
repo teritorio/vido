@@ -1,27 +1,37 @@
 <template>
-  <button
-    id="3D-selector-map"
-    :aria-label="$tc('mapControls.threeDAriaLabel')"
-    type="button"
+  <div
+    ref="container"
     :class="[
-      'hidden md:block items-center justify-center leading-none md:flex text-sm font-bold rounded-full shadow-md w-11 h-11 outline-none focus:outline-none ',
-      pitch != 0 &&
-        'bg-blue-500 text-white hover:bg-blue-400 focus-visible:bg-blue-400',
-      pitch == 0 &&
-        'bg-white text-zinc-800 hover:bg-zinc-100 focus-visible:bg-zinc-100',
+      'maplibregl-ctrl maplibregl-ctrl-group mapboxgl-ctrl mapboxgl-ctrl-group',
+      'hidden md:block',
     ]"
-    @click="toggle3D"
   >
-    3D
-  </button>
+    <button
+      id="3D-selector-map"
+      :aria-label="$tc('mapControls.threeDAriaLabel')"
+      type="button"
+      :class="[, pitch != 0 && 'maplibregl-ctrl-active']"
+      @click="toggle3D"
+    >
+      3D
+    </button>
+  </div>
 </template>
 
 <script lang="ts">
 import { Building3d } from '@teritorio/map'
 import { Map } from 'maplibre-gl'
-import Vue, { PropType } from 'vue'
+import Vue, { VueConstructor, PropType } from 'vue'
 
-export default Vue.extend({
+export default (
+  Vue as VueConstructor<
+    Vue & {
+      $refs: {
+        container: InstanceType<typeof HTMLDivElement>
+      }
+    }
+  >
+).extend({
   props: {
     map: {
       type: Object as PropType<Map>,
@@ -34,12 +44,10 @@ export default Vue.extend({
   },
 
   data(): {
-    building3d: Building3d
+    building3d: Building3d | null
   } {
     return {
-      building3d: new Building3d({
-        building3d: this.pitch !== 0,
-      }),
+      building3d: null,
     }
   },
 
@@ -49,10 +57,17 @@ export default Vue.extend({
         this.building3d.set3d(value !== 0)
       }
     },
-  },
 
-  mounted() {
-    this.map.addControl(this.building3d)
+    map(value, oldValue) {
+      if (!oldValue && value) {
+        this.building3d = new Building3d({
+          building3d: this.pitch !== 0,
+          // @ts-ignore
+          container: this.$refs.container,
+        })
+        this.map.addControl(this.building3d)
+      }
+    },
   },
 
   methods: {

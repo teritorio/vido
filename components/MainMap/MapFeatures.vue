@@ -27,9 +27,10 @@
       @full-attribution="$emit('full-attribution', $event)"
     >
       <template #controls>
-        <MapControlsExplore v-if="explorerModeEnabled" />
+        <MapControlsExplore v-if="explorerModeEnabled" :map="map" />
         <MapControls3D :map="map" :pitch="pitch" />
         <MapControlsBackground
+          :map="map"
           :backgrounds="availableStyles"
           :initial-background="selectedBackground"
           @change-background="selectedBackground = $event"

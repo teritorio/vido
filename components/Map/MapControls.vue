@@ -1,19 +1,7 @@
 <template>
-  <aside class="pointer-events-none">
-    <div
-      :class="[
-        'flex flex-col justify-center inset-y-3 right-3',
-        fullPage ? 'fixed' : 'absolute',
-      ]"
-    >
-      <div class="flex flex-col space-y-3 pointer-events-auto">
-        <div ref="navigationControlContainer" />
-        <div ref="geolocateControlContainer" class="md:hidden" />
-        <div ref="fullscreenControlContainer" />
-        <slot v-if="map"></slot>
-      </div>
-    </div>
-  </aside>
+  <div>
+    <slot />
+  </div>
 </template>
 
 <script lang="ts">
@@ -49,23 +37,17 @@ export default Vue.extend({
           showCompass: this.showCompass,
           visualizePitch: true,
         })
-        ;(this.$refs.navigationControlContainer as HTMLDivElement).appendChild(
-          navigationControl.onAdd(this.map)
-        )
+        this.map.addControl(navigationControl)
 
         const geolocateControl = new maplibregl.GeolocateControl({
           positionOptions: { enableHighAccuracy: true },
           trackUserLocation: true,
         })
-        ;(this.$refs.geolocateControlContainer as HTMLDivElement).appendChild(
-          geolocateControl.onAdd(this.map)
-        )
+        this.map.addControl(geolocateControl)
 
         if (this.fullscreenControl) {
           const control = new maplibregl.FullscreenControl({})
-          ;(
-            this.$refs.fullscreenControlContainer as HTMLDivElement
-          ).appendChild(control.onAdd(this.map))
+          this.map.addControl(control)
         }
 
         const scale = new mapboxgl.ScaleControl({
@@ -78,17 +60,43 @@ export default Vue.extend({
 })
 </script>
 
-<style>
-.mapboxgl-ctrl-group {
-  @apply space-y-3 contents;
+<style lang="scss">
+.mapboxgl-ctrl-group,
+.maplibre-ctrl-group {
+  @apply mb-4;
+
+  background: none;
+}
+
+.mapboxgl-ctrl-group:not(:empty),
+.maplibregl-ctrl-group:not(:empty) {
+  box-shadow: none;
 }
 
 .mapboxgl-ctrl-group > button,
-.mapboxgl-ctrl-group > button:not(:disabled) {
-  @apply text-sm font-bold text-zinc-800 bg-white rounded-full focus:rounded-full shadow-md focus:shadow-md outline-none w-11 h-11 focus:outline-none hover:bg-zinc-100 focus-visible:bg-zinc-100;
+.maplibregl-ctrl-group > button,
+.mapboxgl-ctrl-group > button:not(:disabled),
+.maplibregl-ctrl-group > button:not(:disabled) {
+  @apply text-sm font-bold text-zinc-800 bg-white rounded-full shadow-md outline-none w-11 h-11;
+  @apply focus:rounded-full focus:shadow-md focus:outline-none focus-visible:bg-zinc-100;
+  @apply hover:bg-zinc-100;
 }
 
-.mapboxgl-ctrl-compass {
-  @apply overflow-hidden;
+.mapboxgl-ctrl-group > button.mapboxgl-ctrl-active,
+.maplibregl-ctrl-group > button.maplibregl-ctrl-active,
+.mapboxgl-ctrl-group > button.mapboxgl-ctrlactive:not(:disabled),
+.maplibregl-ctrl-group > button.maplibregl-ctrl-active:not(:disabled) {
+  @apply bg-blue-500 text-white hover:bg-blue-400 focus-visible:bg-blue-400;
+}
+
+.mapboxgl-ctrl-top-right,
+.maplibregl-ctrl-top-right {
+  @apply flex flex-col justify-center inset-y-3;
+}
+
+.mapboxgl-ctrl-attrib,
+.maplibregl-ctrl-attrib {
+  font-size: 0.75rem;
+  line-height: 1rem;
 }
 </style>

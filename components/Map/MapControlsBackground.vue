@@ -1,16 +1,15 @@
 <template>
-  <div>
-    <div v-for="background in backgrounds" :key="background" class="w-11 h-11">
+  <div
+    ref="container"
+    class="maplibregl-ctrl maplibregl-ctrl-group mapboxgl-ctrl mapboxgl-ctrl-group"
+  >
+    <template v-for="background in backgrounds">
       <button
         v-if="!hidden"
         :id="`background-selector-map-${background}`"
-        aria-label="$tc('mapControls.backgroundAriaLabel')"
-        :class="[
-          'bg-white border-4 rounded-full shadow-md outline-none w-11 h-11 focus:outline-none ',
-          activeBackground == background && 'border-blue-500',
-          activeBackground != background &&
-            'border-white hover:border-zinc-100',
-        ]"
+        :key="background"
+        :aria-label="$tc('mapControls.backgroundAriaLabel')"
+        :class="[activeBackground == background && 'maplibregl-ctrl-active']"
         :title="
           $t('mapControls.backgroundButton', {
             background: name(background),
@@ -19,25 +18,41 @@
         type="button"
         @click="changeBackground(background)"
       >
-        <img
-          class="h-full rounded-full"
-          alt="fond de carte"
-          :src="require(`~/assets/${background}.png`)"
-        />
+        <div class="h-full p-1">
+          <img
+            class="rounded-full bg-white"
+            alt="fond de carte"
+            :src="require(`~/assets/${background}.png`)"
+          />
+        </div>
       </button>
-    </div>
+    </template>
   </div>
 </template>
 
 <script lang="ts">
-import Vue, { PropType } from 'vue'
+import { Control } from '@teritorio/map'
+import { Map } from 'maplibre-gl'
+import Vue, { PropType, VueConstructor } from 'vue'
 
 import { DEFAULT_MAP_STYLE, MAP_STYLE_NAMES } from '~/lib/constants'
 import { MapStyleEnum } from '~/utils/types'
 import { getHashPart, routerPushHashUpdate } from '~/utils/url'
 
-export default Vue.extend({
+export default (
+  Vue as VueConstructor<
+    Vue & {
+      $refs: {
+        container: InstanceType<typeof HTMLDivElement>
+      }
+    }
+  >
+).extend({
   props: {
+    map: {
+      type: Object as PropType<Map>,
+      default: null,
+    },
     backgrounds: {
       type: Array as PropType<MapStyleEnum[]>,
       required: true,
@@ -60,14 +75,27 @@ export default Vue.extend({
     }
   },
 
-  mounted() {
-    const bgString = getHashPart(this.$router, 'bg')
-    const bg = MapStyleEnum[bgString as keyof typeof MapStyleEnum]
-    if (bg && this.backgrounds.includes(bg)) {
-      this.activeBackground = bg
-    } else {
-      this.activeBackground = this.initialBackground
-    }
+  watch: {
+    map(value, oldValue) {
+      if (!oldValue && value) {
+        const bgString = getHashPart(this.$router, 'bg')
+        const bg = MapStyleEnum[bgString as keyof typeof MapStyleEnum]
+        if (bg && this.backgrounds.includes(bg)) {
+          this.activeBackground = bg
+        } else {
+          this.activeBackground = this.initialBackground
+        }
+
+        class BackgroundControl extends Control {
+          constructor(container: HTMLDivElement) {
+            super(container)
+          }
+        }
+
+        const control = new BackgroundControl(this.$refs.container)
+        this.map.addControl(control)
+      }
+    },
   },
 
   methods: {

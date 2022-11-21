@@ -4659,12 +4659,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@teritorio/map@npm:^0.12.2":
-  version: 0.12.2
-  resolution: "@teritorio/map@npm:0.12.2"
+"@teritorio/map@npm:^0.12.4":
+  version: 0.12.4
+  resolution: "@teritorio/map@npm:0.12.4"
   peerDependencies:
     mapbox-gl: ^1.10.1
-  checksum: 0e5018705912ad13e1ce17bb28a87e4c3475e941d118e6fbfe527f377b65a0cf9be7aa8329d46956bb2e7c27f5841b6dc34a296d3d59bfd595e9d30a84cf0738
+  checksum: 2f8cd843eb7b2a56e9079fda5f6e1f63756478efbd65cab9cf3857ceaec375cc9eb2db7056b294d4839ff578a190455ebb5e3cc6165f31a6634fd4452f991868
   languageName: node
   linkType: hard
 
@@ -4706,7 +4706,7 @@ __metadata:
     "@tailwindcss/forms": ^0.5.3
     "@tailwindcss/typography": ^0.5.8
     "@teritorio/font-teritorio": ^2.4.0
-    "@teritorio/map": ^0.12.2
+    "@teritorio/map": ^0.12.4
     "@teritorio/openmaptiles-gl-language": ^1.5.4
     "@types/geojson": ^7946.0.10
     "@types/jest": ^28.1.8

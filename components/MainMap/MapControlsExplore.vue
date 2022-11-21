@@ -1,38 +1,73 @@
 <template>
-  <button
-    :aria-label="$tc('mapControls.exploreAriaLabel')"
-    :title="$tc('mapControls.exploreButton')"
-    type="button"
+  <div
+    ref="container"
     :class="[
-      'hidden md:block text-sm font-bold rounded-full shadow-md w-11 h-11 outline-none focus:outline-none ',
-      isModeExplorer &&
-        'bg-blue-500 hover:bg-blue-400 focus-visible:bg-blue-400',
-      !isModeExplorer && 'bg-white hover:bg-zinc-100 focus-visible:bg-zinc-100',
+      'maplibregl-ctrl maplibregl-ctrl-group mapboxgl-ctrl mapboxgl-ctrl-group',
+      'hidden md:block',
     ]"
-    @click="toggleMode"
   >
-    <font-awesome-icon
-      icon="eye"
-      :class="[
-        isModeExplorer && 'text-white',
-        !isModeExplorer && 'text-zinc-800',
-      ]"
-      size="lg"
-    />
-  </button>
+    <button
+      :aria-label="$tc('mapControls.exploreAriaLabel')"
+      :title="$tc('mapControls.exploreButton')"
+      type="button"
+      :class="['hidden md:block', isModeExplorer && 'maplibregl-ctrl-active']"
+      @click="toggleMode"
+    >
+      <font-awesome-icon
+        icon="eye"
+        :class="[
+          isModeExplorer && 'text-white',
+          !isModeExplorer && 'text-zinc-800',
+        ]"
+        size="lg"
+      />
+    </button>
+  </div>
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
+import { Control } from '@teritorio/map'
+import { Map } from 'maplibre-gl'
+import Vue, { PropType, VueConstructor } from 'vue'
 import { mapGetters, mapActions } from 'vuex'
 
 import { Mode } from '~/utils/types'
 
-export default Vue.extend({
+export default (
+  Vue as VueConstructor<
+    Vue & {
+      $refs: {
+        container: InstanceType<typeof HTMLDivElement>
+      }
+    }
+  >
+).extend({
+  props: {
+    map: {
+      type: Object as PropType<Map>,
+      default: null,
+    },
+  },
+
   computed: {
     ...mapGetters({
       isModeExplorer: 'map/isModeExplorer',
     }),
+  },
+
+  watch: {
+    map(value, oldValue) {
+      if (!oldValue && value) {
+        class BackgroundControl extends Control {
+          constructor(container: HTMLDivElement) {
+            super(container)
+          }
+        }
+
+        const control = new BackgroundControl(this.$refs.container)
+        this.map.addControl(control)
+      }
+    },
   },
 
   methods: {
