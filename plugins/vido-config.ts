@@ -38,11 +38,11 @@ export function vidoConfig(req: createServer.IncomingMessage): VidoConfig {
     host = window.location.host
   }
   host = host?.split(':')[0]
-  if (!(host in vidoHostConfig)) {
+  if (!(host in vidoHostConfig) && !('' in vidoHostConfig)) {
     throw new Error(`Not configured host "${host}"`)
   }
   return {
-    ...vidoHostConfig[host],
+    ...(vidoHostConfig[host] || vidoHostConfig['']),
   }
 }
 
