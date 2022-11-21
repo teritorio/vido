@@ -71,7 +71,7 @@
 <script lang="ts">
 import Vue, { VueConstructor } from 'vue'
 
-import ShareLinkModal from '~/components/ShareLinkModal.vue'
+import ShareLinkModal from '~/components/UI/ShareLinkModal.vue'
 import { OriginEnum } from '~/utils/types'
 import { urlAddTrackOrigin } from '~/utils/url'
 

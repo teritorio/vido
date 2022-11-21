@@ -9,7 +9,7 @@ import Vue from 'vue'
 import { MetaInfo } from 'vue-meta'
 import { mapActions } from 'vuex'
 
-import MapPois from '~/components/MapPois.vue'
+import MapPois from '~/components/Map/MapPois.vue'
 import { getPoiByIds, ApiPois } from '~/lib/apiPois'
 import { getSettings, headerFromSettings, Settings } from '~/lib/apiSettings'
 import { vidoConfig } from '~/plugins/vido-config'

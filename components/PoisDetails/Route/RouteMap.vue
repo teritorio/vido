@@ -38,7 +38,7 @@
 <script lang="ts">
 import Vue, { PropType } from 'vue'
 
-import MapPois from '~/components/MapPois.vue'
+import MapPois from '~/components/Map/MapPois.vue'
 import PoisDeck from '~/components/PoisCard/PoisDeck.vue'
 import {
   ApiPoiDeps,
