@@ -23,10 +23,6 @@ export default Vue.extend({
       type: Boolean,
       default: false,
     },
-    fullPage: {
-      type: Boolean,
-      default: false,
-    },
   },
 
   watch: {
