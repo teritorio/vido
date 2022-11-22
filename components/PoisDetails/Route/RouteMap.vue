@@ -2,7 +2,7 @@
   <div v-if="routeCollection">
     <MapPois
       class="map-pois relative"
-      :pois="routeCollection"
+      :features="routeCollection.features"
       :feature-id="poiId"
       :fullscreen-control="true"
     />

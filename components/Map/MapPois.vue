@@ -1,32 +1,38 @@
 <template>
-  <div>
-    <Map
-      v-if="pois && pois.features.length > 0"
-      :center="center()"
-      :bounds="bounds()"
-      :zoom="selectionZoom.poi"
-      :fullscreen-control="fullscreenControl"
-      :extra-attributions="extraAttributions"
-      @map-init="onMapInit"
-    />
-  </div>
+  <MapBase
+    ref="mapBase"
+    :features="features"
+    :center="center"
+    :bounds="bounds"
+    :zoom="selectionZoom.poi"
+    :fullscreen-control="fullscreenControl"
+    :extra-attributions="extraAttributions"
+    @map-init="onMapInit"
+    @map-style-load="onMapStyleLoad"
+  />
 </template>
 
 <script lang="ts">
-import { PoiFilter } from '@teritorio/map'
-import Vue, { PropType } from 'vue'
+import Vue, { PropType, VueConstructor } from 'vue'
 
-import Map from '~/components/Map/Map.vue'
+import MapBase from '~/components/Map/MapBase.vue'
+import { ApiPoi } from '~/lib/apiPois'
 import { getBBoxFeatures } from '~/lib/bbox'
 import { MAP_ZOOM } from '~/lib/constants'
-import { ApiPoiId, MapPoiCollection } from '~/lib/mapPois'
-import { makerHtmlFactory } from '~/lib/markerLayerFactory'
+import { MapPoiId } from '~/lib/mapPois'
 import { filterRouteByPoiId } from '~/utils/styles'
-import { TupleLatLng } from '~/utils/types'
 
-export default Vue.extend({
+export default (
+  Vue as VueConstructor<
+    Vue & {
+      $refs: {
+        mapBase: InstanceType<typeof MapBase>
+      }
+    }
+  >
+).extend({
   components: {
-    Map,
+    MapBase,
   },
 
   props: {
@@ -34,12 +40,12 @@ export default Vue.extend({
       type: Array as PropType<string[]>,
       default: () => [],
     },
-    pois: {
-      type: Object as PropType<MapPoiCollection>,
-      default: null,
+    features: {
+      type: Array as PropType<ApiPoi[]>,
+      required: true,
     },
     featureId: {
-      type: Number as PropType<ApiPoiId>,
+      type: Number as PropType<MapPoiId | null>,
       default: null,
     },
     fullscreenControl: {
@@ -48,45 +54,25 @@ export default Vue.extend({
     },
   },
 
+  data(): {
+    map: maplibregl.Map
+  } {
+    return {
+      map: null!,
+    }
+  },
+
   computed: {
     selectionZoom() {
       return MAP_ZOOM.selectionZoom
     },
-  },
-
-  methods: {
-    onMapInit(map: maplibregl.Map) {
-      map.addControl(new PoiFilter({ filter: [] }))
-
-      map.once('styledata', () => {
-        if (this.featureId) {
-          filterRouteByPoiId(map, this.featureId)
-        }
-
-        this.pois.features.forEach((poi) => {
-          // @ts-ignore
-          const id: ApiPoiId = poi.properties.metadata?.id
-
-          if (poi.geometry.type === 'Point' && poi.properties.display) {
-            makerHtmlFactory(
-              `m${id}`,
-              poi.geometry.coordinates as TupleLatLng,
-              poi.properties.display.color_fill || '#000000',
-              poi.properties.display.icon,
-              poi.properties['image:thumbnail'],
-              'lg'
-            ).addTo(map)
-          }
-        })
-      })
-    },
 
     center() {
       if (
-        this.pois.features.length === 1 &&
-        this.pois.features[0].geometry.type === 'Point'
+        this.features.length === 1 &&
+        this.features[0].geometry.type === 'Point'
       ) {
-        return this.pois.features[0].geometry.coordinates
+        return this.features[0].geometry.coordinates
       } else {
         return undefined
       }
@@ -94,12 +80,38 @@ export default Vue.extend({
 
     bounds() {
       if (
-        this.pois.features.length > 1 ||
-        this.pois.features[0].geometry.type !== 'Point'
+        this.features.length > 1 ||
+        this.features[0].geometry.type !== 'Point'
       ) {
-        return getBBoxFeatures(this.pois.features)
+        return getBBoxFeatures(this.features)
       } else {
         return undefined
+      }
+    },
+  },
+
+  methods: {
+    onMapInit(map: maplibregl.Map) {
+      this.map = map
+    },
+
+    onMapStyleLoad(style: maplibregl.StyleSpecification) {
+      const colors = [
+        ...new Set(
+          this.features.map(
+            (feature) => feature.properties?.display?.color_fill || '#000000'
+          )
+        ),
+      ]
+      this.$refs.mapBase.initPoiLayer(this.features, colors, [
+        'case',
+        ['all', ['has', 'display'], ['has', 'color_fill', ['get', 'display']]],
+        ['get', 'color_fill', ['get', 'display']],
+        '#000000',
+      ])
+
+      if (this.featureId) {
+        filterRouteByPoiId(this.map, this.featureId)
       }
     },
   },
