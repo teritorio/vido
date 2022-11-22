@@ -54,7 +54,7 @@ import Fields from '~/components/PoisCard/Fields.vue'
 import NuxtPicture from '~/components/UI/NuxtPicture.vue'
 import TeritorioIconBadge from '~/components/UI/TeritorioIconBadge.vue'
 import { ApiPoi } from '~/lib/apiPois'
-import { ApiPoiId } from '~/lib/mapPois'
+import { MapPoiId } from '~/lib/mapPois'
 
 export default Vue.extend({
   components: {
@@ -87,7 +87,7 @@ export default Vue.extend({
       favoritesIds: 'favorite/favoritesIds',
     }),
 
-    id(): ApiPoiId {
+    id(): MapPoiId {
       return this.poi.properties.metadata.id
     },
 

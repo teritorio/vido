@@ -1,8 +1,8 @@
-import { MapPoiProperties } from './mapPois'
+import { MapPoiProperties, MapPoiId } from './mapPois'
 
 import { MultilingualString } from '~/utils/types'
 
-export interface ApiPoiId extends Number {}
+export interface ApiPoiId extends MapPoiId {}
 
 export type FieldsListItem = {
   label?: boolean
@@ -20,8 +20,6 @@ export type FieldsListGroup = {
 export type FieldsList = (FieldsListItem | FieldsListGroup)[]
 
 export type ApiPoiProperties = MapPoiProperties & {
-  [key: string]: any
-
   image?: string[]
 
   'addr:city'?: string
@@ -49,6 +47,11 @@ export type ApiPoiProperties = MapPoiProperties & {
   display?: {
     // eslint-disable-next-line camelcase
     style_class?: string[]
+    // eslint-disable-next-line camelcase
+    color_fill: string
+    // eslint-disable-next-line camelcase
+    color_line: string
+    // eslint-disable-next-line camelcase
   }
   editorial?: {
     // eslint-disable-next-line camelcase
