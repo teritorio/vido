@@ -1,15 +1,12 @@
 <template>
   <div v-if="geom.type === 'Point'">
     <slot />
-    {{ href }}
     <ExternalLink v-if="href" :href="href" target="_blank" v-bind="$attrs">
-      yes
       {{ geom.coordinates[1].toFixed(6) }},&nbsp;{{
         geom.coordinates[0].toFixed(6)
       }}
     </ExternalLink>
     <span v-else>
-      no
       {{ geom.coordinates[1].toFixed(6) }},&nbsp;{{
         geom.coordinates[0].toFixed(6)
       }}
@@ -21,10 +18,15 @@
 import GeoJSON from 'geojson'
 import Vue, { PropType } from 'vue'
 
+import ExternalLink from '~/components/UI/ExternalLink.vue'
 import { coordinatesHref } from '~/lib/coordinates'
 import { isIOS } from '~/utils/isIOS'
 
 export default Vue.extend({
+  components: {
+    ExternalLink,
+  },
+
   props: {
     geom: {
       type: Object as PropType<GeoJSON.Geometry>,
