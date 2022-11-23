@@ -7,7 +7,7 @@
     :title="title"
     class="flex flex-row items-center gap-x-2.5 underline underline-offset-4"
   >
-    <font-awesome-icon :icon="icon" color="inherit" size="sm" />
+    <font-awesome-icon :icon="iconDefault" color="inherit" size="sm" />
     <slot />
   </a>
 </template>
@@ -20,7 +20,6 @@ export default Vue.extend({
     href: {
       type: String,
       required: true,
-      default: null,
     },
     title: {
       type: String,
@@ -34,11 +33,17 @@ export default Vue.extend({
       type: String,
       default: null,
     },
+    icon: {
+      type: String,
+      default: null,
+    },
   },
 
   computed: {
-    icon() {
-      if (this.href.startsWith('tel:')) {
+    iconDefault(): string {
+      if (this.icon) {
+        return this.icon
+      } else if (this.href.startsWith('tel:')) {
         return 'phone'
       } else {
         return 'external-link-alt'

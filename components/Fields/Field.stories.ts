@@ -21,6 +21,20 @@ export const Default = bind(Field, {
   ...defaultProps,
 })
 
+export const DefaultListOne = bind(Field, {
+  ...defaultProps,
+  properties: {
+    name: ['foo'],
+  },
+})
+
+export const DefaultListMany = bind(Field, {
+  ...defaultProps,
+  properties: {
+    name: ['foo', 'bar'],
+  },
+})
+
 export const NoValue = bind(Field, {
   ...defaultProps,
   properties: {},

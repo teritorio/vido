@@ -87,38 +87,49 @@
         :number="phone"
       />
 
-      <template
+      <ExternalLink
+        v-for="item in properties[field.field]"
+        v-else-if="field.field == 'website'"
+        :key="field.field + '_' + item"
+        :href="item"
+        target="_blank"
+      >
+        {{ item }}
+      </ExternalLink>
+
+      <ExternalLink
+        v-for="item in properties[field.field]"
+        v-else-if="field.field == 'email'"
+        :key="field.field + '_' + item"
+        :href="`mailto:${item}`"
+      >
+        {{ item }}
+      </ExternalLink>
+
+      <ExternalLink
+        v-for="item in properties[field.field]"
+        v-else-if="field.field == 'download'"
+        :key="field.field + '_' + item"
+        :href="item"
+        icon="arrow-circle-down"
+      >
+        {{ item.split('/').pop() }}
+      </ExternalLink>
+
+      <ul
         v-else-if="
           Array.isArray(properties[field.field]) &&
           properties[field.field].length > 0
         "
+        :class="[properties[field.field].length >= 2 && 'ul-many']"
       >
-        <div
+        <li
           v-for="item in properties[field.field]"
           :key="field.field + '_' + item"
         >
-          <ExternalLink
-            v-if="field.field == 'website'"
-            :href="item"
-            target="_blank"
-          >
-            {{ item }}
-          </ExternalLink>
-
-          <a v-else-if="field.field == 'item'" :href="`mailto:${item}`">
-            {{ item }}
-          </a>
-
-          <a v-else-if="field.field == 'download'" :href="item">
-            <font-awesome-icon prefix="fa" icon="arrow-circle-down" />
-            {{ item.split('/').pop() }}
-          </a>
-
-          <span v-else>
-            {{ item }}
-          </span>
-        </div>
-      </template>
+          {{ item }}
+        </li>
+      </ul>
 
       <Facebook
         v-else-if="field.field === 'facebook'"
@@ -244,8 +255,12 @@ export default Vue.extend({
 })
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 .prose {
   max-width: none;
+}
+
+ul.ul-many {
+  @apply list-disc ml-6;
 }
 </style>
