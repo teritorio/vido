@@ -39,6 +39,7 @@ module.exports = {
       },
     ],
     'vue/no-v-for-template-key-on-child': 'off',
+    'vue/no-deprecated-dollar-listeners-api': 'off', // Vue3 rule
   },
   settings: {
     'import/internal-regex': '^@/',
