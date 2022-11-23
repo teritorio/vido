@@ -34,12 +34,16 @@ export default Vue.extend({
     },
   },
 
-  computed: {
-    href(): string | undefined {
-      return isIOS !== undefined
-        ? coordinatesHref(this.geom, isIOS())
-        : undefined
-    },
+  data(): {
+    href: string | undefined
+  } {
+    return { href: undefined }
+  },
+
+  mounted() {
+    // isOS is client side only
+    this.href =
+      isIOS !== undefined ? coordinatesHref(this.geom, isIOS()) : undefined
   },
 })
 </script>
