@@ -65,7 +65,7 @@
             <MapPois
               :extra-attributions="settings.attributions"
               :feature-id="id"
-              :pois="{ features: [poi] }"
+              :features="[poi]"
               class="relative"
             />
             <p v-if="poi.properties.metadata.updated_at">
