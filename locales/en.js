@@ -73,6 +73,7 @@ export default {
     from_to: 'From {from} to {to}, {duration} day(s)',
     from: 'From {from}',
     to: 'Until {to}',
+    on: 'On {on}',
   },
   openingHours: {
     opened: 'Currently open',

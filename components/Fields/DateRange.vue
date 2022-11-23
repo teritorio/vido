@@ -2,7 +2,14 @@
   <div>
     <slot />
     <span>
-      <template v-if="start && end">
+      <template v-if="start && end && start == end">
+        {{
+          $t('dateRange.on', {
+            on: $d(new Date(start)),
+          })
+        }}
+      </template>
+      <template v-else-if="start && end">
         {{
           $t('dateRange.from_to', {
             from: $d(new Date(start)),

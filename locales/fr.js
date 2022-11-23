@@ -73,6 +73,7 @@ export default {
     from_to: 'Du {from} au {to}, {duration} jour(s)',
     from: 'À partir du {from}',
     to: "Jusqu'au {to}",
+    on: 'Le {on}',
   },
   openingHours: {
     opened: 'Actuellement ouvert',
