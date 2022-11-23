@@ -1,9 +1,5 @@
 <template>
-  <component
-    :is="menuBlock"
-    v-if="categoryIdFilter"
-    :class="[index === 0 && 'hidden md:block']"
-  >
+  <component :is="menuBlock" v-if="categoryIdFilter" class="hidden md:block">
     <div class="w-full flex justify-between pb-4">
       <button
         type="button"
