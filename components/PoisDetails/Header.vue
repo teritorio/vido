@@ -9,7 +9,7 @@
 
     <div class="flex justify-end">
       <slot />
-      <NavMenu :entries="navMenuEntries" class="ml-3 sm:ml-9" />
+      <NavMenu :entries="navMenuEntries" />
     </div>
   </header>
 </template>

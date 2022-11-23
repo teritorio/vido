@@ -10,11 +10,24 @@
           :aria-label="
             isFavorite ? $tc('poiCard.favoriteOn') : $tc('poiCard.favoriteOff')
           "
-          class="text-sm text-zinc-800 bg-white rounded-full shadow-md outline-none w-11 h-11 focus:outline-none hover:bg-zinc-100 focus-visible:bg-zinc-100 shrink-0"
+          :class="[
+            'text-sm text-zinc-800 bg-white rounded-full shadow-md outline-none w-11 h-11 focus:outline-none hover:bg-zinc-100 focus-visible:bg-zinc-100 shrink-0',
+            'mr-3 sm:mr-9',
+          ]"
           @click.stop="toggleFavorite"
         >
           <FavoriteIcon :is-active="isFavorite" :color-line="colorLine" />
         </button>
+        <a
+          :href="settings.themes[0].site_url.fr"
+          :aria-label="$tc('poiCard.backToMap')"
+          :class="[
+            'text-sm text-zinc-800 bg-white rounded-full shadow-md outline-none w-11 h-11 focus:outline-none hover:bg-zinc-100 focus-visible:bg-zinc-100 shrink-0 flex items-center justify-center',
+            'mr-3 sm:mr-9',
+          ]"
+        >
+          <TeritorioIcon picto="map" class="text-zinc-800" />
+        </a>
       </Header>
       <div class="flex justify-center">
         <TeritorioIconBadge
@@ -125,6 +138,7 @@ import RouteMap from '~/components/PoisDetails/Route/RouteMap.vue'
 import Share from '~/components/PoisDetails/Share.vue'
 import FavoriteIcon from '~/components/UI/FavoriteIcon.vue'
 import RelativeDate from '~/components/UI/RelativeDate.vue'
+import TeritorioIcon from '~/components/UI/TeritorioIcon.vue'
 import TeritorioIconBadge from '~/components/UI/TeritorioIconBadge.vue'
 import { ContentEntry } from '~/lib/apiContent'
 import { ApiPoiDeps } from '~/lib/apiPoiDeps'
@@ -137,6 +151,7 @@ export default Vue.extend({
   components: {
     Header,
     FavoriteIcon,
+    TeritorioIcon,
     TeritorioIconBadge,
     Share,
     Carousel,

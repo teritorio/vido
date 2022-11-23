@@ -95,6 +95,7 @@ export default {
     unactivateExplore: 'Deactivate exploration of the surroundings',
     activateExplore: 'Explore nearby points of interest',
     zoom: 'Zoom',
+    backToMap: 'Volver al mapa',
   },
   poiDetails: {
     headerDescription: 'Description',

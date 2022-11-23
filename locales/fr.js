@@ -96,6 +96,7 @@ export default {
     unactivateExplore: "Désactiver l'exploration aux alentours",
     activateExplore: "Explorer les points d'intérêts aux alentours",
     zoom: 'Zoomer',
+    backToMap: 'Aller à la carte',
   },
   poiDetails: {
     headerDescription: 'Descriptif',
