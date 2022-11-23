@@ -112,3 +112,5 @@ storybook-static
 # Cypress
 cypress/videos
 cypress/screenshots
+cypress/fixtures/**/*.geojson
+cypress/fixtures/**/deps.json

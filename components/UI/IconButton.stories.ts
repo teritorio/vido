@@ -11,11 +11,19 @@ const defaultProps = {
   ariaLabel: 'Plop',
 }
 
-export const DefaultButton = bind(IconButton, {
-  ...defaultProps,
-})
+export const DefaultButton = bind(
+  IconButton,
+  {
+    ...defaultProps,
+  },
+  'ABC'
+)
 
-export const DefaultLink = bind(IconButton, {
-  ...defaultProps,
-  href: 'https://www.teritorio.fr/',
-})
+export const DefaultLink = bind(
+  IconButton,
+  {
+    ...defaultProps,
+    href: 'https://www.teritorio.fr/',
+  },
+  'ABC'
+)

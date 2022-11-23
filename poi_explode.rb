@@ -45,6 +45,10 @@ pois.each{ |id, poi|
     "#{path.dirname}/poi/#{id}/deps.geojson",
     JSON.pretty_generate(deps, indent: '    ')
   )
+  File.write(
+    "#{path.dirname}/poi/#{id}/deps.json",
+    JSON.pretty_generate(deps, indent: '    ')
+  )
 }
 
 FileUtils.mkdir_p("#{path.dirname}/pois/category")

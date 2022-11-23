@@ -82,6 +82,10 @@
                         },
                         {
                             "field": "description"
+                        },
+                        {
+                            "field": "coordinates",
+                            "label": true
                         }
                     ],
                     "popup_fields": [

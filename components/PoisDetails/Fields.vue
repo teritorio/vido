@@ -3,6 +3,7 @@
     <template v-for="field in fields">
       <FieldsGroup
         v-if="field.group"
+        :id="`FieldsGroup-${field.group}`"
         :key="field.group"
         :recursion-level="recursionLevel"
         :group="field"
@@ -15,6 +16,7 @@
 
       <Field
         v-else
+        :id="`Field-${field.field}`"
         :key="field.group"
         :context="context"
         :recursion-level="recursionLevel"

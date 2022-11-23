@@ -10,7 +10,7 @@ type Def = {
 export function bind<T extends VueConstructor<Vue>>(
   t: T,
   args: Args,
-  slots: string | undefined = undefined
+  slots: string = ''
 ) {
   const Template = ((args: Args) => ({
     components: { t },

@@ -1,7 +1,12 @@
 import { APIFixture } from '~/cypress/fixtures/APIFixture'
 
-export function mockSSRAPI(hostname: string, api: APIFixture) {
-  const routes: { [route: string]: any } = {
+export function mockSSRAPI(
+  hostname: string,
+  api: APIFixture,
+  routes: { [route: string]: any } = {}
+) {
+  routes = {
+    ...routes,
     'settings.json': api.settings,
     'attribute_translations/fr.json': api.attribute_translations.fr,
     'articles.json?slug=non-classe': api.articles,
