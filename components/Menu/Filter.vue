@@ -17,7 +17,7 @@
       </div>
       <div v-else-if="filter.type == 'multiselection'" :key="filter.property">
         <label :for="filter.property" class="block mb-2 text-zinc-500">
-          {{ (filter.name && filter.name.fr) || filter.property }}
+          {{ (filter.def.name && filter.def.name.fr) || filter.def.property }}
         </label>
         <t-rich-select
           placeholder="Recherchez ou ajoutez une valeur"
