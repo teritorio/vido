@@ -13,7 +13,6 @@
           focusHandler,
           blurHandler,
           keydownHandler,
-          isShown,
         }"
       >
         <button
@@ -25,11 +24,7 @@
           @blur="blurHandler"
           @keydown="keydownHandler"
         >
-          <font-awesome-icon
-            :icon="isShown ? 'times' : 'bars'"
-            class="text-zinc-800"
-            size="sm"
-          />
+          <font-awesome-icon icon="cog" class="text-zinc-800" size="lg" />
         </button>
       </template>
 
