@@ -2,11 +2,11 @@
   <div>
     <slot />
     <div v-if="isCompact">
-      <span v-for="(route, activity) in routes" :key="activity">
+      <p v-for="(route, activity) in routes" :key="activity">
         {{ $propertyTranslations.pv('route', activity, context) }} :
         {{ formatNoDetails(activity, route) }}.
-      </span>
-      {{ length }}.
+      </p>
+      <p>{{ length }}</p>
     </div>
     <div v-else>
       <div class="field">{{ $tc('fields.route.length') }} {{ length }}</div>
