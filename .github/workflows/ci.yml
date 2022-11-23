@@ -81,7 +81,9 @@ jobs:
       - uses: ./.github/actions/install
 
       - name: Install ruby
-        run: sudo apt-get install -y ruby
+        run: |
+          sudo apt-get install -y ruby &&
+          ruby poi_explode.rb cypress/fixtures/teritorio/references/pois.geojson
 
       - name: Runtime configuration
         run: echo "${{secrets.CONFIGURATION_DEV}}" > vidos.config.ts
@@ -115,6 +117,11 @@ jobs:
         uses: actions/checkout@master
 
       - uses: ./.github/actions/install
+
+      - name: Install ruby
+        run: |
+          sudo apt-get install -y ruby &&
+          ruby poi_explode.rb cypress/fixtures/teritorio/references/pois.geojson
 
       - name: Runtime configuration
         run: echo "${{secrets.CONFIGURATION_DEV}}" > vidos.config.ts
@@ -166,6 +173,8 @@ jobs:
             echo -n 'VIDO: Deployment started at: ' &&
             date -u
           POST_SCRIPT: |
-            cd /var/www/clients/client3/web3/web/vido && docker-compose build && docker-compose up -d &&
+            cd /var/www/clients/client3/web3/web/vido &&
+            ruby poi_explode.rb cypress/fixtures/teritorio/references/pois.geojson &&
+            docker-compose build && docker-compose up -d &&
             echo -n 'VIDO: Deployment completed at: ' &&
             date -u
