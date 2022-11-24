@@ -22,6 +22,23 @@ export const markerLayerTextFactory = (
   if (layerTemplate.type !== 'symbol') {
     return layerTemplate
   } else {
+    const textColor =
+      layerTemplate?.paint &&
+      'text-color' in layerTemplate?.paint &&
+      Array.isArray(layerTemplate.paint['text-color']) &&
+      layerTemplate.paint['text-color']
+
+    if (textColor && textColor[0] === 'let') {
+      const superclass = textColor.indexOf('superclass')
+      if (superclass) {
+        textColor[superclass + 1] = [
+          'at',
+          0,
+          ['array', ['get', 'style_class', ['object', ['get', 'display']]]],
+        ]
+      }
+    }
+
     const layer: SymbolLayerSpecification = {
       id,
       type: layerTemplate.type,
@@ -34,24 +51,18 @@ export const markerLayerTextFactory = (
       },
       paint: {
         ...layerTemplate.paint,
+        'text-color': [
+          'case',
+          [
+            'all',
+            ['has', 'display'],
+            ['has', 'color_fill', ['get', 'display']],
+          ],
+          ['get', 'color_fill', ['get', 'display']],
+          textColor || '#000000',
+        ],
         'text-opacity': ['interpolate', ['linear'], ['zoom'], 14, 0, 15, 1],
       },
-    }
-
-    if (
-      layer?.paint &&
-      'text-color' in layer?.paint &&
-      Array.isArray(layer.paint['text-color']) &&
-      layer.paint['text-color'][0] === 'let'
-    ) {
-      const superclass = layer.paint['text-color'].indexOf('superclass')
-      if (superclass) {
-        layer.paint['text-color'][superclass + 1] = [
-          'at',
-          0,
-          ['array', ['get', 'style_class', ['object', ['get', 'display']]]],
-        ]
-      }
     }
 
     return layer
