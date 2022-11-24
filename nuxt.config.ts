@@ -167,6 +167,11 @@ const config: NuxtConfig = {
     typescript: { check: false },
     port: 4000,
     // addons: ['@storybook/addon-controls', '@storybook/addon-notes'],
+    // @ts-ignore
+    webpackFinal(config) {
+      config.watchOptions.ignored = [/node_modules/, /__screenshots__/]
+      return config
+    },
   },
 
   // Google Tag Manager config
