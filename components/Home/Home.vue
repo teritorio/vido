@@ -125,7 +125,19 @@
           :explorer-mode-enabled="explorerModeEnabled"
           @on-select-feature="setSelectedFeature($event)"
           @full-attribution="setFullAttributions($event)"
-        />
+        >
+          <div class="relative">
+            <button
+              v-if="
+                !(isModeExplorer || isModeFavorites) || Boolean(selectedFeature)
+              "
+              class="-top-12 z-0 absolute md:hidden right-3/8 left-3/8 w-1/4 h-12 transition-all rounded-t-lg text-sm font-medium px-5 space-x-1 shadow-lg outline-none focus:outline-none bg-white text-zinc-800 hover:bg-zinc-100 focus-visible:bg-zinc-100"
+              @click="onBottomMenuButtonClick"
+            >
+              <font-awesome-icon icon="grip-lines" size="lg" />
+            </button>
+          </div>
+        </MapFeatures>
         <div
           v-if="isLoadingFeatures"
           class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-80"
@@ -182,14 +194,7 @@
       <div class="grow-[3]" />
     </div>
 
-    <BottomMenu
-      class="md:hidden"
-      :show-grip="
-        !(isModeExplorer || isModeFavorites) || Boolean(selectedFeature)
-      "
-      :is-open="isBottomMenuOpened"
-      @on-grip-click="onBottomMenuButtonClick"
-    >
+    <BottomMenu class="md:hidden" :is-open="isBottomMenuOpened">
       <div class="flex-1 h-full overflow-y-auto h-screen-3/5 divide-y">
         <Menu
           v-if="!showPoi"

@@ -28,7 +28,10 @@
     "
   >
     <template #controls>
-      <slot />
+      <slot name="controls" />
+    </template>
+    <template #body>
+      <slot name="body"></slot>
     </template>
   </Map>
 </template>

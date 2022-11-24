@@ -25,14 +25,19 @@
       @full-attribution="$emit('full-attribution', $event)"
       @feature-click="updateSelectedFeature"
     >
-      <MapControlsExplore v-if="explorerModeEnabled" :map="map" />
-      <MapControls3D :map="map" :pitch="pitch" />
-      <MapControlsBackground
-        :map="map"
-        :backgrounds="availableStyles"
-        :initial-background="selectedBackground"
-        @change-background="selectedBackground = $event"
-      />
+      <template #controls>
+        <MapControlsExplore v-if="explorerModeEnabled" :map="map" />
+        <MapControls3D :map="map" :pitch="pitch" />
+        <MapControlsBackground
+          :map="map"
+          :backgrounds="availableStyles"
+          :initial-background="selectedBackground"
+          @change-background="selectedBackground = $event"
+        />
+      </template>
+      <template #body>
+        <slot></slot>
+      </template>
     </MapBase>
     <SnackBar @click="handleSnackAction" />
   </div>
