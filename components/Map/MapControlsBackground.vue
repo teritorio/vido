@@ -68,10 +68,10 @@ export default (
   },
 
   data(): {
-    activeBackground: MapStyleEnum | null
+    activeBackground: MapStyleEnum
   } {
     return {
-      activeBackground: null,
+      activeBackground: this.initialBackground,
     }
   },
 
