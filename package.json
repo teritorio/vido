@@ -16,6 +16,7 @@
     "test": "yarn test:jest && yarn test:cypress",
     "test:jest": "yarn jest",
     "test:cypress": "ruby poi_explode.rb cypress/fixtures/teritorio/references/pois.geojson && yarn run cypress run",
+    "test:storybook": "npx storycap --parallel 4 --delay 3000 http://localhost:4000",
     "postinstall": "[[ -d '.git' ]] && husky install || true"
   },
   "dependencies": {
@@ -101,7 +102,9 @@
     "node-sass": "^7.0.3",
     "postcss": "^8.4.18",
     "prettier": "^2.7.1",
+    "puppeteer": "^19.3.0",
     "sass-loader": "^10.3.1",
+    "storycap": "^3.1.9",
     "stylelint": "^13.13.1",
     "stylelint-config-prettier": "^9.0.4",
     "stylelint-config-standard": "^20.0.0",
