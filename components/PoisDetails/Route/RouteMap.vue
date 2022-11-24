@@ -2,7 +2,7 @@
   <div v-if="routeCollection">
     <MapPois
       class="map-pois relative"
-      :features="routeCollection.features"
+      :features="routeCollection"
       :feature-id="poiId"
       :fullscreen-control="true"
       :off-map-attribution="true"
@@ -13,7 +13,7 @@
         <PoisDeck
           :pois="points"
           pois-card="PoiCardLight"
-          :explorer-mode-enabled="explorerModeEnabled"
+          :explorer-mode-enabled="false"
           :favorites-mode-enabled="favoritesModeEnabled"
           @explore-click="$emit('explore-click', $event)"
           @favorite-click="$emit('favorite-click', $event)"
@@ -25,7 +25,7 @@
         <PoisDeck
           :pois="pois"
           pois-card="PoiCardLight"
-          :explorer-mode-enabled="explorerModeEnabled"
+          :explorer-mode-enabled="false"
           :favorites-mode-enabled="favoritesModeEnabled"
           @explore-click="$emit('explore-click', $event)"
           @favorite-click="$emit('favorite-click', $event)"
@@ -46,7 +46,7 @@ import {
   ApiRouteWaypoint,
   apiRouteWaypointToApiPoi,
 } from '~/lib/apiPoiDeps'
-import { ApiPoi, ApiPoiId, ApiPois } from '~/lib/apiPois'
+import { ApiPoi, ApiPoiId } from '~/lib/apiPois'
 
 export default Vue.extend({
   components: {
@@ -71,10 +71,6 @@ export default Vue.extend({
       type: String,
       required: true,
     },
-    explorerModeEnabled: {
-      type: Boolean,
-      required: true,
-    },
     favoritesModeEnabled: {
       type: Boolean,
       required: true,
@@ -82,7 +78,7 @@ export default Vue.extend({
   },
 
   data(): {
-    routeCollection: ApiPois | null
+    routeCollection: ApiPoi[] | null
     points: ApiPoi[]
     pois: ApiPoi[]
   } {
@@ -93,28 +89,25 @@ export default Vue.extend({
     }
   },
 
-  mounted() {
-    this.routeCollection = {
-      type: 'FeatureCollection',
-      features: this.route.features.map((feature) => {
-        if (feature.properties['route:point:type']) {
-          const mapPoi = apiRouteWaypointToApiPoi(
-            feature as ApiRouteWaypoint,
-            this.colorFill,
-            this.colorLine
-          )
-          this.points.push(mapPoi)
-          return mapPoi
-        } else {
-          const featureApi = feature as ApiPoi
-          // @ts-ignore
-          if (feature.properties.metadata?.id !== this.poiId) {
-            this.pois.push(featureApi)
-          }
-          return featureApi
+  created() {
+    this.routeCollection = this.route.features.map((feature) => {
+      if (feature.properties['route:point:type']) {
+        const mapPoi = apiRouteWaypointToApiPoi(
+          feature as ApiRouteWaypoint,
+          this.colorFill,
+          this.colorLine
+        )
+        this.points.push(mapPoi)
+        return mapPoi
+      } else {
+        const featureApi = feature as ApiPoi
+        // @ts-ignore
+        if (feature.properties.metadata?.id !== this.poiId) {
+          this.pois.push(featureApi)
         }
-      }),
-    }
+        return featureApi
+      }
+    })
   },
 })
 </script>

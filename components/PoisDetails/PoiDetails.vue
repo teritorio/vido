@@ -110,7 +110,6 @@
         :route="poiDeps"
         :color-fill="colorFill"
         :color-line="colorLine"
-        :explorer-mode-enabled="explorerModeEnabled"
         :favorites-mode-enabled="favoritesModeEnabled"
       />
 
@@ -190,10 +189,6 @@ export default Vue.extend({
 
     favoritesModeEnabled(): boolean {
       return this.settings.themes[0]?.favorites_mode ?? true
-    },
-
-    explorerModeEnabled(): boolean {
-      return this.settings.themes[0]?.explorer_mode ?? true
     },
 
     properties(): ApiPoi['properties'] {
