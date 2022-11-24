@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div :class="(hideControl || !map) && 'map-controls-hidden'">
     <mapbox
       v-if="style"
       access-token=""
@@ -35,7 +35,6 @@
       :map="map"
       :show-compass="rotate"
       :fullscreen-control="fullscreenControl"
-      :class="(hideControl || !map) && 'hidden'"
     >
       <slot name="controls"></slot>
     </MapControls>
@@ -275,3 +274,10 @@ export default Vue.extend({
   },
 })
 </script>
+
+<style>
+.map-controls-hidden .mapboxgl-control-container,
+.map-controls-hidden .maplibregl-control-container {
+  display: none;
+}
+</style>
