@@ -220,10 +220,6 @@
       </div>
     </BottomMenu>
     <footer class="z-20">
-      <Attribution
-        v-if="!isBottomMenuOpened"
-        :attributions="fullAttributions"
-      />
       <CookiesConsent />
     </footer>
   </div>
@@ -240,7 +236,6 @@ import ExplorerOrFavoritesBack from '~/components/Home/ExplorerOrFavoritesBack.v
 import Menu from '~/components/Home/Menu.vue'
 import MenuBlock from '~/components/Home/MenuBlock.vue'
 import SelectedCategories from '~/components/Home/SelectedCategories.vue'
-import Attribution from '~/components/MainMap/Attribution.vue'
 import BottomMenu from '~/components/MainMap/BottomMenu.vue'
 import FavoriteMenu from '~/components/MainMap/FavoriteMenu.vue'
 import FavoritesOverlay from '~/components/MainMap/FavoritesOverlay.vue'
@@ -282,7 +277,6 @@ export default (
     MenuBlock,
     BottomMenu,
     PoiCard,
-    Attribution,
     CookiesConsent,
     ExplorerOrFavoritesBack,
   },
@@ -310,7 +304,6 @@ export default (
     selectedCategoriesIds: ApiMenuCategory['id'][]
     showPoi: boolean
     initialBbox: LngLatBoundsLike | null
-    fullAttributions: string
     showFavoritesOverlay: boolean
     allowRegionBackZoom: boolean
     favorites: ApiPoi[] | null
@@ -321,7 +314,6 @@ export default (
       selectedCategoriesIds: [],
       showPoi: false,
       initialBbox: null,
-      fullAttributions: '',
       showFavoritesOverlay: false,
       allowRegionBackZoom: false,
       favorites: null,
@@ -681,9 +673,6 @@ export default (
 
     onShowPoi(show: boolean) {
       this.showPoi = show
-    },
-    setFullAttributions(fullAttributions: string) {
-      this.fullAttributions = fullAttributions
     },
 
     exploreAroundSelectedPoi(feature?: ApiPoi) {

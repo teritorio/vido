@@ -7,6 +7,7 @@
     :zoom="selectionZoom.poi"
     :fullscreen-control="fullscreenControl"
     :extra-attributions="extraAttributions"
+    :off-map-attribution="offMapAttribution"
     @map-init="onMapInit"
     @map-style-load="onMapStyleLoad"
   />
@@ -39,6 +40,10 @@ export default (
     extraAttributions: {
       type: Array as PropType<string[]>,
       default: () => [],
+    },
+    offMapAttribution: {
+      type: Boolean,
+      default: false,
     },
     features: {
       type: Array as PropType<ApiPoi[]>,

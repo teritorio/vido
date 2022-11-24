@@ -120,7 +120,7 @@ body,
   @apply m-0 box-border;
 }
 
-#map {
+#map-container {
   position: absolute;
   top: 0;
   bottom: 0;

@@ -5,6 +5,7 @@
       :features="routeCollection.features"
       :feature-id="poiId"
       :fullscreen-control="true"
+      :off-map-attribution="true"
     />
     <div class="detail-wrapper">
       <div v-if="points.length > 0" class="detail-left">
@@ -157,7 +158,7 @@ export default Vue.extend({
   }
 }
 
-:deep(#map) {
+:deep(#map-container) {
   width: 100%;
   height: 500px;
 }

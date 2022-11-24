@@ -1,39 +1,47 @@
 <template>
-  <Map
-    :center="center"
-    :bounds="bounds"
-    :zoom="selectionZoom.poi"
-    :fullscreen-control="fullscreenControl"
-    :extra-attributions="extraAttributions"
-    :map-style="mapStyle"
-    :pitch="pitch"
-    :rotate="rotate"
-    :show-attribution="showAttribution"
-    :hide-control="hideControl"
-    :hash="hash"
-    @map-init="
-      onMapInit($event)
-      $emit('map-init', $event)
-    "
-    @map-data="onMapRender('map-data', $event)"
-    @map-dragend="onMapRender('map-dragend', $event)"
-    @map-moveend="onMapRender('map-moveend', $event)"
-    @map-resize="onMapRender('map-resize', $event)"
-    @map-rotateend="onMapRender('map-rotateend', $event)"
-    @map-touchmove="onMapRender('map-touchmove', $event)"
-    @map-zoomend="onMapRender('map-zoomend', $event)"
-    @map-style-load="
-      onMapStyleLoad($event)
-      $emit('map-style-load', $event)
-    "
-  >
-    <template #controls>
-      <slot name="controls" />
-    </template>
-    <template #body>
-      <slot name="body"></slot>
-    </template>
-  </Map>
+  <div id="map-container" class="flex flex-col">
+    <Map
+      :center="center"
+      :bounds="bounds"
+      :zoom="selectionZoom.poi"
+      :fullscreen-control="fullscreenControl"
+      :extra-attributions="extraAttributions"
+      :map-style="mapStyle"
+      :pitch="pitch"
+      :rotate="rotate"
+      :show-attribution="showAttribution && !offMapAttribution"
+      :hide-control="hideControl"
+      :hash="hash"
+      class="grow h-full"
+      @map-init="
+        onMapInit($event)
+        $emit('map-init', $event)
+      "
+      @map-data="onMapRender('map-data', $event)"
+      @map-dragend="onMapRender('map-dragend', $event)"
+      @map-moveend="onMapRender('map-moveend', $event)"
+      @map-resize="onMapRender('map-resize', $event)"
+      @map-rotateend="onMapRender('map-rotateend', $event)"
+      @map-touchmove="onMapRender('map-touchmove', $event)"
+      @map-zoomend="onMapRender('map-zoomend', $event)"
+      @map-style-load="
+        onMapStyleLoad($event)
+        $emit('map-style-load', $event)
+      "
+      @full-attribution="fullAttribution = $event"
+    >
+      <template #controls>
+        <slot name="controls" />
+      </template>
+      <template #body>
+        <slot name="body"></slot>
+      </template>
+    </Map>
+    <Attribution
+      v-if="showAttribution && offMapAttribution"
+      :attribution="fullAttribution"
+    />
+  </div>
 </template>
 
 <script lang="ts">
@@ -42,6 +50,7 @@ import throttle from 'lodash.throttle'
 import { FitBoundsOptions, LngLatBoundsLike, LngLatLike } from 'maplibre-gl'
 import Vue, { PropType } from 'vue'
 
+import Attribution from '~/components/Map/Attribution.vue'
 import Map from '~/components/Map/Map.vue'
 import { ApiPoi } from '~/lib/apiPois'
 import { MAP_ZOOM } from '~/lib/constants'
@@ -55,6 +64,7 @@ const POI_LAYER = 'poi'
 export default Vue.extend({
   components: {
     Map,
+    Attribution,
   },
 
   props: {
@@ -102,6 +112,10 @@ export default Vue.extend({
       type: Boolean,
       default: true,
     },
+    offMapAttribution: {
+      type: Boolean,
+      default: false,
+    },
     hideControl: {
       type: Boolean,
       default: false,
@@ -112,17 +126,25 @@ export default Vue.extend({
     map: maplibregl.Map
     poiLayerTemplate: maplibregl.LayerSpecification | undefined
     markers: { [id: string]: maplibregl.Marker }
+    fullAttribution: string
   } {
     return {
       map: null!,
       poiLayerTemplate: undefined,
       markers: {},
+      fullAttribution: '',
     }
   },
 
   computed: {
     selectionZoom() {
       return MAP_ZOOM.selectionZoom
+    },
+  },
+
+  watch: {
+    offMapAttribution() {
+      this.$nextTick(() => this.map?.resize())
     },
   },
 
@@ -231,5 +253,10 @@ export default Vue.extend({
 
 .cluster-donut {
   @apply text-sm leading-none font-medium block text-zinc-800;
+}
+
+#map {
+  width: inherit;
+  height: inherit;
 }
 </style>

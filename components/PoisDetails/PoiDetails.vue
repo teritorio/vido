@@ -67,6 +67,7 @@
               :feature-id="id"
               :features="[poi]"
               class="relative"
+              :off-map-attribution="true"
             />
             <p v-if="poi.properties.metadata.updated_at">
               {{ $tc('poiDetails.lastUpdate') }}
@@ -343,7 +344,7 @@ h1 {
   @apply list-disc ml-6;
 }
 
-:deep(#map) {
+:deep(#map-container) {
   width: 100%;
   height: 346px;
 }

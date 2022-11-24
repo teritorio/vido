@@ -1,8 +1,8 @@
 <template>
   <div
-    v-if="attributions"
-    class="text-2xs p-2 text-right md:hidden bg-white z-10"
-    v-html="attributions"
+    v-if="attribution"
+    class="text-2xs md:text-xs p-2 text-right bg-white z-10"
+    v-html="attribution"
   ></div>
 </template>
 
@@ -11,7 +11,7 @@ import Vue from 'vue'
 
 export default Vue.extend({
   props: {
-    attributions: {
+    attribution: {
       type: String,
       default: null,
     },

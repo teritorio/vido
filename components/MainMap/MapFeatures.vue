@@ -9,7 +9,8 @@
       :map-style="selectedBackground"
       :pitch="pitch"
       :rotate="!$screen.touch"
-      :show-attribution="!$screen.smallScreen"
+      :show-attribution="!small"
+      :off-map-attribution="$screen.smallScreen && !small"
       :hide-control="small"
       hash="map"
       @map-init="onMapInit"
@@ -164,10 +165,6 @@ export default (
   },
 
   watch: {
-    small() {
-      this.resizeMap()
-    },
-
     styleIconFilter() {
       this.setPoiFilter()
     },
@@ -371,10 +368,6 @@ export default (
 
     // Other
 
-    resizeMap() {
-      this.map?.resize()
-    },
-
     onMapPitchEnd(map: maplibregl.Map) {
       this.pitch = map.getPitch()
     },
@@ -483,7 +476,7 @@ export default (
 </script>
 
 <style>
-#map {
+#map-container {
   position: absolute;
   top: 0;
   bottom: 0;
