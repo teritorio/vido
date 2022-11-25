@@ -312,9 +312,9 @@ export default (
             // Seted temp partial data from vector tiles.
             // Now fetch full data.
             return getPoiById(
-              this.$vidoConfig.API_ENDPOINT,
-              this.$vidoConfig.API_PROJECT,
-              this.$vidoConfig.API_THEME,
+              this.$vidoConfig().API_ENDPOINT,
+              this.$vidoConfig().API_PROJECT,
+              this.$vidoConfig().API_THEME,
               feature.properties.metadata.id
             ).then((apiPoi) => {
               // Overide geometry.
