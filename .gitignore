@@ -108,6 +108,8 @@ sw.*
 # Storybook
 .nuxt-storybook
 storybook-static
+__screenshots__/current
+__screenshots__/diff
 
 # Cypress
 cypress/videos

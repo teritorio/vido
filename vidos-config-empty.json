@@ -8,7 +8,9 @@
         "API_SEARCH_ADDR": "https://api-adresse.data.gouv.fr/search",
         "API_EXPORT": "https://print-dev.teritorio.xyz/v0.1",
         "API_QR_SHORTENER": "https://qr-shortener-dev.teritorio.xyz",
-        "IMAGE_PROXY": [],
+        "IMAGE_PROXY": [
+            "cdt40.tourinsoft.com"
+        ],
         "MAPILLARY_ACCESS_TOKEN": "MLY|5609419529131330|36d86a5578fecba521c1ffe033bda2fc",
         "SENTRY_DSN": null,
         "COOKIES_CONSENT": null,

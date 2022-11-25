@@ -86,7 +86,9 @@ jobs:
           ruby poi_explode.rb cypress/fixtures/teritorio/references/pois.geojson
 
       - name: Runtime configuration
-        run: echo "${{secrets.CONFIGURATION_DEV}}" > vidos.config.ts
+        run: |
+          echo "${{secrets.CONFIGURATION_DEV}}" > vidos.config.ts &&
+          yarn build-config
 
       - name: Run Cypress Tests 🧪
         uses: cypress-io/github-action@v4
@@ -102,7 +104,6 @@ jobs:
   storybook:
     needs: install_cache
     name: Storybook
-    if: github.ref == 'refs/heads/develop'
     runs-on: ${{ matrix.os }}
 
     strategy:
@@ -123,11 +124,24 @@ jobs:
           sudo apt-get install -y ruby &&
           ruby poi_explode.rb cypress/fixtures/teritorio/references/pois.geojson
 
-      - name: Runtime configuration
-        run: echo "${{secrets.CONFIGURATION_DEV}}" > vidos.config.ts
-
       - name: Build Storybook 👀
         run: yarn build:storybook
+
+      - name: Storycap
+        run: |
+          STORYCAP_OPS="--serverCmd 'npx --yes -- http-server storybook-static -p 4000'" yarn test:storybook:report || true
+          zip -r __screenshots__.zip __screenshots__
+
+      - name: Export as Gist
+        uses: exuanbo/actions-deploy-gist@v1
+        with:
+          token: ${{ secrets.GIST_STORYCAP_REPORT_TOKEN }}
+          gist_id: 7c470b063ff1efa19022eec2f394319f
+          file_path: __screenshots__.zip
+          file_type: binary
+
+      - name: Test Storybook
+        run: yarn test:storybook
 
       - name: Deploy to gh-pages
         if: github.ref == 'refs/heads/develop'
@@ -141,6 +155,8 @@ jobs:
       - install_cache
       - lint
       - tests
+      - cypress
+      - storybook
     if: github.ref == 'refs/heads/develop'
     name: Deploy Dev
     runs-on: ${{ matrix.os }}
@@ -175,6 +191,7 @@ jobs:
           POST_SCRIPT: |
             cd /var/www/clients/client3/web3/web/vido &&
             ruby poi_explode.rb cypress/fixtures/teritorio/references/pois.geojson &&
+            yarn build-config &&
             docker-compose build && docker-compose up -d &&
             echo -n 'VIDO: Deployment completed at: ' &&
             date -u
