@@ -6,6 +6,9 @@
 # install dependencies
 $ yarn install
 
+# Generate configuration from `vidos.config.ts`
+$ yarn build-config
+
 # serve with hot reload at localhost:3000
 $ yarn dev
 

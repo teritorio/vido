@@ -3,6 +3,7 @@
   "version": "1.18.0",
   "private": true,
   "scripts": {
+    "build-config": "npx ts-node -O '{\"module\": \"commonjs\"}' bin/build-config.ts > vidos-config.json",
     "dev": "yarn nuxt",
     "build": "yarn nuxt build",
     "build:storybook": "ruby poi_explode.rb cypress/fixtures/teritorio/references/pois.geojson && yarn nuxt storybook build",
