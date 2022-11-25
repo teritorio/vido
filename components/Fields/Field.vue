@@ -121,7 +121,6 @@
           Array.isArray(properties[field.field]) &&
           properties[field.field].length > 0
         "
-        :class="[properties[field.field].length >= 2 && 'ul-many']"
       >
         <li
           v-for="item in properties[field.field]"
@@ -260,7 +259,7 @@ export default Vue.extend({
   max-width: none;
 }
 
-ul.ul-many {
+ul {
   @apply list-disc ml-6;
 }
 </style>
