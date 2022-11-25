@@ -4794,6 +4794,7 @@ __metadata:
     prettier: ^2.7.1
     puppeteer: ^19.3.0
     sass-loader: ^10.3.1
+    storybook-addon-mock: ^3.2.0
     storycap: ^3.1.9
     stylelint: ^13.13.1
     stylelint-config-prettier: ^9.0.4
@@ -17280,6 +17281,13 @@ fsevents@^1.2.7:
   languageName: node
   linkType: hard
 
+"mock-xmlhttprequest@npm:^7.0.3":
+  version: 7.0.4
+  resolution: "mock-xmlhttprequest@npm:7.0.4"
+  checksum: 7f906de4ce1a6f1f49c98d713e34ab1dc257822d70a4363ca70fab7d81f4fa663ab4f012d22b8ef9f8dc8d438b16a0227de1d8c53f4f0b2a0a39c06bc2a04f3d
+  languageName: node
+  linkType: hard
+
 "move-concurrently@npm:^1.0.1":
   version: 1.0.1
   resolution: "move-concurrently@npm:1.0.1"
@@ -18597,7 +18605,7 @@ fsevents@^1.2.7:
   languageName: node
   linkType: hard
 
-"path-to-regexp@npm:^6.1.0":
+"path-to-regexp@npm:^6.1.0, path-to-regexp@npm:^6.2.0":
   version: 6.2.1
   resolution: "path-to-regexp@npm:6.2.1"
   checksum: 263160820de1ba7c17657646f8d558a9373a2d8f2ce0dd565bd5c38c4769000e5a7e605817cd0a52f09f322c5d8f403f6cc066cb17b07120c0b7382bdbbf17f9
@@ -22614,6 +22622,29 @@ fsevents@^1.2.7:
   version: 2.13.2
   resolution: "store2@npm:2.13.2"
   checksum: 64756f6d775cb56536c8c0f3d95b8a8ba51b4896779a719d0ac25abf473c99b19108df1b51c3030c293bf7a9fcb082ddad40ab05eef7bbd5233c9a8ec0f6753b
+  languageName: node
+  linkType: hard
+
+"storybook-addon-mock@npm:^3.2.0":
+  version: 3.2.0
+  resolution: "storybook-addon-mock@npm:3.2.0"
+  dependencies:
+    mock-xmlhttprequest: ^7.0.3
+    path-to-regexp: ^6.2.0
+    polished: ^4.2.2
+  peerDependencies:
+    "@storybook/addons": ^6.4.0
+    "@storybook/api": ^6.4.0
+    "@storybook/components": ^6.4.0
+    "@storybook/theming": ^6.4.0
+    react: ^16.8.0 || ^17.0.0 || ^18.0.0
+    react-dom: ^16.8.0 || ^17.0.0 || ^18.0.0
+  peerDependenciesMeta:
+    react:
+      optional: true
+    react-dom:
+      optional: true
+  checksum: eb6eaa65d28629f133ad8e93628afee488a8536a0c218dc0da7b646f7e567fea9b585dd2e7769531b7b0c029cb3386f6384d8f16abbbf60734aca64f82f12980
   languageName: node
   linkType: hard
 

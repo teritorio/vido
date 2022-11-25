@@ -203,7 +203,7 @@ export default Vue.extend({
     setStyle(mapStyle: MapStyleEnum) {
       this.getStyle(mapStyle)
         .then((style) => {
-          const vectorSource = Object.values(style.sources).find(
+          const vectorSource = Object.values(style.sources || []).find(
             (source) => ['vector', 'raster'].lastIndexOf(source.type) >= 0
           ) as VectorSourceSpecification | RasterSourceSpecification
           if (vectorSource) {
