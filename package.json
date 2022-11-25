@@ -6,7 +6,8 @@
     "build-config": "npx ts-node -O '{\"module\": \"commonjs\"}' bin/build-config.ts > vidos-config.json",
     "dev": "yarn nuxt",
     "build": "yarn nuxt build",
-    "build:storybook": "ruby poi_explode.rb cypress/fixtures/teritorio/references/pois.geojson && yarn nuxt storybook build",
+    "build:storybook": "ruby poi_explode.rb cypress/fixtures/teritorio/references/pois.geojson && CONFIG=vidos-config-empty.json yarn nuxt storybook build",
+    "build:storybook:shoot": "bash -c \"LANG=C npx -- storycap --outDir __screenshots__/current ${STORYCAP_OPS:-} --serverTimeout 20000 --parallel 4 --delay 1000 http://localhost:4000\"",
     "generate": "yarn nuxt generate",
     "start": "yarn nuxt start",
     "start:storybook": "CONFIG=vidos-config-empty.json yarn nuxt storybook",
@@ -14,10 +15,11 @@
     "lint": "yarn lint:js && yarn lint:style",
     "lint:js": "yarn eslint --ext .js,.vue --ignore-path .gitignore .",
     "lint:style": "yarn stylelint **/*.{vue,css} --ignore-path .gitignore",
-    "test": "yarn test:jest && yarn test:cypress",
+    "test": "yarn test:jest && yarn test:cypress && test:storybook",
     "test:jest": "yarn jest",
     "test:cypress": "ruby poi_explode.rb cypress/fixtures/teritorio/references/pois.geojson && yarn run cypress run",
-    "test:storybook": "npx storycap --parallel 4 --delay 3000 http://localhost:4000",
+    "test:storybook:report": "yarn build:storybook:shoot && npx --yes -- reg-cli __screenshots__/actual __screenshots__/current __screenshots__/diff -R __screenshots__/diff/index.html -J __screenshots__/diff/index.json --thresholdPixel 5 --matchingThreshold 0.1 --extendedErrors",
+    "test:storybook": "cat __screenshots__/diff/index.json | jq --exit-status '.failedItems + .newItems + .deletedItems | length == 0'",
     "postinstall": "[[ -d '.git' ]] && husky install || true"
   },
   "dependencies": {
