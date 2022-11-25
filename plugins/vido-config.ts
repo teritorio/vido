@@ -47,13 +47,13 @@ export function vidoConfig(req: createServer.IncomingMessage): VidoConfig {
 }
 
 const vidosConfigPlugin: Plugin = ({ req }, inject) => {
-  inject('vidoConfig', vidoConfig(req))
+  inject('vidoConfig', () => vidoConfig(req))
 }
 
 export default vidosConfigPlugin
 
 declare module 'vue/types/vue' {
   interface Vue {
-    readonly $vidoConfig: VidoConfig
+    readonly $vidoConfig: () => VidoConfig
   }
 }

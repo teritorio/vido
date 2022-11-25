@@ -226,14 +226,16 @@ export default (
       favoritesIds: 'favorite/favoritesIds',
     }),
     pdfLink(): string {
-      return `${this.$vidoConfig.API_EXPORT}/${this.$vidoConfig.API_PROJECT}/${
-        this.$vidoConfig.API_THEME
+      return `${this.$vidoConfig().API_EXPORT}/${
+        this.$vidoConfig().API_PROJECT
+      }/${
+        this.$vidoConfig().API_THEME
       }/pois/favorites.pdf?ids=${this.favoritesIds.join(',')}`
     },
     csvLink(): string {
-      return `${this.$vidoConfig.API_ENDPOINT}/${
-        this.$vidoConfig.API_PROJECT
-      }/${this.$vidoConfig.API_THEME}/pois.csv?ids=${this.favoritesIds.join(
+      return `${this.$vidoConfig().API_ENDPOINT}/${
+        this.$vidoConfig().API_PROJECT
+      }/${this.$vidoConfig().API_THEME}/pois.csv?ids=${this.favoritesIds.join(
         ','
       )}`
     },
@@ -241,9 +243,9 @@ export default (
   methods: {
     async fetchFavorites(ids: [string]) {
       return await getPoiByIds(
-        this.$vidoConfig.API_ENDPOINT,
-        this.$vidoConfig.API_PROJECT,
-        this.$vidoConfig.API_THEME,
+        this.$vidoConfig().API_ENDPOINT,
+        this.$vidoConfig().API_PROJECT,
+        this.$vidoConfig().API_THEME,
         ids
       ).then((pois) => (pois && pois.features) || [])
     },

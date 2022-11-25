@@ -128,7 +128,7 @@ export default (
     qrCodeUrl() {
       if (this.linkQrCode) {
         return (
-          this.$vidoConfig.API_QR_SHORTENER +
+          this.$vidoConfig().API_QR_SHORTENER +
           '/qrcode.svg?url=' +
           encodeURIComponent(this.linkQrCode)
         )

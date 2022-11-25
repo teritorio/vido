@@ -447,9 +447,9 @@ export default (
         this.routerPushUrl()
 
         this.$store.dispatch('menu/fetchFeatures', {
-          apiEndpoint: this.$vidoConfig.API_ENDPOINT,
-          apiProject: this.$vidoConfig.API_PROJECT,
-          apiTheme: this.$vidoConfig.API_THEME,
+          apiEndpoint: this.$vidoConfig().API_ENDPOINT,
+          apiProject: this.$vidoConfig().API_PROJECT,
+          apiTheme: this.$vidoConfig().API_THEME,
           categoryIds: this.selectedCategoriesIds,
         })
         this.allowRegionBackZoom = true
@@ -596,9 +596,9 @@ export default (
 
     onSearchPoi(poiId: number) {
       getPoiById(
-        this.$vidoConfig.API_ENDPOINT,
-        this.$vidoConfig.API_PROJECT,
-        this.$vidoConfig.API_THEME,
+        this.$vidoConfig().API_ENDPOINT,
+        this.$vidoConfig().API_PROJECT,
+        this.$vidoConfig().API_THEME,
         poiId
       ).then((poi) => {
         this.setSelectedFeature(poi).then(() => {
@@ -738,9 +738,9 @@ export default (
 
     fetchFavorites(ids: [string]): Promise<ApiPoi[]> {
       return getPoiByIds(
-        this.$vidoConfig.API_ENDPOINT,
-        this.$vidoConfig.API_PROJECT,
-        this.$vidoConfig.API_THEME,
+        this.$vidoConfig().API_ENDPOINT,
+        this.$vidoConfig().API_PROJECT,
+        this.$vidoConfig().API_THEME,
         ids
       )
         .then((pois) => (pois && pois.features) || [])
