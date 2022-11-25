@@ -1,10 +1,21 @@
 import Vue, { VueConstructor } from 'vue'
 
+import mockStyleGL from './storybook-types-mock-stylegl'
+
 type Args = { [key: string]: any }
 type Def = {
   args: Args | null
   __call__: (args: Args) => any
   bind: (context: Object) => Def
+}
+
+export const mockData = {
+  styleGlEmpty: {
+    url: 'https://example.com/style.json',
+    method: 'GET',
+    status: 200,
+    response: mockStyleGL,
+  },
 }
 
 export function bind<T extends VueConstructor<Vue>>(

@@ -23,6 +23,10 @@ const config: NuxtConfig = {
     vidos,
   },
 
+  publicRuntimeConfig: {
+    vidos: vidos.__publicRuntimeConfig__ ? vidos : undefined,
+  },
+
   pwa: {
     meta: {
       lang: 'fr',
@@ -182,6 +186,7 @@ const config: NuxtConfig = {
       config.watchOptions.ignored = [/node_modules/, /__screenshots__/]
       return config
     },
+    addons: ['storybook-addon-mock'],
   },
 
   // Google Tag Manager config
