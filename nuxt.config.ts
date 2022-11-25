@@ -1,16 +1,26 @@
 // @ts-ignore
 import { cypressMockMiddleware } from '@cypress/mock-ssr'
 import { NuxtConfig } from '@nuxt/types'
+import fs from 'fs'
 import webpack from 'webpack'
 
 import { configuredApi, configuredImageProxy } from './plugins/vido-config'
+import { VidosConfig } from './utils/types-config'
 
 const supportedLocales = ['en-GB', 'fr', 'es']
+
+const vidos: VidosConfig = JSON.parse(
+  fs.readFileSync(process.env.CONFIG || 'vidos-config.json').toString()
+)
 
 const config: NuxtConfig = {
   env: {
     // Copy NODE_ENV to know to real setting when use `nuxt build`
     environment: process.env.NODE_ENV as string,
+  },
+
+  privateRuntimeConfig: {
+    vidos,
   },
 
   pwa: {
@@ -96,7 +106,7 @@ const config: NuxtConfig = {
   },
 
   image: {
-    domains: [...configuredApi(), ...configuredImageProxy()],
+    domains: [...configuredApi(vidos), ...configuredImageProxy(vidos)],
   },
 
   sentry: {
