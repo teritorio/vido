@@ -7,7 +7,7 @@ export default {
   title: 'MainMap/MapFeatures',
   component: MapFeatures,
   parameters: {
-    mockData: [mockData.styleGlEmpty],
+    mockData: [...mockData.style],
   },
 }
 

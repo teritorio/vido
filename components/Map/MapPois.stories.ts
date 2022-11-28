@@ -8,7 +8,7 @@ export default {
   title: 'Map/MapPois',
   component: MapPois,
   parameters: {
-    mockData: [mockData.styleGlEmpty],
+    mockData: [...mockData.style],
   },
 }
 

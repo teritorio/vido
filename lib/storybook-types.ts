@@ -10,12 +10,33 @@ type Def = {
 }
 
 export const mockData = {
-  styleGlEmpty: {
-    url: 'https://example.com/style.json',
-    method: 'GET',
-    status: 200,
-    response: mockStyleGL,
-  },
+  style: [
+    {
+      url: 'https://example.com/style.json',
+      method: 'GET',
+      status: 200,
+      response: mockStyleGL,
+    },
+    {
+      url: 'https://example.com/data/tiles.json',
+      method: 'GET',
+      status: 200,
+      response: {
+        type: 'vector',
+        attribution:
+          '© OpenMapTiles © OpenStreetMap contributors © Teritorio © SirtaquiBD Alti IGN 2021',
+        tiles: ['https://example.com/data/tiles/{z}/{x}/{y}.pbf'],
+        minzoom: 0,
+        maxzoom: 1,
+      },
+    },
+    {
+      url: 'https://example.com/data/tiles/:z/:x/:y.pbf',
+      method: 'GET',
+      status: 204,
+      response: {},
+    },
+  ],
 }
 
 export function bind<T extends VueConstructor<Vue>>(

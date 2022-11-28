@@ -5,7 +5,7 @@ export default {
   title: 'Map/Map',
   component: Map,
   parameters: {
-    mockData: [mockData.styleGlEmpty],
+    mockData: [...mockData.style],
   },
 }
 
