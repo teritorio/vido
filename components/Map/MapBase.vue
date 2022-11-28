@@ -17,6 +17,7 @@
         onMapInit($event)
         $emit('map-init', $event)
       "
+      @map-pitchend="onMapRender('map-pitchend', $event)"
       @map-data="onMapRender('map-data', $event)"
       @map-dragend="onMapRender('map-dragend', $event)"
       @map-moveend="onMapRender('map-moveend', $event)"

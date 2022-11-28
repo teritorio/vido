@@ -10,7 +10,7 @@
       id="3D-selector-map"
       :aria-label="$tc('mapControls.threeDAriaLabel')"
       type="button"
-      :class="[, pitch != 0 && 'maplibregl-ctrl-active']"
+      :class="pitch != 0 && 'maplibregl-ctrl-active'"
       @click="toggle3D"
     >
       3D
