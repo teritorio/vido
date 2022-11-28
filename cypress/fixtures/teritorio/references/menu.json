@@ -84,7 +84,44 @@
             "color_fill": "#ec0029",
             "color_line": "#ec0029",
             "style_merge": false,
-            "zoom": "16"
+            "zoom": "16",
+            "filters": [
+                {
+                    "type": "multiselection",
+                    "property": "route:hiking:difficulty",
+                    "name": {
+                        "fr": "Difficulté"
+                    },
+                    "values": [
+                        {
+                            "value": "easy",
+                            "name": {
+                                "fr": "Facile"
+                            }
+                        },
+                        {
+                            "value": "normal",
+                            "name": {
+                                "fr": "Normal"
+                            }
+                        },
+                        {
+                            "value": "hard",
+                            "name": {
+                                "fr": "Difficile"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "type": "date_range",
+                    "property_begin": "start_date",
+                    "property_end": "end_date",
+                    "name": {
+                        "fr": "Quand ?"
+                    }
+                }
+            ]
         },
         "index_order": 6
     },
@@ -106,7 +143,44 @@
             "color_line": "#ec0029",
             "style_merge": false,
             "zoom": "16",
-            "display_mode": "compact"
+            "display_mode": "compact",
+            "filters": [
+                {
+                    "type": "multiselection",
+                    "property": "route:hiking:difficulty",
+                    "name": {
+                        "fr": "Difficulté"
+                    },
+                    "values": [
+                        {
+                            "value": "easy",
+                            "name": {
+                                "fr": "Facile"
+                            }
+                        },
+                        {
+                            "value": "normal",
+                            "name": {
+                                "fr": "Normal"
+                            }
+                        },
+                        {
+                            "value": "hard",
+                            "name": {
+                                "fr": "Difficile"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "type": "date_range",
+                    "property_begin": "start_date",
+                    "property_end": "end_date",
+                    "name": {
+                        "fr": "Quand ?"
+                    }
+                }
+            ]
         },
         "index_order": 7
     }
