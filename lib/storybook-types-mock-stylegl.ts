@@ -4,15 +4,8 @@ export default {
   glyphs: 'https://vecto.teritorio.xyz/fonts/{fontstack}/{range}.pbf',
   sources: {
     openmaptiles: {
-      type: 'geojson',
-      data: {
-        type: 'Feature',
-        geometry: {
-          type: 'Point',
-          coordinates: [0, 0],
-        },
-        properties: {},
-      },
+      type: 'vector',
+      url: 'https://example.com/data/tiles.json',
     },
   },
   layers: [
@@ -27,7 +20,7 @@ export default {
       id: 'poi-level-1',
       type: 'symbol',
       source: 'openmaptiles',
-      // "source-layer": "poi_tourism",
+      'source-layer': 'poi_tourism',
       minzoom: 12,
       filter: [
         'all',
