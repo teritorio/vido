@@ -1,5 +1,5 @@
 <template>
-  <component :is="menuBlock" v-if="categoryIdFilter" class="hidden md:block">
+  <component :is="menuBlock" v-if="categoryIdFilter">
     <div class="w-full flex justify-between pb-4">
       <button
         type="button"
