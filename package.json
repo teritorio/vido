@@ -19,7 +19,7 @@
     "test": "yarn test:jest && yarn test:cypress && test:storybook",
     "test:jest": "yarn jest",
     "test:cypress": "yarn build-fixture && yarn run cypress run",
-    "test:storybook:report": "yarn build:storybook:shoot && npx --yes -- reg-cli __screenshots__/actual __screenshots__/current __screenshots__/diff -R __screenshots__/diff/index.html -J __screenshots__/diff/index.json --thresholdPixel 15 --matchingThreshold 0.4 --extendedErrors",
+    "test:storybook:report": "yarn build:storybook:shoot && npx --yes -- reg-cli __screenshots__/actual __screenshots__/current __screenshots__/diff -R __screenshots__/diff/index.html -J __screenshots__/diff/index.json --thresholdPixel 5 --matchingThreshold 0.3 --extendedErrors",
     "test:storybook": "cat __screenshots__/diff/index.json | jq --exit-status '.failedItems + .newItems + .deletedItems | length == 0'",
     "postinstall": "[[ -d '.git' ]] && husky install || true"
   },

@@ -119,10 +119,8 @@ jobs:
 
       - uses: ./.github/actions/install
 
-      - name: Install ruby
-        run: |
-          sudo apt-get install -y ruby &&
-          ruby poi_explode.rb cypress/fixtures/teritorio/references/pois.geojson
+      - name: Install more packages
+        run: sudo apt-get install -y ruby
 
       - name: Build Storybook 👀
         run: yarn build:storybook
@@ -131,6 +129,7 @@ jobs:
         run: |
           STORYCAP_OPS="--serverCmd 'npx --yes -- http-server storybook-static -p 4000'" yarn test:storybook:report || true
           zip -r __screenshots__.zip __screenshots__
+          echo "https://gist.github.com/frodrigo/7c470b063ff1efa19022eec2f394319f"
 
       - name: Export as Gist
         uses: exuanbo/actions-deploy-gist@v1
