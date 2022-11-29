@@ -95,4 +95,11 @@ export default Vue.extend({
   font-size: 0.75rem;
   line-height: 1rem;
 }
+
+.mapboxgl-ctrl-group > button.mapboxgl-ctrl-geolocate,
+.maplibregl-ctrl-group > button.maplibregl-ctrl-geolocate,
+.mapboxgl-ctrl-group > button.mapboxgl-ctrl-geolocate:not(:disabled),
+.maplibregl-ctrl-group > button.maplibregl-ctrl-geolocate:not(:disabled) {
+  @apply md:hidden;
+}
 </style>

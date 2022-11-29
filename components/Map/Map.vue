@@ -280,11 +280,4 @@ export default Vue.extend({
 .map-controls-hidden .maplibregl-control-container {
   display: none;
 }
-
-.mapboxgl-ctrl-group > button.mapboxgl-ctrl-geolocate,
-.maplibregl-ctrl-group > button.maplibregl-ctrl-geolocate,
-.mapboxgl-ctrl-group > button.mapboxgl-ctrl-geolocate:not(:disabled),
-.maplibregl-ctrl-group > button.maplibregl-ctrl-geolocate:not(:disabled) {
-  @apply md:hidden;
-}
 </style>
