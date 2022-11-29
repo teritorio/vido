@@ -7,7 +7,6 @@
       :fullscreen-control="fullscreenControl"
       :extra-attributions="extraAttributions"
       :map-style="mapStyle"
-      :pitch="pitch"
       :rotate="rotate"
       :show-attribution="showAttribution && !offMapAttribution"
       :hide-control="hideControl"
@@ -17,7 +16,6 @@
         onMapInit($event)
         $emit('map-init', $event)
       "
-      @map-pitchend="onMapRender('map-pitchend', $event)"
       @map-data="onMapRender('map-data', $event)"
       @map-dragend="onMapRender('map-dragend', $event)"
       @map-moveend="onMapRender('map-moveend', $event)"
@@ -100,10 +98,6 @@ export default Vue.extend({
     mapStyle: {
       type: String as PropType<MapStyleEnum>,
       required: false,
-    },
-    pitch: {
-      type: Number,
-      default: 0,
     },
     rotate: {
       type: Boolean,

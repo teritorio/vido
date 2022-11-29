@@ -10,7 +10,7 @@
       id="3D-selector-map"
       :aria-label="$tc('mapControls.threeDAriaLabel')"
       type="button"
-      :class="pitch != 0 && 'maplibregl-ctrl-active'"
+      :class="pitched && 'maplibregl-ctrl-active'"
       @click="toggle3D"
     >
       3D
@@ -37,35 +37,33 @@ export default (
       type: Object as PropType<Map>,
       default: null,
     },
-    pitch: {
-      type: Number,
-      default: 0,
-    },
   },
 
   data(): {
     building3d: Building3d | null
+    pitched: boolean
   } {
     return {
       building3d: null,
+      pitched: false,
     }
   },
 
   watch: {
-    pitch(value) {
-      if (this.building3d) {
-        this.building3d.set3d(value !== 0)
-      }
-    },
-
     map(value, oldValue) {
       if (!oldValue && value) {
         this.building3d = new Building3d({
-          building3d: this.pitch !== 0,
+          building3d: this.pitched,
           // @ts-ignore
           container: this.$refs.container,
         })
+
         this.map.addControl(this.building3d)
+        this.pitched = this.map.getPitch() != 0
+
+        this.map.on('pitchend', () => {
+          this.pitched = this.map.getPitch() != 0
+        })
       }
     },
   },
@@ -74,7 +72,7 @@ export default (
     toggle3D() {
       this.$tracking({ type: 'map_control_event', event: '3d' })
       if (this.building3d) {
-        if (this.pitch !== 0) {
+        if (this.pitched) {
           this.building3d.set3d(false, 0)
         } else {
           this.building3d.set3d(true, 60)

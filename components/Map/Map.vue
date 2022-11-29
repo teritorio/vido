@@ -10,7 +10,6 @@
         hash: hash,
         maxZoom: defaultZoom.max,
         minZoom: defaultZoom.min,
-        pitch,
         style: style,
         zoom: zoom,
         locale: locales,
@@ -21,7 +20,6 @@
       }"
       v-bind="$attrs"
       @map-init="$emit('map-init', $event) && onMapInit($event)"
-      @map-pitchend="$emit('map-pitchend', $event)"
       @map-data="$emit('map-data', $event)"
       @map-dragend="$emit('map-dragend', $event)"
       @map-moveend="$emit('map-moveend', $event)"
@@ -98,10 +96,6 @@ export default Vue.extend({
     zoom: {
       type: Number,
       default: null,
-    },
-    pitch: {
-      type: Number,
-      default: 0,
     },
     rotate: {
       type: Boolean,

@@ -7,14 +7,12 @@
       :fit-bounds-padding-options="fitBoundsPaddingOptions"
       :extra-attributions="extraAttributions"
       :map-style="selectedBackground"
-      :pitch="pitch"
       :rotate="!$screen.touch"
       :show-attribution="!small"
       :off-map-attribution="$screen.smallScreen && !small"
       :hide-control="small"
       hash="map"
       @map-init="onMapInit"
-      @map-pitchend="onMapPitchEnd"
       @map-data="onMapRender"
       @map-dragend="onMapRender"
       @map-moveend="onMapRender"
@@ -28,7 +26,7 @@
     >
       <template #controls>
         <MapControlsExplore v-if="explorerModeEnabled" :map="map" />
-        <MapControls3D :map="map" :pitch="pitch" />
+        <MapControls3D :map="map" />
         <MapControlsBackground
           :map="map"
           :backgrounds="availableStyles"
@@ -141,14 +139,12 @@ export default (
 
   data(): {
     map: maplibregl.Map
-    pitch: number
     markers: { [id: string]: maplibregl.Marker }
     selectedFeatureMarker: maplibregl.Marker | null
     selectedBackground: keyof typeof MapStyleEnum
   } {
     return {
       map: null!,
-      pitch: 0,
       markers: {},
       selectedFeatureMarker: null,
       selectedBackground: DEFAULT_MAP_STYLE,
@@ -211,7 +207,6 @@ export default (
   },
 
   created() {
-    this.onMapPitchEnd = throttle(this.onMapPitchEnd, 200)
     this.updateSelectedFeature = debounce(this.updateSelectedFeature, 300)
   },
 
@@ -228,7 +223,6 @@ export default (
 
     onMapInit(map: maplibregl.Map) {
       this.map = map
-      this.pitch = this.map.getPitch()
 
       this.map.on('click', this.onClick)
 
@@ -361,10 +355,6 @@ export default (
     },
 
     // Other
-
-    onMapPitchEnd(map: maplibregl.Map) {
-      this.pitch = map.getPitch()
-    },
 
     showZoomSnack(text: string, textBtn: string) {
       this.$store.dispatch('snack/showSnack', {
