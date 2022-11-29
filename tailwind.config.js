@@ -1,6 +1,9 @@
 module.exports = {
   content: [],
   theme: {
+    fontFamily: {
+      sans: ['Noto Sans'],
+    },
     extend: {
       fontSize: () => ({
         '2xs': '.6rem',
