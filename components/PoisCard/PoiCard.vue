@@ -7,7 +7,7 @@
     ]"
   >
     <div
-      class="md:w-48 h-44 md:h-auto md:max-h-full bg-gray-100 flex items-center align-middle justify-center relative"
+      class="md:w-48 h-44 md:h-auto md:max-h-full bg-gray-100 flex items-center align-middle justify-center relative min-icon-height"
     >
       <TeritorioIcon
         v-if="icon"
@@ -316,14 +316,16 @@ export default Vue.extend({
 })
 </script>
 
-<style>
-img {
+<style scoped>
+:deep(img) {
   @apply object-cover w-full h-full;
 }
-</style>
 
-<style scoped>
 button {
   @apply focus:outline-none;
+}
+
+.min-icon-height {
+  min-height: 8rem;
 }
 </style>
