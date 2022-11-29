@@ -128,7 +128,7 @@ jobs:
       - name: Storycap
         run: |
           STORYCAP_OPS="--serverCmd 'npx --yes -- http-server storybook-static -p 4000'" yarn test:storybook:report || true
-          zip -r __screenshots__.zip __screenshots__
+          zip -r __screenshots__.zip __screenshots__ > /dev/null
           echo "https://gist.github.com/frodrigo/7c470b063ff1efa19022eec2f394319f"
 
       - name: Export as Gist
