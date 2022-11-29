@@ -45,7 +45,6 @@
 </template>
 
 <script lang="ts">
-import { PoiFilter } from '@teritorio/map'
 import debounce from 'lodash.debounce'
 import throttle from 'lodash.throttle'
 import maplibregl, {
@@ -142,7 +141,6 @@ export default (
 
   data(): {
     map: maplibregl.Map
-    poiFilter: PoiFilter | null
     pitch: number
     markers: { [id: string]: maplibregl.Marker }
     selectedFeatureMarker: maplibregl.Marker | null
@@ -150,7 +148,6 @@ export default (
   } {
     return {
       map: null!,
-      poiFilter: null,
       pitch: 0,
       markers: {},
       selectedFeatureMarker: null,
@@ -233,9 +230,6 @@ export default (
       this.map = map
       this.pitch = this.map.getPitch()
 
-      this.poiFilter = new PoiFilter()
-      this.map.addControl(this.poiFilter)
-
       this.map.on('click', this.onClick)
 
       this.$store.dispatch('map/center', this.map.getCenter())
@@ -274,9 +268,9 @@ export default (
 
     setPoiFilter() {
       if (this.styleIconFilter) {
-        this.poiFilter?.setIncludeFilter(this.styleIconFilter)
+        this.$refs.mapBase.poiFilter?.setIncludeFilter(this.styleIconFilter)
       } else {
-        this.poiFilter?.remove(true)
+        this.$refs.mapBase.poiFilter?.remove(true)
       }
     },
 

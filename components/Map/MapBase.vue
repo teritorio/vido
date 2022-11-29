@@ -125,12 +125,14 @@ export default Vue.extend({
 
   data(): {
     map: maplibregl.Map
+    poiFilter: PoiFilter | null
     poiLayerTemplate: maplibregl.LayerSpecification | undefined
     markers: { [id: string]: maplibregl.Marker }
     fullAttribution: string
   } {
     return {
       map: null!,
+      poiFilter: null,
       poiLayerTemplate: undefined,
       markers: {},
       fullAttribution: '',
@@ -223,7 +225,8 @@ export default Vue.extend({
         (layer) => layer.id === 'poi-level-1'
       )
 
-      this.map.addControl(new PoiFilter({ filter: [] }))
+      this.poiFilter = new PoiFilter()
+      this.map.addControl(this.poiFilter)
     },
 
     onMapRender(eventName: string, event: any) {
