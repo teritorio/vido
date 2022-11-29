@@ -18,6 +18,13 @@ object-assign
  */
 
 /*!
+ * The buffer module from node.js, for the browser.
+ *
+ * @author   Feross Aboukhadijeh <http://feross.org>
+ * @license  MIT
+ */
+
+/*!
  * Vue.js v2.7.4
  * (c) 2014-2022 Evan You
  * Released under the MIT License.
@@ -107,6 +114,8 @@ See the Apache Version 2.0 License for specific language governing permissions
 and limitations under the License.
 ***************************************************************************** */
 
+/*! ieee754. BSD-3-Clause License. Feross Aboukhadijeh <https://feross.org/opensource> */
+
 /**
   * vue-class-component v7.1.0
   * (c) 2015-present Evan You
@@ -120,6 +129,12 @@ and limitations under the License.
  * Released under MIT license <https://lodash.com/license>
  * Based on Underscore.js 1.8.3 <http://underscorejs.org/LICENSE>
  * Copyright Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
+ */
+
+/**
+ * mock-xmlhttprequest v7.0.4
+ * (c) 2021 Bertrand Guay-Paquet
+ * @license ISC
  */
 
 /** @license React v16.14.0
