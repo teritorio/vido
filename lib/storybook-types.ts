@@ -43,15 +43,23 @@ export const parametersMap = {
   mockData: mockData.style,
 }
 
+export const mapCss = `
+position: absolute;
+top: 0;
+bottom: 0;
+width: 100%;
+`
+
 export function bind<T extends VueConstructor<Vue>>(
   t: T,
   args: Args,
-  slots: string = ''
+  slots: string = '',
+  style: string = ''
 ) {
   const Template = ((args: Args) => ({
     components: { t },
     props: Object.keys(args),
-    template: `<t v-bind="$props" v-on="$props" >${slots}</t>`,
+    template: `<t v-bind="$props" v-on="$props" style="${style}">${slots}</t>`,
   })) as unknown as Def
 
   const b = Template.bind({})

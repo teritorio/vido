@@ -252,9 +252,4 @@ export default Vue.extend({
 .cluster-donut {
   @apply text-sm leading-none font-medium block text-zinc-800;
 }
-
-#map {
-  width: inherit;
-  height: inherit;
-}
 </style>
