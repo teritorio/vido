@@ -219,7 +219,7 @@ export default Vue.extend({
         (layer) => layer.id === 'poi-level-1'
       )
 
-      this.poiFilter = new PoiFilter()
+      this.poiFilter = new PoiFilter({ filter: [] })
       this.map.addControl(this.poiFilter)
     },
 
