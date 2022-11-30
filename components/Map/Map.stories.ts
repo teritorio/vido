@@ -1,11 +1,11 @@
 import Map from '~/components/Map/Map.vue'
-import { bind, mockData } from '~/lib/storybook-types'
+import { bind, parametersMap } from '~/lib/storybook-types'
 
 export default {
   title: 'Map/Map',
   component: Map,
   parameters: {
-    mockData: [...mockData.style],
+    ...parametersMap,
   },
 }
 

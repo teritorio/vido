@@ -1,11 +1,11 @@
 import MapBase from '~/components/Map/MapBase.vue'
-import { bind, mockData } from '~/lib/storybook-types'
+import { bind, parametersMap } from '~/lib/storybook-types'
 
 export default {
   title: 'Map/MapBase',
   component: MapBase,
   parameters: {
-    mockData: [...mockData.style],
+    ...parametersMap,
   },
 }
 

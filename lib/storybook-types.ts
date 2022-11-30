@@ -39,6 +39,10 @@ export const mockData = {
   ],
 }
 
+export const parametersMap = {
+  mockData: mockData.style,
+}
+
 export function bind<T extends VueConstructor<Vue>>(
   t: T,
   args: Args,

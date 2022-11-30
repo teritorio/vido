@@ -3,13 +3,13 @@ import navMenuEntries from '~/cypress/fixtures/teritorio/references/menu.json'
 import poisDeps from '~/cypress/fixtures/teritorio/references/poi/1/deps.json'
 import settings from '~/cypress/fixtures/teritorio/references/settings.json'
 import { ApiPois } from '~/lib/apiPois'
-import { bind, mockData } from '~/lib/storybook-types'
+import { bind, parametersMap } from '~/lib/storybook-types'
 
 export default {
   title: 'PoisDetails/PoiDetails',
   component: PoiDetails,
   parameters: {
-    mockData: [...mockData.style],
+    ...parametersMap,
   },
 }
 

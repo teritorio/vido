@@ -1,13 +1,13 @@
 import MapFeatures from '~/components/MainMap/MapFeatures.vue'
 import { ApiMenuCategory } from '~/lib/apiMenu'
 import { ApiPoi } from '~/lib/apiPois'
-import { bind, mockData } from '~/lib/storybook-types'
+import { bind, parametersMap } from '~/lib/storybook-types'
 
 export default {
   title: 'MainMap/MapFeatures',
   component: MapFeatures,
   parameters: {
-    mockData: [...mockData.style],
+    ...parametersMap,
   },
 }
 
