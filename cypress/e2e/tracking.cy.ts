@@ -1,4 +1,4 @@
-import { mockSSRAPI } from './mock'
+import { mockSSRAPI } from '../support/mock'
 
 import teritorioReferenceAPIFixture from '~/cypress/fixtures/teritorio/references/teritorioReferenceAPIFixture'
 import { Event } from '~/lib/trackers'
