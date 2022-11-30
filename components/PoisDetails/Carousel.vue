@@ -1,5 +1,5 @@
 <template>
-  <div v-if="images.length == 1" class="margin">
+  <div v-if="images.length == 1" class="margin slide">
     <NuxtPicture :src="images[0]" media-size="66vw" />
   </div>
   <VueAgile
@@ -98,5 +98,11 @@ export default Vue.extend({
   -o-object-fit: cover;
   object-fit: cover;
   width: 100%;
+}
+
+.slide img {
+  min-width: 100%;
+  object-fit: cover;
+  height: 500px;
 }
 </style>

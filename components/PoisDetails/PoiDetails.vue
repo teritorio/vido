@@ -201,7 +201,7 @@ export default Vue.extend({
     },
 
     isLargeLayeout(): boolean {
-      return this.poiDeps.features.length > 0
+      return this.poiDeps?.features.length > 0
     },
 
     detailsFields(): FieldsList | undefined {
