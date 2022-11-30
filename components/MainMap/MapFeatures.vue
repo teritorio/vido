@@ -459,8 +459,8 @@ export default (
 })
 </script>
 
-<style>
-#map-container {
+<style lang="scss" scoped>
+:deep(#map-container) {
   position: absolute;
   top: 0;
   bottom: 0;
