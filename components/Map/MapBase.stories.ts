@@ -18,8 +18,7 @@ export const Default = bind(
   {
     ...defaultProps,
   },
-  undefined,
-  mapCss
+  { style: mapCss }
 )
 
 export const OffMapAttrib = bind(
@@ -28,6 +27,5 @@ export const OffMapAttrib = bind(
     ...defaultProps,
     offMapAttribution: true,
   },
-  undefined,
-  mapCss
+  { style: mapCss }
 )

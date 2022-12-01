@@ -53,13 +53,22 @@ width: 100%;
 export function bind<T extends VueConstructor<Vue>>(
   t: T,
   args: Args,
-  slots: string = '',
-  style: string = ''
+  {
+    slots = '',
+    id = '',
+    classs = '',
+    style = '',
+  }: {
+    slots?: string
+    id?: string
+    classs?: string
+    style?: string
+  } = {}
 ) {
   const Template = ((args: Args) => ({
     components: { t },
     props: Object.keys(args),
-    template: `<t v-bind="$props" v-on="$props" style="${style}">${slots}</t>`,
+    template: `<t v-bind="$props" ${id ? `id="${id}"` : ''} v-on="$props" class="${classs} "style="${style}">${slots}</t>`,
   })) as unknown as Def
 
   const b = Template.bind({})

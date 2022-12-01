@@ -16,8 +16,7 @@ export const Default = bind(
   {
     ...defaultProps,
   },
-  undefined,
-  mapCss
+  { style: mapCss }
 )
 
 export const FullScreen = bind(
@@ -26,6 +25,5 @@ export const FullScreen = bind(
     ...defaultProps,
     fullscreenControl: true,
   },
-  undefined,
-  mapCss
+  { style: mapCss }
 )

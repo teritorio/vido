@@ -16,7 +16,7 @@ export const DefaultButton = bind(
   {
     ...defaultProps,
   },
-  'ABC'
+  { slots: 'ABC' }
 )
 
 export const DefaultLink = bind(
@@ -25,5 +25,5 @@ export const DefaultLink = bind(
     ...defaultProps,
     href: 'https://www.teritorio.fr/',
   },
-  'ABC'
+  { slots: 'ABC' }
 )

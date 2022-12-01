@@ -21,6 +21,5 @@ export const Default = bind(
   {
     ...defaultProps,
   },
-  undefined,
-  mapCss
+  { style: mapCss }
 )
