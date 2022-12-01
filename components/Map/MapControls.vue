@@ -61,7 +61,7 @@ export default Vue.extend({
 <style lang="scss">
 #map .mapboxgl-ctrl-group,
 #map .maplibre-ctrl-group {
-  @apply mb-4;
+  @apply mt-2 mb-2;
 
   background: none;
 }
