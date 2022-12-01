@@ -40,6 +40,8 @@ export default Vue.extend({
           trackUserLocation: true,
         })
         this.map.addControl(geolocateControl)
+        // Hack to be style the controler
+        geolocateControl._container.classList.add('control-geolocate')
 
         if (this.fullscreenControl) {
           const control = new maplibregl.FullscreenControl({})
@@ -96,10 +98,7 @@ export default Vue.extend({
   line-height: 1rem;
 }
 
-#map .mapboxgl-ctrl-group > button.mapboxgl-ctrl-geolocate,
-#map .maplibregl-ctrl-group > button.maplibregl-ctrl-geolocate,
-#map .mapboxgl-ctrl-group > button.mapboxgl-ctrl-geolocate:not(:disabled),
-#map .maplibregl-ctrl-group > button.maplibregl-ctrl-geolocate:not(:disabled) {
+.control-geolocate {
   @apply md:hidden;
 }
 </style>
