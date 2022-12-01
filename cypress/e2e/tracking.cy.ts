@@ -3,7 +3,11 @@ import { mockSSRAPI } from '../support/mock'
 import teritorioReferenceAPIFixture from '~/cypress/fixtures/teritorio/references/teritorioReferenceAPIFixture'
 import { Event } from '~/lib/trackers'
 
-const hostname = 'https://dev.appcarto.teritorio.xyz'
+const hostnames = {
+  'https://dev.appcarto.teritorio.xyz':
+    '/content/api.teritorio/geodata/v0.1/dev/tourism/',
+  'http://localhost:3000': '/fixtures/teritorio/empty/',
+}
 
 let consoleError: Cypress.Agent<sinon.SinonSpy>
 Cypress.on('window:before:load', (win) => {
@@ -15,7 +19,7 @@ const asserts: ((event: Event) => void)[] = []
 describe('home content', () => {
   before(() => {
     localStorage.setItem('cookie:accepted', 'true')
-    mockSSRAPI(hostname, teritorioReferenceAPIFixture)
+    mockSSRAPI(hostnames, teritorioReferenceAPIFixture)
     cy.viewport(1024, 768)
     cy.visit('/')
   })

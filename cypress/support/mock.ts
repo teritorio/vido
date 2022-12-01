@@ -1,7 +1,7 @@
 import { APIFixture } from '~/cypress/fixtures/APIFixture'
 
 export function mockSSRAPI(
-  hostname: string,
+  hostnames: { [hostname: string]: string },
   api: APIFixture,
   routes: { [route: string]: any } = {}
 ) {
@@ -14,16 +14,16 @@ export function mockSSRAPI(
     '211.geojson?geometry_as=bbox&short_description=true': api.pois,
   }
 
-  Object.entries(routes).forEach(([route, json]) => {
-    cy.intercept(route, { body: json })
-
-    // @ts-ignore
-    cy.mockSSR({
-      hostname,
-      method: 'GET',
-      path: '/content/api.teritorio/geodata/v0.1/dev/tourism/' + route,
-      statusCode: 200,
-      body: json,
+  Object.entries(hostnames).forEach(([hostname, path]) => {
+    Object.entries(routes).forEach(([route, json]) => {
+      // @ts-ignore
+      cy.mockSSR({
+        hostname,
+        method: 'GET',
+        path: path + route,
+        statusCode: 200,
+        body: json,
+      })
     })
   })
 }
