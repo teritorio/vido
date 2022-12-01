@@ -44,7 +44,6 @@
 
 <script lang="ts">
 import debounce from 'lodash.debounce'
-import throttle from 'lodash.throttle'
 import maplibregl, {
   MapDataEvent,
   LngLatBoundsLike,
