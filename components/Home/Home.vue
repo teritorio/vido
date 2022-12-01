@@ -525,12 +525,10 @@ export default (
 
     if (this.initialPoi) {
       this.setSelectedFeature(this.initialPoi)
-      this.initialBbox = getBBoxFeature(this.initialPoi)
     }
-    if (!this.initialBbox) {
-      // @ts-ignore
-      this.initialBbox = this.settings.bbox_line.coordinates
-    }
+
+    // @ts-ignore
+    this.initialBbox = this.settings.bbox_line.coordinates
   },
   methods: {
     ...mapActions({
