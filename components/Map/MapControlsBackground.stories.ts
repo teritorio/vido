@@ -5,6 +5,7 @@ import { MapStyleEnum } from '~/utils/types'
 export default {
   title: 'Map/MapControlsBackground',
   component: MapControlsBackground,
+  decorators: [() => ({ template: '<div id="map"><story/></div>' })],
 }
 
 const defaultProps = {
