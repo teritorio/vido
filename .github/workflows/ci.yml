@@ -85,6 +85,11 @@ jobs:
           sudo apt-get install -y ruby &&
           ruby poi_explode.rb cypress/fixtures/teritorio/references/pois.geojson
 
+      - name: yarn build
+        run: |
+          ln -s ../cypress/fixtures/ static/fixtures &&
+          NODE_ENV=development CONFIG=vidos-config-cypress.json yarn build
+
       - name: Run Cypress Tests 🧪
         uses: cypress-io/github-action@v4
         env:
@@ -92,8 +97,7 @@ jobs:
           CONFIG: vidos-config-cypress.json
         with:
           install-command: yarn --silent
-          build: NODE_ENV=development CONFIG=vidos-config-cypress.json yarn build
-          start: NODE_ENV=development CONFIG=vidos-config-cypress.json yarn start
+          start: yarn start4storybook
           wait-on: 'http://localhost:3000'
           wait-on-timeout: 30
 
