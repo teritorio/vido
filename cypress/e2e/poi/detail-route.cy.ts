@@ -5,7 +5,7 @@ import teritorioReferenceAPIFixture from '~/cypress/fixtures/teritorio/reference
 const hostnames = {
   'https://dev.appcarto.teritorio.xyz':
     '/content/api.teritorio/geodata/v0.1/dev/tourism/',
-  'http://localhost:3000': '/fixtures/teritorio/empty/',
+  'http://localhost:3000': '/fixtures/teritorio/references/',
 }
 
 describe('home content', () => {

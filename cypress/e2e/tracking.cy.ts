@@ -6,7 +6,7 @@ import { Event } from '~/lib/trackers'
 const hostnames = {
   'https://dev.appcarto.teritorio.xyz':
     '/content/api.teritorio/geodata/v0.1/dev/tourism/',
-  'http://localhost:3000': '/fixtures/teritorio/empty/',
+  'http://localhost:3000': '/fixtures/teritorio/references/',
 }
 
 let consoleError: Cypress.Agent<sinon.SinonSpy>
@@ -27,18 +27,21 @@ describe('home content', () => {
   it('tracks main load', () => {
     // Initial page load
     asserts.push((event: Event) => {
-      assert(event.type === 'page', 'Initial page load, check typ')
-      // @ts-ignore
-      assert(event.path === '/', 'Initial page load, check path')
+      assert(event.type === 'page' && event.path === '/', 'Initial page load')
     })
 
     // Background change
-    cy.get('#background-selector-map-aerial').click()
+    cy.get('#background-selector-map-bicycle', { timeout: 30000 }).click()
+    asserts.push((event: Event) => {
+      assert(event.type === 'map_control_event', 'Background change')
+    })
+
+    // Enable category
+    cy.get('#MenuItem-22').click()
     asserts.push((event: Event) => {
       assert(
-        event.type === 'map_control_event' &&
-          event.type === 'map_control_event',
-        'Background change'
+        event.type === 'category_event' && event.categoryId === 22,
+        'Enable category'
       )
     })
 
