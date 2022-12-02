@@ -75,6 +75,7 @@ export default Vue.extend({
 #map .maplibregl-ctrl-group > button,
 #map .mapboxgl-ctrl-group > button:not(:disabled),
 #map .maplibregl-ctrl-group > button:not(:disabled) {
+  border: none;
   @apply text-sm font-bold text-zinc-800 bg-white rounded-full shadow-md outline-none w-11 h-11;
   @apply focus:rounded-full focus:shadow-md focus:outline-none focus-visible:bg-zinc-100;
   @apply hover:bg-zinc-100;
