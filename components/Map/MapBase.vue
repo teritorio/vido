@@ -115,6 +115,10 @@ export default Vue.extend({
       type: Boolean,
       default: false,
     },
+    styleIconFilter: {
+      type: Array as PropType<Array<string[]> | null>,
+      default: null,
+    },
   },
 
   data(): {
@@ -142,6 +146,10 @@ export default Vue.extend({
   watch: {
     offMapAttribution() {
       this.$nextTick(() => this.map?.resize())
+    },
+
+    styleIconFilter() {
+      this.setPoiFilter()
     },
   },
 
@@ -219,8 +227,18 @@ export default Vue.extend({
         (layer) => layer.id === 'poi-level-1'
       )
 
-      this.poiFilter = new PoiFilter({ filter: [] })
+      this.poiFilter = new PoiFilter({
+        ...(this.styleIconFilter ? { filter: this.styleIconFilter } : {}),
+      })
       this.map.addControl(this.poiFilter)
+    },
+
+    setPoiFilter() {
+      if (this.styleIconFilter) {
+        this.poiFilter?.setIncludeFilter(this.styleIconFilter)
+      } else {
+        this.poiFilter?.remove(true)
+      }
     },
 
     onMapRender(eventName: string, event: any) {

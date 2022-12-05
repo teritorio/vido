@@ -11,6 +11,7 @@
       :show-attribution="!small"
       :off-map-attribution="$screen.smallScreen && !small"
       :hide-control="small"
+      :style-icon-filter="styleIconFilter"
       hash="map"
       @map-init="onMapInit"
       @map-data="onMapRender"
@@ -157,10 +158,6 @@ export default (
   },
 
   watch: {
-    styleIconFilter() {
-      this.setPoiFilter()
-    },
-
     features() {
       if (!this.map) {
         return
@@ -246,8 +243,6 @@ export default (
         '#000000',
       ])
 
-      this.setPoiFilter()
-
       STYLE_LAYERS.forEach((layer) => {
         this.map.on('mouseenter', layer, () => {
           this.map.getCanvas().style.cursor = 'pointer'
@@ -257,14 +252,6 @@ export default (
         })
       })
       this.showSelectedFeature()
-    },
-
-    setPoiFilter() {
-      if (this.styleIconFilter) {
-        this.$refs.mapBase.poiFilter?.setIncludeFilter(this.styleIconFilter)
-      } else {
-        this.$refs.mapBase.poiFilter?.remove(true)
-      }
     },
 
     // Map interactions
