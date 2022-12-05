@@ -4,11 +4,7 @@
       class="hidden md:flex relative md:fixed top-0 bottom-0 z-10 flex flex-row w-full md:h-full space-x-4 pointer-events-none md:w-auto md:p-2"
     >
       <div
-        :class="[
-          'flex-col justify-between w-full w-auto max-w-md space-y-4 sm:pb-10',
-          !selectedFeature && 'flex',
-          showPoi && 'max-h-screen-4/6 max-h-screen 2xl:h-auto',
-        ]"
+        class="flex flex-col justify-between w-full w-auto max-w-md space-y-4 sm:pb-10"
       >
         <transition-group
           name="headers"
