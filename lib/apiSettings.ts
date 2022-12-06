@@ -1,3 +1,4 @@
+import fetch from 'node-fetch'
 import { MetaInfo } from 'vue-meta'
 
 import { MultilingualString } from '~/utils/types'

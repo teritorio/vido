@@ -35,6 +35,7 @@
     "@nuxtjs/gtm": "^2.4.0",
     "@nuxtjs/i18n": "^7.3.0",
     "@nuxtjs/sentry": "^6.0.1",
+    "@nuxtjs/sitemap": "^2.4.0",
     "@tailwindcss/typography": "^0.5.8",
     "@teritorio/map": "^0.12.4",
     "@teritorio/openmaptiles-gl-language": "^1.5.4",

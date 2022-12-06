@@ -171,7 +171,7 @@ import { mapGetters } from 'vuex'
 import FavoriteNoteBook from '~/components/MainMap/FavoriteNoteBook.vue'
 import FavoriteIcon from '~/components/UI/FavoriteIcon.vue'
 import ShareLinkModal from '~/components/UI/ShareLinkModal.vue'
-import { getPoiByIds, ApiPoi } from '~/lib/apiPois'
+import { getPois, ApiPoi } from '~/lib/apiPois'
 
 export default (
   Vue as VueConstructor<
@@ -242,7 +242,7 @@ export default (
   },
   methods: {
     async fetchFavorites(ids: [string]) {
-      return await getPoiByIds(
+      return await getPois(
         this.$vidoConfig().API_ENDPOINT,
         this.$vidoConfig().API_PROJECT,
         this.$vidoConfig().API_THEME,

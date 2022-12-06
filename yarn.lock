@@ -3313,6 +3313,23 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@nuxtjs/sitemap@npm:^2.4.0":
+  version: 2.4.0
+  resolution: "@nuxtjs/sitemap@npm:2.4.0"
+  dependencies:
+    async-cache: ^1.1.0
+    consola: ^2.13.0
+    etag: ^1.8.1
+    fresh: ^0.5.2
+    fs-extra: ^8.1.0
+    is-https: ^2.0.2
+    lodash.unionby: ^4.8.0
+    minimatch: ^3.0.4
+    sitemap: ^4.1.1
+  checksum: 541e8e3289ae7bec815e2131e52de6a6a948b50a8450221facb75c55c538b3513d6f278027152cabf5ce3002bc6bc70c3b42ade84c366a4bbb529e500aef47de
+  languageName: node
+  linkType: hard
+
 "@nuxtjs/storybook@npm:^4.3.2":
   version: 4.3.2
   resolution: "@nuxtjs/storybook@npm:4.3.2"
@@ -4738,6 +4755,7 @@ __metadata:
     "@nuxtjs/gtm": ^2.4.0
     "@nuxtjs/i18n": ^7.3.0
     "@nuxtjs/sentry": ^6.0.1
+    "@nuxtjs/sitemap": ^2.4.0
     "@nuxtjs/storybook": ^4.3.2
     "@nuxtjs/stylelint-module": ^4.1.0
     "@nuxtjs/svg": ^0.4.0
@@ -5339,6 +5357,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/node@npm:^12.0.2":
+  version: 12.20.55
+  resolution: "@types/node@npm:12.20.55"
+  checksum: 8a597dc09833f440c90fd893f9c8e2a6db26ee6f1fb5c265dc748a04324984aa53a64a00c2986af16a47df75cdb185ffa0f7a0782f83e6415a6f555842145f19
+  languageName: node
+  linkType: hard
+
 "@types/node@npm:^14.0.10 || ^16.0.0, @types/node@npm:^14.14.20 || ^16.0.0":
   version: 16.11.43
   resolution: "@types/node@npm:16.11.43"
@@ -5514,6 +5539,15 @@ __metadata:
   dependencies:
     "@types/node": "*"
   checksum: b329192b7d2f69a7ee989197b000c747a14341e09fa917e38ac7faab92b7f7c86d8df19cf43aace6e7db002b8a88835a67da276158d7acfaa36c4fab91a013b9
+  languageName: node
+  linkType: hard
+
+"@types/sax@npm:^1.2.0":
+  version: 1.2.4
+  resolution: "@types/sax@npm:1.2.4"
+  dependencies:
+    "@types/node": "*"
+  checksum: 26eb5142abbbf655ab75bb6492777d99be3e4c45732c128a37fbb887a5f953b13e6faa93b51494526b02e468685ec57794063b2c0b05b2e2cefa11e959be441b
   languageName: node
   linkType: hard
 
@@ -6882,7 +6916,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"arg@npm:^4.1.0":
+"arg@npm:^4.1.0, arg@npm:^4.1.1":
   version: 4.1.3
   resolution: "arg@npm:4.1.3"
   checksum: 81b3b40b1529c4fbf75b12f7c3e6fb2dcce9e78072063babc169de9b4f40777788f3d2b04380f659ef676a756e03ccfbfe78adf4477353bda906295fa69dab89
@@ -7133,6 +7167,15 @@ __metadata:
   version: 2.0.0
   resolution: "astral-regex@npm:2.0.0"
   checksum: bf049ee7048b70af5473580020f98faf09159af31a7fa5e223099966dc90e9e87760bd34030e19a6dcac05b45614b428f559bd71f027344d123555e524cb95ac
+  languageName: node
+  linkType: hard
+
+"async-cache@npm:^1.1.0":
+  version: 1.1.0
+  resolution: "async-cache@npm:1.1.0"
+  dependencies:
+    lru-cache: ^4.0.0
+  checksum: 287c13d654b30880f20f6199e836a7308439e62abcb0661d2e68cdc1e6e3a4bd9e0f624b2eae09357d97951f319cb58dac9420cfa3c5d1e1e850799b22accb7f
   languageName: node
   linkType: hard
 
@@ -9018,7 +9061,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"consola@npm:^2.10.0, consola@npm:^2.15.0, consola@npm:^2.15.3, consola@npm:^2.6.0, consola@npm:^2.9.0":
+"consola@npm:^2.10.0, consola@npm:^2.13.0, consola@npm:^2.15.0, consola@npm:^2.15.3, consola@npm:^2.6.0, consola@npm:^2.9.0":
   version: 2.15.3
   resolution: "consola@npm:2.15.3"
   checksum: 914e2b0b24605a41f1a83ae29a0238558d01a01c40ada5817db81b2dd1543a540d59e38e81e736d05360246379a18013e6930b32231650898dfc4adb52a93523
@@ -14322,6 +14365,13 @@ fsevents@^1.2.7:
   languageName: node
   linkType: hard
 
+"is-https@npm:^2.0.2":
+  version: 2.0.2
+  resolution: "is-https@npm:2.0.2"
+  checksum: 8723a53320eb8b778dc8eb40d6706b3095b14ddcc9e2a81fd3d76500f27a98d504409973cf02c317330386123d90ca505db0b40d9ea003ded7394e62321c05e2
+  languageName: node
+  linkType: hard
+
 "is-https@npm:^4.0.0":
   version: 4.0.0
   resolution: "is-https@npm:4.0.0"
@@ -16289,6 +16339,13 @@ fsevents@^1.2.7:
   languageName: node
   linkType: hard
 
+"lodash.unionby@npm:^4.8.0":
+  version: 4.8.0
+  resolution: "lodash.unionby@npm:4.8.0"
+  checksum: 187e3cfc535d3234422cb59ed8e8a15e4e94afa13b3524fb8bb9976e9145615dd410df3e3bf8a7622e6426458894d9198cc954217858b0b00a20a105c1d673d8
+  languageName: node
+  linkType: hard
+
 "lodash.uniq@npm:4.5.0, lodash.uniq@npm:^4.5.0":
   version: 4.5.0
   resolution: "lodash.uniq@npm:4.5.0"
@@ -16393,7 +16450,7 @@ fsevents@^1.2.7:
   languageName: node
   linkType: hard
 
-"lru-cache@npm:^4.1.2, lru-cache@npm:^4.1.5":
+"lru-cache@npm:^4.0.0, lru-cache@npm:^4.1.2, lru-cache@npm:^4.1.5":
   version: 4.1.5
   resolution: "lru-cache@npm:4.1.5"
   dependencies:
@@ -21806,7 +21863,7 @@ fsevents@^1.2.7:
   languageName: node
   linkType: hard
 
-"sax@npm:~1.2.4":
+"sax@npm:^1.2.4, sax@npm:~1.2.4":
   version: 1.2.4
   resolution: "sax@npm:1.2.4"
   checksum: 9d7668d69105e89e2c1a4b2fdc12c72e1a2f78b825f7b4a8a2ea5cdfebf70920bd17715bed55264c3b3959616a0695f8ad2d098bf6944fbd0953ee9c695dceef
@@ -22247,6 +22304,21 @@ fsevents@^1.2.7:
   version: 1.0.5
   resolution: "sisteransi@npm:1.0.5"
   checksum: 6554debe10fa4c6a7e8d58531313fdb61c39bb435ba420f8d7a01d8aaffecc654cca846b586e33f3c904350e24f229d5bbd8069abdb583c93252849a0f73e933
+  languageName: node
+  linkType: hard
+
+"sitemap@npm:^4.1.1":
+  version: 4.1.1
+  resolution: "sitemap@npm:4.1.1"
+  dependencies:
+    "@types/node": ^12.0.2
+    "@types/sax": ^1.2.0
+    arg: ^4.1.1
+    sax: ^1.2.4
+    xmlbuilder: ^13.0.0
+  bin:
+    sitemap: ./dist/cli.js
+  checksum: c74c2b0e548ba1310f1c0a48f12a764282bd583551ba3b029c3774c29e3d92ce5da5d4cda5815a4786b9f53b13396b247ac85e6d23c621b96f5dcdee5c9296f5
   languageName: node
   linkType: hard
 
@@ -25953,6 +26025,13 @@ typescript@~4.2:
   version: 4.0.0
   resolution: "xml-name-validator@npm:4.0.0"
   checksum: e7c0e9e22111c79f0f02da0c052e16d241580bbad37046e58e64c369e51653aa8a97127893324c70cce8c47f1e72a985a17911f197c04ab843841a13a258de95
+  languageName: node
+  linkType: hard
+
+"xmlbuilder@npm:^13.0.0":
+  version: 13.0.2
+  resolution: "xmlbuilder@npm:13.0.2"
+  checksum: d29631d8991d4fa5e954c7fb7ea4a3d5b37b8bd72264241d60844e9f54e52b3f1415c78104f1e3c720f7dd6e9591234b37897ae883dfe4a1a280f99e9fec4c6f
   languageName: node
   linkType: hard
 

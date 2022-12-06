@@ -13,7 +13,7 @@ import { MetaInfo } from 'vue-meta'
 import { mapActions } from 'vuex'
 
 import MapPois from '~/components/Map/MapPois.vue'
-import { getPoiByIds, ApiPois } from '~/lib/apiPois'
+import { getPois, ApiPois } from '~/lib/apiPois'
 import { getSettings, headerFromSettings, Settings } from '~/lib/apiSettings'
 import { vidoConfig } from '~/plugins/vido-config'
 import { VidoConfig } from '~/utils/types-config'
@@ -42,7 +42,7 @@ export default Vue.extend({
     let pois: ApiPois | null
     if (params.ids) {
       const ids = params.ids.split(',')
-      const getPoiPromise = getPoiByIds(
+      const getPoiPromise = getPois(
         vidoConfig(req, $config).API_ENDPOINT,
         vidoConfig(req, $config).API_PROJECT,
         vidoConfig(req, $config).API_THEME,

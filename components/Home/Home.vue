@@ -243,7 +243,7 @@ import CookiesConsent from '~/components/UI/CookiesConsent.vue'
 import Logo from '~/components/UI/Logo.vue'
 import { ContentEntry } from '~/lib/apiContent'
 import { ApiMenuCategory, MenuItem } from '~/lib/apiMenu'
-import { getPoiById, ApiPoi, getPoiByIds } from '~/lib/apiPois'
+import { getPoiById, ApiPoi, getPois } from '~/lib/apiPois'
 import { ApiMenuItemSearchResult } from '~/lib/apiSearch'
 import { headerFromSettings, Settings } from '~/lib/apiSettings'
 import { getBBoxFeature } from '~/lib/bbox'
@@ -731,7 +731,7 @@ export default (
     },
 
     fetchFavorites(ids: [string]): Promise<ApiPoi[]> {
-      return getPoiByIds(
+      return getPois(
         this.$vidoConfig().API_ENDPOINT,
         this.$vidoConfig().API_PROJECT,
         this.$vidoConfig().API_THEME,

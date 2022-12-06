@@ -1,3 +1,5 @@
+import fetch from 'node-fetch'
+
 import { MapPoiProperties, MapPoiId } from './mapPois'
 
 import { MultilingualString } from '~/utils/types'
@@ -115,17 +117,17 @@ export function getPoiById(
   })
 }
 
-export function getPoiByIds(
+export function getPois(
   apiEndpoint: string,
   apiProject: string,
   apiTheme: string,
-  poiIds: (ApiPoiId | string)[],
+  poiIds?: (ApiPoiId | string)[],
   options: apiPoisOptions = {}
 ): Promise<ApiPois> {
   return fetch(
     `${apiEndpoint}/${apiProject}/${apiTheme}/pois.geojson?` +
       new URLSearchParams([
-        ['ids', poiIds.join(',')],
+        ...(poiIds ? [['ids', poiIds.join(',')]] : []),
         ...stringifyOptions(options),
       ])
   ).then((data) => {
