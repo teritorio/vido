@@ -129,6 +129,7 @@ export default Vue.extend({
   head(): MetaInfo {
     return headerFromSettings(this.settings, {
       title: this.poi?.properties.name,
+      description: { fr: this.poi?.properties.description },
     })
   },
 

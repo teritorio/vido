@@ -76,6 +76,12 @@ export function getSettings(
     })
 }
 
+function stripHTML(value?: string): string | undefined {
+  if (value) {
+    return value.replace(/(<([^>]+)>)/gi, '')
+  }
+}
+
 export function headerFromSettings(
   settings: Settings,
   options: any = null
@@ -101,7 +107,10 @@ export function headerFromSettings(
         // https://nuxtjs.org/docs/2.x/features/meta-tags-seo#local-settings
         hid: 'description',
         name: 'description',
-        content: settings.themes[0]?.description?.fr,
+        content:
+          stripHTML(
+            options?.description?.fr || settings.themes[0]?.description?.fr
+          ) || '',
       },
       {
         hid: 'keywords',
