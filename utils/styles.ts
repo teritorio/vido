@@ -1,4 +1,9 @@
-import { StyleSpecification, Map, ExpressionSpecification } from 'maplibre-gl'
+import {
+  StyleSpecification,
+  Map,
+  ExpressionSpecification,
+  VectorSourceSpecification,
+} from 'maplibre-gl'
 
 import { ApiPoiId } from '~/lib/apiPois'
 
@@ -17,31 +22,30 @@ export const fetchStyle = (
         .map((src: any) => src.url)
         .filter((url) => url)
 
-      const vectoSourceAttribution = await Promise.all(
-        vectoSourceUrl.map((url) => {
-          if (!url) return null
+      const vectoSourceAttribution = (
+        await Promise.all(
+          vectoSourceUrl
+            .filter((url) => !!url)
+            .map((url) =>
+              fetch(url)
+                .then((res) => res.json())
+                .then((res: VectorSourceSpecification) =>
+                  res.attribution
+                    ?.replaceAll('&copy;', '©')
+                    .replaceAll('> <', '>,<')
+                    .split(',')
+                )
+            )
+        )
+      ).filter((attrs) => !!attrs)
 
-          return fetch(url)
-            .then((res) => res.json())
-            .then((res) => {
-              return res.attribution
-            })
-        })
+      extraAttributions = extraAttributions.map((attr) =>
+        attr.replaceAll('&copy;', '©')
       )
 
-      let nuAttribution = ''
-
-      vectoSourceAttribution.forEach((attr, i) => {
-        if (attr) {
-          const existingAttributions = extraAttributions.filter(
-            (att: string) => !attr.includes(att)
-          )
-
-          nuAttribution += [attr].concat(existingAttributions).join(' ')
-        } else if (vectoSources[i]?.attribution) {
-          nuAttribution += ' ' + vectoSources[i]?.attribution
-        }
-      })
+      let nuAttribution = [
+        ...new Set([...vectoSourceAttribution.flat(1), ...extraAttributions]),
+      ].join(' ')
 
       const nuStyle = { ...style }
 
