@@ -90,7 +90,7 @@ export default Vue.extend({
     }
 
     if (!poi) {
-      throw new Error('Missing main route data.')
+      throw new Error('Missing main object.')
     }
 
     return Promise.resolve({
