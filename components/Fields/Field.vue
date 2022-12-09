@@ -24,7 +24,7 @@
   </AddressField>
 
   <DateRange
-    v-else-if="field.field == 'start_end_date'"
+    v-else-if="field.field === 'start_end_date'"
     :start="properties.start_date"
     :end="properties.end_date"
     :class="`field_content_level_${recursionLevel}`"
@@ -45,12 +45,6 @@
       >{{ fieldTranslateK(field.field) }}</FieldsHeader
     >
   </Coordinates>
-
-  <DateRange
-    v-else-if="field.field === 'start_end_date'"
-    :start="properties.start_date"
-    :end="properties.end_date"
-  />
 
   <div v-else-if="properties[field.field]">
     <FieldsHeader
