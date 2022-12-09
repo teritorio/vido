@@ -1,6 +1,6 @@
 <template>
   <ExternalLink
-    v-if="$screen.phone"
+    v-if="phone"
     :href="`tel:${number}`"
     :title="$tc('fields.phone.callNumber')"
   >
@@ -26,6 +26,19 @@ export default Vue.extend({
       type: String,
       default: null,
     },
+  },
+
+  data(): {
+    phone: boolean
+  } {
+    return {
+      phone: true,
+    }
+  },
+
+  mounted() {
+    // Do not use $screen.phone directly in template. De-sync DROM from SSR.
+    this.phone = this.$screen.phone
   },
 })
 </script>
