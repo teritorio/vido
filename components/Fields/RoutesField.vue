@@ -42,6 +42,17 @@ type Route = {
   difficulty?: string
 }
 
+export function isRoutesFieldEmpty(properties: {
+  [key: string]: string
+}): boolean {
+  return (
+    Object.entries(properties || {})
+      .map(([key, value]) => [key.split(':'), value])
+      .filter(([keys, _value]) => keys[0] === 'route' && keys.length === 3)
+      .length > 0
+  )
+}
+
 export default Vue.extend({
   components: {
     FieldsHeader,

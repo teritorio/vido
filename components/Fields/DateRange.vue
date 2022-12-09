@@ -33,6 +33,12 @@
 <script lang="ts">
 import Vue from 'vue'
 
+export function isDateRangeEmpty(properties: {
+  [key: string]: string
+}): boolean {
+  return !('start' in properties) && !('end' in properties)
+}
+
 export default Vue.extend({
   props: {
     start: {

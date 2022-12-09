@@ -22,6 +22,10 @@ import ExternalLink from '~/components/UI/ExternalLink.vue'
 import { coordinatesHref } from '~/lib/coordinates'
 import { isIOS } from '~/utils/isIOS'
 
+export function isCoordinatesEmpty(geom: GeoJSON.Geometry): boolean {
+  return !(geom && geom.type === 'Point' && geom.coordinates)
+}
+
 export default Vue.extend({
   components: {
     ExternalLink,

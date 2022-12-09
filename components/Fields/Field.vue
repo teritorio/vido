@@ -163,19 +163,43 @@
 import GeoJSON from 'geojson'
 import Vue, { PropType } from 'vue'
 
-import AddressField from '~/components/Fields/AddressField.vue'
-import Coordinates from '~/components/Fields/Coordinates.vue'
-import DateRange from '~/components/Fields/DateRange.vue'
+import AddressField, {
+  isAddressFieldEmpty,
+} from '~/components/Fields/AddressField.vue'
+import Coordinates, {
+  isCoordinatesEmpty,
+} from '~/components/Fields/Coordinates.vue'
+import DateRange, { isDateRangeEmpty } from '~/components/Fields/DateRange.vue'
 import Facebook from '~/components/Fields/Facebook.vue'
 import OpeningHours, {
   isOpeningHoursSupportedOsmTags,
 } from '~/components/Fields/OpeningHours.vue'
 import Phone from '~/components/Fields/Phone.vue'
-import RoutesField from '~/components/Fields/RoutesField.vue'
+import RoutesField, {
+  isRoutesFieldEmpty,
+} from '~/components/Fields/RoutesField.vue'
 import ExternalLink from '~/components/UI/ExternalLink.vue'
 import FieldsHeader from '~/components/UI/FieldsHeader.vue'
 import { ApiPoiProperties, FieldsListItem } from '~/lib/apiPois'
 import { PropertyTranslationsContextEnum } from '~/plugins/property-translations'
+
+export function isFiledEmpty(
+  field: FieldsListItem,
+  properties: { [key: string]: string },
+  geom: GeoJSON.Geometry
+): boolean {
+  if (field.field == 'route') {
+    return isRoutesFieldEmpty(properties)
+  } else if (field.field === 'addr') {
+    return isAddressFieldEmpty(properties)
+  } else if (field.field == 'start_end_date') {
+    return isDateRangeEmpty(properties)
+  } else if (field.field === 'coordinates') {
+    return isCoordinatesEmpty(geom)
+  } else {
+    return !(field.field in properties)
+  }
+}
 
 export default Vue.extend({
   components: {
