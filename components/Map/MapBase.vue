@@ -228,7 +228,7 @@ export default Vue.extend({
       )
 
       this.poiFilter = new PoiFilter({
-        ...(this.styleIconFilter ? { filter: this.styleIconFilter } : {}),
+        filter: this.styleIconFilter || [],
       })
       this.map.addControl(this.poiFilter)
     },
