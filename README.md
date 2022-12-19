@@ -4,23 +4,35 @@
 
 ```bash
 # install dependencies
-$ yarn install
+yarn install
 
 # Generate configuration from `vidos.config.ts`
-$ yarn build-config
+yarn build-config
 
 # serve with hot reload at localhost:3000
-$ yarn dev
+yarn dev
 
 # build for production and launch server
-$ yarn build
-$ yarn start
+yarn build
+yarn start
 
 # generate static project
-$ yarn generate
+yarn generate
 ```
 
 For detailed explanation on how things work, check out [Nuxt.js docs](https://nuxtjs.org).
+
+## Setup with Docker
+
+```
+cp .env.sample .env
+
+docker-compose build
+
+docker-compose -f docker-compose.yml run --rm node yarn build-config
+
+docker-compose up -d
+```
 
 ## Tests
 
