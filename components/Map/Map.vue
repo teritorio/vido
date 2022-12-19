@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div :class="(hideControl || !map) && 'map-controls-hidden'">
     <mapbox
       v-if="style"
       access-token=""
@@ -10,7 +10,6 @@
         hash: hash,
         maxZoom: defaultZoom.max,
         minZoom: defaultZoom.min,
-        pitch,
         style: style,
         zoom: zoom,
         locale: locales,
@@ -21,7 +20,6 @@
       }"
       v-bind="$attrs"
       @map-init="$emit('map-init', $event) && onMapInit($event)"
-      @map-pitchend="$emit('map-pitchend', $event)"
       @map-data="$emit('map-data', $event)"
       @map-dragend="$emit('map-dragend', $event)"
       @map-moveend="$emit('map-moveend', $event)"
@@ -34,8 +32,7 @@
     <MapControls
       :map="map"
       :show-compass="rotate"
-      :class="hideControl && 'hidden'"
-      :full-screen-map="fullScreenMap"
+      :fullscreen-control="fullscreenControl"
     >
       <slot name="controls"></slot>
     </MapControls>
@@ -100,11 +97,11 @@ export default Vue.extend({
       type: Number,
       default: null,
     },
-    pitch: {
-      type: Number,
-      default: 0,
-    },
     rotate: {
+      type: Boolean,
+      default: false,
+    },
+    fullscreenControl: {
       type: Boolean,
       default: false,
     },
@@ -117,10 +114,6 @@ export default Vue.extend({
       default: true,
     },
     hideControl: {
-      type: Boolean,
-      default: false,
-    },
-    fullScreenMap: {
       type: Boolean,
       default: false,
     },
@@ -204,7 +197,7 @@ export default Vue.extend({
     setStyle(mapStyle: MapStyleEnum) {
       this.getStyle(mapStyle)
         .then((style) => {
-          const vectorSource = Object.values(style.sources).find(
+          const vectorSource = Object.values(style.sources || []).find(
             (source) => ['vector', 'raster'].lastIndexOf(source.type) >= 0
           ) as VectorSourceSpecification | RasterSourceSpecification
           if (vectorSource) {
@@ -241,9 +234,9 @@ export default Vue.extend({
         return this.mapStyleCache[mapStyle]
       } else {
         const styleURLs = {
-          [MapStyleEnum.vector]: this.$vidoConfig.VECTO_STYLE_URL,
-          [MapStyleEnum.aerial]: this.$vidoConfig.SATELLITE_STYLE_URL,
-          [MapStyleEnum.bicycle]: this.$vidoConfig.BICYCLE_STYLE_URL,
+          [MapStyleEnum.vector]: this.$vidoConfig().VECTO_STYLE_URL,
+          [MapStyleEnum.aerial]: this.$vidoConfig().SATELLITE_STYLE_URL,
+          [MapStyleEnum.bicycle]: this.$vidoConfig().BICYCLE_STYLE_URL,
         }
         const style = await fetchStyle(
           styleURLs[mapStyle],
@@ -276,31 +269,16 @@ export default Vue.extend({
 })
 </script>
 
+<style lang="scss" scoped>
+:deep(#map) {
+  width: 100%;
+  height: 100%;
+}
+</style>
+
 <style>
-.mapboxgl-ctrl.mapboxgl-ctrl-attrib {
-  @apply text-xs px-1 py-0.5 rounded-tl-sm;
-}
-
-.mapboxgl-ctrl.mapboxgl-ctrl-attrib.mapboxgl-compact {
-  min-height: 24px;
-
-  @apply pl-2 pr-8 py-1 rounded-sm;
-}
-
-.mapboxgl-ctrl.mapboxgl-ctrl-attrib.mapboxgl-compact:not(.mapboxgl-compact-show) {
-  @apply bg-transparent;
-}
-
-.mapboxgl-ctrl.mapboxgl-ctrl-attrib.mapboxgl-compact.mapboxgl-compact-show
-  .mapboxgl-ctrl-attrib-button {
-  @apply bg-transparent;
-}
-
-.maplibregl-ctrl-attrib {
-  margin-left: 100px;
-}
-
-.mapboxgl-ctrl-bottom-right {
-  @apply pl-24;
+.map-controls-hidden .mapboxgl-control-container,
+.map-controls-hidden .maplibregl-control-container {
+  display: none;
 }
 </style>

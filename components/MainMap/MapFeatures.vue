@@ -1,21 +1,19 @@
 <template>
   <div class="w-full h-full">
-    <Map
+    <MapBase
+      ref="mapBase"
+      :features="features"
       :bounds="defaultBounds"
-      :fit-bounds-options="{
-        maxZoom: 17,
-        padding: fitBoundsPaddingOptions,
-      }"
-      :full-screen-map="true"
+      :fit-bounds-padding-options="fitBoundsPaddingOptions"
       :extra-attributions="extraAttributions"
       :map-style="selectedBackground"
-      :pitch="pitch"
       :rotate="!$screen.touch"
-      :show-attribution="!$screen.smallScreen"
+      :show-attribution="!small"
+      :off-map-attribution="$screen.smallScreen && !small"
       :hide-control="small"
+      :style-icon-filter="styleIconFilter"
       hash="map"
       @map-init="onMapInit"
-      @map-pitchend="onMapPitchEnd"
       @map-data="onMapRender"
       @map-dragend="onMapRender"
       @map-moveend="onMapRender"
@@ -25,25 +23,28 @@
       @map-zoomend="onMapRender"
       @map-style-load="onMapStyleLoad"
       @full-attribution="$emit('full-attribution', $event)"
+      @feature-click="updateSelectedFeature"
     >
       <template #controls>
-        <MapControlsExplore v-if="explorerModeEnabled" />
-        <MapControls3D :map="map" :pitch="pitch" />
+        <MapControlsExplore v-if="explorerModeEnabled" :map="map" />
+        <MapControls3D :map="map" />
         <MapControlsBackground
+          :map="map"
           :backgrounds="availableStyles"
           :initial-background="selectedBackground"
           @change-background="selectedBackground = $event"
         />
       </template>
-    </Map>
+      <template #body>
+        <slot></slot>
+      </template>
+    </MapBase>
     <SnackBar @click="handleSnackAction" />
   </div>
 </template>
 
 <script lang="ts">
-import { PoiFilter } from '@teritorio/map'
 import debounce from 'lodash.debounce'
-import throttle from 'lodash.throttle'
 import maplibregl, {
   MapDataEvent,
   LngLatBoundsLike,
@@ -51,18 +52,17 @@ import maplibregl, {
   FitBoundsOptions,
   GeoJSONSource,
 } from 'maplibre-gl'
-import Vue, { PropType } from 'vue'
+import Vue, { PropType, VueConstructor } from 'vue'
 
 import MapControlsExplore from '~/components/MainMap/MapControlsExplore.vue'
 import SnackBar from '~/components/MainMap/SnackBar.vue'
-import Map from '~/components/Map/Map.vue'
+import MapBase from '~/components/Map/MapBase.vue'
 import MapControls3D from '~/components/Map/MapControls3D.vue'
 import MapControlsBackground from '~/components/Map/MapControlsBackground.vue'
 import { ApiMenuCategory } from '~/lib/apiMenu'
 import { ApiPoi, getPoiById } from '~/lib/apiPois'
 import { getBBoxFeatures, getBBoxFeature } from '~/lib/bbox'
 import { DEFAULT_MAP_STYLE, MAP_ZOOM } from '~/lib/constants'
-import { markerLayerTextFactory, updateMarkers } from '~/lib/markerLayerFactory'
 import { VectorTilesPoi, vectorTilesPoi2ApiPoi } from '~/lib/vectorTilesPois'
 import { filterRouteByCategories, filterRouteByPoiId } from '~/utils/styles'
 import { LatLng, MapStyleEnum } from '~/utils/types'
@@ -76,11 +76,18 @@ const STYLE_LAYERS = [
   'features-fill',
 ]
 const POI_SOURCE = 'poi'
-const POI_LAYER = 'poi'
 
-export default Vue.extend({
+export default (
+  Vue as VueConstructor<
+    Vue & {
+      $refs: {
+        mapBase: InstanceType<typeof MapBase>
+      }
+    }
+  >
+).extend({
   components: {
-    Map,
+    MapBase,
     MapControlsExplore,
     MapControls3D,
     MapControlsBackground,
@@ -132,18 +139,12 @@ export default Vue.extend({
 
   data(): {
     map: maplibregl.Map
-    poiFilter: PoiFilter | null
-    poiLayerTemplate: maplibregl.LayerSpecification | undefined
-    pitch: number
     markers: { [id: string]: maplibregl.Marker }
     selectedFeatureMarker: maplibregl.Marker | null
     selectedBackground: keyof typeof MapStyleEnum
   } {
     return {
       map: null!,
-      poiFilter: null,
-      poiLayerTemplate: undefined,
-      pitch: 0,
       markers: {},
       selectedFeatureMarker: null,
       selectedBackground: DEFAULT_MAP_STYLE,
@@ -157,14 +158,6 @@ export default Vue.extend({
   },
 
   watch: {
-    small() {
-      this.resizeMap()
-    },
-
-    styleIconFilter() {
-      this.setPoiFilter()
-    },
-
     features() {
       if (!this.map) {
         return
@@ -210,12 +203,6 @@ export default Vue.extend({
   },
 
   created() {
-    this.onMapPitchEnd = throttle(this.onMapPitchEnd, 200)
-    this.onMapRender = throttle(this.onMapRender, 200, {
-      leading: true,
-      trailing: true,
-    })
-
     this.updateSelectedFeature = debounce(this.updateSelectedFeature, 300)
   },
 
@@ -232,10 +219,6 @@ export default Vue.extend({
 
     onMapInit(map: maplibregl.Map) {
       this.map = map
-      this.pitch = this.map.getPitch()
-
-      this.poiFilter = new PoiFilter()
-      this.map.addControl(this.poiFilter)
 
       this.map.on('click', this.onClick)
 
@@ -246,18 +229,19 @@ export default Vue.extend({
     },
 
     onMapStyleLoad(style: maplibregl.StyleSpecification) {
-      this.poiLayerTemplate = style.layers.find(
-        (layer) => layer.id === 'poi-level-1'
-      )
-
-      if (this.map) {
-        this.onStyleInit()
-      }
-    },
-
-    onStyleInit() {
-      this.setPoiFilter()
-      this.initPoiLayer(this.features)
+      const colors = [
+        ...new Set(
+          Object.values(this.categories)
+            .filter((category) => category.category)
+            .map((category) => category.category.color_fill)
+        ),
+      ]
+      this.$refs.mapBase.initPoiLayer(this.features, colors, [
+        'case',
+        ['all', ['has', 'display'], ['has', 'color_fill', ['get', 'display']]],
+        ['get', 'color_fill', ['get', 'display']],
+        '#000000',
+      ])
 
       STYLE_LAYERS.forEach((layer) => {
         this.map.on('mouseenter', layer, () => {
@@ -268,47 +252,6 @@ export default Vue.extend({
         })
       })
       this.showSelectedFeature()
-    },
-
-    initPoiLayer(features: ApiPoi[]) {
-      if (!this.map.getSource(POI_SOURCE)) {
-        // Create cluster properties, which will contain count of features per category
-        const clusterProps: { [category: string]: object } = {}
-
-        Object.keys(this.categories).forEach((category) => {
-          clusterProps[category] = [
-            '+',
-            ['case', ['==', ['get', 'vido_cat'], parseInt(category, 10)], 1, 0],
-          ]
-        })
-
-        this.map.addSource(POI_SOURCE, {
-          type: 'geojson',
-          cluster: true,
-          clusterRadius: 32,
-          clusterProperties: clusterProps,
-          clusterMaxZoom: 15,
-          tolerance: 0.6,
-          data: {
-            type: 'FeatureCollection',
-            features,
-          },
-        })
-      }
-
-      // Add individual markers
-      if (!this.map.getLayer(POI_LAYER) && this.poiLayerTemplate)
-        this.map.addLayer(
-          markerLayerTextFactory(this.poiLayerTemplate, POI_LAYER, POI_SOURCE)
-        )
-    },
-
-    setPoiFilter() {
-      if (this.styleIconFilter) {
-        this.poiFilter?.setIncludeFilter(this.styleIconFilter)
-      } else {
-        this.poiFilter?.remove(true)
-      }
     },
 
     // Map interactions
@@ -343,9 +286,9 @@ export default Vue.extend({
             // Seted temp partial data from vector tiles.
             // Now fetch full data.
             return getPoiById(
-              this.$vidoConfig.API_ENDPOINT,
-              this.$vidoConfig.API_PROJECT,
-              this.$vidoConfig.API_THEME,
+              this.$vidoConfig().API_ENDPOINT,
+              this.$vidoConfig().API_PROJECT,
+              this.$vidoConfig().API_THEME,
               feature.properties.metadata.id
             ).then((apiPoi) => {
               // Overide geometry.
@@ -364,25 +307,10 @@ export default Vue.extend({
     // Map view
 
     onMapRender() {
-      if (
-        this.map &&
-        this.map.getSource(POI_SOURCE) &&
-        this.map.isSourceLoaded(POI_SOURCE)
-      ) {
-        this.markers = updateMarkers(
-          this.map,
-          this.categories,
-          this.markers,
-          POI_SOURCE,
-          this.fitBounds,
-          this.updateSelectedFeature
-        )
-
-        // Put selected feature marker on top
-        if (this.selectedFeatureMarker) {
-          this.selectedFeatureMarker.remove()
-          this.selectedFeatureMarker.addTo(this.map)
-        }
+      // Put selected feature marker on top
+      if (this.selectedFeatureMarker) {
+        this.selectedFeatureMarker.remove()
+        this.selectedFeatureMarker.addTo(this.map)
       }
     },
 
@@ -391,7 +319,7 @@ export default Vue.extend({
         return
       }
 
-      this.fitBounds(getBBoxFeature(feature))
+      this.$refs.mapBase.fitBounds(getBBoxFeature(feature))
     },
 
     goToSelectedFeature() {
@@ -414,14 +342,6 @@ export default Vue.extend({
 
     // Other
 
-    resizeMap() {
-      this.map?.resize()
-    },
-
-    onMapPitchEnd(map: maplibregl.Map) {
-      this.pitch = map.getPitch()
-    },
-
     showZoomSnack(text: string, textBtn: string) {
       this.$store.dispatch('snack/showSnack', {
         time: 5000,
@@ -437,13 +357,13 @@ export default Vue.extend({
       if (this.features) {
         const bounds = getBBoxFeatures(this.features)
         if (bounds) {
-          this.fitBounds(bounds)
+          this.$refs.mapBase.fitBounds(bounds)
         }
       }
     },
 
     resetZoom() {
-      this.fitBounds(this.defaultBounds, { linear: false })
+      this.$refs.mapBase.fitBounds(this.defaultBounds, { linear: false })
     },
 
     handleResetMapZoom(text: string, textBtn: string) {
@@ -521,30 +441,12 @@ export default Vue.extend({
         filterRouteByCategories(this.map, this.selectedCategoriesIds)
       }
     },
-
-    fitBounds(bounds: LngLatBoundsLike, options: FitBoundsOptions = {}) {
-      this.map.fitBounds(bounds, {
-        maxZoom: 17,
-        padding: this.fitBoundsPaddingOptions,
-        ...options,
-      })
-    },
   },
 })
 </script>
 
-<style>
-.cluster-item {
-  cursor: pointer;
-}
-
-.cluster-donut {
-  @apply text-sm leading-none font-medium block text-zinc-800;
-}
-</style>
-
-<style>
-#map {
+<style lang="scss" scoped>
+:deep(#map-container) {
   position: absolute;
   top: 0;
   bottom: 0;

@@ -1,7 +1,7 @@
 <template>
   <div class="flex flex-col items-start">
     <a
-      :id="`MenuItem-${id}`"
+      :id="id"
       :href="href"
       target="_blank"
       :class="[
@@ -57,7 +57,6 @@
 import Vue, { PropType } from 'vue'
 
 import TeritorioIconBadge from '~/components/UI/TeritorioIconBadge.vue'
-import { MenuItem } from '~/lib/apiMenu'
 import { MultilingualString } from '~/utils/types'
 
 export default Vue.extend({
@@ -66,7 +65,7 @@ export default Vue.extend({
   },
   props: {
     id: {
-      type: Number as PropType<MenuItem['id']>,
+      type: String,
       required: true,
     },
     href: {

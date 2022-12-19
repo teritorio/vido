@@ -1,12 +1,17 @@
-import { mockSSRAPI } from './mock'
+import { mockSSRAPI } from '../support/mock'
 
 import teritorioReferenceAPIFixture from '~/cypress/fixtures/teritorio/references/teritorioReferenceAPIFixture'
 
-const hostname = 'https://dev.appcarto.teritorio.xyz'
+const hostnames = {
+  'https://dev.appcarto.teritorio.xyz':
+    '/content/api.teritorio/geodata/v0.1/dev/tourism/',
+  'http://localhost:3000': '/fixtures/teritorio/references/',
+}
 
 describe('home content', () => {
   before(() => {
-    mockSSRAPI(hostname, teritorioReferenceAPIFixture)
+    mockSSRAPI(hostnames, teritorioReferenceAPIFixture)
+    cy.viewport(1024, 768)
     cy.visit('/')
   })
 

@@ -6,15 +6,22 @@
         :nav-menu-entries="navMenuEntries"
         :color-line="colorLine"
       >
-        <button
+        <IconButton
           :aria-label="
             isFavorite ? $tc('poiCard.favoriteOn') : $tc('poiCard.favoriteOff')
           "
-          class="text-sm text-zinc-800 bg-white rounded-full shadow-md outline-none w-11 h-11 focus:outline-none hover:bg-zinc-100 focus-visible:bg-zinc-100 shrink-0"
+          :class="['w-11 h-11', 'mr-3 sm:mr-9']"
           @click.stop="toggleFavorite"
         >
           <FavoriteIcon :is-active="isFavorite" :color-line="colorLine" />
-        </button>
+        </IconButton>
+        <IconButton
+          :href="settings.themes[0].site_url.fr"
+          :aria-label="$tc('poiCard.backToMap')"
+          :class="['w-11 h-11', 'mr-3 sm:mr-9']"
+        >
+          <TeritorioIcon picto="map" class="text-zinc-800" />
+        </IconButton>
       </Header>
       <div class="flex justify-center">
         <TeritorioIconBadge
@@ -34,16 +41,12 @@
       />
       <div class="detail-wrapper">
         <div class="detail-left">
-          <div v-if="classLabel" class="detail-left-block">
-            <h2>
-              {{ classLabel }}
-            </h2>
-          </div>
           <Fields
             v-if="detailsFields"
             :fields="detailsFields"
-            :properties="poi.properties"
+            :properties="properties"
             :color-fill="colorFill"
+            :geom="poi.geometry"
             class="detail-left-block"
           />
         </div>
@@ -62,8 +65,9 @@
             <MapPois
               :extra-attributions="settings.attributions"
               :feature-id="id"
-              :pois="{ features: [poi] }"
+              :features="[poi]"
               class="relative"
+              :off-map-attribution="true"
             />
             <p v-if="poi.properties.metadata.updated_at">
               {{ $tc('poiDetails.lastUpdate') }}
@@ -81,15 +85,21 @@
               <RelativeDate v-else :date="poi.properties.metadata.updated_at">
               </RelativeDate>
             </p>
-            <Location :p="poi.properties" :geom="poi.geometry" />
           </template>
 
-          <Field
+          <Fields
             v-else
-            :field="{ field: 'description' }"
+            :fields="[
+              {
+                group: 'description',
+                display_mode: 'standard',
+                fields: [{ field: 'description' }],
+              },
+            ]"
             :properties="poi.properties"
+            :geom="poi.geometry"
             :color-fill="colorFill"
-          ></Field>
+          />
         </div>
       </div>
 
@@ -100,7 +110,6 @@
         :route="poiDeps"
         :color-fill="colorFill"
         :color-line="colorLine"
-        :explorer-mode-enabled="explorerModeEnabled"
         :favorites-mode-enabled="favoritesModeEnabled"
       />
 
@@ -113,31 +122,33 @@
 import Vue, { PropType } from 'vue'
 import { mapGetters } from 'vuex'
 
-import MapPois from '~/components/MapPois.vue'
+import MapPois from '~/components/Map/MapPois.vue'
 import Carousel from '~/components/PoisDetails/Carousel.vue'
-import Field from '~/components/PoisDetails/Field.vue'
 import Fields from '~/components/PoisDetails/Fields.vue'
 import Footer from '~/components/PoisDetails/Footer.vue'
 import Header from '~/components/PoisDetails/Header.vue'
-import Location from '~/components/PoisDetails/Location.vue'
 import Mapillary from '~/components/PoisDetails/Mapillary.vue'
 import RouteMap from '~/components/PoisDetails/Route/RouteMap.vue'
 import Share from '~/components/PoisDetails/Share.vue'
 import FavoriteIcon from '~/components/UI/FavoriteIcon.vue'
+import IconButton from '~/components/UI/IconButton.vue'
 import RelativeDate from '~/components/UI/RelativeDate.vue'
+import TeritorioIcon from '~/components/UI/TeritorioIcon.vue'
 import TeritorioIconBadge from '~/components/UI/TeritorioIconBadge.vue'
 import { ContentEntry } from '~/lib/apiContent'
 import { ApiPoiDeps } from '~/lib/apiPoiDeps'
 import { ApiPoi, ApiPoiId, FieldsList } from '~/lib/apiPois'
 import { Settings } from '~/lib/apiSettings'
+import { PropertyTranslationsContextEnum } from '~/plugins/property-translations'
 import { OriginEnum } from '~/utils/types'
 
 export default Vue.extend({
   components: {
     Header,
+    IconButton,
     FavoriteIcon,
+    TeritorioIcon,
     TeritorioIconBadge,
-    Location,
     Share,
     Carousel,
     Mapillary,
@@ -145,7 +156,6 @@ export default Vue.extend({
     Footer,
     RouteMap,
     Fields,
-    Field,
     RelativeDate,
   },
 
@@ -173,16 +183,25 @@ export default Vue.extend({
       favoritesIds: 'favorite/favoritesIds',
     }),
 
+    context(): PropertyTranslationsContextEnum {
+      return PropertyTranslationsContextEnum.Details
+    },
+
     favoritesModeEnabled(): boolean {
       return this.settings.themes[0]?.favorites_mode ?? true
     },
 
-    explorerModeEnabled(): boolean {
-      return this.settings.themes[0]?.explorer_mode ?? true
+    properties(): ApiPoi['properties'] {
+      if (!this.isLargeLayeout) {
+        return this.poi.properties
+      } else {
+        const { ['description']: omitted, ...rest } = this.poi.properties
+        return rest
+      }
     },
 
     isLargeLayeout(): boolean {
-      return this.poiDeps.features.length > 0
+      return this.poiDeps?.features.length > 0
     },
 
     detailsFields(): FieldsList | undefined {
@@ -220,6 +239,7 @@ export default Vue.extend({
   },
 
   mounted() {
+    this.$store.dispatch('favorite/initFavoritesFromLocalStorage')
     this.$tracking({
       type: 'page',
       title: this.$meta().refresh().metaInfo.title,
@@ -267,7 +287,7 @@ h1 {
 
 :deep(h3) {
   font-size: 1.2rem;
-  margin-top: 0;
+  margin-top: 1.2rem;
   margin-bottom: 0.7rem;
 }
 
@@ -315,7 +335,11 @@ h1 {
   }
 }
 
-:deep(#map) {
+.detail-wrapper :deep(ul) {
+  @apply list-disc ml-6;
+}
+
+:deep(#map-container) {
   width: 100%;
   height: 346px;
 }

@@ -10,8 +10,7 @@ jobs:
     strategy:
       matrix:
         os:
-           - self-hosted
-#          - ubuntu-latest
+          - ubuntu-latest
         node:
           - 16
 
@@ -29,8 +28,7 @@ jobs:
     strategy:
       matrix:
         os:
-           - self-hosted
-#          - ubuntu-latest
+          - ubuntu-latest
         node:
           - 16
 
@@ -51,8 +49,7 @@ jobs:
     strategy:
       matrix:
         os:
-           - self-hosted
-#          - ubuntu-latest
+          - ubuntu-latest
         node:
           - 16
 
@@ -73,8 +70,7 @@ jobs:
     strategy:
       matrix:
         os:
-           - self-hosted
-#          - ubuntu-latest
+          - ubuntu-latest
         node:
           - 16
 
@@ -84,20 +80,24 @@ jobs:
 
       - uses: ./.github/actions/install
 
-      # - name: Install ruby
-      #   run: sudo apt-get install -y ruby
+      - name: Install ruby
+        run: |
+          sudo apt-get install -y ruby &&
+          ruby poi_explode.rb cypress/fixtures/teritorio/references/pois.geojson
 
-      - name: Runtime configuration
-        run: echo "${{secrets.CONFIGURATION_DEV}}" > vidos.config.ts
+      - name: yarn build
+        run: |
+          ln -s ../cypress/fixtures/ static/fixtures &&
+          NODE_ENV=development CONFIG=vidos-config-cypress.json yarn build
 
       - name: Run Cypress Tests 🧪
         uses: cypress-io/github-action@v4
         env:
           NODE_ENV: development
+          CONFIG: vidos-config-cypress.json
         with:
           install-command: yarn --silent
-          build: yarn build
-          start: yarn start
+          start: yarn start4storybook
           wait-on: 'http://localhost:3000'
           wait-on-timeout: 30
 
@@ -109,8 +109,7 @@ jobs:
     strategy:
       matrix:
         os:
-           - self-hosted
-#          - ubuntu-latest
+          - ubuntu-latest
         node:
           - 16
 
@@ -120,11 +119,28 @@ jobs:
 
       - uses: ./.github/actions/install
 
-      - name: Runtime configuration
-        run: echo "${{secrets.CONFIGURATION_DEV}}" > vidos.config.ts
+      - name: Install more packages
+        run: sudo apt-get install -y ruby
 
       - name: Build Storybook 👀
         run: yarn build:storybook
+
+      - name: Storycap
+        run: |
+          STORYCAP_OPS="--serverCmd 'npx --yes -- http-server storybook-static -p 4000'" yarn test:storybook:report || true
+          zip -r __screenshots__.zip __screenshots__ > /dev/null
+          echo "https://gist.github.com/frodrigo/7c470b063ff1efa19022eec2f394319f"
+
+      - name: Export as Gist
+        uses: exuanbo/actions-deploy-gist@v1
+        with:
+          token: ${{ secrets.GIST_STORYCAP_REPORT_TOKEN }}
+          gist_id: 7c470b063ff1efa19022eec2f394319f
+          file_path: __screenshots__.zip
+          file_type: binary
+
+      - name: Test Storybook
+        run: yarn test:storybook
 
       - name: Deploy to gh-pages
         if: github.ref == 'refs/heads/develop'
@@ -138,6 +154,8 @@ jobs:
       - install_cache
       - lint
       - tests
+      - cypress
+      - storybook
     if: github.ref == 'refs/heads/develop'
     name: Deploy Dev
     runs-on: ${{ matrix.os }}
@@ -145,24 +163,13 @@ jobs:
     strategy:
       matrix:
         os:
-           - self-hosted
-#          - ubuntu-latest
+          - ubuntu-latest
         node:
           - 16
 
     steps:
       - name: Checkout 🛎
         uses: actions/checkout@master
-
-      - uses: ./.github/actions/install
-
-      - name: Setup configuration
-        run: echo "${{secrets.CONFIGURATION_DEV}}" > vidos.config.ts
-
-      - name: Build
-        env:
-          SENTRY_DSN: ${{secrets.SENTRY_DSN_DEV}}
-        run: yarn build
 
       - name: Deploy
         uses: up9cloud/action-rsync@master
@@ -178,9 +185,12 @@ jobs:
           SOURCE: .
 
           PRE_SCRIPT: |
-            echo -n 'VIDO: Deployment started at: '
+            echo -n 'VIDO: Deployment started at: ' &&
             date -u
           POST_SCRIPT: |
-            pm2 restart 0
-            echo -n 'VIDO: Deployment completed at: '
+            cd /var/www/clients/client3/web3/web/vido &&
+            ruby poi_explode.rb cypress/fixtures/teritorio/references/pois.geojson &&
+            yarn build-config &&
+            docker-compose build && docker-compose up -d &&
+            echo -n 'VIDO: Deployment completed at: ' &&
             date -u

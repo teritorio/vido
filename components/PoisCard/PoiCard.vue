@@ -7,36 +7,29 @@
     ]"
   >
     <div
-      class="md:w-48 h-auto max-h-44 md:max-h-full bg-gray-100 flex align-middle justify-center relative"
+      class="md:w-48 h-44 md:h-auto md:max-h-full bg-gray-100 flex items-center align-middle justify-center relative min-icon-height"
     >
-      <div
-        class="md:w-48 h-full max-h-44 md:max-h-full flex align-middle justify-center absolute z-0"
-      >
-        <TeritorioIcon
-          v-if="icon"
-          :picto="icon"
-          :use-native-alignment="false"
-          class="text-8xl"
-          color-text="#AAA"
-        />
-      </div>
-      <nuxt-picture
-        v-if="poi.properties.image && poi.properties.image.length > 0"
-        class="md:w-48 h-auto max-h-44 md:max-h-full z-10"
-        :src="poi.properties.image[0]"
-        alt=""
-      />
       <TeritorioIcon
-        v-else-if="icon"
+        v-if="icon"
         :picto="icon"
         :use-native-alignment="false"
-        class="text-8xl z-10"
-        :color-text="colorFill"
+        class="text-8xl flex align-middle absolute z-0"
+        :color-text="
+          poi.properties.image && poi.properties.image.length > 0
+            ? '#AAA'
+            : colorFill
+        "
+      />
+      <NuxtPicture
+        v-if="poi.properties.image && poi.properties.image.length > 0"
+        class="object-cover h-44 w-full md:w-48 md:h-full z-10"
+        :src="poi.properties.image[0]"
+        media-size="12rem"
       />
     </div>
 
     <div
-      class="px-4 py-5 flex flex-col md:overflow-y-auto flex-grow sm:max-h-60 md:h-50 h-auto md:max-h-full box-border w-full md:w-80 md:h-80 md:max-h-full md:w-96"
+      class="px-4 py-5 flex flex-col md:overflow-y-auto flex-grow h-auto md:max-h-full box-border w-full md:h-80 md:w-96"
     >
       <div class="flex items-center justify-between shrink-0">
         <h2
@@ -85,6 +78,8 @@
           :fields="poi.properties.editorial?.popup_fields || []"
           :properties="poi.properties"
           :details="websiteDetails"
+          :geom="poi.geometry"
+          class="mt-6 text-sm"
           @click-detail="trackingPopupEvent('details')"
         />
       </div>
@@ -92,16 +87,16 @@
       <div
         class="flex items-center space-x-2 justify-evenly shrink-0 bottom-0 pt-2 shrink-0"
       >
-        <CoordinateAction
-          v-if="$screen.smallScreen"
-          :geometry="poi.geometry"
+        <a
+          v-if="$screen.smallScreen && coordinatesHref"
+          :href="coordinatesHref"
           class="flex flex-col items-center flex-1 h-full p-2 space-y-2 rounded-lg hover:bg-zinc-100"
           :title="$tc('poiCard.findRoute')"
           @click="trackingPopupEvent('route')"
         >
           <font-awesome-icon icon="route" :color="colorLine" size="sm" />
           <span class="text-sm">{{ $tc('poiCard.route') }}</span>
-        </CoordinateAction>
+        </a>
 
         <button
           class="flex flex-1 flex-col items-center space-y-2 rounded-lg p-2 h-full hover:bg-zinc-100"
@@ -156,18 +151,20 @@
 import Vue, { PropType } from 'vue'
 import { mapGetters } from 'vuex'
 
-import CoordinateAction from '~/components/Fields/CoordinateAction.vue'
 import Fields from '~/components/PoisCard/Fields.vue'
 import FavoriteIcon from '~/components/UI/FavoriteIcon.vue'
+import NuxtPicture from '~/components/UI/NuxtPicture.vue'
 import TeritorioIcon from '~/components/UI/TeritorioIcon.vue'
 import { ApiPoi, ApiPoiId } from '~/lib/apiPois'
+import { coordinatesHref } from '~/lib/coordinates'
+import { isIOS } from '~/utils/isIOS'
 
 export default Vue.extend({
   components: {
     TeritorioIcon,
     FavoriteIcon,
     Fields,
-    CoordinateAction,
+    NuxtPicture,
   },
 
   props: {
@@ -253,6 +250,12 @@ export default Vue.extend({
         this.poi.properties.editorial['website:details']
       )
     },
+
+    coordinatesHref(): string | undefined {
+      return isIOS !== undefined
+        ? coordinatesHref(this.poi.geometry, isIOS())
+        : undefined
+    },
   },
 
   watch: {
@@ -313,14 +316,16 @@ export default Vue.extend({
 })
 </script>
 
-<style>
-img {
+<style scoped>
+:deep(img) {
   @apply object-cover w-full h-full;
 }
-</style>
 
-<style scoped>
 button {
   @apply focus:outline-none;
+}
+
+.min-icon-height {
+  min-height: 8rem;
 }
 </style>

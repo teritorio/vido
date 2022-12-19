@@ -1,13 +1,41 @@
 // @ts-ignore
 import { cypressMockMiddleware } from '@cypress/mock-ssr'
 import { NuxtConfig } from '@nuxt/types'
+import fs from 'fs'
 import webpack from 'webpack'
 
+import { ApiMenuCategory, getMenu } from './lib/apiMenu'
+import { getPois } from './lib/apiPois'
 import { configuredApi, configuredImageProxy } from './plugins/vido-config'
+import { VidosConfig } from './utils/types-config'
 
 const supportedLocales = ['en-GB', 'fr', 'es']
 
+const vidos: VidosConfig = JSON.parse(
+  fs.readFileSync(process.env.CONFIG || 'vidos-config.json').toString()
+)
+
+let vidosRoutesCategories: {
+  [hostname: string]: { url: string; lastmod?: string }[]
+} = {}
+let vidosRoutesPois: {
+  [hostname: string]: { url: string; lastmod?: string }[]
+} = {}
+
 const config: NuxtConfig = {
+  env: {
+    // Copy NODE_ENV to know to real setting when use `nuxt build`
+    environment: process.env.NODE_ENV as string,
+  },
+
+  privateRuntimeConfig: {
+    vidos,
+  },
+
+  publicRuntimeConfig: {
+    vidos: vidos.__publicRuntimeConfig__ ? vidos : undefined,
+  },
+
   pwa: {
     meta: {
       lang: 'fr',
@@ -50,6 +78,7 @@ const config: NuxtConfig = {
     '@/plugins/vue-tailwind.ts',
     { src: '@/plugins/tracking.ts', mode: 'client' },
     '@/plugins/property-translations.ts',
+    { src: '~plugins/vuex-shared-mutations.js', ssr: false },
   ],
 
   // Auto import components (https://go.nuxtjs.dev/config-components)
@@ -72,6 +101,7 @@ const config: NuxtConfig = {
     '@nuxt/image',
     '@nuxtjs/gtm',
     ...(process.env.SENTRY_DSN ? ['@nuxtjs/sentry'] : []),
+    '@nuxtjs/sitemap', // declare the sitemap module at end of array
   ],
 
   i18n: {
@@ -90,7 +120,7 @@ const config: NuxtConfig = {
   },
 
   image: {
-    domains: [...configuredApi(), ...configuredImageProxy()],
+    domains: [...configuredApi(vidos), ...configuredImageProxy(vidos)],
   },
 
   sentry: {
@@ -98,6 +128,66 @@ const config: NuxtConfig = {
     // https://sentry.nuxtjs.org/sentry/options
     config: {
       // https://docs.sentry.io/platforms/javascript/guides/vue/configuration/options/
+    },
+  },
+
+  sitemap: {
+    cacheTime: -1,
+    async routes() {
+      return Promise.all(
+        Object.entries(vidos).map(([hostname, vido]) =>
+          Promise.all([
+            getMenu(vido.API_ENDPOINT, vido.API_PROJECT, vido.API_THEME).then(
+              (menuItems) => {
+                vidosRoutesCategories[hostname] = menuItems
+                  .filter((menuItem) => menuItem.category && menuItem.id)
+                  .map((menuCategory) => ({
+                    url: `/${menuCategory.id}/`,
+                  }))
+              }
+            ),
+            getPois(
+              vido.API_ENDPOINT,
+              vido.API_PROJECT,
+              vido.API_THEME,
+              undefined,
+              {
+                geometry_as: 'point',
+                short_description: true,
+              }
+            ).then((pois) => {
+              vidosRoutesPois[hostname] = pois.features.map((poi) => ({
+                url: `/poi/${poi.properties.metadata.id}/details`,
+                lastmod: poi.properties.metadata.updated_at,
+              }))
+            }),
+          ])
+        )
+      )
+    },
+    filter({
+      routes,
+      options,
+    }: {
+      routes: any
+      options: { hostname: string }
+    }) {
+      // Hack the filter function to add hostname dependents routes.
+      const hostname = options.hostname.split('/')[1].split(':')[0]
+      routes = [
+        ...routes,
+        ...[
+          ...(vidosRoutesCategories[hostname] || []),
+          ...(vidosRoutesPois[hostname] || []),
+        ].map((page) => ({
+          chunkName: undefined,
+          component: undefined,
+          name: undefined,
+          path: undefined,
+          ...page,
+        })),
+      ]
+      return routes
     },
   },
 
@@ -161,6 +251,12 @@ const config: NuxtConfig = {
     typescript: { check: false },
     port: 4000,
     // addons: ['@storybook/addon-controls', '@storybook/addon-notes'],
+    // @ts-ignore
+    webpackFinal(config) {
+      config.watchOptions.ignored = [/node_modules/, /__screenshots__/]
+      return config
+    },
+    addons: ['storybook-addon-mock'],
   },
 
   // Google Tag Manager config

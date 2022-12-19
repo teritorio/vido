@@ -2,9 +2,9 @@ import { Store } from 'vuex'
 
 import { ApiPoi, ApiPoiId } from '~/lib/apiPois'
 
-export const LOCAL_STORAGE = { favorites: 'vido:favorites' }
+const LOCAL_STORAGE = { favorites: 'vido:favorites' }
 
-enum Mutation {
+export enum Mutation {
   SET_FAVORITES = 'SET_FAVORITES',
 }
 
@@ -36,6 +36,13 @@ export const mutations = {
 }
 
 export const actions = {
+  initFavoritesFromLocalStorage(store: Store<State>) {
+    const local = localStorage.getItem(LOCAL_STORAGE.favorites)
+    if (local) {
+      actions.setFavorites(store, JSON.parse(local).favorites)
+    }
+  },
+
   setFavorites(store: Store<State>, favorites: ApiPoiId[]) {
     store.commit(Mutation.SET_FAVORITES, favorites)
   },

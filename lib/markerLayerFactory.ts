@@ -7,7 +7,6 @@ import maplibregl, {
   FitBoundsOptions,
 } from 'maplibre-gl'
 
-import { ApiMenuCategory } from './apiMenu'
 import { ApiPoi } from './apiPois'
 import { getBBoxFeatures } from './bbox'
 import { createMarkerDonutChart } from './clusters'
@@ -23,6 +22,23 @@ export const markerLayerTextFactory = (
   if (layerTemplate.type !== 'symbol') {
     return layerTemplate
   } else {
+    const textColor =
+      layerTemplate?.paint &&
+      'text-color' in layerTemplate?.paint &&
+      Array.isArray(layerTemplate.paint['text-color']) &&
+      layerTemplate.paint['text-color']
+
+    if (textColor && textColor[0] === 'let') {
+      const superclass = textColor.indexOf('superclass')
+      if (superclass) {
+        textColor[superclass + 1] = [
+          'at',
+          0,
+          ['array', ['get', 'style_class', ['object', ['get', 'display']]]],
+        ]
+      }
+    }
+
     const layer: SymbolLayerSpecification = {
       id,
       type: layerTemplate.type,
@@ -35,24 +51,18 @@ export const markerLayerTextFactory = (
       },
       paint: {
         ...layerTemplate.paint,
+        'text-color': [
+          'case',
+          [
+            'all',
+            ['has', 'display'],
+            ['has', 'color_fill', ['get', 'display']],
+          ],
+          ['get', 'color_fill', ['get', 'display']],
+          textColor || '#000000',
+        ],
         'text-opacity': ['interpolate', ['linear'], ['zoom'], 14, 0, 15, 1],
       },
-    }
-
-    if (
-      layer?.paint &&
-      'text-color' in layer?.paint &&
-      Array.isArray(layer.paint['text-color']) &&
-      layer.paint['text-color'][0] === 'let'
-    ) {
-      const superclass = layer.paint['text-color'].indexOf('superclass')
-      if (superclass) {
-        layer.paint['text-color'][superclass + 1] = [
-          'at',
-          0,
-          ['array', ['get', 'style_class', ['object', ['get', 'display']]]],
-        ]
-      }
     }
 
     return layer
@@ -96,11 +106,10 @@ export function makerHtmlFactory(
 
 export function updateMarkers(
   map: Map,
-  categories: Record<ApiMenuCategory['id'], ApiMenuCategory>,
   markers: { [id: string]: maplibregl.Marker },
   src: string,
   fitBounds: (bounds: LngLatBoundsLike, options: FitBoundsOptions) => void,
-  markerClickCallBack: (feature: ApiPoi) => void
+  markerClickCallBack: ((feature: ApiPoi) => void) | undefined
 ) {
   const markerIdPrevious = Object.keys(markers)
   const markerIdcurrent: string[] = []
@@ -120,7 +129,15 @@ export function updateMarkers(
         const id = 'c' + props.cluster_id
         markerIdcurrent.push(id)
         if (!markers[id]) {
-          const el = createMarkerDonutChart(categories, props)
+          let {
+            cluster: _a,
+            cluster_id: _b,
+            point_count: point_count,
+            _c: _d,
+            point_count_abbreviated: _e,
+            ...countPercolor
+          } = props
+          const el = createMarkerDonutChart(countPercolor)
           el.classList.add('cluster-item')
           markers[id] = new Marker({
             element: el,
@@ -161,25 +178,26 @@ export function updateMarkers(
             const markerCoords =
               feature.geometry.type === 'Point' &&
               (feature.geometry.coordinates as TupleLatLng)
-            if (markerCoords && props.display) {
+            if (markerCoords) {
               if (typeof props.display === 'string') {
                 props.display = JSON.parse(props.display)
               }
+              if (typeof props.editorial === 'string') {
+                props.editorial = JSON.parse(props.editorial)
+              }
+
               // Marker
               markers[id] = makerHtmlFactory(
                 id,
                 markerCoords, // Using this to avoid misplaced marker
-                props.display?.color_fill || '#ff0000',
-                props.display?.icon || '#ff0000',
+                props.display?.color_fill || '#000000',
+                props.display?.icon || '#000000',
                 props['image:thumbnail']
               )
-              const el = markers[id].getElement()
 
               // Click handler
-              if (typeof props.editorial === 'string') {
-                props.editorial = JSON.parse(props.editorial)
-              }
-              if (props.editorial?.popup_fields) {
+              if (markerClickCallBack && props.editorial?.popup_fields) {
+                const el = markers[id].getElement()
                 el.addEventListener('click', (e: MouseEvent) => {
                   e.stopPropagation()
                   markerClickCallBack(feature as unknown as ApiPoi)

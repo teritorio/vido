@@ -1,16 +1,15 @@
 <template>
   <header id="header">
-    <div id="logo">
-      <a :href="logoUrl">
-        <p class="img-logo">
-          <img :src="theme && theme.logo_url" :alt="theme && theme.title.fr" />
-        </p>
-      </a>
-    </div>
+    <Logo
+      id="logo"
+      :main-url="mainUrl"
+      :site-name="theme && theme.title.fr"
+      :logo-url="theme && theme.logo_url"
+    />
 
     <div class="flex justify-end">
       <slot />
-      <NavMenu :entries="navMenuEntries" class="ml-3 sm:ml-9" />
+      <NavMenu :entries="navMenuEntries" />
     </div>
   </header>
 </template>
@@ -20,11 +19,13 @@ import Vue, { PropType } from 'vue'
 import { mapGetters } from 'vuex'
 
 import NavMenu from '~/components/MainMap/NavMenu.vue'
+import Logo from '~/components/UI/Logo.vue'
 import { ContentEntry } from '~/lib/apiContent'
 import { SiteInfosTheme } from '~/lib/apiSettings'
 
 export default Vue.extend({
   components: {
+    Logo,
     NavMenu,
   },
   props: {
@@ -41,7 +42,7 @@ export default Vue.extend({
     ...mapGetters({
       local: 'site/locale',
     }),
-    logoUrl(): string {
+    mainUrl(): string {
       return this.theme.main_url?.[this.local] || ''
     },
   },
@@ -70,7 +71,7 @@ export default Vue.extend({
     margin: 0;
     float: inherit;
 
-    img {
+    :deep(img) {
       height: 5rem;
     }
   }
@@ -82,13 +83,13 @@ export default Vue.extend({
       min-height: 6rem;
     }
 
-    #logo img {
+    #logo :deep(img) {
       height: 3.3rem;
     }
   }
 
   @media only screen and (max-width: 767px) {
-    #header #logo img {
+    #header #logo :deep(img) {
       max-height: 80px;
       max-width: 193px;
       margin-left: -1.3rem;

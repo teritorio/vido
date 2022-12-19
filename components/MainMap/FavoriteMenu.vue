@@ -169,9 +169,9 @@ import { TDropdown, TModal } from 'vue-tailwind/dist/components'
 import { mapGetters } from 'vuex'
 
 import FavoriteNoteBook from '~/components/MainMap/FavoriteNoteBook.vue'
-import ShareLinkModal from '~/components/ShareLinkModal.vue'
 import FavoriteIcon from '~/components/UI/FavoriteIcon.vue'
-import { getPoiByIds, ApiPoi } from '~/lib/apiPois'
+import ShareLinkModal from '~/components/UI/ShareLinkModal.vue'
+import { getPois, ApiPoi } from '~/lib/apiPois'
 
 export default (
   Vue as VueConstructor<
@@ -226,24 +226,26 @@ export default (
       favoritesIds: 'favorite/favoritesIds',
     }),
     pdfLink(): string {
-      return `${this.$vidoConfig.API_EXPORT}/${this.$vidoConfig.API_PROJECT}/${
-        this.$vidoConfig.API_THEME
+      return `${this.$vidoConfig().API_EXPORT}/${
+        this.$vidoConfig().API_PROJECT
+      }/${
+        this.$vidoConfig().API_THEME
       }/pois/favorites.pdf?ids=${this.favoritesIds.join(',')}`
     },
     csvLink(): string {
-      return `${this.$vidoConfig.API_ENDPOINT}/${
-        this.$vidoConfig.API_PROJECT
-      }/${this.$vidoConfig.API_THEME}/pois.csv?ids=${this.favoritesIds.join(
+      return `${this.$vidoConfig().API_ENDPOINT}/${
+        this.$vidoConfig().API_PROJECT
+      }/${this.$vidoConfig().API_THEME}/pois.csv?ids=${this.favoritesIds.join(
         ','
       )}`
     },
   },
   methods: {
     async fetchFavorites(ids: [string]) {
-      return await getPoiByIds(
-        this.$vidoConfig.API_ENDPOINT,
-        this.$vidoConfig.API_PROJECT,
-        this.$vidoConfig.API_THEME,
+      return await getPois(
+        this.$vidoConfig().API_ENDPOINT,
+        this.$vidoConfig().API_PROJECT,
+        this.$vidoConfig().API_THEME,
         ids
       ).then((pois) => (pois && pois.features) || [])
     },

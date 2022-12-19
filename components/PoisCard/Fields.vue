@@ -3,19 +3,25 @@
     <template v-for="field in fields">
       <Field
         :key="field.field"
+        :context="context"
+        :recursion-level="1"
         :field="field"
         :properties="properties"
         :details="details"
-      ></Field>
+        :geom="geom"
+        class="mt-2"
+      />
     </template>
   </div>
 </template>
 
 <script lang="ts">
+import GeoJSON from 'geojson'
 import Vue, { PropType } from 'vue'
 
-import Field from '~/components/PoisCard/Field.vue'
+import Field from '~/components/Fields/Field.vue'
 import { ApiPoiProperties, FieldsList } from '~/lib/apiPois'
+import { PropertyTranslationsContextEnum } from '~/plugins/property-translations'
 
 export default Vue.extend({
   components: {
@@ -34,6 +40,16 @@ export default Vue.extend({
     details: {
       type: String,
       default: null,
+    },
+    geom: {
+      type: Object as PropType<GeoJSON.Geometry>,
+      required: true,
+    },
+  },
+
+  computed: {
+    context(): PropertyTranslationsContextEnum {
+      return PropertyTranslationsContextEnum.Card
     },
   },
 })

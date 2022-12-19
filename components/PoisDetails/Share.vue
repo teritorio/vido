@@ -2,10 +2,9 @@
   <div>
     <ul>
       <li v-if="href">
-        <a
+        <IconButton
           :aria-label="$tc('poiDetails.shareFacebook')"
-          type="button"
-          class="text-sm text-zinc-800 bg-white rounded-full shadow-md outline-none w-8 h-8 focus:outline-none hover:bg-zinc-100 focus-visible:bg-zinc-100 shrink-0 flex items-center justify-center"
+          class="w-8 h-8"
           :href="shareFacebook"
           target="_black"
         >
@@ -13,13 +12,12 @@
             :icon="['fab', 'facebook']"
             :style="{ color: colorLine }"
           />
-        </a>
+        </IconButton>
       </li>
       <li v-if="title && href">
-        <a
+        <IconButton
           :aria-label="$tc('poiDetails.shareTwitter')"
-          type="button"
-          class="text-sm text-zinc-800 bg-white rounded-full shadow-md outline-none w-8 h-8 focus:outline-none hover:bg-zinc-100 focus-visible:bg-zinc-100 shrink-0 flex items-center justify-center"
+          class="w-8 h-8"
           :href="shareTwitter"
           target="_black"
         >
@@ -27,13 +25,12 @@
             :icon="['fab', 'twitter']"
             :style="{ color: colorLine }"
           />
-        </a>
+        </IconButton>
       </li>
       <li v-if="title && href">
-        <a
+        <IconButton
           :aria-label="$tc('poiDetails.shareWhatsApp')"
-          type="button"
-          class="text-sm text-zinc-800 bg-white rounded-full shadow-md outline-none w-8 h-8 focus:outline-none hover:bg-zinc-100 focus-visible:bg-zinc-100 shrink-0 flex items-center justify-center"
+          class="w-8 h-8"
           :href="shareWhatsApp"
           target="_black"
         >
@@ -41,27 +38,25 @@
             :icon="['fab', 'whatsapp']"
             :style="{ color: colorLine }"
           />
-        </a>
+        </IconButton>
       </li>
       <li>
-        <button
+        <IconButton
           :aria-label="$tc('poiDetails.print')"
-          type="button"
-          class="text-sm text-zinc-800 bg-white rounded-full shadow-md outline-none w-8 h-8 focus:outline-none hover:bg-zinc-100 focus-visible:bg-zinc-100 shrink-0 flex items-center justify-center"
+          class="w-8 h-8"
           @click="print"
         >
           <font-awesome-icon icon="print" :style="{ color: colorLine }" />
-        </button>
+        </IconButton>
       </li>
       <li v-if="href">
-        <button
+        <IconButton
           :aria-label="$tc('poiDetails.link')"
-          type="button"
-          class="text-sm text-zinc-800 bg-white rounded-full shadow-md outline-none w-8 h-8 focus:outline-none hover:bg-zinc-100 focus-visible:bg-zinc-100 shrink-0 flex items-center justify-center"
+          class="w-8 h-8"
           @click="shareUrl"
         >
           <font-awesome-icon icon="link" :style="{ color: colorLine }" />
-        </button>
+        </IconButton>
       </li>
     </ul>
     <ShareLinkModal ref="shareModal" :title="$tc('poiDetails.link')" />
@@ -71,7 +66,8 @@
 <script lang="ts">
 import Vue, { VueConstructor } from 'vue'
 
-import ShareLinkModal from '~/components/ShareLinkModal.vue'
+import IconButton from '~/components/UI/IconButton.vue'
+import ShareLinkModal from '~/components/UI/ShareLinkModal.vue'
 import { OriginEnum } from '~/utils/types'
 import { urlAddTrackOrigin } from '~/utils/url'
 
@@ -85,6 +81,7 @@ export default (
   >
 ).extend({
   components: {
+    IconButton,
     ShareLinkModal,
   },
 

@@ -1,23 +1,29 @@
 <template>
-  <div :class="[recursionLevel === 0 && 'fields-list']">
+  <div>
     <template v-for="field in fields">
       <FieldsGroup
         v-if="field.group"
+        :id="`FieldsGroup-${field.group}`"
         :key="field.group"
         :recursion-level="recursionLevel"
         :group="field"
         :title="fieldTranslateK(field.group)"
         :properties="properties"
+        :geom="geom"
         :color-fill="colorFill"
+        :class="[recursionLevel === 0 && 'fields-list']"
       />
 
       <Field
         v-else
+        :id="`Field-${field.field}`"
         :key="field.group"
+        :context="context"
         :recursion-level="recursionLevel"
         :field="field"
         :properties="properties"
-        :color-fill="colorFill"
+        :geom="geom"
+        class="field"
       />
     </template>
   </div>
@@ -26,7 +32,7 @@
 <script lang="ts">
 import Vue, { PropType } from 'vue'
 
-import Field from '~/components/PoisDetails/Field.vue'
+import Field from '~/components/Fields/Field.vue'
 import FieldsGroup from '~/components/PoisDetails/FieldsGroup.vue'
 import { ApiPoiProperties, FieldsList } from '~/lib/apiPois'
 import { PropertyTranslationsContextEnum } from '~/plugins/property-translations'
@@ -50,6 +56,10 @@ export default Vue.extend({
       type: Object as PropType<ApiPoiProperties>,
       required: true,
     },
+    geom: {
+      type: Object as PropType<GeoJSON.Geometry>,
+      required: true,
+    },
     colorFill: {
       type: String,
       required: true,
@@ -71,7 +81,20 @@ export default Vue.extend({
 </script>
 
 <style lang="scss" scoped>
-.fields-list > * {
-  margin-bottom: 3.3rem;
+.fields-list:not(:first-child) {
+  margin-top: 3.3rem;
+}
+
+:deep(.field_header_level_1) {
+  display: inline;
+}
+
+:deep(.field_content_level_1) {
+  display: inline;
+  clear: right;
+}
+
+:deep(.field) {
+  margin-bottom: 0.3rem;
 }
 </style>

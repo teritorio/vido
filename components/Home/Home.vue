@@ -4,11 +4,7 @@
       class="hidden md:flex relative md:fixed top-0 bottom-0 z-10 flex flex-row w-full md:h-full space-x-4 pointer-events-none md:w-auto md:p-2"
     >
       <div
-        :class="[
-          'flex-col justify-between w-full w-auto max-w-md space-y-4 sm:pb-10',
-          !selectedFeature && 'flex',
-          showPoi && 'max-h-screen-4/6 max-h-screen 2xl:h-auto',
-        ]"
+        class="flex flex-col justify-between w-full w-auto max-w-md space-y-4 sm:pb-10"
       >
         <transition-group
           name="headers"
@@ -16,43 +12,45 @@
           mode="out-in"
           class="overflow-y-auto"
         >
-          <ExplorerOrFavoritesBack
-            v-if="isModeExplorer || isModeFavorites"
+          <MenuBlock
+            v-if="isModeExplorerOrFavorites"
             key="ExplorerOrFavoritesBack"
-            @click="onQuitExplorerFavoriteMode"
-          />
+            extra-class-text-background="bg-blue-500 text-white"
+          >
+            <ExplorerOrFavoritesBack @click="onQuitExplorerFavoriteMode" />
+          </MenuBlock>
 
           <Menu
-            v-else-if="state.matches(states.Categories)"
+            v-else
             key="Menu"
             menu-block="MenuBlock"
-            :logo-url="logoUrl"
-            :main-url="mainUrl"
-            :site-name="siteName"
             :menu-items="menuItems"
             :filters="filters"
             :categories-actives-count-by-parent="categoriesActivesCountByParent"
             :is-category-selected="isCategorySelected"
-            @search-click="goToSearch"
+            :is-on-search="isOnSearch"
             @category-click="toggleCategorySelection"
             @select-all-categories="selectCategory"
             @unselect-all-categories="unselectCategory"
-          />
-
-          <div
-            v-else
-            key="Search"
-            :class="['max-h-full flex p-2', showPoi && 'max-h-screen-4/6']"
           >
             <Search
               :menu-to-icon="menuItemsToIcons"
               :map-center="map_center"
-              @go-back-click="goToHome"
               @category-click="onSearchCategory"
               @poi-click="onSearchPoi"
               @feature-click="onFeatureClick"
-            />
-          </div>
+              @focus="isOnSearch = true"
+              @blur="isOnSearch = false"
+            >
+              <Logo
+                :main-url="mainUrl"
+                :site-name="siteName"
+                :logo-url="logoUrl"
+                class="flex-none mr-2"
+                image-class="max-w-2xl max-h-12 md:max-h-16"
+              />
+            </Search>
+          </Menu>
         </transition-group>
       </div>
 
@@ -73,15 +71,32 @@
       class="flex md:hidden relative fidex top-0 bottom-0 z-10 flex-row w-full space-x-4 pointer-events-none"
     >
       <div :class="['w-full', isBottomMenuOpened && 'hidden']">
-        <Search
-          :menu-to-icon="menuItemsToIcons"
-          :map-center="map_center"
-          @go-to-categories="onQuitExplorerFavoriteMode"
-          @go-back-click="goToHome"
-          @category-click="onSearchCategory"
-          @poi-click="onSearchPoi"
-          @feature-click="onFeatureClick"
-        />
+        <aside
+          v-if="!isModeExplorerOrFavorites"
+          class="flex flex-col max-h-full px-5 py-4 space-y-6 shadow-md pointer-events-auto md:rounded-xl md:w-96 bg-white min-h-20"
+        >
+          <Search
+            :menu-to-icon="menuItemsToIcons"
+            :map-center="map_center"
+            @category-click="onSearchCategory"
+            @poi-click="onSearchPoi"
+            @feature-click="onFeatureClick"
+          >
+            <Logo
+              :main-url="mainUrl"
+              :site-name="siteName"
+              :logo-url="logoUrl"
+              class="flex-none md:hidden mr-2"
+              image-class="max-w-2xl max-h-12 md:max-h-16"
+            />
+          </Search>
+        </aside>
+        <aside
+          v-else
+          class="flex flex-col max-h-full px-5 py-4 space-y-6 shadow-md pointer-events-auto md:rounded-xl md:w-96 bg-blue-500 md:bg-white text-white h-20"
+        >
+          <ExplorerOrFavoritesBack @click="onQuitExplorerFavoriteMode" />
+        </aside>
       </div>
     </header>
 
@@ -106,7 +121,19 @@
           :explorer-mode-enabled="explorerModeEnabled"
           @on-select-feature="setSelectedFeature($event)"
           @full-attribution="setFullAttributions($event)"
-        />
+        >
+          <div class="relative">
+            <button
+              v-if="
+                !(isModeExplorer || isModeFavorites) || Boolean(selectedFeature)
+              "
+              class="-top-12 z-0 absolute md:hidden right-3/8 left-3/8 w-1/4 h-12 transition-all rounded-t-lg text-sm font-medium px-5 space-x-1 shadow-lg outline-none focus:outline-none bg-white text-zinc-800 hover:bg-zinc-100 focus-visible:bg-zinc-100"
+              @click="onBottomMenuButtonClick"
+            >
+              <font-awesome-icon icon="grip-lines" size="lg" />
+            </button>
+          </div>
+        </MapFeatures>
         <div
           v-if="isLoadingFeatures"
           class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-80"
@@ -146,7 +173,7 @@
       @discard="showFavoritesOverlay = false"
     />
     <div
-      class="hidden fixed inset-x-0 bottom-0 md:flex overflow-y-auto pointer-events-none h-auto md:inset-x-3 md:bottom-5"
+      class="hidden fixed inset-x-0 bottom-0 md:flex overflow-y-auto pointer-events-none h-auto md:left-8 md:right-16 md:bottom-5"
     >
       <div class="w-full max-w-md" />
       <div class="grow-[1]" />
@@ -163,26 +190,15 @@
       <div class="grow-[3]" />
     </div>
 
-    <BottomMenu
-      class="md:hidden"
-      :show-grip="
-        !(isModeExplorer || isModeFavorites) || Boolean(selectedFeature)
-      "
-      :is-open="isBottomMenuOpened"
-      @on-grip-click="onBottomMenuButtonClick"
-    >
+    <BottomMenu class="md:hidden" :is-open="isBottomMenuOpened">
       <div class="flex-1 h-full overflow-y-auto h-screen-3/5 divide-y">
         <Menu
-          v-if="!showPoi && state.matches(states.Categories)"
+          v-if="!showPoi"
           menu-block="MenuBlockBottom"
-          :logo-url="logoUrl"
-          :main-url="mainUrl"
-          :site-name="siteName"
           :menu-items="menuItems"
           :filters="filters"
           :categories-actives-count-by-parent="categoriesActivesCountByParent"
           :is-category-selected="isCategorySelected"
-          @search-click="goToSearch"
           @category-click="toggleCategorySelection"
           @select-all-categories="selectCategory"
           @unselect-all-categories="unselectCategory"
@@ -200,10 +216,6 @@
       </div>
     </BottomMenu>
     <footer class="z-20">
-      <Attribution
-        v-if="!isBottomMenuOpened"
-        :attributions="fullAttributions"
-      />
       <CookiesConsent />
     </footer>
   </div>
@@ -215,20 +227,11 @@ import { FitBoundsOptions, LngLatBoundsLike } from 'maplibre-gl'
 import Vue, { PropType, VueConstructor } from 'vue'
 import { MetaInfo } from 'vue-meta'
 import { mapGetters, mapActions } from 'vuex'
-import { interpret } from 'xstate'
 
-import ExplorerOrFavoritesBack from './ExplorerOrFavoritesBack.vue'
-import {
-  HomeState,
-  HomeInterpreter,
-  HomeEvents,
-  HomeStates,
-  homeMachine,
-} from './Home.machine'
-
+import ExplorerOrFavoritesBack from '~/components/Home/ExplorerOrFavoritesBack.vue'
 import Menu from '~/components/Home/Menu.vue'
+import MenuBlock from '~/components/Home/MenuBlock.vue'
 import SelectedCategories from '~/components/Home/SelectedCategories.vue'
-import Attribution from '~/components/MainMap/Attribution.vue'
 import BottomMenu from '~/components/MainMap/BottomMenu.vue'
 import FavoriteMenu from '~/components/MainMap/FavoriteMenu.vue'
 import FavoritesOverlay from '~/components/MainMap/FavoritesOverlay.vue'
@@ -237,19 +240,17 @@ import NavMenu from '~/components/MainMap/NavMenu.vue'
 import PoiCard from '~/components/PoisCard/PoiCard.vue'
 import Search from '~/components/Search/Search.vue'
 import CookiesConsent from '~/components/UI/CookiesConsent.vue'
+import Logo from '~/components/UI/Logo.vue'
 import { ContentEntry } from '~/lib/apiContent'
 import { ApiMenuCategory, MenuItem } from '~/lib/apiMenu'
-import { getPoiById, ApiPoi, getPoiByIds } from '~/lib/apiPois'
+import { getPoiById, ApiPoi, getPois } from '~/lib/apiPois'
 import { ApiMenuItemSearchResult } from '~/lib/apiSearch'
 import { headerFromSettings, Settings } from '~/lib/apiSettings'
 import { getBBoxFeature } from '~/lib/bbox'
-import { LOCAL_STORAGE } from '~/store/favorite'
 import { Mode, OriginEnum } from '~/utils/types'
-import { FilterValue, FilterValues } from '~/utils/types-filters'
+import { FilterValue } from '~/utils/types-filters'
 import { getHashPart, setHashParts } from '~/utils/url'
 import { flattenFeatures } from '~/utils/utilities'
-
-const interpretOptions = { devTools: false }
 
 export default (
   Vue as VueConstructor<
@@ -261,6 +262,7 @@ export default (
   >
 ).extend({
   components: {
+    Logo,
     FavoriteMenu,
     FavoritesOverlay,
     NavMenu,
@@ -268,9 +270,9 @@ export default (
     Search,
     SelectedCategories,
     Menu,
+    MenuBlock,
     BottomMenu,
     PoiCard,
-    Attribution,
     CookiesConsent,
     ExplorerOrFavoritesBack,
   },
@@ -294,26 +296,24 @@ export default (
     },
   },
   data(): {
-    service: HomeInterpreter
-    state: HomeState
+    isMenuItemOpen: boolean
     selectedCategoriesIds: ApiMenuCategory['id'][]
     showPoi: boolean
     initialBbox: LngLatBoundsLike | null
-    fullAttributions: string
     showFavoritesOverlay: boolean
     allowRegionBackZoom: boolean
     favorites: ApiPoi[] | null
+    isOnSearch: boolean
   } {
     return {
+      isMenuItemOpen: false,
       selectedCategoriesIds: [],
-      service: interpret(homeMachine, interpretOptions),
-      state: homeMachine.initialState,
       showPoi: false,
       initialBbox: null,
-      fullAttributions: '',
       showFavoritesOverlay: false,
       allowRegionBackZoom: false,
       favorites: null,
+      isOnSearch: false,
     }
   },
   head(): MetaInfo {
@@ -328,6 +328,7 @@ export default (
       mode: 'map/mode',
       isModeExplorer: 'map/isModeExplorer',
       isModeFavorites: 'map/isModeFavorites',
+      isModeExplorerOrFavorites: 'map/isModeExplorerOrFavorites',
       selectedFeature: 'map/selectedFeature',
       map_center: 'map/center',
       favoritesIds: 'favorite/favoritesIds',
@@ -338,7 +339,6 @@ export default (
       return this.$store.getters['menu/menuItems']
     },
 
-    events: () => HomeEvents,
     logoUrl(): string {
       return this.settings.themes[0]?.logo_url || ''
     },
@@ -364,11 +364,10 @@ export default (
     },
     isBottomMenuOpened(): boolean {
       return (
-        this.$screen.smallScreen &&
-        (this.isPoiCardVisible || this.state.matches(this.states.Categories))
+        (this.$screen.smallScreen && this.isPoiCardVisible) ||
+        this.isMenuItemOpen
       )
     },
-    states: () => HomeStates,
     categoriesActivesCountByParent(): Record<ApiMenuCategory['id'], number> {
       const counts: { [id: string]: number } = {}
       this.selectedCategoriesIds.forEach((categoryId) => {
@@ -430,12 +429,6 @@ export default (
     },
   },
   watch: {
-    state(val: HomeState, oldVal: HomeState) {
-      if (val.matches(this.states.Home) && !oldVal.matches(this.states.Home)) {
-        this.goToHome()
-      }
-    },
-
     selectedFeature() {
       if (!this.selectedFeature) {
         this.showPoi = false
@@ -450,9 +443,9 @@ export default (
         this.routerPushUrl()
 
         this.$store.dispatch('menu/fetchFeatures', {
-          apiEndpoint: this.$vidoConfig.API_ENDPOINT,
-          apiProject: this.$vidoConfig.API_PROJECT,
-          apiTheme: this.$vidoConfig.API_THEME,
+          apiEndpoint: this.$vidoConfig().API_ENDPOINT,
+          apiProject: this.$vidoConfig().API_PROJECT,
+          apiTheme: this.$vidoConfig().API_THEME,
           categoryIds: this.selectedCategoriesIds,
         })
         this.allowRegionBackZoom = true
@@ -471,14 +464,6 @@ export default (
     isModeFavorites() {
       this.handleFavorites()
     },
-  },
-
-  created() {
-    this.service
-      .onTransition((state) => {
-        this.state = state
-      })
-      .start()
   },
 
   beforeMount() {
@@ -500,10 +485,7 @@ export default (
         console.error('Vido error:', e.message)
       }
     } else {
-      const local = localStorage.getItem(LOCAL_STORAGE.favorites)
-      if (local) {
-        this.setFavorites(JSON.parse(local).favorites)
-      }
+      this.$store.dispatch('favorite/initFavoritesFromLocalStorage')
     }
   },
 
@@ -539,14 +521,10 @@ export default (
 
     if (this.initialPoi) {
       this.setSelectedFeature(this.initialPoi)
-      this.initialBbox = getBBoxFeature(this.initialPoi)
-    }
-    if (!this.initialBbox) {
-      // @ts-ignore
-      this.initialBbox = this.settings.bbox_line.coordinates
     }
 
-    this.goToHome()
+    // @ts-ignore
+    this.initialBbox = this.settings.bbox_line.coordinates
   },
   methods: {
     ...mapActions({
@@ -576,23 +554,9 @@ export default (
         hash,
       })
     },
-    goToHome() {
-      this.service.send(HomeEvents.GoToHome)
-      if (this.$screen.smallScreen) {
-        this.goToSearch()
-      } else {
-        this.goToMenuItems()
-      }
-    },
     onQuitExplorerFavoriteMode() {
       this.$store.dispatch('map/setMode', Mode.BROWSER)
       this.setSelectedFeature(null)
-    },
-    goToSearch() {
-      this.service.send(HomeEvents.GoToSearch)
-    },
-    goToMenuItems() {
-      this.service.send(HomeEvents.GoToCategories)
     },
     isCategorySelected(categoryId: ApiMenuCategory['id']) {
       return this.selectedCategoriesIds.includes(categoryId)
@@ -605,9 +569,6 @@ export default (
         ...this.selectedCategoriesIds,
         ...categoriesIds,
       ])
-    },
-    send(event: HomeEvents) {
-      this.service.send(event)
     },
     toggleCategorySelection(categoryId: ApiMenuCategory['id']) {
       if (this.selectedCategoriesIds.includes(categoryId)) {
@@ -629,13 +590,12 @@ export default (
 
     onSearchPoi(poiId: number) {
       getPoiById(
-        this.$vidoConfig.API_ENDPOINT,
-        this.$vidoConfig.API_PROJECT,
-        this.$vidoConfig.API_THEME,
+        this.$vidoConfig().API_ENDPOINT,
+        this.$vidoConfig().API_PROJECT,
+        this.$vidoConfig().API_THEME,
         poiId
       ).then((poi) => {
         this.setSelectedFeature(poi).then(() => {
-          this.service.send(HomeEvents.GoToCategories)
           this.$refs.mapFeatures.goToSelectedFeature()
         })
       })
@@ -671,13 +631,11 @@ export default (
         }
       }
 
-      this.service.send(HomeEvents.GoToCategories)
       this.$store.dispatch('map/setMode', Mode.BROWSER)
       this.selectCategory([newFilter.id])
     },
     onFeatureClick(feature: ApiPoi) {
       this.setSelectedFeature(feature).then(() => {
-        this.service.send(HomeEvents.GoToCategories)
         this.$refs.mapFeatures.goToSelectedFeature()
       })
     },
@@ -692,9 +650,9 @@ export default (
               this.setPoiVisibility(false)
             }
           }
-          this.goToHome()
+          this.isMenuItemOpen = false
         } else if (!this.isModeExplorer) {
-          this.goToMenuItems()
+          this.isMenuItemOpen = true
         } else if (this.selectedFeature && !this.isPoiCardVisible) {
           this.setPoiVisibility(true)
         }
@@ -709,9 +667,6 @@ export default (
 
     onShowPoi(show: boolean) {
       this.showPoi = show
-    },
-    setFullAttributions(fullAttributions: string) {
-      this.fullAttributions = fullAttributions
     },
 
     exploreAroundSelectedPoi(feature?: ApiPoi) {
@@ -776,10 +731,10 @@ export default (
     },
 
     fetchFavorites(ids: [string]): Promise<ApiPoi[]> {
-      return getPoiByIds(
-        this.$vidoConfig.API_ENDPOINT,
-        this.$vidoConfig.API_PROJECT,
-        this.$vidoConfig.API_THEME,
+      return getPois(
+        this.$vidoConfig().API_ENDPOINT,
+        this.$vidoConfig().API_PROJECT,
+        this.$vidoConfig().API_THEME,
         ids
       )
         .then((pois) => (pois && pois.features) || [])

@@ -1,9 +1,13 @@
-import { mockSSRAPI } from './mock'
+import { mockSSRAPI } from '../support/mock'
 
 import teritorioReferenceAPIFixture from '~/cypress/fixtures/teritorio/references/teritorioReferenceAPIFixture'
 import { Event } from '~/lib/trackers'
 
-const hostname = 'https://dev.appcarto.teritorio.xyz'
+const hostnames = {
+  'https://dev.appcarto.teritorio.xyz':
+    '/content/api.teritorio/geodata/v0.1/dev/tourism/',
+  'http://localhost:3000': '/fixtures/teritorio/references/',
+}
 
 let consoleError: Cypress.Agent<sinon.SinonSpy>
 Cypress.on('window:before:load', (win) => {
@@ -14,57 +18,65 @@ const asserts: ((event: Event) => void)[] = []
 
 describe('home content', () => {
   before(() => {
-    mockSSRAPI(hostname, teritorioReferenceAPIFixture)
+    localStorage.setItem('cookie:accepted', 'true')
+    mockSSRAPI(hostnames, teritorioReferenceAPIFixture)
+    cy.viewport(1024, 768)
     cy.visit('/')
   })
 
   it('tracks main load', () => {
     // Initial page load
     asserts.push((event: Event) => {
-      assert(event.type === 'page', 'Initial page load')
-      // @ts-ignore
-      assert(event.path === '/', 'Initial page load')
+      assert(event.type === 'page' && event.path === '/', 'Initial page load')
     })
 
     // Background change
-    cy.get('#background-selector-map-aerial').click()
+    cy.get('#background-selector-map-bicycle', { timeout: 30000 }).click()
     asserts.push((event: Event) => {
       assert(event.type === 'map_control_event', 'Background change')
-      // @ts-ignore
-      assert(event.event === 'background', 'Background change')
+    })
+
+    // Enable category
+    cy.get('#MenuItem-22').click()
+    asserts.push((event: Event) => {
+      assert(
+        event.type === 'category_event' && event.categoryId === 22,
+        'Enable category'
+      )
     })
 
     // Navigate into category group
     cy.get('#MenuGroup-21').click()
     asserts.push((event: Event) => {
-      assert(event.type === 'menu', 'Navigate into category group')
-      // @ts-ignore
-      assert(event.categoryId === 21, 'Navigate into category group')
+      assert(
+        event.type === 'menu' && event.menuItemId === 21,
+        'Navigate into category group'
+      )
     })
 
     // Enable category
-    cy.get('#Category-211').click()
+    cy.get('#MenuItem-211').click()
     asserts.push((event: Event) => {
-      assert(event.type === 'category_event', 'Enable category')
-      // @ts-ignore
-      assert(event.categoryId === 211, 'Enable category')
+      assert(
+        event.type === 'category_event' && event.categoryId === 211,
+        'Enable category'
+      )
     })
 
     // Click on map POI
-    cy.get('#m1').click()
+    cy.get('#m1', { timeout: 10000 }).click()
     asserts.push((event: Event) => {
-      assert(event.type === 'popup', 'Click on map POI')
-      // @ts-ignore
-      assert(event.poiId === 1, 'Click on map POI')
+      assert(event.type === 'popup' && event.poiId === 1, 'Click on map POI')
     })
     cy.get('#PoiCard-1').should('be.visible')
 
     // Click on an other map POI
     cy.get('#m2').click({ force: true }) // Force click on non visible element
     asserts.push((event: Event) => {
-      assert(event.type === 'popup', 'Click on an other map POI')
-      // @ts-ignore
-      assert(event.poiId === 2, 'Click on an other map POI')
+      assert(
+        event.type === 'popup' && event.poiId === 2,
+        'Click on an other map POI'
+      )
     })
     cy.get('#PoiCard-2').should('be.visible')
 
@@ -82,7 +94,7 @@ describe('home content', () => {
     asserts.forEach((e) => {
       let event = events.pop()
       if (!event) {
-        assert(event, 'Event present')
+        assert(event, 'No more event present')
       } else {
         e(event)
       }

@@ -1,62 +1,31 @@
 <template>
-  <aside
-    :class="[
-      'flex flex-col max-h-full px-5 py-4 space-y-6 shadow-md pointer-events-auto md:rounded-xl md:w-96',
-      isModeExplorerOrFavorites
-        ? 'bg-blue-500 md:bg-white text-white'
-        : 'bg-white',
-    ]"
-  >
-    <div class="flex flex-row md:flex-col items-center md:items-start">
-      <button
-        type="button"
-        class="hidden md:flex shrink-0 items-center justify-center w-10 h-10 text-2xl font-bold transition-all rounded-full outline-none cursor-pointer focus:outline-none hover:bg-zinc-100 focus:bg-zinc-100"
-        @click="onGoBackClick"
-      >
-        <font-awesome-icon icon="arrow-left" class="text-zinc-800" size="xs" />
-      </button>
-
-      <form
-        v-if="!isModeExplorerOrFavorites"
-        ref="searchform"
-        class="flex-grow relative pointer-events-auto w-full"
-        @submit.prevent="onSubmit"
-      >
-        <section class="relative w-full">
-          <input
-            ref="search"
-            :value="searchText"
-            class="w-full px-5 py-3 font-medium text-zinc-700 placeholder-zinc-500 bg-zinc-100 border-none rounded-full outline-none appearance-none focus:outline-none focus:ring focus:ring-zinc-300"
-            :placeholder="$tc('headerMenu.search')"
-            type="text"
-            @input="
-              searchText = $event.target.value
-              onSubmit()
-            "
-            @focus="$tracking({ type: 'search' })"
-          />
-          <button
-            class="absolute inset-y-0 right-0 px-5 text-zinc-800 rounded-r-full outline-none focus:outline-none"
-            type="submit"
-            @click="focusSearch"
-          >
-            <font-awesome-icon v-if="!isLoading" icon="search" />
-            <font-awesome-icon v-else icon="spinner" class="animate-spin" />
-          </button>
-        </section>
-      </form>
+  <div>
+    <div class="flex flex-row items-center">
+      <template v-if="!focus">
+        <slot />
+      </template>
+      <SearchInput
+        :search-text="searchText"
+        :is-loading="isLoading"
+        @input="onSubmit"
+        @focus="
+          $emit('focus', $event)
+          focus = true
+        "
+        @blur="delayedFocusLose($event)"
+      />
     </div>
 
     <button
-      v-if="results > 0"
+      v-if="focus && results > 0"
       type="button"
-      class="md:hidden shrink-0 w-10 h-10 text-2xl font-bold transition-all rounded-full outline-none cursor-pointer focus:outline-none hover:bg-zinc-100 focus:bg-zinc-100"
+      class="shrink-0 w-10 h-10 text-2xl font-bold transition-all rounded-full outline-none cursor-pointer focus:outline-none hover:bg-zinc-100 focus:bg-zinc-100"
       @click="reset"
     >
       <font-awesome-icon icon="arrow-left" class="text-zinc-800" size="xs" />
     </button>
 
-    <div v-if="results > 0" class="search-results">
+    <div v-if="focus && results > 0" class="search-results">
       <SearchResultBlock
         v-if="itemsCartocode.length > 0"
         type="cartocode"
@@ -97,14 +66,14 @@
         {{ $tc('headerMenu.noResult') }}
       </p>
     </div>
-  </aside>
+  </div>
 </template>
 
 <script lang="ts">
 import { debounce, DebouncedFunc } from 'lodash'
-import Vue, { PropType, VueConstructor } from 'vue'
-import { mapGetters } from 'vuex'
+import Vue, { PropType } from 'vue'
 
+import SearchInput from '~/components/Search/SearchInput.vue'
 import SearchResultBlock from '~/components/Search/SearchResultBlock.vue'
 import { ApiPoi, ApiPoiId, getPoiById } from '~/lib/apiPois'
 import {
@@ -116,16 +85,9 @@ import {
 } from '~/lib/apiSearch'
 import { MAP_ZOOM } from '~/lib/constants'
 
-export default (
-  Vue as VueConstructor<
-    Vue & {
-      $refs: {
-        search: InstanceType<typeof HTMLInputElement> | null
-      }
-    }
-  >
-).extend({
+export default Vue.extend({
   components: {
+    SearchInput,
     SearchResultBlock,
   },
 
@@ -141,6 +103,7 @@ export default (
   },
 
   data(): {
+    focus: boolean
     searchQueryId: number
     searchResultId: number
     searchText: string
@@ -152,6 +115,7 @@ export default (
     trackSearchQuery: null | DebouncedFunc<(query: string) => void>
   } {
     return {
+      focus: false,
       searchQueryId: 0,
       searchResultId: 0,
       searchText: '',
@@ -165,11 +129,6 @@ export default (
   },
 
   computed: {
-    ...mapGetters({
-      isModeFavorites: 'map/isModeFavorites',
-      isModeExplorerOrFavorites: 'map/isModeExplorerOrFavorites',
-    }),
-
     isLoading(): boolean {
       return this.searchResultId !== this.searchQueryId
     },
@@ -240,12 +199,6 @@ export default (
     this.trackSearchQuery = debounce(this.trackSearchQuery_, 3000)
   },
 
-  mounted() {
-    if (!this.$screen.touch) {
-      this.focusSearch()
-    }
-  },
-
   methods: {
     reset() {
       this.searchMenuItemsResults = null
@@ -253,14 +206,15 @@ export default (
       this.searchAddressesResults = null
       this.searchCartocodeResult = null
       this.searchText = ''
+      this.focus = false
     },
 
-    onGoBackClick() {
-      this.$emit('go-back-click')
-    },
-
-    goToCategories() {
-      this.$emit('go-to-categories')
+    delayedFocusLose(event: Event) {
+      // Let time to catch click on results before hiden
+      setTimeout(() => {
+        this.$emit('blur', event)
+        this.focus = false
+      }, 200)
     },
 
     onCartocodeClick(id: number) {
@@ -291,10 +245,6 @@ export default (
       this.reset()
     },
 
-    focusSearch() {
-      this.$refs.search?.focus()
-    },
-
     onAddressClick(id: number) {
       const feature = (this.searchAddressesResults?.features || []).find(
         (a) => a.properties.id === id
@@ -312,7 +262,9 @@ export default (
       this.reset()
     },
 
-    onSubmit() {
+    onSubmit(searchText: string) {
+      this.searchText = searchText
+
       // Reset results if empty search text
       if (!this.searchText || this.searchText.trim().length === 0) {
         this.searchMenuItemsResults = null
@@ -337,14 +289,16 @@ export default (
         this.searchQueryId += 1
         const currentSearchQueryId = this.searchQueryId
 
-        const projectTheme = `project_theme=${this.$vidoConfig.API_PROJECT}-${this.$vidoConfig.API_THEME}`
+        const projectTheme = `project_theme=${this.$vidoConfig().API_PROJECT}-${
+          this.$vidoConfig().API_THEME
+        }`
         const searchText = this.searchText.trim()
         if (searchText.length === 2) {
           const cartocode = this.searchText
           getPoiById(
-            this.$vidoConfig.API_ENDPOINT,
-            this.$vidoConfig.API_PROJECT,
-            this.$vidoConfig.API_THEME,
+            this.$vidoConfig().API_ENDPOINT,
+            this.$vidoConfig().API_PROJECT,
+            this.$vidoConfig().API_THEME,
             `cartocode:${cartocode}`
           )
             .then((poi) => {
@@ -374,17 +328,21 @@ export default (
           const MenuItemsFetch: Promise<
             ApiSearchResult<ApiMenuItemSearchResult>
           > = fetch(
-            `${this.$vidoConfig.API_SEARCH}?${projectTheme}&type=menu_item&${query}`
+            `${
+              this.$vidoConfig().API_SEARCH
+            }?${projectTheme}&type=menu_item&${query}`
           ).then((data) => (data.ok ? data.json() : null))
 
           const poisFetch: Promise<ApiSearchResult<ApiPoisSearchResult>> =
             fetch(
-              `${this.$vidoConfig.API_SEARCH}?${projectTheme}&type=poi&${query}&limit=10`
+              `${
+                this.$vidoConfig().API_SEARCH
+              }?${projectTheme}&type=poi&${query}&limit=10`
             ).then((data) => (data.ok ? data.json() : null))
 
           const addressesFetch: Promise<ApiSearchResult<ApiAddrSearchResult>> =
-            fetch(`${this.$vidoConfig.API_SEARCH_ADDR}?${query}`).then((data) =>
-              data.ok ? data.json() : null
+            fetch(`${this.$vidoConfig().API_SEARCH_ADDR}?${query}`).then(
+              (data) => (data.ok ? data.json() : null)
             )
 
           Promise.all<

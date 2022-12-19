@@ -1,3 +1,5 @@
+import fetch from 'node-fetch'
+
 import {
   ApiPoi,
   ApiPoiId,
@@ -83,6 +85,10 @@ export function apiRouteWaypointToApiPoi(
         popup_fields: [
           {
             field: 'description',
+          },
+          {
+            field: 'coordinates',
+            label: true,
           },
         ],
       },

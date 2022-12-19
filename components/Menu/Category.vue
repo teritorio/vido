@@ -1,6 +1,6 @@
 <template>
   <MenuItem
-    :id="category.id"
+    :id="`MenuItem-${category.id}`"
     :href="`/${category.id}`"
     :display-mode="category.category.display_mode || displayModeDefault"
     :color-fill="category.category.color_fill"

@@ -71,7 +71,7 @@ export default Vue.extend({
     width: 3.4rem;
     vertical-align: baseline;
   }
-  @extend .font-ubuntu-medium;
+  @extend .font-medium;
 
   @media (max-width: 991px) {
     .site-footer__bottom .copyright {

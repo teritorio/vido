@@ -23,13 +23,15 @@ import {
 } from '~/lib/apiPropertyTranslations'
 import { getSettings, headerFromSettings, Settings } from '~/lib/apiSettings'
 import { vidoConfig } from '~/plugins/vido-config'
+import { VidoConfig } from '~/utils/types-config'
 
 export default Vue.extend({
   components: {
     Home,
   },
 
-  async asyncData({ params, route, req }): Promise<{
+  async asyncData({ params, route, req, $config }): Promise<{
+    config: VidoConfig
     settings: Settings
     contents: ContentEntry[]
     propertyTranslations: PropertyTranslations
@@ -38,24 +40,24 @@ export default Vue.extend({
     initialPoi: ApiPoi | null
   }> {
     const fetchSettings = getSettings(
-      vidoConfig(req).API_ENDPOINT,
-      vidoConfig(req).API_PROJECT,
-      vidoConfig(req).API_THEME
+      vidoConfig(req, $config).API_ENDPOINT,
+      vidoConfig(req, $config).API_PROJECT,
+      vidoConfig(req, $config).API_THEME
     )
     const fetchContents = getContents(
-      vidoConfig(req).API_ENDPOINT,
-      vidoConfig(req).API_PROJECT,
-      vidoConfig(req).API_THEME
+      vidoConfig(req, $config).API_ENDPOINT,
+      vidoConfig(req, $config).API_PROJECT,
+      vidoConfig(req, $config).API_THEME
     )
     const fetchPropertyTranslations = getPropertyTranslations(
-      vidoConfig(req).API_ENDPOINT,
-      vidoConfig(req).API_PROJECT,
-      vidoConfig(req).API_THEME
+      vidoConfig(req, $config).API_ENDPOINT,
+      vidoConfig(req, $config).API_PROJECT,
+      vidoConfig(req, $config).API_THEME
     )
     const fetchMenuItems = getMenu(
-      vidoConfig(req).API_ENDPOINT,
-      vidoConfig(req).API_PROJECT,
-      vidoConfig(req).API_THEME
+      vidoConfig(req, $config).API_ENDPOINT,
+      vidoConfig(req, $config).API_PROJECT,
+      vidoConfig(req, $config).API_THEME
     )
 
     let categoryIdsJoin: string | null
@@ -79,9 +81,9 @@ export default Vue.extend({
     let fetchPoi: Promise<ApiPoi | null> = Promise.resolve(null)
     if (poiId) {
       fetchPoi = getPoiById(
-        vidoConfig(req).API_ENDPOINT,
-        vidoConfig(req).API_PROJECT,
-        vidoConfig(req).API_THEME,
+        vidoConfig(req, $config).API_ENDPOINT,
+        vidoConfig(req, $config).API_PROJECT,
+        vidoConfig(req, $config).API_THEME,
         poiId
       )
     }
@@ -96,6 +98,7 @@ export default Vue.extend({
       ])
 
     return Promise.resolve({
+      config: vidoConfig(req, $config),
       settings,
       contents,
       propertyTranslations,
@@ -106,6 +109,7 @@ export default Vue.extend({
   },
 
   data(): {
+    config: VidoConfig | null
     settings: Settings
     contents: ContentEntry[]
     propertyTranslations: PropertyTranslations
@@ -114,6 +118,7 @@ export default Vue.extend({
     initialPoi: ApiPoi | null
   } {
     return {
+      config: null,
       // @ts-ignore
       settings: null,
       // @ts-ignore
@@ -139,6 +144,11 @@ export default Vue.extend({
     this.$propertyTranslations.set(this.propertyTranslations)
   },
 
+  beforeMount() {
+    this.$trackingInit(this.config!)
+    this.$vidoConfigSet(this.config!)
+  },
+
   mounted() {
     this.setSiteLocale(this.$i18n.locale)
   },
@@ -152,32 +162,9 @@ export default Vue.extend({
 </script>
 
 <style>
-html {
-  @apply h-full w-full box-border overflow-hidden overscroll-none;
-}
-
-html,
-.mapboxgl-map {
-  font-family: 'Source Sans Pro', -apple-system, BlinkMacSystemFont, 'Segoe UI',
-    Roboto, 'Helvetica Neue', Arial, sans-serif;
-  font-size: 16px;
-  word-spacing: 1px;
-  -ms-text-size-adjust: 100%;
-  -webkit-text-size-adjust: 100%;
-  -moz-osx-font-smoothing: grayscale;
-  -webkit-font-smoothing: antialiased;
-  @apply text-zinc-900;
-}
-
 body,
 #__nuxt,
 #__layout {
   @apply h-full w-full overflow-hidden overscroll-none;
-}
-
-*,
-*::before,
-*::after {
-  @apply m-0 box-border;
 }
 </style>

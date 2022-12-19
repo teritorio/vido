@@ -1,11 +1,17 @@
-export interface ApiPoiId extends Number {}
+export interface MapPoiId extends Number {}
 
 export interface MapPoiProperties {
+  [key: string]: any
+
   name?: string
   description?: string
 
   // eslint-disable-next-line camelcase
   'image:thumbnail'?: string
+
+  metadata: {
+    id: MapPoiId
+  }
 
   display?: {
     icon: string

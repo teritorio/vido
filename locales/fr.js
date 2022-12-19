@@ -4,6 +4,9 @@ export default {
     hours: 'h',
     km: 'km',
   },
+  ponctuation: {
+    colon: ' :',
+  },
   shareLink: {
     copy: 'Copier',
     qrcode: 'QR-Code',
@@ -67,9 +70,10 @@ export default {
     backToMenuExplorerMobile: 'Rechercher par catégories',
   },
   dateRange: {
-    from_to: 'Du {from} au {to}',
+    from_to: 'Du {from} au {to}, {duration} jour(s)',
     from: 'À partir du {from}',
     to: "Jusqu'au {to}",
+    on: 'Le {on}',
   },
   openingHours: {
     opened: 'Actuellement ouvert',
@@ -93,14 +97,13 @@ export default {
     unactivateExplore: "Désactiver l'exploration aux alentours",
     activateExplore: "Explorer les points d'intérêts aux alentours",
     zoom: 'Zoomer',
+    backToMap: 'Aller à la carte',
   },
   poiDetails: {
     headerDescription: 'Descriptif',
     headerDownload: 'Fichiers à télécharger',
     lastUpdate: 'Dernière modification',
     headerContacts: 'Contact',
-    headerLocation: 'Localisation & Adresse',
-    location: 'Coordonnées GPS (Lat, Lon) :',
     shareFacebook: 'Partager sur Facebook',
     shareTwitter: 'Partager sur Twitter',
     shareWhatsApp: 'Partager sur WhatsApp',
@@ -130,7 +133,7 @@ export default {
     },
     route: {
       difficulty: 'Difficulté :',
-      lenght: 'Distance :',
+      length: 'Distance :',
       duration: 'Durée :',
       difficulties: {
         easy: 'facile',

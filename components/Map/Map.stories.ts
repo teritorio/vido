@@ -1,13 +1,29 @@
 import Map from '~/components/Map/Map.vue'
-import { bind } from '~/lib/storybook-types'
+import { bind, parametersMap, mapCss } from '~/lib/storybook-types'
 
 export default {
   title: 'Map/Map',
   component: Map,
+  parameters: {
+    ...parametersMap,
+  },
 }
 
 const defaultProps = {}
 
-export const Default = bind(Map, {
-  ...defaultProps,
-})
+export const Default = bind(
+  Map,
+  {
+    ...defaultProps,
+  },
+  { style: mapCss }
+)
+
+export const FullScreen = bind(
+  Map,
+  {
+    ...defaultProps,
+    fullscreenControl: true,
+  },
+  { style: mapCss }
+)

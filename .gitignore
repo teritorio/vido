@@ -108,7 +108,14 @@ sw.*
 # Storybook
 .nuxt-storybook
 storybook-static
+__screenshots__/current
+__screenshots__/diff
 
 # Cypress
 cypress/videos
 cypress/screenshots
+cypress/fixtures/**/*.geojson
+cypress/fixtures/**/deps.json
+
+# Vido
+vidos-config.json

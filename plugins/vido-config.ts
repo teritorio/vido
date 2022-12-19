@@ -1,30 +1,33 @@
 import { Plugin } from '@nuxt/types'
+import { NuxtRuntimeConfig } from '@nuxt/types/config/runtime'
 import createServer from 'connect'
 
-import vidos from '../vidos.config'
+import { VidoConfig, VidosConfig } from '~/utils/types-config'
 
-import { VidoConfig } from '~/utils/types-config'
-
-const vidoHostConfig: { [key: string]: VidoConfig } = {}
-Object.values(vidos).forEach((vido) => {
-  vido.HOSTS.forEach((host) => {
-    vidoHostConfig[host] = vido
-  })
-})
-
-export function configuredApi(): string[] {
-  return Object.values(vidos)
-    .map((vido) => vido.API_ENDPOINT || [])
-    .flat()
+export function configuredApi(vidos: VidosConfig): string[] {
+  return [
+    ...new Set(
+      Object.values(vidos)
+        .map((vido) => vido.API_ENDPOINT || [])
+        .flat()
+    ),
+  ].map((url) => new URL(url).hostname)
 }
 
-export function configuredImageProxy(): string[] {
-  return Object.values(vidos)
-    .map((vido) => vido.IMAGE_PROXY || [])
-    .flat()
+export function configuredImageProxy(vidos: VidosConfig): string[] {
+  return [
+    ...new Set(
+      Object.values(vidos)
+        .map((vido) => vido.IMAGE_PROXY || [])
+        .flat()
+    ),
+  ]
 }
 
-export function vidoConfig(req: createServer.IncomingMessage): VidoConfig {
+export function vidoConfig(
+  req: createServer.IncomingMessage,
+  privateRuntimeConfig: NuxtRuntimeConfig
+): VidoConfig {
   let host: string
   if (process.server) {
     const hostHeader =
@@ -38,22 +41,29 @@ export function vidoConfig(req: createServer.IncomingMessage): VidoConfig {
     host = window.location.host
   }
   host = host?.split(':')[0]
-  if (!(host in vidoHostConfig)) {
+
+  const vidoHostConfig = privateRuntimeConfig.vidos as VidosConfig
+  if (!(host in vidoHostConfig) && !('' in vidoHostConfig)) {
     throw new Error(`Not configured host "${host}"`)
   }
   return {
-    ...vidoHostConfig[host],
+    ...(vidoHostConfig[host] || vidoHostConfig['']),
   }
 }
 
-const vidosConfigPlugin: Plugin = ({ req }, inject) => {
-  inject('vidoConfig', vidoConfig(req))
+const vidosConfigPlugin: Plugin = ({ req, $config }, inject) => {
+  let config: VidoConfig | undefined
+  inject('vidoConfigSet', (c: VidoConfig) => {
+    config = c
+  })
+  inject('vidoConfig', () => config || vidoConfig(req, $config))
 }
 
 export default vidosConfigPlugin
 
 declare module 'vue/types/vue' {
   interface Vue {
-    readonly $vidoConfig: VidoConfig
+    readonly $vidoConfigSet: (c: VidoConfig) => void
+    readonly $vidoConfig: () => VidoConfig
   }
 }

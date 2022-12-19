@@ -1,52 +1,79 @@
 <template>
-  <div v-if="group.fields && group.display_mode === 'standard'">
-    <FieldsHeader :recursion-level="recursionLevel">
-      {{ title }}
-    </FieldsHeader>
-    <Fields
-      :recursion-level="recursionLevel + 1"
-      :fields="group.fields"
-      :properties="properties"
+  <div v-if="group.fields && !empty">
+    <div v-if="group.display_mode === 'standard'">
+      <FieldsHeader :recursion-level="recursionLevel">
+        {{ title }}
+      </FieldsHeader>
+      <Fields
+        :recursion-level="recursionLevel + 1"
+        :fields="group.fields"
+        :properties="properties"
+        :geom="geom"
+        :color-fill="colorFill"
+      />
+    </div>
+    <Block
+      v-else-if="group.display_mode === 'card'"
       :color-fill="colorFill"
-    />
+      :icon="group.icon"
+    >
+      <FieldsHeader :recursion-level="recursionLevel">
+        {{ title }}
+      </FieldsHeader>
+      <Fields
+        :recursion-level="recursionLevel + 1"
+        :fields="group.fields"
+        :properties="properties"
+        :geom="geom"
+        :color-fill="colorFill"
+      />
+    </Block>
   </div>
-  <Block
-    v-else-if="group.fields && group.display_mode === 'card'"
-    :color-fill="colorFill"
-    :icon="group.icon"
-  >
-    <FieldsHeader :recursion-level="recursionLevel">
-      {{ title }}
-    </FieldsHeader>
-    <Fields
-      :recursion-level="recursionLevel + 1"
-      :fields="group.fields"
-      :properties="properties"
-      :color-fill="colorFill"
-    />
-  </Block>
 </template>
 
 <script lang="ts">
-import Vue, { PropType } from 'vue'
+import Vue, { VueConstructor, PropType } from 'vue'
+
+import { isFiledEmpty } from '../Fields/Field.vue'
 
 import Block from '~/components/PoisDetails/Block.vue'
-import FieldsHeader from '~/components/PoisDetails/FieldsHeader.vue'
-import { ApiPoiProperties, FieldsListGroup } from '~/lib/apiPois'
+import FieldsHeader from '~/components/UI/FieldsHeader.vue'
+import {
+  ApiPoiProperties,
+  FieldsList,
+  FieldsListGroup,
+  FieldsListItem,
+} from '~/lib/apiPois'
 // import Fields from '~/components/PoisDetails/Fields.vue'
 
-export default Vue.extend({
+export function isListEmpty(
+  fileds: FieldsList,
+  properties: { [key: string]: string },
+  geom: GeoJSON.Geometry
+): boolean {
+  return fileds.reduce(
+    (sum: boolean, value: FieldsListItem | FieldsListGroup) =>
+      sum &&
+      ('group' in value
+        ? isListEmpty(value.fields, properties, geom)
+        : isFiledEmpty(value, properties, geom)),
+    true
+  )
+}
+
+export default (
+  Vue as VueConstructor<
+    Vue & {
+      $refs: {
+        fields: InstanceType<typeof Vue>
+      }
+    }
+  >
+).extend({
   components: {
     Block,
     FieldsHeader,
     // Fields,
-  },
-
-  beforeCreate: function () {
-    // Break circular components dependcy
-    // @ts-ignore
-    this.$options.components.Fields =
-      require('~/components/PoisDetails/Fields.vue').default
   },
 
   props: {
@@ -66,10 +93,33 @@ export default Vue.extend({
       type: Object as PropType<ApiPoiProperties>,
       required: true,
     },
+    geom: {
+      type: Object as PropType<GeoJSON.Geometry>,
+      required: true,
+    },
     colorFill: {
       type: String,
       required: true,
     },
+  },
+
+  data(): {
+    empty: any
+  } {
+    return {
+      empty: true,
+    }
+  },
+
+  beforeCreate() {
+    // Break circular components dependcy
+    // @ts-ignore
+    this.$options.components.Fields =
+      require('~/components/PoisDetails/Fields.vue').default
+  },
+
+  created() {
+    this.empty = isListEmpty(this.group.fields, this.properties, this.geom)
   },
 })
 </script>

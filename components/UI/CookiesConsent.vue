@@ -1,8 +1,8 @@
 <template>
-  <client-only v-if="doNotTrack && $vidoConfig.COOKIES_CONSENT">
+  <client-only v-if="doNotTrack && $vidoConfig().COOKIES_CONSENT">
     <CookieLaw
       :button-text="$tc('cookiesConsent.accept')"
-      :button-link="$vidoConfig.COOKIES_LINK"
+      :button-link="$vidoConfig().COOKIES_LINK"
       :button-link-text="$tc('cookiesConsent.details')"
       :button-link-new-tab="true"
       :button-decline="true"
@@ -11,7 +11,7 @@
       @accept="accept"
     >
       <template #message>
-        {{ $vidoConfig.COOKIES_CONSENT }}
+        {{ $vidoConfig().COOKIES_CONSENT }}
       </template>
     </CookieLaw>
   </client-only>

@@ -1,10 +1,13 @@
-import { MapPoiProperties } from './mapPois'
+import fetch from 'node-fetch'
+
+import { MapPoiProperties, MapPoiId } from './mapPois'
 
 import { MultilingualString } from '~/utils/types'
 
-export interface ApiPoiId extends Number {}
+export interface ApiPoiId extends MapPoiId {}
 
 export type FieldsListItem = {
+  label?: boolean
   field: string
 }
 
@@ -19,8 +22,6 @@ export type FieldsListGroup = {
 export type FieldsList = (FieldsListItem | FieldsListGroup)[]
 
 export type ApiPoiProperties = MapPoiProperties & {
-  [key: string]: any
-
   image?: string[]
 
   'addr:city'?: string
@@ -31,6 +32,7 @@ export type ApiPoiProperties = MapPoiProperties & {
   phone?: string[]
   email?: string[]
   website?: string[]
+  download?: string[]
 
   metadata: {
     id: ApiPoiId
@@ -47,6 +49,11 @@ export type ApiPoiProperties = MapPoiProperties & {
   display?: {
     // eslint-disable-next-line camelcase
     style_class?: string[]
+    // eslint-disable-next-line camelcase
+    color_fill: string
+    // eslint-disable-next-line camelcase
+    color_line: string
+    // eslint-disable-next-line camelcase
   }
   editorial?: {
     // eslint-disable-next-line camelcase
@@ -110,17 +117,17 @@ export function getPoiById(
   })
 }
 
-export function getPoiByIds(
+export function getPois(
   apiEndpoint: string,
   apiProject: string,
   apiTheme: string,
-  poiIds: (ApiPoiId | string)[],
+  poiIds?: (ApiPoiId | string)[],
   options: apiPoisOptions = {}
 ): Promise<ApiPois> {
   return fetch(
     `${apiEndpoint}/${apiProject}/${apiTheme}/pois.geojson?` +
       new URLSearchParams([
-        ['ids', poiIds.join(',')],
+        ...(poiIds ? [['ids', poiIds.join(',')]] : []),
         ...stringifyOptions(options),
       ])
   ).then((data) => {

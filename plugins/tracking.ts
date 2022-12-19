@@ -3,32 +3,33 @@ import { Plugin } from '@nuxt/types'
 import Google from '~/lib/tracker-google'
 import Matomo from '~/lib/tracker-matomo'
 import { Event, Tracker } from '~/lib/trackers'
-import { vidoConfig } from '~/plugins/vido-config'
+import { VidoConfig } from '~/utils/types-config'
 
-const trackingPlugin: Plugin = ({ app, req }, inject) => {
+const trackingPlugin: Plugin = ({ app }, inject) => {
   const trackers: Tracker[] = []
-  const config = vidoConfig(req)
 
-  if (navigator.doNotTrack !== '1') {
-    const googleTagManagerId = config.GOOGLE_TAG_MANAGER_ID
-    if (app.$gtm && googleTagManagerId) {
-      trackers.push(
-        new Google(
-          Boolean(config.COOKIES_CONSENT),
-          app.$gtm,
-          googleTagManagerId
+  inject('trackingInit', (config: VidoConfig) => {
+    if (navigator.doNotTrack !== '1') {
+      const googleTagManagerId = config.GOOGLE_TAG_MANAGER_ID
+      if (app.$gtm && googleTagManagerId) {
+        trackers.push(
+          new Google(
+            Boolean(config.COOKIES_CONSENT),
+            app.$gtm,
+            googleTagManagerId
+          )
         )
-      )
-    }
+      }
 
-    const matomoUrl = config.MATOMO_URL
-    const matomoIdsite = config.MATOMO_SITEID
-    if (matomoUrl && matomoIdsite) {
-      trackers.push(
-        new Matomo(Boolean(config.COOKIES_CONSENT), matomoUrl, matomoIdsite)
-      )
+      const matomoUrl = config.MATOMO_URL
+      const matomoIdsite = config.MATOMO_SITEID
+      if (matomoUrl && matomoIdsite) {
+        trackers.push(
+          new Matomo(Boolean(config.COOKIES_CONSENT), matomoUrl, matomoIdsite)
+        )
+      }
     }
-  }
+  })
 
   inject('tracking_consent', () => {
     if (trackers.length > 0) {
@@ -39,15 +40,13 @@ const trackingPlugin: Plugin = ({ app, req }, inject) => {
   })
 
   inject('tracking', (event: Event) => {
-    if (trackers.length === 0) {
-      if (process.env.NODE_ENV === 'development') {
-        console.error('Tracking event', event)
-      }
-    } else {
-      trackers.forEach((tracker) => {
-        tracker.track(event)
-      })
+    if (process.env.environment === 'development') {
+      console.error('Tracking event', event)
     }
+
+    trackers.forEach((tracker) => {
+      tracker.track(event)
+    })
   })
 }
 
@@ -55,6 +54,7 @@ export default trackingPlugin
 
 declare module 'vue/types/vue' {
   interface Vue {
+    readonly $trackingInit: (config: VidoConfig) => void
     readonly $tracking_consent: () => undefined
     readonly $tracking: (event: Event) => undefined
   }

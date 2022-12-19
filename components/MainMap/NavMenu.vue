@@ -13,24 +13,18 @@
           focusHandler,
           blurHandler,
           keydownHandler,
-          isShown,
         }"
       >
-        <button
+        <IconButton
           :aria-label="$tc('navMenu.label')"
-          type="button"
-          class="text-sm text-zinc-800 bg-white rounded-full shadow-md outline-none w-11 h-11 focus:outline-none hover:bg-zinc-100 focus-visible:bg-zinc-100 shrink-0"
+          class="w-11 h-11"
           @mousedown="mousedownHandler"
           @focus="focusHandler"
           @blur="blurHandler"
           @keydown="keydownHandler"
         >
-          <font-awesome-icon
-            :icon="isShown ? 'times' : 'bars'"
-            class="text-zinc-800"
-            size="sm"
-          />
-        </button>
+          <font-awesome-icon icon="cog" class="text-zinc-800" size="lg" />
+        </IconButton>
       </template>
 
       <div class="py-1 rounded-md shadow-xs flex flex-col w-max">
@@ -70,10 +64,12 @@ import { TDropdown } from 'vue-tailwind/dist/components'
 import { mapActions } from 'vuex'
 
 import ExternalLink from '~/components/UI/ExternalLink.vue'
+import IconButton from '~/components/UI/IconButton.vue'
 import { ContentEntry } from '~/lib/apiContent'
 
 export default Vue.extend({
   components: {
+    IconButton,
     ExternalLink,
     TDropdown,
   },

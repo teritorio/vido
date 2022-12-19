@@ -1,13 +1,32 @@
 <template>
-  <span v-if="address">
-    {{ address }}
-  </span>
+  <div v-if="address">
+    <slot />
+    <span>
+      {{ address }}
+    </span>
+  </div>
 </template>
 
 <script lang="ts">
 import Vue, { PropType } from 'vue'
 
-import { ApiPoiProperties } from '~/lib/apiPois'
+import { ApiPoiProperties, FieldsListItem } from '~/lib/apiPois'
+
+const addressFields = [
+  'addr:housenumber',
+  'addr:street',
+  'addr:postcode',
+  'addr:city',
+]
+
+export function isAddressFieldEmpty(properties: {
+  [key: string]: string
+}): boolean {
+  return addressFields.reduce(
+    (sum: boolean, value) => sum || value in properties,
+    false
+  )
+}
 
 export default Vue.extend({
   props: {
@@ -19,12 +38,8 @@ export default Vue.extend({
 
   computed: {
     address(): string | null {
-      return [
-        this.properties['addr:housenumber'],
-        this.properties['addr:street'],
-        this.properties['addr:postcode'],
-        this.properties['addr:city'],
-      ]
+      return addressFields
+        .map((field) => this.properties[field])
         .map((f) => (f || '').toString().trim())
         .filter((f) => f)
         .join(' ')

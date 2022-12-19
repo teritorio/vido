@@ -1,5 +1,7 @@
 import GeoJSON from 'geojson'
 
+import { ApiPoiProperties } from './apiPois'
+
 import { ApiMenuCategory } from '~/lib/apiMenu'
 
 const getMarkerDonutSegment = (
@@ -49,23 +51,9 @@ const getMarkerDonutSegment = (
 }
 
 export const createMarkerDonutChart = (
-  categories: Record<ApiMenuCategory['id'], ApiMenuCategory>,
-  props: GeoJSON.Feature['properties']
+  countPerColor: Record<string, number>
 ): HTMLElement => {
   const offsets = []
-
-  const countPerColor: { [colorFill: string]: number } = {}
-  Object.keys(categories)
-    .filter((categoryId) => ((props && props[categoryId]) || 0) > 0)
-    .forEach((categoryIdString) => {
-      const categoryId = parseInt(categoryIdString, 10)
-      const colorFill = categories[categoryId].category.color_fill
-      if (countPerColor[colorFill]) {
-        countPerColor[colorFill] += (props && props[categoryId]) || 0
-      } else {
-        countPerColor[colorFill] = (props && props[categoryId]) || 0
-      }
-    })
 
   const counts: number[] = Object.values(countPerColor)
   const colors = Object.keys(countPerColor)
