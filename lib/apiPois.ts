@@ -146,7 +146,7 @@ export function getPoiByCategoryId(
   apiProject: string,
   apiTheme: string,
   categoryId: number | string,
-  options: apiPoisOptions = {}
+  options: apiPoisOptions = { geometry_as: 'point' }
 ): Promise<ApiPois> {
   return fetch(
     `${apiEndpoint}/${apiProject}/${apiTheme}/pois/category/${categoryId}.geojson?` +
