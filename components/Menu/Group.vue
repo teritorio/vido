@@ -7,13 +7,16 @@
     :icon="menuGroup.menu_group.icon"
     :size="size"
     :name="menuGroup.menu_group.name"
-    badge-class="bg-red-600"
+    :badge-class="
+      [
+        'bg-red-600 text-white rounded-full border-2 border-white',
+        size === '2xl' ? 'w-6 h-6' : 'w-5 h-5',
+      ].join(' ')
+    "
     @click.prevent="onClick"
   >
     <template v-if="categoriesActivesCount > 0" #badge>
-      <span class="text-white">
-        {{ categoriesActivesCount }}
-      </span>
+      {{ categoriesActivesCount }}
     </template>
     <template #end-line-large>
       <font-awesome-icon icon="chevron-right" />
