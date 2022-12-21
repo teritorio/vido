@@ -7,6 +7,12 @@
     :icon="menuLink.link.icon"
     :size="size"
     :name="menuLink.link.name"
+    :badge-class="
+      [
+        'bg-white text-zinc-700 rounded-full border-2 border-white',
+        size === '2xl' ? 'w-6 h-6' : 'w-5 h-5',
+      ].join(' ')
+    "
     @click="onClick"
   >
     <template v-if="menuLink.link.display_mode === 'compact'" #badge>

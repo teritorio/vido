@@ -22,10 +22,11 @@
         <TeritorioIconBadge :color-fill="colorFill" :picto="icon" :size="size">
           <div
             v-if="$slots.badge"
-            :class="
-              'text-zinc-700 text-xs font-semibold font-sans text-center rounded-full absolute -top-1 -right-1 w-5 h-5 border-2 border-white bg-white ' +
-              badgeClass
-            "
+            :class="[
+              'text-xs font-semibold font-sans text-center absolute',
+              size === '2xl' ? '-top-3 -right-3' : '-top-1 -right-1',
+              badgeClass,
+            ]"
           >
             <slot name="badge" />
           </div>
@@ -73,7 +74,7 @@ export default Vue.extend({
       required: true,
     },
     displayMode: {
-      type: String,
+      type: String as PropType<'compact' | 'large'>,
       required: true,
     },
     colorFill: {
