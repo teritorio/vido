@@ -224,6 +224,7 @@ const config: NuxtConfig = {
       }
     },
     plugins: [
+      // @ts-ignore
       new webpack.ProvidePlugin({
         mapboxgl: 'maplibre-gl',
       }),

@@ -4774,6 +4774,7 @@ __metadata:
     "@types/lodash.uniqby": ^4.7.7
     "@types/lodash.without": ^4.4.7
     "@types/wcag-contrast": ^3.0.0
+    "@types/webpack": ^5.28.0
     "@typescript-eslint/eslint-plugin": ^5.42.1
     "@typescript-eslint/parser": ^5.42.1
     "@vue/test-utils": ^1.3.3
@@ -5755,6 +5756,17 @@ __metadata:
     anymatch: ^3.0.0
     source-map: ^0.6.0
   checksum: 82114b95ed99389282f0f174df6980b3f84d3f26fb75a9ba0ce4929e3aa229cee51ce09d866df5fce32ac5487c8943bb04b86c0c9953a58c1083d67e1b9d26ab
+  languageName: node
+  linkType: hard
+
+"@types/webpack@npm:^5.28.0":
+  version: 5.28.0
+  resolution: "@types/webpack@npm:5.28.0"
+  dependencies:
+    "@types/node": "*"
+    tapable: ^2.2.0
+    webpack: ^5
+  checksum: c09222b73def3ebec8a111f3382499a70370d58fb05de6a0eb81836e0b291b198b8a3cf368dd0b2849db1769c2fac1920155e138ebe058eb687c1f2849be8504
   languageName: node
   linkType: hard
 
@@ -10769,6 +10781,16 @@ __metadata:
     memory-fs: ^0.5.0
     tapable: ^1.0.0
   checksum: 72e679343f3ca6f2f84b1259460705fa29d46f0b806fa562db96edeb7826357a97ba9ccb61a07cdb05f51c1b4d2f5b544a2e4a6c257d7395a0c9b6e727f86d08
+  languageName: node
+  linkType: hard
+
+"enhanced-resolve@npm:^5.10.0":
+  version: 5.12.0
+  resolution: "enhanced-resolve@npm:5.12.0"
+  dependencies:
+    graceful-fs: ^4.2.4
+    tapable: ^2.2.0
+  checksum: 61f3e8af9acf91816cb771c3338062cdfa1377d4d85d45740f9f9233d4d178f6918d5629203a68cce650b0cdad5b696043ccb96b0ad3a66a370f8e4cb0b8ba7a
   languageName: node
   linkType: hard
 
@@ -25476,7 +25498,7 @@ typescript@~4.2:
   languageName: node
   linkType: hard
 
-"watchpack@npm:^2.2.0, watchpack@npm:^2.3.1":
+"watchpack@npm:^2.2.0, watchpack@npm:^2.3.1, watchpack@npm:^2.4.0":
   version: 2.4.0
   resolution: "watchpack@npm:2.4.0"
   dependencies:
@@ -25700,6 +25722,43 @@ typescript@~4.2:
   bin:
     webpack: bin/webpack.js
   checksum: ad8814a76d3bc2eb769d096cdc33dd3536b3889f654ec93d33ac68d3fc3df1bde46428dad6c7c69f81b149d4c4cbb6eb91175cf8367c54b3a7df8e56332b1e4f
+  languageName: node
+  linkType: hard
+
+"webpack@npm:^5":
+  version: 5.75.0
+  resolution: "webpack@npm:5.75.0"
+  dependencies:
+    "@types/eslint-scope": ^3.7.3
+    "@types/estree": ^0.0.51
+    "@webassemblyjs/ast": 1.11.1
+    "@webassemblyjs/wasm-edit": 1.11.1
+    "@webassemblyjs/wasm-parser": 1.11.1
+    acorn: ^8.7.1
+    acorn-import-assertions: ^1.7.6
+    browserslist: ^4.14.5
+    chrome-trace-event: ^1.0.2
+    enhanced-resolve: ^5.10.0
+    es-module-lexer: ^0.9.0
+    eslint-scope: 5.1.1
+    events: ^3.2.0
+    glob-to-regexp: ^0.4.1
+    graceful-fs: ^4.2.9
+    json-parse-even-better-errors: ^2.3.1
+    loader-runner: ^4.2.0
+    mime-types: ^2.1.27
+    neo-async: ^2.6.2
+    schema-utils: ^3.1.0
+    tapable: ^2.1.1
+    terser-webpack-plugin: ^5.1.3
+    watchpack: ^2.4.0
+    webpack-sources: ^3.2.3
+  peerDependenciesMeta:
+    webpack-cli:
+      optional: true
+  bin:
+    webpack: bin/webpack.js
+  checksum: 15f4767d54f270ab4e03b116bf9eff18db8a04d8bfdf8913a7f0df35361312b5e631f2b228012acba4a20200b27775818bc3f667cb70acb6ba43dcb050588770
   languageName: node
   linkType: hard
 
