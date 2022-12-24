@@ -11,9 +11,11 @@ import { VidosConfig } from './utils/types-config'
 
 const supportedLocales = ['en-GB', 'fr', 'es']
 
-const vidos: VidosConfig = JSON.parse(
-  fs.readFileSync(process.env.CONFIG || 'vidos-config.json').toString()
-)
+const vidos: VidosConfig = !process.env.CONFIG
+  ? {}
+  : JSON.parse(
+      fs.readFileSync(process.env.CONFIG || 'vidos-config.json').toString()
+    )
 
 let vidosRoutesCategories: {
   [hostname: string]: { url: string; lastmod?: string }[]
