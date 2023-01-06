@@ -1,5 +1,5 @@
 <template>
-  <form class="flex-grow relative pointer-events-auto w-full">
+  <form class="flex-grow relative pointer-events-auto w-full" @submit.prevent>
     <section class="relative w-full">
       <input
         ref="search"
