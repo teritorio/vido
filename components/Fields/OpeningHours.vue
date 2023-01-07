@@ -140,13 +140,18 @@ export default Vue.extend({
         if (!this.variable) {
           return [[undefined, prettyString]]
         } else {
-          const ret: [string, string[]][] = []
+          const ret: [string | undefined, string[]][] = []
+          // Stable group by month
           prettyString
-            .map((row) => [
-              row.slice(0, row.indexOf(':')),
-              row.slice(row.indexOf(':') + 1),
-            ])
-            // Stable group by month
+            .map(
+              (row) =>
+                (row.indexOf(': ') >= 0
+                  ? [
+                      row.slice(0, row.indexOf(': ')),
+                      row.slice(row.indexOf(': ') + 1 + 1),
+                    ]
+                  : [undefined, row]) as [string | undefined, string]
+            )
             .forEach(([month, date]) => {
               const i = ret.findIndex((r) => r[0] == month)
               if (i >= 0) {

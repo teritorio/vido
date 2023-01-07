@@ -62,3 +62,34 @@ test('collection_times', () => {
   })
   expect(wrapper.find('#next').exists()).toBeFalsy()
 })
+
+test('pretty', () => {
+  let wrapper
+  wrapper = factory({
+    openingHours: 'Tu-Sa 07:00-12:30,13:30-19:00; Su 07:30-12:15',
+  })
+  expect(wrapper.find('ul > li:nth-child(1)').html()).toEqual(
+    '<li>Mar.-sam. 07:00-12:30,13:30-19:00</li>'
+  )
+  expect(wrapper.find('ul > li:nth-child(2)').html()).toEqual(
+    '<li>Dim. 07:30-12:15</li>'
+  )
+
+  wrapper = factory({ openingHours: 'Apr-Oct: Fr-Su 10:00-18:00' })
+  expect(wrapper.find('ul > li:nth-child(1)').html()).toEqual(`<li>
+  Avr.-oct.
+  <ul>
+    <li>Ven.-dim. 10:00-18:00</li>
+  </ul>
+</li>`)
+
+  wrapper = factory({
+    openingHours: 'Tu-Sa 07:00-12:30,13:30-19:00; Su,PH 07:30-12:15',
+  })
+  expect(wrapper.find('ul > li:nth-child(1)').html()).toEqual(
+    '<li>Mar.-sam. 07:00-12:30,13:30-19:00</li>'
+  )
+  expect(wrapper.find('ul > li:nth-child(2)').html()).toEqual(
+    '<li>Dim.,PH 07:30-12:15</li>'
+  )
+})

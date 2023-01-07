@@ -1,8 +1,7 @@
 <template>
   <div>
     <iframe
-      href=""
-      :src="`https://www.mapillary.com/embed?image_key=${imageId}&style=photo`"
+      :src="`https://www.mapillary.com/embed?image_key=${imageId}&x=0.5&y=0.5&style=photo`"
     />
     <ExternalLink
       :href="`https://www.mapillary.com/app/?pKey=${imageId}&focus=photo`"
