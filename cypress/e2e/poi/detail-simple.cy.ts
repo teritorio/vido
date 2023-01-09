@@ -31,5 +31,7 @@ describe('home content', () => {
     cy.get('#FieldsGroup-contact_card')
       // @ts-ignore
       .contains('contact_card')
+
+    cy.htmlvalidate()
   })
 })

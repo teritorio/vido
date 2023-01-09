@@ -1,3 +1,5 @@
+import 'cypress-html-validate/commands'
+
 import './commands'
 require('cypress-terminal-report/src/installLogsCollector')()
 

@@ -81,6 +81,8 @@ describe('home content', () => {
     cy.get('#PoiCard-2').should('be.visible')
 
     cy.wait(100) // Wait for load
+
+    cy.htmlvalidate()
   })
 
   after(() => {

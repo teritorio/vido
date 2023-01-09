@@ -36,5 +36,7 @@ describe('home content', () => {
 
     // POI
     cy.get('#PoiCardLight-1')
+
+    cy.htmlvalidate()
   })
 })
