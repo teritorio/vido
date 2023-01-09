@@ -7,6 +7,7 @@
         class="flex flex-col justify-between w-full w-auto max-w-md space-y-4 sm:pb-10"
       >
         <transition-group
+          tag="div"
           name="headers"
           appear
           mode="out-in"

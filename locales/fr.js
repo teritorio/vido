@@ -52,6 +52,7 @@ export default {
     },
   },
   headerMenu: {
+    logo: 'Logo',
     search: "Points d'intérêt, catégorie, adresse",
     selectAll: 'Tout sélectionner',
     unselectAll: 'Tout désélectionner',
