@@ -12,8 +12,8 @@
       <div class="field">{{ $tc('fields.route.length') }} {{ length }}</div>
       <div v-for="(route, activity) in routes" :key="activity" class="field">
         <FieldsHeader
-          :recursion-level="recursionLevel"
-          :class="`field_header_level_${recursionLevel}`"
+          :recursion-stack="recursionStack"
+          :class="`field_header_level_${recursionStack.length}`"
         >
           {{ $propertyTranslations.pv('route', activity, context) }}
         </FieldsHeader>
@@ -63,9 +63,9 @@ export default Vue.extend({
       type: String as PropType<PropertyTranslationsContextEnum>,
       required: true,
     },
-    recursionLevel: {
-      type: Number,
-      default: 0,
+    recursionStack: {
+      type: Array as PropType<string[]>,
+      default: () => [],
     },
     properties: {
       type: Object as PropType<ApiPoiProperties>,

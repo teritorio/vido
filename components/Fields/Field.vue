@@ -3,13 +3,13 @@
     v-if="field.field == 'route'"
     class="field_content"
     :context="context"
-    :recursion-level="recursionLevel"
+    :recursion-stack="recursionStack"
     :properties="properties"
   >
     <FieldsHeader
       v-if="field.label"
-      :recursion-level="null"
-      :class="`field_header_level_${recursionLevel}`"
+      :recursion-stack="null"
+      :class="`field_header_level_${recursionStack.length}`"
       >{{ fieldTranslateK(field.field) }}</FieldsHeader
     >
   </RoutesField>
@@ -17,8 +17,8 @@
   <AddressField v-else-if="field.field === 'addr'" :properties="properties">
     <FieldsHeader
       v-if="field.label"
-      :recursion-level="null"
-      :class="`field_header_level_${recursionLevel}`"
+      :recursion-stack="null"
+      :class="`field_header_level_${recursionStack.length}`"
       >{{ fieldTranslateK(field.field) }}</FieldsHeader
     >
   </AddressField>
@@ -27,12 +27,12 @@
     v-else-if="field.field === 'start_end_date'"
     :start="properties.start_date"
     :end="properties.end_date"
-    :class="`field_content_level_${recursionLevel}`"
+    :class="`field_content_level_${recursionStack.length}`"
   >
     <FieldsHeader
       v-if="field.label"
-      :recursion-level="null"
-      :class="`field_header_level_${recursionLevel}`"
+      :recursion-stack="null"
+      :class="`field_header_level_${recursionStack.length}`"
       >{{ fieldTranslateK(field.field) }}</FieldsHeader
     >
   </DateRange>
@@ -40,8 +40,8 @@
   <Coordinates v-else-if="field.field === 'coordinates'" :geom="geom">
     <FieldsHeader
       v-if="field.label"
-      :recursion-level="null"
-      :class="`field_header_level_${recursionLevel}`"
+      :recursion-stack="null"
+      :class="`field_header_level_${recursionStack.length}`"
       >{{ fieldTranslateK(field.field) }}</FieldsHeader
     >
   </Coordinates>
@@ -49,11 +49,11 @@
   <div v-else-if="properties[field.field]">
     <FieldsHeader
       v-if="field.label"
-      :recursion-level="null"
-      :class="`field_header_level_${recursionLevel}`"
+      :recursion-stack="null"
+      :class="`field_header_level_${recursionStack.length}`"
       >{{ fieldTranslateK(field.field) }}</FieldsHeader
     >
-    <div :class="`inline field_content_level_${recursionLevel}`">
+    <div :class="`inline field_content_level_${recursionStack.length}`">
       <div v-if="field.field == 'description'" class="inline">
         <template
           v-if="Boolean(details) && properties.description.length > textLimit"
@@ -213,9 +213,9 @@ export default Vue.extend({
       type: String as PropType<PropertyTranslationsContextEnum>,
       required: true,
     },
-    recursionLevel: {
-      type: Number,
-      default: 0,
+    recursionStack: {
+      type: Array as PropType<string[]>,
+      default: () => [],
     },
     field: {
       type: Object as PropType<FieldsListItem>,

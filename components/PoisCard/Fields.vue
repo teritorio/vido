@@ -4,7 +4,7 @@
       <Field
         :key="field.field"
         :context="context"
-        :recursion-level="1"
+        :recursion-stack="[field.field]"
         :field="field"
         :properties="properties"
         :details="details"
