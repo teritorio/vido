@@ -1,5 +1,5 @@
 <template>
-  <h1>
+  <div>
     <a
       :href="mainUrl"
       rel="noopener noreferrer"
@@ -13,7 +13,7 @@
         :alt="$t('headerMenu.logo')"
       />
     </a>
-  </h1>
+  </div>
 </template>
 
 <script lang="ts">

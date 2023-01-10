@@ -53,8 +53,8 @@
       :class="`field_header_level_${recursionLevel}`"
       >{{ fieldTranslateK(field.field) }}</FieldsHeader
     >
-    <span :class="`field_content_level_${recursionLevel}`">
-      <span v-if="field.field == 'description'">
+    <div :class="`inline field_content_level_${recursionLevel}`">
+      <div v-if="field.field == 'description'" class="inline">
         <template
           v-if="Boolean(details) && properties.description.length > textLimit"
         >
@@ -70,7 +70,7 @@
           </a>
         </template>
         <div v-else class="prose" v-html="properties.description" />
-      </span>
+      </div>
 
       <Phone
         v-for="phone in properties[field.field]"
@@ -149,7 +149,7 @@
       <span v-else>
         {{ propTranslateV(field.field) }}
       </span>
-    </span>
+    </div>
   </div>
 </template>
 

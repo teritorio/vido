@@ -24,6 +24,7 @@
         v-if="poi.properties.image && poi.properties.image.length > 0"
         class="object-cover h-44 w-full md:w-48 md:h-full z-10"
         :src="poi.properties.image[0]"
+        :alt="$t('poiCard.thumbnail')"
         media-size="30rem"
       />
     </div>
@@ -33,6 +34,7 @@
     >
       <div class="flex items-center justify-between shrink-0">
         <h2
+          v-if="name"
           class="block text-xl font-semibold leading-tight"
           :style="'color:' + colorLine"
         >

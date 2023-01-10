@@ -98,6 +98,8 @@ export default {
     activateExplore: 'Explore nearby points of interest',
     zoom: 'Zoom',
     backToMap: 'Volver al mapa',
+    thumbnail: 'Thumbnail',
+    image: 'Illustration',
   },
   poiDetails: {
     headerDescription: 'Description',

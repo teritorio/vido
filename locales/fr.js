@@ -99,6 +99,8 @@ export default {
     activateExplore: "Explorer les points d'intérêts aux alentours",
     zoom: 'Zoomer',
     backToMap: 'Aller à la carte',
+    thumbnail: 'Miniature',
+    image: 'Illustration',
   },
   poiDetails: {
     headerDescription: 'Descriptif',

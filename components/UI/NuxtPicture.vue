@@ -11,6 +11,7 @@
       :src="srcDefault"
       :srcset="nSources[0].srcset"
       :sizes="mediaSize"
+      :alt="alt"
     />
   </picture>
 </template>
@@ -32,6 +33,10 @@ export default defineComponent({
     legacyFormat: { type: String, default: null },
     imgAttrs: { type: Object, default: null },
     mediaSize: {
+      type: String,
+      required: true,
+    },
+    alt: {
       type: String,
       required: true,
     },
@@ -116,3 +121,9 @@ export default defineComponent({
   },
 })
 </script>
+
+<style scoped>
+img:-moz-loading {
+  visibility: hidden;
+}
+</style>

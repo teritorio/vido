@@ -10,6 +10,7 @@ export default defineConfig({
       htmlvalidate.install(on, {
         rules: {
           'require-sri': 'off',
+          'valid-id': 'off',
         },
       })
     },

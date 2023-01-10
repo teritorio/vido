@@ -6,6 +6,7 @@
     <div>
       <div class="flex items-center shrink-0 mb-2">
         <h3
+          v-if="name"
           class="block text-xl font-semibold leading-tight flex items-center gap-2"
           :style="'color:' + colorLine"
         >
@@ -41,6 +42,7 @@
       v-if="poi.properties.image && poi.properties.image.length > 0"
       class="w-full h-32 md:w-32 md:h-32 z-10"
       :src="poi.properties.image[0]"
+      :alt="$t('poiCard.thumbnail')"
       media-size="8rem"
     />
   </div>

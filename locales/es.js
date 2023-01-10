@@ -98,6 +98,8 @@ export default {
     activateExplore: 'Explora los puntos de interés cercanos',
     zoom: 'Acercarse',
     backToMap: 'Go to map',
+    thumbnail: 'Miniatura',
+    image: 'Ilustración',
   },
   poiDetails: {
     headerDescription: 'Descripción',
