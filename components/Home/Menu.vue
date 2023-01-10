@@ -53,6 +53,7 @@
           class="flex items-center justify-center w-10 h-10 text-2xl font-bold transition-all rounded-full outline-none cursor-pointer focus:outline-none hover:bg-zinc-100 focus:bg-zinc-100"
           @click="onGoBackClick"
         >
+          <span class="sr-only">{{ $tc('headerMenu.back') }}</span>
           <font-awesome-icon
             icon="arrow-left"
             class="text-zinc-800"

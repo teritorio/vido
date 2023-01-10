@@ -5,6 +5,7 @@
     >
       <p class="text-lg">{{ $tc('favorites.notebook.title') }}</p>
       <button
+        type="button"
         class="flex items-center border-solid border-zinc-300 border-2 bg-white focus:outline-none focus-visible:bg-zinc-100 hover:bg-zinc-100 py-2 px-4 rounded-full"
         @click="$emit('on-close')"
       >

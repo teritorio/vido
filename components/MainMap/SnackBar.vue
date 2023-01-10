@@ -7,6 +7,7 @@
       >
         <p class="pr-10 self-center">{{ text }}</p>
         <button
+          type="button"
           class="font-medium text-zinc-800 bg-white rounded-full shadow-md outline-none px-5 sm:w-auto h-11 focus:outline-none hover:bg-zinc-100 focus-visible:bg-zinc-100"
           @click="callback"
         >

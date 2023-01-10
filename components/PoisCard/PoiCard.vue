@@ -13,7 +13,7 @@
         v-if="icon"
         :picto="icon"
         :use-native-alignment="false"
-        class="text-8xl flex align-middle absolute z-0"
+        class="text-8xl align-middle absolute z-0"
         :color-text="
           poi.properties.image && poi.properties.image.length > 0
             ? '#AAA'
@@ -87,7 +87,7 @@
       </div>
 
       <div
-        class="flex items-center space-x-2 justify-evenly shrink-0 bottom-0 pt-2 shrink-0"
+        class="flex items-center space-x-2 justify-evenly shrink-0 bottom-0 pt-2"
       >
         <a
           v-if="$screen.smallScreen && coordinatesHref"
@@ -101,6 +101,7 @@
         </a>
 
         <button
+          type="button"
           class="flex flex-1 flex-col items-center space-y-2 rounded-lg p-2 h-full hover:bg-zinc-100"
           :title="$tc('poiCard.zoom')"
           @click.stop="onZoomClick"
@@ -111,6 +112,7 @@
 
         <button
           v-if="explorerModeEnabled"
+          type="button"
           :class="[
             'flex flex-1 flex-col items-center space-y-2 rounded-lg p-2 h-full',
             isModeExplorer && 'bg-blue-600 text-white hover:bg-blue-500',
@@ -133,6 +135,7 @@
 
         <button
           v-if="favoritesModeEnabled && id"
+          type="button"
           class="flex flex-col items-center flex-1 h-full p-2 space-y-2 rounded-lg hover:bg-zinc-100"
           :title="
             isModeFavorites

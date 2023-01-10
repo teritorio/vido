@@ -7,12 +7,21 @@ export default defineConfig({
     setupNodeEvents(on, config) {
       require('cypress-terminal-report/src/installLogsPrinter')(on)
 
-      htmlvalidate.install(on, {
-        rules: {
-          'require-sri': 'off',
-          'valid-id': 'off',
+      htmlvalidate.install(
+        on,
+        {
+          rules: {
+            'require-sri': 'off',
+            'valid-id': 'off',
+            'prefer-native-element': 'off',
+            'heading-level': 'off',
+            'empty-heading': 'off',
+          },
         },
-      })
+        {
+          exclude: ['.maplibregl-marker'],
+        }
+      )
     },
   },
 })

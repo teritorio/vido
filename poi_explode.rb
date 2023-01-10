@@ -57,9 +57,10 @@ categories.each{ |id, pois|
     type: 'FeatureCollection',
     features: pois
   }
-  File.write(
-    # "#{path.dirname}/pois.geojson?idmenu=#{id}&geometry_as=point&short_description=true",
-    "#{path.dirname}/pois/category/#{id}.geojson",
-    JSON.pretty_generate(json, indent: '    ')
-  )
+  %w[geojson json].each{ |ext|
+    File.write(
+      "#{path.dirname}/pois/category/#{id}.#{ext}",
+      JSON.pretty_generate(json, indent: '    ')
+    )
+  }
 }

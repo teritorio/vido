@@ -6,7 +6,6 @@
     <div>
       <div class="flex items-center shrink-0 mb-2">
         <h3
-          v-if="name"
           class="block text-xl font-semibold leading-tight flex items-center gap-2"
           :style="'color:' + colorLine"
         >
