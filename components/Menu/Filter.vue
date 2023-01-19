@@ -1,5 +1,5 @@
 <template>
-  <div class="basis-max shrink flex flex-col gap-4 overflow-y-auto flex-1">
+  <div class="basis-max shrink flex flex-col gap-4 flex-1">
     <template v-for="(filter, filterIndex) in filtersSafeCopy">
       <div v-if="filter.type == 'boolean'" :key="filter.property">
         <label :key="filter.def.property" class="block mb-1 text-zinc-800">
@@ -31,6 +31,8 @@
           "
           :value="filter.filterValues"
           @input="(val) => onSelectionFilterChange(filterIndex, val)"
+          @click="onClickFilter(true)"
+          @blur="onClickFilter(false)"
         />
       </div>
       <div
@@ -118,6 +120,11 @@ export default Vue.extend({
 
     onGoBackClick() {
       this.$emit('go-back-click')
+    },
+
+    onClickFilter(val: boolean) {
+      console.log('value', val)
+      this.$emit('activate-filter', val)
     },
 
     onBooleanFilterChange(filterIndex: number, value: boolean) {
