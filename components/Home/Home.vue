@@ -1,7 +1,7 @@
 <template>
   <div class="fixed w-full h-full overflow-hidden flex flex-col">
     <header
-      class="hidden md:flex relative md:fixed top-0 bottom-0 z-10 flex flex-row w-full md:h-full space-x-4 pointer-events-none md:w-auto md:p-2"
+      class="hidden md:flex relative md:fixed top-0 bottom-0 z-10 flex flex-row w-full md:h-full space-x-4 md:w-auto md:p-2"
     >
       <div
         class="flex flex-col justify-between w-full w-auto max-w-md space-y-4 sm:pb-10"
@@ -69,7 +69,7 @@
     </header>
 
     <header
-      class="flex md:hidden relative fidex top-0 bottom-0 z-10 flex-row w-full space-x-4 pointer-events-none"
+      class="flex md:hidden relative fidex top-0 bottom-0 z-10 flex-row w-full space-x-4"
     >
       <div :class="['w-full', isBottomMenuOpened && 'hidden']">
         <aside
@@ -171,7 +171,7 @@
       @discard="showFavoritesOverlay = false"
     />
     <div
-      class="hidden fixed inset-x-0 bottom-0 md:flex overflow-y-auto pointer-events-none h-auto md:left-8 md:right-16 md:bottom-5"
+      class="hidden fixed inset-x-0 bottom-0 md:flex overflow-y-auto h-auto md:left-8 md:right-16 md:bottom-5"
     >
       <div class="w-full max-w-md" />
       <div class="grow-[1]" />
