@@ -123,7 +123,6 @@ export default Vue.extend({
     },
 
     onClickFilter(val: boolean) {
-      console.log('value', val)
       this.$emit('activate-filter', val)
     },
 
