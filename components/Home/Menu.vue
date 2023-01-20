@@ -1,5 +1,9 @@
 <template>
-  <component :is="menuBlock" v-if="categoryIdFilter">
+  <component
+    :is="menuBlock"
+    v-if="categoryIdFilter"
+    :is-filter-active="isFilterActive"
+  >
     <div class="w-full flex justify-between pb-4">
       <button
         type="button"
@@ -14,6 +18,7 @@
       key="Filter"
       :category-id="categoryIdFilter"
       :filters-values="categoryIdFilter ? filters[categoryIdFilter] : []"
+      @activate-filter="activateFilter"
       @go-back-click="onBackToCategoryClick"
     />
   </component>
@@ -143,6 +148,14 @@ export default Vue.extend({
     isOnSearch: {
       type: Boolean,
       default: false,
+    },
+    isFilterActive: {
+      type: Boolean,
+      default: false,
+    },
+    activateFilter: {
+      type: Function,
+      default: undefined,
     },
   },
 

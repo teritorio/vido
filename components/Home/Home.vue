@@ -11,7 +11,7 @@
           name="headers"
           appear
           mode="out-in"
-          class="overflow-y-auto"
+          :class="[!isFilterActive && 'overflow-y-auto']"
         >
           <MenuBlock
             v-if="isModeExplorerOrFavorites"
@@ -30,6 +30,8 @@
             :categories-actives-count-by-parent="categoriesActivesCountByParent"
             :is-category-selected="isCategorySelected"
             :is-on-search="isOnSearch"
+            :is-filter-active="isFilterActive"
+            :activate-filter="onActivateFilter"
             @category-click="toggleCategorySelection"
             @select-all-categories="selectCategory"
             @unselect-all-categories="unselectCategory"
@@ -302,6 +304,7 @@ export default (
     allowRegionBackZoom: boolean
     favorites: ApiPoi[] | null
     isOnSearch: boolean
+    isFilterActive: boolean
   } {
     return {
       isMenuItemOpen: false,
@@ -312,6 +315,7 @@ export default (
       allowRegionBackZoom: false,
       favorites: null,
       isOnSearch: false,
+      isFilterActive: false,
     }
   },
   head(): MetaInfo {
@@ -665,6 +669,10 @@ export default (
 
     onShowPoi(show: boolean) {
       this.showPoi = show
+    },
+
+    onActivateFilter(val: boolean) {
+      this.isFilterActive = val
     },
 
     exploreAroundSelectedPoi(feature?: ApiPoi) {
