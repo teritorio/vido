@@ -194,7 +194,11 @@ export default Vue.extend({
       )
     },
   },
-  watch: {},
+  watch: {
+    currentMenuItems() {
+      this.$emit('scroll-top')
+    },
+  },
 
   created() {},
 

@@ -191,7 +191,10 @@
     </div>
 
     <BottomMenu class="md:hidden" :is-open="isBottomMenuOpened">
-      <div class="flex-1 h-full overflow-y-auto h-screen-3/5 divide-y">
+      <div
+        ref="bottomMenu"
+        class="flex-1 h-full overflow-y-auto h-screen-3/5 divide-y"
+      >
         <Menu
           v-if="!showPoi"
           menu-block="MenuBlockBottom"
@@ -202,6 +205,7 @@
           @category-click="toggleCategorySelection"
           @select-all-categories="selectCategory"
           @unselect-all-categories="unselectCategory"
+          @scroll-top="scrollTop"
         />
         <PoiCard
           v-else-if="selectedFeature && showPoi"
@@ -257,6 +261,7 @@ export default (
     Vue & {
       $refs: {
         mapFeatures: InstanceType<typeof MapFeatures>
+        bottomMenu: HTMLDivElement
       }
     }
   >
@@ -723,6 +728,10 @@ export default (
 
     goToSelectedFeature() {
       this.$refs.mapFeatures?.goToSelectedFeature()
+    },
+
+    scrollTop() {
+      this.$refs.bottomMenu.scrollTop = 0
     },
 
     handleFavorites() {
