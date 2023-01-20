@@ -1,30 +1,7 @@
 <template>
   <TModal ref="modal" :header="title" :hide-close-button="true">
     <div class="flex flex-col">
-      <div class="flex items-center mb-4">
-        <font-awesome-icon
-          ref="menu_icon"
-          icon="link"
-          class="text-zinc-500 mr-4"
-        />
-        <p class="text-zinc-500 truncate">
-          {{ linkShare }}
-        </p>
-        <button
-          v-if="hasClipboard"
-          type="button"
-          class="focus:outline-none focus-visible:bg-zinc-100 hover:bg-zinc-100 py-2 px-4 rounded-full ml-2"
-          @click="copyLink"
-        >
-          <font-awesome-icon
-            v-if="isCopied"
-            ref="menu_icon"
-            icon="clipboard-check"
-            class="text-emerald-500"
-          />
-          {{ !isCopied ? $tc('shareLink.copy') : '' }}
-        </button>
-      </div>
+      <LinkCopier :link="linkShare" />
       <div v-if="qrCodeUrl" class="flex items-center mb-4 justify-center">
         <img :src="qrCodeUrl()" class="w-1/2" :alt="$tc('shareLink.qrcode')" />
       </div>
@@ -43,6 +20,7 @@
 import Vue, { VueConstructor } from 'vue'
 import { TModal } from 'vue-tailwind/dist/components'
 
+import LinkCopier from '~/components/UI/LinkCopier.vue'
 import { OriginEnum } from '~/utils/types'
 import { urlAddTrackOrigin } from '~/utils/url'
 
@@ -56,6 +34,7 @@ export default (
   >
 ).extend({
   components: {
+    LinkCopier,
     TModal,
   },
 
@@ -68,13 +47,9 @@ export default (
 
   data(): {
     link: string | null
-    hasClipboard: boolean
-    isCopied: boolean
   } {
     return {
       link: null,
-      hasClipboard: true,
-      isCopied: false,
     }
   },
 
@@ -89,10 +64,6 @@ export default (
     },
   },
 
-  mounted() {
-    this.hasClipboard = Boolean(navigator.clipboard)
-  },
-
   methods: {
     open(link: string) {
       this.$tracking({ type: 'favorites_event', event: 'open_share' })
@@ -101,24 +72,6 @@ export default (
 
       const scrollWidth = window.innerWidth - document.body.clientWidth
       document.body.style.marginRight = `${scrollWidth}px`
-    },
-
-    copyLink() {
-      this.$tracking({ type: 'favorites_event', event: 'copy_link' })
-      if (this.hasClipboard && this.linkShare) {
-        navigator.clipboard.writeText(this.linkShare).then(
-          () => {
-            this.isCopied = true
-            setTimeout(() => {
-              this.isCopied = false
-            }, 5000)
-          },
-          (err) => {
-            // eslint-disable-next-line no-console
-            console.error('Vido error: ', err)
-          }
-        )
-      }
     },
 
     close() {
