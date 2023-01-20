@@ -141,6 +141,14 @@ export default (
       type: Boolean,
       required: true,
     },
+    showPoi: {
+      type: Boolean,
+      required: true,
+    },
+    openMenu: {
+      type: Function,
+      required: true,
+    },
   },
 
   data(): {
@@ -218,11 +226,9 @@ export default (
   },
 
   beforeMount() {
-    const bg =
+    this.selectedBackground =
       (getHashPart(this.$router, 'bg') as keyof typeof MapStyleEnum) ||
       DEFAULT_MAP_STYLE
-
-    this.selectedBackground = bg
   },
 
   methods: {
@@ -287,7 +293,7 @@ export default (
           true
         )
         this.showSelectedFeature()
-      } else {
+      } else if (!this.showPoi) {
         this.updateSelectedFeature(null)
       }
     },
@@ -406,6 +412,9 @@ export default (
     showSelectedFeature() {
       // Clean-up previous marker
       if (this.selectedFeatureMarker) {
+        this.selectedFeatureMarker
+          .getElement()
+          .removeEventListener('click', () => this.openMenu(true))
         this.selectedFeatureMarker.remove()
         this.selectedFeatureMarker = null
       }
@@ -450,6 +459,10 @@ export default (
           })
             .setLngLat(lngLat)
             .addTo(this.map)
+
+          this.selectedFeatureMarker
+            .getElement()
+            .addEventListener('click', () => this.openMenu(true))
         }
       } else {
         filterRouteByCategories(this.map, this.selectedCategoriesIds)
