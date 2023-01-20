@@ -218,11 +218,9 @@ export default (
   },
 
   beforeMount() {
-    const bg =
+    this.selectedBackground =
       (getHashPart(this.$router, 'bg') as keyof typeof MapStyleEnum) ||
       DEFAULT_MAP_STYLE
-
-    this.selectedBackground = bg
   },
 
   methods: {

@@ -368,11 +368,7 @@ export default mixins(HomeMixin).extend({
 
   watch: {
     selectedFeature() {
-      if (!this.selectedFeature) {
-        this.showPoi = false
-      } else {
-        this.showPoi = true
-      }
+      this.showPoi = !!this.selectedFeature
       this.routerPushUrl()
     },
 
@@ -501,11 +497,7 @@ export default mixins(HomeMixin).extend({
       if (!this.isModeFavorites) {
         if (this.isBottomMenuOpened) {
           if (this.selectedFeature) {
-            if (!this.isModeExplorer) {
-              this.setSelectedFeature(null)
-            } else {
-              this.setPoiVisibility(false)
-            }
+            this.setPoiVisibility(false)
           }
           this.isMenuItemOpen = false
         } else if (!this.isModeExplorer) {
@@ -514,7 +506,7 @@ export default mixins(HomeMixin).extend({
           this.setPoiVisibility(true)
         }
       } else if (this.selectedFeature) {
-        if (!this.isModeExplorer) {
+        if (!this.isModeExplorer && !this.showPoi) {
           this.setSelectedFeature(null)
         } else {
           this.setPoiVisibility(false)
