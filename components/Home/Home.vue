@@ -288,8 +288,8 @@ export default (
     Vue & {
       $refs: {
         mapFeatures: InstanceType<typeof MapFeatures>
-        detailModal: InstanceType<typeof TModal>
         bottomMenu: HTMLDivElement
+        detailModal: InstanceType<typeof TModal>
       }
     }
   >
