@@ -1,5 +1,24 @@
 <template>
   <div class="fixed w-full h-full overflow-hidden flex flex-col">
+    <t-full-modal ref="detailModal" :hide-close-button="true">
+      <IconButton
+        :aria-label="$tc('shareLink.close')"
+        class="w-11 h-11 absolute top-1 left-1"
+        @click="showPoiWebsite(null)"
+      >
+        <font-awesome-icon icon="times" class="text-zinc-500" size="md" />
+      </IconButton>
+      <div class="flex flex-col items-center h-full">
+        <LinkCopier :link="websiteDetail" />
+        <iframe
+          :src="websiteDetail"
+          width="100%"
+          height="100%"
+          style="flex-grow: 1"
+        >
+        </iframe>
+      </div>
+    </t-full-modal>
     <header
       class="hidden md:flex relative md:fixed top-0 bottom-0 z-10 flex flex-row w-full md:h-full space-x-4 md:w-auto md:p-2"
     >
@@ -186,6 +205,7 @@
         @explore-click="exploreAroundSelectedPoi"
         @favorite-click="toggleFavorite($event)"
         @zoom-click="goToSelectedFeature"
+        @detail-click="showPoiWebsite"
       />
       <div class="grow-[3]" />
     </div>
@@ -226,6 +246,7 @@ import copy from 'fast-copy'
 import { FitBoundsOptions, LngLatBoundsLike } from 'maplibre-gl'
 import Vue, { PropType, VueConstructor } from 'vue'
 import { MetaInfo } from 'vue-meta'
+import { TModal } from 'vue-tailwind/dist/components'
 import { mapGetters, mapActions } from 'vuex'
 
 import ExplorerOrFavoritesBack from '~/components/Home/ExplorerOrFavoritesBack.vue'
@@ -240,6 +261,8 @@ import NavMenu from '~/components/MainMap/NavMenu.vue'
 import PoiCard from '~/components/PoisCard/PoiCard.vue'
 import Search from '~/components/Search/Search.vue'
 import CookiesConsent from '~/components/UI/CookiesConsent.vue'
+import IconButton from '~/components/UI/IconButton.vue'
+import LinkCopier from '~/components/UI/LinkCopier.vue'
 import Logo from '~/components/UI/Logo.vue'
 import { ContentEntry } from '~/lib/apiContent'
 import { ApiMenuCategory, MenuItem } from '~/lib/apiMenu'
@@ -257,11 +280,13 @@ export default (
     Vue & {
       $refs: {
         mapFeatures: InstanceType<typeof MapFeatures>
+        detailModal: InstanceType<typeof TModal>
       }
     }
   >
 ).extend({
   components: {
+    LinkCopier,
     Logo,
     FavoriteMenu,
     FavoritesOverlay,
@@ -271,6 +296,7 @@ export default (
     SelectedCategories,
     Menu,
     MenuBlock,
+    IconButton,
     BottomMenu,
     PoiCard,
     CookiesConsent,
@@ -304,6 +330,7 @@ export default (
     allowRegionBackZoom: boolean
     favorites: ApiPoi[] | null
     isOnSearch: boolean
+    websiteDetail: string | null
     isFilterActive: boolean
   } {
     return {
@@ -315,6 +342,7 @@ export default (
       allowRegionBackZoom: false,
       favorites: null,
       isOnSearch: false,
+      websiteDetail: null,
       isFilterActive: false,
     }
   },
@@ -701,6 +729,16 @@ export default (
       } catch (e) {
         // eslint-disable-next-line no-console
         console.error('Vido error:', e.message)
+      }
+    },
+
+    showPoiWebsite(website: string | null) {
+      this.websiteDetail = website
+
+      if (website) {
+        this.$refs.detailModal?.show()
+      } else {
+        this.$refs.detailModal?.hide()
       }
     },
 
