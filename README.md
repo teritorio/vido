@@ -6,6 +6,9 @@
 # install dependencies
 yarn install
 
+# Generate fixtures
+yarn build-fixture
+
 # Generate configuration from `vidos.config.ts`
 yarn build-config
 
