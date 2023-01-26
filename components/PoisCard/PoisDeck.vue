@@ -13,6 +13,9 @@
       @favorite-click="$emit('favorite-click', $event)"
       @zoom-click="$emit('zoom-click', $event)"
     />
+    <div v-if="!pois" class="no-result">
+      {{ $tc('headerMenu.noResult') }}
+    </div>
   </div>
 </template>
 

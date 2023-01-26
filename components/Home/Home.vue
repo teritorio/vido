@@ -143,7 +143,6 @@
         </div>
       </div>
     </div>
-
     <FavoritesOverlay
       v-if="showFavoritesOverlay"
       @discard="showFavoritesOverlay = false"

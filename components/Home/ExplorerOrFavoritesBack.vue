@@ -1,9 +1,11 @@
 <template>
-  <div class="flex items-center ml-2">
+  <div
+    class="flex items-center ml-2 hover:cursor-pointer"
+    @click="goToMenuItems"
+  >
     <button
       type="button"
       class="flex shrink-0 items-center justify-center w-10 h-10 text-2xl font-bold transition-all rounded-full outline-none cursor-pointer focus:outline-none hover:bg-blue-700 focus:bg-blue-700"
-      @click="goToMenuItems"
     >
       <font-awesome-icon icon="arrow-left" size="xs" />
     </button>

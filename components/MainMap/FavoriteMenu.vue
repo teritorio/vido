@@ -1,154 +1,48 @@
 <template>
   <section>
-    <TDropdown
-      :text="$tc('favorites.menu_label')"
-      :classes="{
-        dropdown:
-          'origin-top-right absolute right-14 md:rigth-16 rounded shadow bg-white mt-1',
-      }"
-    >
-      <template
-        #trigger="{
-          mousedownHandler,
-          focusHandler,
-          blurHandler,
-          keydownHandler,
-          isShown,
-        }"
+    <div class="flex right-10">
+      <button
+        ref="menu"
+        type="button"
+        :class="[
+          'relative space-x-1 text-sm font-medium shadow-md outline-none md:px-5 w-11 md:w-auto h-11 focus:outline-none shrink-0 rounded-l-full',
+          isModeFavorites &&
+            'bg-blue-500 hover:bg-blue-400 focus-visible:bg-blue-400 text-white',
+          !isModeFavorites && 'bg-white',
+        ]"
+        @click="$emit('toggle-favorites')"
       >
-        <div class="flex right-10">
-          <button
-            ref="menu"
-            type="button"
-            :class="[
-              'relative space-x-1 text-sm font-medium shadow-md outline-none md:px-5 w-11 md:w-auto h-11 focus:outline-none shrink-0 border-r border-zinc-400 rounded-l-full',
-              isModeFavorites &&
-                'bg-blue-500 hover:bg-blue-400 focus-visible:bg-blue-400 text-white',
-              !isModeFavorites &&
-                'bg-white hover:bg-zinc-100 focus-visible:bg-zinc-100 text-zinc-800',
-            ]"
-            @click="$emit('toggle-favorites')"
-          >
-            <FavoriteIcon :is-active="isModeFavorites" />
-            <span class="hidden md:inline favoriteTitle">{{
-              $tc('favorites.title')
-            }}</span>
-            <div
-              v-if="hasFavorites"
-              class="flex items-center justify-center text-white text-center rounded-full absolute top-0 right-0 w-5 h-5 border-2 border-white bg-red-600"
-            >
-              <p class="text-xs">{{ favoritesIds.length }}</p>
-            </div>
-          </button>
-          <button
-            type="button"
-            :class="[
-              'flex h-11 items-center justify-center shrink-0 px-3 py-2 bg-white border-l border-zinc-00 rounded-r-full hover:bg-zinc-100 shadow-md focus:outline-none',
-              !hasFavorites && 'bg-zinc-100 cursor-not-allowed',
-            ]"
-            :disabled="!hasFavorites"
-            @mousedown="mousedownHandler"
-            @focus="focusHandler"
-            @blur="blurHandler"
-            @keydown="keydownHandler"
-          >
-            <span class="sr-only">{{ $tc('favorites.list') }}</span>
-            <font-awesome-icon
-              ref="menu_icon"
-              :icon="isShown ? 'chevron-up' : 'chevron-down'"
-              class="text-zinc-500"
-              size="sm"
-            />
-          </button>
+        <FavoriteIcon :is-active="isModeFavorites" />
+        <span class="hidden md:inline favoriteTitle">
+          {{ $tc('favorites.title') }}
+        </span>
+        <div
+          v-if="hasFavorites"
+          class="flex items-center justify-center text-white text-center rounded-full absolute top-1 right-0 w-5 h-5 border-2 border-white bg-red-600"
+        >
+          <p class="text-xs">{{ favoritesIds.length }}</p>
         </div>
-      </template>
-
-      <div
-        slot-scope="{ hide, blurHandler }"
-        class="py-1 rounded-md shadow-xs flex flex-col min-w-max"
+      </button>
+      <button
+        ref="favlist"
+        :disabled="!hasFavorites"
+        type="button"
+        :class="[
+          'flex h-11 items-center justify-center shrink-0 px-3 py-2 bg-white border-l border-zinc-00 rounded-r-full hover:bg-zinc-100 shadow-md focus:outline-none bg-zinc-100',
+          !hasFavorites && ' cursor-not-allowed',
+          !isModeFavorites && 'focus-visible:bg-zinc-100 text-zinc-800',
+        ]"
+        @click="openNotebookModal"
       >
-        <button
-          type="button"
-          class="block w-full px-4 py-2 text-sm leading-5 text-left text-zinc-700 transition duration-150 ease-in-out hover:bg-zinc-100 focus:outline-none focus:bg-zinc-100"
-          role="menuitem"
-          @blur="blurHandler"
-          @click="setShareLink()"
-        >
-          <font-awesome-icon
-            ref="menu_icon"
-            icon="share-alt"
-            class="text-zinc-500 mr-2"
-            size="sm"
-          />
-          {{ $tc('favorites.menu_share') }}
-        </button>
-        <button
-          type="button"
-          class="block w-full px-4 py-2 text-sm leading-5 text-left text-zinc-700 transition duration-150 ease-in-out hover:bg-zinc-100 focus:outline-none focus:bg-zinc-100"
-          role="menuitem"
-          @blur="blurHandler"
-          @click="openNotebookModal"
-        >
-          <font-awesome-icon
-            ref="menu_icon"
-            icon="book-open"
-            class="text-zinc-500 mr-2"
-            size="sm"
-          />
-          {{ $tc('favorites.menu_notebook') }}
-        </button>
-        <a
-          :href="pdfLink"
-          target="_blank"
-          class="block w-full px-4 py-2 text-sm leading-5 text-left text-zinc-700 transition duration-150 ease-in-out hover:bg-zinc-100 focus:outline-none focus:bg-zinc-100"
-          role="menuitem"
-          @blur="blurHandler"
-          @click="exportLink('export_pdf')"
-        >
-          <font-awesome-icon
-            ref="menu_icon"
-            icon="file-download"
-            class="text-zinc-500 mr-2"
-            size="sm"
-          />
-          {{ $tc('favorites.export_pdf') }}
-        </a>
-        <a
-          :href="csvLink"
-          target="_blank"
-          class="block w-full px-4 py-2 text-sm leading-5 text-left text-zinc-700 transition duration-150 ease-in-out hover:bg-zinc-100 focus:outline-none focus:bg-zinc-100"
-          role="menuitem"
-          @blur="blurHandler"
-          @click="exportLink('export_csv')"
-        >
-          <font-awesome-icon
-            ref="menu_icon"
-            icon="file-download"
-            class="text-zinc-500 mr-2"
-            size="sm"
-          />
-          {{ $tc('favorites.export_csv') }}
-        </a>
-        <button
-          type="button"
-          class="block w-full px-4 py-2 text-sm leading-5 text-left text-zinc-700 transition duration-150 ease-in-out hover:bg-zinc-100 focus:outline-none focus:bg-zinc-100"
-          role="menuitem"
-          @blur="blurHandler"
-          @click="
-            removeFavorites()
-            hide()
-          "
-        >
-          <font-awesome-icon
-            ref="menu_icon"
-            icon="trash"
-            class="text-zinc-500 mr-2"
-            size="sm"
-          />
-          {{ $tc('favorites.menu_clear') }}
-        </button>
-      </div>
-    </TDropdown>
+        <span class="sr-only">{{ $tc('favorites.list') }}</span>
+        <font-awesome-icon
+          ref="menu_icon"
+          :icon="isShown ? 'bars' : 'bars'"
+          class="text-zinc-500"
+          size="sm"
+        />
+      </button>
+    </div>
 
     <ShareLinkModal ref="shareModal" :title="$tc('favorites.share_link')" />
 
@@ -160,10 +54,13 @@
       <FavoriteNoteBook
         :favs="favs"
         :explorer-mode-enabled="explorerModeEnabled"
+        :explore-around="exploreAroundSelectedPoi"
         @explore-click="explore"
         @favorite-click="handleFavorite"
-        @zoom-click="goTo"
+        @zoom-click="goToSelectedPoi"
         @on-close="closeNoteBook"
+        @on-go-to-selected-poi="goToSelectedPoi"
+        @on-set-share-link="setShareLink"
       />
     </t-modal-notebook>
   </section>
@@ -190,7 +87,6 @@ export default (
   >
 ).extend({
   components: {
-    TDropdown,
     ShareLinkModal,
     FavoriteNoteBook,
     FavoriteIcon,
@@ -231,20 +127,6 @@ export default (
       isModeFavorites: 'map/isModeFavorites',
       favoritesIds: 'favorite/favoritesIds',
     }),
-    pdfLink(): string {
-      return `${this.$vidoConfig().API_EXPORT}/${
-        this.$vidoConfig().API_PROJECT
-      }/${
-        this.$vidoConfig().API_THEME
-      }/pois/favorites.pdf?ids=${this.favoritesIds.join(',')}`
-    },
-    csvLink(): string {
-      return `${this.$vidoConfig().API_ENDPOINT}/${
-        this.$vidoConfig().API_PROJECT
-      }/${this.$vidoConfig().API_THEME}/pois.csv?ids=${this.favoritesIds.join(
-        ','
-      )}`
-    },
   },
   methods: {
     async fetchFavorites(ids: [string]) {
@@ -255,14 +137,7 @@ export default (
         ids
       ).then((pois) => (pois && pois.features) || [])
     },
-    removeFavorites() {
-      try {
-        this.$store.dispatch('favorite/setFavorites', [])
-      } catch (e) {
-        // eslint-disable-next-line no-console
-        console.error('Vido error:', e.message)
-      }
-    },
+
     setShareLink() {
       try {
         this.$refs.shareModal.open(
@@ -275,25 +150,6 @@ export default (
         console.error('Vido error:', e.message)
       }
     },
-    closeNoteBook() {
-      ;(this.$refs.notebookModal as Vue & { hide: () => void }).hide()
-    },
-    async getFavs() {
-      try {
-        this.favs = await this.fetchFavorites(this.favoritesIds)
-      } catch (e) {
-        // eslint-disable-next-line no-console
-        console.error('Vido error:', e.message)
-      }
-    },
-    explore(poi?: ApiPoi) {
-      this.closeNoteBook()
-      this.exploreAroundSelectedPoi(poi)
-    },
-    goTo(poi?: ApiPoi) {
-      this.closeNoteBook()
-      this.goToSelectedPoi(poi)
-    },
     handleFavorite(poi?: ApiPoi, isNotebook?: Boolean) {
       this.toggleFavorite(poi, isNotebook)
     },
@@ -305,11 +161,16 @@ export default (
 
       this.$refs.notebookModal?.show()
     },
-    exportLink(w: 'export_pdf' | 'export_csv') {
-      this.$tracking({
-        type: 'favorites_event',
-        event: w,
-      })
+    closeNoteBook() {
+      ;(this.$refs.notebookModal as Vue & { hide: () => void }).hide()
+    },
+    async getFavs() {
+      try {
+        this.favs = await this.fetchFavorites(this.favoritesIds)
+      } catch (e) {
+        // eslint-disable-next-line no-console
+        console.error('Vido error:', e.message)
+      }
     },
   },
 })
