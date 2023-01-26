@@ -24,7 +24,7 @@
       />
       <button
         type="button"
-        class="flex items-center justify-center text-white text-center rounded-full absolute -top-1 -right-1 w-5 h-5 border-2 border-white bg-red-600"
+        class="flex items-center justify-center text-white text-center rounded-full absolute -top-1 -right-1 w-5 h-5 border-2 border-white bg-red-600 hover:bg-red-800"
         :title="$tc('headerMenu.hideCategory')"
         @click="() => unselectCategory(menuItem.id)"
       >
@@ -32,6 +32,16 @@
         <font-awesome-icon icon="times" class="text-white" size="sm" />
       </button>
     </div>
+    <button
+      v-if="menuItems.length > 1"
+      type="button"
+      class="flex items-center justify-center text-white text-center rounded-full absolute -right-0 top-1 w-7 h-7 border-2 border-white bg-red-600 hover:bg-red-800"
+      :title="$tc('headerMenu.clearAllCategories')"
+      :aria-label="$tc('headerMenu.clearAllCategories')"
+      @click="() => clearAllCategories()"
+    >
+      <font-awesome-icon icon="times" class="text-white" size="md" />
+    </button>
   </div>
 </template>
 
@@ -63,6 +73,9 @@ export default Vue.extend({
   methods: {
     unselectCategory(categoryId: ApiMenuCategory['id']) {
       this.$emit('category-unselect', [categoryId])
+    },
+    clearAllCategories() {
+      this.$emit('category-clear')
     },
   },
 })

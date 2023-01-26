@@ -67,6 +67,7 @@ export default {
     cartocode: 'Cartocode',
     noResult: 'Aucun résultat',
     hideCategory: 'Masquer cette catégorie',
+    clearAllCategories: 'Retirer toutes les catégories',
     back: 'Retour',
     backToMenuFavorites: 'Afficher le menu',
     backToMenuExplorer: 'Rechercher par catégories',

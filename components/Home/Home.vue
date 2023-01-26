@@ -70,6 +70,7 @@
         :menu-items="selectedCategories"
         :is-category-selected="isCategorySelected"
         @category-unselect="unselectCategory"
+        @category-clear="clearAllCategories"
       />
     </div>
 
@@ -612,6 +613,10 @@ export default (
       this.selectedCategoriesIds = this.selectedCategoriesIds.filter(
         (categoryId) => !categoriesIds.includes(categoryId)
       )
+    },
+
+    clearAllCategories() {
+      this.selectedCategoriesIds = []
     },
 
     onSearchPoi(poiId: number) {
