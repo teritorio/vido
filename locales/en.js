@@ -137,6 +137,9 @@ export default {
     phone: {
       callNumber: 'Call this number',
     },
+    stars: {
+      label: 'Stars',
+    },
     route: {
       difficulty: 'Difficulty:',
       length: 'Distance:',

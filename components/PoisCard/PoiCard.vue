@@ -328,10 +328,6 @@ export default Vue.extend({
   @apply object-cover w-full h-full;
 }
 
-button {
-  @apply focus:outline-none;
-}
-
 .min-icon-height {
   min-height: 8rem;
 }
