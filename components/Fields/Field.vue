@@ -129,6 +129,11 @@
         :url="properties[field.field]"
       />
 
+      <Stars
+        v-else-if="field.field === 'stars'"
+        :stars="properties[field.field]"
+      />
+
       <a
         v-else-if="
           field.field == 'route:gpx_trace' || field.field == 'route:pdf'
@@ -172,6 +177,7 @@ import Phone from '~/components/Fields/Phone.vue'
 import RoutesField, {
   isRoutesFieldEmpty,
 } from '~/components/Fields/RoutesField.vue'
+import Stars from '~/components/Fields/Stars.vue'
 import ExternalLink from '~/components/UI/ExternalLink.vue'
 import FieldsHeader from '~/components/UI/FieldsHeader.vue'
 import { ApiPoiProperties, FieldsListItem } from '~/lib/apiPois'
@@ -206,6 +212,7 @@ export default Vue.extend({
     Phone,
     Facebook,
     ExternalLink,
+    Stars,
   },
 
   props: {

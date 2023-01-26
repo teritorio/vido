@@ -145,6 +145,9 @@ export default {
     phone: {
       callNumber: 'Llama a este número',
     },
+    stars: {
+      label: 'Estrellas',
+    },
     route: {
       difficulty: 'Dificultad:',
       length: 'Distancia:',
