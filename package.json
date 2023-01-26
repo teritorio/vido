@@ -2,6 +2,9 @@
   "name": "@teritorio/vido",
   "version": "1.19.2",
   "private": true,
+  "engines": {
+    "node": ">= 16.0.0"
+  },
   "scripts": {
     "build-config": "npx ts-node -O '{\"module\": \"commonjs\"}' bin/build-config.ts > vidos-config.json",
     "build-fixture": "ruby poi_explode.rb cypress/fixtures/teritorio/references/pois.geojson",

@@ -6,7 +6,7 @@
         class="w-11 h-11 absolute top-1 left-1"
         @click="showPoiWebsite(null)"
       >
-        <font-awesome-icon icon="times" class="text-zinc-500" size="md" />
+        <font-awesome-icon class="text-zinc-500" icon="times" />
       </IconButton>
       <div class="flex flex-col items-center h-full">
         <LinkCopier :link="websiteDetail" />
@@ -89,6 +89,7 @@
           :menu-items="selectedCategories"
           :is-category-selected="isCategorySelected"
           @category-unselect="unselectCategory"
+          @category-clear="clearAllCategories"
         />
       </div>
     </header>
@@ -255,7 +256,7 @@ import { FitBoundsOptions, LngLatBoundsLike } from 'maplibre-gl'
 import Vue, { PropType, VueConstructor } from 'vue'
 import { MetaInfo } from 'vue-meta'
 import { TModal } from 'vue-tailwind/dist/components'
-import { mapGetters, mapActions } from 'vuex'
+import { mapActions, mapGetters } from 'vuex'
 
 import ExplorerOrFavoritesBack from '~/components/Home/ExplorerOrFavoritesBack.vue'
 import Menu from '~/components/Home/Menu.vue'
@@ -274,10 +275,9 @@ import LinkCopier from '~/components/UI/LinkCopier.vue'
 import Logo from '~/components/UI/Logo.vue'
 import { ContentEntry } from '~/lib/apiContent'
 import { ApiMenuCategory, MenuItem } from '~/lib/apiMenu'
-import { getPoiById, ApiPoi, getPois } from '~/lib/apiPois'
+import { ApiPoi, getPoiById, getPois } from '~/lib/apiPois'
 import { ApiMenuItemSearchResult } from '~/lib/apiSearch'
 import { headerFromSettings, Settings } from '~/lib/apiSettings'
-import { getBBoxFeature } from '~/lib/bbox'
 import { Mode, OriginEnum } from '~/utils/types'
 import { FilterValue } from '~/utils/types-filters'
 import { getHashPart, setHashParts } from '~/utils/url'
@@ -641,6 +641,9 @@ export default (
       this.selectedCategoriesIds = this.selectedCategoriesIds.filter(
         (categoryId) => !categoriesIds.includes(categoryId)
       )
+    },
+    clearAllCategories() {
+      this.selectedCategoriesIds = []
     },
 
     onSearchPoi(poiId: number) {
