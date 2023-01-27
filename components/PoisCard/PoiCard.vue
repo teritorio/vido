@@ -43,6 +43,7 @@
 
         <a
           v-if="Boolean(websiteDetails)"
+          type="button"
           class="ml-6 md:ml-8 px-3 py-1.5 text-xs text-zinc-800 bg-zinc-100 hover:bg-zinc-200 focus:bg-zinc-200 transition transition-colors rounded-md"
           :href="websiteDetails"
           rel="noopener noreferrer"
