@@ -20,17 +20,20 @@
       </div>
     </t-full-modal>
     <header
-      class="hidden md:flex relative md:fixed top-0 bottom-0 z-10 flex flex-row w-full md:h-full space-x-4 md:w-auto md:p-2"
+      class="hidden md:flex relative md:fixed top-0 z-10 flex flex-row w-full h-auto space-x-4 md:w-auto md:p-2"
+      style="max-height: calc(100vh - 30px)"
     >
       <div
         class="flex flex-col justify-between w-full w-auto max-w-md space-y-4 sm:pb-10"
       >
         <transition-group
+          id="header-menu"
+          ref="headerMenu"
           tag="div"
           name="headers"
           appear
           mode="out-in"
-          :class="[!isFilterActive && 'overflow-y-auto']"
+          :class="['overflow-x-hidden', !isFilterActive && 'overflow-y-auto']"
         >
           <MenuBlock
             v-if="isModeExplorerOrFavorites"
@@ -54,6 +57,7 @@
             @category-click="toggleCategorySelection"
             @select-all-categories="selectCategory"
             @unselect-all-categories="unselectCategory"
+            @scroll-top="scrollTop"
           >
             <Search
               :menu-to-icon="menuItemsToIcons"
@@ -78,8 +82,8 @@
 
       <div
         v-if="!isModeExplorer && selectedCategories.length && !isModeFavorites"
-        class="py-2"
-        style="max-width: calc(100vw - 670px)"
+        class="p-4 absolute z-10"
+        :style="selectedFeaturesStyles"
       >
         <SelectedCategories
           :menu-items="selectedCategories"
@@ -337,6 +341,7 @@ export default (
     isOnSearch: boolean
     websiteDetail: string | null
     isFilterActive: boolean
+    selectedFeaturesStyles: string
   } {
     return {
       isMenuItemOpen: false,
@@ -349,6 +354,7 @@ export default (
       isOnSearch: false,
       websiteDetail: null,
       isFilterActive: false,
+      selectedFeaturesStyles: '',
     }
   },
   head(): MetaInfo {
@@ -525,6 +531,20 @@ export default (
   },
 
   mounted() {
+    const that = this
+    const resizeObserver = new ResizeObserver((el) => {
+      that.selectedFeaturesStyles = `
+        left: ${el[0].contentRect.width}px;
+        max-width: calc(100vw - 670px);
+      `
+    })
+
+    const header = document.getElementById('header-menu')
+
+    if (header) {
+      resizeObserver.observe(header)
+    }
+
     this.$tracking({
       type: 'page',
       title: this.$meta().refresh().metaInfo.title,
@@ -769,7 +789,13 @@ export default (
     },
 
     scrollTop() {
-      this.$refs.bottomMenu.scrollTop = 0
+      if (this.$refs.bottomMenu) {
+        this.$refs.bottomMenu.scrollTop = 0
+      }
+      const header = document.getElementById('header-menu')
+      if (header) {
+        header.scrollTop = 0
+      }
     },
 
     handleFavorites() {
