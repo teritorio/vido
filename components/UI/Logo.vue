@@ -1,5 +1,5 @@
 <template>
-  <h1>
+  <div>
     <a
       :href="mainUrl"
       rel="noopener noreferrer"
@@ -7,9 +7,13 @@
       :title="siteName"
       target="_blank"
     >
-      <img :src="logoUrl" :class="['w-auto h-auto', imageClass]" />
+      <img
+        :src="logoUrl"
+        :class="['w-auto h-auto', imageClass]"
+        :alt="$t('headerMenu.logo')"
+      />
     </a>
-  </h1>
+  </div>
 </template>
 
 <script lang="ts">

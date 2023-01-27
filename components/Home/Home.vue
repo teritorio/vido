@@ -1,16 +1,20 @@
 <template>
   <div class="fixed w-full h-full overflow-hidden flex flex-col">
     <header
-      class="hidden md:flex relative md:fixed top-0 bottom-0 z-10 flex flex-row w-full md:h-full space-x-4 pointer-events-none md:w-auto md:p-2"
+      class="hidden md:flex relative md:fixed top-0 z-10 flex flex-row w-full h-auto space-x-4 md:w-auto md:p-2"
+      style="max-height: calc(100vh - 30px)"
     >
       <div
-        class="flex flex-col justify-between w-full w-auto max-w-md space-y-4 sm:pb-10"
+        class="flex flex-col justify-between w-full w-auto max-w-md space-y-4"
       >
         <transition-group
+          id="header-menu"
+          ref="headerMenu"
+          tag="div"
           name="headers"
           appear
           mode="out-in"
-          class="overflow-y-auto"
+          :class="['overflow-x-hidden', !isFilterActive && 'overflow-y-auto']"
         >
           <MenuBlock
             v-if="isModeExplorerOrFavorites"
@@ -29,9 +33,12 @@
             :categories-actives-count-by-parent="categoriesActivesCountByParent"
             :is-category-selected="isCategorySelected"
             :is-on-search="isOnSearch"
+            :is-filter-active="isFilterActive"
+            :activate-filter="onActivateFilter"
             @category-click="toggleCategorySelection"
             @select-all-categories="selectCategory"
             @unselect-all-categories="unselectCategory"
+            @scroll-top="scrollTop"
           >
             <Search
               :menu-to-icon="menuItemsToIcons"
@@ -53,22 +60,21 @@
           </Menu>
         </transition-group>
       </div>
-
-      <div
-        v-if="!isModeExplorer && selectedCategories.length && !isModeFavorites"
-        class="py-2"
-        style="max-width: calc(100vw - 670px)"
-      >
-        <SelectedCategories
-          :menu-items="selectedCategories"
-          :is-category-selected="isCategorySelected"
-          @category-unselect="unselectCategory"
-        />
-      </div>
     </header>
+    <div
+      v-if="!isModeExplorer && selectedCategories.length && !isModeFavorites"
+      class="p-4 absolute z-10"
+      :style="selectedFeaturesStyles"
+    >
+      <SelectedCategories
+        :menu-items="selectedCategories"
+        :is-category-selected="isCategorySelected"
+        @category-unselect="unselectCategory"
+      />
+    </div>
 
     <header
-      class="flex md:hidden relative fidex top-0 bottom-0 z-10 flex-row w-full space-x-4 pointer-events-none"
+      class="flex md:hidden relative fidex top-0 bottom-0 z-10 flex-row w-full space-x-4"
     >
       <div :class="['w-full', isBottomMenuOpened && 'hidden']">
         <aside
@@ -101,12 +107,7 @@
     </header>
 
     <div v-if="initialBbox" class="w-full h-full">
-      <div
-        :class="[
-          'relative flex flex-col w-full h-full md:h-full',
-          !isBottomMenuOpened && 'h-full',
-        ]"
-      >
+      <div class="relative flex flex-col w-full h-full md:h-full">
         <MapFeatures
           ref="mapFeatures"
           :default-bounds="initialBbox"
@@ -127,9 +128,11 @@
               v-if="
                 !(isModeExplorer || isModeFavorites) || Boolean(selectedFeature)
               "
+              type="button"
               class="-top-12 z-0 absolute md:hidden right-3/8 left-3/8 w-1/4 h-12 transition-all rounded-t-lg text-sm font-medium px-5 space-x-1 shadow-lg outline-none focus:outline-none bg-white text-zinc-800 hover:bg-zinc-100 focus-visible:bg-zinc-100"
               @click="onBottomMenuButtonClick"
             >
+              <span class="sr-only">{{ $tc('headerMenu.categories') }}</span>
               <font-awesome-icon icon="grip-lines" size="lg" />
             </button>
           </div>
@@ -173,7 +176,7 @@
       @discard="showFavoritesOverlay = false"
     />
     <div
-      class="hidden fixed inset-x-0 bottom-0 md:flex overflow-y-auto pointer-events-none h-auto md:left-8 md:right-16 md:bottom-5"
+      class="hidden fixed inset-x-0 bottom-0 md:flex overflow-y-auto h-auto md:left-8 md:right-16 md:bottom-5"
     >
       <div class="w-full max-w-md" />
       <div class="grow-[1]" />
@@ -191,7 +194,10 @@
     </div>
 
     <BottomMenu class="md:hidden" :is-open="isBottomMenuOpened">
-      <div class="flex-1 h-full overflow-y-auto h-screen-3/5 divide-y">
+      <div
+        ref="bottomMenu"
+        class="flex-1 h-full overflow-y-auto h-screen-3/5 divide-y"
+      >
         <Menu
           v-if="!showPoi"
           menu-block="MenuBlockBottom"
@@ -202,6 +208,7 @@
           @category-click="toggleCategorySelection"
           @select-all-categories="selectCategory"
           @unselect-all-categories="unselectCategory"
+          @scroll-top="scrollTop"
         />
         <PoiCard
           v-else-if="selectedFeature && showPoi"
@@ -257,6 +264,7 @@ export default (
     Vue & {
       $refs: {
         mapFeatures: InstanceType<typeof MapFeatures>
+        bottomMenu: HTMLDivElement
       }
     }
   >
@@ -304,6 +312,8 @@ export default (
     allowRegionBackZoom: boolean
     favorites: ApiPoi[] | null
     isOnSearch: boolean
+    isFilterActive: boolean
+    selectedFeaturesStyles: string
   } {
     return {
       isMenuItemOpen: false,
@@ -314,6 +324,8 @@ export default (
       allowRegionBackZoom: false,
       favorites: null,
       isOnSearch: false,
+      isFilterActive: false,
+      selectedFeaturesStyles: '',
     }
   },
   head(): MetaInfo {
@@ -490,6 +502,20 @@ export default (
   },
 
   mounted() {
+    const that = this
+    const resizeObserver = new ResizeObserver((el) => {
+      that.selectedFeaturesStyles = `
+        left: ${el[0].contentRect.width}px;
+        max-width: calc(100vw - 670px);
+      `
+    })
+
+    const header = document.getElementById('header-menu')
+
+    if (header) {
+      resizeObserver.observe(header)
+    }
+
     this.$tracking({
       type: 'page',
       title: this.$meta().refresh().metaInfo.title,
@@ -669,6 +695,10 @@ export default (
       this.showPoi = show
     },
 
+    onActivateFilter(val: boolean) {
+      this.isFilterActive = val
+    },
+
     exploreAroundSelectedPoi(feature?: ApiPoi) {
       if (feature) {
         this.setSelectedFeature(feature)
@@ -717,6 +747,16 @@ export default (
 
     goToSelectedFeature() {
       this.$refs.mapFeatures?.goToSelectedFeature()
+    },
+
+    scrollTop() {
+      if (this.$refs.bottomMenu) {
+        this.$refs.bottomMenu.scrollTop = 0
+      }
+      const header = document.getElementById('header-menu')
+      if (header) {
+        header.scrollTop = 0
+      }
     },
 
     handleFavorites() {

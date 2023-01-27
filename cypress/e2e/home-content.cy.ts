@@ -34,6 +34,8 @@ describe('home content', () => {
 
     // Use 3D on aerial
     cy.get('#3D-selector-map').click()
+
+    cy.htmlvalidate()
   })
 
   it('bugger menu content entry item', () => {
@@ -44,5 +46,7 @@ describe('home content', () => {
       .click()
       .contains(teritorioReferenceAPIFixture.articles[0].title)
       .should('not.exist')
+
+    cy.htmlvalidate()
   })
 })

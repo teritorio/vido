@@ -1,3 +1,5 @@
+import poisCategory211 from '../fixtures/teritorio/references/pois/category/211.json'
+import poisCategory22 from '../fixtures/teritorio/references/pois/category/22.json'
 import { mockSSRAPI } from '../support/mock'
 
 import teritorioReferenceAPIFixture from '~/cypress/fixtures/teritorio/references/teritorioReferenceAPIFixture'
@@ -20,6 +22,15 @@ describe('home content', () => {
   before(() => {
     localStorage.setItem('cookie:accepted', 'true')
     mockSSRAPI(hostnames, teritorioReferenceAPIFixture)
+    cy.intercept(
+      '/content/api.teritorio/geodata/v0.1/dev/tourism/pois/category/22.geojson?geometry_as=point&short_description=true',
+      { body: poisCategory22 }
+    )
+    cy.intercept(
+      '/content/api.teritorio/geodata/v0.1/dev/tourism/pois/category/211.geojson?geometry_as=point&short_description=true',
+      { body: poisCategory211 }
+    )
+
     cy.viewport(1024, 768)
     cy.visit('/')
   })
@@ -81,6 +92,8 @@ describe('home content', () => {
     cy.get('#PoiCard-2').should('be.visible')
 
     cy.wait(100) // Wait for load
+
+    cy.htmlvalidate()
   })
 
   after(() => {

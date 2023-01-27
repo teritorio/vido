@@ -1,7 +1,7 @@
 <template>
-  <div
+  <span
     :class="[
-      'flex items-center justify-center shrink-0 text-white rounded-full border-2 border-white',
+      'block flex items-center justify-center shrink-0 text-white rounded-full border-2 border-white',
       iconDim,
       Boolean(image) && 'shadow-md',
     ]"
@@ -9,7 +9,7 @@
   >
     <TeritorioIcon :class="`text-${iconSize}`" :picto="picto" :image="image" />
     <slot></slot>
-  </div>
+  </span>
 </template>
 
 <script lang="ts">

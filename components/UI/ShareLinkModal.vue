@@ -12,6 +12,7 @@
         </p>
         <button
           v-if="hasClipboard"
+          type="button"
           class="focus:outline-none focus-visible:bg-zinc-100 hover:bg-zinc-100 py-2 px-4 rounded-full ml-2"
           @click="copyLink"
         >
@@ -28,6 +29,7 @@
         <img :src="qrCodeUrl()" class="w-1/2" :alt="$tc('shareLink.qrcode')" />
       </div>
       <button
+        type="button"
         class="self-end focus:outline-none focus-visible:bg-zinc-100 hover:bg-zinc-100 py-2 px-4 rounded-full"
         @click="close"
       >

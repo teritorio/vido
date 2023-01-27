@@ -14,6 +14,7 @@ export default {
   },
   favorites: {
     title: 'Favorites',
+    list: 'List',
     menu_label: 'Favorites menu',
     menu_notebook: 'Notebook',
     menu_share: 'Share',
@@ -52,7 +53,9 @@ export default {
     },
   },
   headerMenu: {
-    search: 'Point of interest, category, address',
+    logo: 'Logo',
+    search: 'Search',
+    searchHint: 'Point of interest, category, address',
     selectAll: 'Select all',
     unselectAll: 'Unselect all',
     filter: 'Filter',
@@ -64,10 +67,12 @@ export default {
     cartocode: 'Cartocode',
     noResult: 'No results',
     hideCategory: 'Hide this category',
+    back: 'Back',
     backToMenuFavorites: 'Show menu',
     backToMenuExplorer: 'Search by Categories',
     backToMenuFavoritesMobile: 'Exit Favorites',
     backToMenuExplorerMobile: 'Search by Categories',
+    disableCategory: 'Remove the category',
   },
   dateRange: {
     from_to: 'From {from} to {to}, {duration} day(s)',
@@ -97,6 +102,8 @@ export default {
     activateExplore: 'Explore nearby points of interest',
     zoom: 'Zoom',
     backToMap: 'Volver al mapa',
+    thumbnail: 'Thumbnail',
+    image: 'Illustration',
   },
   poiDetails: {
     headerDescription: 'Description',
@@ -107,8 +114,8 @@ export default {
     shareTwitter: 'Share on Twitter',
     shareWhatsApp: 'Share on WhatsApp',
     print: 'Print',
-    qrcode: 'Share with QR-Code',
     link: 'Share link',
+    qrcode: 'Share with QR-Code',
     poweredBy: 'Powered by',
     mapillaryExplore: 'Explore on Mapillary',
     informations: 'Informations',
@@ -133,7 +140,7 @@ export default {
     route: {
       difficulty: 'Difficulty:',
       length: 'Distance:',
-      duration: ' Duration:',
+      duration: 'Duration:',
       difficulties: {
         easy: 'easy',
         normal: 'normal',

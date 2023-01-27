@@ -18,13 +18,13 @@
         type="button"
         @click="changeBackground(background)"
       >
-        <div class="h-full p-1">
+        <span class="block h-full p-1">
           <img
             class="rounded-full bg-white"
             alt="fond de carte"
             :src="require(`~/assets/${background}.png`)"
           />
-        </div>
+        </span>
       </button>
     </template>
   </div>

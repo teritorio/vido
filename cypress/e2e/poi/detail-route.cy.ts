@@ -24,17 +24,19 @@ describe('home content', () => {
       teritorioReferenceAPIFixture.deps[2].features[0].properties.name
     )
 
-    cy.get('#FieldsGroup-download')
+    cy.get('#FieldsGroup--download')
       // @ts-ignore
       .contains('download')
 
     // Check for descript on right column
-    cy.get('.detail-right #FieldsGroup-description')
+    cy.get('.detail-right #FieldsGroup--description')
 
     // Waypoint
     cy.get('#PoiCardLight-10002')
 
     // POI
     cy.get('#PoiCardLight-1')
+
+    cy.htmlvalidate()
   })
 })

@@ -1,6 +1,10 @@
 <template>
   <div v-if="images.length == 1" class="margin slide">
-    <NuxtPicture :src="images[0]" media-size="66vw" />
+    <NuxtPicture
+      :src="images[0]"
+      media-size="66vw"
+      :alt="$t('poiCard.image')"
+    />
   </div>
   <VueAgile
     v-else-if="images.length > 1"
@@ -10,7 +14,12 @@
     :nav-buttons="false"
   >
     <div v-for="(image, i) in images" :key="i" class="slide">
-      <NuxtPicture :key="i" :src="image" media-size="66vw" />
+      <NuxtPicture
+        :key="i"
+        :src="image"
+        media-size="66vw"
+        :alt="$t('poiCard.image')"
+      />
     </div>
   </VueAgile>
 </template>

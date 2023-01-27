@@ -46,6 +46,7 @@
           Object.keys((category.category && category.category.filters) || [])
             .length > 0 && selected
         "
+        type="button"
         :class="[
           'w-full h-12 sm:h-8 text-left rounded-lg outline-none focus:outline-none hover:bg-zinc-100',
           isFiltered && 'text-emerald-500',

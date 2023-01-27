@@ -3,23 +3,23 @@
     <template v-for="field in fields">
       <FieldsGroup
         v-if="field.group"
-        :id="`FieldsGroup-${field.group}`"
+        :id="`FieldsGroup-${recursionStack.join('-')}-${field.group}`"
         :key="field.group"
-        :recursion-level="recursionLevel"
+        :recursion-stack="recursionStack"
         :group="field"
         :title="fieldTranslateK(field.group)"
         :properties="properties"
         :geom="geom"
         :color-fill="colorFill"
-        :class="[recursionLevel === 0 && 'fields-list']"
+        :class="[recursionStack.length === 0 && 'fields-list']"
       />
 
       <Field
         v-else
-        :id="`Field-${field.field}`"
+        :id="`Field-${recursionStack.join('-')}-${field.field}`"
         :key="field.group"
         :context="context"
-        :recursion-level="recursionLevel"
+        :recursion-stack="recursionStack"
         :field="field"
         :properties="properties"
         :geom="geom"
@@ -44,9 +44,9 @@ export default Vue.extend({
   },
 
   props: {
-    recursionLevel: {
-      type: Number,
-      default: 0,
+    recursionStack: {
+      type: Array as PropType<string[]>,
+      default: () => [],
     },
     fields: {
       type: Array as PropType<FieldsList>,

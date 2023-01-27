@@ -11,7 +11,6 @@ export function mockSSRAPI(
     'attribute_translations/fr.json': api.attribute_translations.fr,
     'articles.json?slug=non-classe': api.articles,
     'menu.json': api.menu,
-    '211.geojson?geometry_as=bbox&short_description=true': api.pois,
   }
 
   Object.entries(hostnames).forEach(([hostname, path]) => {

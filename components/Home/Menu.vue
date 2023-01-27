@@ -1,5 +1,9 @@
 <template>
-  <component :is="menuBlock" v-if="categoryIdFilter">
+  <component
+    :is="menuBlock"
+    v-if="categoryIdFilter"
+    :is-filter-active="isFilterActive"
+  >
     <div class="w-full flex justify-between pb-4">
       <button
         type="button"
@@ -14,6 +18,7 @@
       key="Filter"
       :category-id="categoryIdFilter"
       :filters-values="categoryIdFilter ? filters[categoryIdFilter] : []"
+      @activate-filter="activateFilter"
       @go-back-click="onBackToCategoryClick"
     />
   </component>
@@ -53,6 +58,7 @@
           class="flex items-center justify-center w-10 h-10 text-2xl font-bold transition-all rounded-full outline-none cursor-pointer focus:outline-none hover:bg-zinc-100 focus:bg-zinc-100"
           @click="onGoBackClick"
         >
+          <span class="sr-only">{{ $tc('headerMenu.back') }}</span>
           <font-awesome-icon
             icon="arrow-left"
             class="text-zinc-800"
@@ -143,6 +149,14 @@ export default Vue.extend({
       type: Boolean,
       default: false,
     },
+    isFilterActive: {
+      type: Boolean,
+      default: false,
+    },
+    activateFilter: {
+      type: Function,
+      default: undefined,
+    },
   },
 
   data(): {
@@ -180,7 +194,11 @@ export default Vue.extend({
       )
     },
   },
-  watch: {},
+  watch: {
+    currentMenuItems() {
+      this.$emit('scroll-top')
+    },
+  },
 
   created() {},
 

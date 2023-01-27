@@ -1,11 +1,11 @@
 <template>
   <div v-if="group.fields && !empty">
     <div v-if="group.display_mode === 'standard'">
-      <FieldsHeader :recursion-level="recursionLevel">
+      <FieldsHeader :recursion-stack="recursionStack">
         {{ title }}
       </FieldsHeader>
       <Fields
-        :recursion-level="recursionLevel + 1"
+        :recursion-stack="[...recursionStack, group.group]"
         :fields="group.fields"
         :properties="properties"
         :geom="geom"
@@ -17,11 +17,11 @@
       :color-fill="colorFill"
       :icon="group.icon"
     >
-      <FieldsHeader :recursion-level="recursionLevel">
+      <FieldsHeader :recursion-stack="recursionStack">
         {{ title }}
       </FieldsHeader>
       <Fields
-        :recursion-level="recursionLevel + 1"
+        :recursion-stack="[...recursionStack, group.group]"
         :fields="group.fields"
         :properties="properties"
         :geom="geom"
@@ -77,9 +77,9 @@ export default (
   },
 
   props: {
-    recursionLevel: {
-      type: Number,
-      default: 0,
+    recursionStack: {
+      type: Array as PropType<string[]>,
+      default: () => [],
     },
     group: {
       type: Object as PropType<FieldsListGroup>,

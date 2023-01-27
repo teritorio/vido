@@ -6,7 +6,7 @@
           :aria-label="$tc('poiDetails.shareFacebook')"
           class="w-8 h-8"
           :href="shareFacebook"
-          target="_black"
+          target="_blank"
         >
           <font-awesome-icon
             :icon="['fab', 'facebook']"
@@ -19,7 +19,7 @@
           :aria-label="$tc('poiDetails.shareTwitter')"
           class="w-8 h-8"
           :href="shareTwitter"
-          target="_black"
+          target="_blank"
         >
           <font-awesome-icon
             :icon="['fab', 'twitter']"
@@ -32,7 +32,7 @@
           :aria-label="$tc('poiDetails.shareWhatsApp')"
           class="w-8 h-8"
           :href="shareWhatsApp"
-          target="_black"
+          target="_blank"
         >
           <font-awesome-icon
             :icon="['fab', 'whatsapp']"

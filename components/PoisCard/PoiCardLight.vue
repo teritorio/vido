@@ -41,6 +41,7 @@
       v-if="poi.properties.image && poi.properties.image.length > 0"
       class="w-full h-32 md:w-32 md:h-32 z-10"
       :src="poi.properties.image[0]"
+      :alt="$t('poiCard.thumbnail')"
       media-size="8rem"
     />
   </div>

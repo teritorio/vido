@@ -20,16 +20,16 @@
         :style="{ flexShrink: 0 }"
       >
         <TeritorioIconBadge :color-fill="colorFill" :picto="icon" :size="size">
-          <div
+          <span
             v-if="$slots.badge"
             :class="[
-              'text-xs font-semibold font-sans text-center absolute',
+              'block text-xs font-semibold font-sans text-center absolute',
               size === '2xl' ? '-top-3 -right-3' : '-top-1 -right-1',
               badgeClass,
             ]"
           >
             <slot name="badge" />
-          </div>
+          </span>
         </TeritorioIconBadge>
       </div>
 

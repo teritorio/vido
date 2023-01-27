@@ -19,6 +19,7 @@
         <div class="flex right-10">
           <button
             ref="menu"
+            type="button"
             :class="[
               'relative space-x-1 text-sm font-medium shadow-md outline-none md:px-5 w-11 md:w-auto h-11 focus:outline-none shrink-0 border-r border-zinc-400 rounded-l-full',
               isModeFavorites &&
@@ -40,6 +41,7 @@
             </div>
           </button>
           <button
+            type="button"
             :class="[
               'flex h-11 items-center justify-center shrink-0 px-3 py-2 bg-white border-l border-zinc-00 rounded-r-full hover:bg-zinc-100 shadow-md focus:outline-none',
               !hasFavorites && 'bg-zinc-100 cursor-not-allowed',
@@ -50,6 +52,7 @@
             @blur="blurHandler"
             @keydown="keydownHandler"
           >
+            <span class="sr-only">{{ $tc('favorites.list') }}</span>
             <font-awesome-icon
               ref="menu_icon"
               :icon="isShown ? 'chevron-up' : 'chevron-down'"
@@ -65,6 +68,7 @@
         class="py-1 rounded-md shadow-xs flex flex-col min-w-max"
       >
         <button
+          type="button"
           class="block w-full px-4 py-2 text-sm leading-5 text-left text-zinc-700 transition duration-150 ease-in-out hover:bg-zinc-100 focus:outline-none focus:bg-zinc-100"
           role="menuitem"
           @blur="blurHandler"
@@ -79,6 +83,7 @@
           {{ $tc('favorites.menu_share') }}
         </button>
         <button
+          type="button"
           class="block w-full px-4 py-2 text-sm leading-5 text-left text-zinc-700 transition duration-150 ease-in-out hover:bg-zinc-100 focus:outline-none focus:bg-zinc-100"
           role="menuitem"
           @blur="blurHandler"
@@ -125,6 +130,7 @@
           {{ $tc('favorites.export_csv') }}
         </a>
         <button
+          type="button"
           class="block w-full px-4 py-2 text-sm leading-5 text-left text-zinc-700 transition duration-150 ease-in-out hover:bg-zinc-100 focus:outline-none focus:bg-zinc-100"
           role="menuitem"
           @blur="blurHandler"

@@ -23,10 +23,12 @@
         size="lg"
       />
       <button
+        type="button"
         class="flex items-center justify-center text-white text-center rounded-full absolute -top-1 -right-1 w-5 h-5 border-2 border-white bg-red-600"
         :title="$tc('headerMenu.hideCategory')"
         @click="() => unselectCategory(menuItem.id)"
       >
+        <span class="sr-only">{{ $tc('headerMenu.disableCategory') }}</span>
         <font-awesome-icon icon="times" class="text-white" size="sm" />
       </button>
     </div>

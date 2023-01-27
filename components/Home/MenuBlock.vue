@@ -1,6 +1,9 @@
 <template>
   <aside
-    class="flex flex-col overflow-y-hidden pointer-events-auto inset-auto h-max max-h-full box-border space-y-4 p-2 box-border"
+    :class="[
+      'flex flex-col  pointer-events-auto inset-auto h-max max-h-full box-border space-y-4 p-2',
+      !isFilterActive && 'overflow-y-hidden',
+    ]"
   >
     <div
       :class="[
@@ -21,6 +24,10 @@ export default Vue.extend({
     extraClassTextBackground: {
       type: String,
       default: 'bg-white',
+    },
+    isFilterActive: {
+      type: Boolean,
+      default: false,
     },
   },
 })

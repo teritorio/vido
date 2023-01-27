@@ -24,12 +24,14 @@ describe('home content', () => {
       teritorioReferenceAPIFixture.deps[1].features[0].properties.name
     )
 
-    cy.get('#FieldsGroup-contact_standard')
+    cy.get('#FieldsGroup--contact_standard')
       // @ts-ignore
       .contains('contact_standard')
 
-    cy.get('#FieldsGroup-contact_card')
+    cy.get('#FieldsGroup--contact_card')
       // @ts-ignore
       .contains('contact_card')
+
+    cy.htmlvalidate()
   })
 })
