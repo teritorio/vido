@@ -57,9 +57,11 @@ export type ApiPoiProperties = MapPoiProperties & {
   }
   editorial?: {
     // eslint-disable-next-line camelcase
-    popup_fields?: FieldsList
+    popup_fields?: FieldsListItem[]
     // eslint-disable-next-line camelcase
     details_fields?: FieldsList
+    // eslint-disable-next-line camelcase
+    list_fields?: FieldsListItem[]
     // eslint-disable-next-line camelcase
     class_label?: MultilingualString
     // eslint-disable-next-line camelcase

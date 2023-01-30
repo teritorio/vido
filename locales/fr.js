@@ -126,6 +126,10 @@ export default {
       pois: 'Points d’intérêts',
     },
   },
+  poisTable: {
+    empty: 'Liste vide',
+    details: 'Détails',
+  },
   dateFilter: {
     today: "Aujourd'hui",
     tomorrow: 'Demain',

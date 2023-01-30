@@ -126,6 +126,10 @@ export default {
       pois: 'Puntos de interés',
     },
   },
+  poisTable: {
+    empty: 'Lista vacía',
+    details: 'Detalles',
+  },
   dateFilter: {
     today: 'Hoy',
     tomorrow: 'Mañana',

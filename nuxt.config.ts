@@ -57,6 +57,10 @@ const config: NuxtConfig = {
     link: [{ rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }],
   },
 
+  router: {
+    prefetchLinks: false,
+  },
+
   loading: false,
 
   serverMiddleware: [
