@@ -79,20 +79,20 @@
           </Menu>
         </transition-group>
       </div>
-
-      <div
-        v-if="!isModeExplorer && selectedCategories.length && !isModeFavorites"
-        class="p-4 absolute z-10"
-        :style="selectedFeaturesStyles"
-      >
-        <SelectedCategories
-          :menu-items="selectedCategories"
-          :is-category-selected="isCategorySelected"
-          @category-unselect="unselectCategory"
-          @category-clear="clearAllCategories"
-        />
-      </div>
     </header>
+    <div
+      v-if="!isModeExplorer && selectedCategories.length && !isModeFavorites"
+      class="p-4 absolute z-10"
+      :style="selectedFeaturesStyles"
+    >
+      <SelectedCategories
+        :menu-items="selectedCategories"
+        :is-category-selected="isCategorySelected"
+        :unselect-category="unselectCategory"
+        @category-unselect="unselectCategory"
+        @category-clear="clearAllCategories"
+      />
+    </div>
 
     <header
       class="flex md:hidden relative fidex top-0 bottom-0 z-10 flex-row w-full space-x-4"

@@ -1,7 +1,7 @@
 <template>
   <div
     v-if="selectedMenuItems.length > 0"
-    class="flex flex-row p-2 flex-wrap bg-white shadow-md pointer-events-auto rounded-xl max-w-sm min-w-xs"
+    class="flex flex-row p-2 flex-wrap bg-white shadow-md pointer-events-auto rounded-xl max-w-sm min-w-xs xs:hidden"
     :class="{ 'scroll-pr-2': selectedMenuItems.length > 1 }"
   >
     <div
@@ -21,12 +21,12 @@
           (menuItem.menu_group || menuItem.link || menuItem.category).icon
         "
         size="lg"
-        @click="() => unselectCategory(menuItem.id)"
       />
       <button
         type="button"
         class="flex items-center justify-center text-white text-center rounded-full absolute -top-0 -right-0 w-5 h-5 border-2 border-white bg-red-600 hover:bg-red-800"
         :title="$tc('headerMenu.hideCategory')"
+        @click="() => unselectCategory(menuItem.id)"
       >
         <span class="sr-only">{{ $tc('headerMenu.disableCategory') }}</span>
         <font-awesome-icon icon="times" class="text-white" size="sm" />
@@ -35,7 +35,7 @@
     <button
       v-if="menuItems.length > 1"
       type="button"
-      class="clear-all-categories flex items-center justify-center text-white text-center rounded-full absolute -right-3 w-7 h-7 border-2 border-white bg-black hover:bg-red-800"
+      class="clear-all-categories flex items-center justify-center text-white text-center rounded-full absolute -right-1 top-1 w-7 h-7 border-2 border-white bg-red-600 hover:bg-red-800"
       :title="$tc('headerMenu.clearAllCategories')"
       :aria-label="$tc('headerMenu.clearAllCategories')"
       @click="() => clearAllCategories()"
