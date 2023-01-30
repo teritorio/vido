@@ -126,17 +126,23 @@ export default Vue.extend({
     pretty(): [string | undefined, string[]][] | undefined {
       const oh = this.OpeningHoursFactory()
       if (oh) {
-        const prettyString = oh
-          .prettifyValue({
-            // @ts-ignore
-            conf: {
-              locale: this.locale || 'en',
-              rule_sep_string: '\n',
-              print_semicolon: false,
-            },
-          })
-          .replace(/(^\w|\s\w)/g, (c) => c.toUpperCase())
-          .split('\n')
+        let prettyString
+        try {
+          prettyString = oh
+            .prettifyValue({
+              // @ts-ignore
+              conf: {
+                locale: this.locale || 'en',
+                rule_sep_string: '\n',
+                print_semicolon: false,
+              },
+            })
+            .replace(/(^\w|\s\w)/g, (c) => c.toUpperCase())
+            .split('\n')
+        } catch (e) {
+          console.log('Vido error:', e)
+          return undefined
+        }
         if (!this.variable) {
           return [[undefined, prettyString]]
         } else {
@@ -169,7 +175,12 @@ export default Vue.extend({
 
     variable(): boolean {
       const oh = this.OpeningHoursFactory()
-      return !Boolean(oh?.isWeekStable())
+      try {
+        return !Boolean(oh?.isWeekStable())
+      } catch (e) {
+        console.log('Vido error:', e)
+        return false
+      }
     },
 
     nextChange():
@@ -180,12 +191,17 @@ export default Vue.extend({
         } {
       const oh = this.OpeningHoursFactory()
       if (oh) {
-        const nextChange = oh.getNextChange(this.baseDate)
-        if (nextChange) {
-          return {
-            type: oh.getState(this.baseDate) ? 'opened' : 'openAt',
-            nextChange,
+        try {
+          const nextChange = oh.getNextChange(this.baseDate)
+          if (nextChange) {
+            return {
+              type: oh.getState(this.baseDate) ? 'opened' : 'openAt',
+              nextChange,
+            }
           }
+        } catch (e) {
+          console.log('Vido error:', e)
+          return undefined
         }
       }
       return undefined
