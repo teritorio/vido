@@ -74,6 +74,8 @@ Then, create a PR from `develop` to `main`, it will launch the continuous develo
   * details: `/poi/{id}/details`.
 * POIs:
   * map only: `/pois/{ids}/map`.
+* Categories
+  * list of POIs of a category: `/category/{id}`
 
 Full entry points documentation available on [api.yml](static/api.yaml) and on server at [http://localhost:3000/api.yaml](http://localhost:3000/api.yaml).
 

@@ -147,3 +147,18 @@ paths:
       responses:
         '200':
           description: OK
+
+  /category/{id}:
+    get:
+      tags:
+        - category
+      summary: List of POIs of a category.
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: OK
