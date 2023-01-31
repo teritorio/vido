@@ -1,6 +1,11 @@
 <template>
   <div>
-    <PoisList :fields="fields()" :pois="pois" />
+    <PoisList
+      :fields="fields()"
+      :pois="pois"
+      :url-csv="urlCsv"
+      :url-geojson="urlGeojson"
+    />
   </div>
 </template>
 
@@ -10,7 +15,11 @@ import { MetaInfo } from 'vue-meta'
 import { mapActions } from 'vuex'
 
 import PoisList from '~/components/PoisList/PoisList.vue'
-import { getPoiByCategoryId, ApiPois } from '~/lib/apiPois'
+import {
+  getPoiByCategoryId,
+  ApiPois,
+  getPoiByCategoryIdUrl,
+} from '~/lib/apiPois'
 import {
   getPropertyTranslations,
   PropertyTranslations,
@@ -69,12 +78,13 @@ export default Vue.extend({
   },
 
   data(): {
-    config: VidoConfig | null
+    config: VidoConfig
     settings: Settings
     propertyTranslations: PropertyTranslations
     pois: ApiPois
   } {
     return {
+      // @ts-ignore
       config: null,
       // @ts-ignore
       settings: null,
@@ -89,7 +99,15 @@ export default Vue.extend({
     return headerFromSettings(this.settings)
   },
 
-  computed: {},
+  computed: {
+    urlCsv(): string {
+      return this.url('csv')
+    },
+
+    urlGeojson(): string {
+      return this.url('geojson')
+    },
+  },
 
   created() {
     this.$settings.set(this.settings)
@@ -114,6 +132,20 @@ export default Vue.extend({
       return this.pois.features
         ? this.pois.features[0].properties.editorial?.list_fields
         : [{ field: 'name' }]
+    },
+
+    url(format: 'geojson' | 'csv'): string {
+      return getPoiByCategoryIdUrl(
+        this.config.API_ENDPOINT,
+        this.config.API_PROJECT,
+        this.config.API_THEME,
+        this.$route.params.id,
+        {
+          geometry_as: 'point',
+          short_description: false,
+          format: format,
+        }
+      )
     },
   },
 })

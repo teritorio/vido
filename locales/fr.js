@@ -129,6 +129,8 @@ export default {
   poisTable: {
     empty: 'Liste vide',
     details: 'Détails',
+    downloadCsv: 'Télécharger en CSV',
+    downloadGeojson: 'Télécharger en GeoJSON',
   },
   dateFilter: {
     today: "Aujourd'hui",

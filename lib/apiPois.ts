@@ -85,17 +85,19 @@ export interface apiPoisOptions {
   geometry_as?: 'point' | 'bbox'
   // eslint-disable-next-line camelcase
   short_description?: boolean
+  format?: 'geojson' | 'csv'
 }
 
 export const defaultOptions: apiPoisOptions = {
   geometry_as: 'bbox',
   short_description: true,
+  format: 'geojson',
 }
 
 export function stringifyOptions(options: apiPoisOptions): string[][] {
-  return Object.entries(Object.assign({}, defaultOptions, options)).map(
-    ([k, v]) => [k, `${v}`]
-  )
+  return Object.entries(Object.assign({}, defaultOptions, options))
+    .filter(([k, v]) => k != 'format')
+    .map(([k, v]) => [k, `${v}`])
 }
 
 export function getPoiById(
@@ -106,8 +108,9 @@ export function getPoiById(
   options: apiPoisOptions = {}
 ): Promise<ApiPoi> {
   return fetch(
-    `${apiEndpoint}/${apiProject}/${apiTheme}/poi/${poiId}.geojson?` +
-      new URLSearchParams(stringifyOptions(options))
+    `${apiEndpoint}/${apiProject}/${apiTheme}/poi/${poiId}.${
+      options.format || defaultOptions.format
+    }?` + new URLSearchParams(stringifyOptions(options))
   ).then((data) => {
     if (data.ok) {
       return data.json() as unknown as ApiPoi
@@ -127,7 +130,9 @@ export function getPois(
   options: apiPoisOptions = {}
 ): Promise<ApiPois> {
   return fetch(
-    `${apiEndpoint}/${apiProject}/${apiTheme}/pois.geojson?` +
+    `${apiEndpoint}/${apiProject}/${apiTheme}/pois.${
+      options.format || defaultOptions.format
+    }?` +
       new URLSearchParams([
         ...(poiIds ? [['ids', poiIds.join(',')]] : []),
         ...stringifyOptions(options),
@@ -143,6 +148,20 @@ export function getPois(
   })
 }
 
+export function getPoiByCategoryIdUrl(
+  apiEndpoint: string,
+  apiProject: string,
+  apiTheme: string,
+  categoryId: number | string,
+  options: apiPoisOptions = { geometry_as: 'point' }
+): string {
+  return (
+    `${apiEndpoint}/${apiProject}/${apiTheme}/pois/category/${categoryId}.${
+      options.format || defaultOptions.format
+    }?` + new URLSearchParams(stringifyOptions(options))
+  )
+}
+
 export function getPoiByCategoryId(
   apiEndpoint: string,
   apiProject: string,
@@ -151,8 +170,13 @@ export function getPoiByCategoryId(
   options: apiPoisOptions = { geometry_as: 'point' }
 ): Promise<ApiPois> {
   return fetch(
-    `${apiEndpoint}/${apiProject}/${apiTheme}/pois/category/${categoryId}.geojson?` +
-      new URLSearchParams(stringifyOptions(options))
+    getPoiByCategoryIdUrl(
+      apiEndpoint,
+      apiProject,
+      apiTheme,
+      categoryId,
+      options
+    )
   ).then((data) => {
     if (data.ok) {
       return data.json() as unknown as ApiPois

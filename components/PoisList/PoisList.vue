@@ -1,5 +1,18 @@
 <template>
   <div>
+    <ul>
+      <li>
+        <a :href="urlCsv">
+          {{ $tc('poisTable.downloadCsv') }}
+        </a>
+      </li>
+      <li>
+        <a :href="urlGeojson">
+          {{ $tc('poisTable.downloadGeojson') }}
+        </a>
+      </li>
+    </ul>
+
     <PoisTable :fields="fields" :pois="pois" />
   </div>
 </template>
@@ -22,6 +35,14 @@ export default Vue.extend({
     },
     pois: {
       type: Object as PropType<ApiPois>,
+      required: true,
+    },
+    urlCsv: {
+      type: String,
+      required: true,
+    },
+    urlGeojson: {
+      type: String,
       required: true,
     },
   },
