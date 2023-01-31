@@ -94,14 +94,31 @@ export default Vue.extend({
     },
 
     menuEntries(): { value: number; text: string }[] {
+      const menuIndex: { [key: number]: MenuItem } = {}
+      this.menuItems.forEach((menuItem) => {
+        menuIndex[menuItem.id] = menuItem
+      })
+
       return (
         this.menuItems.filter(
           (menuItem) => menuItem.category
         ) as ApiMenuCategory[]
-      ).map((menuItem) => ({
-        value: menuItem.id,
-        text: menuItem.category.name.fr,
-      }))
+      ).map((menuItem) => {
+        const parents: string[] = []
+        let parentId = menuItem.parent_id
+        while (parentId) {
+          const name = menuIndex[parentId].menu_group?.name.fr
+          if (name && menuIndex[parentId].parent_id) {
+            parents.push(name)
+          }
+          parentId = menuIndex[parentId].parent_id
+        }
+
+        return {
+          value: menuItem.id,
+          text: [...parents.reverse(), menuItem.category.name.fr].join(' > '),
+        }
+      })
     },
   },
 
