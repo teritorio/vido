@@ -131,6 +131,7 @@ export default {
     details: 'Detalles',
     downloadCsv: 'Descargar como CSV',
     downloadGeojson: 'Descargar como GeoJSON',
+    showOnMap: 'Mostrar en el mapa',
   },
   dateFilter: {
     today: 'Hoy',

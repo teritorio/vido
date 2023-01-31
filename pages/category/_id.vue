@@ -1,6 +1,7 @@
 <template>
   <div>
     <PoisList
+      :category-id="$route.params.id"
       :fields="fields()"
       :pois="pois"
       :url-csv="urlCsv"

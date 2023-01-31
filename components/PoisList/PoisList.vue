@@ -13,6 +13,10 @@
       </li>
     </ul>
 
+    <p>
+      <a :href="`/${categoryId}/`">{{ $tc('poisTable.showOnMap') }}</a>
+    </p>
+
     <PoisTable :fields="fields" :pois="pois" />
   </div>
 </template>
@@ -29,6 +33,10 @@ export default Vue.extend({
   },
 
   props: {
+    categoryId: {
+      type: Number,
+      required: true,
+    },
     fields: {
       type: Array as PropType<FieldsListItem[]>,
       required: true,
