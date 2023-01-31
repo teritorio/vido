@@ -1,30 +1,11 @@
 <template>
   <div class="fixed w-full h-full overflow-hidden flex flex-col">
-    <t-full-modal ref="detailModal" :hide-close-button="true">
-      <IconButton
-        :aria-label="$tc('shareLink.close')"
-        class="w-11 h-11 absolute top-1 left-1"
-        @click="showPoiWebsite(null)"
-      >
-        <font-awesome-icon class="text-zinc-500" icon="times" />
-      </IconButton>
-      <div class="flex flex-col items-center h-full">
-        <LinkCopier :link="websiteDetail" />
-        <iframe
-          :src="websiteDetail"
-          width="100%"
-          height="100%"
-          style="flex-grow: 1"
-        >
-        </iframe>
-      </div>
-    </t-full-modal>
     <header
       class="hidden md:flex relative md:fixed top-0 z-10 flex flex-row w-full h-auto space-x-4 md:w-auto md:p-2"
       style="max-height: calc(100vh - 30px)"
     >
       <div
-        class="flex flex-col justify-between w-full w-auto max-w-md space-y-4 sm:pb-10"
+        class="flex flex-col justify-between w-full w-auto max-w-md space-y-4"
       >
         <transition-group
           id="header-menu"
@@ -255,8 +236,7 @@ import copy from 'fast-copy'
 import { FitBoundsOptions, LngLatBoundsLike } from 'maplibre-gl'
 import Vue, { PropType, VueConstructor } from 'vue'
 import { MetaInfo } from 'vue-meta'
-import { TModal } from 'vue-tailwind/dist/components'
-import { mapActions, mapGetters } from 'vuex'
+import { mapGetters, mapActions } from 'vuex'
 
 import ExplorerOrFavoritesBack from '~/components/Home/ExplorerOrFavoritesBack.vue'
 import Menu from '~/components/Home/Menu.vue'
@@ -270,14 +250,13 @@ import NavMenu from '~/components/MainMap/NavMenu.vue'
 import PoiCard from '~/components/PoisCard/PoiCard.vue'
 import Search from '~/components/Search/Search.vue'
 import CookiesConsent from '~/components/UI/CookiesConsent.vue'
-import IconButton from '~/components/UI/IconButton.vue'
-import LinkCopier from '~/components/UI/LinkCopier.vue'
 import Logo from '~/components/UI/Logo.vue'
 import { ContentEntry } from '~/lib/apiContent'
 import { ApiMenuCategory, MenuItem } from '~/lib/apiMenu'
-import { ApiPoi, getPoiById, getPois } from '~/lib/apiPois'
+import { getPoiById, ApiPoi, getPois } from '~/lib/apiPois'
 import { ApiMenuItemSearchResult } from '~/lib/apiSearch'
 import { headerFromSettings, Settings } from '~/lib/apiSettings'
+import { getBBoxFeature } from '~/lib/bbox'
 import { Mode, OriginEnum } from '~/utils/types'
 import { FilterValue } from '~/utils/types-filters'
 import { getHashPart, setHashParts } from '~/utils/url'
@@ -289,13 +268,11 @@ export default (
       $refs: {
         mapFeatures: InstanceType<typeof MapFeatures>
         bottomMenu: HTMLDivElement
-        detailModal: InstanceType<typeof TModal>
       }
     }
   >
 ).extend({
   components: {
-    LinkCopier,
     Logo,
     FavoriteMenu,
     FavoritesOverlay,
@@ -305,7 +282,6 @@ export default (
     SelectedCategories,
     Menu,
     MenuBlock,
-    IconButton,
     BottomMenu,
     PoiCard,
     CookiesConsent,
@@ -339,7 +315,6 @@ export default (
     allowRegionBackZoom: boolean
     favorites: ApiPoi[] | null
     isOnSearch: boolean
-    websiteDetail: string | null
     isFilterActive: boolean
     selectedFeaturesStyles: string
   } {
@@ -352,7 +327,6 @@ export default (
       allowRegionBackZoom: false,
       favorites: null,
       isOnSearch: false,
-      websiteDetail: null,
       isFilterActive: false,
       selectedFeaturesStyles: '',
     }
@@ -757,16 +731,6 @@ export default (
       } catch (e) {
         // eslint-disable-next-line no-console
         console.error('Vido error:', e.message)
-      }
-    },
-
-    showPoiWebsite(website: string | null) {
-      this.websiteDetail = website
-
-      if (website) {
-        this.$refs.detailModal?.show()
-      } else {
-        this.$refs.detailModal?.hide()
       }
     },
 

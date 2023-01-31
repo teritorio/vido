@@ -1,6 +1,6 @@
 {
   "name": "@teritorio/vido",
-  "version": "1.19.2",
+  "version": "1.19.3",
   "private": true,
   "engines": {
     "node": ">= 16.0.0"
