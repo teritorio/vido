@@ -1,11 +1,9 @@
 <template>
   <div>
     <PoisList
-      :category-id="$route.params.id"
-      :fields="fields()"
-      :pois="pois"
-      :url-csv="urlCsv"
-      :url-geojson="urlGeojson"
+      :menu-items="menuItems"
+      :initial-category-id="parseInt($route.params.id)"
+      :initial-pois="pois"
     />
   </div>
 </template>
@@ -16,11 +14,8 @@ import { MetaInfo } from 'vue-meta'
 import { mapActions } from 'vuex'
 
 import PoisList from '~/components/PoisList/PoisList.vue'
-import {
-  getPoiByCategoryId,
-  ApiPois,
-  getPoiByCategoryIdUrl,
-} from '~/lib/apiPois'
+import { ApiMenuItem, getMenu } from '~/lib/apiMenu'
+import { getPoiByCategoryId, ApiPois } from '~/lib/apiPois'
 import {
   getPropertyTranslations,
   PropertyTranslations,
@@ -54,6 +49,11 @@ export default Vue.extend({
       vidoConfig(req, $config).API_PROJECT,
       vidoConfig(req, $config).API_THEME
     )
+    const fetchMenuItems = getMenu(
+      vidoConfig(req, $config).API_ENDPOINT,
+      vidoConfig(req, $config).API_PROJECT,
+      vidoConfig(req, $config).API_THEME
+    )
     const getPoiByCategoryIdPromise = getPoiByCategoryId(
       vidoConfig(req, $config).API_ENDPOINT,
       vidoConfig(req, $config).API_PROJECT,
@@ -64,9 +64,10 @@ export default Vue.extend({
         short_description: true,
       }
     )
-    let [settings, propertyTranslations, pois] = await Promise.all([
+    let [settings, propertyTranslations, menuItems, pois] = await Promise.all([
       getSettingsPromise,
       fetchPropertyTranslations,
+      fetchMenuItems,
       getPoiByCategoryIdPromise,
     ])
 
@@ -74,6 +75,7 @@ export default Vue.extend({
       config: vidoConfig(req, $config),
       settings,
       propertyTranslations,
+      menuItems,
       pois,
     })
   },
@@ -82,6 +84,7 @@ export default Vue.extend({
     config: VidoConfig
     settings: Settings
     propertyTranslations: PropertyTranslations
+    menuItems: ApiMenuItem[]
     pois: ApiPois
   } {
     return {
@@ -92,22 +95,14 @@ export default Vue.extend({
       // @ts-ignore
       propertyTranslations: null,
       // @ts-ignore
+      menuItems: null,
+      // @ts-ignore
       pois: null,
     }
   },
 
   head(): MetaInfo {
     return headerFromSettings(this.settings)
-  },
-
-  computed: {
-    urlCsv(): string {
-      return this.url('csv')
-    },
-
-    urlGeojson(): string {
-      return this.url('geojson')
-    },
   },
 
   created() {
@@ -128,26 +123,6 @@ export default Vue.extend({
     ...mapActions({
       setSiteLocale: 'site/setLocale',
     }),
-
-    fields() {
-      return this.pois.features
-        ? this.pois.features[0].properties.editorial?.list_fields
-        : [{ field: 'name' }]
-    },
-
-    url(format: 'geojson' | 'csv'): string {
-      return getPoiByCategoryIdUrl(
-        this.config.API_ENDPOINT,
-        this.config.API_PROJECT,
-        this.config.API_THEME,
-        this.$route.params.id,
-        {
-          geometry_as: 'point',
-          short_description: false,
-          format: format,
-        }
-      )
-    },
   },
 })
 </script>
