@@ -1,5 +1,6 @@
 <template>
   <t-rich-select
+    id="category-selector"
     :options="menuEntries"
     :value="categoryId"
     @input="$emit('category-change', $event)"
