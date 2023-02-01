@@ -3,6 +3,7 @@
     <MapPois
       :extra-attributions="settings.attributions"
       :features="pois.features"
+      :feature-ids="ids"
     />
   </div>
 </template>
@@ -13,7 +14,7 @@ import { MetaInfo } from 'vue-meta'
 import { mapActions } from 'vuex'
 
 import MapPois from '~/components/Map/MapPois.vue'
-import { getPois, ApiPois } from '~/lib/apiPois'
+import { getPois, ApiPois, ApiPoiId } from '~/lib/apiPois'
 import { getSettings, headerFromSettings, Settings } from '~/lib/apiSettings'
 import { vidoConfig } from '~/plugins/vido-config'
 import { VidoConfig } from '~/utils/types-config'
@@ -80,6 +81,12 @@ export default Vue.extend({
 
   head(): MetaInfo {
     return headerFromSettings(this.settings)
+  },
+
+  computed: {
+    ids(): ApiPoiId[] {
+      return this.pois.features.map((feature) => feature.properties.metadata.id)
+    },
   },
 
   created() {

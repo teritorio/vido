@@ -64,7 +64,7 @@
           <template v-if="!isLargeLayeout">
             <MapPois
               :extra-attributions="settings.attributions"
-              :feature-id="id"
+              :feature-ids="[id]"
               :features="[poi]"
               class="relative"
               :off-map-attribution="true"

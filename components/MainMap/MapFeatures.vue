@@ -64,7 +64,7 @@ import { ApiPoi, getPoiById } from '~/lib/apiPois'
 import { getBBoxFeatures, getBBoxFeature } from '~/lib/bbox'
 import { DEFAULT_MAP_STYLE, MAP_ZOOM } from '~/lib/constants'
 import { VectorTilesPoi, vectorTilesPoi2ApiPoi } from '~/lib/vectorTilesPois'
-import { filterRouteByCategories, filterRouteByPoiId } from '~/utils/styles'
+import { filterRouteByCategories, filterRouteByPoiIds } from '~/utils/styles'
 import { LatLng, MapStyleEnum } from '~/utils/types'
 import { getHashPart } from '~/utils/url'
 
@@ -402,12 +402,11 @@ export default (
           this.selectedFeature?.id ||
           this.selectedFeature?.properties?.id)
       ) {
-        filterRouteByPoiId(
-          this.map,
+        filterRouteByPoiIds(this.map, [
           this.selectedFeature.properties?.metadata?.id ||
             this.selectedFeature?.id ||
-            this.selectedFeature?.properties?.id
-        )
+            this.selectedFeature?.properties?.id,
+        ])
 
         if (
           ['Point', 'MultiLineString', 'LineString'].includes(

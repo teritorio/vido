@@ -21,7 +21,7 @@ import { ApiPoi } from '~/lib/apiPois'
 import { getBBoxFeatures } from '~/lib/bbox'
 import { MAP_ZOOM } from '~/lib/constants'
 import { MapPoiId } from '~/lib/mapPois'
-import { filterRouteByPoiId } from '~/utils/styles'
+import { filterRouteByPoiIds } from '~/utils/styles'
 
 export default (
   Vue as VueConstructor<
@@ -49,8 +49,8 @@ export default (
       type: Array as PropType<ApiPoi[]>,
       required: true,
     },
-    featureId: {
-      type: Number as PropType<MapPoiId | null>,
+    featureIds: {
+      type: Array as PropType<MapPoiId[] | null>,
       default: null,
     },
     fullscreenControl: {
@@ -115,8 +115,8 @@ export default (
         '#000000',
       ])
 
-      if (this.featureId) {
-        filterRouteByPoiId(this.map, this.featureId)
+      if (this.featureIds) {
+        filterRouteByPoiIds(this.map, this.featureIds)
       }
     },
   },

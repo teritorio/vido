@@ -3,7 +3,7 @@
     <MapPois
       class="map-pois relative"
       :features="routeCollection"
-      :feature-id="poiId"
+      :feature-ids="[poiId]"
       :fullscreen-control="true"
       :off-map-attribution="true"
     />
