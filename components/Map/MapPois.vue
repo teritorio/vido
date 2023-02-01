@@ -14,6 +14,7 @@
 </template>
 
 <script lang="ts">
+import { Position } from 'geojson'
 import Vue, { PropType, VueConstructor } from 'vue'
 
 import MapBase from '~/components/Map/MapBase.vue'
@@ -72,7 +73,7 @@ export default (
       return MAP_ZOOM.selectionZoom
     },
 
-    center() {
+    center(): Position | undefined {
       if (
         this.features.length === 1 &&
         this.features[0].geometry.type === 'Point'
@@ -83,12 +84,15 @@ export default (
       }
     },
 
-    bounds() {
+    bounds(): maplibregl.LngLatBoundsLike | null | undefined {
       if (
         this.features.length > 1 ||
-        this.features[0].geometry.type !== 'Point'
+        (this.features.length === 1 &&
+          this.features[0].geometry.type !== 'Point')
       ) {
-        return getBBoxFeatures(this.features)
+        return getBBoxFeatures(
+          this.features.filter((feature) => feature.geometry)
+        )
       } else {
         return undefined
       }
@@ -96,11 +100,11 @@ export default (
   },
 
   methods: {
-    onMapInit(map: maplibregl.Map) {
+    onMapInit(map: maplibregl.Map): void {
       this.map = map
     },
 
-    onMapStyleLoad(style: maplibregl.StyleSpecification) {
+    onMapStyleLoad(style: maplibregl.StyleSpecification): void {
       const colors = [
         ...new Set(
           this.features.map(
