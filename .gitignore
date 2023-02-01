@@ -116,6 +116,7 @@ cypress/videos
 cypress/screenshots
 cypress/fixtures/**/*.geojson
 cypress/fixtures/**/deps.json
+cypress/fixtures/teritorio/references/pois/
 
 # Vido
 vidos-config.json
