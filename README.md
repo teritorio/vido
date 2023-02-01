@@ -69,7 +69,9 @@ Then, create a PR from `develop` to `main`, it will launch the continuous develo
 
 ## Entry points
 
-* Main Map: `/`, `/{poi_Id}`, `/{category_ids}/` and `/{category_ids}/{poi_id}`.
+* Main Map:
+  * Full page: `/`, `/{poi_Id}`, `/{category_ids}/` and `/{category_ids}/{poi_id}`.
+  * Embedded: `/embedded/`
 * POI:
   * details: `/poi/{id}/details`.
 * POIs:

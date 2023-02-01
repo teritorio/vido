@@ -20,7 +20,7 @@ export default Vue.extend({
     },
     categoryId: {
       type: Number,
-      required: true,
+      default: undefined,
     },
   },
 

@@ -133,6 +133,15 @@ paths:
         '200':
           description: OK
 
+  /embedded:
+    get:
+      tags:
+        - map
+      summary: Simplified main map for embedded on iframe.
+      responses:
+        '200':
+          description: OK
+
   /poi/{id}/details:
     get:
       tags:
