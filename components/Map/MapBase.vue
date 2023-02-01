@@ -174,45 +174,50 @@ export default Vue.extend({
       clusterPropertiesValues: string[],
       clusterPropertiesKeyExpression: maplibregl.ExpressionSpecification
     ) {
-      if (!this.map.getSource(POI_SOURCE)) {
-        // Create cluster properties, which will contain count of features per category
-
-        const clusterProps: { [category: string]: object } = {}
-        clusterPropertiesValues.forEach((clusterPropertiesValue) => {
-          clusterProps[clusterPropertiesValue] = [
-            '+',
-            [
-              'case',
-              ['==', clusterPropertiesKeyExpression, clusterPropertiesValue],
-              1,
-              0,
-            ],
-          ]
-        })
-
-        if (!('#000000' in clusterProps)) {
-          clusterProps['#000000'] = [
-            '+',
-            ['case', ['==', clusterPropertiesKeyExpression, null], 1, 0],
-          ]
-        }
-
-        this.map.addSource(POI_SOURCE, {
-          type: 'geojson',
-          cluster: true,
-          clusterRadius: 32,
-          clusterProperties: clusterProps,
-          clusterMaxZoom: 15,
-          tolerance: 0.6,
-          data: {
-            type: 'FeatureCollection',
-            features,
-          },
-        })
+      if (this.map.getLayer(POI_LAYER)) {
+        this.map.removeLayer(POI_LAYER)
+      }
+      if (this.map.getSource(POI_SOURCE)) {
+        this.map.removeSource(POI_SOURCE)
       }
 
+      // Create cluster properties, which will contain count of features per category
+
+      const clusterProps: { [category: string]: object } = {}
+      clusterPropertiesValues.forEach((clusterPropertiesValue) => {
+        clusterProps[clusterPropertiesValue] = [
+          '+',
+          [
+            'case',
+            ['==', clusterPropertiesKeyExpression, clusterPropertiesValue],
+            1,
+            0,
+          ],
+        ]
+      })
+
+      if (!('#000000' in clusterProps)) {
+        clusterProps['#000000'] = [
+          '+',
+          ['case', ['==', clusterPropertiesKeyExpression, null], 1, 0],
+        ]
+      }
+
+      this.map.addSource(POI_SOURCE, {
+        type: 'geojson',
+        cluster: true,
+        clusterRadius: 32,
+        clusterProperties: clusterProps,
+        clusterMaxZoom: 15,
+        tolerance: 0.6,
+        data: {
+          type: 'FeatureCollection',
+          features,
+        },
+      })
+
       // Add individual markers
-      if (!this.map.getLayer(POI_LAYER) && this.poiLayerTemplate)
+      if (this.poiLayerTemplate)
         this.map.addLayer(
           markerLayerTextFactory(this.poiLayerTemplate, POI_LAYER, POI_SOURCE)
         )

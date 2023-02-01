@@ -160,6 +160,9 @@ export default Vue.extend({
     locale(locale: string) {
       this.setLanguage(locale)
     },
+    bounds() {
+      this.map?.fitBounds(this.bounds, this.fitBoundsOptions)
+    },
   },
 
   beforeMount() {

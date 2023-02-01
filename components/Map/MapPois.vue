@@ -107,6 +107,15 @@ export default (
     },
   },
 
+  watch: {
+    features() {
+      if (this.map) {
+        // @ts-ignore
+        this.onMapStyleLoad()
+      }
+    },
+  },
+
   methods: {
     onMapInit(map: maplibregl.Map): void {
       this.map = map
