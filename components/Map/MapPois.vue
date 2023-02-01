@@ -58,6 +58,12 @@ export default (
       type: Boolean,
       default: false,
     },
+    defaultBounds: {
+      type: [Array, Object] as PropType<
+        maplibregl.LngLatBoundsLike | undefined
+      >,
+      default: undefined,
+    },
   },
 
   data(): {
@@ -84,17 +90,19 @@ export default (
       }
     },
 
-    bounds(): maplibregl.LngLatBoundsLike | null | undefined {
+    bounds(): maplibregl.LngLatBoundsLike | undefined {
       if (
         this.features.length > 1 ||
         (this.features.length === 1 &&
           this.features[0].geometry.type !== 'Point')
       ) {
-        return getBBoxFeatures(
-          this.features.filter((feature) => feature.geometry)
+        return (
+          getBBoxFeatures(
+            this.features.filter((feature) => feature.geometry)
+          ) || this.defaultBounds
         )
       } else {
-        return undefined
+        return this.defaultBounds
       }
     },
   },
