@@ -11,11 +11,11 @@ const hostnames = {
 describe('pois table', () => {
   before(() => {
     mockSSRAPI(hostnames, teritorioReferenceAPIFixture, {
-      'pois/category/1.geojson?geometry_as=point&short_description=true':
+      'pois/category/211.geojson?geometry_as=point&short_description=true':
         teritorioReferenceAPIFixture.deps[1],
     })
     cy.viewport(1024, 768)
-    cy.visit('/category/1')
+    cy.visit('/category/211')
   })
 
   it('contain basic table', () => {

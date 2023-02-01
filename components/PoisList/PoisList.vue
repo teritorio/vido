@@ -8,24 +8,12 @@
     :color-fill="category.category.color_fill"
   >
     <template #actions>
-      <ul>
-        <li>
-          <a :href="urlCsv">
-            {{ $tc('poisTable.downloadCsv') }}
-          </a>
-        </li>
-        <li>
-          <a :href="urlGeojson">
-            {{ $tc('poisTable.downloadGeojson') }}
-          </a>
-        </li>
-      </ul>
+      <Actions
+        :category-id="categoryId"
+        :color-line="category.category.color_line"
+      />
     </template>
     <template #body>
-      <p>
-        <a :href="`/${categoryId}/`">{{ $tc('poisTable.showOnMap') }}</a>
-      </p>
-
       <CategorySelector
         :menu-items="menuItems"
         :category-id="categoryId"
@@ -47,20 +35,17 @@
 import Vue, { PropType } from 'vue'
 
 import PoiLayout from '~/components/Layout/PoiLayout.vue'
+import Actions from '~/components/PoisList/Actions.vue'
 import CategorySelector from '~/components/PoisList/CategorySelector.vue'
 import PoisTable from '~/components/PoisList/PoisTable.vue'
 import { ContentEntry } from '~/lib/apiContent'
 import { ApiMenuCategory, MenuItem } from '~/lib/apiMenu'
-import {
-  ApiPois,
-  FieldsListItem,
-  getPoiByCategoryId,
-  getPoiByCategoryIdUrl,
-} from '~/lib/apiPois'
+import { ApiPois, FieldsListItem, getPoiByCategoryId } from '~/lib/apiPois'
 import { Settings } from '~/lib/apiSettings'
 
 export default Vue.extend({
   components: {
+    Actions,
     PoiLayout,
     CategorySelector,
     PoisTable,
@@ -114,14 +99,6 @@ export default Vue.extend({
         ]
       )
     },
-
-    urlCsv(): string {
-      return this.url('csv')
-    },
-
-    urlGeojson(): string {
-      return this.url('geojson')
-    },
   },
 
   watch: {
@@ -150,20 +127,6 @@ export default Vue.extend({
   },
 
   methods: {
-    url(format: 'geojson' | 'csv'): string {
-      return getPoiByCategoryIdUrl(
-        this.$vidoConfig().API_ENDPOINT,
-        this.$vidoConfig().API_PROJECT,
-        this.$vidoConfig().API_THEME,
-        this.$route.params.id,
-        {
-          geometry_as: 'point',
-          short_description: false,
-          format: format,
-        }
-      )
-    },
-
     onMenuChange(newCategoryId: number) {
       this.categoryId = newCategoryId
     },
