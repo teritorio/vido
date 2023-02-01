@@ -1,36 +1,31 @@
 <template>
-  <div class="w-full container">
-    <div>
-      <Header
-        :theme="settings.themes[0]"
-        :nav-menu-entries="navMenuEntries"
-        :color-line="colorLine"
+  <PoiLayout
+    :settings="settings"
+    :nav-menu-entries="navMenuEntries"
+    :name="poi.properties.name"
+    :icon="poi.properties.display.icon"
+    :color-line="colorLine"
+    :color-fill="colorFill"
+  >
+    <template #headerButtons>
+      <IconButton
+        :aria-label="
+          isFavorite ? $tc('poiCard.favoriteOn') : $tc('poiCard.favoriteOff')
+        "
+        :class="['w-11 h-11', 'mr-3 sm:mr-9']"
+        @click.stop="toggleFavorite"
       >
-        <IconButton
-          :aria-label="
-            isFavorite ? $tc('poiCard.favoriteOn') : $tc('poiCard.favoriteOff')
-          "
-          :class="['w-11 h-11', 'mr-3 sm:mr-9']"
-          @click.stop="toggleFavorite"
-        >
-          <FavoriteIcon :is-active="isFavorite" :color-line="colorLine" />
-        </IconButton>
-        <IconButton
-          :href="settings.themes[0].site_url.fr"
-          :aria-label="$tc('poiCard.backToMap')"
-          :class="['w-11 h-11', 'mr-3 sm:mr-9']"
-        >
-          <TeritorioIcon picto="map" class="text-zinc-800" />
-        </IconButton>
-      </Header>
-      <div class="flex justify-center">
-        <TeritorioIconBadge
-          :color-fill="colorFill"
-          size="2xl"
-          :picto="poi.properties.display.icon"
-        />
-      </div>
-      <h1>{{ poi.properties.name }}</h1>
+        <FavoriteIcon :is-active="isFavorite" :color-line="colorLine" />
+      </IconButton>
+      <IconButton
+        :href="settings.themes[0].site_url.fr"
+        :aria-label="$tc('poiCard.backToMap')"
+        :class="['w-11 h-11', 'mr-3 sm:mr-9']"
+      >
+        <TeritorioIcon picto="map" class="text-zinc-800" />
+      </IconButton>
+    </template>
+    <template #actions>
       <Share
         :title="poi.properties.name"
         :href="
@@ -39,6 +34,8 @@
         "
         :color-line="colorLine"
       />
+    </template>
+    <template #body>
       <div class="detail-wrapper">
         <div class="detail-left">
           <Fields
@@ -112,21 +109,18 @@
         :color-line="colorLine"
         :favorites-mode-enabled="favoritesModeEnabled"
       />
-
-      <Footer :attributions="settings.attributions" />
-    </div>
-  </div>
+    </template>
+  </PoiLayout>
 </template>
 
 <script lang="ts">
 import Vue, { PropType } from 'vue'
 import { mapGetters } from 'vuex'
 
+import PoiLayout from '~/components/Layout/PoiLayout.vue'
 import MapPois from '~/components/Map/MapPois.vue'
 import Carousel from '~/components/PoisDetails/Carousel.vue'
 import Fields from '~/components/PoisDetails/Fields.vue'
-import Footer from '~/components/PoisDetails/Footer.vue'
-import Header from '~/components/PoisDetails/Header.vue'
 import Mapillary from '~/components/PoisDetails/Mapillary.vue'
 import RouteMap from '~/components/PoisDetails/Route/RouteMap.vue'
 import Share from '~/components/PoisDetails/Share.vue'
@@ -134,7 +128,6 @@ import FavoriteIcon from '~/components/UI/FavoriteIcon.vue'
 import IconButton from '~/components/UI/IconButton.vue'
 import RelativeDate from '~/components/UI/RelativeDate.vue'
 import TeritorioIcon from '~/components/UI/TeritorioIcon.vue'
-import TeritorioIconBadge from '~/components/UI/TeritorioIconBadge.vue'
 import { ContentEntry } from '~/lib/apiContent'
 import { ApiPoiDeps } from '~/lib/apiPoiDeps'
 import { ApiPoi, ApiPoiId, FieldsList } from '~/lib/apiPois'
@@ -144,16 +137,14 @@ import { OriginEnum } from '~/utils/types'
 
 export default Vue.extend({
   components: {
-    Header,
+    PoiLayout,
     IconButton,
     FavoriteIcon,
     TeritorioIcon,
-    TeritorioIconBadge,
     Share,
     Carousel,
     Mapillary,
     MapPois,
-    Footer,
     RouteMap,
     Fields,
     RelativeDate,
@@ -270,26 +261,6 @@ export default Vue.extend({
 
 <style lang="scss" scoped>
 @import '~/assets/details.scss';
-
-h1 {
-  font-size: 2.4rem;
-  text-align: center;
-  margin: 0.6rem 0.3rem 0;
-  text-transform: uppercase;
-}
-
-:deep(h2) {
-  font-size: 1.8rem;
-  margin-top: 0;
-  margin-bottom: 0.7rem;
-  text-transform: uppercase;
-}
-
-:deep(h3) {
-  font-size: 1.2rem;
-  margin-top: 1.2rem;
-  margin-bottom: 0.7rem;
-}
 
 .detail-wrapper {
   position: relative;

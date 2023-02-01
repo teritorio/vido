@@ -53,7 +53,7 @@ export default Vue.extend({
 
           return {
             value: menuItem.id,
-            text: [...parents.reverse(), menuItem.category.name.fr].join(' > '),
+            text: [...parents.reverse(), menuItem.category.name.fr].join(' / '),
           }
         })
         .filter((a) => a !== undefined) as { value: number; text: string }[]

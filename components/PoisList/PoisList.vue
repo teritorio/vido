@@ -1,58 +1,80 @@
 <template>
-  <div>
-    <ul>
-      <li>
-        <a :href="urlCsv">
-          {{ $tc('poisTable.downloadCsv') }}
-        </a>
-      </li>
-      <li>
-        <a :href="urlGeojson">
-          {{ $tc('poisTable.downloadGeojson') }}
-        </a>
-      </li>
-    </ul>
+  <PoiLayout
+    :settings="settings"
+    :nav-menu-entries="navMenuEntries"
+    :name="category.category.name.fr"
+    :icon="category.category.icon"
+    :color-line="category.category.color_line"
+    :color-fill="category.category.color_fill"
+  >
+    <template #actions>
+      <ul>
+        <li>
+          <a :href="urlCsv">
+            {{ $tc('poisTable.downloadCsv') }}
+          </a>
+        </li>
+        <li>
+          <a :href="urlGeojson">
+            {{ $tc('poisTable.downloadGeojson') }}
+          </a>
+        </li>
+      </ul>
+    </template>
+    <template #body>
+      <p>
+        <a :href="`/${categoryId}/`">{{ $tc('poisTable.showOnMap') }}</a>
+      </p>
 
-    <p>
-      <a :href="`/${categoryId}/`">{{ $tc('poisTable.showOnMap') }}</a>
-    </p>
+      <CategorySelector
+        :menu-items="menuItems"
+        :category-id="categoryId"
+        @category-change="onMenuChange"
+      />
 
-    <CategorySelector
-      :menu-items="menuItems"
-      :category-id="categoryId"
-      @category-change="onMenuChange"
-    />
-
-    <PoisTable v-if="pois" :fields="fields" :pois="pois" />
-    <font-awesome-icon
-      v-else
-      icon="spinner"
-      class="text-zinc-400 animate-spin"
-      size="3x"
-    />
-  </div>
+      <PoisTable v-if="pois" :fields="fields" :pois="pois" />
+      <font-awesome-icon
+        v-else
+        icon="spinner"
+        class="text-zinc-400 animate-spin"
+        size="3x"
+      />
+    </template>
+  </PoiLayout>
 </template>
 
 <script lang="ts">
 import Vue, { PropType } from 'vue'
 
+import PoiLayout from '~/components/Layout/PoiLayout.vue'
 import CategorySelector from '~/components/PoisList/CategorySelector.vue'
 import PoisTable from '~/components/PoisList/PoisTable.vue'
-import { MenuItem } from '~/lib/apiMenu'
+import { ContentEntry } from '~/lib/apiContent'
+import { ApiMenuCategory, MenuItem } from '~/lib/apiMenu'
 import {
   ApiPois,
   FieldsListItem,
   getPoiByCategoryId,
   getPoiByCategoryIdUrl,
 } from '~/lib/apiPois'
+import { Settings } from '~/lib/apiSettings'
 
 export default Vue.extend({
   components: {
+    PoiLayout,
     CategorySelector,
     PoisTable,
   },
 
   props: {
+    settings: {
+      type: Object as PropType<Settings>,
+      required: true,
+    },
+    navMenuEntries: {
+      type: Array as PropType<ContentEntry[]>,
+      required: true,
+    },
     menuItems: {
       type: Array as PropType<MenuItem[]>,
       required: true,
@@ -78,6 +100,12 @@ export default Vue.extend({
   },
 
   computed: {
+    category(): ApiMenuCategory {
+      return this.menuItems.find(
+        (menuItem) => menuItem.id == this.categoryId
+      ) as ApiMenuCategory
+    },
+
     fields(): FieldsListItem[] {
       return (
         (this.pois?.features &&
@@ -142,3 +170,14 @@ export default Vue.extend({
   },
 })
 </script>
+
+<style lang="scss" scoped>
+@import '~/assets/details.scss';
+
+h1 {
+  font-size: 2.4rem;
+  text-align: center;
+  margin: 0.6rem 0.3rem 0;
+  text-transform: uppercase;
+}
+</style>

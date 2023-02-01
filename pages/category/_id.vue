@@ -1,11 +1,11 @@
 <template>
-  <div>
-    <PoisList
-      :menu-items="menuItems"
-      :initial-category-id="parseInt($route.params.id)"
-      :initial-pois="pois"
-    />
-  </div>
+  <PoisList
+    :settings="settings"
+    :nav-menu-entries="contents"
+    :menu-items="menuItems"
+    :initial-category-id="parseInt($route.params.id)"
+    :initial-pois="pois"
+  />
 </template>
 
 <script lang="ts">
@@ -14,6 +14,7 @@ import { MetaInfo } from 'vue-meta'
 import { mapActions } from 'vuex'
 
 import PoisList from '~/components/PoisList/PoisList.vue'
+import { ContentEntry, getContents } from '~/lib/apiContent'
 import { ApiMenuItem, getMenu } from '~/lib/apiMenu'
 import { getPoiByCategoryId, ApiPois } from '~/lib/apiPois'
 import {
@@ -44,6 +45,11 @@ export default Vue.extend({
       vidoConfig(req, $config).API_PROJECT,
       vidoConfig(req, $config).API_THEME
     )
+    const fetchContents = getContents(
+      vidoConfig(req, $config).API_ENDPOINT,
+      vidoConfig(req, $config).API_PROJECT,
+      vidoConfig(req, $config).API_THEME
+    )
     const fetchPropertyTranslations = getPropertyTranslations(
       vidoConfig(req, $config).API_ENDPOINT,
       vidoConfig(req, $config).API_PROJECT,
@@ -64,16 +70,19 @@ export default Vue.extend({
         short_description: true,
       }
     )
-    let [settings, propertyTranslations, menuItems, pois] = await Promise.all([
-      getSettingsPromise,
-      fetchPropertyTranslations,
-      fetchMenuItems,
-      getPoiByCategoryIdPromise,
-    ])
+    let [settings, contents, propertyTranslations, menuItems, pois] =
+      await Promise.all([
+        getSettingsPromise,
+        fetchContents,
+        fetchPropertyTranslations,
+        fetchMenuItems,
+        getPoiByCategoryIdPromise,
+      ])
 
     return Promise.resolve({
       config: vidoConfig(req, $config),
       settings,
+      contents,
       propertyTranslations,
       menuItems,
       pois,
@@ -83,6 +92,7 @@ export default Vue.extend({
   data(): {
     config: VidoConfig
     settings: Settings
+    contents: ContentEntry[]
     propertyTranslations: PropertyTranslations
     menuItems: ApiMenuItem[]
     pois: ApiPois
@@ -92,6 +102,8 @@ export default Vue.extend({
       config: null,
       // @ts-ignore
       settings: null,
+      // @ts-ignore
+      contents: null,
       // @ts-ignore
       propertyTranslations: null,
       // @ts-ignore
@@ -126,3 +138,19 @@ export default Vue.extend({
   },
 })
 </script>
+
+<style lang="scss">
+@import '~/assets/details.scss';
+
+body {
+  color: $color-text;
+  background-color: #fefefe;
+  padding: 1rem 1rem;
+  min-width: 21rem;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  line-height: 1.3;
+  word-wrap: break-word;
+  @extend .font-light;
+}
+</style>
