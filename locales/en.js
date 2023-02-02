@@ -134,6 +134,10 @@ export default {
     downloadGeojson: 'Download in GeoJSON',
     showOnMap: 'Show on Map',
   },
+  categorySelector: {
+    placeholder: 'Select a category',
+    search: 'Search into the list',
+  },
   dateFilter: {
     today: 'Today',
     tomorrow: 'Tomorrow',

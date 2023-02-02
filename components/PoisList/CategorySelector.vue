@@ -3,16 +3,50 @@
     id="category-selector"
     :options="menuEntries"
     :value="categoryId"
+    :placeholder="$t('categorySelector.placeholder')"
+    :search-box-placeholder="$t('categorySelector.search')"
     @input="$emit('category-change', $event)"
-  />
+  >
+    <template #label="{ option }">
+      <div class="flex">
+        <span class="flex-none w-6">
+          <TeritorioIcon
+            :color-text="option.raw.menuGroup.category.color_line"
+            :picto="option.raw.menuGroup.category.icon"
+          />
+        </span>
+        <div class="flex flex-col">
+          {{ option.raw.text }}
+        </div>
+      </div>
+    </template>
+    <template #option="{ option }">
+      <div class="flex">
+        <span class="flex-none w-6">
+          <TeritorioIcon
+            :color-text="option.raw.menuGroup.category.color_line"
+            :picto="option.raw.menuGroup.category.icon"
+          />
+        </span>
+        <div class="flex flex-col">
+          {{ option.raw.text }}
+        </div>
+      </div>
+    </template>
+  </t-rich-select>
 </template>
 
 <script lang="ts">
 import Vue, { PropType } from 'vue'
 
+import TeritorioIcon from '~/components/UI/TeritorioIcon.vue'
 import { ApiMenuCategory, MenuItem } from '~/lib/apiMenu'
 
 export default Vue.extend({
+  components: {
+    TeritorioIcon,
+  },
+
   props: {
     menuItems: {
       type: Array as PropType<MenuItem[]>,
@@ -25,7 +59,11 @@ export default Vue.extend({
   },
 
   computed: {
-    menuEntries(): { value: number; text: string }[] {
+    menuEntries(): {
+      value: number
+      text: string
+      menuGroup: ApiMenuCategory
+    }[] {
       const menuIndex: { [key: number]: MenuItem } = {}
       this.menuItems
         .filter((menuItem) => !menuItem.hidden)
@@ -55,9 +93,14 @@ export default Vue.extend({
           return {
             value: menuItem.id,
             text: [...parents.reverse(), menuItem.category.name.fr].join(' / '),
+            menuGroup: menuItem,
           }
         })
-        .filter((a) => a !== undefined) as { value: number; text: string }[]
+        .filter((a) => a !== undefined) as {
+        value: number
+        text: string
+        menuGroup: ApiMenuCategory
+      }[]
     },
   },
 })

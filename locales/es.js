@@ -134,6 +134,10 @@ export default {
     downloadGeojson: 'Descargar como GeoJSON',
     showOnMap: 'Mostrar en el mapa',
   },
+  categorySelector: {
+    placeholder: 'Seleccione una categoría',
+    search: 'Buscar en la lista',
+  },
   dateFilter: {
     today: 'Hoy',
     tomorrow: 'Mañana',
