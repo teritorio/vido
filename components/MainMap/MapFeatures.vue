@@ -22,7 +22,6 @@
       @map-touchmove="onMapRender"
       @map-zoomend="onMapRender"
       @map-style-load="onMapStyleLoad"
-      @full-attribution="$emit('full-attribution', $event)"
       @feature-click="updateSelectedFeature"
     >
       <template #controls>

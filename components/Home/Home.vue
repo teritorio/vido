@@ -122,7 +122,6 @@
           :style-icon-filter="(isModeExplorer && poiFilters) || null"
           :explorer-mode-enabled="explorerModeEnabled"
           @on-select-feature="setSelectedFeature($event)"
-          @full-attribution="setFullAttributions($event)"
         >
           <div class="relative">
             <button
