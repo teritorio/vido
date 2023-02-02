@@ -34,7 +34,7 @@
             :selected-categories-ids="selectedCategoriesIds"
             :is-on-search="isOnSearch"
             :is-filter-active="isFilterActive"
-            :activate-filter="onActivateFilter"
+            @activate-filter="onActivateFilter"
             @category-click="toggleCategorySelection"
             @select-all-categories="selectCategory"
             @unselect-all-categories="unselectCategory"

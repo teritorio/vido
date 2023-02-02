@@ -18,7 +18,7 @@
       key="Filter"
       :category-id="categoryIdFilter"
       :filters-values="categoryIdFilter ? filters[categoryIdFilter] : []"
-      @activate-filter="activateFilter"
+      @activate-filter="$emit('activate-filter', $event)"
       @go-back-click="onBackToCategoryClick"
     />
   </component>
@@ -152,10 +152,6 @@ export default Vue.extend({
     isFilterActive: {
       type: Boolean,
       default: false,
-    },
-    activateFilter: {
-      type: Function,
-      default: undefined,
     },
   },
 
