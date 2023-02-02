@@ -304,6 +304,7 @@ export default (
       default: null,
     },
   },
+
   data(): {
     isMenuItemOpen: boolean
     selectedCategoriesIds: ApiMenuCategory['id'][]
@@ -329,11 +330,13 @@ export default (
       selectedFeaturesStyles: '',
     }
   },
+
   head(): MetaInfo {
     return headerFromSettings(this.settings, {
       title: this.settings.themes[0]?.title.fr,
     })
   },
+
   computed: {
     ...mapGetters({
       pois: 'menu/features',
@@ -355,32 +358,40 @@ export default (
     logoUrl(): string {
       return this.settings.themes[0]?.logo_url || ''
     },
+
     favoritesModeEnabled(): boolean {
       return this.settings.themes[0]?.favorites_mode ?? true
     },
+
     explorerModeEnabled(): boolean {
       return this.settings.themes[0]?.explorer_mode ?? true
     },
+
     selectedCategories(): ApiMenuCategory[] {
       return this.selectedCategoriesIds
         .map((selectedCategoriesId) => this.menuItems[selectedCategoriesId])
         .filter((menuItems) => menuItems !== undefined) as ApiMenuCategory[]
     },
+
     siteName(): string {
       return this.settings.themes[0]?.title.fr || ''
     },
+
     mainUrl(): string {
       return this.settings.themes[0]?.main_url?.fr || ''
     },
+
     isPoiCardVisible(): boolean {
       return this.selectedFeature && this.showPoi
     },
+
     isBottomMenuOpened(): boolean {
       return (
         (this.$screen.smallScreen && this.isPoiCardVisible) ||
         this.isMenuItemOpen
       )
     },
+
     categoriesActivesCountByParent(): Record<ApiMenuCategory['id'], number> {
       const counts: { [id: string]: number } = {}
       this.selectedCategoriesIds.forEach((categoryId) => {
@@ -392,6 +403,7 @@ export default (
       })
       return counts
     },
+
     menuItemsToIcons(): Record<MenuItem['id'], string> {
       const resources: Record<MenuItem['id'], string> = {}
 
@@ -401,6 +413,7 @@ export default (
 
       return resources
     },
+
     fitBoundsPaddingOptions(): FitBoundsOptions['padding'] {
       if (this.$screen.smallScreen) {
         return {
@@ -441,6 +454,7 @@ export default (
       return feature
     },
   },
+
   watch: {
     selectedFeature() {
       if (!this.selectedFeature) {
@@ -553,6 +567,7 @@ export default (
     // @ts-ignore
     this.initialBbox = this.settings.bbox_line.coordinates
   },
+
   methods: {
     ...mapActions({
       applyCategoriesFilters: 'menu/applyFilters',
@@ -560,6 +575,7 @@ export default (
       setMode: 'map/setMode',
       setFavorites: 'favorite/setFavorites',
     }),
+
     routerPushUrl(hashUpdate: { [key: string]: string | null } = {}) {
       const categoryIds = this.selectedCategoriesIds.join(',')
       const id =
@@ -581,22 +597,27 @@ export default (
         hash,
       })
     },
+
     onQuitExplorerFavoriteMode() {
       this.$store.dispatch('map/setMode', Mode.BROWSER)
       this.setSelectedFeature(null)
     },
+
     isCategorySelected(categoryId: ApiMenuCategory['id']) {
       return this.selectedCategoriesIds.includes(categoryId)
     },
+
     sortedUniq<T>(a: T[]): T[] {
       return [...new Set(a)].sort()
     },
+
     selectCategory(categoriesIds: ApiMenuCategory['id'][]) {
       this.selectedCategoriesIds = this.sortedUniq([
         ...this.selectedCategoriesIds,
         ...categoriesIds,
       ])
     },
+
     toggleCategorySelection(categoryId: ApiMenuCategory['id']) {
       if (this.selectedCategoriesIds.includes(categoryId)) {
         this.selectedCategoriesIds = this.selectedCategoriesIds.filter(
@@ -609,6 +630,7 @@ export default (
         ])
       }
     },
+
     unselectCategory(categoriesIds: ApiMenuCategory['id'][]) {
       this.selectedCategoriesIds = this.selectedCategoriesIds.filter(
         (categoryId) => !categoriesIds.includes(categoryId)
@@ -665,6 +687,7 @@ export default (
       this.$store.dispatch('map/setMode', Mode.BROWSER)
       this.selectCategory([newFilter.id])
     },
+
     onFeatureClick(feature: ApiPoi) {
       this.setSelectedFeature(feature).then(() => {
         this.$refs.mapFeatures.goToSelectedFeature()
