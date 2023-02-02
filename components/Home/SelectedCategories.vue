@@ -1,11 +1,11 @@
 <template>
   <div
-    v-if="selectedMenuItems.length > 0"
+    v-if="menuItems.length > 0"
     class="flex flex-row p-2 flex-wrap bg-white shadow-md pointer-events-auto rounded-xl max-w-xl"
     style="min-width: 64px"
   >
     <div
-      v-for="menuItem in selectedMenuItems"
+      v-for="menuItem in menuItems"
       :key="menuItem.id"
       class="m-1 relative"
       :title="
@@ -60,16 +60,8 @@ export default Vue.extend({
       type: Array as PropType<MenuItem[]>,
       required: true,
     },
-    isCategorySelected: {
-      type: Function,
-      required: true,
-    },
   },
-  computed: {
-    selectedMenuItems() {
-      return this.menuItems.filter((c) => this.isCategorySelected(c.id))
-    },
-  },
+
   methods: {
     unselectCategory(categoryId: ApiMenuCategory['id']) {
       this.$emit('category-unselect', [categoryId])

@@ -31,7 +31,7 @@
             :menu-items="menuItems"
             :filters="filters"
             :categories-actives-count-by-parent="categoriesActivesCountByParent"
-            :is-category-selected="isCategorySelected"
+            :selected-categories-ids="selectedCategoriesIds"
             :is-on-search="isOnSearch"
             :is-filter-active="isFilterActive"
             :activate-filter="onActivateFilter"
@@ -68,7 +68,6 @@
     >
       <SelectedCategories
         :menu-items="selectedCategories"
-        :is-category-selected="isCategorySelected"
         @category-unselect="unselectCategory"
         @category-clear="clearAllCategories"
       />
@@ -204,7 +203,7 @@
           :menu-items="menuItems"
           :filters="filters"
           :categories-actives-count-by-parent="categoriesActivesCountByParent"
-          :is-category-selected="isCategorySelected"
+          :selected-categories-ids="selectedCategoriesIds"
           @category-click="toggleCategorySelection"
           @select-all-categories="selectCategory"
           @unselect-all-categories="unselectCategory"
@@ -600,10 +599,6 @@ export default (
     onQuitExplorerFavoriteMode() {
       this.$store.dispatch('map/setMode', Mode.BROWSER)
       this.setSelectedFeature(null)
-    },
-
-    isCategorySelected(categoryId: ApiMenuCategory['id']) {
-      return this.selectedCategoriesIds.includes(categoryId)
     },
 
     sortedUniq<T>(a: T[]): T[] {

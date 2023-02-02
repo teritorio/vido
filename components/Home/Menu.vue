@@ -38,7 +38,7 @@
           :menu-items="getMenuItemByParentId(menuItem.id)"
           :filters="filters"
           :categories-actives-count-by-parent="categoriesActivesCountByParent"
-          :is-category-selected="isCategorySelected"
+          :selected-categories-ids="selectedCategoriesIds"
           :size="size"
           display-mode-default="compact"
           class="flex-1 pointer-events-auto h-full"
@@ -89,7 +89,7 @@
         :menu-items="currentMenuItems"
         :filters="filters"
         :categories-actives-count-by-parent="categoriesActivesCountByParent"
-        :is-category-selected="isCategorySelected"
+        :selected-categories-ids="selectedCategoriesIds"
         :size="size"
         display-mode-default="large"
         class="flex-1 pointer-events-auto h-full"
@@ -137,8 +137,8 @@ export default Vue.extend({
       type: Object as PropType<{ [categoryId: number]: FilterValues }>,
       required: true,
     },
-    isCategorySelected: {
-      type: Function,
+    selectedCategoriesIds: {
+      type: Array as PropType<ApiMenuCategory['id'][]>,
       required: true,
     },
     categoriesActivesCountByParent: {
@@ -190,7 +190,7 @@ export default Vue.extend({
 
     isAllSelected(): boolean {
       return this.getRecursiveCategoryIdByParentId(this.currentParentId).every(
-        (categoryId) => this.isCategorySelected(categoryId)
+        (categoryId) => this.selectedCategoriesIds.includes(categoryId)
       )
     },
   },
