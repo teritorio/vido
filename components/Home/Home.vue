@@ -28,9 +28,6 @@
             v-else
             key="Menu"
             menu-block="MenuBlock"
-            :menu-items="menuItems"
-            :filters="filters"
-            :categories-actives-count-by-parent="categoriesActivesCountByParent"
             :is-on-search="isOnSearch"
             :is-filter-active="isFilterActive"
             @activate-filter="onActivateFilter"
@@ -192,9 +189,6 @@
         <Menu
           v-if="!showPoi"
           menu-block="MenuBlockBottom"
-          :menu-items="menuItems"
-          :filters="filters"
-          :categories-actives-count-by-parent="categoriesActivesCountByParent"
           @scroll-top="scrollTop"
         />
         <PoiCard
@@ -368,18 +362,6 @@ export default (
         (this.$screen.smallScreen && this.isPoiCardVisible) ||
         this.isMenuItemOpen
       )
-    },
-
-    categoriesActivesCountByParent(): Record<ApiMenuCategory['id'], number> {
-      const counts: { [id: string]: number } = {}
-      this.selectedCategoryIds.forEach((categoryId: ApiMenuCategory['id']) => {
-        let parentId = this.menuItems[categoryId]?.parent_id
-        while (parentId) {
-          counts[parentId] = (counts[parentId] || 0) + 1
-          parentId = this.menuItems[parentId].parent_id
-        }
-      })
-      return counts
     },
 
     menuItemsToIcons(): Record<MenuItem['id'], string> {

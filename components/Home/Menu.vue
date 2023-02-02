@@ -129,18 +129,6 @@ export default Vue.extend({
       type: String as PropType<'MenuBlock' | 'MenuBlockBottom'>,
       required: true,
     },
-    menuItems: {
-      type: Object as PropType<{ [menuItemId: number]: MenuItem }>,
-      required: true,
-    },
-    filters: {
-      type: Object as PropType<{ [categoryId: number]: FilterValues }>,
-      required: true,
-    },
-    categoriesActivesCountByParent: {
-      type: Object as PropType<{ [id: string]: number }>,
-      required: true,
-    },
     isOnSearch: {
       type: Boolean,
       default: false,
@@ -163,8 +151,13 @@ export default Vue.extend({
 
   computed: {
     ...mapGetters({
+      filters: 'menu/filters',
       selectedCategoryIds: 'menu/selectedCategoryIds',
     }),
+
+    menuItems(): Record<ApiMenuCategory['id'], MenuItem> {
+      return this.$store.getters['menu/menuItems']
+    },
 
     currentParentId(): MenuItem['id'] | undefined {
       return this.navigationParentIdStack.at(-1)
@@ -187,16 +180,25 @@ export default Vue.extend({
         (categoryId) => this.selectedCategoryIds.includes(categoryId)
       )
     },
+
+    categoriesActivesCountByParent(): Record<ApiMenuCategory['id'], number> {
+      const counts: { [id: string]: number } = {}
+      this.selectedCategoryIds.forEach((categoryId: ApiMenuCategory['id']) => {
+        let parentId = this.menuItems[categoryId]?.parent_id
+        while (parentId) {
+          counts[parentId] = (counts[parentId] || 0) + 1
+          parentId = this.menuItems[parentId].parent_id
+        }
+      })
+      return counts
+    },
   },
+
   watch: {
     currentMenuItems() {
       this.$emit('scroll-top')
     },
   },
-
-  created() {},
-
-  beforeMount() {},
 
   methods: {
     ...mapActions({
