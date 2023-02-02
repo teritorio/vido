@@ -2,7 +2,7 @@ import copy from 'fast-copy'
 import { deepEqual } from 'fast-equals'
 import { Store } from 'vuex'
 
-import { ApiMenuCategory, MenuGroup, MenuItem } from '~/lib/apiMenu'
+import { ApiMenuCategory, MenuItem } from '~/lib/apiMenu'
 import { ApiPoi, ApiPois, getPoiByCategoryId } from '~/lib/apiPois'
 import {
   FilterValues,
@@ -11,7 +11,11 @@ import {
 } from '~/utils/types-filters'
 
 enum Mutation {
-  SET_CONFIG = 'SET_CONFIG',
+  SET_MENU_ITEM = 'SET_MENU_ITEM',
+  SET_SELECTED_CATEGORY_IDS = 'SET_SELECTED_CATEGORY_IDS',
+  ADD_SELECTED_CATEGORY_IDS = 'ADD_SELECTED_CATEGORY_IDS',
+  DEL_SELECTED_CATEGORY_IDS = 'DEL_SELECTED_CATEGORY_IDS',
+  TOOGLE_SELECTED_CATEGORY_ID = 'TOOGLE_SELECTED_CATEGORY_ID',
   SET_FEATURES = 'SET_FEATURES',
   SET_FILTERS = 'SET_FILTERS',
   SET_FEATURES_LOADING = 'SET_FEATURES_LOADING',
@@ -33,6 +37,7 @@ export interface State {
   menuItems: {
     [menuItemId: number]: MenuItem
   }
+  selectedCatagoryIds: ApiMenuCategory['id'][]
   features: {
     [key: number]: ApiPoi[]
   }
@@ -45,15 +50,50 @@ export interface State {
 
 export const state = (): State => ({
   menuItems: {},
+  selectedCatagoryIds: [],
   features: {},
   filters: {},
   allFeatures: {},
   isLoadingFeatures: false,
 })
 
+function sortedUniq<T>(a: T[]): T[] {
+  return [...new Set(a)].sort()
+}
+
 export const mutations = {
-  [Mutation.SET_CONFIG](state: State, payload: State) {
+  [Mutation.SET_MENU_ITEM](state: State, payload: State) {
     state.menuItems = payload.menuItems
+  },
+
+  [Mutation.SET_SELECTED_CATEGORY_IDS](state: State, payload: State) {
+    state.selectedCatagoryIds = payload.selectedCatagoryIds
+  },
+
+  [Mutation.ADD_SELECTED_CATEGORY_IDS](state: State, payload: State) {
+    state.selectedCatagoryIds = sortedUniq([
+      ...state.selectedCatagoryIds,
+      ...payload.selectedCatagoryIds,
+    ])
+  },
+
+  [Mutation.DEL_SELECTED_CATEGORY_IDS](state: State, payload: State) {
+    state.selectedCatagoryIds = state.selectedCatagoryIds.filter(
+      (categoryId) => !payload.selectedCatagoryIds.includes(categoryId)
+    )
+  },
+
+  [Mutation.TOOGLE_SELECTED_CATEGORY_ID](state: State, payload: State) {
+    if (state.selectedCatagoryIds.includes(payload.selectedCatagoryIds[0])) {
+      state.selectedCatagoryIds = state.selectedCatagoryIds.filter(
+        (id) => id !== payload.selectedCatagoryIds[0]
+      )
+    } else {
+      state.selectedCatagoryIds = sortedUniq([
+        ...state.selectedCatagoryIds,
+        payload.selectedCatagoryIds[0],
+      ])
+    }
   },
 
   [Mutation.SET_FILTERS](state: State, payload: State) {
@@ -81,12 +121,54 @@ function keepFeature(filters: FilterValues, feature: ApiPoi): boolean {
 }
 
 export const actions = {
+  setSelectedCategoryIds(
+    store: Store<State>,
+    selectedCatagoryIds: ApiMenuCategory['id'][]
+  ) {
+    store.commit(Mutation.SET_SELECTED_CATEGORY_IDS, {
+      selectedCatagoryIds: selectedCatagoryIds,
+    })
+  },
+
+  addSelectedCategoryIds(
+    store: Store<State>,
+    selectedCatagoryIds: ApiMenuCategory['id'][]
+  ) {
+    store.commit(Mutation.ADD_SELECTED_CATEGORY_IDS, {
+      selectedCatagoryIds: selectedCatagoryIds,
+    })
+  },
+
+  delSelectedCategoryIds(
+    store: Store<State>,
+    selectedCatagoryIds: ApiMenuCategory['id'][]
+  ) {
+    store.commit(Mutation.DEL_SELECTED_CATEGORY_IDS, {
+      selectedCatagoryIds: selectedCatagoryIds,
+    })
+  },
+
+  clearSelectedCategoryIds(store: Store<State>) {
+    store.commit(Mutation.SET_SELECTED_CATEGORY_IDS, {
+      selectedCatagoryIds: [],
+    })
+  },
+
+  toggleSelectedCategoryId(
+    store: Store<State>,
+    categoryId: ApiMenuCategory['id']
+  ) {
+    store.commit(Mutation.TOOGLE_SELECTED_CATEGORY_ID, {
+      selectedCatagoryIds: [categoryId],
+    })
+  },
+
   fetchConfig(store: Store<State>, { menuItems }: FetchConfigPayload) {
     try {
       const stateMenuItems: State['menuItems'] = {}
       const filters: Record<ApiMenuCategory['id'], FilterValues> = {}
 
-      store.commit(Mutation.SET_CONFIG, { menuItems: null }) // Hack, release from store before edit and reappend
+      store.commit(Mutation.SET_MENU_ITEM, { menuItems: null }) // Hack, release from store before edit and reappend
       menuItems
         .filter((menuItem) => !menuItem.hidden)
         .map((menuItem) => {
@@ -112,7 +194,7 @@ export const actions = {
             )
           }
         })
-      store.commit(Mutation.SET_CONFIG, { menuItems: stateMenuItems })
+      store.commit(Mutation.SET_MENU_ITEM, { menuItems: stateMenuItems })
       store.commit(Mutation.SET_FILTERS, { filters })
     } catch (error) {
       // eslint-disable-next-line no-console
@@ -226,6 +308,13 @@ export const actions = {
 export const getters = {
   menuItems: (state: State): { [menuItemId: number]: MenuItem } =>
     state.menuItems,
+  selectedCategoryIds: (state: State): ApiMenuCategory['id'][] =>
+    state.selectedCatagoryIds,
+  selectedCategories: (state: State): ApiMenuCategory[] => {
+    return state.selectedCatagoryIds
+      .map((selectedCatagoryId) => state.menuItems[selectedCatagoryId])
+      .filter((menuItems) => menuItems !== undefined) as ApiMenuCategory[]
+  },
   allFeatures: (state: State) => state.allFeatures,
   isLoadingFeatures: (state: State) => state.isLoadingFeatures,
   filters: (state: State) => state.filters,

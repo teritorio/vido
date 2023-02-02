@@ -38,12 +38,12 @@
           :menu-items="getMenuItemByParentId(menuItem.id)"
           :filters="filters"
           :categories-actives-count-by-parent="categoriesActivesCountByParent"
-          :selected-categories-ids="selectedCategoriesIds"
+          :selected-categories-ids="selectedCategoryIds"
           :size="size"
           display-mode-default="compact"
           class="flex-1 pointer-events-auto h-full"
           @menu-group-click="onMenuGroupClick"
-          @category-click="$emit('category-click', $event)"
+          @category-click="toggleSelectedCategoryId($event)"
           @filter-click="onCategoryFilterClick"
         />
       </component>
@@ -89,12 +89,12 @@
         :menu-items="currentMenuItems"
         :filters="filters"
         :categories-actives-count-by-parent="categoriesActivesCountByParent"
-        :selected-categories-ids="selectedCategoriesIds"
+        :selected-categories-ids="selectedCategoryIds"
         :size="size"
         display-mode-default="large"
         class="flex-1 pointer-events-auto h-full"
         @menu-group-click="onMenuGroupClick"
-        @category-click="$emit('category-click', $event)"
+        @category-click="toggleSelectedCategoryId($event)"
         @filter-click="onCategoryFilterClick"
       />
     </component>
@@ -137,10 +137,6 @@ export default Vue.extend({
       type: Object as PropType<{ [categoryId: number]: FilterValues }>,
       required: true,
     },
-    selectedCategoriesIds: {
-      type: Array as PropType<ApiMenuCategory['id'][]>,
-      required: true,
-    },
     categoriesActivesCountByParent: {
       type: Object as PropType<{ [id: string]: number }>,
       required: true,
@@ -166,7 +162,9 @@ export default Vue.extend({
   },
 
   computed: {
-    ...mapGetters({}),
+    ...mapGetters({
+      selectedCategoryIds: 'menu/selectedCategoryIds',
+    }),
 
     currentParentId(): MenuItem['id'] | undefined {
       return this.navigationParentIdStack.at(-1)
@@ -186,7 +184,7 @@ export default Vue.extend({
 
     isAllSelected(): boolean {
       return this.getRecursiveCategoryIdByParentId(this.currentParentId).every(
-        (categoryId) => this.selectedCategoriesIds.includes(categoryId)
+        (categoryId) => this.selectedCategoryIds.includes(categoryId)
       )
     },
   },
@@ -201,7 +199,11 @@ export default Vue.extend({
   beforeMount() {},
 
   methods: {
-    ...mapActions({}),
+    ...mapActions({
+      addSelectedCategoryIds: 'menu/addSelectedCategoryIds',
+      delSelectedCategoryIds: 'menu/delSelectedCategoryIds',
+      toggleSelectedCategoryId: 'menu/toggleSelectedCategoryId',
+    }),
 
     getMenuItemByParentId(
       menuGroupId: MenuGroup['id'] | undefined
@@ -228,15 +230,13 @@ export default Vue.extend({
     },
 
     onClickSelectAll(): void {
-      this.$emit(
-        'select-all-categories',
+      this.addSelectedCategoryIds(
         this.getRecursiveCategoryIdByParentId(this.currentParentId)
       )
     },
 
     onClickUnselectAll(): void {
-      this.$emit(
-        'unselect-all-categories',
+      this.delSelectedCategoryIds(
         this.getRecursiveCategoryIdByParentId(this.currentParentId)
       )
     },

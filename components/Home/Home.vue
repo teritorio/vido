@@ -31,13 +31,9 @@
             :menu-items="menuItems"
             :filters="filters"
             :categories-actives-count-by-parent="categoriesActivesCountByParent"
-            :selected-categories-ids="selectedCategoriesIds"
             :is-on-search="isOnSearch"
             :is-filter-active="isFilterActive"
             @activate-filter="onActivateFilter"
-            @category-click="toggleCategorySelection"
-            @select-all-categories="selectCategory"
-            @unselect-all-categories="unselectCategory"
             @scroll-top="scrollTop"
           >
             <Search
@@ -62,15 +58,11 @@
       </div>
     </header>
     <div
-      v-if="!isModeExplorer && selectedCategories.length && !isModeFavorites"
+      v-if="!isModeExplorer && selectedCategoryIds.length && !isModeFavorites"
       class="p-4 absolute z-10"
       :style="selectedFeaturesStyles"
     >
-      <SelectedCategories
-        :menu-items="selectedCategories"
-        @category-unselect="unselectCategory"
-        @category-clear="clearAllCategories"
-      />
+      <SelectedCategories />
     </div>
 
     <header
@@ -117,7 +109,7 @@
           :categories="menuItems"
           :features="mapFeatures"
           :selected-feature="selectedFeature"
-          :selected-categories-ids="isModeExplorer ? [] : selectedCategoriesIds"
+          :selected-categories-ids="isModeExplorer ? [] : selectedCategoryIds"
           :style-icon-filter="(isModeExplorer && poiFilters) || null"
           :explorer-mode-enabled="explorerModeEnabled"
           @on-select-feature="setSelectedFeature($event)"
@@ -203,10 +195,6 @@
           :menu-items="menuItems"
           :filters="filters"
           :categories-actives-count-by-parent="categoriesActivesCountByParent"
-          :selected-categories-ids="selectedCategoriesIds"
-          @category-click="toggleCategorySelection"
-          @select-all-categories="selectCategory"
-          @unselect-all-categories="unselectCategory"
           @scroll-top="scrollTop"
         />
         <PoiCard
@@ -252,7 +240,6 @@ import { ApiMenuCategory, MenuItem } from '~/lib/apiMenu'
 import { getPoiById, ApiPoi, getPois } from '~/lib/apiPois'
 import { ApiMenuItemSearchResult } from '~/lib/apiSearch'
 import { headerFromSettings, Settings } from '~/lib/apiSettings'
-import { getBBoxFeature } from '~/lib/bbox'
 import { Mode, OriginEnum } from '~/utils/types'
 import { FilterValue } from '~/utils/types-filters'
 import { getHashPart, setHashParts } from '~/utils/url'
@@ -305,7 +292,6 @@ export default (
 
   data(): {
     isMenuItemOpen: boolean
-    selectedCategoriesIds: ApiMenuCategory['id'][]
     showPoi: boolean
     initialBbox: LngLatBoundsLike | null
     showFavoritesOverlay: boolean
@@ -317,7 +303,6 @@ export default (
   } {
     return {
       isMenuItemOpen: false,
-      selectedCategoriesIds: [],
       showPoi: false,
       initialBbox: null,
       showFavoritesOverlay: false,
@@ -346,6 +331,7 @@ export default (
       selectedFeature: 'map/selectedFeature',
       map_center: 'map/center',
       favoritesIds: 'favorite/favoritesIds',
+      selectedCategoryIds: 'menu/selectedCategoryIds',
       isLoadingFeatures: 'menu/isLoadingFeatures',
     }),
 
@@ -363,12 +349,6 @@ export default (
 
     explorerModeEnabled(): boolean {
       return this.settings.themes[0]?.explorer_mode ?? true
-    },
-
-    selectedCategories(): ApiMenuCategory[] {
-      return this.selectedCategoriesIds
-        .map((selectedCategoriesId) => this.menuItems[selectedCategoriesId])
-        .filter((menuItems) => menuItems !== undefined) as ApiMenuCategory[]
     },
 
     siteName(): string {
@@ -392,7 +372,7 @@ export default (
 
     categoriesActivesCountByParent(): Record<ApiMenuCategory['id'], number> {
       const counts: { [id: string]: number } = {}
-      this.selectedCategoriesIds.forEach((categoryId) => {
+      this.selectedCategoryIds.forEach((categoryId: ApiMenuCategory['id']) => {
         let parentId = this.menuItems[categoryId]?.parent_id
         while (parentId) {
           counts[parentId] = (counts[parentId] || 0) + 1
@@ -463,7 +443,7 @@ export default (
       this.routerPushUrl()
     },
 
-    selectedCategoriesIds(a, b) {
+    selectedCategoryIds(a, b) {
       if (a !== b) {
         this.routerPushUrl()
 
@@ -471,7 +451,7 @@ export default (
           apiEndpoint: this.$vidoConfig().API_ENDPOINT,
           apiProject: this.$vidoConfig().API_PROJECT,
           apiTheme: this.$vidoConfig().API_THEME,
-          categoryIds: this.selectedCategoriesIds,
+          categoryIds: this.selectedCategoryIds,
         })
         this.allowRegionBackZoom = true
       }
@@ -541,7 +521,7 @@ export default (
     })
 
     if (this.initialCategoryIds) {
-      this.selectCategory(this.initialCategoryIds)
+      this.setSelectedCategoryIds(this.initialCategoryIds)
     } else if (
       typeof location !== 'undefined' &&
       !getHashPart(this.$router, 'favs')
@@ -555,7 +535,7 @@ export default (
         }
       })
 
-      this.selectCategory(enabledCategories)
+      this.setSelectedCategoryIds(enabledCategories)
     }
 
     if (this.initialPoi) {
@@ -568,6 +548,8 @@ export default (
 
   methods: {
     ...mapActions({
+      setSelectedCategoryIds: 'menu/setSelectedCategoryIds',
+      addSelectedCategoryIds: 'menu/addSelectedCategoryIds',
       applyCategoriesFilters: 'menu/applyFilters',
       setSelectedFeature: 'map/setSelectedFeature',
       setMode: 'map/setMode',
@@ -575,7 +557,7 @@ export default (
     }),
 
     routerPushUrl(hashUpdate: { [key: string]: string | null } = {}) {
-      const categoryIds = this.selectedCategoriesIds.join(',')
+      const categoryIds = this.selectedCategoryIds.join(',')
       const id =
         this.selectedFeature?.properties?.metadata?.id?.toString() ||
         this.selectedFeature?.id?.toString() ||
@@ -599,40 +581,6 @@ export default (
     onQuitExplorerFavoriteMode() {
       this.$store.dispatch('map/setMode', Mode.BROWSER)
       this.setSelectedFeature(null)
-    },
-
-    sortedUniq<T>(a: T[]): T[] {
-      return [...new Set(a)].sort()
-    },
-
-    selectCategory(categoriesIds: ApiMenuCategory['id'][]) {
-      this.selectedCategoriesIds = this.sortedUniq([
-        ...this.selectedCategoriesIds,
-        ...categoriesIds,
-      ])
-    },
-
-    toggleCategorySelection(categoryId: ApiMenuCategory['id']) {
-      if (this.selectedCategoriesIds.includes(categoryId)) {
-        this.selectedCategoriesIds = this.selectedCategoriesIds.filter(
-          (id) => id !== categoryId
-        )
-      } else {
-        this.selectedCategoriesIds = this.sortedUniq([
-          ...this.selectedCategoriesIds,
-          categoryId,
-        ])
-      }
-    },
-
-    unselectCategory(categoriesIds: ApiMenuCategory['id'][]) {
-      this.selectedCategoriesIds = this.selectedCategoriesIds.filter(
-        (categoryId) => !categoriesIds.includes(categoryId)
-      )
-    },
-
-    clearAllCategories() {
-      this.selectedCategoriesIds = []
     },
 
     onSearchPoi(poiId: number) {
@@ -679,7 +627,7 @@ export default (
       }
 
       this.$store.dispatch('map/setMode', Mode.BROWSER)
-      this.selectCategory([newFilter.id])
+      this.addSelectedCategoryIds([newFilter.id])
     },
 
     onFeatureClick(feature: ApiPoi) {
