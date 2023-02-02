@@ -8,17 +8,17 @@
     @input="$emit('category-change', $event)"
   >
     <template #label="{ option }">
-      <div class="flex">
+      <span class="block flex">
         <span class="flex-none w-6">
           <TeritorioIcon
             :color-text="option.raw.menuGroup.category.color_line"
             :picto="option.raw.menuGroup.category.icon"
           />
         </span>
-        <div class="flex flex-col">
+        <span class="block flex flex-col">
           {{ option.raw.text }}
-        </div>
-      </div>
+        </span>
+      </span>
     </template>
     <template #option="{ option }">
       <div class="flex">

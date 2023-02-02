@@ -108,10 +108,9 @@ const settings = {
         option: '',
         disabledOption: '',
         highlightedOption: 'bg-emerald-100',
-        selectedOption:
-          'font-semibold bg-zinc-100 bg-emerald-500 font-semibold text-white',
+        selectedOption: 'font-semibold bg-zinc-100 bg-emerald-500 text-white',
         selectedHighlightedOption:
-          'font-semibold bg-zinc-100 bg-emerald-500 font-semibold text-white',
+          'font-semibold bg-zinc-100 bg-emerald-500 text-white',
         optionContent: 'flex justify-between items-center px-3 py-2',
         optionLabel: '',
         selectedIcon: '',
