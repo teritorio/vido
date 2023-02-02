@@ -31,7 +31,7 @@ export default {
   },
   mapControls: {
     exploreAriaLabel: 'Explore Mode',
-    exploreButton: 'Switch to Explore mode',
+    exploreButton: 'Explore nearby points of interest',
     threeDAriaLabel: 'View the map in 3D',
     backgroundAriaLabel: 'Switch the map background',
     backgroundButton: 'Switch the map background to "{background}"',
@@ -94,7 +94,7 @@ export default {
     details: 'Details',
     seeDetail: 'See details',
     route: 'Route',
-    explore: 'Explore',
+    explore: 'Nearby',
     favorite: 'Favorite',
     favoriteOn: 'Set as favorite',
     favoriteOff: 'Remove favorite',
