@@ -36,9 +36,6 @@
             <Search
               :menu-to-icon="menuItemsToIcons"
               :map-center="map_center"
-              @category-click="onSearchCategory"
-              @poi-click="onSearchPoi"
-              @feature-click="onFeatureClick"
               @focus="isOnSearch = true"
               @blur="isOnSearch = false"
             >
@@ -70,13 +67,7 @@
           v-if="!isModeExplorerOrFavorites"
           class="flex flex-col max-h-full px-5 py-4 space-y-6 shadow-md pointer-events-auto md:rounded-xl md:w-96 bg-white min-h-20"
         >
-          <Search
-            :menu-to-icon="menuItemsToIcons"
-            :map-center="map_center"
-            @category-click="onSearchCategory"
-            @poi-click="onSearchPoi"
-            @feature-click="onFeatureClick"
-          >
+          <Search :menu-to-icon="menuItemsToIcons" :map-center="map_center">
             <Logo
               :main-url="mainUrl"
               :site-name="siteName"
@@ -167,7 +158,12 @@
       <div class="w-full max-w-md" />
       <div class="grow-[1]" />
       <PoiCard
-        v-if="selectedFeature && showPoi"
+        v-if="
+          selectedFeature &&
+          selectedFeature.properties &&
+          selectedFeature.properties.metadata &&
+          showPoi
+        "
         :poi="selectedFeature"
         class="grow-0"
         :explorer-mode-enabled="explorerModeEnabled"
@@ -190,7 +186,12 @@
           @scroll-top="scrollTop"
         />
         <PoiCard
-          v-else-if="selectedFeature && showPoi"
+          v-else-if="
+            selectedFeature &&
+            selectedFeature.properties &&
+            selectedFeature.properties.metadata &&
+            showPoi
+          "
           :poi="selectedFeature"
           class="grow-0 text-left h-full"
           :explorer-mode-enabled="explorerModeEnabled"
@@ -208,7 +209,6 @@
 </template>
 
 <script lang="ts">
-import copy from 'fast-copy'
 import { FitBoundsOptions, LngLatBoundsLike } from 'maplibre-gl'
 import Vue, { PropType, VueConstructor } from 'vue'
 import { MetaInfo } from 'vue-meta'
@@ -229,11 +229,9 @@ import CookiesConsent from '~/components/UI/CookiesConsent.vue'
 import Logo from '~/components/UI/Logo.vue'
 import { ContentEntry } from '~/lib/apiContent'
 import { ApiMenuCategory, MenuItem } from '~/lib/apiMenu'
-import { getPoiById, ApiPoi, getPois } from '~/lib/apiPois'
-import { ApiMenuItemSearchResult } from '~/lib/apiSearch'
+import { ApiPoi, getPois } from '~/lib/apiPois'
 import { headerFromSettings, Settings } from '~/lib/apiSettings'
 import { Mode, OriginEnum } from '~/utils/types'
-import { FilterValue } from '~/utils/types-filters'
 import { getHashPart, setHashParts } from '~/utils/url'
 import { flattenFeatures } from '~/utils/utilities'
 
@@ -315,12 +313,10 @@ export default (
   computed: {
     ...mapGetters({
       pois: 'menu/features',
-      filters: 'menu/filters',
       mode: 'map/mode',
       isModeExplorer: 'map/isModeExplorer',
       isModeFavorites: 'map/isModeFavorites',
       isModeExplorerOrFavorites: 'map/isModeExplorerOrFavorites',
-      selectedFeature: 'map/selectedFeature',
       map_center: 'map/center',
       favoritesIds: 'favorite/favoritesIds',
       selectedCategoryIds: 'menu/selectedCategoryIds',
@@ -329,6 +325,10 @@ export default (
 
     menuItems(): Record<ApiMenuCategory['id'], MenuItem> {
       return this.$store.getters['menu/menuItems']
+    },
+
+    selectedFeature(): ApiPoi {
+      return this.$store.getters['map/selectedFeature']
     },
 
     logoUrl(): string {
@@ -529,8 +529,6 @@ export default (
   methods: {
     ...mapActions({
       setSelectedCategoryIds: 'menu/setSelectedCategoryIds',
-      addSelectedCategoryIds: 'menu/addSelectedCategoryIds',
-      applyCategoriesFilters: 'menu/applyFilters',
       setSelectedFeature: 'map/setSelectedFeature',
       setMode: 'map/setMode',
       setFavorites: 'favorite/setFavorites',
@@ -561,59 +559,6 @@ export default (
     onQuitExplorerFavoriteMode() {
       this.$store.dispatch('map/setMode', Mode.BROWSER)
       this.setSelectedFeature(null)
-    },
-
-    onSearchPoi(poiId: number) {
-      getPoiById(
-        this.$vidoConfig().API_ENDPOINT,
-        this.$vidoConfig().API_PROJECT,
-        this.$vidoConfig().API_THEME,
-        poiId
-      ).then((poi) => {
-        this.setSelectedFeature(poi).then(() => {
-          this.$refs.mapFeatures.goToSelectedFeature()
-        })
-      })
-    },
-
-    onSearchCategory(newFilter: ApiMenuItemSearchResult) {
-      if (newFilter.filter_property) {
-        const filters = copy(this.filters[newFilter.id])
-        const filter = filters.find(
-          (filter: FilterValue) =>
-            (filter.type === 'boolean' ||
-              filter.type === 'multiselection' ||
-              filter.type === 'checkboxes_list') &&
-            filter.def.property === newFilter.filter_property
-        )
-        if (filter) {
-          switch (filter?.type) {
-            case 'boolean':
-              if (newFilter.filter_value === true) {
-                filter.filterValue = newFilter.filter_value
-              }
-              break
-            case 'multiselection':
-            case 'checkboxes_list':
-              filter.filterValues = [newFilter.filter_value]
-              break
-          }
-
-          this.applyCategoriesFilters({
-            categoryId: newFilter.id,
-            filterValues: filters,
-          })
-        }
-      }
-
-      this.$store.dispatch('map/setMode', Mode.BROWSER)
-      this.addSelectedCategoryIds([newFilter.id])
-    },
-
-    onFeatureClick(feature: ApiPoi) {
-      this.setSelectedFeature(feature).then(() => {
-        this.$refs.mapFeatures.goToSelectedFeature()
-      })
     },
 
     onBottomMenuButtonClick() {

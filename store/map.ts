@@ -13,8 +13,7 @@ enum Mutation {
 interface State {
   center: LatLng
   pitch: Pitch
-  selectedFeature: string | null
-  // eslint-disable-next-line camelcase
+  selectedFeature: string | null // ApiPoi
   mode: Mode
 }
 
@@ -98,7 +97,7 @@ export const getters = {
   all: (state: State) => state,
   center: (state: State) => state.center,
   pitch: (state: State) => state.pitch,
-  selectedFeature: (state: State) =>
+  selectedFeature: (state: State): ApiPoi =>
     state.selectedFeature && JSON.parse(state.selectedFeature),
   mode: (state: State) => state.mode,
   isModeExplorer: (state: State) => state.mode === Mode.EXPLORER,

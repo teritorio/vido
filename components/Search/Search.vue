@@ -70,11 +70,14 @@
 </template>
 
 <script lang="ts">
+import copy from 'fast-copy'
 import { debounce, DebouncedFunc } from 'lodash'
 import Vue, { PropType } from 'vue'
+import { mapActions } from 'vuex'
 
 import SearchInput from '~/components/Search/SearchInput.vue'
 import SearchResultBlock from '~/components/Search/SearchResultBlock.vue'
+import { ApiMenuCategory } from '~/lib/apiMenu'
 import { ApiPoi, ApiPoiId, getPoiById } from '~/lib/apiPois'
 import {
   ApiPoisSearchResult,
@@ -84,6 +87,7 @@ import {
   ApiSearchResult,
 } from '~/lib/apiSearch'
 import { MAP_ZOOM } from '~/lib/constants'
+import { FilterValue, FilterValues } from '~/utils/types-filters'
 
 export default Vue.extend({
   components: {
@@ -129,6 +133,10 @@ export default Vue.extend({
   },
 
   computed: {
+    filters(): Record<ApiMenuCategory['id'], FilterValues> {
+      return this.$store.getters['menu/filters']
+    },
+
     isLoading(): boolean {
       return this.searchResultId !== this.searchQueryId
     },
@@ -200,6 +208,12 @@ export default Vue.extend({
   },
 
   methods: {
+    ...mapActions({
+      setSelectedFeature: 'map/setSelectedFeature',
+      addSelectedCategoryIds: 'menu/addSelectedCategoryIds',
+      applyCategoriesFilters: 'menu/applyFilters',
+    }),
+
     reset() {
       this.searchMenuItemsResults = null
       this.searchPoisResults = null
@@ -234,14 +248,53 @@ export default Vue.extend({
         )
 
         if (filter?.properties) {
-          this.$emit('category-click', filter.properties)
+          const newFilter = filter.properties
+          if (newFilter.filter_property) {
+            const filters = copy(this.filters[newFilter.id])
+            const filter = filters.find(
+              (filter: FilterValue) =>
+                (filter.type === 'boolean' ||
+                  filter.type === 'multiselection' ||
+                  filter.type === 'checkboxes_list') &&
+                filter.def.property === newFilter.filter_property
+            )
+            if (filter) {
+              switch (filter?.type) {
+                case 'boolean':
+                  if (newFilter.filter_value === true) {
+                    filter.filterValue = newFilter.filter_value
+                  }
+                  break
+                case 'multiselection':
+                case 'checkboxes_list':
+                  filter.filterValues = [newFilter.filter_value as string]
+                  break
+              }
+
+              this.applyCategoriesFilters({
+                categoryId: newFilter.id,
+                filterValues: filters,
+              })
+            }
+          }
+
+          this.addSelectedCategoryIds([newFilter.id])
+
           this.reset()
         }
       }
     },
 
     onPoiClick(id: ApiPoiId) {
-      this.$emit('poi-click', id)
+      getPoiById(
+        this.$vidoConfig().API_ENDPOINT,
+        this.$vidoConfig().API_PROJECT,
+        this.$vidoConfig().API_THEME,
+        id
+      ).then((poi) => {
+        this.setSelectedFeature(poi)
+      })
+
       this.reset()
     },
 
@@ -257,7 +310,7 @@ export default Vue.extend({
               ? MAP_ZOOM.selectionZoom.municipality
               : MAP_ZOOM.selectionZoom.streetNumber,
         })
-        this.$emit('feature-click', f)
+        this.setSelectedFeature(feature)
       }
       this.reset()
     },
