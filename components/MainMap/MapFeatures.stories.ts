@@ -105,9 +105,3 @@ export const Features = bind(MapFeatures, {
   ...defaultProps,
   features: [feature1],
 })
-
-export const FeaturesSelected = bind(MapFeatures, {
-  ...defaultProps,
-  features: [feature1, feature2],
-  selectedFeature: feature2,
-})
