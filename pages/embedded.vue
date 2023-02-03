@@ -1,5 +1,5 @@
 <template>
-  <Embedded :settings="settings" :menu-items="menuItems" />
+  <Embedded :settings="settings" />
 </template>
 
 <script lang="ts">

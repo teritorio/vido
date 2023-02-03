@@ -2,7 +2,6 @@
   <PoisList
     :settings="settings"
     :nav-menu-entries="contents"
-    :menu-items="menuItems"
     :initial-category-id="parseInt($route.params.id)"
     :initial-pois="pois"
   />
@@ -118,6 +117,9 @@ export default Vue.extend({
   },
 
   created() {
+    this.$store.dispatch('menu/fetchConfig', {
+      menuItems: this.menuItems,
+    })
     this.$settings.set(this.settings)
     this.$propertyTranslations.set(this.propertyTranslations)
   },

@@ -20,7 +20,7 @@ import Vue, { PropType } from 'vue'
 
 import MapPois from '~/components/Map/MapPois.vue'
 import CategorySelector from '~/components/PoisList/CategorySelector.vue'
-import { MenuItem } from '~/lib/apiMenu'
+import { ApiMenuCategory, MenuItem } from '~/lib/apiMenu'
 import { ApiPoi, getPoiByCategoryId } from '~/lib/apiPois'
 import { Settings } from '~/lib/apiSettings'
 import { getBBoxCoordList } from '~/lib/bbox'
@@ -36,10 +36,6 @@ export default Vue.extend({
       type: Object as PropType<Settings>,
       required: true,
     },
-    menuItems: {
-      type: Array as PropType<MenuItem[]>,
-      required: true,
-    },
   },
 
   data(): {
@@ -50,6 +46,12 @@ export default Vue.extend({
       categoryId: undefined,
       features: [],
     }
+  },
+
+  computed: {
+    menuItems(): Record<ApiMenuCategory['id'], MenuItem> {
+      return this.$store.getters['menu/menuItems']
+    },
   },
 
   watch: {

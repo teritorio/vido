@@ -60,10 +60,6 @@ export default Vue.extend({
       type: Array as PropType<ContentEntry[]>,
       required: true,
     },
-    menuItems: {
-      type: Array as PropType<MenuItem[]>,
-      required: true,
-    },
     initialCategoryId: {
       type: Number,
       required: true,
@@ -85,8 +81,12 @@ export default Vue.extend({
   },
 
   computed: {
+    menuItems(): Record<ApiMenuCategory['id'], MenuItem> {
+      return this.$store.getters['menu/menuItems']
+    },
+
     category(): ApiMenuCategory {
-      return this.menuItems.find(
+      return Object.values(this.menuItems).find(
         (menuItem) => menuItem.id == this.categoryId
       ) as ApiMenuCategory
     },
