@@ -20,6 +20,7 @@
           {{ (filter.def.name && filter.def.name.fr) || filter.def.property }}
         </label>
         <t-rich-select
+          variant="relative"
           placeholder="Recherchez ou ajoutez une valeur"
           search-box-placeholder="Rechercher ..."
           multiple

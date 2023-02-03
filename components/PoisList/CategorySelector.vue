@@ -1,6 +1,7 @@
 <template>
   <t-rich-select
     id="category-selector"
+    variant="default"
     :options="menuEntries"
     :value="categoryId"
     :placeholder="$t('categorySelector.placeholder')"
