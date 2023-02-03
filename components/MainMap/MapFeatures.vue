@@ -65,7 +65,7 @@ import { getBBoxFeatures, getBBoxFeature } from '~/lib/bbox'
 import { DEFAULT_MAP_STYLE, MAP_ZOOM } from '~/lib/constants'
 import { VectorTilesPoi, vectorTilesPoi2ApiPoi } from '~/lib/vectorTilesPois'
 import { filterRouteByCategories, filterRouteByPoiIds } from '~/utils/styles'
-import { LatLng, MapStyleEnum } from '~/utils/types'
+import { LatLng, MapStyleEnum, Mode } from '~/utils/types'
 import { getHashPart } from '~/utils/url'
 
 const STYLE_LAYERS = [
@@ -150,6 +150,7 @@ export default (
   computed: {
     ...mapGetters({
       selectedFeature: 'map/selectedFeature',
+      mode: 'map/mode',
     }),
 
     availableStyles(): MapStyleEnum[] {
@@ -158,9 +159,13 @@ export default (
   },
 
   watch: {
-    features() {
+    features(val) {
       if (!this.map) {
         return
+      }
+
+      if (this.mode === Mode.FAVORITES && val.length > 0) {
+        this.handleSnackAction()
       }
 
       // Change visible data
