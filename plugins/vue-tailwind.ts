@@ -79,7 +79,7 @@ const settings = {
     props: {
       wrapped: true,
       classes: {
-        wrapper: 'relative',
+        wrapper: '',
         buttonWrapper: '',
         selectButton:
           'px-3 py-2 text-black transition duration-100 ease-in-out bg-white border border-zinc-300 rounded shadow-sm focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500 focus:outline-none focus:ring-opacity-50 disabled:opacity-50 disabled:cursor-not-allowed',
@@ -116,7 +116,7 @@ const settings = {
         selectedIcon: '',
         enterClass: 'opacity-0',
         enterActiveClass: 'transition ease-out duration-100 z-40',
-        enterToClass: 'opacity-100 absolute',
+        enterToClass: 'opacity-100',
         leaveClass: 'opacity-100',
         leaveActiveClass: 'transition ease-in duration-75',
         leaveToClass: 'opacity-0',
@@ -138,7 +138,7 @@ const settings = {
         selectButtonClearButton:
           'flex shrink-0 items-center justify-center absolute right-0 top-0 m-2 h-6 w-6',
         selectButtonClearIcon: 'fill-current h-3 w-3',
-        dropdown: 'absolute w-full',
+        dropdown: 'absolute w-full z-10',
         dropdownFeedback: '',
         loadingMoreResults: '',
         optionsList: 'overflow-auto',
@@ -159,6 +159,16 @@ const settings = {
         leaveClass: '',
         leaveActiveClass: '',
         leaveToClass: '',
+      },
+      variants: {
+        relative: {
+          wrapper: '',
+          enterToClass: 'opacity-100 absolute',
+          enterActiveClass: 'transition ease-out duration-100 z-40',
+        },
+        default: {
+          wrapper: 'relative',
+        },
       },
     },
   },
