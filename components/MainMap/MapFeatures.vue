@@ -52,6 +52,7 @@ import maplibregl, {
   GeoJSONSource,
 } from 'maplibre-gl'
 import Vue, { PropType, VueConstructor } from 'vue'
+import { mapGetters, mapActions } from 'vuex'
 
 import MapControlsExplore from '~/components/MainMap/MapControlsExplore.vue'
 import SnackBar from '~/components/MainMap/SnackBar.vue'
@@ -118,10 +119,6 @@ export default (
       type: Array as PropType<ApiPoi[]>,
       default: () => [],
     },
-    selectedFeature: {
-      type: Object as PropType<ApiPoi | null>,
-      default: null,
-    },
     selectedCategoriesIds: {
       type: Array as PropType<string[]>,
       default: () => [],
@@ -151,6 +148,10 @@ export default (
   },
 
   computed: {
+    ...mapGetters({
+      selectedFeature: 'map/selectedFeature',
+    }),
+
     availableStyles(): MapStyleEnum[] {
       return [MapStyleEnum.vector, MapStyleEnum.aerial, MapStyleEnum.bicycle]
     },
@@ -214,6 +215,10 @@ export default (
   },
 
   methods: {
+    ...mapActions({
+      setSelectedFeature: 'map/setSelectedFeature',
+    }),
+
     // Map and style init and changes
 
     onMapInit(map: maplibregl.Map) {
@@ -278,7 +283,7 @@ export default (
 
     updateSelectedFeature(feature: ApiPoi | null, fetch: boolean = false) {
       if (this.selectedFeature !== feature) {
-        this.$emit('on-select-feature', feature)
+        this.setSelectedFeature(feature)
 
         if (feature && fetch && feature.properties.metadata.id) {
           try {
@@ -293,7 +298,7 @@ export default (
               // Overide geometry.
               // Keep same original location to avoid side effect on moving selected object.
               apiPoi.geometry = feature.geometry
-              this.$emit('on-select-feature', apiPoi)
+              this.setSelectedFeature(apiPoi)
             })
           } catch (e) {
             // eslint-disable-next-line no-console

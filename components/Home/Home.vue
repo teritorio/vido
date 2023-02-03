@@ -105,11 +105,9 @@
           :small="isBottomMenuOpened"
           :categories="menuItems"
           :features="mapFeatures"
-          :selected-feature="selectedFeature"
           :selected-categories-ids="isModeExplorer ? [] : selectedCategoryIds"
           :style-icon-filter="(isModeExplorer && poiFilters) || null"
           :explorer-mode-enabled="explorerModeEnabled"
-          @on-select-feature="setSelectedFeature($event)"
         >
           <div class="relative">
             <button
