@@ -40,7 +40,7 @@
       :aria-label="$tc('headerMenu.clearAllCategories')"
       @click="clearSelectedCategoryIds()"
     >
-      <font-awesome-icon icon="times" class="text-white" size="md" />
+      <font-awesome-icon icon="times" class="text-white" />
     </button>
   </div>
 </template>
