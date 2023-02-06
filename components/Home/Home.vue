@@ -16,38 +16,40 @@
           mode="out-in"
           :class="['overflow-x-hidden', !isFilterActive && 'overflow-y-auto']"
         >
-          <MenuBlock
-            v-if="isModeExplorerOrFavorites"
-            key="ExplorerOrFavoritesBack"
-            extra-class-text-background="bg-blue-500 text-white"
-          >
-            <ExplorerOrFavoritesBack @click="onQuitExplorerFavoriteMode" />
-          </MenuBlock>
-
-          <Menu
-            v-else
-            key="Menu"
-            menu-block="MenuBlock"
-            :is-on-search="isOnSearch"
-            :is-filter-active="isFilterActive"
-            @activate-filter="onActivateFilter"
-            @scroll-top="scrollTop"
-          >
-            <Search
-              :menu-to-icon="menuItemsToIcons"
-              :map-center="map_center"
-              @focus="isOnSearch = true"
-              @blur="isOnSearch = false"
+          <client-only>
+            <MenuBlock
+              v-if="isModeExplorerOrFavorites"
+              key="ExplorerOrFavoritesBack"
+              extra-class-text-background="bg-blue-500 text-white"
             >
-              <Logo
-                :main-url="mainUrl"
-                :site-name="siteName"
-                :logo-url="logoUrl"
-                class="flex-none mr-2"
-                image-class="max-w-2xl max-h-12 md:max-h-16"
-              />
-            </Search>
-          </Menu>
+              <ExplorerOrFavoritesBack @click="onQuitExplorerFavoriteMode" />
+            </MenuBlock>
+
+            <Menu
+              v-else
+              key="Menu"
+              menu-block="MenuBlock"
+              :is-on-search="isOnSearch"
+              :is-filter-active="isFilterActive"
+              @activate-filter="onActivateFilter"
+              @scroll-top="scrollTop"
+            >
+              <Search
+                :menu-to-icon="menuItemsToIcons"
+                :map-center="map_center"
+                @focus="isOnSearch = true"
+                @blur="isOnSearch = false"
+              >
+                <Logo
+                  :main-url="mainUrl"
+                  :site-name="siteName"
+                  :logo-url="logoUrl"
+                  class="flex-none mr-2"
+                  image-class="max-w-2xl max-h-12 md:max-h-16"
+                />
+              </Search>
+            </Menu>
+          </client-only>
         </transition-group>
       </div>
     </header>
@@ -63,26 +65,28 @@
       class="flex md:hidden relative fidex top-0 bottom-0 z-10 flex-row w-full space-x-4"
     >
       <div :class="['w-full', isBottomMenuOpened && 'hidden']">
-        <aside
-          v-if="!isModeExplorerOrFavorites"
-          class="flex flex-col max-h-full px-5 py-4 space-y-6 shadow-md pointer-events-auto md:rounded-xl md:w-96 bg-white min-h-20"
-        >
-          <Search :menu-to-icon="menuItemsToIcons" :map-center="map_center">
-            <Logo
-              :main-url="mainUrl"
-              :site-name="siteName"
-              :logo-url="logoUrl"
-              class="flex-none md:hidden mr-2"
-              image-class="max-w-2xl max-h-12 md:max-h-16"
-            />
-          </Search>
-        </aside>
-        <aside
-          v-else
-          class="flex flex-col max-h-full px-5 py-4 space-y-6 shadow-md pointer-events-auto md:rounded-xl md:w-96 bg-blue-500 md:bg-white text-white h-20"
-        >
-          <ExplorerOrFavoritesBack @click="onQuitExplorerFavoriteMode" />
-        </aside>
+        <client-only>
+          <aside
+            v-if="!isModeExplorerOrFavorites"
+            class="flex flex-col max-h-full px-5 py-4 space-y-6 shadow-md pointer-events-auto md:rounded-xl md:w-96 bg-white min-h-20"
+          >
+            <Search :menu-to-icon="menuItemsToIcons" :map-center="map_center">
+              <Logo
+                :main-url="mainUrl"
+                :site-name="siteName"
+                :logo-url="logoUrl"
+                class="flex-none md:hidden mr-2"
+                image-class="max-w-2xl max-h-12 md:max-h-16"
+              />
+            </Search>
+          </aside>
+          <aside
+            v-else
+            class="flex flex-col max-h-full px-5 py-4 space-y-6 shadow-md pointer-events-auto md:rounded-xl md:w-96 bg-blue-500 md:bg-white text-white h-20"
+          >
+            <ExplorerOrFavoritesBack @click="onQuitExplorerFavoriteMode" />
+          </aside>
+        </client-only>
       </div>
     </header>
 
