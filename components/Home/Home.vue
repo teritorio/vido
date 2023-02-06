@@ -133,7 +133,7 @@
           <FavoriteMenu
             v-if="favoritesModeEnabled"
             :has-favorites="favoritesIds.length !== 0"
-            :explore-around-selected-poi="exploreAroundSelectedPoi"
+            :explore-around-selected-poi="toggleExploreAroundSelectedPoi"
             :go-to-selected-poi="goToSelectedFeature"
             :toggle-favorite="toggleFavorite"
             :explorer-mode-enabled="explorerModeEnabled"
@@ -168,8 +168,8 @@
         class="grow-0"
         :explorer-mode-enabled="explorerModeEnabled"
         :favorites-mode-enabled="favoritesModeEnabled"
-        @explore-click="exploreAroundSelectedPoi"
-        @favorite-click="toggleFavorite($event)"
+        @explore-click="toggleExploreAroundSelectedPoi"
+        @favorite-click="toggleFavorite"
         @zoom-click="goToSelectedFeature"
       />
       <div class="grow-[3]" />
@@ -196,8 +196,8 @@
           class="grow-0 text-left h-full"
           :explorer-mode-enabled="explorerModeEnabled"
           :favorites-mode-enabled="favoritesModeEnabled"
-          @explore-click="exploreAroundSelectedPoi"
-          @favorite-click="toggleFavorite($event)"
+          @explore-click="toggleExploreAroundSelectedPoi"
+          @favorite-click="toggleFavorite"
           @zoom-click="goToSelectedFeature"
         />
       </div>
@@ -563,7 +563,7 @@ export default mixins(HomeMixin).extend({
       this.isFilterActive = val
     },
 
-    exploreAroundSelectedPoi(feature?: ApiPoi) {
+    toggleExploreAroundSelectedPoi(feature?: ApiPoi) {
       if (feature) {
         this.setSelectedFeature(feature)
       }
