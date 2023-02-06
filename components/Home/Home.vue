@@ -97,7 +97,7 @@
           :categories="menuItems"
           :features="mapFeatures"
           :selected-categories-ids="isModeExplorer ? [] : selectedCategoryIds"
-          :style-icon-filter="(isModeExplorer && poiFilters) || null"
+          :style-icon-filter="poiFilters"
           :explorer-mode-enabled="explorerModeEnabled"
         >
           <div class="relative">
@@ -303,7 +303,6 @@ export default mixins(HomeMixin).extend({
     ...mapGetters({
       pois: 'menu/features',
       mode: 'map/mode',
-      isModeExplorer: 'map/isModeExplorer',
       isModeFavorites: 'map/isModeFavorites',
       isModeExplorerOrFavorites: 'map/isModeExplorerOrFavorites',
       map_center: 'map/center',
@@ -365,12 +364,6 @@ export default mixins(HomeMixin).extend({
           left: 500,
         }
       }
-    },
-
-    poiFilters(): string[][] {
-      return Object.values(this.menuItems)
-        .map((c) => c.category?.style_class)
-        .filter((s) => s !== undefined) as string[][]
     },
 
     mapFeatures(): ApiPoi[] {

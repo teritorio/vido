@@ -24,6 +24,10 @@ export default (
   },
 
   computed: {
+    isModeExplorer(): boolean {
+      return this.$store.getters['map/isModeExplorer']
+    },
+
     menuItems(): Record<ApiMenuCategory['id'], MenuItem> {
       return this.$store.getters['menu/menuItems']
     },
@@ -38,6 +42,16 @@ export default (
 
     selectedFeature(): ApiPoi {
       return this.$store.getters['map/selectedFeature']
+    },
+
+    poiFilters(): string[][] | null {
+      return (
+        (this.isModeExplorer &&
+          (Object.values(this.menuItems)
+            .map((c) => c.category?.style_class)
+            .filter((s) => s !== undefined) as string[][])) ||
+        null
+      )
     },
   },
 
