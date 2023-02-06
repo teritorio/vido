@@ -14,8 +14,20 @@
         :categories="menuItems"
         :features="features"
         :selected-categories-ids="[categoryId]"
-        :style-icon-filter="null"
+        :style-icon-filter="poiFilters"
         :explorer-mode-enabled="explorerModeEnabled"
+      />
+    </div>
+    <div class="fixed flex left-8 right-16 bottom-5">
+      <PoiCard
+        v-if="selectedFeature"
+        :poi="selectedFeature"
+        class="grow-0"
+        :explorer-mode-enabled="explorerModeEnabled"
+        :favorites-mode-enabled="favoritesModeEnabled"
+        @explore-click="toggleExploreAroundSelectedPoi"
+        @favorite-click="toggleFavorite($event)"
+        @zoom-click="goToSelectedFeature"
       />
     </div>
   </div>
@@ -27,13 +39,16 @@ import mixins from 'vue-typed-mixins'
 
 import HomeMixin from '~/components/Home/HomeMixin'
 import MapFeatures from '~/components/MainMap/MapFeatures.vue'
+import PoiCard from '~/components/PoisCard/PoiCard.vue'
 import CategorySelector from '~/components/PoisList/CategorySelector.vue'
 import { ApiPoi, getPoiByCategoryId } from '~/lib/apiPois'
+import { Mode } from '~/utils/types'
 
 export default mixins(HomeMixin).extend({
   components: {
     CategorySelector,
     MapFeatures,
+    PoiCard,
   },
 
   data(): {
@@ -81,6 +96,15 @@ export default mixins(HomeMixin).extend({
   methods: {
     onMenuChange(newCategoryId: number) {
       this.categoryId = newCategoryId
+    },
+
+    toggleExploreAroundSelectedPoi(feature?: ApiPoi) {
+      if (!this.isModeExplorer) {
+        this.setMode(Mode.EXPLORER)
+        this.goToSelectedFeature()
+      } else {
+        this.setMode(Mode.BROWSER)
+      }
     },
   },
 })
