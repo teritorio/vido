@@ -1,5 +1,5 @@
 <template>
-  <div class="w-full h-full">
+  <div class="flex flex-grow">
     <MapBase
       ref="mapBase"
       :features="features"
@@ -447,12 +447,3 @@ export default (
   },
 })
 </script>
-
-<style lang="scss" scoped>
-:deep(#map-container) {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  width: 100%;
-}
-</style>

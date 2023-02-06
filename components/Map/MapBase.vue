@@ -1,5 +1,5 @@
 <template>
-  <div id="map-container" class="flex flex-col">
+  <div id="map-container" class="w-full h-full flex flex-col">
     <Map
       :center="center"
       :bounds="bounds"
