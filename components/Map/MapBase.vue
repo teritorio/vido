@@ -3,6 +3,7 @@
     <Map
       :center="center"
       :bounds="bounds"
+      :fit-bounds-options="fitBoundsOptions()"
       :zoom="selectionZoom.poi"
       :fullscreen-control="fullscreenControl"
       :extra-attributions="extraAttributions"
@@ -161,12 +162,16 @@ export default Vue.extend({
   },
 
   methods: {
-    fitBounds(bounds: LngLatBoundsLike, options: FitBoundsOptions = {}) {
-      this.map.fitBounds(bounds, {
+    fitBoundsOptions(options: FitBoundsOptions = {}): FitBoundsOptions {
+      return {
         maxZoom: 17,
         padding: this.fitBoundsPaddingOptions,
         ...options,
-      })
+      }
+    },
+
+    fitBounds(bounds: LngLatBoundsLike, options: FitBoundsOptions = {}): void {
+      this.map.fitBounds(bounds, this.fitBoundsOptions(options))
     },
 
     initPoiLayer(
