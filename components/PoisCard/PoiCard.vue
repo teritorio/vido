@@ -91,7 +91,7 @@
         class="flex items-center space-x-2 justify-evenly shrink-0 bottom-0 pt-2"
       >
         <a
-          v-if="$screen.smallScreen && coordinatesHref"
+          v-if="$screen.phone && coordinatesHref"
           :href="coordinatesHref"
           class="flex flex-col items-center flex-1 h-full p-2 space-y-2 rounded-lg hover:bg-zinc-100"
           :title="$tc('poiCard.findRoute')"
