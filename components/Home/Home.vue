@@ -237,6 +237,7 @@ import { ContentEntry } from '~/lib/apiContent'
 import { ApiMenuCategory, MenuItem } from '~/lib/apiMenu'
 import { ApiPoi, getPois } from '~/lib/apiPois'
 import { headerFromSettings } from '~/lib/apiSettings'
+import { getBBoxFeatures } from '~/lib/bbox'
 import { Mode, OriginEnum } from '~/utils/types'
 import { getHashPart, setHashParts } from '~/utils/url'
 import { flattenFeatures } from '~/utils/utilities'
@@ -365,7 +366,7 @@ export default mixins(HomeMixin).extend({
           top: 100,
           bottom: this.isPoiCardVisible ? 400 : 100,
           right: 100,
-          left: 500,
+          left: this.isModeExplorerOrFavorites ? 50 : 500,
         }
       }
     },
@@ -496,8 +497,16 @@ export default mixins(HomeMixin).extend({
       this.setSelectedFeature(this.initialPoi)
     }
 
-    // @ts-ignore
-    this.initialBbox = this.settings.bbox_line.coordinates
+    if (this.mode === Mode.FAVORITES) {
+      this.handleFavorites().then((favorites) => {
+        if (favorites) {
+          this.initialBbox = getBBoxFeatures(favorites)
+        }
+      })
+    } else {
+      // @ts-ignore
+      this.initialBbox = this.settings.bbox_line.coordinates
+    }
   },
 
   methods: {
@@ -623,10 +632,11 @@ export default mixins(HomeMixin).extend({
       }
     },
 
-    handleFavorites() {
-      this.fetchFavorites(this.favoritesIds)
+    handleFavorites(): Promise<void | ApiPoi[]> {
+      return this.fetchFavorites(this.favoritesIds)
         .then((favorites) => {
           this.favorites = favorites
+          return this.favorites
         })
         .catch((e) => {
           // eslint-disable-next-line no-console
