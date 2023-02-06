@@ -23,25 +23,17 @@
 
 <script lang="ts">
 import { FitBoundsOptions } from 'maplibre-gl'
-import Vue, { PropType } from 'vue'
+import mixins from 'vue-typed-mixins'
 
+import HomeMixin from '~/components/Home/HomeMixin'
 import MapFeatures from '~/components/MainMap/MapFeatures.vue'
 import CategorySelector from '~/components/PoisList/CategorySelector.vue'
-import { ApiMenuCategory, MenuItem } from '~/lib/apiMenu'
 import { ApiPoi, getPoiByCategoryId } from '~/lib/apiPois'
-import { Settings } from '~/lib/apiSettings'
 
-export default Vue.extend({
+export default mixins(HomeMixin).extend({
   components: {
     CategorySelector,
     MapFeatures,
-  },
-
-  props: {
-    settings: {
-      type: Object as PropType<Settings>,
-      required: true,
-    },
   },
 
   data(): {
@@ -55,10 +47,6 @@ export default Vue.extend({
   },
 
   computed: {
-    menuItems(): Record<ApiMenuCategory['id'], MenuItem> {
-      return this.$store.getters['menu/menuItems']
-    },
-
     fitBoundsPaddingOptions(): FitBoundsOptions['padding'] {
       return {
         top: 100,
@@ -66,10 +54,6 @@ export default Vue.extend({
         right: 100,
         left: 100,
       }
-    },
-
-    explorerModeEnabled(): boolean {
-      return this.settings.themes[0]?.explorer_mode ?? true
     },
   },
 

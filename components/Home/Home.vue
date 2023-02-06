@@ -210,11 +210,13 @@
 
 <script lang="ts">
 import { FitBoundsOptions, LngLatBoundsLike } from 'maplibre-gl'
-import Vue, { PropType, VueConstructor } from 'vue'
+import { PropType } from 'vue'
 import { MetaInfo } from 'vue-meta'
+import mixins from 'vue-typed-mixins'
 import { mapGetters, mapActions } from 'vuex'
 
 import ExplorerOrFavoritesBack from '~/components/Home/ExplorerOrFavoritesBack.vue'
+import HomeMixin from '~/components/Home/HomeMixin'
 import Menu from '~/components/Home/Menu.vue'
 import MenuBlock from '~/components/Home/MenuBlock.vue'
 import SelectedCategories from '~/components/Home/SelectedCategories.vue'
@@ -230,21 +232,12 @@ import Logo from '~/components/UI/Logo.vue'
 import { ContentEntry } from '~/lib/apiContent'
 import { ApiMenuCategory, MenuItem } from '~/lib/apiMenu'
 import { ApiPoi, getPois } from '~/lib/apiPois'
-import { headerFromSettings, Settings } from '~/lib/apiSettings'
+import { headerFromSettings } from '~/lib/apiSettings'
 import { Mode, OriginEnum } from '~/utils/types'
 import { getHashPart, setHashParts } from '~/utils/url'
 import { flattenFeatures } from '~/utils/utilities'
 
-export default (
-  Vue as VueConstructor<
-    Vue & {
-      $refs: {
-        mapFeatures: InstanceType<typeof MapFeatures>
-        bottomMenu: HTMLDivElement
-      }
-    }
-  >
-).extend({
+export default mixins(HomeMixin).extend({
   components: {
     Logo,
     FavoriteMenu,
@@ -262,10 +255,6 @@ export default (
   },
 
   props: {
-    settings: {
-      type: Object as PropType<Settings>,
-      required: true,
-    },
     navMenuEntries: {
       type: Array as PropType<ContentEntry[]>,
       required: true,
@@ -327,20 +316,8 @@ export default (
       return this.$store.getters['menu/menuItems']
     },
 
-    selectedFeature(): ApiPoi {
-      return this.$store.getters['map/selectedFeature']
-    },
-
     logoUrl(): string {
       return this.settings.themes[0]?.logo_url || ''
-    },
-
-    favoritesModeEnabled(): boolean {
-      return this.settings.themes[0]?.favorites_mode ?? true
-    },
-
-    explorerModeEnabled(): boolean {
-      return this.settings.themes[0]?.explorer_mode ?? true
     },
 
     siteName(): string {
@@ -530,7 +507,6 @@ export default (
     ...mapActions({
       setSelectedCategoryIds: 'menu/setSelectedCategoryIds',
       setSelectedFeature: 'map/setSelectedFeature',
-      setMode: 'map/setMode',
       setFavorites: 'favorite/setFavorites',
     }),
 
@@ -638,10 +614,6 @@ export default (
       } else {
         this.showFavoritesOverlay = true
       }
-    },
-
-    goToSelectedFeature() {
-      this.$refs.mapFeatures?.goToSelectedFeature()
     },
 
     scrollTop() {
