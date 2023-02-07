@@ -119,16 +119,6 @@
           </div>
         </MapFeatures>
         <div
-          v-if="isLoadingFeatures"
-          class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-80"
-        >
-          <font-awesome-icon
-            icon="spinner"
-            class="text-zinc-400 animate-spin"
-            size="3x"
-          />
-        </div>
-        <div
           :class="[
             'absolute flex justify-end pointer-events-auto items-top pt-4 right-3 md:pt-0 w-40 md:w-48 top-4',
             isBottomMenuOpened && 'hidden',
@@ -313,7 +303,6 @@ export default mixins(HomeMixin).extend({
       map_center: 'map/center',
       favoritesIds: 'favorite/favoritesIds',
       selectedCategoryIds: 'menu/selectedCategoryIds',
-      isLoadingFeatures: 'menu/isLoadingFeatures',
     }),
 
     menuItems(): Record<ApiMenuCategory['id'], MenuItem> {

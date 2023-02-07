@@ -39,6 +39,16 @@
       </template>
     </MapBase>
     <SnackBar @click="handleSnackAction" />
+    <div
+      v-if="isLoadingFeatures"
+      class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-80"
+    >
+      <font-awesome-icon
+        icon="spinner"
+        class="text-zinc-400 animate-spin"
+        size="3x"
+      />
+    </div>
   </div>
 </template>
 
@@ -150,6 +160,7 @@ export default (
   computed: {
     ...mapGetters({
       selectedFeature: 'map/selectedFeature',
+      isLoadingFeatures: 'menu/isLoadingFeatures',
     }),
 
     availableStyles(): MapStyleEnum[] {
