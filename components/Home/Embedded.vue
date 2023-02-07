@@ -17,7 +17,7 @@
         <SelectedCategories />
       </div>
     </div>
-    <div class="fixed flex left-8 right-16 bottom-5">
+    <div class="fixed flex left-8 right-16 bottom-5 pointer-events-none">
       <PoiCard
         v-if="selectedFeature"
         :poi="selectedFeature"
