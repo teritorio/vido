@@ -254,20 +254,11 @@ export default mixins(HomeMixin).extend({
       type: Array as PropType<ContentEntry[]>,
       required: true,
     },
-    initialCategoryIds: {
-      type: Array as PropType<number[]>,
-      default: null,
-    },
-    initialPoi: {
-      type: Object as PropType<ApiPoi>,
-      default: null,
-    },
   },
 
   data(): {
     isMenuItemOpen: boolean
     showPoi: boolean
-    initialBbox: LngLatBoundsLike | null
     showFavoritesOverlay: boolean
     allowRegionBackZoom: boolean
     favorites: ApiPoi[] | null
@@ -278,7 +269,6 @@ export default mixins(HomeMixin).extend({
     return {
       isMenuItemOpen: false,
       showPoi: false,
-      initialBbox: null,
       showFavoritesOverlay: false,
       allowRegionBackZoom: false,
       favorites: null,
@@ -463,28 +453,6 @@ export default mixins(HomeMixin).extend({
         ],
     })
 
-    if (this.initialCategoryIds) {
-      this.setSelectedCategoryIds(this.initialCategoryIds)
-    } else if (
-      typeof location !== 'undefined' &&
-      !getHashPart(this.$router, 'favs')
-    ) {
-      const enabledCategories: ApiMenuCategory['id'][] = []
-
-      Object.keys(this.menuItems).forEach((categoryIdString) => {
-        const categoryId = parseInt(categoryIdString, 10)
-        if (this.menuItems[categoryId].selected_by_default) {
-          enabledCategories.push(categoryId)
-        }
-      })
-
-      this.setSelectedCategoryIds(enabledCategories)
-    }
-
-    if (this.initialPoi) {
-      this.setSelectedFeature(this.initialPoi)
-    }
-
     if (this.mode === Mode.FAVORITES) {
       this.handleFavorites().then((favorites) => {
         if (favorites) {
@@ -499,8 +467,6 @@ export default mixins(HomeMixin).extend({
 
   methods: {
     ...mapActions({
-      setSelectedCategoryIds: 'menu/setSelectedCategoryIds',
-      setSelectedFeature: 'map/setSelectedFeature',
       setFavorites: 'favorite/setFavorites',
     }),
 

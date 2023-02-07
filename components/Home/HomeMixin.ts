@@ -1,3 +1,4 @@
+import { LngLatBoundsLike } from 'maplibre-gl'
 import Vue, { PropType, VueConstructor } from 'vue'
 import { mapActions } from 'vuex'
 
@@ -21,6 +22,22 @@ export default (
       type: Object as PropType<Settings>,
       required: true,
     },
+    initialCategoryIds: {
+      type: Array as PropType<number[]>,
+      default: null,
+    },
+    initialPoi: {
+      type: Object as PropType<ApiPoi>,
+      default: null,
+    },
+  },
+
+  data(): {
+    initialBbox: LngLatBoundsLike | null
+  } {
+    return {
+      initialBbox: null,
+    }
   },
 
   computed: {
@@ -59,9 +76,32 @@ export default (
     },
   },
 
+  mounted() {
+    if (this.initialCategoryIds) {
+      this.setSelectedCategoryIds(this.initialCategoryIds)
+    } else if (typeof location !== 'undefined') {
+      const enabledCategories: ApiMenuCategory['id'][] = []
+
+      Object.keys(this.menuItems).forEach((categoryIdString) => {
+        const categoryId = parseInt(categoryIdString, 10)
+        if (this.menuItems[categoryId].selected_by_default) {
+          enabledCategories.push(categoryId)
+        }
+      })
+
+      this.setSelectedCategoryIds(enabledCategories)
+    }
+
+    if (this.initialPoi) {
+      this.setSelectedFeature(this.initialPoi)
+    }
+  },
+
   methods: {
     ...mapActions({
       setMode: 'map/setMode',
+      setSelectedCategoryIds: 'menu/setSelectedCategoryIds',
+      setSelectedFeature: 'map/setSelectedFeature',
     }),
 
     goToSelectedFeature() {

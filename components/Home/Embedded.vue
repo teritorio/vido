@@ -1,10 +1,10 @@
 <template>
   <div class="flex flex-col h-screen">
     <CategorySelector :menu-items="menuItems" @category-change="onMenuChange" />
-    <div class="flex flex-grow">
+    <div v-if="initialBbox" class="flex flex-grow">
       <MapFeatures
         ref="mapFeatures"
-        :default-bounds="settings.bbox_line.coordinates"
+        :default-bounds="initialBbox"
         :fit-bounds-padding-options="fitBoundsPaddingOptions"
         :extra-attributions="settings.attributions"
         :categories="menuItems"
@@ -69,8 +69,15 @@ export default mixins(HomeMixin).extend({
     },
   },
 
+  mounted() {
+    // @ts-ignore
+    this.initialBbox = this.settings.bbox_line.coordinates
+  },
+
   watch: {
     selectedCategoryIds() {
+      this.routerPushUrl()
+
       if (this.selectedCategoryIds) {
         this.$store.dispatch('menu/fetchFeatures', {
           apiEndpoint: this.$vidoConfig().API_ENDPOINT,
@@ -79,6 +86,10 @@ export default mixins(HomeMixin).extend({
           categoryIds: this.selectedCategoryIds,
         })
       }
+    },
+
+    selectedFeature() {
+      this.routerPushUrl()
     },
   },
 
@@ -89,6 +100,23 @@ export default mixins(HomeMixin).extend({
 
     onMenuChange(newCategoryId: number) {
       this.addSelectedCategoryIds([newCategoryId])
+    },
+
+    routerPushUrl() {
+      const categoryIds = this.selectedCategoryIds.join(',')
+      const id =
+        this.selectedFeature?.properties?.metadata?.id?.toString() ||
+        this.selectedFeature?.id?.toString() ||
+        null
+
+      this.$router.push({
+        path:
+          '/embedded' +
+          (categoryIds ? `/${categoryIds}/` : '/') +
+          (id ? `${id}` : ''),
+        query: this.$router.currentRoute.query,
+        hash: this.$router.currentRoute.hash,
+      })
     },
 
     toggleExploreAroundSelectedPoi(feature?: ApiPoi) {

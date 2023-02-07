@@ -1,5 +1,9 @@
 <template>
-  <Embedded :settings="settings" />
+  <Embedded
+    :settings="settings"
+    :initial-category-ids="categoryIds"
+    :initial-poi="initialPoi"
+  />
 </template>
 
 <script lang="ts">
@@ -9,6 +13,7 @@ import { mapActions } from 'vuex'
 
 import Embedded from '~/components/Home/Embedded.vue'
 import { ApiMenuItem, getMenu } from '~/lib/apiMenu'
+import { getPoiById, ApiPoi } from '~/lib/apiPois'
 import {
   getPropertyTranslations,
   PropertyTranslations,
@@ -27,6 +32,8 @@ export default Vue.extend({
     settings: Settings
     propertyTranslations: PropertyTranslations
     menuItems: ApiMenuItem[]
+    categoryIds: number[] | null
+    initialPoi: ApiPoi | null
   }> {
     const fetchSettings = getSettings(
       vidoConfig(req, $config).API_ENDPOINT,
@@ -44,17 +51,49 @@ export default Vue.extend({
       vidoConfig(req, $config).API_THEME
     )
 
-    const [settings, propertyTranslations, menuItems] = await Promise.all([
-      fetchSettings,
-      fetchPropertyTranslations,
-      fetchMenuItems,
-    ])
+    let categoryIdsJoin: string | null
+    let poiId: string | null
+    // Workaround Nuxt missing feature to simple respect trialling slash meaning
+    if (params.poiId) {
+      categoryIdsJoin = params.p1
+      poiId = params.poiId
+    } else if (route.path.endsWith('/')) {
+      categoryIdsJoin = params.p1
+      poiId = null
+    } else {
+      categoryIdsJoin = null
+      poiId = params.p1
+    }
+
+    const categoryIds =
+      (categoryIdsJoin &&
+        categoryIdsJoin.split(',').map((id) => parseInt(id))) ||
+      null
+    let fetchPoi: Promise<ApiPoi | null> = Promise.resolve(null)
+    if (poiId) {
+      fetchPoi = getPoiById(
+        vidoConfig(req, $config).API_ENDPOINT,
+        vidoConfig(req, $config).API_PROJECT,
+        vidoConfig(req, $config).API_THEME,
+        poiId
+      )
+    }
+
+    const [settings, propertyTranslations, menuItems, initialPoi] =
+      await Promise.all([
+        fetchSettings,
+        fetchPropertyTranslations,
+        fetchMenuItems,
+        fetchPoi,
+      ])
 
     return Promise.resolve({
       config: vidoConfig(req, $config),
       settings,
       propertyTranslations,
       menuItems,
+      categoryIds,
+      initialPoi,
     })
   },
 
@@ -63,6 +102,8 @@ export default Vue.extend({
     settings: Settings
     propertyTranslations: PropertyTranslations
     menuItems: ApiMenuItem[]
+    categoryIds: number[] | null
+    initialPoi: ApiPoi | null
   } {
     return {
       config: null,
@@ -72,6 +113,8 @@ export default Vue.extend({
       propertyTranslations: null,
       // @ts-ignore
       menuItems: null,
+      categoryIds: null,
+      initialPoi: null,
     }
   },
 
