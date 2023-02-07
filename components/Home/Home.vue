@@ -55,7 +55,7 @@
     </header>
     <div
       v-if="!isModeExplorer && selectedCategoryIds.length && !isModeFavorites"
-      class="p-4 absolute z-10"
+      class="p-4 absolute z-10 hidden md:block"
       :style="selectedFeaturesStyles"
     >
       <SelectedCategories />
