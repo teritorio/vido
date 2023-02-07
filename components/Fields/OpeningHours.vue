@@ -64,18 +64,18 @@ import { mapGetters } from 'vuex'
 import RelativeDate from '~/components/UI/RelativeDate.vue'
 import { PropertyTranslationsContextEnum } from '~/plugins/property-translations'
 
-const PointTime = [/collection_times/, /service_times/]
+const PointTime = [/^collection_times$/, /^service_times$/]
 
 // List of tag keys regex copied from opening_hours.js
 const SupportedOsmKeys = [
   ...PointTime,
-  /opening_hours/,
-  /opening_hours:.+/,
-  /.+:opening_hours/,
+  /^opening_hours$/,
+  /^opening_hours:.+/,
+  /.+:opening_hours$/,
   /.+:opening_hours:.+/,
-  /smoking_hours/,
-  /happy_hours/,
-  /lit/,
+  /^smoking_hours$/,
+  /^happy_hours$/,
+  /^lit$/,
 ]
 
 function isSupportedOsmTags(keys: RegExp[], key: string): boolean {
