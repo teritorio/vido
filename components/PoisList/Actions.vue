@@ -76,7 +76,7 @@ export default Vue.extend({
         this.$vidoConfig().API_ENDPOINT,
         this.$vidoConfig().API_PROJECT,
         this.$vidoConfig().API_THEME,
-        this.$route.params.id,
+        this.categoryId,
         {
           geometry_as: 'point',
           short_description: false,
