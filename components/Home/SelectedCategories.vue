@@ -6,6 +6,7 @@
   >
     <div
       v-for="menuItem in selectedCategories"
+      :id="`selected-category-${menuItem.id}`"
       :key="menuItem.id"
       class="m-1 relative"
       :title="
