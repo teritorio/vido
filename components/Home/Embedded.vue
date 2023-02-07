@@ -12,7 +12,7 @@
         :fit-bounds-padding-options="fitBoundsPaddingOptions"
         :extra-attributions="settings.attributions"
         :categories="menuItems"
-        :features="features"
+        :features="mapFeatures"
         :selected-categories-ids="[categoryId]"
         :style-icon-filter="poiFilters"
         :explorer-mode-enabled="explorerModeEnabled"
@@ -41,8 +41,9 @@ import HomeMixin from '~/components/Home/HomeMixin'
 import MapFeatures from '~/components/MainMap/MapFeatures.vue'
 import PoiCard from '~/components/PoisCard/PoiCard.vue'
 import CategorySelector from '~/components/PoisList/CategorySelector.vue'
-import { ApiPoi, getPoiByCategoryId } from '~/lib/apiPois'
+import { ApiPoi } from '~/lib/apiPois'
 import { Mode } from '~/utils/types'
+import { flattenFeatures } from '~/utils/utilities'
 
 export default mixins(HomeMixin).extend({
   components: {
@@ -53,11 +54,9 @@ export default mixins(HomeMixin).extend({
 
   data(): {
     categoryId: number | undefined
-    features: ApiPoi[]
   } {
     return {
       categoryId: undefined,
-      features: [],
     }
   },
 
@@ -70,24 +69,20 @@ export default mixins(HomeMixin).extend({
         left: 100,
       }
     },
+
+    mapFeatures(): ApiPoi[] {
+      return flattenFeatures(this.$store.getters['menu/features'])
+    },
   },
 
   watch: {
     categoryId() {
-      this.features = []
-
       if (this.categoryId) {
-        getPoiByCategoryId(
-          this.$vidoConfig().API_ENDPOINT,
-          this.$vidoConfig().API_PROJECT,
-          this.$vidoConfig().API_THEME,
-          this.categoryId,
-          {
-            geometry_as: 'point',
-            short_description: true,
-          }
-        ).then((pois) => {
-          this.features = pois.features
+        this.$store.dispatch('menu/fetchFeatures', {
+          apiEndpoint: this.$vidoConfig().API_ENDPOINT,
+          apiProject: this.$vidoConfig().API_PROJECT,
+          apiTheme: this.$vidoConfig().API_THEME,
+          categoryIds: [this.categoryId],
         })
       }
     },
