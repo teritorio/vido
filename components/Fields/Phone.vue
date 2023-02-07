@@ -4,10 +4,10 @@
     :href="`tel:${number}`"
     :title="$tc('fields.phone.callNumber')"
   >
-    {{ number }}
+    {{ numberFormated }}
   </ExternalLink>
   <span v-else>
-    {{ number }}
+    {{ numberFormated }}
   </span>
 </template>
 
@@ -34,6 +34,12 @@ export default Vue.extend({
     return {
       phone: true,
     }
+  },
+
+  computed: {
+    numberFormated(): string {
+      return this.number.replaceAll(' ', ' ')
+    },
   },
 
   mounted() {
