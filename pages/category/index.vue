@@ -29,10 +29,6 @@ export default Vue.extend({
     PoisList,
   },
 
-  validate({ params }) {
-    return /^[,-_:a-zA-Z0-9]+$/.test(params.id)
-  },
-
   async asyncData({ params, req, $config }): Promise<{
     config: VidoConfig
     settings: Settings

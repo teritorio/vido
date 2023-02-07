@@ -105,11 +105,11 @@ export default Vue.extend({
     categoryId() {
       this.pois = undefined
 
-      // // FIXME, we should do this, but it rerender the page client side and it require server side config
-      // this.$router.push({
-      //   path: `/category/${this.categoryId}`,
-      //   query: this.$router.currentRoute.query,
-      // })
+      this.$router.push({
+        path: `/category/${this.categoryId}`,
+        query: this.$router.currentRoute.query,
+        hash: this.$router.currentRoute.hash,
+      })
 
       getPoiByCategoryId(
         this.$vidoConfig().API_ENDPOINT,
