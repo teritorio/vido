@@ -176,7 +176,7 @@
       @discard="showFavoritesOverlay = false"
     />
     <div
-      class="hidden fixed inset-x-0 bottom-0 md:flex overflow-y-auto h-auto md:left-8 md:right-16 md:bottom-5"
+      class="hidden fixed inset-x-0 bottom-0 md:flex overflow-y-auto h-auto md:left-8 md:right-16 md:bottom-5 pointer-events-none"
     >
       <div class="w-full max-w-md" />
       <div class="grow-[1]" />
