@@ -263,7 +263,7 @@ const config: NuxtConfig = {
       config.watchOptions.ignored = [/node_modules/, /__screenshots__/]
       return config
     },
-    addons: ['storybook-addon-mock'],
+    addons: ['storybook-addon-mock', 'storybook-addon-validate-html'],
   },
 
   // Google Tag Manager config

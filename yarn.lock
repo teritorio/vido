@@ -5141,6 +5141,7 @@ __metadata:
     puppeteer: ^19.3.0
     sass-loader: ^10.3.1
     storybook-addon-mock: ^3.2.0
+    storybook-addon-validate-html: ^0.0.12
     storycap: ^3.1.9
     stylelint: ^13.13.1
     stylelint-config-prettier: ^9.0.4
@@ -23219,6 +23220,26 @@ fsevents@^1.2.7:
     react-dom:
       optional: true
   checksum: eb6eaa65d28629f133ad8e93628afee488a8536a0c218dc0da7b646f7e567fea9b585dd2e7769531b7b0c029cb3386f6384d8f16abbbf60734aca64f82f12980
+  languageName: node
+  linkType: hard
+
+"storybook-addon-validate-html@npm:^0.0.12":
+  version: 0.0.12
+  resolution: "storybook-addon-validate-html@npm:0.0.12"
+  peerDependencies:
+    "@storybook/addons": ^6.4.0
+    "@storybook/api": ^6.4.0
+    "@storybook/components": ^6.4.0
+    "@storybook/core-events": ^6.4.0
+    "@storybook/theming": ^6.4.0
+    react: ^16.8.0 || ^17.0.0
+    react-dom: ^16.8.0 || ^17.0.0
+  peerDependenciesMeta:
+    react:
+      optional: true
+    react-dom:
+      optional: true
+  checksum: bc137cd85c392ddc422fd7b5ff7fde30b26726ef8c212b89e7820924d2c69d967cccd6e24edea03fc45ccc82ecf04284a7b588a336a6c1e0906635d026365a0a
   languageName: node
   linkType: hard
 
