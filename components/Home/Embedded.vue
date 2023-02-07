@@ -1,10 +1,6 @@
 <template>
   <div class="flex flex-col h-screen">
-    <CategorySelector
-      :menu-items="menuItems"
-      :category-id="categoryId"
-      @category-change="onMenuChange"
-    />
+    <CategorySelector :menu-items="menuItems" @category-change="onMenuChange" />
     <div class="flex flex-grow">
       <MapFeatures
         ref="mapFeatures"
@@ -13,7 +9,7 @@
         :extra-attributions="settings.attributions"
         :categories="menuItems"
         :features="mapFeatures"
-        :selected-categories-ids="[categoryId]"
+        :selected-categories-ids="selectedCategoryIds"
         :style-icon-filter="poiFilters"
         :explorer-mode-enabled="explorerModeEnabled"
       />
@@ -36,6 +32,7 @@
 <script lang="ts">
 import { FitBoundsOptions } from 'maplibre-gl'
 import mixins from 'vue-typed-mixins'
+import { mapActions } from 'vuex'
 
 import HomeMixin from '~/components/Home/HomeMixin'
 import MapFeatures from '~/components/MainMap/MapFeatures.vue'
@@ -50,14 +47,6 @@ export default mixins(HomeMixin).extend({
     CategorySelector,
     MapFeatures,
     PoiCard,
-  },
-
-  data(): {
-    categoryId: number | undefined
-  } {
-    return {
-      categoryId: undefined,
-    }
   },
 
   computed: {
@@ -76,21 +65,25 @@ export default mixins(HomeMixin).extend({
   },
 
   watch: {
-    categoryId() {
-      if (this.categoryId) {
+    selectedCategoryIds() {
+      if (this.selectedCategoryIds) {
         this.$store.dispatch('menu/fetchFeatures', {
           apiEndpoint: this.$vidoConfig().API_ENDPOINT,
           apiProject: this.$vidoConfig().API_PROJECT,
           apiTheme: this.$vidoConfig().API_THEME,
-          categoryIds: [this.categoryId],
+          categoryIds: this.selectedCategoryIds,
         })
       }
     },
   },
 
   methods: {
+    ...mapActions({
+      addSelectedCategoryIds: 'menu/addSelectedCategoryIds',
+    }),
+
     onMenuChange(newCategoryId: number) {
-      this.categoryId = newCategoryId
+      this.addSelectedCategoryIds([newCategoryId])
     },
 
     toggleExploreAroundSelectedPoi(feature?: ApiPoi) {

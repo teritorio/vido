@@ -302,7 +302,6 @@ export default mixins(HomeMixin).extend({
       isModeExplorerOrFavorites: 'map/isModeExplorerOrFavorites',
       map_center: 'map/center',
       favoritesIds: 'favorite/favoritesIds',
-      selectedCategoryIds: 'menu/selectedCategoryIds',
     }),
 
     menuItems(): Record<ApiMenuCategory['id'], MenuItem> {

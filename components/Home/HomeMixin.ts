@@ -40,6 +40,10 @@ export default (
       return this.settings.themes[0]?.explorer_mode ?? true
     },
 
+    selectedCategoryIds(): ApiMenuCategory['id'][] {
+      return this.$store.getters['menu/selectedCategoryIds']
+    },
+
     selectedFeature(): ApiPoi {
       return this.$store.getters['map/selectedFeature']
     },
