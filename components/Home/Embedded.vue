@@ -13,6 +13,9 @@
         :style-icon-filter="poiFilters"
         :explorer-mode-enabled="explorerModeEnabled"
       />
+      <div class="p-4 absolute">
+        <SelectedCategories />
+      </div>
     </div>
     <div class="fixed flex left-8 right-16 bottom-5">
       <PoiCard
@@ -35,6 +38,7 @@ import mixins from 'vue-typed-mixins'
 import { mapActions } from 'vuex'
 
 import HomeMixin from '~/components/Home/HomeMixin'
+import SelectedCategories from '~/components/Home/SelectedCategories.vue'
 import MapFeatures from '~/components/MainMap/MapFeatures.vue'
 import PoiCard from '~/components/PoisCard/PoiCard.vue'
 import CategorySelector from '~/components/PoisList/CategorySelector.vue'
@@ -46,6 +50,7 @@ export default mixins(HomeMixin).extend({
   components: {
     CategorySelector,
     MapFeatures,
+    SelectedCategories,
     PoiCard,
   },
 
