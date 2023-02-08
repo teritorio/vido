@@ -24,6 +24,15 @@ export function configuredImageProxy(vidos: VidosConfig): string[] {
   ]
 }
 
+export function vidoConfigResolve(
+  host: string,
+  vidoHostConfig: VidosConfig
+): VidoConfig {
+  return {
+    ...(vidoHostConfig[host] || vidoHostConfig['']),
+  }
+}
+
 export function vidoConfig(
   req: createServer.IncomingMessage,
   privateRuntimeConfig: NuxtRuntimeConfig
@@ -46,9 +55,7 @@ export function vidoConfig(
   if (!(host in vidoHostConfig) && !('' in vidoHostConfig)) {
     throw new Error(`Not configured host "${host}"`)
   }
-  return {
-    ...(vidoHostConfig[host] || vidoHostConfig['']),
-  }
+  return vidoConfigResolve(host, vidoHostConfig)
 }
 
 const vidosConfigPlugin: Plugin = ({ req, $config }, inject) => {

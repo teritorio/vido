@@ -1,21 +1,14 @@
 // @ts-ignore
 import { cypressMockMiddleware } from '@cypress/mock-ssr'
 import { NuxtConfig } from '@nuxt/types'
-import fs from 'fs'
 import webpack from 'webpack'
 
-import { ApiMenuCategory, getMenu } from './lib/apiMenu'
+import { getMenu } from './lib/apiMenu'
 import { getPois } from './lib/apiPois'
+import { vidos } from './lib/config'
 import { configuredApi, configuredImageProxy } from './plugins/vido-config'
-import { VidosConfig } from './utils/types-config'
 
 const supportedLocales = ['en-GB', 'fr', 'es']
-
-const vidos: VidosConfig = !process.env.CONFIG
-  ? {}
-  : JSON.parse(
-      fs.readFileSync(process.env.CONFIG || 'vidos-config.json').toString()
-    )
 
 let vidosRoutesCategories: {
   [hostname: string]: { url: string; lastmod?: string }[]
