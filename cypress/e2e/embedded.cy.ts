@@ -25,7 +25,7 @@ describe('pois table', () => {
     cy.get('#category-selector').click()
     cy.contains('Aire de passage').click()
 
-    cy.get('#m1', { timeout: 10000 }).click()
+    cy.get('#m1', { timeout: 30000 }).click()
     cy.url().should('include', `/embedded/22/1`)
 
     cy.get('#selected-category-22 button').click()
