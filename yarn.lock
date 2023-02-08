@@ -5102,6 +5102,7 @@ __metadata:
     "@typescript-eslint/eslint-plugin": ^5.42.1
     "@typescript-eslint/parser": ^5.42.1
     "@vue/test-utils": ^1.3.3
+    "@vueform/slider": ^2.1.7
     autoprefixer: ^10.4.13
     babel-eslint: ^10.1.0
     babel-jest: ^28.1.3
@@ -6492,6 +6493,13 @@ __metadata:
     vue: 2.x
     vue-template-compiler: ^2.x
   checksum: 200965bb1a8b5ef4453534b4f8b794906439be2e78b4e718b20e2952ac9919d333f0629c7b3b2433f614a6935bb9bf94db933118209494724fdb6148e691c3cd
+  languageName: node
+  linkType: hard
+
+"@vueform/slider@npm:^2.1.7":
+  version: 2.1.7
+  resolution: "@vueform/slider@npm:2.1.7"
+  checksum: 66c3500866786efd0af7963da2209b695e5e50c55b11201fc2ae7e24604172d021bc6a7b15065aa1e420c731b86cdd5cff8444e424d24b1b51eace11ef30312f
   languageName: node
   linkType: hard
 

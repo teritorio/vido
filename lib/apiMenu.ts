@@ -27,7 +27,15 @@ export type FilterDate = {
   name: MultilingualString
 }
 
-export type Filter = FilterList | FilterBoolean | FilterDate
+export type FilterNumberRange = {
+  type: 'number_range'
+  property: string
+  name: MultilingualString
+  min: number
+  max: number
+}
+
+export type Filter = FilterList | FilterBoolean | FilterDate | FilterNumberRange
 
 export interface ApiMenuItem {
   id: number

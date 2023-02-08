@@ -74,6 +74,18 @@
           "
         />
       </div>
+      <div v-else-if="filter.type == 'number_range'" :key="filter.property">
+        <label class="block mb-1 text-zinc-800">
+          {{ (filter.def.name && filter.def.name.fr) || filter.def.property }}
+          <NumberRange
+            :filter="filter"
+            @change="
+              (filterValue) =>
+                onSelectionFilterNumberRangeChange(filterIndex, filterValue)
+            "
+          />
+        </label>
+      </div>
     </template>
   </div>
 </template>
@@ -84,17 +96,20 @@ import Vue, { PropType } from 'vue'
 import { mapActions } from 'vuex'
 
 import DateRange from '~/components/Filters/DateRange.vue'
+import NumberRange from '~/components/Filters/NumberRange.vue'
 import { ApiMenuCategory } from '~/lib/apiMenu'
 import {
   FilterValueBoolean,
   FilterValueDate,
   FilterValueList,
+  FilterValueNumberRange,
   FilterValues,
 } from '~/utils/types-filters'
 
 export default Vue.extend({
   components: {
     DateRange,
+    NumberRange,
   },
 
   props: {
@@ -152,6 +167,19 @@ export default Vue.extend({
     onSelectionFilterDateChange(
       filterIndex: number,
       filterValue: FilterValueDate
+    ) {
+      const filters = this.filtersSafeCopy
+      filters[filterIndex] = filterValue
+
+      this.applyCategorieFilters({
+        categoryId: this.categoryId,
+        filterValues: filters,
+      })
+    },
+
+    onSelectionFilterNumberRangeChange(
+      filterIndex: number,
+      filterValue: FilterValueNumberRange
     ) {
       const filters = this.filtersSafeCopy
       filters[filterIndex] = filterValue
