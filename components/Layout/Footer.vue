@@ -8,7 +8,7 @@
     >
     </span>
     <span>
-      Réalisation
+      {{ $t('poiDetails.poweredBy') }}
       <a target="_blank" href="https://www.teritorio.fr/" title="Teritorio">
         <img
           class="footer-logo"

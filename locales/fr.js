@@ -117,7 +117,7 @@ export default {
     print: 'Imprimer',
     link: 'Partager le lien',
     qrcode: 'Partager en QR-Code',
-    poweredBy: 'Propulsé par',
+    poweredBy: 'Réalisation',
     mapillaryExplore: 'Explorer sur Mapillary',
     informations: 'Informations',
     downloadGPX: 'Le parcours (trace GPS) au format GPX',
