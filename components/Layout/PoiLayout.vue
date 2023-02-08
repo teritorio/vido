@@ -14,7 +14,9 @@
       <h1>{{ name }}</h1>
       <slot name="actions"></slot>
       <slot name="body"></slot>
-      <Footer :attributions="settings.attributions" />
+      <Footer :attributions="settings.attributions">
+        <slot name="footer"></slot>
+      </Footer>
     </div>
   </div>
 </template>

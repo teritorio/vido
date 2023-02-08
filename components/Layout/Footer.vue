@@ -1,5 +1,6 @@
 <template>
   <footer class="footer">
+    <slot></slot>
     <span
       v-for="attribution in attributions"
       :key="attribution"
@@ -52,8 +53,8 @@ export default Vue.extend({
   text-align: center;
   text-decoration: none;
 
-  span:nth-of-type(2) {
-    margin: 0 1.6rem;
+  > span {
+    margin: 0 0.8rem;
   }
 
   a {
