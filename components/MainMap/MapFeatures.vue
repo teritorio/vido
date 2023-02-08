@@ -141,6 +141,14 @@ export default (
       type: Boolean,
       required: true,
     },
+    enableFilterRouteByCategories: {
+      type: Boolean,
+      default: true,
+    },
+    enableFilterRouteByFeatures: {
+      type: Boolean,
+      default: false,
+    },
   },
 
   data(): {
@@ -188,6 +196,18 @@ export default (
         this.$tc('snack.noPoi.issue'),
         this.$tc('snack.noPoi.action')
       )
+
+      if (this.enableFilterRouteByFeatures) {
+        filterRouteByPoiIds(
+          this.map,
+          this.features.map(
+            (feature) =>
+              feature.properties?.metadata?.id ||
+              feature.id ||
+              feature.properties?.id
+          )
+        )
+      }
     },
 
     selectedFeature() {
@@ -195,7 +215,9 @@ export default (
     },
 
     selectedCategoriesIds(categories) {
-      filterRouteByCategories(this.map, categories)
+      if (this.enableFilterRouteByCategories) {
+        filterRouteByCategories(this.map, categories)
+      }
     },
 
     selectedBackground() {
@@ -450,7 +472,20 @@ export default (
             .addTo(this.map)
         }
       } else {
-        filterRouteByCategories(this.map, this.selectedCategoriesIds)
+        if (this.enableFilterRouteByCategories) {
+          filterRouteByPoiIds(
+            this.map,
+            this.features.map(
+              (feature) =>
+                feature.properties?.metadata?.id ||
+                feature.id ||
+                feature.properties?.id
+            )
+          )
+        }
+        if (this.enableFilterRouteByCategories) {
+          filterRouteByCategories(this.map, this.selectedCategoriesIds)
+        }
       }
     },
   },

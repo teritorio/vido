@@ -103,6 +103,8 @@
           :selected-categories-ids="isModeExplorer ? [] : selectedCategoryIds"
           :style-icon-filter="poiFilters"
           :explorer-mode-enabled="explorerModeEnabled"
+          :enable-filter-route-by-categories="!isModeFavorites"
+          :enable-filter-route-by-features="isModeFavorites"
         >
           <div class="relative">
             <button
