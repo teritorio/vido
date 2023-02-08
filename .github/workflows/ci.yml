@@ -97,7 +97,7 @@ jobs:
           CONFIG: vidos-config-cypress.json
         with:
           install-command: yarn --silent
-          start: yarn start4storybook
+          start: yarn start4cypress
           wait-on: 'http://localhost:3000'
           wait-on-timeout: 30
 

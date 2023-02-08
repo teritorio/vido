@@ -14,7 +14,7 @@
     "build:storybook:shoot": "sh -c \"LANG=C npx -- storycap --outDir __screenshots__/current ${STORYCAP_OPS:-} --serverTimeout 20000 --parallel 4 --delay 2000 http://localhost:4000\"",
     "generate": "yarn nuxt generate",
     "start": "yarn nuxt start",
-    "start4storybook": "NODE_ENV=development CONFIG=vidos-config-cypress.json yarn nuxt start",
+    "start4cypress": "NODE_ENV=development CONFIG=vidos-config-cypress.json yarn nuxt start",
     "start:storybook": "CONFIG=vidos-config-empty.json yarn nuxt storybook",
     "start:cypress": "CONFIG=vidos-config-empty.json yarn build-fixture && yarn run cypress open",
     "lint": "yarn lint:js && yarn lint:style",
