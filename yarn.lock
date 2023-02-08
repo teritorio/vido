@@ -5116,6 +5116,7 @@ __metadata:
     eslint-plugin-import: ^2.26.0
     eslint-plugin-nuxt: ^3.2.0
     eslint-plugin-prettier: ^4.2.1
+    express: ^4.18.2
     fast-copy: ^2.1.7
     fast-equals: ^4.0.3
     html-validate: ^7.12.2
@@ -8140,6 +8141,26 @@ __metadata:
     type-is: ~1.6.18
     unpipe: 1.0.0
   checksum: b7bfe5463ecc2b1bece86d1798f973ab76585b41412670387a804f0ea5d3b886f2a57e0ce5744c4a29c17a3ddc17584d52a01c6a68b0a6bf74c3378bf6535c9e
+  languageName: node
+  linkType: hard
+
+"body-parser@npm:1.20.1":
+  version: 1.20.1
+  resolution: "body-parser@npm:1.20.1"
+  dependencies:
+    bytes: 3.1.2
+    content-type: ~1.0.4
+    debug: 2.6.9
+    depd: 2.0.0
+    destroy: 1.2.0
+    http-errors: 2.0.0
+    iconv-lite: 0.4.24
+    on-finished: 2.4.1
+    qs: 6.11.0
+    raw-body: 2.5.1
+    type-is: ~1.6.18
+    unpipe: 1.0.0
+  checksum: 473245b1ff1828a1c0b0aee08f6503aefba9ea5e0de21bf65f014295c262f4177e4d6e60f97e11eab15fb1dafdfeaaa9f5f99cbbf55682c3521905c68f593684
   languageName: node
   linkType: hard
 
@@ -12019,6 +12040,45 @@ __metadata:
     utils-merge: 1.0.1
     vary: ~1.1.2
   checksum: 1483f1b9f21f4be2480ae750c458fcade2565142b8abc3e78fa8874c61dc82bf72ea5c6b2d5f6e8b3296608a49cb384274ed80ad9e5c2ba4d2aed22f9b7ed18e
+  languageName: node
+  linkType: hard
+
+"express@npm:^4.18.2":
+  version: 4.18.2
+  resolution: "express@npm:4.18.2"
+  dependencies:
+    accepts: ~1.3.8
+    array-flatten: 1.1.1
+    body-parser: 1.20.1
+    content-disposition: 0.5.4
+    content-type: ~1.0.4
+    cookie: 0.5.0
+    cookie-signature: 1.0.6
+    debug: 2.6.9
+    depd: 2.0.0
+    encodeurl: ~1.0.2
+    escape-html: ~1.0.3
+    etag: ~1.8.1
+    finalhandler: 1.2.0
+    fresh: 0.5.2
+    http-errors: 2.0.0
+    merge-descriptors: 1.0.1
+    methods: ~1.1.2
+    on-finished: 2.4.1
+    parseurl: ~1.3.3
+    path-to-regexp: 0.1.7
+    proxy-addr: ~2.0.7
+    qs: 6.11.0
+    range-parser: ~1.2.1
+    safe-buffer: 5.2.1
+    send: 0.18.0
+    serve-static: 1.15.0
+    setprototypeof: 1.2.0
+    statuses: 2.0.1
+    type-is: ~1.6.18
+    utils-merge: 1.0.1
+    vary: ~1.1.2
+  checksum: b3675a74759b8b38c4341507d26d50f01eda9e86d71ec03ff695b016fd7573702c591de6a63b28477cced061a9093603b8251e81da4a5b2081b6042a83755f0c
   languageName: node
   linkType: hard
 
@@ -21145,7 +21205,7 @@ fsevents@^1.2.7:
   languageName: node
   linkType: hard
 
-"qs@npm:^6.10.0, qs@npm:^6.4.0, qs@npm:^6.9.4":
+"qs@npm:6.11.0, qs@npm:^6.10.0, qs@npm:^6.4.0, qs@npm:^6.9.4":
   version: 6.11.0
   resolution: "qs@npm:6.11.0"
   dependencies:

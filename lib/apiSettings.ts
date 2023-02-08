@@ -102,6 +102,10 @@ export function headerFromSettings(
         type: 'image/x-icon',
         href: settings.themes[0].favicon_url,
       },
+      {
+        rel: 'manifest',
+        href: '/manifest.webmanifest',
+      },
     ].filter((meta) => meta.href),
     meta: [
       {

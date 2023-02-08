@@ -58,6 +58,7 @@ const config: NuxtConfig = {
 
   serverMiddleware: [
     ...(process.env.NODE_ENV != 'production' ? [cypressMockMiddleware()] : []),
+    '~/api/manifest',
   ],
 
   // Global CSS (https://go.nuxtjs.dev/config-css)
