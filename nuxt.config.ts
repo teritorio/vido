@@ -3,19 +3,11 @@ import { cypressMockMiddleware } from '@cypress/mock-ssr'
 import { NuxtConfig } from '@nuxt/types'
 import webpack from 'webpack'
 
-import { getMenu } from './lib/apiMenu'
-import { getPois } from './lib/apiPois'
 import { vidos } from './lib/config'
+import { sitemapFilter, sitemapRoutes } from './lib/sitemap'
 import { configuredApi, configuredImageProxy } from './plugins/vido-config'
 
 const supportedLocales = ['en-GB', 'fr', 'es']
-
-let vidosRoutesCategories: {
-  [hostname: string]: { url: string; lastmod?: string }[]
-} = {}
-let vidosRoutesPois: {
-  [hostname: string]: { url: string; lastmod?: string }[]
-} = {}
 
 const config: NuxtConfig = {
   env: {
@@ -133,64 +125,8 @@ const config: NuxtConfig = {
 
   sitemap: {
     cacheTime: -1,
-    async routes() {
-      return Promise.all(
-        Object.entries(vidos)
-          .filter(([hostname, vido]) => vido instanceof Object)
-          .map(([hostname, vido]) => {
-            Promise.all([
-              getMenu(vido.API_ENDPOINT, vido.API_PROJECT, vido.API_THEME).then(
-                (menuItems) => {
-                  vidosRoutesCategories[hostname] = menuItems
-                    .filter((menuItem) => menuItem.category && menuItem.id)
-                    .map((menuCategory) => ({
-                      url: `/${menuCategory.id}/`,
-                    }))
-                }
-              ),
-              getPois(
-                vido.API_ENDPOINT,
-                vido.API_PROJECT,
-                vido.API_THEME,
-                undefined,
-                {
-                  geometry_as: 'point',
-                  short_description: true,
-                }
-              ).then((pois) => {
-                vidosRoutesPois[hostname] = pois.features.map((poi) => ({
-                  url: `/poi/${poi.properties.metadata.id}/details`,
-                  lastmod: poi.properties.metadata.updated_at,
-                }))
-              }),
-            ])
-          })
-      )
-    },
-    filter({
-      routes,
-      options,
-    }: {
-      routes: any
-      options: { hostname: string }
-    }) {
-      // Hack the filter function to add hostname dependents routes.
-      const hostname = options.hostname.split('/')[1].split(':')[0]
-      routes = [
-        ...routes,
-        ...[
-          ...(vidosRoutesCategories[hostname] || []),
-          ...(vidosRoutesPois[hostname] || []),
-        ].map((page) => ({
-          chunkName: undefined,
-          component: undefined,
-          name: undefined,
-          path: undefined,
-          ...page,
-        })),
-      ]
-      return routes
-    },
+    routes: () => sitemapRoutes(vidos),
+    filter: sitemapFilter,
   },
 
   watchers: {
