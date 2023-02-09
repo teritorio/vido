@@ -75,17 +75,22 @@ export class FilterValueDate extends FilterValueDef<FilterDate> {
 }
 
 export class FilterValueNumberRange extends FilterValueDef<FilterNumberRange> {
-  filterValueMin: number = 0
-  filterValueMax: number = 100
+  filterValueMin: number | null = null
+  filterValueMax: number | null = null
 
   isSet() {
-    return true
+    return (
+      (this.filterValueMin !== null && this.filterValueMin !== this.def.min) ||
+      (this.filterValueMax !== null && this.filterValueMax !== this.def.max)
+    )
   }
 
   isMatch(properties: ApiPoi['properties']) {
     return (
-      this.filterValueMin < properties[this.def.property] &&
-      properties[this.def.property] < this.filterValueMax
+      (this.filterValueMin == null ||
+        this.filterValueMin < properties[this.def.property]) &&
+      (this.filterValueMax == null ||
+        properties[this.def.property] < this.filterValueMax)
     )
   }
 }

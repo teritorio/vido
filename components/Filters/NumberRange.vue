@@ -12,6 +12,7 @@
 
 <script lang="ts">
 import Slider from '@vueform/slider/dist/slider.vue2.js'
+import copy from 'fast-copy'
 import Vue, { PropType } from 'vue'
 
 import { FilterValueNumberRange } from '~/utils/types-filters'
@@ -32,7 +33,14 @@ export default Vue.extend({
     value: [number, number]
   } {
     return {
-      value: [this.filter.filterValueMin, this.filter.filterValueMax],
+      value: [
+        this.filter.filterValueMin != null
+          ? this.filter.filterValueMin
+          : this.filter.def.min,
+        this.filter.filterValueMax != null
+          ? this.filter.filterValueMax
+          : this.filter.def.max,
+      ],
     }
   },
 
@@ -47,7 +55,10 @@ export default Vue.extend({
 
   methods: {
     onChange(value: [number, number]) {
-      this.$emit('change', value)
+      const newFilter = copy(this.filter)
+      newFilter.filterValueMin = value[0]
+      newFilter.filterValueMax = value[1]
+      this.$emit('change', newFilter)
     },
   },
 })
