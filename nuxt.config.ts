@@ -135,34 +135,36 @@ const config: NuxtConfig = {
     cacheTime: -1,
     async routes() {
       return Promise.all(
-        Object.entries(vidos).map(([hostname, vido]) =>
-          Promise.all([
-            getMenu(vido.API_ENDPOINT, vido.API_PROJECT, vido.API_THEME).then(
-              (menuItems) => {
-                vidosRoutesCategories[hostname] = menuItems
-                  .filter((menuItem) => menuItem.category && menuItem.id)
-                  .map((menuCategory) => ({
-                    url: `/${menuCategory.id}/`,
-                  }))
-              }
-            ),
-            getPois(
-              vido.API_ENDPOINT,
-              vido.API_PROJECT,
-              vido.API_THEME,
-              undefined,
-              {
-                geometry_as: 'point',
-                short_description: true,
-              }
-            ).then((pois) => {
-              vidosRoutesPois[hostname] = pois.features.map((poi) => ({
-                url: `/poi/${poi.properties.metadata.id}/details`,
-                lastmod: poi.properties.metadata.updated_at,
-              }))
-            }),
-          ])
-        )
+        Object.entries(vidos)
+          .filter(([hostname, vido]) => vido instanceof Object)
+          .map(([hostname, vido]) => {
+            Promise.all([
+              getMenu(vido.API_ENDPOINT, vido.API_PROJECT, vido.API_THEME).then(
+                (menuItems) => {
+                  vidosRoutesCategories[hostname] = menuItems
+                    .filter((menuItem) => menuItem.category && menuItem.id)
+                    .map((menuCategory) => ({
+                      url: `/${menuCategory.id}/`,
+                    }))
+                }
+              ),
+              getPois(
+                vido.API_ENDPOINT,
+                vido.API_PROJECT,
+                vido.API_THEME,
+                undefined,
+                {
+                  geometry_as: 'point',
+                  short_description: true,
+                }
+              ).then((pois) => {
+                vidosRoutesPois[hostname] = pois.features.map((poi) => ({
+                  url: `/poi/${poi.properties.metadata.id}/details`,
+                  lastmod: poi.properties.metadata.updated_at,
+                }))
+              }),
+            ])
+          })
       )
     },
     filter({
