@@ -34,9 +34,11 @@ interface FetchFeaturesPayload {
 }
 
 export interface State {
-  menuItems: {
-    [menuItemId: number]: MenuItem
-  }
+  menuItems:
+    | {
+        [menuItemId: number]: MenuItem
+      }
+    | undefined
   selectedCatagoryIds: ApiMenuCategory['id'][]
   features: {
     [key: number]: ApiPoi[]
@@ -49,7 +51,7 @@ export interface State {
 }
 
 export const state = (): State => ({
-  menuItems: {},
+  menuItems: undefined,
   selectedCatagoryIds: [],
   features: {},
   filters: {},
@@ -306,14 +308,16 @@ export const actions = {
 }
 
 export const getters = {
-  menuItems: (state: State): { [menuItemId: number]: MenuItem } =>
+  menuItems: (state: State): { [menuItemId: number]: MenuItem } | undefined =>
     state.menuItems,
   selectedCategoryIds: (state: State): ApiMenuCategory['id'][] =>
     state.selectedCatagoryIds,
-  selectedCategories: (state: State): ApiMenuCategory[] => {
-    return state.selectedCatagoryIds
-      .map((selectedCatagoryId) => state.menuItems[selectedCatagoryId])
-      .filter((menuItems) => menuItems !== undefined) as ApiMenuCategory[]
+  selectedCategories: (state: State): ApiMenuCategory[] | undefined => {
+    return state.menuItems === undefined
+      ? undefined
+      : (state.selectedCatagoryIds
+          .map((selectedCatagoryId) => state.menuItems![selectedCatagoryId])
+          .filter((menuItems) => menuItems !== undefined) as ApiMenuCategory[])
   },
   allFeatures: (state: State) => state.allFeatures,
   isLoadingFeatures: (state: State) => state.isLoadingFeatures,

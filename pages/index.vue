@@ -35,33 +35,34 @@ export default Vue.extend({
     settings: Settings
     contents: ContentEntry[]
     propertyTranslations: PropertyTranslations
-    menuItems: ApiMenuItem[]
+    menuItems: ApiMenuItem[] | undefined
     categoryIds: number[] | null
     initialPoi: ApiPoi | null
   }> {
     const config: VidoConfig =
       store.getters['site/config'] || vidoConfig(req, $config)
 
-    const fetchSettings = getSettings(
-      config.API_ENDPOINT,
-      config.API_PROJECT,
-      config.API_THEME
-    )
-    const fetchContents = getContents(
-      config.API_ENDPOINT,
-      config.API_PROJECT,
-      config.API_THEME
-    )
-    const fetchPropertyTranslations = getPropertyTranslations(
-      config.API_ENDPOINT,
-      config.API_PROJECT,
-      config.API_THEME
-    )
-    const fetchMenuItems = getMenu(
-      config.API_ENDPOINT,
-      config.API_PROJECT,
-      config.API_THEME
-    )
+    const fetchSettings = store.getters['site/settings']
+      ? Promise.resolve(store.getters['site/settings'] as Settings)
+      : getSettings(config.API_ENDPOINT, config.API_PROJECT, config.API_THEME)
+
+    const fetchContents = store.getters['site/content']
+      ? Promise.resolve(store.getters['site/content'] as ContentEntry[])
+      : getContents(config.API_ENDPOINT, config.API_PROJECT, config.API_THEME)
+
+    const fetchPropertyTranslations = store.getters['site/translations']
+      ? Promise.resolve(
+          store.getters['site/translations'] as PropertyTranslations
+        )
+      : getPropertyTranslations(
+          config.API_ENDPOINT,
+          config.API_PROJECT,
+          config.API_THEME
+        )
+
+    const fetchMenuItems = store.getters['menu/menuItems']
+      ? Promise.resolve(undefined)
+      : getMenu(config.API_ENDPOINT, config.API_PROJECT, config.API_THEME)
 
     let categoryIdsJoin: string | null
     let poiId: string | null
@@ -140,9 +141,16 @@ export default Vue.extend({
   },
 
   created() {
-    this.$store.dispatch('menu/fetchConfig', {
-      menuItems: this.menuItems,
-    })
+    this.$store.dispatch('site/setConfig', this.config!)
+    if (this.menuItems) {
+      this.$store.dispatch('menu/fetchConfig', {
+        menuItems: this.menuItems,
+      })
+    }
+    this.$store.dispatch('site/setSettings', this.settings)
+    this.$store.dispatch('site/setContents', this.contents)
+    this.$store.dispatch('site/setTranslations', this.propertyTranslations)
+
     this.$settings.set(this.settings)
     this.$propertyTranslations.set(this.propertyTranslations)
   },
@@ -153,7 +161,6 @@ export default Vue.extend({
   },
 
   mounted() {
-    this.$store.dispatch('site/setConfig', this.config!)
     this.setSiteLocale(this.$i18n.locale)
   },
 

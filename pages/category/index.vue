@@ -38,26 +38,28 @@ export default Vue.extend({
     const config: VidoConfig =
       store.getters['site/config'] || vidoConfig(req, $config)
 
-    const getSettingsPromise = getSettings(
-      config.API_ENDPOINT,
-      config.API_PROJECT,
-      config.API_THEME
-    )
-    const fetchContents = getContents(
-      config.API_ENDPOINT,
-      config.API_PROJECT,
-      config.API_THEME
-    )
-    const fetchPropertyTranslations = getPropertyTranslations(
-      config.API_ENDPOINT,
-      config.API_PROJECT,
-      config.API_THEME
-    )
-    const fetchMenuItems = getMenu(
-      config.API_ENDPOINT,
-      config.API_PROJECT,
-      config.API_THEME
-    )
+    const fetchSettings = store.getters['site/settings']
+      ? Promise.resolve(store.getters['site/settings'] as Settings)
+      : getSettings(config.API_ENDPOINT, config.API_PROJECT, config.API_THEME)
+
+    const fetchContents = store.getters['site/content']
+      ? Promise.resolve(store.getters['site/content'] as ContentEntry[])
+      : getContents(config.API_ENDPOINT, config.API_PROJECT, config.API_THEME)
+
+    const fetchPropertyTranslations = store.getters['site/translations']
+      ? Promise.resolve(
+          store.getters['site/translations'] as PropertyTranslations
+        )
+      : getPropertyTranslations(
+          config.API_ENDPOINT,
+          config.API_PROJECT,
+          config.API_THEME
+        )
+
+    const fetchMenuItems = store.getters['menu/menuItems']
+      ? Promise.resolve([store.getters['menu/menuItems']])
+      : getMenu(config.API_ENDPOINT, config.API_PROJECT, config.API_THEME)
+
     const getPoiByCategoryIdPromise = getPoiByCategoryId(
       config.API_ENDPOINT,
       config.API_PROJECT,
@@ -70,7 +72,7 @@ export default Vue.extend({
     )
     let [settings, contents, propertyTranslations, menuItems, pois] =
       await Promise.all([
-        getSettingsPromise,
+        fetchSettings,
         fetchContents,
         fetchPropertyTranslations,
         fetchMenuItems,
@@ -116,9 +118,16 @@ export default Vue.extend({
   },
 
   created() {
-    this.$store.dispatch('menu/fetchConfig', {
-      menuItems: this.menuItems,
-    })
+    this.$store.dispatch('site/setConfig', this.config!)
+    if (this.menuItems) {
+      this.$store.dispatch('menu/fetchConfig', {
+        menuItems: this.menuItems,
+      })
+    }
+    this.$store.dispatch('site/setSettings', this.settings)
+    this.$store.dispatch('site/setContents', this.contents)
+    this.$store.dispatch('site/setTranslations', this.propertyTranslations)
+
     this.$settings.set(this.settings)
     this.$propertyTranslations.set(this.propertyTranslations)
   },
@@ -129,7 +138,6 @@ export default Vue.extend({
   },
 
   mounted() {
-    this.$store.dispatch('site/setConfig', this.config!)
     this.setSiteLocale(this.$i18n.locale)
   },
 

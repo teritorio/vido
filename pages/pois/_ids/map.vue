@@ -36,11 +36,9 @@ export default Vue.extend({
     const config: VidoConfig =
       store.getters['site/config'] || vidoConfig(req, $config)
 
-    const getSettingsPromise = getSettings(
-      config.API_ENDPOINT,
-      config.API_PROJECT,
-      config.API_THEME
-    )
+    const fetchSettings = store.getters['site/settings']
+      ? Promise.resolve(store.getters['site/settings'] as Settings)
+      : getSettings(config.API_ENDPOINT, config.API_PROJECT, config.API_THEME)
 
     let settings: Settings | null
     let pois: ApiPois | null
@@ -55,9 +53,9 @@ export default Vue.extend({
           geometry_as: undefined,
         }
       )
-      ;[settings, pois] = await Promise.all([getSettingsPromise, getPoiPromise])
+      ;[settings, pois] = await Promise.all([fetchSettings, getPoiPromise])
     } else {
-      ;[settings] = await Promise.all([getSettingsPromise])
+      ;[settings] = await Promise.all([fetchSettings])
       pois = null
     }
 
@@ -93,6 +91,8 @@ export default Vue.extend({
   },
 
   created() {
+    this.$store.dispatch('site/setConfig', this.config!)
+
     this.$settings.set(this.settings)
   },
 
@@ -102,7 +102,6 @@ export default Vue.extend({
   },
 
   mounted() {
-    this.$store.dispatch('site/setConfig', this.config!)
     this.setSiteLocale(this.$i18n.locale)
   },
 
