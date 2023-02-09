@@ -9,17 +9,17 @@
   >
     <slot />
   </button>
-  <a
+  <NuxtLink
     v-else
     :aria-label="ariaLabel"
-    :href="href"
+    :to="href"
     :target="target"
     class="text-sm text-zinc-800 bg-white rounded-full shadow-md outline-none focus:outline-none hover:bg-zinc-100 focus-visible:bg-zinc-100 shrink-0 flex items-center justify-center"
     v-bind="$attrs"
     v-on="$listeners"
   >
     <slot />
-  </a>
+  </NuxtLink>
 </template>
 
 <script lang="ts">
