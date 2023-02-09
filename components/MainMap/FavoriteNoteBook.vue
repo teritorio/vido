@@ -1,11 +1,16 @@
 <template>
-  <section class="py-4 px-1 sm:px-6 sticky top-0 z-50 bg-white">
+  <section
+    id="favourite_notebook"
+    class="py-4 px-1 sm:px-6 sticky top-0 z-50 bg-white"
+  >
     <header>
       <div class="flex justify-between align-center">
         <p class="text-lg flex-auto">{{ $tc('favorites.notebook.title') }}</p>
 
         <button
+          id="close_button_favourite_notebook"
           type="button"
+          :aria-label="$tc('favorites.notebook.close')"
           class="flex-none hover:bg-zinc-200 flex items-center border-solid border-zinc-300 border-2 bg-white focus:outline-none focus-visible:bg-zinc-100 py-2 px-4 rounded-full h-11"
           @click="$emit('on-close')"
         >
@@ -24,6 +29,7 @@
             type="button"
             class="hover:bg-zinc-200 rounded-full px-4 py-2 text-sm leading-5 text-left text-zinc-700 transition duration-150 ease-in-out focus:outline-none focus:bg-zinc-100"
             role="menuitem"
+            :aria-label="$tc('favorites.menu_share')"
             @blur="blurHandler"
             @click="setShareLink()"
           >
@@ -40,6 +46,7 @@
             target="_blank"
             class="hover:bg-zinc-200 rounded-full px-4 py-2 text-sm leading-5 text-left text-zinc-700 transition duration-150 ease-in-out focus:outline-none focus:bg-zinc-100"
             role="menuitem"
+            :aria-label="$tc('favorites.export_pdf')"
             @blur="blurHandler"
             @click="exportLink('export_pdf')"
           >
@@ -68,8 +75,10 @@
             {{ $tc('favorites.export_csv') }}
           </a>
           <button
+            type="button"
             class="hover:bg-zinc-200 rounded-full px-4 py-2 text-sm leading-5 text-left text-zinc-700 transition duration-150 ease-in-out focus:outline-none focus:bg-zinc-100"
             role="menuitem"
+            :aria-label="$tc('favorites.menu_clear')"
             @blur="blurHandler"
             @click="removeFavorites()"
           >

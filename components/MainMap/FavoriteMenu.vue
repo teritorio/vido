@@ -2,8 +2,10 @@
   <section>
     <div class="flex right-10">
       <button
+        id="button_favourites_mode"
         ref="menu"
         type="button"
+        :aria-label="$tc('favorites.title')"
         :class="[
           'relative space-x-1 text-sm font-medium shadow-md outline-none md:px-5 w-11 md:w-auto h-11 focus:outline-none shrink-0 rounded-l-full',
           isModeFavorites &&
@@ -16,20 +18,23 @@
         <span class="hidden md:inline favoriteTitle">
           {{ $tc('favorites.title') }}
         </span>
-        <div
-          v-if="hasFavorites"
+        <span
+          v-if="favoritesIds.length"
+          id="favourites_counter"
           class="flex items-center justify-center text-white text-center rounded-full absolute top-1 right-0 w-5 h-5 border-2 border-white bg-red-600"
         >
-          <p class="text-xs">{{ favoritesIds.length }}</p>
-        </div>
+          <span class="text-xs">{{ favoritesIds.length }}</span>
+        </span>
       </button>
       <button
+        id="button_burger_favourites_notebook"
         ref="favlist"
-        :disabled="!hasFavorites"
+        :disabled="!favoritesIds.length"
+        :aria-label="$tc('favorites.list')"
         type="button"
         :class="[
           'flex h-11 items-center justify-center shrink-0 px-3 py-2 bg-white border-l border-zinc-00 rounded-r-full hover:bg-zinc-100 shadow-md focus:outline-none bg-zinc-100',
-          !hasFavorites && ' cursor-not-allowed',
+          !favoritesIds.length && ' cursor-not-allowed',
           !isModeFavorites && 'focus-visible:bg-zinc-100 text-zinc-800',
         ]"
         @click="openNotebookModal"
@@ -92,10 +97,6 @@ export default (
     FavoriteIcon,
   },
   props: {
-    hasFavorites: {
-      type: Boolean,
-      default: false,
-    },
     exploreAroundSelectedPoi: {
       type: Function,
       required: true,

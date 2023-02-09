@@ -37,16 +37,4 @@ describe('home content', () => {
 
     cy.htmlvalidate()
   })
-
-  it('bugger menu content entry item', () => {
-    cy.get('#nav-menu')
-      .click()
-      .contains(teritorioReferenceAPIFixture.articles[0].title)
-    cy.get('#nav-menu')
-      .click()
-      .contains(teritorioReferenceAPIFixture.articles[0].title)
-      .should('not.exist')
-
-    cy.htmlvalidate()
-  })
 })

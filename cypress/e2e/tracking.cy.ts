@@ -21,6 +21,7 @@ const asserts: ((event: Event) => void)[] = []
 describe('home content', () => {
   before(() => {
     localStorage.setItem('cookie:accepted', 'true')
+
     mockSSRAPI(hostnames, teritorioReferenceAPIFixture)
     cy.intercept(
       '/content/api.teritorio/geodata/v0.1/dev/tourism/pois/category/22.geojson?geometry_as=point&short_description=true',
