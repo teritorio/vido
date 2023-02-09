@@ -2032,56 +2032,56 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@fortawesome/fontawesome-common-types@npm:6.2.0":
-  version: 6.2.0
-  resolution: "@fortawesome/fontawesome-common-types@npm:6.2.0"
-  checksum: c8855c98d8d3b36a690e6c9f9d84ac3f75ac1822977b7364cb0846d4a2d7c2a97d71d5474cad440454648b99cd6c063e9734c04b4a920d8d9413cebf83e060b3
+"@fortawesome/fontawesome-common-types@npm:6.3.0":
+  version: 6.3.0
+  resolution: "@fortawesome/fontawesome-common-types@npm:6.3.0"
+  checksum: dfa7457378bd662a2b04910c4ad1efc20c3e6a963eacce4aa85e9bd2aca9c7b4072f8b051bdd5c1dfa1d5c4da294b7ddcfee2ff874f32b6c84359657a25f618f
   languageName: node
   linkType: hard
 
-"@fortawesome/fontawesome-svg-core@npm:^6.2.0":
-  version: 6.2.0
-  resolution: "@fortawesome/fontawesome-svg-core@npm:6.2.0"
+"@fortawesome/fontawesome-svg-core@npm:^6.3.0":
+  version: 6.3.0
+  resolution: "@fortawesome/fontawesome-svg-core@npm:6.3.0"
   dependencies:
-    "@fortawesome/fontawesome-common-types": 6.2.0
-  checksum: 20d81be5fadbb2a0dc50c48326f94ea1394f5a39567c9c05bc7d9e2b25b93a0ac261ebe1cea189ce863ecbe83ca85ddb15ec6e3bdb9328bba2121a6f7a111785
+    "@fortawesome/fontawesome-common-types": 6.3.0
+  checksum: ec69637f29f9b37a4a3d928738ed4266d805d0d9f70a41a18ffae957ff61ea97fb8c9a3f416b3d08da3bbd306fd46be4fb479ce4f9bce4c4a4508ecdd2c3a7ac
   languageName: node
   linkType: hard
 
-"@fortawesome/free-brands-svg-icons@npm:^6.2.0":
-  version: 6.2.0
-  resolution: "@fortawesome/free-brands-svg-icons@npm:6.2.0"
+"@fortawesome/free-brands-svg-icons@npm:^6.3.0":
+  version: 6.3.0
+  resolution: "@fortawesome/free-brands-svg-icons@npm:6.3.0"
   dependencies:
-    "@fortawesome/fontawesome-common-types": 6.2.0
-  checksum: 9582dbfda544d88c3731ec24a0ce2025e385204eb7da96135123dd18b1871f1d6189908d8e3045ae4034b9c304d3be269f42cb25c33381be11cc9aa74ad6bf34
+    "@fortawesome/fontawesome-common-types": 6.3.0
+  checksum: e8d9c9fbdd41133adbb0a6a4d9535251ade9b6043f5c7008604c72312976483b28ffb49eddb472da21be76c35b14cb2899d5f1983a16a41a7911c03b70f36284
   languageName: node
   linkType: hard
 
-"@fortawesome/free-regular-svg-icons@npm:^6.2.0":
-  version: 6.2.0
-  resolution: "@fortawesome/free-regular-svg-icons@npm:6.2.0"
+"@fortawesome/free-regular-svg-icons@npm:^6.3.0":
+  version: 6.3.0
+  resolution: "@fortawesome/free-regular-svg-icons@npm:6.3.0"
   dependencies:
-    "@fortawesome/fontawesome-common-types": 6.2.0
-  checksum: 81495009c83179196ee0b01a432cba52b86cd9f998b78c98181b0a13088d339a951ba07621537361e43fe30954c4e44822b38220f7bd2ccd0d977fb53cea8548
+    "@fortawesome/fontawesome-common-types": 6.3.0
+  checksum: e925197ec1d6e6d704870f0f0ca4a95f3b78798497e2371dd4749cd56a46ca17160530bae776a78250d951941cbb40ba8139db73b497c027e0176a0dd2954015
   languageName: node
   linkType: hard
 
-"@fortawesome/free-solid-svg-icons@npm:^6.2.0":
-  version: 6.2.0
-  resolution: "@fortawesome/free-solid-svg-icons@npm:6.2.0"
+"@fortawesome/free-solid-svg-icons@npm:^6.3.0":
+  version: 6.3.0
+  resolution: "@fortawesome/free-solid-svg-icons@npm:6.3.0"
   dependencies:
-    "@fortawesome/fontawesome-common-types": 6.2.0
-  checksum: 2c96cda00436dccc53ac0167f119d0f409e58260a5fb0c83f07addba9925b8c7d719fd35c9ee36f3e7b62716bebf8e9294bb92b37894340594bf1403363bc489
+    "@fortawesome/fontawesome-common-types": 6.3.0
+  checksum: 83eaf31fbebe9fa36a95d802cd47536aca05cf9e5fc790bc44135a3c26e77cce00b90aa81ccf33fcdd4e17c24221655ffd8913ce0ea6a31a1d9d99cbcda2435e
   languageName: node
   linkType: hard
 
-"@fortawesome/vue-fontawesome@npm:^2.0.9":
-  version: 2.0.9
-  resolution: "@fortawesome/vue-fontawesome@npm:2.0.9"
+"@fortawesome/vue-fontawesome@npm:^2.0.10":
+  version: 2.0.10
+  resolution: "@fortawesome/vue-fontawesome@npm:2.0.10"
   peerDependencies:
     "@fortawesome/fontawesome-svg-core": ~1 || ~6
     vue: ~2
-  checksum: 4ab9ad6425dda9d7553ba7c09584cad0703c335a72ae037299a862dff39b4cbb97efb9f9d1d473abb6f65ddea00863fe5c4553e633344e989b63004c75deae23
+  checksum: 02660595bc39ef0461e2d321c1f10c6716180027e9ce66661b7f0c545e8232ea10c7f5acd98feab2319fd66f2835e76008b06bc6627080f15b07ac8b88499b01
   languageName: node
   linkType: hard
 
@@ -5064,11 +5064,11 @@ __metadata:
     "@commitlint/cli": ^11.0.0
     "@commitlint/config-conventional": ^11.0.0
     "@cypress/mock-ssr": "https://github.com/cypress-io/cypress-mock-ssr.git#de67dfaa9fd0a88224fd723b9d07feb227db613d"
-    "@fortawesome/fontawesome-svg-core": ^6.2.0
-    "@fortawesome/free-brands-svg-icons": ^6.2.0
-    "@fortawesome/free-regular-svg-icons": ^6.2.0
-    "@fortawesome/free-solid-svg-icons": ^6.2.0
-    "@fortawesome/vue-fontawesome": ^2.0.9
+    "@fortawesome/fontawesome-svg-core": ^6.3.0
+    "@fortawesome/free-brands-svg-icons": ^6.3.0
+    "@fortawesome/free-regular-svg-icons": ^6.3.0
+    "@fortawesome/free-solid-svg-icons": ^6.3.0
+    "@fortawesome/vue-fontawesome": ^2.0.10
     "@nuxt/image": ^0.7.1
     "@nuxt/types": ^2.15.8
     "@nuxt/typescript-build": ^2.1.0
