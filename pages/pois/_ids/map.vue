@@ -28,15 +28,18 @@ export default Vue.extend({
     return /^[,-_:a-zA-Z0-9]+$/.test(params.ids)
   },
 
-  async asyncData({ params, req, $config }): Promise<{
+  async asyncData({ params, req, $config, store }): Promise<{
     config: VidoConfig
     settings: Settings
     pois: ApiPois | null
   }> {
+    const config: VidoConfig =
+      store.getters['site/config'] || vidoConfig(req, $config)
+
     const getSettingsPromise = getSettings(
-      vidoConfig(req, $config).API_ENDPOINT,
-      vidoConfig(req, $config).API_PROJECT,
-      vidoConfig(req, $config).API_THEME
+      config.API_ENDPOINT,
+      config.API_PROJECT,
+      config.API_THEME
     )
 
     let settings: Settings | null
@@ -44,9 +47,9 @@ export default Vue.extend({
     if (params.ids) {
       const ids = params.ids.split(',')
       const getPoiPromise = getPois(
-        vidoConfig(req, $config).API_ENDPOINT,
-        vidoConfig(req, $config).API_PROJECT,
-        vidoConfig(req, $config).API_THEME,
+        config.API_ENDPOINT,
+        config.API_PROJECT,
+        config.API_THEME,
         ids,
         {
           geometry_as: undefined,
@@ -59,7 +62,7 @@ export default Vue.extend({
     }
 
     return Promise.resolve({
-      config: vidoConfig(req, $config),
+      config,
       settings,
       pois,
     })
@@ -99,6 +102,7 @@ export default Vue.extend({
   },
 
   mounted() {
+    this.$store.dispatch('site/setConfig', this.config!)
     this.setSiteLocale(this.$i18n.locale)
   },
 

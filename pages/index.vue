@@ -30,7 +30,7 @@ export default Vue.extend({
     Home,
   },
 
-  async asyncData({ params, route, req, $config }): Promise<{
+  async asyncData({ params, route, req, $config, store }): Promise<{
     config: VidoConfig
     settings: Settings
     contents: ContentEntry[]
@@ -39,25 +39,28 @@ export default Vue.extend({
     categoryIds: number[] | null
     initialPoi: ApiPoi | null
   }> {
+    const config: VidoConfig =
+      store.getters['site/config'] || vidoConfig(req, $config)
+
     const fetchSettings = getSettings(
-      vidoConfig(req, $config).API_ENDPOINT,
-      vidoConfig(req, $config).API_PROJECT,
-      vidoConfig(req, $config).API_THEME
+      config.API_ENDPOINT,
+      config.API_PROJECT,
+      config.API_THEME
     )
     const fetchContents = getContents(
-      vidoConfig(req, $config).API_ENDPOINT,
-      vidoConfig(req, $config).API_PROJECT,
-      vidoConfig(req, $config).API_THEME
+      config.API_ENDPOINT,
+      config.API_PROJECT,
+      config.API_THEME
     )
     const fetchPropertyTranslations = getPropertyTranslations(
-      vidoConfig(req, $config).API_ENDPOINT,
-      vidoConfig(req, $config).API_PROJECT,
-      vidoConfig(req, $config).API_THEME
+      config.API_ENDPOINT,
+      config.API_PROJECT,
+      config.API_THEME
     )
     const fetchMenuItems = getMenu(
-      vidoConfig(req, $config).API_ENDPOINT,
-      vidoConfig(req, $config).API_PROJECT,
-      vidoConfig(req, $config).API_THEME
+      config.API_ENDPOINT,
+      config.API_PROJECT,
+      config.API_THEME
     )
 
     let categoryIdsJoin: string | null
@@ -81,9 +84,9 @@ export default Vue.extend({
     let fetchPoi: Promise<ApiPoi | null> = Promise.resolve(null)
     if (poiId) {
       fetchPoi = getPoiById(
-        vidoConfig(req, $config).API_ENDPOINT,
-        vidoConfig(req, $config).API_PROJECT,
-        vidoConfig(req, $config).API_THEME,
+        config.API_ENDPOINT,
+        config.API_PROJECT,
+        config.API_THEME,
         poiId
       )
     }
@@ -98,7 +101,7 @@ export default Vue.extend({
       ])
 
     return Promise.resolve({
-      config: vidoConfig(req, $config),
+      config,
       settings,
       contents,
       propertyTranslations,
@@ -150,6 +153,7 @@ export default Vue.extend({
   },
 
   mounted() {
+    this.$store.dispatch('site/setConfig', this.config!)
     this.setSiteLocale(this.$i18n.locale)
   },
 
