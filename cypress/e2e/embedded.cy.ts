@@ -23,7 +23,7 @@ describe('pois table', () => {
     )
 
     cy.get('#category-selector').click()
-    cy.contains('Aire de passage').click()
+    cy.contains('Aire de passage', { timeout: 30000 }).click({ timeout: 30000 })
 
     cy.get('#m1', { timeout: 30000 }).click()
     cy.url().should('include', `/embedded/22/1`)

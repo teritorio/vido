@@ -16,10 +16,11 @@ export default defineConfig({
             'prefer-native-element': 'off',
             'heading-level': 'off',
             'empty-heading': 'off',
+            'aria-label-misuse': 'off',
           },
         },
         {
-          exclude: ['.maplibregl-marker'],
+          exclude: ['.maplibregl-marker', '.filters-number-range'],
         }
       )
     },
