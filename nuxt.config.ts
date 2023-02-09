@@ -242,6 +242,7 @@ const config: NuxtConfig = {
         ['@babel/plugin-proposal-private-property-in-object', { loose: true }],
       ],
     },
+    transpile: ['@vueform/slider'], // If you use nuxt you must transpile the module so it can be used universally
   },
 
   // Server config (allow listening to local network)
