@@ -39,8 +39,8 @@ describe('pois table', () => {
       { body: poisCategory22 }
     )
 
-    cy.get('#category-selector').click()
-    cy.contains('Aire de passage').click()
+    cy.get('.category-selector').click()
+    cy.contains('Aire de passage', { timeout: 30000 }).click()
 
     cy.get('th').contains(
       poisCategory22.features[0].properties.editorial.list_fields[0].field

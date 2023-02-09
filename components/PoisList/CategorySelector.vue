@@ -1,6 +1,6 @@
 <template>
   <t-rich-select
-    id="category-selector"
+    class="category-selector"
     variant="default"
     :options="menuEntries"
     :value="categoryId"

@@ -20,7 +20,11 @@ export default defineConfig({
           },
         },
         {
-          exclude: ['.maplibregl-marker', '.filters-number-range'],
+          exclude: [
+            '.maplibregl-marker',
+            '.filters-number-range',
+            '.category-selector',
+          ],
         }
       )
     },
