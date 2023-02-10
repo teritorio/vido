@@ -114,7 +114,7 @@ __screenshots__/diff
 # Cypress
 cypress/videos
 cypress/screenshots
-cypress/fixtures/**/*.geojson
+cypress/fixtures/**/*.*json
 cypress/fixtures/**/deps.json
 cypress/fixtures/teritorio/references/pois/
 

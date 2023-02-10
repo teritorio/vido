@@ -20,23 +20,31 @@ pois.each{ |id, poi|
     "#{path.dirname}/poi/#{id}.geojson",
     JSON.pretty_generate(poi, indent: '    ')
   )
+  File.write(
+    "#{path.dirname}/poi/#{id}.json",
+    JSON.pretty_generate(poi, indent: '    ')
+  )
 
   deps_pois = "#{path.dirname}/poi/#{id}/deps_pois.json"
-  deps_poi_ids = if File.exist?(deps_pois)
-    JSON.parse(File.read(deps_pois), symbolize_names: true)
-  else
-    []
-  end
+  deps_poi_ids = (
+    if File.exist?(deps_pois)
+      JSON.parse(File.read(deps_pois), symbolize_names: true)
+    else
+      []
+    end
+  )
 
   route_point_type = "#{path.dirname}/poi/#{id}/route:point:type.geojson"
-  deps = if File.exist?(route_point_type)
-    JSON.parse(File.read(route_point_type), symbolize_names: true)
-  else
-    {
-      type: 'FeatureCollection',
-      features: []
-    }
-  end
+  deps = (
+    if File.exist?(route_point_type)
+      JSON.parse(File.read(route_point_type), symbolize_names: true)
+    else
+      {
+        type: 'FeatureCollection',
+        features: []
+      }
+    end
+  )
 
   deps[:features] = [poi] + deps_poi_ids.map{ |id| pois[id] } + deps[:features]
 

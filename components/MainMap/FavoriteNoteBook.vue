@@ -1,10 +1,11 @@
 <template>
-  <div>
+  <div id="favourite_notebook">
     <div
       class="flex justify-between items-center py-4 px-1 sm:px-6 sticky top-0 z-20 bg-white"
     >
       <p class="text-lg">{{ $tc('favorites.notebook.title') }}</p>
       <button
+        id="close_favourite_notebook"
         type="button"
         class="flex items-center border-solid border-zinc-300 border-2 bg-white focus:outline-none focus-visible:bg-zinc-100 hover:bg-zinc-100 py-2 px-4 rounded-full"
         @click="$emit('on-close')"
@@ -15,7 +16,9 @@
           class="text-zinc-500 sm:mr-2"
           size="sm"
         />
-        <p class="hidden sm:block">{{ $tc('favorites.notebook.close') }}</p>
+        <span class="hidden sm:block">{{
+          $tc('favorites.notebook.close')
+        }}</span>
       </button>
     </div>
 

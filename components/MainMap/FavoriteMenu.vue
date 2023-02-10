@@ -32,14 +32,17 @@
             <span class="hidden md:inline favoriteTitle">{{
               $tc('favorites.title')
             }}</span>
-            <div
+            <span
               v-if="hasFavorites"
-              class="flex items-center justify-center text-white text-center rounded-full absolute top-0 right-0 w-5 h-5 border-2 border-white bg-red-600"
+              class="block flex items-center justify-center text-white text-center rounded-full absolute top-0 right-0 w-5 h-5 border-2 border-white bg-red-600"
             >
-              <p class="text-xs">{{ favoritesIds.length }}</p>
-            </div>
+              <span id="favourites_counter" class="text-xs">{{
+                favoritesIds.length
+              }}</span>
+            </span>
           </button>
           <button
+            id="open_favourites_notebook"
             type="button"
             :class="[
               'relative space-x-1 text-sm font-medium shadow-md outline-none md:px-5 w-11 md:w-auto h-11 focus:outline-none shrink-0 rounded-r-full',
