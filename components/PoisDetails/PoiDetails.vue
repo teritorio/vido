@@ -18,9 +18,10 @@
         <FavoriteIcon :is-active="isFavorite" :color-line="colorLine" />
       </IconButton>
       <IconButton
-        :href="settings.themes[0].site_url.fr"
+        :href="mapURL"
         :aria-label="$tc('poiCard.backToMap')"
         :class="['w-11 h-11', 'mr-3 sm:mr-9']"
+        @click="!mapURL && $router.go(-1)"
       >
         <TeritorioIcon picto="map" class="text-zinc-800" />
       </IconButton>
@@ -226,6 +227,14 @@ export default Vue.extend({
 
     isFavorite(): boolean {
       return this.favoritesIds.includes(this.id)
+    },
+
+    mapURL(): string | undefined {
+      // Use history back rather than forward to map
+      const mapIsBack = this.$nuxt.context.from?.matched.some(
+        (route) => route.name === 'index'
+      )
+      return mapIsBack ? undefined : this.settings.themes[0].site_url.fr
     },
   },
 
