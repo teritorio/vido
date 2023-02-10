@@ -122,7 +122,7 @@
         </MapFeatures>
         <div
           :class="[
-            'absolute flex justify-end pointer-events-auto items-top pt-4 right-3 md:pt-0 w-40 md:w-48 top-4',
+            'absolute flex justify-end pointer-events-auto items-top pt-4 right-3 md:pt-0 top-4',
             isBottomMenuOpened && 'hidden',
           ]"
         >
@@ -138,7 +138,7 @@
           <NavMenu
             id="nav-menu"
             :entries="navMenuEntries"
-            class="ml-3 sm:ml-9"
+            class="ml-3 sm:ml-4"
           />
         </div>
       </div>
