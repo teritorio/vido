@@ -441,7 +441,7 @@ export default Vue.extend({
 })
 </script>
 
-<style>
+<style scoped>
 .search-results {
   height: auto;
   overflow-y: auto;

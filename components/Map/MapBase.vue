@@ -272,12 +272,12 @@ export default Vue.extend({
 })
 </script>
 
-<style>
-.cluster-item {
+<style scoped>
+:deep(.cluster-item) {
   cursor: pointer;
 }
 
-.cluster-donut {
+:deep(.cluster-donut) {
   @apply text-sm leading-none font-medium block text-zinc-800;
 }
 </style>

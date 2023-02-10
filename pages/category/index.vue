@@ -4,6 +4,7 @@
     :nav-menu-entries="contents"
     :initial-category-id="parseInt($route.params.id)"
     :initial-pois="pois"
+    class="page-index"
   />
 </template>
 
@@ -152,7 +153,7 @@ export default Vue.extend({
 <style lang="scss">
 @import '~/assets/details.scss';
 
-body {
+.page-index {
   color: $color-text;
   background-color: #fefefe;
   padding: 1rem 1rem;

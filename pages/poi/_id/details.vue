@@ -5,6 +5,7 @@
     :nav-menu-entries="contents"
     :poi="poi"
     :poi-deps="poiDeps"
+    class="page-details"
   />
 </template>
 
@@ -166,10 +167,10 @@ export default Vue.extend({
 })
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 @import '~/assets/details.scss';
 
-body {
+.page-details {
   color: $color-text;
   background-color: #fefefe;
   padding: 1rem 1rem;
