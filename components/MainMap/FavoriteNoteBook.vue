@@ -22,48 +22,40 @@
       </button>
     </div>
 
-    <ul>
-      <li>
-        <IconButton
-          :aria-label="$tc('favorites.menu_share')"
-          class="w-8 h-8"
-          @click="setShareLink()"
-        >
-          <font-awesome-icon icon="share-alt" />
-        </IconButton>
-      </li>
-      <li>
-        <IconButton
-          :aria-label="$tc('favorites.export_pdf')"
-          class="w-8 h-8"
-          :href="pdfLink"
-          target="_blank"
-          @click="exportLink('export_pdf')"
-        >
-          <font-awesome-icon icon="file-download" />
-        </IconButton>
-      </li>
-      <li>
-        <IconButton
-          :aria-label="$tc('poisTable.downloadGeojson')"
-          class="w-8 h-8"
-          :href="csvLink"
-          target="_blank"
-          @click="exportLink('export_csv')"
-        >
-          <font-awesome-icon icon="file-download" />
-        </IconButton>
-      </li>
-      <li>
-        <IconButton
-          :aria-label="$tc('favorites.menu_clear')"
-          class="w-8 h-8"
-          @click="removeFavorites()"
-        >
-          <font-awesome-icon icon="trash" />
-        </IconButton>
-      </li>
-    </ul>
+    <IconsBar>
+      <IconButton
+        :aria-label="$tc('favorites.menu_share')"
+        class="w-8 h-8"
+        @click="setShareLink()"
+      >
+        <font-awesome-icon icon="share-alt" />
+      </IconButton>
+      <IconButton
+        :aria-label="$tc('favorites.export_pdf')"
+        class="w-8 h-8"
+        :href="pdfLink"
+        target="_blank"
+        @click="exportLink('export_pdf')"
+      >
+        <font-awesome-icon icon="file-download" />
+      </IconButton>
+      <IconButton
+        :aria-label="$tc('poisTable.downloadGeojson')"
+        class="w-8 h-8"
+        :href="csvLink"
+        target="_blank"
+        @click="exportLink('export_csv')"
+      >
+        <font-awesome-icon icon="file-download" />
+      </IconButton>
+      <IconButton
+        :aria-label="$tc('favorites.menu_clear')"
+        class="w-8 h-8"
+        @click="removeFavorites()"
+      >
+        <font-awesome-icon icon="trash" />
+      </IconButton>
+    </IconsBar>
 
     <PoisDeck
       :pois="favs"
@@ -85,6 +77,7 @@ import { mapGetters } from 'vuex'
 
 import PoisDeck from '~/components/PoisCard/PoisDeck.vue'
 import IconButton from '~/components/UI/IconButton.vue'
+import IconsBar from '~/components/UI/IconsBar.vue'
 import ShareLinkModal from '~/components/UI/ShareLinkModal.vue'
 import { ApiPoi } from '~/lib/apiPois'
 
@@ -100,6 +93,7 @@ export default (
   components: {
     PoisDeck,
     ShareLinkModal,
+    IconsBar,
     IconButton,
   },
 
@@ -168,28 +162,3 @@ export default (
   },
 })
 </script>
-
-<style lang="scss" scoped>
-@import '~/assets/details.scss';
-
-ul {
-  position: relative;
-  display: block;
-  width: 100%;
-  text-align: right;
-  margin-bottom: 0.6rem;
-  list-style: none;
-
-  li {
-    display: inline-block;
-    margin: 0.3rem;
-    border-radius: 50%;
-  }
-}
-
-@media (max-width: 991px) {
-  ul {
-    text-align: center;
-  }
-}
-</style>
