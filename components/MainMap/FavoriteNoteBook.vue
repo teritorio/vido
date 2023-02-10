@@ -22,7 +22,7 @@
       </button>
     </div>
 
-    <IconsBar>
+    <IconsBar class="mr-6">
       <IconButton
         :aria-label="$tc('favorites.menu_share')"
         class="w-8 h-8"
@@ -37,16 +37,16 @@
         target="_blank"
         @click="exportLink('export_pdf')"
       >
-        <font-awesome-icon icon="file-download" />
+        <font-awesome-icon icon="print" />
       </IconButton>
       <IconButton
-        :aria-label="$tc('poisTable.downloadGeojson')"
+        :aria-label="$tc('favorites.export_csv')"
         class="w-8 h-8"
         :href="csvLink"
         target="_blank"
         @click="exportLink('export_csv')"
       >
-        <font-awesome-icon icon="file-download" />
+        <font-awesome-icon icon="file-csv" />
       </IconButton>
       <IconButton
         :aria-label="$tc('favorites.menu_clear')"
