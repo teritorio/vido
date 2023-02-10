@@ -181,10 +181,6 @@ export default Vue.extend({
       ).then((pois) => (pois && pois.features) || [])
     },
 
-    explore(poi?: ApiPoi) {
-      this.$emit('close')
-      this.$emit('explore-click')
-    },
     goTo(poi?: ApiPoi) {
       this.$emit('close')
       this.$emit('go-to-selected-poi', poi)

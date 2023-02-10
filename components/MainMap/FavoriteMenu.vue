@@ -42,7 +42,7 @@
         <span class="sr-only">{{ $tc('favorites.list') }}</span>
         <font-awesome-icon
           ref="menu_icon"
-          :icon="isShown ? 'bars' : 'bars'"
+          icon="bars"
           class="text-zinc-500"
           size="sm"
         />
@@ -172,6 +172,11 @@ export default (
         // eslint-disable-next-line no-console
         console.error('Vido error:', e.message)
       }
+    },
+
+    explore(poi?: ApiPoi) {
+      this.$emit('close')
+      this.$emit('explore-click')
     },
   },
 })
