@@ -1,33 +1,57 @@
 <template>
-  <div class="flex flex-col h-screen">
-    <CategorySelector :menu-items="menuItems" @category-change="onMenuChange" />
-    <div v-if="initialBbox" class="flex flex-grow">
-      <MapFeatures
-        ref="mapFeatures"
-        :default-bounds="initialBbox"
-        :fit-bounds-padding-options="fitBoundsPaddingOptions"
-        :extra-attributions="settings.attributions"
-        :categories="menuItems"
-        :features="mapFeatures"
-        :selected-categories-ids="selectedCategoryIds"
-        :style-icon-filter="poiFilters"
-        :explorer-mode-enabled="explorerModeEnabled"
-      />
-      <div class="p-4 absolute">
-        <SelectedCategories />
+  <div
+    :class="[
+      'flex',
+      'flex-col-reverse h-screen',
+      'md:flex-row md:h-auto md:w-screen',
+    ]"
+  >
+    <div
+      v-if="selectedFeature"
+      :class="[
+        'p-4 bg-white z-20',
+        'absolute w-screen h-screen',
+        'md:relative md:h-full md:w-1/3 md:max-w-md',
+      ]"
+    >
+      <div class="md:hidden grid justify-items-end pb-4">
+        <UIButton
+          :label="$tc('ui.close')"
+          icon="times"
+          @click="setSelectedFeature(undefined)"
+        />
       </div>
-    </div>
-    <div class="fixed flex left-8 right-16 bottom-5 pointer-events-none">
-      <PoiCard
-        v-if="selectedFeature"
+      <PoiCardContent
         :poi="selectedFeature"
-        class="grow-0"
         :explorer-mode-enabled="explorerModeEnabled"
         :favorites-mode-enabled="false"
-        :show-image="false"
         @explore-click="toggleExploreAroundSelectedPoi"
         @zoom-click="goToSelectedFeature"
       />
+    </div>
+    <div class="grow">
+      <div class="flex flex-col h-screen">
+        <CategorySelector
+          :menu-items="menuItems"
+          @category-change="onMenuChange"
+        />
+        <div v-if="initialBbox" class="flex flex-grow">
+          <MapFeatures
+            ref="mapFeatures"
+            :default-bounds="initialBbox"
+            :fit-bounds-padding-options="fitBoundsPaddingOptions"
+            :extra-attributions="settings.attributions"
+            :categories="menuItems"
+            :features="mapFeatures"
+            :selected-categories-ids="selectedCategoryIds"
+            :style-icon-filter="poiFilters"
+            :explorer-mode-enabled="explorerModeEnabled"
+          />
+          <div class="p-4 absolute">
+            <SelectedCategories />
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -40,8 +64,9 @@ import { mapActions } from 'vuex'
 import HomeMixin from '~/components/Home/HomeMixin'
 import SelectedCategories from '~/components/Home/SelectedCategories.vue'
 import MapFeatures from '~/components/MainMap/MapFeatures.vue'
-import PoiCard from '~/components/PoisCard/PoiCard.vue'
+import PoiCardContent from '~/components/PoisCard/PoiCardContent.vue'
 import CategorySelector from '~/components/PoisList/CategorySelector.vue'
+import UIButton from '~/components/UI/UIButton.vue'
 import { ApiPoi } from '~/lib/apiPois'
 import { Mode } from '~/utils/types'
 import { flattenFeatures } from '~/utils/utilities'
@@ -51,7 +76,8 @@ export default mixins(HomeMixin).extend({
     CategorySelector,
     MapFeatures,
     SelectedCategories,
-    PoiCard,
+    PoiCardContent,
+    UIButton,
   },
 
   computed: {
