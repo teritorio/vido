@@ -186,3 +186,16 @@ export default defineNuxtComponent({
   @extend .font-light;
 }
 </style>
+
+<style>
+body {
+  -webkit-print-color-adjust: exact;
+}
+@media print {
+  html,
+  body {
+    width: 210mm;
+    height: 297mm;
+  }
+}
+</style>

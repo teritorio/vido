@@ -9,7 +9,7 @@
 
     <div class="tw-flex tw-justify-end">
       <slot></slot>
-      <NavMenu :entries="navMenuEntries" />
+      <NavMenu :entries="navMenuEntries" class="print:hidden" />
     </div>
   </header>
 </template>

@@ -29,6 +29,9 @@ module.exports = {
       flexBasis: {
         max: 'max-content',
       },
+      screens: {
+        print: { raw: 'print' },
+      },
     },
   },
   plugins: [require('@tailwindcss/forms'), require('@tailwindcss/typography')],

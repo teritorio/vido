@@ -28,6 +28,7 @@
           v-else-if="field.display_mode === 'card'"
           :color-fill="colorFill"
           :icon="field.icon"
+          class="print:hidden"
         >
           <FieldsHeader
             v-if="fieldTranslateK(field.group)"
