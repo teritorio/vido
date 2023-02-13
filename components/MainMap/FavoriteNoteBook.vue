@@ -59,7 +59,7 @@
 
     <PoisDeck
       :pois="favs"
-      :notebook="true"
+      :selected-poi-ids="selectedFavsIds"
       :explorer-mode-enabled="explorerModeEnabled"
       :favorites-mode-enabled="true"
       @explore-click="$emit('explore-click', $event)"
@@ -79,7 +79,7 @@ import PoisDeck from '~/components/PoisCard/PoisDeck.vue'
 import IconButton from '~/components/UI/IconButton.vue'
 import IconsBar from '~/components/UI/IconsBar.vue'
 import ShareLinkModal from '~/components/UI/ShareLinkModal.vue'
-import { ApiPoi } from '~/lib/apiPois'
+import { ApiPoi, ApiPoiId } from '~/lib/apiPois'
 
 export default (
   Vue as VueConstructor<
@@ -100,6 +100,10 @@ export default (
   props: {
     favs: {
       type: Array as PropType<ApiPoi[]>,
+      default: undefined,
+    },
+    selectedFavsIds: {
+      type: Array as PropType<ApiPoiId[]>,
       default: undefined,
     },
     explorerModeEnabled: {

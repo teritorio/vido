@@ -77,6 +77,7 @@
     >
       <FavoriteNoteBook
         :favs="favs"
+        :selected-favs-ids="favoritesIds"
         :explorer-mode-enabled="explorerModeEnabled"
         @explore-click="explore"
         @favorite-click="handleFavorite"
@@ -175,8 +176,8 @@ export default (
       this.closeNoteBook()
       this.goToSelectedPoi(poi)
     },
-    handleFavorite(poi?: ApiPoi, isNotebook?: Boolean) {
-      this.toggleFavorite(poi, isNotebook)
+    handleFavorite(poi?: ApiPoi) {
+      this.toggleFavorite(poi)
     },
     openNotebookModal() {
       this.$tracking({

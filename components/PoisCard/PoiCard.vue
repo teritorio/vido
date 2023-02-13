@@ -2,8 +2,8 @@
   <div
     :id="`PoiCard-${id}`"
     :class="[
-      'z-10 flex flex-col w-full md:max-w-xl mx-0 overflow-y-auto shadow-md pointer-events-auto md:flex-row md:w-auto md:mx-auto md:rounded-xl poiDescription',
-      !isModeFavorites && notebook ? 'bg-zinc-200 opacity-70' : 'bg-white',
+      'poiDescription',
+      'z-10 flex flex-col w-full md:max-w-xl mx-0 overflow-y-auto shadow-md pointer-events-auto md:flex-row md:w-auto md:mx-auto md:rounded-xl bg-white',
     ]"
   >
     <div
@@ -174,10 +174,6 @@ export default Vue.extend({
   },
 
   props: {
-    notebook: {
-      type: Boolean,
-      default: false,
-    },
     poi: {
       type: Object as PropType<ApiPoi>,
       required: true,
@@ -268,16 +264,6 @@ export default Vue.extend({
     },
   },
 
-  watch: {
-    poi() {
-      this.trackingPopup(this.notebook, this.id)
-    },
-  },
-
-  mounted() {
-    this.trackingPopup(this.notebook, this.id)
-  },
-
   methods: {
     onZoomClick() {
       this.trackingPopupEvent('zoom')
@@ -295,20 +281,7 @@ export default Vue.extend({
       if (!this.isModeFavorites) {
         this.trackingPopupEvent('favorite')
       }
-      this.$emit('favorite-click', this.poi, this.notebook)
-    },
-
-    trackingPopup(notebook: boolean, id: ApiPoiId) {
-      if (!notebook) {
-        this.$tracking({
-          type: 'popup',
-          poiId: id,
-          title: this.poi.properties?.name,
-          location: window.location.href,
-          path: this.$route.path,
-          categoryIds: this.poi.properties?.metadata?.category_ids || [],
-        })
-      }
+      this.$emit('favorite-click', this.poi)
     },
 
     trackingPopupEvent(

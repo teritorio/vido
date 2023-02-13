@@ -26,7 +26,6 @@
         :favorites-mode-enabled="false"
         :show-image="false"
         @explore-click="toggleExploreAroundSelectedPoi"
-        @favorite-click="toggleFavorite($event)"
         @zoom-click="goToSelectedFeature"
       />
     </div>

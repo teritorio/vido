@@ -3,10 +3,12 @@
     <component
       :is="poisCard"
       v-for="item in pois"
-      :key="item.id"
+      :key="item.properties.metadata.id"
       :poi="item"
-      :notebook="notebook"
-      class="grow-1"
+      :class="[
+        'grow-1',
+        !isFavorite(item.properties.metadata.id) && 'bg-zinc-200 opacity-70',
+      ]"
       :explorer-mode-enabled="explorerModeEnabled"
       :favorites-mode-enabled="favoritesModeEnabled"
       @explore-click="$emit('explore-click', $event)"
@@ -21,7 +23,7 @@ import Vue, { PropType } from 'vue'
 
 import PoiCard from '~/components/PoisCard/PoiCard.vue'
 import PoiCardLight from '~/components/PoisCard/PoiCardLight.vue'
-import { ApiPoi } from '~/lib/apiPois'
+import { ApiPoi, ApiPoiId } from '~/lib/apiPois'
 
 export default Vue.extend({
   components: {
@@ -33,13 +35,13 @@ export default Vue.extend({
       type: Array as PropType<ApiPoi[]>,
       required: true,
     },
+    selectedPoiIds: {
+      type: Array as PropType<ApiPoiId[]>,
+      required: true,
+    },
     poisCard: {
       type: String as PropType<'PoiCard' | 'PoiCardLight'>,
       default: 'PoiCard',
-    },
-    notebook: {
-      type: Boolean,
-      default: false,
     },
     explorerModeEnabled: {
       type: Boolean,
@@ -48,6 +50,13 @@ export default Vue.extend({
     favoritesModeEnabled: {
       type: Boolean,
       required: true,
+    },
+  },
+
+  methods: {
+    isFavorite(id: ApiPoiId): boolean {
+      console.error(this.selectedPoiIds, id)
+      return this.selectedPoiIds.includes(id)
     },
   },
 })

@@ -372,6 +372,18 @@ export default mixins(HomeMixin).extend({
     selectedFeature() {
       this.showPoi = !!this.selectedFeature
       this.routerPushUrl()
+
+      this.$tracking({
+        type: 'popup',
+        poiId:
+          this.selectedFeature.properties.metadata.id ||
+          this.selectedFeature.properties?.id,
+        title: this.selectedFeature.properties?.name,
+        location: window.location.href,
+        path: this.$route.path,
+        categoryIds:
+          this.selectedFeature.properties?.metadata?.category_ids || [],
+      })
     },
 
     selectedCategoryIds(a, b) {
@@ -541,10 +553,7 @@ export default mixins(HomeMixin).extend({
       }
     },
 
-    toggleFavorite(feature?: ApiPoi, isNotebook?: boolean) {
-      if (feature && !isNotebook) {
-        this.setSelectedFeature(feature)
-      }
+    toggleFavorite(feature?: ApiPoi) {
       try {
         this.$store.dispatch('favorite/toggleFavorite', feature)
       } catch (e) {
