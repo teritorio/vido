@@ -38,6 +38,7 @@
 </template>
 
 <script lang="ts">
+import { LocaleObject } from '@nuxtjs/i18n'
 import Vue, { PropType } from 'vue'
 
 import TeritorioIcon from '~/components/UI/TeritorioIcon.vue'
@@ -97,11 +98,23 @@ export default Vue.extend({
             menuGroup: menuItem,
           }
         })
-        .filter((a) => a !== undefined) as {
-        value: number
-        text: string
-        menuGroup: ApiMenuCategory
-      }[]
+        .filter(
+          (
+            t
+          ): t is NonNullable<{
+            value: number
+            text: string
+            menuGroup: ApiMenuCategory
+          }> => t != null
+        )
+        .sort((a, b) =>
+          a.text.localeCompare(
+            b.text,
+            this.$i18n.locales.map((locale: string | LocaleObject) =>
+              typeof locale === 'string' ? locale : locale.code
+            )
+          )
+        )
     },
   },
 })
