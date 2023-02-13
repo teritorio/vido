@@ -1,4 +1,7 @@
 export default {
+  ui: {
+    close: 'Cerrar',
+  },
   units: {
     min: 'min',
     hours: 'h',
@@ -10,7 +13,6 @@ export default {
   shareLink: {
     copy: 'Copiar',
     qrcode: 'QR-Code',
-    close: 'Cerrar',
   },
   favorites: {
     title: 'Favoritos',
@@ -24,7 +26,6 @@ export default {
     share_link: 'Compartir enlace de favoritos',
     notebook: {
       title: 'Cuaderno de favoritos',
-      close: 'Cerrar',
     },
     noFavs:
       'Todavía no tienes ningún lugar marcado. Puedes hacerlo seleccionando un lugar en el mapa y guardándolo como favorito',

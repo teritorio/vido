@@ -4,22 +4,12 @@
       class="flex justify-between items-center py-4 px-1 sm:px-6 sticky top-0 z-20 bg-white"
     >
       <p class="text-lg">{{ $tc('favorites.notebook.title') }}</p>
-      <button
+      <UIButton
         id="close_favourite_notebook"
-        type="button"
-        class="flex items-center border-solid border-zinc-300 border-2 bg-white focus:outline-none focus-visible:bg-zinc-100 hover:bg-zinc-100 py-2 px-4 rounded-full"
+        :label="$tc('ui.close')"
+        icon="times"
         @click="$emit('on-close')"
-      >
-        <font-awesome-icon
-          ref="menu_icon"
-          icon="times"
-          class="text-zinc-500 sm:mr-2"
-          size="sm"
-        />
-        <span class="hidden sm:block">{{
-          $tc('favorites.notebook.close')
-        }}</span>
-      </button>
+      />
     </div>
 
     <IconsBar class="mr-6">
@@ -79,6 +69,7 @@ import PoisDeck from '~/components/PoisCard/PoisDeck.vue'
 import IconButton from '~/components/UI/IconButton.vue'
 import IconsBar from '~/components/UI/IconsBar.vue'
 import ShareLinkModal from '~/components/UI/ShareLinkModal.vue'
+import UIButton from '~/components/UI/UIButton.vue'
 import { ApiPoi, ApiPoiId } from '~/lib/apiPois'
 
 export default (
@@ -95,6 +86,7 @@ export default (
     ShareLinkModal,
     IconsBar,
     IconButton,
+    UIButton,
   },
 
   props: {
