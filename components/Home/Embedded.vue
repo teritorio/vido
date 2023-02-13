@@ -24,6 +24,7 @@
         class="grow-0"
         :explorer-mode-enabled="explorerModeEnabled"
         :favorites-mode-enabled="false"
+        :show-image="false"
         @explore-click="toggleExploreAroundSelectedPoi"
         @favorite-click="toggleFavorite($event)"
         @zoom-click="goToSelectedFeature"

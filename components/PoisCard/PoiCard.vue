@@ -7,6 +7,7 @@
     ]"
   >
     <div
+      v-if="showImage"
       class="md:w-48 h-44 md:h-auto md:max-h-full bg-gray-100 flex items-center align-middle justify-center relative min-icon-height"
     >
       <TeritorioIcon
@@ -188,6 +189,10 @@ export default Vue.extend({
     favoritesModeEnabled: {
       type: Boolean,
       required: true,
+    },
+    showImage: {
+      type: Boolean,
+      default: true,
     },
   },
 
