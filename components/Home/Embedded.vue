@@ -23,7 +23,7 @@
         :poi="selectedFeature"
         class="grow-0"
         :explorer-mode-enabled="explorerModeEnabled"
-        :favorites-mode-enabled="favoritesModeEnabled"
+        :favorites-mode-enabled="false"
         @explore-click="toggleExploreAroundSelectedPoi"
         @favorite-click="toggleFavorite($event)"
         @zoom-click="goToSelectedFeature"
