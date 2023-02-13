@@ -36,8 +36,8 @@ export default Vue.extend({
       required: true,
     },
     selectedPoiIds: {
-      type: Array as PropType<ApiPoiId[]>,
-      required: true,
+      type: Array as PropType<ApiPoiId[]> | undefined,
+      default: undefined,
     },
     poisCard: {
       type: String as PropType<'PoiCard' | 'PoiCardLight'>,
@@ -55,8 +55,9 @@ export default Vue.extend({
 
   methods: {
     isFavorite(id: ApiPoiId): boolean {
-      console.error(this.selectedPoiIds, id)
-      return this.selectedPoiIds.includes(id)
+      return (
+        this.selectedPoiIds === undefined || this.selectedPoiIds.includes(id)
+      )
     },
   },
 })
