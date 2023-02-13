@@ -272,12 +272,14 @@ export default Vue.extend({
 })
 </script>
 
-<style lang="scss" scoped>
-:deep(.map-controls-hidden .mapboxgl-control-container),
-:deep(.map-controls-hidden .maplibregl-control-container) {
+<style>
+.map-controls-hidden .mapboxgl-control-container,
+.map-controls-hidden .maplibregl-control-container {
   display: none;
 }
+</style>
 
+<style scoped>
 :deep(#map) {
   width: 100%;
   height: 100%;
