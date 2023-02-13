@@ -90,7 +90,7 @@ const settings = {
         selectButtonTagDeleteButton:
           '-ml-1.5 h-full hover:bg-emerald-500 hover:shadow-sm inline-flex items-center px-2 transition',
         selectButtonTagDeleteButtonIcon: '',
-        selectButtonPlaceholder: 'text-zinc-400',
+        selectButtonPlaceholder: 'text-zinc-600',
         selectButtonIcon: 'text-zinc-600',
         selectButtonClearButton:
           'hover:bg-emerald-100 text-zinc-600 rounded transition duration-100 ease-in-out',
