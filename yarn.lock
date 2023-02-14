@@ -5255,7 +5255,7 @@ __metadata:
     "@types/webpack": ^5.28.0
     "@typescript-eslint/eslint-plugin": ^5.52.0
     "@typescript-eslint/parser": ^5.52.0
-    "@vue/test-utils": ^1.3.3
+    "@vue/test-utils": ^1.3.4
     "@vueform/slider": ^2.1.7
     autoprefixer: ^10.4.13
     babel-eslint: ^10.1.0
@@ -6630,9 +6630,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@vue/test-utils@npm:^1.3.3":
-  version: 1.3.3
-  resolution: "@vue/test-utils@npm:1.3.3"
+"@vue/test-utils@npm:^1.3.4":
+  version: 1.3.4
+  resolution: "@vue/test-utils@npm:1.3.4"
   dependencies:
     dom-event-types: ^1.0.0
     lodash: ^4.17.15
@@ -6640,7 +6640,7 @@ __metadata:
   peerDependencies:
     vue: 2.x
     vue-template-compiler: ^2.x
-  checksum: 200965bb1a8b5ef4453534b4f8b794906439be2e78b4e718b20e2952ac9919d333f0629c7b3b2433f614a6935bb9bf94db933118209494724fdb6148e691c3cd
+  checksum: 72e445495f5b4a8bfb7cf4776263c4da12626567440158599f25b018d0baaa535dae312c2d07d2a136bef2bba5b3260bd23a4e132502b045e881e072686260c6
   languageName: node
   linkType: hard
 
