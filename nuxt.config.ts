@@ -191,7 +191,7 @@ const config: NuxtConfig = {
     // addons: ['@storybook/addon-controls', '@storybook/addon-notes'],
     // @ts-ignore
     webpackFinal(config) {
-      config.watchOptions.ignored = [/node_modules/, /__screenshots__/]
+      config.watchOptions.ignored = /node_modules|__screenshots__/
       return config
     },
     addons: ['storybook-addon-mock', 'storybook-addon-validate-html'],

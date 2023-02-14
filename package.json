@@ -133,5 +133,10 @@
     "tailwindcss": "^3.2.6",
     "ts-jest": "^29.0.5",
     "vue-jest": "^3.0.7"
+  },
+  "overrides": {
+    "@nuxtjs/tailwindcss": {
+      "@nuxt/kit": "3.0.0-rc.13"
+    }
   }
 }
