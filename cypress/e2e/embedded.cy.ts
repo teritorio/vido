@@ -10,7 +10,7 @@ const hostnames = {
 }
 
 describe('pois table', () => {
-  before(() => {
+  beforeEach(() => {
     mockSSRAPI(hostnames, teritorioReferenceAPIFixture)
     cy.viewport(1024, 768)
     cy.visit('/embedded')

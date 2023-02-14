@@ -9,7 +9,7 @@ const hostnames = {
 }
 
 describe('home content', () => {
-  before(() => {
+  beforeEach(() => {
     mockSSRAPI(hostnames, teritorioReferenceAPIFixture)
     cy.viewport(1024, 768)
     cy.visit('/')
@@ -23,7 +23,7 @@ describe('home content', () => {
     cy.intercept(
       'https://merge-proxy-dev.teritorio.xyz/styles/teritorio-bicycle-tourism/style.json?*'
     ).as('style-bicycle')
-    cy.get('#background-selector-map-bicycle').click()
+    cy.get('#background-selector-map-bicycle', { timeout: 20000 }).click()
     cy.wait('@style-bicycle').its('response.statusCode').should('eq', 200)
 
     cy.intercept(

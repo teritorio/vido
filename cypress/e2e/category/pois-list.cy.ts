@@ -10,7 +10,7 @@ const hostnames = {
 }
 
 describe('pois table', () => {
-  before(() => {
+  beforeEach(() => {
     mockSSRAPI(hostnames, teritorioReferenceAPIFixture, {
       'pois/category/211.geojson?geometry_as=point&short_description=true':
         teritorioReferenceAPIFixture.deps[1],

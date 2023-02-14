@@ -10,7 +10,7 @@ const hostnames = {
 }
 
 describe('home content', () => {
-  before(() => {
+  beforeEach(() => {
     mockSSRAPI(hostnames, teritorioReferenceAPIFixture)
     cy.viewport(1024, 768)
     // Add some favourites,

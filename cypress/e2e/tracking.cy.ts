@@ -19,7 +19,7 @@ Cypress.on('window:before:load', (win) => {
 const asserts: ((event: Event) => void)[] = []
 
 describe('home content', () => {
-  before(() => {
+  beforeEach(() => {
     localStorage.setItem('cookie:accepted', 'true')
     mockSSRAPI(hostnames, teritorioReferenceAPIFixture)
     cy.intercept(

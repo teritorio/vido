@@ -9,7 +9,7 @@ const hostnames = {
 }
 
 describe('home content', () => {
-  before(() => {
+  beforeEach(() => {
     mockSSRAPI(hostnames, teritorioReferenceAPIFixture, {
       'poi/2/deps.geojson?geometry_as=bbox&short_description=false':
         teritorioReferenceAPIFixture.deps[2],
