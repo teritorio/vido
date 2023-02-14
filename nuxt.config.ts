@@ -24,8 +24,11 @@ const config: NuxtConfig = {
   },
 
   pwa: {
-    meta: {
-      lang: 'fr',
+    icon: false,
+    meta: false,
+    manifest: false,
+    workbox: {
+      enabled: true,
     },
   },
   // Global page headers (https://go.nuxtjs.dev/config-head)
@@ -85,6 +88,7 @@ const config: NuxtConfig = {
     // https://go.nuxtjs.dev/tailwindcss
     '@nuxtjs/tailwindcss',
     '@nuxtjs/svg',
+    '@nuxtjs/pwa',
   ],
 
   // Modules (https://go.nuxtjs.dev/config-modules)

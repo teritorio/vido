@@ -3309,6 +3309,23 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@nuxtjs/pwa@npm:^3.3.5":
+  version: 3.3.5
+  resolution: "@nuxtjs/pwa@npm:3.3.5"
+  dependencies:
+    clone-deep: ^4.0.1
+    defu: ^3.2.2
+    execa: ^5.0.0
+    fs-extra: ^9.1.0
+    hasha: ^5.2.2
+    jimp-compact: ^0.16.1
+    lodash.template: ^4.5.0
+    serve-static: ^1.14.1
+    workbox-cdn: ^5.1.4
+  checksum: 515efff03f6e71115f792289591594eaca2e08281b55f237b174478fafaeeee698a321e348eebfb1bc579b2ea73264927cfee4ec422b24d490decd164c117cf8
+  languageName: node
+  linkType: hard
+
 "@nuxtjs/sentry@npm:^6.0.1":
   version: 6.0.1
   resolution: "@nuxtjs/sentry@npm:6.0.1"
@@ -5077,6 +5094,7 @@ __metadata:
     "@nuxtjs/eslint-module": ^3.1.0
     "@nuxtjs/gtm": ^2.4.0
     "@nuxtjs/i18n": ^7.3.0
+    "@nuxtjs/pwa": ^3.3.5
     "@nuxtjs/sentry": ^6.0.1
     "@nuxtjs/sitemap": ^2.4.0
     "@nuxtjs/storybook": ^4.3.2
@@ -15840,6 +15858,13 @@ fsevents@^1.2.7:
   languageName: node
   linkType: hard
 
+"jimp-compact@npm:^0.16.1":
+  version: 0.16.1
+  resolution: "jimp-compact@npm:0.16.1"
+  checksum: 00447f4011d4af8e459a633523cefee92aa2a81757f60171309f4118103537c491d8f887bd9320c84fe6a740e625ebe3403707789cea31352b2841cfc70817ff
+  languageName: node
+  linkType: hard
+
 "jiti@npm:^1.13.0, jiti@npm:^1.9.2":
   version: 1.14.0
   resolution: "jiti@npm:1.14.0"
@@ -26402,6 +26427,13 @@ typescript@~4.2:
   version: 1.0.0
   resolution: "wordwrap@npm:1.0.0"
   checksum: b4f3f8104a727d1b08e77f43f3692977146f13074392747a3d9cfd631d0fc3ff1c0c034d44fcd7a22183c6505d2fc305421e3512671f8a56f903055671ace4ce
+  languageName: node
+  linkType: hard
+
+"workbox-cdn@npm:^5.1.4":
+  version: 5.1.4
+  resolution: "workbox-cdn@npm:5.1.4"
+  checksum: dad9ec31c4441abdd9efeab6eef4e0a4a49e72d3ed10d4e61221b5f28523750b67565e7b753d5f63aaeefec01fa7b86dbbf21b7e97708c3a71a448c136b06db2
   languageName: node
   linkType: hard
 
