@@ -11,7 +11,10 @@
 
       <template v-if="Boolean(websiteDetails)">
         <NuxtLink
-          v-if="localWebsiteDetails"
+          v-if="
+            !websiteDetails.startsWith('https://') &&
+            !websiteDetails.startsWith('http://')
+          "
           class="ml-6 px-3 py-1.5 text-xs text-zinc-800 bg-zinc-100 hover:bg-zinc-200 focus:bg-zinc-200 transition transition-colors rounded-md"
           :to="websiteDetails"
           rel="noopener noreferrer"
@@ -209,22 +212,24 @@ export default Vue.extend({
     },
 
     websiteDetails(): string | undefined {
-      return (
+      const url =
         this.poi.properties.editorial &&
         this.poi.properties.editorial['website:details']
-      )
-    },
 
-    localWebsiteDetails(): boolean {
-      if (!this.websiteDetails) {
-        return false
-      } else if (
-        !this.websiteDetails.startsWith('https://') &&
-        !this.websiteDetails.startsWith('http://')
-      ) {
-        return true
+      if (!url) {
+        return undefined
+      } else if (!url.startsWith('https://') && !url.startsWith('http://')) {
+        return url
       } else {
-        return new URL(this.websiteDetails).hostname == window.location.hostname
+        const u = new URL(url)
+        if (u.hostname !== window.location.hostname) {
+          return url
+        } else {
+          return url.replace(
+            `${u.protocol}//${u.hostname}${u.port ? ':' + u.port : ''}`,
+            ''
+          )
+        }
       }
     },
 
