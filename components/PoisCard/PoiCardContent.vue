@@ -224,8 +224,7 @@ export default Vue.extend({
       ) {
         return true
       } else {
-        const url = new URL(this.websiteDetails)
-        return url.hostname == window.location.hostname
+        return new URL(this.websiteDetails).hostname == window.location.hostname
       }
     },
 
