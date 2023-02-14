@@ -5300,9 +5300,9 @@ __metadata:
     storybook-addon-validate-html: ^0.0.12
     storycap: ^4.0.0
     stylelint: ^13.13.1
-    stylelint-config-prettier: ^9.0.4
+    stylelint-config-prettier: ^9.0.5
     stylelint-config-standard: ^20.0.0
-    stylelint-scss: ^4.3.0
+    stylelint-scss: ^4.4.0
     svgo: ^3.0.2
     tailwindcss: ^3.2.3
     ts-jest: ^29.0.5
@@ -24180,15 +24180,15 @@ fsevents@^1.2.7:
   languageName: node
   linkType: hard
 
-"stylelint-config-prettier@npm:^9.0.4":
-  version: 9.0.4
-  resolution: "stylelint-config-prettier@npm:9.0.4"
+"stylelint-config-prettier@npm:^9.0.5":
+  version: 9.0.5
+  resolution: "stylelint-config-prettier@npm:9.0.5"
   peerDependencies:
-    stylelint: ">=11.0.0"
+    stylelint: ">= 11.x < 15"
   bin:
     stylelint-config-prettier: bin/check.js
     stylelint-config-prettier-check: bin/check.js
-  checksum: 3a70e7daefab43c6fb890849406e2cf3240ce11f4f41c9175dc03ceda881b2903ab2d8a2fd4c2a629d6e4c8d85ac8df54cc06b098b1bd8d832a1c00c519a23c1
+  checksum: 5a4bb6f994534ce3bce3cbe9657ade18afb084c372a93e32a24f7c04e73d4fe2dc313aca1ae0515039b49f2fd8d083a85ce109210bf3d633ffc4cd7c6e1e069a
   languageName: node
   linkType: hard
 
@@ -24212,9 +24212,9 @@ fsevents@^1.2.7:
   languageName: node
   linkType: hard
 
-"stylelint-scss@npm:^4.3.0":
-  version: 4.3.0
-  resolution: "stylelint-scss@npm:4.3.0"
+"stylelint-scss@npm:^4.4.0":
+  version: 4.4.0
+  resolution: "stylelint-scss@npm:4.4.0"
   dependencies:
     lodash: ^4.17.21
     postcss-media-query-parser: ^0.2.3
@@ -24222,8 +24222,8 @@ fsevents@^1.2.7:
     postcss-selector-parser: ^6.0.6
     postcss-value-parser: ^4.1.0
   peerDependencies:
-    stylelint: ^14.5.1
-  checksum: d4fcb0d9b02a55725d362d6b3e688020c418d1b92c2a2068558e08fa4cf4a86046d38b0bb85cfe5dfcfb7effd7ba61b498686b36f8aa2d1b0e4b07644452e6ad
+    stylelint: ^14.5.1 || ^15.0.0
+  checksum: ea4c50e782cdfc766859ee58f3d302b4115d48289c0a74fd939612cacdedefbe4427a32692291e639431270fdfa5a4be818fc462045a6f540ad065712d0b7c45
   languageName: node
   linkType: hard
 
