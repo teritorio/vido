@@ -40,6 +40,7 @@ module.exports = {
     ],
     'vue/no-v-for-template-key-on-child': 'off',
     'vue/no-deprecated-dollar-listeners-api': 'off', // Vue3 rule
+    'vue/no-reserved-component-names': 'off',
   },
   settings: {
     'import/internal-regex': '^@/',
