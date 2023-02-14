@@ -36,7 +36,7 @@ export default Vue.extend({
     return /^[-_:a-zA-Z0-9]+$/.test(params.id)
   },
 
-  async asyncData({ params, req, $config, store }): Promise<{
+  async asyncData({ params, req, $config, store, error }): Promise<{
     config: VidoConfig
     settings: Settings
     contents: ContentEntry[]
@@ -97,7 +97,10 @@ export default Vue.extend({
     }
 
     if (!poi) {
-      throw new Error('Missing main object.')
+      error({
+        statusCode: 404,
+        message: 'POI not found. Missing main object.',
+      })
     }
 
     return Promise.resolve({
