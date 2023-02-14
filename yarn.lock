@@ -5235,7 +5235,7 @@ __metadata:
     autoprefixer: ^10.4.13
     babel-eslint: ^10.1.0
     babel-jest: ^29.4.2
-    core-js: ^3.23.3
+    core-js: ^3.28.0
     country-flag-icons: ^1.5.5
     cypress: ^12.5.1
     cypress-html-validate: ^5.1.2
@@ -5247,7 +5247,7 @@ __metadata:
     eslint-plugin-nuxt: ^3.2.0
     eslint-plugin-prettier: ^4.2.1
     express: ^4.18.2
-    fast-copy: ^2.1.7
+    fast-copy: ^3.0.0
     fast-equals: ^4.0.3
     html-validate: ^7.13.2
     http-server: ^14.1.1
@@ -9803,10 +9803,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"core-js@npm:^3.0.4, core-js@npm:^3.23.3, core-js@npm:^3.6.1, core-js@npm:^3.6.5, core-js@npm:^3.8.2":
+"core-js@npm:^3.0.4, core-js@npm:^3.6.1, core-js@npm:^3.6.5, core-js@npm:^3.8.2":
   version: 3.23.3
   resolution: "core-js@npm:3.23.3"
   checksum: b878a06d549d094f04e8cccc4ec7cd4cde024729b12862d09dcdacaecbfdb7e0bb92304b141232313f5fbfd531cb854fd9431385eeab84ee4988037693298934
+  languageName: node
+  linkType: hard
+
+"core-js@npm:^3.28.0":
+  version: 3.28.0
+  resolution: "core-js@npm:3.28.0"
+  checksum: 84af8ce3073a546254842778bad0154be2ed8235c5b6b27f57833be8434813b60c6a56006f2cca90820744b9ebce09b1fbfe77302054460c8c3befa1fd487872
   languageName: node
   linkType: hard
 
@@ -12483,10 +12490,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"fast-copy@npm:^2.1.7":
-  version: 2.1.7
-  resolution: "fast-copy@npm:2.1.7"
-  checksum: bb047ba83abc22c94dea441c8eb8defceea758c5ffc6bd5ea4509db8b9c64e61424d0568648a2daf46445ae1019ca1748bc3aff426b3aa46355f3b6705a70f67
+"fast-copy@npm:^3.0.0":
+  version: 3.0.0
+  resolution: "fast-copy@npm:3.0.0"
+  checksum: 883328890eede78d0d1a0e3d418e276911b89498db656ed2e2f05fb0aec8bb99db171a9d6d4e87a25e16e29bf305ba103369e60d0929684319c324a836997af4
   languageName: node
   linkType: hard
 
