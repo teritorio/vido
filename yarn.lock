@@ -5293,7 +5293,7 @@ __metadata:
     nuxt: ^2.15.8
     opening_hours: ^3.8.0
     postcss: ^8.4.18
-    prettier: ^2.7.1
+    prettier: ^2.8.4
     puppeteer: ^19.7.0
     sass-loader: ^10.4.1
     storybook-addon-mock: ^3.2.0
@@ -21201,12 +21201,21 @@ fsevents@^1.2.7:
   languageName: node
   linkType: hard
 
-"prettier@npm:^1.18.2 || ^2.0.0, prettier@npm:^2.7.1":
+"prettier@npm:^1.18.2 || ^2.0.0":
   version: 2.7.1
   resolution: "prettier@npm:2.7.1"
   bin:
     prettier: bin-prettier.js
   checksum: 74e646bf9416eaf01d2aaf3e63f0227bc956eae5901bc0701885e790ea28fba5a68216a4bc766b916b48a9c0637f6a48181d6c995a2e4173bdff90bcf64b6bcf
+  languageName: node
+  linkType: hard
+
+"prettier@npm:^2.8.4":
+  version: 2.8.4
+  resolution: "prettier@npm:2.8.4"
+  bin:
+    prettier: bin-prettier.js
+  checksum: 59758930b2ad33f9335c2bb2c154faa2826c230c2bf21e83d6b1ddf07f66c880a0603a8bdf4cc91cbe24b7fcdd7927bcaadbeab012794e0ff5f171b9993b3573
   languageName: node
   linkType: hard
 
