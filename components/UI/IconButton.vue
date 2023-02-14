@@ -44,11 +44,11 @@ export default Vue.extend({
     },
     href: {
       type: String as PropType<String | undefined>,
-      required: false,
+      default: undefined,
     },
     target: {
       type: String as PropType<String | undefined>,
-      required: false,
+      default: undefined,
     },
   },
 })

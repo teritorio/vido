@@ -98,8 +98,8 @@ export default Vue.extend({
       default: undefined,
     },
     mapStyle: {
-      type: String as PropType<MapStyleEnum>,
-      required: false,
+      type: String as PropType<MapStyleEnum | undefined>,
+      default: undefined,
     },
     rotate: {
       type: Boolean,
