@@ -5281,7 +5281,7 @@ __metadata:
     jest-environment-jsdom: ^29.4.2
     json-loader: ^0.5.7
     lint-staged: ^13.1.2
-    loader-utils: ^3.2.0
+    loader-utils: ^3.2.1
     lodash.debounce: ^4.0.8
     lodash.throttle: ^4.1.1
     lodash.uniq: ^4.5.0
@@ -16999,10 +16999,10 @@ fsevents@^1.2.7:
   languageName: node
   linkType: hard
 
-"loader-utils@npm:^3.2.0":
-  version: 3.2.0
-  resolution: "loader-utils@npm:3.2.0"
-  checksum: bda7900b9457f4516fcfca4d954beeef464f29b1ea1a26c58db6787ea5ab6167f45a589f7441c8cd493ccb5fdf19a9258176dea5f25d808548de3a3bbb45e297
+"loader-utils@npm:^3.2.1":
+  version: 3.2.1
+  resolution: "loader-utils@npm:3.2.1"
+  checksum: 2a2d0dc8d853fe90f102543935da31c296e61d066f0627683e583eefb8013f18c975640a14f25a8074c647601652c9b62667e0a1f65a78825e6c9f578c2b1d1c
   languageName: node
   linkType: hard
 
