@@ -84,12 +84,16 @@ export default Vue.extend({
       null
     let fetchPoi: Promise<ApiPoi | null> = Promise.resolve(null)
     if (poiId) {
-      fetchPoi = getPoiById(
-        config.API_ENDPOINT,
-        config.API_PROJECT,
-        config.API_THEME,
-        poiId
-      )
+      fetchPoi = Promise.resolve(
+        getPoiById(
+          config.API_ENDPOINT,
+          config.API_PROJECT,
+          config.API_THEME,
+          poiId!
+        )
+      ).catch(() => {
+        return null
+      })
     }
 
     const [settings, contents, propertyTranslations, menuItems, initialPoi] =
