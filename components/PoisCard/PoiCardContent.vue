@@ -9,16 +9,26 @@
         {{ name }}
       </h2>
 
-      <NuxtLink
-        v-if="Boolean(websiteDetails)"
-        type="button"
-        class="ml-6 px-3 py-1.5 text-xs text-zinc-800 bg-zinc-100 hover:bg-zinc-200 focus:bg-zinc-200 transition transition-colors rounded-md"
-        :to="websiteDetails"
-        rel="noopener noreferrer"
-        @click.stop="trackingPopupEvent('details')"
-      >
-        {{ $tc('poiCard.details') }}
-      </NuxtLink>
+      <template v-if="Boolean(websiteDetails)">
+        <NuxtLink
+          v-if="localWebsiteDetails"
+          class="ml-6 px-3 py-1.5 text-xs text-zinc-800 bg-zinc-100 hover:bg-zinc-200 focus:bg-zinc-200 transition transition-colors rounded-md"
+          :to="websiteDetails"
+          rel="noopener noreferrer"
+          @click.stop="trackingPopupEvent('details')"
+        >
+          {{ $tc('poiCard.details') }}
+        </NuxtLink>
+        <a
+          v-else
+          class="ml-6 px-3 py-1.5 text-xs text-zinc-800 bg-zinc-100 hover:bg-zinc-200 focus:bg-zinc-200 transition transition-colors rounded-md"
+          :href="websiteDetails"
+          rel="noopener noreferrer"
+          @click.stop="trackingPopupEvent('details')"
+        >
+          {{ $tc('poiCard.details') }}
+        </a>
+      </template>
     </div>
 
     <div
@@ -203,6 +213,20 @@ export default Vue.extend({
         this.poi.properties.editorial &&
         this.poi.properties.editorial['website:details']
       )
+    },
+
+    localWebsiteDetails(): boolean {
+      if (!this.websiteDetails) {
+        return false
+      } else if (
+        !this.websiteDetails.startsWith('https://') &&
+        !this.websiteDetails.startsWith('http://')
+      ) {
+        return true
+      } else {
+        const url = new URL(this.websiteDetails)
+        return url.hostname == window.location.hostname
+      }
     },
 
     coordinatesHref(): string | undefined {
