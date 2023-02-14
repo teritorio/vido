@@ -373,17 +373,19 @@ export default mixins(HomeMixin).extend({
       this.showPoi = !!this.selectedFeature
       this.routerPushUrl()
 
-      this.$tracking({
-        type: 'popup',
-        poiId:
-          this.selectedFeature.properties.metadata.id ||
-          this.selectedFeature.properties?.id,
-        title: this.selectedFeature.properties?.name,
-        location: window.location.href,
-        path: this.$route.path,
-        categoryIds:
-          this.selectedFeature.properties?.metadata?.category_ids || [],
-      })
+      if (this.selectedFeature) {
+        this.$tracking({
+          type: 'popup',
+          poiId:
+            this.selectedFeature.properties.metadata.id ||
+            this.selectedFeature.properties?.id,
+          title: this.selectedFeature.properties?.name,
+          location: window.location.href,
+          path: this.$route.path,
+          categoryIds:
+            this.selectedFeature.properties?.metadata?.category_ids || [],
+        })
+      }
     },
 
     selectedCategoryIds(a, b) {
