@@ -46,6 +46,7 @@
             :selected-categories-ids="selectedCategoryIds"
             :style-icon-filter="poiFilters"
             :explorer-mode-enabled="explorerModeEnabled"
+            :cooperative-gestures="true"
           />
           <div class="p-4 absolute">
             <SelectedCategories />

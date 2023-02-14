@@ -12,6 +12,7 @@
       :off-map-attribution="$screen.smallScreen && !small"
       :hide-control="small"
       :style-icon-filter="styleIconFilter"
+      :cooperative-gestures="cooperativeGestures"
       hash="map"
       @map-init="onMapInit"
       @map-data="onMapRender"
@@ -146,6 +147,10 @@ export default (
       default: true,
     },
     enableFilterRouteByFeatures: {
+      type: Boolean,
+      default: false,
+    },
+    cooperativeGestures: {
       type: Boolean,
       default: false,
     },

@@ -12,6 +12,7 @@
       :show-attribution="showAttribution && !offMapAttribution"
       :hide-control="hideControl"
       :hash="hash"
+      :cooperative-gestures="cooperativeGestures"
       class="grow h-full"
       @map-init="
         onMapInit($event)
@@ -119,6 +120,10 @@ export default Vue.extend({
     styleIconFilter: {
       type: Array as PropType<Array<string[]> | null>,
       default: null,
+    },
+    cooperativeGestures: {
+      type: Boolean,
+      default: false,
     },
   },
 

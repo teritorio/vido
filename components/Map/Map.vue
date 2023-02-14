@@ -14,6 +14,7 @@
         zoom: zoom,
         locale: locales,
         attributionControl: false,
+        cooperativeGestures: cooperativeGestures,
       }"
       :nav-control="{
         show: false,
@@ -114,6 +115,10 @@ export default Vue.extend({
       default: true,
     },
     hideControl: {
+      type: Boolean,
+      default: false,
+    },
+    cooperativeGestures: {
       type: Boolean,
       default: false,
     },
