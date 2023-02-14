@@ -47,6 +47,9 @@ describe('pois table', () => {
     )
     cy.get('td').contains(poisCategory22.features[0].properties.name)
 
+    // Unselect the selector before validate
+    cy.get('body').click()
+
     cy.htmlvalidate()
   })
 })
