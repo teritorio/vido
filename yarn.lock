@@ -1962,7 +1962,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@cypress/mock-ssr@https://github.com/cypress-io/cypress-mock-ssr.git#de67dfaa9fd0a88224fd723b9d07feb227db613d":
+"@cypress/mock-ssr@https://github.com/cypress-io/cypress-mock-ssr.git#commit=de67dfaa9fd0a88224fd723b9d07feb227db613d":
   version: 0.0.1
   resolution: "@cypress/mock-ssr@https://github.com/cypress-io/cypress-mock-ssr.git#commit=de67dfaa9fd0a88224fd723b9d07feb227db613d"
   dependencies:
@@ -5080,7 +5080,7 @@ __metadata:
     "@babel/core": ^7.18.6
     "@commitlint/cli": ^11.0.0
     "@commitlint/config-conventional": ^11.0.0
-    "@cypress/mock-ssr": "https://github.com/cypress-io/cypress-mock-ssr.git#de67dfaa9fd0a88224fd723b9d07feb227db613d"
+    "@cypress/mock-ssr": "https://github.com/cypress-io/cypress-mock-ssr.git#commit=de67dfaa9fd0a88224fd723b9d07feb227db613d"
     "@fortawesome/fontawesome-svg-core": ^6.3.0
     "@fortawesome/free-brands-svg-icons": ^6.3.0
     "@fortawesome/free-regular-svg-icons": ^6.3.0
@@ -5126,9 +5126,9 @@ __metadata:
     babel-jest: ^28.1.3
     core-js: ^3.23.3
     country-flag-icons: ^1.5.5
-    cypress: ^10.11.0
-    cypress-html-validate: ^5.1.1
-    cypress-terminal-report: ^4.1.2
+    cypress: ^12.5.1
+    cypress-html-validate: ^5.1.2
+    cypress-terminal-report: ^5.0.2
     date-fns: ^2.29.3
     eslint: ^8.27.0
     eslint-config-prettier: ^8.5.0
@@ -5138,7 +5138,7 @@ __metadata:
     express: ^4.18.2
     fast-copy: ^2.1.7
     fast-equals: ^4.0.3
-    html-validate: ^7.12.2
+    html-validate: ^7.13.2
     http-server: ^14.1.1
     husky: ^8.0.2
     jest: ^28.1.3
@@ -10259,19 +10259,19 @@ __metadata:
   languageName: node
   linkType: hard
 
-"cypress-html-validate@npm:^5.1.1":
-  version: 5.1.1
-  resolution: "cypress-html-validate@npm:5.1.1"
+"cypress-html-validate@npm:^5.1.2":
+  version: 5.1.2
+  resolution: "cypress-html-validate@npm:5.1.2"
   peerDependencies:
     cypress: ^7.0.1 || ^8 || ^9 || ^10 || ^11.0.1 || ^12
     html-validate: ^2.17 || ^3 || ^4 || ^5 || ^6 || ^7
-  checksum: ec6a2dc562883a9a59c9daa0f6aead726d452b001fc1b6cdefcfc0630ea0e0538944d6b486c808afeaf94510201b775a1d654bb9f796ca9622bf168cc05a625b
+  checksum: 5efc78cbcca4603592129d18fd60dbdcab89a3d7c7119e589c97d1b7e5b9b93913c729476f8b62b5b9c5809ff5329b2a86211f603ed100abc67d54f41de575e9
   languageName: node
   linkType: hard
 
-"cypress-terminal-report@npm:^4.1.2":
-  version: 4.1.2
-  resolution: "cypress-terminal-report@npm:4.1.2"
+"cypress-terminal-report@npm:^5.0.2":
+  version: 5.0.2
+  resolution: "cypress-terminal-report@npm:5.0.2"
   dependencies:
     chalk: ^4.0.0
     fs-extra: ^10.1.0
@@ -10279,13 +10279,13 @@ __metadata:
     tv4: ^1.3.0
   peerDependencies:
     cypress: ">=4.10.0"
-  checksum: fa69f32f00bf879fce155bfb0231d84da4835db72654c04a8b3cdee8e6d35e55ce33ddf9a6e64edd2a91d2ba64673ee4cfe241b1b88de96bcafcb6670961cffe
+  checksum: e44ce5125e13e032cabe5130870bd0668bc032b97019a3baa89a005dfa5a6553a2541578d50c920a21fba1101bcc6792055eb494094e5893b77ea4ee401fd2fc
   languageName: node
   linkType: hard
 
-"cypress@npm:^10.11.0":
-  version: 10.11.0
-  resolution: "cypress@npm:10.11.0"
+"cypress@npm:^12.5.1":
+  version: 12.5.1
+  resolution: "cypress@npm:12.5.1"
   dependencies:
     "@cypress/request": ^2.88.10
     "@cypress/xvfb": ^1.2.4
@@ -10331,7 +10331,7 @@ __metadata:
     yauzl: ^2.10.0
   bin:
     cypress: bin/cypress
-  checksum: 486cd8be0f1a695d59bb2893d7daffa3ea39f9bd27a3a3537c51872a379dbcad43521dd5ac7a3a4568b274bf7d524c0152a34161f80a4241efa74cea00e2856e
+  checksum: 11e1d48f8ecebfa5f5769b326808632a59bcfeea11c89061c8fabf57acc4f8e5cbc5cb75e3a645ec5b40e3d9f3235cc450631a7ff31cbba1674a9e389ec715cc
   languageName: node
   linkType: hard
 
@@ -13865,9 +13865,9 @@ fsevents@^1.2.7:
   languageName: node
   linkType: hard
 
-"html-validate@npm:^7.12.2":
-  version: 7.12.2
-  resolution: "html-validate@npm:7.12.2"
+"html-validate@npm:^7.13.2":
+  version: 7.13.2
+  resolution: "html-validate@npm:7.13.2"
   dependencies:
     "@babel/code-frame": ^7.10.0
     "@html-validate/stylish": ^3.0.0
@@ -13895,7 +13895,7 @@ fsevents@^1.2.7:
       optional: true
   bin:
     html-validate: bin/html-validate.js
-  checksum: 13dfc37c114e6e99db8463c2d07e626c6db1f1ef630484a2fecbd2b6c97624d7bab0f4158757e4566cd58818270cd1414b913b0a2e183dea4450e10d51d2ec57
+  checksum: 3b4acee1199353203d67c4c2123bea8e3743f73cdaf2e97a6e03a5c8fe0ac8ac74de50f2fe5e3fe930280d3f63fc7e8d335ec1a92a487fa289fed470ac2b2ccf
   languageName: node
   linkType: hard
 
