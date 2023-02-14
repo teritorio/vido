@@ -5294,7 +5294,7 @@ __metadata:
     opening_hours: ^3.8.0
     postcss: ^8.4.18
     prettier: ^2.7.1
-    puppeteer: ^19.3.0
+    puppeteer: ^19.7.0
     sass-loader: ^10.4.1
     storybook-addon-mock: ^3.2.0
     storybook-addon-validate-html: ^0.0.12
@@ -9150,6 +9150,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"chromium-bidi@npm:0.4.3":
+  version: 0.4.3
+  resolution: "chromium-bidi@npm:0.4.3"
+  peerDependencies:
+    devtools-protocol: "*"
+    mitt: "*"
+  checksum: afcb136ef6ef2b51d581ea6207db9237c6dc7f32f5bcc9e99b6f20ac354029440d9b7436ccfb7b22ff38dbad36d36de824778cc40a382c8f9bfe94e2b4099da4
+  languageName: node
+  linkType: hard
+
 "ci-info@npm:^2.0.0":
   version: 2.0.0
   resolution: "ci-info@npm:2.0.0"
@@ -9870,16 +9880,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"cosmiconfig@npm:7.0.1, cosmiconfig@npm:^7.0.0":
-  version: 7.0.1
-  resolution: "cosmiconfig@npm:7.0.1"
+"cosmiconfig@npm:8.0.0":
+  version: 8.0.0
+  resolution: "cosmiconfig@npm:8.0.0"
   dependencies:
-    "@types/parse-json": ^4.0.0
     import-fresh: ^3.2.1
+    js-yaml: ^4.1.0
     parse-json: ^5.0.0
     path-type: ^4.0.0
-    yaml: ^1.10.0
-  checksum: 796261c250559339589455c1522bfa284b5bf8203ced7e3c5b0060bd5b27cad86418214d8d86d59c8c9af81e526f27965a6bd725cb12021f1835d9b347727272
+  checksum: 824f409823cd56f859de69ddf6c576c67d0e97b23be3c6b1864a5be4e37bdb8907a512a8ff8125a88ddab4307ab71cec96560dbbe30eda2e36b67ace04049250
   languageName: node
   linkType: hard
 
@@ -9905,6 +9914,19 @@ __metadata:
     path-type: ^4.0.0
     yaml: ^1.7.2
   checksum: bbd6bbaefe15938107da21f2b5f2d5ede75c7ed4bca5af904d91987c59b050ac95f5e786d9021e16959e0119b36174b190f6040a1daf6fddc75361ab123c0d45
+  languageName: node
+  linkType: hard
+
+"cosmiconfig@npm:^7.0.0":
+  version: 7.0.1
+  resolution: "cosmiconfig@npm:7.0.1"
+  dependencies:
+    "@types/parse-json": ^4.0.0
+    import-fresh: ^3.2.1
+    parse-json: ^5.0.0
+    path-type: ^4.0.0
+    yaml: ^1.10.0
+  checksum: 796261c250559339589455c1522bfa284b5bf8203ced7e3c5b0060bd5b27cad86418214d8d86d59c8c9af81e526f27965a6bd725cb12021f1835d9b347727272
   languageName: node
   linkType: hard
 
@@ -10926,10 +10948,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"devtools-protocol@npm:0.0.1056733":
-  version: 0.0.1056733
-  resolution: "devtools-protocol@npm:0.0.1056733"
-  checksum: cd6a776d6eaf3f1dcd0f0f2a4582f5ecf8c0f8d07facb9c39053692eed23f844885da80b93ce89d0afa8c702471fa3c798e6db333c6e8383bfbdb702b6b07860
+"devtools-protocol@npm:0.0.1094867":
+  version: 0.0.1094867
+  resolution: "devtools-protocol@npm:0.0.1094867"
+  checksum: a7021370f20b88a1e82f8ac208a3913bb6620d1e9c0ab51509fc5617214769d159d10565344ca929844edfe525b02cea8a1511dd23404b4e24d3a0c8db264981
   languageName: node
   linkType: hard
 
@@ -21641,21 +21663,27 @@ fsevents@^1.2.7:
   languageName: node
   linkType: hard
 
-"puppeteer-core@npm:19.3.0":
-  version: 19.3.0
-  resolution: "puppeteer-core@npm:19.3.0"
+"puppeteer-core@npm:19.7.0":
+  version: 19.7.0
+  resolution: "puppeteer-core@npm:19.7.0"
   dependencies:
+    chromium-bidi: 0.4.3
     cross-fetch: 3.1.5
     debug: 4.3.4
-    devtools-protocol: 0.0.1056733
+    devtools-protocol: 0.0.1094867
     extract-zip: 2.0.1
     https-proxy-agent: 5.0.1
     proxy-from-env: 1.1.0
     rimraf: 3.0.2
     tar-fs: 2.1.1
     unbzip2-stream: 1.4.3
-    ws: 8.10.0
-  checksum: 8738b8ad4d01ae99b16f6584327d7110b226a55bb9d3f513d1cd057d0bcf8654bbd0b7745bf0f6e499a2dc0a8632ae9bd16ac217cc2c7a62a0392696ab1ca039
+    ws: 8.11.0
+  peerDependencies:
+    typescript: ">= 4.7.4"
+  peerDependenciesMeta:
+    typescript:
+      optional: true
+  checksum: 9d62d72f7b42a76117bd5f4183ec86710367b7e9075376ffe740c93dc95f0fd1e9a49d3a65d7b5397a8455d11466c373f8901333420f33c7511f541d913154e6
   languageName: node
   linkType: hard
 
@@ -21679,17 +21707,16 @@ fsevents@^1.2.7:
   languageName: node
   linkType: hard
 
-"puppeteer@npm:^19.3.0":
-  version: 19.3.0
-  resolution: "puppeteer@npm:19.3.0"
+"puppeteer@npm:^19.7.0":
+  version: 19.7.0
+  resolution: "puppeteer@npm:19.7.0"
   dependencies:
-    cosmiconfig: 7.0.1
-    devtools-protocol: 0.0.1056733
+    cosmiconfig: 8.0.0
     https-proxy-agent: 5.0.1
     progress: 2.0.3
     proxy-from-env: 1.1.0
-    puppeteer-core: 19.3.0
-  checksum: 7b40a20a58a7d027cb3faeaac70fe5d595857c65f58f4501ab90a9a0d5e93e56ca90d3c3a2cd2c76b1bc38ae7752340211872ac67ee024c55f114834ea3434dd
+    puppeteer-core: 19.7.0
+  checksum: 0dad491f73dd7ec2354661fbbd763bda6626caccb914f6d15dc0f9dabb77e71485ba2ac3de41b2fef57a762812403044f0dad6c0453c0ee9817a92d95b29e178
   languageName: node
   linkType: hard
 
@@ -27075,9 +27102,9 @@ typescript@~4.2:
   languageName: node
   linkType: hard
 
-"ws@npm:8.10.0":
-  version: 8.10.0
-  resolution: "ws@npm:8.10.0"
+"ws@npm:8.11.0":
+  version: 8.11.0
+  resolution: "ws@npm:8.11.0"
   peerDependencies:
     bufferutil: ^4.0.1
     utf-8-validate: ^5.0.2
@@ -27086,7 +27113,7 @@ typescript@~4.2:
       optional: true
     utf-8-validate:
       optional: true
-  checksum: f26d8a3bd6ca149ce02edc9fdf13650976dab0065fd3d0f65b3ecbe4ce498efb29368af3a694dc21fbc314e11135c233c67f3c54f083935b5b3793c6edc3ef32
+  checksum: 9d4e7cc7daf569f6611ed695043c665190200c1d63a7708da7789f18a52d5c0aec433ee387700edd4bc62fbc7ac648480c76d88b7fd0658b656f99bb085c62a6
   languageName: node
   linkType: hard
 
