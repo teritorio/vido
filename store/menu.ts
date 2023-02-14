@@ -210,13 +210,10 @@ export const actions = {
         store.getters.features
       )
       const filterIsSet = filterValuesIsSet(filterValues)
-      Object.keys(features).forEach((categoryIdString: string) => {
-        const categoryId = parseInt(categoryIdString, 10)
-        features[categoryId] = features[categoryId].map((feature: ApiPoi) => {
-          feature.properties.vido_visible =
-            !filterIsSet || keepFeature(filterValues, feature)
-          return feature
-        })
+      features[categoryId] = features[categoryId].map((feature: ApiPoi) => {
+        feature.properties.vido_visible =
+          !filterIsSet || keepFeature(filterValues, feature)
+        return feature
       })
       store.commit(Mutation.SET_FEATURES, { features })
     }
