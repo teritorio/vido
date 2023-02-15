@@ -1,25 +1,14 @@
 {
   "vueCompilerOptions": {
-    "target": 2.7
+    "target": 3
   },
+  "extends": "./.nuxt/tsconfig.json",
   "compilerOptions": {
-    "target": "ES2018",
-    "module": "ESNext",
-    "moduleResolution": "Node",
-    "lib": ["ESNext", "ESNext.AsyncIterable", "DOM"],
-    "esModuleInterop": true,
-    "allowJs": true,
-    "resolveJsonModule": true,
     "sourceMap": true,
     "strict": true,
-    "noEmit": true,
     "experimentalDecorators": true,
     "baseUrl": ".",
-    "paths": {
-      "~/*": ["./*"],
-      "@/*": ["./*"]
-    },
-    "types": ["@types/node", "@nuxt/types", "@nuxtjs/i18n", "@nuxt/image", "@nuxtjs/sentry", "@types/jest", "@types/webpack", "@pinia/nuxt"]
+    "types": ["node", "@types/node", "@nuxt/types", "@nuxtjs/i18n", "@nuxt/image", "@nuxtjs/sentry", "@types/jest", "@types/webpack", "@pinia/nuxt"]
   },
   "exclude": ["node_modules", ".nuxt", "dist", "bin"]
 }
