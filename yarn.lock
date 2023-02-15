@@ -2879,7 +2879,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@cypress/mock-ssr@https://github.com/cypress-io/cypress-mock-ssr.git#commit=de67dfaa9fd0a88224fd723b9d07feb227db613d":
+"@cypress/mock-ssr@https://github.com/cypress-io/cypress-mock-ssr.git#de67dfaa9fd0a88224fd723b9d07feb227db613d":
   version: 0.0.1
   resolution: "@cypress/mock-ssr@https://github.com/cypress-io/cypress-mock-ssr.git#commit=de67dfaa9fd0a88224fd723b9d07feb227db613d"
   dependencies:
@@ -5976,7 +5976,7 @@ __metadata:
     "@babel/core": ^7.20.12
     "@commitlint/cli": ^11.0.0
     "@commitlint/config-conventional": ^11.0.0
-    "@cypress/mock-ssr": "https://github.com/cypress-io/cypress-mock-ssr.git#commit=de67dfaa9fd0a88224fd723b9d07feb227db613d"
+    "@cypress/mock-ssr": "https://github.com/cypress-io/cypress-mock-ssr.git#de67dfaa9fd0a88224fd723b9d07feb227db613d"
     "@fortawesome/fontawesome-svg-core": ^6.3.0
     "@fortawesome/free-brands-svg-icons": ^6.3.0
     "@fortawesome/free-regular-svg-icons": ^6.3.0
