@@ -3476,24 +3476,26 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@nuxtjs/tailwindcss@npm:^5.3.5":
-  version: 5.3.5
-  resolution: "@nuxtjs/tailwindcss@npm:5.3.5"
+"@nuxtjs/tailwindcss@npm:^6.4.0":
+  version: 6.4.0
+  resolution: "@nuxtjs/tailwindcss@npm:6.4.0"
   dependencies:
-    "@nuxt/kit": ^3.0.0-rc.9
+    "@nuxt/kit": ^3.2.0
     "@nuxt/postcss8": ^1.1.3
-    autoprefixer: ^10.4.8
-    chalk: ^5.0.1
+    autoprefixer: ^10.4.13
+    chalk: ^5.2.0
+    chokidar: ^3.5.3
     clear-module: ^4.1.2
     consola: ^2.15.3
-    defu: ^6.1.0
-    postcss: ^8.4.16
-    postcss-custom-properties: ^12.1.8
-    postcss-nesting: ^10.1.10
+    defu: ^6.1.2
+    pathe: ^1.1.0
+    postcss: ^8.4.21
+    postcss-custom-properties: ^13.1.3
+    postcss-nesting: ^11.1.0
     tailwind-config-viewer: ^1.7.2
-    tailwindcss: ^3.1.8
-    ufo: ^0.8.5
-  checksum: bce89703afa717f678e994dde868f32d7a64ec56b071b9aaae16c70c7444a2a94aed5d0ebc94fdad3d944ef492107e3479b3b21a499178667fcdf82179ae8347
+    tailwindcss: ^3.2.6
+    ufo: ^1.0.1
+  checksum: efaa67d3dc43b4b0d26e143082b68809ddb5ff355e529a828089573ae5e0ff884c4c6cc3f3c80ec2de69d9d56b15338a0649122301e7e0674341bdaafa458e21
   languageName: node
   linkType: hard
 
@@ -4861,7 +4863,7 @@ __metadata:
     "@nuxtjs/storybook": ^4.3.2
     "@nuxtjs/stylelint-module": ^4.1.0
     "@nuxtjs/svg": ^0.4.0
-    "@nuxtjs/tailwindcss": ^5.3.5
+    "@nuxtjs/tailwindcss": ^6.4.0
     "@storybook/core-client": ^6.5.16
     "@tailwindcss/forms": ^0.5.3
     "@tailwindcss/typography": ^0.5.9
@@ -7224,7 +7226,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"autoprefixer@npm:^10.2.5, autoprefixer@npm:^10.4.13, autoprefixer@npm:^10.4.8":
+"autoprefixer@npm:^10.2.5, autoprefixer@npm:^10.4.13":
   version: 10.4.13
   resolution: "autoprefixer@npm:10.4.13"
   dependencies:
@@ -8382,7 +8384,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"chalk@npm:^5.0.1":
+"chalk@npm:^5.2.0":
   version: 5.2.0
   resolution: "chalk@npm:5.2.0"
   checksum: ac9958ecfaf2e1c69899b0a4772229c2cf676dee329fcfb640ca4681a1e5636f6121c8f91c92aa95b3ac35bfd78ee1307cd010265ecfccf93a57177424d04800
@@ -18558,7 +18560,7 @@ fsevents@^1.2.7:
   languageName: node
   linkType: hard
 
-"pathe@npm:^1.0.0":
+"pathe@npm:^1.0.0, pathe@npm:^1.1.0":
   version: 1.1.0
   resolution: "pathe@npm:1.1.0"
   checksum: 657f2d1e1d03957b594e53bd90a234ad7885507a1a12a1e3c62edc069247892aac622cbca3a2bac9e8f590fa486837f5f754a4ac9b5644c33072321e463341f7
@@ -18893,18 +18895,7 @@ fsevents@^1.2.7:
   languageName: node
   linkType: hard
 
-"postcss-custom-properties@npm:^12.1.8":
-  version: 12.1.11
-  resolution: "postcss-custom-properties@npm:12.1.11"
-  dependencies:
-    postcss-value-parser: ^4.2.0
-  peerDependencies:
-    postcss: ^8.2
-  checksum: 003b05a39543eeb397afcd1dfaa8da906019cdeafb2f3c82418046a07832d6066a3f5e0950f4eb925fb62bacf06cc15b999702a51dfd3dc73b402ae1ecf88f06
-  languageName: node
-  linkType: hard
-
-"postcss-custom-properties@npm:^13.1.0":
+"postcss-custom-properties@npm:^13.1.0, postcss-custom-properties@npm:^13.1.3":
   version: 13.1.3
   resolution: "postcss-custom-properties@npm:13.1.3"
   dependencies:
@@ -19384,19 +19375,7 @@ fsevents@^1.2.7:
   languageName: node
   linkType: hard
 
-"postcss-nesting@npm:^10.1.10":
-  version: 10.2.0
-  resolution: "postcss-nesting@npm:10.2.0"
-  dependencies:
-    "@csstools/selector-specificity": ^2.0.0
-    postcss-selector-parser: ^6.0.10
-  peerDependencies:
-    postcss: ^8.2
-  checksum: bf3fe091544cda46071760c0b192161df3288753cedb38c2982f2f70f830e1a053790f261e921227c6249ae8eadee2b8a4fa4ab7453424bcef8fcbdb1432283e
-  languageName: node
-  linkType: hard
-
-"postcss-nesting@npm:^11.0.0":
+"postcss-nesting@npm:^11.0.0, postcss-nesting@npm:^11.1.0":
   version: 11.2.0
   resolution: "postcss-nesting@npm:11.2.0"
   dependencies:
@@ -19823,17 +19802,6 @@ fsevents@^1.2.7:
     picocolors: ^1.0.0
     source-map-js: ^1.0.2
   checksum: 76b9cefb74af346af7ec82c680a8448fc3472deaf19cf9d5d40ebf597e75f2e8ee54b8c83dd772db994276b3d3729628a21147f409d55599a08775b11f9447cd
-  languageName: node
-  linkType: hard
-
-"postcss@npm:^8.4.16":
-  version: 8.4.18
-  resolution: "postcss@npm:8.4.18"
-  dependencies:
-    nanoid: ^3.3.4
-    picocolors: ^1.0.0
-    source-map-js: ^1.0.2
-  checksum: 6674ee83d6dd724953d7c0111536e55a71334a51c59cc65e3fbcc4066f49975b0fbda9c63ea4faa86d803804c89249c411a4c9305cfacd9a662b422f50d92be6
   languageName: node
   linkType: hard
 
@@ -23208,7 +23176,7 @@ fsevents@^1.2.7:
   languageName: node
   linkType: hard
 
-"tailwindcss@npm:^3.1.8, tailwindcss@npm:^3.2.6":
+"tailwindcss@npm:^3.2.6":
   version: 3.2.6
   resolution: "tailwindcss@npm:3.2.6"
   dependencies:

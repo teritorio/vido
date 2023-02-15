@@ -82,7 +82,7 @@
     "@nuxtjs/storybook": "^4.3.2",
     "@nuxtjs/stylelint-module": "^4.1.0",
     "@nuxtjs/svg": "^0.4.0",
-    "@nuxtjs/tailwindcss": "^5.3.5",
+    "@nuxtjs/tailwindcss": "^6.4.0",
     "@storybook/core-client": "^6.5.16",
     "@tailwindcss/forms": "^0.5.3",
     "@teritorio/font-teritorio": "^2.4.0",
