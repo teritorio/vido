@@ -1,7 +1,5 @@
-// @ts-ignore
-import { cypressMockMiddleware } from '@cypress/mock-ssr'
-import { NuxtConfig } from '@nuxt/types'
-import webpack from 'webpack'
+import { defineNuxtConfig } from 'nuxt/config'
+// import { cypressMockMiddleware } from '@cypress/mock-ssr'
 
 import { vidos } from './lib/config'
 import { sitemapFilter, sitemapRoutes } from './lib/sitemap'
@@ -9,51 +7,51 @@ import { configuredApi, configuredImageProxy } from './plugins/vido-config'
 
 const supportedLocales = ['en-GB', 'fr', 'es']
 
-const config: NuxtConfig = {
+export default defineNuxtConfig({
   env: {
     // Copy NODE_ENV to know to real setting when use `nuxt build`
     environment: process.env.NODE_ENV as string,
   },
 
-  privateRuntimeConfig: {
+  runtimeConfig: {
     vidos,
-  },
-
-  publicRuntimeConfig: {
-    vidos: vidos.__publicRuntimeConfig__ ? vidos : undefined,
-  },
-
-  pwa: {
-    icon: false,
-    meta: false,
-    manifest: false,
-    workbox: {
-      enabled: true,
+    public: {
+      vidos: vidos.__publicRuntimeConfig__ ? vidos : undefined,
     },
   },
-  // Global page headers (https://go.nuxtjs.dev/config-head)
-  head: {
-    htmlAttrs: {
-      lang: 'fr',
-    },
-    title: '@teritorio/vido',
-    meta: [
-      { charset: 'utf-8' },
-      { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-      { hid: 'description', name: 'description', content: '' },
-    ],
-    link: [{ rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }],
-  },
+
+  // pwa: {
+  //   icon: false,
+  //   meta: false,
+  //   manifest: false,
+  //   workbox: {
+  //     enabled: true,
+  //   },
+  // },
+  // // Global page headers (https://go.nuxtjs.dev/config-head)
+  // head: {
+  //   htmlAttrs: {
+  //     lang: 'fr',
+  //   },
+  //   title: '@teritorio/vido',
+  //   meta: [
+  //     { charset: 'utf-8' },
+  //     { name: 'viewport', content: 'width=device-width, initial-scale=1' },
+  //     { hid: 'description', name: 'description', content: '' },
+  //   ],
+  //   link: [{ rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }],
+  // },
 
   router: {
-    prefetchLinks: false,
+    // prefetchLinks: false,
   },
 
-  loading: false,
+  // @ts-ignore
+  loadingIndicator: false,
 
   serverMiddleware: [
-    ...(process.env.NODE_ENV != 'production' ? [cypressMockMiddleware()] : []),
-    { path: '/', handler: '~/api/manifest.ts' },
+    //   ...(process.env.NODE_ENV != 'production' ? [cypressMockMiddleware()] : []),
+    // { path: '/', handler: '~/api/manifest.ts' },
   ],
 
   // Global CSS (https://go.nuxtjs.dev/config-css)
@@ -76,31 +74,27 @@ const config: NuxtConfig = {
     { src: '@/plugins/pinia-shared-state.ts', mode: 'client' },
   ],
 
-  // Auto import components (https://go.nuxtjs.dev/config-components)
-  components: false,
+  // // Auto import components (https://go.nuxtjs.dev/config-components)
+  // components: false,
 
   // Modules for dev and build (recommended) (https://go.nuxtjs.dev/config-modules)
   buildModules: [
-    // https://go.nuxtjs.dev/typescript
-    '@nuxt/typescript-build',
     // https://go.nuxtjs.dev/stylelint
     '@nuxtjs/stylelint-module',
     // https://go.nuxtjs.dev/tailwindcss
     '@nuxtjs/tailwindcss',
     '@nuxtjs/svg',
-    '@nuxtjs/pwa',
-    '@nuxtjs/composition-api/module',
-    ['@pinia/nuxt', { disableVuex: true }], // Add to modules (Nuxt 3) or buildModules (Nuxt 2)
+    // '@nuxtjs/pwa',
   ],
 
   // Modules (https://go.nuxtjs.dev/config-modules)
   modules: [
-    '@nuxtjs/i18n',
-    '@nuxt/image',
-    '@nuxtjs/gtm',
+    // '@nuxtjs/i18n',
+    // '@nuxt/image',
+    // '@nuxtjs/gtm',
     ...(process.env.SENTRY_DSN ? ['@nuxtjs/sentry'] : []),
-    '@nuxtjs/sitemap', // declare the sitemap module at end of array
-    // '@pinia/nuxt' // Add to modules (Nuxt 3)
+    // '@nuxtjs/sitemap', // declare the sitemap module at end of array
+    '@pinia/nuxt',
   ],
 
   i18n: {
@@ -118,9 +112,9 @@ const config: NuxtConfig = {
     langDir: '~/locales/',
   },
 
-  image: {
-    domains: [...configuredApi(vidos), ...configuredImageProxy(vidos)],
-  },
+  // image: {
+  //   domains: [...configuredApi(vidos), ...configuredImageProxy(vidos)],
+  // },
 
   sentry: {
     dsn: process.env.SENTRY_DSN || '',
@@ -130,58 +124,66 @@ const config: NuxtConfig = {
     },
   },
 
-  sitemap: {
-    cacheTime: -1,
-    routes: () => sitemapRoutes(vidos),
-    filter: sitemapFilter,
-  },
+  // sitemap: {
+  //   cacheTime: -1,
+  //   routes: () => sitemapRoutes(vidos),
+  //   filter: sitemapFilter,
+  // },
 
   watchers: {
     chokidar: {
-      ignored: (f) =>
+      // @ts-ignore
+      ignor: (f) =>
         [
           /\.git/,
           /\.yarn/,
           /cypress/,
           /.*\.stories\.ts$/,
           /.*\.jest\.ts$/,
+          /\.nuxt\/dist\/server\//,
         ].some((r) => r.test(f)),
     },
     webpack: {
-      ignored: /\.git|\.yarn|cypress|.*\.stories\.ts$|.*\.jest\.ts$/,
+      // @ts-ignore
+      ignored:
+        /\.git|\.yarn|cypress|.*\.stories\.ts$|.*\.jest\.ts$|\.nuxt\/dist\/server\//,
     },
   },
 
   // Build Configuration (https://go.nuxtjs.dev/config-build)
   build: {
-    extend(config, { isClient }) {
-      // Extend only webpack config for client-bundle
-      if (isClient) {
-        config.devtool = 'source-map'
-      }
-    },
-    plugins: [
-      // @ts-ignore
-      new webpack.ProvidePlugin({
-        mapboxgl: 'maplibre-gl',
-      }),
-      // https://github.com/date-fns/date-fns/blob/main/docs/webpack.md
-      // /!\ Not woring. Has no effect.
-      new webpack.ContextReplacementPlugin(
-        /date-fns\/locale$/,
-        new RegExp('./(' + supportedLocales.join('|') + ')/index.js$')
-      ),
-    ],
-    babel: {
-      plugins: [
-        ['@babel/plugin-proposal-class-properties', { loose: true }],
-        ['@babel/plugin-proposal-private-methods', { loose: true }],
-        ['@babel/plugin-proposal-private-property-in-object', { loose: true }],
-      ],
-    },
+    //   // @ts-ignore
+    //   extend(config, { isClient }) {
+    //     // Extend only webpack config for client-bundle
+    //     if (isClient) {
+    //       config.devtool = 'source-map'
+    //     }
+    //   },
+    //   plugins: [
+    //     // @ts-ignore
+    //     new webpack.ProvidePlugin({
+    //       mapboxgl: 'maplibre-gl',
+    //     }),
+    //     // https://github.com/date-fns/date-fns/blob/main/docs/webpack.md
+    //     // /!\ Not woring. Has no effect.
+    //     new webpack.ContextReplacementPlugin(
+    //       /date-fns\/locale$/,
+    //       new RegExp('./(' + supportedLocales.join('|') + ')/index.js$')
+    //     ),
+    //   ],
+    //   babel: {
+    //     plugins: [
+    //       ['@babel/plugin-proposal-class-properties', { loose: true }],
+    //       ['@babel/plugin-proposal-private-methods', { loose: true }],
+    //       ['@babel/plugin-proposal-private-property-in-object', { loose: true }],
+    //     ],
+    //   },
+    // @ts-ignore
     transpile: [
+      'iron-webcrypto',
       // If you use nuxt you must transpile the module so it can be used universally
       '@vueform/slider',
+      'punycode',
       'pinia',
     ],
   },
@@ -210,6 +212,4 @@ const config: NuxtConfig = {
   },
 
   devServerHandlers: [], // Workaround issue https://github.com/nuxt-community/tailwindcss-module/issues/480
-}
-
-export default config
+})
