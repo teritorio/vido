@@ -145,7 +145,7 @@ const config: NuxtConfig = {
         ].some((r) => r.test(f)),
     },
     webpack: {
-      ignored: ['.git', '.yarn', 'cypress', '**/*.stories.ts', '**/*.jest.ts'],
+      ignored: /\.git|\.yarn|cypress|.*\.stories\.ts$|.*\.jest\.ts$/,
     },
   },
 
