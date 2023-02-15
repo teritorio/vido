@@ -95,8 +95,7 @@ const settings = {
         selectButtonClearButton:
           'hover:bg-emerald-100 text-zinc-600 rounded transition duration-100 ease-in-out',
         selectButtonClearIcon: '',
-        dropdown:
-          '-mt-1 bg-white border-b border-zinc-300 border-l border-r rounded-b shadow-sm',
+        dropdown: '',
         dropdownFeedback: 'pb-2 px-3 text-zinc-400 text-sm',
         loadingMoreResults: 'pb-2 px-3 text-zinc-400 text-sm',
         optionsList: '',
@@ -114,7 +113,7 @@ const settings = {
         optionLabel: '',
         selectedIcon: '',
         enterClass: 'opacity-0',
-        enterActiveClass: 'transition ease-out duration-100 z-40',
+        enterActiveClass: '',
         enterToClass: 'opacity-100',
         leaveClass: 'opacity-100',
         leaveActiveClass: 'transition ease-in duration-75',
@@ -137,7 +136,8 @@ const settings = {
         selectButtonClearButton:
           'flex shrink-0 items-center justify-center absolute right-0 top-0 m-2 h-6 w-6',
         selectButtonClearIcon: 'fill-current h-3 w-3',
-        dropdown: 'absolute w-full z-10',
+        dropdown:
+          'absolute w-full z-10 -mt-1 bg-white border-b border-zinc-300 border-l border-r rounded-b shadow-sm w-full z-10',
         dropdownFeedback: '',
         loadingMoreResults: '',
         optionsList: 'overflow-auto',
@@ -153,20 +153,21 @@ const settings = {
         optionLabel: 'truncate block',
         selectedIcon: 'fill-current h-4 w-4',
         enterClass: '',
-        enterActiveClass: '',
-        enterToClass: '',
+        enterActiveClass: 'transition ease-out duration-100 z-40',
+        enterToClass: 'opacity-100',
         leaveClass: '',
         leaveActiveClass: '',
         leaveToClass: '',
       },
       variants: {
         relative: {
-          wrapper: '',
-          enterToClass: 'opacity-100 absolute',
-          enterActiveClass: 'transition ease-out duration-100 z-40',
+          wrapper: 'relative',
+          enterActiveClass: 'absolute',
+          enterToClass: 'absolute z-10',
+          dropdown: 'relative ',
         },
         default: {
-          wrapper: 'relative',
+          dropdown: 'absolute',
         },
       },
     },
