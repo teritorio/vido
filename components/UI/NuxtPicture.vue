@@ -23,10 +23,10 @@
 
 import { imageMixin } from '@nuxt/image/dist/runtime/components/image.mixin'
 import { getFileExtension } from '@nuxt/image/dist/runtime/utils/index.js'
-
-const defineComponent = (opts) => opts
+import { defineComponent } from 'vue'
 
 export default defineComponent({
+  name: 'NuxtPicture',
   mixins: [imageMixin],
 
   props: {
@@ -70,7 +70,13 @@ export default defineComponent({
     },
 
     nFormat() {
-      return this.format || 'webp'
+      if (this.format) {
+        return this.format
+      }
+      if (this.originalFormat === 'svg') {
+        return 'svg'
+      }
+      return 'webp'
     },
 
     nLegacyFormat() {
@@ -90,6 +96,13 @@ export default defineComponent({
     },
 
     nSources() {
+      if (this.nFormat === 'svg') {
+        return [
+          {
+            srcset: this.src,
+          },
+        ]
+      }
       const formats =
         this.nLegacyFormat !== this.nFormat
           ? [this.nLegacyFormat, this.nFormat]
