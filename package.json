@@ -3,7 +3,7 @@
   "version": "1.19.3",
   "private": true,
   "engines": {
-    "node": ">= 16.0.0"
+    "node": ">= 18.0.0"
   },
   "scripts": {
     "build-config": "npx ts-node -O '{\"module\": \"commonjs\"}' bin/build-config.ts > vidos-config.json",
@@ -135,9 +135,7 @@
     "ts-jest": "^29.0.5",
     "vue-jest": "^3.0.7"
   },
-  "overrides": {
-    "@nuxtjs/tailwindcss": {
-      "@nuxt/kit": "3.0.0-rc.13"
-    }
+  "resolutions": {
+    "@nuxt/kit": "3.0.0-rc.13"
   }
 }

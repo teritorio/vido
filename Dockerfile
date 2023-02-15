@@ -12,6 +12,8 @@ COPY package.json yarn.lock /usr/src/app/
 RUN yarn install
 COPY . /usr/src/app
 RUN yarn install
+
+ENV NODE_OPTIONS --openssl-legacy-provider
 RUN yarn build
 
 # Set environment variables
