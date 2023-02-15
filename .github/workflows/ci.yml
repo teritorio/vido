@@ -91,7 +91,7 @@ jobs:
           NODE_OPTIONS=--openssl-legacy-provider NODE_ENV=development CONFIG=vidos-config-cypress.json yarn build
 
       - name: Run Cypress Tests 🧪
-        uses: cypress-io/github-action@v4
+        uses: cypress-io/github-action@v5
         env:
           NODE_ENV: development
           CONFIG: vidos-config-cypress.json
