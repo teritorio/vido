@@ -19,7 +19,7 @@
         "MATOMO_SITEID": null,
         "API_PROJECT": "teritorio",
         "API_THEME": "references",
-        "API_ENDPOINT": "http://localhost:3000/fixtures",
+        "API_ENDPOINT": "http://127.0.0.1:3000/fixtures",
         "VECTO_STYLE_URL": "https://merge-proxy-dev.teritorio.xyz/styles/teritorio-tourism-1.0/style.json?key=teritorio-demo-1-eTuhasohVahquais0giuth7i",
         "SATELLITE_STYLE_URL": "https://merge-proxy-dev.teritorio.xyz/styles/satellite-hybrid/style.json?key=teritorio-demo-1-eTuhasohVahquais0giuth7i",
         "BICYCLE_STYLE_URL": "https://merge-proxy-dev.teritorio.xyz/styles/teritorio-bicycle-tourism/style.json?key=teritorio-demo-1-eTuhasohVahquais0giuth7i"

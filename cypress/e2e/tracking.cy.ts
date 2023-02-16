@@ -8,7 +8,7 @@ import { Event } from '~/lib/trackers'
 const hostnames = {
   'https://dev.appcarto.teritorio.xyz':
     '/content/api.teritorio/geodata/v0.1/dev/tourism/',
-  'http://localhost:3000': '/fixtures/teritorio/references/',
+  'http://127.0.0.1:3000': '/fixtures/teritorio/references/',
 }
 
 let consoleError: Cypress.Agent<sinon.SinonSpy>
