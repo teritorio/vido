@@ -4902,6 +4902,7 @@ __metadata:
     express: ^4.18.2
     fast-copy: ^3.0.0
     fast-equals: ^4.0.3
+    geojson: ^0.5.0
     html-validate: ^7.13.2
     http-server: ^14.1.1
     husky: ^8.0.3
@@ -12378,6 +12379,13 @@ fsevents@^1.2.7:
   version: 3.2.1
   resolution: "geojson-vt@npm:3.2.1"
   checksum: 5411aa848eebb4bc5ca9583fd696a32655a39b7be5d60ab9460e402b141ccddb544453b73de06c234177f793ab67472e420002ee593c61629ae246656fc6c0a5
+  languageName: node
+  linkType: hard
+
+"geojson@npm:^0.5.0":
+  version: 0.5.0
+  resolution: "geojson@npm:0.5.0"
+  checksum: 5536f75f2660625fbb03ab9b0334d537563f5ec924a7e31b49912ea781ea40e8a1bcde476f662bbb81a00adcd20a75ccfd338a6f1a89e1350de36c12d0db0e3d
   languageName: node
   linkType: hard
 
