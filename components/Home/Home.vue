@@ -625,7 +625,7 @@ export default mixins(HomeMixin).extend({
 })
 </script>
 
-<style>
+<style scoped>
 .headers-enter-active,
 .headers-leave-active {
   transition: opacity 0.1s, transform 0.1s;
