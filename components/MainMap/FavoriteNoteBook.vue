@@ -1,51 +1,53 @@
 <template>
   <div id="favourite_notebook">
-    <div
-      class="flex justify-between items-center py-4 px-1 sm:px-6 sticky top-0 z-20 bg-white"
-    >
-      <p class="text-lg">{{ $tc('favorites.notebook.title') }}</p>
-      <UIButton
-        id="close_favourite_notebook"
-        :label="$tc('ui.close')"
-        icon="times"
-        @click="$emit('on-close')"
-      />
-    </div>
+    <div class="py-4 px-1 sm:px-6 sticky top-0 z-20 bg-white">
+      <div class="flex justify-between items-center">
+        <p class="text-lg">{{ $tc('favorites.notebook.title') }}</p>
+        <UIButton
+          id="close_favourite_notebook"
+          :label="$tc('ui.close')"
+          icon="times"
+          @click="$emit('on-close')"
+        />
+      </div>
 
-    <IconsBar class="mr-6">
-      <IconButton
-        :aria-label="$tc('favorites.menu_share')"
-        class="w-8 h-8"
-        @click="setShareLink()"
-      >
-        <font-awesome-icon icon="share-alt" />
-      </IconButton>
-      <IconButton
-        :aria-label="$tc('favorites.export_pdf')"
-        class="w-8 h-8"
-        :href="pdfLink"
-        target="_blank"
-        @click="exportLink('export_pdf')"
-      >
-        <font-awesome-icon icon="print" />
-      </IconButton>
-      <IconButton
-        :aria-label="$tc('favorites.export_csv')"
-        class="w-8 h-8"
-        :href="csvLink"
-        target="_blank"
-        @click="exportLink('export_csv')"
-      >
-        <font-awesome-icon icon="file-csv" />
-      </IconButton>
-      <IconButton
-        :aria-label="$tc('favorites.menu_clear')"
-        class="w-8 h-8"
-        @click="removeFavorites()"
-      >
-        <font-awesome-icon icon="trash" />
-      </IconButton>
-    </IconsBar>
+      <div>
+        <IconsBar class="mr-6">
+          <IconButton
+            :aria-label="$tc('favorites.menu_share')"
+            class="w-8 h-8"
+            @click="setShareLink()"
+          >
+            <font-awesome-icon icon="share-alt" />
+          </IconButton>
+          <IconButton
+            :aria-label="$tc('favorites.export_pdf')"
+            class="w-8 h-8"
+            :href="pdfLink"
+            target="_blank"
+            @click="exportLink('export_pdf')"
+          >
+            <font-awesome-icon icon="print" />
+          </IconButton>
+          <IconButton
+            :aria-label="$tc('favorites.export_csv')"
+            class="w-8 h-8"
+            :href="csvLink"
+            target="_blank"
+            @click="exportLink('export_csv')"
+          >
+            <font-awesome-icon icon="file-csv" />
+          </IconButton>
+          <IconButton
+            :aria-label="$tc('favorites.menu_clear')"
+            class="w-8 h-8"
+            @click="removeFavorites()"
+          >
+            <font-awesome-icon icon="trash" />
+          </IconButton>
+        </IconsBar>
+      </div>
+    </div>
 
     <PoisDeck
       :pois="favs"
