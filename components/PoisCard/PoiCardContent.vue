@@ -58,7 +58,10 @@
 
     <div v-else class="h-auto flex-grow shrink-0">
       <Fields
-        :fields="poi.properties.editorial?.popup_fields || []"
+        :fields="
+          (poi.properties.editorial && poi.properties.editorial.popup_fields) ||
+          []
+        "
         :properties="poi.properties"
         :details="websiteDetails"
         :geom="poi.geometry"
