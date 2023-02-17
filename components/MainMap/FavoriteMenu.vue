@@ -1,74 +1,53 @@
 <template>
   <section>
-    <TDropdown
-      :text="$tc('favorites.menu_label')"
-      :classes="{
-        dropdown:
-          'origin-top-right absolute right-14 md:rigth-16 rounded shadow bg-white mt-1',
-      }"
-    >
-      <template
-        #trigger="{
-          mousedownHandler,
-          focusHandler,
-          blurHandler,
-          keydownHandler,
-        }"
+    <div class="flex right-10">
+      <button
+        ref="menu"
+        type="button"
+        :class="[
+          'relative space-x-1 text-sm font-medium shadow-md outline-none md:px-5 w-11 md:w-auto h-11 focus:outline-none shrink-0 border-r border-zinc-400 rounded-l-full',
+          isModeFavorites &&
+            'bg-blue-500 hover:bg-blue-400 focus-visible:bg-blue-400 text-white',
+          !isModeFavorites &&
+            'bg-white hover:bg-zinc-100 focus-visible:bg-zinc-100 text-zinc-800',
+        ]"
+        @click="$emit('toggle-favorites')"
       >
-        <div class="flex right-10">
-          <button
-            ref="menu"
-            type="button"
-            :class="[
-              'relative space-x-1 text-sm font-medium shadow-md outline-none md:px-5 w-11 md:w-auto h-11 focus:outline-none shrink-0 border-r border-zinc-400 rounded-l-full',
-              isModeFavorites &&
-                'bg-blue-500 hover:bg-blue-400 focus-visible:bg-blue-400 text-white',
-              !isModeFavorites &&
-                'bg-white hover:bg-zinc-100 focus-visible:bg-zinc-100 text-zinc-800',
-            ]"
-            @click="$emit('toggle-favorites')"
-          >
-            <FavoriteIcon :is-active="isModeFavorites" />
-            <span class="hidden md:inline favoriteTitle">{{
-              $tc('favorites.title')
-            }}</span>
-            <span
-              v-if="hasFavorites"
-              class="block flex items-center justify-center text-white text-center rounded-full absolute top-0 right-0 w-5 h-5 border-2 border-white bg-red-600"
-            >
-              <span id="favourites_counter" class="text-xs">{{
-                favoritesIds.length
-              }}</span>
-            </span>
-          </button>
-          <button
-            id="open_favourites_notebook"
-            type="button"
-            :class="[
-              'relative space-x-1 text-sm font-medium shadow-md outline-none md:px-5 w-11 md:w-auto h-11 focus:outline-none shrink-0 rounded-r-full',
-              'bg-white hover:bg-zinc-100 focus-visible:bg-zinc-100 text-zinc-800',
-              !hasFavorites && 'bg-zinc-100 cursor-not-allowed',
-            ]"
-            :disabled="!hasFavorites"
-            @mousedown="mousedownHandler"
-            @focus="focusHandler"
-            @blur="blurHandler"
-            @keydown="keydownHandler"
-            @click="openNotebookModal"
-          >
-            <font-awesome-icon
-              ref="menu_icon"
-              icon="book-open"
-              class="text-zinc-500 mr-2"
-              size="sm"
-            />
-            <span class="hidden md:inline favoriteTitle">
-              {{ $tc('favorites.menu_notebook') }}
-            </span>
-          </button>
-        </div>
-      </template>
-    </TDropdown>
+        <FavoriteIcon :is-active="isModeFavorites" />
+        <span class="hidden md:inline favoriteTitle">{{
+          $tc('favorites.title')
+        }}</span>
+        <span
+          v-if="hasFavorites"
+          class="block flex items-center justify-center text-white text-center rounded-full absolute top-0 right-0 w-5 h-5 border-2 border-white bg-red-600"
+        >
+          <span id="favourites_counter" class="text-xs">{{
+            favoritesIds.length
+          }}</span>
+        </span>
+      </button>
+      <button
+        id="open_favourites_notebook"
+        type="button"
+        :class="[
+          'relative space-x-1 text-sm font-medium shadow-md outline-none md:px-5 w-11 md:w-auto h-11 focus:outline-none shrink-0 rounded-r-full',
+          'bg-white hover:bg-zinc-100 focus-visible:bg-zinc-100 text-zinc-800',
+          !hasFavorites && 'bg-zinc-100 cursor-not-allowed',
+        ]"
+        :disabled="!hasFavorites"
+        @click="openNotebookModal"
+      >
+        <font-awesome-icon
+          ref="menu_icon"
+          icon="book-open"
+          class="text-zinc-500 mr-2"
+          size="sm"
+        />
+        <span class="hidden md:inline favoriteTitle">
+          {{ $tc('favorites.menu_notebook') }}
+        </span>
+      </button>
+    </div>
 
     <t-modal-notebook
       ref="notebookModal"
@@ -90,7 +69,7 @@
 
 <script lang="ts">
 import Vue, { VueConstructor } from 'vue'
-import { TDropdown, TModal } from 'vue-tailwind/dist/components'
+import { TModal } from 'vue-tailwind/dist/components'
 import { mapGetters } from 'vuex'
 
 import FavoriteNoteBook from '~/components/MainMap/FavoriteNoteBook.vue'
@@ -107,7 +86,6 @@ export default (
   >
 ).extend({
   components: {
-    TDropdown,
     FavoriteNoteBook,
     FavoriteIcon,
   },
