@@ -1,4 +1,4 @@
-import { Plugin } from '@nuxt/types'
+import { defineNuxtPlugin } from '#app/nuxt'
 
 import { PropertyTranslations } from '~/lib/apiPropertyTranslations'
 
@@ -26,7 +26,7 @@ export interface PropertyTranslationsPlugin {
   propertyTranslations: PropertyTranslations
 }
 
-const plugin: Plugin = (_, inject) => {
+export default defineNuxtPlugin((nuxtApp) => {
   const pt: PropertyTranslationsPlugin = {
     propertyTranslations: {},
     set(setPropertyTranslations: PropertyTranslations): void {
@@ -54,13 +54,10 @@ const plugin: Plugin = (_, inject) => {
       )
     },
   }
-  inject('propertyTranslations', pt)
-}
 
-export default plugin
-
-declare module 'vue/types/vue' {
-  interface Vue {
-    readonly $propertyTranslations: PropertyTranslationsPlugin
+  return {
+    provide: {
+      propertyTranslations: pt,
+    }
   }
-}
+})
