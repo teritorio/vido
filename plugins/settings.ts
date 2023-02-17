@@ -1,4 +1,4 @@
-import { Plugin } from '@nuxt/types'
+import { defineNuxtPlugin } from '#app/nuxt'
 
 import { Settings } from '~/lib/apiSettings'
 
@@ -10,19 +10,16 @@ export interface SettingsPlugin extends Settings {
   set(settings: Settings): void
 }
 
-const settingsPlugin: Plugin = (_, inject) => {
+export default defineNuxtPlugin((nuxtApp) => {
   const settings: SettingsPlugin | SettingsSetPlugin = {
     set(setSettings: Settings): void {
       Object.assign(settings, setSettings)
     },
   }
-  inject('settings', settings)
-}
 
-export default settingsPlugin
-
-declare module 'vue/types/vue' {
-  interface Vue {
-    readonly $settings: SettingsPlugin
+  return {
+    provide: {
+      settings
+    }
   }
-}
+})

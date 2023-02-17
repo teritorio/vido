@@ -1,4 +1,4 @@
-import { Plugin } from '@nuxt/types'
+import { defineNuxtPlugin } from '#app/nuxt'
 import { NuxtRuntimeConfig } from '@nuxt/types/config/runtime'
 import createServer from 'connect'
 
@@ -61,19 +61,18 @@ export function vidoConfig(
   return vidoConfigResolve(host, vidoHostConfig)
 }
 
-const vidosConfigPlugin: Plugin = ({ req, $config }, inject) => {
+export default defineNuxtPlugin((nuxtApp) => {
   let config: VidoConfig | undefined
-  inject('vidoConfigSet', (c: VidoConfig) => {
-    config = c
-  })
-  inject('vidoConfig', () => config || vidoConfig(req, $config))
-}
 
-export default vidosConfigPlugin
-
-declare module 'vue/types/vue' {
-  interface Vue {
-    readonly $vidoConfigSet: (c: VidoConfig) => void
-    readonly $vidoConfig: () => VidoConfig
+  return {
+    provide: {
+      vidoConfigSet: (c: VidoConfig): void => {
+        config = c
+      },
+      vidoConfig: (): VidoConfig => (
+        config ||
+        vidoConfig(nuxtApp.vueApp.context.req, nuxtApp.vueApp.$config)
+      )
+    }
   }
-}
+})
