@@ -14,7 +14,7 @@
         'md:relative md:h-full md:w-1/3 md:max-w-md',
       ]"
     >
-      <div class="md:hidden grid justify-items-end pb-4">
+      <div class="grid justify-items-end pb-4">
         <UIButton
           :label="$tc('ui.close')"
           icon="times"
