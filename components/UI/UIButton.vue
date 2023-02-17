@@ -8,7 +8,7 @@
       v-if="icon"
       ref="menu_icon"
       :icon="icon"
-      class="text-zinc-500 sm:mr-2"
+      :class="['text-zinc-500', label && 'md:mr-2']"
       size="sm"
     />
     <span v-if="label" class="hidden sm:block">{{ label }}</span>
