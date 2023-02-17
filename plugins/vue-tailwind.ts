@@ -1,4 +1,4 @@
-import Vue from 'vue'
+import { defineNuxtPlugin } from '#app/nuxt'
 import VueTailwind from 'vue-tailwind'
 import { TModal, TRichSelect } from 'vue-tailwind/dist/components'
 
@@ -173,4 +173,6 @@ const settings = {
   },
 }
 
-Vue.use(VueTailwind, settings)
+export default defineNuxtPlugin((nuxtApp) => {
+  nuxtApp.vueApp.use(VueTailwind, settings)
+})
