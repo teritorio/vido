@@ -1,5 +1,5 @@
 <template>
-  <div class="mt-12">
+  <div>
     <t-rich-select
       variant="relative"
       placeholder="Recherchez ou ajoutez une valeur"

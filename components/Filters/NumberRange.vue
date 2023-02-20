@@ -1,5 +1,5 @@
 <template>
-  <div class="filters-number-range mt-12">
+  <div class="filters-number-range">
     <Slider
       v-model="value"
       :min="min"
