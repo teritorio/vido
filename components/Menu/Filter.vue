@@ -19,19 +19,9 @@
         <label :for="filter.property" class="block mb-2 text-zinc-500">
           {{ (filter.def.name && filter.def.name.fr) || filter.def.property }}
         </label>
-        <t-rich-select
-          variant="relative"
-          placeholder="Recherchez ou ajoutez une valeur"
-          search-box-placeholder="Rechercher ..."
-          multiple
-          :options="
-            filter.def.values.map((value) => ({
-              text: (value.name && value.name.fr) || value.value,
-              value: value.value,
-            }))
-          "
-          :value="filter.filterValues"
-          @input="(val) => onSelectionFilterChange(filterIndex, val)"
+        <SelectFilter
+          :filter="filter"
+          @change="(val) => onSelectionFilterChange(filterIndex, val)"
           @click="onClickFilter(true)"
           @blur="onClickFilter(false)"
         />
@@ -97,6 +87,7 @@ import { mapActions } from 'vuex'
 
 import DateRange from '~/components/Filters/DateRange.vue'
 import NumberRange from '~/components/Filters/NumberRange.vue'
+import SelectFilter from '~/components/Filters/Select.vue'
 import { ApiMenuCategory } from '~/lib/apiMenu'
 import {
   FilterValueBoolean,
@@ -108,6 +99,7 @@ import {
 
 export default Vue.extend({
   components: {
+    SelectFilter,
     DateRange,
     NumberRange,
   },
