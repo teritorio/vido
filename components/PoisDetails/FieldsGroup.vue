@@ -32,7 +32,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, VueConstructor, PropType } from 'vue'
+import { defineComponent, PropType, ref } from 'vue'
 
 import { isFiledEmpty } from '../Fields/Field.vue'
 
@@ -61,15 +61,7 @@ export function isListEmpty(
   )
 }
 
-export default (
-  Vue as VueConstructor<
-    Vue & {
-      $refs: {
-        fields: InstanceType<typeof Vue>
-      }
-    }
-  >
-).extend({
+export default defineComponent({
   components: {
     Block,
     FieldsHeader,
@@ -101,6 +93,11 @@ export default (
       type: String as PropType<string>,
       required: true,
     },
+  },
+  setup() {
+    return {
+      fields: ref<InstanceType<typeof Vue>>(),
+    }
   },
 
   data(): {

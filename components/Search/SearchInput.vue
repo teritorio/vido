@@ -31,17 +31,9 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, VueConstructor } from 'vue'
+import { defineComponent, PropType, ref } from 'vue'
 
-export default (
-  Vue as VueConstructor<
-    Vue & {
-      $refs: {
-        search: InstanceType<typeof HTMLInputElement> | null
-      }
-    }
-  >
-).extend({
+export default defineComponent({
   props: {
     searchText: {
       type: String as PropType<string>,
@@ -51,6 +43,11 @@ export default (
       type: Boolean,
       default: false,
     },
+  },
+  setup() {
+    return {
+      search: ref<InstanceType<typeof HTMLInputElement>>(),
+    }
   },
 
   methods: {

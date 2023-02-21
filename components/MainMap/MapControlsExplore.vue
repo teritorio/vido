@@ -1,10 +1,7 @@
 <template>
   <div
     ref="container"
-    :class="[
-      'maplibregl-ctrl maplibregl-ctrl-group',
-      'hidden md:block',
-    ]"
+    :class="['maplibregl-ctrl maplibregl-ctrl-group', 'hidden md:block']"
   >
     <button
       :aria-label="$tc('mapControls.exploreAriaLabel')"
@@ -29,25 +26,22 @@
 import { Control } from '@teritorio/map'
 import { Map } from 'maplibre-gl'
 import { mapState, mapWritableState } from 'pinia'
-import { defineComponent, PropType, VueConstructor } from 'vue'
+import { defineComponent, PropType, ref } from 'vue'
 
 import { mapStore } from '~/stores/map'
 import { Mode } from '~/utils/types'
 
-export default (
-  Vue as VueConstructor<
-    Vue & {
-      $refs: {
-        container: InstanceType<typeof HTMLDivElement>
-      }
-    }
-  >
-).extend({
+export default defineComponent({
   props: {
     map: {
       type: Object as PropType<Map>,
       default: null,
     },
+  },
+  setup() {
+    return {
+      container: ref<InstanceType<typeof HTMLDivElement>>(),
+    }
   },
 
   computed: {
@@ -64,7 +58,7 @@ export default (
           }
         }
 
-        const control = new BackgroundControl(this.$refs.container)
+        const control = new BackgroundControl(this.container)
         this.map.addControl(control)
       }
     },

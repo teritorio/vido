@@ -1,7 +1,7 @@
 import { Polygon, MultiPolygon } from 'geojson'
 import { LngLatBoundsLike } from 'maplibre-gl'
 import { mapActions, mapState, mapWritableState } from 'pinia'
-import { defineComponent, PropType } from 'vue'
+import { defineComponent, PropType, ref } from 'vue'
 
 import MapFeatures from '~/components/MainMap/MapFeatures.vue'
 import { ApiMenuCategory, MenuItem } from '~/lib/apiMenu'
@@ -10,16 +10,6 @@ import { Settings } from '~/lib/apiSettings'
 import { mapStore } from '~/stores/map'
 import { menuStore } from '~/stores/menu'
 
-// export default (
-//   Vue as VueConstructor<
-//     Vue & {
-//       $refs: {
-//         mapFeatures: InstanceType<typeof MapFeatures>
-//         bottomMenu: HTMLDivElement
-//       }
-//     }
-//   >
-// ).extend({
 export default defineComponent({
   props: {
     settings: {
@@ -38,6 +28,13 @@ export default defineComponent({
       type: Object as PropType<Polygon | MultiPolygon | undefined>,
       default: undefined,
     },
+  },
+
+  setup() {
+    return {
+      mapFeatures: ref<InstanceType<typeof MapFeatures>>(),
+      bottomMenu: ref<HTMLDivElement>(),
+    }
   },
 
   data(): {
@@ -98,7 +95,7 @@ export default defineComponent({
     ...mapActions(menuStore, ['setSelectedCategoryIds']),
 
     goToSelectedFeature() {
-      this.$refs.mapFeatures?.goToSelectedFeature()
+      this.mapFeatures?.goToSelectedFeature()
     },
   },
 })

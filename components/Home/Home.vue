@@ -209,7 +209,7 @@
 <script lang="ts">
 import { FitBoundsOptions, LngLatBoundsLike } from 'maplibre-gl'
 import { mapActions, mapState } from 'pinia'
-import { PropType, defineComponent } from 'vue'
+import { PropType, defineComponent, ref } from 'vue'
 import { MetaInfo } from 'vue-meta'
 
 import ExplorerOrFavoritesBack from '~/components/Home/ExplorerOrFavoritesBack.vue'
@@ -261,6 +261,12 @@ export default defineComponent({
       type: Array as PropType<ContentEntry[]>,
       required: true,
     },
+  },
+
+  setup() {
+    return {
+      bottomMenu: ref<InstanceType<typeof HTMLDivElement>>(),
+    }
   },
 
   data(): {
@@ -585,8 +591,8 @@ export default defineComponent({
     },
 
     scrollTop() {
-      if (this.$refs.bottomMenu) {
-        this.$refs.bottomMenu.scrollTop = 0
+      if (this.bottomMenu) {
+        this.bottomMenu.scrollTop = 0
       }
       const header = document.getElementById('header-menu')
       if (header) {

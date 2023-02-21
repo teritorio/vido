@@ -65,7 +65,7 @@ import maplibregl, {
   GeoJSONSource,
 } from 'maplibre-gl'
 import { mapActions, mapState, mapWritableState } from 'pinia'
-import { defineComponent, PropType, VueConstructor } from 'vue'
+import { defineComponent, PropType, ref } from 'vue'
 
 import MapControlsExplore from '~/components/MainMap/MapControlsExplore.vue'
 import SnackBar from '~/components/MainMap/SnackBar.vue'
@@ -93,15 +93,7 @@ const STYLE_LAYERS = [
 ]
 const POI_SOURCE = 'poi'
 
-export default (
-  Vue as VueConstructor<
-    Vue & {
-      $refs: {
-        mapBase: InstanceType<typeof MapBase>
-      }
-    }
-  >
-).extend({
+export default defineComponent({
   components: {
     MapBase,
     MapControlsExplore,
@@ -163,6 +155,11 @@ export default (
       type: Object as PropType<Polygon | MultiPolygon | undefined>,
       default: undefined,
     },
+  },
+  setup() {
+    return {
+      mapBase: ref<InstanceType<typeof MapBase>>(),
+    }
   },
 
   data(): {
@@ -282,7 +279,7 @@ export default (
             .map((category) => category.category.color_fill)
         ),
       ]
-      this.$refs.mapBase.initPoiLayer(this.features, colors, [
+      this.mapBase.initPoiLayer(this.features, colors, [
         'case',
         ['all', ['has', 'display'], ['has', 'color_fill', ['get', 'display']]],
         ['get', 'color_fill', ['get', 'display']],
@@ -365,7 +362,7 @@ export default (
         return
       }
 
-      this.$refs.mapBase.fitBounds(getBBoxFeature(feature))
+      this.mapBase.fitBounds(getBBoxFeature(feature))
     },
 
     goToSelectedFeature() {
@@ -405,13 +402,13 @@ export default (
       if (this.features) {
         const bounds = getBBoxFeatures(this.features)
         if (bounds) {
-          this.$refs.mapBase.fitBounds(bounds)
+          this.mapBase.fitBounds(bounds)
         }
       }
     },
 
     resetZoom() {
-      this.$refs.mapBase.fitBounds(this.defaultBounds, { linear: false })
+      this.mapBase.fitBounds(this.defaultBounds, { linear: false })
     },
 
     handleResetMapZoom(text: string, textBtn: string) {
