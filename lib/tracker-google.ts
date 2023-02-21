@@ -1,3 +1,4 @@
+import { createGtm } from '@gtm-support/vue-gtm'
 import { NuxtAppOptions } from '@nuxt/types/app'
 import urlSlug from 'url-slug'
 
@@ -9,11 +10,18 @@ export default class Google implements Tracker {
   googleTagManagerId: string
 
   constructor(
-    nuxtApp: NuxtAppOptions,
+    nuxtApp: any,
     waitForConsent: boolean,
-    gtm: any,
     googleTagManagerId: string
   ) {
+    const gtm = createGtm({
+      id: googleTagManagerId,
+      defer: true,
+      compatibility: false,
+      enabled: false,
+    })
+    nuxtApp.vueApp.use(gtm)
+
     this.waitForConsent = waitForConsent
     this.gtm = gtm
     this.googleTagManagerId = googleTagManagerId

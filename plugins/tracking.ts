@@ -1,5 +1,4 @@
 import { defineNuxtPlugin } from '#app/nuxt'
-
 import Google from '~/lib/tracker-google'
 import Matomo from '~/lib/tracker-matomo'
 import { Event, Tracker } from '~/lib/trackers'
@@ -10,16 +9,18 @@ export default defineNuxtPlugin((nuxtApp) => {
 
   return {
     provide: {
-      trackingInit: () => (config: VidoConfig): void => {
-        if (navigator.doNotTrack !== '1') {
-          const googleTagManagerId = config.GOOGLE_TAG_MANAGER_ID
-          if (app.$gtm && googleTagManagerId) {
-            trackers.push(
-              new Google(
-                nuxtApp,
-                Boolean(config.COOKIES_CONSENT),
-                app.$gtm,
-                googleTagManagerId
+      trackingInit:
+        () =>
+        (config: VidoConfig): void => {
+          if (navigator.doNotTrack !== '1') {
+            const googleTagManagerId = config.GOOGLE_TAG_MANAGER_ID
+            if (googleTagManagerId) {
+              trackers.push(
+                new Google(
+                  nuxtApp,
+                  Boolean(config.COOKIES_CONSENT),
+                  googleTagManagerId
+                )
               )
             )
           }
@@ -56,6 +57,6 @@ export default defineNuxtPlugin((nuxtApp) => {
           tracker.track(event)
         })
       },
-    }
+    },
   }
 })

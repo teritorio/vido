@@ -1,6 +1,5 @@
 import { NuxtAppOptions } from '@nuxt/types/app'
 import urlSlug from 'url-slug'
-import Vue from 'vue'
 // @ts-ignore
 import VueMatomo from 'vue-matomo'
 
@@ -8,12 +7,12 @@ import { Event, Tracker } from '~/lib/trackers'
 
 export default class Matomo implements Tracker {
   constructor(
-    nuxtApp: NuxtAppOptions,
+    nuxtApp: any,
     waitForConsent: boolean,
     url: string,
     siteId: string
   ) {
-    Vue.use(VueMatomo, {
+    nuxtApp.vueApp.use(VueMatomo, {
       host: url,
       siteId,
       requireConsent: waitForConsent,
