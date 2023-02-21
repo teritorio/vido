@@ -1,17 +1,19 @@
 <template>
-  <div>
-    <t-rich-select
-      variant="relative"
-      placeholder="Recherchez ou ajoutez une valeur"
-      search-box-placeholder="Rechercher ..."
+  <div data-app>
+    <v-autocomplete
+      v-model="currentValue"
+      outlined
       multiple
-      :options="
+      chips
+      deletable-chips
+      :items="
         filter.def.values.map((value) => ({
           text: (value.name && value.name.fr) || value.value,
           value: value.value,
         }))
       "
-      :value="filter.filterValues"
+      placeholder="Recherchez ou ajoutez une valeur"
+      :clearable="true"
       @input="onChange"
       @click="$emit('click')"
       @blur="$emit('blur')"
@@ -29,6 +31,20 @@ export default Vue.extend({
     filter: {
       type: Object as PropType<FilterValueList>,
       required: true,
+    },
+  },
+
+  data(): {
+    currentValue: string[] | undefined
+  } {
+    return {
+      currentValue: this.filter.filterValues,
+    }
+  },
+
+  watch: {
+    filter() {
+      this.currentValue = this.filter.filterValues
     },
   },
 

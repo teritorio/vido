@@ -1,5 +1,5 @@
 <template>
-  <div id="favourite_notebook">
+  <div id="favourite_notebook" class="bg-white p3">
     <div class="py-4 px-1 sm:px-6 sticky top-0 z-20 bg-white">
       <div class="flex justify-between items-center">
         <p class="text-lg">{{ $tc('favorites.notebook.title') }}</p>
