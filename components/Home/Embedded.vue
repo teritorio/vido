@@ -57,7 +57,7 @@
 <script lang="ts">
 import { FitBoundsOptions } from 'maplibre-gl'
 import { mapActions } from 'pinia'
-import mixins from 'vue-typed-mixins'
+import { defineComponent } from 'vue'
 
 import HomeMixin from '~/components/Home/HomeMixin'
 import SelectedCategories from '~/components/Home/SelectedCategories.vue'
@@ -72,7 +72,7 @@ import { menuStore } from '~/stores/menu'
 import { Mode } from '~/utils/types'
 import { flattenFeatures } from '~/utils/utilities'
 
-export default mixins(HomeMixin).extend({
+export default defineComponent({
   components: {
     CategorySelector,
     MapFeatures,
@@ -80,6 +80,7 @@ export default mixins(HomeMixin).extend({
     PoiCardContent,
     UIButton,
   },
+  mixins: [HomeMixin],
 
   computed: {
     fitBoundsPaddingOptions(): FitBoundsOptions['padding'] {
@@ -94,15 +95,6 @@ export default mixins(HomeMixin).extend({
     mapFeatures(): ApiPoi[] {
       return flattenFeatures(menuStore().features)
     },
-  },
-
-  mounted() {
-    if (this.boundaryArea) {
-      this.initialBbox = getBBoxFeature(this.boundaryArea)
-    } else {
-      // @ts-ignore
-      this.initialBbox = this.settings.bbox_line.coordinates
-    }
   },
 
   watch: {
@@ -122,6 +114,15 @@ export default mixins(HomeMixin).extend({
     selectedFeature() {
       this.routerPushUrl()
     },
+  },
+
+  mounted() {
+    if (this.boundaryArea) {
+      this.initialBbox = getBBoxFeature(this.boundaryArea)
+    } else {
+      // @ts-ignore
+      this.initialBbox = this.settings.bbox_line.coordinates
+    }
   },
 
   methods: {

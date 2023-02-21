@@ -65,7 +65,7 @@
 
 <script lang="ts">
 import { mapState } from 'pinia'
-import Vue, { PropType, VueConstructor } from 'vue'
+import { defineComponent, PropType, VueConstructor } from 'vue'
 
 import PoisDeck from '~/components/PoisCard/PoisDeck.vue'
 import IconButton from '~/components/UI/IconButton.vue'

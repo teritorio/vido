@@ -35,12 +35,12 @@
 </template>
 
 <script lang="ts">
-import Vue, { PropType } from 'vue'
+import { defineComponent, PropType } from 'vue'
 
 import TeritorioIcon from '~/components/UI/TeritorioIcon.vue'
 import { SearchResult } from '~/lib/apiSearch'
 
-export default Vue.extend({
+export default defineComponent({
   components: {
     TeritorioIcon,
   },

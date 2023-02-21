@@ -13,7 +13,7 @@
 
 <script lang="ts">
 import copy from 'fast-copy'
-import Vue, { PropType } from 'vue'
+import { defineComponent, PropType } from 'vue'
 
 import { FilterValueDate } from '~/utils/types-filters'
 
@@ -42,7 +42,7 @@ function formatDate(date: Date): string {
   )
 }
 
-export default Vue.extend({
+export default defineComponent({
   props: {
     filter: {
       type: Object as PropType<FilterValueDate>,

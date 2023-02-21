@@ -16,7 +16,7 @@
 
 <script lang="ts">
 import { mapState } from 'pinia'
-import Vue, { PropType } from 'vue'
+import { defineComponent, PropType } from 'vue'
 
 import NavMenu from '~/components/MainMap/NavMenu.vue'
 import Logo from '~/components/UI/Logo.vue'
@@ -24,7 +24,7 @@ import { ContentEntry } from '~/lib/apiContent'
 import { SiteInfosTheme } from '~/lib/apiSettings'
 import { siteStore } from '~/stores/site'
 
-export default Vue.extend({
+export default defineComponent({
   components: {
     Logo,
     NavMenu,

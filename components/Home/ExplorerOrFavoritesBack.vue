@@ -25,11 +25,11 @@
 
 <script lang="ts">
 import { mapState } from 'pinia'
-import Vue from 'vue'
+import { defineComponent } from 'vue'
 
 import { mapStore } from '~/stores/map'
 
-export default Vue.extend({
+export default defineComponent({
   computed: {
     ...mapState(mapStore, ['isModeFavorites']),
   },

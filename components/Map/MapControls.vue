@@ -6,10 +6,10 @@
 
 <script lang="ts">
 import maplibregl, { Map } from 'maplibre-gl'
-import Vue, { PropType } from 'vue'
+import { defineComponent, PropType } from 'vue'
 import 'maplibre-gl/dist/maplibre-gl.css'
 
-export default Vue.extend({
+export default defineComponent({
   props: {
     map: {
       type: Object as PropType<Map>,

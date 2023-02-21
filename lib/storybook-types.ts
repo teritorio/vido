@@ -1,4 +1,4 @@
-import Vue, { VueConstructor } from 'vue'
+import { defineComponent, VueConstructor } from 'vue'
 
 import mockStyleGL from './storybook-types-mock-stylegl'
 
@@ -68,7 +68,9 @@ export function bind<T extends VueConstructor<Vue>>(
   const Template = ((args: Args) => ({
     components: { t },
     props: Object.keys(args),
-    template: `<t v-bind="$props" ${id ? `id="${id}"` : ''} v-on="$props" class="${classs} "style="${style}">${slots}</t>`,
+    template: `<t v-bind="$props" ${
+      id ? `id="${id}"` : ''
+    } v-on="$props" class="${classs} "style="${style}">${slots}</t>`,
   })) as unknown as Def
 
   const b = Template.bind({})

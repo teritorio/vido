@@ -35,7 +35,7 @@
 </template>
 
 <script lang="ts">
-import Vue, { PropType } from 'vue'
+import { defineComponent, PropType } from 'vue'
 
 export function isDateRangeEmpty(properties: {
   [key: string]: string
@@ -43,7 +43,7 @@ export function isDateRangeEmpty(properties: {
   return !('start' in properties) && !('end' in properties)
 }
 
-export default Vue.extend({
+export default defineComponent({
   props: {
     start: {
       type: String as PropType<string>,

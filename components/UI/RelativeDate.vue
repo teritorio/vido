@@ -3,16 +3,17 @@
 </template>
 
 <script lang="ts">
+import { defineComponent } from 'vue'
+
 import { formatRelative } from 'date-fns'
 import { enGB, fr, es } from 'date-fns/locale'
 import { mapState } from 'pinia'
-import Vue from 'vue'
 
 import { siteStore } from '~/stores/site'
 
 const DateFormatLocales: { [key: string]: Locale } = { en: enGB, fr, es }
 
-export default Vue.extend({
+export default defineComponent({
   props: {
     date: {
       type: [Date, String],

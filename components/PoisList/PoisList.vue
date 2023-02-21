@@ -34,7 +34,7 @@
 
 <script lang="ts">
 import { mapState } from 'pinia'
-import Vue, { PropType } from 'vue'
+import { defineComponent, PropType } from 'vue'
 
 import PoiLayout from '~/components/Layout/PoiLayout.vue'
 import Actions from '~/components/PoisList/Actions.vue'
@@ -46,7 +46,7 @@ import { ApiPois, FieldsListItem, getPoiByCategoryId } from '~/lib/apiPois'
 import { Settings } from '~/lib/apiSettings'
 import { menuStore } from '~/stores/menu'
 
-export default Vue.extend({
+export default defineComponent({
   components: {
     Actions,
     PoiLayout,

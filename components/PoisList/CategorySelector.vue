@@ -30,12 +30,12 @@
 
 <script lang="ts">
 import { LocaleObject } from '@nuxtjs/i18n'
-import Vue, { PropType } from 'vue'
+import { defineComponent, PropType } from 'vue'
 
 import TeritorioIcon from '~/components/UI/TeritorioIcon.vue'
 import { ApiMenuCategory, MenuItem } from '~/lib/apiMenu'
 
-export default Vue.extend({
+export default defineComponent({
   components: {
     TeritorioIcon,
   },

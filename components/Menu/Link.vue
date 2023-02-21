@@ -25,12 +25,12 @@
 </template>
 
 <script lang="ts">
-import Vue, { PropType } from 'vue'
+import { defineComponent, PropType } from 'vue'
 
 import MenuItem from '~/components/Menu/Item.vue'
 import { ApiMenuLink } from '~/lib/apiMenu'
 
-export default Vue.extend({
+export default defineComponent({
   components: {
     MenuItem,
   },

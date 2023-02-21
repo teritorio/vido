@@ -55,12 +55,12 @@
 </template>
 
 <script lang="ts">
-import Vue, { PropType } from 'vue'
+import { defineComponent, PropType } from 'vue'
 
 import TeritorioIconBadge from '~/components/UI/TeritorioIconBadge.vue'
 import { MultilingualString } from '~/utils/types'
 
-export default Vue.extend({
+export default defineComponent({
   components: {
     TeritorioIconBadge,
   },

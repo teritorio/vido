@@ -48,12 +48,12 @@
 
 <script lang="ts">
 import { mapState, mapActions } from 'pinia'
-import Vue from 'vue'
+import { defineComponent } from 'vue'
 
 import TeritorioIconBadge from '~/components/UI/TeritorioIconBadge.vue'
 import { menuStore } from '~/stores/menu'
 
-export default Vue.extend({
+export default defineComponent({
   components: {
     TeritorioIconBadge,
   },

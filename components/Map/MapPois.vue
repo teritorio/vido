@@ -15,7 +15,7 @@
 
 <script lang="ts">
 import { LngLatLike } from 'maplibre-gl'
-import Vue, { PropType, VueConstructor } from 'vue'
+import { defineComponent, PropType, VueConstructor } from 'vue'
 
 import MapBase from '~/components/Map/MapBase.vue'
 import { ApiPoi } from '~/lib/apiPois'

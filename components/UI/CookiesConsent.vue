@@ -18,9 +18,9 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent } from 'vue'
 
-export default Vue.extend({
+export default defineComponent({
   components: {
     // @ts-ignore
     CookieLaw: () => (process.client ? import('vue-cookie-law') : null),

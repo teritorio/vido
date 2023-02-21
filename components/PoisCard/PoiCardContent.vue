@@ -137,7 +137,7 @@
 
 <script lang="ts">
 import { mapState } from 'pinia'
-import Vue, { PropType } from 'vue'
+import { defineComponent, PropType } from 'vue'
 
 import Fields from '~/components/PoisCard/Fields.vue'
 import FavoriteIcon from '~/components/UI/FavoriteIcon.vue'
@@ -148,7 +148,7 @@ import { favoritesStore } from '~/stores/favorite'
 import { mapStore } from '~/stores/map'
 import { isIOS } from '~/utils/isIOS'
 
-export default Vue.extend({
+export default defineComponent({
   components: {
     TeritorioIcon,
     FavoriteIcon,

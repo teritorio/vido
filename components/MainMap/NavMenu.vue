@@ -54,14 +54,14 @@
 
 <script lang="ts">
 import { mapWritableState } from 'pinia'
-import Vue, { PropType } from 'vue'
+import { defineComponent, PropType } from 'vue'
 
 import ExternalLink from '~/components/UI/ExternalLink.vue'
 import IconButton from '~/components/UI/IconButton.vue'
 import { ContentEntry } from '~/lib/apiContent'
 import { siteStore } from '~/stores/site'
 
-export default Vue.extend({
+export default defineComponent({
   components: {
     IconButton,
     ExternalLink,

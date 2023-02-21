@@ -19,13 +19,13 @@
 </template>
 
 <script lang="ts">
-import Vue, { PropType } from 'vue'
+import { defineComponent, PropType } from 'vue'
 
 import PoiCard from '~/components/PoisCard/PoiCard.vue'
 import PoiCardLight from '~/components/PoisCard/PoiCardLight.vue'
 import { ApiPoi, ApiPoiId } from '~/lib/apiPois'
 
-export default Vue.extend({
+export default defineComponent({
   components: {
     PoiCard,
     PoiCardLight,

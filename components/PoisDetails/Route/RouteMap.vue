@@ -37,7 +37,7 @@
 </template>
 
 <script lang="ts">
-import Vue, { PropType } from 'vue'
+import { defineComponent, PropType } from 'vue'
 
 import MapPois from '~/components/Map/MapPois.vue'
 import PoisDeck from '~/components/PoisCard/PoisDeck.vue'
@@ -48,7 +48,7 @@ import {
 } from '~/lib/apiPoiDeps'
 import { ApiPoi, ApiPoiId } from '~/lib/apiPois'
 
-export default Vue.extend({
+export default defineComponent({
   components: {
     MapPois,
     PoisDeck,

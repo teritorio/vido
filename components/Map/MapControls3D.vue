@@ -21,7 +21,7 @@
 <script lang="ts">
 import { Building3d } from '@teritorio/map'
 import { Map } from 'maplibre-gl'
-import Vue, { VueConstructor, PropType } from 'vue'
+import { defineComponent, VueConstructor, PropType } from 'vue'
 
 export default (
   Vue as VueConstructor<

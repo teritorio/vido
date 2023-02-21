@@ -33,7 +33,7 @@
 <script lang="ts">
 import { Control } from '@teritorio/map'
 import { Map } from 'maplibre-gl'
-import Vue, { PropType, VueConstructor } from 'vue'
+import { defineComponent, PropType, VueConstructor } from 'vue'
 
 import { DEFAULT_MAP_STYLE, MAP_STYLE_NAMES } from '~/lib/constants'
 import { MapStyleEnum } from '~/utils/types'

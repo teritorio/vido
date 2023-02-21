@@ -1,5 +1,4 @@
 import { config } from '@vue/test-utils'
-import Vue from 'vue'
 
 import settings from '~/cypress/fixtures/teritorio/references/settings.json'
 import fr from '~/locales/fr.js'

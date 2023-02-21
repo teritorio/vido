@@ -64,7 +64,7 @@
 
 <script lang="ts">
 import { mapState } from 'pinia'
-import Vue from 'vue'
+import { defineComponent } from 'vue'
 
 import FavoriteNoteBook from '~/components/MainMap/FavoriteNoteBook.vue'
 import Badge from '~/components/UI/Badge.vue'
@@ -73,7 +73,7 @@ import { getPois, ApiPoi } from '~/lib/apiPois'
 import { favoritesStore } from '~/stores/favorite'
 import { mapStore } from '~/stores/map'
 
-export default Vue.extend({
+export default defineComponent({
   components: {
     Badge,
     FavoriteNoteBook,

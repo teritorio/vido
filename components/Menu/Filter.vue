@@ -82,7 +82,7 @@
 <script lang="ts">
 import copy from 'fast-copy'
 import { mapActions } from 'pinia'
-import Vue, { PropType } from 'vue'
+import { defineComponent, PropType } from 'vue'
 
 import DateRange from '~/components/Filters/DateRange.vue'
 import NumberRange from '~/components/Filters/NumberRange.vue'
@@ -97,7 +97,7 @@ import {
   FilterValues,
 } from '~/utils/types-filters'
 
-export default Vue.extend({
+export default defineComponent({
   components: {
     SelectFilter,
     DateRange,

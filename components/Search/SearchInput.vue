@@ -31,7 +31,7 @@
 </template>
 
 <script lang="ts">
-import Vue, { PropType, VueConstructor } from 'vue'
+import { defineComponent, PropType, VueConstructor } from 'vue'
 
 export default (
   Vue as VueConstructor<

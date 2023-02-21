@@ -46,7 +46,7 @@
 </template>
 
 <script lang="ts">
-import Vue, { PropType } from 'vue'
+import { defineComponent, PropType } from 'vue'
 
 import Category from '~/components/Menu/Category.vue'
 import MenuGroup from '~/components/Menu/Group.vue'
@@ -54,7 +54,7 @@ import Link from '~/components/Menu/Link.vue'
 import { ApiMenuCategory, MenuItem } from '~/lib/apiMenu'
 import { FilterValues } from '~/utils/types-filters'
 
-export default Vue.extend({
+export default defineComponent({
   components: {
     Category,
     MenuGroup,

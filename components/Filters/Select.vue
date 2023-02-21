@@ -22,11 +22,11 @@
 </template>
 
 <script lang="ts">
-import Vue, { PropType } from 'vue'
+import { defineComponent, PropType } from 'vue'
 
 import { FilterValueList } from '~/utils/types-filters'
 
-export default Vue.extend({
+export default defineComponent({
   props: {
     filter: {
       type: Object as PropType<FilterValueList>,

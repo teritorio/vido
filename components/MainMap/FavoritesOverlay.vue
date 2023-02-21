@@ -12,12 +12,12 @@
 
 <script lang="ts">
 import { mapWritableState } from 'pinia'
-import Vue from 'vue'
+import { defineComponent } from 'vue'
 
 import { mapStore } from '~/stores/map'
 import { Mode } from '~/utils/types'
 
-export default Vue.extend({
+export default defineComponent({
   computed: {
     ...mapWritableState(mapStore, ['mode']),
   },

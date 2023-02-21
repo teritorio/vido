@@ -117,7 +117,7 @@
 
 <script lang="ts">
 import { mapState } from 'pinia'
-import Vue, { PropType } from 'vue'
+import { defineComponent, PropType } from 'vue'
 
 import PoiLayout from '~/components/Layout/PoiLayout.vue'
 import MapPois from '~/components/Map/MapPois.vue'
@@ -138,7 +138,7 @@ import { PropertyTranslationsContextEnum } from '~/plugins/property-translations
 import { favoritesStore } from '~/stores/favorite'
 import { OriginEnum } from '~/utils/types'
 
-export default Vue.extend({
+export default defineComponent({
   components: {
     PoiLayout,
     IconButton,
