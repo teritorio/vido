@@ -65,7 +65,7 @@
 
 <script lang="ts">
 import { mapState } from 'pinia'
-import { defineComponent, PropType, VueConstructor } from 'vue'
+import { defineComponent, PropType, ref } from 'vue'
 
 import PoisDeck from '~/components/PoisCard/PoisDeck.vue'
 import IconButton from '~/components/UI/IconButton.vue'
@@ -75,15 +75,7 @@ import UIButton from '~/components/UI/UIButton.vue'
 import { ApiPoi, ApiPoiId } from '~/lib/apiPois'
 import { favoritesStore } from '~/stores/favorite'
 
-export default (
-  Vue as VueConstructor<
-    Vue & {
-      $refs: {
-        shareModal: InstanceType<typeof ShareLinkModal>
-      }
-    }
-  >
-).extend({
+export default defineComponent({
   components: {
     PoisDeck,
     ShareLinkModal,
@@ -105,6 +97,11 @@ export default (
       type: Boolean,
       required: true,
     },
+  },
+  setup() {
+    return {
+      shareModal: ref<InstanceType<typeof ShareLinkModal>>(),
+    }
   },
 
   computed: {
@@ -130,7 +127,7 @@ export default (
   methods: {
     setShareLink() {
       try {
-        this.$refs.shareModal.open(
+        this.shareModal!.open(
           `${location.origin}/#mode=favorites&favs=${this.favoritesIds.join(
             ','
           )}`
