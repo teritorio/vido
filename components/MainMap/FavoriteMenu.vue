@@ -46,28 +46,25 @@
       </button>
     </div>
 
-    <t-modal-notebook
-      ref="notebookModal"
-      :hide-close-button="true"
-      @before-open="getFavs"
-    >
-      <FavoriteNoteBook
-        :favs="favs"
-        :selected-favs-ids="favoritesIds"
-        :explorer-mode-enabled="explorerModeEnabled"
-        @explore-click="explore"
-        @favorite-click="handleFavorite"
-        @zoom-click="goTo"
-        @on-close="closeNoteBook"
-      />
-    </t-modal-notebook>
+    <div data-app>
+      <v-dialog v-model="notebookModal" scrollable fullscreen max-width="80rem">
+        <FavoriteNoteBook
+          :favs="favs"
+          :selected-favs-ids="favoritesIds"
+          :explorer-mode-enabled="explorerModeEnabled"
+          @explore-click="explore"
+          @favorite-click="handleFavorite"
+          @zoom-click="goTo"
+          @on-close="notebookModal = false"
+        />
+      </v-dialog>
+    </div>
   </section>
 </template>
 
 <script lang="ts">
 import { mapState } from 'pinia'
-import Vue, { VueConstructor } from 'vue'
-import { TModal } from 'vue-tailwind/dist/components'
+import Vue from 'vue'
 
 import FavoriteNoteBook from '~/components/MainMap/FavoriteNoteBook.vue'
 import Badge from '~/components/UI/Badge.vue'
@@ -76,15 +73,7 @@ import { getPois, ApiPoi } from '~/lib/apiPois'
 import { favoritesStore } from '~/stores/favorite'
 import { mapStore } from '~/stores/map'
 
-export default (
-  Vue as VueConstructor<
-    Vue & {
-      $refs: {
-        notebookModal: InstanceType<typeof TModal>
-      }
-    }
-  >
-).extend({
+export default Vue.extend({
   components: {
     Badge,
     FavoriteNoteBook,
@@ -112,15 +101,19 @@ export default (
       required: true,
     },
   },
+
   data(): {
     isCopied: boolean
     favs: ApiPoi[]
+    notebookModal: boolean
   } {
     return {
       isCopied: false,
       favs: [],
+      notebookModal: false,
     }
   },
+
   computed: {
     ...mapState(mapStore, ['isModeFavorites']),
     ...mapState(favoritesStore, ['favoritesIds']),
@@ -134,9 +127,7 @@ export default (
         ids
       ).then((pois) => (pois && pois.features) || [])
     },
-    closeNoteBook() {
-      ;(this.$refs.notebookModal as Vue & { hide: () => void }).hide()
-    },
+
     async getFavs() {
       try {
         this.favs = await this.fetchFavorites(this.favoritesIds)
@@ -146,11 +137,11 @@ export default (
       }
     },
     explore(poi?: ApiPoi) {
-      this.closeNoteBook()
+      this.notebookModal = false
       this.exploreAroundSelectedPoi(poi)
     },
     goTo(poi?: ApiPoi) {
-      this.closeNoteBook()
+      this.notebookModal = false
       this.goToSelectedPoi(poi)
     },
     handleFavorite(poi?: ApiPoi) {
@@ -162,7 +153,9 @@ export default (
         event: 'open',
       })
 
-      this.$refs.notebookModal?.show()
+      this.getFavs().then(() => {
+        this.notebookModal = true
+      })
     },
   },
 })

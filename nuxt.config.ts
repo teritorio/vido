@@ -68,7 +68,6 @@ export default defineNuxtConfig({
     '@/plugins/fontawesome.ts',
     '@/plugins/touch.ts',
     '@/plugins/screen.ts',
-    '@/plugins/vue-tailwind.ts',
     { src: '@/plugins/tracking.ts', mode: 'client' },
     '@/plugins/property-translations.ts',
     { src: '@/plugins/pinia-shared-state.ts', mode: 'client' },
@@ -83,6 +82,7 @@ export default defineNuxtConfig({
     '@nuxtjs/stylelint-module',
     // https://go.nuxtjs.dev/tailwindcss
     '@nuxtjs/tailwindcss',
+    '@nuxtjs/vuetify',
     '@nuxtjs/svg',
     // '@nuxtjs/pwa',
   ],
@@ -186,6 +186,11 @@ export default defineNuxtConfig({
       'punycode',
       'pinia',
     ],
+  },
+
+  vuetify: {
+    theme: false,
+    treeShake: true,
   },
 
   // Server config (allow listening to local network)

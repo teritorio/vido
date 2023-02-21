@@ -1,12 +1,14 @@
 <template>
-  <t-rich-select
-    :placeholder="filter.def.name && filter.def.name.fr"
-    :hide-search-box="true"
-    :options="dateFilters"
-    :clearable="true"
-    :value="currentValue()"
-    @input="onChange"
-  />
+  <div data-app>
+    <v-select
+      v-model="currentValue"
+      outlined
+      :placeholder="filter.def.name && filter.def.name.fr"
+      :items="dateFilters"
+      :clearable="true"
+      @input="onChange"
+    />
+  </div>
 </template>
 
 <script lang="ts">
@@ -105,6 +107,12 @@ export default Vue.extend({
     }
   },
 
+  computed: {
+    value(): string | undefined {
+      return this.currentValue()
+    },
+  },
+
   methods: {
     onChange(value: string | null) {
       const newFilter = copy(this.filter)
@@ -126,7 +134,7 @@ export default Vue.extend({
       this.$emit('change', newFilter)
     },
 
-    currentValue() {
+    currentValue(): string | undefined {
       return this.dateFilters.find(
         (e) =>
           e.begin === this.filter.filterValueBegin &&
@@ -136,3 +144,13 @@ export default Vue.extend({
   },
 })
 </script>
+
+<style scoped>
+.v-text-field--outlined fieldset {
+  border-color: rgba(192, 0, 250, 0.986);
+}
+
+input:focus {
+  border: none;
+}
+</style>

@@ -1,67 +1,60 @@
 <template>
-  <section v-if="entries.length + $i18n.locales.length > 0">
-    <TDropdown
-      :classes="{
-        dropdown:
-          'origin-top-right absolute right-0 rounded shadow bg-white mt-1',
-        dropdownWrapper: 'relative z-40',
-      }"
-    >
-      <template
-        #trigger="{
-          mousedownHandler,
-          focusHandler,
-          blurHandler,
-          keydownHandler,
-        }"
-      >
+  <section
+    v-if="entries.length + $i18n.locales.length > 0"
+    class="relative z-40"
+  >
+    <v-menu offset-y>
+      <template #activator="{ on }">
         <IconButton
           :label="$tc('navMenu.label')"
           class="w-11 h-11"
-          @mousedown="mousedownHandler"
-          @focus="focusHandler"
-          @blur="blurHandler"
-          @keydown="keydownHandler"
+          v-on="on"
         >
           <font-awesome-icon icon="cog" class="text-zinc-800" size="lg" />
         </IconButton>
       </template>
 
-      <div class="py-1 rounded-md shadow-xs flex flex-col w-max">
-        <ExternalLink
+      <v-list>
+        <v-list-item
           v-for="entry in entries"
           :key="entry.post_id"
           class="w-full px-5 py-3 hover:bg-zinc-100"
-          :href="entry.url"
-          rel="noopener noreferrer"
-          target="_blank"
-          @click="openLink(entry.title, entry.url)"
         >
-          {{ entry.title }}
-        </ExternalLink>
-        <hr v-if="Boolean(entries.length)" class="" />
-        <a
+          <v-list-item-title>
+            <ExternalLink
+              :href="entry.url"
+              rel="noopener noreferrer"
+              target="_blank"
+              @click="openLink(entry.title, entry.url)"
+            >
+              {{ entry.title }}
+            </ExternalLink>
+          </v-list-item-title>
+        </v-list-item>
+        <v-divider v-if="Boolean(entries.length)"></v-divider>
+        <v-list-item
           v-for="locale in $i18n.locales"
           :key="locale.code"
           :class="[
-            'w-full px-5 py-3 outline-none focus:outline-none hover:bg-zinc-100',
+            'w-full px-5 py-3 hover:bg-zinc-100',
             locale.code === $i18n.locale && 'bg-zinc-200',
           ]"
-          href="#"
-          @click.prevent="setLocale(locale.code)"
         >
-          <span class="mr-2" :class="`flag:${locale.flag}`"></span>
-          {{ locale.name }}
-        </a>
-      </div>
-    </TDropdown>
+          <v-list-item-title>
+            <a href="#" @click.prevent="setLocale(locale.code)">
+              <span class="mr-2" :class="`flag:${locale.flag}`"></span>
+              {{ locale.name }}
+            </a>
+          </v-list-item-title>
+        </v-list-item>
+      </v-list>
+    </v-menu>
   </section>
 </template>
 
 <script lang="ts">
 import { mapWritableState } from 'pinia'
 import Vue, { PropType } from 'vue'
-import { TDropdown } from 'vue-tailwind/dist/components'
 
 import ExternalLink from '~/components/UI/ExternalLink.vue'
 import IconButton from '~/components/UI/IconButton.vue'
@@ -72,7 +65,6 @@ export default Vue.extend({
   components: {
     IconButton,
     ExternalLink,
-    TDropdown,
   },
 
   props: {
