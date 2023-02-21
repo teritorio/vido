@@ -160,10 +160,6 @@ export default defineNuxtConfig({
     //     }
     //   },
     //   plugins: [
-    //     // @ts-ignore
-    //     new webpack.ProvidePlugin({
-    //       mapboxgl: 'maplibre-gl',
-    //     }),
     //     // https://github.com/date-fns/date-fns/blob/main/docs/webpack.md
     //     // /!\ Not woring. Has no effect.
     //     new webpack.ContextReplacementPlugin(

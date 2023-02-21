@@ -1,7 +1,7 @@
 <template>
   <div
     ref="container"
-    class="maplibregl-ctrl maplibregl-ctrl-group mapboxgl-ctrl mapboxgl-ctrl-group"
+    class="maplibregl-ctrl maplibregl-ctrl-group"
   >
     <template v-for="background in backgrounds">
       <button

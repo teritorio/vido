@@ -5059,6 +5059,7 @@ __metadata:
     "@types/wcag-contrast": ^3.0.0
     "@typescript-eslint/eslint-plugin": ^5.52.0
     "@typescript-eslint/parser": ^5.52.0
+    "@vladvesa/vue-maplibre-gl": ^1.1.5
     "@vue/test-utils": ^2.2.10
     "@vueform/slider": ^2.1.7
     autoprefixer: ^10.4.13
@@ -5093,7 +5094,6 @@ __metadata:
     lodash.uniq: ^4.5.0
     lodash.uniqby: ^4.7.0
     lodash.without: ^4.4.0
-    mapbox-gl-vue: ^2.0.4
     maplibre-gl: ^2.4.0
     node-sass: ^8.0.0
     nuxi: ^3.2.0
@@ -6151,6 +6151,18 @@ __metadata:
     vite: ^4.0.0
     vue: ^3.2.25
   checksum: a02c361e586527d2f852c5a49b6d30f6ec165e076b8be5c8d1641c50e18492bae2ad11cb15e0029fe98b1222028317c0938ee9c881548510fbdb5437be7d03e4
+  languageName: node
+  linkType: hard
+
+"@vladvesa/vue-maplibre-gl@npm:^1.1.5":
+  version: 1.1.5
+  resolution: "@vladvesa/vue-maplibre-gl@npm:1.1.5"
+  dependencies:
+    mitt: ^3.0.0
+  peerDependencies:
+    maplibre-gl: ^2.4.0
+    vue: ^3.2.45
+  checksum: 25a9cae2fa62eccdee906a42f6984d1d9279a179b2ea91f3f9f6f9554d48d58cc40aa627122d181d636e4b3004dc2766af82d20172af360da71c5f8557301cc3
   languageName: node
   linkType: hard
 
@@ -16994,13 +17006,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"mapbox-gl-vue@npm:^2.0.4":
-  version: 2.0.4
-  resolution: "mapbox-gl-vue@npm:2.0.4"
-  checksum: 75490d348a79ce011850b27b2c03b7c38d5cd5a7776d6182c18fdfd2484f0045379900f4f43681ee926a10b700740d04decb773d90f4b4b1ed9cdbe7f622f331
-  languageName: node
-  linkType: hard
-
 "maplibre-gl@npm:^2.4.0":
   version: 2.4.0
   resolution: "maplibre-gl@npm:2.4.0"
@@ -17668,6 +17673,13 @@ __metadata:
   version: 1.1.2
   resolution: "mitt@npm:1.1.2"
   checksum: d0f2ac58b51d32de8797b131d1b67a989f1f3f267f9e0b5af46f9730a418154af7f7665e919ba8ebbd2f93ac53ea6682f4d686c0ec8c0bc4317168397f053271
+  languageName: node
+  linkType: hard
+
+"mitt@npm:^3.0.0":
+  version: 3.0.0
+  resolution: "mitt@npm:3.0.0"
+  checksum: 487329fd3d202f457deeed2a45e2d2681ac9576d1edbc5868ffdc1a0b8418af3f54e2066e2dcde01acc0cf6de89a6ad470f7529cb02b8f4ebbd422f33c0f83db
   languageName: node
   linkType: hard
 
