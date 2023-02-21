@@ -8,10 +8,7 @@
         :search-text="searchText"
         :is-loading="isLoading"
         @input="onSubmit"
-        @focus="
-          $emit('focus', $event)
-          focus = true
-        "
+        @focus="onSearchFocus"
         @blur="delayedFocusLose($event)"
       />
     </div>
@@ -229,6 +226,11 @@ export default Vue.extend({
         this.$emit('blur', event)
         this.focus = false
       }, 200)
+    },
+
+    onSearchFocus(event: Event) {
+      this.$emit('focus', event)
+      this.focus = true
     },
 
     onCartocodeClick(id: number) {

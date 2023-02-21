@@ -10,10 +10,7 @@
           :placeholder="$tc('headerMenu.searchHint')"
           type="text"
           @input="$emit('input', $event.target.value)"
-          @focus="
-            $emit('focus', $event)
-            $tracking({ type: 'search' })
-          "
+          @focus="onFocus"
           @blur="$emit('blur', $event)"
         />
       </label>
@@ -50,6 +47,13 @@ export default (
     isLoading: {
       type: Boolean,
       default: false,
+    },
+  },
+
+  methods: {
+    onFocus(event: Event) {
+      this.$emit('focus', event)
+      this.$tracking({ type: 'search' })
     },
   },
 })

@@ -14,10 +14,7 @@
       :hash="hash"
       :cooperative-gestures="cooperativeGestures"
       class="grow h-full"
-      @map-init="
-        onMapInit($event)
-        $emit('map-init', $event)
-      "
+      @map-init="onMapInit($event)"
       @map-data="onMapRender('map-data', $event)"
       @map-dragend="onMapRender('map-dragend', $event)"
       @map-moveend="onMapRender('map-moveend', $event)"
@@ -25,10 +22,7 @@
       @map-rotateend="onMapRender('map-rotateend', $event)"
       @map-touchmove="onMapRender('map-touchmove', $event)"
       @map-zoomend="onMapRender('map-zoomend', $event)"
-      @map-style-load="
-        onMapStyleLoad($event)
-        $emit('map-style-load', $event)
-      "
+      @map-style-load="onMapStyleLoad($event)"
       @full-attribution="fullAttribution = $event"
     >
       <template #controls>
@@ -235,6 +229,7 @@ export default Vue.extend({
 
     onMapInit(map: maplibregl.Map) {
       this.map = map
+      this.$emit('map-init', map)
     },
 
     onMapStyleLoad(style: maplibregl.StyleSpecification) {
@@ -246,6 +241,7 @@ export default Vue.extend({
         filter: this.styleIconFilter || [],
       })
       this.map.addControl(this.poiFilter)
+      this.$emit('map-style-load', style)
     },
 
     setPoiFilter() {
