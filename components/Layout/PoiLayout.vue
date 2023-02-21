@@ -22,7 +22,7 @@
 </template>
 
 <script lang="ts">
-import Vue, { PropType } from 'vue'
+import { defineComponent, PropType } from 'vue'
 
 import Footer from '~/components/Layout/Footer.vue'
 import Header from '~/components/Layout/Header.vue'
@@ -30,7 +30,7 @@ import TeritorioIconBadge from '~/components/UI/TeritorioIconBadge.vue'
 import { ContentEntry } from '~/lib/apiContent'
 import { Settings } from '~/lib/apiSettings'
 
-export default Vue.extend({
+export default defineComponent({
   components: {
     Header,
     TeritorioIconBadge,

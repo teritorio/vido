@@ -25,13 +25,13 @@
 </template>
 
 <script lang="ts">
-import Vue, { PropType } from 'vue'
+import { defineComponent, PropType } from 'vue'
 // @ts-ignore
 import VueAgile from 'vue-agile/src/Agile.vue'
 
 import NuxtPicture from '~/components/UI/NuxtPicture.vue'
 
-export default Vue.extend({
+export default defineComponent({
   components: {
     VueAgile,
     NuxtPicture,

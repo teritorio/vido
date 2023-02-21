@@ -65,7 +65,7 @@ import maplibregl, {
   GeoJSONSource,
 } from 'maplibre-gl'
 import { mapActions, mapState, mapWritableState } from 'pinia'
-import Vue, { PropType, VueConstructor } from 'vue'
+import { defineComponent, PropType, VueConstructor } from 'vue'
 
 import MapControlsExplore from '~/components/MainMap/MapControlsExplore.vue'
 import SnackBar from '~/components/MainMap/SnackBar.vue'

@@ -12,7 +12,7 @@
 <script lang="ts">
 import { groupBy } from 'lodash'
 import { mapWritableState } from 'pinia'
-import Vue from 'vue'
+import { defineComponent } from 'vue'
 import { MetaInfo } from 'vue-meta'
 
 import Index from '~/components/PoisDetails/PoiDetails.vue'
@@ -28,7 +28,7 @@ import { vidoConfig } from '~/plugins/vido-config'
 import { siteStore } from '~/stores/site'
 import { VidoConfig } from '~/utils/types-config'
 
-export default Vue.extend({
+export default defineComponent({
   components: {
     Index,
   },

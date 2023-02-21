@@ -64,13 +64,13 @@
 </template>
 
 <script lang="ts">
-import Vue, { PropType } from 'vue'
+import { defineComponent, PropType } from 'vue'
 
 import MenuItem from '~/components/Menu/Item.vue'
 import { ApiMenuCategory } from '~/lib/apiMenu'
 import { FilterValues, filterValuesIsSet } from '~/utils/types-filters'
 
-export default Vue.extend({
+export default defineComponent({
   components: {
     MenuItem,
   },

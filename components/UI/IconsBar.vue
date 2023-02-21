@@ -9,9 +9,9 @@
 </template>
 
 <script lang="ts">
-import Vue, { RenderContext } from 'vue'
+import { defineComponent, RenderContext } from 'vue'
 
-export default Vue.extend({
+export default defineComponent({
   components: {
     VNodes: {
       functional: true,

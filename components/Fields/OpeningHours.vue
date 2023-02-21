@@ -59,7 +59,7 @@
 <script lang="ts">
 import OpeningHours, { optional_conf } from 'opening_hours'
 import { mapState } from 'pinia'
-import Vue, { PropType } from 'vue'
+import { defineComponent, PropType } from 'vue'
 
 import RelativeDate from '~/components/UI/RelativeDate.vue'
 import { PropertyTranslationsContextEnum } from '~/plugins/property-translations'
@@ -87,7 +87,7 @@ export function isOpeningHoursSupportedOsmTags(key: string): boolean {
   return isSupportedOsmTags(SupportedOsmKeys, key)
 }
 
-export default Vue.extend({
+export default defineComponent({
   components: {
     RelativeDate,
   },

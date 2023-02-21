@@ -29,7 +29,7 @@
 import { Control } from '@teritorio/map'
 import { Map } from 'maplibre-gl'
 import { mapState, mapWritableState } from 'pinia'
-import Vue, { PropType, VueConstructor } from 'vue'
+import { defineComponent, PropType, VueConstructor } from 'vue'
 
 import { mapStore } from '~/stores/map'
 import { Mode } from '~/utils/types'
