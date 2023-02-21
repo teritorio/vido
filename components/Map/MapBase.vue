@@ -45,7 +45,7 @@ import copy from 'fast-copy'
 import { Polygon, MultiPolygon } from 'geojson'
 import throttle from 'lodash.throttle'
 import { FitBoundsOptions, LngLatBoundsLike, LngLatLike } from 'maplibre-gl'
-import Vue, { PropType } from 'vue'
+import { defineComponent, PropType } from 'vue'
 
 import Attribution from '~/components/Map/Attribution.vue'
 import Map from '~/components/Map/Map.vue'
@@ -62,7 +62,7 @@ const BOUNDARY_SOURCE = 'boundary_area'
 const BOUNDARY_AREA_LAYER = 'boundary_area'
 const BOUNDAR_BORDER_LAYER = 'boundary_border'
 
-export default Vue.extend({
+export default defineComponent({
   components: {
     Map,
     Attribution,

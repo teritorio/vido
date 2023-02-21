@@ -70,7 +70,7 @@
 import copy from 'fast-copy'
 import { debounce, DebouncedFunc } from 'lodash'
 import { mapActions, mapState } from 'pinia'
-import Vue, { PropType } from 'vue'
+import { defineComponent, PropType } from 'vue'
 
 import SearchInput from '~/components/Search/SearchInput.vue'
 import SearchResultBlock from '~/components/Search/SearchResultBlock.vue'
@@ -88,7 +88,7 @@ import { mapStore } from '~/stores/map'
 import { menuStore } from '~/stores/menu'
 import { FilterValue, FilterValues } from '~/utils/types-filters'
 
-export default Vue.extend({
+export default defineComponent({
   components: {
     SearchInput,
     SearchResultBlock,

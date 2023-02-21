@@ -10,7 +10,7 @@
 <script lang="ts">
 import { Polygon, MultiPolygon, GeoJSON } from 'geojson'
 import { mapWritableState } from 'pinia'
-import Vue from 'vue'
+import { defineComponent } from 'vue'
 import { MetaInfo } from 'vue-meta'
 
 import Embedded from '~/components/Home/Embedded.vue'
@@ -26,7 +26,7 @@ import { menuStore } from '~/stores/menu'
 import { siteStore } from '~/stores/site'
 import { VidoConfig } from '~/utils/types-config'
 
-export default Vue.extend({
+export default defineComponent({
   components: {
     Embedded,
   },

@@ -13,11 +13,11 @@
 <script lang="ts">
 import Slider from '@vueform/slider/dist/slider.vue2.js'
 import copy from 'fast-copy'
-import Vue, { PropType } from 'vue'
+import { defineComponent, PropType } from 'vue'
 
 import { FilterValueNumberRange } from '~/utils/types-filters'
 
-export default Vue.extend({
+export default defineComponent({
   components: {
     Slider,
   },

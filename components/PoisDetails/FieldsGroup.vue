@@ -32,7 +32,7 @@
 </template>
 
 <script lang="ts">
-import Vue, { VueConstructor, PropType } from 'vue'
+import { defineComponent, VueConstructor, PropType } from 'vue'
 
 import { isFiledEmpty } from '../Fields/Field.vue'
 

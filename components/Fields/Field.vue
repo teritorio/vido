@@ -177,7 +177,7 @@
 
 <script lang="ts">
 import GeoJSON from 'geojson'
-import Vue, { PropType } from 'vue'
+import { defineComponent, PropType } from 'vue'
 
 import AddressField, {
   isAddressFieldEmpty,
@@ -219,7 +219,7 @@ export function isFiledEmpty(
   }
 }
 
-export default Vue.extend({
+export default defineComponent({
   components: {
     FieldsHeader,
     OpeningHours,
