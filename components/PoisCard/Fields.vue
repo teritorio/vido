@@ -1,8 +1,7 @@
 <template>
   <div>
-    <template v-for="field in fields">
+    <template v-for="field in fields" :key="field.field">
       <Field
-        :key="field.field"
         :context="context"
         :recursion-stack="[field.field]"
         :field="field"
