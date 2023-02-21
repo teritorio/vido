@@ -2,7 +2,7 @@
   <div
     ref="container"
     :class="[
-      'maplibregl-ctrl maplibregl-ctrl-group mapboxgl-ctrl mapboxgl-ctrl-group',
+      'maplibregl-ctrl maplibregl-ctrl-group',
       'hidden md:block',
     ]"
   >
