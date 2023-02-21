@@ -1,40 +1,31 @@
 <template>
-  <t-rich-select
-    class="category-selector"
-    variant="default"
-    :options="menuEntries"
-    :value="categoryId"
-    :placeholder="$t('categorySelector.placeholder')"
-    :search-box-placeholder="$t('categorySelector.search')"
-    @input="$emit('category-change', $event)"
-  >
-    <template #label="{ option }">
-      <span class="block flex">
-        <span class="flex-none w-6">
-          <TeritorioIcon
-            :color-text="option.raw.menuGroup.category.color_line"
-            :picto="option.raw.menuGroup.category.icon"
-          />
-        </span>
-        <span class="block flex flex-col">
-          {{ option.raw.text }}
-        </span>
-      </span>
-    </template>
-    <template #option="{ option }">
-      <div class="flex">
-        <span class="flex-none w-6">
-          <TeritorioIcon
-            :color-text="option.raw.menuGroup.category.color_line"
-            :picto="option.raw.menuGroup.category.icon"
-          />
-        </span>
-        <div class="flex flex-col">
-          {{ option.raw.text }}
-        </div>
-      </div>
-    </template>
-  </t-rich-select>
+  <div data-app>
+    <v-autocomplete
+      class="category-selector"
+      solo
+      :items="menuEntries"
+      :placeholder="$t('categorySelector.placeholder')"
+      @input="$emit('category-change', $event)"
+    >
+      <template #item="data">
+        <v-list-item-content>
+          <v-list-item-title>
+            <div class="flex">
+              <span class="flex-none w-6">
+                <TeritorioIcon
+                  :color-text="data.item.menuGroup.category.color_line"
+                  :picto="data.item.menuGroup.category.icon"
+                />
+              </span>
+              <div class="flex flex-col">
+                {{ data.item.text }}
+              </div>
+            </div>
+          </v-list-item-title>
+        </v-list-item-content>
+      </template>
+    </v-autocomplete>
+  </div>
 </template>
 
 <script lang="ts">
@@ -119,3 +110,13 @@ export default Vue.extend({
   },
 })
 </script>
+
+<style scoped>
+:deep(.v-text-field__details) {
+  display: none;
+}
+
+:deep(.v-input__slot) {
+  margin: 0;
+}
+</style>

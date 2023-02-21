@@ -1,54 +1,59 @@
 <template>
-  <TModal ref="modal" :header="title" :hide-close-button="true">
-    <div class="flex flex-col">
-      <div class="flex items-center mb-4">
-        <font-awesome-icon
-          ref="menu_icon"
-          icon="link"
-          class="text-zinc-500 mr-4"
-        />
-        <p class="text-zinc-500 truncate">
-          {{ linkShare }}
-        </p>
-        <UIButton
-          v-if="hasClipboard"
-          :label="!isCopied && $tc('shareLink.copy')"
-          :icon="isCopied ? 'clipboard-check' : 'copy'"
-          @click="copyLink"
-        />
-      </div>
-      <div v-if="qrCodeUrl" class="flex items-center mb-4 justify-center">
-        <img :src="qrCodeUrl()" class="w-1/2" :alt="$tc('shareLink.qrcode')" />
-      </div>
-      <UIButton
-        :label="$tc('ui.close')"
-        icon="times"
-        class="self-end"
-        @click="close"
-      />
-    </div>
-  </TModal>
+  <div data-app class="vuetify">
+    <v-dialog v-model="modal" scrollable max-width="30rem">
+      <v-card>
+        <v-card-title class="text-h5">{{ title }}</v-card-title>
+        <v-divider class="mx-4"></v-divider>
+
+        <div class="p-3">
+          <div class="flex items-center mb-4">
+            <font-awesome-icon
+              ref="menu_icon"
+              icon="link"
+              class="text-zinc-500 mr-4"
+            />
+            <p class="text-zinc-500 truncate">
+              {{ linkShare }}
+            </p>
+            <UIButton
+              v-if="hasClipboard"
+              :label="!isCopied && $tc('shareLink.copy')"
+              :icon="isCopied ? 'clipboard-check' : 'copy'"
+              @click="copyLink"
+            />
+          </div>
+          <div v-if="qrCodeUrl" class="flex items-center mb-4 justify-center">
+            <img
+              :src="qrCodeUrl()"
+              class="w-1/2"
+              :alt="$tc('shareLink.qrcode')"
+            />
+          </div>
+        </div>
+
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <UIButton
+            :label="$tc('ui.close')"
+            icon="times"
+            class="self-end"
+            @click="close"
+          />
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+  </div>
 </template>
 
 <script lang="ts">
-import Vue, { PropType, VueConstructor } from 'vue'
-import { TModal } from 'vue-tailwind/dist/components'
+import Vue, { PropType } from 'vue'
 
 import UIButton from '~/components/UI/UIButton.vue'
 import { OriginEnum } from '~/utils/types'
 import { urlAddTrackOrigin } from '~/utils/url'
 
-export default (
-  Vue as VueConstructor<
-    Vue & {
-      $refs: {
-        modal: InstanceType<typeof TModal>
-      }
-    }
-  >
-).extend({
+export default Vue.extend({
   components: {
-    TModal,
     UIButton,
   },
 
@@ -60,11 +65,13 @@ export default (
   },
 
   data(): {
+    modal: boolean
     link: string | null
     hasClipboard: boolean
     isCopied: boolean
   } {
     return {
+      modal: true,
       link: null,
       hasClipboard: true,
       isCopied: false,
@@ -90,7 +97,8 @@ export default (
     open(link: string) {
       this.$tracking({ type: 'favorites_event', event: 'open_share' })
       this.link = link
-      this.$refs.modal.show()
+      this.modal = true
+      console.error('open', this)
 
       const scrollWidth = window.innerWidth - document.body.clientWidth
       document.body.style.marginRight = `${scrollWidth}px`
@@ -116,7 +124,7 @@ export default (
 
     close() {
       this.link = null
-      this.$refs.modal.hide()
+      this.modal = false
       document.body.style.marginRight = '0'
     },
 
@@ -132,3 +140,9 @@ export default (
   },
 })
 </script>
+
+<style lang="scss">
+.vuetify {
+  @import 'vuetify/src/styles/styles.sass';
+}
+</style>
