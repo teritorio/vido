@@ -103,7 +103,7 @@
 
 <script lang="ts">
 import { mapActions, mapState } from 'pinia'
-import Vue, { PropType } from 'vue'
+import { defineComponent, PropType } from 'vue'
 
 import MenuBlock from '~/components/Home/MenuBlock.vue'
 import MenuBlockBottom from '~/components/Home/MenuBlockBottom.vue'
@@ -115,7 +115,7 @@ import { ApiMenuCategory, MenuGroup, MenuItem } from '~/lib/apiMenu'
 import { menuStore } from '~/stores/menu'
 import { FilterValues } from '~/utils/types-filters'
 
-export default Vue.extend({
+export default defineComponent({
   components: {
     Logo,
     MenuBlock,

@@ -22,11 +22,11 @@
 </template>
 
 <script lang="ts">
-import Vue, { PropType } from 'vue'
+import { defineComponent, PropType } from 'vue'
 
 import CookiesConsent from '~/components/UI/CookiesConsent.vue'
 
-export default Vue.extend({
+export default defineComponent({
   components: {
     CookiesConsent,
   },

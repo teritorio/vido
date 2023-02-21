@@ -26,13 +26,13 @@
 </template>
 
 <script lang="ts">
-import Vue, { PropType } from 'vue'
+import { defineComponent, PropType } from 'vue'
 
 import IconButton from '~/components/UI/IconButton.vue'
 import IconsBar from '~/components/UI/IconsBar.vue'
 import { getPoiByCategoryIdUrl } from '~/lib/apiPois'
 
-export default Vue.extend({
+export default defineComponent({
   components: {
     IconsBar,
     IconButton,

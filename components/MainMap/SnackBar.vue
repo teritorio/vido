@@ -20,11 +20,11 @@
 
 <script lang="ts">
 import { mapState } from 'pinia'
-import Vue from 'vue'
+import { defineComponent } from 'vue'
 
 import { snackStore } from '~/stores/snack'
 
-export default Vue.extend({
+export default defineComponent({
   computed: {
     ...mapState(snackStore, ['snack']),
 

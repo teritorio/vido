@@ -10,7 +10,7 @@
 
 <script lang="ts">
 import { mapWritableState } from 'pinia'
-import Vue from 'vue'
+import { defineComponent } from 'vue'
 import { MetaInfo } from 'vue-meta'
 
 import MapPois from '~/components/Map/MapPois.vue'
@@ -20,7 +20,7 @@ import { vidoConfig } from '~/plugins/vido-config'
 import { siteStore } from '~/stores/site'
 import { VidoConfig } from '~/utils/types-config'
 
-export default Vue.extend({
+export default defineComponent({
   components: {
     MapPois,
   },

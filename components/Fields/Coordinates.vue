@@ -16,7 +16,7 @@
 
 <script lang="ts">
 import GeoJSON from 'geojson'
-import Vue, { PropType } from 'vue'
+import { defineComponent, PropType } from 'vue'
 
 import ExternalLink from '~/components/UI/ExternalLink.vue'
 import { coordinatesHref } from '~/lib/coordinates'
@@ -26,7 +26,7 @@ export function isCoordinatesEmpty(geom: GeoJSON.Geometry): boolean {
   return !(geom && geom.type === 'Point' && geom.coordinates)
 }
 
-export default Vue.extend({
+export default defineComponent({
   components: {
     ExternalLink,
   },

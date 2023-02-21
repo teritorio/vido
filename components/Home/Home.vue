@@ -209,9 +209,8 @@
 <script lang="ts">
 import { FitBoundsOptions, LngLatBoundsLike } from 'maplibre-gl'
 import { mapActions, mapState } from 'pinia'
-import { PropType } from 'vue'
+import { PropType, defineComponent } from 'vue'
 import { MetaInfo } from 'vue-meta'
-import mixins from 'vue-typed-mixins'
 
 import ExplorerOrFavoritesBack from '~/components/Home/ExplorerOrFavoritesBack.vue'
 import HomeMixin from '~/components/Home/HomeMixin'
@@ -239,7 +238,7 @@ import { Mode, OriginEnum } from '~/utils/types'
 import { getHashPart, setHashParts } from '~/utils/url'
 import { flattenFeatures } from '~/utils/utilities'
 
-export default mixins(HomeMixin).extend({
+export default defineComponent({
   components: {
     Logo,
     FavoriteMenu,
@@ -255,6 +254,7 @@ export default mixins(HomeMixin).extend({
     CookiesConsent,
     ExplorerOrFavoritesBack,
   },
+  mixins: [HomeMixin],
 
   props: {
     navMenuEntries: {

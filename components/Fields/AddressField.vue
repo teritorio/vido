@@ -8,7 +8,7 @@
 </template>
 
 <script lang="ts">
-import Vue, { PropType } from 'vue'
+import { defineComponent, PropType } from 'vue'
 
 import { ApiPoiProperties, FieldsListItem } from '~/lib/apiPois'
 
@@ -28,7 +28,7 @@ export function isAddressFieldEmpty(properties: {
   )
 }
 
-export default Vue.extend({
+export default defineComponent({
   props: {
     properties: {
       type: Object as PropType<ApiPoiProperties>,
