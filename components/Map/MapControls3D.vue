@@ -1,10 +1,7 @@
 <template>
   <div
     ref="container"
-    :class="[
-      'maplibregl-ctrl maplibregl-ctrl-group',
-      'hidden md:block',
-    ]"
+    :class="['maplibregl-ctrl maplibregl-ctrl-group', 'hidden md:block']"
   >
     <button
       id="3D-selector-map"
@@ -21,22 +18,19 @@
 <script lang="ts">
 import { Building3d } from '@teritorio/map'
 import { Map } from 'maplibre-gl'
-import { defineComponent, VueConstructor, PropType } from 'vue'
+import { defineComponent, PropType, ref } from 'vue'
 
-export default (
-  Vue as VueConstructor<
-    Vue & {
-      $refs: {
-        container: InstanceType<typeof HTMLDivElement>
-      }
-    }
-  >
-).extend({
+export default defineComponent({
   props: {
     map: {
       type: Object as PropType<Map>,
       default: null,
     },
+  },
+  setup() {
+    return {
+      container: ref<InstanceType<typeof HTMLDivElement>>(),
+    }
   },
 
   data(): {
@@ -55,7 +49,7 @@ export default (
         this.building3d = new Building3d({
           building3d: this.pitched,
           // @ts-ignore
-          container: this.$refs.container,
+          container: this.container,
         })
 
         this.map.addControl(this.building3d)

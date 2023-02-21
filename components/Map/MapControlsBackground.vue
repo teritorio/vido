@@ -1,8 +1,5 @@
 <template>
-  <div
-    ref="container"
-    class="maplibregl-ctrl maplibregl-ctrl-group"
-  >
+  <div ref="container" class="maplibregl-ctrl maplibregl-ctrl-group">
     <template v-for="background in backgrounds">
       <button
         v-if="!hidden"
@@ -33,21 +30,13 @@
 <script lang="ts">
 import { Control } from '@teritorio/map'
 import { Map } from 'maplibre-gl'
-import { defineComponent, PropType, VueConstructor } from 'vue'
+import { defineComponent, PropType, ref } from 'vue'
 
 import { DEFAULT_MAP_STYLE, MAP_STYLE_NAMES } from '~/lib/constants'
 import { MapStyleEnum } from '~/utils/types'
 import { getHashPart, routerPushHashUpdate } from '~/utils/url'
 
-export default (
-  Vue as VueConstructor<
-    Vue & {
-      $refs: {
-        container: InstanceType<typeof HTMLDivElement>
-      }
-    }
-  >
-).extend({
+export default defineComponent({
   props: {
     map: {
       type: Object as PropType<Map>,
@@ -65,6 +54,11 @@ export default (
       type: Boolean,
       default: false,
     },
+  },
+  setup() {
+    return {
+      container: ref<InstanceType<typeof HTMLDivElement>>(),
+    }
   },
 
   data(): {
@@ -92,7 +86,7 @@ export default (
           }
         }
 
-        const control = new BackgroundControl(this.$refs.container)
+        const control = new BackgroundControl(this.container)
         this.map.addControl(control)
       }
     },

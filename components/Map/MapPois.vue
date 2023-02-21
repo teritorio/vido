@@ -15,7 +15,7 @@
 
 <script lang="ts">
 import { LngLatLike } from 'maplibre-gl'
-import { defineComponent, PropType, VueConstructor } from 'vue'
+import { defineComponent, PropType, ref } from 'vue'
 
 import MapBase from '~/components/Map/MapBase.vue'
 import { ApiPoi } from '~/lib/apiPois'
@@ -24,15 +24,7 @@ import { MAP_ZOOM } from '~/lib/constants'
 import { MapPoiId } from '~/lib/mapPois'
 import { filterRouteByPoiIds } from '~/utils/styles'
 
-export default (
-  Vue as VueConstructor<
-    Vue & {
-      $refs: {
-        mapBase: InstanceType<typeof MapBase>
-      }
-    }
-  >
-).extend({
+export default defineComponent({
   components: {
     MapBase,
   },
@@ -64,6 +56,11 @@ export default (
       >,
       default: undefined,
     },
+  },
+  setup() {
+    return {
+      mapBase: ref<InstanceType<typeof MapBase>>(),
+    }
   },
 
   data(): {
@@ -129,7 +126,7 @@ export default (
           )
         ),
       ]
-      this.$refs.mapBase.initPoiLayer(this.features, colors, [
+      this.mapBase.initPoiLayer(this.features, colors, [
         'case',
         ['all', ['has', 'display'], ['has', 'color_fill', ['get', 'display']]],
         ['get', 'color_fill', ['get', 'display']],
