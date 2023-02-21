@@ -58,7 +58,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, VueConstructor } from 'vue'
+import { defineComponent, PropType, ref } from 'vue'
 
 import IconButton from '~/components/UI/IconButton.vue'
 import IconsBar from '~/components/UI/IconsBar.vue'
@@ -66,15 +66,7 @@ import ShareLinkModal from '~/components/UI/ShareLinkModal.vue'
 import { OriginEnum } from '~/utils/types'
 import { urlAddTrackOrigin } from '~/utils/url'
 
-export default (
-  Vue as VueConstructor<
-    Vue & {
-      $refs: {
-        shareModal: InstanceType<typeof ShareLinkModal>
-      }
-    }
-  >
-).extend({
+export default defineComponent({
   components: {
     IconsBar,
     IconButton,
@@ -94,6 +86,11 @@ export default (
       type: String as PropType<string>,
       required: true,
     },
+  },
+  setup() {
+    return {
+      shareModal: ref<InstanceType<typeof ShareLinkModal>>(),
+    }
   },
 
   data(): {
@@ -137,7 +134,7 @@ export default (
       window.print()
     },
     shareUrl() {
-      this.$refs.shareModal.open(window.location.href)
+      this.shareModal?.open(window.location.href)
     },
   },
 })
