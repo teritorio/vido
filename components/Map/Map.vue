@@ -1,43 +1,36 @@
 <template>
   <div :class="(hideControl || !map) && 'map-controls-hidden'">
-    <mapbox
+    <mgl-map
       v-if="style"
       id="map"
-      access-token=""
-      :map-options="{
-        bounds: bounds,
-        fitBoundsOptions: fitBoundsOptions,
-        center: center,
-        hash: hash,
-        maxZoom: defaultZoom.max,
-        minZoom: defaultZoom.min,
-        style: style,
-        zoom: zoom,
-        locale: locales,
-        attributionControl: false,
-        cooperativeGestures: cooperativeGestures,
-      }"
-      :nav-control="{
-        show: false,
-      }"
+      :center="center"
+      :zoom="zoom"
+      bounds="bounds"
+      fit-bounds-options="fitBoundsOptions"
+      hash="hash"
+      max-zoom="defaultZoom.max"
+      min-zoom="defaultZoom.min"
+      style="style"
+      locale="locales"
+      :attribution-control="false"
+      :cooperative-gestures="cooperativeGestures"
       v-bind="$attrs"
-      @map-init="onMapInit($event)"
-      @map-data="$emit('map-data', $event)"
-      @map-dragend="$emit('map-dragend', $event)"
-      @map-moveend="$emit('map-moveend', $event)"
-      @map-resize="$emit('map-resize', $event)"
-      @map-rotateend="$emit('map-rotateend', $event)"
-      @map-touchmove="$emit('map-touchmove', $event)"
-      @map-zoomend="$emit('map-zoomend', $event)"
-    />
-
-    <MapControls
-      :map="map"
-      :show-compass="rotate"
-      :fullscreen-control="fullscreenControl"
+      @map:load="onMapInit($event)"
+      @map:data="$emit('map-data', $event)"
+      @map:dragend="$emit('map-dragend', $event)"
+      @map:moveend="$emit('map-moveend', $event)"
+      @map:resize="$emit('map-resize', $event)"
+      @map:rotateend="$emit('map-rotateend', $event)"
+      @map:touchmove="$emit('map-touchmove', $event)"
+      @map:zoomend="$emit('map-zoomend', $event)"
     >
-      <slot name="controls"></slot>
-    </MapControls>
+      <MapControls
+        :show-compass="rotate"
+        :fullscreen-control="fullscreenControl"
+      >
+        <slot name="controls"></slot>
+      </MapControls>
+    </mgl-map>
 
     <slot name="body"></slot>
   </div>
@@ -45,7 +38,7 @@
 
 <script lang="ts">
 import { OpenMapTilesLanguage } from '@teritorio/openmaptiles-gl-language'
-import Mapbox from 'mapbox-gl-vue'
+import MglMap from '@vladvesa/vue-maplibre-gl'
 import {
   Map,
   RasterSourceSpecification,
@@ -68,7 +61,7 @@ import { MapStyleEnum } from '~/utils/types'
 
 export default defineComponent({
   components: {
-    Mapbox,
+    MglMap,
     MapControls,
   },
 
@@ -287,7 +280,6 @@ export default defineComponent({
 </script>
 
 <style>
-.map-controls-hidden .mapboxgl-control-container,
 .map-controls-hidden .maplibregl-control-container {
   display: none;
 }
