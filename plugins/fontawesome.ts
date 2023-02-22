@@ -50,6 +50,7 @@ import {
   faSquareParking,
   faHouseFlag,
   faFlagCheckered,
+  faCopy,
   faCog,
 } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
@@ -108,6 +109,7 @@ library.add(
   faSquareParking,
   faHouseFlag,
   faFlagCheckered,
+  faCopy,
   faCog
 )
 
