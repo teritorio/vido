@@ -8,7 +8,12 @@ export default class Google implements Tracker {
   gtm: any
   googleTagManagerId: string
 
-  constructor(waitForConsent: boolean, gtm: any, googleTagManagerId: string) {
+  constructor(
+    nuxtApp: NuxtAppOptions,
+    waitForConsent: boolean,
+    gtm: any,
+    googleTagManagerId: string
+  ) {
     this.waitForConsent = waitForConsent
     this.gtm = gtm
     this.googleTagManagerId = googleTagManagerId
