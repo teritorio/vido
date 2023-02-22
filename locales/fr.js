@@ -96,7 +96,7 @@ export default {
     details: 'Détails',
     seeDetail: 'Voir le detail',
     route: 'Itinéraire',
-    explore: 'À proximité',
+    explore: 'À proximité',
     favorite: 'Favori',
     favoriteOn: 'Mettre en favori',
     favoriteOff: 'Retirer le favori',
