@@ -137,7 +137,7 @@ const settings = {
           'flex shrink-0 items-center justify-center absolute right-0 top-0 m-2 h-6 w-6',
         selectButtonClearIcon: 'fill-current h-3 w-3',
         dropdown:
-          'absolute w-full z-10 -mt-1 bg-white border-b border-zinc-300 border-l border-r rounded-b shadow-sm w-full z-10',
+          'w-full z-10 -mt-1 bg-white border-b border-zinc-300 border-l border-r rounded-b shadow-sm w-full z-10',
         dropdownFeedback: '',
         loadingMoreResults: '',
         optionsList: 'overflow-auto',
