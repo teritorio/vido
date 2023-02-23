@@ -105,6 +105,7 @@
           :explorer-mode-enabled="explorerModeEnabled"
           :enable-filter-route-by-categories="!isModeFavorites"
           :enable-filter-route-by-features="isModeFavorites"
+          :boundary-area="settings.polygon"
         >
           <div class="relative">
             <button

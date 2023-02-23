@@ -13,6 +13,7 @@
       :hide-control="small"
       :style-icon-filter="styleIconFilter"
       :cooperative-gestures="cooperativeGestures"
+      :boundary-area="boundaryArea"
       hash="map"
       @map-init="onMapInit"
       @map-data="onMapRender"
@@ -54,6 +55,7 @@
 </template>
 
 <script lang="ts">
+import { Polygon } from 'geojson'
 import debounce from 'lodash.debounce'
 import maplibregl, {
   MapDataEvent,
@@ -153,6 +155,10 @@ export default (
     cooperativeGestures: {
       type: Boolean,
       default: false,
+    },
+    boundaryArea: {
+      type: Object as PropType<Polygon | undefined>,
+      default: undefined,
     },
   },
 
