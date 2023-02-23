@@ -272,7 +272,6 @@ export default Vue.extend({
         let firstSymbolLayerId: string | undefined = this.map
           .getStyle()
           .layers.find((layer) => layer.type === 'line')?.id
-        console.error(firstSymbolLayerId)
         this.map.addLayer(
           {
             id: BOUNDARY_AREA_LAYER,
