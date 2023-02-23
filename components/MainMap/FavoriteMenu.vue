@@ -5,7 +5,7 @@
         ref="menu"
         type="button"
         :class="[
-          'relative space-x-1 text-sm font-medium shadow-md outline-none md:px-5 w-11 md:w-auto h-11 focus:outline-none shrink-0 border-r border-zinc-400 rounded-l-full',
+          'relative space-x-1 text-sm font-medium shadow-md outline-none md:px-5 w-11 md:w-auto h-11 focus:outline-none shrink-0 border-r border-zinc-400 rounded-l-full z-10',
           isModeFavorites &&
             'bg-blue-500 hover:bg-blue-400 focus-visible:bg-blue-400 text-white',
           !isModeFavorites &&
@@ -17,14 +17,10 @@
         <span class="hidden md:inline favoriteTitle">{{
           $tc('favorites.title')
         }}</span>
-        <span
-          v-if="hasFavorites"
-          class="block flex items-center justify-center text-white text-center rounded-full absolute top-0 right-0 w-5 h-5 border-2 border-white bg-red-600"
-        >
-          <span id="favourites_counter" class="text-xs">{{
-            favoritesIds.length
-          }}</span>
-        </span>
+        <Badge
+          :items="favoritesIds.length"
+          class="absolute top-0 right-0 sm:top-1/2 sm:-translate-y-1/2 sm:translate-x-1/2"
+        />
       </button>
       <button
         id="open_favourites_notebook"
@@ -73,6 +69,7 @@ import Vue, { VueConstructor } from 'vue'
 import { TModal } from 'vue-tailwind/dist/components'
 
 import FavoriteNoteBook from '~/components/MainMap/FavoriteNoteBook.vue'
+import Badge from '~/components/UI/Badge.vue'
 import FavoriteIcon from '~/components/UI/FavoriteIcon.vue'
 import { getPois, ApiPoi } from '~/lib/apiPois'
 import { favoritesStore } from '~/stores/favorite'
@@ -88,6 +85,7 @@ export default (
   >
 ).extend({
   components: {
+    Badge,
     FavoriteNoteBook,
     FavoriteIcon,
   },
