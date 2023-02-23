@@ -289,7 +289,7 @@ export default mixins(HomeMixin).extend({
 
   computed: {
     ...mapGetters({
-      pois: 'menu/features',
+      features: 'menu/features',
       mode: 'map/mode',
       isModeFavorites: 'map/isModeFavorites',
       isModeExplorerOrFavorites: 'map/isModeExplorerOrFavorites',
@@ -314,7 +314,7 @@ export default mixins(HomeMixin).extend({
     },
 
     isPoiCardVisible(): boolean {
-      return this.selectedFeature && this.showPoi
+      return !!(this.selectedFeature && this.showPoi)
     },
 
     isBottomMenuOpened(): boolean {
@@ -356,7 +356,7 @@ export default mixins(HomeMixin).extend({
       let feature: ApiPoi[]
       switch (this.mode as Mode) {
         case Mode.BROWSER:
-          feature = flattenFeatures(this.pois)
+          feature = flattenFeatures(this.features)
           break
         case Mode.FAVORITES:
           feature = this.favorites || []
