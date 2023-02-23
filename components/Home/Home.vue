@@ -36,7 +36,7 @@
             >
               <Search
                 :menu-to-icon="menuItemsToIcons"
-                :map-center="map_center"
+                :map-center="center"
                 @focus="isOnSearch = true"
                 @blur="isOnSearch = false"
               >
@@ -70,7 +70,7 @@
             v-if="!isModeExplorerOrFavorites"
             class="flex flex-col max-h-full px-5 py-4 space-y-6 shadow-md pointer-events-auto md:rounded-xl md:w-96 bg-white min-h-20"
           >
-            <Search :menu-to-icon="menuItemsToIcons" :map-center="map_center">
+            <Search :menu-to-icon="menuItemsToIcons" :map-center="center">
               <Logo
                 :main-url="mainUrl"
                 :site-name="siteName"
@@ -293,7 +293,7 @@ export default mixins(HomeMixin).extend({
       mode: 'map/mode',
       isModeFavorites: 'map/isModeFavorites',
       isModeExplorerOrFavorites: 'map/isModeExplorerOrFavorites',
-      map_center: 'map/center',
+      center: 'map/center',
       favoritesIds: 'favorite/favoritesIds',
     }),
 
