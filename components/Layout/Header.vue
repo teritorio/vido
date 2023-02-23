@@ -40,10 +40,10 @@ export default Vue.extend({
   },
   computed: {
     ...mapGetters({
-      local: 'site/locale',
+      locale: 'site/locale',
     }),
     mainUrl(): string {
-      return this.theme.main_url?.[this.local] || ''
+      return (this.locale && this.theme.main_url?.[this.locale]) || ''
     },
   },
 })

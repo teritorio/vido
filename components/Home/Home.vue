@@ -418,7 +418,9 @@ export default mixins(HomeMixin).extend({
   },
 
   beforeMount() {
-    const mode = getHashPart(this.$router, 'mode') || Mode.BROWSER
+    const mode =
+      Mode[getHashPart(this.$router, 'mode') as keyof typeof Mode] ||
+      Mode.BROWSER
     this.setMode(mode)
 
     const favs = getHashPart(this.$router, 'favs')
@@ -427,7 +429,7 @@ export default mixins(HomeMixin).extend({
         const newFavorite = favs
           .split(',')
           .map((e) => (!isNaN(Number(e)) ? Number(e) : null))
-          .filter((e) => !!e)
+          .filter((e) => !!e) as Number[]
 
         this.setFavorites(newFavorite)
         this.handleFavorites()
@@ -604,7 +606,7 @@ export default mixins(HomeMixin).extend({
         })
     },
 
-    fetchFavorites(ids: [string]): Promise<ApiPoi[]> {
+    fetchFavorites(ids: Number[]): Promise<ApiPoi[]> {
       return getPois(
         this.$vidoConfig().API_ENDPOINT,
         this.$vidoConfig().API_PROJECT,

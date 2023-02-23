@@ -186,7 +186,7 @@ export default Vue.extend({
     onMapInit(map: Map) {
       this.map = map
       this.languageControl = new OpenMapTilesLanguage({
-        defaultLanguage: this.locale,
+        defaultLanguage: this.locale || undefined,
       })
 
       if (this.showAttribution) {

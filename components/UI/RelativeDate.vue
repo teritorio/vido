@@ -25,7 +25,7 @@ export default Vue.extend({
 
     formatLocale(): { locale: Locale } {
       return {
-        locale: DateFormatLocales?.[this.locale] || enGB,
+        locale: (this.locale && DateFormatLocales?.[this.locale]) || enGB,
       }
     },
   },

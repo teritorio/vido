@@ -28,10 +28,10 @@ export default Vue.extend({
       snack: 'snack/snack',
     }),
 
-    text(): string {
+    text(): string | undefined {
       return this.snack?.text
     },
-    textBtn(): string {
+    textBtn(): string | undefined {
       return this.snack?.textBtn
     },
   },

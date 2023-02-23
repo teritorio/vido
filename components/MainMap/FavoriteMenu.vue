@@ -127,7 +127,7 @@ export default (
     }),
   },
   methods: {
-    async fetchFavorites(ids: [string]) {
+    async fetchFavorites(ids: Number[]) {
       return await getPois(
         this.$vidoConfig().API_ENDPOINT,
         this.$vidoConfig().API_PROJECT,
