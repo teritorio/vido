@@ -123,7 +123,7 @@ export default Vue.extend({
 
   methods: {
     ...mapActions({
-      applyCategorieFilters: 'menu/applyFilters',
+      applyFilters: 'menu/applyFilters',
     }),
 
     onGoBackClick() {
@@ -139,7 +139,7 @@ export default Vue.extend({
       const filter = filters[filterIndex] as FilterValueBoolean
 
       filter.filterValue = value
-      this.applyCategorieFilters({
+      this.applyFilters({
         categoryId: this.categoryId,
         filterValues: filters,
       })
@@ -150,7 +150,7 @@ export default Vue.extend({
       const filter = filters[filterIndex] as FilterValueList
 
       filter.filterValues = values || []
-      this.applyCategorieFilters({
+      this.applyFilters({
         categoryId: this.categoryId,
         filterValues: filters,
       })
@@ -163,7 +163,7 @@ export default Vue.extend({
       const filters = this.filtersSafeCopy
       filters[filterIndex] = filterValue
 
-      this.applyCategorieFilters({
+      this.applyFilters({
         categoryId: this.categoryId,
         filterValues: filters,
       })
@@ -176,7 +176,7 @@ export default Vue.extend({
       const filters = this.filtersSafeCopy
       filters[filterIndex] = filterValue
 
-      this.applyCategorieFilters({
+      this.applyFilters({
         categoryId: this.categoryId,
         filterValues: filters,
       })
@@ -192,7 +192,7 @@ export default Vue.extend({
         filter.filterValues = filter.filterValues.filter((k) => k !== val)
       }
 
-      this.applyCategorieFilters({
+      this.applyFilters({
         categoryId: this.categoryId,
         filterValues: filters,
       })

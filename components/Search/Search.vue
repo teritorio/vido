@@ -208,7 +208,7 @@ export default Vue.extend({
     ...mapActions({
       setSelectedFeature: 'map/setSelectedFeature',
       addSelectedCategoryIds: 'menu/addSelectedCategoryIds',
-      applyCategoriesFilters: 'menu/applyFilters',
+      applyFilters: 'menu/applyFilters',
     }),
 
     reset() {
@@ -273,7 +273,7 @@ export default Vue.extend({
                   break
               }
 
-              this.applyCategoriesFilters({
+              this.applyFilters({
                 categoryId: newFilter.id,
                 filterValues: filters,
               })
