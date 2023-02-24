@@ -32,6 +32,7 @@
 </template>
 
 <script lang="ts">
+import { mapState } from 'pinia'
 import Vue, { PropType } from 'vue'
 
 import PoiLayout from '~/components/Layout/PoiLayout.vue'
@@ -42,6 +43,7 @@ import { ContentEntry } from '~/lib/apiContent'
 import { ApiMenuCategory, MenuItem } from '~/lib/apiMenu'
 import { ApiPois, FieldsListItem, getPoiByCategoryId } from '~/lib/apiPois'
 import { Settings } from '~/lib/apiSettings'
+import { menuStore } from '~/stores/menu'
 
 export default Vue.extend({
   components: {
@@ -81,12 +83,10 @@ export default Vue.extend({
   },
 
   computed: {
-    menuItems(): Record<ApiMenuCategory['id'], MenuItem> {
-      return this.$store.getters['menu/menuItems']
-    },
+    ...mapState(menuStore, ['menuItems']),
 
     category(): ApiMenuCategory {
-      return Object.values(this.menuItems).find(
+      return Object.values(this.menuItems || {}).find(
         (menuItem) => menuItem.id == this.categoryId
       ) as ApiMenuCategory
     },

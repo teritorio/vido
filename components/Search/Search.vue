@@ -69,8 +69,8 @@
 <script lang="ts">
 import copy from 'fast-copy'
 import { debounce, DebouncedFunc } from 'lodash'
+import { mapActions, mapState } from 'pinia'
 import Vue, { PropType } from 'vue'
-import { mapActions } from 'vuex'
 
 import SearchInput from '~/components/Search/SearchInput.vue'
 import SearchResultBlock from '~/components/Search/SearchResultBlock.vue'
@@ -84,6 +84,8 @@ import {
   ApiSearchResult,
 } from '~/lib/apiSearch'
 import { MAP_ZOOM } from '~/lib/constants'
+import { mapStore } from '~/stores/map'
+import { menuStore } from '~/stores/menu'
 import { FilterValue, FilterValues } from '~/utils/types-filters'
 
 export default Vue.extend({
@@ -130,9 +132,7 @@ export default Vue.extend({
   },
 
   computed: {
-    filters(): Record<ApiMenuCategory['id'], FilterValues> {
-      return this.$store.getters['menu/filters']
-    },
+    ...mapState(menuStore, ['filters']),
 
     isLoading(): boolean {
       return this.searchResultId !== this.searchQueryId
@@ -205,11 +205,8 @@ export default Vue.extend({
   },
 
   methods: {
-    ...mapActions({
-      setSelectedFeature: 'map/setSelectedFeature',
-      addSelectedCategoryIds: 'menu/addSelectedCategoryIds',
-      applyFilters: 'menu/applyFilters',
-    }),
+    ...mapActions(mapStore, ['setSelectedFeature']),
+    ...mapActions(menuStore, ['addSelectedCategoryIds', 'applyFilters']),
 
     reset() {
       this.searchMenuItemsResults = null
@@ -312,6 +309,7 @@ export default Vue.extend({
               ? MAP_ZOOM.selectionZoom.municipality
               : MAP_ZOOM.selectionZoom.streetNumber,
         })
+        // @ts-ignore
         this.setSelectedFeature(feature)
       }
       this.reset()

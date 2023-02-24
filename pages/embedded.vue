@@ -7,12 +7,12 @@
 </template>
 
 <script lang="ts">
+import { mapActions } from 'pinia'
 import Vue from 'vue'
 import { MetaInfo } from 'vue-meta'
-import { mapActions } from 'vuex'
 
 import Embedded from '~/components/Home/Embedded.vue'
-import { ApiMenuItem, getMenu } from '~/lib/apiMenu'
+import { getMenu, MenuItem } from '~/lib/apiMenu'
 import { getPoiById, ApiPoi } from '~/lib/apiPois'
 import {
   getPropertyTranslations,
@@ -20,6 +20,8 @@ import {
 } from '~/lib/apiPropertyTranslations'
 import { getSettings, headerFromSettings, Settings } from '~/lib/apiSettings'
 import { vidoConfig } from '~/plugins/vido-config'
+import { menuStore } from '~/stores/menu'
+import { siteStore } from '~/stores/site'
 import { VidoConfig } from '~/utils/types-config'
 
 export default Vue.extend({
@@ -27,32 +29,30 @@ export default Vue.extend({
     Embedded,
   },
 
-  async asyncData({ params, route, req, $config, store }): Promise<{
+  async asyncData({ params, route, req, $config, $pinia }): Promise<{
     config: VidoConfig
     settings: Settings
     propertyTranslations: PropertyTranslations
-    menuItems: ApiMenuItem[] | undefined
+    menuItems: MenuItem[] | undefined
     categoryIds: number[] | null
     initialPoi: ApiPoi | null
   }> {
     const config: VidoConfig =
-      store.getters['site/config'] || vidoConfig(req, $config)
+      siteStore($pinia).config || vidoConfig(req, $config)
 
-    const fetchSettings = store.getters['site/settings']
-      ? Promise.resolve(store.getters['site/settings'] as Settings)
+    const fetchSettings = siteStore($pinia).settings
+      ? Promise.resolve(siteStore($pinia).settings as Settings)
       : getSettings(config.API_ENDPOINT, config.API_PROJECT, config.API_THEME)
 
-    const fetchPropertyTranslations = store.getters['site/translations']
-      ? Promise.resolve(
-          store.getters['site/translations'] as PropertyTranslations
-        )
+    const fetchPropertyTranslations = siteStore($pinia).translations
+      ? Promise.resolve(siteStore($pinia).translations as PropertyTranslations)
       : getPropertyTranslations(
           config.API_ENDPOINT,
           config.API_PROJECT,
           config.API_THEME
         )
 
-    const fetchMenuItems = store.getters['menu/menuItems']
+    const fetchMenuItems = menuStore($pinia).menuItems
       ? Promise.resolve(undefined)
       : getMenu(config.API_ENDPOINT, config.API_PROJECT, config.API_THEME)
 
@@ -106,7 +106,7 @@ export default Vue.extend({
     config: VidoConfig | null
     settings: Settings
     propertyTranslations: PropertyTranslations
-    menuItems: ApiMenuItem[]
+    menuItems: MenuItem[]
     categoryIds: number[] | null
     initialPoi: ApiPoi | null
   } {
@@ -129,11 +129,9 @@ export default Vue.extend({
 
   created() {
     if (this.menuItems) {
-      this.$store.dispatch('menu/fetchConfig', {
-        menuItems: this.menuItems,
-      })
+      menuStore().fetchConfig(this.menuItems)
     }
-    this.$store.dispatch('site/setConfig', this.config!)
+    siteStore().setConfig(this.config!)
 
     this.$settings.set(this.settings)
     this.$propertyTranslations.set(this.propertyTranslations)
@@ -145,13 +143,11 @@ export default Vue.extend({
   },
 
   mounted() {
-    this.setSiteLocale(this.$i18n.locale)
+    this.setLocale(this.$i18n.locale)
   },
 
   methods: {
-    ...mapActions({
-      setSiteLocale: 'site/setLocale',
-    }),
+    ...mapActions(siteStore, ['setLocale']),
   },
 })
 </script>

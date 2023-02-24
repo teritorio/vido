@@ -24,14 +24,14 @@
 </template>
 
 <script lang="ts">
+import { mapState } from 'pinia'
 import Vue from 'vue'
-import { mapGetters } from 'vuex'
+
+import { mapStore } from '~/stores/map'
 
 export default Vue.extend({
   computed: {
-    ...mapGetters({
-      isModeFavorites: 'map/isModeFavorites',
-    }),
+    ...mapState(mapStore, ['isModeFavorites']),
   },
 
   methods: {

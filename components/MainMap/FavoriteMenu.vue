@@ -68,13 +68,15 @@
 </template>
 
 <script lang="ts">
+import { mapState } from 'pinia'
 import Vue, { VueConstructor } from 'vue'
 import { TModal } from 'vue-tailwind/dist/components'
-import { mapGetters } from 'vuex'
 
 import FavoriteNoteBook from '~/components/MainMap/FavoriteNoteBook.vue'
 import FavoriteIcon from '~/components/UI/FavoriteIcon.vue'
 import { getPois, ApiPoi } from '~/lib/apiPois'
+import { favoritesStore } from '~/stores/favorite'
+import { mapStore } from '~/stores/map'
 
 export default (
   Vue as VueConstructor<
@@ -121,10 +123,8 @@ export default (
     }
   },
   computed: {
-    ...mapGetters({
-      isModeFavorites: 'map/isModeFavorites',
-      favoritesIds: 'favorite/favoritesIds',
-    }),
+    ...mapState(mapStore, ['isModeFavorites']),
+    ...mapState(favoritesStore, ['favoritesIds']),
   },
   methods: {
     async fetchFavorites(ids: Number[]) {

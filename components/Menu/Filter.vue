@@ -82,13 +82,14 @@
 
 <script lang="ts">
 import copy from 'fast-copy'
+import { mapActions } from 'pinia'
 import Vue, { PropType } from 'vue'
-import { mapActions } from 'vuex'
 
 import DateRange from '~/components/Filters/DateRange.vue'
 import NumberRange from '~/components/Filters/NumberRange.vue'
 import SelectFilter from '~/components/Filters/Select.vue'
 import { ApiMenuCategory } from '~/lib/apiMenu'
+import { menuStore } from '~/stores/menu'
 import {
   FilterValueBoolean,
   FilterValueDate,
@@ -122,9 +123,7 @@ export default Vue.extend({
   },
 
   methods: {
-    ...mapActions({
-      applyFilters: 'menu/applyFilters',
-    }),
+    ...mapActions(menuStore, ['applyFilters']),
 
     onGoBackClick() {
       this.$emit('go-back-click')

@@ -102,8 +102,8 @@
 </template>
 
 <script lang="ts">
+import { mapActions, mapState } from 'pinia'
 import Vue, { PropType } from 'vue'
-import { mapGetters, mapActions } from 'vuex'
 
 import MenuBlock from '~/components/Home/MenuBlock.vue'
 import MenuBlockBottom from '~/components/Home/MenuBlockBottom.vue'
@@ -112,6 +112,7 @@ import ItemList from '~/components/Menu/ItemList.vue'
 import Search from '~/components/Search/Search.vue'
 import Logo from '~/components/UI/Logo.vue'
 import { ApiMenuCategory, MenuGroup, MenuItem } from '~/lib/apiMenu'
+import { menuStore } from '~/stores/menu'
 import { FilterValues } from '~/utils/types-filters'
 
 export default Vue.extend({
@@ -150,14 +151,7 @@ export default Vue.extend({
   },
 
   computed: {
-    ...mapGetters({
-      filters: 'menu/filters',
-      selectedCategoryIds: 'menu/selectedCategoryIds',
-    }),
-
-    menuItems(): Record<ApiMenuCategory['id'], MenuItem> {
-      return this.$store.getters['menu/menuItems']
-    },
+    ...mapState(menuStore, ['filters', 'selectedCategoryIds', 'menuItems']),
 
     currentParentId(): MenuItem['id'] | undefined {
       return this.navigationParentIdStack.at(-1)
@@ -184,10 +178,10 @@ export default Vue.extend({
     categoriesActivesCountByParent(): Record<ApiMenuCategory['id'], number> {
       const counts: { [id: string]: number } = {}
       this.selectedCategoryIds.forEach((categoryId: ApiMenuCategory['id']) => {
-        let parentId = this.menuItems[categoryId]?.parent_id
+        let parentId = this.menuItems?.[categoryId]?.parent_id
         while (parentId) {
           counts[parentId] = (counts[parentId] || 0) + 1
-          parentId = this.menuItems[parentId].parent_id
+          parentId = this.menuItems?.[parentId].parent_id
         }
       })
       return counts
@@ -201,16 +195,16 @@ export default Vue.extend({
   },
 
   methods: {
-    ...mapActions({
-      addSelectedCategoryIds: 'menu/addSelectedCategoryIds',
-      delSelectedCategoryIds: 'menu/delSelectedCategoryIds',
-      toggleSelectedCategoryId: 'menu/toggleSelectedCategoryId',
-    }),
+    ...mapActions(menuStore, [
+      'addSelectedCategoryIds',
+      'delSelectedCategoryIds',
+      'toggleSelectedCategoryId',
+    ]),
 
     getMenuItemByParentId(
       menuGroupId: MenuGroup['id'] | undefined
     ): MenuItem[] {
-      return Object.values(this.menuItems)
+      return Object.values(this.menuItems || {})
         .filter((c) => c.parent_id === (menuGroupId || null))
         .sort((a, b) => a.index_order - b.index_order)
     },

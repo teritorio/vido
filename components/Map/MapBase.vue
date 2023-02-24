@@ -159,7 +159,11 @@ export default Vue.extend({
     },
 
     styleIconFilter() {
-      this.setPoiFilter()
+      if (this.styleIconFilter) {
+        this.poiFilter?.setIncludeFilter(this.styleIconFilter)
+      } else {
+        this.poiFilter?.remove(true)
+      }
     },
   },
 
@@ -299,14 +303,6 @@ export default Vue.extend({
       }
 
       this.$emit('map-style-load', style)
-    },
-
-    setPoiFilter() {
-      if (this.styleIconFilter) {
-        this.poiFilter?.setIncludeFilter(this.styleIconFilter)
-      } else {
-        this.poiFilter?.remove(true)
-      }
     },
 
     onMapRender(eventName: string, event: any) {

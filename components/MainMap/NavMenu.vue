@@ -59,13 +59,14 @@
 </template>
 
 <script lang="ts">
+import { mapActions } from 'pinia'
 import Vue, { PropType } from 'vue'
 import { TDropdown } from 'vue-tailwind/dist/components'
-import { mapActions } from 'vuex'
 
 import ExternalLink from '~/components/UI/ExternalLink.vue'
 import IconButton from '~/components/UI/IconButton.vue'
 import { ContentEntry } from '~/lib/apiContent'
+import { siteStore } from '~/stores/site'
 
 export default Vue.extend({
   components: {
@@ -82,9 +83,7 @@ export default Vue.extend({
   },
 
   methods: {
-    ...mapActions({
-      setSiteLocale: 'site/setLocale',
-    }),
+    ...mapActions(siteStore, { setSiteLocale: 'setLocale' }),
 
     setLocale(locale: string) {
       this.$i18n.setLocale(locale)

@@ -19,14 +19,14 @@
 </template>
 
 <script lang="ts">
+import { mapState } from 'pinia'
 import Vue from 'vue'
-import { mapGetters } from 'vuex'
+
+import { snackStore } from '~/stores/snack'
 
 export default Vue.extend({
   computed: {
-    ...mapGetters({
-      snack: 'snack/snack',
-    }),
+    ...mapState(snackStore, ['snack']),
 
     text(): string | undefined {
       return this.snack?.text

@@ -47,10 +47,11 @@
 </template>
 
 <script lang="ts">
+import { mapState, mapActions } from 'pinia'
 import Vue from 'vue'
-import { mapActions, mapGetters } from 'vuex'
 
 import TeritorioIconBadge from '~/components/UI/TeritorioIconBadge.vue'
+import { menuStore } from '~/stores/menu'
 
 export default Vue.extend({
   components: {
@@ -58,16 +59,14 @@ export default Vue.extend({
   },
 
   computed: {
-    ...mapGetters({
-      selectedCategories: 'menu/selectedCategories',
-    }),
+    ...mapState(menuStore, ['selectedCategories']),
   },
 
   methods: {
-    ...mapActions({
-      delSelectedCategoryIds: 'menu/delSelectedCategoryIds',
-      clearSelectedCategoryIds: 'menu/clearSelectedCategoryIds',
-    }),
+    ...mapActions(menuStore, [
+      'delSelectedCategoryIds',
+      'clearSelectedCategoryIds',
+    ]),
   },
 })
 </script>

@@ -120,11 +120,11 @@ export function getMenu(
   apiEndpoint: string,
   apiProject: string,
   apiTheme: string
-): Promise<[MenuItem]> {
+): Promise<MenuItem[]> {
   return fetch(`${apiEndpoint}/${apiProject}/${apiTheme}/menu.json`).then(
     (data) => {
       if (data.ok) {
-        return data.json() as unknown as [MenuItem]
+        return data.json() as unknown as MenuItem[]
       } else {
         return Promise.reject(
           new Error([data.url, data.status, data.statusText].join(' '))

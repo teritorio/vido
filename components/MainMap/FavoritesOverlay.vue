@@ -13,12 +13,13 @@
 <script lang="ts">
 import Vue from 'vue'
 
+import { mapStore } from '~/stores/map'
 import { Mode } from '~/utils/types'
 
 export default Vue.extend({
   methods: {
     onOverlayClick() {
-      this.$store.dispatch('map/setMode', Mode.BROWSER)
+      mapStore().setMode(Mode.BROWSER)
       this.$emit('discard')
     },
   },

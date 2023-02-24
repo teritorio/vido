@@ -115,8 +115,8 @@
 </template>
 
 <script lang="ts">
+import { mapState } from 'pinia'
 import Vue, { PropType } from 'vue'
-import { mapGetters } from 'vuex'
 
 import PoiLayout from '~/components/Layout/PoiLayout.vue'
 import MapPois from '~/components/Map/MapPois.vue'
@@ -134,6 +134,7 @@ import { ApiPoiDeps } from '~/lib/apiPoiDeps'
 import { ApiPoi, ApiPoiId, FieldsList } from '~/lib/apiPois'
 import { Settings } from '~/lib/apiSettings'
 import { PropertyTranslationsContextEnum } from '~/plugins/property-translations'
+import { favoritesStore } from '~/stores/favorite'
 import { OriginEnum } from '~/utils/types'
 
 export default Vue.extend({
@@ -171,9 +172,7 @@ export default Vue.extend({
   },
 
   computed: {
-    ...mapGetters({
-      favoritesIds: 'favorite/favoritesIds',
-    }),
+    ...mapState(favoritesStore, ['favoritesIds']),
 
     context(): PropertyTranslationsContextEnum {
       return PropertyTranslationsContextEnum.Details
@@ -246,7 +245,7 @@ export default Vue.extend({
   },
 
   mounted() {
-    this.$store.dispatch('favorite/initFavoritesFromLocalStorage')
+    favoritesStore().initFavoritesFromLocalStorage()
     this.$tracking({
       type: 'page',
       title: this.$meta().refresh().metaInfo.title,
@@ -268,7 +267,7 @@ export default Vue.extend({
           poiId: this.id,
           title: this.poi.properties.name,
         })
-        this.$store.dispatch('favorite/toggleFavorite', this.poi)
+        favoritesStore().toggleFavorite(this.poi)
       }
     },
   },

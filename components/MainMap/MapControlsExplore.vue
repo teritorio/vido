@@ -28,9 +28,10 @@
 <script lang="ts">
 import { Control } from '@teritorio/map'
 import { Map } from 'maplibre-gl'
+import { mapActions, mapState } from 'pinia'
 import Vue, { PropType, VueConstructor } from 'vue'
-import { mapGetters, mapActions } from 'vuex'
 
+import { mapStore } from '~/stores/map'
 import { Mode } from '~/utils/types'
 
 export default (
@@ -50,9 +51,7 @@ export default (
   },
 
   computed: {
-    ...mapGetters({
-      isModeExplorer: 'map/isModeExplorer',
-    }),
+    ...mapState(mapStore, ['isModeExplorer']),
   },
 
   watch: {
@@ -71,9 +70,8 @@ export default (
   },
 
   methods: {
-    ...mapActions({
-      setMode: 'map/setMode',
-    }),
+    ...mapActions(mapStore, ['setMode']),
+
     toggleMode() {
       this.$tracking({ type: 'map_control_event', event: 'explorer' })
       this.setMode(this.isModeExplorer ? Mode.BROWSER : Mode.EXPLORER)
