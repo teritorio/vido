@@ -21,6 +21,7 @@ function setFavorites(state: State, payload: ApiPoiId[]) {
   }
 }
 
+// @ts-ignore // Add pinia-shared-state config 'share'
 export const favoritesStore = defineStore('favorites', {
   state: (): State => ({
     favoritesIds: [],
@@ -55,5 +56,9 @@ export const favoritesStore = defineStore('favorites', {
         setFavorites(this, newFavorite)
       }
     },
+  },
+
+  share: {
+    enable: true,
   },
 })
