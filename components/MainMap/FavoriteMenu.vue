@@ -18,6 +18,7 @@
           $tc('favorites.title')
         }}</span>
         <Badge
+          id="favourites_counter"
           :items="favoritesIds.length"
           class="absolute top-0 right-0 sm:top-1/2 sm:-translate-y-1/2 sm:translate-x-1/2"
         />
