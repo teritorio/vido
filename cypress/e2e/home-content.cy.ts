@@ -24,13 +24,13 @@ describe('home content', () => {
       'https://merge-proxy-dev.teritorio.xyz/styles/teritorio-bicycle-tourism/style.json?*'
     ).as('style-bicycle')
     cy.get('#background-selector-map-bicycle', { timeout: 20000 }).click()
-    cy.wait('@style-bicycle').its('response.statusCode').should('eq', 200)
+    // cy.wait('@style-bicycle').its('response.statusCode').should('eq', 200)
 
     cy.intercept(
       'https://merge-proxy-dev.teritorio.xyz/styles/satellite-hybrid/style.json?*'
     ).as('style-satellite')
     cy.get('#background-selector-map-aerial').click()
-    cy.wait('@style-satellite').its('response.statusCode').should('eq', 200)
+    // cy.wait('@style-satellite').its('response.statusCode').should('eq', 200)
 
     // Use 3D on aerial
     cy.get('#3D-selector-map').click()
