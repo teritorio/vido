@@ -75,7 +75,13 @@ export type ApiPoiProperties = MapPoiProperties & {
 export interface ApiPoi
   extends GeoJSON.Feature<GeoJSON.Geometry, ApiPoiProperties> {}
 
-export const ApiPoiPropertiesArray = ['image', 'phone', 'email', 'website']
+export const ApiPoiPropertiesArray = [
+  'image',
+  'phone',
+  'mobile',
+  'email',
+  'website',
+]
 
 export interface ApiPois
   extends GeoJSON.FeatureCollection<GeoJSON.Geometry, ApiPoiProperties> {}
