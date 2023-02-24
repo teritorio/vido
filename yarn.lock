@@ -3111,7 +3111,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@nuxt/kit@npm:3.2.2":
+"@nuxt/kit@npm:3.2.2, @nuxt/kit@npm:^3.0.0":
   version: 3.2.2
   resolution: "@nuxt/kit@npm:3.2.2"
   dependencies:
@@ -3541,14 +3541,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@pinia/nuxt@npm:0.2.1":
-  version: 0.2.1
-  resolution: "@pinia/nuxt@npm:0.2.1"
+"@pinia/nuxt@npm:0.4.7":
+  version: 0.4.7
+  resolution: "@pinia/nuxt@npm:0.4.7"
   dependencies:
-    vue-demi: "*"
-  peerDependencies:
-    pinia: ">=2.0.16"
-  checksum: 19743224f2800de88728550c140f4c6532aae589bf8547aaa35143f7ef7d9be58a3b9f69bd57f69721b95d12c3886f29ad9837658e99f8552bbb876cbcb73c3f
+    "@nuxt/kit": ^3.0.0
+    pinia: ">=2.0.31"
+  checksum: 5ad35d78a2ba624f78f796ba0e77f3a78ec978e77d9e99ad57e9814cacd3c44c487e4064c2bdc6b42c949bef669daad07dd338f7df88bb2fa535158456885a9e
   languageName: node
   linkType: hard
 
@@ -5041,7 +5040,7 @@ __metadata:
     "@nuxtjs/svg": ^0.4.0
     "@nuxtjs/tailwindcss": ^6.4.0
     "@nuxtjs/vuetify": ^1.12.3
-    "@pinia/nuxt": 0.2.1
+    "@pinia/nuxt": 0.4.7
     "@storybook/core-client": ^6.5.16
     "@tailwindcss/forms": ^0.5.3
     "@tailwindcss/typography": ^0.5.9
@@ -19390,7 +19389,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"pinia@npm:^2.0.32":
+"pinia@npm:>=2.0.31, pinia@npm:^2.0.32":
   version: 2.0.32
   resolution: "pinia@npm:2.0.32"
   dependencies:
