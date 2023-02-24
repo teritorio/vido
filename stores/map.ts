@@ -26,7 +26,6 @@ export const mapStore = defineStore('map', {
     ),
 
   getters: {
-    all: (state: State) => state,
     isModeExplorer: (state: State) => state.mode === Mode.EXPLORER,
     isModeFavorites: (state: State) => state.mode === Mode.FAVORITES,
     isModeExplorerOrFavorites: (state: State) =>
@@ -65,14 +64,6 @@ export const mapStore = defineStore('map', {
 
         this.selectedFeature = goodFeature
       }
-    },
-
-    setCenter(center: LatLng) {
-      this.center = center
-    },
-
-    setMode(mode: Mode) {
-      this.mode = mode
     },
   },
 })

@@ -64,7 +64,7 @@ import maplibregl, {
   FitBoundsOptions,
   GeoJSONSource,
 } from 'maplibre-gl'
-import { mapActions, mapState } from 'pinia'
+import { mapActions, mapState, mapWritableState } from 'pinia'
 import Vue, { PropType, VueConstructor } from 'vue'
 
 import MapControlsExplore from '~/components/MainMap/MapControlsExplore.vue'
@@ -182,6 +182,7 @@ export default (
   computed: {
     ...mapState(mapStore, ['selectedFeature']),
     ...mapState(menuStore, ['isLoadingFeatures']),
+    ...mapWritableState(mapStore, ['center']),
 
     availableStyles(): MapStyleEnum[] {
       return [MapStyleEnum.vector, MapStyleEnum.aerial, MapStyleEnum.bicycle]
@@ -268,9 +269,9 @@ export default (
 
       this.map.on('click', this.onClick)
 
-      mapStore().setCenter(this.map.getCenter())
+      this.center = this.map.getCenter()
       this.map.on('moveend', () => {
-        mapStore().setCenter(this.map.getCenter())
+        this.center = this.map.getCenter()
       })
     },
 

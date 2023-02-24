@@ -59,7 +59,7 @@
 </template>
 
 <script lang="ts">
-import { mapActions } from 'pinia'
+import { mapWritableState } from 'pinia'
 import Vue, { PropType } from 'vue'
 import { TDropdown } from 'vue-tailwind/dist/components'
 
@@ -82,12 +82,14 @@ export default Vue.extend({
     },
   },
 
-  methods: {
-    ...mapActions(siteStore, { setSiteLocale: 'setLocale' }),
+  computed: {
+    ...mapWritableState(siteStore, ['locale']),
+  },
 
+  methods: {
     setLocale(locale: string) {
       this.$i18n.setLocale(locale)
-      this.setSiteLocale(locale)
+      this.locale = locale
     },
     openLink(title: string, url: string) {
       this.$tracking({

@@ -7,7 +7,7 @@
 </template>
 
 <script lang="ts">
-import { mapActions } from 'pinia'
+import { mapWritableState } from 'pinia'
 import Vue from 'vue'
 import { MetaInfo } from 'vue-meta'
 
@@ -102,6 +102,13 @@ export default Vue.extend({
     })
   },
 
+  computed: {
+    ...mapWritableState(siteStore, {
+      locale: 'locale',
+      globalConfig: 'config',
+    }),
+  },
+
   data(): {
     config: VidoConfig | null
     settings: Settings
@@ -131,7 +138,7 @@ export default Vue.extend({
     if (this.menuItems) {
       menuStore().fetchConfig(this.menuItems)
     }
-    siteStore().setConfig(this.config!)
+    this.globalConfig = this.config!
 
     this.$settings.set(this.settings)
     this.$propertyTranslations.set(this.propertyTranslations)
@@ -143,11 +150,7 @@ export default Vue.extend({
   },
 
   mounted() {
-    this.setLocale(this.$i18n.locale)
-  },
-
-  methods: {
-    ...mapActions(siteStore, ['setLocale']),
+    this.locale = this.$i18n.locale
   },
 })
 </script>

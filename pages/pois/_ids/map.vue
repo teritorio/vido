@@ -9,7 +9,7 @@
 </template>
 
 <script lang="ts">
-import { mapActions } from 'pinia'
+import { mapWritableState } from 'pinia'
 import Vue from 'vue'
 import { MetaInfo } from 'vue-meta'
 
@@ -86,13 +86,18 @@ export default Vue.extend({
   },
 
   computed: {
+    ...mapWritableState(siteStore, {
+      locale: 'locale',
+      globalConfig: 'config',
+    }),
+
     ids(): ApiPoiId[] {
       return this.pois.features.map((feature) => feature.properties.metadata.id)
     },
   },
 
   created() {
-    siteStore().setConfig(this.config!)
+    this.globalConfig = this.config!
 
     this.$settings.set(this.settings)
   },
@@ -103,11 +108,7 @@ export default Vue.extend({
   },
 
   mounted() {
-    this.setLocale(this.$i18n.locale)
-  },
-
-  methods: {
-    ...mapActions(siteStore, ['setLocale']),
+    this.locale = this.$i18n.locale
   },
 })
 </script>

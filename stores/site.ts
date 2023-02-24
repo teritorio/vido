@@ -21,30 +21,4 @@ export const siteStore = defineStore('site', {
     contents: undefined,
     translations: undefined,
   }),
-
-  getters: {
-    all: (state: State) => state,
-  },
-
-  actions: {
-    setLocale(locale: string) {
-      this.locale = locale
-    },
-
-    setConfig(config: VidoConfig) {
-      this.config = config
-    },
-
-    setSettings(settings: Settings) {
-      this.settings = settings
-    },
-
-    setContents(contents: ContentEntry[]) {
-      this.contents = contents
-    },
-
-    setTranslations(translations: PropertyTranslations) {
-      this.translations = translations
-    },
-  },
 })

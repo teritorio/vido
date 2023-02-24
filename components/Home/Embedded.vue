@@ -70,6 +70,7 @@ import PoiCardContent from '~/components/PoisCard/PoiCardContent.vue'
 import CategorySelector from '~/components/PoisList/CategorySelector.vue'
 import UIButton from '~/components/UI/UIButton.vue'
 import { ApiPoi } from '~/lib/apiPois'
+import { mapStore } from '~/stores/map'
 import { menuStore } from '~/stores/menu'
 import { Mode } from '~/utils/types'
 import { flattenFeatures } from '~/utils/utilities'
@@ -148,10 +149,10 @@ export default mixins(HomeMixin).extend({
 
     toggleExploreAroundSelectedPoi(feature?: ApiPoi) {
       if (!this.isModeExplorer) {
-        this.setMode(Mode.EXPLORER)
+        this.mode = Mode.EXPLORER
         this.goToSelectedFeature()
       } else {
-        this.setMode(Mode.BROWSER)
+        this.mode = Mode.BROWSER
       }
     },
   },

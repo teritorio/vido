@@ -294,7 +294,6 @@ export default mixins(HomeMixin).extend({
     ...mapState(menuStore, ['features', 'menuItems']),
     ...mapState(mapStore, [
       'center',
-      'mode',
       'isModeFavorites',
       'isModeExplorerOrFavorites',
     ]),
@@ -417,10 +416,9 @@ export default mixins(HomeMixin).extend({
   },
 
   beforeMount() {
-    const mode =
+    this.mode =
       Mode[getHashPart(this.$router, 'mode') as keyof typeof Mode] ||
       Mode.BROWSER
-    this.setMode(mode)
 
     const favs = getHashPart(this.$router, 'favs')
     if (favs) {
@@ -505,7 +503,7 @@ export default mixins(HomeMixin).extend({
     },
 
     onQuitExplorerFavoriteMode() {
-      mapStore().setMode(Mode.BROWSER)
+      this.mode = Mode.BROWSER
       this.setSelectedFeature(null)
     },
 
@@ -543,7 +541,7 @@ export default mixins(HomeMixin).extend({
         this.setSelectedFeature(feature)
       }
       if (!this.isModeExplorer) {
-        this.setMode(Mode.EXPLORER)
+        this.mode = Mode.EXPLORER
         this.goToSelectedFeature()
 
         if (this.$screen.smallScreen) {
@@ -551,7 +549,7 @@ export default mixins(HomeMixin).extend({
         }
       } else {
         this.allowRegionBackZoom = false
-        this.setMode(Mode.BROWSER)
+        this.mode = Mode.BROWSER
       }
     },
 
@@ -572,9 +570,9 @@ export default mixins(HomeMixin).extend({
       if (this.favoritesIds?.length > 0) {
         this.$tracking({ type: 'map_control_event', event: 'favorite' })
         if (!this.isModeFavorites) {
-          this.setMode(Mode.FAVORITES)
+          this.mode = Mode.FAVORITES
         } else {
-          this.setMode(Mode.BROWSER)
+          this.mode = Mode.BROWSER
         }
       } else {
         this.showFavoritesOverlay = true

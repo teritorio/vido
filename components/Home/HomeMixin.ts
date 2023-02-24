@@ -1,5 +1,5 @@
 import { LngLatBoundsLike } from 'maplibre-gl'
-import { mapActions, mapState } from 'pinia'
+import { mapActions, mapState, mapWritableState } from 'pinia'
 import Vue, { PropType, VueConstructor } from 'vue'
 
 import MapFeatures from '~/components/MainMap/MapFeatures.vue'
@@ -45,6 +45,7 @@ export default (
   computed: {
     ...mapState(mapStore, ['isModeExplorer', 'selectedFeature']),
     ...mapState(menuStore, ['menuItems', 'selectedCategoryIds']),
+    ...mapWritableState(mapStore, ['mode']),
 
     favoritesModeEnabled(): boolean {
       return this.settings.themes[0]?.favorites_mode ?? true
@@ -87,7 +88,7 @@ export default (
   },
 
   methods: {
-    ...mapActions(mapStore, ['setMode', 'setSelectedFeature']),
+    ...mapActions(mapStore, ['setSelectedFeature']),
     ...mapActions(menuStore, ['setSelectedCategoryIds']),
 
     goToSelectedFeature() {
