@@ -42,7 +42,10 @@ export function vidoConfig(
     const hostHeader =
       (req.headers['x-forwarded-host'] as string) || req.headers.host
     if (!hostHeader) {
-      throw new Error('No header "Host" nor "x-forwarded-host"')
+      throw new Error(
+        'No header "Host" nor "x-forwarded-host": ' +
+          JSON.stringify(req.headers)
+      )
     } else {
       host = hostHeader
     }
