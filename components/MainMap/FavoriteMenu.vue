@@ -20,7 +20,7 @@
         <Badge
           id="favourites_counter"
           :items="favoritesIds.length"
-          class="absolute top-0 right-0 sm:top-1/2 sm:-translate-y-1/2 sm:translate-x-1/2"
+          class="absolute top-1/2 right-0 -translate-y-1/2 translate-x-1/2"
         />
       </button>
       <button
