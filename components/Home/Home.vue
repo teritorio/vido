@@ -230,7 +230,7 @@ import { ContentEntry } from '~/lib/apiContent'
 import { ApiMenuCategory, MenuItem } from '~/lib/apiMenu'
 import { ApiPoi, getPois } from '~/lib/apiPois'
 import { headerFromSettings } from '~/lib/apiSettings'
-import { getBBoxFeatures } from '~/lib/bbox'
+import { getBBoxFeature, getBBoxFeatures } from '~/lib/bbox'
 import { favoritesStore } from '~/stores/favorite'
 import { mapStore } from '~/stores/map'
 import { menuStore } from '~/stores/menu'
@@ -472,8 +472,12 @@ export default mixins(HomeMixin).extend({
         }
       })
     } else {
-      // @ts-ignore
-      this.initialBbox = this.settings.bbox_line.coordinates
+      if (this.boundaryArea) {
+        this.initialBbox = getBBoxFeature(this.boundaryArea)
+      } else {
+        // @ts-ignore
+        this.initialBbox = this.settings.bbox_line.coordinates
+      }
     }
   },
 

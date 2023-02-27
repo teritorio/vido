@@ -70,6 +70,7 @@ import PoiCardContent from '~/components/PoisCard/PoiCardContent.vue'
 import CategorySelector from '~/components/PoisList/CategorySelector.vue'
 import UIButton from '~/components/UI/UIButton.vue'
 import { ApiPoi } from '~/lib/apiPois'
+import { getBBoxFeature } from '~/lib/bbox'
 import { mapStore } from '~/stores/map'
 import { menuStore } from '~/stores/menu'
 import { Mode } from '~/utils/types'
@@ -100,8 +101,12 @@ export default mixins(HomeMixin).extend({
   },
 
   mounted() {
-    // @ts-ignore
-    this.initialBbox = this.settings.bbox_line.coordinates
+    if (this.boundaryArea) {
+      this.initialBbox = getBBoxFeature(this.boundaryArea)
+    } else {
+      // @ts-ignore
+      this.initialBbox = this.settings.bbox_line.coordinates
+    }
   },
 
   watch: {
