@@ -56,11 +56,12 @@ import {
   FitBoundsOptions,
   MapDataEvent,
 } from 'maplibre-gl'
+import { mapState } from 'pinia'
 import Vue, { PropType } from 'vue'
-import { mapGetters } from 'vuex'
 
 import MapControls from '~/components/Map/MapControls.vue'
 import { DEFAULT_MAP_STYLE, MAP_ZOOM } from '~/lib/constants'
+import { siteStore } from '~/stores/site'
 import { fetchStyle } from '~/utils/styles'
 import { MapStyleEnum } from '~/utils/types'
 
@@ -143,9 +144,8 @@ export default Vue.extend({
   },
 
   computed: {
-    ...mapGetters({
-      locale: 'site/locale',
-    }),
+    ...mapState(siteStore, ['locale']),
+
     defaultZoom() {
       return MAP_ZOOM.zoom
     },
@@ -186,7 +186,7 @@ export default Vue.extend({
     onMapInit(map: Map) {
       this.map = map
       this.languageControl = new OpenMapTilesLanguage({
-        defaultLanguage: this.locale,
+        defaultLanguage: this.locale || undefined,
       })
 
       if (this.showAttribution) {

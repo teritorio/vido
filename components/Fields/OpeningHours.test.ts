@@ -1,32 +1,22 @@
 import { expect } from '@jest/globals'
 import { shallowMount } from '@vue/test-utils'
-import { Store } from 'vuex'
+import { createPinia } from 'pinia'
 
 import OpeningHours from './OpeningHours.vue'
 
 import { PropertyTranslationsContextEnum } from '~/plugins/property-translations'
-import * as siteStore from '~/store/site'
+import { siteStore } from '~/stores/site'
 
-let store: Store<siteStore.State>
+const realPinia = createPinia()
 
 beforeEach(() => {
-  store = new Store({
-    modules: {
-      site: {
-        state: {
-          locale: 'fr',
-        },
-        actions: {},
-        getters: siteStore.getters,
-        namespaced: true,
-      },
-    },
+  siteStore(realPinia).$patch({
+    locale: 'fr',
   })
 })
 
 function factory(props = {}) {
   return shallowMount(OpeningHours, {
-    store,
     propsData: {
       context: PropertyTranslationsContextEnum.Default,
       tagKey: 'opening_hours',

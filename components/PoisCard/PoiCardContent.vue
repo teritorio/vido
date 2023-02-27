@@ -136,14 +136,16 @@
 </template>
 
 <script lang="ts">
+import { mapState } from 'pinia'
 import Vue, { PropType } from 'vue'
-import { mapGetters } from 'vuex'
 
 import Fields from '~/components/PoisCard/Fields.vue'
 import FavoriteIcon from '~/components/UI/FavoriteIcon.vue'
 import TeritorioIcon from '~/components/UI/TeritorioIcon.vue'
 import { ApiPoi, ApiPoiId } from '~/lib/apiPois'
 import { coordinatesHref } from '~/lib/coordinates'
+import { favoritesStore } from '~/stores/favorite'
+import { mapStore } from '~/stores/map'
 import { isIOS } from '~/utils/isIOS'
 
 export default Vue.extend({
@@ -169,10 +171,8 @@ export default Vue.extend({
   },
 
   computed: {
-    ...mapGetters({
-      isModeExplorer: 'map/isModeExplorer',
-      favoritesIds: 'favorite/favoritesIds',
-    }),
+    ...mapState(mapStore, ['isModeExplorer']),
+    ...mapState(favoritesStore, ['favoritesIds']),
 
     id(): ApiPoiId {
       return this.poi.properties.metadata.id

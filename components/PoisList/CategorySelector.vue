@@ -67,14 +67,14 @@ export default Vue.extend({
       menuGroup: ApiMenuCategory
     }[] {
       const menuIndex: { [key: number]: MenuItem } = {}
-      Object.values(this.menuItems)
+      Object.values(this.menuItems || {})
         .filter((menuItem) => !menuItem.hidden)
         .forEach((menuItem) => {
           menuIndex[menuItem.id] = menuItem
         })
 
       return (
-        Object.values(this.menuItems).filter(
+        Object.values(this.menuItems || {}).filter(
           (menuItem) => menuItem.category && !menuItem.hidden
         ) as ApiMenuCategory[]
       )

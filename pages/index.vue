@@ -9,13 +9,13 @@
 </template>
 
 <script lang="ts">
+import { mapWritableState } from 'pinia'
 import Vue from 'vue'
 import { MetaInfo } from 'vue-meta'
-import { mapActions } from 'vuex'
 
 import Home from '~/components/Home/Home.vue'
 import { ContentEntry, getContents } from '~/lib/apiContent'
-import { ApiMenuItem, getMenu } from '~/lib/apiMenu'
+import { MenuItem, getMenu } from '~/lib/apiMenu'
 import { getPoiById, ApiPoi } from '~/lib/apiPois'
 import {
   getPropertyTranslations,
@@ -23,6 +23,8 @@ import {
 } from '~/lib/apiPropertyTranslations'
 import { getSettings, headerFromSettings, Settings } from '~/lib/apiSettings'
 import { vidoConfig } from '~/plugins/vido-config'
+import { menuStore } from '~/stores/menu'
+import { siteStore } from '~/stores/site'
 import { VidoConfig } from '~/utils/types-config'
 
 export default Vue.extend({
@@ -30,37 +32,35 @@ export default Vue.extend({
     Home,
   },
 
-  async asyncData({ params, route, req, $config, store }): Promise<{
+  async asyncData({ params, route, req, $config, $pinia }): Promise<{
     config: VidoConfig
     settings: Settings
     contents: ContentEntry[]
     propertyTranslations: PropertyTranslations
-    menuItems: ApiMenuItem[] | undefined
+    menuItems: MenuItem[] | undefined
     categoryIds: number[] | null
     initialPoi: ApiPoi | null
   }> {
     const config: VidoConfig =
-      store.getters['site/config'] || vidoConfig(req, $config)
+      siteStore($pinia).config || vidoConfig(req, $config)
 
-    const fetchSettings = store.getters['site/settings']
-      ? Promise.resolve(store.getters['site/settings'] as Settings)
+    const fetchSettings = siteStore($pinia).settings
+      ? Promise.resolve(siteStore($pinia).settings as Settings)
       : getSettings(config.API_ENDPOINT, config.API_PROJECT, config.API_THEME)
 
-    const fetchContents = store.getters['site/content']
-      ? Promise.resolve(store.getters['site/content'] as ContentEntry[])
+    const fetchContents = siteStore($pinia).contents
+      ? Promise.resolve(siteStore($pinia).contents as ContentEntry[])
       : getContents(config.API_ENDPOINT, config.API_PROJECT, config.API_THEME)
 
-    const fetchPropertyTranslations = store.getters['site/translations']
-      ? Promise.resolve(
-          store.getters['site/translations'] as PropertyTranslations
-        )
+    const fetchPropertyTranslations = siteStore($pinia).translations
+      ? Promise.resolve(siteStore($pinia).translations as PropertyTranslations)
       : getPropertyTranslations(
           config.API_ENDPOINT,
           config.API_PROJECT,
           config.API_THEME
         )
 
-    const fetchMenuItems = store.getters['menu/menuItems']
+    const fetchMenuItems = menuStore($pinia).menuItems
       ? Promise.resolve(undefined)
       : getMenu(config.API_ENDPOINT, config.API_PROJECT, config.API_THEME)
 
@@ -116,12 +116,22 @@ export default Vue.extend({
     })
   },
 
+  computed: {
+    ...mapWritableState(siteStore, {
+      locale: 'locale',
+      globalConfig: 'config',
+      globalSettings: 'settings',
+      globalContents: 'contents',
+      globalTranslations: 'translations',
+    }),
+  },
+
   data(): {
     config: VidoConfig | null
     settings: Settings
     contents: ContentEntry[]
     propertyTranslations: PropertyTranslations
-    menuItems: ApiMenuItem[]
+    menuItems: MenuItem[]
     categoryIds: number[] | null
     initialPoi: ApiPoi | null
   } {
@@ -145,15 +155,13 @@ export default Vue.extend({
   },
 
   created() {
-    this.$store.dispatch('site/setConfig', this.config!)
+    this.globalConfig = this.config!
     if (this.menuItems) {
-      this.$store.dispatch('menu/fetchConfig', {
-        menuItems: this.menuItems,
-      })
+      menuStore().fetchConfig(this.menuItems)
     }
-    this.$store.dispatch('site/setSettings', this.settings)
-    this.$store.dispatch('site/setContents', this.contents)
-    this.$store.dispatch('site/setTranslations', this.propertyTranslations)
+    this.globalSettings = this.settings
+    this.globalContents = this.contents
+    this.globalTranslations = this.propertyTranslations
 
     this.$settings.set(this.settings)
     this.$propertyTranslations.set(this.propertyTranslations)
@@ -165,13 +173,7 @@ export default Vue.extend({
   },
 
   mounted() {
-    this.setSiteLocale(this.$i18n.locale)
-  },
-
-  methods: {
-    ...mapActions({
-      setSiteLocale: 'site/setLocale',
-    }),
+    this.locale = this.$i18n.locale
   },
 })
 </script>

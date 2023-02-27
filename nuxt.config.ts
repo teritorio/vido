@@ -73,7 +73,7 @@ const config: NuxtConfig = {
     '@/plugins/vue-tailwind.ts',
     { src: '@/plugins/tracking.ts', mode: 'client' },
     '@/plugins/property-translations.ts',
-    { src: '@/plugins/vuex-shared-mutations.ts', ssr: false },
+    { src: '@/plugins/pinia-shared-state.ts', ssr: false },
   ],
 
   // Auto import components (https://go.nuxtjs.dev/config-components)
@@ -89,6 +89,8 @@ const config: NuxtConfig = {
     '@nuxtjs/tailwindcss',
     '@nuxtjs/svg',
     '@nuxtjs/pwa',
+    '@nuxtjs/composition-api/module',
+    ['@pinia/nuxt', { disableVuex: true }], // Add to modules (Nuxt 3) or buildModules (Nuxt 2)
   ],
 
   // Modules (https://go.nuxtjs.dev/config-modules)
@@ -98,6 +100,7 @@ const config: NuxtConfig = {
     '@nuxtjs/gtm',
     ...(process.env.SENTRY_DSN ? ['@nuxtjs/sentry'] : []),
     '@nuxtjs/sitemap', // declare the sitemap module at end of array
+    // '@pinia/nuxt' // Add to modules (Nuxt 3)
   ],
 
   i18n: {
@@ -176,7 +179,11 @@ const config: NuxtConfig = {
         ['@babel/plugin-proposal-private-property-in-object', { loose: true }],
       ],
     },
-    transpile: ['@vueform/slider'], // If you use nuxt you must transpile the module so it can be used universally
+    transpile: [
+      // If you use nuxt you must transpile the module so it can be used universally
+      '@vueform/slider',
+      'pinia',
+    ],
   },
 
   // Server config (allow listening to local network)

@@ -60,8 +60,8 @@
 
 <script lang="ts">
 import { FitBoundsOptions } from 'maplibre-gl'
+import { mapActions } from 'pinia'
 import mixins from 'vue-typed-mixins'
-import { mapActions } from 'vuex'
 
 import HomeMixin from '~/components/Home/HomeMixin'
 import SelectedCategories from '~/components/Home/SelectedCategories.vue'
@@ -70,6 +70,8 @@ import PoiCardContent from '~/components/PoisCard/PoiCardContent.vue'
 import CategorySelector from '~/components/PoisList/CategorySelector.vue'
 import UIButton from '~/components/UI/UIButton.vue'
 import { ApiPoi } from '~/lib/apiPois'
+import { mapStore } from '~/stores/map'
+import { menuStore } from '~/stores/menu'
 import { Mode } from '~/utils/types'
 import { flattenFeatures } from '~/utils/utilities'
 
@@ -93,7 +95,7 @@ export default mixins(HomeMixin).extend({
     },
 
     mapFeatures(): ApiPoi[] {
-      return flattenFeatures(this.$store.getters['menu/features'])
+      return flattenFeatures(menuStore().features)
     },
   },
 
@@ -107,7 +109,7 @@ export default mixins(HomeMixin).extend({
       this.routerPushUrl()
 
       if (this.selectedCategoryIds) {
-        this.$store.dispatch('menu/fetchFeatures', {
+        menuStore().fetchFeatures({
           apiEndpoint: this.$vidoConfig().API_ENDPOINT,
           apiProject: this.$vidoConfig().API_PROJECT,
           apiTheme: this.$vidoConfig().API_THEME,
@@ -122,9 +124,7 @@ export default mixins(HomeMixin).extend({
   },
 
   methods: {
-    ...mapActions({
-      addSelectedCategoryIds: 'menu/addSelectedCategoryIds',
-    }),
+    ...mapActions(menuStore, ['addSelectedCategoryIds']),
 
     onMenuChange(newCategoryId: number) {
       this.addSelectedCategoryIds([newCategoryId])
@@ -149,10 +149,10 @@ export default mixins(HomeMixin).extend({
 
     toggleExploreAroundSelectedPoi(feature?: ApiPoi) {
       if (!this.isModeExplorer) {
-        this.setMode(Mode.EXPLORER)
+        this.mode = Mode.EXPLORER
         this.goToSelectedFeature()
       } else {
-        this.setMode(Mode.BROWSER)
+        this.mode = Mode.BROWSER
       }
     },
   },

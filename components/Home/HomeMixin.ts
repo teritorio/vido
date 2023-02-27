@@ -1,11 +1,13 @@
 import { LngLatBoundsLike } from 'maplibre-gl'
+import { mapActions, mapState, mapWritableState } from 'pinia'
 import Vue, { PropType, VueConstructor } from 'vue'
-import { mapActions } from 'vuex'
 
 import MapFeatures from '~/components/MainMap/MapFeatures.vue'
 import { ApiMenuCategory, MenuItem } from '~/lib/apiMenu'
 import { ApiPoi } from '~/lib/apiPois'
 import { Settings } from '~/lib/apiSettings'
+import { mapStore } from '~/stores/map'
+import { menuStore } from '~/stores/menu'
 
 export default (
   Vue as VueConstructor<
@@ -41,13 +43,9 @@ export default (
   },
 
   computed: {
-    isModeExplorer(): boolean {
-      return this.$store.getters['map/isModeExplorer']
-    },
-
-    menuItems(): Record<ApiMenuCategory['id'], MenuItem> {
-      return this.$store.getters['menu/menuItems']
-    },
+    ...mapState(mapStore, ['isModeExplorer', 'selectedFeature']),
+    ...mapState(menuStore, ['menuItems', 'selectedCategoryIds']),
+    ...mapWritableState(mapStore, ['mode']),
 
     favoritesModeEnabled(): boolean {
       return this.settings.themes[0]?.favorites_mode ?? true
@@ -57,18 +55,10 @@ export default (
       return this.settings.themes[0]?.explorer_mode ?? true
     },
 
-    selectedCategoryIds(): ApiMenuCategory['id'][] {
-      return this.$store.getters['menu/selectedCategoryIds']
-    },
-
-    selectedFeature(): ApiPoi {
-      return this.$store.getters['map/selectedFeature']
-    },
-
     poiFilters(): string[][] | null {
       return (
         (this.isModeExplorer &&
-          (Object.values(this.menuItems)
+          (Object.values(this.menuItems || {})
             .map((c) => c.category?.style_class)
             .filter((s) => s !== undefined) as string[][])) ||
         null
@@ -82,9 +72,9 @@ export default (
     } else if (typeof location !== 'undefined') {
       const enabledCategories: ApiMenuCategory['id'][] = []
 
-      Object.keys(this.menuItems).forEach((categoryIdString) => {
+      Object.keys(this.menuItems || {}).forEach((categoryIdString) => {
         const categoryId = parseInt(categoryIdString, 10)
-        if (this.menuItems[categoryId].selected_by_default) {
+        if (this.menuItems![categoryId].selected_by_default) {
           enabledCategories.push(categoryId)
         }
       })
@@ -98,11 +88,8 @@ export default (
   },
 
   methods: {
-    ...mapActions({
-      setMode: 'map/setMode',
-      setSelectedCategoryIds: 'menu/setSelectedCategoryIds',
-      setSelectedFeature: 'map/setSelectedFeature',
-    }),
+    ...mapActions(mapStore, ['setSelectedFeature']),
+    ...mapActions(menuStore, ['setSelectedCategoryIds']),
 
     goToSelectedFeature() {
       this.$refs.mapFeatures?.goToSelectedFeature()

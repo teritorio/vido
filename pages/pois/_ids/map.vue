@@ -9,14 +9,15 @@
 </template>
 
 <script lang="ts">
+import { mapWritableState } from 'pinia'
 import Vue from 'vue'
 import { MetaInfo } from 'vue-meta'
-import { mapActions } from 'vuex'
 
 import MapPois from '~/components/Map/MapPois.vue'
 import { getPois, ApiPois, ApiPoiId } from '~/lib/apiPois'
 import { getSettings, headerFromSettings, Settings } from '~/lib/apiSettings'
 import { vidoConfig } from '~/plugins/vido-config'
+import { siteStore } from '~/stores/site'
 import { VidoConfig } from '~/utils/types-config'
 
 export default Vue.extend({
@@ -28,16 +29,16 @@ export default Vue.extend({
     return /^[,-_:a-zA-Z0-9]+$/.test(params.ids)
   },
 
-  async asyncData({ params, req, $config, store }): Promise<{
+  async asyncData({ params, req, $config, $pinia }): Promise<{
     config: VidoConfig
     settings: Settings
     pois: ApiPois | null
   }> {
     const config: VidoConfig =
-      store.getters['site/config'] || vidoConfig(req, $config)
+      siteStore($pinia).config || vidoConfig(req, $config)
 
-    const fetchSettings = store.getters['site/settings']
-      ? Promise.resolve(store.getters['site/settings'] as Settings)
+    const fetchSettings = siteStore($pinia).settings
+      ? Promise.resolve(siteStore($pinia).settings as Settings)
       : getSettings(config.API_ENDPOINT, config.API_PROJECT, config.API_THEME)
 
     let settings: Settings | null
@@ -85,13 +86,18 @@ export default Vue.extend({
   },
 
   computed: {
+    ...mapWritableState(siteStore, {
+      locale: 'locale',
+      globalConfig: 'config',
+    }),
+
     ids(): ApiPoiId[] {
       return this.pois.features.map((feature) => feature.properties.metadata.id)
     },
   },
 
   created() {
-    this.$store.dispatch('site/setConfig', this.config!)
+    this.globalConfig = this.config!
 
     this.$settings.set(this.settings)
   },
@@ -102,13 +108,7 @@ export default Vue.extend({
   },
 
   mounted() {
-    this.setSiteLocale(this.$i18n.locale)
-  },
-
-  methods: {
-    ...mapActions({
-      setSiteLocale: 'site/setLocale',
-    }),
+    this.locale = this.$i18n.locale
   },
 })
 </script>

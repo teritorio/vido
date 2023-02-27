@@ -64,8 +64,8 @@
 </template>
 
 <script lang="ts">
+import { mapState } from 'pinia'
 import Vue, { PropType, VueConstructor } from 'vue'
-import { mapGetters } from 'vuex'
 
 import PoisDeck from '~/components/PoisCard/PoisDeck.vue'
 import IconButton from '~/components/UI/IconButton.vue'
@@ -73,6 +73,7 @@ import IconsBar from '~/components/UI/IconsBar.vue'
 import ShareLinkModal from '~/components/UI/ShareLinkModal.vue'
 import UIButton from '~/components/UI/UIButton.vue'
 import { ApiPoi, ApiPoiId } from '~/lib/apiPois'
+import { favoritesStore } from '~/stores/favorite'
 
 export default (
   Vue as VueConstructor<
@@ -107,9 +108,7 @@ export default (
   },
 
   computed: {
-    ...mapGetters({
-      favoritesIds: 'favorite/favoritesIds',
-    }),
+    ...mapState(favoritesStore, ['favoritesIds']),
 
     pdfLink(): string {
       return `${this.$vidoConfig().API_EXPORT}/${
@@ -151,7 +150,7 @@ export default (
 
     removeFavorites() {
       try {
-        this.$store.dispatch('favorite/setFavorites', [])
+        favoritesStore().setFavorites([])
       } catch (e) {
         // eslint-disable-next-line no-console
         console.error('Vido error:', e.message)

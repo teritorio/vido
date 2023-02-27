@@ -58,11 +58,12 @@
 
 <script lang="ts">
 import OpeningHours, { optional_conf } from 'opening_hours'
+import { mapState } from 'pinia'
 import Vue, { PropType } from 'vue'
-import { mapGetters } from 'vuex'
 
 import RelativeDate from '~/components/UI/RelativeDate.vue'
 import { PropertyTranslationsContextEnum } from '~/plugins/property-translations'
+import { siteStore } from '~/stores/site'
 
 const PointTime = [/^collection_times$/, /^service_times$/]
 
@@ -111,9 +112,7 @@ export default Vue.extend({
   },
 
   computed: {
-    ...mapGetters({
-      locale: 'site/locale',
-    }),
+    ...mapState(siteStore, ['locale']),
 
     isPointTime(): boolean {
       return isSupportedOsmTags(PointTime, this.tagKey)

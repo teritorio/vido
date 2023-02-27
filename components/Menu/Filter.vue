@@ -82,13 +82,14 @@
 
 <script lang="ts">
 import copy from 'fast-copy'
+import { mapActions } from 'pinia'
 import Vue, { PropType } from 'vue'
-import { mapActions } from 'vuex'
 
 import DateRange from '~/components/Filters/DateRange.vue'
 import NumberRange from '~/components/Filters/NumberRange.vue'
 import SelectFilter from '~/components/Filters/Select.vue'
 import { ApiMenuCategory } from '~/lib/apiMenu'
+import { menuStore } from '~/stores/menu'
 import {
   FilterValueBoolean,
   FilterValueDate,
@@ -122,9 +123,7 @@ export default Vue.extend({
   },
 
   methods: {
-    ...mapActions({
-      applyCategorieFilters: 'menu/applyFilters',
-    }),
+    ...mapActions(menuStore, ['applyFilters']),
 
     onGoBackClick() {
       this.$emit('go-back-click')
@@ -139,7 +138,7 @@ export default Vue.extend({
       const filter = filters[filterIndex] as FilterValueBoolean
 
       filter.filterValue = value
-      this.applyCategorieFilters({
+      this.applyFilters({
         categoryId: this.categoryId,
         filterValues: filters,
       })
@@ -150,7 +149,7 @@ export default Vue.extend({
       const filter = filters[filterIndex] as FilterValueList
 
       filter.filterValues = values || []
-      this.applyCategorieFilters({
+      this.applyFilters({
         categoryId: this.categoryId,
         filterValues: filters,
       })
@@ -163,7 +162,7 @@ export default Vue.extend({
       const filters = this.filtersSafeCopy
       filters[filterIndex] = filterValue
 
-      this.applyCategorieFilters({
+      this.applyFilters({
         categoryId: this.categoryId,
         filterValues: filters,
       })
@@ -176,7 +175,7 @@ export default Vue.extend({
       const filters = this.filtersSafeCopy
       filters[filterIndex] = filterValue
 
-      this.applyCategorieFilters({
+      this.applyFilters({
         categoryId: this.categoryId,
         filterValues: filters,
       })
@@ -192,7 +191,7 @@ export default Vue.extend({
         filter.filterValues = filter.filterValues.filter((k) => k !== val)
       }
 
-      this.applyCategorieFilters({
+      this.applyFilters({
         categoryId: this.categoryId,
         filterValues: filters,
       })

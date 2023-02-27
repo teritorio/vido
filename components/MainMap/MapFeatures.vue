@@ -64,8 +64,8 @@ import maplibregl, {
   FitBoundsOptions,
   GeoJSONSource,
 } from 'maplibre-gl'
+import { mapActions, mapState, mapWritableState } from 'pinia'
 import Vue, { PropType, VueConstructor } from 'vue'
-import { mapGetters, mapActions } from 'vuex'
 
 import MapControlsExplore from '~/components/MainMap/MapControlsExplore.vue'
 import SnackBar from '~/components/MainMap/SnackBar.vue'
@@ -77,6 +77,9 @@ import { ApiPoi, getPoiById } from '~/lib/apiPois'
 import { getBBoxFeatures, getBBoxFeature } from '~/lib/bbox'
 import { DEFAULT_MAP_STYLE, MAP_ZOOM } from '~/lib/constants'
 import { VectorTilesPoi, vectorTilesPoi2ApiPoi } from '~/lib/vectorTilesPois'
+import { mapStore } from '~/stores/map'
+import { menuStore } from '~/stores/menu'
+import { snackStore } from '~/stores/snack'
 import { filterRouteByCategories, filterRouteByPoiIds } from '~/utils/styles'
 import { LatLng, MapStyleEnum } from '~/utils/types'
 import { getHashPart } from '~/utils/url'
@@ -177,10 +180,9 @@ export default (
   },
 
   computed: {
-    ...mapGetters({
-      selectedFeature: 'map/selectedFeature',
-      isLoadingFeatures: 'menu/isLoadingFeatures',
-    }),
+    ...mapState(mapStore, ['selectedFeature']),
+    ...mapState(menuStore, ['isLoadingFeatures']),
+    ...mapWritableState(mapStore, ['center']),
 
     availableStyles(): MapStyleEnum[] {
       return [MapStyleEnum.vector, MapStyleEnum.aerial, MapStyleEnum.bicycle]
@@ -257,9 +259,8 @@ export default (
   },
 
   methods: {
-    ...mapActions({
-      setSelectedFeature: 'map/setSelectedFeature',
-    }),
+    ...mapActions(mapStore, ['setSelectedFeature']),
+    ...mapActions(snackStore, ['showSnack']),
 
     // Map and style init and changes
 
@@ -268,9 +269,9 @@ export default (
 
       this.map.on('click', this.onClick)
 
-      this.$store.dispatch('map/center', this.map.getCenter())
+      this.center = this.map.getCenter()
       this.map.on('moveend', () => {
-        this.$store.dispatch('map/center', this.map.getCenter())
+        this.center = this.map.getCenter()
       })
     },
 
@@ -389,7 +390,7 @@ export default (
     // Other
 
     showZoomSnack(text: string, textBtn: string) {
-      this.$store.dispatch('snack/showSnack', {
+      this.showSnack({
         time: 5000,
         text,
         textBtn,
@@ -397,7 +398,7 @@ export default (
     },
 
     handleSnackAction() {
-      this.$store.dispatch('snack/showSnack')
+      this.showSnack(null)
 
       this.resetZoom()
       if (this.features) {

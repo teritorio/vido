@@ -15,13 +15,14 @@
 </template>
 
 <script lang="ts">
+import { mapState } from 'pinia'
 import Vue, { PropType } from 'vue'
-import { mapGetters } from 'vuex'
 
 import NavMenu from '~/components/MainMap/NavMenu.vue'
 import Logo from '~/components/UI/Logo.vue'
 import { ContentEntry } from '~/lib/apiContent'
 import { SiteInfosTheme } from '~/lib/apiSettings'
+import { siteStore } from '~/stores/site'
 
 export default Vue.extend({
   components: {
@@ -39,11 +40,10 @@ export default Vue.extend({
     },
   },
   computed: {
-    ...mapGetters({
-      local: 'site/locale',
-    }),
+    ...mapState(siteStore, ['locale']),
+
     mainUrl(): string {
-      return this.theme.main_url?.[this.local] || ''
+      return (this.locale && this.theme.main_url?.[this.locale]) || ''
     },
   },
 })

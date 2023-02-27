@@ -11,9 +11,9 @@
 
 <script lang="ts">
 import { groupBy } from 'lodash'
+import { mapWritableState } from 'pinia'
 import Vue from 'vue'
 import { MetaInfo } from 'vue-meta'
-import { mapActions } from 'vuex'
 
 import Index from '~/components/PoisDetails/PoiDetails.vue'
 import { ContentEntry, getContents } from '~/lib/apiContent'
@@ -25,6 +25,7 @@ import {
 } from '~/lib/apiPropertyTranslations'
 import { getSettings, headerFromSettings, Settings } from '~/lib/apiSettings'
 import { vidoConfig } from '~/plugins/vido-config'
+import { siteStore } from '~/stores/site'
 import { VidoConfig } from '~/utils/types-config'
 
 export default Vue.extend({
@@ -36,7 +37,7 @@ export default Vue.extend({
     return /^[-_:a-zA-Z0-9]+$/.test(params.id)
   },
 
-  async asyncData({ params, req, $config, store, error }): Promise<{
+  async asyncData({ params, req, $config, $pinia, error }): Promise<{
     config: VidoConfig
     settings: Settings
     contents: ContentEntry[]
@@ -45,20 +46,18 @@ export default Vue.extend({
     poiDeps: ApiPoiDeps | undefined
   }> {
     const config: VidoConfig =
-      store.getters['site/config'] || vidoConfig(req, $config)
+      siteStore($pinia).config || vidoConfig(req, $config)
 
-    const getSettingsPromise = store.getters['site/settings']
-      ? Promise.resolve(store.getters['site/settings'] as Settings)
+    const getSettingsPromise = siteStore($pinia).settings
+      ? Promise.resolve(siteStore($pinia).settings as Settings)
       : getSettings(config.API_ENDPOINT, config.API_PROJECT, config.API_THEME)
 
-    const fetchContents = store.getters['site/content']
-      ? Promise.resolve(store.getters['site/content'] as ContentEntry[])
+    const fetchContents = siteStore($pinia).contents
+      ? Promise.resolve(siteStore($pinia).contents as ContentEntry[])
       : getContents(config.API_ENDPOINT, config.API_PROJECT, config.API_THEME)
 
-    const fetchPropertyTranslations = store.getters['site/translations']
-      ? Promise.resolve(
-          store.getters['site/translations'] as PropertyTranslations
-        )
+    const fetchPropertyTranslations = siteStore($pinia).translations
+      ? Promise.resolve(siteStore($pinia).translations as PropertyTranslations)
       : getPropertyTranslations(
           config.API_ENDPOINT,
           config.API_PROJECT,
@@ -113,6 +112,16 @@ export default Vue.extend({
     })
   },
 
+  computed: {
+    ...mapWritableState(siteStore, {
+      locale: 'locale',
+      globalConfig: 'config',
+      globalSettings: 'settings',
+      globalContents: 'contents',
+      globalTranslations: 'translations',
+    }),
+  },
+
   data(): {
     config: VidoConfig | null
     settings: Settings
@@ -144,10 +153,10 @@ export default Vue.extend({
   },
 
   created() {
-    this.$store.dispatch('site/setConfig', this.config!)
-    this.$store.dispatch('site/setSettings', this.settings)
-    this.$store.dispatch('site/setContents', this.contents)
-    this.$store.dispatch('site/setTranslations', this.propertyTranslations)
+    this.globalConfig = this.config!
+    this.globalSettings = this.settings
+    this.globalContents = this.contents
+    this.globalTranslations = this.propertyTranslations
 
     this.$settings.set(this.settings)
     this.$propertyTranslations.set(this.propertyTranslations)
@@ -159,13 +168,7 @@ export default Vue.extend({
   },
 
   mounted() {
-    this.setSiteLocale(this.$i18n.locale)
-  },
-
-  methods: {
-    ...mapActions({
-      setSiteLocale: 'site/setLocale',
-    }),
+    this.locale = this.$i18n.locale
   },
 })
 </script>

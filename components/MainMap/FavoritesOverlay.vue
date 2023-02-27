@@ -11,14 +11,20 @@
 </template>
 
 <script lang="ts">
+import { mapWritableState } from 'pinia'
 import Vue from 'vue'
 
+import { mapStore } from '~/stores/map'
 import { Mode } from '~/utils/types'
 
 export default Vue.extend({
+  computed: {
+    ...mapWritableState(mapStore, ['mode']),
+  },
+
   methods: {
     onOverlayClick() {
-      this.$store.dispatch('map/setMode', Mode.BROWSER)
+      this.mode = Mode.BROWSER
       this.$emit('discard')
     },
   },

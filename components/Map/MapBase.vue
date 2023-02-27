@@ -159,7 +159,11 @@ export default Vue.extend({
     },
 
     styleIconFilter() {
-      this.setPoiFilter()
+      if (this.styleIconFilter) {
+        this.poiFilter?.setIncludeFilter(this.styleIconFilter)
+      } else {
+        this.poiFilter?.remove(true)
+      }
     },
   },
 
@@ -272,7 +276,6 @@ export default Vue.extend({
         let firstSymbolLayerId: string | undefined = this.map
           .getStyle()
           .layers.find((layer) => layer.type === 'line')?.id
-        console.error(firstSymbolLayerId)
         this.map.addLayer(
           {
             id: BOUNDARY_AREA_LAYER,
@@ -300,14 +303,6 @@ export default Vue.extend({
       }
 
       this.$emit('map-style-load', style)
-    },
-
-    setPoiFilter() {
-      if (this.styleIconFilter) {
-        this.poiFilter?.setIncludeFilter(this.styleIconFilter)
-      } else {
-        this.poiFilter?.remove(true)
-      }
     },
 
     onMapRender(eventName: string, event: any) {

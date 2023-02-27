@@ -36,7 +36,7 @@
             >
               <Search
                 :menu-to-icon="menuItemsToIcons"
-                :map-center="map_center"
+                :map-center="center"
                 @focus="isOnSearch = true"
                 @blur="isOnSearch = false"
               >
@@ -70,7 +70,7 @@
             v-if="!isModeExplorerOrFavorites"
             class="flex flex-col max-h-full px-5 py-4 space-y-6 shadow-md pointer-events-auto md:rounded-xl md:w-96 bg-white min-h-20"
           >
-            <Search :menu-to-icon="menuItemsToIcons" :map-center="map_center">
+            <Search :menu-to-icon="menuItemsToIcons" :map-center="center">
               <Logo
                 :main-url="mainUrl"
                 :site-name="siteName"
@@ -207,10 +207,10 @@
 
 <script lang="ts">
 import { FitBoundsOptions, LngLatBoundsLike } from 'maplibre-gl'
+import { mapActions, mapState } from 'pinia'
 import { PropType } from 'vue'
 import { MetaInfo } from 'vue-meta'
 import mixins from 'vue-typed-mixins'
-import { mapGetters, mapActions } from 'vuex'
 
 import ExplorerOrFavoritesBack from '~/components/Home/ExplorerOrFavoritesBack.vue'
 import HomeMixin from '~/components/Home/HomeMixin'
@@ -231,6 +231,9 @@ import { ApiMenuCategory, MenuItem } from '~/lib/apiMenu'
 import { ApiPoi, getPois } from '~/lib/apiPois'
 import { headerFromSettings } from '~/lib/apiSettings'
 import { getBBoxFeatures } from '~/lib/bbox'
+import { favoritesStore } from '~/stores/favorite'
+import { mapStore } from '~/stores/map'
+import { menuStore } from '~/stores/menu'
 import { Mode, OriginEnum } from '~/utils/types'
 import { getHashPart, setHashParts } from '~/utils/url'
 import { flattenFeatures } from '~/utils/utilities'
@@ -288,18 +291,13 @@ export default mixins(HomeMixin).extend({
   },
 
   computed: {
-    ...mapGetters({
-      pois: 'menu/features',
-      mode: 'map/mode',
-      isModeFavorites: 'map/isModeFavorites',
-      isModeExplorerOrFavorites: 'map/isModeExplorerOrFavorites',
-      map_center: 'map/center',
-      favoritesIds: 'favorite/favoritesIds',
-    }),
-
-    menuItems(): Record<ApiMenuCategory['id'], MenuItem> {
-      return this.$store.getters['menu/menuItems']
-    },
+    ...mapState(menuStore, ['features', 'menuItems']),
+    ...mapState(mapStore, [
+      'center',
+      'isModeFavorites',
+      'isModeExplorerOrFavorites',
+    ]),
+    ...mapState(favoritesStore, ['favoritesIds']),
 
     logoUrl(): string {
       return this.settings.themes[0]?.logo_url || ''
@@ -314,7 +312,7 @@ export default mixins(HomeMixin).extend({
     },
 
     isPoiCardVisible(): boolean {
-      return this.selectedFeature && this.showPoi
+      return !!(this.selectedFeature && this.showPoi)
     },
 
     isBottomMenuOpened(): boolean {
@@ -327,7 +325,7 @@ export default mixins(HomeMixin).extend({
     menuItemsToIcons(): Record<MenuItem['id'], string> {
       const resources: Record<MenuItem['id'], string> = {}
 
-      Object.values(this.menuItems).forEach((sc) => {
+      Object.values(this.menuItems || {}).forEach((sc) => {
         resources[sc.id] = (sc.menu_group || sc.link || sc.category).icon
       })
 
@@ -356,7 +354,7 @@ export default mixins(HomeMixin).extend({
       let feature: ApiPoi[]
       switch (this.mode as Mode) {
         case Mode.BROWSER:
-          feature = flattenFeatures(this.pois)
+          feature = flattenFeatures(this.features)
           break
         case Mode.FAVORITES:
           feature = this.favorites || []
@@ -393,7 +391,7 @@ export default mixins(HomeMixin).extend({
       if (a !== b) {
         this.routerPushUrl()
 
-        this.$store.dispatch('menu/fetchFeatures', {
+        menuStore().fetchFeatures({
           apiEndpoint: this.$vidoConfig().API_ENDPOINT,
           apiProject: this.$vidoConfig().API_PROJECT,
           apiTheme: this.$vidoConfig().API_THEME,
@@ -418,8 +416,9 @@ export default mixins(HomeMixin).extend({
   },
 
   beforeMount() {
-    const mode = getHashPart(this.$router, 'mode') || Mode.BROWSER
-    this.setMode(mode)
+    this.mode =
+      Mode[getHashPart(this.$router, 'mode') as keyof typeof Mode] ||
+      Mode.BROWSER
 
     const favs = getHashPart(this.$router, 'favs')
     if (favs) {
@@ -427,7 +426,7 @@ export default mixins(HomeMixin).extend({
         const newFavorite = favs
           .split(',')
           .map((e) => (!isNaN(Number(e)) ? Number(e) : null))
-          .filter((e) => !!e)
+          .filter((e) => !!e) as Number[]
 
         this.setFavorites(newFavorite)
         this.handleFavorites()
@@ -436,7 +435,7 @@ export default mixins(HomeMixin).extend({
         console.error('Vido error:', e.message)
       }
     } else {
-      this.$store.dispatch('favorite/initFavoritesFromLocalStorage')
+      favoritesStore().initFavoritesFromLocalStorage()
     }
   },
 
@@ -479,9 +478,7 @@ export default mixins(HomeMixin).extend({
   },
 
   methods: {
-    ...mapActions({
-      setFavorites: 'favorite/setFavorites',
-    }),
+    ...mapActions(favoritesStore, ['setFavorites']),
 
     routerPushUrl(hashUpdate: { [key: string]: string | null } = {}) {
       const categoryIds = this.selectedCategoryIds.join(',')
@@ -506,7 +503,7 @@ export default mixins(HomeMixin).extend({
     },
 
     onQuitExplorerFavoriteMode() {
-      this.$store.dispatch('map/setMode', Mode.BROWSER)
+      this.mode = Mode.BROWSER
       this.setSelectedFeature(null)
     },
 
@@ -544,7 +541,7 @@ export default mixins(HomeMixin).extend({
         this.setSelectedFeature(feature)
       }
       if (!this.isModeExplorer) {
-        this.setMode(Mode.EXPLORER)
+        this.mode = Mode.EXPLORER
         this.goToSelectedFeature()
 
         if (this.$screen.smallScreen) {
@@ -552,13 +549,13 @@ export default mixins(HomeMixin).extend({
         }
       } else {
         this.allowRegionBackZoom = false
-        this.setMode(Mode.BROWSER)
+        this.mode = Mode.BROWSER
       }
     },
 
-    toggleFavorite(feature?: ApiPoi) {
+    toggleFavorite(feature: ApiPoi) {
       try {
-        this.$store.dispatch('favorite/toggleFavorite', feature)
+        favoritesStore().toggleFavorite(feature)
       } catch (e) {
         // eslint-disable-next-line no-console
         console.error('Vido error:', e.message)
@@ -573,9 +570,9 @@ export default mixins(HomeMixin).extend({
       if (this.favoritesIds?.length > 0) {
         this.$tracking({ type: 'map_control_event', event: 'favorite' })
         if (!this.isModeFavorites) {
-          this.setMode(Mode.FAVORITES)
+          this.mode = Mode.FAVORITES
         } else {
-          this.setMode(Mode.BROWSER)
+          this.mode = Mode.BROWSER
         }
       } else {
         this.showFavoritesOverlay = true
@@ -604,7 +601,7 @@ export default mixins(HomeMixin).extend({
         })
     },
 
-    fetchFavorites(ids: [string]): Promise<ApiPoi[]> {
+    fetchFavorites(ids: Number[]): Promise<ApiPoi[]> {
       return getPois(
         this.$vidoConfig().API_ENDPOINT,
         this.$vidoConfig().API_PROJECT,
