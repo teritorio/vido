@@ -1,3 +1,4 @@
+import { Polygon, MultiPolygon } from 'geojson'
 import { LngLatBoundsLike } from 'maplibre-gl'
 import { mapActions, mapState, mapWritableState } from 'pinia'
 import Vue, { PropType, VueConstructor } from 'vue'
@@ -31,6 +32,10 @@ export default (
     initialPoi: {
       type: Object as PropType<ApiPoi>,
       default: null,
+    },
+    boundaryArea: {
+      type: Object as PropType<Polygon | MultiPolygon | undefined>,
+      default: undefined,
     },
   },
 

@@ -71,7 +71,9 @@ Then, create a PR from `develop` to `main`, it will launch the continuous develo
 
 * Main Map:
   * Full page: `/`, `/{poi_Id}`, `/{category_ids}/` and `/{category_ids}/{poi_id}`.
-  * Embedded: `/embedded/`
+    * Parameters:
+      * `boundary`: an alternative boundry key from settings `polygons_extra`.
+  * Embedded: `/embedded/`, same subpath and paramters as full page.
 * POI:
   * details: `/poi/{id}/details`.
 * POIs:

@@ -5,10 +5,12 @@
     :nav-menu-entries="contents"
     :initial-category-ids="categoryIds"
     :initial-poi="initialPoi"
+    :boundary-area="boundary_geojson"
   />
 </template>
 
 <script lang="ts">
+import { Polygon, MultiPolygon, GeoJSON } from 'geojson'
 import { mapWritableState } from 'pinia'
 import Vue from 'vue'
 import { MetaInfo } from 'vue-meta'
@@ -40,6 +42,7 @@ export default Vue.extend({
     menuItems: MenuItem[] | undefined
     categoryIds: number[] | null
     initialPoi: ApiPoi | null
+    boundary_geojson: Polygon | MultiPolygon | undefined
   }> {
     const config: VidoConfig =
       siteStore($pinia).config || vidoConfig(req, $config)
@@ -47,6 +50,32 @@ export default Vue.extend({
     const fetchSettings = siteStore($pinia).settings
       ? Promise.resolve(siteStore($pinia).settings as Settings)
       : getSettings(config.API_ENDPOINT, config.API_PROJECT, config.API_THEME)
+
+    const fetchSettingsBoundary = fetchSettings.then(async (settings) => {
+      let boundary_geojson: Polygon | MultiPolygon | undefined
+      if (route.query.boundary && typeof route.query.boundary === 'string') {
+        const boundaryObject = settings.polygons_extra[route.query.boundary]
+        if (boundaryObject) {
+          if (typeof boundaryObject.data === 'string') {
+            const geojson = (await (
+              await fetch(boundaryObject.data)
+            ).json()) as GeoJSON
+            if (geojson.type === 'Feature') {
+              boundary_geojson = geojson.geometry as Polygon | MultiPolygon
+            } else if (
+              geojson.type === 'Polygon' ||
+              geojson.type === 'MultiPolygon'
+            ) {
+              boundary_geojson = geojson as Polygon | MultiPolygon
+            }
+          } else {
+            boundary_geojson = boundaryObject.data as Polygon
+          }
+        }
+      }
+
+      return [settings, boundary_geojson]
+    }) as unknown as [Settings, Polygon | MultiPolygon | undefined]
 
     const fetchContents = siteStore($pinia).contents
       ? Promise.resolve(siteStore($pinia).contents as ContentEntry[])
@@ -96,14 +125,19 @@ export default Vue.extend({
       })
     }
 
-    const [settings, contents, propertyTranslations, menuItems, initialPoi] =
-      await Promise.all([
-        fetchSettings,
-        fetchContents,
-        fetchPropertyTranslations,
-        fetchMenuItems,
-        fetchPoi,
-      ])
+    const [
+      [settings, boundary_geojson],
+      contents,
+      propertyTranslations,
+      menuItems,
+      initialPoi,
+    ] = await Promise.all([
+      fetchSettingsBoundary,
+      fetchContents,
+      fetchPropertyTranslations,
+      fetchMenuItems,
+      fetchPoi,
+    ])
 
     return Promise.resolve({
       config,
@@ -113,6 +147,7 @@ export default Vue.extend({
       menuItems,
       categoryIds,
       initialPoi,
+      boundary_geojson,
     })
   },
 
@@ -134,6 +169,7 @@ export default Vue.extend({
     menuItems: MenuItem[]
     categoryIds: number[] | null
     initialPoi: ApiPoi | null
+    boundary_geojson: Polygon | MultiPolygon | undefined
   } {
     return {
       config: null,

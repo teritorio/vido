@@ -34,6 +34,12 @@ export interface Settings {
     type: 'geojson'
     data: GeoJSON.Polygon
   }
+  polygons_extra: {
+    [key: string]: {
+      type: 'geojson'
+      data: string | GeoJSON.Polygon
+    }
+  }
   // eslint-disable-next-line camelcase
   bbox_line: GeoJSON.LineString
   // eslint-disable-next-line camelcase

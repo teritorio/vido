@@ -42,7 +42,7 @@
 <script lang="ts">
 import { PoiFilter } from '@teritorio/map'
 import copy from 'fast-copy'
-import { Polygon } from 'geojson'
+import { Polygon, MultiPolygon } from 'geojson'
 import throttle from 'lodash.throttle'
 import { FitBoundsOptions, LngLatBoundsLike, LngLatLike } from 'maplibre-gl'
 import Vue, { PropType } from 'vue'
@@ -126,7 +126,7 @@ export default Vue.extend({
       default: false,
     },
     boundaryArea: {
-      type: Object as PropType<Polygon | undefined>,
+      type: Object as PropType<Polygon | MultiPolygon | undefined>,
       default: undefined,
     },
   },
@@ -258,16 +258,32 @@ export default Vue.extend({
 
       if (this.boundaryArea) {
         const inverse = copy(this.boundaryArea)
-        inverse.coordinates = [
-          [
-            [-180, -90],
-            [180, -90],
-            [180, 90],
-            [-180, 90],
-            [-180, -90],
-          ],
-          ...inverse.coordinates,
-        ]
+        if (inverse.type === 'Polygon') {
+          inverse.coordinates = [
+            [
+              [-180, -90],
+              [180, -90],
+              [180, 90],
+              [-180, 90],
+              [-180, -90],
+            ],
+            ...inverse.coordinates,
+          ]
+        } else {
+          inverse.coordinates = [
+            [
+              [
+                [-180, -90],
+                [180, -90],
+                [180, 90],
+                [-180, 90],
+                [-180, -90],
+              ],
+              ...inverse.coordinates[0],
+            ],
+          ]
+        }
+
         this.map.addSource(BOUNDARY_SOURCE, {
           type: 'geojson',
           data: inverse,

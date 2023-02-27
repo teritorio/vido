@@ -55,7 +55,7 @@
 </template>
 
 <script lang="ts">
-import { Polygon } from 'geojson'
+import { Polygon, MultiPolygon } from 'geojson'
 import debounce from 'lodash.debounce'
 import maplibregl, {
   MapDataEvent,
@@ -160,7 +160,7 @@ export default (
       default: false,
     },
     boundaryArea: {
-      type: Object as PropType<Polygon | undefined>,
+      type: Object as PropType<Polygon | MultiPolygon | undefined>,
       default: undefined,
     },
   },
