@@ -30,6 +30,10 @@ export interface Settings {
   attributions: string[]
   // eslint-disable-next-line camelcase
   icon_font_css_url: string
+  polygon: {
+    type: 'geojson'
+    data: GeoJSON.Polygon
+  }
   // eslint-disable-next-line camelcase
   bbox_line: GeoJSON.LineString
   // eslint-disable-next-line camelcase

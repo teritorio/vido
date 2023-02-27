@@ -47,7 +47,7 @@
             :style-icon-filter="poiFilters"
             :explorer-mode-enabled="explorerModeEnabled"
             :cooperative-gestures="false"
-            :boundary-area="settings.polygon"
+            :boundary-area="settings.polygon.data"
           />
           <div class="p-4 absolute">
             <SelectedCategories />

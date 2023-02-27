@@ -10,23 +10,26 @@
     "default_country_state_opening_hours": "Nouvelle-Aquitaine",
     "slug": "teritorio",
     "polygon": {
-        "type": "Polygon",
-        "coordinates": [
-            [
+        "type": "geojson",
+        "data": {
+            "type": "Polygon",
+            "coordinates": [
                 [
-                    -1.5408,
-                    43.5306
-                ],
-                [
-                    -1.4207,
-                    43.4938
-                ],
-                [
-                    -1.5408,
-                    43.5306
+                    [
+                        -1.5408,
+                        43.5306
+                    ],
+                    [
+                        -1.4207,
+                        43.4938
+                    ],
+                    [
+                        -1.5408,
+                        43.5306
+                    ]
                 ]
             ]
-        ]
+        }
     },
     "bbox_line": {
         "type": "LineString",
