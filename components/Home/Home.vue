@@ -1,5 +1,6 @@
 <template>
   <div class="fixed w-full h-full overflow-hidden flex flex-col">
+    <h1 class="absolute text-white">{{ siteName }}</h1>
     <header
       class="hidden md:flex relative md:fixed top-0 z-10 flex flex-row w-full h-auto space-x-4 md:w-auto md:p-2"
       style="max-height: calc(100vh - 30px)"
