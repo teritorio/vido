@@ -26,7 +26,7 @@
       <SearchResultBlock
         v-if="itemsCartocode.length > 0"
         type="cartocode"
-        :label="$tc('headerMenu.cartocode')"
+        :label="$t('headerMenu.cartocode')"
         icon="layer-group"
         :items="itemsCartocode"
         @item-click="onCartocodeClick"
@@ -35,7 +35,7 @@
       <SearchResultBlock
         v-if="itemsMenuItems.length > 0"
         type="category"
-        :label="$tc('headerMenu.categories')"
+        :label="$t('headerMenu.categories')"
         icon="layer-group"
         :items="itemsMenuItems"
         @item-click="onCategoryClick"
@@ -44,7 +44,7 @@
       <SearchResultBlock
         v-if="itemsPois.length > 0"
         type="pois"
-        :label="$tc('headerMenu.pois')"
+        :label="$t('headerMenu.pois')"
         icon="map-marker-alt"
         :items="itemsPois"
         @item-click="onPoiClick"
@@ -53,14 +53,14 @@
       <SearchResultBlock
         v-if="itemsAddresses.length > 0"
         type="addresse"
-        :label="$tc('headerMenu.addresses')"
+        :label="$t('headerMenu.addresses')"
         icon="home"
         :items="itemsAddresses"
         @item-click="onAddressClick"
       />
 
       <p v-if="results === 0">
-        {{ $tc('headerMenu.noResult') }}
+        {{ $t('headerMenu.noResult') }}
       </p>
     </div>
   </div>

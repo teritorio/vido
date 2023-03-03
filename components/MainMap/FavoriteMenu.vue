@@ -15,7 +15,7 @@
       >
         <FavoriteIcon :is-active="isModeFavorites" />
         <span class="hidden md:inline favoriteTitle">{{
-          $tc('favorites.title')
+          $t('favorites.title')
         }}</span>
         <Badge
           id="favourites_counter"
@@ -41,7 +41,7 @@
           size="sm"
         />
         <span class="hidden md:inline favoriteTitle">
-          {{ $tc('favorites.menu_notebook') }}
+          {{ $t('favorites.menu_notebook') }}
         </span>
       </button>
     </div>

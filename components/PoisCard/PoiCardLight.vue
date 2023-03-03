@@ -26,7 +26,7 @@
           rel="noopener noreferrer"
           target="_blank"
         >
-          {{ $tc('poiCard.details') }}
+          {{ $t('poiCard.details') }}
         </a>
       </div>
       <Fields
