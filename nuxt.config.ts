@@ -73,7 +73,7 @@ const config: NuxtConfig = {
     '@/plugins/vue-tailwind.ts',
     { src: '@/plugins/tracking.ts', mode: 'client' },
     '@/plugins/property-translations.ts',
-    { src: '@/plugins/pinia-shared-state.ts', ssr: false },
+    { src: '@/plugins/pinia-shared-state.ts', mode: 'client' },
   ],
 
   // Auto import components (https://go.nuxtjs.dev/config-components)
