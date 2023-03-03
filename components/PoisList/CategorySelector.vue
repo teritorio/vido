@@ -29,8 +29,9 @@
 </template>
 
 <script lang="ts">
-import { LocaleObject } from '@nuxtjs/i18n'
 import { defineComponent, PropType } from 'vue'
+import { useI18n } from 'vue-i18n'
+import { LocaleObject } from 'vue-i18n-routing'
 
 import TeritorioIcon from '~/components/UI/TeritorioIcon.vue'
 import { ApiMenuCategory, MenuItem } from '~/lib/apiMenu'
@@ -64,6 +65,7 @@ export default defineComponent({
           menuIndex[menuItem.id] = menuItem
         })
 
+      const locales = useI18n().locales.value
       return (
         this.menuItems.filter(
           (menuItem) => menuItem.category && !menuItem.hidden
@@ -101,7 +103,7 @@ export default defineComponent({
         .sort((a, b) =>
           a.text.localeCompare(
             b.text,
-            this.$i18n.locales.map((locale: string | LocaleObject) =>
+            locales.map((locale: string | LocaleObject) =>
               typeof locale === 'string' ? locale : locale.code
             )
           )

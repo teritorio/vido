@@ -17,7 +17,7 @@
             </p>
             <UIButton
               v-if="hasClipboard"
-              :label="!isCopied && $tc('shareLink.copy')"
+              :label="!isCopied && $t('shareLink.copy')"
               :icon="isCopied ? 'clipboard-check' : 'copy'"
               @click="copyLink"
             />
@@ -26,7 +26,7 @@
             <img
               :src="qrCodeUrl()"
               class="w-1/2"
-              :alt="$tc('shareLink.qrcode')"
+              :alt="$t('shareLink.qrcode')"
             />
           </div>
         </div>
@@ -34,7 +34,7 @@
         <v-card-actions>
           <v-spacer></v-spacer>
           <UIButton
-            :label="$tc('ui.close')"
+            :label="$t('ui.close')"
             icon="times"
             class="self-end"
             @click="close"

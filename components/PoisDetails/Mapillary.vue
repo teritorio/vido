@@ -7,7 +7,7 @@
       :href="`https://www.mapillary.com/app/?pKey=${imageId}&focus=photo`"
       target="_blank"
     >
-      {{ $tc('poiDetails.mapillaryExplore') }}
+      {{ $t('poiDetails.mapillaryExplore') }}
     </ExternalLink>
   </div>
 </template>

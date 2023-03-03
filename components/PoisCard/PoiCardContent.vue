@@ -20,7 +20,7 @@
           rel="noopener noreferrer"
           @click.stop="trackingPopupEvent('details')"
         >
-          {{ $tc('poiCard.details') }}
+          {{ $t('poiCard.details') }}
         </NuxtLink>
         <a
           v-else
@@ -29,7 +29,7 @@
           rel="noopener noreferrer"
           @click.stop="trackingPopupEvent('details')"
         >
-          {{ $tc('poiCard.details') }}
+          {{ $t('poiCard.details') }}
         </a>
       </template>
     </div>
@@ -77,21 +77,21 @@
         v-if="$screen.phone && coordinatesHref"
         :href="coordinatesHref"
         class="flex flex-col items-center flex-1 h-full p-2 space-y-2 rounded-lg hover:bg-zinc-100"
-        :title="$tc('poiCard.findRoute')"
+        :title="$t('poiCard.findRoute')"
         @click="trackingPopupEvent('route')"
       >
         <font-awesome-icon icon="route" :color="colorLine" size="sm" />
-        <span class="text-sm">{{ $tc('poiCard.route') }}</span>
+        <span class="text-sm">{{ $t('poiCard.route') }}</span>
       </a>
 
       <button
         type="button"
         class="flex flex-1 flex-col items-center space-y-2 rounded-lg p-2 h-full hover:bg-zinc-100"
-        :title="$tc('poiCard.zoom')"
+        :title="$t('poiCard.zoom')"
         @click.stop="onZoomClick"
       >
         <font-awesome-icon icon="plus" :color="colorLine" size="sm" />
-        <span class="text-sm">{{ $tc('poiCard.zoom') }}</span>
+        <span class="text-sm">{{ $t('poiCard.zoom') }}</span>
       </button>
 
       <button
@@ -104,8 +104,8 @@
         ]"
         :title="
           isModeExplorer
-            ? $tc('poiCard.unactivateExplore')
-            : $tc('poiCard.activateExplore')
+            ? $t('poiCard.unactivateExplore')
+            : $t('poiCard.activateExplore')
         "
         @click.stop="onExploreClick"
       >
@@ -114,7 +114,7 @@
           :color="isModeExplorer ? 'white' : colorLine"
           size="sm"
         />
-        <span class="text-sm">{{ $tc('poiCard.explore') }}</span>
+        <span class="text-sm">{{ $t('poiCard.explore') }}</span>
       </button>
 
       <button
@@ -122,14 +122,12 @@
         type="button"
         class="flex flex-col items-center flex-1 h-full p-2 space-y-2 rounded-lg hover:bg-zinc-100"
         :title="
-          isModeFavorites
-            ? $tc('poiCard.favoriteOn')
-            : $tc('poiCard.favoriteOff')
+          isModeFavorites ? $t('poiCard.favoriteOn') : $t('poiCard.favoriteOff')
         "
         @click.stop="onFavoriteClick"
       >
         <FavoriteIcon :is-active="isModeFavorites" :color-line="colorLine" />
-        <span class="text-sm">{{ $tc('poiCard.favorite') }}</span>
+        <span class="text-sm">{{ $t('poiCard.favorite') }}</span>
       </button>
     </div>
   </div>

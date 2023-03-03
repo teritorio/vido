@@ -58,7 +58,7 @@
           class="flex items-center justify-center w-10 h-10 text-2xl font-bold transition-all rounded-full outline-none cursor-pointer focus:outline-none hover:bg-zinc-100 focus:bg-zinc-100"
           @click="onGoBackClick"
         >
-          <span class="sr-only">{{ $tc('headerMenu.back') }}</span>
+          <span class="sr-only">{{ $t('headerMenu.back') }}</span>
           <font-awesome-icon
             icon="arrow-left"
             class="text-zinc-800"
@@ -72,7 +72,7 @@
           class="px-3 py-2 font-medium transition-all rounded-md outline-none focus:outline-none hover:bg-zinc-100 focus:bg-zinc-100"
           @click="onClickSelectAll"
         >
-          {{ $tc('headerMenu.selectAll') }}
+          {{ $t('headerMenu.selectAll') }}
         </button>
 
         <button
@@ -81,7 +81,7 @@
           class="px-3 py-2 font-medium transition-all rounded-md outline-none focus:outline-none hover:bg-zinc-100 focus:bg-zinc-100"
           @click="onClickUnselectAll"
         >
-          {{ $tc('headerMenu.unselectAll') }}
+          {{ $t('headerMenu.unselectAll') }}
         </button>
       </div>
 

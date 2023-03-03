@@ -5,7 +5,7 @@
         v-if="!hidden"
         :id="`background-selector-map-${background}`"
         :key="background"
-        :aria-label="$tc('mapControls.backgroundAriaLabel')"
+        :aria-label="$t('mapControls.backgroundAriaLabel')"
         :class="[activeBackground == background && 'maplibregl-ctrl-active']"
         :title="
           $t('mapControls.backgroundButton', {

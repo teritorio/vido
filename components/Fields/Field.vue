@@ -65,7 +65,7 @@
       target="_blank"
       @click.stop="$emit('click-details')"
     >
-      {{ $tc('poiCard.seeDetail') }}
+      {{ $t('poiCard.seeDetail') }}
     </a>
   </div>
 

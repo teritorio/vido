@@ -74,31 +74,31 @@ export default defineComponent({
     return {
       dateFilters: [
         {
-          text: this.$tc('dateFilter.' + DateFilterLabel.TODAY),
+          text: this.$t('dateFilter.' + DateFilterLabel.TODAY),
           value: DateFilterLabel.TODAY,
           begin: formatDate(today),
           end: formatDate(today),
         },
         {
-          text: this.$tc('dateFilter.' + DateFilterLabel.TOMORROW),
+          text: this.$t('dateFilter.' + DateFilterLabel.TOMORROW),
           value: DateFilterLabel.TOMORROW,
           begin: formatDate(tomorrow),
           end: formatDate(tomorrow),
         },
         {
-          text: this.$tc('dateFilter.' + DateFilterLabel.THIS_WEEKEND),
+          text: this.$t('dateFilter.' + DateFilterLabel.THIS_WEEKEND),
           value: DateFilterLabel.THIS_WEEKEND,
           begin: formatDate(saturday),
           end: formatDate(sunday),
         },
         {
-          text: this.$tc('dateFilter.' + DateFilterLabel.NEXT_WEEK),
+          text: this.$t('dateFilter.' + DateFilterLabel.NEXT_WEEK),
           value: DateFilterLabel.NEXT_WEEK,
           begin: formatDate(today),
           end: formatDate(in7days),
         },
         {
-          text: this.$tc('dateFilter.' + DateFilterLabel.NEXT_MONTH),
+          text: this.$t('dateFilter.' + DateFilterLabel.NEXT_MONTH),
           value: DateFilterLabel.NEXT_MONTH,
           begin: formatDate(today),
           end: formatDate(in1month),

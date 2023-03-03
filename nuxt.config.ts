@@ -89,7 +89,7 @@ export default defineNuxtConfig({
 
   // Modules (https://go.nuxtjs.dev/config-modules)
   modules: [
-    // '@nuxtjs/i18n',
+    '@nuxtjs/i18n',
     // '@nuxt/image',
     // '@nuxtjs/gtm',
     ...(process.env.SENTRY_DSN ? ['@nuxtjs/sentry'] : []),
@@ -109,7 +109,7 @@ export default defineNuxtConfig({
       { code: 'fr', name: 'Français', flag: 'FR', iso: 'fr-FR', file: 'fr.js' },
     ],
     defaultLocale: 'en',
-    langDir: '~/locales/',
+    langDir: 'locales/',
   },
 
   // image: {

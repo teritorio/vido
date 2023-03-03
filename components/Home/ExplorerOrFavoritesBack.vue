@@ -9,7 +9,7 @@
     </button>
     <p class="ml-2">
       {{
-        $tc(
+        $t(
           $screen.smallScreen
             ? isModeFavorites
               ? 'headerMenu.backToMenuFavorites'

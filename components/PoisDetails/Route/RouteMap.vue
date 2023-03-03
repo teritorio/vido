@@ -9,7 +9,7 @@
     />
     <div class="detail-wrapper">
       <div v-if="points.length > 0" class="detail-left">
-        <h2>{{ $tc('poiDetails.routes.waypoints') }}</h2>
+        <h2>{{ $t('poiDetails.routes.waypoints') }}</h2>
         <PoisDeck
           :pois="points"
           pois-card="PoiCardLight"
@@ -21,7 +21,7 @@
         />
       </div>
       <div v-if="pois.length > 0" class="detail-right">
-        <h2>{{ $tc('poiDetails.routes.pois') }}</h2>
+        <h2>{{ $t('poiDetails.routes.pois') }}</h2>
         <PoisDeck
           :pois="pois"
           pois-card="PoiCardLight"

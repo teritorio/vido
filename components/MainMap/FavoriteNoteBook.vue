@@ -2,10 +2,10 @@
   <div id="favourite_notebook" class="bg-white p3">
     <div class="py-4 px-1 sm:px-6 sticky top-0 z-20 bg-white">
       <div class="flex justify-between items-center">
-        <p class="text-lg">{{ $tc('favorites.notebook.title') }}</p>
+        <p class="text-lg">{{ $t('favorites.notebook.title') }}</p>
         <UIButton
           id="close_favourite_notebook"
-          :label="$tc('ui.close')"
+          :label="$t('ui.close')"
           icon="times"
           @click="$emit('on-close')"
         />
@@ -14,14 +14,14 @@
       <div>
         <IconsBar class="mr-6">
           <IconButton
-            :label="$tc('favorites.menu_share')"
+            :label="$t('favorites.menu_share')"
             class="w-8 h-8"
             @click="setShareLink()"
           >
             <font-awesome-icon icon="share-alt" />
           </IconButton>
           <IconButton
-            :label="$tc('favorites.export_pdf')"
+            :label="$t('favorites.export_pdf')"
             class="w-8 h-8"
             :href="pdfLink"
             target="_blank"
@@ -30,7 +30,7 @@
             <font-awesome-icon icon="print" />
           </IconButton>
           <IconButton
-            :label="$tc('favorites.export_csv')"
+            :label="$t('favorites.export_csv')"
             class="w-8 h-8"
             :href="csvLink"
             target="_blank"
@@ -39,7 +39,7 @@
             <font-awesome-icon icon="file-csv" />
           </IconButton>
           <IconButton
-            :label="$tc('favorites.menu_clear')"
+            :label="$t('favorites.menu_clear')"
             class="w-8 h-8"
             @click="removeFavorites()"
           >
@@ -59,7 +59,7 @@
       @zoom-click="$emit('zoom-click', $event)"
     />
 
-    <ShareLinkModal ref="shareModal" :title="$tc('favorites.share_link')" />
+    <ShareLinkModal ref="shareModal" :title="$t('favorites.share_link')" />
   </div>
 </template>
 

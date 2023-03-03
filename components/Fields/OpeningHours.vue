@@ -3,7 +3,7 @@
     <span hidden>{{ openingHours }}</span>
     <template v-if="nextChange">
       <p v-if="isPointTime" id="next" class="text-emerald-500">
-        {{ $tc('openingHours.next') }}
+        {{ $t('openingHours.next') }}
         <RelativeDate :date="nextChange.nextChange"></RelativeDate>
       </p>
       <template v-else>
@@ -12,10 +12,10 @@
           id="opened"
           class="text-emerald-500"
         >
-          {{ $tc('openingHours.opened') }}
+          {{ $t('openingHours.opened') }}
           <template v-if="nextChange.nextChange">
             -
-            {{ $tc('openingHours.closeAt') }}
+            {{ $t('openingHours.closeAt') }}
             <RelativeDate :date="nextChange.nextChange"></RelativeDate>
           </template>
         </p>
@@ -24,10 +24,10 @@
           id="openAt"
           class="text-red-500"
         >
-          {{ $tc('openingHours.closed') }}
+          {{ $t('openingHours.closed') }}
           <template v-if="nextChange.nextChange">
             -
-            {{ $tc('openingHours.openAt') }}
+            {{ $t('openingHours.openAt') }}
             <RelativeDate :date="nextChange.nextChange"></RelativeDate>
           </template>
         </p>
@@ -50,7 +50,7 @@
         </li>
       </ul>
       <template v-if="variable">
-        <p>{{ $tc('openingHours.variableWeek') }}</p>
+        <p>{{ $t('openingHours.variableWeek') }}</p>
       </template>
     </template>
   </div>

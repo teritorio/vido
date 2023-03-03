@@ -12,7 +12,7 @@
     >
       <div class="grid justify-items-end pb-4">
         <UIButton
-          :label="$tc('ui.close')"
+          :label="$t('ui.close')"
           icon="times"
           @click="setSelectedFeature(null)"
         />

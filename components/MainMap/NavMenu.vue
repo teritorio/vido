@@ -1,15 +1,8 @@
 <template>
-  <section
-    v-if="entries.length + $i18n.locales.length > 0"
-    class="relative z-40"
-  >
+  <section v-if="entries.length + locales.length > 0" class="relative z-40">
     <v-menu offset-y>
       <template #activator="{ on }">
-        <IconButton
-          :label="$tc('navMenu.label')"
-          class="w-11 h-11"
-          v-on="on"
-        >
+        <IconButton :label="$t('navMenu.label')" class="w-11 h-11" v-on="on">
           <font-awesome-icon icon="cog" class="text-zinc-800" size="lg" />
         </IconButton>
       </template>
@@ -33,7 +26,7 @@
         </v-list-item>
         <v-divider v-if="Boolean(entries.length)"></v-divider>
         <v-list-item
-          v-for="locale in $i18n.locales"
+          v-for="locale in locales"
           :key="locale.code"
           :class="[
             'w-full px-5 py-3 hover:bg-zinc-100',
@@ -55,6 +48,8 @@
 <script lang="ts">
 import { mapWritableState } from 'pinia'
 import { defineComponent, PropType } from 'vue'
+import { useI18n } from 'vue-i18n'
+import { LocaleObject } from 'vue-i18n-routing'
 
 import ExternalLink from '~/components/UI/ExternalLink.vue'
 import IconButton from '~/components/UI/IconButton.vue'
@@ -76,11 +71,15 @@ export default defineComponent({
 
   computed: {
     ...mapWritableState(siteStore, ['locale']),
+
+    locales(): LocaleObject[] {
+      return useI18n().locales.value as unknown as LocaleObject[]
+    },
   },
 
   methods: {
     setLocale(locale: string) {
-      this.$i18n.setLocale(locale)
+      this.$i18n.locale = locale
       this.locale = locale
     },
     openLink(title: string, url: string) {
