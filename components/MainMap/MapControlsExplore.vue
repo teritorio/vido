@@ -4,8 +4,8 @@
     :class="['maplibregl-ctrl maplibregl-ctrl-group', 'hidden md:block']"
   >
     <button
-      :aria-label="$tc('mapControls.exploreAriaLabel')"
-      :title="$tc('mapControls.exploreButton')"
+      :aria-label="$t('mapControls.exploreAriaLabel')"
+      :title="$t('mapControls.exploreButton')"
       type="button"
       :class="['hidden md:block', isModeExplorer && 'maplibregl-ctrl-active']"
       @click="toggleMode"

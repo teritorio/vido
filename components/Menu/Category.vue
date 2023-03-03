@@ -56,7 +56,7 @@
       >
         <font-awesome-icon icon="filter" size="sm" class="ml-16" />
         {{
-          isFiltered ? $tc('headerMenu.editFilters') : $tc('headerMenu.filter')
+          isFiltered ? $t('headerMenu.editFilters') : $t('headerMenu.filter')
         }}
       </button>
     </template>

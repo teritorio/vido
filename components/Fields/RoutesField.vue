@@ -9,7 +9,7 @@
       <p>{{ length }}</p>
     </div>
     <div v-else>
-      <div class="field">{{ $tc('fields.route.length') }} {{ length }}</div>
+      <div class="field">{{ $t('fields.route.length') }} {{ length }}</div>
       <div v-for="(route, activity) in routes" :key="activity" class="field">
         <FieldsHeader
           :recursion-stack="recursionStack"
@@ -19,10 +19,10 @@
         </FieldsHeader>
         <ul class="list-disc ml-6">
           <li>
-            {{ $tc('fields.route.difficulty') }}
+            {{ $t('fields.route.difficulty') }}
             {{ difficulty(activity, route) }}
           </li>
-          <li>{{ $tc('fields.route.duration') }} {{ duration(route) }}</li>
+          <li>{{ $t('fields.route.duration') }} {{ duration(route) }}</li>
         </ul>
       </div>
     </div>
@@ -101,9 +101,7 @@ export default defineComponent({
 
     length(): string | undefined {
       const route = Object.values(this.routes)[0]
-      return route.length
-        ? `${route.length} ${this.$tc('units.km')}`
-        : undefined
+      return route.length ? `${route.length} ${this.$t('units.km')}` : undefined
     },
   },
 
@@ -115,10 +113,10 @@ export default defineComponent({
 
         let string = ''
         if (hours > 0) {
-          string += `${hours} ${this.$tc('units.hours')}`
+          string += `${hours} ${this.$t('units.hours')}`
         }
         if (minutes > 0) {
-          string += `${hours > 0 ? ' ' : ''}${minutes} ${this.$tc('units.min')}`
+          string += `${hours > 0 ? ' ' : ''}${minutes} ${this.$t('units.min')}`
         }
 
         return string

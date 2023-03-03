@@ -10,7 +10,7 @@
     <template #headerButtons>
       <IconButton
         :label="
-          isFavorite ? $tc('poiCard.favoriteOn') : $tc('poiCard.favoriteOff')
+          isFavorite ? $t('poiCard.favoriteOn') : $t('poiCard.favoriteOff')
         "
         :class="['w-11 h-11', 'mr-3 sm:mr-9']"
         @click.stop="toggleFavorite"
@@ -19,7 +19,7 @@
       </IconButton>
       <IconButton
         :href="mapURL"
-        :label="$tc('poiCard.backToMap')"
+        :label="$t('poiCard.backToMap')"
         :class="['w-11 h-11', 'mr-3 sm:mr-9']"
         @click="!mapURL && $router.go(-1)"
       >
@@ -99,7 +99,7 @@
 
     <template #footer>
       <span v-if="poi.properties.metadata.updated_at">
-        {{ $tc('poiDetails.lastUpdate') }}
+        {{ $t('poiDetails.lastUpdate') }}
         <a
           v-if="
             poi.properties.metadata.osm_type && poi.properties.metadata.osm_id
