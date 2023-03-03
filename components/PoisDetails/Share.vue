@@ -3,7 +3,7 @@
     <IconsBar>
       <IconButton
         v-if="href"
-        :label="$tc('poiDetails.shareFacebook')"
+        :label="$t('poiDetails.shareFacebook')"
         class="w-8 h-8"
         :href="shareFacebook"
         target="_blank"
@@ -15,7 +15,7 @@
       </IconButton>
       <IconButton
         v-if="title && href"
-        :label="$tc('poiDetails.shareTwitter')"
+        :label="$t('poiDetails.shareTwitter')"
         class="w-8 h-8"
         :href="shareTwitter"
         target="_blank"
@@ -27,7 +27,7 @@
       </IconButton>
       <IconButton
         v-if="title && href"
-        :label="$tc('poiDetails.shareWhatsApp')"
+        :label="$t('poiDetails.shareWhatsApp')"
         class="w-8 h-8"
         :href="shareWhatsApp"
         target="_blank"
@@ -38,7 +38,7 @@
         />
       </IconButton>
       <IconButton
-        :label="$tc('poiDetails.print')"
+        :label="$t('poiDetails.print')"
         class="w-8 h-8"
         @click="print"
       >
@@ -46,14 +46,14 @@
       </IconButton>
       <IconButton
         v-if="href"
-        :label="$tc('poiDetails.link')"
+        :label="$t('poiDetails.link')"
         class="w-8 h-8"
         @click="shareUrl"
       >
         <font-awesome-icon icon="link" :style="{ color: colorLine }" />
       </IconButton>
     </IconsBar>
-    <ShareLinkModal ref="shareModal" :title="$tc('poiDetails.link')" />
+    <ShareLinkModal ref="shareModal" :title="$t('poiDetails.link')" />
   </div>
 </template>
 

@@ -2,7 +2,7 @@
   <ExternalLink
     v-if="phone"
     :href="`tel:${number}`"
-    :title="$tc('fields.phone.callNumber')"
+    :title="$t('fields.phone.callNumber')"
   >
     {{ numberFormated }}
   </ExternalLink>

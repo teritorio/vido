@@ -171,10 +171,10 @@ export default defineComponent({
 
     this.locales = {
       'NavigationControl.ResetBearing':
-        this.$tc('mapControls.resetBearing') || 'Reset bearing to north',
-      'NavigationControl.ZoomIn': this.$tc('mapControls.zoomIn') || 'Zoom in',
+        this.$t('mapControls.resetBearing') || 'Reset bearing to north',
+      'NavigationControl.ZoomIn': this.$t('mapControls.zoomIn') || 'Zoom in',
       'NavigationControl.ZoomOut':
-        this.$tc('mapControls.zoomOut') || 'Zoom out',
+        this.$t('mapControls.zoomOut') || 'Zoom out',
     }
   },
 

@@ -1,7 +1,7 @@
 <template>
   <IconsBar>
     <IconButton
-      :label="$tc('poisTable.showOnMap')"
+      :label="$t('poisTable.showOnMap')"
       class="w-8 h-8"
       :href="urlMap"
       target="_blank"
@@ -9,14 +9,14 @@
       <font-awesome-icon icon="map" :style="{ color: colorLine }" />
     </IconButton>
     <IconButton
-      :label="$tc('poisTable.downloadCsv')"
+      :label="$t('poisTable.downloadCsv')"
       class="w-8 h-8"
       :href="urlCsv"
     >
       <font-awesome-icon icon="file-csv" :style="{ color: colorLine }" />
     </IconButton>
     <IconButton
-      :label="$tc('poisTable.downloadGeojson')"
+      :label="$t('poisTable.downloadGeojson')"
       class="w-8 h-8"
       :href="urlGeojson"
     >

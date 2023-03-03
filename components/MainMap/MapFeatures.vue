@@ -203,8 +203,8 @@ export default defineComponent({
       }
 
       this.handleResetMapZoom(
-        this.$tc('snack.noPoi.issue'),
-        this.$tc('snack.noPoi.action')
+        this.$t('snack.noPoi.issue'),
+        this.$t('snack.noPoi.action')
       )
 
       if (this.enableFilterRouteByFeatures) {
