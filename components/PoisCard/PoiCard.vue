@@ -35,7 +35,7 @@
       :explorer-mode-enabled="explorerModeEnabled"
       :favorites-mode-enabled="favoritesModeEnabled"
       class="px-4 py-5 flex flex-col md:overflow-y-auto flex-grow h-auto md:max-h-full box-border w-full md:h-80 md:w-96"
-      v-on="$listeners"
+      v-bind="$attrs"
     />
   </div>
 </template>
