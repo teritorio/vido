@@ -99,7 +99,7 @@
           :fit-bounds-padding-options="fitBoundsPaddingOptions"
           :extra-attributions="settings.attributions"
           :small="isBottomMenuOpened"
-          :categories="menuItems"
+          :categories="apiMenuCategory || {}"
           :features="mapFeatures"
           :selected-categories-ids="isModeExplorer ? [] : selectedCategoryIds"
           :style-icon-filter="poiFilters"
@@ -292,7 +292,7 @@ export default mixins(HomeMixin).extend({
   },
 
   computed: {
-    ...mapState(menuStore, ['features', 'menuItems']),
+    ...mapState(menuStore, ['features']),
     ...mapState(mapStore, [
       'center',
       'isModeFavorites',
@@ -326,7 +326,7 @@ export default mixins(HomeMixin).extend({
     menuItemsToIcons(): Record<MenuItem['id'], string> {
       const resources: Record<MenuItem['id'], string> = {}
 
-      Object.values(this.menuItems || {}).forEach((sc) => {
+      Object.values(this.apiMenuCategory || {}).forEach((sc) => {
         resources[sc.id] = (sc.menu_group || sc.link || sc.category).icon
       })
 

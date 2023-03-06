@@ -32,7 +32,7 @@
     <div class="grow">
       <div class="flex flex-col h-screen">
         <CategorySelector
-          :menu-items="menuItems"
+          :menu-items="Object.values(apiMenuCategory || {})"
           @category-change="onMenuChange"
         />
         <div v-if="initialBbox" class="flex flex-grow">
@@ -41,7 +41,7 @@
             :default-bounds="initialBbox"
             :fit-bounds-padding-options="fitBoundsPaddingOptions"
             :extra-attributions="settings.attributions"
-            :categories="menuItems"
+            :categories="apiMenuCategory || {}"
             :features="mapFeatures"
             :selected-categories-ids="selectedCategoryIds"
             :style-icon-filter="poiFilters"

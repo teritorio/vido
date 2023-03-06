@@ -15,7 +15,7 @@
     </template>
     <template #body>
       <CategorySelector
-        :menu-items="menuItems"
+        :menu-items="apiMenuCategory || {}"
         :category-id="categoryId"
         @category-change="onMenuChange"
       />
@@ -83,10 +83,10 @@ export default Vue.extend({
   },
 
   computed: {
-    ...mapState(menuStore, ['menuItems']),
+    ...mapState(menuStore, ['apiMenuCategory']),
 
     category(): ApiMenuCategory {
-      return Object.values(this.menuItems || {}).find(
+      return Object.values(this.apiMenuCategory || {}).find(
         (menuItem) => menuItem.id == this.categoryId
       ) as ApiMenuCategory
     },

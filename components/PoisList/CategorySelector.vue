@@ -51,7 +51,7 @@ export default Vue.extend({
 
   props: {
     menuItems: {
-      type: Object as PropType<Record<ApiMenuCategory['id'], ApiMenuCategory>>,
+      type: Array as PropType<ApiMenuCategory[]>,
       required: true,
     },
     categoryId: {
@@ -67,14 +67,14 @@ export default Vue.extend({
       menuGroup: ApiMenuCategory
     }[] {
       const menuIndex: { [key: number]: MenuItem } = {}
-      Object.values(this.menuItems || {})
+      this.menuItems
         .filter((menuItem) => !menuItem.hidden)
         .forEach((menuItem) => {
           menuIndex[menuItem.id] = menuItem
         })
 
       return (
-        Object.values(this.menuItems || {}).filter(
+        this.menuItems.filter(
           (menuItem) => menuItem.category && !menuItem.hidden
         ) as ApiMenuCategory[]
       )

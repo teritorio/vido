@@ -18,9 +18,7 @@ interface FetchFeaturesPayload {
 }
 
 export interface State {
-  menuItems?: {
-    [menuItemId: number]: MenuItem
-  }
+  menuItems?: Record<number, MenuItem>
   selectedCategoryIds: ApiMenuCategory['id'][]
   features: {
     [key: number]: ApiPoi[]
@@ -53,6 +51,14 @@ export const menuStore = defineStore('menu', {
   }),
 
   getters: {
+    apiMenuCategory: (state: State): ApiMenuCategory[] | undefined => {
+      return state.menuItems === undefined
+        ? undefined
+        : (Object.values(state.menuItems).filter(
+            (menuItem) => menuItem.category !== undefined
+          ) as ApiMenuCategory[])
+    },
+
     selectedCategories: (state: State): ApiMenuCategory[] | undefined => {
       return state.menuItems === undefined
         ? undefined

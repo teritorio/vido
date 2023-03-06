@@ -26,8 +26,8 @@ export default (
       required: true,
     },
     initialCategoryIds: {
-      type: Array as PropType<number[]>,
-      default: null,
+      type: Array as PropType<number[] | undefined>,
+      default: undefined,
     },
     initialPoi: {
       type: Object as PropType<ApiPoi>,
@@ -49,7 +49,7 @@ export default (
 
   computed: {
     ...mapState(mapStore, ['isModeExplorer', 'selectedFeature']),
-    ...mapState(menuStore, ['menuItems', 'selectedCategoryIds']),
+    ...mapState(menuStore, ['apiMenuCategory', 'selectedCategoryIds']),
     ...mapWritableState(mapStore, ['mode']),
 
     favoritesModeEnabled(): boolean {
@@ -63,7 +63,7 @@ export default (
     poiFilters(): string[][] | null {
       return (
         (this.isModeExplorer &&
-          (Object.values(this.menuItems || {})
+          (Object.values(this.apiMenuCategory || {})
             .map((c) => c.category?.style_class)
             .filter((s) => s !== undefined) as string[][])) ||
         null
@@ -77,9 +77,9 @@ export default (
     } else if (typeof location !== 'undefined') {
       const enabledCategories: ApiMenuCategory['id'][] = []
 
-      Object.keys(this.menuItems || {}).forEach((categoryIdString) => {
+      Object.keys(this.apiMenuCategory || {}).forEach((categoryIdString) => {
         const categoryId = parseInt(categoryIdString, 10)
-        if (this.menuItems![categoryId].selected_by_default) {
+        if (this.apiMenuCategory![categoryId].selected_by_default) {
           enabledCategories.push(categoryId)
         }
       })

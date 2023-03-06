@@ -128,7 +128,7 @@ export default (
       default: false,
     },
     categories: {
-      type: Object as PropType<Record<ApiMenuCategory['id'], ApiMenuCategory>>,
+      type: Array as PropType<ApiMenuCategory[]>,
       required: true,
     },
     features: {
@@ -278,7 +278,7 @@ export default (
     onMapStyleLoad(style: maplibregl.StyleSpecification) {
       const colors = [
         ...new Set(
-          Object.values(this.categories)
+          this.categories
             .filter((category) => category.category)
             .map((category) => category.category.color_fill)
         ),
@@ -376,8 +376,8 @@ export default (
           zoom = this.selectedFeature.properties.vido_zoom
         } else if (this.selectedFeature.properties.vido_cat) {
           zoom =
-            this.categories[this.selectedFeature.properties.vido_cat].category
-              .zoom
+            this.categories.find((category) => category.id == this.selectedFeature?.properties.vido_cat)?.category
+              .zoom || 17
         }
         this.map.flyTo({
           center: this.selectedFeature.geometry
