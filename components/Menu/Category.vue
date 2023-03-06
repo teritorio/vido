@@ -66,6 +66,7 @@
 <script lang="ts">
 import { defineComponent, PropType } from 'vue'
 
+import { useNuxtApp } from '#app'
 import MenuItem from '~/components/Menu/Item.vue'
 import { ApiMenuCategory } from '~/lib/apiMenu'
 import { FilterValues, filterValuesIsSet } from '~/utils/types-filters'
@@ -103,7 +104,8 @@ export default defineComponent({
   },
   methods: {
     onClick() {
-      this.$tracking({
+      const { $tracking } = useNuxtApp()
+      $tracking({
         type: 'category_event',
         event: 'enable',
         categoryId: this.category.id,
@@ -113,7 +115,8 @@ export default defineComponent({
       this.$emit('click', this.category.id)
     },
     onFilterClick() {
-      this.$tracking({
+      const { $tracking } = useNuxtApp()
+      $tracking({
         type: 'category_event',
         event: 'filter',
         categoryId: this.category.id,

@@ -212,6 +212,7 @@ import { mapActions, mapState } from 'pinia'
 import { PropType, defineComponent, ref } from 'vue'
 import { MetaInfo } from 'vue-meta'
 
+import { useNuxtApp } from '#app'
 import ExplorerOrFavoritesBack from '~/components/Home/ExplorerOrFavoritesBack.vue'
 import HomeMixin from '~/components/Home/HomeMixin'
 import Menu from '~/components/Home/Menu.vue'
@@ -323,9 +324,9 @@ export default defineComponent({
     },
 
     isBottomMenuOpened(): boolean {
+      const { $screen } = useNuxtApp()
       return (
-        (this.$screen.smallScreen && this.isPoiCardVisible) ||
-        this.isMenuItemOpen
+        ($screen.smallScreen && this.isPoiCardVisible) || this.isMenuItemOpen
       )
     },
 
@@ -340,7 +341,8 @@ export default defineComponent({
     },
 
     fitBoundsPaddingOptions(): FitBoundsOptions['padding'] {
-      if (this.$screen.smallScreen) {
+      const { $screen } = useNuxtApp()
+      if ($screen.smallScreen) {
         return {
           top: 100,
           bottom: 50,
@@ -380,7 +382,8 @@ export default defineComponent({
       this.routerPushUrl()
 
       if (this.selectedFeature) {
-        this.$tracking({
+        const { $tracking } = useNuxtApp()
+        $tracking({
           type: 'popup',
           poiId:
             this.selectedFeature.properties.metadata.id ||
@@ -398,10 +401,11 @@ export default defineComponent({
       if (a !== b) {
         this.routerPushUrl()
 
+        const { $vidoConfig } = useNuxtApp()
         menuStore().fetchFeatures({
-          apiEndpoint: this.$vidoConfig().API_ENDPOINT,
-          apiProject: this.$vidoConfig().API_PROJECT,
-          apiTheme: this.$vidoConfig().API_THEME,
+          apiEndpoint: $vidoConfig().API_ENDPOINT,
+          apiProject: $vidoConfig().API_PROJECT,
+          apiTheme: $vidoConfig().API_THEME,
           categoryIds: this.selectedCategoryIds,
         })
         this.allowRegionBackZoom = true
@@ -461,7 +465,8 @@ export default defineComponent({
       resizeObserver.observe(header)
     }
 
-    this.$tracking({
+    const { $tracking } = useNuxtApp()
+    $tracking({
       type: 'page',
       title: this.$meta().refresh().metaInfo.title,
       location: window.location.href,
@@ -555,7 +560,8 @@ export default defineComponent({
         this.mode = Mode.EXPLORER
         this.goToSelectedFeature()
 
-        if (this.$screen.smallScreen) {
+        const { $screen } = useNuxtApp()
+        if ($screen.smallScreen) {
           this.showPoi = false
         }
       } else {
@@ -579,7 +585,8 @@ export default defineComponent({
 
     onToggleFavoritesMode() {
       if (this.favoritesIds?.length > 0) {
-        this.$tracking({ type: 'map_control_event', event: 'favorite' })
+        const { $tracking } = useNuxtApp()
+        $tracking({ type: 'map_control_event', event: 'favorite' })
         if (!this.isModeFavorites) {
           this.mode = Mode.FAVORITES
         } else {
@@ -613,10 +620,11 @@ export default defineComponent({
     },
 
     fetchFavorites(ids: Number[]): Promise<ApiPoi[]> {
+      const { $vidoConfig } = useNuxtApp()
       return getPois(
-        this.$vidoConfig().API_ENDPOINT,
-        this.$vidoConfig().API_PROJECT,
-        this.$vidoConfig().API_THEME,
+        $vidoConfig().API_ENDPOINT,
+        $vidoConfig().API_PROJECT,
+        $vidoConfig().API_THEME,
         ids
       )
         .then((pois) => (pois && pois.features) || [])

@@ -13,6 +13,7 @@ import { mapWritableState } from 'pinia'
 import { defineComponent } from 'vue'
 import { MetaInfo } from 'vue-meta'
 
+import { useNuxtApp } from '#app'
 import MapPois from '~/components/Map/MapPois.vue'
 import { getPois, ApiPois, ApiPoiId } from '~/lib/apiPois'
 import { getSettings, headerFromSettings, Settings } from '~/lib/apiSettings'
@@ -99,12 +100,14 @@ export default defineComponent({
   created() {
     this.globalConfig = this.config!
 
-    this.$settings.set(this.settings)
+    const { $settings } = useNuxtApp()
+    $settings.set(this.settings)
   },
 
   beforeMount() {
-    this.$trackingInit(this.config!)
-    this.$vidoConfigSet(this.config!)
+    const { $trackingInit, $vidoConfigSet } = useNuxtApp()
+    $trackingInit(this.config!)
+    $vidoConfigSet(this.config!)
   },
 
   mounted() {

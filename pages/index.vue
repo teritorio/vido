@@ -13,8 +13,8 @@
 import { Polygon, MultiPolygon, GeoJSON } from 'geojson'
 import { mapWritableState } from 'pinia'
 import { defineComponent } from 'vue'
-import { MetaInfo } from 'vue-meta'
 
+import { useNuxtApp } from '#app'
 import Home from '~/components/Home/Home.vue'
 import { ContentEntry, getContents } from '~/lib/apiContent'
 import { MenuItem, getMenu, ApiMenuCategory } from '~/lib/apiMenu'
@@ -203,13 +203,15 @@ export default defineComponent({
     this.globalContents = this.contents
     this.globalTranslations = this.propertyTranslations
 
-    this.$settings.set(this.settings)
-    this.$propertyTranslations.set(this.propertyTranslations)
+    const { $propertyTranslations, $settings } = useNuxtApp()
+    $settings.set(this.settings)
+    $propertyTranslations.set(this.propertyTranslations)
   },
 
   beforeMount() {
-    this.$trackingInit(this.config!)
-    this.$vidoConfigSet(this.config!)
+    const { $trackingInit, $vidoConfigSet } = useNuxtApp()
+    $trackingInit(this.config!)
+    $vidoConfigSet(this.config!)
   },
 
   mounted() {
