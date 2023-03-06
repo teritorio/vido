@@ -445,6 +445,6 @@ export default Vue.extend({
 .search-results {
   height: auto;
   overflow-y: auto;
-  max-height: calc(100vh - 168px);
+  max-height: calc(100vh - 185px);
 }
 </style>
