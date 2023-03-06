@@ -11,7 +11,7 @@
         extraClassTextBackground,
       ]"
     >
-      <slot />
+      <slot></slot>
     </div>
   </aside>
 </template>

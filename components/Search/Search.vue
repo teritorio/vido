@@ -2,7 +2,7 @@
   <div>
     <div class="flex flex-row items-center">
       <template v-if="!focus">
-        <slot />
+        <slot></slot>
       </template>
       <SearchInput
         :search-text="searchText"

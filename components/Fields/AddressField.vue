@@ -1,6 +1,6 @@
 <template>
   <div v-if="address">
-    <slot />
+    <slot></slot>
     <span>
       {{ address }}
     </span>

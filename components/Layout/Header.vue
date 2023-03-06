@@ -8,7 +8,7 @@
     />
 
     <div class="flex justify-end">
-      <slot />
+      <slot></slot>
       <NavMenu :entries="navMenuEntries" />
     </div>
   </header>

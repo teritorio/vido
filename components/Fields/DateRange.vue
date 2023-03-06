@@ -1,6 +1,6 @@
 <template>
   <div>
-    <slot />
+    <slot></slot>
     <span>
       <template v-if="start && end && start == end">
         {{

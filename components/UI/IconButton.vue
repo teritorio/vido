@@ -7,7 +7,7 @@
     v-bind="$attrs"
     v-on="$listeners"
   >
-    <slot />
+    <slot></slot>
   </button>
   <NuxtLink
     v-else-if="!href.startsWith('http://') && !href.startsWith('https://')"
@@ -18,7 +18,7 @@
     v-bind="$attrs"
     v-on="$listeners"
   >
-    <slot />
+    <slot></slot>
   </NuxtLink>
   <a
     v-else
@@ -29,7 +29,7 @@
     v-bind="$attrs"
     v-on="$listeners"
   >
-    <slot />
+    <slot></slot>
   </a>
 </template>
 

@@ -1,6 +1,6 @@
 <template>
   <div class="px-5 py-4" :class="extraClass">
-    <slot />
+    <slot></slot>
   </div>
 </template>
 

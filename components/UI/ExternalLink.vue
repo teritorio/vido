@@ -8,7 +8,7 @@
     class="flex flex-row items-center gap-x-2.5 underline underline-offset-4"
   >
     <font-awesome-icon :icon="iconDefault" color="inherit" size="sm" />
-    <slot />
+    <slot></slot>
   </a>
 </template>
 
