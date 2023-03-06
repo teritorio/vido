@@ -20,6 +20,8 @@ import { Building3d } from '@teritorio/map'
 import { Map } from 'maplibre-gl'
 import { defineComponent, PropType, ref } from 'vue'
 
+import { useNuxtApp } from '#app'
+
 export default defineComponent({
   props: {
     map: {
@@ -64,7 +66,8 @@ export default defineComponent({
 
   methods: {
     toggle3D() {
-      this.$tracking({ type: 'map_control_event', event: '3d' })
+      const { $tracking } = useNuxtApp()
+      $tracking({ type: 'map_control_event', event: '3d' })
       if (this.building3d) {
         if (this.pitched) {
           this.building3d.set3d(false, 0)

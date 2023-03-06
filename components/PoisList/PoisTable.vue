@@ -39,6 +39,7 @@
 <script lang="ts">
 import { defineComponent, PropType } from 'vue'
 
+import { useNuxtApp } from '#app'
 import Field from '~/components/Fields/Field.vue'
 import { ApiPois, FieldsListItem } from '~/lib/apiPois'
 import { PropertyTranslationsContextEnum } from '~/plugins/property-translations'
@@ -61,9 +62,10 @@ export default defineComponent({
 
   computed: {
     headers(): { value: string; text: string }[] {
+      const { $propertyTranslations } = useNuxtApp()
       const h = this.fields.map((field) => ({
         value: field.field,
-        text: this.$propertyTranslations.p(
+        text: $propertyTranslations.p(
           field.field,
           PropertyTranslationsContextEnum.List
         ),

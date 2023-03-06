@@ -67,6 +67,7 @@
 import { mapState } from 'pinia'
 import { defineComponent, PropType, ref } from 'vue'
 
+import { useNuxtApp } from '#app'
 import PoisDeck from '~/components/PoisCard/PoisDeck.vue'
 import IconButton from '~/components/UI/IconButton.vue'
 import IconsBar from '~/components/UI/IconsBar.vue'
@@ -108,19 +109,17 @@ export default defineComponent({
     ...mapState(favoritesStore, ['favoritesIds']),
 
     pdfLink(): string {
-      return `${this.$vidoConfig().API_EXPORT}/${
-        this.$vidoConfig().API_PROJECT
-      }/${
-        this.$vidoConfig().API_THEME
+      const { $vidoConfig } = useNuxtApp()
+      return `${$vidoConfig().API_EXPORT}/${$vidoConfig().API_PROJECT}/${
+        $vidoConfig().API_THEME
       }/pois/favorites.pdf?ids=${this.favoritesIds.join(',')}`
     },
 
     csvLink(): string {
-      return `${this.$vidoConfig().API_ENDPOINT}/${
-        this.$vidoConfig().API_PROJECT
-      }/${this.$vidoConfig().API_THEME}/pois.csv?ids=${this.favoritesIds.join(
-        ','
-      )}`
+      const { $vidoConfig } = useNuxtApp()
+      return `${$vidoConfig().API_ENDPOINT}/${$vidoConfig().API_PROJECT}/${
+        $vidoConfig().API_THEME
+      }/pois.csv?ids=${this.favoritesIds.join(',')}`
     },
   },
 
@@ -139,7 +138,8 @@ export default defineComponent({
     },
 
     exportLink(w: 'export_pdf' | 'export_csv') {
-      this.$tracking({
+      const { $tracking } = useNuxtApp()
+      $tracking({
         type: 'favorites_event',
         event: w,
       })

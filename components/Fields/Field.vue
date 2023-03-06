@@ -174,6 +174,7 @@
 import GeoJSON from 'geojson'
 import { defineComponent, PropType } from 'vue'
 
+import { useNuxtApp } from '#app'
 import AddressField, {
   isAddressFieldEmpty,
 } from '~/components/Fields/AddressField.vue'
@@ -264,9 +265,9 @@ export default defineComponent({
 
   computed: {
     showPhone(): boolean {
+      const { $screen } = useNuxtApp()
       return (
-        this.context != PropertyTranslationsContextEnum.Card ||
-        this.$screen.phone
+        this.context != PropertyTranslationsContextEnum.Card || $screen.phone
       )
     },
 
@@ -277,11 +278,13 @@ export default defineComponent({
 
   methods: {
     fieldTranslateK(field: string) {
-      return this.$propertyTranslations.p(field, this.context)
+      const { $propertyTranslations } = useNuxtApp()
+      return $propertyTranslations.p(field, this.context)
     },
 
     propTranslateV(field: string) {
-      return this.$propertyTranslations.pv(
+      const { $propertyTranslations } = useNuxtApp()
+      return $propertyTranslations.pv(
         field,
         this.properties[field],
         this.context
