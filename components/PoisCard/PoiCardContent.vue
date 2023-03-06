@@ -137,6 +137,7 @@
 import { mapState } from 'pinia'
 import { defineComponent, PropType } from 'vue'
 
+import { useNuxtApp } from '#app'
 import Fields from '~/components/PoisCard/Fields.vue'
 import FavoriteIcon from '~/components/UI/FavoriteIcon.vue'
 import TeritorioIcon from '~/components/UI/TeritorioIcon.vue'
@@ -264,7 +265,8 @@ export default defineComponent({
     trackingPopupEvent(
       event: 'details' | 'route' | 'explore' | 'favorite' | 'zoom'
     ) {
-      this.$tracking({
+      const { $tracking } = useNuxtApp()
+      $tracking({
         type: 'popup_event',
         event,
         poiId: this.id,

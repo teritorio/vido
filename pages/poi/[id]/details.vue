@@ -15,6 +15,7 @@ import { mapWritableState } from 'pinia'
 import { defineComponent } from 'vue'
 import { MetaInfo } from 'vue-meta'
 
+import { useNuxtApp } from '#app'
 import Index from '~/components/PoisDetails/PoiDetails.vue'
 import { ContentEntry, getContents } from '~/lib/apiContent'
 import { ApiPoiDeps, getPoiDepsById } from '~/lib/apiPoiDeps'
@@ -158,13 +159,15 @@ export default defineComponent({
     this.globalContents = this.contents
     this.globalTranslations = this.propertyTranslations
 
-    this.$settings.set(this.settings)
-    this.$propertyTranslations.set(this.propertyTranslations)
+    const { $propertyTranslations, $settings } = useNuxtApp()
+    $settings.set(this.settings)
+    $propertyTranslations.set(this.propertyTranslations)
   },
 
   beforeMount() {
-    this.$trackingInit(this.config!)
-    this.$vidoConfigSet(this.config!)
+    const { $trackingInit, $vidoConfigSet } = useNuxtApp()
+    $trackingInit(this.config!)
+    $vidoConfigSet(this.config!)
   },
 
   mounted() {

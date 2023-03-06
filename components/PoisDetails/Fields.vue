@@ -32,6 +32,7 @@
 <script lang="ts">
 import { defineComponent, PropType } from 'vue'
 
+import { useNuxtApp } from '#app'
 import Field from '~/components/Fields/Field.vue'
 import FieldsGroup from '~/components/PoisDetails/FieldsGroup.vue'
 import { ApiPoiProperties, FieldsList } from '~/lib/apiPois'
@@ -74,7 +75,8 @@ export default defineComponent({
 
   methods: {
     fieldTranslateK(field: string) {
-      return this.$propertyTranslations.p(field, this.context)
+      const { $propertyTranslations } = useNuxtApp()
+      return $propertyTranslations.p(field, this.context)
     },
   },
 })

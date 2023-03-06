@@ -66,6 +66,7 @@
 import { mapState } from 'pinia'
 import { defineComponent } from 'vue'
 
+import { useNuxtApp } from '#app'
 import FavoriteNoteBook from '~/components/MainMap/FavoriteNoteBook.vue'
 import Badge from '~/components/UI/Badge.vue'
 import FavoriteIcon from '~/components/UI/FavoriteIcon.vue'
@@ -120,10 +121,11 @@ export default defineComponent({
   },
   methods: {
     async fetchFavorites(ids: Number[]) {
+      const { $vidoConfig } = useNuxtApp()
       return await getPois(
-        this.$vidoConfig().API_ENDPOINT,
-        this.$vidoConfig().API_PROJECT,
-        this.$vidoConfig().API_THEME,
+        $vidoConfig().API_ENDPOINT,
+        $vidoConfig().API_PROJECT,
+        $vidoConfig().API_THEME,
         ids
       ).then((pois) => (pois && pois.features) || [])
     },
@@ -148,7 +150,8 @@ export default defineComponent({
       this.toggleFavorite(poi)
     },
     openNotebookModal() {
-      this.$tracking({
+      const { $tracking } = useNuxtApp()
+      $tracking({
         type: 'notebook_event',
         event: 'open',
       })

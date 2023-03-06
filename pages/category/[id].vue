@@ -13,6 +13,7 @@ import { mapWritableState } from 'pinia'
 import { defineComponent } from 'vue'
 import { MetaInfo } from 'vue-meta'
 
+import { useNuxtApp } from '#app'
 import PoisList from '~/components/PoisList/PoisList.vue'
 import { ContentEntry, getContents } from '~/lib/apiContent'
 import { MenuItem, getMenu } from '~/lib/apiMenu'
@@ -141,13 +142,15 @@ export default defineComponent({
     this.globalContents = this.contents
     this.globalTranslations = this.propertyTranslations
 
-    this.$settings.set(this.settings)
-    this.$propertyTranslations.set(this.propertyTranslations)
+    const { $settings, $propertyTranslations } = useNuxtApp()
+    $settings.set(this.settings)
+    $propertyTranslations.set(this.propertyTranslations)
   },
 
   beforeMount() {
-    this.$trackingInit(this.config!)
-    this.$vidoConfigSet(this.config!)
+    const { $trackingInit, $vidoConfigSet } = useNuxtApp()
+    $trackingInit(this.config!)
+    $vidoConfigSet(this.config!)
   },
 
   mounted() {

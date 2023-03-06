@@ -28,6 +28,7 @@
 <script lang="ts">
 import { defineComponent, PropType } from 'vue'
 
+import { useNuxtApp } from '#app'
 import IconButton from '~/components/UI/IconButton.vue'
 import IconsBar from '~/components/UI/IconsBar.vue'
 import { getPoiByCategoryIdUrl } from '~/lib/apiPois'
@@ -65,10 +66,11 @@ export default defineComponent({
 
   methods: {
     url(format: 'geojson' | 'csv'): string {
+      const { $vidoConfig } = useNuxtApp()
       return getPoiByCategoryIdUrl(
-        this.$vidoConfig().API_ENDPOINT,
-        this.$vidoConfig().API_PROJECT,
-        this.$vidoConfig().API_THEME,
+        $vidoConfig().API_ENDPOINT,
+        $vidoConfig().API_PROJECT,
+        $vidoConfig().API_THEME,
         this.categoryId,
         {
           geometry_as: 'point',

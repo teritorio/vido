@@ -33,6 +33,8 @@
 <script lang="ts">
 import { defineComponent, PropType, ref } from 'vue'
 
+import { useNuxtApp } from '#app'
+
 export default defineComponent({
   props: {
     searchText: {
@@ -53,7 +55,8 @@ export default defineComponent({
   methods: {
     onFocus(event: Event) {
       this.$emit('focus', event)
-      this.$tracking({ type: 'search' })
+      const { $tracking } = useNuxtApp()
+      $tracking({ type: 'search' })
     },
   },
 })

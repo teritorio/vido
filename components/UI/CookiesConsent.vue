@@ -20,6 +20,8 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
 
+import { useNuxtApp } from '#app'
+
 export default defineComponent({
   components: {
     // @ts-ignore
@@ -36,7 +38,8 @@ export default defineComponent({
 
   methods: {
     accept() {
-      this.$tracking_consent()
+      const { $tracking_consent } = useNuxtApp()
+      $tracking_consent()
     },
   },
 })

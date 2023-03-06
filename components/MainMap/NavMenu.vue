@@ -51,6 +51,7 @@ import { defineComponent, PropType } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { LocaleObject } from 'vue-i18n-routing'
 
+import { useNuxtApp } from '#app'
 import ExternalLink from '~/components/UI/ExternalLink.vue'
 import IconButton from '~/components/UI/IconButton.vue'
 import { ContentEntry } from '~/lib/apiContent'
@@ -83,7 +84,8 @@ export default defineComponent({
       this.locale = locale
     },
     openLink(title: string, url: string) {
-      this.$tracking({
+      const { $tracking } = useNuxtApp()
+      $tracking({
         type: 'external_link',
         url,
         title,

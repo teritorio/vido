@@ -52,6 +52,7 @@ import {
 } from 'maplibre-gl'
 import { mapState } from 'pinia'
 import { defineComponent, PropType } from 'vue'
+import { useNuxtApp } from '#app'
 
 import MapControls from '~/components/Map/MapControls.vue'
 import { DEFAULT_MAP_STYLE, MAP_ZOOM } from '~/lib/constants'
@@ -243,10 +244,11 @@ export default defineComponent({
       if (this.mapStyleCache[mapStyle]) {
         return this.mapStyleCache[mapStyle]
       } else {
+        const { $vidoConfig } = useNuxtApp()
         const styleURLs = {
-          [MapStyleEnum.vector]: this.$vidoConfig().VECTO_STYLE_URL,
-          [MapStyleEnum.aerial]: this.$vidoConfig().SATELLITE_STYLE_URL,
-          [MapStyleEnum.bicycle]: this.$vidoConfig().BICYCLE_STYLE_URL,
+          [MapStyleEnum.vector]: $vidoConfig().VECTO_STYLE_URL,
+          [MapStyleEnum.aerial]: $vidoConfig().SATELLITE_STYLE_URL,
+          [MapStyleEnum.bicycle]: $vidoConfig().BICYCLE_STYLE_URL,
         }
         const style = await fetchStyle(
           styleURLs[mapStyle],

@@ -36,6 +36,7 @@
 import { mapState } from 'pinia'
 import { defineComponent, PropType } from 'vue'
 
+import { useNuxtApp } from '#app'
 import PoiLayout from '~/components/Layout/PoiLayout.vue'
 import Actions from '~/components/PoisList/Actions.vue'
 import CategorySelector from '~/components/PoisList/CategorySelector.vue'
@@ -112,10 +113,11 @@ export default defineComponent({
         hash: this.$router.currentRoute.hash,
       })
 
+      const { $vidoConfig } = useNuxtApp()
       getPoiByCategoryId(
-        this.$vidoConfig().API_ENDPOINT,
-        this.$vidoConfig().API_PROJECT,
-        this.$vidoConfig().API_THEME,
+        $vidoConfig().API_ENDPOINT,
+        $vidoConfig().API_PROJECT,
+        $vidoConfig().API_THEME,
         this.categoryId,
         {
           geometry_as: 'point',

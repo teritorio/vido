@@ -28,6 +28,7 @@ import { Map } from 'maplibre-gl'
 import { mapState, mapWritableState } from 'pinia'
 import { defineComponent, PropType, ref } from 'vue'
 
+import { useNuxtApp } from '#app'
 import { mapStore } from '~/stores/map'
 import { Mode } from '~/utils/types'
 
@@ -66,7 +67,8 @@ export default defineComponent({
 
   methods: {
     toggleMode() {
-      this.$tracking({ type: 'map_control_event', event: 'explorer' })
+      const { $tracking } = useNuxtApp()
+      $tracking({ type: 'map_control_event', event: 'explorer' })
       this.mode = this.isModeExplorer ? Mode.BROWSER : Mode.EXPLORER
     },
   },

@@ -27,6 +27,7 @@
 <script lang="ts">
 import { defineComponent, PropType } from 'vue'
 
+import { useNuxtApp } from '#app'
 import MenuItem from '~/components/Menu/Item.vue'
 import { ApiMenuGroup } from '~/lib/apiMenu'
 
@@ -54,7 +55,8 @@ export default defineComponent({
   },
   methods: {
     onClick() {
-      this.$tracking({
+      const { $tracking } = useNuxtApp()
+      $tracking({
         type: 'menu',
         menuItemId: this.menuGroup.id,
         title: this.menuGroup.menu_group.name.fr,

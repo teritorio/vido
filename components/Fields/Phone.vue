@@ -14,6 +14,7 @@
 <script lang="ts">
 import { defineComponent, PropType } from 'vue'
 
+import { useNuxtApp } from '#app'
 import ExternalLink from '~/components/UI/ExternalLink.vue'
 
 export default defineComponent({
@@ -44,7 +45,8 @@ export default defineComponent({
 
   mounted() {
     // Do not use $screen.phone directly in template. De-sync DROM from SSR.
-    this.phone = this.$screen.phone
+    const { $screen } = useNuxtApp()
+    this.phone = $screen.phone
   },
 })
 </script>
