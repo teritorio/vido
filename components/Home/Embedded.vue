@@ -18,7 +18,7 @@
         <UIButton
           :label="$tc('ui.close')"
           icon="times"
-          @click="setSelectedFeature(undefined)"
+          @click="setSelectedFeature(null)"
         />
       </div>
       <PoiCardContent
