@@ -11,7 +11,7 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
+import Vue, { PropType } from 'vue'
 
 export default Vue.extend({
   props: {
@@ -20,11 +20,11 @@ export default Vue.extend({
       default: false,
     },
     colorLine: {
-      type: String,
+      type: String as PropType<string>,
       default: null,
     },
     colorClass: {
-      type: String,
+      type: String as PropType<string>,
       default: 'text-white',
     },
   },

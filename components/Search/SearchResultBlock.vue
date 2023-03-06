@@ -47,7 +47,7 @@ export default Vue.extend({
 
   props: {
     label: {
-      type: String,
+      type: String as PropType<string>,
       required: true,
     },
     type: {
@@ -59,7 +59,7 @@ export default Vue.extend({
       required: true,
     },
     icon: {
-      type: String,
+      type: String as PropType<string>,
       default: null,
     },
   },

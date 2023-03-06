@@ -17,24 +17,24 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
+import Vue, { PropType } from 'vue'
 
 export default Vue.extend({
   props: {
     logoUrl: {
-      type: String,
+      type: String as PropType<string>,
       required: true,
     },
     mainUrl: {
-      type: String,
+      type: String as PropType<string>,
       required: true,
     },
     siteName: {
-      type: String,
+      type: String as PropType<string>,
       required: true,
     },
     imageClass: {
-      type: String,
+      type: String as PropType<string>,
       default: 'max-w-2xl max-h-16',
     },
   },

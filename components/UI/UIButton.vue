@@ -16,16 +16,16 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
+import Vue, { PropType } from 'vue'
 
 export default Vue.extend({
   props: {
     label: {
-      type: String,
+      type: String as PropType<string>,
       default: undefined,
     },
     icon: {
-      type: String,
+      type: String as PropType<string>,
       default: undefined,
     },
   },

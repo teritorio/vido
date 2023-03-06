@@ -86,7 +86,7 @@ export default (
       required: true,
     },
     title: {
-      type: String,
+      type: String as PropType<string>,
       required: true,
     },
     properties: {
@@ -98,7 +98,7 @@ export default (
       required: true,
     },
     colorFill: {
-      type: String,
+      type: String as PropType<string>,
       required: true,
     },
   },

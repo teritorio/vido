@@ -13,16 +13,16 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
+import Vue, { PropType } from 'vue'
 
 export default Vue.extend({
   props: {
     colorText: {
-      type: String,
+      type: String as PropType<string>,
       default: '#ffffff',
     },
     picto: {
-      type: String,
+      type: String as PropType<string>,
       required: true,
     },
     useNativeAlignment: {
@@ -30,7 +30,7 @@ export default Vue.extend({
       default: null,
     },
     image: {
-      type: String,
+      type: String as PropType<string>,
       default: null,
     },
   },

@@ -61,7 +61,7 @@ export default Vue.extend({
       required: true,
     },
     colorFill: {
-      type: String,
+      type: String as PropType<string>,
       required: true,
     },
   },

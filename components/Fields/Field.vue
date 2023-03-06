@@ -233,7 +233,7 @@ export default Vue.extend({
       required: true,
     },
     details: {
-      type: String,
+      type: String as PropType<string>,
       default: null,
     },
     geom: {

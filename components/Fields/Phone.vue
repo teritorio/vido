@@ -12,7 +12,7 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
+import Vue, { PropType } from 'vue'
 
 import ExternalLink from '~/components/UI/ExternalLink.vue'
 
@@ -23,7 +23,7 @@ export default Vue.extend({
 
   props: {
     number: {
-      type: String,
+      type: String as PropType<string>,
       default: null,
     },
   },

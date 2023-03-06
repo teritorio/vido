@@ -47,19 +47,19 @@ export default Vue.extend({
       required: true,
     },
     name: {
-      type: String,
+      type: String as PropType<string>,
       required: true,
     },
     icon: {
-      type: String,
+      type: String as PropType<string>,
       required: true,
     },
     colorLine: {
-      type: String,
+      type: String as PropType<string>,
       required: true,
     },
     colorFill: {
-      type: String,
+      type: String as PropType<string>,
       required: true,
     },
   },

@@ -98,11 +98,11 @@ export default Vue.extend({
       required: true,
     },
     tagKey: {
-      type: String,
+      type: String as PropType<string>,
       required: true,
     },
     openingHours: {
-      type: String,
+      type: String as PropType<string>,
       required: true,
     },
     baseDate: {

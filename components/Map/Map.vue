@@ -108,7 +108,7 @@ export default Vue.extend({
       default: false,
     },
     hash: {
-      type: String,
+      type: String as PropType<string>,
       default: undefined,
     },
     showAttribution: {

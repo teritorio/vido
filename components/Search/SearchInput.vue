@@ -28,7 +28,7 @@
 </template>
 
 <script lang="ts">
-import Vue, { VueConstructor } from 'vue'
+import Vue, { PropType, VueConstructor } from 'vue'
 
 export default (
   Vue as VueConstructor<
@@ -41,7 +41,7 @@ export default (
 ).extend({
   props: {
     searchText: {
-      type: String,
+      type: String as PropType<string>,
       default: '',
     },
     isLoading: {

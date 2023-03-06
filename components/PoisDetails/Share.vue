@@ -58,7 +58,7 @@
 </template>
 
 <script lang="ts">
-import Vue, { VueConstructor } from 'vue'
+import Vue, { PropType, VueConstructor } from 'vue'
 
 import IconButton from '~/components/UI/IconButton.vue'
 import IconsBar from '~/components/UI/IconsBar.vue'
@@ -83,28 +83,28 @@ export default (
 
   props: {
     title: {
-      type: String,
+      type: String as PropType<string>,
       default: null,
     },
     href: {
-      type: String,
+      type: String as PropType<string>,
       default: null,
     },
     colorLine: {
-      type: String,
+      type: String as PropType<string>,
       required: true,
     },
   },
 
   data(): {
-    shareFacebook: string | null
-    shareTwitter: string | null
-    shareWhatsApp: string | null
+    shareFacebook: string | undefined
+    shareTwitter: string | undefined
+    shareWhatsApp: string | undefined
   } {
     return {
-      shareFacebook: null,
-      shareTwitter: null,
-      shareWhatsApp: null,
+      shareFacebook: undefined,
+      shareTwitter: undefined,
+      shareWhatsApp: undefined,
     }
   },
 

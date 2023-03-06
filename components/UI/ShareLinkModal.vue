@@ -31,7 +31,7 @@
 </template>
 
 <script lang="ts">
-import Vue, { VueConstructor } from 'vue'
+import Vue, { PropType, VueConstructor } from 'vue'
 import { TModal } from 'vue-tailwind/dist/components'
 
 import UIButton from '~/components/UI/UIButton.vue'
@@ -54,7 +54,7 @@ export default (
 
   props: {
     title: {
-      type: String,
+      type: String as PropType<string>,
       required: true,
     },
   },

@@ -13,28 +13,28 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
+import Vue, { PropType } from 'vue'
 
 export default Vue.extend({
   props: {
     href: {
-      type: String,
+      type: String as PropType<string>,
       required: true,
     },
     title: {
-      type: String,
+      type: String as PropType<string>,
       default: null,
     },
     target: {
-      type: String,
+      type: String as PropType<string>,
       default: '_blank',
     },
     rel: {
-      type: String,
+      type: String as PropType<string>,
       default: null,
     },
     icon: {
-      type: String,
+      type: String as PropType<string>,
       default: null,
     },
   },

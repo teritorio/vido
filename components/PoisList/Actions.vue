@@ -26,7 +26,7 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
+import Vue, { PropType } from 'vue'
 
 import IconButton from '~/components/UI/IconButton.vue'
 import IconsBar from '~/components/UI/IconsBar.vue'
@@ -44,7 +44,7 @@ export default Vue.extend({
       required: true,
     },
     colorLine: {
-      type: String,
+      type: String as PropType<string>,
       required: true,
     },
   },

@@ -398,11 +398,7 @@ export default Vue.extend({
               (data) => (data.ok ? data.json() : null)
             )
 
-          Promise.all<
-            ApiSearchResult<ApiMenuItemSearchResult>,
-            ApiSearchResult<ApiPoisSearchResult>,
-            ApiSearchResult<ApiAddrSearchResult>
-          >([MenuItemsFetch, poisFetch, addressesFetch])
+          Promise.all([MenuItemsFetch, poisFetch, addressesFetch])
             .then(
               ([
                 searchMenuItemsResults,

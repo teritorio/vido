@@ -39,15 +39,15 @@ import Vue, { PropType } from 'vue'
 export default Vue.extend({
   props: {
     ariaLabel: {
-      type: String,
+      type: String as PropType<string>,
       required: true,
     },
     href: {
-      type: String as PropType<String | undefined>,
+      type: String as PropType<string | undefined>,
       default: undefined,
     },
     target: {
-      type: String as PropType<String | undefined>,
+      type: String as PropType<string | undefined>,
       default: undefined,
     },
   },

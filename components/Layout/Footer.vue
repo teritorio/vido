@@ -33,7 +33,7 @@ export default Vue.extend({
 
   props: {
     attributions: {
-      type: Array as PropType<String[]>,
+      type: Array as PropType<string[]>,
       default: null,
     },
   },
