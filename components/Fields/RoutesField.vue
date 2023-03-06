@@ -32,6 +32,7 @@
 <script lang="ts">
 import { defineComponent, PropType } from 'vue'
 
+import { useNuxtApp } from '#app'
 import FieldsHeader from '~/components/UI/FieldsHeader.vue'
 import { ApiPoiProperties } from '~/lib/apiPois'
 import { PropertyTranslationsContextEnum } from '~/plugins/property-translations'
@@ -126,8 +127,9 @@ export default defineComponent({
     },
 
     difficulty(activity: string, route: Route): string | undefined {
+      const { $propertyTranslations } = useNuxtApp()
       return route.difficulty
-        ? this.$propertyTranslations.pv(
+        ? $propertyTranslations.pv(
             `route:${activity}:difficulty`,
             route.difficulty,
             this.context

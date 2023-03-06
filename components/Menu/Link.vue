@@ -27,6 +27,7 @@
 <script lang="ts">
 import { defineComponent, PropType } from 'vue'
 
+import { useNuxtApp } from '#app'
 import MenuItem from '~/components/Menu/Item.vue'
 import { ApiMenuLink } from '~/lib/apiMenu'
 
@@ -50,7 +51,8 @@ export default defineComponent({
   },
   methods: {
     onClick() {
-      this.$tracking({
+      const { $tracking } = useNuxtApp()
+      $tracking({
         type: 'external_link',
         url: this.menuLink.link.href,
         title: this.menuLink.link.name.fr,

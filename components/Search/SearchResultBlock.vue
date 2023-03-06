@@ -37,6 +37,7 @@
 <script lang="ts">
 import { defineComponent, PropType } from 'vue'
 
+import { useNuxtApp } from '#app'
 import TeritorioIcon from '~/components/UI/TeritorioIcon.vue'
 import { SearchResult } from '~/lib/apiSearch'
 
@@ -66,7 +67,8 @@ export default defineComponent({
 
   methods: {
     onItemClick(searchResult: SearchResult) {
-      this.$tracking({
+      const { $tracking } = useNuxtApp()
+      $tracking({
         type: 'search_result_event',
         event: 'select',
         resultType: this.type,

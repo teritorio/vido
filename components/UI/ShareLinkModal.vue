@@ -48,6 +48,7 @@
 <script lang="ts">
 import { defineComponent, PropType } from 'vue'
 
+import { useNuxtApp } from '#app'
 import UIButton from '~/components/UI/UIButton.vue'
 import { OriginEnum } from '~/utils/types'
 import { urlAddTrackOrigin } from '~/utils/url'
@@ -95,7 +96,8 @@ export default defineComponent({
 
   methods: {
     open(link: string) {
-      this.$tracking({ type: 'favorites_event', event: 'open_share' })
+      const { $tracking } = useNuxtApp()
+      $tracking({ type: 'favorites_event', event: 'open_share' })
       this.link = link
       this.modal = true
       console.error('open', this)
@@ -105,7 +107,8 @@ export default defineComponent({
     },
 
     copyLink() {
-      this.$tracking({ type: 'favorites_event', event: 'copy_link' })
+      const { $tracking } = useNuxtApp()
+      $tracking({ type: 'favorites_event', event: 'copy_link' })
       if (this.hasClipboard && this.linkShare) {
         navigator.clipboard.writeText(this.linkShare).then(
           () => {
@@ -130,8 +133,9 @@ export default defineComponent({
 
     qrCodeUrl() {
       if (this.linkQrCode) {
+        const { $vidoConfig } = useNuxtApp()
         return (
-          this.$vidoConfig().API_QR_SHORTENER +
+          $vidoConfig().API_QR_SHORTENER +
           '/qrcode.svg?url=' +
           encodeURIComponent(this.linkQrCode)
         )
