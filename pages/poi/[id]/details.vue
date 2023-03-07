@@ -13,9 +13,8 @@
 import { groupBy } from 'lodash'
 import { mapWritableState } from 'pinia'
 import { defineComponent } from 'vue'
-import { MetaInfo } from 'vue-meta'
 
-import { useNuxtApp } from '#app'
+import { MetaObject, useNuxtApp } from '#app'
 import Index from '~/components/PoisDetails/PoiDetails.vue'
 import { ContentEntry, getContents } from '~/lib/apiContent'
 import { ApiPoiDeps, getPoiDepsById } from '~/lib/apiPoiDeps'
@@ -146,7 +145,7 @@ export default defineComponent({
     }
   },
 
-  head(): MetaInfo {
+  head(): MetaObject {
     return headerFromSettings(this.settings, {
       title: this.poi?.properties.name,
       description: { fr: this.poi?.properties.description },
