@@ -36,7 +36,7 @@
 import { mapState } from 'pinia'
 import { defineComponent, PropType } from 'vue'
 
-import { useNuxtApp } from '#app'
+import { useNuxtApp, useRouter } from '#app'
 import PoiLayout from '~/components/Layout/PoiLayout.vue'
 import Actions from '~/components/PoisList/Actions.vue'
 import CategorySelector from '~/components/PoisList/CategorySelector.vue'
@@ -107,10 +107,10 @@ export default defineComponent({
     categoryId() {
       this.pois = undefined
 
-      this.$router.push({
+      useRouter().push({
         path: `/category/${this.categoryId}`,
-        query: this.$router.currentRoute.query,
-        hash: this.$router.currentRoute.hash,
+        query: useRouter().currentRoute.value.query,
+        hash: useRouter().currentRoute.value.hash,
       })
 
       const { $vidoConfig } = useNuxtApp()
