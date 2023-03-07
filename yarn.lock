@@ -2453,6 +2453,31 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@gtm-support/core@npm:^2.0.0":
+  version: 2.0.0
+  resolution: "@gtm-support/core@npm:2.0.0"
+  checksum: de9d552e0c7c7eb00ced0cca2541eb553333a637481516ab41e0f015ccc55f6372d1840213f02c1c3c005244de5f6b33f988fb788d256d71ea7c7c7f8054a4e7
+  languageName: node
+  linkType: hard
+
+"@gtm-support/vue-gtm@npm:^2.0.0":
+  version: 2.0.0
+  resolution: "@gtm-support/vue-gtm@npm:2.0.0"
+  dependencies:
+    "@gtm-support/core": ^2.0.0
+    vue-router: ^4.1.0
+  peerDependencies:
+    vue: ^3.2.0
+  dependenciesMeta:
+    vue-router:
+      optional: true
+  peerDependenciesMeta:
+    vue-router:
+      optional: true
+  checksum: ff6183a1ec51d153b55dab998c2f95fc90e384b56c0e09812db250689e0f6d898ca0ac1c0d2aa25593a23abd2ccc1ae9250b2c5de8cc953475ad462670ed9413
+  languageName: node
+  linkType: hard
+
 "@hapi/hoek@npm:^9.0.0":
   version: 9.3.0
   resolution: "@hapi/hoek@npm:9.3.0"
@@ -3578,16 +3603,6 @@ __metadata:
   peerDependencies:
     eslint: ">=7"
   checksum: 7668d91ee5298e046e6b48d09181829207cac38ab5215aa38e66cc419199f9e04f062308a6f8d97d55e01e29cabe4d75ef7c081318e1317d2abdbb63bab13597
-  languageName: node
-  linkType: hard
-
-"@nuxtjs/gtm@npm:^2.4.0":
-  version: 2.4.0
-  resolution: "@nuxtjs/gtm@npm:2.4.0"
-  dependencies:
-    chalk: ^4.1.0
-    semver: ^7.3.2
-  checksum: d843047f881a77371d08dad97824929bd0fec4d26853d1834e431bea89b7a7599f14d6040f4320bfcbc1dbe74635f46883ce8a20765d3f205744671fdf22e544
   languageName: node
   linkType: hard
 
@@ -5246,11 +5261,11 @@ __metadata:
     "@fortawesome/free-regular-svg-icons": ^6.3.0
     "@fortawesome/free-solid-svg-icons": ^6.3.0
     "@fortawesome/vue-fontawesome": ^3.0.3
+    "@gtm-support/vue-gtm": ^2.0.0
     "@nuxt/image": ^0.7.1
     "@nuxt/types": ^2.16.1
     "@nuxtjs/eslint-config": ^12.0.0
     "@nuxtjs/eslint-module": ^3.1.0
-    "@nuxtjs/gtm": ^2.4.0
     "@nuxtjs/i18n": next
     "@nuxtjs/pwa": ^3.3.5
     "@nuxtjs/sentry": ^7.0.3
@@ -25849,7 +25864,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"vue-router@npm:^4.1.6":
+"vue-router@npm:^4.1.0, vue-router@npm:^4.1.6":
   version: 4.1.6
   resolution: "vue-router@npm:4.1.6"
   dependencies:
