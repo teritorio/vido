@@ -30,8 +30,8 @@
   },
   "dependencies": {
     "@fortawesome/vue-fontawesome": "^3.0.3",
+    "@gtm-support/vue-gtm": "^2.0.0",
     "@nuxt/image": "^0.7.1",
-    "@nuxtjs/gtm": "^2.4.0",
     "@nuxtjs/sentry": "^7.0.3",
     "@nuxtjs/sitemap": "^2.4.0",
     "@pinia/nuxt": "0.4.7",

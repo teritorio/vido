@@ -1,3 +1,5 @@
+import { createGtm } from '@gtm-support/vue-gtm'
+
 import { defineNuxtPlugin } from '#app/nuxt'
 import Google from '~/lib/tracker-google'
 import Matomo from '~/lib/tracker-matomo'
@@ -22,23 +24,22 @@ export default defineNuxtPlugin((nuxtApp) => {
                   googleTagManagerId
                 )
               )
-            )
-          }
+            }
 
-          const matomoUrl = config.MATOMO_URL
-          const matomoIdsite = config.MATOMO_SITEID
-          if (matomoUrl && matomoIdsite) {
-            trackers.push(
-              new Matomo(
-                nuxtApp,
-                Boolean(config.COOKIES_CONSENT),
-                matomoUrl,
-                matomoIdsite
+            const matomoUrl = config.MATOMO_URL
+            const matomoIdsite = config.MATOMO_SITEID
+            if (matomoUrl && matomoIdsite) {
+              trackers.push(
+                new Matomo(
+                  nuxtApp,
+                  Boolean(config.COOKIES_CONSENT),
+                  matomoUrl,
+                  matomoIdsite
+                )
               )
-            )
+            }
           }
-        }
-      },
+        },
 
       tracking_consent: (): void => {
         if (trackers.length > 0) {
@@ -48,15 +49,17 @@ export default defineNuxtPlugin((nuxtApp) => {
         }
       },
 
-      tracking: () => (event: Event): void => {
-        if (process.env.environment === 'development') {
-          console.error('Tracking event', event)
-        }
+      tracking:
+        () =>
+        (event: Event): void => {
+          if (process.env.environment === 'development') {
+            console.error('Tracking event', event)
+          }
 
-        trackers.forEach((tracker) => {
-          tracker.track(event)
-        })
-      },
+          trackers.forEach((tracker) => {
+            tracker.track(event)
+          })
+        },
     },
   }
 })
