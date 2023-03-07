@@ -20,7 +20,7 @@
         show: false,
       }"
       v-bind="$attrs"
-      @map-init="$emit('map-init', $event) && onMapInit($event)"
+      @map-init="onMapInit($event)"
       @map-data="$emit('map-data', $event)"
       @map-dragend="$emit('map-dragend', $event)"
       @map-moveend="$emit('map-moveend', $event)"
@@ -166,7 +166,9 @@ export default Vue.extend({
       this.setLanguage(locale)
     },
     bounds() {
-      this.map?.fitBounds(this.bounds, this.fitBoundsOptions)
+      if (this.bounds) {
+        this.map?.fitBounds(this.bounds, this.fitBoundsOptions)
+      }
     },
   },
 
@@ -184,6 +186,8 @@ export default Vue.extend({
 
   methods: {
     onMapInit(map: Map) {
+      this.$emit('map-init', map)
+
       this.map = map
       this.languageControl = new OpenMapTilesLanguage({
         defaultLanguage: this.locale || undefined,

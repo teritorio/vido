@@ -60,7 +60,7 @@ export default Vue.extend({
   },
 
   computed: {
-    headers(): { value: String; text: String }[] {
+    headers(): { value: string; text: string }[] {
       const h = this.fields.map((field) => ({
         value: field.field,
         text: this.$propertyTranslations.p(

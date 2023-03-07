@@ -7,6 +7,7 @@ import { MultilingualString } from '~/utils/types'
 export interface ApiPoiId extends MapPoiId {}
 
 export type FieldsListItem = {
+  group?: undefined
   label?: boolean
   field: string
 }

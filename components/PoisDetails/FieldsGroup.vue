@@ -54,7 +54,7 @@ export function isListEmpty(
   return fileds.reduce(
     (sum: boolean, value: FieldsListItem | FieldsListGroup) =>
       sum &&
-      ('group' in value
+      (value.group !== undefined
         ? isListEmpty(value.fields, properties, geom)
         : isFiledEmpty(value, properties, geom)),
     true

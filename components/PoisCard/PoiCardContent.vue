@@ -9,7 +9,7 @@
         {{ name }}
       </h2>
 
-      <template v-if="Boolean(websiteDetails)">
+      <template v-if="websiteDetails !== undefined">
         <NuxtLink
           v-if="
             !websiteDetails.startsWith('https://') &&

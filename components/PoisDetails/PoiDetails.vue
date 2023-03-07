@@ -76,6 +76,7 @@
                 group: 'description',
                 display_mode: 'standard',
                 fields: [{ field: 'description' }],
+                icon: '',
               },
             ]"
             :properties="poi.properties"

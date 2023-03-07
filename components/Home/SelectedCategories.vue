@@ -1,6 +1,6 @@
 <template>
   <div
-    v-if="selectedCategories.length > 0"
+    v-if="selectedCategories && selectedCategories.length > 0"
     class="flex flex-row p-2 flex-wrap bg-white shadow-md pointer-events-auto rounded-xl max-w-xl"
     style="min-width: 64px"
   >

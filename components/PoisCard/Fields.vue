@@ -20,7 +20,7 @@ import GeoJSON from 'geojson'
 import Vue, { PropType } from 'vue'
 
 import Field from '~/components/Fields/Field.vue'
-import { ApiPoiProperties, FieldsList } from '~/lib/apiPois'
+import { ApiPoiProperties, FieldsListItem } from '~/lib/apiPois'
 import { PropertyTranslationsContextEnum } from '~/plugins/property-translations'
 
 export default Vue.extend({
@@ -30,7 +30,7 @@ export default Vue.extend({
 
   props: {
     fields: {
-      type: Array as PropType<FieldsList>,
+      type: Array as PropType<FieldsListItem[]>,
       required: true,
     },
     properties: {

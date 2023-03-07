@@ -4,7 +4,7 @@
       v-model="value"
       :min="min"
       :max="max"
-      :merge="(max - min) / 10"
+      :merge="max !== null && min !== null && (max - min) / 10"
       @set="onChange"
     />
   </div>
