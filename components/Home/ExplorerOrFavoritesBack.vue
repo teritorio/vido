@@ -10,7 +10,7 @@
     <p class="ml-2">
       {{
         $t(
-          $screen.smallScreen
+          screen.smallScreen
             ? isModeFavorites
               ? 'headerMenu.backToMenuFavorites'
               : 'headerMenu.backToMenuExplorer'
@@ -24,6 +24,7 @@
 </template>
 
 <script lang="ts">
+import { useNuxtApp } from '#app'
 import { mapState } from 'pinia'
 import { defineComponent } from 'vue'
 
@@ -32,6 +33,10 @@ import { mapStore } from '~/stores/map'
 export default defineComponent({
   computed: {
     ...mapState(mapStore, ['isModeFavorites']),
+
+    screen() {
+      return useNuxtApp().$screen
+    },
   },
 
   methods: {
