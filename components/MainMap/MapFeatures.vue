@@ -280,7 +280,7 @@ export default defineComponent({
             .map((category) => category.category.color_fill)
         ),
       ]
-      this.mapBase.initPoiLayer(this.features, colors, [
+      this.mapBase!.initPoiLayer(this.features, colors, [
         'case',
         ['all', ['has', 'display'], ['has', 'color_fill', ['get', 'display']]],
         ['get', 'color_fill', ['get', 'display']],
@@ -364,7 +364,7 @@ export default defineComponent({
         return
       }
 
-      this.mapBase.fitBounds(getBBoxFeature(feature))
+      this.mapBase!.fitBounds(getBBoxFeature(feature))
     },
 
     goToSelectedFeature() {
@@ -404,13 +404,13 @@ export default defineComponent({
       if (this.features) {
         const bounds = getBBoxFeatures(this.features)
         if (bounds) {
-          this.mapBase.fitBounds(bounds)
+          this.mapBase!.fitBounds(bounds)
         }
       }
     },
 
     resetZoom() {
-      this.mapBase.fitBounds(this.defaultBounds, { linear: false })
+      this.mapBase!.fitBounds(this.defaultBounds, { linear: false })
     },
 
     handleResetMapZoom(text: string, textBtn: string) {
