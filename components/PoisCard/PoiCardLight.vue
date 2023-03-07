@@ -25,7 +25,6 @@
           :href="websiteDetails"
           rel="noopener noreferrer"
           target="_blank"
-          @click.stop="trackingPopupEvent('details')"
         >
           {{ $tc('poiCard.details') }}
         </a>
@@ -38,7 +37,6 @@
         :properties="poi.properties"
         :details="websiteDetails"
         :geom="poi.geometry"
-        @click-detail="trackingPopupEvent('details')"
       />
     </div>
     <NuxtPicture
