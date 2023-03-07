@@ -3,7 +3,7 @@
     <slot></slot>
     <div v-if="isCompact">
       <p v-for="(route, activity) in routes" :key="activity">
-        {{ $propertyTranslations.pv('route', activity, context) }} :
+        {{ propertyTranslations.pv('route', activity, context) }} :
         {{ formatNoDetails(activity, route) }}.
       </p>
       <p>{{ length }}</p>
@@ -15,7 +15,7 @@
           :recursion-stack="recursionStack"
           :class="`field_header_level_${recursionStack.length}`"
         >
-          {{ $propertyTranslations.pv('route', activity, context) }}
+          {{ propertyTranslations.pv('route', activity, context) }}
         </FieldsHeader>
         <ul class="list-disc ml-6">
           <li>
@@ -75,6 +75,10 @@ export default defineComponent({
   },
 
   computed: {
+    propertyTranslations() {
+      return useNuxtApp().$propertyTranslations
+    },
+
     isCompact(): boolean {
       return this.context === PropertyTranslationsContextEnum.Card
     },

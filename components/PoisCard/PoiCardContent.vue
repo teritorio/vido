@@ -74,7 +74,7 @@
       class="flex items-center space-x-2 justify-evenly shrink-0 bottom-0 pt-2"
     >
       <a
-        v-if="$screen.phone && coordinatesHref"
+        v-if="screen.phone && coordinatesHref"
         :href="coordinatesHref"
         class="flex flex-col items-center flex-1 h-full p-2 space-y-2 rounded-lg hover:bg-zinc-100"
         :title="$t('poiCard.findRoute')"
@@ -172,6 +172,10 @@ export default defineComponent({
   computed: {
     ...mapState(mapStore, ['isModeExplorer']),
     ...mapState(favoritesStore, ['favoritesIds']),
+
+    screen() {
+      return useNuxtApp().$screen
+    },
 
     id(): ApiPoiId {
       return this.poi.properties.metadata.id
