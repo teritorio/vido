@@ -59,7 +59,7 @@ export default defineComponent({
           }
         }
 
-        const control = new BackgroundControl(this.container)
+        const control = new BackgroundControl(this.container!)
         this.map.addControl(control)
       }
     },
