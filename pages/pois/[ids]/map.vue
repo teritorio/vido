@@ -11,9 +11,8 @@
 <script lang="ts">
 import { mapWritableState } from 'pinia'
 import { defineComponent } from 'vue'
-import { MetaInfo } from 'vue-meta'
 
-import { useNuxtApp } from '#app'
+import { MetaObject, useNuxtApp } from '#app'
 import MapPois from '~/components/Map/MapPois.vue'
 import { getPois, ApiPois, ApiPoiId } from '~/lib/apiPois'
 import { getSettings, headerFromSettings, Settings } from '~/lib/apiSettings'
@@ -82,7 +81,7 @@ export default defineComponent({
     }
   },
 
-  head(): MetaInfo {
+  head(): MetaObject {
     return headerFromSettings(this.settings)
   },
 
