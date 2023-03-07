@@ -21,7 +21,7 @@
         :href="mapURL"
         :label="$t('poiCard.backToMap')"
         :class="['w-11 h-11', 'mr-3 sm:mr-9']"
-        @click="!mapURL && $router.go(-1)"
+        @click="!mapURL && back()"
       >
         <TeritorioIcon picto="map" class="text-zinc-800" />
       </IconButton>
@@ -119,7 +119,7 @@
 import { mapState } from 'pinia'
 import { defineComponent, PropType } from 'vue'
 
-import { useNuxtApp } from '#app'
+import { useNuxtApp, useRoute, useRouter } from '#app'
 import PoiLayout from '~/components/Layout/PoiLayout.vue'
 import MapPois from '~/components/Map/MapPois.vue'
 import Carousel from '~/components/PoisDetails/Carousel.vue'
@@ -253,10 +253,10 @@ export default defineComponent({
       type: 'page',
       title: this.$meta().refresh().metaInfo.title,
       location: window.location.href,
-      path: this.$route.path,
+      path: useRoute().path,
       origin:
         OriginEnum[
-          this.$router.currentRoute.query.origin as keyof typeof OriginEnum
+          useRouter().currentRoute.value.query.origin as keyof typeof OriginEnum
         ],
     })
   },
@@ -273,6 +273,10 @@ export default defineComponent({
         })
         favoritesStore().toggleFavorite(this.poi)
       }
+    },
+
+    back(): void {
+      useRouter().go(-1)
     },
   },
 })
