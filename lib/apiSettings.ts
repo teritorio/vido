@@ -1,5 +1,5 @@
 import fetch from 'node-fetch'
-import { MetaInfo } from 'vue-meta'
+import { MetaObject } from 'nuxt/schema'
 
 import { MultilingualString } from '~/utils/types'
 
@@ -96,7 +96,7 @@ function stripHTML(value?: string): string | undefined {
 export function headerFromSettings(
   settings: Settings,
   options: any = null
-): MetaInfo {
+): MetaObject {
   return {
     title: [settings.themes[0].title.fr, options?.title]
       .filter((o) => o)

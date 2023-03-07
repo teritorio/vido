@@ -210,9 +210,8 @@
 import { FitBoundsOptions, LngLatBoundsLike } from 'maplibre-gl'
 import { mapActions, mapState } from 'pinia'
 import { PropType, defineComponent, ref } from 'vue'
-import { MetaInfo } from 'vue-meta'
 
-import { useNuxtApp, useRoute, useRouter } from '#app'
+import { MetaObject, useNuxtApp, useRoute, useRouter } from '#app'
 import ExplorerOrFavoritesBack from '~/components/Home/ExplorerOrFavoritesBack.vue'
 import HomeMixin from '~/components/Home/HomeMixin'
 import Menu from '~/components/Home/Menu.vue'
@@ -292,7 +291,7 @@ export default defineComponent({
     }
   },
 
-  head(): MetaInfo {
+  head(): MetaObject {
     return headerFromSettings(this.settings, {
       title: this.settings.themes[0]?.title.fr,
     })
