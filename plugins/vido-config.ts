@@ -1,7 +1,8 @@
-import { defineNuxtPlugin } from '#app/nuxt'
 import { NuxtRuntimeConfig } from '@nuxt/types/config/runtime'
 import createServer from 'connect'
 
+import { useRequestHeaders } from '#app'
+import { defineNuxtPlugin, useNuxtApp } from '#app/nuxt'
 import { VidoConfig, VidosConfig } from '~/utils/types-config'
 
 export function configuredApi(vidos: VidosConfig): string[] {
@@ -34,17 +35,15 @@ export function vidoConfigResolve(
 }
 
 export function vidoConfig(
-  req: createServer.IncomingMessage,
+  headers: Record<string, string | undefined>,
   privateRuntimeConfig: NuxtRuntimeConfig
 ): VidoConfig {
   let host: string
   if (process.server) {
-    const hostHeader =
-      (req.headers['x-forwarded-host'] as string) || req.headers.host
+    const hostHeader = (headers['x-forwarded-host'] as string) || headers.host
     if (!hostHeader) {
       throw new Error(
-        'No header "Host" nor "x-forwarded-host": ' +
-          JSON.stringify(req.headers)
+        'No header "Host" nor "x-forwarded-host": ' + JSON.stringify(headers)
       )
     } else {
       host = hostHeader
@@ -69,10 +68,8 @@ export default defineNuxtPlugin((nuxtApp) => {
       vidoConfigSet: (c: VidoConfig): void => {
         config = c
       },
-      vidoConfig: (): VidoConfig => (
-        config ||
-        vidoConfig(nuxtApp.vueApp.context.req, nuxtApp.vueApp.$config)
-      )
-    }
+      vidoConfig: (): VidoConfig =>
+        config || vidoConfig(useRequestHeaders(), useNuxtApp().$config),
+    },
   }
 })
