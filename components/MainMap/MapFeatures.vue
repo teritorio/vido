@@ -7,9 +7,9 @@
       :fit-bounds-padding-options="fitBoundsPaddingOptions"
       :extra-attributions="extraAttributions"
       :map-style="selectedBackground"
-      :rotate="!$screen.touch"
+      :rotate="!screen.touch"
       :show-attribution="!small"
-      :off-map-attribution="$screen.smallScreen && !small"
+      :off-map-attribution="screen.smallScreen && !small"
       :hide-control="small"
       :style-icon-filter="styleIconFilter"
       :cooperative-gestures="cooperativeGestures"
@@ -181,6 +181,10 @@ export default defineComponent({
     ...mapState(mapStore, ['selectedFeature']),
     ...mapState(menuStore, ['isLoadingFeatures']),
     ...mapWritableState(mapStore, ['center']),
+
+    screen() {
+      return useNuxtApp().$screen
+    },
 
     availableStyles(): MapStyleEnum[] {
       return [MapStyleEnum.vector, MapStyleEnum.aerial, MapStyleEnum.bicycle]
