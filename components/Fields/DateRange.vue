@@ -15,7 +15,11 @@
             from: $d(new Date(start)),
             to: $d(new Date(end)),
             duration: $n(
-              (new Date(end) - new Date(start)) / 1000 / 60 / 60 / 24
+              (new Date(end).getTime() - new Date(start).getTime()) /
+                1000 /
+                60 /
+                60 /
+                24
             ),
           })
         }}

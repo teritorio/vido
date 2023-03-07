@@ -3,7 +3,7 @@
     :settings="settings"
     :nav-menu-entries="navMenuEntries"
     :name="poi.properties.name"
-    :icon="poi.properties.display.icon"
+    :icon="poi.properties.display && poi.properties.display.icon"
     :color-line="colorLine"
     :color-fill="colorFill"
   >

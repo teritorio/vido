@@ -8,7 +8,7 @@
       >
         <slot name="headerButtons"></slot>
       </Header>
-      <div class="flex justify-center">
+      <div v-if="icon" class="flex justify-center">
         <TeritorioIconBadge :color-fill="colorFill" size="2xl" :picto="icon" />
       </div>
       <h1>{{ name }}</h1>
@@ -47,12 +47,12 @@ export default Vue.extend({
       required: true,
     },
     name: {
-      type: String as PropType<string>,
-      required: true,
+      type: String as PropType<string | undefined>,
+      default: undefined,
     },
     icon: {
-      type: String as PropType<string>,
-      required: true,
+      type: String as PropType<string | undefined>,
+      default: undefined,
     },
     colorLine: {
       type: String as PropType<string>,

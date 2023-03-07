@@ -39,19 +39,31 @@ const defaultProps = {
   },
 }
 
-export const Default = bind(MapFeatures, {
-  ...defaultProps,
-}, { style: mapCss })
+export const Default = bind(
+  MapFeatures,
+  {
+    ...defaultProps,
+  },
+  { style: mapCss }
+)
 
-export const Small = bind(MapFeatures, {
-  ...defaultProps,
-  small: true,
-}, { style: mapCss })
+export const Small = bind(
+  MapFeatures,
+  {
+    ...defaultProps,
+    small: true,
+  },
+  { style: mapCss }
+)
 
-export const StyleIconFilter = bind(MapFeatures, {
-  ...defaultProps,
-  styleIconFilter: [['catering', 'catering_food', 'restaurant']],
-}, { style: mapCss })
+export const StyleIconFilter = bind(
+  MapFeatures,
+  {
+    ...defaultProps,
+    styleIconFilter: [['catering', 'catering_food', 'restaurant']],
+  },
+  { style: mapCss }
+)
 
 const feature1: ApiPoi = {
   type: 'Feature',
@@ -101,7 +113,11 @@ const feature2: ApiPoi = {
   },
 }
 
-export const Features = bind(MapFeatures, {
-  ...defaultProps,
-  features: [feature1],
-}, { style: mapCss })
+export const Features = bind(
+  MapFeatures,
+  {
+    ...defaultProps,
+    features: [feature1],
+  },
+  { style: mapCss }
+)

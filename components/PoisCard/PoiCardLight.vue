@@ -10,10 +10,11 @@
           :style="'color:' + colorLine"
         >
           <TeritorioIconBadge
+            v-if="icon"
             :color-fill="colorFill"
             :picto="icon"
             size="lg"
-            :image="null"
+            :image="undefined"
           />
           {{ name }}
         </h3>
