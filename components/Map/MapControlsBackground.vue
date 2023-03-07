@@ -32,7 +32,7 @@ import { Control } from '@teritorio/map'
 import { Map } from 'maplibre-gl'
 import { defineComponent, PropType, ref } from 'vue'
 
-import { useNuxtApp } from '#app'
+import { useNuxtApp, useRouter } from '#app'
 import { DEFAULT_MAP_STYLE, MAP_STYLE_NAMES } from '~/lib/constants'
 import { MapStyleEnum } from '~/utils/types'
 import { getHashPart, routerPushHashUpdate } from '~/utils/url'
@@ -73,7 +73,7 @@ export default defineComponent({
   watch: {
     map(value, oldValue) {
       if (!oldValue && value) {
-        const bgString = getHashPart(this.$router, 'bg')
+        const bgString = getHashPart(useRouter(), 'bg')
         const bg = MapStyleEnum[bgString as keyof typeof MapStyleEnum]
         if (bg && this.backgrounds.includes(bg)) {
           this.activeBackground = bg
@@ -104,7 +104,7 @@ export default defineComponent({
       $tracking({ type: 'map_control_event', event: 'background' })
 
       this.activeBackground = background
-      routerPushHashUpdate(this.$router, {
+      routerPushHashUpdate(useRouter(), {
         bg: background !== DEFAULT_MAP_STYLE ? background : null,
       })
       this.$emit('change-background', background)

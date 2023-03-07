@@ -2,7 +2,7 @@
   <PoisList
     :settings="settings"
     :nav-menu-entries="contents"
-    :initial-category-id="parseInt($route.params.id)"
+    :initial-category-id="parseInt(useRoute().params.id)"
     :initial-pois="pois"
     class="page-index"
   />
@@ -13,7 +13,7 @@ import { mapWritableState } from 'pinia'
 import { defineComponent } from 'vue'
 import { MetaInfo } from 'vue-meta'
 
-import { useNuxtApp } from '#app'
+import { useNuxtApp, useRoute } from '#app'
 import PoisList from '~/components/PoisList/PoisList.vue'
 import { ContentEntry, getContents } from '~/lib/apiContent'
 import { MenuItem, getMenu } from '~/lib/apiMenu'
@@ -31,10 +31,6 @@ import { VidoConfig } from '~/utils/types-config'
 export default defineComponent({
   components: {
     PoisList,
-  },
-
-  validate({ params }) {
-    return /^[,-_:a-zA-Z0-9]+$/.test(params.id)
   },
 
   async asyncData({ params, req, $config, $pinia }): Promise<{

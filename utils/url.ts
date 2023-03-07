@@ -1,4 +1,4 @@
-import VueRouter from 'vue-router'
+import Router from 'vue-router'
 
 import { OriginEnum } from './types'
 
@@ -32,14 +32,17 @@ export function setHashParts(hash: string, hashParts: HashParts) {
   return params.toString().replace(/%2F/g, '/')
 }
 
-export function routerPushHashUpdate(router: VueRouter, hashParts: HashParts) {
-  let hash = router.currentRoute.hash
+export function routerPushHashUpdate(
+  router: Router.Router,
+  hashParts: HashParts
+) {
+  let hash = router.currentRoute.value.hash
   if (hashParts) {
     hash = setHashParts(hash, hashParts)
   }
   router.push({
-    path: router.currentRoute.path,
-    query: router.currentRoute.query,
+    path: router.currentRoute.value.path,
+    query: router.currentRoute.value.query,
     hash,
   })
 }
@@ -47,8 +50,10 @@ export function routerPushHashUpdate(router: VueRouter, hashParts: HashParts) {
 /**
  * Get value from URL hash key
  */
-export function getHashPart(router: VueRouter, key: string): string | null {
-  const params = new URLSearchParams(router.currentRoute.hash.substring(1))
+export function getHashPart(router: Router.Router, key: string): string | null {
+  const params = new URLSearchParams(
+    router.currentRoute.value.hash.substring(1)
+  )
   return params.get(key)
 }
 
