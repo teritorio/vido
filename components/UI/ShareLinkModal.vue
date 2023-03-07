@@ -17,7 +17,7 @@
             </p>
             <UIButton
               v-if="hasClipboard"
-              :label="!isCopied && $t('shareLink.copy')"
+              :label="(!isCopied && $t('shareLink.copy')) || undefined"
               :icon="isCopied ? 'clipboard-check' : 'copy'"
               @click="copyLink"
             />
