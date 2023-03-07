@@ -6,7 +6,7 @@ export const MAP_STYLE_NAMES = {
   [MapStyleEnum.bicycle]: 'Teritorio - Vélo',
 }
 
-export const DEFAULT_MAP_STYLE: keyof typeof MapStyleEnum = MapStyleEnum.vector
+export const DEFAULT_MAP_STYLE: MapStyleEnum = MapStyleEnum.vector
 
 export const MAP_ZOOM = {
   zoom: {

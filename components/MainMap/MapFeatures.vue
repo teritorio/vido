@@ -169,7 +169,7 @@ export default (
     map: maplibregl.Map
     markers: { [id: string]: maplibregl.Marker }
     selectedFeatureMarker: maplibregl.Marker | null
-    selectedBackground: keyof typeof MapStyleEnum
+    selectedBackground: MapStyleEnum
   } {
     return {
       map: null!,
@@ -253,9 +253,8 @@ export default (
   },
 
   beforeMount() {
-    this.selectedBackground =
-      (getHashPart(this.$router, 'bg') as keyof typeof MapStyleEnum) ||
-      DEFAULT_MAP_STYLE
+    const bg = getHashPart(this.$router, 'bg') as keyof typeof MapStyleEnum
+    this.selectedBackground = (bg && MapStyleEnum[bg]) || DEFAULT_MAP_STYLE
   },
 
   methods: {
