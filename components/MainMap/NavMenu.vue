@@ -16,7 +16,7 @@
         }"
       >
         <IconButton
-          :aria-label="$tc('navMenu.label')"
+          :label="$tc('navMenu.label')"
           class="w-11 h-11"
           @mousedown="mousedownHandler"
           @focus="focusHandler"

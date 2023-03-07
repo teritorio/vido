@@ -9,7 +9,7 @@
   >
     <template #headerButtons>
       <IconButton
-        :aria-label="
+        :label="
           isFavorite ? $tc('poiCard.favoriteOn') : $tc('poiCard.favoriteOff')
         "
         :class="['w-11 h-11', 'mr-3 sm:mr-9']"
@@ -19,7 +19,7 @@
       </IconButton>
       <IconButton
         :href="mapURL"
-        :aria-label="$tc('poiCard.backToMap')"
+        :label="$tc('poiCard.backToMap')"
         :class="['w-11 h-11', 'mr-3 sm:mr-9']"
         @click="!mapURL && $router.go(-1)"
       >

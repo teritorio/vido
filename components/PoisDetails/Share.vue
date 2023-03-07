@@ -3,7 +3,7 @@
     <IconsBar>
       <IconButton
         v-if="href"
-        :aria-label="$tc('poiDetails.shareFacebook')"
+        :label="$tc('poiDetails.shareFacebook')"
         class="w-8 h-8"
         :href="shareFacebook"
         target="_blank"
@@ -15,7 +15,7 @@
       </IconButton>
       <IconButton
         v-if="title && href"
-        :aria-label="$tc('poiDetails.shareTwitter')"
+        :label="$tc('poiDetails.shareTwitter')"
         class="w-8 h-8"
         :href="shareTwitter"
         target="_blank"
@@ -27,7 +27,7 @@
       </IconButton>
       <IconButton
         v-if="title && href"
-        :aria-label="$tc('poiDetails.shareWhatsApp')"
+        :label="$tc('poiDetails.shareWhatsApp')"
         class="w-8 h-8"
         :href="shareWhatsApp"
         target="_blank"
@@ -38,7 +38,7 @@
         />
       </IconButton>
       <IconButton
-        :aria-label="$tc('poiDetails.print')"
+        :label="$tc('poiDetails.print')"
         class="w-8 h-8"
         @click="print"
       >
@@ -46,7 +46,7 @@
       </IconButton>
       <IconButton
         v-if="href"
-        :aria-label="$tc('poiDetails.link')"
+        :label="$tc('poiDetails.link')"
         class="w-8 h-8"
         @click="shareUrl"
       >
