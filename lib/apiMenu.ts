@@ -8,8 +8,8 @@ export type FilterList = {
   name: MultilingualString
   values: {
     value: string
-    name: MultilingualString[]
-  }
+    name: MultilingualString
+  }[]
 }
 
 export type FilterBoolean = {

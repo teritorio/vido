@@ -1,7 +1,7 @@
 <template>
   <div class="basis-max shrink flex flex-col gap-4 flex-1">
     <template v-for="(filter, filterIndex) in filtersSafeCopy">
-      <div v-if="filter.type == 'boolean'" :key="filter.property">
+      <div v-if="filter.type == 'boolean'" :key="filter.def.property">
         <label :key="filter.def.property" class="block mb-1 text-zinc-800">
           <input
             type="checkbox"
@@ -15,13 +15,16 @@
           {{ (filter.def.name && filter.def.name.fr) || filter.def.property }}
         </label>
       </div>
-      <div v-else-if="filter.type == 'multiselection'" :key="filter.property">
-        <label :for="filter.property" class="block mb-2 text-zinc-500">
+      <div
+        v-else-if="filter.type == 'multiselection'"
+        :key="filter.def.property"
+      >
+        <label :for="filter.def.property" class="block mb-2 text-zinc-500">
           {{ (filter.def.name && filter.def.name.fr) || filter.def.property }}
         </label>
         <SelectFilter
           :filter="filter"
-          @change="(val) => onSelectionFilterChange(filterIndex, val)"
+          @change="onSelectionFilterChange(filterIndex, $event)"
           @click="onClickFilter(true)"
           @blur="onClickFilter(false)"
         />
@@ -55,24 +58,21 @@
           {{ (value.name && value.name.fr) || value.value }}
         </label>
       </div>
-      <div v-else-if="filter.type == 'date_range'" :key="filter.property_begin">
+      <div
+        v-else-if="filter.type == 'date_range'"
+        :key="filter.def.property_begin"
+      >
         <DateRange
           :filter="filter"
-          @change="
-            (filterValue) =>
-              onSelectionFilterDateChange(filterIndex, filterValue)
-          "
+          @change="onSelectionFilterDateChange(filterIndex, $event)"
         />
       </div>
-      <div v-else-if="filter.type == 'number_range'" :key="filter.property">
+      <div v-else-if="filter.type == 'number_range'" :key="filter.def.property">
         <label class="block mb-1 text-zinc-800">
           {{ (filter.def.name && filter.def.name.fr) || filter.def.property }}
           <NumberRange
             :filter="filter"
-            @change="
-              (filterValue) =>
-                onSelectionFilterNumberRangeChange(filterIndex, filterValue)
-            "
+            @change="onSelectionFilterNumberRangeChange(filterIndex, $event)"
           />
         </label>
       </div>
