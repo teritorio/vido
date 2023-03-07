@@ -126,7 +126,7 @@ export default defineComponent({
           )
         ),
       ]
-      this.mapBase.initPoiLayer(this.features, colors, [
+      this.mapBase!.initPoiLayer(this.features, colors, [
         'case',
         ['all', ['has', 'display'], ['has', 'color_fill', ['get', 'display']]],
         ['get', 'color_fill', ['get', 'display']],
