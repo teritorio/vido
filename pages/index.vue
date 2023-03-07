@@ -17,7 +17,7 @@ import { MetaInfo } from 'vue-meta'
 
 import Home from '~/components/Home/Home.vue'
 import { ContentEntry, getContents } from '~/lib/apiContent'
-import { MenuItem, getMenu } from '~/lib/apiMenu'
+import { MenuItem, getMenu, ApiMenuCategory } from '~/lib/apiMenu'
 import { getPoiById, ApiPoi } from '~/lib/apiPois'
 import {
   getPropertyTranslations,
@@ -40,8 +40,8 @@ export default Vue.extend({
     contents: ContentEntry[]
     propertyTranslations: PropertyTranslations
     menuItems: MenuItem[] | undefined
-    categoryIds: number[] | null
-    initialPoi: ApiPoi | null
+    categoryIds: ApiMenuCategory['id'][] | undefined
+    initialPoi: ApiPoi | undefined
     boundary_geojson: Polygon | MultiPolygon | undefined
   }> {
     const config: VidoConfig =
@@ -110,8 +110,8 @@ export default Vue.extend({
     const categoryIds =
       (categoryIdsJoin &&
         categoryIdsJoin.split(',').map((id) => parseInt(id))) ||
-      null
-    let fetchPoi: Promise<ApiPoi | null> = Promise.resolve(null)
+      undefined
+    let fetchPoi: Promise<ApiPoi | undefined> = Promise.resolve(undefined)
     if (poiId) {
       fetchPoi = Promise.resolve(
         getPoiById(
@@ -121,7 +121,7 @@ export default Vue.extend({
           poiId!
         )
       ).catch(() => {
-        return null
+        return undefined
       })
     }
 
@@ -167,8 +167,8 @@ export default Vue.extend({
     contents: ContentEntry[]
     propertyTranslations: PropertyTranslations
     menuItems: MenuItem[]
-    categoryIds: number[] | null
-    initialPoi: ApiPoi | null
+    categoryIds: ApiMenuCategory['id'][] | null
+    initialPoi: ApiPoi | undefined
     boundary_geojson: Polygon | MultiPolygon | undefined
   } {
     return {
@@ -182,7 +182,7 @@ export default Vue.extend({
       // @ts-ignore
       menuItems: null,
       categoryIds: null,
-      initialPoi: null,
+      initialPoi: undefined,
     }
   },
 

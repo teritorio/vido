@@ -95,11 +95,11 @@ export default (
   props: {
     favs: {
       type: Array as PropType<ApiPoi[]>,
-      default: undefined,
+      required: true,
     },
     selectedFavsIds: {
       type: Array as PropType<ApiPoiId[]>,
-      default: undefined,
+      required: true,
     },
     explorerModeEnabled: {
       type: Boolean,

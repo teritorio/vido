@@ -30,8 +30,8 @@ export default (
       default: undefined,
     },
     initialPoi: {
-      type: Object as PropType<ApiPoi>,
-      default: null,
+      type: Object as PropType<ApiPoi | undefined>,
+      default: undefined,
     },
     boundaryArea: {
       type: Object as PropType<Polygon | MultiPolygon | undefined>,

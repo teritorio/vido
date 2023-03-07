@@ -99,7 +99,7 @@
           :fit-bounds-padding-options="fitBoundsPaddingOptions"
           :extra-attributions="settings.attributions"
           :small="isBottomMenuOpened"
-          :categories="apiMenuCategory || {}"
+          :categories="apiMenuCategory || []"
           :features="mapFeatures"
           :selected-categories-ids="isModeExplorer ? [] : selectedCategoryIds"
           :style-icon-filter="poiFilters"

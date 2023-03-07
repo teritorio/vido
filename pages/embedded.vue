@@ -14,7 +14,7 @@ import Vue from 'vue'
 import { MetaInfo } from 'vue-meta'
 
 import Embedded from '~/components/Home/Embedded.vue'
-import { getMenu, MenuItem } from '~/lib/apiMenu'
+import { ApiMenuCategory, getMenu, MenuItem } from '~/lib/apiMenu'
 import { getPoiById, ApiPoi } from '~/lib/apiPois'
 import {
   getPropertyTranslations,
@@ -36,8 +36,8 @@ export default Vue.extend({
     settings: Settings
     propertyTranslations: PropertyTranslations
     menuItems: MenuItem[] | undefined
-    categoryIds: number[] | null
-    initialPoi: ApiPoi | null
+    categoryIds: ApiMenuCategory['id'][] | undefined
+    initialPoi: ApiPoi | undefined
     boundary_geojson: Polygon | MultiPolygon | undefined
   }> {
     const config: VidoConfig =
@@ -102,8 +102,8 @@ export default Vue.extend({
     const categoryIds =
       (categoryIdsJoin &&
         categoryIdsJoin.split(',').map((id) => parseInt(id))) ||
-      null
-    let fetchPoi: Promise<ApiPoi | null> = Promise.resolve(null)
+      undefined
+    let fetchPoi: Promise<ApiPoi | undefined> = Promise.resolve(undefined)
     if (poiId) {
       fetchPoi = getPoiById(
         config.API_ENDPOINT,
@@ -148,7 +148,7 @@ export default Vue.extend({
     settings: Settings
     propertyTranslations: PropertyTranslations
     menuItems: MenuItem[]
-    categoryIds: number[] | null
+    categoryIds: ApiMenuCategory['id'][] | null
     initialPoi: ApiPoi | null
     boundary_geojson: Polygon | MultiPolygon | undefined
   } {

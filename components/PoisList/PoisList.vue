@@ -15,7 +15,7 @@
     </template>
     <template #body>
       <CategorySelector
-        :menu-items="apiMenuCategory || {}"
+        :menu-items="apiMenuCategory || []"
         :category-id="categoryId"
         @category-change="onMenuChange"
       />

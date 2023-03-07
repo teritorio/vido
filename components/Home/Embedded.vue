@@ -41,7 +41,7 @@
             :default-bounds="initialBbox"
             :fit-bounds-padding-options="fitBoundsPaddingOptions"
             :extra-attributions="settings.attributions"
-            :categories="apiMenuCategory || {}"
+            :categories="apiMenuCategory || []"
             :features="mapFeatures"
             :selected-categories-ids="selectedCategoryIds"
             :style-icon-filter="poiFilters"

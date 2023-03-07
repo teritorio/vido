@@ -136,7 +136,7 @@ export default (
       default: () => [],
     },
     selectedCategoriesIds: {
-      type: Array as PropType<string[]>,
+      type: Array as PropType<ApiMenuCategory['id'][]>,
       default: () => [],
     },
     styleIconFilter: {
