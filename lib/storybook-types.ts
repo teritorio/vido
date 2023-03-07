@@ -1,5 +1,3 @@
-import { defineComponent, VueConstructor } from 'vue'
-
 import mockStyleGL from './storybook-types-mock-stylegl'
 
 type Args = { [key: string]: any }
@@ -50,7 +48,7 @@ bottom: 0;
 width: 100%;
 `
 
-export function bind<T extends VueConstructor<Vue>>(
+export function bind<T>(
   t: T,
   args: Args,
   {
@@ -65,13 +63,16 @@ export function bind<T extends VueConstructor<Vue>>(
     style?: string
   } = {}
 ) {
-  const Template = ((args: Args) => ({
-    components: { t },
-    props: Object.keys(args),
-    template: `<t v-bind="$props" ${
-      id ? `id="${id}"` : ''
-    } v-on="$props" class="${classs} "style="${style}">${slots}</t>`,
-  })) as unknown as Def
+  const Template = (args: Args) =>
+    ({
+      components: { t },
+      setup() {
+        return { args }
+      },
+      template: `<t v-bind="args" ${
+        id ? `id="${id}"` : ''
+      } v-on="args" class="${classs}" style="${style}">${slots}</t>`,
+    } as unknown as Def)
 
   const b = Template.bind({})
   b.args = args

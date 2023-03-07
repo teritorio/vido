@@ -194,19 +194,6 @@ export default defineNuxtConfig({
     host: '0.0.0.0',
   },
 
-  // Storybook module configuration (https://storybook.nuxtjs.org/setup)
-  storybook: {
-    typescript: { check: false },
-    port: 4000,
-    // addons: ['@storybook/addon-controls', '@storybook/addon-notes'],
-    // @ts-ignore
-    webpackFinal(config) {
-      config.watchOptions.ignored = /node_modules|__screenshots__/
-      return config
-    },
-    addons: ['storybook-addon-mock', 'storybook-addon-validate-html'],
-  },
-
   // Google Tag Manager config
   gtm: {
     pageTracking: false,
