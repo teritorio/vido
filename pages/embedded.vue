@@ -11,9 +11,8 @@
 import { Polygon, MultiPolygon, GeoJSON } from 'geojson'
 import { mapWritableState } from 'pinia'
 import { defineComponent } from 'vue'
-import { MetaInfo } from 'vue-meta'
 
-import { useNuxtApp } from '#app'
+import { MetaObject, useNuxtApp } from '#app'
 import Embedded from '~/components/Home/Embedded.vue'
 import { ApiMenuCategory, getMenu, MenuItem } from '~/lib/apiMenu'
 import { getPoiById, ApiPoi } from '~/lib/apiPois'
@@ -170,7 +169,7 @@ export default defineComponent({
     }
   },
 
-  head(): MetaInfo {
+  head(): MetaObject {
     return headerFromSettings(this.settings)
   },
 

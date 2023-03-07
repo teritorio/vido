@@ -11,9 +11,8 @@
 <script lang="ts">
 import { mapWritableState } from 'pinia'
 import { defineComponent } from 'vue'
-import { MetaInfo } from 'vue-meta'
 
-import { useNuxtApp, useRoute } from '#app'
+import { MetaObject, useNuxtApp, useRoute } from '#app'
 import PoisList from '~/components/PoisList/PoisList.vue'
 import { ContentEntry, getContents } from '~/lib/apiContent'
 import { MenuItem, getMenu } from '~/lib/apiMenu'
@@ -125,7 +124,7 @@ export default defineComponent({
     }
   },
 
-  head(): MetaInfo {
+  head(): MetaObject {
     return headerFromSettings(this.settings)
   },
 
