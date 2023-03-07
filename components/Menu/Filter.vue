@@ -1,7 +1,9 @@
 <template>
   <div class="basis-max shrink flex flex-col gap-4 flex-1">
-    <template v-for="(filter, filterIndex) in filtersSafeCopy">
-      <div v-if="filter.type == 'boolean'" :key="filter.def.property">
+    <template
+      v-for="(filter, filterIndex) in filtersSafeCopy"
+    >
+      <div v-if="filter.type == 'boolean'">
         <label :key="filter.def.property" class="block mb-1 text-zinc-800">
           <input
             type="checkbox"
@@ -13,10 +15,7 @@
           {{ (filter.def.name && filter.def.name.fr) || filter.def.property }}
         </label>
       </div>
-      <div
-        v-else-if="filter.type == 'multiselection'"
-        :key="filter.def.property"
-      >
+      <div v-else-if="filter.type == 'multiselection'">
         <label :for="filter.def.property" class="block mb-2 text-zinc-500">
           {{ (filter.def.name && filter.def.name.fr) || filter.def.property }}
         </label>
@@ -29,7 +28,6 @@
       </div>
       <div
         v-else-if="filter.type == 'checkboxes_list'"
-        :key="filter.def.property"
       >
         <p class="mb-2 text-zinc-500">
           {{ (filter.def.name && filter.def.name.fr) || filter.def.property }}
@@ -57,16 +55,13 @@
           {{ (value.name && value.name.fr) || value.value }}
         </label>
       </div>
-      <div
-        v-else-if="filter.type == 'date_range'"
-        :key="filter.def.property_begin"
-      >
+      <div v-else-if="filter.type == 'date_range'">
         <DateRange
           :filter="filter"
           @change="onSelectionFilterDateChange(filterIndex, $event)"
         />
       </div>
-      <div v-else-if="filter.type == 'number_range'" :key="filter.def.property">
+      <div v-else-if="filter.type == 'number_range'">
         <label class="block mb-1 text-zinc-800">
           {{ (filter.def.name && filter.def.name.fr) || filter.def.property }}
           <NumberRange
