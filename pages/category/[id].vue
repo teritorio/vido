@@ -10,9 +10,11 @@
 
 <script lang="ts">
 import { mapWritableState } from 'pinia'
+import { definePageMeta } from 'nuxt/dist/pages/runtime'
 import { defineComponent } from 'vue'
 
 import { MetaObject, useNuxtApp, useRoute } from '#app'
+import { definePageMeta } from '#imports'
 import PoisList from '~/components/PoisList/PoisList.vue'
 import { ContentEntry, getContents } from '~/lib/apiContent'
 import { MenuItem, getMenu } from '~/lib/apiMenu'
@@ -30,6 +32,16 @@ import { VidoConfig } from '~/utils/types-config'
 export default defineComponent({
   components: {
     PoisList,
+  },
+
+  setup() {
+    definePageMeta({
+      validate({ params }) {
+        return (
+          typeof params.id === 'string' && /^[,-_:a-zA-Z0-9]+$/.test(params.id)
+        )
+      },
+    })
   },
 
   async asyncData({ params, req, $config, $pinia }): Promise<{

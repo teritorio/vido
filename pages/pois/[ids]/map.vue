@@ -13,6 +13,7 @@ import { mapWritableState } from 'pinia'
 import { defineComponent } from 'vue'
 
 import { MetaObject, useNuxtApp } from '#app'
+import { definePageMeta } from '#imports'
 import MapPois from '~/components/Map/MapPois.vue'
 import { getPois, ApiPois, ApiPoiId } from '~/lib/apiPois'
 import { getSettings, headerFromSettings, Settings } from '~/lib/apiSettings'
@@ -25,8 +26,15 @@ export default defineComponent({
     MapPois,
   },
 
-  validate({ params }) {
-    return /^[,-_:a-zA-Z0-9]+$/.test(params.ids)
+  setup() {
+    definePageMeta({
+      validate({ params }) {
+        return (
+          typeof params.ids === 'string' &&
+          /^[,-_:a-zA-Z0-9]+$/.test(params.ids)
+        )
+      },
+    })
   },
 
   async asyncData({ params, req, $config, $pinia }): Promise<{

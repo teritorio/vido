@@ -15,6 +15,7 @@ import { mapWritableState } from 'pinia'
 import { defineComponent } from 'vue'
 
 import { MetaObject, useNuxtApp } from '#app'
+import { definePageMeta } from '#imports'
 import Index from '~/components/PoisDetails/PoiDetails.vue'
 import { ContentEntry, getContents } from '~/lib/apiContent'
 import { ApiPoiDeps, getPoiDepsById } from '~/lib/apiPoiDeps'
@@ -33,8 +34,14 @@ export default defineComponent({
     Index,
   },
 
-  validate({ params }) {
-    return /^[-_:a-zA-Z0-9]+$/.test(params.id)
+  setup() {
+    definePageMeta({
+      validate({ params }) {
+        return (
+          typeof params.id === 'string' && /^[-_:a-zA-Z0-9]+$/.test(params.id)
+        )
+      },
+    })
   },
 
   async asyncData({ params, req, $config, $pinia, error }): Promise<{
