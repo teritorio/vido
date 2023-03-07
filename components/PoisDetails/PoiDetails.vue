@@ -232,7 +232,7 @@ export default defineComponent({
 
     mapURL(): string | undefined {
       // Use history back rather than forward to map
-      const mapIsBack = this.$nuxt.context.from?.matched.some(
+      const mapIsBack = useNuxtApp().context.from?.matched.some(
         (route) => route.name === 'index'
       )
       if (mapIsBack) {
