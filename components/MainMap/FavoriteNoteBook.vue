@@ -137,7 +137,7 @@ export default (
         )
       } catch (e) {
         // eslint-disable-next-line no-console
-        console.error('Vido error:', e.message)
+        console.error('Vido error:', (e as Error).message)
       }
     },
 
@@ -153,7 +153,7 @@ export default (
         favoritesStore().setFavorites([])
       } catch (e) {
         // eslint-disable-next-line no-console
-        console.error('Vido error:', e.message)
+        console.error('Vido error:', (e as Error).message)
       }
     },
   },

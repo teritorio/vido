@@ -433,7 +433,7 @@ export default mixins(HomeMixin).extend({
         this.handleFavorites()
       } catch (e) {
         // eslint-disable-next-line no-console
-        console.error('Vido error:', e.message)
+        console.error('Vido error:', (e as Error).message)
       }
     } else {
       favoritesStore().initFavoritesFromLocalStorage()
@@ -563,7 +563,7 @@ export default mixins(HomeMixin).extend({
         favoritesStore().toggleFavorite(feature)
       } catch (e) {
         // eslint-disable-next-line no-console
-        console.error('Vido error:', e.message)
+        console.error('Vido error:', (e as Error).message)
       }
     },
 
@@ -602,7 +602,7 @@ export default mixins(HomeMixin).extend({
         })
         .catch((e) => {
           // eslint-disable-next-line no-console
-          console.error('Vido error:', e.message)
+          console.error('Vido error:', (e as Error).message)
         })
     },
 

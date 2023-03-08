@@ -142,7 +142,7 @@ export default (
         this.favs = await this.fetchFavorites(this.favoritesIds)
       } catch (e) {
         // eslint-disable-next-line no-console
-        console.error('Vido error:', e.message)
+        console.error('Vido error:', (e as Error).message)
       }
     },
     explore(poi?: ApiPoi) {
