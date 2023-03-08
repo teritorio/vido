@@ -2,7 +2,7 @@
   <PoisList
     :settings="settings"
     :nav-menu-entries="contents"
-    :initial-category-id="id"
+    :initial-category-id="parseInt(id)"
     :initial-pois="pois"
     class="page-index"
   />
