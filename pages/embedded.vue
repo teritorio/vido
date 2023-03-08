@@ -49,8 +49,9 @@ export default Vue.extend({
 
     const fetchSettingsBoundary = fetchSettings.then(async (settings) => {
       let boundary_geojson: Polygon | MultiPolygon | undefined
-      if (route.query.boundary && typeof route.query.boundary === 'string') {
-        const boundaryObject = settings.polygons_extra[route.query.boundary]
+      const boundary = route.query.boundary
+      if (boundary && typeof boundary === 'string') {
+        const boundaryObject = settings.polygons_extra[boundary]
         if (boundaryObject) {
           if (typeof boundaryObject.data === 'string') {
             const geojson = (await (
@@ -89,14 +90,14 @@ export default Vue.extend({
     let poiId: string | null
     // Workaround Nuxt missing feature to simple respect trialling slash meaning
     if (params.poiId) {
-      categoryIdsJoin = params.p1
-      poiId = params.poiId
+      categoryIdsJoin = params.p1 as string
+      poiId = params.poiId as string
     } else if (route.path.endsWith('/')) {
-      categoryIdsJoin = params.p1
+      categoryIdsJoin = params.p1 as string
       poiId = null
     } else {
       categoryIdsJoin = null
-      poiId = params.p1
+      poiId = params.p1 as string
     }
 
     const categoryIds =
