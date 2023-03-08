@@ -14,7 +14,14 @@ import { groupBy } from 'lodash'
 import { mapWritableState } from 'pinia'
 import { defineComponent } from 'vue'
 
-import { MetaObject, useNuxtApp } from '#app'
+import {
+  createError,
+  MetaObject,
+  useNuxtApp,
+  useRequestHeaders,
+  useRoute,
+  useRuntimeConfig,
+} from '#app'
 import { definePageMeta } from '#imports'
 import Index from '~/components/PoisDetails/PoiDetails.vue'
 import { ContentEntry, getContents } from '~/lib/apiContent'
@@ -34,17 +41,7 @@ export default defineComponent({
     Index,
   },
 
-  setup() {
-    definePageMeta({
-      validate({ params }) {
-        return (
-          typeof params.id === 'string' && /^[-_:a-zA-Z0-9]+$/.test(params.id)
-        )
-      },
-    })
-  },
-
-  async asyncData({ params, req, $config, $pinia, error }): Promise<{
+  async setup(): Promise<{
     config: VidoConfig
     settings: Settings
     contents: ContentEntry[]
@@ -52,19 +49,28 @@ export default defineComponent({
     poi: ApiPoi | undefined
     poiDeps: ApiPoiDeps | undefined
   }> {
-    const config: VidoConfig =
-      siteStore($pinia).config || vidoConfig(req, $config)
+    definePageMeta({
+      validate({ params }) {
+        return (
+          typeof params.id === 'string' && /^[-_:a-zA-Z0-9]+$/.test(params.id)
+        )
+      },
+    })
 
-    const getSettingsPromise = siteStore($pinia).settings
-      ? Promise.resolve(siteStore($pinia).settings as Settings)
+    const params = useRoute().params
+    const config: VidoConfig =
+      siteStore().config || vidoConfig(useRequestHeaders(), useRuntimeConfig())
+
+    const getSettingsPromise = siteStore().settings
+      ? Promise.resolve(siteStore().settings as Settings)
       : getSettings(config.API_ENDPOINT, config.API_PROJECT, config.API_THEME)
 
-    const fetchContents = siteStore($pinia).contents
-      ? Promise.resolve(siteStore($pinia).contents as ContentEntry[])
+    const fetchContents = siteStore().contents
+      ? Promise.resolve(siteStore().contents as ContentEntry[])
       : getContents(config.API_ENDPOINT, config.API_PROJECT, config.API_THEME)
 
-    const fetchPropertyTranslations = siteStore($pinia).translations
-      ? Promise.resolve(siteStore($pinia).translations as PropertyTranslations)
+    const fetchPropertyTranslations = siteStore().translations
+      ? Promise.resolve(siteStore().translations as PropertyTranslations)
       : getPropertyTranslations(
           config.API_ENDPOINT,
           config.API_PROJECT,
@@ -75,7 +81,7 @@ export default defineComponent({
       config.API_ENDPOINT,
       config.API_PROJECT,
       config.API_THEME,
-      params.id,
+      params.id as string,
       {
         short_description: false,
       }
@@ -103,9 +109,9 @@ export default defineComponent({
     }
 
     if (!poi) {
-      error({
+      createError({
         statusCode: 404,
-        message: 'POI not found. Missing main object.',
+        statusMessage: 'POI not found. Missing main object.',
       })
     }
 

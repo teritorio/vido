@@ -2,7 +2,7 @@
   <div class="relative flex flex-col w-full h-full">
     <MapPois
       :extra-attributions="settings.attributions"
-      :features="pois.features"
+      :features="pois ? pois.features : []"
       :feature-ids="ids"
     />
   </div>
@@ -12,7 +12,13 @@
 import { mapWritableState } from 'pinia'
 import { defineComponent } from 'vue'
 
-import { MetaObject, useNuxtApp } from '#app'
+import {
+  MetaObject,
+  useNuxtApp,
+  useRequestHeaders,
+  useRoute,
+  useRuntimeConfig,
+} from '#app'
 import { definePageMeta } from '#imports'
 import MapPois from '~/components/Map/MapPois.vue'
 import { getPois, ApiPois, ApiPoiId } from '~/lib/apiPois'
@@ -26,7 +32,11 @@ export default defineComponent({
     MapPois,
   },
 
-  setup() {
+  async setup(): Promise<{
+    config: VidoConfig
+    settings: Settings
+    pois: ApiPois | null
+  }> {
     definePageMeta({
       validate({ params }) {
         return (
@@ -35,24 +45,19 @@ export default defineComponent({
         )
       },
     })
-  },
 
-  async asyncData({ params, req, $config, $pinia }): Promise<{
-    config: VidoConfig
-    settings: Settings
-    pois: ApiPois | null
-  }> {
+    const params = useRoute().params
     const config: VidoConfig =
-      siteStore($pinia).config || vidoConfig(req, $config)
+      siteStore().config || vidoConfig(useRequestHeaders(), useRuntimeConfig())
 
-    const fetchSettings = siteStore($pinia).settings
-      ? Promise.resolve(siteStore($pinia).settings as Settings)
+    const fetchSettings = siteStore().settings
+      ? Promise.resolve(siteStore().settings as Settings)
       : getSettings(config.API_ENDPOINT, config.API_PROJECT, config.API_THEME)
 
     let settings: Settings | null
     let pois: ApiPois | null
     if (params.ids) {
-      const ids = params.ids.split(',')
+      const ids = (params.ids as string).split(',')
       const getPoiPromise = getPois(
         config.API_ENDPOINT,
         config.API_PROJECT,
@@ -75,20 +80,6 @@ export default defineComponent({
     })
   },
 
-  data(): {
-    config: VidoConfig | null
-    settings: Settings
-    pois: ApiPois
-  } {
-    return {
-      config: null,
-      // @ts-ignore
-      settings: null,
-      // @ts-ignore
-      poi: null,
-    }
-  },
-
   head(): MetaObject {
     return headerFromSettings(this.settings)
   },
@@ -100,7 +91,10 @@ export default defineComponent({
     }),
 
     ids(): ApiPoiId[] {
-      return this.pois.features.map((feature) => feature.properties.metadata.id)
+      return (
+        this.pois?.features.map((feature) => feature.properties.metadata.id) ||
+        []
+      )
     },
   },
 
