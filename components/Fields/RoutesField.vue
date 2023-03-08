@@ -4,7 +4,7 @@
     <div v-if="isCompact">
       <p v-for="(route, activity) in routes" :key="activity">
         {{ propertyTranslations.pv('route', activity, context) }} :
-        {{ formatNoDetails(activity, route) }}.
+        {{ formatNoDetails(activity as string, route) }}.
       </p>
       <p>{{ length }}</p>
     </div>
@@ -20,7 +20,7 @@
         <ul class="list-disc ml-6">
           <li>
             {{ $t('fields.route.difficulty') }}
-            {{ difficulty(activity, route) }}
+            {{ difficulty(activity as string, route) }}
           </li>
           <li>{{ $t('fields.route.duration') }} {{ duration(route) }}</li>
         </ul>
