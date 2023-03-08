@@ -9,7 +9,8 @@
             :name="filter.def.property"
             :checked="filter.filterValue"
             @change="
-              (e) => onBooleanFilterChange(filterIndex, e.target.checked)
+              //@ts-ignore
+              ;(e) => onBooleanFilterChange(filterIndex, e.target.checked)
             "
           />
           {{ (filter.def.name && filter.def.name.fr) || filter.def.property }}
@@ -51,6 +52,7 @@
                 onCheckboxFilterChange(
                   filterIndex,
                   value.value,
+                  //@ts-ignore
                   e.target.checked
                 )
             "

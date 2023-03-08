@@ -26,6 +26,7 @@
 
 <script lang="ts">
 import Vue, { PropType } from 'vue'
+// @ts-ignore
 import VueAgile from 'vue-agile/src/Agile.vue'
 
 import NuxtPicture from '~/components/UI/NuxtPicture.vue'
