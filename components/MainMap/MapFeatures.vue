@@ -375,8 +375,10 @@ export default (
           zoom = this.selectedFeature.properties.vido_zoom
         } else if (this.selectedFeature.properties.vido_cat) {
           zoom =
-            this.categories.find((category) => category.id == this.selectedFeature?.properties.vido_cat)?.category
-              .zoom || 17
+            this.categories.find(
+              (category) =>
+                category.id == this.selectedFeature?.properties.vido_cat
+            )?.category.zoom || 17
         }
         this.map.flyTo({
           center: this.selectedFeature.geometry

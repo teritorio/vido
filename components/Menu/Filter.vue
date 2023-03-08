@@ -8,10 +8,7 @@
             class="text-emerald-500 rounded-full focus:ring-0 focus:ring-transparent"
             :name="filter.def.property"
             :checked="filter.filterValue"
-            @change="
-              //@ts-ignore
-              ;(e) => onBooleanFilterChange(filterIndex, e.target.checked)
-            "
+            @change="onBooleanFilterChange(filterIndex, $event)"
           />
           {{ (filter.def.name && filter.def.name.fr) || filter.def.property }}
         </label>
@@ -135,7 +132,10 @@ export default Vue.extend({
       this.$emit('activate-filter', val)
     },
 
-    onBooleanFilterChange(filterIndex: number, value: boolean) {
+    onBooleanFilterChange(filterIndex: number, e: Event) {
+      // @ts-ignore
+      const value: boolean = e.target.checked
+
       const filters = this.filtersSafeCopy
       const filter = filters[filterIndex] as FilterValueBoolean
 
