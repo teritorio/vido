@@ -12,7 +12,13 @@ import { Polygon, MultiPolygon, GeoJSON } from 'geojson'
 import { mapWritableState } from 'pinia'
 import { defineComponent } from 'vue'
 
-import { MetaObject, useNuxtApp } from '#app'
+import {
+  MetaObject,
+  useNuxtApp,
+  useRequestHeaders,
+  useRoute,
+  useRuntimeConfig,
+} from '#app'
 import Embedded from '~/components/Home/Embedded.vue'
 import { ApiMenuCategory, getMenu, MenuItem } from '~/lib/apiMenu'
 import { getPoiById, ApiPoi } from '~/lib/apiPois'
@@ -31,7 +37,7 @@ export default defineComponent({
     Embedded,
   },
 
-  async asyncData({ params, route, req, $config, $pinia }): Promise<{
+  async setup(): Promise<{
     config: VidoConfig
     settings: Settings
     propertyTranslations: PropertyTranslations
@@ -40,16 +46,17 @@ export default defineComponent({
     initialPoi: ApiPoi | undefined
     boundary_geojson: Polygon | MultiPolygon | undefined
   }> {
+    const params = useRoute().params
     const config: VidoConfig =
-      siteStore($pinia).config || vidoConfig(req, $config)
+      siteStore().config || vidoConfig(useRequestHeaders(), useRuntimeConfig())
 
-    const fetchSettings = siteStore($pinia).settings
-      ? Promise.resolve(siteStore($pinia).settings as Settings)
+    const fetchSettings = siteStore().settings
+      ? Promise.resolve(siteStore().settings as Settings)
       : getSettings(config.API_ENDPOINT, config.API_PROJECT, config.API_THEME)
 
     const fetchSettingsBoundary = fetchSettings.then(async (settings) => {
       let boundary_geojson: Polygon | MultiPolygon | undefined
-      const boundary = route.query.boundary
+      const boundary = useRoute().query.boundary
       if (boundary && typeof boundary === 'string') {
         const boundaryObject = settings.polygons_extra[boundary]
         if (boundaryObject) {
@@ -74,15 +81,15 @@ export default defineComponent({
       return [settings, boundary_geojson]
     }) as unknown as [Settings, Polygon | MultiPolygon | undefined]
 
-    const fetchPropertyTranslations = siteStore($pinia).translations
-      ? Promise.resolve(siteStore($pinia).translations as PropertyTranslations)
+    const fetchPropertyTranslations = siteStore().translations
+      ? Promise.resolve(siteStore().translations as PropertyTranslations)
       : getPropertyTranslations(
           config.API_ENDPOINT,
           config.API_PROJECT,
           config.API_THEME
         )
 
-    const fetchMenuItems = menuStore($pinia).menuItems
+    const fetchMenuItems = menuStore().menuItems
       ? Promise.resolve(undefined)
       : getMenu(config.API_ENDPOINT, config.API_PROJECT, config.API_THEME)
 
@@ -92,7 +99,7 @@ export default defineComponent({
     if (params.poiId) {
       categoryIdsJoin = params.p1 as string
       poiId = params.poiId as string
-    } else if (route.path.endsWith('/')) {
+    } else if (useRoute().path.endsWith('/')) {
       categoryIdsJoin = params.p1 as string
       poiId = null
     } else {
@@ -145,28 +152,6 @@ export default defineComponent({
       locale: 'locale',
       globalConfig: 'config',
     }),
-  },
-
-  data(): {
-    config: VidoConfig | null
-    settings: Settings
-    propertyTranslations: PropertyTranslations
-    menuItems: MenuItem[]
-    categoryIds: ApiMenuCategory['id'][] | null
-    initialPoi: ApiPoi | null
-    boundary_geojson: Polygon | MultiPolygon | undefined
-  } {
-    return {
-      config: null,
-      // @ts-ignore
-      settings: null,
-      // @ts-ignore
-      propertyTranslations: null,
-      // @ts-ignore
-      menuItems: null,
-      categoryIds: null,
-      initialPoi: null,
-    }
   },
 
   head(): MetaObject {
