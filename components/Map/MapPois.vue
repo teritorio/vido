@@ -14,7 +14,7 @@
 </template>
 
 <script lang="ts">
-import { Position } from 'geojson'
+import { LngLatLike } from 'maplibre-gl'
 import Vue, { PropType, VueConstructor } from 'vue'
 
 import MapBase from '~/components/Map/MapBase.vue'
@@ -79,12 +79,12 @@ export default (
       return MAP_ZOOM.selectionZoom
     },
 
-    center(): Position | undefined {
+    center(): LngLatLike | undefined {
       if (
         this.features.length === 1 &&
         this.features[0].geometry.type === 'Point'
       ) {
-        return this.features[0].geometry.coordinates
+        return this.features[0].geometry.coordinates as LngLatLike
       } else {
         return undefined
       }
