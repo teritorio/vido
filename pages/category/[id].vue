@@ -2,7 +2,7 @@
   <PoisList
     :settings="settings"
     :nav-menu-entries="contents"
-    :initial-category-id="parseInt(useRoute().params.id)"
+    :initial-category-id="id"
     :initial-pois="pois"
     class="page-index"
   />
@@ -10,10 +10,15 @@
 
 <script lang="ts">
 import { mapWritableState } from 'pinia'
-import { definePageMeta } from 'nuxt/dist/pages/runtime'
 import { defineComponent } from 'vue'
 
-import { MetaObject, useNuxtApp, useRoute } from '#app'
+import {
+  useNuxtApp,
+  useRequestHeaders,
+  useRuntimeConfig,
+  MetaObject,
+  useRoute,
+} from '#app'
 import { definePageMeta } from '#imports'
 import PoisList from '~/components/PoisList/PoisList.vue'
 import { ContentEntry, getContents } from '~/lib/apiContent'
@@ -34,7 +39,15 @@ export default defineComponent({
     PoisList,
   },
 
-  setup() {
+  async setup(): Promise<{
+    config: VidoConfig
+    settings: Settings
+    contents: ContentEntry[]
+    propertyTranslations: PropertyTranslations
+    id: string
+    menuItems: MenuItem[]
+    pois: ApiPois
+  }> {
     definePageMeta({
       validate({ params }) {
         return (
@@ -42,42 +55,37 @@ export default defineComponent({
         )
       },
     })
-  },
 
-  async asyncData({ params, req, $config, $pinia }): Promise<{
-    config: VidoConfig
-    settings: Settings
-    propertyTranslations: PropertyTranslations
-    pois: ApiPois
-  }> {
+    const params = useRoute().params
     const config: VidoConfig =
-      siteStore($pinia).config || vidoConfig(req, $config)
+      siteStore().config || vidoConfig(useRequestHeaders(), useRuntimeConfig())
 
-    const fetchSettings = siteStore($pinia).settings
-      ? Promise.resolve(siteStore($pinia).settings as Settings)
+    const fetchSettings = siteStore().settings
+      ? Promise.resolve(siteStore().settings as Settings)
       : getSettings(config.API_ENDPOINT, config.API_PROJECT, config.API_THEME)
 
-    const fetchContents = siteStore($pinia).contents
-      ? Promise.resolve(siteStore($pinia).contents as ContentEntry[])
+    const fetchContents = siteStore().contents
+      ? Promise.resolve(siteStore().contents as ContentEntry[])
       : getContents(config.API_ENDPOINT, config.API_PROJECT, config.API_THEME)
 
-    const fetchPropertyTranslations = siteStore($pinia).translations
-      ? Promise.resolve(siteStore($pinia).translations as PropertyTranslations)
+    const fetchPropertyTranslations = siteStore().translations
+      ? Promise.resolve(siteStore().translations as PropertyTranslations)
       : getPropertyTranslations(
           config.API_ENDPOINT,
           config.API_PROJECT,
           config.API_THEME
         )
 
-    const fetchMenuItems = menuStore($pinia).menuItems
-      ? Promise.resolve(menuStore($pinia).menuItems)
-      : getMenu(config.API_ENDPOINT, config.API_PROJECT, config.API_THEME)
+    const fetchMenuItems =
+      menuStore().menuItems !== undefined
+        ? Promise.resolve(Object.values(menuStore().menuItems!))
+        : getMenu(config.API_ENDPOINT, config.API_PROJECT, config.API_THEME)
 
     const getPoiByCategoryIdPromise = getPoiByCategoryId(
       config.API_ENDPOINT,
       config.API_PROJECT,
       config.API_THEME,
-      params.id,
+      params.id as string,
       {
         geometry_as: 'point',
         short_description: true,
@@ -97,6 +105,7 @@ export default defineComponent({
       settings,
       contents,
       propertyTranslations,
+      id: params.id as string,
       menuItems,
       pois,
     })
@@ -110,30 +119,6 @@ export default defineComponent({
       globalContents: 'contents',
       globalTranslations: 'translations',
     }),
-  },
-
-  data(): {
-    config: VidoConfig
-    settings: Settings
-    contents: ContentEntry[]
-    propertyTranslations: PropertyTranslations
-    menuItems: MenuItem[]
-    pois: ApiPois
-  } {
-    return {
-      // @ts-ignore
-      config: null,
-      // @ts-ignore
-      settings: null,
-      // @ts-ignore
-      contents: null,
-      // @ts-ignore
-      propertyTranslations: null,
-      // @ts-ignore
-      menuItems: null,
-      // @ts-ignore
-      pois: null,
-    }
   },
 
   head(): MetaObject {
