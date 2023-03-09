@@ -1,28 +1,26 @@
 <template>
-  <div data-app>
+  <div data-app class="vuetify">
     <v-autocomplete
       class="category-selector"
       solo
-      :items="menuEntries"
+      :items="Object.values(menuEntries).map((a) => a[0])"
       :placeholder="$t('categorySelector.placeholder')"
       @input="$emit('category-change', $event)"
     >
-      <template #item="data">
-        <v-list-item-content>
-          <v-list-item-title>
-            <div class="flex">
-              <span class="flex-none w-6">
-                <TeritorioIcon
-                  :color-text="data.item.menuGroup.category.color_line"
-                  :picto="data.item.menuGroup.category.icon"
-                />
-              </span>
-              <div class="flex flex-col">
-                {{ data.item.text }}
-              </div>
+      <template #item="{ item }">
+        <v-list-item>
+          <div class="flex">
+            <span class="flex-none w-6">
+              <TeritorioIcon
+                :color-text="menuEntries[item.value][1].category.color_line"
+                :picto="menuEntries[item.value][1].category.icon"
+              />
+            </span>
+            <div class="flex flex-col">
+              {{ item.title }}
             </div>
-          </v-list-item-title>
-        </v-list-item-content>
+          </div>
+        </v-list-item>
       </template>
     </v-autocomplete>
   </div>
@@ -32,12 +30,16 @@
 import { defineComponent, PropType } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { LocaleObject } from 'vue-i18n-routing'
+import { VAutocomplete } from 'vuetify/components/VAutocomplete'
+import { VListItem } from 'vuetify/components/VList'
 
 import TeritorioIcon from '~/components/UI/TeritorioIcon.vue'
 import { ApiMenuCategory, MenuItem } from '~/lib/apiMenu'
 
 export default defineComponent({
   components: {
+    VAutocomplete,
+    VListItem,
     TeritorioIcon,
   },
 
@@ -54,10 +56,14 @@ export default defineComponent({
 
   computed: {
     menuEntries(): {
-      value: number
-      text: string
-      menuGroup: ApiMenuCategory
-    }[] {
+      [key: number]: [
+        {
+          value: number
+          title: string
+        },
+        ApiMenuCategory
+      ]
+    } {
       const menuIndex: { [key: number]: MenuItem } = {}
       this.menuItems
         .filter((menuItem) => !menuItem.hidden)
@@ -66,48 +72,59 @@ export default defineComponent({
         })
 
       const locales = useI18n().locales.value
-      return (
-        this.menuItems.filter(
-          (menuItem) => menuItem.category && !menuItem.hidden
-        ) as ApiMenuCategory[]
-      )
-        .map((menuItem) => {
-          let parents: string[] = []
-          let parentId = menuItem.parent_id
-          while (parentId) {
-            if (!menuIndex[parentId]) {
-              return undefined
-            }
-            const name = menuIndex[parentId].menu_group?.name.fr
-            if (name && menuIndex[parentId].parent_id) {
-              parents.push(name)
-            }
-            parentId = menuIndex[parentId].parent_id
-          }
-
-          return {
-            value: menuItem.id,
-            text: [...parents.reverse(), menuItem.category.name.fr].join(' / '),
-            menuGroup: menuItem,
-          }
-        })
-        .filter(
-          (
-            t
-          ): t is NonNullable<{
-            value: number
-            text: string
-            menuGroup: ApiMenuCategory
-          }> => t != null
+      return Object.fromEntries(
+        (
+          this.menuItems.filter(
+            (menuItem) => menuItem.category && !menuItem.hidden
+          ) as ApiMenuCategory[]
         )
-        .sort((a, b) =>
-          a.text.localeCompare(
-            b.text,
-            locales.map((locale: string | LocaleObject) =>
-              typeof locale === 'string' ? locale : locale.code
+          .map((menuItem) => {
+            let parents: string[] = []
+            let parentId = menuItem.parent_id
+            while (parentId) {
+              if (!menuIndex[parentId]) {
+                return undefined
+              }
+              const name = menuIndex[parentId].menu_group?.name.fr
+              if (name && menuIndex[parentId].parent_id) {
+                parents.push(name)
+              }
+              parentId = menuIndex[parentId].parent_id
+            }
+
+            return [
+              {
+                value: menuItem.id,
+                title: [...parents.reverse(), menuItem.category.name.fr].join(
+                  ' / '
+                ),
+              },
+              menuItem,
+            ]
+          })
+          .filter(
+            (
+              t
+            ): t is NonNullable<
+              [
+                {
+                  value: number
+                  title: string
+                },
+                ApiMenuCategory
+              ]
+            > => t != null
+          )
+          .sort((a, b) =>
+            a[0].title.localeCompare(
+              b[0].title,
+              locales.map((locale: string | LocaleObject) =>
+                typeof locale === 'string' ? locale : locale.code
+              )
             )
           )
-        )
+          .map((a) => [a[0].value, a])
+      )
     },
   },
 })
