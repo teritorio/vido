@@ -3844,19 +3844,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@nuxtjs/vuetify@npm:^1.12.3":
-  version: 1.12.3
-  resolution: "@nuxtjs/vuetify@npm:1.12.3"
-  dependencies:
-    deepmerge: ^4.2.2
-    sass: ~1.32.13
-    sass-loader: ^10.2.0
-    vuetify: ^2.6
-    vuetify-loader: ^1.7.3
-  checksum: a251c12b87f5e53889610a43700d281b26f3fcc9f8f29194abc969c2d2f43c36aca40940e441a59dc7047877e65950094cd50a7cd71174e0008411b6d9fcdfce
-  languageName: node
-  linkType: hard
-
 "@pinia/nuxt@npm:0.4.7":
   version: 0.4.7
   resolution: "@pinia/nuxt@npm:0.4.7"
@@ -5387,7 +5374,6 @@ __metadata:
     "@nuxtjs/stylelint-module": ^5.0.0
     "@nuxtjs/svg": ^0.4.0
     "@nuxtjs/tailwindcss": ^6.4.1
-    "@nuxtjs/vuetify": ^1.12.3
     "@pinia/nuxt": 0.4.7
     "@storybook/addon-essentials": ^6.5.16
     "@storybook/addon-postcss": ^2.0.0
@@ -5470,12 +5456,14 @@ __metadata:
     ts-jest: ^29.0.5
     typescript: ^4.9.5
     url-slug: ^3.0.4
+    vite-plugin-vuetify: ^1.0.2
     vue-agile: 2.0.0
     vue-cookie-law: ^1.13.3
     vue-jest: ^3.0.7
     vue-matomo: ^4.2.0
     vue-screen: ^1.5.6
     vue2-touch-events: ^3.2.2
+    vuetify: ^3.1.8
   languageName: unknown
   linkType: soft
 
@@ -6714,6 +6702,19 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@vuetify/loader-shared@npm:^1.7.1":
+  version: 1.7.1
+  resolution: "@vuetify/loader-shared@npm:1.7.1"
+  dependencies:
+    find-cache-dir: ^3.3.2
+    upath: ^2.0.1
+  peerDependencies:
+    vue: ^3.0.0
+    vuetify: ^3.0.0-beta.4
+  checksum: 5820cfd08841002bc19c4407b41cedd8eadfdc25ca894fa9f2663b990b5bca1285a031aced082205b964243bace1e3376be4d1918c139d26111c6ac29abc7c84
+  languageName: node
+  linkType: hard
+
 "@vueuse/head@npm:^1.1.9":
   version: 1.1.19
   resolution: "@vueuse/head@npm:1.1.19"
@@ -7163,7 +7164,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"acorn-walk@npm:^8.0.0, acorn-walk@npm:^8.0.2, acorn-walk@npm:^8.1.1, acorn-walk@npm:^8.2.0":
+"acorn-walk@npm:^8.0.0, acorn-walk@npm:^8.0.2, acorn-walk@npm:^8.1.1":
   version: 8.2.0
   resolution: "acorn-walk@npm:8.2.0"
   checksum: 93ffbdb8b35dda04313f1d6a94bdfdf8f929337f742e3a6d51b3026ced8471feb6a522646240809da44b0f576f4902ff2fa0c64292b3216478992aefcbde3278
@@ -8930,13 +8931,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"callsite@npm:^1.0.0":
-  version: 1.0.0
-  resolution: "callsite@npm:1.0.0"
-  checksum: 5940b23533433f4886dea106cdb16d8a511b36ebaf2ac0bbe0adae547a4259f142d37074f864e12f424927b50cf364fffd1fd75d45a62a622d22984d2375e859
-  languageName: node
-  linkType: hard
-
 "callsites@npm:^3.0.0, callsites@npm:^3.1.0":
   version: 3.1.0
   resolution: "callsites@npm:3.1.0"
@@ -10627,15 +10621,6 @@ __metadata:
   dependencies:
     ms: ^2.1.1
   checksum: 9fc1277e666db3af31df89e9e41f5c83da6e9de56d4a95b37e095d47ba1958238b8c7b49d4327b516465d46b6340bee723a97a7b2f28c5c7563f8b0a8fc9458a
-  languageName: node
-  linkType: hard
-
-"decache@npm:^4.6.0":
-  version: 4.6.1
-  resolution: "decache@npm:4.6.1"
-  dependencies:
-    callsite: ^1.0.0
-  checksum: 897bbf499b1d821092b333de29f8f6f58bbccbe8119f50eae6636b8b1f24867658d0e127140f4ae8c6a4d62ad6c7cb23f18bc23fb4cfa2b74f9712a0a112ea70
   languageName: node
   linkType: hard
 
@@ -12887,7 +12872,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"find-cache-dir@npm:^3.3.1":
+"find-cache-dir@npm:^3.3.1, find-cache-dir@npm:^3.3.2":
   version: 3.3.2
   resolution: "find-cache-dir@npm:3.3.2"
   dependencies:
@@ -22593,7 +22578,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"sass-loader@npm:^10.2.0, sass-loader@npm:^10.4.1":
+"sass-loader@npm:^10.4.1":
   version: 10.4.1
   resolution: "sass-loader@npm:10.4.1"
   dependencies:
@@ -22628,17 +22613,6 @@ __metadata:
   bin:
     sass: sass.js
   checksum: c348a7a7ecb1d03fa58acc7fb4431f191c89a2eb81bb1844afcb0a046c3d533a12ecdea34e72d556c709d92236005231ef72ed4dfc57160b38bbe8e82c2440fc
-  languageName: node
-  linkType: hard
-
-"sass@npm:~1.32.13":
-  version: 1.32.13
-  resolution: "sass@npm:1.32.13"
-  dependencies:
-    chokidar: ">=3.0.0 <4.0.0"
-  bin:
-    sass: sass.js
-  checksum: 93913232ec9efbd9edbe63e9c32e08c90e2ca7e1b75079b570207aa828386ad1391a0944a06411f2b2add88803a41dd3ecbfbbcf45ec4c2b288154e17243e71f
   languageName: node
   linkType: hard
 
@@ -25976,6 +25950,20 @@ __metadata:
   languageName: node
   linkType: hard
 
+"vite-plugin-vuetify@npm:^1.0.2":
+  version: 1.0.2
+  resolution: "vite-plugin-vuetify@npm:1.0.2"
+  dependencies:
+    "@vuetify/loader-shared": ^1.7.1
+    debug: ^4.3.3
+    upath: ^2.0.1
+  peerDependencies:
+    vite: ^2.7.0 || ^3.0.0 || ^4.0.0
+    vuetify: ^3.0.0-beta.4
+  checksum: d0717f7952688a33adc0009ffcb352a41efd6dc4c73343b98cfe0e5bc493a68f0985cdce116e18c9dc5ef37d3abe0cccef6ede2a7eb2480b561e3d099f65d590
+  languageName: node
+  linkType: hard
+
 "vite@npm:^3.0.0 || ^4.0.0":
   version: 4.1.3
   resolution: "vite@npm:4.1.3"
@@ -26392,39 +26380,22 @@ __metadata:
   languageName: node
   linkType: hard
 
-"vuetify-loader@npm:^1.7.3":
-  version: 1.9.2
-  resolution: "vuetify-loader@npm:1.9.2"
-  dependencies:
-    acorn: ^8.4.1
-    acorn-walk: ^8.2.0
-    decache: ^4.6.0
-    file-loader: ^6.2.0
-    loader-utils: ^2.0.0
+"vuetify@npm:^3.1.8":
+  version: 3.1.8
+  resolution: "vuetify@npm:3.1.8"
   peerDependencies:
-    gm: ^1.23.0
-    pug: ^2.0.0 || ^3.0.0
-    sharp: "*"
-    vue: ^2.7.2
-    vuetify: ^1.3.0 || ^2.0.0
-    webpack: ^4.0.0 || ^5.0.0
+    vite-plugin-vuetify: ^1.0.0-alpha.12
+    vue: ^3.2.0
+    vue-i18n: ^9.0.0
+    webpack-plugin-vuetify: ^2.0.0-alpha.11
   peerDependenciesMeta:
-    gm:
+    vite-plugin-vuetify:
       optional: true
-    pug:
+    vue-i18n:
       optional: true
-    sharp:
+    webpack-plugin-vuetify:
       optional: true
-  checksum: 2875da9bc47c2188873b347bd584cedb7778d4bbcc1248fc7095cf154e386fe8d1ed5773f18bcfd5830da7054ea28991c5d9cbcdace480cc0c67e6b6b1fe2217
-  languageName: node
-  linkType: hard
-
-"vuetify@npm:^2.6":
-  version: 2.6.14
-  resolution: "vuetify@npm:2.6.14"
-  peerDependencies:
-    vue: ^2.6.4
-  checksum: cba3d5034a00aebf58b66f4d142e6736e06cda47e2da02a74ed86090a2f1d25eb9734aa464e5435f4f31a0e6eb65eeee921062ca76904fbb845e4617ac7a30f6
+  checksum: a444fba795787db583ea1e57e16155988b75e31dae054e1bb269bfdbd660c6959fdf9579f752b81585ca80a3ed2dc8dfbd922dc1397db3bfb21289d390e9009c
   languageName: node
   linkType: hard
 
