@@ -82,7 +82,6 @@ export default defineNuxtConfig({
     '@nuxtjs/stylelint-module',
     // https://go.nuxtjs.dev/tailwindcss
     '@nuxtjs/tailwindcss',
-    '@nuxtjs/vuetify',
     '@nuxtjs/svg',
     // '@nuxtjs/pwa',
   ],
@@ -180,12 +179,8 @@ export default defineNuxtConfig({
       '@vueform/slider',
       'punycode',
       'pinia',
+      'vuetify',
     ],
-  },
-
-  vuetify: {
-    theme: false,
-    treeShake: true,
   },
 
   // Server config (allow listening to local network)

@@ -65,6 +65,7 @@
 <script lang="ts">
 import { mapState } from 'pinia'
 import { defineComponent } from 'vue'
+import { VDialog } from 'vuetify/components/VDialog'
 
 import { useNuxtApp } from '#app'
 import FavoriteNoteBook from '~/components/MainMap/FavoriteNoteBook.vue'
@@ -79,6 +80,7 @@ export default defineComponent({
     Badge,
     FavoriteNoteBook,
     FavoriteIcon,
+    VDialog,
   },
   props: {
     hasFavorites: {

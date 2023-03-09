@@ -1,8 +1,12 @@
 <template>
   <section v-if="entries.length + locales.length > 0" class="relative z-40">
     <v-menu offset-y>
-      <template #activator="{ on }">
-        <IconButton :label="$t('navMenu.label')" class="w-11 h-11" v-on="on">
+      <template #activator="{ props }">
+        <IconButton
+          :label="$t('navMenu.label')"
+          class="w-11 h-11"
+          v-bind="props"
+        >
           <font-awesome-icon icon="cog" class="text-zinc-800" size="lg" />
         </IconButton>
       </template>
@@ -50,6 +54,9 @@ import { mapWritableState } from 'pinia'
 import { defineComponent, PropType } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { LocaleObject } from 'vue-i18n-routing'
+import { VDivider } from 'vuetify/components/VDivider'
+import { VList, VListItem, VListItemTitle } from 'vuetify/components/VList'
+import { VMenu } from 'vuetify/components/VMenu'
 
 import { useNuxtApp } from '#app'
 import ExternalLink from '~/components/UI/ExternalLink.vue'
@@ -59,6 +66,11 @@ import { siteStore } from '~/stores/site'
 
 export default defineComponent({
   components: {
+    VMenu,
+    VList,
+    VListItem,
+    VListItemTitle,
+    VDivider,
     IconButton,
     ExternalLink,
   },
