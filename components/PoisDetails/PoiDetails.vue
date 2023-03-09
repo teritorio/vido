@@ -251,7 +251,7 @@ export default defineComponent({
     const { $tracking } = useNuxtApp()
     $tracking({
       type: 'page',
-      title: this.$meta().refresh().metaInfo.title,
+      title: useRoute().name,
       location: window.location.href,
       path: useRoute().path,
       origin:
