@@ -39,7 +39,7 @@
         >
           <v-list-item-title>
             <a href="#" @click.prevent="setLocale(locale.code)">
-              <span class="mr-2" :class="`flag:${locale.flag}`"></span>
+              <VFlag :flag="locale.flag" class="flag" />
               {{ locale.name }}
             </a>
           </v-list-item-title>
@@ -61,6 +61,7 @@ import { VMenu } from 'vuetify/components/VMenu'
 import { useNuxtApp } from '#app'
 import ExternalLink from '~/components/UI/ExternalLink.vue'
 import IconButton from '~/components/UI/IconButton.vue'
+import VFlag from '~/components/UI/VFlag.vue'
 import { ContentEntry } from '~/lib/apiContent'
 import { siteStore } from '~/stores/site'
 
@@ -73,6 +74,7 @@ export default defineComponent({
     VDivider,
     IconButton,
     ExternalLink,
+    VFlag,
   },
 
   props: {
@@ -108,24 +110,10 @@ export default defineComponent({
 </script>
 
 <style scoped>
-[class*=' flag:'],
-[class^='flag:'] {
+.flag {
   display: inline-block;
-  background-size: cover;
   height: 1em;
   width: 1.5em;
   font-size: 0.7rem;
-}
-
-.flag\:ES {
-  background-image: url('~country-flag-icons/3x2/ES.svg');
-}
-
-.flag\:FR {
-  background-image: url('~country-flag-icons/3x2/FR.svg');
-}
-
-.flag\:GB {
-  background-image: url('~country-flag-icons/3x2/GB.svg');
 }
 </style>
