@@ -1,5 +1,6 @@
 <template>
   <PoiLayout
+    v-if="category !== undefined"
     :settings="settings"
     :nav-menu-entries="navMenuEntries"
     :name="category.category.name.fr"
@@ -85,10 +86,10 @@ export default Vue.extend({
   computed: {
     ...mapState(menuStore, ['apiMenuCategory']),
 
-    category(): ApiMenuCategory {
+    category(): ApiMenuCategory | undefined {
       return Object.values(this.apiMenuCategory || {}).find(
         (menuItem) => menuItem.id == this.categoryId
-      ) as ApiMenuCategory
+      )
     },
 
     fields(): FieldsListItem[] {
