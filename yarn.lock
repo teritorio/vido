@@ -5443,7 +5443,7 @@ __metadata:
     prettier: ^2.8.4
     puppeteer: ^19.7.3
     sass: ^1.58.3
-    sass-loader: ^10.4.1
+    sass-loader: ^13.2.0
     storybook-addon-mock: ^3.2.0
     storybook-addon-validate-html: ^0.0.12
     storycap: ^4.0.0
@@ -22578,20 +22578,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"sass-loader@npm:^10.4.1":
-  version: 10.4.1
-  resolution: "sass-loader@npm:10.4.1"
+"sass-loader@npm:^13.2.0":
+  version: 13.2.0
+  resolution: "sass-loader@npm:13.2.0"
   dependencies:
     klona: ^2.0.4
-    loader-utils: ^2.0.0
     neo-async: ^2.6.2
-    schema-utils: ^3.0.0
-    semver: ^7.3.2
   peerDependencies:
     fibers: ">= 3.1.0"
     node-sass: ^4.0.0 || ^5.0.0 || ^6.0.0 || ^7.0.0 || ^8.0.0
     sass: ^1.3.0
-    webpack: ^4.36.0 || ^5.0.0
+    sass-embedded: "*"
+    webpack: ^5.0.0
   peerDependenciesMeta:
     fibers:
       optional: true
@@ -22599,7 +22597,9 @@ __metadata:
       optional: true
     sass:
       optional: true
-  checksum: 1a450997dac0123f21cec65192114ca27918c02ab87dd2325f77294ee74f9b7afbdac9b8dfda265a108e0ea7ceeb675546c9395f902b0993af093e433f991ee1
+    sass-embedded:
+      optional: true
+  checksum: 1a78bb421e50b12484f934d72a70105b963fcc6ba7e574fa13ffdb8deeb4496c6753cd7e67d358a71f734b8eb48e24ccb78183ecac0b732a58c3b8778e9a46e0
   languageName: node
   linkType: hard
 
