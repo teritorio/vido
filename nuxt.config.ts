@@ -183,6 +183,10 @@ export default defineNuxtConfig({
     ],
   },
 
+  typescript: {
+    typeCheck: true,
+  },
+
   // Server config (allow listening to local network)
   server: {
     host: '0.0.0.0',
