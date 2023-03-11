@@ -35,7 +35,9 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType } from 'vue'
+import { PropType } from 'vue'
+
+import { defineNuxtComponent } from '#app'
 
 export function isDateRangeEmpty(properties: {
   [key: string]: string
@@ -43,7 +45,7 @@ export function isDateRangeEmpty(properties: {
   return !('start' in properties) && !('end' in properties)
 }
 
-export default defineComponent({
+export default defineNuxtComponent({
   props: {
     start: {
       type: String as PropType<string>,

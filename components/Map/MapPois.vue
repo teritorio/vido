@@ -15,8 +15,9 @@
 
 <script lang="ts">
 import { LngLatLike } from 'maplibre-gl'
-import { defineComponent, PropType, ref } from 'vue'
+import { PropType, ref } from 'vue'
 
+import { defineNuxtComponent } from '#app'
 import MapBase from '~/components/Map/MapBase.vue'
 import { ApiPoi } from '~/lib/apiPois'
 import { getBBoxFeatures } from '~/lib/bbox'
@@ -24,7 +25,7 @@ import { MAP_ZOOM } from '~/lib/constants'
 import { MapPoiId } from '~/lib/mapPois'
 import { filterRouteByPoiIds } from '~/utils/styles'
 
-export default defineComponent({
+export default defineNuxtComponent({
   components: {
     MapBase,
   },

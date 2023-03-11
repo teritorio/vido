@@ -22,11 +22,12 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType } from 'vue'
+import { PropType } from 'vue'
 
+import { defineNuxtComponent } from '#app'
 import { FilterValueList } from '~/utils/types-filters'
 
-export default defineComponent({
+export default defineNuxtComponent({
   props: {
     filter: {
       type: Object as PropType<FilterValueList>,

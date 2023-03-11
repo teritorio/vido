@@ -13,11 +13,12 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType } from 'vue'
+import { PropType } from 'vue'
 
+import { defineNuxtComponent } from '#app'
 import TeritorioIcon from '~/components/UI/TeritorioIcon.vue'
 
-export default defineComponent({
+export default defineNuxtComponent({
   components: {
     TeritorioIcon,
   },

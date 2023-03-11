@@ -16,15 +16,16 @@
 
 <script lang="ts">
 import { mapState } from 'pinia'
-import { defineComponent, PropType } from 'vue'
+import { PropType } from 'vue'
 
+import { defineNuxtComponent } from '#app'
 import NavMenu from '~/components/MainMap/NavMenu.vue'
 import Logo from '~/components/UI/Logo.vue'
 import { ContentEntry } from '~/lib/apiContent'
 import { SiteInfosTheme } from '~/lib/apiSettings'
 import { siteStore } from '~/stores/site'
 
-export default defineComponent({
+export default defineNuxtComponent({
   components: {
     Logo,
     NavMenu,

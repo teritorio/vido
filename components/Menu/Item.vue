@@ -55,12 +55,13 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType } from 'vue'
+import { PropType } from 'vue'
 
+import { defineNuxtComponent } from '#app'
 import TeritorioIconBadge from '~/components/UI/TeritorioIconBadge.vue'
 import { MultilingualString } from '~/utils/types'
 
-export default defineComponent({
+export default defineNuxtComponent({
   components: {
     TeritorioIconBadge,
   },

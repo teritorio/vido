@@ -57,9 +57,8 @@
 <script lang="ts">
 import { FitBoundsOptions } from 'maplibre-gl'
 import { mapActions } from 'pinia'
-import { defineComponent } from 'vue'
 
-import { useNuxtApp, useRouter } from '#app'
+import { useNuxtApp, useRouter, defineNuxtComponent } from '#app'
 import HomeMixin from '~/components/Home/HomeMixin'
 import SelectedCategories from '~/components/Home/SelectedCategories.vue'
 import MapFeatures from '~/components/MainMap/MapFeatures.vue'
@@ -73,7 +72,7 @@ import { menuStore } from '~/stores/menu'
 import { Mode } from '~/utils/types'
 import { flattenFeatures } from '~/utils/utilities'
 
-export default defineComponent({
+export default defineNuxtComponent({
   components: {
     CategorySelector,
     MapFeatures,
