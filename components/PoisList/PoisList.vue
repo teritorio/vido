@@ -34,9 +34,9 @@
 
 <script lang="ts">
 import { mapState } from 'pinia'
-import { defineComponent, PropType } from 'vue'
+import { PropType } from 'vue'
 
-import { useNuxtApp, useRouter } from '#app'
+import { defineNuxtComponent, useNuxtApp, useRouter } from '#app'
 import PoiLayout from '~/components/Layout/PoiLayout.vue'
 import Actions from '~/components/PoisList/Actions.vue'
 import CategorySelector from '~/components/PoisList/CategorySelector.vue'
@@ -47,7 +47,7 @@ import { ApiPois, FieldsListItem, getPoiByCategoryId } from '~/lib/apiPois'
 import { Settings } from '~/lib/apiSettings'
 import { menuStore } from '~/stores/menu'
 
-export default defineComponent({
+export default defineNuxtComponent({
   components: {
     Actions,
     PoiLayout,

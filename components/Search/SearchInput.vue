@@ -31,11 +31,11 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, ref } from 'vue'
+import { PropType, ref } from 'vue'
 
-import { useNuxtApp } from '#app'
+import { defineNuxtComponent, useNuxtApp } from '#app'
 
-export default defineComponent({
+export default defineNuxtComponent({
   props: {
     searchText: {
       type: String as PropType<string>,

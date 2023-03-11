@@ -1,9 +1,11 @@
 <script lang="ts">
 import { hasFlag } from 'country-flag-icons'
 import { FR, GB, ES } from 'country-flag-icons/string/3x2'
-import { defineComponent, h, ref, watch } from 'vue'
+import { h, ref, watch } from 'vue'
 
-export default defineComponent({
+import { defineNuxtComponent } from '#app'
+
+export default defineNuxtComponent({
   name: 'VFlag',
 
   props: {

@@ -135,9 +135,9 @@
 
 <script lang="ts">
 import { mapState } from 'pinia'
-import { defineComponent, PropType } from 'vue'
+import { PropType } from 'vue'
 
-import { useNuxtApp } from '#app'
+import { defineNuxtComponent, useNuxtApp } from '#app'
 import Fields from '~/components/PoisCard/Fields.vue'
 import FavoriteIcon from '~/components/UI/FavoriteIcon.vue'
 import TeritorioIcon from '~/components/UI/TeritorioIcon.vue'
@@ -147,7 +147,7 @@ import { favoritesStore } from '~/stores/favorite'
 import { mapStore } from '~/stores/map'
 import { isIOS } from '~/utils/isIOS'
 
-export default defineComponent({
+export default defineNuxtComponent({
   components: {
     TeritorioIcon,
     FavoriteIcon,

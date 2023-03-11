@@ -25,13 +25,13 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType } from 'vue'
+import { PropType } from 'vue'
 
-import { useNuxtApp } from '#app'
+import { defineNuxtComponent, useNuxtApp } from '#app'
 import MenuItem from '~/components/Menu/Item.vue'
 import { ApiMenuLink } from '~/lib/apiMenu'
 
-export default defineComponent({
+export default defineNuxtComponent({
   components: {
     MenuItem,
   },

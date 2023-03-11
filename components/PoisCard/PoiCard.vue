@@ -41,14 +41,15 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType } from 'vue'
+import { PropType } from 'vue'
 
+import { defineNuxtComponent } from '#app'
 import PoiCardContent from '~/components/PoisCard/PoiCardContent.vue'
 import NuxtPicture from '~/components/UI/NuxtPicture.vue'
 import TeritorioIcon from '~/components/UI/TeritorioIcon.vue'
 import { ApiPoi, ApiPoiId } from '~/lib/apiPois'
 
-export default defineComponent({
+export default defineNuxtComponent({
   components: {
     PoiCardContent,
     TeritorioIcon,

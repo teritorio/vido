@@ -12,12 +12,12 @@
 
 <script lang="ts">
 import { mapWritableState } from 'pinia'
-import { defineComponent } from 'vue'
 
+import { defineNuxtComponent } from '#app'
 import { mapStore } from '~/stores/map'
 import { Mode } from '~/utils/types'
 
-export default defineComponent({
+export default defineNuxtComponent({
   computed: {
     ...mapWritableState(mapStore, ['mode']),
   },

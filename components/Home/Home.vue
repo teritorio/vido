@@ -209,9 +209,9 @@
 <script lang="ts">
 import { FitBoundsOptions, LngLatBoundsLike } from 'maplibre-gl'
 import { mapActions, mapState } from 'pinia'
-import { PropType, defineComponent, ref } from 'vue'
+import { PropType, ref } from 'vue'
 
-import { useNuxtApp, useRoute, useRouter } from '#app'
+import { defineNuxtComponent, useNuxtApp, useRoute, useRouter } from '#app'
 import ExplorerOrFavoritesBack from '~/components/Home/ExplorerOrFavoritesBack.vue'
 import HomeMixin from '~/components/Home/HomeMixin'
 import Menu from '~/components/Home/Menu.vue'
@@ -238,7 +238,7 @@ import { Mode, OriginEnum } from '~/utils/types'
 import { getHashPart, setHashParts } from '~/utils/url'
 import { flattenFeatures } from '~/utils/utilities'
 
-export default defineComponent({
+export default defineNuxtComponent({
   components: {
     Logo,
     FavoriteMenu,

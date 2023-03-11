@@ -64,10 +64,9 @@
 
 <script lang="ts">
 import { mapState } from 'pinia'
-import { defineComponent } from 'vue'
 import { VDialog } from 'vuetify/components/VDialog'
 
-import { useNuxtApp } from '#app'
+import { defineNuxtComponent, useNuxtApp } from '#app'
 import FavoriteNoteBook from '~/components/MainMap/FavoriteNoteBook.vue'
 import Badge from '~/components/UI/Badge.vue'
 import FavoriteIcon from '~/components/UI/FavoriteIcon.vue'
@@ -75,7 +74,7 @@ import { getPois, ApiPoi } from '~/lib/apiPois'
 import { favoritesStore } from '~/stores/favorite'
 import { mapStore } from '~/stores/map'
 
-export default defineComponent({
+export default defineNuxtComponent({
   components: {
     Badge,
     FavoriteNoteBook,

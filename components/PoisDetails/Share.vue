@@ -58,15 +58,16 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, ref } from 'vue'
+import { PropType, ref } from 'vue'
 
+import { defineNuxtComponent } from '#app'
 import IconButton from '~/components/UI/IconButton.vue'
 import IconsBar from '~/components/UI/IconsBar.vue'
 import ShareLinkModal from '~/components/UI/ShareLinkModal.vue'
 import { OriginEnum } from '~/utils/types'
 import { urlAddTrackOrigin } from '~/utils/url'
 
-export default defineComponent({
+export default defineNuxtComponent({
   components: {
     IconsBar,
     IconButton,

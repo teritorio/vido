@@ -177,9 +177,9 @@
 
 <script lang="ts">
 import GeoJSON from 'geojson'
-import { defineComponent, PropType } from 'vue'
+import { PropType } from 'vue'
 
-import { useNuxtApp } from '#app'
+import { defineNuxtComponent, useNuxtApp } from '#app'
 import AddressField, {
   isAddressFieldEmpty,
 } from '~/components/Fields/AddressField.vue'
@@ -220,7 +220,7 @@ export function isFiledEmpty(
   }
 }
 
-export default defineComponent({
+export default defineNuxtComponent({
   components: {
     FieldsHeader,
     OpeningHours,
