@@ -1,5 +1,3 @@
-import fetch from 'node-fetch'
-
 import { MapPoiProperties, MapPoiId } from './mapPois'
 
 import { MultilingualString } from '~/utils/types'
