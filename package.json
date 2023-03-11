@@ -31,7 +31,6 @@
   "dependencies": {
     "@fortawesome/vue-fontawesome": "^3.0.3",
     "@gtm-support/vue-gtm": "^2.0.0",
-    "@nuxt/image": "^0.7.1",
     "@nuxtjs/sentry": "^7.1.4",
     "@nuxtjs/sitemap": "^2.4.0",
     "@pinia/nuxt": "0.4.7",
@@ -74,6 +73,7 @@
     "@fortawesome/free-brands-svg-icons": "^6.3.0",
     "@fortawesome/free-regular-svg-icons": "^6.3.0",
     "@fortawesome/free-solid-svg-icons": "^6.3.0",
+    "@nuxt/image-edge": "1.0.0-27840416.dc1ed65",
     "@nuxt/types": "^2.16.2",
     "@nuxtjs/eslint-config": "^12.0.0",
     "@nuxtjs/eslint-module": "^4.0.1",

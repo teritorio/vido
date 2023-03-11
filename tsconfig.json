@@ -8,7 +8,7 @@
     "strict": true,
     "experimentalDecorators": true,
     "baseUrl": ".",
-    "types": ["node", "@types/node", "@nuxt/types", "@nuxtjs/i18n", "@nuxt/image", "@nuxtjs/sentry", "@types/jest", "@types/webpack", "@pinia/nuxt"]
+    "types": ["node", "@types/node", "@nuxt/types", "@nuxtjs/i18n", "@nuxt/image-edge", "@nuxtjs/sentry", "@types/jest", "@types/webpack", "@pinia/nuxt"]
   },
   "exclude": ["node_modules", ".nuxt", "dist", "bin"]
 }
