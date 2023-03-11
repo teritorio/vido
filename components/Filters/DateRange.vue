@@ -13,8 +13,9 @@
 
 <script lang="ts">
 import copy from 'fast-copy'
-import { defineComponent, PropType } from 'vue'
+import { PropType } from 'vue'
 
+import { defineNuxtComponent } from '#app'
 import { FilterValueDate } from '~/utils/types-filters'
 
 export enum DateFilterLabel {
@@ -42,7 +43,7 @@ function formatDate(date: Date): string {
   )
 }
 
-export default defineComponent({
+export default defineNuxtComponent({
   props: {
     filter: {
       type: Object as PropType<FilterValueDate>,

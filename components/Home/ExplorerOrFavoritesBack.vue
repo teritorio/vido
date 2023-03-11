@@ -24,13 +24,12 @@
 </template>
 
 <script lang="ts">
-import { useNuxtApp } from '#app'
 import { mapState } from 'pinia'
-import { defineComponent } from 'vue'
 
+import { defineNuxtComponent, useNuxtApp } from '#app'
 import { mapStore } from '~/stores/map'
 
-export default defineComponent({
+export default defineNuxtComponent({
   computed: {
     ...mapState(mapStore, ['isModeFavorites']),
 

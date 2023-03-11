@@ -19,12 +19,13 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType } from 'vue'
+import { PropType } from 'vue'
 import { VCarousel, VCarouselItem } from 'vuetify/components/VCarousel'
 
+import { defineNuxtComponent } from '#app'
 import NuxtPicture from '~/components/UI/NuxtPicture.vue'
 
-export default defineComponent({
+export default defineNuxtComponent({
   components: {
     NuxtPicture,
     VCarousel,

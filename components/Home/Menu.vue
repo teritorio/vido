@@ -103,8 +103,9 @@
 
 <script lang="ts">
 import { mapActions, mapState } from 'pinia'
-import { defineComponent, PropType } from 'vue'
+import { PropType } from 'vue'
 
+import { defineNuxtComponent } from '#app'
 import MenuBlock from '~/components/Home/MenuBlock.vue'
 import MenuBlockBottom from '~/components/Home/MenuBlockBottom.vue'
 import FilterCompo from '~/components/Menu/Filter.vue'
@@ -115,7 +116,7 @@ import { ApiMenuCategory, MenuGroup, MenuItem } from '~/lib/apiMenu'
 import { menuStore } from '~/stores/menu'
 import { FilterValues } from '~/utils/types-filters'
 
-export default defineComponent({
+export default defineNuxtComponent({
   components: {
     Logo,
     MenuBlock,

@@ -16,13 +16,14 @@
 
 <script lang="ts">
 import GeoJSON from 'geojson'
-import { defineComponent, PropType } from 'vue'
+import { PropType } from 'vue'
 
+import { defineNuxtComponent } from '#app'
 import Field from '~/components/Fields/Field.vue'
 import { ApiPoiProperties, FieldsListItem } from '~/lib/apiPois'
 import { PropertyTranslationsContextEnum } from '~/plugins/property-translations'
 
-export default defineComponent({
+export default defineNuxtComponent({
   components: {
     Field,
   },

@@ -8,9 +8,9 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue'
+import { defineNuxtComponent } from '#app'
 
-export default defineComponent({
+export default defineNuxtComponent({
   layout: 'error-layout',
 
   props: {

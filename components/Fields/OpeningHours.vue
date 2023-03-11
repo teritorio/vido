@@ -59,9 +59,9 @@
 <script lang="ts">
 import OpeningHours, { optional_conf } from 'opening_hours'
 import { mapState } from 'pinia'
-import { defineComponent, PropType } from 'vue'
+import { PropType } from 'vue'
 
-import { useNuxtApp } from '#app'
+import { defineNuxtComponent, useNuxtApp } from '#app'
 import RelativeDate from '~/components/UI/RelativeDate.vue'
 import { PropertyTranslationsContextEnum } from '~/plugins/property-translations'
 import { siteStore } from '~/stores/site'
@@ -88,7 +88,7 @@ export function isOpeningHoursSupportedOsmTags(key: string): boolean {
   return isSupportedOsmTags(SupportedOsmKeys, key)
 }
 
-export default defineComponent({
+export default defineNuxtComponent({
   components: {
     RelativeDate,
   },

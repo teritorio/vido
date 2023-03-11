@@ -26,13 +26,13 @@
 import { Control } from '@teritorio/map'
 import { Map } from 'maplibre-gl'
 import { mapState, mapWritableState } from 'pinia'
-import { defineComponent, PropType, ref } from 'vue'
+import { PropType, ref } from 'vue'
 
-import { useNuxtApp } from '#app'
+import { defineNuxtComponent, useNuxtApp } from '#app'
 import { mapStore } from '~/stores/map'
 import { Mode } from '~/utils/types'
 
-export default defineComponent({
+export default defineNuxtComponent({
   props: {
     map: {
       type: Object as PropType<Map>,

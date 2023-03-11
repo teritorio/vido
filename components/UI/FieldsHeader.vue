@@ -9,9 +9,11 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType } from 'vue'
+import { PropType } from 'vue'
 
-export default defineComponent({
+import { defineNuxtComponent } from '#app'
+
+export default defineNuxtComponent({
   props: {
     recursionStack: {
       type: Array as PropType<string[]>,

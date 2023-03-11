@@ -1,8 +1,9 @@
 import { Polygon, MultiPolygon } from 'geojson'
 import { LngLatBoundsLike } from 'maplibre-gl'
 import { mapActions, mapState, mapWritableState } from 'pinia'
-import { defineComponent, PropType, ref } from 'vue'
+import { PropType, ref } from 'vue'
 
+import { defineNuxtComponent } from '#app'
 import MapFeatures from '~/components/MainMap/MapFeatures.vue'
 import { ApiMenuCategory, MenuItem } from '~/lib/apiMenu'
 import { ApiPoi } from '~/lib/apiPois'
@@ -10,7 +11,7 @@ import { Settings } from '~/lib/apiSettings'
 import { mapStore } from '~/stores/map'
 import { menuStore } from '~/stores/menu'
 
-export default defineComponent({
+export default defineNuxtComponent({
   props: {
     settings: {
       type: Object as PropType<Settings>,

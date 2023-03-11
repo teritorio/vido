@@ -32,10 +32,11 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, ref } from 'vue'
+import { PropType, ref } from 'vue'
 
 import { isFiledEmpty } from '../Fields/Field.vue'
 
+import { defineNuxtComponent } from '#app'
 import Block from '~/components/PoisDetails/Block.vue'
 import FieldsHeader from '~/components/UI/FieldsHeader.vue'
 import {
@@ -61,7 +62,7 @@ export function isListEmpty(
   )
 }
 
-export default defineComponent({
+export default defineNuxtComponent({
   components: {
     Block,
     FieldsHeader,

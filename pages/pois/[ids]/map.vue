@@ -10,7 +10,6 @@
 
 <script lang="ts">
 import { mapWritableState } from 'pinia'
-import { defineComponent } from 'vue'
 
 import {
   useHead,
@@ -18,6 +17,7 @@ import {
   useRequestHeaders,
   useRoute,
   useRuntimeConfig,
+  defineNuxtComponent,
 } from '#app'
 import { definePageMeta } from '#imports'
 import MapPois from '~/components/Map/MapPois.vue'
@@ -27,7 +27,7 @@ import { vidoConfig } from '~/plugins/vido-config'
 import { siteStore } from '~/stores/site'
 import { VidoConfig } from '~/utils/types-config'
 
-export default defineComponent({
+export default defineNuxtComponent({
   components: {
     MapPois,
   },

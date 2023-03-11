@@ -20,11 +20,11 @@
 
 <script lang="ts">
 import { mapState } from 'pinia'
-import { defineComponent } from 'vue'
 
+import { defineNuxtComponent } from '#app'
 import { snackStore } from '~/stores/snack'
 
-export default defineComponent({
+export default defineNuxtComponent({
   computed: {
     ...mapState(snackStore, ['snack']),
 

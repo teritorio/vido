@@ -70,9 +70,9 @@
 import copy from 'fast-copy'
 import { debounce, DebouncedFunc } from 'lodash'
 import { mapActions, mapState } from 'pinia'
-import { defineComponent, PropType } from 'vue'
+import { PropType } from 'vue'
 
-import { useNuxtApp } from '#app'
+import { defineNuxtComponent, useNuxtApp } from '#app'
 import SearchInput from '~/components/Search/SearchInput.vue'
 import SearchResultBlock from '~/components/Search/SearchResultBlock.vue'
 import { ApiMenuCategory } from '~/lib/apiMenu'
@@ -89,7 +89,7 @@ import { mapStore } from '~/stores/map'
 import { menuStore } from '~/stores/menu'
 import { FilterValue, FilterValues } from '~/utils/types-filters'
 
-export default defineComponent({
+export default defineNuxtComponent({
   components: {
     SearchInput,
     SearchResultBlock,

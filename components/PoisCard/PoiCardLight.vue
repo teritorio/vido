@@ -51,8 +51,9 @@
 
 <script lang="ts">
 import { mapState } from 'pinia'
-import { defineComponent, PropType } from 'vue'
+import { PropType } from 'vue'
 
+import { defineNuxtComponent } from '#app'
 import Fields from '~/components/PoisCard/Fields.vue'
 import NuxtPicture from '~/components/UI/NuxtPicture.vue'
 import TeritorioIconBadge from '~/components/UI/TeritorioIconBadge.vue'
@@ -60,7 +61,7 @@ import { ApiPoi } from '~/lib/apiPois'
 import { MapPoiId } from '~/lib/mapPois'
 import { favoritesStore } from '~/stores/favorite'
 
-export default defineComponent({
+export default defineNuxtComponent({
   components: {
     TeritorioIconBadge,
     Fields,

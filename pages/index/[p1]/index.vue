@@ -3,11 +3,10 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue'
-
+import { defineNuxtComponent } from '#app'
 import { definePageMeta } from '#imports'
 
-export default defineComponent({
+export default defineNuxtComponent({
   setup() {
     definePageMeta({
       validate({ params }) {

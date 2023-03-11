@@ -27,16 +27,17 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType } from 'vue'
+import { PropType } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { LocaleObject } from 'vue-i18n-routing'
 import { VAutocomplete } from 'vuetify/components/VAutocomplete'
 import { VListItem } from 'vuetify/components/VList'
 
+import { defineNuxtComponent } from '#app'
 import TeritorioIcon from '~/components/UI/TeritorioIcon.vue'
 import { ApiMenuCategory, MenuItem } from '~/lib/apiMenu'
 
-export default defineComponent({
+export default defineNuxtComponent({
   components: {
     VAutocomplete,
     VListItem,

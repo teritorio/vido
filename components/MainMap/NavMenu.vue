@@ -51,21 +51,21 @@
 
 <script lang="ts">
 import { mapWritableState } from 'pinia'
-import { defineComponent, PropType } from 'vue'
+import { PropType } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { LocaleObject } from 'vue-i18n-routing'
 import { VDivider } from 'vuetify/components/VDivider'
 import { VList, VListItem, VListItemTitle } from 'vuetify/components/VList'
 import { VMenu } from 'vuetify/components/VMenu'
 
-import { useNuxtApp } from '#app'
+import { defineNuxtComponent, useNuxtApp } from '#app'
 import ExternalLink from '~/components/UI/ExternalLink.vue'
 import IconButton from '~/components/UI/IconButton.vue'
 import VFlag from '~/components/UI/VFlag.vue'
 import { ContentEntry } from '~/lib/apiContent'
 import { siteStore } from '~/stores/site'
 
-export default defineComponent({
+export default defineNuxtComponent({
   components: {
     VMenu,
     VList,

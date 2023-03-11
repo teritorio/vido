@@ -18,11 +18,11 @@
 <script lang="ts">
 import { Building3d } from '@teritorio/map'
 import { Map } from 'maplibre-gl'
-import { defineComponent, PropType, ref } from 'vue'
+import { PropType, ref } from 'vue'
 
-import { useNuxtApp } from '#app'
+import { defineNuxtComponent, useNuxtApp } from '#app'
 
-export default defineComponent({
+export default defineNuxtComponent({
   props: {
     map: {
       type: Object as PropType<Map>,

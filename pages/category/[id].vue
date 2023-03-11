@@ -10,7 +10,6 @@
 
 <script lang="ts">
 import { mapWritableState } from 'pinia'
-import { defineComponent } from 'vue'
 
 import {
   useNuxtApp,
@@ -18,6 +17,7 @@ import {
   useRuntimeConfig,
   useRoute,
   useHead,
+  defineNuxtComponent,
 } from '#app'
 import { definePageMeta } from '#imports'
 import PoisList from '~/components/PoisList/PoisList.vue'
@@ -34,7 +34,7 @@ import { menuStore } from '~/stores/menu'
 import { siteStore } from '~/stores/site'
 import { VidoConfig } from '~/utils/types-config'
 
-export default defineComponent({
+export default defineNuxtComponent({
   components: {
     PoisList,
   },

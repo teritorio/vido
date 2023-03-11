@@ -37,8 +37,9 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType } from 'vue'
+import { PropType } from 'vue'
 
+import { defineNuxtComponent } from '#app'
 import MapPois from '~/components/Map/MapPois.vue'
 import PoisDeck from '~/components/PoisCard/PoisDeck.vue'
 import {
@@ -48,7 +49,7 @@ import {
 } from '~/lib/apiPoiDeps'
 import { ApiPoi, ApiPoiId } from '~/lib/apiPois'
 
-export default defineComponent({
+export default defineNuxtComponent({
   components: {
     MapPois,
     PoisDeck,

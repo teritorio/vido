@@ -65,9 +65,9 @@ import maplibregl, {
   GeoJSONSource,
 } from 'maplibre-gl'
 import { mapActions, mapState, mapWritableState } from 'pinia'
-import { defineComponent, PropType, ref } from 'vue'
+import { PropType, ref } from 'vue'
 
-import { useNuxtApp, useRouter } from '#app'
+import { defineNuxtComponent, useNuxtApp, useRouter } from '#app'
 import MapControlsExplore from '~/components/MainMap/MapControlsExplore.vue'
 import SnackBar from '~/components/MainMap/SnackBar.vue'
 import MapBase from '~/components/Map/MapBase.vue'
@@ -94,7 +94,7 @@ const STYLE_LAYERS = [
 ]
 const POI_SOURCE = 'poi'
 
-export default defineComponent({
+export default defineNuxtComponent({
   components: {
     MapBase,
     MapControlsExplore,

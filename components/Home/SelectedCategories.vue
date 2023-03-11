@@ -48,12 +48,12 @@
 
 <script lang="ts">
 import { mapState, mapActions } from 'pinia'
-import { defineComponent } from 'vue'
 
+import { defineNuxtComponent } from '#app'
 import TeritorioIconBadge from '~/components/UI/TeritorioIconBadge.vue'
 import { menuStore } from '~/stores/menu'
 
-export default defineComponent({
+export default defineNuxtComponent({
   components: {
     TeritorioIconBadge,
   },

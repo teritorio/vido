@@ -30,9 +30,9 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType } from 'vue'
+import { PropType } from 'vue'
 
-import { useNuxtApp } from '#app'
+import { defineNuxtComponent, useNuxtApp } from '#app'
 import FieldsHeader from '~/components/UI/FieldsHeader.vue'
 import { ApiPoiProperties } from '~/lib/apiPois'
 import { PropertyTranslationsContextEnum } from '~/plugins/property-translations'
@@ -54,7 +54,7 @@ export function isRoutesFieldEmpty(properties: {
   )
 }
 
-export default defineComponent({
+export default defineNuxtComponent({
   components: {
     FieldsHeader,
   },

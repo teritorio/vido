@@ -19,13 +19,14 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType } from 'vue'
+import { PropType } from 'vue'
 
+import { defineNuxtComponent } from '#app'
 import PoiCard from '~/components/PoisCard/PoiCard.vue'
 import PoiCardLight from '~/components/PoisCard/PoiCardLight.vue'
 import { ApiPoi, ApiPoiId } from '~/lib/apiPois'
 
-export default defineComponent({
+export default defineNuxtComponent({
   components: {
     PoiCard,
     PoiCardLight,
