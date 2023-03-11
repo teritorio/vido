@@ -1,5 +1,3 @@
-import fetch from 'node-fetch'
-
 export type ContentEntry = {
   // eslint-disable-next-line camelcase
   post_id: number
