@@ -180,6 +180,8 @@ export default defineNuxtConfig({
       'punycode',
       'pinia',
       'vuetify',
+      'date-fns',
+      /lodash.*/,
     ],
   },
 
