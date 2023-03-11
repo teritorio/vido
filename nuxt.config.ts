@@ -81,7 +81,6 @@ export default defineNuxtConfig({
     // https://go.nuxtjs.dev/stylelint
     '@nuxtjs/stylelint-module',
     // https://go.nuxtjs.dev/tailwindcss
-    '@nuxtjs/tailwindcss',
     '@nuxtjs/svg',
     // '@nuxtjs/pwa',
   ],
@@ -189,6 +188,13 @@ export default defineNuxtConfig({
     typeCheck: true,
   },
 
+  postcss: {
+    plugins: {
+      tailwindcss: {},
+      autoprefixer: {},
+    },
+  },
+
   // Server config (allow listening to local network)
   server: {
     host: '0.0.0.0',
@@ -198,6 +204,4 @@ export default defineNuxtConfig({
   gtm: {
     pageTracking: false,
   },
-
-  devServerHandlers: [], // Workaround issue https://github.com/nuxt-community/tailwindcss-module/issues/480
 })
