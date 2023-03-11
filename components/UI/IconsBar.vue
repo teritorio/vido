@@ -9,9 +9,11 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, RenderContext } from 'vue'
+import { RenderContext } from 'vue'
 
-export default defineComponent({
+import { defineNuxtComponent } from '#app'
+
+export default defineNuxtComponent({
   components: {
     VNodes: {
       functional: true,

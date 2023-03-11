@@ -77,7 +77,8 @@
 <script lang="ts">
 import copy from 'fast-copy'
 import { mapActions } from 'pinia'
-import { defineComponent, PropType } from 'vue'
+import { PropType } from 'vue'
+import { defineNuxtComponent } from '#app'
 
 import DateRange from '~/components/Filters/DateRange.vue'
 import NumberRange from '~/components/Filters/NumberRange.vue'
@@ -92,7 +93,7 @@ import {
   FilterValues,
 } from '~/utils/types-filters'
 
-export default defineComponent({
+export default defineNuxtComponent({
   components: {
     SelectFilter,
     DateRange,

@@ -117,9 +117,9 @@
 
 <script lang="ts">
 import { mapState } from 'pinia'
-import { defineComponent, PropType } from 'vue'
+import { PropType } from 'vue'
 
-import { useNuxtApp, useRoute, useRouter } from '#app'
+import { defineNuxtComponent, useNuxtApp, useRoute, useRouter } from '#app'
 import PoiLayout from '~/components/Layout/PoiLayout.vue'
 import MapPois from '~/components/Map/MapPois.vue'
 import Carousel from '~/components/PoisDetails/Carousel.vue'
@@ -139,7 +139,7 @@ import { PropertyTranslationsContextEnum } from '~/plugins/property-translations
 import { favoritesStore } from '~/stores/favorite'
 import { OriginEnum } from '~/utils/types'
 
-export default defineComponent({
+export default defineNuxtComponent({
   components: {
     PoiLayout,
     IconButton,

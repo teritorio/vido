@@ -13,11 +13,12 @@
 <script lang="ts">
 import Slider from '@vueform/slider/dist/slider.vue2.js'
 import copy from 'fast-copy'
-import { defineComponent, PropType } from 'vue'
+import { PropType } from 'vue'
 
+import { defineNuxtComponent } from '#app'
 import { FilterValueNumberRange } from '~/utils/types-filters'
 
-export default defineComponent({
+export default defineNuxtComponent({
   components: {
     Slider,
   },

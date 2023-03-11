@@ -23,9 +23,8 @@
 
 import { imageMixin } from '@nuxt/image/dist/runtime/components/image.mixin'
 import { getFileExtension } from '@nuxt/image/dist/runtime/utils/index.js'
-import { defineComponent } from 'vue'
 
-export default defineComponent({
+export default defineNuxtComponent({
   name: 'NuxtPicture',
   mixins: [imageMixin],
 

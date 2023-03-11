@@ -18,11 +18,9 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue'
+import { defineNuxtComponent, useNuxtApp } from '#app'
 
-import { useNuxtApp } from '#app'
-
-export default defineComponent({
+export default defineNuxtComponent({
   components: {
     // @ts-ignore
     CookieLaw: () => (process.client ? import('vue-cookie-law') : null),

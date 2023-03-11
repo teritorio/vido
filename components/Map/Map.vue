@@ -51,8 +51,8 @@ import {
   MapDataEvent,
 } from 'maplibre-gl'
 import { mapState } from 'pinia'
-import { defineComponent, PropType } from 'vue'
-import { useNuxtApp } from '#app'
+import { PropType } from 'vue'
+import { defineNuxtComponent, useNuxtApp } from '#app'
 
 import MapControls from '~/components/Map/MapControls.vue'
 import { DEFAULT_MAP_STYLE, MAP_ZOOM } from '~/lib/constants'
@@ -60,7 +60,7 @@ import { siteStore } from '~/stores/site'
 import { fetchStyle } from '~/utils/styles'
 import { MapStyleEnum } from '~/utils/types'
 
-export default defineComponent({
+export default defineNuxtComponent({
   components: {
     MglMap,
     MapControls,

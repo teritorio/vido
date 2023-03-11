@@ -30,14 +30,14 @@
 <script lang="ts">
 import { Control } from '@teritorio/map'
 import { Map } from 'maplibre-gl'
-import { defineComponent, PropType, ref } from 'vue'
+import { PropType, ref } from 'vue'
 
-import { useNuxtApp, useRouter } from '#app'
+import { defineNuxtComponent, useNuxtApp, useRouter } from '#app'
 import { DEFAULT_MAP_STYLE, MAP_STYLE_NAMES } from '~/lib/constants'
 import { MapStyleEnum } from '~/utils/types'
 import { getHashPart, routerPushHashUpdate } from '~/utils/url'
 
-export default defineComponent({
+export default defineNuxtComponent({
   props: {
     map: {
       type: Object as PropType<Map>,

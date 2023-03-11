@@ -10,9 +10,9 @@
 <script lang="ts">
 import { Polygon, MultiPolygon, GeoJSON } from 'geojson'
 import { mapWritableState } from 'pinia'
-import { defineComponent } from 'vue'
 
 import {
+  defineNuxtComponent,
   useHead,
   useNuxtApp,
   useRequestHeaders,
@@ -32,7 +32,7 @@ import { menuStore } from '~/stores/menu'
 import { siteStore } from '~/stores/site'
 import { VidoConfig } from '~/utils/types-config'
 
-export default defineComponent({
+export default defineNuxtComponent({
   components: {
     Embedded,
   },

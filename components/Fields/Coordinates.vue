@@ -16,8 +16,9 @@
 
 <script lang="ts">
 import GeoJSON from 'geojson'
-import { defineComponent, PropType } from 'vue'
+import { PropType } from 'vue'
 
+import { defineNuxtComponent } from '#app'
 import ExternalLink from '~/components/UI/ExternalLink.vue'
 import { coordinatesHref } from '~/lib/coordinates'
 import { isIOS } from '~/utils/isIOS'
@@ -26,7 +27,7 @@ export function isCoordinatesEmpty(geom: GeoJSON.Geometry): boolean {
   return !(geom && geom.type === 'Point' && geom.coordinates)
 }
 
-export default defineComponent({
+export default defineNuxtComponent({
   components: {
     ExternalLink,
   },

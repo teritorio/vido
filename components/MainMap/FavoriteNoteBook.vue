@@ -65,9 +65,9 @@
 
 <script lang="ts">
 import { mapState } from 'pinia'
-import { defineComponent, PropType, ref } from 'vue'
+import { PropType, ref } from 'vue'
 
-import { useNuxtApp } from '#app'
+import { defineNuxtComponent, useNuxtApp } from '#app'
 import PoisDeck from '~/components/PoisCard/PoisDeck.vue'
 import IconButton from '~/components/UI/IconButton.vue'
 import IconsBar from '~/components/UI/IconsBar.vue'
@@ -76,7 +76,7 @@ import UIButton from '~/components/UI/UIButton.vue'
 import { ApiPoi, ApiPoiId } from '~/lib/apiPois'
 import { favoritesStore } from '~/stores/favorite'
 
-export default defineComponent({
+export default defineNuxtComponent({
   components: {
     PoisDeck,
     ShareLinkModal,

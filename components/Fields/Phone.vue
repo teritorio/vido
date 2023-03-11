@@ -12,12 +12,12 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType } from 'vue'
+import { PropType } from 'vue'
 
-import { useNuxtApp } from '#app'
+import { defineNuxtComponent, useNuxtApp } from '#app'
 import ExternalLink from '~/components/UI/ExternalLink.vue'
 
-export default defineComponent({
+export default defineNuxtComponent({
   components: {
     ExternalLink,
   },

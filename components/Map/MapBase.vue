@@ -45,8 +45,9 @@ import copy from 'fast-copy'
 import { Polygon, MultiPolygon } from 'geojson'
 import throttle from 'lodash.throttle'
 import { FitBoundsOptions, LngLatBoundsLike, LngLatLike } from 'maplibre-gl'
-import { defineComponent, PropType } from 'vue'
+import { PropType } from 'vue'
 
+import { defineNuxtComponent } from '#app'
 import Attribution from '~/components/Map/Attribution.vue'
 import Map from '~/components/Map/Map.vue'
 import { ApiPoi } from '~/lib/apiPois'
@@ -62,7 +63,7 @@ const BOUNDARY_SOURCE = 'boundary_area'
 const BOUNDARY_AREA_LAYER = 'boundary_area'
 const BOUNDAR_BORDER_LAYER = 'boundary_border'
 
-export default defineComponent({
+export default defineNuxtComponent({
   components: {
     Map,
     Attribution,

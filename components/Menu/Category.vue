@@ -64,14 +64,14 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType } from 'vue'
+import { PropType } from 'vue'
 
-import { useNuxtApp } from '#app'
+import { defineNuxtComponent, useNuxtApp } from '#app'
 import MenuItem from '~/components/Menu/Item.vue'
 import { ApiMenuCategory } from '~/lib/apiMenu'
 import { FilterValues, filterValuesIsSet } from '~/utils/types-filters'
 
-export default defineComponent({
+export default defineNuxtComponent({
   components: {
     MenuItem,
   },

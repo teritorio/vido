@@ -37,14 +37,14 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType } from 'vue'
+import { PropType } from 'vue'
 
-import { useNuxtApp } from '#app'
+import { defineNuxtComponent, useNuxtApp } from '#app'
 import Field from '~/components/Fields/Field.vue'
 import { ApiPois, FieldsListItem } from '~/lib/apiPois'
 import { PropertyTranslationsContextEnum } from '~/plugins/property-translations'
 
-export default defineComponent({
+export default defineNuxtComponent({
   components: {
     Field,
   },
