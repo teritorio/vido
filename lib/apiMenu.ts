@@ -1,5 +1,3 @@
-import fetch from 'node-fetch'
-
 import { MultilingualString } from '~/utils/types'
 
 export type FilterList = {
