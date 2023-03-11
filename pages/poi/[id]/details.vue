@@ -16,7 +16,7 @@ import { defineComponent } from 'vue'
 
 import {
   createError,
-  MetaObject,
+  useHead,
   useNuxtApp,
   useRequestHeaders,
   useRoute,
@@ -115,6 +115,13 @@ export default defineComponent({
       })
     }
 
+    useHead(
+      headerFromSettings(settings, {
+        title: poi?.properties.name,
+        description: { fr: poi?.properties.description },
+      })
+    )
+
     return Promise.resolve({
       config,
       settings,
@@ -156,13 +163,6 @@ export default defineComponent({
       // @ts-ignore
       route: null,
     }
-  },
-
-  head(): MetaObject {
-    return headerFromSettings(this.settings, {
-      title: this.poi?.properties.name,
-      description: { fr: this.poi?.properties.description },
-    })
   },
 
   created() {

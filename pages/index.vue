@@ -15,7 +15,7 @@ import { mapWritableState } from 'pinia'
 import { defineComponent } from 'vue'
 
 import {
-  MetaObject,
+  useHead,
   useNuxtApp,
   useRequestHeaders,
   useRoute,
@@ -150,6 +150,12 @@ export default defineComponent({
       fetchPoi,
     ])
 
+    useHead(
+      headerFromSettings(settings, {
+        title: settings.themes[0]?.title.fr,
+      })
+    )
+
     return Promise.resolve({
       config,
       settings,
@@ -170,10 +176,6 @@ export default defineComponent({
       globalContents: 'contents',
       globalTranslations: 'translations',
     }),
-  },
-
-  head(): MetaObject {
-    return headerFromSettings(this.settings)
   },
 
   created() {

@@ -16,8 +16,8 @@ import {
   useNuxtApp,
   useRequestHeaders,
   useRuntimeConfig,
-  MetaObject,
   useRoute,
+  useHead,
 } from '#app'
 import { definePageMeta } from '#imports'
 import PoisList from '~/components/PoisList/PoisList.vue'
@@ -100,6 +100,8 @@ export default defineComponent({
         getPoiByCategoryIdPromise,
       ])
 
+    useHead(headerFromSettings(settings))
+
     return Promise.resolve({
       config,
       settings,
@@ -119,10 +121,6 @@ export default defineComponent({
       globalContents: 'contents',
       globalTranslations: 'translations',
     }),
-  },
-
-  head(): MetaObject {
-    return headerFromSettings(this.settings)
   },
 
   created() {
