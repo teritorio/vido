@@ -89,7 +89,7 @@ export default defineNuxtConfig({
   // Modules (https://go.nuxtjs.dev/config-modules)
   modules: [
     '@nuxtjs/i18n',
-    // '@nuxt/image',
+    '@nuxt/image-edge',
     ...(process.env.SENTRY_DSN ? ['@nuxtjs/sentry'] : []),
     // '@nuxtjs/sitemap', // declare the sitemap module at end of array
     '@pinia/nuxt',
