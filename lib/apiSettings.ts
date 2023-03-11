@@ -1,4 +1,3 @@
-import fetch from 'node-fetch'
 import { MetaObject } from 'nuxt/schema'
 
 import { MultilingualString } from '~/utils/types'
