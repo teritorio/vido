@@ -1,28 +1,17 @@
 <template>
-  <div>
-    <ul>
-      <li v-for="(vnode, index) in $slots.default" :key="index">
-        <VNodes v-if="vnode.tag" :vnodes="[vnode]" />
-      </li>
-    </ul>
-  </div>
+  <ul v-if="$slots.default">
+    <li v-for="(vnode, index) in $slots.default()" :key="index">
+      <VNodes v-if="vnode" :vnodes="[vnode]" />
+    </li>
+  </ul>
 </template>
 
 <script lang="ts">
-import { RenderContext } from 'vue'
-
 import { defineNuxtComponent } from '#app'
 
 export default defineNuxtComponent({
   components: {
-    VNodes: {
-      functional: true,
-      render: (h: any, ctx: RenderContext) => ctx.props.vnodes,
-    },
-  },
-
-  mounted() {
-    // this.$slots.
+    VNodes: (props, ctx) => props.vnodes,
   },
 })
 </script>
