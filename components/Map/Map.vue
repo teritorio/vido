@@ -1,36 +1,14 @@
 <template>
   <div :class="(hideControl || !map) && 'map-controls-hidden'">
-    <mgl-map
-      v-if="style"
-      id="map"
-      :center="center"
-      :zoom="zoom"
-      bounds="bounds"
-      fit-bounds-options="fitBoundsOptions"
-      hash="hash"
-      max-zoom="defaultZoom.max"
-      min-zoom="defaultZoom.min"
-      style="style"
-      locale="locales"
-      :attribution-control="false"
-      :cooperative-gestures="cooperativeGestures"
-      v-bind="$attrs"
-      @map:load="onMapInit($event)"
-      @map:data="$emit('map-data', $event)"
-      @map:dragend="$emit('map-dragend', $event)"
-      @map:moveend="$emit('map-moveend', $event)"
-      @map:resize="$emit('map-resize', $event)"
-      @map:rotateend="$emit('map-rotateend', $event)"
-      @map:touchmove="$emit('map-touchmove', $event)"
-      @map:zoomend="$emit('map-zoomend', $event)"
+    <div id="map"></div>
+    <MapControls
+      v-if="map"
+      :map="map"
+      :show-compass="rotate"
+      :fullscreen-control="fullscreenControl"
     >
-      <MapControls
-        :show-compass="rotate"
-        :fullscreen-control="fullscreenControl"
-      >
-        <slot name="controls"></slot>
-      </MapControls>
-    </mgl-map>
+      <slot name="controls"></slot>
+    </MapControls>
 
     <slot name="body"></slot>
   </div>
@@ -38,7 +16,6 @@
 
 <script lang="ts">
 import { OpenMapTilesLanguage } from '@teritorio/openmaptiles-gl-language'
-import MglMap from '@vladvesa/vue-maplibre-gl'
 import {
   Map,
   RasterSourceSpecification,
@@ -52,8 +29,8 @@ import {
 } from 'maplibre-gl'
 import { mapState } from 'pinia'
 import { PropType } from 'vue'
-import { defineNuxtComponent, useNuxtApp } from '#app'
 
+import { defineNuxtComponent, useNuxtApp } from '#app'
 import MapControls from '~/components/Map/MapControls.vue'
 import { DEFAULT_MAP_STYLE, MAP_ZOOM } from '~/lib/constants'
 import { siteStore } from '~/stores/site'
@@ -62,7 +39,6 @@ import { MapStyleEnum } from '~/utils/types'
 
 export default defineNuxtComponent({
   components: {
-    MglMap,
     MapControls,
   },
 
@@ -138,6 +114,34 @@ export default defineNuxtComponent({
     }
   },
 
+  mounted() {
+    // @ts-ignore
+    this.map = new Map({
+      container: 'map',
+      style: { version: 8, sources: {}, layers: [] },
+      center: this.center,
+      zoom: this.zoom,
+      bounds: this.bounds,
+      fitBoundsOptions: this.fitBoundsOptions,
+      hash: this.hash,
+      maxZoom: this.defaultZoom.max,
+      minZoom: this.defaultZoom.min,
+      // style: this.style,
+      locale: this.locales,
+      attributionControl: false,
+      cooperativeGestures: this.cooperativeGestures,
+    })
+
+    this.map.on('load', ($event) => this.onMapInit(this.map as Map))
+    this.map.on('data', ($event) => this.$emit('map-data', $event))
+    this.map.on('dragend', ($event) => this.$emit('map-dragend', $event))
+    this.map.on('moveend', ($event) => this.$emit('map-moveend', $event))
+    this.map.on('resize', ($event) => this.$emit('map-resize', $event))
+    this.map.on('rotateend', ($event) => this.$emit('map-rotateend', $event))
+    this.map.on('touchmove', ($event) => this.$emit('map-touchmove', $event))
+    this.map.on('zoomend', ($event) => this.$emit('map-zoomend', $event))
+  },
+
   computed: {
     ...mapState(siteStore, ['locale']),
 
@@ -174,8 +178,7 @@ export default defineNuxtComponent({
       'NavigationControl.ResetBearing':
         this.$t('mapControls.resetBearing') || 'Reset bearing to north',
       'NavigationControl.ZoomIn': this.$t('mapControls.zoomIn') || 'Zoom in',
-      'NavigationControl.ZoomOut':
-        this.$t('mapControls.zoomOut') || 'Zoom out',
+      'NavigationControl.ZoomOut': this.$t('mapControls.zoomOut') || 'Zoom out',
     }
   },
 
@@ -282,6 +285,8 @@ export default defineNuxtComponent({
 </script>
 
 <style>
+@import 'maplibre-gl/dist/maplibre-gl.css';
+
 .map-controls-hidden .maplibregl-control-container {
   display: none;
 }

@@ -1,26 +1,27 @@
 <template>
-  <div class="hidden">
-    <mgl-navigation-control
-      :show-zoom="true"
-      :show-compass="showCompass"
-      :visualize-pitch="true"
-    />
-    <mgl-geolocation-control
-      class="control-geolocate"
-      :position-options="{ enableHighAccuracy: true }"
-      :track-user-location="true"
-    />
-    <mgl-fullscreen-control v-if="fullscreenControl" />
-    <mgl-scale-control max-width="80" />
+  <div>
     <slot></slot>
   </div>
 </template>
 
 <script lang="ts">
+import {
+  Map,
+  NavigationControl,
+  GeolocateControl,
+  FullscreenControl,
+  ScaleControl,
+} from 'maplibre-gl'
+import { PropType } from 'vue'
+
 import { defineNuxtComponent } from '#app'
 
 export default defineNuxtComponent({
   props: {
+    map: {
+      type: Object as PropType<Map>,
+      required: true,
+    },
     showCompass: {
       type: Boolean,
       default: false,
@@ -30,13 +31,57 @@ export default defineNuxtComponent({
       default: false,
     },
   },
+
+  data(): {
+    fullscreenControlObject: FullscreenControl
+  } {
+    return {
+      fullscreenControlObject: new FullscreenControl({}),
+    }
+  },
+
+  mounted() {
+    this.map.addControl(
+      new NavigationControl({
+        showZoom: true,
+        showCompass: this.showCompass,
+        visualizePitch: true,
+      })
+    )
+
+    this.map.addControl(
+      new GeolocateControl({
+        // class="control-geolocate"
+        positionOptions: { enableHighAccuracy: true },
+        trackUserLocation: true,
+      })
+    )
+
+    if (this.fullscreenControl) {
+      this.map.addControl(this.fullscreenControlObject)
+    }
+
+    this.map.addControl(
+      new ScaleControl({
+        maxWidth: 80,
+      })
+    )
+  },
+
+  watch: {
+    fullscreenControl() {
+      if (this.fullscreenControl) {
+        this.map.addControl(this.fullscreenControlObject!)
+      } else {
+        this.map.removeControl(this.fullscreenControlObject!)
+      }
+    },
+  },
 })
 </script>
 
 <style lang="scss">
-@import '@vladvesa/vue-maplibre-gl/src/css/maplibre';
-
-#map .maplibre-ctrl-group {
+#map .maplibregl-ctrl-group {
   @apply mt-2 mb-2;
 
   background: none;
