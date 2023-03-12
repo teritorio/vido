@@ -1,5 +1,5 @@
 <template>
-  <div class="relative flex flex-col w-full h-full">
+  <div class="flex flex-col w-full h-full">
     <MapPois
       :extra-attributions="settings.attributions"
       :features="pois ? pois.features : []"
@@ -115,18 +115,14 @@ export default defineNuxtComponent({
 })
 </script>
 
-<style lang="scss">
-html {
-  @apply h-full w-full box-border overflow-hidden overscroll-none;
-}
-
+<style scoped>
 body,
 #__nuxt,
 #__layout {
   @apply h-full w-full overflow-hidden overscroll-none;
 }
 
-#map-container {
+:deep(#map-container) {
   position: absolute;
   top: 0;
   bottom: 0;

@@ -5301,7 +5301,6 @@ __metadata:
     "@types/wcag-contrast": ^3.0.0
     "@typescript-eslint/eslint-plugin": ^5.54.1
     "@typescript-eslint/parser": ^5.54.1
-    "@vladvesa/vue-maplibre-gl": ^1.1.5
     "@vue/test-utils": ^2.3.1
     "@vueform/slider": ^2.1.7
     autoprefixer: ^10.4.13
@@ -6423,18 +6422,6 @@ __metadata:
     vite: ^4.0.0
     vue: ^3.2.25
   checksum: a02c361e586527d2f852c5a49b6d30f6ec165e076b8be5c8d1641c50e18492bae2ad11cb15e0029fe98b1222028317c0938ee9c881548510fbdb5437be7d03e4
-  languageName: node
-  linkType: hard
-
-"@vladvesa/vue-maplibre-gl@npm:^1.1.5":
-  version: 1.1.5
-  resolution: "@vladvesa/vue-maplibre-gl@npm:1.1.5"
-  dependencies:
-    mitt: ^3.0.0
-  peerDependencies:
-    maplibre-gl: ^2.4.0
-    vue: ^3.2.45
-  checksum: 25a9cae2fa62eccdee906a42f6984d1d9279a179b2ea91f3f9f6f9554d48d58cc40aa627122d181d636e4b3004dc2766af82d20172af360da71c5f8557301cc3
   languageName: node
   linkType: hard
 
@@ -18088,7 +18075,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"mitt@npm:3.0.0, mitt@npm:^3.0.0":
+"mitt@npm:3.0.0":
   version: 3.0.0
   resolution: "mitt@npm:3.0.0"
   checksum: 487329fd3d202f457deeed2a45e2d2681ac9576d1edbc5868ffdc1a0b8418af3f54e2066e2dcde01acc0cf6de89a6ad470f7529cb02b8f4ebbd422f33c0f83db
