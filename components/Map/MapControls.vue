@@ -49,13 +49,12 @@ export default defineNuxtComponent({
       })
     )
 
-    this.map.addControl(
-      new GeolocateControl({
-        // class="control-geolocate"
-        positionOptions: { enableHighAccuracy: true },
-        trackUserLocation: true,
-      })
-    )
+    const geolocateControl = new GeolocateControl({
+      positionOptions: { enableHighAccuracy: true },
+      trackUserLocation: true,
+    })
+    this.map.addControl(geolocateControl)
+    geolocateControl._container.classList.add('control-geolocate')
 
     if (this.fullscreenControl) {
       this.map.addControl(this.fullscreenControlObject)
