@@ -5365,7 +5365,7 @@ __metadata:
     vue-cookie-law: ^1.13.3
     vue-jest: ^3.0.7
     vue-matomo: ^4.2.0
-    vue-screen: ^1.5.6
+    vue-screen: next
     vue-tsc: ^1.2.0
     vue2-touch-events: ^3.2.2
     vuetify: ^3.1.8
@@ -25866,10 +25866,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"vue-screen@npm:^1.5.6":
-  version: 1.5.6
-  resolution: "vue-screen@npm:1.5.6"
-  checksum: 66e5fd1b3b5c1555ab48547c7a841505390bdd84e622e52e30ffe9a48e9f2a5edd5414d15f6dee072d59b8974f3a00b6225eba5dc95baf45464bfde1e1480c87
+"vue-screen@npm:next":
+  version: 2.1.0-beta.1
+  resolution: "vue-screen@npm:2.1.0-beta.1"
+  peerDependencies:
+    vue: ^3.0.0
+  checksum: d00aa46537f9a86b64cdf7571e916ef3f2d3e61dd26744c89107696839a267f2a0fd9fe2fc9b16d51a1b86378308f922a6a08a43e2f996b9c2a281be4a273c8c
   languageName: node
   linkType: hard
 

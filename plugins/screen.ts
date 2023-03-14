@@ -1,14 +1,17 @@
+import { useScreen, useGrid } from 'vue-screen'
+
 import { defineNuxtPlugin } from '#app/nuxt'
-import { VueScreenObject } from 'vue-screen'
 
 export default defineNuxtPlugin((nuxtApp) => {
+  const screen = useScreen()
+  const grid = useGrid('tailwind')
   return {
     provide: {
       screen: {
-        smallScreen: (screen: VueScreenObject): boolean => !screen.md,
+        smallScreen: !grid.md,
         // Quick heuristic for device havng phone capability
-        phone: (screen: VueScreenObject): boolean => screen.touch && !screen.lg,
-      }
-    }
+        phone: screen.touch && grid.lg,
+      },
+    },
   }
 })
