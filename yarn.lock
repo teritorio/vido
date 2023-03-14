@@ -5367,7 +5367,7 @@ __metadata:
     vue-matomo: ^4.2.0
     vue-screen: next
     vue-tsc: ^1.2.0
-    vue2-touch-events: ^3.2.2
+    vue3-touch-events: ^4.1.2
     vuetify: ^3.1.8
   languageName: unknown
   linkType: soft
@@ -25918,10 +25918,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"vue2-touch-events@npm:^3.2.2":
-  version: 3.2.2
-  resolution: "vue2-touch-events@npm:3.2.2"
-  checksum: c69015aa0c4f07acce6b74f1a4d94514d1cffe7665611c9fe91744be695420e2faddfb2a37e7fa25789406c79dac034e54405550c72c05bacd7e27302acc41ad
+"vue3-touch-events@npm:^4.1.2":
+  version: 4.1.2
+  resolution: "vue3-touch-events@npm:4.1.2"
+  checksum: 7defc1d9c4ad91ef2805447f427adfef4f2c5522ec2bad9a7fe33c3de29cdced8d6ecef6761c7f24f90abd05b03beae28229d62d8080a694376fe6d16e9502b9
   languageName: node
   linkType: hard
 

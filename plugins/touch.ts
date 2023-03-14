@@ -1,6 +1,7 @@
+import Vue3TouchEvents from 'vue3-touch-events'
+
 import { defineNuxtPlugin } from '#app/nuxt'
-import Vue2TouchEvents from 'vue2-touch-events'
 
 export default defineNuxtPlugin((nuxtApp) => {
-  nuxtApp.vueApp.use(Vue2TouchEvents)
+  nuxtApp.vueApp.use(Vue3TouchEvents)
 })
