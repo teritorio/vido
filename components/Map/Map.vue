@@ -2,6 +2,7 @@
   <div :class="(hideControl || !map) && 'map-controls-hidden'">
     <mapbox
       v-if="style"
+      id="map"
       access-token=""
       :map-options="{
         bounds: bounds,
@@ -204,6 +205,10 @@ export default Vue.extend({
       }
 
       this.emitStyleLoad()
+
+      new ResizeObserver((entries) => {
+        this.map?.resize()
+      }).observe(document.getElementById('map')!)
     },
 
     setStyle(mapStyle: MapStyleEnum) {
