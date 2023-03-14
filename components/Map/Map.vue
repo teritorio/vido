@@ -201,8 +201,6 @@ export default defineNuxtComponent({
         this.map.touchZoomRotate.disableRotation()
       }
 
-      this.emitStyleLoad()
-
       new ResizeObserver((entries) => {
         this.map?.resize()
       }).observe(document.getElementById('map')!)
