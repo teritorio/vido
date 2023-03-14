@@ -19,7 +19,7 @@
           <img
             class="rounded-full bg-white"
             alt="fond de carte"
-            :src="require(`~/assets/${background}.png`)"
+            :src="backgroundImages[background]"
           />
         </span>
       </button>
@@ -62,11 +62,25 @@ export default defineNuxtComponent({
     }
   },
 
+  created() {
+    this.backgroundImages = Object.fromEntries(
+      this.backgrounds.map((background) => {
+        const imageUrl = new URL(
+          `../../assets/${background}.png`,
+          import.meta.url
+        ).href
+        return [background, imageUrl]
+      })
+    )
+  },
+
   data(): {
     activeBackground: MapStyleEnum
+    backgroundImages: Record<string, string>
   } {
     return {
       activeBackground: this.initialBackground,
+      backgroundImages: {},
     }
   },
 
