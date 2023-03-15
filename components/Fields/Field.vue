@@ -89,14 +89,14 @@
         v-else-if="
           (field.field === 'phone' || field.field === 'mobile') && showPhone
         "
-        :key="field.field + '_' + phone"
+        :key="'phone_' + phone"
         :number="phone"
       />
 
       <ExternalLink
         v-for="item in properties[field.field]"
         v-else-if="field.field == 'website'"
-        :key="field.field + '_' + item"
+        :key="'website_' + item"
         :href="item"
         target="_blank"
       >
@@ -106,7 +106,7 @@
       <ExternalLink
         v-for="item in properties[field.field]"
         v-else-if="field.field == 'email'"
-        :key="field.field + '_' + item"
+        :key="'email_' + item"
         :href="`mailto:${item}`"
       >
         {{ item }}
@@ -115,7 +115,7 @@
       <ExternalLink
         v-for="item in properties[field.field]"
         v-else-if="field.field == 'download'"
-        :key="field.field + '_' + item"
+        :key="'download_' + item"
         :href="item"
         icon="arrow-circle-down"
       >
