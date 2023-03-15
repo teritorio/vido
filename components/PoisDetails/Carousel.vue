@@ -1,12 +1,12 @@
 <template>
-  <div v-if="images.length == 1" class="margin slide">
+  <div v-if="images.length == 1" class="margin slide mb-14">
     <NuxtPicture
       :src="images[0]"
       media-size="66vw"
       :alt="$t('poiCard.image')"
     />
   </div>
-  <v-carousel v-else-if="images.length > 1" :show-arrows="false">
+  <v-carousel v-else-if="images.length > 1" :show-arrows="false" class="mb-14">
     <v-carousel-item v-for="(image, i) in images" :key="i">
       <NuxtPicture
         :key="i"
