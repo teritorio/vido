@@ -82,7 +82,7 @@ export default defineNuxtComponent({
     isCopied: boolean
   } {
     return {
-      modal: true,
+      modal: false,
       link: null,
       hasClipboard: true,
       isCopied: false,
