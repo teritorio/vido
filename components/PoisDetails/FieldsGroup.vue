@@ -1,33 +1,74 @@
 <template>
-  <div v-if="group.fields && !empty">
-    <div v-if="group.display_mode === 'standard'">
-      <FieldsHeader :recursion-stack="recursionStack">
-        {{ title }}
-      </FieldsHeader>
-      <Fields
+  <div>
+    <template v-for="field in group.fields" :key="field.group">
+      <div
+        v-if="
+          field.group !== undefined &&
+          !isListEmpty(field.fields, properties, geom)
+        "
+        class="fields-list"
+      >
+        <div v-if="field.display_mode === 'standard'">
+          <FieldsHeader
+            v-if="fieldTranslateK(field.group)"
+            :recursion-stack="recursionStack"
+          >
+            {{ fieldTranslateK(field.group) }}
+          </FieldsHeader>
+          <FieldsGroup
+            :id="`FieldsGroup-${[...recursionStack, field.group].join('-')}-${
+              field.group
+            }`"
+            :recursion-stack="[...recursionStack, field.group]"
+            :group="field"
+            :properties="properties"
+            :geom="geom"
+            :color-fill="colorFill"
+            :class="[
+              [...recursionStack, field.group].length === 0 && 'fields-list',
+            ]"
+          />
+        </div>
+        <Block
+          v-else-if="field.display_mode === 'card'"
+          :color-fill="colorFill"
+          :icon="field.icon"
+        >
+          <FieldsHeader
+            v-if="fieldTranslateK(field.group)"
+            :recursion-stack="recursionStack"
+          >
+            {{ fieldTranslateK(field.group) }}
+          </FieldsHeader>
+          <FieldsGroup
+            :id="`FieldsGroup-${[...recursionStack, field.group].join('-')}-${
+              field.group
+            }`"
+            :recursion-stack="[...recursionStack, field.group]"
+            :group="field"
+            :properties="properties"
+            :geom="geom"
+            :color-fill="colorFill"
+            :class="[
+              [...recursionStack, field.group].length === 0 && 'fields-list',
+            ]"
+          />
+        </Block>
+      </div>
+
+      <Field
+        v-else-if="field.group === undefined"
+        :id="`Field-${[...recursionStack, group.group].join('-')}-${
+          field.field
+        }`"
+        :context="context"
         :recursion-stack="[...recursionStack, group.group]"
-        :fields="group.fields"
+        :field="field"
         :properties="properties"
         :geom="geom"
-        :color-fill="colorFill"
+        class="field"
       />
-    </div>
-    <Block
-      v-else-if="group.display_mode === 'card'"
-      :color-fill="colorFill"
-      :icon="group.icon"
-    >
-      <FieldsHeader :recursion-stack="recursionStack">
-        {{ title }}
-      </FieldsHeader>
-      <Fields
-        :recursion-stack="[...recursionStack, group.group]"
-        :fields="group.fields"
-        :properties="properties"
-        :geom="geom"
-        :color-fill="colorFill"
-      />
-    </Block>
+    </template>
   </div>
 </template>
 
@@ -36,7 +77,8 @@ import { PropType, ref } from 'vue'
 
 import { isFiledEmpty } from '../Fields/Field.vue'
 
-import { defineNuxtComponent } from '#app'
+import { defineNuxtComponent, useNuxtApp } from '#app'
+import Field from '~/components/Fields/Field.vue'
 import Block from '~/components/PoisDetails/Block.vue'
 import FieldsHeader from '~/components/UI/FieldsHeader.vue'
 import {
@@ -45,28 +87,15 @@ import {
   FieldsListGroup,
   FieldsListItem,
 } from '~/lib/apiPois'
-// import Fields from '~/components/PoisDetails/Fields.vue'
-
-export function isListEmpty(
-  fileds: FieldsList,
-  properties: { [key: string]: string },
-  geom: GeoJSON.Geometry
-): boolean {
-  return fileds.reduce(
-    (sum: boolean, value: FieldsListItem | FieldsListGroup) =>
-      sum &&
-      (value.group !== undefined
-        ? isListEmpty(value.fields, properties, geom)
-        : isFiledEmpty(value, properties, geom)),
-    true
-  )
-}
+import { PropertyTranslationsContextEnum } from '~~/plugins/property-translations'
 
 export default defineNuxtComponent({
+  name: 'FieldsGroup',
+
   components: {
     Block,
     FieldsHeader,
-    // Fields,
+    Field,
   },
 
   props: {
@@ -76,10 +105,6 @@ export default defineNuxtComponent({
     },
     group: {
       type: Object as PropType<FieldsListGroup>,
-      required: true,
-    },
-    title: {
-      type: String as PropType<string>,
       required: true,
     },
     properties: {
@@ -95,11 +120,6 @@ export default defineNuxtComponent({
       required: true,
     },
   },
-  setup() {
-    return {
-      fields: ref<InstanceType<typeof Vue>>(),
-    }
-  },
 
   data(): {
     empty: any
@@ -109,15 +129,54 @@ export default defineNuxtComponent({
     }
   },
 
-  beforeCreate() {
-    // Break circular components dependcy
-    // @ts-ignore
-    this.$options.components.Fields =
-      require('~/components/PoisDetails/Fields.vue').default
+  computed: {
+    context(): PropertyTranslationsContextEnum {
+      return PropertyTranslationsContextEnum.Details
+    },
   },
 
-  created() {
-    this.empty = isListEmpty(this.group.fields, this.properties, this.geom)
+  methods: {
+    fieldTranslateK(field: string) {
+      const { $propertyTranslations } = useNuxtApp()
+      return $propertyTranslations.p(field, this.context)
+    },
+
+    isListEmpty(
+      fileds: FieldsList,
+      properties: { [key: string]: string },
+      geom: GeoJSON.Geometry
+    ): boolean {
+      return (
+        !fileds ||
+        fileds.reduce(
+          (sum: boolean, value: FieldsListItem | FieldsListGroup) =>
+            sum &&
+            (value.group !== undefined
+              ? this.isListEmpty(value.fields, properties, geom)
+              : isFiledEmpty(value, properties, geom)),
+          true
+        )
+      )
+    },
   },
 })
 </script>
+
+<style lang="scss" scoped>
+.fields-list:not(:first-child) {
+  margin-top: 3.3rem;
+}
+
+:deep(.field_header_level_1) {
+  display: inline;
+}
+
+:deep(.field_content_level_1) {
+  display: inline;
+  clear: right;
+}
+
+:deep(.field) {
+  margin-bottom: 0.3rem;
+}
+</style>

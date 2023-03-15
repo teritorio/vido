@@ -39,13 +39,17 @@
     <template #body>
       <div class="detail-wrapper">
         <div class="detail-left">
-          <Fields
+          <FieldsGroup
             v-if="detailsFields"
-            :fields="detailsFields"
+            :group="{
+              group: 'root',
+              fields: detailsFields,
+              display_mode: 'standard',
+              icon: '',
+            }"
             :properties="properties"
             :color-fill="colorFill"
             :geom="poi.geometry"
-            class="detail-left-block"
           />
         </div>
 
@@ -69,16 +73,21 @@
             />
           </template>
 
-          <Fields
+          <FieldsGroup
             v-else
-            :fields="[
-              {
-                group: 'description',
-                display_mode: 'standard',
-                fields: [{ field: 'description' }],
-                icon: '',
-              },
-            ]"
+            :group="{
+              group: 'root',
+              display_mode: 'standard',
+              icon: '',
+              fields: [
+                {
+                  group: 'description',
+                  display_mode: 'standard',
+                  fields: [{ field: 'description' }],
+                  icon: '',
+                },
+              ],
+            }"
             :properties="poi.properties"
             :geom="poi.geometry"
             :color-fill="colorFill"
@@ -123,7 +132,7 @@ import { defineNuxtComponent, useNuxtApp, useRoute, useRouter } from '#app'
 import PoiLayout from '~/components/Layout/PoiLayout.vue'
 import MapPois from '~/components/Map/MapPois.vue'
 import Carousel from '~/components/PoisDetails/Carousel.vue'
-import Fields from '~/components/PoisDetails/Fields.vue'
+import FieldsGroup from '~/components/PoisDetails/FieldsGroup.vue'
 import Mapillary from '~/components/PoisDetails/Mapillary.vue'
 import RouteMap from '~/components/PoisDetails/Route/RouteMap.vue'
 import Share from '~/components/PoisDetails/Share.vue'
@@ -150,7 +159,7 @@ export default defineNuxtComponent({
     Mapillary,
     MapPois,
     RouteMap,
-    Fields,
+    FieldsGroup,
     RelativeDate,
   },
 
@@ -296,12 +305,9 @@ export default defineNuxtComponent({
   .detail-left {
     width: 34%;
     box-sizing: border-box;
+    padding: 0 1.6rem;
     padding-right: 0;
-
-    .detail-left-block {
-      margin: 0 0 3.3rem;
-      padding: 0 1.6rem;
-    }
+    margin: 0 0 3.3rem;
   }
 
   .detail-right {
