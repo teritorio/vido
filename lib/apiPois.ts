@@ -14,7 +14,7 @@ export type FieldsListItem = {
 
 export type FieldsListGroup = {
   group: string
-  fields: FieldsListItem[]
+  fields: FieldsList
   // eslint-disable-next-line camelcase
   display_mode: 'standard' | 'card'
   icon: string
