@@ -72,6 +72,7 @@
     "@fortawesome/free-brands-svg-icons": "^6.3.0",
     "@fortawesome/free-regular-svg-icons": "^6.3.0",
     "@fortawesome/free-solid-svg-icons": "^6.3.0",
+    "@mdi/font": "^7.1.96",
     "@nuxt/image-edge": "1.0.0-27840416.dc1ed65",
     "@nuxt/types": "^2.16.2",
     "@nuxtjs/eslint-config": "^12.0.0",
