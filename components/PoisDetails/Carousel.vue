@@ -6,16 +6,18 @@
       :alt="$t('poiCard.image')"
     />
   </div>
-  <v-carousel v-else-if="images.length > 1" :show-arrows="false" class="mb-14">
-    <v-carousel-item v-for="(image, i) in images" :key="i">
-      <NuxtPicture
-        :key="i"
-        :src="image"
-        media-size="66vw"
-        :alt="$t('poiCard.image')"
-      />
-    </v-carousel-item>
-  </v-carousel>
+  <div v-else-if="images.length > 1" data-app class="vuetify">
+    <v-carousel :show-arrows="false" class="mb-14">
+      <v-carousel-item v-for="(image, i) in images" :key="i">
+        <NuxtPicturePatch
+          :src="image"
+          media-size="66vw"
+          :alt="$t('poiCard.image')"
+          class="h-100"
+        />
+      </v-carousel-item>
+    </v-carousel>
+  </div>
 </template>
 
 <script lang="ts">
@@ -23,11 +25,11 @@ import { PropType } from 'vue'
 import { VCarousel, VCarouselItem } from 'vuetify/components/VCarousel'
 
 import { defineNuxtComponent } from '#app'
-import NuxtPicture from '~/components/UI/NuxtPicture.vue'
+import NuxtPicturePatch from '~/components/UI/NuxtPicture.vue'
 
 export default defineNuxtComponent({
   components: {
-    NuxtPicture,
+    NuxtPicturePatch,
     VCarousel,
     VCarouselItem,
   },
