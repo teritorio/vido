@@ -3189,6 +3189,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@mdi/font@npm:^7.1.96":
+  version: 7.1.96
+  resolution: "@mdi/font@npm:7.1.96"
+  checksum: c8c0660ff6e461dc010e78533d0360a521e912b31a9cc0f01ae8ae1a8e46bb9744bbb5622b2a80980db87cc40fa75059f9ddf7daa1fe86144c5955493513a341
+  languageName: node
+  linkType: hard
+
 "@mdx-js/mdx@npm:^1.6.22":
   version: 1.6.22
   resolution: "@mdx-js/mdx@npm:1.6.22"
@@ -5270,6 +5277,7 @@ __metadata:
     "@fortawesome/free-solid-svg-icons": ^6.3.0
     "@fortawesome/vue-fontawesome": ^3.0.3
     "@gtm-support/vue-gtm": ^2.0.0
+    "@mdi/font": ^7.1.96
     "@nuxt/image-edge": 1.0.0-27840416.dc1ed65
     "@nuxt/types": ^2.16.2
     "@nuxtjs/eslint-config": ^12.0.0
