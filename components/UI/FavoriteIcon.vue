@@ -1,6 +1,6 @@
 <template>
   <font-awesome-icon
-    :icon="[`${isActive ? 'fas' : 'far'}`, 'star']"
+    :icon="[isActive ? 'fas' : 'far', 'star']"
     :class="[
       !isActive && !colorLine && 'text-amber-500',
       isActive && 'text-amber-500',
