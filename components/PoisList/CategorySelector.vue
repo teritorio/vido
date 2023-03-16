@@ -4,22 +4,33 @@
       class="category-selector"
       solo
       :items="Object.values(menuEntries).map((a) => a[0])"
-      :placeholder="$t('categorySelector.placeholder')"
+      :label="$t('categorySelector.placeholder')"
       @input="$emit('category-change', $event)"
     >
-      <template #item="{ item }">
-        <v-list-item>
-          <div class="flex">
-            <span class="flex-none w-6">
-              <TeritorioIcon
-                :color-text="menuEntries[item.value][1].category.color_line"
-                :picto="menuEntries[item.value][1].category.icon"
-              />
-            </span>
-            <div class="flex flex-col">
-              {{ item.title }}
-            </div>
-          </div>
+      <template #selection="{ props, item }">
+        <v-list-item v-bind="props">
+          <v-list-item-media>
+            <TeritorioIcon
+              :color-text="menuEntries[item.value][1].category.color_line"
+              :picto="menuEntries[item.value][1].category.icon"
+            />
+          </v-list-item-media>
+          <v-list-item-title>
+            {{ item.title }}
+          </v-list-item-title>
+        </v-list-item>
+      </template>
+      <template #item="{ props, item }">
+        <v-list-item v-bind="props">
+          <v-list-item-media>
+            <TeritorioIcon
+              :color-text="menuEntries[item.value][1].category.color_line"
+              :picto="menuEntries[item.value][1].category.icon"
+            />
+          </v-list-item-media>
+          <v-list-item-title>
+            {{ item.title }}
+          </v-list-item-title>
         </v-list-item>
       </template>
     </v-autocomplete>
@@ -31,7 +42,11 @@ import { PropType } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { LocaleObject } from 'vue-i18n-routing'
 import { VAutocomplete } from 'vuetify/components/VAutocomplete'
-import { VListItem } from 'vuetify/components/VList'
+import {
+  VListItem,
+  VListItemMedia,
+  VListItemTitle,
+} from 'vuetify/components/VList'
 
 import { defineNuxtComponent } from '#app'
 import TeritorioIcon from '~/components/UI/TeritorioIcon.vue'
@@ -41,6 +56,8 @@ export default defineNuxtComponent({
   components: {
     VAutocomplete,
     VListItem,
+    VListItemMedia,
+    VListItemTitle,
     TeritorioIcon,
   },
 
