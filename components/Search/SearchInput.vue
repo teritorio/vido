@@ -1,12 +1,15 @@
 <template>
-  <form class="flex-grow relative pointer-events-auto w-full" @submit.prevent>
-    <section class="relative w-full">
+  <form
+    class="tw-flex-grow tw-relative tw-pointer-events-auto tw-w-full"
+    @submit.prevent
+  >
+    <section class="tw-relative tw-w-full">
       <label>
-        <span class="sr-only">{{ $t('headerMenu.searchHint') }}</span>
+        <span class="tw-sr-only">{{ $t('headerMenu.searchHint') }}</span>
         <input
           ref="search"
           :value="searchText"
-          class="w-full px-5 py-3 font-medium text-zinc-700 placeholder-zinc-500 bg-zinc-100 border-none rounded-full outline-none appearance-none focus:outline-none focus:ring focus:ring-zinc-300 truncate pr-10"
+          class="tw-w-full tw-px-5 tw-py-3 tw-font-medium tw-text-zinc-700 tw-placeholder-zinc-500 tw-bg-zinc-100 tw-border-none tw-rounded-full tw-outline-none tw-appearance-none focus:tw-outline-none focus:tw-ring focus:tw-ring-zinc-300 tw-truncate tw-pr-10"
           :placeholder="$t('headerMenu.searchHint')"
           type="text"
           @input="
@@ -18,13 +21,13 @@
         />
       </label>
       <button
-        class="absolute inset-y-0 right-0 px-5 text-zinc-800 rounded-r-full outline-none focus:outline-none"
+        class="tw-absolute tw-inset-y-0 tw-right-0 tw-px-5 tw-text-zinc-800 tw-rounded-r-full tw-outline-none focus:tw-outline-none"
         style="pointer-events: none"
         type="submit"
       >
-        <span class="sr-only">{{ $t('headerMenu.search') }}</span>
+        <span class="tw-sr-only">{{ $t('headerMenu.search') }}</span>
         <font-awesome-icon v-if="!isLoading" icon="search" />
-        <font-awesome-icon v-else icon="spinner" class="animate-spin" />
+        <font-awesome-icon v-else icon="spinner" class="tw-animate-spin" />
       </button>
     </section>
   </form>

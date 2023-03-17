@@ -2,7 +2,7 @@
   <div v-if="openingHours">
     <span hidden>{{ openingHours }}</span>
     <template v-if="nextChange">
-      <p v-if="isPointTime" id="next" class="text-emerald-500">
+      <p v-if="isPointTime" id="next" class="tw-text-emerald-500">
         {{ $t('openingHours.next') }}
         <RelativeDate :date="nextChange.nextChange"></RelativeDate>
       </p>
@@ -10,7 +10,7 @@
         <p
           v-if="nextChange.type === 'opened'"
           id="opened"
-          class="text-emerald-500"
+          class="tw-text-emerald-500"
         >
           {{ $t('openingHours.opened') }}
           <template v-if="nextChange.nextChange">
@@ -22,7 +22,7 @@
         <p
           v-else-if="nextChange.type === 'openAt'"
           id="openAt"
-          class="text-red-500"
+          class="tw-text-red-500"
         >
           {{ $t('openingHours.closed') }}
           <template v-if="nextChange.nextChange">

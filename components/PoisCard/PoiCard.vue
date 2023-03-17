@@ -3,18 +3,18 @@
     :id="`PoiCard-${id}`"
     :class="[
       'poiDescription',
-      'z-10 flex flex-col w-full md:max-w-xl mx-0 overflow-y-auto shadow-md pointer-events-auto md:flex-row md:w-auto md:mx-auto md:rounded-xl bg-white',
+      'tw-z-10 tw-flex tw-flex-col tw-w-full md:tw-max-w-xl tw-mx-0 tw-overflow-y-auto tw-shadow-md tw-pointer-events-auto md:tw-flex-row md:tw-w-auto md:tw-mx-auto md:tw-rounded-xl tw-bg-white',
     ]"
   >
     <div
       v-if="showImage"
-      class="md:w-48 h-44 md:h-auto md:max-h-full bg-gray-100 flex items-center align-middle justify-center relative min-icon-height"
+      class="md:tw-w-48 tw-h-44 md:tw-h-auto md:tw-max-h-full tw-bg-gray-100 tw-flex tw-items-center tw-align-middle tw-justify-center tw-relative tw-min-icon-height"
     >
       <TeritorioIcon
         v-if="icon"
         :picto="icon"
         :use-native-alignment="false"
-        class="text-8xl align-middle absolute z-0"
+        class="tw-text-8xl tw-align-middle tw-absolute tw-z-0"
         :color-text="
           poi.properties.image && poi.properties.image.length > 0
             ? '#AAA'
@@ -23,7 +23,7 @@
       />
       <NuxtPicture
         v-if="poi.properties.image && poi.properties.image.length > 0"
-        class="object-cover h-44 w-full md:w-48 md:h-full z-10"
+        class="tw-object-cover tw-h-44 tw-w-full md:tw-w-48 md:tw-h-full tw-z-10"
         :src="poi.properties.image[0]"
         :alt="$t('poiCard.thumbnail')"
         media-size="30rem"
@@ -34,7 +34,7 @@
       :poi="poi"
       :explorer-mode-enabled="explorerModeEnabled"
       :favorites-mode-enabled="favoritesModeEnabled"
-      class="px-4 py-5 flex flex-col md:overflow-y-auto flex-grow h-auto md:max-h-full box-border w-full md:h-80 md:w-96"
+      class="tw-px-4 tw-py-5 tw-flex tw-flex-col md:tw-overflow-y-auto tw-flex-grow md:tw-max-h-full tw-box-border tw-w-full md:tw-h-80 md:tw-w-96"
       v-bind="$attrs"
     />
   </div>
@@ -93,7 +93,7 @@ export default defineNuxtComponent({
 
 <style scoped>
 :deep(img) {
-  @apply object-cover w-full h-full;
+  @apply tw-object-cover tw-w-full tw-h-full;
 }
 
 .min-icon-height {

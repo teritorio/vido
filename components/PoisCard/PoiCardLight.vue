@@ -1,12 +1,12 @@
 <template>
   <div
     :id="`PoiCardLight-${id}`"
-    class="flex-col md:flex-row h-auto shrink-0 flex items-start gap-4 justify-between box-border w-full border-gray-300 border-t pt-4 first-of-type:border-t-0"
+    class="tw-flex-col md:tw-flex-row tw-h-auto tw-shrink-0 tw-flex tw-items-start tw-gap-4 tw-justify-between tw-box-border tw-w-full tw-border-gray-300 tw-border-t tw-pt-4 first-of-type:tw-border-t-0"
   >
     <div>
-      <div class="flex items-center shrink-0 mb-2">
+      <div class="tw-flex tw-items-center tw-shrink-0 tw-mb-2">
         <h3
-          class="block text-xl font-semibold leading-tight flex items-center gap-2"
+          class="tw-block tw-text-xl tw-font-semibold tw-leading-tight tw-flex tw-items-center tw-gap-2"
           :style="'color:' + colorLine"
         >
           <TeritorioIconBadge
@@ -21,7 +21,7 @@
 
         <a
           v-if="Boolean(websiteDetails)"
-          class="ml-6 md:ml-8 px-3 py-1.5 text-xs text-zinc-800 bg-zinc-100 hover:bg-zinc-200 focus:bg-zinc-200 transition transition-colors rounded-md"
+          class="tw-ml-6 md:tw-ml-8 tw-px-3 tw-py-1.5 tw-text-xs tw-text-zinc-800 tw-bg-zinc-100 hover:tw-bg-zinc-200 focus:tw-bg-zinc-200 tw-transition tw-transition-colors tw-rounded-md"
           :href="websiteDetails"
           rel="noopener noreferrer"
           target="_blank"
@@ -41,7 +41,7 @@
     </div>
     <NuxtPicture
       v-if="poi.properties.image && poi.properties.image.length > 0"
-      class="w-full h-32 md:w-32 md:h-32 z-10"
+      class="tw-w-full tw-h-32 md:tw-w-32 md:tw-h-32 tw-z-10"
       :src="poi.properties.image[0]"
       :alt="$t('poiCard.thumbnail')"
       media-size="8rem"

@@ -1,13 +1,14 @@
 <template>
-  <div class="flex justify-between flex-wrap gap-6">
+  <div class="tw-flex tw-justify-between tw-flex-wrap tw-gap-6">
     <component
       :is="poisCard"
       v-for="item in pois"
       :key="item.properties.metadata.id"
       :poi="item"
       :class="[
-        'grow-1',
-        !isFavorite(item.properties.metadata.id) && 'bg-zinc-200 opacity-70',
+        'tw-grow-1',
+        !isFavorite(item.properties.metadata.id) &&
+          'tw-bg-zinc-200 tw-opacity-70',
       ]"
       :explorer-mode-enabled="explorerModeEnabled"
       :favorites-mode-enabled="favoritesModeEnabled"

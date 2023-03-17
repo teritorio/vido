@@ -1,13 +1,13 @@
 <template>
-  <div class="basis-max shrink flex flex-col gap-4 flex-1">
+  <div class="tw-basis-max tw-shrink tw-flex tw-flex-col tw-gap-4 tw-flex-1">
     <template
       v-for="(filter, filterIndex) in filtersSafeCopy"
     >
       <div v-if="filter.type == 'boolean'">
-        <label :key="filter.def.property" class="block mb-1 text-zinc-800">
+        <label :key="filter.def.property" class="tw-block tw-mb-1 tw-text-zinc-800">
           <input
             type="checkbox"
-            class="text-emerald-500 rounded-full focus:ring-0 focus:ring-transparent"
+            class="tw-text-emerald-500 tw-rounded-full focus:tw-ring-0 focus:tw-ring-transparent"
             :name="filter.def.property"
             :checked="filter.filterValue"
             @change="onBooleanFilterChange(filterIndex, $event)"
@@ -16,7 +16,7 @@
         </label>
       </div>
       <div v-else-if="filter.type == 'multiselection'">
-        <label :for="filter.def.property" class="block mb-2 text-zinc-500">
+        <label :for="filter.def.property" class="tw-block tw-mb-2 tw-text-zinc-500">
           {{ (filter.def.name && filter.def.name.fr) || filter.def.property }}
         </label>
         <SelectFilter
@@ -29,17 +29,17 @@
       <div
         v-else-if="filter.type == 'checkboxes_list'"
       >
-        <p class="mb-2 text-zinc-500">
+        <p class="tw-mb-2 tw-text-zinc-500">
           {{ (filter.def.name && filter.def.name.fr) || filter.def.property }}
         </p>
         <label
           v-for="value in filter.def.values"
           :key="value.value"
-          class="block mb-1 text-zinc-800"
+          class="tw-block tw-mb-1 tw-text-zinc-800"
         >
           <input
             type="checkbox"
-            class="text-emerald-500 rounded-full focus:ring-0 focus:ring-transparent"
+            class="tw-text-emerald-500 tw-rounded-full focus:tw-ring-0 focus:tw-ring-transparent"
             :name="filter.def.property + '_' + value.value"
             :checked="filter.filterValues.includes(value.value)"
             @change="
@@ -62,7 +62,7 @@
         />
       </div>
       <div v-else-if="filter.type == 'number_range'">
-        <label class="block mb-1 text-zinc-800">
+        <label class="tw-block tw-mb-1 tw-text-zinc-800">
           {{ (filter.def.name && filter.def.name.fr) || filter.def.property }}
           <NumberRange
             :filter="filter"

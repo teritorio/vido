@@ -1,13 +1,16 @@
 <template>
-  <section v-if="entries.length + locales.length > 0" class="relative z-40">
+  <section
+    v-if="entries.length + locales.length > 0"
+    class="tw-relative tw-z-40"
+  >
     <v-menu offset-y>
       <template #activator="{ props }">
         <IconButton
           :label="$t('navMenu.label')"
-          class="w-11 h-11"
+          class="tw-w-11 tw-h-11"
           v-bind="props"
         >
-          <font-awesome-icon icon="cog" class="text-zinc-800" size="lg" />
+          <font-awesome-icon icon="cog" class="tw-text-zinc-800" size="lg" />
         </IconButton>
       </template>
 
@@ -15,7 +18,7 @@
         <v-list-item
           v-for="entry in entries"
           :key="entry.post_id"
-          class="w-full px-5 py-3 hover:bg-zinc-100"
+          class="tw-w-full tw-px-5 tw-py-3 hover:tw-bg-zinc-100"
         >
           <v-list-item-title>
             <ExternalLink
@@ -33,8 +36,8 @@
           v-for="locale in locales"
           :key="locale.code"
           :class="[
-            'w-full px-5 py-3 hover:bg-zinc-100',
-            locale.code === $i18n.locale && 'bg-zinc-200',
+            'tw-w-full tw-px-5 tw-py-3 hover:tw-bg-zinc-100',
+            locale.code === $i18n.locale && 'tw-bg-zinc-200',
           ]"
         >
           <v-list-item-title>

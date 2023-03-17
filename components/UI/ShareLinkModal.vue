@@ -2,17 +2,17 @@
   <div data-app class="vuetify">
     <v-dialog v-model="modal" scrollable max-width="30rem">
       <v-card>
-        <v-card-title class="text-h5">{{ title }}</v-card-title>
-        <v-divider class="mx-4"></v-divider>
+        <v-card-title class="tw-text-h5">{{ title }}</v-card-title>
+        <v-divider class="tw-mx-4"></v-divider>
 
-        <div class="p-3">
-          <div class="flex items-center mb-4">
+        <div class="tw-p-3">
+          <div class="tw-flex tw-items-center tw-mb-4">
             <font-awesome-icon
               ref="menu_icon"
               icon="link"
-              class="text-zinc-500 mr-4"
+              class="tw-text-zinc-500 tw-mr-4"
             />
-            <p class="text-zinc-500 truncate">
+            <p class="tw-text-zinc-500 tw-truncate">
               {{ linkShare }}
             </p>
             <UIButton
@@ -22,10 +22,13 @@
               @click="copyLink"
             />
           </div>
-          <div v-if="qrCodeUrl" class="flex items-center mb-4 justify-center">
+          <div
+            v-if="qrCodeUrl"
+            class="tw-flex tw-items-center tw-mb-4 tw-justify-center"
+          >
             <img
               :src="qrCodeUrl()"
-              class="w-1/2"
+              class="tw-w-1/2"
               :alt="$t('shareLink.qrcode')"
             />
           </div>

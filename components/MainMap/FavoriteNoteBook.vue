@@ -1,8 +1,10 @@
 <template>
-  <div id="favourite_notebook" class="bg-white p3">
-    <div class="py-4 px-1 sm:px-6 sticky top-0 z-20 bg-white">
-      <div class="flex justify-between items-center">
-        <p class="text-lg">{{ $t('favorites.notebook.title') }}</p>
+  <div id="favourite_notebook" class="tw-bg-white tw-p3">
+    <div
+      class="tw-py-4 tw-px-1 sm:tw-px-6 tw-sticky tw-top-0 tw-z-20 tw-bg-white"
+    >
+      <div class="tw-flex tw-justify-between tw-items-center">
+        <p class="tw-text-lg">{{ $t('favorites.notebook.title') }}</p>
         <UIButton
           id="close_favourite_notebook"
           :label="$t('ui.close')"
@@ -12,17 +14,17 @@
       </div>
 
       <div>
-        <IconsBar class="mr-6">
+        <IconsBar class="tw-mr-6">
           <IconButton
             :label="$t('favorites.menu_share')"
-            class="w-8 h-8"
+            class="tw-w-8 tw-h-8"
             @click="setShareLink()"
           >
             <font-awesome-icon icon="share-alt" />
           </IconButton>
           <IconButton
             :label="$t('favorites.export_pdf')"
-            class="w-8 h-8"
+            class="tw-w-8 tw-h-8"
             :href="pdfLink"
             target="_blank"
             @click="exportLink('export_pdf')"
@@ -31,7 +33,7 @@
           </IconButton>
           <IconButton
             :label="$t('favorites.export_csv')"
-            class="w-8 h-8"
+            class="tw-w-8 tw-h-8"
             :href="csvLink"
             target="_blank"
             @click="exportLink('export_csv')"
@@ -40,7 +42,7 @@
           </IconButton>
           <IconButton
             :label="$t('favorites.menu_clear')"
-            class="w-8 h-8"
+            class="tw-w-8 tw-h-8"
             @click="removeFavorites()"
           >
             <font-awesome-icon icon="trash" />

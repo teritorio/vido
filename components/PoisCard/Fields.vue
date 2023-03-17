@@ -8,7 +8,7 @@
         :properties="properties"
         :details="details"
         :geom="geom"
-        class="mt-2"
+        class="tw-mt-2"
       />
     </template>
   </div>

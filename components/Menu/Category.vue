@@ -7,19 +7,19 @@
     :icon="category.category.icon"
     :size="size"
     :name="category.category.name"
-    badge-class="bg-white text-zinc-700 rounded-full border-2 border-white"
+    badge-class="tw-bg-white tw-text-zinc-700 tw-rounded-full tw-border-2 tw-border-white"
     @click.prevent="onClick"
   >
     <template v-if="category.category.display_mode === 'compact'" #badge>
       <font-awesome-icon
         v-if="!selected"
-        class="text-zinc-300"
+        class="tw-text-zinc-300"
         :icon="['far', 'circle']"
         :size="size"
       />
       <font-awesome-icon
         v-else
-        class="text-emerald-500"
+        class="tw-text-emerald-500"
         icon="check-circle"
         :size="size"
       />
@@ -28,13 +28,13 @@
     <template #end-line-large>
       <font-awesome-icon
         v-if="!selected"
-        class="text-zinc-300"
+        class="tw-text-zinc-300"
         :icon="['far', 'circle']"
         :size="size"
       />
       <font-awesome-icon
         v-else
-        class="text-emerald-500"
+        class="tw-text-emerald-500"
         icon="check-circle"
         :size="size"
       />
@@ -48,13 +48,13 @@
         "
         type="button"
         :class="[
-          'w-full h-12 sm:h-8 text-left rounded-lg outline-none focus:outline-none hover:bg-zinc-100',
+          'tw-w-full tw-h-12 sm:tw-h-8 tw-text-left tw-rounded-lg tw-outline-none focus:tw-outline-none hover:tw-bg-zinc-100',
           isFiltered && 'text-emerald-500',
           !isFiltered && 'text-zinc-500',
         ]"
         @click="onFilterClick"
       >
-        <font-awesome-icon icon="filter" size="sm" class="ml-16" />
+        <font-awesome-icon icon="filter" size="sm" class="tw-ml-16" />
         {{
           isFiltered ? $t('headerMenu.editFilters') : $t('headerMenu.filter')
         }}
@@ -130,10 +130,10 @@ export default defineNuxtComponent({
 
 <style scoped>
 button:not(.selected):hover svg[data-icon='check-circle'] {
-  @apply ring-zinc-100;
+  @apply tw-ring-zinc-100;
 }
 
 button.selected:hover svg[data-icon='check-circle'] {
-  @apply ring-white;
+  @apply tw-ring-white;
 }
 </style>

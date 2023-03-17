@@ -1,5 +1,5 @@
 <template>
-  <div class="grid items-start grid-cols-4">
+  <div class="tw-grid tw-items-start tw-grid-cols-4">
     <template v-for="menuItem in menuItems">
       <MenuGroup
         v-if="menuItem.menu_group"
@@ -10,7 +10,7 @@
         :display-mode-default="displayModeDefault"
         :class="
           (menuItem.menu_group.display_mode || displayModeDefault) ===
-            'large' && ['col-start-1 col-span-4']
+            'large' && ['tw-col-start-1 tw-col-span-4']
         "
         @click="onMenuGroupClick(menuItem)"
       />
@@ -22,7 +22,7 @@
         :display-mode-default="displayModeDefault"
         :class="
           (menuItem.link.display_mode || displayModeDefault) === 'large' && [
-            'col-start-1 col-span-4',
+            'tw-col-start-1 tw-col-span-4',
           ]
         "
       />
@@ -36,7 +36,7 @@
         :display-mode-default="displayModeDefault"
         :class="
           (menuItem.category.display_mode || displayModeDefault) ===
-            'large' && ['col-start-1 col-span-4']
+            'large' && ['tw-col-start-1 tw-col-span-4']
         "
         @click="onCategoryClick(menuItem)"
         @filter-click="onFilterClick($event)"

@@ -1,13 +1,13 @@
 <template>
   <aside
     :class="[
-      'flex flex-col  pointer-events-auto inset-auto h-max max-h-full box-border space-y-4 p-2',
-      !isFilterActive && 'overflow-y-hidden',
+      'tw-flex tw-flex-col tw-pointer-events-auto tw-inset-auto tw-h-max tw-max-h-full tw-box-border tw-space-y-4 tw-p-2',
+      !isFilterActive && 'tw-overflow-y-hidden',
     ]"
   >
     <div
       :class="[
-        'items-center justify-between block rounded-xl shadow-md px-5 py-4',
+        'tw-items-center tw-justify-between tw-block tw-rounded-xl tw-shadow-md tw-px-5 tw-py-4',
         extraClassTextBackground,
       ]"
     >
@@ -25,7 +25,7 @@ export default defineNuxtComponent({
   props: {
     extraClassTextBackground: {
       type: String as PropType<string>,
-      default: 'bg-white',
+      default: 'tw-bg-white',
     },
     isFilterActive: {
       type: Boolean,

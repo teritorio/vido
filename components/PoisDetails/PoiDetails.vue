@@ -12,7 +12,7 @@
         :label="
           isFavorite ? $t('poiCard.favoriteOn') : $t('poiCard.favoriteOff')
         "
-        :class="['w-11 h-11', 'mr-3 sm:mr-9']"
+        :class="['tw-w-11 tw-h-11', 'tw-mr-3 sm:tw-mr-9']"
         @click.stop="toggleFavorite"
       >
         <FavoriteIcon :is-active="isFavorite" :color-line="colorLine" />
@@ -20,10 +20,10 @@
       <IconButton
         :href="mapURL"
         :label="$t('poiCard.backToMap')"
-        :class="['w-11 h-11', 'mr-3 sm:mr-9']"
+        :class="['tw-w-11 tw-h-11', 'tw-mr-3 sm:tw-mr-9']"
         @click="!mapURL && back()"
       >
-        <TeritorioIcon picto="map" class="text-zinc-800" />
+        <TeritorioIcon picto="map" class="tw-text-zinc-800" />
       </IconButton>
     </template>
     <template #actions>
@@ -68,7 +68,7 @@
               :extra-attributions="settings.attributions"
               :feature-ids="[id]"
               :features="[poi]"
-              class="relative"
+              class="tw-relative"
               :off-map-attribution="true"
             />
           </template>
@@ -336,7 +336,7 @@ export default defineNuxtComponent({
 }
 
 .detail-wrapper :deep(ul) {
-  @apply list-disc ml-6;
+  @apply tw-list-disc tw-ml-6;
 }
 
 :deep(#map-container) {

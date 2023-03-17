@@ -1,5 +1,5 @@
 <template>
-  <div class="px-5 py-4" :class="extraClass">
+  <div class="tw-px-5 tw-py-4" :class="extraClass">
     <slot></slot>
   </div>
 </template>

@@ -59,7 +59,7 @@
     {{ shortDescription.substring(0, textLimit) + '…' }}
     <a
       v-if="Boolean(details) && shortDescription.length > textLimit"
-      class="underline"
+      class="tw-underline"
       :href="details"
       rel="noopener noreferrer"
       target="_blank"
@@ -79,7 +79,7 @@
     <div :class="`inline field_content_level_${recursionStack.length}`">
       <div
         v-if="field.field == 'description'"
-        class="prose"
+        class="tw-prose"
         v-html="properties.description"
       />
 
@@ -302,11 +302,11 @@ export default defineNuxtComponent({
 </script>
 
 <style lang="scss" scoped>
-.prose {
+.tw-prose {
   max-width: none;
 }
 
 ul {
-  @apply list-disc ml-6;
+  @apply tw-list-disc tw-ml-6;
 }
 </style>

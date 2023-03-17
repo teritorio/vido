@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="flex flex-row items-center">
+    <div class="tw-flex tw-flex-row tw-items-center">
       <template v-if="!focus">
         <slot></slot>
       </template>
@@ -16,10 +16,10 @@
     <button
       v-if="focus && results > 0"
       type="button"
-      class="shrink-0 w-10 h-10 text-2xl font-bold transition-all rounded-full outline-none cursor-pointer focus:outline-none hover:bg-zinc-100 focus:bg-zinc-100"
+      class="tw-shrink-0 tw-w-10 tw-h-10 tw-text-2xl tw-font-bold tw-transition-all tw-rounded-full tw-outline-none tw-cursor-pointer focus:tw-outline-none hover:tw-bg-zinc-100 focus:tw-bg-zinc-100"
       @click="reset"
     >
-      <font-awesome-icon icon="arrow-left" class="text-zinc-800" size="xs" />
+      <font-awesome-icon icon="arrow-left" class="tw-text-zinc-800" size="xs" />
     </button>
 
     <div v-if="focus && results > 0" class="search-results">

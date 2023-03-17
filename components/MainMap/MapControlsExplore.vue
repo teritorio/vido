@@ -1,20 +1,23 @@
 <template>
   <div
     ref="container"
-    :class="['maplibregl-ctrl maplibregl-ctrl-group', 'hidden md:block']"
+    :class="['maplibregl-ctrl maplibregl-ctrl-group', 'tw-hidden md:tw-block']"
   >
     <button
       :aria-label="$t('mapControls.exploreAriaLabel')"
       :title="$t('mapControls.exploreButton')"
       type="button"
-      :class="['hidden md:block', isModeExplorer && 'maplibregl-ctrl-active']"
+      :class="[
+        'tw-hidden md:tw-block',
+        isModeExplorer && 'maplibregl-ctrl-active',
+      ]"
       @click="toggleMode"
     >
       <font-awesome-icon
         icon="eye"
         :class="[
-          isModeExplorer && 'text-white',
-          !isModeExplorer && 'text-zinc-800',
+          isModeExplorer && 'tw-text-white',
+          !isModeExplorer && 'tw-text-zinc-800',
         ]"
         size="lg"
       />

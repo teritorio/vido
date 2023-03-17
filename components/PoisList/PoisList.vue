@@ -25,7 +25,7 @@
       <font-awesome-icon
         v-else
         icon="spinner"
-        class="text-zinc-400 animate-spin"
+        class="tw-text-zinc-400 tw-animate-spin"
         size="3x"
       />
     </template>

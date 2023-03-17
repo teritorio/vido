@@ -15,9 +15,9 @@
         type="button"
         @click="changeBackground(background)"
       >
-        <span class="block h-full p-1">
+        <span class="tw-block tw-h-full tw-p-1">
           <img
-            class="rounded-full bg-white"
+            class="tw-rounded-full tw-bg-white"
             alt="fond de carte"
             :src="backgroundImages[background]"
           />
