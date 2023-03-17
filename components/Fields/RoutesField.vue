@@ -12,8 +12,8 @@
       <div class="field">{{ $t('fields.route.length') }} {{ length }}</div>
       <div v-for="(route, activity) in routes" :key="activity" class="field">
         <FieldsHeader
-          :recursion-stack="recursionStack"
-          :class="`field_header_level_${recursionStack.length}`"
+          :recursion-stack="[...recursionStack, `${activity}`]"
+          :class="`field_header_level_${[...recursionStack, activity].length}`"
         >
           {{ propertyTranslations.pv('route', activity, context) }}
         </FieldsHeader>
