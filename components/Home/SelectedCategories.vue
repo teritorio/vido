@@ -25,7 +25,7 @@
       />
       <button
         type="button"
-        class="tw-flex tw-items-center tw-justify-center tw-text-white tw-text-center tw-rounded-full tw-absolute -tw-top-1 -tw-right-1 tw-w-5 tw-h-5 tw-border-2 tw-border-white tw-bg-red-600 hover:tw-bg-red-800"
+        class="tw-flex tw-items-center tw-justify-center tw-text-white tw-text-center tw-rounded-full tw-absolute -tw-top-1 -tw-right-1 tw-w-5 tw-h-5 tw-border-solid tw-border-2 tw-border-white tw-bg-red-600 hover:tw-bg-red-800"
         :title="$t('headerMenu.hideCategory')"
         @click="delSelectedCategoryIds([menuItem.id])"
       >
@@ -36,7 +36,7 @@
     <button
       v-if="selectedCategories.length > 1"
       type="button"
-      class="tw-flex tw-items-center tw-justify-center tw-text-white tw-text-center tw-rounded-full tw-absolute -tw-right-0 tw-top-1 tw-w-7 tw-h-7 tw-border-2 tw-border-white tw-bg-red-600 hover:tw-bg-red-800"
+      class="tw-flex tw-items-center tw-justify-center tw-text-white tw-text-center tw-rounded-full tw-absolute -tw-right-0 tw-top-1 tw-w-7 tw-h-7 tw-border-solid tw-border-2 tw-border-white tw-bg-red-600 hover:tw-bg-red-800"
       :title="$t('headerMenu.clearAllCategories')"
       :aria-label="$t('headerMenu.clearAllCategories')"
       @click="clearSelectedCategoryIds()"

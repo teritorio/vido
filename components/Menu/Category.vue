@@ -7,7 +7,7 @@
     :icon="category.category.icon"
     :size="size"
     :name="category.category.name"
-    badge-class="tw-bg-white tw-text-zinc-700 tw-rounded-full tw-border-2 tw-border-white"
+    badge-class="tw-bg-white tw-text-zinc-700 tw-rounded-full tw-border-solid tw-border-2 tw-border-white"
     @click.prevent="onClick"
   >
     <template v-if="category.category.display_mode === 'compact'" #badge>
