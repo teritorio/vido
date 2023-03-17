@@ -174,8 +174,6 @@ export default defineNuxtConfig({
     // @ts-ignore
     transpile: [
       'iron-webcrypto',
-      // If you use nuxt you must transpile the module so it can be used universally
-      '@vueform/slider',
       'punycode',
       'pinia',
       'vuetify',
