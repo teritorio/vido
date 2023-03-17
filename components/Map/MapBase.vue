@@ -1,5 +1,5 @@
 <template>
-  <div id="map-container" class="w-full h-full flex flex-col">
+  <div id="map-container" class="tw-w-full tw-h-full tw-flex tw-flex-col">
     <Map
       :center="center"
       :bounds="bounds"
@@ -13,7 +13,7 @@
       :hide-control="hideControl"
       :hash="hash"
       :cooperative-gestures="cooperativeGestures"
-      class="grow h-full"
+      class="tw-grow tw-h-full"
       @map-init="onMapInit($event)"
       @map-data="onMapRender('map-data', $event)"
       @map-dragend="onMapRender('map-dragend', $event)"
@@ -349,6 +349,6 @@ export default defineNuxtComponent({
 }
 
 :deep(.cluster-donut) {
-  @apply text-sm leading-none font-medium block text-zinc-800;
+  @apply tw-text-sm tw-leading-none tw-font-medium tw-block tw-text-zinc-800;
 }
 </style>

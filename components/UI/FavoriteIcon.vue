@@ -2,8 +2,8 @@
   <font-awesome-icon
     :icon="[isActive ? 'fas' : 'far', 'star']"
     :class="[
-      !isActive && !colorLine && 'text-amber-500',
-      isActive && 'text-amber-500',
+      !isActive && !colorLine && 'tw-text-amber-500',
+      isActive && 'tw-text-amber-500',
     ]"
     :color="!isActive && colorLine"
     size="sm"

@@ -1,6 +1,6 @@
 <template>
-  <div class="mb-3">
-    <h4 class="text-zinc-500 text-sm mb-2">
+  <div class="tw-mb-3">
+    <h4 class="tw-text-zinc-500 tw-text-sm tw-mb-2">
       <font-awesome-icon v-if="icon" :icon="icon" />
       {{ label }}
     </h4>
@@ -8,7 +8,7 @@
       <li
         v-for="item in items"
         :key="`${item.id}-${item.filter_property}-${item.filter_value}`"
-        class="flex flex-row items-baseline justify-start gap-x-1 mb-1 hover:bg-zinc-100 cursor-pointer rounded-xl ml-2 px-2"
+        class="tw-flex tw-flex-row tw-items-baseline tw-justify-start tw-gap-x-1 tw-mb-1 hover:tw-bg-zinc-100 tw-cursor-pointer tw-rounded-xl tw-ml-2 tw-px-2"
         :data-item="item.id"
         @click="onItemClick(item)"
       >
@@ -25,7 +25,7 @@
         />
         <span>
           {{ item.label }}
-          <span v-if="item.small" class="text-zinc-400 text-sm"
+          <span v-if="item.small" class="tw-text-zinc-400 tw-text-sm"
             >({{ item.small }})</span
           >
         </span>

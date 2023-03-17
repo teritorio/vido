@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-grow">
+  <div class="tw-flex tw-flex-grow">
     <MapBase
       ref="mapBase"
       :features="features"
@@ -43,11 +43,11 @@
     <SnackBar @click="handleSnackAction" />
     <div
       v-if="isLoadingFeatures"
-      class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-80"
+      class="tw-fixed tw-inset-0 tw-flex tw-items-center tw-justify-center tw-bg-black tw-bg-opacity-80"
     >
       <font-awesome-icon
         icon="spinner"
-        class="text-zinc-400 animate-spin"
+        class="tw-text-zinc-400 tw-animate-spin"
         size="3x"
       />
     </div>

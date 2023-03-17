@@ -7,7 +7,7 @@
       :logo-url="theme && theme.logo_url"
     />
 
-    <div class="flex justify-end">
+    <div class="tw-flex tw-justify-end">
       <slot></slot>
       <NavMenu :entries="navMenuEntries" />
     </div>

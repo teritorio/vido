@@ -1,7 +1,7 @@
 <template>
   <div v-if="routeCollection">
     <MapPois
-      class="map-pois relative"
+      class="map-pois tw-relative"
       :features="routeCollection"
       :feature-ids="[poiId]"
       :fullscreen-control="true"

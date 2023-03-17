@@ -4,7 +4,7 @@
       <IconButton
         v-if="href"
         :label="$t('poiDetails.shareFacebook')"
-        class="w-8 h-8"
+        class="tw-w-8 tw-h-8"
         :href="shareFacebook"
         target="_blank"
       >
@@ -16,7 +16,7 @@
       <IconButton
         v-if="title && href"
         :label="$t('poiDetails.shareTwitter')"
-        class="w-8 h-8"
+        class="tw-w-8 tw-h-8"
         :href="shareTwitter"
         target="_blank"
       >
@@ -28,7 +28,7 @@
       <IconButton
         v-if="title && href"
         :label="$t('poiDetails.shareWhatsApp')"
-        class="w-8 h-8"
+        class="tw-w-8 tw-h-8"
         :href="shareWhatsApp"
         target="_blank"
       >
@@ -39,7 +39,7 @@
       </IconButton>
       <IconButton
         :label="$t('poiDetails.print')"
-        class="w-8 h-8"
+        class="tw-w-8 tw-h-8"
         @click="print"
       >
         <font-awesome-icon icon="print" :style="{ color: colorLine }" />
@@ -47,7 +47,7 @@
       <IconButton
         v-if="href"
         :label="$t('poiDetails.link')"
-        class="w-8 h-8"
+        class="tw-w-8 tw-h-8"
         @click="shareUrl"
       >
         <font-awesome-icon icon="link" :style="{ color: colorLine }" />
