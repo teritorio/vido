@@ -46,7 +46,7 @@
       </button>
     </div>
 
-    <div data-app>
+    <div>
       <v-dialog v-model="notebookModal" scrollable fullscreen max-width="80rem">
         <FavoriteNoteBook
           :favs="favs"
