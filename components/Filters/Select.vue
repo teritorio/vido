@@ -6,12 +6,7 @@
       multiple
       chips
       deletable-chips
-      :items="
-        filter.def.values.map((value) => ({
-          text: (value.name && value.name.fr) || value.value,
-          value: value.value,
-        }))
-      "
+      :items="items"
       placeholder="Recherchez ou ajoutez une valeur"
       :clearable="true"
       @input="onChange"
@@ -41,6 +36,15 @@ export default defineNuxtComponent({
     return {
       currentValue: this.filter.filterValues,
     }
+  },
+
+  computed: {
+    items(): { text: string; value: string }[] {
+      return this.filter.def.values.map((value) => ({
+        text: (value.name && value.name.fr) || value.value,
+        value: value.value,
+      }))
+    },
   },
 
   watch: {
