@@ -8,7 +8,7 @@
   >
     <FieldsHeader
       v-if="field.label"
-      :recursion-stack="undefined"
+      :recursion-stack="recursionStack"
       :class="`field_header_level_${recursionStack.length}`"
       >{{ fieldTranslateK(field.field) }}</FieldsHeader
     >
@@ -17,7 +17,7 @@
   <AddressField v-else-if="field.field === 'addr'" :properties="properties">
     <FieldsHeader
       v-if="field.label"
-      :recursion-stack="undefined"
+      :recursion-stack="recursionStack"
       :class="`field_header_level_${recursionStack.length}`"
       >{{ fieldTranslateK(field.field) }}</FieldsHeader
     >
@@ -31,7 +31,7 @@
   >
     <FieldsHeader
       v-if="field.label"
-      :recursion-stack="undefined"
+      :recursion-stack="recursionStack"
       :class="`field_header_level_${recursionStack.length}`"
       >{{ fieldTranslateK(field.field) }}</FieldsHeader
     >
@@ -40,7 +40,7 @@
   <Coordinates v-else-if="field.field === 'coordinates'" :geom="geom">
     <FieldsHeader
       v-if="field.label"
-      :recursion-stack="undefined"
+      :recursion-stack="recursionStack"
       :class="`field_header_level_${recursionStack.length}`"
       >{{ fieldTranslateK(field.field) }}</FieldsHeader
     >
@@ -73,7 +73,7 @@
   <div v-else-if="properties[field.field]">
     <FieldsHeader
       v-if="field.label"
-      :recursion-stack="undefined"
+      :recursion-stack="recursionStack"
       :class="`field_header_level_${recursionStack.length}`"
       >{{ fieldTranslateK(field.field) }}</FieldsHeader
     >
