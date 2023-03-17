@@ -7,7 +7,11 @@
     />
   </div>
   <div v-else-if="images.length > 1">
-    <v-carousel :show-arrows="false" class="mb-14">
+    <v-carousel
+      :show-arrows="false"
+      :hide-delimiter-background="true"
+      class="mb-14"
+    >
       <v-carousel-item v-for="(image, i) in images" :key="i">
         <NuxtPicturePatch
           :src="image"
