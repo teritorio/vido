@@ -80,7 +80,6 @@ export default defineNuxtConfig({
   buildModules: [
     // https://go.nuxtjs.dev/stylelint
     '@nuxtjs/stylelint-module',
-    // https://go.nuxtjs.dev/tailwindcss
     '@nuxtjs/svg',
     // '@nuxtjs/pwa',
   ],
