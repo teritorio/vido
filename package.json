@@ -38,7 +38,6 @@
     "@teritorio/map": "^0.12.7",
     "@teritorio/openmaptiles-gl-language": "^1.5.4",
     "@types/geojson": "^7946.0.10",
-    "@vueform/slider": "^2.1.7",
     "core-js": "^3.29.0",
     "country-flag-icons": "^1.5.5",
     "date-fns": "^2.29.3",
