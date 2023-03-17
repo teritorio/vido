@@ -44,11 +44,11 @@ export default Vue.extend({
       default: 0,
     },
     size: {
-      type: String,
+      type: String as PropType<string>,
       required: true,
     },
     displayModeDefault: {
-      type: String,
+      type: String as PropType<string>,
       required: true,
     },
   },

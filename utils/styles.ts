@@ -86,7 +86,7 @@ export const filterRouteByCategories = (
   }
 }
 
-export const filterRouteByPoiId = (map: Map, id: ApiPoiId) => {
+export const filterRouteByPoiIds = (map: Map, ids: ApiPoiId[]) => {
   if (map && map.getLayer('features-line-casing')) {
     map.setLayoutProperty('features-line-casing', 'visibility', 'visible')
     map.setLayoutProperty('features-line', 'visibility', 'visible')
@@ -94,18 +94,30 @@ export const filterRouteByPoiId = (map: Map, id: ApiPoiId) => {
     map.setLayoutProperty('features-outline', 'visibility', 'visible')
     const isLineString = ['==', ['geometry-type'], 'LineString']
     const isPolygon = ['==', ['geometry-type'], 'Polygon']
-    const id_ = id as number
+    const ids_ = ids as number[]
     map.setFilter('features-line-casing', [
       // @ts-ignore Inchorent MapLibre type checking in 2.3
       'all',
-      ['==', ['id'], id_],
+      ['in', ['id'], ['literal', ids_]],
       isLineString,
     ])
-    // @ts-ignore Inchorent MapLibre type checking in 2.3
-    map.setFilter('features-line', ['all', ['==', ['id'], id_], isLineString])
-    // @ts-ignore Inchorent MapLibre type checking in 2.3
-    map.setFilter('features-fill', ['all', ['==', ['id'], id_], isPolygon])
-    // @ts-ignore Inchorent MapLibre type checking in 2.3
-    map.setFilter('features-outline', ['all', ['==', ['id'], id_], isPolygon])
+    map.setFilter('features-line', [
+      // @ts-ignore Inchorent MapLibre type checking in 2.3
+      'all',
+      ['in', ['id'], ['literal', ids_]],
+      isLineString,
+    ])
+    map.setFilter('features-fill', [
+      // @ts-ignore Inchorent MapLibre type checking in 2.3
+      'all',
+      ['in', ['id'], ['literal', ids_]],
+      isPolygon,
+    ])
+    map.setFilter('features-outline', [
+      // @ts-ignore Inchorent MapLibre type checking in 2.3
+      'all',
+      ['in', ['id'], ['literal', ids_]],
+      isPolygon,
+    ])
   }
 }

@@ -83,6 +83,7 @@ typings/
 
 # Nuxt generate
 dist
+.output
 
 # vuepress build output
 .vuepress/dist
@@ -114,8 +115,9 @@ __screenshots__/diff
 # Cypress
 cypress/videos
 cypress/screenshots
-cypress/fixtures/**/*.geojson
+cypress/fixtures/**/*.*json
 cypress/fixtures/**/deps.json
+cypress/fixtures/teritorio/references/pois/
 
 # Vido
 vidos-config.json

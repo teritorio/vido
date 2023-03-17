@@ -58,24 +58,25 @@
 
 <script lang="ts">
 import OpeningHours, { optional_conf } from 'opening_hours'
+import { mapState } from 'pinia'
 import Vue, { PropType } from 'vue'
-import { mapGetters } from 'vuex'
 
 import RelativeDate from '~/components/UI/RelativeDate.vue'
 import { PropertyTranslationsContextEnum } from '~/plugins/property-translations'
+import { siteStore } from '~/stores/site'
 
-const PointTime = [/collection_times/, /service_times/]
+const PointTime = [/^collection_times$/, /^service_times$/]
 
 // List of tag keys regex copied from opening_hours.js
 const SupportedOsmKeys = [
   ...PointTime,
-  /opening_hours/,
-  /opening_hours:.+/,
-  /.+:opening_hours/,
+  /^opening_hours$/,
+  /^opening_hours:.+/,
+  /.+:opening_hours$/,
   /.+:opening_hours:.+/,
-  /smoking_hours/,
-  /happy_hours/,
-  /lit/,
+  /^smoking_hours$/,
+  /^happy_hours$/,
+  /^lit$/,
 ]
 
 function isSupportedOsmTags(keys: RegExp[], key: string): boolean {
@@ -97,11 +98,11 @@ export default Vue.extend({
       required: true,
     },
     tagKey: {
-      type: String,
+      type: String as PropType<string>,
       required: true,
     },
     openingHours: {
-      type: String,
+      type: String as PropType<string>,
       required: true,
     },
     baseDate: {
@@ -111,9 +112,7 @@ export default Vue.extend({
   },
 
   computed: {
-    ...mapGetters({
-      locale: 'site/locale',
-    }),
+    ...mapState(siteStore, ['locale']),
 
     isPointTime(): boolean {
       return isSupportedOsmTags(PointTime, this.tagKey)
@@ -126,17 +125,23 @@ export default Vue.extend({
     pretty(): [string | undefined, string[]][] | undefined {
       const oh = this.OpeningHoursFactory()
       if (oh) {
-        const prettyString = oh
-          .prettifyValue({
-            // @ts-ignore
-            conf: {
-              locale: this.locale || 'en',
-              rule_sep_string: '\n',
-              print_semicolon: false,
-            },
-          })
-          .replace(/(^\w|\s\w)/g, (c) => c.toUpperCase())
-          .split('\n')
+        let prettyString
+        try {
+          prettyString = oh
+            .prettifyValue({
+              // @ts-ignore
+              conf: {
+                locale: this.locale || 'en',
+                rule_sep_string: '\n',
+                print_semicolon: false,
+              },
+            })
+            .replace(/(^\w|\s\w)/g, (c) => c.toUpperCase())
+            .split('\n')
+        } catch (e) {
+          console.log('Vido error:', e)
+          return undefined
+        }
         if (!this.variable) {
           return [[undefined, prettyString]]
         } else {
@@ -169,7 +174,12 @@ export default Vue.extend({
 
     variable(): boolean {
       const oh = this.OpeningHoursFactory()
-      return !Boolean(oh?.isWeekStable())
+      try {
+        return !Boolean(oh?.isWeekStable())
+      } catch (e) {
+        console.log('Vido error:', e)
+        return false
+      }
     },
 
     nextChange():
@@ -180,12 +190,17 @@ export default Vue.extend({
         } {
       const oh = this.OpeningHoursFactory()
       if (oh) {
-        const nextChange = oh.getNextChange(this.baseDate)
-        if (nextChange) {
-          return {
-            type: oh.getState(this.baseDate) ? 'opened' : 'openAt',
-            nextChange,
+        try {
+          const nextChange = oh.getNextChange(this.baseDate)
+          if (nextChange) {
+            return {
+              type: oh.getState(this.baseDate) ? 'opened' : 'openAt',
+              nextChange,
+            }
           }
+        } catch (e) {
+          console.log('Vido error:', e)
+          return undefined
         }
       }
       return undefined

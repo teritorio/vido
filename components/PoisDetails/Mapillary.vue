@@ -13,7 +13,7 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
+import Vue, { PropType } from 'vue'
 
 import ExternalLink from '~/components/UI/ExternalLink.vue'
 
@@ -23,7 +23,7 @@ export default Vue.extend({
   },
   props: {
     imageId: {
-      type: String,
+      type: String as PropType<string>,
       required: true,
     },
   },

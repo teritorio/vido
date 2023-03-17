@@ -18,7 +18,7 @@
       key="Filter"
       :category-id="categoryIdFilter"
       :filters-values="categoryIdFilter ? filters[categoryIdFilter] : []"
-      @activate-filter="activateFilter"
+      @activate-filter="$emit('activate-filter', $event)"
       @go-back-click="onBackToCategoryClick"
     />
   </component>
@@ -26,7 +26,7 @@
   <div v-else-if="isRootMenu">
     <template v-for="(menuItem, index) in currentMenuItems">
       <component :is="menuBlock" v-if="index === 0" :key="menuItem.id">
-        <slot />
+        <slot></slot>
       </component>
       <component
         :is="menuBlock"
@@ -38,12 +38,12 @@
           :menu-items="getMenuItemByParentId(menuItem.id)"
           :filters="filters"
           :categories-actives-count-by-parent="categoriesActivesCountByParent"
-          :is-category-selected="isCategorySelected"
+          :selected-categories-ids="selectedCategoryIds"
           :size="size"
           display-mode-default="compact"
           class="flex-1 pointer-events-auto h-full"
           @menu-group-click="onMenuGroupClick"
-          @category-click="$emit('category-click', $event)"
+          @category-click="toggleSelectedCategoryId($event)"
           @filter-click="onCategoryFilterClick"
         />
       </component>
@@ -89,12 +89,12 @@
         :menu-items="currentMenuItems"
         :filters="filters"
         :categories-actives-count-by-parent="categoriesActivesCountByParent"
-        :is-category-selected="isCategorySelected"
+        :selected-categories-ids="selectedCategoryIds"
         :size="size"
         display-mode-default="large"
         class="flex-1 pointer-events-auto h-full"
         @menu-group-click="onMenuGroupClick"
-        @category-click="$emit('category-click', $event)"
+        @category-click="toggleSelectedCategoryId($event)"
         @filter-click="onCategoryFilterClick"
       />
     </component>
@@ -102,8 +102,8 @@
 </template>
 
 <script lang="ts">
+import { mapActions, mapState } from 'pinia'
 import Vue, { PropType } from 'vue'
-import { mapGetters, mapActions } from 'vuex'
 
 import MenuBlock from '~/components/Home/MenuBlock.vue'
 import MenuBlockBottom from '~/components/Home/MenuBlockBottom.vue'
@@ -112,6 +112,7 @@ import ItemList from '~/components/Menu/ItemList.vue'
 import Search from '~/components/Search/Search.vue'
 import Logo from '~/components/UI/Logo.vue'
 import { ApiMenuCategory, MenuGroup, MenuItem } from '~/lib/apiMenu'
+import { menuStore } from '~/stores/menu'
 import { FilterValues } from '~/utils/types-filters'
 
 export default Vue.extend({
@@ -129,22 +130,6 @@ export default Vue.extend({
       type: String as PropType<'MenuBlock' | 'MenuBlockBottom'>,
       required: true,
     },
-    menuItems: {
-      type: Object as PropType<{ [menuItemId: number]: MenuItem }>,
-      required: true,
-    },
-    filters: {
-      type: Object as PropType<{ [categoryId: number]: FilterValues }>,
-      required: true,
-    },
-    isCategorySelected: {
-      type: Function,
-      required: true,
-    },
-    categoriesActivesCountByParent: {
-      type: Object as PropType<{ [id: string]: number }>,
-      required: true,
-    },
     isOnSearch: {
       type: Boolean,
       default: false,
@@ -152,10 +137,6 @@ export default Vue.extend({
     isFilterActive: {
       type: Boolean,
       default: false,
-    },
-    activateFilter: {
-      type: Function,
-      default: undefined,
     },
   },
 
@@ -170,7 +151,7 @@ export default Vue.extend({
   },
 
   computed: {
-    ...mapGetters({}),
+    ...mapState(menuStore, ['filters', 'selectedCategoryIds', 'menuItems']),
 
     currentParentId(): MenuItem['id'] | undefined {
       return this.navigationParentIdStack.at(-1)
@@ -190,27 +171,40 @@ export default Vue.extend({
 
     isAllSelected(): boolean {
       return this.getRecursiveCategoryIdByParentId(this.currentParentId).every(
-        (categoryId) => this.isCategorySelected(categoryId)
+        (categoryId) => this.selectedCategoryIds.includes(categoryId)
       )
     },
+
+    categoriesActivesCountByParent(): Record<ApiMenuCategory['id'], number> {
+      const counts: { [id: string]: number } = {}
+      this.selectedCategoryIds.forEach((categoryId: ApiMenuCategory['id']) => {
+        let parentId = this.menuItems?.[categoryId]?.parent_id
+        while (parentId) {
+          counts[parentId] = (counts[parentId] || 0) + 1
+          parentId = this.menuItems?.[parentId].parent_id
+        }
+      })
+      return counts
+    },
   },
+
   watch: {
     currentMenuItems() {
       this.$emit('scroll-top')
     },
   },
 
-  created() {},
-
-  beforeMount() {},
-
   methods: {
-    ...mapActions({}),
+    ...mapActions(menuStore, [
+      'addSelectedCategoryIds',
+      'delSelectedCategoryIds',
+      'toggleSelectedCategoryId',
+    ]),
 
     getMenuItemByParentId(
       menuGroupId: MenuGroup['id'] | undefined
     ): MenuItem[] {
-      return Object.values(this.menuItems)
+      return Object.values(this.menuItems || {})
         .filter((c) => c.parent_id === (menuGroupId || null))
         .sort((a, b) => a.index_order - b.index_order)
     },
@@ -232,15 +226,13 @@ export default Vue.extend({
     },
 
     onClickSelectAll(): void {
-      this.$emit(
-        'select-all-categories',
+      this.addSelectedCategoryIds(
         this.getRecursiveCategoryIdByParentId(this.currentParentId)
       )
     },
 
     onClickUnselectAll(): void {
-      this.$emit(
-        'unselect-all-categories',
+      this.delSelectedCategoryIds(
         this.getRecursiveCategoryIdByParentId(this.currentParentId)
       )
     },

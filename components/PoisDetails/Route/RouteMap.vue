@@ -3,7 +3,7 @@
     <MapPois
       class="map-pois relative"
       :features="routeCollection"
-      :feature-id="poiId"
+      :feature-ids="[poiId]"
       :fullscreen-control="true"
       :off-map-attribution="true"
     />
@@ -64,11 +64,11 @@ export default Vue.extend({
       required: true,
     },
     colorFill: {
-      type: String,
+      type: String as PropType<string>,
       required: true,
     },
     colorLine: {
-      type: String,
+      type: String as PropType<string>,
       required: true,
     },
     favoritesModeEnabled: {

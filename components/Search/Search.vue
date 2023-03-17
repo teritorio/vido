@@ -2,16 +2,13 @@
   <div>
     <div class="flex flex-row items-center">
       <template v-if="!focus">
-        <slot />
+        <slot></slot>
       </template>
       <SearchInput
         :search-text="searchText"
         :is-loading="isLoading"
         @input="onSubmit"
-        @focus="
-          $emit('focus', $event)
-          focus = true
-        "
+        @focus="onSearchFocus"
         @blur="delayedFocusLose($event)"
       />
     </div>
@@ -70,11 +67,14 @@
 </template>
 
 <script lang="ts">
+import copy from 'fast-copy'
 import { debounce, DebouncedFunc } from 'lodash'
+import { mapActions, mapState } from 'pinia'
 import Vue, { PropType } from 'vue'
 
 import SearchInput from '~/components/Search/SearchInput.vue'
 import SearchResultBlock from '~/components/Search/SearchResultBlock.vue'
+import { ApiMenuCategory } from '~/lib/apiMenu'
 import { ApiPoi, ApiPoiId, getPoiById } from '~/lib/apiPois'
 import {
   ApiPoisSearchResult,
@@ -84,6 +84,9 @@ import {
   ApiSearchResult,
 } from '~/lib/apiSearch'
 import { MAP_ZOOM } from '~/lib/constants'
+import { mapStore } from '~/stores/map'
+import { menuStore } from '~/stores/menu'
+import { FilterValue, FilterValues } from '~/utils/types-filters'
 
 export default Vue.extend({
   components: {
@@ -129,6 +132,8 @@ export default Vue.extend({
   },
 
   computed: {
+    ...mapState(menuStore, ['filters']),
+
     isLoading(): boolean {
       return this.searchResultId !== this.searchQueryId
     },
@@ -200,6 +205,9 @@ export default Vue.extend({
   },
 
   methods: {
+    ...mapActions(mapStore, ['setSelectedFeature']),
+    ...mapActions(menuStore, ['addSelectedCategoryIds', 'applyFilters']),
+
     reset() {
       this.searchMenuItemsResults = null
       this.searchPoisResults = null
@@ -215,6 +223,11 @@ export default Vue.extend({
         this.$emit('blur', event)
         this.focus = false
       }, 200)
+    },
+
+    onSearchFocus(event: Event) {
+      this.$emit('focus', event)
+      this.focus = true
     },
 
     onCartocodeClick(id: number) {
@@ -234,14 +247,53 @@ export default Vue.extend({
         )
 
         if (filter?.properties) {
-          this.$emit('category-click', filter.properties)
+          const newFilter = filter.properties
+          if (newFilter.filter_property) {
+            const filters = copy(this.filters[newFilter.id])
+            const filter = filters.find(
+              (filter: FilterValue) =>
+                (filter.type === 'boolean' ||
+                  filter.type === 'multiselection' ||
+                  filter.type === 'checkboxes_list') &&
+                filter.def.property === newFilter.filter_property
+            )
+            if (filter) {
+              switch (filter?.type) {
+                case 'boolean':
+                  if (newFilter.filter_value === true) {
+                    filter.filterValue = newFilter.filter_value
+                  }
+                  break
+                case 'multiselection':
+                case 'checkboxes_list':
+                  filter.filterValues = [newFilter.filter_value as string]
+                  break
+              }
+
+              this.applyFilters({
+                categoryId: newFilter.id,
+                filterValues: filters,
+              })
+            }
+          }
+
+          this.addSelectedCategoryIds([newFilter.id])
+
           this.reset()
         }
       }
     },
 
     onPoiClick(id: ApiPoiId) {
-      this.$emit('poi-click', id)
+      getPoiById(
+        this.$vidoConfig().API_ENDPOINT,
+        this.$vidoConfig().API_PROJECT,
+        this.$vidoConfig().API_THEME,
+        id
+      ).then((poi) => {
+        this.setSelectedFeature(poi)
+      })
+
       this.reset()
     },
 
@@ -257,7 +309,8 @@ export default Vue.extend({
               ? MAP_ZOOM.selectionZoom.municipality
               : MAP_ZOOM.selectionZoom.streetNumber,
         })
-        this.$emit('feature-click', f)
+        // @ts-ignore
+        this.setSelectedFeature(feature)
       }
       this.reset()
     },
@@ -345,11 +398,7 @@ export default Vue.extend({
               (data) => (data.ok ? data.json() : null)
             )
 
-          Promise.all<
-            ApiSearchResult<ApiMenuItemSearchResult>,
-            ApiSearchResult<ApiPoisSearchResult>,
-            ApiSearchResult<ApiAddrSearchResult>
-          >([MenuItemsFetch, poisFetch, addressesFetch])
+          Promise.all([MenuItemsFetch, poisFetch, addressesFetch])
             .then(
               ([
                 searchMenuItemsResults,
@@ -388,10 +437,10 @@ export default Vue.extend({
 })
 </script>
 
-<style>
+<style scoped>
 .search-results {
   height: auto;
   overflow-y: auto;
-  max-height: calc(100vh - 168px);
+  max-height: calc(100vh - 185px);
 }
 </style>

@@ -12,7 +12,6 @@ export default {
 
 const defaultProps = {
   poi,
-  // notebook
 }
 
 export const Default = bind(PoiCard, {

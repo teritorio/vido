@@ -7,7 +7,12 @@ import VueMatomo from 'vue-matomo'
 import { Event, Tracker } from '~/lib/trackers'
 
 export default class Matomo implements Tracker {
-  constructor(waitForConsent: boolean, url: string, siteId: string) {
+  constructor(
+    nuxtApp: NuxtAppOptions,
+    waitForConsent: boolean,
+    url: string,
+    siteId: string
+  ) {
     Vue.use(VueMatomo, {
       host: url,
       siteId,

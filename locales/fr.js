@@ -1,4 +1,7 @@
 export default {
+  ui: {
+    close: 'Fermer',
+  },
   units: {
     min: 'min',
     hours: 'h',
@@ -24,14 +27,13 @@ export default {
     share_link: 'Partager le lien des favoris',
     notebook: {
       title: 'Carnet des favoris',
-      close: 'Fermer',
     },
     noFavs:
       "Vous n'avez pas encore de lieux en favoris. Vous pouvez le faire en sélectionnant un lieu sur la carte, puis en le mémorisant comme favori.",
   },
   mapControls: {
     exploreAriaLabel: 'Mode explorer',
-    exploreButton: 'Basculer en mode explorer',
+    exploreButton: "Explorer les points d'intérêts à proximité",
     threeDAriaLabel: 'Visualiser la carte en 3D',
     backgroundAriaLabel: 'Changer le fond de carte',
     backgroundButton: 'Changer le fond de carte vers "{background}"',
@@ -67,6 +69,7 @@ export default {
     cartocode: 'Cartocode',
     noResult: 'Aucun résultat',
     hideCategory: 'Masquer cette catégorie',
+    clearAllCategories: 'Retirer toutes les catégories',
     back: 'Retour',
     backToMenuFavorites: 'Afficher le menu',
     backToMenuExplorer: 'Rechercher par catégories',
@@ -93,13 +96,13 @@ export default {
     details: 'Détails',
     seeDetail: 'Voir le detail',
     route: 'Itinéraire',
-    explore: 'Explorer',
+    explore: 'À proximité',
     favorite: 'Favori',
     favoriteOn: 'Mettre en favori',
     favoriteOff: 'Retirer le favori',
     findRoute: "Trouver la route pour venir jusqu'à ce lieu",
-    unactivateExplore: "Désactiver l'exploration aux alentours",
-    activateExplore: "Explorer les points d'intérêts aux alentours",
+    unactivateExplore: "Désactiver l'exploration à proximité",
+    activateExplore: "Explorer les points d'intérêts à proximité",
     zoom: 'Zoomer',
     backToMap: 'Aller à la carte',
     thumbnail: 'Miniature',
@@ -116,7 +119,7 @@ export default {
     print: 'Imprimer',
     link: 'Partager le lien',
     qrcode: 'Partager en QR-Code',
-    poweredBy: 'Propulsé par',
+    poweredBy: 'Réalisation',
     mapillaryExplore: 'Explorer sur Mapillary',
     informations: 'Informations',
     downloadGPX: 'Le parcours (trace GPS) au format GPX',
@@ -125,6 +128,17 @@ export default {
       waypoints: 'Points guides',
       pois: 'Points d’intérêts',
     },
+  },
+  poisTable: {
+    empty: 'Liste vide',
+    details: 'Détails',
+    downloadCsv: 'Télécharger en CSV',
+    downloadGeojson: 'Télécharger en GeoJSON',
+    showOnMap: 'Afficher sur la carte',
+  },
+  categorySelector: {
+    placeholder: 'Sélectionnez une catégorie',
+    search: 'Recherchez dans la liste',
   },
   dateFilter: {
     today: "Aujourd'hui",
@@ -136,6 +150,9 @@ export default {
   fields: {
     phone: {
       callNumber: 'Appeler ce numéro',
+    },
+    stars: {
+      label: 'Étoiles',
     },
     route: {
       difficulty: 'Difficulté :',

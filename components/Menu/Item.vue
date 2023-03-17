@@ -66,11 +66,11 @@ export default Vue.extend({
   },
   props: {
     id: {
-      type: String,
+      type: String as PropType<string>,
       required: true,
     },
     href: {
-      type: String,
+      type: String as PropType<string>,
       required: true,
     },
     displayMode: {
@@ -78,15 +78,15 @@ export default Vue.extend({
       required: true,
     },
     colorFill: {
-      type: String,
+      type: String as PropType<string>,
       required: true,
     },
     icon: {
-      type: String,
+      type: String as PropType<string>,
       required: true,
     },
     size: {
-      type: String,
+      type: String as PropType<string>,
       required: true,
     },
     name: {
@@ -94,7 +94,7 @@ export default Vue.extend({
       required: true,
     },
     badgeClass: {
-      type: String,
+      type: String as PropType<string>,
       default: '',
     },
   },

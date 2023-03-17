@@ -12,17 +12,19 @@ export default {
   component: PoisDeck,
 }
 
+const points = poisDeps['features'].filter(
+  (feature) => feature.properties['route:point:type']
+)
+
 const defaultProps = {
-  pois: poisDeps['features']
-    .filter((feature) => feature.properties['route:point:type'])
-    .map((feature) =>
-      apiRouteWaypointToApiPoi(
-        feature as unknown as ApiRouteWaypoint,
-        '#123456',
-        '#123456'
-      )
-    ),
-  // notebook
+  pois: points.map((feature) =>
+    apiRouteWaypointToApiPoi(
+      feature as unknown as ApiRouteWaypoint,
+      '#123456',
+      '#123456'
+    )
+  ),
+  selectedPoiIds: points.map((feature) => feature.properties.id),
 }
 
 export const Default = bind(PoisDeck, {

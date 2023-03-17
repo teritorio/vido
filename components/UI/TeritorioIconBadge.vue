@@ -13,7 +13,7 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
+import Vue, { PropType } from 'vue'
 
 import TeritorioIcon from '~/components/UI/TeritorioIcon.vue'
 
@@ -24,19 +24,19 @@ export default Vue.extend({
 
   props: {
     colorFill: {
-      type: String,
+      type: String as PropType<string>,
       required: true,
     },
     picto: {
-      type: String,
+      type: String as PropType<string>,
       required: true,
     },
     size: {
-      type: String,
+      type: String as PropType<string>,
       default: 'md',
     },
     image: {
-      type: String,
+      type: String as PropType<string>,
       default: null,
     },
   },

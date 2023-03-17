@@ -4,15 +4,15 @@
     :href="`tel:${number}`"
     :title="$tc('fields.phone.callNumber')"
   >
-    {{ number }}
+    {{ numberFormated }}
   </ExternalLink>
   <span v-else>
-    {{ number }}
+    {{ numberFormated }}
   </span>
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
+import Vue, { PropType } from 'vue'
 
 import ExternalLink from '~/components/UI/ExternalLink.vue'
 
@@ -23,7 +23,7 @@ export default Vue.extend({
 
   props: {
     number: {
-      type: String,
+      type: String as PropType<string>,
       default: null,
     },
   },
@@ -34,6 +34,12 @@ export default Vue.extend({
     return {
       phone: true,
     }
+  },
+
+  computed: {
+    numberFormated(): string {
+      return this.number.replaceAll(' ', ' ')
+    },
   },
 
   mounted() {

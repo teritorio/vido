@@ -1,4 +1,7 @@
 export default {
+  ui: {
+    close: 'Close',
+  },
   units: {
     min: 'min',
     hours: 'h',
@@ -10,7 +13,6 @@ export default {
   shareLink: {
     copy: 'Copy',
     qrcode: 'QR-Code',
-    close: 'Close',
   },
   favorites: {
     title: 'Favorites',
@@ -24,14 +26,13 @@ export default {
     share_link: 'Share link of favorites',
     notebook: {
       title: 'Favorites notebook',
-      close: 'Close',
     },
     noFavs:
       'You do not have any favorite places yet. You can do this by selecting a location on the map, then saving it as a favorite.',
   },
   mapControls: {
     exploreAriaLabel: 'Explore Mode',
-    exploreButton: 'Switch to Explore mode',
+    exploreButton: 'Explore nearby points of interest',
     threeDAriaLabel: 'View the map in 3D',
     backgroundAriaLabel: 'Switch the map background',
     backgroundButton: 'Switch the map background to "{background}"',
@@ -67,6 +68,7 @@ export default {
     cartocode: 'Cartocode',
     noResult: 'No results',
     hideCategory: 'Hide this category',
+    clearAllCategories: 'Hide all categories',
     back: 'Back',
     backToMenuFavorites: 'Show menu',
     backToMenuExplorer: 'Search by Categories',
@@ -93,7 +95,7 @@ export default {
     details: 'Details',
     seeDetail: 'See details',
     route: 'Route',
-    explore: 'Explore',
+    explore: 'Nearby',
     favorite: 'Favorite',
     favoriteOn: 'Set as favorite',
     favoriteOff: 'Remove favorite',
@@ -126,6 +128,17 @@ export default {
       pois: 'Point of Interests',
     },
   },
+  poisTable: {
+    empty: 'Empty List',
+    details: 'Details',
+    downloadCsv: 'Download in CSV',
+    downloadGeojson: 'Download in GeoJSON',
+    showOnMap: 'Show on Map',
+  },
+  categorySelector: {
+    placeholder: 'Select a category',
+    search: 'Search into the list',
+  },
   dateFilter: {
     today: 'Today',
     tomorrow: 'Tomorrow',
@@ -136,6 +149,9 @@ export default {
   fields: {
     phone: {
       callNumber: 'Call this number',
+    },
+    stars: {
+      label: 'Stars',
     },
     route: {
       difficulty: 'Difficulty:',

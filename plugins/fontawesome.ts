@@ -45,10 +45,12 @@ import {
   faPrint,
   faArrowCircleDown,
   faPhone,
+  faFileCsv,
   faFilePdf,
   faSquareParking,
   faHouseFlag,
   faFlagCheckered,
+  faCopy,
   faCog,
 } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
@@ -102,10 +104,12 @@ library.add(
   faTwitter,
   faArrowCircleDown,
   faPhone,
+  faFileCsv,
   faFilePdf,
   faSquareParking,
   faHouseFlag,
   faFlagCheckered,
+  faCopy,
   faCog
 )
 

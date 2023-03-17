@@ -7,13 +7,14 @@ import { MultilingualString } from '~/utils/types'
 export interface ApiPoiId extends MapPoiId {}
 
 export type FieldsListItem = {
+  group?: undefined
   label?: boolean
   field: string
 }
 
 export type FieldsListGroup = {
   group: string
-  fields: FieldsListItem[]
+  fields: FieldsList
   // eslint-disable-next-line camelcase
   display_mode: 'standard' | 'card'
   icon: string
@@ -57,9 +58,11 @@ export type ApiPoiProperties = MapPoiProperties & {
   }
   editorial?: {
     // eslint-disable-next-line camelcase
-    popup_fields?: FieldsList
+    popup_fields?: FieldsListItem[]
     // eslint-disable-next-line camelcase
     details_fields?: FieldsList
+    // eslint-disable-next-line camelcase
+    list_fields?: FieldsListItem[]
     // eslint-disable-next-line camelcase
     class_label?: MultilingualString
     // eslint-disable-next-line camelcase
@@ -73,7 +76,13 @@ export type ApiPoiProperties = MapPoiProperties & {
 export interface ApiPoi
   extends GeoJSON.Feature<GeoJSON.Geometry, ApiPoiProperties> {}
 
-export const ApiPoiPropertiesArray = ['image', 'phone', 'email', 'website']
+export const ApiPoiPropertiesArray = [
+  'image',
+  'phone',
+  'mobile',
+  'email',
+  'website',
+]
 
 export interface ApiPois
   extends GeoJSON.FeatureCollection<GeoJSON.Geometry, ApiPoiProperties> {}
@@ -83,17 +92,19 @@ export interface apiPoisOptions {
   geometry_as?: 'point' | 'bbox'
   // eslint-disable-next-line camelcase
   short_description?: boolean
+  format?: 'geojson' | 'csv'
 }
 
 export const defaultOptions: apiPoisOptions = {
   geometry_as: 'bbox',
   short_description: true,
+  format: 'geojson',
 }
 
 export function stringifyOptions(options: apiPoisOptions): string[][] {
-  return Object.entries(Object.assign({}, defaultOptions, options)).map(
-    ([k, v]) => [k, `${v}`]
-  )
+  return Object.entries(Object.assign({}, defaultOptions, options))
+    .filter(([k, v]) => k != 'format')
+    .map(([k, v]) => [k, `${v}`])
 }
 
 export function getPoiById(
@@ -104,8 +115,9 @@ export function getPoiById(
   options: apiPoisOptions = {}
 ): Promise<ApiPoi> {
   return fetch(
-    `${apiEndpoint}/${apiProject}/${apiTheme}/poi/${poiId}.geojson?` +
-      new URLSearchParams(stringifyOptions(options))
+    `${apiEndpoint}/${apiProject}/${apiTheme}/poi/${poiId}.${
+      options.format || defaultOptions.format
+    }?` + new URLSearchParams(stringifyOptions(options))
   ).then((data) => {
     if (data.ok) {
       return data.json() as unknown as ApiPoi
@@ -125,7 +137,9 @@ export function getPois(
   options: apiPoisOptions = {}
 ): Promise<ApiPois> {
   return fetch(
-    `${apiEndpoint}/${apiProject}/${apiTheme}/pois.geojson?` +
+    `${apiEndpoint}/${apiProject}/${apiTheme}/pois.${
+      options.format || defaultOptions.format
+    }?` +
       new URLSearchParams([
         ...(poiIds ? [['ids', poiIds.join(',')]] : []),
         ...stringifyOptions(options),
@@ -141,6 +155,20 @@ export function getPois(
   })
 }
 
+export function getPoiByCategoryIdUrl(
+  apiEndpoint: string,
+  apiProject: string,
+  apiTheme: string,
+  categoryId: number | string,
+  options: apiPoisOptions = { geometry_as: 'point' }
+): string {
+  return (
+    `${apiEndpoint}/${apiProject}/${apiTheme}/pois/category/${categoryId}.${
+      options.format || defaultOptions.format
+    }?` + new URLSearchParams(stringifyOptions(options))
+  )
+}
+
 export function getPoiByCategoryId(
   apiEndpoint: string,
   apiProject: string,
@@ -149,8 +177,13 @@ export function getPoiByCategoryId(
   options: apiPoisOptions = { geometry_as: 'point' }
 ): Promise<ApiPois> {
   return fetch(
-    `${apiEndpoint}/${apiProject}/${apiTheme}/pois/category/${categoryId}.geojson?` +
-      new URLSearchParams(stringifyOptions(options))
+    getPoiByCategoryIdUrl(
+      apiEndpoint,
+      apiProject,
+      apiTheme,
+      categoryId,
+      options
+    )
   ).then((data) => {
     if (data.ok) {
       return data.json() as unknown as ApiPois

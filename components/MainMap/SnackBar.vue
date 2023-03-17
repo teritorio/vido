@@ -19,19 +19,19 @@
 </template>
 
 <script lang="ts">
+import { mapState } from 'pinia'
 import Vue from 'vue'
-import { mapGetters } from 'vuex'
+
+import { snackStore } from '~/stores/snack'
 
 export default Vue.extend({
   computed: {
-    ...mapGetters({
-      snack: 'snack/snack',
-    }),
+    ...mapState(snackStore, ['snack']),
 
-    text(): string {
+    text(): string | undefined {
       return this.snack?.text
     },
-    textBtn(): string {
+    textBtn(): string | undefined {
       return this.snack?.textBtn
     },
   },
@@ -43,24 +43,25 @@ export default Vue.extend({
   },
 })
 </script>
-<style>
-.snack-enter-active,
-.snack-leave-active {
+
+<style scoped>
+:deep(.snack-enter-active),
+:deep(.snack-leave-active) {
   transition: opacity 0.5s, transform 0.5s;
 }
 
-.snack-enter {
+:deep(.snack-enter) {
   opacity: 0;
   transform: translateY(20px);
 }
 
-.snack-enter-to,
-.snack-leave {
+:deep(.snack-enter-to),
+:deep(.snack-leave) {
   opacity: 1;
   transform: translateX(0);
 }
 
-.snack-leave-to {
+:deep(.snack-leave-to) {
   opacity: 0;
   transform: translateY(20px);
 }

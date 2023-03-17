@@ -1,5 +1,6 @@
 <template>
   <footer class="footer">
+    <slot></slot>
     <span
       v-for="attribution in attributions"
       :key="attribution"
@@ -7,7 +8,7 @@
     >
     </span>
     <span>
-      Réalisation
+      {{ $t('poiDetails.poweredBy') }}
       <a target="_blank" href="https://www.teritorio.fr/" title="Teritorio">
         <img
           class="footer-logo"
@@ -32,7 +33,7 @@ export default Vue.extend({
 
   props: {
     attributions: {
-      type: Array as PropType<String[]>,
+      type: Array as PropType<string[]>,
       default: null,
     },
   },
@@ -52,8 +53,8 @@ export default Vue.extend({
   text-align: center;
   text-decoration: none;
 
-  span:nth-of-type(2) {
-    margin: 0 1.6rem;
+  > span {
+    margin: 0 0.8rem;
   }
 
   a {

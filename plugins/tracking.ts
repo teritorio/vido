@@ -14,6 +14,7 @@ const trackingPlugin: Plugin = ({ app }, inject) => {
       if (app.$gtm && googleTagManagerId) {
         trackers.push(
           new Google(
+            app,
             Boolean(config.COOKIES_CONSENT),
             app.$gtm,
             googleTagManagerId
@@ -25,7 +26,12 @@ const trackingPlugin: Plugin = ({ app }, inject) => {
       const matomoIdsite = config.MATOMO_SITEID
       if (matomoUrl && matomoIdsite) {
         trackers.push(
-          new Matomo(Boolean(config.COOKIES_CONSENT), matomoUrl, matomoIdsite)
+          new Matomo(
+            app,
+            Boolean(config.COOKIES_CONSENT),
+            matomoUrl,
+            matomoIdsite
+          )
         )
       }
     }

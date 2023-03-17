@@ -1,7 +1,7 @@
 import MapFeatures from '~/components/MainMap/MapFeatures.vue'
 import { ApiMenuCategory } from '~/lib/apiMenu'
 import { ApiPoi } from '~/lib/apiPois'
-import { bind, parametersMap } from '~/lib/storybook-types'
+import { bind, mapCss, parametersMap } from '~/lib/storybook-types'
 
 export default {
   title: 'MainMap/MapFeatures',
@@ -39,19 +39,31 @@ const defaultProps = {
   },
 }
 
-export const Default = bind(MapFeatures, {
-  ...defaultProps,
-})
+export const Default = bind(
+  MapFeatures,
+  {
+    ...defaultProps,
+  },
+  { style: mapCss }
+)
 
-export const Small = bind(MapFeatures, {
-  ...defaultProps,
-  small: true,
-})
+export const Small = bind(
+  MapFeatures,
+  {
+    ...defaultProps,
+    small: true,
+  },
+  { style: mapCss }
+)
 
-export const StyleIconFilter = bind(MapFeatures, {
-  ...defaultProps,
-  styleIconFilter: [['catering', 'catering_food', 'restaurant']],
-})
+export const StyleIconFilter = bind(
+  MapFeatures,
+  {
+    ...defaultProps,
+    styleIconFilter: [['catering', 'catering_food', 'restaurant']],
+  },
+  { style: mapCss }
+)
 
 const feature1: ApiPoi = {
   type: 'Feature',
@@ -101,13 +113,11 @@ const feature2: ApiPoi = {
   },
 }
 
-export const Features = bind(MapFeatures, {
-  ...defaultProps,
-  features: [feature1],
-})
-
-export const FeaturesSelected = bind(MapFeatures, {
-  ...defaultProps,
-  features: [feature1, feature2],
-  selectedFeature: feature2,
-})
+export const Features = bind(
+  MapFeatures,
+  {
+    ...defaultProps,
+    features: [feature1],
+  },
+  { style: mapCss }
+)

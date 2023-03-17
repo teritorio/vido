@@ -10,10 +10,11 @@
           :style="'color:' + colorLine"
         >
           <TeritorioIconBadge
+            v-if="icon"
             :color-fill="colorFill"
             :picto="icon"
             size="lg"
-            :image="null"
+            :image="undefined"
           />
           {{ name }}
         </h3>
@@ -24,17 +25,18 @@
           :href="websiteDetails"
           rel="noopener noreferrer"
           target="_blank"
-          @click.stop="trackingPopupEvent('details')"
         >
           {{ $tc('poiCard.details') }}
         </a>
       </div>
       <Fields
-        :fields="poi.properties.editorial?.popup_fields || []"
+        :fields="
+          (poi.properties.editorial && poi.properties.editorial.popup_fields) ||
+          []
+        "
         :properties="poi.properties"
         :details="websiteDetails"
         :geom="poi.geometry"
-        @click-detail="trackingPopupEvent('details')"
       />
     </div>
     <NuxtPicture
@@ -48,14 +50,15 @@
 </template>
 
 <script lang="ts">
+import { mapState } from 'pinia'
 import Vue, { PropType } from 'vue'
-import { mapGetters } from 'vuex'
 
 import Fields from '~/components/PoisCard/Fields.vue'
 import NuxtPicture from '~/components/UI/NuxtPicture.vue'
 import TeritorioIconBadge from '~/components/UI/TeritorioIconBadge.vue'
 import { ApiPoi } from '~/lib/apiPois'
 import { MapPoiId } from '~/lib/mapPois'
+import { favoritesStore } from '~/stores/favorite'
 
 export default Vue.extend({
   components: {
@@ -84,9 +87,7 @@ export default Vue.extend({
   },
 
   computed: {
-    ...mapGetters({
-      favoritesIds: 'favorite/favoritesIds',
-    }),
+    ...mapState(favoritesStore, ['favoritesIds']),
 
     id(): MapPoiId {
       return this.poi.properties.metadata.id

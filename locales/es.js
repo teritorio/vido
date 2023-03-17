@@ -1,4 +1,7 @@
 export default {
+  ui: {
+    close: 'Cerrar',
+  },
   units: {
     min: 'min',
     hours: 'h',
@@ -10,7 +13,6 @@ export default {
   shareLink: {
     copy: 'Copiar',
     qrcode: 'QR-Code',
-    close: 'Cerrar',
   },
   favorites: {
     title: 'Favoritos',
@@ -24,14 +26,13 @@ export default {
     share_link: 'Compartir enlace de favoritos',
     notebook: {
       title: 'Cuaderno de favoritos',
-      close: 'Cerrar',
     },
     noFavs:
       'Todavía no tienes ningún lugar marcado. Puedes hacerlo seleccionando un lugar en el mapa y guardándolo como favorito',
   },
   mapControls: {
     exploreAriaLabel: 'Modo explorar',
-    exploreButton: 'Cambiar al modo explorar',
+    exploreButton: 'Exploración de las cercanías',
     threeDAriaLabel: 'Ver el mapa en 3D',
     backgroundAriaLabel: 'Cambiar el fondo de mapa',
     backgroundButton: 'Cambiar el fondo de mapa a "{background}"',
@@ -67,6 +68,7 @@ export default {
     cartocode: 'Cartocode',
     noResult: 'No hay resultados',
     hideCategory: 'Ocultar esta categoría',
+    clearAllCategories: 'Ocultar todas las categorías',
     back: 'Regresar',
     backToMenuFavorites: 'Ver el menú',
     backToMenuExplorer: 'Buscar par categorías',
@@ -93,12 +95,12 @@ export default {
     details: 'Detalles',
     seeDetail: 'Ver el detalle',
     route: 'Ruta',
-    explore: 'Explorar',
+    explore: 'Cercano',
     favorite: 'Favorito',
     favoriteOn: 'Poner como favorito',
     favoriteOff: 'Eliminar favorito',
     findRoute: 'Buscar la ruta a este lugar',
-    unactivateExplore: 'Desactivar la exploración en los alrededores',
+    unactivateExplore: 'Desactivar la exploración de las cercanías',
     activateExplore: 'Explora los puntos de interés cercanos',
     zoom: 'Acercarse',
     backToMap: 'Go to map',
@@ -126,6 +128,17 @@ export default {
       pois: 'Puntos de interés',
     },
   },
+  poisTable: {
+    empty: 'Lista vacía',
+    details: 'Detalles',
+    downloadCsv: 'Descargar como CSV',
+    downloadGeojson: 'Descargar como GeoJSON',
+    showOnMap: 'Mostrar en el mapa',
+  },
+  categorySelector: {
+    placeholder: 'Seleccione una categoría',
+    search: 'Buscar en la lista',
+  },
   dateFilter: {
     today: 'Hoy',
     tomorrow: 'Mañana',
@@ -136,6 +149,9 @@ export default {
   fields: {
     phone: {
       callNumber: 'Llama a este número',
+    },
+    stars: {
+      label: 'Estrellas',
     },
     route: {
       difficulty: 'Dificultad:',

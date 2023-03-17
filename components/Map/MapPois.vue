@@ -14,6 +14,7 @@
 </template>
 
 <script lang="ts">
+import { LngLatLike } from 'maplibre-gl'
 import Vue, { PropType, VueConstructor } from 'vue'
 
 import MapBase from '~/components/Map/MapBase.vue'
@@ -21,7 +22,7 @@ import { ApiPoi } from '~/lib/apiPois'
 import { getBBoxFeatures } from '~/lib/bbox'
 import { MAP_ZOOM } from '~/lib/constants'
 import { MapPoiId } from '~/lib/mapPois'
-import { filterRouteByPoiId } from '~/utils/styles'
+import { filterRouteByPoiIds } from '~/utils/styles'
 
 export default (
   Vue as VueConstructor<
@@ -49,13 +50,19 @@ export default (
       type: Array as PropType<ApiPoi[]>,
       required: true,
     },
-    featureId: {
-      type: Number as PropType<MapPoiId | null>,
+    featureIds: {
+      type: Array as PropType<MapPoiId[] | null>,
       default: null,
     },
     fullscreenControl: {
       type: Boolean,
       default: false,
+    },
+    defaultBounds: {
+      type: [Array, Object] as PropType<
+        maplibregl.LngLatBoundsLike | undefined
+      >,
+      default: undefined,
     },
   },
 
@@ -72,35 +79,49 @@ export default (
       return MAP_ZOOM.selectionZoom
     },
 
-    center() {
+    center(): LngLatLike | undefined {
       if (
         this.features.length === 1 &&
         this.features[0].geometry.type === 'Point'
       ) {
-        return this.features[0].geometry.coordinates
+        return this.features[0].geometry.coordinates as LngLatLike
       } else {
         return undefined
       }
     },
 
-    bounds() {
+    bounds(): maplibregl.LngLatBoundsLike | undefined {
       if (
         this.features.length > 1 ||
-        this.features[0].geometry.type !== 'Point'
+        (this.features.length === 1 &&
+          this.features[0].geometry.type !== 'Point')
       ) {
-        return getBBoxFeatures(this.features)
+        return (
+          getBBoxFeatures(
+            this.features.filter((feature) => feature.geometry)
+          ) || this.defaultBounds
+        )
       } else {
-        return undefined
+        return this.defaultBounds
+      }
+    },
+  },
+
+  watch: {
+    features() {
+      if (this.map) {
+        // @ts-ignore
+        this.onMapStyleLoad()
       }
     },
   },
 
   methods: {
-    onMapInit(map: maplibregl.Map) {
+    onMapInit(map: maplibregl.Map): void {
       this.map = map
     },
 
-    onMapStyleLoad(style: maplibregl.StyleSpecification) {
+    onMapStyleLoad(style: maplibregl.StyleSpecification): void {
       const colors = [
         ...new Set(
           this.features.map(
@@ -115,8 +136,8 @@ export default (
         '#000000',
       ])
 
-      if (this.featureId) {
-        filterRouteByPoiId(this.map, this.featureId)
+      if (this.featureIds) {
+        filterRouteByPoiIds(this.map, this.featureIds)
       }
     },
   },

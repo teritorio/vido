@@ -51,8 +51,7 @@ const settings = {
       classes: {
         overlay: 'z-40',
         wrapper: 'z-50 max-w-7xl',
-        modal:
-          'bg-white shadow my-0 sm:mx-0 h-screen h-screen w-full overflow-auto',
+        modal: 'bg-white shadow my-0 sm:mx-0 h-screen w-full overflow-auto',
         body: 'p-3 sm:p-0',
         header: 'border-b border-zinc-100 p-3 rounded-t',
         footer: 'bg-zinc-100 p-3 rounded-b',
@@ -79,7 +78,7 @@ const settings = {
     props: {
       wrapped: true,
       classes: {
-        wrapper: 'relative',
+        wrapper: '',
         buttonWrapper: '',
         selectButton:
           'px-3 py-2 text-black transition duration-100 ease-in-out bg-white border border-zinc-300 rounded shadow-sm focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500 focus:outline-none focus:ring-opacity-50 disabled:opacity-50 disabled:cursor-not-allowed',
@@ -91,13 +90,12 @@ const settings = {
         selectButtonTagDeleteButton:
           '-ml-1.5 h-full hover:bg-emerald-500 hover:shadow-sm inline-flex items-center px-2 transition',
         selectButtonTagDeleteButtonIcon: '',
-        selectButtonPlaceholder: 'text-zinc-400',
+        selectButtonPlaceholder: 'text-zinc-600',
         selectButtonIcon: 'text-zinc-600',
         selectButtonClearButton:
           'hover:bg-emerald-100 text-zinc-600 rounded transition duration-100 ease-in-out',
         selectButtonClearIcon: '',
-        dropdown:
-          '-mt-1 bg-white border-b border-zinc-300 border-l border-r rounded-b shadow-sm',
+        dropdown: '',
         dropdownFeedback: 'pb-2 px-3 text-zinc-400 text-sm',
         loadingMoreResults: 'pb-2 px-3 text-zinc-400 text-sm',
         optionsList: '',
@@ -108,16 +106,14 @@ const settings = {
         option: '',
         disabledOption: '',
         highlightedOption: 'bg-emerald-100',
-        selectedOption:
-          'font-semibold bg-zinc-100 bg-emerald-500 font-semibold text-white',
-        selectedHighlightedOption:
-          'font-semibold bg-zinc-100 bg-emerald-500 font-semibold text-white',
+        selectedOption: 'font-semibold bg-emerald-500 text-white',
+        selectedHighlightedOption: 'font-semibold bg-emerald-500 text-white',
         optionContent: 'flex justify-between items-center px-3 py-2',
         optionLabel: '',
         selectedIcon: '',
         enterClass: 'opacity-0',
-        enterActiveClass: 'transition ease-out duration-100 z-40',
-        enterToClass: 'opacity-100 absolute',
+        enterActiveClass: '',
+        enterToClass: 'opacity-100',
         leaveClass: 'opacity-100',
         leaveActiveClass: 'transition ease-in duration-75',
         leaveToClass: 'opacity-0',
@@ -139,7 +135,8 @@ const settings = {
         selectButtonClearButton:
           'flex shrink-0 items-center justify-center absolute right-0 top-0 m-2 h-6 w-6',
         selectButtonClearIcon: 'fill-current h-3 w-3',
-        dropdown: 'absolute w-full',
+        dropdown:
+          'w-full z-10 -mt-1 bg-white border-b border-zinc-300 border-l border-r rounded-b shadow-sm w-full z-10',
         dropdownFeedback: '',
         loadingMoreResults: '',
         optionsList: 'overflow-auto',
@@ -149,17 +146,28 @@ const settings = {
         option: 'cursor-pointer',
         disabledOption: 'opacity-50 cursor-not-allowed',
         highlightedOption: 'cursor-pointer',
-        selectedOption: 'cursor-pointer',
-        selectedHighlightedOption: 'cursor-pointer',
+        selectedOption: 'cursor-pointer bg-emerald-500',
+        selectedHighlightedOption: 'cursor-pointer bg-emerald-500',
         optionContent: '',
         optionLabel: 'truncate block',
         selectedIcon: 'fill-current h-4 w-4',
         enterClass: '',
-        enterActiveClass: '',
-        enterToClass: '',
+        enterActiveClass: 'transition ease-out duration-100 z-40',
+        enterToClass: 'opacity-100',
         leaveClass: '',
         leaveActiveClass: '',
         leaveToClass: '',
+      },
+      variants: {
+        relative: {
+          wrapper: 'relative',
+          enterActiveClass: 'absolute',
+          enterToClass: 'absolute z-10',
+          dropdown: 'relative ',
+        },
+        default: {
+          dropdown: 'absolute',
+        },
       },
     },
   },

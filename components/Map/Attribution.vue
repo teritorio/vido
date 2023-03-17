@@ -7,12 +7,12 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
+import Vue, { PropType } from 'vue'
 
 export default Vue.extend({
   props: {
     attribution: {
-      type: String,
+      type: String as PropType<string>,
       default: null,
     },
   },

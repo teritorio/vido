@@ -73,16 +73,16 @@ export default Vue.extend({
       type: Object as PropType<{ [id: string]: number }>,
       required: true,
     },
-    isCategorySelected: {
-      type: Function,
+    selectedCategoriesIds: {
+      type: Array as PropType<ApiMenuCategory['id'][]>,
       required: true,
     },
     displayModeDefault: {
-      type: String,
+      type: String as PropType<string>,
       required: true,
     },
     size: {
-      type: String,
+      type: String as PropType<string>,
       required: true,
     },
   },
@@ -96,6 +96,9 @@ export default Vue.extend({
     },
     onFilterClick(categoryId: ApiMenuCategory['id']) {
       this.$emit('filter-click', categoryId)
+    },
+    isCategorySelected(categoryId: ApiMenuCategory['id']) {
+      return this.selectedCategoriesIds.includes(categoryId)
     },
   },
 })

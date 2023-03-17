@@ -1,16 +1,16 @@
 <template>
   <div class="px-5 py-4" :class="extraClass">
-    <slot />
+    <slot></slot>
   </div>
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
+import Vue, { PropType } from 'vue'
 
 export default Vue.extend({
   props: {
     extraClass: {
-      type: String,
+      type: String as PropType<string>,
       default: '',
     },
   },

@@ -1,11 +1,11 @@
 <template>
   <h2 v-if="recursionStack && recursionStack.length === 0">
-    <slot />
+    <slot></slot>
   </h2>
   <h3 v-else-if="recursionStack && recursionStack.length === 1">
-    <slot />
+    <slot></slot>
   </h3>
-  <span v-else><slot />{{ $tc('ponctuation.colon') }}</span>
+  <span v-else><slot></slot>{{ $tc('ponctuation.colon') }}</span>
 </template>
 
 <script lang="ts">

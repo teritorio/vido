@@ -1,72 +1,67 @@
 <template>
   <div>
-    <ul>
-      <li v-if="href">
-        <IconButton
-          :aria-label="$tc('poiDetails.shareFacebook')"
-          class="w-8 h-8"
-          :href="shareFacebook"
-          target="_blank"
-        >
-          <font-awesome-icon
-            :icon="['fab', 'facebook']"
-            :style="{ color: colorLine }"
-          />
-        </IconButton>
-      </li>
-      <li v-if="title && href">
-        <IconButton
-          :aria-label="$tc('poiDetails.shareTwitter')"
-          class="w-8 h-8"
-          :href="shareTwitter"
-          target="_blank"
-        >
-          <font-awesome-icon
-            :icon="['fab', 'twitter']"
-            :style="{ color: colorLine }"
-          />
-        </IconButton>
-      </li>
-      <li v-if="title && href">
-        <IconButton
-          :aria-label="$tc('poiDetails.shareWhatsApp')"
-          class="w-8 h-8"
-          :href="shareWhatsApp"
-          target="_blank"
-        >
-          <font-awesome-icon
-            :icon="['fab', 'whatsapp']"
-            :style="{ color: colorLine }"
-          />
-        </IconButton>
-      </li>
-      <li>
-        <IconButton
-          :aria-label="$tc('poiDetails.print')"
-          class="w-8 h-8"
-          @click="print"
-        >
-          <font-awesome-icon icon="print" :style="{ color: colorLine }" />
-        </IconButton>
-      </li>
-      <li v-if="href">
-        <IconButton
-          :aria-label="$tc('poiDetails.link')"
-          class="w-8 h-8"
-          @click="shareUrl"
-        >
-          <font-awesome-icon icon="link" :style="{ color: colorLine }" />
-        </IconButton>
-      </li>
-    </ul>
+    <IconsBar>
+      <IconButton
+        v-if="href"
+        :label="$tc('poiDetails.shareFacebook')"
+        class="w-8 h-8"
+        :href="shareFacebook"
+        target="_blank"
+      >
+        <font-awesome-icon
+          :icon="['fab', 'facebook']"
+          :style="{ color: colorLine }"
+        />
+      </IconButton>
+      <IconButton
+        v-if="title && href"
+        :label="$tc('poiDetails.shareTwitter')"
+        class="w-8 h-8"
+        :href="shareTwitter"
+        target="_blank"
+      >
+        <font-awesome-icon
+          :icon="['fab', 'twitter']"
+          :style="{ color: colorLine }"
+        />
+      </IconButton>
+      <IconButton
+        v-if="title && href"
+        :label="$tc('poiDetails.shareWhatsApp')"
+        class="w-8 h-8"
+        :href="shareWhatsApp"
+        target="_blank"
+      >
+        <font-awesome-icon
+          :icon="['fab', 'whatsapp']"
+          :style="{ color: colorLine }"
+        />
+      </IconButton>
+      <IconButton
+        :label="$tc('poiDetails.print')"
+        class="w-8 h-8"
+        @click="print"
+      >
+        <font-awesome-icon icon="print" :style="{ color: colorLine }" />
+      </IconButton>
+      <IconButton
+        v-if="href"
+        :label="$tc('poiDetails.link')"
+        class="w-8 h-8"
+        @click="shareUrl"
+      >
+        <font-awesome-icon icon="link" :style="{ color: colorLine }" />
+      </IconButton>
+    </IconsBar>
     <ShareLinkModal ref="shareModal" :title="$tc('poiDetails.link')" />
   </div>
 </template>
 
 <script lang="ts">
-import Vue, { VueConstructor } from 'vue'
+import Vue, { PropType, VueConstructor } from 'vue'
 
 import IconButton from '~/components/UI/IconButton.vue'
+import IconsBar from '~/components/UI/IconsBar.vue'
 import ShareLinkModal from '~/components/UI/ShareLinkModal.vue'
 import { OriginEnum } from '~/utils/types'
 import { urlAddTrackOrigin } from '~/utils/url'
@@ -81,34 +76,35 @@ export default (
   >
 ).extend({
   components: {
+    IconsBar,
     IconButton,
     ShareLinkModal,
   },
 
   props: {
     title: {
-      type: String,
+      type: String as PropType<string>,
       default: null,
     },
     href: {
-      type: String,
+      type: String as PropType<string>,
       default: null,
     },
     colorLine: {
-      type: String,
+      type: String as PropType<string>,
       required: true,
     },
   },
 
   data(): {
-    shareFacebook: string | null
-    shareTwitter: string | null
-    shareWhatsApp: string | null
+    shareFacebook: string | undefined
+    shareTwitter: string | undefined
+    shareWhatsApp: string | undefined
   } {
     return {
-      shareFacebook: null,
-      shareTwitter: null,
-      shareWhatsApp: null,
+      shareFacebook: undefined,
+      shareTwitter: undefined,
+      shareWhatsApp: undefined,
     }
   },
 
@@ -146,28 +142,3 @@ export default (
   },
 })
 </script>
-
-<style lang="scss" scoped>
-@import '~/assets/details.scss';
-
-ul {
-  position: relative;
-  display: block;
-  width: 100%;
-  text-align: right;
-  margin-bottom: 0.6rem;
-  list-style: none;
-
-  li {
-    display: inline-block;
-    margin: 0.3rem;
-    border-radius: 50%;
-  }
-}
-
-@media (max-width: 991px) {
-  ul {
-    text-align: center;
-  }
-}
-</style>

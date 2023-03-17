@@ -10,39 +10,31 @@
         <p class="text-zinc-500 truncate">
           {{ linkShare }}
         </p>
-        <button
+        <UIButton
           v-if="hasClipboard"
-          type="button"
-          class="focus:outline-none focus-visible:bg-zinc-100 hover:bg-zinc-100 py-2 px-4 rounded-full ml-2"
+          :label="!isCopied && $tc('shareLink.copy')"
+          :icon="isCopied ? 'clipboard-check' : 'copy'"
           @click="copyLink"
-        >
-          <font-awesome-icon
-            v-if="isCopied"
-            ref="menu_icon"
-            icon="clipboard-check"
-            class="text-emerald-500"
-          />
-          {{ !isCopied ? $tc('shareLink.copy') : '' }}
-        </button>
+        />
       </div>
       <div v-if="qrCodeUrl" class="flex items-center mb-4 justify-center">
         <img :src="qrCodeUrl()" class="w-1/2" :alt="$tc('shareLink.qrcode')" />
       </div>
-      <button
-        type="button"
-        class="self-end focus:outline-none focus-visible:bg-zinc-100 hover:bg-zinc-100 py-2 px-4 rounded-full"
+      <UIButton
+        :label="$tc('ui.close')"
+        icon="times"
+        class="self-end"
         @click="close"
-      >
-        {{ $tc('shareLink.close') }}
-      </button>
+      />
     </div>
   </TModal>
 </template>
 
 <script lang="ts">
-import Vue, { VueConstructor } from 'vue'
+import Vue, { PropType, VueConstructor } from 'vue'
 import { TModal } from 'vue-tailwind/dist/components'
 
+import UIButton from '~/components/UI/UIButton.vue'
 import { OriginEnum } from '~/utils/types'
 import { urlAddTrackOrigin } from '~/utils/url'
 
@@ -57,11 +49,12 @@ export default (
 ).extend({
   components: {
     TModal,
+    UIButton,
   },
 
   props: {
     title: {
-      type: String,
+      type: String as PropType<string>,
       required: true,
     },
   },

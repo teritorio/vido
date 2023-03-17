@@ -96,6 +96,20 @@
                             "field": "addr"
                         }
                     ],
+                    "list_fields": [
+                        {
+                            "field": "name"
+                        },
+                        {
+                            "field": "description"
+                        },
+                        {
+                            "field": "addr"
+                        },
+                        {
+                            "field": "opening_hours"
+                        }
+                    ],
                     "class_label": {
                         "fr": "Aires de camping-cars"
                     },
@@ -194,6 +208,20 @@
                         },
                         {
                             "field": "addr"
+                        }
+                    ],
+                    "list_fields": [
+                        {
+                            "field": "name"
+                        },
+                        {
+                            "field": "description"
+                        },
+                        {
+                            "field": "addr"
+                        },
+                        {
+                            "field": "opening_hours"
                         }
                     ],
                     "class_label": {

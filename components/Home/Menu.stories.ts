@@ -107,12 +107,24 @@ const defaultProps = {
   logoUrl: '',
   mainUrl: '',
   siteName: '',
-  menuItems: [search, menuGroup1, menuGroup2, menuLink, category],
   filters: {},
   isCategorySelected: () => false,
   categoriesActivesCountByParent: {},
 }
 
-export const Default = bind(Menu, {
+const MenuMock = Menu.extend({
+  computed: {
+    menuItems(): Record<ApiMenuCategory['id'], MenuItem> {
+      return Object.fromEntries(
+        [search, menuGroup1, menuGroup2, menuLink, category].map((i) => [
+          i.id,
+          i,
+        ])
+      )
+    },
+  },
+})
+
+export const Default = bind(MenuMock, {
   ...defaultProps,
 })

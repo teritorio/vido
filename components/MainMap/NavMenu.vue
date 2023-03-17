@@ -16,7 +16,7 @@
         }"
       >
         <IconButton
-          :aria-label="$tc('navMenu.label')"
+          :label="$tc('navMenu.label')"
           class="w-11 h-11"
           @mousedown="mousedownHandler"
           @focus="focusHandler"
@@ -59,13 +59,14 @@
 </template>
 
 <script lang="ts">
+import { mapWritableState } from 'pinia'
 import Vue, { PropType } from 'vue'
 import { TDropdown } from 'vue-tailwind/dist/components'
-import { mapActions } from 'vuex'
 
 import ExternalLink from '~/components/UI/ExternalLink.vue'
 import IconButton from '~/components/UI/IconButton.vue'
 import { ContentEntry } from '~/lib/apiContent'
+import { siteStore } from '~/stores/site'
 
 export default Vue.extend({
   components: {
@@ -81,14 +82,14 @@ export default Vue.extend({
     },
   },
 
-  methods: {
-    ...mapActions({
-      setSiteLocale: 'site/setLocale',
-    }),
+  computed: {
+    ...mapWritableState(siteStore, ['locale']),
+  },
 
+  methods: {
     setLocale(locale: string) {
       this.$i18n.setLocale(locale)
-      this.setSiteLocale(locale)
+      this.locale = locale
     },
     openLink(title: string, url: string) {
       this.$tracking({

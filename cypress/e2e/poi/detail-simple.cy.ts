@@ -5,11 +5,11 @@ import teritorioReferenceAPIFixture from '~/cypress/fixtures/teritorio/reference
 const hostnames = {
   'https://dev.appcarto.teritorio.xyz':
     '/content/api.teritorio/geodata/v0.1/dev/tourism/',
-  'http://localhost:3000': '/fixtures/teritorio/references/',
+  'http://127.0.0.1:3000': '/fixtures/teritorio/references/',
 }
 
 describe('home content', () => {
-  before(() => {
+  beforeEach(() => {
     mockSSRAPI(hostnames, teritorioReferenceAPIFixture, {
       'poi/1/deps.geojson?geometry_as=bbox&short_description=false':
         teritorioReferenceAPIFixture.deps[1],

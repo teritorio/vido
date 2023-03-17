@@ -24,6 +24,15 @@ export function configuredImageProxy(vidos: VidosConfig): string[] {
   ]
 }
 
+export function vidoConfigResolve(
+  host: string,
+  vidoHostConfig: VidosConfig
+): VidoConfig {
+  return {
+    ...(vidoHostConfig[host] || vidoHostConfig['']),
+  }
+}
+
 export function vidoConfig(
   req: createServer.IncomingMessage,
   privateRuntimeConfig: NuxtRuntimeConfig
@@ -33,7 +42,10 @@ export function vidoConfig(
     const hostHeader =
       (req.headers['x-forwarded-host'] as string) || req.headers.host
     if (!hostHeader) {
-      throw new Error('No header "Host" nor "x-forwarded-host"')
+      throw new Error(
+        'No header "Host" nor "x-forwarded-host": ' +
+          JSON.stringify(req.headers)
+      )
     } else {
       host = hostHeader
     }
@@ -46,9 +58,7 @@ export function vidoConfig(
   if (!(host in vidoHostConfig) && !('' in vidoHostConfig)) {
     throw new Error(`Not configured host "${host}"`)
   }
-  return {
-    ...(vidoHostConfig[host] || vidoHostConfig['']),
-  }
+  return vidoConfigResolve(host, vidoHostConfig)
 }
 
 const vidosConfigPlugin: Plugin = ({ req, $config }, inject) => {

@@ -30,6 +30,16 @@ export interface Settings {
   attributions: string[]
   // eslint-disable-next-line camelcase
   icon_font_css_url: string
+  polygon: {
+    type: 'geojson'
+    data: GeoJSON.Polygon
+  }
+  polygons_extra: {
+    [key: string]: {
+      type: 'geojson'
+      data: string | GeoJSON.Polygon
+    }
+  }
   // eslint-disable-next-line camelcase
   bbox_line: GeoJSON.LineString
   // eslint-disable-next-line camelcase
@@ -101,6 +111,10 @@ export function headerFromSettings(
         rel: 'icon',
         type: 'image/x-icon',
         href: settings.themes[0].favicon_url,
+      },
+      {
+        rel: 'manifest',
+        href: '/manifest.webmanifest',
       },
     ].filter((meta) => meta.href),
     meta: [

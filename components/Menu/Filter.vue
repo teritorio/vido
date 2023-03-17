@@ -1,36 +1,28 @@
 <template>
   <div class="basis-max shrink flex flex-col gap-4 flex-1">
     <template v-for="(filter, filterIndex) in filtersSafeCopy">
-      <div v-if="filter.type == 'boolean'" :key="filter.property">
+      <div v-if="filter.type == 'boolean'" :key="filter.def.property">
         <label :key="filter.def.property" class="block mb-1 text-zinc-800">
           <input
             type="checkbox"
             class="text-emerald-500 rounded-full focus:ring-0 focus:ring-transparent"
             :name="filter.def.property"
             :checked="filter.filterValue"
-            @change="
-              (e) => onBooleanFilterChange(filterIndex, e.target.checked)
-            "
+            @change="onBooleanFilterChange(filterIndex, $event)"
           />
           {{ (filter.def.name && filter.def.name.fr) || filter.def.property }}
         </label>
       </div>
-      <div v-else-if="filter.type == 'multiselection'" :key="filter.property">
-        <label :for="filter.property" class="block mb-2 text-zinc-500">
+      <div
+        v-else-if="filter.type == 'multiselection'"
+        :key="filter.def.property"
+      >
+        <label :for="filter.def.property" class="block mb-2 text-zinc-500">
           {{ (filter.def.name && filter.def.name.fr) || filter.def.property }}
         </label>
-        <t-rich-select
-          placeholder="Recherchez ou ajoutez une valeur"
-          search-box-placeholder="Rechercher ..."
-          multiple
-          :options="
-            filter.def.values.map((value) => ({
-              text: (value.name && value.name.fr) || value.value,
-              value: value.value,
-            }))
-          "
-          :value="filter.filterValues"
-          @input="(val) => onSelectionFilterChange(filterIndex, val)"
+        <SelectFilter
+          :filter="filter"
+          @change="onSelectionFilterChange(filterIndex, $event)"
           @click="onClickFilter(true)"
           @blur="onClickFilter(false)"
         />
@@ -57,6 +49,7 @@
                 onCheckboxFilterChange(
                   filterIndex,
                   value.value,
+                  //@ts-ignore
                   e.target.checked
                 )
             "
@@ -64,14 +57,23 @@
           {{ (value.name && value.name.fr) || value.value }}
         </label>
       </div>
-      <div v-else-if="filter.type == 'date_range'" :key="filter.property_begin">
+      <div
+        v-else-if="filter.type == 'date_range'"
+        :key="filter.def.property_begin"
+      >
         <DateRange
           :filter="filter"
-          @change="
-            (filterValue) =>
-              onSelectionFilterDateChange(filterIndex, filterValue)
-          "
+          @change="onSelectionFilterDateChange(filterIndex, $event)"
         />
+      </div>
+      <div v-else-if="filter.type == 'number_range'" :key="filter.def.property">
+        <label class="block mb-1 text-zinc-800">
+          {{ (filter.def.name && filter.def.name.fr) || filter.def.property }}
+          <NumberRange
+            :filter="filter"
+            @change="onSelectionFilterNumberRangeChange(filterIndex, $event)"
+          />
+        </label>
       </div>
     </template>
   </div>
@@ -79,21 +81,27 @@
 
 <script lang="ts">
 import copy from 'fast-copy'
+import { mapActions } from 'pinia'
 import Vue, { PropType } from 'vue'
-import { mapActions } from 'vuex'
 
 import DateRange from '~/components/Filters/DateRange.vue'
+import NumberRange from '~/components/Filters/NumberRange.vue'
+import SelectFilter from '~/components/Filters/Select.vue'
 import { ApiMenuCategory } from '~/lib/apiMenu'
+import { menuStore } from '~/stores/menu'
 import {
   FilterValueBoolean,
   FilterValueDate,
   FilterValueList,
+  FilterValueNumberRange,
   FilterValues,
 } from '~/utils/types-filters'
 
 export default Vue.extend({
   components: {
+    SelectFilter,
     DateRange,
+    NumberRange,
   },
 
   props: {
@@ -114,9 +122,7 @@ export default Vue.extend({
   },
 
   methods: {
-    ...mapActions({
-      applyCategorieFilters: 'menu/applyFilters',
-    }),
+    ...mapActions(menuStore, ['applyFilters']),
 
     onGoBackClick() {
       this.$emit('go-back-click')
@@ -126,12 +132,15 @@ export default Vue.extend({
       this.$emit('activate-filter', val)
     },
 
-    onBooleanFilterChange(filterIndex: number, value: boolean) {
+    onBooleanFilterChange(filterIndex: number, e: Event) {
+      // @ts-ignore
+      const value: boolean = e.target.checked
+
       const filters = this.filtersSafeCopy
       const filter = filters[filterIndex] as FilterValueBoolean
 
       filter.filterValue = value
-      this.applyCategorieFilters({
+      this.applyFilters({
         categoryId: this.categoryId,
         filterValues: filters,
       })
@@ -142,7 +151,7 @@ export default Vue.extend({
       const filter = filters[filterIndex] as FilterValueList
 
       filter.filterValues = values || []
-      this.applyCategorieFilters({
+      this.applyFilters({
         categoryId: this.categoryId,
         filterValues: filters,
       })
@@ -155,7 +164,20 @@ export default Vue.extend({
       const filters = this.filtersSafeCopy
       filters[filterIndex] = filterValue
 
-      this.applyCategorieFilters({
+      this.applyFilters({
+        categoryId: this.categoryId,
+        filterValues: filters,
+      })
+    },
+
+    onSelectionFilterNumberRangeChange(
+      filterIndex: number,
+      filterValue: FilterValueNumberRange
+    ) {
+      const filters = this.filtersSafeCopy
+      filters[filterIndex] = filterValue
+
+      this.applyFilters({
         categoryId: this.categoryId,
         filterValues: filters,
       })
@@ -171,7 +193,7 @@ export default Vue.extend({
         filter.filterValues = filter.filterValues.filter((k) => k !== val)
       }
 
-      this.applyCategorieFilters({
+      this.applyFilters({
         categoryId: this.categoryId,
         filterValues: filters,
       })

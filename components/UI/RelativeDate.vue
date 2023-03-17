@@ -5,8 +5,10 @@
 <script lang="ts">
 import { formatRelative } from 'date-fns'
 import { enGB, fr, es } from 'date-fns/locale'
+import { mapState } from 'pinia'
 import Vue from 'vue'
-import { mapGetters } from 'vuex'
+
+import { siteStore } from '~/stores/site'
 
 const DateFormatLocales: { [key: string]: Locale } = { en: enGB, fr, es }
 
@@ -19,13 +21,11 @@ export default Vue.extend({
   },
 
   computed: {
-    ...mapGetters({
-      locale: 'site/locale',
-    }),
+    ...mapState(siteStore, ['locale']),
 
     formatLocale(): { locale: Locale } {
       return {
-        locale: DateFormatLocales?.[this.locale] || enGB,
+        locale: (this.locale && DateFormatLocales?.[this.locale]) || enGB,
       }
     },
   },

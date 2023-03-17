@@ -12,7 +12,7 @@ jobs:
         os:
           - ubuntu-latest
         node:
-          - 16
+          - 18
 
     steps:
       - name: Checkout 🛎
@@ -30,7 +30,7 @@ jobs:
         os:
           - ubuntu-latest
         node:
-          - 16
+          - 18
 
     steps:
       - name: Checkout 🛎
@@ -51,7 +51,7 @@ jobs:
         os:
           - ubuntu-latest
         node:
-          - 16
+          - 18
 
     steps:
       - name: Checkout 🛎
@@ -72,7 +72,7 @@ jobs:
         os:
           - ubuntu-latest
         node:
-          - 16
+          - 18
 
     steps:
       - name: Checkout 🛎
@@ -88,17 +88,17 @@ jobs:
       - name: yarn build
         run: |
           ln -s ../cypress/fixtures/ static/fixtures &&
-          NODE_ENV=development CONFIG=vidos-config-cypress.json yarn build
+          NODE_OPTIONS=--openssl-legacy-provider NODE_ENV=development CONFIG=vidos-config-cypress.json yarn build
 
       - name: Run Cypress Tests 🧪
-        uses: cypress-io/github-action@v4
+        uses: cypress-io/github-action@v5
         env:
           NODE_ENV: development
           CONFIG: vidos-config-cypress.json
         with:
           install-command: yarn --silent
-          start: yarn start4storybook
-          wait-on: 'http://localhost:3000'
+          start: yarn start4cypress
+          wait-on: 'http://127.0.0.1:3000'
           wait-on-timeout: 30
 
   storybook:
@@ -111,7 +111,7 @@ jobs:
         os:
           - ubuntu-latest
         node:
-          - 16
+          - 18
 
     steps:
       - name: Checkout 🛎
@@ -123,7 +123,7 @@ jobs:
         run: sudo apt-get install -y ruby
 
       - name: Build Storybook 👀
-        run: yarn build:storybook
+        run: NODE_OPTIONS=--openssl-legacy-provider yarn build:storybook
 
       - name: Storycap
         run: |
@@ -165,7 +165,7 @@ jobs:
         os:
           - ubuntu-latest
         node:
-          - 16
+          - 18
 
     steps:
       - name: Checkout 🛎
@@ -191,6 +191,7 @@ jobs:
             cd /var/www/clients/client3/web3/web/vido &&
             ruby poi_explode.rb cypress/fixtures/teritorio/references/pois.geojson &&
             yarn build-config &&
+            sed -i "s/# restart: unless-stopped/restart: unless-stopped/" docker-compose.yml &&
             docker-compose build && docker-compose up -d &&
             echo -n 'VIDO: Deployment completed at: ' &&
             date -u

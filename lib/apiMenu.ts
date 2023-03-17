@@ -8,8 +8,8 @@ export type FilterList = {
   name: MultilingualString
   values: {
     value: string
-    name: MultilingualString[]
-  }
+    name: MultilingualString
+  }[]
 }
 
 export type FilterBoolean = {
@@ -27,7 +27,15 @@ export type FilterDate = {
   name: MultilingualString
 }
 
-export type Filter = FilterList | FilterBoolean | FilterDate
+export type FilterNumberRange = {
+  type: 'number_range'
+  property: string
+  name: MultilingualString
+  min: number
+  max: number
+}
+
+export type Filter = FilterList | FilterBoolean | FilterDate | FilterNumberRange
 
 export interface ApiMenuItem {
   id: number
@@ -112,11 +120,11 @@ export function getMenu(
   apiEndpoint: string,
   apiProject: string,
   apiTheme: string
-): Promise<[MenuItem]> {
+): Promise<MenuItem[]> {
   return fetch(`${apiEndpoint}/${apiProject}/${apiTheme}/menu.json`).then(
     (data) => {
       if (data.ok) {
-        return data.json() as unknown as [MenuItem]
+        return data.json() as unknown as MenuItem[]
       } else {
         return Promise.reject(
           new Error([data.url, data.status, data.statusText].join(' '))

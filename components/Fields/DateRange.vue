@@ -1,6 +1,6 @@
 <template>
   <div>
-    <slot />
+    <slot></slot>
     <span>
       <template v-if="start && end && start == end">
         {{
@@ -15,7 +15,11 @@
             from: $d(new Date(start)),
             to: $d(new Date(end)),
             duration: $n(
-              (new Date(end) - new Date(start)) / 1000 / 60 / 60 / 24
+              (new Date(end).getTime() - new Date(start).getTime()) /
+                1000 /
+                60 /
+                60 /
+                24
             ),
           })
         }}
@@ -31,7 +35,7 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
+import Vue, { PropType } from 'vue'
 
 export function isDateRangeEmpty(properties: {
   [key: string]: string
@@ -42,11 +46,11 @@ export function isDateRangeEmpty(properties: {
 export default Vue.extend({
   props: {
     start: {
-      type: String,
+      type: String as PropType<string>,
       default: null,
     },
     end: {
-      type: String,
+      type: String as PropType<string>,
       default: null,
     },
   },

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <slot />
+    <slot></slot>
     <div v-if="isCompact">
       <p v-for="(route, activity) in routes" :key="activity">
         {{ $propertyTranslations.pv('route', activity, context) }} :

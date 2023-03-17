@@ -8,7 +8,7 @@
   >
     <FieldsHeader
       v-if="field.label"
-      :recursion-stack="null"
+      :recursion-stack="undefined"
       :class="`field_header_level_${recursionStack.length}`"
       >{{ fieldTranslateK(field.field) }}</FieldsHeader
     >
@@ -17,7 +17,7 @@
   <AddressField v-else-if="field.field === 'addr'" :properties="properties">
     <FieldsHeader
       v-if="field.label"
-      :recursion-stack="null"
+      :recursion-stack="undefined"
       :class="`field_header_level_${recursionStack.length}`"
       >{{ fieldTranslateK(field.field) }}</FieldsHeader
     >
@@ -31,7 +31,7 @@
   >
     <FieldsHeader
       v-if="field.label"
-      :recursion-stack="null"
+      :recursion-stack="undefined"
       :class="`field_header_level_${recursionStack.length}`"
       >{{ fieldTranslateK(field.field) }}</FieldsHeader
     >
@@ -40,7 +40,7 @@
   <Coordinates v-else-if="field.field === 'coordinates'" :geom="geom">
     <FieldsHeader
       v-if="field.label"
-      :recursion-stack="null"
+      :recursion-stack="undefined"
       :class="`field_header_level_${recursionStack.length}`"
       >{{ fieldTranslateK(field.field) }}</FieldsHeader
     >
@@ -49,14 +49,19 @@
   <div v-else-if="properties[field.field]">
     <FieldsHeader
       v-if="field.label"
-      :recursion-stack="null"
+      :recursion-stack="undefined"
       :class="`field_header_level_${recursionStack.length}`"
       >{{ fieldTranslateK(field.field) }}</FieldsHeader
     >
     <div :class="`inline field_content_level_${recursionStack.length}`">
       <div v-if="field.field == 'description'" class="inline">
         <template
-          v-if="Boolean(details) && properties.description.length > textLimit"
+          v-if="
+            Boolean(details) &&
+            properties &&
+            properties.description &&
+            properties.description.length > textLimit
+          "
         >
           {{ properties.description.substring(0, textLimit) + '...' }}
           <a
@@ -129,6 +134,11 @@
         :url="properties[field.field]"
       />
 
+      <Stars
+        v-else-if="field.field === 'stars'"
+        :stars="properties[field.field]"
+      />
+
       <a
         v-else-if="
           field.field == 'route:gpx_trace' || field.field == 'route:pdf'
@@ -172,6 +182,7 @@ import Phone from '~/components/Fields/Phone.vue'
 import RoutesField, {
   isRoutesFieldEmpty,
 } from '~/components/Fields/RoutesField.vue'
+import Stars from '~/components/Fields/Stars.vue'
 import ExternalLink from '~/components/UI/ExternalLink.vue'
 import FieldsHeader from '~/components/UI/FieldsHeader.vue'
 import { ApiPoiProperties, FieldsListItem } from '~/lib/apiPois'
@@ -206,6 +217,7 @@ export default Vue.extend({
     Phone,
     Facebook,
     ExternalLink,
+    Stars,
   },
 
   props: {
@@ -226,7 +238,7 @@ export default Vue.extend({
       required: true,
     },
     details: {
-      type: String,
+      type: String as PropType<string>,
       default: null,
     },
     geom: {

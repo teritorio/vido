@@ -54,7 +54,7 @@ export function isListEmpty(
   return fileds.reduce(
     (sum: boolean, value: FieldsListItem | FieldsListGroup) =>
       sum &&
-      ('group' in value
+      (value.group !== undefined
         ? isListEmpty(value.fields, properties, geom)
         : isFiledEmpty(value, properties, geom)),
     true
@@ -86,7 +86,7 @@ export default (
       required: true,
     },
     title: {
-      type: String,
+      type: String as PropType<string>,
       required: true,
     },
     properties: {
@@ -98,7 +98,7 @@ export default (
       required: true,
     },
     colorFill: {
-      type: String,
+      type: String as PropType<string>,
       required: true,
     },
   },

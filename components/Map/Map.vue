@@ -2,6 +2,7 @@
   <div :class="(hideControl || !map) && 'map-controls-hidden'">
     <mapbox
       v-if="style"
+      id="map"
       access-token=""
       :map-options="{
         bounds: bounds,
@@ -14,12 +15,13 @@
         zoom: zoom,
         locale: locales,
         attributionControl: false,
+        cooperativeGestures: cooperativeGestures,
       }"
       :nav-control="{
         show: false,
       }"
       v-bind="$attrs"
-      @map-init="$emit('map-init', $event) && onMapInit($event)"
+      @map-init="onMapInit($event)"
       @map-data="$emit('map-data', $event)"
       @map-dragend="$emit('map-dragend', $event)"
       @map-moveend="$emit('map-moveend', $event)"
@@ -55,11 +57,12 @@ import {
   FitBoundsOptions,
   MapDataEvent,
 } from 'maplibre-gl'
+import { mapState } from 'pinia'
 import Vue, { PropType } from 'vue'
-import { mapGetters } from 'vuex'
 
 import MapControls from '~/components/Map/MapControls.vue'
 import { DEFAULT_MAP_STYLE, MAP_ZOOM } from '~/lib/constants'
+import { siteStore } from '~/stores/site'
 import { fetchStyle } from '~/utils/styles'
 import { MapStyleEnum } from '~/utils/types'
 
@@ -106,7 +109,7 @@ export default Vue.extend({
       default: false,
     },
     hash: {
-      type: String,
+      type: String as PropType<string>,
       default: undefined,
     },
     showAttribution: {
@@ -114,6 +117,10 @@ export default Vue.extend({
       default: true,
     },
     hideControl: {
+      type: Boolean,
+      default: false,
+    },
+    cooperativeGestures: {
       type: Boolean,
       default: false,
     },
@@ -138,9 +145,8 @@ export default Vue.extend({
   },
 
   computed: {
-    ...mapGetters({
-      locale: 'site/locale',
-    }),
+    ...mapState(siteStore, ['locale']),
+
     defaultZoom() {
       return MAP_ZOOM.zoom
     },
@@ -160,6 +166,11 @@ export default Vue.extend({
     locale(locale: string) {
       this.setLanguage(locale)
     },
+    bounds() {
+      if (this.bounds) {
+        this.map?.fitBounds(this.bounds, this.fitBoundsOptions)
+      }
+    },
   },
 
   beforeMount() {
@@ -176,9 +187,11 @@ export default Vue.extend({
 
   methods: {
     onMapInit(map: Map) {
+      this.$emit('map-init', map)
+
       this.map = map
       this.languageControl = new OpenMapTilesLanguage({
-        defaultLanguage: this.locale,
+        defaultLanguage: this.locale || undefined,
       })
 
       if (this.showAttribution) {
@@ -192,6 +205,10 @@ export default Vue.extend({
       }
 
       this.emitStyleLoad()
+
+      new ResizeObserver((entries) => {
+        this.map?.resize()
+      }).observe(document.getElementById('map')!)
     },
 
     setStyle(mapStyle: MapStyleEnum) {
@@ -213,7 +230,7 @@ export default Vue.extend({
         })
         .catch((e) => {
           // eslint-disable-next-line no-console
-          console.error('Vido error:', e.message)
+          console.error('Vido error:', (e as Error).message)
         })
     },
 
@@ -269,16 +286,16 @@ export default Vue.extend({
 })
 </script>
 
-<style lang="scss" scoped>
-:deep(#map) {
-  width: 100%;
-  height: 100%;
-}
-</style>
-
 <style>
 .map-controls-hidden .mapboxgl-control-container,
 .map-controls-hidden .maplibregl-control-container {
   display: none;
+}
+</style>
+
+<style scoped>
+:deep(#map) {
+  width: 100%;
+  height: 100%;
 }
 </style>

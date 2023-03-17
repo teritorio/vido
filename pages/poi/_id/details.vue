@@ -5,14 +5,15 @@
     :nav-menu-entries="contents"
     :poi="poi"
     :poi-deps="poiDeps"
+    class="page-details"
   />
 </template>
 
 <script lang="ts">
 import { groupBy } from 'lodash'
+import { mapWritableState } from 'pinia'
 import Vue from 'vue'
 import { MetaInfo } from 'vue-meta'
-import { mapActions } from 'vuex'
 
 import Index from '~/components/PoisDetails/PoiDetails.vue'
 import { ContentEntry, getContents } from '~/lib/apiContent'
@@ -24,6 +25,7 @@ import {
 } from '~/lib/apiPropertyTranslations'
 import { getSettings, headerFromSettings, Settings } from '~/lib/apiSettings'
 import { vidoConfig } from '~/plugins/vido-config'
+import { siteStore } from '~/stores/site'
 import { VidoConfig } from '~/utils/types-config'
 
 export default Vue.extend({
@@ -35,7 +37,7 @@ export default Vue.extend({
     return /^[-_:a-zA-Z0-9]+$/.test(params.id)
   },
 
-  async asyncData({ params, req, $config }): Promise<{
+  async asyncData({ params, req, $config, $pinia, error }): Promise<{
     config: VidoConfig
     settings: Settings
     contents: ContentEntry[]
@@ -43,25 +45,29 @@ export default Vue.extend({
     poi: ApiPoi | undefined
     poiDeps: ApiPoiDeps | undefined
   }> {
-    const getSettingsPromise = getSettings(
-      vidoConfig(req, $config).API_ENDPOINT,
-      vidoConfig(req, $config).API_PROJECT,
-      vidoConfig(req, $config).API_THEME
-    )
-    const fetchContents = getContents(
-      vidoConfig(req, $config).API_ENDPOINT,
-      vidoConfig(req, $config).API_PROJECT,
-      vidoConfig(req, $config).API_THEME
-    )
-    const fetchPropertyTranslations = getPropertyTranslations(
-      vidoConfig(req, $config).API_ENDPOINT,
-      vidoConfig(req, $config).API_PROJECT,
-      vidoConfig(req, $config).API_THEME
-    )
+    const config: VidoConfig =
+      siteStore($pinia).config || vidoConfig(req, $config)
+
+    const getSettingsPromise = siteStore($pinia).settings
+      ? Promise.resolve(siteStore($pinia).settings as Settings)
+      : getSettings(config.API_ENDPOINT, config.API_PROJECT, config.API_THEME)
+
+    const fetchContents = siteStore($pinia).contents
+      ? Promise.resolve(siteStore($pinia).contents as ContentEntry[])
+      : getContents(config.API_ENDPOINT, config.API_PROJECT, config.API_THEME)
+
+    const fetchPropertyTranslations = siteStore($pinia).translations
+      ? Promise.resolve(siteStore($pinia).translations as PropertyTranslations)
+      : getPropertyTranslations(
+          config.API_ENDPOINT,
+          config.API_PROJECT,
+          config.API_THEME
+        )
+
     const poiDepsPromise = getPoiDepsById(
-      vidoConfig(req, $config).API_ENDPOINT,
-      vidoConfig(req, $config).API_PROJECT,
-      vidoConfig(req, $config).API_THEME,
+      config.API_ENDPOINT,
+      config.API_PROJECT,
+      config.API_THEME,
       params.id,
       {
         short_description: false,
@@ -90,17 +96,30 @@ export default Vue.extend({
     }
 
     if (!poi) {
-      throw new Error('Missing main object.')
+      error({
+        statusCode: 404,
+        message: 'POI not found. Missing main object.',
+      })
     }
 
     return Promise.resolve({
-      config: vidoConfig(req, $config),
+      config,
       settings,
       contents,
       propertyTranslations,
       poi,
       poiDeps,
     })
+  },
+
+  computed: {
+    ...mapWritableState(siteStore, {
+      locale: 'locale',
+      globalConfig: 'config',
+      globalSettings: 'settings',
+      globalContents: 'contents',
+      globalTranslations: 'translations',
+    }),
   },
 
   data(): {
@@ -134,6 +153,11 @@ export default Vue.extend({
   },
 
   created() {
+    this.globalConfig = this.config!
+    this.globalSettings = this.settings
+    this.globalContents = this.contents
+    this.globalTranslations = this.propertyTranslations
+
     this.$settings.set(this.settings)
     this.$propertyTranslations.set(this.propertyTranslations)
   },
@@ -144,21 +168,15 @@ export default Vue.extend({
   },
 
   mounted() {
-    this.setSiteLocale(this.$i18n.locale)
-  },
-
-  methods: {
-    ...mapActions({
-      setSiteLocale: 'site/setLocale',
-    }),
+    this.locale = this.$i18n.locale
   },
 })
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 @import '~/assets/details.scss';
 
-body {
+.page-details {
   color: $color-text;
   background-color: #fefefe;
   padding: 1rem 1rem;

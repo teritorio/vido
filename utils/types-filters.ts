@@ -1,4 +1,10 @@
-import { FilterBoolean, FilterList, FilterDate, Filter } from '~/lib/apiMenu'
+import {
+  FilterBoolean,
+  FilterList,
+  FilterDate,
+  Filter,
+  FilterNumberRange,
+} from '~/lib/apiMenu'
 import { ApiPoi } from '~/lib/apiPois'
 
 abstract class FilterValueDef<Type extends Filter> {
@@ -68,7 +74,32 @@ export class FilterValueDate extends FilterValueDef<FilterDate> {
   }
 }
 
-export type FilterValue = FilterValueList | FilterValueBoolean | FilterValueDate
+export class FilterValueNumberRange extends FilterValueDef<FilterNumberRange> {
+  filterValueMin: number | null = null
+  filterValueMax: number | null = null
+
+  isSet() {
+    return (
+      (this.filterValueMin !== null && this.filterValueMin !== this.def.min) ||
+      (this.filterValueMax !== null && this.filterValueMax !== this.def.max)
+    )
+  }
+
+  isMatch(properties: ApiPoi['properties']) {
+    return (
+      (this.filterValueMin == null ||
+        this.filterValueMin < properties[this.def.property]) &&
+      (this.filterValueMax == null ||
+        properties[this.def.property] < this.filterValueMax)
+    )
+  }
+}
+
+export type FilterValue =
+  | FilterValueList
+  | FilterValueBoolean
+  | FilterValueDate
+  | FilterValueNumberRange
 export type FilterValues = FilterValue[]
 
 export function filterValuesIsSet(filterValues: FilterValues) {
@@ -84,5 +115,7 @@ export function filterValueFactory(filter: Filter): FilterValue {
       return new FilterValueList(filter)
     case 'date_range':
       return new FilterValueDate(filter)
+    case 'number_range':
+      return new FilterValueNumberRange(filter)
   }
 }

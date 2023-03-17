@@ -66,7 +66,7 @@ const defaultProps = {
   menuItems: [menuGroup, menuLink, category],
   filters: {},
   categoriesActivesCountByParent: {},
-  isCategorySelected: () => false,
+  selectedCategoriesIds: [],
   size: 'lg',
 }
 

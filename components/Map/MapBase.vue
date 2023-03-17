@@ -1,8 +1,9 @@
 <template>
-  <div id="map-container" class="flex flex-col">
+  <div id="map-container" class="w-full h-full flex flex-col">
     <Map
       :center="center"
       :bounds="bounds"
+      :fit-bounds-options="fitBoundsOptions()"
       :zoom="selectionZoom.poi"
       :fullscreen-control="fullscreenControl"
       :extra-attributions="extraAttributions"
@@ -11,11 +12,9 @@
       :show-attribution="showAttribution && !offMapAttribution"
       :hide-control="hideControl"
       :hash="hash"
+      :cooperative-gestures="cooperativeGestures"
       class="grow h-full"
-      @map-init="
-        onMapInit($event)
-        $emit('map-init', $event)
-      "
+      @map-init="onMapInit($event)"
       @map-data="onMapRender('map-data', $event)"
       @map-dragend="onMapRender('map-dragend', $event)"
       @map-moveend="onMapRender('map-moveend', $event)"
@@ -23,10 +22,7 @@
       @map-rotateend="onMapRender('map-rotateend', $event)"
       @map-touchmove="onMapRender('map-touchmove', $event)"
       @map-zoomend="onMapRender('map-zoomend', $event)"
-      @map-style-load="
-        onMapStyleLoad($event)
-        $emit('map-style-load', $event)
-      "
+      @map-style-load="onMapStyleLoad($event)"
       @full-attribution="fullAttribution = $event"
     >
       <template #controls>
@@ -45,6 +41,8 @@
 
 <script lang="ts">
 import { PoiFilter } from '@teritorio/map'
+import copy from 'fast-copy'
+import { Polygon, MultiPolygon } from 'geojson'
 import throttle from 'lodash.throttle'
 import { FitBoundsOptions, LngLatBoundsLike, LngLatLike } from 'maplibre-gl'
 import Vue, { PropType } from 'vue'
@@ -59,6 +57,10 @@ import { MapStyleEnum } from '~/utils/types'
 
 const POI_SOURCE = 'poi'
 const POI_LAYER = 'poi'
+
+const BOUNDARY_SOURCE = 'boundary_area'
+const BOUNDARY_AREA_LAYER = 'boundary_area'
+const BOUNDAR_BORDER_LAYER = 'boundary_border'
 
 export default Vue.extend({
   components: {
@@ -92,12 +94,12 @@ export default Vue.extend({
       default: false,
     },
     hash: {
-      type: String,
+      type: String as PropType<string>,
       default: undefined,
     },
     mapStyle: {
-      type: String as PropType<MapStyleEnum>,
-      required: false,
+      type: String as PropType<MapStyleEnum | undefined>,
+      default: undefined,
     },
     rotate: {
       type: Boolean,
@@ -118,6 +120,14 @@ export default Vue.extend({
     styleIconFilter: {
       type: Array as PropType<Array<string[]> | null>,
       default: null,
+    },
+    cooperativeGestures: {
+      type: Boolean,
+      default: false,
+    },
+    boundaryArea: {
+      type: Object as PropType<Polygon | MultiPolygon | undefined>,
+      default: undefined,
     },
   },
 
@@ -149,7 +159,11 @@ export default Vue.extend({
     },
 
     styleIconFilter() {
-      this.setPoiFilter()
+      if (this.styleIconFilter) {
+        this.poiFilter?.setIncludeFilter(this.styleIconFilter)
+      } else {
+        this.poiFilter?.remove(true)
+      }
     },
   },
 
@@ -161,12 +175,16 @@ export default Vue.extend({
   },
 
   methods: {
-    fitBounds(bounds: LngLatBoundsLike, options: FitBoundsOptions = {}) {
-      this.map.fitBounds(bounds, {
+    fitBoundsOptions(options: FitBoundsOptions = {}): FitBoundsOptions {
+      return {
         maxZoom: 17,
         padding: this.fitBoundsPaddingOptions,
         ...options,
-      })
+      }
+    },
+
+    fitBounds(bounds: LngLatBoundsLike, options: FitBoundsOptions = {}): void {
+      this.map.fitBounds(bounds, this.fitBoundsOptions(options))
     },
 
     initPoiLayer(
@@ -174,45 +192,50 @@ export default Vue.extend({
       clusterPropertiesValues: string[],
       clusterPropertiesKeyExpression: maplibregl.ExpressionSpecification
     ) {
-      if (!this.map.getSource(POI_SOURCE)) {
-        // Create cluster properties, which will contain count of features per category
-
-        const clusterProps: { [category: string]: object } = {}
-        clusterPropertiesValues.forEach((clusterPropertiesValue) => {
-          clusterProps[clusterPropertiesValue] = [
-            '+',
-            [
-              'case',
-              ['==', clusterPropertiesKeyExpression, clusterPropertiesValue],
-              1,
-              0,
-            ],
-          ]
-        })
-
-        if (!('#000000' in clusterProps)) {
-          clusterProps['#000000'] = [
-            '+',
-            ['case', ['==', clusterPropertiesKeyExpression, null], 1, 0],
-          ]
-        }
-
-        this.map.addSource(POI_SOURCE, {
-          type: 'geojson',
-          cluster: true,
-          clusterRadius: 32,
-          clusterProperties: clusterProps,
-          clusterMaxZoom: 15,
-          tolerance: 0.6,
-          data: {
-            type: 'FeatureCollection',
-            features,
-          },
-        })
+      if (this.map.getLayer(POI_LAYER)) {
+        this.map.removeLayer(POI_LAYER)
+      }
+      if (this.map.getSource(POI_SOURCE)) {
+        this.map.removeSource(POI_SOURCE)
       }
 
+      // Create cluster properties, which will contain count of features per category
+
+      const clusterProps: { [category: string]: object } = {}
+      clusterPropertiesValues.forEach((clusterPropertiesValue) => {
+        clusterProps[clusterPropertiesValue] = [
+          '+',
+          [
+            'case',
+            ['==', clusterPropertiesKeyExpression, clusterPropertiesValue],
+            1,
+            0,
+          ],
+        ]
+      })
+
+      if (!('#000000' in clusterProps)) {
+        clusterProps['#000000'] = [
+          '+',
+          ['case', ['==', clusterPropertiesKeyExpression, null], 1, 0],
+        ]
+      }
+
+      this.map.addSource(POI_SOURCE, {
+        type: 'geojson',
+        cluster: true,
+        clusterRadius: 32,
+        clusterProperties: clusterProps,
+        clusterMaxZoom: 15,
+        tolerance: 0.6,
+        data: {
+          type: 'FeatureCollection',
+          features,
+        },
+      })
+
       // Add individual markers
-      if (!this.map.getLayer(POI_LAYER) && this.poiLayerTemplate)
+      if (this.poiLayerTemplate)
         this.map.addLayer(
           markerLayerTextFactory(this.poiLayerTemplate, POI_LAYER, POI_SOURCE)
         )
@@ -220,6 +243,7 @@ export default Vue.extend({
 
     onMapInit(map: maplibregl.Map) {
       this.map = map
+      this.$emit('map-init', map)
     },
 
     onMapStyleLoad(style: maplibregl.StyleSpecification) {
@@ -231,14 +255,70 @@ export default Vue.extend({
         filter: this.styleIconFilter || [],
       })
       this.map.addControl(this.poiFilter)
-    },
 
-    setPoiFilter() {
-      if (this.styleIconFilter) {
-        this.poiFilter?.setIncludeFilter(this.styleIconFilter)
-      } else {
-        this.poiFilter?.remove(true)
+      if (this.boundaryArea) {
+        const inverse = copy(this.boundaryArea)
+        if (inverse.type === 'Polygon') {
+          inverse.coordinates = [
+            [
+              [-180, -90],
+              [180, -90],
+              [180, 90],
+              [-180, 90],
+              [-180, -90],
+            ],
+            ...inverse.coordinates,
+          ]
+        } else {
+          inverse.coordinates = [
+            [
+              [
+                [-180, -90],
+                [180, -90],
+                [180, 90],
+                [-180, 90],
+                [-180, -90],
+              ],
+              ...inverse.coordinates[0],
+            ],
+          ]
+        }
+
+        this.map.addSource(BOUNDARY_SOURCE, {
+          type: 'geojson',
+          data: inverse,
+        })
+
+        let firstSymbolLayerId: string | undefined = this.map
+          .getStyle()
+          .layers.find((layer) => layer.type === 'line')?.id
+        this.map.addLayer(
+          {
+            id: BOUNDARY_AREA_LAYER,
+            source: BOUNDARY_SOURCE,
+            type: 'fill',
+            paint: {
+              'fill-color': 'rgba(185, 185, 185, 0.46)',
+              'fill-opacity': 0.8,
+            },
+          },
+          firstSymbolLayerId
+        )
+        this.map.addLayer(
+          {
+            id: BOUNDAR_BORDER_LAYER,
+            source: BOUNDARY_SOURCE,
+            type: 'line',
+            paint: {
+              'line-color': 'rgba(185, 185, 185, 0.46)',
+              'line-width': 3,
+            },
+          },
+          firstSymbolLayerId
+        )
       }
+
+      this.$emit('map-style-load', style)
     },
 
     onMapRender(eventName: string, event: any) {
@@ -262,12 +342,12 @@ export default Vue.extend({
 })
 </script>
 
-<style>
-.cluster-item {
+<style scoped>
+:deep(.cluster-item) {
   cursor: pointer;
 }
 
-.cluster-donut {
+:deep(.cluster-donut) {
   @apply text-sm leading-none font-medium block text-zinc-800;
 }
 </style>

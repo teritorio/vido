@@ -5,17 +5,19 @@
     :nav-menu-entries="contents"
     :initial-category-ids="categoryIds"
     :initial-poi="initialPoi"
+    :boundary-area="boundary_geojson"
   />
 </template>
 
 <script lang="ts">
+import { Polygon, MultiPolygon, GeoJSON } from 'geojson'
+import { mapWritableState } from 'pinia'
 import Vue from 'vue'
 import { MetaInfo } from 'vue-meta'
-import { mapActions } from 'vuex'
 
 import Home from '~/components/Home/Home.vue'
 import { ContentEntry, getContents } from '~/lib/apiContent'
-import { ApiMenuItem, getMenu } from '~/lib/apiMenu'
+import { MenuItem, getMenu, ApiMenuCategory } from '~/lib/apiMenu'
 import { getPoiById, ApiPoi } from '~/lib/apiPois'
 import {
   getPropertyTranslations,
@@ -23,6 +25,8 @@ import {
 } from '~/lib/apiPropertyTranslations'
 import { getSettings, headerFromSettings, Settings } from '~/lib/apiSettings'
 import { vidoConfig } from '~/plugins/vido-config'
+import { menuStore } from '~/stores/menu'
+import { siteStore } from '~/stores/site'
 import { VidoConfig } from '~/utils/types-config'
 
 export default Vue.extend({
@@ -30,82 +34,132 @@ export default Vue.extend({
     Home,
   },
 
-  async asyncData({ params, route, req, $config }): Promise<{
+  async asyncData({ params, route, req, $config, $pinia }): Promise<{
     config: VidoConfig
     settings: Settings
     contents: ContentEntry[]
     propertyTranslations: PropertyTranslations
-    menuItems: ApiMenuItem[]
-    categoryIds: number[] | null
-    initialPoi: ApiPoi | null
+    menuItems: MenuItem[] | undefined
+    categoryIds: ApiMenuCategory['id'][] | undefined
+    initialPoi: ApiPoi | undefined
+    boundary_geojson: Polygon | MultiPolygon | undefined
   }> {
-    const fetchSettings = getSettings(
-      vidoConfig(req, $config).API_ENDPOINT,
-      vidoConfig(req, $config).API_PROJECT,
-      vidoConfig(req, $config).API_THEME
-    )
-    const fetchContents = getContents(
-      vidoConfig(req, $config).API_ENDPOINT,
-      vidoConfig(req, $config).API_PROJECT,
-      vidoConfig(req, $config).API_THEME
-    )
-    const fetchPropertyTranslations = getPropertyTranslations(
-      vidoConfig(req, $config).API_ENDPOINT,
-      vidoConfig(req, $config).API_PROJECT,
-      vidoConfig(req, $config).API_THEME
-    )
-    const fetchMenuItems = getMenu(
-      vidoConfig(req, $config).API_ENDPOINT,
-      vidoConfig(req, $config).API_PROJECT,
-      vidoConfig(req, $config).API_THEME
-    )
+    const config: VidoConfig =
+      siteStore($pinia).config || vidoConfig(req, $config)
+
+    const fetchSettings = siteStore($pinia).settings
+      ? Promise.resolve(siteStore($pinia).settings as Settings)
+      : getSettings(config.API_ENDPOINT, config.API_PROJECT, config.API_THEME)
+
+    const fetchSettingsBoundary = fetchSettings.then(async (settings) => {
+      let boundary_geojson: Polygon | MultiPolygon | undefined
+      const boundary = route.query.boundary
+      if (boundary && typeof boundary === 'string') {
+        const boundaryObject = settings.polygons_extra[boundary]
+        if (boundaryObject) {
+          if (typeof boundaryObject.data === 'string') {
+            const geojson = (await (
+              await fetch(boundaryObject.data)
+            ).json()) as GeoJSON
+            if (geojson.type === 'Feature') {
+              boundary_geojson = geojson.geometry as Polygon | MultiPolygon
+            } else if (
+              geojson.type === 'Polygon' ||
+              geojson.type === 'MultiPolygon'
+            ) {
+              boundary_geojson = geojson as Polygon | MultiPolygon
+            }
+          } else {
+            boundary_geojson = boundaryObject.data as Polygon
+          }
+        }
+      }
+
+      return [settings, boundary_geojson]
+    }) as unknown as [Settings, Polygon | MultiPolygon | undefined]
+
+    const fetchContents = siteStore($pinia).contents
+      ? Promise.resolve(siteStore($pinia).contents as ContentEntry[])
+      : getContents(config.API_ENDPOINT, config.API_PROJECT, config.API_THEME)
+
+    const fetchPropertyTranslations = siteStore($pinia).translations
+      ? Promise.resolve(siteStore($pinia).translations as PropertyTranslations)
+      : getPropertyTranslations(
+          config.API_ENDPOINT,
+          config.API_PROJECT,
+          config.API_THEME
+        )
+
+    const fetchMenuItems = menuStore($pinia).menuItems
+      ? Promise.resolve(undefined)
+      : getMenu(config.API_ENDPOINT, config.API_PROJECT, config.API_THEME)
 
     let categoryIdsJoin: string | null
     let poiId: string | null
     // Workaround Nuxt missing feature to simple respect trialling slash meaning
     if (params.poiId) {
-      categoryIdsJoin = params.p1
-      poiId = params.poiId
+      categoryIdsJoin = params.p1 as string
+      poiId = params.poiId as string
     } else if (route.path.endsWith('/')) {
-      categoryIdsJoin = params.p1
+      categoryIdsJoin = params.p1 as string
       poiId = null
     } else {
       categoryIdsJoin = null
-      poiId = params.p1
+      poiId = params.p1 as string
     }
 
     const categoryIds =
       (categoryIdsJoin &&
         categoryIdsJoin.split(',').map((id) => parseInt(id))) ||
-      null
-    let fetchPoi: Promise<ApiPoi | null> = Promise.resolve(null)
+      undefined
+    let fetchPoi: Promise<ApiPoi | undefined> = Promise.resolve(undefined)
     if (poiId) {
-      fetchPoi = getPoiById(
-        vidoConfig(req, $config).API_ENDPOINT,
-        vidoConfig(req, $config).API_PROJECT,
-        vidoConfig(req, $config).API_THEME,
-        poiId
-      )
+      fetchPoi = Promise.resolve(
+        getPoiById(
+          config.API_ENDPOINT,
+          config.API_PROJECT,
+          config.API_THEME,
+          poiId!
+        )
+      ).catch(() => {
+        return undefined
+      })
     }
 
-    const [settings, contents, propertyTranslations, menuItems, initialPoi] =
-      await Promise.all([
-        fetchSettings,
-        fetchContents,
-        fetchPropertyTranslations,
-        fetchMenuItems,
-        fetchPoi,
-      ])
+    const [
+      [settings, boundary_geojson],
+      contents,
+      propertyTranslations,
+      menuItems,
+      initialPoi,
+    ] = await Promise.all([
+      fetchSettingsBoundary,
+      fetchContents,
+      fetchPropertyTranslations,
+      fetchMenuItems,
+      fetchPoi,
+    ])
 
     return Promise.resolve({
-      config: vidoConfig(req, $config),
+      config,
       settings,
       contents,
       propertyTranslations,
       menuItems,
       categoryIds,
       initialPoi,
+      boundary_geojson,
     })
+  },
+
+  computed: {
+    ...mapWritableState(siteStore, {
+      locale: 'locale',
+      globalConfig: 'config',
+      globalSettings: 'settings',
+      globalContents: 'contents',
+      globalTranslations: 'translations',
+    }),
   },
 
   data(): {
@@ -113,9 +167,10 @@ export default Vue.extend({
     settings: Settings
     contents: ContentEntry[]
     propertyTranslations: PropertyTranslations
-    menuItems: ApiMenuItem[]
-    categoryIds: number[] | null
-    initialPoi: ApiPoi | null
+    menuItems: MenuItem[]
+    categoryIds: ApiMenuCategory['id'][] | null
+    initialPoi: ApiPoi | undefined
+    boundary_geojson: Polygon | MultiPolygon | undefined
   } {
     return {
       config: null,
@@ -128,7 +183,7 @@ export default Vue.extend({
       // @ts-ignore
       menuItems: null,
       categoryIds: null,
-      initialPoi: null,
+      initialPoi: undefined,
     }
   },
 
@@ -137,9 +192,14 @@ export default Vue.extend({
   },
 
   created() {
-    this.$store.dispatch('menu/fetchConfig', {
-      menuItems: this.menuItems,
-    })
+    this.globalConfig = this.config!
+    if (this.menuItems) {
+      menuStore().fetchConfig(this.menuItems)
+    }
+    this.globalSettings = this.settings
+    this.globalContents = this.contents
+    this.globalTranslations = this.propertyTranslations
+
     this.$settings.set(this.settings)
     this.$propertyTranslations.set(this.propertyTranslations)
   },
@@ -150,18 +210,12 @@ export default Vue.extend({
   },
 
   mounted() {
-    this.setSiteLocale(this.$i18n.locale)
-  },
-
-  methods: {
-    ...mapActions({
-      setSiteLocale: 'site/setLocale',
-    }),
+    this.locale = this.$i18n.locale
   },
 })
 </script>
 
-<style>
+<style scoped>
 body,
 #__nuxt,
 #__layout {
