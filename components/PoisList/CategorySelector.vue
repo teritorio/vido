@@ -1,11 +1,12 @@
 <template>
   <div>
     <v-autocomplete
+      :model-value="categoryId"
       class="category-selector"
       solo
       :items="Object.values(menuEntries).map((a) => a[0])"
       :label="$t('categorySelector.placeholder')"
-      @input="$emit('category-change', $event)"
+      @update:modelValue="$emit('category-change', $event)"
     >
       <template #selection="{ props, item }">
         <v-list-item v-bind="props">
@@ -147,13 +148,3 @@ export default defineNuxtComponent({
   },
 })
 </script>
-
-<style scoped>
-:deep(.v-text-field__details) {
-  display: none;
-}
-
-:deep(.v-input__slot) {
-  margin: 0;
-}
-</style>
