@@ -1,5 +1,4 @@
 import { defineNuxtConfig } from 'nuxt/config'
-// import { cypressMockMiddleware } from '@cypress/mock-ssr'
 
 import { vidos } from './lib/config'
 import { sitemapFilter, sitemapRoutes } from './lib/sitemap'
@@ -50,7 +49,6 @@ export default defineNuxtConfig({
   loadingIndicator: false,
 
   serverMiddleware: [
-    //   ...(process.env.NODE_ENV != 'production' ? [cypressMockMiddleware()] : []),
     // { path: '/', handler: '~/api/manifest.ts' },
   ],
 
