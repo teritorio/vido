@@ -1,5 +1,5 @@
 <template>
-  <div data-app class="vuetify">
+  <div>
     <v-autocomplete
       class="category-selector"
       solo

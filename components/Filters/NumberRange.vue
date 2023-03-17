@@ -64,7 +64,3 @@ export default defineNuxtComponent({
   },
 })
 </script>
-
-<style lang="scss">
-@import '@vueform/slider/themes/tailwind.scss';
-</style>

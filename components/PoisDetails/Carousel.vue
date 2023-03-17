@@ -6,7 +6,7 @@
       :alt="$t('poiCard.image')"
     />
   </div>
-  <div v-else-if="images.length > 1" data-app class="vuetify">
+  <div v-else-if="images.length > 1">
     <v-carousel :show-arrows="false" class="mb-14">
       <v-carousel-item v-for="(image, i) in images" :key="i">
         <NuxtPicturePatch

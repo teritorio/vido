@@ -1,5 +1,5 @@
 <template>
-  <div data-app>
+  <div>
     <v-select
       v-model="currentValue"
       outlined

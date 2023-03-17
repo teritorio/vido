@@ -1,5 +1,5 @@
 <template>
-  <div data-app>
+  <div>
     <v-autocomplete
       v-model="currentValue"
       outlined
@@ -56,7 +56,3 @@ export default defineNuxtComponent({
   },
 })
 </script>
-
-<style lang="scss">
-@import '@vueform/slider/themes/tailwind.scss';
-</style>
