@@ -2015,16 +2015,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@cypress/mock-ssr@https://github.com/cypress-io/cypress-mock-ssr.git#commit=de67dfaa9fd0a88224fd723b9d07feb227db613d":
-  version: 0.0.1
-  resolution: "@cypress/mock-ssr@https://github.com/cypress-io/cypress-mock-ssr.git#commit=de67dfaa9fd0a88224fd723b9d07feb227db613d"
-  dependencies:
-    connect: ^3.7.0
-    nock: ^13.1.3
-  checksum: 4c876c187b7a13755c4ab412278d738dd32a258ff3773aece5f79e6bcc9117ba0c0a5511d7ca3788b10f2c557edf9664eb355af2d5ed4f03e86d1a25099fdb09
-  languageName: node
-  linkType: hard
-
 "@cypress/request@npm:^2.88.10":
   version: 2.88.11
   resolution: "@cypress/request@npm:2.88.11"
@@ -5270,7 +5260,6 @@ __metadata:
     "@babel/preset-env": ^7.20.2
     "@commitlint/cli": ^17.4.4
     "@commitlint/config-conventional": ^17.4.4
-    "@cypress/mock-ssr": "https://github.com/cypress-io/cypress-mock-ssr.git#commit=de67dfaa9fd0a88224fd723b9d07feb227db613d"
     "@fortawesome/fontawesome-svg-core": ^6.3.0
     "@fortawesome/free-brands-svg-icons": ^6.3.0
     "@fortawesome/free-regular-svg-icons": ^6.3.0
@@ -5343,6 +5332,7 @@ __metadata:
     lodash.uniqby: ^4.7.0
     lodash.without: ^4.4.0
     maplibre-gl: ^2.4.0
+    nock: ^13.3.0
     node-sass: ^8.0.0
     nuxi: ^3.2.3
     nuxt: ^3.2.3
@@ -9632,18 +9622,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"connect@npm:^3.7.0":
-  version: 3.7.0
-  resolution: "connect@npm:3.7.0"
-  dependencies:
-    debug: 2.6.9
-    finalhandler: 1.1.2
-    parseurl: ~1.3.3
-    utils-merge: 1.0.1
-  checksum: 25b827ceb48e6355f6395b44b1ad09ac46002b89e3789952ca0372fd3ef04b81ad40fdc5896ecc21577a0583304731d86c050331575fbde398b2a6fd27c4a643
-  languageName: node
-  linkType: hard
-
 "consola@npm:^2.13.0, consola@npm:^2.15.3":
   version: 2.15.3
   resolution: "consola@npm:2.15.3"
@@ -12706,21 +12684,6 @@ __metadata:
   dependencies:
     to-regex-range: ^5.0.1
   checksum: efca43d59b487ad4bc0b2b1cb9e51617c75a7b0159db51fa190c75c3d634ea5fad1ff4750d7c14346add4cd065e3c46e8f99af333edf2b4ec2a424f87e491a85
-  languageName: node
-  linkType: hard
-
-"finalhandler@npm:1.1.2":
-  version: 1.1.2
-  resolution: "finalhandler@npm:1.1.2"
-  dependencies:
-    debug: 2.6.9
-    encodeurl: ~1.0.2
-    escape-html: ~1.0.3
-    on-finished: ~2.3.0
-    parseurl: ~1.3.3
-    statuses: ~1.5.0
-    unpipe: ~1.0.0
-  checksum: f2e5b6bfe2201f13e74408530a7f354b7846ab3e648b3dde4f8ed3b773c8a743c16b0f378cb5113df7fef84c5be364bb1a3655f0a75571f163c982289fbd9671
   languageName: node
   linkType: hard
 
@@ -18401,7 +18364,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"nock@npm:^13.1.3":
+"nock@npm:^13.3.0":
   version: 13.3.0
   resolution: "nock@npm:13.3.0"
   dependencies:
@@ -19036,15 +18999,6 @@ __metadata:
   dependencies:
     ee-first: 1.1.1
   checksum: ed2f28508d2eda518aa4c814a345f1731a1c91acc05b47c17fe304cc71809c2e0e17cca1f4fd032e5e5b6b207d158d15413179868a1b90deeace8fb236fea3a6
-  languageName: node
-  linkType: hard
-
-"on-finished@npm:~2.3.0":
-  version: 2.3.0
-  resolution: "on-finished@npm:2.3.0"
-  dependencies:
-    ee-first: 1.1.1
-  checksum: 362e64608287d31ffd96a15fb9305a410b3e4d07c86f277fae907e38af46bc6f5ff948de90eabb81dc5632ca7f9a290085acc5410c378053dfa9860451d97ee5
   languageName: node
   linkType: hard
 
@@ -23003,13 +22957,6 @@ __metadata:
   version: 2.0.1
   resolution: "statuses@npm:2.0.1"
   checksum: d0d3024dd1bba02dd3cb837e4f529e2e44f9300e54ca29258e048ded4dd1fdcb85a32060870dd7abb32b6df7f5991b6ea1c051aa5c6ffda6077cac9d68226b23
-  languageName: node
-  linkType: hard
-
-"statuses@npm:~1.5.0":
-  version: 1.5.0
-  resolution: "statuses@npm:1.5.0"
-  checksum: 57735269bf231176a60deb80f6d60214cb4a87663b0937e79497afe9aebe2597f8377fd28893f4d1776205f18dd0b927774a26b72051411ac5108e9e2dfc77d2
   languageName: node
   linkType: hard
 
