@@ -6,7 +6,7 @@
           field.group !== undefined &&
           !isListEmpty(field.fields, properties, geom)
         "
-        class="fields-list"
+        class="block"
       >
         <div v-if="field.display_mode === 'standard'">
           <FieldsHeader
@@ -16,17 +16,12 @@
             {{ fieldTranslateK(field.group) }}
           </FieldsHeader>
           <FieldsGroup
-            :id="`FieldsGroup-${[...recursionStack, field.group].join('-')}-${
-              field.group
-            }`"
+            :id="`FieldsGroup-${recursionStack.join('-')}-${field.group}`"
             :recursion-stack="[...recursionStack, field.group]"
             :group="field"
             :properties="properties"
             :geom="geom"
             :color-fill="colorFill"
-            :class="[
-              [...recursionStack, field.group].length === 0 && 'fields-list',
-            ]"
           />
         </div>
         <Block
@@ -41,28 +36,21 @@
             {{ fieldTranslateK(field.group) }}
           </FieldsHeader>
           <FieldsGroup
-            :id="`FieldsGroup-${[...recursionStack, field.group].join('-')}-${
-              field.group
-            }`"
+            :id="`FieldsGroup-${recursionStack.join('-')}-${field.group}`"
             :recursion-stack="[...recursionStack, field.group]"
             :group="field"
             :properties="properties"
             :geom="geom"
             :color-fill="colorFill"
-            :class="[
-              [...recursionStack, field.group].length === 0 && 'fields-list',
-            ]"
           />
         </Block>
       </div>
 
       <Field
         v-else-if="field.group === undefined"
-        :id="`Field-${[...recursionStack, group.group].join('-')}-${
-          field.field
-        }`"
+        :id="`Field-${recursionStack.join('-')}-${field.field}`"
         :context="context"
-        :recursion-stack="[...recursionStack, group.group]"
+        :recursion-stack="recursionStack"
         :field="field"
         :properties="properties"
         :geom="geom"
@@ -163,20 +151,7 @@ export default defineNuxtComponent({
 </script>
 
 <style lang="scss" scoped>
-.fields-list:not(:first-child) {
-  margin-top: 3.3rem;
-}
-
-:deep(.field_header_level_1) {
-  display: inline;
-}
-
-:deep(.field_content_level_1) {
-  display: inline;
-  clear: right;
-}
-
-:deep(.field) {
-  margin-bottom: 0.3rem;
+.block {
+  margin-bottom: 3rem;
 }
 </style>
