@@ -1,5 +1,5 @@
 <template>
-  <div data-app class="vuetify">
+  <div>
     <v-dialog v-model="modal" scrollable max-width="30rem">
       <v-card>
         <v-card-title class="tw-text-h5">{{ title }}</v-card-title>
