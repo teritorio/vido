@@ -1,7 +1,7 @@
 <template>
   <div
     v-if="attribution"
-    class="text-2xs md:text-xs p-2 text-right bg-white z-10"
+    class="tw-text-2xs md:tw-text-xs tw-p-2 tw-text-right tw-bg-white tw-z-10"
     v-html="attribution"
   ></div>
 </template>

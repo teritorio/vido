@@ -1,9 +1,9 @@
 <template>
   <div>
-    <div class="flex items-center justify-between shrink-0">
+    <div class="tw-flex tw-items-center tw-justify-between tw-shrink-0">
       <h2
         v-if="name"
-        class="block text-xl font-semibold leading-tight"
+        class="tw-block tw-text-xl tw-font-semibold tw-leading-tight"
         :style="'color:' + colorLine"
       >
         {{ name }}
@@ -15,7 +15,7 @@
             !websiteDetails.startsWith('https://') &&
             !websiteDetails.startsWith('http://')
           "
-          class="ml-6 px-3 py-1.5 text-xs text-zinc-800 bg-zinc-100 hover:bg-zinc-200 focus:bg-zinc-200 transition transition-colors rounded-md"
+          class="tw-ml-6 tw-px-3 tw-py-1.5 tw-text-xs tw-text-zinc-800 tw-bg-zinc-100 hover:tw-bg-zinc-200 focus:tw-bg-zinc-200 tw-transition tw-transition-colors tw-rounded-md"
           :to="websiteDetails"
           rel="noopener noreferrer"
           @click.stop="trackingPopupEvent('details')"
@@ -24,7 +24,7 @@
         </NuxtLink>
         <a
           v-else
-          class="ml-6 px-3 py-1.5 text-xs text-zinc-800 bg-zinc-100 hover:bg-zinc-200 focus:bg-zinc-200 transition transition-colors rounded-md"
+          class="tw-ml-6 tw-px-3 tw-py-1.5 tw-text-xs tw-text-zinc-800 tw-bg-zinc-100 hover:tw-bg-zinc-200 focus:tw-bg-zinc-200 tw-transition tw-transition-colors tw-rounded-md"
           :href="websiteDetails"
           rel="noopener noreferrer"
           @click.stop="trackingPopupEvent('details')"
@@ -36,12 +36,12 @@
 
     <div
       v-if="!unavoidable"
-      class="flex items-center mt-2 text-sm text-zinc-500 shrink-0"
+      class="tw-flex tw-items-center tw-mt-2 tw-text-sm tw-text-zinc-500 tw-shrink-0"
     >
       <TeritorioIcon
         v-if="icon"
         :color-text="colorLine"
-        class="mr-2"
+        class="tw-mr-2"
         :picto="icon"
         :use-native-alignment="false"
       />
@@ -51,12 +51,12 @@
 
     <p
       v-if="unavoidable && Boolean(description)"
-      class="text-sm flex-grow shrink-0 mt-6"
+      class="tw-text-sm tw-flex-grow tw-shrink-0 tw-mt-6"
     >
       {{ description }}
     </p>
 
-    <div v-else class="h-auto flex-grow shrink-0">
+    <div v-else class="tw-h-auto tw-flex-grow tw-shrink-0">
       <Fields
         :fields="
           (poi.properties.editorial && poi.properties.editorial.popup_fields) ||
@@ -65,42 +65,42 @@
         :properties="poi.properties"
         :details="websiteDetails"
         :geom="poi.geometry"
-        class="mt-6 text-sm"
+        class="tw-mt-6 tw-text-sm"
         @click-detail="trackingPopupEvent('details')"
       />
     </div>
 
     <div
-      class="flex items-center space-x-2 justify-evenly shrink-0 bottom-0 pt-2"
+      class="tw-flex tw-items-center tw-space-x-2 tw-justify-evenly tw-shrink-0 tw-bottom-0 tw-pt-2"
     >
       <a
         v-if="screen.phone && coordinatesHref"
         :href="coordinatesHref"
-        class="flex flex-col items-center flex-1 h-full p-2 space-y-2 rounded-lg hover:bg-zinc-100"
+        class="tw-flex tw-flex-col tw-items-center tw-flex-1 tw-h-full tw-p-2 tw-space-y-2 tw-rounded-lg hover:tw-bg-zinc-100"
         :title="$t('poiCard.findRoute')"
         @click="trackingPopupEvent('route')"
       >
         <font-awesome-icon icon="route" :color="colorLine" size="sm" />
-        <span class="text-sm">{{ $t('poiCard.route') }}</span>
+        <span class="tw-text-sm">{{ $t('poiCard.route') }}</span>
       </a>
 
       <button
         type="button"
-        class="flex flex-1 flex-col items-center space-y-2 rounded-lg p-2 h-full hover:bg-zinc-100"
+        class="tw-flex tw-flex-1 tw-flex-col tw-items-center tw-space-y-2 tw-rounded-lg tw-p-2 tw-h-full hover:tw-bg-zinc-100"
         :title="$t('poiCard.zoom')"
         @click.stop="onZoomClick"
       >
         <font-awesome-icon icon="plus" :color="colorLine" size="sm" />
-        <span class="text-sm">{{ $t('poiCard.zoom') }}</span>
+        <span class="tw-text-sm">{{ $t('poiCard.zoom') }}</span>
       </button>
 
       <button
         v-if="explorerModeEnabled"
         type="button"
         :class="[
-          'flex flex-1 flex-col items-center space-y-2 rounded-lg p-2 h-full',
-          isModeExplorer && 'bg-blue-600 text-white hover:bg-blue-500',
-          !isModeExplorer && 'hover:bg-zinc-100',
+          'tw-flex tw-flex-1 tw-flex-col tw-items-center tw-space-y-2 tw-rounded-lg tw-p-2 tw-h-full',
+          isModeExplorer && 'tw-bg-blue-600 tw-text-white hover:tw-bg-blue-500',
+          !isModeExplorer && 'hover:tw-bg-zinc-100',
         ]"
         :title="
           isModeExplorer
@@ -114,20 +114,20 @@
           :color="isModeExplorer ? 'white' : colorLine"
           size="sm"
         />
-        <span class="text-sm">{{ $t('poiCard.explore') }}</span>
+        <span class="tw-text-sm">{{ $t('poiCard.explore') }}</span>
       </button>
 
       <button
         v-if="favoritesModeEnabled && id"
         type="button"
-        class="flex flex-col items-center flex-1 h-full p-2 space-y-2 rounded-lg hover:bg-zinc-100"
+        class="tw-flex tw-flex-col tw-items-center tw-flex-1 tw-h-full tw-p-2 tw-space-y-2 tw-rounded-lg hover:tw-bg-zinc-100"
         :title="
           isModeFavorites ? $t('poiCard.favoriteOn') : $t('poiCard.favoriteOff')
         "
         @click.stop="onFavoriteClick"
       >
         <FavoriteIcon :is-active="isModeFavorites" :color-line="colorLine" />
-        <span class="text-sm">{{ $t('poiCard.favorite') }}</span>
+        <span class="tw-text-sm">{{ $t('poiCard.favorite') }}</span>
       </button>
     </div>
   </div>
@@ -284,6 +284,6 @@ export default defineNuxtComponent({
 
 <style scoped>
 button {
-  @apply focus:outline-none;
+  @apply focus:tw-outline-none;
 }
 </style>

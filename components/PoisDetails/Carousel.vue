@@ -1,5 +1,5 @@
 <template>
-  <div v-if="images.length == 1" class="margin slide mb-14">
+  <div v-if="images.length == 1" class="tw-margin tw-slide tw-mb-14">
     <NuxtPicture
       :src="images[0]"
       media-size="66vw"

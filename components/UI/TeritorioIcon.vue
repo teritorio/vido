@@ -1,7 +1,10 @@
 <template>
   <i
     v-if="!Boolean(image) && picto.startsWith('teritorio')"
-    :class="[picto, !useNativeAlignment && 'flex items-center justify-center']"
+    :class="[
+      picto,
+      !useNativeAlignment && 'tw-flex tw-items-center tw-justify-center',
+    ]"
     :style="{ color: colorText }"
   />
   <font-awesome-icon
@@ -9,7 +12,7 @@
     :icon="picto"
     :color="colorText"
   />
-  <img v-else-if="Boolean(image)" class="rounded-full" :src="image" />
+  <img v-else-if="Boolean(image)" class="tw-rounded-full" :src="image" />
 </template>
 
 <script lang="ts">
