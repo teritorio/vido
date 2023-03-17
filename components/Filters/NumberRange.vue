@@ -1,26 +1,27 @@
 <template>
   <div class="filters-number-range">
-    <Slider
+    <v-range-slider
       v-model="value"
+      strict
       :min="min"
       :max="max"
-      :merge="max !== null && min !== null && (max - min) / 10"
-      @set="onChange"
-    />
+      thumb-label="always"
+      @update:modelValue="onChange"
+    ></v-range-slider>
   </div>
 </template>
 
 <script lang="ts">
-import Slider from '@vueform/slider/dist/slider.vue2.js'
 import copy from 'fast-copy'
 import { PropType } from 'vue'
+import { VRangeSlider } from 'vuetify/components/VRangeSlider'
 
 import { defineNuxtComponent } from '#app'
 import { FilterValueNumberRange } from '~/utils/types-filters'
 
 export default defineNuxtComponent({
   components: {
-    Slider,
+    VRangeSlider,
   },
 
   props: {
@@ -46,10 +47,10 @@ export default defineNuxtComponent({
   },
 
   computed: {
-    min(): number | null {
+    min(): number {
       return this.filter.def.min
     },
-    max(): number | null {
+    max(): number {
       return this.filter.def.max
     },
   },
