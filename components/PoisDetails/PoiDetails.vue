@@ -341,6 +341,6 @@ export default defineNuxtComponent({
 
 :deep(#map-container) {
   width: 100%;
-  height: 346px;
+  height: 500px;
 }
 </style>
