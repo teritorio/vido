@@ -1,12 +1,14 @@
 <template>
-  <div class="fixed w-full h-full overflow-hidden flex flex-col">
-    <h1 class="absolute text-white">{{ siteName }}</h1>
+  <div
+    class="tw-fixed tw-w-full tw-h-full tw-overflow-hidden tw-flex tw-flex-col"
+  >
+    <h1 class="tw-absolute tw-text-white">{{ siteName }}</h1>
     <header
-      class="hidden md:flex relative md:fixed top-0 z-10 flex flex-row w-full h-auto space-x-4 md:w-auto md:p-2"
+      class="tw-hidden md:tw-flex tw-relative md:tw-fixed tw-top-0 tw-z-10 tw-flex tw-flex-row tw-w-full tw-h-auto tw-space-tw-x-4 md:tw-w-auto md:tw-p-2"
       style="max-height: calc(100vh - 30px)"
     >
       <div
-        class="flex flex-col justify-between w-full w-auto max-w-md space-y-4"
+        class="tw-flex tw-flex-col tw-justify-between tw-w-full tw-w-auto tw-max-w-md tw-space-y-4"
       >
         <transition-group
           id="header-menu"
@@ -15,13 +17,16 @@
           name="headers"
           appear
           mode="out-in"
-          :class="['overflow-x-hidden', !isFilterActive && 'overflow-y-auto']"
+          :class="[
+            'tw-overflow-x-hidden',
+            !isFilterActive && 'tw-overflow-y-auto',
+          ]"
         >
           <client-only>
             <MenuBlock
               v-if="isModeExplorerOrFavorites"
               key="ExplorerOrFavoritesBack"
-              extra-class-text-background="bg-blue-500 text-white"
+              extra-class-text-background="tw-bg-blue-500 tw-text-white"
             >
               <ExplorerOrFavoritesBack @click="onQuitExplorerFavoriteMode" />
             </MenuBlock>
@@ -45,8 +50,8 @@
                   :main-url="mainUrl"
                   :site-name="siteName"
                   :logo-url="logoUrl"
-                  class="flex-none mr-2"
-                  image-class="max-w-2xl max-h-12 md:max-h-16"
+                  class="tw-flex-none tw-mr-2"
+                  image-class="tw-max-w-2xl tw-max-h-12 md:tw-max-h-16"
                 />
               </Search>
             </Menu>
@@ -56,34 +61,34 @@
     </header>
     <div
       v-if="!isModeExplorer && selectedCategoryIds.length && !isModeFavorites"
-      class="p-4 absolute z-10 hidden md:block"
+      class="tw-p-4 tw-absolute tw-z-10 tw-hidden md:tw-block"
       :style="selectedFeaturesStyles"
     >
       <SelectedCategories />
     </div>
 
     <header
-      class="flex md:hidden relative fidex top-0 bottom-0 z-10 flex-row w-full space-x-4"
+      class="tw-flex md:tw-hidden tw-relative tw-fidex tw-top-0 tw-bottom-0 tw-z-10 tw-flex-row tw-w-full tw-space-x-4"
     >
-      <div :class="['w-full', isBottomMenuOpened && 'hidden']">
+      <div :class="['tw-w-full', isBottomMenuOpened && 'tw-hidden']">
         <client-only>
           <aside
             v-if="!isModeExplorerOrFavorites"
-            class="flex flex-col max-h-full px-5 py-4 space-y-6 shadow-md pointer-events-auto md:rounded-xl md:w-96 bg-white min-h-20"
+            class="tw-flex tw-flex-col tw-max-h-full tw-px-5 tw-py-4 tw-space-y-6 tw-shadow-md tw-pointer-events-auto md:tw-rounded-xl md:tw-w-96 tw-bg-white tw-min-h-20"
           >
             <Search :menu-to-icon="menuItemsToIcons" :map-center="center">
               <Logo
                 :main-url="mainUrl"
                 :site-name="siteName"
                 :logo-url="logoUrl"
-                class="flex-none md:hidden mr-2"
-                image-class="max-w-2xl max-h-12 md:max-h-16"
+                class="tw-flex-none md:tw-hidden tw-mr-2"
+                image-class="tw-max-w-2xl tw-max-h-12 md:tw-max-h-16"
               />
             </Search>
           </aside>
           <aside
             v-else
-            class="flex flex-col max-h-full px-5 py-4 space-y-6 shadow-md pointer-events-auto md:rounded-xl md:w-96 bg-blue-500 md:bg-white text-white h-20"
+            class="tw-flex tw-flex-col tw-max-h-full tw-px-5 tw-py-4 tw-space-y-6 tw-shadow-md tw-pointer-events-auto md:tw-rounded-xl md:tw-w-96 tw-bg-blue-500 md:tw-bg-white tw-text-white tw-h-20"
           >
             <ExplorerOrFavoritesBack @click="onQuitExplorerFavoriteMode" />
           </aside>
@@ -91,8 +96,10 @@
       </div>
     </header>
 
-    <div v-if="initialBbox" class="w-full h-full">
-      <div class="relative flex flex-col w-full h-full md:h-full">
+    <div v-if="initialBbox" class="tw-w-full tw-h-full">
+      <div
+        class="tw-relative tw-flex tw-flex-col tw-w-full tw-h-full md:tw-h-full"
+      >
         <MapFeatures
           ref="mapFeatures"
           :default-bounds="initialBbox"
@@ -108,23 +115,23 @@
           :enable-filter-route-by-features="isModeFavorites"
           :boundary-area="boundaryArea || settings.polygon.data"
         >
-          <div class="relative">
+          <div class="tw-relative">
             <button
               v-if="
                 !(isModeExplorer || isModeFavorites) || Boolean(selectedFeature)
               "
               type="button"
-              class="-top-12 z-0 absolute md:hidden right-3/8 left-3/8 w-1/4 h-12 transition-all rounded-t-lg text-sm font-medium px-5 space-x-1 shadow-lg outline-none focus:outline-none bg-white text-zinc-800 hover:bg-zinc-100 focus-visible:bg-zinc-100"
+              class="-tw-top-12 tw-z-0 tw-absolute md:tw-hidden tw-right-3/8 tw-left-3/8 tw-w-1/4 tw-h-12 tw-transition-all tw-rounded-t-lg tw-text-sm tw-font-medium tw-px-5 tw-space-x-1 tw-shadow-lg tw-outline-none focus:tw-outline-none tw-bg-white tw-text-zinc-800 hover:tw-bg-zinc-100 focus-visible:tw-bg-zinc-100"
               @click="onBottomMenuButtonClick"
             >
-              <span class="sr-only">{{ $t('headerMenu.categories') }}</span>
+              <span class="tw-sr-only">{{ $t('headerMenu.categories') }}</span>
               <font-awesome-icon icon="grip-lines" size="lg" />
             </button>
           </div>
         </MapFeatures>
         <div
           :class="[
-            'absolute flex justify-end pointer-events-auto items-top pt-4 right-3 md:pt-0 top-4',
+            'tw-absolute tw-flex tw-justify-end tw-pointer-events-auto tw-items-top tw-pt-4 tw-right-3 md:tw-pt-0 tw-top-4',
             isBottomMenuOpened && 'hidden',
           ]"
         >
@@ -140,7 +147,7 @@
           <NavMenu
             id="nav-menu"
             :entries="navMenuEntries"
-            class="ml-3 sm:ml-4"
+            class="tw-ml-3 sm:tw-ml-4"
           />
         </div>
       </div>
@@ -151,10 +158,10 @@
       @discard="showFavoritesOverlay = false"
     />
     <div
-      class="hidden fixed inset-x-0 bottom-0 md:flex overflow-y-auto h-auto md:left-8 md:right-16 md:bottom-5 pointer-events-none"
+      class="tw-hidden tw-fixed tw-inset-x-0 tw-bottom-0 md:tw-flex tw-overflow-y-auto tw-h-auto md:tw-left-8 md:tw-right-16 md:tw-bottom-5 tw-pointer-events-none"
     >
-      <div class="w-full max-w-md" />
-      <div class="grow-[1]" />
+      <div class="tw-w-full tw-max-w-md" />
+      <div class="tw-grow-[1]" />
       <PoiCard
         v-if="
           selectedFeature &&
@@ -163,20 +170,20 @@
           showPoi
         "
         :poi="selectedFeature"
-        class="grow-0"
+        class="tw-grow-0"
         :explorer-mode-enabled="explorerModeEnabled"
         :favorites-mode-enabled="favoritesModeEnabled"
         @explore-click="toggleExploreAroundSelectedPoi"
         @favorite-click="toggleFavorite"
         @zoom-click="goToSelectedFeature"
       />
-      <div class="grow-[3]" />
+      <div class="tw-grow-[3]" />
     </div>
 
-    <BottomMenu class="md:hidden" :is-open="isBottomMenuOpened">
+    <BottomMenu class="md:tw-hidden" :is-open="isBottomMenuOpened">
       <div
         ref="bottomMenu"
-        class="flex-1 h-full overflow-y-auto h-screen-3/5 divide-y"
+        class="tw-flex-1 tw-h-full tw-overflow-y-auto tw-h-screen-3/5 tw-divide-y"
       >
         <Menu
           v-if="!showPoi"
@@ -191,7 +198,7 @@
             showPoi
           "
           :poi="selectedFeature"
-          class="grow-0 text-left h-full"
+          class="tw-grow-0 tw-text-left tw-h-full"
           :explorer-mode-enabled="explorerModeEnabled"
           :favorites-mode-enabled="favoritesModeEnabled"
           @explore-click="toggleExploreAroundSelectedPoi"
@@ -200,7 +207,7 @@
         />
       </div>
     </BottomMenu>
-    <footer class="z-20">
+    <footer class="tw-z-20">
       <CookiesConsent />
     </footer>
   </div>

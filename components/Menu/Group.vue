@@ -9,8 +9,8 @@
     :name="menuGroup.menu_group.name"
     :badge-class="
       [
-        'bg-red-600 text-white rounded-full border-2 border-white',
-        size === '2xl' ? 'w-6 h-6' : 'w-5 h-5',
+        'tw-bg-red-600 tw-text-white tw-rounded-full tw-border-2 tw-border-white',
+        size === '2xl' ? 'tw-w-6 tw-h-6' : 'tw-w-5 tw-h-5',
       ].join(' ')
     "
     @click.prevent="onClick"

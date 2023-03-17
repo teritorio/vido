@@ -1,7 +1,7 @@
 <template>
   <div
     ref="container"
-    :class="['maplibregl-ctrl maplibregl-ctrl-group', 'hidden md:block']"
+    :class="['maplibregl-ctrl maplibregl-ctrl-group', 'tw-hidden md:tw-block']"
   >
     <button
       id="3D-selector-map"

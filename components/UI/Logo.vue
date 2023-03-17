@@ -9,7 +9,7 @@
     >
       <img
         :src="logoUrl"
-        :class="['w-auto h-auto', imageClass]"
+        :class="['tw-w-auto tw-h-auto', imageClass]"
         :alt="$t('headerMenu.logo')"
       />
     </a>
@@ -37,7 +37,7 @@ export default defineNuxtComponent({
     },
     imageClass: {
       type: String as PropType<string>,
-      default: 'max-w-2xl max-h-16',
+      default: 'tw-max-w-2xl tw-max-h-16',
     },
   },
 })

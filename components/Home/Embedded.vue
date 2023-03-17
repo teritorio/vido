@@ -1,16 +1,16 @@
 <template>
   <div
-    :class="['flex h-screen', 'flex-col-reverse', 'md:flex-row md:w-screen']"
+    :class="['tw-flex tw-h-screen', 'tw-flex-col-reverse', 'md:tw-flex-row md:tw-w-screen']"
   >
     <div
       v-if="selectedFeature"
       :class="[
-        'h-screen p-4 bg-white z-20',
-        'absolute w-screen',
-        'md:relative md:w-1/3 md:max-w-md overflow-scroll',
+        'tw-h-screen tw-p-4 tw-bg-white tw-z-20',
+        'tw-absolute tw-w-screen',
+        'md:tw-relative md:tw-w-1/3 md:tw-max-w-md tw-overflow-scroll',
       ]"
     >
-      <div class="grid justify-items-end pb-4">
+      <div class="tw-grid tw-justify-items-end tw-pb-4">
         <UIButton
           :label="$t('ui.close')"
           icon="times"
@@ -25,13 +25,13 @@
         @zoom-click="goToSelectedFeature"
       />
     </div>
-    <div class="grow">
-      <div class="flex flex-col h-screen">
+    <div class="tw-grow">
+      <div class="tw-flex tw-flex-col tw-h-screen">
         <CategorySelector
           :menu-items="Object.values(apiMenuCategory || {})"
           @category-change="onMenuChange"
         />
-        <div v-if="initialBbox" class="flex flex-grow">
+        <div v-if="initialBbox" class="tw-flex tw-flex-grow">
           <MapFeatures
             ref="mapFeatures"
             :default-bounds="initialBbox"
@@ -45,7 +45,7 @@
             :cooperative-gestures="false"
             :boundary-area="boundaryArea || settings.polygon.data"
           />
-          <div class="p-4 absolute">
+          <div class="tw-p-4 tw-absolute">
             <SelectedCategories />
           </div>
         </div>

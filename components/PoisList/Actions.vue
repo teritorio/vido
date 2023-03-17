@@ -2,7 +2,7 @@
   <IconsBar>
     <IconButton
       :label="$t('poisTable.showOnMap')"
-      class="w-8 h-8"
+      class="tw-w-8 tw-h-8"
       :href="urlMap"
       target="_blank"
     >
@@ -10,14 +10,14 @@
     </IconButton>
     <IconButton
       :label="$t('poisTable.downloadCsv')"
-      class="w-8 h-8"
+      class="tw-w-8 tw-h-8"
       :href="urlCsv"
     >
       <font-awesome-icon icon="file-csv" :style="{ color: colorLine }" />
     </IconButton>
     <IconButton
       :label="$t('poisTable.downloadGeojson')"
-      class="w-8 h-8"
+      class="tw-w-8 tw-h-8"
       :href="urlGeojson"
     >
       <font-awesome-icon icon="map-marker-alt" :style="{ color: colorLine }" />

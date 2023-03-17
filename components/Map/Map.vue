@@ -317,7 +317,7 @@ export default defineNuxtComponent({
 
 <style lang="scss">
 #map .maplibregl-ctrl-group {
-  @apply mt-2 mb-2;
+  @apply tw-mt-2 tw-mb-2;
 
   background: none;
 }
@@ -329,18 +329,18 @@ export default defineNuxtComponent({
 #map .maplibregl-ctrl-group > button,
 #map .maplibregl-ctrl-group > button:not(:disabled) {
   border: none;
-  @apply text-sm font-bold text-zinc-800 bg-white rounded-full shadow-md outline-none w-11 h-11;
-  @apply focus:rounded-full focus:shadow-md focus:outline-none focus-visible:bg-zinc-100;
-  @apply hover:bg-zinc-100;
+  @apply tw-text-sm tw-font-bold tw-text-zinc-800 tw-bg-white tw-rounded-full tw-shadow-md tw-outline-none tw-w-11 tw-h-11;
+  @apply focus:tw-rounded-full focus:tw-shadow-md focus:tw-outline-none focus-visible:tw-bg-zinc-100;
+  @apply hover:tw-bg-zinc-100;
 }
 
 #map .maplibregl-ctrl-group > button.maplibregl-ctrl-active,
 #map .maplibregl-ctrl-group > button.maplibregl-ctrl-active:not(:disabled) {
-  @apply bg-blue-500 text-white hover:bg-blue-400 focus-visible:bg-blue-400;
+  @apply tw-bg-blue-500 tw-text-white hover:tw-bg-blue-400 focus-visible:tw-bg-blue-400;
 }
 
 #map .maplibregl-ctrl-top-right {
-  @apply flex flex-col justify-center inset-y-3;
+  @apply tw-flex tw-flex-col tw-justify-center tw-inset-y-3;
 }
 
 #map .maplibregl-ctrl-attrib {
@@ -349,6 +349,6 @@ export default defineNuxtComponent({
 }
 
 .control-geolocate {
-  @apply md:hidden;
+  @apply md:tw-hidden;
 }
 </style>

@@ -1,35 +1,35 @@
 <template>
   <section>
-    <div class="flex right-10">
+    <div class="tw-flex tw-right-10">
       <button
         ref="menu"
         type="button"
         :class="[
-          'relative space-x-1 text-sm font-medium shadow-md outline-none md:px-5 w-11 md:w-auto h-11 focus:outline-none shrink-0 border-r border-zinc-400 rounded-l-full z-10',
+          'tw-relative tw-space-x-1 tw-text-sm tw-font-medium tw-shadow-md tw-outline-none md:tw-px-5 tw-w-11 md:tw-w-auto tw-h-11 focus:tw-outline-none tw-shrink-0 tw-border-r tw-border-zinc-400 tw-rounded-l-full tw-z-10',
           isModeFavorites &&
-            'bg-blue-500 hover:bg-blue-400 focus-visible:bg-blue-400 text-white',
+            'tw-bg-blue-500 hover:tw-bg-blue-400 focus-visible:tw-bg-blue-400 tw-text-white',
           !isModeFavorites &&
-            'bg-white hover:bg-zinc-100 focus-visible:bg-zinc-100 text-zinc-800',
+            'tw-bg-white hover:tw-bg-zinc-100 focus-visible:tw-bg-zinc-100 tw-text-zinc-800',
         ]"
         @click="$emit('toggle-favorites')"
       >
         <FavoriteIcon :is-active="isModeFavorites" />
-        <span class="hidden md:inline favoriteTitle">{{
+        <span class="tw-hidden md:tw-inline favoriteTitle">{{
           $t('favorites.title')
         }}</span>
         <Badge
           id="favourites_counter"
           :items="favoritesIds.length"
-          class="absolute top-1/2 right-0 -translate-y-1/2 translate-x-1/2"
+          class="tw-absolute tw-top-1/2 tw-right-0 -tw-translate-y-1/2 tw-translate-x-1/2"
         />
       </button>
       <button
         id="open_favourites_notebook"
         type="button"
         :class="[
-          'relative space-x-1 text-sm font-medium shadow-md outline-none md:px-5 w-11 md:w-auto h-11 focus:outline-none shrink-0 rounded-r-full',
-          'bg-white hover:bg-zinc-100 focus-visible:bg-zinc-100 text-zinc-800',
-          !hasFavorites && 'bg-zinc-100 cursor-not-allowed',
+          'tw-relative tw-space-x-1 tw-text-sm tw-font-medium tw-shadow-md tw-outline-none md:tw-px-5 tw-w-11 md:tw-w-auto tw-h-11 focus:tw-outline-none tw-shrink-0 tw-rounded-r-full',
+          'tw-bg-white hover:tw-bg-zinc-100 focus-visible:tw-bg-zinc-100 tw-text-zinc-800',
+          !hasFavorites && 'tw-bg-zinc-100 tw-cursor-not-allowed',
         ]"
         :disabled="!hasFavorites"
         @click="openNotebookModal"
@@ -37,10 +37,10 @@
         <font-awesome-icon
           ref="menu_icon"
           icon="book-open"
-          class="text-zinc-500 mr-2"
+          class="tw-text-zinc-500 tw-mr-2"
           size="sm"
         />
-        <span class="hidden md:inline favoriteTitle">
+        <span class="tw-hidden md:tw-inline favoriteTitle">
           {{ $t('favorites.menu_notebook') }}
         </span>
       </button>
@@ -168,7 +168,7 @@ export default defineNuxtComponent({
 <style lang="scss" scoped>
 .favoriteTitle {
   @media (max-width: 860px) {
-    @apply hidden;
+    @apply tw-hidden;
   }
 }
 </style>

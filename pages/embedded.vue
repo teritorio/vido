@@ -183,6 +183,6 @@ export default defineNuxtComponent({
 body,
 #__nuxt,
 #__layout {
-  @apply h-full w-full overflow-hidden overscroll-none;
+  @apply tw-h-full tw-w-full tw-overflow-hidden tw-overscroll-none;
 }
 </style>
