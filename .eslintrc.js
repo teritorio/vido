@@ -24,7 +24,6 @@ module.exports = {
   rules: {
     'vue/multi-word-component-names': 'off',
     'vue/require-explicit-emits': 'off',
-    'vue/no-deprecated-slot-scope-attribute': 'off',
     'import/order': [
       'error',
       {
@@ -38,9 +37,6 @@ module.exports = {
         'newlines-between': 'always',
       },
     ],
-    'vue/no-v-for-template-key-on-child': 'off',
-    'vue/no-deprecated-dollar-listeners-api': 'off', // Vue3 rule
-    'vue/no-reserved-component-names': 'off',
   },
   settings: {
     'import/internal-regex': '^@/',
