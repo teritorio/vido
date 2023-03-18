@@ -6,7 +6,7 @@
       solo
       :items="Object.values(menuEntries).map((a) => a[0])"
       :label="$t('categorySelector.placeholder')"
-      @update:modelValue="$emit('category-change', $event)"
+      @update:model-value="$emit('category-change', $event)"
     >
       <template #selection="{ props, item }">
         <v-list-item v-bind="props">

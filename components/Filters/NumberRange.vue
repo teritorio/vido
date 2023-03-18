@@ -6,7 +6,7 @@
       :min="min"
       :max="max"
       thumb-label="always"
-      @update:modelValue="onChange"
+      @update:model-value="onChange"
     ></v-range-slider>
   </div>
 </template>

@@ -2,9 +2,10 @@
   <div class="tw-basis-max tw-shrink tw-flex tw-flex-col tw-gap-4 tw-flex-1">
     <template
       v-for="(filter, filterIndex) in filtersSafeCopy"
+      :key="filter.def.property"
     >
       <div v-if="filter.type == 'boolean'">
-        <label :key="filter.def.property" class="tw-block tw-mb-1 tw-text-zinc-800">
+        <label class="tw-block tw-mb-1 tw-text-zinc-800">
           <input
             type="checkbox"
             class="tw-text-emerald-500 tw-rounded-full focus:tw-ring-0 focus:tw-ring-transparent"
@@ -16,7 +17,10 @@
         </label>
       </div>
       <div v-else-if="filter.type == 'multiselection'">
-        <label :for="filter.def.property" class="tw-block tw-mb-2 tw-text-zinc-500">
+        <label
+          :for="filter.def.property"
+          class="tw-block tw-mb-2 tw-text-zinc-500"
+        >
           {{ (filter.def.name && filter.def.name.fr) || filter.def.property }}
         </label>
         <SelectFilter
@@ -26,9 +30,7 @@
           @blur="onClickFilter(false)"
         />
       </div>
-      <div
-        v-else-if="filter.type == 'checkboxes_list'"
-      >
+      <div v-else-if="filter.type == 'checkboxes_list'">
         <p class="tw-mb-2 tw-text-zinc-500">
           {{ (filter.def.name && filter.def.name.fr) || filter.def.property }}
         </p>
@@ -78,8 +80,8 @@
 import copy from 'fast-copy'
 import { mapActions } from 'pinia'
 import { PropType } from 'vue'
-import { defineNuxtComponent } from '#app'
 
+import { defineNuxtComponent } from '#app'
 import DateRange from '~/components/Filters/DateRange.vue'
 import NumberRange from '~/components/Filters/NumberRange.vue'
 import SelectFilter from '~/components/Filters/Select.vue'
