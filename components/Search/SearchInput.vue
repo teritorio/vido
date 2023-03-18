@@ -55,8 +55,14 @@ export default defineNuxtComponent({
     }
   },
 
+  emits: {
+    input: (value: string) => true,
+    focus: (event: string | Event) => true,
+    blur: (event: FocusEvent) => true,
+  },
+
   methods: {
-    onFocus(event: Event) {
+    onFocus(event: string | Event) {
       this.$emit('focus', event)
       const { $tracking } = useNuxtApp()
       $tracking({ type: 'search' })

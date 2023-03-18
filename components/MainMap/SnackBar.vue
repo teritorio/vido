@@ -38,6 +38,10 @@ export default defineNuxtComponent({
     },
   },
 
+  emits: {
+    click: () => true,
+  },
+
   methods: {
     callback() {
       this.snack && this.$emit('click')

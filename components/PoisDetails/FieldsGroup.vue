@@ -75,7 +75,7 @@ import {
   FieldsListGroup,
   FieldsListItem,
 } from '~/lib/apiPois'
-import { PropertyTranslationsContextEnum } from '~~/plugins/property-translations'
+import { PropertyTranslationsContextEnum } from '~/plugins/property-translations'
 
 export default defineNuxtComponent({
   name: 'FieldsGroup',

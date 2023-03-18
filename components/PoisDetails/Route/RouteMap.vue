@@ -55,6 +55,12 @@ export default defineNuxtComponent({
     PoisDeck,
   },
 
+  emits: {
+    'zoom-click': (poi: ApiPoi) => true,
+    'explore-click': (poi: ApiPoi) => true,
+    'favorite-click': (poi: ApiPoi) => true,
+  },
+
   props: {
     poiId: {
       type: Number as PropType<ApiPoiId>,

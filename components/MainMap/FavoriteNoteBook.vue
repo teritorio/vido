@@ -87,6 +87,13 @@ export default defineNuxtComponent({
     UIButton,
   },
 
+  emits: {
+    'on-close': () => true,
+    'zoom-click': (poi: ApiPoi) => true,
+    'explore-click': (poi: ApiPoi) => true,
+    'favorite-click': (poi: ApiPoi) => true,
+  },
+
   props: {
     favs: {
       type: Array as PropType<ApiPoi[]>,

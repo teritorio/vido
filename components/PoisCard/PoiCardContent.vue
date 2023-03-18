@@ -246,6 +246,12 @@ export default defineNuxtComponent({
     },
   },
 
+  emits: {
+    'zoom-click': (poi: ApiPoi) => true,
+    'explore-click': (poi: ApiPoi) => true,
+    'favorite-click': (poi: ApiPoi) => true,
+  },
+
   methods: {
     onZoomClick() {
       this.trackingPopupEvent('zoom')
