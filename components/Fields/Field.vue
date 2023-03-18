@@ -227,6 +227,10 @@ export default defineNuxtComponent({
     Stars,
   },
 
+  emits: {
+    'click-details': () => true,
+  },
+
   props: {
     context: {
       type: String as PropType<PropertyTranslationsContextEnum>,

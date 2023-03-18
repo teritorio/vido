@@ -62,6 +62,10 @@ export default defineNuxtComponent({
     TeritorioIcon,
   },
 
+  emits: {
+    'category-change': (categoryId: number) => true,
+  },
+
   props: {
     menuItems: {
       type: Array as PropType<ApiMenuCategory[]>,

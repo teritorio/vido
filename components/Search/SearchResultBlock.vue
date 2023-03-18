@@ -39,6 +39,7 @@ import { PropType } from 'vue'
 
 import { defineNuxtComponent, useNuxtApp } from '#app'
 import TeritorioIcon from '~/components/UI/TeritorioIcon.vue'
+import { ApiPoiId } from '~/lib/apiPois'
 import { SearchResult } from '~/lib/apiSearch'
 
 export default defineNuxtComponent({
@@ -65,6 +66,10 @@ export default defineNuxtComponent({
     },
   },
 
+  emits: {
+    'item-click': (searchResult: SearchResult) => true,
+  },
+
   methods: {
     onItemClick(searchResult: SearchResult) {
       const { $tracking } = useNuxtApp()
@@ -74,10 +79,7 @@ export default defineNuxtComponent({
         resultType: this.type,
         title: searchResult.label,
       })
-      this.$emit(
-        'item-click',
-        this.type === 'category' ? searchResult : searchResult.id
-      )
+      this.$emit('item-click', searchResult)
     },
   },
 })

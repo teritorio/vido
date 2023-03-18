@@ -51,6 +51,10 @@ export default defineNuxtComponent({
     },
   },
 
+  emits: {
+    change: (newFilter: FilterValueDate) => true,
+  },
+
   data(): {
     dateFilters: DateFilterOption[]
   } {

@@ -67,6 +67,11 @@ export default defineNuxtComponent({
   components: {
     TeritorioIconBadge,
   },
+
+  emits: {
+    click: (val: MouseEvent) => true,
+  },
+
   props: {
     id: {
       type: String as PropType<string>,

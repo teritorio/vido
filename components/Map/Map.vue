@@ -22,6 +22,8 @@ import {
   GeolocateControl,
   FullscreenControl,
   ScaleControl,
+  MapLibreEvent,
+  MapTouchEvent,
 } from 'maplibre-gl'
 import { mapState } from 'pinia'
 import { PropType } from 'vue'
@@ -167,6 +169,29 @@ export default defineNuxtComponent({
     )
   },
 
+  emits: {
+    'map-init': (map: Map) => true,
+    'map-data': (event: MapDataEvent & Object) => true,
+    'map-dragend': (
+      event: MapLibreEvent<MouseEvent | TouchEvent | undefined> & Object
+    ) => true,
+    'map-moveend': (
+      event: MapLibreEvent<MouseEvent | TouchEvent | WheelEvent | undefined> &
+        Object
+    ) => true,
+    'map-resize': (event: MapLibreEvent<undefined> & Object) => true,
+    'map-rotateend': (
+      event: MapLibreEvent<MouseEvent | TouchEvent | undefined> & Object
+    ) => true,
+    'map-touchmove': (event: MapTouchEvent & Object) => true,
+    'map-zoomend': (
+      event: MapLibreEvent<MouseEvent | TouchEvent | WheelEvent | undefined> &
+        Object
+    ) => true,
+    'full-attribution': (attribution: string) => true,
+    'map-style-load': (style: StyleSpecification) => true,
+  },
+
   computed: {
     ...mapState(siteStore, ['locale']),
 
@@ -229,8 +254,8 @@ export default defineNuxtComponent({
         .then((style) => {
           const vectorSource = Object.values(style.sources || []).find(
             (source) => ['vector', 'raster'].lastIndexOf(source.type) >= 0
-          ) as VectorSourceSpecification | RasterSourceSpecification
-          if (vectorSource) {
+          ) as VectorSourceSpecification | RasterSourceSpecification | undefined
+          if (vectorSource?.attribution) {
             this.$emit('full-attribution', vectorSource.attribution)
           }
 
@@ -250,7 +275,7 @@ export default defineNuxtComponent({
     emitStyleLoad() {
       if (this.map) {
         const styleEvent = (e: MapDataEvent) => {
-          if (this.map && e.dataType === 'style') {
+          if (this.map && e.dataType === 'style' && this.style) {
             this.map.off('styledata', styleEvent)
             this.$emit('map-style-load', this.style)
           }

@@ -35,6 +35,12 @@ export default defineNuxtComponent({
     },
   },
 
+  emits: {
+    click: () => true,
+    blur: () => true,
+    change: (value: string[] | undefined) => true,
+  },
+
   data(): {
     currentValue: string[] | undefined
   } {

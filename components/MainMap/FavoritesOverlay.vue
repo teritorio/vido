@@ -22,6 +22,10 @@ export default defineNuxtComponent({
     ...mapWritableState(mapStore, ['mode']),
   },
 
+  emits: {
+    discard: () => true,
+  },
+
   methods: {
     onOverlayClick() {
       this.mode = Mode.BROWSER

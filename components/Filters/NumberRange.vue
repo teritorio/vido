@@ -31,6 +31,10 @@ export default defineNuxtComponent({
     },
   },
 
+  emits: {
+    change: (newFilter: FilterValueNumberRange) => true,
+  },
+
   data(): {
     value: [number, number]
   } {

@@ -104,6 +104,10 @@ export default defineNuxtComponent({
     },
   },
 
+  emits: {
+    'toggle-favorites': () => true,
+  },
+
   data(): {
     isCopied: boolean
     favs: ApiPoi[]

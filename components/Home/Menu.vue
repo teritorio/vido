@@ -192,6 +192,11 @@ export default defineNuxtComponent({
     },
   },
 
+  emits: {
+    'activate-filter': (val: boolean) => true,
+    'scroll-top': () => true,
+  },
+
   watch: {
     currentMenuItems() {
       this.$emit('scroll-top')
