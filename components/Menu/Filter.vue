@@ -119,6 +119,11 @@ export default defineNuxtComponent({
     },
   },
 
+  emits: {
+    'go-back-click': () => true,
+    'activate-filter': (val: boolean) => true,
+  },
+
   methods: {
     ...mapActions(menuStore, ['applyFilters']),
 
@@ -144,7 +149,7 @@ export default defineNuxtComponent({
       })
     },
 
-    onSelectionFilterChange(filterIndex: number, values: string[] | null) {
+    onSelectionFilterChange(filterIndex: number, values: string[] | undefined) {
       const filters = this.filtersSafeCopy
       const filter = filters[filterIndex] as FilterValueList
 

@@ -52,7 +52,7 @@ import { defineNuxtComponent } from '#app'
 import Category from '~/components/Menu/Category.vue'
 import MenuGroup from '~/components/Menu/Group.vue'
 import Link from '~/components/Menu/Link.vue'
-import { ApiMenuCategory, MenuItem } from '~/lib/apiMenu'
+import { ApiMenuCategory, ApiMenuItem, MenuItem } from '~/lib/apiMenu'
 import { FilterValues } from '~/utils/types-filters'
 
 export default defineNuxtComponent({
@@ -86,6 +86,12 @@ export default defineNuxtComponent({
       type: String as PropType<string>,
       required: true,
     },
+  },
+
+  emits: {
+    'menu-group-click': (menuItemId: ApiMenuItem['id']) => true,
+    'category-click': (menuItemId: ApiMenuItem['id']) => true,
+    'filter-click': (categoryId: ApiMenuCategory['id']) => true,
   },
 
   methods: {

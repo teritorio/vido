@@ -175,6 +175,12 @@ export default defineNuxtComponent({
     })
   },
 
+  emits: {
+    'map-init': (map: maplibregl.Map) => true,
+    'map-style-load': (style: maplibregl.StyleSpecification) => true,
+    'feature-click': (feature: ApiPoi) => true,
+  },
+
   methods: {
     fitBoundsOptions(options: FitBoundsOptions = {}): FitBoundsOptions {
       return {
