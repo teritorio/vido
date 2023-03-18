@@ -9,7 +9,7 @@
       :items="items"
       placeholder="Recherchez ou ajoutez une valeur"
       :clearable="true"
-      @input="onChange"
+      @update:model-value="onChange"
       @click="$emit('click')"
       @blur="$emit('blur')"
     />
@@ -18,11 +18,16 @@
 
 <script lang="ts">
 import { PropType } from 'vue'
+import { VAutocomplete } from 'vuetify/components/VAutocomplete'
 
 import { defineNuxtComponent } from '#app'
 import { FilterValueList } from '~/utils/types-filters'
 
 export default defineNuxtComponent({
+  components: {
+    VAutocomplete,
+  },
+
   props: {
     filter: {
       type: Object as PropType<FilterValueList>,
