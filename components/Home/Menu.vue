@@ -28,14 +28,13 @@
   </component>
 
   <div v-else-if="isRootMenu">
-    <template v-for="(menuItem, index) in currentMenuItems">
-      <component :is="menuBlock" v-if="index === 0" :key="menuItem.id">
+    <template v-for="(menuItem, index) in currentMenuItems" :key="menuItem.id">
+      <component :is="menuBlock" v-if="index === 0">
         <slot></slot>
       </component>
       <component
         :is="menuBlock"
         v-else-if="!isOnSearch"
-        :key="menuItem.id"
         :class="[index === 0 && 'tw-hidden md:tw-block']"
       >
         <ItemList
