@@ -29,7 +29,7 @@ import { PropType } from 'vue'
 
 import { defineNuxtComponent, useNuxtApp } from '#app'
 import MenuItem from '~/components/Menu/Item.vue'
-import { ApiMenuGroup } from '~/lib/apiMenu'
+import { ApiMenuGroup, ApiMenuItem } from '~/lib/apiMenu'
 
 export default defineNuxtComponent({
   components: {
@@ -53,6 +53,11 @@ export default defineNuxtComponent({
       required: true,
     },
   },
+
+  emits: {
+    click: (menuGroupId: ApiMenuItem['id']) => true,
+  },
+
   methods: {
     onClick() {
       const { $tracking } = useNuxtApp()

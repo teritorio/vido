@@ -68,7 +68,7 @@ import { PropType } from 'vue'
 
 import { defineNuxtComponent, useNuxtApp } from '#app'
 import MenuItem from '~/components/Menu/Item.vue'
-import { ApiMenuCategory } from '~/lib/apiMenu'
+import { ApiMenuCategory, ApiMenuItem } from '~/lib/apiMenu'
 import { FilterValues, filterValuesIsSet } from '~/utils/types-filters'
 
 export default defineNuxtComponent({
@@ -102,6 +102,12 @@ export default defineNuxtComponent({
       return this.filters && filterValuesIsSet(this.filters)
     },
   },
+
+  emits: {
+    click: (category_id: ApiMenuItem['id']) => true,
+    'filter-click': (category_id: ApiMenuItem['id']) => true,
+  },
+
   methods: {
     onClick() {
       const { $tracking } = useNuxtApp()

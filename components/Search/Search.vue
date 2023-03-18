@@ -205,6 +205,11 @@ export default defineNuxtComponent({
     this.trackSearchQuery = debounce(this.trackSearchQuery_, 3000)
   },
 
+  emits: {
+    blur: (event: FocusEvent) => true,
+    focus: (event: string | Event) => true,
+  },
+
   methods: {
     ...mapActions(mapStore, ['setSelectedFeature']),
     ...mapActions(menuStore, ['addSelectedCategoryIds', 'applyFilters']),
@@ -218,7 +223,7 @@ export default defineNuxtComponent({
       this.focus = false
     },
 
-    delayedFocusLose(event: Event) {
+    delayedFocusLose(event: FocusEvent) {
       // Let time to catch click on results before hiden
       setTimeout(() => {
         this.$emit('blur', event)
@@ -226,15 +231,15 @@ export default defineNuxtComponent({
       }, 200)
     },
 
-    onSearchFocus(event: Event) {
+    onSearchFocus(event: string | Event) {
       this.$emit('focus', event)
       this.focus = true
     },
 
-    onCartocodeClick(id: number) {
+    onCartocodeClick(searchResult: SearchResult) {
       const cartocodeId = this.searchCartocodeResult?.properties.metadata?.id
-      if (cartocodeId === id) {
-        this.onPoiClick(cartocodeId)
+      if (cartocodeId === searchResult.id) {
+        this.onPoiClick(searchResult)
       }
     },
 
@@ -285,13 +290,13 @@ export default defineNuxtComponent({
       }
     },
 
-    onPoiClick(id: ApiPoiId) {
+    onPoiClick(searchResult: SearchResult) {
       const { $vidoConfig } = useNuxtApp()
       getPoiById(
         $vidoConfig().API_ENDPOINT,
         $vidoConfig().API_PROJECT,
         $vidoConfig().API_THEME,
-        id
+        searchResult.id
       ).then((poi) => {
         this.setSelectedFeature(poi)
       })
@@ -299,9 +304,9 @@ export default defineNuxtComponent({
       this.reset()
     },
 
-    onAddressClick(id: number) {
+    onAddressClick(searchResult: SearchResult) {
       const feature = (this.searchAddressesResults?.features || []).find(
-        (a) => a.properties.id === id
+        (a) => a.properties.id === searchResult.id
       )
       if (feature) {
         const f = Object.assign({}, feature, {
