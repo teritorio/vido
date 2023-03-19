@@ -117,7 +117,7 @@
     "json-loader": "^0.5.7",
     "lint-staged": "^13.1.2",
     "loader-utils": "^3.2.1",
-    "nock": "^13.3.0",
+    "msw": "^1.1.0",
     "node-sass": "^8.0.0",
     "nuxi": "^3.2.3",
     "patch-package": "^6.5.1",
