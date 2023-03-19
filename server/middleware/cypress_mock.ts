@@ -1,49 +1,70 @@
 import { defineEventHandler } from 'h3'
-import nock from 'nock'
+import { rest } from 'msw'
+import { SetupServer, setupServer } from 'msw/node'
 import { IncomingMessage, ServerResponse } from 'node:http'
 
-// Inspired from https://github.com/cypress-io/cypress-mock-ssr
-// MIT License
+let server: SetupServer | undefined = undefined
 
-function cypressServerMock(
+function cypressSetMocks(
   req: IncomingMessage,
   res: ServerResponse<IncomingMessage>
 ) {
   const chunks: any = []
-
   req.on('data', (chunk) => {
     chunks.push(chunk)
   })
 
   req.on('end', () => {
-    const reqBody = JSON.parse(Buffer.concat(chunks).toString())
+    if (server) {
+      server.close()
+      console.error('Cypress mock service stoped')
+    }
 
-    const { hostname, method, path, statusCode, body } = reqBody
-    const lcMethod = method.toLowerCase()
-    // @ts-ignore
-    nock(hostname)[lcMethod](path).reply(statusCode, body)
+    const json = Buffer.concat(chunks).toString()
+    const mocks = JSON.parse(json) as {
+      method: string
+      url: string
+      statusCode: number
+      body: Object
+    }[]
+    const rests = mocks.map((mock) => {
+      return rest.get(mock.url, (req, res, ctx) => res(ctx.json(mock.body)))
+    })
+
+    server = setupServer(...rests)
+    server.listen({
+      onUnhandledRequest: ({ method, url }) => {
+        console.error(`Cypress mock unhandled ${method} request to ${url}`)
+      },
+    })
+    console.error('Cypress mock service started')
+    server.printHandlers()
+
+    res.statusCode = 200
+    res.end()
   })
-  res.statusCode = 200
-  res.end()
 }
 
-function cypressClearServerMock(
+function cypressClearMocks(
   req: IncomingMessage,
   res: ServerResponse<IncomingMessage>
 ) {
-  nock.restore()
-  nock.cleanAll()
-  nock.activate()
+  if (server) {
+    server.close()
+    server = undefined
+    console.error('Cypress mock service stoped')
+  }
+
   res.statusCode = 200
   res.end()
 }
 
 export default defineEventHandler((event) => {
   if (process.env.NODE_ENV != 'production') {
-    if (event.node.req.url === '/__cypress_clear_mocks') {
-      cypressClearServerMock(event.node.req, event.node.res)
-    } else if (event.node.req.url === '/__cypress_server_mock') {
-      cypressServerMock(event.node.req, event.node.res)
+    if (event.node.req.url === '/__cypress_set_mocks') {
+      cypressSetMocks(event.node.req, event.node.res)
+    } else if (event.node.req.url === '/__cypress_clear_mocks') {
+      cypressClearMocks(event.node.req, event.node.res)
     }
   }
 })
