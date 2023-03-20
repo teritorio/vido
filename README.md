@@ -32,7 +32,7 @@ cp .env.sample .env
 
 docker-compose build
 
-docker-compose -f docker-compose.yml run --rm node yarn build-config
+docker-compose -f docker-compose.yml run --rm vido yarn build-config
 
 docker-compose up -d
 ```
