@@ -97,6 +97,9 @@ export function headerFromSettings(
   options: any = null
 ): MetaObject {
   return {
+    htmlAttrs: {
+      lang: 'fr',
+    },
     title: [settings.themes[0].title.fr, options?.title]
       .filter((o) => o)
       .join(' - '),
