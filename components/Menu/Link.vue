@@ -16,15 +16,16 @@
     @click="onClick"
   >
     <template v-if="menuLink.link.display_mode === 'compact'" #badge>
-      <font-awesome-icon icon="external-link-alt" size="sm" />
+      <FontAwesomeIcon icon="external-link-alt" size="sm" />
     </template>
     <template #end-line-large>
-      <font-awesome-icon icon="external-link-alt" />
+      <FontAwesomeIcon icon="external-link-alt" />
     </template>
   </MenuItem>
 </template>
 
 <script lang="ts">
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { PropType } from 'vue'
 
 import { defineNuxtComponent, useNuxtApp } from '#app'
@@ -33,6 +34,7 @@ import { ApiMenuItem, ApiMenuLink } from '~/lib/apiMenu'
 
 export default defineNuxtComponent({
   components: {
+    FontAwesomeIcon,
     MenuItem,
   },
   props: {

@@ -34,7 +34,7 @@
         :disabled="!hasFavorites"
         @click="openNotebookModal"
       >
-        <font-awesome-icon
+        <FontAwesomeIcon
           ref="menu_icon"
           icon="book-open"
           class="tw-text-zinc-500 tw-mr-2"
@@ -63,6 +63,7 @@
 </template>
 
 <script lang="ts">
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { mapState } from 'pinia'
 import { VDialog } from 'vuetify/components/VDialog'
 
@@ -76,6 +77,7 @@ import { mapStore } from '~/stores/map'
 
 export default defineNuxtComponent({
   components: {
+    FontAwesomeIcon,
     Badge,
     FavoriteNoteBook,
     FavoriteIcon,

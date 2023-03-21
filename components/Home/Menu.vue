@@ -10,11 +10,7 @@
         class="tw-flex tw-items-center tw-justify-center tw-w-10 tw-h-10 tw-text-2xl tw-font-bold tw-transition-all tw-rounded-full tw-outline-none tw-cursor-pointer focus:tw-outline-none hover:tw-bg-zinc-100 focus:tw-bg-zinc-100"
         @click="onBackToCategoryClick"
       >
-        <font-awesome-icon
-          icon="arrow-left"
-          class="tw-text-zinc-800"
-          size="xs"
-        />
+        <FontAwesomeIcon icon="arrow-left" class="tw-text-zinc-800" size="xs" />
       </button>
     </div>
 
@@ -62,7 +58,7 @@
           @click="onGoBackClick"
         >
           <span class="sr-only">{{ $t('headerMenu.back') }}</span>
-          <font-awesome-icon
+          <FontAwesomeIcon
             icon="arrow-left"
             class="tw-text-zinc-800"
             size="xs"
@@ -105,6 +101,7 @@
 </template>
 
 <script lang="ts">
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { mapActions, mapState } from 'pinia'
 import { PropType } from 'vue'
 
@@ -121,6 +118,7 @@ import { FilterValues } from '~/utils/types-filters'
 
 export default defineNuxtComponent({
   components: {
+    FontAwesomeIcon,
     Logo,
     MenuBlock,
     MenuBlockBottom,
