@@ -11,7 +11,7 @@
     <div class="tw-relative tw-z-10">
       <slot id="block-content"></slot>
     </div>
-    <font-awesome-icon
+    <FontAwesomeIcon
       prefix="fa"
       :icon="icon"
       :class="['block-block-icon', 'tw-absolute tw-z-0']"
@@ -20,11 +20,16 @@
 </template>
 
 <script lang="ts">
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { PropType } from 'vue'
 
 import { defineNuxtComponent } from '#app'
 
 export default defineNuxtComponent({
+  components: {
+    FontAwesomeIcon,
+  },
+
   props: {
     colorFill: {
       type: String as PropType<string>,

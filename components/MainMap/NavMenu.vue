@@ -10,7 +10,7 @@
           class="tw-w-11 tw-h-11"
           v-bind="props"
         >
-          <font-awesome-icon icon="cog" class="tw-text-zinc-800" size="lg" />
+          <FontAwesomeIcon icon="cog" class="tw-text-zinc-800" size="lg" />
         </IconButton>
       </template>
 
@@ -53,6 +53,7 @@
 </template>
 
 <script lang="ts">
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { mapWritableState } from 'pinia'
 import { PropType } from 'vue'
 import { useI18n } from 'vue-i18n'
@@ -70,6 +71,7 @@ import { siteStore } from '~/stores/site'
 
 export default defineNuxtComponent({
   components: {
+    FontAwesomeIcon,
     VMenu,
     VList,
     VListItem,

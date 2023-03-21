@@ -8,7 +8,7 @@
         :href="shareFacebook"
         target="_blank"
       >
-        <font-awesome-icon
+        <FontAwesomeIcon
           :icon="['fab', 'facebook']"
           :style="{ color: colorLine }"
         />
@@ -20,7 +20,7 @@
         :href="shareTwitter"
         target="_blank"
       >
-        <font-awesome-icon
+        <FontAwesomeIcon
           :icon="['fab', 'twitter']"
           :style="{ color: colorLine }"
         />
@@ -32,7 +32,7 @@
         :href="shareWhatsApp"
         target="_blank"
       >
-        <font-awesome-icon
+        <FontAwesomeIcon
           :icon="['fab', 'whatsapp']"
           :style="{ color: colorLine }"
         />
@@ -42,7 +42,7 @@
         class="tw-w-8 tw-h-8"
         @click="print"
       >
-        <font-awesome-icon icon="print" :style="{ color: colorLine }" />
+        <FontAwesomeIcon icon="print" :style="{ color: colorLine }" />
       </IconButton>
       <IconButton
         v-if="href"
@@ -50,7 +50,7 @@
         class="tw-w-8 tw-h-8"
         @click="shareUrl"
       >
-        <font-awesome-icon icon="link" :style="{ color: colorLine }" />
+        <FontAwesomeIcon icon="link" :style="{ color: colorLine }" />
       </IconButton>
     </IconsBar>
     <ShareLinkModal ref="shareModal" :title="$t('poiDetails.link')" />
@@ -58,6 +58,7 @@
 </template>
 
 <script lang="ts">
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { PropType, ref } from 'vue'
 
 import { defineNuxtComponent } from '#app'
@@ -69,6 +70,7 @@ import { urlAddTrackOrigin } from '~/utils/url'
 
 export default defineNuxtComponent({
   components: {
+    FontAwesomeIcon,
     IconsBar,
     IconButton,
     ShareLinkModal,

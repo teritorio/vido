@@ -45,7 +45,7 @@
       v-if="isLoadingFeatures"
       class="tw-fixed tw-inset-0 tw-flex tw-items-center tw-justify-center tw-bg-black tw-bg-opacity-80"
     >
-      <font-awesome-icon
+      <FontAwesomeIcon
         icon="spinner"
         class="tw-text-zinc-400 tw-animate-spin"
         size="3x"
@@ -55,6 +55,7 @@
 </template>
 
 <script lang="ts">
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { Polygon, MultiPolygon } from 'geojson'
 import debounce from 'lodash.debounce'
 import maplibregl, {
@@ -96,6 +97,7 @@ const POI_SOURCE = 'poi'
 
 export default defineNuxtComponent({
   components: {
+    FontAwesomeIcon,
     MapBase,
     MapControlsExplore,
     MapControls3D,
