@@ -7,7 +7,7 @@
 
         <div class="tw-p-3">
           <div class="tw-flex tw-items-center tw-mb-4">
-            <font-awesome-icon
+            <FontAwesomeIcon
               ref="menu_icon"
               icon="link"
               class="tw-text-zinc-500 tw-mr-4"
@@ -49,6 +49,7 @@
 </template>
 
 <script lang="ts">
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { PropType } from 'vue'
 import { VCard, VCardTitle, VCardActions } from 'vuetify/components/VCard'
 import { VDialog } from 'vuetify/components/VDialog'
@@ -62,6 +63,7 @@ import { urlAddTrackOrigin } from '~/utils/url'
 
 export default defineNuxtComponent({
   components: {
+    FontAwesomeIcon,
     VDialog,
     VCard,
     VCardTitle,

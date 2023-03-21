@@ -13,7 +13,7 @@
       ]"
       @click="toggleMode"
     >
-      <font-awesome-icon
+      <FontAwesomeIcon
         icon="eye"
         :class="[
           isModeExplorer && 'tw-text-white',
@@ -26,6 +26,7 @@
 </template>
 
 <script lang="ts">
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { Control } from '@teritorio/map'
 import { Map } from 'maplibre-gl'
 import { mapState, mapWritableState } from 'pinia'
@@ -36,6 +37,10 @@ import { mapStore } from '~/stores/map'
 import { Mode } from '~/utils/types'
 
 export default defineNuxtComponent({
+  components: {
+    FontAwesomeIcon,
+  },
+
   props: {
     map: {
       type: Object as PropType<Map>,

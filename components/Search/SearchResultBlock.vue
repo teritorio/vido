@@ -1,7 +1,7 @@
 <template>
   <div class="tw-mb-3">
     <h4 class="tw-text-zinc-500 tw-text-sm tw-mb-2">
-      <font-awesome-icon v-if="icon" :icon="icon" />
+      <FontAwesomeIcon v-if="icon" :icon="icon" />
       {{ label }}
     </h4>
     <ul>
@@ -17,7 +17,7 @@
           :picto="item.icon"
           color-text="#6B7280"
         />
-        <font-awesome-icon
+        <FontAwesomeIcon
           v-else-if="item.icon"
           :icon="item.icon"
           color="#6B7280"
@@ -35,6 +35,7 @@
 </template>
 
 <script lang="ts">
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { PropType } from 'vue'
 
 import { defineNuxtComponent, useNuxtApp } from '#app'
@@ -44,6 +45,7 @@ import { SearchResult } from '~/lib/apiSearch'
 
 export default defineNuxtComponent({
   components: {
+    FontAwesomeIcon,
     TeritorioIcon,
   },
 

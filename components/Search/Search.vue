@@ -19,7 +19,7 @@
       class="tw-shrink-0 tw-w-10 tw-h-10 tw-text-2xl tw-font-bold tw-transition-all tw-rounded-full tw-outline-none tw-cursor-pointer focus:tw-outline-none hover:tw-bg-zinc-100 focus:tw-bg-zinc-100"
       @click="reset"
     >
-      <font-awesome-icon icon="arrow-left" class="tw-text-zinc-800" size="xs" />
+      <FontAwesomeIcon icon="arrow-left" class="tw-text-zinc-800" size="xs" />
     </button>
 
     <div v-if="focus && results > 0" class="search-results">
@@ -67,6 +67,7 @@
 </template>
 
 <script lang="ts">
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import copy from 'fast-copy'
 import { debounce, DebouncedFunc } from 'lodash'
 import { mapActions, mapState } from 'pinia'
@@ -91,6 +92,7 @@ import { FilterValue, FilterValues } from '~/utils/types-filters'
 
 export default defineNuxtComponent({
   components: {
+    FontAwesomeIcon,
     SearchInput,
     SearchResultBlock,
   },

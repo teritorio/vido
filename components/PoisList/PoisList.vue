@@ -22,7 +22,7 @@
       />
 
       <PoisTable v-if="pois" :fields="fields" :pois="pois" />
-      <font-awesome-icon
+      <FontAwesomeIcon
         v-else
         icon="spinner"
         class="tw-text-zinc-400 tw-animate-spin"
@@ -33,6 +33,7 @@
 </template>
 
 <script lang="ts">
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { mapState } from 'pinia'
 import { PropType } from 'vue'
 
@@ -49,6 +50,7 @@ import { menuStore } from '~/stores/menu'
 
 export default defineNuxtComponent({
   components: {
+    FontAwesomeIcon,
     Actions,
     PoiLayout,
     CategorySelector,

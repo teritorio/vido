@@ -6,26 +6,27 @@
       :href="urlMap"
       target="_blank"
     >
-      <font-awesome-icon icon="map" :style="{ color: colorLine }" />
+      <FontAwesomeIcon icon="map" :style="{ color: colorLine }" />
     </IconButton>
     <IconButton
       :label="$t('poisTable.downloadCsv')"
       class="tw-w-8 tw-h-8"
       :href="urlCsv"
     >
-      <font-awesome-icon icon="file-csv" :style="{ color: colorLine }" />
+      <FontAwesomeIcon icon="file-csv" :style="{ color: colorLine }" />
     </IconButton>
     <IconButton
       :label="$t('poisTable.downloadGeojson')"
       class="tw-w-8 tw-h-8"
       :href="urlGeojson"
     >
-      <font-awesome-icon icon="map-marker-alt" :style="{ color: colorLine }" />
+      <FontAwesomeIcon icon="map-marker-alt" :style="{ color: colorLine }" />
     </IconButton>
   </IconsBar>
 </template>
 
 <script lang="ts">
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { PropType } from 'vue'
 
 import { defineNuxtComponent, useNuxtApp } from '#app'
@@ -35,6 +36,7 @@ import { getPoiByCategoryIdUrl } from '~/lib/apiPois'
 
 export default defineNuxtComponent({
   components: {
+    FontAwesomeIcon,
     IconsBar,
     IconButton,
   },

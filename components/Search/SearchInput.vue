@@ -26,19 +26,24 @@
         type="submit"
       >
         <span class="tw-sr-only">{{ $t('headerMenu.search') }}</span>
-        <font-awesome-icon v-if="!isLoading" icon="search" />
-        <font-awesome-icon v-else icon="spinner" class="tw-animate-spin" />
+        <FontAwesomeIcon v-if="!isLoading" icon="search" />
+        <FontAwesomeIcon v-else icon="spinner" class="tw-animate-spin" />
       </button>
     </section>
   </form>
 </template>
 
 <script lang="ts">
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { PropType, ref } from 'vue'
 
 import { defineNuxtComponent, useNuxtApp } from '#app'
 
 export default defineNuxtComponent({
+  components: {
+    FontAwesomeIcon,
+  },
+
   props: {
     searchText: {
       type: String as PropType<string>,

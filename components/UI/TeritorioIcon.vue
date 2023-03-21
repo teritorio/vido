@@ -7,7 +7,7 @@
     ]"
     :style="{ color: colorText }"
   />
-  <font-awesome-icon
+  <FontAwesomeIcon
     v-else-if="!Boolean(image)"
     :icon="picto"
     :color="colorText"
@@ -16,11 +16,16 @@
 </template>
 
 <script lang="ts">
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { PropType } from 'vue'
 
 import { defineNuxtComponent } from '#app'
 
 export default defineNuxtComponent({
+  components: {
+    FontAwesomeIcon,
+  },
+
   props: {
     colorText: {
       type: String as PropType<string>,

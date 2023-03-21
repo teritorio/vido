@@ -20,7 +20,7 @@
             class="tw-w-8 tw-h-8"
             @click="setShareLink()"
           >
-            <font-awesome-icon icon="share-alt" />
+            <FontAwesomeIcon icon="share-alt" />
           </IconButton>
           <IconButton
             :label="$t('favorites.export_pdf')"
@@ -29,7 +29,7 @@
             target="_blank"
             @click="exportLink('export_pdf')"
           >
-            <font-awesome-icon icon="print" />
+            <FontAwesomeIcon icon="print" />
           </IconButton>
           <IconButton
             :label="$t('favorites.export_csv')"
@@ -38,14 +38,14 @@
             target="_blank"
             @click="exportLink('export_csv')"
           >
-            <font-awesome-icon icon="file-csv" />
+            <FontAwesomeIcon icon="file-csv" />
           </IconButton>
           <IconButton
             :label="$t('favorites.menu_clear')"
             class="tw-w-8 tw-h-8"
             @click="removeFavorites()"
           >
-            <font-awesome-icon icon="trash" />
+            <FontAwesomeIcon icon="trash" />
           </IconButton>
         </IconsBar>
       </div>
@@ -66,6 +66,7 @@
 </template>
 
 <script lang="ts">
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { mapState } from 'pinia'
 import { PropType, ref } from 'vue'
 
@@ -80,6 +81,7 @@ import { favoritesStore } from '~/stores/favorite'
 
 export default defineNuxtComponent({
   components: {
+    FontAwesomeIcon,
     PoisDeck,
     ShareLinkModal,
     IconsBar,

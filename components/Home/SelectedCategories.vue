@@ -30,7 +30,7 @@
         @click="delSelectedCategoryIds([menuItem.id])"
       >
         <span class="tw-sr-only">{{ $t('headerMenu.disableCategory') }}</span>
-        <font-awesome-icon icon="times" class="tw-text-white" size="sm" />
+        <FontAwesomeIcon icon="times" class="tw-text-white" size="sm" />
       </button>
     </div>
     <button
@@ -41,12 +41,13 @@
       :aria-label="$t('headerMenu.clearAllCategories')"
       @click="clearSelectedCategoryIds()"
     >
-      <font-awesome-icon icon="times" class="tw-text-white" />
+      <FontAwesomeIcon icon="times" class="tw-text-white" />
     </button>
   </div>
 </template>
 
 <script lang="ts">
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { mapState, mapActions } from 'pinia'
 
 import { defineNuxtComponent } from '#app'
@@ -55,6 +56,7 @@ import { menuStore } from '~/stores/menu'
 
 export default defineNuxtComponent({
   components: {
+    FontAwesomeIcon,
     TeritorioIconBadge,
   },
 
