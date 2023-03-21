@@ -125,7 +125,7 @@
               @click="onBottomMenuButtonClick"
             >
               <span class="tw-sr-only">{{ $t('headerMenu.categories') }}</span>
-              <font-awesome-icon icon="grip-lines" size="lg" />
+              <FontAwesomeIcon icon="grip-lines" size="lg" />
             </button>
           </div>
         </MapFeatures>
@@ -214,6 +214,7 @@
 </template>
 
 <script lang="ts">
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { FitBoundsOptions, LngLatBoundsLike } from 'maplibre-gl'
 import { mapActions, mapState } from 'pinia'
 import { PropType, ref } from 'vue'
@@ -247,6 +248,7 @@ import { flattenFeatures } from '~/utils/utilities'
 
 export default defineNuxtComponent({
   components: {
+    FontAwesomeIcon,
     Logo,
     FavoriteMenu,
     FavoritesOverlay,

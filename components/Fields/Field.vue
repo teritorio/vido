@@ -157,7 +157,7 @@
         "
         :href="properties[field.field]"
       >
-        <font-awesome-icon prefix="fa" icon="arrow-circle-down" />
+        <FontAwesomeIcon prefix="fa" icon="arrow-circle-down" />
         {{ fieldTranslateK(field.field) }}
       </a>
 
@@ -176,6 +176,7 @@
 </template>
 
 <script lang="ts">
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import GeoJSON from 'geojson'
 import { PropType } from 'vue'
 
@@ -222,6 +223,7 @@ export function isFiledEmpty(
 
 export default defineNuxtComponent({
   components: {
+    FontAwesomeIcon,
     FieldsHeader,
     OpeningHours,
     RoutesField,

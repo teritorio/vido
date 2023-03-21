@@ -80,7 +80,7 @@
         :title="$t('poiCard.findRoute')"
         @click="trackingPopupEvent('route')"
       >
-        <font-awesome-icon icon="route" :color="colorLine" size="sm" />
+        <FontAwesomeIcon icon="route" :color="colorLine" size="sm" />
         <span class="tw-text-sm">{{ $t('poiCard.route') }}</span>
       </a>
 
@@ -90,7 +90,7 @@
         :title="$t('poiCard.zoom')"
         @click.stop="onZoomClick"
       >
-        <font-awesome-icon icon="plus" :color="colorLine" size="sm" />
+        <FontAwesomeIcon icon="plus" :color="colorLine" size="sm" />
         <span class="tw-text-sm">{{ $t('poiCard.zoom') }}</span>
       </button>
 
@@ -109,7 +109,7 @@
         "
         @click.stop="onExploreClick"
       >
-        <font-awesome-icon
+        <FontAwesomeIcon
           icon="eye"
           :color="isModeExplorer ? 'white' : colorLine"
           size="sm"
@@ -134,6 +134,7 @@
 </template>
 
 <script lang="ts">
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { mapState } from 'pinia'
 import { PropType } from 'vue'
 
@@ -149,6 +150,7 @@ import { isIOS } from '~/utils/isIOS'
 
 export default defineNuxtComponent({
   components: {
+    FontAwesomeIcon,
     TeritorioIcon,
     FavoriteIcon,
     Fields,

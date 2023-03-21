@@ -11,13 +11,13 @@
     @click.prevent="onClick"
   >
     <template v-if="category.category.display_mode === 'compact'" #badge>
-      <font-awesome-icon
+      <FontAwesomeIcon
         v-if="!selected"
         class="tw-text-zinc-300"
         :icon="['far', 'circle']"
         :size="size"
       />
-      <font-awesome-icon
+      <FontAwesomeIcon
         v-else
         class="tw-text-emerald-500"
         icon="check-circle"
@@ -26,13 +26,13 @@
     </template>
 
     <template #end-line-large>
-      <font-awesome-icon
+      <FontAwesomeIcon
         v-if="!selected"
         class="tw-text-zinc-300"
         :icon="['far', 'circle']"
         :size="size"
       />
-      <font-awesome-icon
+      <FontAwesomeIcon
         v-else
         class="tw-text-emerald-500"
         icon="check-circle"
@@ -54,7 +54,7 @@
         ]"
         @click="onFilterClick"
       >
-        <font-awesome-icon icon="filter" size="sm" class="tw-ml-16" />
+        <FontAwesomeIcon icon="filter" size="sm" class="tw-ml-16" />
         {{
           isFiltered ? $t('headerMenu.editFilters') : $t('headerMenu.filter')
         }}
@@ -64,6 +64,7 @@
 </template>
 
 <script lang="ts">
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { PropType } from 'vue'
 
 import { defineNuxtComponent, useNuxtApp } from '#app'
@@ -73,6 +74,7 @@ import { FilterValues, filterValuesIsSet } from '~/utils/types-filters'
 
 export default defineNuxtComponent({
   components: {
+    FontAwesomeIcon,
     MenuItem,
   },
   props: {

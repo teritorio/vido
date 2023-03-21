@@ -19,12 +19,13 @@
       {{ categoriesActivesCount }}
     </template>
     <template #end-line-large>
-      <font-awesome-icon icon="chevron-right" />
+      <FontAwesomeIcon icon="chevron-right" />
     </template>
   </MenuItem>
 </template>
 
 <script lang="ts">
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { PropType } from 'vue'
 
 import { defineNuxtComponent, useNuxtApp } from '#app'
@@ -33,6 +34,7 @@ import { ApiMenuGroup, ApiMenuItem } from '~/lib/apiMenu'
 
 export default defineNuxtComponent({
   components: {
+    FontAwesomeIcon,
     MenuItem,
   },
   props: {
