@@ -11,8 +11,8 @@ const hostnames = {
 describe('home content', () => {
   beforeEach(() => {
     mockSSRAPI(hostnames, teritorioReferenceAPIFixture, {
-      'poi/1/deps.geojson?geometry_as=bbox&short_description=false':
-        teritorioReferenceAPIFixture.deps[1],
+      // ?geometry_as=bbox&short_description=false
+      'poi/1/deps.geojson': teritorioReferenceAPIFixture.deps[1],
     })
     cy.viewport(1024, 768)
     cy.visit('/poi/1/details')
@@ -25,10 +25,12 @@ describe('home content', () => {
     )
 
     cy.get('#FieldsGroup--contact_standard')
+      .parent()
       // @ts-ignore
       .contains('contact_standard')
 
     cy.get('#FieldsGroup--contact_card')
+      .parent()
       // @ts-ignore
       .contains('contact_card')
 

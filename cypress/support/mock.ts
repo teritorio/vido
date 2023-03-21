@@ -9,7 +9,7 @@ export function mockSSRAPI(
     ...routes,
     'settings.json': api.settings,
     'attribute_translations/fr.json': api.attribute_translations.fr,
-    'articles.json?slug=non-classe': api.articles,
+    'articles.json': api.articles, // ?slug=non-classe
     'menu.json': api.menu,
   }
 
