@@ -1,0 +1,28 @@
+<template>
+  <Story title="Map/MapPois">
+    <Variant
+      v-for="(p, name) in props"
+      :key="name"
+      :title="name.replace(/([A-Z])/g, ' $1').trim()"
+    >
+      <MapPois :style="mapCss" v-bind="p" />
+    </Variant>
+  </Story>
+</template>
+
+<script lang="ts" setup>
+import pois from '~/cypress/fixtures/teritorio/references/poi/2/deps.json'
+import { mapCss } from '~/lib/storybook-types'
+
+// ...parametersMap,
+
+const defaultProps = {
+  features: pois.features,
+}
+
+const props = {
+  Default: {
+    ...defaultProps,
+  },
+}
+</script>

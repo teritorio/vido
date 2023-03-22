@@ -68,6 +68,5 @@ dist
 # VS Code
 .vscode/settings.json
 
-# Storybook
-.nuxt-storybook
-storybook-static
+# Histoire
+.histoire
