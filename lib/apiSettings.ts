@@ -33,7 +33,7 @@ export interface Settings {
     type: 'geojson'
     data: GeoJSON.Polygon
   }
-  polygons_extra: {
+  polygons_extra?: {
     [key: string]: {
       type: 'geojson'
       data: string | GeoJSON.Polygon

@@ -61,7 +61,7 @@ export default defineNuxtComponent({
     const fetchSettingsBoundary = fetchSettings.then(async (settings) => {
       let boundary_geojson: Polygon | MultiPolygon | undefined
       const boundary = useRoute().query.boundary
-      if (boundary && typeof boundary === 'string') {
+      if (boundary && typeof boundary === 'string' && settings.polygons_extra) {
         const boundaryObject = settings.polygons_extra[boundary]
         if (boundaryObject) {
           if (typeof boundaryObject.data === 'string') {
