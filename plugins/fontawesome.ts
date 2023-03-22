@@ -54,6 +54,8 @@ import {
   faCog,
 } from '@fortawesome/free-solid-svg-icons'
 
+import { defineNuxtPlugin } from '#app/nuxt'
+
 // This is important, we are going to let Nuxt.js worry about the CSS
 config.autoAddCss = false
 
@@ -110,3 +112,5 @@ library.add(
   faCopy,
   faCog
 )
+
+export default defineNuxtPlugin((nuxtApp) => {})
