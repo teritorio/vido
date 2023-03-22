@@ -25,8 +25,8 @@ const defaultProps = {
     )
   ),
   selectedPoiIds: points.map((feature) => feature.properties.id),
-  explorerModeEnabled: true,
-  favoritesModeEnabled: true,
+  explorerModeEnabled: false,
+  favoritesModeEnabled: false,
 }
 
 export const Default = bind(PoisDeck, {
