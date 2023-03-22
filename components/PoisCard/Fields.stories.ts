@@ -14,7 +14,12 @@ const properties: ApiPoiProperties = {
 }
 
 const defaultProps = {
+  fields: [],
   properties,
+  geom: {
+    type: 'Point',
+    coordinates: [0, 0],
+  },
 }
 
 export const DefaultEmpty = bind(Fields, {
@@ -32,8 +37,9 @@ export const Many = bind(Fields, {
     { field: 'short_description' },
   ],
   properties: {
-    phone: '+33676544',
-    mobile: '+339750987766',
+    metadata: { id: 0 },
+    phone: ['+33676544'],
+    mobile: ['+339750987766'],
     'route:hiking:difficulty': 'easy',
     'route:hiking:duration': 285,
     'route:hiking:length': 10.2,
@@ -44,5 +50,5 @@ export const Many = bind(Fields, {
     'route:pdf': 'https://cdt40.tourinsoft.com/upload/ITIAQU040V502MFU.pdf',
     description,
   },
-  details: true,
+  details: 'details',
 })

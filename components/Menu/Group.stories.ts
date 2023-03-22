@@ -29,6 +29,7 @@ const defaultProps = {
   menuGroup,
   categoriesActivesCount: 0,
   size: 'lg',
+  displayModeDefault: 'large',
 }
 
 export const Default = bind(Group, {

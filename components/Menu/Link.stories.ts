@@ -27,6 +27,7 @@ const menuLink: ApiMenuLink = {
 const defaultProps = {
   menuLink,
   size: 'lg',
+  displayModeDefault: 'large',
 }
 
 export const Default = bind(Link, {
