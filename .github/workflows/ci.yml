@@ -101,9 +101,9 @@ jobs:
           wait-on: 'http://127.0.0.1:3000'
           wait-on-timeout: 30
 
-  storybook:
+  histoire:
     needs: install_cache
-    name: Storybook
+    name: Histoire
     runs-on: ${{ matrix.os }}
 
     strategy:
@@ -122,14 +122,8 @@ jobs:
       - name: Install more packages
         run: sudo apt-get install -y ruby
 
-      - name: Build Storybook 👀
-        run: NODE_OPTIONS=--openssl-legacy-provider yarn build:storybook
-
-      - name: Storycap
-        run: |
-          STORYCAP_OPS="--serverCmd 'npx --yes -- http-server storybook-static -p 4000'" yarn test:storybook:report || true
-          zip -r __screenshots__.zip __screenshots__ > /dev/null
-          echo "https://gist.github.com/frodrigo/7c470b063ff1efa19022eec2f394319f"
+      - name: Test Histoire
+        run: CONFIG=vidos-config-empty.json yarn test:histoire
 
       - name: Export as Gist
         uses: exuanbo/actions-deploy-gist@v1
@@ -139,15 +133,12 @@ jobs:
           file_path: __screenshots__.zip
           file_type: binary
 
-      - name: Test Storybook
-        run: yarn test:storybook
-
       - name: Deploy to gh-pages
         if: github.ref == 'refs/heads/develop'
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./storybook-static
+          publish_dir: ./.histoire/dist
 
   deploy_dev:
     needs:
@@ -155,7 +146,7 @@ jobs:
       - lint
       - tests
       - cypress
-      - storybook
+      - histoire
     if: github.ref == 'refs/heads/develop'
     name: Deploy Dev
     runs-on: ${{ matrix.os }}

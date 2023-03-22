@@ -132,7 +132,7 @@ export default defineNuxtConfig({
           /\.git/,
           /\.yarn/,
           /cypress/,
-          /.*\.stories\.ts$/,
+          /.*\.story\.vue$/,
           /.*\.jest\.ts$/,
           /\.nuxt\/dist\/server\//,
         ].some((r) => r.test(f)),
@@ -140,7 +140,7 @@ export default defineNuxtConfig({
     webpack: {
       // @ts-ignore
       ignored:
-        /\.git|\.yarn|cypress|.*\.stories\.ts$|.*\.jest\.ts$|\.nuxt\/dist\/server\//,
+        /\.git|\.yarn|cypress|.*\.story\.vue$|.*\.jest\.ts$|\.nuxt\/dist\/server\//,
     },
   },
 
