@@ -16,7 +16,12 @@ const defaultProps = {
   title: 'Contact info',
   colorFill: '#f76Ffe',
   properties: {
+    metadata: { id: 0 },
     name: 'foo',
+  },
+  geom: {
+    type: 'Point',
+    coordinates: [0, 0],
   },
 }
 
@@ -26,7 +31,9 @@ export const Sandart = bind(FieldsGroup, {
 
 export const Empty = bind(FieldsGroup, {
   ...defaultProps,
-  properties: {},
+  properties: {
+    metadata: { id: 0 },
+  },
 })
 
 export const Label = bind(FieldsGroup, {
@@ -60,6 +67,7 @@ export const Many = bind(FieldsGroup, {
     fields: [{ field: 'phone' }, { field: 'route' }, { field: 'short_description' }],
   },
   properties: {
+    metadata: { id: 0 },
     phone: ['+33676544'],
     mobile: ['+339750987766'],
     'route:hiking:difficulty': 'easy',

@@ -64,7 +64,12 @@
             },
             "main_url": {
                 "en": "https://teritorio.fr"
-            }
+            },
+            "keywords": {
+                "en": "foo"
+            },
+            "favorites_mode": true,
+            "explorer_mode": true
         }
     ]
 }
