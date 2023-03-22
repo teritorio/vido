@@ -1,5 +1,6 @@
 import Field from '~/components/Fields/Field.vue'
 import { bind } from '~/lib/storybook-types'
+import { PropertyTranslationsContextEnum } from '~/plugins/property-translations'
 
 export default {
   title: 'Fields/Field',
@@ -7,8 +8,10 @@ export default {
 }
 
 const defaultProps = {
+  context: PropertyTranslationsContextEnum.Details,
   field: { field: 'name' },
   properties: {
+    metadata: { id: 0 },
     name: 'foo',
   },
   geom: {
@@ -24,6 +27,7 @@ export const Default = bind(Field, {
 export const DefaultListOne = bind(Field, {
   ...defaultProps,
   properties: {
+    metadata: { id: 0 },
     name: ['foo'],
   },
 })
@@ -31,13 +35,16 @@ export const DefaultListOne = bind(Field, {
 export const DefaultListMany = bind(Field, {
   ...defaultProps,
   properties: {
+    metadata: { id: 0 },
     name: ['foo', 'bar'],
   },
 })
 
 export const NoValue = bind(Field, {
   ...defaultProps,
-  properties: {},
+  properties: {
+    metadata: { id: 0 },
+  },
 })
 
 export const Label = bind(Field, {
@@ -52,6 +59,7 @@ export const Route = bind(Field, {
   ...defaultProps,
   field: { field: 'route' },
   properties: {
+    metadata: { id: 0 },
     'route:hiking:difficulty': 'easy',
     'route:hiking:duration': 285,
     'route:hiking:length': 10.2,
@@ -65,6 +73,7 @@ export const StartEndDate = bind(Field, {
   ...defaultProps,
   field: { field: 'start_end_date' },
   properties: {
+    metadata: { id: 0 },
     start_date: '2001-01-01',
     end_date: '2012-12-12',
   },
@@ -74,9 +83,10 @@ export const Addr = bind(Field, {
   ...defaultProps,
   field: { field: 'addr' },
   properties: {
+    metadata: { id: 0 },
     'addr:housenumber': '33',
     'addr:street': 'Rue du Nord',
-    'addr:postcode': 35677,
+    'addr:postcode': '35677',
     'addr:city': 'Le Grand Nord',
   },
 })
@@ -88,6 +98,7 @@ export const Description = bind(Field, {
   ...defaultProps,
   field: { field: 'short_description' },
   properties: {
+    metadata: { id: 0 },
     description,
   },
 })
@@ -96,15 +107,17 @@ export const DescriptionDetails = bind(Field, {
   ...defaultProps,
   field: { field: 'short_description' },
   properties: {
+    metadata: { id: 0 },
     description,
   },
-  details: true,
+  details: 'details',
 })
 
 export const Phone = bind(Field, {
   ...defaultProps,
   field: { field: 'phone' },
   properties: {
+    metadata: { id: 0 },
     phone: ['+33676544'],
   },
 })
@@ -113,6 +126,7 @@ export const Email = bind(Field, {
   ...defaultProps,
   field: { field: 'email' },
   properties: {
+    metadata: { id: 0 },
     email: ['root@example.com'],
   },
 })
@@ -121,6 +135,7 @@ export const Website = bind(Field, {
   ...defaultProps,
   field: { field: 'website' },
   properties: {
+    metadata: { id: 0 },
     website: ['https://example.com'],
   },
 })
@@ -129,6 +144,7 @@ export const Facebook = bind(Field, {
   ...defaultProps,
   field: { field: 'facebook' },
   properties: {
+    metadata: { id: 0 },
     facebook: 'https://www.facebook.com/',
   },
 })
@@ -145,6 +161,7 @@ export const RouteGpxTrace = bind(Field, {
   ...defaultProps,
   field: { field: 'route:gpx_trace' },
   properties: {
+    metadata: { id: 0 },
     'route:gpx_trace': 'https://cdt40.tourinsoft.com/upload/15.8.gpx',
   },
 })
@@ -153,6 +170,7 @@ export const RoutePdf = bind(Field, {
   ...defaultProps,
   field: { field: 'route:pdf' },
   properties: {
+    metadata: { id: 0 },
     'route:pdf': 'https://cdt40.tourinsoft.com/upload/ITIAQU040V502MFU.pdf',
   },
 })
@@ -161,6 +179,7 @@ export const Download = bind(Field, {
   ...defaultProps,
   field: { field: 'download' },
   properties: {
+    metadata: { id: 0 },
     download: [
       'https://cdt40.tourinsoft.com/upload/ITIAQU040V502MFU.pdf',
       'https://cdt41.tourinsoft.com/upload/ITIAQU040V502MFU.pdf',

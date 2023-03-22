@@ -8,7 +8,7 @@ export default {
 }
 
 const defaultProps = {
-  ariaLabel: 'Plop',
+  label: 'Plop',
 }
 
 export const DefaultButton = bind(

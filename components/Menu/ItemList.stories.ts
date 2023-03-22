@@ -68,6 +68,7 @@ const defaultProps = {
   categoriesActivesCountByParent: {},
   selectedCategoriesIds: [],
   size: 'lg',
+  displayModeDefault: 'large',
 }
 
 export const Default = bind(ItemList, {
