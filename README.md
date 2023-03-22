@@ -100,14 +100,14 @@ Apache2 configuration
   </LocationMatch>
 ```
 
-## Dev with Storybook
+## Dev with Historie
 
-Run Storybook with
+Run Historie with
 ```
-yarn start:storybook
+yarn start:historie
 ```
 
-Storybook build also available on `gh-pages` branch built by CI and online at https://teritorio.github.io/vido/
+Historie build also available on `gh-pages` branch built by CI and online at https://teritorio.github.io/vido/
 
 ## Settings
 
