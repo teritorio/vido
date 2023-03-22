@@ -101,7 +101,10 @@
 </template>
 
 <script lang="ts">
-import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
+import {
+  FontAwesomeIcon,
+  FontAwesomeIconProps,
+} from '@fortawesome/vue-fontawesome'
 import { mapActions, mapState } from 'pinia'
 import { PropType } from 'vue'
 
@@ -167,7 +170,7 @@ export default defineNuxtComponent({
       return this.navigationParentIdStack.length === 0
     },
 
-    size(): string {
+    size(): FontAwesomeIconProps['size'] {
       return this.isRootMenu ? '2xl' : 'lg'
     },
 
