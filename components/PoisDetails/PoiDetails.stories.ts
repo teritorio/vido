@@ -1,5 +1,5 @@
 import PoiDetails from '~/components/PoisDetails/PoiDetails.vue'
-import navMenuEntries from '~/cypress/fixtures/teritorio/references/menu.json'
+import navMenuEntries from '~/cypress/fixtures/teritorio/references/articles.json'
 import poisDeps from '~/cypress/fixtures/teritorio/references/poi/1/deps.json'
 import settings from '~/cypress/fixtures/teritorio/references/settings.json'
 import { ApiPois } from '~/lib/apiPois'

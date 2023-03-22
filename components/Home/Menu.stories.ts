@@ -110,6 +110,7 @@ const defaultProps = {
   filters: {},
   isCategorySelected: () => false,
   categoriesActivesCountByParent: {},
+  menuBlock: 'MenuBlock',
 }
 
 const MenuMock = Menu.extend({

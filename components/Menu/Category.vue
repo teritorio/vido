@@ -98,7 +98,7 @@ export default defineNuxtComponent({
       required: true,
     },
     displayModeDefault: {
-      type: String as PropType<string>,
+      type: String as PropType<'compact' | 'large'>,
       required: true,
     },
   },
