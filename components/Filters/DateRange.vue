@@ -1,7 +1,7 @@
 <template>
   <div>
     <v-select
-      v-model="currentValue"
+      :model-value="currentValue"
       outlined
       :placeholder="filter.def.name && filter.def.name.fr"
       :items="dateFilters"
@@ -14,6 +14,7 @@
 <script lang="ts">
 import copy from 'fast-copy'
 import { PropType } from 'vue'
+import { VSelect } from 'vuetify/components/VSelect'
 
 import { defineNuxtComponent } from '#app'
 import { FilterValueDate } from '~/utils/types-filters'
@@ -27,7 +28,7 @@ export enum DateFilterLabel {
 }
 
 export type DateFilterOption = {
-  text: string
+  title: string
   value: string
   begin: string
   end: string
@@ -44,6 +45,10 @@ function formatDate(date: Date): string {
 }
 
 export default defineNuxtComponent({
+  components: {
+    VSelect,
+  },
+
   props: {
     filter: {
       type: Object as PropType<FilterValueDate>,
@@ -79,31 +84,31 @@ export default defineNuxtComponent({
     return {
       dateFilters: [
         {
-          text: this.$t('dateFilter.' + DateFilterLabel.TODAY),
+          title: this.$t('dateFilter.' + DateFilterLabel.TODAY),
           value: DateFilterLabel.TODAY,
           begin: formatDate(today),
           end: formatDate(today),
         },
         {
-          text: this.$t('dateFilter.' + DateFilterLabel.TOMORROW),
+          title: this.$t('dateFilter.' + DateFilterLabel.TOMORROW),
           value: DateFilterLabel.TOMORROW,
           begin: formatDate(tomorrow),
           end: formatDate(tomorrow),
         },
         {
-          text: this.$t('dateFilter.' + DateFilterLabel.THIS_WEEKEND),
+          title: this.$t('dateFilter.' + DateFilterLabel.THIS_WEEKEND),
           value: DateFilterLabel.THIS_WEEKEND,
           begin: formatDate(saturday),
           end: formatDate(sunday),
         },
         {
-          text: this.$t('dateFilter.' + DateFilterLabel.NEXT_WEEK),
+          title: this.$t('dateFilter.' + DateFilterLabel.NEXT_WEEK),
           value: DateFilterLabel.NEXT_WEEK,
           begin: formatDate(today),
           end: formatDate(in7days),
         },
         {
-          text: this.$t('dateFilter.' + DateFilterLabel.NEXT_MONTH),
+          title: this.$t('dateFilter.' + DateFilterLabel.NEXT_MONTH),
           value: DateFilterLabel.NEXT_MONTH,
           begin: formatDate(today),
           end: formatDate(in1month),
@@ -113,8 +118,12 @@ export default defineNuxtComponent({
   },
 
   computed: {
-    value(): string | undefined {
-      return this.currentValue()
+    currentValue(): string | undefined {
+      return this.dateFilters.find(
+        (e) =>
+          e.begin === this.filter.filterValueBegin &&
+          e.end === this.filter.filterValueEnd
+      )?.value
     },
   },
 
@@ -138,24 +147,6 @@ export default defineNuxtComponent({
 
       this.$emit('change', newFilter)
     },
-
-    currentValue(): string | undefined {
-      return this.dateFilters.find(
-        (e) =>
-          e.begin === this.filter.filterValueBegin &&
-          e.end === this.filter.filterValueEnd
-      )?.value
-    },
   },
 })
 </script>
-
-<style scoped>
-.v-text-field--outlined fieldset {
-  border-color: rgba(192, 0, 250, 0.986);
-}
-
-input:focus {
-  border: none;
-}
-</style>
