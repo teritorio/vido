@@ -13,7 +13,6 @@ const defaultProps = {
     icon: 'phone',
     fields: [{ field: 'name' }],
   },
-  title: 'Contact info',
   colorFill: '#f76Ffe',
   properties: {
     metadata: { id: 0 },
