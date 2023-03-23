@@ -1,13 +1,10 @@
 import PoisTable from '~/components/PoisList/PoisTable.vue'
 import poisDeps from '~/cypress/fixtures/teritorio/references/poi/1/deps.json'
-import { bind, parametersMap } from '~/lib/storybook-types'
+import { bind } from '~/lib/storybook-types'
 
 export default {
-  title: 'PoisTable/PoisTable',
+  title: 'PoisList/PoisTable',
   component: PoisTable,
-  parameters: {
-    ...parametersMap,
-  },
 }
 
 const defaultProps = {
