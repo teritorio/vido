@@ -1,5 +1,5 @@
 <template>
-  <div class="stars-data text-amber-500 mb-1">
+  <div class="stars-data tw-text-amber-500 tw-mb-1">
     <FontAwesomeIcon
       v-for="index in new Array(stars)"
       :key="index"
