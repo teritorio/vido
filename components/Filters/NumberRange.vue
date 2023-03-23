@@ -1,7 +1,7 @@
 <template>
-  <div class="filters-number-range">
+  <div :class="['tw-mt-4', 'filters-number-range']">
     <v-range-slider
-      v-model="value"
+      :model-value="value"
       strict
       :min="min"
       :max="max"
@@ -35,27 +35,22 @@ export default defineNuxtComponent({
     change: (newFilter: FilterValueNumberRange) => true,
   },
 
-  data(): {
-    value: [number, number]
-  } {
-    return {
-      value: [
-        this.filter.filterValueMin != null
-          ? this.filter.filterValueMin
-          : this.filter.def.min,
-        this.filter.filterValueMax != null
-          ? this.filter.filterValueMax
-          : this.filter.def.max,
-      ],
-    }
-  },
-
   computed: {
     min(): number {
       return this.filter.def.min
     },
     max(): number {
       return this.filter.def.max
+    },
+    value(): [number, number] {
+      return [
+        this.filter.filterValueMin != null
+          ? this.filter.filterValueMin
+          : this.filter.def.min,
+        this.filter.filterValueMax != null
+          ? this.filter.filterValueMax
+          : this.filter.def.max,
+      ]
     },
   },
 
