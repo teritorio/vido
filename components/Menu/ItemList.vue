@@ -1,9 +1,8 @@
 <template>
   <div class="tw-grid tw-items-start tw-grid-cols-4">
-    <template v-for="menuItem in menuItems">
+    <template v-for="menuItem in menuItems" :key="menuItem.id">
       <MenuGroup
         v-if="menuItem.menu_group"
-        :key="menuItem.id"
         :menu-group="menuItem"
         :categories-actives-count="categoriesActivesCountByParent[menuItem.id]"
         :size="size"
@@ -14,9 +13,8 @@
         "
         @click="onMenuGroupClick(menuItem)"
       />
-      <Link
+      <LinkItem
         v-else-if="menuItem.link"
-        :key="menuItem.id"
         :menu-link="menuItem"
         :size="size"
         :display-mode-default="displayModeDefault"
@@ -28,7 +26,6 @@
       />
       <Category
         v-else-if="menuItem.category"
-        :key="menuItem.id"
         :category="menuItem"
         :selected="isCategorySelected(menuItem.id)"
         :filters="filters[menuItem.id]"
@@ -52,7 +49,7 @@ import { PropType } from 'vue'
 import { defineNuxtComponent } from '#app'
 import Category from '~/components/Menu/Category.vue'
 import MenuGroup from '~/components/Menu/Group.vue'
-import Link from '~/components/Menu/Link.vue'
+import LinkItem from '~/components/Menu/Link.vue'
 import { ApiMenuCategory, ApiMenuItem, MenuItem } from '~/lib/apiMenu'
 import { FilterValues } from '~/utils/types-filters'
 
@@ -60,7 +57,7 @@ export default defineNuxtComponent({
   components: {
     Category,
     MenuGroup,
-    Link,
+    LinkItem,
   },
   props: {
     menuItems: {
