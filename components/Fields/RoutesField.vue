@@ -17,7 +17,7 @@
         >
           {{ propertyTranslations.pv('route', activity, context) }}
         </FieldsHeader>
-        <ul class="list-disc ml-6">
+        <ul class="tw-list-disc tw-ml-6">
           <li>
             {{ $t('fields.route.difficulty') }}
             {{ difficulty(activity as string, route) }}
