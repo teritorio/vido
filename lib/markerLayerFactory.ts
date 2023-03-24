@@ -6,6 +6,7 @@ import maplibregl, {
   LngLatBoundsLike,
   FitBoundsOptions,
 } from 'maplibre-gl'
+import { createApp } from 'vue'
 
 import { ApiPoi } from './apiPois'
 import { getBBoxFeatures } from './bbox'
@@ -91,15 +92,12 @@ export function makerHtmlFactory(
   }).setLngLat(latLng) // Using this to avoid misplaced marker
 
   // Teritorio badge
-  const instance = new TeritorioIconBadge({
-    propsData: {
-      colorFill,
-      picto: icon,
-      image: thumbnail,
-      size,
-    },
-  }).$mount()
-  el.appendChild(instance.$el)
+  createApp(TeritorioIconBadge, {
+    colorFill,
+    picto: icon,
+    image: thumbnail,
+    size,
+  }).mount(el)
 
   return marker
 }
