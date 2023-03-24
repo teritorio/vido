@@ -44,7 +44,14 @@ import { PoiFilter } from '@teritorio/map'
 import copy from 'fast-copy'
 import { Polygon, MultiPolygon } from 'geojson'
 import throttle from 'lodash.throttle'
-import { FitBoundsOptions, LngLatBoundsLike, LngLatLike } from 'maplibre-gl'
+import {
+  FitBoundsOptions,
+  LngLatBoundsLike,
+  LngLatLike,
+  MapDataEvent,
+  MapLibreEvent,
+  MapTouchEvent,
+} from 'maplibre-gl'
 import { PropType } from 'vue'
 
 import { defineNuxtComponent } from '#app'
@@ -177,6 +184,23 @@ export default defineNuxtComponent({
 
   emits: {
     'map-init': (map: maplibregl.Map) => true,
+    'map-data': (event: MapDataEvent & Object) => true,
+    'map-dragend': (
+      event: MapLibreEvent<MouseEvent | TouchEvent | undefined> & Object
+    ) => true,
+    'map-moveend': (
+      event: MapLibreEvent<MouseEvent | TouchEvent | WheelEvent | undefined> &
+        Object
+    ) => true,
+    'map-resize': (event: MapLibreEvent<undefined> & Object) => true,
+    'map-rotateend': (
+      event: MapLibreEvent<MouseEvent | TouchEvent | undefined> & Object
+    ) => true,
+    'map-touchmove': (event: MapTouchEvent & Object) => true,
+    'map-zoomend': (
+      event: MapLibreEvent<MouseEvent | TouchEvent | WheelEvent | undefined> &
+        Object
+    ) => true,
     'map-style-load': (style: maplibregl.StyleSpecification) => true,
     'feature-click': (feature: ApiPoi) => true,
   },
