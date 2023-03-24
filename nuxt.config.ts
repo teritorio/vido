@@ -46,10 +46,6 @@ export default defineNuxtConfig({
   // @ts-ignore
   loadingIndicator: false,
 
-  serverMiddleware: [
-    // { path: '/', handler: '~/api/manifest.ts' },
-  ],
-
   // Global CSS (https://go.nuxtjs.dev/config-css)
   css: ['@fortawesome/fontawesome-svg-core/styles.css'],
 
