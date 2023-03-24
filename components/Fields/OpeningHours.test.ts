@@ -2,8 +2,7 @@ import { expect } from '@jest/globals'
 import { shallowMount } from '@vue/test-utils'
 import { createPinia } from 'pinia'
 
-import OpeningHours from './OpeningHours.vue'
-
+import OpeningHours from '~/components/Fields/OpeningHours.vue'
 import { PropertyTranslationsContextEnum } from '~/plugins/property-translations'
 import { siteStore } from '~/stores/site'
 
