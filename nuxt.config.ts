@@ -1,7 +1,6 @@
 import { defineNuxtConfig } from 'nuxt/config'
 
 import { vidos } from './lib/config'
-import { sitemapFilter, sitemapRoutes } from './lib/sitemap'
 import { configuredApi, configuredImageProxy } from './utils/vido-config-static'
 
 export default defineNuxtConfig({
@@ -81,7 +80,6 @@ export default defineNuxtConfig({
     '@nuxtjs/i18n',
     '@nuxt/image-edge',
     ...(process.env.SENTRY_DSN ? ['@nuxtjs/sentry'] : []),
-    // '@nuxtjs/sitemap', // declare the sitemap module at end of array
     '@pinia/nuxt',
   ],
 
@@ -111,12 +109,6 @@ export default defineNuxtConfig({
       // https://docs.sentry.io/platforms/javascript/guides/vue/configuration/options/
     },
   },
-
-  // sitemap: {
-  //   cacheTime: -1,
-  //   routes: () => sitemapRoutes(vidos),
-  //   filter: sitemapFilter,
-  // },
 
   watchers: {
     chokidar: {
