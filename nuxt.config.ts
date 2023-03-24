@@ -2,7 +2,7 @@ import { defineNuxtConfig } from 'nuxt/config'
 
 import { vidos } from './lib/config'
 import { sitemapFilter, sitemapRoutes } from './lib/sitemap'
-import { configuredApi, configuredImageProxy } from './plugins/vido-config'
+import { configuredApi, configuredImageProxy } from './utils/vido-config-static'
 
 const supportedLocales = ['en-GB', 'fr', 'es']
 
@@ -106,9 +106,9 @@ export default defineNuxtConfig({
     langDir: 'locales/',
   },
 
-  // image: {
-  //   domains: [...configuredApi(vidos), ...configuredImageProxy(vidos)],
-  // },
+  image: {
+    domains: [...configuredApi(vidos), ...configuredImageProxy(vidos)],
+  },
 
   sentry: {
     dsn: process.env.SENTRY_DSN || '',
