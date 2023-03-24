@@ -1,141 +1,103 @@
-<template>
-  <picture :key="nSources[0].src">
-    <source
-      v-if="nSources[1]"
-      :type="nSources[1].type"
-      :srcset="nSources[1].srcset"
-      :sizes="mediaSize"
-    />
-    <img
-      v-bind="{ ...nImgAttrs, ...imgAttrs, ...$attrs }"
-      :src="srcDefault"
-      :srcset="nSources[0].srcset"
-      :sizes="mediaSize"
-      :alt="alt"
-    />
-  </picture>
-</template>
-
 <script>
 // Monkey patch
 // Change stategy of source image size
 // Pass explicite size, not the default one based on view port size
+import {
+  useBaseImage,
+  baseImageProps,
+} from '@nuxt/image-edge/dist/runtime/components/_base.mjs'
+import { h, defineComponent, computed } from 'vue'
 
-import { imageMixin } from '@nuxt/image/dist/runtime/components/image.mixin'
-import { getFileExtension } from '@nuxt/image/dist/runtime/utils/index.js'
-
-export default defineNuxtComponent({
+import { getFileExtension } from '#image'
+import { useImage, useHead } from '#imports'
+export const pictureProps = {
+  ...baseImageProps,
+  legacyFormat: { type: String, default: null },
+  imgAttrs: { type: Object, default: null },
+  mediaSize: { type: String, required: true },
+}
+export default defineComponent({
   name: 'NuxtPicture',
-  mixins: [imageMixin],
-
-  props: {
-    legacyFormat: { type: String, default: null },
-    imgAttrs: { type: Object, default: null },
-    mediaSize: {
-      type: String,
-      required: true,
-    },
-    alt: {
-      type: String,
-      required: true,
-    },
-  },
-
-  head() {
-    if (this.preload === true) {
-      const srcKey = typeof this.nSources[1] !== 'undefined' ? 1 : 0
+  props: pictureProps,
+  setup: (props, ctx) => {
+    const $img = useImage()
+    const _base = useBaseImage(props)
+    const isTransparent = computed(() =>
+      ['png', 'webp', 'gif'].includes(originalFormat.value)
+    )
+    const originalFormat = computed(() => getFileExtension(props.src))
+    const format = computed(() =>
+      props.format || originalFormat.value === 'svg' ? 'svg' : 'webp'
+    )
+    const legacyFormat = computed(() => {
+      if (props.legacyFormat) {
+        return props.legacyFormat
+      }
+      const formats = {
+        webp: isTransparent.value ? 'png' : 'jpeg',
+        svg: 'png',
+      }
+      return formats[format.value] || originalFormat.value
+    })
+    const nSources = computed(() => {
+      if (format.value === 'svg') {
+        return [{ srcset: props.src }]
+      }
+      const formats =
+        legacyFormat.value !== format.value
+          ? [legacyFormat.value, format.value]
+          : [format.value]
+      return formats.map((format2) => {
+        const { srcset, sizes, src } = $img.getSizes(props.src, {
+          ..._base.options.value,
+          sizes: props.sizes || $img.options.screens,
+          modifiers: { ..._base.modifiers.value, format: format2 },
+        })
+        return { src, type: `image/${format2}`, sizes, srcset }
+      })
+    })
+    if (props.preload) {
+      const srcKey = nSources.value?.[1] ? 1 : 0
       const link = {
         rel: 'preload',
         as: 'image',
-        imagesrcset: this.nSources[srcKey].srcset,
+        imagesrcset: nSources.value[srcKey].srcset,
       }
-      if (typeof this.nSources[srcKey].sizes !== 'undefined') {
-        link.imagesizes = this.nSources[srcKey].sizes
+      if (nSources.value?.[srcKey]?.sizes) {
+        link.imagesizes = nSources.value[srcKey].sizes
       }
-      return {
-        link: [link],
+      useHead({ link: [link] })
+    }
+    const imgAttrs = { ...props.imgAttrs }
+    for (const key in ctx.attrs) {
+      if (key in baseImageProps && !(key in imgAttrs)) {
+        imgAttrs[key] = ctx.attrs[key]
       }
     }
-    return {}
-  },
-
-  computed: {
-    isTransparent() {
-      return ['png', 'webp', 'gif'].includes(this.originalFormat)
-    },
-
-    originalFormat() {
-      return getFileExtension(this.src)
-    },
-
-    nFormat() {
-      if (this.format) {
-        return this.format
-      }
-      if (this.originalFormat === 'svg') {
-        return 'svg'
-      }
-      return 'webp'
-    },
-
-    nLegacyFormat() {
-      if (this.legacyFormat) {
-        return this.legacyFormat
-      }
-      const formats = {
-        webp: this.isTransparent ? 'png' : 'jpeg',
-        svg: 'png',
-      }
-      return formats[this.nFormat] || this.originalFormat
-    },
-
-    srcDefault() {
-      // Get the smallest by default, not the biggest one
-      return this.nSources[0].srcset.split(' ')[0]
-    },
-
-    nSources() {
-      if (this.nFormat === 'svg') {
-        return [
-          {
-            srcset: this.src,
-          },
-        ]
-      }
-      const formats =
-        this.nLegacyFormat !== this.nFormat
-          ? [this.nLegacyFormat, this.nFormat]
-          : [this.nFormat]
-      const sources = formats.map((format) => {
-        const { srcset, sizes, src } = this.$img.getSizes(this.src, {
-          ...this.nOptions,
-          sizes: this.sizes || this.$img.options.screens,
-          modifiers: {
-            ...this.nModifiers,
-            format,
-          },
-        })
-        return {
-          src,
-          type: `image/${format}`,
-          sizes,
-          srcset,
-        }
-      })
-      return sources
-    },
-  },
-
-  created() {
-    if (process.server && process.static) {
-      this.nSources
-    }
+    // Get the smallest by default, not the biggest one
+    const srcDefault = nSources.value[0].srcset.split(' ')[0] // Monkey path, add
+    return () =>
+      h('picture', { key: nSources.value[0].src }, [
+        ...(nSources.value?.[1]
+          ? [
+              h('source', {
+                type: nSources.value[1].type,
+                sizes: props.mediaSize, // Monkey path, replace: nSources.value[1].sizes,
+                srcset: nSources.value[1].srcset,
+              }),
+            ]
+          : []),
+        h('img', {
+          ..._base.attrs.value,
+          ...imgAttrs,
+          // ...this.$attrs, // Monkey path, add
+          // src: nSources.value[0].src,
+          src: srcDefault, // Monkey path, replace: nSources.value[0].src,
+          // sizes: nSources.value[0].sizes,
+          sizes: props.mediaSize, // Monkey path, replace: nSources.value[0].sizes,
+          srcset: nSources.value[0].srcset,
+        }),
+      ])
   },
 })
 </script>
-
-<style scoped>
-img:-moz-loading {
-  visibility: hidden;
-}
-</style>
