@@ -69,6 +69,7 @@ Then, create a PR from `develop` to `main`, it will launch the continuous develo
 
 ## Entry points
 
+### Web
 * Main Map:
   * Full page: `/`, `/{poi_Id}`, `/{category_ids}/` and `/{category_ids}/{poi_id}`.
     * Parameters:
@@ -80,6 +81,10 @@ Then, create a PR from `develop` to `main`, it will launch the continuous develo
   * map only: `/pois/{ids}/map`.
 * Categories
   * list of POIs of a category: `/category/{id}`
+
+### Sitemap & WPA
+* `/manifest.webmanifest`
+* `/sitemap.xml`
 
 Full entry points documentation available on [api.yml](static/api.yaml) and on server at [http://localhost:3000/api.yaml](http://localhost:3000/api.yaml).
 
