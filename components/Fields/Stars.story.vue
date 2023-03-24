@@ -11,7 +11,7 @@
 </template>
 
 <script lang="ts" setup>
-import Stars from './Stars.vue'
+import Stars from '~/components/Fields/Stars.vue'
 
 let defaultProps = {
   stars: 3,
