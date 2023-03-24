@@ -10,19 +10,19 @@
       <div
         class="tw-flex tw-flex-col tw-justify-between tw-w-full tw-w-auto tw-max-w-md tw-space-y-4"
       >
-        <transition-group
-          id="header-menu"
-          ref="headerMenu"
-          tag="div"
-          name="headers"
-          appear
-          mode="out-in"
-          :class="[
-            'tw-overflow-x-hidden',
-            !isFilterActive && 'tw-overflow-y-auto',
-          ]"
-        >
-          <client-only>
+        <client-only>
+          <transition-group
+            id="header-menu"
+            ref="headerMenu"
+            tag="div"
+            name="headers"
+            appear
+            mode="out-in"
+            :class="[
+              'tw-overflow-x-hidden',
+              !isFilterActive && 'tw-overflow-y-auto',
+            ]"
+          >
             <MenuBlock
               v-if="isModeExplorerOrFavorites"
               key="ExplorerOrFavoritesBack"
@@ -55,8 +55,8 @@
                 />
               </Search>
             </Menu>
-          </client-only>
-        </transition-group>
+          </transition-group>
+        </client-only>
       </div>
     </header>
     <div
