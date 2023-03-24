@@ -8,6 +8,8 @@ import {
   FilterValues,
   filterValueFactory,
   filterValuesIsSet,
+  isSet,
+  isMatch,
 } from '~/utils/types-filters'
 
 interface FetchFeaturesPayload {
@@ -36,7 +38,7 @@ function sortedUniq<T>(a: T[]): T[] {
 
 function keepFeature(filters: FilterValues, feature: ApiPoi): boolean {
   return filters.reduce<boolean>((prevValue, filter) => {
-    return prevValue && (!filter.isSet() || filter.isMatch(feature.properties))
+    return prevValue && (!isSet(filter) || isMatch(filter, feature.properties))
   }, true)
 }
 

@@ -16,8 +16,6 @@ abstract class FilterValueDef<Type extends Filter> {
     this.type = def.type
   }
 
-  abstract isSet(): boolean
-  abstract isMatch(properties: ApiPoi['properties']): boolean
   toJSON() {
     return { ...this }
   }
@@ -25,74 +23,20 @@ abstract class FilterValueDef<Type extends Filter> {
 
 export class FilterValueList extends FilterValueDef<FilterList> {
   filterValues: string[] = []
-
-  isSet() {
-    return this.filterValues.length > 0
-  }
-
-  isMatch(properties: ApiPoi['properties']) {
-    const propertyValues = properties[this.def.property]
-    if (propertyValues instanceof Array) {
-      return this.filterValues.some((filterValue) =>
-        propertyValues.includes(filterValue)
-      )
-    } else {
-      return this.filterValues.includes(properties[this.def.property] as string)
-    }
-  }
 }
 
 export class FilterValueBoolean extends FilterValueDef<FilterBoolean> {
   filterValue: boolean = false
-
-  isSet() {
-    return this.filterValue
-  }
-
-  isMatch(properties: ApiPoi['properties']) {
-    return Boolean(properties[this.def.property])
-  }
 }
 
 export class FilterValueDate extends FilterValueDef<FilterDate> {
   filterValueBegin: String | null = null
   filterValueEnd: String | null = null
-
-  isSet() {
-    return this.filterValueBegin !== null || this.filterValueEnd !== null
-  }
-
-  isMatch(properties: ApiPoi['properties']) {
-    return Boolean(
-      (!this.def.property_begin ||
-        !this.filterValueEnd ||
-        properties[this.def.property_begin] <= this.filterValueEnd) &&
-        (!this.def.property_end ||
-          !this.filterValueBegin ||
-          properties[this.def.property_end] >= this.filterValueBegin)
-    )
-  }
 }
 
 export class FilterValueNumberRange extends FilterValueDef<FilterNumberRange> {
   filterValueMin: number | null = null
   filterValueMax: number | null = null
-
-  isSet() {
-    return (
-      (this.filterValueMin !== null && this.filterValueMin !== this.def.min) ||
-      (this.filterValueMax !== null && this.filterValueMax !== this.def.max)
-    )
-  }
-
-  isMatch(properties: ApiPoi['properties']) {
-    return (
-      (this.filterValueMin == null ||
-        this.filterValueMin < properties[this.def.property]) &&
-      (this.filterValueMax == null ||
-        properties[this.def.property] < this.filterValueMax)
-    )
-  }
 }
 
 export type FilterValue =
@@ -102,8 +46,71 @@ export type FilterValue =
   | FilterValueNumberRange
 export type FilterValues = FilterValue[]
 
+export function isSet(filter: FilterValue): boolean {
+  switch (filter.type) {
+    case 'boolean':
+      return filter.filterValue
+
+    case 'checkboxes_list':
+    case 'multiselection':
+      return filter.filterValues.length > 0
+
+    case 'date_range':
+      return filter.filterValueBegin !== null || filter.filterValueEnd !== null
+
+    case 'number_range':
+      return (
+        (filter.filterValueMin !== null &&
+          filter.filterValueMin !== filter.def.min) ||
+        (filter.filterValueMax !== null &&
+          filter.filterValueMax !== filter.def.max)
+      )
+  }
+}
+
+export function isMatch(
+  filter: FilterValue,
+  properties: ApiPoi['properties']
+): boolean {
+  switch (filter.type) {
+    case 'boolean':
+      return Boolean(properties[filter.def.property])
+
+    case 'checkboxes_list':
+    case 'multiselection':
+      const propertyValues = properties[filter.def.property]
+      if (propertyValues instanceof Array) {
+        return filter.filterValues.some((filterValue) =>
+          propertyValues.includes(filterValue)
+        )
+      } else {
+        return filter.filterValues.includes(
+          properties[filter.def.property] as string
+        )
+      }
+
+    case 'date_range':
+      return Boolean(
+        (!filter.def.property_begin ||
+          !filter.filterValueEnd ||
+          properties[filter.def.property_begin] <= filter.filterValueEnd) &&
+          (!filter.def.property_end ||
+            !filter.filterValueBegin ||
+            properties[filter.def.property_end] >= filter.filterValueBegin)
+      )
+
+    case 'number_range':
+      return (
+        (filter.filterValueMin == null ||
+          filter.filterValueMin < properties[filter.def.property]) &&
+        (filter.filterValueMax == null ||
+          properties[filter.def.property] < filter.filterValueMax)
+      )
+  }
+}
+
 export function filterValuesIsSet(filterValues: FilterValues) {
-  return filterValues.some((filterValue) => filterValue.isSet())
+  return filterValues.some((filterValue) => isSet(filterValue))
 }
 
 export function filterValueFactory(filter: Filter): FilterValue {
