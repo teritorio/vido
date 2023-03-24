@@ -1,5 +1,4 @@
-import Stars from './Stars.vue'
-
+import Stars from '~/components/Fields/Stars.vue'
 import { bind } from '~/lib/storybook-types'
 
 export default {
