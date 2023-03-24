@@ -4,8 +4,6 @@ import { vidos } from './lib/config'
 import { sitemapFilter, sitemapRoutes } from './lib/sitemap'
 import { configuredApi, configuredImageProxy } from './utils/vido-config-static'
 
-const supportedLocales = ['en-GB', 'fr', 'es']
-
 export default defineNuxtConfig({
   env: {
     // Copy NODE_ENV to know to real setting when use `nuxt build`
@@ -146,29 +144,6 @@ export default defineNuxtConfig({
 
   // Build Configuration (https://go.nuxtjs.dev/config-build)
   build: {
-    //   // @ts-ignore
-    //   extend(config, { isClient }) {
-    //     // Extend only webpack config for client-bundle
-    //     if (isClient) {
-    //       config.devtool = 'source-map'
-    //     }
-    //   },
-    //   plugins: [
-    //     // https://github.com/date-fns/date-fns/blob/main/docs/webpack.md
-    //     // /!\ Not woring. Has no effect.
-    //     new webpack.ContextReplacementPlugin(
-    //       /date-fns\/locale$/,
-    //       new RegExp('./(' + supportedLocales.join('|') + ')/index.js$')
-    //     ),
-    //   ],
-    //   babel: {
-    //     plugins: [
-    //       ['@babel/plugin-proposal-class-properties', { loose: true }],
-    //       ['@babel/plugin-proposal-private-methods', { loose: true }],
-    //       ['@babel/plugin-proposal-private-property-in-object', { loose: true }],
-    //     ],
-    //   },
-    // @ts-ignore
     transpile: [
       'iron-webcrypto',
       'punycode',
