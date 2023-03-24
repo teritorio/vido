@@ -142,29 +142,6 @@ export default defineNuxtComponent({
     }),
   },
 
-  data(): {
-    config: VidoConfig | null
-    settings: Settings
-    contents: ContentEntry[]
-    propertyTranslations: PropertyTranslations
-    poi: ApiPoi
-    route: ApiPoiDeps | undefined
-  } {
-    return {
-      config: null,
-      // @ts-ignore
-      settings: null,
-      // @ts-ignore
-      contents: null,
-      // @ts-ignore
-      propertyTranslations: null,
-      // @ts-ignore
-      poi: null,
-      // @ts-ignore
-      route: null,
-    }
-  },
-
   created() {
     this.globalConfig = this.config!
     this.globalSettings = this.settings
