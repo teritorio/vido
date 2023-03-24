@@ -21,7 +21,7 @@
             : colorFill
         "
       />
-      <NuxtPicture
+      <UIPicture
         v-if="poi.properties.image && poi.properties.image.length > 0"
         class="tw-object-cover tw-h-44 tw-w-full md:tw-w-48 md:tw-h-full tw-z-10"
         :src="poi.properties.image[0]"
@@ -45,15 +45,15 @@ import { PropType } from 'vue'
 
 import { defineNuxtComponent } from '#app'
 import PoiCardContent from '~/components/PoisCard/PoiCardContent.vue'
-import NuxtPicture from '~/components/UI/NuxtPicture.vue'
 import TeritorioIcon from '~/components/UI/TeritorioIcon.vue'
+import UIPicture from '~/components/UI/UIPicture.vue'
 import { ApiPoi, ApiPoiId } from '~/lib/apiPois'
 
 export default defineNuxtComponent({
   components: {
     PoiCardContent,
     TeritorioIcon,
-    NuxtPicture,
+    UIPicture,
   },
 
   props: {

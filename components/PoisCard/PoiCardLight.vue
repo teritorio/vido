@@ -39,7 +39,7 @@
         :geom="poi.geometry"
       />
     </div>
-    <NuxtPicture
+    <UIPicture
       v-if="poi.properties.image && poi.properties.image.length > 0"
       class="tw-w-full tw-h-32 md:tw-w-32 md:tw-h-32 tw-z-10"
       :src="poi.properties.image[0]"
@@ -55,8 +55,8 @@ import { PropType } from 'vue'
 
 import { defineNuxtComponent } from '#app'
 import Fields from '~/components/PoisCard/Fields.vue'
-import NuxtPicture from '~/components/UI/NuxtPicture.vue'
 import TeritorioIconBadge from '~/components/UI/TeritorioIconBadge.vue'
+import UIPicture from '~/components/UI/UIPicture.vue'
 import { ApiPoi } from '~/lib/apiPois'
 import { MapPoiId } from '~/lib/mapPois'
 import { favoritesStore } from '~/stores/favorite'
@@ -65,7 +65,7 @@ export default defineNuxtComponent({
   components: {
     TeritorioIconBadge,
     Fields,
-    NuxtPicture,
+    UIPicture,
   },
 
   props: {
