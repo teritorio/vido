@@ -11,7 +11,7 @@
     "build-fixture": "ruby poi_explode.rb cypress/fixtures/teritorio/references/pois.geojson",
     "dev": "yarn nuxi dev",
     "build": "yarn prepare && yarn nuxi build",
-    "build:histoire": "rm -fr __screenshots__/current/* && yarn histoire build",
+    "build:histoire": "rm -fr __screenshots__/current/ && mkdir -p __screenshots__/current/ && yarn histoire build",
     "generate": "yarn nuxi generate",
     "start": "yarn prepare && yarn nuxi start",
     "start4cypress": "NODE_ENV=development CONFIG=vidos-config-cypress.json yarn nuxi start",
