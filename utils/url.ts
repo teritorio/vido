@@ -29,7 +29,9 @@ export function setHashParts(hash: string, hashParts: HashParts) {
   })
 
   // Replace is for keeping map param working with maplibregl
-  return params.toString().replace(/%2F/g, '/')
+  return params.toString() != ''
+    ? '#' + params.toString().replace(/%2F/g, '/')
+    : ''
 }
 
 export function routerPushHashUpdate(
