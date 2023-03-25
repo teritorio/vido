@@ -369,7 +369,7 @@ export default defineNuxtComponent({
         this.map.isSourceLoaded(POI_SOURCE)
       ) {
         this.markers = updateMarkers(
-          this.map,
+          this.map as maplibregl.Map,
           this.markers,
           POI_SOURCE,
           this.fitBounds,
