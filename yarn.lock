@@ -4223,7 +4223,6 @@ __metadata:
     "@types/wcag-contrast": ^3.0.0
     "@typescript-eslint/eslint-plugin": ^5.57.0
     "@typescript-eslint/parser": ^5.57.0
-    "@vue/test-utils": ^2.3.2
     "@vue/vue3-jest": ^29.2.3
     autoprefixer: ^10.4.14
     babel-core: ^7.0.0-bridge.0
@@ -5465,7 +5464,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@vue/compiler-dom@npm:3.2.47, @vue/compiler-dom@npm:^3.0.1, @vue/compiler-dom@npm:^3.2.47":
+"@vue/compiler-dom@npm:3.2.47, @vue/compiler-dom@npm:^3.2.47":
   version: 3.2.47
   resolution: "@vue/compiler-dom@npm:3.2.47"
   dependencies:
@@ -5553,7 +5552,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@vue/server-renderer@npm:3.2.47, @vue/server-renderer@npm:^3.0.1":
+"@vue/server-renderer@npm:3.2.47":
   version: 3.2.47
   resolution: "@vue/server-renderer@npm:3.2.47"
   dependencies:
@@ -5569,26 +5568,6 @@ __metadata:
   version: 3.2.47
   resolution: "@vue/shared@npm:3.2.47"
   checksum: a1587433962f72a6292ebc5350ecc646b0fab8527ecb6ecf57119145fed5062b31bb6243a3a8ba4d3562ee8a3fb17cc7b80a6455b0bcc8872e771078c7bdf633
-  languageName: node
-  linkType: hard
-
-"@vue/test-utils@npm:^2.3.2":
-  version: 2.3.2
-  resolution: "@vue/test-utils@npm:2.3.2"
-  dependencies:
-    "@vue/compiler-dom": ^3.0.1
-    "@vue/server-renderer": ^3.0.1
-    js-beautify: 1.14.6
-  peerDependencies:
-    "@vue/compiler-dom": ^3.0.1
-    "@vue/server-renderer": ^3.0.1
-    vue: ^3.0.1
-  dependenciesMeta:
-    "@vue/compiler-dom":
-      optional: true
-    "@vue/server-renderer":
-      optional: true
-  checksum: 349a8370c579eb1061418f39e799c4dd0e0184304b98b16a4a5416b54c120760712983f9139b543110ec76353aaf038385f9d9aa293dc91c36dbc74cd90e621d
   languageName: node
   linkType: hard
 
@@ -7523,7 +7502,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"commander@npm:^2.19.0, commander@npm:^2.20.0, commander@npm:^2.20.3":
+"commander@npm:^2.20.0, commander@npm:^2.20.3":
   version: 2.20.3
   resolution: "commander@npm:2.20.3"
   checksum: b73428e97de7624323f81ba13f8ed9271de487017432d18b4da3f07cfc528ad754bbd199004bd5d14e0ccd67d1fdfe0ec8dbbd4c438b401df3c4cc387bfd1daa
@@ -7605,16 +7584,6 @@ __metadata:
   version: 0.0.1
   resolution: "concat-map@npm:0.0.1"
   checksum: 554e28d9ee5aa6e061795473ee092cb3d3a2cbdb76c35416e0bb6e03f136d7d07676da387b2ed0ec4106cedbb6534080d9abc48ecc4a92b76406cf2d0c3c0c4b
-  languageName: node
-  linkType: hard
-
-"config-chain@npm:^1.1.13":
-  version: 1.1.13
-  resolution: "config-chain@npm:1.1.13"
-  dependencies:
-    ini: ^1.3.4
-    proto-list: ~1.2.1
-  checksum: 047fb0971ba48cf242aa390e8e404ced375e136e2e4a8b753d2ce2b83928d62ef6b3ec74ee35e8f5b2d7cd9cb38fedd7962a83d64422c10afd7e9acfa83ecbb1
   languageName: node
   linkType: hard
 
@@ -8820,20 +8789,6 @@ __metadata:
     jsbn: ~0.1.0
     safer-buffer: ^2.1.0
   checksum: 5b4dd05f24b2b94c1bb882488dba2b878bb5b83182669aa71fbdf53c6941618180cb226c4eb9a3e2fa51ad11f87b5edb0a7d7289cdef468ba2e6024542f73f07
-  languageName: node
-  linkType: hard
-
-"editorconfig@npm:^0.15.3":
-  version: 0.15.3
-  resolution: "editorconfig@npm:0.15.3"
-  dependencies:
-    commander: ^2.19.0
-    lru-cache: ^4.1.5
-    semver: ^5.6.0
-    sigmund: ^1.0.1
-  bin:
-    editorconfig: bin/editorconfig
-  checksum: ed8491cac424b93c00b9ead7b1d67267901bc87807b3f977b328f83f118018aa216225bd05fc1aa72a5b3e76fa93e19097ee7a0b9409779864a0ceef0ed2e0ea
   languageName: node
   linkType: hard
 
@@ -13166,22 +13121,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"js-beautify@npm:1.14.6":
-  version: 1.14.6
-  resolution: "js-beautify@npm:1.14.6"
-  dependencies:
-    config-chain: ^1.1.13
-    editorconfig: ^0.15.3
-    glob: ^8.0.3
-    nopt: ^6.0.0
-  bin:
-    css-beautify: js/bin/css-beautify.js
-    html-beautify: js/bin/html-beautify.js
-    js-beautify: js/bin/js-beautify.js
-  checksum: 4b87738e53cefc05c3153419473bc053a6633f355669fab1e3f95f0e9f5fdc008f2c78939d53a860c6b81932bde086b9fccb399018738dc2c5b63b43fd892549
-  languageName: node
-  linkType: hard
-
 "js-cookie@npm:^3.0.1":
   version: 3.0.1
   resolution: "js-cookie@npm:3.0.1"
@@ -14055,16 +13994,6 @@ __metadata:
   dependencies:
     tslib: ^2.0.3
   checksum: aabaca9cef65f7564a1005b625664527e4d169e363101e65773f8f6ff2fdcf09884a3bc02990cd7a62cf05f3538114af25ee7bef553f1ca3208c8a77ac75cbfa
-  languageName: node
-  linkType: hard
-
-"lru-cache@npm:^4.1.5":
-  version: 4.1.5
-  resolution: "lru-cache@npm:4.1.5"
-  dependencies:
-    pseudomap: ^1.0.2
-    yallist: ^2.1.2
-  checksum: 6a098d23629357451d4324e1e4fefccdd6df316df29e25571c6148220ced923258381ebeafdf919f90e28c780b650427390582618c1d5fe097873e656d062511
   languageName: node
   linkType: hard
 
@@ -17215,13 +17144,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"proto-list@npm:~1.2.1":
-  version: 1.2.4
-  resolution: "proto-list@npm:1.2.4"
-  checksum: e722a11c66837cab0d5b81dd3f18717b73ea068fad0ceaf71d856e82167699c632201d0a1793ea48c997f1ac8544e9af89debc5cbd389b639370bc1adfb3abb4
-  languageName: node
-  linkType: hard
-
 "protocol-buffers-schema@npm:^3.3.1":
   version: 3.6.0
   resolution: "protocol-buffers-schema@npm:3.6.0"
@@ -17254,13 +17176,6 @@ __metadata:
   version: 1.0.1
   resolution: "prr@npm:1.0.1"
   checksum: ac5c0986b46390140b920b8e7f6b56e769a00620af02b6bbdfc6658e8a36b876569c8f174a7c209843f5b9af3d13cbf847c2a9dded4d965b01afbfa5ea8d0761
-  languageName: node
-  linkType: hard
-
-"pseudomap@npm:^1.0.2":
-  version: 1.0.2
-  resolution: "pseudomap@npm:1.0.2"
-  checksum: 1ad1802645e830d99f9c1db97efc6902d2316b660454633229f636dd59e751d00498dd325d3b18d49f2be990a2c9d28f8bfe6f9b544a8220a5faa2bfb4694bb7
   languageName: node
   linkType: hard
 
@@ -18492,13 +18407,6 @@ __metadata:
     get-intrinsic: ^1.0.2
     object-inspect: ^1.9.0
   checksum: 84258ce3edb1ad35810ca17eccd52fd504b5d4da59447a6829cfd1ae8e3cff97b7df2a14f9a45b7aaa3b507ded95626cf20a500735d3b797e9ffb1eba3cfa9e7
-  languageName: node
-  linkType: hard
-
-"sigmund@npm:^1.0.1":
-  version: 1.0.1
-  resolution: "sigmund@npm:1.0.1"
-  checksum: f1a6ed3c5477c5d38e43d700a8c80f3042fbffbaf98ca7aeab223f6b922d6786bdf3c51d971a19f04e044f12d97310902d1fe6a5ed9bcc41556c2a8eff0f421e
   languageName: node
   linkType: hard
 
@@ -21667,13 +21575,6 @@ __metadata:
   version: 5.0.8
   resolution: "y18n@npm:5.0.8"
   checksum: 56275bfa72a8a585c4d2905b086862fb881dfe7871adcefe4ecf4c1a6a78c6389b459b427c0a8672ccdb09731a78143acc71f0bcc8dc8d8427869fafe7f18b95
-  languageName: node
-  linkType: hard
-
-"yallist@npm:^2.1.2":
-  version: 2.1.2
-  resolution: "yallist@npm:2.1.2"
-  checksum: f83e3d18eeba68a0276be2ab09260be3f2a300307e84b1565c620ef71f03f106c3df9bec4c3a91e5fa621a038f8826c19b3786804d3795dd4f999e5b6be66ea3
   languageName: node
   linkType: hard
 
