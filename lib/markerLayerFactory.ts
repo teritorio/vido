@@ -1,4 +1,4 @@
-import maplibregl, {
+import {
   LayerSpecification,
   SymbolLayerSpecification,
   Map,
@@ -77,14 +77,14 @@ export function makerHtmlFactory(
   icon: string,
   thumbnail: string | undefined,
   size: string | null = null
-): maplibregl.Marker {
+): Marker {
   // Marker
   const el: HTMLElement = document.createElement('div')
   el.id = id
   el.classList.add('maplibregl-marker')
   el.classList.add('cluster-item')
 
-  const marker = new maplibregl.Marker({
+  const marker = new Marker({
     element: el,
     ...(thumbnail && {
       offset: [0, -10],
@@ -104,7 +104,7 @@ export function makerHtmlFactory(
 
 export function updateMarkers(
   map: Map,
-  markers: { [id: string]: maplibregl.Marker },
+  markers: { [id: string]: Marker },
   src: string,
   fitBounds: (bounds: LngLatBoundsLike, options: FitBoundsOptions) => void,
   markerClickCallBack: ((feature: ApiPoi) => void) | undefined
