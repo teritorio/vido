@@ -30,7 +30,7 @@ export default class Google implements Tracker {
     }
   }
 
-  consent(app: NuxtAppOptions) {
+  consent() {
     if (this.waitForConsent) {
       this.gtm.init(this.googleTagManagerId)
     }

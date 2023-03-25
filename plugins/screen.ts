@@ -9,6 +9,7 @@ export default defineNuxtPlugin((nuxtApp) => {
     provide: {
       screen: {
         smallScreen: !grid.md,
+        touch: screen.touch,
         // Quick heuristic for device havng phone capability
         phone: screen.touch && grid.lg,
       },

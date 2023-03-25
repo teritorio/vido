@@ -1,5 +1,4 @@
 import { defineNuxtPlugin } from '#app/nuxt'
-
 import { Settings } from '~/lib/apiSettings'
 
 interface SettingsSetPlugin {
@@ -19,7 +18,7 @@ export default defineNuxtPlugin((nuxtApp) => {
 
   return {
     provide: {
-      settings
-    }
+      settings: settings as SettingsPlugin,
+    },
   }
 })
