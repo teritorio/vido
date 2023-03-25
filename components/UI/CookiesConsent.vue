@@ -28,7 +28,7 @@ export default defineNuxtComponent({
 
   computed: {
     vidoConfig() {
-      return useNuxtApp().$vidoConfig
+      return useNuxtApp().$vidoConfig()
     },
 
     doNotTrack(): boolean {

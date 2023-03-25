@@ -192,7 +192,7 @@ export default defineNuxtComponent({
       )
     },
 
-    results(): Number {
+    results(): number {
       return (
         this.itemsCartocode.length +
         this.itemsMenuItems.length +
