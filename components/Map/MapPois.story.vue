@@ -12,11 +12,12 @@
 
 <script lang="ts" setup>
 import pois from '~/cypress/fixtures/teritorio/references/poi/2/deps.json'
+import { ApiPoi } from '~/lib/apiPois'
 
 // ...parametersMap,
 
 const defaultProps = {
-  features: pois.features,
+  features: pois.features as ApiPoi[],
 }
 
 const props = {

@@ -135,7 +135,7 @@ export default defineNuxtComponent({
       ])
 
       if (this.featureIds) {
-        filterRouteByPoiIds(this.map, this.featureIds)
+        filterRouteByPoiIds(this.map as maplibregl.Map, this.featureIds)
       }
     },
   },

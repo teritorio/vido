@@ -27,10 +27,10 @@
       @feature-click="updateSelectedFeature"
     >
       <template #controls>
-        <MapControlsExplore v-if="explorerModeEnabled" :map="map" />
-        <MapControls3D :map="map" />
+        <MapControlsExplore v-if="explorerModeEnabled" :map="mapTyped" />
+        <MapControls3D :map="mapTyped" />
         <MapControlsBackground
-          :map="map"
+          :map="mapTyped"
           :backgrounds="availableStyles"
           :initial-background="selectedBackground"
           @change-background="selectedBackground = $event"
@@ -191,6 +191,11 @@ export default defineNuxtComponent({
     availableStyles(): MapStyleEnum[] {
       return [MapStyleEnum.vector, MapStyleEnum.aerial, MapStyleEnum.bicycle]
     },
+
+    // Workarround typing issue
+    mapTyped(): maplibregl.Map {
+      return this.map as maplibregl.Map
+    },
   },
 
   watch: {
@@ -216,7 +221,7 @@ export default defineNuxtComponent({
 
       if (this.enableFilterRouteByFeatures) {
         filterRouteByPoiIds(
-          this.map,
+          this.map as maplibregl.Map,
           this.features.map(
             (feature) =>
               feature.properties?.metadata?.id ||
@@ -233,7 +238,7 @@ export default defineNuxtComponent({
 
     selectedCategoriesIds(categories) {
       if (this.enableFilterRouteByCategories) {
-        filterRouteByCategories(this.map, categories)
+        filterRouteByCategories(this.map as maplibregl.Map, categories)
       }
     },
 
@@ -361,7 +366,7 @@ export default defineNuxtComponent({
       // Put selected feature marker on top
       if (this.selectedFeatureMarker) {
         this.selectedFeatureMarker.remove()
-        this.selectedFeatureMarker.addTo(this.map)
+        this.selectedFeatureMarker.addTo(this.map as maplibregl.Map)
       }
     },
 
@@ -455,7 +460,7 @@ export default defineNuxtComponent({
           this.selectedFeature?.id ||
           this.selectedFeature?.properties?.id)
       ) {
-        filterRouteByPoiIds(this.map, [
+        filterRouteByPoiIds(this.map as maplibregl.Map, [
           this.selectedFeature.properties?.metadata?.id ||
             this.selectedFeature?.id ||
             this.selectedFeature?.properties?.id,
@@ -487,12 +492,12 @@ export default defineNuxtComponent({
             color: '#f44336',
           })
             .setLngLat(lngLat)
-            .addTo(this.map)
+            .addTo(this.map as maplibregl.Map)
         }
       } else {
         if (this.enableFilterRouteByCategories) {
           filterRouteByPoiIds(
-            this.map,
+            this.map as maplibregl.Map,
             this.features.map(
               (feature) =>
                 feature.properties?.metadata?.id ||
@@ -502,7 +507,10 @@ export default defineNuxtComponent({
           )
         }
         if (this.enableFilterRouteByCategories) {
-          filterRouteByCategories(this.map, this.selectedCategoriesIds)
+          filterRouteByCategories(
+            this.map as maplibregl.Map,
+            this.selectedCategoriesIds
+          )
         }
       }
     },
