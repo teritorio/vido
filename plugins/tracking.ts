@@ -46,7 +46,7 @@ export default defineNuxtPlugin((nuxtApp) => {
       },
 
       tracking: (event: Event): void => {
-        if (process.env.environment === 'development') {
+        if (process.dev) {
           console.error('Tracking event', event)
         }
 
