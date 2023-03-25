@@ -1,3 +1,4 @@
+import { reactive } from 'vue'
 import { useScreen, useGrid } from 'vue-screen'
 
 import { defineNuxtPlugin } from '#app/nuxt'
@@ -7,12 +8,12 @@ export default defineNuxtPlugin((nuxtApp) => {
   const grid = useGrid('tailwind')
   return {
     provide: {
-      screen: {
+      screen: reactive({
         smallScreen: !grid.md,
         touch: screen.touch,
         // Quick heuristic for device havng phone capability
         phone: screen.touch && grid.lg,
-      },
+      }),
     },
   }
 })
