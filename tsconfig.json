@@ -8,7 +8,23 @@
     "strict": true,
     "experimentalDecorators": true,
     "baseUrl": ".",
-    "types": ["node", "@types/node", "@nuxt/types", "@nuxtjs/i18n", "@nuxt/image-edge", "@nuxtjs/sentry", "@types/jest", "@types/webpack", "@pinia/nuxt", "tailwindcss"]
+    "types": [
+      "node",
+      "@types/node",
+      "@nuxt/types",
+      "@nuxtjs/i18n",
+      "@nuxt/image-edge",
+      "@nuxtjs/sentry",
+      "@types/jest",
+      "@types/webpack",
+      "@pinia/nuxt",
+      "tailwindcss"
+    ]
   },
-  "exclude": ["node_modules", ".nuxt", "dist", "bin"]
+  "exclude": [
+    "./node_modules",
+    "./dist",
+    "./.output",
+    "./bin"
+  ]
 }
