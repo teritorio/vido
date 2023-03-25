@@ -240,11 +240,12 @@ export default defineNuxtComponent({
     },
 
     mapURL(): string | undefined {
-      // Use history back rather than forward to map
-      const mapIsBack = useNuxtApp().context.from?.matched.some(
-        (route) => route.name === 'index'
-      )
-      if (mapIsBack) {
+      // Assume if there is a history on the same site, it comes form the main map
+      const localHistoryBack =
+        this.$router.options.history.state.back &&
+        !(this.$router.options.history.state.back as string).startsWith('http')
+      if (localHistoryBack) {
+        // Use history back rather than forward to map
         return undefined
       } else {
         const categoryIds =
