@@ -79,6 +79,6 @@ export type Event =
     }
 
 export interface Tracker {
-  consent(app: NuxtAppOptions): void
+  consent(): void
   track(event: Event): void
 }

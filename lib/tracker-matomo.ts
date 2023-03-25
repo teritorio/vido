@@ -21,7 +21,7 @@ export default class Matomo implements Tracker {
     })
   }
 
-  consent(app: NuxtAppOptions) {
+  consent() {
     let delai = 1000
     const timeout = () => {
       setTimeout(function () {

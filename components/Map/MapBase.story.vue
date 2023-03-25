@@ -5,14 +5,13 @@
       :key="name"
       :title="name.replace(/([A-Z])/g, ' $1').trim()"
     >
-      <MapBase :style="mapCss" v-bind="p" />
+      <MapBase v-bind="p" />
     </Variant>
   </Story>
 </template>
 
 <script lang="ts" setup>
 import MapBase from '~/components/Map/MapBase.vue'
-import { mapCss } from '~/lib/storybook-types'
 
 const defaultProps = {
   features: [],
