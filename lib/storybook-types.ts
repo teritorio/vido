@@ -75,6 +75,7 @@ export function bind<T>(
     } as unknown as Def)
 
   const b = Template.bind({})
+  // @ts-ignore
   b.args = args
   return b
 }

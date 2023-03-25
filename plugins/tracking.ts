@@ -1,5 +1,3 @@
-import { createGtm } from '@gtm-support/vue-gtm'
-
 import { defineNuxtPlugin } from '#app/nuxt'
 import Google from '~/lib/tracker-google'
 import Matomo from '~/lib/tracker-matomo'
@@ -11,55 +9,51 @@ export default defineNuxtPlugin((nuxtApp) => {
 
   return {
     provide: {
-      trackingInit:
-        () =>
-        (config: VidoConfig): void => {
-          if (navigator.doNotTrack !== '1') {
-            const googleTagManagerId = config.GOOGLE_TAG_MANAGER_ID
-            if (googleTagManagerId) {
-              trackers.push(
-                new Google(
-                  nuxtApp,
-                  Boolean(config.COOKIES_CONSENT),
-                  googleTagManagerId
-                )
+      trackingInit: (config: VidoConfig): void => {
+        if (navigator.doNotTrack !== '1') {
+          const googleTagManagerId = config.GOOGLE_TAG_MANAGER_ID
+          if (googleTagManagerId) {
+            trackers.push(
+              new Google(
+                nuxtApp,
+                Boolean(config.COOKIES_CONSENT),
+                googleTagManagerId
               )
-            }
-
-            const matomoUrl = config.MATOMO_URL
-            const matomoIdsite = config.MATOMO_SITEID
-            if (matomoUrl && matomoIdsite) {
-              trackers.push(
-                new Matomo(
-                  nuxtApp,
-                  Boolean(config.COOKIES_CONSENT),
-                  matomoUrl,
-                  matomoIdsite
-                )
-              )
-            }
+            )
           }
-        },
+
+          const matomoUrl = config.MATOMO_URL
+          const matomoIdsite = config.MATOMO_SITEID
+          if (matomoUrl && matomoIdsite) {
+            trackers.push(
+              new Matomo(
+                nuxtApp,
+                Boolean(config.COOKIES_CONSENT),
+                matomoUrl,
+                matomoIdsite
+              )
+            )
+          }
+        }
+      },
 
       tracking_consent: (): void => {
         if (trackers.length > 0) {
           trackers.forEach((tracker) => {
-            tracker.consent(nuxtApp.app)
+            tracker.consent()
           })
         }
       },
 
-      tracking:
-        () =>
-        (event: Event): void => {
-          if (process.env.environment === 'development') {
-            console.error('Tracking event', event)
-          }
+      tracking: (event: Event): void => {
+        if (process.env.environment === 'development') {
+          console.error('Tracking event', event)
+        }
 
-          trackers.forEach((tracker) => {
-            tracker.track(event)
-          })
-        },
+        trackers.forEach((tracker) => {
+          tracker.track(event)
+        })
+      },
     },
   }
 })

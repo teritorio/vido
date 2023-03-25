@@ -5,14 +5,13 @@
       :key="name"
       :title="name.replace(/([A-Z])/g, ' $1').trim()"
     >
-      <MapPois :style="mapCss" v-bind="p" />
+      <MapPois v-bind="p" />
     </Variant>
   </Story>
 </template>
 
 <script lang="ts" setup>
 import pois from '~/cypress/fixtures/teritorio/references/poi/2/deps.json'
-import { mapCss } from '~/lib/storybook-types'
 
 // ...parametersMap,
 

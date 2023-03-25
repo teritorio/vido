@@ -352,7 +352,17 @@ export default defineNuxtComponent({
       this.$emit('map-style-load', style)
     },
 
-    onMapRender(eventName: string, event: any) {
+    onMapRender(
+      eventName:
+        | 'map-data'
+        | 'map-dragend'
+        | 'map-moveend'
+        | 'map-resize'
+        | 'map-rotateend'
+        | 'map-touchmove'
+        | 'map-zoomend',
+      event: any
+    ) {
       if (
         this.map &&
         this.map.getSource(POI_SOURCE) &&
@@ -367,6 +377,7 @@ export default defineNuxtComponent({
         )
       }
 
+      // @ts-ignore
       this.$emit(eventName, event)
     },
   },

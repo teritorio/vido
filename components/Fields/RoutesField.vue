@@ -3,7 +3,7 @@
     <slot></slot>
     <div v-if="isCompact">
       <p v-for="(route, activity) in routes" :key="activity">
-        {{ propertyTranslations.pv('route', activity, context) }} :
+        {{ propertyTranslations.pv('route', `${activity}`, context) }} :
         {{ formatNoDetails(activity as string, route) }}.
       </p>
       <p>{{ length }}</p>
@@ -15,7 +15,7 @@
           :recursion-stack="[...recursionStack, `${activity}`]"
           :class="`field_header_level_${[...recursionStack, activity].length}`"
         >
-          {{ propertyTranslations.pv('route', activity, context) }}
+          {{ propertyTranslations.pv('route', `${activity}`, context) }}
         </FieldsHeader>
         <ul class="tw-list-disc tw-ml-6">
           <li>
