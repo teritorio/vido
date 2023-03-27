@@ -219,7 +219,7 @@ import { FitBoundsOptions, LngLatBoundsLike } from 'maplibre-gl'
 import { mapActions, mapState } from 'pinia'
 import { PropType, ref } from 'vue'
 
-import { defineNuxtComponent, useNuxtApp } from '#app'
+import { defineNuxtComponent } from '#app'
 import ExplorerOrFavoritesBack from '~/components/Home/ExplorerOrFavoritesBack.vue'
 import HomeMixin from '~/components/Home/HomeMixin'
 import Menu from '~/components/Home/Menu.vue'
@@ -326,9 +326,9 @@ export default defineNuxtComponent({
     },
 
     isBottomMenuOpened(): boolean {
-      const { $screen } = useNuxtApp()
       return (
-        ($screen.smallScreen && this.isPoiCardVisible) || this.isMenuItemOpen
+        (this.$device.smallScreen && this.isPoiCardVisible) ||
+        this.isMenuItemOpen
       )
     },
 
@@ -343,8 +343,7 @@ export default defineNuxtComponent({
     },
 
     fitBoundsPaddingOptions(): FitBoundsOptions['padding'] {
-      const { $screen } = useNuxtApp()
-      if ($screen.smallScreen) {
+      if (this.$device.smallScreen) {
         return {
           top: 100,
           bottom: 50,
@@ -560,8 +559,7 @@ export default defineNuxtComponent({
         this.mode = Mode.EXPLORER
         this.goToSelectedFeature()
 
-        const { $screen } = useNuxtApp()
-        if ($screen.smallScreen) {
+        if (this.$device.smallScreen) {
           this.showPoi = false
         }
       } else {

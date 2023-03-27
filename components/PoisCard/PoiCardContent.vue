@@ -74,7 +74,7 @@
       class="tw-flex tw-items-center tw-space-x-2 tw-justify-evenly tw-shrink-0 tw-bottom-0 tw-pt-2"
     >
       <a
-        v-if="screen.phone && coordinatesHref"
+        v-if="device.phone && coordinatesHref"
         :href="coordinatesHref"
         class="tw-flex tw-flex-col tw-items-center tw-flex-1 tw-h-full tw-p-2 tw-space-y-2 tw-rounded-lg hover:tw-bg-zinc-100"
         :title="$t('poiCard.findRoute')"
@@ -138,7 +138,7 @@ import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { mapState } from 'pinia'
 import { PropType } from 'vue'
 
-import { defineNuxtComponent, useNuxtApp } from '#app'
+import { defineNuxtComponent } from '#app'
 import Fields from '~/components/PoisCard/Fields.vue'
 import FavoriteIcon from '~/components/UI/FavoriteIcon.vue'
 import TeritorioIcon from '~/components/UI/TeritorioIcon.vue'
@@ -175,8 +175,8 @@ export default defineNuxtComponent({
     ...mapState(mapStore, ['isModeExplorer']),
     ...mapState(favoritesStore, ['favoritesIds']),
 
-    screen() {
-      return useNuxtApp().$screen
+    device() {
+      return this.$device
     },
 
     id(): ApiPoiId {
