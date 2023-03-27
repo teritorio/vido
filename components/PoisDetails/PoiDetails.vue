@@ -128,7 +128,7 @@
 import { mapState } from 'pinia'
 import { PropType } from 'vue'
 
-import { defineNuxtComponent, useNuxtApp, useRoute, useRouter } from '#app'
+import { defineNuxtComponent, useNuxtApp } from '#app'
 import PoiLayout from '~/components/Layout/PoiLayout.vue'
 import MapPois from '~/components/Map/MapPois.vue'
 import Carousel from '~/components/PoisDetails/Carousel.vue'
@@ -261,12 +261,13 @@ export default defineNuxtComponent({
     const { $tracking } = useNuxtApp()
     $tracking({
       type: 'page',
-      title: (useRoute().name && String(useRoute().name)) || undefined,
+      title: (this.$route.name && String(this.$route.name)) || undefined,
       location: window.location.href,
-      path: useRoute().path,
+      path: this.$route.path,
       origin:
         OriginEnum[
-          useRouter().currentRoute.value.query.origin as keyof typeof OriginEnum
+          this.$router.currentRoute.value.query
+            .origin as keyof typeof OriginEnum
         ],
     })
   },
@@ -286,7 +287,7 @@ export default defineNuxtComponent({
     },
 
     back(): void {
-      useRouter().go(-1)
+      this.$router.go(-1)
     },
   },
 })

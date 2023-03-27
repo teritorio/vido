@@ -68,7 +68,7 @@ import maplibregl, {
 import { mapActions, mapState, mapWritableState } from 'pinia'
 import { PropType, ref } from 'vue'
 
-import { defineNuxtComponent, useNuxtApp, useRouter } from '#app'
+import { defineNuxtComponent, useNuxtApp } from '#app'
 import MapControlsExplore from '~/components/MainMap/MapControlsExplore.vue'
 import SnackBar from '~/components/MainMap/SnackBar.vue'
 import MapBase from '~/components/Map/MapBase.vue'
@@ -262,7 +262,7 @@ export default defineNuxtComponent({
   },
 
   beforeMount() {
-    const bg = getHashPart(useRouter(), 'bg') as keyof typeof MapStyleEnum
+    const bg = getHashPart(this.$router, 'bg') as keyof typeof MapStyleEnum
     this.selectedBackground = (bg && MapStyleEnum[bg]) || DEFAULT_MAP_STYLE
   },
 
