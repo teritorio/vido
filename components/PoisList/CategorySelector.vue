@@ -40,7 +40,6 @@
 
 <script lang="ts">
 import { PropType } from 'vue'
-import { useI18n } from 'vue-i18n'
 import { LocaleObject } from 'vue-i18n-routing'
 import { VAutocomplete } from 'vuetify/components/VAutocomplete'
 import {
@@ -94,7 +93,7 @@ export default defineNuxtComponent({
           menuIndex[menuItem.id] = menuItem
         })
 
-      const locales = useI18n().locales.value
+      const locales = this.$i18n.locales
       return Object.fromEntries(
         (
           this.menuItems.filter(
