@@ -58,7 +58,7 @@
 import { FitBoundsOptions } from 'maplibre-gl'
 import { mapActions } from 'pinia'
 
-import { useNuxtApp, useRouter, defineNuxtComponent } from '#app'
+import { useNuxtApp, defineNuxtComponent } from '#app'
 import HomeMixin from '~/components/Home/HomeMixin'
 import SelectedCategories from '~/components/Home/SelectedCategories.vue'
 import MapFeatures from '~/components/MainMap/MapFeatures.vue'
@@ -140,13 +140,13 @@ export default defineNuxtComponent({
         this.selectedFeature?.id?.toString() ||
         null
 
-      useRouter().push({
+      this.$router.push({
         path:
           '/embedded' +
           (categoryIds ? `/${categoryIds}/` : '/') +
           (id ? `${id}` : ''),
-        query: useRouter().currentRoute.value.query,
-        hash: useRouter().currentRoute.value.hash,
+        query: this.$router.currentRoute.value.query,
+        hash: this.$router.currentRoute.value.hash,
       })
     },
 
