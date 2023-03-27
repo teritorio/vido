@@ -56,7 +56,6 @@
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { mapWritableState } from 'pinia'
 import { PropType } from 'vue'
-import { useI18n } from 'vue-i18n'
 import { LocaleObject } from 'vue-i18n-routing'
 import { VDivider } from 'vuetify/components/VDivider'
 import { VList, VListItem, VListItemTitle } from 'vuetify/components/VList'
@@ -93,7 +92,7 @@ export default defineNuxtComponent({
     ...mapWritableState(siteStore, ['locale']),
 
     locales(): LocaleObject[] {
-      return useI18n().locales.value as unknown as LocaleObject[]
+      return this.$i18n.locales as unknown as LocaleObject[]
     },
   },
 
