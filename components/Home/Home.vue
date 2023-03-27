@@ -219,7 +219,7 @@ import { FitBoundsOptions, LngLatBoundsLike } from 'maplibre-gl'
 import { mapActions, mapState } from 'pinia'
 import { PropType, ref } from 'vue'
 
-import { defineNuxtComponent, useNuxtApp, useRoute, useRouter } from '#app'
+import { defineNuxtComponent, useNuxtApp } from '#app'
 import ExplorerOrFavoritesBack from '~/components/Home/ExplorerOrFavoritesBack.vue'
 import HomeMixin from '~/components/Home/HomeMixin'
 import Menu from '~/components/Home/Menu.vue'
@@ -392,7 +392,7 @@ export default defineNuxtComponent({
             this.selectedFeature.properties?.id,
           title: this.selectedFeature.properties?.name,
           location: window.location.href,
-          path: useRoute().path,
+          path: this.$route.path,
           categoryIds:
             this.selectedFeature.properties?.metadata?.category_ids || [],
         })
@@ -430,10 +430,10 @@ export default defineNuxtComponent({
 
   beforeMount() {
     this.mode =
-      Mode[getHashPart(useRouter(), 'mode') as keyof typeof Mode] ||
+      Mode[getHashPart(this.$router, 'mode') as keyof typeof Mode] ||
       Mode.BROWSER
 
-    const favs = getHashPart(useRouter(), 'favs')
+    const favs = getHashPart(this.$router, 'favs')
     if (favs) {
       try {
         const newFavorite = favs
@@ -470,12 +470,13 @@ export default defineNuxtComponent({
     const { $tracking } = useNuxtApp()
     $tracking({
       type: 'page',
-      title: (useRoute().name && String(useRoute().name)) || undefined,
+      title: (this.$route.name && String(this.$route.name)) || undefined,
       location: window.location.href,
-      path: useRoute().path,
+      path: this.$route.path,
       origin:
         OriginEnum[
-          useRouter().currentRoute.value.query.origin as keyof typeof OriginEnum
+          this.$router.currentRoute.value.query
+            .origin as keyof typeof OriginEnum
         ],
     })
 
@@ -505,17 +506,17 @@ export default defineNuxtComponent({
         this.selectedFeature?.id?.toString() ||
         null
 
-      let hash = useRouter().currentRoute.value.hash
+      let hash = this.$router.currentRoute.value.hash
       if (hashUpdate) {
         hash = setHashParts(hash, hashUpdate)
       }
 
-      useRouter().push({
+      this.$router.push({
         path:
           this.mode !== Mode.BROWSER
             ? '/'
             : (categoryIds ? `/${categoryIds}/` : '/') + (id ? `${id}` : ''),
-        query: useRouter().currentRoute.value.query,
+        query: this.$router.currentRoute.value.query,
         hash,
       })
     },

@@ -37,7 +37,7 @@ import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { mapState } from 'pinia'
 import { PropType } from 'vue'
 
-import { defineNuxtComponent, useNuxtApp, useRouter } from '#app'
+import { defineNuxtComponent, useNuxtApp } from '#app'
 import PoiLayout from '~/components/Layout/PoiLayout.vue'
 import Actions from '~/components/PoisList/Actions.vue'
 import CategorySelector from '~/components/PoisList/CategorySelector.vue'
@@ -109,10 +109,10 @@ export default defineNuxtComponent({
     categoryId() {
       this.pois = undefined
 
-      useRouter().push({
+      this.$router.push({
         path: `/category/${this.categoryId}`,
-        query: useRouter().currentRoute.value.query,
-        hash: useRouter().currentRoute.value.hash,
+        query: this.$router.currentRoute.value.query,
+        hash: this.$router.currentRoute.value.hash,
       })
 
       const { $vidoConfig } = useNuxtApp()
