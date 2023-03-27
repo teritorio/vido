@@ -1,4 +1,5 @@
 import { defineNuxtConfig } from 'nuxt/config'
+import vuetify from 'vite-plugin-vuetify'
 
 import { vidos } from './lib/config'
 import { configuredApi, configuredImageProxy } from './utils/vido-config-static'
@@ -82,6 +83,12 @@ export default defineNuxtConfig({
     '@nuxt/image-edge',
     ...(process.env.SENTRY_DSN ? ['@nuxtjs/sentry'] : []),
     '@pinia/nuxt',
+    async (options, nuxt) => {
+      nuxt.hooks.hook('vite:extendConfig', (config) =>
+        // @ts-ignore
+        config.plugins.push(vuetify())
+      )
+    },
   ],
 
   i18n: {
