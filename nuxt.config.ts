@@ -60,7 +60,7 @@ export default defineNuxtConfig({
     '@/plugins/settings.ts',
     '@/plugins/fontawesome.ts',
     '@/plugins/touch.ts',
-    '@/plugins/screen.ts',
+    '@/plugins/device.ts',
     { src: '@/plugins/tracking.ts', mode: 'client' },
     '@/plugins/property-translations.ts',
     { src: '@/plugins/pinia-shared-state.ts', mode: 'client' },

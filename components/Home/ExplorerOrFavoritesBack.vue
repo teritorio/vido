@@ -10,7 +10,7 @@
     <p class="tw-ml-2">
       {{
         $t(
-          screen.smallScreen
+          device.smallScreen
             ? isModeFavorites
               ? 'headerMenu.backToMenuFavorites'
               : 'headerMenu.backToMenuExplorer'
@@ -27,7 +27,7 @@
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { mapState } from 'pinia'
 
-import { defineNuxtComponent, useNuxtApp } from '#app'
+import { defineNuxtComponent } from '#app'
 import { mapStore } from '~/stores/map'
 
 export default defineNuxtComponent({
@@ -38,8 +38,8 @@ export default defineNuxtComponent({
   computed: {
     ...mapState(mapStore, ['isModeFavorites']),
 
-    screen() {
-      return useNuxtApp().$screen
+    device() {
+      return this.$device
     },
   },
 

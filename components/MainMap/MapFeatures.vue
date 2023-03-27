@@ -68,7 +68,7 @@ import maplibregl, {
 import { mapActions, mapState, mapWritableState } from 'pinia'
 import { PropType, ref } from 'vue'
 
-import { defineNuxtComponent, useNuxtApp } from '#app'
+import { defineNuxtComponent } from '#app'
 import MapControlsExplore from '~/components/MainMap/MapControlsExplore.vue'
 import SnackBar from '~/components/MainMap/SnackBar.vue'
 import MapBase from '~/components/Map/MapBase.vue'
@@ -185,7 +185,7 @@ export default defineNuxtComponent({
     ...mapWritableState(mapStore, ['center']),
 
     screen() {
-      return useNuxtApp().$screen
+      return this.$device
     },
 
     availableStyles(): MapStyleEnum[] {

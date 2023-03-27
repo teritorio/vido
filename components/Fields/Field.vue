@@ -180,7 +180,7 @@ import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import GeoJSON from 'geojson'
 import { PropType } from 'vue'
 
-import { defineNuxtComponent, useNuxtApp } from '#app'
+import { defineNuxtComponent } from '#app'
 import AddressField, {
   isAddressFieldEmpty,
 } from '~/components/Fields/AddressField.vue'
@@ -278,9 +278,9 @@ export default defineNuxtComponent({
 
   computed: {
     showPhone(): boolean {
-      const { $screen } = useNuxtApp()
       return (
-        this.context != PropertyTranslationsContextEnum.Card || $screen.phone
+        this.context != PropertyTranslationsContextEnum.Card ||
+        this.$device.phone
       )
     },
 
