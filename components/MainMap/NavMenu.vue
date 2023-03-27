@@ -62,7 +62,7 @@ import { VDivider } from 'vuetify/components/VDivider'
 import { VList, VListItem, VListItemTitle } from 'vuetify/components/VList'
 import { VMenu } from 'vuetify/components/VMenu'
 
-import { defineNuxtComponent, useNuxtApp } from '#app'
+import { defineNuxtComponent } from '#app'
 import ExternalLink from '~/components/UI/ExternalLink.vue'
 import IconButton from '~/components/UI/IconButton.vue'
 import VFlag from '~/components/UI/VFlag.vue'
@@ -103,8 +103,7 @@ export default defineNuxtComponent({
       this.locale = locale
     },
     openLink(title: string, url: string) {
-      const { $tracking } = useNuxtApp()
-      $tracking({
+      this.$tracking({
         type: 'external_link',
         url,
         title,

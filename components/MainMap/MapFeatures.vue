@@ -340,11 +340,10 @@ export default defineNuxtComponent({
           try {
             // Seted temp partial data from vector tiles.
             // Now fetch full data.
-            const { $vidoConfig } = useNuxtApp()
             return getPoiById(
-              $vidoConfig().API_ENDPOINT,
-              $vidoConfig().API_PROJECT,
-              $vidoConfig().API_THEME,
+              this.$vidoConfig().API_ENDPOINT,
+              this.$vidoConfig().API_PROJECT,
+              this.$vidoConfig().API_THEME,
               feature.properties.metadata.id
             ).then((apiPoi) => {
               // Overide geometry.

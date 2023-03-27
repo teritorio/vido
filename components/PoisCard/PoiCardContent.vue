@@ -277,8 +277,7 @@ export default defineNuxtComponent({
     trackingPopupEvent(
       event: 'details' | 'route' | 'explore' | 'favorite' | 'zoom'
     ) {
-      const { $tracking } = useNuxtApp()
-      $tracking({
+      this.$tracking({
         type: 'popup_event',
         event,
         poiId: this.id,

@@ -12,7 +12,6 @@
 import { mapWritableState } from 'pinia'
 
 import {
-  useNuxtApp,
   useRequestHeaders,
   useRuntimeConfig,
   useRoute,
@@ -132,15 +131,13 @@ export default defineNuxtComponent({
     this.globalContents = this.contents
     this.globalTranslations = this.propertyTranslations
 
-    const { $settings, $propertyTranslations } = useNuxtApp()
-    $settings.set(this.settings)
-    $propertyTranslations.set(this.propertyTranslations)
+    this.$settings.set(this.settings)
+    this.$propertyTranslations.set(this.propertyTranslations)
   },
 
   beforeMount() {
-    const { $trackingInit, $vidoConfigSet } = useNuxtApp()
-    $trackingInit(this.config!)
-    $vidoConfigSet(this.config!)
+    this.$trackingInit(this.config!)
+    this.$vidoConfigSet(this.config!)
   },
 
   mounted() {

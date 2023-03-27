@@ -67,7 +67,7 @@ import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { mapState } from 'pinia'
 import { VDialog } from 'vuetify/components/VDialog'
 
-import { defineNuxtComponent, useNuxtApp } from '#app'
+import { defineNuxtComponent } from '#app'
 import FavoriteNoteBook from '~/components/MainMap/FavoriteNoteBook.vue'
 import Badge from '~/components/UI/Badge.vue'
 import FavoriteIcon from '~/components/UI/FavoriteIcon.vue'
@@ -128,11 +128,10 @@ export default defineNuxtComponent({
   },
   methods: {
     async fetchFavorites(ids: Number[]) {
-      const { $vidoConfig } = useNuxtApp()
       return await getPois(
-        $vidoConfig().API_ENDPOINT,
-        $vidoConfig().API_PROJECT,
-        $vidoConfig().API_THEME,
+        this.$vidoConfig().API_ENDPOINT,
+        this.$vidoConfig().API_PROJECT,
+        this.$vidoConfig().API_THEME,
         ids
       ).then((pois) => (pois && pois.features) || [])
     },
@@ -157,8 +156,7 @@ export default defineNuxtComponent({
       this.toggleFavorite(poi)
     },
     openNotebookModal() {
-      const { $tracking } = useNuxtApp()
-      $tracking({
+      this.$tracking({
         type: 'notebook_event',
         event: 'open',
       })
