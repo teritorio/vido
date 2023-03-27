@@ -31,7 +31,7 @@ import {
 } from '@fortawesome/vue-fontawesome'
 import { PropType } from 'vue'
 
-import { defineNuxtComponent, useNuxtApp } from '#app'
+import { defineNuxtComponent } from '#app'
 import MenuItem from '~/components/Menu/Item.vue'
 import { ApiMenuItem, ApiMenuLink } from '~/lib/apiMenu'
 
@@ -61,8 +61,7 @@ export default defineNuxtComponent({
 
   methods: {
     onClick() {
-      const { $tracking } = useNuxtApp()
-      $tracking({
+      this.$tracking({
         type: 'external_link',
         url: this.menuLink.link.href,
         title: this.menuLink.link.name.fr,

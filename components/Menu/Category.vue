@@ -70,7 +70,7 @@ import {
 } from '@fortawesome/vue-fontawesome'
 import { PropType } from 'vue'
 
-import { defineNuxtComponent, useNuxtApp } from '#app'
+import { defineNuxtComponent } from '#app'
 import MenuItem from '~/components/Menu/Item.vue'
 import { ApiMenuCategory, ApiMenuItem } from '~/lib/apiMenu'
 import { FilterValues, filterValuesIsSet } from '~/utils/types-filters'
@@ -115,8 +115,7 @@ export default defineNuxtComponent({
 
   methods: {
     onClick() {
-      const { $tracking } = useNuxtApp()
-      $tracking({
+      this.$tracking({
         type: 'category_event',
         event: 'enable',
         categoryId: this.category.id,
@@ -126,8 +125,7 @@ export default defineNuxtComponent({
       this.$emit('click', this.category.id)
     },
     onFilterClick() {
-      const { $tracking } = useNuxtApp()
-      $tracking({
+      this.$tracking({
         type: 'category_event',
         event: 'filter',
         categoryId: this.category.id,

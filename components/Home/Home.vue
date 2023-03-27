@@ -384,8 +384,7 @@ export default defineNuxtComponent({
       this.routerPushUrl()
 
       if (this.selectedFeature) {
-        const { $tracking } = useNuxtApp()
-        $tracking({
+        this.$tracking({
           type: 'popup',
           poiId:
             this.selectedFeature.properties.metadata.id ||
@@ -403,11 +402,10 @@ export default defineNuxtComponent({
       if (a !== b) {
         this.routerPushUrl()
 
-        const { $vidoConfig } = useNuxtApp()
         menuStore().fetchFeatures({
-          apiEndpoint: $vidoConfig().API_ENDPOINT,
-          apiProject: $vidoConfig().API_PROJECT,
-          apiTheme: $vidoConfig().API_THEME,
+          apiEndpoint: this.$vidoConfig().API_ENDPOINT,
+          apiProject: this.$vidoConfig().API_PROJECT,
+          apiTheme: this.$vidoConfig().API_THEME,
           categoryIds: this.selectedCategoryIds,
         })
         this.allowRegionBackZoom = true
@@ -467,8 +465,7 @@ export default defineNuxtComponent({
       resizeObserver.observe(header)
     }
 
-    const { $tracking } = useNuxtApp()
-    $tracking({
+    this.$tracking({
       type: 'page',
       title: (this.$route.name && String(this.$route.name)) || undefined,
       location: window.location.href,
@@ -588,8 +585,7 @@ export default defineNuxtComponent({
 
     onToggleFavoritesMode() {
       if (this.favoritesIds?.length > 0) {
-        const { $tracking } = useNuxtApp()
-        $tracking({ type: 'map_control_event', event: 'favorite' })
+        this.$tracking({ type: 'map_control_event', event: 'favorite' })
         if (!this.isModeFavorites) {
           this.mode = Mode.FAVORITES
         } else {
@@ -623,11 +619,10 @@ export default defineNuxtComponent({
     },
 
     fetchFavorites(ids: Number[]): Promise<ApiPoi[]> {
-      const { $vidoConfig } = useNuxtApp()
       return getPois(
-        $vidoConfig().API_ENDPOINT,
-        $vidoConfig().API_PROJECT,
-        $vidoConfig().API_THEME,
+        this.$vidoConfig().API_ENDPOINT,
+        this.$vidoConfig().API_PROJECT,
+        this.$vidoConfig().API_THEME,
         ids
       )
         .then((pois) => (pois && pois.features) || [])

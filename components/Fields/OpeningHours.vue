@@ -61,7 +61,7 @@ import OpeningHours, { optional_conf } from 'opening_hours'
 import { mapState } from 'pinia'
 import { PropType } from 'vue'
 
-import { defineNuxtComponent, useNuxtApp } from '#app'
+import { defineNuxtComponent } from '#app'
 import RelativeDate from '~/components/UI/RelativeDate.vue'
 import { PropertyTranslationsContextEnum } from '~/plugins/property-translations'
 import { siteStore } from '~/stores/site'
@@ -216,21 +216,20 @@ export default defineNuxtComponent({
         const optionalConf: optional_conf = {
           tag_key: this.tagKey,
         }
-        const { $settings } = useNuxtApp()
         return new OpeningHours(
           this.openingHours,
           {
             lon:
-              ($settings.bbox_line.coordinates[0][1] +
-                $settings.bbox_line.coordinates[1][1]) /
+              (this.$settings.bbox_line.coordinates[0][1] +
+                this.$settings.bbox_line.coordinates[1][1]) /
               2,
             lat:
-              ($settings.bbox_line.coordinates[0][0] +
-                $settings.bbox_line.coordinates[1][0]) /
+              (this.$settings.bbox_line.coordinates[0][0] +
+                this.$settings.bbox_line.coordinates[1][0]) /
               2,
             address: {
-              country_code: $settings.default_country,
-              state: $settings.default_country_state_opening_hours,
+              country_code: this.$settings.default_country,
+              state: this.$settings.default_country_state_opening_hours,
             },
           },
           optionalConf
