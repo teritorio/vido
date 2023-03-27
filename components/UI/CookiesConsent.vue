@@ -18,7 +18,7 @@
 </template>
 
 <script lang="ts">
-import { defineNuxtComponent, useNuxtApp } from '#app'
+import { defineNuxtComponent } from '#app'
 
 export default defineNuxtComponent({
   components: {
@@ -28,7 +28,7 @@ export default defineNuxtComponent({
 
   computed: {
     vidoConfig() {
-      return useNuxtApp().$vidoConfig()
+      return this.$vidoConfig()
     },
 
     doNotTrack(): boolean {
@@ -40,8 +40,7 @@ export default defineNuxtComponent({
 
   methods: {
     accept() {
-      const { $tracking_consent } = useNuxtApp()
-      $tracking_consent()
+      this.$tracking_consent()
     },
   },
 })

@@ -58,7 +58,7 @@
 import { FitBoundsOptions } from 'maplibre-gl'
 import { mapActions } from 'pinia'
 
-import { useNuxtApp, defineNuxtComponent } from '#app'
+import { defineNuxtComponent } from '#app'
 import HomeMixin from '~/components/Home/HomeMixin'
 import SelectedCategories from '~/components/Home/SelectedCategories.vue'
 import MapFeatures from '~/components/MainMap/MapFeatures.vue'
@@ -102,11 +102,10 @@ export default defineNuxtComponent({
       this.routerPushUrl()
 
       if (this.selectedCategoryIds) {
-        const { $vidoConfig } = useNuxtApp()
         menuStore().fetchFeatures({
-          apiEndpoint: $vidoConfig().API_ENDPOINT,
-          apiProject: $vidoConfig().API_PROJECT,
-          apiTheme: $vidoConfig().API_THEME,
+          apiEndpoint: this.$vidoConfig().API_ENDPOINT,
+          apiProject: this.$vidoConfig().API_PROJECT,
+          apiTheme: this.$vidoConfig().API_THEME,
           categoryIds: this.selectedCategoryIds,
         })
       }

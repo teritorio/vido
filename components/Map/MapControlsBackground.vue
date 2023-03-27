@@ -32,7 +32,7 @@ import { Control } from '@teritorio/map'
 import { Map } from 'maplibre-gl'
 import { PropType, ref } from 'vue'
 
-import { defineNuxtComponent, useNuxtApp } from '#app'
+import { defineNuxtComponent } from '#app'
 import { DEFAULT_MAP_STYLE, MAP_STYLE_NAMES } from '~/lib/constants'
 import { MapStyleEnum } from '~/utils/types'
 import { getHashPart, routerPushHashUpdate } from '~/utils/url'
@@ -118,8 +118,7 @@ export default defineNuxtComponent({
 
     changeBackground(background: MapStyleEnum) {
       // TODO mettre le background selectioné
-      const { $tracking } = useNuxtApp()
-      $tracking({ type: 'map_control_event', event: 'background' })
+      this.$tracking({ type: 'map_control_event', event: 'background' })
 
       this.activeBackground = background
       routerPushHashUpdate(this.$router, {

@@ -56,7 +56,7 @@ import { VDialog } from 'vuetify/components/VDialog'
 import { VDivider } from 'vuetify/components/VDivider'
 import { VSpacer } from 'vuetify/components/VGrid'
 
-import { defineNuxtComponent, useNuxtApp } from '#app'
+import { defineNuxtComponent } from '#app'
 import UIButton from '~/components/UI/UIButton.vue'
 import { OriginEnum } from '~/utils/types'
 import { urlAddTrackOrigin } from '~/utils/url'
@@ -111,8 +111,7 @@ export default defineNuxtComponent({
 
   methods: {
     open(link: string) {
-      const { $tracking } = useNuxtApp()
-      $tracking({ type: 'favorites_event', event: 'open_share' })
+      this.$tracking({ type: 'favorites_event', event: 'open_share' })
       this.link = link
       this.modal = true
       console.error('open', this)
@@ -122,8 +121,7 @@ export default defineNuxtComponent({
     },
 
     copyLink() {
-      const { $tracking } = useNuxtApp()
-      $tracking({ type: 'favorites_event', event: 'copy_link' })
+      this.$tracking({ type: 'favorites_event', event: 'copy_link' })
       if (this.hasClipboard && this.linkShare) {
         navigator.clipboard.writeText(this.linkShare).then(
           () => {
@@ -148,9 +146,8 @@ export default defineNuxtComponent({
 
     qrCodeUrl() {
       if (this.linkQrCode) {
-        const { $vidoConfig } = useNuxtApp()
         return (
-          $vidoConfig().API_QR_SHORTENER +
+          this.$vidoConfig().API_QR_SHORTENER +
           '/qrcode.svg?url=' +
           encodeURIComponent(this.linkQrCode)
         )

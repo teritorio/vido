@@ -128,7 +128,7 @@
 import { mapState } from 'pinia'
 import { PropType } from 'vue'
 
-import { defineNuxtComponent, useNuxtApp } from '#app'
+import { defineNuxtComponent } from '#app'
 import PoiLayout from '~/components/Layout/PoiLayout.vue'
 import MapPois from '~/components/Map/MapPois.vue'
 import Carousel from '~/components/PoisDetails/Carousel.vue'
@@ -258,8 +258,7 @@ export default defineNuxtComponent({
 
   mounted() {
     favoritesStore().initFavoritesFromLocalStorage()
-    const { $tracking } = useNuxtApp()
-    $tracking({
+    this.$tracking({
       type: 'page',
       title: (this.$route.name && String(this.$route.name)) || undefined,
       location: window.location.href,
@@ -275,8 +274,7 @@ export default defineNuxtComponent({
   methods: {
     toggleFavorite() {
       if (this.id) {
-        const { $tracking } = useNuxtApp()
-        $tracking({
+        this.$tracking({
           type: 'details_event',
           event: 'favorite',
           poiId: this.id,

@@ -28,7 +28,7 @@ import {
 import { mapState } from 'pinia'
 import { PropType } from 'vue'
 
-import { defineNuxtComponent, useNuxtApp } from '#app'
+import { defineNuxtComponent } from '#app'
 import { DEFAULT_MAP_STYLE, MAP_ZOOM } from '~/lib/constants'
 import { siteStore } from '~/stores/site'
 import { fetchStyle } from '~/utils/styles'
@@ -288,11 +288,10 @@ export default defineNuxtComponent({
       if (this.mapStyleCache[mapStyle]) {
         return this.mapStyleCache[mapStyle]
       } else {
-        const { $vidoConfig } = useNuxtApp()
         const styleURLs = {
-          [MapStyleEnum.vector]: $vidoConfig().VECTO_STYLE_URL,
-          [MapStyleEnum.aerial]: $vidoConfig().SATELLITE_STYLE_URL,
-          [MapStyleEnum.bicycle]: $vidoConfig().BICYCLE_STYLE_URL,
+          [MapStyleEnum.vector]: this.$vidoConfig().VECTO_STYLE_URL,
+          [MapStyleEnum.aerial]: this.$vidoConfig().SATELLITE_STYLE_URL,
+          [MapStyleEnum.bicycle]: this.$vidoConfig().BICYCLE_STYLE_URL,
         }
         const style = await fetchStyle(
           styleURLs[mapStyle],

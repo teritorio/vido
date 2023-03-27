@@ -65,7 +65,7 @@ import { PropType, ref } from 'vue'
 
 import { isFiledEmpty } from '../Fields/Field.vue'
 
-import { defineNuxtComponent, useNuxtApp } from '#app'
+import { defineNuxtComponent } from '#app'
 import Field from '~/components/Fields/Field.vue'
 import Block from '~/components/PoisDetails/Block.vue'
 import FieldsHeader from '~/components/UI/FieldsHeader.vue'
@@ -125,8 +125,7 @@ export default defineNuxtComponent({
 
   methods: {
     fieldTranslateK(field: string) {
-      const { $propertyTranslations } = useNuxtApp()
-      return $propertyTranslations.p(field, this.context)
+      return this.$propertyTranslations.p(field, this.context)
     },
 
     isListEmpty(

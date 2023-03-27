@@ -38,7 +38,7 @@
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { PropType } from 'vue'
 
-import { defineNuxtComponent, useNuxtApp } from '#app'
+import { defineNuxtComponent } from '#app'
 import TeritorioIcon from '~/components/UI/TeritorioIcon.vue'
 import { ApiPoiId } from '~/lib/apiPois'
 import { SearchResult } from '~/lib/apiSearch'
@@ -74,8 +74,7 @@ export default defineNuxtComponent({
 
   methods: {
     onItemClick(searchResult: SearchResult) {
-      const { $tracking } = useNuxtApp()
-      $tracking({
+      this.$tracking({
         type: 'search_result_event',
         event: 'select',
         resultType: this.type,
