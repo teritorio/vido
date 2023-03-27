@@ -291,13 +291,11 @@ export default defineNuxtComponent({
 
   methods: {
     fieldTranslateK(field: string) {
-      const { $propertyTranslations } = useNuxtApp()
-      return $propertyTranslations.p(field, this.context)
+      return this.$propertyTranslations.p(field, this.context)
     },
 
     propTranslateV(field: string) {
-      const { $propertyTranslations } = useNuxtApp()
-      return $propertyTranslations.pv(
+      return this.$propertyTranslations.pv(
         field,
         this.properties[field],
         this.context

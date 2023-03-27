@@ -29,7 +29,7 @@
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { PropType } from 'vue'
 
-import { defineNuxtComponent, useNuxtApp } from '#app'
+import { defineNuxtComponent } from '#app'
 import IconButton from '~/components/UI/IconButton.vue'
 import IconsBar from '~/components/UI/IconsBar.vue'
 import { getPoiByCategoryIdUrl } from '~/lib/apiPois'
@@ -68,11 +68,10 @@ export default defineNuxtComponent({
 
   methods: {
     url(format: 'geojson' | 'csv'): string {
-      const { $vidoConfig } = useNuxtApp()
       return getPoiByCategoryIdUrl(
-        $vidoConfig().API_ENDPOINT,
-        $vidoConfig().API_PROJECT,
-        $vidoConfig().API_THEME,
+        this.$vidoConfig().API_ENDPOINT,
+        this.$vidoConfig().API_PROJECT,
+        this.$vidoConfig().API_THEME,
         this.categoryId,
         {
           geometry_as: 'point',

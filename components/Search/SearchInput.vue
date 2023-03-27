@@ -37,7 +37,7 @@
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { PropType, ref } from 'vue'
 
-import { defineNuxtComponent, useNuxtApp } from '#app'
+import { defineNuxtComponent } from '#app'
 
 export default defineNuxtComponent({
   components: {
@@ -69,8 +69,7 @@ export default defineNuxtComponent({
   methods: {
     onFocus(event: string | Event) {
       this.$emit('focus', event)
-      const { $tracking } = useNuxtApp()
-      $tracking({ type: 'search' })
+      this.$tracking({ type: 'search' })
     },
   },
 })

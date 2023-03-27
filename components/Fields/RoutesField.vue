@@ -32,7 +32,7 @@
 <script lang="ts">
 import { PropType } from 'vue'
 
-import { defineNuxtComponent, useNuxtApp } from '#app'
+import { defineNuxtComponent } from '#app'
 import FieldsHeader from '~/components/UI/FieldsHeader.vue'
 import { ApiPoiProperties } from '~/lib/apiPois'
 import { PropertyTranslationsContextEnum } from '~/plugins/property-translations'
@@ -76,7 +76,7 @@ export default defineNuxtComponent({
 
   computed: {
     propertyTranslations() {
-      return useNuxtApp().$propertyTranslations
+      return this.$propertyTranslations
     },
 
     isCompact(): boolean {
@@ -131,9 +131,8 @@ export default defineNuxtComponent({
     },
 
     difficulty(activity: string, route: Route): string | undefined {
-      const { $propertyTranslations } = useNuxtApp()
       return route.difficulty
-        ? $propertyTranslations.pv(
+        ? this.$propertyTranslations.pv(
             `route:${activity}:difficulty`,
             route.difficulty,
             this.context

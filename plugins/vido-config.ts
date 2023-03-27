@@ -1,7 +1,7 @@
 import { NuxtRuntimeConfig } from '@nuxt/types/config/runtime'
 
 import { useRequestHeaders } from '#app'
-import { defineNuxtPlugin, useNuxtApp } from '#app/nuxt'
+import { defineNuxtPlugin } from '#app/nuxt'
 import { VidoConfig, VidosConfig } from '~/utils/types-config'
 
 export function vidoConfigResolve(
@@ -48,7 +48,7 @@ export default defineNuxtPlugin((nuxtApp) => {
         config = c
       },
       vidoConfig: (): VidoConfig =>
-        config || vidoConfig(useRequestHeaders(), useNuxtApp().$config),
+        config || vidoConfig(useRequestHeaders(), nuxtApp.$config),
     },
   }
 })

@@ -31,7 +31,7 @@ import {
 } from '@fortawesome/vue-fontawesome'
 import { PropType } from 'vue'
 
-import { defineNuxtComponent, useNuxtApp } from '#app'
+import { defineNuxtComponent } from '#app'
 import MenuItem from '~/components/Menu/Item.vue'
 import { ApiMenuGroup, ApiMenuItem } from '~/lib/apiMenu'
 
@@ -65,8 +65,7 @@ export default defineNuxtComponent({
 
   methods: {
     onClick() {
-      const { $tracking } = useNuxtApp()
-      $tracking({
+      this.$tracking({
         type: 'menu',
         menuItemId: this.menuGroup.id,
         title: this.menuGroup.menu_group.name.fr,
