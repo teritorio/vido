@@ -8,7 +8,7 @@ export default defineNuxtPlugin((nuxtApp) => {
   const grid = useGrid('tailwind')
   return {
     provide: {
-      screen: reactive({
+      device: reactive({
         smallScreen: !grid.md,
         touch: screen.touch,
         // Quick heuristic for device havng phone capability
