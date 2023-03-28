@@ -125,7 +125,7 @@
           v-for="item in properties[field.field]"
           :key="field.field + '_' + item"
         >
-          {{ item }}
+          {{ propTranslateVs(field.field, item) }}
         </li>
       </ul>
 
@@ -275,6 +275,10 @@ export default Vue.extend({
         this.properties[field],
         this.context
       )
+    },
+
+    propTranslateVs(field: string, value: string) {
+      return this.$propertyTranslations.pv(field, value, this.context)
     },
 
     isOpeningHoursSupportedOsmTags(key: string) {
