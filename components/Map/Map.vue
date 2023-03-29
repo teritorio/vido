@@ -8,20 +8,14 @@
 
 <script lang="ts">
 import { OpenMapTilesLanguage } from '@teritorio/openmaptiles-gl-language'
-import {
-  Map,
+import type {
   RasterSourceSpecification,
   VectorSourceSpecification,
   StyleSpecification,
   LngLatBoundsLike,
   LngLatLike,
-  AttributionControl,
   FitBoundsOptions,
   MapDataEvent,
-  NavigationControl,
-  GeolocateControl,
-  FullscreenControl,
-  ScaleControl,
   MapLibreEvent,
   MapTouchEvent,
 } from 'maplibre-gl'
@@ -33,6 +27,22 @@ import { DEFAULT_MAP_STYLE, MAP_ZOOM } from '~/lib/constants'
 import { siteStore } from '~/stores/site'
 import { fetchStyle } from '~/utils/styles'
 import { MapStyleEnum } from '~/utils/types'
+
+const {
+  Map,
+  AttributionControl,
+  NavigationControl,
+  GeolocateControl,
+  FullscreenControl,
+  ScaleControl,
+} = await import('maplibre-gl')
+
+type ITMap = InstanceType<typeof Map>
+type ITAttributionControl = InstanceType<typeof AttributionControl>
+type ITNavigationControl = InstanceType<typeof NavigationControl>
+type ITGeolocateControl = InstanceType<typeof GeolocateControl>
+type ITFullscreenControl = InstanceType<typeof FullscreenControl>
+type ITScaleControl = InstanceType<typeof ScaleControl>
 
 export default defineNuxtComponent({
   props: {
@@ -90,12 +100,12 @@ export default defineNuxtComponent({
   },
 
   data(): {
-    map: Map | undefined
+    map: ITMap | undefined
     style: StyleSpecification | null
     mapStyleCache: { [key: string]: StyleSpecification }
-    attributionControl: AttributionControl | null
+    attributionControl: ITAttributionControl | null
     languageControl: OpenMapTilesLanguage | null
-    fullscreenControlObject: FullscreenControl | undefined
+    fullscreenControlObject: ITFullscreenControl | undefined
   } {
     return {
       map: undefined,
@@ -134,7 +144,7 @@ export default defineNuxtComponent({
       },
     })
 
-    map.on('load', ($event) => this.onMapInit(map as Map))
+    map.on('load', ($event) => this.onMapInit(map as ITMap))
     map.on('data', ($event) => this.$emit('map-data', $event))
     map.on('dragend', ($event) => this.$emit('map-dragend', $event))
     map.on('moveend', ($event) => this.$emit('map-moveend', $event))
@@ -170,7 +180,7 @@ export default defineNuxtComponent({
   },
 
   emits: {
-    'map-init': (map: Map) => true,
+    'map-init': (map: ITMap) => true,
     'map-data': (event: MapDataEvent & Object) => true,
     'map-dragend': (
       event: MapLibreEvent<MouseEvent | TouchEvent | undefined> & Object
@@ -226,7 +236,7 @@ export default defineNuxtComponent({
   },
 
   methods: {
-    onMapInit(map: Map) {
+    onMapInit(map: ITMap) {
       this.$emit('map-init', map)
 
       this.map = map

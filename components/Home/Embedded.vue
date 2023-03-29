@@ -55,7 +55,7 @@
 </template>
 
 <script lang="ts">
-import { FitBoundsOptions } from 'maplibre-gl'
+import type { FitBoundsOptions } from 'maplibre-gl'
 import { mapActions } from 'pinia'
 
 import { defineNuxtComponent } from '#app'
