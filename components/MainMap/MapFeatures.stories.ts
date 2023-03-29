@@ -1,4 +1,4 @@
-import { LngLatBoundsLike } from 'maplibre-gl'
+import type { LngLatBoundsLike } from 'maplibre-gl'
 
 import MapFeatures from '~/components/MainMap/MapFeatures.vue'
 import { ApiMenuCategory } from '~/lib/apiMenu'

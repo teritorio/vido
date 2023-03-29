@@ -215,7 +215,7 @@
 
 <script lang="ts">
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
-import { FitBoundsOptions, LngLatBoundsLike } from 'maplibre-gl'
+import type { FitBoundsOptions, LngLatBoundsLike } from 'maplibre-gl'
 import { mapActions, mapState } from 'pinia'
 import { PropType, ref } from 'vue'
 

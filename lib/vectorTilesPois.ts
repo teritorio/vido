@@ -1,4 +1,4 @@
-import { MapGeoJSONFeature } from 'maplibre-gl'
+import type { MapGeoJSONFeature } from 'maplibre-gl'
 
 import { ApiPoi, ApiPoiId, ApiPoiPropertiesArray } from './apiPois'
 

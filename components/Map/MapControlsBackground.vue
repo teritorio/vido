@@ -29,7 +29,7 @@
 
 <script lang="ts">
 import { Control } from '@teritorio/map'
-import { Map } from 'maplibre-gl'
+import type { Map } from 'maplibre-gl'
 import { PropType, ref } from 'vue'
 
 import { defineNuxtComponent } from '#app'

@@ -1,5 +1,5 @@
 import { Polygon, MultiPolygon } from 'geojson'
-import { LngLatBoundsLike } from 'maplibre-gl'
+import type { LngLatBoundsLike } from 'maplibre-gl'
 import { mapActions, mapState, mapWritableState } from 'pinia'
 import { PropType, ref } from 'vue'
 

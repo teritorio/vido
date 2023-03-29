@@ -44,7 +44,7 @@ import { PoiFilter } from '@teritorio/map'
 import copy from 'fast-copy'
 import { Polygon, MultiPolygon } from 'geojson'
 import throttle from 'lodash.throttle'
-import {
+import type {
   FitBoundsOptions,
   LngLatBoundsLike,
   LngLatLike,

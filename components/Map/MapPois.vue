@@ -14,7 +14,7 @@
 </template>
 
 <script lang="ts">
-import { LngLatLike } from 'maplibre-gl'
+import type { LngLatLike } from 'maplibre-gl'
 import { PropType, ref } from 'vue'
 
 import { defineNuxtComponent } from '#app'
