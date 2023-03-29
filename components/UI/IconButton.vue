@@ -4,7 +4,6 @@
     :aria-label="label"
     type="button"
     class="tw-text-sm tw-text-zinc-800 tw-bg-white tw-rounded-full tw-shadow-md tw-outline-none focus:tw-outline-none hover:tw-bg-zinc-100 focus-visible:tw-bg-zinc-100 tw-shrink-0 tw-flex tw-items-center tw-justify-center"
-    v-bind="$attrs"
   >
     <slot></slot>
   </button>
@@ -14,7 +13,6 @@
     :to="href"
     :target="target"
     class="tw-text-sm tw-text-zinc-800 tw-bg-white tw-rounded-full tw-shadow-md tw-outline-none focus:tw-outline-none hover:tw-bg-zinc-100 focus-visible:tw-bg-zinc-100 tw-shrink-0 tw-flex tw-items-center tw-justify-center"
-    v-bind="$attrs"
   >
     <slot></slot>
   </NuxtLink>
@@ -24,7 +22,6 @@
     :href="href"
     :target="target"
     class="tw-text-sm tw-text-zinc-800 tw-bg-white tw-rounded-full tw-shadow-md tw-outline-none focus:tw-outline-none hover:tw-bg-zinc-100 focus-visible:tw-bg-zinc-100 tw-shrink-0 tw-flex tw-items-center tw-justify-center"
-    v-bind="$attrs"
   >
     <slot></slot>
   </a>
