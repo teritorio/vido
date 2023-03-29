@@ -28,7 +28,7 @@
 <script lang="ts">
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { Control } from '@teritorio/map'
-import { Map } from 'maplibre-gl'
+import type { Map } from 'maplibre-gl'
 import { mapState, mapWritableState } from 'pinia'
 import { PropType, ref } from 'vue'
 
