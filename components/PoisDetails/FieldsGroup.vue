@@ -48,7 +48,7 @@
 
       <Field
         v-else-if="field.group === undefined"
-        :id="`Field-${recursionStack.join('-')}-${field.field}`"
+        :id="`Field_-${recursionStack.join('-')}-${field.field}`"
         :context="context"
         :recursion-stack="recursionStack"
         :field="field"

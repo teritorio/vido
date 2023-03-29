@@ -1,7 +1,7 @@
 <template>
   <div v-if="geom.type === 'Point'">
     <slot></slot>
-    <ExternalLink v-if="href" :href="href" target="_blank" v-bind="$attrs">
+    <ExternalLink v-if="href" :href="href" target="_blank">
       {{ geom.coordinates[1].toFixed(6) }},&nbsp;{{
         geom.coordinates[0].toFixed(6)
       }}

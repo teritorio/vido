@@ -14,7 +14,7 @@
         </IconButton>
       </template>
 
-      <v-list>
+      <v-list id="nav-menu-dropdown">
         <v-list-item
           v-for="entry in entries"
           :key="entry.post_id"

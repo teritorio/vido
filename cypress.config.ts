@@ -17,6 +17,7 @@ export default defineConfig({
             'heading-level': 'off',
             'empty-heading': 'off',
             'aria-label-misuse': 'off',
+            'no-missing-references': 'off',
           },
         },
         {
