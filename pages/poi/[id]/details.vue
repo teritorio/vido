@@ -1,10 +1,10 @@
 <template>
   <Index
-    v-if="settings && poi"
+    v-if="settings"
     :settings="settings"
     :nav-menu-entries="contents"
     :poi="poi"
-    :poi-deps="poiDeps"
+    :poi-deps="poiDeps || undefined"
     class="page-details"
   />
 </template>
@@ -12,16 +12,17 @@
 <script lang="ts">
 import { groupBy } from 'lodash'
 import { mapWritableState } from 'pinia'
+import { Ref, ref } from 'vue'
 
 import {
   defineNuxtComponent,
-  createError,
   useHead,
   useRequestHeaders,
   useRoute,
   useRuntimeConfig,
+  showError,
 } from '#app'
-import { definePageMeta } from '#imports'
+import { definePageMeta, useAsyncData } from '#imports'
 import Index from '~/components/PoisDetails/PoiDetails.vue'
 import { ContentEntry, getContents } from '~/lib/apiContent'
 import { ApiPoiDeps, getPoiDepsById } from '~/lib/apiPoiDeps'
@@ -31,6 +32,7 @@ import {
   PropertyTranslations,
 } from '~/lib/apiPropertyTranslations'
 import { getSettings, headerFromSettings, Settings } from '~/lib/apiSettings'
+import { throwFetchError } from '~/lib/throwFetchError'
 import { vidoConfig } from '~/plugins/vido-config'
 import { siteStore } from '~/stores/site'
 import { VidoConfig } from '~/utils/types-config'
@@ -42,11 +44,11 @@ export default defineNuxtComponent({
 
   async setup(): Promise<{
     config: VidoConfig
-    settings: Settings
-    contents: ContentEntry[]
-    propertyTranslations: PropertyTranslations
-    poi: ApiPoi | undefined
-    poiDeps: ApiPoiDeps | undefined
+    settings: Ref<Settings>
+    contents: Ref<ContentEntry[]>
+    propertyTranslations: Ref<PropertyTranslations>
+    poi: Ref<ApiPoi>
+    poiDeps: Ref<ApiPoiDeps | null>
   }> {
     definePageMeta({
       validate({ params }) {
@@ -57,78 +59,104 @@ export default defineNuxtComponent({
     })
 
     const params = useRoute().params
-    const config: VidoConfig =
-      siteStore().config || vidoConfig(useRequestHeaders(), useRuntimeConfig())
-
-    const getSettingsPromise = siteStore().settings
-      ? Promise.resolve(siteStore().settings as Settings)
-      : getSettings(config.API_ENDPOINT, config.API_PROJECT, config.API_THEME)
-
-    const fetchContents = siteStore().contents
-      ? Promise.resolve(siteStore().contents as ContentEntry[])
-      : getContents(config.API_ENDPOINT, config.API_PROJECT, config.API_THEME)
-
-    const fetchPropertyTranslations = siteStore().translations
-      ? Promise.resolve(siteStore().translations as PropertyTranslations)
-      : getPropertyTranslations(
-          config.API_ENDPOINT,
-          config.API_PROJECT,
-          config.API_THEME
-        )
-
-    const poiDepsPromise = getPoiDepsById(
-      config.API_ENDPOINT,
-      config.API_PROJECT,
-      config.API_THEME,
-      params.id as string,
-      {
-        short_description: false,
-      }
-    )
-
-    let [settings, contents, propertyTranslations, poiDeps] = await Promise.all(
-      [
-        getSettingsPromise,
-        fetchContents,
-        fetchPropertyTranslations,
-        poiDepsPromise,
-      ]
-    )
-
-    let poi: ApiPoi | undefined = undefined
-    if (poiDeps) {
-      const g = groupBy(
-        poiDeps.features,
-        (feature) =>
-          // @ts-ignore
-          feature.properties.metadata?.id == params.id
+    const { data: configRef } = await useAsyncData(() =>
+      Promise.resolve(
+        siteStore().config ||
+          vidoConfig(useRequestHeaders(), useRuntimeConfig())
       )
-      poi = g['true'] && (g['true'][0] as ApiPoi)
-      poiDeps.features = g['false'] || []
-    }
+    )
+    const config: VidoConfig = configRef.value!
 
-    if (!poi) {
-      createError({
+    const fetchSettings = useAsyncData(() =>
+      siteStore().settings
+        ? Promise.resolve(siteStore().settings as Settings)
+        : getSettings(config.API_ENDPOINT, config.API_PROJECT, config.API_THEME)
+    )
+
+    const fetchContents = useAsyncData(() =>
+      siteStore().contents
+        ? Promise.resolve(siteStore().contents as ContentEntry[])
+        : getContents(config.API_ENDPOINT, config.API_PROJECT, config.API_THEME)
+    )
+
+    const fetchPropertyTranslations = useAsyncData(() =>
+      siteStore().translations
+        ? Promise.resolve(siteStore().translations as PropertyTranslations)
+        : getPropertyTranslations(
+            config.API_ENDPOINT,
+            config.API_PROJECT,
+            config.API_THEME
+          )
+    )
+
+    const fetchPoiPoiDeps = useAsyncData(() => {
+      return getPoiDepsById(
+        config.API_ENDPOINT,
+        config.API_PROJECT,
+        config.API_THEME,
+        params.id as string,
+        {
+          short_description: false,
+        }
+      ).then((poiDeps) => {
+        let poi: ApiPoi | undefined = undefined
+        if (poiDeps) {
+          const g = groupBy(
+            poiDeps.features,
+            (feature) =>
+              // @ts-ignore
+              feature.properties.metadata?.id == params.id
+          )
+          poi = g['true'] && (g['true'][0] as ApiPoi)
+          poiDeps.features = g['false'] || []
+        }
+
+        return { poi: ref(poi), poiDeps: ref(poiDeps) }
+      })
+    })
+
+    const [
+      { data: settings },
+      { data: contents },
+      { data: propertyTranslations },
+      { data: poiPoiDeps },
+    ] = await Promise.all([
+      fetchSettings,
+      fetchContents,
+      fetchPropertyTranslations,
+      fetchPoiPoiDeps,
+    ])
+    throwFetchError([
+      fetchSettings,
+      fetchContents,
+      fetchPropertyTranslations,
+      fetchPoiPoiDeps,
+    ])
+
+    if (!poiPoiDeps.value?.poi || poiPoiDeps.value?.poi.value) {
+      showError({
         statusCode: 404,
         statusMessage: 'POI not found. Missing main object.',
       })
     }
 
     useHead(
-      headerFromSettings(settings, {
-        title: poi?.properties.name,
-        description: { fr: poi?.properties.description },
+      headerFromSettings(settings.value!, {
+        title: poiPoiDeps.value?.poi.value?.properties.name,
+        description: {
+          fr: poiPoiDeps.value?.poi.value?.properties.description,
+        },
       })
     )
 
-    return Promise.resolve({
+    return {
       config,
-      settings,
-      contents,
-      propertyTranslations,
-      poi,
-      poiDeps,
-    })
+      settings: settings as Ref<Settings>,
+      contents: contents as Ref<ContentEntry[]>,
+      propertyTranslations: propertyTranslations as Ref<PropertyTranslations>,
+      poi: poiPoiDeps.value!.poi as Ref<ApiPoi>,
+      poiDeps: poiPoiDeps.value!.poiDeps,
+    }
   },
 
   computed: {
@@ -142,7 +170,7 @@ export default defineNuxtComponent({
   },
 
   created() {
-    this.globalConfig = this.config!
+    this.globalConfig = this.config
     this.globalSettings = this.settings
     this.globalContents = this.contents
     this.globalTranslations = this.propertyTranslations
@@ -152,8 +180,8 @@ export default defineNuxtComponent({
   },
 
   beforeMount() {
-    this.$trackingInit(this.config!)
-    this.$vidoConfigSet(this.config!)
+    this.$trackingInit(this.config)
+    this.$vidoConfigSet(this.config)
   },
 
   mounted() {
