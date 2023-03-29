@@ -18,27 +18,27 @@ export default defineNuxtConfig({
     },
   },
 
-  // pwa: {
-  //   icon: false,
-  //   meta: false,
-  //   manifest: false,
-  //   workbox: {
-  //     enabled: true,
-  //   },
-  // },
-  // // Global page headers (https://go.nuxtjs.dev/config-head)
-  // head: {
-  //   htmlAttrs: {
-  //     lang: 'fr',
-  //   },
-  //   title: '@teritorio/vido',
-  //   meta: [
-  //     { charset: 'utf-8' },
-  //     { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-  //     { hid: 'description', name: 'description', content: '' },
-  //   ],
-  //   link: [{ rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }],
-  // },
+  pwa: {
+    icon: false,
+    meta: false,
+    manifest: false,
+    workbox: {
+      enabled: true,
+    },
+  },
+  // Global page headers (https://go.nuxtjs.dev/config-head)
+  head: {
+    htmlAttrs: {
+      lang: 'fr',
+    },
+    title: '@teritorio/vido',
+    meta: [
+      { charset: 'utf-8' },
+      { name: 'viewport', content: 'width=device-width, initial-scale=1' },
+      { hid: 'description', name: 'description', content: '' },
+    ],
+    link: [{ rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }],
+  },
 
   router: {
     // prefetchLinks: false,
@@ -77,7 +77,6 @@ export default defineNuxtConfig({
     // https://go.nuxtjs.dev/stylelint
     '@nuxtjs/stylelint-module',
     '@nuxtjs/svg',
-    // '@nuxtjs/pwa',
   ],
 
   // Modules (https://go.nuxtjs.dev/config-modules)
@@ -86,6 +85,7 @@ export default defineNuxtConfig({
     '@nuxt/image-edge',
     ...(process.env.SENTRY_DSN ? ['@nuxtjs/sentry'] : []),
     '@pinia/nuxt',
+    '@kevinmarrec/nuxt-pwa',
     async (options, nuxt) => {
       nuxt.hooks.hook('vite:extendConfig', (config) =>
         // @ts-ignore
