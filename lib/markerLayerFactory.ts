@@ -1,8 +1,7 @@
-import {
+import type {
+  Map,
   LayerSpecification,
   SymbolLayerSpecification,
-  Map,
-  Marker,
   LngLatBoundsLike,
   FitBoundsOptions,
 } from 'maplibre-gl'
@@ -14,6 +13,10 @@ import { createMarkerDonutChart } from './clusters'
 
 import TeritorioIconBadge from '~/components/UI/TeritorioIconBadge.vue'
 import { TupleLatLng } from '~/utils/types'
+
+const { Marker } = await import('maplibre-gl')
+
+type ITMarker = InstanceType<typeof Marker>
 
 export const markerLayerTextFactory = (
   layerTemplate: LayerSpecification,
@@ -77,7 +80,7 @@ export function makerHtmlFactory(
   icon: string,
   thumbnail: string | undefined,
   size: string | null = null
-): Marker {
+): ITMarker {
   // Marker
   const el: HTMLElement = document.createElement('div')
   el.id = id
@@ -104,7 +107,7 @@ export function makerHtmlFactory(
 
 export function updateMarkers(
   map: Map,
-  markers: { [id: string]: Marker },
+  markers: { [id: string]: ITMarker },
   src: string,
   fitBounds: (bounds: LngLatBoundsLike, options: FitBoundsOptions) => void,
   markerClickCallBack: ((feature: ApiPoi) => void) | undefined

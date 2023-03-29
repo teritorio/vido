@@ -58,12 +58,14 @@
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { Polygon, MultiPolygon } from 'geojson'
 import debounce from 'lodash.debounce'
-import maplibregl, {
+import type {
+  Map,
   MapDataEvent,
   LngLatBoundsLike,
   MapMouseEvent,
   FitBoundsOptions,
   GeoJSONSource,
+  StyleSpecification,
 } from 'maplibre-gl'
 import { mapActions, mapState, mapWritableState } from 'pinia'
 import { PropType, ref } from 'vue'
@@ -85,6 +87,10 @@ import { snackStore } from '~/stores/snack'
 import { filterRouteByCategories, filterRouteByPoiIds } from '~/utils/styles'
 import { LatLng, MapStyleEnum } from '~/utils/types'
 import { getHashPart } from '~/utils/url'
+
+const { Marker } = await import('maplibre-gl')
+
+type ITMarker = InstanceType<typeof Marker>
 
 const STYLE_LAYERS = [
   'poi-level-1',
@@ -166,9 +172,9 @@ export default defineNuxtComponent({
   },
 
   data(): {
-    map: maplibregl.Map
-    markers: { [id: string]: maplibregl.Marker }
-    selectedFeatureMarker: maplibregl.Marker | null
+    map: Map
+    markers: { [id: string]: ITMarker }
+    selectedFeatureMarker: ITMarker | null
     selectedBackground: MapStyleEnum
   } {
     return {
@@ -193,8 +199,8 @@ export default defineNuxtComponent({
     },
 
     // Workarround typing issue
-    mapTyped(): maplibregl.Map {
-      return this.map as maplibregl.Map
+    mapTyped(): Map {
+      return this.map as Map
     },
   },
 
@@ -221,7 +227,7 @@ export default defineNuxtComponent({
 
       if (this.enableFilterRouteByFeatures) {
         filterRouteByPoiIds(
-          this.map as maplibregl.Map,
+          this.map as Map,
           this.features.map(
             (feature) =>
               feature.properties?.metadata?.id ||
@@ -238,7 +244,7 @@ export default defineNuxtComponent({
 
     selectedCategoriesIds(categories) {
       if (this.enableFilterRouteByCategories) {
-        filterRouteByCategories(this.map as maplibregl.Map, categories)
+        filterRouteByCategories(this.map as Map, categories)
       }
     },
 
@@ -272,7 +278,7 @@ export default defineNuxtComponent({
 
     // Map and style init and changes
 
-    onMapInit(map: maplibregl.Map) {
+    onMapInit(map: Map) {
       this.map = map
 
       this.map.on('click', this.onClick)
@@ -283,7 +289,7 @@ export default defineNuxtComponent({
       })
     },
 
-    onMapStyleLoad(style: maplibregl.StyleSpecification) {
+    onMapStyleLoad(style: StyleSpecification) {
       const colors = [
         ...new Set(
           this.categories
@@ -365,7 +371,7 @@ export default defineNuxtComponent({
       // Put selected feature marker on top
       if (this.selectedFeatureMarker) {
         this.selectedFeatureMarker.remove()
-        this.selectedFeatureMarker.addTo(this.map as maplibregl.Map)
+        this.selectedFeatureMarker.addTo(this.map as Map)
       }
     },
 
@@ -459,7 +465,7 @@ export default defineNuxtComponent({
           this.selectedFeature?.id ||
           this.selectedFeature?.properties?.id)
       ) {
-        filterRouteByPoiIds(this.map as maplibregl.Map, [
+        filterRouteByPoiIds(this.map as Map, [
           this.selectedFeature.properties?.metadata?.id ||
             this.selectedFeature?.id ||
             this.selectedFeature?.properties?.id,
@@ -486,17 +492,17 @@ export default defineNuxtComponent({
               : this.defaultBounds
           ) as [number, number]
 
-          this.selectedFeatureMarker = new maplibregl.Marker({
+          this.selectedFeatureMarker = new Marker({
             scale: 1.3,
             color: '#f44336',
           })
             .setLngLat(lngLat)
-            .addTo(this.map as maplibregl.Map)
+            .addTo(this.map as Map)
         }
       } else {
         if (this.enableFilterRouteByCategories) {
           filterRouteByPoiIds(
-            this.map as maplibregl.Map,
+            this.map as Map,
             this.features.map(
               (feature) =>
                 feature.properties?.metadata?.id ||
@@ -506,10 +512,7 @@ export default defineNuxtComponent({
           )
         }
         if (this.enableFilterRouteByCategories) {
-          filterRouteByCategories(
-            this.map as maplibregl.Map,
-            this.selectedCategoriesIds
-          )
+          filterRouteByCategories(this.map as Map, this.selectedCategoriesIds)
         }
       }
     },
