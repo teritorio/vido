@@ -10,6 +10,7 @@
 
 <script lang="ts">
 import { mapWritableState } from 'pinia'
+import { ref, Ref } from 'vue'
 
 import {
   useHead,
@@ -18,10 +19,11 @@ import {
   useRuntimeConfig,
   defineNuxtComponent,
 } from '#app'
-import { definePageMeta } from '#imports'
+import { definePageMeta, useAsyncData } from '#imports'
 import MapPois from '~/components/Map/MapPois.vue'
 import { getPois, ApiPois, ApiPoiId } from '~/lib/apiPois'
 import { getSettings, headerFromSettings, Settings } from '~/lib/apiSettings'
+import { throwFetchError } from '~/lib/throwFetchError'
 import { vidoConfig } from '~/plugins/vido-config'
 import { siteStore } from '~/stores/site'
 import { VidoConfig } from '~/utils/types-config'
@@ -33,8 +35,8 @@ export default defineNuxtComponent({
 
   async setup(): Promise<{
     config: VidoConfig
-    settings: Settings
-    pois: ApiPois | null
+    settings: Ref<Settings>
+    pois: Ref<ApiPois | null>
   }> {
     definePageMeta({
       validate({ params }) {
@@ -46,39 +48,57 @@ export default defineNuxtComponent({
     })
 
     const params = useRoute().params
-    const config: VidoConfig =
-      siteStore().config || vidoConfig(useRequestHeaders(), useRuntimeConfig())
+    const { data: configRef } = await useAsyncData(() =>
+      Promise.resolve(
+        siteStore().config ||
+          vidoConfig(useRequestHeaders(), useRuntimeConfig())
+      )
+    )
+    const config: VidoConfig = configRef.value!
 
-    const fetchSettings = siteStore().settings
-      ? Promise.resolve(siteStore().settings as Settings)
-      : getSettings(config.API_ENDPOINT, config.API_PROJECT, config.API_THEME)
+    const fetchSettings = useAsyncData(() =>
+      siteStore().settings
+        ? Promise.resolve(siteStore().settings as Settings)
+        : getSettings(config.API_ENDPOINT, config.API_PROJECT, config.API_THEME)
+    )
 
-    let settings: Settings | null
-    let pois: ApiPois | null
+    let settings: Ref<Settings | null>
+    let pois: Ref<ApiPois | null>
     if (params.ids) {
       const ids = (params.ids as string).split(',')
-      const getPoiPromise = getPois(
-        config.API_ENDPOINT,
-        config.API_PROJECT,
-        config.API_THEME,
-        ids,
-        {
-          geometry_as: undefined,
-        }
+      const getPoiPromise = useAsyncData(() =>
+        getPois(
+          config.API_ENDPOINT,
+          config.API_PROJECT,
+          config.API_THEME,
+          ids,
+          {
+            geometry_as: undefined,
+          }
+        )
       )
-      ;[settings, pois] = await Promise.all([fetchSettings, getPoiPromise])
+      const [{ data: settingsF }, { data: poisF }] = await Promise.all([
+        fetchSettings,
+        getPoiPromise,
+      ])
+      throwFetchError([fetchSettings, getPoiPromise])
+
+      settings = settingsF
+      pois = poisF
     } else {
-      ;[settings] = await Promise.all([fetchSettings])
-      pois = null
+      const [{ data: settingsF }] = await Promise.all([fetchSettings])
+      throwFetchError([fetchSettings])
+
+      settings = settingsF
+      pois = ref(null)
     }
+    useHead(headerFromSettings(settings.value!))
 
-    useHead(headerFromSettings(settings))
-
-    return Promise.resolve({
+    return {
       config,
-      settings,
-      pois,
-    })
+      settings: settings as Ref<Settings>,
+      pois: pois as Ref<ApiPois | null>,
+    }
   },
 
   computed: {
@@ -96,14 +116,14 @@ export default defineNuxtComponent({
   },
 
   created() {
-    this.globalConfig = this.config!
+    this.globalConfig = this.config
 
     this.$settings.set(this.settings)
   },
 
   beforeMount() {
-    this.$trackingInit(this.config!)
-    this.$vidoConfigSet(this.config!)
+    this.$trackingInit(this.config)
+    this.$vidoConfigSet(this.config)
   },
 
   mounted() {
