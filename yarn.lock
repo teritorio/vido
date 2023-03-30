@@ -4092,7 +4092,7 @@ __metadata:
     url-slug: ^3.0.4
     vite-plugin-top-level-await: ^1.3.0
     vite-plugin-vuetify: ^1.0.2
-    vue-cookie-law: ^1.13.3
+    vue-cookie-accept-decline: ^6.1.0
     vue-matomo: ^4.2.0
     vue-screen: ^2.2.0
     vue-tsc: ^1.3.8
@@ -17899,10 +17899,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tiny-cookie@npm:^2.1.1":
-  version: 2.4.0
-  resolution: "tiny-cookie@npm:2.4.0"
-  checksum: 61dfbed2f7cba538486ef1741524d43619356801445d35ed1776072f13c0bc79b8692d21fa0bb8e467fac61ede6e1e299b3760d20abe5bedd68d0342521818bf
+"tiny-cookie@npm:^2.3.2":
+  version: 2.4.1
+  resolution: "tiny-cookie@npm:2.4.1"
+  checksum: 9541dd89dddf4845543f4506c58ea8c1f3ce1f1d8b84cc032af210e7721f59228b94c85f7f5d54e61d3df0196f89cbd41482a64babc6180613c70d159002fb1c
   languageName: node
   linkType: hard
 
@@ -19181,12 +19181,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"vue-cookie-law@npm:^1.13.3":
-  version: 1.13.3
-  resolution: "vue-cookie-law@npm:1.13.3"
+"vue-cookie-accept-decline@npm:^6.1.0":
+  version: 6.1.0
+  resolution: "vue-cookie-accept-decline@npm:6.1.0"
   dependencies:
-    tiny-cookie: ^2.1.1
-  checksum: 5aadbdb8ccbb4b4df80d02eecfbb68c9e541c1fc1b5c709d18069ca5bc72f1f3bfec4c2677839935d6eb2b6adbb7379fcc3f20e168beee2f7dc6cd430247c714
+    tiny-cookie: ^2.3.2
+  peerDependencies:
+    vue: ^3.2.31
+  checksum: 6b08dc4f84379a6a4f5e8ea7a476c61568a98ecdfa34085b8c9242c5ccc477dbdf18b2d9dd77c9e6b326cda440d09d403801c39e55ec9e74d4e051ec7de9de3f
   languageName: node
   linkType: hard
 

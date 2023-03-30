@@ -1,29 +1,39 @@
 <template>
   <client-only v-if="doNotTrack && vidoConfig.COOKIES_CONSENT">
-    <CookieLaw
-      :button-text="$t('cookiesConsent.accept')"
-      :button-link="vidoConfig.COOKIES_LINK"
-      :button-link-text="$t('cookiesConsent.details')"
-      :button-link-new-tab="true"
-      :button-decline="true"
-      :button-decline-text="$t('cookiesConsent.decline')"
-      button-decline-class="Cookie__button"
-      @accept="accept"
+    <VueCookieAcceptDecline
+      element-id="cookies-consent"
+      type="bar"
+      position="bottom"
+      @clicked-accept="accept"
     >
       <template #message>
         {{ vidoConfig.COOKIES_CONSENT }}
+        <ExternalLink
+          v-if="vidoConfig.COOKIES_LINK"
+          :href="vidoConfig.COOKIES_LINK"
+          target="_blank"
+        >
+          {{ $t('cookiesConsent.details') }}
+        </ExternalLink>
       </template>
-    </CookieLaw>
+      <template #declineContent>{{ $t('cookiesConsent.decline') }}</template>
+      <template #acceptContent>{{ $t('cookiesConsent.accept') }}</template>
+    </VueCookieAcceptDecline>
   </client-only>
 </template>
 
 <script lang="ts">
+//@ts-ignore
+import VueCookieAcceptDecline from 'vue-cookie-accept-decline'
+
 import { defineNuxtComponent } from '#app'
+import 'vue-cookie-accept-decline/dist/vue-cookie-accept-decline.css'
+import ExternalLink from '~/components/UI/ExternalLink.vue'
 
 export default defineNuxtComponent({
   components: {
-    // @ts-ignore
-    CookieLaw: () => (process.client ? import('vue-cookie-law') : null),
+    VueCookieAcceptDecline,
+    ExternalLink,
   },
 
   computed: {
@@ -45,3 +55,12 @@ export default defineNuxtComponent({
   },
 })
 </script>
+
+<style>
+.cookie__bar__buttons__button--accept,
+.cookie__bar__buttons__button--decline,
+.cookie__bar__buttons__button--accept:hover,
+.cookie__bar__buttons__button--decline:hover {
+  background: linear-gradient(#5cb860, #4caf50);
+}
+</style>
