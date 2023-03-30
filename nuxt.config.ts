@@ -131,14 +131,12 @@ export default defineNuxtConfig({
           /\.yarn/,
           /cypress/,
           /.*\.story\.vue$/,
-          /.*\.jest\.ts$/,
           /\.nuxt\/dist\/server\//,
         ].some((r) => r.test(f)),
     },
     webpack: {
       // @ts-ignore
-      ignored:
-        /\.git|\.yarn|cypress|.*\.story\.vue$|.*\.jest\.ts$|\.nuxt\/dist\/server\//,
+      ignored: /\.git|\.yarn|cypress|.*\.story\.vue$|\.nuxt\/dist\/server\//,
     },
   },
 
