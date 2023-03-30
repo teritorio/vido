@@ -166,6 +166,7 @@ export default defineNuxtConfig({
   },
 
   vite: {
+    clearScreen: false,
     plugins: [
       // Add support for old browser of
       // const { ... } = await import('maplibre-gl')
