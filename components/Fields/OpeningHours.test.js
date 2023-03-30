@@ -1,4 +1,3 @@
-import { expect } from '@jest/globals'
 import { createPinia } from 'pinia'
 import { createApp } from 'vue'
 
@@ -15,7 +14,7 @@ beforeEach(() => {
 })
 
 function factory(props = {}) {
-  const el: HTMLElement = document.createElement('div')
+  const el = document.createElement('div')
   createApp(OpeningHours, {
     context: PropertyTranslationsContextEnum.Default,
     tagKey: 'opening_hours',

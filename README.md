@@ -39,11 +39,6 @@ docker-compose up -d
 
 ## Tests
 
-Run unitary tests with:
-```
-yarn test:jest
-```
-
 Run end to end tests with dev server or build:
 ```
 # With dev
