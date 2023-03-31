@@ -64,19 +64,17 @@ jobs:
           sudo apt-get install -y ruby &&
           ruby poi_explode.rb cypress/fixtures/teritorio/references/pois.geojson
 
-      - name: yarn build
+      - name: Prepare
         run: |
-          cp -R cypress/fixtures/ public/fixtures &&
-          NODE_OPTIONS=--openssl-legacy-provider NODE_ENV=development CONFIG=vidos-config-cypress.json yarn build
+          cp -R cypress/fixtures/ public/fixtures
 
       - name: Run Cypress Tests 🧪
         uses: cypress-io/github-action@v5
         env:
-          NODE_ENV: development
           CONFIG: vidos-config-cypress.json
         with:
           install-command: yarn --silent
-          start: yarn start4cypress
+          start: yarn dev
           wait-on: 'http://127.0.0.1:3000'
           wait-on-timeout: 30
 
@@ -106,7 +104,9 @@ jobs:
       - name: Build Histoire
         run: |
           CONFIG=vidos-config-empty.json yarn prepare &&
-          CONFIG=vidos-config-empty.json yarn test:histoire:report
+          CONFIG=vidos-config-empty.json yarn test:histoire:report &&
+          zip -r __screenshots__.zip __screenshots__ > /dev/null
+          echo "https://gist.github.com/frodrigo/7c470b063ff1efa19022eec2f394319f"
 
       - name: Export as Gist
         uses: exuanbo/actions-deploy-gist@v1
