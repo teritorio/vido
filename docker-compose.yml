@@ -10,5 +10,7 @@ services:
     ports:
       - "3000:3000"
     volumes:
-      - ./.env:/usr/src/app/.env
       - ./vidos-config.json:/usr/src/app/vidos-config.json
+    environment:
+      - CONFIG=/usr/src/app/vidos-config.json
+      - SENTRY_DSN=
