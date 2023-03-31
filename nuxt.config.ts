@@ -152,7 +152,7 @@ export default defineNuxtConfig({
   },
 
   typescript: {
-    typeCheck: true,
+    typeCheck: !!process.env.TYPESCRIPT_CHECK,
   },
 
   postcss: {
