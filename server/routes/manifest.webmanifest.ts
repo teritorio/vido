@@ -49,8 +49,6 @@ async function manifest(
   }
 }
 
-export default defineEventHandler(async (event) => {
-  if (event.node.req.url === '/manifest.webmanifest') {
-    await manifest(event.node.req, event.node.res)
-  }
-})
+export default defineEventHandler(
+  async (event) => await manifest(event.node.req, event.node.res)
+)
