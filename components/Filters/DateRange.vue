@@ -3,7 +3,7 @@
     <v-select
       :model-value="currentValue"
       outlined
-      :placeholder="filter.def.name && filter.def.name.fr"
+      :label="filter.def.name && filter.def.name.fr"
       :items="dateFilters"
       :clearable="true"
       @input="onChange"
