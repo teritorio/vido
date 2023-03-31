@@ -120,3 +120,4 @@ cypress/fixtures/teritorio/references/pois/
 
 # Vido
 vidos-config.json
+public/fixtures
