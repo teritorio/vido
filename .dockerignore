@@ -70,3 +70,14 @@ dist
 
 # Histoire
 .histoire
+
+# Storybook
+.nuxt-storybook
+storybook-static
+
+# Cypress
+cypress
+
+# Vido
+**/*.stories.ts
+**/*.story.vue
