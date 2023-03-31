@@ -13,7 +13,7 @@
     "build": "TYPESCRIPT_CHECK=true yarn prepare && yarn nuxi build",
     "build:histoire": "rm -fr __screenshots__/current/ && mkdir -p __screenshots__/current/ && yarn histoire build",
     "generate": "yarn nuxi generate",
-    "start": "yarn prepare && yarn nuxi start",
+    "start": "yarn nuxi start",
     "start:histoire": "CONFIG=vidos-config-empty.json yarn histoire dev",
     "start:cypress": "CONFIG=vidos-config-empty.json yarn build-fixture && yarn run cypress open",
     "lint": "yarn lint:js && yarn lint:style",
