@@ -39,7 +39,7 @@ describe('pois table', () => {
       { body: poisCategory22 }
     )
 
-    cy.get('.category-selector').click()
+    cy.get('.category-selector').wait(1000).click()
     cy.contains('Aire de passage', { timeout: 30000 }).click()
 
     cy.get('th').contains(
