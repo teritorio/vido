@@ -13,6 +13,15 @@ export const setupVue3 = defineSetupVue3(({ app, story, variant }) => {
   app.config.globalProperties.$t = (key) => get(en, key, key)
   app.config.globalProperties.$d = (key) => key
   app.config.globalProperties.$n = (key) => key
+  app.config.globalProperties.$propertyTranslations = {
+    p: (field, context) => field,
+    pv: (field, property, context) => property,
+  }
+  app.config.globalProperties.$device = {
+    smallScreen: false,
+    touch: true,
+    phone: true,
+  }
 
   // Plugins
   vuetify({ vueApp: app })

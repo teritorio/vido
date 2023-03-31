@@ -21,6 +21,10 @@ export default defineComponent({
   props: pictureProps,
   setup: (props, ctx) => {
     const $img = useImage()
+    if (!$img) {
+      // Without initialised Nuxt from Histoire, render a plain image
+      return () => h('img', { src: props.src, ...props.imgAttrs })
+    }
     const _base = useBaseImage(props)
     const isTransparent = computed(() =>
       ['png', 'webp', 'gif'].includes(originalFormat.value)
