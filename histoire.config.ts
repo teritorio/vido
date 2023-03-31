@@ -24,10 +24,7 @@ export default defineConfig({
         file: string
         story: { title: string }
         variant: { id: string; title: string }
-      }) =>
-        payload.story.title === 'Tailwind' || // Remove builtins
-        (payload.file.endsWith('Field.story.vue') &&
-          payload.variant.title === 'StartEndDate'), // Error on rendering
+      }) => payload.story.title === 'Tailwind', // Remove builtins
       presets: [
         {
           width: 800,

@@ -103,10 +103,10 @@ jobs:
           sudo apt-get install -y ruby &&
           ruby poi_explode.rb cypress/fixtures/teritorio/references/pois.geojson
 
-      - name: Test Histoire
+      - name: Build Histoire
         run: |
           CONFIG=vidos-config-empty.json yarn prepare &&
-          CONFIG=vidos-config-empty.json yarn test:histoire
+          CONFIG=vidos-config-empty.json yarn test:histoire:report
 
       - name: Export as Gist
         uses: exuanbo/actions-deploy-gist@v1
@@ -115,6 +115,10 @@ jobs:
           gist_id: 7c470b063ff1efa19022eec2f394319f
           file_path: __screenshots__.zip
           file_type: binary
+
+      - name: Test Histoire
+        run: |
+          CONFIG=vidos-config-empty.json yarn test:histoire:check-report
 
       - name: Deploy to gh-pages
         if: github.ref == 'refs/heads/develop'

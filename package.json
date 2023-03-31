@@ -22,7 +22,7 @@
     "lint:style": "yarn stylelint **/*.{vue,css} --ignore-path .gitignore",
     "test": "yarn test:cypress && yarn test:histoire",
     "test:cypress": "yarn build-fixture && yarn run cypress run",
-    "test:histoire:report": "yarn build:histoire && npx --yes -- reg-cli __screenshots__/current __screenshots__/actual __screenshots__/diff -R __screenshots__/diff/index.html -J __screenshots__/diff/index.json --thresholdPixel 5 --matchingThreshold 0.3 --extendedErrors",
+    "test:histoire:report": "yarn build:histoire && npx --yes -- reg-cli __screenshots__/current __screenshots__/actual __screenshots__/diff -R __screenshots__/diff/index.html -J __screenshots__/diff/index.json --thresholdPixel 5 --matchingThreshold 0.3 --extendedErrors || exit 0",
     "test:histoire:check-report": "cat __screenshots__/diff/index.json | jq --exit-status '.failedItems + .newItems + .deletedItems | length == 0'",
     "test:histoire": "yarn test:histoire:report && yarn test:histoire:check-report",
     "postinstall": "[[ -d '.git' ]] && husky install || true"
