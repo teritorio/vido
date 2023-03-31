@@ -11,7 +11,7 @@ declare global {
 
 // @ts-ignore
 Cypress.Commands.add('clearSSRMocks', () => {
-  cy.request('/__cypress_clear_mocks')
+  cy.request('POST', '/__cypress_set_mocks', [])
 })
 
 after(() => {

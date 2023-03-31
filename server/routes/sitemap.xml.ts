@@ -61,7 +61,7 @@ async function manifest(
 
     const options: BuildSitemapOptions = {
       sitemapConfig: {
-        xsl: '/__sitemap__/style.xsl',
+        xsl: '/sitemap-style.xsl',
         defaults: {},
         enabled: true,
         trailingSlash: false,
@@ -94,19 +94,6 @@ async function manifest(
   }
 }
 
-async function stylesheet(
-  req: IncomingMessage,
-  res: ServerResponse<IncomingMessage>
-) {
-  res.write(generateXslStylesheet())
-  res.statusCode = 200
-  res.end()
-}
-
-export default defineEventHandler(async (event) => {
-  if (event.node.req.url === '/sitemap.xml') {
-    await manifest(event.node.req, event.node.res)
-  } else if (event.node.req.url === '/__sitemap__/style.xsl') {
-    await stylesheet(event.node.req, event.node.res)
-  }
-})
+export default defineEventHandler(
+  async (event) => await manifest(event.node.req, event.node.res)
+)
