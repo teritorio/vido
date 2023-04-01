@@ -48,7 +48,7 @@ function cypressSetMocks(
 }
 
 export default defineEventHandler((event) => {
-  if (process.env.NODE_ENV != 'production') {
+  if (process.env.dev || process.env.CYPRESS) {
     cypressSetMocks(event.node.req, event.node.res)
   }
 })

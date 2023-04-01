@@ -1,4 +1,4 @@
-import { defineNuxtPlugin } from '#app/nuxt'
+import { defineNuxtPlugin, useRuntimeConfig } from '#app/nuxt'
 import Google from '~/lib/tracker-google'
 import Matomo from '~/lib/tracker-matomo'
 import { Event, Tracker } from '~/lib/trackers'
@@ -46,7 +46,7 @@ export default defineNuxtPlugin((nuxtApp) => {
       },
 
       tracking: (event: Event): void => {
-        if (process.dev) {
+        if (process.dev || useRuntimeConfig().cypress) {
           console.error('Tracking event', event)
         }
 

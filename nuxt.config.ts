@@ -16,6 +16,7 @@ export default defineNuxtConfig({
     public: {
       // @ts-ignore
       vidos: vidos.__publicRuntimeConfig__ ? vidos : undefined,
+      cypress: process.env.CYPRESS,
     },
   },
 
