@@ -66,17 +66,26 @@ jobs:
 
       - name: Prepare
         run: |
-          cp -R cypress/fixtures/ public/fixtures
+          cp -R cypress/fixtures/ public/fixtures &&
+          CONFIG=vidos-config-cypress.json CYPRESS=true yarn build
 
       - name: Run Cypress Tests 🧪
         uses: cypress-io/github-action@v5
         env:
           CONFIG: vidos-config-cypress.json
+          CYPRESS: true
         with:
           install-command: yarn --silent
-          start: yarn dev
+          start: yarn start
           wait-on: 'http://127.0.0.1:3000'
           wait-on-timeout: 30
+
+      - name: Keep failled cypress-screenshots
+        uses: actions/upload-artifact@v3
+        if: failure()
+        with:
+          name: cypress-screenshots
+          path: cypress/screenshots
 
   histoire:
     needs: install_cache
