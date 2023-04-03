@@ -1,8 +1,29 @@
 # @teritorio/vido
 
+Vido is a web map application for browsing POIs organized in categories. The main features are:
+- a slippy map
+- a POI categories menu
+- a full POIs browsing mode
+- POI favorites and notebook
+- page for each POI content
+- list a POI be categories
+
+Vido is the frontend for the [data API](https://dev.appcarto.teritorio.xyz/content/wp-content/plugins/ApiTeritorio/vendor/swagger-api/swagger-ui/dist/?url=https://dev.appcarto.teritorio.xyz//content/wp-content/plugins/ApiTeritorio/swagger-doc.yaml).
+
+Vido use aside projects to:
+- export list of POIs as PDF: [https://github.com/teritorio/elasa-export](https://github.com/teritorio/elasa-export)
+- search for POIs: [elasa-search](https://github.com/teritorio/elasa-search)
+- produce QR Code: [qr-shortener](https://github.com/teritorio/qr-shortener)
+
+The web application target multiple devices: smartphones, desktops, and large touchscreens.
+
+![Vido main map](Vido-main-map.webp)
+
 ## Entry points
 
 ### Web
+Full entry points documentation available on [api.yml](public/api.yaml) and on server at [http://localhost:3000/api.yaml](http://localhost:3000/api.yaml).
+
 * Main Map:
 * Full page: `/`, `/{poi_Id}`, `/{category_ids}/` and `/{category_ids}/{poi_id}`.
 * Parameters:
@@ -18,8 +39,6 @@
 ### Sitemap & WPA
 * `/manifest.webmanifest`
 * `/sitemap.xml`
-
-Full entry points documentation available on [api.yml](public/api.yaml) and on server at [http://localhost:3000/api.yaml](http://localhost:3000/api.yaml).
 
 ## Setup
 
@@ -70,7 +89,11 @@ Header set Content-Security-Policy "frame-ancestors *"
 
 ## Dev
 
-For detailed explanation on how things work, check out [Nuxt.js docs](https://nuxtjs.org).
+![data flow](doc/data-flow.svg)
+
+Vido is mainly building using:
+- [MapLibre GL JS](https://maplibre.org/maplibre-gl-js-docs/api/map/)
+- [Nxut3](https://nuxt.com/) and [Vue3](https://vuejs.org/), using the Options API
 
 ```
 # serve with hot reload at localhost:3000
