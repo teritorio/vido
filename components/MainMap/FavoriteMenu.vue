@@ -1,6 +1,6 @@
 <template>
   <section>
-    <div class="tw-flex tw-right-10">
+    <div class="tw-flex tw-right-10 tw-pointer-events-auto">
       <button
         ref="menu"
         type="button"
@@ -29,9 +29,9 @@
         :class="[
           'tw-relative tw-space-x-1 tw-text-sm tw-font-medium tw-shadow-md tw-outline-none md:tw-px-5 tw-w-11 md:tw-w-auto tw-h-11 focus:tw-outline-none tw-shrink-0 tw-rounded-r-full',
           'tw-bg-white hover:tw-bg-zinc-100 focus-visible:tw-bg-zinc-100 tw-text-zinc-800',
-          !hasFavorites && 'tw-bg-zinc-100 tw-cursor-not-allowed',
+          favoritesIds.length === 0 && 'tw-bg-zinc-100 tw-cursor-not-allowed',
         ]"
-        :disabled="!hasFavorites"
+        :disabled="favoritesIds.length === 0"
         @click="openNotebookModal"
       >
         <FontAwesomeIcon
@@ -65,14 +65,14 @@
 <script lang="ts">
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { mapState } from 'pinia'
+import { PropType } from 'vue'
 import { VDialog } from 'vuetify/components/VDialog'
 
 import { defineNuxtComponent } from '#app'
 import FavoriteNoteBook from '~/components/MainMap/FavoriteNoteBook.vue'
 import Badge from '~/components/UI/Badge.vue'
 import FavoriteIcon from '~/components/UI/FavoriteIcon.vue'
-import { getPois, ApiPoi } from '~/lib/apiPois'
-import { favoritesStore } from '~/stores/favorite'
+import { getPois, ApiPoi, ApiPoiId } from '~/lib/apiPois'
 import { mapStore } from '~/stores/map'
 
 export default defineNuxtComponent({
@@ -84,8 +84,8 @@ export default defineNuxtComponent({
     VDialog,
   },
   props: {
-    hasFavorites: {
-      type: Boolean,
+    favoritesIds: {
+      type: Array as PropType<ApiPoiId[]>,
       default: false,
     },
     exploreAroundSelectedPoi: {
@@ -124,7 +124,6 @@ export default defineNuxtComponent({
 
   computed: {
     ...mapState(mapStore, ['isModeFavorites']),
-    ...mapState(favoritesStore, ['favoritesIds']),
   },
   methods: {
     async fetchFavorites(ids: Number[]) {
