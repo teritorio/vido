@@ -12,7 +12,11 @@
             v-if="!isModeExplorerOrFavorites"
             class="tw-flex tw-flex-col tw-max-h-full tw-px-5 tw-py-4 tw-space-y-6 tw-shadow-md tw-pointer-events-auto md:tw-rounded-xl md:tw-w-96 tw-bg-white tw-min-h-20"
           >
-            <Search :menu-to-icon="menuItemsToIcons" :map-center="center">
+            <Search
+              :menu-to-icon="menuItemsToIcons"
+              :map-center="center"
+              @select-feature="searchSelectFeature"
+            >
               <Logo
                 :main-url="mainUrl"
                 :site-name="siteName"
@@ -72,6 +76,7 @@
               :map-center="center"
               @focus="isOnSearch = true"
               @blur="isOnSearch = false"
+              @select-feature="searchSelectFeature"
             >
               <Logo
                 :main-url="mainUrl"
@@ -609,6 +614,11 @@ export default defineNuxtComponent({
             },
           }))
         )
+    },
+
+    searchSelectFeature(feature: ApiPoi) {
+      this.setSelectedFeature(feature)
+      this.goToSelectedFeature()
     },
   },
 })

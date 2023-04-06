@@ -76,8 +76,7 @@ import { PropType } from 'vue'
 import { defineNuxtComponent } from '#app'
 import SearchInput from '~/components/Search/SearchInput.vue'
 import SearchResultBlock from '~/components/Search/SearchResultBlock.vue'
-import { ApiMenuCategory } from '~/lib/apiMenu'
-import { ApiPoi, ApiPoiId, getPoiById } from '~/lib/apiPois'
+import { ApiPoi, getPoiById } from '~/lib/apiPois'
 import {
   ApiPoisSearchResult,
   ApiMenuItemSearchResult,
@@ -86,9 +85,8 @@ import {
   ApiSearchResult,
 } from '~/lib/apiSearch'
 import { MAP_ZOOM } from '~/lib/constants'
-import { mapStore } from '~/stores/map'
 import { menuStore } from '~/stores/menu'
-import { FilterValue, FilterValues } from '~/utils/types-filters'
+import { FilterValue } from '~/utils/types-filters'
 
 export default defineNuxtComponent({
   components: {
@@ -210,11 +208,15 @@ export default defineNuxtComponent({
   emits: {
     blur: (event: FocusEvent) => true,
     focus: (event: string | Event) => true,
+    selectFeature: (feature: ApiPoi) => true,
   },
 
   methods: {
-    ...mapActions(mapStore, ['setSelectedFeature']),
     ...mapActions(menuStore, ['addSelectedCategoryIds', 'applyFilters']),
+
+    setSelectedFeature(feature: ApiPoi): void {
+      this.$emit('selectFeature', feature)
+    },
 
     reset() {
       this.searchMenuItemsResults = null
