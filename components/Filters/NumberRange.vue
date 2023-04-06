@@ -1,5 +1,5 @@
 <template>
-  <div :class="['tw-mt-4', 'filters-number-range']">
+  <div :class="['tw-mt-7', 'filters-number-range']">
     <v-range-slider
       :model-value="value"
       strict
@@ -7,6 +7,7 @@
       :max="max"
       thumb-label="always"
       hide-details="auto"
+      :step="Math.max(Math.round((max - min) / 50), 1)"
       @update:model-value="onChange"
     ></v-range-slider>
   </div>

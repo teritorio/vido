@@ -5,7 +5,7 @@
       :key="name"
       :title="name.replace(/([A-Z])/g, ' $1').trim()"
     >
-      <NumberRange v-bind="p" />
+      <NumberRange v-bind="p" class="v-locale--is-ltr" />
     </Variant>
   </Story>
 </template>
