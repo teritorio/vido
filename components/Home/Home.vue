@@ -132,7 +132,8 @@
                 !(isModeExplorer || isModeFavorites) || Boolean(selectedFeature)
               "
               type="button"
-              class="-tw-top-12 tw-z-0 tw-absolute md:tw-hidden tw-right-3/8 tw-left-3/8 tw-w-1/4 tw-h-12 tw-transition-all tw-rounded-t-lg tw-text-sm tw-font-medium tw-px-5 tw-space-x-1 tw-shadow-lg tw-outline-none focus:tw-outline-none tw-bg-white tw-text-zinc-800 hover:tw-bg-zinc-100 focus-visible:tw-bg-zinc-100"
+              class="md:tw-hidden tw-absolute -tw-top-12 tw-z-0 tw-w-1/4 tw-h-12 tw-transition-all tw-rounded-t-lg tw-text-sm tw-font-medium tw-px-5 tw-shadow-lg tw-outline-none focus:tw-outline-none tw-bg-white tw-text-zinc-800 hover:tw-bg-zinc-100 focus-visible:tw-bg-zinc-100"
+              style="right: 37.5%"
               @click="onBottomMenuButtonClick"
             >
               <span class="tw-sr-only">{{ $t('headerMenu.categories') }}</span>
