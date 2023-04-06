@@ -54,7 +54,7 @@
       <div class="tw-w-full tw-flex tw-justify-between tw-pb-4">
         <button
           type="button"
-          class="tw-flex tw-items-center tw-justify-center tw-w-10 tw-h-10 tw-text-2xl tw-font-bold tw-transition-all tw-rounded-full tw-outline-none tw-cursor-pointer focus:tw-outline-none hover:tw-bg-zinc-100 focus:tw-bg-zinc-100"
+          class="tw-flex tw-items-center tw-justify-center tw-w-10 tw-h-10 tw-text-2xl tw-font-bold tw-transition-all tw-rounded-full tw-outline-none tw-cursor-pointer focus:tw-outline-none hover:tw-bg-zinc-100"
           @click="onGoBackClick"
         >
           <span class="sr-only">{{ $t('headerMenu.back') }}</span>
