@@ -9,30 +9,16 @@
       hide-details="auto"
       @update:model-value="$emit('category-change', $event)"
     >
-      <template #selection="{ props, item }">
-        <v-list-item v-bind="props">
-          <v-list-item-media>
-            <TeritorioIcon
-              :color-text="menuEntries[item.value][1].category.color_line"
-              :picto="menuEntries[item.value][1].category.icon"
-            />
-          </v-list-item-media>
-          <v-list-item-title>
-            {{ item.title }}
-          </v-list-item-title>
-        </v-list-item>
-      </template>
       <template #item="{ props, item }">
-        <v-list-item v-bind="props">
+        <v-list-item v-bind="props" :title="null">
           <v-list-item-media>
             <TeritorioIcon
               :color-text="menuEntries[item.value][1].category.color_line"
               :picto="menuEntries[item.value][1].category.icon"
+              use-native-alignment
             />
-          </v-list-item-media>
-          <v-list-item-title>
             {{ item.title }}
-          </v-list-item-title>
+          </v-list-item-media>
         </v-list-item>
       </template>
     </v-autocomplete>
