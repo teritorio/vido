@@ -6,6 +6,7 @@
       solo
       :items="Object.values(menuEntries).map((a) => a[0])"
       :label="$t('categorySelector.placeholder')"
+      hide-details="auto"
       @update:model-value="$emit('category-change', $event)"
     >
       <template #selection="{ props, item }">
