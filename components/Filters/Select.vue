@@ -10,6 +10,7 @@
       placeholder="Recherchez ou ajoutez une valeur"
       :clearable="true"
       hide-details="auto"
+      density="compact"
       @update:model-value="onChange"
       @click="$emit('click')"
       @blur="$emit('blur')"
@@ -51,9 +52,9 @@ export default defineNuxtComponent({
   },
 
   computed: {
-    items(): { text: string; value: string }[] {
+    items(): { title: string; value: string }[] {
       return this.filter.def.values.map((value) => ({
-        text: (value.name && value.name.fr) || value.value,
+        title: (value.name && value.name.fr) || value.value,
         value: value.value,
       }))
     },
