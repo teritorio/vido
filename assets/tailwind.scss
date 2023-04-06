@@ -34,5 +34,9 @@ select:focus {
   background-color: inherit;
 }
 
+[type="checkbox"], [type="radio"] {
+  appearance: auto;
+}
+
 @tailwind components;
 @tailwind utilities;
