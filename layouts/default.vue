@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="v-locale--is-ltr">
     <slot />
   </div>
 </template>
