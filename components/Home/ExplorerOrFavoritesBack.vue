@@ -2,7 +2,7 @@
   <div class="tw-flex tw-items-center tw-ml-2">
     <button
       type="button"
-      class="tw-flex tw-shrink-0 tw-items-center tw-justify-center tw-w-10 tw-h-10 tw-text-2xl tw-font-bold tw-transition-all tw-rounded-full tw-outline-none tw-cursor-pointer focus:tw-outline-none hover:tw-bg-blue-700 focus:tw-bg-blue-700"
+      class="tw-flex tw-shrink-0 tw-items-center tw-justify-center tw-w-10 tw-h-10 tw-text-2xl tw-font-bold tw-transition-all tw-rounded-full tw-outline-none tw-cursor-pointer focus:tw-outline-none hover:tw-bg-blue-700"
       @click="goToMenuItems"
     >
       <FontAwesomeIcon icon="arrow-left" size="xs" />

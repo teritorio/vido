@@ -16,7 +16,7 @@
     <button
       v-if="focus && results > 0"
       type="button"
-      class="tw-shrink-0 tw-w-10 tw-h-10 tw-text-2xl tw-font-bold tw-transition-all tw-rounded-full tw-outline-none tw-cursor-pointer focus:tw-outline-none hover:tw-bg-zinc-100 focus:tw-bg-zinc-100"
+      class="tw-shrink-0 tw-w-10 tw-h-10 tw-text-2xl tw-font-bold tw-transition-all tw-rounded-full tw-outline-none tw-cursor-pointer focus:tw-outline-none hover:tw-bg-zinc-10"
       @click="reset"
     >
       <FontAwesomeIcon icon="arrow-left" class="tw-text-zinc-800" size="xs" />
