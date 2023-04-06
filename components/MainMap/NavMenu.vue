@@ -7,7 +7,7 @@
       <template #activator="{ props }">
         <IconButton
           :label="$t('navMenu.label')"
-          class="tw-w-11 tw-h-11"
+          class="tw-w-11 tw-h-11 tw-pointer-events-auto"
           v-bind="props"
         >
           <FontAwesomeIcon icon="cog" class="tw-text-zinc-800" size="lg" />

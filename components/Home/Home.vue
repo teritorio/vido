@@ -4,70 +4,6 @@
   >
     <h1 class="tw-absolute tw-text-white">{{ siteName }}</h1>
     <header
-      class="tw-hidden md:tw-flex tw-relative md:tw-fixed tw-top-0 tw-z-10 tw-flex tw-flex-row tw-w-full tw-h-auto tw-space-tw-x-4 md:tw-w-auto md:tw-p-2"
-      style="max-height: calc(100vh - 30px)"
-    >
-      <div
-        class="tw-flex tw-flex-col tw-justify-between tw-w-full tw-w-auto tw-max-w-md tw-space-y-4"
-      >
-        <client-only>
-          <transition-group
-            id="header-menu"
-            ref="headerMenu"
-            tag="div"
-            name="headers"
-            appear
-            mode="out-in"
-            :class="[
-              'tw-overflow-x-hidden',
-              !isFilterActive && 'tw-overflow-y-auto',
-            ]"
-          >
-            <MenuBlock
-              v-if="isModeExplorerOrFavorites"
-              key="ExplorerOrFavoritesBack"
-              extra-class-text-background="tw-bg-blue-500 tw-text-white"
-            >
-              <ExplorerOrFavoritesBack @click="onQuitExplorerFavoriteMode" />
-            </MenuBlock>
-
-            <Menu
-              v-else
-              key="Menu"
-              menu-block="MenuBlock"
-              :is-on-search="isOnSearch"
-              :is-filter-active="isFilterActive"
-              @activate-filter="onActivateFilter"
-              @scroll-top="scrollTop"
-            >
-              <Search
-                :menu-to-icon="menuItemsToIcons"
-                :map-center="center"
-                @focus="isOnSearch = true"
-                @blur="isOnSearch = false"
-              >
-                <Logo
-                  :main-url="mainUrl"
-                  :site-name="siteName"
-                  :logo-url="logoUrl"
-                  class="tw-flex-none tw-mr-2"
-                  image-class="tw-max-w-2xl tw-max-h-12 md:tw-max-h-16"
-                />
-              </Search>
-            </Menu>
-          </transition-group>
-        </client-only>
-      </div>
-    </header>
-    <div
-      v-if="!isModeExplorer && selectedCategoryIds.length && !isModeFavorites"
-      class="tw-p-4 tw-absolute tw-z-10 tw-hidden md:tw-block"
-      :style="selectedFeaturesStyles"
-    >
-      <SelectedCategories />
-    </div>
-
-    <header
       class="tw-flex md:tw-hidden tw-relative tw-fidex tw-top-0 tw-bottom-0 tw-z-10 tw-flex-row tw-w-full tw-space-x-4"
     >
       <div :class="['tw-w-full', isBottomMenuOpened && 'tw-hidden']">
@@ -97,6 +33,81 @@
     </header>
 
     <div v-if="initialBbox" class="tw-w-full tw-h-full">
+      <header
+        class="tw-pointer-events-none tw-flex tw-flex-row tw-fixed tw-z-10 tw-w-full tw-h-auto tw-p-4 tw-space-x-4"
+        style="max-height: calc(100vh - 30px)"
+      >
+        <transition-group
+          id="header-menu"
+          ref="headerMenu"
+          tag="div"
+          name="headers"
+          appear
+          mode="out-in"
+          :class="[
+            'tw-hidden md:tw-block',
+            'flex-none tw-max-w-md tw-overflow-scroll',
+          ]"
+        >
+          <MenuBlock
+            v-if="isModeExplorerOrFavorites"
+            key="ExplorerOrFavoritesBack"
+            extra-class-text-background="tw-bg-blue-500 tw-text-white"
+          >
+            <ExplorerOrFavoritesBack @click="onQuitExplorerFavoriteMode" />
+          </MenuBlock>
+
+          <Menu
+            v-else
+            key="Menu"
+            menu-block="MenuBlock"
+            :is-on-search="isOnSearch"
+            :is-filter-active="isFilterActive"
+            @activate-filter="onActivateFilter"
+            @scroll-top="scrollTop"
+          >
+            <Search
+              :menu-to-icon="menuItemsToIcons"
+              :map-center="center"
+              @focus="isOnSearch = true"
+              @blur="isOnSearch = false"
+            >
+              <Logo
+                :main-url="mainUrl"
+                :site-name="siteName"
+                :logo-url="logoUrl"
+                class="tw-flex-none tw-mr-2"
+                image-class="tw-max-w-2xl tw-max-h-12 md:tw-max-h-16"
+              />
+            </Search>
+          </Menu>
+        </transition-group>
+        <SelectedCategories
+          v-if="
+            !isModeExplorer && selectedCategoryIds.length && !isModeFavorites
+          "
+        />
+        <div class="tw-grow" style="margin-left: 0" />
+        <div
+          :class="['tw-flex-none', 'tw-flex', isBottomMenuOpened && 'hidden']"
+        >
+          <FavoriteMenu
+            v-if="favoritesModeEnabled"
+            :favorites-ids="favoritesIds"
+            :explore-around-selected-poi="toggleExploreAroundSelectedPoi"
+            :go-to-selected-poi="goToSelectedFeature"
+            :toggle-favorite="toggleFavorite"
+            :explorer-mode-enabled="explorerModeEnabled"
+            @toggle-favorites="onToggleFavoritesMode"
+          />
+          <NavMenu
+            id="nav-menu"
+            :entries="navMenuEntries"
+            class="tw-ml-3 sm:tw-ml-4"
+          />
+        </div>
+      </header>
+
       <div
         class="tw-relative tw-flex tw-flex-col tw-w-full tw-h-full md:tw-h-full"
       >
@@ -129,27 +140,6 @@
             </button>
           </div>
         </MapFeatures>
-        <div
-          :class="[
-            'tw-absolute tw-flex tw-justify-end tw-pointer-events-auto tw-items-top tw-pt-4 tw-right-3 md:tw-pt-0 tw-top-4',
-            isBottomMenuOpened && 'hidden',
-          ]"
-        >
-          <FavoriteMenu
-            v-if="favoritesModeEnabled"
-            :has-favorites="favoritesIds.length !== 0"
-            :explore-around-selected-poi="toggleExploreAroundSelectedPoi"
-            :go-to-selected-poi="goToSelectedFeature"
-            :toggle-favorite="toggleFavorite"
-            :explorer-mode-enabled="explorerModeEnabled"
-            @toggle-favorites="onToggleFavoritesMode"
-          />
-          <NavMenu
-            id="nav-menu"
-            :entries="navMenuEntries"
-            class="tw-ml-3 sm:tw-ml-4"
-          />
-        </div>
       </div>
     </div>
 
@@ -286,7 +276,6 @@ export default defineNuxtComponent({
     favorites: ApiPoi[] | null
     isOnSearch: boolean
     isFilterActive: boolean
-    selectedFeaturesStyles: string
   } {
     return {
       isMenuItemOpen: false,
@@ -296,7 +285,6 @@ export default defineNuxtComponent({
       favorites: null,
       isOnSearch: false,
       isFilterActive: false,
-      selectedFeaturesStyles: '',
     }
   },
 
@@ -450,20 +438,6 @@ export default defineNuxtComponent({
   },
 
   mounted() {
-    const that = this
-    const resizeObserver = new ResizeObserver((el) => {
-      that.selectedFeaturesStyles = `
-        left: ${el[0].contentRect.width}px;
-        max-width: calc(100vw - 670px);
-      `
-    })
-
-    const header = document.getElementById('header-menu')
-
-    if (header) {
-      resizeObserver.observe(header)
-    }
-
     this.$tracking({
       type: 'page',
       title: (this.$route.name && String(this.$route.name)) || undefined,

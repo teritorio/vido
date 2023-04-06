@@ -1,16 +1,11 @@
 <template>
   <aside
     :class="[
-      'tw-flex tw-flex-col tw-pointer-events-auto tw-inset-auto tw-h-max tw-max-h-full tw-box-border tw-space-y-4 tw-p-2',
+      'tw-rounded-xl tw-shadow-md tw-pointer-events-auto',
       !isFilterActive && 'tw-overflow-y-hidden',
     ]"
   >
-    <div
-      :class="[
-        'tw-items-center tw-justify-between tw-block tw-rounded-xl tw-shadow-md tw-px-5 tw-py-4',
-        extraClassTextBackground,
-      ]"
-    >
+    <div :class="['tw-px-5 tw-py-4', extraClassTextBackground]">
       <slot></slot>
     </div>
   </aside>

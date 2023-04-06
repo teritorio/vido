@@ -23,7 +23,7 @@
     />
   </component>
 
-  <div v-else-if="isRootMenu">
+  <div v-else-if="isRootMenu" class="tw-flex tw-flex-col tw-space-y-4">
     <template v-for="(menuItem, index) in currentMenuItems" :key="menuItem.id">
       <component :is="menuBlock" v-if="index === 0">
         <slot></slot>
