@@ -96,7 +96,9 @@ export default defineNuxtComponent({
     ...mapActions(menuStore, ['setSelectedCategoryIds']),
 
     goToSelectedFeature() {
-      this.mapFeatures?.goToSelectedFeature()
+      if (this.$refs.mapFeatures) {
+        ;(this.$refs.mapFeatures as typeof MapFeatures).goToSelectedFeature()
+      }
     },
   },
 })
