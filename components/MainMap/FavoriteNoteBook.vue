@@ -1,5 +1,5 @@
 <template>
-  <div id="favourite_notebook" class="tw-bg-white tw-p3">
+  <div id="favourite_notebook" class="tw-bg-white tw-p3 tw-h-full">
     <div
       class="tw-py-4 tw-px-1 sm:tw-px-6 tw-sticky tw-top-0 tw-z-20 tw-bg-white"
     >
