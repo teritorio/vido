@@ -9,6 +9,7 @@
       :items="items"
       placeholder="Recherchez ou ajoutez une valeur"
       :clearable="true"
+      hide-details="auto"
       @update:model-value="onChange"
       @click="$emit('click')"
       @blur="$emit('blur')"

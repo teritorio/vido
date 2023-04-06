@@ -6,6 +6,7 @@
       :label="filter.def.name && filter.def.name.fr"
       :items="dateFilters"
       :clearable="true"
+      hide-details="auto"
       @input="onChange"
     />
   </div>
