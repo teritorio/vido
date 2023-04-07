@@ -8,7 +8,7 @@
   >
     <div
       v-if="showImage"
-      class="md:tw-w-48 tw-h-44 md:tw-h-auto md:tw-max-h-full tw-bg-gray-100 tw-flex tw-items-center tw-align-middle tw-justify-center tw-relative tw-min-icon-height"
+      class="md:tw-w-48 tw-h-44 md:tw-h-auto md:tw-max-h-full tw-bg-gray-100 tw-text-gray-100 tw-flex tw-items-center tw-align-middle tw-justify-center tw-relative tw-min-icon-height"
     >
       <TeritorioIcon
         v-if="icon"
