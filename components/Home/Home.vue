@@ -63,6 +63,7 @@
             menu-block="MenuBlock"
             :is-on-search="isOnSearch"
             :is-filter-active="isFilterActive"
+            class="tw-px-1 tw-pb-1.5"
             @activate-filter="onActivateFilter"
             @scroll-top="scrollTop"
           >
