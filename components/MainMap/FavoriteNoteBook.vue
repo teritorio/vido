@@ -1,8 +1,9 @@
 <template>
-  <div id="favourite_notebook" class="tw-bg-white tw-p3 tw-h-full">
-    <div
-      class="tw-py-4 tw-px-1 sm:tw-px-6 tw-sticky tw-top-0 tw-z-20 tw-bg-white"
-    >
+  <div
+    id="favourite_notebook"
+    class="tw-bg-white tw-p3 tw-h-full tw-overflow-scroll"
+  >
+    <div class="tw-sticky tw-p-4 tw-top-0 tw-z-20 tw-bg-white">
       <div class="tw-flex tw-justify-between tw-items-center">
         <p class="tw-text-lg">{{ $t('favorites.notebook.title') }}</p>
         <UIButton
@@ -56,6 +57,7 @@
       :selected-poi-ids="selectedFavsIds"
       :explorer-mode-enabled="explorerModeEnabled"
       :favorites-mode-enabled="true"
+      class="tw-pb-4"
       @explore-click="$emit('explore-click', $event)"
       @favorite-click="$emit('favorite-click', $event)"
       @zoom-click="$emit('zoom-click', $event)"
