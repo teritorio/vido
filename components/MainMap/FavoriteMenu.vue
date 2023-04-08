@@ -47,7 +47,11 @@
     </div>
 
     <div>
-      <v-dialog v-model="notebookModal" scrollable fullscreen max-width="80rem">
+      <v-dialog
+        v-model="notebookModal"
+        :fullscreen="smallScreen"
+        max-width="80rem"
+      >
         <FavoriteNoteBook
           :favs="favs"
           :selected-favs-ids="favoritesIds"
@@ -124,6 +128,9 @@ export default defineNuxtComponent({
 
   computed: {
     ...mapState(mapStore, ['isModeFavorites']),
+    smallScreen(): boolean {
+      return this.$device.smallScreen
+    },
   },
   methods: {
     async fetchFavorites(ids: Number[]) {
