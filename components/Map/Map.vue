@@ -106,6 +106,7 @@ export default defineNuxtComponent({
     attributionControl: ITAttributionControl | null
     languageControl: OpenMapTilesLanguage | null
     fullscreenControlObject: ITFullscreenControl | undefined
+    withMap: any[]
   } {
     return {
       map: undefined,
@@ -114,6 +115,7 @@ export default defineNuxtComponent({
       attributionControl: null,
       languageControl: null,
       fullscreenControlObject: undefined,
+      withMap: [],
     }
   },
 
@@ -124,7 +126,17 @@ export default defineNuxtComponent({
     // @ts-ignore
     const map = new Map({
       container: 'map',
-      style: { version: 8, sources: {}, layers: [] },
+      style: this.style || {
+        version: 8,
+        sources: {},
+        layers: [
+          {
+            id: 'bg',
+            type: 'background',
+            paint: { 'background-color': '#f8f4f0' },
+          },
+        ],
+      },
       center: this.center,
       zoom: this.zoom,
       bounds: this.bounds,
@@ -236,6 +248,14 @@ export default defineNuxtComponent({
   },
 
   methods: {
+    doWithMap(lambda: () => void) {
+      if (this.map) {
+        lambda()
+      } else {
+        this.withMap.push(lambda)
+      }
+    },
+
     onMapInit(map: ITMap) {
       this.$emit('map-init', map)
 
@@ -257,6 +277,10 @@ export default defineNuxtComponent({
       new ResizeObserver((entries) => {
         this.map?.resize()
       }).observe(document.getElementById('map')!)
+
+      while (this.withMap.length > 0) {
+        this.withMap.pop()()
+      }
     },
 
     setStyle(mapStyle: MapStyleEnum) {
@@ -270,11 +294,11 @@ export default defineNuxtComponent({
           }
 
           this.style = style
-          if (this.map) {
+          this.doWithMap(() => {
             // Use no diff mode to avoid issue with added layers
-            this.map.setStyle(style, { diff: false })
+            this.map!.setStyle(style, { diff: false })
             this.emitStyleLoad()
-          }
+          })
         })
         .catch((e) => {
           // eslint-disable-next-line no-console
@@ -314,17 +338,21 @@ export default defineNuxtComponent({
     },
 
     addAttribution() {
-      if (this.map && !this.attributionControl) {
-        this.attributionControl = new AttributionControl()
-        this.map.addControl(this.attributionControl)
-      }
+      this.doWithMap(() => {
+        if (!this.attributionControl) {
+          this.attributionControl = new AttributionControl()
+          this.map!.addControl(this.attributionControl)
+        }
+      })
     },
 
     removeAttribution() {
-      if (this.map && this.attributionControl) {
-        this.map.removeControl(this.attributionControl)
-        this.attributionControl = null
-      }
+      this.doWithMap(() => {
+        if (this.attributionControl) {
+          this.map!.removeControl(this.attributionControl)
+          this.attributionControl = null
+        }
+      })
     },
 
     setLanguage(locale: string) {
