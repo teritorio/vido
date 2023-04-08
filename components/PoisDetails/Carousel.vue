@@ -13,7 +13,7 @@
           :src="image"
           media-size="66vw"
           :alt="$t('poiCard.image')"
-          class="h-100"
+          :img-attrs="{ class: 'h-100 tw-object-cover' }"
         />
       </v-carousel-item>
     </v-carousel>
