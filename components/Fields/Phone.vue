@@ -29,23 +29,14 @@ export default defineNuxtComponent({
     },
   },
 
-  data(): {
-    phone: boolean
-  } {
-    return {
-      phone: true,
-    }
-  },
-
   computed: {
     numberFormated(): string {
       return this.number.replaceAll(' ', ' ')
     },
-  },
 
-  mounted() {
-    // Do not use $device.phone directly in template. De-sync DROM from SSR.
-    this.phone = this.$device.phone
+    phone(): boolean {
+      return this.$device.value.phone
+    },
   },
 })
 </script>

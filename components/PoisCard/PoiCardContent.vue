@@ -74,7 +74,7 @@
       class="tw-flex tw-items-center tw-space-x-2 tw-justify-evenly tw-shrink-0 tw-bottom-0 tw-pt-2"
     >
       <a
-        v-if="device.phone && coordinatesHref"
+        v-if="device.value.phone && coordinatesHref"
         :href="coordinatesHref"
         class="tw-flex tw-flex-col tw-items-center tw-flex-1 tw-h-full tw-p-2 tw-space-y-2 tw-rounded-lg hover:tw-bg-zinc-100"
         :title="$t('poiCard.findRoute')"

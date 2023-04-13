@@ -280,7 +280,7 @@ export default defineNuxtComponent({
     showPhone(): boolean {
       return (
         this.context != PropertyTranslationsContextEnum.Card ||
-        this.$device.phone
+        this.$device.value.phone
       )
     },
 
