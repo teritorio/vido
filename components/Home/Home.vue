@@ -322,7 +322,7 @@ export default defineNuxtComponent({
 
     isBottomMenuOpened(): boolean {
       return (
-        (this.$device.smallScreen && this.isPoiCardVisible) ||
+        (this.$device.value.smallScreen && this.isPoiCardVisible) ||
         this.isMenuItemOpen
       )
     },
@@ -338,7 +338,7 @@ export default defineNuxtComponent({
     },
 
     fitBoundsPaddingOptions(): FitBoundsOptions['padding'] {
-      if (this.$device.smallScreen) {
+      if (this.$device.value.smallScreen) {
         return {
           top: 100,
           bottom: 50,
@@ -540,7 +540,7 @@ export default defineNuxtComponent({
         this.mode = Mode.EXPLORER
         this.goToSelectedFeature()
 
-        if (this.$device.smallScreen) {
+        if (this.$device.value.smallScreen) {
           this.showPoi = false
         }
       } else {

@@ -10,7 +10,7 @@
     <p class="tw-ml-2">
       {{
         $t(
-          device.smallScreen
+          device.value.smallScreen
             ? isModeFavorites
               ? 'headerMenu.backToMenuFavorites'
               : 'headerMenu.backToMenuExplorer'
