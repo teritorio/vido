@@ -15,14 +15,12 @@ import { mapWritableState } from 'pinia'
 import { ref, Ref } from 'vue'
 
 import {
-  AsyncData,
   defineNuxtComponent,
   useHead,
   useRequestHeaders,
   useRoute,
   useRuntimeConfig,
 } from '#app'
-import { useAsyncData } from '#imports'
 import Home from '~/components/Home/Home.vue'
 import { ContentEntry, getContents } from '~/lib/apiContent'
 import { MenuItem, getMenu, ApiMenuCategory } from '~/lib/apiMenu'
@@ -32,7 +30,7 @@ import {
   PropertyTranslations,
 } from '~/lib/apiPropertyTranslations'
 import { getSettings, headerFromSettings, Settings } from '~/lib/apiSettings'
-import { throwFetchError } from '~/lib/throwFetchError'
+import { getAsyncDataOrNull, getAsyncDataOrThrows } from '~/lib/getAsyncData'
 import { vidoConfig } from '~/plugins/vido-config'
 import { menuStore } from '~/stores/menu'
 import { siteStore } from '~/stores/site'
@@ -48,76 +46,77 @@ export default defineNuxtComponent({
     settings: Ref<Settings>
     contents: Ref<ContentEntry[]>
     propertyTranslations: Ref<PropertyTranslations>
-    menuItems: Ref<MenuItem[] | null>
+    menuItems: Ref<MenuItem[]>
     categoryIds: Ref<ApiMenuCategory['id'][] | null>
     initialPoi: Ref<ApiPoi | null>
     boundary_geojson: Ref<Polygon | MultiPolygon | undefined>
   }> {
     const params = useRoute().params
-    const { data: configRef } = await useAsyncData(() =>
-      Promise.resolve(
-        siteStore().config ||
-          vidoConfig(useRequestHeaders(), useRuntimeConfig())
-      )
+    const configRef: Ref<VidoConfig> = await getAsyncDataOrThrows(
+      'configRef',
+      () =>
+        Promise.resolve(
+          siteStore().config ||
+            vidoConfig(useRequestHeaders(), useRuntimeConfig())
+        )
     )
-    const config: VidoConfig = configRef.value!
+    const config: VidoConfig = configRef.value
 
-    const fetchSettings = useAsyncData(() =>
+    const fetchSettings = getAsyncDataOrThrows('fetchSettings', () =>
       siteStore().settings
         ? Promise.resolve(siteStore().settings as Settings)
         : getSettings(config.API_ENDPOINT, config.API_PROJECT, config.API_THEME)
     )
 
-    const fetchSettingsBoundary = fetchSettings.then(
-      async ({ data: settings }) => {
-        let boundary_geojson: Polygon | MultiPolygon | undefined
-        const boundary = useRoute().query.boundary
-        if (
-          boundary &&
-          typeof boundary === 'string' &&
-          settings.value!.polygons_extra
-        ) {
-          const boundaryObject = settings.value!.polygons_extra[boundary]
-          if (boundaryObject) {
-            if (typeof boundaryObject.data === 'string') {
-              const geojson = (await (
-                await fetch(boundaryObject.data)
-              ).json()) as GeoJSON
-              if (geojson.type === 'Feature') {
-                boundary_geojson = geojson.geometry as Polygon | MultiPolygon
-              } else if (
-                geojson.type === 'Polygon' ||
-                geojson.type === 'MultiPolygon'
-              ) {
-                boundary_geojson = geojson as Polygon | MultiPolygon
-              }
-            } else {
-              boundary_geojson = boundaryObject.data as Polygon
+    const fetchSettingsBoundary = fetchSettings.then(async (settings) => {
+      let boundary_geojson: Polygon | MultiPolygon | undefined
+      const boundary = useRoute().query.boundary
+      if (
+        boundary &&
+        typeof boundary === 'string' &&
+        settings.value.polygons_extra
+      ) {
+        const boundaryObject = settings.value.polygons_extra[boundary]
+        if (boundaryObject) {
+          if (typeof boundaryObject.data === 'string') {
+            const geojson = (await (
+              await fetch(boundaryObject.data)
+            ).json()) as GeoJSON
+            if (geojson.type === 'Feature') {
+              boundary_geojson = geojson.geometry as Polygon | MultiPolygon
+            } else if (
+              geojson.type === 'Polygon' ||
+              geojson.type === 'MultiPolygon'
+            ) {
+              boundary_geojson = geojson as Polygon | MultiPolygon
             }
+          } else {
+            boundary_geojson = boundaryObject.data as Polygon
           }
         }
-
-        return [settings, ref(boundary_geojson)]
       }
-    ) as unknown as [Ref<Settings>, Ref<Polygon | MultiPolygon | undefined>]
 
-    const fetchContents = useAsyncData(() =>
+      return [settings, ref(boundary_geojson)]
+    }) as unknown as [Ref<Settings>, Ref<Polygon | MultiPolygon | undefined>]
+
+    const fetchContents = getAsyncDataOrThrows('fetchContents', () =>
       siteStore().contents
         ? Promise.resolve(siteStore().contents as ContentEntry[])
         : getContents(config.API_ENDPOINT, config.API_PROJECT, config.API_THEME)
     )
 
-    const fetchPropertyTranslations = useAsyncData(() =>
-      siteStore().translations
-        ? Promise.resolve(siteStore().translations as PropertyTranslations)
-        : getPropertyTranslations(
-            config.API_ENDPOINT,
-            config.API_PROJECT,
-            config.API_THEME
-          )
-    )
+    const fetchPropertyTranslations: Promise<Ref<PropertyTranslations>> =
+      getAsyncDataOrThrows('fetchPropertyTranslations', () =>
+        siteStore().translations
+          ? Promise.resolve(siteStore().translations as PropertyTranslations)
+          : getPropertyTranslations(
+              config.API_ENDPOINT,
+              config.API_PROJECT,
+              config.API_THEME
+            )
+      )
 
-    const fetchMenuItems = useAsyncData(() =>
+    const fetchMenuItems = getAsyncDataOrThrows('fetchMenuItems', () =>
       menuStore().menuItems !== undefined
         ? Promise.resolve(Object.values(menuStore().menuItems!))
         : getMenu(config.API_ENDPOINT, config.API_PROJECT, config.API_THEME)
@@ -137,16 +136,17 @@ export default defineNuxtComponent({
       poiId = params.p1 as string
     }
 
-    const categoryIds = ref(
+    const categoryIds: Ref<ApiMenuCategory['id'][] | null> = ref(
       (categoryIdsJoin &&
         categoryIdsJoin.split(',').map((id) => parseInt(id))) ||
         null
     )
-    let fetchPoi: AsyncData<ApiPoi | null, Error | null> = useAsyncData(() =>
-      Promise.resolve(null)
+    let fetchPoi: Promise<Ref<ApiPoi | null>> = getAsyncDataOrNull(
+      'fetchPoiNull',
+      () => Promise.resolve(null)
     )
     if (poiId) {
-      fetchPoi = useAsyncData(() =>
+      fetchPoi = getAsyncDataOrThrows(`fetchPoi-${poiId}`, () =>
         getPoiById(
           config.API_ENDPOINT,
           config.API_PROJECT,
@@ -161,10 +161,10 @@ export default defineNuxtComponent({
 
     const [
       [settings, boundary_geojson],
-      { data: contents },
-      { data: propertyTranslations },
-      { data: menuItems },
-      { data: initialPoi },
+      contents,
+      propertyTranslations,
+      menuItems,
+      initialPoi,
     ] = await Promise.all([
       fetchSettingsBoundary,
       fetchContents,
@@ -172,28 +172,21 @@ export default defineNuxtComponent({
       fetchMenuItems,
       fetchPoi,
     ])
-    throwFetchError([
-      // fetchSettingsBoundary,
-      fetchContents,
-      fetchPropertyTranslations,
-      fetchMenuItems,
-      fetchPoi,
-    ])
 
     useHead(
-      headerFromSettings(settings.value!, {
-        title: settings.value!.themes[0]?.title.fr,
+      headerFromSettings(settings.value, {
+        title: settings.value.themes[0]?.title.fr,
       })
     )
 
     return {
       config,
-      settings: settings as Ref<Settings>,
-      contents: contents as Ref<ContentEntry[]>,
+      settings,
+      contents,
       propertyTranslations: propertyTranslations as Ref<PropertyTranslations>,
-      menuItems: menuItems as Ref<MenuItem[] | null>,
-      categoryIds: categoryIds as Ref<ApiMenuCategory['id'][] | null>,
-      initialPoi: initialPoi as Ref<ApiPoi | null>,
+      menuItems,
+      categoryIds,
+      initialPoi,
       boundary_geojson,
     }
   },

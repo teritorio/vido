@@ -19,7 +19,7 @@ import {
   useHead,
   defineNuxtComponent,
 } from '#app'
-import { definePageMeta, useAsyncData } from '#imports'
+import { definePageMeta } from '#imports'
 import PoisList from '~/components/PoisList/PoisList.vue'
 import { ContentEntry, getContents } from '~/lib/apiContent'
 import { MenuItem, getMenu } from '~/lib/apiMenu'
@@ -29,7 +29,7 @@ import {
   PropertyTranslations,
 } from '~/lib/apiPropertyTranslations'
 import { getSettings, headerFromSettings, Settings } from '~/lib/apiSettings'
-import { throwFetchError } from '~/lib/throwFetchError'
+import { getAsyncDataOrThrows } from '~/lib/getAsyncData'
 import { vidoConfig } from '~/plugins/vido-config'
 import { menuStore } from '~/stores/menu'
 import { siteStore } from '~/stores/site'
@@ -58,85 +58,76 @@ export default defineNuxtComponent({
     })
 
     const params = useRoute().params
-    const { data: configRef } = await useAsyncData(() =>
+    const configRef = await getAsyncDataOrThrows('configRef', () =>
       Promise.resolve(
         siteStore().config ||
           vidoConfig(useRequestHeaders(), useRuntimeConfig())
       )
     )
-    const config: VidoConfig = configRef.value!
+    const config: VidoConfig = configRef.value
 
-    const fetchSettings = useAsyncData(() =>
+    const fetchSettings = getAsyncDataOrThrows('fetchSettings', () =>
       siteStore().settings
         ? Promise.resolve(siteStore().settings as Settings)
         : getSettings(config.API_ENDPOINT, config.API_PROJECT, config.API_THEME)
     )
 
-    const fetchContents = useAsyncData(() =>
+    const fetchContents = getAsyncDataOrThrows('fetchContents', () =>
       siteStore().contents
         ? Promise.resolve(siteStore().contents as ContentEntry[])
         : getContents(config.API_ENDPOINT, config.API_PROJECT, config.API_THEME)
     )
 
-    const fetchPropertyTranslations = useAsyncData(() =>
-      siteStore().translations
-        ? Promise.resolve(siteStore().translations as PropertyTranslations)
-        : getPropertyTranslations(
-            config.API_ENDPOINT,
-            config.API_PROJECT,
-            config.API_THEME
-          )
-    )
+    const fetchPropertyTranslations: Promise<Ref<PropertyTranslations>> =
+      getAsyncDataOrThrows('fetchPropertyTranslations', () =>
+        siteStore().translations
+          ? Promise.resolve(siteStore().translations as PropertyTranslations)
+          : getPropertyTranslations(
+              config.API_ENDPOINT,
+              config.API_PROJECT,
+              config.API_THEME
+            )
+      )
 
-    const fetchMenuItems = useAsyncData(() =>
+    const fetchMenuItems = getAsyncDataOrThrows('fetchMenuItems', () =>
       menuStore().menuItems !== undefined
         ? Promise.resolve(Object.values(menuStore().menuItems!))
         : getMenu(config.API_ENDPOINT, config.API_PROJECT, config.API_THEME)
     )
 
-    const getPoiByCategoryIdPromise = useAsyncData(() =>
-      getPoiByCategoryId(
-        config.API_ENDPOINT,
-        config.API_PROJECT,
-        config.API_THEME,
-        params.id as string,
-        {
-          geometry_as: 'point',
-          short_description: true,
-        }
-      )
+    const fetchPoiByCategoryId = getAsyncDataOrThrows(
+      `fetchPoiByCategoryId-${params.id}`,
+      () =>
+        getPoiByCategoryId(
+          config.API_ENDPOINT,
+          config.API_PROJECT,
+          config.API_THEME,
+          params.id as string,
+          {
+            geometry_as: 'point',
+            short_description: true,
+          }
+        )
     )
-    let [
-      { data: settings },
-      { data: contents },
-      { data: propertyTranslations },
-      { data: menuItems },
-      { data: pois },
-    ] = await Promise.all([
-      fetchSettings,
-      fetchContents,
-      fetchPropertyTranslations,
-      fetchMenuItems,
-      getPoiByCategoryIdPromise,
-    ])
-    throwFetchError([
-      fetchSettings,
-      fetchContents,
-      fetchPropertyTranslations,
-      fetchMenuItems,
-      getPoiByCategoryIdPromise,
-    ])
+    let [settings, contents, propertyTranslations, menuItems, pois] =
+      await Promise.all([
+        fetchSettings,
+        fetchContents,
+        fetchPropertyTranslations,
+        fetchMenuItems,
+        fetchPoiByCategoryId,
+      ])
 
-    useHead(headerFromSettings(settings.value!))
+    useHead(headerFromSettings(settings.value))
 
     return {
       config,
-      settings: settings as Ref<Settings>,
-      contents: contents as Ref<ContentEntry[]>,
-      propertyTranslations: propertyTranslations as Ref<PropertyTranslations>,
+      settings,
+      contents,
+      propertyTranslations,
       id: params.id as string,
-      menuItems: menuItems as Ref<MenuItem[]>,
-      pois: pois as Ref<ApiPois>,
+      menuItems,
+      pois,
     }
   },
 
