@@ -22,7 +22,7 @@ import {
   useRuntimeConfig,
   showError,
 } from '#app'
-import { definePageMeta, useAsyncData } from '#imports'
+import { definePageMeta } from '#imports'
 import Index from '~/components/PoisDetails/PoiDetails.vue'
 import { ContentEntry, getContents } from '~/lib/apiContent'
 import { ApiPoiDeps, getPoiDepsById } from '~/lib/apiPoiDeps'
@@ -32,7 +32,7 @@ import {
   PropertyTranslations,
 } from '~/lib/apiPropertyTranslations'
 import { getSettings, headerFromSettings, Settings } from '~/lib/apiSettings'
-import { throwFetchError } from '~/lib/throwFetchError'
+import { getAsyncDataOrThrows } from '~/lib/getAsyncData'
 import { vidoConfig } from '~/plugins/vido-config'
 import { siteStore } from '~/stores/site'
 import { VidoConfig } from '~/utils/types-config'
@@ -59,79 +59,73 @@ export default defineNuxtComponent({
     })
 
     const params = useRoute().params
-    const { data: configRef } = await useAsyncData(() =>
+    const configRef = await getAsyncDataOrThrows('configRef', () =>
       Promise.resolve(
         siteStore().config ||
           vidoConfig(useRequestHeaders(), useRuntimeConfig())
       )
     )
-    const config: VidoConfig = configRef.value!
+    const config: VidoConfig = configRef.value
 
-    const fetchSettings = useAsyncData(() =>
+    const fetchSettings = getAsyncDataOrThrows('fetchSettings', () =>
       siteStore().settings
         ? Promise.resolve(siteStore().settings as Settings)
         : getSettings(config.API_ENDPOINT, config.API_PROJECT, config.API_THEME)
     )
 
-    const fetchContents = useAsyncData(() =>
+    const fetchContents = getAsyncDataOrThrows('fetchContents', () =>
       siteStore().contents
         ? Promise.resolve(siteStore().contents as ContentEntry[])
         : getContents(config.API_ENDPOINT, config.API_PROJECT, config.API_THEME)
     )
 
-    const fetchPropertyTranslations = useAsyncData(() =>
-      siteStore().translations
-        ? Promise.resolve(siteStore().translations as PropertyTranslations)
-        : getPropertyTranslations(
-            config.API_ENDPOINT,
-            config.API_PROJECT,
-            config.API_THEME
-          )
+    const fetchPropertyTranslations: Promise<Ref<PropertyTranslations>> =
+      getAsyncDataOrThrows('fetchPropertyTranslations', () =>
+        siteStore().translations
+          ? Promise.resolve(siteStore().translations as PropertyTranslations)
+          : getPropertyTranslations(
+              config.API_ENDPOINT,
+              config.API_PROJECT,
+              config.API_THEME
+            )
+      )
+
+    const fetchPoiPoiDeps = getAsyncDataOrThrows(
+      `fetchPoiPoiDeps-${params.id}`,
+      () => {
+        return getPoiDepsById(
+          config.API_ENDPOINT,
+          config.API_PROJECT,
+          config.API_THEME,
+          params.id as string,
+          {
+            short_description: false,
+          }
+        ).then((poiDeps) => {
+          let poi: ApiPoi | undefined = undefined
+          if (poiDeps) {
+            const g = groupBy(
+              poiDeps.features,
+              (feature) =>
+                // @ts-ignore
+                feature.properties.metadata?.id == params.id
+            )
+            poi = g['true'] && (g['true'][0] as ApiPoi)
+            poiDeps.features = g['false'] || []
+          }
+
+          return { poi: ref(poi), poiDeps: ref(poiDeps) }
+        })
+      }
     )
 
-    const fetchPoiPoiDeps = useAsyncData(() => {
-      return getPoiDepsById(
-        config.API_ENDPOINT,
-        config.API_PROJECT,
-        config.API_THEME,
-        params.id as string,
-        {
-          short_description: false,
-        }
-      ).then((poiDeps) => {
-        let poi: ApiPoi | undefined = undefined
-        if (poiDeps) {
-          const g = groupBy(
-            poiDeps.features,
-            (feature) =>
-              // @ts-ignore
-              feature.properties.metadata?.id == params.id
-          )
-          poi = g['true'] && (g['true'][0] as ApiPoi)
-          poiDeps.features = g['false'] || []
-        }
-
-        return { poi: ref(poi), poiDeps: ref(poiDeps) }
-      })
-    })
-
-    const [
-      { data: settings },
-      { data: contents },
-      { data: propertyTranslations },
-      { data: poiPoiDeps },
-    ] = await Promise.all([
-      fetchSettings,
-      fetchContents,
-      fetchPropertyTranslations,
-      fetchPoiPoiDeps,
-    ])
-    throwFetchError([
-      fetchSettings,
-      fetchContents,
-      fetchPropertyTranslations,
-      fetchPoiPoiDeps,
-    ])
+    const [settings, contents, propertyTranslations, poiPoiDeps] =
+      await Promise.all([
+        fetchSettings,
+        fetchContents,
+        fetchPropertyTranslations,
+        fetchPoiPoiDeps,
+      ])
 
     if (!poiPoiDeps.value?.poi || poiPoiDeps.value?.poi.value) {
       showError({
@@ -141,7 +135,7 @@ export default defineNuxtComponent({
     }
 
     useHead(
-      headerFromSettings(settings.value!, {
+      headerFromSettings(settings.value, {
         title: poiPoiDeps.value?.poi.value?.properties.name,
         description: {
           fr: poiPoiDeps.value?.poi.value?.properties.description,
@@ -151,11 +145,11 @@ export default defineNuxtComponent({
 
     return {
       config,
-      settings: settings as Ref<Settings>,
-      contents: contents as Ref<ContentEntry[]>,
-      propertyTranslations: propertyTranslations as Ref<PropertyTranslations>,
-      poi: poiPoiDeps.value!.poi as Ref<ApiPoi>,
-      poiDeps: poiPoiDeps.value!.poiDeps,
+      settings,
+      contents,
+      propertyTranslations,
+      poi: poiPoiDeps.value.poi as Ref<ApiPoi>,
+      poiDeps: poiPoiDeps.value.poiDeps,
     }
   },
 
