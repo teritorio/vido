@@ -19,11 +19,11 @@ import {
   useRuntimeConfig,
   defineNuxtComponent,
 } from '#app'
-import { definePageMeta, useAsyncData } from '#imports'
+import { definePageMeta } from '#imports'
 import MapPois from '~/components/Map/MapPois.vue'
 import { getPois, ApiPois, ApiPoiId } from '~/lib/apiPois'
 import { getSettings, headerFromSettings, Settings } from '~/lib/apiSettings'
-import { throwFetchError } from '~/lib/throwFetchError'
+import { getAsyncDataOrThrows } from '~/lib/getAsyncData'
 import { vidoConfig } from '~/plugins/vido-config'
 import { siteStore } from '~/stores/site'
 import { VidoConfig } from '~/utils/types-config'
@@ -48,25 +48,25 @@ export default defineNuxtComponent({
     })
 
     const params = useRoute().params
-    const { data: configRef } = await useAsyncData(() =>
+    const configRef = await getAsyncDataOrThrows('configRef', () =>
       Promise.resolve(
         siteStore().config ||
           vidoConfig(useRequestHeaders(), useRuntimeConfig())
       )
     )
-    const config: VidoConfig = configRef.value!
+    const config: VidoConfig = configRef.value
 
-    const fetchSettings = useAsyncData(() =>
+    const fetchSettings = getAsyncDataOrThrows('fetchSettings', () =>
       siteStore().settings
         ? Promise.resolve(siteStore().settings as Settings)
         : getSettings(config.API_ENDPOINT, config.API_PROJECT, config.API_THEME)
     )
 
-    let settings: Ref<Settings | null>
+    let settings: Ref<Settings>
     let pois: Ref<ApiPois | null>
     if (params.ids) {
       const ids = (params.ids as string).split(',')
-      const getPoiPromise = useAsyncData(() =>
+      const getPoiPromise = getAsyncDataOrThrows('getPoiPromise', () =>
         getPois(
           config.API_ENDPOINT,
           config.API_PROJECT,
@@ -77,27 +77,25 @@ export default defineNuxtComponent({
           }
         )
       )
-      const [{ data: settingsF }, { data: poisF }] = await Promise.all([
+      const [settingsF, poisF] = await Promise.all([
         fetchSettings,
         getPoiPromise,
       ])
-      throwFetchError([fetchSettings, getPoiPromise])
 
       settings = settingsF
       pois = poisF
     } else {
-      const [{ data: settingsF }] = await Promise.all([fetchSettings])
-      throwFetchError([fetchSettings])
+      const [settingsF] = await Promise.all([fetchSettings])
 
       settings = settingsF
       pois = ref(null)
     }
-    useHead(headerFromSettings(settings.value!))
+    useHead(headerFromSettings(settings.value))
 
     return {
       config,
-      settings: settings as Ref<Settings>,
-      pois: pois as Ref<ApiPois | null>,
+      settings,
+      pois,
     }
   },
 
