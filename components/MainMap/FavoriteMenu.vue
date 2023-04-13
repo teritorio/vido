@@ -129,7 +129,7 @@ export default defineNuxtComponent({
   computed: {
     ...mapState(mapStore, ['isModeFavorites']),
     smallScreen(): boolean {
-      return this.$device.smallScreen
+      return this.$device.value.smallScreen
     },
   },
   methods: {

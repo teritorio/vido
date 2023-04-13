@@ -7,9 +7,9 @@
       :fit-bounds-padding-options="fitBoundsPaddingOptions"
       :extra-attributions="extraAttributions"
       :map-style="selectedBackground"
-      :rotate="!screen.touch"
+      :rotate="!device.touch"
       :show-attribution="!small"
-      :off-map-attribution="screen.smallScreen && !small"
+      :off-map-attribution="device.smallScreen && !small"
       :hide-control="small"
       :style-icon-filter="styleIconFilter"
       :cooperative-gestures="cooperativeGestures"
@@ -190,8 +190,8 @@ export default defineNuxtComponent({
     ...mapState(menuStore, ['isLoadingFeatures']),
     ...mapWritableState(mapStore, ['center']),
 
-    screen() {
-      return this.$device
+    device() {
+      return this.$device.value
     },
 
     availableStyles(): MapStyleEnum[] {
