@@ -126,7 +126,7 @@ export default defineNuxtComponent({
     // @ts-ignore
     const map = new Map({
       container: 'map',
-      style: this.style || {
+      style: (this.style as StyleSpecification) || {
         version: 8,
         sources: {},
         layers: [
@@ -311,7 +311,7 @@ export default defineNuxtComponent({
         const styleEvent = (e: MapDataEvent) => {
           if (this.map && e.dataType === 'style' && this.style) {
             this.map.off('styledata', styleEvent)
-            this.$emit('map-style-load', this.style)
+            this.$emit('map-style-load', this.style as StyleSpecification)
           }
         }
         this.map.on('styledata', styleEvent)

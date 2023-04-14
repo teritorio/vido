@@ -46,6 +46,7 @@ import { Polygon, MultiPolygon } from 'geojson'
 import throttle from 'lodash.throttle'
 import type {
   FitBoundsOptions,
+  LayerSpecification,
   LngLatBoundsLike,
   LngLatLike,
   MapDataEvent,
@@ -268,7 +269,11 @@ export default defineNuxtComponent({
       // Add individual markers
       if (this.poiLayerTemplate)
         this.map.addLayer(
-          markerLayerTextFactory(this.poiLayerTemplate, POI_LAYER, POI_SOURCE)
+          markerLayerTextFactory(
+            this.poiLayerTemplate as LayerSpecification,
+            POI_LAYER,
+            POI_SOURCE
+          )
         )
     },
 
