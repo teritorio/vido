@@ -14,13 +14,7 @@ import { Polygon, MultiPolygon, GeoJSON } from 'geojson'
 import { mapWritableState } from 'pinia'
 import { ref, Ref } from 'vue'
 
-import {
-  defineNuxtComponent,
-  useHead,
-  useRequestHeaders,
-  useRoute,
-  useRuntimeConfig,
-} from '#app'
+import { defineNuxtComponent, useHead, useRequestHeaders, useRoute } from '#app'
 import Home from '~/components/Home/Home.vue'
 import { ContentEntry, getContents } from '~/lib/apiContent'
 import { MenuItem, getMenu, ApiMenuCategory } from '~/lib/apiMenu'
@@ -54,18 +48,12 @@ export default defineNuxtComponent({
     const params = useRoute().params
     const configRef: Ref<VidoConfig> = await getAsyncDataOrThrows(
       'configRef',
-      () =>
-        Promise.resolve(
-          siteStore().config ||
-            vidoConfig(useRequestHeaders(), useRuntimeConfig())
-        )
+      () => Promise.resolve(vidoConfig(useRequestHeaders()))
     )
     const config: VidoConfig = configRef.value
 
     const fetchSettings = getAsyncDataOrThrows('fetchSettings', () =>
-      siteStore().settings
-        ? Promise.resolve(siteStore().settings as Settings)
-        : getSettings(config.API_ENDPOINT, config.API_PROJECT, config.API_THEME)
+      getSettings(config.API_ENDPOINT, config.API_PROJECT, config.API_THEME)
     )
 
     const fetchSettingsBoundary = fetchSettings.then(async (settings) => {
@@ -100,20 +88,16 @@ export default defineNuxtComponent({
     }) as unknown as [Ref<Settings>, Ref<Polygon | MultiPolygon | undefined>]
 
     const fetchContents = getAsyncDataOrThrows('fetchContents', () =>
-      siteStore().contents
-        ? Promise.resolve(siteStore().contents as ContentEntry[])
-        : getContents(config.API_ENDPOINT, config.API_PROJECT, config.API_THEME)
+      getContents(config.API_ENDPOINT, config.API_PROJECT, config.API_THEME)
     )
 
     const fetchPropertyTranslations: Promise<Ref<PropertyTranslations>> =
       getAsyncDataOrThrows('fetchPropertyTranslations', () =>
-        siteStore().translations
-          ? Promise.resolve(siteStore().translations as PropertyTranslations)
-          : getPropertyTranslations(
-              config.API_ENDPOINT,
-              config.API_PROJECT,
-              config.API_THEME
-            )
+        getPropertyTranslations(
+          config.API_ENDPOINT,
+          config.API_PROJECT,
+          config.API_THEME
+        )
       )
 
     const fetchMenuItems = getAsyncDataOrThrows('fetchMenuItems', () =>
@@ -194,22 +178,13 @@ export default defineNuxtComponent({
   computed: {
     ...mapWritableState(siteStore, {
       locale: 'locale',
-      globalConfig: 'config',
-      globalSettings: 'settings',
-      globalContents: 'contents',
-      globalTranslations: 'translations',
     }),
   },
 
   created() {
-    this.globalConfig = this.config
     if (this.menuItems) {
       menuStore().fetchConfig(this.menuItems)
     }
-    this.globalSettings = this.settings
-    this.globalContents = this.contents
-    this.globalTranslations = this.propertyTranslations
-
     this.$settings.set(this.settings)
     this.$propertyTranslations.set(this.propertyTranslations)
   },

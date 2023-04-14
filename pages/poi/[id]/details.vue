@@ -19,7 +19,6 @@ import {
   useHead,
   useRequestHeaders,
   useRoute,
-  useRuntimeConfig,
   showError,
 } from '#app'
 import { definePageMeta } from '#imports'
@@ -60,34 +59,25 @@ export default defineNuxtComponent({
 
     const params = useRoute().params
     const configRef = await getAsyncDataOrThrows('configRef', () =>
-      Promise.resolve(
-        siteStore().config ||
-          vidoConfig(useRequestHeaders(), useRuntimeConfig())
-      )
+      Promise.resolve(vidoConfig(useRequestHeaders()))
     )
     const config: VidoConfig = configRef.value
 
     const fetchSettings = getAsyncDataOrThrows('fetchSettings', () =>
-      siteStore().settings
-        ? Promise.resolve(siteStore().settings as Settings)
-        : getSettings(config.API_ENDPOINT, config.API_PROJECT, config.API_THEME)
+      getSettings(config.API_ENDPOINT, config.API_PROJECT, config.API_THEME)
     )
 
     const fetchContents = getAsyncDataOrThrows('fetchContents', () =>
-      siteStore().contents
-        ? Promise.resolve(siteStore().contents as ContentEntry[])
-        : getContents(config.API_ENDPOINT, config.API_PROJECT, config.API_THEME)
+      getContents(config.API_ENDPOINT, config.API_PROJECT, config.API_THEME)
     )
 
     const fetchPropertyTranslations: Promise<Ref<PropertyTranslations>> =
       getAsyncDataOrThrows('fetchPropertyTranslations', () =>
-        siteStore().translations
-          ? Promise.resolve(siteStore().translations as PropertyTranslations)
-          : getPropertyTranslations(
-              config.API_ENDPOINT,
-              config.API_PROJECT,
-              config.API_THEME
-            )
+        getPropertyTranslations(
+          config.API_ENDPOINT,
+          config.API_PROJECT,
+          config.API_THEME
+        )
       )
 
     const fetchPoiPoiDeps = getAsyncDataOrThrows(
@@ -156,19 +146,10 @@ export default defineNuxtComponent({
   computed: {
     ...mapWritableState(siteStore, {
       locale: 'locale',
-      globalConfig: 'config',
-      globalSettings: 'settings',
-      globalContents: 'contents',
-      globalTranslations: 'translations',
     }),
   },
 
   created() {
-    this.globalConfig = this.config
-    this.globalSettings = this.settings
-    this.globalContents = this.contents
-    this.globalTranslations = this.propertyTranslations
-
     this.$settings.set(this.settings)
     this.$propertyTranslations.set(this.propertyTranslations)
   },
