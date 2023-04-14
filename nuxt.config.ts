@@ -12,7 +12,6 @@ export default defineNuxtConfig({
   },
 
   runtimeConfig: {
-    vidos,
     public: {
       // @ts-ignore
       vidos: vidos.__publicRuntimeConfig__ ? vidos : undefined,

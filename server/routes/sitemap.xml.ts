@@ -23,7 +23,7 @@ async function manifest(
     | string
     | undefined
   if (hostname) {
-    const vido: VidoConfig = vidoConfigResolve(hostname, vidos)
+    const vido: VidoConfig = vidoConfigResolve(hostname, vidos())
 
     const menu = getMenu(
       vido.API_ENDPOINT,
