@@ -1,6 +1,7 @@
 import '@teritorio/font-teritorio/teritorio/teritorio.css'
 import { defineSetupVue3 } from '@histoire/plugin-vue'
 import get from 'lodash.get'
+import { ref } from 'vue'
 
 import en from '~/locales/en.js'
 import vuetify from '~/plugins/vuetify'
@@ -17,11 +18,11 @@ export const setupVue3 = defineSetupVue3(({ app, story, variant }) => {
     p: (field, context) => field,
     pv: (field, property, context) => property,
   }
-  app.config.globalProperties.$device = {
+  app.config.globalProperties.$device = ref({
     smallScreen: false,
     touch: true,
     phone: true,
-  }
+  })
 
   // Plugins
   vuetify({ vueApp: app })
