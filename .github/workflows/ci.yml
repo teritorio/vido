@@ -72,7 +72,7 @@ jobs:
       - name: Run Cypress Tests 🧪
         uses: cypress-io/github-action@v5
         env:
-          CONFIG: vidos-config-cypress.json
+          CONFIG: ../vidos-config-cypress.json
           CYPRESS: true
         with:
           install-command: yarn --silent
