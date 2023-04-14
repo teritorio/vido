@@ -114,7 +114,6 @@ export default defineNuxtComponent({
       this.$tracking({ type: 'favorites_event', event: 'open_share' })
       this.link = link
       this.modal = true
-      console.error('open', this)
 
       const scrollWidth = window.innerWidth - document.body.clientWidth
       document.body.style.marginRight = `${scrollWidth}px`
