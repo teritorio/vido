@@ -148,7 +148,7 @@ export default defineNuxtConfig({
       'vuetify',
       'date-fns',
       /lodash.*/,
-      'maplibre-gl',
+      ...(process.dev ? [] : ['maplibre-gl']), // What the hell, maplibre-gl 2.x
     ],
   },
 
