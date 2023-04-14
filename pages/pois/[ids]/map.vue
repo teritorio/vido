@@ -12,13 +12,7 @@
 import { mapWritableState } from 'pinia'
 import { ref, Ref } from 'vue'
 
-import {
-  useHead,
-  useRequestHeaders,
-  useRoute,
-  useRuntimeConfig,
-  defineNuxtComponent,
-} from '#app'
+import { useHead, useRequestHeaders, useRoute, defineNuxtComponent } from '#app'
 import { definePageMeta } from '#imports'
 import MapPois from '~/components/Map/MapPois.vue'
 import { getPois, ApiPois, ApiPoiId } from '~/lib/apiPois'
@@ -49,17 +43,12 @@ export default defineNuxtComponent({
 
     const params = useRoute().params
     const configRef = await getAsyncDataOrThrows('configRef', () =>
-      Promise.resolve(
-        siteStore().config ||
-          vidoConfig(useRequestHeaders(), useRuntimeConfig())
-      )
+      Promise.resolve(vidoConfig(useRequestHeaders()))
     )
     const config: VidoConfig = configRef.value
 
     const fetchSettings = getAsyncDataOrThrows('fetchSettings', () =>
-      siteStore().settings
-        ? Promise.resolve(siteStore().settings as Settings)
-        : getSettings(config.API_ENDPOINT, config.API_PROJECT, config.API_THEME)
+      getSettings(config.API_ENDPOINT, config.API_PROJECT, config.API_THEME)
     )
 
     let settings: Ref<Settings>
@@ -102,7 +91,6 @@ export default defineNuxtComponent({
   computed: {
     ...mapWritableState(siteStore, {
       locale: 'locale',
-      globalConfig: 'config',
     }),
 
     ids(): ApiPoiId[] {
@@ -114,8 +102,6 @@ export default defineNuxtComponent({
   },
 
   created() {
-    this.globalConfig = this.config
-
     this.$settings.set(this.settings)
   },
 
