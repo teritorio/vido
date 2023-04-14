@@ -2,6 +2,7 @@ import { NuxtRuntimeConfig } from '@nuxt/types/config/runtime'
 
 import { useRequestHeaders } from '#app'
 import { defineNuxtPlugin } from '#app/nuxt'
+import { vidos } from '~/lib/config'
 import { VidoConfig, VidosConfig } from '~/utils/types-config'
 
 export function vidoConfigResolve(
@@ -14,8 +15,7 @@ export function vidoConfigResolve(
 }
 
 export function vidoConfig(
-  headers: Record<string, string | undefined>,
-  privateRuntimeConfig: NuxtRuntimeConfig
+  headers: Record<string, string | undefined>
 ): VidoConfig {
   let host: string
   if (process.server) {
@@ -32,7 +32,7 @@ export function vidoConfig(
   }
   host = host?.split(':')[0]
 
-  const vidoHostConfig = privateRuntimeConfig.vidos as VidosConfig
+  const vidoHostConfig = vidos()
   if (!(host in vidoHostConfig) && !('' in vidoHostConfig)) {
     throw new Error(`Not configured host "${host}"`)
   }
@@ -47,8 +47,7 @@ export default defineNuxtPlugin((nuxtApp) => {
       vidoConfigSet: (c: VidoConfig): void => {
         config = c
       },
-      vidoConfig: (): VidoConfig =>
-        config || vidoConfig(useRequestHeaders(), nuxtApp.$config),
+      vidoConfig: (): VidoConfig => config || vidoConfig(useRequestHeaders()),
     },
   }
 })
