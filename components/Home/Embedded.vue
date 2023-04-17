@@ -1,17 +1,13 @@
 <template>
   <div
-    :class="[
-      'flex',
-      'flex-col-reverse h-screen',
-      'md:flex-row md:h-auto md:w-screen',
-    ]"
+    :class="['flex h-screen', 'flex-col-reverse', 'md:flex-row md:w-screen']"
   >
     <div
       v-if="selectedFeature"
       :class="[
-        'p-4 bg-white z-20',
-        'absolute w-screen h-screen',
-        'md:relative md:h-full md:w-1/3 md:max-w-md',
+        'h-screen p-4 bg-white z-20',
+        'absolute w-screen',
+        'md:relative md:w-1/3 md:max-w-md overflow-scroll',
       ]"
     >
       <div class="grid justify-items-end pb-4">
