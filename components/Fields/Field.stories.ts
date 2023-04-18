@@ -86,7 +86,7 @@ const description =
 
 export const Description = bind(Field, {
   ...defaultProps,
-  field: { field: 'description' },
+  field: { field: 'short_description' },
   properties: {
     description,
   },
@@ -94,7 +94,7 @@ export const Description = bind(Field, {
 
 export const DescriptionDetails = bind(Field, {
   ...defaultProps,
-  field: { field: 'description' },
+  field: { field: 'short_description' },
   properties: {
     description,
   },

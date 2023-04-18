@@ -46,6 +46,30 @@
     >
   </Coordinates>
 
+  <div
+    v-else-if="field.field == 'short_description' && shortDescription"
+    class="inline"
+  >
+    <FieldsHeader
+      v-if="field.label"
+      :recursion-stack="undefined"
+      :class="`field_header_level_${recursionStack.length}`"
+      >{{ fieldTranslateK(field.field) }}</FieldsHeader
+    >
+    {{ shortDescription.substring(0, textLimit) }}
+    <template v-if="shortDescription.length > textLimit">…</template>
+    <a
+      v-if="Boolean(details) && shortDescription.length > textLimit"
+      class="underline"
+      :href="details"
+      rel="noopener noreferrer"
+      target="_blank"
+      @click.stop="$emit('click-details')"
+    >
+      {{ $tc('poiCard.seeDetail') }}
+    </a>
+  </div>
+
   <div v-else-if="properties[field.field]">
     <FieldsHeader
       v-if="field.label"
@@ -54,28 +78,11 @@
       >{{ fieldTranslateK(field.field) }}</FieldsHeader
     >
     <div :class="`inline field_content_level_${recursionStack.length}`">
-      <div v-if="field.field == 'description'" class="inline">
-        <template
-          v-if="
-            Boolean(details) &&
-            properties &&
-            properties.description &&
-            properties.description.length > textLimit
-          "
-        >
-          {{ properties.description.substring(0, textLimit) + '...' }}
-          <a
-            class="underline"
-            :href="details"
-            rel="noopener noreferrer"
-            target="_blank"
-            @click.stop="$emit('click-details')"
-          >
-            {{ $tc('poiCard.seeDetail') }}
-          </a>
-        </template>
-        <div v-else class="prose" v-html="properties.description" />
-      </div>
+      <div
+        v-if="field.field == 'description'"
+        class="prose"
+        v-html="properties.description"
+      />
 
       <Phone
         v-for="phone in properties[field.field]"
@@ -261,6 +268,10 @@ export default Vue.extend({
         this.context != PropertyTranslationsContextEnum.Card ||
         this.$screen.phone
       )
+    },
+
+    shortDescription(): string | undefined {
+      return this.properties?.description?.replace(/(<([^>]+)>)/gi, '')
     },
   },
 

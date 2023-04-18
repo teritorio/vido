@@ -119,7 +119,10 @@ export default Vue.extend({
           config.API_ENDPOINT,
           config.API_PROJECT,
           config.API_THEME,
-          poiId!
+          poiId!,
+          {
+            short_description: false,
+          }
         )
       ).catch(() => {
         return undefined

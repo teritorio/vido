@@ -26,7 +26,11 @@ const description =
 
 export const Many = bind(Fields, {
   ...defaultProps,
-  fields: [{ field: 'phone' }, { field: 'route' }, { field: 'description' }],
+  fields: [
+    { field: 'phone' },
+    { field: 'route' },
+    { field: 'short_description' },
+  ],
   properties: {
     phone: ['+33676544'],
     mobile: ['+339750987766'],

@@ -84,7 +84,7 @@ export function apiRouteWaypointToApiPoi(
       editorial: {
         popup_fields: [
           {
-            field: 'description',
+            field: 'short_description',
           },
           {
             field: 'coordinates',
