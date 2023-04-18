@@ -170,7 +170,10 @@ export const menuStore = defineStore('menu', {
                   apiEndpoint,
                   apiProject,
                   apiTheme,
-                  categoryId
+                  categoryId,
+                  {
+                    short_description: false,
+                  }
                 )
               )
           )

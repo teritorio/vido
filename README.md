@@ -115,8 +115,9 @@ Popup and details special fields support:
 * `addr:*`: combined all address fields.
 * `route:*`: all routes activity types and fields.
 * `start_end_date`: combined `start_date` and `end_date` fields.
+* `short_description`
 
-Spetial formatting support:
+Special formatting support:
 * `opening_hours`
 * `phone` and `mobile`
 
