@@ -100,6 +100,14 @@ const props = {
   },
   Description: {
     ...defaultProps,
+    field: { field: 'description' },
+    properties: {
+      metadata: { id: 0 },
+      description,
+    },
+  },
+  DescriptionShort: {
+    ...defaultProps,
     field: { field: 'short_description' },
     properties: {
       metadata: { id: 0 },
