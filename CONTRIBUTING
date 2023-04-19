@@ -1,0 +1,18 @@
+# Contributing to the Code
+- Follow the existing code style when making changes or adding new code.
+- Add code typing, more is better than less.
+- Indent with 2 spaces, no tab, and use Unix line endings.
+- If modifying the code requires a hack, avoid making the change.
+
+## Vue3 and Nuxt3
+- Use the option API when possible.
+- Avoid using the store in low-level components to make them easier to manipulate and test.
+
+# Testing
+- Include tests with any changes made.
+- Add Histoire stories for new components or when modifying existing ones.
+- Maintain and add Cypress tests for new features.
+
+# Contributing on GitHub
+- Split changes into coherent commits, ensuring that the commit comments and messages remain readable for years.
+- Only include one fix or feature per PR. If the feature is large, split it into multiple PRs.
