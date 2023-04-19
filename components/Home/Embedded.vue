@@ -1,6 +1,10 @@
 <template>
   <div
-    :class="['tw-flex tw-h-screen', 'tw-flex-col-reverse', 'md:tw-flex-row md:tw-w-screen']"
+    :class="[
+      'tw-flex tw-h-screen',
+      'tw-flex-col-reverse',
+      'md:tw-flex-row md:tw-w-screen',
+    ]"
   >
     <div
       v-if="selectedFeature"
