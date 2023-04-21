@@ -121,7 +121,7 @@ export default defineNuxtComponent({
       () => Promise.resolve(null)
     )
     if (poiId) {
-      fetchPoi = getAsyncDataOrThrows(`fetchPoi-${poiId}`, () =>
+      fetchPoi = getAsyncDataOrNull(`fetchPoi-${poiId}`, () =>
         getPoiById(
           config.API_ENDPOINT,
           config.API_PROJECT,
