@@ -1,6 +1,5 @@
 <template>
   <Home
-    v-if="settings"
     :settings="settings"
     :nav-menu-entries="contents"
     :initial-category-ids="categoryIds || undefined"
@@ -174,13 +173,11 @@ export default defineNuxtComponent({
       boundary_geojson,
     }
   },
-
   computed: {
     ...mapWritableState(siteStore, {
       locale: 'locale',
     }),
   },
-
   created() {
     if (this.menuItems) {
       menuStore().fetchConfig(this.menuItems)
