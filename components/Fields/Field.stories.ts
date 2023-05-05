@@ -133,6 +133,14 @@ export const Facebook = bind(Field, {
   },
 })
 
+export const Instagram = bind(Field, {
+  ...defaultProps,
+  field: { field: 'instagram' },
+  properties: {
+    instagram: 'https://www.instagram.com/',
+  },
+})
+
 export const RouteGpxTrace = bind(Field, {
   ...defaultProps,
   field: { field: 'route:gpx_trace' },
