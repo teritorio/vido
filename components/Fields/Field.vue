@@ -129,6 +129,11 @@
         :url="properties[field.field]"
       />
 
+      <Instagram
+        v-else-if="field.field === 'instagram'"
+        :url="properties[field.field]"
+      />
+
       <a
         v-else-if="
           field.field == 'route:gpx_trace' || field.field == 'route:pdf'
@@ -165,6 +170,7 @@ import Coordinates, {
 } from '~/components/Fields/Coordinates.vue'
 import DateRange, { isDateRangeEmpty } from '~/components/Fields/DateRange.vue'
 import Facebook from '~/components/Fields/Facebook.vue'
+import Instagram from '~/components/Fields/Instagram.vue'
 import OpeningHours, {
   isOpeningHoursSupportedOsmTags,
 } from '~/components/Fields/OpeningHours.vue'
@@ -205,6 +211,7 @@ export default Vue.extend({
     Coordinates,
     Phone,
     Facebook,
+    Instagram,
     ExternalLink,
   },
 
