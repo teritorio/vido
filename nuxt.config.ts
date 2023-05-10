@@ -19,14 +19,14 @@ export default defineNuxtConfig({
     },
   },
 
-  pwa: {
-    icon: false,
-    meta: false,
-    manifest: false,
-    workbox: {
-      enabled: true,
-    },
-  },
+  // pwa: {
+  //   icon: false,
+  //   meta: false,
+  //   manifest: false,
+  //   workbox: {
+  //     enabled: true,
+  //   },
+  // },
   // Global page headers (https://go.nuxtjs.dev/config-head)
   head: {
     htmlAttrs: {
@@ -85,7 +85,7 @@ export default defineNuxtConfig({
     '@nuxt/image-edge',
     ...(process.env.SENTRY_DSN ? ['@nuxtjs/sentry'] : []),
     '@pinia/nuxt',
-    '@kevinmarrec/nuxt-pwa',
+    // '@kevinmarrec/nuxt-pwa',
     async (options, nuxt) => {
       nuxt.hooks.hook('vite:extendConfig', (config) =>
         // @ts-ignore
@@ -148,13 +148,14 @@ export default defineNuxtConfig({
       'vuetify',
       'date-fns',
       /lodash.*/,
-      ...(process.dev ? [] : ['maplibre-gl']), // What the hell, maplibre-gl 2.x
+      // ...(process.dev ? [] : ['maplibre-gl']), // What the hell, maplibre-gl 2.x
+      // 'maplibre-gl'
     ],
   },
 
-  typescript: {
-    typeCheck: !!process.env.TYPESCRIPT_CHECK,
-  },
+  // typescript: {
+  //   typeCheck: !!process.env.TYPESCRIPT_CHECK,
+  // },
 
   postcss: {
     plugins: {
