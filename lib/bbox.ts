@@ -1,5 +1,5 @@
 import GeoJSON, { Geometry } from 'geojson'
-import { LngLatBounds } from 'maplibre-gl'
+import  { LngLatBounds } from 'maplibre-gl'
 
 type ITLngLatBounds = InstanceType<typeof LngLatBounds>
 
