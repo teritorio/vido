@@ -413,4 +413,7 @@ export default defineNuxtComponent({
 .control-geolocate {
   @apply md:tw-hidden;
 }
+.mapboxgl-ctrl-top-right .mapboxgl-ctrl, .maplibregl-ctrl-top-right .maplibregl-ctrl {
+  margin: 10px 15px 0 0;
+}
 </style>
