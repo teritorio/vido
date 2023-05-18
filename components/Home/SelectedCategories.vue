@@ -1,7 +1,7 @@
 <template>
   <div
     v-if="selectedCategories && selectedCategories.length > 0"
-    class="tw-relative"
+    class="tw-hidden md:tw-block tw-relative"
   >
     <div class="tw-flex tw-flex-row tw-pointer-events-auto">
       <div
