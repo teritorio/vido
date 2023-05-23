@@ -48,10 +48,7 @@
           name="headers"
           appear
           mode="out-in"
-          :class="[
-            'tw-hidden md:tw-block',
-            'flex-none tw-max-w-md',
-          ]"
+          :class="['tw-hidden md:tw-block','flex-none tw-max-w-md']"
         >
           <MenuBlock
             v-if="isModeExplorerOrFavorites"
