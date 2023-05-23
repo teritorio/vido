@@ -141,6 +141,11 @@
         :url="properties[field.field]"
       />
 
+      <Instagram
+        v-else-if="field.field === 'instagram'"
+        :url="properties[field.field]"
+      />
+
       <Stars
         v-else-if="field.field === 'stars'"
         :stars="properties[field.field]"
@@ -184,6 +189,7 @@ import Coordinates, {
 } from '~/components/Fields/Coordinates.vue'
 import DateRange, { isDateRangeEmpty } from '~/components/Fields/DateRange.vue'
 import Facebook from '~/components/Fields/Facebook.vue'
+import Instagram from '~/components/Fields/Instagram.vue'
 import OpeningHours, {
   isOpeningHoursSupportedOsmTags,
 } from '~/components/Fields/OpeningHours.vue'
@@ -226,6 +232,7 @@ export default defineNuxtComponent({
     Coordinates,
     Phone,
     Facebook,
+    Instagram,
     ExternalLink,
     Stars,
   },
