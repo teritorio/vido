@@ -155,6 +155,14 @@ const props = {
       facebook: 'https://www.facebook.com/',
     },
   },
+  Instagram: {
+    ...defaultProps,
+    field: { field: 'instagram' },
+    properties: {
+      metadata: { id: 0 },
+      instagram: 'https://www.instagram.com/',
+    },
+  },
   RouteGpxTrace: {
     ...defaultProps,
     field: { field: 'route:gpx_trace' },
