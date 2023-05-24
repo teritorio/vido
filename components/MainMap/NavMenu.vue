@@ -1,7 +1,7 @@
 <template>
   <section
     v-if="entries.length + locales.length > 0"
-    class="tw-relative tw-z-40"
+    class="tw-relative tw-z-40 tw-left-1.5"
   >
     <v-menu offset-y>
       <template #activator="{ props }">
