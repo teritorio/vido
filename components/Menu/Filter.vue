@@ -179,7 +179,14 @@ export default defineNuxtComponent({
     ) {
       const filters = this.filtersSafeCopy
       filters[filterIndex] = filterValue
-
+      filters.forEach((filter) => {
+        if (filter.type === 'number_range') {
+          if (filter.filterValueMax && !isNaN(filter.filterValueMax))
+            filter.filterValueMax += 1
+          if (filter.filterValueMin && !isNaN(filter.filterValueMin))
+            filter.filterValueMin -= 1
+        }
+      })
       this.applyFilters({
         categoryId: this.categoryId,
         filterValues: filters,
