@@ -413,5 +413,4 @@ export default defineNuxtComponent({
 .control-geolocate {
   @apply md:tw-hidden;
 }
-
 </style>
