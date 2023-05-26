@@ -102,9 +102,9 @@ export function isMatch(
     case 'number_range':
       return (
         (filter.filterValueMin == null ||
-          filter.filterValueMin < properties[filter.def.property]) &&
+          filter.filterValueMin <= properties[filter.def.property]) &&
         (filter.filterValueMax == null ||
-          properties[filter.def.property] < filter.filterValueMax)
+          properties[filter.def.property] <= filter.filterValueMax)
       )
   }
 }
