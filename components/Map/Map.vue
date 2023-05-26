@@ -201,7 +201,7 @@ export default defineNuxtComponent({
       event: MapLibreEvent<MouseEvent | TouchEvent | WheelEvent | undefined> &
         Object
     ) => true,
-    'map-resize': (event: MapLibreEvent<undefined> & Object) => true,
+    'map-resize': (event: MapLibreEvent<unknown> & Object) => true,
     'map-rotateend': (
       event: MapLibreEvent<MouseEvent | TouchEvent | undefined> & Object
     ) => true,

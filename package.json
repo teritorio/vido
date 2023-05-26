@@ -45,7 +45,7 @@
     "lodash.uniq": "^4.5.0",
     "lodash.uniqby": "^4.7.0",
     "lodash.without": "^4.4.0",
-    "maplibre-gl": "^2.4.0",
+    "maplibre-gl": "^3.0.0",
     "nuxt": "^3.2.3",
     "nuxt-simple-sitemap": "^2.2.0",
     "opening_hours": "^3.8.0",
