@@ -92,6 +92,7 @@
           v-if="
             !isModeExplorer && selectedCategoryIds.length && !isModeFavorites
           "
+          class="tw-hidden md:tw-block"
         />
         <div class="tw-grow" style="margin-left: 0" />
         <div
