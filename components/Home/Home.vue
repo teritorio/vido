@@ -50,7 +50,7 @@
           mode="out-in"
           :class="[
             'tw-hidden md:tw-block',
-            'flex-none tw-max-w-md tw-overflow-scroll',
+            'flex-none tw-max-w-md tw-overflow-scroll flex-shrink-0',
           ]"
         >
           <MenuBlock
@@ -92,7 +92,7 @@
           v-if="
             !isModeExplorer && selectedCategoryIds.length && !isModeFavorites
           "
-          class="tw-hidden md:tw-block"
+          class="tw-hidden md:tw-block flex-shrink-1"
         />
         <div class="tw-grow" style="margin-left: 0" />
         <div
