@@ -53,6 +53,7 @@ import {
   faFlagCheckered,
   faCopy,
   faCog,
+  faEnvelope,
 } from '@fortawesome/free-solid-svg-icons'
 
 import { defineNuxtPlugin } from '#app/nuxt'
@@ -112,7 +113,8 @@ library.add(
   faHouseFlag,
   faFlagCheckered,
   faCopy,
-  faCog
+  faCog,
+  faEnvelope
 )
 
 export default defineNuxtPlugin((nuxtApp) => {})

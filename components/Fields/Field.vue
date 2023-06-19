@@ -106,6 +106,7 @@
         v-else-if="field.field == 'email'"
         :key="'email_' + item"
         :href="`mailto:${item}`"
+        icon="envelope"
       >
         {{ item }}
       </ExternalLink>
