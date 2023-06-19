@@ -65,19 +65,6 @@ const props = {
       label: true,
     },
   },
-  Route: {
-    ...defaultProps,
-    field: { field: 'route' },
-    properties: {
-      metadata: { id: 0 },
-      'route:hiking:difficulty': 'easy',
-      'route:hiking:duration': 285,
-      'route:hiking:length': 10.2,
-      'route:mtb:difficulty': 'easy',
-      'route:mtb:duration': 90,
-      'route:mtb:length': 10.2,
-    },
-  },
   StartEndDate: {
     ...defaultProps,
     field: { field: 'start_end_date' },

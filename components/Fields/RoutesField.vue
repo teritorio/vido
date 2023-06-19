@@ -6,10 +6,12 @@
         {{ propertyTranslations.pv('route', `${activity}`, context) }} :
         {{ formatNoDetails(activity as string, route) }}.
       </p>
-      <p>{{ length }}</p>
+      <p v-if="length">{{ length }}</p>
     </div>
     <div v-else>
-      <div class="field">{{ $t('fields.route.length') }} {{ length }}</div>
+      <div v-if="length" class="field">
+        {{ $t('fields.route.length') }} {{ length }}
+      </div>
       <div v-for="(route, activity) in routes" :key="activity" class="field">
         <FieldsHeader
           :recursion-stack="[...recursionStack, `${activity}`]"
@@ -22,7 +24,9 @@
             {{ $t('fields.route.difficulty') }}
             {{ difficulty(activity as string, route) }}
           </li>
-          <li>{{ $t('fields.route.duration') }} {{ duration(route) }}</li>
+          <li v-if="duration(route)">
+            {{ $t('fields.route.duration') }} {{ duration(route) }}
+          </li>
         </ul>
       </div>
     </div>
@@ -106,7 +110,9 @@ export default defineNuxtComponent({
 
     length(): string | undefined {
       const route = Object.values(this.routes)[0]
-      return route.length ? `${route.length} ${this.$t('units.km')}` : undefined
+      return route?.length
+        ? `${route.length} ${this.$t('units.km')}`
+        : undefined
     },
   },
 
