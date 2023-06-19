@@ -5,7 +5,7 @@
     :nav-menu-entries="contents"
     :poi="poi"
     :poi-deps="poiDeps || undefined"
-    class="page-details"
+    :class="['page-details', 'tw-overflow-clip']"
   />
 </template>
 
