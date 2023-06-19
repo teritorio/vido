@@ -86,9 +86,7 @@
 
       <Phone
         v-for="phone in properties[field.field]"
-        v-else-if="
-          (field.field === 'phone' || field.field === 'mobile') && showPhone
-        "
+        v-else-if="field.field === 'phone' || field.field === 'mobile'"
         :key="'phone_' + phone"
         :number="phone"
       />
@@ -277,13 +275,6 @@ export default defineNuxtComponent({
   },
 
   computed: {
-    showPhone(): boolean {
-      return (
-        this.context != PropertyTranslationsContextEnum.Card ||
-        this.$device.value.phone
-      )
-    },
-
     shortDescription(): string | undefined {
       return this.properties?.description?.replace(/(<([^>]+)>)/gi, '')
     },
