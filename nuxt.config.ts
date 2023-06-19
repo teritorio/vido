@@ -148,6 +148,7 @@ export default defineNuxtConfig({
       'vuetify',
       'date-fns',
       /lodash.*/,
+      '@fortawesome/vue-fontawesome',
     ],
   },
 
