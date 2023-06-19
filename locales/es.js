@@ -146,6 +146,9 @@ export default {
     nextWeek: 'Próximos 7 días',
     nextMonth: 'Próximos 30 días',
   },
+  listFilter: {
+    label: 'Busca o añade un valor',
+  },
   fields: {
     phone: {
       callNumber: 'Llama a este número',

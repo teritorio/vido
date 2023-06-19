@@ -7,7 +7,7 @@
       chips
       deletable-chips
       :items="items"
-      placeholder="Recherchez ou ajoutez une valeur"
+      :label="$t('listFilter.label')"
       :clearable="true"
       hide-details="auto"
       density="compact"
