@@ -123,14 +123,6 @@ const props = {
     },
     details: 'details',
   },
-  Phone: {
-    ...defaultProps,
-    field: { field: 'phone' },
-    properties: {
-      metadata: { id: 0 },
-      phone: ['+33676544'],
-    },
-  },
   Email: {
     ...defaultProps,
     field: { field: 'email' },
