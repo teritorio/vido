@@ -115,7 +115,7 @@ Run end to end tests with dev server or build:
 yarn dev
 
 # The run Histoire component screenshot regression tests
-yarn test:cypress
+yarn test:histoire
 
 # The run end to end tests
 yarn test:cypress
