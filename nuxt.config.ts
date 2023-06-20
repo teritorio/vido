@@ -149,6 +149,7 @@ export default defineNuxtConfig({
       'date-fns',
       /lodash.*/,
       '@fortawesome/vue-fontawesome',
+      ...(process.dev ? [] : ['maplibre-gl']), // What the hell, maplibre-gl
     ],
   },
 
