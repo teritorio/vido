@@ -49,8 +49,8 @@
         type="button"
         :class="[
           'tw-w-full tw-h-12 sm:tw-h-8 tw-text-left tw-rounded-lg tw-outline-none focus:tw-outline-none hover:tw-bg-zinc-100',
-          isFiltered && 'text-emerald-500',
-          !isFiltered && 'text-zinc-500',
+          isFiltered && 'tw-text-emerald-500',
+          !isFiltered && 'tw-text-zinc-500',
         ]"
         @click="onFilterClick"
       >
