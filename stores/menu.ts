@@ -242,14 +242,18 @@ export const menuStore = defineStore('menu', {
         this.filters = newFilters
 
         // Update features visibility
-        const features: { [categoryId: number]: ApiPoi[] } = copy(this.features)
-        const filterIsSet = filterValuesIsSet(filterValues)
-        features[categoryId] = features[categoryId].map((feature: ApiPoi) => {
-          feature.properties.vido_visible =
-            !filterIsSet || keepFeature(filterValues, feature)
-          return feature
-        })
-        this.features = features
+        if (categoryId in this.features) {
+          const features: { [categoryId: number]: ApiPoi[] } = copy(
+            this.features
+          )
+          const filterIsSet = filterValuesIsSet(filterValues)
+          features[categoryId] = features[categoryId].map((feature: ApiPoi) => {
+            feature.properties.vido_visible =
+              !filterIsSet || keepFeature(filterValues, feature)
+            return feature
+          })
+          this.features = features
+        }
       }
     },
   },
