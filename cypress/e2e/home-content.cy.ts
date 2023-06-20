@@ -39,7 +39,7 @@ describe('home content', () => {
   })
 
   it('bugger menu content entry item', () => {
-    cy.get('#nav-menu').click()
+    cy.get('#nav-menu button').click()
     cy.get('#nav-menu-dropdown').contains(
       teritorioReferenceAPIFixture.articles[0].title
     )
