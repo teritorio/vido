@@ -1,0 +1,131 @@
+const type = "Feature";
+const geometry = {
+	type: "Point",
+	coordinates: [
+		-1.16728,
+		44.07568
+	]
+};
+const properties = {
+	name: "A Mézos, circuit du Courlis",
+	classe: "Balades à pieds",
+	"teritorio:url": "https://www.tourismelandes.com/wp-json/irisit/link/ITIAQU040V502MFU",
+	"addr:street": "Avenue du Born",
+	"addr:postcode": "40170",
+	phone: [
+		"+33 5 58 09 11 20"
+	],
+	email: [
+		"contact@mimizan-tourisme.com"
+	],
+	"addr:city": "MEZOS",
+	metadata: {
+		id: 2,
+		category_ids: [
+			211
+		],
+		source: "tis"
+	},
+	display: {
+		icon: "teritorio teritorio-extra-hiking_forest",
+		style_class: [
+			"extra",
+			"hiking"
+		],
+		color_fill: "#00a757",
+		color_line: "#00a757"
+	},
+	editorial: {
+		details_fields: [
+			{
+				field: "route"
+			},
+			{
+				field: "opening_hours"
+			},
+			{
+				group: "download",
+				display_mode: "card",
+				icon: "arrow-circle-down",
+				fields: [
+					{
+						field: "route:gpx_trace"
+					},
+					{
+						field: "route:pdf"
+					}
+				]
+			},
+			{
+				group: "contact",
+				display_mode: "card",
+				icon: "phone",
+				fields: [
+					{
+						field: "addr"
+					},
+					{
+						field: "phone"
+					},
+					{
+						field: "mobile"
+					}
+				]
+			},
+			{
+				field: "description"
+			}
+		],
+		popup_fields: [
+			{
+				field: "route"
+			},
+			{
+				field: "addr"
+			}
+		],
+		list_fields: [
+			{
+				field: "name"
+			},
+			{
+				field: "description"
+			},
+			{
+				field: "addr"
+			},
+			{
+				field: "opening_hours"
+			}
+		],
+		class_label: {
+			fr: "Balades à pieds"
+		},
+		class_label_popup: {
+			fr: "Balades à pieds"
+		},
+		class_label_details: {
+			fr: "Balades à pieds"
+		},
+		"website:details": "/poi/2/details"
+	},
+	description: "<div>Itinéraire très intéressant, d'une part pour sa variété paysagère accentuée par la traversée fréquente de cours d'eau et d'autre part, par la qualité du patrimoine bâti : maisons traditionnelles landaises, église en garluche. \n\nDistance : 10,2 km - Durée : 4h45 - Animaux tenus en laisse  - Sentier pédestre et VTT \nFiche rando disponible dans le topoguide du Département des Landes du Pays de Born n°15 (en vente : 2 €)</div><div><br /></div><div><span type=\"champSimple\" id=\"408feabd-c6ba-44fe-99e6-2dcb32b888b1\" data-champcoderef=\" \"></span><br /></div><br />",
+	image: [
+		"https://tile.openstreetmap.org/7/6/19.png"
+	],
+	"route:hiking:difficulty": "easy",
+	"route:hiking:duration": 285,
+	"route:hiking:length": 10.2,
+	"route:mtb:difficulty": "easy",
+	"route:mtb:duration": 90,
+	"route:mtb:length": 10.2,
+	"route:gpx_trace": "https://cdt40.tourinsoft.com/upload/15.8.gpx",
+	"route:pdf": "https://cdt40.tourinsoft.com/upload/ITIAQU040V502MFU.pdf"
+};
+const poi = {
+	type: type,
+	geometry: geometry,
+	properties: properties
+};
+
+export { poi as p };

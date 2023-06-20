@@ -1,0 +1,1016 @@
+{
+  "stories": [
+    {
+      "id": "components-fields-daterange-story-vue",
+      "title": "DateRange",
+      "group": null,
+      "layout": {
+        "type": "grid",
+        "width": "100%"
+      },
+      "icon": null,
+      "iconColor": null,
+      "docsOnly": false,
+      "variants": [
+        {
+          "id": "components-fields-daterange-story-vue-0",
+          "title": "Default",
+          "icon": null,
+          "iconColor": null
+        },
+        {
+          "id": "components-fields-daterange-story-vue-1",
+          "title": "Default Start",
+          "icon": null,
+          "iconColor": null
+        },
+        {
+          "id": "components-fields-daterange-story-vue-2",
+          "title": "Default End",
+          "icon": null,
+          "iconColor": null
+        },
+        {
+          "id": "components-fields-daterange-story-vue-3",
+          "title": "Default Same",
+          "icon": null,
+          "iconColor": null
+        }
+      ],
+      "relativePath": "components/Fields/DateRange.story.vue",
+      "supportPluginId": "vue3",
+      "treePath": [
+        "Fields",
+        "DateRange"
+      ],
+      "virtual": false,
+      "markdownFile": null
+    },
+    {
+      "id": "components-fields-field-story-vue",
+      "title": "Field",
+      "group": null,
+      "layout": {
+        "type": "grid",
+        "width": "100%"
+      },
+      "icon": null,
+      "iconColor": null,
+      "docsOnly": false,
+      "variants": [
+        {
+          "id": "components-fields-field-story-vue-0",
+          "title": "Default",
+          "icon": null,
+          "iconColor": null
+        },
+        {
+          "id": "components-fields-field-story-vue-1",
+          "title": "Default List One",
+          "icon": null,
+          "iconColor": null
+        },
+        {
+          "id": "components-fields-field-story-vue-2",
+          "title": "Default List Many",
+          "icon": null,
+          "iconColor": null
+        },
+        {
+          "id": "components-fields-field-story-vue-3",
+          "title": "No Value",
+          "icon": null,
+          "iconColor": null
+        },
+        {
+          "id": "components-fields-field-story-vue-4",
+          "title": "Label",
+          "icon": null,
+          "iconColor": null
+        },
+        {
+          "id": "components-fields-field-story-vue-5",
+          "title": "Start End Date",
+          "icon": null,
+          "iconColor": null
+        },
+        {
+          "id": "components-fields-field-story-vue-6",
+          "title": "Addr",
+          "icon": null,
+          "iconColor": null
+        },
+        {
+          "id": "components-fields-field-story-vue-7",
+          "title": "Description",
+          "icon": null,
+          "iconColor": null
+        },
+        {
+          "id": "components-fields-field-story-vue-8",
+          "title": "Description Short",
+          "icon": null,
+          "iconColor": null
+        },
+        {
+          "id": "components-fields-field-story-vue-9",
+          "title": "Description Details",
+          "icon": null,
+          "iconColor": null
+        },
+        {
+          "id": "components-fields-field-story-vue-10",
+          "title": "Email",
+          "icon": null,
+          "iconColor": null
+        },
+        {
+          "id": "components-fields-field-story-vue-11",
+          "title": "Website",
+          "icon": null,
+          "iconColor": null
+        },
+        {
+          "id": "components-fields-field-story-vue-12",
+          "title": "Facebook",
+          "icon": null,
+          "iconColor": null
+        },
+        {
+          "id": "components-fields-field-story-vue-13",
+          "title": "Instagram",
+          "icon": null,
+          "iconColor": null
+        },
+        {
+          "id": "components-fields-field-story-vue-14",
+          "title": "Route Gpx Trace",
+          "icon": null,
+          "iconColor": null
+        },
+        {
+          "id": "components-fields-field-story-vue-15",
+          "title": "Route Pdf",
+          "icon": null,
+          "iconColor": null
+        },
+        {
+          "id": "components-fields-field-story-vue-16",
+          "title": "Download",
+          "icon": null,
+          "iconColor": null
+        },
+        {
+          "id": "components-fields-field-story-vue-17",
+          "title": "Coordinates",
+          "icon": null,
+          "iconColor": null
+        }
+      ],
+      "relativePath": "components/Fields/Field.story.vue",
+      "supportPluginId": "vue3",
+      "treePath": [
+        "Fields",
+        "Field"
+      ],
+      "virtual": false,
+      "markdownFile": null
+    },
+    {
+      "id": "components-fields-phone-story-vue",
+      "title": "Phone",
+      "group": null,
+      "layout": {
+        "type": "grid",
+        "width": "100%"
+      },
+      "icon": null,
+      "iconColor": null,
+      "docsOnly": false,
+      "variants": [
+        {
+          "id": "components-fields-phone-story-vue-0",
+          "title": "Default - desktop",
+          "icon": null,
+          "iconColor": null
+        },
+        {
+          "id": "components-fields-phone-story-vue-1",
+          "title": "Default - mobile",
+          "icon": null,
+          "iconColor": null
+        }
+      ],
+      "relativePath": "components/Fields/Phone.story.vue",
+      "supportPluginId": "vue3",
+      "treePath": [
+        "Fields",
+        "Phone"
+      ],
+      "virtual": false,
+      "markdownFile": null
+    },
+    {
+      "id": "components-fields-routesfield-story-vue",
+      "title": "Route",
+      "group": null,
+      "layout": {
+        "type": "grid",
+        "width": "100%"
+      },
+      "icon": null,
+      "iconColor": null,
+      "docsOnly": false,
+      "variants": [
+        {
+          "id": "components-fields-routesfield-story-vue-0",
+          "title": "Default",
+          "icon": null,
+          "iconColor": null
+        },
+        {
+          "id": "components-fields-routesfield-story-vue-1",
+          "title": "Missing Fields",
+          "icon": null,
+          "iconColor": null
+        },
+        {
+          "id": "components-fields-routesfield-story-vue-2",
+          "title": "Missing Difficulty",
+          "icon": null,
+          "iconColor": null
+        }
+      ],
+      "relativePath": "components/Fields/RoutesField.story.vue",
+      "supportPluginId": "vue3",
+      "treePath": [
+        "Fields",
+        "Route"
+      ],
+      "virtual": false,
+      "markdownFile": null
+    },
+    {
+      "id": "components-fields-stars-story-vue",
+      "title": "Stars",
+      "group": null,
+      "layout": {
+        "type": "grid",
+        "width": "100%"
+      },
+      "icon": null,
+      "iconColor": null,
+      "docsOnly": false,
+      "variants": [
+        {
+          "id": "components-fields-stars-story-vue-0",
+          "title": "Default",
+          "icon": null,
+          "iconColor": null
+        },
+        {
+          "id": "components-fields-stars-story-vue-1",
+          "title": "More",
+          "icon": null,
+          "iconColor": null
+        },
+        {
+          "id": "components-fields-stars-story-vue-2",
+          "title": "None",
+          "icon": null,
+          "iconColor": null
+        }
+      ],
+      "relativePath": "components/Fields/Stars.story.vue",
+      "supportPluginId": "vue3",
+      "treePath": [
+        "Fields",
+        "Stars"
+      ],
+      "virtual": false,
+      "markdownFile": null
+    },
+    {
+      "id": "components-filters-daterange-story-vue",
+      "title": "DateRange",
+      "group": null,
+      "layout": {
+        "type": "grid",
+        "width": "100%"
+      },
+      "icon": null,
+      "iconColor": null,
+      "docsOnly": false,
+      "variants": [
+        {
+          "id": "components-filters-daterange-story-vue-0",
+          "title": "Default",
+          "icon": null,
+          "iconColor": null
+        }
+      ],
+      "relativePath": "components/Filters/DateRange.story.vue",
+      "supportPluginId": "vue3",
+      "treePath": [
+        "Filters",
+        "DateRange"
+      ],
+      "virtual": false,
+      "markdownFile": null
+    },
+    {
+      "id": "components-filters-numberrange-story-vue",
+      "title": "NumberRange",
+      "group": null,
+      "layout": {
+        "type": "grid",
+        "width": "100%"
+      },
+      "icon": null,
+      "iconColor": null,
+      "docsOnly": false,
+      "variants": [
+        {
+          "id": "components-filters-numberrange-story-vue-0",
+          "title": "Default",
+          "icon": null,
+          "iconColor": null
+        }
+      ],
+      "relativePath": "components/Filters/NumberRange.story.vue",
+      "supportPluginId": "vue3",
+      "treePath": [
+        "Filters",
+        "NumberRange"
+      ],
+      "virtual": false,
+      "markdownFile": null
+    },
+    {
+      "id": "components-filters-select-story-vue",
+      "title": "Select",
+      "group": null,
+      "layout": {
+        "type": "grid",
+        "width": "100%"
+      },
+      "icon": null,
+      "iconColor": null,
+      "docsOnly": false,
+      "variants": [
+        {
+          "id": "components-filters-select-story-vue-0",
+          "title": "Default",
+          "icon": null,
+          "iconColor": null
+        }
+      ],
+      "relativePath": "components/Filters/Select.story.vue",
+      "supportPluginId": "vue3",
+      "treePath": [
+        "Filters",
+        "Select"
+      ],
+      "virtual": false,
+      "markdownFile": null
+    },
+    {
+      "id": "components-home-menu-story-vue",
+      "title": "Menu",
+      "group": null,
+      "layout": {
+        "type": "grid",
+        "width": "100%"
+      },
+      "icon": null,
+      "iconColor": null,
+      "docsOnly": false,
+      "variants": [
+        {
+          "id": "components-home-menu-story-vue-0",
+          "title": "Default",
+          "icon": null,
+          "iconColor": null
+        }
+      ],
+      "relativePath": "components/Home/Menu.story.vue",
+      "supportPluginId": "vue3",
+      "treePath": [
+        "Home",
+        "Menu"
+      ],
+      "virtual": false,
+      "markdownFile": null
+    },
+    {
+      "id": "components-menu-category-story-vue",
+      "title": "Category",
+      "group": null,
+      "layout": {
+        "type": "grid",
+        "width": "100%"
+      },
+      "icon": null,
+      "iconColor": null,
+      "docsOnly": false,
+      "variants": [
+        {
+          "id": "components-menu-category-story-vue-0",
+          "title": "Default",
+          "icon": null,
+          "iconColor": null
+        },
+        {
+          "id": "components-menu-category-story-vue-1",
+          "title": "Selected",
+          "icon": null,
+          "iconColor": null
+        },
+        {
+          "id": "components-menu-category-story-vue-2",
+          "title": "Default Compact",
+          "icon": null,
+          "iconColor": null
+        },
+        {
+          "id": "components-menu-category-story-vue-3",
+          "title": "Selected Compact",
+          "icon": null,
+          "iconColor": null
+        }
+      ],
+      "relativePath": "components/Menu/Category.story.vue",
+      "supportPluginId": "vue3",
+      "treePath": [
+        "Menu",
+        "Category"
+      ],
+      "virtual": false,
+      "markdownFile": null
+    },
+    {
+      "id": "components-menu-group-story-vue",
+      "title": "Group",
+      "group": null,
+      "layout": {
+        "type": "grid",
+        "width": "100%"
+      },
+      "icon": null,
+      "iconColor": null,
+      "docsOnly": false,
+      "variants": [
+        {
+          "id": "components-menu-group-story-vue-0",
+          "title": "Default",
+          "icon": null,
+          "iconColor": null
+        },
+        {
+          "id": "components-menu-group-story-vue-1",
+          "title": "Large",
+          "icon": null,
+          "iconColor": null
+        },
+        {
+          "id": "components-menu-group-story-vue-2",
+          "title": "Activities",
+          "icon": null,
+          "iconColor": null
+        },
+        {
+          "id": "components-menu-group-story-vue-3",
+          "title": "Activities Large",
+          "icon": null,
+          "iconColor": null
+        },
+        {
+          "id": "components-menu-group-story-vue-4",
+          "title": "Edge Cases",
+          "icon": null,
+          "iconColor": null
+        }
+      ],
+      "relativePath": "components/Menu/Group.story.vue",
+      "supportPluginId": "vue3",
+      "treePath": [
+        "Menu",
+        "Group"
+      ],
+      "virtual": false,
+      "markdownFile": null
+    },
+    {
+      "id": "components-menu-itemlist-story-vue",
+      "title": "ItemList",
+      "group": null,
+      "layout": {
+        "type": "grid",
+        "width": "100%"
+      },
+      "icon": null,
+      "iconColor": null,
+      "docsOnly": false,
+      "variants": [
+        {
+          "id": "components-menu-itemlist-story-vue-0",
+          "title": "Default",
+          "icon": null,
+          "iconColor": null
+        },
+        {
+          "id": "components-menu-itemlist-story-vue-1",
+          "title": "Large",
+          "icon": null,
+          "iconColor": null
+        },
+        {
+          "id": "components-menu-itemlist-story-vue-2",
+          "title": "Many Groups",
+          "icon": null,
+          "iconColor": null
+        }
+      ],
+      "relativePath": "components/Menu/ItemList.story.vue",
+      "supportPluginId": "vue3",
+      "treePath": [
+        "Menu",
+        "ItemList"
+      ],
+      "virtual": false,
+      "markdownFile": null
+    },
+    {
+      "id": "components-menu-link-story-vue",
+      "title": "Link",
+      "group": null,
+      "layout": {
+        "type": "grid",
+        "width": "100%"
+      },
+      "icon": null,
+      "iconColor": null,
+      "docsOnly": false,
+      "variants": [
+        {
+          "id": "components-menu-link-story-vue-0",
+          "title": "Default",
+          "icon": null,
+          "iconColor": null
+        },
+        {
+          "id": "components-menu-link-story-vue-1",
+          "title": "Large",
+          "icon": null,
+          "iconColor": null
+        }
+      ],
+      "relativePath": "components/Menu/Link.story.vue",
+      "supportPluginId": "vue3",
+      "treePath": [
+        "Menu",
+        "Link"
+      ],
+      "virtual": false,
+      "markdownFile": null
+    },
+    {
+      "id": "components-poiscard-fields-story-vue",
+      "title": "Fields",
+      "group": null,
+      "layout": {
+        "type": "grid",
+        "width": "100%"
+      },
+      "icon": null,
+      "iconColor": null,
+      "docsOnly": false,
+      "variants": [
+        {
+          "id": "components-poiscard-fields-story-vue-0",
+          "title": "Default Empty",
+          "icon": null,
+          "iconColor": null
+        },
+        {
+          "id": "components-poiscard-fields-story-vue-1",
+          "title": "Many",
+          "icon": null,
+          "iconColor": null
+        }
+      ],
+      "relativePath": "components/PoisCard/Fields.story.vue",
+      "supportPluginId": "vue3",
+      "treePath": [
+        "PoisCard",
+        "Fields"
+      ],
+      "virtual": false,
+      "markdownFile": null
+    },
+    {
+      "id": "components-poiscard-poicard-story-vue",
+      "title": "PoiCard",
+      "group": null,
+      "layout": {
+        "type": "grid",
+        "width": "100%"
+      },
+      "icon": null,
+      "iconColor": null,
+      "docsOnly": false,
+      "variants": [
+        {
+          "id": "components-poiscard-poicard-story-vue-0",
+          "title": "Default",
+          "icon": null,
+          "iconColor": null
+        }
+      ],
+      "relativePath": "components/PoisCard/PoiCard.story.vue",
+      "supportPluginId": "vue3",
+      "treePath": [
+        "PoisCard",
+        "PoiCard"
+      ],
+      "virtual": false,
+      "markdownFile": null
+    },
+    {
+      "id": "components-poiscard-poicardlight-story-vue",
+      "title": "PoiCardLight",
+      "group": null,
+      "layout": {
+        "type": "grid",
+        "width": "100%"
+      },
+      "icon": null,
+      "iconColor": null,
+      "docsOnly": false,
+      "variants": [
+        {
+          "id": "components-poiscard-poicardlight-story-vue-0",
+          "title": "Default",
+          "icon": null,
+          "iconColor": null
+        }
+      ],
+      "relativePath": "components/PoisCard/PoiCardLight.story.vue",
+      "supportPluginId": "vue3",
+      "treePath": [
+        "PoisCard",
+        "PoiCardLight"
+      ],
+      "virtual": false,
+      "markdownFile": null
+    },
+    {
+      "id": "components-poiscard-poisdeck-story-vue",
+      "title": "PoisDeck",
+      "group": null,
+      "layout": {
+        "type": "grid",
+        "width": "100%"
+      },
+      "icon": null,
+      "iconColor": null,
+      "docsOnly": false,
+      "variants": [
+        {
+          "id": "components-poiscard-poisdeck-story-vue-0",
+          "title": "Default",
+          "icon": null,
+          "iconColor": null
+        },
+        {
+          "id": "components-poiscard-poisdeck-story-vue-1",
+          "title": "Light",
+          "icon": null,
+          "iconColor": null
+        }
+      ],
+      "relativePath": "components/PoisCard/PoisDeck.story.vue",
+      "supportPluginId": "vue3",
+      "treePath": [
+        "PoisCard",
+        "PoisDeck"
+      ],
+      "virtual": false,
+      "markdownFile": null
+    },
+    {
+      "id": "components-poisdetails-fieldsgroup-story-vue",
+      "title": "FieldsGroup",
+      "group": null,
+      "layout": {
+        "type": "grid",
+        "width": "100%"
+      },
+      "icon": null,
+      "iconColor": null,
+      "docsOnly": false,
+      "variants": [
+        {
+          "id": "components-poisdetails-fieldsgroup-story-vue-0",
+          "title": "Sandart",
+          "icon": null,
+          "iconColor": null
+        },
+        {
+          "id": "components-poisdetails-fieldsgroup-story-vue-1",
+          "title": "Empty",
+          "icon": null,
+          "iconColor": null
+        },
+        {
+          "id": "components-poisdetails-fieldsgroup-story-vue-2",
+          "title": "Label",
+          "icon": null,
+          "iconColor": null
+        },
+        {
+          "id": "components-poisdetails-fieldsgroup-story-vue-3",
+          "title": "Card",
+          "icon": null,
+          "iconColor": null
+        },
+        {
+          "id": "components-poisdetails-fieldsgroup-story-vue-4",
+          "title": "Many",
+          "icon": null,
+          "iconColor": null
+        }
+      ],
+      "relativePath": "components/PoisDetails/FieldsGroup.story.vue",
+      "supportPluginId": "vue3",
+      "treePath": [
+        "PoisDetails",
+        "FieldsGroup"
+      ],
+      "virtual": false,
+      "markdownFile": null
+    },
+    {
+      "id": "components-poislist-poistable-story-vue",
+      "title": "PoisTable",
+      "group": null,
+      "layout": {
+        "type": "grid",
+        "width": "100%"
+      },
+      "icon": null,
+      "iconColor": null,
+      "docsOnly": false,
+      "variants": [
+        {
+          "id": "components-poislist-poistable-story-vue-0",
+          "title": "Default",
+          "icon": null,
+          "iconColor": null
+        }
+      ],
+      "relativePath": "components/PoisList/PoisTable.story.vue",
+      "supportPluginId": "vue3",
+      "treePath": [
+        "PoisList",
+        "PoisTable"
+      ],
+      "virtual": false,
+      "markdownFile": null
+    },
+    {
+      "id": "components-ui-favoriteicon-story-vue",
+      "title": "FavoriteIcon",
+      "group": null,
+      "layout": {
+        "type": "grid",
+        "width": "100%"
+      },
+      "icon": null,
+      "iconColor": null,
+      "docsOnly": false,
+      "variants": [
+        {
+          "id": "components-ui-favoriteicon-story-vue-0",
+          "title": "Default",
+          "icon": null,
+          "iconColor": null
+        },
+        {
+          "id": "components-ui-favoriteicon-story-vue-1",
+          "title": "Active",
+          "icon": null,
+          "iconColor": null
+        },
+        {
+          "id": "components-ui-favoriteicon-story-vue-2",
+          "title": "Colored",
+          "icon": null,
+          "iconColor": null
+        }
+      ],
+      "relativePath": "components/UI/FavoriteIcon.story.vue",
+      "supportPluginId": "vue3",
+      "treePath": [
+        "UI",
+        "FavoriteIcon"
+      ],
+      "virtual": false,
+      "markdownFile": null
+    },
+    {
+      "id": "components-ui-iconbutton-story-vue",
+      "title": "IconButton",
+      "group": null,
+      "layout": {
+        "type": "grid",
+        "width": "100%"
+      },
+      "icon": null,
+      "iconColor": null,
+      "docsOnly": false,
+      "variants": [
+        {
+          "id": "components-ui-iconbutton-story-vue-0",
+          "title": "Default Button",
+          "icon": null,
+          "iconColor": null
+        },
+        {
+          "id": "components-ui-iconbutton-story-vue-1",
+          "title": "Default Link",
+          "icon": null,
+          "iconColor": null
+        }
+      ],
+      "relativePath": "components/UI/IconButton.story.vue",
+      "supportPluginId": "vue3",
+      "treePath": [
+        "UI",
+        "IconButton"
+      ],
+      "virtual": false,
+      "markdownFile": null
+    },
+    {
+      "id": "components-ui-teritorioicon-story-vue",
+      "title": "TeritorioIcon",
+      "group": null,
+      "layout": {
+        "type": "grid",
+        "width": "100%"
+      },
+      "icon": null,
+      "iconColor": null,
+      "docsOnly": false,
+      "variants": [
+        {
+          "id": "components-ui-teritorioicon-story-vue-0",
+          "title": "Default",
+          "icon": null,
+          "iconColor": null
+        },
+        {
+          "id": "components-ui-teritorioicon-story-vue-1",
+          "title": "Text Color",
+          "icon": null,
+          "iconColor": null
+        },
+        {
+          "id": "components-ui-teritorioicon-story-vue-2",
+          "title": "Fontawesome",
+          "icon": null,
+          "iconColor": null
+        },
+        {
+          "id": "components-ui-teritorioicon-story-vue-3",
+          "title": "Fontawesome Text Color",
+          "icon": null,
+          "iconColor": null
+        },
+        {
+          "id": "components-ui-teritorioicon-story-vue-4",
+          "title": "Image",
+          "icon": null,
+          "iconColor": null
+        }
+      ],
+      "relativePath": "components/UI/TeritorioIcon.story.vue",
+      "supportPluginId": "vue3",
+      "treePath": [
+        "UI",
+        "TeritorioIcon"
+      ],
+      "virtual": false,
+      "markdownFile": null
+    },
+    {
+      "id": "tailwind",
+      "title": "Tailwind",
+      "group": "design-system",
+      "layout": {
+        "type": "single",
+        "iframe": false
+      },
+      "icon": "mdi:tailwind",
+      "docsOnly": false,
+      "variants": [
+        {
+          "id": "background-color",
+          "title": "Background Color",
+          "icon": "carbon:color-palette"
+        },
+        {
+          "id": "text-color",
+          "title": "Text Color",
+          "icon": "carbon:text-color"
+        },
+        {
+          "id": "border-color",
+          "title": "Border Color",
+          "icon": "carbon:color-palette"
+        },
+        {
+          "id": "padding",
+          "title": "Padding",
+          "icon": "carbon:area"
+        },
+        {
+          "id": "margin",
+          "title": "Margin",
+          "icon": "carbon:area"
+        },
+        {
+          "id": "font-size",
+          "title": "Font Size",
+          "icon": "carbon:text-font"
+        },
+        {
+          "id": "font-weight",
+          "title": "Font Weight",
+          "icon": "carbon:text-font"
+        },
+        {
+          "id": "font-family",
+          "title": "Font Family",
+          "icon": "carbon:text-font"
+        },
+        {
+          "id": "letter-spacing",
+          "title": "Letter Spacing",
+          "icon": "carbon:text-font"
+        },
+        {
+          "id": "line-height",
+          "title": "Line Height",
+          "icon": "carbon:text-font"
+        },
+        {
+          "id": "drop-shadow",
+          "title": "Drop Shadow",
+          "icon": "carbon:shape-except"
+        },
+        {
+          "id": "border-radius",
+          "title": "Border Radius",
+          "icon": "carbon:condition-wait-point"
+        },
+        {
+          "id": "border-width",
+          "title": "Border Width",
+          "icon": "carbon:checkbox"
+        },
+        {
+          "id": "width",
+          "title": "Width",
+          "icon": "carbon:pan-horizontal"
+        },
+        {
+          "id": "height",
+          "title": "Height",
+          "icon": "carbon:pan-vertical"
+        },
+        {
+          "id": "full-config",
+          "title": "Full Config",
+          "icon": "carbon:code"
+        }
+      ],
+      "relativePath": "/home/runner/work/vido/vido/node_modules/.histoire/plugins/builtin_tailwind-tokens/Tailwind.story.js",
+      "supportPluginId": "vanilla",
+      "treePath": [
+        "Tailwind"
+      ],
+      "virtual": false,
+      "markdownFile": null
+    }
+  ],
+  "markdownFiles": [
+    {
+      "id": "cypress-fixtures-teritorio-references-pois-geojson",
+      "relativePath": "cypress/fixtures/teritorio/references/pois.geojson",
+      "isRelatedToStory": true,
+      "frontmatter": {}
+    }
+  ]
+}
