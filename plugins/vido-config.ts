@@ -1,5 +1,3 @@
-import { NuxtRuntimeConfig } from '@nuxt/types/config/runtime'
-
 import { useRequestHeaders } from '#app'
 import { defineNuxtPlugin } from '#app/nuxt'
 import { vidos } from '~/lib/config'
