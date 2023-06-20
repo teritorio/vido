@@ -1,9 +1,8 @@
-import { NuxtRuntimeConfig } from '@nuxt/types/config/runtime'
-
-import { useRequestHeaders } from '#app'
 import { defineNuxtPlugin } from '#app/nuxt'
 import { vidos } from '~/lib/config'
 import { VidoConfig, VidosConfig } from '~/utils/types-config'
+
+export declare function useRequestHeaders(): Readonly<Record<string, string>>
 
 export function vidoConfigResolve(
   host: string,
