@@ -20,7 +20,7 @@
           {{ propertyTranslations.pv('route', `${activity}`, context) }}
         </FieldsHeader>
         <ul class="tw-list-disc tw-ml-6">
-          <li>
+          <li v-if="difficulty(activity as string, route)">
             {{ $t('fields.route.difficulty') }}
             {{ difficulty(activity as string, route) }}
           </li>
@@ -147,7 +147,9 @@ export default defineNuxtComponent({
     },
 
     formatNoDetails(activity: string, route: Route): string {
-      return [this.duration(route), this.difficulty(activity, route)].join(', ')
+      return [this.duration(route), this.difficulty(activity, route)]
+        .filter((x) => x)
+        .join(', ')
     },
   },
 })

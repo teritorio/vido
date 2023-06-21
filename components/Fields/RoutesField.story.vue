@@ -1,12 +1,18 @@
 <template>
   <Story title="Fields/Route">
-    <Variant
-      v-for="(p, name) in props"
-      :key="name"
-      :title="name.replace(/([A-Z])/g, ' $1').trim()"
-    >
-      <RoutesField v-bind="p" />
-    </Variant>
+    <div v-for="(p, name) in props" :key="name">
+      <div
+        v-for="id in [
+          PropertyTranslationsContextEnum.Card,
+          PropertyTranslationsContextEnum.Details,
+        ]"
+        :key="id"
+      >
+        <Variant :title="`${name.replace(/([A-Z])/g, ' $1').trim()} - ${id}`">
+          <RoutesField v-bind="p" :context="id" />
+        </Variant>
+      </div>
+    </div>
   </Story>
 </template>
 
