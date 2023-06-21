@@ -52,9 +52,7 @@ jspm_packages/
 
 # nuxt.js build output
 .nuxt
-
-# Nuxt generate
-dist
+.output
 
 # IDE / Editor
 .idea
@@ -81,3 +79,5 @@ cypress
 # Vido
 **/*.stories.ts
 **/*.story.vue
+vidos.config.ts
+vidos-config.json

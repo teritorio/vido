@@ -169,7 +169,6 @@ jobs:
           POST_SCRIPT: |
             cd /var/www/clients/client3/web3/web/vido &&
             ruby poi_explode.rb cypress/fixtures/teritorio/references/pois.geojson &&
-            yarn build-config &&
             sed -i "s/# restart: unless-stopped/restart: unless-stopped/" docker-compose.yml &&
             docker-compose build && docker-compose up -d &&
             echo -n 'VIDO: Deployment completed at: ' &&
