@@ -1,14 +1,16 @@
 <template>
-  <ExternalLink
-    v-if="phone"
-    :href="`tel:${number}`"
-    :title="$t('fields.phone.callNumber')"
-  >
-    {{ numberFormated }}
-  </ExternalLink>
-  <span v-else>
-    {{ numberFormated }}
-  </span>
+  <client-only>
+    <ExternalLink
+      v-if="phone"
+      :href="`tel:${number}`"
+      :title="$t('fields.phone.callNumber')"
+    >
+      {{ numberFormated }}
+    </ExternalLink>
+    <span v-else>
+      {{ numberFormated }}
+    </span>
+  </client-only>
 </template>
 
 <script lang="ts">
