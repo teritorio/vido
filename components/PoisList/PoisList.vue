@@ -109,11 +109,8 @@ export default defineNuxtComponent({
     categoryId() {
       this.pois = undefined
 
-      this.$router.push({
-        path: `/category/${this.categoryId}`,
-        query: this.$router.currentRoute.value.query,
-        hash: this.$router.currentRoute.value.hash,
-      })
+      // Change history directly to avoid resetup the page with this.$router.push
+      history.pushState({}, '', `/category/${this.categoryId}`)
 
       getPoiByCategoryId(
         this.$vidoConfig(useRequestHeaders()),
