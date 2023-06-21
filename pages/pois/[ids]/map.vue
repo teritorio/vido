@@ -48,7 +48,7 @@ export default defineNuxtComponent({
     const config: VidoConfig = configRef.value
 
     const fetchSettings = getAsyncDataOrThrows('fetchSettings', () =>
-      getSettings(config.API_ENDPOINT, config.API_PROJECT, config.API_THEME)
+      getSettings(config)
     )
 
     let settings: Ref<Settings>
@@ -56,15 +56,9 @@ export default defineNuxtComponent({
     if (params.ids) {
       const ids = (params.ids as string).split(',')
       const getPoiPromise = getAsyncDataOrThrows('getPoiPromise', () =>
-        getPois(
-          config.API_ENDPOINT,
-          config.API_PROJECT,
-          config.API_THEME,
-          ids,
-          {
-            geometry_as: undefined,
-          }
-        )
+        getPois(config, ids, {
+          geometry_as: undefined,
+        })
       )
       const [settingsF, poisF] = await Promise.all([
         fetchSettings,

@@ -1,4 +1,5 @@
 import { MultilingualString } from '~/utils/types'
+import { VidoConfig } from '~/utils/types-config'
 
 export type FilterList = {
   type: 'multiselection' | 'checkboxes_list'
@@ -114,20 +115,16 @@ export interface MenuGroup extends ApiMenuGroup {
 
 export type MenuItem = MenuGroup | ApiMenuLink | ApiMenuCategory
 
-export function getMenu(
-  apiEndpoint: string,
-  apiProject: string,
-  apiTheme: string
-): Promise<MenuItem[]> {
-  return fetch(`${apiEndpoint}/${apiProject}/${apiTheme}/menu.json`).then(
-    (data) => {
-      if (data.ok) {
-        return data.json() as unknown as MenuItem[]
-      } else {
-        return Promise.reject(
-          new Error([data.url, data.status, data.statusText].join(' '))
-        )
-      }
+export function getMenu(vidoConfig: VidoConfig): Promise<MenuItem[]> {
+  return fetch(
+    `${vidoConfig.API_ENDPOINT}/${vidoConfig.API_PROJECT}/${vidoConfig.API_THEME}/menu.json`
+  ).then((data) => {
+    if (data.ok) {
+      return data.json() as unknown as MenuItem[]
+    } else {
+      return Promise.reject(
+        new Error([data.url, data.status, data.statusText].join(' '))
+      )
     }
-  )
+  })
 }

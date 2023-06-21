@@ -22,7 +22,7 @@ import type {
 import { mapState } from 'pinia'
 import { PropType } from 'vue'
 
-import { defineNuxtComponent } from '#app'
+import { defineNuxtComponent, useRequestHeaders } from '#app'
 import { DEFAULT_MAP_STYLE, MAP_ZOOM } from '~/lib/constants'
 import { siteStore } from '~/stores/site'
 import { fetchStyle } from '~/utils/styles'
@@ -322,10 +322,11 @@ export default defineNuxtComponent({
       if (this.mapStyleCache[mapStyle]) {
         return this.mapStyleCache[mapStyle]
       } else {
+        const config = this.$vidoConfig(useRequestHeaders())
         const styleURLs = {
-          [MapStyleEnum.vector]: this.$vidoConfig().VECTO_STYLE_URL,
-          [MapStyleEnum.aerial]: this.$vidoConfig().SATELLITE_STYLE_URL,
-          [MapStyleEnum.bicycle]: this.$vidoConfig().BICYCLE_STYLE_URL,
+          [MapStyleEnum.vector]: config.VECTO_STYLE_URL,
+          [MapStyleEnum.aerial]: config.SATELLITE_STYLE_URL,
+          [MapStyleEnum.bicycle]: config.BICYCLE_STYLE_URL,
         }
         const style = await fetchStyle(
           styleURLs[mapStyle],

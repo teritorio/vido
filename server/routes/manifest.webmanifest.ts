@@ -15,11 +15,7 @@ async function manifest(
     | undefined
   if (hostname) {
     const vido: VidoConfig = vidoConfigResolve(hostname, vidos())
-    const fetchSettings = getSettings(
-      vido.API_ENDPOINT,
-      vido.API_PROJECT,
-      vido.API_THEME
-    )
+    const fetchSettings = getSettings(vido)
 
     const [settings] = await Promise.all([fetchSettings])
 

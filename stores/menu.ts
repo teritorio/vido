@@ -4,6 +4,7 @@ import { defineStore } from 'pinia'
 
 import { ApiMenuCategory, MenuItem } from '~/lib/apiMenu'
 import { ApiPoi, ApiPois, getPoiByCategoryId } from '~/lib/apiPois'
+import { VidoConfig } from '~/utils/types-config'
 import {
   FilterValues,
   filterValueFactory,
@@ -13,9 +14,7 @@ import {
 } from '~/utils/types-filters'
 
 interface FetchFeaturesPayload {
-  apiEndpoint: string
-  apiProject: string
-  apiTheme: string
+  vidoConfig: VidoConfig
   categoryIds: ApiMenuCategory['id'][]
 }
 
@@ -149,12 +148,7 @@ export const menuStore = defineStore('menu', {
       }
     },
 
-    async fetchFeatures({
-      apiEndpoint,
-      apiProject,
-      apiTheme,
-      categoryIds,
-    }: FetchFeaturesPayload) {
+    async fetchFeatures({ vidoConfig, categoryIds }: FetchFeaturesPayload) {
       this.isLoadingFeatures = true
 
       try {
@@ -168,15 +162,9 @@ export const menuStore = defineStore('menu', {
             categoryIds
               .filter((categoryId) => !previousFeatures[categoryId])
               .map((categoryId) =>
-                getPoiByCategoryId(
-                  apiEndpoint,
-                  apiProject,
-                  apiTheme,
-                  categoryId,
-                  {
-                    short_description: false,
-                  }
-                )
+                getPoiByCategoryId(vidoConfig, categoryId, {
+                  short_description: false,
+                })
               )
           )
         ).filter((e) => e) as ApiPois[]

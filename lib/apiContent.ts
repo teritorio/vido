@@ -1,3 +1,5 @@
+import { VidoConfig } from '~/utils/types-config'
+
 export type ContentEntry = {
   // eslint-disable-next-line camelcase
   post_id: number
@@ -5,13 +7,9 @@ export type ContentEntry = {
   url: string
 }
 
-export function getContents(
-  apiEndpoint: string,
-  apiProject: string,
-  apiTheme: string
-): Promise<ContentEntry[]> {
+export function getContents(vidoConfig: VidoConfig): Promise<ContentEntry[]> {
   return fetch(
-    `${apiEndpoint}/${apiProject}/${apiTheme}/articles.json?slug=non-classe`
+    `${vidoConfig.API_ENDPOINT}/${vidoConfig.API_PROJECT}/${vidoConfig.API_THEME}/articles.json?slug=non-classe`
   ).then((data) => {
     if (data.ok) {
       return data.json() as unknown as ContentEntry[]

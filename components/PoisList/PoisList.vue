@@ -37,7 +37,7 @@ import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { mapState } from 'pinia'
 import { PropType } from 'vue'
 
-import { defineNuxtComponent } from '#app'
+import { defineNuxtComponent, useRequestHeaders } from '#app'
 import PoiLayout from '~/components/Layout/PoiLayout.vue'
 import Actions from '~/components/PoisList/Actions.vue'
 import CategorySelector from '~/components/PoisList/CategorySelector.vue'
@@ -116,9 +116,7 @@ export default defineNuxtComponent({
       })
 
       getPoiByCategoryId(
-        this.$vidoConfig().API_ENDPOINT,
-        this.$vidoConfig().API_PROJECT,
-        this.$vidoConfig().API_THEME,
+        this.$vidoConfig(useRequestHeaders()),
         this.categoryId,
         {
           geometry_as: 'point',

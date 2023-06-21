@@ -7,6 +7,7 @@ import {
 } from './apiPois'
 
 import { MultilingualString } from '~/utils/types'
+import { VidoConfig } from '~/utils/types-config'
 
 export enum ApiRouteWaypointType {
   parking = 'parking',
@@ -33,14 +34,12 @@ export interface ApiPoiDeps
   > {}
 
 export function getPoiDepsById(
-  apiEndpoint: string,
-  apiProject: string,
-  apiTheme: string,
+  vidoConfig: VidoConfig,
   poiId: ApiPoiId | string,
   options: apiPoisOptions = {}
 ): Promise<ApiPoiDeps> {
   return fetch(
-    `${apiEndpoint}/${apiProject}/${apiTheme}/poi/${poiId}/deps.geojson?` +
+    `${vidoConfig.API_ENDPOINT}/${vidoConfig.API_PROJECT}/${vidoConfig.API_THEME}/poi/${poiId}/deps.geojson?` +
       new URLSearchParams(stringifyOptions(options))
   ).then((data) => {
     if (data.ok) {

@@ -26,7 +26,7 @@
 //@ts-ignore
 import VueCookieAcceptDecline from 'vue-cookie-accept-decline'
 
-import { defineNuxtComponent } from '#app'
+import { defineNuxtComponent, useRequestHeaders } from '#app'
 import 'vue-cookie-accept-decline/dist/vue-cookie-accept-decline.css'
 import ExternalLink from '~/components/UI/ExternalLink.vue'
 
@@ -38,7 +38,7 @@ export default defineNuxtComponent({
 
   computed: {
     vidoConfig() {
-      return this.$vidoConfig()
+      return this.$vidoConfig(useRequestHeaders())
     },
 
     doNotTrack(): boolean {

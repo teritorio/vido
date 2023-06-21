@@ -48,7 +48,7 @@ export default defineNuxtComponent({
     const config: VidoConfig = configRef.value
 
     const fetchSettings = getAsyncDataOrThrows('fetchSettings', () =>
-      getSettings(config.API_ENDPOINT, config.API_PROJECT, config.API_THEME)
+      getSettings(config)
     )
 
     const fetchSettingsBoundary = fetchSettings.then(async (settings) => {
@@ -84,17 +84,13 @@ export default defineNuxtComponent({
 
     const fetchPropertyTranslations: Promise<Ref<PropertyTranslations>> =
       getAsyncDataOrThrows('fetchPropertyTranslations', () =>
-        getPropertyTranslations(
-          config.API_ENDPOINT,
-          config.API_PROJECT,
-          config.API_THEME
-        )
+        getPropertyTranslations(config)
       )
 
     const fetchMenuItems = getAsyncDataOrThrows('fetchMenuItems', () =>
       menuStore().menuItems !== undefined
         ? Promise.resolve(Object.values(menuStore().menuItems!))
-        : getMenu(config.API_ENDPOINT, config.API_PROJECT, config.API_THEME)
+        : getMenu(config)
     )
 
     let categoryIdsJoin: string | null
@@ -122,15 +118,9 @@ export default defineNuxtComponent({
     )
     if (poiId) {
       fetchPoi = getAsyncDataOrNull(`fetchPoi-${poiId}`, () =>
-        getPoiById(
-          config.API_ENDPOINT,
-          config.API_PROJECT,
-          config.API_THEME,
-          poiId!,
-          {
-            short_description: false,
-          }
-        )
+        getPoiById(config, poiId!, {
+          short_description: false,
+        })
       )
     }
 

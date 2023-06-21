@@ -1,6 +1,7 @@
 import { MapPoiProperties, MapPoiId } from './mapPois'
 
 import { MultilingualString } from '~/utils/types'
+import { VidoConfig } from '~/utils/types-config'
 
 export interface ApiPoiId extends MapPoiId {}
 
@@ -106,16 +107,15 @@ export function stringifyOptions(options: apiPoisOptions): string[][] {
 }
 
 export function getPoiById(
-  apiEndpoint: string,
-  apiProject: string,
-  apiTheme: string,
+  vidoConfig: VidoConfig,
   poiId: ApiPoiId | string,
   options: apiPoisOptions = {}
 ): Promise<ApiPoi> {
   return fetch(
-    `${apiEndpoint}/${apiProject}/${apiTheme}/poi/${poiId}.${
-      options.format || defaultOptions.format
-    }?` + new URLSearchParams(stringifyOptions(options))
+    `${vidoConfig.API_ENDPOINT}/${vidoConfig.API_PROJECT}/${
+      vidoConfig.API_THEME
+    }/poi/${poiId}.${options.format || defaultOptions.format}?` +
+      new URLSearchParams(stringifyOptions(options))
   ).then((data) => {
     if (data.ok) {
       return data.json() as unknown as ApiPoi
@@ -128,16 +128,14 @@ export function getPoiById(
 }
 
 export function getPois(
-  apiEndpoint: string,
-  apiProject: string,
-  apiTheme: string,
+  vidoConfig: VidoConfig,
   poiIds?: (ApiPoiId | string)[],
   options: apiPoisOptions = {}
 ): Promise<ApiPois> {
   return fetch(
-    `${apiEndpoint}/${apiProject}/${apiTheme}/pois.${
-      options.format || defaultOptions.format
-    }?` +
+    `${vidoConfig.API_ENDPOINT}/${vidoConfig.API_PROJECT}/${
+      vidoConfig.API_THEME
+    }/pois.${options.format || defaultOptions.format}?` +
       new URLSearchParams([
         ...(poiIds ? [['ids', poiIds.join(',')]] : []),
         ...stringifyOptions(options),
@@ -154,41 +152,32 @@ export function getPois(
 }
 
 export function getPoiByCategoryIdUrl(
-  apiEndpoint: string,
-  apiProject: string,
-  apiTheme: string,
+  vidoConfig: VidoConfig,
   categoryId: number | string,
   options: apiPoisOptions = { geometry_as: 'point' }
 ): string {
   return (
-    `${apiEndpoint}/${apiProject}/${apiTheme}/pois/category/${categoryId}.${
-      options.format || defaultOptions.format
-    }?` + new URLSearchParams(stringifyOptions(options))
+    `${vidoConfig.API_ENDPOINT}/${vidoConfig.API_PROJECT}/${
+      vidoConfig.API_THEME
+    }/pois/category/${categoryId}.${options.format || defaultOptions.format}?` +
+    new URLSearchParams(stringifyOptions(options))
   )
 }
 
 export function getPoiByCategoryId(
-  apiEndpoint: string,
-  apiProject: string,
-  apiTheme: string,
+  vidoConfig: VidoConfig,
   categoryId: number | string,
   options: apiPoisOptions = { geometry_as: 'point' }
 ): Promise<ApiPois> {
-  return fetch(
-    getPoiByCategoryIdUrl(
-      apiEndpoint,
-      apiProject,
-      apiTheme,
-      categoryId,
-      options
-    )
-  ).then((data) => {
-    if (data.ok) {
-      return data.json() as unknown as ApiPois
-    } else {
-      return Promise.reject(
-        new Error([data.url, data.status, data.statusText].join(' '))
-      )
+  return fetch(getPoiByCategoryIdUrl(vidoConfig, categoryId, options)).then(
+    (data) => {
+      if (data.ok) {
+        return data.json() as unknown as ApiPois
+      } else {
+        return Promise.reject(
+          new Error([data.url, data.status, data.statusText].join(' '))
+        )
+      }
     }
-  })
+  )
 }

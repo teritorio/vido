@@ -72,7 +72,7 @@ import { mapState } from 'pinia'
 import { PropType } from 'vue'
 import { VDialog } from 'vuetify/components/VDialog'
 
-import { defineNuxtComponent } from '#app'
+import { defineNuxtComponent, useRequestHeaders } from '#app'
 import FavoriteNoteBook from '~/components/MainMap/FavoriteNoteBook.vue'
 import Badge from '~/components/UI/Badge.vue'
 import FavoriteIcon from '~/components/UI/FavoriteIcon.vue'
@@ -134,12 +134,9 @@ export default defineNuxtComponent({
   },
   methods: {
     async fetchFavorites(ids: Number[]) {
-      return await getPois(
-        this.$vidoConfig().API_ENDPOINT,
-        this.$vidoConfig().API_PROJECT,
-        this.$vidoConfig().API_THEME,
-        ids
-      ).then((pois) => (pois && pois.features) || [])
+      return await getPois(this.$vidoConfig(useRequestHeaders()), ids).then(
+        (pois) => (pois && pois.features) || []
+      )
     },
 
     async getFavs() {

@@ -72,7 +72,7 @@ import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { mapState } from 'pinia'
 import { PropType, ref } from 'vue'
 
-import { defineNuxtComponent } from '#app'
+import { defineNuxtComponent, useRequestHeaders } from '#app'
 import PoisDeck from '~/components/PoisCard/PoisDeck.vue'
 import IconButton from '~/components/UI/IconButton.vue'
 import IconsBar from '~/components/UI/IconsBar.vue'
@@ -122,19 +122,17 @@ export default defineNuxtComponent({
     ...mapState(favoritesStore, ['favoritesIds']),
 
     pdfLink(): string {
-      return `${this.$vidoConfig().API_EXPORT}/${
-        this.$vidoConfig().API_PROJECT
-      }/${
-        this.$vidoConfig().API_THEME
+      const config = this.$vidoConfig(useRequestHeaders())
+      return `${config.API_EXPORT}/${config.API_PROJECT}/${
+        config.API_THEME
       }/pois/favorites.pdf?ids=${this.favoritesIds.join(',')}`
     },
 
     csvLink(): string {
-      return `${this.$vidoConfig().API_ENDPOINT}/${
-        this.$vidoConfig().API_PROJECT
-      }/${this.$vidoConfig().API_THEME}/pois.csv?ids=${this.favoritesIds.join(
-        ','
-      )}`
+      const config = this.$vidoConfig(useRequestHeaders())
+      return `${config.API_ENDPOINT}/${config.API_PROJECT}/${
+        config.API_THEME
+      }/pois.csv?ids=${this.favoritesIds.join(',')}`
     },
   },
 

@@ -70,7 +70,7 @@ import type {
 import { mapActions, mapState, mapWritableState } from 'pinia'
 import { PropType, ref } from 'vue'
 
-import { defineNuxtComponent } from '#app'
+import { defineNuxtComponent, useRequestHeaders } from '#app'
 import MapControlsExplore from '~/components/MainMap/MapControlsExplore.vue'
 import SnackBar from '~/components/MainMap/SnackBar.vue'
 import MapBase from '~/components/Map/MapBase.vue'
@@ -347,9 +347,7 @@ export default defineNuxtComponent({
             // Seted temp partial data from vector tiles.
             // Now fetch full data.
             return getPoiById(
-              this.$vidoConfig().API_ENDPOINT,
-              this.$vidoConfig().API_PROJECT,
-              this.$vidoConfig().API_THEME,
+              this.$vidoConfig(useRequestHeaders()),
               feature.properties.metadata.id
             ).then((apiPoi) => {
               // Overide geometry.

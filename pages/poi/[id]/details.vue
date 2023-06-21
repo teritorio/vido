@@ -64,34 +64,24 @@ export default defineNuxtComponent({
     const config: VidoConfig = configRef.value
 
     const fetchSettings = getAsyncDataOrThrows('fetchSettings', () =>
-      getSettings(config.API_ENDPOINT, config.API_PROJECT, config.API_THEME)
+      getSettings(config)
     )
 
     const fetchContents = getAsyncDataOrThrows('fetchContents', () =>
-      getContents(config.API_ENDPOINT, config.API_PROJECT, config.API_THEME)
+      getContents(config)
     )
 
     const fetchPropertyTranslations: Promise<Ref<PropertyTranslations>> =
       getAsyncDataOrThrows('fetchPropertyTranslations', () =>
-        getPropertyTranslations(
-          config.API_ENDPOINT,
-          config.API_PROJECT,
-          config.API_THEME
-        )
+        getPropertyTranslations(config)
       )
 
     const fetchPoiPoiDeps = getAsyncDataOrThrows(
       `fetchPoiPoiDeps-${params.id}`,
       () => {
-        return getPoiDepsById(
-          config.API_ENDPOINT,
-          config.API_PROJECT,
-          config.API_THEME,
-          params.id as string,
-          {
-            short_description: false,
-          }
-        ).then((poiDeps) => {
+        return getPoiDepsById(config, params.id as string, {
+          short_description: false,
+        }).then((poiDeps) => {
           let poi: ApiPoi | undefined = undefined
           if (poiDeps) {
             const g = groupBy(

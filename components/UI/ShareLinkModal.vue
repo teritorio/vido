@@ -56,7 +56,7 @@ import { VDialog } from 'vuetify/components/VDialog'
 import { VDivider } from 'vuetify/components/VDivider'
 import { VSpacer } from 'vuetify/components/VGrid'
 
-import { defineNuxtComponent } from '#app'
+import { defineNuxtComponent, useRequestHeaders } from '#app'
 import UIButton from '~/components/UI/UIButton.vue'
 import { OriginEnum } from '~/utils/types'
 import { urlAddTrackOrigin } from '~/utils/url'
@@ -146,7 +146,7 @@ export default defineNuxtComponent({
     qrCodeUrl() {
       if (this.linkQrCode) {
         return (
-          this.$vidoConfig().API_QR_SHORTENER +
+          this.$vidoConfig(useRequestHeaders()).API_QR_SHORTENER +
           '/qrcode.svg?url=' +
           encodeURIComponent(this.linkQrCode)
         )

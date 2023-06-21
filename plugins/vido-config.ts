@@ -1,4 +1,3 @@
-import { useRequestHeaders } from '#app'
 import { defineNuxtPlugin } from '#app/nuxt'
 import { vidos } from '~/lib/config'
 import { VidoConfig, VidosConfig } from '~/utils/types-config'
@@ -45,7 +44,9 @@ export default defineNuxtPlugin((nuxtApp) => {
       vidoConfigSet: (c: VidoConfig): void => {
         config = c
       },
-      vidoConfig: (): VidoConfig => config || vidoConfig(useRequestHeaders()),
+      vidoConfig: (
+        headers: Readonly<Record<string, string | undefined>>
+      ): VidoConfig => config || vidoConfig(headers),
     },
   }
 })

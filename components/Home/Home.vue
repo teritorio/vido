@@ -217,7 +217,7 @@ import type { FitBoundsOptions, LngLatBoundsLike } from 'maplibre-gl'
 import { mapActions, mapState } from 'pinia'
 import { PropType, ref } from 'vue'
 
-import { defineNuxtComponent } from '#app'
+import { defineNuxtComponent, useRequestHeaders } from '#app'
 import ExplorerOrFavoritesBack from '~/components/Home/ExplorerOrFavoritesBack.vue'
 import HomeMixin from '~/components/Home/HomeMixin'
 import Menu from '~/components/Home/Menu.vue'
@@ -398,9 +398,7 @@ export default defineNuxtComponent({
         this.routerPushUrl()
 
         menuStore().fetchFeatures({
-          apiEndpoint: this.$vidoConfig().API_ENDPOINT,
-          apiProject: this.$vidoConfig().API_PROJECT,
-          apiTheme: this.$vidoConfig().API_THEME,
+          vidoConfig: this.$vidoConfig(useRequestHeaders()),
           categoryIds: this.selectedCategoryIds,
         })
         this.allowRegionBackZoom = true
@@ -599,12 +597,7 @@ export default defineNuxtComponent({
     },
 
     fetchFavorites(ids: Number[]): Promise<ApiPoi[]> {
-      return getPois(
-        this.$vidoConfig().API_ENDPOINT,
-        this.$vidoConfig().API_PROJECT,
-        this.$vidoConfig().API_THEME,
-        ids
-      )
+      return getPois(this.$vidoConfig(useRequestHeaders()), ids)
         .then((pois) => (pois && pois.features) || [])
         .then((pois) =>
           pois.map((poi) => ({

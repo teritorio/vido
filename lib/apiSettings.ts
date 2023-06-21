@@ -1,6 +1,7 @@
 import { MetaObject } from 'nuxt/schema'
 
 import { MultilingualString } from '~/utils/types'
+import { VidoConfig } from '~/utils/types-config'
 
 export interface SiteInfosTheme {
   id: number
@@ -49,12 +50,10 @@ export interface Settings {
   themes: SiteInfosTheme[]
 }
 
-export function getSettings(
-  apiEndpoint: string,
-  apiProject: string,
-  apiTheme: string
-): Promise<Settings> {
-  return fetch(`${apiEndpoint}/${apiProject}/${apiTheme}/settings.json`)
+export function getSettings(vidoConfig: VidoConfig): Promise<Settings> {
+  return fetch(
+    `${vidoConfig.API_ENDPOINT}/${vidoConfig.API_PROJECT}/${vidoConfig.API_THEME}/settings.json`
+  )
     .then((data) => {
       if (data.ok) {
         return data.json() as unknown as Settings

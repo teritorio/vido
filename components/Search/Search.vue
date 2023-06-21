@@ -73,7 +73,7 @@ import { debounce, DebouncedFunc } from 'lodash'
 import { mapActions, mapState } from 'pinia'
 import { PropType } from 'vue'
 
-import { defineNuxtComponent } from '#app'
+import { defineNuxtComponent, useRequestHeaders } from '#app'
 import SearchInput from '~/components/Search/SearchInput.vue'
 import SearchResultBlock from '~/components/Search/SearchResultBlock.vue'
 import { ApiPoi, getPoiById } from '~/lib/apiPois'
@@ -295,14 +295,11 @@ export default defineNuxtComponent({
     },
 
     onPoiClick(searchResult: SearchResult) {
-      getPoiById(
-        this.$vidoConfig().API_ENDPOINT,
-        this.$vidoConfig().API_PROJECT,
-        this.$vidoConfig().API_THEME,
-        searchResult.id
-      ).then((poi) => {
-        this.setSelectedFeature(poi)
-      })
+      getPoiById(this.$vidoConfig(useRequestHeaders()), searchResult.id).then(
+        (poi) => {
+          this.setSelectedFeature(poi)
+        }
+      )
 
       this.reset()
     },
@@ -352,16 +349,13 @@ export default defineNuxtComponent({
         this.searchQueryId += 1
         const currentSearchQueryId = this.searchQueryId
 
-        const projectTheme = `project_theme=${this.$vidoConfig().API_PROJECT}-${
-          this.$vidoConfig().API_THEME
-        }`
+        const config = this.$vidoConfig(useRequestHeaders())
+        const projectTheme = `project_theme=${config.API_PROJECT}-${config.API_THEME}`
         const searchText = this.searchText.trim()
         if (searchText.length === 2) {
           const cartocode = this.searchText
           getPoiById(
-            this.$vidoConfig().API_ENDPOINT,
-            this.$vidoConfig().API_PROJECT,
-            this.$vidoConfig().API_THEME,
+            this.$vidoConfig(useRequestHeaders()),
             `cartocode:${cartocode}`
           )
             .then((poi) => {
@@ -388,24 +382,21 @@ export default defineNuxtComponent({
         } else if (searchText.length > 2) {
           const query = `q=${this.searchText}&lon=${this.mapCenter.lng}&lat=${this.mapCenter.lat}`
 
+          const config = this.$vidoConfig(useRequestHeaders())
           const MenuItemsFetch: Promise<
             ApiSearchResult<ApiMenuItemSearchResult>
           > = fetch(
-            `${
-              this.$vidoConfig().API_SEARCH
-            }?${projectTheme}&type=menu_item&${query}`
+            `${config.API_SEARCH}?${projectTheme}&type=menu_item&${query}`
           ).then((data) => (data.ok ? data.json() : null))
 
           const poisFetch: Promise<ApiSearchResult<ApiPoisSearchResult>> =
             fetch(
-              `${
-                this.$vidoConfig().API_SEARCH
-              }?${projectTheme}&type=poi&${query}&limit=10`
+              `${config.API_SEARCH}?${projectTheme}&type=poi&${query}&limit=10`
             ).then((data) => (data.ok ? data.json() : null))
 
           const addressesFetch: Promise<ApiSearchResult<ApiAddrSearchResult>> =
-            fetch(`${this.$vidoConfig().API_SEARCH_ADDR}?${query}`).then(
-              (data) => (data.ok ? data.json() : null)
+            fetch(`${config.API_SEARCH_ADDR}?${query}`).then((data) =>
+              data.ok ? data.json() : null
             )
 
           Promise.all([MenuItemsFetch, poisFetch, addressesFetch])

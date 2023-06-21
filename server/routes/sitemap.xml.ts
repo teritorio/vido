@@ -25,11 +25,7 @@ async function manifest(
   if (hostname) {
     const vido: VidoConfig = vidoConfigResolve(hostname, vidos())
 
-    const menu = getMenu(
-      vido.API_ENDPOINT,
-      vido.API_PROJECT,
-      vido.API_THEME
-    ).then((menuItem) =>
+    const menu = getMenu(vido).then((menuItem) =>
       menuItem
         .filter((menuItem) => menuItem.category && menuItem.id)
         .map((menuCategory) => ({
@@ -37,11 +33,7 @@ async function manifest(
         }))
     )
 
-    const pois = getPois(
-      vido.API_ENDPOINT,
-      vido.API_PROJECT,
-      vido.API_THEME
-    ).then((apiPois) =>
+    const pois = getPois(vido).then((apiPois) =>
       apiPois.features.map((poi) => ({
         url: `/poi/${poi.properties.metadata.id}/details`,
         lastmod: poi.properties.metadata.updated_at,
