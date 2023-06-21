@@ -224,19 +224,37 @@
       "variants": [
         {
           "id": "components-fields-routesfield-story-vue-0",
-          "title": "Default",
+          "title": "Default - label_popup",
           "icon": null,
           "iconColor": null
         },
         {
           "id": "components-fields-routesfield-story-vue-1",
-          "title": "Missing Fields",
+          "title": "Default - label_details",
           "icon": null,
           "iconColor": null
         },
         {
           "id": "components-fields-routesfield-story-vue-2",
-          "title": "Missing Difficulty",
+          "title": "Missing Fields - label_popup",
+          "icon": null,
+          "iconColor": null
+        },
+        {
+          "id": "components-fields-routesfield-story-vue-3",
+          "title": "Missing Fields - label_details",
+          "icon": null,
+          "iconColor": null
+        },
+        {
+          "id": "components-fields-routesfield-story-vue-4",
+          "title": "Missing Difficulty - label_popup",
+          "icon": null,
+          "iconColor": null
+        },
+        {
+          "id": "components-fields-routesfield-story-vue-5",
+          "title": "Missing Difficulty - label_details",
           "icon": null,
           "iconColor": null
         }
