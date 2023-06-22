@@ -10,6 +10,7 @@ services:
     ports:
       - "3000:3000"
     volumes:
+      - ./vidos.config.ts:/usr/src/app/vidos.config.ts
       - ./vidos-config.json:/usr/src/app/vidos-config.json
     environment:
       - CONFIG=/usr/src/app/vidos-config.json
