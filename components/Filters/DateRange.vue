@@ -7,7 +7,7 @@
       :items="dateFilters"
       :clearable="true"
       hide-details="auto"
-      @input="onChange"
+      @update:modelValue="onChange"
     />
   </div>
 </template>
