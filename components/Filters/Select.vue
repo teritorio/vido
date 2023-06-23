@@ -11,6 +11,7 @@
       :clearable="true"
       hide-details="auto"
       density="compact"
+      :custom-filter="filterEasy"
       @update:model-value="onChange"
       @click="$emit('click')"
       @blur="$emit('blur')"
@@ -67,6 +68,19 @@ export default defineNuxtComponent({
   },
 
   methods: {
+    normalize(str: string): string {
+      return str
+        .toLocaleLowerCase()
+        .normalize('NFD')
+        .replace(/\p{Diacritic}/gu, '')
+    },
+
+    filterEasy(value: string, query: string) {
+      if (value == null || query == null) return -1
+
+      return this.normalize(value).indexOf(this.normalize(query))
+    },
+
     onChange(value: string[] | undefined) {
       this.$emit('change', value)
     },
