@@ -154,12 +154,11 @@ export function getPois(
 export function getPoiByCategoryIdUrl(
   vidoConfig: VidoConfig,
   categoryId: number | string,
-  options: ApiPoisOptions = { geometry_as: 'point' }
+  options: ApiPoisOptions = {}
 ): string {
+  options = Object.assign(defaultOptions, { geometry_as: 'point' }, options)
   return (
-    `${vidoConfig.API_ENDPOINT}/${vidoConfig.API_PROJECT}/${
-      vidoConfig.API_THEME
-    }/pois/category/${categoryId}.${options.format || defaultOptions.format}?` +
+    `${vidoConfig.API_ENDPOINT}/${vidoConfig.API_PROJECT}/${vidoConfig.API_THEME}/pois/category/${categoryId}.${options.format}?` +
     new URLSearchParams(stringifyOptions(options))
   )
 }
@@ -167,8 +166,9 @@ export function getPoiByCategoryIdUrl(
 export function getPoiByCategoryId(
   vidoConfig: VidoConfig,
   categoryId: number | string,
-  options: ApiPoisOptions = { geometry_as: 'point' }
+  options: ApiPoisOptions = {}
 ): Promise<ApiPois> {
+  options = Object.assign(defaultOptions, { geometry_as: 'point' }, options)
   return fetch(getPoiByCategoryIdUrl(vidoConfig, categoryId, options)).then(
     (data) => {
       if (data.ok) {
