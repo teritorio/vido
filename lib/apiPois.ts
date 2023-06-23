@@ -86,7 +86,7 @@ export const ApiPoiPropertiesArray = [
 export interface ApiPois
   extends GeoJSON.FeatureCollection<GeoJSON.Geometry, ApiPoiProperties> {}
 
-export interface apiPoisOptions {
+export interface ApiPoisOptions {
   // eslint-disable-next-line camelcase
   geometry_as?: 'point' | 'bbox'
   // eslint-disable-next-line camelcase
@@ -94,13 +94,13 @@ export interface apiPoisOptions {
   format?: 'geojson' | 'csv'
 }
 
-export const defaultOptions: apiPoisOptions = {
+export const defaultOptions: ApiPoisOptions = {
   geometry_as: 'bbox',
   short_description: true,
   format: 'geojson',
 }
 
-export function stringifyOptions(options: apiPoisOptions): string[][] {
+export function stringifyOptions(options: ApiPoisOptions): string[][] {
   return Object.entries(Object.assign({}, defaultOptions, options))
     .filter(([k, v]) => k != 'format')
     .map(([k, v]) => [k, `${v}`])
@@ -109,7 +109,7 @@ export function stringifyOptions(options: apiPoisOptions): string[][] {
 export function getPoiById(
   vidoConfig: VidoConfig,
   poiId: ApiPoiId | string,
-  options: apiPoisOptions = {}
+  options: ApiPoisOptions = {}
 ): Promise<ApiPoi> {
   return fetch(
     `${vidoConfig.API_ENDPOINT}/${vidoConfig.API_PROJECT}/${
@@ -130,7 +130,7 @@ export function getPoiById(
 export function getPois(
   vidoConfig: VidoConfig,
   poiIds?: (ApiPoiId | string)[],
-  options: apiPoisOptions = {}
+  options: ApiPoisOptions = {}
 ): Promise<ApiPois> {
   return fetch(
     `${vidoConfig.API_ENDPOINT}/${vidoConfig.API_PROJECT}/${
@@ -154,7 +154,7 @@ export function getPois(
 export function getPoiByCategoryIdUrl(
   vidoConfig: VidoConfig,
   categoryId: number | string,
-  options: apiPoisOptions = { geometry_as: 'point' }
+  options: ApiPoisOptions = { geometry_as: 'point' }
 ): string {
   return (
     `${vidoConfig.API_ENDPOINT}/${vidoConfig.API_PROJECT}/${
@@ -167,7 +167,7 @@ export function getPoiByCategoryIdUrl(
 export function getPoiByCategoryId(
   vidoConfig: VidoConfig,
   categoryId: number | string,
-  options: apiPoisOptions = { geometry_as: 'point' }
+  options: ApiPoisOptions = { geometry_as: 'point' }
 ): Promise<ApiPois> {
   return fetch(getPoiByCategoryIdUrl(vidoConfig, categoryId, options)).then(
     (data) => {

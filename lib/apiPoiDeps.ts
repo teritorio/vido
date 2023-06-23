@@ -2,7 +2,7 @@ import {
   ApiPoi,
   ApiPoiId,
   ApiPoiProperties,
-  apiPoisOptions,
+  ApiPoisOptions,
   stringifyOptions,
 } from './apiPois'
 
@@ -36,7 +36,7 @@ export interface ApiPoiDeps
 export function getPoiDepsById(
   vidoConfig: VidoConfig,
   poiId: ApiPoiId | string,
-  options: apiPoisOptions = {}
+  options: ApiPoisOptions = {}
 ): Promise<ApiPoiDeps> {
   return fetch(
     `${vidoConfig.API_ENDPOINT}/${vidoConfig.API_PROJECT}/${vidoConfig.API_THEME}/poi/${poiId}/deps.geojson?` +
