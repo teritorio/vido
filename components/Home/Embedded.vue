@@ -33,6 +33,7 @@
       <div class="tw-flex tw-flex-col tw-h-screen">
         <CategorySelector
           :menu-items="Object.values(apiMenuCategory || {})"
+          label="categorySelector.placeholderAdd"
           @category-change="onMenuChange"
         />
         <div v-if="initialBbox" class="tw-flex tw-flex-grow">

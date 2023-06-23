@@ -5,10 +5,17 @@
       class="category-selector"
       solo
       :items="Object.values(menuEntries).map((a) => a[0])"
-      :label="$t('categorySelector.placeholder')"
+      :label="$t(label)"
+      variant="solo"
+      rounded
       hide-details="auto"
       @update:model-value="$emit('category-change', $event)"
     >
+      <template #prepend-inner>
+        <div class="tw-right-0 tw-px-5 tw-text-zinc-800">
+          <FontAwesomeIcon icon="search" />
+        </div>
+      </template>
       <template #item="{ props, item }">
         <v-list-item v-bind="props" :title="null">
           <v-list-item-media>
@@ -26,6 +33,7 @@
 </template>
 
 <script lang="ts">
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { PropType } from 'vue'
 import { LocaleObject } from 'vue-i18n-routing'
 import { VAutocomplete } from 'vuetify/components/VAutocomplete'
@@ -46,6 +54,7 @@ export default defineNuxtComponent({
     VListItemMedia,
     VListItemTitle,
     TeritorioIcon,
+    FontAwesomeIcon,
   },
 
   emits: {
@@ -60,6 +69,10 @@ export default defineNuxtComponent({
     categoryId: {
       type: Number,
       default: undefined,
+    },
+    label: {
+      type: String,
+      default: 'categorySelector.placeholderSelect',
     },
   },
 

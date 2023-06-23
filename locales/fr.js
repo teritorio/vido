@@ -137,7 +137,8 @@ export default {
     showOnMap: 'Afficher sur la carte',
   },
   categorySelector: {
-    placeholder: 'Sélectionnez une catégorie',
+    placeholderSelect: 'Sélectionnez une catégorie',
+    placeholderAdd: 'Recherche une catégorie à ajouter',
     search: 'Recherchez dans la liste',
   },
   dateFilter: {

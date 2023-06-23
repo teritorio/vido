@@ -136,7 +136,8 @@ export default {
     showOnMap: 'Show on Map',
   },
   categorySelector: {
-    placeholder: 'Select a category',
+    placeholderSelect: 'Select a category',
+    placeholderAdd: 'RSearch for a category to add',
     search: 'Search into the list',
   },
   dateFilter: {

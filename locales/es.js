@@ -136,7 +136,8 @@ export default {
     showOnMap: 'Mostrar en el mapa',
   },
   categorySelector: {
-    placeholder: 'Seleccione una categoría',
+    placeholderSelect: 'Seleccione una categoría',
+    placeholderAdd: 'Buscar una categoría para añadir',
     search: 'Buscar en la lista',
   },
   dateFilter: {
