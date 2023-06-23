@@ -30,29 +30,28 @@
       />
     </div>
     <div class="tw-grow">
-      <div class="tw-flex tw-flex-col tw-h-screen">
+      <div v-if="initialBbox" class="tw-flex tw-flex-col tw-h-screen">
+        <MapFeatures
+          ref="mapFeatures"
+          :default-bounds="initialBbox"
+          :fit-bounds-padding-options="fitBoundsPaddingOptions"
+          :extra-attributions="settings.attributions"
+          :categories="apiMenuCategory || []"
+          :features="mapFeatures"
+          :selected-categories-ids="selectedCategoryIds"
+          :style-icon-filter="poiFilters"
+          :explorer-mode-enabled="explorerModeEnabled"
+          :cooperative-gestures="false"
+          :boundary-area="boundaryArea || settings.polygon.data"
+        />
         <CategorySelector
           :menu-items="Object.values(apiMenuCategory || {})"
           label="categorySelector.placeholderAdd"
+          class="tw-p-4 tw-fixed tw-z-1 tw-w-full"
           @category-change="onMenuChange"
         />
-        <div v-if="initialBbox" class="tw-flex tw-flex-grow">
-          <MapFeatures
-            ref="mapFeatures"
-            :default-bounds="initialBbox"
-            :fit-bounds-padding-options="fitBoundsPaddingOptions"
-            :extra-attributions="settings.attributions"
-            :categories="apiMenuCategory || []"
-            :features="mapFeatures"
-            :selected-categories-ids="selectedCategoryIds"
-            :style-icon-filter="poiFilters"
-            :explorer-mode-enabled="explorerModeEnabled"
-            :cooperative-gestures="false"
-            :boundary-area="boundaryArea || settings.polygon.data"
-          />
-          <div class="tw-p-4 tw-absolute">
-            <SelectedCategories />
-          </div>
+        <div class="tw-p-4 tw-pt-24 tw-absolute">
+          <SelectedCategories />
         </div>
       </div>
     </div>
