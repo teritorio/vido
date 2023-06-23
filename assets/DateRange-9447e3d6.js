@@ -104,12 +104,12 @@ let __tla = Promise.all([
         items: _ctx.dateFilters,
         clearable: true,
         "hide-details": "auto",
-        onInput: _ctx.onChange
+        "onUpdate:modelValue": _ctx.onChange
       }, null, 8, [
         "model-value",
         "label",
         "items",
-        "onInput"
+        "onUpdate:modelValue"
       ])
     ]);
   }

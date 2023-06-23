@@ -1,5 +1,5 @@
 import { d as defineComponent, u as useCssVars, a as unref, c as computed, b as useRoute, r as ref, o as openBlock, e as createElementBlock, f as createVNode, w as withCtx, g as createBaseVNode, I as Icon, n as normalizeClass, t as toDisplayString, h as createCommentVNode, i as defineStore, j as useStorage, k as watch, l as resolveComponent, m as withKeys, F as Fragment, p as renderList, q as createBlock, s as useEventListener, v as isRef, x as resolveDirective, y as withDirectives, z as createTextVNode, A as pushScopeId, B as popScopeId, C as vShow, D as defineAsyncComponent, _ as __vitePreload, E as reactive, G as normalizeStyle, T as Transition, H as useTitle, J as onMounted, K as createApp, L as createPinia, M as plugin, __tla as __tla_0 } from "./vendor-cc850437.js";
-import { f as files, m as mapFile, t as tree, _ as _sfc_main$c, __tla as __tla_1 } from "./GenericMountStory.vue2-88fc774a.js";
+import { f as files, m as mapFile, t as tree, _ as _sfc_main$c, __tla as __tla_1 } from "./GenericMountStory.vue2-5b512f6d.js";
 import { u as useScrollOnActive, B as BaseListItemLink, _ as _export_sfc, a as useStoryStore, b as _sfc_main$b, i as isMobile, c as BaseSplitPane, __tla as __tla_2 } from "./MobileOverlay.vue2-7c1eddc4.js";
 import { i as isDark, t as toggleDark, r as router, __tla as __tla_3 } from "./__resolved__virtual__histoire-support-plugins-client-f488ae1d.js";
 import { h as histoireConfig, c as customLogos } from "./config-23d2cc81.js";
@@ -802,10 +802,10 @@ let __tla = Promise.all([
     },
     setup(__props, { emit }) {
       const SearchPane = defineAsyncComponent({
-        loader: () => __vitePreload(() => import("./SearchPane.vue-9fa17312.js").then(async (m) => {
+        loader: () => __vitePreload(() => import("./SearchPane.vue-ff228440.js").then(async (m) => {
           await m.__tla;
           return m;
-        }), true ? ["assets/SearchPane.vue-9fa17312.js","assets/vendor-cc850437.js","assets/MobileOverlay.vue2-7c1eddc4.js","assets/__resolved__virtual__histoire-support-plugins-client-f488ae1d.js","assets/config-23d2cc81.js","assets/BaseEmpty.vue-82ca7f61.js","assets/GenericMountStory.vue2-88fc774a.js"] : void 0),
+        }), true ? ["assets/SearchPane.vue-ff228440.js","assets/vendor-cc850437.js","assets/MobileOverlay.vue2-7c1eddc4.js","assets/__resolved__virtual__histoire-support-plugins-client-f488ae1d.js","assets/config-23d2cc81.js","assets/BaseEmpty.vue-82ca7f61.js","assets/GenericMountStory.vue2-5b512f6d.js"] : void 0),
         loadingComponent: _sfc_main$3,
         delay: 0
       });

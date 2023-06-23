@@ -1,5 +1,5 @@
 import { aE as defineNuxtComponent, as as _export_sfc, ax as openBlock, ay as createElementBlock, aG as createBaseVNode, aF as renderSlot, aS as normalizeClass, aL as defineStore, aZ as index, b0 as deepEqual, b1 as mapActions, au as resolveComponent, aA as Fragment, az as renderList, aH as createTextVNode, aI as toDisplayString, aB as createVNode, aJ as createCommentVNode, aK as FontAwesomeIcon, aV as ref, av as createBlock, aT as withModifiers, aM as mapState, b2 as lodashExports, b3 as useRequestHeaders, aw as withCtx, b4 as resolveDynamicComponent, at as defineComponent, aC as normalizeProps, aD as guardReactiveProps, __tla as __tla_0 } from "./vendor-cc850437.js";
-import { D as DateRange, __tla as __tla_1 } from "./DateRange-a46ec052.js";
+import { D as DateRange, __tla as __tla_1 } from "./DateRange-9447e3d6.js";
 import { N as NumberRange, __tla as __tla_2 } from "./NumberRange-a719095c.js";
 import { S as SelectFilter, __tla as __tla_3 } from "./Select-e667f399.js";
 import { f as filterValueFactory, c as filterValuesIsSet, i as isSet, d as isMatch } from "./types-filters-1e0221da.js";
@@ -178,14 +178,16 @@ let __tla = Promise.all([
       }
     });
   }
-  function getPoiByCategoryIdUrl(vidoConfig, categoryId, options = {
-    geometry_as: "point"
-  }) {
-    return `${vidoConfig.API_ENDPOINT}/${vidoConfig.API_PROJECT}/${vidoConfig.API_THEME}/pois/category/${categoryId}.${options.format || defaultOptions.format}?` + new URLSearchParams(stringifyOptions(options));
+  function getPoiByCategoryIdUrl(vidoConfig, categoryId, options = {}) {
+    options = Object.assign(defaultOptions, {
+      geometry_as: "point"
+    }, options);
+    return `${vidoConfig.API_ENDPOINT}/${vidoConfig.API_PROJECT}/${vidoConfig.API_THEME}/pois/category/${categoryId}.${options.format}?` + new URLSearchParams(stringifyOptions(options));
   }
-  function getPoiByCategoryId(vidoConfig, categoryId, options = {
-    geometry_as: "point"
-  }) {
+  function getPoiByCategoryId(vidoConfig, categoryId, options = {}) {
+    options = Object.assign(defaultOptions, {
+      geometry_as: "point"
+    }, options);
     return fetch(getPoiByCategoryIdUrl(vidoConfig, categoryId, options)).then((data) => {
       if (data.ok) {
         return data.json();
