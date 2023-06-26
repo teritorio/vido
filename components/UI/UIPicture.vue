@@ -100,6 +100,7 @@ export default defineComponent({
           // sizes: nSources.value[0].sizes,
           sizes: props.mediaSize, // Monkey path, replace: nSources.value[0].sizes,
           srcset: nSources.value[0].srcset,
+          style: 'tw-w-full',
         }),
       ])
   },
