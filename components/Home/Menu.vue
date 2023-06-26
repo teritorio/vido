@@ -25,12 +25,12 @@
 
   <div v-else-if="isRootMenu" class="tw-flex tw-flex-col tw-space-y-4">
     <template v-for="(menuItem, index) in currentMenuItems" :key="menuItem.id">
-      <component :is="menuBlock" v-if="index === 0">
+      <component :is="menuBlock" v-if="index === 0 && hasSlot">
         <slot></slot>
       </component>
       <component
         :is="menuBlock"
-        v-else-if="!isOnSearch"
+        v-else-if="index !== 0 && !isOnSearch"
         :class="[index === 0 && 'tw-hidden md:tw-block']"
       >
         <ItemList
@@ -190,6 +190,10 @@ export default defineNuxtComponent({
         }
       })
       return counts
+    },
+
+    hasSlot(): boolean {
+      return this.$slots.default !== undefined
     },
   },
 
