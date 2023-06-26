@@ -37,7 +37,7 @@
           :key="locale.code"
           :class="[
             'tw-w-full tw-px-5 tw-py-3 hover:tw-bg-zinc-100',
-            locale.code === $i18n.locale && 'tw-bg-zinc-200',
+            locale.code === $i18n.locale && 'bg-grey-lighten-2',
           ]"
         >
           <v-list-item-title>
