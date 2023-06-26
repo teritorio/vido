@@ -210,7 +210,8 @@ let __tla = Promise.all([
             ...imgAttrs,
             src: srcDefault,
             sizes: props.mediaSize,
-            srcset: nSources.value[0].srcset
+            srcset: nSources.value[0].srcset,
+            style: "tw-w-full"
           })
         ]);
       };

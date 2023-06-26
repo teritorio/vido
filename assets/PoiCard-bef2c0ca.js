@@ -3,7 +3,7 @@ import { F as Fields, __tla as __tla_1 } from "./Fields-c137fd35.js";
 import { F as FavoriteIcon, __tla as __tla_2 } from "./FavoriteIcon-6f36283c.js";
 import { T as TeritorioIcon, __tla as __tla_3 } from "./TeritorioIcon-12504358.js";
 import { i as isIOS, c as coordinatesHref, __tla as __tla_4 } from "./Field-ceb20a59.js";
-import { f as favoritesStore, U as UIPicture, __tla as __tla_5 } from "./UIPicture-ba682e0f.js";
+import { f as favoritesStore, U as UIPicture, __tla as __tla_5 } from "./UIPicture-43681163.js";
 import { a as Mode } from "./types-f83cf40c.js";
 let PoiCard;
 let __tla = Promise.all([
@@ -483,7 +483,12 @@ let __tla = Promise.all([
   ];
   const _hoisted_2 = {
     key: 0,
-    class: "md:tw-w-48 tw-h-44 md:tw-h-auto md:tw-max-h-full tw-bg-gray-100 tw-text-gray-100 tw-flex tw-items-center tw-align-middle tw-justify-center tw-relative tw-min-icon-height"
+    class: normalizeClass([
+      " tw-bg-gray-100 tw-text-gray-100 tw-flex tw-relative tw-items-center tw-align-middle tw-justify-center",
+      "tw-h-44",
+      "md:tw-w-48 md:tw-h-auto md:tw-max-h-full",
+      "min-icon-height"
+    ])
   };
   function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
     const _component_TeritorioIcon = resolveComponent("TeritorioIcon");
@@ -509,7 +514,7 @@ let __tla = Promise.all([
         ])) : createCommentVNode("v-if", true),
         _ctx.poi.properties.image && _ctx.poi.properties.image.length > 0 ? (openBlock(), createBlock(_component_UIPicture, {
           key: 1,
-          class: "tw-object-cover tw-h-44 tw-w-full md:tw-w-48 md:tw-h-full tw-z-10",
+          class: "tw-object-cover tw-h-full tw-w-full tw-z-10",
           src: _ctx.poi.properties.image[0],
           alt: _ctx.$t("poiCard.thumbnail"),
           "media-size": "30rem"

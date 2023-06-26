@@ -47,10 +47,10 @@ let __tla = Promise.all([
     await m.__tla;
     return m;
   }), true ? ["assets/Select.story-b018b50b.js","assets/vendor-fe86adbc.js","assets/Select-1f61754b.js","assets/types-filters-1e0221da.js"] : void 0));
-  const Comp8 = defineAsyncComponent(() => __vitePreload(() => import("./Menu.story-6854978b.js").then(async (m) => {
+  const Comp8 = defineAsyncComponent(() => __vitePreload(() => import("./Menu.story-6ee20e56.js").then(async (m) => {
     await m.__tla;
     return m;
-  }), true ? ["assets/Menu.story-6854978b.js","assets/vendor-fe86adbc.js","assets/DateRange-7fd7dee9.js","assets/NumberRange-81a73742.js","assets/Select-1f61754b.js","assets/types-filters-1e0221da.js","assets/ItemList-216e4f5c.js","assets/Category-4bca8876.js","assets/Item-eeb46123.js","assets/TeritorioIconBadge-af4ad1b2.js","assets/TeritorioIcon-12504358.js","assets/Group-0ecaac6d.js","assets/Link-0851620b.js","assets/types-f83cf40c.js"] : void 0));
+  }), true ? ["assets/Menu.story-6ee20e56.js","assets/vendor-fe86adbc.js","assets/DateRange-7fd7dee9.js","assets/NumberRange-81a73742.js","assets/Select-1f61754b.js","assets/types-filters-1e0221da.js","assets/ItemList-216e4f5c.js","assets/Category-4bca8876.js","assets/Item-eeb46123.js","assets/TeritorioIconBadge-af4ad1b2.js","assets/TeritorioIcon-12504358.js","assets/Group-0ecaac6d.js","assets/Link-0851620b.js","assets/types-f83cf40c.js"] : void 0));
   const Comp9 = defineAsyncComponent(() => __vitePreload(() => import("./Category.story-1b088b9f.js").then(async (m) => {
     await m.__tla;
     return m;
@@ -71,18 +71,18 @@ let __tla = Promise.all([
     await m.__tla;
     return m;
   }), true ? ["assets/Fields.story-3e9293ed.js","assets/vendor-fe86adbc.js","assets/Fields-c137fd35.js","assets/Field-ceb20a59.js","assets/Phone-61a68ce3.js","assets/DateRange-541430bf.js","assets/property-translations-1fdfea06.js","assets/RoutesField-bbb40be4.js","assets/Stars-184461e1.js"] : void 0));
-  const Comp14 = defineAsyncComponent(() => __vitePreload(() => import("./PoiCard.story-a077fa1c.js").then(async (m) => {
+  const Comp14 = defineAsyncComponent(() => __vitePreload(() => import("./PoiCard.story-ec202dcf.js").then(async (m) => {
     await m.__tla;
     return m;
-  }), true ? ["assets/PoiCard.story-a077fa1c.js","assets/vendor-fe86adbc.js","assets/PoiCard-a564d29e.js","assets/Fields-c137fd35.js","assets/Field-ceb20a59.js","assets/Phone-61a68ce3.js","assets/DateRange-541430bf.js","assets/property-translations-1fdfea06.js","assets/RoutesField-bbb40be4.js","assets/Stars-184461e1.js","assets/FavoriteIcon-6f36283c.js","assets/TeritorioIcon-12504358.js","assets/UIPicture-ba682e0f.js","assets/types-f83cf40c.js","assets/2-8524393d.js"] : void 0));
-  const Comp15 = defineAsyncComponent(() => __vitePreload(() => import("./PoiCardLight.story-fa90e57d.js").then(async (m) => {
+  }), true ? ["assets/PoiCard.story-ec202dcf.js","assets/vendor-fe86adbc.js","assets/PoiCard-bef2c0ca.js","assets/Fields-c137fd35.js","assets/Field-ceb20a59.js","assets/Phone-61a68ce3.js","assets/DateRange-541430bf.js","assets/property-translations-1fdfea06.js","assets/RoutesField-bbb40be4.js","assets/Stars-184461e1.js","assets/FavoriteIcon-6f36283c.js","assets/TeritorioIcon-12504358.js","assets/UIPicture-43681163.js","assets/types-f83cf40c.js","assets/2-8524393d.js"] : void 0));
+  const Comp15 = defineAsyncComponent(() => __vitePreload(() => import("./PoiCardLight.story-17a40304.js").then(async (m) => {
     await m.__tla;
     return m;
-  }), true ? ["assets/PoiCardLight.story-fa90e57d.js","assets/vendor-fe86adbc.js","assets/PoiCardLight-d44048f5.js","assets/Fields-c137fd35.js","assets/Field-ceb20a59.js","assets/Phone-61a68ce3.js","assets/DateRange-541430bf.js","assets/property-translations-1fdfea06.js","assets/RoutesField-bbb40be4.js","assets/Stars-184461e1.js","assets/TeritorioIconBadge-af4ad1b2.js","assets/TeritorioIcon-12504358.js","assets/UIPicture-ba682e0f.js","assets/2-8524393d.js"] : void 0));
-  const Comp16 = defineAsyncComponent(() => __vitePreload(() => import("./PoisDeck.story-5b7bc6e2.js").then(async (m) => {
+  }), true ? ["assets/PoiCardLight.story-17a40304.js","assets/vendor-fe86adbc.js","assets/PoiCardLight-e4ba1341.js","assets/Fields-c137fd35.js","assets/Field-ceb20a59.js","assets/Phone-61a68ce3.js","assets/DateRange-541430bf.js","assets/property-translations-1fdfea06.js","assets/RoutesField-bbb40be4.js","assets/Stars-184461e1.js","assets/TeritorioIconBadge-af4ad1b2.js","assets/TeritorioIcon-12504358.js","assets/UIPicture-43681163.js","assets/2-8524393d.js"] : void 0));
+  const Comp16 = defineAsyncComponent(() => __vitePreload(() => import("./PoisDeck.story-49d19fe6.js").then(async (m) => {
     await m.__tla;
     return m;
-  }), true ? ["assets/PoisDeck.story-5b7bc6e2.js","assets/vendor-fe86adbc.js","assets/PoiCard-a564d29e.js","assets/Fields-c137fd35.js","assets/Field-ceb20a59.js","assets/Phone-61a68ce3.js","assets/DateRange-541430bf.js","assets/property-translations-1fdfea06.js","assets/RoutesField-bbb40be4.js","assets/Stars-184461e1.js","assets/FavoriteIcon-6f36283c.js","assets/TeritorioIcon-12504358.js","assets/UIPicture-ba682e0f.js","assets/types-f83cf40c.js","assets/PoiCardLight-d44048f5.js","assets/TeritorioIconBadge-af4ad1b2.js"] : void 0));
+  }), true ? ["assets/PoisDeck.story-49d19fe6.js","assets/vendor-fe86adbc.js","assets/PoiCard-bef2c0ca.js","assets/Fields-c137fd35.js","assets/Field-ceb20a59.js","assets/Phone-61a68ce3.js","assets/DateRange-541430bf.js","assets/property-translations-1fdfea06.js","assets/RoutesField-bbb40be4.js","assets/Stars-184461e1.js","assets/FavoriteIcon-6f36283c.js","assets/TeritorioIcon-12504358.js","assets/UIPicture-43681163.js","assets/types-f83cf40c.js","assets/PoiCardLight-e4ba1341.js","assets/TeritorioIconBadge-af4ad1b2.js"] : void 0));
   const Comp17 = defineAsyncComponent(() => __vitePreload(() => import("./FieldsGroup.story-97013a63.js").then(async (m) => {
     await m.__tla;
     return m;

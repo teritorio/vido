@@ -1,7 +1,7 @@
 import { aE as defineNuxtComponent, aM as mapState, as as _export_sfc, au as resolveComponent, ax as openBlock, ay as createElementBlock, aG as createBaseVNode, b6 as normalizeStyle, av as createBlock, aJ as createCommentVNode, aH as createTextVNode, aI as toDisplayString, aB as createVNode, __tla as __tla_0 } from "./vendor-fe86adbc.js";
 import { F as Fields, __tla as __tla_1 } from "./Fields-c137fd35.js";
 import { T as TeritorioIconBadge, __tla as __tla_2 } from "./TeritorioIconBadge-af4ad1b2.js";
-import { U as UIPicture, f as favoritesStore, __tla as __tla_3 } from "./UIPicture-ba682e0f.js";
+import { U as UIPicture, f as favoritesStore, __tla as __tla_3 } from "./UIPicture-43681163.js";
 let PoiCardLight;
 let __tla = Promise.all([
   (() => {

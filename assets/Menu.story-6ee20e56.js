@@ -1316,6 +1316,9 @@ let __tla = Promise.all([
           }
         });
         return counts;
+      },
+      hasSlot() {
+        return this.$slots.default !== void 0;
       }
     },
     emits: {
@@ -1423,14 +1426,14 @@ let __tla = Promise.all([
         return openBlock(), createElementBlock(Fragment, {
           key: menuItem.id
         }, [
-          index2 === 0 ? (openBlock(), createBlock(resolveDynamicComponent(_ctx.menuBlock), {
+          index2 === 0 && _ctx.hasSlot ? (openBlock(), createBlock(resolveDynamicComponent(_ctx.menuBlock), {
             key: 0
           }, {
             default: withCtx(() => [
               renderSlot(_ctx.$slots, "default")
             ]),
             _: 3
-          })) : !_ctx.isOnSearch ? (openBlock(), createBlock(resolveDynamicComponent(_ctx.menuBlock), {
+          })) : index2 !== 0 && !_ctx.isOnSearch ? (openBlock(), createBlock(resolveDynamicComponent(_ctx.menuBlock), {
             key: 1,
             class: normalizeClass([
               index2 === 0 && "tw-hidden md:tw-block"
