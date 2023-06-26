@@ -8,7 +8,12 @@
   >
     <div
       v-if="showImage"
-      class="md:tw-w-48 tw-h-44 md:tw-h-auto md:tw-max-h-full tw-bg-gray-100 tw-text-gray-100 tw-flex tw-items-center tw-align-middle tw-justify-center tw-relative tw-min-icon-height"
+      :class="[
+        ' tw-bg-gray-100 tw-text-gray-100 tw-flex tw-relative tw-items-center tw-align-middle tw-justify-center',
+        'tw-h-44',
+        'md:tw-w-48 md:tw-h-auto md:tw-max-h-full',
+        'min-icon-height',
+      ]"
     >
       <TeritorioIcon
         v-if="icon"
@@ -23,7 +28,7 @@
       />
       <UIPicture
         v-if="poi.properties.image && poi.properties.image.length > 0"
-        class="tw-object-cover tw-h-44 tw-w-full md:tw-w-48 md:tw-h-full tw-z-10"
+        class="tw-object-cover tw-h-full tw-w-full tw-z-10"
         :src="poi.properties.image[0]"
         :alt="$t('poiCard.thumbnail')"
         media-size="30rem"
@@ -97,6 +102,6 @@ export default defineNuxtComponent({
 }
 
 .min-icon-height {
-  min-height: 8rem;
+  min-height: 11rem;
 }
 </style>
