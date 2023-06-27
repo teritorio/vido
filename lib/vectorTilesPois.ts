@@ -2,7 +2,7 @@ import type { MapGeoJSONFeature } from 'maplibre-gl'
 
 import { ApiPoi, ApiPoiId, ApiPoiPropertiesArray } from './apiPois'
 
-export interface VectorTilesPoi extends MapGeoJSONFeature {}
+export type VectorTilesPoi = MapGeoJSONFeature
 
 function split(value: string | undefined): string[] | undefined {
   return value

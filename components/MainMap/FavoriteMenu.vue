@@ -133,7 +133,7 @@ export default defineNuxtComponent({
     },
   },
   methods: {
-    async fetchFavorites(ids: Number[]) {
+    async fetchFavorites(ids: number[]) {
       return await getPois(this.$vidoConfig(useRequestHeaders()), ids).then(
         (pois) => (pois && pois.features) || []
       )

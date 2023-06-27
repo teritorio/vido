@@ -3,7 +3,7 @@ import { MapPoiProperties, MapPoiId } from './mapPois'
 import { MultilingualString } from '~/utils/types'
 import { VidoConfig } from '~/utils/types-config'
 
-export interface ApiPoiId extends MapPoiId {}
+export type ApiPoiId = MapPoiId
 
 export type FieldsListItem = {
   group?: undefined
@@ -72,8 +72,7 @@ export type ApiPoiProperties = MapPoiProperties & {
     unavoidable?: boolean
   }
 }
-export interface ApiPoi
-  extends GeoJSON.Feature<GeoJSON.Geometry, ApiPoiProperties> {}
+export type ApiPoi = GeoJSON.Feature<GeoJSON.Geometry, ApiPoiProperties>
 
 export const ApiPoiPropertiesArray = [
   'image',
@@ -83,8 +82,10 @@ export const ApiPoiPropertiesArray = [
   'website',
 ]
 
-export interface ApiPois
-  extends GeoJSON.FeatureCollection<GeoJSON.Geometry, ApiPoiProperties> {}
+export type ApiPois = GeoJSON.FeatureCollection<
+  GeoJSON.Geometry,
+  ApiPoiProperties
+>
 
 export interface ApiPoisOptions {
   // eslint-disable-next-line camelcase

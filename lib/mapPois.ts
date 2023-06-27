@@ -1,4 +1,4 @@
-export interface MapPoiId extends Number {}
+export type MapPoiId = number
 
 export interface MapPoiProperties {
   [key: string]: any
@@ -21,8 +21,9 @@ export interface MapPoiProperties {
     color_line?: string
   }
 }
-export interface MapPoi
-  extends GeoJSON.Feature<GeoJSON.Geometry, MapPoiProperties> {}
+export type MapPoi = GeoJSON.Feature<GeoJSON.Geometry, MapPoiProperties>
 
-export interface MapPoiCollection
-  extends GeoJSON.FeatureCollection<GeoJSON.Geometry, MapPoiProperties> {}
+export type MapPoiCollection = GeoJSON.FeatureCollection<
+  GeoJSON.Geometry,
+  MapPoiProperties
+>

@@ -130,7 +130,7 @@ export function updateMarkers(
         const id = 'c' + props.cluster_id
         markerIdcurrent.push(id)
         if (!markers[id]) {
-          let {
+          const {
             cluster: _a,
             cluster_id: _b,
             point_count: point_count,

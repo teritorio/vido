@@ -26,12 +26,12 @@ export class FilterValueList extends FilterValueDef<FilterList> {
 }
 
 export class FilterValueBoolean extends FilterValueDef<FilterBoolean> {
-  filterValue: boolean = false
+  filterValue = false
 }
 
 export class FilterValueDate extends FilterValueDef<FilterDate> {
-  filterValueBegin: String | null = null
-  filterValueEnd: String | null = null
+  filterValueBegin: string | null = null
+  filterValueEnd: string | null = null
 }
 
 export class FilterValueNumberRange extends FilterValueDef<FilterNumberRange> {

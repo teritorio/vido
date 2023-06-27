@@ -430,7 +430,7 @@ export default defineNuxtComponent({
         const newFavorite = favs
           .split(',')
           .map((e) => (!isNaN(Number(e)) ? Number(e) : null))
-          .filter((e) => !!e) as Number[]
+          .filter((e) => !!e) as number[]
 
         this.setFavorites(newFavorite)
         this.handleFavorites()
@@ -596,7 +596,7 @@ export default defineNuxtComponent({
         })
     },
 
-    fetchFavorites(ids: Number[]): Promise<ApiPoi[]> {
+    fetchFavorites(ids: number[]): Promise<ApiPoi[]> {
       return getPois(this.$vidoConfig(useRequestHeaders()), ids)
         .then((pois) => (pois && pois.features) || [])
         .then((pois) =>

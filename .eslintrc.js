@@ -23,6 +23,8 @@ module.exports = {
   plugins: ['prettier', 'import', '@typescript-eslint', 'vue'],
   // add your custom rules here
   rules: {
+    '@typescript-eslint/ban-ts-comment': 'off',
+    '@typescript-eslint/no-non-null-assertion': 'off',
     'vue/multi-word-component-names': 'off',
     'import/order': [
       'error',

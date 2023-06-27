@@ -6,7 +6,7 @@ export default {
   component: Stars,
 }
 
-let defaultProps = {
+const defaultProps = {
   stars: 3,
 }
 

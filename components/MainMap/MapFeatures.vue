@@ -338,7 +338,7 @@ export default defineNuxtComponent({
       }
     },
 
-    updateSelectedFeature(feature: ApiPoi | null, fetch: boolean = false) {
+    updateSelectedFeature(feature: ApiPoi | null, fetch = false) {
       if (this.selectedFeature !== feature) {
         this.setSelectedFeature(feature)
 

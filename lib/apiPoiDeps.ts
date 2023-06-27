@@ -24,14 +24,15 @@ export interface ApiRouteWaypointProperties {
   'route:point:type': ApiRouteWaypointType
 }
 
-export interface ApiRouteWaypoint
-  extends GeoJSON.Feature<GeoJSON.Point, ApiRouteWaypointProperties> {}
+export type ApiRouteWaypoint = GeoJSON.Feature<
+  GeoJSON.Point,
+  ApiRouteWaypointProperties
+>
 
-export interface ApiPoiDeps
-  extends GeoJSON.FeatureCollection<
-    GeoJSON.Geometry,
-    ApiPoiProperties | ApiRouteWaypointProperties
-  > {}
+export type ApiPoiDeps = GeoJSON.FeatureCollection<
+  GeoJSON.Geometry,
+  ApiPoiProperties | ApiRouteWaypointProperties
+>
 
 export function getPoiDepsById(
   vidoConfig: VidoConfig,
