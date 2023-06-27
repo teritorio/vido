@@ -1,3 +1,0 @@
-const __resolved__virtual_storySource_componentsFieldsStarsStoryVue = "<template>\n  <Story title=\"Fields/Stars\">\n    <Variant\n      v-for=\"(p, name) in props\"\n      :key=\"name\"\n      :title=\"name.replace(/([A-Z])/g, ' $1').trim()\"\n    >\n      <Stars v-bind=\"p\" />\n    </Variant>\n  </Story>\n</template>\n\n<script lang=\"ts\" setup>\nimport Stars from '~/components/Fields/Stars.vue'\n\nlet defaultProps = {\n  stars: 3,\n}\n\nconst props = {\n  Default: {\n    ...defaultProps,\n  },\n  More: {\n    stars: 10,\n  },\n  None: {\n    stars: 0,\n  },\n}\n</script>\n";
-
-export { __resolved__virtual_storySource_componentsFieldsStarsStoryVue as default };

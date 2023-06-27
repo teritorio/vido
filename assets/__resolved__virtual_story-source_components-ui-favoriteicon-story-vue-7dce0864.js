@@ -1,3 +1,0 @@
-const __resolved__virtual_storySource_componentsUiFavoriteiconStoryVue = "<template>\n  <Story title=\"UI/FavoriteIcon\">\n    <Variant\n      v-for=\"(p, name) in props\"\n      :key=\"name\"\n      :title=\"name.replace(/([A-Z])/g, ' $1').trim()\"\n    >\n      <FavoriteIcon v-bind=\"p\" />\n    </Variant>\n  </Story>\n</template>\n\n<script lang=\"ts\" setup>\nimport FavoriteIcon from '~/components/UI/FavoriteIcon.vue'\n\nconst defaultProps = {}\n\nconst props = {\n  Default: {\n    ...defaultProps,\n  },\n  Active: {\n    ...defaultProps,\n    isActive: true,\n  },\n  Colored: {\n    ...defaultProps,\n    colorLine: '#ff0000',\n  },\n}\n</script>\n";
-
-export { __resolved__virtual_storySource_componentsUiFavoriteiconStoryVue as default };

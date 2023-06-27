@@ -1,3 +1,0 @@
-const __resolved__virtual_storySource_componentsPoiscardPoicardlightStoryVue = "<template>\n  <Story title=\"PoisCard/PoiCardLight\">\n    <Variant\n      v-for=\"(p, name) in props\"\n      :key=\"name\"\n      :title=\"name.replace(/([A-Z])/g, ' $1').trim()\"\n    >\n      <PoiCardLight v-bind=\"p\" />\n    </Variant>\n  </Story>\n</template>\n\n<script lang=\"ts\" setup>\nimport PoiCardLight from '~/components/PoisCard/PoiCardLight.vue'\nimport poi from '~/cypress/fixtures/teritorio/references/poi/2.json'\nimport { ApiPoi } from '~/lib/apiPois'\n\nconst defaultProps = {\n  poi: poi as ApiPoi,\n}\n\nconst props = {\n  Default: {\n    ...defaultProps,\n  },\n}\n</script>\n";
-
-export { __resolved__virtual_storySource_componentsPoiscardPoicardlightStoryVue as default };
