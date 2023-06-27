@@ -45,36 +45,43 @@ const getMarkerDonutSegment = (
 }
 
 export const createMarkerDonutChart = (
-  countPerColor: Record<string, number>
+  countPerColor: Record<string, number>,
+  totalCount: number
 ): HTMLElement => {
-  const offsets = []
-
-  const counts: number[] = Object.values(countPerColor)
-  const colors = Object.keys(countPerColor)
-  let total = 0
-  for (let i = 0; i < counts.length; i++) {
-    offsets.push(total)
-    total += counts[i]
-  }
-
-  const r = total >= 1000 ? 40 : total >= 100 ? 32 : total >= 10 ? 24 : 16
+  const r =
+    totalCount >= 1000
+      ? 40
+      : totalCount >= 100
+      ? 32
+      : totalCount >= 10
+      ? 24
+      : 16
   const r0 = r - 5
   const w = r * 2
 
   let html = `<svg width="${w}" height="${w}" viewbox="0 0 ${w} ${w}" text-anchor="middle" class="cluster-donut">`
 
-  for (let i = 0; i < counts.length; i++) {
+  let total = 0
+  let offsets = 0
+  Object.entries(countPerColor).forEach(([color, count]) => {
+    total += count
     html += getMarkerDonutSegment(
-      offsets[i] / total,
-      (offsets[i] + counts[i]) / total,
+      offsets / totalCount,
+      total / totalCount,
       r,
       r0,
-      colors[i]
+      color
     )
+    offsets = total
+  })
+
+  if (total != totalCount) {
+    html += getMarkerDonutSegment(total / totalCount, 1, r, r0, '#ccc')
   }
+
   html += `<circle cx="${r}" cy="${r}" r="${r0}" fill="white" />
       <text dominant-baseline="central" transform="translate(${r}, ${r})">
-        ${total.toLocaleString()}
+        ${totalCount.toLocaleString()}
       </text>
     </svg>`
 

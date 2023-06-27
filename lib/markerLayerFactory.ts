@@ -133,12 +133,12 @@ export function updateMarkers(
           const {
             cluster: _a,
             cluster_id: _b,
-            point_count: _point_count,
+            point_count: point_count,
             _c: _d,
             point_count_abbreviated: _e,
             ...countPercolor
           } = props
-          const el = createMarkerDonutChart(countPercolor)
+          const el = createMarkerDonutChart(countPercolor, point_count)
           el.classList.add('cluster-item')
           markers[id] = new Marker({
             element: el,
