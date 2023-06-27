@@ -63,7 +63,11 @@ export const Many = bind(FieldsGroup, {
   ...defaultProps,
   group: {
     ...defaultProps.group,
-    fields: [{ field: 'phone' }, { field: 'route' }, { field: 'short_description' }],
+    fields: [
+      { field: 'phone' },
+      { field: 'route' },
+      { field: 'short_description' },
+    ],
   },
   properties: {
     metadata: { id: 0 },

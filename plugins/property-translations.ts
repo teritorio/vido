@@ -1,5 +1,4 @@
 import { defineNuxtPlugin } from '#app/nuxt'
-
 import { PropertyTranslations } from '~/lib/apiPropertyTranslations'
 
 export enum PropertyTranslationsContextEnum {
@@ -58,6 +57,6 @@ export default defineNuxtPlugin((nuxtApp) => {
   return {
     provide: {
       propertyTranslations: pt,
-    }
+    },
   }
 })
