@@ -10,7 +10,12 @@ interface State {
   mode: Mode
 }
 
-const getInitialMapview: Function = () => ({
+const getInitialMapview: () => {
+  center: {
+    lng: number
+    lat: number
+  }
+} = () => ({
   center: { lng: 0, lat: 0 },
 })
 

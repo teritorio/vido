@@ -4,7 +4,7 @@ type Args = { [key: string]: any }
 type Def = {
   args: Args | null
   __call__: (args: Args) => any
-  bind: (context: Object) => Def
+  bind: (context: object) => Def
 }
 
 export const mockData = {

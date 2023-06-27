@@ -117,4 +117,4 @@ library.add(
   faEnvelope
 )
 
-export default defineNuxtPlugin((nuxtApp) => {})
+export default defineNuxtPlugin((nuxtApp) => undefined)

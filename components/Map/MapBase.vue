@@ -185,22 +185,22 @@ export default defineNuxtComponent({
 
   emits: {
     'map-init': (map: maplibregl.Map) => true,
-    'map-data': (event: MapDataEvent & Object) => true,
+    'map-data': (event: MapDataEvent & object) => true,
     'map-dragend': (
-      event: MapLibreEvent<MouseEvent | TouchEvent | undefined> & Object
+      event: MapLibreEvent<MouseEvent | TouchEvent | undefined> & object
     ) => true,
     'map-moveend': (
       event: MapLibreEvent<MouseEvent | TouchEvent | WheelEvent | undefined> &
-        Object
+        object
     ) => true,
-    'map-resize': (event: MapLibreEvent<undefined> & Object) => true,
+    'map-resize': (event: MapLibreEvent<undefined> & object) => true,
     'map-rotateend': (
-      event: MapLibreEvent<MouseEvent | TouchEvent | undefined> & Object
+      event: MapLibreEvent<MouseEvent | TouchEvent | undefined> & object
     ) => true,
-    'map-touchmove': (event: MapTouchEvent & Object) => true,
+    'map-touchmove': (event: MapTouchEvent & object) => true,
     'map-zoomend': (
       event: MapLibreEvent<MouseEvent | TouchEvent | WheelEvent | undefined> &
-        Object
+        object
     ) => true,
     'map-style-load': (style: maplibregl.StyleSpecification) => true,
     'feature-click': (feature: ApiPoi) => true,

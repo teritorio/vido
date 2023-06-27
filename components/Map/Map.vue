@@ -190,22 +190,22 @@ export default defineNuxtComponent({
 
   emits: {
     'map-init': (map: ITMap) => true,
-    'map-data': (event: MapDataEvent & Object) => true,
+    'map-data': (event: MapDataEvent & object) => true,
     'map-dragend': (
-      event: MapLibreEvent<MouseEvent | TouchEvent | undefined> & Object
+      event: MapLibreEvent<MouseEvent | TouchEvent | undefined> & object
     ) => true,
     'map-moveend': (
       event: MapLibreEvent<MouseEvent | TouchEvent | WheelEvent | undefined> &
-        Object
+        object
     ) => true,
-    'map-resize': (event: MapLibreEvent<unknown> & Object) => true,
+    'map-resize': (event: MapLibreEvent<unknown> & object) => true,
     'map-rotateend': (
-      event: MapLibreEvent<MouseEvent | TouchEvent | undefined> & Object
+      event: MapLibreEvent<MouseEvent | TouchEvent | undefined> & object
     ) => true,
-    'map-touchmove': (event: MapTouchEvent & Object) => true,
+    'map-touchmove': (event: MapTouchEvent & object) => true,
     'map-zoomend': (
       event: MapLibreEvent<MouseEvent | TouchEvent | WheelEvent | undefined> &
-        Object
+        object
     ) => true,
     'full-attribution': (attribution: string) => true,
     'map-style-load': (style: StyleSpecification) => true,

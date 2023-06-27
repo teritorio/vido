@@ -26,7 +26,7 @@ function cypressSetMocks(
         method: string
         url: string
         statusCode: number
-        body: Object
+        body: object
       }[]
       const rests = mocks.map((mock) => {
         return rest.get(mock.url, (req, res, ctx) => res(ctx.json(mock.body)))
