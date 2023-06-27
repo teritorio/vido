@@ -213,7 +213,7 @@
 
 <script lang="ts">
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
-import type { FitBoundsOptions, LngLatBoundsLike } from 'maplibre-gl'
+import type { FitBoundsOptions } from 'maplibre-gl'
 import { mapActions, mapState } from 'pinia'
 import { PropType, ref } from 'vue'
 
@@ -233,9 +233,7 @@ import Search from '~/components/Search/Search.vue'
 import CookiesConsent from '~/components/UI/CookiesConsent.vue'
 import Logo from '~/components/UI/Logo.vue'
 import { ContentEntry } from '~/lib/apiContent'
-import { ApiMenuCategory, MenuItem } from '~/lib/apiMenu'
 import { ApiPoi, getPois } from '~/lib/apiPois'
-import { headerFromSettings } from '~/lib/apiSettings'
 import { getBBoxFeature, getBBoxFeatures } from '~/lib/bbox'
 import { favoritesStore } from '~/stores/favorite'
 import { mapStore } from '~/stores/map'

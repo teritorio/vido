@@ -1,4 +1,3 @@
-import { NuxtAppOptions } from '@nuxt/types/app'
 import urlSlug from 'url-slug'
 // @ts-ignore
 import VueMatomo from 'vue-matomo'

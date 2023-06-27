@@ -117,7 +117,6 @@ import Search from '~/components/Search/Search.vue'
 import Logo from '~/components/UI/Logo.vue'
 import { ApiMenuCategory, MenuGroup, MenuItem } from '~/lib/apiMenu'
 import { menuStore } from '~/stores/menu'
-import { FilterValues } from '~/utils/types-filters'
 
 export default defineNuxtComponent({
   components: {

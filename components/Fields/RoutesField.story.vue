@@ -17,8 +17,6 @@
 </template>
 
 <script lang="ts" setup>
-import GeoJSON from 'geojson'
-
 import RoutesField from '~/components/Fields/RoutesField.vue'
 import { PropertyTranslationsContextEnum } from '~/plugins/property-translations'
 

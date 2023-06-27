@@ -8,7 +8,6 @@ import { SitemapFullEntry } from '~/node_modules/nuxt-simple-sitemap/dist/module
 import {
   buildSitemap,
   BuildSitemapOptions,
-  generateXslStylesheet,
 } from '~/node_modules/nuxt-simple-sitemap/dist/runtime/util/builder'
 import { vidoConfigResolve } from '~/plugins/vido-config'
 import { VidoConfig } from '~/utils/types-config'

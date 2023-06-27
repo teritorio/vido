@@ -1,5 +1,3 @@
-import { NuxtAppOptions } from '@nuxt/types/app'
-
 import { ApiPoiId } from './apiPois'
 
 import { ApiMenuCategory, MenuItem } from '~/lib/apiMenu'

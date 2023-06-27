@@ -39,10 +39,7 @@ const {
 
 type ITMap = InstanceType<typeof Map>
 type ITAttributionControl = InstanceType<typeof AttributionControl>
-type ITNavigationControl = InstanceType<typeof NavigationControl>
-type ITGeolocateControl = InstanceType<typeof GeolocateControl>
 type ITFullscreenControl = InstanceType<typeof FullscreenControl>
-type ITScaleControl = InstanceType<typeof ScaleControl>
 
 export default defineNuxtComponent({
   props: {

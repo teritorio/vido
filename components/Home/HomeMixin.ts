@@ -5,7 +5,7 @@ import { PropType, ref } from 'vue'
 
 import { defineNuxtComponent } from '#app'
 import MapFeatures from '~/components/MainMap/MapFeatures.vue'
-import { ApiMenuCategory, MenuItem } from '~/lib/apiMenu'
+import { ApiMenuCategory } from '~/lib/apiMenu'
 import { ApiPoi } from '~/lib/apiPois'
 import { Settings } from '~/lib/apiSettings'
 import { mapStore } from '~/stores/map'

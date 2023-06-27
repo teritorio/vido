@@ -40,7 +40,6 @@ import { PropType } from 'vue'
 
 import { defineNuxtComponent } from '#app'
 import TeritorioIcon from '~/components/UI/TeritorioIcon.vue'
-import { ApiPoiId } from '~/lib/apiPois'
 import { SearchResult } from '~/lib/apiSearch'
 
 export default defineNuxtComponent({

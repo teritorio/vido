@@ -11,7 +11,7 @@
 import { PropType } from 'vue'
 
 import { defineNuxtComponent } from '#app'
-import { ApiPoiProperties, FieldsListItem } from '~/lib/apiPois'
+import { ApiPoiProperties } from '~/lib/apiPois'
 
 const addressFields = [
   'addr:housenumber',
