@@ -3,7 +3,7 @@ import { useScreen, useGrid } from 'vue-screen'
 
 import { defineNuxtPlugin } from '#app/nuxt'
 
-export default defineNuxtPlugin((nuxtApp) => {
+export default defineNuxtPlugin((_nuxtApp) => {
   const screen = useScreen()
   const grid = useGrid('tailwind')
   return {

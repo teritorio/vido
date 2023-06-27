@@ -33,7 +33,7 @@ const devices = {
 
 function setupApp(device: (typeof devices)[keyof typeof devices]) {
   // @ts-ignore
-  return ({ app, story, variant }) => {
+  return ({ app, _story, _variant }) => {
     app.config.globalProperties.$device = ref(device)
   }
 }

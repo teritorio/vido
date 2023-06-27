@@ -71,7 +71,6 @@ import CategorySelector from '~/components/PoisList/CategorySelector.vue'
 import UIButton from '~/components/UI/UIButton.vue'
 import { ApiPoi } from '~/lib/apiPois'
 import { getBBoxFeature } from '~/lib/bbox'
-import { mapStore } from '~/stores/map'
 import { menuStore } from '~/stores/menu'
 import { Mode } from '~/utils/types'
 import { flattenFeatures } from '~/utils/utilities'
@@ -151,7 +150,7 @@ export default defineNuxtComponent({
       })
     },
 
-    toggleExploreAroundSelectedPoi(feature?: ApiPoi) {
+    toggleExploreAroundSelectedPoi(_feature?: ApiPoi) {
       if (!this.isModeExplorer) {
         this.mode = Mode.EXPLORER
         this.goToSelectedFeature()

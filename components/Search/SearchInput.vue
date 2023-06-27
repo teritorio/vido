@@ -61,9 +61,9 @@ export default defineNuxtComponent({
   },
 
   emits: {
-    input: (value: string) => true,
-    focus: (event: string | Event) => true,
-    blur: (event: FocusEvent) => true,
+    input: (_value: string) => true,
+    focus: (_event: string | Event) => true,
+    blur: (_event: FocusEvent) => true,
   },
 
   methods: {

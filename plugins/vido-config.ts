@@ -36,7 +36,7 @@ export function vidoConfig(
   return vidoConfigResolve(host, vidoHostConfig)
 }
 
-export default defineNuxtPlugin((nuxtApp) => {
+export default defineNuxtPlugin((_nuxtApp) => {
   let config: VidoConfig | undefined
 
   return {

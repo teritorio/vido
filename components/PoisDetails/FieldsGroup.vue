@@ -61,7 +61,7 @@
 </template>
 
 <script lang="ts">
-import { PropType, ref } from 'vue'
+import { PropType } from 'vue'
 
 import { isFiledEmpty } from '../Fields/Field.vue'
 

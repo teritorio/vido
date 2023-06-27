@@ -56,9 +56,9 @@ export default defineNuxtComponent({
   },
 
   emits: {
-    'zoom-click': (poi: ApiPoi) => true,
-    'explore-click': (poi: ApiPoi) => true,
-    'favorite-click': (poi: ApiPoi) => true,
+    'zoom-click': (_poi: ApiPoi) => true,
+    'explore-click': (_poi: ApiPoi) => true,
+    'favorite-click': (_poi: ApiPoi) => true,
   },
 
   methods: {

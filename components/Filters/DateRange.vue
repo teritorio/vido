@@ -7,7 +7,7 @@
       :items="dateFilters"
       :clearable="true"
       hide-details="auto"
-      @update:modelValue="onChange"
+      @update:model-value="onChange"
     />
   </div>
 </template>
@@ -58,7 +58,7 @@ export default defineNuxtComponent({
   },
 
   emits: {
-    change: (newFilter: FilterValueDate) => true,
+    change: (_newFilter: FilterValueDate) => true,
   },
 
   data(): {

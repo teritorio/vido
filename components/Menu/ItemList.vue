@@ -87,9 +87,9 @@ export default defineNuxtComponent({
   },
 
   emits: {
-    'menu-group-click': (menuItemId: ApiMenuItem['id']) => true,
-    'category-click': (menuItemId: ApiMenuItem['id']) => true,
-    'filter-click': (categoryId: ApiMenuCategory['id']) => true,
+    'menu-group-click': (_menuItemId: ApiMenuItem['id']) => true,
+    'category-click': (_menuItemId: ApiMenuItem['id']) => true,
+    'filter-click': (_categoryId: ApiMenuCategory['id']) => true,
   },
 
   methods: {

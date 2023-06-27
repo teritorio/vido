@@ -25,7 +25,7 @@ export interface PropertyTranslationsPlugin {
   propertyTranslations: PropertyTranslations
 }
 
-export default defineNuxtPlugin((nuxtApp) => {
+export default defineNuxtPlugin((_nuxtApp) => {
   const pt: PropertyTranslationsPlugin = {
     propertyTranslations: {},
     set(setPropertyTranslations: PropertyTranslations): void {

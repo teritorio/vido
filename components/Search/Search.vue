@@ -206,9 +206,9 @@ export default defineNuxtComponent({
   },
 
   emits: {
-    blur: (event: FocusEvent) => true,
-    focus: (event: string | Event) => true,
-    selectFeature: (feature: ApiPoi) => true,
+    blur: (_event: FocusEvent) => true,
+    focus: (_event: string | Event) => true,
+    selectFeature: (_feature: ApiPoi) => true,
   },
 
   methods: {

@@ -121,7 +121,7 @@ export default defineNuxtComponent({
 
   emits: {
     'go-back-click': () => true,
-    'activate-filter': (val: boolean) => true,
+    'activate-filter': (_val: boolean) => true,
   },
 
   methods: {

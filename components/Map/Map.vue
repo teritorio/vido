@@ -153,7 +153,7 @@ export default defineNuxtComponent({
       },
     })
 
-    map.on('load', ($event) => this.onMapInit(map as ITMap))
+    map.on('load', (_event) => this.onMapInit(map as ITMap))
     map.on('data', ($event) => this.$emit('map-data', $event))
     map.on('dragend', ($event) => this.$emit('map-dragend', $event))
     map.on('moveend', ($event) => this.$emit('map-moveend', $event))
@@ -189,26 +189,26 @@ export default defineNuxtComponent({
   },
 
   emits: {
-    'map-init': (map: ITMap) => true,
-    'map-data': (event: MapDataEvent & object) => true,
+    'map-init': (_map: ITMap) => true,
+    'map-data': (_event: MapDataEvent & object) => true,
     'map-dragend': (
-      event: MapLibreEvent<MouseEvent | TouchEvent | undefined> & object
+      _event: MapLibreEvent<MouseEvent | TouchEvent | undefined> & object
     ) => true,
     'map-moveend': (
-      event: MapLibreEvent<MouseEvent | TouchEvent | WheelEvent | undefined> &
+      _event: MapLibreEvent<MouseEvent | TouchEvent | WheelEvent | undefined> &
         object
     ) => true,
-    'map-resize': (event: MapLibreEvent<unknown> & object) => true,
+    'map-resize': (_event: MapLibreEvent<unknown> & object) => true,
     'map-rotateend': (
-      event: MapLibreEvent<MouseEvent | TouchEvent | undefined> & object
+      _event: MapLibreEvent<MouseEvent | TouchEvent | undefined> & object
     ) => true,
-    'map-touchmove': (event: MapTouchEvent & object) => true,
+    'map-touchmove': (_event: MapTouchEvent & object) => true,
     'map-zoomend': (
-      event: MapLibreEvent<MouseEvent | TouchEvent | WheelEvent | undefined> &
+      _event: MapLibreEvent<MouseEvent | TouchEvent | WheelEvent | undefined> &
         object
     ) => true,
-    'full-attribution': (attribution: string) => true,
-    'map-style-load': (style: StyleSpecification) => true,
+    'full-attribution': (_attribution: string) => true,
+    'map-style-load': (_style: StyleSpecification) => true,
   },
 
   computed: {
@@ -271,7 +271,7 @@ export default defineNuxtComponent({
         this.map.touchZoomRotate.disableRotation()
       }
 
-      new ResizeObserver((entries) => {
+      new ResizeObserver((_entries) => {
         this.map?.resize()
       }).observe(document.getElementById('map')!)
 

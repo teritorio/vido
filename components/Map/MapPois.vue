@@ -119,7 +119,7 @@ export default defineNuxtComponent({
       this.map = map
     },
 
-    onMapStyleLoad(style: maplibregl.StyleSpecification): void {
+    onMapStyleLoad(_style: maplibregl.StyleSpecification): void {
       const colors = [
         ...new Set(
           this.features.map(

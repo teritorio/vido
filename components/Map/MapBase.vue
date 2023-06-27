@@ -184,26 +184,26 @@ export default defineNuxtComponent({
   },
 
   emits: {
-    'map-init': (map: maplibregl.Map) => true,
-    'map-data': (event: MapDataEvent & object) => true,
+    'map-init': (_map: maplibregl.Map) => true,
+    'map-data': (_event: MapDataEvent & object) => true,
     'map-dragend': (
-      event: MapLibreEvent<MouseEvent | TouchEvent | undefined> & object
+      _event: MapLibreEvent<MouseEvent | TouchEvent | undefined> & object
     ) => true,
     'map-moveend': (
-      event: MapLibreEvent<MouseEvent | TouchEvent | WheelEvent | undefined> &
+      _event: MapLibreEvent<MouseEvent | TouchEvent | WheelEvent | undefined> &
         object
     ) => true,
-    'map-resize': (event: MapLibreEvent<undefined> & object) => true,
+    'map-resize': (_event: MapLibreEvent<undefined> & object) => true,
     'map-rotateend': (
-      event: MapLibreEvent<MouseEvent | TouchEvent | undefined> & object
+      _event: MapLibreEvent<MouseEvent | TouchEvent | undefined> & object
     ) => true,
-    'map-touchmove': (event: MapTouchEvent & object) => true,
+    'map-touchmove': (_event: MapTouchEvent & object) => true,
     'map-zoomend': (
-      event: MapLibreEvent<MouseEvent | TouchEvent | WheelEvent | undefined> &
+      _event: MapLibreEvent<MouseEvent | TouchEvent | WheelEvent | undefined> &
         object
     ) => true,
-    'map-style-load': (style: maplibregl.StyleSpecification) => true,
-    'feature-click': (feature: ApiPoi) => true,
+    'map-style-load': (_style: maplibregl.StyleSpecification) => true,
+    'feature-click': (_feature: ApiPoi) => true,
   },
 
   methods: {

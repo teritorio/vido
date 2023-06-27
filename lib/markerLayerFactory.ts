@@ -133,7 +133,7 @@ export function updateMarkers(
           const {
             cluster: _a,
             cluster_id: _b,
-            point_count: point_count,
+            point_count: _point_count,
             _c: _d,
             point_count_abbreviated: _e,
             ...countPercolor

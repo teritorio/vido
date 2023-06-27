@@ -58,7 +58,7 @@ export default defineNuxtComponent({
   },
 
   emits: {
-    'category-change': (categoryId: number) => true,
+    'category-change': (_categoryId: number) => true,
   },
 
   props: {

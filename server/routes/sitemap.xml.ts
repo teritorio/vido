@@ -65,7 +65,7 @@ async function manifest(
         urls: entries,
       },
       baseURL: `https://${hostname}`,
-      getRouteRulesForPath(path: string): Record<string, any> {
+      getRouteRulesForPath(_path: string): Record<string, any> {
         return {}
       },
     }

@@ -92,30 +92,6 @@ const feature1: ApiPoi = {
   },
 }
 
-const feature2: ApiPoi = {
-  type: 'Feature',
-  geometry: {
-    type: 'Point',
-    coordinates: [-1.4736125, 43.4909623],
-  },
-  properties: {
-    name: 'foo',
-    metadata: {
-      id: 2,
-      category_ids: [2],
-    },
-    display: {
-      icon: 'teritorio safety-care-pharmacy',
-      color_fill: '#00ff00',
-      color_line: '#00ff00',
-      style_class: ['safety', 'care', 'pharmacy'],
-    },
-    editorial: {
-      popup_fields: [{ field: 'foot' }],
-    },
-  },
-}
-
 export const Features = bind(
   MapFeatures,
   {

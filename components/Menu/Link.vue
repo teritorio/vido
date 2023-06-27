@@ -56,7 +56,7 @@ export default defineNuxtComponent({
   },
 
   emits: {
-    click: (menuLinkId: ApiMenuItem['id']) => true,
+    click: (_menuLinkId: ApiMenuItem['id']) => true,
   },
 
   methods: {

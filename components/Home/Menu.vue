@@ -197,7 +197,7 @@ export default defineNuxtComponent({
   },
 
   emits: {
-    'activate-filter': (val: boolean) => true,
+    'activate-filter': (_val: boolean) => true,
     'scroll-top': () => true,
   },
 

@@ -9,7 +9,7 @@ import vuetify from '~/plugins/vuetify'
 // Load tailwind after vuetify
 import '../assets/tailwind.scss'
 
-export const setupVue3 = defineSetupVue3(({ app, story, variant }) => {
+export const setupVue3 = defineSetupVue3(({ app, _story, _variant }) => {
   // Mock globals
   app.config.globalProperties.$t = (key) =>
     get(
@@ -24,8 +24,8 @@ export const setupVue3 = defineSetupVue3(({ app, story, variant }) => {
   app.config.globalProperties.$d = (key) => key
   app.config.globalProperties.$n = (key) => key
   app.config.globalProperties.$propertyTranslations = {
-    p: (field, context) => field,
-    pv: (field, property, context) => property,
+    p: (field, _context) => field,
+    pv: (_field, property, _context) => property,
   }
   app.config.globalProperties.$device = ref({
     smallScreen: false,

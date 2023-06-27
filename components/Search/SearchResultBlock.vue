@@ -68,7 +68,7 @@ export default defineNuxtComponent({
   },
 
   emits: {
-    'item-click': (searchResult: SearchResult) => true,
+    'item-click': (_searchResult: SearchResult) => true,
   },
 
   methods: {

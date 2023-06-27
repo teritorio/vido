@@ -11,7 +11,7 @@ import { useAsyncData } from '#imports'
 
 export async function getAsyncDataOrThrows<
   DataT,
-  DataE = Error,
+  _DataE = Error,
   Transform extends _Transform<DataT> = _Transform<DataT, DataT>,
   PickKeys extends KeyOfRes<Transform> = KeyOfRes<Transform>
 >(
@@ -30,7 +30,7 @@ export async function getAsyncDataOrThrows<
 
 export async function getAsyncDataOrNull<
   DataT,
-  DataE = Error,
+  _DataE = Error,
   Transform extends _Transform<DataT> = _Transform<DataT, DataT>,
   PickKeys extends KeyOfRes<Transform> = KeyOfRes<Transform>
 >(

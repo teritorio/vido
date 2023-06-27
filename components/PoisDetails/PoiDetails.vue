@@ -197,7 +197,7 @@ export default defineNuxtComponent({
       if (!this.isLargeLayeout) {
         return this.poi.properties
       } else {
-        const { ['description']: omitted, ...rest } = this.poi.properties
+        const { ['description']: _omitted, ...rest } = this.poi.properties
         return rest
       }
     },

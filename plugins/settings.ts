@@ -9,7 +9,7 @@ export interface SettingsPlugin extends Settings {
   set(settings: Settings): void
 }
 
-export default defineNuxtPlugin((nuxtApp) => {
+export default defineNuxtPlugin((_nuxtApp) => {
   const settings: SettingsPlugin | SettingsSetPlugin = {
     set(setSettings: Settings): void {
       Object.assign(settings, setSettings)

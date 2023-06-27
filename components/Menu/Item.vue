@@ -70,7 +70,7 @@ export default defineNuxtComponent({
   },
 
   emits: {
-    click: (val: MouseEvent) => true,
+    click: (_val: MouseEvent) => true,
   },
 
   props: {

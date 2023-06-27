@@ -289,7 +289,7 @@ export default defineNuxtComponent({
       })
     },
 
-    onMapStyleLoad(style: StyleSpecification) {
+    onMapStyleLoad(_style: StyleSpecification) {
       const colors = [
         ...new Set(
           this.categories

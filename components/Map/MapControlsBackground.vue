@@ -108,7 +108,7 @@ export default defineNuxtComponent({
   },
 
   emits: {
-    'change-background': (background: MapStyleEnum) => true,
+    'change-background': (_background: MapStyleEnum) => true,
   },
 
   methods: {

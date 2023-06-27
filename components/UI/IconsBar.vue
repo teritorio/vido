@@ -11,7 +11,7 @@ import { defineNuxtComponent } from '#app'
 
 export default defineNuxtComponent({
   components: {
-    VNodes: (props, ctx) => props.vnodes,
+    VNodes: (props, _ctx) => props.vnodes,
   },
 })
 </script>

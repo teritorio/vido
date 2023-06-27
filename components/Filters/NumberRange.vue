@@ -34,7 +34,7 @@ export default defineNuxtComponent({
   },
 
   emits: {
-    change: (newFilter: FilterValueNumberRange) => true,
+    change: (_newFilter: FilterValueNumberRange) => true,
   },
 
   computed: {

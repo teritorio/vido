@@ -109,8 +109,8 @@ export default defineNuxtComponent({
   },
 
   emits: {
-    click: (category_id: ApiMenuItem['id']) => true,
-    'filter-click': (category_id: ApiMenuItem['id']) => true,
+    click: (_category_id: ApiMenuItem['id']) => true,
+    'filter-click': (_category_id: ApiMenuItem['id']) => true,
   },
 
   methods: {
