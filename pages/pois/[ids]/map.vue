@@ -43,12 +43,14 @@ export default defineNuxtComponent({
 
     const params = useRoute().params
     const configRef = await getAsyncDataOrThrows('configRef', () =>
-      Promise.resolve(vidoConfig(useRequestHeaders()))
+      Promise.resolve(siteStore().config || vidoConfig(useRequestHeaders()))
     )
     const config: VidoConfig = configRef.value
 
     const fetchSettings = getAsyncDataOrThrows('fetchSettings', () =>
-      getSettings(config)
+      siteStore().settings
+        ? Promise.resolve(siteStore().settings as Settings)
+        : getSettings(config)
     )
 
     let settings: Ref<Settings>
@@ -85,6 +87,8 @@ export default defineNuxtComponent({
   computed: {
     ...mapWritableState(siteStore, {
       locale: 'locale',
+      globalConfig: 'config',
+      globalSettings: 'settings',
     }),
 
     ids(): ApiPoiId[] {
@@ -96,6 +100,9 @@ export default defineNuxtComponent({
   },
 
   created() {
+    this.globalConfig = this.config
+    this.globalSettings = this.settings
+
     this.$settings.set(this.settings)
   },
 

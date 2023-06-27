@@ -53,25 +53,33 @@ export default defineNuxtComponent({
 
     const params = useRoute().params
     const configRef = await getAsyncDataOrThrows('configRef', () =>
-      Promise.resolve(vidoConfig(useRequestHeaders()))
+      Promise.resolve(siteStore().config || vidoConfig(useRequestHeaders()))
     )
     const config: VidoConfig = configRef.value
 
     const fetchSettings = getAsyncDataOrThrows('fetchSettings', () =>
-      getSettings(config)
+      siteStore().settings
+        ? Promise.resolve(siteStore().settings as Settings)
+        : getSettings(config)
     )
 
     const fetchContents = getAsyncDataOrThrows('fetchContents', () =>
-      getContents(config)
+      siteStore().contents
+        ? Promise.resolve(siteStore().contents as ContentEntry[])
+        : getContents(config)
     )
 
     const fetchPropertyTranslations: Promise<Ref<PropertyTranslations>> =
       getAsyncDataOrThrows('fetchPropertyTranslations', () =>
-        getPropertyTranslations(config)
+        siteStore().translations
+          ? Promise.resolve(siteStore().translations as PropertyTranslations)
+          : getPropertyTranslations(config)
       )
 
     const fetchMenuItems = getAsyncDataOrThrows('fetchMenuItems', () =>
-      getMenu(config)
+      menuStore().menuItems !== undefined
+        ? Promise.resolve(Object.values(menuStore().menuItems!))
+        : getMenu(config)
     )
 
     const fetchPoiByCategoryId = getAsyncDataOrThrows(
@@ -107,13 +115,22 @@ export default defineNuxtComponent({
   computed: {
     ...mapWritableState(siteStore, {
       locale: 'locale',
+      globalConfig: 'config',
+      globalSettings: 'settings',
+      globalContents: 'contents',
+      globalTranslations: 'translations',
     }),
   },
 
   created() {
+    this.globalConfig = this.config
     if (this.menuItems) {
       menuStore().fetchConfig(this.menuItems)
     }
+    this.globalSettings = this.settings
+    this.globalContents = this.contents
+    this.globalTranslations = this.propertyTranslations
+
     this.$settings.set(this.settings)
     this.$propertyTranslations.set(this.propertyTranslations)
   },
