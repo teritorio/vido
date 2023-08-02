@@ -119,12 +119,13 @@ export default defineNuxtComponent({
         statusMessage: 'POI not found. Missing main object.',
       })
     }
-
     useHead(
       headerFromSettings(settings.value, {
-        title: poiPoiDeps.value?.poi.value?.properties.name,
+        // @ts-ignore
+        title: poiPoiDeps.value?.poi.properties.name,
         description: {
-          fr: poiPoiDeps.value?.poi.value?.properties.description,
+          // @ts-ignore
+          fr: poiPoiDeps.value?.poi.properties.description,
         },
       })
     )

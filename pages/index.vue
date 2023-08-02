@@ -152,11 +152,7 @@ export default defineNuxtComponent({
       fetchPoi,
     ])
 
-    useHead(
-      headerFromSettings(settings.value, {
-        title: settings.value.themes[0]?.title.fr,
-      })
-    )
+    useHead(headerFromSettings(settings.value))
 
     return {
       config,
