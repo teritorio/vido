@@ -152,7 +152,11 @@ export default defineNuxtComponent({
       fetchPoi,
     ])
 
-    useHead(headerFromSettings(settings.value))
+    useHead(
+      headerFromSettings(settings.value, {
+        googleSiteVerification: config['GOOGLE_SITE_VERIFICATION'],
+      })
+    )
 
     return {
       config,

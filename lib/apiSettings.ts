@@ -93,7 +93,9 @@ function stripHTML(value?: string): string | undefined {
 
 export function headerFromSettings(
   settings: Settings,
-  options: any = null
+  options:
+    | { title?: string; description?: any; googleSiteVerification?: string }
+    | undefined = undefined
 ): MetaObject {
   return {
     htmlAttrs: {
@@ -132,6 +134,11 @@ export function headerFromSettings(
         hid: 'keywords',
         name: 'keywords',
         content: settings.themes[0]?.keywords?.fr,
+      },
+      {
+        hid: 'google-site-verification',
+        name: 'google-site-verification',
+        content: options?.googleSiteVerification,
       },
     ].filter((meta) => meta.content),
   }
