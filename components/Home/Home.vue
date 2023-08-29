@@ -419,9 +419,13 @@ export default defineNuxtComponent({
   },
 
   beforeMount() {
+    const modeHash = getHashPart(this.$router, 'mode')
     this.mode =
-      Mode[getHashPart(this.$router, 'mode') as keyof typeof Mode] ||
-      Mode.BROWSER
+      Mode[
+        Object.keys(Mode).find(
+          (key) => Mode[key as keyof typeof Mode] === modeHash
+        ) as keyof typeof Mode
+      ] || Mode.BROWSER
 
     const favs = getHashPart(this.$router, 'favs')
     if (favs) {
