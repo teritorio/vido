@@ -596,7 +596,9 @@ export default defineNuxtComponent({
     },
 
     fetchFavorites(ids: number[]): Promise<ApiPoi[]> {
-      return getPois(this.$vidoConfig(useRequestHeaders()), ids)
+      return getPois(this.$vidoConfig(useRequestHeaders()), ids, {
+        geometry_as: 'point',
+      })
         .then((pois) => (pois && pois.features) || [])
         .then((pois) =>
           pois.map((poi) => ({
