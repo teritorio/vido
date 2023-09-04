@@ -76,12 +76,13 @@ export default defineNuxtComponent({
     } else if (typeof location !== 'undefined') {
       const enabledCategories: ApiMenuCategory['id'][] = []
 
-      Object.keys(this.apiMenuCategory || {}).forEach((categoryIdString) => {
-        const categoryId = parseInt(categoryIdString, 10)
-        if (this.apiMenuCategory![categoryId].selected_by_default) {
-          enabledCategories.push(categoryId)
-        }
-      })
+      if (this.apiMenuCategory) {
+        this.apiMenuCategory.forEach((apiMenuCategory) => {
+          if (apiMenuCategory.selected_by_default) {
+            enabledCategories.push(apiMenuCategory.id)
+          }
+        })
+      }
 
       this.setSelectedCategoryIds(enabledCategories)
     }
