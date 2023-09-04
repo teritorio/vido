@@ -161,11 +161,17 @@ export const menuStore = defineStore('menu', {
           await Promise.all(
             categoryIds
               .filter((categoryId) => !previousFeatures[categoryId])
-              .map((categoryId) =>
-                getPoiByCategoryId(vidoConfig, categoryId, {
-                  short_description: false,
-                })
-              )
+              .map((categoryId) => {
+                try {
+                  return getPoiByCategoryId(vidoConfig, categoryId, {
+                    short_description: false,
+                  })
+                } catch (e) {
+                  console.log('Vido error:', e)
+                  return undefined
+                }
+              })
+              .filter((apiPoi) => !!apiPoi)
           )
         ).filter((e) => e) as ApiPois[]
 
