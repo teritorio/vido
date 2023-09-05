@@ -84,42 +84,41 @@
         v-html="properties.description"
       />
 
-      <Phone
+      <div
         v-for="phone in properties[field.field]"
         v-else-if="field.field === 'phone' || field.field === 'mobile'"
         :key="'phone_' + phone"
-        :number="phone"
-      />
+      >
+        <Phone :number="phone" />
+      </div>
 
-      <ExternalLink
+      <div
         v-for="item in properties[field.field]"
         v-else-if="field.field == 'website'"
         :key="'website_' + item"
-        :href="item"
-        target="_blank"
       >
-        {{ item }}
-      </ExternalLink>
+        <ExternalLink :href="item" target="_blank">{{ item }}</ExternalLink>
+      </div>
 
-      <ExternalLink
+      <div
         v-for="item in properties[field.field]"
         v-else-if="field.field == 'email'"
         :key="'email_' + item"
-        :href="`mailto:${item}`"
-        icon="envelope"
       >
-        {{ item }}
-      </ExternalLink>
+        <ExternalLink :href="`mailto:${item}`" icon="envelope">
+          {{ item }}
+        </ExternalLink>
+      </div>
 
-      <ExternalLink
+      <div
         v-for="item in properties[field.field]"
         v-else-if="field.field == 'download'"
         :key="'download_' + item"
-        :href="item"
-        icon="arrow-circle-down"
       >
-        {{ item.split('/').pop() }}
-      </ExternalLink>
+        <ExternalLink :href="item" icon="arrow-circle-down">
+          {{ item.split('/').pop() }}
+        </ExternalLink>
+      </div>
 
       <ul
         v-else-if="
