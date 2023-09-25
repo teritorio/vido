@@ -218,7 +218,7 @@ export default defineNuxtComponent({
       menuGroupId: MenuGroup['id'] | undefined
     ): MenuItem[] {
       return Object.values(this.menuItems || {})
-        .filter((c) => c.parent_id === (menuGroupId || null))
+        .filter((c) => (c.parent_id || null) === (menuGroupId || null))
         .sort((a, b) => a.index_order - b.index_order)
     },
 
