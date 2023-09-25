@@ -57,8 +57,6 @@ export interface ApiMenuGroup extends ApiMenuItem {
     // eslint-disable-next-line camelcase
     color_line: string
     // eslint-disable-next-line camelcase
-    style_class?: string[]
-    // eslint-disable-next-line camelcase
     display_mode: 'large' | 'compact'
   }
   link: undefined
@@ -94,7 +92,7 @@ export interface ApiMenuCategory extends ApiMenuItem {
     // eslint-disable-next-line camelcase
     color_line: string
     // eslint-disable-next-line camelcase
-    style_class: string[]
+    style_class?: string[]
     // eslint-disable-next-line camelcase
     style_merge: boolean
     // eslint-disable-next-line camelcase

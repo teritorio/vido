@@ -1,8 +1,6 @@
 import { VidoConfig } from '~/utils/types-config'
 
 export type ContentEntry = {
-  // eslint-disable-next-line camelcase
-  post_id: number
   title: string
   url: string
 }
