@@ -15,7 +15,7 @@ export default defineNuxtPlugin((nuxtApp) => {
           if (googleTagManagerId) {
             trackers.push(
               new Google(
-                nuxtApp,
+                nuxtApp.vueApp,
                 Boolean(config.COOKIES_CONSENT),
                 googleTagManagerId
               )
@@ -27,7 +27,7 @@ export default defineNuxtPlugin((nuxtApp) => {
           if (matomoUrl && matomoIdsite) {
             trackers.push(
               new Matomo(
-                nuxtApp,
+                nuxtApp.vueApp,
                 Boolean(config.COOKIES_CONSENT),
                 matomoUrl,
                 matomoIdsite
@@ -40,7 +40,7 @@ export default defineNuxtPlugin((nuxtApp) => {
       tracking_consent: (): void => {
         if (trackers.length > 0) {
           trackers.forEach((tracker) => {
-            tracker.consent()
+            tracker.consent(nuxtApp.vueApp)
           })
         }
       },
@@ -51,7 +51,7 @@ export default defineNuxtPlugin((nuxtApp) => {
         }
 
         trackers.forEach((tracker) => {
-          tracker.track(event)
+          tracker.track(nuxtApp.vueApp, event)
         })
       },
     },

@@ -1,3 +1,5 @@
+import { App } from 'nuxt/dist/app/compat/vue-demi'
+
 import { ApiPoiId } from './apiPois'
 
 import { ApiMenuCategory, MenuItem } from '~/lib/apiMenu'
@@ -77,6 +79,6 @@ export type Event =
     }
 
 export interface Tracker {
-  consent(): void
-  track(event: Event): void
+  consent(app: App): void
+  track(app: App, event: Event): void
 }
