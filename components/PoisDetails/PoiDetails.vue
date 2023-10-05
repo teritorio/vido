@@ -12,7 +12,7 @@
         :label="
           isFavorite ? $t('poiCard.favoriteOn') : $t('poiCard.favoriteOff')
         "
-        :class="['tw-w-11 tw-h-11', 'tw-mr-3 sm:tw-mr-9', 'print: hidden']"
+        :class="['tw-w-11 tw-h-11', 'tw-mr-3 sm:tw-mr-9']"
         @click.stop="toggleFavorite"
       >
         <FavoriteIcon :is-active="isFavorite" :color-line="colorLine" />
@@ -20,7 +20,7 @@
       <IconButton
         :href="mapURL"
         :label="$t('poiCard.backToMap')"
-        :class="['tw-w-11 tw-h-11', 'tw-mr-3 sm:tw-mr-9', 'print:hidden']"
+        :class="['tw-w-11 tw-h-11', 'tw-mr-3 sm:tw-mr-9']"
         @click="!mapURL && back()"
       >
         <TeritorioIcon picto="map" class="tw-text-zinc-800" />
@@ -28,13 +28,13 @@
     </template>
     <template #actions>
       <Share
+        class="print:tw-hidden"
         :title="poi.properties.name"
         :href="
           poi.properties.editorial &&
           poi.properties.editorial['website:details']
         "
         :color-line="colorLine"
-        class="print:hidden"
       />
     </template>
     <template #body>

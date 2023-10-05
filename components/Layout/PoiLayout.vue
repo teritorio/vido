@@ -11,7 +11,7 @@
       <div v-if="icon" class="tw-flex tw-justify-center">
         <TeritorioIconBadge :color-fill="colorFill" size="2xl" :picto="icon" />
       </div>
-      <h1 class="print:pb-8">{{ name }}</h1>
+      <h1 class="print:tw-pb-4">{{ name }}</h1>
       <slot name="actions"></slot>
       <slot name="body"></slot>
       <Footer :attributions="settings.attributions">
@@ -100,11 +100,5 @@ export default defineNuxtComponent({
   font-size: 1.2rem;
   margin-top: 1.2rem;
   margin-bottom: 0.7rem;
-}
-
-@media print {
-  #headerbuttons {
-    display: none;
-  }
 }
 </style>

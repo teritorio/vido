@@ -188,14 +188,16 @@ export default defineNuxtComponent({
 </style>
 
 <style>
-body {
+body,
+#__nuxt,
+#__layout {
   -webkit-print-color-adjust: exact;
 }
-@media print {
-  html,
-  body {
-    width: 210mm;
-    height: 297mm;
-  }
+img,
+.poi-deck,
+#route-map {
+  page-break-before: auto;
+  page-break-after: auto;
+  page-break-inside: avoid;
 }
 </style>
