@@ -1,5 +1,5 @@
 <template>
-  <div id="map-container" class="w-full h-full flex flex-col">
+  <div id="map-container" class="tw-w-full tw-h-full tw-flex tw-flex-col">
     <Map
       :center="center"
       :bounds="bounds"
@@ -13,7 +13,7 @@
       :hide-control="hideControl"
       :hash="hash"
       :cooperative-gestures="cooperativeGestures"
-      class="grow h-full"
+      class="tw-grow tw-h-full"
       @map-init="onMapInit($event)"
       @map-data="onMapRender('map-data', $event)"
       @map-dragend="onMapRender('map-dragend', $event)"
@@ -44,9 +44,18 @@ import { PoiFilter } from '@teritorio/map'
 import copy from 'fast-copy'
 import { Polygon, MultiPolygon } from 'geojson'
 import throttle from 'lodash.throttle'
-import { FitBoundsOptions, LngLatBoundsLike, LngLatLike } from 'maplibre-gl'
-import Vue, { PropType } from 'vue'
+import type {
+  FitBoundsOptions,
+  LayerSpecification,
+  LngLatBoundsLike,
+  LngLatLike,
+  MapDataEvent,
+  MapLibreEvent,
+  MapTouchEvent,
+} from 'maplibre-gl'
+import { PropType } from 'vue'
 
+import { defineNuxtComponent } from '#app'
 import Attribution from '~/components/Map/Attribution.vue'
 import Map from '~/components/Map/Map.vue'
 import { ApiPoi } from '~/lib/apiPois'
@@ -62,7 +71,7 @@ const BOUNDARY_SOURCE = 'boundary_area'
 const BOUNDARY_AREA_LAYER = 'boundary_area'
 const BOUNDAR_BORDER_LAYER = 'boundary_border'
 
-export default Vue.extend({
+export default defineNuxtComponent({
   components: {
     Map,
     Attribution,
@@ -174,6 +183,29 @@ export default Vue.extend({
     })
   },
 
+  emits: {
+    'map-init': (_map: maplibregl.Map) => true,
+    'map-data': (_event: MapDataEvent & object) => true,
+    'map-dragend': (
+      _event: MapLibreEvent<MouseEvent | TouchEvent | undefined> & object
+    ) => true,
+    'map-moveend': (
+      _event: MapLibreEvent<MouseEvent | TouchEvent | WheelEvent | undefined> &
+        object
+    ) => true,
+    'map-resize': (_event: MapLibreEvent<undefined> & object) => true,
+    'map-rotateend': (
+      _event: MapLibreEvent<MouseEvent | TouchEvent | undefined> & object
+    ) => true,
+    'map-touchmove': (_event: MapTouchEvent & object) => true,
+    'map-zoomend': (
+      _event: MapLibreEvent<MouseEvent | TouchEvent | WheelEvent | undefined> &
+        object
+    ) => true,
+    'map-style-load': (_style: maplibregl.StyleSpecification) => true,
+    'feature-click': (_feature: ApiPoi) => true,
+  },
+
   methods: {
     fitBoundsOptions(options: FitBoundsOptions = {}): FitBoundsOptions {
       return {
@@ -237,7 +269,11 @@ export default Vue.extend({
       // Add individual markers
       if (this.poiLayerTemplate)
         this.map.addLayer(
-          markerLayerTextFactory(this.poiLayerTemplate, POI_LAYER, POI_SOURCE)
+          markerLayerTextFactory(
+            this.poiLayerTemplate as LayerSpecification,
+            POI_LAYER,
+            POI_SOURCE
+          )
         )
     },
 
@@ -321,14 +357,24 @@ export default Vue.extend({
       this.$emit('map-style-load', style)
     },
 
-    onMapRender(eventName: string, event: any) {
+    onMapRender(
+      eventName:
+        | 'map-data'
+        | 'map-dragend'
+        | 'map-moveend'
+        | 'map-resize'
+        | 'map-rotateend'
+        | 'map-touchmove'
+        | 'map-zoomend',
+      event: any
+    ) {
       if (
         this.map &&
         this.map.getSource(POI_SOURCE) &&
         this.map.isSourceLoaded(POI_SOURCE)
       ) {
         this.markers = updateMarkers(
-          this.map,
+          this.map as maplibregl.Map,
           this.markers,
           POI_SOURCE,
           this.fitBounds,
@@ -336,6 +382,7 @@ export default Vue.extend({
         )
       }
 
+      // @ts-ignore
       this.$emit(eventName, event)
     },
   },
@@ -348,6 +395,6 @@ export default Vue.extend({
 }
 
 :deep(.cluster-donut) {
-  @apply text-sm leading-none font-medium block text-zinc-800;
+  @apply tw-text-sm tw-leading-none tw-font-medium tw-block tw-text-zinc-800;
 }
 </style>

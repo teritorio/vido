@@ -7,34 +7,34 @@
     :icon="category.category.icon"
     :size="size"
     :name="category.category.name"
-    badge-class="bg-white text-zinc-700 rounded-full border-2 border-white"
+    badge-class="tw-bg-white tw-text-zinc-700 tw-rounded-full tw-border-solid tw-border-2 tw-border-white"
     @click.prevent="onClick"
   >
     <template v-if="category.category.display_mode === 'compact'" #badge>
-      <font-awesome-icon
+      <FontAwesomeIcon
         v-if="!selected"
-        class="text-zinc-300"
+        class="tw-text-zinc-300"
         :icon="['far', 'circle']"
         :size="size"
       />
-      <font-awesome-icon
+      <FontAwesomeIcon
         v-else
-        class="text-emerald-500"
+        class="tw-text-emerald-500"
         icon="check-circle"
         :size="size"
       />
     </template>
 
     <template #end-line-large>
-      <font-awesome-icon
+      <FontAwesomeIcon
         v-if="!selected"
-        class="text-zinc-300"
+        class="tw-text-zinc-300"
         :icon="['far', 'circle']"
         :size="size"
       />
-      <font-awesome-icon
+      <FontAwesomeIcon
         v-else
-        class="text-emerald-500"
+        class="tw-text-emerald-500"
         icon="check-circle"
         :size="size"
       />
@@ -48,15 +48,15 @@
         "
         type="button"
         :class="[
-          'w-full h-12 sm:h-8 text-left rounded-lg outline-none focus:outline-none hover:bg-zinc-100',
-          isFiltered && 'text-emerald-500',
-          !isFiltered && 'text-zinc-500',
+          'tw-w-full tw-h-12 sm:tw-h-8 tw-text-left tw-rounded-lg tw-outline-none focus:tw-outline-none hover:tw-bg-zinc-100',
+          isFiltered && 'tw-text-emerald-500',
+          !isFiltered && 'tw-text-zinc-500',
         ]"
         @click="onFilterClick"
       >
-        <font-awesome-icon icon="filter" size="sm" class="ml-16" />
+        <FontAwesomeIcon icon="filter" size="sm" class="tw-ml-16" />
         {{
-          isFiltered ? $tc('headerMenu.editFilters') : $tc('headerMenu.filter')
+          isFiltered ? $t('headerMenu.editFilters') : $t('headerMenu.filter')
         }}
       </button>
     </template>
@@ -64,14 +64,20 @@
 </template>
 
 <script lang="ts">
-import Vue, { PropType } from 'vue'
+import {
+  FontAwesomeIcon,
+  FontAwesomeIconProps,
+} from '@fortawesome/vue-fontawesome'
+import { PropType } from 'vue'
 
+import { defineNuxtComponent } from '#app'
 import MenuItem from '~/components/Menu/Item.vue'
-import { ApiMenuCategory } from '~/lib/apiMenu'
+import { ApiMenuCategory, ApiMenuItem } from '~/lib/apiMenu'
 import { FilterValues, filterValuesIsSet } from '~/utils/types-filters'
 
-export default Vue.extend({
+export default defineNuxtComponent({
   components: {
+    FontAwesomeIcon,
     MenuItem,
   },
   props: {
@@ -88,11 +94,11 @@ export default Vue.extend({
       required: true,
     },
     size: {
-      type: String as PropType<string>,
+      type: String as PropType<FontAwesomeIconProps['size']>,
       required: true,
     },
     displayModeDefault: {
-      type: String as PropType<string>,
+      type: String as PropType<'compact' | 'large'>,
       required: true,
     },
   },
@@ -101,6 +107,12 @@ export default Vue.extend({
       return this.filters && filterValuesIsSet(this.filters)
     },
   },
+
+  emits: {
+    click: (_category_id: ApiMenuItem['id']) => true,
+    'filter-click': (_category_id: ApiMenuItem['id']) => true,
+  },
+
   methods: {
     onClick() {
       this.$tracking({
@@ -127,10 +139,10 @@ export default Vue.extend({
 
 <style scoped>
 button:not(.selected):hover svg[data-icon='check-circle'] {
-  @apply ring-zinc-100;
+  @apply tw-ring-zinc-100;
 }
 
 button.selected:hover svg[data-icon='check-circle'] {
-  @apply ring-white;
+  @apply tw-ring-white;
 }
 </style>

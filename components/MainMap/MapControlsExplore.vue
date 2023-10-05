@@ -1,23 +1,23 @@
 <template>
   <div
     ref="container"
-    :class="[
-      'maplibregl-ctrl maplibregl-ctrl-group mapboxgl-ctrl mapboxgl-ctrl-group',
-      'hidden md:block',
-    ]"
+    :class="['maplibregl-ctrl maplibregl-ctrl-group', 'tw-hidden md:tw-block']"
   >
     <button
-      :aria-label="$tc('mapControls.exploreAriaLabel')"
-      :title="$tc('mapControls.exploreButton')"
+      :aria-label="$t('mapControls.exploreAriaLabel')"
+      :title="$t('mapControls.exploreButton')"
       type="button"
-      :class="['hidden md:block', isModeExplorer && 'maplibregl-ctrl-active']"
+      :class="[
+        'tw-hidden md:tw-block',
+        isModeExplorer && 'maplibregl-ctrl-active',
+      ]"
       @click="toggleMode"
     >
-      <font-awesome-icon
+      <FontAwesomeIcon
         icon="eye"
         :class="[
-          isModeExplorer && 'text-white',
-          !isModeExplorer && 'text-zinc-800',
+          isModeExplorer && 'tw-text-white',
+          !isModeExplorer && 'tw-text-zinc-800',
         ]"
         size="lg"
       />
@@ -26,28 +26,31 @@
 </template>
 
 <script lang="ts">
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { Control } from '@teritorio/map'
-import { Map } from 'maplibre-gl'
+import type { Map } from 'maplibre-gl'
 import { mapState, mapWritableState } from 'pinia'
-import Vue, { PropType, VueConstructor } from 'vue'
+import { PropType, ref } from 'vue'
 
+import { defineNuxtComponent } from '#app'
 import { mapStore } from '~/stores/map'
 import { Mode } from '~/utils/types'
 
-export default (
-  Vue as VueConstructor<
-    Vue & {
-      $refs: {
-        container: InstanceType<typeof HTMLDivElement>
-      }
-    }
-  >
-).extend({
+export default defineNuxtComponent({
+  components: {
+    FontAwesomeIcon,
+  },
+
   props: {
     map: {
       type: Object as PropType<Map>,
       default: null,
     },
+  },
+  setup() {
+    return {
+      container: ref<InstanceType<typeof HTMLDivElement>>(),
+    }
   },
 
   computed: {
@@ -64,7 +67,7 @@ export default (
           }
         }
 
-        const control = new BackgroundControl(this.$refs.container)
+        const control = new BackgroundControl(this.container!)
         this.map.addControl(control)
       }
     },

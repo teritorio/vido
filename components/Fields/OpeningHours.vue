@@ -2,32 +2,32 @@
   <div v-if="openingHours">
     <span hidden>{{ openingHours }}</span>
     <template v-if="nextChange">
-      <p v-if="isPointTime" id="next" class="text-emerald-500">
-        {{ $tc('openingHours.next') }}
+      <p v-if="isPointTime" id="next" class="tw-text-emerald-500">
+        {{ $t('openingHours.next') }}
         <RelativeDate :date="nextChange.nextChange"></RelativeDate>
       </p>
       <template v-else>
         <p
           v-if="nextChange.type === 'opened'"
           id="opened"
-          class="text-emerald-500"
+          class="tw-text-emerald-500"
         >
-          {{ $tc('openingHours.opened') }}
+          {{ $t('openingHours.opened') }}
           <template v-if="nextChange.nextChange">
             -
-            {{ $tc('openingHours.closeAt') }}
+            {{ $t('openingHours.closeAt') }}
             <RelativeDate :date="nextChange.nextChange"></RelativeDate>
           </template>
         </p>
         <p
           v-else-if="nextChange.type === 'openAt'"
           id="openAt"
-          class="text-red-500"
+          class="tw-text-red-500"
         >
-          {{ $tc('openingHours.closed') }}
+          {{ $t('openingHours.closed') }}
           <template v-if="nextChange.nextChange">
             -
-            {{ $tc('openingHours.openAt') }}
+            {{ $t('openingHours.openAt') }}
             <RelativeDate :date="nextChange.nextChange"></RelativeDate>
           </template>
         </p>
@@ -50,7 +50,7 @@
         </li>
       </ul>
       <template v-if="variable">
-        <p>{{ $tc('openingHours.variableWeek') }}</p>
+        <p>{{ $t('openingHours.variableWeek') }}</p>
       </template>
     </template>
   </div>
@@ -59,8 +59,9 @@
 <script lang="ts">
 import OpeningHours, { optional_conf } from 'opening_hours'
 import { mapState } from 'pinia'
-import Vue, { PropType } from 'vue'
+import { PropType } from 'vue'
 
+import { defineNuxtComponent } from '#app'
 import RelativeDate from '~/components/UI/RelativeDate.vue'
 import { PropertyTranslationsContextEnum } from '~/plugins/property-translations'
 import { siteStore } from '~/stores/site'
@@ -87,7 +88,7 @@ export function isOpeningHoursSupportedOsmTags(key: string): boolean {
   return isSupportedOsmTags(SupportedOsmKeys, key)
 }
 
-export default Vue.extend({
+export default defineNuxtComponent({
   components: {
     RelativeDate,
   },

@@ -1,5 +1,16 @@
 module.exports = {
-  content: [],
+  prefix: 'tw-',
+  content: [
+    './components/**/*.{js,vue,ts}',
+    './layouts/**/*.vue',
+    './pages/**/*.vue',
+    './plugins/**/*.{js,ts}',
+    './nuxt.config.{js,ts}',
+    './app.vue',
+  ],
+  media: {
+    darkMode: false,
+  },
   theme: {
     extend: {
       fontSize: () => ({
@@ -20,9 +31,5 @@ module.exports = {
       },
     },
   },
-  plugins: [
-    require('@tailwindcss/forms'),
-    require('@tailwindcss/typography'),
-    require('@vueform/slider/tailwind'),
-  ],
+  plugins: [require('@tailwindcss/forms'), require('@tailwindcss/typography')],
 }

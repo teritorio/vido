@@ -29,9 +29,10 @@ const category: ApiMenuCategory = {
 
 const defaultProps = {
   category,
-  filters: {},
+  filters: [],
   selected: false,
   size: 'lg',
+  displayModeDefault: 'large',
 }
 
 export const Default = bind(Category, {

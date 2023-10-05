@@ -1,0 +1,42 @@
+@tailwind base;
+
+// Remove tailwind reset, make it works with vuetify
+[type="text"],
+[type="text"]:focus,
+[type="email"],
+[type="email"]:focus,
+[type="url"],
+[type="url"]:focus,
+[type="password"],
+[type="password"]:focus,
+[type="number"],
+[type="number"]:focus,
+[type="date"],
+[type="date"]:focus,
+[type="datetime-local"],
+[type="datetime-local"]:focus,
+[type="month"],
+[type="month"]:focus,
+[type="search"],
+[type="search"]:focus,
+[type="tel"],
+[type="tel"]:focus,
+[type="time"],
+[type="time"]:focus,
+[type="week"],
+[type="week"]:focus,
+[multiple],
+[multiple]:focus,
+textarea,
+textarea:focus,
+select,
+select:focus {
+  background-color: inherit;
+}
+
+[type="checkbox"], [type="radio"] {
+  appearance: auto;
+}
+
+@tailwind components;
+@tailwind utilities;

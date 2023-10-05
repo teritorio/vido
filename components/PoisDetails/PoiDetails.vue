@@ -10,20 +10,20 @@
     <template #headerButtons>
       <IconButton
         :label="
-          isFavorite ? $tc('poiCard.favoriteOn') : $tc('poiCard.favoriteOff')
+          isFavorite ? $t('poiCard.favoriteOn') : $t('poiCard.favoriteOff')
         "
-        :class="['w-11 h-11', 'mr-3 sm:mr-9']"
+        :class="['tw-w-11 tw-h-11', 'tw-mr-3 sm:tw-mr-9']"
         @click.stop="toggleFavorite"
       >
         <FavoriteIcon :is-active="isFavorite" :color-line="colorLine" />
       </IconButton>
       <IconButton
         :href="mapURL"
-        :label="$tc('poiCard.backToMap')"
-        :class="['w-11 h-11', 'mr-3 sm:mr-9']"
-        @click="!mapURL && $router.go(-1)"
+        :label="$t('poiCard.backToMap')"
+        :class="['tw-w-11 tw-h-11', 'tw-mr-3 sm:tw-mr-9']"
+        @click="!mapURL && back()"
       >
-        <TeritorioIcon picto="map" class="text-zinc-800" />
+        <TeritorioIcon picto="map" class="tw-text-zinc-800" />
       </IconButton>
     </template>
     <template #actions>
@@ -39,13 +39,17 @@
     <template #body>
       <div class="detail-wrapper">
         <div class="detail-left">
-          <Fields
+          <FieldsGroup
             v-if="detailsFields"
-            :fields="detailsFields"
+            :group="{
+              group: 'root',
+              fields: detailsFields,
+              display_mode: 'standard',
+              icon: '',
+            }"
             :properties="properties"
             :color-fill="colorFill"
             :geom="poi.geometry"
-            class="detail-left-block"
           />
         </div>
 
@@ -64,21 +68,26 @@
               :extra-attributions="settings.attributions"
               :feature-ids="[id]"
               :features="[poi]"
-              class="relative"
+              class="tw-relative"
               :off-map-attribution="true"
             />
           </template>
 
-          <Fields
+          <FieldsGroup
             v-else
-            :fields="[
-              {
-                group: 'description',
-                display_mode: 'standard',
-                fields: [{ field: 'description' }],
-                icon: '',
-              },
-            ]"
+            :group="{
+              group: 'root',
+              display_mode: 'standard',
+              icon: '',
+              fields: [
+                {
+                  group: 'description',
+                  display_mode: 'standard',
+                  fields: [{ field: 'description' }],
+                  icon: '',
+                },
+              ],
+            }"
             :properties="poi.properties"
             :geom="poi.geometry"
             :color-fill="colorFill"
@@ -99,7 +108,7 @@
 
     <template #footer>
       <span v-if="poi.properties.metadata.updated_at">
-        {{ $tc('poiDetails.lastUpdate') }}
+        {{ $t('poiDetails.lastUpdate') }}
         <a
           v-if="
             poi.properties.metadata.osm_type && poi.properties.metadata.osm_id
@@ -117,12 +126,13 @@
 
 <script lang="ts">
 import { mapState } from 'pinia'
-import Vue, { PropType } from 'vue'
+import { PropType } from 'vue'
 
+import { defineNuxtComponent } from '#app'
 import PoiLayout from '~/components/Layout/PoiLayout.vue'
 import MapPois from '~/components/Map/MapPois.vue'
 import Carousel from '~/components/PoisDetails/Carousel.vue'
-import Fields from '~/components/PoisDetails/Fields.vue'
+import FieldsGroup from '~/components/PoisDetails/FieldsGroup.vue'
 import Mapillary from '~/components/PoisDetails/Mapillary.vue'
 import RouteMap from '~/components/PoisDetails/Route/RouteMap.vue'
 import Share from '~/components/PoisDetails/Share.vue'
@@ -138,7 +148,7 @@ import { PropertyTranslationsContextEnum } from '~/plugins/property-translations
 import { favoritesStore } from '~/stores/favorite'
 import { OriginEnum } from '~/utils/types'
 
-export default Vue.extend({
+export default defineNuxtComponent({
   components: {
     PoiLayout,
     IconButton,
@@ -149,7 +159,7 @@ export default Vue.extend({
     Mapillary,
     MapPois,
     RouteMap,
-    Fields,
+    FieldsGroup,
     RelativeDate,
   },
 
@@ -187,7 +197,7 @@ export default Vue.extend({
       if (!this.isLargeLayeout) {
         return this.poi.properties
       } else {
-        const { ['description']: omitted, ...rest } = this.poi.properties
+        const { ['description']: _omitted, ...rest } = this.poi.properties
         return rest
       }
     },
@@ -230,11 +240,12 @@ export default Vue.extend({
     },
 
     mapURL(): string | undefined {
-      // Use history back rather than forward to map
-      const mapIsBack = this.$nuxt.context.from?.matched.some(
-        (route) => route.name === 'index'
-      )
-      if (mapIsBack) {
+      // Assume if there is a history on the same site, it comes form the main map
+      const localHistoryBack =
+        this.$router.options.history.state.back &&
+        !(this.$router.options.history.state.back as string).startsWith('http')
+      if (localHistoryBack) {
+        // Use history back rather than forward to map
         return undefined
       } else {
         const categoryIds =
@@ -249,12 +260,13 @@ export default Vue.extend({
     favoritesStore().initFavoritesFromLocalStorage()
     this.$tracking({
       type: 'page',
-      title: this.$meta().refresh().metaInfo.title,
+      title: (this.$route.name && String(this.$route.name)) || undefined,
       location: window.location.href,
       path: this.$route.path,
       origin:
         OriginEnum[
-          this.$router.currentRoute.query.origin as keyof typeof OriginEnum
+          this.$router.currentRoute.value.query
+            .origin as keyof typeof OriginEnum
         ],
     })
   },
@@ -270,6 +282,10 @@ export default Vue.extend({
         })
         favoritesStore().toggleFavorite(this.poi)
       }
+    },
+
+    back(): void {
+      this.$router.go(-1)
     },
   },
 })
@@ -289,12 +305,9 @@ export default Vue.extend({
   .detail-left {
     width: 34%;
     box-sizing: border-box;
+    padding: 0 1.6rem;
     padding-right: 0;
-
-    .detail-left-block {
-      margin: 0 0 3.3rem;
-      padding: 0 1.6rem;
-    }
+    margin: 0 0 3.3rem;
   }
 
   .detail-right {
@@ -323,11 +336,11 @@ export default Vue.extend({
 }
 
 .detail-wrapper :deep(ul) {
-  @apply list-disc ml-6;
+  @apply tw-list-disc tw-ml-6;
 }
 
 :deep(#map-container) {
   width: 100%;
-  height: 346px;
+  height: 500px;
 }
 </style>

@@ -1,23 +1,28 @@
 <template>
   <span
     :class="[
-      'block flex items-center justify-center shrink-0 text-white rounded-full border-2 border-white',
+      'tw-block tw-flex tw-items-center tw-justify-center tw-shrink-0 tw-text-white tw-rounded-full tw-border-2 tw-border-white',
       iconDim,
-      Boolean(image) && 'shadow-md',
+      Boolean(image) && 'tw-shadow-md',
     ]"
     :style="{ backgroundColor: colorFill }"
   >
-    <TeritorioIcon :class="`text-${iconSize}`" :picto="picto" :image="image" />
+    <TeritorioIcon
+      :class="`tw-text-${iconSize}`"
+      :picto="picto"
+      :image="image"
+    />
     <slot></slot>
   </span>
 </template>
 
 <script lang="ts">
-import Vue, { PropType } from 'vue'
+import { PropType } from 'vue'
 
+import { defineNuxtComponent } from '#app'
 import TeritorioIcon from '~/components/UI/TeritorioIcon.vue'
 
-export default Vue.extend({
+export default defineNuxtComponent({
   components: {
     TeritorioIcon,
   },
@@ -55,12 +60,12 @@ export default Vue.extend({
     },
     iconDim(): string {
       const values: { [size: string]: string } = {
-        xs: 'w-4 h-4',
-        sm: 'w-6 h-6',
-        md: 'w-8 h-8',
-        lg: 'w-10 h-10',
-        xl: 'w-12 h-12',
-        '2xl': 'w-14 h-14',
+        xs: 'tw-w-4 tw-h-4',
+        sm: 'tw-w-6 tw-h-6',
+        md: 'tw-w-8 tw-h-8',
+        lg: 'tw-w-10 tw-h-10',
+        xl: 'tw-w-12 tw-h-12',
+        '2xl': 'tw-w-14 tw-h-14',
       }
       return this.image ? values.xl : values[this.size || 'md']
     },

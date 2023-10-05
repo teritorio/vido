@@ -1,16 +1,16 @@
 <template>
   <span
     v-if="hasItems"
-    class="flex items-center justify-center text-white text-center rounded-full min-w-5 h-5 border-2 border-white bg-red-600 px-1"
+    class="tw-flex tw-items-center tw-justify-center tw-text-white tw-text-center tw-rounded-full tw-min-w-5 tw-h-5 tw-border-2 tw-border-white tw-bg-red-600 tw-px-1"
   >
-    <span class="text-xs">{{ items }}</span>
+    <span class="tw-text-xs">{{ items }}</span>
   </span>
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineNuxtComponent } from '#app'
 
-export default Vue.extend({
+export default defineNuxtComponent({
   props: {
     items: {
       type: Number,

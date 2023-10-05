@@ -10,6 +10,7 @@ module.exports = {
     sourceType: 'module',
   },
   extends: [
+    'plugin:@typescript-eslint/recommended',
     // '@nuxtjs/eslint-config-typescript',
     'plugin:vue/vue3-recommended',
     'plugin:prettier/recommended',
@@ -22,9 +23,18 @@ module.exports = {
   plugins: ['prettier', 'import', '@typescript-eslint', 'vue'],
   // add your custom rules here
   rules: {
+    '@typescript-eslint/ban-ts-comment': 'off',
+    '@typescript-eslint/no-non-null-assertion': 'off',
+    '@typescript-eslint/no-var-requires': 'off',
+    '@typescript-eslint/no-namespace': 'off',
+    '@typescript-eslint/no-unused-vars': [
+      'error',
+      {
+        argsIgnorePattern: '^_',
+        varsIgnorePattern: '^_',
+      },
+    ],
     'vue/multi-word-component-names': 'off',
-    'vue/require-explicit-emits': 'off',
-    'vue/no-deprecated-slot-scope-attribute': 'off',
     'import/order': [
       'error',
       {
@@ -38,9 +48,6 @@ module.exports = {
         'newlines-between': 'always',
       },
     ],
-    'vue/no-v-for-template-key-on-child': 'off',
-    'vue/no-deprecated-dollar-listeners-api': 'off', // Vue3 rule
-    'vue/no-reserved-component-names': 'off',
   },
   settings: {
     'import/internal-regex': '^@/',

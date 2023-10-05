@@ -1,78 +1,84 @@
 <template>
-  <section v-if="entries.length + $i18n.locales.length > 0">
-    <TDropdown
-      :classes="{
-        dropdown:
-          'origin-top-right absolute right-0 rounded shadow bg-white mt-1',
-        dropdownWrapper: 'relative z-40',
-      }"
-    >
-      <template
-        #trigger="{
-          mousedownHandler,
-          focusHandler,
-          blurHandler,
-          keydownHandler,
-        }"
-      >
+  <section
+    v-if="entries.length + locales.length > 0"
+    class="tw-relative tw-z-40"
+  >
+    <v-menu offset-y>
+      <template #activator="{ props }">
         <IconButton
-          :label="$tc('navMenu.label')"
-          class="w-11 h-11"
-          @mousedown="mousedownHandler"
-          @focus="focusHandler"
-          @blur="blurHandler"
-          @keydown="keydownHandler"
+          :label="$t('navMenu.label')"
+          class="tw-w-11 tw-h-11 tw-pointer-events-auto"
+          v-bind="props"
         >
-          <font-awesome-icon icon="cog" class="text-zinc-800" size="lg" />
+          <FontAwesomeIcon icon="cog" class="tw-text-zinc-800" size="lg" />
         </IconButton>
       </template>
 
-      <div class="py-1 rounded-md shadow-xs flex flex-col w-max">
-        <ExternalLink
+      <v-list id="nav-menu-dropdown">
+        <v-list-item
           v-for="entry in entries"
           :key="entry.post_id"
-          class="w-full px-5 py-3 hover:bg-zinc-100"
-          :href="entry.url"
-          rel="noopener noreferrer"
-          target="_blank"
-          @click="openLink(entry.title, entry.url)"
+          class="tw-w-full tw-px-5 tw-py-3 hover:tw-bg-zinc-100"
         >
-          {{ entry.title }}
-        </ExternalLink>
-        <hr v-if="Boolean(entries.length)" class="" />
-        <a
-          v-for="locale in $i18n.locales"
+          <v-list-item-title>
+            <ExternalLink
+              :href="entry.url"
+              rel="noopener noreferrer"
+              target="_blank"
+              @click="openLink(entry.title, entry.url)"
+            >
+              {{ entry.title }}
+            </ExternalLink>
+          </v-list-item-title>
+        </v-list-item>
+        <v-divider v-if="Boolean(entries.length)"></v-divider>
+        <v-list-item
+          v-for="locale in locales"
           :key="locale.code"
           :class="[
-            'w-full px-5 py-3 outline-none focus:outline-none hover:bg-zinc-100',
-            locale.code === $i18n.locale && 'bg-zinc-200',
+            'tw-w-full tw-px-5 tw-py-3 hover:tw-bg-zinc-100',
+            locale.code === $i18n.locale && 'bg-grey-lighten-2',
           ]"
-          href="#"
-          @click.prevent="setLocale(locale.code)"
         >
-          <span class="mr-2" :class="`flag:${locale.flag}`"></span>
-          {{ locale.name }}
-        </a>
-      </div>
-    </TDropdown>
+          <v-list-item-title>
+            <a href="#" @click.prevent="setLocale(locale.code)">
+              <VFlag :flag="locale.flag" class="flag" />
+              {{ locale.name }}
+            </a>
+          </v-list-item-title>
+        </v-list-item>
+      </v-list>
+    </v-menu>
   </section>
 </template>
 
 <script lang="ts">
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { mapWritableState } from 'pinia'
-import Vue, { PropType } from 'vue'
-import { TDropdown } from 'vue-tailwind/dist/components'
+import { PropType } from 'vue'
+import { LocaleObject } from 'vue-i18n-routing'
+import { VDivider } from 'vuetify/components/VDivider'
+import { VList, VListItem, VListItemTitle } from 'vuetify/components/VList'
+import { VMenu } from 'vuetify/components/VMenu'
 
+import { defineNuxtComponent } from '#app'
 import ExternalLink from '~/components/UI/ExternalLink.vue'
 import IconButton from '~/components/UI/IconButton.vue'
+import VFlag from '~/components/UI/VFlag.vue'
 import { ContentEntry } from '~/lib/apiContent'
 import { siteStore } from '~/stores/site'
 
-export default Vue.extend({
+export default defineNuxtComponent({
   components: {
+    FontAwesomeIcon,
+    VMenu,
+    VList,
+    VListItem,
+    VListItemTitle,
+    VDivider,
     IconButton,
     ExternalLink,
-    TDropdown,
+    VFlag,
   },
 
   props: {
@@ -84,11 +90,15 @@ export default Vue.extend({
 
   computed: {
     ...mapWritableState(siteStore, ['locale']),
+
+    locales(): LocaleObject[] {
+      return this.$i18n.locales as unknown as LocaleObject[]
+    },
   },
 
   methods: {
     setLocale(locale: string) {
-      this.$i18n.setLocale(locale)
+      this.$i18n.locale = locale
       this.locale = locale
     },
     openLink(title: string, url: string) {
@@ -103,24 +113,10 @@ export default Vue.extend({
 </script>
 
 <style scoped>
-[class*=' flag:'],
-[class^='flag:'] {
+.flag {
   display: inline-block;
-  background-size: cover;
   height: 1em;
   width: 1.5em;
   font-size: 0.7rem;
-}
-
-.flag\:ES {
-  background-image: url('~country-flag-icons/3x2/ES.svg');
-}
-
-.flag\:FR {
-  background-image: url('~country-flag-icons/3x2/FR.svg');
-}
-
-.flag\:GB {
-  background-image: url('~country-flag-icons/3x2/GB.svg');
 }
 </style>

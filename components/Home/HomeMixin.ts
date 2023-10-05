@@ -1,25 +1,17 @@
 import { Polygon, MultiPolygon } from 'geojson'
-import { LngLatBoundsLike } from 'maplibre-gl'
+import type { LngLatBoundsLike } from 'maplibre-gl'
 import { mapActions, mapState, mapWritableState } from 'pinia'
-import Vue, { PropType, VueConstructor } from 'vue'
+import { PropType, ref } from 'vue'
 
+import { defineNuxtComponent } from '#app'
 import MapFeatures from '~/components/MainMap/MapFeatures.vue'
-import { ApiMenuCategory, MenuItem } from '~/lib/apiMenu'
+import { ApiMenuCategory } from '~/lib/apiMenu'
 import { ApiPoi } from '~/lib/apiPois'
 import { Settings } from '~/lib/apiSettings'
 import { mapStore } from '~/stores/map'
 import { menuStore } from '~/stores/menu'
 
-export default (
-  Vue as VueConstructor<
-    Vue & {
-      $refs: {
-        mapFeatures: InstanceType<typeof MapFeatures>
-        bottomMenu: HTMLDivElement
-      }
-    }
-  >
-).extend({
+export default defineNuxtComponent({
   props: {
     settings: {
       type: Object as PropType<Settings>,
@@ -37,6 +29,13 @@ export default (
       type: Object as PropType<Polygon | MultiPolygon | undefined>,
       default: undefined,
     },
+  },
+
+  setup() {
+    return {
+      mapFeatures: ref<InstanceType<typeof MapFeatures>>(),
+      bottomMenu: ref<HTMLDivElement>(),
+    }
   },
 
   data(): {
@@ -77,12 +76,13 @@ export default (
     } else if (typeof location !== 'undefined') {
       const enabledCategories: ApiMenuCategory['id'][] = []
 
-      Object.keys(this.apiMenuCategory || {}).forEach((categoryIdString) => {
-        const categoryId = parseInt(categoryIdString, 10)
-        if (this.apiMenuCategory![categoryId].selected_by_default) {
-          enabledCategories.push(categoryId)
-        }
-      })
+      if (this.apiMenuCategory) {
+        this.apiMenuCategory.forEach((apiMenuCategory) => {
+          if (apiMenuCategory.selected_by_default) {
+            enabledCategories.push(apiMenuCategory.id)
+          }
+        })
+      }
 
       this.setSelectedCategoryIds(enabledCategories)
     }
@@ -97,7 +97,9 @@ export default (
     ...mapActions(menuStore, ['setSelectedCategoryIds']),
 
     goToSelectedFeature() {
-      this.$refs.mapFeatures?.goToSelectedFeature()
+      if (this.$refs.mapFeatures) {
+        ;(this.$refs.mapFeatures as typeof MapFeatures).goToSelectedFeature()
+      }
     },
   },
 })

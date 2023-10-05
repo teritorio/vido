@@ -1,7 +1,7 @@
-import fetch from 'node-fetch'
-import { MetaInfo } from 'vue-meta'
+import { MetaObject } from 'nuxt/schema'
 
 import { MultilingualString } from '~/utils/types'
+import { VidoConfig } from '~/utils/types-config'
 
 export interface SiteInfosTheme {
   id: number
@@ -34,7 +34,7 @@ export interface Settings {
     type: 'geojson'
     data: GeoJSON.Polygon
   }
-  polygons_extra: {
+  polygons_extra?: {
     [key: string]: {
       type: 'geojson'
       data: string | GeoJSON.Polygon
@@ -50,12 +50,10 @@ export interface Settings {
   themes: SiteInfosTheme[]
 }
 
-export function getSettings(
-  apiEndpoint: string,
-  apiProject: string,
-  apiTheme: string
-): Promise<Settings> {
-  return fetch(`${apiEndpoint}/${apiProject}/${apiTheme}/settings.json`)
+export function getSettings(vidoConfig: VidoConfig): Promise<Settings> {
+  return fetch(
+    `${vidoConfig.API_ENDPOINT}/${vidoConfig.API_PROJECT}/${vidoConfig.API_THEME}/settings.json`
+  )
     .then((data) => {
       if (data.ok) {
         return data.json() as unknown as Settings
@@ -95,9 +93,14 @@ function stripHTML(value?: string): string | undefined {
 
 export function headerFromSettings(
   settings: Settings,
-  options: any = null
-): MetaInfo {
+  options:
+    | { title?: string; description?: any; googleSiteVerification?: string }
+    | undefined = undefined
+): MetaObject {
   return {
+    htmlAttrs: {
+      lang: 'fr',
+    },
     title: [settings.themes[0].title.fr, options?.title]
       .filter((o) => o)
       .join(' - '),
@@ -131,6 +134,11 @@ export function headerFromSettings(
         hid: 'keywords',
         name: 'keywords',
         content: settings.themes[0]?.keywords?.fr,
+      },
+      {
+        hid: 'google-site-verification',
+        name: 'google-site-verification',
+        content: options?.googleSiteVerification,
       },
     ].filter((meta) => meta.content),
   }

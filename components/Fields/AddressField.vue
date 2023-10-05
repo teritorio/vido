@@ -8,9 +8,10 @@
 </template>
 
 <script lang="ts">
-import Vue, { PropType } from 'vue'
+import { PropType } from 'vue'
 
-import { ApiPoiProperties, FieldsListItem } from '~/lib/apiPois'
+import { defineNuxtComponent } from '#app'
+import { ApiPoiProperties } from '~/lib/apiPois'
 
 const addressFields = [
   'addr:housenumber',
@@ -28,7 +29,7 @@ export function isAddressFieldEmpty(properties: {
   )
 }
 
-export default Vue.extend({
+export default defineNuxtComponent({
   props: {
     properties: {
       type: Object as PropType<ApiPoiProperties>,

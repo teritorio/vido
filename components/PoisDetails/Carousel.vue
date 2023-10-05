@@ -1,40 +1,48 @@
 <template>
-  <div v-if="images.length == 1" class="margin slide">
-    <NuxtPicture
+  <div v-if="images.length == 1" class="tw-margin tw-slide tw-mb-14">
+    <UIPicture
       :src="images[0]"
-      media-size="66vw"
+      :media-size="smallScreen ? '100vw' : '66vw'"
       :alt="$t('poiCard.image')"
     />
   </div>
-  <VueAgile
-    v-else-if="images.length > 1"
-    id="agile"
-    class="margin"
-    :dots="dots"
-    :nav-buttons="false"
-  >
-    <div v-for="(image, i) in images" :key="i" class="slide">
-      <NuxtPicture
-        :key="i"
-        :src="image"
-        media-size="66vw"
-        :alt="$t('poiCard.image')"
-      />
-    </div>
-  </VueAgile>
+  <div v-else-if="images.length > 1">
+    <v-carousel
+      :show-arrows="false"
+      :hide-delimiter-background="true"
+      class="mb-14"
+      :height="smallScreen ? 300 : 500"
+    >
+      <v-carousel-item v-for="(image, i) in images" :key="i">
+        <UIPicture
+          :src="image"
+          :media-size="smallScreen ? '100vw' : '66vw'"
+          :alt="$t('poiCard.image')"
+          :img-attrs="{ class: 'h-100 tw-object-cover' }"
+        />
+      </v-carousel-item>
+    </v-carousel>
+  </div>
 </template>
 
 <script lang="ts">
-import Vue, { PropType } from 'vue'
-// @ts-ignore
-import VueAgile from 'vue-agile/src/Agile.vue'
+import { PropType } from 'vue'
+import { VCarousel, VCarouselItem } from 'vuetify/components/VCarousel'
 
-import NuxtPicture from '~/components/UI/NuxtPicture.vue'
+import { defineNuxtComponent } from '#app'
+import UIPicture from '~/components/UI/UIPicture.vue'
 
-export default Vue.extend({
+export default defineNuxtComponent({
   components: {
-    VueAgile,
-    NuxtPicture,
+    UIPicture,
+    VCarousel,
+    VCarouselItem,
+  },
+
+  computed: {
+    smallScreen(): boolean {
+      return this.$device.value.smallScreen
+    },
   },
 
   props: {
@@ -43,76 +51,5 @@ export default Vue.extend({
       required: true,
     },
   },
-
-  data(): {
-    dots: boolean
-  } {
-    return {
-      dots: false,
-    }
-  },
-
-  mounted() {
-    // Workarround SSR issue.
-    // https://github.com/lukaszflorczak/vue-agile/issues/163
-    this.dots = true
-  },
 })
 </script>
-
-<style lang="css" scoped>
-.margin {
-  margin-bottom: 60px;
-}
-</style>
-
-<style lang="css">
-#agile ul.agile__dots {
-  @apply list-none;
-
-  bottom: 15px;
-  left: 50%;
-  position: absolute;
-  transform: translateX(-50%);
-  margin: 0;
-  padding: 0;
-}
-
-.agile__dot {
-  margin: 0 5px;
-}
-
-.agile__dot button {
-  background-color: rgba(0, 0, 0, 0.3);
-  border: 1px solid #fff;
-  border-radius: 50%;
-  cursor: pointer;
-  display: block;
-  height: 15px;
-  font-size: 0;
-  line-height: 0;
-  margin: 0;
-  padding: 0;
-  transition-duration: 0.3s;
-  width: 15px;
-}
-
-.agile__dot--current button,
-.agile__dot:hover button {
-  background-color: #fff;
-}
-
-.slide {
-  display: block;
-  height: 500px;
-  -o-object-fit: cover;
-  object-fit: cover;
-  width: 100%;
-}
-
-.slide img {
-  min-width: 100%;
-  object-fit: cover;
-  height: 500px;
-}
-</style>

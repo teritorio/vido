@@ -1,11 +1,11 @@
 <template>
   <div class="contents">
-    <Nuxt />
+    <slot />
   </div>
 </template>
 
 <style lang="scss" scoped>
 .contents {
-  @apply text-zinc-800 text-4xl text-center;
+  @apply tw-text-zinc-800 tw-text-4xl tw-text-center;
 }
 </style>

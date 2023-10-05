@@ -1,12 +1,45 @@
 <template>
-  <div class="fixed w-full h-full overflow-hidden flex flex-col">
-    <h1 class="absolute text-white">{{ siteName }}</h1>
+  <div
+    class="tw-fixed tw-w-full tw-h-full tw-overflow-hidden tw-flex tw-flex-col"
+  >
+    <h1 class="tw-absolute tw-text-white">{{ siteName }}</h1>
     <header
-      class="hidden md:flex relative md:fixed top-0 z-10 flex flex-row w-full h-auto space-x-4 md:w-auto md:p-2"
-      style="max-height: calc(100vh - 30px)"
+      class="tw-flex md:tw-hidden tw-relative tw-fidex tw-top-0 tw-bottom-0 tw-z-10 tw-flex-row tw-w-full tw-space-x-4"
     >
-      <div
-        class="flex flex-col justify-between w-full w-auto max-w-md space-y-4"
+      <div :class="['tw-w-full', isBottomMenuOpened && 'tw-hidden']">
+        <client-only>
+          <aside
+            v-if="!isModeExplorerOrFavorites"
+            class="tw-flex tw-flex-col tw-max-h-full tw-px-5 tw-py-4 tw-space-y-6 tw-shadow-md tw-pointer-events-auto md:tw-rounded-xl md:tw-w-96 tw-bg-white tw-min-h-20"
+          >
+            <Search
+              :menu-to-icon="menuItemsToIcons"
+              :map-center="center"
+              @select-feature="searchSelectFeature"
+            >
+              <Logo
+                :main-url="mainUrl"
+                :site-name="siteName"
+                :logo-url="logoUrl"
+                class="tw-flex-none md:tw-hidden tw-mr-2"
+                image-class="tw-max-w-2xl tw-max-h-12 md:tw-max-h-16"
+              />
+            </Search>
+          </aside>
+          <aside
+            v-else
+            class="tw-flex tw-flex-col tw-max-h-full tw-px-5 tw-py-4 tw-space-y-6 tw-shadow-md tw-pointer-events-auto md:tw-rounded-xl md:tw-w-96 tw-bg-blue-500 md:tw-bg-white tw-text-white tw-h-20"
+          >
+            <ExplorerOrFavoritesBack @click="onQuitExplorerFavoriteMode" />
+          </aside>
+        </client-only>
+      </div>
+    </header>
+
+    <div v-if="initialBbox" class="tw-w-full tw-h-full">
+      <header
+        class="tw-pointer-events-none tw-flex tw-flex-row tw-fixed tw-z-10 tw-w-full tw-h-auto tw-p-4 tw-pr-[10px] tw-space-x-4"
+        style="max-height: calc(100vh - 30px)"
       >
         <transition-group
           id="header-menu"
@@ -15,84 +48,76 @@
           name="headers"
           appear
           mode="out-in"
-          :class="['overflow-x-hidden', !isFilterActive && 'overflow-y-auto']"
+          :class="[
+            'tw-hidden md:tw-block',
+            'flex-none tw-max-w-md tw-overflow-y-auto tw-overflow-x-clip flex-shrink-0',
+          ]"
         >
-          <client-only>
-            <MenuBlock
-              v-if="isModeExplorerOrFavorites"
-              key="ExplorerOrFavoritesBack"
-              extra-class-text-background="bg-blue-500 text-white"
-            >
-              <ExplorerOrFavoritesBack @click="onQuitExplorerFavoriteMode" />
-            </MenuBlock>
-
-            <Menu
-              v-else
-              key="Menu"
-              menu-block="MenuBlock"
-              :is-on-search="isOnSearch"
-              :is-filter-active="isFilterActive"
-              @activate-filter="onActivateFilter"
-              @scroll-top="scrollTop"
-            >
-              <Search
-                :menu-to-icon="menuItemsToIcons"
-                :map-center="center"
-                @focus="isOnSearch = true"
-                @blur="isOnSearch = false"
-              >
-                <Logo
-                  :main-url="mainUrl"
-                  :site-name="siteName"
-                  :logo-url="logoUrl"
-                  class="flex-none mr-2"
-                  image-class="max-w-2xl max-h-12 md:max-h-16"
-                />
-              </Search>
-            </Menu>
-          </client-only>
-        </transition-group>
-      </div>
-    </header>
-    <div
-      v-if="!isModeExplorer && selectedCategoryIds.length && !isModeFavorites"
-      class="p-4 absolute z-10 hidden md:block"
-      :style="selectedFeaturesStyles"
-    >
-      <SelectedCategories />
-    </div>
-
-    <header
-      class="flex md:hidden relative fidex top-0 bottom-0 z-10 flex-row w-full space-x-4"
-    >
-      <div :class="['w-full', isBottomMenuOpened && 'hidden']">
-        <client-only>
-          <aside
-            v-if="!isModeExplorerOrFavorites"
-            class="flex flex-col max-h-full px-5 py-4 space-y-6 shadow-md pointer-events-auto md:rounded-xl md:w-96 bg-white min-h-20"
+          <MenuBlock
+            v-if="isModeExplorerOrFavorites"
+            key="ExplorerOrFavoritesBack"
+            extra-class-text-background="tw-bg-blue-500 tw-text-white"
           >
-            <Search :menu-to-icon="menuItemsToIcons" :map-center="center">
+            <ExplorerOrFavoritesBack @click="onQuitExplorerFavoriteMode" />
+          </MenuBlock>
+
+          <Menu
+            v-else
+            key="Menu"
+            menu-block="MenuBlock"
+            :is-on-search="isOnSearch"
+            :is-filter-active="isFilterActive"
+            class="tw-px-1 tw-pb-1.5"
+            @activate-filter="onActivateFilter"
+            @scroll-top="scrollTop"
+          >
+            <Search
+              :menu-to-icon="menuItemsToIcons"
+              :map-center="center"
+              @focus="isOnSearch = true"
+              @blur="isOnSearch = false"
+              @select-feature="searchSelectFeature"
+            >
               <Logo
                 :main-url="mainUrl"
                 :site-name="siteName"
                 :logo-url="logoUrl"
-                class="flex-none md:hidden mr-2"
-                image-class="max-w-2xl max-h-12 md:max-h-16"
+                class="tw-flex-none tw-mr-2"
+                image-class="tw-max-w-2xl tw-max-h-12 md:tw-max-h-16"
               />
             </Search>
-          </aside>
-          <aside
-            v-else
-            class="flex flex-col max-h-full px-5 py-4 space-y-6 shadow-md pointer-events-auto md:rounded-xl md:w-96 bg-blue-500 md:bg-white text-white h-20"
-          >
-            <ExplorerOrFavoritesBack @click="onQuitExplorerFavoriteMode" />
-          </aside>
-        </client-only>
-      </div>
-    </header>
+          </Menu>
+        </transition-group>
+        <SelectedCategories
+          v-if="
+            !isModeExplorer && selectedCategoryIds.length && !isModeFavorites
+          "
+          class="tw-hidden md:tw-block flex-shrink-1"
+        />
+        <div class="tw-grow" style="margin-left: 0" />
+        <div
+          :class="['tw-flex-none', 'tw-flex', isBottomMenuOpened && 'hidden']"
+        >
+          <FavoriteMenu
+            v-if="favoritesModeEnabled"
+            :favorites-ids="favoritesIds"
+            :explore-around-selected-poi="toggleExploreAroundSelectedPoi"
+            :go-to-selected-poi="goToSelectedFeature"
+            :toggle-favorite="toggleFavorite"
+            :explorer-mode-enabled="explorerModeEnabled"
+            @toggle-favorites="onToggleFavoritesMode"
+          />
+          <NavMenu
+            id="nav-menu"
+            :entries="navMenuEntries"
+            class="tw-ml-3 sm:tw-ml-4"
+          />
+        </div>
+      </header>
 
-    <div v-if="initialBbox" class="w-full h-full">
-      <div class="relative flex flex-col w-full h-full md:h-full">
+      <div
+        class="tw-relative tw-flex tw-flex-col tw-w-full tw-h-full md:tw-h-full"
+      >
         <MapFeatures
           ref="mapFeatures"
           :default-bounds="initialBbox"
@@ -108,41 +133,21 @@
           :enable-filter-route-by-features="isModeFavorites"
           :boundary-area="boundaryArea || settings.polygon.data"
         >
-          <div class="relative">
+          <div class="tw-relative">
             <button
               v-if="
                 !(isModeExplorer || isModeFavorites) || Boolean(selectedFeature)
               "
               type="button"
-              class="-top-12 z-0 absolute md:hidden right-3/8 left-3/8 w-1/4 h-12 transition-all rounded-t-lg text-sm font-medium px-5 space-x-1 shadow-lg outline-none focus:outline-none bg-white text-zinc-800 hover:bg-zinc-100 focus-visible:bg-zinc-100"
+              class="md:tw-hidden tw-absolute -tw-top-12 tw-z-0 tw-w-1/4 tw-h-12 tw-transition-all tw-rounded-t-lg tw-text-sm tw-font-medium tw-px-5 tw-shadow-lg tw-outline-none focus:tw-outline-none tw-bg-white tw-text-zinc-800 hover:tw-bg-zinc-100 focus-visible:tw-bg-zinc-100"
+              style="right: 37.5%"
               @click="onBottomMenuButtonClick"
             >
-              <span class="sr-only">{{ $tc('headerMenu.categories') }}</span>
-              <font-awesome-icon icon="grip-lines" size="lg" />
+              <span class="tw-sr-only">{{ $t('headerMenu.categories') }}</span>
+              <FontAwesomeIcon icon="grip-lines" size="lg" />
             </button>
           </div>
         </MapFeatures>
-        <div
-          :class="[
-            'absolute flex justify-end pointer-events-auto items-top pt-4 right-3 md:pt-0 top-4',
-            isBottomMenuOpened && 'hidden',
-          ]"
-        >
-          <FavoriteMenu
-            v-if="favoritesModeEnabled"
-            :has-favorites="favoritesIds.length !== 0"
-            :explore-around-selected-poi="toggleExploreAroundSelectedPoi"
-            :go-to-selected-poi="goToSelectedFeature"
-            :toggle-favorite="toggleFavorite"
-            :explorer-mode-enabled="explorerModeEnabled"
-            @toggle-favorites="onToggleFavoritesMode"
-          />
-          <NavMenu
-            id="nav-menu"
-            :entries="navMenuEntries"
-            class="ml-3 sm:ml-4"
-          />
-        </div>
       </div>
     </div>
 
@@ -151,10 +156,10 @@
       @discard="showFavoritesOverlay = false"
     />
     <div
-      class="hidden fixed inset-x-0 bottom-0 md:flex overflow-y-auto h-auto md:left-8 md:right-16 md:bottom-5 pointer-events-none"
+      class="tw-hidden tw-fixed tw-inset-x-0 tw-bottom-0 md:tw-flex tw-overflow-y-auto tw-h-auto md:tw-left-8 md:tw-right-16 md:tw-bottom-5 tw-pointer-events-none"
     >
-      <div class="w-full max-w-md" />
-      <div class="grow-[1]" />
+      <div class="tw-w-full tw-max-w-md" />
+      <div class="tw-grow-[1]" />
       <PoiCard
         v-if="
           selectedFeature &&
@@ -163,20 +168,20 @@
           showPoi
         "
         :poi="selectedFeature"
-        class="grow-0"
+        class="tw-grow-0"
         :explorer-mode-enabled="explorerModeEnabled"
         :favorites-mode-enabled="favoritesModeEnabled"
         @explore-click="toggleExploreAroundSelectedPoi"
         @favorite-click="toggleFavorite"
         @zoom-click="goToSelectedFeature"
       />
-      <div class="grow-[3]" />
+      <div class="tw-grow-[3]" />
     </div>
 
-    <BottomMenu class="md:hidden" :is-open="isBottomMenuOpened">
+    <BottomMenu class="md:tw-hidden" :is-open="isBottomMenuOpened">
       <div
         ref="bottomMenu"
-        class="flex-1 h-full overflow-y-auto h-screen-3/5 divide-y"
+        class="tw-flex-1 tw-h-full tw-overflow-y-auto tw-h-screen-3/5 tw-divide-y"
       >
         <Menu
           v-if="!showPoi"
@@ -191,7 +196,7 @@
             showPoi
           "
           :poi="selectedFeature"
-          class="grow-0 text-left h-full"
+          class="tw-grow-0 tw-text-left tw-h-full"
           :explorer-mode-enabled="explorerModeEnabled"
           :favorites-mode-enabled="favoritesModeEnabled"
           @explore-click="toggleExploreAroundSelectedPoi"
@@ -200,19 +205,19 @@
         />
       </div>
     </BottomMenu>
-    <footer class="z-20">
+    <footer class="tw-z-20">
       <CookiesConsent />
     </footer>
   </div>
 </template>
 
 <script lang="ts">
-import { FitBoundsOptions, LngLatBoundsLike } from 'maplibre-gl'
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
+import type { FitBoundsOptions } from 'maplibre-gl'
 import { mapActions, mapState } from 'pinia'
-import { PropType } from 'vue'
-import { MetaInfo } from 'vue-meta'
-import mixins from 'vue-typed-mixins'
+import { PropType, ref } from 'vue'
 
+import { defineNuxtComponent, useRequestHeaders } from '#app'
 import ExplorerOrFavoritesBack from '~/components/Home/ExplorerOrFavoritesBack.vue'
 import HomeMixin from '~/components/Home/HomeMixin'
 import Menu from '~/components/Home/Menu.vue'
@@ -228,9 +233,8 @@ import Search from '~/components/Search/Search.vue'
 import CookiesConsent from '~/components/UI/CookiesConsent.vue'
 import Logo from '~/components/UI/Logo.vue'
 import { ContentEntry } from '~/lib/apiContent'
-import { ApiMenuCategory, MenuItem } from '~/lib/apiMenu'
+import { MenuItem } from '~/lib/apiMenu'
 import { ApiPoi, getPois } from '~/lib/apiPois'
-import { headerFromSettings } from '~/lib/apiSettings'
 import { getBBoxFeature, getBBoxFeatures } from '~/lib/bbox'
 import { favoritesStore } from '~/stores/favorite'
 import { mapStore } from '~/stores/map'
@@ -239,8 +243,9 @@ import { Mode, OriginEnum } from '~/utils/types'
 import { getHashPart, setHashParts } from '~/utils/url'
 import { flattenFeatures } from '~/utils/utilities'
 
-export default mixins(HomeMixin).extend({
+export default defineNuxtComponent({
   components: {
+    FontAwesomeIcon,
     Logo,
     FavoriteMenu,
     FavoritesOverlay,
@@ -255,12 +260,19 @@ export default mixins(HomeMixin).extend({
     CookiesConsent,
     ExplorerOrFavoritesBack,
   },
+  mixins: [HomeMixin],
 
   props: {
     navMenuEntries: {
       type: Array as PropType<ContentEntry[]>,
       required: true,
     },
+  },
+
+  setup() {
+    return {
+      bottomMenu: ref<InstanceType<typeof HTMLDivElement>>(),
+    }
   },
 
   data(): {
@@ -271,7 +283,6 @@ export default mixins(HomeMixin).extend({
     favorites: ApiPoi[] | null
     isOnSearch: boolean
     isFilterActive: boolean
-    selectedFeaturesStyles: string
   } {
     return {
       isMenuItemOpen: false,
@@ -281,14 +292,7 @@ export default mixins(HomeMixin).extend({
       favorites: null,
       isOnSearch: false,
       isFilterActive: false,
-      selectedFeaturesStyles: '',
     }
-  },
-
-  head(): MetaInfo {
-    return headerFromSettings(this.settings, {
-      title: this.settings.themes[0]?.title.fr,
-    })
   },
 
   computed: {
@@ -318,7 +322,7 @@ export default mixins(HomeMixin).extend({
 
     isBottomMenuOpened(): boolean {
       return (
-        (this.$screen.smallScreen && this.isPoiCardVisible) ||
+        (this.$device.value.smallScreen && this.isPoiCardVisible) ||
         this.isMenuItemOpen
       )
     },
@@ -334,7 +338,7 @@ export default mixins(HomeMixin).extend({
     },
 
     fitBoundsPaddingOptions(): FitBoundsOptions['padding'] {
-      if (this.$screen.smallScreen) {
+      if (this.$device.value.smallScreen) {
         return {
           top: 100,
           bottom: 50,
@@ -393,9 +397,7 @@ export default mixins(HomeMixin).extend({
         this.routerPushUrl()
 
         menuStore().fetchFeatures({
-          apiEndpoint: this.$vidoConfig().API_ENDPOINT,
-          apiProject: this.$vidoConfig().API_PROJECT,
-          apiTheme: this.$vidoConfig().API_THEME,
+          vidoConfig: this.$vidoConfig(useRequestHeaders()),
           categoryIds: this.selectedCategoryIds,
         })
         this.allowRegionBackZoom = true
@@ -417,9 +419,13 @@ export default mixins(HomeMixin).extend({
   },
 
   beforeMount() {
+    const modeHash = getHashPart(this.$router, 'mode')
     this.mode =
-      Mode[getHashPart(this.$router, 'mode') as keyof typeof Mode] ||
-      Mode.BROWSER
+      Mode[
+        Object.keys(Mode).find(
+          (key) => Mode[key as keyof typeof Mode] === modeHash
+        ) as keyof typeof Mode
+      ] || Mode.BROWSER
 
     const favs = getHashPart(this.$router, 'favs')
     if (favs) {
@@ -427,7 +433,7 @@ export default mixins(HomeMixin).extend({
         const newFavorite = favs
           .split(',')
           .map((e) => (!isNaN(Number(e)) ? Number(e) : null))
-          .filter((e) => !!e) as Number[]
+          .filter((e) => !!e) as number[]
 
         this.setFavorites(newFavorite)
         this.handleFavorites()
@@ -441,28 +447,15 @@ export default mixins(HomeMixin).extend({
   },
 
   mounted() {
-    const that = this
-    const resizeObserver = new ResizeObserver((el) => {
-      that.selectedFeaturesStyles = `
-        left: ${el[0].contentRect.width}px;
-        max-width: calc(100vw - 670px);
-      `
-    })
-
-    const header = document.getElementById('header-menu')
-
-    if (header) {
-      resizeObserver.observe(header)
-    }
-
     this.$tracking({
       type: 'page',
-      title: this.$meta().refresh().metaInfo.title,
+      title: (this.$route.name && String(this.$route.name)) || undefined,
       location: window.location.href,
       path: this.$route.path,
       origin:
         OriginEnum[
-          this.$router.currentRoute.query.origin as keyof typeof OriginEnum
+          this.$router.currentRoute.value.query
+            .origin as keyof typeof OriginEnum
         ],
     })
 
@@ -492,7 +485,7 @@ export default mixins(HomeMixin).extend({
         this.selectedFeature?.id?.toString() ||
         null
 
-      let hash = this.$router.currentRoute.hash
+      let hash = this.$router.currentRoute.value.hash
       if (hashUpdate) {
         hash = setHashParts(hash, hashUpdate)
       }
@@ -502,7 +495,7 @@ export default mixins(HomeMixin).extend({
           this.mode !== Mode.BROWSER
             ? '/'
             : (categoryIds ? `/${categoryIds}/` : '/') + (id ? `${id}` : ''),
-        query: this.$router.currentRoute.query,
+        query: this.$router.currentRoute.value.query,
         hash,
       })
     },
@@ -549,7 +542,7 @@ export default mixins(HomeMixin).extend({
         this.mode = Mode.EXPLORER
         this.goToSelectedFeature()
 
-        if (this.$screen.smallScreen) {
+        if (this.$device.value.smallScreen) {
           this.showPoi = false
         }
       } else {
@@ -585,8 +578,8 @@ export default mixins(HomeMixin).extend({
     },
 
     scrollTop() {
-      if (this.$refs.bottomMenu) {
-        this.$refs.bottomMenu.scrollTop = 0
+      if (this.bottomMenu) {
+        this.bottomMenu.scrollTop = 0
       }
       const header = document.getElementById('header-menu')
       if (header) {
@@ -606,13 +599,10 @@ export default mixins(HomeMixin).extend({
         })
     },
 
-    fetchFavorites(ids: Number[]): Promise<ApiPoi[]> {
-      return getPois(
-        this.$vidoConfig().API_ENDPOINT,
-        this.$vidoConfig().API_PROJECT,
-        this.$vidoConfig().API_THEME,
-        ids
-      )
+    fetchFavorites(ids: number[]): Promise<ApiPoi[]> {
+      return getPois(this.$vidoConfig(useRequestHeaders()), ids, {
+        geometry_as: 'point',
+      })
         .then((pois) => (pois && pois.features) || [])
         .then((pois) =>
           pois.map((poi) => ({
@@ -623,6 +613,11 @@ export default mixins(HomeMixin).extend({
             },
           }))
         )
+    },
+
+    searchSelectFeature(feature: ApiPoi) {
+      this.setSelectedFeature(feature)
+      this.goToSelectedFeature()
     },
   },
 })

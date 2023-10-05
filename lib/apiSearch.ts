@@ -2,8 +2,7 @@ import GeoJSON from 'geojson'
 
 import { ApiPoiId } from './apiPois'
 
-export interface ApiSearchResult<T>
-  extends GeoJSON.FeatureCollection<GeoJSON.Point, T> {}
+export type ApiSearchResult<T> = GeoJSON.FeatureCollection<GeoJSON.Point, T>
 
 export type ApiPoisSearchResult = {
   id: ApiPoiId

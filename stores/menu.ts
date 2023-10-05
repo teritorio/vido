@@ -4,16 +4,17 @@ import { defineStore } from 'pinia'
 
 import { ApiMenuCategory, MenuItem } from '~/lib/apiMenu'
 import { ApiPoi, ApiPois, getPoiByCategoryId } from '~/lib/apiPois'
+import { VidoConfig } from '~/utils/types-config'
 import {
   FilterValues,
   filterValueFactory,
   filterValuesIsSet,
+  isSet,
+  isMatch,
 } from '~/utils/types-filters'
 
 interface FetchFeaturesPayload {
-  apiEndpoint: string
-  apiProject: string
-  apiTheme: string
+  vidoConfig: VidoConfig
   categoryIds: ApiMenuCategory['id'][]
 }
 
@@ -36,7 +37,7 @@ function sortedUniq<T>(a: T[]): T[] {
 
 function keepFeature(filters: FilterValues, feature: ApiPoi): boolean {
   return filters.reduce<boolean>((prevValue, filter) => {
-    return prevValue && (!filter.isSet() || filter.isMatch(feature.properties))
+    return prevValue && (!isSet(filter) || isMatch(filter, feature.properties))
   }, true)
 }
 
@@ -147,12 +148,7 @@ export const menuStore = defineStore('menu', {
       }
     },
 
-    async fetchFeatures({
-      apiEndpoint,
-      apiProject,
-      apiTheme,
-      categoryIds,
-    }: FetchFeaturesPayload) {
+    async fetchFeatures({ vidoConfig, categoryIds }: FetchFeaturesPayload) {
       this.isLoadingFeatures = true
 
       try {
@@ -165,14 +161,17 @@ export const menuStore = defineStore('menu', {
           await Promise.all(
             categoryIds
               .filter((categoryId) => !previousFeatures[categoryId])
-              .map((categoryId) =>
-                getPoiByCategoryId(
-                  apiEndpoint,
-                  apiProject,
-                  apiTheme,
-                  categoryId
-                )
-              )
+              .map((categoryId) => {
+                try {
+                  return getPoiByCategoryId(vidoConfig, categoryId, {
+                    short_description: false,
+                  })
+                } catch (e) {
+                  console.log('Vido error:', e)
+                  return undefined
+                }
+              })
+              .filter((apiPoi) => !!apiPoi)
           )
         ).filter((e) => e) as ApiPois[]
 
@@ -237,14 +236,18 @@ export const menuStore = defineStore('menu', {
         this.filters = newFilters
 
         // Update features visibility
-        const features: { [categoryId: number]: ApiPoi[] } = copy(this.features)
-        const filterIsSet = filterValuesIsSet(filterValues)
-        features[categoryId] = features[categoryId].map((feature: ApiPoi) => {
-          feature.properties.vido_visible =
-            !filterIsSet || keepFeature(filterValues, feature)
-          return feature
-        })
-        this.features = features
+        if (categoryId in this.features) {
+          const features: { [categoryId: number]: ApiPoi[] } = copy(
+            this.features
+          )
+          const filterIsSet = filterValuesIsSet(filterValues)
+          features[categoryId] = features[categoryId].map((feature: ApiPoi) => {
+            feature.properties.vido_visible =
+              !filterIsSet || keepFeature(filterValues, feature)
+            return feature
+          })
+          this.features = features
+        }
       }
     },
   },

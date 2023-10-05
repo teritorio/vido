@@ -2,27 +2,34 @@
   <div
     :class="[
       'block-block',
-      'relative detail-left-block flex flex-col justify-start z-0',
+      'tw-relative tw-detail-left-block tw-flex tw-flex-col tw-justify-start tw-z-0',
     ]"
     :style="`
       background-color: ${colorFill};
     `"
   >
-    <div class="relative z-10">
+    <div class="tw-relative tw-z-10">
       <slot id="block-content"></slot>
     </div>
-    <font-awesome-icon
+    <FontAwesomeIcon
       prefix="fa"
       :icon="icon"
-      :class="['block-block-icon', 'absolute z-0']"
+      :class="['block-block-icon', 'tw-absolute tw-z-0']"
     />
   </div>
 </template>
 
 <script lang="ts">
-import Vue, { PropType } from 'vue'
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
+import { PropType } from 'vue'
 
-export default Vue.extend({
+import { defineNuxtComponent } from '#app'
+
+export default defineNuxtComponent({
+  components: {
+    FontAwesomeIcon,
+  },
+
   props: {
     colorFill: {
       type: String as PropType<string>,

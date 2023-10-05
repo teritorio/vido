@@ -1,0 +1,7 @@
+digraph G {
+    vido -> data_api
+    vido -> elasa_search -> data_api;
+    vido -> elasa_export -> data_api;
+    vido -> qr_shortener;
+    elasa_export -> qr_shortener;
+}

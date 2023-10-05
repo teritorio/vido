@@ -9,29 +9,35 @@
     :name="menuLink.link.name"
     :badge-class="
       [
-        'bg-white text-zinc-700 rounded-full border-2 border-white',
-        size === '2xl' ? 'w-6 h-6' : 'w-5 h-5',
+        'tw-bg-white tw-text-zinc-700 tw-rounded-full tw-border-2 tw-border-white',
+        size === '2xl' ? 'tw-w-6 tw-h-6' : 'tw-w-5 tw-h-5',
       ].join(' ')
     "
     @click="onClick"
   >
     <template v-if="menuLink.link.display_mode === 'compact'" #badge>
-      <font-awesome-icon icon="external-link-alt" size="sm" />
+      <FontAwesomeIcon icon="external-link-alt" size="sm" />
     </template>
     <template #end-line-large>
-      <font-awesome-icon icon="external-link-alt" />
+      <FontAwesomeIcon icon="external-link-alt" />
     </template>
   </MenuItem>
 </template>
 
 <script lang="ts">
-import Vue, { PropType } from 'vue'
+import {
+  FontAwesomeIcon,
+  FontAwesomeIconProps,
+} from '@fortawesome/vue-fontawesome'
+import { PropType } from 'vue'
 
+import { defineNuxtComponent } from '#app'
 import MenuItem from '~/components/Menu/Item.vue'
-import { ApiMenuLink } from '~/lib/apiMenu'
+import { ApiMenuItem, ApiMenuLink } from '~/lib/apiMenu'
 
-export default Vue.extend({
+export default defineNuxtComponent({
   components: {
+    FontAwesomeIcon,
     MenuItem,
   },
   props: {
@@ -40,14 +46,19 @@ export default Vue.extend({
       required: true,
     },
     size: {
-      type: String as PropType<string>,
+      type: String as PropType<FontAwesomeIconProps['size']>,
       required: true,
     },
     displayModeDefault: {
-      type: String as PropType<string>,
+      type: String as PropType<'compact' | 'large'>,
       required: true,
     },
   },
+
+  emits: {
+    click: (_menuLinkId: ApiMenuItem['id']) => true,
+  },
+
   methods: {
     onClick() {
       this.$tracking({

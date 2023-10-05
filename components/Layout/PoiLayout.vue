@@ -1,5 +1,5 @@
 <template>
-  <div class="w-full container">
+  <div class="tw-w-full container">
     <div>
       <Header
         :theme="settings.themes[0]"
@@ -8,7 +8,7 @@
       >
         <slot name="headerButtons"></slot>
       </Header>
-      <div v-if="icon" class="flex justify-center">
+      <div v-if="icon" class="tw-flex tw-justify-center">
         <TeritorioIconBadge :color-fill="colorFill" size="2xl" :picto="icon" />
       </div>
       <h1>{{ name }}</h1>
@@ -22,15 +22,16 @@
 </template>
 
 <script lang="ts">
-import Vue, { PropType } from 'vue'
+import { PropType } from 'vue'
 
+import { defineNuxtComponent } from '#app'
 import Footer from '~/components/Layout/Footer.vue'
 import Header from '~/components/Layout/Header.vue'
 import TeritorioIconBadge from '~/components/UI/TeritorioIconBadge.vue'
 import { ContentEntry } from '~/lib/apiContent'
 import { Settings } from '~/lib/apiSettings'
 
-export default Vue.extend({
+export default defineNuxtComponent({
   components: {
     Header,
     TeritorioIconBadge,

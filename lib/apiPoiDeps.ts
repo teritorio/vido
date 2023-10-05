@@ -1,14 +1,13 @@
-import fetch from 'node-fetch'
-
 import {
   ApiPoi,
   ApiPoiId,
   ApiPoiProperties,
-  apiPoisOptions,
+  ApiPoisOptions,
   stringifyOptions,
 } from './apiPois'
 
 import { MultilingualString } from '~/utils/types'
+import { VidoConfig } from '~/utils/types-config'
 
 export enum ApiRouteWaypointType {
   parking = 'parking',
@@ -25,24 +24,23 @@ export interface ApiRouteWaypointProperties {
   'route:point:type': ApiRouteWaypointType
 }
 
-export interface ApiRouteWaypoint
-  extends GeoJSON.Feature<GeoJSON.Point, ApiRouteWaypointProperties> {}
+export type ApiRouteWaypoint = GeoJSON.Feature<
+  GeoJSON.Point,
+  ApiRouteWaypointProperties
+>
 
-export interface ApiPoiDeps
-  extends GeoJSON.FeatureCollection<
-    GeoJSON.Geometry,
-    ApiPoiProperties | ApiRouteWaypointProperties
-  > {}
+export type ApiPoiDeps = GeoJSON.FeatureCollection<
+  GeoJSON.Geometry,
+  ApiPoiProperties | ApiRouteWaypointProperties
+>
 
 export function getPoiDepsById(
-  apiEndpoint: string,
-  apiProject: string,
-  apiTheme: string,
+  vidoConfig: VidoConfig,
   poiId: ApiPoiId | string,
-  options: apiPoisOptions = {}
+  options: ApiPoisOptions = {}
 ): Promise<ApiPoiDeps> {
   return fetch(
-    `${apiEndpoint}/${apiProject}/${apiTheme}/poi/${poiId}/deps.geojson?` +
+    `${vidoConfig.API_ENDPOINT}/${vidoConfig.API_PROJECT}/${vidoConfig.API_THEME}/poi/${poiId}/deps.geojson?` +
       new URLSearchParams(stringifyOptions(options))
   ).then((data) => {
     if (data.ok) {
@@ -84,7 +82,7 @@ export function apiRouteWaypointToApiPoi(
       editorial: {
         popup_fields: [
           {
-            field: 'description',
+            field: 'short_description',
           },
           {
             field: 'coordinates',

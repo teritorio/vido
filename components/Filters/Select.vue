@@ -1,18 +1,18 @@
 <template>
   <div>
-    <t-rich-select
-      variant="relative"
-      placeholder="Recherchez ou ajoutez une valeur"
-      search-box-placeholder="Rechercher ..."
+    <v-autocomplete
+      v-model="currentValue"
+      outlined
       multiple
-      :options="
-        filter.def.values.map((value) => ({
-          text: (value.name && value.name.fr) || value.value,
-          value: value.value,
-        }))
-      "
-      :value="filter.filterValues"
-      @input="onChange"
+      chips
+      deletable-chips
+      :items="items"
+      :label="$t('listFilter.label')"
+      :clearable="true"
+      hide-details="auto"
+      density="compact"
+      :custom-filter="filterEasy"
+      @update:model-value="onChange"
       @click="$emit('click')"
       @blur="$emit('blur')"
     />
@@ -20,11 +20,17 @@
 </template>
 
 <script lang="ts">
-import Vue, { PropType } from 'vue'
+import { PropType } from 'vue'
+import { VAutocomplete } from 'vuetify/components/VAutocomplete'
 
+import { defineNuxtComponent } from '#app'
 import { FilterValueList } from '~/utils/types-filters'
 
-export default Vue.extend({
+export default defineNuxtComponent({
+  components: {
+    VAutocomplete,
+  },
+
   props: {
     filter: {
       type: Object as PropType<FilterValueList>,
@@ -32,14 +38,52 @@ export default Vue.extend({
     },
   },
 
+  emits: {
+    click: () => true,
+    blur: () => true,
+    change: (_value: string[] | undefined) => true,
+  },
+
+  data(): {
+    currentValue: string[] | undefined
+  } {
+    return {
+      currentValue: this.filter.filterValues,
+    }
+  },
+
+  computed: {
+    items(): { title: string; value: string }[] {
+      return this.filter.def.values.map((value) => ({
+        title: (value.name && value.name.fr) || value.value,
+        value: value.value,
+      }))
+    },
+  },
+
+  watch: {
+    filter() {
+      this.currentValue = this.filter.filterValues
+    },
+  },
+
   methods: {
+    normalize(str: string): string {
+      return str
+        .toLocaleLowerCase()
+        .normalize('NFD')
+        .replace(/\p{Diacritic}/gu, '')
+    },
+
+    filterEasy(value: string, query: string) {
+      if (value == null || query == null) return -1
+
+      return this.normalize(value).indexOf(this.normalize(query))
+    },
+
     onChange(value: string[] | undefined) {
       this.$emit('change', value)
     },
   },
 })
 </script>
-
-<style lang="scss">
-@import '@vueform/slider/themes/tailwind.scss';
-</style>

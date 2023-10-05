@@ -1,14 +1,14 @@
 <template>
-  <div class="mb-3">
-    <h4 class="text-zinc-500 text-sm mb-2">
-      <font-awesome-icon v-if="icon" :icon="icon" />
+  <div class="tw-mb-3">
+    <h4 class="tw-text-zinc-500 tw-text-sm tw-mb-2">
+      <FontAwesomeIcon v-if="icon" :icon="icon" />
       {{ label }}
     </h4>
     <ul>
       <li
         v-for="item in items"
         :key="`${item.id}-${item.filter_property}-${item.filter_value}`"
-        class="flex flex-row items-baseline justify-start gap-x-1 mb-1 hover:bg-zinc-100 cursor-pointer rounded-xl ml-2 px-2"
+        class="tw-flex tw-flex-row tw-items-baseline tw-justify-start tw-gap-x-1 tw-mb-1 hover:tw-bg-zinc-100 tw-cursor-pointer tw-rounded-xl tw-ml-2 tw-px-2"
         :data-item="item.id"
         @click="onItemClick(item)"
       >
@@ -17,7 +17,7 @@
           :picto="item.icon"
           color-text="#6B7280"
         />
-        <font-awesome-icon
+        <FontAwesomeIcon
           v-else-if="item.icon"
           :icon="item.icon"
           color="#6B7280"
@@ -25,7 +25,7 @@
         />
         <span>
           {{ item.label }}
-          <span v-if="item.small" class="text-zinc-400 text-sm"
+          <span v-if="item.small" class="tw-text-zinc-400 tw-text-sm"
             >({{ item.small }})</span
           >
         </span>
@@ -35,13 +35,16 @@
 </template>
 
 <script lang="ts">
-import Vue, { PropType } from 'vue'
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
+import { PropType } from 'vue'
 
+import { defineNuxtComponent } from '#app'
 import TeritorioIcon from '~/components/UI/TeritorioIcon.vue'
 import { SearchResult } from '~/lib/apiSearch'
 
-export default Vue.extend({
+export default defineNuxtComponent({
   components: {
+    FontAwesomeIcon,
     TeritorioIcon,
   },
 
@@ -64,6 +67,10 @@ export default Vue.extend({
     },
   },
 
+  emits: {
+    'item-click': (_searchResult: SearchResult) => true,
+  },
+
   methods: {
     onItemClick(searchResult: SearchResult) {
       this.$tracking({
@@ -72,10 +79,7 @@ export default Vue.extend({
         resultType: this.type,
         title: searchResult.label,
       })
-      this.$emit(
-        'item-click',
-        this.type === 'category' ? searchResult : searchResult.id
-      )
+      this.$emit('item-click', searchResult)
     },
   },
 })

@@ -1,8 +1,8 @@
 <template>
-  <div class="z-0 relative shrink-0 bottom-0 w-full">
+  <div class="tw-z-0 tw-relative tw-shrink-0 tw-bottom-0 tw-w-full">
     <div
       v-if="isOpen"
-      class="relative justify-between w-full bg-white shadow-md pointer-events-auto h-auto"
+      class="tw-relative tw-justify-between tw-w-full tw-bg-white tw-shadow-md tw-pointer-events-auto tw-h-auto"
     >
       <transition name="headers" appear mode="out-in">
         <slot></slot>
@@ -12,9 +12,9 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineNuxtComponent } from '#app'
 
-export default Vue.extend({
+export default defineNuxtComponent({
   props: {
     isOpen: Boolean,
   },

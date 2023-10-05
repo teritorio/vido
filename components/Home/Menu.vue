@@ -4,13 +4,13 @@
     v-if="categoryIdFilter"
     :is-filter-active="isFilterActive"
   >
-    <div class="w-full flex justify-between pb-4">
+    <div class="tw-w-full tw-flex tw-justify-between tw-pb-4">
       <button
         type="button"
-        class="flex items-center justify-center w-10 h-10 text-2xl font-bold transition-all rounded-full outline-none cursor-pointer focus:outline-none hover:bg-zinc-100 focus:bg-zinc-100"
+        class="tw-flex tw-items-center tw-justify-center tw-w-10 tw-h-10 tw-text-2xl tw-font-bold tw-transition-all tw-rounded-full tw-outline-none tw-cursor-pointer focus:tw-outline-none hover:tw-bg-zinc-100 focus:tw-bg-zinc-100"
         @click="onBackToCategoryClick"
       >
-        <font-awesome-icon icon="arrow-left" class="text-zinc-800" size="xs" />
+        <FontAwesomeIcon icon="arrow-left" class="tw-text-zinc-800" size="xs" />
       </button>
     </div>
 
@@ -23,16 +23,15 @@
     />
   </component>
 
-  <div v-else-if="isRootMenu">
-    <template v-for="(menuItem, index) in currentMenuItems">
-      <component :is="menuBlock" v-if="index === 0" :key="menuItem.id">
+  <div v-else-if="isRootMenu" class="tw-flex tw-flex-col tw-space-y-4">
+    <template v-for="(menuItem, index) in currentMenuItems" :key="menuItem.id">
+      <component :is="menuBlock" v-if="index === 0 && hasSlot">
         <slot></slot>
       </component>
       <component
         :is="menuBlock"
-        v-else-if="!isOnSearch"
-        :key="menuItem.id"
-        :class="[index === 0 && 'hidden md:block']"
+        v-else-if="index !== 0 && !isOnSearch"
+        :class="[index === 0 && 'tw-hidden md:tw-block']"
       >
         <ItemList
           :menu-items="getMenuItemByParentId(menuItem.id)"
@@ -41,7 +40,7 @@
           :selected-categories-ids="selectedCategoryIds"
           :size="size"
           display-mode-default="compact"
-          class="flex-1 pointer-events-auto h-full"
+          class="tw-flex-1 tw-pointer-events-auto tw-h-full"
           @menu-group-click="onMenuGroupClick"
           @category-click="toggleSelectedCategoryId($event)"
           @filter-click="onCategoryFilterClick"
@@ -52,16 +51,16 @@
 
   <div v-else>
     <component :is="menuBlock">
-      <div class="w-full flex justify-between pb-4">
+      <div class="tw-w-full tw-flex tw-justify-between tw-pb-4">
         <button
           type="button"
-          class="flex items-center justify-center w-10 h-10 text-2xl font-bold transition-all rounded-full outline-none cursor-pointer focus:outline-none hover:bg-zinc-100 focus:bg-zinc-100"
+          class="tw-flex tw-items-center tw-justify-center tw-w-10 tw-h-10 tw-text-2xl tw-font-bold tw-transition-all tw-rounded-full tw-outline-none tw-cursor-pointer focus:tw-outline-none hover:tw-bg-zinc-100"
           @click="onGoBackClick"
         >
-          <span class="sr-only">{{ $tc('headerMenu.back') }}</span>
-          <font-awesome-icon
+          <span class="sr-only">{{ $t('headerMenu.back') }}</span>
+          <FontAwesomeIcon
             icon="arrow-left"
-            class="text-zinc-800"
+            class="tw-text-zinc-800"
             size="xs"
           />
         </button>
@@ -69,19 +68,19 @@
         <button
           v-if="!isAllSelected"
           type="button"
-          class="px-3 py-2 font-medium transition-all rounded-md outline-none focus:outline-none hover:bg-zinc-100 focus:bg-zinc-100"
+          class="tw-px-3 tw-py-2 tw-font-medium tw-transition-all tw-rounded-md tw-outline-none focus:tw-outline-none hover:tw-bg-zinc-100 focus:tw-bg-zinc-100"
           @click="onClickSelectAll"
         >
-          {{ $tc('headerMenu.selectAll') }}
+          {{ $t('headerMenu.selectAll') }}
         </button>
 
         <button
           v-if="isAllSelected"
           type="button"
-          class="px-3 py-2 font-medium transition-all rounded-md outline-none focus:outline-none hover:bg-zinc-100 focus:bg-zinc-100"
+          class="tw-px-3 tw-py-2 tw-font-medium tw-transition-all tw-rounded-md tw-outline-none focus:tw-outline-none hover:tw-bg-zinc-100 focus:tw-bg-zinc-100"
           @click="onClickUnselectAll"
         >
-          {{ $tc('headerMenu.unselectAll') }}
+          {{ $t('headerMenu.unselectAll') }}
         </button>
       </div>
 
@@ -92,7 +91,7 @@
         :selected-categories-ids="selectedCategoryIds"
         :size="size"
         display-mode-default="large"
-        class="flex-1 pointer-events-auto h-full"
+        class="tw-flex-1 tw-pointer-events-auto tw-h-full"
         @menu-group-click="onMenuGroupClick"
         @category-click="toggleSelectedCategoryId($event)"
         @filter-click="onCategoryFilterClick"
@@ -102,9 +101,14 @@
 </template>
 
 <script lang="ts">
+import {
+  FontAwesomeIcon,
+  FontAwesomeIconProps,
+} from '@fortawesome/vue-fontawesome'
 import { mapActions, mapState } from 'pinia'
-import Vue, { PropType } from 'vue'
+import { PropType } from 'vue'
 
+import { defineNuxtComponent } from '#app'
 import MenuBlock from '~/components/Home/MenuBlock.vue'
 import MenuBlockBottom from '~/components/Home/MenuBlockBottom.vue'
 import FilterCompo from '~/components/Menu/Filter.vue'
@@ -113,10 +117,10 @@ import Search from '~/components/Search/Search.vue'
 import Logo from '~/components/UI/Logo.vue'
 import { ApiMenuCategory, MenuGroup, MenuItem } from '~/lib/apiMenu'
 import { menuStore } from '~/stores/menu'
-import { FilterValues } from '~/utils/types-filters'
 
-export default Vue.extend({
+export default defineNuxtComponent({
   components: {
+    FontAwesomeIcon,
     Logo,
     MenuBlock,
     MenuBlockBottom,
@@ -165,7 +169,7 @@ export default Vue.extend({
       return this.navigationParentIdStack.length === 0
     },
 
-    size(): string {
+    size(): FontAwesomeIconProps['size'] {
       return this.isRootMenu ? '2xl' : 'lg'
     },
 
@@ -186,6 +190,15 @@ export default Vue.extend({
       })
       return counts
     },
+
+    hasSlot(): boolean {
+      return this.$slots.default !== undefined
+    },
+  },
+
+  emits: {
+    'activate-filter': (_val: boolean) => true,
+    'scroll-top': () => true,
   },
 
   watch: {
@@ -205,7 +218,7 @@ export default Vue.extend({
       menuGroupId: MenuGroup['id'] | undefined
     ): MenuItem[] {
       return Object.values(this.menuItems || {})
-        .filter((c) => c.parent_id === (menuGroupId || null))
+        .filter((c) => (c.parent_id || null) === (menuGroupId || null))
         .sort((a, b) => a.index_order - b.index_order)
     },
 

@@ -1,25 +1,29 @@
 <template>
   <div
     v-touch="onOverlayClick"
-    :click="onOverlayClick"
-    class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-80 z-20 cursor-pointer"
+    class="tw-fixed tw-inset-0 tw-flex tw-items-center tw-justify-center tw-bg-black tw-bg-opacity-80 tw-z-20 tw-cursor-pointer"
+    @click="onOverlayClick"
   >
-    <p class="p-8 max-w-sm text-center text-white">
-      {{ $tc('favorites.noFavs') }}
+    <p class="tw-p-8 tw-max-w-sm tw-text-center tw-text-white">
+      {{ $t('favorites.noFavs') }}
     </p>
   </div>
 </template>
 
 <script lang="ts">
 import { mapWritableState } from 'pinia'
-import Vue from 'vue'
 
+import { defineNuxtComponent } from '#app'
 import { mapStore } from '~/stores/map'
 import { Mode } from '~/utils/types'
 
-export default Vue.extend({
+export default defineNuxtComponent({
   computed: {
     ...mapWritableState(mapStore, ['mode']),
+  },
+
+  emits: {
+    discard: () => true,
   },
 
   methods: {

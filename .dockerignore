@@ -52,9 +52,7 @@ jspm_packages/
 
 # nuxt.js build output
 .nuxt
-
-# Nuxt generate
-dist
+.output
 
 # IDE / Editor
 .idea
@@ -68,6 +66,18 @@ dist
 # VS Code
 .vscode/settings.json
 
+# Histoire
+.histoire
+
 # Storybook
 .nuxt-storybook
 storybook-static
+
+# Cypress
+cypress
+
+# Vido
+**/*.stories.ts
+**/*.story.vue
+vidos.config.ts
+vidos-config.json

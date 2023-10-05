@@ -9,20 +9,20 @@ export function mockSSRAPI(
     ...routes,
     'settings.json': api.settings,
     'attribute_translations/fr.json': api.attribute_translations.fr,
-    'articles.json?slug=non-classe': api.articles,
+    'articles.json': api.articles, // ?slug=non-classe
     'menu.json': api.menu,
   }
 
-  Object.entries(hostnames).forEach(([hostname, path]) => {
-    Object.entries(routes).forEach(([route, json]) => {
-      // @ts-ignore
-      cy.mockSSR({
-        hostname,
+  const mocks = Object.entries(hostnames)
+    .map(([hostname, path]) =>
+      Object.entries(routes).map(([route, json]) => ({
         method: 'GET',
-        path: path + route,
+        url: hostname + path + route,
         statusCode: 200,
         body: json,
-      })
-    })
-  })
+      }))
+    )
+    .flat(1)
+
+  cy.request('POST', '/__cypress_set_mocks', mocks)
 }

@@ -1,4 +1,5 @@
-import { NuxtAppOptions } from '@nuxt/types/app'
+import { createGtm } from '@gtm-support/vue-gtm'
+import { App } from 'nuxt/dist/app/compat/vue-demi'
 import urlSlug from 'url-slug'
 
 import { Event, Tracker } from '~/lib/trackers'
@@ -6,32 +7,35 @@ import { Event, Tracker } from '~/lib/trackers'
 export default class Google implements Tracker {
   waitForConsent: boolean
   gtm: any
-  googleTagManagerId: string
 
-  constructor(
-    nuxtApp: NuxtAppOptions,
-    waitForConsent: boolean,
-    gtm: any,
-    googleTagManagerId: string
-  ) {
+  constructor(app: App, waitForConsent: boolean, googleTagManagerId: string) {
+    const gtm = createGtm({
+      id: googleTagManagerId,
+      defer: true,
+      compatibility: false,
+      enabled: !waitForConsent,
+    })
+    app.use(gtm)
+
     this.waitForConsent = waitForConsent
-    this.gtm = gtm
-    this.googleTagManagerId = googleTagManagerId
-    if (!waitForConsent) {
-      this.gtm.init(googleTagManagerId)
-    }
   }
 
-  consent(app: NuxtAppOptions) {
+  consent(app: App) {
     if (this.waitForConsent) {
-      this.gtm.init(this.googleTagManagerId)
+      const gtm = app.config.globalProperties.$gtm
+      gtm.enable(true)
     }
   }
 
-  track(event: Event) {
+  track(app: App, event: Event) {
+    const gtm = app.config.globalProperties.$gtm
+    if (!gtm.enabled()) {
+      return
+    }
+
     switch (event.type) {
       case 'page': {
-        this.gtm.push({
+        window.dataLayer?.push({
           event: 'pageview',
           pageType: 'PageView',
           pageTitle: event.title,
@@ -42,7 +46,7 @@ export default class Google implements Tracker {
         break
       }
       case 'menu': {
-        this.gtm.push({
+        window.dataLayer?.push({
           event: 'pageview',
           pageType: 'PageView',
           pageTitle: event.title,
@@ -51,7 +55,7 @@ export default class Google implements Tracker {
         break
       }
       case 'category_event': {
-        this.gtm.push({
+        window.dataLayer?.push({
           event: event.type,
           action: event.event,
           categoryId: event.categoryId,
@@ -61,7 +65,7 @@ export default class Google implements Tracker {
       }
       case 'notebook_event':
       case 'search': {
-        this.gtm.push({
+        window.dataLayer?.push({
           event: 'pageview',
           pageType: 'PageView',
           pageTitle: event.type,
@@ -71,7 +75,7 @@ export default class Google implements Tracker {
       }
       // case 'search_query': {}
       case 'search_result_event': {
-        this.gtm.push({
+        window.dataLayer?.push({
           event: event.type,
           action: event.event,
           type: event.resultType,
@@ -80,7 +84,7 @@ export default class Google implements Tracker {
         break
       }
       case 'popup': {
-        this.gtm.push({
+        window.dataLayer?.push({
           event: 'pageview',
           pageType: 'PageView',
           pageTitle: event.title,
@@ -92,7 +96,7 @@ export default class Google implements Tracker {
         break
       }
       case 'popup_event': {
-        this.gtm.push({
+        window.dataLayer?.push({
           event: event.type,
           action: event.event,
           poiId: event.poiId,
@@ -102,19 +106,23 @@ export default class Google implements Tracker {
         break
       }
       case 'map_control_event': {
-        this.gtm.push({ event: event.type, action: event.event })
+        window.dataLayer?.push({ event: event.type, action: event.event })
         break
       }
       case 'favorites_event': {
-        this.gtm.push({ event: event.type, action: event.event })
+        window.dataLayer?.push({ event: event.type, action: event.event })
         break
       }
       case 'external_link': {
-        this.gtm.push({ event: event.type, url: event.url, title: event.title })
+        window.dataLayer?.push({
+          event: event.type,
+          url: event.url,
+          title: event.title,
+        })
         break
       }
       case 'details_event': {
-        this.gtm.push({
+        window.dataLayer?.push({
           event: event.type,
           action: event.event,
           poiId: event.poiId,

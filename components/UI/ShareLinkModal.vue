@@ -1,54 +1,75 @@
 <template>
-  <TModal ref="modal" :header="title" :hide-close-button="true">
-    <div class="flex flex-col">
-      <div class="flex items-center mb-4">
-        <font-awesome-icon
-          ref="menu_icon"
-          icon="link"
-          class="text-zinc-500 mr-4"
-        />
-        <p class="text-zinc-500 truncate">
-          {{ linkShare }}
-        </p>
-        <UIButton
-          v-if="hasClipboard"
-          :label="!isCopied && $tc('shareLink.copy')"
-          :icon="isCopied ? 'clipboard-check' : 'copy'"
-          @click="copyLink"
-        />
-      </div>
-      <div v-if="qrCodeUrl" class="flex items-center mb-4 justify-center">
-        <img :src="qrCodeUrl()" class="w-1/2" :alt="$tc('shareLink.qrcode')" />
-      </div>
-      <UIButton
-        :label="$tc('ui.close')"
-        icon="times"
-        class="self-end"
-        @click="close"
-      />
-    </div>
-  </TModal>
+  <div>
+    <v-dialog v-model="modal" scrollable max-width="30rem">
+      <v-card>
+        <v-card-title class="tw-text-h5">{{ title }}</v-card-title>
+        <v-divider class="tw-mx-4"></v-divider>
+
+        <div class="tw-p-3">
+          <div class="tw-flex tw-items-center tw-mb-4">
+            <FontAwesomeIcon
+              ref="menu_icon"
+              icon="link"
+              class="tw-text-zinc-500 tw-mr-4"
+            />
+            <p class="tw-text-zinc-500 tw-truncate">
+              {{ linkShare }}
+            </p>
+            <UIButton
+              v-if="hasClipboard"
+              :label="(!isCopied && $t('shareLink.copy')) || undefined"
+              :icon="isCopied ? 'clipboard-check' : 'copy'"
+              @click="copyLink"
+            />
+          </div>
+          <div
+            v-if="qrCodeUrl"
+            class="tw-flex tw-items-center tw-mb-4 tw-justify-center"
+          >
+            <img
+              :src="qrCodeUrl()"
+              class="tw-w-1/2"
+              :alt="$t('shareLink.qrcode')"
+            />
+          </div>
+        </div>
+
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <UIButton
+            :label="$t('ui.close')"
+            icon="times"
+            class="self-end"
+            @click="close"
+          />
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+  </div>
 </template>
 
 <script lang="ts">
-import Vue, { PropType, VueConstructor } from 'vue'
-import { TModal } from 'vue-tailwind/dist/components'
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
+import { PropType } from 'vue'
+import { VCard, VCardTitle, VCardActions } from 'vuetify/components/VCard'
+import { VDialog } from 'vuetify/components/VDialog'
+import { VDivider } from 'vuetify/components/VDivider'
+import { VSpacer } from 'vuetify/components/VGrid'
 
+import { defineNuxtComponent, useRequestHeaders } from '#app'
 import UIButton from '~/components/UI/UIButton.vue'
 import { OriginEnum } from '~/utils/types'
 import { urlAddTrackOrigin } from '~/utils/url'
 
-export default (
-  Vue as VueConstructor<
-    Vue & {
-      $refs: {
-        modal: InstanceType<typeof TModal>
-      }
-    }
-  >
-).extend({
+export default defineNuxtComponent({
   components: {
-    TModal,
+    FontAwesomeIcon,
+    VDialog,
+    VCard,
+    VCardTitle,
+    VCardActions,
+    VDivider,
+    VSpacer,
     UIButton,
   },
 
@@ -60,11 +81,13 @@ export default (
   },
 
   data(): {
+    modal: boolean
     link: string | null
     hasClipboard: boolean
     isCopied: boolean
   } {
     return {
+      modal: false,
       link: null,
       hasClipboard: true,
       isCopied: false,
@@ -90,7 +113,7 @@ export default (
     open(link: string) {
       this.$tracking({ type: 'favorites_event', event: 'open_share' })
       this.link = link
-      this.$refs.modal.show()
+      this.modal = true
 
       const scrollWidth = window.innerWidth - document.body.clientWidth
       document.body.style.marginRight = `${scrollWidth}px`
@@ -116,14 +139,14 @@ export default (
 
     close() {
       this.link = null
-      this.$refs.modal.hide()
+      this.modal = false
       document.body.style.marginRight = '0'
     },
 
     qrCodeUrl() {
       if (this.linkQrCode) {
         return (
-          this.$vidoConfig().API_QR_SHORTENER +
+          this.$vidoConfig(useRequestHeaders()).API_QR_SHORTENER +
           '/qrcode.svg?url=' +
           encodeURIComponent(this.linkQrCode)
         )

@@ -1,26 +1,22 @@
-// @ts-ignore
-import { cypressMockMiddleware } from '@cypress/mock-ssr'
-import { NuxtConfig } from '@nuxt/types'
-import webpack from 'webpack'
+import { defineNuxtConfig } from 'nuxt/config'
+import topLevelAwait from 'vite-plugin-top-level-await'
+import vuetify from 'vite-plugin-vuetify'
 
 import { vidos } from './lib/config'
-import { sitemapFilter, sitemapRoutes } from './lib/sitemap'
-import { configuredApi, configuredImageProxy } from './plugins/vido-config'
+import { configuredApi, configuredImageProxy } from './utils/vido-config-static'
 
-const supportedLocales = ['en-GB', 'fr', 'es']
-
-const config: NuxtConfig = {
+export default defineNuxtConfig({
   env: {
     // Copy NODE_ENV to know to real setting when use `nuxt build`
     environment: process.env.NODE_ENV as string,
   },
 
-  privateRuntimeConfig: {
-    vidos,
-  },
-
-  publicRuntimeConfig: {
-    vidos: vidos.__publicRuntimeConfig__ ? vidos : undefined,
+  runtimeConfig: {
+    public: {
+      // @ts-ignore
+      vidos: vidos.__publicRuntimeConfig__ ? vidos : undefined,
+      cypress: process.env.CYPRESS,
+    },
   },
 
   pwa: {
@@ -46,15 +42,11 @@ const config: NuxtConfig = {
   },
 
   router: {
-    prefetchLinks: false,
+    // prefetchLinks: false,
   },
 
-  loading: false,
-
-  serverMiddleware: [
-    ...(process.env.NODE_ENV != 'production' ? [cypressMockMiddleware()] : []),
-    { path: '/', handler: '~/api/manifest.ts' },
-  ],
+  // @ts-ignore
+  loadingIndicator: false,
 
   // Global CSS (https://go.nuxtjs.dev/config-css)
   css: ['@fortawesome/fontawesome-svg-core/styles.css'],
@@ -69,43 +61,42 @@ const config: NuxtConfig = {
     '@/plugins/settings.ts',
     '@/plugins/fontawesome.ts',
     '@/plugins/touch.ts',
-    '@/plugins/screen.ts',
-    '@/plugins/vue-tailwind.ts',
+    '@/plugins/device.ts',
     { src: '@/plugins/tracking.ts', mode: 'client' },
     '@/plugins/property-translations.ts',
     { src: '@/plugins/pinia-shared-state.ts', mode: 'client' },
   ],
 
-  // Auto import components (https://go.nuxtjs.dev/config-components)
+  imports: {
+    autoImport: false,
+  },
+
   components: false,
 
   // Modules for dev and build (recommended) (https://go.nuxtjs.dev/config-modules)
   buildModules: [
-    // https://go.nuxtjs.dev/typescript
-    '@nuxt/typescript-build',
     // https://go.nuxtjs.dev/stylelint
     '@nuxtjs/stylelint-module',
-    // https://go.nuxtjs.dev/tailwindcss
-    '@nuxtjs/tailwindcss',
-    '@nuxtjs/svg',
-    '@nuxtjs/pwa',
-    '@nuxtjs/composition-api/module',
-    ['@pinia/nuxt', { disableVuex: true }], // Add to modules (Nuxt 3) or buildModules (Nuxt 2)
   ],
 
   // Modules (https://go.nuxtjs.dev/config-modules)
   modules: [
     '@nuxtjs/i18n',
-    '@nuxt/image',
-    '@nuxtjs/gtm',
+    '@nuxt/image-edge',
     ...(process.env.SENTRY_DSN ? ['@nuxtjs/sentry'] : []),
-    '@nuxtjs/sitemap', // declare the sitemap module at end of array
-    // '@pinia/nuxt' // Add to modules (Nuxt 3)
+    '@pinia/nuxt',
+    '@kevinmarrec/nuxt-pwa',
+    async (options, nuxt) => {
+      nuxt.hooks.hook('vite:extendConfig', (config) =>
+        // @ts-ignore
+        config.plugins.push(vuetify())
+      )
+    },
   ],
 
   i18n: {
     strategy: 'no_prefix',
-    lazy: true,
+    // lazy: true, // lazy-load not working as expected https://i18n.nuxtjs.org/lazy-load-translations/
     detectBrowserLanguage: {
       useCookie: false,
     },
@@ -115,7 +106,7 @@ const config: NuxtConfig = {
       { code: 'fr', name: 'Français', flag: 'FR', iso: 'fr-FR', file: 'fr.js' },
     ],
     defaultLocale: 'en',
-    langDir: '~/locales/',
+    langDir: 'locales/',
   },
 
   image: {
@@ -130,60 +121,59 @@ const config: NuxtConfig = {
     },
   },
 
-  sitemap: {
-    cacheTime: -1,
-    routes: () => sitemapRoutes(vidos),
-    filter: sitemapFilter,
-  },
-
   watchers: {
     chokidar: {
-      ignored: (f) =>
+      // @ts-ignore
+      ignor: (f) =>
         [
           /\.git/,
           /\.yarn/,
           /cypress/,
-          /.*\.stories\.ts$/,
-          /.*\.jest\.ts$/,
+          /.*\.story\.vue$/,
+          /\.nuxt\/dist\/server\//,
         ].some((r) => r.test(f)),
     },
     webpack: {
-      ignored: /\.git|\.yarn|cypress|.*\.stories\.ts$|.*\.jest\.ts$/,
+      // @ts-ignore
+      ignored: /\.git|\.yarn|cypress|.*\.story\.vue$|\.nuxt\/dist\/server\//,
     },
   },
 
   // Build Configuration (https://go.nuxtjs.dev/config-build)
   build: {
-    extend(config, { isClient }) {
-      // Extend only webpack config for client-bundle
-      if (isClient) {
-        config.devtool = 'source-map'
-      }
-    },
-    plugins: [
-      // @ts-ignore
-      new webpack.ProvidePlugin({
-        mapboxgl: 'maplibre-gl',
-      }),
-      // https://github.com/date-fns/date-fns/blob/main/docs/webpack.md
-      // /!\ Not woring. Has no effect.
-      new webpack.ContextReplacementPlugin(
-        /date-fns\/locale$/,
-        new RegExp('./(' + supportedLocales.join('|') + ')/index.js$')
-      ),
-    ],
-    babel: {
-      plugins: [
-        ['@babel/plugin-proposal-class-properties', { loose: true }],
-        ['@babel/plugin-proposal-private-methods', { loose: true }],
-        ['@babel/plugin-proposal-private-property-in-object', { loose: true }],
-      ],
-    },
     transpile: [
-      // If you use nuxt you must transpile the module so it can be used universally
-      '@vueform/slider',
+      'iron-webcrypto',
+      'punycode',
       'pinia',
+      'vuetify',
+      'date-fns',
+      /lodash.*/,
+      '@fortawesome/vue-fontawesome',
+      ...(process.dev ? [] : ['maplibre-gl']), // What the hell, maplibre-gl
     ],
+  },
+
+  typescript: {
+    typeCheck: !!process.env.TYPESCRIPT_CHECK,
+  },
+
+  postcss: {
+    plugins: {
+      tailwindcss: {},
+      autoprefixer: {},
+    },
+  },
+
+  vite: {
+    clearScreen: false,
+    plugins: [
+      // Add support for old browser of
+      // const { ... } = await import('maplibre-gl')
+      topLevelAwait(),
+    ],
+    optimizeDeps: {
+      exclude: ['vite-plugin-top-level-await'],
+    },
   },
 
   // Server config (allow listening to local network)
@@ -191,25 +181,8 @@ const config: NuxtConfig = {
     host: '0.0.0.0',
   },
 
-  // Storybook module configuration (https://storybook.nuxtjs.org/setup)
-  storybook: {
-    typescript: { check: false },
-    port: 4000,
-    // addons: ['@storybook/addon-controls', '@storybook/addon-notes'],
-    // @ts-ignore
-    webpackFinal(config) {
-      config.watchOptions.ignored = /node_modules|__screenshots__/
-      return config
-    },
-    addons: ['storybook-addon-mock', 'storybook-addon-validate-html'],
-  },
-
   // Google Tag Manager config
   gtm: {
     pageTracking: false,
   },
-
-  devServerHandlers: [], // Workaround issue https://github.com/nuxt-community/tailwindcss-module/issues/480
-}
-
-export default config
+})

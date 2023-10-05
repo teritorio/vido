@@ -106,9 +106,8 @@ sw.*
 # VS Code
 .vscode/settings.json
 
-# Storybook
-.nuxt-storybook
-storybook-static
+# Histoire
+.histoire
 __screenshots__/current
 __screenshots__/diff
 
@@ -121,3 +120,4 @@ cypress/fixtures/teritorio/references/pois/
 
 # Vido
 vidos-config.json
+public/fixtures

@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-grow">
+  <div class="tw-flex tw-flex-grow">
     <MapBase
       ref="mapBase"
       :features="features"
@@ -7,9 +7,9 @@
       :fit-bounds-padding-options="fitBoundsPaddingOptions"
       :extra-attributions="extraAttributions"
       :map-style="selectedBackground"
-      :rotate="!$screen.touch"
+      :rotate="!device.touch"
       :show-attribution="!small"
-      :off-map-attribution="$screen.smallScreen && !small"
+      :off-map-attribution="device.smallScreen && !small"
       :hide-control="small"
       :style-icon-filter="styleIconFilter"
       :cooperative-gestures="cooperativeGestures"
@@ -27,10 +27,10 @@
       @feature-click="updateSelectedFeature"
     >
       <template #controls>
-        <MapControlsExplore v-if="explorerModeEnabled" :map="map" />
-        <MapControls3D :map="map" />
+        <MapControlsExplore v-if="explorerModeEnabled" :map="mapTyped" />
+        <MapControls3D :map="mapTyped" />
         <MapControlsBackground
-          :map="map"
+          :map="mapTyped"
           :backgrounds="availableStyles"
           :initial-background="selectedBackground"
           @change-background="selectedBackground = $event"
@@ -43,11 +43,11 @@
     <SnackBar @click="handleSnackAction" />
     <div
       v-if="isLoadingFeatures"
-      class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-80"
+      class="tw-fixed tw-inset-0 tw-flex tw-items-center tw-justify-center tw-bg-black tw-bg-opacity-80"
     >
-      <font-awesome-icon
+      <FontAwesomeIcon
         icon="spinner"
-        class="text-zinc-400 animate-spin"
+        class="tw-text-zinc-400 tw-animate-spin"
         size="3x"
       />
     </div>
@@ -55,18 +55,22 @@
 </template>
 
 <script lang="ts">
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { Polygon, MultiPolygon } from 'geojson'
 import debounce from 'lodash.debounce'
-import maplibregl, {
+import type {
+  Map,
   MapDataEvent,
   LngLatBoundsLike,
   MapMouseEvent,
   FitBoundsOptions,
   GeoJSONSource,
+  StyleSpecification,
 } from 'maplibre-gl'
 import { mapActions, mapState, mapWritableState } from 'pinia'
-import Vue, { PropType, VueConstructor } from 'vue'
+import { PropType, ref } from 'vue'
 
+import { defineNuxtComponent, useRequestHeaders } from '#app'
 import MapControlsExplore from '~/components/MainMap/MapControlsExplore.vue'
 import SnackBar from '~/components/MainMap/SnackBar.vue'
 import MapBase from '~/components/Map/MapBase.vue'
@@ -84,6 +88,10 @@ import { filterRouteByCategories, filterRouteByPoiIds } from '~/utils/styles'
 import { LatLng, MapStyleEnum } from '~/utils/types'
 import { getHashPart } from '~/utils/url'
 
+const { Marker } = await import('maplibre-gl')
+
+type ITMarker = InstanceType<typeof Marker>
+
 const STYLE_LAYERS = [
   'poi-level-1',
   'poi-level-2',
@@ -93,16 +101,9 @@ const STYLE_LAYERS = [
 ]
 const POI_SOURCE = 'poi'
 
-export default (
-  Vue as VueConstructor<
-    Vue & {
-      $refs: {
-        mapBase: InstanceType<typeof MapBase>
-      }
-    }
-  >
-).extend({
+export default defineNuxtComponent({
   components: {
+    FontAwesomeIcon,
     MapBase,
     MapControlsExplore,
     MapControls3D,
@@ -164,11 +165,16 @@ export default (
       default: undefined,
     },
   },
+  setup() {
+    return {
+      mapBase: ref<InstanceType<typeof MapBase>>(),
+    }
+  },
 
   data(): {
-    map: maplibregl.Map
-    markers: { [id: string]: maplibregl.Marker }
-    selectedFeatureMarker: maplibregl.Marker | null
+    map: Map
+    markers: { [id: string]: ITMarker }
+    selectedFeatureMarker: ITMarker | null
     selectedBackground: MapStyleEnum
   } {
     return {
@@ -184,8 +190,17 @@ export default (
     ...mapState(menuStore, ['isLoadingFeatures']),
     ...mapWritableState(mapStore, ['center']),
 
+    device() {
+      return this.$device.value
+    },
+
     availableStyles(): MapStyleEnum[] {
       return [MapStyleEnum.vector, MapStyleEnum.aerial, MapStyleEnum.bicycle]
+    },
+
+    // Workarround typing issue
+    mapTyped(): Map {
+      return this.map as Map
     },
   },
 
@@ -206,13 +221,13 @@ export default (
       }
 
       this.handleResetMapZoom(
-        this.$tc('snack.noPoi.issue'),
-        this.$tc('snack.noPoi.action')
+        this.$t('snack.noPoi.issue'),
+        this.$t('snack.noPoi.action')
       )
 
       if (this.enableFilterRouteByFeatures) {
         filterRouteByPoiIds(
-          this.map,
+          this.map as Map,
           this.features.map(
             (feature) =>
               feature.properties?.metadata?.id ||
@@ -229,7 +244,7 @@ export default (
 
     selectedCategoriesIds(categories) {
       if (this.enableFilterRouteByCategories) {
-        filterRouteByCategories(this.map, categories)
+        filterRouteByCategories(this.map as Map, categories)
       }
     },
 
@@ -263,7 +278,7 @@ export default (
 
     // Map and style init and changes
 
-    onMapInit(map: maplibregl.Map) {
+    onMapInit(map: Map) {
       this.map = map
 
       this.map.on('click', this.onClick)
@@ -274,7 +289,7 @@ export default (
       })
     },
 
-    onMapStyleLoad(style: maplibregl.StyleSpecification) {
+    onMapStyleLoad(_style: StyleSpecification) {
       const colors = [
         ...new Set(
           this.categories
@@ -282,7 +297,7 @@ export default (
             .map((category) => category.category.color_fill)
         ),
       ]
-      this.$refs.mapBase.initPoiLayer(this.features, colors, [
+      this.mapBase!.initPoiLayer(this.features, colors, [
         'case',
         ['all', ['has', 'display'], ['has', 'color_fill', ['get', 'display']]],
         ['get', 'color_fill', ['get', 'display']],
@@ -323,7 +338,7 @@ export default (
       }
     },
 
-    updateSelectedFeature(feature: ApiPoi | null, fetch: boolean = false) {
+    updateSelectedFeature(feature: ApiPoi | null, fetch = false) {
       if (this.selectedFeature !== feature) {
         this.setSelectedFeature(feature)
 
@@ -332,9 +347,7 @@ export default (
             // Seted temp partial data from vector tiles.
             // Now fetch full data.
             return getPoiById(
-              this.$vidoConfig().API_ENDPOINT,
-              this.$vidoConfig().API_PROJECT,
-              this.$vidoConfig().API_THEME,
+              this.$vidoConfig(useRequestHeaders()),
               feature.properties.metadata.id
             ).then((apiPoi) => {
               // Overide geometry.
@@ -356,7 +369,7 @@ export default (
       // Put selected feature marker on top
       if (this.selectedFeatureMarker) {
         this.selectedFeatureMarker.remove()
-        this.selectedFeatureMarker.addTo(this.map)
+        this.selectedFeatureMarker.addTo(this.map as Map)
       }
     },
 
@@ -365,7 +378,7 @@ export default (
         return
       }
 
-      this.$refs.mapBase.fitBounds(getBBoxFeature(feature))
+      this.mapBase!.fitBounds(getBBoxFeature(feature))
     },
 
     goToSelectedFeature() {
@@ -405,13 +418,13 @@ export default (
       if (this.features) {
         const bounds = getBBoxFeatures(this.features)
         if (bounds) {
-          this.$refs.mapBase.fitBounds(bounds)
+          this.mapBase!.fitBounds(bounds)
         }
       }
     },
 
     resetZoom() {
-      this.$refs.mapBase.fitBounds(this.defaultBounds, { linear: false })
+      this.mapBase!.fitBounds(this.defaultBounds, { linear: false })
     },
 
     handleResetMapZoom(text: string, textBtn: string) {
@@ -450,7 +463,7 @@ export default (
           this.selectedFeature?.id ||
           this.selectedFeature?.properties?.id)
       ) {
-        filterRouteByPoiIds(this.map, [
+        filterRouteByPoiIds(this.map as Map, [
           this.selectedFeature.properties?.metadata?.id ||
             this.selectedFeature?.id ||
             this.selectedFeature?.properties?.id,
@@ -477,17 +490,17 @@ export default (
               : this.defaultBounds
           ) as [number, number]
 
-          this.selectedFeatureMarker = new maplibregl.Marker({
+          this.selectedFeatureMarker = new Marker({
             scale: 1.3,
             color: '#f44336',
           })
             .setLngLat(lngLat)
-            .addTo(this.map)
+            .addTo(this.map as Map)
         }
       } else {
         if (this.enableFilterRouteByCategories) {
           filterRouteByPoiIds(
-            this.map,
+            this.map as Map,
             this.features.map(
               (feature) =>
                 feature.properties?.metadata?.id ||
@@ -497,7 +510,7 @@ export default (
           )
         }
         if (this.enableFilterRouteByCategories) {
-          filterRouteByCategories(this.map, this.selectedCategoriesIds)
+          filterRouteByCategories(this.map as Map, this.selectedCategoriesIds)
         }
       }
     },

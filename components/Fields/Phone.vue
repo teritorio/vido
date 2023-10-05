@@ -1,22 +1,25 @@
 <template>
-  <ExternalLink
-    v-if="phone"
-    :href="`tel:${number}`"
-    :title="$tc('fields.phone.callNumber')"
-  >
-    {{ numberFormated }}
-  </ExternalLink>
-  <span v-else>
-    {{ numberFormated }}
-  </span>
+  <client-only>
+    <ExternalLink
+      v-if="phone"
+      :href="`tel:${number}`"
+      :title="$t('fields.phone.callNumber')"
+    >
+      {{ numberFormated }}
+    </ExternalLink>
+    <span v-else>
+      {{ numberFormated }}
+    </span>
+  </client-only>
 </template>
 
 <script lang="ts">
-import Vue, { PropType } from 'vue'
+import { PropType } from 'vue'
 
+import { defineNuxtComponent } from '#app'
 import ExternalLink from '~/components/UI/ExternalLink.vue'
 
-export default Vue.extend({
+export default defineNuxtComponent({
   components: {
     ExternalLink,
   },
@@ -28,23 +31,14 @@ export default Vue.extend({
     },
   },
 
-  data(): {
-    phone: boolean
-  } {
-    return {
-      phone: true,
-    }
-  },
-
   computed: {
     numberFormated(): string {
       return this.number.replaceAll(' ', ' ')
     },
-  },
 
-  mounted() {
-    // Do not use $screen.phone directly in template. De-sync DROM from SSR.
-    this.phone = this.$screen.phone
+    phone(): boolean {
+      return this.$device.value.phone
+    },
   },
 })
 </script>

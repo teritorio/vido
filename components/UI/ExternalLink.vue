@@ -5,17 +5,24 @@
     :target="target"
     :rel="rel"
     :title="title"
-    class="flex flex-row items-center gap-x-2.5 underline underline-offset-4"
+    class="tw-flex tw-flex-row tw-items-center tw-gap-x-2.5 tw-underline tw-underline-offset-4"
   >
-    <font-awesome-icon :icon="iconDefault" color="inherit" size="sm" />
+    <FontAwesomeIcon :icon="iconDefault" color="inherit" size="sm" />
     <slot></slot>
   </a>
 </template>
 
 <script lang="ts">
-import Vue, { PropType } from 'vue'
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
+import { PropType } from 'vue'
 
-export default Vue.extend({
+import { defineNuxtComponent } from '#app'
+
+export default defineNuxtComponent({
+  components: {
+    FontAwesomeIcon,
+  },
+
   props: {
     href: {
       type: String as PropType<string>,

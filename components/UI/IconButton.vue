@@ -3,9 +3,7 @@
     v-if="!href"
     :aria-label="label"
     type="button"
-    class="text-sm text-zinc-800 bg-white rounded-full shadow-md outline-none focus:outline-none hover:bg-zinc-100 focus-visible:bg-zinc-100 shrink-0 flex items-center justify-center"
-    v-bind="$attrs"
-    v-on="$listeners"
+    class="tw-text-sm tw-text-zinc-800 tw-bg-white tw-rounded-full tw-shadow-md tw-outline-none focus:tw-outline-none hover:tw-bg-zinc-100 focus-visible:tw-bg-zinc-100 tw-shrink-0 tw-flex tw-items-center tw-justify-center"
   >
     <slot></slot>
   </button>
@@ -14,9 +12,7 @@
     :aria-label="label"
     :to="href"
     :target="target"
-    class="text-sm text-zinc-800 bg-white rounded-full shadow-md outline-none focus:outline-none hover:bg-zinc-100 focus-visible:bg-zinc-100 shrink-0 flex items-center justify-center"
-    v-bind="$attrs"
-    v-on="$listeners"
+    class="tw-text-sm tw-text-zinc-800 tw-bg-white tw-rounded-full tw-shadow-md tw-outline-none focus:tw-outline-none hover:tw-bg-zinc-100 focus-visible:tw-bg-zinc-100 tw-shrink-0 tw-flex tw-items-center tw-justify-center"
   >
     <slot></slot>
   </NuxtLink>
@@ -25,18 +21,18 @@
     :aria-label="label"
     :href="href"
     :target="target"
-    class="text-sm text-zinc-800 bg-white rounded-full shadow-md outline-none focus:outline-none hover:bg-zinc-100 focus-visible:bg-zinc-100 shrink-0 flex items-center justify-center"
-    v-bind="$attrs"
-    v-on="$listeners"
+    class="tw-text-sm tw-text-zinc-800 tw-bg-white tw-rounded-full tw-shadow-md tw-outline-none focus:tw-outline-none hover:tw-bg-zinc-100 focus-visible:tw-bg-zinc-100 tw-shrink-0 tw-flex tw-items-center tw-justify-center"
   >
     <slot></slot>
   </a>
 </template>
 
 <script lang="ts">
-import Vue, { PropType } from 'vue'
+import { PropType } from 'vue'
 
-export default Vue.extend({
+import { defineNuxtComponent } from '#app'
+
+export default defineNuxtComponent({
   props: {
     label: {
       type: String as PropType<string>,

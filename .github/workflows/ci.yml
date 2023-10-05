@@ -41,27 +41,6 @@ jobs:
       - name: Run linter 👀
         run: yarn lint
 
-  tests:
-    needs: install_cache
-    name: Jest Test
-    runs-on: ${{ matrix.os }}
-
-    strategy:
-      matrix:
-        os:
-          - ubuntu-latest
-        node:
-          - 18
-
-    steps:
-      - name: Checkout 🛎
-        uses: actions/checkout@master
-
-      - uses: ./.github/actions/install
-
-      - name: Run Jest tests 🧪
-        run: yarn test:jest
-
   cypress:
     needs: install_cache
     name: Cypress
@@ -85,25 +64,32 @@ jobs:
           sudo apt-get install -y ruby &&
           ruby poi_explode.rb cypress/fixtures/teritorio/references/pois.geojson
 
-      - name: yarn build
+      - name: Prepare
         run: |
-          ln -s ../cypress/fixtures/ static/fixtures &&
-          NODE_OPTIONS=--openssl-legacy-provider NODE_ENV=development CONFIG=vidos-config-cypress.json yarn build
+          cp -R cypress/fixtures/ public/fixtures &&
+          CONFIG=vidos-config-cypress.json CYPRESS=true yarn build
 
       - name: Run Cypress Tests 🧪
         uses: cypress-io/github-action@v5
         env:
-          NODE_ENV: development
-          CONFIG: vidos-config-cypress.json
+          CONFIG: ../vidos-config-cypress.json
+          CYPRESS: true
         with:
           install-command: yarn --silent
-          start: yarn start4cypress
+          start: yarn start
           wait-on: 'http://127.0.0.1:3000'
           wait-on-timeout: 30
 
-  storybook:
+      - name: Keep failled cypress-screenshots
+        uses: actions/upload-artifact@v3
+        if: failure()
+        with:
+          name: cypress-screenshots
+          path: cypress/screenshots
+
+  histoire:
     needs: install_cache
-    name: Storybook
+    name: Histoire
     runs-on: ${{ matrix.os }}
 
     strategy:
@@ -120,42 +106,35 @@ jobs:
       - uses: ./.github/actions/install
 
       - name: Install more packages
-        run: sudo apt-get install -y ruby
-
-      - name: Build Storybook 👀
-        run: NODE_OPTIONS=--openssl-legacy-provider yarn build:storybook
-
-      - name: Storycap
         run: |
-          STORYCAP_OPS="--serverCmd 'npx --yes -- http-server storybook-static -p 4000'" yarn test:storybook:report || true
-          zip -r __screenshots__.zip __screenshots__ > /dev/null
-          echo "https://gist.github.com/frodrigo/7c470b063ff1efa19022eec2f394319f"
+          sudo apt-get install -y ruby &&
+          ruby poi_explode.rb cypress/fixtures/teritorio/references/pois.geojson
 
-      - name: Export as Gist
-        uses: exuanbo/actions-deploy-gist@v1
+      - name: Test Histoire
+        run: |
+          CONFIG=vidos-config-empty.json yarn prepare &&
+          CONFIG=vidos-config-empty.json yarn test:histoire
+
+      - name: Keep failled histoire-screenshots
+        uses: actions/upload-artifact@v3
+        if: failure()
         with:
-          token: ${{ secrets.GIST_STORYCAP_REPORT_TOKEN }}
-          gist_id: 7c470b063ff1efa19022eec2f394319f
-          file_path: __screenshots__.zip
-          file_type: binary
-
-      - name: Test Storybook
-        run: yarn test:storybook
+          name: histoire-screenshots
+          path: __screenshots__
 
       - name: Deploy to gh-pages
         if: github.ref == 'refs/heads/develop'
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./storybook-static
+          publish_dir: ./.histoire/dist
 
   deploy_dev:
     needs:
       - install_cache
       - lint
-      - tests
       - cypress
-      - storybook
+      - histoire
     if: github.ref == 'refs/heads/develop'
     name: Deploy Dev
     runs-on: ${{ matrix.os }}
@@ -190,8 +169,10 @@ jobs:
           POST_SCRIPT: |
             cd /var/www/clients/client3/web3/web/vido &&
             ruby poi_explode.rb cypress/fixtures/teritorio/references/pois.geojson &&
-            yarn build-config &&
             sed -i "s/# restart: unless-stopped/restart: unless-stopped/" docker-compose.yml &&
-            docker-compose build && docker-compose up -d &&
+            docker-compose build &&
+            touch vidos-config.json &&
+            docker-compose run --rm vido yarn build-config &&
+            docker-compose up -d &&
             echo -n 'VIDO: Deployment completed at: ' &&
             date -u

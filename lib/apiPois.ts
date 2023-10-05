@@ -1,10 +1,9 @@
-import fetch from 'node-fetch'
-
 import { MapPoiProperties, MapPoiId } from './mapPois'
 
 import { MultilingualString } from '~/utils/types'
+import { VidoConfig } from '~/utils/types-config'
 
-export interface ApiPoiId extends MapPoiId {}
+export type ApiPoiId = MapPoiId
 
 export type FieldsListItem = {
   group?: undefined
@@ -73,8 +72,7 @@ export type ApiPoiProperties = MapPoiProperties & {
     unavoidable?: boolean
   }
 }
-export interface ApiPoi
-  extends GeoJSON.Feature<GeoJSON.Geometry, ApiPoiProperties> {}
+export type ApiPoi = GeoJSON.Feature<GeoJSON.Geometry, ApiPoiProperties>
 
 export const ApiPoiPropertiesArray = [
   'image',
@@ -84,10 +82,12 @@ export const ApiPoiPropertiesArray = [
   'website',
 ]
 
-export interface ApiPois
-  extends GeoJSON.FeatureCollection<GeoJSON.Geometry, ApiPoiProperties> {}
+export type ApiPois = GeoJSON.FeatureCollection<
+  GeoJSON.Geometry,
+  ApiPoiProperties
+>
 
-export interface apiPoisOptions {
+export interface ApiPoisOptions {
   // eslint-disable-next-line camelcase
   geometry_as?: 'point' | 'bbox'
   // eslint-disable-next-line camelcase
@@ -95,29 +95,28 @@ export interface apiPoisOptions {
   format?: 'geojson' | 'csv'
 }
 
-export const defaultOptions: apiPoisOptions = {
+export const defaultOptions: ApiPoisOptions = {
   geometry_as: 'bbox',
   short_description: true,
   format: 'geojson',
 }
 
-export function stringifyOptions(options: apiPoisOptions): string[][] {
+export function stringifyOptions(options: ApiPoisOptions): string[][] {
   return Object.entries(Object.assign({}, defaultOptions, options))
-    .filter(([k, v]) => k != 'format')
+    .filter(([k, _v]) => k != 'format')
     .map(([k, v]) => [k, `${v}`])
 }
 
 export function getPoiById(
-  apiEndpoint: string,
-  apiProject: string,
-  apiTheme: string,
+  vidoConfig: VidoConfig,
   poiId: ApiPoiId | string,
-  options: apiPoisOptions = {}
+  options: ApiPoisOptions = {}
 ): Promise<ApiPoi> {
   return fetch(
-    `${apiEndpoint}/${apiProject}/${apiTheme}/poi/${poiId}.${
-      options.format || defaultOptions.format
-    }?` + new URLSearchParams(stringifyOptions(options))
+    `${vidoConfig.API_ENDPOINT}/${vidoConfig.API_PROJECT}/${
+      vidoConfig.API_THEME
+    }/poi/${poiId}.${options.format || defaultOptions.format}?` +
+      new URLSearchParams(stringifyOptions(options))
   ).then((data) => {
     if (data.ok) {
       return data.json() as unknown as ApiPoi
@@ -130,16 +129,14 @@ export function getPoiById(
 }
 
 export function getPois(
-  apiEndpoint: string,
-  apiProject: string,
-  apiTheme: string,
+  vidoConfig: VidoConfig,
   poiIds?: (ApiPoiId | string)[],
-  options: apiPoisOptions = {}
+  options: ApiPoisOptions = {}
 ): Promise<ApiPois> {
   return fetch(
-    `${apiEndpoint}/${apiProject}/${apiTheme}/pois.${
-      options.format || defaultOptions.format
-    }?` +
+    `${vidoConfig.API_ENDPOINT}/${vidoConfig.API_PROJECT}/${
+      vidoConfig.API_THEME
+    }/pois.${options.format || defaultOptions.format}?` +
       new URLSearchParams([
         ...(poiIds ? [['ids', poiIds.join(',')]] : []),
         ...stringifyOptions(options),
@@ -156,41 +153,32 @@ export function getPois(
 }
 
 export function getPoiByCategoryIdUrl(
-  apiEndpoint: string,
-  apiProject: string,
-  apiTheme: string,
+  vidoConfig: VidoConfig,
   categoryId: number | string,
-  options: apiPoisOptions = { geometry_as: 'point' }
+  options: ApiPoisOptions = {}
 ): string {
+  options = Object.assign(defaultOptions, { geometry_as: 'point' }, options)
   return (
-    `${apiEndpoint}/${apiProject}/${apiTheme}/pois/category/${categoryId}.${
-      options.format || defaultOptions.format
-    }?` + new URLSearchParams(stringifyOptions(options))
+    `${vidoConfig.API_ENDPOINT}/${vidoConfig.API_PROJECT}/${vidoConfig.API_THEME}/pois/category/${categoryId}.${options.format}?` +
+    new URLSearchParams(stringifyOptions(options))
   )
 }
 
 export function getPoiByCategoryId(
-  apiEndpoint: string,
-  apiProject: string,
-  apiTheme: string,
+  vidoConfig: VidoConfig,
   categoryId: number | string,
-  options: apiPoisOptions = { geometry_as: 'point' }
+  options: ApiPoisOptions = {}
 ): Promise<ApiPois> {
-  return fetch(
-    getPoiByCategoryIdUrl(
-      apiEndpoint,
-      apiProject,
-      apiTheme,
-      categoryId,
-      options
-    )
-  ).then((data) => {
-    if (data.ok) {
-      return data.json() as unknown as ApiPois
-    } else {
-      return Promise.reject(
-        new Error([data.url, data.status, data.statusText].join(' '))
-      )
+  options = Object.assign(defaultOptions, { geometry_as: 'point' }, options)
+  return fetch(getPoiByCategoryIdUrl(vidoConfig, categoryId, options)).then(
+    (data) => {
+      if (data.ok) {
+        return data.json() as unknown as ApiPois
+      } else {
+        return Promise.reject(
+          new Error([data.url, data.status, data.statusText].join(' '))
+        )
+      }
     }
-  })
+  )
 }

@@ -9,7 +9,7 @@
     >
       <img
         :src="logoUrl"
-        :class="['w-auto h-auto', imageClass]"
+        :class="['tw-w-auto tw-h-auto', imageClass]"
         :alt="$t('headerMenu.logo')"
       />
     </a>
@@ -17,9 +17,11 @@
 </template>
 
 <script lang="ts">
-import Vue, { PropType } from 'vue'
+import { PropType } from 'vue'
 
-export default Vue.extend({
+import { defineNuxtComponent } from '#app'
+
+export default defineNuxtComponent({
   props: {
     logoUrl: {
       type: String as PropType<string>,
@@ -35,7 +37,7 @@ export default Vue.extend({
     },
     imageClass: {
       type: String as PropType<string>,
-      default: 'max-w-2xl max-h-16',
+      default: 'tw-max-w-2xl tw-max-h-16',
     },
   },
 })

@@ -1,8 +1,8 @@
 <template>
   <Embedded
     :settings="settings"
-    :initial-category-ids="categoryIds"
-    :initial-poi="initialPoi"
+    :initial-category-ids="categoryIds || undefined"
+    :initial-poi="initialPoi || undefined"
     :boundary-area="boundary_geojson"
   />
 </template>
@@ -10,9 +10,9 @@
 <script lang="ts">
 import { Polygon, MultiPolygon, GeoJSON } from 'geojson'
 import { mapWritableState } from 'pinia'
-import Vue from 'vue'
-import { MetaInfo } from 'vue-meta'
+import { ref, Ref } from 'vue'
 
+import { defineNuxtComponent, useHead, useRequestHeaders, useRoute } from '#app'
 import Embedded from '~/components/Home/Embedded.vue'
 import { ApiMenuCategory, getMenu, MenuItem } from '~/lib/apiMenu'
 import { getPoiById, ApiPoi } from '~/lib/apiPois'
@@ -21,37 +21,47 @@ import {
   PropertyTranslations,
 } from '~/lib/apiPropertyTranslations'
 import { getSettings, headerFromSettings, Settings } from '~/lib/apiSettings'
+import { getAsyncDataOrNull, getAsyncDataOrThrows } from '~/lib/getAsyncData'
 import { vidoConfig } from '~/plugins/vido-config'
 import { menuStore } from '~/stores/menu'
 import { siteStore } from '~/stores/site'
 import { VidoConfig } from '~/utils/types-config'
 
-export default Vue.extend({
+export default defineNuxtComponent({
   components: {
     Embedded,
   },
 
-  async asyncData({ params, route, req, $config, $pinia }): Promise<{
+  async setup(): Promise<{
     config: VidoConfig
-    settings: Settings
-    propertyTranslations: PropertyTranslations
-    menuItems: MenuItem[] | undefined
-    categoryIds: ApiMenuCategory['id'][] | undefined
-    initialPoi: ApiPoi | undefined
-    boundary_geojson: Polygon | MultiPolygon | undefined
+    settings: Ref<Settings>
+    propertyTranslations: Ref<PropertyTranslations>
+    menuItems: Ref<MenuItem[]>
+    categoryIds: Ref<ApiMenuCategory['id'][] | null>
+    initialPoi: Ref<ApiPoi | null>
+    boundary_geojson: Ref<Polygon | MultiPolygon | undefined>
   }> {
-    const config: VidoConfig =
-      siteStore($pinia).config || vidoConfig(req, $config)
+    const params = useRoute().params
+    const configRef = await getAsyncDataOrThrows('configRef', () =>
+      Promise.resolve(siteStore().config || vidoConfig(useRequestHeaders()))
+    )
+    const config: VidoConfig = configRef.value
 
-    const fetchSettings = siteStore($pinia).settings
-      ? Promise.resolve(siteStore($pinia).settings as Settings)
-      : getSettings(config.API_ENDPOINT, config.API_PROJECT, config.API_THEME)
+    const fetchSettings = getAsyncDataOrThrows('fetchSettings', () =>
+      siteStore().settings
+        ? Promise.resolve(siteStore().settings as Settings)
+        : getSettings(config)
+    )
 
     const fetchSettingsBoundary = fetchSettings.then(async (settings) => {
       let boundary_geojson: Polygon | MultiPolygon | undefined
-      const boundary = route.query.boundary
-      if (boundary && typeof boundary === 'string') {
-        const boundaryObject = settings.polygons_extra[boundary]
+      const boundary = useRoute().query.boundary
+      if (
+        boundary &&
+        typeof boundary === 'string' &&
+        settings.value.polygons_extra
+      ) {
+        const boundaryObject = settings.value.polygons_extra[boundary]
         if (boundaryObject) {
           if (typeof boundaryObject.data === 'string') {
             const geojson = (await (
@@ -71,20 +81,21 @@ export default Vue.extend({
         }
       }
 
-      return [settings, boundary_geojson]
-    }) as unknown as [Settings, Polygon | MultiPolygon | undefined]
+      return [settings, ref(boundary_geojson)]
+    }) as unknown as [Ref<Settings>, Ref<Polygon | MultiPolygon | undefined>]
 
-    const fetchPropertyTranslations = siteStore($pinia).translations
-      ? Promise.resolve(siteStore($pinia).translations as PropertyTranslations)
-      : getPropertyTranslations(
-          config.API_ENDPOINT,
-          config.API_PROJECT,
-          config.API_THEME
-        )
+    const fetchPropertyTranslations: Promise<Ref<PropertyTranslations>> =
+      getAsyncDataOrThrows('fetchPropertyTranslations', () =>
+        siteStore().translations
+          ? Promise.resolve(siteStore().translations as PropertyTranslations)
+          : getPropertyTranslations(config)
+      )
 
-    const fetchMenuItems = menuStore($pinia).menuItems
-      ? Promise.resolve(undefined)
-      : getMenu(config.API_ENDPOINT, config.API_PROJECT, config.API_THEME)
+    const fetchMenuItems = getAsyncDataOrThrows('fetchMenuItems', () =>
+      menuStore().menuItems !== undefined
+        ? Promise.resolve(Object.values(menuStore().menuItems!))
+        : getMenu(config)
+    )
 
     let categoryIdsJoin: string | null
     let poiId: string | null
@@ -92,7 +103,7 @@ export default Vue.extend({
     if (params.poiId) {
       categoryIdsJoin = params.p1 as string
       poiId = params.poiId as string
-    } else if (route.path.endsWith('/')) {
+    } else if (useRoute().path.endsWith('/')) {
       categoryIdsJoin = params.p1 as string
       poiId = null
     } else {
@@ -100,17 +111,20 @@ export default Vue.extend({
       poiId = params.p1 as string
     }
 
-    const categoryIds =
+    const categoryIds = ref(
       (categoryIdsJoin &&
         categoryIdsJoin.split(',').map((id) => parseInt(id))) ||
-      undefined
-    let fetchPoi: Promise<ApiPoi | undefined> = Promise.resolve(undefined)
+        null
+    )
+    let fetchPoi: Promise<Ref<ApiPoi | null>> = getAsyncDataOrNull(
+      'fetchPoiNull',
+      () => Promise.resolve(null)
+    )
     if (poiId) {
-      fetchPoi = getPoiById(
-        config.API_ENDPOINT,
-        config.API_PROJECT,
-        config.API_THEME,
-        poiId
+      fetchPoi = getAsyncDataOrNull(`fetchPoi-${poiId}`, () =>
+        getPoiById(config, poiId!, {
+          short_description: false,
+        })
       )
     }
 
@@ -126,7 +140,9 @@ export default Vue.extend({
       fetchPoi,
     ])
 
-    return Promise.resolve({
+    useHead(headerFromSettings(settings.value))
+
+    return {
       config,
       settings,
       propertyTranslations,
@@ -134,55 +150,33 @@ export default Vue.extend({
       categoryIds,
       initialPoi,
       boundary_geojson,
-    })
+    }
   },
 
   computed: {
     ...mapWritableState(siteStore, {
       locale: 'locale',
       globalConfig: 'config',
+      globalSettings: 'settings',
+      globalTranslations: 'translations',
     }),
   },
 
-  data(): {
-    config: VidoConfig | null
-    settings: Settings
-    propertyTranslations: PropertyTranslations
-    menuItems: MenuItem[]
-    categoryIds: ApiMenuCategory['id'][] | null
-    initialPoi: ApiPoi | null
-    boundary_geojson: Polygon | MultiPolygon | undefined
-  } {
-    return {
-      config: null,
-      // @ts-ignore
-      settings: null,
-      // @ts-ignore
-      propertyTranslations: null,
-      // @ts-ignore
-      menuItems: null,
-      categoryIds: null,
-      initialPoi: null,
-    }
-  },
-
-  head(): MetaInfo {
-    return headerFromSettings(this.settings)
-  },
-
   created() {
+    this.globalConfig = this.config
     if (this.menuItems) {
       menuStore().fetchConfig(this.menuItems)
     }
-    this.globalConfig = this.config!
+    this.globalSettings = this.settings
+    this.globalTranslations = this.propertyTranslations
 
     this.$settings.set(this.settings)
     this.$propertyTranslations.set(this.propertyTranslations)
   },
 
   beforeMount() {
-    this.$trackingInit(this.config!)
-    this.$vidoConfigSet(this.config!)
+    this.$trackingInit(this.config)
+    this.$vidoConfigSet(this.config)
   },
 
   mounted() {
@@ -195,6 +189,6 @@ export default Vue.extend({
 body,
 #__nuxt,
 #__layout {
-  @apply h-full w-full overflow-hidden overscroll-none;
+  @apply tw-h-full tw-w-full tw-overflow-hidden tw-overscroll-none;
 }
 </style>

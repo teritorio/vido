@@ -1,22 +1,22 @@
 <template>
   <div
     :class="[
-      'flex',
-      'flex-col-reverse h-screen',
-      'md:flex-row md:h-auto md:w-screen',
+      'tw-flex tw-h-screen',
+      'tw-flex-col-reverse',
+      'md:tw-flex-row md:tw-w-screen',
     ]"
   >
     <div
       v-if="selectedFeature"
       :class="[
-        'p-4 bg-white z-20',
-        'absolute w-screen h-screen',
-        'md:relative md:h-full md:w-1/3 md:max-w-md',
+        'tw-h-screen tw-p-4 tw-bg-white tw-z-20',
+        'tw-absolute tw-w-screen',
+        'md:tw-relative md:tw-w-1/3 md:tw-max-w-md tw-overflow-scroll',
       ]"
     >
-      <div class="grid justify-items-end pb-4">
+      <div class="tw-grid tw-justify-items-end tw-pb-4">
         <UIButton
-          :label="$tc('ui.close')"
+          :label="$t('ui.close')"
           icon="times"
           @click="setSelectedFeature(null)"
         />
@@ -29,29 +29,32 @@
         @zoom-click="goToSelectedFeature"
       />
     </div>
-    <div class="grow">
-      <div class="flex flex-col h-screen">
+    <div class="tw-grow">
+      <div
+        v-if="initialBbox"
+        class="tw-flex tw-flex-col tw-h-screen tw-relative"
+      >
+        <MapFeatures
+          ref="mapFeatures"
+          :default-bounds="initialBbox"
+          :fit-bounds-padding-options="fitBoundsPaddingOptions"
+          :extra-attributions="settings.attributions"
+          :categories="apiMenuCategory || []"
+          :features="mapFeatures"
+          :selected-categories-ids="selectedCategoryIds"
+          :style-icon-filter="poiFilters"
+          :explorer-mode-enabled="explorerModeEnabled"
+          :cooperative-gestures="false"
+          :boundary-area="boundaryArea || settings.polygon.data"
+        />
         <CategorySelector
           :menu-items="Object.values(apiMenuCategory || {})"
+          label="categorySelector.placeholderAdd"
+          class="tw-p-4 tw-absolute tw-z-1 tw-w-full"
           @category-change="onMenuChange"
         />
-        <div v-if="initialBbox" class="flex flex-grow">
-          <MapFeatures
-            ref="mapFeatures"
-            :default-bounds="initialBbox"
-            :fit-bounds-padding-options="fitBoundsPaddingOptions"
-            :extra-attributions="settings.attributions"
-            :categories="apiMenuCategory || []"
-            :features="mapFeatures"
-            :selected-categories-ids="selectedCategoryIds"
-            :style-icon-filter="poiFilters"
-            :explorer-mode-enabled="explorerModeEnabled"
-            :cooperative-gestures="false"
-            :boundary-area="boundaryArea || settings.polygon.data"
-          />
-          <div class="p-4 absolute">
-            <SelectedCategories />
-          </div>
+        <div class="tw-p-4 tw-pt-24 tw-absolute">
+          <SelectedCategories />
         </div>
       </div>
     </div>
@@ -59,10 +62,10 @@
 </template>
 
 <script lang="ts">
-import { FitBoundsOptions } from 'maplibre-gl'
+import type { FitBoundsOptions } from 'maplibre-gl'
 import { mapActions } from 'pinia'
-import mixins from 'vue-typed-mixins'
 
+import { defineNuxtComponent, useRequestHeaders } from '#app'
 import HomeMixin from '~/components/Home/HomeMixin'
 import SelectedCategories from '~/components/Home/SelectedCategories.vue'
 import MapFeatures from '~/components/MainMap/MapFeatures.vue'
@@ -71,12 +74,11 @@ import CategorySelector from '~/components/PoisList/CategorySelector.vue'
 import UIButton from '~/components/UI/UIButton.vue'
 import { ApiPoi } from '~/lib/apiPois'
 import { getBBoxFeature } from '~/lib/bbox'
-import { mapStore } from '~/stores/map'
 import { menuStore } from '~/stores/menu'
 import { Mode } from '~/utils/types'
 import { flattenFeatures } from '~/utils/utilities'
 
-export default mixins(HomeMixin).extend({
+export default defineNuxtComponent({
   components: {
     CategorySelector,
     MapFeatures,
@@ -84,6 +86,7 @@ export default mixins(HomeMixin).extend({
     PoiCardContent,
     UIButton,
   },
+  mixins: [HomeMixin],
 
   computed: {
     fitBoundsPaddingOptions(): FitBoundsOptions['padding'] {
@@ -100,24 +103,13 @@ export default mixins(HomeMixin).extend({
     },
   },
 
-  mounted() {
-    if (this.boundaryArea) {
-      this.initialBbox = getBBoxFeature(this.boundaryArea)
-    } else {
-      // @ts-ignore
-      this.initialBbox = this.settings.bbox_line.coordinates
-    }
-  },
-
   watch: {
     selectedCategoryIds() {
       this.routerPushUrl()
 
       if (this.selectedCategoryIds) {
         menuStore().fetchFeatures({
-          apiEndpoint: this.$vidoConfig().API_ENDPOINT,
-          apiProject: this.$vidoConfig().API_PROJECT,
-          apiTheme: this.$vidoConfig().API_THEME,
+          vidoConfig: this.$vidoConfig(useRequestHeaders()),
           categoryIds: this.selectedCategoryIds,
         })
       }
@@ -126,6 +118,15 @@ export default mixins(HomeMixin).extend({
     selectedFeature() {
       this.routerPushUrl()
     },
+  },
+
+  mounted() {
+    if (this.boundaryArea) {
+      this.initialBbox = getBBoxFeature(this.boundaryArea)
+    } else {
+      // @ts-ignore
+      this.initialBbox = this.settings.bbox_line.coordinates
+    }
   },
 
   methods: {
@@ -147,12 +148,12 @@ export default mixins(HomeMixin).extend({
           '/embedded' +
           (categoryIds ? `/${categoryIds}/` : '/') +
           (id ? `${id}` : ''),
-        query: this.$router.currentRoute.query,
-        hash: this.$router.currentRoute.hash,
+        query: this.$router.currentRoute.value.query,
+        hash: this.$router.currentRoute.value.hash,
       })
     },
 
-    toggleExploreAroundSelectedPoi(feature?: ApiPoi) {
+    toggleExploreAroundSelectedPoi(_feature?: ApiPoi) {
       if (!this.isModeExplorer) {
         this.mode = Mode.EXPLORER
         this.goToSelectedFeature()

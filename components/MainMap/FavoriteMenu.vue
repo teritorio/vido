@@ -1,98 +1,95 @@
 <template>
   <section>
-    <div class="flex right-10">
+    <div class="tw-flex tw-right-10 tw-pointer-events-auto">
       <button
         ref="menu"
         type="button"
         :class="[
-          'relative space-x-1 text-sm font-medium shadow-md outline-none md:px-5 w-11 md:w-auto h-11 focus:outline-none shrink-0 border-r border-zinc-400 rounded-l-full z-10',
+          'tw-relative tw-space-x-1 tw-text-sm tw-font-medium tw-shadow-md tw-outline-none md:tw-px-5 tw-w-11 md:tw-w-auto tw-h-11 focus:tw-outline-none tw-shrink-0 border-solid tw-border-r tw-border-zinc-400 tw-rounded-l-full tw-z-10',
           isModeFavorites &&
-            'bg-blue-500 hover:bg-blue-400 focus-visible:bg-blue-400 text-white',
+            'tw-bg-blue-500 hover:tw-bg-blue-400 focus-visible:tw-bg-blue-400 tw-text-white',
           !isModeFavorites &&
-            'bg-white hover:bg-zinc-100 focus-visible:bg-zinc-100 text-zinc-800',
+            'tw-bg-white hover:tw-bg-zinc-100 focus-visible:tw-bg-zinc-100 tw-text-zinc-800',
         ]"
         @click="$emit('toggle-favorites')"
       >
         <FavoriteIcon :is-active="isModeFavorites" />
-        <span class="hidden md:inline favoriteTitle">{{
-          $tc('favorites.title')
+        <span class="tw-hidden md:tw-inline favoriteTitle">{{
+          $t('favorites.title')
         }}</span>
         <Badge
           id="favourites_counter"
           :items="favoritesIds.length"
-          class="absolute top-1/2 right-0 -translate-y-1/2 translate-x-1/2"
+          class="tw-absolute tw-top-1/2 tw-right-0 -tw-translate-y-1/2 tw-translate-x-1/2"
         />
       </button>
       <button
         id="open_favourites_notebook"
         type="button"
         :class="[
-          'relative space-x-1 text-sm font-medium shadow-md outline-none md:px-5 w-11 md:w-auto h-11 focus:outline-none shrink-0 rounded-r-full',
-          'bg-white hover:bg-zinc-100 focus-visible:bg-zinc-100 text-zinc-800',
-          !hasFavorites && 'bg-zinc-100 cursor-not-allowed',
+          'tw-relative tw-space-x-1 tw-text-sm tw-font-medium tw-shadow-md tw-outline-none md:tw-px-5 tw-w-11 md:tw-w-auto tw-h-11 focus:tw-outline-none tw-shrink-0 tw-rounded-r-full',
+          'tw-bg-white hover:tw-bg-zinc-100 focus-visible:tw-bg-zinc-100 tw-text-zinc-800',
+          favoritesIds.length === 0 && 'tw-bg-zinc-100 tw-cursor-not-allowed',
         ]"
-        :disabled="!hasFavorites"
+        :disabled="favoritesIds.length === 0"
         @click="openNotebookModal"
       >
-        <font-awesome-icon
+        <FontAwesomeIcon
           ref="menu_icon"
           icon="book-open"
-          class="text-zinc-500 mr-2"
+          class="tw-text-zinc-500 tw-mr-2"
           size="sm"
         />
-        <span class="hidden md:inline favoriteTitle">
-          {{ $tc('favorites.menu_notebook') }}
+        <span class="tw-hidden md:tw-inline favoriteTitle">
+          {{ $t('favorites.menu_notebook') }}
         </span>
       </button>
     </div>
 
-    <t-modal-notebook
-      ref="notebookModal"
-      :hide-close-button="true"
-      @before-open="getFavs"
-    >
-      <FavoriteNoteBook
-        :favs="favs"
-        :selected-favs-ids="favoritesIds"
-        :explorer-mode-enabled="explorerModeEnabled"
-        @explore-click="explore"
-        @favorite-click="handleFavorite"
-        @zoom-click="goTo"
-        @on-close="closeNoteBook"
-      />
-    </t-modal-notebook>
+    <div>
+      <v-dialog
+        v-model="notebookModal"
+        :fullscreen="smallScreen"
+        max-width="80rem"
+      >
+        <FavoriteNoteBook
+          :favs="favs"
+          :selected-favs-ids="favoritesIds"
+          :explorer-mode-enabled="explorerModeEnabled"
+          @explore-click="explore"
+          @favorite-click="handleFavorite"
+          @zoom-click="goTo"
+          @on-close="notebookModal = false"
+        />
+      </v-dialog>
+    </div>
   </section>
 </template>
 
 <script lang="ts">
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { mapState } from 'pinia'
-import Vue, { VueConstructor } from 'vue'
-import { TModal } from 'vue-tailwind/dist/components'
+import { PropType } from 'vue'
+import { VDialog } from 'vuetify/components/VDialog'
 
+import { defineNuxtComponent, useRequestHeaders } from '#app'
 import FavoriteNoteBook from '~/components/MainMap/FavoriteNoteBook.vue'
 import Badge from '~/components/UI/Badge.vue'
 import FavoriteIcon from '~/components/UI/FavoriteIcon.vue'
-import { getPois, ApiPoi } from '~/lib/apiPois'
-import { favoritesStore } from '~/stores/favorite'
+import { getPois, ApiPoi, ApiPoiId } from '~/lib/apiPois'
 import { mapStore } from '~/stores/map'
 
-export default (
-  Vue as VueConstructor<
-    Vue & {
-      $refs: {
-        notebookModal: InstanceType<typeof TModal>
-      }
-    }
-  >
-).extend({
+export default defineNuxtComponent({
   components: {
+    FontAwesomeIcon,
     Badge,
     FavoriteNoteBook,
     FavoriteIcon,
+    VDialog,
   },
   props: {
-    hasFavorites: {
-      type: Boolean,
+    favoritesIds: {
+      type: Array as PropType<ApiPoiId[]>,
       default: false,
     },
     exploreAroundSelectedPoi: {
@@ -112,31 +109,36 @@ export default (
       required: true,
     },
   },
+
+  emits: {
+    'toggle-favorites': () => true,
+  },
+
   data(): {
     isCopied: boolean
     favs: ApiPoi[]
+    notebookModal: boolean
   } {
     return {
       isCopied: false,
       favs: [],
+      notebookModal: false,
     }
   },
+
   computed: {
     ...mapState(mapStore, ['isModeFavorites']),
-    ...mapState(favoritesStore, ['favoritesIds']),
+    smallScreen(): boolean {
+      return this.$device.value.smallScreen
+    },
   },
   methods: {
-    async fetchFavorites(ids: Number[]) {
-      return await getPois(
-        this.$vidoConfig().API_ENDPOINT,
-        this.$vidoConfig().API_PROJECT,
-        this.$vidoConfig().API_THEME,
-        ids
-      ).then((pois) => (pois && pois.features) || [])
+    async fetchFavorites(ids: number[]) {
+      return await getPois(this.$vidoConfig(useRequestHeaders()), ids).then(
+        (pois) => (pois && pois.features) || []
+      )
     },
-    closeNoteBook() {
-      ;(this.$refs.notebookModal as Vue & { hide: () => void }).hide()
-    },
+
     async getFavs() {
       try {
         this.favs = await this.fetchFavorites(this.favoritesIds)
@@ -146,11 +148,11 @@ export default (
       }
     },
     explore(poi?: ApiPoi) {
-      this.closeNoteBook()
+      this.notebookModal = false
       this.exploreAroundSelectedPoi(poi)
     },
     goTo(poi?: ApiPoi) {
-      this.closeNoteBook()
+      this.notebookModal = false
       this.goToSelectedPoi(poi)
     },
     handleFavorite(poi?: ApiPoi) {
@@ -162,7 +164,9 @@ export default (
         event: 'open',
       })
 
-      this.$refs.notebookModal?.show()
+      this.getFavs().then(() => {
+        this.notebookModal = true
+      })
     },
   },
 })
@@ -171,7 +175,7 @@ export default (
 <style lang="scss" scoped>
 .favoriteTitle {
   @media (max-width: 860px) {
-    @apply hidden;
+    @apply tw-hidden;
   }
 }
 </style>

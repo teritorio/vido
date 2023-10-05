@@ -6,13 +6,13 @@
 import { formatRelative } from 'date-fns'
 import { enGB, fr, es } from 'date-fns/locale'
 import { mapState } from 'pinia'
-import Vue from 'vue'
 
+import { defineNuxtComponent } from '#app'
 import { siteStore } from '~/stores/site'
 
 const DateFormatLocales: { [key: string]: Locale } = { en: enGB, fr, es }
 
-export default Vue.extend({
+export default defineNuxtComponent({
   props: {
     date: {
       type: [Date, String],

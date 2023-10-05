@@ -1,11 +1,11 @@
-import maplibregl, {
+import type {
+  Map,
   LayerSpecification,
   SymbolLayerSpecification,
-  Map,
-  Marker,
   LngLatBoundsLike,
   FitBoundsOptions,
 } from 'maplibre-gl'
+import { createApp } from 'vue'
 
 import { ApiPoi } from './apiPois'
 import { getBBoxFeatures } from './bbox'
@@ -13,6 +13,10 @@ import { createMarkerDonutChart } from './clusters'
 
 import TeritorioIconBadge from '~/components/UI/TeritorioIconBadge.vue'
 import { TupleLatLng } from '~/utils/types'
+
+const { Marker } = await import('maplibre-gl')
+
+type ITMarker = InstanceType<typeof Marker>
 
 export const markerLayerTextFactory = (
   layerTemplate: LayerSpecification,
@@ -76,14 +80,14 @@ export function makerHtmlFactory(
   icon: string,
   thumbnail: string | undefined,
   size: string | null = null
-): maplibregl.Marker {
+): ITMarker {
   // Marker
   const el: HTMLElement = document.createElement('div')
   el.id = id
   el.classList.add('maplibregl-marker')
   el.classList.add('cluster-item')
 
-  const marker = new maplibregl.Marker({
+  const marker = new Marker({
     element: el,
     ...(thumbnail && {
       offset: [0, -10],
@@ -91,22 +95,19 @@ export function makerHtmlFactory(
   }).setLngLat(latLng) // Using this to avoid misplaced marker
 
   // Teritorio badge
-  const instance = new TeritorioIconBadge({
-    propsData: {
-      colorFill,
-      picto: icon,
-      image: thumbnail,
-      size,
-    },
-  }).$mount()
-  el.appendChild(instance.$el)
+  createApp(TeritorioIconBadge, {
+    colorFill,
+    picto: icon,
+    image: thumbnail,
+    size,
+  }).mount(el)
 
   return marker
 }
 
 export function updateMarkers(
   map: Map,
-  markers: { [id: string]: maplibregl.Marker },
+  markers: { [id: string]: ITMarker },
   src: string,
   fitBounds: (bounds: LngLatBoundsLike, options: FitBoundsOptions) => void,
   markerClickCallBack: ((feature: ApiPoi) => void) | undefined
@@ -129,7 +130,7 @@ export function updateMarkers(
         const id = 'c' + props.cluster_id
         markerIdcurrent.push(id)
         if (!markers[id]) {
-          let {
+          const {
             cluster: _a,
             cluster_id: _b,
             point_count: point_count,
@@ -137,7 +138,7 @@ export function updateMarkers(
             point_count_abbreviated: _e,
             ...countPercolor
           } = props
-          const el = createMarkerDonutChart(countPercolor)
+          const el = createMarkerDonutChart(countPercolor, point_count)
           el.classList.add('cluster-item')
           markers[id] = new Marker({
             element: el,

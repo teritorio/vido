@@ -1,39 +1,42 @@
 <template>
   <IconsBar>
     <IconButton
-      :label="$tc('poisTable.showOnMap')"
-      class="w-8 h-8"
+      :label="$t('poisTable.showOnMap')"
+      class="tw-w-8 tw-h-8"
       :href="urlMap"
       target="_blank"
     >
-      <font-awesome-icon icon="map" :style="{ color: colorLine }" />
+      <FontAwesomeIcon icon="map" :style="{ color: colorLine }" />
     </IconButton>
     <IconButton
-      :label="$tc('poisTable.downloadCsv')"
-      class="w-8 h-8"
+      :label="$t('poisTable.downloadCsv')"
+      class="tw-w-8 tw-h-8"
       :href="urlCsv"
     >
-      <font-awesome-icon icon="file-csv" :style="{ color: colorLine }" />
+      <FontAwesomeIcon icon="file-csv" :style="{ color: colorLine }" />
     </IconButton>
     <IconButton
-      :label="$tc('poisTable.downloadGeojson')"
-      class="w-8 h-8"
+      :label="$t('poisTable.downloadGeojson')"
+      class="tw-w-8 tw-h-8"
       :href="urlGeojson"
     >
-      <font-awesome-icon icon="map-marker-alt" :style="{ color: colorLine }" />
+      <FontAwesomeIcon icon="map-marker-alt" :style="{ color: colorLine }" />
     </IconButton>
   </IconsBar>
 </template>
 
 <script lang="ts">
-import Vue, { PropType } from 'vue'
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
+import { PropType } from 'vue'
 
+import { defineNuxtComponent, useRequestHeaders } from '#app'
 import IconButton from '~/components/UI/IconButton.vue'
 import IconsBar from '~/components/UI/IconsBar.vue'
 import { getPoiByCategoryIdUrl } from '~/lib/apiPois'
 
-export default Vue.extend({
+export default defineNuxtComponent({
   components: {
+    FontAwesomeIcon,
     IconsBar,
     IconButton,
   },
@@ -66,9 +69,7 @@ export default Vue.extend({
   methods: {
     url(format: 'geojson' | 'csv'): string {
       return getPoiByCategoryIdUrl(
-        this.$vidoConfig().API_ENDPOINT,
-        this.$vidoConfig().API_PROJECT,
-        this.$vidoConfig().API_THEME,
+        this.$vidoConfig(useRequestHeaders()),
         this.categoryId,
         {
           geometry_as: 'point',

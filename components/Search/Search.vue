@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="flex flex-row items-center">
+    <div class="tw-flex tw-flex-row tw-items-center">
       <template v-if="!focus">
         <slot></slot>
       </template>
@@ -16,17 +16,17 @@
     <button
       v-if="focus && results > 0"
       type="button"
-      class="shrink-0 w-10 h-10 text-2xl font-bold transition-all rounded-full outline-none cursor-pointer focus:outline-none hover:bg-zinc-100 focus:bg-zinc-100"
+      class="tw-shrink-0 tw-w-10 tw-h-10 tw-text-2xl tw-font-bold tw-transition-all tw-rounded-full tw-outline-none tw-cursor-pointer focus:tw-outline-none hover:tw-bg-zinc-10"
       @click="reset"
     >
-      <font-awesome-icon icon="arrow-left" class="text-zinc-800" size="xs" />
+      <FontAwesomeIcon icon="arrow-left" class="tw-text-zinc-800" size="xs" />
     </button>
 
     <div v-if="focus && results > 0" class="search-results">
       <SearchResultBlock
         v-if="itemsCartocode.length > 0"
         type="cartocode"
-        :label="$tc('headerMenu.cartocode')"
+        :label="$t('headerMenu.cartocode')"
         icon="layer-group"
         :items="itemsCartocode"
         @item-click="onCartocodeClick"
@@ -35,7 +35,7 @@
       <SearchResultBlock
         v-if="itemsMenuItems.length > 0"
         type="category"
-        :label="$tc('headerMenu.categories')"
+        :label="$t('headerMenu.categories')"
         icon="layer-group"
         :items="itemsMenuItems"
         @item-click="onCategoryClick"
@@ -44,7 +44,7 @@
       <SearchResultBlock
         v-if="itemsPois.length > 0"
         type="pois"
-        :label="$tc('headerMenu.pois')"
+        :label="$t('headerMenu.pois')"
         icon="map-marker-alt"
         :items="itemsPois"
         @item-click="onPoiClick"
@@ -53,28 +53,29 @@
       <SearchResultBlock
         v-if="itemsAddresses.length > 0"
         type="addresse"
-        :label="$tc('headerMenu.addresses')"
+        :label="$t('headerMenu.addresses')"
         icon="home"
         :items="itemsAddresses"
         @item-click="onAddressClick"
       />
 
       <p v-if="results === 0">
-        {{ $tc('headerMenu.noResult') }}
+        {{ $t('headerMenu.noResult') }}
       </p>
     </div>
   </div>
 </template>
 
 <script lang="ts">
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import copy from 'fast-copy'
 import { debounce, DebouncedFunc } from 'lodash'
 import { mapActions, mapState } from 'pinia'
-import Vue, { PropType } from 'vue'
+import { PropType } from 'vue'
 
+import { defineNuxtComponent, useRequestHeaders } from '#app'
 import SearchInput from '~/components/Search/SearchInput.vue'
 import SearchResultBlock from '~/components/Search/SearchResultBlock.vue'
-import { ApiMenuCategory } from '~/lib/apiMenu'
 import { ApiPoi, ApiPoiId, getPoiById } from '~/lib/apiPois'
 import {
   ApiPoisSearchResult,
@@ -84,12 +85,12 @@ import {
   ApiSearchResult,
 } from '~/lib/apiSearch'
 import { MAP_ZOOM } from '~/lib/constants'
-import { mapStore } from '~/stores/map'
 import { menuStore } from '~/stores/menu'
-import { FilterValue, FilterValues } from '~/utils/types-filters'
+import { FilterValue } from '~/utils/types-filters'
 
-export default Vue.extend({
+export default defineNuxtComponent({
   components: {
+    FontAwesomeIcon,
     SearchInput,
     SearchResultBlock,
   },
@@ -189,7 +190,7 @@ export default Vue.extend({
       )
     },
 
-    results(): Number {
+    results(): number {
       return (
         this.itemsCartocode.length +
         this.itemsMenuItems.length +
@@ -204,9 +205,18 @@ export default Vue.extend({
     this.trackSearchQuery = debounce(this.trackSearchQuery_, 3000)
   },
 
+  emits: {
+    blur: (_event: FocusEvent) => true,
+    focus: (_event: string | Event) => true,
+    selectFeature: (_feature: ApiPoi) => true,
+  },
+
   methods: {
-    ...mapActions(mapStore, ['setSelectedFeature']),
     ...mapActions(menuStore, ['addSelectedCategoryIds', 'applyFilters']),
+
+    setSelectedFeature(feature: ApiPoi): void {
+      this.$emit('selectFeature', feature)
+    },
 
     reset() {
       this.searchMenuItemsResults = null
@@ -217,7 +227,7 @@ export default Vue.extend({
       this.focus = false
     },
 
-    delayedFocusLose(event: Event) {
+    delayedFocusLose(event: FocusEvent) {
       // Let time to catch click on results before hiden
       setTimeout(() => {
         this.$emit('blur', event)
@@ -225,15 +235,15 @@ export default Vue.extend({
       }, 200)
     },
 
-    onSearchFocus(event: Event) {
+    onSearchFocus(event: string | Event) {
       this.$emit('focus', event)
       this.focus = true
     },
 
-    onCartocodeClick(id: number) {
+    onCartocodeClick(searchResult: SearchResult) {
       const cartocodeId = this.searchCartocodeResult?.properties.metadata?.id
-      if (cartocodeId === id) {
-        this.onPoiClick(cartocodeId)
+      if (cartocodeId === searchResult.id) {
+        this.onPoiClick(searchResult)
       }
     },
 
@@ -284,33 +294,51 @@ export default Vue.extend({
       }
     },
 
-    onPoiClick(id: ApiPoiId) {
-      getPoiById(
-        this.$vidoConfig().API_ENDPOINT,
-        this.$vidoConfig().API_PROJECT,
-        this.$vidoConfig().API_THEME,
-        id
-      ).then((poi) => {
-        this.setSelectedFeature(poi)
-      })
+    onPoiClick(searchResult: SearchResult) {
+      getPoiById(this.$vidoConfig(useRequestHeaders()), searchResult.id).then(
+        (poi) => {
+          this.setSelectedFeature(poi)
+        }
+      )
 
       this.reset()
     },
 
-    onAddressClick(id: number) {
+    onAddressClick(searchResult: SearchResult) {
       const feature = (this.searchAddressesResults?.features || []).find(
-        (a) => a.properties.id === id
+        (a) => a.properties.id === searchResult.id
       )
       if (feature) {
-        const f = Object.assign({}, feature, {
-          class: 'Adresse',
-          vido_zoom:
-            feature.properties.type === 'municipality'
-              ? MAP_ZOOM.selectionZoom.municipality
-              : MAP_ZOOM.selectionZoom.streetNumber,
-        })
-        // @ts-ignore
-        this.setSelectedFeature(feature)
+        const f: ApiPoi = {
+          type: 'Feature',
+          geometry: feature.geometry,
+          properties: {
+            metadata: {
+              id: feature.properties.id as ApiPoiId,
+            },
+            name: feature.properties.label,
+            vido_zoom:
+              feature.properties.type === 'municipality'
+                ? MAP_ZOOM.selectionZoom.municipality
+                : MAP_ZOOM.selectionZoom.streetNumber,
+            display: {
+              icon:
+                feature.properties.type === 'municipality'
+                  ? 'city'
+                  : 'map-marker-alt',
+              color_fill: '#AAA',
+              color_line: '#AAA',
+            },
+            editorial: {
+              popup_fields: [
+                {
+                  field: 'name',
+                },
+              ],
+            },
+          },
+        }
+        this.setSelectedFeature(f)
       }
       this.reset()
     },
@@ -342,16 +370,13 @@ export default Vue.extend({
         this.searchQueryId += 1
         const currentSearchQueryId = this.searchQueryId
 
-        const projectTheme = `project_theme=${this.$vidoConfig().API_PROJECT}-${
-          this.$vidoConfig().API_THEME
-        }`
+        const config = this.$vidoConfig(useRequestHeaders())
+        const projectTheme = `project_theme=${config.API_PROJECT}-${config.API_THEME}`
         const searchText = this.searchText.trim()
         if (searchText.length === 2) {
           const cartocode = this.searchText
           getPoiById(
-            this.$vidoConfig().API_ENDPOINT,
-            this.$vidoConfig().API_PROJECT,
-            this.$vidoConfig().API_THEME,
+            this.$vidoConfig(useRequestHeaders()),
             `cartocode:${cartocode}`
           )
             .then((poi) => {
@@ -378,24 +403,21 @@ export default Vue.extend({
         } else if (searchText.length > 2) {
           const query = `q=${this.searchText}&lon=${this.mapCenter.lng}&lat=${this.mapCenter.lat}`
 
+          const config = this.$vidoConfig(useRequestHeaders())
           const MenuItemsFetch: Promise<
             ApiSearchResult<ApiMenuItemSearchResult>
           > = fetch(
-            `${
-              this.$vidoConfig().API_SEARCH
-            }?${projectTheme}&type=menu_item&${query}`
+            `${config.API_SEARCH}?${projectTheme}&type=menu_item&${query}`
           ).then((data) => (data.ok ? data.json() : null))
 
           const poisFetch: Promise<ApiSearchResult<ApiPoisSearchResult>> =
             fetch(
-              `${
-                this.$vidoConfig().API_SEARCH
-              }?${projectTheme}&type=poi&${query}&limit=10`
+              `${config.API_SEARCH}?${projectTheme}&type=poi&${query}&limit=10`
             ).then((data) => (data.ok ? data.json() : null))
 
           const addressesFetch: Promise<ApiSearchResult<ApiAddrSearchResult>> =
-            fetch(`${this.$vidoConfig().API_SEARCH_ADDR}?${query}`).then(
-              (data) => (data.ok ? data.json() : null)
+            fetch(`${config.API_SEARCH_ADDR}?${query}`).then((data) =>
+              data.ok ? data.json() : null
             )
 
           Promise.all([MenuItemsFetch, poisFetch, addressesFetch])

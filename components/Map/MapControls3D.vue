@@ -1,14 +1,11 @@
 <template>
   <div
     ref="container"
-    :class="[
-      'maplibregl-ctrl maplibregl-ctrl-group mapboxgl-ctrl mapboxgl-ctrl-group',
-      'hidden md:block',
-    ]"
+    :class="['maplibregl-ctrl maplibregl-ctrl-group', 'tw-hidden md:tw-block']"
   >
     <button
       id="3D-selector-map"
-      :aria-label="$tc('mapControls.threeDAriaLabel')"
+      :aria-label="$t('mapControls.threeDAriaLabel')"
       type="button"
       :class="pitched && 'maplibregl-ctrl-active'"
       @click="toggle3D"
@@ -20,23 +17,22 @@
 
 <script lang="ts">
 import { Building3d } from '@teritorio/map'
-import { Map } from 'maplibre-gl'
-import Vue, { VueConstructor, PropType } from 'vue'
+import type { Map } from 'maplibre-gl'
+import { PropType, ref } from 'vue'
 
-export default (
-  Vue as VueConstructor<
-    Vue & {
-      $refs: {
-        container: InstanceType<typeof HTMLDivElement>
-      }
-    }
-  >
-).extend({
+import { defineNuxtComponent } from '#app'
+
+export default defineNuxtComponent({
   props: {
     map: {
       type: Object as PropType<Map>,
       default: null,
     },
+  },
+  setup() {
+    return {
+      container: ref<InstanceType<typeof HTMLDivElement>>(),
+    }
   },
 
   data(): {
@@ -55,7 +51,7 @@ export default (
         this.building3d = new Building3d({
           building3d: this.pitched,
           // @ts-ignore
-          container: this.$refs.container,
+          container: this.container,
         })
 
         this.map.addControl(this.building3d)

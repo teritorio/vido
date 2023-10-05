@@ -22,11 +22,12 @@
 </template>
 
 <script lang="ts">
-import Vue, { PropType } from 'vue'
+import { PropType } from 'vue'
 
+import { defineNuxtComponent } from '#app'
 import CookiesConsent from '~/components/UI/CookiesConsent.vue'
 
-export default Vue.extend({
+export default defineNuxtComponent({
   components: {
     CookiesConsent,
   },

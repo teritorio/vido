@@ -8,7 +8,7 @@
   >
     <FieldsHeader
       v-if="field.label"
-      :recursion-stack="undefined"
+      :recursion-stack="recursionStack"
       :class="`field_header_level_${recursionStack.length}`"
       >{{ fieldTranslateK(field.field) }}</FieldsHeader
     >
@@ -17,7 +17,7 @@
   <AddressField v-else-if="field.field === 'addr'" :properties="properties">
     <FieldsHeader
       v-if="field.label"
-      :recursion-stack="undefined"
+      :recursion-stack="recursionStack"
       :class="`field_header_level_${recursionStack.length}`"
       >{{ fieldTranslateK(field.field) }}</FieldsHeader
     >
@@ -31,7 +31,7 @@
   >
     <FieldsHeader
       v-if="field.label"
-      :recursion-stack="undefined"
+      :recursion-stack="recursionStack"
       :class="`field_header_level_${recursionStack.length}`"
       >{{ fieldTranslateK(field.field) }}</FieldsHeader
     >
@@ -40,80 +40,85 @@
   <Coordinates v-else-if="field.field === 'coordinates'" :geom="geom">
     <FieldsHeader
       v-if="field.label"
-      :recursion-stack="undefined"
+      :recursion-stack="recursionStack"
       :class="`field_header_level_${recursionStack.length}`"
       >{{ fieldTranslateK(field.field) }}</FieldsHeader
     >
   </Coordinates>
 
-  <div v-else-if="properties[field.field]">
+  <div
+    v-else-if="field.field == 'short_description' && shortDescription"
+    class="inline"
+  >
     <FieldsHeader
       v-if="field.label"
       :recursion-stack="undefined"
       :class="`field_header_level_${recursionStack.length}`"
       >{{ fieldTranslateK(field.field) }}</FieldsHeader
     >
-    <div :class="`inline field_content_level_${recursionStack.length}`">
-      <div v-if="field.field == 'description'" class="inline">
-        <template
-          v-if="
-            Boolean(details) &&
-            properties &&
-            properties.description &&
-            properties.description.length > textLimit
-          "
-        >
-          {{ properties.description.substring(0, textLimit) + '...' }}
-          <a
-            class="underline"
-            :href="details"
-            rel="noopener noreferrer"
-            target="_blank"
-            @click.stop="$emit('click-details')"
-          >
-            {{ $tc('poiCard.seeDetail') }}
-          </a>
-        </template>
-        <div v-else class="prose" v-html="properties.description" />
-      </div>
+    {{ shortDescription.substring(0, textLimit) }}
+    <template v-if="shortDescription.length > textLimit">…</template>
+    <a
+      v-if="Boolean(details) && shortDescription.length > textLimit"
+      class="tw-underline"
+      :href="details"
+      rel="noopener noreferrer"
+      target="_blank"
+      @click.stop="$emit('click-details')"
+    >
+      {{ $t('poiCard.seeDetail') }}
+    </a>
+  </div>
 
-      <Phone
-        v-for="phone in properties[field.field]"
-        v-else-if="
-          (field.field === 'phone' || field.field === 'mobile') && showPhone
-        "
-        :key="field.field + '_' + phone"
-        :number="phone"
+  <div v-else-if="properties[field.field]">
+    <FieldsHeader
+      v-if="field.label"
+      :recursion-stack="recursionStack"
+      :class="`field_header_level_${recursionStack.length}`"
+      >{{ fieldTranslateK(field.field) }}</FieldsHeader
+    >
+    <div :class="`inline field_content_level_${recursionStack.length}`">
+      <div
+        v-if="field.field == 'description'"
+        class="tw-prose"
+        v-html="properties.description"
       />
 
-      <ExternalLink
+      <div
+        v-for="phone in properties[field.field]"
+        v-else-if="field.field === 'phone' || field.field === 'mobile'"
+        :key="'phone_' + phone"
+      >
+        <Phone :number="phone" />
+      </div>
+
+      <div
         v-for="item in properties[field.field]"
         v-else-if="field.field == 'website'"
-        :key="field.field + '_' + item"
-        :href="item"
-        target="_blank"
+        :key="'website_' + item"
       >
-        {{ item }}
-      </ExternalLink>
+        <ExternalLink :href="item" target="_blank">{{ item }}</ExternalLink>
+      </div>
 
-      <ExternalLink
+      <div
         v-for="item in properties[field.field]"
         v-else-if="field.field == 'email'"
-        :key="field.field + '_' + item"
-        :href="`mailto:${item}`"
+        :key="'email_' + item"
       >
-        {{ item }}
-      </ExternalLink>
+        <ExternalLink :href="`mailto:${item}`" icon="envelope">
+          {{ item }}
+        </ExternalLink>
+      </div>
 
-      <ExternalLink
+      <div
         v-for="item in properties[field.field]"
         v-else-if="field.field == 'download'"
-        :key="field.field + '_' + item"
-        :href="item"
-        icon="arrow-circle-down"
+        :key="'download_' + item"
       >
-        {{ item.split('/').pop() }}
-      </ExternalLink>
+        <ExternalLink :href="item" icon="arrow-circle-down">
+          {{ item.split('/').pop() }}
+        </ExternalLink>
+      </div>
 
       <ul
         v-else-if="
@@ -125,12 +130,17 @@
           v-for="item in properties[field.field]"
           :key="field.field + '_' + item"
         >
-          {{ item }}
+          {{ propTranslateVs(field.field, item) }}
         </li>
       </ul>
 
       <Facebook
         v-else-if="field.field === 'facebook'"
+        :url="properties[field.field]"
+      />
+
+      <Instagram
+        v-else-if="field.field === 'instagram'"
         :url="properties[field.field]"
       />
 
@@ -145,7 +155,7 @@
         "
         :href="properties[field.field]"
       >
-        <font-awesome-icon prefix="fa" icon="arrow-circle-down" />
+        <FontAwesomeIcon prefix="fa" icon="arrow-circle-down" />
         {{ fieldTranslateK(field.field) }}
       </a>
 
@@ -164,9 +174,11 @@
 </template>
 
 <script lang="ts">
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import GeoJSON from 'geojson'
-import Vue, { PropType } from 'vue'
+import { PropType } from 'vue'
 
+import { defineNuxtComponent } from '#app'
 import AddressField, {
   isAddressFieldEmpty,
 } from '~/components/Fields/AddressField.vue'
@@ -175,6 +187,7 @@ import Coordinates, {
 } from '~/components/Fields/Coordinates.vue'
 import DateRange, { isDateRangeEmpty } from '~/components/Fields/DateRange.vue'
 import Facebook from '~/components/Fields/Facebook.vue'
+import Instagram from '~/components/Fields/Instagram.vue'
 import OpeningHours, {
   isOpeningHoursSupportedOsmTags,
 } from '~/components/Fields/OpeningHours.vue'
@@ -206,8 +219,9 @@ export function isFiledEmpty(
   }
 }
 
-export default Vue.extend({
+export default defineNuxtComponent({
   components: {
+    FontAwesomeIcon,
     FieldsHeader,
     OpeningHours,
     RoutesField,
@@ -216,8 +230,13 @@ export default Vue.extend({
     Coordinates,
     Phone,
     Facebook,
+    Instagram,
     ExternalLink,
     Stars,
+  },
+
+  emits: {
+    'click-details': () => true,
   },
 
   props: {
@@ -256,11 +275,8 @@ export default Vue.extend({
   },
 
   computed: {
-    showPhone(): boolean {
-      return (
-        this.context != PropertyTranslationsContextEnum.Card ||
-        this.$screen.phone
-      )
+    shortDescription(): string | undefined {
+      return this.properties?.description?.replace(/(<([^>]+)>)/gi, '')
     },
   },
 
@@ -277,6 +293,10 @@ export default Vue.extend({
       )
     },
 
+    propTranslateVs(field: string, value: string) {
+      return this.$propertyTranslations.pv(field, value, this.context)
+    },
+
     isOpeningHoursSupportedOsmTags(key: string) {
       return isOpeningHoursSupportedOsmTags(key)
     },
@@ -285,11 +305,11 @@ export default Vue.extend({
 </script>
 
 <style lang="scss" scoped>
-.prose {
+.tw-prose {
   max-width: none;
 }
 
 ul {
-  @apply list-disc ml-6;
+  @apply tw-list-disc tw-ml-6;
 }
 </style>

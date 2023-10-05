@@ -105,7 +105,7 @@ describe('home content', () => {
         .reverse() || []
 
     asserts.forEach((e) => {
-      let event = events.pop()
+      const event = events.pop()
       if (!event) {
         assert(event, 'No more event present')
       } else {

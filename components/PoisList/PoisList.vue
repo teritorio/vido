@@ -22,10 +22,10 @@
       />
 
       <PoisTable v-if="pois" :fields="fields" :pois="pois" />
-      <font-awesome-icon
+      <FontAwesomeIcon
         v-else
         icon="spinner"
-        class="text-zinc-400 animate-spin"
+        class="tw-text-zinc-400 tw-animate-spin"
         size="3x"
       />
     </template>
@@ -33,21 +33,24 @@
 </template>
 
 <script lang="ts">
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { mapState } from 'pinia'
-import Vue, { PropType } from 'vue'
+import { PropType } from 'vue'
 
+import { defineNuxtComponent, useRequestHeaders } from '#app'
 import PoiLayout from '~/components/Layout/PoiLayout.vue'
 import Actions from '~/components/PoisList/Actions.vue'
 import CategorySelector from '~/components/PoisList/CategorySelector.vue'
 import PoisTable from '~/components/PoisList/PoisTable.vue'
 import { ContentEntry } from '~/lib/apiContent'
-import { ApiMenuCategory, MenuItem } from '~/lib/apiMenu'
+import { ApiMenuCategory } from '~/lib/apiMenu'
 import { ApiPois, FieldsListItem, getPoiByCategoryId } from '~/lib/apiPois'
 import { Settings } from '~/lib/apiSettings'
 import { menuStore } from '~/stores/menu'
 
-export default Vue.extend({
+export default defineNuxtComponent({
   components: {
+    FontAwesomeIcon,
     Actions,
     PoiLayout,
     CategorySelector,
@@ -106,16 +109,11 @@ export default Vue.extend({
     categoryId() {
       this.pois = undefined
 
-      this.$router.push({
-        path: `/category/${this.categoryId}`,
-        query: this.$router.currentRoute.query,
-        hash: this.$router.currentRoute.hash,
-      })
+      // Change history directly to avoid resetup the page with this.$router.push
+      history.pushState({}, '', `/category/${this.categoryId}`)
 
       getPoiByCategoryId(
-        this.$vidoConfig().API_ENDPOINT,
-        this.$vidoConfig().API_PROJECT,
-        this.$vidoConfig().API_THEME,
+        this.$vidoConfig(useRequestHeaders()),
         this.categoryId,
         {
           geometry_as: 'point',

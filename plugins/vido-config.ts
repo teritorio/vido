@@ -1,28 +1,6 @@
-import { Plugin } from '@nuxt/types'
-import { NuxtRuntimeConfig } from '@nuxt/types/config/runtime'
-import createServer from 'connect'
-
+import { defineNuxtPlugin } from '#app/nuxt'
+import { vidos } from '~/lib/config'
 import { VidoConfig, VidosConfig } from '~/utils/types-config'
-
-export function configuredApi(vidos: VidosConfig): string[] {
-  return [
-    ...new Set(
-      Object.values(vidos)
-        .map((vido) => vido.API_ENDPOINT || [])
-        .flat()
-    ),
-  ].map((url) => new URL(url).hostname)
-}
-
-export function configuredImageProxy(vidos: VidosConfig): string[] {
-  return [
-    ...new Set(
-      Object.values(vidos)
-        .map((vido) => vido.IMAGE_PROXY || [])
-        .flat()
-    ),
-  ]
-}
 
 export function vidoConfigResolve(
   host: string,
@@ -34,17 +12,14 @@ export function vidoConfigResolve(
 }
 
 export function vidoConfig(
-  req: createServer.IncomingMessage,
-  privateRuntimeConfig: NuxtRuntimeConfig
+  headers: Record<string, string | undefined>
 ): VidoConfig {
   let host: string
   if (process.server) {
-    const hostHeader =
-      (req.headers['x-forwarded-host'] as string) || req.headers.host
+    const hostHeader = (headers['x-forwarded-host'] as string) || headers.host
     if (!hostHeader) {
       throw new Error(
-        'No header "Host" nor "x-forwarded-host": ' +
-          JSON.stringify(req.headers)
+        'No header "Host" nor "x-forwarded-host": ' + JSON.stringify(headers)
       )
     } else {
       host = hostHeader
@@ -54,26 +29,24 @@ export function vidoConfig(
   }
   host = host?.split(':')[0]
 
-  const vidoHostConfig = privateRuntimeConfig.vidos as VidosConfig
+  const vidoHostConfig = vidos()
   if (!(host in vidoHostConfig) && !('' in vidoHostConfig)) {
     throw new Error(`Not configured host "${host}"`)
   }
   return vidoConfigResolve(host, vidoHostConfig)
 }
 
-const vidosConfigPlugin: Plugin = ({ req, $config }, inject) => {
+export default defineNuxtPlugin((_nuxtApp) => {
   let config: VidoConfig | undefined
-  inject('vidoConfigSet', (c: VidoConfig) => {
-    config = c
-  })
-  inject('vidoConfig', () => config || vidoConfig(req, $config))
-}
 
-export default vidosConfigPlugin
-
-declare module 'vue/types/vue' {
-  interface Vue {
-    readonly $vidoConfigSet: (c: VidoConfig) => void
-    readonly $vidoConfig: () => VidoConfig
+  return {
+    provide: {
+      vidoConfigSet: (c: VidoConfig): void => {
+        config = c
+      },
+      vidoConfig: (
+        headers: Readonly<Record<string, string | undefined>>
+      ): VidoConfig => config || vidoConfig(headers),
+    },
   }
-}
+})

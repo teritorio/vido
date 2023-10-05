@@ -7,17 +7,18 @@
       :href="`https://www.mapillary.com/app/?pKey=${imageId}&focus=photo`"
       target="_blank"
     >
-      {{ $tc('poiDetails.mapillaryExplore') }}
+      {{ $t('poiDetails.mapillaryExplore') }}
     </ExternalLink>
   </div>
 </template>
 
 <script lang="ts">
-import Vue, { PropType } from 'vue'
+import { PropType } from 'vue'
 
+import { defineNuxtComponent } from '#app'
 import ExternalLink from '~/components/UI/ExternalLink.vue'
 
-export default Vue.extend({
+export default defineNuxtComponent({
   components: {
     ExternalLink,
   },
@@ -40,6 +41,6 @@ div {
 iframe {
   width: 100%;
   height: 346px;
-  @apply bg-gray-100;
+  @apply tw-bg-gray-100;
 }
 </style>

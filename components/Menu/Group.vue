@@ -9,8 +9,8 @@
     :name="menuGroup.menu_group.name"
     :badge-class="
       [
-        'bg-red-600 text-white rounded-full border-2 border-white',
-        size === '2xl' ? 'w-6 h-6' : 'w-5 h-5',
+        'tw-bg-red-600 tw-text-white tw-rounded-full tw-border-2 tw-border-white',
+        size === '2xl' ? 'tw-w-6 tw-h-6' : 'tw-w-5 tw-h-5',
       ].join(' ')
     "
     @click.prevent="onClick"
@@ -19,19 +19,25 @@
       {{ categoriesActivesCount }}
     </template>
     <template #end-line-large>
-      <font-awesome-icon icon="chevron-right" />
+      <FontAwesomeIcon icon="chevron-right" />
     </template>
   </MenuItem>
 </template>
 
 <script lang="ts">
-import Vue, { PropType } from 'vue'
+import {
+  FontAwesomeIcon,
+  FontAwesomeIconProps,
+} from '@fortawesome/vue-fontawesome'
+import { PropType } from 'vue'
 
+import { defineNuxtComponent } from '#app'
 import MenuItem from '~/components/Menu/Item.vue'
-import { ApiMenuGroup } from '~/lib/apiMenu'
+import { ApiMenuGroup, ApiMenuItem } from '~/lib/apiMenu'
 
-export default Vue.extend({
+export default defineNuxtComponent({
   components: {
+    FontAwesomeIcon,
     MenuItem,
   },
   props: {
@@ -44,14 +50,19 @@ export default Vue.extend({
       default: 0,
     },
     size: {
-      type: String as PropType<string>,
+      type: String as PropType<FontAwesomeIconProps['size']>,
       required: true,
     },
     displayModeDefault: {
-      type: String as PropType<string>,
+      type: String as PropType<'compact' | 'large'>,
       required: true,
     },
   },
+
+  emits: {
+    click: (_menuGroupId: ApiMenuItem['id']) => true,
+  },
+
   methods: {
     onClick() {
       this.$tracking({

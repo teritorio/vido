@@ -1,4 +1,4 @@
-import {
+import type {
   StyleSpecification,
   Map,
   ExpressionSpecification,
@@ -43,7 +43,7 @@ export const fetchStyle = (
         attr.replaceAll('&copy;', '©')
       )
 
-      let nuAttribution = [
+      const nuAttribution = [
         ...new Set([...vectoSourceAttribution.flat(1), ...extraAttributions]),
       ].join(' ')
 

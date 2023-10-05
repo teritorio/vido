@@ -1,7 +1,7 @@
 <template>
   <div v-if="geom.type === 'Point'">
     <slot></slot>
-    <ExternalLink v-if="href" :href="href" target="_blank" v-bind="$attrs">
+    <ExternalLink v-if="href" :href="href" target="_blank">
       {{ geom.coordinates[1].toFixed(6) }},&nbsp;{{
         geom.coordinates[0].toFixed(6)
       }}
@@ -16,8 +16,9 @@
 
 <script lang="ts">
 import GeoJSON from 'geojson'
-import Vue, { PropType } from 'vue'
+import { PropType } from 'vue'
 
+import { defineNuxtComponent } from '#app'
 import ExternalLink from '~/components/UI/ExternalLink.vue'
 import { coordinatesHref } from '~/lib/coordinates'
 import { isIOS } from '~/utils/isIOS'
@@ -26,7 +27,7 @@ export function isCoordinatesEmpty(geom: GeoJSON.Geometry): boolean {
   return !(geom && geom.type === 'Point' && geom.coordinates)
 }
 
-export default Vue.extend({
+export default defineNuxtComponent({
   components: {
     ExternalLink,
   },

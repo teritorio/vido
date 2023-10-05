@@ -1,6 +1,6 @@
 <template>
-  <div class="flex h-screen">
-    <div class="m-auto">
+  <div class="tw-flex tw-h-screen">
+    <div class="tw-m-auto">
       <h1 v-if="error.statusCode === 404">404<br />Page not found</h1>
       <h1 v-else>An error occurred - {{ error.statusCode }}</h1>
     </div>
@@ -8,9 +8,9 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineNuxtComponent } from '#app'
 
-export default Vue.extend({
+export default defineNuxtComponent({
   layout: 'error-layout',
 
   props: {

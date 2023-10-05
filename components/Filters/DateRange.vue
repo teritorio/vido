@@ -1,18 +1,23 @@
 <template>
-  <t-rich-select
-    :placeholder="filter.def.name && filter.def.name.fr"
-    :hide-search-box="true"
-    :options="dateFilters"
-    :clearable="true"
-    :value="currentValue()"
-    @input="onChange"
-  />
+  <div>
+    <v-select
+      :model-value="currentValue"
+      outlined
+      :label="filter.def.name && filter.def.name.fr"
+      :items="dateFilters"
+      :clearable="true"
+      hide-details="auto"
+      @update:model-value="onChange"
+    />
+  </div>
 </template>
 
 <script lang="ts">
 import copy from 'fast-copy'
-import Vue, { PropType } from 'vue'
+import { PropType } from 'vue'
+import { VSelect } from 'vuetify/components/VSelect'
 
+import { defineNuxtComponent } from '#app'
 import { FilterValueDate } from '~/utils/types-filters'
 
 export enum DateFilterLabel {
@@ -24,7 +29,7 @@ export enum DateFilterLabel {
 }
 
 export type DateFilterOption = {
-  text: string
+  title: string
   value: string
   begin: string
   end: string
@@ -40,12 +45,20 @@ function formatDate(date: Date): string {
   )
 }
 
-export default Vue.extend({
+export default defineNuxtComponent({
+  components: {
+    VSelect,
+  },
+
   props: {
     filter: {
       type: Object as PropType<FilterValueDate>,
       required: true,
     },
+  },
+
+  emits: {
+    change: (_newFilter: FilterValueDate) => true,
   },
 
   data(): {
@@ -72,37 +85,47 @@ export default Vue.extend({
     return {
       dateFilters: [
         {
-          text: this.$tc('dateFilter.' + DateFilterLabel.TODAY),
+          title: this.$t('dateFilter.' + DateFilterLabel.TODAY),
           value: DateFilterLabel.TODAY,
           begin: formatDate(today),
           end: formatDate(today),
         },
         {
-          text: this.$tc('dateFilter.' + DateFilterLabel.TOMORROW),
+          title: this.$t('dateFilter.' + DateFilterLabel.TOMORROW),
           value: DateFilterLabel.TOMORROW,
           begin: formatDate(tomorrow),
           end: formatDate(tomorrow),
         },
         {
-          text: this.$tc('dateFilter.' + DateFilterLabel.THIS_WEEKEND),
+          title: this.$t('dateFilter.' + DateFilterLabel.THIS_WEEKEND),
           value: DateFilterLabel.THIS_WEEKEND,
           begin: formatDate(saturday),
           end: formatDate(sunday),
         },
         {
-          text: this.$tc('dateFilter.' + DateFilterLabel.NEXT_WEEK),
+          title: this.$t('dateFilter.' + DateFilterLabel.NEXT_WEEK),
           value: DateFilterLabel.NEXT_WEEK,
           begin: formatDate(today),
           end: formatDate(in7days),
         },
         {
-          text: this.$tc('dateFilter.' + DateFilterLabel.NEXT_MONTH),
+          title: this.$t('dateFilter.' + DateFilterLabel.NEXT_MONTH),
           value: DateFilterLabel.NEXT_MONTH,
           begin: formatDate(today),
           end: formatDate(in1month),
         },
       ],
     }
+  },
+
+  computed: {
+    currentValue(): string | undefined {
+      return this.dateFilters.find(
+        (e) =>
+          e.begin === this.filter.filterValueBegin &&
+          e.end === this.filter.filterValueEnd
+      )?.value
+    },
   },
 
   methods: {
@@ -124,14 +147,6 @@ export default Vue.extend({
       }
 
       this.$emit('change', newFilter)
-    },
-
-    currentValue() {
-      return this.dateFilters.find(
-        (e) =>
-          e.begin === this.filter.filterValueBegin &&
-          e.end === this.filter.filterValueEnd
-      )?.value
     },
   },
 })

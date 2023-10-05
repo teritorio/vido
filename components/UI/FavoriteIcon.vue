@@ -1,9 +1,9 @@
 <template>
-  <font-awesome-icon
+  <FontAwesomeIcon
     :icon="[isActive ? 'fas' : 'far', 'star']"
     :class="[
-      !isActive && !colorLine && 'text-amber-500',
-      isActive && 'text-amber-500',
+      !isActive && !colorLine && 'tw-text-amber-500',
+      isActive && 'tw-text-amber-500',
     ]"
     :color="!isActive && colorLine"
     size="sm"
@@ -11,9 +11,16 @@
 </template>
 
 <script lang="ts">
-import Vue, { PropType } from 'vue'
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
+import { PropType } from 'vue'
 
-export default Vue.extend({
+import { defineNuxtComponent } from '#app'
+
+export default defineNuxtComponent({
+  components: {
+    FontAwesomeIcon,
+  },
+
   props: {
     isActive: {
       type: Boolean,

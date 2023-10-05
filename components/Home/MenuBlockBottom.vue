@@ -1,13 +1,15 @@
 <template>
-  <div class="px-5 py-4" :class="extraClass">
+  <div class="tw-px-5 tw-py-4" :class="extraClass">
     <slot></slot>
   </div>
 </template>
 
 <script lang="ts">
-import Vue, { PropType } from 'vue'
+import { PropType } from 'vue'
 
-export default Vue.extend({
+import { defineNuxtComponent } from '#app'
+
+export default defineNuxtComponent({
   props: {
     extraClass: {
       type: String as PropType<string>,

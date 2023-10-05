@@ -137,7 +137,8 @@ export default {
     showOnMap: 'Afficher sur la carte',
   },
   categorySelector: {
-    placeholder: 'Sélectionnez une catégorie',
+    placeholderSelect: 'Sélectionnez une catégorie',
+    placeholderAdd: 'Recherche une catégorie à ajouter',
     search: 'Recherchez dans la liste',
   },
   dateFilter: {
@@ -146,6 +147,9 @@ export default {
     thisWeekend: 'Ce week-end',
     nextWeek: '7 prochains jours',
     nextMonth: '30 prochains jours',
+  },
+  listFilter: {
+    label: 'Recherchez ou ajoutez une valeur',
   },
   fields: {
     phone: {

@@ -1,29 +1,26 @@
 <template>
   <aside
     :class="[
-      'flex flex-col  pointer-events-auto inset-auto h-max max-h-full box-border space-y-4 p-2',
-      !isFilterActive && 'overflow-y-hidden',
+      'tw-rounded-xl tw-shadow-md tw-pointer-events-auto',
+      !isFilterActive && 'tw-overflow-y-hidden',
     ]"
   >
-    <div
-      :class="[
-        'items-center justify-between block rounded-xl shadow-md px-5 py-4',
-        extraClassTextBackground,
-      ]"
-    >
+    <div :class="['tw-px-5 tw-py-4', extraClassTextBackground]">
       <slot></slot>
     </div>
   </aside>
 </template>
 
 <script lang="ts">
-import Vue, { PropType } from 'vue'
+import { PropType } from 'vue'
 
-export default Vue.extend({
+import { defineNuxtComponent } from '#app'
+
+export default defineNuxtComponent({
   props: {
     extraClassTextBackground: {
       type: String as PropType<string>,
-      default: 'bg-white',
+      default: 'tw-bg-white',
     },
     isFilterActive: {
       type: Boolean,

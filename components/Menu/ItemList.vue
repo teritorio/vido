@@ -1,34 +1,31 @@
 <template>
-  <div class="grid items-start grid-cols-4">
-    <template v-for="menuItem in menuItems">
+  <div class="tw-grid tw-items-start tw-grid-cols-4">
+    <template v-for="menuItem in menuItems" :key="menuItem.id">
       <MenuGroup
         v-if="menuItem.menu_group"
-        :key="menuItem.id"
         :menu-group="menuItem"
         :categories-actives-count="categoriesActivesCountByParent[menuItem.id]"
         :size="size"
         :display-mode-default="displayModeDefault"
         :class="
           (menuItem.menu_group.display_mode || displayModeDefault) ===
-            'large' && ['col-start-1 col-span-4']
+            'large' && ['tw-col-start-1 tw-col-span-4']
         "
         @click="onMenuGroupClick(menuItem)"
       />
-      <Link
+      <LinkItem
         v-else-if="menuItem.link"
-        :key="menuItem.id"
         :menu-link="menuItem"
         :size="size"
         :display-mode-default="displayModeDefault"
         :class="
           (menuItem.link.display_mode || displayModeDefault) === 'large' && [
-            'col-start-1 col-span-4',
+            'tw-col-start-1 tw-col-span-4',
           ]
         "
       />
       <Category
         v-else-if="menuItem.category"
-        :key="menuItem.id"
         :category="menuItem"
         :selected="isCategorySelected(menuItem.id)"
         :filters="filters[menuItem.id]"
@@ -36,7 +33,7 @@
         :display-mode-default="displayModeDefault"
         :class="
           (menuItem.category.display_mode || displayModeDefault) ===
-            'large' && ['col-start-1 col-span-4']
+            'large' && ['tw-col-start-1 tw-col-span-4']
         "
         @click="onCategoryClick(menuItem)"
         @filter-click="onFilterClick($event)"
@@ -46,19 +43,21 @@
 </template>
 
 <script lang="ts">
-import Vue, { PropType } from 'vue'
+import { FontAwesomeIconProps } from '@fortawesome/vue-fontawesome'
+import { PropType } from 'vue'
 
+import { defineNuxtComponent } from '#app'
 import Category from '~/components/Menu/Category.vue'
 import MenuGroup from '~/components/Menu/Group.vue'
-import Link from '~/components/Menu/Link.vue'
-import { ApiMenuCategory, MenuItem } from '~/lib/apiMenu'
+import LinkItem from '~/components/Menu/Link.vue'
+import { ApiMenuCategory, ApiMenuItem, MenuItem } from '~/lib/apiMenu'
 import { FilterValues } from '~/utils/types-filters'
 
-export default Vue.extend({
+export default defineNuxtComponent({
   components: {
     Category,
     MenuGroup,
-    Link,
+    LinkItem,
   },
   props: {
     menuItems: {
@@ -78,13 +77,19 @@ export default Vue.extend({
       required: true,
     },
     displayModeDefault: {
-      type: String as PropType<string>,
+      type: String as PropType<'compact' | 'large'>,
       required: true,
     },
     size: {
-      type: String as PropType<string>,
+      type: String as PropType<FontAwesomeIconProps['size']>,
       required: true,
     },
+  },
+
+  emits: {
+    'menu-group-click': (_menuItemId: ApiMenuItem['id']) => true,
+    'category-click': (_menuItemId: ApiMenuItem['id']) => true,
+    'filter-click': (_categoryId: ApiMenuCategory['id']) => true,
   },
 
   methods: {

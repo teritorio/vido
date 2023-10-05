@@ -14,6 +14,7 @@ COPY . /usr/src/app
 RUN yarn install
 
 ENV NODE_OPTIONS --openssl-legacy-provider
+COPY vidos-config-empty.json vidos-config.json
 RUN yarn build
 
 # Set environment variables

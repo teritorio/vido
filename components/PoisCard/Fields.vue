@@ -1,15 +1,14 @@
 <template>
   <div>
-    <template v-for="field in fields">
+    <template v-for="field in fields" :key="field.field">
       <Field
-        :key="field.field"
         :context="context"
         :recursion-stack="[field.field]"
         :field="field"
         :properties="properties"
         :details="details"
         :geom="geom"
-        class="mt-2"
+        class="tw-mt-2"
       />
     </template>
   </div>
@@ -17,13 +16,14 @@
 
 <script lang="ts">
 import GeoJSON from 'geojson'
-import Vue, { PropType } from 'vue'
+import { PropType } from 'vue'
 
+import { defineNuxtComponent } from '#app'
 import Field from '~/components/Fields/Field.vue'
 import { ApiPoiProperties, FieldsListItem } from '~/lib/apiPois'
 import { PropertyTranslationsContextEnum } from '~/plugins/property-translations'
 
-export default Vue.extend({
+export default defineNuxtComponent({
   components: {
     Field,
   },

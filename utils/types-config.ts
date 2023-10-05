@@ -14,6 +14,7 @@ export interface VidoConfig {
   MAPILLARY_ACCESS_TOKEN: string | null
   COOKIES_CONSENT: string | null
   COOKIES_LINK: string | null
+  GOOGLE_SITE_VERIFICATION: string | null
   GOOGLE_TAG_MANAGER_ID: string | null
   MATOMO_URL: string | null
   MATOMO_SITEID: string | null

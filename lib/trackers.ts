@@ -1,4 +1,4 @@
-import { NuxtAppOptions } from '@nuxt/types/app'
+import { App } from 'nuxt/dist/app/compat/vue-demi'
 
 import { ApiPoiId } from './apiPois'
 
@@ -45,7 +45,7 @@ export type Event =
       title?: string
       location: string
       path: string
-      categoryIds: Array<Number>
+      categoryIds: Array<number>
     }
   | {
       type: 'popup_event'
@@ -79,6 +79,6 @@ export type Event =
     }
 
 export interface Tracker {
-  consent(app: NuxtAppOptions): void
-  track(event: Event): void
+  consent(app: App): void
+  track(app: App, event: Event): void
 }

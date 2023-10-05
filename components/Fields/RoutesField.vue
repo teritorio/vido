@@ -3,26 +3,30 @@
     <slot></slot>
     <div v-if="isCompact">
       <p v-for="(route, activity) in routes" :key="activity">
-        {{ $propertyTranslations.pv('route', activity, context) }} :
-        {{ formatNoDetails(activity, route) }}.
+        {{ propertyTranslations.pv('route', `${activity}`, context) }} :
+        {{ formatNoDetails(activity as string, route) }}.
       </p>
-      <p>{{ length }}</p>
+      <p v-if="length">{{ length }}</p>
     </div>
     <div v-else>
-      <div class="field">{{ $tc('fields.route.length') }} {{ length }}</div>
+      <div v-if="length" class="field">
+        {{ $t('fields.route.length') }} {{ length }}
+      </div>
       <div v-for="(route, activity) in routes" :key="activity" class="field">
         <FieldsHeader
-          :recursion-stack="recursionStack"
-          :class="`field_header_level_${recursionStack.length}`"
+          :recursion-stack="[...recursionStack, `${activity}`]"
+          :class="`field_header_level_${[...recursionStack, activity].length}`"
         >
-          {{ $propertyTranslations.pv('route', activity, context) }}
+          {{ propertyTranslations.pv('route', `${activity}`, context) }}
         </FieldsHeader>
-        <ul class="list-disc ml-6">
-          <li>
-            {{ $tc('fields.route.difficulty') }}
-            {{ difficulty(activity, route) }}
+        <ul class="tw-list-disc tw-ml-6">
+          <li v-if="difficulty(activity as string, route)">
+            {{ $t('fields.route.difficulty') }}
+            {{ difficulty(activity as string, route) }}
           </li>
-          <li>{{ $tc('fields.route.duration') }} {{ duration(route) }}</li>
+          <li v-if="duration(route)">
+            {{ $t('fields.route.duration') }} {{ duration(route) }}
+          </li>
         </ul>
       </div>
     </div>
@@ -30,8 +34,9 @@
 </template>
 
 <script lang="ts">
-import Vue, { PropType } from 'vue'
+import { PropType } from 'vue'
 
+import { defineNuxtComponent } from '#app'
 import FieldsHeader from '~/components/UI/FieldsHeader.vue'
 import { ApiPoiProperties } from '~/lib/apiPois'
 import { PropertyTranslationsContextEnum } from '~/plugins/property-translations'
@@ -53,7 +58,7 @@ export function isRoutesFieldEmpty(properties: {
   )
 }
 
-export default Vue.extend({
+export default defineNuxtComponent({
   components: {
     FieldsHeader,
   },
@@ -74,6 +79,10 @@ export default Vue.extend({
   },
 
   computed: {
+    propertyTranslations() {
+      return this.$propertyTranslations
+    },
+
     isCompact(): boolean {
       return this.context === PropertyTranslationsContextEnum.Card
     },
@@ -101,8 +110,8 @@ export default Vue.extend({
 
     length(): string | undefined {
       const route = Object.values(this.routes)[0]
-      return route.length
-        ? `${route.length} ${this.$tc('units.km')}`
+      return route?.length
+        ? `${route.length} ${this.$t('units.km')}`
         : undefined
     },
   },
@@ -115,10 +124,10 @@ export default Vue.extend({
 
         let string = ''
         if (hours > 0) {
-          string += `${hours} ${this.$tc('units.hours')}`
+          string += `${hours} ${this.$t('units.hours')}`
         }
         if (minutes > 0) {
-          string += `${hours > 0 ? ' ' : ''}${minutes} ${this.$tc('units.min')}`
+          string += `${hours > 0 ? ' ' : ''}${minutes} ${this.$t('units.min')}`
         }
 
         return string
@@ -138,7 +147,9 @@ export default Vue.extend({
     },
 
     formatNoDetails(activity: string, route: Route): string {
-      return [this.duration(route), this.difficulty(activity, route)].join(', ')
+      return [this.duration(route), this.difficulty(activity, route)]
+        .filter((x) => x)
+        .join(', ')
     },
   },
 })

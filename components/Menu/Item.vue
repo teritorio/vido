@@ -1,21 +1,21 @@
 <template>
-  <div class="flex flex-col items-start">
+  <div class="tw-flex tw-flex-col tw-items-start">
     <a
       :id="id"
       :href="href"
       target="_blank"
       :class="[
-        'flex focus:outline-none outline-none items-center text-center self-stretch justify-start leading-none transition-colors rounded-lg relative hover:bg-zinc-100',
+        'tw-flex focus:tw-outline-none tw-outline-none tw-items-center tw-text-center tw-self-stretch tw-justify-start tw-leading-none tw-transition-colors tw-rounded-lg tw-relative hover:tw-bg-zinc-100',
         displayMode === 'large'
-          ? 'px-4 py-2 col-start-1 col-span-4'
-          : 'p-4 flex-col',
+          ? 'tw-px-4 tw-py-2 tw-col-start-1 tw-col-span-4'
+          : 'tw-p-4 tw-flex-col',
       ]"
       @click="$emit('click', $event)"
     >
       <div
         :class="[
-          'relative flex items-center justify-center w-12 h-12 text-white rounded-full',
-          displayMode === 'compact' && 'mb-2',
+          'tw-relative tw-flex tw-items-center tw-justify-center tw-w-12 tw-h-12 tw-text-white tw-rounded-full',
+          displayMode === 'compact' && 'tw-mb-2',
         ]"
         :style="{ flexShrink: 0 }"
       >
@@ -23,8 +23,10 @@
           <span
             v-if="$slots.badge"
             :class="[
-              'block text-xs font-semibold font-sans text-center absolute',
-              size === '2xl' ? '-top-3 -right-3' : '-top-1 -right-1',
+              'tw-block tw-text-xs tw-font-semibold tw-font-sans tw-text-center tw-absolute',
+              size === '2xl'
+                ? '-tw-top-3 -tw-right-3'
+                : '-tw-top-1 -tw-right-1',
               badgeClass,
             ]"
           >
@@ -35,8 +37,8 @@
 
       <div
         :class="[
-          displayMode === 'compact' && 'text-xs',
-          displayMode === 'large' && 'mx-4 text-left grow w-full',
+          displayMode === 'compact' && 'tw-text-xs',
+          displayMode === 'large' && 'tw-mx-4 tw-text-left tw-grow tw-w-full',
         ]"
       >
         {{ name.fr }}
@@ -45,7 +47,7 @@
       <slot
         v-if="displayMode === 'large'"
         name="end-line-large"
-        class="text-zinc-700 shrink-0"
+        class="tw-text-zinc-700 tw-shrink-0"
         size="sm"
       />
     </a>
@@ -55,15 +57,22 @@
 </template>
 
 <script lang="ts">
-import Vue, { PropType } from 'vue'
+import { FontAwesomeIconProps } from '@fortawesome/vue-fontawesome'
+import { PropType } from 'vue'
 
+import { defineNuxtComponent } from '#app'
 import TeritorioIconBadge from '~/components/UI/TeritorioIconBadge.vue'
 import { MultilingualString } from '~/utils/types'
 
-export default Vue.extend({
+export default defineNuxtComponent({
   components: {
     TeritorioIconBadge,
   },
+
+  emits: {
+    click: (_val: MouseEvent) => true,
+  },
+
   props: {
     id: {
       type: String as PropType<string>,
@@ -86,7 +95,7 @@ export default Vue.extend({
       required: true,
     },
     size: {
-      type: String as PropType<string>,
+      type: String as PropType<FontAwesomeIconProps['size']>,
       required: true,
     },
     name: {

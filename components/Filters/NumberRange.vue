@@ -1,25 +1,29 @@
 <template>
-  <div class="filters-number-range">
-    <Slider
-      v-model="value"
+  <div :class="['tw-mt-7', 'filters-number-range']">
+    <v-range-slider
+      :model-value="value"
+      strict
       :min="min"
       :max="max"
-      :merge="max !== null && min !== null && (max - min) / 10"
-      @set="onChange"
-    />
+      thumb-label="always"
+      hide-details="auto"
+      :step="Math.max(Math.round((max - min) / 50), 1)"
+      @update:model-value="onChange"
+    ></v-range-slider>
   </div>
 </template>
 
 <script lang="ts">
-import Slider from '@vueform/slider/dist/slider.vue2.js'
 import copy from 'fast-copy'
-import Vue, { PropType } from 'vue'
+import { PropType } from 'vue'
+import { VRangeSlider } from 'vuetify/components/VRangeSlider'
 
+import { defineNuxtComponent } from '#app'
 import { FilterValueNumberRange } from '~/utils/types-filters'
 
-export default Vue.extend({
+export default defineNuxtComponent({
   components: {
-    Slider,
+    VRangeSlider,
   },
 
   props: {
@@ -29,27 +33,26 @@ export default Vue.extend({
     },
   },
 
-  data(): {
-    value: [number, number]
-  } {
-    return {
-      value: [
+  emits: {
+    change: (_newFilter: FilterValueNumberRange) => true,
+  },
+
+  computed: {
+    min(): number {
+      return this.filter.def.min
+    },
+    max(): number {
+      return this.filter.def.max
+    },
+    value(): [number, number] {
+      return [
         this.filter.filterValueMin != null
           ? this.filter.filterValueMin
           : this.filter.def.min,
         this.filter.filterValueMax != null
           ? this.filter.filterValueMax
           : this.filter.def.max,
-      ],
-    }
-  },
-
-  computed: {
-    min(): number | null {
-      return this.filter.def.min
-    },
-    max(): number | null {
-      return this.filter.def.max
+      ]
     },
   },
 
@@ -63,7 +66,3 @@ export default Vue.extend({
   },
 })
 </script>
-
-<style lang="scss">
-@import '@vueform/slider/themes/tailwind.scss';
-</style>

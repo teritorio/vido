@@ -12,8 +12,8 @@ const hostnames = {
 describe('pois table', () => {
   beforeEach(() => {
     mockSSRAPI(hostnames, teritorioReferenceAPIFixture, {
-      'pois/category/211.geojson?geometry_as=point&short_description=true':
-        teritorioReferenceAPIFixture.deps[1],
+      // ?geometry_as=point&short_description=true
+      'pois/category/211.geojson': teritorioReferenceAPIFixture.deps[1],
     })
     cy.viewport(1024, 768)
     cy.visit('/category/211')
@@ -39,7 +39,7 @@ describe('pois table', () => {
       { body: poisCategory22 }
     )
 
-    cy.get('.category-selector').click()
+    cy.get('.category-selector').wait(1000).click()
     cy.contains('Aire de passage', { timeout: 30000 }).click()
 
     cy.get('th').contains(

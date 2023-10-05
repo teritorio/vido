@@ -1,19 +1,13 @@
-import { NuxtAppOptions } from '@nuxt/types/app'
+import { App } from 'nuxt/dist/app/compat/vue-demi'
 import urlSlug from 'url-slug'
-import Vue from 'vue'
 // @ts-ignore
 import VueMatomo from 'vue-matomo'
 
 import { Event, Tracker } from '~/lib/trackers'
 
 export default class Matomo implements Tracker {
-  constructor(
-    nuxtApp: NuxtAppOptions,
-    waitForConsent: boolean,
-    url: string,
-    siteId: string
-  ) {
-    Vue.use(VueMatomo, {
+  constructor(app: App, waitForConsent: boolean, url: string, siteId: string) {
+    app.use(VueMatomo, {
       host: url,
       siteId,
       requireConsent: waitForConsent,
@@ -22,7 +16,7 @@ export default class Matomo implements Tracker {
     })
   }
 
-  consent(app: NuxtAppOptions) {
+  consent(_app: App) {
     let delai = 1000
     const timeout = () => {
       setTimeout(function () {
@@ -46,7 +40,7 @@ export default class Matomo implements Tracker {
     set()
   }
 
-  track(event: Event) {
+  track(_app: App, event: Event) {
     // @ts-ignore
     const _paq = window._paq
     switch (event.type) {

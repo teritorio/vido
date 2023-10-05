@@ -14,9 +14,10 @@
 </template>
 
 <script lang="ts">
-import { LngLatLike } from 'maplibre-gl'
-import Vue, { PropType, VueConstructor } from 'vue'
+import type { LngLatLike } from 'maplibre-gl'
+import { PropType, ref } from 'vue'
 
+import { defineNuxtComponent } from '#app'
 import MapBase from '~/components/Map/MapBase.vue'
 import { ApiPoi } from '~/lib/apiPois'
 import { getBBoxFeatures } from '~/lib/bbox'
@@ -24,15 +25,7 @@ import { MAP_ZOOM } from '~/lib/constants'
 import { MapPoiId } from '~/lib/mapPois'
 import { filterRouteByPoiIds } from '~/utils/styles'
 
-export default (
-  Vue as VueConstructor<
-    Vue & {
-      $refs: {
-        mapBase: InstanceType<typeof MapBase>
-      }
-    }
-  >
-).extend({
+export default defineNuxtComponent({
   components: {
     MapBase,
   },
@@ -64,6 +57,11 @@ export default (
       >,
       default: undefined,
     },
+  },
+  setup() {
+    return {
+      mapBase: ref<InstanceType<typeof MapBase>>(),
+    }
   },
 
   data(): {
@@ -121,7 +119,7 @@ export default (
       this.map = map
     },
 
-    onMapStyleLoad(style: maplibregl.StyleSpecification): void {
+    onMapStyleLoad(_style: maplibregl.StyleSpecification): void {
       const colors = [
         ...new Set(
           this.features.map(
@@ -129,7 +127,7 @@ export default (
           )
         ),
       ]
-      this.$refs.mapBase.initPoiLayer(this.features, colors, [
+      this.mapBase!.initPoiLayer(this.features, colors, [
         'case',
         ['all', ['has', 'display'], ['has', 'color_fill', ['get', 'display']]],
         ['get', 'color_fill', ['get', 'display']],
@@ -137,7 +135,7 @@ export default (
       ])
 
       if (this.featureIds) {
-        filterRouteByPoiIds(this.map, this.featureIds)
+        filterRouteByPoiIds(this.map as maplibregl.Map, this.featureIds)
       }
     },
   },

@@ -1,14 +1,11 @@
 <template>
-  <div
-    ref="container"
-    class="maplibregl-ctrl maplibregl-ctrl-group mapboxgl-ctrl mapboxgl-ctrl-group"
-  >
+  <div ref="container" class="maplibregl-ctrl maplibregl-ctrl-group">
     <template v-for="background in backgrounds">
       <button
         v-if="!hidden"
         :id="`background-selector-map-${background}`"
         :key="background"
-        :aria-label="$tc('mapControls.backgroundAriaLabel')"
+        :aria-label="$t('mapControls.backgroundAriaLabel')"
         :class="[activeBackground == background && 'maplibregl-ctrl-active']"
         :title="
           $t('mapControls.backgroundButton', {
@@ -18,11 +15,11 @@
         type="button"
         @click="changeBackground(background)"
       >
-        <span class="block h-full p-1">
+        <span class="tw-block tw-h-full tw-p-1">
           <img
-            class="rounded-full bg-white"
+            class="tw-rounded-full tw-bg-white"
             alt="fond de carte"
-            :src="require(`~/assets/${background}.png`)"
+            :src="backgroundImages[background]"
           />
         </span>
       </button>
@@ -32,22 +29,15 @@
 
 <script lang="ts">
 import { Control } from '@teritorio/map'
-import { Map } from 'maplibre-gl'
-import Vue, { PropType, VueConstructor } from 'vue'
+import type { Map } from 'maplibre-gl'
+import { PropType, ref } from 'vue'
 
+import { defineNuxtComponent } from '#app'
 import { DEFAULT_MAP_STYLE, MAP_STYLE_NAMES } from '~/lib/constants'
 import { MapStyleEnum } from '~/utils/types'
 import { getHashPart, routerPushHashUpdate } from '~/utils/url'
 
-export default (
-  Vue as VueConstructor<
-    Vue & {
-      $refs: {
-        container: InstanceType<typeof HTMLDivElement>
-      }
-    }
-  >
-).extend({
+export default defineNuxtComponent({
   props: {
     map: {
       type: Object as PropType<Map>,
@@ -66,12 +56,31 @@ export default (
       default: false,
     },
   },
+  setup() {
+    return {
+      container: ref<InstanceType<typeof HTMLDivElement>>(),
+    }
+  },
+
+  created() {
+    this.backgroundImages = Object.fromEntries(
+      this.backgrounds.map((background) => {
+        const imageUrl = new URL(
+          `../../assets/${background}.png`,
+          import.meta.url
+        ).href
+        return [background, imageUrl]
+      })
+    )
+  },
 
   data(): {
     activeBackground: MapStyleEnum
+    backgroundImages: Record<string, string>
   } {
     return {
       activeBackground: this.initialBackground,
+      backgroundImages: {},
     }
   },
 
@@ -92,10 +101,14 @@ export default (
           }
         }
 
-        const control = new BackgroundControl(this.$refs.container)
+        const control = new BackgroundControl(this.container!)
         this.map.addControl(control)
       }
     },
+  },
+
+  emits: {
+    'change-background': (_background: MapStyleEnum) => true,
   },
 
   methods: {

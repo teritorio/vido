@@ -1,7 +1,7 @@
 <template>
   <table>
     <thead>
-      <tr class="bg-gray-100">
+      <tr class="tw-bg-gray-100">
         <th v-for="header in headers" :key="header.value" scope="col">
           {{ header.text }}
         </th>
@@ -9,7 +9,7 @@
     </thead>
     <tbody v-if="pois.features">
       <tr v-for="(feature, i) in pois.features" :key="i">
-        <td v-for="field in fields" :key="field.field" class="align-top">
+        <td v-for="field in fields" :key="field.field" class="tw-align-top">
           <Field
             :context="context"
             :recursion-stack="[field.field]"
@@ -19,7 +19,7 @@
             :geom="feature.geometry"
           />
         </td>
-        <td class="align-top">
+        <td class="tw-align-top">
           <NuxtLink :to="`/poi/${feature.properties.metadata.id}/details`">
             {{ $t('poisTable.details') }}
           </NuxtLink>
@@ -27,7 +27,7 @@
       </tr>
     </tbody>
     <tbody v-else>
-      <tr class="text-center">
+      <tr class="tw-text-center">
         <td :colspan="headers.length">
           {{ $t('poisTable.empty') }}
         </td>
@@ -37,13 +37,14 @@
 </template>
 
 <script lang="ts">
-import Vue, { PropType } from 'vue'
+import { PropType } from 'vue'
 
+import { defineNuxtComponent } from '#app'
 import Field from '~/components/Fields/Field.vue'
 import { ApiPois, FieldsListItem } from '~/lib/apiPois'
 import { PropertyTranslationsContextEnum } from '~/plugins/property-translations'
 
-export default Vue.extend({
+export default defineNuxtComponent({
   components: {
     Field,
   },

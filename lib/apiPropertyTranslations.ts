@@ -1,6 +1,5 @@
-import fetch from 'node-fetch'
-
 import { MultilingualString } from '~/utils/types'
+import { VidoConfig } from '~/utils/types-config'
 
 export interface PropertyValueTranslation {
   label: MultilingualString
@@ -26,12 +25,10 @@ export interface PropertyTranslations {
 }
 
 export function getPropertyTranslations(
-  apiEndpoint: string,
-  apiProject: string,
-  apiTheme: string
+  vidoConfig: VidoConfig
 ): Promise<PropertyTranslations> {
   return fetch(
-    `${apiEndpoint}/${apiProject}/${apiTheme}/attribute_translations/fr.json`
+    `${vidoConfig.API_ENDPOINT}/${vidoConfig.API_PROJECT}/${vidoConfig.API_THEME}/attribute_translations/fr.json`
   ).then((data) => {
     if (data.ok) {
       return data.json() as unknown as PropertyTranslations

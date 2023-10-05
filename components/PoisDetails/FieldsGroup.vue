@@ -1,41 +1,72 @@
 <template>
-  <div v-if="group.fields && !empty">
-    <div v-if="group.display_mode === 'standard'">
-      <FieldsHeader :recursion-stack="recursionStack">
-        {{ title }}
-      </FieldsHeader>
-      <Fields
-        :recursion-stack="[...recursionStack, group.group]"
-        :fields="group.fields"
+  <div>
+    <template v-for="field in group.fields" :key="field.group">
+      <div
+        v-if="
+          field.group !== undefined &&
+          !isListEmpty(field.fields, properties, geom)
+        "
+        class="block"
+      >
+        <div v-if="field.display_mode === 'standard'">
+          <FieldsHeader
+            v-if="fieldTranslateK(field.group)"
+            :recursion-stack="recursionStack"
+          >
+            {{ fieldTranslateK(field.group) }}
+          </FieldsHeader>
+          <FieldsGroup
+            :id="`FieldsGroup-${recursionStack.join('-')}-${field.group}`"
+            :recursion-stack="[...recursionStack, field.group]"
+            :group="field"
+            :properties="properties"
+            :geom="geom"
+            :color-fill="colorFill"
+          />
+        </div>
+        <Block
+          v-else-if="field.display_mode === 'card'"
+          :color-fill="colorFill"
+          :icon="field.icon"
+        >
+          <FieldsHeader
+            v-if="fieldTranslateK(field.group)"
+            :recursion-stack="recursionStack"
+          >
+            {{ fieldTranslateK(field.group) }}
+          </FieldsHeader>
+          <FieldsGroup
+            :id="`FieldsGroup-${recursionStack.join('-')}-${field.group}`"
+            :recursion-stack="[...recursionStack, field.group]"
+            :group="field"
+            :properties="properties"
+            :geom="geom"
+            :color-fill="colorFill"
+          />
+        </Block>
+      </div>
+
+      <Field
+        v-else-if="field.group === undefined"
+        :id="`Field_-${recursionStack.join('-')}-${field.field}`"
+        :context="context"
+        :recursion-stack="recursionStack"
+        :field="field"
         :properties="properties"
         :geom="geom"
-        :color-fill="colorFill"
+        class="field"
       />
-    </div>
-    <Block
-      v-else-if="group.display_mode === 'card'"
-      :color-fill="colorFill"
-      :icon="group.icon"
-    >
-      <FieldsHeader :recursion-stack="recursionStack">
-        {{ title }}
-      </FieldsHeader>
-      <Fields
-        :recursion-stack="[...recursionStack, group.group]"
-        :fields="group.fields"
-        :properties="properties"
-        :geom="geom"
-        :color-fill="colorFill"
-      />
-    </Block>
+    </template>
   </div>
 </template>
 
 <script lang="ts">
-import Vue, { VueConstructor, PropType } from 'vue'
+import { PropType } from 'vue'
 
 import { isFiledEmpty } from '../Fields/Field.vue'
 
+import { defineNuxtComponent } from '#app'
+import Field from '~/components/Fields/Field.vue'
 import Block from '~/components/PoisDetails/Block.vue'
 import FieldsHeader from '~/components/UI/FieldsHeader.vue'
 import {
@@ -44,36 +75,15 @@ import {
   FieldsListGroup,
   FieldsListItem,
 } from '~/lib/apiPois'
-// import Fields from '~/components/PoisDetails/Fields.vue'
+import { PropertyTranslationsContextEnum } from '~/plugins/property-translations'
 
-export function isListEmpty(
-  fileds: FieldsList,
-  properties: { [key: string]: string },
-  geom: GeoJSON.Geometry
-): boolean {
-  return fileds.reduce(
-    (sum: boolean, value: FieldsListItem | FieldsListGroup) =>
-      sum &&
-      (value.group !== undefined
-        ? isListEmpty(value.fields, properties, geom)
-        : isFiledEmpty(value, properties, geom)),
-    true
-  )
-}
+export default defineNuxtComponent({
+  name: 'FieldsGroup',
 
-export default (
-  Vue as VueConstructor<
-    Vue & {
-      $refs: {
-        fields: InstanceType<typeof Vue>
-      }
-    }
-  >
-).extend({
   components: {
     Block,
     FieldsHeader,
-    // Fields,
+    Field,
   },
 
   props: {
@@ -83,10 +93,6 @@ export default (
     },
     group: {
       type: Object as PropType<FieldsListGroup>,
-      required: true,
-    },
-    title: {
-      type: String as PropType<string>,
       required: true,
     },
     properties: {
@@ -111,15 +117,40 @@ export default (
     }
   },
 
-  beforeCreate() {
-    // Break circular components dependcy
-    // @ts-ignore
-    this.$options.components.Fields =
-      require('~/components/PoisDetails/Fields.vue').default
+  computed: {
+    context(): PropertyTranslationsContextEnum {
+      return PropertyTranslationsContextEnum.Details
+    },
   },
 
-  created() {
-    this.empty = isListEmpty(this.group.fields, this.properties, this.geom)
+  methods: {
+    fieldTranslateK(field: string) {
+      return this.$propertyTranslations.p(field, this.context)
+    },
+
+    isListEmpty(
+      fileds: FieldsList,
+      properties: { [key: string]: string },
+      geom: GeoJSON.Geometry
+    ): boolean {
+      return (
+        !fileds ||
+        fileds.reduce(
+          (sum: boolean, value: FieldsListItem | FieldsListGroup) =>
+            sum &&
+            (value.group !== undefined
+              ? this.isListEmpty(value.fields, properties, geom)
+              : isFiledEmpty(value, properties, geom)),
+          true
+        )
+      )
+    },
   },
 })
 </script>
+
+<style lang="scss" scoped>
+.block {
+  margin-bottom: 3rem;
+}
+</style>

@@ -1,7 +1,7 @@
 <template>
   <div v-if="routeCollection">
     <MapPois
-      class="map-pois relative"
+      class="map-pois tw-relative"
       :features="routeCollection"
       :feature-ids="[poiId]"
       :fullscreen-control="true"
@@ -9,7 +9,7 @@
     />
     <div class="detail-wrapper">
       <div v-if="points.length > 0" class="detail-left">
-        <h2>{{ $tc('poiDetails.routes.waypoints') }}</h2>
+        <h2>{{ $t('poiDetails.routes.waypoints') }}</h2>
         <PoisDeck
           :pois="points"
           pois-card="PoiCardLight"
@@ -21,7 +21,7 @@
         />
       </div>
       <div v-if="pois.length > 0" class="detail-right">
-        <h2>{{ $tc('poiDetails.routes.pois') }}</h2>
+        <h2>{{ $t('poiDetails.routes.pois') }}</h2>
         <PoisDeck
           :pois="pois"
           pois-card="PoiCardLight"
@@ -37,8 +37,9 @@
 </template>
 
 <script lang="ts">
-import Vue, { PropType } from 'vue'
+import { PropType } from 'vue'
 
+import { defineNuxtComponent } from '#app'
 import MapPois from '~/components/Map/MapPois.vue'
 import PoisDeck from '~/components/PoisCard/PoisDeck.vue'
 import {
@@ -48,10 +49,16 @@ import {
 } from '~/lib/apiPoiDeps'
 import { ApiPoi, ApiPoiId } from '~/lib/apiPois'
 
-export default Vue.extend({
+export default defineNuxtComponent({
   components: {
     MapPois,
     PoisDeck,
+  },
+
+  emits: {
+    'zoom-click': (_poi: ApiPoi) => true,
+    'explore-click': (_poi: ApiPoi) => true,
+    'favorite-click': (_poi: ApiPoi) => true,
   },
 
   props: {

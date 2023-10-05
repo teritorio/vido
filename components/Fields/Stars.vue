@@ -1,6 +1,6 @@
 <template>
-  <div class="stars-data text-amber-500 mb-1">
-    <font-awesome-icon
+  <div class="stars-data tw-text-amber-500 tw-mb-1">
+    <FontAwesomeIcon
       v-for="index in new Array(stars)"
       :key="index"
       icon="star"
@@ -9,9 +9,15 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 
-export default Vue.extend({
+import { defineNuxtComponent } from '#app'
+
+export default defineNuxtComponent({
+  components: {
+    FontAwesomeIcon,
+  },
+
   props: {
     stars: {
       type: Number,

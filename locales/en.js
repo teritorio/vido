@@ -136,7 +136,8 @@ export default {
     showOnMap: 'Show on Map',
   },
   categorySelector: {
-    placeholder: 'Select a category',
+    placeholderSelect: 'Select a category',
+    placeholderAdd: 'RSearch for a category to add',
     search: 'Search into the list',
   },
   dateFilter: {
@@ -145,6 +146,9 @@ export default {
     thisWeekend: 'Coming week-end',
     nextWeek: 'Next 7 days',
     nextMonth: 'Next 30 days',
+  },
+  listFilter: {
+    label: 'Search or add a value',
   },
   fields: {
     phone: {

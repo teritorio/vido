@@ -39,13 +39,10 @@ describe('home content', () => {
   })
 
   it('bugger menu content entry item', () => {
-    cy.get('#nav-menu')
-      .click()
-      .contains(teritorioReferenceAPIFixture.articles[0].title)
-    cy.get('#nav-menu')
-      .click()
-      .contains(teritorioReferenceAPIFixture.articles[0].title)
-      .should('not.exist')
+    cy.get('#nav-menu button').click()
+    cy.get('#nav-menu-dropdown').contains(
+      teritorioReferenceAPIFixture.articles[0].title
+    )
 
     cy.htmlvalidate()
   })

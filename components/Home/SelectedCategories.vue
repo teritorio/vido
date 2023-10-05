@@ -1,60 +1,74 @@
 <template>
   <div
     v-if="selectedCategories && selectedCategories.length > 0"
-    class="flex flex-row p-2 flex-wrap bg-white shadow-md pointer-events-auto rounded-xl max-w-xl"
-    style="min-width: 64px"
+    class="tw-relative"
   >
-    <div
-      v-for="menuItem in selectedCategories"
-      :id="`selected-category-${menuItem.id}`"
-      :key="menuItem.id"
-      class="m-1 relative"
-      :title="
-        (menuItem.menu_group || menuItem.link || menuItem.category).name.fr
-      "
-    >
-      <TeritorioIconBadge
-        :id="menuItem.id"
-        :color-fill="
-          (menuItem.menu_group || menuItem.link || menuItem.category).color_fill
-        "
-        :picto="
-          (menuItem.menu_group || menuItem.link || menuItem.category).icon
-        "
-        size="lg"
-      />
-      <button
-        type="button"
-        class="flex items-center justify-center text-white text-center rounded-full absolute -top-1 -right-1 w-5 h-5 border-2 border-white bg-red-600 hover:bg-red-800"
-        :title="$tc('headerMenu.hideCategory')"
-        @click="delSelectedCategoryIds([menuItem.id])"
+    <div class="tw-flex tw-flex-row tw-pointer-events-auto">
+      <div
+        class="tw-flex tw-flex-row tw-p-2 tw-flex-wrap tw-bg-white tw-shadow-md tw-rounded-xl"
+        style="min-width: 64px"
       >
-        <span class="sr-only">{{ $tc('headerMenu.disableCategory') }}</span>
-        <font-awesome-icon icon="times" class="text-white" size="sm" />
-      </button>
+        <div
+          v-for="menuItem in selectedCategories"
+          :id="`selected-category-${menuItem.id}`"
+          :key="menuItem.id"
+          class="tw-m-1 tw-relative"
+          :title="
+            (menuItem.menu_group || menuItem.link || menuItem.category).name.fr
+          "
+        >
+          <TeritorioIconBadge
+            :id="menuItem.id"
+            :color-fill="
+              (menuItem.menu_group || menuItem.link || menuItem.category)
+                .color_fill
+            "
+            :picto="
+              (menuItem.menu_group || menuItem.link || menuItem.category).icon
+            "
+            size="lg"
+          />
+          <button
+            type="button"
+            class="tw-flex tw-items-center tw-justify-center tw-text-white tw-text-center tw-rounded-full tw-absolute -tw-top-1 -tw-right-1 tw-w-5 tw-h-5 tw-border-solid tw-border-2 tw-border-white tw-bg-red-600 hover:tw-bg-red-800"
+            :title="$t('headerMenu.hideCategory')"
+            @click="delSelectedCategoryIds([menuItem.id])"
+          >
+            <span class="tw-sr-only">{{
+              $t('headerMenu.disableCategory')
+            }}</span>
+            <FontAwesomeIcon icon="times" class="tw-text-white" size="sm" />
+          </button>
+        </div>
+      </div>
     </div>
     <button
       v-if="selectedCategories.length > 1"
       type="button"
-      class="flex items-center justify-center text-white text-center rounded-full absolute -right-0 top-1 w-7 h-7 border-2 border-white bg-red-600 hover:bg-red-800"
-      :title="$tc('headerMenu.clearAllCategories')"
-      :aria-label="$tc('headerMenu.clearAllCategories')"
-      @click="clearSelectedCategoryIds()"
+      :class="[
+        'tw-absolute -tw-top-3 -tw-right-3 tw-pointer-events-auto',
+        'tw-flex tw-items-center tw-justify-center tw-text-white tw-text-center tw-rounded-full tw-w-7 tw-h-7 tw-border-solid tw-border-2 tw-border-white tw-bg-red-600 hover:tw-bg-red-800',
+      ]"
+      :title="$t('headerMenu.clearAllCategories')"
+      :aria-label="$t('headerMenu.clearAllCategories')"
+      @click="clearSelectedCategoryIds"
     >
-      <font-awesome-icon icon="times" class="text-white" />
+      <FontAwesomeIcon icon="times" class="tw-text-white" />
     </button>
   </div>
 </template>
 
 <script lang="ts">
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { mapState, mapActions } from 'pinia'
-import Vue from 'vue'
 
+import { defineNuxtComponent } from '#app'
 import TeritorioIconBadge from '~/components/UI/TeritorioIconBadge.vue'
 import { menuStore } from '~/stores/menu'
 
-export default Vue.extend({
+export default defineNuxtComponent({
   components: {
+    FontAwesomeIcon,
     TeritorioIconBadge,
   },
 
