@@ -151,3 +151,10 @@ export default defineNuxtComponent({
   },
 })
 </script>
+
+<style>
+.category-selector input[type='text'] {
+  padding: 0 6px;
+  outline: none !important;
+}
+</style>
