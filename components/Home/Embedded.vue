@@ -30,7 +30,10 @@
       />
     </div>
     <div class="tw-grow">
-      <div v-if="initialBbox" class="tw-flex tw-flex-col tw-h-screen">
+      <div
+        v-if="initialBbox"
+        class="tw-flex tw-flex-col tw-h-screen tw-relative"
+      >
         <MapFeatures
           ref="mapFeatures"
           :default-bounds="initialBbox"
@@ -47,7 +50,7 @@
         <CategorySelector
           :menu-items="Object.values(apiMenuCategory || {})"
           label="categorySelector.placeholderAdd"
-          class="tw-p-4 tw-fixed tw-z-1 tw-w-full"
+          class="tw-p-4 tw-absolute tw-z-1 tw-w-full"
           @category-change="onMenuChange"
         />
         <div class="tw-p-4 tw-pt-24 tw-absolute">
