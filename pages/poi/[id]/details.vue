@@ -193,6 +193,7 @@ body,
 #__layout {
   -webkit-print-color-adjust: exact;
 }
+
 img,
 .poi-deck,
 #route-map {
