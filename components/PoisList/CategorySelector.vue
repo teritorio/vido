@@ -4,7 +4,7 @@
       :model-value="categoryId"
       class="category-selector"
       solo
-      :items="Object.values(menuEntries).map((a) => a[0])"
+      :items="menuEntries"
       :label="$t(label)"
       variant="solo"
       rounded
@@ -20,8 +20,8 @@
         <v-list-item v-bind="props" :title="null">
           <v-list-item-media>
             <TeritorioIcon
-              :color-text="menuEntries[item.value][1].category.color_line"
-              :picto="menuEntries[item.value][1].category.icon"
+              :color-text="item.raw.category.color_line"
+              :picto="item.raw.category.icon"
               use-native-alignment
             />
             {{ item.title }}
@@ -77,15 +77,13 @@ export default defineNuxtComponent({
   },
 
   computed: {
-    menuEntries(): {
-      [key: number]: [
-        {
-          value: number
-          title: string
-        },
-        ApiMenuCategory
-      ]
-    } {
+    menuEntries(): [
+      {
+        value: number
+        title: string
+        category: ApiMenuCategory['category']
+      }
+    ] {
       const menuIndex: { [key: number]: MenuItem } = {}
       this.menuItems
         .filter((menuItem) => !menuItem.hidden)
@@ -94,59 +92,39 @@ export default defineNuxtComponent({
         })
 
       const locales = this.$i18n.locales
-      return Object.fromEntries(
-        (
-          this.menuItems.filter(
-            (menuItem) => menuItem.category && !menuItem.hidden
-          ) as ApiMenuCategory[]
-        )
-          .map((menuItem) => {
-            let parents: string[] = []
-            let parentId = menuItem.parent_id
-            while (parentId) {
-              if (!menuIndex[parentId]) {
-                return undefined
-              }
-              const name = menuIndex[parentId].menu_group?.name.fr
-              if (name && menuIndex[parentId].parent_id) {
-                parents.push(name)
-              }
-              parentId = menuIndex[parentId].parent_id
-            }
-
-            return [
-              {
-                value: menuItem.id,
-                title: [...parents.reverse(), menuItem.category.name.fr].join(
-                  ' / '
-                ),
-              },
-              menuItem,
-            ]
-          })
-          .filter(
-            (
-              t
-            ): t is NonNullable<
-              [
-                {
-                  value: number
-                  title: string
-                },
-                ApiMenuCategory
-              ]
-            > => t != null
-          )
-          .sort((a, b) =>
-            a[0].title.localeCompare(
-              b[0].title,
-              locales.map((locale: string | LocaleObject) =>
-                typeof locale === 'string' ? locale : locale.code
-              )
-            )
-          )
-          .map((a) => [a[0].value, a])
+      const localeCompareOptions = locales.map(
+        (locale: string | LocaleObject) =>
+          typeof locale === 'string' ? locale : locale.code
       )
+      return (
+        this.menuItems.filter(
+          (menuItem) => menuItem.category && !menuItem.hidden
+        ) as ApiMenuCategory[]
+      )
+        .map((menuItem) => {
+          let parents: string[] = []
+          let parentId = menuItem.parent_id
+          while (parentId) {
+            if (!menuIndex[parentId]) {
+              return undefined
+            }
+            const name = menuIndex[parentId].menu_group?.name.fr
+            if (name && menuIndex[parentId].parent_id) {
+              parents.push(name)
+            }
+            parentId = menuIndex[parentId].parent_id
+          }
+
+          return {
+            value: menuItem.id,
+            title: [...parents.reverse(), menuItem.category.name.fr].join(
+              ' / '
+            ),
+            category: menuItem.category,
+          }
+        })
+        .filter((t) => t != null)
+        .sort((a, b) => a.title.localeCompare(b.title, localeCompareOptions))
     },
   },
 })
