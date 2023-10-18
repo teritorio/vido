@@ -86,7 +86,7 @@ export default defineNuxtComponent({
     ] {
       const menuIndex: { [key: number]: MenuItem } = {}
       this.menuItems
-        .filter((menuItem) => !menuItem.hidden)
+        .filter((menuItem) => menuItem.menu_group)
         .forEach((menuItem) => {
           menuIndex[menuItem.id] = menuItem
         })

@@ -55,9 +55,7 @@ export const menuStore = defineStore('menu', {
     apiMenuCategory: (state: State): ApiMenuCategory[] | undefined => {
       return state.menuItems === undefined
         ? undefined
-        : (Object.values(state.menuItems).filter(
-            (menuItem) => menuItem.category !== undefined
-          ) as ApiMenuCategory[])
+        : (Object.values(state.menuItems) as ApiMenuCategory[])
     },
 
     selectedCategories: (state: State): ApiMenuCategory[] | undefined => {
@@ -65,9 +63,7 @@ export const menuStore = defineStore('menu', {
         ? undefined
         : (state.selectedCategoryIds
             .map((selectedCatagoryId) => state.menuItems![selectedCatagoryId])
-            .filter(
-              (menuItems) => menuItems !== undefined
-            ) as ApiMenuCategory[])
+            .filter((menuItems) => menuItems) as ApiMenuCategory[])
     },
   },
 
