@@ -4,11 +4,16 @@ import { VidoConfig, VidosConfig } from '~/utils/types-config'
 
 export function vidoConfigResolve(
   host: string,
+  matchedHost: string,
   vidoHostConfig: VidosConfig
 ): VidoConfig {
-  return {
-    ...(vidoHostConfig[host] || vidoHostConfig['']),
+  const vido = { ...vidoHostConfig[matchedHost] }
+  if (matchedHost.startsWith('*.')) {
+    vido.API_PROJECT = host.split('.')[1]
+    vido.API_THEME = host.split('.')[0]
   }
+
+  return vido
 }
 
 export function vidoConfig(
@@ -30,10 +35,16 @@ export function vidoConfig(
   host = host?.split(':')[0]
 
   const vidoHostConfig = vidos()
-  if (!(host in vidoHostConfig) && !('' in vidoHostConfig)) {
-    throw new Error(`Not configured host "${host}"`)
+  const matchedHost = Object.keys(vidoHostConfig).find(
+    (availableHost) =>
+      availableHost == host ||
+      (availableHost.startsWith('*.') &&
+        host.endsWith(availableHost.substring(1)))
+  )
+  if (!matchedHost && !('' in vidoHostConfig)) {
+    throw new Error(`Not matching host "${host}"`)
   }
-  return vidoConfigResolve(host, vidoHostConfig)
+  return vidoConfigResolve(host, matchedHost || '', vidoHostConfig)
 }
 
 export default defineNuxtPlugin((_nuxtApp) => {
