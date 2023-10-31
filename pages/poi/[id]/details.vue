@@ -196,6 +196,7 @@ body,
 
 img,
 .poi-deck,
+.poi-map,
 #route-map {
   page-break-before: auto;
   page-break-after: auto;
