@@ -17,6 +17,12 @@
           "
           class="tw-ml-6 tw-px-3 tw-py-1.5 tw-text-xs tw-text-zinc-800 tw-bg-zinc-100 hover:tw-bg-zinc-200 focus:tw-bg-zinc-200 tw-transition tw-transition-colors tw-rounded-md"
           :to="websiteDetails"
+          :style="
+            'background:' +
+            colorLine +
+            ';color:' +
+            pickTextColorBasedOnBgColor(colorLine, 'white')
+          "
           rel="noopener noreferrer"
           @click.stop="trackingPopupEvent('details')"
         >
@@ -26,6 +32,12 @@
           v-else
           class="tw-ml-6 tw-px-3 tw-py-1.5 tw-text-xs tw-text-zinc-800 tw-bg-zinc-100 hover:tw-bg-zinc-200 focus:tw-bg-zinc-200 tw-transition tw-transition-colors tw-rounded-md"
           :href="websiteDetails"
+          :style="
+            'background:' +
+            colorLine +
+            ';color:' +
+            pickTextColorBasedOnBgColor(colorLine, 'white')
+          "
           rel="noopener noreferrer"
           @click.stop="trackingPopupEvent('details')"
         >
@@ -143,6 +155,7 @@ import Fields from '~/components/PoisCard/Fields.vue'
 import FavoriteIcon from '~/components/UI/FavoriteIcon.vue'
 import TeritorioIcon from '~/components/UI/TeritorioIcon.vue'
 import { ApiPoi, ApiPoiId } from '~/lib/apiPois'
+import { pickTextColorBasedOnBgColor } from '~/lib/colorDefiner'
 import { coordinatesHref } from '~/lib/coordinates'
 import { favoritesStore } from '~/stores/favorite'
 import { mapStore } from '~/stores/map'
@@ -255,6 +268,7 @@ export default defineNuxtComponent({
   },
 
   methods: {
+    pickTextColorBasedOnBgColor,
     onZoomClick() {
       this.trackingPopupEvent('zoom')
       this.$emit('zoom-click', this.poi)
