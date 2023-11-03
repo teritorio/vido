@@ -18,10 +18,11 @@
         <IconsBar class="tw-mr-6">
           <IconButton
             :label="$t('favorites.menu_share')"
-            class="tw-w-8 tw-h-8"
+            class="tw-h-8"
             @click="setShareLink()"
           >
             <FontAwesomeIcon icon="share-alt" />
+            <p class="tw-text-sm">{{ $t('favorites.notebook.share') }}</p>
           </IconButton>
           <IconButton
             :label="$t('favorites.export_pdf')"

@@ -26,6 +26,7 @@ export default {
     share_link: 'Compartir enlace de favoritos',
     notebook: {
       title: 'Cuaderno de favoritos',
+      share: 'Partager',
     },
     noFavs:
       'Todavía no tienes ningún lugar marcado. Puedes hacerlo seleccionando un lugar en el mapa y guardándolo como favorito',
