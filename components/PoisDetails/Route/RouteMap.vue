@@ -6,6 +6,7 @@
       :feature-ids="[poiId]"
       :fullscreen-control="true"
       :off-map-attribution="true"
+      :no-cluster="noCluster"
     />
     <div class="detail-wrapper">
       <div v-if="points.length > 0" class="detail-left">
@@ -81,6 +82,10 @@ export default defineNuxtComponent({
     favoritesModeEnabled: {
       type: Boolean,
       required: true,
+    },
+    noCluster: {
+      type: Boolean,
+      required: false,
     },
   },
 

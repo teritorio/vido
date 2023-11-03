@@ -5,7 +5,7 @@ import type {
   LngLatBoundsLike,
   FitBoundsOptions,
 } from 'maplibre-gl'
-import { createApp } from 'vue'
+import { createApp, PropType } from 'vue'
 
 import { ApiPoi } from './apiPois'
 import { getBBoxFeatures } from './bbox'
@@ -79,7 +79,8 @@ export function makerHtmlFactory(
   colorFill: string,
   icon: string,
   thumbnail: string | undefined,
-  size: string | null = null
+  size: string | null = null,
+  waypoint?: number
 ): ITMarker {
   // Marker
   const el: HTMLElement = document.createElement('div')
@@ -100,6 +101,7 @@ export function makerHtmlFactory(
     picto: icon,
     image: thumbnail,
     size,
+    text: waypoint,
   }).mount(el)
 
   return marker
@@ -110,7 +112,8 @@ export function updateMarkers(
   markers: { [id: string]: ITMarker },
   src: string,
   fitBounds: (bounds: LngLatBoundsLike, options: FitBoundsOptions) => void,
-  markerClickCallBack: ((feature: ApiPoi) => void) | undefined
+  markerClickCallBack: ((feature: ApiPoi) => void) | undefined,
+  initFeatures: PropType<ApiPoi[]> = []
 ) {
   const markerIdPrevious = Object.keys(markers)
   const markerIdcurrent: string[] = []
@@ -188,12 +191,18 @@ export function updateMarkers(
               }
 
               // Marker
+              const index = initFeatures.findIndex(
+                (initFeature) => initFeature.properties.id === props.id
+              )
+
               markers[id] = makerHtmlFactory(
                 id,
                 markerCoords, // Using this to avoid misplaced marker
                 props.display?.color_fill || '#000000',
                 props.display?.icon || '#000000',
-                props['image:thumbnail']
+                props['image:thumbnail'],
+                null,
+                typeof index === 'number' ? index + 1 : undefined
               )
 
               // Click handler

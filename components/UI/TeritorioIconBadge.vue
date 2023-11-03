@@ -8,10 +8,12 @@
     :style="{ backgroundColor: colorFill }"
   >
     <TeritorioIcon
+      v-if="!text"
       :class="`tw-text-${iconSize}`"
       :picto="picto"
       :image="image"
     />
+    <template v-else>{{ text }}</template>
     <slot></slot>
   </span>
 </template>
@@ -43,6 +45,10 @@ export default defineNuxtComponent({
     image: {
       type: String as PropType<string>,
       default: null,
+    },
+    text: {
+      type: String as PropType<string>,
+      required: false,
     },
   },
 
