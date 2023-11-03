@@ -17,6 +17,7 @@
           "
           class="tw-ml-6 tw-px-3 tw-py-1.5 tw-text-xs tw-text-zinc-800 tw-bg-zinc-100 hover:tw-bg-zinc-200 focus:tw-bg-zinc-200 tw-transition tw-transition-colors tw-rounded-md"
           :to="websiteDetails"
+          :style="'background:' + colorLine + ';color:white'"
           rel="noopener noreferrer"
           @click.stop="trackingPopupEvent('details')"
         >
@@ -26,6 +27,7 @@
           v-else
           class="tw-ml-6 tw-px-3 tw-py-1.5 tw-text-xs tw-text-zinc-800 tw-bg-zinc-100 hover:tw-bg-zinc-200 focus:tw-bg-zinc-200 tw-transition tw-transition-colors tw-rounded-md"
           :href="websiteDetails"
+          :style="'background:' + colorLine + ';color:white'"
           rel="noopener noreferrer"
           @click.stop="trackingPopupEvent('details')"
         >
