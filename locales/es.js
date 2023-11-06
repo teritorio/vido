@@ -26,10 +26,10 @@ export default {
     share_link: 'Compartir enlace de favoritos',
     notebook: {
       title: 'Cuaderno de favoritos',
-      share: 'Partager',
-      print: 'Imprimer',
-      export: 'Exporter',
-      remove: 'Supprimer',
+      share: 'Compartir',
+      print: 'Imprimir',
+      export: 'Exportar',
+      remove: 'Borrar',
     },
     noFavs:
       'Todavía no tienes ningún lugar marcado. Puedes hacerlo seleccionando un lugar en el mapa y guardándolo como favorito',
