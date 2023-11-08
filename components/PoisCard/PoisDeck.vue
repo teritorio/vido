@@ -2,9 +2,10 @@
   <div class="tw-flex tw-justify-between tw-flex-wrap tw-gap-6">
     <component
       :is="poisCard"
-      v-for="item in pois"
+      v-for="(item, index) in pois"
       :key="item.properties.metadata.id"
       :poi="item"
+      :position="(index + 1).toString()"
       :class="[
         'tw-grow-1 poi-deck',
         !isFavorite(item.properties.metadata.id) &&

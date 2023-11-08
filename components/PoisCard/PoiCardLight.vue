@@ -15,6 +15,7 @@
             :picto="icon"
             size="lg"
             :image="undefined"
+            :text="position"
           />
           {{ name }}
         </h3>
@@ -76,6 +77,10 @@ export default defineNuxtComponent({
     poi: {
       type: Object as PropType<ApiPoi>,
       required: true,
+    },
+    position: {
+      type: String,
+      required: false,
     },
   },
 

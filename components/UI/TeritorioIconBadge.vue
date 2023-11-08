@@ -13,7 +13,7 @@
       :picto="picto"
       :image="image"
     />
-    <template v-else>{{ text }}</template>
+    <b v-else>{{ text }}</b>
     <slot></slot>
   </span>
 </template>
