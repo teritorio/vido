@@ -61,9 +61,9 @@ export default defineNuxtComponent({
       type: Boolean,
       default: false,
     },
-    noCluster: {
+    cluster: {
       type: Boolean,
-      default: false,
+      default: true,
     },
   },
   setup() {
@@ -148,7 +148,7 @@ export default defineNuxtComponent({
           ['get', 'color_fill', ['get', 'display']],
           '#000000',
         ],
-        this.noCluster
+        this.cluster
       )
 
       if (this.featureIds) {

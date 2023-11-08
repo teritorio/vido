@@ -104,7 +104,6 @@
         :color-fill="colorFill"
         :color-line="colorLine"
         :favorites-mode-enabled="favoritesModeEnabled"
-        :no-cluster="true"
       />
     </template>
 
