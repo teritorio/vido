@@ -28,6 +28,7 @@
     </template>
     <template #actions>
       <Share
+        class="print:tw-hidden"
         :title="poi.properties.name"
         :href="
           poi.properties.editorial &&
@@ -68,7 +69,7 @@
               :extra-attributions="settings.attributions"
               :feature-ids="[id]"
               :features="[poi]"
-              class="tw-relative"
+              class="tw-relative poi-map"
               :off-map-attribution="true"
             />
           </template>

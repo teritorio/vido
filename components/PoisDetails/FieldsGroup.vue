@@ -6,7 +6,7 @@
           field.group !== undefined &&
           !isListEmpty(field.fields, properties, geom)
         "
-        class="block"
+        class="block print:tw-mb-2"
       >
         <div v-if="field.display_mode === 'standard'">
           <FieldsHeader
@@ -28,6 +28,7 @@
           v-else-if="field.display_mode === 'card'"
           :color-fill="colorFill"
           :icon="field.icon"
+          class="print:tw-hidden"
         >
           <FieldsHeader
             v-if="fieldTranslateK(field.group)"
@@ -152,5 +153,10 @@ export default defineNuxtComponent({
 <style lang="scss" scoped>
 .block {
   margin-bottom: 3rem;
+}
+@media print {
+  .block {
+    margin-bottom: 0.5rem !important;
+  }
 }
 </style>
