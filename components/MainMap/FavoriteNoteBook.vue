@@ -26,28 +26,31 @@
           </IconButton>
           <IconButton
             :label="$t('favorites.export_pdf')"
-            class="tw-w-8 tw-h-8"
+            class="tw-h-8"
             :href="pdfLink"
             target="_blank"
             @click="exportLink('export_pdf')"
           >
             <FontAwesomeIcon icon="print" />
+            <p class="tw-text-sm">{{ $t('favorites.notebook.print') }}</p>
           </IconButton>
           <IconButton
             :label="$t('favorites.export_csv')"
-            class="tw-w-8 tw-h-8"
+            class="tw-h-8"
             :href="csvLink"
             target="_blank"
             @click="exportLink('export_csv')"
           >
             <FontAwesomeIcon icon="file-csv" />
+            <p class="tw-text-sm">{{ $t('favorites.notebook.export') }}</p>
           </IconButton>
           <IconButton
             :label="$t('favorites.menu_clear')"
-            class="tw-w-8 tw-h-8"
+            class="tw-h-8"
             @click="removeFavorites()"
           >
             <FontAwesomeIcon icon="trash" />
+            <p class="tw-text-sm">{{ $t('favorites.notebook.remove') }}</p>
           </IconButton>
         </IconsBar>
       </div>

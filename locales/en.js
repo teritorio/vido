@@ -27,6 +27,9 @@ export default {
     notebook: {
       title: 'Favorites notebook',
       share: 'Share',
+      print: 'Print',
+      export: 'Export',
+      remove: 'Remove',
     },
     noFavs:
       'You do not have any favorite places yet. You can do this by selecting a location on the map, then saving it as a favorite.',

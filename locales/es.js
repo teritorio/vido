@@ -27,6 +27,9 @@ export default {
     notebook: {
       title: 'Cuaderno de favoritos',
       share: 'Partager',
+      print: 'Imprimer',
+      export: 'Exporter',
+      remove: 'Supprimer',
     },
     noFavs:
       'Todavía no tienes ningún lugar marcado. Puedes hacerlo seleccionando un lugar en el mapa y guardándolo como favorito',

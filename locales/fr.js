@@ -28,6 +28,9 @@ export default {
     notebook: {
       title: 'Carnet des favoris',
       share: 'Partager',
+      print: 'Imprimer',
+      export: 'Exporter',
+      remove: 'Supprimer',
     },
     noFavs:
       "Vous n'avez pas encore de lieux en favoris. Vous pouvez le faire en sélectionnant un lieu sur la carte, puis en le mémorisant comme favori.",
