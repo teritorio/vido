@@ -186,3 +186,20 @@ export default defineNuxtComponent({
   @extend .font-light;
 }
 </style>
+
+<style>
+body,
+#__nuxt,
+#__layout {
+  -webkit-print-color-adjust: exact;
+}
+
+img,
+.poi-deck,
+.poi-map,
+#route-map {
+  page-break-before: auto;
+  page-break-after: auto;
+  page-break-inside: avoid;
+}
+</style>

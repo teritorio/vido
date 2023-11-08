@@ -10,7 +10,7 @@
     <v-carousel
       :show-arrows="false"
       :hide-delimiter-background="true"
-      class="mb-14"
+      class="tw-mb-14 print:tw-mb-6"
       :height="smallScreen ? 300 : 500"
     >
       <v-carousel-item v-for="(image, i) in images" :key="i">

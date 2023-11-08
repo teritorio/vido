@@ -6,7 +6,7 @@
       :key="item.properties.metadata.id"
       :poi="item"
       :class="[
-        'tw-grow-1',
+        'tw-grow-1 poi-deck',
         !isFavorite(item.properties.metadata.id) &&
           'tw-bg-zinc-200 tw-opacity-70',
       ]"
