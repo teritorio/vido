@@ -80,7 +80,7 @@ export function makerHtmlFactory(
   icon: string,
   thumbnail: string | undefined,
   size: string | null = null,
-  waypoint?: number
+  text?: string
 ): ITMarker {
   // Marker
   const el: HTMLElement = document.createElement('div')
@@ -101,7 +101,7 @@ export function makerHtmlFactory(
     picto: icon,
     image: thumbnail,
     size,
-    text: waypoint,
+    text: text,
   }).mount(el)
 
   return marker
