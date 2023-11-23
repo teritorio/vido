@@ -3,7 +3,7 @@
     v-if="!href"
     :aria-label="label"
     type="button"
-    class="tw-text-sm tw-text-zinc-800 tw-bg-white tw-rounded-full tw-shadow-md tw-outline-none focus:tw-outline-none hover:tw-bg-zinc-100 focus-visible:tw-bg-zinc-100 tw-shrink-0 tw-flex tw-items-center tw-justify-center tw-flex tw-px-2.5 tw-gap-2"
+    class="tw-text-sm tw-text-zinc-800 tw-bg-white tw-rounded-full tw-shadow-md tw-outline-none focus:tw-outline-none hover:tw-bg-zinc-100 focus-visible:tw-bg-zinc-100 tw-shrink-0 tw-flex tw-items-center tw-justify-center tw-px-2.5 tw-gap-2"
   >
     <slot></slot>
   </button>
@@ -12,7 +12,7 @@
     :aria-label="label"
     :to="href"
     :target="target"
-    class="tw-text-sm tw-text-zinc-800 tw-bg-white tw-rounded-full tw-shadow-md tw-outline-none focus:tw-outline-none hover:tw-bg-zinc-100 focus-visible:tw-bg-zinc-100 tw-shrink-0 tw-flex tw-items-center tw-justify-center tw-flex tw-px-2.5 tw-gap-2"
+    class="tw-text-sm tw-text-zinc-800 tw-bg-white tw-rounded-full tw-shadow-md tw-outline-none focus:tw-outline-none hover:tw-bg-zinc-100 focus-visible:tw-bg-zinc-100 tw-shrink-0 tw-flex tw-items-center tw-justify-center tw-px-2.5 tw-gap-2"
   >
     <slot></slot>
   </NuxtLink>
@@ -21,7 +21,7 @@
     :aria-label="label"
     :href="href"
     :target="target"
-    class="tw-text-sm tw-text-zinc-800 tw-bg-white tw-rounded-full tw-shadow-md tw-outline-none focus:tw-outline-none hover:tw-bg-zinc-100 focus-visible:tw-bg-zinc-100 tw-shrink-0 tw-flex tw-items-center tw-justify-center tw-flex tw-px-2.5 tw-gap-2"
+    class="tw-text-sm tw-text-zinc-800 tw-bg-white tw-rounded-full tw-shadow-md tw-outline-none focus:tw-outline-none hover:tw-bg-zinc-100 focus-visible:tw-bg-zinc-100 tw-shrink-0 tw-flex tw-items-center tw-justify-center tw-px-2.5 tw-gap-2"
   >
     <slot></slot>
   </a>
