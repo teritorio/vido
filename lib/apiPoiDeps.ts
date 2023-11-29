@@ -63,7 +63,8 @@ export const iconMap: { [key: string]: string } = {
 export function apiRouteWaypointToApiPoi(
   waypoint: ApiRouteWaypoint,
   colorFill: string,
-  colorLine: string
+  colorLine: string,
+  position?: string
 ): ApiPoi {
   return {
     ...waypoint,
@@ -79,6 +80,7 @@ export function apiRouteWaypointToApiPoi(
         color_fill: colorFill,
         color_line: colorLine,
       },
+      position,
       editorial: {
         popup_fields: [
           {

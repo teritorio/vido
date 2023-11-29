@@ -15,7 +15,7 @@
             :picto="icon"
             size="lg"
             :image="undefined"
-            :text="position"
+            :text="poi.properties.position"
           />
           {{ name }}
         </h3>
