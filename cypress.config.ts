@@ -26,6 +26,7 @@ export default defineConfig({
             '.maplibregl-marker',
             '.filters-number-range',
             '.category-selector',
+            '.cookie__bar__buttons',
           ],
         }
       )
