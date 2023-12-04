@@ -57,6 +57,14 @@ export default defineNuxtComponent({
       >,
       default: undefined,
     },
+    fullscreenControl: {
+      type: Boolean,
+      default: false,
+    },
+    cluster: {
+      type: Boolean,
+      default: true,
+    },
   },
   setup() {
     return {
@@ -127,12 +135,21 @@ export default defineNuxtComponent({
           )
         ),
       ]
-      this.mapBase!.initPoiLayer(this.features, colors, [
-        'case',
-        ['all', ['has', 'display'], ['has', 'color_fill', ['get', 'display']]],
-        ['get', 'color_fill', ['get', 'display']],
-        '#000000',
-      ])
+      this.mapBase!.initPoiLayer(
+        this.features,
+        colors,
+        [
+          'case',
+          [
+            'all',
+            ['has', 'display'],
+            ['has', 'color_fill', ['get', 'display']],
+          ],
+          ['get', 'color_fill', ['get', 'display']],
+          '#000000',
+        ],
+        this.cluster
+      )
 
       if (this.featureIds) {
         filterRouteByPoiIds(this.map as maplibregl.Map, this.featureIds)

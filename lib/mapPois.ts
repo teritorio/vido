@@ -19,6 +19,7 @@ export interface MapPoiProperties {
     color_fill?: string
     // eslint-disable-next-line camelcase
     color_line?: string
+    text?: string
   }
 }
 export type MapPoi = GeoJSON.Feature<GeoJSON.Geometry, MapPoiProperties>

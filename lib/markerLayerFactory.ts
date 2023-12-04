@@ -79,7 +79,8 @@ export function makerHtmlFactory(
   colorFill: string,
   icon: string,
   thumbnail: string | undefined,
-  size: string | null = null
+  size: string | null = null,
+  text?: string
 ): ITMarker {
   // Marker
   const el: HTMLElement = document.createElement('div')
@@ -100,6 +101,7 @@ export function makerHtmlFactory(
     picto: icon,
     image: thumbnail,
     size,
+    text: text,
   }).mount(el)
 
   return marker
@@ -193,7 +195,9 @@ export function updateMarkers(
                 markerCoords, // Using this to avoid misplaced marker
                 props.display?.color_fill || '#000000',
                 props.display?.icon || '#000000',
-                props['image:thumbnail']
+                props['image:thumbnail'],
+                null,
+                props.display?.text
               )
 
               // Click handler

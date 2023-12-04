@@ -6,6 +6,7 @@
       :feature-ids="[poiId]"
       :fullscreen-control="true"
       :off-map-attribution="true"
+      :cluster="false"
     />
     <div class="detail-wrapper">
       <div v-if="points.length > 0" class="detail-left">
@@ -47,6 +48,7 @@ import {
   ApiRouteWaypoint,
   apiRouteWaypointToApiPoi,
 } from '~/lib/apiPoiDeps'
+import { ApiRouteWaypointType } from '~/lib/apiPoiDeps.ts'
 import { ApiPoi, ApiPoiId } from '~/lib/apiPois'
 
 export default defineNuxtComponent({
@@ -97,12 +99,17 @@ export default defineNuxtComponent({
   },
 
   created() {
+    let index = 1
     this.routeCollection = this.route.features.map((feature) => {
       if (feature.properties['route:point:type']) {
         const mapPoi = apiRouteWaypointToApiPoi(
           feature as ApiRouteWaypoint,
           this.colorFill,
-          this.colorLine
+          this.colorLine,
+          feature.properties['route:point:type'] ==
+            ApiRouteWaypointType.way_point
+            ? (index++).toString()
+            : undefined
         )
         this.points.push(mapPoi)
         return mapPoi

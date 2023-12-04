@@ -222,7 +222,8 @@ export default defineNuxtComponent({
     initPoiLayer(
       features: MapPoi[],
       clusterPropertiesValues: string[],
-      clusterPropertiesKeyExpression: maplibregl.ExpressionSpecification
+      clusterPropertiesKeyExpression: maplibregl.ExpressionSpecification,
+      cluster?: boolean
     ) {
       if (this.map.getLayer(POI_LAYER)) {
         this.map.removeLayer(POI_LAYER)
@@ -255,7 +256,7 @@ export default defineNuxtComponent({
 
       this.map.addSource(POI_SOURCE, {
         type: 'geojson',
-        cluster: true,
+        cluster: cluster === undefined ? true : cluster,
         clusterRadius: 32,
         clusterProperties: clusterProps,
         clusterMaxZoom: 15,
@@ -378,7 +379,8 @@ export default defineNuxtComponent({
           this.markers,
           POI_SOURCE,
           this.fitBounds,
-          (feature: ApiPoi) => this.$emit('feature-click', feature)
+          (feature: ApiPoi) => this.$emit('feature-click', feature),
+          this.features
         )
       }
 

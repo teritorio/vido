@@ -10,11 +10,12 @@
           :style="'color:' + colorLine"
         >
           <TeritorioIconBadge
-            v-if="icon"
+            v-if="icon || poi.properties.display.text"
             :color-fill="colorFill"
             :picto="icon"
             size="lg"
             :image="undefined"
+            :text="poi.properties.display.text"
           />
           {{ name }}
         </h3>
