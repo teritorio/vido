@@ -22,7 +22,7 @@
             @click="setShareLink()"
           >
             <FontAwesomeIcon icon="share-alt" />
-            <p class="tw-text-sm">{{ $t('favorites.notebook.share') }}</p>
+            <span class="tw-text-sm">{{ $t('favorites.notebook.share') }}</span>
           </IconButton>
           <IconButton
             :label="$t('favorites.export_pdf')"
@@ -32,7 +32,7 @@
             @click="exportLink('export_pdf')"
           >
             <FontAwesomeIcon icon="print" />
-            <p class="tw-text-sm">{{ $t('favorites.notebook.print') }}</p>
+            <span class="tw-text-sm">{{ $t('favorites.notebook.print') }}</span>
           </IconButton>
           <IconButton
             :label="$t('favorites.export_csv')"
@@ -42,7 +42,9 @@
             @click="exportLink('export_csv')"
           >
             <FontAwesomeIcon icon="file-csv" />
-            <p class="tw-text-sm">{{ $t('favorites.notebook.export') }}</p>
+            <span class="tw-text-sm">{{
+              $t('favorites.notebook.export')
+            }}</span>
           </IconButton>
           <IconButton
             :label="$t('favorites.menu_clear')"
@@ -50,7 +52,9 @@
             @click="removeFavorites()"
           >
             <FontAwesomeIcon icon="trash" />
-            <p class="tw-text-sm">{{ $t('favorites.notebook.remove') }}</p>
+            <span class="tw-text-sm">{{
+              $t('favorites.notebook.remove')
+            }}</span>
           </IconButton>
         </IconsBar>
       </div>
