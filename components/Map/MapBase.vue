@@ -256,7 +256,7 @@ export default defineNuxtComponent({
 
       this.map.addSource(POI_SOURCE, {
         type: 'geojson',
-        cluster: cluster,
+        cluster: cluster || true,
         clusterRadius: 32,
         clusterProperties: clusterProps,
         clusterMaxZoom: 15,
