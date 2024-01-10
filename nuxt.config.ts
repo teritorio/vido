@@ -1,5 +1,4 @@
 import { defineNuxtConfig } from 'nuxt/config'
-import topLevelAwait from 'vite-plugin-top-level-await'
 import vuetify from 'vite-plugin-vuetify'
 
 import { vidos } from './lib/config'
@@ -166,14 +165,6 @@ export default defineNuxtConfig({
 
   vite: {
     clearScreen: false,
-    plugins: [
-      // Add support for old browser of
-      // const { ... } = await import('maplibre-gl')
-      topLevelAwait(),
-    ],
-    optimizeDeps: {
-      exclude: ['vite-plugin-top-level-await'],
-    },
   },
 
   // Server config (allow listening to local network)

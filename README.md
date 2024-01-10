@@ -45,6 +45,11 @@ Full entry points documentation available on [api.yml](public/api.yaml) and on s
 Can be build directly (dev) or within Docker.
 
 ### Native Build Setup
+
+**Prerequisite**
+
+- Node >= 18.0.0 < 20.0.0
+
 ```bash
 # install dependencies
 yarn install
