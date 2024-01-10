@@ -132,6 +132,7 @@ export default defineNuxtConfig({
   // Build Configuration (https://go.nuxtjs.dev/config-build)
   build: {
     transpile: [
+      'maplibre-gl',
       'iron-webcrypto',
       'punycode',
       'pinia',
@@ -139,7 +140,6 @@ export default defineNuxtConfig({
       'date-fns',
       /lodash.*/,
       '@fortawesome/vue-fontawesome',
-      // ...(process.dev ? [] : ['maplibre-gl']), // What the hell, maplibre-gl
     ],
   },
 
