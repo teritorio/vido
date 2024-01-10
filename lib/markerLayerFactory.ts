@@ -5,6 +5,7 @@ import type {
   LngLatBoundsLike,
   FitBoundsOptions,
 } from 'maplibre-gl'
+import { Marker } from 'maplibre-gl'
 import { createApp } from 'vue'
 
 import { ApiPoi } from './apiPois'
@@ -13,8 +14,6 @@ import { createMarkerDonutChart } from './clusters'
 
 import TeritorioIconBadge from '~/components/UI/TeritorioIconBadge.vue'
 import { TupleLatLng } from '~/utils/types'
-
-const { Marker } = await import('maplibre-gl')
 
 type ITMarker = InstanceType<typeof Marker>
 

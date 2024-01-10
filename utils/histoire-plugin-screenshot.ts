@@ -2,6 +2,7 @@
 // MIT License
 
 import type { FileOptions } from 'capture-website'
+import captureWebsite from 'capture-website'
 import { defu } from 'defu'
 import fs from 'fs-extra'
 import type { Plugin } from 'histoire'
@@ -58,7 +59,6 @@ export function HstScreenshot(options: ScreenshotPluginOptions = {}): Plugin {
     name: '@histoire/plugin-screenshot',
 
     onBuild: async (api) => {
-      const { default: captureWebsite } = await import('capture-website')
       await fs.ensureDir(finalOptions.saveFolder!)
 
       api.onPreviewStory(async ({ file, story, variant, url }) => {

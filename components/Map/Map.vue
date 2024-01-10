@@ -19,6 +19,14 @@ import type {
   MapLibreEvent,
   MapTouchEvent,
 } from 'maplibre-gl'
+import {
+  Map,
+  AttributionControl,
+  NavigationControl,
+  GeolocateControl,
+  FullscreenControl,
+  ScaleControl,
+} from 'maplibre-gl'
 import { mapState } from 'pinia'
 import { PropType } from 'vue'
 
@@ -27,15 +35,6 @@ import { DEFAULT_MAP_STYLE, MAP_ZOOM } from '~/lib/constants'
 import { siteStore } from '~/stores/site'
 import { fetchStyle } from '~/utils/styles'
 import { MapStyleEnum } from '~/utils/types'
-
-const {
-  Map,
-  AttributionControl,
-  NavigationControl,
-  GeolocateControl,
-  FullscreenControl,
-  ScaleControl,
-} = await import('maplibre-gl')
 
 type ITMap = InstanceType<typeof Map>
 type ITAttributionControl = InstanceType<typeof AttributionControl>

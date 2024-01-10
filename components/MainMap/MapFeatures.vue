@@ -1,55 +1,27 @@
 <template>
   <div class="tw-flex tw-flex-grow">
-    <MapBase
-      ref="mapBase"
-      :features="features"
-      :bounds="defaultBounds"
-      :fit-bounds-padding-options="fitBoundsPaddingOptions"
-      :extra-attributions="extraAttributions"
-      :map-style="selectedBackground"
-      :rotate="!device.touch"
-      :show-attribution="!small"
-      :off-map-attribution="device.smallScreen && !small"
-      :hide-control="small"
-      :style-icon-filter="styleIconFilter"
-      :cooperative-gestures="cooperativeGestures"
-      :boundary-area="boundaryArea"
-      hash="map"
-      @map-init="onMapInit"
-      @map-data="onMapRender"
-      @map-dragend="onMapRender"
-      @map-moveend="onMapRender"
-      @map-resize="onMapRender"
-      @map-rotateend="onMapRender"
-      @map-touchmove="onMapRender"
-      @map-zoomend="onMapRender"
-      @map-style-load="onMapStyleLoad"
-      @feature-click="updateSelectedFeature"
-    >
+    <MapBase ref="mapBase" :features="features" :bounds="defaultBounds"
+      :fit-bounds-padding-options="fitBoundsPaddingOptions" :extra-attributions="extraAttributions"
+      :map-style="selectedBackground" :rotate="!device.touch" :show-attribution="!small"
+      :off-map-attribution="device.smallScreen && !small" :hide-control="small" :style-icon-filter="styleIconFilter"
+      :cooperative-gestures="cooperativeGestures" :boundary-area="boundaryArea" hash="map" @map-init="onMapInit"
+      @map-data="onMapRender" @map-dragend="onMapRender" @map-moveend="onMapRender" @map-resize="onMapRender"
+      @map-rotateend="onMapRender" @map-touchmove="onMapRender" @map-zoomend="onMapRender"
+      @map-style-load="onMapStyleLoad" @feature-click="updateSelectedFeature">
       <template #controls>
         <MapControlsExplore v-if="explorerModeEnabled" :map="mapTyped" />
         <MapControls3D :map="mapTyped" />
-        <MapControlsBackground
-          :map="mapTyped"
-          :backgrounds="availableStyles"
-          :initial-background="selectedBackground"
-          @change-background="selectedBackground = $event"
-        />
+        <MapControlsBackground :map="mapTyped" :backgrounds="availableStyles" :initial-background="selectedBackground"
+          @change-background="selectedBackground = $event" />
       </template>
       <template #body>
         <slot></slot>
       </template>
     </MapBase>
     <SnackBar @click="handleSnackAction" />
-    <div
-      v-if="isLoadingFeatures"
-      class="tw-fixed tw-inset-0 tw-flex tw-items-center tw-justify-center tw-bg-black tw-bg-opacity-80"
-    >
-      <FontAwesomeIcon
-        icon="spinner"
-        class="tw-text-zinc-400 tw-animate-spin"
-        size="3x"
-      />
+    <div v-if="isLoadingFeatures"
+      class="tw-fixed tw-inset-0 tw-flex tw-items-center tw-justify-center tw-bg-black tw-bg-opacity-80">
+      <FontAwesomeIcon icon="spinner" class="tw-text-zinc-400 tw-animate-spin" size="3x" />
     </div>
   </div>
 </template>
@@ -67,6 +39,7 @@ import type {
   GeoJSONSource,
   StyleSpecification,
 } from 'maplibre-gl'
+import { Marker } from 'maplibre-gl'
 import { mapActions, mapState, mapWritableState } from 'pinia'
 import { PropType, ref } from 'vue'
 
@@ -87,8 +60,6 @@ import { snackStore } from '~/stores/snack'
 import { filterRouteByCategories, filterRouteByPoiIds } from '~/utils/styles'
 import { LatLng, MapStyleEnum } from '~/utils/types'
 import { getHashPart } from '~/utils/url'
-
-const { Marker } = await import('maplibre-gl')
 
 type ITMarker = InstanceType<typeof Marker>
 
@@ -213,7 +184,7 @@ export default defineNuxtComponent({
       // Change visible data
       const source = this.map.getSource(POI_SOURCE)
       if (source?.type == 'geojson' && 'setData' in source) {
-        ;(source as GeoJSONSource).setData({
+        ; (source as GeoJSONSource).setData({
           type: 'FeatureCollection',
           features: this.features,
         })
@@ -465,8 +436,8 @@ export default defineNuxtComponent({
       ) {
         filterRouteByPoiIds(this.map as Map, [
           this.selectedFeature.properties?.metadata?.id ||
-            this.selectedFeature?.id ||
-            this.selectedFeature?.properties?.id,
+          this.selectedFeature?.id ||
+          this.selectedFeature?.properties?.id,
         ])
 
         if (
@@ -480,14 +451,14 @@ export default defineNuxtComponent({
               originalFeature.properties?.metadata?.id &&
               this.selectedFeature?.properties?.metadata?.id &&
               originalFeature.properties?.metadata?.id ===
-                this.selectedFeature?.properties?.metadata?.id
+              this.selectedFeature?.properties?.metadata?.id
           )
           const lngLat = (
             originalFeature && originalFeature.geometry.type === 'Point'
               ? originalFeature.geometry.coordinates
               : this.selectedFeature.geometry.type === 'Point'
-              ? this.selectedFeature.geometry?.coordinates
-              : this.defaultBounds
+                ? this.selectedFeature.geometry?.coordinates
+                : this.defaultBounds
           ) as [number, number]
 
           this.selectedFeatureMarker = new Marker({

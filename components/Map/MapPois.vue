@@ -1,16 +1,7 @@
 <template>
-  <MapBase
-    ref="mapBase"
-    :features="features"
-    :center="center"
-    :bounds="bounds"
-    :zoom="selectionZoom.poi"
-    :fullscreen-control="fullscreenControl"
-    :extra-attributions="extraAttributions"
-    :off-map-attribution="offMapAttribution"
-    @map-init="onMapInit"
-    @map-style-load="onMapStyleLoad"
-  />
+  <MapBase ref="mapBase" :features="features" :center="center" :bounds="bounds" :zoom="selectionZoom.poi"
+    :fullscreen-control="fullscreenControl" :extra-attributions="extraAttributions"
+    :off-map-attribution="offMapAttribution" @map-init="onMapInit" @map-style-load="onMapStyleLoad" />
 </template>
 
 <script lang="ts">
@@ -56,10 +47,6 @@ export default defineNuxtComponent({
         maplibregl.LngLatBoundsLike | undefined
       >,
       default: undefined,
-    },
-    fullscreenControl: {
-      type: Boolean,
-      default: false,
     },
     cluster: {
       type: Boolean,
