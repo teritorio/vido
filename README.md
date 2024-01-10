@@ -52,6 +52,9 @@ yarn install
 # Generate fixtures
 yarn build-fixture
 
+# Prepare
+yarn prepare
+
 # Generate configuration from `vidos.config.ts`
 yarn build-config
 
