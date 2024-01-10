@@ -18,14 +18,6 @@ export default defineNuxtConfig({
     },
   },
 
-  pwa: {
-    icon: false,
-    meta: false,
-    manifest: false,
-    workbox: {
-      enabled: true,
-    },
-  },
   // Global page headers (https://go.nuxtjs.dev/config-head)
   head: {
     htmlAttrs: {
@@ -84,7 +76,6 @@ export default defineNuxtConfig({
     '@nuxt/image-edge',
     ...(process.env.SENTRY_DSN ? ['@nuxtjs/sentry'] : []),
     '@pinia/nuxt',
-    '@kevinmarrec/nuxt-pwa',
     async (options, nuxt) => {
       nuxt.hooks.hook('vite:extendConfig', (config) =>
         // @ts-ignore
@@ -148,12 +139,12 @@ export default defineNuxtConfig({
       'date-fns',
       /lodash.*/,
       '@fortawesome/vue-fontawesome',
-      ...(process.dev ? [] : ['maplibre-gl']), // What the hell, maplibre-gl
+      // ...(process.dev ? [] : ['maplibre-gl']), // What the hell, maplibre-gl
     ],
   },
 
   typescript: {
-    typeCheck: !!process.env.TYPESCRIPT_CHECK,
+    // typeCheck: !!process.env.TYPESCRIPT_CHECK,
   },
 
   postcss: {
@@ -162,9 +153,8 @@ export default defineNuxtConfig({
       autoprefixer: {},
     },
   },
-
   vite: {
-    clearScreen: false,
+    optimizeDeps: { exclude: ['fsevents'] },
   },
 
   // Server config (allow listening to local network)

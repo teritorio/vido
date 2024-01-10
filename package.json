@@ -70,7 +70,6 @@
     "@histoire/plugin-nuxt": "^0.16.2",
     "@histoire/plugin-screenshot": "^0.16.1",
     "@histoire/plugin-vue": "^0.16.1",
-    "@kevinmarrec/nuxt-pwa": "^0.17.0",
     "@mdi/font": "^7.2.96",
     "@nuxt/image-edge": "1.0.0-rc.1-28119537.bfe30ab",
     "@nuxt/types": "^2.17.0",
