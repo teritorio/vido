@@ -132,7 +132,6 @@ export default defineNuxtConfig({
   // Build Configuration (https://go.nuxtjs.dev/config-build)
   build: {
     transpile: [
-      'maplibre-gl',
       'iron-webcrypto',
       'punycode',
       'pinia',

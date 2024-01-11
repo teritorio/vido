@@ -13,14 +13,11 @@ module.exports = {
     'plugin:@typescript-eslint/recommended',
     // '@nuxtjs/eslint-config-typescript',
     'plugin:vue/vue3-recommended',
-    'plugin:prettier/recommended',
     'plugin:nuxt/recommended',
     'plugin:import/warnings',
     'plugin:import/typescript',
-    // Make sure "prettier" is the last element in this list.
-    'prettier',
   ],
-  plugins: ['prettier', 'import', '@typescript-eslint', 'vue'],
+  plugins: ['import', '@typescript-eslint', 'vue'],
   // add your custom rules here
   rules: {
     '@typescript-eslint/ban-ts-comment': 'off',
