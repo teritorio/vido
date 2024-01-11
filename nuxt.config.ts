@@ -5,11 +5,6 @@ import { vidos } from './lib/config'
 import { configuredApi, configuredImageProxy } from './utils/vido-config-static'
 
 export default defineNuxtConfig({
-  env: {
-    // Copy NODE_ENV to know to real setting when use `nuxt build`
-    environment: process.env.NODE_ENV as string,
-  },
-
   runtimeConfig: {
     public: {
       // @ts-ignore
@@ -132,7 +127,7 @@ export default defineNuxtConfig({
   // Build Configuration (https://nuxt.com/docs/api/nuxt-config#build)
   build: {
     transpile: [
-      'maplibre-gl',
+      process.env.NODE_ENV === 'production' ? 'maplibre-gl' : '',
       'iron-webcrypto',
       'punycode',
       'pinia',
@@ -153,6 +148,7 @@ export default defineNuxtConfig({
       autoprefixer: {},
     },
   },
+  
   vite: {
     optimizeDeps: { exclude: ['fsevents'] },
   },
