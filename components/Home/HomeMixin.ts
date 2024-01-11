@@ -98,7 +98,7 @@ export default defineNuxtComponent({
 
     goToSelectedFeature() {
       if (this.$refs.mapFeatures) {
-        ;(this.$refs.mapFeatures as typeof MapFeatures).goToSelectedFeature()
+        (this.$refs.mapFeatures as typeof MapFeatures).goToSelectedFeature()
       }
     },
   },

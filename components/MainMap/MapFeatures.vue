@@ -184,7 +184,7 @@ export default defineNuxtComponent({
       // Change visible data
       const source = this.map.getSource(POI_SOURCE)
       if (source?.type == 'geojson' && 'setData' in source) {
-        ; (source as GeoJSONSource).setData({
+        (source as GeoJSONSource).setData({
           type: 'FeatureCollection',
           features: this.features,
         })

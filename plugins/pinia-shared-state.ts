@@ -6,7 +6,7 @@ import { defineNuxtPlugin } from '#app/nuxt'
 
 // @ts-ignore
 const piniaSharedState: Plugin = defineNuxtPlugin(({ $pinia }) => {
-  ;($pinia as Pinia).use(
+  ($pinia as Pinia).use(
     PiniaSharedState({
       enable: false,
     })
