@@ -41,19 +41,24 @@ export default defineNuxtConfig({
     detectBrowserLanguage: {
       useCookie: false,
     },
-    langDir: 'locales/',
+    experimental: {
+      jsTsFormatResource: true
+    },
+    langDir: 'locales',
+    lazy: true,
     locales: [
-      { code: 'en', name: 'English', flag: 'GB', iso: 'en-US', file: 'en.js' },
-      { code: 'es', name: 'Español', flag: 'ES', iso: 'es-ES', file: 'es.js' },
-      { code: 'fr', name: 'Français', flag: 'FR', iso: 'fr-FR', file: 'fr.js' },
+      { code: 'en', name: 'English', flag: 'GB', iso: 'en-GB', file: 'en-GB.ts' },
+      { code: 'es', name: 'Español', flag: 'ES', iso: 'es-ES', file: 'es-ES.ts' },
+      { code: 'fr', name: 'Français', flag: 'FR', iso: 'fr-FR', file: 'fr-FR.ts' },
     ],
     strategy: 'no_prefix',
+    vueI18n: 'i18n.config.ts'
   },
   image: {
     domains: [...configuredApi(vidos), ...configuredImageProxy(vidos)],
   },
   imports: {
-    autoImport: false,
+    autoImport: true,
   },
   loadingIndicator: false,
   modules: [
@@ -93,7 +98,7 @@ export default defineNuxtConfig({
   },
   purgeCSS: {
     whitelistPatterns: [/svg.*/, /fa.*/],
-  }, 
+  },
   // sentry: {
   //   dsn: process.env.SENTRY_DSN || '',
   //   // https://sentry.nuxtjs.org/sentry/options

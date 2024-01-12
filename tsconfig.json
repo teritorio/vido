@@ -11,8 +11,6 @@
     "types": [
       "node",
       "@types/node",
-      "@nuxt/types",
-      "@nuxtjs/i18n",
       "@nuxt/image-edge",
       "@nuxtjs/sentry",
       "@types/webpack",
