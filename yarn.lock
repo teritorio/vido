@@ -3097,12 +3097,10 @@ __metadata:
     pinia-shared-state: ^0.4.2
     postcss: ^8.4.24
     postinstall-postinstall: ^2.1.0
-    prettier: ^2.8.8
     reg-suit: ^0.12.1
     sass: ^1.63.4
     sass-loader: ^13.3.2
     stylelint: ^13.13.1
-    stylelint-config-prettier: ^9.0.5
     stylelint-config-standard: ^20.0.0
     stylelint-scss: ^4.7.0
     tailwindcss: ^3.3.2
@@ -14297,15 +14295,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"prettier@npm:^2.8.8":
-  version: 2.8.8
-  resolution: "prettier@npm:2.8.8"
-  bin:
-    prettier: bin-prettier.js
-  checksum: a2afc2fea5326d1e3667e385652f4f82ebb3467a79fd893ad237e683a65ad865ecf108658cfc296cc1224ce5862340417a4eddea2174917d3b4bc732e3e83501
-  languageName: node
-  linkType: hard
-
 "pretty-bytes@npm:^5.6.0":
   version: 5.6.0
   resolution: "pretty-bytes@npm:5.6.0"
@@ -16130,18 +16119,6 @@ __metadata:
   peerDependencies:
     postcss: ^8.2.15
   checksum: 3f21fe87db76737027027c4ac579d18ecfe3ee7e5aed72879456fd076b096dff6df505c30701c11e2c5599c13458ae7780c4d60ade61da82b3c379e980e93298
-  languageName: node
-  linkType: hard
-
-"stylelint-config-prettier@npm:^9.0.5":
-  version: 9.0.5
-  resolution: "stylelint-config-prettier@npm:9.0.5"
-  peerDependencies:
-    stylelint: ">= 11.x < 15"
-  bin:
-    stylelint-config-prettier: bin/check.js
-    stylelint-config-prettier-check: bin/check.js
-  checksum: 5a4bb6f994534ce3bce3cbe9657ade18afb084c372a93e32a24f7c04e73d4fe2dc313aca1ae0515039b49f2fd8d083a85ce109210bf3d633ffc4cd7c6e1e069a
   languageName: node
   linkType: hard
 
