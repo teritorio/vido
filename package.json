@@ -48,7 +48,6 @@
     "lodash.without": "^4.4.0",
     "maplibre-gl": "^3.6.2",
     "nuxt": "^3.2.3",
-    "nuxt-simple-sitemap": "^2.7.0",
     "opening_hours": "^3.8.0",
     "pinia": "^2.0.33",
     "pinia-shared-state": "^0.4.2",
