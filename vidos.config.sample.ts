@@ -1,4 +1,4 @@
-import { VidosConfig } from '~/utils/types-config'
+import type { VidosConfig } from '~/utils/types-config'
 
 const configDefault = {
   API_SEARCH: 'https://search-dev.teritorio.xyz/search',
@@ -11,6 +11,7 @@ const configDefault = {
   MAPILLARY_ACCESS_TOKEN: null,
   COOKIES_CONSENT: null,
   COOKIES_LINK: null,
+  GOOGLE_SITE_VERIFICATION: null,
   GOOGLE_TAG_MANAGER_ID: null,
   MATOMO_URL: null,
   MATOMO_SITEID: null,
