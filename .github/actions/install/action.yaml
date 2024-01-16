@@ -1,7 +1,7 @@
-name: "Install Yarn deps an cache it"
+name: Install Yarn deps an cache it
 
 runs:
-  using: "composite"
+  using: composite
   steps:
     - name: Setup node env 🏗
       uses: actions/setup-node@v2.1.2
