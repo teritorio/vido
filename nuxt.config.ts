@@ -106,21 +106,4 @@ export default defineNuxtConfig({
   vite: {
     optimizeDeps: { exclude: ['fsevents'] },
   },
-  watchers: {
-    chokidar: {
-      // @ts-expect-error: Not sure these watchers are useful
-      ignor: f =>
-        [
-          /\.git/,
-          /\.yarn/,
-          /cypress/,
-          /.*\.story\.vue$/,
-          /\.nuxt\/dist\/server\//,
-        ].some(r => r.test(f)),
-    },
-    webpack: {
-      // @ts-expect-error: Not sure webpack is usefull as we are using Vite
-      ignored: /\.git|\.yarn|cypress|.*\.story\.vue$|\.nuxt\/dist\/server\//,
-    },
-  },
 })
