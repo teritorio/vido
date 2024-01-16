@@ -1,4 +1,5 @@
 import { defineConfig } from 'cypress'
+import installLogsPrinter from 'cypress-terminal-report/src/installLogsPrinter'
 import htmlvalidate from 'cypress-html-validate/plugin'
 
 export default defineConfig({
@@ -6,7 +7,7 @@ export default defineConfig({
     baseUrl: 'http://127.0.0.1:3000',
     retries: 2,
     setupNodeEvents(on, _config) {
-      require('cypress-terminal-report/src/installLogsPrinter')(on)
+      installLogsPrinter(on)
 
       htmlvalidate.install(
         on,
@@ -28,7 +29,7 @@ export default defineConfig({
             '.category-selector',
             '.cookie__bar__buttons',
           ],
-        }
+        },
       )
     },
   },
