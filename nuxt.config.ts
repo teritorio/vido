@@ -42,7 +42,7 @@ export default defineNuxtConfig({
       useCookie: false,
     },
     experimental: {
-      jsTsFormatResource: true
+      jsTsFormatResource: true,
     },
     langDir: 'locales',
     lazy: true,
@@ -52,7 +52,7 @@ export default defineNuxtConfig({
       { code: 'fr', name: 'Français', flag: 'FR', iso: 'fr-FR', file: 'fr-FR.ts' },
     ],
     strategy: 'no_prefix',
-    vueI18n: 'i18n.config.ts'
+    vueI18n: 'config/i18n.config.ts',
   },
   image: {
     domains: [...configuredApi(vidos), ...configuredImageProxy(vidos)],
@@ -67,15 +67,14 @@ export default defineNuxtConfig({
     // process.env.SENTRY_DSN ? ['@nuxtjs/sentry'] : [],
     '@pinia/nuxt',
     async (options, nuxt) => {
-      nuxt.hooks.hook('vite:extendConfig', (config) =>
-        // @ts-ignore
-        config.plugins.push(vuetify())
-      )
+      nuxt.hooks.hook('vite:extendConfig', config =>
+        // @ts-expect-error: Do we really need to extend the config ?
+        config.plugins.push(vuetify()))
     },
   ],
   runtimeConfig: {
     public: {
-      // @ts-ignore
+      // @ts-expect-error: Bad pratice, make it the Nuxt way (https://nuxt.com/docs/guide/going-further/runtime-config)
       vidos: vidos.__publicRuntimeConfig__ ? vidos : undefined,
       cypress: process.env.CYPRESS,
     },
@@ -110,26 +109,26 @@ export default defineNuxtConfig({
     host: '0.0.0.0',
   },
   typescript: {
-    shim: false
+    shim: false,
   },
   vite: {
     optimizeDeps: { exclude: ['fsevents'] },
   },
   watchers: {
     chokidar: {
-      // @ts-ignore
-      ignor: (f) =>
+      // @ts-expect-error: Not sure these watchers are useful
+      ignor: f =>
         [
           /\.git/,
           /\.yarn/,
           /cypress/,
           /.*\.story\.vue$/,
           /\.nuxt\/dist\/server\//,
-        ].some((r) => r.test(f)),
+        ].some(r => r.test(f)),
     },
     webpack: {
-      // @ts-ignore
+      // @ts-expect-error: Not sure webpack is usefull as we are using Vite
       ignored: /\.git|\.yarn|cypress|.*\.story\.vue$|\.nuxt\/dist\/server\//,
     },
-  }
+  },
 })

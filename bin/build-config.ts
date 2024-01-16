@@ -1,6 +1,6 @@
 import vidos from '../vidos.config'
 
-import { VidoConfig } from '~/utils/types-config'
+import type { VidoConfig } from '~/utils/types-config'
 
 const vidoHostConfig: { [key: string]: VidoConfig } = {}
 Object.values(vidos).forEach((vido) => {
