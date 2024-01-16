@@ -1,7 +1,7 @@
-import { MetaObject } from 'nuxt/schema'
+import type { MetaObject } from 'nuxt/schema'
 
-import { MultilingualString } from '~/utils/types'
-import { VidoConfig } from '~/utils/types-config'
+import type { MultilingualString } from '~/utils/types'
+import type { VidoConfig } from '~/utils/types-config'
 
 export interface SiteInfosTheme {
   id: number
@@ -9,17 +9,17 @@ export interface SiteInfosTheme {
   title: MultilingualString
   description: MultilingualString
   keywords: MultilingualString
-  // eslint-disable-next-line camelcase
+
   site_url: MultilingualString
-  // eslint-disable-next-line camelcase
+
   main_url?: MultilingualString
-  // eslint-disable-next-line camelcase
+
   logo_url: string
-  // eslint-disable-next-line camelcase
+
   favicon_url: string
-  // eslint-disable-next-line camelcase
+
   favorites_mode: boolean
-  // eslint-disable-next-line camelcase
+
   explorer_mode: boolean
 }
 
@@ -28,7 +28,7 @@ export interface Settings {
   slug: string
   name: MultilingualString
   attributions: string[]
-  // eslint-disable-next-line camelcase
+
   icon_font_css_url: string
   polygon: {
     type: 'geojson'
@@ -40,11 +40,11 @@ export interface Settings {
       data: string | GeoJSON.Polygon
     }
   }
-  // eslint-disable-next-line camelcase
+
   bbox_line: GeoJSON.LineString
-  // eslint-disable-next-line camelcase
+
   default_country: string
-  // eslint-disable-next-line camelcase
+
   default_country_state_opening_hours: string
 
   themes: SiteInfosTheme[]
@@ -52,14 +52,15 @@ export interface Settings {
 
 export function getSettings(vidoConfig: VidoConfig): Promise<Settings> {
   return fetch(
-    `${vidoConfig.API_ENDPOINT}/${vidoConfig.API_PROJECT}/${vidoConfig.API_THEME}/settings.json`
+    `${vidoConfig.API_ENDPOINT}/${vidoConfig.API_PROJECT}/${vidoConfig.API_THEME}/settings.json`,
   )
     .then((data) => {
       if (data.ok) {
         return data.json() as unknown as Settings
-      } else {
+      }
+      else {
         return Promise.reject(
-          new Error([data.url, data.status, data.statusText].join(' '))
+          new Error([data.url, data.status, data.statusText].join(' ')),
         )
       }
     })
@@ -80,29 +81,28 @@ export function getSettings(vidoConfig: VidoConfig): Promise<Settings> {
           },
           themes: [],
         },
-        json
+        json,
       )
     })
 }
 
 function stripHTML(value?: string): string | undefined {
-  if (value) {
+  if (value)
     return value.replace(/(<([^>]+)>)/gi, '')
-  }
 }
 
 export function headerFromSettings(
   settings: Settings,
   options:
-    | { title?: string; description?: any; googleSiteVerification?: string }
-    | undefined = undefined
+    | { title?: string, description?: any, googleSiteVerification?: string }
+    | undefined = undefined,
 ): MetaObject {
   return {
     htmlAttrs: {
       lang: 'fr',
     },
     title: [settings.themes[0].title.fr, options?.title]
-      .filter((o) => o)
+      .filter(o => o)
       .join(' - '),
     link: [
       {
@@ -119,7 +119,7 @@ export function headerFromSettings(
         rel: 'manifest',
         href: '/manifest.webmanifest',
       },
-    ].filter((meta) => meta.href),
+    ].filter(meta => meta.href),
     meta: [
       {
         // https://nuxtjs.org/docs/2.x/features/meta-tags-seo#local-settings
@@ -127,7 +127,7 @@ export function headerFromSettings(
         name: 'description',
         content:
           stripHTML(
-            options?.description?.fr || settings.themes[0]?.description?.fr
+            options?.description?.fr || settings.themes[0]?.description?.fr,
           ) || '',
       },
       {
@@ -140,6 +140,6 @@ export function headerFromSettings(
         name: 'google-site-verification',
         content: options?.googleSiteVerification,
       },
-    ].filter((meta) => meta.content),
+    ].filter(meta => meta.content),
   }
 }
