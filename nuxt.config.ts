@@ -64,7 +64,6 @@ export default defineNuxtConfig({
   modules: [
     '@nuxtjs/i18n',
     '@nuxt/image-edge',
-    // process.env.SENTRY_DSN ? ['@nuxtjs/sentry'] : [],
     '@pinia/nuxt',
     async (options, nuxt) => {
       nuxt.hooks.hook('vite:extendConfig', config =>
@@ -98,13 +97,6 @@ export default defineNuxtConfig({
   purgeCSS: {
     whitelistPatterns: [/svg.*/, /fa.*/],
   },
-  // sentry: {
-  //   dsn: process.env.SENTRY_DSN || '',
-  //   // https://sentry.nuxtjs.org/sentry/options
-  //   config: {
-  //     // https://docs.sentry.io/platforms/javascript/guides/vue/configuration/options/
-  //   },
-  // },
   server: {
     host: '0.0.0.0',
   },
