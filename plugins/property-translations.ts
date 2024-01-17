@@ -11,11 +11,8 @@ export enum PropertyTranslationsContextEnum {
 const Default = PropertyTranslationsContextEnum.Default
 
 export interface PropertyTranslationsPlugin {
-  // @ts-expect-error
   set(propertyTranslations: PropertyTranslations): void
-  // @ts-expect-error
   p(propertyName: string, context: PropertyTranslationsContextEnum): string
-  // @ts-expect-error
   pv(
     propertyName: string,
     valueName: string,

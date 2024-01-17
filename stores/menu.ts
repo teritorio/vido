@@ -172,7 +172,6 @@ export const menuStore = defineStore('menu', {
                   })
                 }
                 catch (e) {
-                  console.log('Vido error:', e)
                   return undefined
                 }
               })

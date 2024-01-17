@@ -63,20 +63,20 @@ export type Event =
       event: 'open_share' | 'copy_link' | 'export_pdf' | 'export_csv'
     }
   | {
-      type: 'notebook_event'
-      event: 'open'
-    }
+    type: 'notebook_event'
+    event: 'open'
+  }
   | {
-      type: 'external_link'
-      title: string
-      url: string
-    }
+    type: 'external_link'
+    title: string
+    url: string
+  }
   | {
-      type: 'details_event'
-      event: 'favorite'
-      poiId: ApiPoiId
-      title?: string
-    }
+    type: 'details_event'
+    event: 'favorite'
+    poiId: ApiPoiId
+    title?: string
+  }
 
 export interface Tracker {
   consent(app: App): void
