@@ -7,7 +7,7 @@ export default defineNuxtComponent({
     definePageMeta({
       validate({ params }) {
         return (
-          typeof params.p1 === undefined
+          typeof params.p1 === 'undefined'
           || (typeof params.p1 === 'string'
           && /^[-_:a-zA-Z0-9,]+$/.test(params.p1))
         )

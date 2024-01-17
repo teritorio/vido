@@ -76,6 +76,7 @@ export function HstScreenshot(options: ScreenshotPluginOptions = {}): Plugin {
         )
           return
 
+        // eslint-disable-next-line no-console
         console.log(
           'Rendering screenshot for',
           file,
