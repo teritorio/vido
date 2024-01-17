@@ -26,6 +26,7 @@ export default defineNuxtComponent({
     headers(): { value: string, text: string }[] {
       const h = this.fields.map(field => ({
         value: field.field,
+        // @ts-expect-error: Create types for Plugin injection
         text: this.$propertyTranslations.p(
           field.field,
           PropertyTranslationsContextEnum.List,

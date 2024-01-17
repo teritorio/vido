@@ -1,8 +1,7 @@
 import MapPois from '~/components/Map/MapPois.vue'
-import type { MapPoiCollection } from '~/lib/mapPois'
 import { bind, mapCss, parametersMap } from '~/lib/storybook-types'
 
-const pois: MapPoiCollection = require('json-loader!~/cypress/fixtures/teritorio/references/poi/2/deps.geojson')
+import pois from '~/cypress/fixtures/teritorio/references/poi/2/deps.geojson'
 
 export default {
   title: 'Map/MapPois',

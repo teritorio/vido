@@ -1,6 +1,6 @@
 <script lang="ts">
-// @ts-expect-error
 import VueCookieAcceptDecline from 'vue-cookie-accept-decline'
+import type { VidoConfig } from '~/utils/types-config'
 
 import { defineNuxtComponent, useRequestHeaders } from '#app'
 import 'vue-cookie-accept-decline/dist/vue-cookie-accept-decline.css'
@@ -13,7 +13,7 @@ export default defineNuxtComponent({
   },
 
   computed: {
-    vidoConfig() {
+    vidoConfig(): VidoConfig {
       return this.$vidoConfig(useRequestHeaders())
     },
 

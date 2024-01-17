@@ -70,7 +70,7 @@ export default defineNuxtComponent({
           this.colorFill,
           this.colorLine,
           feature.properties['route:point:type']
-          == ApiRouteWaypointType.way_point
+          === ApiRouteWaypointType.way_point
             ? (index++).toString()
             : undefined,
         )

@@ -103,7 +103,7 @@ export const defaultOptions: ApiPoisOptions = {
 
 export function stringifyOptions(options: ApiPoisOptions): string[][] {
   return Object.entries(Object.assign({}, defaultOptions, options))
-    .filter(([k, _v]) => k != 'format')
+    .filter(([k, _v]) => k !== 'format')
     .map(([k, v]) => [k, `${v}`])
 }
 

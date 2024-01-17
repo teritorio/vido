@@ -132,7 +132,7 @@ export default defineNuxtComponent({
       v-for="(filter, filterIndex) in filtersSafeCopy"
       :key="filter.def.property"
     >
-      <div v-if="filter.type == 'boolean'">
+      <div v-if="filter.type === 'boolean'">
         <label class="tw-block tw-mb-1 tw-text-zinc-800">
           <input
             type="checkbox"
@@ -144,7 +144,7 @@ export default defineNuxtComponent({
           {{ (filter.def.name && filter.def.name.fr) || filter.def.property }}
         </label>
       </div>
-      <div v-else-if="filter.type == 'multiselection'">
+      <div v-else-if="filter.type === 'multiselection'">
         <label
           :for="filter.def.property"
           class="tw-block tw-mb-2 tw-text-zinc-500"
@@ -158,7 +158,7 @@ export default defineNuxtComponent({
           @blur="onClickFilter(false)"
         />
       </div>
-      <div v-else-if="filter.type == 'checkboxes_list'">
+      <div v-else-if="filter.type === 'checkboxes_list'">
         <p class="tw-mb-2 tw-text-zinc-500">
           {{ (filter.def.name && filter.def.name.fr) || filter.def.property }}
         </p>
@@ -185,13 +185,13 @@ export default defineNuxtComponent({
           {{ (value.name && value.name.fr) || value.value }}
         </label>
       </div>
-      <div v-else-if="filter.type == 'date_range'">
+      <div v-else-if="filter.type === 'date_range'">
         <DateRange
           :filter="filter"
           @change="onSelectionFilterDateChange(filterIndex, $event)"
         />
       </div>
-      <div v-else-if="filter.type == 'number_range'">
+      <div v-else-if="filter.type === 'number_range'">
         <label class="tw-block tw-mb-1 tw-text-zinc-800">
           {{ (filter.def.name && filter.def.name.fr) || filter.def.property }}
           <NumberRange

@@ -34,15 +34,14 @@ export default defineNuxtComponent({
       if (!oldValue && value) {
         this.building3d = new Building3d({
           building3d: this.pitched,
-          // @ts-expect-error
           container: this.container,
         })
 
         this.map.addControl(this.building3d)
-        this.pitched = this.map.getPitch() != 0
+        this.pitched = this.map.getPitch() !== 0
 
         this.map.on('pitchend', () => {
-          this.pitched = this.map.getPitch() != 0
+          this.pitched = this.map.getPitch() !== 0
         })
       }
     },

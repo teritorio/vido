@@ -1,4 +1,4 @@
-const path = require('node:path')
+import path from 'node:path'
 
 module.exports = {
   stories: [
@@ -15,7 +15,7 @@ module.exports = {
           importLoaders: 1,
         },
         postcssLoaderOptions: {
-          implementation: require('postcss'),
+          implementation: import('postcss'),
         },
       },
     },
@@ -26,7 +26,7 @@ module.exports = {
   core: {
     builder: '@storybook/builder-vite',
   },
-  async viteFinal(config, options) {
+  async viteFinal(config, _options) {
     config.resolve.alias = {
       ...config.resolve.alias,
       '~': path.resolve(__dirname, '../'),

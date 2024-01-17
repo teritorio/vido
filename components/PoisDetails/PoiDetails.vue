@@ -88,7 +88,7 @@ export default defineNuxtComponent({
       }
       else {
         // @ts-expect-error
-        return fields.filter(field => field.field != 'description')
+        return fields.filter(field => field.field !== 'description')
       }
     },
 

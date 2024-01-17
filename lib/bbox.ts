@@ -14,7 +14,7 @@ export function getBBoxFeatures(features: GeoJSON.Feature[]): ITLngLatBounds | n
 
 export function getBBoxFeature(feature: GeoJSON.Feature | Geometry): ITLngLatBounds {
   const geometry: Geometry
-    = feature.type == 'Feature' ? feature.geometry : feature
+    = feature.type === 'Feature' ? feature.geometry : feature
   switch (geometry.type) {
     case 'LineString':
       return (geometry.coordinates as [[number, number]]).reduce(

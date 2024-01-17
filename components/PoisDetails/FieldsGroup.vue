@@ -63,6 +63,7 @@ export default defineNuxtComponent({
 
   methods: {
     fieldTranslateK(field: string) {
+      // @ts-expect-error: Create types for Plugin injection
       return this.$propertyTranslations.p(field, this.context)
     },
 
