@@ -1,18 +1,6 @@
-<template>
-  <Story title="Filters/Select">
-    <Variant
-      v-for="(p, name) in props"
-      :key="name"
-      :title="name.replace(/([A-Z])/g, ' $1').trim()"
-    >
-      <Select v-bind="p" class="v-locale--is-ltr" />
-    </Variant>
-  </Story>
-</template>
-
 <script lang="ts" setup>
 import Select from '~/components/Filters/Select.vue'
-import { FilterList } from '~/lib/apiMenu'
+import type { FilterList } from '~/lib/apiMenu'
 import { FilterValueList } from '~/utils/types-filters'
 
 const def: FilterList = {
@@ -43,3 +31,15 @@ const props = {
   },
 }
 </script>
+
+<template>
+  <Story title="Filters/Select">
+    <Variant
+      v-for="(p, name) in props"
+      :key="name"
+      :title="name.replace(/([A-Z])/g, ' $1').trim()"
+    >
+      <Select v-bind="p" class="v-locale--is-ltr" />
+    </Variant>
+  </Story>
+</template>

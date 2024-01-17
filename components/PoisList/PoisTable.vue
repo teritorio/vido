@@ -1,3 +1,47 @@
+<script lang="ts">
+import type { PropType } from 'vue'
+
+import { defineNuxtComponent } from '#app'
+import Field from '~/components/Fields/Field.vue'
+import type { ApiPois, FieldsListItem } from '~/lib/apiPois'
+import { PropertyTranslationsContextEnum } from '~/plugins/property-translations'
+
+export default defineNuxtComponent({
+  components: {
+    Field,
+  },
+
+  props: {
+    fields: {
+      type: Array as PropType<FieldsListItem[]>,
+      required: true,
+    },
+    pois: {
+      type: Object as PropType<ApiPois>,
+      required: true,
+    },
+  },
+
+  computed: {
+    headers(): { value: string, text: string }[] {
+      const h = this.fields.map(field => ({
+        value: field.field,
+        text: this.$propertyTranslations.p(
+          field.field,
+          PropertyTranslationsContextEnum.List,
+        ),
+      }))
+      h.push({ value: '', text: '' })
+      return h
+    },
+
+    context(): PropertyTranslationsContextEnum {
+      return PropertyTranslationsContextEnum.List
+    },
+  },
+})
+</script>
+
 <template>
   <table>
     <thead>
@@ -35,47 +79,3 @@
     </tbody>
   </table>
 </template>
-
-<script lang="ts">
-import { PropType } from 'vue'
-
-import { defineNuxtComponent } from '#app'
-import Field from '~/components/Fields/Field.vue'
-import { ApiPois, FieldsListItem } from '~/lib/apiPois'
-import { PropertyTranslationsContextEnum } from '~/plugins/property-translations'
-
-export default defineNuxtComponent({
-  components: {
-    Field,
-  },
-
-  props: {
-    fields: {
-      type: Array as PropType<FieldsListItem[]>,
-      required: true,
-    },
-    pois: {
-      type: Object as PropType<ApiPois>,
-      required: true,
-    },
-  },
-
-  computed: {
-    headers(): { value: string; text: string }[] {
-      const h = this.fields.map((field) => ({
-        value: field.field,
-        text: this.$propertyTranslations.p(
-          field.field,
-          PropertyTranslationsContextEnum.List
-        ),
-      }))
-      h.push({ value: '', text: '' })
-      return h
-    },
-
-    context(): PropertyTranslationsContextEnum {
-      return PropertyTranslationsContextEnum.List
-    },
-  },
-})
-</script>

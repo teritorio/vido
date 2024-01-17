@@ -1,20 +1,8 @@
-<template>
-  <Story title="Menu/Category">
-    <Variant
-      v-for="(p, name) in props"
-      :key="name"
-      :title="name.replace(/([A-Z])/g, ' $1').trim()"
-    >
-      <Category v-bind="p" />
-    </Variant>
-  </Story>
-</template>
-
 <script lang="ts" setup>
-import { FontAwesomeIconProps } from '@fortawesome/vue-fontawesome'
+import type { FontAwesomeIconProps } from '@fortawesome/vue-fontawesome'
 
 import Category from '~/components/Menu/Category.vue'
-import { ApiMenuCategory } from '~/lib/apiMenu'
+import type { ApiMenuCategory } from '~/lib/apiMenu'
 
 const category: ApiMenuCategory = {
   id: 123,
@@ -79,3 +67,15 @@ const props = {
   // },
 }
 </script>
+
+<template>
+  <Story title="Menu/Category">
+    <Variant
+      v-for="(p, name) in props"
+      :key="name"
+      :title="name.replace(/([A-Z])/g, ' $1').trim()"
+    >
+      <Category v-bind="p" />
+    </Variant>
+  </Story>
+</template>

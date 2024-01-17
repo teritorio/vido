@@ -1,24 +1,8 @@
-<template>
-  <div
-    ref="container"
-    :class="['maplibregl-ctrl maplibregl-ctrl-group', 'tw-hidden md:tw-block']"
-  >
-    <button
-      id="3D-selector-map"
-      :aria-label="$t('mapControls.threeDAriaLabel')"
-      type="button"
-      :class="pitched && 'maplibregl-ctrl-active'"
-      @click="toggle3D"
-    >
-      3D
-    </button>
-  </div>
-</template>
-
 <script lang="ts">
 import { Building3d } from '@teritorio/map'
 import type { Map } from 'maplibre-gl'
-import { PropType, ref } from 'vue'
+import type { PropType } from 'vue'
+import { ref } from 'vue'
 
 import { defineNuxtComponent } from '#app'
 
@@ -50,7 +34,7 @@ export default defineNuxtComponent({
       if (!oldValue && value) {
         this.building3d = new Building3d({
           building3d: this.pitched,
-          // @ts-ignore
+          // @ts-expect-error
           container: this.container,
         })
 
@@ -68,13 +52,29 @@ export default defineNuxtComponent({
     toggle3D() {
       this.$tracking({ type: 'map_control_event', event: '3d' })
       if (this.building3d) {
-        if (this.pitched) {
+        if (this.pitched)
           this.building3d.set3d(false, 0)
-        } else {
+        else
           this.building3d.set3d(true, 60)
-        }
       }
     },
   },
 })
 </script>
+
+<template>
+  <div
+    ref="container"
+    class="maplibregl-ctrl maplibregl-ctrl-group tw-hidden md:tw-block"
+  >
+    <button
+      id="3D-selector-map"
+      :aria-label="$t('mapControls.threeDAriaLabel')"
+      type="button"
+      :class="pitched && 'maplibregl-ctrl-active'"
+      @click="toggle3D"
+    >
+      3D
+    </button>
+  </div>
+</template>

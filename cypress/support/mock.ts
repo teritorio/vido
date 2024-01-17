@@ -1,9 +1,9 @@
-import { APIFixture } from '~/cypress/fixtures/APIFixture'
+import type { APIFixture } from '~/cypress/fixtures/APIFixture'
 
 export function mockSSRAPI(
   hostnames: { [hostname: string]: string },
   api: APIFixture,
-  routes: { [route: string]: any } = {}
+  routes: { [route: string]: any } = {},
 ) {
   routes = {
     ...routes,
@@ -20,7 +20,7 @@ export function mockSSRAPI(
         url: hostname + path + route,
         statusCode: 200,
         body: json,
-      }))
+      })),
     )
     .flat(1)
 

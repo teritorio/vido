@@ -1,24 +1,10 @@
-<template>
-  <div>
-    <v-select
-      :model-value="currentValue"
-      outlined
-      :label="filter.def.name && filter.def.name.fr"
-      :items="dateFilters"
-      :clearable="true"
-      hide-details="auto"
-      @update:model-value="onChange"
-    />
-  </div>
-</template>
-
 <script lang="ts">
 import copy from 'fast-copy'
-import { PropType } from 'vue'
+import type { PropType } from 'vue'
 import { VSelect } from 'vuetify/components/VSelect'
 
 import { defineNuxtComponent } from '#app'
-import { FilterValueDate } from '~/utils/types-filters'
+import type { FilterValueDate } from '~/utils/types-filters'
 
 export enum DateFilterLabel {
   TODAY = 'today',
@@ -28,7 +14,7 @@ export enum DateFilterLabel {
   NEXT_MONTH = 'nextMonth',
 }
 
-export type DateFilterOption = {
+export interface DateFilterOption {
   title: string
   value: string
   begin: string
@@ -37,11 +23,11 @@ export type DateFilterOption = {
 
 function formatDate(date: Date): string {
   return (
-    date.getFullYear().toString() +
-    '-' +
-    (date.getMonth() + 1).toString().padStart(2, '0') +
-    '-' +
-    date.getDate().toString().padStart(2, '0')
+    `${date.getFullYear().toString()
+    }-${
+    (date.getMonth() + 1).toString().padStart(2, '0')
+    }-${
+    date.getDate().toString().padStart(2, '0')}`
   )
 }
 
@@ -85,31 +71,31 @@ export default defineNuxtComponent({
     return {
       dateFilters: [
         {
-          title: this.$t('dateFilter.' + DateFilterLabel.TODAY),
+          title: this.$t(`dateFilter.${DateFilterLabel.TODAY}`),
           value: DateFilterLabel.TODAY,
           begin: formatDate(today),
           end: formatDate(today),
         },
         {
-          title: this.$t('dateFilter.' + DateFilterLabel.TOMORROW),
+          title: this.$t(`dateFilter.${DateFilterLabel.TOMORROW}`),
           value: DateFilterLabel.TOMORROW,
           begin: formatDate(tomorrow),
           end: formatDate(tomorrow),
         },
         {
-          title: this.$t('dateFilter.' + DateFilterLabel.THIS_WEEKEND),
+          title: this.$t(`dateFilter.${DateFilterLabel.THIS_WEEKEND}`),
           value: DateFilterLabel.THIS_WEEKEND,
           begin: formatDate(saturday),
           end: formatDate(sunday),
         },
         {
-          title: this.$t('dateFilter.' + DateFilterLabel.NEXT_WEEK),
+          title: this.$t(`dateFilter.${DateFilterLabel.NEXT_WEEK}`),
           value: DateFilterLabel.NEXT_WEEK,
           begin: formatDate(today),
           end: formatDate(in7days),
         },
         {
-          title: this.$t('dateFilter.' + DateFilterLabel.NEXT_MONTH),
+          title: this.$t(`dateFilter.${DateFilterLabel.NEXT_MONTH}`),
           value: DateFilterLabel.NEXT_MONTH,
           begin: formatDate(today),
           end: formatDate(in1month),
@@ -121,9 +107,9 @@ export default defineNuxtComponent({
   computed: {
     currentValue(): string | undefined {
       return this.dateFilters.find(
-        (e) =>
-          e.begin === this.filter.filterValueBegin &&
-          e.end === this.filter.filterValueEnd
+        e =>
+          e.begin === this.filter.filterValueBegin
+          && e.end === this.filter.filterValueEnd,
       )?.value
     },
   },
@@ -134,14 +120,15 @@ export default defineNuxtComponent({
 
       if (value) {
         const dateRange = this.dateFilters.find(
-          (e: DateFilterOption) => e.value === value
+          (e: DateFilterOption) => e.value === value,
         )
 
         if (dateRange) {
           newFilter.filterValueBegin = dateRange.begin
           newFilter.filterValueEnd = dateRange.end
         }
-      } else {
+      }
+      else {
         newFilter.filterValueBegin = null
         newFilter.filterValueEnd = null
       }
@@ -151,3 +138,17 @@ export default defineNuxtComponent({
   },
 })
 </script>
+
+<template>
+  <div>
+    <v-select
+      :model-value="currentValue"
+      outlined
+      :label="filter.def.name && filter.def.name.fr"
+      :items="dateFilters"
+      :clearable="true"
+      hide-details="auto"
+      @update:model-value="onChange"
+    />
+  </div>
+</template>

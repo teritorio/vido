@@ -31,7 +31,7 @@ describe('home content', () => {
           type: 'FeatureCollection',
           features: [poi1],
         },
-      }
+      },
     )
 
     cy.get('#open_favourites_notebook')

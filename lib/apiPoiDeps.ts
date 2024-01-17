@@ -1,13 +1,15 @@
-import {
+import type {
   ApiPoi,
   ApiPoiId,
   ApiPoiProperties,
   ApiPoisOptions,
+} from './apiPois'
+import {
   stringifyOptions,
 } from './apiPois'
 
-import { MultilingualString } from '~/utils/types'
-import { VidoConfig } from '~/utils/types-config'
+import type { MultilingualString } from '~/utils/types'
+import type { VidoConfig } from '~/utils/types-config'
 
 export enum ApiRouteWaypointType {
   parking = 'parking',
@@ -37,17 +39,18 @@ export type ApiPoiDeps = GeoJSON.FeatureCollection<
 export function getPoiDepsById(
   vidoConfig: VidoConfig,
   poiId: ApiPoiId | string,
-  options: ApiPoisOptions = {}
+  options: ApiPoisOptions = {},
 ): Promise<ApiPoiDeps> {
   return fetch(
-    `${vidoConfig.API_ENDPOINT}/${vidoConfig.API_PROJECT}/${vidoConfig.API_THEME}/poi/${poiId}/deps.geojson?` +
-      new URLSearchParams(stringifyOptions(options))
+    `${vidoConfig.API_ENDPOINT}/${vidoConfig.API_PROJECT}/${vidoConfig.API_THEME}/poi/${poiId}/deps.geojson?${
+      new URLSearchParams(stringifyOptions(options))}`,
   ).then((data) => {
     if (data.ok) {
       return data.json() as unknown as ApiPoiDeps
-    } else {
+    }
+    else {
       return Promise.reject(
-        new Error([data.url, data.status, data.statusText].join(' '))
+        new Error([data.url, data.status, data.statusText].join(' ')),
       )
     }
   })
@@ -64,7 +67,7 @@ export function apiRouteWaypointToApiPoi(
   waypoint: ApiRouteWaypoint,
   colorFill: string,
   colorLine: string,
-  text?: string
+  text?: string,
 ): ApiPoi {
   return {
     ...waypoint,

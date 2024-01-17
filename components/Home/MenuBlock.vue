@@ -1,18 +1,5 @@
-<template>
-  <aside
-    :class="[
-      'tw-rounded-xl tw-shadow-md tw-pointer-events-auto',
-      !isFilterActive && 'tw-overflow-y-hidden',
-    ]"
-  >
-    <div :class="['tw-px-5 tw-py-4', extraClassTextBackground]">
-      <slot></slot>
-    </div>
-  </aside>
-</template>
-
 <script lang="ts">
-import { PropType } from 'vue'
+import type { PropType } from 'vue'
 
 import { defineNuxtComponent } from '#app'
 
@@ -29,6 +16,18 @@ export default defineNuxtComponent({
   },
 })
 </script>
+
+<template>
+  <aside
+    class="tw-rounded-xl tw-shadow-md tw-pointer-events-auto" :class="[
+      !isFilterActive && 'tw-overflow-y-hidden',
+    ]"
+  >
+    <div class="tw-px-5 tw-py-4" :class="[extraClassTextBackground]">
+      <slot />
+    </div>
+  </aside>
+</template>
 
 <style scoped>
 aside {

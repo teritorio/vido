@@ -1,22 +1,6 @@
-<template>
-  <div v-if="geom.type === 'Point'">
-    <slot></slot>
-    <ExternalLink v-if="href" :href="href" target="_blank">
-      {{ geom.coordinates[1].toFixed(6) }},&nbsp;{{
-        geom.coordinates[0].toFixed(6)
-      }}
-    </ExternalLink>
-    <span v-else>
-      {{ geom.coordinates[1].toFixed(6) }},&nbsp;{{
-        geom.coordinates[0].toFixed(6)
-      }}
-    </span>
-  </div>
-</template>
-
 <script lang="ts">
-import GeoJSON from 'geojson'
-import { PropType } from 'vue'
+import type GeoJSON from 'geojson'
+import type { PropType } from 'vue'
 
 import { defineNuxtComponent } from '#app'
 import ExternalLink from '~/components/UI/ExternalLink.vue'
@@ -47,8 +31,24 @@ export default defineNuxtComponent({
 
   mounted() {
     // isOS is client side only
-    this.href =
-      isIOS !== undefined ? coordinatesHref(this.geom, isIOS()) : undefined
+    this.href
+      = isIOS !== undefined ? coordinatesHref(this.geom, isIOS()) : undefined
   },
 })
 </script>
+
+<template>
+  <div v-if="geom.type === 'Point'">
+    <slot />
+    <ExternalLink v-if="href" :href="href" target="_blank">
+      {{ geom.coordinates[1].toFixed(6) }},&nbsp;{{
+        geom.coordinates[0].toFixed(6)
+      }}
+    </ExternalLink>
+    <span v-else>
+      {{ geom.coordinates[1].toFixed(6) }},&nbsp;{{
+        geom.coordinates[0].toFixed(6)
+      }}
+    </span>
+  </div>
+</template>

@@ -1,5 +1,5 @@
 import { computed } from 'vue'
-import { useScreen, useGrid } from 'vue-screen'
+import { useGrid, useScreen } from 'vue-screen'
 
 import { defineNuxtPlugin } from '#app/nuxt'
 

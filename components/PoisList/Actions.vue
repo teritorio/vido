@@ -1,33 +1,6 @@
-<template>
-  <IconsBar>
-    <IconButton
-      :label="$t('poisTable.showOnMap')"
-      class="tw-w-8 tw-h-8"
-      :href="urlMap"
-      target="_blank"
-    >
-      <FontAwesomeIcon icon="map" :style="{ color: colorLine }" />
-    </IconButton>
-    <IconButton
-      :label="$t('poisTable.downloadCsv')"
-      class="tw-w-8 tw-h-8"
-      :href="urlCsv"
-    >
-      <FontAwesomeIcon icon="file-csv" :style="{ color: colorLine }" />
-    </IconButton>
-    <IconButton
-      :label="$t('poisTable.downloadGeojson')"
-      class="tw-w-8 tw-h-8"
-      :href="urlGeojson"
-    >
-      <FontAwesomeIcon icon="map-marker-alt" :style="{ color: colorLine }" />
-    </IconButton>
-  </IconsBar>
-</template>
-
 <script lang="ts">
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
-import { PropType } from 'vue'
+import type { PropType } from 'vue'
 
 import { defineNuxtComponent, useRequestHeaders } from '#app'
 import IconButton from '~/components/UI/IconButton.vue'
@@ -74,10 +47,37 @@ export default defineNuxtComponent({
         {
           geometry_as: 'point',
           short_description: false,
-          format: format,
-        }
+          format,
+        },
       )
     },
   },
 })
 </script>
+
+<template>
+  <IconsBar>
+    <IconButton
+      :label="$t('poisTable.showOnMap')"
+      class="tw-w-8 tw-h-8"
+      :href="urlMap"
+      target="_blank"
+    >
+      <FontAwesomeIcon icon="map" :style="{ color: colorLine }" />
+    </IconButton>
+    <IconButton
+      :label="$t('poisTable.downloadCsv')"
+      class="tw-w-8 tw-h-8"
+      :href="urlCsv"
+    >
+      <FontAwesomeIcon icon="file-csv" :style="{ color: colorLine }" />
+    </IconButton>
+    <IconButton
+      :label="$t('poisTable.downloadGeojson')"
+      class="tw-w-8 tw-h-8"
+      :href="urlGeojson"
+    >
+      <FontAwesomeIcon icon="map-marker-alt" :style="{ color: colorLine }" />
+    </IconButton>
+  </IconsBar>
+</template>

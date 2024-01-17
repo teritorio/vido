@@ -1,221 +1,9 @@
-<template>
-  <div
-    class="tw-fixed tw-w-full tw-h-full tw-overflow-hidden tw-flex tw-flex-col"
-  >
-    <h1 class="tw-absolute tw-text-white">{{ siteName }}</h1>
-    <header
-      class="tw-flex md:tw-hidden tw-relative tw-fidex tw-top-0 tw-bottom-0 tw-z-10 tw-flex-row tw-w-full tw-space-x-4"
-    >
-      <div :class="['tw-w-full', isBottomMenuOpened && 'tw-hidden']">
-        <client-only>
-          <aside
-            v-if="!isModeExplorerOrFavorites"
-            class="tw-flex tw-flex-col tw-max-h-full tw-px-5 tw-py-4 tw-space-y-6 tw-shadow-md tw-pointer-events-auto md:tw-rounded-xl md:tw-w-96 tw-bg-white tw-min-h-20"
-          >
-            <Search
-              :menu-to-icon="menuItemsToIcons"
-              :map-center="center"
-              @select-feature="searchSelectFeature"
-            >
-              <Logo
-                :main-url="mainUrl"
-                :site-name="siteName"
-                :logo-url="logoUrl"
-                class="tw-flex-none md:tw-hidden tw-mr-2"
-                image-class="tw-max-w-2xl tw-max-h-12 md:tw-max-h-16"
-              />
-            </Search>
-          </aside>
-          <aside
-            v-else
-            class="tw-flex tw-flex-col tw-max-h-full tw-px-5 tw-py-4 tw-space-y-6 tw-shadow-md tw-pointer-events-auto md:tw-rounded-xl md:tw-w-96 tw-bg-blue-500 md:tw-bg-white tw-text-white tw-h-20"
-          >
-            <ExplorerOrFavoritesBack @click="onQuitExplorerFavoriteMode" />
-          </aside>
-        </client-only>
-      </div>
-    </header>
-
-    <div v-if="initialBbox" class="tw-w-full tw-h-full">
-      <header
-        class="tw-pointer-events-none tw-flex tw-flex-row tw-fixed tw-z-10 tw-w-full tw-h-auto tw-p-4 tw-pr-[10px] tw-space-x-4"
-        style="max-height: calc(100vh - 30px)"
-      >
-        <transition-group
-          id="header-menu"
-          ref="headerMenu"
-          tag="div"
-          name="headers"
-          appear
-          mode="out-in"
-          :class="[
-            'tw-hidden md:tw-block',
-            'flex-none tw-max-w-md tw-overflow-y-auto tw-overflow-x-clip flex-shrink-0',
-          ]"
-        >
-          <MenuBlock
-            v-if="isModeExplorerOrFavorites"
-            key="ExplorerOrFavoritesBack"
-            extra-class-text-background="tw-bg-blue-500 tw-text-white"
-          >
-            <ExplorerOrFavoritesBack @click="onQuitExplorerFavoriteMode" />
-          </MenuBlock>
-
-          <Menu
-            v-else
-            key="Menu"
-            menu-block="MenuBlock"
-            :is-on-search="isOnSearch"
-            :is-filter-active="isFilterActive"
-            class="tw-px-1 tw-pb-1.5"
-            @activate-filter="onActivateFilter"
-            @scroll-top="scrollTop"
-          >
-            <Search
-              :menu-to-icon="menuItemsToIcons"
-              :map-center="center"
-              @focus="isOnSearch = true"
-              @blur="isOnSearch = false"
-              @select-feature="searchSelectFeature"
-            >
-              <Logo
-                :main-url="mainUrl"
-                :site-name="siteName"
-                :logo-url="logoUrl"
-                class="tw-flex-none tw-mr-2"
-                image-class="tw-max-w-2xl tw-max-h-12 md:tw-max-h-16"
-              />
-            </Search>
-          </Menu>
-        </transition-group>
-        <SelectedCategories
-          v-if="
-            !isModeExplorer && selectedCategoryIds.length && !isModeFavorites
-          "
-          class="tw-hidden md:tw-block flex-shrink-1"
-        />
-        <div class="tw-grow" style="margin-left: 0" />
-        <div
-          :class="['tw-flex-none', 'tw-flex', isBottomMenuOpened && 'hidden']"
-        >
-          <FavoriteMenu
-            v-if="favoritesModeEnabled"
-            :favorites-ids="favoritesIds"
-            :explore-around-selected-poi="toggleExploreAroundSelectedPoi"
-            :go-to-selected-poi="goToSelectedFeature"
-            :toggle-favorite="toggleFavorite"
-            :explorer-mode-enabled="explorerModeEnabled"
-            @toggle-favorites="onToggleFavoritesMode"
-          />
-          <NavMenu
-            id="nav-menu"
-            :entries="navMenuEntries"
-            class="tw-ml-3 sm:tw-ml-4"
-          />
-        </div>
-      </header>
-
-      <div
-        class="tw-relative tw-flex tw-flex-col tw-w-full tw-h-full md:tw-h-full"
-      >
-        <MapFeatures
-          ref="mapFeatures"
-          :default-bounds="initialBbox"
-          :fit-bounds-padding-options="fitBoundsPaddingOptions"
-          :extra-attributions="settings.attributions"
-          :small="isBottomMenuOpened"
-          :categories="apiMenuCategory || []"
-          :features="mapFeatures"
-          :selected-categories-ids="isModeExplorer ? [] : selectedCategoryIds"
-          :style-icon-filter="poiFilters"
-          :explorer-mode-enabled="explorerModeEnabled"
-          :enable-filter-route-by-categories="!isModeFavorites"
-          :enable-filter-route-by-features="isModeFavorites"
-          :boundary-area="boundaryArea || settings.polygon.data"
-        >
-          <div class="tw-relative">
-            <button
-              v-if="
-                !(isModeExplorer || isModeFavorites) || Boolean(selectedFeature)
-              "
-              type="button"
-              class="md:tw-hidden tw-absolute -tw-top-12 tw-z-0 tw-w-1/4 tw-h-12 tw-transition-all tw-rounded-t-lg tw-text-sm tw-font-medium tw-px-5 tw-shadow-lg tw-outline-none focus:tw-outline-none tw-bg-white tw-text-zinc-800 hover:tw-bg-zinc-100 focus-visible:tw-bg-zinc-100"
-              style="right: 37.5%"
-              @click="onBottomMenuButtonClick"
-            >
-              <span class="tw-sr-only">{{ $t('headerMenu.categories') }}</span>
-              <FontAwesomeIcon icon="grip-lines" size="lg" />
-            </button>
-          </div>
-        </MapFeatures>
-      </div>
-    </div>
-
-    <FavoritesOverlay
-      v-if="showFavoritesOverlay"
-      @discard="showFavoritesOverlay = false"
-    />
-    <div
-      class="tw-hidden tw-fixed tw-inset-x-0 tw-bottom-0 md:tw-flex tw-overflow-y-auto tw-h-auto md:tw-left-8 md:tw-right-16 md:tw-bottom-5 tw-pointer-events-none"
-    >
-      <div class="tw-w-full tw-max-w-md" />
-      <div class="tw-grow-[1]" />
-      <PoiCard
-        v-if="
-          selectedFeature &&
-          selectedFeature.properties &&
-          selectedFeature.properties.metadata &&
-          showPoi
-        "
-        :poi="selectedFeature"
-        class="tw-grow-0"
-        :explorer-mode-enabled="explorerModeEnabled"
-        :favorites-mode-enabled="favoritesModeEnabled"
-        @explore-click="toggleExploreAroundSelectedPoi"
-        @favorite-click="toggleFavorite"
-        @zoom-click="goToSelectedFeature"
-      />
-      <div class="tw-grow-[3]" />
-    </div>
-
-    <BottomMenu class="md:tw-hidden" :is-open="isBottomMenuOpened">
-      <div
-        ref="bottomMenu"
-        class="tw-flex-1 tw-h-full tw-overflow-y-auto tw-h-screen-3/5 tw-divide-y"
-      >
-        <Menu
-          v-if="!showPoi"
-          menu-block="MenuBlockBottom"
-          @scroll-top="scrollTop"
-        />
-        <PoiCard
-          v-else-if="
-            selectedFeature &&
-            selectedFeature.properties &&
-            selectedFeature.properties.metadata &&
-            showPoi
-          "
-          :poi="selectedFeature"
-          class="tw-grow-0 tw-text-left tw-h-full"
-          :explorer-mode-enabled="explorerModeEnabled"
-          :favorites-mode-enabled="favoritesModeEnabled"
-          @explore-click="toggleExploreAroundSelectedPoi"
-          @favorite-click="toggleFavorite"
-          @zoom-click="goToSelectedFeature"
-        />
-      </div>
-    </BottomMenu>
-    <footer class="tw-z-20">
-      <CookiesConsent />
-    </footer>
-  </div>
-</template>
-
 <script lang="ts">
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import type { FitBoundsOptions } from 'maplibre-gl'
 import { mapActions, mapState } from 'pinia'
-import { PropType, ref } from 'vue'
+import type { PropType } from 'vue'
+import { ref } from 'vue'
 
 import { defineNuxtComponent, useRequestHeaders } from '#app'
 import ExplorerOrFavoritesBack from '~/components/Home/ExplorerOrFavoritesBack.vue'
@@ -232,9 +20,10 @@ import PoiCard from '~/components/PoisCard/PoiCard.vue'
 import Search from '~/components/Search/Search.vue'
 import CookiesConsent from '~/components/UI/CookiesConsent.vue'
 import Logo from '~/components/UI/Logo.vue'
-import { ContentEntry } from '~/lib/apiContent'
-import { MenuItem } from '~/lib/apiMenu'
-import { ApiPoi, getPois } from '~/lib/apiPois'
+import type { ContentEntry } from '~/lib/apiContent'
+import type { MenuItem } from '~/lib/apiMenu'
+import type { ApiPoi } from '~/lib/apiPois'
+import { getPois } from '~/lib/apiPois'
 import { getBBoxFeature, getBBoxFeatures } from '~/lib/bbox'
 import { favoritesStore } from '~/stores/favorite'
 import { mapStore } from '~/stores/map'
@@ -322,8 +111,8 @@ export default defineNuxtComponent({
 
     isBottomMenuOpened(): boolean {
       return (
-        (this.$device.value.smallScreen && this.isPoiCardVisible) ||
-        this.isMenuItemOpen
+        (this.$device.value.smallScreen && this.isPoiCardVisible)
+        || this.isMenuItemOpen
       )
     },
 
@@ -345,7 +134,8 @@ export default defineNuxtComponent({
           right: 100,
           left: 50,
         }
-      } else {
+      }
+      else {
         return {
           top: 100,
           bottom: this.isPoiCardVisible ? 400 : 100,
@@ -381,8 +171,8 @@ export default defineNuxtComponent({
         this.$tracking({
           type: 'popup',
           poiId:
-            this.selectedFeature.properties.metadata.id ||
-            this.selectedFeature.properties?.id,
+            this.selectedFeature.properties.metadata.id
+              || this.selectedFeature.properties?.id,
           title: this.selectedFeature.properties?.name,
           location: window.location.href,
           path: this.$route.path,
@@ -420,10 +210,10 @@ export default defineNuxtComponent({
 
   beforeMount() {
     const modeHash = getHashPart(this.$router, 'mode')
-    this.mode =
-      Mode[
+    this.mode
+      = Mode[
         Object.keys(Mode).find(
-          (key) => Mode[key as keyof typeof Mode] === modeHash
+          key => Mode[key as keyof typeof Mode] === modeHash,
         ) as keyof typeof Mode
       ] || Mode.BROWSER
 
@@ -432,16 +222,17 @@ export default defineNuxtComponent({
       try {
         const newFavorite = favs
           .split(',')
-          .map((e) => (!isNaN(Number(e)) ? Number(e) : null))
-          .filter((e) => !!e) as number[]
+          .map(e => (!isNaN(Number(e)) ? Number(e) : null))
+          .filter(e => !!e) as number[]
 
         this.setFavorites(newFavorite)
         this.handleFavorites()
-      } catch (e) {
-        // eslint-disable-next-line no-console
+      }
+      catch (e) {
         console.error('Vido error:', (e as Error).message)
       }
-    } else {
+    }
+    else {
       favoritesStore().initFavoritesFromLocalStorage()
     }
   },
@@ -461,15 +252,16 @@ export default defineNuxtComponent({
 
     if (this.mode === Mode.FAVORITES) {
       this.handleFavorites().then((favorites) => {
-        if (favorites) {
+        if (favorites)
           this.initialBbox = getBBoxFeatures(favorites)
-        }
       })
-    } else {
+    }
+    else {
       if (this.boundaryArea) {
         this.initialBbox = getBBoxFeature(this.boundaryArea)
-      } else {
-        // @ts-ignore
+      }
+      else {
+        // @ts-expect-error
         this.initialBbox = this.settings.bbox_line.coordinates
       }
     }
@@ -480,15 +272,14 @@ export default defineNuxtComponent({
 
     routerPushUrl(hashUpdate: { [key: string]: string | null } = {}) {
       const categoryIds = this.selectedCategoryIds.join(',')
-      const id =
-        this.selectedFeature?.properties?.metadata?.id?.toString() ||
-        this.selectedFeature?.id?.toString() ||
-        null
+      const id
+        = this.selectedFeature?.properties?.metadata?.id?.toString()
+        || this.selectedFeature?.id?.toString()
+        || null
 
       let hash = this.$router.currentRoute.value.hash
-      if (hashUpdate) {
+      if (hashUpdate)
         hash = setHashParts(hash, hashUpdate)
-      }
 
       this.$router.push({
         path:
@@ -508,21 +299,23 @@ export default defineNuxtComponent({
     onBottomMenuButtonClick() {
       if (!this.isModeFavorites) {
         if (this.isBottomMenuOpened) {
-          if (this.selectedFeature) {
+          if (this.selectedFeature)
             this.setPoiVisibility(false)
-          }
+
           this.isMenuItemOpen = false
-        } else if (!this.isModeExplorer) {
+        }
+        else if (!this.isModeExplorer) {
           this.isMenuItemOpen = true
-        } else if (this.selectedFeature && !this.isPoiCardVisible) {
+        }
+        else if (this.selectedFeature && !this.isPoiCardVisible) {
           this.setPoiVisibility(true)
         }
-      } else if (this.selectedFeature) {
-        if (!this.isModeExplorer && !this.showPoi) {
+      }
+      else if (this.selectedFeature) {
+        if (!this.isModeExplorer && !this.showPoi)
           this.setSelectedFeature(null)
-        } else {
+        else
           this.setPoiVisibility(false)
-        }
       }
     },
 
@@ -535,17 +328,17 @@ export default defineNuxtComponent({
     },
 
     toggleExploreAroundSelectedPoi(feature?: ApiPoi) {
-      if (feature) {
+      if (feature)
         this.setSelectedFeature(feature)
-      }
+
       if (!this.isModeExplorer) {
         this.mode = Mode.EXPLORER
         this.goToSelectedFeature()
 
-        if (this.$device.value.smallScreen) {
+        if (this.$device.value.smallScreen)
           this.showPoi = false
-        }
-      } else {
+      }
+      else {
         this.allowRegionBackZoom = false
         this.mode = Mode.BROWSER
       }
@@ -554,8 +347,8 @@ export default defineNuxtComponent({
     toggleFavorite(feature: ApiPoi) {
       try {
         favoritesStore().toggleFavorite(feature)
-      } catch (e) {
-        // eslint-disable-next-line no-console
+      }
+      catch (e) {
         console.error('Vido error:', (e as Error).message)
       }
     },
@@ -567,24 +360,23 @@ export default defineNuxtComponent({
     onToggleFavoritesMode() {
       if (this.favoritesIds?.length > 0) {
         this.$tracking({ type: 'map_control_event', event: 'favorite' })
-        if (!this.isModeFavorites) {
+        if (!this.isModeFavorites)
           this.mode = Mode.FAVORITES
-        } else {
+        else
           this.mode = Mode.BROWSER
-        }
-      } else {
+      }
+      else {
         this.showFavoritesOverlay = true
       }
     },
 
     scrollTop() {
-      if (this.bottomMenu) {
+      if (this.bottomMenu)
         this.bottomMenu.scrollTop = 0
-      }
+
       const header = document.getElementById('header-menu')
-      if (header) {
+      if (header)
         header.scrollTop = 0
-      }
     },
 
     handleFavorites(): Promise<void | ApiPoi[]> {
@@ -594,7 +386,6 @@ export default defineNuxtComponent({
           return this.favorites
         })
         .catch((e) => {
-          // eslint-disable-next-line no-console
           console.error('Vido error:', (e as Error).message)
         })
     },
@@ -603,15 +394,15 @@ export default defineNuxtComponent({
       return getPois(this.$vidoConfig(useRequestHeaders()), ids, {
         geometry_as: 'point',
       })
-        .then((pois) => (pois && pois.features) || [])
-        .then((pois) =>
-          pois.map((poi) => ({
+        .then(pois => (pois && pois.features) || [])
+        .then(pois =>
+          pois.map(poi => ({
             ...poi,
             properties: {
               ...poi.properties,
               vido_cat: poi.properties.metadata?.category_ids?.[0],
             },
-          }))
+          })),
         )
     },
 
@@ -622,6 +413,218 @@ export default defineNuxtComponent({
   },
 })
 </script>
+
+<template>
+  <div
+    class="tw-fixed tw-w-full tw-h-full tw-overflow-hidden tw-flex tw-flex-col"
+  >
+    <h1 class="tw-absolute tw-text-white">
+      {{ siteName }}
+    </h1>
+    <header
+      class="tw-flex md:tw-hidden tw-relative tw-fidex tw-top-0 tw-bottom-0 tw-z-10 tw-flex-row tw-w-full tw-space-x-4"
+    >
+      <div class="tw-w-full" :class="[isBottomMenuOpened && 'tw-hidden']">
+        <client-only>
+          <aside
+            v-if="!isModeExplorerOrFavorites"
+            class="tw-flex tw-flex-col tw-max-h-full tw-px-5 tw-py-4 tw-space-y-6 tw-shadow-md tw-pointer-events-auto md:tw-rounded-xl md:tw-w-96 tw-bg-white tw-min-h-20"
+          >
+            <Search
+              :menu-to-icon="menuItemsToIcons"
+              :map-center="center"
+              @select-feature="searchSelectFeature"
+            >
+              <Logo
+                :main-url="mainUrl"
+                :site-name="siteName"
+                :logo-url="logoUrl"
+                class="tw-flex-none md:tw-hidden tw-mr-2"
+                image-class="tw-max-w-2xl tw-max-h-12 md:tw-max-h-16"
+              />
+            </Search>
+          </aside>
+          <aside
+            v-else
+            class="tw-flex tw-flex-col tw-max-h-full tw-px-5 tw-py-4 tw-space-y-6 tw-shadow-md tw-pointer-events-auto md:tw-rounded-xl md:tw-w-96 tw-bg-blue-500 md:tw-bg-white tw-text-white tw-h-20"
+          >
+            <ExplorerOrFavoritesBack @click="onQuitExplorerFavoriteMode" />
+          </aside>
+        </client-only>
+      </div>
+    </header>
+
+    <div v-if="initialBbox" class="tw-w-full tw-h-full">
+      <header
+        class="tw-pointer-events-none tw-flex tw-flex-row tw-fixed tw-z-10 tw-w-full tw-h-auto tw-p-4 tw-pr-[10px] tw-space-x-4"
+        style="max-height: calc(100vh - 30px)"
+      >
+        <transition-group
+          id="header-menu"
+          ref="headerMenu"
+          tag="div"
+          name="headers"
+          appear
+          mode="out-in"
+          class="tw-hidden md:tw-block flex-none tw-max-w-md tw-overflow-y-auto tw-overflow-x-clip flex-shrink-0"
+        >
+          <MenuBlock
+            v-if="isModeExplorerOrFavorites"
+            key="ExplorerOrFavoritesBack"
+            extra-class-text-background="tw-bg-blue-500 tw-text-white"
+          >
+            <ExplorerOrFavoritesBack @click="onQuitExplorerFavoriteMode" />
+          </MenuBlock>
+
+          <Menu
+            v-else
+            key="Menu"
+            menu-block="MenuBlock"
+            :is-on-search="isOnSearch"
+            :is-filter-active="isFilterActive"
+            class="tw-px-1 tw-pb-1.5"
+            @activate-filter="onActivateFilter"
+            @scroll-top="scrollTop"
+          >
+            <Search
+              :menu-to-icon="menuItemsToIcons"
+              :map-center="center"
+              @focus="isOnSearch = true"
+              @blur="isOnSearch = false"
+              @select-feature="searchSelectFeature"
+            >
+              <Logo
+                :main-url="mainUrl"
+                :site-name="siteName"
+                :logo-url="logoUrl"
+                class="tw-flex-none tw-mr-2"
+                image-class="tw-max-w-2xl tw-max-h-12 md:tw-max-h-16"
+              />
+            </Search>
+          </Menu>
+        </transition-group>
+        <SelectedCategories
+          v-if="
+            !isModeExplorer && selectedCategoryIds.length && !isModeFavorites
+          "
+          class="tw-hidden md:tw-block flex-shrink-1"
+        />
+        <div class="tw-grow" style="margin-left: 0" />
+        <div
+          class="tw-flex-none tw-flex" :class="[isBottomMenuOpened && 'hidden']"
+        >
+          <FavoriteMenu
+            v-if="favoritesModeEnabled"
+            :favorites-ids="favoritesIds"
+            :explore-around-selected-poi="toggleExploreAroundSelectedPoi"
+            :go-to-selected-poi="goToSelectedFeature"
+            :toggle-favorite="toggleFavorite"
+            :explorer-mode-enabled="explorerModeEnabled"
+            @toggle-favorites="onToggleFavoritesMode"
+          />
+          <NavMenu
+            id="nav-menu"
+            :entries="navMenuEntries"
+            class="tw-ml-3 sm:tw-ml-4"
+          />
+        </div>
+      </header>
+
+      <div
+        class="tw-relative tw-flex tw-flex-col tw-w-full tw-h-full md:tw-h-full"
+      >
+        <MapFeatures
+          ref="mapFeatures"
+          :default-bounds="initialBbox"
+          :fit-bounds-padding-options="fitBoundsPaddingOptions"
+          :extra-attributions="settings.attributions"
+          :small="isBottomMenuOpened"
+          :categories="apiMenuCategory || []"
+          :features="mapFeatures"
+          :selected-categories-ids="isModeExplorer ? [] : selectedCategoryIds"
+          :style-icon-filter="poiFilters"
+          :explorer-mode-enabled="explorerModeEnabled"
+          :enable-filter-route-by-categories="!isModeFavorites"
+          :enable-filter-route-by-features="isModeFavorites"
+          :boundary-area="boundaryArea || settings.polygon.data"
+        >
+          <div class="tw-relative">
+            <button
+              v-if="
+                !(isModeExplorer || isModeFavorites) || Boolean(selectedFeature)
+              "
+              type="button"
+              class="md:tw-hidden tw-absolute -tw-top-12 tw-z-0 tw-w-1/4 tw-h-12 tw-transition-all tw-rounded-t-lg tw-text-sm tw-font-medium tw-px-5 tw-shadow-lg tw-outline-none focus:tw-outline-none tw-bg-white tw-text-zinc-800 hover:tw-bg-zinc-100 focus-visible:tw-bg-zinc-100"
+              style="right: 37.5%"
+              @click="onBottomMenuButtonClick"
+            >
+              <span class="tw-sr-only">{{ $t('headerMenu.categories') }}</span>
+              <FontAwesomeIcon icon="grip-lines" size="lg" />
+            </button>
+          </div>
+        </MapFeatures>
+      </div>
+    </div>
+
+    <FavoritesOverlay
+      v-if="showFavoritesOverlay"
+      @discard="showFavoritesOverlay = false"
+    />
+    <div
+      class="tw-hidden tw-fixed tw-inset-x-0 tw-bottom-0 md:tw-flex tw-overflow-y-auto tw-h-auto md:tw-left-8 md:tw-right-16 md:tw-bottom-5 tw-pointer-events-none"
+    >
+      <div class="tw-w-full tw-max-w-md" />
+      <div class="tw-grow-[1]" />
+      <PoiCard
+        v-if="
+          selectedFeature
+            && selectedFeature.properties
+            && selectedFeature.properties.metadata
+            && showPoi
+        "
+        :poi="selectedFeature"
+        class="tw-grow-0"
+        :explorer-mode-enabled="explorerModeEnabled"
+        :favorites-mode-enabled="favoritesModeEnabled"
+        @explore-click="toggleExploreAroundSelectedPoi"
+        @favorite-click="toggleFavorite"
+        @zoom-click="goToSelectedFeature"
+      />
+      <div class="tw-grow-[3]" />
+    </div>
+
+    <BottomMenu class="md:tw-hidden" :is-open="isBottomMenuOpened">
+      <div
+        ref="bottomMenu"
+        class="tw-flex-1 tw-h-full tw-overflow-y-auto tw-h-screen-3/5 tw-divide-y"
+      >
+        <Menu
+          v-if="!showPoi"
+          menu-block="MenuBlockBottom"
+          @scroll-top="scrollTop"
+        />
+        <PoiCard
+          v-else-if="
+            selectedFeature
+              && selectedFeature.properties
+              && selectedFeature.properties.metadata
+              && showPoi
+          "
+          :poi="selectedFeature"
+          class="tw-grow-0 tw-text-left tw-h-full"
+          :explorer-mode-enabled="explorerModeEnabled"
+          :favorites-mode-enabled="favoritesModeEnabled"
+          @explore-click="toggleExploreAroundSelectedPoi"
+          @favorite-click="toggleFavorite"
+          @zoom-click="goToSelectedFeature"
+        />
+      </div>
+    </BottomMenu>
+    <footer class="tw-z-20">
+      <CookiesConsent />
+    </footer>
+  </div>
+</template>
 
 <style scoped>
 .headers-enter-active,

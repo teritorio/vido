@@ -1,5 +1,5 @@
 import NumberRange from '~/components/Filters/NumberRange.vue'
-import { FilterNumberRange } from '~/lib/apiMenu'
+import type { FilterNumberRange } from '~/lib/apiMenu'
 import { bind } from '~/lib/storybook-types'
 import { FilterValueNumberRange } from '~/utils/types-filters'
 

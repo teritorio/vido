@@ -1,17 +1,5 @@
-<template>
-  <Story title="Fields/Field">
-    <Variant
-      v-for="(p, name) in props"
-      :key="name"
-      :title="name.replace(/([A-Z])/g, ' $1').trim()"
-    >
-      <Field v-bind="p" />
-    </Variant>
-  </Story>
-</template>
-
 <script lang="ts" setup>
-import GeoJSON from 'geojson'
+import type GeoJSON from 'geojson'
 
 import Field from '~/components/Fields/Field.vue'
 import { PropertyTranslationsContextEnum } from '~/plugins/property-translations'
@@ -29,8 +17,8 @@ const defaultProps = {
   } as GeoJSON.Geometry,
 }
 
-const description =
-  "Itinéraire très intéressant, d'une part pour sa variété paysagère accentuée par la traversée fréquente de cours d'eau et d'autre part, par la qualité du patrimoine bâti : maisons traditionnelles landaises, église en garluche. \n\nDistance : 10,2 km - Durée : 4h45 - Animaux tenus en laisse  - Sentier pédestre et VTT \nFiche rando disponible dans le topoguide du Département des Landes du Pays de Born n°15 (en vente : 2 €)"
+const description
+  = 'Itinéraire très intéressant, d\'une part pour sa variété paysagère accentuée par la traversée fréquente de cours d\'eau et d\'autre part, par la qualité du patrimoine bâti : maisons traditionnelles landaises, église en garluche. \n\nDistance : 10,2 km - Durée : 4h45 - Animaux tenus en laisse  - Sentier pédestre et VTT \nFiche rando disponible dans le topoguide du Département des Landes du Pays de Born n°15 (en vente : 2 €)'
 
 const props = {
   Default: {
@@ -78,7 +66,7 @@ const props = {
     ...defaultProps,
     field: { field: 'addr' },
     properties: {
-      metadata: { id: 0 },
+      'metadata': { id: 0 },
       'addr:housenumber': '33',
       'addr:street': 'Rue du Nord',
       'addr:postcode': '35677',
@@ -146,7 +134,7 @@ const props = {
     ...defaultProps,
     field: { field: 'route:gpx_trace' },
     properties: {
-      metadata: { id: 0 },
+      'metadata': { id: 0 },
       'route:gpx_trace': 'https://cdt40.tourinsoft.com/upload/15.8.gpx',
     },
   },
@@ -154,7 +142,7 @@ const props = {
     ...defaultProps,
     field: { field: 'route:pdf' },
     properties: {
-      metadata: { id: 0 },
+      'metadata': { id: 0 },
       'route:pdf': 'https://cdt40.tourinsoft.com/upload/ITIAQU040V502MFU.pdf',
     },
   },
@@ -183,3 +171,15 @@ const props = {
 //   },
 // })
 </script>
+
+<template>
+  <Story title="Fields/Field">
+    <Variant
+      v-for="(p, name) in props"
+      :key="name"
+      :title="name.replace(/([A-Z])/g, ' $1').trim()"
+    >
+      <Field v-bind="p" />
+    </Variant>
+  </Story>
+</template>

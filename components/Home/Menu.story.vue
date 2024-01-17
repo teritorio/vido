@@ -1,19 +1,7 @@
-<template>
-  <Story title="Home/Menu">
-    <Variant
-      v-for="(p, name) in props"
-      :key="name"
-      :title="name.replace(/([A-Z])/g, ' $1').trim()"
-    >
-      <MenuMock v-bind="p" />
-    </Variant>
-  </Story>
-</template>
-
 <script lang="ts" setup>
 import { defineNuxtComponent } from '#app'
 import Menu from '~/components/Home/Menu.vue'
-import {
+import type {
   ApiMenuCategory,
   ApiMenuLink,
   MenuGroup,
@@ -127,10 +115,10 @@ const MenuMock = defineNuxtComponent({
   computed: {
     menuItems(): Record<ApiMenuCategory['id'], MenuItem> {
       return Object.fromEntries(
-        [search, menuGroup1, menuGroup2, menuLink, category].map((i) => [
+        [search, menuGroup1, menuGroup2, menuLink, category].map(i => [
           i.id,
           i,
-        ])
+        ]),
       )
     },
   },
@@ -142,3 +130,15 @@ const props = {
   },
 }
 </script>
+
+<template>
+  <Story title="Home/Menu">
+    <Variant
+      v-for="(p, name) in props"
+      :key="name"
+      :title="name.replace(/([A-Z])/g, ' $1').trim()"
+    >
+      <MenuMock v-bind="p" />
+    </Variant>
+  </Story>
+</template>

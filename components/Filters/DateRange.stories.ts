@@ -1,5 +1,5 @@
 import DateRange from '~/components/Filters/DateRange.vue'
-import { FilterDate } from '~/lib/apiMenu'
+import type { FilterDate } from '~/lib/apiMenu'
 import { bind } from '~/lib/storybook-types'
 import { FilterValueDate } from '~/utils/types-filters'
 

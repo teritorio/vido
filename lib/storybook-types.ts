@@ -1,7 +1,7 @@
 import mockStyleGL from './storybook-types-mock-stylegl'
 
-type Args = { [key: string]: any }
-type Def = {
+interface Args { [key: string]: any }
+interface Def {
   args: Args | null
   __call__: (args: Args) => any
   bind: (context: object) => Def
@@ -61,7 +61,7 @@ export function bind<T>(
     id?: string
     classs?: string
     style?: string
-  } = {}
+  } = {},
 ) {
   const Template = (args: Args) =>
     ({
@@ -75,7 +75,7 @@ export function bind<T>(
     } as unknown as Def)
 
   const b = Template.bind({})
-  // @ts-ignore
+  // @ts-expect-error
   b.args = args
   return b
 }

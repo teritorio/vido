@@ -1,6 +1,6 @@
 /// <reference types="cypress" />
 
-// @ts-ignore
+// @ts-expect-error
 declare global {
   namespace Cypress {
     interface Chainable {
@@ -9,12 +9,12 @@ declare global {
   }
 }
 
-// @ts-ignore
+// @ts-expect-error
 Cypress.Commands.add('clearSSRMocks', () => {
   cy.request('POST', '/__cypress_set_mocks', [])
 })
 
 after(() => {
-  // @ts-ignore
+  // @ts-expect-error
   cy.clearSSRMocks()
 })

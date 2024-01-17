@@ -1,27 +1,6 @@
-<template>
-  <div
-    :class="[
-      'block-block',
-      'tw-relative tw-detail-left-block tw-flex tw-flex-col tw-justify-start tw-z-0',
-    ]"
-    :style="`
-      background-color: ${colorFill};
-    `"
-  >
-    <div class="tw-relative tw-z-10">
-      <slot id="block-content"></slot>
-    </div>
-    <FontAwesomeIcon
-      prefix="fa"
-      :icon="icon"
-      :class="['block-block-icon', 'tw-absolute tw-z-0']"
-    />
-  </div>
-</template>
-
 <script lang="ts">
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
-import { PropType } from 'vue'
+import type { PropType } from 'vue'
 
 import { defineNuxtComponent } from '#app'
 
@@ -42,6 +21,24 @@ export default defineNuxtComponent({
   },
 })
 </script>
+
+<template>
+  <div
+    class="block-block tw-relative tw-detail-left-block tw-flex tw-flex-col tw-justify-start tw-z-0"
+    :style="`
+      background-color: ${colorFill};
+    `"
+  >
+    <div class="tw-relative tw-z-10">
+      <slot id="block-content" />
+    </div>
+    <FontAwesomeIcon
+      prefix="fa"
+      :icon="icon"
+      class="block-block-icon tw-absolute tw-z-0"
+    />
+  </div>
+</template>
 
 <style lang="css" scoped>
 .block-block {

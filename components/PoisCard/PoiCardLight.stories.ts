@@ -1,5 +1,5 @@
 import PoiCardLight from '~/components/PoisCard/PoiCardLight.vue'
-import { ApiPoi } from '~/lib/apiPois'
+import type { ApiPoi } from '~/lib/apiPois'
 import { bind } from '~/lib/storybook-types'
 import '@teritorio/font-teritorio/teritorio/teritorio.css'
 

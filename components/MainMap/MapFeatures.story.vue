@@ -1,21 +1,9 @@
-<template>
-  <Story title="MainMap/MapFeatures">
-    <Variant
-      v-for="(p, name) in props"
-      :key="name"
-      :title="name.replace(/([A-Z])/g, ' $1').trim()"
-    >
-      <MapFeatures :style="mapCss" v-bind="p" />
-    </Variant>
-  </Story>
-</template>
-
 <script lang="ts" setup>
 import type { LngLatBoundsLike } from 'maplibre-gl'
 
 import MapFeatures from '~/components/MainMap/MapFeatures.vue'
-import { ApiMenuCategory } from '~/lib/apiMenu'
-import { ApiPoi } from '~/lib/apiPois'
+import type { ApiMenuCategory } from '~/lib/apiMenu'
+import type { ApiPoi } from '~/lib/apiPois'
 import { mapCss } from '~/lib/storybook-types'
 
 // ...parametersMap,
@@ -91,3 +79,15 @@ const props = {
   },
 }
 </script>
+
+<template>
+  <Story title="MainMap/MapFeatures">
+    <Variant
+      v-for="(p, name) in props"
+      :key="name"
+      :title="name.replace(/([A-Z])/g, ' $1').trim()"
+    >
+      <MapFeatures :style="mapCss" v-bind="p" />
+    </Variant>
+  </Story>
+</template>

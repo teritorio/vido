@@ -1,18 +1,6 @@
-<template>
-  <Story title="Filters/DateRange">
-    <Variant
-      v-for="(p, name) in props"
-      :key="name"
-      :title="name.replace(/([A-Z])/g, ' $1').trim()"
-    >
-      <DateRange v-bind="p" />
-    </Variant>
-  </Story>
-</template>
-
 <script lang="ts" setup>
 import DateRange from '~/components/Filters/DateRange.vue'
-import { FilterDate } from '~/lib/apiMenu'
+import type { FilterDate } from '~/lib/apiMenu'
 import { FilterValueDate } from '~/utils/types-filters'
 
 const def: FilterDate = {
@@ -36,3 +24,15 @@ const props = {
   },
 }
 </script>
+
+<template>
+  <Story title="Filters/DateRange">
+    <Variant
+      v-for="(p, name) in props"
+      :key="name"
+      :title="name.replace(/([A-Z])/g, ' $1').trim()"
+    >
+      <DateRange v-bind="p" />
+    </Variant>
+  </Story>
+</template>
