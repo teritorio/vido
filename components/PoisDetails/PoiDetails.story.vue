@@ -1,3 +1,26 @@
+<script lang="ts" setup>
+import PoiDetails from '~/components/PoisDetails/PoiDetails.vue'
+import navMenuEntries from '~/cypress/fixtures/teritorio/references/articles.json'
+import poisDeps from '~/cypress/fixtures/teritorio/references/poi/1/deps.json'
+import settings from '~/cypress/fixtures/teritorio/references/settings.json'
+import type { ApiPoi } from '~/lib/apiPois'
+import type { Settings } from '~/lib/apiSettings'
+
+// ...parametersMap,
+
+const defaultProps = {
+  settings: settings as Settings,
+  navMenuEntries,
+  poi: poisDeps.features[0] as ApiPoi,
+}
+
+const props = {
+  Default: {
+    ...defaultProps,
+  },
+}
+</script>
+
 <template>
   <Story title="PoisDetails/PoiDetails">
     <Variant
@@ -9,26 +32,3 @@
     </Variant>
   </Story>
 </template>
-
-<script lang="ts" setup>
-import PoiDetails from '~/components/PoisDetails/PoiDetails.vue'
-import navMenuEntries from '~/cypress/fixtures/teritorio/references/articles.json'
-import poisDeps from '~/cypress/fixtures/teritorio/references/poi/1/deps.json'
-import settings from '~/cypress/fixtures/teritorio/references/settings.json'
-import { ApiPoi } from '~/lib/apiPois'
-import { Settings } from '~/lib/apiSettings'
-
-// ...parametersMap,
-
-const defaultProps = {
-  settings: settings as Settings,
-  navMenuEntries: navMenuEntries,
-  poi: poisDeps.features[0] as ApiPoi,
-}
-
-const props = {
-  Default: {
-    ...defaultProps,
-  },
-}
-</script>

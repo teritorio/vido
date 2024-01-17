@@ -1,15 +1,3 @@
-<template>
-  <Story title="UI/TeritorioIcon">
-    <Variant
-      v-for="(p, name) in props"
-      :key="name"
-      :title="name.replace(/([A-Z])/g, ' $1').trim()"
-    >
-      <TeritorioIcon v-bind="p" />
-    </Variant>
-  </Story>
-</template>
-
 <script lang="ts" setup>
 import TeritorioIcon from '~/components/UI/TeritorioIcon.vue'
 
@@ -43,3 +31,15 @@ const props = {
   },
 }
 </script>
+
+<template>
+  <Story title="UI/TeritorioIcon">
+    <Variant
+      v-for="(p, name) in props"
+      :key="name"
+      :title="name.replace(/([A-Z])/g, ' $1').trim()"
+    >
+      <TeritorioIcon v-bind="p" />
+    </Variant>
+  </Story>
+</template>

@@ -1,11 +1,11 @@
-import { ContentEntry } from '~/lib/apiContent'
-import { MenuItem } from '~/lib/apiMenu'
-import { ApiPoiDeps } from '~/lib/apiPoiDeps'
-import { ApiPois } from '~/lib/apiPois'
-import { PropertyTranslations } from '~/lib/apiPropertyTranslations'
-import { Settings } from '~/lib/apiSettings'
+import type { ContentEntry } from '~/lib/apiContent'
+import type { MenuItem } from '~/lib/apiMenu'
+import type { ApiPoiDeps } from '~/lib/apiPoiDeps'
+import type { ApiPois } from '~/lib/apiPois'
+import type { PropertyTranslations } from '~/lib/apiPropertyTranslations'
+import type { Settings } from '~/lib/apiSettings'
 
-export type APIFixture = {
+export interface APIFixture {
   attribute_translations: { [key: string]: PropertyTranslations }
   settings: Settings
   articles: ContentEntry[]

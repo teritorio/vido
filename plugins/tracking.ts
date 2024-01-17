@@ -1,8 +1,8 @@
 import { defineNuxtPlugin, useRuntimeConfig } from '#app/nuxt'
 import Google from '~/lib/tracker-google'
 import Matomo from '~/lib/tracker-matomo'
-import { Event, Tracker } from '~/lib/trackers'
-import { VidoConfig } from '~/utils/types-config'
+import type { Event, Tracker } from '~/lib/trackers'
+import type { VidoConfig } from '~/utils/types-config'
 
 export default defineNuxtPlugin((nuxtApp) => {
   const trackers: Tracker[] = []
@@ -17,8 +17,8 @@ export default defineNuxtPlugin((nuxtApp) => {
               new Google(
                 nuxtApp.vueApp,
                 Boolean(config.COOKIES_CONSENT),
-                googleTagManagerId
-              )
+                googleTagManagerId,
+              ),
             )
           }
 
@@ -30,8 +30,8 @@ export default defineNuxtPlugin((nuxtApp) => {
                 nuxtApp.vueApp,
                 Boolean(config.COOKIES_CONSENT),
                 matomoUrl,
-                matomoIdsite
-              )
+                matomoIdsite,
+              ),
             )
           }
         }
@@ -46,9 +46,8 @@ export default defineNuxtPlugin((nuxtApp) => {
       },
 
       tracking: (event: Event): void => {
-        if (process.dev || useRuntimeConfig().cypress) {
+        if (process.dev || useRuntimeConfig().cypress)
           console.error('Tracking event', event)
-        }
 
         trackers.forEach((tracker) => {
           tracker.track(nuxtApp.vueApp, event)

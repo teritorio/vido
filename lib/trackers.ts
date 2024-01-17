@@ -1,38 +1,38 @@
-import { App } from 'nuxt/dist/app/compat/vue-demi'
+import type { App } from 'nuxt/dist/app/compat/vue-demi'
 
-import { ApiPoiId } from './apiPois'
+import type { ApiPoiId } from './apiPois'
 
-import { ApiMenuCategory, MenuItem } from '~/lib/apiMenu'
-import { OriginEnum } from '~/utils/types'
+import type { ApiMenuCategory, MenuItem } from '~/lib/apiMenu'
+import type { OriginEnum } from '~/utils/types'
 
 // Also Update README.md according to tracking changes.
 
 export type Event =
   | {
-      type: 'page'
-      title?: string
-      location: string
-      path: string
-      origin: OriginEnum
-    }
+    type: 'page'
+    title?: string
+    location: string
+    path: string
+    origin: OriginEnum
+  }
   | {
-      type: 'menu'
-      menuItemId: MenuItem['id']
-      title: string
-    }
+    type: 'menu'
+    menuItemId: MenuItem['id']
+    title: string
+  }
   | {
-      type: 'category_event'
-      event: 'enable' | 'filter'
-      categoryId: ApiMenuCategory['id']
-      title: string
-    }
+    type: 'category_event'
+    event: 'enable' | 'filter'
+    categoryId: ApiMenuCategory['id']
+    title: string
+  }
   | {
-      type: 'search'
-    }
+    type: 'search'
+  }
   | {
-      type: 'search_query'
-      query: string
-    }
+    type: 'search_query'
+    query: string
+  }
   | {
       type: 'search_result_event'
       event: 'select'

@@ -1,17 +1,8 @@
-<template>
-  <div v-if="address">
-    <slot></slot>
-    <span>
-      {{ address }}
-    </span>
-  </div>
-</template>
-
 <script lang="ts">
-import { PropType } from 'vue'
+import type { PropType } from 'vue'
 
 import { defineNuxtComponent } from '#app'
-import { ApiPoiProperties } from '~/lib/apiPois'
+import type { ApiPoiProperties } from '~/lib/apiPois'
 
 const addressFields = [
   'addr:housenumber',
@@ -25,7 +16,7 @@ export function isAddressFieldEmpty(properties: {
 }): boolean {
   return addressFields.reduce(
     (sum: boolean, value) => sum || value in properties,
-    false
+    false,
   )
 }
 
@@ -40,11 +31,20 @@ export default defineNuxtComponent({
   computed: {
     address(): string | null {
       return addressFields
-        .map((field) => this.properties[field])
-        .map((f) => (f || '').toString().trim())
-        .filter((f) => f)
+        .map(field => this.properties[field])
+        .map(f => (f || '').toString().trim())
+        .filter(f => f)
         .join(' ')
     },
   },
 })
 </script>
+
+<template>
+  <div v-if="address">
+    <slot />
+    <span>
+      {{ address }}
+    </span>
+  </div>
+</template>

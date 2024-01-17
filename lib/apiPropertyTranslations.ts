@@ -1,5 +1,5 @@
-import { MultilingualString } from '~/utils/types'
-import { VidoConfig } from '~/utils/types-config'
+import type { MultilingualString } from '~/utils/types'
+import type { VidoConfig } from '~/utils/types-config'
 
 export interface PropertyValueTranslation {
   label: MultilingualString
@@ -25,16 +25,17 @@ export interface PropertyTranslations {
 }
 
 export function getPropertyTranslations(
-  vidoConfig: VidoConfig
+  vidoConfig: VidoConfig,
 ): Promise<PropertyTranslations> {
   return fetch(
-    `${vidoConfig.API_ENDPOINT}/${vidoConfig.API_PROJECT}/${vidoConfig.API_THEME}/attribute_translations/fr.json`
+    `${vidoConfig.API_ENDPOINT}/${vidoConfig.API_PROJECT}/${vidoConfig.API_THEME}/attribute_translations/fr.json`,
   ).then((data) => {
     if (data.ok) {
       return data.json() as unknown as PropertyTranslations
-    } else {
+    }
+    else {
       return Promise.reject(
-        new Error([data.url, data.status, data.statusText].join(' '))
+        new Error([data.url, data.status, data.statusText].join(' ')),
       )
     }
   })

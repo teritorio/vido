@@ -1,13 +1,14 @@
+import type { IncomingMessage, ServerResponse } from 'node:http'
 import { defineEventHandler } from 'h3'
 import { rest } from 'msw'
-import { SetupServer, setupServer } from 'msw/node'
-import { IncomingMessage, ServerResponse } from 'node:http'
+import type { SetupServer } from 'msw/node'
+import { setupServer } from 'msw/node'
 
-let server: SetupServer | undefined = undefined
+let server: SetupServer | undefined
 
 function cypressSetMocks(
   req: IncomingMessage,
-  res: ServerResponse<IncomingMessage>
+  res: ServerResponse<IncomingMessage>,
 ) {
   const chunks: any = []
   req.on('data', (chunk) => {
@@ -48,7 +49,6 @@ function cypressSetMocks(
 }
 
 export default defineEventHandler((event) => {
-  if (process.env.dev || process.env.CYPRESS) {
+  if (process.env.dev || process.env.CYPRESS)
     cypressSetMocks(event.node.req, event.node.res)
-  }
 })

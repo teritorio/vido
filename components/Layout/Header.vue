@@ -1,28 +1,12 @@
-<template>
-  <header id="header">
-    <Logo
-      id="logo"
-      :main-url="mainUrl"
-      :site-name="theme && theme.title.fr"
-      :logo-url="theme && theme.logo_url"
-    />
-
-    <div class="tw-flex tw-justify-end print:tw-hidden">
-      <slot></slot>
-      <NavMenu :entries="navMenuEntries" />
-    </div>
-  </header>
-</template>
-
 <script lang="ts">
 import { mapState } from 'pinia'
-import { PropType } from 'vue'
+import type { PropType } from 'vue'
 
 import { defineNuxtComponent } from '#app'
 import NavMenu from '~/components/MainMap/NavMenu.vue'
 import Logo from '~/components/UI/Logo.vue'
-import { ContentEntry } from '~/lib/apiContent'
-import { SiteInfosTheme } from '~/lib/apiSettings'
+import type { ContentEntry } from '~/lib/apiContent'
+import type { SiteInfosTheme } from '~/lib/apiSettings'
 import { siteStore } from '~/stores/site'
 
 export default defineNuxtComponent({
@@ -49,6 +33,22 @@ export default defineNuxtComponent({
   },
 })
 </script>
+
+<template>
+  <header id="header">
+    <Logo
+      id="logo"
+      :main-url="mainUrl"
+      :site-name="theme && theme.title.fr"
+      :logo-url="theme && theme.logo_url"
+    />
+
+    <div class="tw-flex tw-justify-end print:tw-hidden">
+      <slot />
+      <NavMenu :entries="navMenuEntries" />
+    </div>
+  </header>
+</template>
 
 <style lang="scss" scoped>
 @import '~/assets/details.scss';

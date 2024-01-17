@@ -1,35 +1,32 @@
 import type {
-  Map,
-  LayerSpecification,
-  SymbolLayerSpecification,
-  LngLatBoundsLike,
   FitBoundsOptions,
+  LayerSpecification,
+  LngLatBoundsLike,
+  Map,
+  SymbolLayerSpecification,
 } from 'maplibre-gl'
 import { Marker } from 'maplibre-gl'
 import { createApp } from 'vue'
 
-import { ApiPoi } from './apiPois'
+import type { ApiPoi } from './apiPois'
 import { getBBoxFeatures } from './bbox'
 import { createMarkerDonutChart } from './clusters'
 
 import TeritorioIconBadge from '~/components/UI/TeritorioIconBadge.vue'
-import { TupleLatLng } from '~/utils/types'
+import type { TupleLatLng } from '~/utils/types'
 
 type ITMarker = InstanceType<typeof Marker>
 
-export const markerLayerTextFactory = (
-  layerTemplate: LayerSpecification,
-  id: string,
-  source: string
-): LayerSpecification => {
+export function markerLayerTextFactory(layerTemplate: LayerSpecification, id: string, source: string): LayerSpecification {
   if (layerTemplate.type !== 'symbol') {
     return layerTemplate
-  } else {
-    const textColor =
-      layerTemplate?.paint &&
-      'text-color' in layerTemplate?.paint &&
-      Array.isArray(layerTemplate.paint['text-color']) &&
-      layerTemplate.paint['text-color']
+  }
+  else {
+    const textColor
+      = layerTemplate?.paint
+      && 'text-color' in layerTemplate?.paint
+      && Array.isArray(layerTemplate.paint['text-color'])
+      && layerTemplate.paint['text-color']
 
     if (textColor && textColor[0] === 'let') {
       const superclass = textColor.indexOf('superclass')
@@ -79,7 +76,7 @@ export function makerHtmlFactory(
   icon: string,
   thumbnail: string | undefined,
   size: string | null = null,
-  text?: string
+  text?: string,
 ): ITMarker {
   // Marker
   const el: HTMLElement = document.createElement('div')
@@ -100,7 +97,7 @@ export function makerHtmlFactory(
     picto: icon,
     image: thumbnail,
     size,
-    text: text,
+    text,
   }).mount(el)
 
   return marker
@@ -111,7 +108,7 @@ export function updateMarkers(
   markers: { [id: string]: ITMarker },
   src: string,
   fitBounds: (bounds: LngLatBoundsLike, options: FitBoundsOptions) => void,
-  markerClickCallBack: ((feature: ApiPoi) => void) | undefined
+  markerClickCallBack: ((feature: ApiPoi) => void) | undefined,
 ) {
   const markerIdPrevious = Object.keys(markers)
   const markerIdcurrent: string[] = []
@@ -120,21 +117,21 @@ export function updateMarkers(
   // for every cluster on the screen, create an HTML marker for it (if we didn't yet),
   // and add it to the map if it's not there already
   features
-    .filter((feature) => feature.geometry.type === 'Point')
+    .filter(feature => feature.geometry.type === 'Point')
     .forEach((feature) => {
       const coords = (feature.geometry as GeoJSON.Point).coordinates as [
         number,
-        number
+        number,
       ]
       const props = feature.properties
       if (props?.cluster) {
-        const id = 'c' + props.cluster_id
+        const id = `c${props.cluster_id}`
         markerIdcurrent.push(id)
         if (!markers[id]) {
           const {
             cluster: _a,
             cluster_id: _b,
-            point_count: point_count,
+            point_count,
             _c: _d,
             point_count_abbreviated: _e,
             ...countPercolor
@@ -150,7 +147,7 @@ export function updateMarkers(
             const source = map.getSource(src)
 
             if (source && 'getClusterLeaves' in source) {
-              // @ts-ignore
+              // @ts-expect-error
               source.getClusterLeaves(
                 props.cluster_id,
                 100,
@@ -158,35 +155,34 @@ export function updateMarkers(
                 (error: any, features: GeoJSON.Feature[]) => {
                   if (!error && map) {
                     const bounds = getBBoxFeatures(features)
-                    if (bounds) {
+                    if (bounds)
                       fitBounds(bounds, {})
-                    }
                   }
-                }
+                },
               )
             }
           })
           markers[id].addTo(map)
         }
-      } else if (props?.metadata) {
-        if (typeof props.metadata === 'string') {
+      }
+      else if (props?.metadata) {
+        if (typeof props.metadata === 'string')
           props.metadata = JSON.parse(props.metadata)
-        }
+
         if (props?.metadata?.id) {
-          const id = 'm' + props.metadata.id
+          const id = `m${props.metadata.id}`
           markerIdcurrent.push(id)
           if (!markers[id]) {
             // const markerCoords = this.featuresCoordinates[props.metadata.id]
-            const markerCoords =
-              feature.geometry.type === 'Point' &&
-              (feature.geometry.coordinates as TupleLatLng)
+            const markerCoords
+              = feature.geometry.type === 'Point'
+              && (feature.geometry.coordinates as TupleLatLng)
             if (markerCoords) {
-              if (typeof props.display === 'string') {
+              if (typeof props.display === 'string')
                 props.display = JSON.parse(props.display)
-              }
-              if (typeof props.editorial === 'string') {
+
+              if (typeof props.editorial === 'string')
                 props.editorial = JSON.parse(props.editorial)
-              }
 
               // Marker
               markers[id] = makerHtmlFactory(
@@ -196,7 +192,7 @@ export function updateMarkers(
                 props.display?.icon || '#000000',
                 props['image:thumbnail'],
                 null,
-                props.display?.text
+                props.display?.text,
               )
 
               // Click handler

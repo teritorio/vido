@@ -1,26 +1,10 @@
-<template>
-  <div>
-    <template v-for="field in fields" :key="field.field">
-      <Field
-        :context="context"
-        :recursion-stack="[field.field]"
-        :field="field"
-        :properties="properties"
-        :details="details"
-        :geom="geom"
-        class="tw-mt-2"
-      />
-    </template>
-  </div>
-</template>
-
 <script lang="ts">
-import GeoJSON from 'geojson'
-import { PropType } from 'vue'
+import type GeoJSON from 'geojson'
+import type { PropType } from 'vue'
 
 import { defineNuxtComponent } from '#app'
 import Field from '~/components/Fields/Field.vue'
-import { ApiPoiProperties, FieldsListItem } from '~/lib/apiPois'
+import type { ApiPoiProperties, FieldsListItem } from '~/lib/apiPois'
 import { PropertyTranslationsContextEnum } from '~/plugins/property-translations'
 
 export default defineNuxtComponent({
@@ -54,3 +38,19 @@ export default defineNuxtComponent({
   },
 })
 </script>
+
+<template>
+  <div>
+    <template v-for="field in fields" :key="field.field">
+      <Field
+        :context="context"
+        :recursion-stack="[field.field]"
+        :field="field"
+        :properties="properties"
+        :details="details"
+        :geom="geom"
+        class="tw-mt-2"
+      />
+    </template>
+  </div>
+</template>

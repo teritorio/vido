@@ -1,9 +1,9 @@
 import { defineStore } from 'pinia'
 
-import { ContentEntry } from '~/lib/apiContent'
-import { PropertyTranslations } from '~/lib/apiPropertyTranslations'
-import { Settings } from '~/lib/apiSettings'
-import { VidoConfig } from '~/utils/types-config'
+import type { ContentEntry } from '~/lib/apiContent'
+import type { PropertyTranslations } from '~/lib/apiPropertyTranslations'
+import type { Settings } from '~/lib/apiSettings'
+import type { VidoConfig } from '~/utils/types-config'
 
 interface State {
   locale: string | null

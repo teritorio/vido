@@ -1,34 +1,26 @@
-<template>
-  <div :class="(hideControl || !map) && 'map-controls-hidden'">
-    <div id="map"></div>
-    <slot name="controls"></slot>
-    <slot name="body"></slot>
-  </div>
-</template>
-
 <script lang="ts">
 import { OpenMapTilesLanguage } from '@teritorio/openmaptiles-gl-language'
 import type {
-  RasterSourceSpecification,
-  VectorSourceSpecification,
-  StyleSpecification,
+  FitBoundsOptions,
   LngLatBoundsLike,
   LngLatLike,
-  FitBoundsOptions,
   MapDataEvent,
   MapLibreEvent,
   MapTouchEvent,
+  RasterSourceSpecification,
+  StyleSpecification,
+  VectorSourceSpecification,
 } from 'maplibre-gl'
 import {
-  Map,
   AttributionControl,
-  NavigationControl,
-  GeolocateControl,
   FullscreenControl,
+  GeolocateControl,
+  Map,
+  NavigationControl,
   ScaleControl,
 } from 'maplibre-gl'
 import { mapState } from 'pinia'
-import { PropType } from 'vue'
+import type { PropType } from 'vue'
 
 import { defineNuxtComponent, useRequestHeaders } from '#app'
 import { DEFAULT_MAP_STYLE, MAP_ZOOM } from '~/lib/constants'
@@ -116,10 +108,10 @@ export default defineNuxtComponent({
   },
 
   mounted() {
-    // @ts-ignore
+    // @ts-expect-error
     this.fullscreenControlObject = new FullscreenControl({})
 
-    // @ts-ignore
+    // @ts-expect-error
     const map = new Map({
       container: 'map',
       style: (this.style as StyleSpecification) || {
@@ -152,21 +144,21 @@ export default defineNuxtComponent({
       },
     })
 
-    map.on('load', (_event) => this.onMapInit(map as ITMap))
-    map.on('data', ($event) => this.$emit('map-data', $event))
-    map.on('dragend', ($event) => this.$emit('map-dragend', $event))
-    map.on('moveend', ($event) => this.$emit('map-moveend', $event))
-    map.on('resize', ($event) => this.$emit('map-resize', $event))
-    map.on('rotateend', ($event) => this.$emit('map-rotateend', $event))
-    map.on('touchmove', ($event) => this.$emit('map-touchmove', $event))
-    map.on('zoomend', ($event) => this.$emit('map-zoomend', $event))
+    map.on('load', _event => this.onMapInit(map as ITMap))
+    map.on('data', $event => this.$emit('map-data', $event))
+    map.on('dragend', $event => this.$emit('map-dragend', $event))
+    map.on('moveend', $event => this.$emit('map-moveend', $event))
+    map.on('resize', $event => this.$emit('map-resize', $event))
+    map.on('rotateend', $event => this.$emit('map-rotateend', $event))
+    map.on('touchmove', $event => this.$emit('map-touchmove', $event))
+    map.on('zoomend', $event => this.$emit('map-zoomend', $event))
 
     map.addControl(
       new NavigationControl({
         showZoom: true,
         showCompass: this.rotate,
         visualizePitch: true,
-      })
+      }),
     )
 
     const geolocateControl = new GeolocateControl({
@@ -176,14 +168,13 @@ export default defineNuxtComponent({
     map.addControl(geolocateControl)
     geolocateControl._container.classList.add('control-geolocate')
 
-    if (this.fullscreenControl) {
+    if (this.fullscreenControl)
       map.addControl(this.fullscreenControlObject)
-    }
 
     map.addControl(
       new ScaleControl({
         maxWidth: 80,
-      })
+      }),
     )
   },
 
@@ -191,20 +182,20 @@ export default defineNuxtComponent({
     'map-init': (_map: ITMap) => true,
     'map-data': (_event: MapDataEvent & object) => true,
     'map-dragend': (
-      _event: MapLibreEvent<MouseEvent | TouchEvent | undefined> & object
+      _event: MapLibreEvent<MouseEvent | TouchEvent | undefined> & object,
     ) => true,
     'map-moveend': (
       _event: MapLibreEvent<MouseEvent | TouchEvent | WheelEvent | undefined> &
-        object
+      object,
     ) => true,
     'map-resize': (_event: MapLibreEvent<unknown> & object) => true,
     'map-rotateend': (
-      _event: MapLibreEvent<MouseEvent | TouchEvent | undefined> & object
+      _event: MapLibreEvent<MouseEvent | TouchEvent | undefined> & object,
     ) => true,
     'map-touchmove': (_event: MapTouchEvent & object) => true,
     'map-zoomend': (
       _event: MapLibreEvent<MouseEvent | TouchEvent | WheelEvent | undefined> &
-        object
+      object,
     ) => true,
     'full-attribution': (_attribution: string) => true,
     'map-style-load': (_style: StyleSpecification) => true,
@@ -223,19 +214,17 @@ export default defineNuxtComponent({
       this.setStyle(value)
     },
     showAttribution(enable: boolean) {
-      if (enable) {
+      if (enable)
         this.addAttribution()
-      } else {
+      else
         this.removeAttribution()
-      }
     },
     locale(locale: string) {
       this.setLanguage(locale)
     },
     bounds() {
-      if (this.bounds) {
+      if (this.bounds)
         this.map?.fitBounds(this.bounds, this.fitBoundsOptions)
-      }
     },
   },
 
@@ -245,11 +234,10 @@ export default defineNuxtComponent({
 
   methods: {
     doWithMap(lambda: () => void) {
-      if (this.map) {
+      if (this.map)
         lambda()
-      } else {
+      else
         this.withMap.push(lambda)
-      }
     },
 
     onMapInit(map: ITMap) {
@@ -260,9 +248,9 @@ export default defineNuxtComponent({
         defaultLanguage: this.locale || undefined,
       })
 
-      if (this.showAttribution) {
+      if (this.showAttribution)
         this.addAttribution()
-      }
+
       this.map.addControl(this.languageControl)
 
       if (!this.rotate) {
@@ -274,20 +262,18 @@ export default defineNuxtComponent({
         this.map?.resize()
       }).observe(document.getElementById('map')!)
 
-      while (this.withMap.length > 0) {
+      while (this.withMap.length > 0)
         this.withMap.pop()()
-      }
     },
 
     setStyle(mapStyle: MapStyleEnum) {
       this.getStyle(mapStyle)
         .then((style) => {
           const vectorSource = Object.values(style.sources || []).find(
-            (source) => ['vector', 'raster'].lastIndexOf(source.type) >= 0
+            source => ['vector', 'raster'].lastIndexOf(source.type) >= 0,
           ) as VectorSourceSpecification | RasterSourceSpecification | undefined
-          if (vectorSource?.attribution) {
+          if (vectorSource?.attribution)
             this.$emit('full-attribution', vectorSource.attribution)
-          }
 
           this.style = style
           this.doWithMap(() => {
@@ -297,7 +283,6 @@ export default defineNuxtComponent({
           })
         })
         .catch((e) => {
-          // eslint-disable-next-line no-console
           console.error('Vido error:', (e as Error).message)
         })
     },
@@ -317,7 +302,8 @@ export default defineNuxtComponent({
     async getStyle(mapStyle: MapStyleEnum): Promise<StyleSpecification> {
       if (this.mapStyleCache[mapStyle]) {
         return this.mapStyleCache[mapStyle]
-      } else {
+      }
+      else {
         const config = this.$vidoConfig(useRequestHeaders())
         const styleURLs = {
           [MapStyleEnum.vector]: config.VECTO_STYLE_URL,
@@ -326,7 +312,7 @@ export default defineNuxtComponent({
         }
         const style = await fetchStyle(
           styleURLs[mapStyle],
-          this.extraAttributions
+          this.extraAttributions,
         )
         this.mapStyleCache[mapStyle] = style
 
@@ -358,6 +344,14 @@ export default defineNuxtComponent({
   },
 })
 </script>
+
+<template>
+  <div :class="(hideControl || !map) && 'map-controls-hidden'">
+    <div id="map" />
+    <slot name="controls" />
+    <slot name="body" />
+  </div>
+</template>
 
 <style>
 @import 'maplibre-gl/dist/maplibre-gl.css';

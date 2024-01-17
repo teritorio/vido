@@ -1,5 +1,5 @@
 import Link from '~/components/Menu/Link.vue'
-import { ApiMenuLink } from '~/lib/apiMenu'
+import type { ApiMenuLink } from '~/lib/apiMenu'
 import { bind } from '~/lib/storybook-types'
 
 export default {

@@ -1,8 +1,8 @@
-import Router from 'vue-router'
+import type Router from 'vue-router'
 
-import { OriginEnum } from './types'
+import type { OriginEnum } from './types'
 
-type HashParts = { [key: string]: string | null }
+interface HashParts { [key: string]: string | null }
 
 export function setHashParts(hash: string, hashParts: HashParts) {
   const params = new URLSearchParams(hash.substring(1))
@@ -16,32 +16,31 @@ export function setHashParts(hash: string, hashParts: HashParts) {
     const val = item[1]
 
     if (
-      val === null ||
-      val === undefined ||
-      val === '' ||
-      val === 'null' ||
-      val === 'undefined'
-    ) {
+      val === null
+      || val === undefined
+      || val === ''
+      || val === 'null'
+      || val === 'undefined'
+    )
       params.delete(key)
-    } else {
+    else
       params.set(key, val)
-    }
   })
 
   // Replace is for keeping map param working with maplibregl
   return params.toString() != ''
-    ? '#' + params.toString().replace(/%2F/g, '/')
+    ? `#${params.toString().replace(/%2F/g, '/')}`
     : ''
 }
 
 export function routerPushHashUpdate(
   router: Router.Router,
-  hashParts: HashParts
+  hashParts: HashParts,
 ) {
   let hash = router.currentRoute.value.hash
-  if (hashParts) {
+  if (hashParts)
     hash = setHashParts(hash, hashParts)
-  }
+
   router.push({
     path: router.currentRoute.value.path,
     query: router.currentRoute.value.query,
@@ -54,7 +53,7 @@ export function routerPushHashUpdate(
  */
 export function getHashPart(router: Router.Router, key: string): string | null {
   const params = new URLSearchParams(
-    router.currentRoute.value.hash.substring(1)
+    router.currentRoute.value.hash.substring(1),
   )
   return params.get(key)
 }

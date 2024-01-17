@@ -1,10 +1,6 @@
-<template>
-  <span>{{ displayTime() }}</span>
-</template>
-
 <script lang="ts">
 import { formatRelative } from 'date-fns'
-import { enGB, fr, es } from 'date-fns/locale'
+import { enGB, es, fr } from 'date-fns/locale'
 import { mapState } from 'pinia'
 
 import { defineNuxtComponent } from '#app'
@@ -38,3 +34,7 @@ export default defineNuxtComponent({
   },
 })
 </script>
+
+<template>
+  <span>{{ displayTime() }}</span>
+</template>

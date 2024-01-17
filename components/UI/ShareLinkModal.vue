@@ -1,57 +1,7 @@
-<template>
-  <div>
-    <v-dialog v-model="modal" scrollable max-width="30rem">
-      <v-card>
-        <v-card-title class="tw-text-h5">{{ title }}</v-card-title>
-        <v-divider class="tw-mx-4"></v-divider>
-
-        <div class="tw-p-3">
-          <div class="tw-flex tw-items-center tw-mb-4">
-            <FontAwesomeIcon
-              ref="menu_icon"
-              icon="link"
-              class="tw-text-zinc-500 tw-mr-4"
-            />
-            <p class="tw-text-zinc-500 tw-truncate">
-              {{ linkShare }}
-            </p>
-            <UIButton
-              v-if="hasClipboard"
-              :label="(!isCopied && $t('shareLink.copy')) || undefined"
-              :icon="isCopied ? 'clipboard-check' : 'copy'"
-              @click="copyLink"
-            />
-          </div>
-          <div
-            v-if="qrCodeUrl"
-            class="tw-flex tw-items-center tw-mb-4 tw-justify-center"
-          >
-            <img
-              :src="qrCodeUrl()"
-              class="tw-w-1/2"
-              :alt="$t('shareLink.qrcode')"
-            />
-          </div>
-        </div>
-
-        <v-card-actions>
-          <v-spacer></v-spacer>
-          <UIButton
-            :label="$t('ui.close')"
-            icon="times"
-            class="self-end"
-            @click="close"
-          />
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
-  </div>
-</template>
-
 <script lang="ts">
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
-import { PropType } from 'vue'
-import { VCard, VCardTitle, VCardActions } from 'vuetify/components/VCard'
+import type { PropType } from 'vue'
+import { VCard, VCardActions, VCardTitle } from 'vuetify/components/VCard'
 import { VDialog } from 'vuetify/components/VDialog'
 import { VDivider } from 'vuetify/components/VDivider'
 import { VSpacer } from 'vuetify/components/VGrid'
@@ -130,9 +80,8 @@ export default defineNuxtComponent({
             }, 5000)
           },
           (err) => {
-            // eslint-disable-next-line no-console
             console.error('Vido error: ', err)
-          }
+          },
         )
       }
     },
@@ -146,12 +95,64 @@ export default defineNuxtComponent({
     qrCodeUrl() {
       if (this.linkQrCode) {
         return (
-          this.$vidoConfig(useRequestHeaders()).API_QR_SHORTENER +
-          '/qrcode.svg?url=' +
-          encodeURIComponent(this.linkQrCode)
+          `${this.$vidoConfig(useRequestHeaders()).API_QR_SHORTENER
+          }/qrcode.svg?url=${
+          encodeURIComponent(this.linkQrCode)}`
         )
       }
     },
   },
 })
 </script>
+
+<template>
+  <div>
+    <v-dialog v-model="modal" scrollable max-width="30rem">
+      <v-card>
+        <v-card-title class="tw-text-h5">
+          {{ title }}
+        </v-card-title>
+        <v-divider class="tw-mx-4" />
+
+        <div class="tw-p-3">
+          <div class="tw-flex tw-items-center tw-mb-4">
+            <FontAwesomeIcon
+              ref="menu_icon"
+              icon="link"
+              class="tw-text-zinc-500 tw-mr-4"
+            />
+            <p class="tw-text-zinc-500 tw-truncate">
+              {{ linkShare }}
+            </p>
+            <UIButton
+              v-if="hasClipboard"
+              :label="(!isCopied && $t('shareLink.copy')) || undefined"
+              :icon="isCopied ? 'clipboard-check' : 'copy'"
+              @click="copyLink"
+            />
+          </div>
+          <div
+            v-if="qrCodeUrl"
+            class="tw-flex tw-items-center tw-mb-4 tw-justify-center"
+          >
+            <img
+              :src="qrCodeUrl()"
+              class="tw-w-1/2"
+              :alt="$t('shareLink.qrcode')"
+            >
+          </div>
+        </div>
+
+        <v-card-actions>
+          <v-spacer />
+          <UIButton
+            :label="$t('ui.close')"
+            icon="times"
+            class="self-end"
+            @click="close"
+          />
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+  </div>
+</template>

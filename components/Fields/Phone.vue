@@ -1,20 +1,5 @@
-<template>
-  <client-only>
-    <ExternalLink
-      v-if="phone"
-      :href="`tel:${number}`"
-      :title="$t('fields.phone.callNumber')"
-    >
-      {{ numberFormated }}
-    </ExternalLink>
-    <span v-else>
-      {{ numberFormated }}
-    </span>
-  </client-only>
-</template>
-
 <script lang="ts">
-import { PropType } from 'vue'
+import type { PropType } from 'vue'
 
 import { defineNuxtComponent } from '#app'
 import ExternalLink from '~/components/UI/ExternalLink.vue'
@@ -42,3 +27,18 @@ export default defineNuxtComponent({
   },
 })
 </script>
+
+<template>
+  <client-only>
+    <ExternalLink
+      v-if="phone"
+      :href="`tel:${number}`"
+      :title="$t('fields.phone.callNumber')"
+    >
+      {{ numberFormated }}
+    </ExternalLink>
+    <span v-else>
+      {{ numberFormated }}
+    </span>
+  </client-only>
+</template>

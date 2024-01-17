@@ -1,18 +1,6 @@
-<template>
-  <Story title="Map/MapPois">
-    <Variant
-      v-for="(p, name) in props"
-      :key="name"
-      :title="name.replace(/([A-Z])/g, ' $1').trim()"
-    >
-      <MapPois v-bind="p" />
-    </Variant>
-  </Story>
-</template>
-
 <script lang="ts" setup>
 import pois from '~/cypress/fixtures/teritorio/references/poi/2/deps.json'
-import { ApiPoi } from '~/lib/apiPois'
+import type { ApiPoi } from '~/lib/apiPois'
 
 // ...parametersMap,
 
@@ -26,3 +14,15 @@ const props = {
   },
 }
 </script>
+
+<template>
+  <Story title="Map/MapPois">
+    <Variant
+      v-for="(p, name) in props"
+      :key="name"
+      :title="name.replace(/([A-Z])/g, ' $1').trim()"
+    >
+      <MapPois v-bind="p" />
+    </Variant>
+  </Story>
+</template>

@@ -1,25 +1,10 @@
-<template>
-  <div :class="['tw-mt-7', 'filters-number-range']">
-    <v-range-slider
-      :model-value="value"
-      strict
-      :min="min"
-      :max="max"
-      thumb-label="always"
-      hide-details="auto"
-      :step="Math.max(Math.round((max - min) / 50), 1)"
-      @update:model-value="onChange"
-    ></v-range-slider>
-  </div>
-</template>
-
 <script lang="ts">
 import copy from 'fast-copy'
-import { PropType } from 'vue'
+import type { PropType } from 'vue'
 import { VRangeSlider } from 'vuetify/components/VRangeSlider'
 
 import { defineNuxtComponent } from '#app'
-import { FilterValueNumberRange } from '~/utils/types-filters'
+import type { FilterValueNumberRange } from '~/utils/types-filters'
 
 export default defineNuxtComponent({
   components: {
@@ -66,3 +51,18 @@ export default defineNuxtComponent({
   },
 })
 </script>
+
+<template>
+  <div class="tw-mt-7 filters-number-range">
+    <v-range-slider
+      :model-value="value"
+      strict
+      :min="min"
+      :max="max"
+      thumb-label="always"
+      hide-details="auto"
+      :step="Math.max(Math.round((max - min) / 50), 1)"
+      @update:model-value="onChange"
+    />
+  </div>
+</template>
