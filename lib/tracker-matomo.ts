@@ -1,7 +1,5 @@
 import type { App } from 'nuxt/dist/app/compat/vue-demi'
 import urlSlug from 'url-slug'
-
-// @ts-expect-error
 import VueMatomo from 'vue-matomo'
 
 import type { Event, Tracker } from '~/lib/trackers'
@@ -19,19 +17,18 @@ export default class Matomo implements Tracker {
 
   consent(_app: App) {
     let delai = 1000
+
     const timeout = () => {
       setTimeout(() => {
+        // eslint-disable-next-line ts/no-use-before-define
         set()
       }, delai)
       delai = delai * 2
     }
 
     const set = () => {
-      // @ts-expect-error
       if (window.Matomo && window.Matomo.getAsyncTracker()) {
-        // @ts-expect-error
         window.Matomo.getAsyncTracker().setConsentGiven()
-        // @ts-expect-error
         window.Matomo.getAsyncTracker().setCookieConsentGiven()
       }
       else {
@@ -43,7 +40,6 @@ export default class Matomo implements Tracker {
   }
 
   track(_app: App, event: Event) {
-    // @ts-expect-error
     const _paq = window._paq
     switch (event.type) {
       case 'page': {
