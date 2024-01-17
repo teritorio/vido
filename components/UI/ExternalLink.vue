@@ -1,20 +1,6 @@
-<template>
-  <a
-    v-if="href"
-    :href="href"
-    :target="target"
-    :rel="rel"
-    :title="title"
-    class="tw-flex tw-flex-row tw-items-center tw-gap-x-2.5 tw-underline tw-underline-offset-4"
-  >
-    <FontAwesomeIcon :icon="iconDefault" color="inherit" size="sm" />
-    <slot></slot>
-  </a>
-</template>
-
 <script lang="ts">
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
-import { PropType } from 'vue'
+import type { PropType } from 'vue'
 
 import { defineNuxtComponent } from '#app'
 
@@ -48,14 +34,27 @@ export default defineNuxtComponent({
 
   computed: {
     iconDefault(): string {
-      if (this.icon) {
+      if (this.icon)
         return this.icon
-      } else if (this.href.startsWith('tel:')) {
+      else if (this.href.startsWith('tel:'))
         return 'phone'
-      } else {
+      else
         return 'external-link-alt'
-      }
     },
   },
 })
 </script>
+
+<template>
+  <a
+    v-if="href"
+    :href="href"
+    :target="target"
+    :rel="rel"
+    :title="title"
+    class="tw-flex tw-flex-row tw-items-center tw-gap-x-2.5 tw-underline tw-underline-offset-4"
+  >
+    <FontAwesomeIcon :icon="iconDefault" color="inherit" size="sm" />
+    <slot />
+  </a>
+</template>

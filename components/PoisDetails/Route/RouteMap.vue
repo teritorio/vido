@@ -1,55 +1,18 @@
-<template>
-  <div v-if="routeCollection">
-    <MapPois
-      class="map-pois tw-relative"
-      :features="routeCollection"
-      :feature-ids="[poiId]"
-      :fullscreen-control="true"
-      :off-map-attribution="true"
-      :cluster="false"
-    />
-    <div class="detail-wrapper">
-      <div v-if="points.length > 0" class="detail-left">
-        <h2>{{ $t('poiDetails.routes.waypoints') }}</h2>
-        <PoisDeck
-          :pois="points"
-          pois-card="PoiCardLight"
-          :explorer-mode-enabled="false"
-          :favorites-mode-enabled="favoritesModeEnabled"
-          @explore-click="$emit('explore-click', $event)"
-          @favorite-click="$emit('favorite-click', $event)"
-          @zoom-click="$emit('zoom-click', $event)"
-        />
-      </div>
-      <div v-if="pois.length > 0" class="detail-right">
-        <h2>{{ $t('poiDetails.routes.pois') }}</h2>
-        <PoisDeck
-          :pois="pois"
-          pois-card="PoiCardLight"
-          :explorer-mode-enabled="false"
-          :favorites-mode-enabled="favoritesModeEnabled"
-          @explore-click="$emit('explore-click', $event)"
-          @favorite-click="$emit('favorite-click', $event)"
-          @zoom-click="$emit('zoom-click', $event)"
-        />
-      </div>
-    </div>
-  </div>
-</template>
-
 <script lang="ts">
-import { PropType } from 'vue'
+import type { PropType } from 'vue'
 
 import { defineNuxtComponent } from '#app'
 import MapPois from '~/components/Map/MapPois.vue'
 import PoisDeck from '~/components/PoisCard/PoisDeck.vue'
-import {
+import type {
   ApiPoiDeps,
   ApiRouteWaypoint,
+} from '~/lib/apiPoiDeps'
+import {
   apiRouteWaypointToApiPoi,
 } from '~/lib/apiPoiDeps'
 import { ApiRouteWaypointType } from '~/lib/apiPoiDeps.ts'
-import { ApiPoi, ApiPoiId } from '~/lib/apiPois'
+import type { ApiPoi, ApiPoiId } from '~/lib/apiPois'
 
 export default defineNuxtComponent({
   components: {
@@ -106,25 +69,65 @@ export default defineNuxtComponent({
           feature as ApiRouteWaypoint,
           this.colorFill,
           this.colorLine,
-          feature.properties['route:point:type'] ==
-            ApiRouteWaypointType.way_point
+          feature.properties['route:point:type']
+          == ApiRouteWaypointType.way_point
             ? (index++).toString()
-            : undefined
+            : undefined,
         )
         this.points.push(mapPoi)
         return mapPoi
-      } else {
+      }
+      else {
         const featureApi = feature as ApiPoi
-        // @ts-ignore
-        if (feature.properties.metadata?.id !== this.poiId) {
+        // @ts-expect-error
+        if (feature.properties.metadata?.id !== this.poiId)
           this.pois.push(featureApi)
-        }
+
         return featureApi
       }
     })
   },
 })
 </script>
+
+<template>
+  <div v-if="routeCollection">
+    <MapPois
+      class="map-pois tw-relative"
+      :features="routeCollection"
+      :feature-ids="[poiId]"
+      :fullscreen-control="true"
+      :off-map-attribution="true"
+      :cluster="false"
+    />
+    <div class="detail-wrapper">
+      <div v-if="points.length > 0" class="detail-left">
+        <h2>{{ $t('poiDetails.routes.waypoints') }}</h2>
+        <PoisDeck
+          :pois="points"
+          pois-card="PoiCardLight"
+          :explorer-mode-enabled="false"
+          :favorites-mode-enabled="favoritesModeEnabled"
+          @explore-click="$emit('explore-click', $event)"
+          @favorite-click="$emit('favorite-click', $event)"
+          @zoom-click="$emit('zoom-click', $event)"
+        />
+      </div>
+      <div v-if="pois.length > 0" class="detail-right">
+        <h2>{{ $t('poiDetails.routes.pois') }}</h2>
+        <PoisDeck
+          :pois="pois"
+          pois-card="PoiCardLight"
+          :explorer-mode-enabled="false"
+          :favorites-mode-enabled="favoritesModeEnabled"
+          @explore-click="$emit('explore-click', $event)"
+          @favorite-click="$emit('favorite-click', $event)"
+          @zoom-click="$emit('zoom-click', $event)"
+        />
+      </div>
+    </div>
+  </div>
+</template>
 
 <style lang="scss" scoped>
 .map-pois {

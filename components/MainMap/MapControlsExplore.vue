@@ -1,36 +1,10 @@
-<template>
-  <div
-    ref="container"
-    :class="['maplibregl-ctrl maplibregl-ctrl-group', 'tw-hidden md:tw-block']"
-  >
-    <button
-      :aria-label="$t('mapControls.exploreAriaLabel')"
-      :title="$t('mapControls.exploreButton')"
-      type="button"
-      :class="[
-        'tw-hidden md:tw-block',
-        isModeExplorer && 'maplibregl-ctrl-active',
-      ]"
-      @click="toggleMode"
-    >
-      <FontAwesomeIcon
-        icon="eye"
-        :class="[
-          isModeExplorer && 'tw-text-white',
-          !isModeExplorer && 'tw-text-zinc-800',
-        ]"
-        size="lg"
-      />
-    </button>
-  </div>
-</template>
-
 <script lang="ts">
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { Control } from '@teritorio/map'
 import type { Map } from 'maplibre-gl'
 import { mapState, mapWritableState } from 'pinia'
-import { PropType, ref } from 'vue'
+import type { PropType } from 'vue'
+import { ref } from 'vue'
 
 import { defineNuxtComponent } from '#app'
 import { mapStore } from '~/stores/map'
@@ -81,3 +55,29 @@ export default defineNuxtComponent({
   },
 })
 </script>
+
+<template>
+  <div
+    ref="container"
+    class="maplibregl-ctrl maplibregl-ctrl-group tw-hidden md:tw-block"
+  >
+    <button
+      :aria-label="$t('mapControls.exploreAriaLabel')"
+      :title="$t('mapControls.exploreButton')"
+      type="button"
+      class="tw-hidden md:tw-block" :class="[
+        isModeExplorer && 'maplibregl-ctrl-active',
+      ]"
+      @click="toggleMode"
+    >
+      <FontAwesomeIcon
+        icon="eye"
+        :class="[
+          isModeExplorer && 'tw-text-white',
+          !isModeExplorer && 'tw-text-zinc-800',
+        ]"
+        size="lg"
+      />
+    </button>
+  </div>
+</template>

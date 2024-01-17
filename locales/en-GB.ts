@@ -93,7 +93,7 @@ export default defineI18nLocale(() => {
       closed: 'Currently closed',
       openAt: 'Opens',
       next: 'Next',
-      formatDayAndDayInMonth: "EEE do':'",
+      formatDayAndDayInMonth: 'EEE do\':\'',
       variableWeek: 'The hours may vary from week to week.',
     },
     poiCard: {
@@ -177,6 +177,6 @@ export default defineI18nLocale(() => {
       accept: 'Agree',
       details: 'More information',
       decline: 'Decline',
-    }
+    },
   }
 })

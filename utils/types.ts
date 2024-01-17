@@ -26,9 +26,9 @@ export enum MapStyleEnum {
 }
 
 export enum OriginEnum {
-  // eslint-disable-next-line camelcase
+
   link_share = 'link_share',
-  // eslint-disable-next-line camelcase
+
   qr_code = 'qr_code',
   facebook = 'facebook',
   twitter = 'twitter',

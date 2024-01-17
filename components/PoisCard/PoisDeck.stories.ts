@@ -1,6 +1,7 @@
 import PoisDeck from '~/components/PoisCard/PoisDeck.vue'
-import { ApiRouteWaypoint, apiRouteWaypointToApiPoi } from '~/lib/apiPoiDeps'
-import { ApiPois } from '~/lib/apiPois'
+import type { ApiRouteWaypoint } from '~/lib/apiPoiDeps'
+import { apiRouteWaypointToApiPoi } from '~/lib/apiPoiDeps'
+import type { ApiPois } from '~/lib/apiPois'
 import { bind } from '~/lib/storybook-types'
 
 import '@teritorio/font-teritorio/teritorio/teritorio.css'
@@ -12,19 +13,19 @@ export default {
   component: PoisDeck,
 }
 
-const points = poisDeps['features'].filter(
-  (feature) => feature.properties['route:point:type']
+const points = poisDeps.features.filter(
+  feature => feature.properties['route:point:type'],
 )
 
 const defaultProps = {
-  pois: points.map((feature) =>
+  pois: points.map(feature =>
     apiRouteWaypointToApiPoi(
       feature as unknown as ApiRouteWaypoint,
       '#123456',
-      '#123456'
-    )
+      '#123456',
+    ),
   ),
-  selectedPoiIds: points.map((feature) => feature.properties.id),
+  selectedPoiIds: points.map(feature => feature.properties.id),
   explorerModeEnabled: false,
   favoritesModeEnabled: false,
 }

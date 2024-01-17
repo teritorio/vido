@@ -1,31 +1,28 @@
-<template>
-  <Embedded
-    :settings="settings"
-    :initial-category-ids="categoryIds || undefined"
-    :initial-poi="initialPoi || undefined"
-    :boundary-area="boundary_geojson"
-  />
-</template>
-
 <script lang="ts">
-import { Polygon, MultiPolygon, GeoJSON } from 'geojson'
+import type { GeoJSON, MultiPolygon, Polygon } from 'geojson'
 import { mapWritableState } from 'pinia'
-import { ref, Ref } from 'vue'
+import type { Ref } from 'vue'
+import { ref } from 'vue'
 
 import { defineNuxtComponent, useHead, useRequestHeaders, useRoute } from '#app'
 import Embedded from '~/components/Home/Embedded.vue'
-import { ApiMenuCategory, getMenu, MenuItem } from '~/lib/apiMenu'
-import { getPoiById, ApiPoi } from '~/lib/apiPois'
-import {
-  getPropertyTranslations,
+import type { ApiMenuCategory, MenuItem } from '~/lib/apiMenu'
+import { getMenu } from '~/lib/apiMenu'
+import type { ApiPoi } from '~/lib/apiPois'
+import { getPoiById } from '~/lib/apiPois'
+import type {
   PropertyTranslations,
 } from '~/lib/apiPropertyTranslations'
-import { getSettings, headerFromSettings, Settings } from '~/lib/apiSettings'
+import {
+  getPropertyTranslations,
+} from '~/lib/apiPropertyTranslations'
+import type { Settings } from '~/lib/apiSettings'
+import { getSettings, headerFromSettings } from '~/lib/apiSettings'
 import { getAsyncDataOrNull, getAsyncDataOrThrows } from '~/lib/getAsyncData'
 import { vidoConfig } from '~/plugins/vido-config'
 import { menuStore } from '~/stores/menu'
 import { siteStore } from '~/stores/site'
-import { VidoConfig } from '~/utils/types-config'
+import type { VidoConfig } from '~/utils/types-config'
 
 export default defineNuxtComponent({
   components: {
@@ -43,23 +40,21 @@ export default defineNuxtComponent({
   }> {
     const params = useRoute().params
     const configRef = await getAsyncDataOrThrows('configRef', () =>
-      Promise.resolve(siteStore().config || vidoConfig(useRequestHeaders()))
-    )
+      Promise.resolve(siteStore().config || vidoConfig(useRequestHeaders())))
     const config: VidoConfig = configRef.value
 
     const fetchSettings = getAsyncDataOrThrows('fetchSettings', () =>
       siteStore().settings
         ? Promise.resolve(siteStore().settings as Settings)
-        : getSettings(config)
-    )
+        : getSettings(config))
 
     const fetchSettingsBoundary = fetchSettings.then(async (settings) => {
       let boundary_geojson: Polygon | MultiPolygon | undefined
       const boundary = useRoute().query.boundary
       if (
-        boundary &&
-        typeof boundary === 'string' &&
-        settings.value.polygons_extra
+        boundary
+        && typeof boundary === 'string'
+        && settings.value.polygons_extra
       ) {
         const boundaryObject = settings.value.polygons_extra[boundary]
         if (boundaryObject) {
@@ -67,15 +62,15 @@ export default defineNuxtComponent({
             const geojson = (await (
               await fetch(boundaryObject.data)
             ).json()) as GeoJSON
-            if (geojson.type === 'Feature') {
+            if (geojson.type === 'Feature')
               boundary_geojson = geojson.geometry as Polygon | MultiPolygon
-            } else if (
-              geojson.type === 'Polygon' ||
-              geojson.type === 'MultiPolygon'
-            ) {
+            else if (
+              geojson.type === 'Polygon'
+              || geojson.type === 'MultiPolygon'
+            )
               boundary_geojson = geojson as Polygon | MultiPolygon
-            }
-          } else {
+          }
+          else {
             boundary_geojson = boundaryObject.data as Polygon
           }
         }
@@ -84,18 +79,16 @@ export default defineNuxtComponent({
       return [settings, ref(boundary_geojson)]
     }) as unknown as [Ref<Settings>, Ref<Polygon | MultiPolygon | undefined>]
 
-    const fetchPropertyTranslations: Promise<Ref<PropertyTranslations>> =
-      getAsyncDataOrThrows('fetchPropertyTranslations', () =>
+    const fetchPropertyTranslations: Promise<Ref<PropertyTranslations>>
+      = getAsyncDataOrThrows('fetchPropertyTranslations', () =>
         siteStore().translations
           ? Promise.resolve(siteStore().translations as PropertyTranslations)
-          : getPropertyTranslations(config)
-      )
+          : getPropertyTranslations(config))
 
     const fetchMenuItems = getAsyncDataOrThrows('fetchMenuItems', () =>
       menuStore().menuItems !== undefined
         ? Promise.resolve(Object.values(menuStore().menuItems!))
-        : getMenu(config)
-    )
+        : getMenu(config))
 
     let categoryIdsJoin: string | null
     let poiId: string | null
@@ -103,29 +96,30 @@ export default defineNuxtComponent({
     if (params.poiId) {
       categoryIdsJoin = params.p1 as string
       poiId = params.poiId as string
-    } else if (useRoute().path.endsWith('/')) {
+    }
+    else if (useRoute().path.endsWith('/')) {
       categoryIdsJoin = params.p1 as string
       poiId = null
-    } else {
+    }
+    else {
       categoryIdsJoin = null
       poiId = params.p1 as string
     }
 
     const categoryIds = ref(
-      (categoryIdsJoin &&
-        categoryIdsJoin.split(',').map((id) => parseInt(id))) ||
-        null
+      (categoryIdsJoin
+      && categoryIdsJoin.split(',').map(id => Number.parseInt(id)))
+      || null,
     )
     let fetchPoi: Promise<Ref<ApiPoi | null>> = getAsyncDataOrNull(
       'fetchPoiNull',
-      () => Promise.resolve(null)
+      () => Promise.resolve(null),
     )
     if (poiId) {
       fetchPoi = getAsyncDataOrNull(`fetchPoi-${poiId}`, () =>
         getPoiById(config, poiId!, {
           short_description: false,
-        })
-      )
+        }))
     }
 
     const [
@@ -164,9 +158,9 @@ export default defineNuxtComponent({
 
   created() {
     this.globalConfig = this.config
-    if (this.menuItems) {
+    if (this.menuItems)
       menuStore().fetchConfig(this.menuItems)
-    }
+
     this.globalSettings = this.settings
     this.globalTranslations = this.propertyTranslations
 
@@ -184,6 +178,15 @@ export default defineNuxtComponent({
   },
 })
 </script>
+
+<template>
+  <Embedded
+    :settings="settings"
+    :initial-category-ids="categoryIds || undefined"
+    :initial-poi="initialPoi || undefined"
+    :boundary-area="boundary_geojson"
+  />
+</template>
 
 <style scoped>
 body,

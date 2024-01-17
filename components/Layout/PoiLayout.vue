@@ -1,35 +1,12 @@
-<template>
-  <div class="tw-w-full container">
-    <div>
-      <Header
-        :theme="settings.themes[0]"
-        :nav-menu-entries="navMenuEntries"
-        :color-line="colorLine"
-      >
-        <slot name="headerButtons"></slot>
-      </Header>
-      <div v-if="icon" class="tw-flex tw-justify-center">
-        <TeritorioIconBadge :color-fill="colorFill" size="2xl" :picto="icon" />
-      </div>
-      <h1 class="print:tw-pb-4">{{ name }}</h1>
-      <slot name="actions"></slot>
-      <slot name="body"></slot>
-      <Footer :attributions="settings.attributions">
-        <slot name="footer"></slot>
-      </Footer>
-    </div>
-  </div>
-</template>
-
 <script lang="ts">
-import { PropType } from 'vue'
+import type { PropType } from 'vue'
 
 import { defineNuxtComponent } from '#app'
 import Footer from '~/components/Layout/Footer.vue'
 import Header from '~/components/Layout/Header.vue'
 import TeritorioIconBadge from '~/components/UI/TeritorioIconBadge.vue'
-import { ContentEntry } from '~/lib/apiContent'
-import { Settings } from '~/lib/apiSettings'
+import type { ContentEntry } from '~/lib/apiContent'
+import type { Settings } from '~/lib/apiSettings'
 
 export default defineNuxtComponent({
   components: {
@@ -66,6 +43,31 @@ export default defineNuxtComponent({
   },
 })
 </script>
+
+<template>
+  <div class="tw-w-full container">
+    <div>
+      <Header
+        :theme="settings.themes[0]"
+        :nav-menu-entries="navMenuEntries"
+        :color-line="colorLine"
+      >
+        <slot name="headerButtons" />
+      </Header>
+      <div v-if="icon" class="tw-flex tw-justify-center">
+        <TeritorioIconBadge :color-fill="colorFill" size="2xl" :picto="icon" />
+      </div>
+      <h1 class="print:tw-pb-4">
+        {{ name }}
+      </h1>
+      <slot name="actions" />
+      <slot name="body" />
+      <Footer :attributions="settings.attributions">
+        <slot name="footer" />
+      </Footer>
+    </div>
+  </div>
+</template>
 
 <style lang="scss" scoped>
 @import '~/assets/details.scss';

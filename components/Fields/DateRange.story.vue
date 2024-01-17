@@ -1,15 +1,3 @@
-<template>
-  <Story title="Fields/DateRange">
-    <Variant
-      v-for="(p, name) in props"
-      :key="name"
-      :title="name.replace(/([A-Z])/g, ' $1').trim()"
-    >
-      <DateRange v-bind="p" />
-    </Variant>
-  </Story>
-</template>
-
 <script lang="ts" setup>
 import DateRange from '~/components/Fields/DateRange.vue'
 
@@ -36,3 +24,15 @@ const props = {
   },
 }
 </script>
+
+<template>
+  <Story title="Fields/DateRange">
+    <Variant
+      v-for="(p, name) in props"
+      :key="name"
+      :title="name.replace(/([A-Z])/g, ' $1').trim()"
+    >
+      <DateRange v-bind="p" />
+    </Variant>
+  </Story>
+</template>

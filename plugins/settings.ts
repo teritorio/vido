@@ -1,5 +1,5 @@
 import { defineNuxtPlugin } from '#app/nuxt'
-import { Settings } from '~/lib/apiSettings'
+import type { Settings } from '~/lib/apiSettings'
 
 interface SettingsSetPlugin {
   set(settings: Settings): void

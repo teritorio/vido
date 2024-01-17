@@ -1,33 +1,29 @@
-<template>
-  <PoisList
-    :settings="settings"
-    :nav-menu-entries="contents"
-    :initial-category-id="parseInt(id)"
-    :initial-pois="pois"
-    class="page-index"
-  />
-</template>
-
 <script lang="ts">
 import { mapWritableState } from 'pinia'
-import { Ref } from 'vue'
+import type { Ref } from 'vue'
 
-import { useRequestHeaders, useRoute, useHead, defineNuxtComponent } from '#app'
+import { defineNuxtComponent, useHead, useRequestHeaders, useRoute } from '#app'
 import { definePageMeta } from '#imports'
 import PoisList from '~/components/PoisList/PoisList.vue'
-import { ContentEntry, getContents } from '~/lib/apiContent'
-import { MenuItem, getMenu } from '~/lib/apiMenu'
-import { getPoiByCategoryId, ApiPois } from '~/lib/apiPois'
-import {
-  getPropertyTranslations,
+import type { ContentEntry } from '~/lib/apiContent'
+import { getContents } from '~/lib/apiContent'
+import type { MenuItem } from '~/lib/apiMenu'
+import { getMenu } from '~/lib/apiMenu'
+import type { ApiPois } from '~/lib/apiPois'
+import { getPoiByCategoryId } from '~/lib/apiPois'
+import type {
   PropertyTranslations,
 } from '~/lib/apiPropertyTranslations'
-import { getSettings, headerFromSettings, Settings } from '~/lib/apiSettings'
+import {
+  getPropertyTranslations,
+} from '~/lib/apiPropertyTranslations'
+import type { Settings } from '~/lib/apiSettings'
+import { getSettings, headerFromSettings } from '~/lib/apiSettings'
 import { getAsyncDataOrThrows } from '~/lib/getAsyncData'
 import { vidoConfig } from '~/plugins/vido-config'
 import { menuStore } from '~/stores/menu'
 import { siteStore } from '~/stores/site'
-import { VidoConfig } from '~/utils/types-config'
+import type { VidoConfig } from '~/utils/types-config'
 
 export default defineNuxtComponent({
   components: {
@@ -53,34 +49,29 @@ export default defineNuxtComponent({
 
     const params = useRoute().params
     const configRef = await getAsyncDataOrThrows('configRef', () =>
-      Promise.resolve(siteStore().config || vidoConfig(useRequestHeaders()))
-    )
+      Promise.resolve(siteStore().config || vidoConfig(useRequestHeaders())))
     const config: VidoConfig = configRef.value
 
     const fetchSettings = getAsyncDataOrThrows('fetchSettings', () =>
       siteStore().settings
         ? Promise.resolve(siteStore().settings as Settings)
-        : getSettings(config)
-    )
+        : getSettings(config))
 
     const fetchContents = getAsyncDataOrThrows('fetchContents', () =>
       siteStore().contents
         ? Promise.resolve(siteStore().contents as ContentEntry[])
-        : getContents(config)
-    )
+        : getContents(config))
 
-    const fetchPropertyTranslations: Promise<Ref<PropertyTranslations>> =
-      getAsyncDataOrThrows('fetchPropertyTranslations', () =>
+    const fetchPropertyTranslations: Promise<Ref<PropertyTranslations>>
+      = getAsyncDataOrThrows('fetchPropertyTranslations', () =>
         siteStore().translations
           ? Promise.resolve(siteStore().translations as PropertyTranslations)
-          : getPropertyTranslations(config)
-      )
+          : getPropertyTranslations(config))
 
     const fetchMenuItems = getAsyncDataOrThrows('fetchMenuItems', () =>
       menuStore().menuItems !== undefined
         ? Promise.resolve(Object.values(menuStore().menuItems!))
-        : getMenu(config)
-    )
+        : getMenu(config))
 
     const fetchPoiByCategoryId = getAsyncDataOrThrows(
       `fetchPoiByCategoryId-${params.id}`,
@@ -88,10 +79,10 @@ export default defineNuxtComponent({
         getPoiByCategoryId(config, params.id as string, {
           geometry_as: 'point',
           short_description: true,
-        })
+        }),
     )
-    let [settings, contents, propertyTranslations, menuItems, pois] =
-      await Promise.all([
+    const [settings, contents, propertyTranslations, menuItems, pois]
+      = await Promise.all([
         fetchSettings,
         fetchContents,
         fetchPropertyTranslations,
@@ -124,9 +115,9 @@ export default defineNuxtComponent({
 
   created() {
     this.globalConfig = this.config
-    if (this.menuItems) {
+    if (this.menuItems)
       menuStore().fetchConfig(this.menuItems)
-    }
+
     this.globalSettings = this.settings
     this.globalContents = this.contents
     this.globalTranslations = this.propertyTranslations
@@ -145,6 +136,16 @@ export default defineNuxtComponent({
   },
 })
 </script>
+
+<template>
+  <PoisList
+    :settings="settings"
+    :nav-menu-entries="contents"
+    :initial-category-id="parseInt(id)"
+    :initial-pois="pois"
+    class="page-index"
+  />
+</template>
 
 <style lang="scss" scoped>
 @import '~/assets/details.scss';

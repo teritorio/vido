@@ -1,51 +1,18 @@
-<template>
-  <PoiLayout
-    v-if="category !== undefined"
-    :settings="settings"
-    :nav-menu-entries="navMenuEntries"
-    :name="category.category.name.fr"
-    :icon="category.category.icon"
-    :color-line="category.category.color_line"
-    :color-fill="category.category.color_fill"
-  >
-    <template #actions>
-      <Actions
-        :category-id="categoryId"
-        :color-line="category.category.color_line"
-      />
-    </template>
-    <template #body>
-      <CategorySelector
-        :menu-items="apiMenuCategory || []"
-        :category-id="categoryId"
-        @category-change="onMenuChange"
-      />
-
-      <PoisTable v-if="pois" :fields="fields" :pois="pois" />
-      <FontAwesomeIcon
-        v-else
-        icon="spinner"
-        class="tw-text-zinc-400 tw-animate-spin"
-        size="3x"
-      />
-    </template>
-  </PoiLayout>
-</template>
-
 <script lang="ts">
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { mapState } from 'pinia'
-import { PropType } from 'vue'
+import type { PropType } from 'vue'
 
 import { defineNuxtComponent, useRequestHeaders } from '#app'
 import PoiLayout from '~/components/Layout/PoiLayout.vue'
 import Actions from '~/components/PoisList/Actions.vue'
 import CategorySelector from '~/components/PoisList/CategorySelector.vue'
 import PoisTable from '~/components/PoisList/PoisTable.vue'
-import { ContentEntry } from '~/lib/apiContent'
-import { ApiMenuCategory } from '~/lib/apiMenu'
-import { ApiPois, FieldsListItem, getPoiByCategoryId } from '~/lib/apiPois'
-import { Settings } from '~/lib/apiSettings'
+import type { ContentEntry } from '~/lib/apiContent'
+import type { ApiMenuCategory } from '~/lib/apiMenu'
+import type { ApiPois, FieldsListItem } from '~/lib/apiPois'
+import { getPoiByCategoryId } from '~/lib/apiPois'
+import type { Settings } from '~/lib/apiSettings'
 import { menuStore } from '~/stores/menu'
 
 export default defineNuxtComponent({
@@ -91,14 +58,14 @@ export default defineNuxtComponent({
 
     category(): ApiMenuCategory | undefined {
       return Object.values(this.apiMenuCategory || {}).find(
-        (menuItem) => menuItem.id == this.categoryId
+        menuItem => menuItem.id == this.categoryId,
       )
     },
 
     fields(): FieldsListItem[] {
       return (
-        (this.pois?.features &&
-          this.pois.features[0].properties.editorial?.list_fields) || [
+        (this.pois?.features
+        && this.pois.features[0].properties.editorial?.list_fields) || [
           { field: 'name' },
         ]
       )
@@ -118,7 +85,7 @@ export default defineNuxtComponent({
         {
           geometry_as: 'point',
           short_description: true,
-        }
+        },
       ).then((pois) => {
         this.pois = pois
       })
@@ -132,6 +99,40 @@ export default defineNuxtComponent({
   },
 })
 </script>
+
+<template>
+  <PoiLayout
+    v-if="category !== undefined"
+    :settings="settings"
+    :nav-menu-entries="navMenuEntries"
+    :name="category.category.name.fr"
+    :icon="category.category.icon"
+    :color-line="category.category.color_line"
+    :color-fill="category.category.color_fill"
+  >
+    <template #actions>
+      <Actions
+        :category-id="categoryId"
+        :color-line="category.category.color_line"
+      />
+    </template>
+    <template #body>
+      <CategorySelector
+        :menu-items="apiMenuCategory || []"
+        :category-id="categoryId"
+        @category-change="onMenuChange"
+      />
+
+      <PoisTable v-if="pois" :fields="fields" :pois="pois" />
+      <FontAwesomeIcon
+        v-else
+        icon="spinner"
+        class="tw-text-zinc-400 tw-animate-spin"
+        size="3x"
+      />
+    </template>
+  </PoiLayout>
+</template>
 
 <style lang="scss" scoped>
 @import '~/assets/details.scss';

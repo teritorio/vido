@@ -1,30 +1,9 @@
-<template>
-  <div>
-    <v-autocomplete
-      v-model="currentValue"
-      outlined
-      multiple
-      chips
-      deletable-chips
-      :items="items"
-      :label="$t('listFilter.label')"
-      :clearable="true"
-      hide-details="auto"
-      density="compact"
-      :custom-filter="filterEasy"
-      @update:model-value="onChange"
-      @click="$emit('click')"
-      @blur="$emit('blur')"
-    />
-  </div>
-</template>
-
 <script lang="ts">
-import { PropType } from 'vue'
+import type { PropType } from 'vue'
 import { VAutocomplete } from 'vuetify/components/VAutocomplete'
 
 import { defineNuxtComponent } from '#app'
-import { FilterValueList } from '~/utils/types-filters'
+import type { FilterValueList } from '~/utils/types-filters'
 
 export default defineNuxtComponent({
   components: {
@@ -53,8 +32,8 @@ export default defineNuxtComponent({
   },
 
   computed: {
-    items(): { title: string; value: string }[] {
-      return this.filter.def.values.map((value) => ({
+    items(): { title: string, value: string }[] {
+      return this.filter.def.values.map(value => ({
         title: (value.name && value.name.fr) || value.value,
         value: value.value,
       }))
@@ -76,7 +55,8 @@ export default defineNuxtComponent({
     },
 
     filterEasy(value: string, query: string) {
-      if (value == null || query == null) return -1
+      if (value == null || query == null)
+        return -1
 
       return this.normalize(value).indexOf(this.normalize(query))
     },
@@ -87,3 +67,24 @@ export default defineNuxtComponent({
   },
 })
 </script>
+
+<template>
+  <div>
+    <v-autocomplete
+      v-model="currentValue"
+      outlined
+      multiple
+      chips
+      deletable-chips
+      :items="items"
+      :label="$t('listFilter.label')"
+      :clearable="true"
+      hide-details="auto"
+      density="compact"
+      :custom-filter="filterEasy"
+      @update:model-value="onChange"
+      @click="$emit('click')"
+      @blur="$emit('blur')"
+    />
+  </div>
+</template>

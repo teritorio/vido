@@ -1,23 +1,5 @@
-<template>
-  <div>
-    <a
-      :href="mainUrl"
-      rel="noopener noreferrer"
-      :aria-label="siteName"
-      :title="siteName"
-      target="_blank"
-    >
-      <img
-        :src="logoUrl"
-        :class="['tw-w-auto tw-h-auto', imageClass]"
-        :alt="$t('headerMenu.logo')"
-      />
-    </a>
-  </div>
-</template>
-
 <script lang="ts">
-import { PropType } from 'vue'
+import type { PropType } from 'vue'
 
 import { defineNuxtComponent } from '#app'
 
@@ -42,3 +24,21 @@ export default defineNuxtComponent({
   },
 })
 </script>
+
+<template>
+  <div>
+    <a
+      :href="mainUrl"
+      rel="noopener noreferrer"
+      :aria-label="siteName"
+      :title="siteName"
+      target="_blank"
+    >
+      <img
+        :src="logoUrl"
+        class="tw-w-auto tw-h-auto" :class="[imageClass]"
+        :alt="$t('headerMenu.logo')"
+      >
+    </a>
+  </div>
+</template>

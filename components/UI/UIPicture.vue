@@ -3,13 +3,14 @@
 // Change stategy of source image size
 // Pass explicite size, not the default one based on view port size
 import {
-  useBaseImage,
   baseImageProps,
+  useBaseImage,
 } from '@nuxt/image-edge/dist/runtime/components/_base.mjs'
-import { h, defineComponent, computed } from 'vue'
+import { computed, defineComponent, h } from 'vue'
 
 import { getFileExtension } from '#image'
-import { useImage, useHead } from '#imports'
+import { useHead, useImage } from '#imports'
+
 export const pictureProps = {
   ...baseImageProps,
   legacyFormat: { type: String, default: null },
@@ -27,16 +28,16 @@ export default defineComponent({
     }
     const _base = useBaseImage(props)
     const isTransparent = computed(() =>
-      ['png', 'webp', 'gif'].includes(originalFormat.value)
+      ['png', 'webp', 'gif'].includes(originalFormat.value),
     )
     const originalFormat = computed(() => getFileExtension(props.src))
     const format = computed(() =>
-      props.format || originalFormat.value === 'svg' ? 'svg' : 'webp'
+      props.format || originalFormat.value === 'svg' ? 'svg' : 'webp',
     )
     const legacyFormat = computed(() => {
-      if (props.legacyFormat) {
+      if (props.legacyFormat)
         return props.legacyFormat
-      }
+
       const formats = {
         webp: isTransparent.value ? 'png' : 'jpeg',
         svg: 'png',
@@ -44,11 +45,11 @@ export default defineComponent({
       return formats[format.value] || originalFormat.value
     })
     const nSources = computed(() => {
-      if (format.value === 'svg') {
+      if (format.value === 'svg')
         return [{ srcset: props.src }]
-      }
-      const formats =
-        legacyFormat.value !== format.value
+
+      const formats
+        = legacyFormat.value !== format.value
           ? [legacyFormat.value, format.value]
           : [format.value]
       return formats.map((format2) => {
@@ -67,16 +68,15 @@ export default defineComponent({
         as: 'image',
         imagesrcset: nSources.value[srcKey].srcset,
       }
-      if (nSources.value?.[srcKey]?.sizes) {
+      if (nSources.value?.[srcKey]?.sizes)
         link.imagesizes = nSources.value[srcKey].sizes
-      }
+
       useHead({ link: [link] })
     }
     const imgAttrs = { ...props.imgAttrs }
     for (const key in ctx.attrs) {
-      if (key in baseImageProps && !(key in imgAttrs)) {
+      if (key in baseImageProps && !(key in imgAttrs))
         imgAttrs[key] = ctx.attrs[key]
-      }
     }
     // Get the smallest by default, not the biggest one
     const srcDefault = nSources.value[0].srcset.split(' ')[0] // Monkey path, add

@@ -23,7 +23,7 @@ export default defineConfig({
       ignored: (payload: {
         file: string
         story: { title: string }
-        variant: { id: string; title: string }
+        variant: { id: string, title: string }
       }) => payload.story.title === 'Tailwind', // Remove builtins
       presets: [
         {

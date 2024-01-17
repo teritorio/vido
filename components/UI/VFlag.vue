@@ -1,6 +1,6 @@
 <script lang="ts">
 import { hasFlag } from 'country-flag-icons'
-import { FR, GB, ES } from 'country-flag-icons/string/3x2'
+import { ES, FR, GB } from 'country-flag-icons/string/3x2'
 import { h, ref, watch } from 'vue'
 
 import { defineNuxtComponent } from '#app'
@@ -25,11 +25,11 @@ export default defineNuxtComponent({
       () => props.flag,
       async (newFlag, oldFlag) => {
         if (newFlag !== oldFlag) {
-          // @ts-ignore
+          // @ts-expect-error
           svgFlag.value = svgs[newFlag]
         }
       },
-      { immediate: true }
+      { immediate: true },
     )
     return () => h('div', { innerHTML: svgFlag.value })
   },

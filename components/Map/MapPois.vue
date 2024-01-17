@@ -1,19 +1,14 @@
-<template>
-  <MapBase ref="mapBase" :features="features" :center="center" :bounds="bounds" :zoom="selectionZoom.poi"
-    :fullscreen-control="fullscreenControl" :extra-attributions="extraAttributions"
-    :off-map-attribution="offMapAttribution" @map-init="onMapInit" @map-style-load="onMapStyleLoad" />
-</template>
-
 <script lang="ts">
 import type { LngLatLike } from 'maplibre-gl'
-import { PropType, ref } from 'vue'
+import type { PropType } from 'vue'
+import { ref } from 'vue'
 
 import { defineNuxtComponent } from '#app'
 import MapBase from '~/components/Map/MapBase.vue'
-import { ApiPoi } from '~/lib/apiPois'
+import type { ApiPoi } from '~/lib/apiPois'
 import { getBBoxFeatures } from '~/lib/bbox'
 import { MAP_ZOOM } from '~/lib/constants'
-import { MapPoiId } from '~/lib/mapPois'
+import type { MapPoiId } from '~/lib/mapPois'
 import { filterRouteByPoiIds } from '~/utils/styles'
 
 export default defineNuxtComponent({
@@ -74,27 +69,27 @@ export default defineNuxtComponent({
 
     center(): LngLatLike | undefined {
       if (
-        this.features.length === 1 &&
-        this.features[0].geometry.type === 'Point'
-      ) {
+        this.features.length === 1
+          && this.features[0].geometry.type === 'Point'
+      )
         return this.features[0].geometry.coordinates as LngLatLike
-      } else {
+      else
         return undefined
-      }
     },
 
     bounds(): maplibregl.LngLatBoundsLike | undefined {
       if (
-        this.features.length > 1 ||
-        (this.features.length === 1 &&
-          this.features[0].geometry.type !== 'Point')
+        this.features.length > 1
+          || (this.features.length === 1
+          && this.features[0].geometry.type !== 'Point')
       ) {
         return (
           getBBoxFeatures(
-            this.features.filter((feature) => feature.geometry)
+            this.features.filter(feature => feature.geometry),
           ) || this.defaultBounds
         )
-      } else {
+      }
+      else {
         return this.defaultBounds
       }
     },
@@ -103,7 +98,7 @@ export default defineNuxtComponent({
   watch: {
     features() {
       if (this.map) {
-        // @ts-ignore
+        // @ts-expect-error
         this.onMapStyleLoad()
       }
     },
@@ -118,8 +113,8 @@ export default defineNuxtComponent({
       const colors = [
         ...new Set(
           this.features.map(
-            (feature) => feature.properties?.display?.color_fill || '#000000'
-          )
+            feature => feature.properties?.display?.color_fill || '#000000',
+          ),
         ),
       ]
       this.mapBase!.initPoiLayer(
@@ -135,13 +130,20 @@ export default defineNuxtComponent({
           ['get', 'color_fill', ['get', 'display']],
           '#000000',
         ],
-        this.cluster
+        this.cluster,
       )
 
-      if (this.featureIds) {
+      if (this.featureIds)
         filterRouteByPoiIds(this.map as maplibregl.Map, this.featureIds)
-      }
     },
   },
 })
 </script>
+
+<template>
+  <MapBase
+    ref="mapBase" :features="features" :center="center" :bounds="bounds" :zoom="selectionZoom.poi"
+    :fullscreen-control="fullscreenControl" :extra-attributions="extraAttributions"
+    :off-map-attribution="offMapAttribution" @map-init="onMapInit" @map-style-load="onMapStyleLoad"
+  />
+</template>

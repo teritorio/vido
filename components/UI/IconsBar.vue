@@ -1,11 +1,3 @@
-<template>
-  <ul v-if="$slots.default">
-    <li v-for="(vnode, index) in $slots.default()" :key="index">
-      <VNodes v-if="vnode" :vnodes="[vnode]" />
-    </li>
-  </ul>
-</template>
-
 <script lang="ts">
 import { defineNuxtComponent } from '#app'
 
@@ -15,6 +7,14 @@ export default defineNuxtComponent({
   },
 })
 </script>
+
+<template>
+  <ul v-if="$slots.default">
+    <li v-for="(vnode, index) in $slots.default()" :key="index">
+      <VNodes v-if="vnode" :vnodes="[vnode]" />
+    </li>
+  </ul>
+</template>
 
 <style lang="scss" scoped>
 @import '~/assets/details.scss';

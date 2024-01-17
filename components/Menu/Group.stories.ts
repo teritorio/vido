@@ -1,5 +1,5 @@
 import Group from '~/components/Menu/Group.vue'
-import { MenuGroup } from '~/lib/apiMenu'
+import type { MenuGroup } from '~/lib/apiMenu'
 import { bind } from '~/lib/storybook-types'
 
 export default {

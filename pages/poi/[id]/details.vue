@@ -1,40 +1,35 @@
-<template>
-  <Index
-    v-if="settings"
-    :settings="settings"
-    :nav-menu-entries="contents"
-    :poi="poi"
-    :poi-deps="poiDeps || undefined"
-    :class="['page-details', 'tw-overflow-clip']"
-  />
-</template>
-
 <script lang="ts">
 import { groupBy } from 'lodash'
 import { mapWritableState } from 'pinia'
-import { Ref, ref } from 'vue'
+import type { Ref } from 'vue'
+import { ref } from 'vue'
 
 import {
   defineNuxtComponent,
+  showError,
   useHead,
   useRequestHeaders,
   useRoute,
-  showError,
 } from '#app'
 import { definePageMeta } from '#imports'
 import Index from '~/components/PoisDetails/PoiDetails.vue'
-import { ContentEntry, getContents } from '~/lib/apiContent'
-import { ApiPoiDeps, getPoiDepsById } from '~/lib/apiPoiDeps'
-import { ApiPoi } from '~/lib/apiPois'
-import {
-  getPropertyTranslations,
+import type { ContentEntry } from '~/lib/apiContent'
+import { getContents } from '~/lib/apiContent'
+import type { ApiPoiDeps } from '~/lib/apiPoiDeps'
+import { getPoiDepsById } from '~/lib/apiPoiDeps'
+import type { ApiPoi } from '~/lib/apiPois'
+import type {
   PropertyTranslations,
 } from '~/lib/apiPropertyTranslations'
-import { getSettings, headerFromSettings, Settings } from '~/lib/apiSettings'
+import {
+  getPropertyTranslations,
+} from '~/lib/apiPropertyTranslations'
+import type { Settings } from '~/lib/apiSettings'
+import { getSettings, headerFromSettings } from '~/lib/apiSettings'
 import { getAsyncDataOrThrows } from '~/lib/getAsyncData'
 import { vidoConfig } from '~/plugins/vido-config'
 import { siteStore } from '~/stores/site'
-import { VidoConfig } from '~/utils/types-config'
+import type { VidoConfig } from '~/utils/types-config'
 
 export default defineNuxtComponent({
   components: {
@@ -59,28 +54,24 @@ export default defineNuxtComponent({
 
     const params = useRoute().params
     const configRef = await getAsyncDataOrThrows('configRef', () =>
-      Promise.resolve(siteStore().config || vidoConfig(useRequestHeaders()))
-    )
+      Promise.resolve(siteStore().config || vidoConfig(useRequestHeaders())))
     const config: VidoConfig = configRef.value
 
     const fetchSettings = getAsyncDataOrThrows('fetchSettings', () =>
       siteStore().settings
         ? Promise.resolve(siteStore().settings as Settings)
-        : getSettings(config)
-    )
+        : getSettings(config))
 
     const fetchContents = getAsyncDataOrThrows('fetchContents', () =>
       siteStore().contents
         ? Promise.resolve(siteStore().contents as ContentEntry[])
-        : getContents(config)
-    )
+        : getContents(config))
 
-    const fetchPropertyTranslations: Promise<Ref<PropertyTranslations>> =
-      getAsyncDataOrThrows('fetchPropertyTranslations', () =>
+    const fetchPropertyTranslations: Promise<Ref<PropertyTranslations>>
+      = getAsyncDataOrThrows('fetchPropertyTranslations', () =>
         siteStore().translations
           ? Promise.resolve(siteStore().translations as PropertyTranslations)
-          : getPropertyTranslations(config)
-      )
+          : getPropertyTranslations(config))
 
     const fetchPoiPoiDeps = getAsyncDataOrThrows(
       `fetchPoiPoiDeps-${params.id}`,
@@ -88,25 +79,25 @@ export default defineNuxtComponent({
         return getPoiDepsById(config, params.id as string, {
           short_description: false,
         }).then((poiDeps) => {
-          let poi: ApiPoi | undefined = undefined
+          let poi: ApiPoi | undefined
           if (poiDeps) {
             const g = groupBy(
               poiDeps.features,
-              (feature) =>
-                // @ts-ignore
-                feature.properties.metadata?.id == params.id
+              feature =>
+                // @ts-expect-error
+                feature.properties.metadata?.id == params.id,
             )
-            poi = g['true'] && (g['true'][0] as ApiPoi)
-            poiDeps.features = g['false'] || []
+            poi = g.true && (g.true[0] as ApiPoi)
+            poiDeps.features = g.false || []
           }
 
           return { poi: ref(poi), poiDeps: ref(poiDeps) }
         })
-      }
+      },
     )
 
-    const [settings, contents, propertyTranslations, poiPoiDeps] =
-      await Promise.all([
+    const [settings, contents, propertyTranslations, poiPoiDeps]
+      = await Promise.all([
         fetchSettings,
         fetchContents,
         fetchPropertyTranslations,
@@ -121,13 +112,13 @@ export default defineNuxtComponent({
     }
     useHead(
       headerFromSettings(settings.value, {
-        // @ts-ignore
+        // @ts-expect-error
         title: poiPoiDeps.value?.poi.properties.name,
         description: {
-          // @ts-ignore
+          // @ts-expect-error
           fr: poiPoiDeps.value?.poi.properties.description,
         },
-      })
+      }),
     )
 
     return {
@@ -170,6 +161,17 @@ export default defineNuxtComponent({
   },
 })
 </script>
+
+<template>
+  <Index
+    v-if="settings"
+    :settings="settings"
+    :nav-menu-entries="contents"
+    :poi="poi"
+    :poi-deps="poiDeps || undefined"
+    class="page-details tw-overflow-clip"
+  />
+</template>
 
 <style lang="scss" scoped>
 @import '~/assets/details.scss';

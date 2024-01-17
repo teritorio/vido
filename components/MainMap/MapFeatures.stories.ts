@@ -1,8 +1,8 @@
 import type { LngLatBoundsLike } from 'maplibre-gl'
 
 import MapFeatures from '~/components/MainMap/MapFeatures.vue'
-import { ApiMenuCategory } from '~/lib/apiMenu'
-import { ApiPoi } from '~/lib/apiPois'
+import type { ApiMenuCategory } from '~/lib/apiMenu'
+import type { ApiPoi } from '~/lib/apiPois'
 import { bind, mapCss, parametersMap } from '~/lib/storybook-types'
 
 export default {
@@ -47,7 +47,7 @@ export const Default = bind(
   {
     ...defaultProps,
   },
-  { style: mapCss }
+  { style: mapCss },
 )
 
 export const Small = bind(
@@ -56,7 +56,7 @@ export const Small = bind(
     ...defaultProps,
     small: true,
   },
-  { style: mapCss }
+  { style: mapCss },
 )
 
 export const StyleIconFilter = bind(
@@ -65,7 +65,7 @@ export const StyleIconFilter = bind(
     ...defaultProps,
     styleIconFilter: [['catering', 'catering_food', 'restaurant']],
   },
-  { style: mapCss }
+  { style: mapCss },
 )
 
 const feature1: ApiPoi = {
@@ -98,5 +98,5 @@ export const Features = bind(
     ...defaultProps,
     features: [feature1],
   },
-  { style: mapCss }
+  { style: mapCss },
 )

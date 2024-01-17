@@ -1,23 +1,6 @@
-<template>
-  <i
-    v-if="!Boolean(image) && picto.startsWith('teritorio')"
-    :class="[
-      picto,
-      !useNativeAlignment && 'tw-flex tw-items-center tw-justify-center',
-    ]"
-    :style="{ color: colorText }"
-  />
-  <FontAwesomeIcon
-    v-else-if="!Boolean(image)"
-    :icon="picto"
-    :color="colorText"
-  />
-  <img v-else-if="Boolean(image)" class="tw-rounded-full" :src="image" />
-</template>
-
 <script lang="ts">
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
-import { PropType } from 'vue'
+import type { PropType } from 'vue'
 
 import { defineNuxtComponent } from '#app'
 
@@ -46,3 +29,20 @@ export default defineNuxtComponent({
   },
 })
 </script>
+
+<template>
+  <i
+    v-if="!Boolean(image) && picto.startsWith('teritorio')"
+    :class="[
+      picto,
+      !useNativeAlignment && 'tw-flex tw-items-center tw-justify-center',
+    ]"
+    :style="{ color: colorText }"
+  />
+  <FontAwesomeIcon
+    v-else-if="!Boolean(image)"
+    :icon="picto"
+    :color="colorText"
+  />
+  <img v-else-if="Boolean(image)" class="tw-rounded-full" :src="image">
+</template>

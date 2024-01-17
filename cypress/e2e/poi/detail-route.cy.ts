@@ -20,13 +20,13 @@ describe('home content', () => {
 
   it('contain basic details', () => {
     cy.get('h1').contains(
-      // @ts-ignore
-      teritorioReferenceAPIFixture.deps[2].features[0].properties.name
+      // @ts-expect-error
+      teritorioReferenceAPIFixture.deps[2].features[0].properties.name,
     )
 
     cy.get('#FieldsGroup--download')
       .parent()
-      // @ts-ignore
+      // @ts-expect-error
       .contains('download')
 
     // Check for descript on right column

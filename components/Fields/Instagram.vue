@@ -1,12 +1,6 @@
-<template>
-  <a v-if="url" :href="url" target="_blank">
-    <FontAwesomeIcon icon="fa-brands fa-instagram" size="lg" />
-  </a>
-</template>
-
 <script lang="ts">
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
-import { PropType } from 'vue'
+import type { PropType } from 'vue'
 
 import { defineNuxtComponent } from '#app'
 
@@ -23,3 +17,9 @@ export default defineNuxtComponent({
   },
 })
 </script>
+
+<template>
+  <a v-if="url" :href="url" target="_blank">
+    <FontAwesomeIcon icon="fa-brands fa-instagram" size="lg" />
+  </a>
+</template>
