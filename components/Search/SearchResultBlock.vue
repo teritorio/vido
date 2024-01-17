@@ -64,7 +64,7 @@ export default defineNuxtComponent({
         @click="onItemClick(item)"
       >
         <teritorio-icon
-          v-if="item.icon && item.icon.indexOf('teritorio') != -1"
+          v-if="item.icon && item.icon.indexOf('teritorio') !== -1"
           :picto="item.icon"
           color-text="#6B7280"
         />

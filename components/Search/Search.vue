@@ -301,7 +301,6 @@ export default defineNuxtComponent({
 
         this.searchQueryId += 1
         const currentSearchQueryId = this.searchQueryId
-
         const config = this.$vidoConfig(useRequestHeaders())
         const projectTheme = `project_theme=${config.API_PROJECT}-${config.API_THEME}`
         const searchText = this.searchText.trim()
@@ -335,7 +334,6 @@ export default defineNuxtComponent({
         }
         else if (searchText.length > 2) {
           const query = `q=${this.searchText}&lon=${this.mapCenter.lng}&lat=${this.mapCenter.lat}`
-
           const config = this.$vidoConfig(useRequestHeaders())
           const MenuItemsFetch: Promise<
             ApiSearchResult<ApiMenuItemSearchResult>

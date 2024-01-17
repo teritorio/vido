@@ -27,7 +27,7 @@ export default defineNuxtComponent({
   <div>
     <slot />
     <span>
-      <template v-if="start && end && start == end">
+      <template v-if="start && end && start === end">
         {{
           $t('dateRange.on', {
             on: $d(new Date(start)),

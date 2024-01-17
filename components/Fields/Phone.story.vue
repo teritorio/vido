@@ -17,7 +17,7 @@ const devices = {
 }
 
 function setupApp(device: (typeof devices)[keyof typeof devices]) {
-  // @ts-expect-error
+  // @ts-expect-error; Fix typings
   return ({ app, _story, _variant }) => {
     app.config.globalProperties.$device = ref(device)
   }

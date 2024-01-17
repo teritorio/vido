@@ -58,7 +58,7 @@ export default defineNuxtComponent({
 
     category(): ApiMenuCategory | undefined {
       return Object.values(this.apiMenuCategory || {}).find(
-        menuItem => menuItem.id == this.categoryId,
+        menuItem => menuItem.id === this.categoryId,
       )
     },
 

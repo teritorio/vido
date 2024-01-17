@@ -54,6 +54,7 @@ export default defineNuxtComponent({
     ...mapState(favoritesStore, ['favoritesIds']),
 
     pdfLink(): string {
+      // @ts-expect-error: Create types for Plugin injection
       const config = this.$vidoConfig(useRequestHeaders())
       return `${config.API_EXPORT}/${config.API_PROJECT}/${
         config.API_THEME
@@ -61,6 +62,7 @@ export default defineNuxtComponent({
     },
 
     csvLink(): string {
+      // @ts-expect-error: Create types for Plugin injection
       const config = this.$vidoConfig(useRequestHeaders())
       return `${config.API_ENDPOINT}/${config.API_PROJECT}/${
         config.API_THEME

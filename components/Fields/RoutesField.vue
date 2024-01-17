@@ -45,6 +45,7 @@ export default defineNuxtComponent({
 
   computed: {
     propertyTranslations() {
+      // @ts-expect-error: Create types for Plugin injection
       return this.$propertyTranslations
     },
 
@@ -104,6 +105,7 @@ export default defineNuxtComponent({
 
     difficulty(activity: string, route: Route): string | undefined {
       return route.difficulty
+      // @ts-expect-error: Create types for Plugin injection
         ? this.$propertyTranslations.pv(
             `route:${activity}:difficulty`,
             route.difficulty,
