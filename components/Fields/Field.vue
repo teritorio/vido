@@ -23,11 +23,11 @@ export function isFiledEmpty(
   properties: { [key: string]: string },
   geom: GeoJSON.Geometry,
 ): boolean {
-  if (field.field == 'route')
+  if (field.field === 'route')
     return isRoutesFieldEmpty(properties)
   else if (field.field === 'addr')
     return isAddressFieldEmpty(properties)
-  else if (field.field == 'start_end_date')
+  else if (field.field === 'start_end_date')
     return isDateRangeEmpty(properties)
   else if (field.field === 'coordinates')
     return isCoordinatesEmpty(geom)
@@ -52,7 +52,7 @@ export default defineNuxtComponent({
   },
 
   emits: {
-    'click-details': () => true,
+    clickDetails: () => true,
   },
 
   props: {
@@ -98,10 +98,12 @@ export default defineNuxtComponent({
 
   methods: {
     fieldTranslateK(field: string) {
+      // @ts-expect-error: Create types for Plugin injection
       return this.$propertyTranslations.p(field, this.context)
     },
 
     propTranslateV(field: string) {
+      // @ts-expect-error: Create types for Plugin injection
       return this.$propertyTranslations.pv(
         field,
         this.properties[field],
@@ -110,6 +112,7 @@ export default defineNuxtComponent({
     },
 
     propTranslateVs(field: string, value: string) {
+      // @ts-expect-error: Create types for Plugin injection
       return this.$propertyTranslations.pv(field, value, this.context)
     },
 
@@ -122,7 +125,7 @@ export default defineNuxtComponent({
 
 <template>
   <RoutesField
-    v-if="field.field == 'route'"
+    v-if="field.field === 'route'"
     class="field_content"
     :context="context"
     :recursion-stack="recursionStack"
@@ -173,7 +176,7 @@ export default defineNuxtComponent({
   </Coordinates>
 
   <div
-    v-else-if="field.field == 'short_description' && shortDescription"
+    v-else-if="field.field === 'short_description' && shortDescription"
     class="inline"
   >
     <FieldsHeader
@@ -193,7 +196,7 @@ export default defineNuxtComponent({
       :href="details"
       rel="noopener noreferrer"
       target="_blank"
-      @click.stop="$emit('click-details')"
+      @click.stop="$emit('clickDetails')"
     >
       {{ $t('poiCard.seeDetail') }}
     </a>
@@ -209,7 +212,7 @@ export default defineNuxtComponent({
     </FieldsHeader>
     <div :class="`inline field_content_level_${recursionStack.length}`">
       <div
-        v-if="field.field == 'description'"
+        v-if="field.field === 'description'"
         class="tw-prose"
         v-html="properties.description"
       />
@@ -224,7 +227,7 @@ export default defineNuxtComponent({
 
       <div
         v-for="item in properties[field.field]"
-        v-else-if="field.field == 'website'"
+        v-else-if="field.field === 'website'"
         :key="`website_${item}`"
       >
         <ExternalLink :href="item" target="_blank">
@@ -234,7 +237,7 @@ export default defineNuxtComponent({
 
       <div
         v-for="item in properties[field.field]"
-        v-else-if="field.field == 'email'"
+        v-else-if="field.field === 'email'"
         :key="`email_${item}`"
       >
         <ExternalLink :href="`mailto:${item}`" icon="envelope">
@@ -244,7 +247,7 @@ export default defineNuxtComponent({
 
       <div
         v-for="item in properties[field.field]"
-        v-else-if="field.field == 'download'"
+        v-else-if="field.field === 'download'"
         :key="`download_${item}`"
       >
         <ExternalLink :href="item" icon="arrow-circle-down">
@@ -283,7 +286,7 @@ export default defineNuxtComponent({
 
       <a
         v-else-if="
-          field.field == 'route:gpx_trace' || field.field == 'route:pdf'
+          field.field === 'route:gpx_trace' || field.field === 'route:pdf'
         "
         :href="properties[field.field]"
       >

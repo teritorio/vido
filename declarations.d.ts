@@ -5,3 +5,4 @@ declare module '*.svg?raw'
 
 declare module 'vue-mobile-detection'
 declare module 'vue-matomo'
+declare module 'vue-cookie-accept-decline'

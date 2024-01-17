@@ -84,8 +84,7 @@ export default defineNuxtComponent({
             const g = groupBy(
               poiDeps.features,
               feature =>
-                // @ts-expect-error
-                feature.properties.metadata?.id == params.id,
+                'metadata' in feature.properties ? feature.properties.metadata.id.toString() === params.id : false,
             )
             poi = g.true && (g.true[0] as ApiPoi)
             poiDeps.features = g.false || []
@@ -112,10 +111,10 @@ export default defineNuxtComponent({
     }
     useHead(
       headerFromSettings(settings.value, {
-        // @ts-expect-error
+        // @ts-expect-error: Fix typings
         title: poiPoiDeps.value?.poi.properties.name,
         description: {
-          // @ts-expect-error
+          // @ts-expect-error: Fix typings
           fr: poiPoiDeps.value?.poi.properties.description,
         },
       }),
@@ -147,12 +146,16 @@ export default defineNuxtComponent({
     this.globalContents = this.contents
     this.globalTranslations = this.propertyTranslations
 
+    // @ts-expect-error: Create types for Plugin injection
     this.$settings.set(this.settings)
+    // @ts-expect-error: Create types for Plugin injection
     this.$propertyTranslations.set(this.propertyTranslations)
   },
 
   beforeMount() {
+    // @ts-expect-error: Create types for Plugin injection
     this.$trackingInit(this.config)
+    // @ts-expect-error: Create types for Plugin injection
     this.$vidoConfigSet(this.config)
   },
 

@@ -339,11 +339,10 @@ export default defineNuxtComponent({
           POI_SOURCE,
           this.fitBounds,
           (feature: ApiPoi) => this.$emit('feature-click', feature),
-          this.features,
         )
       }
 
-      // @ts-expect-error
+      // @ts-expect-error: eventName is not in events definition
       this.$emit(eventName, event)
     },
   },

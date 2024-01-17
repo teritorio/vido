@@ -73,7 +73,7 @@ export default defineNuxtComponent({
         try {
           prettyString = oh
             .prettifyValue({
-              // @ts-expect-error
+              // @ts-expect-error: Fix typings
               conf: {
                 locale: this.locale || 'en',
                 rule_sep_string: '\n',
@@ -84,7 +84,6 @@ export default defineNuxtComponent({
             .split('\n')
         }
         catch (e) {
-          console.log('Vido error:', e)
           return undefined
         }
         if (!this.variable) {
@@ -104,7 +103,7 @@ export default defineNuxtComponent({
                   : [undefined, row]) as [string | undefined, string],
             )
             .forEach(([month, date]) => {
-              const i = ret.findIndex(r => r[0] == month)
+              const i = ret.findIndex(r => r[0] === month)
               if (i >= 0)
                 ret[i][1].push(date)
               else
@@ -124,7 +123,6 @@ export default defineNuxtComponent({
         return !oh?.isWeekStable()
       }
       catch (e) {
-        console.log('Vido error:', e)
         return false
       }
     },
@@ -147,7 +145,6 @@ export default defineNuxtComponent({
           }
         }
         catch (e) {
-          console.log('Vido error:', e)
           return undefined
         }
       }
@@ -159,7 +156,7 @@ export default defineNuxtComponent({
     OpeningHoursFactory(): OpeningHours | undefined {
       try {
         // https://github.com/opening-hours/opening_hours.js/issues/428
-        // @ts-expect-error
+        // @ts-expect-error: Fix typings
         const optionalConf: optional_conf = {
           tag_key: this.tagKey,
         }
@@ -182,9 +179,7 @@ export default defineNuxtComponent({
           optionalConf,
         )
       }
-      catch (e) {
-        console.log('Vido error:', e)
-      }
+      catch (e) {}
     },
   },
 })
@@ -227,7 +222,7 @@ export default defineNuxtComponent({
     </template>
     <template v-if="!isCompact">
       <br>
-      <div v-if="pretty && !pretty[0][0] && pretty[0][1].length == 1">
+      <div v-if="pretty && !pretty[0][0] && pretty[0][1].length === 1">
         {{ pretty[0][1][0] }}
       </div>
       <ul v-else-if="pretty && !pretty[0][0]">

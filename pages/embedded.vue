@@ -164,12 +164,16 @@ export default defineNuxtComponent({
     this.globalSettings = this.settings
     this.globalTranslations = this.propertyTranslations
 
+    // @ts-expect-error: Create types for Plugin injection
     this.$settings.set(this.settings)
+    // @ts-expect-error: Create types for Plugin injection
     this.$propertyTranslations.set(this.propertyTranslations)
   },
 
   beforeMount() {
+    // @ts-expect-error: Create types for Plugin injection
     this.$trackingInit(this.config)
+    // @ts-expect-error: Create types for Plugin injection
     this.$vidoConfigSet(this.config)
   },
 

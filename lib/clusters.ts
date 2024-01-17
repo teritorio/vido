@@ -67,7 +67,7 @@ export function createMarkerDonutChart(countPerColor: Record<string, number>, to
     offsets = total
   })
 
-  if (total != totalCount)
+  if (total !== totalCount)
     html += getMarkerDonutSegment(total / totalCount, 1, r, r0, '#ccc')
 
   html += `<circle cx="${r}" cy="${r}" r="${r0}" fill="white" />

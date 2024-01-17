@@ -158,7 +158,7 @@ export default defineNuxtComponent({
 
       // Change visible data
       const source = this.map.getSource(POI_SOURCE)
-      if (source?.type == 'geojson' && 'setData' in source) {
+      if (source?.type === 'geojson' && 'setData' in source) {
         (source as GeoJSONSource).setData({
           type: 'FeatureCollection',
           features: this.features,
@@ -336,7 +336,7 @@ export default defineNuxtComponent({
           zoom
             = this.categories.find(
               category =>
-                category.id == this.selectedFeature?.properties.vido_cat,
+                category.id === this.selectedFeature?.properties.vido_cat,
             )?.category.zoom || 17
         }
         this.map.flyTo({

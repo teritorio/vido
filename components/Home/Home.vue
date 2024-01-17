@@ -222,7 +222,7 @@ export default defineNuxtComponent({
       try {
         const newFavorite = favs
           .split(',')
-          .map(e => (!isNaN(Number(e)) ? Number(e) : null))
+          .map(e => (!Number.isNaN(Number(e)) ? Number(e) : null))
           .filter(e => !!e) as number[]
 
         this.setFavorites(newFavorite)
@@ -261,7 +261,7 @@ export default defineNuxtComponent({
         this.initialBbox = getBBoxFeature(this.boundaryArea)
       }
       else {
-        // @ts-expect-error
+        // @ts-expect-error: setting wrong type to initialBbox
         this.initialBbox = this.settings.bbox_line.coordinates
       }
     }

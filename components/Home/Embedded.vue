@@ -62,7 +62,7 @@ export default defineNuxtComponent({
       this.initialBbox = getBBoxFeature(this.boundaryArea)
     }
     else {
-      // @ts-expect-error
+      // @ts-expect-error: setting wrong type to initialBbox
       this.initialBbox = this.settings.bbox_line.coordinates
     }
   },

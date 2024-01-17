@@ -28,7 +28,7 @@ export default defineNuxtComponent({
 </script>
 
 <template>
-  <div v-if="images.length == 1" class="tw-margin tw-slide tw-mb-14">
+  <div v-if="images.length === 1" class="tw-margin tw-slide tw-mb-14">
     <UIPicture
       :src="images[0]"
       :media-size="smallScreen ? '100vw' : '66vw'"
