@@ -1,4 +1,5 @@
 import type { IncomingMessage, ServerResponse } from 'node:http'
+import { Buffer } from 'node:buffer'
 import { defineEventHandler } from 'h3'
 import { rest } from 'msw'
 import type { SetupServer } from 'msw/node'
