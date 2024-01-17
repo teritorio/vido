@@ -2,10 +2,6 @@ import 'cypress-html-validate/commands'
 
 import './commands'
 
-require('cypress-terminal-report/src/installLogsCollector')()
+import installLogsCollector from 'cypress-terminal-report/src/installLogsCollector'
 
-// Cypress.on('uncaught:exception', (err, runnable) => {
-// 	if (err.message.includes('t.layout is undefined')) {
-// 		return false
-// 	}
-// })
+installLogsCollector()
