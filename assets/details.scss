@@ -15,10 +15,12 @@ $large-only: '#{$screen} and (min-width:#{($large-range)})' !default;
 
 $white-color: #ffff;
 
+%font-light,
 .font-light {
   font-weight: 300;
 }
 
+%font-medium,
 .font-medium {
   font-weight: 400;
 }

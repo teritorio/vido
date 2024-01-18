@@ -70,7 +70,7 @@ export default defineNuxtComponent({
 </template>
 
 <style lang="scss" scoped>
-@import '~/assets/details.scss';
+@import '~/assets/details';
 
 :deep(body) {
   color: $color-text;
@@ -81,7 +81,7 @@ export default defineNuxtComponent({
   text-rendering: optimizeLegibility;
   line-height: 1.3;
   word-wrap: break-word;
-  @extend .font-light;
+  @extend %font-light;
 }
 
 :deep(h1) {

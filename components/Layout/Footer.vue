@@ -41,7 +41,7 @@ export default defineNuxtComponent({
 </template>
 
 <style lang="scss" scoped>
-@import '~/assets/details.scss';
+@import '~/assets/details';
 
 .footer {
   position: relative;
@@ -72,7 +72,7 @@ export default defineNuxtComponent({
     width: 3.4rem;
     vertical-align: baseline;
   }
-  @extend .font-medium;
+  @extend %font-medium;
 
   @media (max-width: 991px) {
     .site-footer__bottom .copyright {

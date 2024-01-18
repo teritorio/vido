@@ -2,5 +2,5 @@
 
 export default {
   $schema: 'https://json.schemastore.org/stylelintrc.json',
-  extends: ['stylelint-config-standard'],
+  extends: ['stylelint-config-recommended-vue', 'stylelint-config-recommended-vue/scss'],
 }
