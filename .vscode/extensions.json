@@ -1,7 +1,8 @@
 {
   "recommendations": [
     "vue.volar",
-    "dbaeumer.vscode-eslint"
+    "dbaeumer.vscode-eslint",
+    "stylelint.vscode-stylelint"
   ],
   "unwantedRecommendations": [
     "vscode.typescript-language-features",
