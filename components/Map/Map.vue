@@ -381,6 +381,7 @@ export default defineNuxtComponent({
 #map .maplibregl-ctrl-group > button,
 #map .maplibregl-ctrl-group > button:not(:disabled) {
   border: none;
+
   @apply tw-text-sm tw-font-bold tw-text-zinc-800 tw-bg-white tw-rounded-full tw-shadow-md tw-outline-none tw-w-11 tw-h-11;
   @apply focus:tw-rounded-full focus:tw-shadow-md focus:tw-outline-none focus-visible:tw-bg-zinc-100;
   @apply hover:tw-bg-zinc-100;

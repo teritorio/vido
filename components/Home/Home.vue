@@ -648,7 +648,7 @@ export default defineNuxtComponent({
   transform: translateX(-10px);
 }
 
-.right-3\/8 {
+.right-3 {
   right: 37.5%;
 }
 </style>

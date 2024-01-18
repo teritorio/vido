@@ -17,7 +17,7 @@ export default defineNuxtComponent({
 </template>
 
 <style lang="scss" scoped>
-@import '~/assets/details.scss';
+@import '~/assets/details';
 
 ul {
   position: relative;
@@ -34,7 +34,7 @@ ul {
   }
 }
 
-@media (max-width: 991px) {
+@media (width <= 991px) {
   ul {
     text-align: center;
   }

@@ -1,6 +1,13 @@
 /** @type {import('stylelint').Config} */
 
 export default {
-  $schema: 'https://json.schemastore.org/stylelintrc.json',
-  extends: ['stylelint-config-standard'],
+  extends: ['stylelint-config-standard-scss', 'stylelint-config-recommended-vue/scss'],
+  rules: {
+    'scss/at-rule-no-unknown': [
+      true,
+      {
+        ignoreAtRules: ['tailwind'],
+      },
+    ],
+  },
 }

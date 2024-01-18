@@ -61,6 +61,7 @@ export default defineNuxtComponent({
 </template>
 
 <style>
+/* stylelint-disable selector-class-pattern */
 .cookie__bar__buttons__button--accept,
 .cookie__bar__buttons__button--decline,
 .cookie__bar__buttons__button--accept:hover,

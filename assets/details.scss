@@ -2,7 +2,6 @@
 $small-range: (767px);
 $medium-range: (1024px);
 $large-range: (1280px);
-
 $screen: 'only screen' !default;
 $landscape: '#{$screen} and (orientation: landscape)' !default;
 $portrait: '#{$screen} and (orientation: portrait)' !default;
@@ -12,13 +11,14 @@ $medium-and-small: '#{$screen} and (max-width: #{($medium-range)})' !default;
 $medium-only: '#{$screen} and (min-width:#{($small-range)}) and (max-width:#{($medium-range)})' !default;
 $x-medium-only: '#{$screen} and (min-width:#{($medium-range)}) and (max-width:#{($large-range)})' !default;
 $large-only: '#{$screen} and (min-width:#{($large-range)})' !default;
-
 $white-color: #ffff;
 
+%font-light,
 .font-light {
   font-weight: 300;
 }
 
+%font-medium,
 .font-medium {
   font-weight: 400;
 }

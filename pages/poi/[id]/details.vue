@@ -178,17 +178,19 @@ export default defineNuxtComponent({
 .page-details {
   color: $color-text;
   background-color: #fefefe;
-  padding: 1rem 1rem;
+  padding: 1rem;
   min-width: 21rem;
   -webkit-font-smoothing: antialiased;
-  text-rendering: optimizeLegibility;
+  text-rendering: optimizelegibility;
   line-height: 1.3;
   word-wrap: break-word;
-  @extend .font-light;
+
+  @extend %font-light;
 }
 </style>
 
 <style>
+/* stylelint-disable selector-id-pattern */
 body,
 #__nuxt,
 #__layout {
