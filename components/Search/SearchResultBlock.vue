@@ -32,7 +32,7 @@ export default defineNuxtComponent({
   },
 
   emits: {
-    'item-click': (_searchResult: SearchResult) => true,
+    itemClick: (_searchResult: SearchResult) => true,
   },
 
   methods: {
@@ -43,7 +43,7 @@ export default defineNuxtComponent({
         resultType: this.type,
         title: searchResult.label,
       })
-      this.$emit('item-click', searchResult)
+      this.$emit('itemClick', searchResult)
     },
   },
 })

@@ -97,13 +97,13 @@ export default defineNuxtComponent({
   },
 
   emits: {
-    'activate-filter': (_val: boolean) => true,
-    'scroll-top': () => true,
+    activateFilter: (_val: boolean) => true,
+    scrollTop: () => true,
   },
 
   watch: {
     currentMenuItems() {
-      this.$emit('scroll-top')
+      this.$emit('scrollTop')
     },
   },
 
@@ -189,7 +189,7 @@ export default defineNuxtComponent({
       key="Filter"
       :category-id="categoryIdFilter"
       :filters-values="categoryIdFilter ? filters[categoryIdFilter] : []"
-      @activate-filter="$emit('activate-filter', $event)"
+      @activate-filter="$emit('activateFilter', $event)"
       @go-back-click="onBackToCategoryClick"
     />
   </component>

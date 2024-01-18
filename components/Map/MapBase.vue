@@ -142,26 +142,26 @@ export default defineNuxtComponent({
   },
 
   emits: {
-    'map-init': (_map: maplibregl.Map) => true,
-    'map-data': (_event: MapDataEvent & object) => true,
-    'map-dragend': (
+    mapInit: (_map: maplibregl.Map) => true,
+    mapData: (_event: MapDataEvent & object) => true,
+    mapDragEnd: (
       _event: MapLibreEvent<MouseEvent | TouchEvent | undefined> & object,
     ) => true,
-    'map-moveend': (
+    mapMoveEnd: (
       _event: MapLibreEvent<MouseEvent | TouchEvent | WheelEvent | undefined> &
       object,
     ) => true,
-    'map-resize': (_event: MapLibreEvent<undefined> & object) => true,
-    'map-rotateend': (
+    mapResize: (_event: MapLibreEvent<undefined> & object) => true,
+    mapRotateEnd: (
       _event: MapLibreEvent<MouseEvent | TouchEvent | undefined> & object,
     ) => true,
-    'map-touchmove': (_event: MapTouchEvent & object) => true,
-    'map-zoomend': (
+    mapTouchMove: (_event: MapTouchEvent & object) => true,
+    mapZoomEnd: (
       _event: MapLibreEvent<MouseEvent | TouchEvent | WheelEvent | undefined> &
       object,
     ) => true,
-    'map-style-load': (_style: maplibregl.StyleSpecification) => true,
-    'feature-click': (_feature: ApiPoi) => true,
+    mapStyleLoad: (_style: maplibregl.StyleSpecification) => true,
+    featureClick: (_feature: ApiPoi) => true,
   },
 
   methods: {
@@ -238,7 +238,7 @@ export default defineNuxtComponent({
 
     onMapInit(map: maplibregl.Map) {
       this.map = map
-      this.$emit('map-init', map)
+      this.$emit('mapInit', map)
     },
 
     onMapStyleLoad(style: maplibregl.StyleSpecification) {
@@ -314,18 +314,18 @@ export default defineNuxtComponent({
         )
       }
 
-      this.$emit('map-style-load', style)
+      this.$emit('mapStyleLoad', style)
     },
 
     onMapRender(
       eventName:
-        | 'map-data'
-        | 'map-dragend'
-        | 'map-moveend'
-        | 'map-resize'
-        | 'map-rotateend'
-        | 'map-touchmove'
-        | 'map-zoomend',
+        | 'mapData'
+        | 'mapDragEnd'
+        | 'mapMoveEnd'
+        | 'mapResize'
+        | 'mapRotateEnd'
+        | 'mapTouchMove'
+        | 'mapZoomEnd',
       event: any,
     ) {
       if (
@@ -338,7 +338,7 @@ export default defineNuxtComponent({
           this.markers,
           POI_SOURCE,
           this.fitBounds,
-          (feature: ApiPoi) => this.$emit('feature-click', feature),
+          (feature: ApiPoi) => this.$emit('featureClick', feature),
         )
       }
 
@@ -366,13 +366,13 @@ export default defineNuxtComponent({
       :cooperative-gestures="cooperativeGestures"
       class="tw-grow tw-h-full"
       @map-init="onMapInit($event)"
-      @map-data="onMapRender('map-data', $event)"
-      @map-dragend="onMapRender('map-dragend', $event)"
-      @map-moveend="onMapRender('map-moveend', $event)"
-      @map-resize="onMapRender('map-resize', $event)"
-      @map-rotateend="onMapRender('map-rotateend', $event)"
-      @map-touchmove="onMapRender('map-touchmove', $event)"
-      @map-zoomend="onMapRender('map-zoomend', $event)"
+      @map-data="onMapRender('mapData', $event)"
+      @map-drag-end="onMapRender('mapDragEnd', $event)"
+      @map-move-end="onMapRender('mapMoveEnd', $event)"
+      @map-resize="onMapRender('mapResize', $event)"
+      @map-rotate-end="onMapRender('mapRotateEnd', $event)"
+      @map-touch-move="onMapRender('mapTouchMove', $event)"
+      @map-zoom-end="onMapRender('mapZoomEnd', $event)"
       @map-style-load="onMapStyleLoad($event)"
       @full-attribution="fullAttribution = $event"
     >

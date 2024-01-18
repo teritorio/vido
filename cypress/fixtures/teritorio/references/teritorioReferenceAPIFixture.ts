@@ -11,12 +11,11 @@ import type { ApiPoiDeps } from '~/lib/apiPoiDeps'
 
 const fixture: APIFixture = {
   attribute_translations: { fr },
-  // @ts-expect-error
+  // @ts-expect-error: Types issue
   settings,
   articles,
-  // @ts-expect-error
+  // @ts-expect-error: Types issue
   menu,
-  // @ts-expect-error
   pois,
   deps: {
     1: deps1 as ApiPoiDeps,

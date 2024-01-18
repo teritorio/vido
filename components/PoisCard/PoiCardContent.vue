@@ -117,29 +117,29 @@ export default defineNuxtComponent({
   },
 
   emits: {
-    'zoom-click': (_poi: ApiPoi) => true,
-    'explore-click': (_poi: ApiPoi) => true,
-    'favorite-click': (_poi: ApiPoi) => true,
+    zoomClick: (_poi: ApiPoi) => true,
+    exploreClick: (_poi: ApiPoi) => true,
+    favoriteClick: (_poi: ApiPoi) => true,
   },
 
   methods: {
     onZoomClick() {
       this.trackingPopupEvent('zoom')
-      this.$emit('zoom-click', this.poi)
+      this.$emit('zoomClick', this.poi)
     },
 
     onExploreClick() {
       if (!this.isModeExplorer)
         this.trackingPopupEvent('explore')
 
-      this.$emit('explore-click', this.poi)
+      this.$emit('exploreClick', this.poi)
     },
 
     onFavoriteClick() {
       if (!this.isModeFavorites)
         this.trackingPopupEvent('favorite')
 
-      this.$emit('favorite-click', this.poi)
+      this.$emit('favoriteClick', this.poi)
     },
 
     trackingPopupEvent(

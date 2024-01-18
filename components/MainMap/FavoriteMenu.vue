@@ -44,7 +44,7 @@ export default defineNuxtComponent({
   },
 
   emits: {
-    'toggle-favorites': () => true,
+    toggleFavorites: () => true,
   },
 
   data(): {
@@ -117,7 +117,7 @@ export default defineNuxtComponent({
           !isModeFavorites
             && 'tw-bg-white hover:tw-bg-zinc-100 focus-visible:tw-bg-zinc-100 tw-text-zinc-800',
         ]"
-        @click="$emit('toggle-favorites')"
+        @click="$emit('toggleFavorites')"
       >
         <FavoriteIcon :is-active="isModeFavorites" />
         <span class="tw-hidden md:tw-inline favoriteTitle">{{

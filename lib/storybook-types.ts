@@ -75,7 +75,7 @@ export function bind<T>(
     } as unknown as Def)
 
   const b = Template.bind({})
-  // @ts-expect-error
+  // @ts-expect-error: Won't fix as we'll redo SB config
   b.args = args
   return b
 }

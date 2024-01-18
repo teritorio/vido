@@ -43,20 +43,20 @@ export default defineNuxtComponent({
   },
 
   emits: {
-    'menu-group-click': (_menuItemId: ApiMenuItem['id']) => true,
-    'category-click': (_menuItemId: ApiMenuItem['id']) => true,
-    'filter-click': (_categoryId: ApiMenuCategory['id']) => true,
+    menuGroupClick: (_menuItemId: ApiMenuItem['id']) => true,
+    categoryClick: (_menuItemId: ApiMenuItem['id']) => true,
+    filterClick: (_categoryId: ApiMenuCategory['id']) => true,
   },
 
   methods: {
     onMenuGroupClick(menuItem: MenuItem) {
-      this.$emit('menu-group-click', menuItem.id)
+      this.$emit('menuGroupClick', menuItem.id)
     },
     onCategoryClick(menuItem: MenuItem) {
-      this.$emit('category-click', menuItem.id)
+      this.$emit('categoryClick', menuItem.id)
     },
     onFilterClick(categoryId: ApiMenuCategory['id']) {
-      this.$emit('filter-click', categoryId)
+      this.$emit('filterClick', categoryId)
     },
     isCategorySelected(categoryId: ApiMenuCategory['id']) {
       return this.selectedCategoriesIds.includes(categoryId)

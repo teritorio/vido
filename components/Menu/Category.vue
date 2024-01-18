@@ -47,8 +47,8 @@ export default defineNuxtComponent({
   },
 
   emits: {
-    'click': (_category_id: ApiMenuItem['id']) => true,
-    'filter-click': (_category_id: ApiMenuItem['id']) => true,
+    click: (_category_id: ApiMenuItem['id']) => true,
+    filterClick: (_category_id: ApiMenuItem['id']) => true,
   },
 
   methods: {
@@ -69,7 +69,7 @@ export default defineNuxtComponent({
         categoryId: this.category.id,
         title: this.category.category.name.fr,
       })
-      this.$emit('filter-click', this.category.id)
+      this.$emit('filterClick', this.category.id)
     },
   },
 })

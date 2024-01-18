@@ -27,10 +27,10 @@ export default defineComponent({
       return () => h('img', { src: props.src, ...props.imgAttrs })
     }
     const _base = useBaseImage(props)
+    const originalFormat = computed(() => getFileExtension(props.src))
     const isTransparent = computed(() =>
       ['png', 'webp', 'gif'].includes(originalFormat.value),
     )
-    const originalFormat = computed(() => getFileExtension(props.src))
     const format = computed(() =>
       props.format || originalFormat.value === 'svg' ? 'svg' : 'webp',
     )
