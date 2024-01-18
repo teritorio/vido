@@ -70,18 +70,19 @@ export default defineNuxtComponent({
 </template>
 
 <style lang="scss" scoped>
-@import '~/assets/details.scss';
+@import '~/assets/details';
 
 :deep(body) {
   color: $color-text;
   background-color: #fefefe;
-  padding: 1rem 1rem;
+  padding: 1rem;
   min-width: 21rem;
   -webkit-font-smoothing: antialiased;
-  text-rendering: optimizeLegibility;
+  text-rendering: optimizelegibility;
   line-height: 1.3;
   word-wrap: break-word;
-  @extend .font-light;
+
+  @extend %font-light;
 }
 
 :deep(h1) {

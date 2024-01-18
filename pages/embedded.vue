@@ -189,6 +189,7 @@ export default defineNuxtComponent({
 </template>
 
 <style scoped>
+/* stylelint-disable selector-id-pattern */
 body,
 #__nuxt,
 #__layout {

@@ -294,7 +294,7 @@ export default defineNuxtComponent({
 </template>
 
 <style lang="scss" scoped>
-@import '~/assets/details.scss';
+@import '~/assets/details';
 
 .detail-wrapper {
   position: relative;
@@ -324,7 +324,7 @@ export default defineNuxtComponent({
   margin: auto;
 }
 
-@media (max-width: 991px) {
+@media (width <= 991px) {
   .detail-wrapper {
     flex-direction: column;
 

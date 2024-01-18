@@ -32,7 +32,7 @@ export default defineNuxtComponent({
 </template>
 
 <style lang="scss" scoped>
-@import '~/assets/details.scss';
+@import '~/assets/details';
 
 div {
   margin-bottom: 60px;
@@ -41,6 +41,7 @@ div {
 iframe {
   width: 100%;
   height: 346px;
+
   @apply tw-bg-gray-100;
 }
 </style>
