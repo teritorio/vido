@@ -98,12 +98,10 @@ export default defineNuxtComponent({
 
   methods: {
     fieldTranslateK(field: string) {
-      // @ts-expect-error: Create types for Plugin injection
       return this.$propertyTranslations.p(field, this.context)
     },
 
     propTranslateV(field: string) {
-      // @ts-expect-error: Create types for Plugin injection
       return this.$propertyTranslations.pv(
         field,
         this.properties[field],
@@ -112,7 +110,6 @@ export default defineNuxtComponent({
     },
 
     propTranslateVs(field: string, value: string) {
-      // @ts-expect-error: Create types for Plugin injection
       return this.$propertyTranslations.pv(field, value, this.context)
     },
 
