@@ -21,6 +21,7 @@ export default defineNuxtConfig({
   buildModules: ['@nuxtjs/stylelint-module'],
   components: false,
   css: ['@fortawesome/fontawesome-svg-core/styles.css'],
+  devtools: { enabled: true },
   gtm: {
     pageTracking: false,
   },
