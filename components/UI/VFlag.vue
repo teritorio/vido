@@ -25,7 +25,7 @@ export default defineNuxtComponent({
       () => props.flag,
       async (newFlag, oldFlag) => {
         if (newFlag !== oldFlag) {
-          // @ts-expect-error
+          // @ts-expect-error: Fix type
           svgFlag.value = svgs[newFlag]
         }
       },

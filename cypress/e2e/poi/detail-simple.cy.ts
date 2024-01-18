@@ -20,18 +20,15 @@ describe('home content', () => {
 
   it('contain basic details', () => {
     cy.get('h1').contains(
-      // @ts-expect-error
       teritorioReferenceAPIFixture.deps[1].features[0].properties.name,
     )
 
     cy.get('#FieldsGroup--contact_standard')
       .parent()
-      // @ts-expect-error
       .contains('contact_standard')
 
     cy.get('#FieldsGroup--contact_card')
       .parent()
-      // @ts-expect-error
       .contains('contact_card')
 
     cy.htmlvalidate()

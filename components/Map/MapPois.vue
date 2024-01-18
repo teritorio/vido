@@ -1,5 +1,5 @@
 <script lang="ts">
-import type { LngLatLike } from 'maplibre-gl'
+import type { LngLatBoundsLike, LngLatLike, Map } from 'maplibre-gl'
 import type { PropType } from 'vue'
 import { ref } from 'vue'
 
@@ -39,7 +39,7 @@ export default defineNuxtComponent({
     },
     defaultBounds: {
       type: [Array, Object] as PropType<
-        maplibregl.LngLatBoundsLike | undefined
+        LngLatBoundsLike | undefined
       >,
       default: undefined,
     },
@@ -55,7 +55,7 @@ export default defineNuxtComponent({
   },
 
   data(): {
-    map: maplibregl.Map
+    map: Map
   } {
     return {
       map: null!,
@@ -77,7 +77,7 @@ export default defineNuxtComponent({
         return undefined
     },
 
-    bounds(): maplibregl.LngLatBoundsLike | undefined {
+    bounds(): LngLatBoundsLike | undefined {
       if (
         this.features.length > 1
           || (this.features.length === 1
@@ -97,19 +97,18 @@ export default defineNuxtComponent({
 
   watch: {
     features() {
-      if (this.map) {
-        // @ts-expect-error
+      if (this.map)
         this.onMapStyleLoad()
-      }
     },
   },
 
   methods: {
-    onMapInit(map: maplibregl.Map): void {
+    onMapInit(map: Map): void {
+      // @ts-expect-error: Type is too deep
       this.map = map
     },
 
-    onMapStyleLoad(_style: maplibregl.StyleSpecification): void {
+    onMapStyleLoad(): void {
       const colors = [
         ...new Set(
           this.features.map(
@@ -134,7 +133,7 @@ export default defineNuxtComponent({
       )
 
       if (this.featureIds)
-        filterRouteByPoiIds(this.map as maplibregl.Map, this.featureIds)
+        filterRouteByPoiIds(this.map as Map, this.featureIds)
     },
   },
 })

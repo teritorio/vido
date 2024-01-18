@@ -72,13 +72,13 @@ export function isMatch(
   filter: FilterValue,
   properties: ApiPoi['properties'],
 ): boolean {
+  const propertyValues = 'property' in filter.def ? properties[filter.def.property] : null
   switch (filter.type) {
     case 'boolean':
       return Boolean(properties[filter.def.property])
 
     case 'checkboxes_list':
     case 'multiselection':
-      const propertyValues = properties[filter.def.property]
       if (Array.isArray(propertyValues)) {
         return filter.filterValues.some(filterValue =>
           propertyValues.includes(filterValue),

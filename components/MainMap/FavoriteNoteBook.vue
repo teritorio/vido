@@ -24,10 +24,10 @@ export default defineNuxtComponent({
   },
 
   emits: {
-    'on-close': () => true,
-    'zoom-click': (_poi: ApiPoi) => true,
-    'explore-click': (_poi: ApiPoi) => true,
-    'favorite-click': (_poi: ApiPoi) => true,
+    onClose: () => true,
+    zoomClick: (_poi: ApiPoi) => true,
+    exploreClick: (_poi: ApiPoi) => true,
+    favoriteClick: (_poi: ApiPoi) => true,
   },
 
   props: {
@@ -54,7 +54,6 @@ export default defineNuxtComponent({
     ...mapState(favoritesStore, ['favoritesIds']),
 
     pdfLink(): string {
-      // @ts-expect-error: Create types for Plugin injection
       const config = this.$vidoConfig(useRequestHeaders())
       return `${config.API_EXPORT}/${config.API_PROJECT}/${
         config.API_THEME
@@ -62,7 +61,6 @@ export default defineNuxtComponent({
     },
 
     csvLink(): string {
-      // @ts-expect-error: Create types for Plugin injection
       const config = this.$vidoConfig(useRequestHeaders())
       return `${config.API_ENDPOINT}/${config.API_PROJECT}/${
         config.API_THEME
@@ -117,7 +115,7 @@ export default defineNuxtComponent({
           id="close_favourite_notebook"
           :label="$t('ui.close')"
           icon="times"
-          @click="$emit('on-close')"
+          @click="$emit('onClose')"
         />
       </div>
 
@@ -173,9 +171,9 @@ export default defineNuxtComponent({
       :explorer-mode-enabled="explorerModeEnabled"
       :favorites-mode-enabled="true"
       class="tw-pb-4"
-      @explore-click="$emit('explore-click', $event)"
-      @favorite-click="$emit('favorite-click', $event)"
-      @zoom-click="$emit('zoom-click', $event)"
+      @explore-click="$emit('exploreClick', $event)"
+      @favorite-click="$emit('favoriteClick', $event)"
+      @zoom-click="$emit('zoomClick', $event)"
     />
 
     <ShareLinkModal ref="shareModal" :title="$t('favorites.share_link')" />

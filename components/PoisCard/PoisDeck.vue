@@ -35,9 +35,9 @@ export default defineNuxtComponent({
   },
 
   emits: {
-    'zoom-click': (_poi: ApiPoi) => true,
-    'explore-click': (_poi: ApiPoi) => true,
-    'favorite-click': (_poi: ApiPoi) => true,
+    zoomClick: (_poi: ApiPoi) => true,
+    exploreClick: (_poi: ApiPoi) => true,
+    favoriteClick: (_poi: ApiPoi) => true,
   },
 
   methods: {
@@ -63,9 +63,9 @@ export default defineNuxtComponent({
       ]"
       :explorer-mode-enabled="explorerModeEnabled"
       :favorites-mode-enabled="favoritesModeEnabled"
-      @explore-click="$emit('explore-click', $event)"
-      @favorite-click="$emit('favorite-click', $event)"
-      @zoom-click="$emit('zoom-click', $event)"
+      @explore-click="$emit('exploreClick', $event)"
+      @favorite-click="$emit('favoriteClick', $event)"
+      @zoom-click="$emit('zoomClick', $event)"
     />
   </div>
 </template>
