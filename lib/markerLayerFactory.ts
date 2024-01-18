@@ -143,11 +143,10 @@ export function updateMarkers(
           }).setLngLat(coords)
           el.addEventListener('click', (e) => {
             e.stopPropagation()
-            // if (!map) return
             const source = map.getSource(src)
 
             if (source && 'getClusterLeaves' in source) {
-              // @ts-expect-error
+              // @ts-expect-error: getClusterLeaves is for GeoJSONSource but source is Source type
               source.getClusterLeaves(
                 props.cluster_id,
                 100,

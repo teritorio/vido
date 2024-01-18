@@ -9,9 +9,9 @@ import type {
   ApiRouteWaypoint,
 } from '~/lib/apiPoiDeps'
 import {
+  ApiRouteWaypointType,
   apiRouteWaypointToApiPoi,
 } from '~/lib/apiPoiDeps'
-import { ApiRouteWaypointType } from '~/lib/apiPoiDeps.ts'
 import type { ApiPoi, ApiPoiId } from '~/lib/apiPois'
 
 export default defineNuxtComponent({
@@ -21,9 +21,9 @@ export default defineNuxtComponent({
   },
 
   emits: {
-    'zoom-click': (_poi: ApiPoi) => true,
-    'explore-click': (_poi: ApiPoi) => true,
-    'favorite-click': (_poi: ApiPoi) => true,
+    zoomClick: (_poi: ApiPoi) => true,
+    exploreClick: (_poi: ApiPoi) => true,
+    favoriteClick: (_poi: ApiPoi) => true,
   },
 
   props: {
@@ -79,8 +79,7 @@ export default defineNuxtComponent({
       }
       else {
         const featureApi = feature as ApiPoi
-        // @ts-expect-error
-        if (feature.properties.metadata?.id !== this.poiId)
+        if ('metadata' in feature.properties && feature.properties.metadata?.id !== this.poiId)
           this.pois.push(featureApi)
 
         return featureApi
@@ -108,9 +107,9 @@ export default defineNuxtComponent({
           pois-card="PoiCardLight"
           :explorer-mode-enabled="false"
           :favorites-mode-enabled="favoritesModeEnabled"
-          @explore-click="$emit('explore-click', $event)"
-          @favorite-click="$emit('favorite-click', $event)"
-          @zoom-click="$emit('zoom-click', $event)"
+          @explore-click="$emit('exploreClick', $event)"
+          @favorite-click="$emit('favoriteClick', $event)"
+          @zoom-click="$emit('zoomClick', $event)"
         />
       </div>
       <div v-if="pois.length > 0" class="detail-right">
@@ -120,9 +119,9 @@ export default defineNuxtComponent({
           pois-card="PoiCardLight"
           :explorer-mode-enabled="false"
           :favorites-mode-enabled="favoritesModeEnabled"
-          @explore-click="$emit('explore-click', $event)"
-          @favorite-click="$emit('favorite-click', $event)"
-          @zoom-click="$emit('zoom-click', $event)"
+          @explore-click="$emit('exploreClick', $event)"
+          @favorite-click="$emit('favoriteClick', $event)"
+          @zoom-click="$emit('zoomClick', $event)"
         />
       </div>
     </div>

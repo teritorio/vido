@@ -144,13 +144,13 @@ export default defineNuxtComponent({
     })
 
     map.on('load', _event => this.onMapInit(map as ITMap))
-    map.on('data', $event => this.$emit('map-data', $event))
-    map.on('dragend', $event => this.$emit('map-dragend', $event))
-    map.on('moveend', $event => this.$emit('map-moveend', $event))
-    map.on('resize', $event => this.$emit('map-resize', $event))
-    map.on('rotateend', $event => this.$emit('map-rotateend', $event))
-    map.on('touchmove', $event => this.$emit('map-touchmove', $event))
-    map.on('zoomend', $event => this.$emit('map-zoomend', $event))
+    map.on('data', $event => this.$emit('mapData', $event))
+    map.on('dragend', $event => this.$emit('mapDragEnd', $event))
+    map.on('moveend', $event => this.$emit('mapMoveEnd', $event))
+    map.on('resize', $event => this.$emit('mapResize', $event))
+    map.on('rotateend', $event => this.$emit('mapRotateEnd', $event))
+    map.on('touchmove', $event => this.$emit('mapTouchMove', $event))
+    map.on('zoomend', $event => this.$emit('mapZoomEnd', $event))
 
     map.addControl(
       new NavigationControl({
@@ -178,26 +178,26 @@ export default defineNuxtComponent({
   },
 
   emits: {
-    'map-init': (_map: ITMap) => true,
-    'map-data': (_event: MapDataEvent & object) => true,
-    'map-dragend': (
+    mapInit: (_map: ITMap) => true,
+    mapData: (_event: MapDataEvent & object) => true,
+    mapDragEnd: (
       _event: MapLibreEvent<MouseEvent | TouchEvent | undefined> & object,
     ) => true,
-    'map-moveend': (
+    mapMoveEnd: (
       _event: MapLibreEvent<MouseEvent | TouchEvent | WheelEvent | undefined> &
       object,
     ) => true,
-    'map-resize': (_event: MapLibreEvent<unknown> & object) => true,
-    'map-rotateend': (
+    mapResize: (_event: MapLibreEvent<unknown> & object) => true,
+    mapRotateEnd: (
       _event: MapLibreEvent<MouseEvent | TouchEvent | undefined> & object,
     ) => true,
-    'map-touchmove': (_event: MapTouchEvent & object) => true,
-    'map-zoomend': (
+    mapTouchMove: (_event: MapTouchEvent & object) => true,
+    mapZoomEnd: (
       _event: MapLibreEvent<MouseEvent | TouchEvent | WheelEvent | undefined> &
       object,
     ) => true,
-    'full-attribution': (_attribution: string) => true,
-    'map-style-load': (_style: StyleSpecification) => true,
+    fullAttribution: (_attribution: string) => true,
+    mapStyleLoad: (_style: StyleSpecification) => true,
   },
 
   computed: {
@@ -240,7 +240,7 @@ export default defineNuxtComponent({
     },
 
     onMapInit(map: ITMap) {
-      this.$emit('map-init', map)
+      this.$emit('mapInit', map)
 
       this.map = map
       this.languageControl = new OpenMapTilesLanguage({
@@ -272,7 +272,7 @@ export default defineNuxtComponent({
             source => ['vector', 'raster'].lastIndexOf(source.type) >= 0,
           ) as VectorSourceSpecification | RasterSourceSpecification | undefined
           if (vectorSource?.attribution)
-            this.$emit('full-attribution', vectorSource.attribution)
+            this.$emit('fullAttribution', vectorSource.attribution)
 
           this.style = style
           this.doWithMap(() => {
@@ -291,7 +291,7 @@ export default defineNuxtComponent({
         const styleEvent = (e: MapDataEvent) => {
           if (this.map && e.dataType === 'style' && this.style) {
             this.map.off('styledata', styleEvent)
-            this.$emit('map-style-load', this.style as StyleSpecification)
+            this.$emit('mapStyleLoad', this.style as StyleSpecification)
           }
         }
         this.map.on('styledata', styleEvent)

@@ -42,24 +42,24 @@ export default defineNuxtComponent({
   },
 
   emits: {
-    'go-back-click': () => true,
-    'activate-filter': (_val: boolean) => true,
+    goBackClick: () => true,
+    activateFilter: (_val: boolean) => true,
   },
 
   methods: {
     ...mapActions(menuStore, ['applyFilters']),
 
     onGoBackClick() {
-      this.$emit('go-back-click')
+      this.$emit('goBackClick')
     },
 
     onClickFilter(val: boolean) {
-      this.$emit('activate-filter', val)
+      this.$emit('activateFilter', val)
     },
 
-    onBooleanFilterChange(filterIndex: number, e: Event) {
-      // @ts-expect-error
-      const value: boolean = e.target.checked
+    onBooleanFilterChange(filterIndex: number, event: Event) {
+      const target = event.target as HTMLInputElement
+      const value: boolean = target.checked
 
       const filters = this.filtersSafeCopy
       const filter = filters[filterIndex] as FilterValueBoolean

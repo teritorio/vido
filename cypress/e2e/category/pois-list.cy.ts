@@ -21,13 +21,11 @@ describe('pois table', () => {
 
   it('contain basic table', () => {
     cy.get('th').contains(
-      // @ts-expect-error
       teritorioReferenceAPIFixture.pois.features[0].properties.editorial
         .list_fields[0].field,
     )
 
     cy.get('td')
-      // @ts-expect-error
       .contains(teritorioReferenceAPIFixture.pois.features[0].properties.name)
 
     cy.htmlvalidate()

@@ -24,7 +24,7 @@ export default defineNuxtComponent({
   },
 
   emits: {
-    'category-change': (_categoryId: number) => true,
+    categoryChange: (_categoryId: number) => true,
   },
 
   props: {
@@ -107,7 +107,7 @@ export default defineNuxtComponent({
       variant="solo"
       rounded
       hide-details="auto"
-      @update:model-value="$emit('category-change', $event)"
+      @update:model-value="$emit('categoryChange', $event)"
     >
       <template #prepend-inner>
         <div class="tw-right-0 tw-px-5 tw-text-zinc-800">

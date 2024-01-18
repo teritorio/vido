@@ -79,7 +79,7 @@ export default defineNuxtComponent({
   },
 
   emits: {
-    'change-background': (_background: MapStyleEnum) => true,
+    changeBackground: (_background: MapStyleEnum) => true,
   },
 
   methods: {
@@ -95,7 +95,7 @@ export default defineNuxtComponent({
       routerPushHashUpdate(this.$router, {
         bg: background !== DEFAULT_MAP_STYLE ? background : null,
       })
-      this.$emit('change-background', background)
+      this.$emit('changeBackground', background)
     },
   },
 })

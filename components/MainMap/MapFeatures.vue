@@ -9,7 +9,6 @@ import type {
   Map,
   MapDataEvent,
   MapMouseEvent,
-  StyleSpecification,
 } from 'maplibre-gl'
 import { Marker } from 'maplibre-gl'
 import { mapActions, mapState, mapWritableState } from 'pinia'
@@ -224,6 +223,7 @@ export default defineNuxtComponent({
     // Map and style init and changes
 
     onMapInit(map: Map) {
+      // @ts-expect-error: type is too deep
       this.map = map
 
       this.map.on('click', this.onClick)
@@ -234,7 +234,7 @@ export default defineNuxtComponent({
       })
     },
 
-    onMapStyleLoad(_style: StyleSpecification) {
+    onMapStyleLoad() {
       const colors = [
         ...new Set(
           this.categories
@@ -470,8 +470,8 @@ export default defineNuxtComponent({
       :map-style="selectedBackground" :rotate="!device.touch" :show-attribution="!small"
       :off-map-attribution="device.smallScreen && !small" :hide-control="small" :style-icon-filter="styleIconFilter"
       :cooperative-gestures="cooperativeGestures" :boundary-area="boundaryArea" hash="map" @map-init="onMapInit"
-      @map-data="onMapRender" @map-dragend="onMapRender" @map-moveend="onMapRender" @map-resize="onMapRender"
-      @map-rotateend="onMapRender" @map-touchmove="onMapRender" @map-zoomend="onMapRender"
+      @map-data="onMapRender" @map-drag-end="onMapRender" @map-move-end="onMapRender" @map-resize="onMapRender"
+      @map-rotate-end="onMapRender" @map-touch-move="onMapRender" @map-zoom-end="onMapRender"
       @map-style-load="onMapStyleLoad" @feature-click="updateSelectedFeature"
     >
       <template #controls>
