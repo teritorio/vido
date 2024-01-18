@@ -146,16 +146,12 @@ export default defineNuxtComponent({
     this.globalContents = this.contents
     this.globalTranslations = this.propertyTranslations
 
-    // @ts-expect-error: Create types for Plugin injection
     this.$settings.set(this.settings)
-    // @ts-expect-error: Create types for Plugin injection
     this.$propertyTranslations.set(this.propertyTranslations)
   },
 
   beforeMount() {
-    // @ts-expect-error: Create types for Plugin injection
     this.$trackingInit(this.config)
-    // @ts-expect-error: Create types for Plugin injection
     this.$vidoConfigSet(this.config)
   },
 
@@ -177,7 +173,7 @@ export default defineNuxtComponent({
 </template>
 
 <style lang="scss" scoped>
-@import '~/assets/details.scss';
+@import '~/assets/details';
 
 .page-details {
   color: $color-text;
