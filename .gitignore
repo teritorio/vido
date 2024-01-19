@@ -6,10 +6,10 @@ vidos.config.ts
 
 # Yarn v2
 .yarn/*
-# !.yarn/releases
-# !.yarn/plugins
-# !.yarn/sdks
-# !.yarn/versions
+!.yarn/releases
+!.yarn/plugins
+!.yarn/sdks
+!.yarn/versions
 .pnp.*
 
 # Logs
