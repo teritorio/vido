@@ -83,11 +83,13 @@ export default defineNuxtComponent({
 
     detailsFields(): FieldsList | undefined {
       const fields = this.poi.properties.editorial?.details_fields
-      if (!fields || !this.isLargeLayeout)
+      if (!fields || !this.isLargeLayeout) {
         return fields
-
-      else
-        return fields.filter(item => 'field' in item ? item.field !== 'description' : false)
+      }
+      else {
+        // @ts-expect-error: ignore
+        return fields.filter(field => field.field !== 'description')
+      }
     },
 
     colorFill(): string {
