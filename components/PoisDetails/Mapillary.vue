@@ -41,6 +41,7 @@ div {
 iframe {
   width: 100%;
   height: 346px;
+
   @apply tw-bg-gray-100;
 }
 </style>

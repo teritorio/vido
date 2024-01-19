@@ -154,6 +154,7 @@ export default defineNuxtComponent({
 .block {
   margin-bottom: 3rem;
 }
+
 @media print {
   .block {
     margin-bottom: 0.5rem !important;

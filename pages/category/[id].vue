@@ -153,12 +153,13 @@ export default defineNuxtComponent({
 .page-index {
   color: $color-text;
   background-color: #fefefe;
-  padding: 1rem 1rem;
+  padding: 1rem;
   min-width: 21rem;
   -webkit-font-smoothing: antialiased;
-  text-rendering: optimizeLegibility;
+  text-rendering: optimizelegibility;
   line-height: 1.3;
   word-wrap: break-word;
+
   @extend %font-light;
 }
 </style>

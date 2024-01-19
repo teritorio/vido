@@ -324,7 +324,7 @@ export default defineNuxtComponent({
   margin: auto;
 }
 
-@media (max-width: 991px) {
+@media (width <= 991px) {
   .detail-wrapper {
     flex-direction: column;
 

@@ -18,7 +18,6 @@ export default defineNuxtConfig({
       '@fortawesome/vue-fontawesome',
     ],
   },
-  buildModules: ['@nuxtjs/stylelint-module'],
   components: false,
   css: ['@fortawesome/fontawesome-svg-core/styles.css'],
   devtools: { enabled: true },
@@ -66,7 +65,7 @@ export default defineNuxtConfig({
     '@nuxtjs/i18n',
     '@nuxt/image-edge',
     '@pinia/nuxt',
-    async (options, nuxt) => {
+    async (_options, nuxt) => {
       nuxt.hooks.hook('vite:extendConfig', config =>
         // @ts-expect-error: Do we really need to extend the config ?
         config.plugins.push(vuetify()))

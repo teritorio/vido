@@ -120,7 +120,7 @@ export default defineNuxtComponent({
         @click="$emit('toggleFavorites')"
       >
         <FavoriteIcon :is-active="isModeFavorites" />
-        <span class="tw-hidden md:tw-inline favoriteTitle">{{
+        <span class="tw-hidden md:tw-inline favorite-title">{{
           $t('favorites.title')
         }}</span>
         <Badge
@@ -144,7 +144,7 @@ export default defineNuxtComponent({
           class="tw-text-zinc-500 tw-mr-2"
           size="sm"
         />
-        <span class="tw-hidden md:tw-inline favoriteTitle">
+        <span class="tw-hidden md:tw-inline favorite-title">
           {{ $t('favorites.menu_notebook') }}
         </span>
       </button>
@@ -171,8 +171,8 @@ export default defineNuxtComponent({
 </template>
 
 <style lang="scss" scoped>
-.favoriteTitle {
-  @media (max-width: 860px) {
+.favorite-title {
+  @media (width <= 860px) {
     @apply tw-hidden;
   }
 }

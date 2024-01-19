@@ -34,7 +34,7 @@ ul {
   }
 }
 
-@media (max-width: 991px) {
+@media (width <= 991px) {
   ul {
     text-align: center;
   }

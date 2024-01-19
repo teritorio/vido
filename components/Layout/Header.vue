@@ -57,10 +57,12 @@ export default defineNuxtComponent({
   display: flex;
   flex-direction: row;
   overflow: visible;
+
   // height: 8.6rem;
   // min-height: 8.6rem;
   align-items: center;
   justify-content: space-between;
+
   // padding: 0.8rem 1.3rem;
 
   &::before,
@@ -77,7 +79,7 @@ export default defineNuxtComponent({
     }
   }
 
-  @media (max-width: 600px) {
+  @media (width <= 600px) {
     height: 6rem;
 
     & {
@@ -89,7 +91,7 @@ export default defineNuxtComponent({
     }
   }
 
-  @media only screen and (max-width: 767px) {
+  @media only screen and (width <= 767px) {
     #header #logo :deep(img) {
       max-height: 80px;
       max-width: 193px;

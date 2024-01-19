@@ -3041,8 +3041,8 @@ __metadata:
     sass: ^1.63.4
     sass-loader: ^13.3.2
     stylelint: ^16.1.0
-    stylelint-config-recommended-scss: ^14.0.0
     stylelint-config-recommended-vue: ^1.5.0
+    stylelint-config-standard-scss: ^13.0.0
     tailwindcss: ^3.3.2
     typescript: ^5.1.3
     url-slug: ^4.0.1
@@ -14197,6 +14197,33 @@ __metadata:
   peerDependencies:
     stylelint: ^16.0.0
   checksum: 189ad575c644d623570c3e85e979a926bc7708dfbc2280c0db1e452eaafebc0096a3b2f1c6212a3d9bd5b1b98dfd68c755bdddd31b774de3642e122be7486e87
+  languageName: node
+  linkType: hard
+
+"stylelint-config-standard-scss@npm:^13.0.0":
+  version: 13.0.0
+  resolution: "stylelint-config-standard-scss@npm:13.0.0"
+  dependencies:
+    stylelint-config-recommended-scss: ^14.0.0
+    stylelint-config-standard: ^36.0.0
+  peerDependencies:
+    postcss: ^8.3.3
+    stylelint: ^16.1.0
+  peerDependenciesMeta:
+    postcss:
+      optional: true
+  checksum: 87191c0b59c705417d2a646cd0be091c60b54b3af5357815e37c0314cba05996a777a4a57c4e236e896a427ae4f7989daf31a267907716e88fbdd863efbfae73
+  languageName: node
+  linkType: hard
+
+"stylelint-config-standard@npm:^36.0.0":
+  version: 36.0.0
+  resolution: "stylelint-config-standard@npm:36.0.0"
+  dependencies:
+    stylelint-config-recommended: ^14.0.0
+  peerDependencies:
+    stylelint: ^16.1.0
+  checksum: f08ab93b5bfd92f81555cbbbccb8768b301fb2f225f478d77ac010d7f41aa04153bc9f7f211d7f6f2c9b94e8986fe6727c514a9df9af50abfb567d73f9c8ed72
   languageName: node
   linkType: hard
 
