@@ -151,23 +151,18 @@ jobs:
         uses: actions/checkout@master
 
       - name: Deploy
-        uses: up9cloud/action-rsync@master
-        env:
-          HOST: dev.appcarto.teritorio.xyz
-          KEY: ${{secrets.DEPLOY_SSH_KEY_DEV}}
-          TARGET: /var/www/clients/client3/web3/web/vido
-
-          VERBOSE: false
-          USER: devappcarto
-          ARGS: -az --exclude=/.git/ --exclude=vidos.config.ts
-          SSH_ARGS: '-p 2222 -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no'
-          SOURCE: .
-
-          PRE_SCRIPT: |
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: dev.appcarto.teritorio.xyz
+          username: devappcarto
+          key: ${{secrets.DEPLOY_SSH_KEY_DEV}}
+          port: 2222
+          script: |
             echo -n 'VIDO: Deployment started at: ' &&
-            date -u
-          POST_SCRIPT: |
+            date -u &&
             cd /var/www/clients/client3/web3/web/vido &&
+            git fetch &&
+            git checkout -f origin/develop &&
             ruby poi_explode.rb cypress/fixtures/teritorio/references/pois.geojson &&
             sed -i "s/# restart: unless-stopped/restart: unless-stopped/" docker-compose.yml &&
             docker-compose build &&
