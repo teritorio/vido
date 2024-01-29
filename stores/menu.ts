@@ -172,6 +172,8 @@ export const menuStore = defineStore('menu', {
                   })
                 }
                 catch (e) {
+                  // eslint-disable-next-line no-console
+                  console.log('Vido error:', e)
                   return undefined
                 }
               })
