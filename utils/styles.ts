@@ -1,5 +1,6 @@
 import type {
   ExpressionSpecification,
+  FilterSpecification,
   Map,
   StyleSpecification,
   VectorSourceSpecification,
@@ -67,15 +68,11 @@ export function filterRouteByCategories(map: Map, categorieIds: (number | string
     map.setLayoutProperty('features-line', 'visibility', 'visible')
     map.setLayoutProperty('features-fill', 'visibility', 'visible')
     map.setLayoutProperty('features-outline', 'visibility', 'visible')
-    const isLineString = ['==', ['geometry-type'], 'LineString']
-    const isPolygon = ['==', ['geometry-type'], 'Polygon']
-    // @ts-expect-error Inchorent MapLibre type checking in 2.3
+    const isLineString: FilterSpecification = ['==', ['geometry-type'], 'LineString']
+    const isPolygon: FilterSpecification = ['==', ['geometry-type'], 'Polygon']
     map.setFilter('features-line-casing', ['all', filter, isLineString])
-    // @ts-expect-error Inchorent MapLibre type checking in 2.3
     map.setFilter('features-line', ['all', filter, isLineString])
-    // @ts-expect-error Inchorent MapLibre type checking in 2.3
     map.setFilter('features-fill', ['all', filter, isPolygon])
-    // @ts-expect-error Inchorent MapLibre type checking in 2.3
     map.setFilter('features-outline', ['all', filter, isPolygon])
   }
 }
@@ -86,32 +83,12 @@ export function filterRouteByPoiIds(map: Map, ids: ApiPoiId[]) {
     map.setLayoutProperty('features-line', 'visibility', 'visible')
     map.setLayoutProperty('features-fill', 'visibility', 'visible')
     map.setLayoutProperty('features-outline', 'visibility', 'visible')
-    const isLineString = ['==', ['geometry-type'], 'LineString']
-    const isPolygon = ['==', ['geometry-type'], 'Polygon']
+    const isLineString: FilterSpecification = ['==', ['geometry-type'], 'LineString']
+    const isPolygon: FilterSpecification = ['==', ['geometry-type'], 'Polygon']
     const ids_ = ids as number[]
-    map.setFilter('features-line-casing', [
-      // @ts-expect-error Inchorent MapLibre type checking in 2.3
-      'all',
-      ['in', ['id'], ['literal', ids_]],
-      isLineString,
-    ])
-    map.setFilter('features-line', [
-      // @ts-expect-error Inchorent MapLibre type checking in 2.3
-      'all',
-      ['in', ['id'], ['literal', ids_]],
-      isLineString,
-    ])
-    map.setFilter('features-fill', [
-      // @ts-expect-error Inchorent MapLibre type checking in 2.3
-      'all',
-      ['in', ['id'], ['literal', ids_]],
-      isPolygon,
-    ])
-    map.setFilter('features-outline', [
-      // @ts-expect-error Inchorent MapLibre type checking in 2.3
-      'all',
-      ['in', ['id'], ['literal', ids_]],
-      isPolygon,
-    ])
+    map.setFilter('features-line-casing', ['all', ['in', ['id'], ['literal', ids_]], isLineString])
+    map.setFilter('features-line', ['all', ['in', ['id'], ['literal', ids_]], isLineString])
+    map.setFilter('features-fill', ['all', ['in', ['id'], ['literal', ids_]], isPolygon])
+    map.setFilter('features-outline', ['all', ['in', ['id'], ['literal', ids_]], isPolygon])
   }
 }
