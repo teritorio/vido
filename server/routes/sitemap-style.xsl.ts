@@ -1,19 +1,19 @@
-// import { defineEventHandler } from 'h3'
-// import { IncomingMessage, ServerResponse } from 'node:http'
+import type { IncomingMessage, ServerResponse } from 'node:http'
+import { defineEventHandler } from 'h3'
 
-// import { generateXslStylesheet } from '~/node_modules/nuxt-simple-sitemap/dist/runtime/util/builder'
+import { generateXslStylesheet } from '~/node_modules/nuxt-simple-sitemap/dist/runtime/util/builder'
 
-// // Import by node_modules because access to internal module content
+// Import by node_modules because access to internal module content
 
-// async function stylesheet(
-//   req: IncomingMessage,
-//   res: ServerResponse<IncomingMessage>
-// ) {
-//   res.write(generateXslStylesheet())
-//   res.statusCode = 200
-//   res.end()
-// }
+async function stylesheet(
+  req: IncomingMessage,
+  res: ServerResponse<IncomingMessage>,
+) {
+  res.write(generateXslStylesheet())
+  res.statusCode = 200
+  res.end()
+}
 
-// export default defineEventHandler(
-//   async (event) => await stylesheet(event.node.req, event.node.res)
-// )
+export default defineEventHandler(
+  async event => await stylesheet(event.node.req, event.node.res),
+)

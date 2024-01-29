@@ -92,6 +92,7 @@
     "msw": "^1.2.2",
     "node-sass": "^9.0.0",
     "nuxt": "^3.2.3",
+    "nuxt-simple-sitemap": "^2.7.0",
     "postcss": "^8.4.24",
     "postcss-html": "^1.6.0",
     "sass": "^1.63.4",
