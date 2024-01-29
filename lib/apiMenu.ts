@@ -50,6 +50,7 @@ export interface ApiMenuItem {
 export interface ApiMenuGroup extends ApiMenuItem {
 
   menu_group: {
+    id?: number
     name: MultilingualString
     icon: string
 

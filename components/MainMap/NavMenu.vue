@@ -68,7 +68,7 @@ export default defineNuxtComponent({
       </template>
 
       <v-list id="nav-menu-dropdown">
-        <v-list-item v-for="entry in entries" :key="entry.post_id" class="tw-w-full tw-px-5 tw-py-3 hover:tw-bg-zinc-100">
+        <v-list-item v-for="(entry, index) in entries" :key="index" class="tw-w-full tw-px-5 tw-py-3 hover:tw-bg-zinc-100">
           <v-list-item-title>
             <ExternalLink
               :href="entry.url" rel="noopener noreferrer" target="_blank"
