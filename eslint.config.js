@@ -11,6 +11,12 @@ export default antfu(
     },
   },
   {
+    files: ['**/*.ts'],
+    rules: {
+      'antfu/no-import-node-modules-by-path': 0,
+    },
+  },
+  {
     rules: {
       'node/prefer-global/process': 0,
     },

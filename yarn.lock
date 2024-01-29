@@ -2324,6 +2324,31 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@nuxt/kit@npm:3.5.3, @nuxt/kit@npm:^3.4.1, @nuxt/kit@npm:^3.5.0, @nuxt/kit@npm:^3.5.3":
+  version: 3.5.3
+  resolution: "@nuxt/kit@npm:3.5.3"
+  dependencies:
+    "@nuxt/schema": 3.5.3
+    c12: ^1.4.1
+    consola: ^3.1.0
+    defu: ^6.1.2
+    globby: ^13.1.4
+    hash-sum: ^2.0.0
+    ignore: ^5.2.4
+    jiti: ^1.18.2
+    knitwork: ^1.0.0
+    mlly: ^1.4.0
+    pathe: ^1.1.1
+    pkg-types: ^1.0.3
+    scule: ^1.0.0
+    semver: ^7.5.1
+    unctx: ^2.3.1
+    unimport: ^3.0.7
+    untyped: ^1.3.2
+  checksum: 0139aa67b4e76f9d23910cec26d3f727413dcdb9e5d5e3e06314256325e0341436651f3b04f0ec3afb3a9b8facca771123fc716adb319f26de16e2610ccd250a
+  languageName: node
+  linkType: hard
+
 "@nuxt/kit@npm:^3.0.0-rc.11":
   version: 3.3.1
   resolution: "@nuxt/kit@npm:3.3.1"
@@ -2373,31 +2398,6 @@ __metadata:
     unimport: ^2.2.4
     untyped: ^1.2.2
   checksum: 9621f945d75f214470a7c1d9190c32bef25aea40a9069841e8cb20ee1305c304717cdbea5b853761bcf7494a698c6156671daa5908dd5a353d15164742076fc1
-  languageName: node
-  linkType: hard
-
-"@nuxt/kit@npm:^3.4.1, @nuxt/kit@npm:^3.5.0, @nuxt/kit@npm:^3.5.3":
-  version: 3.5.3
-  resolution: "@nuxt/kit@npm:3.5.3"
-  dependencies:
-    "@nuxt/schema": 3.5.3
-    c12: ^1.4.1
-    consola: ^3.1.0
-    defu: ^6.1.2
-    globby: ^13.1.4
-    hash-sum: ^2.0.0
-    ignore: ^5.2.4
-    jiti: ^1.18.2
-    knitwork: ^1.0.0
-    mlly: ^1.4.0
-    pathe: ^1.1.1
-    pkg-types: ^1.0.3
-    scule: ^1.0.0
-    semver: ^7.5.1
-    unctx: ^2.3.1
-    unimport: ^3.0.7
-    untyped: ^1.3.2
-  checksum: 0139aa67b4e76f9d23910cec26d3f727413dcdb9e5d5e3e06314256325e0341436651f3b04f0ec3afb3a9b8facca771123fc716adb319f26de16e2610ccd250a
   languageName: node
   linkType: hard
 
@@ -3033,6 +3033,7 @@ __metadata:
     msw: ^1.2.2
     node-sass: ^9.0.0
     nuxt: ^3.2.3
+    nuxt-simple-sitemap: ^2.7.0
     opening_hours: ^3.8.0
     pinia: ^2.0.33
     pinia-shared-state: ^0.4.2
@@ -11420,6 +11421,23 @@ __metadata:
   bin:
     nuxi: bin/nuxi.mjs
   checksum: 9861fc4e65f94bad0e89501dbf174fbcb543decdf28265f4b1571a729388a371a8f1bade95c8b3b95549b01ceef9f643abd2ec86016eb84533c05e2a246b0702
+  languageName: node
+  linkType: hard
+
+"nuxt-simple-sitemap@npm:^2.7.0":
+  version: 2.7.0
+  resolution: "nuxt-simple-sitemap@npm:2.7.0"
+  dependencies:
+    "@nuxt/kit": 3.5.3
+    chalk: ^5.2.0
+    defu: ^6.1.2
+    escape-string-regexp: ^5.0.0
+    globby: ^13.1.4
+    knitwork: ^1.0.0
+    pathe: ^1.1.1
+    radix3: ^1.0.1
+    ufo: ^1.1.2
+  checksum: fe072cfc784335fa4c496da4d556b7aa6979f1d64880ce973279227d785a30bf1cb2c4a467bcfe32ed121d6716c726b5d23dd4e962a6494734094ec1bfe3803c
   languageName: node
   linkType: hard
 
