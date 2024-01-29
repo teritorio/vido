@@ -11,7 +11,7 @@ const configDefault = {
   MAPILLARY_ACCESS_TOKEN: null,
   COOKIES_CONSENT: null,
   COOKIES_LINK: null,
-  GOOGLE_SITE_VERIFICATION: null,
+  GOOGLE_SITE_VERIFICATION: undefined,
   GOOGLE_TAG_MANAGER_ID: null,
   MATOMO_URL: null,
   MATOMO_SITEID: null,

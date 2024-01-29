@@ -20,13 +20,13 @@ describe('pois table', () => {
   })
 
   it('contain basic table', () => {
-    cy.get('th').contains(
-      teritorioReferenceAPIFixture.pois.features[0].properties.editorial
-        .list_fields[0].field,
-    )
+    if (teritorioReferenceAPIFixture.pois.features[0].properties.editorial?.list_fields?.length) {
+      cy.get('th')
+        .contains(teritorioReferenceAPIFixture.pois.features[0].properties.editorial.list_fields[0].field as string)
+    }
 
     cy.get('td')
-      .contains(teritorioReferenceAPIFixture.pois.features[0].properties.name)
+      .contains(teritorioReferenceAPIFixture.pois.features[0].properties.name as string)
 
     cy.htmlvalidate()
   })

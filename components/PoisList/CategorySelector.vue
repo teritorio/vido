@@ -43,13 +43,7 @@ export default defineNuxtComponent({
   },
 
   computed: {
-    menuEntries(): [
-      {
-        value: number
-        title: string
-        category: ApiMenuCategory['category']
-      },
-    ] {
+    menuEntries(): Array<{ value: number, title: string, category: ApiMenuCategory['category'] } | undefined> {
       const menuIndex: { [key: number]: MenuItem } = {}
       this.menuItems
         .filter(menuItem => !menuItem.hidden)
@@ -62,10 +56,9 @@ export default defineNuxtComponent({
         (locale: string | LocaleObject) =>
           typeof locale === 'string' ? locale : locale.code,
       )
-      return (
-        this.menuItems.filter(
-          menuItem => menuItem.category && !menuItem.hidden,
-        ) as ApiMenuCategory[]
+
+      return this.menuItems.filter(
+        menuItem => menuItem.category && !menuItem.hidden,
       )
         .map((menuItem) => {
           const parents: string[] = []
@@ -89,8 +82,8 @@ export default defineNuxtComponent({
             category: menuItem.category,
           }
         })
-        .filter(t => t != null)
-        .sort((a, b) => a.title.localeCompare(b.title, localeCompareOptions))
+        .filter(t => t !== undefined)
+        .sort((a, b) => a && b ? a.title.localeCompare(b.title, localeCompareOptions) : -1)
     },
   },
 })
