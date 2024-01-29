@@ -100,6 +100,9 @@ export default defineNuxtConfig({
   server: {
     host: '0.0.0.0',
   },
+  typescript: {
+    typeCheck: true,
+  },
   vite: {
     optimizeDeps: { exclude: ['fsevents'] },
   },
