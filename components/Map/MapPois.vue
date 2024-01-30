@@ -104,7 +104,6 @@ export default defineNuxtComponent({
 
   methods: {
     onMapInit(map: Map): void {
-      // @ts-expect-error: Type is too deep
       this.map = map
     },
 

@@ -108,8 +108,7 @@ export default defineNuxtComponent({
   },
 
   mounted() {
-    // @ts-expect-error: Instance is too deep
-    this.fullscreenControlObject = new FullscreenControl({})
+    this.fullscreenControlObject = new FullscreenControl()
 
     const map = new Map({
       container: 'map',
