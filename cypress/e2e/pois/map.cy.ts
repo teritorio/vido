@@ -11,7 +11,7 @@ const hostnames = {
 describe('home content', () => {
   beforeEach(() => {
     mockSSRAPI(hostnames, teritorioReferenceAPIFixture, {
-      'pois.json?ids=1&geometry_as=undefined&short_description=true':
+      'pois.geojson?ids=1&geometry_as=undefined&short_description=true':
         teritorioReferenceAPIFixture.deps[1],
     })
     cy.viewport(1024, 768)

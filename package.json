@@ -9,7 +9,7 @@
   "scripts": {
     "prepare": "nuxt prepare",
     "build-config": "npx vite-node bin/build-config.ts > vidos-config.json",
-    "build-fixture": "ruby poi_explode.rb cypress/fixtures/teritorio/references/pois.json",
+    "build-fixture": "ruby poi_explode.rb cypress/fixtures/teritorio/references/pois.geojson",
     "dev": "nuxt dev",
     "build": "nuxt build",
     "build:histoire": "rm -fr __screenshots__/current/ && mkdir -p __screenshots__/current/ && yarn histoire build",

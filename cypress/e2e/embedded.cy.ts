@@ -18,7 +18,7 @@ describe('pois table', () => {
 
   it('contain basic table', () => {
     cy.intercept(
-      '/content/api.teritorio/geodata/v0.1/dev/tourism/pois/category/22.json?geometry_as=point&short_description=true',
+      '/content/api.teritorio/geodata/v0.1/dev/tourism/pois/category/22.geojson?geometry_as=point&short_description=true',
       { body: poisCategory22 },
     )
 
