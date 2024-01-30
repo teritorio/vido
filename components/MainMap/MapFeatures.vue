@@ -223,7 +223,6 @@ export default defineNuxtComponent({
     // Map and style init and changes
 
     onMapInit(map: Map) {
-      // @ts-expect-error: type is too deep
       this.map = map
 
       this.map.on('click', this.onClick)
