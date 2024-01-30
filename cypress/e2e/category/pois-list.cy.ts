@@ -1,5 +1,6 @@
 import poisCategory22 from '../../fixtures/teritorio/references/pois/category/22.json'
 import { mockSSRAPI } from '../../support/mock'
+import type { ApiPois } from '~/lib/apiPois'
 
 import teritorioReferenceAPIFixture from '~/cypress/fixtures/teritorio/references/teritorioReferenceAPIFixture'
 
@@ -20,9 +21,10 @@ describe('pois table', () => {
   })
 
   it('contain basic table', () => {
-    if (teritorioReferenceAPIFixture.pois.features[0].properties.editorial?.list_fields?.length) {
+    const pois = teritorioReferenceAPIFixture.pois as ApiPois
+    if (pois.features[0].properties.editorial && pois.features[0].properties.editorial.list_fields) {
       cy.get('th')
-        .contains(teritorioReferenceAPIFixture.pois.features[0].properties.editorial.list_fields[0].field as string)
+        .contains(pois.features[0].properties.editorial.list_fields[0].field as string)
     }
 
     cy.get('td')
