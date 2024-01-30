@@ -13,6 +13,8 @@
             "display_mode": "compact",
             "vido_children": null
         },
+        "link": null,
+        "category": null,
         "index_order": 1
     },
     {
@@ -45,6 +47,8 @@
             "display_mode": "compact",
             "vido_children": null
         },
+        "link": null,
+        "category": null,
         "index_order": 4
     },
     {
@@ -61,11 +65,15 @@
             "display_mode": "compact",
             "vido_children": null
         },
+        "link": null,
+        "category": null,
         "index_order": 5
     },
     {
         "id": 211,
         "parent_id": 21,
+        "menu_group": null,
+        "link": null,
         "category": {
             "id": 211,
             "slug": "",
@@ -122,6 +130,8 @@
     {
         "id": 22,
         "parent_id": 2,
+        "menu_group": null,
+        "link": null,
         "category": {
             "id": 22,
             "slug": "",
