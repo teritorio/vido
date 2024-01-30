@@ -306,6 +306,10 @@ export default defineNuxtComponent({
 </template>
 
 <style lang="scss" scoped>
+.inline {
+  overflow-wrap: break-word;
+}
+
 .tw-prose {
   max-width: none;
 }
