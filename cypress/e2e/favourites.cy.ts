@@ -25,7 +25,7 @@ describe('home content', () => {
     cy.get('#favourites_counter').contains('1')
 
     cy.intercept(
-      '/content/api.teritorio/geodata/v0.1/dev/tourism/pois.geojson?ids=1&geometry_as=bbox&short_description=true',
+      '/content/api.teritorio/geodata/v0.1/dev/tourism/pois.json?ids=1&geometry_as=bbox&short_description=true',
       {
         body: {
           type: 'FeatureCollection',

@@ -23,11 +23,11 @@ describe('home content', () => {
     localStorage.setItem('cookie:accepted', 'true')
     mockSSRAPI(hostnames, teritorioReferenceAPIFixture)
     cy.intercept(
-      '/content/api.teritorio/geodata/v0.1/dev/tourism/pois/category/22.geojson?geometry_as=point&short_description=true',
+      '/content/api.teritorio/geodata/v0.1/dev/tourism/pois/category/22.json?geometry_as=point&short_description=true',
       { body: poisCategory22 },
     )
     cy.intercept(
-      '/content/api.teritorio/geodata/v0.1/dev/tourism/pois/category/211.geojson?geometry_as=point&short_description=true',
+      '/content/api.teritorio/geodata/v0.1/dev/tourism/pois/category/211.json?geometry_as=point&short_description=true',
       { body: poisCategory211 },
     )
 

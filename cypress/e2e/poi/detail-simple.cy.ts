@@ -12,7 +12,7 @@ describe('home content', () => {
   beforeEach(() => {
     mockSSRAPI(hostnames, teritorioReferenceAPIFixture, {
       // ?geometry_as=bbox&short_description=false
-      'poi/1/deps.geojson': teritorioReferenceAPIFixture.deps[1],
+      'poi/1/deps.json': teritorioReferenceAPIFixture.deps[1],
     })
     cy.viewport(1024, 768)
     cy.visit('/poi/1/details')

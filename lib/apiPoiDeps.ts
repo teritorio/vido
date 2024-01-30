@@ -42,7 +42,7 @@ export function getPoiDepsById(
   options: ApiPoisOptions = {},
 ): Promise<ApiPoiDeps> {
   return fetch(
-    `${vidoConfig.API_ENDPOINT}/${vidoConfig.API_PROJECT}/${vidoConfig.API_THEME}/poi/${poiId}/deps.geojson?${
+    `${vidoConfig.API_ENDPOINT}/${vidoConfig.API_PROJECT}/${vidoConfig.API_THEME}/poi/${poiId}/deps.json?${
       new URLSearchParams(stringifyOptions(options))}`,
   ).then((data) => {
     if (data.ok) {

@@ -5,7 +5,7 @@ import { bind } from '~/lib/storybook-types'
 
 import '@teritorio/font-teritorio/teritorio/teritorio.css'
 
-import poisDeps from '~/cypress/fixtures/teritorio/references/poi/2/deps.geojson'
+import poisDeps from '~/cypress/fixtures/teritorio/references/poi/2/deps.json'
 
 export default {
   title: 'PoisCard/PoisDeck',

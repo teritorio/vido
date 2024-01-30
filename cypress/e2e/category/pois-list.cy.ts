@@ -13,7 +13,7 @@ describe('pois table', () => {
   beforeEach(() => {
     mockSSRAPI(hostnames, teritorioReferenceAPIFixture, {
       // ?geometry_as=point&short_description=true
-      'pois/category/211.geojson': teritorioReferenceAPIFixture.deps[1],
+      'pois/category/211.json': teritorioReferenceAPIFixture.deps[1],
     })
     cy.viewport(1024, 768)
     cy.visit('/category/211')
@@ -33,7 +33,7 @@ describe('pois table', () => {
 
   it('should be interative', () => {
     cy.intercept(
-      '/content/api.teritorio/geodata/v0.1/dev/tourism/pois/category/22.geojson?geometry_as=point&short_description=true',
+      '/content/api.teritorio/geodata/v0.1/dev/tourism/pois/category/22.json?geometry_as=point&short_description=true',
       { body: poisCategory22 },
     )
 
