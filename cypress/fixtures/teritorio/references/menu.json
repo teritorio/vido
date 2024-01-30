@@ -10,10 +10,9 @@
             "icon": "teritorio teritorio-camp_site",
             "color_fill": "#99163a",
             "color_line": "#99163a",
-            "display_mode": "compact"
+            "display_mode": "compact",
+            "vido_children": null
         },
-        "link": null,
-        "category": null,
         "index_order": 1
     },
     {
@@ -27,10 +26,9 @@
             "icon": "glyphicons glyphicons-search",
             "color_fill": "#99163a",
             "color_line": "#99163a",
-            "display_mode": "compact"
+            "display_mode": "compact",
+            "vido_children": null
         },
-        "link": null,
-        "category": null,
         "index_order": 2
     },
     {
@@ -44,10 +42,9 @@
             "icon": "teritorio teritorio-camp_site",
             "color_fill": "#99163a",
             "color_line": "#99163a",
-            "display_mode": "compact"
+            "display_mode": "compact",
+            "vido_children": null
         },
-        "link": null,
-        "category": null,
         "index_order": 4
     },
     {
@@ -61,17 +58,14 @@
             "icon": "teritorio teritorio-hosting",
             "color_fill": "#99163a",
             "color_line": "#99163a",
-            "display_mode": "compact"
+            "display_mode": "compact",
+            "vido_children": null
         },
-        "link": null,
-        "category": null,
         "index_order": 5
     },
     {
         "id": 211,
         "parent_id": 21,
-        "menu_group": null,
-        "link": null,
         "category": {
             "id": 211,
             "slug": "",
@@ -128,8 +122,6 @@
     {
         "id": 22,
         "parent_id": 2,
-        "menu_group": null,
-        "link": null,
         "category": {
             "id": 22,
             "slug": "",

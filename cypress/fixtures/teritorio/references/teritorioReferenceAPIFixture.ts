@@ -1,22 +1,24 @@
 import type { APIFixture } from '../../APIFixture'
 import articles from './articles.json'
 import fr from './attribute_translations/fr.json'
-import menu from './menu.json'
+
 import deps1 from './poi/1/deps.json'
 import deps2 from './poi/2/deps.json'
-import pois from './pois.json'
-import settings from './settings.json'
 
+import pois from './pois.json'
+import menu from './menu.json'
+import settings from './settings.json'
 import type { ApiPoiDeps } from '~/lib/apiPoiDeps'
+import type { MenuItem } from '~/lib/apiMenu'
+import type { ApiPoi } from '~/lib/apiPois'
+import type { Settings } from '~/lib/apiSettings'
 
 const fixture: APIFixture = {
   attribute_translations: { fr },
-  // @ts-expect-error: Types issue
-  settings,
+  settings: settings as Settings,
   articles,
-  // @ts-expect-error: Types issue
-  menu,
-  pois,
+  menu: menu as MenuItem[],
+  pois: pois as ApiPoi,
   deps: {
     1: deps1 as ApiPoiDeps,
     2: deps2 as ApiPoiDeps,

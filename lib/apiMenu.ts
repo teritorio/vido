@@ -48,8 +48,8 @@ export interface ApiMenuItem {
 }
 
 export interface ApiMenuGroup extends ApiMenuItem {
-
   menu_group: {
+    id?: number
     name: MultilingualString
     icon: string
 
@@ -59,13 +59,9 @@ export interface ApiMenuGroup extends ApiMenuItem {
 
     display_mode: 'large' | 'compact'
   }
-  link: undefined
-  category: undefined
 }
 
 export interface ApiMenuLink extends ApiMenuItem {
-
-  menu_group: undefined
   link: {
     href: string
     name: MultilingualString
@@ -77,13 +73,9 @@ export interface ApiMenuLink extends ApiMenuItem {
 
     display_mode: 'large' | 'compact'
   }
-  category: undefined
 }
 
 export interface ApiMenuCategory extends ApiMenuItem {
-
-  menu_group: undefined
-  link: undefined
   category: {
     name: MultilingualString
     icon: string
