@@ -102,7 +102,7 @@ export default defineNuxtConfig({
     host: '0.0.0.0',
   },
   typescript: {
-    typeCheck: true,
+    typeCheck: !process.env.CYPRESS,
   },
   vite: {
     optimizeDeps: { exclude: ['fsevents'] },
