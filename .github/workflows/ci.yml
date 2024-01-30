@@ -62,7 +62,7 @@ jobs:
       - name: Install ruby
         run: |
           sudo apt-get install -y ruby &&
-          ruby poi_explode.rb cypress/fixtures/teritorio/references/pois.json
+          ruby poi_explode.rb cypress/fixtures/teritorio/references/pois.geojson
 
       - name: Prepare
         run: |
@@ -108,7 +108,7 @@ jobs:
       - name: Install more packages
         run: |
           sudo apt-get install -y ruby &&
-          ruby poi_explode.rb cypress/fixtures/teritorio/references/pois.json
+          ruby poi_explode.rb cypress/fixtures/teritorio/references/pois.geojson
 
       - name: Test Histoire
         run: |
@@ -163,7 +163,7 @@ jobs:
             cd ${{secrets.DEPLOY_SSH_PATH}} &&
             git fetch &&
             git checkout -f origin/develop &&
-            ruby poi_explode.rb cypress/fixtures/teritorio/references/pois.json &&
+            ruby poi_explode.rb cypress/fixtures/teritorio/references/pois.geojson &&
             sed -i "s/# restart: unless-stopped/restart: unless-stopped/" docker-compose.yml &&
             docker-compose build &&
             touch vidos-config.json &&
