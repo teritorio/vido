@@ -108,6 +108,7 @@ export default defineNuxtComponent({
   },
 
   mounted() {
+    // @ts-expect-error: type is too deep
     this.fullscreenControlObject = new FullscreenControl()
 
     const map = new Map({
