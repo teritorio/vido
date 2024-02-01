@@ -1,26 +1,32 @@
-ARG  NODE_VERSION
-FROM node:${NODE_VERSION}
+# syntax = docker/dockerfile:1
 
-RUN apk --no-cache add git
+# Base
+ARG NODE_VERSION=18.19.0
 
-# Create app directory
-RUN mkdir -p /usr/src/app/.nuxt
-WORKDIR /usr/src/app
+FROM node:${NODE_VERSION}-slim as base
 
-# Install app dependencies
-COPY package.json yarn.lock /usr/src/app/
+ARG PORT=3000
+
+ENV NODE_ENV=production
+
+WORKDIR /src
+
+# Build
+FROM base as build
+
+COPY --link .yarn ./.yarn
+COPY --link package.json yarn.lock .yarnrc.yml ./ 
 RUN yarn install
-COPY . /usr/src/app
-RUN yarn install
 
-ENV NODE_OPTIONS --openssl-legacy-provider
-COPY vidos-config-empty.json vidos-config.json
+COPY --link . .
+
 RUN yarn build
 
-# Set environment variables
-ENV NODE_ENV production
-ENV NUXT_HOST 0.0.0.0
-ENV NUXT_PORT 3000
+# Run
+FROM base
 
-EXPOSE 3000
-CMD [ "yarn", "start" ]
+ENV PORT=$PORT
+
+COPY --from=build /src/.output /src/.output
+
+CMD [ "node", ".output/server/index.mjs" ]
