@@ -20,6 +20,7 @@ RUN yarn install
 
 COPY --link . .
 
+RUN yarn build-config
 RUN yarn build
 
 # Run
@@ -28,5 +29,6 @@ FROM base
 ENV PORT=$PORT
 
 COPY --from=build /src/.output /src/.output
+COPY --from=build /src/vidos-config.json /src/vidos-config.json
 
 CMD [ "node", ".output/server/index.mjs" ]
