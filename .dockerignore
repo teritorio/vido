@@ -79,5 +79,5 @@ cypress
 # Vido
 **/*.stories.ts
 **/*.story.vue
-vidos.config.ts
+# vidos.config.ts
 vidos-config.json
