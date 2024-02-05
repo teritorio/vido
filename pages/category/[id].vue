@@ -90,8 +90,6 @@ export default defineNuxtComponent({
         fetchPoiByCategoryId,
       ])
 
-    useHead(headerFromSettings(settings.value))
-
     return {
       config,
       settings,
@@ -117,6 +115,19 @@ export default defineNuxtComponent({
     this.globalConfig = this.config
     if (this.menuItems)
       menuStore().fetchConfig(this.menuItems)
+
+    // Fetching category by ID
+    // TODO: Has to be done in setup() but menuItems is touched in created() hook
+    const category = menuStore().getCurrentCategory(useRoute().params.id as string)
+    if (!category) {
+      throw createError({
+        statusCode: 404,
+        statusMessage: 'Category Not Found',
+      })
+    }
+
+    this.settings.themes[0].title = category.category.name
+    useHead(headerFromSettings(this.settings))
 
     this.globalSettings = this.settings
     this.globalContents = this.contents
