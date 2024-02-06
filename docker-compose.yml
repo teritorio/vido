@@ -6,7 +6,7 @@ services:
       context: .
       args:
         NODE_VERSION: 18-alpine3.17
-    # restart: unless-stopped
+    restart: unless-stopped
     ports:
       - '3000:3000'
     volumes:

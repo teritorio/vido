@@ -168,7 +168,6 @@ jobs:
             git fetch &&
             git checkout -f origin/develop &&
             ruby poi_explode.rb cypress/fixtures/teritorio/references/pois.geojson &&
-            sed -i "s/# restart: unless-stopped/restart: unless-stopped/" docker-compose.yml &&
             docker-compose build &&
             touch vidos-config.json &&
             docker-compose run --rm vido yarn build-config &&
