@@ -7,7 +7,7 @@ import { definePageMeta } from '#imports'
 import PoisList from '~/components/PoisList/PoisList.vue'
 import type { ContentEntry } from '~/lib/apiContent'
 import { getContents } from '~/lib/apiContent'
-import type { MenuItem } from '~/lib/apiMenu'
+import type { ApiMenuCategory, MenuItem } from '~/lib/apiMenu'
 import { getMenu } from '~/lib/apiMenu'
 import type { ApiPois } from '~/lib/apiPois'
 import { getPoiByCategoryId } from '~/lib/apiPois'
@@ -90,8 +90,6 @@ export default defineNuxtComponent({
         fetchPoiByCategoryId,
       ])
 
-    useHead(headerFromSettings(settings.value))
-
     return {
       config,
       settings,
@@ -133,6 +131,26 @@ export default defineNuxtComponent({
 
   mounted() {
     this.locale = this.$i18n.locale
+    this.handleCategoryUpdate(useRoute().params.id as string)
+  },
+  methods: {
+    getCategory(categoryId: string): ApiMenuCategory {
+      // Fetching category by ID
+      // TODO: Has to be done in setup() but menuItems is touched in created() hook
+      const category = menuStore().getCurrentCategory(categoryId)
+      if (!category) {
+        throw createError({
+          statusCode: 404,
+          statusMessage: 'Category Not Found',
+        })
+      }
+      return category
+    },
+    handleCategoryUpdate(categoryId: number | string) {
+      const category = this.getCategory(categoryId.toString())
+      this.settings.themes[0].title = category.category.name
+      useHead(headerFromSettings(this.settings))
+    },
   },
 })
 </script>
@@ -144,6 +162,7 @@ export default defineNuxtComponent({
     :initial-category-id="parseInt(id)"
     :initial-pois="pois"
     class="page-index"
+    @category-update="handleCategoryUpdate"
   />
 </template>
 

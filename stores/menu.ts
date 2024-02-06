@@ -63,6 +63,16 @@ export const menuStore = defineStore('menu', {
           ) as ApiMenuCategory[])
     },
 
+    getCurrentCategory: (state: State): (categoryId: string) => ApiMenuCategory | undefined => {
+      return (categoryId) => {
+        return state.menuItems === undefined
+          ? undefined
+          : Object.values(state.menuItems).find(
+            menuItem => menuItem.id.toString() === categoryId,
+          ) as ApiMenuCategory
+      }
+    },
+
     selectedCategories: (state: State): ApiMenuCategory[] | undefined => {
       return state.menuItems === undefined
         ? undefined
