@@ -3050,7 +3050,7 @@ __metadata:
     typescript: ^5.1.3
     url-slug: ^4.0.1
     vite-plugin-checker: ^0.6.2
-    vite-plugin-vuetify: ^1.0.2
+    vite-plugin-vuetify: ^2.0.1
     vue-cookie-accept-decline: ^6.1.0
     vue-matomo: ^4.2.0
     vue-screen: ^2.2.0
@@ -4178,16 +4178,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@vuetify/loader-shared@npm:^1.7.1":
-  version: 1.7.1
-  resolution: "@vuetify/loader-shared@npm:1.7.1"
+"@vuetify/loader-shared@npm:^2.0.1":
+  version: 2.0.1
+  resolution: "@vuetify/loader-shared@npm:2.0.1"
   dependencies:
-    find-cache-dir: ^3.3.2
     upath: ^2.0.1
   peerDependencies:
     vue: ^3.0.0
-    vuetify: ^3.0.0-beta.4
-  checksum: 5820cfd08841002bc19c4407b41cedd8eadfdc25ca894fa9f2663b990b5bca1285a031aced082205b964243bace1e3376be4d1918c139d26111c6ac29abc7c84
+    vuetify: ^3.0.0
+  checksum: c476ee2cdce413d6a2011516bd7da07d79ab97a8bce92e81c6b2261584aa8e0cba7e4af1de4de5e39f8deddce76ff5bedacf0521c5875e0cd55cb2aa87a3ec55
   languageName: node
   linkType: hard
 
@@ -7719,17 +7718,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"find-cache-dir@npm:^3.3.2":
-  version: 3.3.2
-  resolution: "find-cache-dir@npm:3.3.2"
-  dependencies:
-    commondir: ^1.0.1
-    make-dir: ^3.0.2
-    pkg-dir: ^4.1.0
-  checksum: 5330b819225a54a105c7e186ceea5f64d313f7e830aa0abeea7d419379b454c286fcdced2f25768c31e87b6621488bab99b3d64c74ca831f93f8018a8b79bbe2
-  languageName: node
-  linkType: hard
-
 "find-up@npm:^4.0.0, find-up@npm:^4.1.0":
   version: 4.1.0
   resolution: "find-up@npm:4.1.0"
@@ -10418,7 +10406,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"make-dir@npm:^3.0.2, make-dir@npm:^3.1.0, make-dir@npm:~3.1.0":
+"make-dir@npm:^3.1.0, make-dir@npm:~3.1.0":
   version: 3.1.0
   resolution: "make-dir@npm:3.1.0"
   dependencies:
@@ -12255,7 +12243,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"pkg-dir@npm:4.2.0, pkg-dir@npm:^4.1.0":
+"pkg-dir@npm:4.2.0":
   version: 4.2.0
   resolution: "pkg-dir@npm:4.2.0"
   dependencies:
@@ -15722,17 +15710,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"vite-plugin-vuetify@npm:^1.0.2":
-  version: 1.0.2
-  resolution: "vite-plugin-vuetify@npm:1.0.2"
+"vite-plugin-vuetify@npm:^2.0.1":
+  version: 2.0.1
+  resolution: "vite-plugin-vuetify@npm:2.0.1"
   dependencies:
-    "@vuetify/loader-shared": ^1.7.1
+    "@vuetify/loader-shared": ^2.0.1
     debug: ^4.3.3
     upath: ^2.0.1
   peerDependencies:
-    vite: ^2.7.0 || ^3.0.0 || ^4.0.0
-    vuetify: ^3.0.0-beta.4
-  checksum: d0717f7952688a33adc0009ffcb352a41efd6dc4c73343b98cfe0e5bc493a68f0985cdce116e18c9dc5ef37d3abe0cccef6ede2a7eb2480b561e3d099f65d590
+    vite: ">=5"
+    vue: ^3.0.0
+    vuetify: ^3.0.0
+  checksum: 0b57c8fb767d38e8a72a0e90f131e21d2a6850984a06bab9800b4165465637a20dc4f0ce257d4ad76c8d9844ebdf678dc7086c2a5c75927c350172c884522cf6
   languageName: node
   linkType: hard
 
