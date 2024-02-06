@@ -76,6 +76,9 @@ export default defineNuxtComponent({
     categoryId() {
       this.pois = undefined
 
+      // Send new categoryId to parent in order to update meta title
+      this.$emit('categoryUpdate', this.categoryId)
+
       // Change history directly to avoid resetup the page with this.$router.push
       history.pushState({}, '', `/category/${this.categoryId}`)
 
