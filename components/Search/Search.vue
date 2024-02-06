@@ -246,6 +246,7 @@ export default defineNuxtComponent({
           type: 'Feature',
           geometry: feature.geometry,
           properties: {
+            internalType: 'address',
             metadata: {
               id: feature.properties.id as ApiPoiId,
             },
