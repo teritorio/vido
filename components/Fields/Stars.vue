@@ -20,7 +20,7 @@ export default defineNuxtComponent({
 <template>
   <div class="stars-data tw-text-amber-500 tw-mb-1">
     <FontAwesomeIcon
-      v-for="index in new Array(stars)"
+      v-for="index in stars"
       :key="index"
       icon="star"
     />
