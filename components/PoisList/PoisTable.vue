@@ -52,7 +52,7 @@ export default defineNuxtComponent({
       </tr>
     </thead>
     <tbody v-if="pois.features">
-      <tr v-for="(feature, i) in pois.features" :key="i">
+      <tr v-for="(feature, i) in pois.features" :key="i" :class="{ 'tw-bg-gray-100': i % 2 !== 0 }">
         <td v-for="field in fields" :key="field.field" class="tw-align-top">
           <Field
             :context="context"
