@@ -1,12 +1,12 @@
 <script lang="ts">
 import type { PropType } from 'vue'
 
-import { defineNuxtComponent } from '#app'
+import { VDataTable } from 'vuetify/labs/VDataTable'
 import Field from '~/components/Fields/Field.vue'
 import type { ApiPois, FieldsListItem } from '~/lib/apiPois'
 import { PropertyTranslationsContextEnum } from '~/plugins/property-translations'
 
-export default defineNuxtComponent({
+export default {
   components: {
     Field,
   },
@@ -23,59 +23,56 @@ export default defineNuxtComponent({
   },
 
   computed: {
-    headers(): { value: string, text: string }[] {
-      const h = this.fields.map(field => ({
-        value: field.field,
-        text: this.$propertyTranslations.p(
-          field.field,
-          PropertyTranslationsContextEnum.List,
-        ),
-      }))
-      h.push({ value: '', text: '' })
-      return h
-    },
-
     context(): PropertyTranslationsContextEnum {
       return PropertyTranslationsContextEnum.List
     },
+    headers(): Array<{ title: string, value?: string, key?: string }> {
+      const headers = this.fields.map(f => ({
+        title: this.$propertyTranslations.p(
+          f.field,
+          PropertyTranslationsContextEnum.List,
+        ),
+        value: f.field,
+        key: `properties.${f.field}`,
+      }))
+      headers.push({ title: '', value: '', key: '' })
+      return headers
+    },
   },
-})
+}
 </script>
 
 <template>
-  <table>
-    <thead>
-      <tr class="tw-bg-gray-100">
-        <th v-for="header in headers" :key="header.value" scope="col">
-          {{ header.text }}
-        </th>
-      </tr>
-    </thead>
-    <tbody v-if="pois.features">
-      <tr v-for="(feature, i) in pois.features" :key="i" :class="{ 'tw-bg-gray-100': i % 2 !== 0 }">
+  <v-data-table class="mt-4" :headers="headers" :items="pois.features" item-key="name" items-per-page="5" :no-data-text="$t('poisTable.empty')">
+    <template #item="{ item }">
+      <tr>
         <td v-for="field in fields" :key="field.field" class="tw-align-top">
           <Field
             :context="context"
             :recursion-stack="[field.field]"
             :field="field"
             :details="$t('poisTable.details')"
-            :properties="feature.properties"
-            :geom="feature.geometry"
+            :properties="item.selectable.properties"
+            :geom="item.selectable.geometry"
           />
         </td>
-        <td class="tw-align-top">
-          <NuxtLink :to="`/poi/${feature.properties.metadata.id}/details`">
+        <td>
+          <NuxtLink :to="`/poi/${item.selectable.properties.metadata.id}/details`">
             {{ $t('poisTable.details') }}
           </NuxtLink>
         </td>
       </tr>
-    </tbody>
-    <tbody v-else>
-      <tr class="tw-text-center">
-        <td :colspan="headers.length">
-          {{ $t('poisTable.empty') }}
-        </td>
-      </tr>
-    </tbody>
-  </table>
+    </template>
+  </v-data-table>
 </template>
+
+<style scoped lang="scss">
+/* stylelint-disable selector-class-pattern */
+.v-data-table .v-table__wrapper > table thead {
+  background: blue
+}
+
+.v-data-table .v-table__wrapper > table tbody > tr:nth-child(even) > td {
+  background: #F3F4F6;
+}
+</style>
