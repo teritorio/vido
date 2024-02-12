@@ -67,11 +67,9 @@ export default {
 
 <style scoped lang="scss">
 /* stylelint-disable selector-class-pattern */
-.v-data-table .v-table__wrapper > table thead {
-  background: blue
-}
 
-.v-data-table .v-table__wrapper > table tbody > tr:nth-child(even) > td {
+.v-data-table .v-table__wrapper > table tbody > tr:nth-child(even) > td,
+.v-data-table .v-table__wrapper > table > thead > tr th {
   background: #F3F4F6;
 }
 </style>
