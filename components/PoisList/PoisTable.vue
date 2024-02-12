@@ -1,7 +1,6 @@
 <script lang="ts">
 import type { PropType } from 'vue'
 
-import { VDataTable } from 'vuetify/labs/VDataTable'
 import Field from '~/components/Fields/Field.vue'
 import type { ApiPois, FieldsListItem } from '~/lib/apiPois'
 import { PropertyTranslationsContextEnum } from '~/plugins/property-translations'
