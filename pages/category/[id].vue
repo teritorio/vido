@@ -131,6 +131,23 @@ export default defineNuxtComponent({
 
   mounted() {
     this.locale = this.$i18n.locale
+    if (siteStore().contribMode) {
+      this.pois.features.map((poi) => {
+        const { coordinates } = poi.geometry as GeoJSON.Point
+        if (poi.properties.metadata.osm_id && poi.properties.metadata.osm_type) {
+          if (poi.properties.mapillary) {
+            poi.properties.mapillary_link = `https://www.mapillary.com/app/?pKey=${poi.properties.mapillary}&focus=photo`
+            poi.properties.editorial?.list_fields?.push({ field: 'mapillary_link' })
+          }
+
+          poi.properties.editor_id = `https://www.openstreetmap.org/edit?node=${poi.properties.metadata.osm_id}`
+          poi.properties.osm_note = `https://www.openstreetmap.org/note/new#map=19/${coordinates[1]}/${coordinates[0]}&layers=N`
+          poi.properties.editorial?.list_fields?.push({ field: 'editor_id' }, { field: 'osm_note' }, { field: 'mapillary_link' })
+        }
+
+        return poi
+      })
+    }
     this.handleCategoryUpdate(useRoute().params.id as string)
   },
   methods: {

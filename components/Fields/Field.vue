@@ -253,6 +253,14 @@ export default defineNuxtComponent({
         {{ $t('fields.osm_note') }}
       </ExternalLink>
 
+      <ExternalLink
+        v-else-if="field.field === 'mapillary_link'"
+        :href="properties[field.field]"
+        target="_blank"
+      >
+        {{ $t('poiDetails.mapillaryExplore') }}
+      </ExternalLink>
+
       <div
         v-for="item in properties[field.field]"
         v-else-if="field.field === 'download'"
