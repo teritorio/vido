@@ -32,7 +32,7 @@ export default defineNuxtComponent({
 
 <template>
   <i
-    v-if="!Boolean(image) && picto.startsWith('teritorio')"
+    v-if="!Boolean(image) && (picto.startsWith('teritorio') || picto.startsWith('glyphicons'))"
     :class="[
       picto,
       !useNativeAlignment && 'tw-flex tw-items-center tw-justify-center',
