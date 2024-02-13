@@ -245,6 +245,14 @@ export default defineNuxtComponent({
         </ExternalLink>
       </div>
 
+      <ExternalLink v-else-if="field.field === 'editor_id'" :href="properties[field.field]" target="blank">
+        {{ propTranslateV(field.field) }}
+      </ExternalLink>
+
+      <ExternalLink v-else-if="field.field === 'osm_note'" :href="properties[field.field]" target="blank">
+        {{ propTranslateV(field.field) }}
+      </ExternalLink>
+
       <div
         v-for="item in properties[field.field]"
         v-else-if="field.field === 'download'"
