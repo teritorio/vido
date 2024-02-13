@@ -245,11 +245,11 @@ export default defineNuxtComponent({
         </ExternalLink>
       </div>
 
-      <ExternalLink v-else-if="field.field === 'editor_id'" :href="properties[field.field]" target="blank">
+      <ExternalLink v-else-if="field.field === 'editor_id'" icon="pen-to-square" :href="properties[field.field]" target="blank">
         {{ propTranslateV(field.field) }}
       </ExternalLink>
 
-      <ExternalLink v-else-if="field.field === 'osm_note'" :href="properties[field.field]" target="blank">
+      <ExternalLink v-else-if="field.field === 'osm_note'" icon="note-sticky" :href="properties[field.field]" target="blank">
         {{ propTranslateV(field.field) }}
       </ExternalLink>
 
