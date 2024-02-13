@@ -157,6 +157,8 @@ export default defineI18nLocale(() => {
       label: 'Recherchez ou ajoutez une valeur',
     },
     fields: {
+      editor_id: 'Editer dans ID Editor',
+      osm_note: 'Ajouter une Note OSM',
       phone: {
         callNumber: 'Appeler ce numéro',
       },
