@@ -13,6 +13,7 @@ import OpeningHours, { isOpeningHoursSupportedOsmTags } from '~/components/Field
 import Phone from '~/components/Fields/Phone.vue'
 import RoutesField, { isRoutesFieldEmpty } from '~/components/Fields/RoutesField.vue'
 import Stars from '~/components/Fields/Stars.vue'
+import Website from '~/components/Fields/Website.vue'
 import ExternalLink from '~/components/UI/ExternalLink.vue'
 import FieldsHeader from '~/components/UI/FieldsHeader.vue'
 import type { ApiPoiProperties, FieldsListItem } from '~/lib/apiPois'
@@ -49,6 +50,7 @@ export default defineNuxtComponent({
     Instagram,
     ExternalLink,
     Stars,
+    Website,
   },
 
   emits: {
@@ -93,6 +95,9 @@ export default defineNuxtComponent({
   computed: {
     shortDescription(): string | undefined {
       return this.properties?.description?.replace(/(<([^>]+)>)/gi, '')
+    },
+    isWebsite(): boolean {
+      return /\w*:?website:?\w*/.test(this.field.field)
     },
   },
 
@@ -222,15 +227,7 @@ export default defineNuxtComponent({
         <Phone :number="phone" />
       </div>
 
-      <div
-        v-for="item in properties[field.field]"
-        v-else-if="field.field === 'website'"
-        :key="`website_${item}`"
-      >
-        <ExternalLink :href="item" target="_blank">
-          {{ item }}
-        </ExternalLink>
-      </div>
+      <Website v-else-if="isWebsite" :urls="properties[field.field]" />
 
       <div
         v-for="item in properties[field.field]"
