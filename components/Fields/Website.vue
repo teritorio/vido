@@ -1,24 +1,16 @@
-<script lang="ts">
-import type { PropType } from 'vue'
-
-import { defineNuxtComponent } from '#app'
+<script setup lang="ts">
 import ExternalLink from '~/components/UI/ExternalLink.vue'
 
-export default defineNuxtComponent({
-  components: {
-    ExternalLink,
-  },
-  props: {
-    url: {
-      type: String as PropType<string>,
-      default: null,
-    },
-  },
-})
+defineProps<{ urls: string[] }>()
 </script>
 
 <template>
-  <ExternalLink :href="url" target="_blank">
-    {{ url }}
-  </ExternalLink>
+  <div
+    v-for="(url, index) in urls"
+    :key="index"
+  >
+    <ExternalLink :href="url">
+      {{ url }}
+    </ExternalLink>
+  </div>
 </template>
