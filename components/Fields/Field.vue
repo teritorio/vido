@@ -97,7 +97,7 @@ export default defineNuxtComponent({
       return this.properties?.description?.replace(/(<([^>]+)>)/gi, '')
     },
     isWebsite(): boolean {
-      return /\w*:?website:?\w*/.test(this.field.field)
+      return this.field.field === 'website' || this.field.field.startsWith('website:') || this.field.field.endsWith(':website')
     },
   },
 
