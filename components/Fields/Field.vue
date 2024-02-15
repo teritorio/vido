@@ -94,10 +94,10 @@
 
       <div
         v-for="item in properties[field.field]"
-        v-else-if="field.field == 'website'"
+        v-else-if="isWebsite"
         :key="'website_' + item"
       >
-        <ExternalLink :href="item" target="_blank">{{ item }}</ExternalLink>
+        <ExternalLink :href="item">{{ item }}</ExternalLink>
       </div>
 
       <div
@@ -275,6 +275,13 @@ export default defineNuxtComponent({
   },
 
   computed: {
+    isWebsite(): boolean {
+      return (
+        this.field.field === 'website' ||
+        this.field.field.startsWith('website:') ||
+        this.field.field.endsWith(':website')
+      )
+    },
     shortDescription(): string | undefined {
       return this.properties?.description?.replace(/(<([^>]+)>)/gi, '')
     },
