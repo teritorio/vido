@@ -15,6 +15,7 @@ import RoutesField, { isRoutesFieldEmpty } from '~/components/Fields/RoutesField
 import Stars from '~/components/Fields/Stars.vue'
 import ExternalLink from '~/components/UI/ExternalLink.vue'
 import FieldsHeader from '~/components/UI/FieldsHeader.vue'
+import ContribFieldGroup from '~/components/Fields/ContribFieldGroup.vue'
 import type { ApiPoiProperties, FieldsListItem } from '~/lib/apiPois'
 import type { PropertyTranslationsContextEnum } from '~/plugins/property-translations'
 
@@ -37,6 +38,7 @@ export function isFiledEmpty(
 
 export default defineNuxtComponent({
   components: {
+    ContribFieldGroup,
     FontAwesomeIcon,
     FieldsHeader,
     OpeningHours,
@@ -245,21 +247,10 @@ export default defineNuxtComponent({
         </ExternalLink>
       </div>
 
-      <ExternalLink v-else-if="field.field === 'editor_id'" icon="pen-to-square" :href="properties[field.field]" target="blank">
-        {{ $t('fields.editor_id') }}
-      </ExternalLink>
-
-      <ExternalLink v-else-if="field.field === 'osm_note'" icon="note-sticky" :href="properties[field.field]" target="blank">
-        {{ $t('fields.osm_note') }}
-      </ExternalLink>
-
-      <ExternalLink
-        v-else-if="field.field === 'mapillary_link'"
-        :href="properties[field.field]"
-        target="_blank"
-      >
-        {{ $t('poiDetails.mapillaryExplore') }}
-      </ExternalLink>
+      <ContribFieldGroup
+        v-if="field.field === 'contrib'"
+        v-bind="properties[field.field]"
+      />
 
       <div
         v-for="item in properties[field.field]"

@@ -24,7 +24,8 @@ import { vidoConfig } from '~/plugins/vido-config'
 import { menuStore } from '~/stores/menu'
 import { siteStore } from '~/stores/site'
 import type { VidoConfig } from '~/utils/types-config'
-import { FieldGroupType, addContributorFields, isContribEligible } from '~/middleware/contrib-mode.global'
+import { addContributorFields, isContribEligible } from '~/middleware/contrib-mode.global'
+import { EditorialGroupType } from '~/utils/types'
 
 export default defineNuxtComponent({
   components: {
@@ -136,7 +137,7 @@ export default defineNuxtComponent({
     if (siteStore().contribMode) {
       this.pois.features.map(poi =>
         isContribEligible(poi.properties)
-          ? addContributorFields(poi, FieldGroupType.List)
+          ? addContributorFields(poi, EditorialGroupType.List)
           : poi)
     }
 
