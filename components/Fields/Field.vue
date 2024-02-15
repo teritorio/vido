@@ -13,7 +13,6 @@ import OpeningHours, { isOpeningHoursSupportedOsmTags } from '~/components/Field
 import Phone from '~/components/Fields/Phone.vue'
 import RoutesField, { isRoutesFieldEmpty } from '~/components/Fields/RoutesField.vue'
 import Stars from '~/components/Fields/Stars.vue'
-import Website from '~/components/Fields/Website.vue'
 import ExternalLink from '~/components/UI/ExternalLink.vue'
 import FieldsHeader from '~/components/UI/FieldsHeader.vue'
 import type { ApiPoiProperties, FieldsListItem } from '~/lib/apiPois'
@@ -50,7 +49,6 @@ export default defineNuxtComponent({
     Instagram,
     ExternalLink,
     Stars,
-    Website,
   },
 
   emits: {
@@ -93,11 +91,11 @@ export default defineNuxtComponent({
   },
 
   computed: {
-    shortDescription(): string | undefined {
-      return this.properties?.description?.replace(/(<([^>]+)>)/gi, '')
-    },
     isWebsite(): boolean {
       return this.field.field === 'website' || this.field.field.startsWith('website:') || this.field.field.endsWith(':website')
+    },
+    shortDescription(): string | undefined {
+      return this.properties?.description?.replace(/(<([^>]+)>)/gi, '')
     },
   },
 
@@ -227,7 +225,15 @@ export default defineNuxtComponent({
         <Phone :number="phone" />
       </div>
 
-      <Website v-else-if="isWebsite" :urls="properties[field.field]" />
+      <div
+        v-for="item in properties[field.field]"
+        v-else-if="isWebsite"
+        :key="`website_${item}`"
+      >
+        <ExternalLink :href="item">
+          {{ item }}
+        </ExternalLink>
+      </div>
 
       <div
         v-for="item in properties[field.field]"
