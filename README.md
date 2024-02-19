@@ -172,3 +172,6 @@ Special formatting support:
 | Action on details page | details_event | favorite | details_event | action, title, poiId | trackEvent | event, action, title, poiId |
 
 Note on Matomo. `Origin` is a set as dimension `1` and should be configured as is on Matomo.
+
+## Contributor Mode
+Enable/Disable: Add the following query parameter in the URL: `?contrib=true|false`
