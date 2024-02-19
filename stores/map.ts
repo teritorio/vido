@@ -60,10 +60,9 @@ export const mapStore = defineStore('map', {
           const cleanProperties: { [key: string]: any } = {}
 
           Object.keys(feature.properties).forEach((key) => {
-            if (IsJsonString(feature.properties[key]))
+            if (key !== 'stars' && IsJsonString(feature.properties[key]))
               cleanProperties[key] = JSON.parse(feature.properties[key])
-            else
-              cleanProperties[key] = feature.properties[key]
+            else cleanProperties[key] = feature.properties[key]
           })
 
           goodFeature.properties = cleanProperties as ApiPoiProperties
