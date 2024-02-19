@@ -59,7 +59,7 @@ function getContributorFields(
         icon: 'pen-to-square',
         url: `https://www.openstreetmap.org/edit?node:${data.nodeId}`,
       },
-      mapillary_link: mode === EditorialGroupType.List && data.mapillaryId
+      mapillary_link: data.mapillaryId
         ? {
             icon: 'external-link-alt',
             url: `https://www.mapillary.com/app/?pKey=${data.mapillaryId}&focus=photo`,
