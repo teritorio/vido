@@ -36,6 +36,7 @@ export enum OriginEnum {
 }
 
 export enum EditorialGroupType {
+  Details,
   List,
   Popup,
 }

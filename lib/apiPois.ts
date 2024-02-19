@@ -16,7 +16,7 @@ export interface FieldsListGroup {
   fields: FieldsList
 
   display_mode: 'standard' | 'card'
-  icon: string
+  icon?: string
 }
 
 export type FieldsList = (FieldsListItem | FieldsListGroup)[]

@@ -26,7 +26,6 @@ import { siteStore } from '~/stores/site'
 import { useContribStore } from '~/stores/contrib'
 import type { VidoConfig } from '~/utils/types-config'
 import { addContributorFields, isContribEligible } from '~/middleware/contrib-mode.global'
-import { EditorialGroupType } from '~/utils/types'
 
 export default defineNuxtComponent({
   components: {

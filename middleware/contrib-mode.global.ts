@@ -1,5 +1,4 @@
-import { isArray, mergeWith } from 'lodash'
-import type { ApiPoi, ApiPoiProperties } from '~/lib/apiPois'
+import type { ApiPoi, ApiPoiProperties, FieldsList, FieldsListItem } from '~/lib/apiPois'
 import { EditorialGroupType } from '~/utils/types'
 import { STORE_NAME, useContribStore } from '~/stores/contrib'
 
@@ -14,9 +13,10 @@ export interface ContribFields {
   osm_note: Link
 }
 
-interface ContribProperties {
-  contrib: ContribFields
-  editorial: ApiPoiProperties['editorial']
+interface ContribEditorial {
+  details_fields: FieldsList
+  list_fields: FieldsListItem[]
+  popup_fields: FieldsListItem[]
 }
 
 export default defineNuxtRouteMiddleware((to) => {
@@ -38,42 +38,43 @@ export default defineNuxtRouteMiddleware((to) => {
   }
 })
 
-function getEditorialGroup(mode: EditorialGroupType): ApiPoiProperties['editorial'] {
+function getEditorialGroup(editorial: ContribEditorial, mode: EditorialGroupType) {
   switch (mode) {
     case EditorialGroupType.List:
-      return { list_fields: [{ field: 'contrib' }] }
+      editorial.list_fields.push({ field: 'contrib' })
+      break
     case EditorialGroupType.Popup:
-      return { popup_fields: [{ field: 'contrib' }] }
+      editorial.popup_fields.push({ field: 'contrib' })
+      break
+    case EditorialGroupType.Details:
+      editorial.details_fields.push({
+        group: 'group_contrib',
+        display_mode: 'standard',
+        fields: [{ field: 'contrib' }],
+      })
+      break
     default:
-      return undefined
+      break
   }
 }
 
-function getContributorFields(
-  data: { nodeId: number, coordinates: GeoJSON.Position, mapillaryId?: number },
-  mode: EditorialGroupType,
-): ContribProperties {
-  const properties: ContribProperties = {
-    contrib: {
-      editor_id: {
-        icon: 'pen-to-square',
-        url: `https://www.openstreetmap.org/edit?node:${data.nodeId}`,
-      },
-      mapillary_link: data.mapillaryId
-        ? {
-            icon: 'external-link-alt',
-            url: `https://www.mapillary.com/app/?pKey=${data.mapillaryId}&focus=photo`,
-          }
-        : undefined,
-      osm_note: {
-        icon: 'note-sticky',
-        url: `https://www.openstreetmap.org/note/new#map=19/${data.coordinates[1]}/${data.coordinates[0]}&layers=N`,
-      },
+function getContributorFields(nodeId: number, coordinates: GeoJSON.Position, mapillaryId?: number): ContribFields {
+  return {
+    editor_id: {
+      icon: 'pen-to-square',
+      url: `https://www.openstreetmap.org/edit?node:${nodeId}`,
     },
-    editorial: getEditorialGroup(mode),
+    mapillary_link: mapillaryId
+      ? {
+          icon: 'external-link-alt',
+          url: `https://www.mapillary.com/app/?pKey=${mapillaryId}&focus=photo`,
+        }
+      : undefined,
+    osm_note: {
+      icon: 'note-sticky',
+      url: `https://www.openstreetmap.org/note/new#map=19/${coordinates[1]}/${coordinates[0]}&layers=N`,
+    },
   }
-
-  return properties
 }
 
 export function isContribEligible(properties: ApiPoiProperties): boolean {
@@ -83,13 +84,8 @@ export function isContribEligible(properties: ApiPoiProperties): boolean {
 export function addContributorFields(feature: ApiPoi, mode: EditorialGroupType) {
   const { osm_id } = feature.properties.metadata
   const { coordinates } = feature.geometry as GeoJSON.Point
-  const fields = getContributorFields(
-    {
-      nodeId: osm_id as number,
-      coordinates,
-      mapillaryId: feature.properties.mapillary,
-    },
-    mode,
-  )
-  mergeWith(feature.properties, fields, (objValue, srcValue) => isArray(objValue) && mode === EditorialGroupType.List ? objValue.concat(srcValue) : undefined)
+
+  feature.properties.contrib = getContributorFields(osm_id as number, coordinates, feature.properties.mapillary)
+  if (feature.properties.editorial)
+    getEditorialGroup(feature.properties.editorial as ContribEditorial, mode)
 }
