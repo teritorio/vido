@@ -158,8 +158,8 @@ export default defineI18nLocale(() => {
     },
     fields: {
       contrib: {
-        editor_id: 'Editer dans ID Editor',
-        osm_note: 'Ajouter une Note OSM',
+        editor_id: 'Éditer dans l\'éditeur iD',
+        osm_note: 'Ajouter une note à OSM',
         mapillary_link: 'Explorer sur Mapillary',
       },
       phone: {
