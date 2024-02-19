@@ -26,15 +26,13 @@ export default defineNuxtRouteMiddleware((to) => {
   if (process.client) {
     const contribLocalStorage = localStorage.getItem(STORE_NAME)
 
-    if (to.query.contrib !== 'undefined') {
+    if (to.query.contrib !== undefined) {
       useContribStore().setEnabled(to.query.contrib === 'true')
       return
     }
 
-    if (contribLocalStorage) {
-      const state = JSON.parse(contribLocalStorage).enabled
-      useContribStore().setEnabled(state)
-    }
+    if (contribLocalStorage)
+      useContribStore().setEnabled(contribLocalStorage === 'true')
   }
 })
 
