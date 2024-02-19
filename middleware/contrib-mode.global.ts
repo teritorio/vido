@@ -1,7 +1,7 @@
 import { isArray, mergeWith } from 'lodash'
-import { siteStore } from '~/stores/site'
 import type { ApiPoi, ApiPoiProperties } from '~/lib/apiPois'
 import { EditorialGroupType } from '~/utils/types'
+import { STORE_NAME, useContribStore } from '~/stores/contrib'
 
 export interface Link {
   icon: string
@@ -20,7 +20,22 @@ interface ContribProperties {
 }
 
 export default defineNuxtRouteMiddleware((to) => {
-  siteStore().contribMode = to.query.contrib === 'true'
+  if (process.server)
+    return
+
+  if (process.client) {
+    const contribLocalStorage = localStorage.getItem(STORE_NAME)
+
+    if (to.query.contrib !== 'undefined') {
+      useContribStore().setEnabled(to.query.contrib === 'true')
+      return
+    }
+
+    if (contribLocalStorage) {
+      const state = JSON.parse(contribLocalStorage).enabled
+      useContribStore().setEnabled(state)
+    }
+  }
 })
 
 function getEditorialGroup(mode: EditorialGroupType): ApiPoiProperties['editorial'] {

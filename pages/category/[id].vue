@@ -23,6 +23,7 @@ import { getAsyncDataOrThrows } from '~/lib/getAsyncData'
 import { vidoConfig } from '~/plugins/vido-config'
 import { menuStore } from '~/stores/menu'
 import { siteStore } from '~/stores/site'
+import { useContribStore } from '~/stores/contrib'
 import type { VidoConfig } from '~/utils/types-config'
 import { addContributorFields, isContribEligible } from '~/middleware/contrib-mode.global'
 import { EditorialGroupType } from '~/utils/types'
@@ -134,7 +135,7 @@ export default defineNuxtComponent({
   mounted() {
     this.locale = this.$i18n.locale
 
-    if (siteStore().contribMode) {
+    if (useContribStore().enabled) {
       this.pois.features.map(poi =>
         isContribEligible(poi.properties)
           ? addContributorFields(poi, EditorialGroupType.List)

@@ -9,7 +9,6 @@ interface State {
   locale: string | null
   config: VidoConfig | undefined
   settings: Settings | undefined
-  contribMode: boolean
   contents: ContentEntry[] | undefined
   translations: PropertyTranslations | undefined
 }
@@ -18,7 +17,6 @@ export const siteStore = defineStore('site', {
   state: (): State => ({
     locale: null,
     config: undefined,
-    contribMode: false,
     settings: undefined,
     contents: undefined,
     translations: undefined,

@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { siteStore } from './site'
+import { useContribStore } from './contrib'
 import { addContributorFields, isContribEligible } from '~/middleware/contrib-mode.global'
 import type { ApiPoi, ApiPoiProperties } from '~/lib/apiPois'
 import type { LatLng, Pitch } from '~/utils/types'
@@ -62,7 +62,7 @@ export const mapStore = defineStore('map', {
         if (feature?.properties) {
           const cleanProperties: ApiPoiProperties = {} as ApiPoiProperties
 
-          if (siteStore().contribMode && isContribEligible(feature.properties))
+          if (useContribStore().enabled && isContribEligible(feature.properties))
             addContributorFields(feature, EditorialGroupType.Popup)
 
           Object.keys(feature.properties).forEach((key) => {
