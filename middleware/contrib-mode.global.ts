@@ -56,11 +56,11 @@ function getEditorialGroup(editorial: ContribEditorial, mode: EditorialGroupType
   }
 }
 
-function getContributorFields(nodeId: number, coordinates: GeoJSON.Position, mapillaryId?: number): ContribFields {
+function getContributorFields(nodeId: ApiPoiProperties['metadata']['osm_id'], nodeType: ApiPoiProperties['metadata']['osm_type'], coordinates: GeoJSON.Position, mapillaryId?: number): ContribFields {
   return {
     editor_id: {
       icon: 'pen-to-square',
-      url: `https://www.openstreetmap.org/edit?node:${nodeId}`,
+      url: `https://www.openstreetmap.org/edit?${nodeType}=${nodeId}`,
     },
     mapillary_link: mapillaryId
       ? {
@@ -80,10 +80,10 @@ export function isContribEligible(properties: ApiPoiProperties): boolean {
 }
 
 export function addContributorFields(feature: ApiPoi, mode: EditorialGroupType) {
-  const { osm_id } = feature.properties.metadata
+  const { osm_id, osm_type } = feature.properties.metadata
   const { coordinates } = feature.geometry as GeoJSON.Point
 
-  feature.properties.contrib = getContributorFields(osm_id as number, coordinates, feature.properties.mapillary)
+  feature.properties.contrib = getContributorFields(osm_id, osm_type, coordinates, feature.properties.mapillary)
   if (feature.properties.editorial)
     getEditorialGroup(feature.properties.editorial as ContribEditorial, mode)
 }
