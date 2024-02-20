@@ -138,7 +138,8 @@ export default defineNuxtComponent({
       this.pois.features.map(poi =>
         isContribEligible(poi.properties)
           ? addContributorFields(poi, EditorialGroupType.List)
-          : poi)
+          : poi,
+      )
     }
 
     this.handleCategoryUpdate(useRoute().params.id as string)

@@ -14,6 +14,8 @@ import type { ApiPois, FieldsListItem } from '~/lib/apiPois'
 import { getPoiByCategoryId } from '~/lib/apiPois'
 import type { Settings } from '~/lib/apiSettings'
 import { menuStore } from '~/stores/menu'
+import { useContribStore } from '~/stores/contrib'
+import { addContributorFields, isContribEligible } from '~/middleware/contrib-mode.global'
 
 export default defineNuxtComponent({
   components: {
@@ -90,6 +92,14 @@ export default defineNuxtComponent({
           short_description: true,
         },
       ).then((pois) => {
+        if (useContribStore().enabled) {
+          pois.features.map(poi =>
+            isContribEligible(poi.properties)
+              ? addContributorFields(poi, EditorialGroupType.List)
+              : poi,
+          )
+        }
+
         this.pois = pois
       })
     },
