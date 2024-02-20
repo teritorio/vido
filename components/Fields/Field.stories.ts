@@ -1,201 +1,241 @@
-import Field from '~/components/Fields/Field.vue'
-import { bind } from '~/lib/storybook-types'
+import type { Meta, StoryObj } from '@storybook/vue3'
+import Field from './Field.vue'
 import { PropertyTranslationsContextEnum } from '~/plugins/property-translations'
 
-export default {
-  title: 'Fields/Field',
+const meta = {
   component: Field,
-}
+} satisfies Meta<typeof Field>
 
-const defaultProps = {
-  context: PropertyTranslationsContextEnum.Details,
-  field: { field: 'name' },
-  properties: {
-    metadata: { id: 0 },
-    name: 'foo',
+export default meta
+type Story = StoryObj<typeof Field>
+
+const description = 'Itinéraire très intéressant, d\'une part pour sa variété paysagère accentuée par la traversée fréquente de cours d\'eau et d\'autre part, par la qualité du patrimoine bâti : maisons traditionnelles landaises, église en garluche. \n\nDistance : 10,2 km - Durée : 4h45 - Animaux tenus en laisse  - Sentier pédestre et VTT \nFiche rando disponible dans le topoguide du Département des Landes du Pays de Born n°15 (en vente : 2 €)'
+
+export const Default = {
+  args: {
+    context: PropertyTranslationsContextEnum.Details,
+    field: { field: 'name' },
+    properties: {
+      metadata: { id: 0 },
+      name: 'foo',
+    },
+    geom: {
+      type: 'Point',
+      coordinates: [0.123456789, 0.987654321],
+    } as GeoJSON.Geometry,
   },
-  geom: {
-    type: 'Point',
-    coordinates: [0.123456789, 0.987654321],
+} satisfies Story
+
+export const DefaultListOne = {
+  args: {
+    ...Default.args,
+    field: { field: 'email' },
+    properties: {
+      metadata: { id: 0 },
+      email: ['foo'],
+    },
   },
-}
+} satisfies Story
 
-export const Default = bind(Field, {
-  ...defaultProps,
-})
-
-export const DefaultListOne = bind(Field, {
-  ...defaultProps,
-  properties: {
-    metadata: { id: 0 },
-    name: ['foo'],
+export const DefaultListMany = {
+  args: {
+    ...Default.args,
+    field: { field: 'email' },
+    properties: {
+      metadata: { id: 0 },
+      email: ['foo', 'bar'],
+    },
   },
-})
+} satisfies Story
 
-export const DefaultListMany = bind(Field, {
-  ...defaultProps,
-  properties: {
-    metadata: { id: 0 },
-    name: ['foo', 'bar'],
+export const NoValue = {
+  args: {
+    ...Default.args,
+    properties: {
+      metadata: { id: 0 },
+    },
   },
-})
+} satisfies Story
 
-export const NoValue = bind(Field, {
-  ...defaultProps,
-  properties: {
-    metadata: { id: 0 },
+export const Label = {
+  args: {
+    ...Default.args,
+    field: {
+      ...Default.args.field,
+      label: true,
+    },
   },
-})
+} satisfies Story
 
-export const Label = bind(Field, {
-  ...defaultProps,
-  field: {
-    ...defaultProps.field,
-    label: true,
+export const Route = {
+  args: {
+    ...Default.args,
+    field: { field: 'route' },
+    properties: {
+      'metadata': { id: 0 },
+      'route:hiking:difficulty': 'easy',
+      'route:hiking:duration': 285,
+      'route:hiking:length': 10.2,
+      'route:mtb:difficulty': 'easy',
+      'route:mtb:duration': 90,
+      'route:mtb:length': 10.2,
+    },
   },
-})
+} satisfies Story
 
-export const Route = bind(Field, {
-  ...defaultProps,
-  field: { field: 'route' },
-  properties: {
-    'metadata': { id: 0 },
-    'route:hiking:difficulty': 'easy',
-    'route:hiking:duration': 285,
-    'route:hiking:length': 10.2,
-    'route:mtb:difficulty': 'easy',
-    'route:mtb:duration': 90,
-    'route:mtb:length': 10.2,
+export const StartEndDate = {
+  args: {
+    ...Default.args,
+    field: { field: 'start_end_date' },
+    properties: {
+      metadata: { id: 0 },
+      start_date: '2001-01-01',
+      end_date: '2012-12-12',
+    },
   },
-})
+} satisfies Story
 
-export const StartEndDate = bind(Field, {
-  ...defaultProps,
-  field: { field: 'start_end_date' },
-  properties: {
-    metadata: { id: 0 },
-    start_date: '2001-01-01',
-    end_date: '2012-12-12',
+export const Addr = {
+  args: {
+    ...Default.args,
+    field: { field: 'addr' },
+    properties: {
+      'metadata': { id: 0 },
+      'addr:housenumber': '33',
+      'addr:street': 'Rue du Nord',
+      'addr:postcode': '35677',
+      'addr:city': 'Le Grand Nord',
+    },
   },
-})
+} satisfies Story
 
-export const Addr = bind(Field, {
-  ...defaultProps,
-  field: { field: 'addr' },
-  properties: {
-    'metadata': { id: 0 },
-    'addr:housenumber': '33',
-    'addr:street': 'Rue du Nord',
-    'addr:postcode': '35677',
-    'addr:city': 'Le Grand Nord',
+export const Description = {
+  args: {
+    ...Default.args,
+    field: { field: 'description' },
+    properties: {
+      metadata: { id: 0 },
+      description,
+    },
   },
-})
+} satisfies Story
 
-const description
-  = 'Itinéraire très intéressant, d\'une part pour sa variété paysagère accentuée par la traversée fréquente de cours d\'eau et d\'autre part, par la qualité du patrimoine bâti : maisons traditionnelles landaises, église en garluche. \n\nDistance : 10,2 km - Durée : 4h45 - Animaux tenus en laisse  - Sentier pédestre et VTT \nFiche rando disponible dans le topoguide du Département des Landes du Pays de Born n°15 (en vente : 2 €)'
-
-export const Description = bind(Field, {
-  ...defaultProps,
-  field: { field: 'short_description' },
-  properties: {
-    metadata: { id: 0 },
-    description,
+export const DescriptionShort = {
+  args: {
+    ...Default.args,
+    field: { field: 'short_description' },
+    properties: {
+      metadata: { id: 0 },
+      description,
+    },
   },
-})
+} satisfies Story
 
-export const DescriptionDetails = bind(Field, {
-  ...defaultProps,
-  field: { field: 'short_description' },
-  properties: {
-    metadata: { id: 0 },
-    description,
+export const DescriptionDetails = {
+  args: {
+    ...Default.args,
+    field: { field: 'short_description' },
+    properties: {
+      metadata: { id: 0 },
+      description,
+    },
   },
-  details: 'details',
-})
+} satisfies Story
 
-export const Phone = bind(Field, {
-  ...defaultProps,
-  field: { field: 'phone' },
-  properties: {
-    metadata: { id: 0 },
-    phone: ['+33676544'],
+export const Phone = {
+  args: {
+    ...Default.args,
+    field: { field: 'phone' },
+    properties: {
+      metadata: { id: 0 },
+      phone: ['+33676544'],
+    },
   },
-})
+} satisfies Story
 
-export const Email = bind(Field, {
-  ...defaultProps,
-  field: { field: 'email' },
-  properties: {
-    metadata: { id: 0 },
-    email: ['root@example.com'],
+export const Email = {
+  args: {
+    ...Default.args,
+    field: { field: 'email' },
+    properties: {
+      metadata: { id: 0 },
+      email: ['root@example.com'],
+    },
   },
-})
+} satisfies Story
 
-export const Website = bind(Field, {
-  ...defaultProps,
-  field: { field: 'website' },
-  properties: {
-    metadata: { id: 0 },
-    website: ['https://example.com'],
+export const Website = {
+  args: {
+    ...Default.args,
+    field: { field: 'website' },
+    properties: {
+      metadata: { id: 0 },
+      website: ['https://example.com'],
+    },
   },
-})
+} satisfies Story
 
-export const Facebook = bind(Field, {
-  ...defaultProps,
-  field: { field: 'facebook' },
-  properties: {
-    metadata: { id: 0 },
-    facebook: 'https://www.facebook.com/',
+export const Facebook = {
+  args: {
+    ...Default.args,
+    field: { field: 'facebook' },
+    properties: {
+      metadata: { id: 0 },
+      facebook: 'https://www.facebook.com/',
+    },
   },
-})
+} satisfies Story
 
-export const Instagram = bind(Field, {
-  ...defaultProps,
-  field: { field: 'instagram' },
-  properties: {
-    instagram: 'https://www.instagram.com/',
+export const Instagram = {
+  args: {
+    ...Default.args,
+    field: { field: 'instagram' },
+    properties: {
+      metadata: { id: 0 },
+      instagram: 'https://www.instagram.com/',
+    },
   },
-})
+} satisfies Story
 
-export const RouteGpxTrace = bind(Field, {
-  ...defaultProps,
-  field: { field: 'route:gpx_trace' },
-  properties: {
-    'metadata': { id: 0 },
-    'route:gpx_trace': 'https://cdt40.tourinsoft.com/upload/15.8.gpx',
+export const RouteGpxTrace = {
+  args: {
+    ...Default.args,
+    field: { field: 'route:gpx_trace' },
+    properties: {
+      'metadata': { id: 0 },
+      'route:gpx_trace': 'https://cdt40.tourinsoft.com/upload/15.8.gpx',
+    },
   },
-})
+} satisfies Story
 
-export const RoutePdf = bind(Field, {
-  ...defaultProps,
-  field: { field: 'route:pdf' },
-  properties: {
-    'metadata': { id: 0 },
-    'route:pdf': 'https://cdt40.tourinsoft.com/upload/ITIAQU040V502MFU.pdf',
+export const RoutePdf = {
+  args: {
+    ...Default.args,
+    field: { field: 'route:pdf' },
+    properties: {
+      'metadata': { id: 0 },
+      'route:pdf': 'https://cdt40.tourinsoft.com/upload/ITIAQU040V502MFU.pdf',
+    },
   },
-})
+} satisfies Story
 
-export const Download = bind(Field, {
-  ...defaultProps,
-  field: { field: 'download' },
-  properties: {
-    metadata: { id: 0 },
-    download: [
-      'https://cdt40.tourinsoft.com/upload/ITIAQU040V502MFU.pdf',
-      'https://cdt41.tourinsoft.com/upload/ITIAQU040V502MFU.pdf',
-    ],
+export const Download = {
+  args: {
+    ...Default.args,
+    field: { field: 'download' },
+    properties: {
+      metadata: { id: 0 },
+      download: [
+        'https://cdt40.tourinsoft.com/upload/ITIAQU040V502MFU.pdf',
+        'https://cdt41.tourinsoft.com/upload/ITIAQU040V502MFU.pdf',
+      ],
+    },
   },
-})
+} satisfies Story
 
-export const Coordinates = bind(Field, {
-  ...defaultProps,
-  field: { field: 'coordinates' },
-})
-
-// export const OpeningHours = bind(Field, {
-//   ...defaultProps,
-//   field: { field: 'opening_hours' },
-//   properties: {
-//     'opening_hours': 'Mo-Fr 08:00-12:00,13:00-17:30; Sa',
-//   },
-// })
+export const Coordinates = {
+  args: {
+    ...Default.args,
+    field: { field: 'coordinates' },
+  },
+} satisfies Story
