@@ -80,6 +80,9 @@ export function isContribEligible(properties: ApiPoiProperties): boolean {
 }
 
 export function addContributorFields(feature: ApiPoi, mode: EditorialGroupType) {
+  if (feature.properties.contrib)
+    return
+
   const { osm_id, osm_type } = feature.properties.metadata
   const { coordinates } = feature.geometry as GeoJSON.Point
 
