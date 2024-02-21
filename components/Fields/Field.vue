@@ -248,7 +248,7 @@ export default defineNuxtComponent({
       </div>
 
       <ContribFieldGroup
-        v-if="field.field === 'contrib'"
+        v-else-if="field.field === 'contrib'"
         v-bind="properties[field.field]"
       />
 
