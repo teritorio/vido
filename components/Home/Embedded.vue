@@ -1,6 +1,6 @@
 <script lang="ts">
 import type { FitBoundsOptions } from 'maplibre-gl'
-import { mapActions } from 'pinia'
+import { mapActions, mapState } from 'pinia'
 
 import { defineNuxtComponent, useRequestHeaders } from '#app'
 import HomeMixin from '~/components/Home/HomeMixin'
@@ -26,6 +26,7 @@ export default defineNuxtComponent({
   mixins: [HomeMixin],
 
   computed: {
+    ...mapState(menuStore, ['menuItems']),
     fitBoundsPaddingOptions(): FitBoundsOptions['padding'] {
       return {
         top: 100,
@@ -146,7 +147,7 @@ export default defineNuxtComponent({
           :boundary-area="boundaryArea || settings.polygon.data"
         />
         <CategorySelector
-          :menu-items="Object.values(apiMenuCategory || {})"
+          :menu-items="menuItems || []"
           label="categorySelector.placeholderAdd"
           class="tw-p-4 tw-absolute tw-z-1 tw-w-full"
           @category-change="onMenuChange"

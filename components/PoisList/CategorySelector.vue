@@ -29,7 +29,7 @@ export default defineNuxtComponent({
 
   props: {
     menuItems: {
-      type: Array as PropType<ApiMenuCategory[]>,
+      type: Array as PropType<Record<number, MenuItem>>,
       required: true,
     },
     categoryId: {
@@ -44,42 +44,35 @@ export default defineNuxtComponent({
 
   computed: {
     menuEntries(): Array<{ value: number, title: string, category: ApiMenuCategory['category'] } | undefined> {
-      const menuIndex: { [key: number]: MenuItem } = {}
-      this.menuItems
-        .filter(menuItem => !menuItem.hidden)
-        .forEach((menuItem) => {
-          menuIndex[menuItem.id] = menuItem
-        })
-
       const locales = this.$i18n.locales
       const localeCompareOptions = locales.map(
         (locale: string | LocaleObject) =>
           typeof locale === 'string' ? locale : locale.code,
       )
 
-      return this.menuItems.filter(
+      return Object.values(this.menuItems).filter(
         menuItem => menuItem.category && !menuItem.hidden,
       )
         .map((menuItem) => {
           const parents: string[] = []
           let parentId = menuItem.parent_id
           while (parentId) {
-            if (!menuIndex[parentId])
+            if (!this.menuItems[parentId])
               return undefined
 
-            const name = menuIndex[parentId].menu_group?.name.fr
-            if (name && menuIndex[parentId].parent_id)
-              parents.push(name)
+            const name = this.menuItems[parentId].menu_group?.name.fr
+            if (name && this.menuItems[parentId].parent_id)
+              parents.unshift(name)
 
-            parentId = menuIndex[parentId].parent_id
+            parentId = this.menuItems[parentId].parent_id
           }
 
           return {
             value: menuItem.id,
-            title: [...parents.reverse(), menuItem.category.name.fr].join(
+            title: [...parents, (menuItem as ApiMenuCategory).category.name.fr].join(
               ' / ',
             ),
-            category: menuItem.category,
+            category: (menuItem as ApiMenuCategory).category,
           }
         })
         .filter(t => t !== undefined)
