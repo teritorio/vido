@@ -54,12 +54,10 @@ export default defineNuxtComponent({
   },
 
   computed: {
-    ...mapState(menuStore, ['apiMenuCategory']),
+    ...mapState(menuStore, ['menuItems']),
 
     category(): ApiMenuCategory | undefined {
-      return Object.values(this.apiMenuCategory || {}).find(
-        menuItem => menuItem.id === this.categoryId,
-      )
+      return (this.menuItems || {})[this.categoryId] as ApiMenuCategory
     },
 
     fields(): FieldsListItem[] {
@@ -121,7 +119,7 @@ export default defineNuxtComponent({
     </template>
     <template #body>
       <CategorySelector
-        :menu-items="apiMenuCategory || []"
+        :menu-items="menuItems || []"
         :category-id="categoryId"
         @category-change="onMenuChange"
       />
