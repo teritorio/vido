@@ -59,7 +59,7 @@ export const menuStore = defineStore('menu', {
       return state.menuItems === undefined
         ? undefined
         : (Object.values(state.menuItems).filter(
-            menuItem => menuItem.category !== undefined,
+            menuItem => !!menuItem.category,
           ) as ApiMenuCategory[])
     },
 
