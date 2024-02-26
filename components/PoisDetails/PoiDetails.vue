@@ -128,7 +128,7 @@ export default defineNuxtComponent({
         const categoryIds
           = `${this.poi.properties.metadata.category_ids?.join(',')}/`
         const id = this.poi.properties.metadata.id
-        return `${this.settings.themes[0].site_url.fr}${categoryIds}${id}`
+        return `/${categoryIds}${id}`
       }
     },
   },

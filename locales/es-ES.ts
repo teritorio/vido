@@ -108,7 +108,7 @@ export default defineI18nLocale(() => {
       unactivateExplore: 'Desactivar la exploración de las cercanías',
       activateExplore: 'Explora los puntos de interés cercanos',
       zoom: 'Acercarse',
-      backToMap: 'Go to map',
+      backToMap: 'Volver al mapa',
       thumbnail: 'Miniatura',
       image: 'Ilustración',
     },

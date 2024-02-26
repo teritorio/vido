@@ -12,7 +12,7 @@ import {
   useRoute,
 } from '#app'
 import { definePageMeta } from '#imports'
-import Index from '~/components/PoisDetails/PoiDetails.vue'
+import PoiDetails from '~/components/PoisDetails/PoiDetails.vue'
 import type { ContentEntry } from '~/lib/apiContent'
 import { getContents } from '~/lib/apiContent'
 import type { ApiPoiDeps } from '~/lib/apiPoiDeps'
@@ -33,7 +33,7 @@ import type { VidoConfig } from '~/utils/types-config'
 
 export default defineNuxtComponent({
   components: {
-    Index,
+    PoiDetails,
   },
 
   async setup(): Promise<{
@@ -162,7 +162,7 @@ export default defineNuxtComponent({
 </script>
 
 <template>
-  <Index
+  <PoiDetails
     v-if="settings"
     :settings="settings"
     :nav-menu-entries="contents"
