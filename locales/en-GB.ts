@@ -142,7 +142,7 @@ export default defineI18nLocale(() => {
     },
     categorySelector: {
       placeholderSelect: 'Select a category',
-      placeholderAdd: 'RSearch for a category to add',
+      placeholderAdd: 'Search for a category to add',
       search: 'Search into the list',
     },
     dateFilter: {
