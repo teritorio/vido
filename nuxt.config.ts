@@ -67,6 +67,7 @@ export default defineNuxtConfig({
     '@nuxt/image-edge',
     '@pinia/nuxt',
     '@kevinmarrec/nuxt-pwa',
+    ...(process.env.SENTRY_DSN ? ['@nuxtjs/sentry'] : []),
     async (_options, nuxt) => {
       nuxt.hooks.hook('vite:extendConfig', config =>
         // @ts-expect-error: Do we really need to extend the config ?
@@ -105,6 +106,13 @@ export default defineNuxtConfig({
     manifest: false,
     workbox: {
       enabled: true,
+    },
+  },
+  sentry: {
+    dsn: process.env.SENTRY_DSN || '',
+    // https://sentry.nuxtjs.org/sentry/options
+    config: {
+      // https://docs.sentry.io/platforms/javascript/guides/vue/configuration/options/
     },
   },
   server: {

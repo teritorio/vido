@@ -14,3 +14,4 @@ services:
       - ./vidos-config.json:/usr/src/app/vidos-config.json
     environment:
       - CONFIG=/usr/src/app/vidos-config.json
+      - SENTRY_DSN=
