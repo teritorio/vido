@@ -2,7 +2,6 @@
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { mapState } from 'pinia'
 import type { PropType } from 'vue'
-
 import { defineNuxtComponent } from '#app'
 import Fields from '~/components/PoisCard/Fields.vue'
 import FavoriteIcon from '~/components/UI/FavoriteIcon.vue'
@@ -12,6 +11,7 @@ import { coordinatesHref } from '~/lib/coordinates'
 import { favoritesStore } from '~/stores/favorite'
 import { mapStore } from '~/stores/map'
 import { isIOS } from '~/utils/isIOS'
+import ContributionMixin from '~/mixins/contribution'
 
 export default defineNuxtComponent({
   components: {
@@ -20,7 +20,7 @@ export default defineNuxtComponent({
     FavoriteIcon,
     Fields,
   },
-
+  mixins: [ContributionMixin],
   props: {
     poi: {
       type: Object as PropType<ApiPoi>,
@@ -216,6 +216,10 @@ export default defineNuxtComponent({
     >
       {{ description }}
     </p>
+
+    <ClientOnly v-if="contribMode && isContribEligible(poi.properties)">
+      <ContribFieldGroup v-bind="getContributorFields(poi)" />
+    </ClientOnly>
 
     <div v-else class="tw-h-auto tw-flex-grow tw-shrink-0">
       <Fields

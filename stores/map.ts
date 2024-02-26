@@ -1,5 +1,4 @@
 import { defineStore } from 'pinia'
-
 import type { ApiPoi, ApiPoiProperties } from '~/lib/apiPois'
 import type { LatLng, Pitch } from '~/utils/types'
 import { Mode } from '~/utils/types'
@@ -59,14 +58,15 @@ export const mapStore = defineStore('map', {
         }
 
         if (feature?.properties) {
-          const cleanProperties: { [key: string]: any } = {}
+          const cleanProperties: ApiPoiProperties = {} as ApiPoiProperties
 
           Object.keys(feature.properties).forEach((key) => {
             if (isJsonObject(feature.properties[key]))
               cleanProperties[key] = JSON.parse(feature.properties[key])
             else cleanProperties[key] = feature.properties[key]
           })
-          goodFeature.properties = cleanProperties as ApiPoiProperties
+
+          goodFeature.properties = cleanProperties
         }
 
         this.selectedFeature = goodFeature

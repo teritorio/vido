@@ -21,12 +21,15 @@ import type { Settings } from '~/lib/apiSettings'
 import { PropertyTranslationsContextEnum } from '~/plugins/property-translations'
 import { favoritesStore } from '~/stores/favorite'
 import { OriginEnum } from '~/utils/types'
+import ContributionMixin from '~/mixins/contribution'
+import FieldsHeader from '~/components/UI/FieldsHeader.vue'
 
 export default defineNuxtComponent({
   components: {
     PoiLayout,
     IconButton,
     FavoriteIcon,
+    FieldsHeader,
     TeritorioIcon,
     Share,
     Carousel,
@@ -36,7 +39,7 @@ export default defineNuxtComponent({
     FieldsGroup,
     RelativeDate,
   },
-
+  mixins: [ContributionMixin],
   props: {
     settings: {
       type: Object as PropType<Settings>,
@@ -210,6 +213,12 @@ export default defineNuxtComponent({
     <template #body>
       <div class="detail-wrapper">
         <div class="detail-left">
+          <ClientOnly v-if="contribMode && isContribEligible(poi.properties)">
+            <FieldsHeader :recursion-stack="[]">
+              {{ $t('fields.contrib.heading') }}
+            </FieldsHeader>
+            <ContribFieldGroup v-bind="getContributorFields(poi)" />
+          </ClientOnly>
           <FieldsGroup
             v-if="detailsFields"
             :group="{
@@ -280,16 +289,7 @@ export default defineNuxtComponent({
     <template #footer>
       <span v-if="poi.properties.metadata.updated_at">
         {{ $t('poiDetails.lastUpdate') }}
-        <a
-          v-if="
-            poi.properties.metadata.osm_type && poi.properties.metadata.osm_id
-          "
-          :href="`https://www.openstreetmap.org/${poi.properties.metadata.osm_type}/${poi.properties.metadata.osm_id}`"
-          target="_blank"
-        >
-          <RelativeDate :date="poi.properties.metadata.updated_at" />
-        </a>
-        <RelativeDate v-else :date="poi.properties.metadata.updated_at" />
+        <RelativeDate :date="poi.properties.metadata.updated_at" />
       </span>
     </template>
   </PoiLayout>

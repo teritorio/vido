@@ -87,9 +87,7 @@ export default defineNuxtComponent({
           geometry_as: 'point',
           short_description: true,
         },
-      ).then((pois) => {
-        this.pois = pois
-      })
+      ).then(pois => this.pois = pois)
     },
   },
 

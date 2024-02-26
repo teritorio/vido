@@ -156,6 +156,12 @@ export default defineI18nLocale(() => {
       label: 'Busca o añade un valor',
     },
     fields: {
+      contrib: {
+        editor_id: 'Editar en iD editor',
+        heading: 'Contribución',
+        osm_note: 'Añadir una nota en OSM',
+        mapillary_link: 'Explorar en Mapillary',
+      },
       phone: {
         callNumber: 'Llama a este número',
       },

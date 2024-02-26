@@ -1,16 +1,16 @@
 <script lang="ts">
 import type { PropType } from 'vue'
-
 import { defineNuxtComponent } from '#app'
 import Field from '~/components/Fields/Field.vue'
 import type { ApiPois, FieldsListItem } from '~/lib/apiPois'
 import { PropertyTranslationsContextEnum } from '~/plugins/property-translations'
+import ContributionMixin from '~/mixins/contribution'
 
 export default defineNuxtComponent({
   components: {
     Field,
   },
-
+  mixins: [ContributionMixin],
   props: {
     fields: {
       type: Array as PropType<FieldsListItem[]>,
@@ -32,6 +32,8 @@ export default defineNuxtComponent({
         ),
       }))
       h.push({ value: '', text: '' })
+      if (this.contribMode)
+        h.push({ value: 'contrib', text: this.$t('fields.contrib.heading') })
       return h
     },
 
@@ -68,6 +70,11 @@ export default defineNuxtComponent({
             {{ $t('poisTable.details') }}
           </NuxtLink>
         </td>
+        <ClientOnly v-if="contribMode && isContribEligible(feature.properties)">
+          <td class="tw-align-top">
+            <ContribFieldGroup v-bind="getContributorFields(feature)" />
+          </td>
+        </ClientOnly>
       </tr>
     </tbody>
     <tbody v-else>

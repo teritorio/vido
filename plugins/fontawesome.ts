@@ -42,6 +42,8 @@ import {
   faMap,
   faMapMarkerAlt,
   faMinus,
+  faNoteSticky,
+  faPenToSquare,
   faPhone,
   faPlus,
   faPrint,
@@ -115,6 +117,8 @@ library.add(
   faCopy,
   faCog,
   faEnvelope,
+  faPenToSquare,
+  faNoteSticky,
 )
 
 export default defineNuxtPlugin(_nuxtApp => undefined)
