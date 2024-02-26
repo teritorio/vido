@@ -66,6 +66,7 @@ export default defineNuxtConfig({
     '@nuxtjs/i18n',
     '@nuxt/image-edge',
     '@pinia/nuxt',
+    '@kevinmarrec/nuxt-pwa',
     async (_options, nuxt) => {
       nuxt.hooks.hook('vite:extendConfig', config =>
         // @ts-expect-error: Do we really need to extend the config ?
@@ -97,6 +98,14 @@ export default defineNuxtConfig({
   },
   purgeCSS: {
     whitelistPatterns: [/svg.*/, /fa.*/],
+  },
+  pwa: {
+    icon: false,
+    meta: false,
+    manifest: false,
+    workbox: {
+      enabled: true,
+    },
   },
   server: {
     host: '0.0.0.0',

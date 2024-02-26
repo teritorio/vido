@@ -2023,6 +2023,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@kevinmarrec/nuxt-pwa@npm:^0.17.0":
+  version: 0.17.0
+  resolution: "@kevinmarrec/nuxt-pwa@npm:0.17.0"
+  dependencies:
+    hasha: ^5.2.2
+    sharp: ^0.31.3
+    std-env: ^3.3.2
+  checksum: 9550b511b58e18a9d4f9881634207d10bc83931088879d372afca2671481dd87a3a7932cfc13dcc285950b6f7025fb1e32987506dc8e50d5170783d52e19af3d
+  languageName: node
+  linkType: hard
+
 "@lezer/common@npm:^1.0.0":
   version: 1.0.2
   resolution: "@lezer/common@npm:1.0.2"
@@ -2990,6 +3001,7 @@ __metadata:
     "@histoire/plugin-nuxt": ^0.16.2
     "@histoire/plugin-screenshot": ^0.16.1
     "@histoire/plugin-vue": ^0.16.1
+    "@kevinmarrec/nuxt-pwa": ^0.17.0
     "@mdi/font": ^7.2.96
     "@nuxt/image-edge": 1.0.0-rc.1-28119537.bfe30ab
     "@nuxt/types": ^2.17.0
@@ -8554,6 +8566,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"hasha@npm:^5.2.2":
+  version: 5.2.2
+  resolution: "hasha@npm:5.2.2"
+  dependencies:
+    is-stream: ^2.0.0
+    type-fest: ^0.8.0
+  checksum: 50adf6a312f802a3fac6858eb5835b0465931c46608e0719178033008153c4aef85cb682d82df6c02f069024bd588d918fd8cea30ca0584a8fbe7914b36962af
+  languageName: node
+  linkType: hard
+
 "hasown@npm:^2.0.0":
   version: 2.0.0
   resolution: "hasown@npm:2.0.0"
@@ -11235,6 +11257,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"node-addon-api@npm:^5.0.0":
+  version: 5.1.0
+  resolution: "node-addon-api@npm:5.1.0"
+  dependencies:
+    node-gyp: latest
+  checksum: 46b4f82aad7d116e2588a5757f190fc4e4f4edbbbdd35de7cade2c731cdf8d716f2fb088d0ad281c4a17eb8068f985697dde4cd776aa6b6af8509ef4060c46e3
+  languageName: node
+  linkType: hard
+
 "node-addon-api@npm:^6.1.0":
   version: 6.1.0
   resolution: "node-addon-api@npm:6.1.0"
@@ -13709,6 +13740,23 @@ __metadata:
   languageName: node
   linkType: hard
 
+"sharp@npm:^0.31.3":
+  version: 0.31.3
+  resolution: "sharp@npm:0.31.3"
+  dependencies:
+    color: ^4.2.3
+    detect-libc: ^2.0.1
+    node-addon-api: ^5.0.0
+    node-gyp: latest
+    prebuild-install: ^7.1.1
+    semver: ^7.3.8
+    simple-get: ^4.0.1
+    tar-fs: ^2.1.1
+    tunnel-agent: ^0.6.0
+  checksum: d95d88be9a4d338e812f2474709381f183d25a262777c092a4d0bffc6be211dbe72ea6638045be1474385e55b229cf7ed0adb5c96b9ed82dead15987df075351
+  languageName: node
+  linkType: hard
+
 "sharp@npm:^0.32.1":
   version: 0.32.1
   resolution: "sharp@npm:0.32.1"
@@ -14996,7 +15044,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"type-fest@npm:^0.8.1":
+"type-fest@npm:^0.8.0, type-fest@npm:^0.8.1":
   version: 0.8.1
   resolution: "type-fest@npm:0.8.1"
   checksum: f8c4b4249f52e8bea7a4fc55b3653c96c2d547240e4c772e001d02b7cc38b8c3eb493ab9fbe985a76a203cd1aa7044776b728a71ba12bf36e7131f989597885b
