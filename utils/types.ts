@@ -34,9 +34,3 @@ export enum OriginEnum {
   twitter = 'twitter',
   whatsapp = 'whatsapp',
 }
-
-export enum EditorialGroupType {
-  Details,
-  List,
-  Popup,
-}

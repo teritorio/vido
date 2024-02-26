@@ -30,8 +30,6 @@ import { getAsyncDataOrThrows } from '~/lib/getAsyncData'
 import { vidoConfig } from '~/plugins/vido-config'
 import { siteStore } from '~/stores/site'
 import type { VidoConfig } from '~/utils/types-config'
-import { useContribStore } from '~/stores/contrib'
-import { addContributorFields, isContribEligible } from '~/middleware/contrib-mode.global'
 
 export default defineNuxtComponent({
   components: {
@@ -155,8 +153,6 @@ export default defineNuxtComponent({
   beforeMount() {
     this.$trackingInit(this.config)
     this.$vidoConfigSet(this.config)
-    if (useContribStore().enabled && isContribEligible(this.poi.properties))
-      addContributorFields(this.poi, EditorialGroupType.Details)
   },
 
   mounted() {

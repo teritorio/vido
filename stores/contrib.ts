@@ -13,10 +13,7 @@ export const useContribStore = defineStore(STORE_NAME, {
   actions: {
     setEnabled(state: boolean) {
       this.enabled = state
-      localStorage.setItem(STORE_NAME, JSON.stringify(this.enabled))
+      localStorage.setItem(STORE_NAME, JSON.stringify(state))
     },
-  },
-  share: {
-    enable: true,
   },
 })

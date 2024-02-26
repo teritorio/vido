@@ -15,7 +15,6 @@ import RoutesField, { isRoutesFieldEmpty } from '~/components/Fields/RoutesField
 import Stars from '~/components/Fields/Stars.vue'
 import ExternalLink from '~/components/UI/ExternalLink.vue'
 import FieldsHeader from '~/components/UI/FieldsHeader.vue'
-import ContribFieldGroup from '~/components/Fields/ContribFieldGroup.vue'
 import type { ApiPoiProperties, FieldsListItem } from '~/lib/apiPois'
 import type { PropertyTranslationsContextEnum } from '~/plugins/property-translations'
 
@@ -38,7 +37,6 @@ export function isFiledEmpty(
 
 export default defineNuxtComponent({
   components: {
-    ContribFieldGroup,
     FontAwesomeIcon,
     FieldsHeader,
     OpeningHours,
@@ -246,11 +244,6 @@ export default defineNuxtComponent({
           {{ item }}
         </ExternalLink>
       </div>
-
-      <ContribFieldGroup
-        v-else-if="field.field === 'contrib'"
-        v-bind="properties[field.field]"
-      />
 
       <div
         v-for="item in properties[field.field]"

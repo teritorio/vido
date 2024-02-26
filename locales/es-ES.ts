@@ -158,6 +158,7 @@ export default defineI18nLocale(() => {
     fields: {
       contrib: {
         editor_id: 'Editar en iD editor',
+        heading: 'Contribución',
         osm_note: 'Añadir una nota en OSM',
         mapillary_link: 'Explorar en Mapillary',
       },

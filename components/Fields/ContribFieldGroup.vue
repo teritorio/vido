@@ -16,13 +16,27 @@ const onlyDefinedProps = computed(() => {
 </script>
 
 <template>
-  <ExternalLink
-    v-for="(field, key, index) in onlyDefinedProps"
-    :key="key"
-    :class="{ 'mt-2': index > 0 }"
-    :icon="field.icon"
-    :href="field.url"
-  >
-    {{ $t(`fields.contrib.${key}`) }}
-  </ExternalLink>
+  <div>
+    <ExternalLink
+      v-for="(field, key, index) in onlyDefinedProps"
+      :key="key"
+      :class="{ 'mt-2': index > 0 }"
+      :icon="field.icon"
+      :href="field.url"
+    >
+      {{ $t(`fields.contrib.${key}`) }}
+    </ExternalLink>
+  </div>
 </template>
+
+<style scoped>
+div  {
+  margin: 1rem 0;
+}
+
+@media print {
+  div {
+   display: none;
+  }
+}
+</style>
