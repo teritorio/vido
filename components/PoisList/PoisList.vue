@@ -9,7 +9,6 @@ import Actions from '~/components/PoisList/Actions.vue'
 import CategorySelector from '~/components/PoisList/CategorySelector.vue'
 import PoisTable from '~/components/PoisList/PoisTable.vue'
 import type { ContentEntry } from '~/lib/apiContent'
-import type { ApiMenuCategory } from '~/lib/apiMenu'
 import type { ApiPois, FieldsListItem } from '~/lib/apiPois'
 import { getPoiByCategoryId } from '~/lib/apiPois'
 import type { Settings } from '~/lib/apiSettings'
@@ -54,10 +53,10 @@ export default defineNuxtComponent({
   },
 
   computed: {
-    ...mapState(menuStore, ['menuItems']),
+    ...mapState(menuStore, ['menuItems', 'getCurrentCategory']),
 
-    category(): ApiMenuCategory | undefined {
-      return (this.menuItems || {})[this.categoryId] as ApiMenuCategory
+    category() {
+      return this.getCurrentCategory(this.categoryId)
     },
 
     fields(): FieldsListItem[] {
@@ -117,7 +116,7 @@ export default defineNuxtComponent({
     </template>
     <template #body>
       <CategorySelector
-        :menu-items="menuItems || []"
+        :menu-items="menuItems || {}"
         :category-id="categoryId"
         @category-change="onMenuChange"
       />

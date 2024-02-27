@@ -147,7 +147,7 @@ export default defineNuxtComponent({
           :boundary-area="boundaryArea || settings.polygon.data"
         />
         <CategorySelector
-          :menu-items="menuItems || []"
+          :menu-items="menuItems || {}"
           label="categorySelector.placeholderAdd"
           class="tw-p-4 tw-absolute tw-z-1 tw-w-full"
           @category-change="onMenuChange"

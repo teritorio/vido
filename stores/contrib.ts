@@ -12,8 +12,10 @@ export const useContribStore = defineStore(STORE_NAME, {
   }),
   actions: {
     setEnabled(state: boolean) {
+      const cookie = useCookie(STORE_NAME)
+
       this.enabled = state
-      localStorage.setItem(STORE_NAME, JSON.stringify(state))
+      cookie.value = JSON.stringify(state)
     },
   },
 })

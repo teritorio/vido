@@ -29,7 +29,7 @@ export default defineNuxtComponent({
 
   props: {
     menuItems: {
-      type: Array as PropType<Record<number, MenuItem>>,
+      type: Object as PropType<Record<number, MenuItem>>,
       required: true,
     },
     categoryId: {

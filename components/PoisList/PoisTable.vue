@@ -32,8 +32,10 @@ export default defineNuxtComponent({
         ),
       }))
       h.push({ value: '', text: '' })
+
       if (this.contribMode)
-        h.push({ value: 'contrib', text: this.$t('fields.contrib.heading') })
+        h.push({ value: '', text: this.$t('fields.contrib.heading') })
+
       return h
     },
 
@@ -70,11 +72,9 @@ export default defineNuxtComponent({
             {{ $t('poisTable.details') }}
           </NuxtLink>
         </td>
-        <ClientOnly v-if="contribMode && isContribEligible(feature.properties)">
-          <td class="tw-align-top">
-            <ContribFieldGroup v-bind="getContributorFields(feature)" />
-          </td>
-        </ClientOnly>
+        <td v-if="contribMode && isContribEligible(feature.properties)" class="tw-align-top">
+          <ContribFieldGroup v-bind="getContributorFields(feature)" />
+        </td>
       </tr>
     </tbody>
     <tbody v-else>

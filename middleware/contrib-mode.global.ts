@@ -13,21 +13,15 @@ export interface ContribFields {
 }
 
 export default defineNuxtRouteMiddleware((to) => {
-  if (process.server)
+  const { setEnabled } = useContribStore()
+  const cookie = useCookie(STORE_NAME)
+
+  if (to.query.contrib !== undefined) {
+    setEnabled(to.query.contrib === 'true')
     return
-
-  if (process.client) {
-    const { setEnabled } = useContribStore()
-    const contribLocalStorage = localStorage.getItem(STORE_NAME)
-
-    if (to.query.contrib !== undefined) {
-      setEnabled(to.query.contrib === 'true')
-      return
-    }
-
-    if (contribLocalStorage)
-      setEnabled(contribLocalStorage === 'true')
   }
+
+  setEnabled(Boolean(cookie.value))
 })
 
 export function getContributorFields(feature: ApiPoi): ContribFields {
