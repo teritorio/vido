@@ -117,7 +117,7 @@ export default defineNuxtComponent({
     </template>
     <template #body>
       <CategorySelector
-        :menu-items="menuItems || []"
+        :menu-items="menuItems || {}"
         :category-id="categoryId"
         @category-change="onMenuChange"
       />
