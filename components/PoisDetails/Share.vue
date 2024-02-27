@@ -5,7 +5,7 @@ import { ref } from 'vue'
 
 import { defineNuxtComponent } from '#app'
 import IconButton from '~/components/UI/IconButton.vue'
-import IconsBar from '~/components/UI/IconsBar.vue'
+import VActions from '~/components/UI/VActions.vue'
 import ShareLinkModal from '~/components/UI/ShareLinkModal.vue'
 import { OriginEnum } from '~/utils/types'
 import { urlAddTrackOrigin } from '~/utils/url'
@@ -13,7 +13,7 @@ import { urlAddTrackOrigin } from '~/utils/url'
 export default defineNuxtComponent({
   components: {
     FontAwesomeIcon,
-    IconsBar,
+    VActions,
     IconButton,
     ShareLinkModal,
   },
@@ -87,7 +87,7 @@ export default defineNuxtComponent({
 
 <template>
   <div>
-    <IconsBar>
+    <VActions>
       <IconButton
         v-if="href"
         :label="$t('poiDetails.shareFacebook')"
@@ -139,7 +139,7 @@ export default defineNuxtComponent({
       >
         <FontAwesomeIcon icon="link" :style="{ color: colorLine }" />
       </IconButton>
-    </IconsBar>
+    </VActions>
     <ShareLinkModal ref="shareModal" :title="$t('poiDetails.link')" />
   </div>
 </template>

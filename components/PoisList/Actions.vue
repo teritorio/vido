@@ -4,13 +4,13 @@ import type { PropType } from 'vue'
 
 import { defineNuxtComponent, useRequestHeaders } from '#app'
 import IconButton from '~/components/UI/IconButton.vue'
-import IconsBar from '~/components/UI/IconsBar.vue'
+import VActions from '~/components/UI/VActions.vue'
 import { getPoiByCategoryIdUrl } from '~/lib/apiPois'
 
 export default defineNuxtComponent({
   components: {
     FontAwesomeIcon,
-    IconsBar,
+    VActions,
     IconButton,
   },
 
@@ -56,7 +56,7 @@ export default defineNuxtComponent({
 </script>
 
 <template>
-  <IconsBar>
+  <VActions>
     <IconButton
       :label="$t('poisTable.showOnMap')"
       class="tw-w-8 tw-h-8"
@@ -79,5 +79,5 @@ export default defineNuxtComponent({
     >
       <FontAwesomeIcon icon="map-marker-alt" :style="{ color: colorLine }" />
     </IconButton>
-  </IconsBar>
+  </VActions>
 </template>

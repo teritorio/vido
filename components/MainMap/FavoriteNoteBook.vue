@@ -7,7 +7,7 @@ import { ref } from 'vue'
 import { defineNuxtComponent, useRequestHeaders } from '#app'
 import PoisDeck from '~/components/PoisCard/PoisDeck.vue'
 import IconButton from '~/components/UI/IconButton.vue'
-import IconsBar from '~/components/UI/IconsBar.vue'
+import VActions from '~/components/UI/VActions.vue'
 import ShareLinkModal from '~/components/UI/ShareLinkModal.vue'
 import UIButton from '~/components/UI/UIButton.vue'
 import type { ApiPoi, ApiPoiId } from '~/lib/apiPois'
@@ -18,7 +18,7 @@ export default defineNuxtComponent({
     FontAwesomeIcon,
     PoisDeck,
     ShareLinkModal,
-    IconsBar,
+    VActions,
     IconButton,
     UIButton,
   },
@@ -120,7 +120,7 @@ export default defineNuxtComponent({
       </div>
 
       <div>
-        <IconsBar class="tw-mr-6">
+        <VActions class="tw-mr-6">
           <IconButton
             :label="$t('favorites.menu_share')"
             class="tw-h-8"
@@ -161,7 +161,7 @@ export default defineNuxtComponent({
               $t('favorites.notebook.remove')
             }}</span>
           </IconButton>
-        </IconsBar>
+        </VActions>
       </div>
     </div>
 
