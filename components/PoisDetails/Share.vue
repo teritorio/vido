@@ -1,16 +1,12 @@
 <script lang="ts">
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
-import type { PropType } from 'vue'
-import { ref } from 'vue'
-
-import { defineNuxtComponent } from '#app'
 import IconButton from '~/components/UI/IconButton.vue'
 import VActions from '~/components/UI/VActions.vue'
 import ShareLinkModal from '~/components/UI/ShareLinkModal.vue'
 import { OriginEnum } from '~/utils/types'
 import { urlAddTrackOrigin } from '~/utils/url'
 
-export default defineNuxtComponent({
+export default {
   components: {
     FontAwesomeIcon,
     VActions,
@@ -82,64 +78,62 @@ export default defineNuxtComponent({
       this.shareModal?.open(window.location.href)
     },
   },
-})
+}
 </script>
 
 <template>
-  <div>
-    <VActions>
-      <IconButton
-        v-if="href"
-        :label="$t('poiDetails.shareFacebook')"
-        class="tw-w-8 tw-h-8"
-        :href="shareFacebook"
-        target="_blank"
-      >
-        <FontAwesomeIcon
-          :icon="['fab', 'facebook']"
-          :style="{ color: colorLine }"
-        />
-      </IconButton>
-      <IconButton
-        v-if="title && href"
-        :label="$t('poiDetails.shareTwitter')"
-        class="tw-w-8 tw-h-8"
-        :href="shareTwitter"
-        target="_blank"
-      >
-        <FontAwesomeIcon
-          :icon="['fab', 'twitter']"
-          :style="{ color: colorLine }"
-        />
-      </IconButton>
-      <IconButton
-        v-if="title && href"
-        :label="$t('poiDetails.shareWhatsApp')"
-        class="tw-w-8 tw-h-8"
-        :href="shareWhatsApp"
-        target="_blank"
-      >
-        <FontAwesomeIcon
-          :icon="['fab', 'whatsapp']"
-          :style="{ color: colorLine }"
-        />
-      </IconButton>
-      <IconButton
-        :label="$t('poiDetails.print')"
-        class="tw-w-8 tw-h-8"
-        @click="print"
-      >
-        <FontAwesomeIcon icon="print" :style="{ color: colorLine }" />
-      </IconButton>
-      <IconButton
-        v-if="href"
-        :label="$t('poiDetails.link')"
-        class="tw-w-8 tw-h-8"
-        @click="shareUrl"
-      >
-        <FontAwesomeIcon icon="link" :style="{ color: colorLine }" />
-      </IconButton>
-    </VActions>
+  <VActions>
+    <IconButton
+      v-if="href"
+      :label="$t('poiDetails.shareFacebook')"
+      class="tw-w-8 tw-h-8"
+      :href="shareFacebook"
+      target="_blank"
+    >
+      <FontAwesomeIcon
+        :icon="['fab', 'facebook']"
+        :style="{ color: colorLine }"
+      />
+    </IconButton>
+    <IconButton
+      v-if="title && href"
+      :label="$t('poiDetails.shareTwitter')"
+      class="tw-w-8 tw-h-8"
+      :href="shareTwitter"
+      target="_blank"
+    >
+      <FontAwesomeIcon
+        :icon="['fab', 'twitter']"
+        :style="{ color: colorLine }"
+      />
+    </IconButton>
+    <IconButton
+      v-if="title && href"
+      :label="$t('poiDetails.shareWhatsApp')"
+      class="tw-w-8 tw-h-8"
+      :href="shareWhatsApp"
+      target="_blank"
+    >
+      <FontAwesomeIcon
+        :icon="['fab', 'whatsapp']"
+        :style="{ color: colorLine }"
+      />
+    </IconButton>
+    <IconButton
+      :label="$t('poiDetails.print')"
+      class="tw-w-8 tw-h-8"
+      @click="print"
+    >
+      <FontAwesomeIcon icon="print" :style="{ color: colorLine }" />
+    </IconButton>
+    <IconButton
+      v-if="href"
+      :label="$t('poiDetails.link')"
+      class="tw-w-8 tw-h-8"
+      @click="shareUrl"
+    >
+      <FontAwesomeIcon icon="link" :style="{ color: colorLine }" />
+    </IconButton>
     <ShareLinkModal ref="shareModal" :title="$t('poiDetails.link')" />
-  </div>
+  </VActions>
 </template>
