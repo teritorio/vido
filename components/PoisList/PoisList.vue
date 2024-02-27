@@ -54,10 +54,10 @@ export default defineNuxtComponent({
   },
 
   computed: {
-    ...mapState(menuStore, ['menuItems']),
+    ...mapState(menuStore, ['menuItems', 'getCurrentCategory']),
 
-    category(): ApiMenuCategory | undefined {
-      return (this.menuItems || {})[this.categoryId] as ApiMenuCategory
+    category() {
+      return this.getCurrentCategory(this.categoryId)
     },
 
     fields(): FieldsListItem[] {

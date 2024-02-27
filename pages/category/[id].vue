@@ -1,5 +1,5 @@
 <script lang="ts">
-import { mapWritableState } from 'pinia'
+import { mapState, mapWritableState } from 'pinia'
 import type { Ref } from 'vue'
 
 import { defineNuxtComponent, useHead, useRequestHeaders, useRoute } from '#app'
@@ -102,6 +102,7 @@ export default defineNuxtComponent({
   },
 
   computed: {
+    ...mapState(menuStore, ['getCurrentCategory']),
     ...mapWritableState(siteStore, {
       locale: 'locale',
       globalConfig: 'config',
@@ -130,14 +131,15 @@ export default defineNuxtComponent({
   },
 
   mounted() {
+    const { params } = useRoute()
     this.locale = this.$i18n.locale
-    this.handleCategoryUpdate(useRoute().params.id as string)
+    this.handleCategoryUpdate(Number.parseInt(Array.isArray(params.id) ? params.id[0] : params.id))
   },
   methods: {
-    getCategory(categoryId: string): ApiMenuCategory {
+    getCategory(categoryId: number): ApiMenuCategory {
       // Fetching category by ID
       // TODO: Has to be done in setup() but menuItems is touched in created() hook
-      const category = menuStore().getCurrentCategory(categoryId)
+      const category = this.getCurrentCategory(categoryId)
       if (!category) {
         throw createError({
           statusCode: 404,
@@ -146,8 +148,8 @@ export default defineNuxtComponent({
       }
       return category
     },
-    handleCategoryUpdate(categoryId: number | string) {
-      const category = this.getCategory(categoryId.toString())
+    handleCategoryUpdate(categoryId: number) {
+      const category = this.getCategory(categoryId)
       this.settings.themes[0].title = category.category.name
       useHead(headerFromSettings(this.settings))
     },
