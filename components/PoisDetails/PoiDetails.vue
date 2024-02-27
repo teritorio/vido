@@ -213,12 +213,6 @@ export default defineNuxtComponent({
     <template #body>
       <div class="detail-wrapper">
         <div class="detail-left">
-          <ClientOnly v-if="contribMode && isContribEligible(poi.properties)">
-            <FieldsHeader :recursion-stack="[]">
-              {{ $t('fields.contrib.heading') }}
-            </FieldsHeader>
-            <ContribFieldGroup v-bind="getContributorFields(poi)" />
-          </ClientOnly>
           <FieldsGroup
             v-if="detailsFields"
             :group="{
@@ -231,6 +225,12 @@ export default defineNuxtComponent({
             :color-fill="colorFill"
             :geom="poi.geometry"
           />
+          <div v-if="contribMode && isContribEligible(poi.properties)">
+            <FieldsHeader :recursion-stack="[]">
+              {{ $t('fields.contrib.heading') }}
+            </FieldsHeader>
+            <ContribFieldGroup v-bind="getContributorFields(poi)" />
+          </div>
         </div>
 
         <div class="detail-right">
