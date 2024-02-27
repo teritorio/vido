@@ -1,19 +1,15 @@
 <script lang="ts">
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
-import { mapState } from 'pinia'
-import type { PropType } from 'vue'
-import { ref } from 'vue'
-
-import { defineNuxtComponent, useRequestHeaders } from '#app'
 import PoisDeck from '~/components/PoisCard/PoisDeck.vue'
 import IconButton from '~/components/UI/IconButton.vue'
 import VActions from '~/components/UI/VActions.vue'
 import ShareLinkModal from '~/components/UI/ShareLinkModal.vue'
 import UIButton from '~/components/UI/UIButton.vue'
 import type { ApiPoi, ApiPoiId } from '~/lib/apiPois'
-import { favoritesStore } from '~/stores/favorite'
+import type { VidoConfig } from '~/utils/types-config'
+import { favoritesStore as useFavoritesStore } from '~/stores/favorite'
 
-export default defineNuxtComponent({
+export default {
   components: {
     FontAwesomeIcon,
     PoisDeck,
@@ -21,13 +17,6 @@ export default defineNuxtComponent({
     VActions,
     IconButton,
     UIButton,
-  },
-
-  emits: {
-    onClose: () => true,
-    zoomClick: (_poi: ApiPoi) => true,
-    exploreClick: (_poi: ApiPoi) => true,
-    favoriteClick: (_poi: ApiPoi) => true,
   },
 
   props: {
@@ -44,27 +33,39 @@ export default defineNuxtComponent({
       required: true,
     },
   },
+
+  emits: {
+    onClose: () => true,
+    zoomClick: (_poi: ApiPoi) => true,
+    exploreClick: (_poi: ApiPoi) => true,
+    favoriteClick: (_poi: ApiPoi) => true,
+  },
+
   setup() {
+    const favoritesStore = useFavoritesStore()
+    const { favoritesIds } = favoritesStore
+    const queryStringFavIDs = favoritesIds.join(',')
+
     return {
+      favoritesStore,
+      queryStringFavIDs,
       shareModal: ref<InstanceType<typeof ShareLinkModal>>(),
     }
   },
 
   computed: {
-    ...mapState(favoritesStore, ['favoritesIds']),
+    config(): VidoConfig {
+      return this.$vidoConfig(useRequestHeaders())
+    },
 
     pdfLink(): string {
-      const config = this.$vidoConfig(useRequestHeaders())
-      return `${config.API_EXPORT}/${config.API_PROJECT}/${
-        config.API_THEME
-      }/pois/favorites.pdf?ids=${this.favoritesIds.join(',')}`
+      const { API_EXPORT, API_PROJECT, API_THEME } = this.config
+      return `${API_EXPORT}/${API_PROJECT}/${API_THEME}/pois/favorites.pdf?ids=${this.queryStringFavIDs}`
     },
 
     csvLink(): string {
-      const config = this.$vidoConfig(useRequestHeaders())
-      return `${config.API_ENDPOINT}/${config.API_PROJECT}/${
-        config.API_THEME
-      }/pois.csv?ids=${this.favoritesIds.join(',')}`
+      const { API_ENDPOINT, API_PROJECT, API_THEME } = this.config
+      return `${API_ENDPOINT}/${API_PROJECT}/${API_THEME}/pois.csv?ids=${this.queryStringFavIDs}`
     },
   },
 
@@ -72,9 +73,7 @@ export default defineNuxtComponent({
     setShareLink() {
       try {
         this.shareModal!.open(
-          `${location.origin}/#mode=favorites&favs=${this.favoritesIds.join(
-            ',',
-          )}`,
+          `${location.origin}/#mode=favorites&favs=${this.queryStringFavIDs}`,
         )
       }
       catch (e) {
@@ -90,15 +89,10 @@ export default defineNuxtComponent({
     },
 
     removeFavorites() {
-      try {
-        favoritesStore().setFavorites([])
-      }
-      catch (e) {
-        console.error('Vido error:', (e as Error).message)
-      }
+      this.favoritesStore.$reset()
     },
   },
-})
+}
 </script>
 
 <template>
@@ -154,7 +148,7 @@ export default defineNuxtComponent({
           <IconButton
             :label="$t('favorites.menu_clear')"
             class="tw-h-8"
-            @click="removeFavorites()"
+            @click="removeFavorites"
           >
             <FontAwesomeIcon icon="trash" />
             <span class="tw-text-sm">{{
