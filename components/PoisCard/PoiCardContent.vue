@@ -218,9 +218,6 @@ export default defineNuxtComponent({
     </p>
 
     <div v-else class="tw-h-auto tw-flex-grow tw-shrink-0">
-      <ClientOnly v-if="contribMode && isContribEligible(poi.properties)">
-        <ContribFieldGroup v-bind="getContributorFields(poi)" />
-      </ClientOnly>
       <Fields
         :fields="
           (poi.properties.editorial && poi.properties.editorial.popup_fields)
@@ -232,6 +229,9 @@ export default defineNuxtComponent({
         class="tw-mt-6 tw-text-sm"
         @click-detail="trackingPopupEvent('details')"
       />
+      <ClientOnly v-if="contribMode && isContribEligible(poi.properties)">
+        <ContribFieldGroup v-bind="getContributorFields(poi)" />
+      </ClientOnly>
     </div>
 
     <div
