@@ -217,11 +217,10 @@ export default defineNuxtComponent({
       {{ description }}
     </p>
 
-    <ClientOnly v-if="contribMode && isContribEligible(poi.properties)">
-      <ContribFieldGroup v-bind="getContributorFields(poi)" />
-    </ClientOnly>
-
     <div v-else class="tw-h-auto tw-flex-grow tw-shrink-0">
+      <ClientOnly v-if="contribMode && isContribEligible(poi.properties)">
+        <ContribFieldGroup v-bind="getContributorFields(poi)" />
+      </ClientOnly>
       <Fields
         :fields="
           (poi.properties.editorial && poi.properties.editorial.popup_fields)
