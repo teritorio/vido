@@ -7,6 +7,7 @@ import IconButton from '~/components/UI/IconButton.vue'
 import ContribFieldGroup from '~/components/Fields/ContribFieldGroup.vue'
 
 interface DataTableHeader {
+  filterable: boolean
   key: string
   title: string
   value?: string | Function
@@ -21,19 +22,28 @@ const { t } = useI18n()
 const { $propertyTranslations } = useNuxtApp()
 const { contribMode, isContribEligible, getContributorFields } = useContrib()
 
+const search = ref('')
+
+function customFilter(value: any, query: string): boolean {
+  return query !== null && value !== null && typeof value === 'string' && value.toLowerCase().includes(query.toLowerCase())
+}
+
 const headers = computed((): Array<DataTableHeader> => {
   // Basic Fields
   const headers: Array<DataTableHeader> = props.fields.map(f => ({
+    filterable: true,
     key: f.field,
     title: $propertyTranslations.p(
       f.field,
       PropertyTranslationsContextEnum.List,
     ),
+    value: `properties.${f.field}`,
   }))
 
   // Contrib Field
   if (contribMode) {
     headers.push({
+      filterable: false,
       key: 'contrib',
       title: t('fields.contrib.heading'),
     })
@@ -41,6 +51,7 @@ const headers = computed((): Array<DataTableHeader> => {
 
   // Details Field
   headers.push({
+    filterable: false,
     key: 'details',
     title: 'Actions',
   })
@@ -54,8 +65,17 @@ const headers = computed((): Array<DataTableHeader> => {
     :headers="headers"
     :items="pois.features"
     :no-data-text="$t('poisTable.empty')"
+    :search="search"
+    :custom-filter="customFilter"
     items-per-page="20"
   >
+    <template #top>
+      <VTextField
+        v-model="search"
+        label="Search"
+        class="pa-2"
+      />
+    </template>
     <template #item="{ item, columns }">
       <tr>
         <td v-for="col in columns" :key="col.key">
