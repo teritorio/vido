@@ -1,13 +1,17 @@
 <script lang="ts">
-import type { PropType } from 'vue'
-import { defineNuxtComponent } from '#app'
 import Field from '~/components/Fields/Field.vue'
 import type { ApiPoi, ApiPoiProperties, ApiPois, FieldsListItem } from '~/lib/apiPois'
 import { PropertyTranslationsContextEnum } from '~/plugins/property-translations'
 import ContribFieldGroup from '~/components/Fields/ContribFieldGroup.vue'
 import type { ContribFields } from '~/composables/useContrib'
 
-export default defineNuxtComponent({
+interface DataTableHeaders {
+  title: string
+  value?: string
+  key?: string
+}
+
+export default {
   components: {
     ContribFieldGroup,
     Field,
@@ -22,63 +26,68 @@ export default defineNuxtComponent({
       required: true,
     },
   },
+
   data(): {
     contribMode: boolean
+    context: string
     isContribEligible: (properties: ApiPoiProperties) => boolean
     getContributorFields: (feature: ApiPoi) => ContribFields
   } {
     const { contribMode, isContribEligible, getContributorFields } = useContrib()
+
     return {
       contribMode,
+      context: PropertyTranslationsContextEnum.List,
       isContribEligible,
       getContributorFields,
     }
   },
+
   computed: {
-    headers(): { value: string, text: string }[] {
-      const h = this.fields.map(field => ({
-        value: field.field,
-        text: this.$propertyTranslations.p(
-          field.field,
+    headers(): Array<DataTableHeaders> {
+      const headers: Array<DataTableHeaders> = this.fields.map(f => ({
+        title: this.$propertyTranslations.p(
+          f.field,
           PropertyTranslationsContextEnum.List,
         ),
+        value: f.field,
+        key: `properties.${f.field}`,
       }))
-      h.push({ value: '', text: '' })
-      if (this.contribMode)
-        h.push({ value: '', text: this.$t('fields.contrib.heading') })
 
-      return h
-    },
-    context(): PropertyTranslationsContextEnum {
-      return PropertyTranslationsContextEnum.List
+      headers.push({ title: '' })
+
+      if (this.contribMode)
+        headers.push({ title: this.$t('fields.contrib.heading') })
+
+      return headers
     },
   },
-})
+}
 </script>
 
 <template>
-  <table>
-    <thead>
-      <tr class="tw-bg-gray-100">
-        <th v-for="header in headers" :key="header.value" scope="col">
-          {{ header.text }}
-        </th>
-      </tr>
-    </thead>
-    <tbody v-if="pois.features">
-      <tr v-for="(feature, i) in pois.features" :key="i">
+  <v-data-table
+    class="mt-4"
+    :headers="headers"
+    :items="pois.features"
+    :no-data-text="$t('poisTable.empty')"
+    item-key="name"
+    items-per-page="5"
+  >
+    <template #item="{ item }">
+      <tr>
         <td v-for="field in fields" :key="field.field" class="tw-align-top">
           <Field
             :context="context"
             :recursion-stack="[field.field]"
             :field="field"
             :details="$t('poisTable.details')"
-            :properties="feature.properties"
-            :geom="feature.geometry"
+            :properties="item.selectable.properties"
+            :geom="item.selectable.geometry"
           />
         </td>
-        <td class="tw-align-top">
-          <NuxtLink :to="`/poi/${feature.properties.metadata.id}/details`">
+        <td>
+          <NuxtLink :to="`/poi/${item.selectable.properties.metadata.id}/details`">
             {{ $t('poisTable.details') }}
           </NuxtLink>
         </td>
@@ -86,13 +95,17 @@ export default defineNuxtComponent({
           <ContribFieldGroup v-bind="getContributorFields(feature)" />
         </td>
       </tr>
-    </tbody>
-    <tbody v-else>
-      <tr class="tw-text-center">
-        <td :colspan="headers.length">
-          {{ $t('poisTable.empty') }}
-        </td>
-      </tr>
-    </tbody>
-  </table>
+    </template>
+  </v-data-table>
 </template>
+
+<style scoped>
+/* stylelint-disable selector-class-pattern */
+.v-data-table .v-table__wrapper > table thead {
+  background: blue
+}
+
+.v-data-table .v-table__wrapper > table tbody > tr:nth-child(even) > td {
+  background: #F3F4F6;
+}
+</style>
