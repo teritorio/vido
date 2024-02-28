@@ -11,7 +11,6 @@ import { coordinatesHref } from '~/lib/coordinates'
 import { favoritesStore } from '~/stores/favorite'
 import { mapStore } from '~/stores/map'
 import { isIOS } from '~/utils/isIOS'
-import ContributionMixin from '~/mixins/contribution'
 
 export default defineNuxtComponent({
   components: {
@@ -20,7 +19,7 @@ export default defineNuxtComponent({
     FavoriteIcon,
     Fields,
   },
-  mixins: [ContributionMixin],
+
   props: {
     poi: {
       type: Object as PropType<ApiPoi>,
@@ -34,6 +33,16 @@ export default defineNuxtComponent({
       type: Boolean,
       required: true,
     },
+  },
+
+  data() {
+    const { contribMode, isContribEligible, getContributorFields } = useContrib()
+
+    return {
+      contribMode,
+      isContribEligible,
+      getContributorFields,
+    }
   },
 
   computed: {

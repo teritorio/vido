@@ -21,7 +21,6 @@ import type { Settings } from '~/lib/apiSettings'
 import { PropertyTranslationsContextEnum } from '~/plugins/property-translations'
 import { favoritesStore } from '~/stores/favorite'
 import { OriginEnum } from '~/utils/types'
-import ContributionMixin from '~/mixins/contribution'
 import FieldsHeader from '~/components/UI/FieldsHeader.vue'
 
 export default defineNuxtComponent({
@@ -39,7 +38,7 @@ export default defineNuxtComponent({
     FieldsGroup,
     RelativeDate,
   },
-  mixins: [ContributionMixin],
+
   props: {
     settings: {
       type: Object as PropType<Settings>,
@@ -57,6 +56,16 @@ export default defineNuxtComponent({
       type: Object as PropType<ApiPoiDeps>,
       default: null,
     },
+  },
+
+  data() {
+    const { contribMode, isContribEligible, getContributorFields } = useContrib()
+
+    return {
+      contribMode,
+      isContribEligible,
+      getContributorFields,
+    }
   },
 
   computed: {
