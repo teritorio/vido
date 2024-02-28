@@ -71,7 +71,11 @@ export default defineNuxtConfig({
     async (_options, nuxt) => {
       nuxt.hooks.hook('vite:extendConfig', config =>
         // @ts-expect-error: Do we really need to extend the config ?
-        config.plugins.push(vuetify()))
+        config.plugins.push(vuetify({
+          autoImport: {
+            labs: true,
+          },
+        })))
     },
   ],
   runtimeConfig: {
