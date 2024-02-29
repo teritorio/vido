@@ -105,7 +105,7 @@ export default defineNuxtConfig({
     meta: false,
     manifest: false,
     workbox: {
-      enabled: true,
+      enabled: false,
     },
   },
   sentry: {
