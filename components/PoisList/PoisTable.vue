@@ -74,7 +74,11 @@ const headers = computed((): Array<DataTableHeader> => {
         v-model="search"
         :label="t('poisTable.search')"
         class="pa-2"
-      />
+      >
+        <template #append-inner>
+          <FontAwesomeIcon class="px-2" icon="search" />
+        </template>
+      </VTextField>
     </template>
     <template #item="{ item, columns }">
       <tr>
