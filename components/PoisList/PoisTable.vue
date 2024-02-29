@@ -64,7 +64,7 @@ const headers = computed((): Array<DataTableHeader> => {
   <VDataTable
     :headers="headers"
     :items="pois.features"
-    :no-data-text="$t('poisTable.empty')"
+    :no-data-text="t('poisTable.empty')"
     :search="search"
     :custom-filter="customFilter"
     items-per-page="20"
@@ -72,7 +72,7 @@ const headers = computed((): Array<DataTableHeader> => {
     <template #top>
       <VTextField
         v-model="search"
-        label="Search"
+        :label="t('poisTable.search')"
         class="pa-2"
       />
     </template>

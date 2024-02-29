@@ -138,6 +138,7 @@ export default defineI18nLocale(() => {
       details: 'Details',
       downloadCsv: 'Download in CSV',
       downloadGeojson: 'Download in GeoJSON',
+      search: 'Search into the list',
       showOnMap: 'Show on Map',
     },
     categorySelector: {
