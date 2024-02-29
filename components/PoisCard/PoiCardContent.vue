@@ -11,9 +11,11 @@ import { coordinatesHref } from '~/lib/coordinates'
 import { favoritesStore } from '~/stores/favorite'
 import { mapStore } from '~/stores/map'
 import { isIOS } from '~/utils/isIOS'
+import ContribFieldGroup from '~/components/Fields/ContribFieldGroup.vue'
 
 export default defineNuxtComponent({
   components: {
+    ContribFieldGroup,
     FontAwesomeIcon,
     TeritorioIcon,
     FavoriteIcon,

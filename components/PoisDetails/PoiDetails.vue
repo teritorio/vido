@@ -22,9 +22,11 @@ import { PropertyTranslationsContextEnum } from '~/plugins/property-translations
 import { favoritesStore } from '~/stores/favorite'
 import { OriginEnum } from '~/utils/types'
 import FieldsHeader from '~/components/UI/FieldsHeader.vue'
+import ContribFieldGroup from '~/components/Fields/ContribFieldGroup.vue'
 
 export default defineNuxtComponent({
   components: {
+    ContribFieldGroup,
     PoiLayout,
     IconButton,
     FavoriteIcon,
