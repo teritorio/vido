@@ -5,7 +5,6 @@ import type { PropType } from 'vue'
 
 import { defineNuxtComponent, useRequestHeaders } from '#app'
 import PoiLayout from '~/components/Layout/PoiLayout.vue'
-import Actions from '~/components/PoisList/Actions.vue'
 import CategorySelector from '~/components/PoisList/CategorySelector.vue'
 import PoisTable from '~/components/PoisList/PoisTable.vue'
 import type { ContentEntry } from '~/lib/apiContent'
@@ -17,7 +16,6 @@ import { menuStore } from '~/stores/menu'
 export default defineNuxtComponent({
   components: {
     FontAwesomeIcon,
-    Actions,
     PoiLayout,
     CategorySelector,
     PoisTable,
@@ -108,12 +106,6 @@ export default defineNuxtComponent({
     :color-line="category.category.color_line"
     :color-fill="category.category.color_fill"
   >
-    <template #actions>
-      <Actions
-        :category-id="categoryId"
-        :color-line="category.category.color_line"
-      />
-    </template>
     <template #body>
       <CategorySelector
         :menu-items="menuItems || {}"
@@ -121,7 +113,15 @@ export default defineNuxtComponent({
         @category-change="onMenuChange"
       />
 
-      <PoisTable v-if="pois" :fields="fields" :pois="pois" />
+      <VDivider />
+
+      <PoisTable
+        v-if="pois"
+        :category="category"
+        :fields="fields"
+        :pois="pois"
+      />
+
       <FontAwesomeIcon
         v-else
         icon="spinner"
