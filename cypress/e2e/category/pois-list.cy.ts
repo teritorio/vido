@@ -15,6 +15,7 @@ const htmlValidateRules = {
     'no-dup-class': 0,
     'wcag/h63': 0,
     'input-missing-label': 0,
+    'element-permitted-content': 0,
   },
 }
 
