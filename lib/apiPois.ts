@@ -166,13 +166,13 @@ export function getPoiByCategoryIdUrl(
   )
 }
 
-export function getPoiByCategoryId(
+export async function getPoiByCategoryId(
   vidoConfig: VidoConfig,
   categoryId: number | string,
   options: ApiPoisOptions = {},
 ): Promise<ApiPois> {
   options = Object.assign(defaultOptions, { geometry_as: 'point' }, options)
-  return fetch(getPoiByCategoryIdUrl(vidoConfig, categoryId, options)).then(
+  return await fetch(getPoiByCategoryIdUrl(vidoConfig, categoryId, options)).then(
     (data) => {
       if (data.ok) {
         return data.json() as unknown as ApiPois
