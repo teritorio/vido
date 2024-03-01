@@ -1,171 +1,111 @@
-<script lang="ts">
-import { mapState, mapWritableState } from 'pinia'
-import type { Ref } from 'vue'
-
-import { defineNuxtComponent, useHead, useRequestHeaders, useRoute } from '#app'
-import { definePageMeta } from '#imports'
-import PoisList from '~/components/PoisList/PoisList.vue'
-import type { ContentEntry } from '~/lib/apiContent'
+<script setup lang="ts">
 import { getContents } from '~/lib/apiContent'
-import type { ApiMenuCategory, MenuItem } from '~/lib/apiMenu'
 import { getMenu } from '~/lib/apiMenu'
-import type { ApiPois } from '~/lib/apiPois'
-import { getPoiByCategoryId } from '~/lib/apiPois'
-import type {
-  PropertyTranslations,
-} from '~/lib/apiPropertyTranslations'
-import {
-  getPropertyTranslations,
-} from '~/lib/apiPropertyTranslations'
-import type { Settings } from '~/lib/apiSettings'
+import { getPropertyTranslations } from '~/lib/apiPropertyTranslations'
 import { getSettings, headerFromSettings } from '~/lib/apiSettings'
-import { getAsyncDataOrThrows } from '~/lib/getAsyncData'
 import { vidoConfig } from '~/plugins/vido-config'
-import { menuStore } from '~/stores/menu'
-import { siteStore } from '~/stores/site'
-import type { VidoConfig } from '~/utils/types-config'
+import { menuStore as useMenuStore } from '~/stores/menu'
+import { siteStore as useSiteStore } from '~/stores/site'
+import Header from '~/components/Layout/Header.vue'
+import Footer from '~/components/Layout/Footer.vue'
+import PoisTable from '~/components/PoisList/PoisTable.vue'
+import CategorySelector from '~/components/PoisList/CategorySelector.vue'
 
-export default defineNuxtComponent({
-  components: {
-    PoisList,
-  },
-
-  async setup(): Promise<{
-    config: VidoConfig
-    settings: Ref<Settings>
-    contents: Ref<ContentEntry[]>
-    propertyTranslations: Ref<PropertyTranslations>
-    id: string
-    menuItems: Ref<MenuItem[]>
-    pois: Ref<ApiPois>
-  }> {
-    definePageMeta({
-      validate({ params }) {
-        return (
-          typeof params.id === 'string' && /^[,-_:a-zA-Z0-9]+$/.test(params.id)
-        )
-      },
-    })
-
-    const params = useRoute().params
-    const configRef = await getAsyncDataOrThrows('configRef', () =>
-      Promise.resolve(siteStore().config || vidoConfig(useRequestHeaders())))
-    const config: VidoConfig = configRef.value
-
-    const fetchSettings = getAsyncDataOrThrows('fetchSettings', () =>
-      siteStore().settings
-        ? Promise.resolve(siteStore().settings as Settings)
-        : getSettings(config))
-
-    const fetchContents = getAsyncDataOrThrows('fetchContents', () =>
-      siteStore().contents
-        ? Promise.resolve(siteStore().contents as ContentEntry[])
-        : getContents(config))
-
-    const fetchPropertyTranslations: Promise<Ref<PropertyTranslations>>
-      = getAsyncDataOrThrows('fetchPropertyTranslations', () =>
-        siteStore().translations
-          ? Promise.resolve(siteStore().translations as PropertyTranslations)
-          : getPropertyTranslations(config))
-
-    const fetchMenuItems = getAsyncDataOrThrows('fetchMenuItems', () =>
-      menuStore().menuItems !== undefined
-        ? Promise.resolve(Object.values(menuStore().menuItems!))
-        : getMenu(config))
-
-    const fetchPoiByCategoryId = getAsyncDataOrThrows(
-      `fetchPoiByCategoryId-${params.id}`,
-      () =>
-        getPoiByCategoryId(config, params.id as string, {
-          geometry_as: 'point',
-          short_description: true,
-        }),
+// Query param validation
+definePageMeta({
+  validate({ params }) {
+    return (
+      typeof params.id === 'string' && /^[,-_:a-zA-Z0-9]+$/.test(params.id)
     )
-    const [settings, contents, propertyTranslations, menuItems, pois]
-      = await Promise.all([
-        fetchSettings,
-        fetchContents,
-        fetchPropertyTranslations,
-        fetchMenuItems,
-        fetchPoiByCategoryId,
-      ])
-
-    return {
-      config,
-      settings,
-      contents,
-      propertyTranslations,
-      id: params.id as string,
-      menuItems,
-      pois,
-    }
-  },
-
-  computed: {
-    ...mapState(menuStore, ['getCurrentCategory']),
-    ...mapWritableState(siteStore, {
-      locale: 'locale',
-      globalConfig: 'config',
-      globalSettings: 'settings',
-      globalContents: 'contents',
-      globalTranslations: 'translations',
-    }),
-  },
-
-  created() {
-    this.globalConfig = this.config
-    if (this.menuItems)
-      menuStore().fetchConfig(this.menuItems)
-
-    this.globalSettings = this.settings
-    this.globalContents = this.contents
-    this.globalTranslations = this.propertyTranslations
-
-    this.$settings.set(this.settings)
-    this.$propertyTranslations.set(this.propertyTranslations)
-  },
-
-  beforeMount() {
-    this.$trackingInit(this.config)
-    this.$vidoConfigSet(this.config)
-  },
-
-  mounted() {
-    const { params } = useRoute()
-    this.locale = this.$i18n.locale
-    this.handleCategoryUpdate(Number.parseInt(Array.isArray(params.id) ? params.id[0] : params.id))
-  },
-  methods: {
-    getCategory(categoryId: number): ApiMenuCategory {
-      // Fetching category by ID
-      // TODO: Has to be done in setup() but menuItems is touched in created() hook
-      const category = this.getCurrentCategory(categoryId)
-      if (!category) {
-        throw createError({
-          statusCode: 404,
-          statusMessage: 'Category Not Found',
-        })
-      }
-      return category
-    },
-    handleCategoryUpdate(categoryId: number) {
-      const category = this.getCategory(categoryId)
-      this.settings.themes[0].title = category.category.name
-      useHead(headerFromSettings(this.settings))
-    },
   },
 })
+
+const router = useRouter()
+const param = useRoute().params
+const id = Number.parseInt(param.id as string)
+const siteStore = useSiteStore()
+const menuStore = useMenuStore()
+const { $vidoConfigSet, $settings, $propertyTranslations, $trackingInit } = useNuxtApp()
+
+// TODO: Get this globally as share it across components / pages
+let config = siteStore.config
+
+if (process.server) {
+  config = vidoConfig(useRequestHeaders())
+  $vidoConfigSet(config)
+  siteStore.$patch({ config })
+}
+
+if (!config)
+  throw createError({ statusCode: 404, statusMessage: 'Wrong config', fatal: true })
+
+// Fetch common data
+// TODO: Move common data on upper-level (ex: layout)
+const { data, error } = await useLazyAsyncData('categoryList', async () => {
+  const { data: cache } = useNuxtData('categoryList')
+  if (cache.value)
+    return cache.value
+
+  const [settings, contents, translations] = await Promise.all([
+    getSettings(config!),
+    getContents(config!),
+    getPropertyTranslations(config!),
+    getMenu(config!).then((menu) => {
+      menuStore.fetchConfig(menu)
+      return menu
+    }),
+  ])
+
+  return { settings, contents, translations }
+})
+
+if (error.value || !data.value)
+  throw createError({ statusCode: 404, statusMessage: 'Page not found.', fatal: true })
+
+const { settings, contents, translations } = data.value
+const category = menuStore.getCurrentCategory(id)
+
+if (!category) {
+  throw createError({
+    statusCode: 404,
+    statusMessage: 'Category Not Found',
+  })
+}
+
+settings.themes[0].title = category.category.name
+useHead(headerFromSettings(settings))
+
+// Not sure about future usage as we could have data from useNuxtData
+$settings.set(settings)
+$propertyTranslations.set(translations)
+
+if (process.client)
+  $trackingInit(config)
+
+function onCategoryUpdate(categoryId: number) {
+  router.push(`/category/${categoryId}`)
+}
 </script>
 
 <template>
-  <PoisList
-    :settings="settings"
-    :nav-menu-entries="contents"
-    :initial-category-id="parseInt(id)"
-    :initial-pois="pois"
-    class="page-index"
-    @category-update="handleCategoryUpdate"
-  />
+  <VContainer fluid>
+    <Header
+      :theme="settings.themes[0]"
+      :nav-menu-entries="contents"
+      :color-line="category?.category.color_line"
+    >
+      <template #search>
+        <CategorySelector
+          class="w-50"
+          :menu-items="menuStore.menuItems || {}"
+          :category-id="id"
+          @category-change="onCategoryUpdate"
+        />
+      </template>
+    </Header>
+    <PoisTable :category="category" />
+    <Footer :attributions="settings.attributions" />
+  </VContainer>
 </template>
 
 <style lang="scss" scoped>

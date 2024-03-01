@@ -8,6 +8,8 @@ import IconButton from '~/components/UI/IconButton.vue'
 import ContribFieldGroup from '~/components/Fields/ContribFieldGroup.vue'
 import Actions from '~/components/PoisList/Actions.vue'
 import TeritorioIconBadge from '~/components/UI/TeritorioIconBadge.vue'
+import { getPoiByCategoryId } from '~/lib/apiPois'
+import { siteStore as useSiteStore } from '~/stores/site'
 
 interface DataTableHeader {
   filterable: boolean
@@ -18,23 +20,44 @@ interface DataTableHeader {
 
 const props = defineProps<{
   category: ApiMenuCategory
-  fields: FieldsListItem[]
-  pois: ApiPois
 }>()
 
 const { t } = useI18n()
+const siteStore = useSiteStore()
 const { $propertyTranslations } = useNuxtApp()
 const { contribMode, isContribEligible, getContributorFields } = useContrib()
-
 const search = ref('')
 
-function customFilter(value: any, query: string): boolean {
-  return query !== null && value !== null && typeof value === 'string' && value.toLowerCase().includes(query.toLowerCase())
-}
+// Fetch POIs by Cache or API
+const { data: pois, pending, error } = await useAsyncData(`pois-${props.category.id}`, async () => {
+  const { data: cache } = useNuxtData(`pois-${props.category.id}`)
+  if (cache.value)
+    return cache.value as ApiPois
 
+  return await getPoiByCategoryId(
+    siteStore.config!,
+    props.category.id,
+    { geometry_as: 'point', short_description: true },
+  )
+}, {
+  watch: [props.category],
+})
+
+if (error.value || !pois.value)
+  throw createError({ statusCode: 404, statusMessage: 'POIs not found.' })
+
+// Handle default config field if not provided by API
+const fields = computed((): FieldsListItem[] => {
+  return (
+    (pois.value?.features[0].properties.editorial?.list_fields)
+    || [{ field: 'name' }]
+  )
+})
+
+// Transform headers data to be compliant with Vuetify's standards
 const headers = computed((): Array<DataTableHeader> => {
   // Basic Fields
-  const headers: Array<DataTableHeader> = props.fields.map(f => ({
+  const headers: Array<DataTableHeader> = fields.value.map(f => ({
     filterable: true,
     key: f.field,
     title: $propertyTranslations.p(
@@ -62,10 +85,14 @@ const headers = computed((): Array<DataTableHeader> => {
 
   return headers
 })
+
+function customFilter(value: any, query: string): boolean {
+  return query !== null && value !== null && typeof value === 'string' && value.toLowerCase().includes(query.toLowerCase())
+}
 </script>
 
 <template>
-  <VCard>
+  <VCard class="mt-8">
     <VToolbar class="pa-2" flat>
       <TeritorioIconBadge
         :color-fill="category.category.color_fill"
@@ -92,8 +119,9 @@ const headers = computed((): Array<DataTableHeader> => {
       />
     </VToolbar>
     <VDataTable
+      :loading="pending"
       :headers="headers"
-      :items="pois.features"
+      :items="pois?.features"
       :no-data-text="t('poisTable.empty')"
       :search="search"
       :custom-filter="customFilter"
@@ -127,6 +155,9 @@ const headers = computed((): Array<DataTableHeader> => {
             />
           </td>
         </tr>
+      </template>
+      <template #loading>
+        <VSkeletonLoader type="table-row@10" />
       </template>
     </VDataTable>
   </VCard>
