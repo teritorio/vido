@@ -77,6 +77,10 @@ export default defineNuxtComponent({
       )
     },
 
+    colorFill(): string {
+      return this.poi.properties.display?.color_fill || 'black'
+    },
+
     colorLine(): string {
       return this.poi.properties.display?.color_line || 'black'
     },
@@ -192,7 +196,7 @@ export default defineNuxtComponent({
           "
           class="tw-ml-6 tw-px-3 tw-py-1.5 tw-text-xs tw-text-zinc-800 tw-bg-zinc-100 hover:tw-bg-zinc-200 focus:tw-bg-zinc-200 tw-transition tw-transition-colors tw-rounded-md"
           :to="websiteDetails"
-          :style="`background:${colorLine};color:white`"
+          :style="`background:${colorFill};color:white`"
           rel="noopener noreferrer"
           @click.stop="trackingPopupEvent('details')"
         >
@@ -202,7 +206,7 @@ export default defineNuxtComponent({
           v-else
           class="tw-ml-6 tw-px-3 tw-py-1.5 tw-text-xs tw-text-zinc-800 tw-bg-zinc-100 hover:tw-bg-zinc-200 focus:tw-bg-zinc-200 tw-transition tw-transition-colors tw-rounded-md"
           :href="websiteDetails"
-          :style="`background:${colorLine};color:white`"
+          :style="`background:${colorFill};color:white`"
           rel="noopener noreferrer"
           @click.stop="trackingPopupEvent('details')"
         >
