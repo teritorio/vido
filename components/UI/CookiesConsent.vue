@@ -5,6 +5,7 @@ import type { VidoConfig } from '~/utils/types-config'
 import { defineNuxtComponent, useRequestHeaders } from '#app'
 import 'vue-cookie-accept-decline/dist/vue-cookie-accept-decline.css'
 import ExternalLink from '~/components/UI/ExternalLink.vue'
+import { siteStore as useSiteStore } from '~/stores/site'
 
 export default defineNuxtComponent({
   components: {
@@ -14,7 +15,7 @@ export default defineNuxtComponent({
 
   computed: {
     vidoConfig(): VidoConfig {
-      return this.$vidoConfig(useRequestHeaders())
+      return useSiteStore().config || this.$vidoConfig(useRequestHeaders())
     },
 
     doNotTrack(): boolean {
