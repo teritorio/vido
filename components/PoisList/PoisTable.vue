@@ -2,15 +2,16 @@
 import type { PropType } from 'vue'
 import { defineNuxtComponent } from '#app'
 import Field from '~/components/Fields/Field.vue'
-import type { ApiPois, FieldsListItem } from '~/lib/apiPois'
+import type { ApiPoi, ApiPoiProperties, ApiPois, FieldsListItem } from '~/lib/apiPois'
 import { PropertyTranslationsContextEnum } from '~/plugins/property-translations'
-import ContributionMixin from '~/mixins/contribution'
+import ContribFieldGroup from '~/components/Fields/ContribFieldGroup.vue'
+import type { ContribFields } from '~/composables/useContrib'
 
 export default defineNuxtComponent({
   components: {
+    ContribFieldGroup,
     Field,
   },
-  mixins: [ContributionMixin],
   props: {
     fields: {
       type: Array as PropType<FieldsListItem[]>,
@@ -21,7 +22,18 @@ export default defineNuxtComponent({
       required: true,
     },
   },
-
+  data(): {
+    contribMode: boolean
+    isContribEligible: (properties: ApiPoiProperties) => boolean
+    getContributorFields: (feature: ApiPoi) => ContribFields
+  } {
+    const { contribMode, isContribEligible, getContributorFields } = useContrib()
+    return {
+      contribMode,
+      isContribEligible,
+      getContributorFields,
+    }
+  },
   computed: {
     headers(): { value: string, text: string }[] {
       const h = this.fields.map(field => ({
@@ -32,13 +44,11 @@ export default defineNuxtComponent({
         ),
       }))
       h.push({ value: '', text: '' })
-
       if (this.contribMode)
         h.push({ value: '', text: this.$t('fields.contrib.heading') })
 
       return h
     },
-
     context(): PropertyTranslationsContextEnum {
       return PropertyTranslationsContextEnum.List
     },

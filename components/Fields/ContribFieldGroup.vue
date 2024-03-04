@@ -1,12 +1,12 @@
 <script setup lang="ts">
 /* eslint-disable vue/prop-name-casing */
 import { pickBy } from 'lodash'
-import type { ContribFields, Link } from '~/middleware/contrib-mode.global'
+import type { ContribFields, Link } from '~/composables/useContrib'
 import ExternalLink from '~/components/UI/ExternalLink.vue'
 
 const props = defineProps<{
   editor_id: ContribFields['editor_id']
-  mapillary_link: ContribFields['mapillary_link']
+  mapillary_link?: ContribFields['mapillary_link']
   osm_note: ContribFields['osm_note']
 }>()
 
