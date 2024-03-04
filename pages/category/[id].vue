@@ -42,10 +42,6 @@ if (!config)
 // Fetch common data
 // TODO: Move common data on upper-level (ex: layout)
 const { data, error } = await useLazyAsyncData('categoryList', async () => {
-  const { data: cache } = useNuxtData('categoryList')
-  if (cache.value)
-    return cache.value
-
   const [settings, contents, translations] = await Promise.all([
     getSettings(config!),
     getContents(config!),
