@@ -16,13 +16,14 @@ import RelativeDate from '~/components/UI/RelativeDate.vue'
 import TeritorioIcon from '~/components/UI/TeritorioIcon.vue'
 import type { ContentEntry } from '~/lib/apiContent'
 import type { ApiPoiDeps } from '~/lib/apiPoiDeps'
-import type { ApiPoi, ApiPoiId, FieldsList } from '~/lib/apiPois'
+import type { ApiPoi, ApiPoiId, ApiPoiProperties, FieldsList } from '~/lib/apiPois'
 import type { Settings } from '~/lib/apiSettings'
 import { PropertyTranslationsContextEnum } from '~/plugins/property-translations'
 import { favoritesStore } from '~/stores/favorite'
 import { OriginEnum } from '~/utils/types'
 import FieldsHeader from '~/components/UI/FieldsHeader.vue'
 import ContribFieldGroup from '~/components/Fields/ContribFieldGroup.vue'
+import type { ContribFields } from '~/composables/useContrib'
 
 export default defineNuxtComponent({
   components: {
@@ -60,7 +61,11 @@ export default defineNuxtComponent({
     },
   },
 
-  data() {
+  data(): {
+    contribMode: boolean
+    isContribEligible: (properties: ApiPoiProperties) => boolean
+    getContributorFields: (feature: ApiPoi) => ContribFields
+  } {
     const { contribMode, isContribEligible, getContributorFields } = useContrib()
 
     return {

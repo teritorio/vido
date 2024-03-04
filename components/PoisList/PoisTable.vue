@@ -2,9 +2,10 @@
 import type { PropType } from 'vue'
 import { defineNuxtComponent } from '#app'
 import Field from '~/components/Fields/Field.vue'
-import type { ApiPois, FieldsListItem } from '~/lib/apiPois'
+import type { ApiPoi, ApiPoiProperties, ApiPois, FieldsListItem } from '~/lib/apiPois'
 import { PropertyTranslationsContextEnum } from '~/plugins/property-translations'
 import ContribFieldGroup from '~/components/Fields/ContribFieldGroup.vue'
+import type { ContribFields } from '~/composables/useContrib'
 
 export default defineNuxtComponent({
   components: {
@@ -21,7 +22,11 @@ export default defineNuxtComponent({
       required: true,
     },
   },
-  data() {
+  data(): {
+    contribMode: boolean
+    isContribEligible: (properties: ApiPoiProperties) => boolean
+    getContributorFields: (feature: ApiPoi) => ContribFields
+  } {
     const { contribMode, isContribEligible, getContributorFields } = useContrib()
     return {
       contribMode,
