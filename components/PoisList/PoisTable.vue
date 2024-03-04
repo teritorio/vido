@@ -29,21 +29,15 @@ const { contribMode, isContribEligible, getContributorFields } = useContrib()
 const search = ref('')
 
 // Fetch POIs by Cache or API
-const { data: pois, pending, error } = await useAsyncData(`pois-${props.category.id}`, async () => {
-  const { data: cache } = useNuxtData(`pois-${props.category.id}`)
-  if (cache.value)
-    return cache.value as ApiPois
-
-  return await getPoiByCategoryId(
-    siteStore.config!,
-    props.category.id,
-    { geometry_as: 'point', short_description: true },
-  )
-}, {
+const { data: pois, pending, error } = await useAsyncData(`pois-${props.category.id}`, () => getPoiByCategoryId(
+  siteStore.config!,
+  props.category.id,
+  { geometry_as: 'point', short_description: true },
+), {
   watch: [props.category],
 })
 
-if (error.value || !pois.value)
+if (error.value)
   throw createError({ statusCode: 404, statusMessage: 'POIs not found.' })
 
 // Handle default config field if not provided by API
