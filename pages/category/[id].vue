@@ -41,7 +41,7 @@ if (!config)
 
 // Fetch common data
 // TODO: Move common data on upper-level (ex: layout)
-const { data, error } = await useLazyAsyncData('categoryList', async () => {
+const { data, error } = await useAsyncData('categoryList', async () => {
   const [settings, contents, translations] = await Promise.all([
     getSettings(config!),
     getContents(config!),
@@ -84,24 +84,29 @@ function onCategoryUpdate(categoryId: number) {
 </script>
 
 <template>
-  <VContainer fluid>
-    <Header
-      :theme="settings.themes[0]"
-      :nav-menu-entries="contents"
-      :color-line="category?.category.color_line"
-    >
-      <template #search>
-        <CategorySelector
-          class="w-50"
-          :menu-items="menuStore.menuItems || {}"
-          :category-id="id"
-          @category-change="onCategoryUpdate"
-        />
-      </template>
-    </Header>
-    <PoisTable :category="category" />
-    <Footer :attributions="settings.attributions" />
-  </VContainer>
+  <Suspense>
+    <VContainer fluid>
+      <Header
+        :theme="settings.themes[0]"
+        :nav-menu-entries="contents"
+        :color-line="category?.category.color_line"
+      >
+        <template #search>
+          <CategorySelector
+            class="w-50"
+            :menu-items="menuStore.menuItems || {}"
+            :category-id="id"
+            @category-change="onCategoryUpdate"
+          />
+        </template>
+      </Header>
+      <PoisTable :category="category" />
+      <Footer :attributions="settings.attributions" />
+    </VContainer>
+    <template #fallback>
+      Loading ....
+    </template>
+  </Suspense>
 </template>
 
 <style lang="scss" scoped>
