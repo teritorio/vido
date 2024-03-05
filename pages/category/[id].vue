@@ -1,7 +1,10 @@
 <script setup lang="ts">
+import type { ContentEntry } from '~/lib/apiContent'
 import { getContents } from '~/lib/apiContent'
 import { getMenu } from '~/lib/apiMenu'
+import type { PropertyTranslations } from '~/lib/apiPropertyTranslations'
 import { getPropertyTranslations } from '~/lib/apiPropertyTranslations'
+import type { Settings } from '~/lib/apiSettings'
 import { getSettings, headerFromSettings } from '~/lib/apiSettings'
 import { vidoConfig } from '~/plugins/vido-config'
 import { menuStore as useMenuStore } from '~/stores/menu'
@@ -30,7 +33,7 @@ const { $vidoConfigSet, $settings, $propertyTranslations, $trackingInit } = useN
 // TODO: Get this globally as share it across components / pages
 let config = siteStore.config
 
-if (process.server) {
+if (process.server && !config) {
   config = vidoConfig(useRequestHeaders())
   $vidoConfigSet(config)
   siteStore.$patch({ config })
@@ -41,24 +44,48 @@ if (!config)
 
 // Fetch common data
 // TODO: Move common data on upper-level (ex: layout)
-const { data, error } = await useAsyncData('categoryList', async () => {
-  const [settings, contents, translations] = await Promise.all([
-    getSettings(config!),
-    getContents(config!),
-    getPropertyTranslations(config!),
-    getMenu(config!).then((menu) => {
-      menuStore.fetchConfig(menu)
-      return menu
-    }),
-  ])
+const categoryListData = ref<{
+  settings: Settings
+  contents: ContentEntry[]
+  translations: PropertyTranslations
+}>()
+const { data: cachedCategoryListData } = useNuxtData('categoryList')
 
-  return { settings, contents, translations }
-})
+if (cachedCategoryListData.value) {
+  categoryListData.value = cachedCategoryListData.value
+}
+else {
+  const { data, error } = await useAsyncData('categoryList', async () => {
+    const [settings, contents, translations] = await Promise.all([
+      getSettings(config!),
+      getContents(config!),
+      getPropertyTranslations(config!),
+    ])
 
-if (error.value || !data.value)
-  throw createError({ statusCode: 404, statusMessage: 'Page not found.', fatal: true })
+    return { settings, contents, translations }
+  })
 
-const { settings, contents, translations } = data.value
+  if (error.value || !data.value)
+    throw createError({ statusCode: 404, statusMessage: 'Global config not found.', fatal: true })
+
+  categoryListData.value = data.value
+}
+
+// MenuItems
+const { data: cachedMenuItems } = useNuxtData('menu-items')
+if (cachedMenuItems.value) {
+  menuStore.fetchConfig(cachedMenuItems.value)
+}
+else {
+  const { data, error } = await useAsyncData('menu-items', async () => await getMenu(config!))
+
+  if (error.value || !data.value)
+    throw createError({ statusCode: 404, statusMessage: 'Menu not found', fatal: true })
+
+  menuStore.fetchConfig(data.value)
+}
+
+const { settings, contents, translations } = categoryListData.value!
 const category = menuStore.getCurrentCategory(id)
 
 if (!category) {
@@ -84,29 +111,24 @@ function onCategoryUpdate(categoryId: number) {
 </script>
 
 <template>
-  <Suspense>
-    <VContainer fluid>
-      <Header
-        :theme="settings.themes[0]"
-        :nav-menu-entries="contents"
-        :color-line="category?.category.color_line"
-      >
-        <template #search>
-          <CategorySelector
-            class="w-50"
-            :menu-items="menuStore.menuItems || {}"
-            :category-id="id"
-            @category-change="onCategoryUpdate"
-          />
-        </template>
-      </Header>
-      <PoisTable :category="category" />
-      <Footer :attributions="settings.attributions" />
-    </VContainer>
-    <template #fallback>
-      Loading ....
-    </template>
-  </Suspense>
+  <VContainer fluid>
+    <Header
+      :theme="settings.themes[0]"
+      :nav-menu-entries="contents"
+      :color-line="category?.category.color_line"
+    >
+      <template #search>
+        <CategorySelector
+          class="w-50"
+          :menu-items="menuStore.menuItems || {}"
+          :category-id="id"
+          @category-change="onCategoryUpdate"
+        />
+      </template>
+    </Header>
+    <PoisTable :category="category" />
+    <Footer :attributions="settings.attributions" />
+  </VContainer>
 </template>
 
 <style lang="scss" scoped>
