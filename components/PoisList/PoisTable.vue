@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { PropertyTranslationsContextEnum } from '~/plugins/property-translations'
-import type { ApiPois, FieldsListItem } from '~/lib/apiPois'
+import type { FieldsListItem } from '~/lib/apiPois'
 import type { ApiMenuCategory } from '~/lib/apiMenu'
 import Field from '~/components/Fields/Field.vue'
 import IconButton from '~/components/UI/IconButton.vue'
@@ -27,18 +27,28 @@ const siteStore = useSiteStore()
 const { $propertyTranslations } = useNuxtApp()
 const { contribMode, isContribEligible, getContributorFields } = useContrib()
 const search = ref('')
+const cachedKey = computed(() => `pois-${props.category.id}`)
 
 // Fetch POIs by Cache or API
-const { data: pois, pending, error } = await useAsyncData(`pois-${props.category.id}`, () => getPoiByCategoryId(
-  siteStore.config!,
-  props.category.id,
-  { geometry_as: 'point', short_description: true },
-), {
-  watch: [props.category],
-})
+const pois = ref()
+const loadingState = ref(false)
+const { data: cachedPois } = useNuxtData(cachedKey.value)
+if (cachedPois.value) {
+  pois.value = cachedPois.value
+}
+else {
+  const { data, pending, error } = await useAsyncData(cachedKey.value, () => getPoiByCategoryId(
+    siteStore.config!,
+    props.category.id,
+    { geometry_as: 'point', short_description: true },
+  ))
 
-if (error.value)
-  throw createError({ statusCode: 404, statusMessage: 'POIs not found.' })
+  if (error.value || !data.value)
+    throw createError({ statusCode: 404, statusMessage: 'POIs not found.' })
+
+  pois.value = data.value
+  loadingState.value = pending.value
+}
 
 // Handle default config field if not provided by API
 const fields = computed((): FieldsListItem[] => {
@@ -113,7 +123,7 @@ function customFilter(value: any, query: string): boolean {
       />
     </VToolbar>
     <VDataTable
-      :loading="pending"
+      :loading="loadingState"
       :headers="headers"
       :items="pois?.features"
       :no-data-text="t('poisTable.empty')"
