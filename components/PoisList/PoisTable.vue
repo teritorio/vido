@@ -93,6 +93,10 @@ const headers = computed((): Array<DataTableHeader> => {
 function customFilter(value: any, query: string): boolean {
   return query !== null && value !== null && typeof value === 'string' && value.toLowerCase().includes(query.toLowerCase())
 }
+
+function getContext(key: string) {
+  return key === 'opening_hours' ? PropertyTranslationsContextEnum.Card : PropertyTranslationsContextEnum.List
+}
 </script>
 
 <template>
@@ -150,7 +154,7 @@ function customFilter(value: any, query: string): boolean {
             </IconButton>
             <Field
               v-else
-              :context="PropertyTranslationsContextEnum.List"
+              :context="getContext(col.key)"
               :recursion-stack="[col.key]"
               :field="{ field: col.key }"
               :details="t('poisTable.details')"
