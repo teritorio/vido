@@ -9,6 +9,7 @@ import {
   VListItemTitle,
 } from 'vuetify/components/VList'
 
+import { localeIncludes } from 'locale-includes'
 import { defineNuxtComponent } from '#app'
 import TeritorioIcon from '~/components/UI/TeritorioIcon.vue'
 import type { ApiMenuCategory, MenuItem } from '~/lib/apiMenu'
@@ -40,6 +41,14 @@ export default defineNuxtComponent({
       type: String,
       default: 'categorySelector.placeholderSelect',
     },
+  },
+
+  setup() {
+    const { locale } = useI18n()
+
+    return {
+      locale,
+    }
   },
 
   computed: {
@@ -79,6 +88,12 @@ export default defineNuxtComponent({
         .sort((a, b) => a && b ? a.title.localeCompare(b.title, localeCompareOptions) : -1)
     },
   },
+
+  methods: {
+    customFilter(item: string, query: string) {
+      return localeIncludes(item, query, { locales: this.locale, sensitivity: 'base' })
+    },
+  },
 })
 </script>
 
@@ -93,6 +108,7 @@ export default defineNuxtComponent({
       variant="solo"
       rounded
       hide-details="auto"
+      :custom-filter="customFilter"
       @update:model-value="$emit('categoryChange', $event)"
     >
       <template #prepend-inner>

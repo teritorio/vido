@@ -3181,6 +3181,7 @@ __metadata:
     json-loader: ^0.5.7
     lint-staged: ^15.2.0
     loader-utils: ^3.2.1
+    locale-includes: ^1.0.6
     lodash.debounce: ^4.0.8
     lodash.get: ^4.4.2
     lodash.throttle: ^4.1.1
@@ -10289,6 +10290,13 @@ __metadata:
     mlly: ^1.4.2
     pkg-types: ^1.0.3
   checksum: fe289ac59f52aba1d443534874f270789195d64aa6074cf0ad1b8f73de469ba49d83664e053accaf3f8e52a735ed6e0e4aca23878b00728cd3b2966826eb31f7
+  languageName: node
+  linkType: hard
+
+"locale-includes@npm:^1.0.6":
+  version: 1.0.6
+  resolution: "locale-includes@npm:1.0.6"
+  checksum: 817d49df2f4cbb336f5768937110613b6e29b99071f15093faa1b46035819e4b0d4dbb27edf67fc86e262f52ab81109bbb668a4dd3506e217366280f135147c9
   languageName: node
   linkType: hard
 
