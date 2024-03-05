@@ -115,7 +115,6 @@ function onCategoryUpdate(categoryId: number) {
     <Header
       :theme="settings.themes[0]"
       :nav-menu-entries="contents"
-      :color-line="category?.category.color_line"
     >
       <template #search>
         <CategorySelector
