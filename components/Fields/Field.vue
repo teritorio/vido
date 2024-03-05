@@ -231,7 +231,7 @@ export default defineNuxtComponent({
         :key="`website_${item}`"
       >
         <ExternalLink :href="item">
-          {{ item }}
+          {{ context !== 'label_list' ? item : '' }}
         </ExternalLink>
       </div>
 
@@ -241,7 +241,7 @@ export default defineNuxtComponent({
         :key="`email_${item}`"
       >
         <ExternalLink :href="`mailto:${item}`" icon="envelope">
-          {{ item }}
+          {{ context !== 'label_list' ? item : '' }}
         </ExternalLink>
       </div>
 
