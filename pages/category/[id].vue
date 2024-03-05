@@ -106,6 +106,9 @@ if (process.client)
   $trackingInit(config)
 
 function onCategoryUpdate(categoryId: number) {
+  if (!categoryId)
+    return
+
   router.push(`/category/${categoryId}`)
 }
 </script>
