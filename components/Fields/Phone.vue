@@ -3,6 +3,7 @@ import type { PropType } from 'vue'
 
 import { defineNuxtComponent } from '#app'
 import ExternalLink from '~/components/UI/ExternalLink.vue'
+import useDevice from '~/composables/useDevice'
 
 export default defineNuxtComponent({
   components: {
@@ -16,13 +17,17 @@ export default defineNuxtComponent({
     },
   },
 
+  setup() {
+    const device = useDevice()
+
+    return {
+      device,
+    }
+  },
+
   computed: {
     numberFormated(): string {
       return this.number.replaceAll(' ', ' ')
-    },
-
-    phone(): boolean {
-      return this.$device.value.phone
     },
   },
 })
@@ -31,7 +36,7 @@ export default defineNuxtComponent({
 <template>
   <client-only>
     <ExternalLink
-      v-if="phone"
+      v-if="device.phone"
       :href="`tel:${number}`"
       :title="$t('fields.phone.callNumber')"
     >
