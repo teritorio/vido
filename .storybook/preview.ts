@@ -4,6 +4,7 @@ import { action } from '@storybook/addon-actions'
 import { createI18n } from 'vue-i18n'
 import { config } from '@fortawesome/fontawesome-svg-core'
 import { propertyTranslationsVuePlugin } from '../plugins/property-translations'
+import { deviceVuePlugin } from '../plugins/device'
 import fontawesome from '../plugins/fontawesome'
 import messages from '../locales'
 
@@ -58,6 +59,7 @@ setup((app) => {
   app.use(fontawesome)
   app.use(i18n)
   app.use(propertyTranslationsVuePlugin)
+  app.use(deviceVuePlugin)
 
   app.component('NuxtLink', {
     props: {
