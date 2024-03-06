@@ -1,26 +1,8 @@
-<script lang="ts">
-import type { PropType } from 'vue'
-
-import { defineNuxtComponent } from '#app'
-
-export function isDateRangeEmpty(properties: {
-  [key: string]: string
-}): boolean {
-  return !('start' in properties) && !('end' in properties)
-}
-
-export default defineNuxtComponent({
-  props: {
-    start: {
-      type: String as PropType<string>,
-      default: null,
-    },
-    end: {
-      type: String as PropType<string>,
-      default: null,
-    },
-  },
-})
+<script setup lang="ts">
+defineProps<{
+  start?: string
+  end?: string
+}>()
 </script>
 
 <template>

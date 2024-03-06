@@ -1,31 +1,37 @@
-import DateRange from '~/components/Fields/DateRange.vue'
-import { bind } from '~/lib/storybook-types'
+import type { Meta, StoryObj } from '@storybook/vue3'
+import DateRange from './DateRange.vue'
 
-export default {
-  title: 'Fields/DateRange',
+const meta = {
   component: DateRange,
-}
+} satisfies Meta<typeof DateRange>
 
-const defaultProps = {
-  start: '01/01/01',
-  end: '02/02/02',
-}
+export default meta
+type Story = StoryObj<typeof DateRange>
 
-export const Default = bind(DateRange, {
-  ...defaultProps,
-})
+export const Default = {
+  args: {
+    start: '01/01/01',
+    end: '02/02/02',
+  },
+} satisfies Story
 
-export const DefaultStart = bind(DateRange, {
-  ...defaultProps,
-  end: undefined,
-})
+export const StartDate = {
+  args: {
+    ...Default.args,
+    end: undefined,
+  },
+} satisfies Story
 
-export const DefaultEnd = bind(DateRange, {
-  ...defaultProps,
-  start: undefined,
-})
+export const EndDate = {
+  args: {
+    ...Default.args,
+    start: undefined,
+  },
+} satisfies Story
 
-export const DefaultSame = bind(DateRange, {
-  ...defaultProps,
-  end: defaultProps.start,
-})
+export const SameDay = {
+  args: {
+    ...Default.args,
+    end: Default.args.start,
+  },
+} satisfies Story
