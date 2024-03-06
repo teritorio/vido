@@ -1,4 +1,10 @@
+import { setup } from '@storybook/vue3'
 import type { Preview } from '@storybook/vue3'
+import { propertyTranslationsVuePlugin } from '../plugins/property-translations'
+
+setup((app) => {
+  app.use(propertyTranslationsVuePlugin)
+})
 
 const preview: Preview = {
   parameters: {
