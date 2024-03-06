@@ -1,7 +1,9 @@
 import { setup } from '@storybook/vue3'
 import type { Preview } from '@storybook/vue3'
 import { createI18n } from 'vue-i18n'
+import { config } from '@fortawesome/fontawesome-svg-core'
 import { propertyTranslationsVuePlugin } from '../plugins/property-translations'
+import fontawesome from '../plugins/fontawesome'
 import messages from '../locales'
 
 // After @nuxtjs/i18n module update
@@ -51,6 +53,8 @@ const preview: Preview = {
 }
 
 setup((app) => {
+  config.autoAddCss = true
+  app.use(fontawesome)
   app.use(i18n)
   app.use(propertyTranslationsVuePlugin)
 })
