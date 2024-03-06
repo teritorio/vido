@@ -1,5 +1,6 @@
 import { setup } from '@storybook/vue3'
 import type { Preview } from '@storybook/vue3'
+import { action } from '@storybook/addon-actions'
 import { createI18n } from 'vue-i18n'
 import { config } from '@fortawesome/fontawesome-svg-core'
 import { propertyTranslationsVuePlugin } from '../plugins/property-translations'
@@ -57,6 +58,21 @@ setup((app) => {
   app.use(fontawesome)
   app.use(i18n)
   app.use(propertyTranslationsVuePlugin)
+
+  app.component('NuxtLink', {
+    props: {
+      to: {
+        type: String,
+        required: true,
+      },
+    },
+    methods: {
+      log() {
+        action('link target')(this.to)
+      },
+    },
+    template: '<a @click="log"><slot></slot></a>',
+  })
 })
 
 export default preview
