@@ -13,6 +13,7 @@
     "dev": "nuxt dev",
     "build": "nuxt build",
     "build:histoire": "rm -fr __screenshots__/current/ && mkdir -p __screenshots__/current/ && yarn histoire build",
+    "build-storybook": "storybook build",
     "generate": "nuxt generate",
     "start": "CONFIG=${CONFIG:-$PWD/vidos-config.json} nuxt start",
     "start:histoire": "CONFIG=vidos-config-empty.json yarn histoire dev",
@@ -20,6 +21,7 @@
     "lint": "yarn lint:js && yarn lint:style",
     "lint:js": "eslint .",
     "lint:style": "stylelint --cache **/*.{vue,css,scss}",
+    "storybook": "storybook dev -p 6006",
     "test": "yarn test:cypress && yarn test:histoire",
     "test:cypress": "yarn build-fixture && yarn run cypress run",
     "test:histoire:report": "yarn build:histoire && npx --yes -- reg-cli __screenshots__/current __screenshots__/actual __screenshots__/diff -R __screenshots__/diff/index.html -J __screenshots__/diff/index.json --thresholdPixel 5 --matchingThreshold 0.3 --extendedErrors || exit 0",
@@ -73,6 +75,13 @@
     "@nuxt/image-edge": "1.0.0-rc.1-28119537.bfe30ab",
     "@nuxt/types": "^2.17.0",
     "@nuxtjs/i18n": "^8.0.0-beta.12",
+    "@storybook/addon-essentials": "^7.6.17",
+    "@storybook/addon-interactions": "^7.6.17",
+    "@storybook/addon-links": "^7.6.17",
+    "@storybook/blocks": "^7.6.17",
+    "@storybook/test": "^7.6.17",
+    "@storybook/vue3": "^7.6.17",
+    "@storybook/vue3-vite": "^7.6.17",
     "@tailwindcss/forms": "^0.5.3",
     "@teritorio/font-teritorio": "^2.5.0",
     "@types/lodash.debounce": "^4.0.7",
@@ -87,6 +96,7 @@
     "cypress-html-validate": "^6.0.0",
     "cypress-terminal-report": "^5.2.0",
     "eslint": "^8.43.0",
+    "eslint-plugin-storybook": "^0.8.0",
     "geojson": "^0.5.0",
     "histoire": "^0.16.2",
     "html-validate": "^8.0.5",
@@ -99,9 +109,12 @@
     "nuxt-simple-sitemap": "^2.7.0",
     "postcss": "^8.4.24",
     "postcss-html": "^1.6.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
     "sass": "^1.63.4",
     "sass-loader": "^13.3.2",
     "simple-git-hooks": "^2.9.0",
+    "storybook": "^7.6.17",
     "stylelint": "^16.1.0",
     "stylelint-config-recommended-vue": "^1.5.0",
     "stylelint-config-standard-scss": "^13.0.0",
@@ -117,5 +130,10 @@
   "lint-staged": {
     "*.{css,scss,vue}": "stylelint",
     "*.{js,jsx,ts,tsx,vue}": "eslint"
+  },
+  "eslintConfig": {
+    "extends": [
+      "plugin:storybook/recommended"
+    ]
   }
 }
