@@ -4,6 +4,7 @@ import { mapState } from 'pinia'
 
 import { defineNuxtComponent } from '#app'
 import { mapStore } from '~/stores/map'
+import useDevice from '~/composables/useDevice'
 
 export default defineNuxtComponent({
   components: {
@@ -12,10 +13,14 @@ export default defineNuxtComponent({
 
   computed: {
     ...mapState(mapStore, ['isModeFavorites']),
+  },
 
-    device() {
-      return this.$device
-    },
+  setup() {
+    const device = useDevice()
+
+    return {
+      device,
+    }
   },
 
   emits: {
@@ -42,7 +47,7 @@ export default defineNuxtComponent({
     <p class="tw-ml-2">
       {{
         $t(
-          device.value.smallScreen
+          device.smallScreen
             ? isModeFavorites
               ? 'headerMenu.backToMenuFavorites'
               : 'headerMenu.backToMenuExplorer'
