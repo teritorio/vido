@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
+import { localeIncludes } from 'locale-includes'
 import { PropertyTranslationsContextEnum } from '~/plugins/property-translations'
 import type { ApiPoi, FieldsListItem } from '~/lib/apiPois'
 import type { ApiMenuCategory } from '~/lib/apiMenu'
@@ -141,7 +142,12 @@ function customSort(a: string, b: string) {
 }
 
 function customFilter(value: any, query: string): boolean {
-  return query !== null && value !== null && typeof value === 'string' && value.toLowerCase().includes(query.toLowerCase())
+  value = valueToString(value)
+
+  if (!value)
+    return false
+
+  return localeIncludes(value, query, { locales: locale.value, sensitivity: 'base' })
 }
 
 function getContext(key: string) {
