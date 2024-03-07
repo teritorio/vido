@@ -35,6 +35,7 @@ import { filterRouteByCategories, filterRouteByPoiIds } from '~/utils/styles'
 import type { LatLng } from '~/utils/types'
 import { MapStyleEnum } from '~/utils/types'
 import { getHashPart } from '~/utils/url'
+import useDevice from '~/composables/useDevice'
 
 type ITMarker = InstanceType<typeof Marker>
 
@@ -111,8 +112,12 @@ export default defineNuxtComponent({
       default: undefined,
     },
   },
+
   setup() {
+    const device = useDevice()
+
     return {
+      device,
       mapBase: ref<InstanceType<typeof MapBase>>(),
     }
   },
@@ -135,10 +140,6 @@ export default defineNuxtComponent({
     ...mapState(mapStore, ['selectedFeature']),
     ...mapState(menuStore, ['isLoadingFeatures']),
     ...mapWritableState(mapStore, ['center']),
-
-    device() {
-      return this.$device.value
-    },
 
     availableStyles(): MapStyleEnum[] {
       return [MapStyleEnum.vector, MapStyleEnum.aerial, MapStyleEnum.bicycle]

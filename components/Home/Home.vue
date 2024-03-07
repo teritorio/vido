@@ -31,6 +31,7 @@ import { menuStore } from '~/stores/menu'
 import { Mode, OriginEnum } from '~/utils/types'
 import { getHashPart, setHashParts } from '~/utils/url'
 import { flattenFeatures } from '~/utils/utilities'
+import useDevice from '~/composables/useDevice'
 
 export default defineNuxtComponent({
   components: {
@@ -59,8 +60,11 @@ export default defineNuxtComponent({
   },
 
   setup() {
+    const device = useDevice()
+
     return {
       bottomMenu: ref<InstanceType<typeof HTMLDivElement>>(),
+      device,
     }
   },
 
@@ -111,7 +115,7 @@ export default defineNuxtComponent({
 
     isBottomMenuOpened(): boolean {
       return (
-        (this.$device.value.smallScreen && this.isPoiCardVisible)
+        (this.device.smallScreen && this.isPoiCardVisible)
         || this.isMenuItemOpen
       )
     },
@@ -127,7 +131,7 @@ export default defineNuxtComponent({
     },
 
     fitBoundsPaddingOptions(): FitBoundsOptions['padding'] {
-      if (this.$device.value.smallScreen) {
+      if (this.device.smallScreen) {
         return {
           top: 100,
           bottom: 50,
@@ -335,7 +339,7 @@ export default defineNuxtComponent({
         this.mode = Mode.EXPLORER
         this.goToSelectedFeature()
 
-        if (this.$device.value.smallScreen)
+        if (this.device.smallScreen)
           this.showPoi = false
       }
       else {

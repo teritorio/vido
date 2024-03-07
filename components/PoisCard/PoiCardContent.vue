@@ -13,6 +13,7 @@ import { mapStore } from '~/stores/map'
 import { isIOS } from '~/utils/isIOS'
 import ContribFieldGroup from '~/components/Fields/ContribFieldGroup.vue'
 import type { ContribFields } from '~/composables/useContrib'
+import useDevice from '~/composables/useDevice'
 
 export default defineNuxtComponent({
   components: {
@@ -38,6 +39,14 @@ export default defineNuxtComponent({
     },
   },
 
+  setup() {
+    const device = useDevice()
+
+    return {
+      device,
+    }
+  },
+
   data(): {
     contribMode: boolean
     isContribEligible: (properties: ApiPoiProperties) => boolean
@@ -55,10 +64,6 @@ export default defineNuxtComponent({
   computed: {
     ...mapState(mapStore, ['isModeExplorer']),
     ...mapState(favoritesStore, ['favoritesIds']),
-
-    device() {
-      return this.$device
-    },
 
     id(): ApiPoiId {
       return this.poi.properties.metadata.id
@@ -256,7 +261,7 @@ export default defineNuxtComponent({
       class="tw-flex tw-items-center tw-space-x-2 tw-justify-evenly tw-shrink-0 tw-bottom-0 tw-pt-2"
     >
       <a
-        v-if="device.value.phone && coordinatesHref"
+        v-if="device.phone && coordinatesHref"
         :href="coordinatesHref"
         class="tw-flex tw-flex-col tw-items-center tw-flex-1 tw-h-full tw-p-2 tw-space-y-2 tw-rounded-lg hover:tw-bg-zinc-100"
         :title="$t('poiCard.findRoute')"

@@ -11,6 +11,7 @@ import FavoriteIcon from '~/components/UI/FavoriteIcon.vue'
 import type { ApiPoi, ApiPoiId } from '~/lib/apiPois'
 import { getPois } from '~/lib/apiPois'
 import { mapStore } from '~/stores/map'
+import useDevice from '~/composables/useDevice'
 
 export default defineNuxtComponent({
   components: {
@@ -47,6 +48,14 @@ export default defineNuxtComponent({
     toggleFavorites: () => true,
   },
 
+  setup() {
+    const device = useDevice()
+
+    return {
+      device,
+    }
+  },
+
   data(): {
     isCopied: boolean
     favs: ApiPoi[]
@@ -61,9 +70,6 @@ export default defineNuxtComponent({
 
   computed: {
     ...mapState(mapStore, ['isModeFavorites']),
-    smallScreen(): boolean {
-      return this.$device.value.smallScreen
-    },
   },
   methods: {
     async fetchFavorites(ids: number[]) {
@@ -153,7 +159,7 @@ export default defineNuxtComponent({
     <div>
       <v-dialog
         v-model="notebookModal"
-        :fullscreen="smallScreen"
+        :fullscreen="device.smallScreen"
         max-width="80rem"
       >
         <FavoriteNoteBook

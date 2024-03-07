@@ -6,7 +6,7 @@ import type { PropType } from 'vue'
 import { defineNuxtComponent } from '#app'
 import AddressField, { isAddressFieldEmpty } from '~/components/Fields/AddressField.vue'
 import Coordinates, { isCoordinatesEmpty } from '~/components/Fields/Coordinates.vue'
-import DateRange, { isDateRangeEmpty } from '~/components/Fields/DateRange.vue'
+import DateRange from '~/components/Fields/DateRange.vue'
 import Facebook from '~/components/Fields/Facebook.vue'
 import Instagram from '~/components/Fields/Instagram.vue'
 import OpeningHours, { isOpeningHoursSupportedOsmTags } from '~/components/Fields/OpeningHours.vue'
@@ -28,7 +28,7 @@ export function isFiledEmpty(
   else if (field.field === 'addr')
     return isAddressFieldEmpty(properties)
   else if (field.field === 'start_end_date')
-    return isDateRangeEmpty(properties)
+    return !('start' in properties) && !('end' in properties)
   else if (field.field === 'coordinates')
     return isCoordinatesEmpty(geom)
   else

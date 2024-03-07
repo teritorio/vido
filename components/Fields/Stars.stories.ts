@@ -1,23 +1,28 @@
-import Stars from '~/components/Fields/Stars.vue'
-import { bind } from '~/lib/storybook-types'
+import type { Meta, StoryObj } from '@storybook/vue3'
+import Stars from './Stars.vue'
+import { StarsEnum } from '~/utils/types'
 
-export default {
-  title: 'Fields/Stars',
+const meta = {
   component: Stars,
-}
+  argTypes: {
+    stars: {
+      control: 'select',
+      options: StarsEnum,
+    },
+  },
+} satisfies Meta<typeof Stars>
 
-const defaultProps = {
-  stars: 3,
-}
+export default meta
+type Story = StoryObj<typeof Stars>
 
-export const Default = bind(Stars, {
-  ...defaultProps,
-})
+export const Default = {
+  args: {
+    stars: StarsEnum.Four,
+  },
+} satisfies Story
 
-export const More = bind(Stars, {
-  stars: 10,
-})
-
-export const None = bind(Stars, {
-  stars: 0,
-})
+export const SNotation = {
+  args: {
+    stars: StarsEnum.FourS,
+  },
+} satisfies Story

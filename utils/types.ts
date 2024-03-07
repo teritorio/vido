@@ -26,11 +26,22 @@ export enum MapStyleEnum {
 }
 
 export enum OriginEnum {
-
   link_share = 'link_share',
-
   qr_code = 'qr_code',
   facebook = 'facebook',
   twitter = 'twitter',
   whatsapp = 'whatsapp',
+}
+
+export enum StarsEnum {
+  One = '1',
+  OneS = '1S',
+  Two = '2',
+  TwoS = '2S',
+  Three = '3',
+  ThreeS = '3S',
+  Four = '4',
+  FourS = '4S',
+  Five = '5',
+  FiveS = '5S',
 }

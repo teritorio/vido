@@ -1,42 +1,47 @@
-import path from 'node:path'
+import { resolve } from 'node:path'
+import { mergeConfig } from 'vite'
+import type { StorybookConfig } from '@storybook/vue3-vite'
+import AutoImport from 'unplugin-auto-import/vite'
 
-module.exports = {
+const config: StorybookConfig = {
   stories: [
-    '../stories/**/*.stories.mdx',
-    '../stories/**/*.stories.@(js|jsx|ts|tsx)',
-    '../components/**/*.stories.@(js|jsx|ts|tsx)',
+    '../components/**/*.stories.@(js|jsx|mjs|ts|tsx)',
   ],
   addons: [
+    '@storybook/addon-links',
     '@storybook/addon-essentials',
-    {
-      name: '@storybook/addon-postcss',
-      options: {
-        cssLoaderOptions: {
-          importLoaders: 1,
-        },
-        postcssLoaderOptions: {
-          implementation: import('postcss'),
+    '@storybook/addon-interactions',
+  ],
+  framework: {
+    name: '@storybook/vue3-vite',
+    options: {},
+  },
+  docs: {
+    autodocs: 'tag',
+  },
+  viteFinal: async (config) => {
+    return mergeConfig(config, {
+      define: { 'process.env': {} },
+      resolve: {
+        alias: {
+          '~': resolve(__dirname, '../'),
+          // Maybe we could take advantage of auto-imports
+          '#app': resolve(__dirname, '../node_modules/nuxt/dist/app'),
+          '#head': resolve(__dirname, '../node_modules/nuxt/dist/head/runtime'),
+          '#build': resolve(__dirname, '../.nuxt'),
+          '#imports': resolve(__dirname, '../.nuxt/imports'),
+          '#image': resolve(__dirname, '../node_modules/@nuxt/image-edge/dist/runtime'),
         },
       },
-    },
-    'storybook-addon-mock',
-    'storybook-addon-validate-html',
-  ],
-  framework: '@storybook/vue3',
-  core: {
-    builder: '@storybook/builder-vite',
-  },
-  async viteFinal(config, _options) {
-    config.resolve.alias = {
-      ...config.resolve.alias,
-      '~': path.resolve(__dirname, '../'),
-      '#app': path.resolve(__dirname, '../node_modules/nuxt/dist/app'),
-      '#app/*': path.resolve(__dirname, '../node_modules/nuxt/dist/app/*'),
-      '#head': path.resolve(__dirname, '../node_modules/nuxt/dist/head/runtime'),
-      '#head/*': path.resolve(__dirname, '../node_modules/nuxt/dist/head/runtime/*'),
-      '#build': path.resolve(__dirname, '../.nuxt'),
-      '#build/*': path.resolve(__dirname, '../.nuxt/*'),
-    }
-    return config
+      plugins: [
+        AutoImport({
+          dts: './.storybook/auto-imports.d.ts',
+          imports: [
+            'vue',
+          ],
+        }),
+      ],
+    })
   },
 }
+export default config
