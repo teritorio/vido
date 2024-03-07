@@ -77,7 +77,7 @@ export default defineNuxtComponent({
     length(): string | undefined {
       const route = Object.values(this.routes)[0]
       return route?.length
-        ? `${route.length} ${this.$t('units.km')}`
+        ? this.$t('units.km', { length: route.length })
         : undefined
     },
   },
@@ -90,10 +90,10 @@ export default defineNuxtComponent({
 
         let string = ''
         if (hours > 0)
-          string += `${hours} ${this.$t('units.hours')}`
+          string += this.$t('units.hours', { hours })
 
         if (minutes > 0)
-          string += `${hours > 0 ? ' ' : ''}${minutes} ${this.$t('units.min')}`
+          string += `${hours > 0 ? ' ' : ''}${this.$t('units.min', { minutes })}`
 
         return string
       }
