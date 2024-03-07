@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
+import { localeIncludes } from 'locale-includes'
 import { PropertyTranslationsContextEnum } from '~/plugins/property-translations'
 import type { ApiPoi, ApiPoiProperties, FieldsListItem } from '~/lib/apiPois'
 import type { ApiMenuCategory } from '~/lib/apiMenu'
@@ -23,7 +24,7 @@ const props = defineProps<{
 }>()
 
 const routeField = useRouteField()
-const { t } = useI18n()
+const { t, locale } = useI18n()
 const siteStore = useSiteStore()
 const { $propertyTranslations } = useNuxtApp()
 const { contribMode, isContribEligible, getContributorFields } = useContrib()
@@ -118,7 +119,10 @@ function getAddrString(properties: ApiPoiProperties) {
 }
 
 function customFilter(value: any, query: string): boolean {
-  return query !== null && value !== null && typeof value === 'string' && value.toLowerCase().includes(query.toLowerCase())
+  if (typeof value !== 'string')
+    return false
+
+  return localeIncludes(value, query, { locales: locale.value, sensitivity: 'base' })
 }
 
 function getContext(key: string) {
