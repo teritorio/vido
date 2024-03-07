@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { PropertyTranslationsContextEnum } from '~/plugins/property-translations'
-import type { FieldsListItem } from '~/lib/apiPois'
+import type { ApiPoi, ApiPoiProperties, FieldsListItem } from '~/lib/apiPois'
 import type { ApiMenuCategory } from '~/lib/apiMenu'
 import Field from '~/components/Fields/Field.vue'
 import IconButton from '~/components/UI/IconButton.vue'
@@ -68,7 +68,12 @@ const headers = computed((): Array<DataTableHeader> => {
       f.field,
       PropertyTranslationsContextEnum.List,
     ),
-    value: `properties.${f.field}`,
+    value: (item: ApiPoi) => {
+      if (f.field === 'addr')
+        return getAddrString(item.properties)
+
+      return item.properties[f.field]
+    },
   }))
 
   // Contrib Field
@@ -89,6 +94,21 @@ const headers = computed((): Array<DataTableHeader> => {
 
   return headers
 })
+
+function getAddrString(properties: ApiPoiProperties) {
+  const addressFields = [
+    'addr:housenumber',
+    'addr:street',
+    'addr:postcode',
+    'addr:city',
+  ]
+
+  return addressFields
+    .map(field => properties[field])
+    .map(f => (f || '').toString().trim())
+    .filter(f => f)
+    .join(' ')
+}
 
 function customFilter(value: any, query: string): boolean {
   return query !== null && value !== null && typeof value === 'string' && value.toLowerCase().includes(query.toLowerCase())
