@@ -72,6 +72,9 @@ const headers = computed((): Array<DataTableHeader> => {
       if (f.field === 'addr')
         return getAddrString(item.properties)
 
+      if (Array.isArray(item.properties[f.field]))
+        return item.properties[f.field].join(' ')
+
       return item.properties[f.field]
     },
   }))
