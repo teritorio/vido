@@ -40,7 +40,7 @@ if (process.server && !config) {
 }
 
 if (!config)
-  throw createError({ statusCode: 404, statusMessage: 'Wrong config', fatal: true })
+  throw createError({ statusCode: 500, statusMessage: 'Wrong config', fatal: true })
 
 // Fetch common data
 // TODO: Move common data on upper-level (ex: layout)
@@ -66,7 +66,7 @@ else {
   })
 
   if (error.value || !data.value)
-    throw createError({ statusCode: 404, statusMessage: 'Global config not found.', fatal: true })
+    throw createError({ statusCode: 500, statusMessage: 'Global config not found.', fatal: true })
 
   categoryListData.value = data.value
 }
