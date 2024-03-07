@@ -22,6 +22,7 @@ const props = defineProps<{
   category: ApiMenuCategory
 }>()
 
+const routeField = useRouteField()
 const { t } = useI18n()
 const siteStore = useSiteStore()
 const { $propertyTranslations } = useNuxtApp()
@@ -71,6 +72,9 @@ const headers = computed((): Array<DataTableHeader> => {
     value: (item: ApiPoi) => {
       if (f.field === 'addr')
         return getAddrString(item.properties)
+
+      if (f.field === 'route')
+        return routeField.toString(item.properties, getContext('route'))
 
       if (Array.isArray(item.properties[f.field]))
         return item.properties[f.field].join(' ')
