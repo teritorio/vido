@@ -17,6 +17,7 @@ export function getBBoxFeature(feature: GeoJSON.Feature | Geometry): ITLngLatBou
     = feature.type === 'Feature' ? feature.geometry : feature
   switch (geometry.type) {
     case 'LineString':
+    case 'MultiPoint':
       return (geometry.coordinates as [[number, number]]).reduce(
         (bounds: ITLngLatBounds, coord: [number, number]) => {
           return bounds.extend(coord)
