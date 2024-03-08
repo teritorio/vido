@@ -171,7 +171,7 @@ export const menuStore = defineStore('menu', {
           Boolean(previousFeatures[categoryId]),
         )
 
-        const posts: ApiPois[] = (
+        let posts: ApiPois[] = (
           await Promise.all(
             categoryIds
               .filter(categoryId => !previousFeatures[categoryId])
@@ -190,6 +190,9 @@ export const menuStore = defineStore('menu', {
               .filter(apiPoi => !!apiPoi),
           )
         ).filter(e => e) as ApiPois[]
+
+        const { flattenMultipoint } = useGeometry()
+        posts = posts.map(p => ({ ...p, features: flattenMultipoint(p.features) as ApiPoi[] }))
 
         const features: State['features'] = {}
 
