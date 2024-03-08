@@ -1,7 +1,7 @@
 <script lang="ts">
 import { PoiFilter } from '@teritorio/map'
 import copy from 'fast-copy'
-import type { MultiPolygon, Polygon } from 'geojson'
+import type { MultiLineString, MultiPoint, MultiPolygon, Polygon } from 'geojson'
 import throttle from 'lodash.throttle'
 import type {
   FitBoundsOptions,
@@ -178,10 +178,27 @@ export default defineNuxtComponent({
     },
 
     featuresPrepare(features: ApiPoi[]): ApiPoi[] {
-      return features.map((feature, index) => {
+      return features.map((feature) => {
+        if (['MultiPoint', 'MultiLineString', 'MultiPolygon'].includes(feature.geometry.type)) {
+          return (feature.geometry as (MultiPoint | MultiLineString | MultiPolygon)).coordinates.map(coordinates => ({
+            type: 'Feature',
+            properties: feature.properties,
+            geometry: {
+              type: feature.geometry.type.substring(5) as ('Point' | 'LineString' | 'Polygon'),
+              coordinates,
+            },
+          } as ApiPoi))
+        }
+        else {
+          return [feature]
+        }
+      })
+        .flat()
+        .filter(feature => !!feature)
+        .map((feature, index) => {
           feature.id = index
           return feature
-      })
+        })
     },
 
     initPoiLayer(
