@@ -170,13 +170,13 @@ function getContext(key: string) {
         <tr>
           <td v-for="col in columns" :key="col.key">
             <ContribFieldGroup
-              v-if="col.key === 'contrib' && isContribEligible(item.raw.properties)"
-              v-bind="getContributorFields(item.raw)"
+              v-if="col.key === 'contrib' && isContribEligible(item.properties)"
+              v-bind="getContributorFields(item)"
             />
             <IconButton
               v-else-if="col.key === 'details'"
               class="tw-h-10"
-              :href="`/poi/${item.raw.properties.metadata.id}/details`"
+              :href="`/poi/${item.properties.metadata.id}/details`"
               :label="t('poisTable.details')"
               target="_self"
             >
@@ -189,8 +189,8 @@ function getContext(key: string) {
               :recursion-stack="[col.key]"
               :field="{ field: col.key }"
               :details="t('poisTable.details')"
-              :properties="item.raw.properties"
-              :geom="item.raw.geometry"
+              :properties="item.properties"
+              :geom="item.geometry"
             />
           </td>
         </tr>
