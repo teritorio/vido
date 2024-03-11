@@ -13,8 +13,10 @@ import { getPoiByCategoryId } from '~/lib/apiPois'
 import { siteStore as useSiteStore } from '~/stores/site'
 
 interface DataTableHeader {
-  filterable: boolean
+  filterable?: boolean
   key: string
+  sortable?: boolean
+  sort?: (a: ApiPoi, b: ApiPoi) => number
   title: string
   value?: string | Function
 }
@@ -66,6 +68,7 @@ const headers = computed((): Array<DataTableHeader> => {
   const headers: Array<DataTableHeader> = fields.value.map(f => ({
     filterable: true,
     key: f.field,
+    sortable: true,
     title: $propertyTranslations.p(
       f.field,
       PropertyTranslationsContextEnum.List,
@@ -88,6 +91,7 @@ const headers = computed((): Array<DataTableHeader> => {
   if (contribMode) {
     headers.push({
       filterable: false,
+      sortable: false,
       key: 'contrib',
       title: t('fields.contrib.heading'),
     })
@@ -96,6 +100,7 @@ const headers = computed((): Array<DataTableHeader> => {
   // Details Field
   headers.push({
     filterable: false,
+    sortable: false,
     key: 'details',
     title: 'Actions',
   })
