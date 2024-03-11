@@ -16,16 +16,16 @@ interface DataTableHeader {
   filterable?: boolean
   key: string
   sortable?: boolean
-  sort?: (a: ApiPoi, b: ApiPoi) => number
+  sort?: (a: string, b: string) => number
   title: string
-  value?: string | Function
+  value?: string | ((item: ApiPoi) => string)
 }
 
 const props = defineProps<{
   category: ApiMenuCategory
 }>()
 
-const routeField = useRouteField()
+const { toString } = useRouteField()
 const { t, locale } = useI18n()
 const siteStore = useSiteStore()
 const { $propertyTranslations } = useNuxtApp()
@@ -62,28 +62,52 @@ const fields = computed((): FieldsListItem[] => {
   )
 })
 
+// Transform non-string values to single string
+// Used for sort and filter comparisons
+pois.value.features = pois.value.features.map((f: ApiPoi) => {
+  const fieldEntries = fields.value.map(f => f.field)
+  const arrayProps: { [key: string]: any } = []
+
+  if (fieldEntries.includes('route'))
+    arrayProps.route = toString(f.properties, getContext('route'))
+
+  if (fieldEntries.includes('addr'))
+    arrayProps.addr = getAddrString(f.properties)
+
+  return {
+    ...f,
+    properties: {
+      ...f.properties,
+      ...arrayProps,
+    },
+  }
+})
+
 // Transform headers data to be compliant with Vuetify's standards
 const headers = computed((): Array<DataTableHeader> => {
   // Basic Fields
   const headers: Array<DataTableHeader> = fields.value.map(f => ({
     filterable: true,
-    key: f.field,
+    key: `properties.${f.field}`,
     sortable: true,
     title: $propertyTranslations.p(
       f.field,
       PropertyTranslationsContextEnum.List,
     ),
-    value: (item: ApiPoi) => {
-      if (f.field === 'addr')
-        return getAddrString(item.properties)
+    sort: (a: string, b: string) => {
+      const first = transformValue(a)
+      const second = transformValue(b)
 
-      if (f.field === 'route')
-        return routeField.toString(item.properties, getContext('route'))
+      if (!first && second)
+        return -1
 
-      if (Array.isArray(item.properties[f.field]))
-        return item.properties[f.field].join(' ')
+      if (first && !second)
+        return 1
 
-      return item.properties[f.field]
+      if (!first && !second)
+        return 0
+
+      return first.localeCompare(second, locale.value, { sensitivity: 'base' })
     },
   }))
 
@@ -123,8 +147,17 @@ function getAddrString(properties: ApiPoiProperties) {
     .join(' ')
 }
 
+function transformValue(item: any) {
+  if (Array.isArray(item))
+    return item.join(' ')
+
+  return item === undefined || typeof item === 'object' ? '' : item
+}
+
 function customFilter(value: any, query: string): boolean {
-  if (typeof value !== 'string')
+  value = transformValue(value)
+
+  if (!value)
     return false
 
   return localeIncludes(value, query, { locales: locale.value, sensitivity: 'base' })
@@ -190,9 +223,9 @@ function getContext(key: string) {
             </IconButton>
             <Field
               v-else
-              :context="getContext(col.key)"
-              :recursion-stack="[col.key]"
-              :field="{ field: col.key }"
+              :context="getContext(col.key.split('.').pop())"
+              :recursion-stack="[col.key.split('.').pop()]"
+              :field="{ field: col.key.split('.').pop() }"
               :details="t('poisTable.details')"
               :properties="item.properties"
               :geom="item.geometry"
