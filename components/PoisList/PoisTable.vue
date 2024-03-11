@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { PropertyTranslationsContextEnum } from '~/plugins/property-translations'
-import type { FieldsListItem } from '~/lib/apiPois'
+import type { ApiPoi, FieldsListItem } from '~/lib/apiPois'
 import type { ApiMenuCategory } from '~/lib/apiMenu'
 import Field from '~/components/Fields/Field.vue'
 import IconButton from '~/components/UI/IconButton.vue'
@@ -12,27 +12,30 @@ import { getPoiByCategoryId } from '~/lib/apiPois'
 import { siteStore as useSiteStore } from '~/stores/site'
 
 interface DataTableHeader {
-  filterable: boolean
+  filterable?: boolean
   key: string
+  sortable?: boolean
+  sort?: (a: string, b: string) => number
   title: string
-  value?: string | Function
 }
 
 const props = defineProps<{
   category: ApiMenuCategory
 }>()
 
-const { t } = useI18n()
+const { routeToString, addressToString } = useField()
+const { t, locale } = useI18n()
 const siteStore = useSiteStore()
 const { $propertyTranslations } = useNuxtApp()
 const { contribMode, isContribEligible, getContributorFields } = useContrib()
 const search = ref('')
-const cachedKey = computed(() => `pois-${props.category.id}`)
 
 // Fetch POIs by Cache or API
 const pois = ref()
 const loadingState = ref(false)
+const cachedKey = computed(() => `pois-${props.category.id}`)
 const { data: cachedPois } = useNuxtData(cachedKey.value)
+
 if (cachedPois.value) {
   pois.value = cachedPois.value
 }
@@ -58,37 +61,84 @@ const fields = computed((): FieldsListItem[] => {
   )
 })
 
+// Transform non-string values to single string
+// Used for sort and filter comparisons
+pois.value.features = pois.value.features.map((f: ApiPoi) => {
+  const fieldEntries = fields.value.map(f => f.field)
+  const arrayProps: { [key: string]: any } = []
+
+  if (fieldEntries.includes('route'))
+    arrayProps.route = routeToString(f.properties, getContext('route'))
+
+  if (fieldEntries.includes('addr'))
+    arrayProps.addr = addressToString(f.properties)
+
+  return {
+    ...f,
+    properties: {
+      ...f.properties,
+      ...arrayProps,
+    },
+  }
+})
+
 // Transform headers data to be compliant with Vuetify's standards
-const headers = computed((): Array<DataTableHeader> => {
+const headers = computed(() => {
   // Basic Fields
-  const headers: Array<DataTableHeader> = fields.value.map(f => ({
+  const h: DataTableHeader[] = fields.value.map(f => ({
     filterable: true,
-    key: f.field,
+    key: `properties.${f.field}`,
+    sortable: true,
     title: $propertyTranslations.p(
       f.field,
       PropertyTranslationsContextEnum.List,
     ),
-    value: `properties.${f.field}`,
+    sort: customSort,
   }))
 
   // Contrib Field
   if (contribMode) {
-    headers.push({
+    h.push({
       filterable: false,
+      sortable: false,
       key: 'contrib',
       title: t('fields.contrib.heading'),
     })
   }
 
   // Details Field
-  headers.push({
+  h.push({
     filterable: false,
+    sortable: false,
     key: 'details',
     title: 'Actions',
   })
 
-  return headers
+  return h
 })
+
+function valueToString(item: any) {
+  if (Array.isArray(item))
+    return item.join(' ')
+
+  return item === undefined || typeof item === 'object' ? '' : item
+}
+
+function customSort(a: string, b: string) {
+  const first = valueToString(a)
+  const second = valueToString(b)
+
+  if (!first && second)
+    return -1
+
+  if (first && !second)
+    return 1
+
+  if (!first && !second)
+    return 0
+
+  return first.localeCompare(second, locale.value, { sensitivity: 'base' })
+}
 
 function customFilter(value: any, query: string): boolean {
   return query !== null && value !== null && typeof value === 'string' && value.toLowerCase().includes(query.toLowerCase())
@@ -154,9 +204,9 @@ function getContext(key: string) {
             </IconButton>
             <Field
               v-else
-              :context="getContext(col.key)"
-              :recursion-stack="[col.key]"
-              :field="{ field: col.key }"
+              :context="getContext(col.key.split('.').pop())"
+              :recursion-stack="[col.key.split('.').pop()]"
+              :field="{ field: col.key.split('.').pop() }"
               :details="t('poisTable.details')"
               :properties="item.properties"
               :geom="item.geometry"
