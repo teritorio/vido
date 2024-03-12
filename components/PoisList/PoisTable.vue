@@ -2,7 +2,7 @@
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { localeIncludes } from 'locale-includes'
 import { PropertyTranslationsContextEnum } from '~/plugins/property-translations'
-import type { ApiPoi, ApiPoiProperties, FieldsListItem } from '~/lib/apiPois'
+import type { ApiPoi, FieldsListItem } from '~/lib/apiPois'
 import type { ApiMenuCategory } from '~/lib/apiMenu'
 import Field from '~/components/Fields/Field.vue'
 import IconButton from '~/components/UI/IconButton.vue'
@@ -25,7 +25,7 @@ const props = defineProps<{
   category: ApiMenuCategory
 }>()
 
-const { toString } = useRouteField()
+const { routeToString, addressToString } = useField()
 const { t, locale } = useI18n()
 const siteStore = useSiteStore()
 const { $propertyTranslations } = useNuxtApp()
@@ -37,6 +37,7 @@ const cachedKey = computed(() => `pois-${props.category.id}`)
 const pois = ref()
 const loadingState = ref(false)
 const { data: cachedPois } = useNuxtData(cachedKey.value)
+
 if (cachedPois.value) {
   pois.value = cachedPois.value
 }
@@ -54,7 +55,7 @@ else {
   loadingState.value = pending.value
 }
 
-// Handle default config field if not provided by API
+// Set default config field if not provided by API
 const fields = computed((): FieldsListItem[] => {
   return (
     (pois.value?.features[0].properties.editorial?.list_fields)
@@ -69,10 +70,10 @@ pois.value.features = pois.value.features.map((f: ApiPoi) => {
   const arrayProps: { [key: string]: any } = []
 
   if (fieldEntries.includes('route'))
-    arrayProps.route = toString(f.properties, getContext('route'))
+    arrayProps.route = routeToString(f.properties, getContext('route'))
 
   if (fieldEntries.includes('addr'))
-    arrayProps.addr = getAddrString(f.properties)
+    arrayProps.addr = addressToString(f.properties)
 
   return {
     ...f,
@@ -95,8 +96,8 @@ const headers = computed((): Array<DataTableHeader> => {
       PropertyTranslationsContextEnum.List,
     ),
     sort: (a: string, b: string) => {
-      const first = transformValue(a)
-      const second = transformValue(b)
+      const first = valueToString(a)
+      const second = valueToString(b)
 
       if (!first && second)
         return -1
@@ -132,22 +133,7 @@ const headers = computed((): Array<DataTableHeader> => {
   return headers
 })
 
-function getAddrString(properties: ApiPoiProperties) {
-  const addressFields = [
-    'addr:housenumber',
-    'addr:street',
-    'addr:postcode',
-    'addr:city',
-  ]
-
-  return addressFields
-    .map(field => properties[field])
-    .map(f => (f || '').toString().trim())
-    .filter(f => f)
-    .join(' ')
-}
-
-function transformValue(item: any) {
+function valueToString(item: any) {
   if (Array.isArray(item))
     return item.join(' ')
 
@@ -155,7 +141,7 @@ function transformValue(item: any) {
 }
 
 function customFilter(value: any, query: string): boolean {
-  value = transformValue(value)
+  value = valueToString(value)
 
   if (!value)
     return false

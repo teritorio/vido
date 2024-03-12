@@ -1,10 +1,27 @@
 import type { ApiPoiProperties } from '~/lib/apiPois'
 
+const ADDRESS_FIELDS = [
+  'addr:housenumber',
+  'addr:street',
+  'addr:postcode',
+  'addr:city',
+]
+
 export default function () {
   const { $propertyTranslations } = useNuxtApp()
   const { t } = useI18n()
 
-  const getActivity = (properties: ApiPoiProperties, context: string): { key: string, translatedValue: string } | undefined => {
+  // Address Field
+  const addressToString = (properties: ApiPoiProperties): string => {
+    return ADDRESS_FIELDS
+      .map(field => properties[field])
+      .map(f => (f || '').toString().trim())
+      .filter(f => f)
+      .join(' ')
+  }
+
+  // Route Field
+  const getRouteActivity = (properties: ApiPoiProperties, context: string): { key: string, translatedValue: string } | undefined => {
     const activity = Object.entries(properties)
       .find(([key, _value]) => {
         if (!key.includes(':'))
@@ -25,13 +42,13 @@ export default function () {
       : { key: activityKey, translatedValue: $propertyTranslations.pv('route', `${activityKey}`, context) }
   }
 
-  const getDifficulty = (activity: string, difficulty: string, context: string): string | undefined => {
+  const getRouteDifficulty = (activity: string, difficulty: string, context: string): string | undefined => {
     return !difficulty
       ? undefined
       : $propertyTranslations.pv(`route:${activity}:difficulty`, difficulty, context)
   }
 
-  const getDuration = (duration: number): string | undefined => {
+  const getRouteDuration = (duration: number): string | undefined => {
     if (!duration)
       return undefined
 
@@ -48,22 +65,22 @@ export default function () {
     return string
   }
 
-  const getLength = (length: number): string | undefined => {
+  const getRouteLength = (length: number): string | undefined => {
     return !length
       ? undefined
       : t('units.km', { length })
   }
 
-  const toString = (properties: ApiPoiProperties, context: string): string => {
+  const routeToString = (properties: ApiPoiProperties, context: string): string => {
     let routeData = []
-    const activity = getActivity(properties, context)
+    const activity = getRouteActivity(properties, context)
 
     if (!activity)
       return ''
 
-    const difficulty = getDifficulty(activity.key, properties[`route:${activity.key}:difficulty`], context)
-    const duration = getDuration(properties[`route:${activity.key}:duration`])
-    const length = getLength(properties[`route:${activity.key}:length`])
+    const difficulty = getRouteDifficulty(activity.key, properties[`route:${activity.key}:difficulty`], context)
+    const duration = getRouteDuration(properties[`route:${activity.key}:duration`])
+    const length = getRouteLength(properties[`route:${activity.key}:length`])
 
     routeData = [
       activity.translatedValue,
@@ -76,10 +93,11 @@ export default function () {
   }
 
   return {
-    getActivity,
-    getDifficulty,
-    getDuration,
-    getLength,
-    toString,
+    addressToString,
+    getRouteActivity,
+    getRouteDifficulty,
+    getRouteDuration,
+    getRouteLength,
+    routeToString,
   }
 }
