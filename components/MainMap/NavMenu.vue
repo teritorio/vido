@@ -6,7 +6,7 @@ import type { LocaleObject } from 'vue-i18n-routing'
 import { VDivider } from 'vuetify/components/VDivider'
 import { VList, VListItem, VListItemTitle } from 'vuetify/components/VList'
 import { VMenu } from 'vuetify/components/VMenu'
-
+import { useLocale } from 'vuetify'
 import { defineNuxtComponent } from '#app'
 import ExternalLink from '~/components/UI/ExternalLink.vue'
 import IconButton from '~/components/UI/IconButton.vue'
@@ -34,6 +34,14 @@ export default defineNuxtComponent({
     },
   },
 
+  setup() {
+    const { current } = useLocale()
+
+    return {
+      vuetifyLocale: current,
+    }
+  },
+
   computed: {
     ...mapWritableState(siteStore, ['locale']),
 
@@ -46,6 +54,7 @@ export default defineNuxtComponent({
     async setLocale(locale: string) {
       await this.$i18n.setLocale(locale)
       this.locale = locale
+      this.vuetifyLocale = locale
     },
     openLink(title: string, url: string) {
       this.$tracking({
