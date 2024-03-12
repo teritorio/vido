@@ -71,19 +71,9 @@ else {
   categoryListData.value = data.value
 }
 
-// MenuItems
-const { data: cachedMenuItems } = useNuxtData('menu-items')
-if (cachedMenuItems.value) {
-  menuStore.fetchConfig(cachedMenuItems.value)
-}
-else {
-  const { data, error } = await useAsyncData('menu-items', async () => await getMenu(config!))
-
-  if (error.value || !data.value)
-    throw createError({ statusCode: 404, statusMessage: 'Menu not found', fatal: true })
-
-  menuStore.fetchConfig(data.value)
-}
+// Fetch MenuItems by Cache or API
+const { getMenuByCacheOrAPI } = useMenu()
+await getMenuByCacheOrAPI(config)
 
 const { settings, contents, translations } = categoryListData.value!
 const category = menuStore.getCurrentCategory(id)
