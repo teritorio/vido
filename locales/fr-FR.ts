@@ -139,6 +139,7 @@ export default defineI18nLocale(() => {
       details: 'Détails',
       downloadCsv: 'Télécharger en CSV',
       downloadGeojson: 'Télécharger en GeoJSON',
+      search: 'Recherchez dans la liste',
       showOnMap: 'Afficher sur la carte',
     },
     categorySelector: {

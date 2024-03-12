@@ -9,6 +9,7 @@ export default antfu(
     files: ['**/*.vue'],
     rules: {
       'vue/no-unused-refs': 0,
+      'vue/valid-v-slot': 0,
     },
   },
   {
