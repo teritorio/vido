@@ -31,11 +31,11 @@ const siteStore = useSiteStore()
 const { $propertyTranslations } = useNuxtApp()
 const { contribMode, isContribEligible, getContributorFields } = useContrib()
 const search = ref('')
-const cachedKey = computed(() => `pois-${props.category.id}`)
 
 // Fetch POIs by Cache or API
 const pois = ref()
 const loadingState = ref(false)
+const cachedKey = computed(() => `pois-${props.category.id}`)
 const { data: cachedPois } = useNuxtData(cachedKey.value)
 
 if (cachedPois.value) {
@@ -85,9 +85,9 @@ pois.value.features = pois.value.features.map((f: ApiPoi) => {
 })
 
 // Transform headers data to be compliant with Vuetify's standards
-const headers = computed((): Array<DataTableHeader> => {
+const headers = computed(() => {
   // Basic Fields
-  const headers: Array<DataTableHeader> = fields.value.map(f => ({
+  const h: DataTableHeader[] = fields.value.map(f => ({
     filterable: true,
     key: `properties.${f.field}`,
     sortable: true,
@@ -95,26 +95,12 @@ const headers = computed((): Array<DataTableHeader> => {
       f.field,
       PropertyTranslationsContextEnum.List,
     ),
-    sort: (a: string, b: string) => {
-      const first = valueToString(a)
-      const second = valueToString(b)
-
-      if (!first && second)
-        return -1
-
-      if (first && !second)
-        return 1
-
-      if (!first && !second)
-        return 0
-
-      return first.localeCompare(second, locale.value, { sensitivity: 'base' })
-    },
+    sort: customSort,
   }))
 
   // Contrib Field
   if (contribMode) {
-    headers.push({
+    h.push({
       filterable: false,
       sortable: false,
       key: 'contrib',
@@ -123,14 +109,14 @@ const headers = computed((): Array<DataTableHeader> => {
   }
 
   // Details Field
-  headers.push({
+  h.push({
     filterable: false,
     sortable: false,
     key: 'details',
     title: 'Actions',
   })
 
-  return headers
+  return h
 })
 
 function valueToString(item: any) {
@@ -138,6 +124,22 @@ function valueToString(item: any) {
     return item.join(' ')
 
   return item === undefined || typeof item === 'object' ? '' : item
+}
+
+function customSort(a: string, b: string) {
+  const first = valueToString(a)
+  const second = valueToString(b)
+
+  if (!first && second)
+    return -1
+
+  if (first && !second)
+    return 1
+
+  if (!first && !second)
+    return 0
+
+  return first.localeCompare(second, locale.value, { sensitivity: 'base' })
 }
 
 function customFilter(value: any, query: string): boolean {
