@@ -230,8 +230,8 @@ export default defineNuxtComponent({
         v-else-if="isWebsite"
         :key="`website_${item}`"
       >
-        <ExternalLink :title="item" :href="item">
-          {{ context !== 'label_list' ? item : '' }}
+        <ExternalLink :href="item">
+          {{ item }}
         </ExternalLink>
       </div>
 
@@ -240,8 +240,8 @@ export default defineNuxtComponent({
         v-else-if="field.field === 'email'"
         :key="`email_${item}`"
       >
-        <ExternalLink :title="item" :href="`mailto:${item}`" icon="envelope">
-          {{ context !== 'label_list' ? item : '' }}
+        <ExternalLink :href="`mailto:${item}`" icon="envelope">
+          {{ item }}
         </ExternalLink>
       </div>
 

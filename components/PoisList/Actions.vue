@@ -2,11 +2,10 @@
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import type { PropType } from 'vue'
 
-import { defineNuxtComponent } from '#app'
+import { defineNuxtComponent, useRequestHeaders } from '#app'
 import IconButton from '~/components/UI/IconButton.vue'
 import IconsBar from '~/components/UI/IconsBar.vue'
 import { getPoiByCategoryIdUrl } from '~/lib/apiPois'
-import { siteStore as useSiteStore } from '~/stores/site'
 
 export default defineNuxtComponent({
   components: {
@@ -14,6 +13,7 @@ export default defineNuxtComponent({
     IconsBar,
     IconButton,
   },
+
   props: {
     categoryId: {
       type: Number,
@@ -42,7 +42,7 @@ export default defineNuxtComponent({
   methods: {
     url(format: 'geojson' | 'csv'): string {
       return getPoiByCategoryIdUrl(
-        useSiteStore().config!,
+        this.$vidoConfig(useRequestHeaders()),
         this.categoryId,
         {
           geometry_as: 'point',

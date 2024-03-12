@@ -50,8 +50,8 @@ export interface Settings {
   themes: SiteInfosTheme[]
 }
 
-export async function getSettings(vidoConfig: VidoConfig): Promise<Settings> {
-  return await fetch(
+export function getSettings(vidoConfig: VidoConfig): Promise<Settings> {
+  return fetch(
     `${vidoConfig.API_ENDPOINT}/${vidoConfig.API_PROJECT}/${vidoConfig.API_THEME}/settings.json`,
   )
     .then((data) => {

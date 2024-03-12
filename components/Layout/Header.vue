@@ -43,8 +43,6 @@ export default defineNuxtComponent({
       :logo-url="theme && theme.logo_url"
     />
 
-    <slot name="search" />
-
     <div class="tw-flex tw-justify-end print:tw-hidden">
       <slot />
       <NavMenu :entries="navMenuEntries" />

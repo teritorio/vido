@@ -10,15 +10,6 @@ const hostnames = {
   'http://127.0.0.1:3000': '/fixtures/teritorio/references/',
 }
 
-const htmlValidateRules = {
-  rules: {
-    'no-dup-class': 0,
-    'wcag/h63': 0,
-    'input-missing-label': 0,
-    'element-permitted-content': 0,
-  },
-}
-
 describe('pois table', () => {
   beforeEach(() => {
     mockSSRAPI(hostnames, teritorioReferenceAPIFixture, {
@@ -39,7 +30,7 @@ describe('pois table', () => {
     cy.get('td')
       .contains(teritorioReferenceAPIFixture.pois.features[0].properties.name as string)
 
-    cy.htmlvalidate(htmlValidateRules)
+    cy.htmlvalidate()
   })
 
   it('should be interative', () => {
@@ -59,6 +50,6 @@ describe('pois table', () => {
     // Unselect the selector before validate
     cy.get('body').click()
 
-    cy.htmlvalidate(htmlValidateRules)
+    cy.htmlvalidate()
   })
 })
