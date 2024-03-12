@@ -1,8 +1,9 @@
 import { getMenu } from '~/lib/apiMenu'
 import { menuStore as useMenuStore } from '~/stores/menu'
+import type { VidoConfig } from '~/utils/types-config'
 
 export default function () {
-  async function getMenuByCacheOrAPI() {
+  async function getMenuByCacheOrAPI(config: VidoConfig) {
     const menuStore = useMenuStore()
     const { data: cachedMenuItems } = useNuxtData('menu-items')
 

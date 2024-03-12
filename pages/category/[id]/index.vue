@@ -1,20 +1,16 @@
 <script setup lang="ts">
 import type { ContentEntry } from '~/lib/apiContent'
 import { getContents } from '~/lib/apiContent'
-import { getMenu } from '~/lib/apiMenu'
 import type { PropertyTranslations } from '~/lib/apiPropertyTranslations'
 import { getPropertyTranslations } from '~/lib/apiPropertyTranslations'
 import type { Settings } from '~/lib/apiSettings'
 import { getSettings, headerFromSettings } from '~/lib/apiSettings'
-import { vidoConfig } from '~/plugins/vido-config'
 import { menuStore as useMenuStore } from '~/stores/menu'
-import { siteStore as useSiteStore } from '~/stores/site'
 import Header from '~/components/Layout/Header.vue'
 import Footer from '~/components/Layout/Footer.vue'
 import PoisTable from '~/components/PoisList/PoisTable.vue'
 import CategorySelector from '~/components/PoisList/CategorySelector.vue'
 
-console.log('INDEX PAGE')
 // Query param validation
 definePageMeta({
   validate({ params }) {
@@ -27,21 +23,13 @@ definePageMeta({
 const router = useRouter()
 const param = useRoute().params
 const id = Number.parseInt(param.id as string)
-const siteStore = useSiteStore()
 const menuStore = useMenuStore()
-const { $vidoConfigSet, $settings, $propertyTranslations, $trackingInit } = useNuxtApp()
+const { $settings, $propertyTranslations, $trackingInit } = useNuxtApp()
 
-// TODO: Get this globally as share it across components / pages
-let config = siteStore.config
-
-if (process.server && !config) {
-  config = vidoConfig(useRequestHeaders())
-  $vidoConfigSet(config)
-  siteStore.$patch({ config })
-}
-
-if (!config)
-  throw createError({ statusCode: 404, statusMessage: 'Wrong config', fatal: true })
+// Fetch config
+// TODO: Do it on a higher level to share the config across pages
+const { fetchConfig } = useConfig()
+const config = fetchConfig()
 
 // Fetch common data
 // TODO: Move common data on upper-level (ex: layout)
