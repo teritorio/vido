@@ -14,6 +14,7 @@ import Footer from '~/components/Layout/Footer.vue'
 import PoisTable from '~/components/PoisList/PoisTable.vue'
 import CategorySelector from '~/components/PoisList/CategorySelector.vue'
 
+console.log('INDEX PAGE')
 // Query param validation
 definePageMeta({
   validate({ params }) {
