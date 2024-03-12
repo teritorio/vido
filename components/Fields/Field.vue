@@ -11,7 +11,7 @@ import Facebook from '~/components/Fields/Facebook.vue'
 import Instagram from '~/components/Fields/Instagram.vue'
 import OpeningHours, { isOpeningHoursSupportedOsmTags } from '~/components/Fields/OpeningHours.vue'
 import Phone from '~/components/Fields/Phone.vue'
-import RoutesField, { isRoutesFieldEmpty } from '~/components/Fields/RoutesField.vue'
+import RoutesField from '~/components/Fields/RoutesField.vue'
 import Stars from '~/components/Fields/Stars.vue'
 import ExternalLink from '~/components/UI/ExternalLink.vue'
 import FieldsHeader from '~/components/UI/FieldsHeader.vue'
@@ -23,16 +23,18 @@ export function isFiledEmpty(
   properties: { [key: string]: string },
   geom: GeoJSON.Geometry,
 ): boolean {
-  if (field.field === 'route')
-    return isRoutesFieldEmpty(properties)
-  else if (field.field === 'addr')
-    return isAddressFieldEmpty(properties)
-  else if (field.field === 'start_end_date')
-    return isDateRangeEmpty(properties)
-  else if (field.field === 'coordinates')
-    return isCoordinatesEmpty(geom)
-  else
-    return !(field.field in properties)
+  if (field.field === 'route') {
+    return (
+      Object.entries(properties || {})
+        .map(([key, value]) => [key.split(':'), value])
+        .filter(([keys, _value]) => keys[0] === 'route' && keys.length === 3)
+        .length > 0
+    )
+  }
+  else if (field.field === 'addr') { return isAddressFieldEmpty(properties) }
+  else if (field.field === 'start_end_date') { return isDateRangeEmpty(properties) }
+  else if (field.field === 'coordinates') { return isCoordinatesEmpty(geom) }
+  else { return !(field.field in properties) }
 }
 
 export default defineNuxtComponent({
