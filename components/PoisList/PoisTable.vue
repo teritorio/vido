@@ -167,7 +167,7 @@ function getContext(key: string) {
 
       <VTextField
         v-model="search"
-        :label="t('poisTable.search')"
+        :label="t('poisTable.filter')"
         clearable
         variant="solo-filled"
         hide-details="auto"
