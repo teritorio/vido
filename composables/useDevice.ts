@@ -11,7 +11,7 @@ export default function (): ComputedRef<{
   const device = computed(() => ({
     smallScreen: !grid.md,
     touch: screen.touch,
-    // Quick heuristic for device havng phone capability
+    // Quick heuristic for device having phone capability
     phone: screen.touch && !grid.lg,
   }))
 
