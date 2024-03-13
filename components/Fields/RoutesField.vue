@@ -72,7 +72,7 @@ export default defineNuxtComponent({
     <div v-else>
       <div v-for="(route, activity, index) in routes" :key="activity" class="field">
         <div v-if="route.length && index === 0" class="field">
-          {{ $t('fields.route.length') }} {{ getRouteLength(route.length) }}
+          {{ $t('fields.route.length', { length: getRouteLength(route.length) }) }}
         </div>
         <FieldsHeader
           :recursion-stack="[...recursionStack, `${activity}`]"
@@ -82,11 +82,10 @@ export default defineNuxtComponent({
         </FieldsHeader>
         <ul class="tw-list-disc tw-ml-6">
           <li v-if="route.difficulty">
-            {{ $t('fields.route.difficulty') }}
-            {{ getRouteDifficulty(activity.toString(), route.difficulty, context) }}
+            {{ $t('fields.route.difficulty', { difficulty: getRouteDifficulty(activity.toString(), route.difficulty, context) }) }}
           </li>
           <li v-if="route.duration">
-            {{ $t('fields.route.duration') }} {{ getRouteDuration(route.duration) }}
+            {{ $t('fields.route.duration', { duration: getRouteDuration(route.duration) }) }}
           </li>
         </ul>
       </div>
