@@ -24,6 +24,7 @@ const props = defineProps<{
   category: ApiMenuCategory
 }>()
 
+const device = useDevice()
 const { routeToString, addressToString } = useField()
 const { t, locale } = useI18n()
 const siteStore = useSiteStore()
@@ -157,31 +158,6 @@ function getContext(key: string) {
 
 <template>
   <VCard class="mt-8">
-    <VToolbar class="pa-2" flat>
-      <TeritorioIconBadge
-        :color-fill="category.category.color_fill"
-        :picto="category.category.icon"
-        size="xl"
-      />
-      <VToolbarTitle class="d-flex print:tw-pb-4" tag="h1" :text="category.category.name.fr" />
-
-      <VTextField
-        v-model="search"
-        :label="t('poisTable.filter')"
-        clearable
-        variant="solo-filled"
-        hide-details="auto"
-      >
-        <template #append-inner>
-          <FontAwesomeIcon class="px-2" icon="search" />
-        </template>
-      </VTextField>
-      <Actions
-        class="ma-0 ml-2 w-auto"
-        :category-id="category.id"
-        :color-line="category.category.color_line"
-      />
-    </VToolbar>
     <VDataTable
       :loading="loadingState"
       :headers="headers"
@@ -191,6 +167,38 @@ function getContext(key: string) {
       :custom-filter="customFilter"
       items-per-page="20"
     >
+      <template #top>
+        <header class="d-flex align-center pa-2" :style="{ flexDirection: device.smallScreen ? 'column' : 'row', gap: '8px', background: '#eeeeee' }">
+          <h1 class="d-flex align-center print:tw-pb-4" :style="{ marginRight: device.smallScreen ? 'unset' : 'auto' }">
+            <TeritorioIconBadge
+              :color-fill="category.category.color_fill"
+              :picto="category.category.icon"
+              size="xl"
+            />
+            {{ category.category.name.fr }}
+          </h1>
+          <VTextField
+            v-model="search"
+            :style="{
+              width: device.smallScreen ? '75%' : '25%',
+              flexGrow: device.smallScreen ? 'unset' : '0',
+            }"
+            :label="t('poisTable.filter')"
+            clearable
+            variant="solo-filled"
+            hide-details="auto"
+          >
+            <template #append-inner>
+              <FontAwesomeIcon class="px-2" icon="search" />
+            </template>
+          </VTextField>
+          <Actions
+            class="ma-0 w-auto"
+            :category-id="category.id"
+            :color-line="category.category.color_line"
+          />
+        </header>
+      </template>
       <template #item="{ item, columns }">
         <tr>
           <td v-for="col in columns" :key="col.key">
@@ -227,10 +235,18 @@ function getContext(key: string) {
   </VCard>
 </template>
 
-<style>
+<style scoped>
 /* stylelint-disable selector-class-pattern */
 .v-data-table .v-table__wrapper > table tbody > tr:nth-child(even) > td,
-.v-data-table .v-table__wrapper > table > thead > tr th {
+:deep(.v-data-table .v-table__wrapper > table > thead > tr th) {
   background: #F3F4F6;
+}
+
+h1 {
+  font-size: 1.25rem;
+  font-weight: 400;
+  gap: 8px;
+  letter-spacing: 0;
+  line-height: 1.75rem;
 }
 </style>
