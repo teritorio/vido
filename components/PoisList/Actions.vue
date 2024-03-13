@@ -14,6 +14,7 @@ export default defineNuxtComponent({
     IconsBar,
     IconButton,
   },
+
   props: {
     categoryId: {
       type: Number,
@@ -23,6 +24,14 @@ export default defineNuxtComponent({
       type: String as PropType<string>,
       required: true,
     },
+  },
+
+  setup() {
+    const { config } = useSiteStore()
+
+    return {
+      config,
+    }
   },
 
   computed: {
@@ -42,7 +51,7 @@ export default defineNuxtComponent({
   methods: {
     url(format: 'geojson' | 'csv'): string {
       return getPoiByCategoryIdUrl(
-        useSiteStore().config!,
+        this.config!,
         this.categoryId,
         {
           geometry_as: 'point',
