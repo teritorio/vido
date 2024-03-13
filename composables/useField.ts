@@ -6,7 +6,7 @@ interface Route {
   difficulty?: string
 }
 
-const ADDRESS_FIELDS = [
+export const ADDRESS_FIELDS = [
   'addr:housenumber',
   'addr:street',
   'addr:postcode',

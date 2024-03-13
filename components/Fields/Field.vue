@@ -4,7 +4,7 @@ import type GeoJSON from 'geojson'
 import type { PropType } from 'vue'
 
 import { defineNuxtComponent } from '#app'
-import AddressField, { isAddressFieldEmpty } from '~/components/Fields/AddressField.vue'
+import AddressField from '~/components/Fields/AddressField.vue'
 import Coordinates, { isCoordinatesEmpty } from '~/components/Fields/Coordinates.vue'
 import DateRange, { isDateRangeEmpty } from '~/components/Fields/DateRange.vue'
 import Facebook from '~/components/Fields/Facebook.vue'
@@ -17,6 +17,7 @@ import ExternalLink from '~/components/UI/ExternalLink.vue'
 import FieldsHeader from '~/components/UI/FieldsHeader.vue'
 import type { ApiPoiProperties, FieldsListItem } from '~/lib/apiPois'
 import type { PropertyTranslationsContextEnum } from '~/plugins/property-translations'
+import { ADDRESS_FIELDS } from '~/composables/useField'
 
 export function isFiledEmpty(
   field: FieldsListItem,
@@ -31,10 +32,21 @@ export function isFiledEmpty(
         .length > 0
     )
   }
-  else if (field.field === 'addr') { return isAddressFieldEmpty(properties) }
-  else if (field.field === 'start_end_date') { return isDateRangeEmpty(properties) }
-  else if (field.field === 'coordinates') { return isCoordinatesEmpty(geom) }
-  else { return !(field.field in properties) }
+
+  if (field.field === 'addr') {
+    return ADDRESS_FIELDS.reduce(
+      (sum: boolean, value) => sum || value in properties,
+      false,
+    )
+  }
+
+  if (field.field === 'start_end_date')
+    return isDateRangeEmpty(properties)
+
+  if (field.field === 'coordinates')
+    return isCoordinatesEmpty(geom)
+
+  return !(field.field in properties)
 }
 
 export default defineNuxtComponent({
