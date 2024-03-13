@@ -171,9 +171,9 @@ export default defineI18nLocale(() => {
         label: 'Étoiles',
       },
       route: {
-        difficulty: 'Difficulté :',
-        length: 'Distance :',
-        duration: 'Durée :',
+        difficulty: 'Difficulté: {difficulty}',
+        length: 'Distance: {length}',
+        duration: 'Durée: {duration}',
         difficulties: {
           easy: 'facile',
           normal: 'normal',

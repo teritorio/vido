@@ -170,9 +170,9 @@ export default defineI18nLocale(() => {
         label: 'Stars',
       },
       route: {
-        difficulty: 'Difficulty:',
-        length: 'Distance:',
-        duration: 'Duration:',
+        difficulty: 'Difficulty: {difficulty}',
+        length: 'Distance: {length}',
+        duration: 'Duration: {duration}',
         difficulties: {
           easy: 'easy',
           normal: 'normal',
