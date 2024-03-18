@@ -418,7 +418,7 @@ export default defineNuxtComponent({
             this.selectedFeature.geometry.type,
           )
         ) {
-          // Get original coords to set axact marker position
+          // Get original coords to set exact marker position
           const originalFeature = this.features.find(
             originalFeature =>
               originalFeature.properties?.metadata?.id
