@@ -177,6 +177,13 @@ export default defineNuxtComponent({
       this.map.fitBounds(bounds, this.fitBoundsOptions(options))
     },
 
+    featuresPrepare(features: ApiPoi[]): ApiPoi[] {
+      return features.map((feature, index) => {
+          feature.id = index
+          return feature
+      })
+    },
+
     initPoiLayer(
       features: MapPoi[],
       clusterPropertiesValues: string[],
@@ -220,7 +227,7 @@ export default defineNuxtComponent({
         tolerance: 0.6,
         data: {
           type: 'FeatureCollection',
-          features,
+          features: this.featuresPrepare(this.features),
         },
       })
 
