@@ -68,13 +68,7 @@ export default defineNuxtComponent({
     },
 
     center(): LngLatLike | undefined {
-      if (
-        this.features.length === 1
-          && this.features[0].geometry.type === 'Point'
-      )
-        return this.features[0].geometry.coordinates as LngLatLike
-      else
-        return undefined
+      return this.bounds?.getCenter()
     },
 
     bounds(): LngLatBounds | undefined {
