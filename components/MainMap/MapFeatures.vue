@@ -14,6 +14,7 @@ import { Marker } from 'maplibre-gl'
 import { mapActions, mapState, mapWritableState } from 'pinia'
 import type { PropType } from 'vue'
 import { ref } from 'vue'
+import booleanIntersects from '@turf/boolean-intersects'
 
 import { defineNuxtComponent, useRequestHeaders } from '#app'
 import MapControlsExplore from '~/components/MainMap/MapControlsExplore.vue'
@@ -373,12 +374,18 @@ export default defineNuxtComponent({
     },
 
     handleResetMapZoom(text: string, textBtn: string) {
-      const mapBounds = this.map.getBounds()
-      const isOneInView = this.features.some(
-        feature =>
-          feature.geometry.type === 'Point'
-          && mapBounds.contains(feature.geometry.coordinates as [number, number]),
-      )
+      const mapBound = this.map.getBounds().toArray()
+      const bounds = {
+        type: 'Polygon',
+        coordinates: [[
+          [mapBound[0][0], mapBound[0][1]],
+          [mapBound[1][0], mapBound[0][1]],
+          [mapBound[1][0], mapBound[1][1]],
+          [mapBound[0][0], mapBound[1][1]],
+          [mapBound[0][0], mapBound[0][1]],
+        ]],
+      } as Polygon
+      const isOneInView = this.features.some(feature => booleanIntersects(bounds, feature.geometry as Exclude<GeoJSON.Geometry, GeoJSON.GeometryCollection>))
 
       const currentZoom = this.map.getZoom()
 

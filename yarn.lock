@@ -3157,6 +3157,7 @@ __metadata:
     "@teritorio/font-teritorio": ^2.5.0
     "@teritorio/map": ^0.12.7
     "@teritorio/openmaptiles-gl-language": ^1.5.4
+    "@turf/boolean-intersects": ^6.5.0
     "@types/geojson": ^7946.0.10
     "@types/lodash.debounce": ^4.0.7
     "@types/lodash.memoize": ^4.1.7
@@ -3236,6 +3237,109 @@ __metadata:
   version: 0.2.0
   resolution: "@trysound/sax@npm:0.2.0"
   checksum: 55c7d0801a51848b8032b943590a15d8a2155480c123ed4338d2b4299293398037ea05c65c586ad35c4d52c3fc1dfade5745cf6666158c0653df291ceef425e5
+  languageName: node
+  linkType: hard
+
+"@turf/bbox@npm:*":
+  version: 6.5.0
+  resolution: "@turf/bbox@npm:6.5.0"
+  dependencies:
+    "@turf/helpers": ^6.5.0
+    "@turf/meta": ^6.5.0
+  checksum: 623f2dac62ff7b4f0e98f156bb25da0b2f50f4589507c3b770deb80460a7aeacf63802c867a5cfa8323568d6302b91b309441cf8764b4c6168ebda6985228afe
+  languageName: node
+  linkType: hard
+
+"@turf/boolean-disjoint@npm:^6.5.0":
+  version: 6.5.0
+  resolution: "@turf/boolean-disjoint@npm:6.5.0"
+  dependencies:
+    "@turf/boolean-point-in-polygon": ^6.5.0
+    "@turf/helpers": ^6.5.0
+    "@turf/line-intersect": ^6.5.0
+    "@turf/meta": ^6.5.0
+    "@turf/polygon-to-line": ^6.5.0
+  checksum: d586c60e0e99a7d72c3a065f0b6e5d9e4542b945357a099776666509c7bb185e7fb76bef699c626656e2a23a713c558d24251a3164a31f16acbc47c1d6395468
+  languageName: node
+  linkType: hard
+
+"@turf/boolean-intersects@npm:^6.5.0":
+  version: 6.5.0
+  resolution: "@turf/boolean-intersects@npm:6.5.0"
+  dependencies:
+    "@turf/boolean-disjoint": ^6.5.0
+    "@turf/helpers": ^6.5.0
+    "@turf/meta": ^6.5.0
+  checksum: 7c6e0fd3b6ffcadeb0d2770d8b1d008068758a6b3ef743a47971fc8ebf7ac079049d65e4775a15b5f821d9f75ab2ff444bd0d3b1013cb538d70acb41e21b9535
+  languageName: node
+  linkType: hard
+
+"@turf/boolean-point-in-polygon@npm:^6.5.0":
+  version: 6.5.0
+  resolution: "@turf/boolean-point-in-polygon@npm:6.5.0"
+  dependencies:
+    "@turf/helpers": ^6.5.0
+    "@turf/invariant": ^6.5.0
+  checksum: 07fb029f304efa980003719853d226e16e87322ffdcf944c1c91860f05e6c85c7805793c9c0ca093b65425316f5540f99b51387ebf5103f79a73215377f93336
+  languageName: node
+  linkType: hard
+
+"@turf/helpers@npm:6.x, @turf/helpers@npm:^6.5.0":
+  version: 6.5.0
+  resolution: "@turf/helpers@npm:6.5.0"
+  checksum: e531ab902beabe9c80ba2364fdd3af65af16678f25d1e32b44d485b4aecf268d4f6083dfbddf53c2448f693cf37e62559fbc07c08f6c68ef324512c48a02cfe0
+  languageName: node
+  linkType: hard
+
+"@turf/invariant@npm:^6.5.0":
+  version: 6.5.0
+  resolution: "@turf/invariant@npm:6.5.0"
+  dependencies:
+    "@turf/helpers": ^6.5.0
+  checksum: 83cd553ae4cb52fd76dc5574f9cf4b9b9b7d4675ceeef0152fbebbff7ed1c9b99f8ca33ae5a9e230629a5ee726d0250644ae56d4ac65b50c076af7081d602f33
+  languageName: node
+  linkType: hard
+
+"@turf/line-intersect@npm:^6.5.0":
+  version: 6.5.0
+  resolution: "@turf/line-intersect@npm:6.5.0"
+  dependencies:
+    "@turf/helpers": ^6.5.0
+    "@turf/invariant": ^6.5.0
+    "@turf/line-segment": ^6.5.0
+    "@turf/meta": ^6.5.0
+    geojson-rbush: 3.x
+  checksum: 8853436c108c8abbff690aee8fe60b431e68915764601184c6b2c2b425d2f978a31d4d41153360f5f8841e09741d419fa66fe7060ed821484682bd5d4a918bbe
+  languageName: node
+  linkType: hard
+
+"@turf/line-segment@npm:^6.5.0":
+  version: 6.5.0
+  resolution: "@turf/line-segment@npm:6.5.0"
+  dependencies:
+    "@turf/helpers": ^6.5.0
+    "@turf/invariant": ^6.5.0
+    "@turf/meta": ^6.5.0
+  checksum: f81e8e5fd94f67bb0c2068b947dfac8cbe70b8e005e81d71c172c72a3412b68624de8f509432caa87ac5a3552dfba8632a6afeda9544a3b296608551e99093fa
+  languageName: node
+  linkType: hard
+
+"@turf/meta@npm:6.x, @turf/meta@npm:^6.5.0":
+  version: 6.5.0
+  resolution: "@turf/meta@npm:6.5.0"
+  dependencies:
+    "@turf/helpers": ^6.5.0
+  checksum: 853336c9a5faacf68ee996ac95bd5a4590b3f431651e616aa4a114d89d6989b89447fe154d534a579a131405310bbc61c0311a6b805368435b22f126264a87a1
+  languageName: node
+  linkType: hard
+
+"@turf/polygon-to-line@npm:^6.5.0":
+  version: 6.5.0
+  resolution: "@turf/polygon-to-line@npm:6.5.0"
+  dependencies:
+    "@turf/helpers": ^6.5.0
+    "@turf/invariant": ^6.5.0
+  checksum: 6331cee23e3663557391d15983ebadbf07fc2188294aea6c22d805c8845b772dd2b4cf59ff19c28a8219921f7d55fc12b556e6c71e0148c74dc7abbbf080d725
   languageName: node
   linkType: hard
 
@@ -3435,6 +3539,13 @@ __metadata:
   version: 7946.0.10
   resolution: "@types/geojson@npm:7946.0.10"
   checksum: 7d03094fa247f371e05e02f12b42daa034c7a7a5c9de5b5b7d77aec3472a5c349b18f5b3bd10138dfa4b243b55c4ff8800522e4b16af77134ee9935eeef7e3eb
+  languageName: node
+  linkType: hard
+
+"@types/geojson@npm:7946.0.8":
+  version: 7946.0.8
+  resolution: "@types/geojson@npm:7946.0.8"
+  checksum: 2d9628afd0caac21dd927c90a5be0a361634a2d3b55c78752a9f1754874cf3802aa5cf2248489ace40e97b29a25d718b0d10689ca8e1b42df350222c282a8ef0
   languageName: node
   linkType: hard
 
@@ -8161,6 +8272,19 @@ __metadata:
   version: 1.0.0-beta.2
   resolution: "gensync@npm:1.0.0-beta.2"
   checksum: d523437689c97b3aba9c5cdeca4677d5fff9a29d620db693fea40d852bad63563110f16979d0170248439dbcd2ecee0780fb2533d3f0519f019081aa10767c60
+  languageName: node
+  linkType: hard
+
+"geojson-rbush@npm:3.x":
+  version: 3.2.0
+  resolution: "geojson-rbush@npm:3.2.0"
+  dependencies:
+    "@turf/bbox": "*"
+    "@turf/helpers": 6.x
+    "@turf/meta": 6.x
+    "@types/geojson": 7946.0.8
+    rbush: ^3.0.1
+  checksum: ac13562b74b43ee274a969f031463c4a987143b7eeae7497566f719511469bd6d1a248bfe1921b98739dcf51e63de6831664d29f2ed1211eb7683f19d1a0cea6
   languageName: node
   linkType: hard
 
@@ -13260,6 +13384,15 @@ __metadata:
   version: 1.2.1
   resolution: "range-parser@npm:1.2.1"
   checksum: 05074f5b23dbdc24acdae9821dd684fbc9c0d770cdaa4469ab529d8e0fc1338aa33561a4c7c14a1f9bdcb3b5e9a3770e5a80318258a72289a7ef05fcda72a707
+  languageName: node
+  linkType: hard
+
+"rbush@npm:^3.0.1":
+  version: 3.0.1
+  resolution: "rbush@npm:3.0.1"
+  dependencies:
+    quickselect: ^2.0.0
+  checksum: 85044397855be0f0019deedaf0aa3dc80b7e3700d7f00cab439dfec12139aef18a69418008d65449ecff94102c9871046a59de95c19995bd17f1340b48a00168
   languageName: node
   linkType: hard
 
