@@ -6,7 +6,7 @@ import throttle from 'lodash.throttle'
 import type {
   FitBoundsOptions,
   LayerSpecification,
-  LngLatBoundsLike,
+  LngLatBounds,
   LngLatLike,
   MapDataEvent,
   MapLibreEvent,
@@ -42,7 +42,7 @@ export default defineNuxtComponent({
       default: undefined,
     },
     bounds: {
-      type: [Array, Object] as PropType<LngLatBoundsLike>,
+      type: [Array, Object] as PropType<LngLatBounds>,
       default: undefined,
     },
     fitBoundsPaddingOptions: {
@@ -173,7 +173,7 @@ export default defineNuxtComponent({
       }
     },
 
-    fitBounds(bounds: LngLatBoundsLike, options: FitBoundsOptions = {}): void {
+    fitBounds(bounds: LngLatBounds, options: FitBoundsOptions = {}): void {
       this.map.fitBounds(bounds, this.fitBoundsOptions(options))
     },
 

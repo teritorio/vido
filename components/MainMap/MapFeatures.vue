@@ -5,7 +5,7 @@ import debounce from 'lodash.debounce'
 import type {
   FitBoundsOptions,
   GeoJSONSource,
-  LngLatBoundsLike,
+  LngLatBounds,
   Map,
   MapDataEvent,
   MapMouseEvent,
@@ -61,7 +61,7 @@ export default defineNuxtComponent({
 
   props: {
     defaultBounds: {
-      type: [Array, Object] as PropType<LngLatBoundsLike>,
+      type: [Array, Object] as PropType<LngLatBounds>,
       default: null,
     },
     fitBoundsPaddingOptions: {

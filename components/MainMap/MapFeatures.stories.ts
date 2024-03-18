@@ -1,4 +1,4 @@
-import type { LngLatBoundsLike } from 'maplibre-gl'
+import { LngLatBounds } from 'maplibre-gl'
 
 import MapFeatures from '~/components/MainMap/MapFeatures.vue'
 import type { ApiMenuCategory } from '~/lib/apiMenu'
@@ -14,10 +14,10 @@ export default {
 }
 
 const defaultProps = {
-  defaultBounds: [
+  defaultBounds: new LngLatBounds([
     [-1.4755803, 43.4916681],
     [-1.4735674, 43.4902015],
-  ] as LngLatBoundsLike,
+  ]),
   categories: [
     {
       id: 1,
