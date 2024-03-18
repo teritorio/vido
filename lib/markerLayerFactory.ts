@@ -168,42 +168,40 @@ export function updateMarkers(
         if (typeof props.metadata === 'string')
           props.metadata = JSON.parse(props.metadata)
 
-        if (props?.metadata?.id) {
-          const id = `m${props.metadata.id}`
-          markerIdcurrent.push(id)
-          if (!markers[id]) {
-            // const markerCoords = this.featuresCoordinates[props.metadata.id]
-            const markerCoords
-              = feature.geometry.type === 'Point'
-              && (feature.geometry.coordinates as TupleLatLng)
-            if (markerCoords) {
-              if (typeof props.display === 'string')
-                props.display = JSON.parse(props.display)
+        const id = `m${feature.id}`
+        markerIdcurrent.push(id)
+        if (!markers[id]) {
+          // const markerCoords = this.featuresCoordinates[props.metadata.id]
+          const markerCoords
+            = feature.geometry.type === 'Point'
+            && (feature.geometry.coordinates as TupleLatLng)
+          if (markerCoords) {
+            if (typeof props.display === 'string')
+              props.display = JSON.parse(props.display)
 
-              if (typeof props.editorial === 'string')
-                props.editorial = JSON.parse(props.editorial)
+            if (typeof props.editorial === 'string')
+              props.editorial = JSON.parse(props.editorial)
 
-              // Marker
-              markers[id] = makerHtmlFactory(
-                id,
-                markerCoords, // Using this to avoid misplaced marker
-                props.display?.color_fill || '#000000',
-                props.display?.icon || '#000000',
-                props['image:thumbnail'],
-                null,
-                props.display?.text,
-              )
+            // Marker
+            markers[id] = makerHtmlFactory(
+              id,
+              markerCoords, // Using this to avoid misplaced marker
+              props.display?.color_fill || '#000000',
+              props.display?.icon || '#000000',
+              props['image:thumbnail'],
+              null,
+              props.display?.text,
+            )
 
-              // Click handler
-              if (markerClickCallBack && props.editorial?.popup_fields) {
-                const el = markers[id].getElement()
-                el.addEventListener('click', (e: MouseEvent) => {
-                  e.stopPropagation()
-                  markerClickCallBack(feature as unknown as ApiPoi)
-                })
-              }
-              markers[id].addTo(map)
+            // Click handler
+            if (markerClickCallBack && props.editorial?.popup_fields) {
+              const el = markers[id].getElement()
+              el.addEventListener('click', (e: MouseEvent) => {
+                e.stopPropagation()
+                markerClickCallBack(feature as unknown as ApiPoi)
+              })
             }
+            markers[id].addTo(map)
           }
         }
       }

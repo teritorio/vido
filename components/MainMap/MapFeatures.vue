@@ -162,7 +162,7 @@ export default defineNuxtComponent({
       if (source?.type === 'geojson' && 'setData' in source) {
         (source as GeoJSONSource).setData({
           type: 'FeatureCollection',
-          features: this.features,
+          features: this.mapBase!.featuresPrepare(this.features),
         })
         this.showSelectedFeature()
       }
