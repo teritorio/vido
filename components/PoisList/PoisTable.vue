@@ -2,14 +2,13 @@
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { localeIncludes } from 'locale-includes'
 import { PropertyTranslationsContextEnum } from '~/plugins/property-translations'
-import type { ApiPoi, FieldsListItem } from '~/lib/apiPois'
+import { type ApiPoi, type ApiPois, type FieldsListItem, getPoiByCategoryId } from '~/lib/apiPois'
 import type { ApiMenuCategory } from '~/lib/apiMenu'
 import Field from '~/components/Fields/Field.vue'
 import IconButton from '~/components/UI/IconButton.vue'
 import ContribFieldGroup from '~/components/Fields/ContribFieldGroup.vue'
 import Actions from '~/components/PoisList/Actions.vue'
 import TeritorioIconBadge from '~/components/UI/TeritorioIconBadge.vue'
-import { getPoiByCategoryId } from '~/lib/apiPois'
 import { siteStore as useSiteStore } from '~/stores/site'
 
 interface DataTableHeader {
@@ -21,7 +20,7 @@ interface DataTableHeader {
 }
 
 const props = defineProps<{
-  category: ApiMenuCategory
+  category?: ApiMenuCategory
 }>()
 
 const device = useDevice()
@@ -33,26 +32,28 @@ const { contribMode, isContribEligible, getContributorFields } = useContrib()
 const search = ref('')
 
 // Fetch POIs by Cache or API
-const pois = ref()
+const pois = ref<ApiPois>()
 const loadingState = ref(false)
-const cachedKey = computed(() => `pois-${props.category.id}`)
-const { data: cachedPois } = useNuxtData(cachedKey.value)
 
-if (cachedPois.value) {
-  pois.value = cachedPois.value
-}
-else {
-  const { data, pending, error } = await useAsyncData(cachedKey.value, () => getPoiByCategoryId(
-    siteStore.config!,
-    props.category.id,
-    { geometry_as: 'point', short_description: true },
-  ))
+if (props.category) {
+  const cachedKey = computed(() => `pois-${props.category!.id}`)
+  const { data: cachedPois } = useNuxtData(cachedKey.value)
+  if (cachedPois.value) {
+    pois.value = cachedPois.value
+  }
+  else {
+    const { data, pending, error } = await useAsyncData(cachedKey.value, () => getPoiByCategoryId(
+      siteStore.config!,
+      props.category!.id,
+      { geometry_as: 'point', short_description: true },
+    ))
 
-  if (error.value || !data.value)
-    throw createError({ statusCode: 404, statusMessage: 'POIs not found.' })
+    if (error.value || !data.value)
+      throw createError({ statusCode: 404, statusMessage: 'POIs not found.' })
 
-  pois.value = data.value
-  loadingState.value = pending.value
+    pois.value = data.value
+    loadingState.value = pending.value
+  }
 }
 
 // Handle default config field if not provided by API
@@ -65,27 +66,32 @@ const fields = computed((): FieldsListItem[] => {
 
 // Transform non-string values to single string
 // Used for sort and filter comparisons
-pois.value.features = pois.value.features.map((f: ApiPoi) => {
-  const fieldEntries = fields.value.map(f => f.field)
-  const arrayProps: { [key: string]: any } = []
+if (pois.value) {
+  pois.value.features = pois.value.features.map((f: ApiPoi) => {
+    const fieldEntries = fields.value.map(f => f.field)
+    const arrayProps: { [key: string]: any } = []
 
-  if (fieldEntries.includes('route'))
-    arrayProps.route = routeToString(f.properties, getContext('route'))
+    if (fieldEntries.includes('route'))
+      arrayProps.route = routeToString(f.properties, getContext('route'))
 
-  if (fieldEntries.includes('addr'))
-    arrayProps.addr = addressToString(f.properties)
+    if (fieldEntries.includes('addr'))
+      arrayProps.addr = addressToString(f.properties)
 
-  return {
-    ...f,
-    properties: {
-      ...f.properties,
-      ...arrayProps,
-    },
-  }
-})
+    return {
+      ...f,
+      properties: {
+        ...f.properties,
+        ...arrayProps,
+      },
+    }
+  })
+}
 
 // Transform headers data to be compliant with Vuetify's standards
 const headers = computed(() => {
+  if (!props.category)
+    return []
+
   // Basic Fields
   const h: DataTableHeader[] = fields.value.map(f => ({
     filterable: true,
@@ -171,11 +177,11 @@ function getContext(key: string) {
         <header class="d-flex align-center pa-2" :style="{ flexDirection: device.smallScreen ? 'column' : 'row', gap: '8px', background: '#eeeeee' }">
           <h1 class="d-flex align-center print:tw-pb-4" :style="{ marginRight: device.smallScreen ? 'unset' : 'auto' }">
             <TeritorioIconBadge
-              :color-fill="category.category.color_fill"
-              :picto="category.category.icon"
+              :color-fill="category?.category.color_fill || '#2a62ac'"
+              :picto="category?.category.icon || 'info'"
               size="xl"
             />
-            {{ category.category.name.fr }}
+            {{ category?.category.name.fr }}
           </h1>
           <VTextField
             v-model="search"
@@ -193,6 +199,7 @@ function getContext(key: string) {
             </template>
           </VTextField>
           <Actions
+            v-if="category"
             class="ma-0 w-auto"
             :category-id="category.id"
             :color-line="category.category.color_line"
@@ -240,6 +247,10 @@ function getContext(key: string) {
 .v-data-table .v-table__wrapper > table tbody > tr:nth-child(even) > td,
 :deep(.v-data-table .v-table__wrapper > table > thead > tr th) {
   background: #F3F4F6;
+}
+
+.v-data-table {
+  min-height: 350px;
 }
 
 h1 {
