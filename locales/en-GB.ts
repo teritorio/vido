@@ -134,7 +134,7 @@ export default defineI18nLocale(() => {
       },
     },
     poisTable: {
-      empty: 'Empty List',
+      empty: 'The list is empty: select a category',
       details: 'Details',
       downloadCsv: 'Download in CSV',
       downloadGeojson: 'Download in GeoJSON',
