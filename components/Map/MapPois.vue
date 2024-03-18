@@ -1,5 +1,5 @@
 <script lang="ts">
-import type { LngLatBoundsLike, LngLatLike, Map } from 'maplibre-gl'
+import type { LngLatBounds, LngLatLike, Map } from 'maplibre-gl'
 import type { PropType } from 'vue'
 import { ref } from 'vue'
 
@@ -39,7 +39,7 @@ export default defineNuxtComponent({
     },
     defaultBounds: {
       type: [Array, Object] as PropType<
-        LngLatBoundsLike | undefined
+        LngLatBounds | undefined
       >,
       default: undefined,
     },
@@ -77,7 +77,7 @@ export default defineNuxtComponent({
         return undefined
     },
 
-    bounds(): LngLatBoundsLike | undefined {
+    bounds(): LngLatBounds | undefined {
       if (
         this.features.length > 1
           || (this.features.length === 1

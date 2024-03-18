@@ -2,7 +2,7 @@
 import { OpenMapTilesLanguage } from '@teritorio/openmaptiles-gl-language'
 import type {
   FitBoundsOptions,
-  LngLatBoundsLike,
+  LngLatBounds,
   LngLatLike,
   MapDataEvent,
   MapLibreEvent,
@@ -39,7 +39,7 @@ export default defineNuxtComponent({
       default: DEFAULT_MAP_STYLE as MapStyleEnum,
     },
     bounds: {
-      type: [Array, Object] as PropType<LngLatBoundsLike>,
+      type: [Array, Object] as PropType<LngLatBounds>,
       default: undefined,
     },
     fitBoundsOptions: {

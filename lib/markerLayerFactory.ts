@@ -1,7 +1,7 @@
 import type {
   FitBoundsOptions,
   LayerSpecification,
-  LngLatBoundsLike,
+  LngLatBounds,
   Map,
   SymbolLayerSpecification,
 } from 'maplibre-gl'
@@ -107,7 +107,7 @@ export function updateMarkers(
   map: Map,
   markers: { [id: string]: ITMarker },
   src: string,
-  fitBounds: (bounds: LngLatBoundsLike, options: FitBoundsOptions) => void,
+  fitBounds: (bounds: LngLatBounds, options: FitBoundsOptions) => void,
   markerClickCallBack: ((feature: ApiPoi) => void) | undefined,
 ) {
   const markerIdPrevious = Object.keys(markers)

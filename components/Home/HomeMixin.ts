@@ -1,5 +1,5 @@
 import type { MultiPolygon, Polygon } from 'geojson'
-import type { LngLatBoundsLike } from 'maplibre-gl'
+import type { LngLatBounds } from 'maplibre-gl'
 import { mapActions, mapState, mapWritableState } from 'pinia'
 import type { PropType } from 'vue'
 import { ref } from 'vue'
@@ -40,7 +40,7 @@ export default defineNuxtComponent({
   },
 
   data(): {
-    initialBbox: LngLatBoundsLike | null
+    initialBbox: LngLatBounds | null
   } {
     return {
       initialBbox: null,
