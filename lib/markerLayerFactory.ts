@@ -169,7 +169,7 @@ export function updateMarkers(
           props.metadata = JSON.parse(props.metadata)
 
         if (props?.metadata?.id) {
-          const id = `m${props.metadata.id}`
+          const id = `m${Math.floor(Math.random() * props.metadata.id)}`
           markerIdcurrent.push(id)
           if (!markers[id]) {
             // const markerCoords = this.featuresCoordinates[props.metadata.id]
