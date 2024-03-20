@@ -93,6 +93,19 @@ useHead(headerFromSettings(settings))
 $settings.set(settings)
 $propertyTranslations.set(translations)
 
+// Get CategorySelector filters from Query params
+const filters = computed(() => {
+  const route = useRoute()
+  return route.query.menuItemIds
+    ? route.query.menuItemIds
+      .toString()
+      .split(',')
+      .map(Number.parseInt)
+    : undefined
+})
+
+const isFiltersEqualToCategoryId = filters.value?.length === 1 && filters.value[0] === category.id
+
 if (process.client)
   $trackingInit(config)
 
@@ -101,14 +114,16 @@ function onCategoryUpdate(categoryId: number) {
   if (!categoryId)
     return
 
-  router.push(`/category/embedded/${categoryId}`)
+  router.push({ path: `/category/embedded/${categoryId}`, query: { filters: filters.value } })
 }
 </script>
 
 <template>
   <div>
     <CategorySelector
+      v-if="!isFiltersEqualToCategoryId"
       class="pa-4"
+      :filters="filters"
       :menu-items="menuStore.menuItems || {}"
       :category-id="id"
       @category-change="onCategoryUpdate"

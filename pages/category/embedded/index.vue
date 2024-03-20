@@ -72,6 +72,17 @@ useHead(headerFromSettings(settings))
 $settings.set(settings)
 $propertyTranslations.set(translations)
 
+// Get CategorySelector filters from Query params
+const filters = computed(() => {
+  const route = useRoute()
+  return route.query.menuItemIds
+    ? route.query.menuItemIds
+      .toString()
+      .split(',')
+      .map((f: string) => Number.parseInt(f))
+    : undefined
+})
+
 if (process.client)
   $trackingInit(config)
 
@@ -80,7 +91,7 @@ function onCategoryUpdate(categoryId: number) {
   if (!categoryId)
     return
 
-  router.push(`/category/embedded/${categoryId}`)
+  router.push({ path: `/category/embedded/${categoryId}`, query: { filters: filters.value } })
 }
 </script>
 
@@ -88,6 +99,7 @@ function onCategoryUpdate(categoryId: number) {
   <div>
     <CategorySelector
       class="pa-4"
+      :filters="filters"
       :menu-items="menuStore.menuItems || {}"
       @category-change="onCategoryUpdate"
     />

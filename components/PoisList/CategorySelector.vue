@@ -29,6 +29,9 @@ export default defineNuxtComponent({
   },
 
   props: {
+    filters: {
+      type: Array as PropType<number[]>,
+    },
     menuItems: {
       type: Object as PropType<Record<number, MenuItem>>,
       required: true,
@@ -65,9 +68,17 @@ export default defineNuxtComponent({
         .map((menuItem) => {
           const parents: string[] = []
           let parentId = menuItem.parent_id
+          let isIncluded = false
+
           while (parentId) {
             if (!this.menuItems[parentId])
               return undefined
+
+            if (
+              this.filters
+                && (this.filters.includes(parentId) || this.filters.includes(menuItem.id))
+            )
+              isIncluded = true
 
             const name = this.menuItems[parentId].menu_group?.name.fr
             if (name && this.menuItems[parentId].parent_id)
@@ -75,6 +86,9 @@ export default defineNuxtComponent({
 
             parentId = this.menuItems[parentId].parent_id
           }
+
+          if (this.filters && !isIncluded)
+            return undefined
 
           return {
             value: menuItem.id,
