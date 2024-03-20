@@ -1,12 +1,9 @@
 <script setup lang="ts">
-import type { ContentEntry } from '~/lib/apiContent'
-import { getContents } from '~/lib/apiContent'
-import { getMenu } from '~/lib/apiMenu'
-import type { PropertyTranslations } from '~/lib/apiPropertyTranslations'
-import { getPropertyTranslations } from '~/lib/apiPropertyTranslations'
-import type { Settings } from '~/lib/apiSettings'
-import { getSettings, headerFromSettings } from '~/lib/apiSettings'
 import { vidoConfig } from '~/plugins/vido-config'
+import { getMenu } from '~/lib/apiMenu'
+import { type ContentEntry, getContents } from '~/lib/apiContent'
+import { type PropertyTranslations, getPropertyTranslations } from '~/lib/apiPropertyTranslations'
+import { type Settings, getSettings, headerFromSettings } from '~/lib/apiSettings'
 import { menuStore as useMenuStore } from '~/stores/menu'
 import { siteStore as useSiteStore } from '~/stores/site'
 import Header from '~/components/Layout/Header.vue'
@@ -23,11 +20,7 @@ definePageMeta({
   },
 })
 
-const router = useRouter()
-const param = useRoute().params
-const id = Number.parseInt(param.id as string)
 const siteStore = useSiteStore()
-const menuStore = useMenuStore()
 const { $vidoConfigSet, $settings, $propertyTranslations, $trackingInit } = useNuxtApp()
 
 // TODO: Get this globally as share it across components / pages
@@ -72,6 +65,7 @@ else {
 }
 
 // MenuItems
+const menuStore = useMenuStore()
 const { data: cachedMenuItems } = useNuxtData('menu-items')
 if (cachedMenuItems.value) {
   menuStore.fetchConfig(cachedMenuItems.value)
@@ -85,7 +79,8 @@ else {
   menuStore.fetchConfig(data.value)
 }
 
-const { settings, contents, translations } = categoryListData.value!
+const param = useRoute().params
+const id = Number.parseInt(param.id as string)
 const category = menuStore.getCurrentCategory(id)
 
 if (!category) {
@@ -95,6 +90,7 @@ if (!category) {
   })
 }
 
+const { settings, contents, translations } = categoryListData.value!
 settings.themes[0].title = category.category.name
 useHead(headerFromSettings(settings))
 
@@ -105,6 +101,7 @@ $propertyTranslations.set(translations)
 if (process.client)
   $trackingInit(config)
 
+const router = useRouter()
 function onCategoryUpdate(categoryId: number) {
   if (!categoryId)
     return
