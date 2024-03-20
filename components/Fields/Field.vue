@@ -25,7 +25,7 @@ export function isFiledEmpty(
   geom: GeoJSON.Geometry,
 ): boolean {
   if (field.field === 'route') {
-    return (
+    return !(
       Object.entries(properties || {})
         .map(([key, value]) => [key.split(':'), value])
         .filter(([keys, _value]) => keys[0] === 'route' && keys.length === 3)
