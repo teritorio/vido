@@ -91,7 +91,7 @@ function onCategoryUpdate(categoryId: number) {
       :menu-items="menuStore.menuItems || {}"
       @category-change="onCategoryUpdate"
     />
-    <PoisTable />
+    <PoisTable :details-is-external="true" />
   </div>
 </template>
 

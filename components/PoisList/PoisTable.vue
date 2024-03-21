@@ -21,6 +21,7 @@ interface DataTableHeader {
 
 const props = defineProps<{
   category?: ApiMenuCategory
+  detailsIsExternal?: boolean
 }>()
 
 const device = useDevice()
@@ -218,7 +219,7 @@ function getContext(key: string) {
               class="tw-h-10"
               :href="`/poi/${item.properties.metadata.id}/details`"
               :label="t('poisTable.details')"
-              target="_self"
+              :target="detailsIsExternal ? '_blank' : '_self'"
             >
               <FontAwesomeIcon icon="external-link-alt" />
               {{ t('poisTable.details') }}
