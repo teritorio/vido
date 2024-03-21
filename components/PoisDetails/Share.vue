@@ -108,7 +108,7 @@ export default defineNuxtComponent({
         target="_blank"
       >
         <FontAwesomeIcon
-          :icon="['fab', 'twitter']"
+          :icon="['fab', 'x-twitter']"
           :style="{ color: colorLine }"
         />
       </IconButton>

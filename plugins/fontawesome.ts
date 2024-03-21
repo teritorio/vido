@@ -2,8 +2,8 @@ import { config, library } from '@fortawesome/fontawesome-svg-core'
 import {
   faFacebook,
   faInstagram,
-  faTwitter,
   faWhatsapp,
+  faXTwitter,
 } from '@fortawesome/free-brands-svg-icons'
 import {
   faCircle,
@@ -106,7 +106,7 @@ library.add(
   faFacebook,
   faInstagram,
   faWhatsapp,
-  faTwitter,
+  faXTwitter,
   faArrowCircleDown,
   faPhone,
   faFileCsv,
