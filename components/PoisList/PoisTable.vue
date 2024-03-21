@@ -17,6 +17,7 @@ interface DataTableHeader {
   sortable?: boolean
   sort?: (a: string, b: string) => number
   title: string
+  width?: string
 }
 
 const props = defineProps<{
@@ -111,6 +112,7 @@ const headers = computed(() => {
       sortable: false,
       key: 'contrib',
       title: t('fields.contrib.heading'),
+      width: '100px',
     })
   }
 
@@ -120,6 +122,7 @@ const headers = computed(() => {
     sortable: false,
     key: 'details',
     title: 'Actions',
+    width: '100px',
   })
 
   return h
