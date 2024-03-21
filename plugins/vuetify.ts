@@ -8,8 +8,8 @@ import { defineNuxtPlugin } from '#app/nuxt'
 export default defineNuxtPlugin((nuxtApp) => {
   const vuetify = createVuetify({
     locale: {
-      locale: 'en',
-      fallback: 'en',
+      locale: nuxtApp.$i18n.locale.value,
+      fallback: nuxtApp.$i18n.fallbackLocale.value,
       messages: { en, es, fr },
     },
     icons: {
