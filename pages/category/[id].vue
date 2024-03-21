@@ -113,6 +113,7 @@ function onCategoryUpdate(categoryId: number) {
 <template>
   <VContainer fluid>
     <Header
+      class="mb-4"
       :theme="settings.themes[0]"
       :nav-menu-entries="contents"
     >
