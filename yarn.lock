@@ -1568,46 +1568,46 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@fortawesome/fontawesome-common-types@npm:6.4.0":
-  version: 6.4.0
-  resolution: "@fortawesome/fontawesome-common-types@npm:6.4.0"
-  checksum: 0c6a9bef6b77462fefbe4182553e25a852483f0d7624ddb4904fe8f3b520786a0071374db71ab4692ff69dda4174a1ee018963dc8a07f05f378aae7e13eabffd
+"@fortawesome/fontawesome-common-types@npm:6.4.2":
+  version: 6.4.2
+  resolution: "@fortawesome/fontawesome-common-types@npm:6.4.2"
+  checksum: 133ca294585b3303ecf39cf8c595fd90ed2a0313464653e619a71fdd1804b4c424c62f4196493a43ed8ad8e4e74b7ba6a5afca90d207fa465ab82864866b2d47
   languageName: node
   linkType: hard
 
-"@fortawesome/fontawesome-svg-core@npm:^6.4.0":
-  version: 6.4.0
-  resolution: "@fortawesome/fontawesome-svg-core@npm:6.4.0"
+"@fortawesome/fontawesome-svg-core@npm:6.4.2":
+  version: 6.4.2
+  resolution: "@fortawesome/fontawesome-svg-core@npm:6.4.2"
   dependencies:
-    "@fortawesome/fontawesome-common-types": 6.4.0
-  checksum: f2bee51670ed460ff39e2ffcce44bfc3942992910f8f61f61928f757ce5a38532eea609fb9c08cb4e183247248c183c5b698267277e86b04f966ff996327c4ac
+    "@fortawesome/fontawesome-common-types": 6.4.2
+  checksum: abc9bfb45abcb8b2e5accccb45f7d53d130d4379b316c83b3bccd0cafe7e27af9c259f4324379f669d0fcac09581d6397f47ee380ce369ec3b82fa753e71642f
   languageName: node
   linkType: hard
 
-"@fortawesome/free-brands-svg-icons@npm:^6.4.0":
-  version: 6.4.0
-  resolution: "@fortawesome/free-brands-svg-icons@npm:6.4.0"
+"@fortawesome/free-brands-svg-icons@npm:6.4.2":
+  version: 6.4.2
+  resolution: "@fortawesome/free-brands-svg-icons@npm:6.4.2"
   dependencies:
-    "@fortawesome/fontawesome-common-types": 6.4.0
-  checksum: 37613dfe5c752580adedcc08dc421d75e15b3c4b6a6d2fc6d523244f7fe1c29bce84078fd7f84a445309b6f75301a73154f81fb194c8447ab7b96eb21d6155cb
+    "@fortawesome/fontawesome-common-types": 6.4.2
+  checksum: 6e2365140f6ad5e618f0b9209866df692d3bfe94c4fc8e23181359f35daeeb24eb55c65bffa45b3032e9ec04b10b942035e493016d3cff0a47499876a7160f26
   languageName: node
   linkType: hard
 
-"@fortawesome/free-regular-svg-icons@npm:^6.4.0":
-  version: 6.4.0
-  resolution: "@fortawesome/free-regular-svg-icons@npm:6.4.0"
+"@fortawesome/free-regular-svg-icons@npm:6.4.2":
+  version: 6.4.2
+  resolution: "@fortawesome/free-regular-svg-icons@npm:6.4.2"
   dependencies:
-    "@fortawesome/fontawesome-common-types": 6.4.0
-  checksum: fc89d6697e5186c18a7ec82d1c932307fbe4bbd399c195f1d60820e03c1701152dd4c597d0166260715bd87dce4fd4938f9606c24a408223a78a6c7c14908558
+    "@fortawesome/fontawesome-common-types": 6.4.2
+  checksum: a9e336ed6c730238696e81ef616672a9d1554c796d5376f3ba09197240a6f64fcf988806ea659feb3df4a39bdefa5341bdd6e17329dc5bca3d05d7618569c4b7
   languageName: node
   linkType: hard
 
-"@fortawesome/free-solid-svg-icons@npm:^6.4.0":
-  version: 6.4.0
-  resolution: "@fortawesome/free-solid-svg-icons@npm:6.4.0"
+"@fortawesome/free-solid-svg-icons@npm:6.4.2":
+  version: 6.4.2
+  resolution: "@fortawesome/free-solid-svg-icons@npm:6.4.2"
   dependencies:
-    "@fortawesome/fontawesome-common-types": 6.4.0
-  checksum: 1477373f0af7f65c056019a9044912cf44ff5b715740339944658190e921e6b6100be238f27f1709e6cb1d4fd4588215bdbc84ae99a3febe510501a75c32e07b
+    "@fortawesome/fontawesome-common-types": 6.4.2
+  checksum: 7178b10b0d5a1051672769752c84823802095498962435253cb5a0e6133efa9a57135b3a1f4f15c3c282594938603f0fe6538ff1ebd89f4aaa49e8bda785dea8
   languageName: node
   linkType: hard
 
@@ -3136,10 +3136,10 @@ __metadata:
   resolution: "@teritorio/vido@workspace:."
   dependencies:
     "@antfu/eslint-config": ^2.6.2
-    "@fortawesome/fontawesome-svg-core": ^6.4.0
-    "@fortawesome/free-brands-svg-icons": ^6.4.0
-    "@fortawesome/free-regular-svg-icons": ^6.4.0
-    "@fortawesome/free-solid-svg-icons": ^6.4.0
+    "@fortawesome/fontawesome-svg-core": 6.4.2
+    "@fortawesome/free-brands-svg-icons": 6.4.2
+    "@fortawesome/free-regular-svg-icons": 6.4.2
+    "@fortawesome/free-solid-svg-icons": 6.4.2
     "@fortawesome/vue-fontawesome": ^3.0.3
     "@gtm-support/vue-gtm": ^2.0.0
     "@histoire/plugin-nuxt": ^0.16.2
