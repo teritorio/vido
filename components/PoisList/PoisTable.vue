@@ -163,7 +163,7 @@ function getContext(key: string) {
 </script>
 
 <template>
-  <VCard class="mt-8">
+  <VCard class="mb-4">
     <VDataTable
       :loading="loadingState"
       :headers="headers"
