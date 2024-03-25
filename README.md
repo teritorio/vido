@@ -34,7 +34,14 @@ Full entry points documentation available on [api.yml](public/api.yaml) and on s
 * POIs:
   * map only: `/pois/{ids}/map`.
 * Categories
-  * list of POIs of a category: `/category/{id}`
+  * Empty list: `/category`
+  * Embedded empty list: `/category/embedded`
+    * Parameters:
+      * `menuItemIds=[id,id]`: filters selector entries by categories IDs
+  * List of POIs by category ID: `/category/{id}`
+  * Embedded list of POIs by category ID: `/category/embedded/{id}`
+    * Parameters:
+      * `menuItemIds=[id,id]`: filters selector entries by categories IDs
 
 ### Sitemap & WPA
 * `/manifest.webmanifest`
