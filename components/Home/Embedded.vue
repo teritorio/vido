@@ -27,6 +27,17 @@ export default defineNuxtComponent({
 
   computed: {
     ...mapState(menuStore, ['menuItems']),
+
+    // Get CategorySelector filters from Query params
+    filters() {
+      return this.$route.query.menuItemIds
+        ? this.$route.query.menuItemIds
+          .toString()
+          .split(',')
+          .map(Number.parseInt)
+        : undefined
+    },
+
     fitBoundsPaddingOptions(): FitBoundsOptions['padding'] {
       return {
         top: 100,
@@ -34,6 +45,13 @@ export default defineNuxtComponent({
         right: 100,
         left: 100,
       }
+    },
+
+    isFiltersEqualToCategoryId() {
+      if (this.filters?.length === 1 && this.selectedCategoryIds.length === 1)
+        return this.filters[0] === this.selectedCategoryIds[0]
+
+      return false
     },
 
     mapFeatures(): ApiPoi[] {
@@ -147,13 +165,15 @@ export default defineNuxtComponent({
           :boundary-area="boundaryArea || settings.polygon.data"
         />
         <CategorySelector
+          v-if="!isFiltersEqualToCategoryId"
+          :filters="filters"
           :menu-items="menuItems || {}"
           label="categorySelector.placeholderAdd"
           class="tw-p-4 tw-absolute tw-z-1 tw-w-full"
           @category-change="onMenuChange"
         />
         <div class="tw-p-4 tw-pt-24 tw-absolute">
-          <SelectedCategories />
+          <SelectedCategories v-if="!isFiltersEqualToCategoryId" />
         </div>
       </div>
     </div>
