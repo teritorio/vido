@@ -121,6 +121,7 @@ export default defineNuxtComponent({
         />
       </div>
       <PoiCardContent
+        :details-is-external="true"
         :poi="selectedFeature"
         :explorer-mode-enabled="explorerModeEnabled"
         :favorites-mode-enabled="false"

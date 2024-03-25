@@ -25,6 +25,10 @@ export default defineNuxtComponent({
   },
 
   props: {
+    detailsIsExternal: {
+      type: Boolean,
+      default: false,
+    },
     poi: {
       type: Object as PropType<ApiPoi>,
       required: true,
@@ -203,6 +207,7 @@ export default defineNuxtComponent({
           :to="websiteDetails"
           :style="`background:${colorFill};color:white`"
           rel="noopener noreferrer"
+          :target="detailsIsExternal ? '_blank' : '_self'"
           @click.stop="trackingPopupEvent('details')"
         >
           {{ $t('poiCard.details') }}
@@ -213,6 +218,7 @@ export default defineNuxtComponent({
           :href="websiteDetails"
           :style="`background:${colorFill};color:white`"
           rel="noopener noreferrer"
+          :target="detailsIsExternal ? '_blank' : '_self'"
           @click.stop="trackingPopupEvent('details')"
         >
           {{ $t('poiCard.details') }}
