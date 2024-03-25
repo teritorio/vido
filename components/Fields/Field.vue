@@ -97,9 +97,11 @@ export default defineNuxtComponent({
   },
 
   data(): {
+    colorfill: string
     textLimit: number
   } {
     return {
+      colorfill: this.properties.display?.color_fill || 'black',
       textLimit: 130,
     }
   },
@@ -303,8 +305,10 @@ export default defineNuxtComponent({
           field.field === 'route:gpx_trace' || field.field === 'route:pdf'
         "
         :href="properties[field.field]"
+        class="d-inline-block pa-2 rounded-lg"
+        :style="{ backgroundColor: colorfill, color: '#ffffff' }"
       >
-        <FontAwesomeIcon prefix="fa" icon="arrow-circle-down" />
+        <FontAwesomeIcon icon="arrow-circle-down" />
         {{ fieldTranslateK(field.field) }}
       </a>
 
