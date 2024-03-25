@@ -179,13 +179,17 @@ function getContext(key: string) {
     >
       <template #top>
         <header class="d-flex align-center pa-2" :style="{ flexDirection: device.smallScreen ? 'column' : 'row', gap: '8px', background: '#eeeeee' }">
-          <h1 class="d-flex align-center print:tw-pb-4" :style="{ marginRight: device.smallScreen ? 'unset' : 'auto' }">
+          <h1
+            v-if="category"
+            class="d-flex align-center print:tw-pb-4"
+            :style="{ marginRight: device.smallScreen ? 'unset' : 'auto' }"
+          >
             <TeritorioIconBadge
-              :color-fill="category?.category.color_fill || '#2a62ac'"
-              :picto="category?.category.icon || 'info'"
+              :color-fill="category.category.color_fill"
+              :picto="category.category.icon"
               size="xl"
             />
-            {{ category?.category.name.fr }}
+            {{ category.category.name.fr }}
           </h1>
           <VTextField
             v-model="search"
@@ -194,6 +198,7 @@ function getContext(key: string) {
               flexGrow: device.smallScreen ? 'unset' : '0',
             }"
             :label="t('poisTable.filter')"
+            class="ml-auto"
             clearable
             variant="solo-filled"
             hide-details="auto"
