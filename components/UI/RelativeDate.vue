@@ -21,7 +21,7 @@ export default defineNuxtComponent({
 
     formatLocale(): { locale: Locale } {
       return {
-        locale: (this.locale && DateFormatLocales?.[this.locale]) || enGB,
+        locale: (this.$i18n.locale && DateFormatLocales?.[this.$i18n.locale]) || enGB,
       }
     },
   },
