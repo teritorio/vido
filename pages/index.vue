@@ -125,9 +125,7 @@ export default defineNuxtComponent({
     )
     if (poiId) {
       fetchPoi = getAsyncDataOrNull(`fetchPoi-${poiId}`, () =>
-        getPoiById(config, poiId!, {
-          short_description: false,
-        }))
+        getPoiById(config, poiId!))
     }
 
     const [

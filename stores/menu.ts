@@ -177,9 +177,7 @@ export const menuStore = defineStore('menu', {
               .filter(categoryId => !previousFeatures[categoryId])
               .map((categoryId) => {
                 try {
-                  return getPoiByCategoryId(vidoConfig, categoryId, {
-                    short_description: false,
-                  })
+                  return getPoiByCategoryId(vidoConfig, categoryId)
                 }
                 catch (e) {
                   // eslint-disable-next-line no-console
