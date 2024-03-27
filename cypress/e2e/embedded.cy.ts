@@ -18,14 +18,14 @@ describe('pois table', () => {
 
   it('contain basic table', () => {
     cy.intercept(
-      '/content/api.teritorio/geodata/v0.1/dev/tourism/pois/category/22.geojson?geometry_as=point&short_description=true',
+      '/content/api.teritorio/geodata/v0.1/dev/tourism/pois/category/22.geojson?geometry_as=point&short_description=false',
       { body: poisCategory22 },
     )
 
     cy.get('.category-selector input').wait(1000).click()
     cy.contains('Aire de passage', { timeout: 30000 }).click({ timeout: 30000 })
 
-    cy.get('#m1', { timeout: 30000 }).click()
+    cy.get('#m0', { timeout: 30000 }).click()
     cy.url().should('include', `/embedded/22/1`)
 
     cy.get('#selected-category-22 button').click()
