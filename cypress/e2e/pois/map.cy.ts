@@ -19,7 +19,7 @@ describe('home content', () => {
   })
 
   it('contain map and poi', () => {
-    cy.get('#m1')
+    cy.get('#m0')
 
     cy.htmlvalidate()
   })

@@ -244,7 +244,7 @@ export default defineNuxtComponent({
         tolerance: 0.6,
         data: {
           type: 'FeatureCollection',
-          features: this.featuresPrepare(this.features),
+          features: this.featuresPrepare(features as ApiPoi[]),
         },
       })
 
