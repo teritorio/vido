@@ -72,20 +72,11 @@ export default defineNuxtComponent({
     },
 
     bounds(): LngLatBounds | undefined {
-      if (
-        this.features.length > 1
-          || (this.features.length === 1
-          && this.features[0].geometry.type !== 'Point')
-      ) {
-        return (
-          getBBoxFeatures(
-            this.features.filter(feature => feature.geometry),
-          ) || this.defaultBounds
-        )
-      }
-      else {
-        return this.defaultBounds
-      }
+      return (
+        getBBoxFeatures(
+          this.features.filter(feature => feature.geometry),
+        ) || this.defaultBounds
+      )
     },
   },
 
