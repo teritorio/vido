@@ -58,14 +58,14 @@ Can be build directly (dev) or within Docker.
 - Node >= 18.0.0 < 20.0.0
 
 ```bash
+# Create empty config file, will be build on `build-config` step
+cp vidos-config-empty.json vidos-config.json
+
 # install dependencies
 yarn install
 
 # Generate fixtures
 yarn build-fixture
-
-# Prepare
-yarn prepare
 
 # Generate configuration from `vidos.config.ts`
 yarn build-config

@@ -23,4 +23,4 @@ runs:
 
     - name: Install dependencies 👨🏻‍💻
       shell: bash
-      run: yarn install
+      run: cp vidos-config-empty.json vidos-config.json && yarn install
