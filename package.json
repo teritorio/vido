@@ -95,7 +95,6 @@
     "loader-utils": "^3.2.1",
     "lodash.get": "^4.4.2",
     "msw": "^1.2.2",
-    "node-sass": "^9.0.0",
     "nuxt": "^3.2.3",
     "nuxt-simple-sitemap": "^2.7.0",
     "postcss": "^8.4.24",
