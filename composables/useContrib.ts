@@ -8,6 +8,7 @@ export interface Link {
 
 export interface ContribFields {
   editor_id: Link
+  josm: Link
   mapillary_link?: Link
   osm_note: Link
 }
@@ -28,6 +29,10 @@ export default function () {
       editor_id: {
         icon: 'pen-to-square',
         url: `https://www.openstreetmap.org/edit?editor=id&${osm_type}=${osm_id}`,
+      },
+      josm: {
+        icon: 'pen-to-square',
+        url: `http://127.0.0.1:8111/load_object?objects=${osm_type?.substring(0, 1)}${osm_id}`,
       },
       mapillary_link: mapillary
         ? {

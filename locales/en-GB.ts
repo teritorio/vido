@@ -160,6 +160,7 @@ export default defineI18nLocale(() => {
       contrib: {
         editor_id: 'Edit in iD Editor',
         heading: 'Contribution',
+        josm: 'Edit in JOSM',
         osm_note: 'Add an OSM note',
         mapillary_link: 'Explore on Mapillary',
       },
