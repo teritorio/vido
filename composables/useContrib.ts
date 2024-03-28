@@ -27,7 +27,7 @@ export default function () {
     return {
       editor_id: {
         icon: 'pen-to-square',
-        url: `https://www.openstreetmap.org/edit?${osm_type}=${osm_id}`,
+        url: `https://www.openstreetmap.org/edit?editor=id&${osm_type}=${osm_id}`,
       },
       mapillary_link: mapillary
         ? {
