@@ -8,10 +8,10 @@ RUN mkdir -p /usr/src/app/.nuxt
 WORKDIR /usr/src/app
 
 # Install app dependencies
-COPY package.json yarn.lock /usr/src/app/
-RUN yarn install
+COPY package.json yarn.lock .yarnrc.yml /usr/src/app/
+COPY .yarn /usr/src/app/.yarn
+RUN yarn install && yarn cache clean
 COPY . /usr/src/app
-RUN yarn install
 
 ENV NODE_OPTIONS --openssl-legacy-provider
 COPY vidos-config-empty.json vidos-config.json
