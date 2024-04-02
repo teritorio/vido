@@ -35,26 +35,29 @@ const search = ref('')
 
 // Fetch POIs by Cache or API
 const pois = ref<ApiPois>()
-const loadingState = ref(false)
+const loadingState = ref(true)
 
 if (props.category) {
   const cachedKey = computed(() => `pois-${props.category!.id}`)
   const { data: cachedPois } = useNuxtData(cachedKey.value)
   if (cachedPois.value) {
     pois.value = cachedPois.value
+    loadingState.value = false
   }
   else {
-    const { data, pending, error } = await useAsyncData(cachedKey.value, () => getPoiByCategoryId(
-      siteStore.config!,
-      props.category!.id,
-      { geometry_as: 'point', short_description: true },
-    ))
+    watchEffect(async () => {
+      const { data, pending, error } = await useAsyncData(cachedKey.value, () => getPoiByCategoryId(
+        siteStore.config!,
+        props.category!.id,
+        { geometry_as: 'point', short_description: true },
+      ))
 
-    if (error.value || !data.value)
-      throw createError({ statusCode: 404, statusMessage: 'POIs not found.' })
+      if (error.value || !data.value)
+        throw createError({ statusCode: 404, statusMessage: 'POIs not found.' })
 
-    pois.value = data.value
-    loadingState.value = pending.value
+      pois.value = data.value
+      loadingState.value = pending.value
+    })
   }
 }
 
