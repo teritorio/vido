@@ -35,11 +35,13 @@ const search = ref('')
 
 // Fetch POIs by Cache or API
 const pois = ref<ApiPois>()
-const loadingState = ref(true)
+const loadingState = ref(false)
 
 if (props.category) {
   const cachedKey = computed(() => `pois-${props.category!.id}`)
   const { data: cachedPois } = useNuxtData(cachedKey.value)
+
+  loadingState.value = true
   if (cachedPois.value) {
     pois.value = cachedPois.value
     loadingState.value = false
