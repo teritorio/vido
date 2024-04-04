@@ -227,9 +227,9 @@ function getContext(key: string) {
               v-bind="getContributorFields(item)"
             />
             <IconButton
-              v-else-if="col.key === 'details'"
+              v-else-if="col.key === 'details' && item.properties.editorial && item.properties.editorial['website:details']"
               class="tw-h-10"
-              :href="`/poi/${item.properties.metadata.id}/details`"
+              :href="item.properties.editorial['website:details']"
               :label="t('poisTable.details')"
               :target="detailsIsExternal ? '_blank' : '_self'"
             >
