@@ -203,7 +203,6 @@ function getContext(key: string) {
               flexGrow: device.smallScreen ? 'unset' : '0',
             }"
             :label="t('poisTable.filter')"
-            class="ml-auto"
             clearable
             variant="solo-filled"
             hide-details="auto"
