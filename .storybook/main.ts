@@ -39,6 +39,7 @@ const config: StorybookConfig = {
           imports: [
             'vue',
           ],
+          dirs: ['./composables'],
         }),
       ],
     })
