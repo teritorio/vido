@@ -183,41 +183,49 @@ function getContext(key: string) {
       items-per-page="20"
     >
       <template #top>
-        <header class="d-flex align-center pa-2" :style="{ flexDirection: device.smallScreen ? 'column' : 'row', gap: '8px', background: '#eeeeee' }">
-          <h1
-            v-if="category"
-            class="d-flex align-center print:tw-pb-4"
-            :style="{ marginRight: device.smallScreen ? 'unset' : 'auto' }"
-          >
-            <TeritorioIconBadge
-              :color-fill="category.category.color_fill"
-              :picto="category.category.icon"
-              size="xl"
-            />
-            {{ category.category.name.fr }}
-          </h1>
-          <VTextField
-            v-model="search"
-            :style="{
-              width: device.smallScreen ? '75%' : '25%',
-              flexGrow: device.smallScreen ? 'unset' : '0',
-            }"
-            :label="t('poisTable.filter')"
-            clearable
-            variant="solo-filled"
-            hide-details="auto"
-          >
-            <template #append-inner>
-              <FontAwesomeIcon class="px-2" icon="search" />
-            </template>
-          </VTextField>
-          <Actions
-            v-if="category"
-            class="ma-0 w-auto"
-            :category-id="category.id"
-            :color-line="category.category.color_line"
-          />
-        </header>
+        <VContainer
+          :style="{ background: '#eeeeee' }"
+          class="ma-0"
+          tag="header"
+          fluid
+        >
+          <VRow align="center" justify="center" dense>
+            <VCol cols="12" sm="4">
+              <h1
+                v-if="category"
+                class="d-flex align-center print:tw-pb-4"
+                :style="{ justifyContent: device.smallScreen ? 'center' : 'start' }"
+              >
+                <TeritorioIconBadge
+                  :color-fill="category.category.color_fill"
+                  :picto="category.category.icon" size="xl"
+                />
+                {{ category.category.name.fr }}
+              </h1>
+            </VCol>
+            <VCol cols="12" sm="4" class="ml-auto">
+              <VTextField
+                v-model="search"
+                :label="t('poisTable.filter')"
+                clearable
+                variant="solo-filled"
+                hide-details="auto"
+              >
+                <template #append-inner>
+                  <FontAwesomeIcon class="px-2" icon="search" />
+                </template>
+              </VTextField>
+            </VCol>
+            <VCol cols="12" sm="auto">
+              <Actions
+                v-if="category"
+                class="ma-0 w-auto"
+                :category-id="category.id"
+                :color-line="category.category.color_line"
+              />
+            </VCol>
+          </VRow>
+        </VContainer>
       </template>
       <template #item="{ item, columns }">
         <tr>
