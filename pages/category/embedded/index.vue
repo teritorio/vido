@@ -73,8 +73,8 @@ $settings.set(settings)
 $propertyTranslations.set(translations)
 
 // Get CategorySelector filters from Query params
+const route = useRoute()
 const filters = computed(() => {
-  const route = useRoute()
   return route.query.menuItemIds
     ? route.query.menuItemIds
       .toString()
@@ -91,7 +91,7 @@ function onCategoryUpdate(categoryId: number) {
   if (!categoryId)
     return
 
-  router.push({ path: `/category/embedded/${categoryId}`, query: { menuItemIds: filters.value } })
+  router.push({ query: route.query, path: `/category/embedded/${categoryId}` })
 }
 </script>
 
