@@ -64,10 +64,13 @@ if (props.category) {
 
 // Handle default config field if not provided by API
 const fields = computed((): FieldsListItem[] => {
-  return (
-    (pois.value?.features[0].properties.editorial?.list_fields)
-    || [{ field: 'name' }]
+  if (
+    !pois.value?.features.length
+    || !pois.value.features[0].properties.editorial?.list_fields
   )
+    return [{ field: 'name' }]
+
+  return pois.value.features[0].properties.editorial.list_fields
 })
 
 // Transform non-string values to single string
