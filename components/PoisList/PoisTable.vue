@@ -25,7 +25,6 @@ const props = defineProps<{
   detailsIsExternal?: boolean
 }>()
 
-const device = useDevice()
 const { routeToString, addressToString } = useField()
 const { t, locale } = useI18n()
 const siteStore = useSiteStore()
@@ -193,8 +192,7 @@ function getContext(key: string) {
             <VCol cols="12" sm="4">
               <h1
                 v-if="category"
-                class="d-flex align-center print:tw-pb-4"
-                :style="{ justifyContent: device.smallScreen ? 'center' : 'start' }"
+                class="d-flex align-center justify-center justify-sm-start print:tw-pb-4"
               >
                 <TeritorioIconBadge
                   :color-fill="category.category.color_fill"
