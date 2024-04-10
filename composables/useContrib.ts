@@ -4,6 +4,7 @@ import { STORE_NAME, useContribStore } from '~/stores/contrib'
 export interface Link {
   icon: string
   url: string
+  target?: string
 }
 
 export interface ContribFields {
@@ -33,6 +34,7 @@ export default function () {
       josm: {
         icon: 'pen-to-square',
         url: `http://127.0.0.1:8111/load_object?objects=${osm_type?.substring(0, 1)}${osm_id}`,
+        target: 'hiddenIframe',
       },
       mapillary_link: mapillary
         ? {

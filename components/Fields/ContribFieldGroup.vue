@@ -24,8 +24,10 @@ const onlyDefinedProps = computed(() => {
       :class="{ 'mt-2': index > 0 }"
       :icon="field.icon"
       :href="field.url"
+      :target="field.target"
     >
       {{ $t(`fields.contrib.${key}`) }}
+      <iframe v-if="key === 'josm'" id="hidden-iframe" name="hiddenIframe" />
     </ExternalLink>
   </div>
 </template>
@@ -39,5 +41,10 @@ div  {
   div {
    display: none;
   }
+}
+
+iframe#hidden-iframe {
+  display: none;
+  position: absolute;
 }
 </style>
