@@ -1,20 +1,8 @@
-<template>
-  <Story title="Menu/Link">
-    <Variant
-      v-for="(p, name) in props"
-      :key="name"
-      :title="name.replace(/([A-Z])/g, ' $1').trim()"
-    >
-      <Link v-bind="p" />
-    </Variant>
-  </Story>
-</template>
-
 <script lang="ts" setup>
-import { FontAwesomeIconProps } from '@fortawesome/vue-fontawesome'
+import type { FontAwesomeIconProps } from '@fortawesome/vue-fontawesome'
 
 import Link from '~/components/Menu/Link.vue'
-import { ApiMenuLink } from '~/lib/apiMenu'
+import type { ApiMenuLink } from '~/lib/apiMenu'
 
 const menuLink: ApiMenuLink = {
   id: 123,
@@ -55,3 +43,15 @@ const props = {
   },
 }
 </script>
+
+<template>
+  <Story title="Menu/Link">
+    <Variant
+      v-for="(p, name) in props"
+      :key="name"
+      :title="name.replace(/([A-Z])/g, ' $1').trim()"
+    >
+      <Link v-bind="p" />
+    </Variant>
+  </Story>
+</template>

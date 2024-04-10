@@ -2,9 +2,13 @@ name: Continuous Integration
 
 on: push
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   install_cache:
-    name: Instal code and deps
+    name: Install code and deps
     runs-on: ${{ matrix.os }}
 
     strategy:
@@ -151,25 +155,19 @@ jobs:
         uses: actions/checkout@master
 
       - name: Deploy
-        uses: up9cloud/action-rsync@master
-        env:
-          HOST: dev.appcarto.teritorio.xyz
-          KEY: ${{secrets.DEPLOY_SSH_KEY_DEV}}
-          TARGET: /var/www/clients/client3/web3/web/vido
-
-          VERBOSE: false
-          USER: devappcarto
-          ARGS: -az --exclude=/.git/ --exclude=vidos.config.ts
-          SSH_ARGS: '-p 2222 -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no'
-          SOURCE: .
-
-          PRE_SCRIPT: |
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{secrets.DEPLOY_SSH_HOST}}
+          username: ${{secrets.DEPLOY_SSH_USERNAME}}
+          key: ${{secrets.DEPLOY_SSH_KEY_DEV}}
+          port: 2222
+          script: |
             echo -n 'VIDO: Deployment started at: ' &&
-            date -u
-          POST_SCRIPT: |
-            cd /var/www/clients/client3/web3/web/vido &&
+            date -u &&
+            cd ${{secrets.DEPLOY_SSH_PATH}} &&
+            git fetch &&
+            git checkout -f origin/develop &&
             ruby poi_explode.rb cypress/fixtures/teritorio/references/pois.geojson &&
-            sed -i "s/# restart: unless-stopped/restart: unless-stopped/" docker-compose.yml &&
             docker-compose build &&
             touch vidos-config.json &&
             docker-compose run --rm vido yarn build-config &&

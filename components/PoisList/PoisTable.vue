@@ -1,81 +1,285 @@
+<script setup lang="ts">
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
+import { localeIncludes } from 'locale-includes'
+import { PropertyTranslationsContextEnum } from '~/plugins/property-translations'
+import { type ApiPoi, type ApiPois, type FieldsListItem, getPoiByCategoryId } from '~/lib/apiPois'
+import type { ApiMenuCategory } from '~/lib/apiMenu'
+import Field from '~/components/Fields/Field.vue'
+import IconButton from '~/components/UI/IconButton.vue'
+import ContribFieldGroup from '~/components/Fields/ContribFieldGroup.vue'
+import Actions from '~/components/PoisList/Actions.vue'
+import TeritorioIconBadge from '~/components/UI/TeritorioIconBadge.vue'
+import { siteStore as useSiteStore } from '~/stores/site'
+
+interface DataTableHeader {
+  filterable?: boolean
+  key: string
+  sortable?: boolean
+  sort?: (a: string, b: string) => number
+  title: string
+  width?: string
+}
+
+const props = defineProps<{
+  category?: ApiMenuCategory
+  detailsIsExternal?: boolean
+}>()
+
+const { routeToString, addressToString } = useField()
+const { t, locale } = useI18n()
+const siteStore = useSiteStore()
+const { $propertyTranslations } = useNuxtApp()
+const { contribMode, isContribEligible, getContributorFields } = useContrib()
+const search = ref('')
+
+// Fetch POIs by Cache or API
+const pois = ref<ApiPois>()
+const loadingState = ref(false)
+
+if (props.category) {
+  const cachedKey = computed(() => `pois-${props.category!.id}`)
+  const { data: cachedPois } = useNuxtData(cachedKey.value)
+
+  loadingState.value = true
+  if (cachedPois.value) {
+    pois.value = cachedPois.value
+    loadingState.value = false
+  }
+  else {
+    watchEffect(async () => {
+      const { data, pending, error } = await useAsyncData(cachedKey.value, () => getPoiByCategoryId(
+        siteStore.config!,
+        props.category!.id,
+        { geometry_as: 'point', short_description: true },
+      ))
+
+      if (error.value || !data.value)
+        throw createError({ statusCode: 404, statusMessage: 'POIs not found.' })
+
+      pois.value = data.value
+      loadingState.value = pending.value
+    })
+  }
+}
+
+// Handle default config field if not provided by API
+const fields = computed((): FieldsListItem[] => {
+  if (
+    !pois.value?.features.length
+    || !pois.value.features[0].properties.editorial?.list_fields
+  )
+    return [{ field: 'name' }]
+
+  return pois.value.features[0].properties.editorial.list_fields
+})
+
+// Transform non-string values to single string
+// Used for sort and filter comparisons
+if (pois.value) {
+  pois.value.features = pois.value.features.map((f: ApiPoi) => {
+    const fieldEntries = fields.value.map(f => f.field)
+    const arrayProps: { [key: string]: any } = []
+
+    if (fieldEntries.includes('route'))
+      arrayProps.route = routeToString(f.properties, getContext('route'))
+
+    if (fieldEntries.includes('addr'))
+      arrayProps.addr = addressToString(f.properties)
+
+    return {
+      ...f,
+      properties: {
+        ...f.properties,
+        ...arrayProps,
+      },
+    }
+  })
+}
+
+// Transform headers data to be compliant with Vuetify's standards
+const headers = computed(() => {
+  if (!props.category)
+    return []
+
+  // Basic Fields
+  const h: DataTableHeader[] = fields.value.map(f => ({
+    filterable: true,
+    key: `properties.${f.field}`,
+    sortable: true,
+    title: $propertyTranslations.p(
+      f.field,
+      PropertyTranslationsContextEnum.List,
+    ),
+    sort: customSort,
+  }))
+
+  // Contrib Field
+  if (contribMode) {
+    h.push({
+      filterable: false,
+      sortable: false,
+      key: 'contrib',
+      title: t('fields.contrib.heading'),
+      width: '100px',
+    })
+  }
+
+  // Details Field
+  h.push({
+    filterable: false,
+    sortable: false,
+    key: 'details',
+    title: 'Actions',
+    width: '100px',
+  })
+
+  return h
+})
+
+function valueToString(item: any) {
+  if (Array.isArray(item))
+    return item.join(' ')
+
+  return item === undefined || typeof item === 'object' ? '' : item
+}
+
+function customSort(a: string, b: string) {
+  const first = valueToString(a)
+  const second = valueToString(b)
+
+  if (!first && second)
+    return -1
+
+  if (first && !second)
+    return 1
+
+  if (!first && !second)
+    return 0
+
+  return first.localeCompare(second, locale.value, { sensitivity: 'base' })
+}
+
+function customFilter(value: any, query: string): boolean {
+  value = valueToString(value)
+
+  if (!value)
+    return false
+
+  return localeIncludes(value, query, { locales: locale.value, sensitivity: 'base' })
+}
+
+function getContext(key: string) {
+  return key === 'opening_hours' ? PropertyTranslationsContextEnum.Card : PropertyTranslationsContextEnum.List
+}
+</script>
+
 <template>
-  <table>
-    <thead>
-      <tr class="tw-bg-gray-100">
-        <th v-for="header in headers" :key="header.value" scope="col">
-          {{ header.text }}
-        </th>
-      </tr>
-    </thead>
-    <tbody v-if="pois.features">
-      <tr v-for="(feature, i) in pois.features" :key="i">
-        <td v-for="field in fields" :key="field.field" class="tw-align-top">
-          <Field
-            :context="context"
-            :recursion-stack="[field.field]"
-            :field="field"
-            :details="$t('poisTable.details')"
-            :properties="feature.properties"
-            :geom="feature.geometry"
-          />
-        </td>
-        <td class="tw-align-top">
-          <NuxtLink :to="`/poi/${feature.properties.metadata.id}/details`">
-            {{ $t('poisTable.details') }}
-          </NuxtLink>
-        </td>
-      </tr>
-    </tbody>
-    <tbody v-else>
-      <tr class="tw-text-center">
-        <td :colspan="headers.length">
-          {{ $t('poisTable.empty') }}
-        </td>
-      </tr>
-    </tbody>
-  </table>
+  <VCard class="mb-4">
+    <VDataTable
+      :loading="loadingState"
+      :headers="headers"
+      :items="pois?.features"
+      :no-data-text="t('poisTable.empty')"
+      :search="search"
+      :custom-filter="customFilter"
+      items-per-page="20"
+    >
+      <template #top>
+        <VContainer
+          :style="{ background: '#eeeeee' }"
+          class="ma-0"
+          tag="header"
+          fluid
+        >
+          <VRow align="center" justify="center" dense>
+            <VCol cols="12" sm="4">
+              <h1
+                v-if="category"
+                class="d-flex align-center justify-center justify-sm-start print:tw-pb-4"
+              >
+                <TeritorioIconBadge
+                  :color-fill="category.category.color_fill"
+                  :picto="category.category.icon" size="xl"
+                />
+                {{ category.category.name.fr }}
+              </h1>
+            </VCol>
+            <VCol cols="12" sm="4" class="ml-auto">
+              <VTextField
+                v-model="search"
+                :label="t('poisTable.filter')"
+                clearable
+                variant="solo-filled"
+                hide-details="auto"
+              >
+                <template #append-inner>
+                  <FontAwesomeIcon class="px-2" icon="search" />
+                </template>
+              </VTextField>
+            </VCol>
+            <VCol cols="12" sm="auto">
+              <Actions
+                v-if="category"
+                class="ma-0 w-auto"
+                :category-id="category.id"
+                :color-line="category.category.color_line"
+              />
+            </VCol>
+          </VRow>
+        </VContainer>
+      </template>
+      <template #item="{ item, columns }">
+        <tr>
+          <td v-for="col in columns" :key="col.key">
+            <ContribFieldGroup
+              v-if="col.key === 'contrib' && isContribEligible(item.properties)"
+              v-bind="getContributorFields(item)"
+            />
+            <IconButton
+              v-else-if="col.key === 'details' && item.properties.editorial && item.properties.editorial['website:details']"
+              class="tw-h-10"
+              :href="item.properties.editorial['website:details']"
+              :label="t('poisTable.details')"
+              :target="detailsIsExternal ? '_blank' : '_self'"
+            >
+              <FontAwesomeIcon icon="external-link-alt" />
+              {{ t('poisTable.details') }}
+            </IconButton>
+            <Field
+              v-else
+              :context="getContext(col.key.split('.').pop())"
+              :recursion-stack="[col.key.split('.').pop()]"
+              :field="{ field: col.key.split('.').pop() }"
+              :details="t('poisTable.details')"
+              :properties="item.properties"
+              :geom="item.geometry"
+            />
+          </td>
+        </tr>
+      </template>
+      <template #loading>
+        <VSkeletonLoader type="table-row@10" />
+      </template>
+    </VDataTable>
+  </VCard>
 </template>
 
-<script lang="ts">
-import { PropType } from 'vue'
+<style scoped>
+/* stylelint-disable selector-class-pattern */
+.v-data-table .v-table__wrapper > table tbody > tr:nth-child(even) > td,
+:deep(.v-data-table .v-table__wrapper > table > thead > tr th) {
+  background: #F3F4F6;
+}
 
-import { defineNuxtComponent } from '#app'
-import Field from '~/components/Fields/Field.vue'
-import { ApiPois, FieldsListItem } from '~/lib/apiPois'
-import { PropertyTranslationsContextEnum } from '~/plugins/property-translations'
+.v-data-table {
+  min-height: 350px;
+}
 
-export default defineNuxtComponent({
-  components: {
-    Field,
-  },
-
-  props: {
-    fields: {
-      type: Array as PropType<FieldsListItem[]>,
-      required: true,
-    },
-    pois: {
-      type: Object as PropType<ApiPois>,
-      required: true,
-    },
-  },
-
-  computed: {
-    headers(): { value: string; text: string }[] {
-      const h = this.fields.map((field) => ({
-        value: field.field,
-        text: this.$propertyTranslations.p(
-          field.field,
-          PropertyTranslationsContextEnum.List
-        ),
-      }))
-      h.push({ value: '', text: '' })
-      return h
-    },
-
-    context(): PropertyTranslationsContextEnum {
-      return PropertyTranslationsContextEnum.List
-    },
-  },
-})
-</script>
+h1 {
+  font-size: 1.25rem;
+  font-weight: 400;
+  gap: 8px;
+  letter-spacing: 0;
+  line-height: 1.75rem;
+}
+</style>

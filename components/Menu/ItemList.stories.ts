@@ -1,5 +1,5 @@
 import ItemList from '~/components/Menu/ItemList.vue'
-import { ApiMenuCategory, ApiMenuLink, MenuGroup } from '~/lib/apiMenu'
+import type { ApiMenuCategory, ApiMenuLink, MenuGroup } from '~/lib/apiMenu'
 import { bind } from '~/lib/storybook-types'
 
 export default {

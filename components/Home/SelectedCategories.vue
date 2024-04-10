@@ -1,3 +1,30 @@
+<script lang="ts">
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
+import { mapActions, mapState } from 'pinia'
+
+import { defineNuxtComponent } from '#app'
+import TeritorioIconBadge from '~/components/UI/TeritorioIconBadge.vue'
+import { menuStore } from '~/stores/menu'
+
+export default defineNuxtComponent({
+  components: {
+    FontAwesomeIcon,
+    TeritorioIconBadge,
+  },
+
+  computed: {
+    ...mapState(menuStore, ['selectedCategories']),
+  },
+
+  methods: {
+    ...mapActions(menuStore, [
+      'delSelectedCategoryIds',
+      'clearSelectedCategoryIds',
+    ]),
+  },
+})
+</script>
+
 <template>
   <div
     v-if="selectedCategories && selectedCategories.length > 0"
@@ -45,10 +72,7 @@
     <button
       v-if="selectedCategories.length > 1"
       type="button"
-      :class="[
-        'tw-absolute -tw-top-3 -tw-right-3 tw-pointer-events-auto',
-        'tw-flex tw-items-center tw-justify-center tw-text-white tw-text-center tw-rounded-full tw-w-7 tw-h-7 tw-border-solid tw-border-2 tw-border-white tw-bg-red-600 hover:tw-bg-red-800',
-      ]"
+      class="tw-absolute -tw-top-3 -tw-right-3 tw-pointer-events-auto tw-flex tw-items-center tw-justify-center tw-text-white tw-text-center tw-rounded-full tw-w-7 tw-h-7 tw-border-solid tw-border-2 tw-border-white tw-bg-red-600 hover:tw-bg-red-800"
       :title="$t('headerMenu.clearAllCategories')"
       :aria-label="$t('headerMenu.clearAllCategories')"
       @click="clearSelectedCategoryIds"
@@ -57,30 +81,3 @@
     </button>
   </div>
 </template>
-
-<script lang="ts">
-import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
-import { mapState, mapActions } from 'pinia'
-
-import { defineNuxtComponent } from '#app'
-import TeritorioIconBadge from '~/components/UI/TeritorioIconBadge.vue'
-import { menuStore } from '~/stores/menu'
-
-export default defineNuxtComponent({
-  components: {
-    FontAwesomeIcon,
-    TeritorioIconBadge,
-  },
-
-  computed: {
-    ...mapState(menuStore, ['selectedCategories']),
-  },
-
-  methods: {
-    ...mapActions(menuStore, [
-      'delSelectedCategoryIds',
-      'clearSelectedCategoryIds',
-    ]),
-  },
-})
-</script>

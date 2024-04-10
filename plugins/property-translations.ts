@@ -1,5 +1,5 @@
 import { defineNuxtPlugin } from '#app/nuxt'
-import { PropertyTranslations } from '~/lib/apiPropertyTranslations'
+import type { PropertyTranslations } from '~/lib/apiPropertyTranslations'
 
 export enum PropertyTranslationsContextEnum {
   Default = 'label',
@@ -11,11 +11,8 @@ export enum PropertyTranslationsContextEnum {
 const Default = PropertyTranslationsContextEnum.Default
 
 export interface PropertyTranslationsPlugin {
-  // @ts-ignore
   set(propertyTranslations: PropertyTranslations): void
-  // @ts-ignore
   p(propertyName: string, context: PropertyTranslationsContextEnum): string
-  // @ts-ignore
   pv(
     propertyName: string,
     valueName: string,
@@ -33,7 +30,7 @@ export default defineNuxtPlugin((_nuxtApp) => {
     },
     p(
       propertyName: string,
-      context: PropertyTranslationsContextEnum = Default
+      context: PropertyTranslationsContextEnum = Default,
     ): string {
       const pn = pt.propertyTranslations[propertyName]
       return (
@@ -44,7 +41,7 @@ export default defineNuxtPlugin((_nuxtApp) => {
     pv(
       propertyName: string,
       valueName: string,
-      context: PropertyTranslationsContextEnum = Default
+      context: PropertyTranslationsContextEnum = Default,
     ): string {
       const pn = pt.propertyTranslations[propertyName]?.values?.[valueName]
       return (

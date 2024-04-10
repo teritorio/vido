@@ -1,5 +1,5 @@
 import Menu from '~/components/Home/Menu.vue'
-import {
+import type {
   ApiMenuCategory,
   ApiMenuLink,
   MenuGroup,
@@ -117,10 +117,10 @@ const MenuMock = Menu.extend({
   computed: {
     menuItems(): Record<ApiMenuCategory['id'], MenuItem> {
       return Object.fromEntries(
-        [search, menuGroup1, menuGroup2, menuLink, category].map((i) => [
+        [search, menuGroup1, menuGroup2, menuLink, category].map(i => [
           i.id,
           i,
-        ])
+        ]),
       )
     },
   },

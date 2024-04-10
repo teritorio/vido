@@ -10,7 +10,8 @@
             "icon": "teritorio teritorio-camp_site",
             "color_fill": "#99163a",
             "color_line": "#99163a",
-            "display_mode": "compact"
+            "display_mode": "compact",
+            "vido_children": null
         },
         "link": null,
         "category": null,
@@ -27,10 +28,9 @@
             "icon": "glyphicons glyphicons-search",
             "color_fill": "#99163a",
             "color_line": "#99163a",
-            "display_mode": "compact"
+            "display_mode": "compact",
+            "vido_children": null
         },
-        "link": null,
-        "category": null,
         "index_order": 2
     },
     {
@@ -44,7 +44,8 @@
             "icon": "teritorio teritorio-camp_site",
             "color_fill": "#99163a",
             "color_line": "#99163a",
-            "display_mode": "compact"
+            "display_mode": "compact",
+            "vido_children": null
         },
         "link": null,
         "category": null,
@@ -61,7 +62,8 @@
             "icon": "teritorio teritorio-hosting",
             "color_fill": "#99163a",
             "color_line": "#99163a",
-            "display_mode": "compact"
+            "display_mode": "compact",
+            "vido_children": null
         },
         "link": null,
         "category": null,

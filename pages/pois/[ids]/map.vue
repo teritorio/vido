@@ -1,26 +1,19 @@
-<template>
-  <div class="tw-flex tw-flex-col tw-w-full tw-h-full">
-    <MapPois
-      :extra-attributions="settings.attributions"
-      :features="pois ? pois.features : []"
-      :feature-ids="ids"
-    />
-  </div>
-</template>
-
 <script lang="ts">
 import { mapWritableState } from 'pinia'
-import { ref, Ref } from 'vue'
+import type { Ref } from 'vue'
+import { ref } from 'vue'
 
-import { useHead, useRequestHeaders, useRoute, defineNuxtComponent } from '#app'
+import { defineNuxtComponent, useHead, useRequestHeaders, useRoute } from '#app'
 import { definePageMeta } from '#imports'
 import MapPois from '~/components/Map/MapPois.vue'
-import { getPois, ApiPois, ApiPoiId } from '~/lib/apiPois'
-import { getSettings, headerFromSettings, Settings } from '~/lib/apiSettings'
+import type { ApiPoiId, ApiPois } from '~/lib/apiPois'
+import { getPois } from '~/lib/apiPois'
+import type { Settings } from '~/lib/apiSettings'
+import { getSettings, headerFromSettings } from '~/lib/apiSettings'
 import { getAsyncDataOrThrows } from '~/lib/getAsyncData'
 import { vidoConfig } from '~/plugins/vido-config'
 import { siteStore } from '~/stores/site'
-import { VidoConfig } from '~/utils/types-config'
+import type { VidoConfig } from '~/utils/types-config'
 
 export default defineNuxtComponent({
   components: {
@@ -35,23 +28,21 @@ export default defineNuxtComponent({
     definePageMeta({
       validate({ params }) {
         return (
-          typeof params.ids === 'string' &&
-          /^[,-_:a-zA-Z0-9]+$/.test(params.ids)
+          typeof params.ids === 'string'
+          && /^[,-_:a-zA-Z0-9]+$/.test(params.ids)
         )
       },
     })
 
     const params = useRoute().params
     const configRef = await getAsyncDataOrThrows('configRef', () =>
-      Promise.resolve(siteStore().config || vidoConfig(useRequestHeaders()))
-    )
+      Promise.resolve(siteStore().config || vidoConfig(useRequestHeaders())))
     const config: VidoConfig = configRef.value
 
     const fetchSettings = getAsyncDataOrThrows('fetchSettings', () =>
       siteStore().settings
         ? Promise.resolve(siteStore().settings as Settings)
-        : getSettings(config)
-    )
+        : getSettings(config))
 
     let settings: Ref<Settings>
     let pois: Ref<ApiPois | null>
@@ -60,8 +51,7 @@ export default defineNuxtComponent({
       const getPoiPromise = getAsyncDataOrThrows('getPoiPromise', () =>
         getPois(config, ids, {
           geometry_as: undefined,
-        })
-      )
+        }))
       const [settingsF, poisF] = await Promise.all([
         fetchSettings,
         getPoiPromise,
@@ -69,7 +59,8 @@ export default defineNuxtComponent({
 
       settings = settingsF
       pois = poisF
-    } else {
+    }
+    else {
       const [settingsF] = await Promise.all([fetchSettings])
 
       settings = settingsF
@@ -93,8 +84,8 @@ export default defineNuxtComponent({
 
     ids(): ApiPoiId[] {
       return (
-        this.pois?.features.map((feature) => feature.properties.metadata.id) ||
-        []
+        this.pois?.features.map(feature => feature.properties.metadata.id)
+          || []
       )
     },
   },
@@ -117,7 +108,18 @@ export default defineNuxtComponent({
 })
 </script>
 
+<template>
+  <div class="tw-flex tw-flex-col tw-w-full tw-h-full">
+    <MapPois
+      :extra-attributions="settings.attributions"
+      :features="pois ? pois.features : []"
+      :feature-ids="ids"
+    />
+  </div>
+</template>
+
 <style scoped>
+/* stylelint-disable selector-id-pattern */
 body,
 #__nuxt,
 #__layout {

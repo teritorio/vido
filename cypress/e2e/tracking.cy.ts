@@ -3,7 +3,7 @@ import poisCategory22 from '../fixtures/teritorio/references/pois/category/22.js
 import { mockSSRAPI } from '../support/mock'
 
 import teritorioReferenceAPIFixture from '~/cypress/fixtures/teritorio/references/teritorioReferenceAPIFixture'
-import { Event } from '~/lib/trackers'
+import type { Event } from '~/lib/trackers'
 
 const hostnames = {
   'https://dev.appcarto.teritorio.xyz':
@@ -23,12 +23,12 @@ describe('home content', () => {
     localStorage.setItem('cookie:accepted', 'true')
     mockSSRAPI(hostnames, teritorioReferenceAPIFixture)
     cy.intercept(
-      '/content/api.teritorio/geodata/v0.1/dev/tourism/pois/category/22.geojson?geometry_as=point&short_description=true',
-      { body: poisCategory22 }
+      '/content/api.teritorio/geodata/v0.1/dev/tourism/pois/category/22.geojson?geometry_as=point&short_description=false',
+      { body: poisCategory22 },
     )
     cy.intercept(
-      '/content/api.teritorio/geodata/v0.1/dev/tourism/pois/category/211.geojson?geometry_as=point&short_description=true',
-      { body: poisCategory211 }
+      '/content/api.teritorio/geodata/v0.1/dev/tourism/pois/category/211.geojson?geometry_as=point&short_description=false',
+      { body: poisCategory211 },
     )
 
     cy.viewport(1024, 768)
@@ -52,7 +52,7 @@ describe('home content', () => {
     asserts.push((event: Event) => {
       assert(
         event.type === 'category_event' && event.categoryId === 22,
-        'Enable category'
+        'Enable category',
       )
     })
 
@@ -61,7 +61,7 @@ describe('home content', () => {
     asserts.push((event: Event) => {
       assert(
         event.type === 'menu' && event.menuItemId === 21,
-        'Navigate into category group'
+        'Navigate into category group',
       )
     })
 
@@ -70,23 +70,23 @@ describe('home content', () => {
     asserts.push((event: Event) => {
       assert(
         event.type === 'category_event' && event.categoryId === 211,
-        'Enable category'
+        'Enable category',
       )
     })
 
     // Click on map POI
-    cy.get('#m1', { timeout: 10000 }).click()
+    cy.get('#m0', { timeout: 10000 }).click()
     asserts.push((event: Event) => {
       assert(event.type === 'popup' && event.poiId === 1, 'Click on map POI')
     })
     cy.get('#PoiCard-1').should('be.visible')
 
     // Click on an other map POI
-    cy.get('#m2').click({ force: true }) // Force click on non visible element
+    cy.get('#m1').click({ force: true }) // Force click on non visible element
     asserts.push((event: Event) => {
       assert(
         event.type === 'popup' && event.poiId === 2,
-        'Click on an other map POI'
+        'Click on an other map POI',
       )
     })
     cy.get('#PoiCard-2').should('be.visible')
@@ -97,20 +97,19 @@ describe('home content', () => {
   })
 
   after(() => {
-    const events: Event[] =
-      consoleError
+    const events: Event[]
+      = consoleError
         .getCalls()
-        .filter((call) => call.args[0] === 'Tracking event')
-        .map((call) => call.args[1] as Event)
+        .filter(call => call.args[0] === 'Tracking event')
+        .map(call => call.args[1] as Event)
         .reverse() || []
 
     asserts.forEach((e) => {
       const event = events.pop()
-      if (!event) {
+      if (!event)
         assert(event, 'No more event present')
-      } else {
+      else
         e(event)
-      }
     })
 
     assert(events.length === 0, 'No extra events')

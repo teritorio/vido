@@ -1,13 +1,14 @@
-import { Polygon, MultiPolygon } from 'geojson'
-import type { LngLatBoundsLike } from 'maplibre-gl'
+import type { MultiPolygon, Polygon } from 'geojson'
+import type { LngLatBounds } from 'maplibre-gl'
 import { mapActions, mapState, mapWritableState } from 'pinia'
-import { PropType, ref } from 'vue'
+import type { PropType } from 'vue'
+import { ref } from 'vue'
 
 import { defineNuxtComponent } from '#app'
-import MapFeatures from '~/components/MainMap/MapFeatures.vue'
-import { ApiMenuCategory } from '~/lib/apiMenu'
-import { ApiPoi } from '~/lib/apiPois'
-import { Settings } from '~/lib/apiSettings'
+import type MapFeatures from '~/components/MainMap/MapFeatures.vue'
+import type { ApiMenuCategory } from '~/lib/apiMenu'
+import type { ApiPoi } from '~/lib/apiPois'
+import type { Settings } from '~/lib/apiSettings'
 import { mapStore } from '~/stores/map'
 import { menuStore } from '~/stores/menu'
 
@@ -39,7 +40,7 @@ export default defineNuxtComponent({
   },
 
   data(): {
-    initialBbox: LngLatBoundsLike | null
+    initialBbox: LngLatBounds | null
   } {
     return {
       initialBbox: null,
@@ -61,11 +62,11 @@ export default defineNuxtComponent({
 
     poiFilters(): string[][] | null {
       return (
-        (this.isModeExplorer &&
-          (Object.values(this.apiMenuCategory || {})
-            .map((c) => c.category?.style_class)
-            .filter((s) => s !== undefined) as string[][])) ||
-        null
+        (this.isModeExplorer
+        && (Object.values(this.apiMenuCategory || {})
+          .map(c => c.category?.style_class)
+          .filter(s => s !== undefined) as string[][]))
+          || null
       )
     },
   },
@@ -73,23 +74,22 @@ export default defineNuxtComponent({
   mounted() {
     if (this.initialCategoryIds) {
       this.setSelectedCategoryIds(this.initialCategoryIds)
-    } else if (typeof location !== 'undefined') {
+    }
+    else if (typeof location !== 'undefined') {
       const enabledCategories: ApiMenuCategory['id'][] = []
 
       if (this.apiMenuCategory) {
         this.apiMenuCategory.forEach((apiMenuCategory) => {
-          if (apiMenuCategory.selected_by_default) {
+          if (apiMenuCategory.selected_by_default)
             enabledCategories.push(apiMenuCategory.id)
-          }
         })
       }
 
       this.setSelectedCategoryIds(enabledCategories)
     }
 
-    if (this.initialPoi) {
+    if (this.initialPoi)
       this.setSelectedFeature(this.initialPoi)
-    }
   },
 
   methods: {
@@ -97,9 +97,8 @@ export default defineNuxtComponent({
     ...mapActions(menuStore, ['setSelectedCategoryIds']),
 
     goToSelectedFeature() {
-      if (this.$refs.mapFeatures) {
-        ;(this.$refs.mapFeatures as typeof MapFeatures).goToSelectedFeature()
-      }
+      if (this.$refs.mapFeatures)
+        (this.$refs.mapFeatures as typeof MapFeatures).goToSelectedFeature()
     },
   },
 })

@@ -1,29 +1,4 @@
 {
-  "vueCompilerOptions": {
-    "target": 3
-  },
-  "extends": "./.nuxt/tsconfig.json",
-  "compilerOptions": {
-    "sourceMap": true,
-    "strict": true,
-    "experimentalDecorators": true,
-    "baseUrl": ".",
-    "types": [
-      "node",
-      "@types/node",
-      "@nuxt/types",
-      "@nuxtjs/i18n",
-      "@nuxt/image-edge",
-      "@nuxtjs/sentry",
-      "@types/webpack",
-      "@pinia/nuxt",
-      "tailwindcss"
-    ]
-  },
-  "exclude": [
-    "./node_modules",
-    "./dist",
-    "./.output",
-    "./bin"
-  ]
+  // https://nuxt.com/docs/guide/concepts/typescript
+  "extends": "./.nuxt/tsconfig.json"
 }

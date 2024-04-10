@@ -25,16 +25,23 @@ The web application target multiple devices: smartphones, desktops, and large to
 Full entry points documentation available on [api.yml](public/api.yaml) and on server at [http://localhost:3000/api.yaml](http://localhost:3000/api.yaml).
 
 * Main Map:
-* Full page: `/`, `/{poi_Id}`, `/{category_ids}/` and `/{category_ids}/{poi_id}`.
-* Parameters:
-* `boundary`: an alternative boundary key from settings `polygons_extra`.
+  * Full page: `/`, `/{poi_Id}`, `/{category_ids}/` and `/{category_ids}/{poi_id}`.
+  * Parameters:
+    * `boundary`: an alternative boundary key from settings `polygons_extra`.
 * Embedded: `/embedded/`, same subpath and parameters as full page.
 * POI:
-* details: `/poi/{id}/details`.
+  * details: `/poi/{id}/details`.
 * POIs:
-* map only: `/pois/{ids}/map`.
+  * map only: `/pois/{ids}/map`.
 * Categories
-* list of POIs of a category: `/category/{id}`
+  * Empty list: `/category`
+  * Embedded empty list: `/category/embedded`
+    * Parameters:
+      * `menuItemIds=[id,id]`: filters selector entries by categories IDs
+  * List of POIs by category ID: `/category/{id}`
+  * Embedded list of POIs by category ID: `/category/embedded/{id}`
+    * Parameters:
+      * `menuItemIds=[id,id]`: filters selector entries by categories IDs
 
 ### Sitemap & WPA
 * `/manifest.webmanifest`
@@ -45,7 +52,15 @@ Full entry points documentation available on [api.yml](public/api.yaml) and on s
 Can be build directly (dev) or within Docker.
 
 ### Native Build Setup
+
+**Prerequisite**
+
+- Node >= 18.0.0 < 20.0.0
+
 ```bash
+# Create empty config file, will be build on `build-config` step
+cp vidos-config-empty.json vidos-config.json
+
 # install dependencies
 yarn install
 
@@ -164,3 +179,6 @@ Special formatting support:
 | Action on details page | details_event | favorite | details_event | action, title, poiId | trackEvent | event, action, title, poiId |
 
 Note on Matomo. `Origin` is a set as dimension `1` and should be configured as is on Matomo.
+
+## Contributor Mode
+Enable/Disable: Add the following query parameter in the URL: `?contrib=true|false`

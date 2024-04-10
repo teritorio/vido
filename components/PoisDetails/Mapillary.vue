@@ -1,19 +1,5 @@
-<template>
-  <div>
-    <iframe
-      :src="`https://www.mapillary.com/embed?image_key=${imageId}&x=0.5&y=0.5&style=photo`"
-    />
-    <ExternalLink
-      :href="`https://www.mapillary.com/app/?pKey=${imageId}&focus=photo`"
-      target="_blank"
-    >
-      {{ $t('poiDetails.mapillaryExplore') }}
-    </ExternalLink>
-  </div>
-</template>
-
 <script lang="ts">
-import { PropType } from 'vue'
+import type { PropType } from 'vue'
 
 import { defineNuxtComponent } from '#app'
 import ExternalLink from '~/components/UI/ExternalLink.vue'
@@ -31,8 +17,22 @@ export default defineNuxtComponent({
 })
 </script>
 
+<template>
+  <div>
+    <iframe
+      :src="`https://www.mapillary.com/embed?image_key=${imageId}&x=0.5&y=0.5&style=photo`"
+    />
+    <ExternalLink
+      :href="`https://www.mapillary.com/app/?pKey=${imageId}&focus=photo`"
+      target="_blank"
+    >
+      {{ $t('poiDetails.mapillaryExplore') }}
+    </ExternalLink>
+  </div>
+</template>
+
 <style lang="scss" scoped>
-@import '~/assets/details.scss';
+@import '~/assets/details';
 
 div {
   margin-bottom: 60px;
@@ -41,6 +41,7 @@ div {
 iframe {
   width: 100%;
   height: 346px;
+
   @apply tw-bg-gray-100;
 }
 </style>

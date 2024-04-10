@@ -1,28 +1,14 @@
-<template>
-  <MapBase
-    ref="mapBase"
-    :features="features"
-    :center="center"
-    :bounds="bounds"
-    :zoom="selectionZoom.poi"
-    :fullscreen-control="fullscreenControl"
-    :extra-attributions="extraAttributions"
-    :off-map-attribution="offMapAttribution"
-    @map-init="onMapInit"
-    @map-style-load="onMapStyleLoad"
-  />
-</template>
-
 <script lang="ts">
-import type { LngLatLike } from 'maplibre-gl'
-import { PropType, ref } from 'vue'
+import type { LngLatBounds, LngLatLike, Map } from 'maplibre-gl'
+import type { PropType } from 'vue'
+import { ref } from 'vue'
 
 import { defineNuxtComponent } from '#app'
 import MapBase from '~/components/Map/MapBase.vue'
-import { ApiPoi } from '~/lib/apiPois'
+import type { ApiPoi } from '~/lib/apiPois'
 import { getBBoxFeatures } from '~/lib/bbox'
 import { MAP_ZOOM } from '~/lib/constants'
-import { MapPoiId } from '~/lib/mapPois'
+import type { MapPoiId } from '~/lib/mapPois'
 import { filterRouteByPoiIds } from '~/utils/styles'
 
 export default defineNuxtComponent({
@@ -53,9 +39,13 @@ export default defineNuxtComponent({
     },
     defaultBounds: {
       type: [Array, Object] as PropType<
-        maplibregl.LngLatBoundsLike | undefined
+        LngLatBounds | undefined
       >,
       default: undefined,
+    },
+    cluster: {
+      type: Boolean,
+      default: true,
     },
   },
   setup() {
@@ -65,7 +55,7 @@ export default defineNuxtComponent({
   },
 
   data(): {
-    map: maplibregl.Map
+    map: Map
   } {
     return {
       map: null!,
@@ -78,66 +68,65 @@ export default defineNuxtComponent({
     },
 
     center(): LngLatLike | undefined {
-      if (
-        this.features.length === 1 &&
-        this.features[0].geometry.type === 'Point'
-      ) {
-        return this.features[0].geometry.coordinates as LngLatLike
-      } else {
-        return undefined
-      }
+      return this.bounds?.getCenter()
     },
 
-    bounds(): maplibregl.LngLatBoundsLike | undefined {
-      if (
-        this.features.length > 1 ||
-        (this.features.length === 1 &&
-          this.features[0].geometry.type !== 'Point')
-      ) {
-        return (
-          getBBoxFeatures(
-            this.features.filter((feature) => feature.geometry)
-          ) || this.defaultBounds
-        )
-      } else {
-        return this.defaultBounds
-      }
+    bounds(): LngLatBounds | undefined {
+      return (
+        getBBoxFeatures(
+          this.features.filter(feature => feature.geometry),
+        ) || this.defaultBounds
+      )
     },
   },
 
   watch: {
     features() {
-      if (this.map) {
-        // @ts-ignore
+      if (this.map)
         this.onMapStyleLoad()
-      }
     },
   },
 
   methods: {
-    onMapInit(map: maplibregl.Map): void {
+    onMapInit(map: Map): void {
       this.map = map
     },
 
-    onMapStyleLoad(_style: maplibregl.StyleSpecification): void {
+    onMapStyleLoad(): void {
       const colors = [
         ...new Set(
           this.features.map(
-            (feature) => feature.properties?.display?.color_fill || '#000000'
-          )
+            feature => feature.properties?.display?.color_fill || '#000000',
+          ),
         ),
       ]
-      this.mapBase!.initPoiLayer(this.features, colors, [
-        'case',
-        ['all', ['has', 'display'], ['has', 'color_fill', ['get', 'display']]],
-        ['get', 'color_fill', ['get', 'display']],
-        '#000000',
-      ])
+      this.mapBase!.initPoiLayer(
+        this.features,
+        colors,
+        [
+          'case',
+          [
+            'all',
+            ['has', 'display'],
+            ['has', 'color_fill', ['get', 'display']],
+          ],
+          ['get', 'color_fill', ['get', 'display']],
+          '#000000',
+        ],
+        this.cluster,
+      )
 
-      if (this.featureIds) {
-        filterRouteByPoiIds(this.map as maplibregl.Map, this.featureIds)
-      }
+      if (this.featureIds)
+        filterRouteByPoiIds(this.map as Map, this.featureIds)
     },
   },
 })
 </script>
+
+<template>
+  <MapBase
+    ref="mapBase" :features="features" :center="center" :bounds="bounds" :zoom="selectionZoom.poi"
+    :fullscreen-control="fullscreenControl" :extra-attributions="extraAttributions"
+    :off-map-attribution="offMapAttribution" @map-init="onMapInit" @map-style-load="onMapStyleLoad"
+  />
+</template>

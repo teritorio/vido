@@ -1,18 +1,8 @@
-<template>
-  <div class="stars-data tw-text-amber-500 tw-mb-1">
-    <FontAwesomeIcon
-      v-for="(_item, index) in numericProp"
-      :key="index"
-      icon="star"
-    />
-    {{ isSNotation ? 'S' : '' }}
-  </div>
-</template>
-
 <script lang="ts">
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import type { PropType } from 'vue'
 
+import type { PropType } from 'vue'
 import { defineNuxtComponent } from '#app'
 
 enum StarsEnum {
@@ -45,10 +35,22 @@ export default defineNuxtComponent({
     },
     numericProp(): number {
       let stars: string = this.stars
-      if (this.isSNotation) stars = this.stars.slice(0, -1)
+      if (this.isSNotation)
+        stars = this.stars.slice(0, -1)
 
       return Number(stars)
     },
   },
 })
 </script>
+
+<template>
+  <div class="stars-data tw-text-amber-500 tw-mb-1">
+    <FontAwesomeIcon
+      v-for="(_item, index) in numericProp"
+      :key="index"
+      icon="star"
+    />
+    {{ isSNotation ? 'S' : '' }}
+  </div>
+</template>

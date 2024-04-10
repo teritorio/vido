@@ -1,46 +1,10 @@
-<template>
-  <div class="tw-mb-3">
-    <h4 class="tw-text-zinc-500 tw-text-sm tw-mb-2">
-      <FontAwesomeIcon v-if="icon" :icon="icon" />
-      {{ label }}
-    </h4>
-    <ul>
-      <li
-        v-for="item in items"
-        :key="`${item.id}-${item.filter_property}-${item.filter_value}`"
-        class="tw-flex tw-flex-row tw-items-baseline tw-justify-start tw-gap-x-1 tw-mb-1 hover:tw-bg-zinc-100 tw-cursor-pointer tw-rounded-xl tw-ml-2 tw-px-2"
-        :data-item="item.id"
-        @click="onItemClick(item)"
-      >
-        <teritorio-icon
-          v-if="item.icon && item.icon.indexOf('teritorio') != -1"
-          :picto="item.icon"
-          color-text="#6B7280"
-        />
-        <FontAwesomeIcon
-          v-else-if="item.icon"
-          :icon="item.icon"
-          color="#6B7280"
-          size="sm"
-        />
-        <span>
-          {{ item.label }}
-          <span v-if="item.small" class="tw-text-zinc-400 tw-text-sm"
-            >({{ item.small }})</span
-          >
-        </span>
-      </li>
-    </ul>
-  </div>
-</template>
-
 <script lang="ts">
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
-import { PropType } from 'vue'
+import type { PropType } from 'vue'
 
 import { defineNuxtComponent } from '#app'
 import TeritorioIcon from '~/components/UI/TeritorioIcon.vue'
-import { SearchResult } from '~/lib/apiSearch'
+import type { SearchResult } from '~/lib/apiSearch'
 
 export default defineNuxtComponent({
   components: {
@@ -68,7 +32,7 @@ export default defineNuxtComponent({
   },
 
   emits: {
-    'item-click': (_searchResult: SearchResult) => true,
+    itemClick: (_searchResult: SearchResult) => true,
   },
 
   methods: {
@@ -79,8 +43,42 @@ export default defineNuxtComponent({
         resultType: this.type,
         title: searchResult.label,
       })
-      this.$emit('item-click', searchResult)
+      this.$emit('itemClick', searchResult)
     },
   },
 })
 </script>
+
+<template>
+  <div class="tw-mb-3">
+    <h4 class="tw-text-zinc-500 tw-text-sm tw-mb-2">
+      <FontAwesomeIcon v-if="icon" :icon="icon" />
+      {{ label }}
+    </h4>
+    <ul>
+      <li
+        v-for="item in items"
+        :key="`${item.id}-${item.filter_property}-${item.filter_value}`"
+        class="tw-flex tw-flex-row tw-items-baseline tw-justify-start tw-gap-x-1 tw-mb-1 hover:tw-bg-zinc-100 tw-cursor-pointer tw-rounded-xl tw-ml-2 tw-px-2"
+        :data-item="item.id"
+        @click="onItemClick(item)"
+      >
+        <teritorio-icon
+          v-if="item.icon && item.icon.indexOf('teritorio') !== -1"
+          :picto="item.icon"
+          color-text="#6B7280"
+        />
+        <FontAwesomeIcon
+          v-else-if="item.icon"
+          :icon="item.icon"
+          color="#6B7280"
+          size="sm"
+        />
+        <span>
+          {{ item.label }}
+          <span v-if="item.small" class="tw-text-zinc-400 tw-text-sm">({{ item.small }})</span>
+        </span>
+      </li>
+    </ul>
+  </div>
+</template>

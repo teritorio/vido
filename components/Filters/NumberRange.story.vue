@@ -1,18 +1,6 @@
-<template>
-  <Story title="Filters/NumberRange">
-    <Variant
-      v-for="(p, name) in props"
-      :key="name"
-      :title="name.replace(/([A-Z])/g, ' $1').trim()"
-    >
-      <NumberRange v-bind="p" class="v-locale--is-ltr" />
-    </Variant>
-  </Story>
-</template>
-
 <script lang="ts" setup>
 import NumberRange from '~/components/Filters/NumberRange.vue'
-import { FilterNumberRange } from '~/lib/apiMenu'
+import type { FilterNumberRange } from '~/lib/apiMenu'
 import { FilterValueNumberRange } from '~/utils/types-filters'
 
 const def: FilterNumberRange = {
@@ -37,3 +25,15 @@ const props = {
   },
 }
 </script>
+
+<template>
+  <Story title="Filters/NumberRange">
+    <Variant
+      v-for="(p, name) in props"
+      :key="name"
+      :title="name.replace(/([A-Z])/g, ' $1').trim()"
+    >
+      <NumberRange v-bind="p" class="v-locale--is-ltr" />
+    </Variant>
+  </Story>
+</template>

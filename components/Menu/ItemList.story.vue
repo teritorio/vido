@@ -1,20 +1,8 @@
-<template>
-  <Story title="Menu/ItemList">
-    <Variant
-      v-for="(p, name) in props"
-      :key="name"
-      :title="name.replace(/([A-Z])/g, ' $1').trim()"
-    >
-      <ItemList v-bind="p" />
-    </Variant>
-  </Story>
-</template>
-
 <script lang="ts" setup>
-import { FontAwesomeIconProps } from '@fortawesome/vue-fontawesome'
+import type { FontAwesomeIconProps } from '@fortawesome/vue-fontawesome'
 
 import ItemList from '~/components/Menu/ItemList.vue'
-import { ApiMenuCategory, ApiMenuLink, MenuGroup } from '~/lib/apiMenu'
+import type { ApiMenuCategory, ApiMenuLink, MenuGroup } from '~/lib/apiMenu'
 
 const menuGroup: MenuGroup = {
   id: 1,
@@ -126,3 +114,15 @@ const props = {
   },
 }
 </script>
+
+<template>
+  <Story title="Menu/ItemList">
+    <Variant
+      v-for="(p, name) in props"
+      :key="name"
+      :title="name.replace(/([A-Z])/g, ' $1').trim()"
+    >
+      <ItemList v-bind="p" />
+    </Variant>
+  </Story>
+</template>

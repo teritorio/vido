@@ -1,20 +1,8 @@
-<template>
-  <Story title="Menu/Group">
-    <Variant
-      v-for="(p, name) in props"
-      :key="name"
-      :title="name.replace(/([A-Z])/g, ' $1').trim()"
-    >
-      <Group v-bind="p" />
-    </Variant>
-  </Story>
-</template>
-
 <script lang="ts" setup>
-import { FontAwesomeIconProps } from '@fortawesome/vue-fontawesome'
+import type { FontAwesomeIconProps } from '@fortawesome/vue-fontawesome'
 
 import Group from '~/components/Menu/Group.vue'
-import { MenuGroup } from '~/lib/apiMenu'
+import type { MenuGroup } from '~/lib/apiMenu'
 
 const menuGroup: MenuGroup = {
   id: 123,
@@ -84,3 +72,15 @@ const props = {
   },
 }
 </script>
+
+<template>
+  <Story title="Menu/Group">
+    <Variant
+      v-for="(p, name) in props"
+      :key="name"
+      :title="name.replace(/([A-Z])/g, ' $1').trim()"
+    >
+      <Group v-bind="p" />
+    </Variant>
+  </Story>
+</template>

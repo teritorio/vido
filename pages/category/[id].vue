@@ -1,163 +1,149 @@
-<template>
-  <PoisList
-    :settings="settings"
-    :nav-menu-entries="contents"
-    :initial-category-id="parseInt(id)"
-    :initial-pois="pois"
-    class="page-index"
-  />
-</template>
-
-<script lang="ts">
-import { mapWritableState } from 'pinia'
-import { Ref } from 'vue'
-
-import { useRequestHeaders, useRoute, useHead, defineNuxtComponent } from '#app'
-import { definePageMeta } from '#imports'
-import PoisList from '~/components/PoisList/PoisList.vue'
-import { ContentEntry, getContents } from '~/lib/apiContent'
-import { MenuItem, getMenu } from '~/lib/apiMenu'
-import { getPoiByCategoryId, ApiPois } from '~/lib/apiPois'
-import {
-  getPropertyTranslations,
-  PropertyTranslations,
-} from '~/lib/apiPropertyTranslations'
-import { getSettings, headerFromSettings, Settings } from '~/lib/apiSettings'
-import { getAsyncDataOrThrows } from '~/lib/getAsyncData'
+<script setup lang="ts">
 import { vidoConfig } from '~/plugins/vido-config'
-import { menuStore } from '~/stores/menu'
-import { siteStore } from '~/stores/site'
-import { VidoConfig } from '~/utils/types-config'
+import { getMenu } from '~/lib/apiMenu'
+import { type ContentEntry, getContents } from '~/lib/apiContent'
+import { type PropertyTranslations, getPropertyTranslations } from '~/lib/apiPropertyTranslations'
+import { type Settings, getSettings, headerFromSettings } from '~/lib/apiSettings'
+import { menuStore as useMenuStore } from '~/stores/menu'
+import { siteStore as useSiteStore } from '~/stores/site'
+import Header from '~/components/Layout/Header.vue'
+import Footer from '~/components/Layout/Footer.vue'
+import PoisTable from '~/components/PoisList/PoisTable.vue'
+import CategorySelector from '~/components/PoisList/CategorySelector.vue'
 
-export default defineNuxtComponent({
-  components: {
-    PoisList,
-  },
-
-  async setup(): Promise<{
-    config: VidoConfig
-    settings: Ref<Settings>
-    contents: Ref<ContentEntry[]>
-    propertyTranslations: Ref<PropertyTranslations>
-    id: string
-    menuItems: Ref<MenuItem[]>
-    pois: Ref<ApiPois>
-  }> {
-    definePageMeta({
-      validate({ params }) {
-        return (
-          typeof params.id === 'string' && /^[,-_:a-zA-Z0-9]+$/.test(params.id)
-        )
-      },
-    })
-
-    const params = useRoute().params
-    const configRef = await getAsyncDataOrThrows('configRef', () =>
-      Promise.resolve(siteStore().config || vidoConfig(useRequestHeaders()))
+// Query param validation
+definePageMeta({
+  validate({ params }) {
+    return (
+      typeof params.id === 'string' && /^[,-_:a-zA-Z0-9]+$/.test(params.id)
     )
-    const config: VidoConfig = configRef.value
-
-    const fetchSettings = getAsyncDataOrThrows('fetchSettings', () =>
-      siteStore().settings
-        ? Promise.resolve(siteStore().settings as Settings)
-        : getSettings(config)
-    )
-
-    const fetchContents = getAsyncDataOrThrows('fetchContents', () =>
-      siteStore().contents
-        ? Promise.resolve(siteStore().contents as ContentEntry[])
-        : getContents(config)
-    )
-
-    const fetchPropertyTranslations: Promise<Ref<PropertyTranslations>> =
-      getAsyncDataOrThrows('fetchPropertyTranslations', () =>
-        siteStore().translations
-          ? Promise.resolve(siteStore().translations as PropertyTranslations)
-          : getPropertyTranslations(config)
-      )
-
-    const fetchMenuItems = getAsyncDataOrThrows('fetchMenuItems', () =>
-      menuStore().menuItems !== undefined
-        ? Promise.resolve(Object.values(menuStore().menuItems!))
-        : getMenu(config)
-    )
-
-    const fetchPoiByCategoryId = getAsyncDataOrThrows(
-      `fetchPoiByCategoryId-${params.id}`,
-      () =>
-        getPoiByCategoryId(config, params.id as string, {
-          geometry_as: 'point',
-          short_description: true,
-        })
-    )
-    let [settings, contents, propertyTranslations, menuItems, pois] =
-      await Promise.all([
-        fetchSettings,
-        fetchContents,
-        fetchPropertyTranslations,
-        fetchMenuItems,
-        fetchPoiByCategoryId,
-      ])
-
-    useHead(headerFromSettings(settings.value))
-
-    return {
-      config,
-      settings,
-      contents,
-      propertyTranslations,
-      id: params.id as string,
-      menuItems,
-      pois,
-    }
-  },
-
-  computed: {
-    ...mapWritableState(siteStore, {
-      locale: 'locale',
-      globalConfig: 'config',
-      globalSettings: 'settings',
-      globalContents: 'contents',
-      globalTranslations: 'translations',
-    }),
-  },
-
-  created() {
-    this.globalConfig = this.config
-    if (this.menuItems) {
-      menuStore().fetchConfig(this.menuItems)
-    }
-    this.globalSettings = this.settings
-    this.globalContents = this.contents
-    this.globalTranslations = this.propertyTranslations
-
-    this.$settings.set(this.settings)
-    this.$propertyTranslations.set(this.propertyTranslations)
-  },
-
-  beforeMount() {
-    this.$trackingInit(this.config)
-    this.$vidoConfigSet(this.config)
-  },
-
-  mounted() {
-    this.locale = this.$i18n.locale
   },
 })
+
+const siteStore = useSiteStore()
+const { $vidoConfigSet, $settings, $propertyTranslations, $trackingInit } = useNuxtApp()
+
+// TODO: Get this globally as share it across components / pages
+let config = siteStore.config
+
+if (process.server && !config) {
+  config = vidoConfig(useRequestHeaders())
+  $vidoConfigSet(config)
+  siteStore.$patch({ config })
+}
+
+if (!config)
+  throw createError({ statusCode: 500, statusMessage: 'Wrong config', fatal: true })
+
+// Fetch common data
+// TODO: Move common data on upper-level (ex: layout)
+const categoryListData = ref<{
+  settings: Settings
+  contents: ContentEntry[]
+  translations: PropertyTranslations
+}>()
+const { data: cachedCategoryListData } = useNuxtData('categoryList')
+
+if (cachedCategoryListData.value) {
+  categoryListData.value = cachedCategoryListData.value
+}
+else {
+  const { data, error } = await useAsyncData('categoryList', async () => {
+    const [settings, contents, translations] = await Promise.all([
+      getSettings(config!),
+      getContents(config!),
+      getPropertyTranslations(config!),
+    ])
+
+    return { settings, contents, translations }
+  })
+
+  if (error.value || !data.value)
+    throw createError({ statusCode: 500, statusMessage: 'Global config not found.', fatal: true })
+
+  categoryListData.value = data.value
+}
+
+// MenuItems
+const menuStore = useMenuStore()
+const { data: cachedMenuItems } = useNuxtData('menu-items')
+if (cachedMenuItems.value) {
+  menuStore.fetchConfig(cachedMenuItems.value)
+}
+else {
+  const { data, error } = await useAsyncData('menu-items', async () => await getMenu(config!))
+
+  if (error.value || !data.value)
+    throw createError({ statusCode: 404, statusMessage: 'Menu not found', fatal: true })
+
+  menuStore.fetchConfig(data.value)
+}
+
+const param = useRoute().params
+const id = Number.parseInt(param.id as string)
+const category = menuStore.getCurrentCategory(id)
+
+if (!category) {
+  throw createError({
+    statusCode: 404,
+    statusMessage: 'Category Not Found',
+  })
+}
+
+const { settings, contents, translations } = categoryListData.value!
+settings.themes[0].title = category.category.name
+useHead(headerFromSettings(settings))
+
+// Not sure about future usage as we could have data from useNuxtData
+$settings.set(settings)
+$propertyTranslations.set(translations)
+
+if (process.client)
+  $trackingInit(config)
+
+const router = useRouter()
+function onCategoryUpdate(categoryId: number) {
+  if (!categoryId)
+    return
+
+  router.push(`/category/${categoryId}`)
+}
 </script>
 
+<template>
+  <VContainer fluid>
+    <Header
+      class="mb-4"
+      :theme="settings.themes[0]"
+      :nav-menu-entries="contents"
+    >
+      <template #search>
+        <CategorySelector
+          class="w-50"
+          :menu-items="menuStore.menuItems || {}"
+          :category-id="id"
+          @category-change="onCategoryUpdate"
+        />
+      </template>
+    </Header>
+    <PoisTable :category="category" />
+    <Footer :attributions="settings.attributions" />
+  </VContainer>
+</template>
+
 <style lang="scss" scoped>
-@import '~/assets/details.scss';
+@import '~/assets/details';
 
 .page-index {
   color: $color-text;
   background-color: #fefefe;
-  padding: 1rem 1rem;
+  padding: 1rem;
   min-width: 21rem;
   -webkit-font-smoothing: antialiased;
-  text-rendering: optimizeLegibility;
+  text-rendering: optimizelegibility;
   line-height: 1.3;
   word-wrap: break-word;
-  @extend .font-light;
+
+  @extend %font-light;
 }
 </style>

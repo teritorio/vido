@@ -1,36 +1,8 @@
-<template>
-  <div ref="container" class="maplibregl-ctrl maplibregl-ctrl-group">
-    <template v-for="background in backgrounds">
-      <button
-        v-if="!hidden"
-        :id="`background-selector-map-${background}`"
-        :key="background"
-        :aria-label="$t('mapControls.backgroundAriaLabel')"
-        :class="[activeBackground == background && 'maplibregl-ctrl-active']"
-        :title="
-          $t('mapControls.backgroundButton', {
-            background: name(background),
-          })
-        "
-        type="button"
-        @click="changeBackground(background)"
-      >
-        <span class="tw-block tw-h-full tw-p-1">
-          <img
-            class="tw-rounded-full tw-bg-white"
-            alt="fond de carte"
-            :src="backgroundImages[background]"
-          />
-        </span>
-      </button>
-    </template>
-  </div>
-</template>
-
 <script lang="ts">
 import { Control } from '@teritorio/map'
 import type { Map } from 'maplibre-gl'
-import { PropType, ref } from 'vue'
+import type { PropType } from 'vue'
+import { ref } from 'vue'
 
 import { defineNuxtComponent } from '#app'
 import { DEFAULT_MAP_STYLE, MAP_STYLE_NAMES } from '~/lib/constants'
@@ -67,10 +39,10 @@ export default defineNuxtComponent({
       this.backgrounds.map((background) => {
         const imageUrl = new URL(
           `../../assets/${background}.png`,
-          import.meta.url
+          import.meta.url,
         ).href
         return [background, imageUrl]
-      })
+      }),
     )
   },
 
@@ -89,11 +61,10 @@ export default defineNuxtComponent({
       if (!oldValue && value) {
         const bgString = getHashPart(this.$router, 'bg')
         const bg = MapStyleEnum[bgString as keyof typeof MapStyleEnum]
-        if (bg && this.backgrounds.includes(bg)) {
+        if (bg && this.backgrounds.includes(bg))
           this.activeBackground = bg
-        } else {
+        else
           this.activeBackground = this.initialBackground
-        }
 
         class BackgroundControl extends Control {
           constructor(container: HTMLDivElement) {
@@ -108,7 +79,7 @@ export default defineNuxtComponent({
   },
 
   emits: {
-    'change-background': (_background: MapStyleEnum) => true,
+    changeBackground: (_background: MapStyleEnum) => true,
   },
 
   methods: {
@@ -124,8 +95,37 @@ export default defineNuxtComponent({
       routerPushHashUpdate(this.$router, {
         bg: background !== DEFAULT_MAP_STYLE ? background : null,
       })
-      this.$emit('change-background', background)
+      this.$emit('changeBackground', background)
     },
   },
 })
 </script>
+
+<template>
+  <div ref="container" class="maplibregl-ctrl maplibregl-ctrl-group">
+    <template v-for="background in backgrounds">
+      <button
+        v-if="!hidden"
+        :id="`background-selector-map-${background}`"
+        :key="background"
+        :aria-label="$t('mapControls.backgroundAriaLabel')"
+        :class="[activeBackground === background && 'maplibregl-ctrl-active']"
+        :title="
+          $t('mapControls.backgroundButton', {
+            background: name(background),
+          })
+        "
+        type="button"
+        @click="changeBackground(background)"
+      >
+        <span class="tw-block tw-h-full tw-p-1">
+          <img
+            class="tw-rounded-full tw-bg-white"
+            alt="fond de carte"
+            :src="backgroundImages[background]"
+          >
+        </span>
+      </button>
+    </template>
+  </div>
+</template>

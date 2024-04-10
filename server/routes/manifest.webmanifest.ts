@@ -1,14 +1,14 @@
+import type { IncomingMessage, ServerResponse } from 'node:http'
 import { defineEventHandler } from 'h3'
-import { IncomingMessage, ServerResponse } from 'node:http'
 
 import { getSettings } from '../../lib/apiSettings'
 import { vidos } from '../../lib/config'
 import { vidoConfigResolve } from '../../plugins/vido-config'
-import { VidoConfig } from '../../utils/types-config'
+import type { VidoConfig } from '../../utils/types-config'
 
 async function manifest(
   req: IncomingMessage,
-  res: ServerResponse<IncomingMessage>
+  res: ServerResponse<IncomingMessage>,
 ) {
   const hostname = (req.headers['x-forwarded-host'] || req.headers.host) as
     | string
@@ -34,17 +34,18 @@ async function manifest(
             type: 'image/png',
           },
         ],
-      })
+      }),
     )
 
     res.statusCode = 200
     res.end()
-  } else {
+  }
+  else {
     res.statusCode = 500
     res.end()
   }
 }
 
 export default defineEventHandler(
-  async (event) => await manifest(event.node.req, event.node.res)
+  async event => await manifest(event.node.req, event.node.res),
 )

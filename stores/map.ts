@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
-
-import { ApiPoi, ApiPoiProperties } from '~/lib/apiPois'
-import { LatLng, Pitch, Mode } from '~/utils/types'
+import type { ApiPoi, ApiPoiProperties } from '~/lib/apiPois'
+import type { LatLng, Pitch } from '~/utils/types'
+import { Mode } from '~/utils/types'
 
 interface State {
   center: LatLng
@@ -27,7 +27,7 @@ export const mapStore = defineStore('map', {
         selectedFeature: null,
         mode: Mode.BROWSER,
       },
-      getInitialMapview()
+      getInitialMapview(),
     ),
 
   getters: {
@@ -41,14 +41,16 @@ export const mapStore = defineStore('map', {
     setSelectedFeature(feature: ApiPoi | null) {
       if (!feature) {
         this.selectedFeature = null
-      } else {
+      }
+      else {
         const goodFeature = feature
 
         function isJsonObject(item: string): boolean {
           let value = false
           try {
             value = JSON.parse(item)
-          } catch (e) {
+          }
+          catch (e) {
             return false
           }
 
@@ -56,14 +58,15 @@ export const mapStore = defineStore('map', {
         }
 
         if (feature?.properties) {
-          const cleanProperties: { [key: string]: any } = {}
+          const cleanProperties: ApiPoiProperties = {} as ApiPoiProperties
 
           Object.keys(feature.properties).forEach((key) => {
             if (isJsonObject(feature.properties[key]))
               cleanProperties[key] = JSON.parse(feature.properties[key])
             else cleanProperties[key] = feature.properties[key]
           })
-          goodFeature.properties = cleanProperties as ApiPoiProperties
+
+          goodFeature.properties = cleanProperties
         }
 
         this.selectedFeature = goodFeature

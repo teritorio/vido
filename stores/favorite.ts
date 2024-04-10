@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 
-import { ApiPoi, ApiPoiId } from '~/lib/apiPois'
+import type { ApiPoi, ApiPoiId } from '~/lib/apiPois'
 
 const LOCAL_STORAGE = { favorites: 'vido:favorites' }
 
@@ -13,10 +13,11 @@ function setFavorites(state: State, payload: ApiPoiId[]) {
 
   if (!payload) {
     localStorage.removeItem(LOCAL_STORAGE.favorites)
-  } else {
+  }
+  else {
     localStorage.setItem(
       LOCAL_STORAGE.favorites,
-      JSON.stringify({ favorites: payload, version: 1 })
+      JSON.stringify({ favorites: payload, version: 1 }),
     )
   }
 }
@@ -29,9 +30,8 @@ export const favoritesStore = defineStore('favorites', {
   actions: {
     initFavoritesFromLocalStorage() {
       const local = localStorage.getItem(LOCAL_STORAGE.favorites)
-      if (local) {
+      if (local)
         this.setFavorites(JSON.parse(local).favorites)
-      }
     },
 
     setFavorites(favorites: ApiPoiId[]) {
@@ -46,9 +46,10 @@ export const favoritesStore = defineStore('favorites', {
       if (id) {
         if (!this.favoritesIds.includes(id)) {
           newFavorite = [...this.favoritesIds, id]
-        } else {
+        }
+        else {
           newFavorite = this.favoritesIds.filter(
-            (f: ApiPoiId) => `${f}` !== `${id}`
+            (f: ApiPoiId) => `${f}` !== `${id}`,
           )
         }
 

@@ -1,39 +1,15 @@
-<template>
-  <MenuItem
-    :id="`MenuGroup-${menuGroup.id}`"
-    :href="`/${menuGroup.id}/`"
-    :display-mode="menuGroup.menu_group.display_mode || displayModeDefault"
-    :color-fill="menuGroup.menu_group.color_fill"
-    :icon="menuGroup.menu_group.icon"
-    :size="size"
-    :name="menuGroup.menu_group.name"
-    :badge-class="
-      [
-        'tw-bg-red-600 tw-text-white tw-rounded-full tw-border-2 tw-border-white',
-        size === '2xl' ? 'tw-w-6 tw-h-6' : 'tw-w-5 tw-h-5',
-      ].join(' ')
-    "
-    @click.prevent="onClick"
-  >
-    <template v-if="categoriesActivesCount > 0" #badge>
-      {{ categoriesActivesCount }}
-    </template>
-    <template #end-line-large>
-      <FontAwesomeIcon icon="chevron-right" />
-    </template>
-  </MenuItem>
-</template>
-
 <script lang="ts">
-import {
-  FontAwesomeIcon,
+import type {
   FontAwesomeIconProps,
 } from '@fortawesome/vue-fontawesome'
-import { PropType } from 'vue'
+import {
+  FontAwesomeIcon,
+} from '@fortawesome/vue-fontawesome'
+import type { PropType } from 'vue'
 
 import { defineNuxtComponent } from '#app'
 import MenuItem from '~/components/Menu/Item.vue'
-import { ApiMenuGroup, ApiMenuItem } from '~/lib/apiMenu'
+import type { ApiMenuGroup, ApiMenuItem } from '~/lib/apiMenu'
 
 export default defineNuxtComponent({
   components: {
@@ -76,3 +52,29 @@ export default defineNuxtComponent({
   },
 })
 </script>
+
+<template>
+  <MenuItem
+    :id="`MenuGroup-${menuGroup.id}`"
+    :href="`/${menuGroup.id}/`"
+    :display-mode="menuGroup.menu_group.display_mode || displayModeDefault"
+    :color-fill="menuGroup.menu_group.color_fill"
+    :icon="menuGroup.menu_group.icon"
+    :size="size"
+    :name="menuGroup.menu_group.name"
+    :badge-class="
+      [
+        'tw-bg-red-600 tw-text-white tw-rounded-full tw-border-2 tw-border-white',
+        size === '2xl' ? 'tw-w-6 tw-h-6' : 'tw-w-5 tw-h-5',
+      ].join(' ')
+    "
+    @click.prevent="onClick"
+  >
+    <template v-if="categoriesActivesCount > 0" #badge>
+      {{ categoriesActivesCount }}
+    </template>
+    <template #end-line-large>
+      <FontAwesomeIcon icon="chevron-right" />
+    </template>
+  </MenuItem>
+</template>

@@ -1,68 +1,27 @@
-<template>
-  <div id="map-container" class="tw-w-full tw-h-full tw-flex tw-flex-col">
-    <Map
-      :center="center"
-      :bounds="bounds"
-      :fit-bounds-options="fitBoundsOptions()"
-      :zoom="selectionZoom.poi"
-      :fullscreen-control="fullscreenControl"
-      :extra-attributions="extraAttributions"
-      :map-style="mapStyle"
-      :rotate="rotate"
-      :show-attribution="showAttribution && !offMapAttribution"
-      :hide-control="hideControl"
-      :hash="hash"
-      :cooperative-gestures="cooperativeGestures"
-      class="tw-grow tw-h-full"
-      @map-init="onMapInit($event)"
-      @map-data="onMapRender('map-data', $event)"
-      @map-dragend="onMapRender('map-dragend', $event)"
-      @map-moveend="onMapRender('map-moveend', $event)"
-      @map-resize="onMapRender('map-resize', $event)"
-      @map-rotateend="onMapRender('map-rotateend', $event)"
-      @map-touchmove="onMapRender('map-touchmove', $event)"
-      @map-zoomend="onMapRender('map-zoomend', $event)"
-      @map-style-load="onMapStyleLoad($event)"
-      @full-attribution="fullAttribution = $event"
-    >
-      <template #controls>
-        <slot name="controls" />
-      </template>
-      <template #body>
-        <slot name="body"></slot>
-      </template>
-    </Map>
-    <Attribution
-      v-if="showAttribution && offMapAttribution"
-      :attribution="fullAttribution"
-    />
-  </div>
-</template>
-
 <script lang="ts">
 import { PoiFilter } from '@teritorio/map'
 import copy from 'fast-copy'
-import { Polygon, MultiPolygon } from 'geojson'
+import type { MultiLineString, MultiPoint, MultiPolygon, Polygon } from 'geojson'
 import throttle from 'lodash.throttle'
 import type {
   FitBoundsOptions,
   LayerSpecification,
-  LngLatBoundsLike,
+  LngLatBounds,
   LngLatLike,
   MapDataEvent,
   MapLibreEvent,
   MapTouchEvent,
 } from 'maplibre-gl'
-import { PropType } from 'vue'
+import type { PropType } from 'vue'
 
 import { defineNuxtComponent } from '#app'
 import Attribution from '~/components/Map/Attribution.vue'
 import Map from '~/components/Map/Map.vue'
-import { ApiPoi } from '~/lib/apiPois'
+import type { ApiPoi } from '~/lib/apiPois'
 import { MAP_ZOOM } from '~/lib/constants'
-import { MapPoi } from '~/lib/mapPois'
+import type { MapPoi } from '~/lib/mapPois'
 import { markerLayerTextFactory, updateMarkers } from '~/lib/markerLayerFactory'
-import { MapStyleEnum } from '~/utils/types'
+import type { MapStyleEnum } from '~/utils/types'
 
 const POI_SOURCE = 'poi'
 const POI_LAYER = 'poi'
@@ -83,7 +42,7 @@ export default defineNuxtComponent({
       default: undefined,
     },
     bounds: {
-      type: [Array, Object] as PropType<LngLatBoundsLike>,
+      type: [Array, Object] as PropType<LngLatBounds>,
       default: undefined,
     },
     fitBoundsPaddingOptions: {
@@ -168,11 +127,10 @@ export default defineNuxtComponent({
     },
 
     styleIconFilter() {
-      if (this.styleIconFilter) {
+      if (this.styleIconFilter)
         this.poiFilter?.setIncludeFilter(this.styleIconFilter)
-      } else {
+      else
         this.poiFilter?.remove(true)
-      }
     },
   },
 
@@ -184,26 +142,26 @@ export default defineNuxtComponent({
   },
 
   emits: {
-    'map-init': (_map: maplibregl.Map) => true,
-    'map-data': (_event: MapDataEvent & object) => true,
-    'map-dragend': (
-      _event: MapLibreEvent<MouseEvent | TouchEvent | undefined> & object
+    mapInit: (_map: maplibregl.Map) => true,
+    mapData: (_event: MapDataEvent & object) => true,
+    mapDragEnd: (
+      _event: MapLibreEvent<MouseEvent | TouchEvent | undefined> & object,
     ) => true,
-    'map-moveend': (
+    mapMoveEnd: (
       _event: MapLibreEvent<MouseEvent | TouchEvent | WheelEvent | undefined> &
-        object
+      object,
     ) => true,
-    'map-resize': (_event: MapLibreEvent<undefined> & object) => true,
-    'map-rotateend': (
-      _event: MapLibreEvent<MouseEvent | TouchEvent | undefined> & object
+    mapResize: (_event: MapLibreEvent<undefined> & object) => true,
+    mapRotateEnd: (
+      _event: MapLibreEvent<MouseEvent | TouchEvent | undefined> & object,
     ) => true,
-    'map-touchmove': (_event: MapTouchEvent & object) => true,
-    'map-zoomend': (
+    mapTouchMove: (_event: MapTouchEvent & object) => true,
+    mapZoomEnd: (
       _event: MapLibreEvent<MouseEvent | TouchEvent | WheelEvent | undefined> &
-        object
+      object,
     ) => true,
-    'map-style-load': (_style: maplibregl.StyleSpecification) => true,
-    'feature-click': (_feature: ApiPoi) => true,
+    mapStyleLoad: (_style: maplibregl.StyleSpecification) => true,
+    featureClick: (_feature: ApiPoi) => true,
   },
 
   methods: {
@@ -215,21 +173,45 @@ export default defineNuxtComponent({
       }
     },
 
-    fitBounds(bounds: LngLatBoundsLike, options: FitBoundsOptions = {}): void {
+    fitBounds(bounds: LngLatBounds, options: FitBoundsOptions = {}): void {
       this.map.fitBounds(bounds, this.fitBoundsOptions(options))
+    },
+
+    featuresPrepare(features: ApiPoi[]): ApiPoi[] {
+      return features.map((feature) => {
+        if (['MultiPoint', 'MultiLineString', 'MultiPolygon'].includes(feature.geometry.type)) {
+          return (feature.geometry as (MultiPoint | MultiLineString | MultiPolygon)).coordinates.map(coordinates => ({
+            type: 'Feature',
+            properties: feature.properties,
+            geometry: {
+              type: feature.geometry.type.substring(5) as ('Point' | 'LineString' | 'Polygon'),
+              coordinates,
+            },
+          } as ApiPoi))
+        }
+        else {
+          return [feature]
+        }
+      })
+        .flat()
+        .filter(feature => !!feature)
+        .map((feature, index) => {
+          feature.id = index
+          return feature
+        })
     },
 
     initPoiLayer(
       features: MapPoi[],
       clusterPropertiesValues: string[],
-      clusterPropertiesKeyExpression: maplibregl.ExpressionSpecification
+      clusterPropertiesKeyExpression: maplibregl.ExpressionSpecification,
+      cluster?: boolean,
     ) {
-      if (this.map.getLayer(POI_LAYER)) {
+      if (this.map.getLayer(POI_LAYER))
         this.map.removeLayer(POI_LAYER)
-      }
-      if (this.map.getSource(POI_SOURCE)) {
+
+      if (this.map.getSource(POI_SOURCE))
         this.map.removeSource(POI_SOURCE)
-      }
 
       // Create cluster properties, which will contain count of features per category
 
@@ -255,36 +237,37 @@ export default defineNuxtComponent({
 
       this.map.addSource(POI_SOURCE, {
         type: 'geojson',
-        cluster: true,
+        cluster: cluster === undefined ? true : cluster,
         clusterRadius: 32,
         clusterProperties: clusterProps,
         clusterMaxZoom: 15,
         tolerance: 0.6,
         data: {
           type: 'FeatureCollection',
-          features,
+          features: this.featuresPrepare(features as ApiPoi[]),
         },
       })
 
       // Add individual markers
-      if (this.poiLayerTemplate)
+      if (this.poiLayerTemplate) {
         this.map.addLayer(
           markerLayerTextFactory(
             this.poiLayerTemplate as LayerSpecification,
             POI_LAYER,
-            POI_SOURCE
-          )
+            POI_SOURCE,
+          ),
         )
+      }
     },
 
     onMapInit(map: maplibregl.Map) {
       this.map = map
-      this.$emit('map-init', map)
+      this.$emit('mapInit', map)
     },
 
     onMapStyleLoad(style: maplibregl.StyleSpecification) {
       this.poiLayerTemplate = style.layers.find(
-        (layer) => layer.id === 'poi-level-1'
+        layer => layer.id === 'poi-level-1',
       )
 
       this.poiFilter = new PoiFilter({
@@ -305,7 +288,8 @@ export default defineNuxtComponent({
             ],
             ...inverse.coordinates,
           ]
-        } else {
+        }
+        else {
           inverse.coordinates = [
             [
               [
@@ -325,9 +309,9 @@ export default defineNuxtComponent({
           data: inverse,
         })
 
-        let firstSymbolLayerId: string | undefined = this.map
+        const firstSymbolLayerId: string | undefined = this.map
           .getStyle()
-          .layers.find((layer) => layer.type === 'line')?.id
+          .layers.find(layer => layer.type === 'line')?.id
         this.map.addLayer(
           {
             id: BOUNDARY_AREA_LAYER,
@@ -338,7 +322,7 @@ export default defineNuxtComponent({
               'fill-opacity': 0.8,
             },
           },
-          firstSymbolLayerId
+          firstSymbolLayerId,
         )
         this.map.addLayer(
           {
@@ -350,44 +334,85 @@ export default defineNuxtComponent({
               'line-width': 3,
             },
           },
-          firstSymbolLayerId
+          firstSymbolLayerId,
         )
       }
 
-      this.$emit('map-style-load', style)
+      this.$emit('mapStyleLoad', style)
     },
 
     onMapRender(
       eventName:
-        | 'map-data'
-        | 'map-dragend'
-        | 'map-moveend'
-        | 'map-resize'
-        | 'map-rotateend'
-        | 'map-touchmove'
-        | 'map-zoomend',
-      event: any
+        | 'mapData'
+        | 'mapDragEnd'
+        | 'mapMoveEnd'
+        | 'mapResize'
+        | 'mapRotateEnd'
+        | 'mapTouchMove'
+        | 'mapZoomEnd',
+      event: any,
     ) {
       if (
-        this.map &&
-        this.map.getSource(POI_SOURCE) &&
-        this.map.isSourceLoaded(POI_SOURCE)
+        this.map
+          && this.map.getSource(POI_SOURCE)
+          && this.map.isSourceLoaded(POI_SOURCE)
       ) {
         this.markers = updateMarkers(
           this.map as maplibregl.Map,
           this.markers,
           POI_SOURCE,
           this.fitBounds,
-          (feature: ApiPoi) => this.$emit('feature-click', feature)
+          (feature: ApiPoi) => this.$emit('featureClick', feature),
         )
       }
 
-      // @ts-ignore
+      // @ts-expect-error: eventName is not in events definition
       this.$emit(eventName, event)
     },
   },
 })
 </script>
+
+<template>
+  <div id="map-container" class="tw-w-full tw-h-full tw-flex tw-flex-col">
+    <Map
+      :center="center"
+      :bounds="bounds"
+      :fit-bounds-options="fitBoundsOptions()"
+      :zoom="selectionZoom.poi"
+      :fullscreen-control="fullscreenControl"
+      :extra-attributions="extraAttributions"
+      :map-style="mapStyle"
+      :rotate="rotate"
+      :show-attribution="showAttribution && !offMapAttribution"
+      :hide-control="hideControl"
+      :hash="hash"
+      :cooperative-gestures="cooperativeGestures"
+      class="tw-grow tw-h-full"
+      @map-init="onMapInit($event)"
+      @map-data="onMapRender('mapData', $event)"
+      @map-drag-end="onMapRender('mapDragEnd', $event)"
+      @map-move-end="onMapRender('mapMoveEnd', $event)"
+      @map-resize="onMapRender('mapResize', $event)"
+      @map-rotate-end="onMapRender('mapRotateEnd', $event)"
+      @map-touch-move="onMapRender('mapTouchMove', $event)"
+      @map-zoom-end="onMapRender('mapZoomEnd', $event)"
+      @map-style-load="onMapStyleLoad($event)"
+      @full-attribution="fullAttribution = $event"
+    >
+      <template #controls>
+        <slot name="controls" />
+      </template>
+      <template #body>
+        <slot name="body" />
+      </template>
+    </Map>
+    <Attribution
+      v-if="showAttribution && offMapAttribution"
+      :attribution="fullAttribution"
+    />
+  </div>
+</template>
 
 <style scoped>
 :deep(.cluster-item) {

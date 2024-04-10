@@ -17,12 +17,12 @@ export default {
       },
     },
     {
-      id: 'poi-level-1',
-      type: 'symbol',
-      source: 'openmaptiles',
+      'id': 'poi-level-1',
+      'type': 'symbol',
+      'source': 'openmaptiles',
       'source-layer': 'poi_tourism',
-      minzoom: 12,
-      filter: [
+      'minzoom': 12,
+      'filter': [
         'all',
         ['<=', ['get', 'rank'], 14],
         ['<=', ['get', 'zoom'], ['zoom']],
@@ -34,7 +34,7 @@ export default {
           ['let', 'style', ['get', 'style'], ['!=', ['var', 'style'], '•']],
         ],
       ],
-      layout: {
+      'layout': {
         'icon-image': [
           'concat',
           ['get', 'superclass'],
@@ -56,7 +56,7 @@ export default {
         'text-size': 12,
         'text-optional': true,
       },
-      paint: {
+      'paint': {
         'text-color': [
           'let',
           'style',

@@ -1,57 +1,13 @@
-<template>
-  <div class="tw-grid tw-items-start tw-grid-cols-4">
-    <template v-for="menuItem in menuItems" :key="menuItem.id">
-      <MenuGroup
-        v-if="menuItem.menu_group"
-        :menu-group="menuItem"
-        :categories-actives-count="categoriesActivesCountByParent[menuItem.id]"
-        :size="size"
-        :display-mode-default="displayModeDefault"
-        :class="
-          (menuItem.menu_group.display_mode || displayModeDefault) ===
-            'large' && ['tw-col-start-1 tw-col-span-4']
-        "
-        @click="onMenuGroupClick(menuItem)"
-      />
-      <LinkItem
-        v-else-if="menuItem.link"
-        :menu-link="menuItem"
-        :size="size"
-        :display-mode-default="displayModeDefault"
-        :class="
-          (menuItem.link.display_mode || displayModeDefault) === 'large' && [
-            'tw-col-start-1 tw-col-span-4',
-          ]
-        "
-      />
-      <Category
-        v-else-if="menuItem.category"
-        :category="menuItem"
-        :selected="isCategorySelected(menuItem.id)"
-        :filters="filters[menuItem.id]"
-        :size="size"
-        :display-mode-default="displayModeDefault"
-        :class="
-          (menuItem.category.display_mode || displayModeDefault) ===
-            'large' && ['tw-col-start-1 tw-col-span-4']
-        "
-        @click="onCategoryClick(menuItem)"
-        @filter-click="onFilterClick($event)"
-      />
-    </template>
-  </div>
-</template>
-
 <script lang="ts">
-import { FontAwesomeIconProps } from '@fortawesome/vue-fontawesome'
-import { PropType } from 'vue'
+import type { FontAwesomeIconProps } from '@fortawesome/vue-fontawesome'
+import type { PropType } from 'vue'
 
 import { defineNuxtComponent } from '#app'
 import Category from '~/components/Menu/Category.vue'
 import MenuGroup from '~/components/Menu/Group.vue'
 import LinkItem from '~/components/Menu/Link.vue'
-import { ApiMenuCategory, ApiMenuItem, MenuItem } from '~/lib/apiMenu'
-import { FilterValues } from '~/utils/types-filters'
+import type { ApiMenuCategory, ApiMenuItem, MenuItem } from '~/lib/apiMenu'
+import type { FilterValues } from '~/utils/types-filters'
 
 export default defineNuxtComponent({
   components: {
@@ -87,20 +43,20 @@ export default defineNuxtComponent({
   },
 
   emits: {
-    'menu-group-click': (_menuItemId: ApiMenuItem['id']) => true,
-    'category-click': (_menuItemId: ApiMenuItem['id']) => true,
-    'filter-click': (_categoryId: ApiMenuCategory['id']) => true,
+    menuGroupClick: (_menuItemId: ApiMenuItem['id']) => true,
+    categoryClick: (_menuItemId: ApiMenuItem['id']) => true,
+    filterClick: (_categoryId: ApiMenuCategory['id']) => true,
   },
 
   methods: {
     onMenuGroupClick(menuItem: MenuItem) {
-      this.$emit('menu-group-click', menuItem.id)
+      this.$emit('menuGroupClick', menuItem.id)
     },
     onCategoryClick(menuItem: MenuItem) {
-      this.$emit('category-click', menuItem.id)
+      this.$emit('categoryClick', menuItem.id)
     },
     onFilterClick(categoryId: ApiMenuCategory['id']) {
-      this.$emit('filter-click', categoryId)
+      this.$emit('filterClick', categoryId)
     },
     isCategorySelected(categoryId: ApiMenuCategory['id']) {
       return this.selectedCategoriesIds.includes(categoryId)
@@ -108,3 +64,47 @@ export default defineNuxtComponent({
   },
 })
 </script>
+
+<template>
+  <div class="tw-grid tw-items-start tw-grid-cols-4">
+    <template v-for="menuItem in menuItems" :key="menuItem.id">
+      <MenuGroup
+        v-if="menuItem.menu_group"
+        :menu-group="menuItem"
+        :categories-actives-count="categoriesActivesCountByParent[menuItem.id]"
+        :size="size"
+        :display-mode-default="displayModeDefault"
+        :class="
+          (menuItem.menu_group.display_mode || displayModeDefault)
+            === 'large' && ['tw-col-start-1 tw-col-span-4']
+        "
+        @click="onMenuGroupClick(menuItem)"
+      />
+      <LinkItem
+        v-else-if="menuItem.link"
+        :menu-link="menuItem"
+        :size="size"
+        :display-mode-default="displayModeDefault"
+        :class="
+          (menuItem.link.display_mode || displayModeDefault) === 'large' && [
+            'tw-col-start-1 tw-col-span-4',
+          ]
+        "
+      />
+      <Category
+        v-else-if="menuItem.category"
+        :category="menuItem"
+        :selected="isCategorySelected(menuItem.id)"
+        :filters="filters[menuItem.id]"
+        :size="size"
+        :display-mode-default="displayModeDefault"
+        :class="
+          (menuItem.category.display_mode || displayModeDefault)
+            === 'large' && ['tw-col-start-1 tw-col-span-4']
+        "
+        @click="onCategoryClick(menuItem)"
+        @filter-click="onFilterClick($event)"
+      />
+    </template>
+  </div>
+</template>

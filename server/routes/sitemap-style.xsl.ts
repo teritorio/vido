@@ -1,5 +1,5 @@
+import type { IncomingMessage, ServerResponse } from 'node:http'
 import { defineEventHandler } from 'h3'
-import { IncomingMessage, ServerResponse } from 'node:http'
 
 import { generateXslStylesheet } from '~/node_modules/nuxt-simple-sitemap/dist/runtime/util/builder'
 
@@ -7,7 +7,7 @@ import { generateXslStylesheet } from '~/node_modules/nuxt-simple-sitemap/dist/r
 
 async function stylesheet(
   req: IncomingMessage,
-  res: ServerResponse<IncomingMessage>
+  res: ServerResponse<IncomingMessage>,
 ) {
   res.write(generateXslStylesheet())
   res.statusCode = 200
@@ -15,5 +15,5 @@ async function stylesheet(
 }
 
 export default defineEventHandler(
-  async (event) => await stylesheet(event.node.req, event.node.res)
+  async event => await stylesheet(event.node.req, event.node.res),
 )

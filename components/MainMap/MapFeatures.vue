@@ -1,74 +1,20 @@
-<template>
-  <div class="tw-flex tw-flex-grow">
-    <MapBase
-      ref="mapBase"
-      :features="features"
-      :bounds="defaultBounds"
-      :fit-bounds-padding-options="fitBoundsPaddingOptions"
-      :extra-attributions="extraAttributions"
-      :map-style="selectedBackground"
-      :rotate="!device.touch"
-      :show-attribution="!small"
-      :off-map-attribution="device.smallScreen && !small"
-      :hide-control="small"
-      :style-icon-filter="styleIconFilter"
-      :cooperative-gestures="cooperativeGestures"
-      :boundary-area="boundaryArea"
-      hash="map"
-      @map-init="onMapInit"
-      @map-data="onMapRender"
-      @map-dragend="onMapRender"
-      @map-moveend="onMapRender"
-      @map-resize="onMapRender"
-      @map-rotateend="onMapRender"
-      @map-touchmove="onMapRender"
-      @map-zoomend="onMapRender"
-      @map-style-load="onMapStyleLoad"
-      @feature-click="updateSelectedFeature"
-    >
-      <template #controls>
-        <MapControlsExplore v-if="explorerModeEnabled" :map="mapTyped" />
-        <MapControls3D :map="mapTyped" />
-        <MapControlsBackground
-          :map="mapTyped"
-          :backgrounds="availableStyles"
-          :initial-background="selectedBackground"
-          @change-background="selectedBackground = $event"
-        />
-      </template>
-      <template #body>
-        <slot></slot>
-      </template>
-    </MapBase>
-    <SnackBar @click="handleSnackAction" />
-    <div
-      v-if="isLoadingFeatures"
-      class="tw-fixed tw-inset-0 tw-flex tw-items-center tw-justify-center tw-bg-black tw-bg-opacity-80"
-    >
-      <FontAwesomeIcon
-        icon="spinner"
-        class="tw-text-zinc-400 tw-animate-spin"
-        size="3x"
-      />
-    </div>
-  </div>
-</template>
-
 <script lang="ts">
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
-import { Polygon, MultiPolygon } from 'geojson'
+import type { MultiPolygon, Polygon } from 'geojson'
 import debounce from 'lodash.debounce'
 import type {
-  Map,
-  MapDataEvent,
-  LngLatBoundsLike,
-  MapMouseEvent,
   FitBoundsOptions,
   GeoJSONSource,
-  StyleSpecification,
+  LngLatBounds,
+  Map,
+  MapDataEvent,
+  MapMouseEvent,
 } from 'maplibre-gl'
+import { Marker } from 'maplibre-gl'
 import { mapActions, mapState, mapWritableState } from 'pinia'
-import { PropType, ref } from 'vue'
+import type { PropType } from 'vue'
+import { ref } from 'vue'
+import booleanIntersects from '@turf/boolean-intersects'
 
 import { defineNuxtComponent, useRequestHeaders } from '#app'
 import MapControlsExplore from '~/components/MainMap/MapControlsExplore.vue'
@@ -76,19 +22,21 @@ import SnackBar from '~/components/MainMap/SnackBar.vue'
 import MapBase from '~/components/Map/MapBase.vue'
 import MapControls3D from '~/components/Map/MapControls3D.vue'
 import MapControlsBackground from '~/components/Map/MapControlsBackground.vue'
-import { ApiMenuCategory } from '~/lib/apiMenu'
-import { ApiPoi, getPoiById } from '~/lib/apiPois'
-import { getBBoxFeatures, getBBoxFeature } from '~/lib/bbox'
+import type { ApiMenuCategory } from '~/lib/apiMenu'
+import type { ApiPoi } from '~/lib/apiPois'
+import { getPoiById } from '~/lib/apiPois'
+import { getBBoxFeature, getBBoxFeatures } from '~/lib/bbox'
 import { DEFAULT_MAP_STYLE, MAP_ZOOM } from '~/lib/constants'
-import { VectorTilesPoi, vectorTilesPoi2ApiPoi } from '~/lib/vectorTilesPois'
+import type { VectorTilesPoi } from '~/lib/vectorTilesPois'
+import { vectorTilesPoi2ApiPoi } from '~/lib/vectorTilesPois'
 import { mapStore } from '~/stores/map'
 import { menuStore } from '~/stores/menu'
 import { snackStore } from '~/stores/snack'
 import { filterRouteByCategories, filterRouteByPoiIds } from '~/utils/styles'
-import { LatLng, MapStyleEnum } from '~/utils/types'
+import type { LatLng } from '~/utils/types'
+import { MapStyleEnum } from '~/utils/types'
 import { getHashPart } from '~/utils/url'
-
-const { Marker } = await import('maplibre-gl')
+import useDevice from '~/composables/useDevice'
 
 type ITMarker = InstanceType<typeof Marker>
 
@@ -113,7 +61,7 @@ export default defineNuxtComponent({
 
   props: {
     defaultBounds: {
-      type: [Array, Object] as PropType<LngLatBoundsLike>,
+      type: [Array, Object] as PropType<LngLatBounds>,
       default: null,
     },
     fitBoundsPaddingOptions: {
@@ -165,8 +113,12 @@ export default defineNuxtComponent({
       default: undefined,
     },
   },
+
   setup() {
+    const device = useDevice()
+
     return {
+      device,
       mapBase: ref<InstanceType<typeof MapBase>>(),
     }
   },
@@ -190,10 +142,6 @@ export default defineNuxtComponent({
     ...mapState(menuStore, ['isLoadingFeatures']),
     ...mapWritableState(mapStore, ['center']),
 
-    device() {
-      return this.$device.value
-    },
-
     availableStyles(): MapStyleEnum[] {
       return [MapStyleEnum.vector, MapStyleEnum.aerial, MapStyleEnum.bicycle]
     },
@@ -206,34 +154,33 @@ export default defineNuxtComponent({
 
   watch: {
     features() {
-      if (!this.map) {
+      if (!this.map)
         return
-      }
 
       // Change visible data
       const source = this.map.getSource(POI_SOURCE)
-      if (source?.type == 'geojson' && 'setData' in source) {
-        ;(source as GeoJSONSource).setData({
+      if (source?.type === 'geojson' && 'setData' in source) {
+        (source as GeoJSONSource).setData({
           type: 'FeatureCollection',
-          features: this.features,
+          features: this.mapBase!.featuresPrepare(this.features),
         })
         this.showSelectedFeature()
       }
 
       this.handleResetMapZoom(
         this.$t('snack.noPoi.issue'),
-        this.$t('snack.noPoi.action')
+        this.$t('snack.noPoi.action'),
       )
 
       if (this.enableFilterRouteByFeatures) {
         filterRouteByPoiIds(
           this.map as Map,
           this.features.map(
-            (feature) =>
-              feature.properties?.metadata?.id ||
-              feature.id ||
-              feature.properties?.id
-          )
+            feature =>
+              feature.properties?.metadata?.id
+              || feature.id
+              || feature.properties?.id,
+          ),
         )
       }
     },
@@ -243,9 +190,8 @@ export default defineNuxtComponent({
     },
 
     selectedCategoriesIds(categories) {
-      if (this.enableFilterRouteByCategories) {
+      if (this.enableFilterRouteByCategories)
         filterRouteByCategories(this.map as Map, categories)
-      }
     },
 
     selectedBackground() {
@@ -289,12 +235,12 @@ export default defineNuxtComponent({
       })
     },
 
-    onMapStyleLoad(_style: StyleSpecification) {
+    onMapStyleLoad() {
       const colors = [
         ...new Set(
           this.categories
-            .filter((category) => category.category)
-            .map((category) => category.category.color_fill)
+            .filter(category => category.category)
+            .map(category => category.category.color_fill),
         ),
       ]
       this.mapBase!.initPoiLayer(this.features, colors, [
@@ -324,16 +270,17 @@ export default defineNuxtComponent({
         }) as unknown as VectorTilesPoi[]
       }).flat()
       selectedFeatures = selectedFeatures.filter(
-        (feature) => feature.properties.popup_fields
+        feature => feature.properties.popup_fields,
       )
       if (selectedFeatures.length > 0) {
         // Set temp partial data from vector tiles. Then fetch full data
         this.updateSelectedFeature(
           vectorTilesPoi2ApiPoi(selectedFeatures[0]),
-          true
+          true,
         )
         this.showSelectedFeature()
-      } else {
+      }
+      else {
         this.updateSelectedFeature(null)
       }
     },
@@ -348,15 +295,15 @@ export default defineNuxtComponent({
             // Now fetch full data.
             return getPoiById(
               this.$vidoConfig(useRequestHeaders()),
-              feature.properties.metadata.id
+              feature.properties.metadata.id,
             ).then((apiPoi) => {
               // Overide geometry.
               // Keep same original location to avoid side effect on moving selected object.
               apiPoi.geometry = feature.geometry
               this.setSelectedFeature(apiPoi)
             })
-          } catch (e) {
-            // eslint-disable-next-line no-console
+          }
+          catch (e) {
             console.error('Vido error:', (e as Error).message)
           }
         }
@@ -374,9 +321,8 @@ export default defineNuxtComponent({
     },
 
     goTo(feature: ApiPoi) {
-      if (!feature || !('coordinates' in feature.geometry)) {
+      if (!feature || !('coordinates' in feature.geometry))
         return
-      }
 
       this.mapBase!.fitBounds(getBBoxFeature(feature))
     },
@@ -386,11 +332,12 @@ export default defineNuxtComponent({
         let zoom
         if (this.selectedFeature.properties.vido_zoom) {
           zoom = this.selectedFeature.properties.vido_zoom
-        } else if (this.selectedFeature.properties.vido_cat) {
-          zoom =
-            this.categories.find(
-              (category) =>
-                category.id == this.selectedFeature?.properties.vido_cat
+        }
+        else if (this.selectedFeature.properties.vido_cat) {
+          zoom
+            = this.categories.find(
+              category =>
+                category.id === this.selectedFeature?.properties.vido_cat,
             )?.category.zoom || 17
         }
         this.map.flyTo({
@@ -417,9 +364,8 @@ export default defineNuxtComponent({
       this.resetZoom()
       if (this.features) {
         const bounds = getBBoxFeatures(this.features)
-        if (bounds) {
+        if (bounds)
           this.mapBase!.fitBounds(bounds)
-        }
       }
     },
 
@@ -428,25 +374,30 @@ export default defineNuxtComponent({
     },
 
     handleResetMapZoom(text: string, textBtn: string) {
-      const mapBounds = this.map.getBounds()
-      const isOneInView = this.features.some(
-        (feature) =>
-          feature.geometry.type === 'Point' &&
-          mapBounds.contains(feature.geometry.coordinates as [number, number])
-      )
+      const mapBound = this.map.getBounds().toArray()
+      const bounds = {
+        type: 'Polygon',
+        coordinates: [[
+          [mapBound[0][0], mapBound[0][1]],
+          [mapBound[1][0], mapBound[0][1]],
+          [mapBound[1][0], mapBound[1][1]],
+          [mapBound[0][0], mapBound[1][1]],
+          [mapBound[0][0], mapBound[0][1]],
+        ]],
+      } as Polygon
+      const isOneInView = this.features.some(feature => booleanIntersects(bounds, feature.geometry as Exclude<GeoJSON.Geometry, GeoJSON.GeometryCollection>))
 
       const currentZoom = this.map.getZoom()
 
       if (
-        !isOneInView &&
-        currentZoom >= MAP_ZOOM.zoom.default &&
-        this.features.length > 0
-      ) {
+        !isOneInView
+        && currentZoom >= MAP_ZOOM.zoom.default
+        && this.features.length > 0
+      )
         this.showZoomSnack(text, textBtn)
-      }
-      if (currentZoom < MAP_ZOOM.zoom.default) {
+
+      if (currentZoom < MAP_ZOOM.zoom.default)
         this.resetZoom()
-      }
     },
 
     showSelectedFeature() {
@@ -458,36 +409,36 @@ export default defineNuxtComponent({
 
       // Add new marker if a feature is selected
       if (
-        this.selectedFeature &&
-        (this.selectedFeature.properties?.metadata?.id ||
-          this.selectedFeature?.id ||
-          this.selectedFeature?.properties?.id)
+        this.selectedFeature
+          && (this.selectedFeature.properties?.metadata?.id
+          || this.selectedFeature?.id
+          || this.selectedFeature?.properties?.id)
       ) {
         filterRouteByPoiIds(this.map as Map, [
-          this.selectedFeature.properties?.metadata?.id ||
-            this.selectedFeature?.id ||
-            this.selectedFeature?.properties?.id,
+          this.selectedFeature.properties?.metadata?.id
+            || this.selectedFeature?.id
+            || this.selectedFeature?.properties?.id,
         ])
 
         if (
           ['Point', 'MultiLineString', 'LineString'].includes(
-            this.selectedFeature.geometry.type
+            this.selectedFeature.geometry.type,
           )
         ) {
-          // Get original coords to set axact marker position
+          // Get original coords to set exact marker position
           const originalFeature = this.features.find(
-            (originalFeature) =>
-              originalFeature.properties?.metadata?.id &&
-              this.selectedFeature?.properties?.metadata?.id &&
-              originalFeature.properties?.metadata?.id ===
-                this.selectedFeature?.properties?.metadata?.id
+            originalFeature =>
+              originalFeature.properties?.metadata?.id
+              && this.selectedFeature?.properties?.metadata?.id
+              && originalFeature.properties?.metadata?.id
+              === this.selectedFeature?.properties?.metadata?.id,
           )
           const lngLat = (
             originalFeature && originalFeature.geometry.type === 'Point'
               ? originalFeature.geometry.coordinates
               : this.selectedFeature.geometry.type === 'Point'
-              ? this.selectedFeature.geometry?.coordinates
-              : this.defaultBounds
+                ? this.selectedFeature.geometry?.coordinates
+                : this.defaultBounds
           ) as [number, number]
 
           this.selectedFeatureMarker = new Marker({
@@ -497,23 +448,57 @@ export default defineNuxtComponent({
             .setLngLat(lngLat)
             .addTo(this.map as Map)
         }
-      } else {
+      }
+      else {
         if (this.enableFilterRouteByCategories) {
           filterRouteByPoiIds(
             this.map as Map,
             this.features.map(
-              (feature) =>
-                feature.properties?.metadata?.id ||
-                feature.id ||
-                feature.properties?.id
-            )
+              feature =>
+                feature.properties?.metadata?.id
+                || feature.id
+                || feature.properties?.id,
+            ),
           )
         }
-        if (this.enableFilterRouteByCategories) {
+        if (this.enableFilterRouteByCategories)
           filterRouteByCategories(this.map as Map, this.selectedCategoriesIds)
-        }
       }
     },
   },
 })
 </script>
+
+<template>
+  <div class="tw-flex tw-flex-grow">
+    <MapBase
+      ref="mapBase" :features="features" :bounds="defaultBounds"
+      :fit-bounds-padding-options="fitBoundsPaddingOptions" :extra-attributions="extraAttributions"
+      :map-style="selectedBackground" :rotate="!device.touch" :show-attribution="!small"
+      :off-map-attribution="device.smallScreen && !small" :hide-control="small" :style-icon-filter="styleIconFilter"
+      :cooperative-gestures="cooperativeGestures" :boundary-area="boundaryArea" hash="map" @map-init="onMapInit"
+      @map-data="onMapRender" @map-drag-end="onMapRender" @map-move-end="onMapRender" @map-resize="onMapRender"
+      @map-rotate-end="onMapRender" @map-touch-move="onMapRender" @map-zoom-end="onMapRender"
+      @map-style-load="onMapStyleLoad" @feature-click="updateSelectedFeature"
+    >
+      <template #controls>
+        <MapControlsExplore v-if="explorerModeEnabled" :map="mapTyped" />
+        <MapControls3D :map="mapTyped" />
+        <MapControlsBackground
+          :map="mapTyped" :backgrounds="availableStyles" :initial-background="selectedBackground"
+          @change-background="selectedBackground = $event"
+        />
+      </template>
+      <template #body>
+        <slot />
+      </template>
+    </MapBase>
+    <SnackBar @click="handleSnackAction" />
+    <div
+      v-if="isLoadingFeatures"
+      class="tw-fixed tw-inset-0 tw-flex tw-items-center tw-justify-center tw-bg-black tw-bg-opacity-80"
+    >
+      <FontAwesomeIcon icon="spinner" class="tw-text-zinc-400 tw-animate-spin" size="3x" />
+    </div>
+  </div>
+</template>

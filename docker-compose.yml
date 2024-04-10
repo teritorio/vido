@@ -6,9 +6,9 @@ services:
       context: .
       args:
         NODE_VERSION: 18-alpine3.17
-    # restart: unless-stopped
+    restart: unless-stopped
     ports:
-      - "3000:3000"
+      - '3000:3000'
     volumes:
       - ./vidos.config.ts:/usr/src/app/vidos.config.ts
       - ./vidos-config.json:/usr/src/app/vidos-config.json

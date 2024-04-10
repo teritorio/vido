@@ -2,15 +2,18 @@ import copy from 'fast-copy'
 import { deepEqual } from 'fast-equals'
 import { defineStore } from 'pinia'
 
-import { ApiMenuCategory, MenuItem } from '~/lib/apiMenu'
-import { ApiPoi, ApiPois, getPoiByCategoryId } from '~/lib/apiPois'
-import { VidoConfig } from '~/utils/types-config'
-import {
+import type { ApiMenuCategory, MenuItem } from '~/lib/apiMenu'
+import type { ApiPoi, ApiPois } from '~/lib/apiPois'
+import { getPoiByCategoryId } from '~/lib/apiPois'
+import type { VidoConfig } from '~/utils/types-config'
+import type {
   FilterValues,
+} from '~/utils/types-filters'
+import {
   filterValueFactory,
   filterValuesIsSet,
-  isSet,
   isMatch,
+  isSet,
 } from '~/utils/types-filters'
 
 interface FetchFeaturesPayload {
@@ -56,17 +59,27 @@ export const menuStore = defineStore('menu', {
       return state.menuItems === undefined
         ? undefined
         : (Object.values(state.menuItems).filter(
-            (menuItem) => menuItem.category !== undefined
+            menuItem => !!menuItem.category,
           ) as ApiMenuCategory[])
+    },
+
+    getCurrentCategory: (state: State): (categoryId: number) => ApiMenuCategory | undefined => {
+      return (categoryId) => {
+        return state.menuItems === undefined
+          ? undefined
+          : Object.values(state.menuItems).find(
+            menuItem => menuItem.id === categoryId,
+          ) as ApiMenuCategory
+      }
     },
 
     selectedCategories: (state: State): ApiMenuCategory[] | undefined => {
       return state.menuItems === undefined
         ? undefined
         : (state.selectedCategoryIds
-            .map((selectedCatagoryId) => state.menuItems![selectedCatagoryId])
+            .map(selectedCatagoryId => state.menuItems![selectedCatagoryId])
             .filter(
-              (menuItems) => menuItems !== undefined
+              menuItems => menuItems !== undefined,
             ) as ApiMenuCategory[])
     },
   },
@@ -85,7 +98,7 @@ export const menuStore = defineStore('menu', {
 
     delSelectedCategoryIds(selectedCategoryIds: ApiMenuCategory['id'][]) {
       this.selectedCategoryIds = this.selectedCategoryIds.filter(
-        (categoryId) => !selectedCategoryIds.includes(categoryId)
+        categoryId => !selectedCategoryIds.includes(categoryId),
       )
     },
 
@@ -96,9 +109,10 @@ export const menuStore = defineStore('menu', {
     toggleSelectedCategoryId(categoryId: ApiMenuCategory['id']) {
       if (this.selectedCategoryIds.includes(categoryId)) {
         this.selectedCategoryIds = this.selectedCategoryIds.filter(
-          (id) => id !== categoryId
+          id => id !== categoryId,
         )
-      } else {
+      }
+      else {
         this.selectedCategoryIds = sortedUniq([
           ...this.selectedCategoryIds,
           categoryId,
@@ -113,7 +127,7 @@ export const menuStore = defineStore('menu', {
 
         this.menuItems = undefined // Hack, release from store before edit and reappend
         menuItems
-          .filter((menuItem) => !menuItem.hidden)
+          .filter(menuItem => !menuItem.hidden)
           .map((menuItem) => {
             stateMenuItems[menuItem.id] = menuItem
             return menuItem
@@ -124,26 +138,26 @@ export const menuStore = defineStore('menu', {
             if (menuItem.parent_id && menuItem.parent_id !== null) {
               const parent = stateMenuItems[menuItem.parent_id]
               if (parent?.menu_group) {
-                if (!parent.menu_group.vido_children) {
+                if (!parent.menu_group.vido_children)
                   parent.menu_group.vido_children = []
-                }
+
                 parent.menu_group.vido_children.push(menuItem.id)
               }
             }
 
             if (menuItem.category?.filters) {
-              filters[menuItem.id] = menuItem.category?.filters.map((filter) =>
-                filterValueFactory(filter)
+              filters[menuItem.id] = menuItem.category?.filters.map(filter =>
+                filterValueFactory(filter),
               )
             }
           })
         this.menuItems = stateMenuItems
         this.filters = filters
-      } catch (error) {
-        // eslint-disable-next-line no-console
+      }
+      catch (error) {
         console.error(
           'Vido error: Unable to fetch the menu config from the API',
-          error
+          error,
         )
       }
     },
@@ -153,27 +167,27 @@ export const menuStore = defineStore('menu', {
 
       try {
         const previousFeatures = this.allFeatures
-        const existingFeatures = categoryIds.map((categoryId) =>
-          Boolean(previousFeatures[categoryId])
+        const existingFeatures = categoryIds.map(categoryId =>
+          Boolean(previousFeatures[categoryId]),
         )
 
         const posts: ApiPois[] = (
           await Promise.all(
             categoryIds
-              .filter((categoryId) => !previousFeatures[categoryId])
+              .filter(categoryId => !previousFeatures[categoryId])
               .map((categoryId) => {
                 try {
-                  return getPoiByCategoryId(vidoConfig, categoryId, {
-                    short_description: false,
-                  })
-                } catch (e) {
+                  return getPoiByCategoryId(vidoConfig, categoryId)
+                }
+                catch (e) {
+                  // eslint-disable-next-line no-console
                   console.log('Vido error:', e)
                   return undefined
                 }
               })
-              .filter((apiPoi) => !!apiPoi)
+              .filter(apiPoi => !!apiPoi),
           )
-        ).filter((e) => e) as ApiPois[]
+        ).filter(e => e) as ApiPois[]
 
         const features: State['features'] = {}
 
@@ -182,9 +196,9 @@ export const menuStore = defineStore('menu', {
         for (let j = 0; j < categoryIds.length; j++) {
           const categoryId = categoryIds[j]
 
-          const filterIsSet =
-            this.filters[categoryId] &&
-            filterValuesIsSet(this.filters[categoryId])
+          const filterIsSet
+            = this.filters[categoryId]
+            && filterValuesIsSet(this.filters[categoryId])
           if (existingFeatures[j]) {
             features[categoryId] = previousFeatures[categoryId].map(
               (f: ApiPoi) => ({
@@ -194,15 +208,16 @@ export const menuStore = defineStore('menu', {
                   vido_visible:
                     !filterIsSet || keepFeature(this.filters[categoryId], f),
                 },
-              })
+              }),
             )
-          } else {
+          }
+          else {
             const post = posts[i]
 
             features[categoryId] = post.features.map((f) => {
               f.properties.vido_cat = categoryId
-              f.properties.vido_visible =
-                !filterIsSet || keepFeature(this.filters[categoryId], f)
+              f.properties.vido_visible
+                = !filterIsSet || keepFeature(this.filters[categoryId], f)
               return f
             })
 
@@ -212,13 +227,14 @@ export const menuStore = defineStore('menu', {
 
         this.features = features
         this.allFeatures = { ...this.allFeatures, ...features }
-      } catch (error) {
-        // eslint-disable-next-line no-console
+      }
+      catch (error) {
         console.error(
           'Vido error: Unable to fetch the features from the API',
-          error
+          error,
         )
-      } finally {
+      }
+      finally {
         this.isLoadingFeatures = false
       }
     },
@@ -238,12 +254,12 @@ export const menuStore = defineStore('menu', {
         // Update features visibility
         if (categoryId in this.features) {
           const features: { [categoryId: number]: ApiPoi[] } = copy(
-            this.features
+            this.features,
           )
           const filterIsSet = filterValuesIsSet(filterValues)
           features[categoryId] = features[categoryId].map((feature: ApiPoi) => {
-            feature.properties.vido_visible =
-              !filterIsSet || keepFeature(filterValues, feature)
+            feature.properties.vido_visible
+              = !filterIsSet || keepFeature(filterValues, feature)
             return feature
           })
           this.features = features

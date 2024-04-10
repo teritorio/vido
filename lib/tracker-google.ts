@@ -1,8 +1,8 @@
 import { createGtm } from '@gtm-support/vue-gtm'
-import { App } from 'nuxt/dist/app/compat/vue-demi'
+import type { App } from 'nuxt/dist/app/compat/vue-demi'
 import urlSlug from 'url-slug'
 
-import { Event, Tracker } from '~/lib/trackers'
+import type { Event, Tracker } from '~/lib/trackers'
 
 export default class Google implements Tracker {
   waitForConsent: boolean
@@ -29,9 +29,8 @@ export default class Google implements Tracker {
 
   track(app: App, event: Event) {
     const gtm = app.config.globalProperties.$gtm
-    if (!gtm.enabled()) {
+    if (!gtm.enabled())
       return
-    }
 
     switch (event.type) {
       case 'page': {

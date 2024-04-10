@@ -25,7 +25,7 @@ function factory(props = {}) {
   return el
 }
 
-test('opening_hours', () => {
+it('opening_hours', () => {
   let wrapper
   wrapper = factory({ openingHours: 'Su 00:00-24:00' })
   expect(wrapper.querySelector('#opened')).toBeTruthy()
@@ -39,7 +39,7 @@ test('opening_hours', () => {
   expect(wrapper.querySelector('#openAt')).toBeFalsy()
 })
 
-test('collection_times', () => {
+it('collection_times', () => {
   let wrapper
   wrapper = factory({ tagKey: 'collection_times', openingHours: 'Su 00:00' })
   expect(wrapper.querySelector('#next')).toBeTruthy()
@@ -51,16 +51,16 @@ test('collection_times', () => {
   expect(wrapper.querySelector('#next')).toBeFalsy()
 })
 
-test('pretty', () => {
+it('pretty', () => {
   let wrapper
   wrapper = factory({
     openingHours: 'Tu-Sa 07:00-12:30,13:30-19:00; Su 07:30-12:15',
   })
   expect(wrapper.querySelector('ul > li:nth-child(1)')?.innerHTML).toEqual(
-    '<li>Mar.-sam. 07:00-12:30,13:30-19:00</li>'
+    '<li>Mar.-sam. 07:00-12:30,13:30-19:00</li>',
   )
   expect(wrapper.querySelector('ul > li:nth-child(2)')?.innerHTML).toEqual(
-    '<li>Dim. 07:30-12:15</li>'
+    '<li>Dim. 07:30-12:15</li>',
   )
 
   wrapper = factory({ openingHours: 'Apr-Oct: Fr-Su 10:00-18:00' })
@@ -75,9 +75,9 @@ test('pretty', () => {
     openingHours: 'Tu-Sa 07:00-12:30,13:30-19:00; Su,PH 07:30-12:15',
   })
   expect(wrapper.querySelector('ul > li:nth-child(1)')?.innerHTML).toEqual(
-    '<li>Mar.-sam. 07:00-12:30,13:30-19:00</li>'
+    '<li>Mar.-sam. 07:00-12:30,13:30-19:00</li>',
   )
   expect(wrapper.querySelector('ul > li:nth-child(2)')?.innerHTML).toEqual(
-    '<li>Dim.,PH 07:30-12:15</li>'
+    '<li>Dim.,PH 07:30-12:15</li>',
   )
 })

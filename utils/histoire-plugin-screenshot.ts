@@ -2,6 +2,7 @@
 // MIT License
 
 import type { FileOptions } from 'capture-website'
+import captureWebsite from 'capture-website'
 import { defu } from 'defu'
 import fs from 'fs-extra'
 import type { Plugin } from 'histoire'
@@ -29,7 +30,7 @@ export interface ScreenshotPluginOptions {
   ignored?: (payload: {
     file: string
     story: { title: string }
-    variant: { id: string; title: string }
+    variant: { id: string, title: string }
   }) => boolean
   /**
    * Presets for each screenshot.
@@ -58,7 +59,6 @@ export function HstScreenshot(options: ScreenshotPluginOptions = {}): Plugin {
     name: '@histoire/plugin-screenshot',
 
     onBuild: async (api) => {
-      const { default: captureWebsite } = await import('capture-website')
       await fs.ensureDir(finalOptions.saveFolder!)
 
       api.onPreviewStory(async ({ file, story, variant, url }) => {
@@ -73,9 +73,10 @@ export function HstScreenshot(options: ScreenshotPluginOptions = {}): Plugin {
               title: variant.title,
             },
           })
-        ) {
+        )
           return
-        }
+
+        // eslint-disable-next-line no-console
         console.log(
           'Rendering screenshot for',
           file,
@@ -84,7 +85,7 @@ export function HstScreenshot(options: ScreenshotPluginOptions = {}): Plugin {
           'variant:',
           variant.id,
           'title:',
-          variant.title
+          variant.title,
         )
         for (const preset of finalOptions.presets!) {
           const launchOptions = finalOptions.launchOptionsArgs
@@ -101,8 +102,8 @@ export function HstScreenshot(options: ScreenshotPluginOptions = {}): Plugin {
             scaleFactor: 1, // Changed option
           }
           let group = story.id.split('-')[1]
-          group =
-            {
+          group
+            = {
               poiscard: 'PoisCard',
               poisdetails: 'PoisDetails',
               poislist: 'PoisList',
@@ -110,7 +111,7 @@ export function HstScreenshot(options: ScreenshotPluginOptions = {}): Plugin {
             }[group] || group
           group = group.charAt(0).toUpperCase() + group.slice(1)
           await fs.ensureDir(
-            path.join(finalOptions.saveFolder!, group, story.title)
+            path.join(finalOptions.saveFolder!, group, story.title),
           )
           await captureWebsite.file(
             url,
@@ -118,9 +119,9 @@ export function HstScreenshot(options: ScreenshotPluginOptions = {}): Plugin {
               finalOptions.saveFolder!,
               group,
               story.title,
-              `${variant.title}.png`
+              `${variant.title}.png`,
             ),
-            captureWebsiteFileOptions
+            captureWebsiteFileOptions,
           )
         }
       })

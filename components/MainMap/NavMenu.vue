@@ -1,71 +1,17 @@
-<template>
-  <section
-    v-if="entries.length + locales.length > 0"
-    class="tw-relative tw-z-40"
-  >
-    <v-menu offset-y>
-      <template #activator="{ props }">
-        <IconButton
-          :label="$t('navMenu.label')"
-          class="tw-w-11 tw-h-11 tw-pointer-events-auto"
-          v-bind="props"
-        >
-          <FontAwesomeIcon icon="cog" class="tw-text-zinc-800" size="lg" />
-        </IconButton>
-      </template>
-
-      <v-list id="nav-menu-dropdown">
-        <v-list-item
-          v-for="entry in entries"
-          :key="entry.post_id"
-          class="tw-w-full tw-px-5 tw-py-3 hover:tw-bg-zinc-100"
-        >
-          <v-list-item-title>
-            <ExternalLink
-              :href="entry.url"
-              rel="noopener noreferrer"
-              target="_blank"
-              @click="openLink(entry.title, entry.url)"
-            >
-              {{ entry.title }}
-            </ExternalLink>
-          </v-list-item-title>
-        </v-list-item>
-        <v-divider v-if="Boolean(entries.length)"></v-divider>
-        <v-list-item
-          v-for="locale in locales"
-          :key="locale.code"
-          :class="[
-            'tw-w-full tw-px-5 tw-py-3 hover:tw-bg-zinc-100',
-            locale.code === $i18n.locale && 'bg-grey-lighten-2',
-          ]"
-        >
-          <v-list-item-title>
-            <a href="#" @click.prevent="setLocale(locale.code)">
-              <VFlag :flag="locale.flag" class="flag" />
-              {{ locale.name }}
-            </a>
-          </v-list-item-title>
-        </v-list-item>
-      </v-list>
-    </v-menu>
-  </section>
-</template>
-
 <script lang="ts">
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { mapWritableState } from 'pinia'
-import { PropType } from 'vue'
-import { LocaleObject } from 'vue-i18n-routing'
+import type { PropType } from 'vue'
+import type { LocaleObject } from 'vue-i18n-routing'
 import { VDivider } from 'vuetify/components/VDivider'
 import { VList, VListItem, VListItemTitle } from 'vuetify/components/VList'
 import { VMenu } from 'vuetify/components/VMenu'
-
+import { useLocale } from 'vuetify'
 import { defineNuxtComponent } from '#app'
 import ExternalLink from '~/components/UI/ExternalLink.vue'
 import IconButton from '~/components/UI/IconButton.vue'
 import VFlag from '~/components/UI/VFlag.vue'
-import { ContentEntry } from '~/lib/apiContent'
+import type { ContentEntry } from '~/lib/apiContent'
 import { siteStore } from '~/stores/site'
 
 export default defineNuxtComponent({
@@ -88,6 +34,14 @@ export default defineNuxtComponent({
     },
   },
 
+  setup() {
+    const { current } = useLocale()
+
+    return {
+      vuetifyLocale: current,
+    }
+  },
+
   computed: {
     ...mapWritableState(siteStore, ['locale']),
 
@@ -97,9 +51,10 @@ export default defineNuxtComponent({
   },
 
   methods: {
-    setLocale(locale: string) {
-      this.$i18n.locale = locale
+    async setLocale(locale: string) {
+      await this.$i18n.setLocale(locale)
       this.locale = locale
+      this.vuetifyLocale = locale
     },
     openLink(title: string, url: string) {
       this.$tracking({
@@ -111,6 +66,44 @@ export default defineNuxtComponent({
   },
 })
 </script>
+
+<template>
+  <section v-if="entries.length + locales.length > 0" class="tw-relative tw-z-40">
+    <v-menu offset-y>
+      <template #activator="{ props }">
+        <IconButton :label="$t('navMenu.label')" class="tw-w-11 tw-h-11 tw-pointer-events-auto" v-bind="props">
+          <FontAwesomeIcon icon="cog" class="tw-text-zinc-800" size="lg" />
+        </IconButton>
+      </template>
+
+      <v-list id="nav-menu-dropdown">
+        <v-list-item v-for="(entry, index) in entries" :key="index" class="tw-w-full tw-px-5 tw-py-3 hover:tw-bg-zinc-100">
+          <v-list-item-title>
+            <ExternalLink
+              :href="entry.url" rel="noopener noreferrer" target="_blank"
+              @click="openLink(entry.title, entry.url)"
+            >
+              {{ entry.title }}
+            </ExternalLink>
+          </v-list-item-title>
+        </v-list-item>
+        <v-divider v-if="Boolean(entries.length)" />
+        <v-list-item
+          v-for="locale in locales" :key="locale.code" class="tw-w-full tw-px-5 tw-py-3 hover:tw-bg-zinc-100" :class="[
+            locale.code === $i18n.locale && 'bg-grey-lighten-2',
+          ]"
+        >
+          <v-list-item-title>
+            <a href="#" @click.prevent="setLocale(locale.code)">
+              <VFlag :flag="locale.flag" class="flag" />
+              {{ locale.name }}
+            </a>
+          </v-list-item-title>
+        </v-list-item>
+      </v-list>
+    </v-menu>
+  </section>
+</template>
 
 <style scoped>
 .flag {

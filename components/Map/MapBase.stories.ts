@@ -1,5 +1,5 @@
 import MapBase from '~/components/Map/MapBase.vue'
-import { bind, parametersMap, mapCss } from '~/lib/storybook-types'
+import { bind, mapCss, parametersMap } from '~/lib/storybook-types'
 
 export default {
   title: 'Map/MapBase',
@@ -18,7 +18,7 @@ export const Default = bind(
   {
     ...defaultProps,
   },
-  { style: mapCss }
+  { style: mapCss },
 )
 
 export const OffMapAttrib = bind(
@@ -27,5 +27,5 @@ export const OffMapAttrib = bind(
     ...defaultProps,
     offMapAttribution: true,
   },
-  { style: mapCss }
+  { style: mapCss },
 )

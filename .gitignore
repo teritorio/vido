@@ -5,12 +5,13 @@ vidos.config.ts
 ### Node template
 
 # Yarn v2
+.pnp.*
 .yarn/*
-!.yarn/releases
+!.yarn/patches
 !.yarn/plugins
+!.yarn/releases
 !.yarn/sdks
 !.yarn/versions
-.pnp.*
 
 # Logs
 /logs
@@ -57,8 +58,9 @@ typings/
 # Optional npm cache directory
 .npm
 
-# Optional eslint cache
+# Optional lint cache
 .eslintcache
+.stylelintcache
 
 # Optional REPL history
 .node_repl_history

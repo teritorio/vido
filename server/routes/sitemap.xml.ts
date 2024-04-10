@@ -1,22 +1,24 @@
+import type { IncomingMessage, ServerResponse } from 'node:http'
 import { defineEventHandler } from 'h3'
-import { IncomingMessage, ServerResponse } from 'node:http'
 
+import type { SitemapEntry } from '~/node_modules/nuxt-simple-sitemap/dist/module'
+import type {
+  BuildSitemapOptions,
+} from '~/node_modules/nuxt-simple-sitemap/dist/runtime/util/builder'
+import {
+  buildSitemap,
+} from '~/node_modules/nuxt-simple-sitemap/dist/runtime/util/builder'
 import { getMenu } from '~/lib/apiMenu'
 import { getPois } from '~/lib/apiPois'
 import { vidos } from '~/lib/config'
-import { SitemapFullEntry } from '~/node_modules/nuxt-simple-sitemap/dist/module'
-import {
-  buildSitemap,
-  BuildSitemapOptions,
-} from '~/node_modules/nuxt-simple-sitemap/dist/runtime/util/builder'
 import { vidoConfigResolve } from '~/plugins/vido-config'
-import { VidoConfig } from '~/utils/types-config'
+import type { VidoConfig } from '~/utils/types-config'
 
 // Import by node_modules because access to internal module content
 
 async function manifest(
   req: IncomingMessage,
-  res: ServerResponse<IncomingMessage>
+  res: ServerResponse<IncomingMessage>,
 ) {
   const hostname = (req.headers['x-forwarded-host'] || req.headers.host) as
     | string
@@ -24,23 +26,23 @@ async function manifest(
   if (hostname) {
     const vido: VidoConfig = vidoConfigResolve(hostname, vidos())
 
-    const menu = getMenu(vido).then((menuItem) =>
+    const menu = getMenu(vido).then(menuItem =>
       menuItem
-        .filter((menuItem) => menuItem.category && menuItem.id)
-        .map((menuCategory) => ({
+        .filter(menuItem => menuItem.category && menuItem.id)
+        .map(menuCategory => ({
           url: `/${menuCategory.id}/`,
-        }))
+        })),
     )
 
-    const pois = getPois(vido).then((apiPois) =>
-      apiPois.features.map((poi) => ({
+    const pois = getPois(vido).then(apiPois =>
+      apiPois.features.map(poi => ({
         url: `/poi/${poi.properties.metadata.id}/details`,
         lastmod: poi.properties.metadata.updated_at,
-      }))
+      })),
     )
 
-    const entries: SitemapFullEntry[] = (await Promise.all([menu, pois])).flat(
-      1
+    const entries: SitemapEntry[] = (await Promise.all([menu, pois])).flat(
+      1,
     )
 
     entries.push({
@@ -52,6 +54,8 @@ async function manifest(
 
     const options: BuildSitemapOptions = {
       sitemapConfig: {
+        dynamicUrlsApiEndpoint: '/__sitemap',
+        discoverImages: false,
         xsl: '/sitemap-style.xsl',
         defaults: {},
         enabled: true,
@@ -61,8 +65,10 @@ async function manifest(
         inferStaticPagesAsRoutes: false,
         //  sitemaps?: boolean | Record<string, Partial<SitemapRoot>>;
         hasApiRoutesUrl: false,
+        hasPrerenderedRoutesPayload: false,
         isNuxtContentDocumentDriven: false,
         urls: entries,
+        sitemapName: 'sitemap.xml',
       },
       baseURL: `https://${hostname}`,
       getRouteRulesForPath(_path: string): Record<string, any> {
@@ -74,17 +80,18 @@ async function manifest(
       await buildSitemap({
         ...options,
         sitemapName: 'default',
-      })
+      }),
     )
 
     res.statusCode = 200
     res.end()
-  } else {
+  }
+  else {
     res.statusCode = 500
     res.end()
   }
 }
 
 export default defineEventHandler(
-  async (event) => await manifest(event.node.req, event.node.res)
+  async event => await manifest(event.node.req, event.node.res),
 )

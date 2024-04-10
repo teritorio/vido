@@ -1,28 +1,5 @@
-<template>
-  <footer class="footer">
-    <slot></slot>
-    <span
-      v-for="attribution in attributions"
-      :key="attribution"
-      v-html="attribution"
-    >
-    </span>
-    <span>
-      {{ $t('poiDetails.poweredBy') }}
-      <a target="_blank" href="https://www.teritorio.fr/" title="Teritorio">
-        <img
-          class="footer-logo"
-          src="https://carte.bidarttourisme.com/content/wp-content/uploads/2020/05/logo-teritorio.png"
-          alt="Teritorio"
-        />
-      </a>
-    </span>
-    <CookiesConsent />
-  </footer>
-</template>
-
 <script lang="ts">
-import { PropType } from 'vue'
+import type { PropType } from 'vue'
 
 import { defineNuxtComponent } from '#app'
 import CookiesConsent from '~/components/UI/CookiesConsent.vue'
@@ -41,8 +18,30 @@ export default defineNuxtComponent({
 })
 </script>
 
+<template>
+  <footer class="footer">
+    <slot />
+    <span
+      v-for="attribution in attributions"
+      :key="attribution"
+      v-html="attribution"
+    />
+    <span>
+      {{ $t('poiDetails.poweredBy') }}
+      <a target="_blank" href="https://www.teritorio.fr/" title="Teritorio">
+        <img
+          class="footer-logo"
+          src="https://carte.bidarttourisme.com/content/wp-content/uploads/2020/05/logo-teritorio.png"
+          alt="Teritorio"
+        >
+      </a>
+    </span>
+    <CookiesConsent />
+  </footer>
+</template>
+
 <style lang="scss" scoped>
-@import '~/assets/details.scss';
+@import '~/assets/details';
 
 .footer {
   position: relative;
@@ -73,10 +72,11 @@ export default defineNuxtComponent({
     width: 3.4rem;
     vertical-align: baseline;
   }
-  @extend .font-medium;
 
-  @media (max-width: 991px) {
-    .site-footer__bottom .copyright {
+  @extend %font-medium;
+
+  @media (width <= 991px) {
+    .site-footer-bottom .copyright {
       width: 100%;
       margin-top: 0;
       text-align: center;

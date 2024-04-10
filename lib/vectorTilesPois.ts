@@ -1,15 +1,16 @@
 import type { MapGeoJSONFeature } from 'maplibre-gl'
 
-import { ApiPoi, ApiPoiId, ApiPoiPropertiesArray } from './apiPois'
+import type { ApiPoi, ApiPoiId } from './apiPois'
+import { ApiPoiPropertiesArray } from './apiPois'
 
 export type VectorTilesPoi = MapGeoJSONFeature
 
 function split(value: string | undefined): string[] | undefined {
   return value
     ? value
-        .split(';')
-        .map((s: string) => s.trim())
-        .filter((s: string) => s)
+      .split(';')
+      .map((s: string) => s.trim())
+      .filter((s: string) => s)
     : undefined
 }
 
@@ -18,7 +19,7 @@ export function vectorTilesPoi2ApiPoi(mapPoi: VectorTilesPoi): ApiPoi {
     Object.entries(mapPoi.properties).map(([key, value]) => [
       key,
       value && ApiPoiPropertiesArray.includes(key) ? split(value) : value,
-    ])
+    ]),
   )
 
   props.metadata = {

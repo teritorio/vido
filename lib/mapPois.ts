@@ -6,7 +6,6 @@ export interface MapPoiProperties {
   name?: string
   description?: string
 
-  // eslint-disable-next-line camelcase
   'image:thumbnail'?: string
 
   metadata: {
@@ -15,10 +14,11 @@ export interface MapPoiProperties {
 
   display?: {
     icon: string
-    // eslint-disable-next-line camelcase
+
     color_fill?: string
-    // eslint-disable-next-line camelcase
+
     color_line?: string
+    text?: string
   }
 }
 export type MapPoi = GeoJSON.Feature<GeoJSON.Geometry, MapPoiProperties>

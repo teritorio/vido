@@ -1,3 +1,80 @@
+<script lang="ts">
+import type {
+  FontAwesomeIconProps,
+} from '@fortawesome/vue-fontawesome'
+import {
+  FontAwesomeIcon,
+} from '@fortawesome/vue-fontawesome'
+import type { PropType } from 'vue'
+
+import { defineNuxtComponent } from '#app'
+import MenuItem from '~/components/Menu/Item.vue'
+import type { ApiMenuCategory, ApiMenuItem } from '~/lib/apiMenu'
+import type { FilterValues } from '~/utils/types-filters'
+import { filterValuesIsSet } from '~/utils/types-filters'
+
+export default defineNuxtComponent({
+  components: {
+    FontAwesomeIcon,
+    MenuItem,
+  },
+  props: {
+    category: {
+      type: Object as PropType<ApiMenuCategory>,
+      required: true,
+    },
+    filters: {
+      type: Array as unknown as PropType<FilterValues>,
+      default: null,
+    },
+    selected: {
+      type: Boolean,
+      required: true,
+    },
+    size: {
+      type: String as PropType<FontAwesomeIconProps['size']>,
+      required: true,
+    },
+    displayModeDefault: {
+      type: String as PropType<'compact' | 'large'>,
+      required: true,
+    },
+  },
+  computed: {
+    isFiltered(): boolean {
+      return this.filters && filterValuesIsSet(this.filters)
+    },
+  },
+
+  emits: {
+    click: (_category_id: ApiMenuItem['id']) => true,
+    filterClick: (_category_id: ApiMenuItem['id']) => true,
+  },
+
+  methods: {
+    onClick() {
+      this.$tracking({
+        type: 'category_event',
+        event: 'enable',
+        categoryId: this.category.id,
+        title: this.category.category.name.fr,
+      })
+
+      this.$emit('click', this.category.id)
+    },
+    onFilterClick() {
+      this.$tracking({
+        type: 'category_event',
+        event: 'filter',
+        categoryId: this.category.id,
+        title: this.category.category.name.fr,
+      })
+      this.$emit('filterClick', this.category.id)
+    },
+  },
+})
+</script>
+
 <template>
   <MenuItem
     :id="`MenuItem-${category.id}`"
@@ -47,8 +124,7 @@
             .length > 0 && selected
         "
         type="button"
-        :class="[
-          'tw-w-full tw-h-12 sm:tw-h-8 tw-text-left tw-rounded-lg tw-outline-none focus:tw-outline-none hover:tw-bg-zinc-100',
+        class="tw-w-full tw-h-12 sm:tw-h-8 tw-text-left tw-rounded-lg tw-outline-none focus:tw-outline-none hover:tw-bg-zinc-100" :class="[
           isFiltered && 'tw-text-emerald-500',
           !isFiltered && 'tw-text-zinc-500',
         ]"
@@ -62,80 +138,6 @@
     </template>
   </MenuItem>
 </template>
-
-<script lang="ts">
-import {
-  FontAwesomeIcon,
-  FontAwesomeIconProps,
-} from '@fortawesome/vue-fontawesome'
-import { PropType } from 'vue'
-
-import { defineNuxtComponent } from '#app'
-import MenuItem from '~/components/Menu/Item.vue'
-import { ApiMenuCategory, ApiMenuItem } from '~/lib/apiMenu'
-import { FilterValues, filterValuesIsSet } from '~/utils/types-filters'
-
-export default defineNuxtComponent({
-  components: {
-    FontAwesomeIcon,
-    MenuItem,
-  },
-  props: {
-    category: {
-      type: Object as PropType<ApiMenuCategory>,
-      required: true,
-    },
-    filters: {
-      type: Array as unknown as PropType<FilterValues>,
-      default: null,
-    },
-    selected: {
-      type: Boolean,
-      required: true,
-    },
-    size: {
-      type: String as PropType<FontAwesomeIconProps['size']>,
-      required: true,
-    },
-    displayModeDefault: {
-      type: String as PropType<'compact' | 'large'>,
-      required: true,
-    },
-  },
-  computed: {
-    isFiltered(): boolean {
-      return this.filters && filterValuesIsSet(this.filters)
-    },
-  },
-
-  emits: {
-    click: (_category_id: ApiMenuItem['id']) => true,
-    'filter-click': (_category_id: ApiMenuItem['id']) => true,
-  },
-
-  methods: {
-    onClick() {
-      this.$tracking({
-        type: 'category_event',
-        event: 'enable',
-        categoryId: this.category.id,
-        title: this.category.category.name.fr,
-      })
-
-      this.$emit('click', this.category.id)
-    },
-    onFilterClick() {
-      this.$tracking({
-        type: 'category_event',
-        event: 'filter',
-        categoryId: this.category.id,
-        title: this.category.category.name.fr,
-      })
-      this.$emit('filter-click', this.category.id)
-    },
-  },
-})
-</script>
 
 <style scoped>
 button:not(.selected):hover svg[data-icon='check-circle'] {

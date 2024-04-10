@@ -1,41 +1,7 @@
-<template>
-  <div>
-    <v-autocomplete
-      :model-value="categoryId"
-      class="category-selector"
-      solo
-      :items="Object.values(menuEntries).map((a) => a[0])"
-      :label="$t(label)"
-      variant="solo"
-      rounded
-      hide-details="auto"
-      @update:model-value="$emit('category-change', $event)"
-    >
-      <template #prepend-inner>
-        <div class="tw-right-0 tw-px-5 tw-text-zinc-800">
-          <FontAwesomeIcon icon="search" />
-        </div>
-      </template>
-      <template #item="{ props, item }">
-        <v-list-item v-bind="props" :title="null">
-          <v-list-item-media>
-            <TeritorioIcon
-              :color-text="menuEntries[item.value][1].category.color_line"
-              :picto="menuEntries[item.value][1].category.icon"
-              use-native-alignment
-            />
-            {{ item.title }}
-          </v-list-item-media>
-        </v-list-item>
-      </template>
-    </v-autocomplete>
-  </div>
-</template>
-
 <script lang="ts">
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
-import { PropType } from 'vue'
-import { LocaleObject } from 'vue-i18n-routing'
+import type { PropType } from 'vue'
+import type { LocaleObject } from 'vue-i18n-routing'
 import { VAutocomplete } from 'vuetify/components/VAutocomplete'
 import {
   VListItem,
@@ -43,9 +9,10 @@ import {
   VListItemTitle,
 } from 'vuetify/components/VList'
 
+import { localeIncludes } from 'locale-includes'
 import { defineNuxtComponent } from '#app'
 import TeritorioIcon from '~/components/UI/TeritorioIcon.vue'
-import { ApiMenuCategory, MenuItem } from '~/lib/apiMenu'
+import type { ApiMenuCategory, MenuItem } from '~/lib/apiMenu'
 
 export default defineNuxtComponent({
   components: {
@@ -58,12 +25,15 @@ export default defineNuxtComponent({
   },
 
   emits: {
-    'category-change': (_categoryId: number) => true,
+    categoryChange: (_categoryId: number) => true,
   },
 
   props: {
+    filters: {
+      type: Array as PropType<number[]>,
+    },
     menuItems: {
-      type: Array as PropType<ApiMenuCategory[]>,
+      type: Object as PropType<Record<number, MenuItem>>,
       required: true,
     },
     categoryId: {
@@ -76,85 +46,118 @@ export default defineNuxtComponent({
     },
   },
 
+  setup() {
+    const { locale } = useI18n()
+
+    return {
+      locale,
+    }
+  },
+
   computed: {
-    menuEntries(): {
-      [key: number]: [
-        {
-          value: number
-          title: string
-        },
-        ApiMenuCategory
-      ]
-    } {
-      const menuIndex: { [key: number]: MenuItem } = {}
-      this.menuItems
-        .filter((menuItem) => !menuItem.hidden)
-        .forEach((menuItem) => {
-          menuIndex[menuItem.id] = menuItem
-        })
-
+    menuEntries(): Array<{ value: number, title: string, category: ApiMenuCategory['category'] } | undefined> {
       const locales = this.$i18n.locales
-      return Object.fromEntries(
-        (
-          this.menuItems.filter(
-            (menuItem) => menuItem.category && !menuItem.hidden
-          ) as ApiMenuCategory[]
-        )
-          .map((menuItem) => {
-            let parents: string[] = []
-            let parentId = menuItem.parent_id
-            while (parentId) {
-              if (!menuIndex[parentId]) {
-                return undefined
-              }
-              const name = menuIndex[parentId].menu_group?.name.fr
-              if (name && menuIndex[parentId].parent_id) {
-                parents.push(name)
-              }
-              parentId = menuIndex[parentId].parent_id
-            }
-
-            return [
-              {
-                value: menuItem.id,
-                title: [...parents.reverse(), menuItem.category.name.fr].join(
-                  ' / '
-                ),
-              },
-              menuItem,
-            ]
-          })
-          .filter(
-            (
-              t
-            ): t is NonNullable<
-              [
-                {
-                  value: number
-                  title: string
-                },
-                ApiMenuCategory
-              ]
-            > => t != null
-          )
-          .sort((a, b) =>
-            a[0].title.localeCompare(
-              b[0].title,
-              locales.map((locale: string | LocaleObject) =>
-                typeof locale === 'string' ? locale : locale.code
-              )
-            )
-          )
-          .map((a) => [a[0].value, a])
+      const localeCompareOptions = locales.map(
+        (locale: string | LocaleObject) =>
+          typeof locale === 'string' ? locale : locale.code,
       )
+
+      return Object.values(this.menuItems).filter(
+        menuItem => menuItem.category && !menuItem.hidden,
+      )
+        .map((menuItem) => {
+          const parents: string[] = []
+          let parentId = menuItem.parent_id
+          let isIncluded = false
+
+          while (parentId) {
+            if (!this.menuItems[parentId])
+              return undefined
+
+            if (
+              this.filters
+                && (this.filters.includes(parentId) || this.filters.includes(menuItem.id))
+            )
+              isIncluded = true
+
+            const name = this.menuItems[parentId].menu_group?.name.fr
+            if (name && this.menuItems[parentId].parent_id)
+              parents.unshift(name)
+
+            parentId = this.menuItems[parentId].parent_id
+          }
+
+          if (this.filters && !isIncluded)
+            return undefined
+
+          return {
+            value: menuItem.id,
+            title: [...parents, (menuItem as ApiMenuCategory).category.name.fr].join(
+              ' / ',
+            ),
+            category: (menuItem as ApiMenuCategory).category,
+          }
+        })
+        .filter(t => t !== undefined)
+        .sort((a, b) => a && b ? a.title.localeCompare(b.title, localeCompareOptions) : -1)
+    },
+  },
+
+  methods: {
+    customFilter(item: string, query: string) {
+      return localeIncludes(item, query, { locales: this.locale, sensitivity: 'base' })
     },
   },
 })
 </script>
 
-<style>
+<template>
+  <div>
+    <v-autocomplete
+      :model-value="categoryId"
+      class="category-selector"
+      solo
+      :items="menuEntries"
+      :label="$t(label)"
+      :menu-props="{ maxWidth: '100%' }"
+      variant="solo"
+      rounded
+      hide-details="auto"
+      :custom-filter="customFilter"
+      @update:model-value="$emit('categoryChange', $event)"
+    >
+      <template #prepend-inner>
+        <div class="tw-right-0 tw-px-5 tw-text-zinc-800">
+          <FontAwesomeIcon icon="search" />
+        </div>
+      </template>
+      <template #item="{ props, item }">
+        <v-list-item v-bind="props" :title="null">
+          <v-list-item-media>
+            <TeritorioIcon
+              :color-text="item.raw.category.color_line"
+              :picto="item.raw.category.icon"
+              use-native-alignment
+            />
+            {{ item.title }}
+          </v-list-item-media>
+        </v-list-item>
+      </template>
+    </v-autocomplete>
+  </div>
+</template>
+
+<style scoped>
 .category-selector input[type='text'] {
   padding: 0 6px;
   outline: none !important;
+}
+
+.v-list-item-media {
+  direction: rtl;
+  overflow: hidden;
+  text-align: left;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 </style>

@@ -20,13 +20,11 @@ describe('home content', () => {
 
   it('contain basic details', () => {
     cy.get('h1').contains(
-      // @ts-ignore
-      teritorioReferenceAPIFixture.deps[2].features[0].properties.name
+      teritorioReferenceAPIFixture.deps[2].features[0].properties.name as string,
     )
 
     cy.get('#FieldsGroup--download')
       .parent()
-      // @ts-ignore
       .contains('download')
 
     // Check for descript on right column
