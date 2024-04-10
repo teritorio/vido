@@ -119,6 +119,7 @@ export default defineNuxtComponent({
       solo
       :items="menuEntries"
       :label="$t(label)"
+      :menu-props="{ maxWidth: '100%' }"
       variant="solo"
       rounded
       hide-details="auto"
@@ -146,9 +147,17 @@ export default defineNuxtComponent({
   </div>
 </template>
 
-<style>
+<style scoped>
 .category-selector input[type='text'] {
   padding: 0 6px;
   outline: none !important;
+}
+
+.v-list-item-media {
+  direction: rtl;
+  overflow: hidden;
+  text-align: left;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 </style>
