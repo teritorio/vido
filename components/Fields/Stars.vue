@@ -1,8 +1,6 @@
 <script lang="ts">
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import type { PropType } from 'vue'
-
-import type { PropType } from 'vue'
 import { defineNuxtComponent } from '#app'
 
 enum StarsEnum {
