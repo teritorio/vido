@@ -179,7 +179,7 @@ export default defineNuxtComponent({
 
     featuresPrepare(features: ApiPoi[]): ApiPoi[] {
       return features.map((feature) => {
-        if (['MultiPoint', 'MultiLineString', 'MultiPolygon'].includes(feature.geometry.type)) {
+        if (feature.geometry && ['MultiPoint', 'MultiLineString', 'MultiPolygon'].includes(feature.geometry.type)) {
           return (feature.geometry as (MultiPoint | MultiLineString | MultiPolygon)).coordinates.map(coordinates => ({
             type: 'Feature',
             properties: feature.properties,
