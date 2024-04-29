@@ -460,7 +460,7 @@ export default defineNuxtComponent({
 
     <div v-if="initialBbox" class="tw-w-full tw-h-full">
       <header
-        class="tw-pointer-events-none tw-flex tw-flex-row tw-fixed tw-z-10 tw-w-full tw-h-auto tw-p-4 tw-pr-[10px] tw-space-x-4"
+        class="tw-flex tw-flex-row tw-fixed tw-z-10 tw-w-full tw-h-auto tw-p-4 tw-pr-[10px] tw-space-x-4"
         style="max-height: calc(100vh - 30px)"
       >
         <transition-group
