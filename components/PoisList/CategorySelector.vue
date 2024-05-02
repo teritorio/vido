@@ -56,6 +56,7 @@ export default defineNuxtComponent({
 
   computed: {
     menuEntries(): Array<{ value: number, title: string, category: ApiMenuCategory['category'] } | undefined> {
+      const { contribMode } = useContrib()
       const locales = this.$i18n.locales
       const localeCompareOptions = locales.map(
         (locale: string | LocaleObject) =>
@@ -63,7 +64,7 @@ export default defineNuxtComponent({
       )
 
       return Object.values(this.menuItems).filter(
-        menuItem => menuItem.category && !menuItem.hidden,
+        menuItem => contribMode ? menuItem.category : menuItem.category && !menuItem.hidden,
       )
         .map((menuItem) => {
           const parents: string[] = []
