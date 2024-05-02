@@ -124,10 +124,11 @@ export const menuStore = defineStore('menu', {
       try {
         const stateMenuItems: State['menuItems'] = {}
         const filters: Record<ApiMenuCategory['id'], FilterValues> = {}
+        const { contribMode } = useContrib()
 
         this.menuItems = undefined // Hack, release from store before edit and reappend
         menuItems
-          .filter(menuItem => !menuItem.hidden)
+          .filter(menuItem => contribMode ? true : !menuItem.hidden)
           .map((menuItem) => {
             stateMenuItems[menuItem.id] = menuItem
             return menuItem
