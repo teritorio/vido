@@ -30,8 +30,8 @@
   "dependencies": {
     "@fortawesome/vue-fontawesome": "^3.0.3",
     "@gtm-support/vue-gtm": "^2.0.0",
-    "@nuxtjs/sentry": "^7.3.0",
     "@pinia/nuxt": "0.4.11",
+    "@sentry/vue": "^7.113.0",
     "@tailwindcss/typography": "^0.5.9",
     "@teritorio/map": "^0.12.7",
     "@teritorio/openmaptiles-gl-language": "^1.5.4",
