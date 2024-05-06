@@ -78,6 +78,10 @@ export default defineNuxtConfig({
       // @ts-expect-error: Bad pratice, make it the Nuxt way (https://nuxt.com/docs/guide/going-further/runtime-config)
       vidos: vidos.__publicRuntimeConfig__ ? vidos : undefined,
       cypress: process.env.CYPRESS,
+      sentry: {
+        dsn: undefined,
+        environment: 'production',
+      },
     },
   },
   plugins: [
