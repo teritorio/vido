@@ -56,3 +56,11 @@ export default defineNuxtComponent({
     </v-carousel>
   </div>
 </template>
+
+<style lang="scss" scoped>
+:deep(.v-carousel__controls > button svg) {
+  color: #000;
+  border: 2px solid #fff;
+  border-radius: 100%;
+}
+</style>
