@@ -8,6 +8,7 @@ import AddressField from '~/components/Fields/AddressField.vue'
 import Coordinates, { isCoordinatesEmpty } from '~/components/Fields/Coordinates.vue'
 import DateRange, { isDateRangeEmpty } from '~/components/Fields/DateRange.vue'
 import Facebook from '~/components/Fields/Facebook.vue'
+import LinkedIn from '~/components/Fields/LinkedIn.vue'
 import Instagram from '~/components/Fields/Instagram.vue'
 import OpeningHours, { isOpeningHoursSupportedOsmTags } from '~/components/Fields/OpeningHours.vue'
 import Phone from '~/components/Fields/Phone.vue'
@@ -60,6 +61,7 @@ export default defineNuxtComponent({
     Coordinates,
     Phone,
     Facebook,
+    LinkedIn,
     Instagram,
     ExternalLink,
     Stars,
@@ -287,6 +289,11 @@ export default defineNuxtComponent({
 
       <Facebook
         v-else-if="field.field === 'facebook'"
+        :url="properties[field.field]"
+      />
+
+      <LinkedIn
+        v-else-if="field.field === 'linkedin'"
         :url="properties[field.field]"
       />
 

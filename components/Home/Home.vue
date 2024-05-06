@@ -470,7 +470,7 @@ export default defineNuxtComponent({
           name="headers"
           appear
           mode="out-in"
-          class="tw-hidden md:tw-block flex-none tw-max-w-md tw-overflow-y-auto tw-overflow-x-clip flex-shrink-0"
+          class="tw-pointer-events-auto tw-hidden md:tw-block flex-none tw-max-w-md tw-overflow-y-auto tw-overflow-x-clip flex-shrink-0"
         >
           <MenuBlock
             v-if="isModeExplorerOrFavorites"

@@ -34,20 +34,17 @@ const search = ref('')
 
 // Fetch POIs by Cache or API
 const pois = ref<ApiPois>()
-const loadingState = ref(false)
 
 if (props.category) {
   const cachedKey = computed(() => `pois-${props.category!.id}`)
   const { data: cachedPois } = useNuxtData(cachedKey.value)
 
-  loadingState.value = true
   if (cachedPois.value) {
     pois.value = cachedPois.value
-    loadingState.value = false
   }
   else {
     watchEffect(async () => {
-      const { data, pending, error } = await useAsyncData(cachedKey.value, () => getPoiByCategoryId(
+      const { data, error } = await useAsyncData(cachedKey.value, () => getPoiByCategoryId(
         siteStore.config!,
         props.category!.id,
         { geometry_as: 'point', short_description: true },
@@ -57,7 +54,6 @@ if (props.category) {
         throw createError({ statusCode: 404, statusMessage: 'POIs not found.' })
 
       pois.value = data.value
-      loadingState.value = pending.value
     })
   }
 }
@@ -176,7 +172,6 @@ function getContext(key: string) {
 <template>
   <VCard class="mb-4">
     <VDataTable
-      :loading="loadingState"
       :headers="headers"
       :items="pois?.features"
       :no-data-text="t('poisTable.empty')"
@@ -256,9 +251,6 @@ function getContext(key: string) {
             />
           </td>
         </tr>
-      </template>
-      <template #loading>
-        <VSkeletonLoader type="table-row@10" />
       </template>
     </VDataTable>
   </VCard>

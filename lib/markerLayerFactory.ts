@@ -170,8 +170,12 @@ export function updateMarkers(
 
         const id = `m${feature.id}`
         markerIdcurrent.push(id)
-        if (!markers[id]) {
-          // const markerCoords = this.featuresCoordinates[props.metadata.id]
+
+        // Workaround to correct shifting POI markers after zoom-in
+        if (!markers[id] || (markers[id] && (markers[id]?.getLngLat().lat !== (feature.geometry as GeoJSON.Point).coordinates[1]))) {
+          if (markers[id])
+            markers[id].remove()
+
           const markerCoords
             = feature.geometry.type === 'Point'
             && (feature.geometry.coordinates as TupleLatLng)
