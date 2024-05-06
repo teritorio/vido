@@ -257,7 +257,6 @@ function getContext(key: string) {
 </template>
 
 <style scoped>
-/* stylelint-disable selector-class-pattern */
 .v-data-table .v-table__wrapper > table tbody > tr:nth-child(even) > td,
 :deep(.v-data-table .v-table__wrapper > table > thead > tr th) {
   background: #F3F4F6;
