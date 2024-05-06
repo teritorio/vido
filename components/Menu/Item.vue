@@ -74,7 +74,7 @@ export default defineNuxtComponent({
         <TeritorioIconBadge :color-fill="colorFill" :picto="icon" :size="size">
           <span
             v-if="$slots.badge"
-            class="tw-block tw-text-xs tw-font-semibold tw-font-sans tw-text-center tw-absolute" :class="[
+            class="tw-flex tw-items-center tw-justify-center tw-text-xs tw-font-semibold tw-font-sans tw-text-center tw-absolute" :class="[
               size === '2xl'
                 ? '-tw-top-3 -tw-right-3'
                 : '-tw-top-1 -tw-right-1',
