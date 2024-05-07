@@ -36,7 +36,7 @@ export default defineNuxtComponent({
       return this.filter.def.values.map(value => ({
         title: (value.name && value.name.fr) || value.value,
         value: value.value,
-      }))
+      })).sort((a, b) => a.title.localeCompare(b.title, this.$i18n.locale, { sensitivity: 'base' }))
     },
   },
 
