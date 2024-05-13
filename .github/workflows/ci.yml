@@ -168,9 +168,9 @@ jobs:
             git fetch &&
             git checkout -f origin/develop &&
             ruby poi_explode.rb cypress/fixtures/teritorio/references/pois.geojson &&
-            docker-compose build &&
+            docker compose build &&
             touch vidos-config.json &&
-            docker-compose run --rm vido yarn build-config &&
-            docker-compose up -d &&
+            docker compose run --rm vido yarn build-config &&
+            docker compose up -d &&
             echo -n 'VIDO: Deployment completed at: ' &&
             date -u

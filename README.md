@@ -81,9 +81,9 @@ yarn start
 ### Setup with Docker
 ```
 cp .env.sample .env
-docker-compose build
-docker-compose -f docker-compose.yml run --rm vido yarn build-config
-docker-compose up -d
+docker compose build
+docker-compose -f docker compose.yml run --rm vido yarn build-config
+docker compose up -d
 ```
 
 ### Production configuration
