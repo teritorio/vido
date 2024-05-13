@@ -6,6 +6,7 @@ import ExternalLink from '~/components/UI/ExternalLink.vue'
 
 const props = defineProps<{
   editor_id: ContribFields['editor_id']
+  json: ContribFields['json']
   josm: ContribFields['josm']
   mapillary_link?: ContribFields['mapillary_link']
   osm_note: ContribFields['osm_note']
