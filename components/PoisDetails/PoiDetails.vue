@@ -305,7 +305,14 @@ export default defineNuxtComponent({
     <template #footer>
       <span v-if="poi.properties.metadata.updated_at">
         {{ $t('poiDetails.lastUpdate') }}
-        <RelativeDate :date="poi.properties.metadata.updated_at" />
+        <a
+          v-if="poi.properties.metadata.osm_type && poi.properties.metadata.osm_id"
+          :href="`https://www.openstreetmap.org/${poi.properties.metadata.osm_type}/${poi.properties.metadata.osm_id}`"
+          target="_blank"
+        >
+          <RelativeDate :date="poi.properties.metadata.updated_at" />
+        </a>
+        <RelativeDate v-else :date="poi.properties.metadata.updated_at" />
       </span>
     </template>
   </PoiLayout>
