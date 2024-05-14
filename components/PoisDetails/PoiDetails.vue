@@ -76,7 +76,7 @@ export default defineNuxtComponent({
   },
 
   computed: {
-    ...mapState(favoritesStore, ['favoritesIds']),
+    ...mapState(favoritesStore, ['favoritesIds', 'favoriteAddresses']),
 
     context(): PropertyTranslationsContextEnum {
       return PropertyTranslationsContextEnum.Details
@@ -131,7 +131,7 @@ export default defineNuxtComponent({
     },
 
     isFavorite(): boolean {
-      return this.favoritesIds.includes(this.id)
+      return this.favoritesIds.includes(this.id) || this.favoriteAddresses.has(this.id.toString())
     },
 
     mapURL(): string | undefined {
@@ -176,7 +176,11 @@ export default defineNuxtComponent({
           poiId: this.id,
           title: this.poi.properties.name,
         })
-        favoritesStore().toggleFavorite(this.poi)
+
+        if (this.poi.properties.internalType === 'address')
+          favoritesStore().toggleFavoriteAddr(this.poi)
+        else
+          favoritesStore().toggleFavorite(this.poi)
       }
     },
 

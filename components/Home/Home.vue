@@ -3,6 +3,7 @@ import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import type { FitBoundsOptions, LngLatBounds } from 'maplibre-gl'
 import { storeToRefs } from 'pinia'
 import type { MultiPolygon, Polygon } from 'geojson'
+import { decodeBase32 } from 'geohashing'
 import ExplorerOrFavoritesBack from '~/components/Home/ExplorerOrFavoritesBack.vue'
 import Menu from '~/components/Home/Menu.vue'
 import MenuBlock from '~/components/Home/MenuBlock.vue'
@@ -18,7 +19,7 @@ import CookiesConsent from '~/components/UI/CookiesConsent.vue'
 import Logo from '~/components/UI/Logo.vue'
 import type { ContentEntry } from '~/lib/apiContent'
 import type { ApiMenuCategory, MenuItem } from '~/lib/apiMenu'
-import type { ApiPoi } from '~/lib/apiPois'
+import type { ApiPoi, ApiPoiId } from '~/lib/apiPois'
 import { getPois } from '~/lib/apiPois'
 import { getBBoxFeature, getBBoxFeatures } from '~/lib/bbox'
 import { favoritesStore as useFavoritesStore } from '~/stores/favorite'
@@ -29,6 +30,8 @@ import { Mode, OriginEnum } from '~/utils/types'
 import { getHashPart, setHashParts } from '~/utils/url'
 import { flattenFeatures } from '~/utils/utilities'
 import useDevice from '~/composables/useDevice'
+import type { ApiAddrSearchResult, ApiSearchResult } from '~/lib/apiSearch'
+import { MAP_ZOOM } from '~/lib/constants'
 
 //
 // Props
@@ -48,11 +51,10 @@ const { center, isModeFavorites, isModeExplorer, isModeExplorerOrFavorites, mode
 const menuStore = useMenuStore()
 const { apiMenuCategory, features, selectedCategoryIds } = storeToRefs(menuStore)
 const favoritesStore = useFavoritesStore()
-const { favoritesIds } = storeToRefs(favoritesStore)
+const { favoritesIds, favoriteAddresses, favoriteFeatures, favoriteCount } = storeToRefs(favoritesStore)
 const { config, settings } = useSiteStore()
 
 const allowRegionBackZoom = ref<boolean>(false)
-const favorites = ref<ApiPoi[] | null>(null)
 const isFilterActive = ref<boolean>(false)
 const initialBbox = ref<LngLatBounds | null>(null)
 const isMenuItemOpen = ref<boolean>(false)
@@ -71,6 +73,65 @@ const device = useDevice()
 //
 // Hooks
 //
+onBeforeMount(async () => {
+  const favs = getHashPart(router, 'favs')
+  if (favs) {
+    try {
+      const addressHashes: string[] = []
+
+      favs
+        .split(',')
+        .forEach((id) => {
+          if (!Number.isNaN(Number(id)))
+            favoritesStore.toggleFavorite(Number(id))
+
+          if (id.startsWith('addr:'))
+            addressHashes.push(id.substring(5))
+        })
+
+      await Promise.all(addressHashes.map(async (hash) => {
+        const address = await fetchAddress(hash)
+
+        if (!address || !address.features.length)
+          throw createError({ statusCode: 404, message: `Error while reverse geocoding: ${hash}` })
+
+        favoritesStore.toggleFavoriteAddr({
+          type: 'Feature',
+          geometry: address.features[0].geometry,
+          properties: {
+            internalType: 'address',
+            metadata: {
+              id: address.features[0].properties.id as ApiPoiId,
+            },
+            name: address.features[0].properties.label,
+            vido_zoom: address.features[0].properties.type === 'municipality'
+              ? MAP_ZOOM.selectionZoom.municipality
+              : MAP_ZOOM.selectionZoom.streetNumber,
+            display: {
+              icon: address.features[0].properties.type === 'municipality'
+                ? 'city'
+                : 'map-marker-alt',
+              color_fill: '#AAA',
+              color_line: '#AAA',
+            },
+            editorial: {
+              popup_fields: [{ field: 'name' }],
+            },
+          },
+        })
+      }))
+    }
+    catch (e) {
+      console.error('Vido error:', (e as Error).message)
+    }
+  }
+
+  favoritesStore.initFavoritesFromLocalStorage()
+
+  const modeHash = getHashPart(router, 'mode')
+  mode.value = Mode[Object.keys(Mode).find(key => Mode[key as keyof typeof Mode] === modeHash) as keyof typeof Mode] || Mode.BROWSER
+})
+
 onMounted(async () => {
   if (props.initialCategoryIds) {
     menuStore.setSelectedCategoryIds(props.initialCategoryIds)
@@ -99,44 +160,12 @@ onMounted(async () => {
     origin: OriginEnum[router.currentRoute.value.query.origin as keyof typeof OriginEnum],
   })
 
-  if (mode.value === Mode.FAVORITES) {
-    await handleFavorites().then((favorites) => {
-      if (favorites)
-        initialBbox.value = getBBoxFeatures(favorites)
-    })
+  if (props.boundaryArea) {
+    initialBbox.value = getBBoxFeature(props.boundaryArea)
   }
   else {
-    if (props.boundaryArea) {
-      initialBbox.value = getBBoxFeature(props.boundaryArea)
-    }
-    else {
-      // @ts-expect-error: setting wrong type to initialBbox
-      initialBbox.value = settings!.bbox_line.coordinates
-    }
-  }
-})
-
-onBeforeMount(async () => {
-  const modeHash = getHashPart(router, 'mode')
-  mode.value = Mode[Object.keys(Mode).find(key => Mode[key as keyof typeof Mode] === modeHash) as keyof typeof Mode] || Mode.BROWSER
-
-  const favs = getHashPart(router, 'favs')
-  if (favs) {
-    try {
-      const newFavorite = favs
-        .split(',')
-        .map(e => (!Number.isNaN(Number(e)) ? Number(e) : null))
-        .filter(e => !!e) as number[]
-
-      favoritesStore.setFavorites(newFavorite)
-      await handleFavorites()
-    }
-    catch (e) {
-      console.error('Vido error:', (e as Error).message)
-    }
-  }
-  else {
-    favoritesStore.initFavoritesFromLocalStorage()
+    // @ts-expect-error: setting wrong type to initialBbox
+    initialBbox.value = settings!.bbox_line.coordinates
   }
 })
 
@@ -193,7 +222,7 @@ const mapFeatures = computed(() => {
       f = flattenFeatures(features.value)
       break
     case Mode.FAVORITES:
-      f = favorites.value || []
+      f = favoriteFeatures.value
       break
     case Mode.EXPLORER:
       f = []
@@ -270,8 +299,18 @@ watch(mode, () => {
   routerPushUrl(hash)
 })
 
-watch(isModeFavorites, async () => {
-  await handleFavorites()
+watch(isModeFavorites, async (isEnabled) => {
+  if (isEnabled) {
+    if (favoriteCount.value !== favoriteFeatures.value.length
+      || favoriteFeatures.value.some(f =>
+        !favoritesIds.value.includes(f.properties.metadata.id)
+        && !favoriteAddresses.value.has(f.properties.metadata.id.toString()),
+      )
+    )
+      await handleFavorites()
+
+    initialBbox.value = getBBoxFeatures(favoriteFeatures.value)
+  }
 })
 
 //
@@ -283,8 +322,21 @@ function goToSelectedFeature() {
     mapFeaturesRef.value.goToSelectedFeature()
 }
 
-async function fetchFavorites(ids: number[]) {
-  return await getPois(config!, ids, {
+async function fetchAddress(hash: string) {
+  try {
+    const coordinates = decodeBase32(hash)
+    return await $fetch<ApiSearchResult<ApiAddrSearchResult>>(`${config!.API_ADDR}/reverse?lon=${coordinates.lng}&lat=${coordinates.lat}&limit=1`)
+  }
+  catch (error: any) {
+    console.error(error)
+  }
+}
+
+async function fetchFavorites() {
+  if (!favoritesIds.value.length)
+    return []
+
+  return await getPois(config!, favoritesIds.value, {
     geometry_as: 'point',
   })
     .then(pois => (pois && pois.features) || [])
@@ -300,14 +352,48 @@ async function fetchFavorites(ids: number[]) {
 }
 
 async function handleFavorites() {
-  return await fetchFavorites(favoritesIds.value)
-    .then((f) => {
-      favorites.value = f
-      return favorites.value
-    })
-    .catch((e) => {
-      console.error('Vido error:', (e as Error).message)
-    })
+  favoriteFeatures.value = []
+
+  const favorites = await fetchFavorites()
+  const favoriteAddresses = await handleFavoriteAddresses()
+
+  favoriteFeatures.value = [...favoriteFeatures.value, ...favorites, ...favoriteAddresses]
+}
+
+async function handleFavoriteAddresses() {
+  if (!favoriteAddresses.value.size)
+    return []
+
+  const promises = Array.from(favoriteAddresses.value.values()).map(async hash => await fetchAddress(hash))
+  const responses = await Promise.all(promises)
+
+  return responses
+    .filter(Boolean)
+    .map(address => ({
+      type: 'Feature',
+      geometry: address!.features[0].geometry,
+      properties: {
+        internalType: 'address',
+        metadata: {
+          id: address!.features[0].properties.id as ApiPoiId,
+        },
+        name: address!.features[0].properties.label,
+        vido_zoom: address!.features[0].properties.type === 'municipality'
+          ? MAP_ZOOM.selectionZoom.municipality
+          : MAP_ZOOM.selectionZoom.streetNumber,
+        display: {
+          icon: address!.features[0].properties.type === 'municipality'
+            ? 'city'
+            : 'map-marker-alt',
+          color_fill: '#AAA',
+          color_line: '#AAA',
+        },
+        editorial: {
+          popup_fields: [{ field: 'name' }],
+        },
+      },
+    }) as ApiPoi)
+    .concat(favoriteFeatures.value)
 }
 
 function onActivateFilter(val: boolean) {
@@ -341,8 +427,8 @@ function onQuitExplorerFavoriteMode() {
   mapStore.setSelectedFeature(null)
 }
 
-function onToggleFavoritesMode() {
-  if (favoritesIds.value.length) {
+function toggleFavoriteMode() {
+  if (favoriteCount.value) {
     $tracking({ type: 'map_control_event', event: 'favorite' })
     if (!isModeFavorites.value)
       mode.value = Mode.FAVORITES
@@ -352,6 +438,16 @@ function onToggleFavoritesMode() {
   else {
     showFavoritesOverlay.value = true
   }
+}
+
+async function toggleNoteBookMode() {
+  if (favoriteCount.value !== favoriteFeatures.value.length
+    || favoriteFeatures.value.some(f =>
+      !favoritesIds.value.includes(f.properties.metadata.id)
+      && !favoriteAddresses.value.has(f.properties.metadata.id.toString()),
+    )
+  )
+    await handleFavorites()
 }
 
 function routerPushUrl(hashUpdate: { [key: string]: string | null } = {}) {
@@ -392,7 +488,10 @@ function toggleExploreAroundSelectedPoi(feature?: ApiPoi) {
 
 function toggleFavorite(feature: ApiPoi) {
   try {
-    favoritesStore.toggleFavorite(feature)
+    if (feature.properties.internalType === 'address')
+      favoritesStore.toggleFavoriteAddr(feature)
+    else
+      favoritesStore.toggleFavorite(feature)
   }
   catch (e) {
     console.error('Vido error:', (e as Error).message)
@@ -520,12 +619,12 @@ function setPoiVisibility(visible: boolean) {
         >
           <FavoriteMenu
             v-if="favoritesModeEnabled"
-            :favorites-ids="favoritesIds"
             :explore-around-selected-poi="toggleExploreAroundSelectedPoi"
             :go-to-selected-poi="goToSelectedFeature"
             :toggle-favorite="toggleFavorite"
             :explorer-mode-enabled="explorerModeEnabled"
-            @toggle-favorites="onToggleFavoritesMode"
+            @toggle-favorite-mode="toggleFavoriteMode"
+            @toggle-note-book-mode="toggleNoteBookMode"
           />
           <NavMenu
             id="nav-menu"
@@ -590,7 +689,7 @@ function setPoiVisibility(visible: boolean) {
         :poi="selectedFeature"
         class="tw-grow-0"
         :explorer-mode-enabled="explorerModeEnabled"
-        :favorites-mode-enabled="favoritesModeEnabled && selectedFeature.properties.internalType !== 'address'"
+        :favorites-mode-enabled="favoritesModeEnabled"
         @explore-click="toggleExploreAroundSelectedPoi"
         @favorite-click="toggleFavorite"
         @zoom-click="goToSelectedFeature"
@@ -618,7 +717,7 @@ function setPoiVisibility(visible: boolean) {
           :poi="selectedFeature"
           class="tw-grow-0 tw-text-left tw-h-full"
           :explorer-mode-enabled="explorerModeEnabled"
-          :favorites-mode-enabled="favoritesModeEnabled && selectedFeature.properties.internalType !== 'address'"
+          :favorites-mode-enabled="favoritesModeEnabled"
           @explore-click="toggleExploreAroundSelectedPoi"
           @favorite-click="toggleFavorite"
           @zoom-click="goToSelectedFeature"

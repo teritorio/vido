@@ -129,12 +129,12 @@ export function getPoiById(
   })
 }
 
-export function getPois(
+export async function getPois(
   vidoConfig: VidoConfig,
   poiIds?: (ApiPoiId | string)[],
   options: ApiPoisOptions = {},
 ): Promise<ApiPois> {
-  return fetch(
+  return await fetch(
     `${vidoConfig.API_ENDPOINT}/${vidoConfig.API_PROJECT}/${
       vidoConfig.API_THEME
     }/pois.${options.format || defaultOptions.format}?${
