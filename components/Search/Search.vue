@@ -348,7 +348,7 @@ export default defineNuxtComponent({
             ).then(data => (data.ok ? data.json() : null))
 
           const addressesFetch: Promise<ApiSearchResult<ApiAddrSearchResult>>
-            = fetch(`${config.API_SEARCH_ADDR}?${query}`).then(data =>
+            = fetch(`${config.API_ADDR}/search?${query}`).then(data =>
               data.ok ? data.json() : null,
             )
 

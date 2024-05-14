@@ -2,7 +2,7 @@ import type { VidosConfig } from '~/utils/types-config'
 
 const configDefault = {
   API_SEARCH: 'https://search-dev.teritorio.xyz/search',
-  API_SEARCH_ADDR: 'https://api-adresse.data.gouv.fr/search',
+  API_ADDR: 'https://api-adresse.data.gouv.fr',
   API_EXPORT: 'https://print-dev.teritorio.xyz/v0.1',
   API_QR_SHORTENER: 'https://qr-shortener-dev.teritorio.xyz',
   IMAGE_PROXY: null,
