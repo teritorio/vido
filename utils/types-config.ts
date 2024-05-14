@@ -1,7 +1,7 @@
 export interface VidoConfig {
   HOSTS: string[]
   API_SEARCH: string
-  API_SEARCH_ADDR: string
+  API_ADDR: string
   API_EXPORT: string
   API_QR_SHORTENER: string
   API_ENDPOINT: string
