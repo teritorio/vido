@@ -3126,6 +3126,7 @@ __metadata:
     eslint: ^8.43.0
     fast-copy: ^3.0.1
     fast-equals: ^5.0.1
+    geohashing: ^1.1.4
     geojson: ^0.5.0
     histoire: ^0.16.2
     html-validate: ^8.0.5
@@ -8116,6 +8117,13 @@ __metadata:
   version: 1.0.0-beta.2
   resolution: "gensync@npm:1.0.0-beta.2"
   checksum: d523437689c97b3aba9c5cdeca4677d5fff9a29d620db693fea40d852bad63563110f16979d0170248439dbcd2ecee0780fb2533d3f0519f019081aa10767c60
+  languageName: node
+  linkType: hard
+
+"geohashing@npm:^1.1.4":
+  version: 1.1.4
+  resolution: "geohashing@npm:1.1.4"
+  checksum: 4aaaa8109c25a26f7d129205611e05d577c678344db730bf64139c68513b78de0f372fbe5839917d72796933dde60d05508d096e70e704f96334a80b24379b71
   languageName: node
   linkType: hard
 
