@@ -67,15 +67,14 @@ export default defineNuxtComponent({
 
   computed: {
     ...mapState(mapStore, ['isModeExplorer']),
-    ...mapState(favoritesStore, ['favoritesIds']),
+    ...mapState(favoritesStore, ['favoritesIds', 'favoriteAddresses']),
 
     id(): ApiPoiId {
       return this.poi.properties.metadata.id
     },
 
-    isModeFavorites(): boolean {
-      const currentFavorites = this.favoritesIds
-      return currentFavorites.includes(this.id)
+    isFavorite() {
+      return this.favoritesIds.includes(this.id) || this.favoriteAddresses.has(this.id.toString())
     },
 
     name(): string | undefined {
@@ -165,7 +164,7 @@ export default defineNuxtComponent({
     },
 
     onFavoriteClick() {
-      if (!this.isModeFavorites)
+      if (!this.isFavorite)
         this.trackingPopupEvent('favorite')
 
       this.$emit('favoriteClick', this.poi)
@@ -313,12 +312,10 @@ export default defineNuxtComponent({
         v-if="favoritesModeEnabled && id"
         type="button"
         class="tw-flex tw-flex-col tw-items-center tw-flex-1 tw-h-full tw-p-2 tw-space-y-2 tw-rounded-lg hover:tw-bg-zinc-100"
-        :title="
-          isModeFavorites ? $t('poiCard.favoriteOn') : $t('poiCard.favoriteOff')
-        "
+        :title="isFavorite ? $t('poiCard.favoriteOn') : $t('poiCard.favoriteOff')"
         @click.stop="onFavoriteClick"
       >
-        <FavoriteIcon :is-active="isModeFavorites" :color-line="colorLine" />
+        <FavoriteIcon :is-active="isFavorite" :color-line="colorLine" />
         <span class="tw-text-sm">{{ $t('poiCard.favorite') }}</span>
       </button>
     </div>

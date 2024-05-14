@@ -6,14 +6,12 @@ import IconButton from '~/components/UI/IconButton.vue'
 import IconsBar from '~/components/UI/IconsBar.vue'
 import ShareLinkModal from '~/components/UI/ShareLinkModal.vue'
 import UIButton from '~/components/UI/UIButton.vue'
-import type { ApiPoi, ApiPoiId } from '~/lib/apiPois'
-import { favoritesStore as useFavoritesStore } from '~/stores/favorite'
+import type { ApiPoi } from '~/lib/apiPois'
+import { favoritesStore as useFavoriteStore } from '~/stores/favorite'
 import { siteStore as useSiteStore } from '~/stores/site'
 
 defineProps<{
-  favs: ApiPoi[]
   explorerModeEnabled: boolean
-  selectedFavsIds: ApiPoiId[]
 }>()
 
 defineEmits<{
@@ -25,10 +23,12 @@ defineEmits<{
 
 const shareModal = ref<InstanceType<typeof ShareLinkModal>>()
 
-const favoritesStore = useFavoritesStore()
-const { favoritesIds } = storeToRefs(favoritesStore)
+const favoriteStore = useFavoriteStore()
+const { favoritesIds, favoriteAddresses, favoriteFeatures } = storeToRefs(favoriteStore)
 
 const { config } = useSiteStore()
+const idsStringified = [...favoritesIds.value, ...Array.from(favoriteAddresses.value.values()).map(id => `addr:${id}`)].join(',')
+
 const pdfLink = computed(() => {
   return `${config!.API_EXPORT}/${config!.API_PROJECT}/${config!.API_THEME}/pois/favorites.pdf?ids=${favoritesIds.value.join(',')}`
 })
@@ -39,7 +39,7 @@ const csvLink = computed(() => {
 
 function setShareLink() {
   try {
-    shareModal.value?.open(`${location.origin}/#mode=favorites&favs=${favoritesIds.value.join(',')}`)
+    shareModal.value?.open(`${location.origin}/#mode=favorites&favs=${idsStringified}`)
   }
   catch (e) {
     console.error('Vido error:', (e as Error).message)
@@ -56,7 +56,7 @@ function exportLink(w: 'export_pdf' | 'export_csv') {
 
 function removeFavorites() {
   try {
-    favoritesStore.setFavorites([])
+    favoriteStore.reset()
   }
   catch (e) {
     console.error('Vido error:', (e as Error).message)
@@ -129,8 +129,8 @@ function removeFavorites() {
     </div>
 
     <PoisDeck
-      :pois="favs"
-      :selected-poi-ids="selectedFavsIds"
+      :pois="favoriteFeatures"
+      :is-card-light="false"
       :explorer-mode-enabled="explorerModeEnabled"
       :favorites-mode-enabled="true"
       class="tw-pb-4"

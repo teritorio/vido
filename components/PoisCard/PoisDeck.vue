@@ -1,14 +1,15 @@
 <script setup lang="ts">
-import type { ApiPoi, ApiPoiId } from '~/lib/apiPois'
+import { storeToRefs } from 'pinia'
+import type { ApiPoi } from '~/lib/apiPois'
 import PoiCard from '~/components/PoisCard/PoiCard.vue'
 import PoiCardLight from '~/components/PoisCard/PoiCardLight.vue'
+import { favoritesStore as useFavoriteStore } from '~/stores/favorite'
 
-const props = defineProps<{
+defineProps<{
   explorerModeEnabled: boolean
   favoritesModeEnabled: boolean
   pois: ApiPoi[]
   isCardLight: boolean
-  selectedPoiIds?: ApiPoiId[]
 }>()
 
 defineEmits<{
@@ -17,10 +18,9 @@ defineEmits<{
   (e: 'zoomClick', poi: ApiPoi): void
 }>()
 
-function isFavorite(id: ApiPoiId): boolean {
-  return (
-    props.selectedPoiIds === undefined || props.selectedPoiIds.includes(id)
-  )
+const { favoritesIds, favoriteAddresses } = storeToRefs(useFavoriteStore())
+function isFavorite(id: number) {
+  return favoritesIds.value.includes(id) || favoriteAddresses.value.has(id.toString())
 }
 </script>
 
