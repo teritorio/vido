@@ -1,114 +1,71 @@
-<script lang="ts">
+<script setup lang="ts">
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
-import { mapState } from 'pinia'
-import type { PropType } from 'vue'
+import { storeToRefs } from 'pinia'
 import { VDialog } from 'vuetify/components/VDialog'
-
-import { defineNuxtComponent, useRequestHeaders } from '#app'
 import FavoriteNoteBook from '~/components/MainMap/FavoriteNoteBook.vue'
 import Badge from '~/components/UI/Badge.vue'
 import FavoriteIcon from '~/components/UI/FavoriteIcon.vue'
-import type { ApiPoi, ApiPoiId } from '~/lib/apiPois'
-import { getPois } from '~/lib/apiPois'
-import { mapStore } from '~/stores/map'
-import useDevice from '~/composables/useDevice'
+import { type ApiPoi, type ApiPoiId, getPois } from '~/lib/apiPois'
+import { mapStore as useMapStore } from '~/stores/map'
+import { siteStore as useSiteStore } from '~/stores/site'
 
-export default defineNuxtComponent({
-  components: {
-    FontAwesomeIcon,
-    Badge,
-    FavoriteNoteBook,
-    FavoriteIcon,
-    VDialog,
-  },
-  props: {
-    favoritesIds: {
-      type: Array as PropType<ApiPoiId[]>,
-      default: false,
-    },
-    exploreAroundSelectedPoi: {
-      type: Function,
-      required: true,
-    },
-    goToSelectedPoi: {
-      type: Function,
-      required: true,
-    },
-    toggleFavorite: {
-      type: Function,
-      required: true,
-    },
-    explorerModeEnabled: {
-      type: Boolean,
-      required: true,
-    },
-  },
+const props = defineProps<{
+  exploreAroundSelectedPoi: Function
+  explorerModeEnabled: boolean
+  favoritesIds: ApiPoiId[]
+  goToSelectedPoi: Function
+  toggleFavorite: Function
+}>()
 
-  emits: {
-    toggleFavorites: () => true,
-  },
+defineEmits(['toggleFavorites'])
 
-  setup() {
-    const device = useDevice()
+const device = useDevice()
+const favs = ref<ApiPoi[]>([])
+const notebookModal = ref<boolean>(false)
 
-    return {
-      device,
-    }
-  },
+const { isModeFavorites } = storeToRefs(useMapStore())
 
-  data(): {
-    isCopied: boolean
-    favs: ApiPoi[]
-    notebookModal: boolean
-  } {
-    return {
-      isCopied: false,
-      favs: [],
-      notebookModal: false,
-    }
-  },
+const { config } = useSiteStore()
+async function fetchFavorites(ids: number[]) {
+  return await getPois(config!, ids).then(
+    pois => (pois && pois.features) || [],
+  )
+}
 
-  computed: {
-    ...mapState(mapStore, ['isModeFavorites']),
-  },
-  methods: {
-    async fetchFavorites(ids: number[]) {
-      return await getPois(this.$vidoConfig(useRequestHeaders()), ids).then(
-        pois => (pois && pois.features) || [],
-      )
-    },
+async function getFavs() {
+  try {
+    favs.value = await fetchFavorites(props.favoritesIds)
+  }
+  catch (e) {
+    console.error('Vido error:', (e as Error).message)
+  }
+}
 
-    async getFavs() {
-      try {
-        this.favs = await this.fetchFavorites(this.favoritesIds)
-      }
-      catch (e) {
-        console.error('Vido error:', (e as Error).message)
-      }
-    },
-    explore(poi?: ApiPoi) {
-      this.notebookModal = false
-      this.exploreAroundSelectedPoi(poi)
-    },
-    goTo(poi?: ApiPoi) {
-      this.notebookModal = false
-      this.goToSelectedPoi(poi)
-    },
-    handleFavorite(poi?: ApiPoi) {
-      this.toggleFavorite(poi)
-    },
-    openNotebookModal() {
-      this.$tracking({
-        type: 'notebook_event',
-        event: 'open',
-      })
+function explore(poi?: ApiPoi) {
+  notebookModal.value = false
+  props.exploreAroundSelectedPoi(poi)
+}
 
-      this.getFavs().then(() => {
-        this.notebookModal = true
-      })
-    },
-  },
-})
+function goTo(poi?: ApiPoi) {
+  notebookModal.value = false
+  props.goToSelectedPoi(poi)
+}
+
+function handleFavorite(poi?: ApiPoi) {
+  props.toggleFavorite(poi)
+}
+
+const { $tracking } = useNuxtApp()
+async function openNotebookModal() {
+  $tracking({
+    type: 'notebook_event',
+    event: 'open',
+  })
+
+  await getFavs().then(() => {
+    notebookModal.value = true
+  })
+}
 </script>
 
 <template>
@@ -157,7 +114,7 @@ export default defineNuxtComponent({
     </div>
 
     <div>
-      <v-dialog
+      <VDialog
         v-model="notebookModal"
         :fullscreen="device.smallScreen"
         max-width="80rem"
@@ -171,7 +128,7 @@ export default defineNuxtComponent({
           @zoom-click="goTo"
           @on-close="notebookModal = false"
         />
-      </v-dialog>
+      </VDialog>
     </div>
   </section>
 </template>
