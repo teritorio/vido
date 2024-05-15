@@ -8,7 +8,7 @@ import FavoriteIcon from '~/components/UI/FavoriteIcon.vue'
 import TeritorioIcon from '~/components/UI/TeritorioIcon.vue'
 import type { ApiPoi, ApiPoiId, ApiPoiProperties } from '~/lib/apiPois'
 import { coordinatesHref } from '~/lib/coordinates'
-import { favoritesStore } from '~/stores/favorite'
+import { favoriteStore } from '~/stores/favorite'
 import { mapStore } from '~/stores/map'
 import { isIOS } from '~/utils/isIOS'
 import ContribFieldGroup from '~/components/Fields/ContribFieldGroup.vue'
@@ -67,7 +67,7 @@ export default defineNuxtComponent({
 
   computed: {
     ...mapState(mapStore, ['isModeExplorer']),
-    ...mapState(favoritesStore, ['favoritesIds', 'favoriteAddresses']),
+    ...mapState(favoriteStore, ['favoritesIds', 'favoriteAddresses']),
 
     id(): ApiPoiId {
       return this.poi.properties.metadata.id

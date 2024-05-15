@@ -7,7 +7,7 @@ import Badge from '~/components/UI/Badge.vue'
 import FavoriteIcon from '~/components/UI/FavoriteIcon.vue'
 import type { ApiPoi } from '~/lib/apiPois'
 import { mapStore as useMapStore } from '~/stores/map'
-import { favoritesStore as useFavoriteStore } from '~/stores/favorite'
+import { favoriteStore as useFavoriteStore } from '~/stores/favorite'
 
 const props = defineProps<{
   exploreAroundSelectedPoi: Function

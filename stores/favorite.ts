@@ -13,7 +13,7 @@ interface State {
   favoriteFeatures: ApiPoi[]
 }
 
-export const favoritesStore = defineStore('favorites', {
+export const favoriteStore = defineStore('favorite', {
   state: (): State => ({
     favoritesIds: [],
     favoriteAddresses: new Map(),
@@ -27,7 +27,7 @@ export const favoritesStore = defineStore('favorites', {
   },
 
   actions: {
-    initFavoritesFromLocalStorage() {
+    init() {
       const poiFavorites = localStorage.getItem(LOCAL_STORAGE.favorites)
       const addressFavorites = localStorage.getItem(LOCAL_STORAGE.favoritesAddr)
 
