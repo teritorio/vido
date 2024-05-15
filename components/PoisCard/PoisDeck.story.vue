@@ -20,6 +20,7 @@ const defaultProps = {
   selectedPoiIds: points.map(feature => feature.properties.id as ApiPoiId),
   explorerModeEnabled: false,
   favoritesModeEnabled: false,
+  isCardLight: true,
 }
 
 const props = {
@@ -28,7 +29,7 @@ const props = {
   },
   Light: {
     ...defaultProps,
-    poisCard: 'PoiCardLight' as 'PoiCard' | 'PoiCardLight' | undefined,
+    isCardLight: true,
   },
 }
 </script>

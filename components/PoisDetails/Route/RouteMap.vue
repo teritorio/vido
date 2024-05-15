@@ -104,7 +104,7 @@ export default defineNuxtComponent({
         <h2>{{ $t('poiDetails.routes.waypoints') }}</h2>
         <PoisDeck
           :pois="points"
-          pois-card="PoiCardLight"
+          :is-card-light="true"
           :explorer-mode-enabled="false"
           :favorites-mode-enabled="favoritesModeEnabled"
           @explore-click="$emit('exploreClick', $event)"
@@ -116,7 +116,7 @@ export default defineNuxtComponent({
         <h2>{{ $t('poiDetails.routes.pois') }}</h2>
         <PoisDeck
           :pois="pois"
-          pois-card="PoiCardLight"
+          :is-card-light="true"
           :explorer-mode-enabled="false"
           :favorites-mode-enabled="favoritesModeEnabled"
           @explore-click="$emit('exploreClick', $event)"
