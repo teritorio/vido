@@ -22,7 +22,7 @@ import type { ApiMenuCategory, MenuItem } from '~/lib/apiMenu'
 import type { ApiPoi, ApiPoiId } from '~/lib/apiPois'
 import { getPois } from '~/lib/apiPois'
 import { getBBoxFeature, getBBoxFeatures } from '~/lib/bbox'
-import { favoritesStore as useFavoritesStore } from '~/stores/favorite'
+import { favoriteStore as useFavoriteStore } from '~/stores/favorite'
 import { mapStore as useMapStore } from '~/stores/map'
 import { menuStore as useMenuStore } from '~/stores/menu'
 import { siteStore as useSiteStore } from '~/stores/site'
@@ -50,8 +50,8 @@ const mapStore = useMapStore()
 const { center, isModeFavorites, isModeExplorer, isModeExplorerOrFavorites, mode, selectedFeature } = storeToRefs(mapStore)
 const menuStore = useMenuStore()
 const { apiMenuCategory, features, selectedCategoryIds } = storeToRefs(menuStore)
-const favoritesStore = useFavoritesStore()
-const { favoritesIds, favoriteAddresses, favoriteFeatures, favoriteCount } = storeToRefs(favoritesStore)
+const favoriteStore = useFavoriteStore()
+const { favoritesIds, favoriteAddresses, favoriteFeatures, favoriteCount } = storeToRefs(favoriteStore)
 const { config, settings } = useSiteStore()
 
 const allowRegionBackZoom = ref<boolean>(false)
@@ -83,7 +83,7 @@ onBeforeMount(async () => {
         .split(',')
         .forEach((id) => {
           if (!Number.isNaN(Number(id)))
-            favoritesStore.toggleFavorite(Number(id))
+            favoriteStore.toggleFavorite(Number(id))
 
           if (id.startsWith('addr:'))
             addressHashes.push(id.substring(5))
@@ -95,7 +95,7 @@ onBeforeMount(async () => {
         if (!address || !address.features.length)
           throw createError({ statusCode: 404, message: `Error while reverse geocoding: ${hash}` })
 
-        favoritesStore.toggleFavoriteAddr({
+        favoriteStore.toggleFavoriteAddr({
           type: 'Feature',
           geometry: address.features[0].geometry,
           properties: {
@@ -126,7 +126,7 @@ onBeforeMount(async () => {
     }
   }
 
-  favoritesStore.initFavoritesFromLocalStorage()
+  favoriteStore.init()
 
   const modeHash = getHashPart(router, 'mode')
   mode.value = Mode[Object.keys(Mode).find(key => Mode[key as keyof typeof Mode] === modeHash) as keyof typeof Mode] || Mode.BROWSER
@@ -489,9 +489,9 @@ function toggleExploreAroundSelectedPoi(feature?: ApiPoi) {
 function toggleFavorite(feature: ApiPoi) {
   try {
     if (feature.properties.internalType === 'address')
-      favoritesStore.toggleFavoriteAddr(feature)
+      favoriteStore.toggleFavoriteAddr(feature)
     else
-      favoritesStore.toggleFavorite(feature)
+      favoriteStore.toggleFavorite(feature)
   }
   catch (e) {
     console.error('Vido error:', (e as Error).message)

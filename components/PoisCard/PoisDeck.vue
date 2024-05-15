@@ -3,7 +3,7 @@ import { storeToRefs } from 'pinia'
 import type { ApiPoi } from '~/lib/apiPois'
 import PoiCard from '~/components/PoisCard/PoiCard.vue'
 import PoiCardLight from '~/components/PoisCard/PoiCardLight.vue'
-import { favoritesStore as useFavoriteStore } from '~/stores/favorite'
+import { favoriteStore as useFavoriteStore } from '~/stores/favorite'
 
 defineProps<{
   explorerModeEnabled: boolean

@@ -19,7 +19,7 @@ import type { ApiPoiDeps } from '~/lib/apiPoiDeps'
 import type { ApiPoi, ApiPoiId, ApiPoiProperties, FieldsList } from '~/lib/apiPois'
 import type { Settings } from '~/lib/apiSettings'
 import { PropertyTranslationsContextEnum } from '~/plugins/property-translations'
-import { favoritesStore } from '~/stores/favorite'
+import { favoriteStore } from '~/stores/favorite'
 import { OriginEnum } from '~/utils/types'
 import FieldsHeader from '~/components/UI/FieldsHeader.vue'
 import ContribFieldGroup from '~/components/Fields/ContribFieldGroup.vue'
@@ -76,7 +76,7 @@ export default defineNuxtComponent({
   },
 
   computed: {
-    ...mapState(favoritesStore, ['favoritesIds', 'favoriteAddresses']),
+    ...mapState(favoriteStore, ['favoritesIds', 'favoriteAddresses']),
 
     context(): PropertyTranslationsContextEnum {
       return PropertyTranslationsContextEnum.Details
@@ -153,7 +153,7 @@ export default defineNuxtComponent({
   },
 
   mounted() {
-    favoritesStore().initFavoritesFromLocalStorage()
+    favoriteStore().init()
     this.$tracking({
       type: 'page',
       title: (this.$route.name && String(this.$route.name)) || undefined,
@@ -178,9 +178,9 @@ export default defineNuxtComponent({
         })
 
         if (this.poi.properties.internalType === 'address')
-          favoritesStore().toggleFavoriteAddr(this.poi)
+          favoriteStore().toggleFavoriteAddr(this.poi)
         else
-          favoritesStore().toggleFavorite(this.poi)
+          favoriteStore().toggleFavorite(this.poi)
       }
     },
 
