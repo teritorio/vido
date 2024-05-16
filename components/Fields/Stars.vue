@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import type { PropType } from 'vue'
 import { defineNuxtComponent } from '#app'
 
-enum StarsEnum {
+export enum StarsEnum {
   One = '1',
   OneS = '1S',
   Two = '2',
