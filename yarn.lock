@@ -796,12 +796,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/runtime@npm:7.21.0":
-  version: 7.21.0
-  resolution: "@babel/runtime@npm:7.21.0"
+"@babel/runtime@npm:7.23.4":
+  version: 7.23.4
+  resolution: "@babel/runtime@npm:7.23.4"
   dependencies:
-    regenerator-runtime: ^0.13.11
-  checksum: ce6997d573eaf881606f2ef1ac174b70c727822f4841bf2ab438badc2c4b6ab77266922eeba2305df60715d6278d94723b8330df662c1125e7467fbbd1ae1707
+    regenerator-runtime: ^0.14.0
+  checksum: 18c1aa37b56d41a9b47c378339b04fa9f389b40f11bd55ae13b8784e484b1e40326d342895e2e433538c4b0cb59aba86ca1f67852b501590541bb48dba5a1bf2
   languageName: node
   linkType: hard
 
@@ -3146,7 +3146,7 @@ __metadata:
     nuxt-simple-sitemap: ^2.7.0
     opening_hours: ^3.8.0
     pinia: ^2.0.33
-    pinia-shared-state: ^0.4.2
+    pinia-shared-state: 0.5.1
     postcss: ^8.4.24
     postcss-html: ^1.6.0
     sass: ^1.63.4
@@ -4993,16 +4993,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"broadcast-channel@npm:^5.1.0":
-  version: 5.1.0
-  resolution: "broadcast-channel@npm:5.1.0"
+"broadcast-channel@npm:^7.0.0":
+  version: 7.0.0
+  resolution: "broadcast-channel@npm:7.0.0"
   dependencies:
-    "@babel/runtime": 7.21.0
-    oblivious-set: 1.1.1
+    "@babel/runtime": 7.23.4
+    oblivious-set: 1.4.0
     p-queue: 6.6.2
-    rimraf: 3.0.2
     unload: 2.4.1
-  checksum: 030161b25ceae8b70ae372359cf53498ee26a71215302c24b0f31ac7ac9b94225bc94e521705cc80f3a7479c1ae3c32d65cd77ff95d93cf8c3b4a76a038882ba
+  checksum: 1da28b7dc91cd7618ccf87e7676c4b112b7921665e4b49df54e8092c574269d3c83656c1d20980394885877b26958e2716dc98495bc1b782f4c7c95212f4e530
   languageName: node
   linkType: hard
 
@@ -11606,10 +11605,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"oblivious-set@npm:1.1.1":
-  version: 1.1.1
-  resolution: "oblivious-set@npm:1.1.1"
-  checksum: fdf3428c9362e9a561ebb4e3cdff94ac52b5082fc557c954fef73bbce8b0490dd7e552973cb46242696da24cc29cdcc099bd04b6f45dccde23b26ecdc6b209c1
+"oblivious-set@npm:1.4.0":
+  version: 1.4.0
+  resolution: "oblivious-set@npm:1.4.0"
+  checksum: 47fe7d82ed89320dfa56a69705a9c86b34aea335ed78c80ab4f71d395a2175e8f7a2882817b663d57ef2ff0d506664826afef39e94b0a5a5611a5ae2617f90a9
   languageName: node
   linkType: hard
 
@@ -12156,15 +12155,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"pinia-shared-state@npm:^0.4.2":
-  version: 0.4.2
-  resolution: "pinia-shared-state@npm:0.4.2"
+"pinia-shared-state@npm:0.5.1":
+  version: 0.5.1
+  resolution: "pinia-shared-state@npm:0.5.1"
   dependencies:
-    broadcast-channel: ^5.1.0
-    vue-demi: ^0.14.5
+    broadcast-channel: ^7.0.0
+    vue-demi: ^0.14.6
   peerDependencies:
     pinia: ^2
-  checksum: fb3f06b65b53c90ead095c634bb366b94d7fbe0f201f856dc8d8baa0088c916224d86633f75786507e7be38c420814454b2e61e4c58b5dec03e141d48eea34be
+  checksum: f2d11d6db1cb8a0d401bb5c9666a0dfaf2b2c5e8a51352aedc9070ab0c43c1fff4e57c7ae77d51b889bc33d489a8790fb0bd087e30cf0da1fdb72963fe1db1e6
   languageName: node
   linkType: hard
 
@@ -13144,6 +13143,13 @@ __metadata:
   version: 0.13.11
   resolution: "regenerator-runtime@npm:0.13.11"
   checksum: b7c850f32500838961c073b885f0b18671867e2f3626d0c6de18fc269147f57d1777fe42d045cb1b9c0dc31a69a5c456d684afeb9adb05cbd788dac521403e68
+  languageName: node
+  linkType: hard
+
+"regenerator-runtime@npm:^0.14.0":
+  version: 0.14.1
+  resolution: "regenerator-runtime@npm:0.14.1"
+  checksum: 945c5856b2dfe76c75569ad6aa1a65d212c25d541f47004c44a33b2a3e0a87e925350204c5adf48c9b927c2aa3d5d2ccf826fa716972d69f4447e169deea5627
   languageName: node
   linkType: hard
 
@@ -15795,7 +15801,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"vue-demi@npm:>=0.14.5, vue-demi@npm:^0.14.5":
+"vue-demi@npm:>=0.14.5":
   version: 0.14.5
   resolution: "vue-demi@npm:0.14.5"
   peerDependencies:
@@ -15808,6 +15814,22 @@ __metadata:
     vue-demi-fix: bin/vue-demi-fix.js
     vue-demi-switch: bin/vue-demi-switch.js
   checksum: 53d122fb793c15b0a219d2854e073891e5323c7670fc7381ed3aa1a077df25c70edd9b381f4bbbca840f71458ebdf68a341d27a2fd81aade7590d756ed06a880
+  languageName: node
+  linkType: hard
+
+"vue-demi@npm:^0.14.6":
+  version: 0.14.7
+  resolution: "vue-demi@npm:0.14.7"
+  peerDependencies:
+    "@vue/composition-api": ^1.0.0-rc.1
+    vue: ^3.0.0-0 || ^2.6.0
+  peerDependenciesMeta:
+    "@vue/composition-api":
+      optional: true
+  bin:
+    vue-demi-fix: bin/vue-demi-fix.js
+    vue-demi-switch: bin/vue-demi-switch.js
+  checksum: 736a4aa0d8f4d725b808180fc5df4878f472f487b26263a26cf8dd78e4e8990bd1f768272e07d8d03606b7d48ffafc9c5ed6ac77fd93c16cc9352b6db8d05725
   languageName: node
   linkType: hard
 
