@@ -1,9 +1,25 @@
-<script lang="ts">
+<script setup lang="ts">
+import { storeToRefs } from 'pinia'
+import { siteStore as useSiteStore } from '~/stores/site'
 import '~/assets/tailwind.scss'
 
-import { defineNuxtComponent } from '#app'
+const siteStore = useSiteStore()
+const { config, settings, contents, translations } = storeToRefs(siteStore)
 
-export default defineNuxtComponent({})
+if (process.server)
+  await siteStore.init()
+
+if (!config.value)
+  throw createError({ statusCode: 500, statusMessage: 'Wrong config', fatal: true })
+
+if (!settings.value)
+  throw createError({ statusCode: 500, statusMessage: 'Failed to fetch settings', fatal: true })
+
+if (!contents.value)
+  throw createError({ statusCode: 500, statusMessage: 'Failed to fetch contents', fatal: true })
+
+if (!translations.value)
+  throw createError({ statusCode: 500, statusMessage: 'Failed to fetch translations', fatal: true })
 </script>
 
 <template>
