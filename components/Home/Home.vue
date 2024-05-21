@@ -19,7 +19,7 @@ import CookiesConsent from '~/components/UI/CookiesConsent.vue'
 import Logo from '~/components/UI/Logo.vue'
 import type { ContentEntry } from '~/lib/apiContent'
 import type { ApiMenuCategory, MenuItem } from '~/lib/apiMenu'
-import type { ApiPoi, ApiPoiId } from '~/lib/apiPois'
+import type { ApiPoi } from '~/lib/apiPois'
 import { getPois } from '~/lib/apiPois'
 import { getBBoxFeature, getBBoxFeatures } from '~/lib/bbox'
 import { favoriteStore as useFavoriteStore } from '~/stores/favorite'
@@ -28,10 +28,9 @@ import { menuStore as useMenuStore } from '~/stores/menu'
 import { siteStore as useSiteStore } from '~/stores/site'
 import { Mode, OriginEnum } from '~/utils/types'
 import { getHashPart, setHashParts } from '~/utils/url'
-import { flattenFeatures } from '~/utils/utilities'
+import { flattenFeatures, formatApiAddressToFeature } from '~/utils/utilities'
 import useDevice from '~/composables/useDevice'
 import type { ApiAddrSearchResult, ApiSearchResult } from '~/lib/apiSearch'
-import { MAP_ZOOM } from '~/lib/constants'
 
 //
 // Props
@@ -95,30 +94,7 @@ onBeforeMount(async () => {
         if (!address || !address.features.length)
           throw createError({ statusCode: 404, message: `Error while reverse geocoding: ${hash}` })
 
-        favoriteStore.toggleFavoriteAddr({
-          type: 'Feature',
-          geometry: address.features[0].geometry,
-          properties: {
-            internalType: 'address',
-            metadata: {
-              id: address.features[0].properties.id as ApiPoiId,
-            },
-            name: address.features[0].properties.label,
-            vido_zoom: address.features[0].properties.type === 'municipality'
-              ? MAP_ZOOM.selectionZoom.municipality
-              : MAP_ZOOM.selectionZoom.streetNumber,
-            display: {
-              icon: address.features[0].properties.type === 'municipality'
-                ? 'city'
-                : 'map-marker-alt',
-              color_fill: '#AAA',
-              color_line: '#AAA',
-            },
-            editorial: {
-              popup_fields: [{ field: 'name' }],
-            },
-          },
-        })
+        favoriteStore.toggleFavoriteAddr(formatApiAddressToFeature(address.features[0]))
       }))
     }
     catch (e) {
@@ -369,30 +345,7 @@ async function handleFavoriteAddresses() {
 
   return responses
     .filter(Boolean)
-    .map(address => ({
-      type: 'Feature',
-      geometry: address!.features[0].geometry,
-      properties: {
-        internalType: 'address',
-        metadata: {
-          id: address!.features[0].properties.id as ApiPoiId,
-        },
-        name: address!.features[0].properties.label,
-        vido_zoom: address!.features[0].properties.type === 'municipality'
-          ? MAP_ZOOM.selectionZoom.municipality
-          : MAP_ZOOM.selectionZoom.streetNumber,
-        display: {
-          icon: address!.features[0].properties.type === 'municipality'
-            ? 'city'
-            : 'map-marker-alt',
-          color_fill: '#AAA',
-          color_line: '#AAA',
-        },
-        editorial: {
-          popup_fields: [{ field: 'name' }],
-        },
-      },
-    }) as ApiPoi)
+    .map(address => formatApiAddressToFeature(address!.features[0]))
     .concat(favoriteFeatures.value)
 }
 
