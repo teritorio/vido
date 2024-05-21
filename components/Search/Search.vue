@@ -9,7 +9,7 @@ import type { PropType } from 'vue'
 import { defineNuxtComponent, useRequestHeaders } from '#app'
 import SearchInput from '~/components/Search/SearchInput.vue'
 import SearchResultBlock from '~/components/Search/SearchResultBlock.vue'
-import type { ApiPoi, ApiPoiId } from '~/lib/apiPois'
+import type { ApiPoi } from '~/lib/apiPois'
 import { getPoiById } from '~/lib/apiPois'
 import type {
   ApiAddrSearchResult,
@@ -18,7 +18,6 @@ import type {
   ApiSearchResult,
   SearchResult,
 } from '~/lib/apiSearch'
-import { MAP_ZOOM } from '~/lib/constants'
 import { menuStore } from '~/stores/menu'
 import type { FilterValue } from '~/utils/types-filters'
 
@@ -242,36 +241,7 @@ export default defineNuxtComponent({
         a => a.properties.id === searchResult.id,
       )
       if (feature) {
-        const f: ApiPoi = {
-          type: 'Feature',
-          geometry: feature.geometry,
-          properties: {
-            internalType: 'address',
-            metadata: {
-              id: feature.properties.id as ApiPoiId,
-            },
-            name: feature.properties.label,
-            vido_zoom:
-              feature.properties.type === 'municipality'
-                ? MAP_ZOOM.selectionZoom.municipality
-                : MAP_ZOOM.selectionZoom.streetNumber,
-            display: {
-              icon:
-                feature.properties.type === 'municipality'
-                  ? 'city'
-                  : 'map-marker-alt',
-              color_fill: '#AAA',
-              color_line: '#AAA',
-            },
-            editorial: {
-              popup_fields: [
-                {
-                  field: 'name',
-                },
-              ],
-            },
-          },
-        }
+        const f = formatApiAddressToFeature(feature, true)
         this.setSelectedFeature(f)
       }
       this.reset()

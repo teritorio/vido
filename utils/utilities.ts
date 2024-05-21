@@ -1,4 +1,6 @@
-import type { ApiPoi } from '~/lib/apiPois'
+import type { ApiPoi, ApiPoiId } from '~/lib/apiPois'
+import type { ApiAddrSearchResult } from '~/lib/apiSearch'
+import { MAP_ZOOM } from '~/lib/constants'
 
 export function flattenFeatures(features: { [categoryId: number]: ApiPoi[] }) {
   return Object.values(features)
@@ -13,4 +15,37 @@ export function getPreviousMonday() {
     return new Date().setDate(date.getDate() - 7 - 6)
 
   return new Date().setDate(date.getDate() - date.getDate() - 6)
+}
+
+export function formatApiAddressToFeature(feature: GeoJSON.Feature<GeoJSON.Point, ApiAddrSearchResult>, isGeocoding: boolean = false): ApiPoi {
+  let vido_zoom = null
+
+  if (isGeocoding) {
+    vido_zoom = feature.properties.type === 'municipality'
+      ? MAP_ZOOM.selectionZoom.municipality
+      : MAP_ZOOM.selectionZoom.streetNumber
+  }
+
+  return {
+    type: 'Feature',
+    geometry: feature.geometry,
+    properties: {
+      internalType: 'address',
+      metadata: {
+        id: feature.properties.id as ApiPoiId,
+      },
+      name: feature.properties.label,
+      vido_zoom,
+      display: {
+        icon: feature.properties.type === 'municipality'
+          ? 'city'
+          : 'map-marker-alt',
+        color_fill: '#AAA',
+        color_line: '#AAA',
+      },
+      editorial: {
+        popup_fields: [{ field: 'name' }],
+      },
+    },
+  }
 }
