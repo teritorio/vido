@@ -4,7 +4,7 @@ import { mapWritableState } from 'pinia'
 import type { Ref } from 'vue'
 import { ref } from 'vue'
 
-import { defineNuxtComponent, useHead, useRequestHeaders, useRoute } from '#app'
+import { defineNuxtComponent, useRequestHeaders, useRoute } from '#app'
 import Home from '~/components/Home/Home.vue'
 import type { ContentEntry } from '~/lib/apiContent'
 import { getContents } from '~/lib/apiContent'

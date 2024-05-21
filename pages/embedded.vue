@@ -4,7 +4,7 @@ import { mapWritableState } from 'pinia'
 import type { Ref } from 'vue'
 import { ref } from 'vue'
 
-import { defineNuxtComponent, useHead, useRequestHeaders, useRoute } from '#app'
+import { defineNuxtComponent, useRequestHeaders, useRoute } from '#app'
 import Embedded from '~/components/Home/Embedded.vue'
 import type { ApiMenuCategory, MenuItem } from '~/lib/apiMenu'
 import { getMenu } from '~/lib/apiMenu'

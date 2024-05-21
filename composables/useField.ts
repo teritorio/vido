@@ -1,4 +1,5 @@
 import type { ApiPoiProperties } from '~/lib/apiPois'
+import type { PropertyTranslationsContextEnum } from '~/plugins/property-translations'
 
 interface Route {
   duration?: number
@@ -46,7 +47,7 @@ export default function () {
     return routes
   }
 
-  const getRouteActivity = (properties: ApiPoiProperties, context: string): { key: string, translatedValue: string } | undefined => {
+  const getRouteActivity = (properties: ApiPoiProperties, context: PropertyTranslationsContextEnum): { key: string, translatedValue: string } | undefined => {
     const activity = Object.entries(properties)
       .find(([key, _value]) => {
         if (!key.includes(':'))
@@ -67,7 +68,7 @@ export default function () {
       : { key: activityKey, translatedValue: $propertyTranslations.pv('route', `${activityKey}`, context) }
   }
 
-  const getRouteDifficulty = (activity: string, difficulty: string, context: string): string | undefined => {
+  const getRouteDifficulty = (activity: string, difficulty: string, context: PropertyTranslationsContextEnum): string | undefined => {
     return !difficulty
       ? undefined
       : $propertyTranslations.pv(`route:${activity}:difficulty`, difficulty, context)
@@ -96,13 +97,13 @@ export default function () {
       : t('units.km', { length })
   }
 
-  const getRouteNoDetails = (activity: string, route: Route, context: string): string => {
+  const getRouteNoDetails = (activity: string, route: Route, context: PropertyTranslationsContextEnum): string => {
     return [getRouteDuration(route.duration!), getRouteDifficulty(activity, route.difficulty!, context)]
       .filter(x => x)
       .join(', ')
   }
 
-  const routeToString = (properties: ApiPoiProperties, context: string): string => {
+  const routeToString = (properties: ApiPoiProperties, context: PropertyTranslationsContextEnum): string => {
     let routeData = []
     const activity = getRouteActivity(properties, context)
 
