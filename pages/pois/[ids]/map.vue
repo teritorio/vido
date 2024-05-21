@@ -3,7 +3,7 @@ import { mapWritableState } from 'pinia'
 import type { Ref } from 'vue'
 import { ref } from 'vue'
 
-import { defineNuxtComponent, useHead, useRequestHeaders, useRoute } from '#app'
+import { defineNuxtComponent, useRequestHeaders, useRoute } from '#app'
 import { definePageMeta } from '#imports'
 import MapPois from '~/components/Map/MapPois.vue'
 import type { ApiPoiId, ApiPois } from '~/lib/apiPois'

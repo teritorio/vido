@@ -7,7 +7,6 @@ import { ref } from 'vue'
 import {
   defineNuxtComponent,
   showError,
-  useHead,
   useRequestHeaders,
   useRoute,
 } from '#app'
