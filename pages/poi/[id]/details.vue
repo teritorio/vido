@@ -1,163 +1,126 @@
-<script lang="ts">
+<script setup lang="ts">
 import { groupBy } from 'lodash'
-import { mapWritableState } from 'pinia'
-import type { Ref } from 'vue'
-import { ref } from 'vue'
-
-import {
-  defineNuxtComponent,
-  showError,
-  useRequestHeaders,
-  useRoute,
-} from '#app'
-import { definePageMeta } from '#imports'
+import { storeToRefs } from 'pinia'
 import PoiDetails from '~/components/PoisDetails/PoiDetails.vue'
-import type { ContentEntry } from '~/lib/apiContent'
-import { getContents } from '~/lib/apiContent'
+import { type ContentEntry, getContents } from '~/lib/apiContent'
 import type { ApiPoiDeps } from '~/lib/apiPoiDeps'
 import { getPoiDepsById } from '~/lib/apiPoiDeps'
 import type { ApiPoi } from '~/lib/apiPois'
-import type {
-  PropertyTranslations,
-} from '~/lib/apiPropertyTranslations'
-import {
-  getPropertyTranslations,
-} from '~/lib/apiPropertyTranslations'
-import type { Settings } from '~/lib/apiSettings'
-import { getSettings, headerFromSettings } from '~/lib/apiSettings'
+import { type PropertyTranslations, getPropertyTranslations } from '~/lib/apiPropertyTranslations'
+import { type Settings, getSettings, headerFromSettings } from '~/lib/apiSettings'
 import { getAsyncDataOrThrows } from '~/lib/getAsyncData'
 import { vidoConfig } from '~/plugins/vido-config'
 import { siteStore } from '~/stores/site'
 import type { VidoConfig } from '~/utils/types-config'
 
-export default defineNuxtComponent({
-  components: {
-    PoiDetails,
-  },
-
-  async setup(): Promise<{
-    config: VidoConfig
-    settings: Ref<Settings>
-    contents: Ref<ContentEntry[]>
-    propertyTranslations: Ref<PropertyTranslations>
-    poi: Ref<ApiPoi>
-    poiDeps: Ref<ApiPoiDeps | null>
-  }> {
-    definePageMeta({
-      validate({ params }) {
-        return (
-          typeof params.id === 'string' && /^[-_:a-zA-Z0-9]+$/.test(params.id)
-        )
-      },
-    })
-
-    const params = useRoute().params
-    const configRef = await getAsyncDataOrThrows('configRef', () =>
-      Promise.resolve(siteStore().config || vidoConfig(useRequestHeaders())))
-    const config: VidoConfig = configRef.value
-
-    const fetchSettings = getAsyncDataOrThrows('fetchSettings', () =>
-      siteStore().settings
-        ? Promise.resolve(siteStore().settings as Settings)
-        : getSettings(config))
-
-    const fetchContents = getAsyncDataOrThrows('fetchContents', () =>
-      siteStore().contents
-        ? Promise.resolve(siteStore().contents as ContentEntry[])
-        : getContents(config))
-
-    const fetchPropertyTranslations: Promise<Ref<PropertyTranslations>>
-      = getAsyncDataOrThrows('fetchPropertyTranslations', () =>
-        siteStore().translations
-          ? Promise.resolve(siteStore().translations as PropertyTranslations)
-          : getPropertyTranslations(config))
-
-    const fetchPoiPoiDeps = getAsyncDataOrThrows(
-      `fetchPoiPoiDeps-${params.id}`,
-      () => {
-        return getPoiDepsById(config, params.id as string, {
-          short_description: false,
-        }).then((poiDeps) => {
-          let poi: ApiPoi | undefined
-          if (poiDeps) {
-            const g = groupBy(
-              poiDeps.features,
-              feature =>
-                'metadata' in feature.properties ? feature.properties.metadata.id.toString() === params.id : false,
-            )
-            poi = g.true && (g.true[0] as ApiPoi)
-            poiDeps.features = g.false || []
-          }
-
-          return { poi: ref(poi), poiDeps: ref(poiDeps) }
-        })
-      },
+definePageMeta({
+  validate({ params }) {
+    return (
+      typeof params.id === 'string' && /^[-_:a-zA-Z0-9]+$/.test(params.id)
     )
-
-    const [settings, contents, propertyTranslations, poiPoiDeps]
-      = await Promise.all([
-        fetchSettings,
-        fetchContents,
-        fetchPropertyTranslations,
-        fetchPoiPoiDeps,
-      ])
-
-    if (!poiPoiDeps.value?.poi || poiPoiDeps.value?.poi.value) {
-      showError({
-        statusCode: 404,
-        statusMessage: 'POI not found. Missing main object.',
-      })
-    }
-    useHead(
-      headerFromSettings(settings.value, {
-        // @ts-expect-error: Fix typings
-        title: poiPoiDeps.value?.poi.properties.name,
-        description: {
-          // @ts-expect-error: Fix typings
-          fr: poiPoiDeps.value?.poi.properties.description,
-        },
-      }),
-    )
-
-    return {
-      config,
-      settings,
-      contents,
-      propertyTranslations,
-      poi: poiPoiDeps.value.poi as Ref<ApiPoi>,
-      poiDeps: poiPoiDeps.value.poiDeps,
-    }
-  },
-
-  computed: {
-    ...mapWritableState(siteStore, {
-      locale: 'locale',
-      globalConfig: 'config',
-      globalSettings: 'settings',
-      globalContents: 'contents',
-      globalTranslations: 'translations',
-    }),
-  },
-
-  created() {
-    this.globalConfig = this.config
-    this.globalSettings = this.settings
-    this.globalContents = this.contents
-    this.globalTranslations = this.propertyTranslations
-
-    this.$settings.set(this.settings)
-    this.$propertyTranslations.set(this.propertyTranslations)
-  },
-
-  beforeMount() {
-    this.$trackingInit(this.config)
-    this.$vidoConfigSet(this.config)
-  },
-
-  mounted() {
-    this.locale = this.$i18n.locale
   },
 })
+
+const params = useRoute().params
+const configRef = await getAsyncDataOrThrows('configRef', () =>
+  Promise.resolve(siteStore().config || vidoConfig(useRequestHeaders())))
+const config: VidoConfig = configRef.value
+
+const fetchSettings = getAsyncDataOrThrows('fetchSettings', () =>
+  siteStore().settings
+    ? Promise.resolve(siteStore().settings as Settings)
+    : getSettings(config))
+
+const fetchContents = getAsyncDataOrThrows('fetchContents', () =>
+  siteStore().contents
+    ? Promise.resolve(siteStore().contents as ContentEntry[])
+    : getContents(config))
+
+const fetchPropertyTranslations: Promise<Ref<PropertyTranslations>>
+  = getAsyncDataOrThrows('fetchPropertyTranslations', () =>
+    siteStore().translations
+      ? Promise.resolve(siteStore().translations as PropertyTranslations)
+      : getPropertyTranslations(config))
+
+const fetchPoiPoiDeps = getAsyncDataOrThrows(
+  `fetchPoiPoiDeps-${params.id}`,
+  async () => {
+    return await getPoiDepsById(config, params.id as string, {
+      short_description: false,
+    }).then((poiDeps) => {
+      let poi: ApiPoi | undefined
+      if (poiDeps) {
+        const g = groupBy(
+          poiDeps.features,
+          feature => 'metadata' in feature.properties
+            ? feature.properties.metadata.id.toString() === params.id
+            : false,
+        )
+        poi = g.true && (g.true[0] as ApiPoi)
+        poiDeps.features = g.false || []
+      }
+
+      return { poi, poiDeps }
+    })
+  },
+)
+
+const [settings, contents, propertyTranslations, poiPoiDeps]
+  = await Promise.all([
+    fetchSettings,
+    fetchContents,
+    fetchPropertyTranslations,
+    fetchPoiPoiDeps,
+  ])
+
+if (!poiPoiDeps.value?.poi) {
+  showError({
+    statusCode: 404,
+    statusMessage: 'POI not found. Missing main object.',
+  })
+}
+
+const poi = ref<ApiPoi>(poiPoiDeps.value.poi!)
+const poiDeps = ref<ApiPoiDeps>(poiPoiDeps.value.poiDeps)
+
+const { $trackingInit, $vidoConfigSet } = useNuxtApp()
+onBeforeMount(() => {
+  $trackingInit(config)
+  $vidoConfigSet(config)
+})
+
+const {
+  locale,
+  config: globalConfig,
+  settings: globalSettings,
+  contents: globalContents,
+  translations: globalTranslations,
+} = storeToRefs(siteStore())
+
+const { locale: i18nLocale } = useI18n()
+onMounted(() => {
+  locale.value = i18nLocale.value
+})
+
+globalConfig.value = config
+globalSettings.value = settings.value
+globalContents.value = contents.value
+globalTranslations.value = propertyTranslations.value
+
+const { $settings, $propertyTranslations } = useNuxtApp()
+$settings.set(settings.value)
+$propertyTranslations.set(propertyTranslations.value)
+
+useHead(
+  headerFromSettings(settings.value, {
+    // @ts-expect-error: Fix typings
+    title: poiPoiDeps.value?.poi.properties.name,
+    description: {
+      // @ts-expect-error: Fix typings
+      fr: poiPoiDeps.value?.poi.properties.description,
+    },
+  }),
+)
 </script>
 
 <template>
@@ -166,7 +129,7 @@ export default defineNuxtComponent({
     :settings="settings"
     :nav-menu-entries="contents"
     :poi="poi"
-    :poi-deps="poiDeps || undefined"
+    :poi-deps="poiDeps"
     class="page-details tw-overflow-clip"
   />
 </template>
