@@ -167,6 +167,14 @@ function customFilter(value: any, query: string): boolean {
 function getContext(key: string) {
   return key === 'opening_hours' ? PropertyTranslationsContextEnum.Card : PropertyTranslationsContextEnum.List
 }
+
+function getColKey(key: string) {
+  const keySplit = key.split('.')
+  if (keySplit.length > 1)
+    return keySplit[keySplit.length - 1]
+
+  return key
+}
 </script>
 
 <template>
@@ -225,7 +233,7 @@ function getContext(key: string) {
       </template>
       <template #item="{ item, columns }">
         <tr>
-          <td v-for="col in columns" :key="col.key">
+          <td v-for="col in columns" :key="col.key!">
             <ContribFieldGroup
               v-if="col.key === 'contrib' && isContribEligible(item.properties)"
               v-bind="getContributorFields(item)"
@@ -242,9 +250,9 @@ function getContext(key: string) {
             </IconButton>
             <Field
               v-else
-              :context="getContext(col.key.split('.').pop())"
-              :recursion-stack="[col.key.split('.').pop()]"
-              :field="{ field: col.key.split('.').pop() }"
+              :context="getContext(getColKey(col.key!))"
+              :recursion-stack="[getColKey(col.key!)]"
+              :field="{ field: getColKey(col.key!) }"
               :details="t('poisTable.details')"
               :properties="item.properties"
               :geom="item.geometry"
