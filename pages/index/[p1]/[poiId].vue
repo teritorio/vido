@@ -9,8 +9,8 @@ export default defineNuxtComponent({
         return (
           typeof params.p1 === 'string'
           && typeof params.poiId === 'string'
-          && /^[-_:a-zA-Z0-9,]/.test(params.p1)
-          && /^[-_:a-zA-Z0-9]+$/.test(params.poiId)
+          && /^[-\w:,]/.test(params.p1)
+          && /^[-\w:]+$/.test(params.poiId)
         )
       },
     })

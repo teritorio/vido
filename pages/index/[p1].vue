@@ -9,7 +9,7 @@ export default defineNuxtComponent({
         return (
           typeof params.p1 === 'undefined'
           || (typeof params.p1 === 'string'
-          && /^[-_:a-zA-Z0-9,]+$/.test(params.p1))
+          && /^[-\w:,]+$/.test(params.p1))
         )
       },
     })

@@ -15,7 +15,7 @@ import CategorySelector from '~/components/PoisList/CategorySelector.vue'
 definePageMeta({
   validate({ params }) {
     return (
-      typeof params.id === 'string' && /^[,-_:a-zA-Z0-9]+$/.test(params.id)
+      typeof params.id === 'string' && /^[-\w:,]+$/.test(params.id)
     )
   },
 })
