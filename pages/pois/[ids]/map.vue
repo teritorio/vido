@@ -12,7 +12,7 @@ definePageMeta({
   validate({ params }) {
     return (
       typeof params.ids === 'string'
-      && /^[,-_:a-zA-Z0-9]+$/.test(params.ids)
+      && /^[-\w:,]+$/.test(params.ids)
     )
   },
 })

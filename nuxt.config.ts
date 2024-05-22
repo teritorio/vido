@@ -30,9 +30,6 @@ export default defineNuxtConfig({
     detectBrowserLanguage: {
       useCookie: false,
     },
-    experimental: {
-      jsTsFormatResource: true,
-    },
     langDir: 'locales',
     lazy: true,
     locales: [

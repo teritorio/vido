@@ -10,7 +10,7 @@ export default defineNuxtComponent({
           typeof params.p1 === 'string'
           && typeof params.poiId === 'string'
           && /^[0-9,]+$/.test(params.p1)
-          && /^[-_:a-zA-Z0-9]+$/.test(params.poiId)
+          && /^[-\w:]+$/.test(params.poiId)
         )
       },
     })
