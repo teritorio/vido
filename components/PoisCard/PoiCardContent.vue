@@ -80,8 +80,8 @@ export default defineNuxtComponent({
     name(): string | undefined {
       return (
         this.poi.properties.name
-          || this.poi.properties.editorial?.class_label_popup?.fr
-          || this.poi.properties.editorial?.class_label?.fr
+        || this.poi.properties.editorial?.class_label_popup?.fr
+        || this.poi.properties.editorial?.class_label?.fr
       )
     },
 
@@ -100,7 +100,7 @@ export default defineNuxtComponent({
     category(): string | undefined {
       return (
         this.poi.properties.editorial?.class_label_popup?.fr
-          || this.poi.properties.editorial?.class_label?.fr
+        || this.poi.properties.editorial?.class_label?.fr
       )
     },
 

@@ -3,16 +3,16 @@ export type MapPoiId = number
 export interface MapPoiProperties {
   [key: string]: any
 
-  name?: string
-  description?: string
+  'name'?: string
+  'description'?: string
 
   'image:thumbnail'?: string
 
-  metadata: {
+  'metadata': {
     id: MapPoiId
   }
 
-  display?: {
+  'display'?: {
     icon: string
 
     color_fill?: string

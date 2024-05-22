@@ -22,19 +22,19 @@ export interface FieldsListGroup {
 export type FieldsList = (FieldsListItem | FieldsListGroup)[]
 
 export type ApiPoiProperties = MapPoiProperties & {
-  image?: string[]
+  'image'?: string[]
 
   'addr:city'?: string
   'addr:housenumber'?: string
   'addr:postcode'?: string
   'addr:street'?: string
 
-  phone?: string[]
-  email?: string[]
-  website?: string[]
-  download?: string[]
+  'phone'?: string[]
+  'email'?: string[]
+  'website'?: string[]
+  'download'?: string[]
 
-  metadata: {
+  'metadata': {
     id: ApiPoiId
     source?: string
 
@@ -46,7 +46,7 @@ export type ApiPoiProperties = MapPoiProperties & {
 
     osm_type?: 'node' | 'way' | 'relation'
   }
-  display?: {
+  'display'?: {
 
     style_class?: string[]
 
@@ -55,21 +55,21 @@ export type ApiPoiProperties = MapPoiProperties & {
     color_line: string
 
   }
-  editorial?: {
+  'editorial'?: {
 
-    popup_fields?: FieldsListItem[]
+    'popup_fields'?: FieldsListItem[]
 
-    details_fields?: FieldsList
+    'details_fields'?: FieldsList
 
-    list_fields?: FieldsListItem[]
+    'list_fields'?: FieldsListItem[]
 
-    class_label?: MultilingualString
+    'class_label'?: MultilingualString
 
-    class_label_popup?: MultilingualString
+    'class_label_popup'?: MultilingualString
 
-    class_label_details?: MultilingualString
+    'class_label_details'?: MultilingualString
     'website:details'?: string
-    unavoidable?: boolean
+    'unavoidable'?: boolean
   }
 }
 export type ApiPoi = GeoJSON.Feature<GeoJSON.Geometry, ApiPoiProperties>

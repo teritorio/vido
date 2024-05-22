@@ -11,13 +11,13 @@ export enum PropertyTranslationsContextEnum {
 const Default = PropertyTranslationsContextEnum.Default
 
 export interface PropertyTranslationsPlugin {
-  set(propertyTranslations: PropertyTranslations): void
-  p(propertyName: string, context: PropertyTranslationsContextEnum): string
-  pv(
+  set: (propertyTranslations: PropertyTranslations) => void
+  p: (propertyName: string, context: PropertyTranslationsContextEnum) => string
+  pv: (
     propertyName: string,
     valueName: string,
     context: PropertyTranslationsContextEnum
-  ): string
+  ) => string
 
   propertyTranslations: PropertyTranslations
 }

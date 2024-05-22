@@ -122,7 +122,7 @@ export default defineNuxtComponent({
     classLabel(): string | undefined {
       return (
         this.poi.properties.editorial?.class_label_details?.fr
-          || this.poi.properties.editorial?.class_label?.fr
+        || this.poi.properties.editorial?.class_label?.fr
       )
     },
 

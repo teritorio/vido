@@ -2,11 +2,11 @@ import { defineNuxtPlugin } from '#app/nuxt'
 import type { Settings } from '~/lib/apiSettings'
 
 interface SettingsSetPlugin {
-  set(settings: Settings): void
+  set: (settings: Settings) => void
 }
 
 export interface SettingsPlugin extends Settings {
-  set(settings: Settings): void
+  set: (settings: Settings) => void
 }
 
 export default defineNuxtPlugin((_nuxtApp) => {

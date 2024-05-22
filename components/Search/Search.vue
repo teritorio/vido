@@ -126,9 +126,9 @@ export default defineNuxtComponent({
     results(): number {
       return (
         this.itemsCartocode.length
-          + this.itemsMenuItems.length
-          + this.itemsPois.length
-          + this.itemsAddresses.length
+        + this.itemsMenuItems.length
+        + this.itemsPois.length
+        + this.itemsAddresses.length
       )
     },
   },

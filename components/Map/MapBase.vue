@@ -354,8 +354,8 @@ export default defineNuxtComponent({
     ) {
       if (
         this.map
-          && this.map.getSource(POI_SOURCE)
-          && this.map.isSourceLoaded(POI_SOURCE)
+        && this.map.getSource(POI_SOURCE)
+        && this.map.isSourceLoaded(POI_SOURCE)
       ) {
         this.markers = updateMarkers(
           this.map as maplibregl.Map,
