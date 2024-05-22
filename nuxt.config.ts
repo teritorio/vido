@@ -1,4 +1,3 @@
-import { defineNuxtConfig } from 'nuxt/config'
 import vuetify from 'vite-plugin-vuetify'
 import checker from 'vite-plugin-checker'
 
