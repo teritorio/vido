@@ -410,14 +410,14 @@ export default defineNuxtComponent({
       // Add new marker if a feature is selected
       if (
         this.selectedFeature
-          && (this.selectedFeature.properties?.metadata?.id
-          || this.selectedFeature?.id
-          || this.selectedFeature?.properties?.id)
+        && (this.selectedFeature.properties?.metadata?.id
+        || this.selectedFeature?.id
+        || this.selectedFeature?.properties?.id)
       ) {
         filterRouteByPoiIds(this.map as Map, [
           this.selectedFeature.properties?.metadata?.id
-            || this.selectedFeature?.id
-            || this.selectedFeature?.properties?.id,
+          || this.selectedFeature?.id
+          || this.selectedFeature?.properties?.id,
         ])
 
         if (
