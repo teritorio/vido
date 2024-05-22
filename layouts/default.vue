@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { storeToRefs } from 'pinia'
 import { siteStore as useSiteStore } from '~/stores/site'
+import { headerFromSettings } from '~/lib/apiSettings'
 import '~/assets/tailwind.scss'
 
 const siteStore = useSiteStore()
@@ -20,6 +21,8 @@ if (!contents.value)
 
 if (!translations.value)
   throw createError({ statusCode: 500, statusMessage: 'Failed to fetch translations', fatal: true })
+
+useHead(headerFromSettings(settings.value, { googleSiteVerification: config.value.GOOGLE_SITE_VERIFICATION }))
 </script>
 
 <template>

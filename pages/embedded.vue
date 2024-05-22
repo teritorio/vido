@@ -17,7 +17,7 @@ import {
   getPropertyTranslations,
 } from '~/lib/apiPropertyTranslations'
 import type { Settings } from '~/lib/apiSettings'
-import { getSettings, headerFromSettings } from '~/lib/apiSettings'
+import { getSettings } from '~/lib/apiSettings'
 import { getAsyncDataOrNull, getAsyncDataOrThrows } from '~/lib/getAsyncData'
 import { vidoConfig } from '~/plugins/vido-config'
 import { menuStore } from '~/stores/menu'
@@ -133,8 +133,6 @@ export default defineNuxtComponent({
       fetchMenuItems,
       fetchPoi,
     ])
-
-    useHead(headerFromSettings(settings.value))
 
     return {
       config,
