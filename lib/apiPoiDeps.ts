@@ -36,12 +36,12 @@ export type ApiPoiDeps = GeoJSON.FeatureCollection<
   ApiPoiProperties | ApiRouteWaypointProperties
 >
 
-export function getPoiDepsById(
+export async function getPoiDepsById(
   vidoConfig: VidoConfig,
   poiId: ApiPoiId | string,
   options: ApiPoisOptions = {},
 ): Promise<ApiPoiDeps> {
-  return fetch(
+  return await fetch(
     `${vidoConfig.API_ENDPOINT}/${vidoConfig.API_PROJECT}/${vidoConfig.API_THEME}/poi/${poiId}/deps.geojson?${
       new URLSearchParams(stringifyOptions(options))}`,
   ).then((data) => {
