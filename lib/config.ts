@@ -1,5 +1,4 @@
 import fs from 'node:fs'
-
 import type { VidosConfig } from '~/utils/types-config'
 
 let config: VidosConfig | undefined
