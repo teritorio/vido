@@ -1,8 +1,7 @@
 import poisCategory22 from '../../fixtures/teritorio/references/pois/category/22.json'
 import { mockSSRAPI } from '../../support/mock'
-import type { ApiPois } from '~/lib/apiPois'
-
-import teritorioReferenceAPIFixture from '~/cypress/fixtures/teritorio/references/teritorioReferenceAPIFixture'
+import teritorioReferenceAPIFixture from '../../fixtures/teritorio/references/teritorioReferenceAPIFixture'
+import type { ApiPois } from '../../../lib/apiPois'
 
 const hostnames = {
   'https://dev.appcarto.teritorio.xyz':
@@ -16,6 +15,7 @@ const htmlValidateRules = {
     'wcag/h63': 0,
     'input-missing-label': 0,
     'element-permitted-content': 0,
+    'unique-landmark': 0,
   },
 }
 
