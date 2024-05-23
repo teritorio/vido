@@ -1,6 +1,5 @@
 import { mockSSRAPI } from '../../support/mock'
-
-import teritorioReferenceAPIFixture from '~/cypress/fixtures/teritorio/references/teritorioReferenceAPIFixture'
+import teritorioReferenceAPIFixture from '../../fixtures/teritorio/references/teritorioReferenceAPIFixture'
 
 const hostnames = {
   'https://dev.appcarto.teritorio.xyz':

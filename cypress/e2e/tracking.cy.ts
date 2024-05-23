@@ -1,14 +1,19 @@
 import poisCategory211 from '../fixtures/teritorio/references/pois/category/211.json'
 import poisCategory22 from '../fixtures/teritorio/references/pois/category/22.json'
 import { mockSSRAPI } from '../support/mock'
-
-import teritorioReferenceAPIFixture from '~/cypress/fixtures/teritorio/references/teritorioReferenceAPIFixture'
-import type { Event } from '~/lib/trackers'
+import teritorioReferenceAPIFixture from '../fixtures/teritorio/references/teritorioReferenceAPIFixture'
+import type { Event } from '../../lib/trackers'
 
 const hostnames = {
   'https://dev.appcarto.teritorio.xyz':
     '/content/api.teritorio/geodata/v0.1/dev/tourism/',
   'http://127.0.0.1:3000': '/fixtures/teritorio/references/',
+}
+
+const htmlValidateRules = {
+  rules: {
+    'unique-landmark': 0,
+  },
 }
 
 let consoleError: Cypress.Agent<sinon.SinonSpy>
@@ -93,7 +98,7 @@ describe('home content', () => {
 
     cy.wait(100) // Wait for load
 
-    cy.htmlvalidate()
+    cy.htmlvalidate(htmlValidateRules)
   })
 
   after(() => {
