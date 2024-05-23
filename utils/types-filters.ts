@@ -117,13 +117,13 @@ export function filterValuesIsSet(filterValues: FilterValues) {
 export function filterValueFactory(filter: Filter): FilterValue {
   switch (filter.type) {
     case 'boolean':
-      return new FilterValueBoolean(filter)
+      return new FilterValueBoolean(filter).toJSON()
     case 'checkboxes_list':
     case 'multiselection':
-      return new FilterValueList(filter)
+      return new FilterValueList(filter).toJSON()
     case 'date_range':
-      return new FilterValueDate(filter)
+      return new FilterValueDate(filter).toJSON()
     case 'number_range':
-      return new FilterValueNumberRange(filter)
+      return new FilterValueNumberRange(filter).toJSON()
   }
 }
