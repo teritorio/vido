@@ -1,8 +1,6 @@
 <script setup lang="ts">
-import { vidoConfig } from '~/plugins/vido-config'
-import { getMenu } from '~/lib/apiMenu'
-import { type PropertyTranslations, getPropertyTranslations } from '~/lib/apiPropertyTranslations'
-import { type Settings, getSettings, headerFromSettings } from '~/lib/apiSettings'
+import { storeToRefs } from 'pinia'
+import { headerFromSettings } from '~/lib/apiSettings'
 import { menuStore as useMenuStore } from '~/stores/menu'
 import { siteStore as useSiteStore } from '~/stores/site'
 import PoisTable from '~/components/PoisList/PoisTable.vue'
@@ -18,64 +16,23 @@ definePageMeta({
 })
 
 const siteStore = useSiteStore()
-const { $vidoConfigSet, $settings, $propertyTranslations, $trackingInit } = useNuxtApp()
-
-// TODO: Get this globally as share it across components / pages
-let config = siteStore.config
-
-if (process.server && !config) {
-  config = vidoConfig(useRequestHeaders())
-  $vidoConfigSet(config)
-  siteStore.$patch({ config })
-}
-
-if (!config)
-  throw createError({ statusCode: 500, statusMessage: 'Wrong config', fatal: true })
-
-// Fetch common data
-// TODO: Move common data on upper-level (ex: layout)
-const categoryListData = ref<{
-  settings: Settings
-  translations: PropertyTranslations
-}>()
-const { data: cachedCategoryListData } = useNuxtData('categoryList')
-
-if (cachedCategoryListData.value) {
-  categoryListData.value = cachedCategoryListData.value
-}
-else {
-  const { data, error } = await useAsyncData('categoryList', async () => {
-    const [settings, translations] = await Promise.all([
-      getSettings(config!),
-      getPropertyTranslations(config!),
-    ])
-
-    return { settings, translations }
-  })
-
-  if (error.value || !data.value)
-    throw createError({ statusCode: 500, statusMessage: 'Global config not found.', fatal: true })
-
-  categoryListData.value = data.value
-}
+const { config, settings, translations } = storeToRefs(siteStore)
 
 // MenuItems
 const menuStore = useMenuStore()
-const { data: cachedMenuItems } = useNuxtData('menu-items')
-if (cachedMenuItems.value) {
-  menuStore.fetchConfig(cachedMenuItems.value)
-}
-else {
-  const { data, error } = await useAsyncData('menu-items', async () => await getMenu(config!))
+const { data, error } = await useFetch(`${config.value!.API_ENDPOINT}/${config.value!.API_PROJECT}/${config.value!.API_THEME}/menu.json`)
 
-  if (error.value || !data.value)
-    throw createError({ statusCode: 404, statusMessage: 'Menu not found', fatal: true })
+if (error.value)
+  throw createError(error.value)
 
-  menuStore.fetchConfig(data.value)
-}
+if (!data.value)
+  throw createError({ statusCode: 404, statusMessage: 'Menu not found', fatal: true })
 
-const param = useRoute().params
-const id = Number.parseInt(param.id as string)
+menuStore.fetchConfig(data.value)
+
+const route = useRoute()
+const { params, query } = route
+const id = Number.parseInt(params.id as string)
 const category = menuStore.getCurrentCategory(id)
 
 if (!category) {
@@ -85,29 +42,28 @@ if (!category) {
   })
 }
 
-const { settings, translations } = categoryListData.value!
-settings.themes[0].title = category.category.name
-useHead(headerFromSettings(settings))
+settings.value!.themes[0].title = category.category.name
+useHead(headerFromSettings(settings.value!))
 
 // Not sure about future usage as we could have data from useNuxtData
-$settings.set(settings)
-$propertyTranslations.set(translations)
+const { $settings, $propertyTranslations, $trackingInit } = useNuxtApp()
+$settings.set(settings.value!)
+$propertyTranslations.set(translations.value!)
 
 // Get CategorySelector filters from Query params
-const route = useRoute()
 const filters = computed(() => {
-  return route.query.menuItemIds
-    ? route.query.menuItemIds
+  return query.menuItemIds
+    ? query.menuItemIds
       .toString()
       .split(',')
       .map(f => Number.parseInt(f))
     : undefined
 })
 
-const isFiltersEqualToCategoryId = filters.value?.length === 1 && filters.value[0] === category.id
+const isFiltersEqualToCategoryId = computed(() => filters.value?.length === 1 && filters.value[0] === category.id)
 
 if (process.client)
-  $trackingInit(config)
+  $trackingInit(config.value!)
 
 const router = useRouter()
 function onCategoryUpdate(categoryId: number) {
@@ -119,17 +75,15 @@ function onCategoryUpdate(categoryId: number) {
 </script>
 
 <template>
-  <div>
-    <CategorySelector
-      v-if="!isFiltersEqualToCategoryId"
-      class="pa-4"
-      :filters="filters"
-      :menu-items="menuStore.menuItems || {}"
-      :category-id="id"
-      @category-change="onCategoryUpdate"
-    />
-    <PoisTable :details-is-external="true" :category="category" />
-  </div>
+  <CategorySelector
+    v-if="!isFiltersEqualToCategoryId"
+    class="pa-4"
+    :filters="filters"
+    :menu-items="menuStore.menuItems || {}"
+    :category-id="id"
+    @category-change="onCategoryUpdate"
+  />
+  <PoisTable :details-is-external="true" :category="category" />
 </template>
 
 <style lang="scss" scoped>
