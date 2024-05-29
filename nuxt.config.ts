@@ -25,18 +25,6 @@ export default defineNuxtConfig({
   gtm: {
     pageTracking: false,
   },
-  head: {
-    htmlAttrs: {
-      lang: 'fr',
-    },
-    link: [{ rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }],
-    meta: [
-      { charset: 'utf-8' },
-      { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-      { hid: 'description', name: 'description', content: '' },
-    ],
-    title: '@teritorio/vido',
-  },
   i18n: {
     defaultLocale: 'en',
     detectBrowserLanguage: {
