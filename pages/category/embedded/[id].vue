@@ -73,7 +73,7 @@ function onCategoryUpdate(categoryId: number) {
     :category-id="id"
     @category-change="onCategoryUpdate"
   />
-  <PoisTable :details-is-external="true" :category="category" />
+  <PoisTable :details-is-external="true" />
 </template>
 
 <style lang="scss" scoped>

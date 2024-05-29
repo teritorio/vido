@@ -1,15 +1,16 @@
 <script setup lang="ts">
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { localeIncludes } from 'locale-includes'
+import { storeToRefs } from 'pinia'
 import { PropertyTranslationsContextEnum } from '~/plugins/property-translations'
-import { type ApiPoi, type ApiPois, type FieldsListItem, getPoiByCategoryId } from '~/lib/apiPois'
-import type { ApiMenuCategory } from '~/lib/apiMenu'
+import { type ApiPoi, type ApiPois, type FieldsListItem, getPoiByCategoryIdUrl } from '~/lib/apiPois'
 import Field from '~/components/Fields/Field.vue'
 import IconButton from '~/components/UI/IconButton.vue'
 import ContribFieldGroup from '~/components/Fields/ContribFieldGroup.vue'
 import Actions from '~/components/PoisList/Actions.vue'
 import TeritorioIconBadge from '~/components/UI/TeritorioIconBadge.vue'
 import { siteStore as useSiteStore } from '~/stores/site'
+import { menuStore as useMenuStore } from '~/stores/menu'
 
 interface DataTableHeader {
   filterable?: boolean
@@ -20,46 +21,47 @@ interface DataTableHeader {
   width?: string
 }
 
-const props = defineProps<{
-  category?: ApiMenuCategory
+defineProps<{
   detailsIsExternal?: boolean
 }>()
 
 const { routeToString, addressToString } = useField()
 const { t, locale } = useI18n()
 const siteStore = useSiteStore()
+const { config } = storeToRefs(siteStore)
 const { $propertyTranslations } = useNuxtApp()
 const { contribMode, isContribEligible, getContributorFields } = useContrib()
 const search = ref('')
+const { params } = useRoute()
+const id = ref(Number.parseInt(params.id as string))
+const fields = ref<FieldsListItem[]>()
+const headers = ref<DataTableHeader[]>()
 
-// Fetch POIs by Cache or API
-const pois = ref<ApiPois>()
+const menuStore = useMenuStore()
+const category = menuStore.getCurrentCategory(id.value)
 
-if (props.category) {
-  const cachedKey = computed(() => `pois-${props.category!.id}`)
-  const { data: cachedPois } = useNuxtData(cachedKey.value)
+const { data: pois, error, pending } = await useFetch<ApiPois>(() => getPoiByCategoryIdUrl(config.value!, id.value, { geometry_as: 'point', short_description: true }))
 
-  if (cachedPois.value) {
-    pois.value = cachedPois.value
-  }
-  else {
-    watchEffect(async () => {
-      const { data, error } = await useAsyncData(cachedKey.value, () => getPoiByCategoryId(
-        siteStore.config!,
-        props.category!.id,
-        { geometry_as: 'point', short_description: true },
-      ))
-
-      if (error.value || !data.value)
-        throw createError({ statusCode: 404, statusMessage: 'POIs not found.' })
-
-      pois.value = data.value
+if (id.value) {
+  if (!category) {
+    throw createError({
+      statusCode: 404,
+      statusMessage: 'Category Not Found',
     })
   }
+
+  if (error.value)
+    throw createError({ statusCode: 404, statusMessage: 'POIs not found.' })
+
+  if (!pending.value && !pois.value)
+    throw createError({ statusCode: 404, statusMessage: 'POIs not found.' })
+
+  fields.value = getFields()
+  headers.value = getHeaders()
 }
 
 // Handle default config field if not provided by API
-const fields = computed((): FieldsListItem[] => {
+function getFields(): FieldsListItem[] {
   if (
     !pois.value?.features.length
     || !pois.value.features[0].properties.editorial?.list_fields
@@ -67,15 +69,13 @@ const fields = computed((): FieldsListItem[] => {
     return [{ field: 'name' }]
   }
 
-  return pois.value.features[0].properties.editorial.list_fields
-})
+  // Transform non-string values to single string
+  // Used for sort and filter comparisons
+  const featureFields = pois.value.features[0].properties.editorial.list_fields
 
-// Transform non-string values to single string
-// Used for sort and filter comparisons
-if (pois.value) {
   pois.value.features = pois.value.features.map((f: ApiPoi) => {
-    const fieldEntries = fields.value.map(f => f.field)
     const arrayProps: { [key: string]: any } = []
+    const fieldEntries = featureFields.map((f: FieldsListItem) => f.field)
 
     if (fieldEntries.includes('route'))
       arrayProps.route = routeToString(f.properties, getContext('route'))
@@ -91,15 +91,14 @@ if (pois.value) {
       },
     }
   })
+
+  return featureFields
 }
 
 // Transform headers data to be compliant with Vuetify's standards
-const headers = computed(() => {
-  if (!props.category)
-    return []
-
+function getHeaders() {
   // Basic Fields
-  const h: DataTableHeader[] = fields.value.map(f => ({
+  const h: DataTableHeader[] = fields.value!.map((f: FieldsListItem) => ({
     filterable: true,
     key: `properties.${f.field}`,
     sortable: true,
@@ -131,7 +130,7 @@ const headers = computed(() => {
   })
 
   return h
-})
+}
 
 function valueToString(item: any) {
   if (Array.isArray(item))
@@ -181,6 +180,7 @@ function getColKey(key: string) {
 <template>
   <VCard class="mb-4">
     <VDataTable
+      :loading="pending"
       :headers="headers"
       :items="pois?.features"
       :no-data-text="t('poisTable.empty')"
@@ -260,6 +260,9 @@ function getColKey(key: string) {
             />
           </td>
         </tr>
+      </template>
+      <template #loading>
+        <v-skeleton-loader type="table-row@10" />
       </template>
     </VDataTable>
   </VCard>
