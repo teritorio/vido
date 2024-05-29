@@ -1,8 +1,7 @@
 import copy from 'fast-copy'
 import { deepEqual } from 'fast-equals'
 import { defineStore } from 'pinia'
-
-import type { ApiMenuCategory, MenuItem } from '~/lib/apiMenu'
+import { type ApiMenuCategory, type MenuItem, getMenu } from '~/lib/apiMenu'
 import type { ApiPoi, ApiPois } from '~/lib/apiPois'
 import { getPoiByCategoryId } from '~/lib/apiPois'
 import type { VidoConfig } from '~/utils/types-config'
@@ -85,6 +84,11 @@ export const menuStore = defineStore('menu', {
   },
 
   actions: {
+    async init(config: VidoConfig) {
+      const menuItems = await getMenu(config)
+      this.fetchConfig(menuItems)
+    },
+
     setSelectedCategoryIds(selectedCategoryIds: ApiMenuCategory['id'][]) {
       this.selectedCategoryIds = selectedCategoryIds
     },

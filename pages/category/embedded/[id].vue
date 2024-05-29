@@ -15,20 +15,10 @@ definePageMeta({
   },
 })
 
+const menuStore = useMenuStore()
+const { menuItems } = storeToRefs(menuStore)
 const siteStore = useSiteStore()
 const { config, settings, translations } = storeToRefs(siteStore)
-
-// MenuItems
-const menuStore = useMenuStore()
-const { data, error } = await useFetch(`${config.value!.API_ENDPOINT}/${config.value!.API_PROJECT}/${config.value!.API_THEME}/menu.json`)
-
-if (error.value)
-  throw createError(error.value)
-
-if (!data.value)
-  throw createError({ statusCode: 404, statusMessage: 'Menu not found', fatal: true })
-
-menuStore.fetchConfig(data.value)
 
 const route = useRoute()
 const { params, query } = route
@@ -79,7 +69,7 @@ function onCategoryUpdate(categoryId: number) {
     v-if="!isFiltersEqualToCategoryId"
     class="pa-4"
     :filters="filters"
-    :menu-items="menuStore.menuItems || {}"
+    :menu-items="menuItems || {}"
     :category-id="id"
     @category-change="onCategoryUpdate"
   />

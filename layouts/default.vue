@@ -2,16 +2,25 @@
 import { storeToRefs } from 'pinia'
 import { siteStore as useSiteStore } from '~/stores/site'
 import { headerFromSettings } from '~/lib/apiSettings'
+import { menuStore as useMenuStore } from '~/stores/menu'
 import '~/assets/tailwind.scss'
 
 const siteStore = useSiteStore()
 const { config, settings, contents, translations } = storeToRefs(siteStore)
+const menuStore = useMenuStore()
+const { menuItems } = storeToRefs(menuStore)
 
-if (process.server)
+if (process.server) {
   await siteStore.init()
 
-if (!config.value)
-  throw createError({ statusCode: 500, statusMessage: 'Wrong config', fatal: true })
+  if (!config.value)
+    throw createError({ statusCode: 500, statusMessage: 'Wrong config', fatal: true })
+
+  await menuStore.init(config.value)
+
+  if (!menuItems?.value)
+    throw createError({ statusCode: 404, statusMessage: 'Menu not found', fatal: true })
+}
 
 if (!settings.value)
   throw createError({ statusCode: 500, statusMessage: 'Failed to fetch settings', fatal: true })

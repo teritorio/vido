@@ -6,20 +6,10 @@ import { menuStore as useMenuStore } from '~/stores/menu'
 import PoisTable from '~/components/PoisList/PoisTable.vue'
 import CategorySelector from '~/components/PoisList/CategorySelector.vue'
 
+const menuStore = useMenuStore()
+const { menuItems } = storeToRefs(menuStore)
 const siteStore = useSiteStore()
 const { config, settings, translations } = storeToRefs(siteStore)
-
-// MenuItems
-const menuStore = useMenuStore()
-const { data, error } = await useFetch(`${config.value!.API_ENDPOINT}/${config.value!.API_PROJECT}/${config.value!.API_THEME}/menu.json`)
-
-if (error.value)
-  throw createError(error.value)
-
-if (!data.value)
-  throw createError({ statusCode: 404, statusMessage: 'Menu not found', fatal: true })
-
-menuStore.fetchConfig(data.value)
 
 useHead(headerFromSettings(settings.value!))
 
@@ -56,7 +46,7 @@ function onCategoryUpdate(categoryId: number) {
     <CategorySelector
       class="pa-4"
       :filters="filters"
-      :menu-items="menuStore.menuItems || {}"
+      :menu-items="menuItems || {}"
       @category-change="onCategoryUpdate"
     />
     <PoisTable :details-is-external="true" />

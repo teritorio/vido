@@ -8,20 +8,10 @@ import Footer from '~/components/Layout/Footer.vue'
 import PoisTable from '~/components/PoisList/PoisTable.vue'
 import CategorySelector from '~/components/PoisList/CategorySelector.vue'
 
+const menuStore = useMenuStore()
+const { menuItems } = storeToRefs(menuStore)
 const siteStore = useSiteStore()
 const { config, settings, contents, translations } = storeToRefs(siteStore)
-
-// MenuItems
-const menuStore = useMenuStore()
-const { data, error } = await useFetch(`${config.value!.API_ENDPOINT}/${config.value!.API_PROJECT}/${config.value!.API_THEME}/menu.json`)
-
-if (error.value)
-  throw createError(error.value)
-
-if (!data.value)
-  throw createError({ statusCode: 404, statusMessage: 'Menu not found', fatal: true })
-
-menuStore.fetchConfig(data.value)
 
 useHead(headerFromSettings(settings.value!))
 
@@ -52,7 +42,7 @@ function onCategoryUpdate(categoryId: number) {
       <template #search>
         <CategorySelector
           class="w-50"
-          :menu-items="menuStore.menuItems || {}"
+          :menu-items="menuItems || {}"
           @category-change="onCategoryUpdate"
         />
       </template>
