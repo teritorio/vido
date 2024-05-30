@@ -16,7 +16,7 @@ import type { PropType } from 'vue'
 import { ref } from 'vue'
 import booleanIntersects from '@turf/boolean-intersects'
 
-import { defineNuxtComponent, useRequestHeaders } from '#app'
+import { defineNuxtComponent } from '#app'
 import MapControlsExplore from '~/components/MainMap/MapControlsExplore.vue'
 import SnackBar from '~/components/MainMap/SnackBar.vue'
 import MapBase from '~/components/Map/MapBase.vue'
@@ -29,6 +29,7 @@ import { getBBoxFeature, getBBoxFeatures } from '~/lib/bbox'
 import { DEFAULT_MAP_STYLE, MAP_ZOOM } from '~/lib/constants'
 import type { VectorTilesPoi } from '~/lib/vectorTilesPois'
 import { vectorTilesPoi2ApiPoi } from '~/lib/vectorTilesPois'
+import { siteStore as useSiteStore } from '~/stores/site'
 import { mapStore } from '~/stores/map'
 import { menuStore } from '~/stores/menu'
 import { snackStore } from '~/stores/snack'
@@ -138,6 +139,7 @@ export default defineNuxtComponent({
   },
 
   computed: {
+    ...mapState(useSiteStore, ['config']),
     ...mapState(mapStore, ['selectedFeature']),
     ...mapState(menuStore, ['isLoadingFeatures']),
     ...mapWritableState(mapStore, ['center']),
@@ -294,7 +296,7 @@ export default defineNuxtComponent({
             // Seted temp partial data from vector tiles.
             // Now fetch full data.
             return getPoiById(
-              this.$vidoConfig(useRequestHeaders()),
+              this.config!,
               feature.properties.metadata.id,
             ).then((apiPoi) => {
               // Overide geometry.

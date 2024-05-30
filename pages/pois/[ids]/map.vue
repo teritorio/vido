@@ -4,9 +4,7 @@ import MapPois from '~/components/Map/MapPois.vue'
 import { type ApiPoiId, type ApiPois, getPois } from '~/lib/apiPois'
 import { type Settings, getSettings, headerFromSettings } from '~/lib/apiSettings'
 import { getAsyncDataOrThrows } from '~/lib/getAsyncData'
-import { vidoConfig } from '~/plugins/vido-config'
 import { siteStore } from '~/stores/site'
-import type { VidoConfig } from '~/utils/types-config'
 
 definePageMeta({
   validate({ params }) {
@@ -18,14 +16,12 @@ definePageMeta({
 })
 
 const params = useRoute().params
-const configRef = await getAsyncDataOrThrows('configRef', () =>
-  Promise.resolve(siteStore().config || vidoConfig(useRequestHeaders())))
-const config: VidoConfig = configRef.value
+const { config } = storeToRefs(siteStore())
 
 const fetchSettings = getAsyncDataOrThrows('fetchSettings', () =>
   siteStore().settings
     ? Promise.resolve(siteStore().settings as Settings)
-    : getSettings(config))
+    : getSettings(config.value!))
 
 let settings: Ref<Settings>
 let pois: Ref<ApiPois | null>
@@ -33,7 +29,7 @@ let pois: Ref<ApiPois | null>
 if (params.ids) {
   const ids = (params.ids as string).split(',')
   const getPoiPromise = getAsyncDataOrThrows('getPoiPromise', async () =>
-    await getPois(config, ids, {
+    await getPois(config.value!, ids, {
       geometry_as: undefined,
     }))
   const [settingsF, poisF] = await Promise.all([
@@ -57,8 +53,8 @@ const ids = computed((): ApiPoiId[] => {
 
 const { $trackingInit, $vidoConfigSet } = useNuxtApp()
 onBeforeMount(() => {
-  $trackingInit(config)
-  $vidoConfigSet(config)
+  $trackingInit(config.value!)
+  $vidoConfigSet(config.value!)
 })
 
 const {
@@ -72,7 +68,7 @@ onMounted(() => {
   locale.value = i18nLocale.value
 })
 
-globalConfig.value = config
+globalConfig.value = config.value!
 globalSettings.value = settings.value
 
 const { $settings } = useNuxtApp()

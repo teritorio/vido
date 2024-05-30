@@ -6,7 +6,7 @@ import { debounce } from 'lodash'
 import { mapActions, mapState } from 'pinia'
 import type { PropType } from 'vue'
 
-import { defineNuxtComponent, useRequestHeaders } from '#app'
+import { defineNuxtComponent } from '#app'
 import SearchInput from '~/components/Search/SearchInput.vue'
 import SearchResultBlock from '~/components/Search/SearchResultBlock.vue'
 import type { ApiPoi } from '~/lib/apiPois'
@@ -19,6 +19,7 @@ import type {
   SearchResult,
 } from '~/lib/apiSearch'
 import { menuStore } from '~/stores/menu'
+import { siteStore as useSiteStore } from '~/stores/site'
 import type { FilterValue } from '~/utils/types-filters'
 
 export default defineNuxtComponent({
@@ -66,6 +67,7 @@ export default defineNuxtComponent({
   },
 
   computed: {
+    ...mapState(useSiteStore, ['config']),
     ...mapState(menuStore, ['filters']),
 
     isLoading(): boolean {
@@ -227,7 +229,7 @@ export default defineNuxtComponent({
     },
 
     onPoiClick(searchResult: SearchResult) {
-      getPoiById(this.$vidoConfig(useRequestHeaders()), searchResult.id).then(
+      getPoiById(this.config!, searchResult.id).then(
         (poi) => {
           this.setSelectedFeature(poi)
         },
@@ -272,15 +274,11 @@ export default defineNuxtComponent({
 
         this.searchQueryId += 1
         const currentSearchQueryId = this.searchQueryId
-        const config = this.$vidoConfig(useRequestHeaders())
-        const projectTheme = `project_theme=${config.API_PROJECT}-${config.API_THEME}`
+        const projectTheme = `project_theme=${this.config!.API_PROJECT}-${this.config!.API_THEME}`
         const searchText = this.searchText.trim()
         if (searchText.length === 2) {
           const cartocode = this.searchText
-          getPoiById(
-            this.$vidoConfig(useRequestHeaders()),
-            `cartocode:${cartocode}`,
-          )
+          getPoiById(this.config!, `cartocode:${cartocode}`)
             .then((poi) => {
               if (currentSearchQueryId > this.searchResultId) {
                 this.searchResultId = currentSearchQueryId
@@ -305,22 +303,14 @@ export default defineNuxtComponent({
         }
         else if (searchText.length > 2) {
           const query = `q=${this.searchText}&lon=${this.mapCenter.lng}&lat=${this.mapCenter.lat}`
-          const config = this.$vidoConfig(useRequestHeaders())
-          const MenuItemsFetch: Promise<
-            ApiSearchResult<ApiMenuItemSearchResult>
-          > = fetch(
-            `${config.API_SEARCH}?${projectTheme}&type=menu_item&${query}`,
-          ).then(data => (data.ok ? data.json() : null))
+          const MenuItemsFetch: Promise<ApiSearchResult<ApiMenuItemSearchResult>> = fetch(`${this.config!.API_SEARCH}?${projectTheme}&type=menu_item&${query}`)
+            .then(data => data.ok ? data.json() : null)
 
-          const poisFetch: Promise<ApiSearchResult<ApiPoisSearchResult>>
-            = fetch(
-              `${config.API_SEARCH}?${projectTheme}&type=poi&${query}&limit=10`,
-            ).then(data => (data.ok ? data.json() : null))
+          const poisFetch: Promise<ApiSearchResult<ApiPoisSearchResult>> = fetch(`${this.config!.API_SEARCH}?${projectTheme}&type=poi&${query}&limit=10`)
+            .then(data => data.ok ? data.json() : null)
 
-          const addressesFetch: Promise<ApiSearchResult<ApiAddrSearchResult>>
-            = fetch(`${config.API_ADDR}/search?${query}`).then(data =>
-              data.ok ? data.json() : null,
-            )
+          const addressesFetch: Promise<ApiSearchResult<ApiAddrSearchResult>> = fetch(`${this.config!.API_ADDR}/search?${query}`)
+            .then(data => data.ok ? data.json() : null)
 
           Promise.all([MenuItemsFetch, poisFetch, addressesFetch])
             .then(

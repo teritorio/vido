@@ -21,14 +21,13 @@ const initialPoi = ref<ApiPoi>()
 const { params, query, path } = useRoute()
 const siteStore = useSiteStore()
 const { config, settings, translations } = storeToRefs(siteStore)
-const { $settings, $propertyTranslations, $trackingInit, $vidoConfigSet } = useNuxtApp()
+const { $settings, $propertyTranslations, $trackingInit } = useNuxtApp()
 
 //
 // Hooks
 //
 onBeforeMount(() => {
   $trackingInit(config.value!)
-  $vidoConfigSet(config.value!)
 })
 
 const { boundary } = query

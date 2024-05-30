@@ -1,8 +1,7 @@
 <script lang="ts">
+import { mapState } from 'pinia'
 import VueCookieAcceptDecline from 'vue-cookie-accept-decline'
-import type { VidoConfig } from '~/utils/types-config'
-
-import { defineNuxtComponent, useRequestHeaders } from '#app'
+import { defineNuxtComponent } from '#app'
 import 'vue-cookie-accept-decline/dist/vue-cookie-accept-decline.css'
 import ExternalLink from '~/components/UI/ExternalLink.vue'
 import { siteStore as useSiteStore } from '~/stores/site'
@@ -14,10 +13,7 @@ export default defineNuxtComponent({
   },
 
   computed: {
-    vidoConfig(): VidoConfig {
-      return useSiteStore().config || this.$vidoConfig(useRequestHeaders())
-    },
-
+    ...mapState(useSiteStore, ['config']),
     doNotTrack(): boolean {
       return (
         (process.client && navigator && navigator.doNotTrack !== '1') || false
@@ -34,7 +30,7 @@ export default defineNuxtComponent({
 </script>
 
 <template>
-  <client-only v-if="doNotTrack && vidoConfig.COOKIES_CONSENT">
+  <client-only v-if="doNotTrack && config!.COOKIES_CONSENT">
     <VueCookieAcceptDecline
       element-id="cookies-consent"
       type="bar"
@@ -42,10 +38,10 @@ export default defineNuxtComponent({
       @clicked-accept="accept"
     >
       <template #message>
-        {{ vidoConfig.COOKIES_CONSENT }}
+        {{ config!.COOKIES_CONSENT }}
         <ExternalLink
-          v-if="vidoConfig.COOKIES_LINK"
-          :href="vidoConfig.COOKIES_LINK"
+          v-if="config!.COOKIES_LINK"
+          :href="config!.COOKIES_LINK"
           target="_blank"
         >
           {{ $t('cookiesConsent.details') }}

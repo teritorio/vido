@@ -9,9 +9,7 @@ import type { ApiPoi } from '~/lib/apiPois'
 import { type PropertyTranslations, getPropertyTranslations } from '~/lib/apiPropertyTranslations'
 import { type Settings, getSettings, headerFromSettings } from '~/lib/apiSettings'
 import { getAsyncDataOrThrows } from '~/lib/getAsyncData'
-import { vidoConfig } from '~/plugins/vido-config'
 import { siteStore } from '~/stores/site'
-import type { VidoConfig } from '~/utils/types-config'
 
 definePageMeta({
   validate({ params }) {
@@ -22,30 +20,28 @@ definePageMeta({
 })
 
 const params = useRoute().params
-const configRef = await getAsyncDataOrThrows('configRef', () =>
-  Promise.resolve(siteStore().config || vidoConfig(useRequestHeaders())))
-const config: VidoConfig = configRef.value
+const { config } = storeToRefs(siteStore())
 
 const fetchSettings = getAsyncDataOrThrows('fetchSettings', () =>
   siteStore().settings
     ? Promise.resolve(siteStore().settings as Settings)
-    : getSettings(config))
+    : getSettings(config.value!))
 
 const fetchContents = getAsyncDataOrThrows('fetchContents', () =>
   siteStore().contents
     ? Promise.resolve(siteStore().contents as ContentEntry[])
-    : getContents(config))
+    : getContents(config.value!))
 
 const fetchPropertyTranslations: Promise<Ref<PropertyTranslations>>
   = getAsyncDataOrThrows('fetchPropertyTranslations', () =>
     siteStore().translations
       ? Promise.resolve(siteStore().translations as PropertyTranslations)
-      : getPropertyTranslations(config))
+      : getPropertyTranslations(config.value!))
 
 const fetchPoiPoiDeps = getAsyncDataOrThrows(
   `fetchPoiPoiDeps-${params.id}`,
   async () => {
-    return await getPoiDepsById(config, params.id as string, {
+    return await getPoiDepsById(config.value!, params.id as string, {
       short_description: false,
     }).then((poiDeps) => {
       let poi: ApiPoi | undefined
@@ -85,8 +81,8 @@ const poiDeps = ref<ApiPoiDeps>(poiPoiDeps.value.poiDeps)
 
 const { $trackingInit, $vidoConfigSet } = useNuxtApp()
 onBeforeMount(() => {
-  $trackingInit(config)
-  $vidoConfigSet(config)
+  $trackingInit(config.value!)
+  $vidoConfigSet(config.value!)
 })
 
 const {
@@ -102,7 +98,7 @@ onMounted(() => {
   locale.value = i18nLocale.value
 })
 
-globalConfig.value = config
+globalConfig.value = config.value!
 globalSettings.value = settings.value
 globalContents.value = contents.value
 globalTranslations.value = propertyTranslations.value

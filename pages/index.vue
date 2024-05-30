@@ -19,20 +19,16 @@ import {
 import type { Settings } from '~/lib/apiSettings'
 import { getSettings } from '~/lib/apiSettings'
 import { getAsyncDataOrNull, getAsyncDataOrThrows } from '~/lib/getAsyncData'
-import { vidoConfig } from '~/plugins/vido-config'
 import { menuStore } from '~/stores/menu'
 import { siteStore } from '~/stores/site'
-import type { VidoConfig } from '~/utils/types-config'
 
 const params = useRoute().params
-const configRef = await getAsyncDataOrThrows('configRef', () =>
-  Promise.resolve(siteStore().config || vidoConfig(useRequestHeaders())))
-const config: VidoConfig = configRef.value
+const { config } = storeToRefs(siteStore())
 
 const fetchSettings = getAsyncDataOrThrows('fetchSettings', () =>
   siteStore().settings
     ? Promise.resolve(siteStore().settings as Settings)
-    : getSettings(config))
+    : getSettings(config.value!))
 
 const fetchSettingsBoundary = fetchSettings.then(async (settings) => {
   let boundary_geojson: Polygon | MultiPolygon | undefined
@@ -70,18 +66,18 @@ const fetchSettingsBoundary = fetchSettings.then(async (settings) => {
 const fetchContents = getAsyncDataOrThrows('fetchContents', () =>
   siteStore().contents
     ? Promise.resolve(siteStore().contents as ContentEntry[])
-    : getContents(config))
+    : getContents(config.value!))
 
 const fetchPropertyTranslations: Promise<Ref<PropertyTranslations>>
     = getAsyncDataOrThrows('fetchPropertyTranslations', () =>
       siteStore().translations
         ? Promise.resolve(siteStore().translations as PropertyTranslations)
-        : getPropertyTranslations(config))
+        : getPropertyTranslations(config.value!))
 
 const fetchMenuItems = getAsyncDataOrThrows('fetchMenuItems', () =>
   menuStore().menuItems !== undefined
     ? Promise.resolve(Object.values(menuStore().menuItems!))
-    : getMenu(config))
+    : getMenu(config.value!))
 
 let categoryIdsJoin: string | null
 let poiId: string | null
@@ -110,7 +106,7 @@ let fetchPoi: Promise<Ref<ApiPoi | null>> = getAsyncDataOrNull(
 )
 if (poiId) {
   fetchPoi = getAsyncDataOrNull(`fetchPoi-${poiId}`, () =>
-    getPoiById(config, poiId!))
+    getPoiById(config.value!, poiId!))
 }
 
 const [
@@ -135,7 +131,7 @@ const {
   locale,
 } = storeToRefs(siteStore())
 
-globalConfig.value = config
+globalConfig.value = config.value!
 if (menuItems.value)
   menuStore().fetchConfig(menuItems.value)
 
@@ -149,8 +145,8 @@ $propertyTranslations.set(propertyTranslations.value)
 
 const { $trackingInit, $vidoConfigSet } = useNuxtApp()
 onBeforeMount(() => {
-  $trackingInit(config)
-  $vidoConfigSet(config)
+  $trackingInit(config.value!)
+  $vidoConfigSet(config.value!)
 })
 
 const { locale: i18nLocale } = useI18n()
