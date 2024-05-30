@@ -59,6 +59,7 @@ const isMenuItemOpen = ref<boolean>(false)
 const isOnSearch = ref<boolean>(false)
 const showFavoritesOverlay = ref<boolean>(false)
 const showPoi = ref<boolean>(false)
+const mapFeaturesRef = ref<InstanceType<typeof MapFeatures>>()
 
 //
 // Composables
@@ -231,7 +232,7 @@ const siteName = computed(() => {
 })
 
 //
-// Watch
+// Watchers
 //
 watch(selectedFeature, () => {
   showPoi.value = !!selectedFeature.value
@@ -292,7 +293,6 @@ watch(isModeFavorites, async (isEnabled) => {
 //
 // Methods
 //
-const mapFeaturesRef = ref<InstanceType<typeof MapFeatures>>()
 function goToSelectedFeature() {
   if (mapFeaturesRef.value)
     mapFeaturesRef.value.goToSelectedFeature()

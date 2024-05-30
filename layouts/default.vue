@@ -5,8 +5,9 @@ import { headerFromSettings } from '~/lib/apiSettings'
 import { menuStore as useMenuStore } from '~/stores/menu'
 import '~/assets/tailwind.scss'
 
+const { locale: i18nLocale } = useI18n()
 const siteStore = useSiteStore()
-const { config, settings, contents, translations } = storeToRefs(siteStore)
+const { config, settings, contents, translations, locale } = storeToRefs(siteStore)
 const menuStore = useMenuStore()
 const { menuItems } = storeToRefs(menuStore)
 
@@ -31,7 +32,8 @@ if (!contents.value)
 if (!translations.value)
   throw createError({ statusCode: 500, statusMessage: 'Failed to fetch translations', fatal: true })
 
-useHead(headerFromSettings(settings.value, { googleSiteVerification: config.value.GOOGLE_SITE_VERIFICATION }))
+useHead(headerFromSettings(settings.value, { googleSiteVerification: config.value!.GOOGLE_SITE_VERIFICATION }))
+locale.value = i18nLocale.value
 </script>
 
 <template>
