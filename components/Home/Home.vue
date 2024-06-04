@@ -282,8 +282,9 @@ watch(isModeFavorites, async (isEnabled) => {
         !favoritesIds.value.includes(f.properties.metadata.id)
         && !favoriteAddresses.value.has(f.properties.metadata.id.toString()),
       )
-    )
+    ) {
       await handleFavorites()
+    }
 
     initialBbox.value = getBBoxFeatures(favoriteFeatures.value)
   }
@@ -399,8 +400,9 @@ async function toggleNoteBookMode() {
       !favoritesIds.value.includes(f.properties.metadata.id)
       && !favoriteAddresses.value.has(f.properties.metadata.id.toString()),
     )
-  )
+  ) {
     await handleFavorites()
+  }
 }
 
 function routerPushUrl(hashUpdate: { [key: string]: string | null } = {}) {

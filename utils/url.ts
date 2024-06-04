@@ -21,10 +21,12 @@ export function setHashParts(hash: string, hashParts: HashParts) {
       || val === ''
       || val === 'null'
       || val === 'undefined'
-    )
+    ) {
       params.delete(key)
-    else
+    }
+    else {
       params.set(key, val)
+    }
   })
 
   // Replace is for keeping map param working with maplibregl

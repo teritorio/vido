@@ -48,13 +48,15 @@ const fetchSettingsBoundary = fetchSettings.then(async (settings) => {
         const geojson = (await (
           await fetch(boundaryObject.data)
         ).json()) as GeoJSON
-        if (geojson.type === 'Feature')
+        if (geojson.type === 'Feature') {
           boundary_geojson = geojson.geometry as Polygon | MultiPolygon
+        }
         else if (
           geojson.type === 'Polygon'
           || geojson.type === 'MultiPolygon'
-        )
+        ) {
           boundary_geojson = geojson as Polygon | MultiPolygon
+        }
       }
       else {
         boundary_geojson = boundaryObject.data as Polygon

@@ -63,8 +63,9 @@ const fields = computed((): FieldsListItem[] => {
   if (
     !pois.value?.features.length
     || !pois.value.features[0].properties.editorial?.list_fields
-  )
+  ) {
     return [{ field: 'name' }]
+  }
 
   return pois.value.features[0].properties.editorial.list_fields
 })
