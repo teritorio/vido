@@ -393,8 +393,9 @@ export default defineNuxtComponent({
         !isOneInView
         && currentZoom >= MAP_ZOOM.zoom.default
         && this.features.length > 0
-      )
+      ) {
         this.showZoomSnack(text, textBtn)
+      }
 
       if (currentZoom < MAP_ZOOM.zoom.default)
         this.resetZoom()
