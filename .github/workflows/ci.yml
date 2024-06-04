@@ -10,37 +10,42 @@ jobs:
   install_cache:
     name: Install code and deps
     runs-on: ${{ matrix.os }}
-
     strategy:
       matrix:
         os:
           - ubuntu-latest
         node:
-          - 18
-
+          - 20
     steps:
       - name: Checkout 🛎
-        uses: actions/checkout@master
+        uses: actions/checkout@v4
 
-      - uses: ./.github/actions/install
+      - name: Setup node env 🏗
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: yarn
+
+      - name: Install dependencies 👨🏻‍💻
+        shell: bash
+        run: cp vidos-config-empty.json vidos-config.json && yarn install --immutable
 
   lint:
     needs: install_cache
     name: Lint code base
     runs-on: ${{ matrix.os }}
-
     strategy:
       matrix:
         os:
           - ubuntu-latest
         node:
-          - 18
-
+          - 20
     steps:
       - name: Checkout 🛎
-        uses: actions/checkout@master
+        uses: actions/checkout@v4
 
-      - uses: ./.github/actions/install
+      - name: Install code and deps
+        uses: ./.github/actions/install
 
       - name: Run linter 👀
         run: yarn lint
@@ -49,19 +54,18 @@ jobs:
     needs: install_cache
     name: Cypress
     runs-on: ${{ matrix.os }}
-
     strategy:
       matrix:
         os:
           - ubuntu-latest
         node:
-          - 18
-
+          - 20
     steps:
       - name: Checkout 🛎
-        uses: actions/checkout@master
+        uses: actions/checkout@v4
 
-      - uses: ./.github/actions/install
+      - name: Install code and deps
+        uses: ./.github/actions/install
 
       - name: Install ruby
         run: |
@@ -74,7 +78,7 @@ jobs:
           CONFIG=vidos-config-cypress.json CYPRESS=true yarn build
 
       - name: Run Cypress Tests 🧪
-        uses: cypress-io/github-action@v5
+        uses: cypress-io/github-action@v6
         env:
           CONFIG: ../vidos-config-cypress.json
           CYPRESS: true
@@ -84,75 +88,30 @@ jobs:
           wait-on: 'http://127.0.0.1:3000'
           wait-on-timeout: 30
 
-      - name: Keep failled cypress-screenshots
+      - name: Keep failed cypress-screenshots
         uses: actions/upload-artifact@v3
         if: failure()
         with:
           name: cypress-screenshots
           path: cypress/screenshots
 
-  histoire:
-    needs: install_cache
-    name: Histoire
-    runs-on: ${{ matrix.os }}
-
-    strategy:
-      matrix:
-        os:
-          - ubuntu-latest
-        node:
-          - 18
-
-    steps:
-      - name: Checkout 🛎
-        uses: actions/checkout@master
-
-      - uses: ./.github/actions/install
-
-      - name: Install more packages
-        run: |
-          sudo apt-get install -y ruby &&
-          ruby poi_explode.rb cypress/fixtures/teritorio/references/pois.geojson
-
-      - name: Test Histoire
-        run: |
-          CONFIG=vidos-config-empty.json yarn prepare &&
-          CONFIG=vidos-config-empty.json yarn test:histoire
-
-      - name: Keep failled histoire-screenshots
-        uses: actions/upload-artifact@v3
-        if: failure()
-        with:
-          name: histoire-screenshots
-          path: __screenshots__
-
-      - name: Deploy to gh-pages
-        if: github.ref == 'refs/heads/develop'
-        uses: peaceiris/actions-gh-pages@v3
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./.histoire/dist
-
   deploy_dev:
     needs:
       - install_cache
       - lint
       - cypress
-      - histoire
     if: github.ref == 'refs/heads/develop'
     name: Deploy Dev
     runs-on: ${{ matrix.os }}
-
     strategy:
       matrix:
         os:
           - ubuntu-latest
         node:
-          - 18
-
+          - 20
     steps:
       - name: Checkout 🛎
-        uses: actions/checkout@master
+        uses: actions/checkout@v4
 
       - name: Deploy
         uses: appleboy/ssh-action@v1.0.3
