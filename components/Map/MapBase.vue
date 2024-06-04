@@ -11,6 +11,7 @@ import type {
   MapDataEvent,
   MapLibreEvent,
   MapTouchEvent,
+  Marker,
 } from 'maplibre-gl'
 import type { PropType } from 'vue'
 
@@ -197,6 +198,7 @@ export default defineNuxtComponent({
         .filter(feature => !!feature)
         .map((feature, index) => {
           feature.id = index
+
           return feature
         })
     },
@@ -240,7 +242,7 @@ export default defineNuxtComponent({
         cluster: cluster === undefined ? true : cluster,
         clusterRadius: 32,
         clusterProperties: clusterProps,
-        clusterMaxZoom: 15,
+        clusterMaxZoom: 20,
         tolerance: 0.6,
         data: {
           type: 'FeatureCollection',
@@ -352,11 +354,7 @@ export default defineNuxtComponent({
         | 'mapZoomEnd',
       event: any,
     ) {
-      if (
-        this.map
-        && this.map.getSource(POI_SOURCE)
-        && this.map.isSourceLoaded(POI_SOURCE)
-      ) {
+      if (this.map && this.map.getSource(POI_SOURCE) && this.map.isSourceLoaded(POI_SOURCE)) {
         this.markers = updateMarkers(
           this.map as maplibregl.Map,
           this.markers,
@@ -414,9 +412,15 @@ export default defineNuxtComponent({
   </div>
 </template>
 
-<style scoped>
+<style lang="scss" scoped>
 :deep(.cluster-item) {
   cursor: pointer;
+}
+
+:deep(.cluster-declusterized) {
+  display: flex;
+  flex-wrap: wrap;
+  max-width: 200px;
 }
 
 :deep(.cluster-donut) {

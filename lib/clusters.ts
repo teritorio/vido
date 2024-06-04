@@ -1,3 +1,8 @@
+import { createApp } from 'vue'
+import { type Map, Marker } from 'maplibre-gl'
+import type { ApiPoi } from './apiPois'
+import TeritorioIconBadge from '~/components/UI/TeritorioIconBadge.vue'
+
 function getMarkerDonutSegment(start: number, end: number, r: number, r0: number, colorFill: string): string {
   if (end - start === 1)
     end -= 0.00001
@@ -37,6 +42,54 @@ function getMarkerDonutSegment(start: number, end: number, r: number, r0: number
     r + r0 * y0,
     `" fill="${colorFill}" />`,
   ].join(' ')
+}
+
+export function createDeclusterizedCluster(
+  features: GeoJSON.Feature[],
+  clusterCoords: [number, number],
+  map: Map,
+  markerClickCallBack: ((feature: ApiPoi) => void) | undefined,
+): HTMLElement {
+  const clusterWrapper = document.createElement('div')
+  features.forEach((feature, index) => {
+    const el = document.createElement('div')
+    el.id = `m${feature.id}`
+
+    createApp(TeritorioIconBadge, {
+      colorFill: feature.properties?.display.color_fill,
+      picto: feature.properties?.display.icon,
+      image: feature.properties!['image:thumbnail'],
+      size: null,
+      text: feature.properties?.display.name,
+    }).mount(el)
+
+    if (feature.properties?.editorial?.popup_fields) {
+      el.addEventListener('click', (e: MouseEvent) => {
+        e.stopPropagation()
+
+        const middle = features.length / 2
+        const offset
+          = index + 1 <= middle
+            ? ((index + 1 - middle) * 32) - 16
+            : ((index - middle) * 32) + 16
+
+        new Marker({
+          scale: 1.3,
+          color: '#f44336',
+        })
+          .setLngLat(clusterCoords)
+          .setOffset([offset, -10])
+          .addTo(map as Map)
+
+        if (markerClickCallBack)
+          markerClickCallBack(feature as ApiPoi)
+      })
+    }
+
+    clusterWrapper.append(el)
+  })
+  clusterWrapper.classList.add('cluster-item', 'cluster-declusterized')
+  return clusterWrapper
 }
 
 export function createMarkerDonutChart(countPerColor: Record<string, number>, totalCount: number): HTMLElement {

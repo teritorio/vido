@@ -1,5 +1,6 @@
 import type {
   FitBoundsOptions,
+  GeoJSONSource,
   LayerSpecification,
   LngLatBounds,
   Map,
@@ -10,8 +11,7 @@ import { createApp } from 'vue'
 
 import type { ApiPoi } from './apiPois'
 import { getBBoxFeatures } from './bbox'
-import { createMarkerDonutChart } from './clusters'
-
+import { createDeclusterizedCluster, createMarkerDonutChart } from './clusters'
 import TeritorioIconBadge from '~/components/UI/TeritorioIconBadge.vue'
 import type { TupleLatLng } from '~/utils/types'
 
@@ -123,46 +123,58 @@ export function updateMarkers(
         number,
         number,
       ]
-      const props = feature.properties
-      if (props?.cluster) {
-        const id = `c${props.cluster_id}`
-        markerIdcurrent.push(id)
-        if (!markers[id]) {
-          const {
-            cluster: _a,
-            cluster_id: _b,
-            point_count,
-            _c: _d,
-            point_count_abbreviated: _e,
-            ...countPercolor
-          } = props
-          const el = createMarkerDonutChart(countPercolor, point_count)
-          el.classList.add('cluster-item')
-          markers[id] = new Marker({
-            element: el,
-          }).setLngLat(coords)
-          el.addEventListener('click', (e) => {
-            e.stopPropagation()
-            const source = map.getSource(src)
 
-            if (source && 'getClusterLeaves' in source) {
-              // @ts-expect-error: getClusterLeaves is for GeoJSONSource but source is Source type
-              source.getClusterLeaves(
-                props.cluster_id,
-                100,
-                0,
-                (error: any, features: GeoJSON.Feature[]) => {
-                  if (!error && map) {
-                    const bounds = getBBoxFeatures(features)
-                    if (bounds)
-                      fitBounds(bounds, {})
-                  }
-                },
-              )
+      const props = feature.properties
+      const source = map.getSource(src) as GeoJSONSource
+
+      if (props.cluster) {
+        source.getClusterLeaves(props.cluster_id, 100, 0, (error, features) => {
+          if (error) {
+            console.error('ERROR:', error)
+          }
+
+          const id = `c${props.cluster_id}`
+          markerIdcurrent.push(id)
+
+          if (!markers[id]) {
+            if (features && (features.length <= 5 || map.getZoom() >= 17)) {
+              const el = createDeclusterizedCluster(features, coords, map, markerClickCallBack)
+              markers[id] = new Marker({
+                element: el,
+              }).setLngLat(coords)
+              markers[id].addTo(map)
             }
-          })
-          markers[id].addTo(map)
-        }
+            else {
+              const {
+                cluster: _a,
+                cluster_id: _b,
+                point_count,
+                _c: _d,
+                point_count_abbreviated: _e,
+                ...countPercolor
+              } = props
+              const el = createMarkerDonutChart(countPercolor, point_count)
+              el.classList.add('cluster-item')
+              markers[id] = new Marker({
+                element: el,
+              }).setLngLat(coords)
+              el.addEventListener('click', (e) => {
+                e.stopPropagation()
+
+                if (source && 'getClusterLeaves' in source) {
+                  source.getClusterLeaves(props.cluster_id, 100, 0, (error, features) => {
+                    if (!error && map) {
+                      const bounds = getBBoxFeatures(features as GeoJSON.Feature[])
+                      if (bounds)
+                        fitBounds(bounds, {})
+                    }
+                  })
+                }
+              })
+              markers[id].addTo(map)
+            }
+          }
+        })
       }
       else if (props?.metadata) {
         if (typeof props.metadata === 'string')
@@ -176,9 +188,8 @@ export function updateMarkers(
           if (markers[id])
             markers[id].remove()
 
-          const markerCoords
-            = feature.geometry.type === 'Point'
-            && (feature.geometry.coordinates as TupleLatLng)
+          const markerCoords = feature.geometry.type === 'Point' && (feature.geometry.coordinates as TupleLatLng)
+
           if (markerCoords) {
             if (typeof props.display === 'string')
               props.display = JSON.parse(props.display)
