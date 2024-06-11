@@ -1,4 +1,4 @@
-ARG  NODE_VERSION
+ARG NODE_VERSION
 FROM node:${NODE_VERSION}
 
 RUN apk --no-cache add git
@@ -6,6 +6,7 @@ RUN apk --no-cache add git
 # Create app directory
 RUN mkdir -p /usr/src/app/.nuxt
 WORKDIR /usr/src/app
+RUN corepack enable
 
 # Install app dependencies
 COPY package.json yarn.lock .yarnrc.yml /usr/src/app/
