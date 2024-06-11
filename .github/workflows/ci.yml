@@ -19,6 +19,7 @@ jobs:
     steps:
       - name: Checkout 🛎
         uses: actions/checkout@v4
+      - run: corepack enable
 
       - name: Setup node env 🏗
         uses: actions/setup-node@v4
@@ -43,6 +44,7 @@ jobs:
     steps:
       - name: Checkout 🛎
         uses: actions/checkout@v4
+      - run: corepack enable
 
       - name: Install code and deps
         uses: ./.github/actions/install
@@ -63,6 +65,7 @@ jobs:
     steps:
       - name: Checkout 🛎
         uses: actions/checkout@v4
+      - run: corepack enable
 
       - name: Install code and deps
         uses: ./.github/actions/install
@@ -111,6 +114,7 @@ jobs:
     steps:
       - name: Checkout 🛎
         uses: actions/checkout@v4
+      - run: corepack enable
 
       - name: Deploy
         uses: appleboy/ssh-action@v1.0.3
