@@ -2,11 +2,8 @@
 import { storeToRefs } from 'pinia'
 import MapPois from '~/components/Map/MapPois.vue'
 import { type ApiPoiId, type ApiPois, getPois } from '~/lib/apiPois'
-import { type Settings, getSettings, headerFromSettings } from '~/lib/apiSettings'
 import { getAsyncDataOrThrows } from '~/lib/getAsyncData'
-import { vidoConfig } from '~/plugins/vido-config'
-import { siteStore } from '~/stores/site'
-import type { VidoConfig } from '~/utils/types-config'
+import { siteStore as useSiteStore } from '~/stores/site'
 
 definePageMeta({
   validate({ params }) {
@@ -18,36 +15,20 @@ definePageMeta({
 })
 
 const params = useRoute().params
-const configRef = await getAsyncDataOrThrows('configRef', () =>
-  Promise.resolve(siteStore().config || vidoConfig(useRequestHeaders())))
-const config: VidoConfig = configRef.value
-
-const fetchSettings = getAsyncDataOrThrows('fetchSettings', () =>
-  siteStore().settings
-    ? Promise.resolve(siteStore().settings as Settings)
-    : getSettings(config))
-
-let settings: Ref<Settings>
+const siteStore = useSiteStore()
+const { config, settings } = storeToRefs(siteStore)
 let pois: Ref<ApiPois | null>
 
 if (params.ids) {
   const ids = (params.ids as string).split(',')
   const getPoiPromise = getAsyncDataOrThrows('getPoiPromise', async () =>
-    await getPois(config, ids, {
+    await getPois(config.value!, ids, {
       geometry_as: undefined,
     }))
-  const [settingsF, poisF] = await Promise.all([
-    fetchSettings,
-    getPoiPromise,
-  ])
-
-  settings = settingsF
+  const [poisF] = await Promise.all([getPoiPromise])
   pois = poisF
 }
 else {
-  const [settingsF] = await Promise.all([fetchSettings])
-
-  settings = settingsF
   pois = ref(null)
 }
 
@@ -55,36 +36,16 @@ const ids = computed((): ApiPoiId[] => {
   return pois.value?.features.map(feature => feature.properties.metadata.id) || []
 })
 
-const { $trackingInit, $vidoConfigSet } = useNuxtApp()
+const { $trackingInit } = useNuxtApp()
 onBeforeMount(() => {
-  $trackingInit(config)
-  $vidoConfigSet(config)
+  $trackingInit(config.value!)
 })
-
-const {
-  locale,
-  config: globalConfig,
-  settings: globalSettings,
-} = storeToRefs(siteStore())
-
-const { locale: i18nLocale } = useI18n()
-onMounted(() => {
-  locale.value = i18nLocale.value
-})
-
-globalConfig.value = config
-globalSettings.value = settings.value
-
-const { $settings } = useNuxtApp()
-$settings.set(settings.value)
-
-useHead(headerFromSettings(settings.value))
 </script>
 
 <template>
   <div class="tw-flex tw-flex-col tw-w-full tw-h-full">
     <MapPois
-      :extra-attributions="settings.attributions"
+      :extra-attributions="settings!.attributions"
       :features="pois ? pois.features : []"
       :feature-ids="ids"
     />

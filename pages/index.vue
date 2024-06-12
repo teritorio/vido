@@ -1,158 +1,89 @@
 <script setup lang="ts">
 import type { GeoJSON, MultiPolygon, Polygon } from 'geojson'
 import { storeToRefs } from 'pinia'
-import type { Ref } from 'vue'
-import { ref } from 'vue'
 import Home from '~/components/Home/Home.vue'
-import type { ContentEntry } from '~/lib/apiContent'
-import { getContents } from '~/lib/apiContent'
-import type { ApiMenuCategory } from '~/lib/apiMenu'
 import type { ApiPoi } from '~/lib/apiPois'
-import { getPoiById } from '~/lib/apiPois'
-import type { PropertyTranslations } from '~/lib/apiPropertyTranslations'
-import { getPropertyTranslations } from '~/lib/apiPropertyTranslations'
-import type { Settings } from '~/lib/apiSettings'
-import { getSettings } from '~/lib/apiSettings'
-import { getAsyncDataOrNull, getAsyncDataOrThrows } from '~/lib/getAsyncData'
-import { vidoConfig } from '~/plugins/vido-config'
-import { siteStore } from '~/stores/site'
-import type { VidoConfig } from '~/utils/types-config'
+import { siteStore as useSiteStore } from '~/stores/site'
 
-const params = useRoute().params
-const configRef = await getAsyncDataOrThrows('configRef', () =>
-  Promise.resolve(siteStore().config || vidoConfig(useRequestHeaders())))
-const config: VidoConfig = configRef.value
+//
+// Data
+//
+const boundaryGeojson = ref<Polygon | MultiPolygon>()
+const categoryIdsJoin = ref<string>()
+const poiId = ref<string>()
+const categoryIds = ref<number[]>()
+const initialPoi = ref<ApiPoi>()
 
-const fetchSettings = getAsyncDataOrThrows('fetchSettings', () =>
-  siteStore().settings
-    ? Promise.resolve(siteStore().settings as Settings)
-    : getSettings(config))
+//
+// Composables
+//
+const { params, query, path } = useRoute()
+const siteStore = useSiteStore()
+const { config, settings } = storeToRefs(siteStore)
+const { API_ENDPOINT, API_PROJECT, API_THEME } = config.value!
+const { $trackingInit } = useNuxtApp()
 
-const fetchSettingsBoundary = fetchSettings.then(async (settings) => {
-  let boundary_geojson: Polygon | MultiPolygon | undefined
-  const boundary = useRoute().query.boundary
-  if (
-    boundary
-    && typeof boundary === 'string'
-    && settings.value.polygons_extra
-  ) {
-    const boundaryObject = settings.value.polygons_extra[boundary]
-    if (boundaryObject) {
-      if (typeof boundaryObject.data === 'string') {
-        const geojson = (await (
-          await fetch(boundaryObject.data)
-        ).json()) as GeoJSON
-        if (geojson.type === 'Feature') {
-          boundary_geojson = geojson.geometry as Polygon | MultiPolygon
-        }
+//
+// Hooks
+//
+onBeforeMount(() => {
+  $trackingInit(config.value!)
+})
 
-        else if (
-          geojson.type === 'Polygon'
-          || geojson.type === 'MultiPolygon'
-        ) {
-          boundary_geojson = geojson as Polygon | MultiPolygon
-        }
+const { boundary } = query
+if (boundary && typeof boundary === 'string' && settings.value!.polygons_extra) {
+  const boundaryObject = settings.value!.polygons_extra[boundary]
+  if (boundaryObject) {
+    if (typeof boundaryObject.data === 'string') {
+      const geojson = (await (await fetch(boundaryObject.data)).json()) as GeoJSON
+
+      if (geojson.type === 'Feature') {
+        boundaryGeojson.value = geojson.geometry as Polygon | MultiPolygon
       }
-      else {
-        boundary_geojson = boundaryObject.data as Polygon
+      else if (geojson.type === 'Polygon' || geojson.type === 'MultiPolygon') {
+        boundaryGeojson.value = geojson as Polygon | MultiPolygon
       }
     }
+    else {
+      boundaryGeojson.value = boundaryObject.data as Polygon
+    }
   }
+}
 
-  return [settings, ref(boundary_geojson)]
-}) as unknown as [Ref<Settings>, Ref<Polygon | MultiPolygon | undefined>]
-
-const fetchContents = getAsyncDataOrThrows('fetchContents', () =>
-  siteStore().contents
-    ? Promise.resolve(siteStore().contents as ContentEntry[])
-    : getContents(config))
-
-const fetchPropertyTranslations: Promise<Ref<PropertyTranslations>>
-    = getAsyncDataOrThrows('fetchPropertyTranslations', () =>
-      siteStore().translations
-        ? Promise.resolve(siteStore().translations as PropertyTranslations)
-        : getPropertyTranslations(config))
-
-let categoryIdsJoin: string | null
-let poiId: string | null
 // Workaround Nuxt missing feature to simple respect trialling slash meaning
 if (params.poiId) {
-  categoryIdsJoin = params.p1 as string
-  poiId = params.poiId as string
+  categoryIdsJoin.value = params.p1 as string
+  poiId.value = params.poiId as string
 }
-else if (useRoute().path.endsWith('/')) {
-  categoryIdsJoin = params.p1 as string
-  poiId = null
+else if (path.endsWith('/')) {
+  categoryIdsJoin.value = params.p1 as string
+  poiId.value = undefined
 }
 else {
-  categoryIdsJoin = null
-  poiId = params.p1 as string
+  categoryIdsJoin.value = undefined
+  poiId.value = params.p1 as string
 }
 
-const categoryIds: Ref<ApiMenuCategory['id'][] | null> = ref(
-  (categoryIdsJoin
-  && categoryIdsJoin.split(',').map(id => Number.parseInt(id)))
-  || null,
-)
-let fetchPoi: Promise<Ref<ApiPoi | null>> = getAsyncDataOrNull(
-  'fetchPoiNull',
-  () => Promise.resolve(null),
-)
-if (poiId) {
-  fetchPoi = getAsyncDataOrNull(`fetchPoi-${poiId}`, () =>
-    getPoiById(config, poiId!))
+categoryIds.value = categoryIdsJoin.value?.split(',').map(id => Number.parseInt(id))
+
+const { data, error } = await useFetch<ApiPoi>(`${API_ENDPOINT}/${API_PROJECT}/${API_THEME}/poi/${poiId.value}.geojson?geometry_as=bbox&short_description=true`)
+
+if (categoryIds.value && poiId.value) {
+  if (error.value)
+    throw createError(error.value)
+
+  if (!data.value)
+    throw createError({ statusCode: 404, message: 'Initial POI not found !' })
+
+  initialPoi.value = data.value!
 }
-
-const [
-  [settings, boundary_geojson],
-  contents,
-  propertyTranslations,
-  initialPoi,
-] = await Promise.all([
-  fetchSettingsBoundary,
-  fetchContents,
-  fetchPropertyTranslations,
-  fetchPoi,
-])
-
-const {
-  contents: globalContents,
-  config: globalConfig,
-  settings: globalSettings,
-  translations: globalTranslations,
-  locale,
-} = storeToRefs(siteStore())
-
-globalConfig.value = config
-
-globalSettings.value = settings.value
-globalContents.value = contents.value
-globalTranslations.value = propertyTranslations.value
-
-const { $settings, $propertyTranslations } = useNuxtApp()
-$settings.set(settings.value)
-$propertyTranslations.set(propertyTranslations.value)
-
-const { $trackingInit, $vidoConfigSet } = useNuxtApp()
-onBeforeMount(() => {
-  $trackingInit(config)
-  $vidoConfigSet(config)
-})
-
-const { locale: i18nLocale } = useI18n()
-onMounted(() => {
-  locale.value = i18nLocale.value
-})
 </script>
 
 <template>
   <Home
-    v-if="settings"
-    :settings="settings"
-    :nav-menu-entries="contents"
-    :initial-category-ids="categoryIds || undefined"
-    :initial-poi="initialPoi || undefined"
-    :boundary-area="boundary_geojson"
+    :boundary-area="boundaryGeojson"
+    :initial-category-ids="categoryIds"
+    :initial-poi="initialPoi"
   />
 </template>
 

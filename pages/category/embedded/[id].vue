@@ -1,8 +1,5 @@
 <script setup lang="ts">
 import { storeToRefs } from 'pinia'
-import { vidoConfig } from '~/plugins/vido-config'
-import { type PropertyTranslations, getPropertyTranslations } from '~/lib/apiPropertyTranslations'
-import { type Settings, getSettings, headerFromSettings } from '~/lib/apiSettings'
 import { menuStore as useMenuStore } from '~/stores/menu'
 import { siteStore as useSiteStore } from '~/stores/site'
 import PoisTable from '~/components/PoisList/PoisTable.vue'
@@ -18,49 +15,10 @@ definePageMeta({
 })
 
 const siteStore = useSiteStore()
-const { $vidoConfigSet, $settings, $propertyTranslations, $trackingInit } = useNuxtApp()
+const { config } = storeToRefs(siteStore)
+const { $trackingInit } = useNuxtApp()
 const menuStore = useMenuStore()
 const { menuItems } = storeToRefs(menuStore)
-
-// TODO: Get this globally as share it across components / pages
-let config = siteStore.config
-
-if (process.server && !config) {
-  config = vidoConfig(useRequestHeaders())
-  $vidoConfigSet(config)
-  siteStore.$patch({ config })
-}
-
-if (!config)
-  throw createError({ statusCode: 500, statusMessage: 'Wrong config', fatal: true })
-
-// Fetch common data
-// TODO: Move common data on upper-level (ex: layout)
-const categoryListData = ref<{
-  settings: Settings
-  translations: PropertyTranslations
-}>()
-const { data: cachedCategoryListData } = useNuxtData('categoryList')
-
-if (cachedCategoryListData.value) {
-  categoryListData.value = cachedCategoryListData.value
-}
-else {
-  const { data, error } = await useAsyncData('categoryList', async () => {
-    const [settings, translations] = await Promise.all([
-      getSettings(config!),
-      getPropertyTranslations(config!),
-    ])
-
-    return { settings, translations }
-  })
-
-  if (error.value || !data.value)
-    throw createError({ statusCode: 500, statusMessage: 'Global config not found.', fatal: true })
-
-  categoryListData.value = data.value
-}
-
 const param = useRoute().params
 const id = Number.parseInt(param.id as string)
 const category = menuStore.getCurrentCategory(id)
@@ -71,14 +29,6 @@ if (!category) {
     statusMessage: 'Category Not Found',
   })
 }
-
-const { settings, translations } = categoryListData.value!
-settings.themes[0].title = category.category.name
-useHead(headerFromSettings(settings))
-
-// Not sure about future usage as we could have data from useNuxtData
-$settings.set(settings)
-$propertyTranslations.set(translations)
 
 // Get CategorySelector filters from Query params
 const route = useRoute()
@@ -93,8 +43,9 @@ const filters = computed(() => {
 
 const isFiltersEqualToCategoryId = filters.value?.length === 1 && filters.value[0] === category.id
 
-if (process.client)
-  $trackingInit(config)
+onBeforeMount(() => {
+  $trackingInit(config.value!)
+})
 
 const router = useRouter()
 function onCategoryUpdate(categoryId: number) {
