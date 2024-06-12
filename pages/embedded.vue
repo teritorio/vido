@@ -3,24 +3,17 @@ import type { GeoJSON, MultiPolygon, Polygon } from 'geojson'
 import { mapWritableState } from 'pinia'
 import type { Ref } from 'vue'
 import { ref } from 'vue'
-
 import { defineNuxtComponent, useRequestHeaders, useRoute } from '#app'
 import Embedded from '~/components/Home/Embedded.vue'
-import type { ApiMenuCategory, MenuItem } from '~/lib/apiMenu'
-import { getMenu } from '~/lib/apiMenu'
+import type { ApiMenuCategory } from '~/lib/apiMenu'
 import type { ApiPoi } from '~/lib/apiPois'
 import { getPoiById } from '~/lib/apiPois'
-import type {
-  PropertyTranslations,
-} from '~/lib/apiPropertyTranslations'
-import {
-  getPropertyTranslations,
-} from '~/lib/apiPropertyTranslations'
+import type { PropertyTranslations } from '~/lib/apiPropertyTranslations'
+import { getPropertyTranslations } from '~/lib/apiPropertyTranslations'
 import type { Settings } from '~/lib/apiSettings'
 import { getSettings } from '~/lib/apiSettings'
 import { getAsyncDataOrNull, getAsyncDataOrThrows } from '~/lib/getAsyncData'
 import { vidoConfig } from '~/plugins/vido-config'
-import { menuStore } from '~/stores/menu'
 import { siteStore } from '~/stores/site'
 import type { VidoConfig } from '~/utils/types-config'
 
@@ -33,7 +26,6 @@ export default defineNuxtComponent({
     config: VidoConfig
     settings: Ref<Settings>
     propertyTranslations: Ref<PropertyTranslations>
-    menuItems: Ref<MenuItem[]>
     categoryIds: Ref<ApiMenuCategory['id'][] | null>
     initialPoi: Ref<ApiPoi | null>
     boundary_geojson: Ref<Polygon | MultiPolygon | undefined>
@@ -65,6 +57,7 @@ export default defineNuxtComponent({
             if (geojson.type === 'Feature') {
               boundary_geojson = geojson.geometry as Polygon | MultiPolygon
             }
+
             else if (
               geojson.type === 'Polygon'
               || geojson.type === 'MultiPolygon'
@@ -86,11 +79,6 @@ export default defineNuxtComponent({
         siteStore().translations
           ? Promise.resolve(siteStore().translations as PropertyTranslations)
           : getPropertyTranslations(config))
-
-    const fetchMenuItems = getAsyncDataOrThrows('fetchMenuItems', () =>
-      menuStore().menuItems !== undefined
-        ? Promise.resolve(Object.values(menuStore().menuItems!))
-        : getMenu(config))
 
     let categoryIdsJoin: string | null
     let poiId: string | null
@@ -127,12 +115,10 @@ export default defineNuxtComponent({
     const [
       [settings, boundary_geojson],
       propertyTranslations,
-      menuItems,
       initialPoi,
     ] = await Promise.all([
       fetchSettingsBoundary,
       fetchPropertyTranslations,
-      fetchMenuItems,
       fetchPoi,
     ])
 
@@ -140,7 +126,6 @@ export default defineNuxtComponent({
       config,
       settings,
       propertyTranslations,
-      menuItems,
       categoryIds,
       initialPoi,
       boundary_geojson,
@@ -158,8 +143,6 @@ export default defineNuxtComponent({
 
   created() {
     this.globalConfig = this.config
-    if (this.menuItems)
-      menuStore().fetchConfig(this.menuItems)
 
     this.globalSettings = this.settings
     this.globalTranslations = this.propertyTranslations

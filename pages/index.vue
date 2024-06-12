@@ -7,20 +7,14 @@ import Home from '~/components/Home/Home.vue'
 import type { ContentEntry } from '~/lib/apiContent'
 import { getContents } from '~/lib/apiContent'
 import type { ApiMenuCategory } from '~/lib/apiMenu'
-import { getMenu } from '~/lib/apiMenu'
 import type { ApiPoi } from '~/lib/apiPois'
 import { getPoiById } from '~/lib/apiPois'
-import type {
-  PropertyTranslations,
-} from '~/lib/apiPropertyTranslations'
-import {
-  getPropertyTranslations,
-} from '~/lib/apiPropertyTranslations'
+import type { PropertyTranslations } from '~/lib/apiPropertyTranslations'
+import { getPropertyTranslations } from '~/lib/apiPropertyTranslations'
 import type { Settings } from '~/lib/apiSettings'
 import { getSettings } from '~/lib/apiSettings'
 import { getAsyncDataOrNull, getAsyncDataOrThrows } from '~/lib/getAsyncData'
 import { vidoConfig } from '~/plugins/vido-config'
-import { menuStore } from '~/stores/menu'
 import { siteStore } from '~/stores/site'
 import type { VidoConfig } from '~/utils/types-config'
 
@@ -51,6 +45,7 @@ const fetchSettingsBoundary = fetchSettings.then(async (settings) => {
         if (geojson.type === 'Feature') {
           boundary_geojson = geojson.geometry as Polygon | MultiPolygon
         }
+
         else if (
           geojson.type === 'Polygon'
           || geojson.type === 'MultiPolygon'
@@ -77,11 +72,6 @@ const fetchPropertyTranslations: Promise<Ref<PropertyTranslations>>
       siteStore().translations
         ? Promise.resolve(siteStore().translations as PropertyTranslations)
         : getPropertyTranslations(config))
-
-const fetchMenuItems = getAsyncDataOrThrows('fetchMenuItems', () =>
-  menuStore().menuItems !== undefined
-    ? Promise.resolve(Object.values(menuStore().menuItems!))
-    : getMenu(config))
 
 let categoryIdsJoin: string | null
 let poiId: string | null
@@ -117,13 +107,11 @@ const [
   [settings, boundary_geojson],
   contents,
   propertyTranslations,
-  menuItems,
   initialPoi,
 ] = await Promise.all([
   fetchSettingsBoundary,
   fetchContents,
   fetchPropertyTranslations,
-  fetchMenuItems,
   fetchPoi,
 ])
 
@@ -136,8 +124,6 @@ const {
 } = storeToRefs(siteStore())
 
 globalConfig.value = config
-if (menuItems.value)
-  menuStore().fetchConfig(menuItems.value)
 
 globalSettings.value = settings.value
 globalContents.value = contents.value
