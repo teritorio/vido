@@ -1,6 +1,6 @@
 <script setup lang="ts">
+import { storeToRefs } from 'pinia'
 import { vidoConfig } from '~/plugins/vido-config'
-import { getMenu } from '~/lib/apiMenu'
 import { type PropertyTranslations, getPropertyTranslations } from '~/lib/apiPropertyTranslations'
 import { type Settings, getSettings, headerFromSettings } from '~/lib/apiSettings'
 import { menuStore as useMenuStore } from '~/stores/menu'
@@ -10,6 +10,8 @@ import CategorySelector from '~/components/PoisList/CategorySelector.vue'
 
 const siteStore = useSiteStore()
 const { $vidoConfigSet, $settings, $propertyTranslations, $trackingInit } = useNuxtApp()
+const menuStore = useMenuStore()
+const { menuItems } = storeToRefs(menuStore)
 
 // TODO: Get this globally as share it across components / pages
 let config = siteStore.config
@@ -50,21 +52,6 @@ else {
   categoryListData.value = data.value
 }
 
-// MenuItems
-const menuStore = useMenuStore()
-const { data: cachedMenuItems } = useNuxtData('menu-items')
-if (cachedMenuItems.value) {
-  menuStore.fetchConfig(cachedMenuItems.value)
-}
-else {
-  const { data, error } = await useAsyncData('menu-items', async () => await getMenu(config!))
-
-  if (error.value || !data.value)
-    throw createError({ statusCode: 404, statusMessage: 'Menu not found', fatal: true })
-
-  menuStore.fetchConfig(data.value)
-}
-
 const { settings, translations } = categoryListData.value!
 useHead(headerFromSettings(settings))
 
@@ -100,7 +87,7 @@ function onCategoryUpdate(categoryId: number) {
     <CategorySelector
       class="pa-4"
       :filters="filters"
-      :menu-items="menuStore.menuItems || {}"
+      :menu-items="menuItems || {}"
       @category-change="onCategoryUpdate"
     />
     <PoisTable :details-is-external="true" />

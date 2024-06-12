@@ -22,8 +22,7 @@ export const siteStore = defineStore('site', {
     translations: undefined,
   }),
   actions: {
-    async init() {
-      const headers = useRequestHeaders()
+    async init(headers: Record<string, string>) {
       this.config = vidoConfig(headers)
       this.settings = await getSettings(this.config)
       this.contents = await getContents(this.config)
