@@ -5,11 +5,12 @@ import { VCard, VCardActions, VCardTitle } from 'vuetify/components/VCard'
 import { VDialog } from 'vuetify/components/VDialog'
 import { VDivider } from 'vuetify/components/VDivider'
 import { VSpacer } from 'vuetify/components/VGrid'
-
-import { defineNuxtComponent, useRequestHeaders } from '#app'
+import { storeToRefs } from 'pinia'
+import { defineNuxtComponent } from '#app'
 import UIButton from '~/components/UI/UIButton.vue'
 import { OriginEnum } from '~/utils/types'
 import { urlAddTrackOrigin } from '~/utils/url'
+import { siteStore as useSiteStore } from '~/stores/site'
 
 export default defineNuxtComponent({
   components: {
@@ -28,6 +29,14 @@ export default defineNuxtComponent({
       type: String as PropType<string>,
       required: true,
     },
+  },
+
+  setup() {
+    const { config } = storeToRefs(useSiteStore())
+
+    return {
+      config,
+    }
   },
 
   data(): {
@@ -94,11 +103,7 @@ export default defineNuxtComponent({
 
     qrCodeUrl() {
       if (this.linkQrCode) {
-        return (
-          `${this.$vidoConfig(useRequestHeaders()).API_QR_SHORTENER
-          }/qrcode.svg?url=${
-          encodeURIComponent(this.linkQrCode)}`
-        )
+        return `${this.config!.API_QR_SHORTENER}/qrcode.svg?url=${encodeURIComponent(this.linkQrCode)}`
       }
     },
   },

@@ -16,7 +16,6 @@ import PoiCard from '~/components/PoisCard/PoiCard.vue'
 import Search from '~/components/Search/Search.vue'
 import CookiesConsent from '~/components/UI/CookiesConsent.vue'
 import Logo from '~/components/UI/Logo.vue'
-import type { ContentEntry } from '~/lib/apiContent'
 import type { ApiMenuCategory, MenuItem } from '~/lib/apiMenu'
 import type { ApiPoi } from '~/lib/apiPois'
 import { getPois } from '~/lib/apiPois'
@@ -38,7 +37,6 @@ const props = defineProps<{
   boundaryArea?: Polygon | MultiPolygon
   initialCategoryIds?: number[]
   initialPoi?: ApiPoi
-  navMenuEntries: ContentEntry[]
 }>()
 
 //
@@ -50,7 +48,7 @@ const menuStore = useMenuStore()
 const { apiMenuCategory, features, selectedCategoryIds } = storeToRefs(menuStore)
 const favoriteStore = useFavoriteStore()
 const { favoritesIds, favoriteAddresses, favoriteFeatures, favoriteCount } = storeToRefs(favoriteStore)
-const { config, settings } = useSiteStore()
+const { config, settings, contents } = useSiteStore()
 
 const allowRegionBackZoom = ref<boolean>(false)
 const isFilterActive = ref<boolean>(false)
@@ -59,6 +57,7 @@ const isMenuItemOpen = ref<boolean>(false)
 const isOnSearch = ref<boolean>(false)
 const showFavoritesOverlay = ref<boolean>(false)
 const showPoi = ref<boolean>(false)
+const mapFeaturesRef = ref<InstanceType<typeof MapFeatures>>()
 
 //
 // Composables
@@ -231,7 +230,7 @@ const siteName = computed(() => {
 })
 
 //
-// Watch
+// Watchers
 //
 watch(selectedFeature, () => {
   showPoi.value = !!selectedFeature.value
@@ -292,7 +291,6 @@ watch(isModeFavorites, async (isEnabled) => {
 //
 // Methods
 //
-const mapFeaturesRef = ref<InstanceType<typeof MapFeatures>>()
 function goToSelectedFeature() {
   if (mapFeaturesRef.value)
     mapFeaturesRef.value.goToSelectedFeature()
@@ -582,7 +580,7 @@ function setPoiVisibility(visible: boolean) {
           />
           <NavMenu
             id="nav-menu"
-            :entries="navMenuEntries"
+            :entries="contents!"
             class="tw-ml-3 sm:tw-ml-4"
           />
         </div>
