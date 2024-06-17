@@ -5,33 +5,43 @@ import { siteStore as useSiteStore } from '~/stores/site'
 import PoisTable from '~/components/PoisList/PoisTable.vue'
 import CategorySelector from '~/components/PoisList/CategorySelector.vue'
 
+//
+// Composables
 const siteStore = useSiteStore()
 const { config } = storeToRefs(siteStore)
-const { $trackingInit } = useNuxtApp()
 const menuStore = useMenuStore()
 const { menuItems } = storeToRefs(menuStore)
+const { $trackingInit } = useNuxtApp()
+const { query } = useRoute()
+const router = useRouter()
 
-// Get CategorySelector filters from Query params
-const route = useRoute()
+//
+// Computed
+//
 const filters = computed(() => {
-  return route.query.menuItemIds
-    ? route.query.menuItemIds
+  return query.menuItemIds
+    ? query.menuItemIds
       .toString()
       .split(',')
       .map(f => Number.parseInt(f))
     : undefined
 })
 
+//
+// Hooks
+//
 onBeforeMount(() => {
   $trackingInit(config.value!)
 })
 
-const router = useRouter()
+//
+// Methods
+//
 function onCategoryUpdate(categoryId: number) {
   if (!categoryId)
     return
 
-  router.push({ query: route.query, path: `/category/embedded/${categoryId}` })
+  router.push({ query, path: `/category/embedded/${categoryId}` })
 }
 </script>
 

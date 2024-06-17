@@ -5,7 +5,9 @@ import { siteStore as useSiteStore } from '~/stores/site'
 import PoisTable from '~/components/PoisList/PoisTable.vue'
 import CategorySelector from '~/components/PoisList/CategorySelector.vue'
 
-// Query param validation
+//
+// Validators
+//
 definePageMeta({
   validate({ params }) {
     return (
@@ -14,13 +16,17 @@ definePageMeta({
   },
 })
 
+//
+// Composables
+//
 const siteStore = useSiteStore()
 const { config } = storeToRefs(siteStore)
-const { $trackingInit } = useNuxtApp()
 const menuStore = useMenuStore()
 const { menuItems } = storeToRefs(menuStore)
-const param = useRoute().params
-const id = Number.parseInt(param.id as string)
+const { $trackingInit } = useNuxtApp()
+const { params, query, name } = useRoute()
+const router = useRouter()
+const id = Number.parseInt(params.id as string)
 const category = menuStore.getCurrentCategory(id)
 
 if (!category) {
@@ -30,29 +36,35 @@ if (!category) {
   })
 }
 
-// Get CategorySelector filters from Query params
-const route = useRoute()
+//
+// Computed
+//
 const filters = computed(() => {
-  return route.query.menuItemIds
-    ? route.query.menuItemIds
+  return query.menuItemIds
+    ? query.menuItemIds
       .toString()
       .split(',')
       .map(f => Number.parseInt(f))
     : undefined
 })
 
-const isFiltersEqualToCategoryId = filters.value?.length === 1 && filters.value[0] === category.id
+const isFiltersEqualToCategoryId = computed(() => filters.value?.length === 1 && filters.value[0] === category.id)
 
+//
+// Hooks
+//
 onBeforeMount(() => {
   $trackingInit(config.value!)
 })
 
-const router = useRouter()
+//
+// Methods
+//
 function onCategoryUpdate(categoryId: number) {
   if (!categoryId)
     return
 
-  router.push({ name: route.name?.toString(), params: { id: categoryId } })
+  router.push({ name: name?.toString(), params: { id: categoryId } })
 }
 </script>
 

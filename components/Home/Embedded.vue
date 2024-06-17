@@ -26,12 +26,6 @@ const props = defineProps<{
 }>()
 
 //
-// Data
-//
-const initialBbox = ref<LngLatBounds | null>(null)
-const mapFeaturesRef = ref<InstanceType<typeof MapFeatures>>()
-
-//
 // Composables
 //
 const mapStore = useMapStore()
@@ -42,6 +36,12 @@ const { config, settings } = useSiteStore()
 const route = useRoute()
 const router = useRouter()
 const { t } = useI18n()
+
+//
+// Data
+//
+const initialBbox = ref<LngLatBounds | null>(null)
+const mapFeaturesRef = ref<InstanceType<typeof MapFeatures>>()
 
 //
 // Hooks
@@ -77,6 +77,7 @@ onMounted(() => {
 const explorerModeEnabled = computed(() => {
   return settings!.themes[0]?.explorer_mode ?? true
 })
+
 const filters = computed(() => {
   return route.query.menuItemIds
     ? route.query.menuItemIds
@@ -85,6 +86,7 @@ const filters = computed(() => {
       .map(f => Number.parseInt(f))
     : undefined
 })
+
 const fitBoundsPaddingOptions = computed((): FitBoundsOptions['padding'] => {
   return {
     top: 100,
@@ -93,14 +95,17 @@ const fitBoundsPaddingOptions = computed((): FitBoundsOptions['padding'] => {
     left: 100,
   }
 })
+
 const isFiltersEqualToCategoryId = computed(() => {
   if (filters.value?.length === 1 && selectedCategoryIds.value.length === 1)
     return filters.value[0] === selectedCategoryIds.value[0]
   return false
 })
+
 const mapFeatures = computed((): ApiPoi[] => {
   return flattenFeatures(features.value)
 })
+
 const poiFilters = computed(() => {
   return (
     (
@@ -119,6 +124,7 @@ const poiFilters = computed(() => {
 watch(selectedFeature, () => {
   routerPushUrl()
 })
+
 watch(selectedCategoryIds, (a, b) => {
   if (a !== b) {
     routerPushUrl()
@@ -138,9 +144,11 @@ function goToSelectedFeature() {
   if (mapFeaturesRef.value)
     mapFeaturesRef.value.goToSelectedFeature()
 }
+
 function onMenuChange(newCategoryId: number) {
   menuStore.addSelectedCategoryIds([newCategoryId])
 }
+
 function routerPushUrl() {
   const categoryIds = selectedCategoryIds.value.join(',')
   const id = selectedFeature.value?.properties?.metadata?.id?.toString()
@@ -152,6 +160,7 @@ function routerPushUrl() {
     hash: router.currentRoute.value.hash,
   })
 }
+
 function toggleExploreAroundSelectedPoi() {
   if (!isModeExplorer.value) {
     mode.value = Mode.EXPLORER

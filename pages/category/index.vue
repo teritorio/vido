@@ -7,17 +7,26 @@ import Footer from '~/components/Layout/Footer.vue'
 import PoisTable from '~/components/PoisList/PoisTable.vue'
 import CategorySelector from '~/components/PoisList/CategorySelector.vue'
 
+//
+// Composables
+//
 const siteStore = useSiteStore()
 const { config, settings, contents } = storeToRefs(siteStore)
-const { $trackingInit } = useNuxtApp()
 const menuStore = useMenuStore()
 const { menuItems } = storeToRefs(menuStore)
+const { $trackingInit } = useNuxtApp()
+const router = useRouter()
 
+//
+// Hooks
+//
 onBeforeMount(() => {
   $trackingInit(config.value!)
 })
 
-const router = useRouter()
+//
+// Methods
+//
 function onCategoryUpdate(categoryId: number) {
   if (!categoryId)
     return
