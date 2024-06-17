@@ -5,6 +5,9 @@ import { menuStore as useMenuStore } from '~/stores/menu'
 import { headerFromSettings } from '~/lib/apiSettings'
 import '~/assets/tailwind.scss'
 
+//
+// Composables
+//
 const { locale: i18nLocale } = useI18n()
 const siteStore = useSiteStore()
 const { config, settings, contents, translations, locale } = storeToRefs(siteStore)

@@ -9,6 +9,9 @@ import { headerFromSettings } from '~/lib/apiSettings'
 import { getAsyncDataOrThrows } from '~/lib/getAsyncData'
 import { siteStore as useSiteStore } from '~/stores/site'
 
+//
+// Validators
+//
 definePageMeta({
   validate({ params }) {
     return (
@@ -17,9 +20,19 @@ definePageMeta({
   },
 })
 
-const params = useRoute().params
+//
+// Composables
+//
 const siteStore = useSiteStore()
 const { config, settings, contents } = storeToRefs(siteStore)
+const { params } = useRoute()
+const { $trackingInit } = useNuxtApp()
+
+//
+// Data
+//
+const poi = ref<ApiPoi>()
+const poiDeps = ref<ApiPoiDeps>()
 
 const fetchPoiPoiDeps = getAsyncDataOrThrows(
   `fetchPoiPoiDeps-${params.id}`,
@@ -46,17 +59,19 @@ const fetchPoiPoiDeps = getAsyncDataOrThrows(
 
 const [poiPoiDeps] = await Promise.all([fetchPoiPoiDeps])
 
-if (!poiPoiDeps.value?.poi) {
+poi.value = poiPoiDeps.value.poi
+poiDeps.value = poiPoiDeps.value.poiDeps
+
+if (!poi.value) {
   showError({
     statusCode: 404,
     statusMessage: 'POI not found. Missing main object.',
   })
 }
 
-const poi = ref<ApiPoi>(poiPoiDeps.value.poi!)
-const poiDeps = ref<ApiPoiDeps>(poiPoiDeps.value.poiDeps)
-
-const { $trackingInit } = useNuxtApp()
+//
+// Hooks
+//
 onBeforeMount(() => {
   $trackingInit(config.value!)
 })
@@ -78,7 +93,7 @@ useHead(
     v-if="settings"
     :settings="settings"
     :nav-menu-entries="contents!"
-    :poi="poi"
+    :poi="poi!"
     :poi-deps="poiDeps"
     class="page-details tw-overflow-clip"
   />

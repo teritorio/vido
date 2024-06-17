@@ -6,15 +6,6 @@ import type { ApiPoi } from '~/lib/apiPois'
 import { siteStore as useSiteStore } from '~/stores/site'
 
 //
-// Data
-//
-const boundaryGeojson = ref<Polygon | MultiPolygon>()
-const categoryIdsJoin = ref<string>()
-const poiId = ref<string>()
-const categoryIds = ref<number[]>()
-const initialPoi = ref<ApiPoi>()
-
-//
 // Composables
 //
 const { params, query, path } = useRoute()
@@ -22,6 +13,15 @@ const siteStore = useSiteStore()
 const { config, settings } = storeToRefs(siteStore)
 const { API_ENDPOINT, API_PROJECT, API_THEME } = config.value!
 const { $trackingInit } = useNuxtApp()
+
+//
+// Data
+//
+const boundaryGeojson = ref<Polygon | MultiPolygon>()
+const categoryIdsJoin = ref<string>()
+const poiId = ref<string>()
+const categoryIds = ref<number[]>()
+const initialPoi = ref<ApiPoi>()
 
 //
 // Hooks

@@ -8,7 +8,9 @@ import Footer from '~/components/Layout/Footer.vue'
 import PoisTable from '~/components/PoisList/PoisTable.vue'
 import CategorySelector from '~/components/PoisList/CategorySelector.vue'
 
-// Query param validation
+//
+// Validators
+//
 definePageMeta({
   validate({ params }) {
     return (
@@ -17,15 +19,19 @@ definePageMeta({
   },
 })
 
+//
+// Composables
+//
 const siteStore = useSiteStore()
 const { config, settings, contents } = storeToRefs(siteStore)
-const { $trackingInit } = useNuxtApp()
 const menuStore = useMenuStore()
 const { menuItems } = storeToRefs(menuStore)
-const param = useRoute().params
-const id = Number.parseInt(param.id as string)
-const category = menuStore.getCurrentCategory(id)
+const { params } = useRoute()
+const router = useRouter()
+const id = Number.parseInt(params.id as string)
+const { $trackingInit } = useNuxtApp()
 
+const category = menuStore.getCurrentCategory(id)
 if (!category) {
   throw createError({
     statusCode: 404,
@@ -35,11 +41,16 @@ if (!category) {
 
 useHead(headerFromSettings(settings.value!, { title: category.category.name.fr }))
 
+//
+// Hooks
+//
 onBeforeMount(() => {
   $trackingInit(config.value!)
 })
 
-const router = useRouter()
+//
+// Methods
+//
 function onCategoryUpdate(categoryId: number) {
   if (!categoryId)
     return

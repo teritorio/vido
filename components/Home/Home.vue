@@ -40,7 +40,7 @@ const props = defineProps<{
 }>()
 
 //
-// Data
+// Composables
 //
 const mapStore = useMapStore()
 const { center, isModeFavorites, isModeExplorer, isModeExplorerOrFavorites, mode, selectedFeature } = storeToRefs(mapStore)
@@ -49,7 +49,14 @@ const { apiMenuCategory, features, selectedCategoryIds } = storeToRefs(menuStore
 const favoriteStore = useFavoriteStore()
 const { favoritesIds, favoriteAddresses, favoriteFeatures, favoriteCount } = storeToRefs(favoriteStore)
 const { config, settings, contents } = useSiteStore()
+const { $tracking } = useNuxtApp()
+const route = useRoute()
+const router = useRouter()
+const device = useDevice()
 
+//
+// Data
+//
 const allowRegionBackZoom = ref<boolean>(false)
 const isFilterActive = ref<boolean>(false)
 const initialBbox = ref<LngLatBounds | null>(null)
@@ -58,14 +65,6 @@ const isOnSearch = ref<boolean>(false)
 const showFavoritesOverlay = ref<boolean>(false)
 const showPoi = ref<boolean>(false)
 const mapFeaturesRef = ref<InstanceType<typeof MapFeatures>>()
-
-//
-// Composables
-//
-const { $tracking } = useNuxtApp()
-const route = useRoute()
-const router = useRouter()
-const device = useDevice()
 
 //
 // Hooks

@@ -5,6 +5,9 @@ import { type ApiPoiId, type ApiPois, getPois } from '~/lib/apiPois'
 import { getAsyncDataOrThrows } from '~/lib/getAsyncData'
 import { siteStore as useSiteStore } from '~/stores/site'
 
+//
+// Validators
+//
 definePageMeta({
   validate({ params }) {
     return (
@@ -14,10 +17,18 @@ definePageMeta({
   },
 })
 
-const params = useRoute().params
+//
+// Composables
+//
+const { params } = useRoute()
 const siteStore = useSiteStore()
 const { config, settings } = storeToRefs(siteStore)
-let pois: Ref<ApiPois | null>
+const { $trackingInit } = useNuxtApp()
+
+//
+// Data
+//
+const pois = ref<ApiPois>()
 
 if (params.ids) {
   const ids = (params.ids as string).split(',')
@@ -26,17 +37,20 @@ if (params.ids) {
       geometry_as: undefined,
     }))
   const [poisF] = await Promise.all([getPoiPromise])
-  pois = poisF
+  pois.value = poisF.value
 }
 else {
-  pois = ref(null)
+  pois.value = undefined
 }
 
-const ids = computed((): ApiPoiId[] => {
-  return pois.value?.features.map(feature => feature.properties.metadata.id) || []
-})
+//
+// Computed
+//
+const ids = computed((): ApiPoiId[] => pois.value?.features.map(feature => feature.properties.metadata.id) || [])
 
-const { $trackingInit } = useNuxtApp()
+//
+// Hooks
+//
 onBeforeMount(() => {
   $trackingInit(config.value!)
 })
