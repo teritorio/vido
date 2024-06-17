@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { localeIncludes } from 'locale-includes'
+import { storeToRefs } from 'pinia'
 import { PropertyTranslationsContextEnum } from '~/plugins/property-translations'
-import { type ApiPoi, type ApiPois, type FieldsListItem, getPoiByCategoryId } from '~/lib/apiPois'
+import type { ApiPoi, ApiPois, FieldsListItem } from '~/lib/apiPois'
 import type { ApiMenuCategory } from '~/lib/apiMenu'
 import Field from '~/components/Fields/Field.vue'
 import IconButton from '~/components/UI/IconButton.vue'
@@ -10,6 +11,8 @@ import ContribFieldGroup from '~/components/Fields/ContribFieldGroup.vue'
 import Actions from '~/components/PoisList/Actions.vue'
 import TeritorioIconBadge from '~/components/UI/TeritorioIconBadge.vue'
 import { siteStore as useSiteStore } from '~/stores/site'
+import { menuStore as useMenuStore } from '~/stores/menu'
+import { headerFromSettings } from '~/lib/apiSettings'
 
 interface DataTableHeader {
   filterable?: boolean
@@ -20,62 +23,77 @@ interface DataTableHeader {
   width?: string
 }
 
-const props = defineProps<{
-  category?: ApiMenuCategory
+//
+// Props
+//
+defineProps<{
   detailsIsExternal?: boolean
 }>()
 
+//
+// Composables
+//
 const { routeToString, addressToString } = useField()
 const { t, locale } = useI18n()
 const siteStore = useSiteStore()
+const { config, settings } = storeToRefs(siteStore)
+const menuStore = useMenuStore()
 const { $propertyTranslations } = useNuxtApp()
 const { contribMode, isContribEligible, getContributorFields } = useContrib()
+const { params } = useRoute()
+
+//
+// Data
+//
+const { API_ENDPOINT, API_PROJECT, API_THEME } = config.value!
 const search = ref('')
+const fields = ref<FieldsListItem[]>()
+const headers = ref<DataTableHeader[]>()
+const category = ref<ApiMenuCategory>()
 
-// Fetch POIs by Cache or API
-const pois = ref<ApiPois>()
+const { data: pois, error, pending } = useFetch<ApiPois>(
+  `${API_ENDPOINT}/${API_PROJECT}/${API_THEME}/pois/category/${params.id}.geojson`,
+  {
+    query: {
+      geometry_as: 'point',
+      short_description: true,
+    },
+  },
+)
 
-if (props.category) {
-  const cachedKey = computed(() => `pois-${props.category!.id}`)
-  const { data: cachedPois } = useNuxtData(cachedKey.value)
+if (params.id) {
+  category.value = menuStore.getCurrentCategory(Number.parseInt(params.id as string))
 
-  if (cachedPois.value) {
-    pois.value = cachedPois.value
-  }
-  else {
-    watchEffect(async () => {
-      const { data, error } = await useAsyncData(cachedKey.value, () => getPoiByCategoryId(
-        siteStore.config!,
-        props.category!.id,
-        { geometry_as: 'point', short_description: true },
-      ))
-
-      if (error.value || !data.value)
-        throw createError({ statusCode: 404, statusMessage: 'POIs not found.' })
-
-      pois.value = data.value
+  if (!category.value) {
+    throw createError({
+      statusCode: 404,
+      statusMessage: 'Category Not Found',
     })
   }
+
+  useHead(headerFromSettings(settings.value!, { title: category.value.category.name.fr }))
+
+  if (error.value)
+    throw createError({ statusCode: 404, statusMessage: 'POIs not found.' })
+
+  if (!pending.value && !pois.value)
+    throw createError({ statusCode: 404, statusMessage: 'POIs not found.' })
+
+  fields.value = getFields()
+  headers.value = getHeaders()
 }
 
-// Handle default config field if not provided by API
-const fields = computed((): FieldsListItem[] => {
-  if (
-    !pois.value?.features.length
-    || !pois.value.features[0].properties.editorial?.list_fields
-  ) {
+function getFields(): FieldsListItem[] {
+  if (!pois.value?.features.length || !pois.value.features[0].properties.editorial?.list_fields)
     return [{ field: 'name' }]
-  }
 
-  return pois.value.features[0].properties.editorial.list_fields
-})
+  // Transform non-string values to single string
+  // Used for sort and filter comparisons
+  const featureFields = pois.value.features[0].properties.editorial.list_fields
 
-// Transform non-string values to single string
-// Used for sort and filter comparisons
-if (pois.value) {
   pois.value.features = pois.value.features.map((f: ApiPoi) => {
-    const fieldEntries = fields.value.map(f => f.field)
     const arrayProps: { [key: string]: any } = []
+    const fieldEntries = featureFields.map((f: FieldsListItem) => f.field)
 
     if (fieldEntries.includes('route'))
       arrayProps.route = routeToString(f.properties, getContext('route'))
@@ -91,15 +109,15 @@ if (pois.value) {
       },
     }
   })
+
+  return featureFields
 }
 
-// Transform headers data to be compliant with Vuetify's standards
-const headers = computed(() => {
-  if (!props.category)
-    return []
-
-  // Basic Fields
-  const h: DataTableHeader[] = fields.value.map(f => ({
+//
+// Methods
+//
+function getHeaders() {
+  const h: DataTableHeader[] = fields.value!.map((f: FieldsListItem) => ({
     filterable: true,
     key: `properties.${f.field}`,
     sortable: true,
@@ -110,7 +128,6 @@ const headers = computed(() => {
     sort: customSort,
   }))
 
-  // Contrib Field
   if (contribMode) {
     h.push({
       filterable: false,
@@ -121,7 +138,6 @@ const headers = computed(() => {
     })
   }
 
-  // Details Field
   h.push({
     filterable: false,
     sortable: false,
@@ -131,7 +147,7 @@ const headers = computed(() => {
   })
 
   return h
-})
+}
 
 function valueToString(item: any) {
   if (Array.isArray(item))
@@ -171,6 +187,7 @@ function getContext(key: string) {
 
 function getColKey(key: string) {
   const keySplit = key.split('.')
+
   if (keySplit.length > 1)
     return keySplit[keySplit.length - 1]
 
@@ -181,6 +198,7 @@ function getColKey(key: string) {
 <template>
   <VCard class="mb-4">
     <VDataTable
+      :loading="pending"
       :headers="headers"
       :items="pois?.features"
       :no-data-text="t('poisTable.empty')"
@@ -203,7 +221,8 @@ function getColKey(key: string) {
               >
                 <TeritorioIconBadge
                   :color-fill="category.category.color_fill"
-                  :picto="category.category.icon" size="xl"
+                  :picto="category.category.icon"
+                  size="xl"
                 />
                 {{ category.category.name.fr }}
               </h1>
@@ -260,6 +279,9 @@ function getColKey(key: string) {
             />
           </td>
         </tr>
+      </template>
+      <template #loading>
+        <v-skeleton-loader type="table-row@10" />
       </template>
     </VDataTable>
   </VCard>

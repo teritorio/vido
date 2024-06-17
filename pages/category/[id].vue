@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { storeToRefs } from 'pinia'
-import { headerFromSettings } from '~/lib/apiSettings'
 import { menuStore as useMenuStore } from '~/stores/menu'
 import { siteStore as useSiteStore } from '~/stores/site'
 import Header from '~/components/Layout/Header.vue'
@@ -30,16 +29,6 @@ const { params } = useRoute()
 const router = useRouter()
 const id = Number.parseInt(params.id as string)
 const { $trackingInit } = useNuxtApp()
-
-const category = menuStore.getCurrentCategory(id)
-if (!category) {
-  throw createError({
-    statusCode: 404,
-    statusMessage: 'Category Not Found',
-  })
-}
-
-useHead(headerFromSettings(settings.value!, { title: category.category.name.fr }))
 
 //
 // Hooks
@@ -75,7 +64,7 @@ function onCategoryUpdate(categoryId: number) {
         />
       </template>
     </Header>
-    <PoisTable :category="category" />
+    <PoisTable />
     <Footer :attributions="settings!.attributions" />
   </VContainer>
 </template>
