@@ -59,6 +59,7 @@ export default defineI18nLocale(() => {
       },
     },
     headerMenu: {
+      burgerLabel: 'Menú',
       logo: 'Logo',
       search: 'Buscar',
       searchHint: 'Punto de interés, categoría, dirección',

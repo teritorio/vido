@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import type { FitBoundsOptions, LngLatBounds } from 'maplibre-gl'
 import { storeToRefs } from 'pinia'
 import type { MultiPolygon, Polygon } from 'geojson'
@@ -617,8 +616,7 @@ function setPoiVisibility(visible: boolean) {
               style="right: 37.5%"
               @click="onBottomMenuButtonClick"
             >
-              <span class="tw-sr-only">{{ $t('headerMenu.categories') }}</span>
-              <FontAwesomeIcon icon="grip-lines" size="lg" />
+              <span>{{ $t('headerMenu.burgerLabel') }}</span>
             </button>
           </div>
         </MapFeatures>
