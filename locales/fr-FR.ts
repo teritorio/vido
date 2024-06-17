@@ -60,6 +60,7 @@ export default defineI18nLocale(() => {
       },
     },
     headerMenu: {
+      burgerLabel: 'Menu',
       logo: 'Logo',
       search: 'Rechercher',
       searchHint: 'Points d\'intérêt, catégorie, adresse',
