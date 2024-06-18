@@ -23,21 +23,21 @@ describe('pois table', () => {
   beforeEach(() => {
     mockSSRAPI(hostnames, teritorioReferenceAPIFixture, {
       // ?geometry_as=point&short_description=true
-      'pois/category/211.geojson': teritorioReferenceAPIFixture.deps[1],
+      'pois/category/211.geojson': teritorioReferenceAPIFixture.deps[2],
     })
     cy.viewport(1024, 768)
     cy.visit('/category/211')
   })
 
   it('contain basic table', () => {
-    const pois = teritorioReferenceAPIFixture.pois as ApiPois
+    const pois = teritorioReferenceAPIFixture.deps[2] as ApiPois
     if (pois.features[0].properties.editorial && pois.features[0].properties.editorial.list_fields) {
       cy.get('th')
         .contains(pois.features[0].properties.editorial.list_fields[0].field as string)
     }
 
     cy.get('td')
-      .contains(teritorioReferenceAPIFixture.pois.features[0].properties.name as string)
+      .contains(pois.features[0].properties.name as string)
 
     cy.htmlvalidate(htmlValidateRules)
   })
