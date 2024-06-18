@@ -130,7 +130,7 @@ export default defineNuxtComponent({
         </div>
       </template>
       <template #item="{ props, item }">
-        <v-list-item v-bind="props">
+        <v-list-item v-bind="props" :title="undefined">
           <v-list-item-media>
             <TeritorioIcon
               :color-text="item.raw!.category.color_line"
