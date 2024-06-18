@@ -56,10 +56,15 @@ export default defineNuxtComponent({
   },
 
   computed: {
-    ...mapState(siteStore, ['locale']),
+    ...mapState(siteStore, ['locale', 'settings']),
 
     isPointTime(): boolean {
       return isSupportedOsmTags(PointTime, this.tagKey)
+    },
+
+    comment() {
+      const oh = this.OpeningHoursFactory()
+      return oh?.getComment(this.baseDate)
     },
 
     isCompact(): boolean {
@@ -164,16 +169,16 @@ export default defineNuxtComponent({
           this.openingHours,
           {
             lon:
-              (this.$settings.bbox_line.coordinates[0][1]
-              + this.$settings.bbox_line.coordinates[1][1])
+              (this.settings!.bbox_line.coordinates[0][1]
+              + this.settings!.bbox_line.coordinates[1][1])
               / 2,
             lat:
-              (this.$settings.bbox_line.coordinates[0][0]
-              + this.$settings.bbox_line.coordinates[1][0])
+              (this.settings!.bbox_line.coordinates[0][0]
+              + this.settings!.bbox_line.coordinates[1][0])
               / 2,
             address: {
-              country_code: this.$settings.default_country,
-              state: this.$settings.default_country_state_opening_hours,
+              country_code: this.settings!.default_country,
+              state: this.settings!.default_country_state_opening_hours,
             },
           },
           optionalConf,
@@ -243,6 +248,9 @@ export default defineNuxtComponent({
       <template v-if="variable">
         <p>{{ $t('openingHours.variableWeek') }}</p>
       </template>
+    </template>
+    <template v-if="isCompact && comment">
+      <p>{{ comment }}</p>
     </template>
   </div>
 </template>
