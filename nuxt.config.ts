@@ -70,7 +70,6 @@ export default defineNuxtConfig({
   },
   plugins: [
     '@/plugins/vido-config.ts',
-    '@/plugins/settings.ts',
     '@/plugins/fontawesome.ts',
     '@/plugins/touch.ts',
     { src: '@/plugins/tracking.ts', mode: 'client' },
