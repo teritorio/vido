@@ -15,7 +15,17 @@ const { config, settings, contents } = storeToRefs(siteStore)
 const menuStore = useMenuStore()
 const { menuItems } = storeToRefs(menuStore)
 const { $trackingInit } = useNuxtApp()
-const router = useRouter()
+const route = useRoute()
+
+//
+// Computed
+//
+const categoryId = computed(() => {
+  if (!route.params.id)
+    return undefined
+
+  return Number.parseInt(route.params.id as string)
+})
 
 //
 // Hooks
@@ -27,11 +37,11 @@ onBeforeMount(() => {
 //
 // Methods
 //
-function onCategoryUpdate(categoryId: number) {
+async function onCategoryUpdate(categoryId: number) {
   if (!categoryId)
     return
 
-  router.push(`/category/${categoryId}`)
+  await navigateTo(`/category/${categoryId}`)
 }
 </script>
 
@@ -45,6 +55,7 @@ function onCategoryUpdate(categoryId: number) {
       <template #search>
         <CategorySelector
           class="w-50"
+          :category-id="categoryId"
           :menu-items="menuItems || {}"
           @category-change="onCategoryUpdate"
         />
