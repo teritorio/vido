@@ -51,67 +51,73 @@ const fields = ref<FieldsListItem[]>()
 const headers = ref<DataTableHeader[]>()
 const category = ref<ApiMenuCategory>()
 
-const { data: pois, error, pending } = useFetch<ApiPois>(
-  `${API_ENDPOINT}/${API_PROJECT}/${API_THEME}/pois/category/${params.id}.geojson`,
+const { data: pois, error, pending, status } = useFetch<ApiPois>(
+  () => `${API_ENDPOINT}/${API_PROJECT}/${API_THEME}/pois/category/${params.id}.geojson`,
   {
     query: {
       geometry_as: 'point',
       short_description: true,
     },
+    transform(pois) {
+      if (!pois.features.length)
+        return pois
+
+      const featureFields = pois.features[0].properties.editorial?.list_fields || []
+
+      // Transform non-string values to single string
+      // Used for sort and filter comparisons
+      return {
+        ...pois,
+        features: pois.features.map((f: ApiPoi) => {
+          const arrayProps: { [key: string]: any } = []
+          const fieldEntries = featureFields.map((f: FieldsListItem) => f.field)
+
+          if (fieldEntries.includes('route'))
+            arrayProps.route = routeToString(f.properties, getContext('route'))
+
+          if (fieldEntries.includes('addr'))
+            arrayProps.addr = addressToString(f.properties)
+
+          return {
+            ...f,
+            properties: {
+              ...f.properties,
+              ...arrayProps,
+            },
+          }
+        }),
+      }
+    },
   },
 )
 
-if (params.id) {
-  category.value = menuStore.getCurrentCategory(Number.parseInt(params.id as string))
+//
+// Watchers
+//
+watch(status, (status) => {
+  switch (status) {
+    case 'error':
+      clearError()
+      break
+    case 'success':
+      if (!pois.value!.features.length || !pois.value!.features[0].properties.editorial?.list_fields)
+        fields.value = [{ field: 'name' }]
 
-  if (!category.value) {
-    throw createError({
-      statusCode: 404,
-      statusMessage: 'Category Not Found',
-    })
+      else
+        fields.value = pois.value!.features[0].properties.editorial.list_fields
+
+      headers.value = getHeaders()
+      category.value = menuStore.getCurrentCategory(Number.parseInt(params.id as string))
+
+      if (!category.value)
+        throw createError({ statusCode: 404, statusMessage: 'Category Not Found' })
+
+      useHead(headerFromSettings(settings.value!, { title: category.value.category.name.fr }))
+      break
+    default:
+      break
   }
-
-  useHead(headerFromSettings(settings.value!, { title: category.value.category.name.fr }))
-
-  if (error.value)
-    throw createError({ statusCode: 404, statusMessage: 'POIs not found.' })
-
-  if (!pending.value && !pois.value)
-    throw createError({ statusCode: 404, statusMessage: 'POIs not found.' })
-
-  fields.value = getFields()
-  headers.value = getHeaders()
-}
-
-function getFields(): FieldsListItem[] {
-  if (!pois.value?.features.length || !pois.value.features[0].properties.editorial?.list_fields)
-    return [{ field: 'name' }]
-
-  // Transform non-string values to single string
-  // Used for sort and filter comparisons
-  const featureFields = pois.value.features[0].properties.editorial.list_fields
-
-  pois.value.features = pois.value.features.map((f: ApiPoi) => {
-    const arrayProps: { [key: string]: any } = []
-    const fieldEntries = featureFields.map((f: FieldsListItem) => f.field)
-
-    if (fieldEntries.includes('route'))
-      arrayProps.route = routeToString(f.properties, getContext('route'))
-
-    if (fieldEntries.includes('addr'))
-      arrayProps.addr = addressToString(f.properties)
-
-    return {
-      ...f,
-      properties: {
-        ...f.properties,
-        ...arrayProps,
-      },
-    }
-  })
-
-  return featureFields
-}
+}, { immediate: true })
 
 //
 // Methods
@@ -199,7 +205,9 @@ function getColKey(key: string) {
   <VCard class="mb-4">
     <!-- Because of Vuetify internal hydration mismatch (See: https://github.com/vuetifyjs/vuetify/issues/19696) -->
     <ClientOnly>
+      <VBanner v-if="error && params.id" bg-color="#F44336" :text="error.message" />
       <VDataTable
+        v-else
         :loading="pending"
         :headers="headers"
         :items="pois?.features"
