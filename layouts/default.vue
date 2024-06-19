@@ -13,6 +13,7 @@ const siteStore = useSiteStore()
 const { config, settings, contents, translations, locale } = storeToRefs(siteStore)
 const menuStore = useMenuStore()
 const { menuItems } = storeToRefs(menuStore)
+const { $propertyTranslations } = useNuxtApp()
 
 if (process.server) {
   await siteStore.init(useRequestHeaders())
@@ -35,6 +36,7 @@ if (!contents.value)
 if (!translations.value)
   throw createError({ statusCode: 500, statusMessage: 'Failed to fetch translations', fatal: true })
 
+$propertyTranslations.set(translations.value)
 useHead(headerFromSettings(settings.value, { googleSiteVerification: config.value!.GOOGLE_SITE_VERIFICATION }))
 locale.value = i18nLocale.value
 </script>
