@@ -197,93 +197,96 @@ function getColKey(key: string) {
 
 <template>
   <VCard class="mb-4">
-    <VDataTable
-      :loading="pending"
-      :headers="headers"
-      :items="pois?.features"
-      :no-data-text="t('poisTable.empty')"
-      :search="search"
-      :custom-filter="customFilter"
-      items-per-page="20"
-    >
-      <template #top>
-        <VContainer
-          :style="{ background: '#eeeeee' }"
-          class="ma-0"
-          tag="header"
-          fluid
-        >
-          <VRow align="center" justify="center" dense>
-            <VCol cols="12" sm="4">
-              <h1
-                v-if="category"
-                class="d-flex align-center justify-center justify-sm-start print:tw-pb-4"
-              >
-                <TeritorioIconBadge
-                  :color-fill="category.category.color_fill"
-                  :picto="category.category.icon"
-                  size="xl"
+    <!-- Because of Vuetify internal hydration mismatch (See: https://github.com/vuetifyjs/vuetify/issues/19696) -->
+    <ClientOnly>
+      <VDataTable
+        :loading="pending"
+        :headers="headers"
+        :items="pois?.features"
+        :no-data-text="t('poisTable.empty')"
+        :search="search"
+        :custom-filter="customFilter"
+        items-per-page="20"
+      >
+        <template #top>
+          <VContainer
+            :style="{ background: '#eeeeee' }"
+            class="ma-0"
+            tag="header"
+            fluid
+          >
+            <VRow align="center" justify="center" dense>
+              <VCol cols="12" sm="4">
+                <h1
+                  v-if="category"
+                  class="d-flex align-center justify-center justify-sm-start print:tw-pb-4"
+                >
+                  <TeritorioIconBadge
+                    :color-fill="category.category.color_fill"
+                    :picto="category.category.icon"
+                    size="xl"
+                  />
+                  {{ category.category.name.fr }}
+                </h1>
+              </VCol>
+              <VCol cols="12" sm="4" class="ml-auto">
+                <VTextField
+                  v-model="search"
+                  :label="t('poisTable.filter')"
+                  clearable
+                  variant="solo-filled"
+                  hide-details="auto"
+                >
+                  <template #append-inner>
+                    <FontAwesomeIcon class="px-2" icon="search" />
+                  </template>
+                </VTextField>
+              </VCol>
+              <VCol cols="12" sm="auto">
+                <Actions
+                  v-if="category"
+                  class="ma-0 w-auto"
+                  :category-id="category.id"
+                  :color-line="category.category.color_line"
                 />
-                {{ category.category.name.fr }}
-              </h1>
-            </VCol>
-            <VCol cols="12" sm="4" class="ml-auto">
-              <VTextField
-                v-model="search"
-                :label="t('poisTable.filter')"
-                clearable
-                variant="solo-filled"
-                hide-details="auto"
-              >
-                <template #append-inner>
-                  <FontAwesomeIcon class="px-2" icon="search" />
-                </template>
-              </VTextField>
-            </VCol>
-            <VCol cols="12" sm="auto">
-              <Actions
-                v-if="category"
-                class="ma-0 w-auto"
-                :category-id="category.id"
-                :color-line="category.category.color_line"
+              </VCol>
+            </VRow>
+          </VContainer>
+        </template>
+        <template #item="{ item, columns }">
+          <tr>
+            <td v-for="col in columns" :key="col.key!">
+              <ContribFieldGroup
+                v-if="col.key === 'contrib' && isContribEligible(item.properties)"
+                v-bind="getContributorFields(item)"
               />
-            </VCol>
-          </VRow>
-        </VContainer>
-      </template>
-      <template #item="{ item, columns }">
-        <tr>
-          <td v-for="col in columns" :key="col.key!">
-            <ContribFieldGroup
-              v-if="col.key === 'contrib' && isContribEligible(item.properties)"
-              v-bind="getContributorFields(item)"
-            />
-            <IconButton
-              v-else-if="col.key === 'details' && item.properties.editorial && item.properties.editorial['website:details']"
-              class="tw-h-10"
-              :href="item.properties.editorial['website:details']"
-              :label="t('poisTable.details')"
-              :target="detailsIsExternal ? '_blank' : '_self'"
-            >
-              <FontAwesomeIcon icon="external-link-alt" />
-              {{ t('poisTable.details') }}
-            </IconButton>
-            <Field
-              v-else
-              :context="getContext(getColKey(col.key!))"
-              :recursion-stack="[getColKey(col.key!)]"
-              :field="{ field: getColKey(col.key!) }"
-              :details="t('poisTable.details')"
-              :properties="item.properties"
-              :geom="item.geometry"
-            />
-          </td>
-        </tr>
-      </template>
-      <template #loading>
-        <v-skeleton-loader type="table-row@10" />
-      </template>
-    </VDataTable>
+              <IconButton
+                v-else-if="col.key === 'details' && item.properties.editorial && item.properties.editorial['website:details']"
+                class="tw-h-10"
+                :href="item.properties.editorial['website:details']"
+                :label="t('poisTable.details')"
+                :target="detailsIsExternal ? '_blank' : '_self'"
+              >
+                <FontAwesomeIcon icon="external-link-alt" />
+                {{ t('poisTable.details') }}
+              </IconButton>
+              <Field
+                v-else
+                :context="getContext(getColKey(col.key!))"
+                :recursion-stack="[getColKey(col.key!)]"
+                :field="{ field: getColKey(col.key!) }"
+                :details="t('poisTable.details')"
+                :properties="item.properties"
+                :geom="item.geometry"
+              />
+            </td>
+          </tr>
+        </template>
+        <template #loading>
+          <v-skeleton-loader type="table-row@10" />
+        </template>
+      </VDataTable>
+    </ClientOnly>
   </VCard>
 </template>
 
