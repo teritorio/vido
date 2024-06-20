@@ -4,7 +4,6 @@ import { localeIncludes } from 'locale-includes'
 import { storeToRefs } from 'pinia'
 import { PropertyTranslationsContextEnum } from '~/plugins/property-translations'
 import type { ApiPoi, ApiPois, FieldsListItem } from '~/lib/apiPois'
-import type { ApiMenuCategory } from '~/lib/apiMenu'
 import Field from '~/components/Fields/Field.vue'
 import IconButton from '~/components/UI/IconButton.vue'
 import ContribFieldGroup from '~/components/Fields/ContribFieldGroup.vue'
@@ -40,24 +39,25 @@ const { config, settings } = storeToRefs(siteStore)
 const menuStore = useMenuStore()
 const { $propertyTranslations } = useNuxtApp()
 const { contribMode, isContribEligible, getContributorFields } = useContrib()
-const { params } = useRoute()
+const route = useRoute()
 
 //
 // Data
 //
 const { API_ENDPOINT, API_PROJECT, API_THEME } = config.value!
 const search = ref('')
-const fields = ref<FieldsListItem[]>()
-const headers = ref<DataTableHeader[]>()
-const category = ref<ApiMenuCategory>()
 
+//
+// Data Fetching
+//
 const { data: pois, error, pending, status } = useFetch<ApiPois>(
-  () => `${API_ENDPOINT}/${API_PROJECT}/${API_THEME}/pois/category/${params.id}.geojson`,
+  () => `${API_ENDPOINT}/${API_PROJECT}/${API_THEME}/pois/category/${route.params.id}.geojson`,
   {
     query: {
       geometry_as: 'point',
       short_description: true,
     },
+    immediate: !!route.params.id,
     transform(pois) {
       if (!pois.features.length)
         return pois
@@ -91,39 +91,19 @@ const { data: pois, error, pending, status } = useFetch<ApiPois>(
   },
 )
 
-//
-// Watchers
-//
-watch(status, (status) => {
-  switch (status) {
-    case 'error':
-      clearError()
-      break
-    case 'success':
-      if (!pois.value!.features.length || !pois.value!.features[0].properties.editorial?.list_fields)
-        fields.value = [{ field: 'name' }]
-
-      else
-        fields.value = pois.value!.features[0].properties.editorial.list_fields
-
-      headers.value = getHeaders()
-      category.value = menuStore.getCurrentCategory(Number.parseInt(params.id as string))
-
-      if (!category.value)
-        throw createError({ statusCode: 404, statusMessage: 'Category Not Found' })
-
-      useHead(headerFromSettings(settings.value!, { title: category.value.category.name.fr }))
-      break
-    default:
-      break
-  }
-}, { immediate: true })
+if (error.value) {
+  clearError()
+}
 
 //
-// Methods
+// Computed
 //
-function getHeaders() {
-  const h: DataTableHeader[] = fields.value!.map((f: FieldsListItem) => ({
+const headers = computed(() => {
+  let fields = [{ field: 'name' }]
+  if (pois.value?.features.length && pois.value.features[0].properties.editorial?.list_fields)
+    fields = pois.value.features[0].properties.editorial.list_fields
+
+  const headers: DataTableHeader[] = fields.map((f: FieldsListItem) => ({
     filterable: true,
     key: `properties.${f.field}`,
     sortable: true,
@@ -135,7 +115,7 @@ function getHeaders() {
   }))
 
   if (contribMode) {
-    h.push({
+    headers.push({
       filterable: false,
       sortable: false,
       key: 'contrib',
@@ -144,7 +124,7 @@ function getHeaders() {
     })
   }
 
-  h.push({
+  headers.push({
     filterable: false,
     sortable: false,
     key: 'details',
@@ -152,9 +132,25 @@ function getHeaders() {
     width: '100px',
   })
 
-  return h
-}
+  return headers
+})
 
+const category = computed(() => {
+  if (!route.params.id)
+    return undefined
+
+  const categoryExists = menuStore.getCurrentCategory(Number.parseInt(route.params.id as string))
+
+  if (!categoryExists) {
+    throw createError({ statusCode: 404, message: 'Category Not Found' })
+  }
+
+  return categoryExists
+})
+
+//
+// Methods
+//
 function valueToString(item: any) {
   if (Array.isArray(item))
     return item.join(' ')
@@ -199,16 +195,18 @@ function getColKey(key: string) {
 
   return key
 }
+
+useHead(headerFromSettings(settings.value!, { title: category.value?.category.name.fr }))
 </script>
 
 <template>
   <VCard class="mb-4">
     <!-- Because of Vuetify internal hydration mismatch (See: https://github.com/vuetifyjs/vuetify/issues/19696) -->
     <ClientOnly>
-      <VBanner v-if="error && params.id" bg-color="#F44336" :text="error.message" />
+      <VBanner v-if="error" bg-color="#F44336" :text="error.message" />
       <VDataTable
         v-else
-        :loading="pending"
+        :loading="pending && status === 'pending'"
         :headers="headers"
         :items="pois?.features"
         :no-data-text="t('poisTable.empty')"
