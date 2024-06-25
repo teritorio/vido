@@ -3588,7 +3588,7 @@ __metadata:
     vue-screen: "npm:^2.2.0"
     vue-tsc: "npm:^1.8.27"
     vue3-touch-events: "npm:^4.1.3"
-    vuetify: "npm:3.4.0"
+    vuetify: "npm:3.4.3"
   languageName: unknown
   linkType: soft
 
@@ -16713,9 +16713,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"vuetify@npm:3.4.0":
-  version: 3.4.0
-  resolution: "vuetify@npm:3.4.0"
+"vuetify@npm:3.4.3":
+  version: 3.4.3
+  resolution: "vuetify@npm:3.4.3"
   peerDependencies:
     typescript: ">=4.7"
     vite-plugin-vuetify: ^1.0.0-alpha.12
@@ -16731,7 +16731,7 @@ __metadata:
       optional: true
     webpack-plugin-vuetify:
       optional: true
-  checksum: 10c0/616cc98da777e38d1e132d0b2c4030f08c5c293dcef6e4e8217f9731ef901728bb262ecff0e4ff69a755875367d3f152760e883e4533c61087ce7519e30da5eb
+  checksum: 10c0/140978b26f2ebe00db537e5ea74853f1512f910445129756d6d4d0ee7ceaf475706ba7143f54394fed37b1259e6c788e2e5db39f24e76ed0e3000ea140f29614
   languageName: node
   linkType: hard
 
