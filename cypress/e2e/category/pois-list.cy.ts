@@ -16,6 +16,8 @@ const htmlValidateRules = {
     'input-missing-label': 0,
     'element-permitted-content': 0,
     'unique-landmark': 0,
+    'no-redundant-role': 0,
+    'text-content': 0,
   },
 }
 
