@@ -15,16 +15,33 @@ const { config, settings, contents } = storeToRefs(siteStore)
 const menuStore = useMenuStore()
 const { menuItems } = storeToRefs(menuStore)
 const { $trackingInit } = useNuxtApp()
-const route = useRoute()
+const { params, query, name } = useRoute()
 
 //
 // Computed
 //
 const categoryId = computed(() => {
-  if (!route.params.id)
+  if (!params.id)
     return undefined
 
-  return Number.parseInt(route.params.id as string)
+  return Number.parseInt(params.id as string)
+})
+
+const filters = computed(() => {
+  return query.menuItemIds
+    ? query.menuItemIds
+      .toString()
+      .split(',')
+      .map(f => Number.parseInt(f))
+    : undefined
+})
+
+const isEmbedded = computed(() => {
+  return name?.toString().indexOf('embedded') !== -1
+})
+
+const isFiltersEqualToCategoryId = computed(() => {
+  return filters.value?.length === 1 && filters.value[0] === categoryId.value
 })
 
 //
@@ -41,12 +58,28 @@ async function onCategoryUpdate(categoryId: number) {
   if (!categoryId)
     return
 
-  await navigateTo(`/category/${categoryId}`)
+  if (isEmbedded.value) {
+    await navigateTo({ path: `/category/embedded/${categoryId}`, query })
+  }
+  else {
+    await navigateTo(`/category/${categoryId}`)
+  }
 }
 </script>
 
 <template>
-  <VContainer fluid>
+  <div v-if="isEmbedded">
+    <CategorySelector
+      v-if="!isFiltersEqualToCategoryId"
+      class="pa-4"
+      :filters="filters"
+      :menu-items="menuItems || {}"
+      :category-id="categoryId"
+      @category-change="onCategoryUpdate"
+    />
+    <PoisTable :details-is-external="true" />
+  </div>
+  <VContainer v-else fluid>
     <Header
       class="mb-4"
       :theme="settings!.themes[0]"
