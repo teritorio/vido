@@ -265,7 +265,6 @@ export default defineNuxtComponent({
     },
 
     // Map interactions
-
     onClick(e: MapMouseEvent) {
       let selectedFeatures = STYLE_LAYERS.map((layerId) => {
         return this.map.queryRenderedFeatures(e.point, {
