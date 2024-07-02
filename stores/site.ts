@@ -1,8 +1,8 @@
 import { defineStore } from 'pinia'
-
-import type { ContentEntry } from '~/lib/apiContent'
-import type { PropertyTranslations } from '~/lib/apiPropertyTranslations'
-import type { Settings } from '~/lib/apiSettings'
+import { vidoConfig } from '~/plugins/vido-config'
+import { type ContentEntry, getContents } from '~/lib/apiContent'
+import { type PropertyTranslations, getPropertyTranslations } from '~/lib/apiPropertyTranslations'
+import { type Settings, getSettings } from '~/lib/apiSettings'
 import type { VidoConfig } from '~/utils/types-config'
 
 interface State {
@@ -21,4 +21,12 @@ export const siteStore = defineStore('site', {
     contents: undefined,
     translations: undefined,
   }),
+  actions: {
+    async init(headers: Record<string, string>) {
+      this.config = vidoConfig(headers)
+      this.settings = await getSettings(this.config)
+      this.contents = await getContents(this.config)
+      this.translations = await getPropertyTranslations(this.config)
+    },
+  },
 })

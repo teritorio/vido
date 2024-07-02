@@ -1,8 +1,8 @@
 <script lang="ts" setup>
-import Stars from '~/components/Fields/Stars.vue'
+import Stars, { StarsEnum } from '~/components/Fields/Stars.vue'
 
 const defaultProps = {
-  stars: 3,
+  stars: StarsEnum.Three,
 }
 
 const props = {
@@ -10,10 +10,7 @@ const props = {
     ...defaultProps,
   },
   More: {
-    stars: 10,
-  },
-  None: {
-    stars: 0,
+    stars: StarsEnum.FiveS,
   },
 }
 </script>

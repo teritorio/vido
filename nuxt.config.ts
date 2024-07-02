@@ -1,4 +1,3 @@
-import { defineNuxtConfig } from 'nuxt/config'
 import vuetify from 'vite-plugin-vuetify'
 import checker from 'vite-plugin-checker'
 
@@ -25,25 +24,10 @@ export default defineNuxtConfig({
   gtm: {
     pageTracking: false,
   },
-  head: {
-    htmlAttrs: {
-      lang: 'fr',
-    },
-    link: [{ rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }],
-    meta: [
-      { charset: 'utf-8' },
-      { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-      { hid: 'description', name: 'description', content: '' },
-    ],
-    title: '@teritorio/vido',
-  },
   i18n: {
     defaultLocale: 'en',
     detectBrowserLanguage: {
       useCookie: false,
-    },
-    experimental: {
-      jsTsFormatResource: true,
     },
     langDir: 'locales',
     lazy: true,
@@ -86,7 +70,6 @@ export default defineNuxtConfig({
   },
   plugins: [
     '@/plugins/vido-config.ts',
-    '@/plugins/settings.ts',
     '@/plugins/fontawesome.ts',
     '@/plugins/touch.ts',
     { src: '@/plugins/tracking.ts', mode: 'client' },

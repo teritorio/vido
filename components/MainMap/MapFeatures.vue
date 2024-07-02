@@ -11,12 +11,12 @@ import type {
   MapMouseEvent,
 } from 'maplibre-gl'
 import { Marker } from 'maplibre-gl'
-import { mapActions, mapState, mapWritableState } from 'pinia'
+import { mapActions, mapState, mapWritableState, storeToRefs } from 'pinia'
 import type { PropType } from 'vue'
 import { ref } from 'vue'
 import booleanIntersects from '@turf/boolean-intersects'
 
-import { defineNuxtComponent, useRequestHeaders } from '#app'
+import { defineNuxtComponent } from '#app'
 import MapControlsExplore from '~/components/MainMap/MapControlsExplore.vue'
 import SnackBar from '~/components/MainMap/SnackBar.vue'
 import MapBase from '~/components/Map/MapBase.vue'
@@ -31,6 +31,7 @@ import type { VectorTilesPoi } from '~/lib/vectorTilesPois'
 import { vectorTilesPoi2ApiPoi } from '~/lib/vectorTilesPois'
 import { mapStore } from '~/stores/map'
 import { menuStore } from '~/stores/menu'
+import { siteStore as useSiteStore } from '~/stores/site'
 import { snackStore } from '~/stores/snack'
 import { filterRouteByCategories, filterRouteByPoiIds } from '~/utils/styles'
 import type { LatLng } from '~/utils/types'
@@ -116,8 +117,10 @@ export default defineNuxtComponent({
 
   setup() {
     const device = useDevice()
+    const { config } = storeToRefs(useSiteStore())
 
     return {
+      config,
       device,
       mapBase: ref<InstanceType<typeof MapBase>>(),
     }
@@ -294,7 +297,7 @@ export default defineNuxtComponent({
             // Seted temp partial data from vector tiles.
             // Now fetch full data.
             return getPoiById(
-              this.$vidoConfig(useRequestHeaders()),
+              this.config!,
               feature.properties.metadata.id,
             ).then((apiPoi) => {
               // Overide geometry.
@@ -393,8 +396,9 @@ export default defineNuxtComponent({
         !isOneInView
         && currentZoom >= MAP_ZOOM.zoom.default
         && this.features.length > 0
-      )
+      ) {
         this.showZoomSnack(text, textBtn)
+      }
 
       if (currentZoom < MAP_ZOOM.zoom.default)
         this.resetZoom()
@@ -410,14 +414,14 @@ export default defineNuxtComponent({
       // Add new marker if a feature is selected
       if (
         this.selectedFeature
-          && (this.selectedFeature.properties?.metadata?.id
-          || this.selectedFeature?.id
-          || this.selectedFeature?.properties?.id)
+        && (this.selectedFeature.properties?.metadata?.id
+        || this.selectedFeature?.id
+        || this.selectedFeature?.properties?.id)
       ) {
         filterRouteByPoiIds(this.map as Map, [
           this.selectedFeature.properties?.metadata?.id
-            || this.selectedFeature?.id
-            || this.selectedFeature?.properties?.id,
+          || this.selectedFeature?.id
+          || this.selectedFeature?.properties?.id,
         ])
 
         if (

@@ -8,7 +8,7 @@ import FavoriteIcon from '~/components/UI/FavoriteIcon.vue'
 import TeritorioIcon from '~/components/UI/TeritorioIcon.vue'
 import type { ApiPoi, ApiPoiId, ApiPoiProperties } from '~/lib/apiPois'
 import { coordinatesHref } from '~/lib/coordinates'
-import { favoritesStore } from '~/stores/favorite'
+import { favoriteStore } from '~/stores/favorite'
 import { mapStore } from '~/stores/map'
 import { isIOS } from '~/utils/isIOS'
 import ContribFieldGroup from '~/components/Fields/ContribFieldGroup.vue'
@@ -67,22 +67,21 @@ export default defineNuxtComponent({
 
   computed: {
     ...mapState(mapStore, ['isModeExplorer']),
-    ...mapState(favoritesStore, ['favoritesIds']),
+    ...mapState(favoriteStore, ['favoritesIds', 'favoriteAddresses']),
 
     id(): ApiPoiId {
       return this.poi.properties.metadata.id
     },
 
-    isModeFavorites(): boolean {
-      const currentFavorites = this.favoritesIds
-      return currentFavorites.includes(this.id)
+    isFavorite() {
+      return this.favoritesIds.includes(this.id) || this.favoriteAddresses.has(this.id.toString())
     },
 
     name(): string | undefined {
       return (
         this.poi.properties.name
-          || this.poi.properties.editorial?.class_label_popup?.fr
-          || this.poi.properties.editorial?.class_label?.fr
+        || this.poi.properties.editorial?.class_label_popup?.fr
+        || this.poi.properties.editorial?.class_label?.fr
       )
     },
 
@@ -101,7 +100,7 @@ export default defineNuxtComponent({
     category(): string | undefined {
       return (
         this.poi.properties.editorial?.class_label_popup?.fr
-          || this.poi.properties.editorial?.class_label?.fr
+        || this.poi.properties.editorial?.class_label?.fr
       )
     },
 
@@ -165,7 +164,7 @@ export default defineNuxtComponent({
     },
 
     onFavoriteClick() {
-      if (!this.isModeFavorites)
+      if (!this.isFavorite)
         this.trackingPopupEvent('favorite')
 
       this.$emit('favoriteClick', this.poi)
@@ -313,12 +312,10 @@ export default defineNuxtComponent({
         v-if="favoritesModeEnabled && id"
         type="button"
         class="tw-flex tw-flex-col tw-items-center tw-flex-1 tw-h-full tw-p-2 tw-space-y-2 tw-rounded-lg hover:tw-bg-zinc-100"
-        :title="
-          isModeFavorites ? $t('poiCard.favoriteOn') : $t('poiCard.favoriteOff')
-        "
+        :title="isFavorite ? $t('poiCard.favoriteOn') : $t('poiCard.favoriteOff')"
         @click.stop="onFavoriteClick"
       >
-        <FavoriteIcon :is-active="isModeFavorites" :color-line="colorLine" />
+        <FavoriteIcon :is-active="isFavorite" :color-line="colorLine" />
         <span class="tw-text-sm">{{ $t('poiCard.favorite') }}</span>
       </button>
     </div>

@@ -55,7 +55,7 @@ Can be build directly (dev) or within Docker.
 
 **Prerequisite**
 
-- Node >= 18.0.0 < 20.0.0
+- Node ^14.18.0 || >=16.10.0
 
 ```bash
 # Create empty config file, will be build on `build-config` step
@@ -81,9 +81,9 @@ yarn start
 ### Setup with Docker
 ```
 cp .env.sample .env
-docker-compose build
-docker-compose -f docker-compose.yml run --rm vido yarn build-config
-docker-compose up -d
+docker compose build
+docker-compose -f docker compose.yml run --rm vido yarn build-config
+docker compose up -d
 ```
 
 ### Production configuration

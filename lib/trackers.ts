@@ -79,6 +79,6 @@ export type Event =
   }
 
 export interface Tracker {
-  consent(app: App): void
-  track(app: App, event: Event): void
+  consent: (app: App) => void
+  track: (app: App, event: Event) => void
 }

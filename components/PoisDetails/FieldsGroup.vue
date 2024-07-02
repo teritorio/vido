@@ -114,7 +114,7 @@ export default defineNuxtComponent({
           />
         </div>
         <Block
-          v-else-if="field.display_mode === 'card'"
+          v-else-if="field.display_mode === 'card' && field.icon"
           :color-fill="colorFill"
           :icon="field.icon"
           class="print:tw-hidden"

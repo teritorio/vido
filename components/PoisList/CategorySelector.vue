@@ -75,10 +75,7 @@ export default defineNuxtComponent({
             if (!this.menuItems[parentId])
               return undefined
 
-            if (
-              this.filters
-                && (this.filters.includes(parentId) || this.filters.includes(menuItem.id))
-            )
+            if (this.filters && (this.filters.includes(parentId) || this.filters.includes(menuItem.id)))
               isIncluded = true
 
             const name = this.menuItems[parentId].menu_group?.name.fr
@@ -133,11 +130,11 @@ export default defineNuxtComponent({
         </div>
       </template>
       <template #item="{ props, item }">
-        <v-list-item v-bind="props" :title="null">
+        <v-list-item v-bind="props" :title="undefined">
           <v-list-item-media>
             <TeritorioIcon
-              :color-text="item.raw.category.color_line"
-              :picto="item.raw.category.icon"
+              :color-text="item.raw!.category.color_line"
+              :picto="item.raw!.category.icon"
               use-native-alignment
             />
             {{ item.title }}

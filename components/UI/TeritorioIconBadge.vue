@@ -16,7 +16,7 @@ export default defineNuxtComponent({
     },
     picto: {
       type: String as PropType<string>,
-      required: true,
+      required: false,
     },
     size: {
       type: String as PropType<string>,
@@ -67,13 +67,14 @@ export default defineNuxtComponent({
     ]"
     :style="{ backgroundColor: colorFill }"
   >
+    <b v-if="text">{{ text }}</b>
     <TeritorioIcon
-      v-if="!text"
+      v-if="picto"
       :class="`tw-text-${iconSize}`"
       :picto="picto"
       :image="image"
     />
-    <b v-else>{{ text }}</b>
+
     <slot />
   </span>
 </template>

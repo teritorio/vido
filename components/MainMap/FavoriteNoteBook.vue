@@ -1,104 +1,67 @@
-<script lang="ts">
+<script setup lang="ts">
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
-import { mapState } from 'pinia'
-import type { PropType } from 'vue'
-import { ref } from 'vue'
-
-import { defineNuxtComponent, useRequestHeaders } from '#app'
+import { storeToRefs } from 'pinia'
 import PoisDeck from '~/components/PoisCard/PoisDeck.vue'
 import IconButton from '~/components/UI/IconButton.vue'
 import IconsBar from '~/components/UI/IconsBar.vue'
 import ShareLinkModal from '~/components/UI/ShareLinkModal.vue'
 import UIButton from '~/components/UI/UIButton.vue'
-import type { ApiPoi, ApiPoiId } from '~/lib/apiPois'
-import { favoritesStore } from '~/stores/favorite'
+import type { ApiPoi } from '~/lib/apiPois'
+import { favoriteStore as useFavoriteStore } from '~/stores/favorite'
+import { siteStore as useSiteStore } from '~/stores/site'
 
-export default defineNuxtComponent({
-  components: {
-    FontAwesomeIcon,
-    PoisDeck,
-    ShareLinkModal,
-    IconsBar,
-    IconButton,
-    UIButton,
-  },
+defineProps<{
+  explorerModeEnabled: boolean
+}>()
 
-  emits: {
-    onClose: () => true,
-    zoomClick: (_poi: ApiPoi) => true,
-    exploreClick: (_poi: ApiPoi) => true,
-    favoriteClick: (_poi: ApiPoi) => true,
-  },
+defineEmits<{
+  (e: 'onClose'): void
+  (e: 'exploreClick', poi: ApiPoi): void
+  (e: 'favoriteClick', poi: ApiPoi): void
+  (e: 'zoomClick', poi: ApiPoi): void
+}>()
 
-  props: {
-    favs: {
-      type: Array as PropType<ApiPoi[]>,
-      required: true,
-    },
-    selectedFavsIds: {
-      type: Array as PropType<ApiPoiId[]>,
-      required: true,
-    },
-    explorerModeEnabled: {
-      type: Boolean,
-      required: true,
-    },
-  },
-  setup() {
-    return {
-      shareModal: ref<InstanceType<typeof ShareLinkModal>>(),
-    }
-  },
+const shareModal = ref<InstanceType<typeof ShareLinkModal>>()
 
-  computed: {
-    ...mapState(favoritesStore, ['favoritesIds']),
+const favoriteStore = useFavoriteStore()
+const { favoritesIds, favoriteAddresses, favoriteFeatures } = storeToRefs(favoriteStore)
 
-    pdfLink(): string {
-      const config = this.$vidoConfig(useRequestHeaders())
-      return `${config.API_EXPORT}/${config.API_PROJECT}/${
-        config.API_THEME
-      }/pois/favorites.pdf?ids=${this.favoritesIds.join(',')}`
-    },
+const { config } = useSiteStore()
+const idsStringified = [...favoritesIds.value, ...Array.from(favoriteAddresses.value.values()).map(id => `addr:${id}`)].join(',')
 
-    csvLink(): string {
-      const config = this.$vidoConfig(useRequestHeaders())
-      return `${config.API_ENDPOINT}/${config.API_PROJECT}/${
-        config.API_THEME
-      }/pois.csv?ids=${this.favoritesIds.join(',')}`
-    },
-  },
-
-  methods: {
-    setShareLink() {
-      try {
-        this.shareModal!.open(
-          `${location.origin}/#mode=favorites&favs=${this.favoritesIds.join(
-            ',',
-          )}`,
-        )
-      }
-      catch (e) {
-        console.error('Vido error:', (e as Error).message)
-      }
-    },
-
-    exportLink(w: 'export_pdf' | 'export_csv') {
-      this.$tracking({
-        type: 'favorites_event',
-        event: w,
-      })
-    },
-
-    removeFavorites() {
-      try {
-        favoritesStore().setFavorites([])
-      }
-      catch (e) {
-        console.error('Vido error:', (e as Error).message)
-      }
-    },
-  },
+const pdfLink = computed(() => {
+  return `${config!.API_EXPORT}/${config!.API_PROJECT}/${config!.API_THEME}/pois/favorites.pdf?ids=${favoritesIds.value.join(',')}`
 })
+
+const csvLink = computed(() => {
+  return `${config!.API_ENDPOINT}/${config!.API_PROJECT}/${config!.API_THEME}/pois.csv?ids=${favoritesIds.value.join(',')}`
+})
+
+function setShareLink() {
+  try {
+    shareModal.value?.open(`${location.origin}/#mode=favorites&favs=${idsStringified}`)
+  }
+  catch (e) {
+    console.error('Vido error:', (e as Error).message)
+  }
+}
+
+const { $tracking } = useNuxtApp()
+function exportLink(w: 'export_pdf' | 'export_csv') {
+  $tracking({
+    type: 'favorites_event',
+    event: w,
+  })
+}
+
+function removeFavorites() {
+  try {
+    favoriteStore.reset()
+  }
+  catch (e) {
+    console.error('Vido error:', (e as Error).message)
+  }
+}
 </script>
 
 <template>
@@ -124,7 +87,7 @@ export default defineNuxtComponent({
           <IconButton
             :label="$t('favorites.menu_share')"
             class="tw-h-8"
-            @click="setShareLink()"
+            @click="setShareLink"
           >
             <FontAwesomeIcon icon="share-alt" />
             <span class="tw-text-sm">{{ $t('favorites.notebook.share') }}</span>
@@ -154,7 +117,7 @@ export default defineNuxtComponent({
           <IconButton
             :label="$t('favorites.menu_clear')"
             class="tw-h-8"
-            @click="removeFavorites()"
+            @click="removeFavorites"
           >
             <FontAwesomeIcon icon="trash" />
             <span class="tw-text-sm">{{
@@ -166,8 +129,8 @@ export default defineNuxtComponent({
     </div>
 
     <PoisDeck
-      :pois="favs"
-      :selected-poi-ids="selectedFavsIds"
+      :pois="favoriteFeatures"
+      :is-card-light="false"
       :explorer-mode-enabled="explorerModeEnabled"
       :favorites-mode-enabled="true"
       class="tw-pb-4"

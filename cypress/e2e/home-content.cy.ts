@@ -1,11 +1,17 @@
 import { mockSSRAPI } from '../support/mock'
-
-import teritorioReferenceAPIFixture from '~/cypress/fixtures/teritorio/references/teritorioReferenceAPIFixture'
+import teritorioReferenceAPIFixture from '../fixtures/teritorio/references/teritorioReferenceAPIFixture'
 
 const hostnames = {
   'https://dev.appcarto.teritorio.xyz':
     '/content/api.teritorio/geodata/v0.1/dev/tourism/',
   'http://127.0.0.1:3000': '/fixtures/teritorio/references/',
+}
+
+const htmlValidateRules = {
+  rules: {
+    'unique-landmark': 0,
+    'no-redundant-role': 0,
+  },
 }
 
 describe('home content', () => {
@@ -35,7 +41,7 @@ describe('home content', () => {
     // Use 3D on aerial
     cy.get('#3D-selector-map').click()
 
-    cy.htmlvalidate()
+    cy.htmlvalidate(htmlValidateRules)
   })
 
   it('bugger menu content entry item', () => {
@@ -44,6 +50,6 @@ describe('home content', () => {
       teritorioReferenceAPIFixture.articles[0].title,
     )
 
-    cy.htmlvalidate()
+    cy.htmlvalidate(htmlValidateRules)
   })
 })

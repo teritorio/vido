@@ -8,7 +8,7 @@ import TeritorioIconBadge from '~/components/UI/TeritorioIconBadge.vue'
 import UIPicture from '~/components/UI/UIPicture.vue'
 import type { ApiPoi } from '~/lib/apiPois'
 import type { MapPoiId } from '~/lib/mapPois'
-import { favoritesStore } from '~/stores/favorite'
+import { favoriteStore } from '~/stores/favorite'
 
 export default defineNuxtComponent({
   components: {
@@ -37,7 +37,7 @@ export default defineNuxtComponent({
   },
 
   computed: {
-    ...mapState(favoritesStore, ['favoritesIds']),
+    ...mapState(favoriteStore, ['favoritesIds']),
 
     id(): MapPoiId {
       return this.poi.properties.metadata.id
@@ -46,8 +46,8 @@ export default defineNuxtComponent({
     name(): string | undefined {
       return (
         this.poi.properties.name
-          || this.poi.properties.editorial?.class_label_popup?.fr
-          || this.poi.properties.editorial?.class_label?.fr
+        || this.poi.properties.editorial?.class_label_popup?.fr
+        || this.poi.properties.editorial?.class_label?.fr
       )
     },
 
@@ -70,7 +70,7 @@ export default defineNuxtComponent({
     websiteDetails(): string | undefined {
       return (
         this.poi.properties.editorial
-          && this.poi.properties.editorial['website:details']
+        && this.poi.properties.editorial['website:details']
       )
     },
   },

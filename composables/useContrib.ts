@@ -1,5 +1,6 @@
 import type { ApiPoi, ApiPoiProperties } from '~/lib/apiPois'
 import { STORE_NAME, useContribStore } from '~/stores/contrib'
+import { siteStore as useSiteStore } from '~/stores/site'
 
 export interface Link {
   icon: string
@@ -9,6 +10,7 @@ export interface Link {
 
 export interface ContribFields {
   editor_id: Link
+  json: Link
   josm: Link
   mapillary_link?: Link
   osm_note: Link
@@ -16,6 +18,7 @@ export interface ContribFields {
 
 export default function () {
   const { enabled, setEnabled } = useContribStore()
+  const config = useSiteStore().config
 
   function isContribEligible(properties: ApiPoiProperties): boolean {
     return !!(properties.metadata.osm_id && properties.metadata.osm_type && properties.editorial)
@@ -23,13 +26,17 @@ export default function () {
 
   function getContributorFields(feature: ApiPoi): ContribFields {
     const { mapillary } = feature.properties
-    const { osm_id, osm_type } = feature.properties.metadata
+    const { osm_id, osm_type, id } = feature.properties.metadata
     const { coordinates } = feature.geometry as GeoJSON.Point
 
     return {
       editor_id: {
         icon: 'pen-to-square',
         url: `https://www.openstreetmap.org/edit?editor=id&${osm_type}=${osm_id}`,
+      },
+      json: {
+        icon: 'map-marker-alt',
+        url: `${config!.API_ENDPOINT}/${config!.API_PROJECT}/${config!.API_THEME}/poi/${id}/deps.geojson?geometry_as=bbox&short_description=false`,
       },
       josm: {
         icon: 'pen-to-square',

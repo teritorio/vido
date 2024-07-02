@@ -46,7 +46,7 @@ export default defineNuxtPlugin((nuxtApp) => {
       },
 
       tracking: (event: Event): void => {
-        if (process.dev || useRuntimeConfig().cypress)
+        if (process.dev || useRuntimeConfig().public.cypress)
           console.error('Tracking event', event)
 
         trackers.forEach((tracker) => {

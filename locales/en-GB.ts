@@ -59,6 +59,7 @@ export default defineI18nLocale(() => {
       },
     },
     headerMenu: {
+      burgerLabel: 'Menu',
       logo: 'Logo',
       search: 'Search',
       searchHint: 'Point of interest, category, address',
@@ -160,6 +161,7 @@ export default defineI18nLocale(() => {
       contrib: {
         editor_id: 'Edit in iD Editor',
         heading: 'Contribution',
+        json: 'View GeoJSON',
         josm: 'Edit in JOSM',
         osm_note: 'Add an OSM note',
         mapillary_link: 'Explore on Mapillary',

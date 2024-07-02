@@ -43,16 +43,30 @@ export default defineNuxtComponent({
       :show-arrows="false"
       :hide-delimiter-background="true"
       class="tw-mb-14 print:tw-mb-6"
-      :height="device.smallScreen ? 300 : 500"
+      height="auto"
     >
       <v-carousel-item v-for="(image, i) in images" :key="i">
         <UIPicture
           :src="image"
           :media-size="device.smallScreen ? '100vw' : '66vw'"
           :alt="$t('poiCard.image')"
-          :img-attrs="{ class: 'h-100 tw-object-cover' }"
         />
       </v-carousel-item>
     </v-carousel>
   </div>
 </template>
+
+<style lang="scss" scoped>
+:deep(.v-carousel__controls > button svg) {
+  color: #000;
+  border: 2px solid #fff;
+  border-radius: 100%;
+}
+
+:deep(picture img) {
+  aspect-ratio: 16/9;
+  object-fit: cover;
+  height: auto;
+  width: 100%;
+}
+</style>

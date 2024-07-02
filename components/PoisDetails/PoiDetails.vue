@@ -19,7 +19,7 @@ import type { ApiPoiDeps } from '~/lib/apiPoiDeps'
 import type { ApiPoi, ApiPoiId, ApiPoiProperties, FieldsList } from '~/lib/apiPois'
 import type { Settings } from '~/lib/apiSettings'
 import { PropertyTranslationsContextEnum } from '~/plugins/property-translations'
-import { favoritesStore } from '~/stores/favorite'
+import { favoriteStore } from '~/stores/favorite'
 import { OriginEnum } from '~/utils/types'
 import FieldsHeader from '~/components/UI/FieldsHeader.vue'
 import ContribFieldGroup from '~/components/Fields/ContribFieldGroup.vue'
@@ -76,7 +76,7 @@ export default defineNuxtComponent({
   },
 
   computed: {
-    ...mapState(favoritesStore, ['favoritesIds']),
+    ...mapState(favoriteStore, ['favoritesIds', 'favoriteAddresses']),
 
     context(): PropertyTranslationsContextEnum {
       return PropertyTranslationsContextEnum.Details
@@ -122,7 +122,7 @@ export default defineNuxtComponent({
     classLabel(): string | undefined {
       return (
         this.poi.properties.editorial?.class_label_details?.fr
-          || this.poi.properties.editorial?.class_label?.fr
+        || this.poi.properties.editorial?.class_label?.fr
       )
     },
 
@@ -131,7 +131,7 @@ export default defineNuxtComponent({
     },
 
     isFavorite(): boolean {
-      return this.favoritesIds.includes(this.id)
+      return this.favoritesIds.includes(this.id) || this.favoriteAddresses.has(this.id.toString())
     },
 
     mapURL(): string | undefined {
@@ -153,7 +153,7 @@ export default defineNuxtComponent({
   },
 
   mounted() {
-    favoritesStore().initFavoritesFromLocalStorage()
+    favoriteStore().init()
     this.$tracking({
       type: 'page',
       title: (this.$route.name && String(this.$route.name)) || undefined,
@@ -176,7 +176,11 @@ export default defineNuxtComponent({
           poiId: this.id,
           title: this.poi.properties.name,
         })
-        favoritesStore().toggleFavorite(this.poi)
+
+        if (this.poi.properties.internalType === 'address')
+          favoriteStore().toggleFavoriteAddr(this.poi)
+        else
+          favoriteStore().toggleFavorite(this.poi)
       }
     },
 
@@ -305,7 +309,14 @@ export default defineNuxtComponent({
     <template #footer>
       <span v-if="poi.properties.metadata.updated_at">
         {{ $t('poiDetails.lastUpdate') }}
-        <RelativeDate :date="poi.properties.metadata.updated_at" />
+        <a
+          v-if="poi.properties.metadata.osm_type && poi.properties.metadata.osm_id"
+          :href="`https://www.openstreetmap.org/${poi.properties.metadata.osm_type}/${poi.properties.metadata.osm_id}`"
+          target="_blank"
+        >
+          <RelativeDate :date="poi.properties.metadata.updated_at" />
+        </a>
+        <RelativeDate v-else :date="poi.properties.metadata.updated_at" />
       </span>
     </template>
   </PoiLayout>

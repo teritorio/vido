@@ -88,7 +88,7 @@ export async function getSettings(vidoConfig: VidoConfig): Promise<Settings> {
 
 function stripHTML(value?: string): string | undefined {
   if (value)
-    return value.replace(/(<([^>]+)>)/gi, '')
+    return value.replace(/(<([^>]+)>)/g, '')
 }
 
 export function headerFromSettings(

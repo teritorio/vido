@@ -19,12 +19,12 @@ import {
   NavigationControl,
   ScaleControl,
 } from 'maplibre-gl'
-import { mapState } from 'pinia'
+import { mapState, storeToRefs } from 'pinia'
 import type { PropType } from 'vue'
 
-import { defineNuxtComponent, useRequestHeaders } from '#app'
+import { defineNuxtComponent } from '#app'
 import { DEFAULT_MAP_STYLE, MAP_ZOOM } from '~/lib/constants'
-import { siteStore } from '~/stores/site'
+import { siteStore as useSiteStore } from '~/stores/site'
 import { fetchStyle } from '~/utils/styles'
 import { MapStyleEnum } from '~/utils/types'
 
@@ -85,6 +85,14 @@ export default defineNuxtComponent({
       type: Boolean,
       default: false,
     },
+  },
+
+  setup() {
+    const { config } = storeToRefs(useSiteStore())
+
+    return {
+      config,
+    }
   },
 
   data(): {
@@ -201,7 +209,7 @@ export default defineNuxtComponent({
   },
 
   computed: {
-    ...mapState(siteStore, ['locale']),
+    ...mapState(useSiteStore, ['locale']),
 
     defaultZoom() {
       return MAP_ZOOM.zoom
@@ -303,11 +311,11 @@ export default defineNuxtComponent({
         return this.mapStyleCache[mapStyle]
       }
       else {
-        const config = this.$vidoConfig(useRequestHeaders())
+        const { BICYCLE_STYLE_URL, SATELLITE_STYLE_URL, VECTO_STYLE_URL } = this.config!
         const styleURLs = {
-          [MapStyleEnum.vector]: config.VECTO_STYLE_URL,
-          [MapStyleEnum.aerial]: config.SATELLITE_STYLE_URL,
-          [MapStyleEnum.bicycle]: config.BICYCLE_STYLE_URL,
+          [MapStyleEnum.vector]: VECTO_STYLE_URL,
+          [MapStyleEnum.aerial]: SATELLITE_STYLE_URL,
+          [MapStyleEnum.bicycle]: BICYCLE_STYLE_URL,
         }
         const style = await fetchStyle(
           styleURLs[mapStyle],

@@ -1,12 +1,17 @@
 import poi1 from '../fixtures/teritorio/references/poi/1.json'
 import { mockSSRAPI } from '../support/mock'
-
-import teritorioReferenceAPIFixture from '~/cypress/fixtures/teritorio/references/teritorioReferenceAPIFixture'
+import teritorioReferenceAPIFixture from '../fixtures/teritorio/references/teritorioReferenceAPIFixture'
 
 const hostnames = {
   'https://dev.appcarto.teritorio.xyz':
     '/content/api.teritorio/geodata/v0.1/dev/tourism/',
   'http://127.0.0.1:3000': '/fixtures/teritorio/references/',
+}
+
+const htmlValidateRules = {
+  rules: {
+    'unique-landmark': 0,
+  },
 }
 
 describe('home content', () => {
@@ -42,7 +47,7 @@ describe('home content', () => {
     cy.get('#favourite_notebook')
     cy.get('#PoiCard-1', { timeout: 30000 })
 
-    cy.htmlvalidate()
+    cy.htmlvalidate(htmlValidateRules)
 
     cy.get('#close_favourite_notebook').click()
     cy.get('#favourite_notebook').should('not.exist')

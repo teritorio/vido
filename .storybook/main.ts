@@ -32,8 +32,6 @@ module.exports = {
       '~': path.resolve(__dirname, '../'),
       '#app': path.resolve(__dirname, '../node_modules/nuxt/dist/app'),
       '#app/*': path.resolve(__dirname, '../node_modules/nuxt/dist/app/*'),
-      '#head': path.resolve(__dirname, '../node_modules/nuxt/dist/head/runtime'),
-      '#head/*': path.resolve(__dirname, '../node_modules/nuxt/dist/head/runtime/*'),
       '#build': path.resolve(__dirname, '../.nuxt'),
       '#build/*': path.resolve(__dirname, '../.nuxt/*'),
     }

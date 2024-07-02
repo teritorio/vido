@@ -113,7 +113,7 @@ export default defineNuxtComponent({
       return this.field.field === 'website' || this.field.field.startsWith('website:') || this.field.field.endsWith(':website')
     },
     shortDescription(): string | undefined {
-      return this.properties?.description?.replace(/(<([^>]+)>)/gi, '')
+      return this.properties?.description?.replace(/(<([^>]+)>)/g, '')
     },
   },
 

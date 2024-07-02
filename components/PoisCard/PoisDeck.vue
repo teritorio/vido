@@ -1,59 +1,33 @@
-<script lang="ts">
-import type { PropType } from 'vue'
-
-import { defineNuxtComponent } from '#app'
+<script setup lang="ts">
+import { storeToRefs } from 'pinia'
+import type { ApiPoi } from '~/lib/apiPois'
 import PoiCard from '~/components/PoisCard/PoiCard.vue'
 import PoiCardLight from '~/components/PoisCard/PoiCardLight.vue'
-import type { ApiPoi, ApiPoiId } from '~/lib/apiPois'
+import { favoriteStore as useFavoriteStore } from '~/stores/favorite'
 
-export default defineNuxtComponent({
-  components: {
-    PoiCard,
-    PoiCardLight,
-  },
-  props: {
-    pois: {
-      type: Array as PropType<ApiPoi[]>,
-      required: true,
-    },
-    selectedPoiIds: {
-      type: Array as PropType<ApiPoiId[]> | undefined,
-      default: undefined,
-    },
-    poisCard: {
-      type: String as PropType<'PoiCard' | 'PoiCardLight'>,
-      default: 'PoiCard',
-    },
-    explorerModeEnabled: {
-      type: Boolean,
-      required: true,
-    },
-    favoritesModeEnabled: {
-      type: Boolean,
-      required: true,
-    },
-  },
+defineProps<{
+  explorerModeEnabled: boolean
+  favoritesModeEnabled: boolean
+  pois: ApiPoi[]
+  isCardLight: boolean
+}>()
 
-  emits: {
-    zoomClick: (_poi: ApiPoi) => true,
-    exploreClick: (_poi: ApiPoi) => true,
-    favoriteClick: (_poi: ApiPoi) => true,
-  },
+defineEmits<{
+  (e: 'exploreClick', poi: ApiPoi): void
+  (e: 'favoriteClick', poi: ApiPoi): void
+  (e: 'zoomClick', poi: ApiPoi): void
+}>()
 
-  methods: {
-    isFavorite(id: ApiPoiId): boolean {
-      return (
-        this.selectedPoiIds === undefined || this.selectedPoiIds.includes(id)
-      )
-    },
-  },
-})
+const { favoritesIds, favoriteAddresses } = storeToRefs(useFavoriteStore())
+function isFavorite(id: number) {
+  return favoritesIds.value.includes(id) || favoriteAddresses.value.has(id.toString())
+}
 </script>
 
 <template>
   <div class="tw-flex tw-justify-between tw-flex-wrap tw-gap-6">
     <component
-      :is="poisCard"
+      :is="isCardLight ? PoiCardLight : PoiCard"
       v-for="item in pois"
       :key="item.properties.metadata.id"
       :poi="item"
