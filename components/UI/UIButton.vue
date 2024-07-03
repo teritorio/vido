@@ -10,6 +10,10 @@ export default defineNuxtComponent({
   },
 
   props: {
+    color: {
+      type: String,
+      default: '#000000',
+    },
     label: {
       type: String as PropType<string>,
       default: undefined,
@@ -38,3 +42,9 @@ export default defineNuxtComponent({
     <span v-if="label" class="tw-hidden sm:tw-block">{{ label }}</span>
   </button>
 </template>
+
+<style scoped>
+svg {
+  color: v-bind(color)
+}
+</style>

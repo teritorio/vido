@@ -4,13 +4,16 @@ import type { PropType } from 'vue'
 import { defineNuxtComponent } from '#app'
 import PoiCardContent from '~/components/PoisCard/PoiCardContent.vue'
 import TeritorioIcon from '~/components/UI/TeritorioIcon.vue'
+import UIButton from '~/components/UI/UIButton.vue'
 import UIPicture from '~/components/UI/UIPicture.vue'
 import type { ApiPoi, ApiPoiId } from '~/lib/apiPois'
+import useDevice from '~/composables/useDevice'
 
 export default defineNuxtComponent({
   components: {
     PoiCardContent,
     TeritorioIcon,
+    UIButton,
     UIPicture,
   },
 
@@ -31,6 +34,14 @@ export default defineNuxtComponent({
       type: Boolean,
       default: true,
     },
+  },
+
+  setup() {
+    const device = useDevice()
+
+    return {
+      device,
+    }
   },
 
   computed: {
@@ -54,6 +65,15 @@ export default defineNuxtComponent({
     :id="`PoiCard-${id}`"
     class="poiDescription tw-z-10 tw-flex tw-flex-col tw-w-full md:tw-max-w-xl tw-mx-0 tw-overflow-y-auto tw-shadow-md tw-pointer-events-auto md:tw-flex-row md:tw-w-auto md:tw-mx-auto md:tw-rounded-xl tw-bg-white"
   >
+    <UIButton
+      v-show="device.smallScreen"
+      id="close-poi-card"
+      :color="device.smallScreen ? '#ffffff' : '#000000'"
+      :style="{ backgroundColor: device.smallScreen ? 'rgb(0 0 0 / 55%)' : 'transparent' }"
+      :title="$t('ui.close')"
+      icon="times"
+      @click="$emit('onClose')"
+    />
     <div
       v-if="showImage"
       class=" tw-bg-gray-100 tw-text-gray-100 tw-flex tw-relative tw-items-center tw-align-middle tw-justify-center tw-h-44 md:tw-w-48 md:tw-h-auto md:tw-max-h-full min-icon-height"
@@ -89,8 +109,26 @@ export default defineNuxtComponent({
 </template>
 
 <style scoped>
+.poiDescription {
+  position: relative;
+}
+
 :deep(img) {
   @apply tw-object-cover tw-w-full tw-h-full;
+}
+
+#close-poi-card {
+  border: 0;
+  border-radius: 0 0 0 8px;
+  position: absolute;
+  top: 0;
+  right: 0;
+  z-index: 15;
+}
+
+#close-poi-card :deep(svg) {
+  width: 24px;
+  height: 24px;
 }
 
 .min-icon-height {
