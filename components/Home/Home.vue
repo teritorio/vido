@@ -467,6 +467,11 @@ function scrollTop() {
 function setPoiVisibility(visible: boolean) {
   showPoi.value = visible
 }
+
+function handlePoiCardClose() {
+  mapStore.setSelectedFeature(null)
+  setPoiVisibility(false)
+}
 </script>
 
 <template>
@@ -641,6 +646,7 @@ function setPoiVisibility(visible: boolean) {
         @explore-click="toggleExploreAroundSelectedPoi"
         @favorite-click="toggleFavorite"
         @zoom-click="goToSelectedFeature"
+        @on-close="handlePoiCardClose"
       />
       <div class="tw-grow-[3]" />
     </div>
@@ -669,6 +675,7 @@ function setPoiVisibility(visible: boolean) {
           @explore-click="toggleExploreAroundSelectedPoi"
           @favorite-click="toggleFavorite"
           @zoom-click="goToSelectedFeature"
+          @on-close="handlePoiCardClose"
         />
       </div>
     </BottomMenu>
