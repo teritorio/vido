@@ -62,6 +62,8 @@ export const favoriteStore = defineStore('favorite', {
         this.favoriteAddresses.delete(id)
 
       this.saveToLocalStorage(LOCAL_STORAGE.favoritesAddr, Array.from(this.favoriteAddresses.entries()))
+
+      return !this.favoriteAddresses.has(id)
     },
 
     toggleFavorite(poi: ApiPoi | number) {
@@ -77,6 +79,8 @@ export const favoriteStore = defineStore('favorite', {
         this.favoritesIds.splice(favIndex, 1)
 
       this.saveToLocalStorage(LOCAL_STORAGE.favorites, this.favoritesIds)
+
+      return favIndex !== -1
     },
 
     reset() {

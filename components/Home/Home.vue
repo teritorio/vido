@@ -438,11 +438,15 @@ function toggleExploreAroundSelectedPoi(feature?: ApiPoi) {
 }
 
 function toggleFavorite(feature: ApiPoi) {
+  let removeFavorite = false
   try {
     if (feature.properties.internalType === 'address')
-      favoriteStore.toggleFavoriteAddr(feature)
+      removeFavorite = favoriteStore.toggleFavoriteAddr(feature)
     else
-      favoriteStore.toggleFavorite(feature)
+      removeFavorite = favoriteStore.toggleFavorite(feature)
+
+    if (mode.value === Mode.FAVORITES && removeFavorite)
+      mapStore.setSelectedFeature(null)
   }
   catch (e) {
     console.error('Vido error:', (e as Error).message)
