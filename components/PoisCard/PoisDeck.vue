@@ -1,9 +1,7 @@
 <script setup lang="ts">
-import { storeToRefs } from 'pinia'
 import type { ApiPoi } from '~/lib/apiPois'
 import PoiCard from '~/components/PoisCard/PoiCard.vue'
 import PoiCardLight from '~/components/PoisCard/PoiCardLight.vue'
-import { favoriteStore as useFavoriteStore } from '~/stores/favorite'
 
 defineProps<{
   explorerModeEnabled: boolean
@@ -17,11 +15,6 @@ defineEmits<{
   (e: 'favoriteClick', poi: ApiPoi): void
   (e: 'zoomClick', poi: ApiPoi): void
 }>()
-
-const { favoritesIds, favoriteAddresses } = storeToRefs(useFavoriteStore())
-function isFavorite(id: number) {
-  return favoritesIds.value.includes(id) || favoriteAddresses.value.has(id.toString())
-}
 </script>
 
 <template>
@@ -31,10 +24,7 @@ function isFavorite(id: number) {
       v-for="item in pois"
       :key="item.properties.metadata.id"
       :poi="item"
-      class="tw-grow-1 poi-deck" :class="[
-        !isFavorite(item.properties.metadata.id)
-          && 'tw-bg-zinc-200 tw-opacity-70',
-      ]"
+      class="tw-grow-1 poi-deck"
       :explorer-mode-enabled="explorerModeEnabled"
       :favorites-mode-enabled="favoritesModeEnabled"
       @explore-click="$emit('exploreClick', $event)"
