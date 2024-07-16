@@ -10,7 +10,6 @@ RUN corepack enable
 
 # Install app dependencies
 COPY package.json yarn.lock .yarnrc.yml /usr/src/app/
-COPY .yarn /usr/src/app/.yarn
 RUN yarn install && yarn cache clean
 COPY . /usr/src/app
 

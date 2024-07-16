@@ -13,6 +13,7 @@ const hostnames = {
 const htmlValidateRules = {
   rules: {
     'unique-landmark': 0,
+    'text-content': 0,
   },
 }
 

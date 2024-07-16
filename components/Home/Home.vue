@@ -467,6 +467,11 @@ function scrollTop() {
 function setPoiVisibility(visible: boolean) {
   showPoi.value = visible
 }
+
+function handlePoiCardClose() {
+  mapStore.setSelectedFeature(null)
+  setPoiVisibility(false)
+}
 </script>
 
 <template>
@@ -605,9 +610,7 @@ function setPoiVisibility(visible: boolean) {
         >
           <div class="tw-relative">
             <button
-              v-if="
-                !(isModeExplorer || isModeFavorites) || Boolean(selectedFeature)
-              "
+              v-if="!(isModeExplorer || isModeFavorites || showPoi)"
               type="button"
               class="md:tw-hidden tw-absolute -tw-top-12 tw-z-0 tw-w-1/4 tw-h-12 tw-transition-all tw-rounded-t-lg tw-text-sm tw-font-medium tw-px-5 tw-shadow-lg tw-outline-none focus:tw-outline-none tw-bg-white tw-text-zinc-800 hover:tw-bg-zinc-100 focus-visible:tw-bg-zinc-100"
               style="right: 37.5%"
@@ -643,6 +646,7 @@ function setPoiVisibility(visible: boolean) {
         @explore-click="toggleExploreAroundSelectedPoi"
         @favorite-click="toggleFavorite"
         @zoom-click="goToSelectedFeature"
+        @on-close="handlePoiCardClose"
       />
       <div class="tw-grow-[3]" />
     </div>
@@ -671,6 +675,7 @@ function setPoiVisibility(visible: boolean) {
           @explore-click="toggleExploreAroundSelectedPoi"
           @favorite-click="toggleFavorite"
           @zoom-click="goToSelectedFeature"
+          @on-close="handlePoiCardClose"
         />
       </div>
     </BottomMenu>
