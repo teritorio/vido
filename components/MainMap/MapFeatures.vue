@@ -454,7 +454,7 @@ export default defineNuxtComponent({
         }
       }
       else {
-        if (this.enableFilterRouteByCategories) {
+        if (this.enableFilterRouteByFeatures) {
           filterRouteByPoiIds(
             this.map as Map,
             this.features.map(
@@ -465,6 +465,7 @@ export default defineNuxtComponent({
             ),
           )
         }
+
         if (this.enableFilterRouteByCategories)
           filterRouteByCategories(this.map as Map, this.selectedCategoriesIds)
       }
