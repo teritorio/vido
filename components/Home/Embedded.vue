@@ -22,7 +22,6 @@ import { flattenFeatures } from '~/utils/utilities'
 const props = defineProps<{
   boundaryArea?: Polygon | MultiPolygon
   initialCategoryIds?: number[]
-  initialPoi?: ApiPoi
 }>()
 
 //
@@ -60,8 +59,7 @@ onMounted(() => {
     }
     menuStore.setSelectedCategoryIds(enabledCategories)
   }
-  if (props.initialPoi)
-    mapStore.setSelectedFeature(props.initialPoi)
+
   if (props.boundaryArea) {
     initialBbox.value = getBBoxFeature(props.boundaryArea)
   }
