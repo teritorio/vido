@@ -36,7 +36,6 @@ import type { ApiAddrSearchResult, ApiSearchResult } from '~/lib/apiSearch'
 const props = defineProps<{
   boundaryArea?: Polygon | MultiPolygon
   initialCategoryIds?: number[]
-  initialPoi?: ApiPoi
 }>()
 
 //
@@ -121,9 +120,6 @@ onMounted(async () => {
 
     menuStore.setSelectedCategoryIds(enabledCategories)
   }
-
-  if (props.initialPoi)
-    mapStore.setSelectedFeature(props.initialPoi)
 
   $tracking({
     type: 'page',

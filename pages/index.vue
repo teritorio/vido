@@ -4,12 +4,14 @@ import { storeToRefs } from 'pinia'
 import Home from '~/components/Home/Home.vue'
 import type { ApiPoi } from '~/lib/apiPois'
 import { siteStore as useSiteStore } from '~/stores/site'
+import { mapStore as useMapStore } from '~/stores/map'
 
 //
 // Composables
 //
 const { params, query, path } = useRoute()
 const siteStore = useSiteStore()
+const mapStore = useMapStore()
 const { config, settings } = storeToRefs(siteStore)
 const { API_ENDPOINT, API_PROJECT, API_THEME } = config.value!
 const { $trackingInit } = useNuxtApp()
@@ -21,7 +23,6 @@ const boundaryGeojson = ref<Polygon | MultiPolygon>()
 const categoryIdsJoin = ref<string>()
 const poiId = ref<string>()
 const categoryIds = ref<number[]>()
-const initialPoi = ref<ApiPoi>()
 
 //
 // Hooks
@@ -66,6 +67,7 @@ else {
 
 categoryIds.value = categoryIdsJoin.value?.split(',').map(id => Number.parseInt(id))
 
+// Fetch inital POI
 const { data, error } = await useFetch<ApiPoi>(`${API_ENDPOINT}/${API_PROJECT}/${API_THEME}/poi/${poiId.value}.geojson?geometry_as=bbox&short_description=true`)
 
 if (categoryIds.value && poiId.value) {
@@ -75,7 +77,7 @@ if (categoryIds.value && poiId.value) {
   if (!data.value)
     throw createError({ statusCode: 404, message: 'Initial POI not found !' })
 
-  initialPoi.value = data.value!
+  mapStore.setSelectedFeature(data.value!)
 }
 </script>
 
@@ -83,7 +85,6 @@ if (categoryIds.value && poiId.value) {
   <Home
     :boundary-area="boundaryGeojson"
     :initial-category-ids="categoryIds"
-    :initial-poi="initialPoi"
   />
 </template>
 
