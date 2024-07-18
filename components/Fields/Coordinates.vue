@@ -5,7 +5,6 @@ import type { PropType } from 'vue'
 import { defineNuxtComponent } from '#app'
 import ExternalLink from '~/components/UI/ExternalLink.vue'
 import { coordinatesHref } from '~/lib/coordinates'
-import { isIOS } from '~/utils/isIOS'
 
 export function isCoordinatesEmpty(geom: GeoJSON.Geometry): boolean {
   return !(geom && geom.type === 'Point' && geom.coordinates)
@@ -30,9 +29,7 @@ export default defineNuxtComponent({
   },
 
   mounted() {
-    // isOS is client side only
-    this.href
-      = isIOS !== undefined ? coordinatesHref(this.geom, isIOS()) : undefined
+    this.href = coordinatesHref(this.geom)
   },
 })
 </script>

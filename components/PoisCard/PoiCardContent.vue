@@ -10,7 +10,6 @@ import type { ApiPoi, ApiPoiId, ApiPoiProperties } from '~/lib/apiPois'
 import { coordinatesHref } from '~/lib/coordinates'
 import { favoriteStore } from '~/stores/favorite'
 import { mapStore } from '~/stores/map'
-import { isIOS } from '~/utils/isIOS'
 import ContribFieldGroup from '~/components/Fields/ContribFieldGroup.vue'
 import type { ContribFields } from '~/composables/useContrib'
 import useDevice from '~/composables/useDevice'
@@ -43,11 +42,17 @@ export default defineNuxtComponent({
     },
   },
 
-  setup() {
+  setup(props) {
     const device = useDevice()
+    const routeHref = ref<string>()
+
+    onMounted(() => {
+      routeHref.value = coordinatesHref(props.poi.geometry)
+    })
 
     return {
       device,
+      routeHref,
     }
   },
 
@@ -125,7 +130,7 @@ export default defineNuxtComponent({
       }
       else {
         const u = new URL(url)
-        if (u.hostname !== window.location.hostname) {
+        if (process.client && u.hostname !== window.location.hostname) {
           return url
         }
         else {
@@ -135,12 +140,6 @@ export default defineNuxtComponent({
           )
         }
       }
-    },
-
-    coordinatesHref(): string | undefined {
-      return isIOS !== undefined
-        ? coordinatesHref(this.poi.geometry, isIOS())
-        : undefined
     },
   },
 
@@ -196,33 +195,35 @@ export default defineNuxtComponent({
         {{ name }}
       </h2>
 
-      <template v-if="websiteDetails !== undefined">
-        <NuxtLink
-          v-if="
-            !websiteDetails.startsWith('https://')
-              && !websiteDetails.startsWith('http://')
-          "
-          class="tw-ml-6 tw-px-3 tw-py-1.5 tw-text-xs tw-text-zinc-800 tw-bg-zinc-100 hover:tw-bg-zinc-200 focus:tw-bg-zinc-200 tw-transition tw-transition-colors tw-rounded-md"
-          :to="websiteDetails"
-          :style="`background:${colorFill};color:white`"
-          rel="noopener noreferrer"
-          :target="detailsIsExternal ? '_blank' : '_self'"
-          @click.stop="trackingPopupEvent('details')"
-        >
-          {{ $t('poiCard.details') }}
-        </NuxtLink>
-        <a
-          v-else
-          class="tw-ml-6 tw-px-3 tw-py-1.5 tw-text-xs tw-text-zinc-800 tw-bg-zinc-100 hover:tw-bg-zinc-200 focus:tw-bg-zinc-200 tw-transition tw-transition-colors tw-rounded-md"
-          :href="websiteDetails"
-          :style="`background:${colorFill};color:white`"
-          rel="noopener noreferrer"
-          :target="detailsIsExternal ? '_blank' : '_self'"
-          @click.stop="trackingPopupEvent('details')"
-        >
-          {{ $t('poiCard.details') }}
-        </a>
-      </template>
+      <client-only>
+        <template v-if="websiteDetails !== undefined">
+          <NuxtLink
+            v-if="
+              !websiteDetails.startsWith('https://')
+                && !websiteDetails.startsWith('http://')
+            "
+            class="tw-ml-6 tw-px-3 tw-py-1.5 tw-text-xs tw-text-zinc-800 tw-bg-zinc-100 hover:tw-bg-zinc-200 focus:tw-bg-zinc-200 tw-transition tw-transition-colors tw-rounded-md"
+            :to="websiteDetails"
+            :style="`background:${colorFill};color:white`"
+            rel="noopener noreferrer"
+            :target="detailsIsExternal ? '_blank' : '_self'"
+            @click.stop="trackingPopupEvent('details')"
+          >
+            {{ $t('poiCard.details') }}
+          </NuxtLink>
+          <a
+            v-else
+            class="tw-ml-6 tw-px-3 tw-py-1.5 tw-text-xs tw-text-zinc-800 tw-bg-zinc-100 hover:tw-bg-zinc-200 focus:tw-bg-zinc-200 tw-transition tw-transition-colors tw-rounded-md"
+            :href="websiteDetails"
+            :style="`background:${colorFill};color:white`"
+            rel="noopener noreferrer"
+            :target="detailsIsExternal ? '_blank' : '_self'"
+            @click.stop="trackingPopupEvent('details')"
+          >
+            {{ $t('poiCard.details') }}
+          </a>
+        </template>
+      </client-only>
     </div>
 
     <div
@@ -266,8 +267,8 @@ export default defineNuxtComponent({
       class="tw-flex tw-items-center tw-space-x-2 tw-justify-evenly tw-shrink-0 tw-bottom-0 tw-pt-2"
     >
       <a
-        v-if="device.phone && coordinatesHref"
-        :href="coordinatesHref"
+        v-if="device.phone && routeHref"
+        :href="routeHref"
         class="tw-flex tw-flex-col tw-items-center tw-flex-1 tw-h-full tw-p-2 tw-space-y-2 tw-rounded-lg hover:tw-bg-zinc-100"
         :title="$t('poiCard.findRoute')"
         @click="trackingPopupEvent('route')"
