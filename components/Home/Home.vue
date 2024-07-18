@@ -229,21 +229,24 @@ const siteName = computed(() => {
 //
 watch(selectedFeature, () => {
   showPoi.value = !!selectedFeature.value
-  routerPushUrl()
 
-  if (selectedFeature.value) {
-    $tracking({
-      type: 'popup',
-      poiId:
-            selectedFeature.value.properties.metadata.id
-            || selectedFeature.value.properties?.id,
-      title: selectedFeature.value.properties?.name,
-      location: window.location.href,
-      path: route.path,
-      categoryIds: selectedFeature.value.properties?.metadata?.category_ids || [],
-    })
+  if (process.client) {
+    routerPushUrl()
+
+    if (selectedFeature.value) {
+      $tracking({
+        type: 'popup',
+        poiId:
+              selectedFeature.value.properties.metadata.id
+              || selectedFeature.value.properties?.id,
+        title: selectedFeature.value.properties?.name,
+        location: window.location.href,
+        path: route.path,
+        categoryIds: selectedFeature.value.properties?.metadata?.category_ids || [],
+      })
+    }
   }
-})
+}, { immediate: true })
 
 watch(selectedCategoryIds, (a, b) => {
   if (a !== b) {
