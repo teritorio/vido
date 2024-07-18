@@ -21,7 +21,8 @@ const emit = defineEmits(['toggleFavoriteMode', 'toggleNoteBookMode'])
 const device = useDevice()
 const notebookModal = ref<boolean>(false)
 
-const { isModeFavorites, selectedFeature } = storeToRefs(useMapStore())
+const mapStore = useMapStore()
+const { isModeFavorites } = storeToRefs(mapStore)
 const { favoriteCount } = storeToRefs(useFavoriteStore())
 
 function explore(poi: ApiPoi) {
@@ -35,7 +36,7 @@ function onClose() {
 }
 
 function onZoomClick(poi: ApiPoi) {
-  selectedFeature.value = poi
+  mapStore.setSelectedFeature(poi)
   notebookModal.value = false
   props.goToSelectedPoi(poi)
 }
