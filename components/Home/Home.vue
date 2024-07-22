@@ -62,7 +62,7 @@ const initialBbox = ref<LngLatBounds | null>(null)
 const isMenuItemOpen = ref<boolean>(false)
 const isOnSearch = ref<boolean>(false)
 const showFavoritesOverlay = ref<boolean>(false)
-const showPoi = ref<boolean>(false)
+const isPoiCardShown = ref<boolean>(false)
 const mapFeaturesRef = ref<InstanceType<typeof MapFeatures>>()
 
 //
@@ -149,12 +149,8 @@ const favoritesModeEnabled = computed(() => {
   return settings!.themes[0]?.favorites_mode ?? true
 })
 
-const isPoiCardVisible = computed(() => {
-  return !!(selectedFeature.value && showPoi.value)
-})
-
 const isBottomMenuOpened = computed(() => {
-  return ((device.value.smallScreen && isPoiCardVisible.value) || isMenuItemOpen.value)
+  return ((device.value.smallScreen && isPoiCardShown.value) || isMenuItemOpen.value)
 })
 
 const fitBoundsPaddingOptions = computed((): FitBoundsOptions['padding'] => {
@@ -169,7 +165,7 @@ const fitBoundsPaddingOptions = computed((): FitBoundsOptions['padding'] => {
   else {
     return {
       top: 100,
-      bottom: isPoiCardVisible.value ? 400 : 100,
+      bottom: isPoiCardShown.value ? 400 : 100,
       right: 100,
       left: isModeExplorerOrFavorites.value ? 50 : 500,
     }
@@ -228,7 +224,7 @@ const siteName = computed(() => {
 // Watchers
 //
 watch(selectedFeature, () => {
-  showPoi.value = !!selectedFeature.value
+  isPoiCardShown.value = !!selectedFeature.value
 
   if (process.client) {
     routerPushUrl()
@@ -353,21 +349,21 @@ function onBottomMenuButtonClick() {
   if (!isModeFavorites.value) {
     if (isBottomMenuOpened.value) {
       if (selectedFeature.value)
-        setPoiVisibility(false)
+        setPoiCardDisplay(false)
       isMenuItemOpen.value = false
     }
     else if (!isModeExplorer.value) {
       isMenuItemOpen.value = true
     }
-    else if (selectedFeature.value && !isPoiCardVisible.value) {
-      setPoiVisibility(true)
+    else if (selectedFeature.value && !isPoiCardShown.value) {
+      setPoiCardDisplay(true)
     }
   }
   else if (selectedFeature.value) {
-    if (!isModeExplorer.value && !showPoi.value)
+    if (!isModeExplorer.value && !isPoiCardShown.value)
       mapStore.setSelectedFeature(null)
     else
-      setPoiVisibility(false)
+      setPoiCardDisplay(false)
   }
 }
 
@@ -428,7 +424,7 @@ function toggleExploreAroundSelectedPoi(feature?: ApiPoi) {
     goToSelectedFeature()
 
     if (device.value.smallScreen)
-      showPoi.value = false
+      isPoiCardShown.value = false
   }
   else {
     allowRegionBackZoom.value = false
@@ -463,13 +459,12 @@ function scrollTop() {
     header.scrollTop = 0
 }
 
-function setPoiVisibility(visible: boolean) {
-  showPoi.value = visible
+function setPoiCardDisplay(visible: boolean) {
+  isPoiCardShown.value = visible
 }
 
 function handlePoiCardClose() {
   mapStore.setSelectedFeature(null)
-  setPoiVisibility(false)
 }
 </script>
 
@@ -609,7 +604,7 @@ function handlePoiCardClose() {
         >
           <div class="tw-relative">
             <button
-              v-if="!(isModeExplorer || isModeFavorites || showPoi)"
+              v-if="!(isModeExplorer || isModeFavorites || isPoiCardShown)"
               type="button"
               class="md:tw-hidden tw-absolute -tw-top-12 tw-z-0 tw-w-1/4 tw-h-12 tw-transition-all tw-rounded-t-lg tw-text-sm tw-font-medium tw-px-5 tw-shadow-lg tw-outline-none focus:tw-outline-none tw-bg-white tw-text-zinc-800 hover:tw-bg-zinc-100 focus-visible:tw-bg-zinc-100"
               style="right: 37.5%"
@@ -636,7 +631,7 @@ function handlePoiCardClose() {
           selectedFeature
             && selectedFeature.properties
             && selectedFeature.properties.metadata
-            && showPoi
+            && isPoiCardShown
         "
         :can-close="device.smallScreen"
         :poi="selectedFeature"
@@ -657,7 +652,7 @@ function handlePoiCardClose() {
         class="tw-flex-1 tw-h-full tw-overflow-y-auto tw-h-screen-3/5 tw-divide-y"
       >
         <Menu
-          v-if="!showPoi"
+          v-if="!isPoiCardShown"
           menu-block="MenuBlockBottom"
           @scroll-top="scrollTop"
         />
@@ -666,7 +661,7 @@ function handlePoiCardClose() {
             selectedFeature
               && selectedFeature.properties
               && selectedFeature.properties.metadata
-              && showPoi
+              && isPoiCardShown
           "
           :can-close="device.smallScreen"
           :poi="selectedFeature"
