@@ -1,85 +1,31 @@
-<script lang="ts">
-import { mapState } from 'pinia'
-import type { PropType } from 'vue'
-
-import { defineNuxtComponent } from '#app'
+<script setup lang="ts">
 import Fields from '~/components/PoisCard/Fields.vue'
 import TeritorioIconBadge from '~/components/UI/TeritorioIconBadge.vue'
 import UIPicture from '~/components/UI/UIPicture.vue'
 import type { ApiPoi } from '~/lib/apiPois'
-import type { MapPoiId } from '~/lib/mapPois'
-import { favoriteStore } from '~/stores/favorite'
 
-export default defineNuxtComponent({
-  components: {
-    TeritorioIconBadge,
-    Fields,
-    UIPicture,
-  },
-
-  props: {
-    notebook: {
-      type: Boolean,
-      default: false,
-    },
-    poi: {
-      type: Object as PropType<ApiPoi>,
-      required: true,
-    },
-  },
-
-  data(): {
-    textLimit: number
-  } {
-    return {
-      textLimit: 160,
-    }
-  },
-
-  computed: {
-    ...mapState(favoriteStore, ['favoritesIds']),
-
-    id(): MapPoiId {
-      return this.poi.properties.metadata.id
-    },
-
-    name(): string | undefined {
-      return (
-        this.poi.properties.name
-        || this.poi.properties.editorial?.class_label_popup?.fr
-        || this.poi.properties.editorial?.class_label?.fr
-      )
-    },
-
-    colorFill(): string {
-      return this.poi.properties.display?.color_fill || 'black'
-    },
-
-    colorLine(): string {
-      return this.poi.properties.display?.color_line || 'black'
-    },
-
-    icon(): string | undefined {
-      return this.poi.properties.display?.icon
-    },
-
-    description(): string | undefined {
-      return this.poi.properties.description
-    },
-
-    websiteDetails(): string | undefined {
-      return (
-        this.poi.properties.editorial
-        && this.poi.properties.editorial['website:details']
-      )
-    },
-  },
+//
+// Props
+//
+const props = withDefaults(defineProps<{
+  notebook: boolean
+  poi: ApiPoi
+}>(), {
+  notebook: false,
 })
+
+//
+// Data
+//
+const colorFill = ref(props.poi.properties.display?.color_fill || 'black')
+const colorLine = ref(props.poi.properties.display?.color_line || 'black')
+const name = ref(props.poi.properties.name || props.poi.properties.editorial?.class_label_popup?.fr || props.poi.properties.editorial?.class_label?.fr)
+const websiteDetails = ref(props.poi.properties.editorial && props.poi.properties.editorial['website:details'])
 </script>
 
 <template>
   <div
-    :id="`PoiCardLight-${id}`"
+    :id="`PoiCardLight-${poi.properties.metadata.id}`"
     class="tw-flex-col md:tw-flex-row tw-h-auto tw-shrink-0 tw-flex tw-items-start tw-gap-4 tw-justify-between tw-box-border tw-w-full tw-border-gray-300 tw-border-t tw-pt-4 first-of-type:tw-border-t-0"
   >
     <div>
@@ -89,9 +35,9 @@ export default defineNuxtComponent({
           :style="`color:${colorLine}`"
         >
           <TeritorioIconBadge
-            v-if="icon || poi.properties.display?.text"
+            v-if="props.poi.properties.display?.icon || poi.properties.display?.text"
             :color-fill="colorFill"
-            :picto="icon"
+            :picto="props.poi.properties.display?.icon"
             size="lg"
             :image="undefined"
             :text="poi.properties.display?.text"
