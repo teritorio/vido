@@ -155,10 +155,6 @@ export default defineNuxtComponent({
   methods: {
     ...mapActions(menuStore, ['addSelectedCategoryIds', 'applyFilters']),
 
-    setSelectedFeature(feature: ApiPoi): void {
-      this.$emit('selectFeature', feature)
-    },
-
     reset() {
       this.searchMenuItemsResults = null
       this.searchPoisResults = null
@@ -237,7 +233,7 @@ export default defineNuxtComponent({
     onPoiClick(searchResult: SearchResult) {
       getPoiById(this.config!, searchResult.id).then(
         (poi) => {
-          this.setSelectedFeature(poi)
+          this.$emit('selectFeature', poi)
         },
       )
 
@@ -250,7 +246,7 @@ export default defineNuxtComponent({
       )
       if (feature) {
         const f = formatApiAddressToFeature(feature, true)
-        this.setSelectedFeature(f)
+        this.$emit('selectFeature', f)
       }
       this.reset()
     },
