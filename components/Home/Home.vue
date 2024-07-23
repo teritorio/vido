@@ -346,25 +346,7 @@ function onActivateFilter(val: boolean) {
 }
 
 function onBottomMenuButtonClick() {
-  if (!isModeFavorites.value) {
-    if (isBottomMenuOpened.value) {
-      if (selectedFeature.value)
-        setPoiCardDisplay(false)
-      isMenuItemOpen.value = false
-    }
-    else if (!isModeExplorer.value) {
-      isMenuItemOpen.value = true
-    }
-    else if (selectedFeature.value && !isPoiCardShown.value) {
-      setPoiCardDisplay(true)
-    }
-  }
-  else if (selectedFeature.value) {
-    if (!isModeExplorer.value && !isPoiCardShown.value)
-      mapStore.setSelectedFeature(null)
-    else
-      setPoiCardDisplay(false)
-  }
+  isMenuItemOpen.value = !isMenuItemOpen.value
 }
 
 function onQuitExplorerFavoriteMode() {
@@ -457,10 +439,6 @@ function scrollTop() {
   const header = document.getElementById('header-menu')
   if (header)
     header.scrollTop = 0
-}
-
-function setPoiCardDisplay(visible: boolean) {
-  isPoiCardShown.value = visible
 }
 
 function handlePoiCardClose() {
