@@ -223,22 +223,20 @@ const siteName = computed(() => {
 //
 // Watchers
 //
-watch(selectedFeature, () => {
-  isPoiCardShown.value = !!selectedFeature.value
+watch(selectedFeature, (newFeature) => {
+  isPoiCardShown.value = !!newFeature
 
   if (process.client) {
     routerPushUrl()
 
-    if (selectedFeature.value) {
+    if (newFeature) {
       $tracking({
         type: 'popup',
-        poiId:
-              selectedFeature.value.properties.metadata.id
-              || selectedFeature.value.properties?.id,
-        title: selectedFeature.value.properties?.name,
+        poiId: newFeature.properties.metadata.id || newFeature.properties?.id,
+        title: newFeature.properties?.name,
         location: window.location.href,
         path: route.path,
-        categoryIds: selectedFeature.value.properties?.metadata?.category_ids || [],
+        categoryIds: newFeature.properties?.metadata?.category_ids || [],
       })
     }
   }
