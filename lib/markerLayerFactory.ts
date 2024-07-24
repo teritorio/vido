@@ -16,8 +16,6 @@ import TeritorioIconBadge from '~/components/UI/TeritorioIconBadge.vue'
 import type { TupleLatLng } from '~/utils/types'
 import { createMarker } from '~/composables/useMarker'
 
-type ITMarker = InstanceType<typeof Marker>
-
 export function markerLayerTextFactory(layerTemplate: LayerSpecification, id: string, source: string): LayerSpecification {
   if (layerTemplate.type !== 'symbol') {
     return layerTemplate
@@ -78,7 +76,7 @@ export function makerHtmlFactory(
   thumbnail: string | undefined,
   size: string | null = null,
   text?: string,
-): ITMarker {
+): Marker {
   // Marker
   const el: HTMLElement = document.createElement('div')
   el.id = id
@@ -106,10 +104,10 @@ export function makerHtmlFactory(
 
 export function updateMarkers(
   map: Map,
-  markers: { [id: string]: ITMarker },
+  markers: { [id: string]: Marker },
   src: string,
   fitBounds: (bounds: LngLatBounds, options: FitBoundsOptions) => void,
-  markerClickCallBack: ((feature: ApiPoi) => void) | undefined,
+  markerClickCallBack: ((feature: ApiPoi, marker?: Marker) => void) | undefined,
 ) {
   const markerIdPrevious = Object.keys(markers)
   const markerIdcurrent: string[] = []
@@ -203,7 +201,9 @@ export function updateMarkers(
 
               el.addEventListener('click', (e: MouseEvent) => {
                 e.stopPropagation()
-                markerClickCallBack(feature as unknown as ApiPoi)
+                const pinMarker = createMarker(markerCoords)
+
+                markerClickCallBack(feature as unknown as ApiPoi, pinMarker)
               })
             }
             markers[id].addTo(map)

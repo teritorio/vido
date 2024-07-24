@@ -11,6 +11,7 @@ import type {
   MapDataEvent,
   MapLibreEvent,
   MapTouchEvent,
+  Marker,
 } from 'maplibre-gl'
 import type { PropType } from 'vue'
 
@@ -161,7 +162,7 @@ export default defineNuxtComponent({
       object,
     ) => true,
     mapStyleLoad: (_style: maplibregl.StyleSpecification) => true,
-    featureClick: (_feature: ApiPoi) => true,
+    featureClick: (_feature: ApiPoi, _marker?: Marker) => true,
   },
 
   methods: {
@@ -362,7 +363,7 @@ export default defineNuxtComponent({
           this.markers,
           POI_SOURCE,
           this.fitBounds,
-          (feature: ApiPoi) => this.$emit('featureClick', feature),
+          (feature: ApiPoi, marker?: Marker) => this.$emit('featureClick', feature, marker),
         )
       }
 

@@ -1,7 +1,6 @@
 <script lang="ts">
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import type { MultiPolygon, Polygon } from 'geojson'
-import debounce from 'lodash.debounce'
 import type {
   FitBoundsOptions,
   GeoJSONSource,
@@ -9,9 +8,9 @@ import type {
   Map,
   MapDataEvent,
   MapMouseEvent,
+  Marker,
 } from 'maplibre-gl'
-import { Marker } from 'maplibre-gl'
-import { mapActions, mapState, mapWritableState, storeToRefs } from 'pinia'
+import { mapActions, mapState, storeToRefs } from 'pinia'
 import type { PropType } from 'vue'
 import { ref } from 'vue'
 import booleanIntersects from '@turf/boolean-intersects'
@@ -38,8 +37,6 @@ import type { LatLng } from '~/utils/types'
 import { MapStyleEnum } from '~/utils/types'
 import { getHashPart } from '~/utils/url'
 import useDevice from '~/composables/useDevice'
-
-type ITMarker = InstanceType<typeof Marker>
 
 const STYLE_LAYERS = [
   'poi-level-1',
@@ -120,6 +117,7 @@ export default defineNuxtComponent({
     const { config } = storeToRefs(useSiteStore())
     const mapStore = useMapStore()
     const { center, selectedFeature } = storeToRefs(mapStore)
+    const mapStyleLoaded = ref(false)
 
     return {
       center,
@@ -127,20 +125,20 @@ export default defineNuxtComponent({
       device,
       mapBase: ref<InstanceType<typeof MapBase>>(),
       mapStore,
+      mapStyleLoaded,
       selectedFeature,
     }
   },
 
   data(): {
     map: Map
-    markers: { [id: string]: ITMarker }
-    selectedFeatureMarker: ITMarker | null
+    markers: { [id: string]: Marker }
+    selectedFeatureMarker?: Marker
     selectedBackground: MapStyleEnum
   } {
     return {
       map: null!,
       markers: {},
-      selectedFeatureMarker: null,
       selectedBackground: DEFAULT_MAP_STYLE,
     }
   },
@@ -215,10 +213,6 @@ export default defineNuxtComponent({
     },
   },
 
-  created() {
-    this.updateSelectedFeature = debounce(this.updateSelectedFeature, 300)
-  },
-
   beforeMount() {
     const bg = getHashPart(this.$router, 'bg') as keyof typeof MapStyleEnum
     this.selectedBackground = (bg && MapStyleEnum[bg]) || DEFAULT_MAP_STYLE
@@ -263,7 +257,9 @@ export default defineNuxtComponent({
           this.map.getCanvas().style.cursor = ''
         })
       })
+
       this.showSelectedFeature()
+      this.mapStyleLoaded = true
     },
 
     // Map interactions
@@ -281,18 +277,20 @@ export default defineNuxtComponent({
         // Set temp partial data from vector tiles. Then fetch full data
         this.updateSelectedFeature(
           vectorTilesPoi2ApiPoi(selectedFeatures[0]),
+          undefined,
           true,
         )
         this.showSelectedFeature()
       }
       else {
-        this.updateSelectedFeature(null)
+        this.updateSelectedFeature(null, undefined)
       }
     },
 
-    updateSelectedFeature(feature: ApiPoi | null, fetch = false) {
+    updateSelectedFeature(feature: ApiPoi | null, marker?: Marker, fetch = false) {
       if (this.selectedFeature !== feature) {
         this.mapStore.setSelectedFeature(feature)
+        this.setSelectedFeatureMarker(marker)
 
         if (feature && fetch && feature.properties.metadata.id) {
           try {
@@ -316,12 +314,10 @@ export default defineNuxtComponent({
     },
 
     // Map view
-
     onMapRender() {
-      // Put selected feature marker on top
-      if (this.selectedFeatureMarker) {
-        this.selectedFeatureMarker.remove()
-        this.selectedFeatureMarker.addTo(this.map as Map)
+      if (this.mapStyleLoaded && this.selectedFeature) {
+        const marker = createMarker((this.selectedFeature.geometry as GeoJSON.Point).coordinates as [number, number])
+        this.setSelectedFeatureMarker(marker)
       }
     },
 
@@ -407,13 +403,6 @@ export default defineNuxtComponent({
     },
 
     showSelectedFeature() {
-      // Clean-up previous marker
-      if (this.selectedFeatureMarker) {
-        this.selectedFeatureMarker.remove()
-        this.selectedFeatureMarker = null
-      }
-
-      // Add new marker if a feature is selected
       if (
         this.selectedFeature
         && (this.selectedFeature.properties?.metadata?.id
@@ -425,35 +414,6 @@ export default defineNuxtComponent({
           || this.selectedFeature?.id
           || this.selectedFeature?.properties?.id,
         ])
-
-        if (
-          ['Point', 'MultiLineString', 'LineString'].includes(
-            this.selectedFeature.geometry.type,
-          )
-        ) {
-          // Get original coords to set exact marker position
-          const originalFeature = this.features.find(
-            originalFeature =>
-              originalFeature.properties?.metadata?.id
-              && this.selectedFeature?.properties?.metadata?.id
-              && originalFeature.properties?.metadata?.id
-              === this.selectedFeature?.properties?.metadata?.id,
-          )
-          const lngLat = (
-            originalFeature && originalFeature.geometry.type === 'Point'
-              ? originalFeature.geometry.coordinates
-              : this.selectedFeature.geometry.type === 'Point'
-                ? this.selectedFeature.geometry?.coordinates
-                : this.defaultBounds
-          ) as [number, number]
-
-          this.selectedFeatureMarker = new Marker({
-            scale: 1.3,
-            color: '#f44336',
-          })
-            .setLngLat(lngLat)
-            .addTo(this.map as Map)
-        }
       }
       else {
         if (this.enableFilterRouteByFeatures) {
@@ -471,6 +431,11 @@ export default defineNuxtComponent({
         if (this.enableFilterRouteByCategories)
           filterRouteByCategories(this.map as Map, this.selectedCategoriesIds)
       }
+    },
+
+    setSelectedFeatureMarker(marker?: Marker) {
+      this.selectedFeatureMarker?.remove()
+      this.selectedFeatureMarker = marker?.addTo(this.map as Map)
     },
   },
 })
