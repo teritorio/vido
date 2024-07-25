@@ -5,30 +5,18 @@ import { Mode } from '~/utils/types'
 
 interface State {
   center: LatLng
+  mode: Mode
   pitch: Pitch
   selectedFeature: ApiPoi | null
-  mode: Mode
 }
 
-const getInitialMapview: () => {
-  center: {
-    lng: number
-    lat: number
-  }
-} = () => ({
-  center: { lng: 0, lat: 0 },
-})
-
 export const mapStore = defineStore('map', {
-  state: (): State =>
-    Object.assign(
-      {
-        pitch: 0,
-        selectedFeature: null,
-        mode: Mode.BROWSER,
-      },
-      getInitialMapview(),
-    ),
+  state: (): State => ({
+    center: { lng: 0, lat: 0 },
+    mode: Mode.BROWSER,
+    pitch: 0,
+    selectedFeature: null,
+  }),
 
   getters: {
     isModeExplorer: (state: State) => state.mode === Mode.EXPLORER,

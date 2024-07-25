@@ -1,9 +1,9 @@
 <script lang="ts">
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
-import { mapState } from 'pinia'
+import { storeToRefs } from 'pinia'
 
 import { defineNuxtComponent } from '#app'
-import { mapStore } from '~/stores/map'
+import { mapStore as useMapStore } from '~/stores/map'
 import useDevice from '~/composables/useDevice'
 
 export default defineNuxtComponent({
@@ -11,15 +11,13 @@ export default defineNuxtComponent({
     FontAwesomeIcon,
   },
 
-  computed: {
-    ...mapState(mapStore, ['isModeFavorites']),
-  },
-
   setup() {
     const device = useDevice()
+    const { isModeFavorites } = storeToRefs(useMapStore())
 
     return {
       device,
+      isModeFavorites,
     }
   },
 
