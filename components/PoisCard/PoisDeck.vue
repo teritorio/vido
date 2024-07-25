@@ -23,6 +23,7 @@ defineEmits<{
       :is="isCardLight ? PoiCardLight : PoiCard"
       v-for="item in pois"
       :key="item.properties.metadata.id"
+      :can-close="false"
       :poi="item"
       class="tw-grow-1 poi-deck"
       :explorer-mode-enabled="explorerModeEnabled"
