@@ -3,9 +3,9 @@ import type {
   LayerSpecification,
   LngLatBounds,
   Map,
+  Marker,
   SymbolLayerSpecification,
 } from 'maplibre-gl'
-import { Marker } from 'maplibre-gl'
 import { createApp } from 'vue'
 
 import type { ApiPoi } from './apiPois'
@@ -14,6 +14,7 @@ import { createMarkerDonutChart } from './clusters'
 
 import TeritorioIconBadge from '~/components/UI/TeritorioIconBadge.vue'
 import type { TupleLatLng } from '~/utils/types'
+import { createMarker } from '~/composables/useMarker'
 
 type ITMarker = InstanceType<typeof Marker>
 
@@ -84,12 +85,12 @@ export function makerHtmlFactory(
   el.classList.add('maplibregl-marker')
   el.classList.add('cluster-item')
 
-  const marker = new Marker({
+  const marker = createMarker(latLng, {
     element: el,
     ...(thumbnail && {
       offset: [0, -10],
     }),
-  }).setLngLat(latLng) // Using this to avoid misplaced marker
+  })
 
   // Teritorio badge
   createApp(TeritorioIconBadge, {
@@ -136,12 +137,12 @@ export function updateMarkers(
             point_count_abbreviated: _e,
             ...countPercolor
           } = props
-          const el = createMarkerDonutChart(countPercolor, point_count)
-          el.classList.add('cluster-item')
-          markers[id] = new Marker({
-            element: el,
-          }).setLngLat(coords)
-          el.addEventListener('click', (e) => {
+          const element = createMarkerDonutChart(countPercolor, point_count)
+
+          markers[id] = createMarker(coords, { element })
+          markers[id].addTo(map)
+
+          element.addEventListener('click', (e) => {
             e.stopPropagation()
             const source = map.getSource(src)
 
@@ -161,7 +162,6 @@ export function updateMarkers(
               )
             }
           })
-          markers[id].addTo(map)
         }
       }
       else if (props?.metadata) {
@@ -200,6 +200,7 @@ export function updateMarkers(
             // Click handler
             if (markerClickCallBack && props.editorial?.popup_fields) {
               const el = markers[id].getElement()
+
               el.addEventListener('click', (e: MouseEvent) => {
                 e.stopPropagation()
                 markerClickCallBack(feature as unknown as ApiPoi)
