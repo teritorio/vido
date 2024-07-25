@@ -29,7 +29,7 @@ import { getBBoxFeature, getBBoxFeatures } from '~/lib/bbox'
 import { DEFAULT_MAP_STYLE, MAP_ZOOM } from '~/lib/constants'
 import type { VectorTilesPoi } from '~/lib/vectorTilesPois'
 import { vectorTilesPoi2ApiPoi } from '~/lib/vectorTilesPois'
-import { mapStore } from '~/stores/map'
+import { mapStore as useMapStore } from '~/stores/map'
 import { menuStore } from '~/stores/menu'
 import { siteStore as useSiteStore } from '~/stores/site'
 import { snackStore } from '~/stores/snack'
@@ -118,11 +118,16 @@ export default defineNuxtComponent({
   setup() {
     const device = useDevice()
     const { config } = storeToRefs(useSiteStore())
+    const mapStore = useMapStore()
+    const { center, selectedFeature } = storeToRefs(mapStore)
 
     return {
+      center,
       config,
       device,
       mapBase: ref<InstanceType<typeof MapBase>>(),
+      mapStore,
+      selectedFeature,
     }
   },
 
@@ -141,9 +146,7 @@ export default defineNuxtComponent({
   },
 
   computed: {
-    ...mapState(mapStore, ['selectedFeature']),
     ...mapState(menuStore, ['isLoadingFeatures']),
-    ...mapWritableState(mapStore, ['center']),
 
     availableStyles(): MapStyleEnum[] {
       return [MapStyleEnum.vector, MapStyleEnum.aerial, MapStyleEnum.bicycle]
@@ -222,7 +225,6 @@ export default defineNuxtComponent({
   },
 
   methods: {
-    ...mapActions(mapStore, ['setSelectedFeature']),
     ...mapActions(snackStore, ['showSnack']),
 
     // Map and style init and changes
@@ -290,7 +292,7 @@ export default defineNuxtComponent({
 
     updateSelectedFeature(feature: ApiPoi | null, fetch = false) {
       if (this.selectedFeature !== feature) {
-        this.setSelectedFeature(feature)
+        this.mapStore.setSelectedFeature(feature)
 
         if (feature && fetch && feature.properties.metadata.id) {
           try {
@@ -303,7 +305,7 @@ export default defineNuxtComponent({
               // Overide geometry.
               // Keep same original location to avoid side effect on moving selected object.
               apiPoi.geometry = feature.geometry
-              this.setSelectedFeature(apiPoi)
+              this.mapStore.setSelectedFeature(apiPoi)
             })
           }
           catch (e) {

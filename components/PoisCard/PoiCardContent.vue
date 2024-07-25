@@ -1,6 +1,6 @@
 <script lang="ts">
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
-import { mapState } from 'pinia'
+import { mapState, storeToRefs } from 'pinia'
 import type { PropType } from 'vue'
 import { defineNuxtComponent } from '#app'
 import Fields from '~/components/PoisCard/Fields.vue'
@@ -9,7 +9,7 @@ import TeritorioIcon from '~/components/UI/TeritorioIcon.vue'
 import type { ApiPoi, ApiPoiId, ApiPoiProperties } from '~/lib/apiPois'
 import { coordinatesHref } from '~/lib/coordinates'
 import { favoriteStore } from '~/stores/favorite'
-import { mapStore } from '~/stores/map'
+import { mapStore as useMapStore } from '~/stores/map'
 import ContribFieldGroup from '~/components/Fields/ContribFieldGroup.vue'
 import type { ContribFields } from '~/composables/useContrib'
 import useDevice from '~/composables/useDevice'
@@ -43,6 +43,7 @@ export default defineNuxtComponent({
   },
 
   setup(props) {
+    const { isModeExplorer } = storeToRefs(useMapStore())
     const device = useDevice()
     const routeHref = ref<string>()
 
@@ -52,6 +53,7 @@ export default defineNuxtComponent({
 
     return {
       device,
+      isModeExplorer,
       routeHref,
     }
   },
@@ -71,7 +73,6 @@ export default defineNuxtComponent({
   },
 
   computed: {
-    ...mapState(mapStore, ['isModeExplorer']),
     ...mapState(favoriteStore, ['favoritesIds', 'favoriteAddresses']),
 
     id(): ApiPoiId {

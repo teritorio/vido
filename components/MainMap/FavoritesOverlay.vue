@@ -1,13 +1,16 @@
 <script lang="ts">
-import { mapWritableState } from 'pinia'
-
+import { storeToRefs } from 'pinia'
 import { defineNuxtComponent } from '#app'
-import { mapStore } from '~/stores/map'
+import { mapStore as useMapStore } from '~/stores/map'
 import { Mode } from '~/utils/types'
 
 export default defineNuxtComponent({
-  computed: {
-    ...mapWritableState(mapStore, ['mode']),
+  setup() {
+    const { mode } = storeToRefs(useMapStore())
+
+    return {
+      mode,
+    }
   },
 
   emits: {

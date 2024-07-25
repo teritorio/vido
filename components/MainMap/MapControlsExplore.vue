@@ -2,12 +2,12 @@
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { Control } from '@teritorio/map'
 import type { Map } from 'maplibre-gl'
-import { mapState, mapWritableState } from 'pinia'
+import { storeToRefs } from 'pinia'
 import type { PropType } from 'vue'
 import { ref } from 'vue'
 
 import { defineNuxtComponent } from '#app'
-import { mapStore } from '~/stores/map'
+import { mapStore as useMapStore } from '~/stores/map'
 import { Mode } from '~/utils/types'
 
 export default defineNuxtComponent({
@@ -21,15 +21,15 @@ export default defineNuxtComponent({
       default: null,
     },
   },
+
   setup() {
+    const { isModeExplorer, mode } = storeToRefs(useMapStore())
+
     return {
       container: ref<InstanceType<typeof HTMLDivElement>>(),
+      isModeExplorer,
+      mode,
     }
-  },
-
-  computed: {
-    ...mapState(mapStore, ['isModeExplorer']),
-    ...mapWritableState(mapStore, ['mode']),
   },
 
   watch: {
