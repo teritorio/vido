@@ -77,6 +77,7 @@ export function createMarkerDonutChart(countPerColor: Record<string, number>, to
     </svg>`
 
   const el = document.createElement('div')
+  el.classList.add('cluster-item')
   el.innerHTML = html
   return el
 }
