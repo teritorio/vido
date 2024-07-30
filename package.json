@@ -50,7 +50,7 @@
     "lodash.uniq": "^4.5.0",
     "lodash.uniqby": "^4.7.0",
     "lodash.without": "^4.4.0",
-    "maplibre-gl": "^3.6.2",
+    "maplibre-gl": "4.0.0",
     "opening_hours": "^3.8.0",
     "pinia": "^2.0.33",
     "pinia-shared-state": "0.5.1",
