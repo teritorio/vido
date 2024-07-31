@@ -1,6 +1,7 @@
 <script lang="ts">
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import type { MultiPolygon, Polygon } from 'geojson'
+import debounce from 'lodash.debounce'
 import type {
   FitBoundsOptions,
   GeoJSONSource,
@@ -110,6 +111,10 @@ export default defineNuxtComponent({
       type: Object as PropType<Polygon | MultiPolygon | undefined>,
       default: undefined,
     },
+  },
+
+  created() {
+    this.updateSelectedFeature = debounce(this.updateSelectedFeature, 300)
   },
 
   setup() {
