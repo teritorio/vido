@@ -330,7 +330,7 @@ export default defineNuxtComponent({
     addAttribution() {
       this.doWithMap(() => {
         if (!this.attributionControl) {
-          this.attributionControl = new AttributionControl()
+          this.attributionControl = new AttributionControl({ compact: false })
           this.map!.addControl(this.attributionControl)
         }
       })
