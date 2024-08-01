@@ -4,14 +4,17 @@ import copy from 'fast-copy'
 import type { MultiLineString, MultiPoint, MultiPolygon, Polygon } from 'geojson'
 import throttle from 'lodash.throttle'
 import type {
+  ExpressionSpecification,
   FitBoundsOptions,
   LayerSpecification,
   LngLatBounds,
   LngLatLike,
   MapDataEvent,
+  Map as MapGL,
   MapLibreEvent,
   MapTouchEvent,
   Marker,
+  StyleSpecification,
 } from 'maplibre-gl'
 import type { PropType } from 'vue'
 
@@ -101,10 +104,10 @@ export default defineNuxtComponent({
   },
 
   data(): {
-    map: maplibregl.Map
+    map: MapGL
     poiFilter: PoiFilter | null
-    poiLayerTemplate: maplibregl.LayerSpecification | undefined
-    markers: { [id: string]: maplibregl.Marker }
+    poiLayerTemplate: LayerSpecification | undefined
+    markers: { [id: string]: Marker }
     fullAttribution: string
   } {
     return {
@@ -143,7 +146,7 @@ export default defineNuxtComponent({
   },
 
   emits: {
-    mapInit: (_map: maplibregl.Map) => true,
+    mapInit: (_map: MapGL) => true,
     mapData: (_event: MapDataEvent & object) => true,
     mapDragEnd: (
       _event: MapLibreEvent<MouseEvent | TouchEvent | undefined> & object,
@@ -161,7 +164,7 @@ export default defineNuxtComponent({
       _event: MapLibreEvent<MouseEvent | TouchEvent | WheelEvent | undefined> &
       object,
     ) => true,
-    mapStyleLoad: (_style: maplibregl.StyleSpecification) => true,
+    mapStyleLoad: (_style: StyleSpecification) => true,
     featureClick: (_feature: ApiPoi, _marker?: Marker) => true,
   },
 
@@ -205,7 +208,7 @@ export default defineNuxtComponent({
     initPoiLayer(
       features: MapPoi[],
       clusterPropertiesValues: string[],
-      clusterPropertiesKeyExpression: maplibregl.ExpressionSpecification,
+      clusterPropertiesKeyExpression: ExpressionSpecification,
       cluster?: boolean,
     ) {
       if (this.map.getLayer(POI_LAYER))
@@ -261,12 +264,12 @@ export default defineNuxtComponent({
       }
     },
 
-    onMapInit(map: maplibregl.Map) {
+    onMapInit(map: MapGL) {
       this.map = map
       this.$emit('mapInit', map)
     },
 
-    onMapStyleLoad(style: maplibregl.StyleSpecification) {
+    onMapStyleLoad(style: StyleSpecification) {
       this.poiLayerTemplate = style.layers.find(
         layer => layer.id === 'poi-level-1',
       )
@@ -359,7 +362,7 @@ export default defineNuxtComponent({
         && this.map.isSourceLoaded(POI_SOURCE)
       ) {
         this.markers = updateMarkers(
-          this.map as maplibregl.Map,
+          this.map as MapGL,
           this.markers,
           POI_SOURCE,
           this.fitBounds,
