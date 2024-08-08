@@ -1,3 +1,7 @@
+import type { MapGeoJSONFeature } from 'maplibre-gl'
+import { createApp } from 'vue'
+import TeritorioIconBadge from '~/components/UI/TeritorioIconBadge.vue'
+
 function getMarkerDonutSegment(start: number, end: number, r: number, r0: number, colorFill: string): string {
   if (end - start === 1)
     end -= 0.00001
@@ -39,15 +43,23 @@ function getMarkerDonutSegment(start: number, end: number, r: number, r0: number
   ].join(' ')
 }
 
-export function createMarkerDonutChart(countPerColor: Record<string, number>, totalCount: number): HTMLElement {
-  const r
-    = totalCount >= 1000
-      ? 40
-      : totalCount >= 100
-        ? 32
-        : totalCount >= 10
-          ? 24
-          : 16
+export function createMarkerDonutChart(props: MapGeoJSONFeature['properties']): HTMLDivElement {
+  const {
+    cluster: _a,
+    cluster_id: _b,
+    point_count,
+    _c: _d,
+    point_count_abbreviated: _e,
+    ...countPercolor
+  } = props
+
+  const r = point_count >= 1000
+    ? 40
+    : point_count >= 100
+      ? 32
+      : point_count >= 10
+        ? 24
+        : 16
   const r0 = r - 5
   const w = r * 2
 
@@ -55,11 +67,11 @@ export function createMarkerDonutChart(countPerColor: Record<string, number>, to
 
   let total = 0
   let offsets = 0
-  Object.entries(countPerColor).forEach(([color, count]) => {
+  Object.entries(countPercolor).forEach(([color, count]) => {
     total += count
     html += getMarkerDonutSegment(
-      offsets / totalCount,
-      total / totalCount,
+      offsets / point_count,
+      total / point_count,
       r,
       r0,
       color,
@@ -67,17 +79,42 @@ export function createMarkerDonutChart(countPerColor: Record<string, number>, to
     offsets = total
   })
 
-  if (total !== totalCount)
-    html += getMarkerDonutSegment(total / totalCount, 1, r, r0, '#ccc')
+  if (total !== point_count)
+    html += getMarkerDonutSegment(total / point_count, 1, r, r0, '#ccc')
 
   html += `<circle cx="${r}" cy="${r}" r="${r0}" fill="white" />
       <text dominant-baseline="central" transform="translate(${r}, ${r})">
-        ${totalCount.toLocaleString()}
+        ${point_count.toLocaleString()}
       </text>
     </svg>`
 
   const el = document.createElement('div')
   el.classList.add('cluster-item')
   el.innerHTML = html
+  return el
+}
+
+export function createSingleMarker(feature: MapGeoJSONFeature) {
+  const el = document.createElement('div')
+
+  if (typeof feature.properties?.metadata === 'string')
+    feature.properties.metadata = JSON.parse(feature.properties.metadata)
+
+  if (typeof feature.properties?.display === 'string')
+    feature.properties.display = JSON.parse(feature.properties?.display)
+
+  if (typeof feature.properties?.editorial === 'string')
+    feature.properties.editorial = JSON.parse(feature.properties?.editorial)
+
+  el.id = feature.properties?.metadata?.id || feature.properties?.id
+
+  createApp(TeritorioIconBadge, {
+    colorFill: feature.properties.display?.color_fill,
+    picto: feature.properties.display?.icon,
+    image: feature.properties!['image:thumbnail'],
+    size: null,
+    text: feature.properties.display?.text,
+  }).mount(el)
+
   return el
 }

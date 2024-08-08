@@ -18,13 +18,15 @@ import type {
 } from 'maplibre-gl'
 import type { PropType } from 'vue'
 
+import { UnCluster } from 'maplibre-gl-uncluster'
 import { defineNuxtComponent } from '#app'
 import Attribution from '~/components/Map/Attribution.vue'
 import Map from '~/components/Map/Map.vue'
 import type { ApiPoi } from '~/lib/apiPois'
 import { MAP_ZOOM } from '~/lib/constants'
 import type { MapPoi } from '~/lib/mapPois'
-import { markerLayerTextFactory, updateMarkers } from '~/lib/markerLayerFactory'
+import { markerLayerTextFactory } from '~/lib/markerLayerFactory'
+import { createMarkerDonutChart, createSingleMarker } from '~/lib/clusters'
 import type { MapStyleEnum } from '~/utils/types'
 
 const POI_SOURCE = 'poi'
@@ -109,6 +111,7 @@ export default defineNuxtComponent({
     poiLayerTemplate: LayerSpecification | undefined
     markers: { [id: string]: Marker }
     fullAttribution: string
+    uncluster: UnCluster | null
   } {
     return {
       map: null!,
@@ -116,6 +119,7 @@ export default defineNuxtComponent({
       poiLayerTemplate: undefined,
       markers: {},
       fullAttribution: '',
+      uncluster: null,
     }
   },
 
@@ -244,7 +248,6 @@ export default defineNuxtComponent({
         cluster: cluster === undefined ? true : cluster,
         clusterRadius: 32,
         clusterProperties: clusterProps,
-        clusterMaxZoom: 15,
         tolerance: 0.6,
         data: {
           type: 'FeatureCollection',
@@ -266,6 +269,7 @@ export default defineNuxtComponent({
 
     onMapInit(map: MapGL) {
       this.map = map
+      this.uncluster = new UnCluster(map, POI_SOURCE, createMarkerDonutChart, createSingleMarker)
       this.$emit('mapInit', map)
     },
 
@@ -361,13 +365,7 @@ export default defineNuxtComponent({
         && this.map.getSource(POI_SOURCE)
         && this.map.isSourceLoaded(POI_SOURCE)
       ) {
-        this.markers = updateMarkers(
-          this.map as MapGL,
-          this.markers,
-          POI_SOURCE,
-          this.fitBounds,
-          (feature: ApiPoi, marker?: Marker) => this.$emit('featureClick', feature, marker),
-        )
+        this.uncluster?.render()
       }
 
       // @ts-expect-error: eventName is not in events definition
@@ -380,28 +378,14 @@ export default defineNuxtComponent({
 <template>
   <div id="map-container" class="tw-w-full tw-h-full tw-flex tw-flex-col">
     <Map
-      :center="center"
-      :bounds="bounds"
-      :fit-bounds-options="fitBoundsOptions()"
-      :zoom="selectionZoom.poi"
-      :fullscreen-control="fullscreenControl"
-      :extra-attributions="extraAttributions"
-      :map-style="mapStyle"
-      :rotate="rotate"
-      :show-attribution="showAttribution && !offMapAttribution"
-      :hide-control="hideControl"
-      :hash="hash"
-      :cooperative-gestures="cooperativeGestures"
-      class="tw-grow tw-h-full"
-      @map-init="onMapInit($event)"
-      @map-data="onMapRender('mapData', $event)"
-      @map-drag-end="onMapRender('mapDragEnd', $event)"
-      @map-move-end="onMapRender('mapMoveEnd', $event)"
-      @map-resize="onMapRender('mapResize', $event)"
-      @map-rotate-end="onMapRender('mapRotateEnd', $event)"
-      @map-touch-move="onMapRender('mapTouchMove', $event)"
-      @map-zoom-end="onMapRender('mapZoomEnd', $event)"
-      @map-style-load="onMapStyleLoad($event)"
+      :center="center" :bounds="bounds" :fit-bounds-options="fitBoundsOptions()" :zoom="selectionZoom.poi"
+      :fullscreen-control="fullscreenControl" :extra-attributions="extraAttributions" :map-style="mapStyle"
+      :rotate="rotate" :show-attribution="showAttribution && !offMapAttribution" :hide-control="hideControl"
+      :hash="hash" :cooperative-gestures="cooperativeGestures" class="tw-grow tw-h-full" @map-init="onMapInit($event)"
+      @map-data="onMapRender('mapData', $event)" @map-drag-end="onMapRender('mapDragEnd', $event)"
+      @map-move-end="onMapRender('mapMoveEnd', $event)" @map-resize="onMapRender('mapResize', $event)"
+      @map-rotate-end="onMapRender('mapRotateEnd', $event)" @map-touch-move="onMapRender('mapTouchMove', $event)"
+      @map-zoom-end="onMapRender('mapZoomEnd', $event)" @map-style-load="onMapStyleLoad($event)"
       @full-attribution="fullAttribution = $event"
     >
       <template #controls>
@@ -411,10 +395,7 @@ export default defineNuxtComponent({
         <slot name="body" />
       </template>
     </Map>
-    <Attribution
-      v-if="showAttribution && offMapAttribution"
-      :attribution="fullAttribution"
-    />
+    <Attribution v-if="showAttribution && offMapAttribution" :attribution="fullAttribution" />
   </div>
 </template>
 
