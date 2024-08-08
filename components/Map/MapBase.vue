@@ -11,6 +11,7 @@ import type {
   LngLatLike,
   MapDataEvent,
   Map as MapGL,
+  MapGeoJSONFeature,
   MapLibreEvent,
   MapTouchEvent,
   Marker,
@@ -18,14 +19,18 @@ import type {
 } from 'maplibre-gl'
 import type { PropType } from 'vue'
 
+import { TeritorioCluster } from '@teritorio/maplibre-gl-teritorio-cluster'
+import { storeToRefs } from 'pinia'
 import { defineNuxtComponent } from '#app'
 import Attribution from '~/components/Map/Attribution.vue'
 import Map from '~/components/Map/Map.vue'
 import type { ApiPoi } from '~/lib/apiPois'
 import { MAP_ZOOM } from '~/lib/constants'
 import type { MapPoi } from '~/lib/mapPois'
-import { markerLayerTextFactory, updateMarkers } from '~/lib/markerLayerFactory'
+import { markerLayerTextFactory } from '~/lib/markerLayerFactory'
+import { clusterRender, markerRender, pinMarkerRender } from '~/lib/clusters'
 import type { MapStyleEnum } from '~/utils/types'
+import { mapStore as useMapStore } from '~/stores/map'
 
 const POI_SOURCE = 'poi'
 const POI_LAYER = 'poi'
@@ -103,6 +108,15 @@ export default defineNuxtComponent({
     },
   },
 
+  setup() {
+    const { selectedFeature, teritorioCluster } = storeToRefs(useMapStore())
+
+    return {
+      selectedFeature,
+      teritorioCluster,
+    }
+  },
+
   data(): {
     map: MapGL
     poiFilter: PoiFilter | null
@@ -165,7 +179,7 @@ export default defineNuxtComponent({
       object,
     ) => true,
     mapStyleLoad: (_style: StyleSpecification) => true,
-    featureClick: (_feature: ApiPoi, _marker?: Marker) => true,
+    featureClick: (_feature: ApiPoi) => true,
   },
 
   methods: {
@@ -244,8 +258,9 @@ export default defineNuxtComponent({
         cluster: cluster === undefined ? true : cluster,
         clusterRadius: 32,
         clusterProperties: clusterProps,
-        clusterMaxZoom: 15,
+        clusterMaxZoom: 22,
         tolerance: 0.6,
+        maxzoom: 24,
         data: {
           type: 'FeatureCollection',
           features: this.featuresPrepare(features as ApiPoi[]),
@@ -266,6 +281,14 @@ export default defineNuxtComponent({
 
     onMapInit(map: MapGL) {
       this.map = map
+      this.teritorioCluster = new TeritorioCluster(map, POI_SOURCE, {
+        clusterRenderFn: clusterRender,
+        initialFeature: this.selectedFeature as unknown as MapGeoJSONFeature,
+        markerRenderFn: markerRender,
+        markerSize: 32,
+        pinMarkerRenderFn: pinMarkerRender,
+      })
+
       this.$emit('mapInit', map)
     },
 
@@ -361,13 +384,8 @@ export default defineNuxtComponent({
         && this.map.getSource(POI_SOURCE)
         && this.map.isSourceLoaded(POI_SOURCE)
       ) {
-        this.markers = updateMarkers(
-          this.map as MapGL,
-          this.markers,
-          POI_SOURCE,
-          this.fitBounds,
-          (feature: ApiPoi, marker?: Marker) => this.$emit('featureClick', feature, marker),
-        )
+        this.teritorioCluster?.render()
+        this.teritorioCluster?.addEventListener('click', (e: Event) => this.$emit('featureClick', (e as CustomEvent).detail.selectedFeature))
       }
 
       // @ts-expect-error: eventName is not in events definition
@@ -380,28 +398,14 @@ export default defineNuxtComponent({
 <template>
   <div id="map-container" class="tw-w-full tw-h-full tw-flex tw-flex-col">
     <Map
-      :center="center"
-      :bounds="bounds"
-      :fit-bounds-options="fitBoundsOptions()"
-      :zoom="selectionZoom.poi"
-      :fullscreen-control="fullscreenControl"
-      :extra-attributions="extraAttributions"
-      :map-style="mapStyle"
-      :rotate="rotate"
-      :show-attribution="showAttribution && !offMapAttribution"
-      :hide-control="hideControl"
-      :hash="hash"
-      :cooperative-gestures="cooperativeGestures"
-      class="tw-grow tw-h-full"
-      @map-init="onMapInit($event)"
-      @map-data="onMapRender('mapData', $event)"
-      @map-drag-end="onMapRender('mapDragEnd', $event)"
-      @map-move-end="onMapRender('mapMoveEnd', $event)"
-      @map-resize="onMapRender('mapResize', $event)"
-      @map-rotate-end="onMapRender('mapRotateEnd', $event)"
-      @map-touch-move="onMapRender('mapTouchMove', $event)"
-      @map-zoom-end="onMapRender('mapZoomEnd', $event)"
-      @map-style-load="onMapStyleLoad($event)"
+      :center="center" :bounds="bounds" :fit-bounds-options="fitBoundsOptions()" :zoom="selectionZoom.poi"
+      :fullscreen-control="fullscreenControl" :extra-attributions="extraAttributions" :map-style="mapStyle"
+      :rotate="rotate" :show-attribution="showAttribution && !offMapAttribution" :hide-control="hideControl"
+      :hash="hash" :cooperative-gestures="cooperativeGestures" class="tw-grow tw-h-full" @map-init="onMapInit($event)"
+      @map-data="onMapRender('mapData', $event)" @map-drag-end="onMapRender('mapDragEnd', $event)"
+      @map-move-end="onMapRender('mapMoveEnd', $event)" @map-resize="onMapRender('mapResize', $event)"
+      @map-rotate-end="onMapRender('mapRotateEnd', $event)" @map-touch-move="onMapRender('mapTouchMove', $event)"
+      @map-zoom-end="onMapRender('mapZoomEnd', $event)" @map-style-load="onMapStyleLoad($event)"
       @full-attribution="fullAttribution = $event"
     >
       <template #controls>
@@ -411,10 +415,7 @@ export default defineNuxtComponent({
         <slot name="body" />
       </template>
     </Map>
-    <Attribution
-      v-if="showAttribution && offMapAttribution"
-      :attribution="fullAttribution"
-    />
+    <Attribution v-if="showAttribution && offMapAttribution" :attribution="fullAttribution" />
   </div>
 </template>
 
