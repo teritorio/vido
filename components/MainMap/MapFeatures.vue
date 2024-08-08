@@ -121,7 +121,7 @@ export default defineNuxtComponent({
     const device = useDevice()
     const { config } = storeToRefs(useSiteStore())
     const mapStore = useMapStore()
-    const { center, selectedFeature } = storeToRefs(mapStore)
+    const { center, selectedFeature, pinMarker } = storeToRefs(mapStore)
     const mapStyleLoaded = ref(false)
 
     return {
@@ -131,6 +131,7 @@ export default defineNuxtComponent({
       mapBase: ref<InstanceType<typeof MapBase>>(),
       mapStore,
       mapStyleLoaded,
+      pinMarker,
       selectedFeature,
     }
   },
@@ -138,7 +139,6 @@ export default defineNuxtComponent({
   data(): {
     map: Map
     markers: { [id: string]: Marker }
-    selectedFeatureMarker?: Marker
     selectedBackground: MapStyleEnum
   } {
     return {
@@ -155,7 +155,7 @@ export default defineNuxtComponent({
       return [MapStyleEnum.vector, MapStyleEnum.aerial, MapStyleEnum.bicycle]
     },
 
-    // Workarround typing issue
+    // Workaround typing issue
     mapTyped(): Map {
       return this.map as Map
     },
@@ -195,6 +195,9 @@ export default defineNuxtComponent({
     },
 
     selectedFeature() {
+      if (this.pinMarker)
+        this.pinMarker.addTo(this.map as Map)
+
       this.showSelectedFeature()
     },
 
@@ -280,22 +283,17 @@ export default defineNuxtComponent({
       )
       if (selectedFeatures.length > 0) {
         // Set temp partial data from vector tiles. Then fetch full data
-        this.updateSelectedFeature(
-          vectorTilesPoi2ApiPoi(selectedFeatures[0]),
-          undefined,
-          true,
-        )
+        this.updateSelectedFeature(vectorTilesPoi2ApiPoi(selectedFeatures[0]), true)
         this.showSelectedFeature()
       }
       else {
-        this.updateSelectedFeature(null, undefined)
+        this.updateSelectedFeature(null)
       }
     },
 
-    updateSelectedFeature(feature: ApiPoi | null, marker?: Marker, fetch = false) {
+    updateSelectedFeature(feature: ApiPoi | null, fetch = false) {
       if (this.selectedFeature !== feature) {
         this.mapStore.setSelectedFeature(feature)
-        this.setSelectedFeatureMarker(marker)
 
         if (feature && fetch && feature.properties.metadata.id) {
           try {
@@ -315,14 +313,6 @@ export default defineNuxtComponent({
             console.error('Vido error:', (e as Error).message)
           }
         }
-      }
-    },
-
-    // Map view
-    onMapRender() {
-      if (this.mapStyleLoaded && this.selectedFeature) {
-        const marker = createMarker((this.selectedFeature.geometry as GeoJSON.Point).coordinates as [number, number])
-        this.setSelectedFeatureMarker(marker)
       }
     },
 
@@ -437,11 +427,6 @@ export default defineNuxtComponent({
           filterRouteByCategories(this.map as Map, this.selectedCategoriesIds)
       }
     },
-
-    setSelectedFeatureMarker(marker?: Marker) {
-      this.selectedFeatureMarker?.remove()
-      this.selectedFeatureMarker = marker?.addTo(this.map as Map)
-    },
   },
 })
 </script>
@@ -454,8 +439,6 @@ export default defineNuxtComponent({
       :map-style="selectedBackground" :rotate="!device.touch" :show-attribution="!small"
       :off-map-attribution="device.smallScreen && !small" :hide-control="small" :style-icon-filter="styleIconFilter"
       :cooperative-gestures="cooperativeGestures" :boundary-area="boundaryArea" hash="map" @map-init="onMapInit"
-      @map-data="onMapRender" @map-drag-end="onMapRender" @map-move-end="onMapRender" @map-resize="onMapRender"
-      @map-rotate-end="onMapRender" @map-touch-move="onMapRender" @map-zoom-end="onMapRender"
       @map-style-load="onMapStyleLoad" @feature-click="updateSelectedFeature"
     >
       <template #controls>
