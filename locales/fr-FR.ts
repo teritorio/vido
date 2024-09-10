@@ -80,7 +80,7 @@ export default defineI18nLocale(() => {
       backToMenuFavorites: 'Afficher le menu',
       backToMenuExplorer: 'Rechercher par catégories',
       backToMenuFavoritesMobile: 'Quitter les favoris',
-      backToMenuExplorerMobile: 'Rechercher par catégories',
+      backToMenuExplorerMobile: 'Quitter « À proximité »',
       disableCategory: 'Supprimer la catégorie',
     },
     dateRange: {
@@ -102,7 +102,7 @@ export default defineI18nLocale(() => {
       details: 'Détails',
       seeDetail: 'Voir le detail',
       route: 'Itinéraire',
-      explore: 'À proximité',
+      explore: 'À proximité',
       favorite: 'Favori',
       favoriteOn: 'Mettre en favori',
       favoriteOff: 'Retirer le favori',
