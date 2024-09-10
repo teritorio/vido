@@ -2,7 +2,6 @@
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { storeToRefs } from 'pinia'
 import { mapStore as useMapStore } from '~/stores/map'
-import useDevice from '~/composables/useDevice'
 
 //
 // Emits
@@ -13,14 +12,20 @@ const emit = defineEmits(['click'])
 // Props
 //
 const device = useDevice()
+const { t } = useI18n()
 const { isModeFavorites } = storeToRefs(useMapStore())
 
 //
-// Methods
+// Computed
 //
-function goToMenuItems() {
-  emit('click')
-}
+const label = computed(() => {
+  if (isModeFavorites.value) {
+    return device.value.smallScreen ? 'headerMenu.backToMenuFavoritesMobile' : 'headerMenu.backToMenuFavorites'
+  }
+  else {
+    return device.value.smallScreen ? 'headerMenu.backToMenuExplorerMobile' : 'headerMenu.backToMenuExplorer'
+  }
+})
 </script>
 
 <template>
@@ -28,22 +33,12 @@ function goToMenuItems() {
     <button
       type="button"
       class="tw-flex tw-shrink-0 tw-items-center tw-justify-center tw-w-10 tw-h-10 tw-text-2xl tw-font-bold tw-transition-all tw-rounded-full tw-outline-none tw-cursor-pointer focus:tw-outline-none hover:tw-bg-blue-700"
-      @click="goToMenuItems"
+      @click="emit('click')"
     >
       <FontAwesomeIcon icon="arrow-left" size="xs" />
     </button>
     <p class="tw-ml-2">
-      {{
-        $t(
-          device.smallScreen
-            ? isModeFavorites
-              ? 'headerMenu.backToMenuFavorites'
-              : 'headerMenu.backToMenuExplorer'
-            : isModeFavorites
-              ? 'headerMenu.backToMenuFavoritesMobile'
-              : 'headerMenu.backToMenuExplorerMobile',
-        )
-      }}
+      {{ t(label) }}
     </p>
   </div>
 </template>

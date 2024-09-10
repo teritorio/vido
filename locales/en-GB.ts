@@ -77,9 +77,9 @@ export default defineI18nLocale(() => {
       clearAllCategories: 'Hide all categories',
       back: 'Back',
       backToMenuFavorites: 'Show menu',
-      backToMenuExplorer: 'Search by Categories',
-      backToMenuFavoritesMobile: 'Exit Favorites',
-      backToMenuExplorerMobile: 'Search by Categories',
+      backToMenuExplorer: 'Search by categories',
+      backToMenuFavoritesMobile: 'Exit favorites',
+      backToMenuExplorerMobile: 'Exit "Nearby"',
       disableCategory: 'Remove the category',
     },
     dateRange: {
