@@ -1,36 +1,26 @@
-<script lang="ts">
+<script setup lang="ts">
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { storeToRefs } from 'pinia'
-
-import { defineNuxtComponent } from '#app'
 import { mapStore as useMapStore } from '~/stores/map'
 import useDevice from '~/composables/useDevice'
 
-export default defineNuxtComponent({
-  components: {
-    FontAwesomeIcon,
-  },
+//
+// Emits
+//
+const emit = defineEmits(['click'])
 
-  setup() {
-    const device = useDevice()
-    const { isModeFavorites } = storeToRefs(useMapStore())
+//
+// Props
+//
+const device = useDevice()
+const { isModeFavorites } = storeToRefs(useMapStore())
 
-    return {
-      device,
-      isModeFavorites,
-    }
-  },
-
-  emits: {
-    click: () => true,
-  },
-
-  methods: {
-    goToMenuItems() {
-      this.$emit('click')
-    },
-  },
-})
+//
+// Methods
+//
+function goToMenuItems() {
+  emit('click')
+}
 </script>
 
 <template>
