@@ -79,7 +79,7 @@ export default defineI18nLocale(() => {
       backToMenuFavorites: 'Ver el menú',
       backToMenuExplorer: 'Buscar par categorías',
       backToMenuFavoritesMobile: 'Salir de los favoritos',
-      backToMenuExplorerMobile: 'Buscar par categorías',
+      backToMenuExplorerMobile: 'Salir «Cercano»',
       disableCategory: 'Eliminar la categoría',
     },
     dateRange: {
