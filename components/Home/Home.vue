@@ -451,11 +451,11 @@ function handlePoiCardClose() {
     <h1 class="tw-absolute tw-text-white">
       {{ siteName }}
     </h1>
-    <header
-      class="tw-flex md:tw-hidden tw-relative tw-fidex tw-top-0 tw-bottom-0 tw-z-10 tw-flex-row tw-w-full tw-space-x-4"
-    >
-      <div class="tw-w-full" :class="[isBottomMenuOpened && 'tw-hidden']">
-        <client-only>
+    <ClientOnly>
+      <header
+        class="tw-flex md:tw-hidden tw-relative tw-fidex tw-top-0 tw-bottom-0 tw-z-10 tw-flex-row tw-w-full tw-space-x-4"
+      >
+        <div class="tw-w-full" :class="[isBottomMenuOpened && 'tw-hidden']">
           <aside
             v-if="!isModeExplorerOrFavorites"
             class="tw-flex tw-flex-col tw-max-h-full tw-px-5 tw-py-4 tw-space-y-6 tw-shadow-md tw-pointer-events-auto md:tw-rounded-xl md:tw-w-96 tw-bg-white tw-min-h-20"
@@ -480,9 +480,9 @@ function handlePoiCardClose() {
           >
             <ExplorerOrFavoritesBack @click="onQuitExplorerFavoriteMode" />
           </aside>
-        </client-only>
-      </div>
-    </header>
+        </div>
+      </header>
+    </ClientOnly>
 
     <div v-if="initialBbox" class="tw-w-full tw-h-full">
       <header
@@ -597,43 +597,15 @@ function handlePoiCardClose() {
       v-if="showFavoritesOverlay"
       @discard="showFavoritesOverlay = false"
     />
-    <div
-      class="tw-hidden tw-fixed tw-inset-x-0 tw-bottom-0 md:tw-flex tw-overflow-y-auto tw-h-auto md:tw-left-8 md:tw-right-16 md:tw-bottom-5 tw-pointer-events-none"
-    >
-      <div class="tw-w-full tw-max-w-md" />
-      <div class="tw-grow-[1]" />
-      <PoiCard
-        v-if="
-          selectedFeature
-            && selectedFeature.properties
-            && selectedFeature.properties.metadata
-            && isPoiCardShown
-        "
-        :can-close="device.smallScreen"
-        :poi="selectedFeature"
-        class="tw-grow-0"
-        :explorer-mode-enabled="explorerModeEnabled"
-        :favorites-mode-enabled="favoritesModeEnabled"
-        @explore-click="toggleExploreAroundSelectedPoi"
-        @favorite-click="toggleFavorite"
-        @zoom-click="goToSelectedFeature"
-        @on-close="handlePoiCardClose"
-      />
-      <div class="tw-grow-[3]" />
-    </div>
 
-    <BottomMenu class="md:tw-hidden" :is-open="isBottomMenuOpened">
+    <ClientOnly>
       <div
-        ref="bottomMenuRef"
-        class="tw-flex-1 tw-h-full tw-overflow-y-auto tw-h-screen-3/5 tw-divide-y"
+        class="tw-hidden tw-fixed tw-inset-x-0 tw-bottom-0 md:tw-flex tw-overflow-y-auto tw-h-auto md:tw-left-8 md:tw-right-16 md:tw-bottom-5 tw-pointer-events-none"
       >
-        <Menu
-          v-if="!isPoiCardShown"
-          menu-block="MenuBlockBottom"
-          @scroll-top="scrollTop"
-        />
+        <div class="tw-w-full tw-max-w-md" />
+        <div class="tw-grow-[1]" />
         <PoiCard
-          v-else-if="
+          v-if="
             selectedFeature
               && selectedFeature.properties
               && selectedFeature.properties.metadata
@@ -641,7 +613,7 @@ function handlePoiCardClose() {
           "
           :can-close="device.smallScreen"
           :poi="selectedFeature"
-          class="tw-grow-0 tw-text-left tw-h-full"
+          class="tw-grow-0"
           :explorer-mode-enabled="explorerModeEnabled"
           :favorites-mode-enabled="favoritesModeEnabled"
           @explore-click="toggleExploreAroundSelectedPoi"
@@ -649,8 +621,42 @@ function handlePoiCardClose() {
           @zoom-click="goToSelectedFeature"
           @on-close="handlePoiCardClose"
         />
+        <div class="tw-grow-[3]" />
       </div>
-    </BottomMenu>
+    </ClientOnly>
+
+    <ClientOnly>
+      <BottomMenu class="md:tw-hidden" :is-open="isBottomMenuOpened">
+        <div
+          ref="bottomMenuRef"
+          class="tw-flex-1 tw-h-full tw-overflow-y-auto tw-h-screen-3/5 tw-divide-y"
+        >
+          <Menu
+            v-if="!isPoiCardShown"
+            menu-block="MenuBlockBottom"
+            @scroll-top="scrollTop"
+          />
+          <PoiCard
+            v-else-if="
+              selectedFeature
+                && selectedFeature.properties
+                && selectedFeature.properties.metadata
+                && isPoiCardShown
+            "
+            :can-close="device.smallScreen"
+            :poi="selectedFeature"
+            class="tw-grow-0 tw-text-left tw-h-full"
+            :explorer-mode-enabled="explorerModeEnabled"
+            :favorites-mode-enabled="favoritesModeEnabled"
+            @explore-click="toggleExploreAroundSelectedPoi"
+            @favorite-click="toggleFavorite"
+            @zoom-click="goToSelectedFeature"
+            @on-close="handlePoiCardClose"
+          />
+        </div>
+      </BottomMenu>
+    </ClientOnly>
+
     <footer class="tw-z-20">
       <CookiesConsent />
     </footer>
