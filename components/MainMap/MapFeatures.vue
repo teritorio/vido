@@ -288,11 +288,11 @@ export default defineNuxtComponent({
         this.showSelectedFeature()
       }
       else {
-        this.updateSelectedFeature(null, undefined)
+        this.updateSelectedFeature()
       }
     },
 
-    updateSelectedFeature(feature: ApiPoi | null, marker?: Marker, fetch = false) {
+    updateSelectedFeature(feature?: ApiPoi, marker?: Marker, fetch = false) {
       if (this.selectedFeature !== feature) {
         this.mapStore.setSelectedFeature(feature)
         this.setSelectedFeatureMarker(marker)
@@ -343,12 +343,11 @@ export default defineNuxtComponent({
           zoom
             = this.categories.find(
               category =>
-                category.id === this.selectedFeature?.properties.vido_cat,
+                category.id === this.selectedFeature!.properties.vido_cat,
             )?.category.zoom || 17
         }
         this.map.flyTo({
-          center: this.selectedFeature.geometry
-            .coordinates as unknown as LatLng,
+          center: this.selectedFeature.geometry.coordinates as unknown as LatLng,
           zoom: zoom === undefined ? Math.max(this.map.getZoom(), 17) : zoom,
         })
       }
@@ -411,13 +410,13 @@ export default defineNuxtComponent({
       if (
         this.selectedFeature
         && (this.selectedFeature.properties?.metadata?.id
-        || this.selectedFeature?.id
-        || this.selectedFeature?.properties?.id)
+        || this.selectedFeature.id
+        || this.selectedFeature.properties?.id)
       ) {
         filterRouteByPoiIds(this.map as Map, [
           this.selectedFeature.properties?.metadata?.id
-          || this.selectedFeature?.id
-          || this.selectedFeature?.properties?.id,
+          || this.selectedFeature.id
+          || this.selectedFeature.properties?.id,
         ])
       }
       else {

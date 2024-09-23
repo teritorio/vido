@@ -10,9 +10,21 @@ interface State {
   selectedFeature: ApiPoi | null
 }
 
+function isJsonObject(item: string): boolean {
+  let value = false
+  try {
+    value = JSON.parse(item)
+  }
+  catch (e) {
+    return false
+  }
+
+  return typeof value === 'object' && value !== null
+}
+
 export const mapStore = defineStore('map', {
   state: (): State => ({
-    center: { lng: 0, lat: 0 },
+    center: { lng: 0, lat: 0 } as LatLng,
     mode: Mode.BROWSER,
     pitch: 0,
     selectedFeature: null,
@@ -26,24 +38,12 @@ export const mapStore = defineStore('map', {
   },
 
   actions: {
-    setSelectedFeature(feature: ApiPoi | null) {
+    setSelectedFeature(feature?: ApiPoi) {
       if (!feature) {
         this.selectedFeature = null
       }
       else {
         const goodFeature = feature
-
-        function isJsonObject(item: string): boolean {
-          let value = false
-          try {
-            value = JSON.parse(item)
-          }
-          catch (e) {
-            return false
-          }
-
-          return typeof value === 'object' && value !== null
-        }
 
         if (feature?.properties) {
           const cleanProperties: ApiPoiProperties = {} as ApiPoiProperties
@@ -58,6 +58,7 @@ export const mapStore = defineStore('map', {
         }
 
         this.selectedFeature = goodFeature
+        return this.selectedFeature
       }
     },
   },

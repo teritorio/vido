@@ -2,18 +2,14 @@
 import type { GeoJSON, MultiPolygon, Polygon } from 'geojson'
 import { storeToRefs } from 'pinia'
 import Embedded from '~/components/Home/Embedded.vue'
-import type { ApiPoi } from '~/lib/apiPois'
 import { siteStore as useSiteStore } from '~/stores/site'
-import { mapStore as useMapStore } from '~/stores/map'
 
 //
 // Composables
 //
 const { params, query, path } = useRoute()
 const siteStore = useSiteStore()
-const mapStore = useMapStore()
 const { config, settings } = storeToRefs(siteStore)
-const { API_ENDPOINT, API_PROJECT, API_THEME } = config.value!
 const { $trackingInit } = useNuxtApp()
 
 //
@@ -66,24 +62,13 @@ else {
 }
 
 categoryIds.value = categoryIdsJoin.value?.split(',').map(id => Number.parseInt(id))
-
-const { data, error } = await useFetch<ApiPoi>(`${API_ENDPOINT}/${API_PROJECT}/${API_THEME}/poi/${poiId.value}.geojson?geometry_as=bbox&short_description=false`)
-
-if (categoryIds.value && poiId.value) {
-  if (error.value)
-    throw createError(error.value)
-
-  if (!data.value)
-    throw createError({ statusCode: 404, message: 'Initial POI not found !' })
-
-  mapStore.setSelectedFeature(data.value!)
-}
 </script>
 
 <template>
   <Embedded
     :boundary-area="boundaryGeojson"
     :initial-category-ids="categoryIds"
+    :initial-poi="poiId"
   />
 </template>
 

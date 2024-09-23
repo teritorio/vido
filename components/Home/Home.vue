@@ -36,6 +36,7 @@ import type { ApiAddrSearchResult, ApiSearchResult } from '~/lib/apiSearch'
 const props = defineProps<{
   boundaryArea?: Polygon | MultiPolygon
   initialCategoryIds?: number[]
+  initialPoi?: string
 }>()
 
 //
@@ -48,6 +49,7 @@ const { apiMenuCategory, features, selectedCategoryIds } = storeToRefs(menuStore
 const favoriteStore = useFavoriteStore()
 const { favoritesIds, favoriteAddresses, favoriteFeatures, favoriteCount } = storeToRefs(favoriteStore)
 const { config, settings, contents } = useSiteStore()
+const { API_ENDPOINT, API_PROJECT, API_THEME } = config!
 const { $tracking } = useNuxtApp()
 const route = useRoute()
 const router = useRouter()
@@ -220,28 +222,33 @@ const siteName = computed(() => {
   return settings!.themes[0]?.title.fr || ''
 })
 
+// Store Subscribers
+mapStore.$onAction(({ name, after }) => {
+  if (name === 'setSelectedFeature') {
+    after((feature) => {
+      isPoiCardShown.value = !!feature
+
+      if (process.client) {
+        routerPushUrl()
+
+        if (feature) {
+          $tracking({
+            type: 'popup',
+            poiId: feature.properties.metadata.id || feature.properties?.id,
+            title: feature.properties?.name,
+            location: window.location.href,
+            path: route.path,
+            categoryIds: feature.properties?.metadata?.category_ids || [],
+          })
+        }
+      }
+    })
+  }
+})
+
 //
 // Watchers
 //
-watch(selectedFeature, (newFeature) => {
-  isPoiCardShown.value = !!newFeature
-
-  if (process.client) {
-    routerPushUrl()
-
-    if (newFeature) {
-      $tracking({
-        type: 'popup',
-        poiId: newFeature.properties.metadata.id || newFeature.properties?.id,
-        title: newFeature.properties?.name,
-        location: window.location.href,
-        path: route.path,
-        categoryIds: newFeature.properties?.metadata?.category_ids || [],
-      })
-    }
-  }
-}, { immediate: true })
-
 watch(selectedCategoryIds, (a, b) => {
   if (a !== b) {
     routerPushUrl()
@@ -349,7 +356,7 @@ function onBottomMenuButtonClick() {
 
 function onQuitExplorerFavoriteMode() {
   mode.value = Mode.BROWSER
-  mapStore.setSelectedFeature(null)
+  mapStore.setSelectedFeature()
 }
 
 function toggleFavoriteMode() {
@@ -396,8 +403,7 @@ function routerPushUrl(hashUpdate: { [key: string]: string | null } = {}) {
 }
 
 function toggleExploreAroundSelectedPoi(feature?: ApiPoi) {
-  if (feature)
-    mapStore.setSelectedFeature(feature)
+  mapStore.setSelectedFeature(feature)
 
   if (!isModeExplorer.value) {
     mode.value = Mode.EXPLORER
@@ -440,7 +446,29 @@ function scrollTop() {
 }
 
 function handlePoiCardClose() {
-  mapStore.setSelectedFeature(null)
+  mapStore.setSelectedFeature()
+}
+
+// Fetch inital POI
+const { data, error } = await useFetch<ApiPoi>(
+  () => `${API_ENDPOINT}/${API_PROJECT}/${API_THEME}/poi/${props.initialPoi}.geojson`,
+  {
+    query: {
+      geometry_as: 'bbox',
+      short_description: true,
+    },
+    immediate: !!props.initialPoi,
+  },
+)
+
+if (props.initialPoi) {
+  if (error.value)
+    throw createError(error.value)
+
+  if (!data.value)
+    throw createError({ statusCode: 404, message: 'Initial POI not found !' })
+
+  mapStore.setSelectedFeature(data.value)
 }
 </script>
 

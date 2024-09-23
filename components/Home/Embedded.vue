@@ -22,6 +22,7 @@ import { flattenFeatures } from '~/utils/utilities'
 const props = defineProps<{
   boundaryArea?: Polygon | MultiPolygon
   initialCategoryIds?: number[]
+  initialPoi?: string
 }>()
 
 //
@@ -32,6 +33,7 @@ const { isModeExplorer, mode, selectedFeature } = storeToRefs(mapStore)
 const menuStore = useMenuStore()
 const { apiMenuCategory, features, selectedCategoryIds, menuItems } = storeToRefs(menuStore)
 const { config, settings } = useSiteStore()
+const { API_ENDPOINT, API_PROJECT, API_THEME } = config!
 const route = useRoute()
 const router = useRouter()
 const { t } = useI18n()
@@ -116,13 +118,16 @@ const poiFilters = computed(() => {
   )
 })
 
+// Store Subscribers
+mapStore.$onAction(({ name, after }) => {
+  if (name === 'setSelectedFeature') {
+    after(() => routerPushUrl())
+  }
+})
+
 //
 // Watchers
 //
-watch(selectedFeature, () => {
-  routerPushUrl()
-})
-
 watch(selectedCategoryIds, (a, b) => {
   if (a !== b) {
     routerPushUrl()
@@ -152,6 +157,7 @@ function routerPushUrl() {
   const id = selectedFeature.value?.properties?.metadata?.id?.toString()
     || selectedFeature.value?.id?.toString()
     || null
+
   router.push({
     path: `/embedded${categoryIds ? `/${categoryIds}/` : '/'}${id ? `${id}` : ''}`,
     query: router.currentRoute.value.query,
@@ -168,6 +174,28 @@ function toggleExploreAroundSelectedPoi() {
     mode.value = Mode.BROWSER
   }
 }
+
+// Fetch inital POI
+const { data, error } = await useFetch<ApiPoi>(
+  () => `${API_ENDPOINT}/${API_PROJECT}/${API_THEME}/poi/${props.initialPoi}.geojson`,
+  {
+    query: {
+      geometry_as: 'bbox',
+      short_description: false,
+    },
+    immediate: !!props.initialPoi,
+  },
+)
+
+if (props.initialPoi) {
+  if (error.value)
+    throw createError(error.value)
+
+  if (!data.value)
+    throw createError({ statusCode: 404, message: 'Initial POI not found !' })
+
+  mapStore.setSelectedFeature(data.value)
+}
 </script>
 
 <template>
@@ -180,7 +208,7 @@ function toggleExploreAroundSelectedPoi() {
         <UIButton
           :label="t('ui.close')"
           icon="times"
-          @click="mapStore.setSelectedFeature(null)"
+          @click="mapStore.setSelectedFeature()"
         />
       </div>
       <PoiCardContent
