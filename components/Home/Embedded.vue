@@ -42,7 +42,7 @@ const { t } = useI18n()
 // Data
 //
 const initialBbox = ref<LngLatBounds | null>(null)
-const mapFeaturesRef = ref<InstanceType<typeof MapFeatures>>()
+const mapFeaturesRef = ref<InstanceType<typeof MapFeatures> | null>(null)
 
 //
 // Hooks
@@ -108,14 +108,11 @@ const mapFeatures = computed((): ApiPoi[] => {
 
 const poiFilters = computed(() => {
   return (
-    (
-      isModeExplorer.value
-      && (Object.values(apiMenuCategory.value || {})
-        .map(c => c.category?.style_class)
-        .filter(s => s !== undefined) as string[][])
-    )
-    || null
-  )
+    isModeExplorer.value
+    && (Object.values(apiMenuCategory.value || {})
+      .map(c => c.category?.style_class)
+      .filter(s => s !== undefined) as string[][])
+  ) || undefined
 })
 
 // Store Subscribers
@@ -144,8 +141,7 @@ watch(selectedCategoryIds, (a, b) => {
 // Methods
 //
 function goToSelectedFeature() {
-  if (mapFeaturesRef.value)
-    mapFeaturesRef.value.goToSelectedFeature()
+  mapFeaturesRef.value?.goToSelectedFeature()
 }
 
 function onMenuChange(newCategoryId: number) {

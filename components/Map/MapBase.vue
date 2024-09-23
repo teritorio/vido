@@ -7,7 +7,7 @@ import type {
   ExpressionSpecification,
   FitBoundsOptions,
   LayerSpecification,
-  LngLatBounds,
+  LngLatBoundsLike,
   LngLatLike,
   MapDataEvent,
   Map as MapGL,
@@ -46,7 +46,7 @@ export default defineNuxtComponent({
       default: undefined,
     },
     bounds: {
-      type: [Array, Object] as PropType<LngLatBounds>,
+      type: [Array, Object] as PropType<LngLatBoundsLike>,
       default: undefined,
     },
     fitBoundsPaddingOptions: {
@@ -177,7 +177,7 @@ export default defineNuxtComponent({
       }
     },
 
-    fitBounds(bounds: LngLatBounds, options: FitBoundsOptions = {}): void {
+    fitBounds(bounds: LngLatBoundsLike, options: FitBoundsOptions = {}): void {
       this.map.fitBounds(bounds, this.fitBoundsOptions(options))
     },
 

@@ -208,14 +208,11 @@ const menuItemsToIcons = computed(() => {
 
 const poiFilters = computed(() => {
   return (
-    (
-      isModeExplorer.value
-      && (Object.values(apiMenuCategory.value || {})
-        .map(c => c.category?.style_class)
-        .filter(s => s !== undefined) as string[][])
-    )
-    || null
-  )
+    isModeExplorer.value
+    && (Object.values(apiMenuCategory.value || {})
+      .map(c => c.category?.style_class)
+      .filter(s => s !== undefined) as string[][])
+  ) || undefined
 })
 
 const siteName = computed(() => {
@@ -291,8 +288,7 @@ watch(isModeFavorites, async (isEnabled) => {
 // Methods
 //
 function goToSelectedFeature() {
-  if (mapFeaturesRef.value)
-    mapFeaturesRef.value.goToSelectedFeature()
+  mapFeaturesRef.value?.goToSelectedFeature()
 }
 
 async function fetchAddress(hash: string) {
