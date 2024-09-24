@@ -657,9 +657,11 @@ function handlePoiCardClose() {
       </BottomMenu>
     </ClientOnly>
 
-    <footer class="tw-z-20">
-      <CookiesConsent />
-    </footer>
+    <ClientOnly>
+      <footer class="tw-z-20">
+        <CookiesConsent />
+      </footer>
+    </ClientOnly>
   </div>
 </template>
 
