@@ -1,6 +1,4 @@
 import vuetify from 'vite-plugin-vuetify'
-import checker from 'vite-plugin-checker'
-
 import { vidos } from './lib/config'
 import { configuredApi, configuredImageProxy } from './utils/vido-config-static'
 
@@ -97,10 +95,9 @@ export default defineNuxtConfig({
     host: '0.0.0.0',
   },
   typescript: {
-    typeCheck: !process.env.CYPRESS,
+    typeCheck: 'build',
   },
   vite: {
-    optimizeDeps: { exclude: ['fsevents'] },
-    plugins: [!process.env.CYPRESS ? checker({ vueTsc: true }) : undefined],
+    optimizeDeps: { exclude: ['fsevents'] }
   },
 })
