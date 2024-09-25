@@ -108,7 +108,23 @@ Header set Content-Security-Policy "frame-ancestors *"
 
 Vido is mainly building using:
 - [MapLibre GL JS](https://maplibre.org/maplibre-gl-js-docs/api/map/)
-- [Nxut3](https://nuxt.com/) and [Vue3](https://vuejs.org/), using the Options API
+- [Nuxt 3](https://nuxt.com/) and [Vue 3](https://vuejs.org/), using both Options API / Composition API
+
+### Setup hooks
+
+Ensure that `core.hooksPath` is properly setup !
+
+From your project root run:
+
+```bash
+git config core.hooksPath .git/hooks/
+```
+
+Then update your hooks with the following command:
+
+```bash
+yarn dlx simple-git-hooks
+```
 
 ```
 # serve with hot reload at localhost:3000
