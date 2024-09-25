@@ -20,6 +20,7 @@
     "start:cypress": "CONFIG=vidos-config-empty.json yarn build-fixture && yarn run cypress open",
     "lint": "yarn lint:js && yarn lint:style",
     "lint:js": "eslint .",
+    "lint:js:fix": "eslint --fix .",
     "lint:style": "stylelint --cache **/*.{vue,css,scss}",
     "test": "yarn test:cypress && yarn test:histoire",
     "test:cypress": "yarn build-fixture && yarn run cypress run",
@@ -120,6 +121,7 @@
   },
   "lint-staged": {
     "*.{css,scss,vue}": "stylelint",
-    "*.{js,jsx,ts,tsx,vue}": "nuxi typecheck && eslint"
+    "*": "yarn nuxi typecheck .",
+    "*.{vue,ts,js}": "yarn lint:js:fix"
   }
 }
