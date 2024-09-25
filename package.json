@@ -120,6 +120,6 @@
   },
   "lint-staged": {
     "*.{css,scss,vue}": "stylelint",
-    "*.{js,jsx,ts,tsx,vue}": "eslint"
+    "*.{js,jsx,ts,tsx,vue}": "nuxi typecheck && eslint"
   }
 }
