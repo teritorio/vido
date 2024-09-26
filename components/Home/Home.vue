@@ -177,7 +177,11 @@ const logoUrl = computed(() => {
 })
 
 const mainUrl = computed(() => {
-  return settings!.themes[0]?.main_url?.fr || ''
+  return settings!.themes[0]?.main_url?.fr || '/'
+})
+
+const target = computed(() => {
+  return settings!.themes[0]?.main_url?.fr ? '_blank' : '_self'
 })
 
 const mapFeatures = computed(() => {
@@ -469,6 +473,7 @@ function handlePoiCardClose() {
                 :main-url="mainUrl"
                 :site-name="siteName"
                 :logo-url="logoUrl"
+                :target="target"
                 class="tw-flex-none md:tw-hidden tw-mr-2"
                 image-class="tw-max-w-2xl tw-max-h-12 md:tw-max-h-16"
               />
@@ -527,6 +532,7 @@ function handlePoiCardClose() {
                 :main-url="mainUrl"
                 :site-name="siteName"
                 :logo-url="logoUrl"
+                :target="target"
                 class="tw-flex-none tw-mr-2"
                 image-class="tw-max-w-2xl tw-max-h-12 md:tw-max-h-16"
               />

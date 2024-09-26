@@ -28,7 +28,10 @@ export default defineNuxtComponent({
     ...mapState(siteStore, ['locale']),
 
     mainUrl(): string {
-      return (this.locale && this.theme.main_url?.[this.locale]) || ''
+      return (this.locale && this.theme.main_url?.[this.locale]) || '/'
+    },
+    target() {
+      return (this.locale && this.theme.main_url?.[this.locale]) ? '_blank' : '_self'
     },
   },
 })
@@ -39,6 +42,7 @@ export default defineNuxtComponent({
     <Logo
       id="logo"
       :main-url="mainUrl"
+      :target="target"
       :site-name="theme && theme.title.fr"
       :logo-url="theme && theme.logo_url"
     />
