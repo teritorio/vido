@@ -70,6 +70,16 @@ if (!poi.value) {
 }
 
 //
+// Computed
+//
+const pageTitle = computed(() => {
+  if (!poi.value)
+    return ''
+
+  return `${poi.value.properties.classe} - ${poi.value.properties.name}`
+})
+
+//
 // Hooks
 //
 onBeforeMount(() => {
@@ -78,11 +88,9 @@ onBeforeMount(() => {
 
 useHead(
   headerFromSettings(settings.value!, {
-    // @ts-expect-error: Fix typings
-    title: poiPoiDeps.value?.poi.properties.name,
+    title: pageTitle.value,
     description: {
-      // @ts-expect-error: Fix typings
-      fr: poiPoiDeps.value?.poi.properties.description,
+      fr: poi.value?.properties.description,
     },
   }),
 )
@@ -95,6 +103,7 @@ useHead(
     :nav-menu-entries="contents!"
     :poi="poi!"
     :poi-deps="poiDeps"
+    :page-title="pageTitle"
     class="page-details tw-overflow-clip"
   />
 </template>
