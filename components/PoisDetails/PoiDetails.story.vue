@@ -17,6 +17,7 @@ const defaultProps = {
 const props = {
   Default: {
     ...defaultProps,
+    pageTitle: `${defaultProps.poi.properties.classe} - ${defaultProps.poi.properties.name}`,
   },
 }
 </script>

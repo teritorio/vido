@@ -59,6 +59,10 @@ export default defineNuxtComponent({
       type: Object as PropType<ApiPoiDeps>,
       default: null,
     },
+    pageTitle: {
+      type: String,
+      required: true,
+    },
   },
 
   data(): {
@@ -195,7 +199,7 @@ export default defineNuxtComponent({
   <PoiLayout
     :settings="settings"
     :nav-menu-entries="navMenuEntries"
-    :name="poi.properties.name"
+    :name="pageTitle"
     :icon="poi.properties.display && poi.properties.display.icon"
     :color-line="colorLine"
     :color-fill="colorFill"
