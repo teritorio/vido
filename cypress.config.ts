@@ -4,7 +4,7 @@ import htmlvalidate from 'cypress-html-validate/plugin'
 
 export default defineConfig({
   e2e: {
-    baseUrl: 'http://localhost:3000',
+    baseUrl: 'http://127.0.0.1:3000',
     retries: 2,
     setupNodeEvents(on, _config) {
       installLogsPrinter(on)

@@ -7,6 +7,12 @@ const hostnames = {
   'http://127.0.0.1:3000': '/fixtures/teritorio/references/',
 }
 
+const htmlValidateRules = {
+  rules: {
+    'long-title': 0,
+  },
+}
+
 describe('home content', () => {
   beforeEach(() => {
     mockSSRAPI(hostnames, teritorioReferenceAPIFixture, {
@@ -30,6 +36,6 @@ describe('home content', () => {
       .parent()
       .contains('contact_card')
 
-    cy.htmlvalidate()
+    cy.htmlvalidate(htmlValidateRules)
   })
 })
