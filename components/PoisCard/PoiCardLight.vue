@@ -8,7 +8,7 @@ import type { ApiPoi } from '~/lib/apiPois'
 // Props
 //
 const props = withDefaults(defineProps<{
-  notebook: boolean
+  notebook?: boolean
   poi: ApiPoi
 }>(), {
   notebook: false,
