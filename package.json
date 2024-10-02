@@ -17,7 +17,7 @@
     "generate": "nuxi generate",
     "start": "CONFIG=${CONFIG:-$PWD/vidos-config.json} nuxi preview",
     "start:histoire": "CONFIG=vidos-config-empty.json yarn histoire dev",
-    "start:cypress": "CONFIG=vidos-config-empty.json yarn build-fixture && yarn run cypress open",
+    "start:cypress": "CONFIG=vidos-config-cypress.json yarn build-fixture && yarn run cypress open",
     "lint": "yarn lint:js && yarn lint:style",
     "lint:js": "eslint .",
     "lint:js:fix": "eslint --fix .",
