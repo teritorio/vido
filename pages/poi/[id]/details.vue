@@ -38,6 +38,7 @@ const fetchPoiPoiDeps = getAsyncDataOrThrows(
   `fetchPoiPoiDeps-${params.id}`,
   async () => {
     return await getPoiDepsById(config.value!, params.id as string, {
+      geometry_as: 'point_or_bbox',
       short_description: false,
     }).then((poiDeps) => {
       let poi: ApiPoi | undefined
