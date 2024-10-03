@@ -82,7 +82,7 @@ yarn start
 ```
 cp .env.sample .env
 docker compose build
-docker-compose -f docker compose.yml run --rm vido yarn build-config
+docker compose run --rm vido yarn build-config
 docker compose up -d
 ```
 
