@@ -1,188 +1,152 @@
-<script lang="ts">
+<script setup lang="ts">
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
-import { mapState, storeToRefs } from 'pinia'
-import type { PropType } from 'vue'
-import { defineNuxtComponent } from '#app'
+import { storeToRefs } from 'pinia'
 import Fields from '~/components/PoisCard/Fields.vue'
 import FavoriteIcon from '~/components/UI/FavoriteIcon.vue'
 import TeritorioIcon from '~/components/UI/TeritorioIcon.vue'
-import type { ApiPoi, ApiPoiId, ApiPoiProperties } from '~/lib/apiPois'
+import type { ApiPoi } from '~/lib/apiPois'
 import { coordinatesHref } from '~/lib/coordinates'
-import { favoriteStore } from '~/stores/favorite'
+import { favoriteStore as useFavoriteStore } from '~/stores/favorite'
 import { mapStore as useMapStore } from '~/stores/map'
 import ContribFieldGroup from '~/components/Fields/ContribFieldGroup.vue'
-import type { ContribFields } from '~/composables/useContrib'
 import useDevice from '~/composables/useDevice'
 
-export default defineNuxtComponent({
-  components: {
-    ContribFieldGroup,
-    FontAwesomeIcon,
-    TeritorioIcon,
-    FavoriteIcon,
-    Fields,
-  },
-
-  props: {
-    detailsIsExternal: {
-      type: Boolean,
-      default: false,
-    },
-    poi: {
-      type: Object as PropType<ApiPoi>,
-      required: true,
-    },
-    explorerModeEnabled: {
-      type: Boolean,
-      required: true,
-    },
-    favoritesModeEnabled: {
-      type: Boolean,
-      required: true,
-    },
-  },
-
-  setup(props) {
-    const { isModeExplorer } = storeToRefs(useMapStore())
-    const device = useDevice()
-    const routeHref = ref<string>()
-
-    onMounted(() => {
-      routeHref.value = coordinatesHref(props.poi.geometry)
-    })
-
-    return {
-      device,
-      isModeExplorer,
-      routeHref,
-    }
-  },
-
-  data(): {
-    contribMode: boolean
-    isContribEligible: (properties: ApiPoiProperties) => boolean
-    getContributorFields: (feature: ApiPoi) => ContribFields
-  } {
-    const { contribMode, isContribEligible, getContributorFields } = useContrib()
-
-    return {
-      contribMode,
-      isContribEligible,
-      getContributorFields,
-    }
-  },
-
-  computed: {
-    ...mapState(favoriteStore, ['favoritesIds', 'favoriteAddresses']),
-
-    id(): ApiPoiId {
-      return this.poi.properties.metadata.id
-    },
-
-    isFavorite() {
-      return this.favoritesIds.includes(this.id) || this.favoriteAddresses.has(this.id.toString())
-    },
-
-    name(): string | undefined {
-      return (
-        this.poi.properties.name
-        || this.poi.properties.editorial?.class_label_popup?.fr
-        || this.poi.properties.editorial?.class_label?.fr
-      )
-    },
-
-    colorFill(): string {
-      return this.poi.properties.display?.color_fill || 'black'
-    },
-
-    colorLine(): string {
-      return this.poi.properties.display?.color_line || 'black'
-    },
-
-    icon(): string | undefined {
-      return this.poi.properties.display?.icon
-    },
-
-    category(): string | undefined {
-      return (
-        this.poi.properties.editorial?.class_label_popup?.fr
-        || this.poi.properties.editorial?.class_label?.fr
-      )
-    },
-
-    description(): string | undefined {
-      return this.poi.properties.description
-    },
-
-    unavoidable(): boolean {
-      return Boolean(this.poi.properties.editorial?.unavoidable)
-    },
-
-    websiteDetails(): string | undefined {
-      const url
-        = this.poi.properties.editorial
-        && this.poi.properties.editorial['website:details']
-
-      if (!url) {
-        return undefined
-      }
-      else if (!url.startsWith('https://') && !url.startsWith('http://')) {
-        return url
-      }
-      else {
-        const u = new URL(url)
-        if (process.client && u.hostname !== window.location.hostname) {
-          return url
-        }
-        else {
-          return url.replace(
-            `${u.protocol}//${u.hostname}${u.port ? `:${u.port}` : ''}`,
-            '',
-          )
-        }
-      }
-    },
-  },
-
-  emits: {
-    zoomClick: (_poi: ApiPoi) => true,
-    exploreClick: (_poi: ApiPoi) => true,
-    favoriteClick: (_poi: ApiPoi) => true,
-  },
-
-  methods: {
-    onZoomClick() {
-      this.trackingPopupEvent('zoom')
-      this.$emit('zoomClick', this.poi)
-    },
-
-    onExploreClick() {
-      if (!this.isModeExplorer)
-        this.trackingPopupEvent('explore')
-
-      this.$emit('exploreClick', this.poi)
-    },
-
-    onFavoriteClick() {
-      if (!this.isFavorite)
-        this.trackingPopupEvent('favorite')
-
-      this.$emit('favoriteClick', this.poi)
-    },
-
-    trackingPopupEvent(
-      event: 'details' | 'route' | 'explore' | 'favorite' | 'zoom',
-    ) {
-      this.$tracking({
-        type: 'popup_event',
-        event,
-        poiId: this.id,
-        category: this.category || '',
-        title: this.poi.properties?.name,
-      })
-    },
-  },
+//
+// Props
+//
+const props = withDefaults(defineProps<{
+  detailsIsExternal?: boolean
+  explorerModeEnabled: boolean
+  favoritesModeEnabled: boolean
+  poi: ApiPoi
+}>(), {
+  detailsIsExternal: false,
 })
+
+//
+// Emits
+//
+const emit = defineEmits<{
+  (e: 'favoriteClick', poi: ApiPoi): void
+  (e: 'exploreClick', poi: ApiPoi): void
+  (e: 'zoomClick', poi: ApiPoi): void
+}>()
+
+//
+// Composables
+//
+const { t } = useI18n()
+const { $tracking } = useNuxtApp()
+const { favoritesIds, favoriteAddresses } = storeToRefs(useFavoriteStore())
+const { contribMode, isContribEligible, getContributorFields } = useContrib()
+const { isModeExplorer } = storeToRefs(useMapStore())
+const device = useDevice()
+
+//
+// Data
+//
+const routeHref = ref<string>()
+
+//
+// Hooks
+//
+onMounted(() => {
+  routeHref.value = coordinatesHref(props.poi.geometry)
+})
+
+//
+// Computed
+//
+const id = computed(() => {
+  return props.poi.properties.metadata.id
+})
+
+const isFavorite = computed(() => {
+  return favoritesIds.value.includes(id.value) || favoriteAddresses.value.has(id.value.toString())
+})
+
+const name = computed(() => {
+  return props.poi.properties.name || props.poi.properties.editorial?.class_label_popup?.fr || props.poi.properties.editorial?.class_label?.fr
+})
+
+const colorFill = computed(() => {
+  return props.poi.properties.display?.color_fill || 'black'
+})
+
+const colorLine = computed(() => {
+  return props.poi.properties.display?.color_line || 'black'
+})
+
+const icon = computed(() => {
+  return props.poi.properties.display?.icon
+})
+
+const category = computed(() => {
+  return props.poi.properties.editorial?.class_label_popup?.fr || props.poi.properties.editorial?.class_label?.fr
+})
+
+const description = computed(() => {
+  return props.poi.properties.description
+})
+
+const unavoidable = computed(() => {
+  return Boolean(props.poi.properties.editorial?.unavoidable)
+})
+
+const websiteDetails = computed(() => {
+  const url = props.poi.properties.editorial && props.poi.properties.editorial['website:details']
+
+  if (!url) {
+    return undefined
+  }
+  else if (!url.startsWith('https://') && !url.startsWith('http://')) {
+    return url
+  }
+  else {
+    const u = new URL(url)
+    if (process.client && u.hostname !== window.location.hostname) {
+      return url
+    }
+    else {
+      return url.replace(
+        `${u.protocol}//${u.hostname}${u.port ? `:${u.port}` : ''}`,
+        '',
+      )
+    }
+  }
+})
+
+//
+// Methods
+//
+function onZoomClick() {
+  trackingPopupEvent('zoom')
+  emit('zoomClick', props.poi)
+}
+
+function onExploreClick() {
+  if (!isModeExplorer.value)
+    trackingPopupEvent('explore')
+
+  emit('exploreClick', props.poi)
+}
+
+function onFavoriteClick() {
+  if (!isFavorite.value)
+    trackingPopupEvent('favorite')
+
+  emit('favoriteClick', props.poi)
+}
+
+function trackingPopupEvent(event: 'details' | 'route' | 'explore' | 'favorite' | 'zoom') {
+  $tracking({
+    type: 'popup_event',
+    event,
+    poiId: id.value,
+    category: category.value || '',
+    title: props.poi.properties?.name,
+  })
+}
 </script>
 
 <template>
@@ -210,7 +174,7 @@ export default defineNuxtComponent({
             :target="detailsIsExternal ? '_blank' : '_self'"
             @click.stop="trackingPopupEvent('details')"
           >
-            {{ $t('poiCard.details') }}
+            {{ t('poiCard.details') }}
           </NuxtLink>
           <a
             v-else
@@ -221,7 +185,7 @@ export default defineNuxtComponent({
             :target="detailsIsExternal ? '_blank' : '_self'"
             @click.stop="trackingPopupEvent('details')"
           >
-            {{ $t('poiCard.details') }}
+            {{ t('poiCard.details') }}
           </a>
         </template>
       </client-only>
@@ -271,35 +235,32 @@ export default defineNuxtComponent({
         v-if="device.phone && routeHref"
         :href="routeHref"
         class="tw-flex tw-flex-col tw-items-center tw-flex-1 tw-h-full tw-p-2 tw-space-y-2 tw-rounded-lg hover:tw-bg-zinc-100"
-        :title="$t('poiCard.findRoute')"
+        :title="t('poiCard.findRoute')"
         @click="trackingPopupEvent('route')"
       >
         <FontAwesomeIcon icon="route" :color="colorLine" size="sm" />
-        <span class="tw-text-sm">{{ $t('poiCard.route') }}</span>
+        <span class="tw-text-sm">{{ t('poiCard.route') }}</span>
       </a>
 
       <button
         type="button"
         class="tw-flex tw-flex-1 tw-flex-col tw-items-center tw-space-y-2 tw-rounded-lg tw-p-2 tw-h-full hover:tw-bg-zinc-100"
-        :title="$t('poiCard.zoom')"
+        :title="t('poiCard.zoom')"
         @click.stop="onZoomClick"
       >
         <FontAwesomeIcon icon="plus" :color="colorLine" size="sm" />
-        <span class="tw-text-sm">{{ $t('poiCard.zoom') }}</span>
+        <span class="tw-text-sm">{{ t('poiCard.zoom') }}</span>
       </button>
 
       <button
         v-if="explorerModeEnabled"
         type="button"
-        class="tw-flex tw-flex-1 tw-flex-col tw-items-center tw-space-y-2 tw-rounded-lg tw-p-2 tw-h-full" :class="[
+        class="tw-flex tw-flex-1 tw-flex-col tw-items-center tw-space-y-2 tw-rounded-lg tw-p-2 tw-h-full"
+        :class="[
           isModeExplorer && 'tw-bg-blue-600 tw-text-white hover:tw-bg-blue-500',
           !isModeExplorer && 'hover:tw-bg-zinc-100',
         ]"
-        :title="
-          isModeExplorer
-            ? $t('poiCard.unactivateExplore')
-            : $t('poiCard.activateExplore')
-        "
+        :title="isModeExplorer ? t('poiCard.unactivateExplore') : t('poiCard.activateExplore')"
         @click.stop="onExploreClick"
       >
         <FontAwesomeIcon
@@ -307,18 +268,18 @@ export default defineNuxtComponent({
           :color="isModeExplorer ? 'white' : colorLine"
           size="sm"
         />
-        <span class="tw-text-sm">{{ $t('poiCard.explore') }}</span>
+        <span class="tw-text-sm">{{ t('poiCard.explore') }}</span>
       </button>
 
       <button
         v-if="favoritesModeEnabled && id"
         type="button"
         class="tw-flex tw-flex-col tw-items-center tw-flex-1 tw-h-full tw-p-2 tw-space-y-2 tw-rounded-lg hover:tw-bg-zinc-100"
-        :title="isFavorite ? $t('poiCard.favoriteOn') : $t('poiCard.favoriteOff')"
+        :title="isFavorite ? t('poiCard.favoriteOn') : t('poiCard.favoriteOff')"
         @click.stop="onFavoriteClick"
       >
         <FavoriteIcon :is-active="isFavorite" :color-line="colorLine" />
-        <span class="tw-text-sm">{{ $t('poiCard.favorite') }}</span>
+        <span class="tw-text-sm">{{ t('poiCard.favorite') }}</span>
       </button>
     </div>
   </div>
