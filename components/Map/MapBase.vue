@@ -11,7 +11,6 @@ import type {
   LngLatLike,
   MapDataEvent,
   Map as MapGL,
-  MapGeoJSONFeature,
   MapLibreEvent,
   MapTouchEvent,
   Marker,
@@ -19,7 +18,6 @@ import type {
 } from 'maplibre-gl'
 import type { PropType } from 'vue'
 
-import { TeritorioCluster } from '@teritorio/maplibre-gl-teritorio-cluster'
 import { storeToRefs } from 'pinia'
 import { defineNuxtComponent } from '#app'
 import Attribution from '~/components/Map/Attribution.vue'
@@ -28,7 +26,6 @@ import type { ApiPoi } from '~/lib/apiPois'
 import { MAP_ZOOM } from '~/lib/constants'
 import type { MapPoi } from '~/lib/mapPois'
 import { markerLayerTextFactory } from '~/lib/markerLayerFactory'
-import { clusterRender, markerRender, pinMarkerRender } from '~/lib/clusters'
 import type { MapStyleEnum } from '~/utils/types'
 import { mapStore as useMapStore } from '~/stores/map'
 
@@ -109,11 +106,10 @@ export default defineNuxtComponent({
   },
 
   setup() {
-    const { selectedFeature, teritorioCluster } = storeToRefs(useMapStore())
+    const { selectedFeature } = storeToRefs(useMapStore())
 
     return {
       selectedFeature,
-      teritorioCluster,
     }
   },
 
@@ -281,14 +277,6 @@ export default defineNuxtComponent({
 
     onMapInit(map: MapGL) {
       this.map = map
-      this.teritorioCluster = new TeritorioCluster(map, POI_SOURCE, {
-        clusterRenderFn: clusterRender,
-        initialFeature: this.selectedFeature as unknown as MapGeoJSONFeature,
-        markerRenderFn: markerRender,
-        markerSize: 32,
-        pinMarkerRenderFn: pinMarkerRender,
-      })
-
       this.$emit('mapInit', map)
     },
 
@@ -379,15 +367,6 @@ export default defineNuxtComponent({
         | 'mapZoomEnd',
       event: any,
     ) {
-      if (
-        this.map
-        && this.map.getSource(POI_SOURCE)
-        && this.map.isSourceLoaded(POI_SOURCE)
-      ) {
-        this.teritorioCluster?.render()
-        this.teritorioCluster?.addEventListener('click', (e: Event) => this.$emit('featureClick', (e as CustomEvent).detail.selectedFeature))
-      }
-
       // @ts-expect-error: eventName is not in events definition
       this.$emit(eventName, event)
     },

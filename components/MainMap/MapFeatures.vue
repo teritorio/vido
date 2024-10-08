@@ -8,6 +8,7 @@ import type {
   LngLatBounds,
   Map,
   MapDataEvent,
+  MapGeoJSONFeature,
   MapMouseEvent,
   Marker,
 } from 'maplibre-gl'
@@ -16,6 +17,7 @@ import type { PropType } from 'vue'
 import { ref } from 'vue'
 import booleanIntersects from '@turf/boolean-intersects'
 
+import { TeritorioCluster } from '@teritorio/maplibre-gl-teritorio-cluster'
 import { defineNuxtComponent } from '#app'
 import MapControlsExplore from '~/components/MainMap/MapControlsExplore.vue'
 import SnackBar from '~/components/MainMap/SnackBar.vue'
@@ -38,6 +40,7 @@ import type { LatLng } from '~/utils/types'
 import { MapStyleEnum } from '~/utils/types'
 import { getHashPart } from '~/utils/url'
 import useDevice from '~/composables/useDevice'
+import { clusterRender, markerRender, pinMarkerRender } from '~/lib/clusters'
 
 const STYLE_LAYERS = [
   'poi-level-1',
@@ -121,7 +124,7 @@ export default defineNuxtComponent({
     const device = useDevice()
     const { config } = storeToRefs(useSiteStore())
     const mapStore = useMapStore()
-    const { center, selectedFeature, pinMarker } = storeToRefs(mapStore)
+    const { center, selectedFeature, pinMarker, teritorioCluster } = storeToRefs(mapStore)
     const mapStyleLoaded = ref(false)
 
     return {
@@ -133,6 +136,7 @@ export default defineNuxtComponent({
       mapStyleLoaded,
       pinMarker,
       selectedFeature,
+      teritorioCluster,
     }
   },
 
@@ -233,6 +237,16 @@ export default defineNuxtComponent({
 
     onMapInit(map: Map) {
       this.map = map
+
+      this.teritorioCluster = new TeritorioCluster(map, POI_SOURCE, {
+        clusterRenderFn: clusterRender,
+        initialFeature: this.selectedFeature as unknown as MapGeoJSONFeature,
+        markerRenderFn: markerRender,
+        markerSize: 32,
+        pinMarkerRenderFn: pinMarkerRender,
+      })
+
+      this.teritorioCluster.addEventListener('click', (e: Event) => this.updateSelectedFeature((e as CustomEvent).detail.selectedFeature))
 
       this.map.on('click', this.onClick)
 
