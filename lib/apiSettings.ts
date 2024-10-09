@@ -21,6 +21,8 @@ export interface SiteInfosTheme {
   favorites_mode: boolean
 
   explorer_mode: boolean
+
+  isochroneEnabled: boolean
 }
 
 export interface Settings {
