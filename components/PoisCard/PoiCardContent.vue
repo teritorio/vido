@@ -10,6 +10,7 @@ import { favoriteStore as useFavoriteStore } from '~/stores/favorite'
 import { mapStore as useMapStore } from '~/stores/map'
 import ContribFieldGroup from '~/components/Fields/ContribFieldGroup.vue'
 import useDevice from '~/composables/useDevice'
+import IsochroneTrigger from '~/components/Isochrone/IsochroneTrigger.vue'
 
 //
 // Props
@@ -41,6 +42,7 @@ const { favoritesIds, favoriteAddresses } = storeToRefs(useFavoriteStore())
 const { contribMode, isContribEligible, getContributorFields } = useContrib()
 const { isModeExplorer } = storeToRefs(useMapStore())
 const device = useDevice()
+const { enabled: isochroneEnabled } = useIsochrone()
 
 //
 // Data
@@ -228,9 +230,7 @@ function trackingPopupEvent(event: 'details' | 'route' | 'explore' | 'favorite' 
       <ContribFieldGroup v-if="contribMode && isContribEligible(poi.properties)" v-bind="getContributorFields(poi)" />
     </div>
 
-    <div
-      class="tw-flex tw-items-center tw-space-x-2 tw-justify-evenly tw-shrink-0 tw-bottom-0 tw-pt-2"
-    >
+    <div class="tw-flex tw-items-center tw-space-x-2 tw-justify-evenly tw-shrink-0 tw-bottom-0 tw-pt-2">
       <a
         v-if="device.phone && routeHref"
         :href="routeHref"
@@ -241,6 +241,15 @@ function trackingPopupEvent(event: 'details' | 'route' | 'explore' | 'favorite' 
         <FontAwesomeIcon icon="route" :color="colorLine" size="sm" />
         <span class="tw-text-sm">{{ t('poiCard.route') }}</span>
       </a>
+
+      <IsochroneTrigger
+        v-if="isochroneEnabled"
+        class="tw-flex tw-flex-col tw-items-center tw-flex-1 tw-h-full tw-p-2 tw-space-y-2 tw-rounded-lg hover:tw-bg-zinc-100"
+        :feature="poi"
+      >
+        <FontAwesomeIcon :color="colorLine" icon="clock" size="sm" />
+        <span class="tw-text-sm">{{ t('isochrone.trigger') }}</span>
+      </IsochroneTrigger>
 
       <button
         type="button"

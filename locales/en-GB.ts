@@ -188,5 +188,17 @@ export default defineI18nLocale(() => {
       details: 'More information',
       decline: 'Decline',
     },
+    isochrone: {
+      trigger: 'Travel time',
+      overlay: {
+        title: 'Where can I go ?',
+        text: 'View on map, accessible areas from this point, depending on the duration of travel mode.',
+      },
+      profiles: {
+        'cycling-regular': 'By bike',
+        'driving-car': 'By car',
+        'foot-walking': 'On foot',
+      },
+    },
   }
 })
