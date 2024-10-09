@@ -188,5 +188,17 @@ export default defineI18nLocale(() => {
       details: 'Más información',
       decline: 'Descenso',
     },
+    isochrone: {
+      trigger: 'Tiempo de viaje',
+      overlay: {
+        title: '¿A dónde puedo ir?',
+        text: 'Visualiza en el mapa las zonas accesibles desde este punto de partida en función de la duración de la modalidad de viaje.',
+      },
+      profiles: {
+        'cycling-regular': 'En bicicleta',
+        'driving-car': 'En coche',
+        'foot-walking': 'A pie',
+      },
+    },
   }
 })

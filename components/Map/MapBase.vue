@@ -277,6 +277,7 @@ export default defineNuxtComponent({
 
     onMapInit(map: MapGL) {
       this.map = map
+      useState('map-instance', () => map)
       this.$emit('mapInit', map)
     },
 
