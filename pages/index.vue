@@ -82,10 +82,12 @@ if (categoryIds.value && poiId.value) {
 </script>
 
 <template>
-  <Home
-    :boundary-area="boundaryGeojson"
-    :initial-category-ids="categoryIds"
-  />
+  <VApp>
+    <Home
+      :boundary-area="boundaryGeojson"
+      :initial-category-ids="categoryIds"
+    />
+  </VApp>
 </template>
 
 <style scoped>

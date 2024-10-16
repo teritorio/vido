@@ -69,7 +69,8 @@
                 "en": "foo"
             },
             "favorites_mode": true,
-            "explorer_mode": true
+            "explorer_mode": true,
+            "isochroneEnabled": false
         }
     ]
 }
