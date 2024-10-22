@@ -286,7 +286,25 @@ export default defineNuxtComponent({
           this.style = style
           this.doWithMap(() => {
             // Use no diff mode to avoid issue with added layers
-            this.map!.setStyle(style, { diff: false })
+            this.map!.setStyle(style, {
+              diff: false,
+              transformStyle: (previousStyle, nextStyle) => {
+                if (previousStyle?.sources.isochrone) {
+                  style = {
+                    ...nextStyle,
+                    sources: {
+                      ...nextStyle.sources,
+                      isochrone: previousStyle.sources.isochrone,
+                    },
+                    layers: [
+                      ...nextStyle.layers,
+                      ...previousStyle.layers.filter(l => l.id.includes('isochrone')),
+                    ],
+                  }
+                }
+                return style
+              },
+            })
             this.emitStyleLoad()
           })
         })
