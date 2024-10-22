@@ -192,7 +192,7 @@ export default defineI18nLocale(() => {
       trigger: 'Travel time',
       overlay: {
         title: 'Where can I go ?',
-        text: 'View on map, accessible areas from this point, depending on the duration of travel mode.',
+        text: 'View on map, accessible areas from this point, depending on the duration and travel mode.',
       },
       profiles: {
         'cycling-regular': 'By bike',

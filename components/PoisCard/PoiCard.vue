@@ -4,19 +4,18 @@ import TeritorioIcon from '~/components/UI/TeritorioIcon.vue'
 import UIButton from '~/components/UI/UIButton.vue'
 import UIPicture from '~/components/UI/UIPicture.vue'
 import type { ApiPoi } from '~/lib/apiPois'
-import useDevice from '~/composables/useDevice'
 
 //
 // Props
 //
 withDefaults(defineProps<{
-  canClose: boolean
+  canClose?: boolean
   poi: ApiPoi
   explorerModeEnabled: boolean
   favoritesModeEnabled: boolean
   showImage?: boolean
 }>(), {
-  canClose: false,
+  canClose: true,
   showImage: true,
 })
 
@@ -34,6 +33,16 @@ defineEmits<{
 // Composables
 //
 const device = useDevice()
+
+//
+// Data
+//
+const closeBtnStyles = reactive({
+  backgroundColor: 'rgb(0 0 0 / 55%)',
+  borderRadius: device.value.smallScreen ? '0 0 0 8px' : '0 0 8px 0',
+  right: device.value.smallScreen ? 0 : 'unset',
+  left: device.value.smallScreen ? 'unset' : 0,
+})
 </script>
 
 <template>
@@ -44,8 +53,8 @@ const device = useDevice()
     <UIButton
       v-show="canClose"
       id="close-poi-card"
-      :color="device.smallScreen ? '#ffffff' : '#000000'"
-      :style="{ backgroundColor: device.smallScreen ? 'rgb(0 0 0 / 55%)' : 'transparent' }"
+      color="#ffffff"
+      :style="closeBtnStyles"
       :title="$t('ui.close')"
       icon="times"
       @click="$emit('onClose')"
@@ -97,10 +106,8 @@ const device = useDevice()
 
 #close-poi-card {
   border: 0;
-  border-radius: 0 0 0 8px;
   position: absolute;
   top: 0;
-  right: 0;
   z-index: 15;
 }
 

@@ -285,23 +285,21 @@ export default defineNuxtComponent({
     },
 
     // Map interactions
-
     onClick(e: MapMouseEvent) {
       let selectedFeatures = STYLE_LAYERS.map((layerId) => {
         return this.map.queryRenderedFeatures(e.point, {
           layers: [layerId],
         }) as unknown as VectorTilesPoi[]
       }).flat()
+
       selectedFeatures = selectedFeatures.filter(
         feature => feature.properties.popup_fields,
       )
+
       if (selectedFeatures.length > 0) {
         // Set temp partial data from vector tiles. Then fetch full data
         this.updateSelectedFeature(vectorTilesPoi2ApiPoi(selectedFeatures[0]), true)
         this.showSelectedFeature()
-      }
-      else {
-        this.updateSelectedFeature(null)
       }
     },
 

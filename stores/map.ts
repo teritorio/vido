@@ -39,6 +39,7 @@ export const mapStore = defineStore('map', {
 
       if (!feature) {
         this.selectedFeature = null
+        this.teritorioCluster?.resetSelectedFeature()
       }
       else {
         const goodFeature = feature
