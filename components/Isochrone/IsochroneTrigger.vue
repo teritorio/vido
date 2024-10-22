@@ -19,6 +19,7 @@ const { t } = useI18n()
 //
 const loading = ref(false)
 const profile = ref<Profile>()
+const error = ref<string>()
 
 //
 // Methods
@@ -28,12 +29,14 @@ async function handleProfileUpdate(value: Profile) {
     loading.value = true
 
     await fetchIsochrone(props.feature, value)
+    toggleOverlay()
   }
-  catch (e: any) {}
+  catch (e: any) {
+    error.value = e.message
+  }
   finally {
     loading.value = false
     profile.value = undefined
-    toggleOverlay()
   }
 }
 </script>
@@ -69,6 +72,7 @@ async function handleProfileUpdate(value: Profile) {
 
       <template #text>
         {{ t('isochrone.overlay.text') }}
+        <VAlert v-if="error" type="error" :text="error" />
       </template>
 
       <template #actions>

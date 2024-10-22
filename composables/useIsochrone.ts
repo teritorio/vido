@@ -28,7 +28,7 @@ export default function useIsochrone() {
   const { config, settings } = useSiteStore()
   const mapStore = useMapStore()
   // Get feature flag for Vido config
-  const enabled = settings?.themes[0].isochroneEnabled || true
+  const enabled = (config?.OPEN_ROUTE_SERVICE_KEY && settings?.themes[0].isochroneEnabled) || false
   const { t, locale } = useI18n()
   const map = useState<Map>('map-instance')
   const profile = useState('isochrone-profile')
@@ -166,7 +166,7 @@ export default function useIsochrone() {
     )
 
     if (error.value)
-      throw new Error(error.value.message)
+      throw createError(error.value)
 
     if (data.value)
       render(data.value)
@@ -198,9 +198,6 @@ export default function useIsochrone() {
       ])
     }
   })
-
-  if (!config?.OPEN_ROUTE_SERVICE_KEY)
-    throw new Error('Open Route Service api key is missing.')
 
   return {
     fetchIsochrone,
