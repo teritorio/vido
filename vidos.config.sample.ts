@@ -8,6 +8,7 @@ const configDefault = {
   IMAGE_PROXY: null,
   MAPILLARY_ACCESS_TOKEN: null,
   OPEN_ROUTE_SERVICE_KEY: null,
+  ISOCHRONE: false,
   SENTRY_DSN: null,
   COOKIES_CONSENT: null,
   COOKIES_LINK: null,

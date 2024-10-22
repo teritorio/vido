@@ -25,10 +25,10 @@ export default function useIsochrone() {
   //
   // Composables
   //
-  const { config, settings } = useSiteStore()
+  const { config } = useSiteStore()
   const mapStore = useMapStore()
   // Get feature flag for Vido config
-  const enabled = (config?.OPEN_ROUTE_SERVICE_KEY && settings?.themes[0].isochroneEnabled) || false
+  const enabled = (config?.OPEN_ROUTE_SERVICE_KEY && config?.ISOCHRONE) || false
   const { t, locale } = useI18n()
   const map = useState<Map>('map-instance')
   const profile = useState('isochrone-profile')
