@@ -36,7 +36,7 @@
     "@sentry/vue": "^7.113.0",
     "@tailwindcss/typography": "^0.5.9",
     "@teritorio/map": "^0.12.7",
-    "@teritorio/maplibre-gl-teritorio-cluster": "^0.0.6",
+    "@teritorio/maplibre-gl-teritorio-cluster": "^0.0.7",
     "@teritorio/openmaptiles-gl-language": "^1.5.4",
     "@turf/boolean-intersects": "^6.5.0",
     "@types/geojson": "^7946.0.10",

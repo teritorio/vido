@@ -617,7 +617,6 @@ function handlePoiCardClose() {
               && selectedFeature.properties.metadata
               && isPoiCardShown
           "
-          :can-close="device.smallScreen"
           :poi="selectedFeature"
           class="tw-grow-0"
           :explorer-mode-enabled="explorerModeEnabled"
@@ -649,7 +648,6 @@ function handlePoiCardClose() {
                 && selectedFeature.properties.metadata
                 && isPoiCardShown
             "
-            :can-close="device.smallScreen"
             :poi="selectedFeature"
             class="tw-grow-0 tw-text-left tw-h-full"
             :explorer-mode-enabled="explorerModeEnabled"
