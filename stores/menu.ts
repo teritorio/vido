@@ -11,6 +11,7 @@ import { filterValueFactory, filterValuesIsSet, isMatch, isSet } from '~/utils/t
 interface FetchFeaturesPayload {
   vidoConfig: VidoConfig
   categoryIds: ApiMenuCategory['id'][]
+  clipingPolygonSlug?: string
 }
 
 export interface State {
@@ -160,7 +161,7 @@ export const menuStore = defineStore('menu', {
       }
     },
 
-    async fetchFeatures({ vidoConfig, categoryIds }: FetchFeaturesPayload) {
+    async fetchFeatures({ vidoConfig, categoryIds, clipingPolygonSlug }: FetchFeaturesPayload) {
       this.isLoadingFeatures = true
 
       try {
@@ -175,7 +176,7 @@ export const menuStore = defineStore('menu', {
               .filter(categoryId => !previousFeatures[categoryId])
               .map((categoryId) => {
                 try {
-                  return getPoiByCategoryId(vidoConfig, categoryId)
+                  return getPoiByCategoryId(vidoConfig, categoryId, { cliping_polygon_slug: clipingPolygonSlug })
                 }
                 catch (e) {
                   // eslint-disable-next-line no-console

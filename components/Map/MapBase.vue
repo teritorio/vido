@@ -320,10 +320,12 @@ export default defineNuxtComponent({
           ]
         }
 
-        this.map.addSource(BOUNDARY_SOURCE, {
-          type: 'geojson',
-          data: inverse,
-        })
+        if (!this.map.getSource(BOUNDARY_SOURCE)) {
+          this.map.addSource(BOUNDARY_SOURCE, {
+            type: 'geojson',
+            data: inverse,
+          })
+        }
 
         const firstSymbolLayerId: string | undefined = this.map
           .getStyle()

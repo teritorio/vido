@@ -48,6 +48,7 @@ export default defineNuxtComponent({
           geometry_as: 'point',
           short_description: false,
           format,
+          cliping_polygon_slug: this.$route.query.clipingPolygonSlug?.toString(),
         },
       )
     },

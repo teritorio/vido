@@ -253,6 +253,7 @@ watch(selectedCategoryIds, (a, b) => {
     menuStore.fetchFeatures({
       vidoConfig: config!,
       categoryIds: selectedCategoryIds.value,
+      clipingPolygonSlug: route.query.clipingPolygonSlug?.toString(),
     })
 
     allowRegionBackZoom.value = true
@@ -308,6 +309,7 @@ async function fetchFavorites() {
 
   return await getPois(config!, favoritesIds.value, {
     geometry_as: 'point',
+    cliping_polygon_slug: route.query.clipingPolygonSlug?.toString(),
   })
     .then(pois => (pois && pois.features) || [])
     .then(pois =>
