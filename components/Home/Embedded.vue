@@ -130,6 +130,7 @@ watch(selectedCategoryIds, (a, b) => {
       menuStore.fetchFeatures({
         vidoConfig: config!,
         categoryIds: selectedCategoryIds.value,
+        clipingPolygonSlug: route.query.clipingPolygonSlug?.toString(),
       })
     }
   }

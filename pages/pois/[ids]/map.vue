@@ -24,6 +24,7 @@ const { params } = useRoute()
 const siteStore = useSiteStore()
 const { config, settings } = storeToRefs(siteStore)
 const { $trackingInit } = useNuxtApp()
+const route = useRoute()
 
 //
 // Data
@@ -35,6 +36,7 @@ if (params.ids) {
   const getPoiPromise = getAsyncDataOrThrows('getPoiPromise', async () =>
     await getPois(config.value!, ids, {
       geometry_as: undefined,
+      cliping_polygon_slug: route.query.clipingPolygonSlug?.toString(),
     }))
   const [poisF] = await Promise.all([getPoiPromise])
   pois.value = poisF.value
