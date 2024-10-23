@@ -189,10 +189,13 @@ export default defineI18nLocale(() => {
       decline: 'Decline',
     },
     isochrone: {
-      trigger: 'Travel time',
+      trigger: {
+        label: 'Travel time',
+        title: 'Travel time from this point',
+      },
       overlay: {
         title: 'Where can I go ?',
-        text: 'View on map, accessible areas from this point, depending on the duration and travel mode.',
+        text: 'View on map, accessible areas from this point, depending on the duration (15, 30, 60 min) and travel mode.',
       },
       profiles: {
         'cycling-regular': 'By bike',

@@ -248,7 +248,7 @@ function trackingPopupEvent(event: 'details' | 'route' | 'explore' | 'favorite' 
         :feature="poi"
       >
         <FontAwesomeIcon :color="colorLine" icon="clock" size="sm" />
-        <span class="tw-text-sm">{{ t('isochrone.trigger') }}</span>
+        <span class="tw-text-sm">{{ t('isochrone.trigger.label') }}</span>
       </IsochroneTrigger>
 
       <button
