@@ -189,7 +189,7 @@ export default function useIsochrone() {
   // Watcher
   //
   watch(locale, (newLocale, oldLocale) => {
-    if (newLocale !== oldLocale) {
+    if (newLocale !== oldLocale && map.value.getLayer(`${sourceName}-symbol`)) {
       // Update symbols translation on locale change
       map.value.setLayoutProperty(`${sourceName}-symbol`, 'text-field', [
         'concat',
