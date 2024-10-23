@@ -190,10 +190,13 @@ export default defineI18nLocale(() => {
       decline: 'Refuser',
     },
     isochrone: {
-      trigger: 'Temps de trajet',
+      trigger: {
+        label: 'Temps de trajet',
+        title: 'Temps de trajet depuis ce point',
+      },
       overlay: {
         title: 'Où puis-je aller ?',
-        text: 'Visualiser sur la carte les zones accessibles depuis ce point de départ en fonction de la durée et du mode de déplacement.',
+        text: 'Visualiser sur la carte les zones accessibles depuis ce point de départ en fonction de la durée (15, 30, 60 min) et du mode de déplacement.',
       },
       profiles: {
         'cycling-regular': 'À vélo',

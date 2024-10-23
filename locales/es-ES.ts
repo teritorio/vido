@@ -189,10 +189,13 @@ export default defineI18nLocale(() => {
       decline: 'Descenso',
     },
     isochrone: {
-      trigger: 'Duración de viaje',
+      trigger: {
+        label: 'Duración de viaje',
+        title: 'Duración de viaje desde este punto',
+      },
       overlay: {
         title: '¿A dónde puedo ir?',
-        text: 'Visualiza en el mapa las zonas accesibles desde este punto de inicio en función de la duración y de la modalidad de viaje.',
+        text: 'Visualiza en el mapa las zonas accesibles desde este punto de inicio en función de la duración (15, 30, 60 minutos) y de la modalidad de viaje.',
       },
       profiles: {
         'cycling-regular': 'En bicicleta',

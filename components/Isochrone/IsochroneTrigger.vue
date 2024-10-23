@@ -42,7 +42,7 @@ async function handleProfileUpdate(value: Profile) {
 </script>
 
 <template>
-  <button type="button" :class="$attrs.class" :aria-label="t('isochrone.trigger')" @click.stop="toggleOverlay">
+  <button type="button" :title="t('isochrone.trigger.title')" :class="$attrs.class" :aria-label="t('isochrone.trigger.label')" @click.stop="toggleOverlay">
     <slot />
   </button>
 
