@@ -2,7 +2,7 @@ import * as Sentry from '@sentry/vue'
 
 export default defineNuxtPlugin((nuxtApp) => {
   const router = useRouter()
-  const { sentry } = useRuntimeConfig().public
+  const { public: { sentry } } = useRuntimeConfig()
 
   if (!sentry.dsn)
     return
@@ -13,7 +13,10 @@ export default defineNuxtPlugin((nuxtApp) => {
     environment: sentry.environment,
     integrations: [
       Sentry.browserTracingIntegration({ router }),
-      Sentry.replayIntegration(),
+      Sentry.replayIntegration({
+        maskAllText: false,
+        blockAllMedia: false,
+      }),
     ],
 
     // Set tracesSampleRate to 1.0 to capture 100%
