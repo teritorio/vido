@@ -307,10 +307,14 @@ async function fetchFavorites() {
   if (!favoritesIds.value.length)
     return []
 
-  return await getPois(config!, favoritesIds.value, {
+  const query = {
     geometry_as: 'point',
-    cliping_polygon_slug: route.query.clipingPolygonSlug?.toString(),
-  })
+  } as Record<string, any>
+
+  if (route.query.clipingPolygonSlug)
+    query.cliping_polygon_slug = route.query.clipingPolygonSlug.toString()
+
+  return await getPois(config!, favoritesIds.value, query)
     .then(pois => (pois && pois.features) || [])
     .then(pois =>
       pois.map(poi => ({

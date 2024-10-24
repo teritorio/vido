@@ -176,7 +176,10 @@ export const menuStore = defineStore('menu', {
               .filter(categoryId => !previousFeatures[categoryId])
               .map((categoryId) => {
                 try {
-                  return getPoiByCategoryId(vidoConfig, categoryId, { cliping_polygon_slug: clipingPolygonSlug })
+                  let options = {}
+                  if (clipingPolygonSlug)
+                    options = { cliping_polygon_slug: clipingPolygonSlug }
+                  return getPoiByCategoryId(vidoConfig, categoryId, options)
                 }
                 catch (e) {
                   // eslint-disable-next-line no-console

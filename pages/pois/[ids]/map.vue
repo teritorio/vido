@@ -33,11 +33,14 @@ const pois = ref<ApiPois>()
 
 if (params.ids) {
   const ids = (params.ids as string).split(',')
-  const getPoiPromise = getAsyncDataOrThrows('getPoiPromise', async () =>
-    await getPois(config.value!, ids, {
-      geometry_as: undefined,
-      cliping_polygon_slug: route.query.clipingPolygonSlug?.toString(),
-    }))
+  const query = {
+    geometry_as: undefined,
+  } as Record<string, any>
+
+  if (route.query.clipingPolygonSlug)
+    query.cliping_polygon_slug = route.query.clipingPolygonSlug.toString()
+
+  const getPoiPromise = getAsyncDataOrThrows('getPoiPromise', async () => await getPois(config.value!, ids, query))
   const [poisF] = await Promise.all([getPoiPromise])
   pois.value = poisF.value
 }
