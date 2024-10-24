@@ -39,6 +39,7 @@
     "@teritorio/maplibre-gl-teritorio-cluster": "^0.0.7",
     "@teritorio/openmaptiles-gl-language": "^1.5.4",
     "@turf/boolean-intersects": "^6.5.0",
+    "@turf/mask": "^7.1.0",
     "@types/geojson": "^7946.0.10",
     "core-js": "^3.31.0",
     "country-flag-icons": "^1.5.7",
