@@ -161,6 +161,7 @@ export default function useIsochrone() {
           locations: [coordinates],
           range_type: 'time',
           range,
+          smoothing: 50,
         },
       }),
     )
