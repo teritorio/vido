@@ -1,6 +1,5 @@
 <script lang="ts">
 import { PoiFilter } from '@teritorio/map'
-import copy from 'fast-copy'
 import type { MultiLineString, MultiPoint, MultiPolygon, Polygon } from 'geojson'
 import throttle from 'lodash.throttle'
 import type {
@@ -16,6 +15,7 @@ import type {
   Marker,
   StyleSpecification,
 } from 'maplibre-gl'
+import { mask } from '@turf/mask'
 import type { PropType } from 'vue'
 
 import { storeToRefs } from 'pinia'
@@ -292,68 +292,34 @@ export default defineNuxtComponent({
       this.map.addControl(this.poiFilter)
 
       if (this.boundaryArea) {
-        const inverse = copy(this.boundaryArea)
-        if (inverse.type === 'Polygon') {
-          inverse.coordinates = [
-            [
-              [-180, -90],
-              [180, -90],
-              [180, 90],
-              [-180, 90],
-              [-180, -90],
-            ],
-            ...inverse.coordinates,
-          ]
-        }
-        else {
-          inverse.coordinates = [
-            [
-              [
-                [-180, -90],
-                [180, -90],
-                [180, 90],
-                [-180, 90],
-                [-180, -90],
-              ],
-              ...inverse.coordinates[0],
-            ],
-          ]
-        }
-
         if (!this.map.getSource(BOUNDARY_SOURCE)) {
           this.map.addSource(BOUNDARY_SOURCE, {
             type: 'geojson',
-            data: inverse,
+            data: mask(this.boundaryArea),
           })
         }
 
-        const firstSymbolLayerId: string | undefined = this.map
-          .getStyle()
-          .layers.find(layer => layer.type === 'line')?.id
-        this.map.addLayer(
-          {
-            id: BOUNDARY_AREA_LAYER,
-            source: BOUNDARY_SOURCE,
-            type: 'fill',
-            paint: {
-              'fill-color': 'rgba(185, 185, 185, 0.46)',
-              'fill-opacity': 0.8,
-            },
+        const firstSymbolLayerId = this.map.getStyle().layers.find(layer => layer.type === 'line')?.id
+
+        this.map.addLayer({
+          id: BOUNDARY_AREA_LAYER,
+          source: BOUNDARY_SOURCE,
+          type: 'fill',
+          paint: {
+            'fill-color': 'rgba(185, 185, 185, 0.46)',
+            'fill-opacity': 0.8,
           },
-          firstSymbolLayerId,
-        )
-        this.map.addLayer(
-          {
-            id: BOUNDAR_BORDER_LAYER,
-            source: BOUNDARY_SOURCE,
-            type: 'line',
-            paint: {
-              'line-color': 'rgba(185, 185, 185, 0.46)',
-              'line-width': 3,
-            },
+        }, firstSymbolLayerId)
+
+        this.map.addLayer({
+          id: BOUNDAR_BORDER_LAYER,
+          source: BOUNDARY_SOURCE,
+          type: 'line',
+          paint: {
+            'line-color': 'rgba(185, 185, 185, 0.46)',
+            'line-width': 3,
           },
-          firstSymbolLayerId,
-        )
+        }, firstSymbolLayerId)
       }
 
       this.$emit('mapStyleLoad', style)

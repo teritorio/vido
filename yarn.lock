@@ -3542,6 +3542,7 @@ __metadata:
     "@teritorio/maplibre-gl-teritorio-cluster": "npm:^0.0.7"
     "@teritorio/openmaptiles-gl-language": "npm:^1.5.4"
     "@turf/boolean-intersects": "npm:^6.5.0"
+    "@turf/mask": "npm:^7.1.0"
     "@types/geojson": "npm:^7946.0.10"
     "@types/lodash.debounce": "npm:^4.0.7"
     "@types/lodash.memoize": "npm:^4.1.7"
@@ -3679,10 +3680,31 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@turf/clone@npm:^7.1.0":
+  version: 7.1.0
+  resolution: "@turf/clone@npm:7.1.0"
+  dependencies:
+    "@turf/helpers": "npm:^7.1.0"
+    "@types/geojson": "npm:^7946.0.10"
+    tslib: "npm:^2.6.2"
+  checksum: 10c0/18cc6fd7f285652e5ad38d432ebdf66fc7ed4b960ff732d35833a12662f1cda442a3ab27a9ac789e9fad8a82aafc917f89ef44a680d52385770af226c2ccdda3
+  languageName: node
+  linkType: hard
+
 "@turf/helpers@npm:6.x, @turf/helpers@npm:^6.5.0":
   version: 6.5.0
   resolution: "@turf/helpers@npm:6.5.0"
   checksum: 10c0/786cbe0c0027f85db286fb3a0b7be04bb29bd63ec07760a49735ef32e9c5b4a7c059a8f691fafa31c7e0e9be34c281e014dc24077438bae01a09b492a680fb6f
+  languageName: node
+  linkType: hard
+
+"@turf/helpers@npm:^7.1.0":
+  version: 7.1.0
+  resolution: "@turf/helpers@npm:7.1.0"
+  dependencies:
+    "@types/geojson": "npm:^7946.0.10"
+    tslib: "npm:^2.6.2"
+  checksum: 10c0/0b07c01584d8bee977edec8752109b4f79ab5b149e55a7dbe051e412e150c0a96f2464c9647676a092b7ab4429271eee4a31400ea45e9b55095ae53ad22f43d6
   languageName: node
   linkType: hard
 
@@ -3716,6 +3738,19 @@ __metadata:
     "@turf/invariant": "npm:^6.5.0"
     "@turf/meta": "npm:^6.5.0"
   checksum: 10c0/5fa92ca0b3dbb909c957eefd8d98eda2dcb9ea924854507f1f8f8c2ad304d78c84734affd4601d10eda6732e808857020fccb2eaa91a76981fcce3eeafa72757
+  languageName: node
+  linkType: hard
+
+"@turf/mask@npm:^7.1.0":
+  version: 7.1.0
+  resolution: "@turf/mask@npm:7.1.0"
+  dependencies:
+    "@turf/clone": "npm:^7.1.0"
+    "@turf/helpers": "npm:^7.1.0"
+    "@types/geojson": "npm:^7946.0.10"
+    polygon-clipping: "npm:^0.15.3"
+    tslib: "npm:^2.6.2"
+  checksum: 10c0/f6cbd696cc14ac9be8abb8e5667e2fd81beeb76e7481c193be58d7d1722413f08d28e1d9dfae2675b94aac2005668e4e8b54d6a9b0fcbdb7b6f47870886bacc3
   languageName: node
   linkType: hard
 
@@ -12959,6 +12994,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"polygon-clipping@npm:^0.15.3":
+  version: 0.15.7
+  resolution: "polygon-clipping@npm:0.15.7"
+  dependencies:
+    robust-predicates: "npm:^3.0.2"
+    splaytree: "npm:^3.1.0"
+  checksum: 10c0/9515283509f1793f22fd87e68662838a6ebbd33cca4fc4bccd9f1b4f366383a4590e9a1cd48287e6897ad018803aeb97ed9ebe38bada5cffa7b4551539a9ab10
+  languageName: node
+  linkType: hard
+
 "possible-typed-array-names@npm:^1.0.0":
   version: 1.0.0
   resolution: "possible-typed-array-names@npm:1.0.0"
@@ -14017,6 +14062,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"robust-predicates@npm:^3.0.2":
+  version: 3.0.2
+  resolution: "robust-predicates@npm:3.0.2"
+  checksum: 10c0/4ecd53649f1c2d49529c85518f2fa69ffb2f7a4453f7fd19c042421c7b4d76c3efb48bc1c740c8f7049346d7cb58cf08ee0c9adaae595cc23564d360adb1fde4
+  languageName: node
+  linkType: hard
+
 "rollup-plugin-visualizer@npm:^5.12.0, rollup-plugin-visualizer@npm:^5.9.2":
   version: 5.12.0
   resolution: "rollup-plugin-visualizer@npm:5.12.0"
@@ -14785,6 +14837,13 @@ __metadata:
   version: 14.0.1
   resolution: "speakingurl@npm:14.0.1"
   checksum: 10c0/1de1d1b938a7c4d9e79593ff7a26d312ec04a7c3234ca40b7f9b8106daf74ea9d2110a077f5db97ecf3762b83069e3ccbf9694431b51d4fcfd863f0b3333c342
+  languageName: node
+  linkType: hard
+
+"splaytree@npm:^3.1.0":
+  version: 3.1.2
+  resolution: "splaytree@npm:3.1.2"
+  checksum: 10c0/ba82da4e4185d692eb2b1c9e000a9dde6cd713ec447f5c90ec97264ce9de19ba1f5f90fbef8a9ffa37bbbe2e9f4b031c6ee45d4119acbf1cddb93112ec5ecf86
   languageName: node
   linkType: hard
 
