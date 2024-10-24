@@ -28,6 +28,7 @@ Full entry points documentation available on [api.yml](public/api.yaml) and on s
   * Full page: `/`, `/{poi_Id}`, `/{category_ids}/` and `/{category_ids}/{poi_id}`.
   * Parameters:
     * `boundary`: an alternative boundary key from settings `polygons_extra`.
+    * `clipingPolygonSlug`: POI filtering by polygon (key from settings `polygons_extra`).
 * Embedded: `/embedded/`, same subpath and parameters as full page.
 * POI:
   * details: `/poi/{id}/details`.
