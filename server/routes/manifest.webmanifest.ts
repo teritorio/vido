@@ -4,20 +4,16 @@ import { defineEventHandler } from 'h3'
 import { getSettings } from '../../lib/apiSettings'
 import { vidos } from '../../lib/config'
 import { vidoConfigResolve } from '../../plugins/vido-config'
-import type { VidoConfig } from '../../utils/types-config'
 
 async function manifest(
   req: IncomingMessage,
   res: ServerResponse<IncomingMessage>,
 ) {
-  const hostname = (req.headers['x-forwarded-host'] || req.headers.host) as
-    | string
-    | undefined
-  if (hostname) {
-    const vido: VidoConfig = vidoConfigResolve(hostname, vidos())
-    const fetchSettings = getSettings(vido)
+  const hostname = (req.headers['x-forwarded-host'] || req.headers.host)?.toString().split(':')[0]
 
-    const [settings] = await Promise.all([fetchSettings])
+  if (hostname) {
+    const vido = vidoConfigResolve(hostname, vidos())
+    const settings = await getSettings(vido)
 
     res.write(
       JSON.stringify({
