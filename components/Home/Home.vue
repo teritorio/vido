@@ -48,7 +48,9 @@ const menuStore = useMenuStore()
 const { apiMenuCategory, features, selectedCategoryIds } = storeToRefs(menuStore)
 const favoriteStore = useFavoriteStore()
 const { favoritesIds, favoriteAddresses, favoriteFeatures, favoriteCount } = storeToRefs(favoriteStore)
-const { config, settings, contents } = useSiteStore()
+const siteStore = useSiteStore()
+const { config, settings, contents } = siteStore
+const { favoritesModeEnabled } = storeToRefs(siteStore)
 const { $tracking } = useNuxtApp()
 const route = useRoute()
 const router = useRouter()
@@ -143,10 +145,6 @@ onMounted(async () => {
 //
 // Computed
 //
-const favoritesModeEnabled = computed(() => {
-  return settings!.themes[0]?.favorites_mode ?? true
-})
-
 const isBottomMenuOpened = computed(() => {
   return ((device.value.smallScreen && isPoiCardShown.value) || isMenuItemOpen.value)
 })
@@ -627,7 +625,6 @@ function handlePoiCardClose() {
           "
           :poi="selectedFeature"
           class="tw-grow-0"
-          :favorites-mode-enabled="favoritesModeEnabled"
           @explore-click="toggleExploreAroundSelectedPoi(undefined)"
           @favorite-click="toggleFavorite"
           @zoom-click="goToSelectedFeature"
@@ -657,7 +654,6 @@ function handlePoiCardClose() {
             "
             :poi="selectedFeature"
             class="tw-grow-0 tw-text-left tw-h-full"
-            :favorites-mode-enabled="favoritesModeEnabled"
             @explore-click="toggleExploreAroundSelectedPoi(undefined)"
             @favorite-click="toggleFavorite"
             @zoom-click="goToSelectedFeature"

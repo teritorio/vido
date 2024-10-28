@@ -43,10 +43,6 @@ export default defineNuxtComponent({
       type: String as PropType<string>,
       required: true,
     },
-    favoritesModeEnabled: {
-      type: Boolean,
-      required: true,
-    },
   },
 
   data(): {

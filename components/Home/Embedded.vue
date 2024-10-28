@@ -185,7 +185,6 @@ function toggleExploreAroundSelectedPoi() {
       <PoiCardContent
         :details-is-external="true"
         :poi="selectedFeature"
-        :favorites-mode-enabled="false"
         @explore-click="toggleExploreAroundSelectedPoi"
         @zoom-click="goToSelectedFeature"
       />

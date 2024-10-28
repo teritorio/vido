@@ -127,7 +127,6 @@ function removeFavorites() {
     <PoisDeck
       :pois="favoriteFeatures"
       :is-card-light="false"
-      :favorites-mode-enabled="true"
       class="tw-pb-4"
       @explore-click="$emit('exploreClick', $event)"
       @favorite-click="$emit('favoriteClick', $event)"

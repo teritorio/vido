@@ -5,7 +5,6 @@ import type { ApiPoi } from '~/lib/apiPois'
 
 const defaultProps = {
   poi: poi as ApiPoi,
-  favoritesModeEnabled: false,
 }
 
 const props = {

@@ -86,10 +86,6 @@ export default defineNuxtComponent({
       return PropertyTranslationsContextEnum.Details
     },
 
-    favoritesModeEnabled(): boolean {
-      return this.settings.themes[0]?.favorites_mode ?? true
-    },
-
     properties(): ApiPoi['properties'] {
       if (!this.isLargeLayeout) {
         return this.poi.properties
@@ -299,7 +295,6 @@ export default defineNuxtComponent({
         :route="poiDeps"
         :color-fill="colorFill"
         :color-line="colorLine"
-        :favorites-mode-enabled="favoritesModeEnabled"
       />
     </template>
 
