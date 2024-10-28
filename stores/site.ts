@@ -8,6 +8,7 @@ import type { VidoConfig } from '~/utils/types-config'
 interface State {
   locale: string | null
   config: VidoConfig | undefined
+  explorerModeEnabled: boolean
   settings: Settings | undefined
   contents: ContentEntry[] | undefined
   translations: PropertyTranslations | undefined
@@ -17,6 +18,7 @@ export const siteStore = defineStore('site', {
   state: (): State => ({
     locale: null,
     config: undefined,
+    explorerModeEnabled: false,
     settings: undefined,
     contents: undefined,
     translations: undefined,
@@ -25,6 +27,7 @@ export const siteStore = defineStore('site', {
     async init(headers: Record<string, string>) {
       this.config = vidoConfig(headers)
       this.settings = await getSettings(this.config)
+      this.explorerModeEnabled = this.settings?.themes[0]?.explorer_mode || true
       this.contents = await getContents(this.config)
       this.translations = await getPropertyTranslations(this.config)
     },

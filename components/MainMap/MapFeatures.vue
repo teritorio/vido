@@ -94,10 +94,6 @@ export default defineNuxtComponent({
       type: Array as PropType<Array<string[]> | null>,
       default: null,
     },
-    explorerModeEnabled: {
-      type: Boolean,
-      required: true,
-    },
     enableFilterRouteByCategories: {
       type: Boolean,
       default: true,
@@ -122,7 +118,9 @@ export default defineNuxtComponent({
 
   setup() {
     const device = useDevice()
-    const { config } = storeToRefs(useSiteStore())
+    const siteStore = useSiteStore()
+    const { config } = siteStore
+    const { explorerModeEnabled } = storeToRefs(useSiteStore())
     const mapStore = useMapStore()
     const { center, selectedFeature, teritorioCluster } = storeToRefs(mapStore)
     const mapStyleLoaded = ref(false)
@@ -131,6 +129,7 @@ export default defineNuxtComponent({
       center,
       config,
       device,
+      explorerModeEnabled,
       mapBase: ref<InstanceType<typeof MapBase>>(),
       mapStore,
       mapStyleLoaded,

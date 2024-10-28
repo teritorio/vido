@@ -8,6 +8,7 @@ import type { ApiPoi } from '~/lib/apiPois'
 import { coordinatesHref } from '~/lib/coordinates'
 import { favoriteStore as useFavoriteStore } from '~/stores/favorite'
 import { mapStore as useMapStore } from '~/stores/map'
+import { siteStore as useSiteStore } from '~/stores/site'
 import ContribFieldGroup from '~/components/Fields/ContribFieldGroup.vue'
 import useDevice from '~/composables/useDevice'
 import IsochroneTrigger from '~/components/Isochrone/IsochroneTrigger.vue'
@@ -17,7 +18,6 @@ import IsochroneTrigger from '~/components/Isochrone/IsochroneTrigger.vue'
 //
 const props = withDefaults(defineProps<{
   detailsIsExternal?: boolean
-  explorerModeEnabled: boolean
   favoritesModeEnabled: boolean
   poi: ApiPoi
 }>(), {
@@ -44,6 +44,7 @@ const { isModeExplorer } = storeToRefs(useMapStore())
 const device = useDevice()
 const { enabled: isochroneEnabled, isochroneCurrentFeature } = useIsochrone()
 const { featureName, featureCategoryName } = useFeature(toRef(() => props.poi), { type: 'popup' })
+const { explorerModeEnabled } = storeToRefs(useSiteStore())
 
 //
 // Data
