@@ -156,7 +156,12 @@ export default defineNuxtComponent({
     ...mapState(menuStore, ['isLoadingFeatures']),
 
     availableStyles(): MapStyleEnum[] {
-      return [MapStyleEnum.vector, MapStyleEnum.aerial, MapStyleEnum.bicycle]
+      const styles = [MapStyleEnum.vector, MapStyleEnum.aerial]
+
+      if (this.config!.BICYCLE_STYLE_URL)
+        styles.push(MapStyleEnum.bicycle)
+
+      return styles
     },
 
     // Workaround typing issue
