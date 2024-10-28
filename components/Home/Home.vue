@@ -284,7 +284,10 @@ watch(isModeFavorites, async (isEnabled) => {
 //
 // Methods
 //
-function goToSelectedFeature() {
+function goToSelectedFeature(feature?: ApiPoi) {
+  if (feature)
+    mapStore.setSelectedFeature(feature)
+
   if (mapFeaturesRef.value)
     mapFeaturesRef.value.goToSelectedFeature()
 }
@@ -553,11 +556,11 @@ function handlePoiCardClose() {
         >
           <FavoriteMenu
             v-if="favoritesModeEnabled"
-            :explore-around-selected-poi="toggleExploreAroundSelectedPoi"
-            :go-to-selected-poi="goToSelectedFeature"
-            :toggle-favorite="toggleFavorite"
+            @explore-click="toggleExploreAroundSelectedPoi"
+            @favorite-click="toggleFavorite"
             @toggle-favorite-mode="toggleFavoriteMode"
             @toggle-note-book-mode="toggleNoteBookMode"
+            @zoom-click="goToSelectedFeature"
           />
           <NavMenu
             id="nav-menu"
