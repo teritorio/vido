@@ -9,13 +9,13 @@ import type { ApiPoi } from '~/lib/apiPois'
 import { mapStore as useMapStore } from '~/stores/map'
 import { favoriteStore as useFavoriteStore } from '~/stores/favorite'
 
-const props = defineProps<{
-  exploreAroundSelectedPoi: Function
-  goToSelectedPoi: Function
-  toggleFavorite: Function
+const emit = defineEmits<{
+  (e: 'exploreClick', poi: ApiPoi): void
+  (e: 'favoriteClick', poi: ApiPoi): void
+  (e: 'toggleFavoriteMode'): void
+  (e: 'toggleNoteBookMode'): void
+  (e: 'zoomClick', poi: ApiPoi): void
 }>()
-
-const emit = defineEmits(['toggleFavoriteMode', 'toggleNoteBookMode'])
 
 const device = useDevice()
 const notebookModal = ref<boolean>(false)
@@ -24,9 +24,9 @@ const mapStore = useMapStore()
 const { isModeFavorites } = storeToRefs(mapStore)
 const { favoriteCount } = storeToRefs(useFavoriteStore())
 
-function explore(poi: ApiPoi) {
+function onExploreClick(poi: ApiPoi) {
   notebookModal.value = false
-  props.exploreAroundSelectedPoi(poi)
+  emit('exploreClick', poi)
 }
 
 function onClose() {
@@ -35,13 +35,8 @@ function onClose() {
 }
 
 function onZoomClick(poi: ApiPoi) {
-  mapStore.setSelectedFeature(poi)
   notebookModal.value = false
-  props.goToSelectedPoi(poi)
-}
-
-function handleFavorite(poi: ApiPoi) {
-  props.toggleFavorite(poi)
+  emit('zoomClick', poi)
 }
 
 const { $tracking } = useNuxtApp()
@@ -107,8 +102,8 @@ async function toggleNoteBookMode() {
         max-width="80rem"
       >
         <FavoriteNoteBook
-          @explore-click="explore"
-          @favorite-click="handleFavorite"
+          @explore-click="onExploreClick"
+          @favorite-click="$emit('favoriteClick', $event)"
           @zoom-click="onZoomClick"
           @on-close="onClose"
         />
