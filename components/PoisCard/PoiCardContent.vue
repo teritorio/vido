@@ -18,7 +18,6 @@ import IsochroneTrigger from '~/components/Isochrone/IsochroneTrigger.vue'
 //
 const props = withDefaults(defineProps<{
   detailsIsExternal?: boolean
-  favoritesModeEnabled: boolean
   poi: ApiPoi
 }>(), {
   detailsIsExternal: false,
@@ -43,7 +42,7 @@ const { contribMode, isContribEligible, getContributorFields } = useContrib()
 const { isModeExplorer } = storeToRefs(useMapStore())
 const device = useDevice()
 const { enabled: isochroneEnabled } = useIsochrone()
-const { explorerModeEnabled } = storeToRefs(useSiteStore())
+const { explorerModeEnabled, favoritesModeEnabled } = storeToRefs(useSiteStore())
 
 //
 // Data

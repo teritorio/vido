@@ -11,7 +11,6 @@ export default {
 
 const defaultProps = {
   poi,
-  favoritesModeEnabled: false,
 }
 
 export const Default = bind(PoiCard, {

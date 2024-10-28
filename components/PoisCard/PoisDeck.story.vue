@@ -18,7 +18,6 @@ const defaultProps = {
     ),
   ),
   selectedPoiIds: points.map(feature => feature.properties.id as ApiPoiId),
-  favoritesModeEnabled: false,
   isCardLight: true,
 }
 
