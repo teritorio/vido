@@ -11,7 +11,6 @@ import { favoriteStore as useFavoriteStore } from '~/stores/favorite'
 
 const props = defineProps<{
   exploreAroundSelectedPoi: Function
-  explorerModeEnabled: boolean
   goToSelectedPoi: Function
   toggleFavorite: Function
 }>()
@@ -108,7 +107,6 @@ async function toggleNoteBookMode() {
         max-width="80rem"
       >
         <FavoriteNoteBook
-          :explorer-mode-enabled="explorerModeEnabled"
           @explore-click="explore"
           @favorite-click="handleFavorite"
           @zoom-click="onZoomClick"
