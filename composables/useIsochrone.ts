@@ -26,7 +26,6 @@ export default function useIsochrone() {
   // Composables
   //
   const { config } = useSiteStore()
-  const mapStore = useMapStore()
   // Get feature flag for Vido config
   const enabled = (config?.OPEN_ROUTE_SERVICE_KEY && config?.ISOCHRONE) || false
   const { t, locale } = useI18n()
@@ -37,7 +36,6 @@ export default function useIsochrone() {
   // Data
   //
   const isOverlayOpen = ref(false)
-  const sources = ref<string[]>([])
   const layers = ref<string[]>([])
   const sourceName = 'isochrone'
   const colorExpression = [
@@ -59,8 +57,8 @@ export default function useIsochrone() {
     layers.value.forEach(layerId => map.value.removeLayer(layerId))
     layers.value = []
 
-    sources.value.forEach(sourceId => map.value.removeSource(sourceId))
-    sources.value = []
+    if (map.value.getSource(sourceName))
+      map.value.removeSource(sourceName)
   }
 
   const render = (data: ORSData) => {
@@ -130,7 +128,6 @@ export default function useIsochrone() {
         },
       })
 
-      sources.value.push(sourceName)
       layers.value.push(`${sourceName}-fill`)
       layers.value.push(`${sourceName}-line`)
       layers.value.push(`${sourceName}-symbol`)
@@ -174,22 +171,10 @@ export default function useIsochrone() {
   }
 
   //
-  // Subscribers
-  //
-  mapStore.$onAction(({ name, after }) => {
-    if (name === 'setSelectedFeature') {
-      after((result) => {
-        if (result === undefined) {
-          reset()
-        }
-      })
-    }
-  })
-
-  //
   // Watcher
   //
   watch(locale, (newLocale, oldLocale) => {
+    console.log('watch', map.value.getLayer(`${sourceName}-symbol`))
     if (newLocale !== oldLocale && map.value.getLayer(`${sourceName}-symbol`)) {
       // Update symbols translation on locale change
       map.value.setLayoutProperty(`${sourceName}-symbol`, 'text-field', [
