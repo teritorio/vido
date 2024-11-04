@@ -1,5 +1,6 @@
 import type { ExpressionSpecification, LngLatBoundsLike, Map } from 'maplibre-gl'
 import type { FeatureCollection, GeoJsonProperties, Geometry } from 'geojson'
+import { storeToRefs } from 'pinia'
 import { siteStore as useSiteStore } from '~/stores/site'
 import { mapStore as useMapStore } from '~/stores/map'
 
@@ -31,6 +32,7 @@ export default function useIsochrone() {
   const { t, locale } = useI18n()
   const map = useState<Map>('map-instance')
   const profile = useState('isochrone-profile')
+  const { boundOptions } = storeToRefs(useMapStore())
 
   //
   // Data
@@ -54,6 +56,7 @@ export default function useIsochrone() {
   // Methods
   //
   const reset = () => {
+    // FIXME: Issue with HMR, layers is empty but layers and source are still present on map
     layers.value.forEach(layerId => map.value.removeLayer(layerId))
     layers.value = []
 
@@ -68,7 +71,7 @@ export default function useIsochrone() {
       profile.value = data.metadata.query.profile
 
       // Apply Isochrone bbox
-      map.value.fitBounds(data.bbox)
+      map.value.fitBounds(data.bbox, boundOptions?.value)
 
       // Add Isochrone data source
       map.value.addSource(sourceName, {
@@ -174,7 +177,6 @@ export default function useIsochrone() {
   // Watcher
   //
   watch(locale, (newLocale, oldLocale) => {
-    console.log('watch', map.value.getLayer(`${sourceName}-symbol`))
     if (newLocale !== oldLocale && map.value.getLayer(`${sourceName}-symbol`)) {
       // Update symbols translation on locale change
       map.value.setLayoutProperty(`${sourceName}-symbol`, 'text-field', [
