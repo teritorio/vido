@@ -11,8 +11,6 @@ import type { ApiPoi } from '~/lib/apiPois'
 withDefaults(defineProps<{
   canClose?: boolean
   poi: ApiPoi
-  explorerModeEnabled: boolean
-  favoritesModeEnabled: boolean
   showImage?: boolean
 }>(), {
   canClose: true,
@@ -85,8 +83,6 @@ const closeBtnStyles = reactive({
 
     <PoiCardContent
       :poi="poi"
-      :explorer-mode-enabled="explorerModeEnabled"
-      :favorites-mode-enabled="favoritesModeEnabled"
       class="tw-px-4 tw-py-5 tw-flex tw-flex-col md:tw-overflow-y-auto tw-flex-grow md:tw-max-h-full tw-box-border tw-w-full md:tw-h-80 md:tw-w-96"
       @explore-click="$emit('exploreClick', $event)"
       @favorite-click="$emit('favoriteClick', $event)"

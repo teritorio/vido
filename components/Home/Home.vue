@@ -47,7 +47,9 @@ const menuStore = useMenuStore()
 const { apiMenuCategory, features, selectedCategoryIds } = storeToRefs(menuStore)
 const favoriteStore = useFavoriteStore()
 const { favoritesIds, favoriteAddresses, favoriteFeatures, favoriteCount } = storeToRefs(favoriteStore)
-const { config, settings, contents } = useSiteStore()
+const siteStore = useSiteStore()
+const { config, settings, contents } = siteStore
+const { favoritesModeEnabled } = storeToRefs(siteStore)
 const { $tracking } = useNuxtApp()
 const route = useRoute()
 const router = useRouter()
@@ -141,14 +143,6 @@ onMounted(async () => {
 //
 // Computed
 //
-const explorerModeEnabled = computed(() => {
-  return settings!.themes[0]?.explorer_mode ?? true
-})
-
-const favoritesModeEnabled = computed(() => {
-  return settings!.themes[0]?.favorites_mode ?? true
-})
-
 const isBottomMenuOpened = computed(() => {
   return ((device.value.smallScreen && isPoiCardShown.value) || isMenuItemOpen.value)
 })
@@ -288,7 +282,10 @@ watch(isModeFavorites, async (isEnabled) => {
 //
 // Methods
 //
-function goToSelectedFeature() {
+function goToSelectedFeature(feature?: ApiPoi) {
+  if (feature)
+    mapStore.setSelectedFeature(feature)
+
   if (mapFeaturesRef.value)
     mapFeaturesRef.value.goToSelectedFeature()
 }
@@ -557,12 +554,11 @@ function handlePoiCardClose() {
         >
           <FavoriteMenu
             v-if="favoritesModeEnabled"
-            :explore-around-selected-poi="toggleExploreAroundSelectedPoi"
-            :go-to-selected-poi="goToSelectedFeature"
-            :toggle-favorite="toggleFavorite"
-            :explorer-mode-enabled="explorerModeEnabled"
+            @explore-click="toggleExploreAroundSelectedPoi"
+            @favorite-click="toggleFavorite"
             @toggle-favorite-mode="toggleFavoriteMode"
             @toggle-note-book-mode="toggleNoteBookMode"
+            @zoom-click="goToSelectedFeature"
           />
           <NavMenu
             id="nav-menu"
@@ -585,7 +581,6 @@ function handlePoiCardClose() {
           :features="mapFeatures"
           :selected-categories-ids="isModeExplorer ? [] : selectedCategoryIds"
           :style-icon-filter="poiFilters"
-          :explorer-mode-enabled="explorerModeEnabled"
           :enable-filter-route-by-categories="!isModeFavorites"
           :enable-filter-route-by-features="isModeFavorites"
           :boundary-area="boundaryArea || settings!.polygon.data"
@@ -625,8 +620,6 @@ function handlePoiCardClose() {
           "
           :poi="selectedFeature"
           class="tw-grow-0"
-          :explorer-mode-enabled="explorerModeEnabled"
-          :favorites-mode-enabled="favoritesModeEnabled"
           @explore-click="toggleExploreAroundSelectedPoi(undefined)"
           @favorite-click="toggleFavorite"
           @zoom-click="goToSelectedFeature"
@@ -656,8 +649,6 @@ function handlePoiCardClose() {
             "
             :poi="selectedFeature"
             class="tw-grow-0 tw-text-left tw-h-full"
-            :explorer-mode-enabled="explorerModeEnabled"
-            :favorites-mode-enabled="favoritesModeEnabled"
             @explore-click="toggleExploreAroundSelectedPoi(undefined)"
             @favorite-click="toggleFavorite"
             @zoom-click="goToSelectedFeature"

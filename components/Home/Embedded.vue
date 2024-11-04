@@ -72,10 +72,6 @@ onMounted(() => {
 //
 // Computed
 //
-const explorerModeEnabled = computed(() => {
-  return settings!.themes[0]?.explorer_mode ?? true
-})
-
 const filters = computed(() => {
   return route.query.menuItemIds
     ? route.query.menuItemIds
@@ -187,8 +183,6 @@ function toggleExploreAroundSelectedPoi() {
       <PoiCardContent
         :details-is-external="true"
         :poi="selectedFeature"
-        :explorer-mode-enabled="explorerModeEnabled"
-        :favorites-mode-enabled="false"
         @explore-click="toggleExploreAroundSelectedPoi"
         @zoom-click="goToSelectedFeature"
       />
@@ -207,7 +201,6 @@ function toggleExploreAroundSelectedPoi() {
           :features="mapFeatures"
           :selected-categories-ids="selectedCategoryIds"
           :style-icon-filter="poiFilters"
-          :explorer-mode-enabled="explorerModeEnabled"
           :cooperative-gestures="false"
           :boundary-area="boundaryArea || settings!.polygon.data"
         />

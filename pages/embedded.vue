@@ -10,10 +10,11 @@ import { mapStore as useMapStore } from '~/stores/map'
 // Composables
 //
 const { params, query, path } = useRoute()
-const siteStore = useSiteStore()
 const mapStore = useMapStore()
-const { config, settings } = storeToRefs(siteStore)
-const { API_ENDPOINT, API_PROJECT, API_THEME } = config.value!
+const siteStore = useSiteStore()
+const { config, settings } = siteStore
+const { favoritesModeEnabled } = storeToRefs(siteStore)
+const { API_ENDPOINT, API_PROJECT, API_THEME } = config!
 const { $trackingInit } = useNuxtApp()
 
 //
@@ -28,12 +29,12 @@ const categoryIds = ref<number[]>()
 // Hooks
 //
 onBeforeMount(() => {
-  $trackingInit(config.value!)
+  $trackingInit(config!)
 })
 
 const { boundary } = query
-if (boundary && typeof boundary === 'string' && settings.value!.polygons_extra) {
-  const boundaryObject = settings.value!.polygons_extra[boundary]
+if (boundary && typeof boundary === 'string' && settings!.polygons_extra) {
+  const boundaryObject = settings!.polygons_extra[boundary]
   if (boundaryObject) {
     if (typeof boundaryObject.data === 'string') {
       const geojson = (await (await fetch(boundaryObject.data)).json()) as GeoJSON
@@ -78,6 +79,9 @@ if (categoryIds.value && poiId.value) {
 
   mapStore.setSelectedFeature(data.value!)
 }
+
+// Disable Favorite Mode
+favoritesModeEnabled.value = false
 </script>
 
 <template>
