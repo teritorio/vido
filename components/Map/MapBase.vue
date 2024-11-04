@@ -106,9 +106,10 @@ export default defineNuxtComponent({
   },
 
   setup() {
-    const { selectedFeature } = storeToRefs(useMapStore())
+    const { boundOptions, selectedFeature } = storeToRefs(useMapStore())
 
     return {
+      boundOptions,
       selectedFeature,
     }
   },
@@ -136,6 +137,13 @@ export default defineNuxtComponent({
   },
 
   watch: {
+    fitBoundsPaddingOptions: {
+      handler() {
+        this.boundOptions = this.fitBoundsOptions()
+      },
+      immediate: true,
+    },
+
     offMapAttribution() {
       this.$nextTick(() => this.map?.resize())
     },

@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { type LngLatLike, type Marker, Point } from 'maplibre-gl'
+import { type FitBoundsOptions, type LngLatLike, type Marker, Point } from 'maplibre-gl'
 import type { TeritorioCluster } from '@teritorio/maplibre-gl-teritorio-cluster'
 import type { ApiPoi, ApiPoiProperties } from '~/lib/apiPois'
 import type { LatLng, Pitch } from '~/utils/types'
@@ -7,6 +7,7 @@ import { Mode } from '~/utils/types'
 import { pinMarkerRender } from '~/lib/clusters'
 
 interface State {
+  boundOptions?: FitBoundsOptions
   center: LatLng
   mode: Mode
   pinMarker: Marker | null
@@ -17,6 +18,7 @@ interface State {
 
 export const mapStore = defineStore('map', {
   state: (): State => ({
+    boundOptions: undefined,
     center: { lng: 0, lat: 0 },
     mode: Mode.BROWSER,
     pinMarker: null,
