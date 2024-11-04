@@ -306,6 +306,9 @@ export default defineNuxtComponent({
         this.updateSelectedFeature(vectorTilesPoi2ApiPoi(selectedFeatures[0]), true)
         this.showSelectedFeature()
       }
+      else {
+        this.updateSelectedFeature(null)
+      }
     },
 
     updateSelectedFeature(feature: ApiPoi | null, fetch = false) {
