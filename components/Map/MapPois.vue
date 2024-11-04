@@ -102,6 +102,7 @@ export default defineNuxtComponent({
 
       this.teritorioCluster = new TeritorioCluster(map, POI_SOURCE, {
         clusterRenderFn: clusterRender,
+        fitBoundsOptions: this.mapBase?.fitBoundsOptions(),
         markerRenderFn: markerRender,
         markerSize: 32,
         pinMarkerRenderFn: pinMarkerRender,

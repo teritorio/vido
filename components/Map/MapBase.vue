@@ -106,11 +106,12 @@ export default defineNuxtComponent({
   },
 
   setup() {
-    const { boundOptions, selectedFeature } = storeToRefs(useMapStore())
+    const { boundOptions, selectedFeature, teritorioCluster } = storeToRefs(useMapStore())
 
     return {
       boundOptions,
       selectedFeature,
+      teritorioCluster,
     }
   },
 
@@ -140,6 +141,7 @@ export default defineNuxtComponent({
     fitBoundsPaddingOptions: {
       handler() {
         this.boundOptions = this.fitBoundsOptions()
+        this.teritorioCluster?.setBoundsOptions(this.boundOptions)
       },
       immediate: true,
     },
