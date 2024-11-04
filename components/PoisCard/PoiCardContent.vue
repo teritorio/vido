@@ -243,7 +243,7 @@ function trackingPopupEvent(event: 'details' | 'route' | 'explore' | 'favorite' 
       </a>
 
       <IsochroneTrigger
-        v-if="isochroneEnabled"
+        v-if="isochroneEnabled && !device.smallScreen"
         class="tw-flex tw-flex-col tw-items-center tw-flex-1 tw-h-full tw-p-2 tw-space-y-2 tw-rounded-lg hover:tw-bg-zinc-100"
         :feature="poi"
       >
