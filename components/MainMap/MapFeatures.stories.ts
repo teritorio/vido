@@ -39,7 +39,6 @@ const defaultProps = {
       },
     } as ApiMenuCategory,
   ],
-  explorerModeEnabled: false,
 }
 
 export const Default = bind(
