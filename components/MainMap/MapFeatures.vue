@@ -245,6 +245,7 @@ export default defineNuxtComponent({
 
       this.teritorioCluster = new TeritorioCluster(map, POI_SOURCE, {
         clusterRenderFn: clusterRender,
+        fitBoundsOptions: this.mapBase?.fitBoundsOptions(),
         initialFeature: this.selectedFeature as unknown as MapGeoJSONFeature,
         markerRenderFn: markerRender,
         markerSize: 32,

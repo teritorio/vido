@@ -3985,12 +3985,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@teritorio/maplibre-gl-teritorio-cluster@npm:^0.0.8":
-  version: 0.0.8
-  resolution: "@teritorio/maplibre-gl-teritorio-cluster@npm:0.0.8"
+"@teritorio/maplibre-gl-teritorio-cluster@npm:^0.0.10":
+  version: 0.0.10
+  resolution: "@teritorio/maplibre-gl-teritorio-cluster@npm:0.0.10"
   dependencies:
+    "@turf/bbox": "npm:^7.1.0"
+    "@turf/helpers": "npm:^7.1.0"
     maplibre-gl: "npm:^4.7.0"
-  checksum: 10c0/f87519ce64cc49341678b18cbc143ca3b92152d039fd2666ff0e060e985a3cdbeea6979da3fab666c49c8a157b2c7c58e7db1b97bfc2354bddb66e0e82355e2c
+  checksum: 10c0/6c248337ea92e60659e1daf85a5891770a68551af455ff81562444301aa7e4c3ac58ea91af1cd30a5eba09f6b8cfc3484fb1451d2ffe8843740d7b340d299eec
   languageName: node
   linkType: hard
 
@@ -4030,7 +4032,7 @@ __metadata:
     "@tailwindcss/typography": "npm:^0.5.9"
     "@teritorio/font-teritorio": "npm:^2.5.0"
     "@teritorio/map": "npm:^0.12.7"
-    "@teritorio/maplibre-gl-teritorio-cluster": "npm:^0.0.8"
+    "@teritorio/maplibre-gl-teritorio-cluster": "npm:^0.0.10"
     "@teritorio/openmaptiles-gl-language": "npm:^1.5.4"
     "@turf/boolean-intersects": "npm:^6.5.0"
     "@turf/mask": "npm:^7.1.0"
@@ -4134,6 +4136,18 @@ __metadata:
     "@turf/helpers": "npm:^6.5.0"
     "@turf/meta": "npm:^6.5.0"
   checksum: 10c0/32c705ff0462f9f72fd4c78f013ebf3cbb30127c998770841d41540b246d3f3a73365a714ef335e45a70b9340317f402af76c36dbd64e9d9c2dfc65de71a9f84
+  languageName: node
+  linkType: hard
+
+"@turf/bbox@npm:^7.1.0":
+  version: 7.1.0
+  resolution: "@turf/bbox@npm:7.1.0"
+  dependencies:
+    "@turf/helpers": "npm:^7.1.0"
+    "@turf/meta": "npm:^7.1.0"
+    "@types/geojson": "npm:^7946.0.10"
+    tslib: "npm:^2.6.2"
+  checksum: 10c0/901ed437ad1241b1c7cf76ee3f1dd998b32a59647074216d076a62080281693cc3f1d66d1dedd02fd5617ea57434ec059843bcc275d20f667019f3e1f378b05d
   languageName: node
   linkType: hard
 
@@ -4251,6 +4265,16 @@ __metadata:
   dependencies:
     "@turf/helpers": "npm:^6.5.0"
   checksum: 10c0/9df6cb5af7af98a477ddcd744fb44e4e890fe8a67afa50bb24cad7d9c15af67362d24f1f8890d706a9c369b18285b0ba42430509add769ad868ac452703bb59b
+  languageName: node
+  linkType: hard
+
+"@turf/meta@npm:^7.1.0":
+  version: 7.1.0
+  resolution: "@turf/meta@npm:7.1.0"
+  dependencies:
+    "@turf/helpers": "npm:^7.1.0"
+    "@types/geojson": "npm:^7946.0.10"
+  checksum: 10c0/c7aa77ddb28ef5068b031c1b422d2d5dc1df51975f727be42e2d8d500a026a2e667242d6aa06453f757cbd5ead2db0ba6b9a5d2fcf5ab496574cd4c0ae4fe325
   languageName: node
   linkType: hard
 
