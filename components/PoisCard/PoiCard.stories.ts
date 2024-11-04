@@ -11,7 +11,6 @@ export default {
 
 const defaultProps = {
   poi,
-  explorerModeEnabled: false,
   favoritesModeEnabled: false,
 }
 

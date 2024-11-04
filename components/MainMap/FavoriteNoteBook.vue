@@ -10,10 +10,6 @@ import type { ApiPoi } from '~/lib/apiPois'
 import { favoriteStore as useFavoriteStore } from '~/stores/favorite'
 import { siteStore as useSiteStore } from '~/stores/site'
 
-defineProps<{
-  explorerModeEnabled: boolean
-}>()
-
 defineEmits<{
   (e: 'onClose'): void
   (e: 'exploreClick', poi: ApiPoi): void
@@ -131,7 +127,6 @@ function removeFavorites() {
     <PoisDeck
       :pois="favoriteFeatures"
       :is-card-light="false"
-      :explorer-mode-enabled="explorerModeEnabled"
       :favorites-mode-enabled="true"
       class="tw-pb-4"
       @explore-click="$emit('exploreClick', $event)"

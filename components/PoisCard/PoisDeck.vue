@@ -4,12 +4,10 @@ import PoiCard from '~/components/PoisCard/PoiCard.vue'
 import PoiCardLight from '~/components/PoisCard/PoiCardLight.vue'
 
 withDefaults(defineProps<{
-  explorerModeEnabled?: boolean
   favoritesModeEnabled?: boolean
   pois: ApiPoi[]
   isCardLight: boolean
 }>(), {
-  explorerModeEnabled: false,
   favoritesModeEnabled: false,
 })
 
@@ -38,7 +36,6 @@ defineEmits<{
       :can-close="false"
       :poi="item"
       class="tw-grow-1 poi-deck"
-      :explorer-mode-enabled="explorerModeEnabled"
       :favorites-mode-enabled="favoritesModeEnabled"
       @explore-click="$emit('exploreClick', $event)"
       @favorite-click="$emit('favoriteClick', $event)"
