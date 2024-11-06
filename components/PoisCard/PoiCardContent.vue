@@ -43,6 +43,7 @@ const { contribMode, isContribEligible, getContributorFields } = useContrib()
 const { isModeExplorer } = storeToRefs(useMapStore())
 const device = useDevice()
 const { enabled: isochroneEnabled } = useIsochrone()
+const { featureName, featureCategoryName } = useFeature(toRef(() => props.poi), { type: 'popup' })
 
 //
 // Data
@@ -67,10 +68,6 @@ const isFavorite = computed(() => {
   return favoritesIds.value.includes(id.value) || favoriteAddresses.value.has(id.value.toString())
 })
 
-const name = computed(() => {
-  return props.poi.properties.name || props.poi.properties.editorial?.class_label_popup?.fr || props.poi.properties.editorial?.class_label?.fr
-})
-
 const colorFill = computed(() => {
   return props.poi.properties.display?.color_fill || 'black'
 })
@@ -81,10 +78,6 @@ const colorLine = computed(() => {
 
 const icon = computed(() => {
   return props.poi.properties.display?.icon
-})
-
-const category = computed(() => {
-  return props.poi.properties.editorial?.class_label_popup?.fr || props.poi.properties.editorial?.class_label?.fr
 })
 
 const description = computed(() => {
@@ -145,8 +138,8 @@ function trackingPopupEvent(event: 'details' | 'route' | 'explore' | 'favorite' 
     type: 'popup_event',
     event,
     poiId: id.value,
-    category: category.value || '',
-    title: props.poi.properties?.name,
+    category: featureCategoryName.value || '',
+    title: featureName.value,
   })
 }
 </script>
@@ -155,11 +148,11 @@ function trackingPopupEvent(event: 'details' | 'route' | 'explore' | 'favorite' 
   <div>
     <div class="tw-flex tw-items-center tw-justify-between tw-shrink-0">
       <h2
-        v-if="name"
+        v-if="featureName"
         class="tw-block tw-text-xl tw-font-semibold tw-leading-tight"
         :style="`color:${colorLine}`"
       >
-        {{ name }}
+        {{ featureName }}
       </h2>
 
       <client-only>
@@ -205,7 +198,7 @@ function trackingPopupEvent(event: 'details' | 'route' | 'explore' | 'favorite' 
         :use-native-alignment="false"
       />
 
-      {{ category }}
+      {{ featureCategoryName }}
     </div>
 
     <p
