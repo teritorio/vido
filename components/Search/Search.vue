@@ -83,17 +83,16 @@ export default defineNuxtComponent({
     itemsCartocode(): SearchResult[] {
       const v = this.searchCartocodeResult
       if (v && v.properties.metadata?.id) {
-        const label
-          = v.properties.name || v.properties.editorial?.class_label?.fr
-        if (label) {
-          return [
-            {
-              id: v.properties.metadata?.id,
-              label,
-            },
-          ]
+        const { featureName } = useFeature(toRef(v), { type: 'popup' })
+
+        if (featureName.value) {
+          return [{
+            id: v.properties.metadata?.id,
+            label: featureName.value,
+          }]
         }
       }
+
       return []
     },
 
