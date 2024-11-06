@@ -123,13 +123,6 @@ export default defineNuxtComponent({
       return this.poi.properties.display?.color_line || '#76009E'
     },
 
-    classLabel(): string | undefined {
-      return (
-        this.poi.properties.editorial?.class_label_details?.fr
-        || this.poi.properties.editorial?.class_label?.fr
-      )
-    },
-
     id(): ApiPoiId {
       return this.poi.properties.metadata.id
     },
