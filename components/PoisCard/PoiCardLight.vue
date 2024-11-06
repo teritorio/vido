@@ -15,11 +15,15 @@ const props = withDefaults(defineProps<{
 })
 
 //
+// Composables
+//
+const { featureName } = useFeature(toRef(() => props.poi), { type: 'popup' })
+
+//
 // Data
 //
 const colorFill = ref(props.poi.properties.display?.color_fill || 'black')
 const colorLine = ref(props.poi.properties.display?.color_line || 'black')
-const name = ref(props.poi.properties.name || props.poi.properties.editorial?.class_label_popup?.fr || props.poi.properties.editorial?.class_label?.fr)
 const websiteDetails = ref(props.poi.properties.editorial && props.poi.properties.editorial['website:details'])
 </script>
 
@@ -42,7 +46,7 @@ const websiteDetails = ref(props.poi.properties.editorial && props.poi.propertie
             :image="undefined"
             :text="poi.properties.display?.text"
           />
-          {{ name }}
+          {{ featureName }}
         </h3>
 
         <a

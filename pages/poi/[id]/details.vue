@@ -31,7 +31,6 @@ const { $trackingInit } = useNuxtApp()
 //
 // Data
 //
-const poi = ref<ApiPoi>()
 const poiDeps = ref<ApiPoiDeps>()
 
 const fetchPoiPoiDeps = getAsyncDataOrThrows(
@@ -60,25 +59,20 @@ const fetchPoiPoiDeps = getAsyncDataOrThrows(
 
 const [poiPoiDeps] = await Promise.all([fetchPoiPoiDeps])
 
-poi.value = poiPoiDeps.value.poi
-poiDeps.value = poiPoiDeps.value.poiDeps
-
-if (!poi.value) {
-  showError({
+if (!poiPoiDeps.value.poi) {
+  throw createError({
     statusCode: 404,
     statusMessage: 'POI not found. Missing main object.',
   })
 }
 
-//
-// Computed
-//
-const pageTitle = computed(() => {
-  if (!poi.value)
-    return ''
+const poi = ref(poiPoiDeps.value.poi)
+poiDeps.value = poiPoiDeps.value.poiDeps
 
-  return `${poi.value.properties.classe} - ${poi.value.properties.name}`
-})
+const { featureSeoTitle } = useFeature(poi, { type: 'details' })
+
+if (!featureSeoTitle.value)
+  throw createError('Feature has no name')
 
 //
 // Hooks
@@ -89,7 +83,7 @@ onBeforeMount(() => {
 
 useHead(
   headerFromSettings(settings.value!, {
-    title: pageTitle.value,
+    title: featureSeoTitle.value,
     description: {
       fr: poi.value?.properties.description,
     },
@@ -104,7 +98,7 @@ useHead(
     :nav-menu-entries="contents!"
     :poi="poi!"
     :poi-deps="poiDeps"
-    :page-title="pageTitle"
+    :page-title="featureSeoTitle!"
     class="page-details tw-overflow-clip"
   />
 </template>
