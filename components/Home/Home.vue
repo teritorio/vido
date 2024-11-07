@@ -29,6 +29,7 @@ import { getHashPart, setHashParts } from '~/utils/url'
 import { flattenFeatures, formatApiAddressToFeature } from '~/utils/utilities'
 import useDevice from '~/composables/useDevice'
 import type { ApiAddrSearchResult, ApiSearchResult } from '~/lib/apiSearch'
+import IsochroneStatus from '~/components/Isochrone/IsochroneStatus.vue'
 
 //
 // Props
@@ -52,6 +53,7 @@ const { $tracking } = useNuxtApp()
 const route = useRoute()
 const router = useRouter()
 const device = useDevice()
+const { isochroneCurrentFeature } = useIsochrone()
 
 //
 // Data
@@ -551,6 +553,7 @@ function handlePoiCardClose() {
           "
           class="tw-hidden md:tw-block flex-shrink-1"
         />
+        <IsochroneStatus v-if="isochroneCurrentFeature" />
         <div class="tw-grow" style="margin-left: 0" />
         <div
           class="tw-flex-none tw-flex" :class="[isBottomMenuOpened && 'hidden']"

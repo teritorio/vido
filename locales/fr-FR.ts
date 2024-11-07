@@ -190,6 +190,7 @@ export default defineI18nLocale(() => {
       decline: 'Refuser',
     },
     isochrone: {
+      remove: 'Supprimer le temps de trajet',
       trigger: {
         label: 'Temps de trajet',
         title: 'Temps de trajet depuis ce point',
