@@ -32,13 +32,13 @@ export default function useIsochrone() {
   const { t, locale } = useI18n()
   const map = useState<Map>('map-instance')
   const profile = useState('isochrone-profile')
+  const layers = useState<string[]>('isochrone-layers', () => [])
   const { boundOptions } = storeToRefs(useMapStore())
 
   //
   // Data
   //
   const isOverlayOpen = ref(false)
-  const layers = ref<string[]>([])
   const sourceName = 'isochrone'
   const colorExpression = [
     'match',
@@ -56,7 +56,6 @@ export default function useIsochrone() {
   // Methods
   //
   const reset = () => {
-    // FIXME: Issue with HMR, layers is empty but layers and source are still present on map
     layers.value.forEach(layerId => map.value.removeLayer(layerId))
     layers.value = []
 
