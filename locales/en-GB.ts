@@ -189,6 +189,7 @@ export default defineI18nLocale(() => {
       decline: 'Decline',
     },
     isochrone: {
+      remove: 'Remove travel time',
       trigger: {
         label: 'Travel time',
         title: 'Travel time from this point',
