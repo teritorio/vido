@@ -31,8 +31,9 @@ export default function useIsochrone() {
   const enabled = (config?.OPEN_ROUTE_SERVICE_KEY && config?.ISOCHRONE) || false
   const { t, locale } = useI18n()
   const map = useState<Map>('map-instance')
-  const profile = useState('isochrone-profile')
+  const profile = useState<Profile | null>('isochrone-profile', () => null)
   const layers = useState<string[]>('isochrone-layers', () => [])
+  const isochroneCurrentFeature = useState<GeoJSON.Feature | null>(() => null)
   const { boundOptions } = storeToRefs(useMapStore())
 
   //
@@ -61,6 +62,8 @@ export default function useIsochrone() {
 
     if (map.value.getSource(sourceName))
       map.value.removeSource(sourceName)
+
+    isochroneCurrentFeature.value = null
   }
 
   const render = (data: ORSData) => {
@@ -168,8 +171,10 @@ export default function useIsochrone() {
     if (error.value)
       throw createError(error.value)
 
-    if (data.value)
+    if (data.value) {
+      isochroneCurrentFeature.value = feature
       render(data.value)
+    }
   }
 
   //
@@ -187,10 +192,12 @@ export default function useIsochrone() {
   })
 
   return {
+    isochroneCurrentFeature,
     fetchIsochrone,
     enabled,
     isOverlayOpen,
     toggleOverlay,
     profiles,
+    reset,
   }
 }
