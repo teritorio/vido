@@ -89,11 +89,13 @@ export function clusterRender(element: HTMLDivElement, props: MapGeoJSONFeature[
       </text>
     </svg>`
 
-  element.classList.add('cluster-item')
+  element.style.cursor = 'pointer'
   element.innerHTML = html
 }
 
 export function markerRender(element: HTMLDivElement, feature: MapGeoJSONFeature) {
+  element.style.cursor = 'pointer'
+
   if (typeof feature.properties?.metadata === 'string')
     feature.properties.metadata = JSON.parse(feature.properties.metadata)
 
