@@ -378,10 +378,6 @@ export default defineNuxtComponent({
 </template>
 
 <style scoped>
-:deep(.cluster-item) {
-  cursor: pointer;
-}
-
 :deep(.cluster-donut) {
   @apply tw-text-sm tw-leading-none tw-font-medium tw-block tw-text-zinc-800;
 }
