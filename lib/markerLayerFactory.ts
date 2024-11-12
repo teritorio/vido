@@ -1,13 +1,4 @@
-import type {
-  LayerSpecification,
-  Marker,
-  SymbolLayerSpecification,
-} from 'maplibre-gl'
-import { createApp } from 'vue'
-
-import TeritorioIconBadge from '~/components/UI/TeritorioIconBadge.vue'
-import type { TupleLatLng } from '~/utils/types'
-import { createMarker } from '~/composables/useMarker'
+import type { LayerSpecification, SymbolLayerSpecification } from 'maplibre-gl'
 
 export function markerLayerTextFactory(layerTemplate: LayerSpecification, id: string, source: string): LayerSpecification {
   if (layerTemplate.type !== 'symbol') {
@@ -59,38 +50,4 @@ export function markerLayerTextFactory(layerTemplate: LayerSpecification, id: st
 
     return layer
   }
-}
-
-export function makerHtmlFactory(
-  id: string,
-  latLng: TupleLatLng,
-  colorFill: string,
-  icon: string,
-  thumbnail: string | undefined,
-  size: string | null = null,
-  text?: string,
-): Marker {
-  // Marker
-  const el: HTMLElement = document.createElement('div')
-  el.id = id
-  el.classList.add('maplibregl-marker')
-  el.classList.add('cluster-item')
-
-  const marker = createMarker(latLng, {
-    element: el,
-    ...(thumbnail && {
-      offset: [0, -10],
-    }),
-  })
-
-  // Teritorio badge
-  createApp(TeritorioIconBadge, {
-    colorFill,
-    picto: icon,
-    image: thumbnail,
-    size,
-    text,
-  }).mount(el)
-
-  return marker
 }
