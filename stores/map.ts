@@ -1,16 +1,14 @@
 import { defineStore } from 'pinia'
-import { type FitBoundsOptions, type LngLatLike, type Marker, Point } from 'maplibre-gl'
+import type { FitBoundsOptions } from 'maplibre-gl'
 import type { TeritorioCluster } from '@teritorio/maplibre-gl-teritorio-cluster'
 import type { ApiPoi, ApiPoiProperties } from '~/lib/apiPois'
 import type { LatLng, Pitch } from '~/utils/types'
 import { Mode } from '~/utils/types'
-import { pinMarkerRender } from '~/lib/clusters'
 
 interface State {
   boundOptions?: FitBoundsOptions
   center: LatLng
   mode: Mode
-  pinMarker: Marker | null
   pitch: Pitch
   selectedFeature: ApiPoi | null
   teritorioCluster: TeritorioCluster | null
@@ -21,7 +19,6 @@ export const mapStore = defineStore('map', {
     boundOptions: undefined,
     center: { lng: 0, lat: 0 },
     mode: Mode.BROWSER,
-    pinMarker: null,
     pitch: 0,
     selectedFeature: null,
     teritorioCluster: null,
@@ -36,9 +33,6 @@ export const mapStore = defineStore('map', {
 
   actions: {
     setSelectedFeature(feature: ApiPoi | null) {
-      this.pinMarker?.remove()
-      this.pinMarker = null
-
       if (!feature) {
         this.selectedFeature = null
         this.teritorioCluster?.resetSelectedFeature()
@@ -68,13 +62,6 @@ export const mapStore = defineStore('map', {
           })
 
           goodFeature.properties = cleanProperties
-
-          if (feature.properties.internalType === 'address') {
-            const { coordinates } = feature.geometry as GeoJSON.Point
-            // @ts-expect-error: type is too deep
-            this.pinMarker = pinMarkerRender(coordinates as LngLatLike, new Point(0, 0))
-            this.teritorioCluster?.resetSelectedFeature()
-          }
         }
 
         this.selectedFeature = goodFeature
