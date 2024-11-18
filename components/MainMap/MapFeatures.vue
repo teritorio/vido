@@ -124,7 +124,7 @@ export default defineNuxtComponent({
     const device = useDevice()
     const { config } = storeToRefs(useSiteStore())
     const mapStore = useMapStore()
-    const { center, selectedFeature, pinMarker, teritorioCluster } = storeToRefs(mapStore)
+    const { center, selectedFeature, teritorioCluster } = storeToRefs(mapStore)
     const mapStyleLoaded = ref(false)
 
     return {
@@ -134,7 +134,6 @@ export default defineNuxtComponent({
       mapBase: ref<InstanceType<typeof MapBase>>(),
       mapStore,
       mapStyleLoaded,
-      pinMarker,
       selectedFeature,
       teritorioCluster,
     }
@@ -204,9 +203,6 @@ export default defineNuxtComponent({
     },
 
     selectedFeature() {
-      if (this.pinMarker)
-        this.pinMarker.addTo(this.map as Map)
-
       this.showSelectedFeature()
     },
 
