@@ -79,8 +79,11 @@ export const menuStore = defineStore('menu', {
 
   actions: {
     async init(config: VidoConfig) {
-      const menuItems = await getMenu(config)
-      this.fetchConfig(menuItems)
+      try {
+        const menuItems = await getMenu(config)
+        this.fetchConfig(menuItems)
+      }
+      catch (err: any) {}
     },
 
     setSelectedCategoryIds(selectedCategoryIds: ApiMenuCategory['id'][]) {
