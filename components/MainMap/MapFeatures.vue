@@ -248,7 +248,7 @@ export default defineNuxtComponent({
         pinMarkerRenderFn: pinMarkerRender,
       })
 
-      this.teritorioCluster.addEventListener('click', (e: Event) => this.updateSelectedFeature((e as CustomEvent).detail.selectedFeature))
+      this.teritorioCluster.addEventListener('feature-click', (e: Event) => this.updateSelectedFeature((e as CustomEvent).detail.selectedFeature))
 
       this.map.on('click', this.onClick)
 
