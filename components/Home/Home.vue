@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { FitBoundsOptions, LngLatBounds } from 'maplibre-gl'
+import type { FitBoundsOptions, LngLatBounds, MapGeoJSONFeature } from 'maplibre-gl'
 import { storeToRefs } from 'pinia'
 import type { MultiPolygon, Polygon } from 'geojson'
 import { decodeBase32 } from 'geohashing'
@@ -43,7 +43,7 @@ const props = defineProps<{
 // Composables
 //
 const mapStore = useMapStore()
-const { center, isModeFavorites, isModeExplorer, isModeExplorerOrFavorites, mode, selectedFeature } = storeToRefs(mapStore)
+const { center, isModeFavorites, isModeExplorer, isModeExplorerOrFavorites, mode, selectedFeature, teritorioCluster } = storeToRefs(mapStore)
 const menuStore = useMenuStore()
 const { apiMenuCategory, features, selectedCategoryIds } = storeToRefs(menuStore)
 const favoriteStore = useFavoriteStore()
@@ -439,6 +439,8 @@ function toggleFavorite(feature: ApiPoi) {
 function searchSelectFeature(feature: ApiPoi) {
   mapStore.setSelectedFeature(feature)
   goToSelectedFeature()
+
+  teritorioCluster.value?.setSelectedFeature(feature as unknown as MapGeoJSONFeature)
 }
 
 const bottomMenuRef = ref<HTMLDivElement>()
