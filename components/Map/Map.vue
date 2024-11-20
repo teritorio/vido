@@ -251,6 +251,7 @@ export default defineNuxtComponent({
     onMapInit(map: ITMap) {
       this.$emit('mapInit', map)
 
+      // @ts-expect-error: Type is too deep
       this.map = map
       this.languageControl = new OpenMapTilesLanguage({
         defaultLanguage: this.locale || undefined,
