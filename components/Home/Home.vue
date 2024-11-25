@@ -628,7 +628,6 @@ function handlePoiCardClose() {
               && selectedFeature.properties.metadata
               && isPoiCardShown
           "
-          :can-close="device.smallScreen"
           :poi="selectedFeature"
           class="tw-grow-0"
           :explorer-mode-enabled="explorerModeEnabled"
