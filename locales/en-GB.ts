@@ -77,9 +77,9 @@ export default defineI18nLocale(() => {
       clearAllCategories: 'Hide all categories',
       back: 'Back',
       backToMenuFavorites: 'Show menu',
-      backToMenuExplorer: 'Search by Categories',
-      backToMenuFavoritesMobile: 'Exit Favorites',
-      backToMenuExplorerMobile: 'Search by Categories',
+      backToMenuExplorer: 'Search by categories',
+      backToMenuFavoritesMobile: 'Exit favorites',
+      backToMenuExplorerMobile: 'Exit "Nearby"',
       disableCategory: 'Remove the category',
     },
     dateRange: {
@@ -187,6 +187,22 @@ export default defineI18nLocale(() => {
       accept: 'Agree',
       details: 'More information',
       decline: 'Decline',
+    },
+    isochrone: {
+      remove: 'Remove travel time',
+      trigger: {
+        label: 'Travel time',
+        title: 'Travel time from this point',
+      },
+      overlay: {
+        title: 'Where can I go ?',
+        text: 'View on map, accessible areas from this point, depending on the duration (15, 30, 60 min) and travel mode.',
+      },
+      profiles: {
+        'cycling-regular': 'By bike',
+        'driving-car': 'By car',
+        'foot-walking': 'On foot',
+      },
     },
   }
 })

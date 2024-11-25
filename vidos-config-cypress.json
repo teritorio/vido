@@ -12,6 +12,8 @@
       "cdt40.tourinsoft.com"
     ],
     "MAPILLARY_ACCESS_TOKEN": "MLY|5609419529131330|36d86a5578fecba521c1ffe033bda2fc",
+    "OPEN_ROUTE_SERVICE_KEY": "5b3ce3597851110001cf6248e176e3d24c3d4a71bff8701252700040",
+    "ISOCHRONE": false,
     "COOKIES_CONSENT": null,
     "COOKIES_LINK": null,
     "GOOGLE_TAG_MANAGER_ID": null,

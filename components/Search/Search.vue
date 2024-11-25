@@ -83,17 +83,16 @@ export default defineNuxtComponent({
     itemsCartocode(): SearchResult[] {
       const v = this.searchCartocodeResult
       if (v && v.properties.metadata?.id) {
-        const label
-          = v.properties.name || v.properties.editorial?.class_label?.fr
-        if (label) {
-          return [
-            {
-              id: v.properties.metadata?.id,
-              label,
-            },
-          ]
+        const { featureName } = useFeature(toRef(v), { type: 'popup' })
+
+        if (featureName.value) {
+          return [{
+            id: v.properties.metadata?.id,
+            label: featureName.value,
+          }]
         }
       }
+
       return []
     },
 
@@ -154,10 +153,6 @@ export default defineNuxtComponent({
 
   methods: {
     ...mapActions(menuStore, ['addSelectedCategoryIds', 'applyFilters']),
-
-    setSelectedFeature(feature: ApiPoi): void {
-      this.$emit('selectFeature', feature)
-    },
 
     reset() {
       this.searchMenuItemsResults = null
@@ -237,7 +232,7 @@ export default defineNuxtComponent({
     onPoiClick(searchResult: SearchResult) {
       getPoiById(this.config!, searchResult.id).then(
         (poi) => {
-          this.setSelectedFeature(poi)
+          this.$emit('selectFeature', poi)
         },
       )
 
@@ -250,7 +245,7 @@ export default defineNuxtComponent({
       )
       if (feature) {
         const f = formatApiAddressToFeature(feature, true)
-        this.setSelectedFeature(f)
+        this.$emit('selectFeature', f)
       }
       this.reset()
     },

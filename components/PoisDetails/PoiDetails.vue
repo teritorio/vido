@@ -59,6 +59,10 @@ export default defineNuxtComponent({
       type: Object as PropType<ApiPoiDeps>,
       default: null,
     },
+    pageTitle: {
+      type: String,
+      required: true,
+    },
   },
 
   data(): {
@@ -117,13 +121,6 @@ export default defineNuxtComponent({
 
     colorLine(): string {
       return this.poi.properties.display?.color_line || '#76009E'
-    },
-
-    classLabel(): string | undefined {
-      return (
-        this.poi.properties.editorial?.class_label_details?.fr
-        || this.poi.properties.editorial?.class_label?.fr
-      )
     },
 
     id(): ApiPoiId {
@@ -195,7 +192,7 @@ export default defineNuxtComponent({
   <PoiLayout
     :settings="settings"
     :nav-menu-entries="navMenuEntries"
-    :name="poi.properties.name"
+    :name="pageTitle"
     :icon="poi.properties.display && poi.properties.display.icon"
     :color-line="colorLine"
     :color-fill="colorFill"

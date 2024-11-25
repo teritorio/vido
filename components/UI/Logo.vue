@@ -21,6 +21,10 @@ export default defineNuxtComponent({
       type: String as PropType<string>,
       default: 'tw-max-w-2xl tw-max-h-16',
     },
+    target: {
+      type: String,
+      default: '_blank',
+    },
   },
 })
 </script>
@@ -32,7 +36,7 @@ export default defineNuxtComponent({
       rel="noopener noreferrer"
       :aria-label="siteName"
       :title="siteName"
-      target="_blank"
+      :target="target"
     >
       <img
         :src="logoUrl"

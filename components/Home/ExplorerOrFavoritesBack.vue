@@ -1,37 +1,30 @@
-<script lang="ts">
+<script setup lang="ts">
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
-import { mapState } from 'pinia'
+import { storeToRefs } from 'pinia'
+import { mapStore as useMapStore } from '~/stores/map'
 
-import { defineNuxtComponent } from '#app'
-import { mapStore } from '~/stores/map'
-import useDevice from '~/composables/useDevice'
+//
+// Emits
+//
+const emit = defineEmits(['click'])
 
-export default defineNuxtComponent({
-  components: {
-    FontAwesomeIcon,
-  },
+//
+// Props
+//
+const device = useDevice()
+const { t } = useI18n()
+const { isModeFavorites } = storeToRefs(useMapStore())
 
-  computed: {
-    ...mapState(mapStore, ['isModeFavorites']),
-  },
-
-  setup() {
-    const device = useDevice()
-
-    return {
-      device,
-    }
-  },
-
-  emits: {
-    click: () => true,
-  },
-
-  methods: {
-    goToMenuItems() {
-      this.$emit('click')
-    },
-  },
+//
+// Computed
+//
+const label = computed(() => {
+  if (isModeFavorites.value) {
+    return device.value.smallScreen ? 'headerMenu.backToMenuFavoritesMobile' : 'headerMenu.backToMenuFavorites'
+  }
+  else {
+    return device.value.smallScreen ? 'headerMenu.backToMenuExplorerMobile' : 'headerMenu.backToMenuExplorer'
+  }
 })
 </script>
 
@@ -40,22 +33,12 @@ export default defineNuxtComponent({
     <button
       type="button"
       class="tw-flex tw-shrink-0 tw-items-center tw-justify-center tw-w-10 tw-h-10 tw-text-2xl tw-font-bold tw-transition-all tw-rounded-full tw-outline-none tw-cursor-pointer focus:tw-outline-none hover:tw-bg-blue-700"
-      @click="goToMenuItems"
+      @click="emit('click')"
     >
       <FontAwesomeIcon icon="arrow-left" size="xs" />
     </button>
     <p class="tw-ml-2">
-      {{
-        $t(
-          device.smallScreen
-            ? isModeFavorites
-              ? 'headerMenu.backToMenuFavorites'
-              : 'headerMenu.backToMenuExplorer'
-            : isModeFavorites
-              ? 'headerMenu.backToMenuFavoritesMobile'
-              : 'headerMenu.backToMenuExplorerMobile',
-        )
-      }}
+      {{ t(label) }}
     </p>
   </div>
 </template>

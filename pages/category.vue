@@ -58,12 +58,10 @@ async function onCategoryUpdate(categoryId: number) {
   if (!categoryId)
     return
 
-  if (isEmbedded.value) {
-    await navigateTo({ path: `/category/embedded/${categoryId}`, query })
-  }
-  else {
-    await navigateTo(`/category/${categoryId}`)
-  }
+  await navigateTo({
+    path: isEmbedded.value ? `/category/embedded/${categoryId}` : `/category/${categoryId}`,
+    query,
+  })
 }
 </script>
 

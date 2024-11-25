@@ -41,15 +41,16 @@ export default defineNuxtComponent({
 
   methods: {
     url(format: 'geojson' | 'csv'): string {
-      return getPoiByCategoryIdUrl(
-        useSiteStore().config!,
-        this.categoryId,
-        {
-          geometry_as: 'point',
-          short_description: false,
-          format,
-        },
-      )
+      const query = {
+        geometry_as: 'point',
+        short_description: false,
+        format,
+      } as Record<string, any>
+
+      if (this.$route.query.clipingPolygonSlug)
+        query.cliping_polygon_slug = this.$route.query.clipingPolygonSlug.toString()
+
+      return getPoiByCategoryIdUrl(useSiteStore().config!, this.categoryId, query)
     },
   },
 })

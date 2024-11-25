@@ -12,6 +12,8 @@ export interface VidoConfig {
   BICYCLE_STYLE_URL: string
   IMAGE_PROXY: string[] | null
   MAPILLARY_ACCESS_TOKEN: string | null
+  OPEN_ROUTE_SERVICE_KEY: string | null
+  ISOCHRONE: boolean
   COOKIES_CONSENT: string | null
   COOKIES_LINK: string | null
   GOOGLE_SITE_VERIFICATION: string | undefined

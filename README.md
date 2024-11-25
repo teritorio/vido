@@ -28,6 +28,7 @@ Full entry points documentation available on [api.yml](public/api.yaml) and on s
   * Full page: `/`, `/{poi_Id}`, `/{category_ids}/` and `/{category_ids}/{poi_id}`.
   * Parameters:
     * `boundary`: an alternative boundary key from settings `polygons_extra`.
+    * `clipingPolygonSlug`: POI filtering by polygon (key from settings `polygons_extra`).
 * Embedded: `/embedded/`, same subpath and parameters as full page.
 * POI:
   * details: `/poi/{id}/details`.
@@ -82,7 +83,7 @@ yarn start
 ```
 cp .env.sample .env
 docker compose build
-docker-compose -f docker compose.yml run --rm vido yarn build-config
+docker compose run --rm vido yarn build-config
 docker compose up -d
 ```
 
@@ -108,7 +109,23 @@ Header set Content-Security-Policy "frame-ancestors *"
 
 Vido is mainly building using:
 - [MapLibre GL JS](https://maplibre.org/maplibre-gl-js-docs/api/map/)
-- [Nxut3](https://nuxt.com/) and [Vue3](https://vuejs.org/), using the Options API
+- [Nuxt 3](https://nuxt.com/) and [Vue 3](https://vuejs.org/), using both Options API / Composition API
+
+### Setup hooks
+
+Ensure that `core.hooksPath` is properly setup !
+
+From your project root run:
+
+```bash
+git config core.hooksPath .git/hooks/
+```
+
+Then update your hooks with the following command:
+
+```bash
+yarn dlx simple-git-hooks
+```
 
 ```
 # serve with hot reload at localhost:3000

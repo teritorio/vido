@@ -10,7 +10,8 @@ import DateRange, { isDateRangeEmpty } from '~/components/Fields/DateRange.vue'
 import Facebook from '~/components/Fields/Facebook.vue'
 import LinkedIn from '~/components/Fields/LinkedIn.vue'
 import Instagram from '~/components/Fields/Instagram.vue'
-import OpeningHours, { isOpeningHoursSupportedOsmTags } from '~/components/Fields/OpeningHours.vue'
+import OpeningHours from '~/components/Fields/OpeningHours.vue'
+import { isOpeningHoursSupportedOsmTags } from '~/composables/useOpeningHours'
 import Phone from '~/components/Fields/Phone.vue'
 import RoutesField from '~/components/Fields/RoutesField.vue'
 import Stars from '~/components/Fields/Stars.vue'
@@ -313,7 +314,7 @@ export default defineNuxtComponent({
         "
         :href="properties[field.field]"
         class="d-inline-block pa-2 rounded-lg"
-        :style="{ backgroundColor: colorfill, color: '#ffffff' }"
+        :style="{ color: '#ffffff' }"
       >
         <FontAwesomeIcon icon="arrow-circle-down" />
         {{ fieldTranslateK(field.field) }}

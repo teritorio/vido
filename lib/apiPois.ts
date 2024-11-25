@@ -88,9 +88,8 @@ export type ApiPois = GeoJSON.FeatureCollection<
 >
 
 export interface ApiPoisOptions {
-
-  geometry_as?: 'point' | 'bbox'
-
+  cliping_polygon_slug?: string
+  geometry_as?: 'point' | 'bbox' | 'point_or_bbox'
   short_description?: boolean
   format?: 'geojson' | 'csv'
 }

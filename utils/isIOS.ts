@@ -2,6 +2,10 @@
  * Looks at the user agent and guess if the current OS is iOS.
  */
 export function isIOS() {
+  if (!process.client)
+    return false
+
+  // FIXME: navigator.platform is deprecated
   return (
     [
       'iPad Simulator',

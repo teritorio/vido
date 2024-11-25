@@ -16,9 +16,14 @@ export function fetchStyle(styleUrl: string, extraAttributions: string[]): Promi
         url: string
         attribution: string
       }[] = Object.values(style.sources)
+
       const vectoSourceUrl: string[] = vectoSources
         .map((src: any) => src.url)
         .filter(url => url)
+
+      const vectoSourcesLocal: string[] = vectoSources
+        .filter((source: any) => source.tiles?.length)
+        .map((source: any) => source.attribution)
 
       const vectoSourceAttribution = (
         await Promise.all(
@@ -42,7 +47,7 @@ export function fetchStyle(styleUrl: string, extraAttributions: string[]): Promi
       )
 
       const nuAttribution = [
-        ...new Set([...vectoSourceAttribution.flat(1), ...extraAttributions]),
+        ...new Set([...vectoSourceAttribution.flat(1), ...vectoSourcesLocal, ...extraAttributions]),
       ].join(' ')
 
       const nuStyle = { ...style }

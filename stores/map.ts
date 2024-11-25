@@ -1,39 +1,33 @@
 import { defineStore } from 'pinia'
+import type { FitBoundsOptions } from 'maplibre-gl'
+import type { TeritorioCluster } from '@teritorio/maplibre-gl-teritorio-cluster'
 import type { ApiPoi, ApiPoiProperties } from '~/lib/apiPois'
 import type { LatLng, Pitch } from '~/utils/types'
 import { Mode } from '~/utils/types'
 
 interface State {
+  boundOptions?: FitBoundsOptions
   center: LatLng
+  mode: Mode
   pitch: Pitch
   selectedFeature: ApiPoi | null
-  mode: Mode
+  teritorioCluster: TeritorioCluster | null
 }
 
-const getInitialMapview: () => {
-  center: {
-    lng: number
-    lat: number
-  }
-} = () => ({
-  center: { lng: 0, lat: 0 },
-})
-
 export const mapStore = defineStore('map', {
-  state: (): State =>
-    Object.assign(
-      {
-        pitch: 0,
-        selectedFeature: null,
-        mode: Mode.BROWSER,
-      },
-      getInitialMapview(),
-    ),
+  state: (): State => ({
+    boundOptions: undefined,
+    center: { lng: 0, lat: 0 },
+    mode: Mode.BROWSER,
+    pitch: 0,
+    selectedFeature: null,
+    teritorioCluster: null,
+  }),
 
   getters: {
-    isModeExplorer: (state: State) => state.mode === Mode.EXPLORER,
-    isModeFavorites: (state: State) => state.mode === Mode.FAVORITES,
-    isModeExplorerOrFavorites: (state: State) =>
+    isModeExplorer: state => state.mode === Mode.EXPLORER,
+    isModeFavorites: state => state.mode === Mode.FAVORITES,
+    isModeExplorerOrFavorites: state =>
       state.mode === Mode.EXPLORER || state.mode === Mode.FAVORITES,
   },
 
@@ -41,6 +35,7 @@ export const mapStore = defineStore('map', {
     setSelectedFeature(feature: ApiPoi | null) {
       if (!feature) {
         this.selectedFeature = null
+        this.teritorioCluster?.resetSelectedFeature()
       }
       else {
         const goodFeature = feature

@@ -80,7 +80,7 @@ export default defineI18nLocale(() => {
       backToMenuFavorites: 'Afficher le menu',
       backToMenuExplorer: 'Rechercher par catégories',
       backToMenuFavoritesMobile: 'Quitter les favoris',
-      backToMenuExplorerMobile: 'Rechercher par catégories',
+      backToMenuExplorerMobile: 'Quitter « À proximité »',
       disableCategory: 'Supprimer la catégorie',
     },
     dateRange: {
@@ -102,7 +102,7 @@ export default defineI18nLocale(() => {
       details: 'Détails',
       seeDetail: 'Voir le detail',
       route: 'Itinéraire',
-      explore: 'À proximité',
+      explore: 'À proximité',
       favorite: 'Favori',
       favoriteOn: 'Mettre en favori',
       favoriteOff: 'Retirer le favori',
@@ -188,6 +188,22 @@ export default defineI18nLocale(() => {
       accept: 'Accepter',
       details: 'En savoir plus',
       decline: 'Refuser',
+    },
+    isochrone: {
+      remove: 'Supprimer le temps de trajet',
+      trigger: {
+        label: 'Temps de trajet',
+        title: 'Temps de trajet depuis ce point',
+      },
+      overlay: {
+        title: 'Où puis-je aller ?',
+        text: 'Visualiser sur la carte les zones accessibles depuis ce point de départ en fonction de la durée (15, 30, 60 min) et du mode de déplacement.',
+      },
+      profiles: {
+        'cycling-regular': 'À vélo',
+        'driving-car': 'En voiture',
+        'foot-walking': 'À pied',
+      },
     },
   }
 })

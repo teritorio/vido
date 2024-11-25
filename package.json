@@ -1,9 +1,9 @@
 {
   "name": "@teritorio/vido",
   "type": "module",
-  "version": "1.23.2",
+  "version": "1.24.0",
   "private": true,
-  "packageManager": "yarn@4.3.0",
+  "packageManager": "yarn@4.4.1",
   "engines": {
     "node": "^14.18.0 || >=16.10.0"
   },
@@ -17,9 +17,10 @@
     "generate": "nuxi generate",
     "start": "CONFIG=${CONFIG:-$PWD/vidos-config.json} nuxi preview",
     "start:histoire": "CONFIG=vidos-config-empty.json yarn histoire dev",
-    "start:cypress": "CONFIG=vidos-config-empty.json yarn build-fixture && yarn run cypress open",
+    "start:cypress": "CONFIG=vidos-config-cypress.json yarn build-fixture && yarn run cypress open",
     "lint": "yarn lint:js && yarn lint:style",
     "lint:js": "eslint .",
+    "lint:js:fix": "eslint --fix .",
     "lint:style": "stylelint --cache **/*.{vue,css,scss}",
     "test": "yarn test:cypress && yarn test:histoire",
     "test:cypress": "yarn build-fixture && yarn run cypress run",
@@ -32,11 +33,14 @@
     "@fortawesome/vue-fontawesome": "^3.0.3",
     "@gtm-support/vue-gtm": "^2.0.0",
     "@pinia/nuxt": "0.4.11",
-    "@sentry/vue": "^7.113.0",
+    "@sentry/node": "^8.35.0",
+    "@sentry/vue": "^8.35.0",
     "@tailwindcss/typography": "^0.5.9",
     "@teritorio/map": "^0.12.7",
+    "@teritorio/maplibre-gl-teritorio-cluster": "^0.0.12",
     "@teritorio/openmaptiles-gl-language": "^1.5.4",
     "@turf/boolean-intersects": "^6.5.0",
+    "@turf/mask": "^7.1.0",
     "@types/geojson": "^7946.0.10",
     "core-js": "^3.31.0",
     "country-flag-icons": "^1.5.7",
@@ -50,7 +54,7 @@
     "lodash.uniq": "^4.5.0",
     "lodash.uniqby": "^4.7.0",
     "lodash.without": "^4.4.0",
-    "maplibre-gl": "^3.6.2",
+    "maplibre-gl": "^4.5.0",
     "opening_hours": "^3.8.0",
     "pinia": "^2.0.33",
     "pinia-shared-state": "0.5.1",
@@ -120,6 +124,7 @@
   },
   "lint-staged": {
     "*.{css,scss,vue}": "stylelint",
-    "*.{js,jsx,ts,tsx,vue}": "eslint"
+    "*": "yarn nuxi typecheck .",
+    "*.{vue,ts,js}": "yarn lint:js:fix"
   }
 }

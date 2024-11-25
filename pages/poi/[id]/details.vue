@@ -31,13 +31,13 @@ const { $trackingInit } = useNuxtApp()
 //
 // Data
 //
-const poi = ref<ApiPoi>()
 const poiDeps = ref<ApiPoiDeps>()
 
 const fetchPoiPoiDeps = getAsyncDataOrThrows(
   `fetchPoiPoiDeps-${params.id}`,
   async () => {
     return await getPoiDepsById(config.value!, params.id as string, {
+      geometry_as: 'point_or_bbox',
       short_description: false,
     }).then((poiDeps) => {
       let poi: ApiPoi | undefined
@@ -59,15 +59,20 @@ const fetchPoiPoiDeps = getAsyncDataOrThrows(
 
 const [poiPoiDeps] = await Promise.all([fetchPoiPoiDeps])
 
-poi.value = poiPoiDeps.value.poi
-poiDeps.value = poiPoiDeps.value.poiDeps
-
-if (!poi.value) {
-  showError({
+if (!poiPoiDeps.value.poi) {
+  throw createError({
     statusCode: 404,
     statusMessage: 'POI not found. Missing main object.',
   })
 }
+
+const poi = ref(poiPoiDeps.value.poi)
+poiDeps.value = poiPoiDeps.value.poiDeps
+
+const { featureSeoTitle } = useFeature(poi, { type: 'details' })
+
+if (!featureSeoTitle.value)
+  throw createError('Feature has no name')
 
 //
 // Hooks
@@ -78,11 +83,9 @@ onBeforeMount(() => {
 
 useHead(
   headerFromSettings(settings.value!, {
-    // @ts-expect-error: Fix typings
-    title: poiPoiDeps.value?.poi.properties.name,
+    title: featureSeoTitle.value,
     description: {
-      // @ts-expect-error: Fix typings
-      fr: poiPoiDeps.value?.poi.properties.description,
+      fr: poi.value?.properties.description,
     },
   }),
 )
@@ -95,6 +98,7 @@ useHead(
     :nav-menu-entries="contents!"
     :poi="poi!"
     :poi-deps="poiDeps"
+    :page-title="featureSeoTitle!"
     class="page-details tw-overflow-clip"
   />
 </template>

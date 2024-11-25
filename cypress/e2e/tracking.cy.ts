@@ -81,14 +81,14 @@ describe('home content', () => {
     })
 
     // Click on map POI
-    cy.get('#m0', { timeout: 10000 }).click()
+    cy.get('#1', { timeout: 10000 }).click()
     asserts.push((event: Event) => {
       assert(event.type === 'popup' && event.poiId === 1, 'Click on map POI')
     })
     cy.get('#PoiCard-1').should('be.visible')
 
     // Click on an other map POI
-    cy.get('#m1').click({ force: true }) // Force click on non visible element
+    cy.get('#2').click({ force: true }) // Force click on non visible element
     asserts.push((event: Event) => {
       assert(
         event.type === 'popup' && event.poiId === 2,

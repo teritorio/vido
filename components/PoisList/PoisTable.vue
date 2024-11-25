@@ -46,6 +46,13 @@ const route = useRoute()
 //
 const { API_ENDPOINT, API_PROJECT, API_THEME } = config.value!
 const search = ref('')
+const query = {
+  geometry_as: 'point',
+  short_description: true,
+} as Record<string, any>
+
+if (route.query.clipingPolygonSlug)
+  query.cliping_polygon_slug = route.query.clipingPolygonSlug.toString()
 
 //
 // Data Fetching
@@ -53,10 +60,7 @@ const search = ref('')
 const { data: pois, error, pending, status } = useFetch<ApiPois>(
   () => `${API_ENDPOINT}/${API_PROJECT}/${API_THEME}/pois/category/${route.params.id}.geojson`,
   {
-    query: {
-      geometry_as: 'point',
-      short_description: true,
-    },
+    query,
     immediate: !!route.params.id,
     transform(pois) {
       if (!pois.features.length)

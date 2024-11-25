@@ -14,9 +14,12 @@ const defaultProps = {
   poi: poisDeps.features[0] as ApiPoi,
 }
 
+const { featureSeoTitle } = useFeature(toRef(defaultProps.poi), { type: 'details' })
+
 const props = {
   Default: {
     ...defaultProps,
+    pageTitle: featureSeoTitle.value || '',
   },
 }
 </script>

@@ -36,7 +36,9 @@ export default defineNuxtComponent({
         >
       </a>
     </span>
-    <CookiesConsent />
+    <ClientOnly>
+      <CookiesConsent />
+    </ClientOnly>
   </footer>
 </template>
 

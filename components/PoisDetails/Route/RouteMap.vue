@@ -102,27 +102,11 @@ export default defineNuxtComponent({
     <div class="detail-wrapper">
       <div v-if="points.length > 0" class="detail-left">
         <h2>{{ $t('poiDetails.routes.waypoints') }}</h2>
-        <PoisDeck
-          :pois="points"
-          :is-card-light="true"
-          :explorer-mode-enabled="false"
-          :favorites-mode-enabled="favoritesModeEnabled"
-          @explore-click="$emit('exploreClick', $event)"
-          @favorite-click="$emit('favoriteClick', $event)"
-          @zoom-click="$emit('zoomClick', $event)"
-        />
+        <PoisDeck :pois="points" :is-card-light="true" />
       </div>
       <div v-if="pois.length > 0" class="detail-right">
         <h2>{{ $t('poiDetails.routes.pois') }}</h2>
-        <PoisDeck
-          :pois="pois"
-          :is-card-light="true"
-          :explorer-mode-enabled="false"
-          :favorites-mode-enabled="favoritesModeEnabled"
-          @explore-click="$emit('exploreClick', $event)"
-          @favorite-click="$emit('favoriteClick', $event)"
-          @zoom-click="$emit('zoomClick', $event)"
-        />
+        <PoisDeck :pois="pois" :is-card-light="true" />
       </div>
     </div>
   </div>

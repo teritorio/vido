@@ -8,14 +8,16 @@ import type {
   LngLatBounds,
   Map,
   MapDataEvent,
+  MapGeoJSONFeature,
   MapMouseEvent,
+  Marker,
 } from 'maplibre-gl'
-import { Marker } from 'maplibre-gl'
-import { mapActions, mapState, mapWritableState, storeToRefs } from 'pinia'
+import { mapActions, mapState, storeToRefs } from 'pinia'
 import type { PropType } from 'vue'
 import { ref } from 'vue'
 import booleanIntersects from '@turf/boolean-intersects'
 
+import { TeritorioCluster } from '@teritorio/maplibre-gl-teritorio-cluster'
 import { defineNuxtComponent } from '#app'
 import MapControlsExplore from '~/components/MainMap/MapControlsExplore.vue'
 import SnackBar from '~/components/MainMap/SnackBar.vue'
@@ -29,7 +31,7 @@ import { getBBoxFeature, getBBoxFeatures } from '~/lib/bbox'
 import { DEFAULT_MAP_STYLE, MAP_ZOOM } from '~/lib/constants'
 import type { VectorTilesPoi } from '~/lib/vectorTilesPois'
 import { vectorTilesPoi2ApiPoi } from '~/lib/vectorTilesPois'
-import { mapStore } from '~/stores/map'
+import { mapStore as useMapStore } from '~/stores/map'
 import { menuStore } from '~/stores/menu'
 import { siteStore as useSiteStore } from '~/stores/site'
 import { snackStore } from '~/stores/snack'
@@ -38,8 +40,7 @@ import type { LatLng } from '~/utils/types'
 import { MapStyleEnum } from '~/utils/types'
 import { getHashPart } from '~/utils/url'
 import useDevice from '~/composables/useDevice'
-
-type ITMarker = InstanceType<typeof Marker>
+import { clusterRender, markerRender, pinMarkerRender } from '~/lib/clusters'
 
 const STYLE_LAYERS = [
   'poi-level-1',
@@ -115,41 +116,54 @@ export default defineNuxtComponent({
     },
   },
 
+  created() {
+    this.updateSelectedFeature = debounce(this.updateSelectedFeature, 300)
+  },
+
   setup() {
     const device = useDevice()
     const { config } = storeToRefs(useSiteStore())
+    const mapStore = useMapStore()
+    const { center, selectedFeature, teritorioCluster } = storeToRefs(mapStore)
+    const mapStyleLoaded = ref(false)
 
     return {
+      center,
       config,
       device,
       mapBase: ref<InstanceType<typeof MapBase>>(),
+      mapStore,
+      mapStyleLoaded,
+      selectedFeature,
+      teritorioCluster,
     }
   },
 
   data(): {
     map: Map
-    markers: { [id: string]: ITMarker }
-    selectedFeatureMarker: ITMarker | null
+    markers: { [id: string]: Marker }
     selectedBackground: MapStyleEnum
   } {
     return {
       map: null!,
       markers: {},
-      selectedFeatureMarker: null,
       selectedBackground: DEFAULT_MAP_STYLE,
     }
   },
 
   computed: {
-    ...mapState(mapStore, ['selectedFeature']),
     ...mapState(menuStore, ['isLoadingFeatures']),
-    ...mapWritableState(mapStore, ['center']),
 
     availableStyles(): MapStyleEnum[] {
-      return [MapStyleEnum.vector, MapStyleEnum.aerial, MapStyleEnum.bicycle]
+      const styles = [MapStyleEnum.vector, MapStyleEnum.aerial]
+
+      if (this.config!.BICYCLE_STYLE_URL)
+        styles.push(MapStyleEnum.bicycle)
+
+      return styles
     },
 
-    // Workarround typing issue
+    // Workaround typing issue
     mapTyped(): Map {
       return this.map as Map
     },
@@ -212,23 +226,29 @@ export default defineNuxtComponent({
     },
   },
 
-  created() {
-    this.updateSelectedFeature = debounce(this.updateSelectedFeature, 300)
-  },
-
   beforeMount() {
     const bg = getHashPart(this.$router, 'bg') as keyof typeof MapStyleEnum
     this.selectedBackground = (bg && MapStyleEnum[bg]) || DEFAULT_MAP_STYLE
   },
 
   methods: {
-    ...mapActions(mapStore, ['setSelectedFeature']),
     ...mapActions(snackStore, ['showSnack']),
 
     // Map and style init and changes
 
     onMapInit(map: Map) {
       this.map = map
+
+      this.teritorioCluster = new TeritorioCluster(map, POI_SOURCE, {
+        clusterRenderFn: clusterRender,
+        fitBoundsOptions: this.mapBase?.fitBoundsOptions(),
+        initialFeature: this.selectedFeature as unknown as MapGeoJSONFeature,
+        markerRenderFn: markerRender,
+        markerSize: 32,
+        pinMarkerRenderFn: pinMarkerRender,
+      })
+
+      this.teritorioCluster.addEventListener('feature-click', (e: Event) => this.updateSelectedFeature((e as CustomEvent).detail.selectedFeature))
 
       this.map.on('click', this.onClick)
 
@@ -261,26 +281,26 @@ export default defineNuxtComponent({
           this.map.getCanvas().style.cursor = ''
         })
       })
+
       this.showSelectedFeature()
+      this.mapStyleLoaded = true
     },
 
     // Map interactions
-
     onClick(e: MapMouseEvent) {
       let selectedFeatures = STYLE_LAYERS.map((layerId) => {
         return this.map.queryRenderedFeatures(e.point, {
           layers: [layerId],
         }) as unknown as VectorTilesPoi[]
       }).flat()
+
       selectedFeatures = selectedFeatures.filter(
         feature => feature.properties.popup_fields,
       )
+
       if (selectedFeatures.length > 0) {
         // Set temp partial data from vector tiles. Then fetch full data
-        this.updateSelectedFeature(
-          vectorTilesPoi2ApiPoi(selectedFeatures[0]),
-          true,
-        )
+        this.updateSelectedFeature(vectorTilesPoi2ApiPoi(selectedFeatures[0]), true)
         this.showSelectedFeature()
       }
       else {
@@ -290,7 +310,7 @@ export default defineNuxtComponent({
 
     updateSelectedFeature(feature: ApiPoi | null, fetch = false) {
       if (this.selectedFeature !== feature) {
-        this.setSelectedFeature(feature)
+        this.mapStore.setSelectedFeature(feature)
 
         if (feature && fetch && feature.properties.metadata.id) {
           try {
@@ -303,23 +323,13 @@ export default defineNuxtComponent({
               // Overide geometry.
               // Keep same original location to avoid side effect on moving selected object.
               apiPoi.geometry = feature.geometry
-              this.setSelectedFeature(apiPoi)
+              this.mapStore.setSelectedFeature(apiPoi)
             })
           }
           catch (e) {
             console.error('Vido error:', (e as Error).message)
           }
         }
-      }
-    },
-
-    // Map view
-
-    onMapRender() {
-      // Put selected feature marker on top
-      if (this.selectedFeatureMarker) {
-        this.selectedFeatureMarker.remove()
-        this.selectedFeatureMarker.addTo(this.map as Map)
       }
     },
 
@@ -405,13 +415,6 @@ export default defineNuxtComponent({
     },
 
     showSelectedFeature() {
-      // Clean-up previous marker
-      if (this.selectedFeatureMarker) {
-        this.selectedFeatureMarker.remove()
-        this.selectedFeatureMarker = null
-      }
-
-      // Add new marker if a feature is selected
       if (
         this.selectedFeature
         && (this.selectedFeature.properties?.metadata?.id
@@ -423,35 +426,6 @@ export default defineNuxtComponent({
           || this.selectedFeature?.id
           || this.selectedFeature?.properties?.id,
         ])
-
-        if (
-          ['Point', 'MultiLineString', 'LineString'].includes(
-            this.selectedFeature.geometry.type,
-          )
-        ) {
-          // Get original coords to set exact marker position
-          const originalFeature = this.features.find(
-            originalFeature =>
-              originalFeature.properties?.metadata?.id
-              && this.selectedFeature?.properties?.metadata?.id
-              && originalFeature.properties?.metadata?.id
-              === this.selectedFeature?.properties?.metadata?.id,
-          )
-          const lngLat = (
-            originalFeature && originalFeature.geometry.type === 'Point'
-              ? originalFeature.geometry.coordinates
-              : this.selectedFeature.geometry.type === 'Point'
-                ? this.selectedFeature.geometry?.coordinates
-                : this.defaultBounds
-          ) as [number, number]
-
-          this.selectedFeatureMarker = new Marker({
-            scale: 1.3,
-            color: '#f44336',
-          })
-            .setLngLat(lngLat)
-            .addTo(this.map as Map)
-        }
       }
       else {
         if (this.enableFilterRouteByFeatures) {
@@ -482,8 +456,6 @@ export default defineNuxtComponent({
       :map-style="selectedBackground" :rotate="!device.touch" :show-attribution="!small"
       :off-map-attribution="device.smallScreen && !small" :hide-control="small" :style-icon-filter="styleIconFilter"
       :cooperative-gestures="cooperativeGestures" :boundary-area="boundaryArea" hash="map" @map-init="onMapInit"
-      @map-data="onMapRender" @map-drag-end="onMapRender" @map-move-end="onMapRender" @map-resize="onMapRender"
-      @map-rotate-end="onMapRender" @map-touch-move="onMapRender" @map-zoom-end="onMapRender"
       @map-style-load="onMapStyleLoad" @feature-click="updateSelectedFeature"
     >
       <template #controls>

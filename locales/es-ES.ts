@@ -79,7 +79,7 @@ export default defineI18nLocale(() => {
       backToMenuFavorites: 'Ver el menú',
       backToMenuExplorer: 'Buscar par categorías',
       backToMenuFavoritesMobile: 'Salir de los favoritos',
-      backToMenuExplorerMobile: 'Buscar par categorías',
+      backToMenuExplorerMobile: 'Salir «Cercano»',
       disableCategory: 'Eliminar la categoría',
     },
     dateRange: {
@@ -187,6 +187,22 @@ export default defineI18nLocale(() => {
       accept: 'Aceptar',
       details: 'Más información',
       decline: 'Descenso',
+    },
+    isochrone: {
+      remove: 'Eliminar duración de viaje',
+      trigger: {
+        label: 'Duración de viaje',
+        title: 'Duración de viaje desde este punto',
+      },
+      overlay: {
+        title: '¿A dónde puedo ir?',
+        text: 'Visualiza en el mapa las zonas accesibles desde este punto de inicio en función de la duración (15, 30, 60 minutos) y de la modalidad de viaje.',
+      },
+      profiles: {
+        'cycling-regular': 'En bicicleta',
+        'driving-car': 'En coche',
+        'foot-walking': 'A pie',
+      },
     },
   }
 })

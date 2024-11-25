@@ -17,12 +17,14 @@ import {
   faBars,
   faBiking,
   faBookOpen,
+  faCar,
   faCheckCircle,
   faChevronDown,
   faChevronRight,
   faChevronUp,
   faCity,
   faClipboardCheck,
+  faClock,
   faCog,
   faCopy,
   faEnvelope,
@@ -56,6 +58,7 @@ import {
   faStar,
   faTimes,
   faTrash,
+  faWalking,
   faCircle as fasCircle,
 } from '@fortawesome/free-solid-svg-icons'
 
@@ -70,11 +73,13 @@ library.add(
   faArrowLeft,
   faBars,
   faBiking,
+  faCar,
   faCheckCircle,
   faChevronDown,
   faChevronUp,
   faChevronRight,
   faCircle,
+  faClock,
   fasCircle,
   faHiking,
   faInfo,
@@ -121,6 +126,7 @@ library.add(
   faEnvelope,
   faPenToSquare,
   faNoteSticky,
+  faWalking,
 )
 
 export default defineNuxtPlugin(_nuxtApp => undefined)

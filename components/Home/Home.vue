@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { FitBoundsOptions, LngLatBounds } from 'maplibre-gl'
+import type { FitBoundsOptions, LngLatBounds, MapGeoJSONFeature } from 'maplibre-gl'
 import { storeToRefs } from 'pinia'
 import type { MultiPolygon, Polygon } from 'geojson'
 import { decodeBase32 } from 'geohashing'
@@ -29,6 +29,7 @@ import { getHashPart, setHashParts } from '~/utils/url'
 import { flattenFeatures, formatApiAddressToFeature } from '~/utils/utilities'
 import useDevice from '~/composables/useDevice'
 import type { ApiAddrSearchResult, ApiSearchResult } from '~/lib/apiSearch'
+import IsochroneStatus from '~/components/Isochrone/IsochroneStatus.vue'
 
 //
 // Props
@@ -36,14 +37,13 @@ import type { ApiAddrSearchResult, ApiSearchResult } from '~/lib/apiSearch'
 const props = defineProps<{
   boundaryArea?: Polygon | MultiPolygon
   initialCategoryIds?: number[]
-  initialPoi?: ApiPoi
 }>()
 
 //
 // Composables
 //
 const mapStore = useMapStore()
-const { center, isModeFavorites, isModeExplorer, isModeExplorerOrFavorites, mode, selectedFeature } = storeToRefs(mapStore)
+const { center, isModeFavorites, isModeExplorer, isModeExplorerOrFavorites, mode, selectedFeature, teritorioCluster } = storeToRefs(mapStore)
 const menuStore = useMenuStore()
 const { apiMenuCategory, features, selectedCategoryIds } = storeToRefs(menuStore)
 const favoriteStore = useFavoriteStore()
@@ -53,6 +53,7 @@ const { $tracking } = useNuxtApp()
 const route = useRoute()
 const router = useRouter()
 const device = useDevice()
+const { isochroneCurrentFeature } = useIsochrone()
 
 //
 // Data
@@ -63,7 +64,7 @@ const initialBbox = ref<LngLatBounds | null>(null)
 const isMenuItemOpen = ref<boolean>(false)
 const isOnSearch = ref<boolean>(false)
 const showFavoritesOverlay = ref<boolean>(false)
-const showPoi = ref<boolean>(false)
+const isPoiCardShown = ref<boolean>(false)
 const mapFeaturesRef = ref<InstanceType<typeof MapFeatures>>()
 
 //
@@ -122,9 +123,6 @@ onMounted(async () => {
     menuStore.setSelectedCategoryIds(enabledCategories)
   }
 
-  if (props.initialPoi)
-    mapStore.setSelectedFeature(props.initialPoi)
-
   $tracking({
     type: 'page',
     title: (route.name && String(route.name)) || undefined,
@@ -153,12 +151,8 @@ const favoritesModeEnabled = computed(() => {
   return settings!.themes[0]?.favorites_mode ?? true
 })
 
-const isPoiCardVisible = computed(() => {
-  return !!(selectedFeature.value && showPoi.value)
-})
-
 const isBottomMenuOpened = computed(() => {
-  return ((device.value.smallScreen && isPoiCardVisible.value) || isMenuItemOpen.value)
+  return ((device.value.smallScreen && isPoiCardShown.value) || isMenuItemOpen.value)
 })
 
 const fitBoundsPaddingOptions = computed((): FitBoundsOptions['padding'] => {
@@ -173,7 +167,7 @@ const fitBoundsPaddingOptions = computed((): FitBoundsOptions['padding'] => {
   else {
     return {
       top: 100,
-      bottom: isPoiCardVisible.value ? 400 : 100,
+      bottom: isPoiCardShown.value ? 400 : 100,
       right: 100,
       left: isModeExplorerOrFavorites.value ? 50 : 500,
     }
@@ -185,7 +179,11 @@ const logoUrl = computed(() => {
 })
 
 const mainUrl = computed(() => {
-  return settings!.themes[0]?.main_url?.fr || ''
+  return settings!.themes[0]?.main_url?.fr || '/'
+})
+
+const target = computed(() => {
+  return settings!.themes[0]?.main_url?.fr ? '_blank' : '_self'
 })
 
 const mapFeatures = computed(() => {
@@ -231,23 +229,24 @@ const siteName = computed(() => {
 //
 // Watchers
 //
-watch(selectedFeature, () => {
-  showPoi.value = !!selectedFeature.value
-  routerPushUrl()
+watch(selectedFeature, (newFeature) => {
+  isPoiCardShown.value = !!newFeature
 
-  if (selectedFeature.value) {
-    $tracking({
-      type: 'popup',
-      poiId:
-            selectedFeature.value.properties.metadata.id
-            || selectedFeature.value.properties?.id,
-      title: selectedFeature.value.properties?.name,
-      location: window.location.href,
-      path: route.path,
-      categoryIds: selectedFeature.value.properties?.metadata?.category_ids || [],
-    })
+  if (process.client) {
+    routerPushUrl()
+
+    if (newFeature) {
+      $tracking({
+        type: 'popup',
+        poiId: newFeature.properties.metadata.id || newFeature.properties?.id,
+        title: newFeature.properties?.name,
+        location: window.location.href,
+        path: route.path,
+        categoryIds: newFeature.properties?.metadata?.category_ids || [],
+      })
+    }
   }
-})
+}, { immediate: true })
 
 watch(selectedCategoryIds, (a, b) => {
   if (a !== b) {
@@ -256,6 +255,7 @@ watch(selectedCategoryIds, (a, b) => {
     menuStore.fetchFeatures({
       vidoConfig: config!,
       categoryIds: selectedCategoryIds.value,
+      clipingPolygonSlug: route.query.clipingPolygonSlug?.toString(),
     })
 
     allowRegionBackZoom.value = true
@@ -309,9 +309,14 @@ async function fetchFavorites() {
   if (!favoritesIds.value.length)
     return []
 
-  return await getPois(config!, favoritesIds.value, {
+  const query = {
     geometry_as: 'point',
-  })
+  } as Record<string, any>
+
+  if (route.query.clipingPolygonSlug)
+    query.cliping_polygon_slug = route.query.clipingPolygonSlug.toString()
+
+  return await getPois(config!, favoritesIds.value, query)
     .then(pois => (pois && pois.features) || [])
     .then(pois =>
       pois.map(poi => ({
@@ -351,25 +356,7 @@ function onActivateFilter(val: boolean) {
 }
 
 function onBottomMenuButtonClick() {
-  if (!isModeFavorites.value) {
-    if (isBottomMenuOpened.value) {
-      if (selectedFeature.value)
-        setPoiVisibility(false)
-      isMenuItemOpen.value = false
-    }
-    else if (!isModeExplorer.value) {
-      isMenuItemOpen.value = true
-    }
-    else if (selectedFeature.value && !isPoiCardVisible.value) {
-      setPoiVisibility(true)
-    }
-  }
-  else if (selectedFeature.value) {
-    if (!isModeExplorer.value && !showPoi.value)
-      mapStore.setSelectedFeature(null)
-    else
-      setPoiVisibility(false)
-  }
+  isMenuItemOpen.value = !isMenuItemOpen.value
 }
 
 function onQuitExplorerFavoriteMode() {
@@ -429,7 +416,7 @@ function toggleExploreAroundSelectedPoi(feature?: ApiPoi) {
     goToSelectedFeature()
 
     if (device.value.smallScreen)
-      showPoi.value = false
+      isPoiCardShown.value = false
   }
   else {
     allowRegionBackZoom.value = false
@@ -452,6 +439,8 @@ function toggleFavorite(feature: ApiPoi) {
 function searchSelectFeature(feature: ApiPoi) {
   mapStore.setSelectedFeature(feature)
   goToSelectedFeature()
+
+  teritorioCluster.value?.setSelectedFeature(feature as unknown as MapGeoJSONFeature)
 }
 
 const bottomMenuRef = ref<HTMLDivElement>()
@@ -464,13 +453,8 @@ function scrollTop() {
     header.scrollTop = 0
 }
 
-function setPoiVisibility(visible: boolean) {
-  showPoi.value = visible
-}
-
 function handlePoiCardClose() {
   mapStore.setSelectedFeature(null)
-  setPoiVisibility(false)
 }
 </script>
 
@@ -481,11 +465,11 @@ function handlePoiCardClose() {
     <h1 class="tw-absolute tw-text-white">
       {{ siteName }}
     </h1>
-    <header
-      class="tw-flex md:tw-hidden tw-relative tw-fidex tw-top-0 tw-bottom-0 tw-z-10 tw-flex-row tw-w-full tw-space-x-4"
-    >
-      <div class="tw-w-full" :class="[isBottomMenuOpened && 'tw-hidden']">
-        <client-only>
+    <ClientOnly>
+      <header
+        class="tw-flex md:tw-hidden tw-relative tw-fidex tw-top-0 tw-bottom-0 tw-z-10 tw-flex-row tw-w-full tw-space-x-4"
+      >
+        <div class="tw-w-full" :class="[isBottomMenuOpened && 'tw-hidden']">
           <aside
             v-if="!isModeExplorerOrFavorites"
             class="tw-flex tw-flex-col tw-max-h-full tw-px-5 tw-py-4 tw-space-y-6 tw-shadow-md tw-pointer-events-auto md:tw-rounded-xl md:tw-w-96 tw-bg-white tw-min-h-20"
@@ -499,6 +483,7 @@ function handlePoiCardClose() {
                 :main-url="mainUrl"
                 :site-name="siteName"
                 :logo-url="logoUrl"
+                :target="target"
                 class="tw-flex-none md:tw-hidden tw-mr-2"
                 image-class="tw-max-w-2xl tw-max-h-12 md:tw-max-h-16"
               />
@@ -510,9 +495,9 @@ function handlePoiCardClose() {
           >
             <ExplorerOrFavoritesBack @click="onQuitExplorerFavoriteMode" />
           </aside>
-        </client-only>
-      </div>
-    </header>
+        </div>
+      </header>
+    </ClientOnly>
 
     <div v-if="initialBbox" class="tw-w-full tw-h-full">
       <header
@@ -557,6 +542,7 @@ function handlePoiCardClose() {
                 :main-url="mainUrl"
                 :site-name="siteName"
                 :logo-url="logoUrl"
+                :target="target"
                 class="tw-flex-none tw-mr-2"
                 image-class="tw-max-w-2xl tw-max-h-12 md:tw-max-h-16"
               />
@@ -569,6 +555,7 @@ function handlePoiCardClose() {
           "
           class="tw-hidden md:tw-block flex-shrink-1"
         />
+        <IsochroneStatus v-if="isochroneCurrentFeature" />
         <div class="tw-grow" style="margin-left: 0" />
         <div
           class="tw-flex-none tw-flex" :class="[isBottomMenuOpened && 'hidden']"
@@ -610,7 +597,7 @@ function handlePoiCardClose() {
         >
           <div class="tw-relative">
             <button
-              v-if="!(isModeExplorer || isModeFavorites || showPoi)"
+              v-if="!(isModeExplorer || isModeFavorites || isPoiCardShown)"
               type="button"
               class="md:tw-hidden tw-absolute -tw-top-12 tw-z-0 tw-w-1/4 tw-h-12 tw-transition-all tw-rounded-t-lg tw-text-sm tw-font-medium tw-px-5 tw-shadow-lg tw-outline-none focus:tw-outline-none tw-bg-white tw-text-zinc-800 hover:tw-bg-zinc-100 focus-visible:tw-bg-zinc-100"
               style="right: 37.5%"
@@ -627,63 +614,70 @@ function handlePoiCardClose() {
       v-if="showFavoritesOverlay"
       @discard="showFavoritesOverlay = false"
     />
-    <div
-      class="tw-hidden tw-fixed tw-inset-x-0 tw-bottom-0 md:tw-flex tw-overflow-y-auto tw-h-auto md:tw-left-8 md:tw-right-16 md:tw-bottom-5 tw-pointer-events-none"
-    >
-      <div class="tw-w-full tw-max-w-md" />
-      <div class="tw-grow-[1]" />
-      <PoiCard
-        v-if="
-          selectedFeature
-            && selectedFeature.properties
-            && selectedFeature.properties.metadata
-            && showPoi
-        "
-        :can-close="device.smallScreen"
-        :poi="selectedFeature"
-        class="tw-grow-0"
-        :explorer-mode-enabled="explorerModeEnabled"
-        :favorites-mode-enabled="favoritesModeEnabled"
-        @explore-click="toggleExploreAroundSelectedPoi"
-        @favorite-click="toggleFavorite"
-        @zoom-click="goToSelectedFeature"
-        @on-close="handlePoiCardClose"
-      />
-      <div class="tw-grow-[3]" />
-    </div>
 
-    <BottomMenu class="md:tw-hidden" :is-open="isBottomMenuOpened">
+    <ClientOnly>
       <div
-        ref="bottomMenuRef"
-        class="tw-flex-1 tw-h-full tw-overflow-y-auto tw-h-screen-3/5 tw-divide-y"
+        class="tw-hidden tw-fixed tw-inset-x-0 tw-bottom-0 md:tw-flex tw-overflow-y-auto tw-h-auto md:tw-left-8 md:tw-right-16 md:tw-bottom-5 tw-pointer-events-none"
       >
-        <Menu
-          v-if="!showPoi"
-          menu-block="MenuBlockBottom"
-          @scroll-top="scrollTop"
-        />
+        <div class="tw-w-full tw-max-w-md" />
+        <div class="tw-grow-[1]" />
         <PoiCard
-          v-else-if="
+          v-if="
             selectedFeature
               && selectedFeature.properties
               && selectedFeature.properties.metadata
-              && showPoi
+              && isPoiCardShown
           "
           :can-close="device.smallScreen"
           :poi="selectedFeature"
-          class="tw-grow-0 tw-text-left tw-h-full"
+          class="tw-grow-0"
           :explorer-mode-enabled="explorerModeEnabled"
           :favorites-mode-enabled="favoritesModeEnabled"
-          @explore-click="toggleExploreAroundSelectedPoi"
+          @explore-click="toggleExploreAroundSelectedPoi(undefined)"
           @favorite-click="toggleFavorite"
           @zoom-click="goToSelectedFeature"
           @on-close="handlePoiCardClose"
         />
+        <div class="tw-grow-[3]" />
       </div>
-    </BottomMenu>
-    <footer class="tw-z-20">
-      <CookiesConsent />
-    </footer>
+    </ClientOnly>
+
+    <ClientOnly>
+      <BottomMenu class="md:tw-hidden" :is-open="isBottomMenuOpened">
+        <div
+          ref="bottomMenuRef"
+          class="tw-flex-1 tw-h-full tw-overflow-y-auto tw-h-screen-3/5 tw-divide-y"
+        >
+          <Menu
+            v-if="!isPoiCardShown"
+            menu-block="MenuBlockBottom"
+            @scroll-top="scrollTop"
+          />
+          <PoiCard
+            v-else-if="
+              selectedFeature
+                && selectedFeature.properties
+                && selectedFeature.properties.metadata
+                && isPoiCardShown
+            "
+            :poi="selectedFeature"
+            class="tw-grow-0 tw-text-left tw-h-full"
+            :explorer-mode-enabled="explorerModeEnabled"
+            :favorites-mode-enabled="favoritesModeEnabled"
+            @explore-click="toggleExploreAroundSelectedPoi(undefined)"
+            @favorite-click="toggleFavorite"
+            @zoom-click="goToSelectedFeature"
+            @on-close="handlePoiCardClose"
+          />
+        </div>
+      </BottomMenu>
+    </ClientOnly>
+
+    <ClientOnly>
+      <footer class="tw-z-20">
+        <CookiesConsent />
+      </footer>
+    </ClientOnly>
   </div>
 </template>
 

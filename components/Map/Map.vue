@@ -9,6 +9,7 @@ import type {
   MapTouchEvent,
   RasterSourceSpecification,
   StyleSpecification,
+
   VectorSourceSpecification,
 } from 'maplibre-gl'
 import {
@@ -30,7 +31,6 @@ import { MapStyleEnum } from '~/utils/types'
 
 type ITMap = InstanceType<typeof Map>
 type ITAttributionControl = InstanceType<typeof AttributionControl>
-type ITFullscreenControl = InstanceType<typeof FullscreenControl>
 
 export default defineNuxtComponent({
   props: {
@@ -89,9 +89,15 @@ export default defineNuxtComponent({
 
   setup() {
     const { config } = storeToRefs(useSiteStore())
+    const fullscreenControlObject = ref<FullscreenControl>()
+
+    onMounted(() => {
+      fullscreenControlObject.value = new FullscreenControl()
+    })
 
     return {
       config,
+      fullscreenControlObject,
     }
   },
 
@@ -101,7 +107,6 @@ export default defineNuxtComponent({
     mapStyleCache: { [key: string]: StyleSpecification }
     attributionControl: ITAttributionControl | null
     languageControl: OpenMapTilesLanguage | null
-    fullscreenControlObject: ITFullscreenControl | undefined
     withMap: any[]
   } {
     return {
@@ -110,15 +115,11 @@ export default defineNuxtComponent({
       mapStyleCache: {},
       attributionControl: null,
       languageControl: null,
-      fullscreenControlObject: undefined,
       withMap: [],
     }
   },
 
   mounted() {
-    // @ts-expect-error: type is too deep
-    this.fullscreenControlObject = new FullscreenControl()
-
     const map = new Map({
       container: 'map',
       style: (this.style as StyleSpecification) || {
@@ -175,7 +176,7 @@ export default defineNuxtComponent({
     map.addControl(geolocateControl)
     geolocateControl._container.classList.add('control-geolocate')
 
-    if (this.fullscreenControl)
+    if (this.fullscreenControl && this.fullscreenControlObject)
       map.addControl(this.fullscreenControlObject)
 
     map.addControl(
@@ -250,6 +251,7 @@ export default defineNuxtComponent({
     onMapInit(map: ITMap) {
       this.$emit('mapInit', map)
 
+      // @ts-expect-error: Type is too deep
       this.map = map
       this.languageControl = new OpenMapTilesLanguage({
         defaultLanguage: this.locale || undefined,
@@ -285,7 +287,25 @@ export default defineNuxtComponent({
           this.style = style
           this.doWithMap(() => {
             // Use no diff mode to avoid issue with added layers
-            this.map!.setStyle(style, { diff: false })
+            this.map!.setStyle(style, {
+              diff: false,
+              transformStyle: (previousStyle, nextStyle) => {
+                if (previousStyle?.sources.isochrone) {
+                  style = {
+                    ...nextStyle,
+                    sources: {
+                      ...nextStyle.sources,
+                      isochrone: previousStyle.sources.isochrone,
+                    },
+                    layers: [
+                      ...nextStyle.layers,
+                      ...previousStyle.layers.filter(l => l.id.includes('isochrone')),
+                    ],
+                  }
+                }
+                return style
+              },
+            })
             this.emitStyleLoad()
           })
         })
@@ -330,7 +350,7 @@ export default defineNuxtComponent({
     addAttribution() {
       this.doWithMap(() => {
         if (!this.attributionControl) {
-          this.attributionControl = new AttributionControl()
+          this.attributionControl = new AttributionControl({ compact: false })
           this.map!.addControl(this.attributionControl)
         }
       })
