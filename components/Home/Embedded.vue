@@ -15,6 +15,7 @@ import { menuStore as useMenuStore } from '~/stores/menu'
 import { siteStore as useSiteStore } from '~/stores/site'
 import { Mode } from '~/utils/types'
 import { flattenFeatures } from '~/utils/utilities'
+import IsochroneStatus from '~/components/Isochrone/IsochroneStatus.vue'
 
 //
 // Props
@@ -35,6 +36,7 @@ const { config, settings } = useSiteStore()
 const route = useRoute()
 const router = useRouter()
 const { t } = useI18n()
+const { isochroneCurrentFeature } = useIsochrone()
 
 //
 // Data
@@ -219,8 +221,9 @@ function toggleExploreAroundSelectedPoi() {
           class="tw-p-4 tw-absolute tw-z-1 tw-w-full"
           @category-change="onMenuChange"
         />
-        <div class="tw-p-4 tw-pt-24 tw-absolute">
+        <div class="tw-p-4 tw-pt-24 tw-absolute tw-flex tw-gap-4">
           <SelectedCategories v-if="!isFiltersEqualToCategoryId" />
+          <IsochroneStatus v-if="isochroneCurrentFeature" />
         </div>
       </div>
     </div>
