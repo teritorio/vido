@@ -3985,14 +3985,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@teritorio/maplibre-gl-teritorio-cluster@npm:^0.0.12":
-  version: 0.0.12
-  resolution: "@teritorio/maplibre-gl-teritorio-cluster@npm:0.0.12"
+"@teritorio/maplibre-gl-teritorio-cluster@npm:^0.0.15":
+  version: 0.0.15
+  resolution: "@teritorio/maplibre-gl-teritorio-cluster@npm:0.0.15"
   dependencies:
     "@turf/bbox": "npm:^7.1.0"
     "@turf/helpers": "npm:^7.1.0"
-    maplibre-gl: "npm:^4.7.0"
-  checksum: 10c0/f04440b42d9d5fa1374d512a29cef305f635e97dcfaec07c84e09facb885755c5bbce8c6ed2252e658bf58c7c38ff15fc552f9ac90296576b900ff7613cb0630
+  peerDependencies:
+    maplibre-gl: ^4.5.0
+  checksum: 10c0/aad194a693733422eff4f46dbfee77ad44daef05b0273ebe14576b46ad52ed9c9cfdc5ee0b40cd4220df45d581700f4f475ea1b8f4c61608927d120676847797
   languageName: node
   linkType: hard
 
@@ -4032,7 +4033,7 @@ __metadata:
     "@tailwindcss/typography": "npm:^0.5.9"
     "@teritorio/font-teritorio": "npm:^2.5.0"
     "@teritorio/map": "npm:^0.12.7"
-    "@teritorio/maplibre-gl-teritorio-cluster": "npm:^0.0.12"
+    "@teritorio/maplibre-gl-teritorio-cluster": "npm:^0.0.15"
     "@teritorio/openmaptiles-gl-language": "npm:^1.5.4"
     "@turf/boolean-intersects": "npm:^6.5.0"
     "@turf/mask": "npm:^7.1.0"
@@ -11758,7 +11759,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"maplibre-gl@npm:^4.5.0, maplibre-gl@npm:^4.7.0":
+"maplibre-gl@npm:^4.5.0":
   version: 4.7.1
   resolution: "maplibre-gl@npm:4.7.1"
   dependencies:
