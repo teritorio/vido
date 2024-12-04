@@ -11,12 +11,14 @@ export default defineNuxtPlugin((nuxtApp) => {
     provide: {
       trackingInit: (config: VidoConfig): void => {
         if (navigator.doNotTrack !== '1') {
+          const consentIsGranted = localStorage.getItem('vue-cookie-accept-decline-cookies-consent') === 'accept'
           const googleTagManagerId = config.GOOGLE_TAG_MANAGER_ID
+
           if (googleTagManagerId) {
             trackers.push(
               new Google(
                 nuxtApp.vueApp,
-                Boolean(config.COOKIES_CONSENT),
+                !consentIsGranted,
                 googleTagManagerId,
               ),
             )
