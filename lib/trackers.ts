@@ -49,7 +49,7 @@ export type Event =
   }
   | {
     type: 'popup_event'
-    event: 'details' | 'route' | 'explore' | 'favorite' | 'zoom'
+    event: 'details' | 'route' | 'explore' | 'favorite' | 'zoom' | 'isochrone'
     poiId: ApiPoiId
     category: string
     title?: string
@@ -76,6 +76,11 @@ export type Event =
     event: 'favorite'
     poiId: ApiPoiId
     title?: string
+  }
+  | {
+    type: 'isochrone_event'
+    event: 'select_profile'
+    profile: Profile
   }
 
 export interface Tracker {

@@ -9,6 +9,14 @@ const props = defineProps<{
 }>()
 
 //
+// Emits
+//
+const emit = defineEmits<{
+  (event: 'profileUpdate', profile: Profile): void
+  (event: 'triggerClick'): void
+}>()
+
+//
 // Composables
 //
 const { isOverlayOpen, toggleOverlay, profiles, fetchIsochrone } = useIsochrone()
@@ -37,12 +45,24 @@ async function handleProfileUpdate(value: Profile) {
   finally {
     loading.value = false
     profile.value = undefined
+    emit('profileUpdate', value)
   }
+}
+
+function handleTriggerClick() {
+  toggleOverlay()
+  emit('triggerClick')
 }
 </script>
 
 <template>
-  <button type="button" :title="t('isochrone.trigger.title')" :class="$attrs.class" :aria-label="t('isochrone.trigger.label')" @click.stop="toggleOverlay">
+  <button
+    type="button"
+    :title="t('isochrone.trigger.title')"
+    :class="$attrs.class"
+    :aria-label="t('isochrone.trigger.label')"
+    @click.stop="handleTriggerClick"
+  >
     <slot />
   </button>
 
