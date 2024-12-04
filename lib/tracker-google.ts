@@ -105,7 +105,19 @@ export default class Google implements Tracker {
         break
       }
       case 'map_control_event': {
-        window.dataLayer?.push({ event: event.type, action: event.event })
+        const dataLayerObject: {
+          event: 'map_control_event'
+          action: '3d' | 'explorer' | 'favorite' | 'background'
+          background?: MapStyleEnum
+        } = {
+          event: event.type,
+          action: event.event,
+        }
+
+        if (event.event === 'background')
+          dataLayerObject.background = event.background
+
+        window.dataLayer?.push(dataLayerObject)
         break
       }
       case 'favorites_event': {
@@ -126,6 +138,14 @@ export default class Google implements Tracker {
           action: event.event,
           poiId: event.poiId,
           title: event.title,
+        })
+        break
+      }
+      case 'isochrone_event': {
+        window.dataLayer?.push({
+          event: event.type,
+          action: event.event,
+          profile: event.profile,
         })
         break
       }

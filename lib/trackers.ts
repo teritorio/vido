@@ -56,7 +56,12 @@ export type Event =
   }
   | {
     type: 'map_control_event'
-    event: '3d' | 'background' | 'explorer' | 'favorite'
+    event: '3d' | 'explorer' | 'favorite'
+  }
+  | {
+    type: 'map_control_event'
+    event: 'background'
+    background: MapStyleEnum
   }
   | {
     type: 'favorites_event'
