@@ -6,7 +6,6 @@ import type { ApiMenuCategory, MenuItem } from '~/lib/apiMenu'
 import type { OriginEnum } from '~/utils/types'
 
 // Also Update README.md according to tracking changes.
-
 export type Event =
   | {
     type: 'page'

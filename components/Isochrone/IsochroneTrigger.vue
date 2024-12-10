@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
+import type { ProfileKeys } from '~/composables/useIsochrone'
 
 //
 // Props
@@ -37,15 +38,27 @@ async function handleProfileUpdate(value: Profile) {
     loading.value = true
 
     await fetchIsochrone(props.feature, value)
+
+    const profileTrackingLabel = Object.keys(profiles).find(key => profiles[key as ProfileKeys] === value)
+
+    if (!profileTrackingLabel)
+      throw new Error(`Tracking label for ${value} not found`)
+
+    emit('profileUpdate', profileTrackingLabel)
+
     toggleOverlay()
   }
-  catch (e: any) {
-    error.value = e.message
+  catch (err) {
+    if (err instanceof Error) {
+      error.value = err.message
+    }
+    else {
+      error.value = 'An unknown error occurred'
+    }
   }
   finally {
     loading.value = false
     profile.value = undefined
-    emit('profileUpdate', value)
   }
 }
 
@@ -104,11 +117,11 @@ function handleTriggerClick() {
             </template>
             {{ t(`isochrone.profiles.${profiles.foot}`) }}
           </VBtn>
-          <VBtn :value="profiles.cycle">
+          <VBtn :value="profiles.bicycle">
             <template #prepend>
               <FontAwesomeIcon icon="biking" />
             </template>
-            {{ t(`isochrone.profiles.${profiles.cycle}`) }}
+            {{ t(`isochrone.profiles.${profiles.bicycle}`) }}
           </VBtn>
           <VBtn :value="profiles.car">
             <template #prepend>
