@@ -119,13 +119,20 @@ export default class Matomo implements Tracker {
         break
       }
       case 'map_control_event': {
-        _paq.push([
+        const eventParams = [
           'trackEvent',
           // category
           event.type,
           // action
           event.event,
-        ])
+        ]
+
+        if (event.event === 'background') {
+          eventParams.push('background')
+          eventParams.push(event.background)
+        }
+
+        _paq.push(eventParams)
         break
       }
       case 'favorites_event': {
@@ -158,6 +165,20 @@ export default class Matomo implements Tracker {
           event.title,
           // value
           event.poiId,
+        ])
+        break
+      }
+      case 'isochrone_event': {
+        _paq.push([
+          'trackEvent',
+          // category
+          event.type,
+          // action
+          event.event,
+          // name
+          'profile',
+          // value
+          event.profile,
         ])
         break
       }

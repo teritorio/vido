@@ -1,11 +1,20 @@
 <script setup lang="ts">
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
+import type { ProfileKeys } from '~/composables/useIsochrone'
 
 //
 // Props
 //
 const props = defineProps<{
   feature: GeoJSON.Feature
+}>()
+
+//
+// Emits
+//
+const emit = defineEmits<{
+  (event: 'profileUpdate', profile: Profile): void
+  (event: 'triggerClick'): void
 }>()
 
 //
@@ -29,20 +38,44 @@ async function handleProfileUpdate(value: Profile) {
     loading.value = true
 
     await fetchIsochrone(props.feature, value)
+
+    const profileTrackingLabel = Object.keys(profiles).find(key => profiles[key as ProfileKeys] === value)
+
+    if (!profileTrackingLabel)
+      throw new Error(`Tracking label for ${value} not found`)
+
+    emit('profileUpdate', profileTrackingLabel)
+
     toggleOverlay()
   }
-  catch (e: any) {
-    error.value = e.message
+  catch (err) {
+    if (err instanceof Error) {
+      error.value = err.message
+    }
+    else {
+      error.value = 'An unknown error occurred'
+    }
   }
   finally {
     loading.value = false
     profile.value = undefined
   }
 }
+
+function handleTriggerClick() {
+  toggleOverlay()
+  emit('triggerClick')
+}
 </script>
 
 <template>
-  <button type="button" :title="t('isochrone.trigger.title')" :class="$attrs.class" :aria-label="t('isochrone.trigger.label')" @click.stop="toggleOverlay">
+  <button
+    type="button"
+    :title="t('isochrone.trigger.title')"
+    :class="$attrs.class"
+    :aria-label="t('isochrone.trigger.label')"
+    @click.stop="handleTriggerClick"
+  >
     <slot />
   </button>
 
@@ -84,11 +117,11 @@ async function handleProfileUpdate(value: Profile) {
             </template>
             {{ t(`isochrone.profiles.${profiles.foot}`) }}
           </VBtn>
-          <VBtn :value="profiles.cycle">
+          <VBtn :value="profiles.bicycle">
             <template #prepend>
               <FontAwesomeIcon icon="biking" />
             </template>
-            {{ t(`isochrone.profiles.${profiles.cycle}`) }}
+            {{ t(`isochrone.profiles.${profiles.bicycle}`) }}
           </VBtn>
           <VBtn :value="profiles.car">
             <template #prepend>

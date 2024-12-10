@@ -135,13 +135,21 @@ function onFavoriteClick() {
   emit('favoriteClick', props.poi)
 }
 
-function trackingPopupEvent(event: 'details' | 'route' | 'explore' | 'favorite' | 'zoom') {
+function trackingPopupEvent(event: 'details' | 'route' | 'explore' | 'favorite' | 'zoom' | 'isochrone') {
   $tracking({
     type: 'popup_event',
     event,
     poiId: id.value,
     category: featureCategoryName.value || '',
     title: featureName.value,
+  })
+}
+
+function trackIsochroneEvent(profile: Profile) {
+  $tracking({
+    type: 'isochrone_event',
+    event: 'select_profile',
+    profile,
   })
 }
 </script>
@@ -245,6 +253,8 @@ function trackingPopupEvent(event: 'details' | 'route' | 'explore' | 'favorite' 
           isSameFeatureAsIsochrone && 'tw-bg-blue-600 tw-text-white hover:tw-bg-blue-500',
           !isSameFeatureAsIsochrone && 'hover:tw-bg-zinc-100',
         ]"
+        @trigger-click="trackingPopupEvent('isochrone')"
+        @profile-update="trackIsochroneEvent"
       >
         <FontAwesomeIcon :color="isSameFeatureAsIsochrone ? '#fff' : colorLine" icon="clock" size="sm" />
         <span class="tw-text-sm">{{ t('isochrone.trigger.label') }}</span>
