@@ -88,8 +88,11 @@ export default defineNuxtComponent({
     },
 
     changeBackground(background: MapStyleEnum) {
-      // TODO mettre le background selectioné
-      this.$tracking({ type: 'map_control_event', event: 'background' })
+      this.$tracking({
+        type: 'map_control_event',
+        event: 'background',
+        background,
+      })
 
       this.activeBackground = background
       routerPushHashUpdate(this.$router, {

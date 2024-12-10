@@ -6,12 +6,12 @@ import { mapStore as useMapStore } from '~/stores/map'
 
 export const profiles = {
   car: 'driving-car',
-  cycle: 'cycling-regular',
+  bicycle: 'cycling-regular',
   foot: 'foot-walking',
   wheelchair: 'wheelchair',
 }
 
-type ProfileKeys = keyof typeof profiles
+export type ProfileKeys = keyof typeof profiles
 export type Profile = (typeof profiles)[ProfileKeys]
 type ORSData = FeatureCollection<Geometry, GeoJsonProperties> & {
   bbox: LngLatBoundsLike
