@@ -3,11 +3,10 @@
 // Validators
 //
 definePageMeta({
-  validate({ params }) {
-    return (
-      params.p1 === undefined
-      || (typeof params.p1 === 'string' && /^[0-9,]+$/.test(params.p1))
-    )
+  validate: ({ params }) => {
+    const regexForIds = /^(?:cartocode:[a-zA-Z0-9]{2}|ref:[a-z0-9-]+:[a-zA-Z0-9]+|osm:[nwr]\d+|\d+(?:,\d+)*)$/
+
+    return regexForIds.test(params.p1.toString())
   },
 })
 </script>
