@@ -9,7 +9,7 @@ import { mapStore as useMapStore } from '~/stores/map'
 //
 // Composables
 //
-const { params, query, path } = useRoute()
+const route = useRoute()
 const siteStore = useSiteStore()
 const mapStore = useMapStore()
 const { config, settings } = storeToRefs(siteStore)
@@ -20,9 +20,9 @@ const { $trackingInit } = useNuxtApp()
 // Data
 //
 const boundaryGeojson = ref<Polygon | MultiPolygon>()
-const categoryIdsJoin = ref<string>()
 const poiId = ref<string>()
 const categoryIds = ref<number[]>()
+const categoryIdsRegex = /^(?:(?<cartocode>cartocode:[a-zA-Z0-9]{2})|(?<reference>ref:[a-z0-9-]+:[a-zA-Z0-9]+)|(?<osm>osm:[nwr]\d+)|\d+(?:,\d+)*)$/
 
 //
 // Hooks
@@ -31,7 +31,7 @@ onBeforeMount(() => {
   $trackingInit(config.value!)
 })
 
-const { boundary } = query
+const { boundary } = route.query
 if (boundary && typeof boundary === 'string' && settings.value!.polygons_extra) {
   const boundaryObject = settings.value!.polygons_extra[boundary]
   if (boundaryObject) {
@@ -51,33 +51,42 @@ if (boundary && typeof boundary === 'string' && settings.value!.polygons_extra) 
   }
 }
 
-// Workaround Nuxt missing feature to simple respect trialling slash meaning
-if (params.poiId) {
-  categoryIdsJoin.value = params.p1 as string
-  poiId.value = params.poiId as string
-}
-else if (path.endsWith('/')) {
-  categoryIdsJoin.value = params.p1 as string
-  poiId.value = undefined
-}
-else {
-  categoryIdsJoin.value = undefined
-  poiId.value = params.p1 as string
+// Get category IDs from URL
+if (route.params.p1) {
+  const match = route.params.p1.toString().match(categoryIdsRegex)
+
+  if (!match || (!route.path.endsWith('/') && match.groups && (match.groups.cartocode || match.groups.reference || match.groups.osm)))
+    throw createError({ statusCode: 400, message: `No match for category ID: ${route.params.p1}` })
+
+  categoryIds.value = match.input?.split(',').map(id => Number.parseInt(id))
 }
 
-categoryIds.value = categoryIdsJoin.value?.split(',').map(id => Number.parseInt(id))
-
-const { data, error } = await useFetch<ApiPoi>(`${API_ENDPOINT}/${API_PROJECT}/${API_THEME}/poi/${poiId.value}.geojson?geometry_as=bbox&short_description=false`)
-
-if (categoryIds.value && poiId.value) {
-  if (error.value)
-    throw createError(error.value)
-
-  if (!data.value)
-    throw createError({ statusCode: 404, message: 'Initial POI not found !' })
-
-  mapStore.setSelectedFeature(data.value!)
+// Get POI ID from URL
+if (categoryIds.value?.length === 1 && route.name === 'index-p1' && route.path.endsWith('/')) {
+  poiId.value = route.params.p1?.toString()
+  categoryIds.value = undefined
 }
+
+if (route.params.poiId)
+  poiId.value = route.params.poiId.toString()
+
+// Fetch inital POI
+const { data, error, status } = await useFetch<ApiPoi>(
+  () => `${API_ENDPOINT}/${API_PROJECT}/${API_THEME}/poi/${poiId.value}.geojson`,
+  {
+    query: {
+      geometry_as: 'bbox',
+      short_description: false,
+    },
+    immediate: !!poiId.value,
+  },
+)
+
+if (error.value)
+  createError(error.value)
+
+if (status.value === 'success' && data.value)
+  mapStore.setSelectedFeature(data.value)
 </script>
 
 <template>
