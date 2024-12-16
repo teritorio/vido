@@ -314,7 +314,7 @@ export default defineNuxtComponent({
         "
         :href="properties[field.field]"
         class="d-inline-block pa-2 rounded-lg"
-        :style="{ color: '#ffffff' }"
+        :style="{ backgroundColor: colorfill, color: '#ffffff' }"
       >
         <FontAwesomeIcon icon="arrow-circle-down" />
         {{ fieldTranslateK(field.field) }}

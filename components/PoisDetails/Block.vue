@@ -58,4 +58,8 @@ export default defineNuxtComponent({
 .block-block * {
   color: white;
 }
+
+.block-block  :deep([id*="route:"] a) {
+  background-color: unset !important;
+}
 </style>
