@@ -22,7 +22,7 @@ const { $trackingInit } = useNuxtApp()
 const boundaryGeojson = ref<Polygon | MultiPolygon>()
 const poiId = ref<string>()
 const categoryIds = ref<number[]>()
-const categoryIdsRegex = /^(?:(?<cartocode>cartocode:[a-zA-Z0-9]{2})|(?<reference>ref:[a-z0-9-]+:[a-zA-Z0-9]+)|(?<osm>osm:[nwr]\d+)|\d+(?:,\d+)*)$/
+const categoryIdsRegex = /^(?:(?<cartocode>cartocode:\w{2})|(?<reference>ref:[\w-]+:\w+)|(?<osm>osm:[nwr]\d+)|\d+(?:,\d+)*)$/
 
 //
 // Hooks
