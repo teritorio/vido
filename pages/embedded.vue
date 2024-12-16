@@ -5,6 +5,7 @@ import Embedded from '~/components/Home/Embedded.vue'
 import type { ApiPoi } from '~/lib/apiPois'
 import { siteStore as useSiteStore } from '~/stores/site'
 import { mapStore as useMapStore } from '~/stores/map'
+import { regexForCategoryIds } from '~/composables/useIdsResolver'
 
 //
 // Composables
@@ -22,7 +23,6 @@ const { $trackingInit } = useNuxtApp()
 const boundaryGeojson = ref<Polygon | MultiPolygon>()
 const poiId = ref<string>()
 const categoryIds = ref<number[]>()
-const categoryIdsRegex = /^(?:(?<cartocode>cartocode:\w{2})|(?<reference>ref:[\w-]+:\w+)|(?<osm>osm:[nwr]\d+)|\d+(?:,\d+)*)$/
 
 //
 // Hooks
@@ -53,7 +53,7 @@ if (boundary && typeof boundary === 'string' && settings.value!.polygons_extra) 
 
 // Get category IDs from URL
 if (route.params.p1) {
-  const match = route.params.p1.toString().match(categoryIdsRegex)
+  const match = route.params.p1.toString().match(regexForCategoryIds)
 
   if (!match || (!route.path.endsWith('/') && match.groups && (match.groups.cartocode || match.groups.reference || match.groups.osm)))
     throw createError({ statusCode: 400, message: `No match for category ID: ${route.params.p1}` })
