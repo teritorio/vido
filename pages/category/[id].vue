@@ -1,10 +1,12 @@
 <script setup lang="ts">
+import { regexForCategoryIds } from '~/composables/useIdsResolver'
+
 //
 // Validators
 //
 definePageMeta({
   validate({ params }) {
-    return typeof params.id === 'string' && /^[-\w:,]+$/.test(params.id)
+    return !!params.id && regexForCategoryIds.test(params.id.toString())
   },
 })
 </script>

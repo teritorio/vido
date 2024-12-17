@@ -1,15 +1,18 @@
 <script setup lang="ts">
+import { regexForCategoryIds, regexForPOIIds } from '~/composables/useIdsResolver'
+
 //
 // Validators
 //
 definePageMeta({
-  validate({ params }) {
-    return (
-      typeof params.p1 === 'string'
-      && typeof params.poiId === 'string'
-      && /^[0-9,]+$/.test(params.p1)
-      && /^[-\w:]+$/.test(params.poiId)
-    )
+  validate: ({ params }) => {
+    const match = params.p1.toString().match(regexForCategoryIds)
+
+    if (match?.groups && (match.groups.cartocode || match.groups.reference || match.groups.osm)) {
+      return false
+    }
+
+    return !!params.p1 && !!params.poiId && regexForCategoryIds.test(params.p1.toString()) && regexForPOIIds.test(params.poiId.toString())
   },
 })
 </script>

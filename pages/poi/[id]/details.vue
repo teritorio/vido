@@ -8,15 +8,14 @@ import type { ApiPoi } from '~/lib/apiPois'
 import { headerFromSettings } from '~/lib/apiSettings'
 import { getAsyncDataOrThrows } from '~/lib/getAsyncData'
 import { siteStore as useSiteStore } from '~/stores/site'
+import { regexForPOIIds } from '~/composables/useIdsResolver'
 
 //
 // Validators
 //
 definePageMeta({
   validate({ params }) {
-    return (
-      typeof params.id === 'string' && /^[-\w:]+$/.test(params.id)
-    )
+    return !!params.id && regexForPOIIds.test(params.id.toString())
   },
 })
 
