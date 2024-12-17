@@ -12,7 +12,7 @@ definePageMeta({
       return false
     }
 
-    return regexForCategoryIds.test(params.p1.toString()) && regexForPOIIds.test(params.poiId.toString())
+    return !!params.p1 && !!params.poiId && regexForCategoryIds.test(params.p1.toString()) && regexForPOIIds.test(params.poiId.toString())
   },
 })
 </script>
