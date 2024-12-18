@@ -55,14 +55,14 @@ if (boundary && typeof boundary === 'string' && settings.value!.polygons_extra) 
 if (route.params.p1) {
   const match = route.params.p1.toString().match(regexForCategoryIds)
 
-  if (!match || (!route.path.endsWith('/') && match.groups && (match.groups.cartocode || match.groups.reference || match.groups.osm)))
+  if (!match || (route.path.endsWith('/') && match.groups && (match.groups.cartocode || match.groups.reference || match.groups.osm)))
     throw createError({ statusCode: 400, message: `No match for category ID: ${route.params.p1}` })
 
   categoryIds.value = match.input?.split(',').map(id => Number.parseInt(id))
 }
 
 // Get POI ID from URL
-if (categoryIds.value?.length === 1 && route.name === 'index-p1' && route.path.endsWith('/')) {
+if (categoryIds.value?.length === 1 && route.name === 'index-p1' && !route.path.endsWith('/')) {
   poiId.value = route.params.p1?.toString()
   categoryIds.value = undefined
 }
