@@ -6,7 +6,6 @@ import type { ApiMenuCategory, MenuItem } from '~/lib/apiMenu'
 import type { OriginEnum } from '~/utils/types'
 
 // Also Update README.md according to tracking changes.
-
 export type Event =
   | {
     type: 'page'
@@ -49,14 +48,19 @@ export type Event =
   }
   | {
     type: 'popup_event'
-    event: 'details' | 'route' | 'explore' | 'favorite' | 'zoom'
+    event: 'details' | 'route' | 'explore' | 'favorite' | 'zoom' | 'isochrone'
     poiId: ApiPoiId
     category: string
     title?: string
   }
   | {
     type: 'map_control_event'
-    event: '3d' | 'background' | 'explorer' | 'favorite'
+    event: '3d' | 'explorer' | 'favorite'
+  }
+  | {
+    type: 'map_control_event'
+    event: 'background'
+    background: MapStyleEnum
   }
   | {
     type: 'favorites_event'
@@ -76,6 +80,11 @@ export type Event =
     event: 'favorite'
     poiId: ApiPoiId
     title?: string
+  }
+  | {
+    type: 'isochrone_event'
+    event: 'select_profile'
+    profile: Profile
   }
 
 export interface Tracker {

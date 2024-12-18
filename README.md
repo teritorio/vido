@@ -188,12 +188,14 @@ Special formatting support:
 | Seach query | search_query | | | | trackSiteSearch | query |
 | Selecting a search result | search_result_event | | search_result_event | type, title | trackEvent | event, action, title, resultType |
 | Opening the popup | popup | | pageview | pageTitle, pageLocation, pagePath, poiId | trackPageView | title, Url |
-| Action on the popup | popup_event | details, route, explore, favorite, zoom | popup_event | action, title, poiId, category | trackEvent | event, action, title, poiId |
-| Action on the map control | map_control_event | 3d, background, explorer, favorite | map_control_event | action | trackEvent | event, action |
+| Action on the popup | popup_event | details, route, explore, favorite, zoom, isochrone | popup_event | action, title, poiId, category | trackEvent | event, action, title, poiId |
+| Action on the map control | map_control_event | 3d, explorer, favorite | map_control_event | action | trackEvent | event, action |
+| Action on the map background control | map_control_event | background | map_control_event | action, background | trackEvent | event, action, background |
 | Action on favorites | favorites_event | open_share, copy_link, exportPDF, exportCSV | favorites_event | action | trackEvent | event, action |
 | Notebook | notebook_event | open | pageview | pageTitle, pagePath | trackPageView | title, Url |
 | External links | external_link | | external_link | Url, title | trackLink | Url |
 | Action on details page | details_event | favorite | details_event | action, title, poiId | trackEvent | event, action, title, poiId |
+| Select isochrone profile | isochrone_event | select_profile | isochrone_event | action, profile | trackEvent | event, action, profile |
 
 Note on Matomo. `Origin` is a set as dimension `1` and should be configured as is on Matomo.
 

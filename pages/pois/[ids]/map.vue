@@ -4,16 +4,14 @@ import MapPois from '~/components/Map/MapPois.vue'
 import { type ApiPoiId, type ApiPois, getPois } from '~/lib/apiPois'
 import { getAsyncDataOrThrows } from '~/lib/getAsyncData'
 import { siteStore as useSiteStore } from '~/stores/site'
+import { regexForCategoryIds } from '~/composables/useIdsResolver'
 
 //
 // Validators
 //
 definePageMeta({
   validate({ params }) {
-    return (
-      typeof params.ids === 'string'
-      && /^[-\w:,]+$/.test(params.ids)
-    )
+    return !!params.ids && regexForCategoryIds.test(params.ids.toString())
   },
 })
 
