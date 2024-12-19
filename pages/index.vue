@@ -78,7 +78,7 @@ const { data, error, status } = await useFetch<ApiPoi>(
       geometry_as: 'bbox',
       short_description: true,
     },
-    immediate: !!poiId.value,
+    immediate: !!poiId.value && !poiId.value.includes('_'),
   },
 )
 
