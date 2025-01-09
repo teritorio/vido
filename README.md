@@ -141,16 +141,23 @@ yarn start:historie
 Historie build also available on `gh-pages` branch built by CI and online at https://teritorio.github.io/vido/
 
 ### Tests
-Run end to end tests with dev server or build:
-```
-# With dev
+Run end to end tests with build or dev server:
+
+```bash
+cp -R vidos-config-cypress.json vidos-config.json
+
+# With build
+yarn test
+yarn start # In a new terminal for separate logs
+
+# With dev server (slower - not recommended)
 yarn dev
+## In a new terminal for separate logs
+yarn test:gui
+yarn test:cli
 
 # The run Histoire component screenshot regression tests
 yarn test:histoire
-
-# The run end to end tests
-yarn test:cypress
 ```
 
 ## Release
