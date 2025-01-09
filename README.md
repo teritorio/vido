@@ -111,23 +111,7 @@ Vido is mainly building using:
 - [MapLibre GL JS](https://maplibre.org/maplibre-gl-js-docs/api/map/)
 - [Nuxt 3](https://nuxt.com/) and [Vue 3](https://vuejs.org/), using both Options API / Composition API
 
-### Setup hooks
-
-Ensure that `core.hooksPath` is properly setup !
-
-From your project root run:
-
 ```bash
-git config core.hooksPath .git/hooks/
-```
-
-Then update your hooks with the following command:
-
-```bash
-yarn dlx simple-git-hooks
-```
-
-```
 # serve with hot reload at localhost:3000
 yarn dev
 ```
