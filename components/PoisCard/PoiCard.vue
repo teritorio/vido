@@ -11,7 +11,6 @@ import type { ApiPoi } from '~/lib/apiPois'
 withDefaults(defineProps<{
   canClose?: boolean
   poi: ApiPoi
-  favoritesModeEnabled: boolean
   showImage?: boolean
 }>(), {
   canClose: true,
@@ -21,7 +20,7 @@ withDefaults(defineProps<{
 //
 // Events
 //
-defineEmits<{
+const emit = defineEmits<{
   (e: 'exploreClick', poi: ApiPoi): void
   (e: 'favoriteClick', poi: ApiPoi): void
   (e: 'onClose'): void
@@ -56,7 +55,7 @@ const closeBtnStyles = reactive({
       :style="closeBtnStyles"
       :title="$t('ui.close')"
       icon="times"
-      @click="$emit('onClose')"
+      @click="emit('onClose')"
     />
     <div
       v-if="showImage"
@@ -84,11 +83,10 @@ const closeBtnStyles = reactive({
 
     <PoiCardContent
       :poi="poi"
-      :favorites-mode-enabled="favoritesModeEnabled"
       class="tw-px-4 tw-py-5 tw-flex tw-flex-col md:tw-overflow-y-auto tw-flex-grow md:tw-max-h-full tw-box-border tw-w-full md:tw-h-80 md:tw-w-96"
-      @explore-click="$emit('exploreClick', $event)"
-      @favorite-click="$emit('favoriteClick', $event)"
-      @zoom-click="$emit('zoomClick', $event)"
+      @explore-click="emit('exploreClick', $event)"
+      @favorite-click="emit('favoriteClick', $event)"
+      @zoom-click="emit('zoomClick', $event)"
     />
   </div>
 </template>

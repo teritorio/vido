@@ -3,15 +3,12 @@ import type { ApiPoi } from '~/lib/apiPois'
 import PoiCard from '~/components/PoisCard/PoiCard.vue'
 import PoiCardLight from '~/components/PoisCard/PoiCardLight.vue'
 
-withDefaults(defineProps<{
-  favoritesModeEnabled?: boolean
+defineProps<{
   pois: ApiPoi[]
   isCardLight: boolean
-}>(), {
-  favoritesModeEnabled: false,
-})
+}>()
 
-defineEmits<{
+const emit = defineEmits<{
   (e: 'exploreClick', poi: ApiPoi): void
   (e: 'favoriteClick', poi: ApiPoi): void
   (e: 'zoomClick', poi: ApiPoi): void
@@ -36,10 +33,9 @@ defineEmits<{
       :can-close="false"
       :poi="item"
       class="tw-grow-1 poi-deck"
-      :favorites-mode-enabled="favoritesModeEnabled"
-      @explore-click="$emit('exploreClick', $event)"
-      @favorite-click="$emit('favoriteClick', $event)"
-      @zoom-click="$emit('zoomClick', $event)"
+      @explore-click="emit('exploreClick', $event)"
+      @favorite-click="emit('favoriteClick', $event)"
+      @zoom-click="emit('zoomClick', $event)"
     />
   </div>
 </template>

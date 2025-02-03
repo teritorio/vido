@@ -63,7 +63,7 @@ async function toggleNoteBookMode() {
           isModeFavorites && 'tw-bg-blue-500 hover:tw-bg-blue-400 focus-visible:tw-bg-blue-400 tw-text-white',
           !isModeFavorites && 'tw-bg-white hover:tw-bg-zinc-100 focus-visible:tw-bg-zinc-100 tw-text-zinc-800',
         ]"
-        @click="$emit('toggleFavoriteMode')"
+        @click="emit('toggleFavoriteMode')"
       >
         <FavoriteIcon :is-active="isModeFavorites" />
         <span class="tw-hidden md:tw-inline favorite-title">
@@ -103,7 +103,7 @@ async function toggleNoteBookMode() {
       >
         <FavoriteNoteBook
           @explore-click="onExploreClick"
-          @favorite-click="$emit('favoriteClick', $event)"
+          @favorite-click="emit('favoriteClick', $event)"
           @zoom-click="onZoomClick"
           @on-close="onClose"
         />
