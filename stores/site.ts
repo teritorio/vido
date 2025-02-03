@@ -5,7 +5,7 @@ import { type PropertyTranslations, getPropertyTranslations } from '~/lib/apiPro
 import { type Settings, getSettings } from '~/lib/apiSettings'
 import type { VidoConfig } from '~/utils/types-config'
 
-enum PropertyTranslationsContextEnum {
+export enum PropertyTranslationsContextEnum {
   Default = 'label',
   Card = 'label_popup',
   Details = 'label_details',

@@ -18,8 +18,9 @@ import Stars from '~/components/Fields/Stars.vue'
 import ExternalLink from '~/components/UI/ExternalLink.vue'
 import FieldsHeader from '~/components/UI/FieldsHeader.vue'
 import type { ApiPoiProperties, FieldsListItem } from '~/lib/apiPois'
-import type { PropertyTranslationsContextEnum } from '~/plugins/property-translations'
 import { ADDRESS_FIELDS } from '~/composables/useField'
+import type { PropertyTranslationsContextEnum } from '~/stores/site'
+import { siteStore as useSiteStore } from '~/stores/site'
 
 export function isFiledEmpty(
   field: FieldsListItem,
@@ -99,13 +100,16 @@ export default defineNuxtComponent({
     },
   },
 
-  data(): {
-    colorfill: string
-    textLimit: number
-  } {
+  setup(props) {
+    const colorfill = ref(props.properties.display?.color_fill || 'black')
+    const textLimit = ref(130)
+    const { p, pv } = useSiteStore()
+
     return {
-      colorfill: this.properties.display?.color_fill || 'black',
-      textLimit: 130,
+      colorfill,
+      textLimit,
+      p,
+      pv,
     }
   },
 
@@ -120,11 +124,11 @@ export default defineNuxtComponent({
 
   methods: {
     fieldTranslateK(field: string) {
-      return this.$propertyTranslations.p(field, this.context)
+      return this.p(field, this.context)
     },
 
     propTranslateV(field: string) {
-      return this.$propertyTranslations.pv(
+      return this.pv(
         field,
         this.properties[field],
         this.context,
@@ -132,7 +136,7 @@ export default defineNuxtComponent({
     },
 
     propTranslateVs(field: string, value: string) {
-      return this.$propertyTranslations.pv(field, value, this.context)
+      return this.pv(field, value, this.context)
     },
 
     isOpeningHoursSupportedOsmTags(key: string) {

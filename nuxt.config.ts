@@ -71,7 +71,6 @@ export default defineNuxtConfig({
     '@/plugins/fontawesome.ts',
     '@/plugins/touch.ts',
     { src: '@/plugins/tracking.ts', mode: 'client' },
-    '@/plugins/property-translations.ts',
     { src: '@/plugins/pinia-shared-state.ts', mode: 'client' },
   ],
   postcss: {

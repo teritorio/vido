@@ -1,5 +1,6 @@
 import type { ApiPoiProperties } from '~/lib/apiPois'
-import type { PropertyTranslationsContextEnum } from '~/plugins/property-translations'
+import type { PropertyTranslationsContextEnum } from '~/stores/site'
+import { siteStore as useSiteStore } from '~/stores/site'
 
 interface Route {
   duration?: number
@@ -15,7 +16,7 @@ export const ADDRESS_FIELDS = [
 ]
 
 export default function () {
-  const { $propertyTranslations } = useNuxtApp()
+  const { pv } = useSiteStore()
   const { t } = useI18n()
 
   // Address Field
@@ -65,13 +66,13 @@ export default function () {
 
     return !activityKey
       ? undefined
-      : { key: activityKey, translatedValue: $propertyTranslations.pv('route', `${activityKey}`, context) }
+      : { key: activityKey, translatedValue: pv('route', `${activityKey}`, context) }
   }
 
   const getRouteDifficulty = (activity: string, difficulty: string, context: PropertyTranslationsContextEnum): string | undefined => {
     return !difficulty
       ? undefined
-      : $propertyTranslations.pv(`route:${activity}:difficulty`, difficulty, context)
+      : pv(`route:${activity}:difficulty`, difficulty, context)
   }
 
   const getRouteDuration = (duration: number): string | undefined => {
