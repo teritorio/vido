@@ -8,7 +8,7 @@ defineProps<{
   isCardLight: boolean
 }>()
 
-defineEmits<{
+const emit = defineEmits<{
   (e: 'exploreClick', poi: ApiPoi): void
   (e: 'favoriteClick', poi: ApiPoi): void
   (e: 'zoomClick', poi: ApiPoi): void
@@ -33,9 +33,9 @@ defineEmits<{
       :can-close="false"
       :poi="item"
       class="tw-grow-1 poi-deck"
-      @explore-click="$emit('exploreClick', $event)"
-      @favorite-click="$emit('favoriteClick', $event)"
-      @zoom-click="$emit('zoomClick', $event)"
+      @explore-click="emit('exploreClick', $event)"
+      @favorite-click="emit('favoriteClick', $event)"
+      @zoom-click="emit('zoomClick', $event)"
     />
   </div>
 </template>
