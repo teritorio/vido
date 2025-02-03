@@ -3,8 +3,7 @@ import type { optional_conf } from 'opening_hours'
 import OpeningHours from 'opening_hours'
 import { storeToRefs } from 'pinia'
 import RelativeDate from '~/components/UI/RelativeDate.vue'
-import { PropertyTranslationsContextEnum } from '~/plugins/property-translations'
-import { siteStore as useSiteStore } from '~/stores/site'
+import { PropertyTranslationsContextEnum, siteStore as useSiteStore } from '~/stores/site'
 import { PointTime, isSupportedOsmTags } from '~/composables/useOpeningHours'
 
 //

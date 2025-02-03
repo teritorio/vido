@@ -22,10 +22,6 @@ export const setupVue3 = defineSetupVue3(({ app, _story, _variant }) => {
     })
   app.config.globalProperties.$d = key => key
   app.config.globalProperties.$n = key => key
-  app.config.globalProperties.$propertyTranslations = {
-    p: (field, _context) => field,
-    pv: (_field, property, _context) => property,
-  }
   // Plugins
   vuetify({ vueApp: app })
 })

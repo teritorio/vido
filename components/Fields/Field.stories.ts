@@ -1,6 +1,6 @@
 import Field from '~/components/Fields/Field.vue'
 import { bind } from '~/lib/storybook-types'
-import { PropertyTranslationsContextEnum } from '~/plugins/property-translations'
+import { PropertyTranslationsContextEnum } from '~/stores/site'
 
 export default {
   title: 'Fields/Field',

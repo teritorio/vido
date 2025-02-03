@@ -13,7 +13,7 @@ import type {
   FieldsListGroup,
   FieldsListItem,
 } from '~/lib/apiPois'
-import { PropertyTranslationsContextEnum } from '~/plugins/property-translations'
+import { PropertyTranslationsContextEnum, siteStore as useSiteStore } from '~/stores/site'
 
 export default defineNuxtComponent({
   name: 'FieldsGroup',
@@ -47,11 +47,11 @@ export default defineNuxtComponent({
     },
   },
 
-  data(): {
-    empty: any
-  } {
+  setup() {
+    const { p } = useSiteStore()
+
     return {
-      empty: true,
+      p,
     }
   },
 
@@ -63,7 +63,7 @@ export default defineNuxtComponent({
 
   methods: {
     fieldTranslateK(field: string) {
-      return this.$propertyTranslations.p(field, this.context)
+      return this.p(field, this.context)
     },
 
     isListEmpty(

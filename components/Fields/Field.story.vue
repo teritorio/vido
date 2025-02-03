@@ -2,7 +2,7 @@
 import type GeoJSON from 'geojson'
 
 import Field from '~/components/Fields/Field.vue'
-import { PropertyTranslationsContextEnum } from '~/plugins/property-translations'
+import { PropertyTranslationsContextEnum } from '~/stores/site'
 
 const defaultProps = {
   context: PropertyTranslationsContextEnum.Details,

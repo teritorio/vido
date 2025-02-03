@@ -5,7 +5,7 @@ import type { PropType } from 'vue'
 import { defineNuxtComponent } from '#app'
 import Field from '~/components/Fields/Field.vue'
 import type { ApiPoiProperties, FieldsListItem } from '~/lib/apiPois'
-import { PropertyTranslationsContextEnum } from '~/plugins/property-translations'
+import { PropertyTranslationsContextEnum } from '~/stores/site'
 
 export default defineNuxtComponent({
   components: {
