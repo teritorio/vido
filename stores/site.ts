@@ -5,6 +5,15 @@ import { type PropertyTranslations, getPropertyTranslations } from '~/lib/apiPro
 import { type Settings, getSettings } from '~/lib/apiSettings'
 import type { VidoConfig } from '~/utils/types-config'
 
+enum PropertyTranslationsContextEnum {
+  Default = 'label',
+  Card = 'label_popup',
+  Details = 'label_details',
+  List = 'label_list',
+}
+
+const Default = PropertyTranslationsContextEnum.Default
+
 interface State {
   locale: string | null
   config: VidoConfig | undefined
@@ -33,6 +42,34 @@ export const siteStore = defineStore('site', {
       this.favoritesModeEnabled = this.settings?.themes[0]?.favorites_mode || true
       this.contents = await getContents(this.config)
       this.translations = await getPropertyTranslations(this.config)
+    },
+    p(propertyName: string, context: PropertyTranslationsContextEnum = Default): string {
+      if (!this.translations)
+        throw new Error('Missing translation, call siteStore.init() first.')
+
+      const pn = this.translations[propertyName]
+
+      // When context exists, does not use default
+      return (
+        pn?.[context]
+          ? pn?.[context]?.fr
+          : pn?.[Default]?.fr
+      )
+      || propertyName
+    },
+    pv(propertyName: string, valueName: string, context: PropertyTranslationsContextEnum = Default): string {
+      if (!this.translations)
+        throw new Error('Missing translation, call siteStore.init() first.')
+
+      const pn = this.translations[propertyName]?.values?.[valueName]
+
+      // When context exists, does not use default
+      return (
+        pn?.[context]
+          ? pn?.[context]?.fr
+          : pn?.[Default]?.fr
+      )
+      || valueName
     },
   },
 })
