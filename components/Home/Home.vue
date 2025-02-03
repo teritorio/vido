@@ -143,10 +143,6 @@ onMounted(async () => {
 //
 // Computed
 //
-const explorerModeEnabled = computed(() => {
-  return settings!.themes[0]?.explorer_mode ?? true
-})
-
 const favoritesModeEnabled = computed(() => {
   return settings!.themes[0]?.favorites_mode ?? true
 })
@@ -565,7 +561,6 @@ function handlePoiCardClose() {
             :explore-around-selected-poi="toggleExploreAroundSelectedPoi"
             :go-to-selected-poi="goToSelectedFeature"
             :toggle-favorite="toggleFavorite"
-            :explorer-mode-enabled="explorerModeEnabled"
             @toggle-favorite-mode="toggleFavoriteMode"
             @toggle-note-book-mode="toggleNoteBookMode"
           />
@@ -590,7 +585,6 @@ function handlePoiCardClose() {
           :features="mapFeatures"
           :selected-categories-ids="isModeExplorer ? [] : selectedCategoryIds"
           :style-icon-filter="poiFilters"
-          :explorer-mode-enabled="explorerModeEnabled"
           :enable-filter-route-by-categories="!isModeFavorites"
           :enable-filter-route-by-features="isModeFavorites"
           :boundary-area="boundaryArea || settings!.polygon.data"
@@ -630,7 +624,6 @@ function handlePoiCardClose() {
           "
           :poi="selectedFeature"
           class="tw-grow-0"
-          :explorer-mode-enabled="explorerModeEnabled"
           :favorites-mode-enabled="favoritesModeEnabled"
           @explore-click="toggleExploreAroundSelectedPoi(undefined)"
           @favorite-click="toggleFavorite"
@@ -661,7 +654,6 @@ function handlePoiCardClose() {
             "
             :poi="selectedFeature"
             class="tw-grow-0 tw-text-left tw-h-full"
-            :explorer-mode-enabled="explorerModeEnabled"
             :favorites-mode-enabled="favoritesModeEnabled"
             @explore-click="toggleExploreAroundSelectedPoi(undefined)"
             @favorite-click="toggleFavorite"
