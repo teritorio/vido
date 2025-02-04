@@ -7,9 +7,6 @@ export default defineNuxtConfig({
   build: {
     transpile: [
       process.env.NODE_ENV === 'production' ? 'maplibre-gl' : '',
-      'iron-webcrypto',
-      'punycode',
-      'pinia',
       'vuetify',
       'date-fns',
       /lodash.*/,
@@ -40,10 +37,6 @@ export default defineNuxtConfig({
   image: {
     domains: [...configuredApi(vidos), ...configuredImageProxy(vidos)],
   },
-  imports: {
-    autoImport: true,
-  },
-  loadingIndicator: false,
   modules: [
     '@nuxtjs/i18n',
     '@nuxt/image-edge',
