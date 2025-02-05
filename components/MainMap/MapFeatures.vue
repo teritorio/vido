@@ -258,13 +258,10 @@ export default defineNuxtComponent({
     },
 
     onMapStyleLoad() {
-      const colors = [
-        ...new Set(
-          this.categories
-            .filter(category => category.category)
-            .map(category => category.category.color_fill),
-        ),
-      ]
+      const categoryColors = this.categories.filter(category => category.category).map(category => category.category.color_fill)
+      const featureColors = this.features.filter(feature => feature.properties.display).map(feature => feature.properties.display!.color_fill)
+      const colors = [...new Set([...categoryColors, ...featureColors])]
+
       this.mapBase!.initPoiLayer(this.features, colors, [
         'case',
         ['all', ['has', 'display'], ['has', 'color_fill', ['get', 'display']]],
