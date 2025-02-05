@@ -17,7 +17,7 @@ export const ADDRESS_FIELDS = [
 
 export default function () {
   const { pv } = useSiteStore()
-  const { t } = useI18n()
+  const { locale } = useI18n()
 
   // Address Field
   const addressToString = (properties: ApiPoiProperties): string => {
@@ -79,23 +79,32 @@ export default function () {
     if (!duration)
       return undefined
 
-    let string = ''
     const hours = Math.floor(duration / 60)
     const minutes = duration % 60
 
-    if (hours > 0)
-      string += t('units.hours', { hours })
+    const formatter = new Intl.NumberFormat(locale.value, {
+      style: 'unit',
+      unit: 'hour',
+      unitDisplay: 'narrow',
+    })
 
-    if (minutes > 0)
-      string += `${hours > 0 ? ' ' : ''}${t('units.min', { minutes })}`
+    const formattedHours = hours > 0 ? formatter.format(hours) : ''
+    const formattedMinutes = minutes > 0
+      ? new Intl.NumberFormat(locale.value, {
+        style: 'unit',
+        unit: 'minute',
+        unitDisplay: 'narrow',
+      }).format(minutes)
+      : ''
 
-    return string
+    return `${formattedHours} ${formattedMinutes}`.trim()
   }
 
   const getRouteLength = (length: number): string | undefined => {
-    return !length
-      ? undefined
-      : t('units.km', { length })
+    if (!length)
+      return undefined
+
+    return new Intl.NumberFormat(locale.value, { style: 'unit', unit: 'kilometer' }).format(length / 1000)
   }
 
   const getRouteNoDetails = (activity: string, route: Route, context: PropertyTranslationsContextEnum): string => {
