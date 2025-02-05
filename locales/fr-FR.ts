@@ -3,11 +3,6 @@ export default defineI18nLocale(() => {
     ui: {
       close: 'Fermer',
     },
-    units: {
-      min: '{minutes} min',
-      hours: '{hours} h',
-      km: '{length} km',
-    },
     ponctuation: {
       colon: ' :',
     },
