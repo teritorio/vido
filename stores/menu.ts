@@ -48,6 +48,13 @@ export const menuStore = defineStore('menu', {
   }),
 
   getters: {
+    featuresColor: (state: State) => {
+      const colors = Object.values(state.features)
+        .flat()
+        .filter(feature => feature.properties.display)
+        .map(feature => feature.properties.display!.color_fill)
+      return [...new Set(colors)]
+    },
     apiMenuCategory: (state: State): ApiMenuCategory[] | undefined => {
       return state.menuItems === undefined
         ? undefined
