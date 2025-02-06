@@ -14,6 +14,7 @@ import type { MapPoiId } from '~/lib/mapPois'
 import { filterRouteByPoiIds } from '~/utils/styles'
 import { clusterRender, markerRender, pinMarkerRender } from '~/lib/clusters'
 import { mapStore as useMapStore } from '~/stores/map'
+import { menuStore as useMenuStore } from '~/stores/menu'
 
 const POI_SOURCE = 'poi'
 
@@ -56,9 +57,11 @@ export default defineNuxtComponent({
   },
   setup() {
     const { teritorioCluster } = storeToRefs(useMapStore())
+    const { featuresColor } = storeToRefs(useMenuStore())
 
     return {
       mapBase: ref<InstanceType<typeof MapBase>>(),
+      featuresColor,
       teritorioCluster,
     }
   },
@@ -91,8 +94,17 @@ export default defineNuxtComponent({
 
   watch: {
     features() {
-      if (this.map)
-        this.onMapStyleLoad()
+      if (!this.map)
+        return
+
+      this.mapBase!.initPoiLayer(this.features, this.featuresColor, [
+        'case',
+        ['all', ['has', 'display'], ['has', 'color_fill', ['get', 'display']]],
+        ['get', 'color_fill', ['get', 'display']],
+        '#000000',
+      ], this.cluster)
+
+      this.onMapStyleLoad()
     },
   },
 
@@ -110,29 +122,6 @@ export default defineNuxtComponent({
     },
 
     onMapStyleLoad(): void {
-      const colors = [
-        ...new Set(
-          this.features.map(
-            feature => feature.properties?.display?.color_fill || '#000000',
-          ),
-        ),
-      ]
-      this.mapBase!.initPoiLayer(
-        this.features,
-        colors,
-        [
-          'case',
-          [
-            'all',
-            ['has', 'display'],
-            ['has', 'color_fill', ['get', 'display']],
-          ],
-          ['get', 'color_fill', ['get', 'display']],
-          '#000000',
-        ],
-        this.cluster,
-      )
-
       if (this.featureIds)
         filterRouteByPoiIds(this.map as Map, this.featureIds)
     },

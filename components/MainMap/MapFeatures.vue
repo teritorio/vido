@@ -4,7 +4,6 @@ import type { MultiPolygon, Polygon } from 'geojson'
 import debounce from 'lodash.debounce'
 import type {
   FitBoundsOptions,
-  GeoJSONSource,
   LngLatBounds,
   Map,
   MapDataEvent,
@@ -12,7 +11,7 @@ import type {
   MapMouseEvent,
   Marker,
 } from 'maplibre-gl'
-import { mapActions, mapState, storeToRefs } from 'pinia'
+import { mapActions, storeToRefs } from 'pinia'
 import type { PropType } from 'vue'
 import { ref } from 'vue'
 import booleanIntersects from '@turf/boolean-intersects'
@@ -32,7 +31,7 @@ import { DEFAULT_MAP_STYLE, MAP_ZOOM } from '~/lib/constants'
 import type { VectorTilesPoi } from '~/lib/vectorTilesPois'
 import { vectorTilesPoi2ApiPoi } from '~/lib/vectorTilesPois'
 import { mapStore as useMapStore } from '~/stores/map'
-import { menuStore } from '~/stores/menu'
+import { menuStore as useMenuStore } from '~/stores/menu'
 import { siteStore as useSiteStore } from '~/stores/site'
 import { snackStore } from '~/stores/snack'
 import { filterRouteByCategories, filterRouteByPoiIds } from '~/utils/styles'
@@ -118,6 +117,7 @@ export default defineNuxtComponent({
 
   setup() {
     const device = useDevice()
+    const { featuresColor, isLoadingFeatures } = storeToRefs(useMenuStore())
     const siteStore = useSiteStore()
     const { config } = siteStore
     const { explorerModeEnabled } = storeToRefs(useSiteStore())
@@ -135,6 +135,8 @@ export default defineNuxtComponent({
       mapStyleLoaded,
       selectedFeature,
       teritorioCluster,
+      featuresColor,
+      isLoadingFeatures,
     }
   },
 
@@ -151,8 +153,6 @@ export default defineNuxtComponent({
   },
 
   computed: {
-    ...mapState(menuStore, ['isLoadingFeatures']),
-
     availableStyles(): MapStyleEnum[] {
       const styles = [MapStyleEnum.vector, MapStyleEnum.aerial]
 
@@ -173,15 +173,14 @@ export default defineNuxtComponent({
       if (!this.map)
         return
 
-      // Change visible data
-      const source = this.map.getSource(POI_SOURCE)
-      if (source?.type === 'geojson' && 'setData' in source) {
-        (source as GeoJSONSource).setData({
-          type: 'FeatureCollection',
-          features: this.mapBase!.featuresPrepare(this.features),
-        })
-        this.showSelectedFeature()
-      }
+      this.mapBase!.initPoiLayer(this.features, this.featuresColor, [
+        'case',
+        ['all', ['has', 'display'], ['has', 'color_fill', ['get', 'display']]],
+        ['get', 'color_fill', ['get', 'display']],
+        '#000000',
+      ])
+
+      this.showSelectedFeature()
 
       this.handleResetMapZoom(
         this.$t('snack.noPoi.issue'),
@@ -258,17 +257,6 @@ export default defineNuxtComponent({
     },
 
     onMapStyleLoad() {
-      const categoryColors = this.categories.filter(category => category.category).map(category => category.category.color_fill)
-      const featureColors = this.features.filter(feature => feature.properties.display).map(feature => feature.properties.display!.color_fill)
-      const colors = [...new Set([...categoryColors, ...featureColors])]
-
-      this.mapBase!.initPoiLayer(this.features, colors, [
-        'case',
-        ['all', ['has', 'display'], ['has', 'color_fill', ['get', 'display']]],
-        ['get', 'color_fill', ['get', 'display']],
-        '#000000',
-      ])
-
       STYLE_LAYERS.forEach((layer) => {
         this.map.on('mouseenter', layer, () => {
           this.map.getCanvas().style.cursor = 'pointer'
