@@ -28,7 +28,6 @@ import type { ApiPoi } from '~/lib/apiPois'
 import { getPoiById } from '~/lib/apiPois'
 import { getBBoxFeature, getBBoxFeatures } from '~/lib/bbox'
 import { DEFAULT_MAP_STYLE, MAP_ZOOM } from '~/lib/constants'
-import type { VectorTilesPoi } from '~/lib/vectorTilesPois'
 import { vectorTilesPoi2ApiPoi } from '~/lib/vectorTilesPois'
 import { mapStore as useMapStore } from '~/stores/map'
 import { menuStore as useMenuStore } from '~/stores/menu'
@@ -272,19 +271,21 @@ export default defineNuxtComponent({
 
     // Map interactions
     onClick(e: MapMouseEvent) {
-      let selectedFeatures = STYLE_LAYERS.map((layerId) => {
+      const vectorSelectedFeatures = STYLE_LAYERS.map((layerId) => {
+        if (!this.map.getLayer(layerId)) {
+          return [] satisfies MapGeoJSONFeature[]
+        }
+
         return this.map.queryRenderedFeatures(e.point, {
           layers: [layerId],
-        }) as unknown as VectorTilesPoi[]
-      }).flat()
+        })
+      })
+        .flat()
+        .filter(feature => feature.properties.popup_fields)
 
-      selectedFeatures = selectedFeatures.filter(
-        feature => feature.properties.popup_fields,
-      )
-
-      if (selectedFeatures.length > 0) {
+      if (vectorSelectedFeatures.length > 0) {
         // Set temp partial data from vector tiles. Then fetch full data
-        this.updateSelectedFeature(vectorTilesPoi2ApiPoi(selectedFeatures[0]), true)
+        this.updateSelectedFeature(vectorTilesPoi2ApiPoi(vectorSelectedFeatures[0]), true)
         this.showSelectedFeature()
       }
       else {
