@@ -41,7 +41,7 @@ const { isochroneCurrentFeature } = useIsochrone()
 //
 // Data
 //
-const initialBbox = ref<LngLatBounds | null>(null)
+const initialBbox = ref<LngLatBounds>()
 const mapFeaturesRef = ref<InstanceType<typeof MapFeatures>>()
 
 //
@@ -110,7 +110,7 @@ const poiFilters = computed(() => {
         .map(c => c.category?.style_class)
         .filter(s => s !== undefined) as string[][])
     )
-    || null
+    || undefined
   )
 })
 

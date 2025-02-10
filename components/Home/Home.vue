@@ -62,7 +62,7 @@ const { isochroneCurrentFeature } = useIsochrone()
 //
 const allowRegionBackZoom = ref<boolean>(false)
 const isFilterActive = ref<boolean>(false)
-const initialBbox = ref<LngLatBounds | null>(null)
+const initialBbox = ref<LngLatBounds>()
 const isMenuItemOpen = ref<boolean>(false)
 const isOnSearch = ref<boolean>(false)
 const showFavoritesOverlay = ref<boolean>(false)
@@ -212,7 +212,7 @@ const poiFilters = computed(() => {
         .map(c => c.category?.style_class)
         .filter(s => s !== undefined) as string[][])
     )
-    || null
+    || undefined
   )
 })
 

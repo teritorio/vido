@@ -4,11 +4,11 @@ import { LngLatBounds } from 'maplibre-gl'
 
 type ITLngLatBounds = InstanceType<typeof LngLatBounds>
 
-export function getBBoxFeatures(features: GeoJSON.Feature[]): ITLngLatBounds | null {
+export function getBBoxFeatures(features: GeoJSON.Feature[]): ITLngLatBounds | undefined {
   return features.reduce(
-    (bounds: ITLngLatBounds | null, coord: GeoJSON.Feature<GeoJSON.Geometry>) =>
+    (bounds: ITLngLatBounds | undefined, coord: GeoJSON.Feature<GeoJSON.Geometry>) =>
       bounds ? bounds.extend(getBBoxFeature(coord)) : getBBoxFeature(coord),
-    null,
+    undefined,
   )
 }
 
