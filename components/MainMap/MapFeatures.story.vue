@@ -34,6 +34,7 @@ const defaultProps = {
       },
     } as ApiMenuCategory,
   ],
+  features: [],
 }
 
 const feature1: ApiPoi = {

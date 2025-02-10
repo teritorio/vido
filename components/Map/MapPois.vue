@@ -56,11 +56,12 @@ export default defineNuxtComponent({
   },
   setup() {
     const map = ref<MapGL>()
+    const mapBaseRef = ref<InstanceType<typeof MapBase>>()
     const { teritorioCluster } = storeToRefs(useMapStore())
 
     return {
       map,
-      mapBaseRef: ref<InstanceType<typeof MapBase>>(),
+      mapBaseRef,
       teritorioCluster,
     }
   },
@@ -127,8 +128,15 @@ export default defineNuxtComponent({
 
 <template>
   <MapBase
-    ref="mapBaseRef" :features="features" :center="center" :bounds="bounds" :zoom="selectionZoom.poi"
-    :fullscreen-control="fullscreenControl" :extra-attributions="extraAttributions"
-    :off-map-attribution="offMapAttribution" @map-init="onMapInit" @map-style-load="onMapStyleLoad"
+    ref="mapBaseRef"
+    :features="features"
+    :center="center"
+    :bounds="bounds"
+    :zoom="selectionZoom.poi"
+    :fullscreen-control="fullscreenControl"
+    :extra-attributions="extraAttributions"
+    :off-map-attribution="offMapAttribution"
+    @map-init="onMapInit"
+    @map-style-load="onMapStyleLoad"
   />
 </template>
