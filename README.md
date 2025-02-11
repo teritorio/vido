@@ -128,7 +128,7 @@ Historie build also available on `gh-pages` branch built by CI and online at htt
 Run end to end tests with build or dev server:
 
 ```bash
-cp -R vidos-config-cypress.json vidos-config.json
+cp vidos-config-cypress.json vidos-config.json
 
 # With build
 yarn test
