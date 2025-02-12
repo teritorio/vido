@@ -1,5 +1,5 @@
 <script lang="ts">
-import type { LngLatBounds, LngLatLike, Map } from 'maplibre-gl'
+import type { LngLatBounds, LngLatLike, Map as MapGL } from 'maplibre-gl'
 import type { PropType } from 'vue'
 import { ref } from 'vue'
 
@@ -14,7 +14,6 @@ import type { MapPoiId } from '~/lib/mapPois'
 import { filterRouteByPoiIds } from '~/utils/styles'
 import { clusterRender, markerRender, pinMarkerRender } from '~/lib/clusters'
 import { mapStore as useMapStore } from '~/stores/map'
-import { menuStore as useMenuStore } from '~/stores/menu'
 
 const POI_SOURCE = 'poi'
 
@@ -56,21 +55,13 @@ export default defineNuxtComponent({
     },
   },
   setup() {
+    const map = ref<MapGL>()
     const { teritorioCluster } = storeToRefs(useMapStore())
-    const { featuresColor } = storeToRefs(useMenuStore())
 
     return {
-      mapBase: ref<InstanceType<typeof MapBase>>(),
-      featuresColor,
+      map,
+      mapBaseRef: ref<InstanceType<typeof MapBase>>(),
       teritorioCluster,
-    }
-  },
-
-  data(): {
-    map: Map
-  } {
-    return {
-      map: null!,
     }
   },
 
@@ -92,38 +83,43 @@ export default defineNuxtComponent({
     },
   },
 
-  watch: {
-    features() {
-      if (!this.map)
-        return
-
-      this.mapBase!.initPoiLayer(this.features, this.featuresColor, [
-        'case',
-        ['all', ['has', 'display'], ['has', 'color_fill', ['get', 'display']]],
-        ['get', 'color_fill', ['get', 'display']],
-        '#000000',
-      ], this.cluster)
-
-      this.onMapStyleLoad()
-    },
-  },
-
   methods: {
-    onMapInit(map: Map): void {
-      this.map = map
-
-      this.teritorioCluster = new TeritorioCluster(map, POI_SOURCE, {
+    onMapInit(mapInstance: MapGL): void {
+      this.map = mapInstance
+      this.teritorioCluster = new TeritorioCluster(mapInstance, POI_SOURCE, {
         clusterRenderFn: clusterRender,
-        fitBoundsOptions: this.mapBase?.fitBoundsOptions(),
+        fitBoundsOptions: this.mapBaseRef?.fitBoundsOptions(),
         markerRenderFn: markerRender,
         markerSize: 32,
         pinMarkerRenderFn: pinMarkerRender,
       })
     },
 
+    renderPois(): void {
+      if (!this.mapBaseRef)
+        return
+
+      const colors = [
+        ...new Set(
+          this.features.map(
+            feature => feature.properties?.display?.color_fill || '#000000',
+          ),
+        ),
+      ]
+
+      this.mapBaseRef.initPoiLayer(this.features, colors, [
+        'case',
+        ['all', ['has', 'display'], ['has', 'color_fill', ['get', 'display']]],
+        ['get', 'color_fill', ['get', 'display']],
+        '#000000',
+      ], this.cluster)
+    },
+
     onMapStyleLoad(): void {
-      if (this.featureIds)
-        filterRouteByPoiIds(this.map as Map, this.featureIds)
+      if (this.map && this.featureIds)
+        filterRouteByPoiIds(this.map, this.featureIds)
+
+      this.renderPois()
     },
   },
 })
@@ -131,7 +127,7 @@ export default defineNuxtComponent({
 
 <template>
   <MapBase
-    ref="mapBase" :features="features" :center="center" :bounds="bounds" :zoom="selectionZoom.poi"
+    ref="mapBaseRef" :features="features" :center="center" :bounds="bounds" :zoom="selectionZoom.poi"
     :fullscreen-control="fullscreenControl" :extra-attributions="extraAttributions"
     :off-map-attribution="offMapAttribution" @map-init="onMapInit" @map-style-load="onMapStyleLoad"
   />
