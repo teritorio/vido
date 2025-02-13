@@ -52,7 +52,7 @@ export const mapStore = defineStore('map', {
           return typeof value === 'object' && value !== null
         }
 
-        if (feature?.properties) {
+        if (feature.properties) {
           const cleanProperties: ApiPoiProperties = {} as ApiPoiProperties
 
           Object.keys(feature.properties).forEach((key) => {

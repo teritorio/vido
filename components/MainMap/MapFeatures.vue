@@ -6,7 +6,6 @@ import type {
   LngLatBounds,
   MapDataEvent,
   Map as MapGL,
-  MapGeoJSONFeature,
   MapMouseEvent,
 } from 'maplibre-gl'
 import { storeToRefs } from 'pinia'
@@ -211,17 +210,9 @@ function onClick(e: MapMouseEvent): void {
   if (!map.value)
     return
 
-  const vectorSelectedFeatures = STYLE_LAYERS.map((layerId) => {
-    if (!map.value!.getLayer(layerId)) {
-      return [] satisfies MapGeoJSONFeature[]
-    }
-
-    return map.value!.queryRenderedFeatures(e.point, {
-      layers: [layerId],
-    })
+  const vectorSelectedFeatures = map.value!.queryRenderedFeatures(e.point, {
+    layers: STYLE_LAYERS.filter(layer => map.value?.getLayer(layer)),
   })
-    .flat()
-    .filter(feature => feature?.properties.popup_fields)
 
   if (vectorSelectedFeatures.length > 0) {
     // Set temp partial data from vector tiles. Then fetch full data
@@ -234,7 +225,7 @@ function onClick(e: MapMouseEvent): void {
 }
 
 async function updateSelectedFeature(feature: ApiPoi | null, fetch = false): Promise<ApiPoi | void> {
-  if (selectedFeature.value !== feature) {
+  if (selectedFeature.value?.properties.metadata.id !== feature?.properties.metadata.id) {
     mapStore.setSelectedFeature(feature)
 
     if (feature && fetch && feature.properties.metadata.id) {
