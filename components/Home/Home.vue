@@ -285,11 +285,11 @@ watch(isModeFavorites, async (isEnabled) => {
 // Methods
 //
 function goToSelectedFeature(feature?: ApiPoi) {
-  if (feature)
-    mapStore.setSelectedFeature(feature)
-
-  if (mapFeaturesRef.value)
+  if (mapFeaturesRef.value) {
+    if (feature)
+      mapFeaturesRef.value.updateSelectedFeature(feature)
     mapFeaturesRef.value.goToSelectedFeature()
+  }
 }
 
 async function fetchAddress(hash: string) {
@@ -358,7 +358,7 @@ function onBottomMenuButtonClick() {
 
 function onQuitExplorerFavoriteMode() {
   mode.value = Mode.BROWSER
-  mapStore.setSelectedFeature(null)
+  mapStore.setSelectedFeature()
 }
 
 function toggleFavoriteMode() {
@@ -405,12 +405,9 @@ function routerPushUrl(hashUpdate: { [key: string]: string | null } = {}) {
 }
 
 function toggleExploreAroundSelectedPoi(feature?: ApiPoi) {
-  if (feature)
-    mapStore.setSelectedFeature(feature)
-
   if (!isModeExplorer.value) {
     mode.value = Mode.EXPLORER
-    goToSelectedFeature()
+    goToSelectedFeature(feature)
 
     if (device.value.smallScreen)
       isPoiCardShown.value = false
@@ -434,9 +431,7 @@ function toggleFavorite(feature: ApiPoi) {
 }
 
 function searchSelectFeature(feature: ApiPoi) {
-  mapStore.setSelectedFeature(feature)
-  goToSelectedFeature()
-
+  goToSelectedFeature(feature)
   teritorioCluster.value?.setSelectedFeature(feature as unknown as MapGeoJSONFeature)
 }
 
@@ -451,7 +446,9 @@ function scrollTop() {
 }
 
 function handlePoiCardClose() {
-  mapStore.setSelectedFeature(null)
+  if (mapFeaturesRef.value) {
+    mapFeaturesRef.value.updateSelectedFeature()
+  }
 }
 </script>
 

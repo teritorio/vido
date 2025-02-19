@@ -32,7 +32,7 @@ export const mapStore = defineStore('map', {
   },
 
   actions: {
-    setSelectedFeature(feature: ApiPoi | null) {
+    setSelectedFeature(feature?: ApiPoi) {
       if (!feature) {
         this.selectedFeature = null
         this.teritorioCluster?.resetSelectedFeature()

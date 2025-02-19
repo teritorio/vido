@@ -63,7 +63,6 @@ const emit = defineEmits<{
   (e: 'mapTouchMove', event: MapTouchEvent & object): void
   (e: 'mapZoomEnd', event: MapLibreEvent<MouseEvent | TouchEvent | WheelEvent | undefined> & object): void
   (e: 'mapStyleLoad', style: StyleSpecification): void
-  (e: 'featureClick', feature: ApiPoi): void
 }>()
 
 const POI_SOURCE = 'poi'

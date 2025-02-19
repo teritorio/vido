@@ -251,6 +251,14 @@ export const menuStore = defineStore('menu', {
       }
     },
 
+    filterByDeps(categoryIds: number[], deps: ApiPoi[]) {
+      const filteredFeatures: { [key: number]: ApiPoi[] } = {}
+      categoryIds.forEach((id) => {
+        filteredFeatures[id] = deps
+      })
+      this.features = filteredFeatures
+    },
+
     applyFilters({
       categoryId,
       filterValues,

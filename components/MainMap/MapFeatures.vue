@@ -18,7 +18,8 @@ import MapControls3D from '~/components/Map/MapControls3D.vue'
 import MapControlsBackground from '~/components/Map/MapControlsBackground.vue'
 import type { ApiMenuCategory } from '~/lib/apiMenu'
 import type { ApiPoi } from '~/lib/apiPois'
-import { getPoiById } from '~/lib/apiPois'
+import type { ApiPoiDeps, ApiRouteWaypoint } from '~/lib/apiPoiDeps'
+import { ApiRouteWaypointType, apiRouteWaypointToApiPoi } from '~/lib/apiPoiDeps'
 import { getBBoxFeatures } from '~/lib/bbox'
 import { DEFAULT_MAP_STYLE, MAP_ZOOM } from '~/lib/constants'
 import { vectorTilesPoi2ApiPoi } from '~/lib/vectorTilesPois'
@@ -64,13 +65,20 @@ const STYLE_LAYERS = [
   'features-fill',
 ]
 
+const route = useRoute()
 const router = useRouter()
 const { t } = useI18n()
 const device = useDevice()
 const snackStore = useSnackStore()
-const { featuresColor, isLoadingFeatures } = storeToRefs(useMenuStore())
+const menuStore = useMenuStore()
+const { featuresColor, isLoadingFeatures } = storeToRefs(menuStore)
 const siteStore = useSiteStore()
 const { config } = siteStore
+
+if (!config)
+  throw createError({ statusCode: 500, statusMessage: 'Wrong config', fatal: true })
+
+const { BICYCLE_STYLE_URL, API_ENDPOINT, API_PROJECT, API_THEME } = config
 const { explorerModeEnabled } = storeToRefs(useSiteStore())
 const mapStore = useMapStore()
 const { center, selectedFeature, teritorioCluster } = storeToRefs(mapStore)
@@ -82,7 +90,7 @@ const selectedBackground = ref<MapStyleEnum>(DEFAULT_MAP_STYLE)
 const availableStyles = computed((): MapStyleEnum[] => {
   const styles = [MapStyleEnum.vector, MapStyleEnum.aerial]
 
-  if (config!.BICYCLE_STYLE_URL)
+  if (BICYCLE_STYLE_URL)
     styles.push(MapStyleEnum.bicycle)
 
   return styles
@@ -90,29 +98,13 @@ const availableStyles = computed((): MapStyleEnum[] => {
 
 watch(
   () => props.features,
-  (newValue) => {
+  () => {
     if (!map.value)
       return
 
     showVectorSelectedFeature()
     renderPois()
-
     handleResetMapZoom(t('snack.noPoi.issue'), t('snack.noPoi.action'))
-
-    if (props.enableFilterRouteByFeatures) {
-      filterRouteByPoiIds(map.value, newValue.map(feature => feature.properties?.metadata?.id || feature.id || feature.properties?.id))
-    }
-  },
-)
-
-watch(
-  () => props.selectedCategoriesIds,
-  (newValue) => {
-    if (!map.value)
-      return
-
-    if (props.enableFilterRouteByCategories)
-      filterRouteByCategories(map.value, newValue)
   },
 )
 
@@ -215,30 +207,78 @@ function onClick(e: MapMouseEvent): void {
   })
 
   if (vectorSelectedFeatures.length > 0) {
-    // Set temp partial data from vector tiles. Then fetch full data
-    updateSelectedFeature(vectorTilesPoi2ApiPoi(vectorSelectedFeatures[0]), true)
+    updateSelectedFeature(vectorTilesPoi2ApiPoi(vectorSelectedFeatures[0]))
     showVectorSelectedFeature()
   }
   else {
-    updateSelectedFeature(null)
+    updateSelectedFeature()
   }
 }
 
-async function updateSelectedFeature(feature: ApiPoi | null, fetch = false): Promise<ApiPoi | void> {
-  if (selectedFeature.value?.properties.metadata.id !== feature?.properties.metadata.id) {
-    mapStore.setSelectedFeature(feature)
+async function updateSelectedFeature(feature?: ApiPoi): Promise<void> {
+  if (!feature) {
+    mapStore.setSelectedFeature()
+    menuStore.fetchFeatures({
+      vidoConfig: config!,
+      categoryIds: props.selectedCategoriesIds,
+      clipingPolygonSlug: route.query.clipingPolygonSlug?.toString(),
+    })
+  }
+  else {
+    const id = feature.properties.metadata.id || feature.properties.id || feature.id
 
-    if (feature && fetch && feature.properties.metadata.id) {
+    if (selectedFeature.value?.properties.metadata.id !== id) {
       try {
-        // Seted temp partial data from vector tiles.
-        // Now fetch full data.
-        return await getPoiById(config!, feature.properties.metadata.id)
-          .then((apiPoi) => {
-            // Overide geometry.
-            // Keep same original location to avoid side effect on moving selected object.
-            apiPoi.geometry = feature.geometry
-            mapStore.setSelectedFeature(apiPoi)
+        const { data, error, status } = await useFetch<ApiPoiDeps>(
+          () => `${API_ENDPOINT}/${API_PROJECT}/${API_THEME}/poi/${id}/deps.geojson`,
+          {
+            query: {
+              geometry_as: 'point_or_bbox',
+              short_description: false,
+            },
+          },
+        )
+
+        if (error.value)
+          throw createError(error.value)
+
+        if (status.value === 'success' && data.value) {
+          let poi: ApiPoi | undefined
+          const deps = [] as ApiPoi[]
+          let waypointIndex = 1
+
+          data.value.features.forEach((feature) => {
+            feature = {
+              ...feature,
+              properties: {
+                ...feature.properties,
+                vido_visible: true,
+              },
+            }
+            if ('metadata' in feature.properties && feature.properties.metadata.id === id) {
+              poi = feature as ApiPoi
+            }
+            else {
+              if (feature.properties['route:point:type']) {
+                feature = apiRouteWaypointToApiPoi(
+                  feature as ApiRouteWaypoint,
+                  poi?.properties.display?.color_fill || '#76009E',
+                  poi?.properties.display?.color_line || '#76009E',
+                  feature.properties['route:point:type'] === ApiRouteWaypointType.way_point
+                    ? (waypointIndex++).toString()
+                    : undefined,
+                )
+              }
+              deps.push(feature as ApiPoi)
+            }
           })
+
+          mapStore.setSelectedFeature(poi)
+
+          if (poi?.properties.metadata.category_ids?.length) {
+            menuStore.filterByDeps(poi.properties.metadata.category_ids, deps)
+          }
+        }
       }
       catch (e) {
         console.error('Vido error:', (e as Error).message)
@@ -346,7 +386,7 @@ function showVectorSelectedFeature(): void {
   }
 }
 
-defineExpose({ goToSelectedFeature })
+defineExpose({ goToSelectedFeature, updateSelectedFeature })
 </script>
 
 <template>
@@ -368,7 +408,6 @@ defineExpose({ goToSelectedFeature })
       hash="map"
       @map-init="onMapInit"
       @map-style-load="onMapStyleLoad"
-      @feature-click="updateSelectedFeature"
     >
       <template #controls>
         <MapControlsExplore v-if="explorerModeEnabled" :map="map" />
