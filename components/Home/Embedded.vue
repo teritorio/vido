@@ -179,7 +179,7 @@ function toggleExploreAroundSelectedPoi() {
         <UIButton
           :label="t('ui.close')"
           icon="times"
-          @click="mapStore.setSelectedFeature(null)"
+          @click="mapStore.setSelectedFeature()"
         />
       </div>
       <PoiCardContent
