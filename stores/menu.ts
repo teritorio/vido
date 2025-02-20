@@ -192,8 +192,7 @@ export const menuStore = defineStore('menu', {
                   return getPoiByCategoryId(vidoConfig, categoryId, options)
                 }
                 catch (e) {
-                  // eslint-disable-next-line no-console
-                  console.log('Vido error:', e)
+                  console.error('Vido error:', e)
                   return undefined
                 }
               })
@@ -251,10 +250,12 @@ export const menuStore = defineStore('menu', {
       }
     },
 
-    filterByDeps(categoryIds: number[], deps: ApiPoi[]) {
+    filterByDeps(categoryIds: number[], deps: ApiPoi[], selectedFeature: ApiPoi | null) {
       const filteredFeatures: { [key: number]: ApiPoi[] } = {}
       categoryIds.forEach((id) => {
         filteredFeatures[id] = deps
+        if (selectedFeature?.properties.metadata.category_ids?.includes(id))
+          filteredFeatures[id].push(selectedFeature)
       })
       this.features = filteredFeatures
     },

@@ -6,6 +6,7 @@ import type {
   LngLatBounds,
   MapDataEvent,
   Map as MapGL,
+  MapGeoJSONFeature,
   MapMouseEvent,
 } from 'maplibre-gl'
 import { storeToRefs } from 'pinia'
@@ -81,7 +82,7 @@ if (!config)
 const { BICYCLE_STYLE_URL, API_ENDPOINT, API_PROJECT, API_THEME } = config
 const { explorerModeEnabled } = storeToRefs(useSiteStore())
 const mapStore = useMapStore()
-const { center, selectedFeature, teritorioCluster } = storeToRefs(mapStore)
+const { center, selectedFeature, teritorioCluster, mode } = storeToRefs(mapStore)
 const mapStyleLoaded = ref(false)
 const mapBaseRef = ref<InstanceType<typeof MapBase>>()
 const map = ref<MapGL>()
@@ -229,6 +230,10 @@ async function updateSelectedFeature(feature?: ApiPoi): Promise<void> {
 
     if (selectedFeature.value?.properties.metadata.id !== id) {
       try {
+        if (feature.properties['route:point:type']) {
+          return
+        }
+
         const { data, error, status } = await useFetch<ApiPoiDeps>(
           () => `${API_ENDPOINT}/${API_PROJECT}/${API_THEME}/poi/${id}/deps.geojson`,
           {
@@ -247,36 +252,39 @@ async function updateSelectedFeature(feature?: ApiPoi): Promise<void> {
           const deps = [] as ApiPoi[]
           let waypointIndex = 1
 
-          data.value.features.forEach((feature) => {
-            feature = {
-              ...feature,
+          data.value.features.forEach((f) => {
+            f = {
+              ...f,
               properties: {
-                ...feature.properties,
+                ...f.properties,
                 vido_visible: true,
               },
             }
-            if ('metadata' in feature.properties && feature.properties.metadata.id === id) {
-              poi = feature as ApiPoi
+            if ('metadata' in f.properties && f.properties.metadata.id === id) {
+              poi = f as ApiPoi
             }
             else {
-              if (feature.properties['route:point:type']) {
-                feature = apiRouteWaypointToApiPoi(
-                  feature as ApiRouteWaypoint,
+              if (f.properties['route:point:type']) {
+                f = apiRouteWaypointToApiPoi(
+                  f as ApiRouteWaypoint,
                   poi?.properties.display?.color_fill || '#76009E',
                   poi?.properties.display?.color_line || '#76009E',
-                  feature.properties['route:point:type'] === ApiRouteWaypointType.way_point
+                  f.properties['route:point:type'] === ApiRouteWaypointType.way_point
                     ? (waypointIndex++).toString()
                     : undefined,
                 )
               }
-              deps.push(feature as ApiPoi)
+              deps.push(f as ApiPoi)
             }
           })
 
           mapStore.setSelectedFeature(poi)
+          if (poi) {
+            // In case user click on vecto element, attach Pin Marker to POI Marker
+            teritorioCluster.value?.setSelectedFeature(poi as unknown as MapGeoJSONFeature)
 
-          if (poi?.properties.metadata.category_ids?.length) {
-            menuStore.filterByDeps(poi.properties.metadata.category_ids, deps)
+            if (poi.properties.metadata.category_ids?.length)
+              menuStore.filterByDeps(poi.properties.metadata.category_ids, deps, selectedFeature.value)
           }
         }
       }
@@ -368,6 +376,11 @@ function handleResetMapZoom(text: string, textBtn: string): void {
 function showVectorSelectedFeature(): void {
   if (!map.value)
     return
+
+  if (mode.value === Mode.EXPLORER) {
+    filterRouteByPoiIds(map.value, [])
+    return
+  }
 
   if (
     selectedFeature.value
