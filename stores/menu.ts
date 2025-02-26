@@ -250,7 +250,12 @@ export const menuStore = defineStore('menu', {
       }
     },
 
+    // TODO: Maybe merge filterDeps with fetchFeatures
+    // Check potential side-effects in components calling fetchFeatures
     filterByDeps(categoryIds: number[], deps: ApiPoi[], selectedFeature: ApiPoi | null) {
+      if (!deps.length)
+        return
+
       const filteredFeatures: { [key: number]: ApiPoi[] } = {}
       categoryIds.forEach((id) => {
         filteredFeatures[id] = deps
