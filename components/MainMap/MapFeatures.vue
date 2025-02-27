@@ -218,12 +218,12 @@ function onClick(e: MapMouseEvent): void {
 
 async function updateSelectedFeature(feature?: ApiPoi): Promise<void> {
   if (!feature) {
-    mapStore.setSelectedFeature()
-    menuStore.fetchFeatures({
+    await menuStore.fetchFeatures({
       vidoConfig: config!,
       categoryIds: props.selectedCategoriesIds,
       clipingPolygonSlug: route.query.clipingPolygonSlug?.toString(),
     })
+    mapStore.setSelectedFeature()
   }
   else {
     const id = feature.properties.metadata.id || feature.properties.id || feature.id
