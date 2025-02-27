@@ -356,9 +356,11 @@ function onBottomMenuButtonClick() {
   isMenuItemOpen.value = !isMenuItemOpen.value
 }
 
-function onQuitExplorerFavoriteMode() {
+async function onQuitExplorerFavoriteMode() {
+  if (mapFeaturesRef.value)
+    await mapFeaturesRef.value.updateSelectedFeature()
+
   mode.value = Mode.BROWSER
-  mapStore.setSelectedFeature()
 }
 
 function toggleFavoriteMode() {
@@ -581,7 +583,7 @@ function handlePoiCardClose() {
           :small="isBottomMenuOpened"
           :categories="apiMenuCategory || []"
           :features="mapFeatures"
-          :selected-categories-ids="isModeExplorer ? [] : selectedCategoryIds"
+          :selected-categories-ids="selectedCategoryIds"
           :style-icon-filter="poiFilters"
           :enable-filter-route-by-categories="!isModeFavorites"
           :enable-filter-route-by-features="isModeFavorites"
