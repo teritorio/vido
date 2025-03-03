@@ -39,3 +39,20 @@ export async function getArticles(config: VidoConfig): Promise<{
 
   return { data, error, status }
 }
+
+export async function getArticle(config: VidoConfig, slug: string): Promise<{
+  data: Ref<Document | null>
+  error: Ref<FetchError<any> | null>
+  status: Ref<AsyncDataRequestStatus>
+}> {
+  const { data, error, status } = await useFetch<Document>(
+    () => `${config.API_ENDPOINT}/${config.API_PROJECT}/${config.API_THEME}/article/${slug}.html`,
+    { method: 'GET' },
+  )
+
+  if (error.value) {
+    console.error('Fail to fetch article:', error.value)
+  }
+
+  return { data, error, status }
+}
