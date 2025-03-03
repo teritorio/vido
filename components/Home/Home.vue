@@ -566,7 +566,7 @@ function handlePoiCardClose() {
           />
           <NavMenu
             id="nav-menu"
-            :entries="articles!"
+            :entries="articles"
             class="tw-ml-3 sm:tw-ml-4"
           />
         </div>
