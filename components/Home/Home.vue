@@ -49,7 +49,7 @@ const { apiMenuCategory, features, selectedCategoryIds } = storeToRefs(menuStore
 const favoriteStore = useFavoriteStore()
 const { favoritesIds, favoriteAddresses, favoriteFeatures, favoriteCount } = storeToRefs(favoriteStore)
 const siteStore = useSiteStore()
-const { config, settings, contents } = siteStore
+const { config, settings, articles } = siteStore
 const { favoritesModeEnabled } = storeToRefs(siteStore)
 const { $tracking } = useNuxtApp()
 const route = useRoute()
@@ -566,7 +566,7 @@ function handlePoiCardClose() {
           />
           <NavMenu
             id="nav-menu"
-            :entries="contents!"
+            :entries="articles!"
             class="tw-ml-3 sm:tw-ml-4"
           />
         </div>

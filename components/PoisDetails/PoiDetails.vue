@@ -14,7 +14,7 @@ import FavoriteIcon from '~/components/UI/FavoriteIcon.vue'
 import IconButton from '~/components/UI/IconButton.vue'
 import RelativeDate from '~/components/UI/RelativeDate.vue'
 import TeritorioIcon from '~/components/UI/TeritorioIcon.vue'
-import type { ContentEntry } from '~/lib/apiContent'
+import type { Article } from '~/lib/apiArticle'
 import type { ApiPoiDeps } from '~/lib/apiPoiDeps'
 import type { ApiPoi, ApiPoiId, ApiPoiProperties, FieldsList } from '~/lib/apiPois'
 import type { Settings } from '~/lib/apiSettings'
@@ -48,7 +48,7 @@ export default defineNuxtComponent({
       required: true,
     },
     navMenuEntries: {
-      type: Array as PropType<ContentEntry[]>,
+      type: Array as PropType<Article[]>,
       required: true,
     },
     poi: {
