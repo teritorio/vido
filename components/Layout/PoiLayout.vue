@@ -5,7 +5,6 @@ import { defineNuxtComponent } from '#app'
 import Footer from '~/components/Layout/Footer.vue'
 import Header from '~/components/Layout/Header.vue'
 import TeritorioIconBadge from '~/components/UI/TeritorioIconBadge.vue'
-import type { Article } from '~/lib/apiArticle'
 import type { Settings } from '~/lib/apiSettings'
 
 export default defineNuxtComponent({
