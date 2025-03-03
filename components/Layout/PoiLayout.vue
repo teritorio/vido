@@ -20,10 +20,6 @@ export default defineNuxtComponent({
       type: Object as PropType<Settings>,
       required: true,
     },
-    navMenuEntries: {
-      type: Array as PropType<Article[]>,
-      required: true,
-    },
     name: {
       type: String as PropType<string | undefined>,
       default: undefined,
@@ -49,7 +45,6 @@ export default defineNuxtComponent({
     <div>
       <Header
         :theme="settings.themes[0]"
-        :nav-menu-entries="navMenuEntries"
         :color-line="colorLine"
       >
         <slot name="headerButtons" />
