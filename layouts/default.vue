@@ -10,7 +10,7 @@ import '~/assets/tailwind.scss'
 //
 const { locale: i18nLocale } = useI18n()
 const siteStore = useSiteStore()
-const { config, settings, articles, translations, locale } = storeToRefs(siteStore)
+const { config, settings, translations, locale } = storeToRefs(siteStore)
 const menuStore = useMenuStore()
 const { menuItems } = storeToRefs(menuStore)
 
@@ -28,9 +28,6 @@ if (!menuItems?.value)
 
 if (!settings.value)
   throw createError({ statusCode: 500, statusMessage: 'Failed to fetch settings', fatal: true })
-
-if (!articles.value)
-  throw createError({ statusCode: 500, statusMessage: 'Failed to fetch articles', fatal: true })
 
 if (!translations.value)
   throw createError({ statusCode: 500, statusMessage: 'Failed to fetch translations', fatal: true })

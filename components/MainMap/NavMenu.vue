@@ -8,11 +8,11 @@ import { VList, VListItem, VListItemTitle } from 'vuetify/components/VList'
 import { VMenu } from 'vuetify/components/VMenu'
 import { useLocale } from 'vuetify'
 import { defineNuxtComponent } from '#app'
-import ExternalLink from '~/components/UI/ExternalLink.vue'
 import IconButton from '~/components/UI/IconButton.vue'
 import VFlag from '~/components/UI/VFlag.vue'
 import type { Article } from '~/lib/apiArticle'
 import { siteStore } from '~/stores/site'
+import { NuxtLink } from '#components'
 
 export default defineNuxtComponent({
   components: {
@@ -23,8 +23,8 @@ export default defineNuxtComponent({
     VListItemTitle,
     VDivider,
     IconButton,
-    ExternalLink,
     VFlag,
+    NuxtLink,
   },
 
   props: {
@@ -79,12 +79,9 @@ export default defineNuxtComponent({
       <v-list id="nav-menu-dropdown">
         <v-list-item v-for="(entry, index) in entries" :key="index" class="tw-w-full tw-px-5 tw-py-3 hover:tw-bg-zinc-100">
           <v-list-item-title>
-            <ExternalLink
-              :href="entry.url" rel="noopener noreferrer" target="_blank"
-              @click="openLink(entry.title, entry.url)"
-            >
+            <NuxtLink :to="{ name: 'articles-slug', params: { slug: entry.url } }">
               {{ entry.title }}
-            </ExternalLink>
+            </NuxtLink>
           </v-list-item-title>
         </v-list-item>
         <v-divider v-if="Boolean(entries.length)" />

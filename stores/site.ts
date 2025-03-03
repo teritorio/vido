@@ -23,7 +23,7 @@ interface State {
   explorerModeEnabled: boolean
   favoritesModeEnabled: boolean
   settings: Settings | undefined
-  articles: Article[] | undefined
+  articles: Article[]
   translations: PropertyTranslations | undefined
 }
 
@@ -34,7 +34,7 @@ export const siteStore = defineStore('site', {
     explorerModeEnabled: false,
     favoritesModeEnabled: false,
     settings: undefined,
-    articles: undefined,
+    articles: [],
     translations: undefined,
   }),
   actions: {
@@ -43,8 +43,15 @@ export const siteStore = defineStore('site', {
       this.settings = await getSettings(this.config)
       this.explorerModeEnabled = this.settings?.themes[0]?.explorer_mode || true
       this.favoritesModeEnabled = this.settings?.themes[0]?.favorites_mode || true
-      this.articles = await getArticles(this.config)
       this.translations = await getPropertyTranslations(this.config)
+      const { data: articlesData, error: articlesError, status: articlesStatus } = await getArticles(this.config)
+
+      if (articlesError.value)
+        throw createError(articlesError.value)
+
+      if (articlesStatus.value === 'success' && articlesData.value) {
+        this.articles = articlesData.value
+      }
     },
     p(propertyName: string, context: PropertyTranslationsContextEnum = Default): string {
       if (!this.translations)

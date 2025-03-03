@@ -1,3 +1,7 @@
+import type { Ref } from 'vue'
+import type { FetchError } from 'ofetch'
+// TODO: update Nuxt to be able to import from #app
+import type { AsyncDataRequestStatus } from 'nuxt/dist/app/composables/asyncData'
 import type { VidoConfig } from '~/utils/types-config'
 
 export interface Article {
@@ -5,30 +9,33 @@ export interface Article {
   url: string
 }
 
-export async function getArticles(vidoConfig: VidoConfig): Promise<Article[]> {
-  return await fetch(
-    `${vidoConfig.API_ENDPOINT}/${vidoConfig.API_PROJECT}/${vidoConfig.API_THEME}/articles.json?slug=non-classe`,
-  ).then((data) => {
-    if (data.ok) {
-      return data.json() as unknown as Article[]
-    }
-    else {
-      return Promise.reject(
-        new Error([data.url, data.status, data.statusText].join(' ')),
-      )
-    }
-  })
+function _getSlugFromURL(url: string): string {
+  const urlParts = url.split('/')
+  return urlParts[urlParts.length - 1].split('.')[0]
 }
 
-export async function getArticle(url: string): Promise<Article[]> {
-  return await fetch(url).then((data) => {
-    if (data.ok) {
-      return data.json() as unknown as Article[]
-    }
-    else {
-      return Promise.reject(
-        new Error([data.url, data.status, data.statusText].join(' ')),
-      )
-    }
-  })
+export async function getArticles(config: VidoConfig): Promise<{
+  data: Ref<Article[] | null>
+  error: Ref<FetchError<any> | null>
+  status: Ref<AsyncDataRequestStatus>
+}> {
+  // HINT: slug query param is here only for WP API backward compatibility
+  const { data, error, status } = await useFetch<Article[]>(
+    () => `${config.API_ENDPOINT}/${config.API_PROJECT}/${config.API_THEME}/articles.json?slug=non-classe`,
+    {
+      method: 'GET',
+      transform: (articles) => {
+        return articles.map(article => ({
+          ...article,
+          url: _getSlugFromURL(article.url),
+        }))
+      },
+    },
+  )
+
+  if (error.value) {
+    console.error('Fail to fetch articles:', error.value)
+  }
+
+  return { data, error, status }
 }
