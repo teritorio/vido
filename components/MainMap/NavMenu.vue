@@ -11,7 +11,7 @@ import { defineNuxtComponent } from '#app'
 import ExternalLink from '~/components/UI/ExternalLink.vue'
 import IconButton from '~/components/UI/IconButton.vue'
 import VFlag from '~/components/UI/VFlag.vue'
-import type { ContentEntry } from '~/lib/apiContent'
+import type { Article } from '~/lib/apiArticle'
 import { siteStore } from '~/stores/site'
 
 export default defineNuxtComponent({
@@ -29,7 +29,7 @@ export default defineNuxtComponent({
 
   props: {
     entries: {
-      type: Array as PropType<ContentEntry[]>,
+      type: Array as PropType<Article[]>,
       required: true,
     },
   },

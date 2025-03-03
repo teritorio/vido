@@ -5,7 +5,7 @@ import { defineNuxtComponent } from '#app'
 import Footer from '~/components/Layout/Footer.vue'
 import Header from '~/components/Layout/Header.vue'
 import TeritorioIconBadge from '~/components/UI/TeritorioIconBadge.vue'
-import type { ContentEntry } from '~/lib/apiContent'
+import type { Article } from '~/lib/apiArticle'
 import type { Settings } from '~/lib/apiSettings'
 
 export default defineNuxtComponent({
@@ -21,7 +21,7 @@ export default defineNuxtComponent({
       required: true,
     },
     navMenuEntries: {
-      type: Array as PropType<ContentEntry[]>,
+      type: Array as PropType<Article[]>,
       required: true,
     },
     name: {

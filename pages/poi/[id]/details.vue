@@ -23,7 +23,7 @@ definePageMeta({
 // Composables
 //
 const siteStore = useSiteStore()
-const { config, settings, contents } = storeToRefs(siteStore)
+const { config, settings, articles } = storeToRefs(siteStore)
 const { params } = useRoute()
 const { $trackingInit } = useNuxtApp()
 
@@ -94,7 +94,7 @@ useHead(
   <PoiDetails
     v-if="settings"
     :settings="settings"
-    :nav-menu-entries="contents!"
+    :nav-menu-entries="articles!"
     :poi="poi!"
     :poi-deps="poiDeps"
     :page-title="featureSeoTitle!"

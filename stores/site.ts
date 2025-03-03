@@ -1,9 +1,12 @@
 import { defineStore } from 'pinia'
-import { vidoConfig } from '~/plugins/vido-config'
-import { type ContentEntry, getContents } from '~/lib/apiContent'
-import { type PropertyTranslations, getPropertyTranslations } from '~/lib/apiPropertyTranslations'
-import { type Settings, getSettings } from '~/lib/apiSettings'
+import type { Article } from '~/lib/apiArticle'
+import type { PropertyTranslations } from '~/lib/apiPropertyTranslations'
+import type { Settings } from '~/lib/apiSettings'
 import type { VidoConfig } from '~/utils/types-config'
+import { getArticles } from '~/lib/apiArticle'
+import { getPropertyTranslations } from '~/lib/apiPropertyTranslations'
+import { getSettings } from '~/lib/apiSettings'
+import { vidoConfig } from '~/plugins/vido-config'
 
 export enum PropertyTranslationsContextEnum {
   Default = 'label',
@@ -20,7 +23,7 @@ interface State {
   explorerModeEnabled: boolean
   favoritesModeEnabled: boolean
   settings: Settings | undefined
-  contents: ContentEntry[] | undefined
+  articles: Article[] | undefined
   translations: PropertyTranslations | undefined
 }
 
@@ -31,7 +34,7 @@ export const siteStore = defineStore('site', {
     explorerModeEnabled: false,
     favoritesModeEnabled: false,
     settings: undefined,
-    contents: undefined,
+    articles: undefined,
     translations: undefined,
   }),
   actions: {
@@ -40,7 +43,7 @@ export const siteStore = defineStore('site', {
       this.settings = await getSettings(this.config)
       this.explorerModeEnabled = this.settings?.themes[0]?.explorer_mode || true
       this.favoritesModeEnabled = this.settings?.themes[0]?.favorites_mode || true
-      this.contents = await getContents(this.config)
+      this.articles = await getArticles(this.config)
       this.translations = await getPropertyTranslations(this.config)
     },
     p(propertyName: string, context: PropertyTranslationsContextEnum = Default): string {

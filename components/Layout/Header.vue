@@ -5,7 +5,7 @@ import type { PropType } from 'vue'
 import { defineNuxtComponent } from '#app'
 import NavMenu from '~/components/MainMap/NavMenu.vue'
 import Logo from '~/components/UI/Logo.vue'
-import type { ContentEntry } from '~/lib/apiContent'
+import type { Article } from '~/lib/apiArticle'
 import type { SiteInfosTheme } from '~/lib/apiSettings'
 import { siteStore } from '~/stores/site'
 
@@ -20,7 +20,7 @@ export default defineNuxtComponent({
       default: null,
     },
     navMenuEntries: {
-      type: Array as PropType<ContentEntry[]>,
+      type: Array as PropType<Article[]>,
       required: true,
     },
   },
