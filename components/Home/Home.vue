@@ -49,7 +49,7 @@ const { apiMenuCategory, features, selectedCategoryIds } = storeToRefs(menuStore
 const favoriteStore = useFavoriteStore()
 const { favoritesIds, favoriteAddresses, favoriteFeatures, favoriteCount } = storeToRefs(favoriteStore)
 const siteStore = useSiteStore()
-const { config, settings, articles } = siteStore
+const { config, settings } = siteStore
 const { favoritesModeEnabled } = storeToRefs(siteStore)
 const { $tracking } = useNuxtApp()
 const route = useRoute()
@@ -564,11 +564,7 @@ function handlePoiCardClose() {
             @toggle-note-book-mode="toggleNoteBookMode"
             @zoom-click="goToSelectedFeature"
           />
-          <NavMenu
-            id="nav-menu"
-            :entries="articles"
-            class="tw-ml-3 sm:tw-ml-4"
-          />
+          <NavMenu id="nav-menu" class="tw-ml-3 sm:tw-ml-4" />
         </div>
       </header>
 

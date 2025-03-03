@@ -5,7 +5,6 @@ import type { PropType } from 'vue'
 import { defineNuxtComponent } from '#app'
 import NavMenu from '~/components/MainMap/NavMenu.vue'
 import Logo from '~/components/UI/Logo.vue'
-import type { Article } from '~/lib/apiArticle'
 import type { SiteInfosTheme } from '~/lib/apiSettings'
 import { siteStore } from '~/stores/site'
 
@@ -18,10 +17,6 @@ export default defineNuxtComponent({
     theme: {
       type: Object as PropType<SiteInfosTheme>,
       default: null,
-    },
-    navMenuEntries: {
-      type: Array as PropType<Article[]>,
-      required: true,
     },
   },
   computed: {
@@ -51,7 +46,7 @@ export default defineNuxtComponent({
 
     <div class="tw-flex tw-justify-end print:tw-hidden">
       <slot />
-      <NavMenu :entries="navMenuEntries" />
+      <NavMenu />
     </div>
   </header>
 </template>

@@ -1,104 +1,71 @@
-<script lang="ts">
+<script setup lang="ts">
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
-import { mapWritableState } from 'pinia'
-import type { PropType } from 'vue'
-import type { LocaleObject } from 'vue-i18n-routing'
-import { VDivider } from 'vuetify/components/VDivider'
-import { VList, VListItem, VListItemTitle } from 'vuetify/components/VList'
-import { VMenu } from 'vuetify/components/VMenu'
+import { storeToRefs } from 'pinia'
 import { useLocale } from 'vuetify'
-import { defineNuxtComponent } from '#app'
+import { VDivider } from 'vuetify/components/VDivider'
+import { VList, VListItem } from 'vuetify/components/VList'
+import { VMenu } from 'vuetify/components/VMenu'
 import IconButton from '~/components/UI/IconButton.vue'
 import VFlag from '~/components/UI/VFlag.vue'
-import type { Article } from '~/lib/apiArticle'
-import { siteStore } from '~/stores/site'
-import { NuxtLink } from '#components'
+import { siteStore as useSiteStore } from '~/stores/site'
 
-export default defineNuxtComponent({
-  components: {
-    FontAwesomeIcon,
-    VMenu,
-    VList,
-    VListItem,
-    VListItemTitle,
-    VDivider,
-    IconButton,
-    VFlag,
-    NuxtLink,
-  },
+const { $tracking } = useNuxtApp()
+const { articles: entries, locale: currentI18n } = storeToRefs(useSiteStore())
+const { current: vuetifyLocale } = useLocale()
+const { locales, setLocale, localeProperties } = useI18n() // LocaleObject[]
 
-  props: {
-    entries: {
-      type: Array as PropType<Article[]>,
-      required: true,
-    },
-  },
+async function updateLocale(value: string): Promise<void> {
+  await setLocale(value)
+  currentI18n.value = value
+  vuetifyLocale.value = value
+}
 
-  setup() {
-    const { current } = useLocale()
-
-    return {
-      vuetifyLocale: current,
-    }
-  },
-
-  computed: {
-    ...mapWritableState(siteStore, ['locale']),
-
-    locales(): LocaleObject[] {
-      return this.$i18n.locales as unknown as LocaleObject[]
-    },
-  },
-
-  methods: {
-    async setLocale(locale: string) {
-      await this.$i18n.setLocale(locale)
-      this.locale = locale
-      this.vuetifyLocale = locale
-    },
-    openLink(title: string, url: string) {
-      this.$tracking({
-        type: 'external_link',
-        url,
-        title,
-      })
-    },
-  },
-})
+function handleClick(title: string, url: string): void {
+  $tracking({
+    type: 'external_link',
+    url,
+    title,
+  })
+}
 </script>
 
 <template>
   <section v-if="entries.length + locales.length > 0" class="tw-relative tw-z-40">
-    <v-menu offset-y>
+    <VMenu offset-y>
       <template #activator="{ props }">
         <IconButton :label="$t('navMenu.label')" class="tw-w-11 tw-h-11 tw-pointer-events-auto" v-bind="props">
           <FontAwesomeIcon icon="cog" class="tw-text-zinc-800" size="lg" />
         </IconButton>
       </template>
-
-      <v-list id="nav-menu-dropdown">
-        <v-list-item v-for="(entry, index) in entries" :key="index" class="tw-w-full tw-px-5 tw-py-3 hover:tw-bg-zinc-100">
-          <v-list-item-title>
-            <NuxtLink :to="{ name: 'articles-slug', params: { slug: entry.url } }">
-              {{ entry.title }}
-            </NuxtLink>
-          </v-list-item-title>
-        </v-list-item>
-        <v-divider v-if="Boolean(entries.length)" />
-        <v-list-item
-          v-for="locale in locales" :key="locale.code" class="tw-w-full tw-px-5 tw-py-3 hover:tw-bg-zinc-100" :class="[
-            locale.code === $i18n.locale && 'bg-grey-lighten-2',
-          ]"
+      <VList id="nav-menu-dropdown">
+        <VListItem
+          v-for="(entry, index) in entries"
+          :key="index"
+          :to="{ name: 'articles-slug', params: { slug: entry.url } }"
+          tag="NuxtLink"
+          class="tw-w-full tw-px-5 tw-py-3 hover:tw-bg-zinc-100"
+          @click="handleClick(entry.title, entry.url)"
         >
-          <v-list-item-title>
-            <a href="#" @click.prevent="setLocale(locale.code)">
-              <VFlag :flag="locale.flag" class="flag" />
-              {{ locale.name }}
-            </a>
-          </v-list-item-title>
-        </v-list-item>
-      </v-list>
-    </v-menu>
+          {{ entry.title }}
+        </VListItem>
+        <VDivider v-if="Boolean(entries.length)" />
+        <VListItem
+          v-for="locale in locales"
+          :key="typeof locale === 'string' ? locale : locale.code"
+          :class="[typeof locale !== 'string' && locale.code === localeProperties.code && 'bg-grey-lighten-2']"
+          class="tw-w-full tw-px-5 tw-py-3 hover:tw-bg-zinc-100"
+          @click="updateLocale(typeof locale === 'string' ? locale : locale.code)"
+        >
+          <template v-if="(typeof locale !== 'string')">
+            <VFlag :flag="locale.flag" class="flag" />
+            {{ locale.name }}
+          </template>
+          <template v-else>
+            {{ locale }}
+          </template>
+        </VListItem>
+      </VList>
+    </VMenu>
   </section>
 </template>
 

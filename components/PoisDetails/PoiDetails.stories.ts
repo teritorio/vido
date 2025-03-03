@@ -1,5 +1,4 @@
 import PoiDetails from '~/components/PoisDetails/PoiDetails.vue'
-import navMenuEntries from '~/cypress/fixtures/teritorio/references/articles.json'
 import poisDeps from '~/cypress/fixtures/teritorio/references/poi/1/deps.json'
 import settings from '~/cypress/fixtures/teritorio/references/settings.json'
 import type { ApiPois } from '~/lib/apiPois'
@@ -15,7 +14,6 @@ export default {
 
 const defaultProps = {
   settings,
-  navMenuEntries,
   poi: (poisDeps as ApiPois).features[0],
 }
 
