@@ -44,10 +44,7 @@ if (error.value)
       type="error"
       variant="elevated"
     />
-    <Header
-      class="mb-4"
-      :theme="settings.themes[0]"
-    >
+    <Header class="mb-4">
       <IconButton
         :label="t('poiCard.backToMap')"
         :title="t('poiCard.backToMap')"

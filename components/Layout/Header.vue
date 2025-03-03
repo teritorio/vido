@@ -1,35 +1,20 @@
-<script lang="ts">
-import { mapState } from 'pinia'
-import type { PropType } from 'vue'
-
-import { defineNuxtComponent } from '#app'
+<script setup lang="ts">
+import { storeToRefs } from 'pinia'
 import NavMenu from '~/components/MainMap/NavMenu.vue'
 import Logo from '~/components/UI/Logo.vue'
 import type { SiteInfosTheme } from '~/lib/apiSettings'
-import { siteStore } from '~/stores/site'
+import { siteStore as useSiteStore } from '~/stores/site'
 
-export default defineNuxtComponent({
-  components: {
-    Logo,
-    NavMenu,
-  },
-  props: {
-    theme: {
-      type: Object as PropType<SiteInfosTheme>,
-      default: null,
-    },
-  },
-  computed: {
-    ...mapState(siteStore, ['locale']),
+const siteStore = useSiteStore()
+const { settings } = siteStore
+const { locale } = storeToRefs(siteStore)
 
-    mainUrl(): string {
-      return (this.locale && this.theme.main_url?.[this.locale]) || '/'
-    },
-    target() {
-      return (this.locale && this.theme.main_url?.[this.locale]) ? '_blank' : '_self'
-    },
-  },
-})
+if (!settings)
+  throw createError({ statusCode: 500, statusMessage: 'Failed to fetch settings', fatal: true })
+
+const theme = ref<SiteInfosTheme>(settings.themes[0])
+const mainUrl = computed(() => (locale.value && theme.value.main_url?.[locale.value]) || '/')
+const target = computed(() => (locale.value && theme.value.main_url?.[locale.value]) ? '_blank' : '_self')
 </script>
 
 <template>
@@ -38,12 +23,10 @@ export default defineNuxtComponent({
       id="logo"
       :main-url="mainUrl"
       :target="target"
-      :site-name="theme && theme.title.fr"
-      :logo-url="theme && theme.logo_url"
+      :site-name="theme.title.fr"
+      :logo-url="theme.logo_url"
     />
-
     <slot name="search" />
-
     <div class="tw-flex tw-justify-end print:tw-hidden">
       <slot />
       <NavMenu />
@@ -58,13 +41,8 @@ export default defineNuxtComponent({
   display: flex;
   flex-direction: row;
   overflow: visible;
-
-  // height: 8.6rem;
-  // min-height: 8.6rem;
   align-items: center;
   justify-content: space-between;
-
-  // padding: 0.8rem 1.3rem;
 
   &::before,
   &::after {
