@@ -11,7 +11,7 @@ import CategorySelector from '~/components/PoisList/CategorySelector.vue'
 // Composables
 //
 const siteStore = useSiteStore()
-const { config, settings, articles } = storeToRefs(siteStore)
+const { config, settings } = storeToRefs(siteStore)
 const menuStore = useMenuStore()
 const { menuItems } = storeToRefs(menuStore)
 const { $trackingInit } = useNuxtApp()
@@ -78,11 +78,7 @@ async function onCategoryUpdate(categoryId: number) {
     <PoisTable :details-is-external="true" />
   </div>
   <VContainer v-else fluid>
-    <Header
-      class="mb-4"
-      :theme="settings!.themes[0]"
-      :nav-menu-entries="articles!"
-    >
+    <Header class="mb-4">
       <template #search>
         <CategorySelector
           class="w-50"

@@ -42,10 +42,7 @@ export default defineNuxtComponent({
 <template>
   <div class="tw-w-full container">
     <div>
-      <Header
-        :theme="settings.themes[0]"
-        :color-line="colorLine"
-      >
+      <Header>
         <slot name="headerButtons" />
       </Header>
       <div v-if="icon" class="tw-flex tw-justify-center">
