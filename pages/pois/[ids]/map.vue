@@ -1,9 +1,8 @@
 <script setup lang="ts">
-import { storeToRefs } from 'pinia'
 import MapPois from '~/components/Map/MapPois.vue'
 import { type ApiPoiId, type ApiPois, getPois } from '~/lib/apiPois'
 import { getAsyncDataOrThrows } from '~/lib/getAsyncData'
-import { siteStore as useSiteStore } from '~/stores/site'
+import { useSiteStore } from '~/stores/site'
 import { regexForCategoryIds } from '~/composables/useIdsResolver'
 
 //
@@ -20,7 +19,7 @@ definePageMeta({
 //
 const { params } = useRoute()
 const siteStore = useSiteStore()
-const { config, settings } = storeToRefs(siteStore)
+const { config, settings } = siteStore
 const { $trackingInit } = useNuxtApp()
 const route = useRoute()
 
@@ -38,7 +37,7 @@ if (params.ids) {
   if (route.query.clipingPolygonSlug)
     query.cliping_polygon_slug = route.query.clipingPolygonSlug.toString()
 
-  const getPoiPromise = getAsyncDataOrThrows('getPoiPromise', async () => await getPois(config.value!, ids, query))
+  const getPoiPromise = getAsyncDataOrThrows('getPoiPromise', async () => await getPois(config!, ids, query))
   const [poisF] = await Promise.all([getPoiPromise])
   pois.value = poisF.value
 }
@@ -55,7 +54,7 @@ const ids = computed((): ApiPoiId[] => pois.value?.features.map(feature => featu
 // Hooks
 //
 onBeforeMount(() => {
-  $trackingInit(config.value!)
+  $trackingInit(config!)
 })
 </script>
 

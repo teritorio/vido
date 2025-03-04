@@ -1,7 +1,7 @@
 import type { ExpressionSpecification, LngLatBoundsLike, Map } from 'maplibre-gl'
 import type { FeatureCollection, GeoJsonProperties, Geometry } from 'geojson'
 import { storeToRefs } from 'pinia'
-import { siteStore as useSiteStore } from '~/stores/site'
+import { useSiteStore } from '~/stores/site'
 import { mapStore as useMapStore } from '~/stores/map'
 
 export const profiles = {

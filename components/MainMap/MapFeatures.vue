@@ -26,7 +26,7 @@ import { DEFAULT_MAP_STYLE, MAP_ZOOM } from '~/lib/constants'
 import { vectorTilesPoi2ApiPoi } from '~/lib/vectorTilesPois'
 import { mapStore as useMapStore } from '~/stores/map'
 import { menuStore as useMenuStore } from '~/stores/menu'
-import { siteStore as useSiteStore } from '~/stores/site'
+import { useSiteStore } from '~/stores/site'
 import { snackStore as useSnackStore } from '~/stores/snack'
 import { filterRouteByCategories, filterRouteByPoiIds } from '~/utils/styles'
 import type { LatLng } from '~/utils/types'
@@ -80,7 +80,7 @@ if (!config)
   throw createError({ statusCode: 500, statusMessage: 'Wrong config', fatal: true })
 
 const { BICYCLE_STYLE_URL, API_ENDPOINT, API_PROJECT, API_THEME } = config
-const { explorerModeEnabled } = storeToRefs(useSiteStore())
+const { explorerModeEnabled } = storeToRefs(siteStore)
 const mapStore = useMapStore()
 const { center, selectedFeature, teritorioCluster, mode } = storeToRefs(mapStore)
 const mapStyleLoaded = ref(false)

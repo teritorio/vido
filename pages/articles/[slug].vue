@@ -3,7 +3,7 @@ import Header from '~/components/Layout/Header.vue'
 import Footer from '~/components/Layout/Footer.vue'
 import IconButton from '~/components/UI/IconButton.vue'
 import TeritorioIcon from '~/components/UI/TeritorioIcon.vue'
-import { siteStore as useSiteStore } from '~/stores/site'
+import { useSiteStore } from '~/stores/site'
 import { getArticle } from '~/lib/apiArticle'
 
 definePageMeta({

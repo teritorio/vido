@@ -19,7 +19,7 @@ import type {
 } from '~/lib/apiSearch'
 import { menuStore } from '~/stores/menu'
 import type { FilterValue } from '~/utils/types-filters'
-import { siteStore as useSiteStore } from '~/stores/site'
+import { useSiteStore } from '~/stores/site'
 
 export default defineNuxtComponent({
   components: {
