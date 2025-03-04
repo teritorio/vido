@@ -21,7 +21,7 @@ defineEmits<{
 </script>
 
 <template>
-  <div v-if="isCardLight" class="tw-flex tw-justify-between tw-flex-wrap tw-gap-6">
+  <div v-if="isCardLight" class="pois-deck">
     <component
       :is="PoiCardLight"
       v-for="item in pois"
@@ -30,7 +30,7 @@ defineEmits<{
       class="tw-grow-1 poi-deck"
     />
   </div>
-  <div v-else class="tw-flex tw-justify-between tw-flex-wrap tw-gap-6">
+  <div v-else class="pois-deck">
     <component
       :is="PoiCard"
       v-for="item in pois"
@@ -46,3 +46,11 @@ defineEmits<{
     />
   </div>
 </template>
+
+<style lang="css" scoped>
+.pois-deck {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+</style>
