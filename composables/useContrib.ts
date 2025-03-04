@@ -1,6 +1,6 @@
 import type { ApiPoi, ApiPoiProperties } from '~/lib/apiPois'
 import { STORE_NAME, useContribStore } from '~/stores/contrib'
-import { siteStore as useSiteStore } from '~/stores/site'
+import { useSiteStore } from '~/stores/site'
 
 export interface Link {
   icon: string
@@ -18,7 +18,7 @@ export interface ContribFields {
 
 export default function () {
   const { enabled, setEnabled } = useContribStore()
-  const config = useSiteStore().config
+  const { config } = useSiteStore()
 
   function isContribEligible(properties: ApiPoiProperties): boolean {
     return !!(properties.metadata.osm_id && properties.metadata.osm_type && properties.editorial)

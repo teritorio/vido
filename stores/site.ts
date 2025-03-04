@@ -17,7 +17,7 @@ export enum PropertyTranslationsContextEnum {
 
 const Default = PropertyTranslationsContextEnum.Default
 
-export const siteStore = defineStore('site', () => {
+export const useSiteStore = defineStore('site', () => {
   const locale = ref<string>()
   const config = ref<VidoConfig>()
   const settings = ref<Settings>()

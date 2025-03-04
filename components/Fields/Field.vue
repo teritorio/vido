@@ -20,7 +20,7 @@ import FieldsHeader from '~/components/UI/FieldsHeader.vue'
 import type { ApiPoiProperties, FieldsListItem } from '~/lib/apiPois'
 import { ADDRESS_FIELDS } from '~/composables/useField'
 import type { PropertyTranslationsContextEnum } from '~/stores/site'
-import { siteStore as useSiteStore } from '~/stores/site'
+import { useSiteStore } from '~/stores/site'
 
 export function isFiledEmpty(
   field: FieldsListItem,

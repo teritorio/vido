@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { storeToRefs } from 'pinia'
 import { menuStore as useMenuStore } from '~/stores/menu'
-import { siteStore as useSiteStore } from '~/stores/site'
+import { useSiteStore } from '~/stores/site'
 import Header from '~/components/Layout/Header.vue'
 import Footer from '~/components/Layout/Footer.vue'
 import PoisTable from '~/components/PoisList/PoisTable.vue'
@@ -11,7 +11,7 @@ import CategorySelector from '~/components/PoisList/CategorySelector.vue'
 // Composables
 //
 const siteStore = useSiteStore()
-const { config, settings } = storeToRefs(siteStore)
+const { config, settings } = siteStore
 const menuStore = useMenuStore()
 const { menuItems } = storeToRefs(menuStore)
 const { $trackingInit } = useNuxtApp()
@@ -48,7 +48,7 @@ const isFiltersEqualToCategoryId = computed(() => {
 // Hooks
 //
 onBeforeMount(() => {
-  $trackingInit(config.value!)
+  $trackingInit(config!)
 })
 
 //

@@ -13,7 +13,7 @@ import type {
   FieldsListGroup,
   FieldsListItem,
 } from '~/lib/apiPois'
-import { PropertyTranslationsContextEnum, siteStore as useSiteStore } from '~/stores/site'
+import { PropertyTranslationsContextEnum, useSiteStore } from '~/stores/site'
 
 export default defineNuxtComponent({
   name: 'FieldsGroup',

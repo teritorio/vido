@@ -3,7 +3,7 @@ import type { optional_conf } from 'opening_hours'
 import OpeningHours from 'opening_hours'
 import { storeToRefs } from 'pinia'
 import RelativeDate from '~/components/UI/RelativeDate.vue'
-import { PropertyTranslationsContextEnum, siteStore as useSiteStore } from '~/stores/site'
+import { PropertyTranslationsContextEnum, useSiteStore } from '~/stores/site'
 import { PointTime, isSupportedOsmTags } from '~/composables/useOpeningHours'
 
 //
@@ -21,7 +21,9 @@ const props = withDefaults(defineProps<{
 //
 // Composables
 //
-const { locale, settings } = storeToRefs(useSiteStore())
+const siteStore = useSiteStore()
+const { settings } = siteStore
+const { locale } = storeToRefs(useSiteStore())
 const { t } = useI18n()
 
 //
@@ -126,16 +128,16 @@ function OpeningHoursFactory(): OpeningHours | undefined {
       props.openingHours,
       {
         lon:
-          (settings.value!.bbox_line.coordinates[0][1]
-          + settings.value!.bbox_line.coordinates[1][1])
+          (settings!.bbox_line.coordinates[0][1]
+          + settings!.bbox_line.coordinates[1][1])
           / 2,
         lat:
-          (settings.value!.bbox_line.coordinates[0][0]
-          + settings.value!.bbox_line.coordinates[1][0])
+          (settings!.bbox_line.coordinates[0][0]
+          + settings!.bbox_line.coordinates[1][0])
           / 2,
         address: {
-          country_code: settings.value!.default_country,
-          state: settings.value!.default_country_state_opening_hours,
+          country_code: settings!.default_country,
+          state: settings!.default_country_state_opening_hours,
         },
       },
       optionalConf,

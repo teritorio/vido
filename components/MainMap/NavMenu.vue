@@ -7,7 +7,7 @@ import { VList, VListItem } from 'vuetify/components/VList'
 import { VMenu } from 'vuetify/components/VMenu'
 import IconButton from '~/components/UI/IconButton.vue'
 import VFlag from '~/components/UI/VFlag.vue'
-import { siteStore as useSiteStore } from '~/stores/site'
+import { useSiteStore } from '~/stores/site'
 
 const { $tracking } = useNuxtApp()
 const { articles: entries, locale: currentI18n } = storeToRefs(useSiteStore())

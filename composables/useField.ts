@@ -1,6 +1,6 @@
 import type { ApiPoiProperties } from '~/lib/apiPois'
 import type { PropertyTranslationsContextEnum } from '~/stores/site'
-import { siteStore as useSiteStore } from '~/stores/site'
+import { useSiteStore } from '~/stores/site'
 
 interface Route {
   duration?: number

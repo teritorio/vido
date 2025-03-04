@@ -3,7 +3,7 @@ import { storeToRefs } from 'pinia'
 import NavMenu from '~/components/MainMap/NavMenu.vue'
 import Logo from '~/components/UI/Logo.vue'
 import type { SiteInfosTheme } from '~/lib/apiSettings'
-import { siteStore as useSiteStore } from '~/stores/site'
+import { useSiteStore } from '~/stores/site'
 
 const siteStore = useSiteStore()
 const { settings } = siteStore
