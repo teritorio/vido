@@ -5,6 +5,7 @@ import IconButton from '~/components/UI/IconButton.vue'
 import TeritorioIcon from '~/components/UI/TeritorioIcon.vue'
 import { useSiteStore } from '~/stores/site'
 import { getArticle } from '~/lib/apiArticle'
+import { headerFromSettings } from '~/lib/apiSettings'
 
 definePageMeta({
   validate({ params }) {
@@ -22,14 +23,22 @@ if (!settings)
 
 const { t } = useI18n()
 const { params } = useRoute()
-const { data, error } = await getArticle(config, params.slug as string)
+
+const { data, error, status } = await getArticle(config, params.slug as string)
 
 if (error.value)
   throw createError(error.value)
 
-// if (status.value === 'success' && data.value) {
-//   this.articles = articlesData.value
-// }
+const content = ref<string>()
+onMounted(() => {
+  if (status.value === 'success' && data.value) {
+    const parser = new DOMParser()
+    const document = parser.parseFromString(data.value, 'text/html')
+    const title = document.querySelector('title')?.textContent
+    content.value = document.querySelector('body')?.innerHTML
+    useHead(headerFromSettings(settings, { title: title || undefined }))
+  }
+})
 </script>
 
 <template>
@@ -55,10 +64,7 @@ if (error.value)
       </IconButton>
     </Header>
     <ClientOnly>
-      <!-- <h1 class="print:tw-pb-4">
-        {{ data.title }}
-      </h1> -->
-      <p v-html="data" />
+      <p v-html="content" />
     </ClientOnly>
     <Footer :attributions="settings.attributions" />
   </VContainer>

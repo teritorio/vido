@@ -41,11 +41,11 @@ export async function getArticles(config: VidoConfig): Promise<{
 }
 
 export async function getArticle(config: VidoConfig, slug: string): Promise<{
-  data: Ref<Document | null>
+  data: Ref<string | null>
   error: Ref<FetchError<any> | null>
   status: Ref<AsyncDataRequestStatus>
 }> {
-  const { data, error, status } = await useFetch<Document>(
+  const { data, error, status } = await useFetch<string>(
     () => `${config.API_ENDPOINT}/${config.API_PROJECT}/${config.API_THEME}/article/${slug}.html`,
     { method: 'GET' },
   )
