@@ -216,7 +216,10 @@ function onClick(e: MapMouseEvent): void {
   }
 }
 
+const selectedFeatureDepsIDs = ref<number[]>([])
 async function updateSelectedFeature(feature?: ApiPoi): Promise<void> {
+  selectedFeatureDepsIDs.value = []
+
   if (!feature) {
     await menuStore.fetchFeatures({
       vidoConfig: config!,
@@ -253,6 +256,9 @@ async function updateSelectedFeature(feature?: ApiPoi): Promise<void> {
           let waypointIndex = 1
 
           data.value.features.forEach((f) => {
+            const depID = 'metadata' in f.properties ? f.properties.metadata.id : f.properties.id
+            selectedFeatureDepsIDs.value.push(depID)
+
             f = {
               ...f,
               properties: {
@@ -260,32 +266,37 @@ async function updateSelectedFeature(feature?: ApiPoi): Promise<void> {
                 vido_visible: true,
               },
             }
-            if ('metadata' in f.properties && f.properties.metadata.id === id) {
+
+            if (id === depID) {
               poi = f as ApiPoi
             }
-            else {
-              if (f.properties['route:point:type']) {
-                f = apiRouteWaypointToApiPoi(
-                  f as ApiRouteWaypoint,
-                  poi?.properties.display?.color_fill || '#76009E',
-                  poi?.properties.display?.color_line || '#76009E',
-                  f.properties['route:point:type'] === ApiRouteWaypointType.way_point
-                    ? (waypointIndex++).toString()
-                    : undefined,
-                )
-              }
+
+            if (f.properties['route:point:type']) {
+              f = apiRouteWaypointToApiPoi(
+                f as ApiRouteWaypoint,
+                poi?.properties.display?.color_fill || '#76009E',
+                poi?.properties.display?.color_line || '#76009E',
+                f.properties['route:point:type'] === ApiRouteWaypointType.way_point
+                  ? (waypointIndex++).toString()
+                  : undefined,
+              )
+            }
+
+            if (f.geometry.type === 'Point') {
               deps.push(f as ApiPoi)
             }
           })
 
-          mapStore.setSelectedFeature(poi)
-          if (poi) {
-            // In case user click on vecto element, attach Pin Marker to POI Marker
-            teritorioCluster.value?.setSelectedFeature(poi as unknown as MapGeoJSONFeature)
+          if (!poi)
+            throw new Error(`Feature with ID: ${id} not found.`)
 
-            if (poi.properties.metadata.category_ids?.length)
-              menuStore.filterByDeps(poi.properties.metadata.category_ids, deps, selectedFeature.value)
-          }
+          mapStore.setSelectedFeature(poi)
+
+          // In case user click on vecto element, attach Pin Marker to POI Marker
+          teritorioCluster.value?.setSelectedFeature(poi as unknown as MapGeoJSONFeature)
+
+          if (poi.properties.metadata.category_ids?.length)
+            menuStore.filterByDeps(poi.properties.metadata.category_ids, deps)
         }
       }
       catch (e) {
@@ -382,11 +393,8 @@ function showVectorSelectedFeature(): void {
     return
   }
 
-  if (
-    selectedFeature.value
-    && (selectedFeature.value.properties?.metadata?.id || selectedFeature.value.id || selectedFeature.value.properties?.id)
-  ) {
-    filterRouteByPoiIds(map.value, [selectedFeature.value.properties?.metadata?.id || selectedFeature.value.id || selectedFeature.value.properties?.id])
+  if (selectedFeature.value) {
+    filterRouteByPoiIds(map.value, selectedFeatureDepsIDs.value)
   }
   else {
     if (props.enableFilterRouteByFeatures) {
