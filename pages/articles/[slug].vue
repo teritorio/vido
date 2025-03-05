@@ -42,7 +42,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <VContainer>
+  <VApp>
     <VAlert
       v-if="error"
       :closable="true"
@@ -53,19 +53,58 @@ onMounted(() => {
       type="error"
       variant="elevated"
     />
-    <Header class="mb-4">
-      <IconButton
-        :label="t('poiCard.backToMap')"
-        :title="t('poiCard.backToMap')"
-        href="/"
-        class="tw-w-11 tw-h-11 tw-mr-3 sm:tw-mr-9"
-      >
-        <TeritorioIcon picto="map" class="tw-text-zinc-800" />
-      </IconButton>
-    </Header>
-    <ClientOnly>
-      <p v-html="content" />
-    </ClientOnly>
-    <Footer :attributions="settings.attributions" />
-  </VContainer>
+    <VContainer :style="{ maxWidth: '1200px' }">
+      <Header class="mb-4">
+        <IconButton
+          :label="t('poiCard.backToMap')"
+          :title="t('poiCard.backToMap')"
+          href="/"
+          class="tw-w-11 tw-h-11 tw-mr-3 sm:tw-mr-9"
+        >
+          <TeritorioIcon picto="map" class="tw-text-zinc-800" />
+        </IconButton>
+      </Header>
+      <ClientOnly>
+        <p v-html="content" />
+      </ClientOnly>
+      <Footer :attributions="settings.attributions" />
+    </VContainer>
+  </VApp>
 </template>
+
+<style lang="scss" scoped>
+@import '~/assets/details';
+
+:deep(body) {
+  color: $color-text;
+  background-color: #fefefe;
+  padding: 1rem;
+  min-width: 21rem;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizelegibility;
+  line-height: 1.3;
+  word-wrap: break-word;
+
+  @extend %font-light;
+}
+
+:deep(h1) {
+  font-size: 2.4rem;
+  text-align: center;
+  margin: 0.6rem 0.3rem 0;
+  text-transform: uppercase;
+}
+
+:deep(h2) {
+  font-size: 1.8rem;
+  margin-top: 0;
+  margin-bottom: 0.7rem;
+  text-transform: uppercase;
+}
+
+:deep(h3) {
+  font-size: 1.2rem;
+  margin-top: 1.2rem;
+  margin-bottom: 0.7rem;
+}
+</style>
