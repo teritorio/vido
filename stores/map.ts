@@ -5,67 +5,64 @@ import type { ApiPoi, ApiPoiProperties } from '~/lib/apiPois'
 import type { LatLng, Pitch } from '~/utils/types'
 import { Mode } from '~/utils/types'
 
-interface State {
-  boundOptions?: FitBoundsOptions
-  center: LatLng
-  mode: Mode
-  pitch: Pitch
-  selectedFeature: ApiPoi | null
-  teritorioCluster: TeritorioCluster | null
-}
+export const mapStore = defineStore('map', () => {
+  const boundOptions = ref<FitBoundsOptions>()
+  const center = ref<LatLng>({ lng: 0, lat: 0 })
+  const mode = ref<Mode>(Mode.BROWSER)
+  const pitch = ref<Pitch>(0)
+  const selectedFeature = ref<ApiPoi | null>(null)
+  const teritorioCluster = ref<TeritorioCluster | null>(null)
 
-export const mapStore = defineStore('map', {
-  state: (): State => ({
-    boundOptions: undefined,
-    center: { lng: 0, lat: 0 },
-    mode: Mode.BROWSER,
-    pitch: 0,
-    selectedFeature: null,
-    teritorioCluster: null,
-  }),
+  const isModeExplorer = computed(() => mode.value === Mode.EXPLORER)
+  const isModeFavorites = computed(() => mode.value === Mode.FAVORITES)
+  const isModeExplorerOrFavorites = computed(() => mode.value === Mode.EXPLORER || mode.value === Mode.FAVORITES)
 
-  getters: {
-    isModeExplorer: state => state.mode === Mode.EXPLORER,
-    isModeFavorites: state => state.mode === Mode.FAVORITES,
-    isModeExplorerOrFavorites: state =>
-      state.mode === Mode.EXPLORER || state.mode === Mode.FAVORITES,
-  },
+  function setSelectedFeature(feature?: ApiPoi) {
+    if (!feature) {
+      selectedFeature.value = null
+      teritorioCluster.value?.resetSelectedFeature()
+    }
+    else {
+      const goodFeature = feature
 
-  actions: {
-    setSelectedFeature(feature?: ApiPoi) {
-      if (!feature) {
-        this.selectedFeature = null
-        this.teritorioCluster?.resetSelectedFeature()
-      }
-      else {
-        const goodFeature = feature
-
-        function isJsonObject(item: string): boolean {
-          let value = false
-          try {
-            value = JSON.parse(item)
-          }
-          catch (e) {
-            return false
-          }
-
-          return typeof value === 'object' && value !== null
+      function isJsonObject(item: string): boolean {
+        let value = false
+        try {
+          value = JSON.parse(item)
+        }
+        catch (e) {
+          return false
         }
 
-        if (feature.properties) {
-          const cleanProperties: ApiPoiProperties = {} as ApiPoiProperties
-
-          Object.keys(feature.properties).forEach((key) => {
-            if (isJsonObject(feature.properties[key]))
-              cleanProperties[key] = JSON.parse(feature.properties[key])
-            else cleanProperties[key] = feature.properties[key]
-          })
-
-          goodFeature.properties = cleanProperties
-        }
-
-        this.selectedFeature = goodFeature
+        return typeof value === 'object' && value !== null
       }
-    },
-  },
+
+      if (feature.properties) {
+        const cleanProperties: ApiPoiProperties = {} as ApiPoiProperties
+
+        Object.keys(feature.properties).forEach((key) => {
+          if (isJsonObject(feature.properties[key]))
+            cleanProperties[key] = JSON.parse(feature.properties[key])
+          else cleanProperties[key] = feature.properties[key]
+        })
+
+        goodFeature.properties = cleanProperties
+      }
+
+      selectedFeature.value = goodFeature
+    }
+  }
+
+  return {
+    boundOptions,
+    center,
+    mode,
+    pitch,
+    selectedFeature,
+    teritorioCluster,
+    isModeExplorer,
+    isModeFavorites,
+    isModeExplorerOrFavorites,
+    setSelectedFeature,
+  }
 })
