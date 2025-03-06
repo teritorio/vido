@@ -1,33 +1,31 @@
 <script setup lang="ts">
 import type { GeoJSON, MultiPolygon, Polygon } from 'geojson'
+import { storeToRefs } from 'pinia'
 import Home from '~/components/Home/Home.vue'
-import type { ApiPoi } from '~/lib/apiPois'
 import { useSiteStore } from '~/stores/site'
+import { menuStore as useMenuStore } from '~/stores/menu'
 import { mapStore as useMapStore } from '~/stores/map'
 import { regexForCategoryIds } from '~/composables/useIdsResolver'
+import type { ApiMenuCategory } from '~/lib/apiMenu'
 
-//
-// Composables
-//
 const route = useRoute()
 const mapStore = useMapStore()
 const siteStore = useSiteStore()
+const menuStore = useMenuStore()
+const { apiMenuCategory } = storeToRefs(menuStore)
 const { config, settings } = siteStore
-const { API_ENDPOINT, API_PROJECT, API_THEME } = config!
+
+if (!config)
+  throw createError({ statusCode: 500, statusMessage: 'Wrong config', fatal: true })
+
 const { $trackingInit } = useNuxtApp()
 
-//
-// Data
-//
 const boundaryGeojson = ref<Polygon | MultiPolygon>()
 const poiId = ref<string>()
 const categoryIds = ref<number[]>()
 
-//
-// Hooks
-//
 onBeforeMount(() => {
-  $trackingInit(config!)
+  $trackingInit(config)
 })
 
 const { boundary } = route.query
@@ -66,44 +64,41 @@ if (categoryIds.value?.length === 1 && route.name === 'index-p1' && !route.path.
   categoryIds.value = undefined
 }
 
-if (route.params.poiId)
+if (categoryIds.value) {
+  await menuStore.fetchFeatures({
+    vidoConfig: config,
+    categoryIds: categoryIds.value,
+    clipingPolygonSlug: route.query.clipingPolygonSlug?.toString(),
+  })
+  menuStore.setSelectedCategoryIds(categoryIds.value)
+}
+else if (typeof location !== 'undefined') {
+  const enabledCategories: ApiMenuCategory['id'][] = []
+
+  if (apiMenuCategory.value) {
+    apiMenuCategory.value.forEach((category) => {
+      if (category.selected_by_default)
+        enabledCategories.push(category.id)
+    })
+  }
+
+  menuStore.setSelectedCategoryIds(enabledCategories)
+}
+
+if (route.params.poiId) {
   poiId.value = route.params.poiId.toString()
 
-// Fetch inital POI
-const { data, error, status } = await useFetch<ApiPoi>(
-  () => `${API_ENDPOINT}/${API_PROJECT}/${API_THEME}/poi/${poiId.value}.geojson`,
-  {
-    query: {
-      geometry_as: 'bbox',
-      short_description: true,
-    },
-    immediate: !!poiId.value && !poiId.value.includes('_'),
-  },
-)
-
-if (error.value)
-  createError(error.value)
-
-if (status.value === 'success' && data.value)
-  mapStore.setSelectedFeature(data.value)
+  // TO CHECK:  !poiId.value.includes('_')
+  const selectedFeature = menuStore.getFeatureById(Number.parseInt(poiId.value))
+  if (selectedFeature) {
+    await mapStore.setSelectedFeature(selectedFeature)
+  }
+}
 </script>
 
 <template>
   <VApp>
-    <VAlert
-      v-if="error"
-      :closable="true"
-      :style="{ zIndex: 999 }"
-      :text="error.message"
-      location="top center"
-      position="fixed"
-      type="error"
-      variant="elevated"
-    />
-    <Home
-      :boundary-area="boundaryGeojson"
-      :initial-category-ids="categoryIds"
-    />
+    <Home :boundary-area="boundaryGeojson" />
   </VApp>
 </template>
 

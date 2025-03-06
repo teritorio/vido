@@ -48,6 +48,18 @@ export const menuStore = defineStore('menu', {
   }),
 
   getters: {
+    getFeatureById: (state: State): (id: number) => ApiPoi | null => {
+      return (id) => {
+        for (const key in state.features) {
+          for (const feature of state.features[key]) {
+            if (feature.properties.metadata.id === id) {
+              return feature
+            }
+          }
+        }
+        return null
+      }
+    },
     featuresColor: (state: State) => {
       const colors = Object.values(state.features)
         .flat()
