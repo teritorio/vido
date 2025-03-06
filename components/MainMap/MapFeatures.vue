@@ -6,7 +6,6 @@ import type {
   LngLatBounds,
   MapDataEvent,
   Map as MapGL,
-  MapGeoJSONFeature,
   MapMouseEvent,
 } from 'maplibre-gl'
 import { storeToRefs } from 'pinia'
@@ -19,8 +18,6 @@ import MapControls3D from '~/components/Map/MapControls3D.vue'
 import MapControlsBackground from '~/components/Map/MapControlsBackground.vue'
 import type { ApiMenuCategory } from '~/lib/apiMenu'
 import type { ApiPoi } from '~/lib/apiPois'
-import type { ApiPoiDeps, ApiRouteWaypoint } from '~/lib/apiPoiDeps'
-import { ApiRouteWaypointType, apiRouteWaypointToApiPoi } from '~/lib/apiPoiDeps'
 import { getBBoxFeatures } from '~/lib/bbox'
 import { DEFAULT_MAP_STYLE, MAP_ZOOM } from '~/lib/constants'
 import { vectorTilesPoi2ApiPoi } from '~/lib/vectorTilesPois'
@@ -66,7 +63,6 @@ const STYLE_LAYERS = [
   'features-fill',
 ]
 
-const route = useRoute()
 const router = useRouter()
 const { t } = useI18n()
 const device = useDevice()
@@ -79,10 +75,9 @@ const { config } = siteStore
 if (!config)
   throw createError({ statusCode: 500, statusMessage: 'Wrong config', fatal: true })
 
-const { BICYCLE_STYLE_URL, API_ENDPOINT, API_PROJECT, API_THEME } = config
 const { explorerModeEnabled } = storeToRefs(siteStore)
 const mapStore = useMapStore()
-const { center, selectedFeature, teritorioCluster, mode } = storeToRefs(mapStore)
+const { center, selectedFeature, teritorioCluster, mode, selectedFeatureDepsIDs } = storeToRefs(mapStore)
 const mapStyleLoaded = ref(false)
 const mapBaseRef = ref<InstanceType<typeof MapBase>>()
 const map = ref<MapGL>()
@@ -91,7 +86,7 @@ const selectedBackground = ref<MapStyleEnum>(DEFAULT_MAP_STYLE)
 const availableStyles = computed((): MapStyleEnum[] => {
   const styles = [MapStyleEnum.vector, MapStyleEnum.aerial]
 
-  if (BICYCLE_STYLE_URL)
+  if (config.BICYCLE_STYLE_URL)
     styles.push(MapStyleEnum.bicycle)
 
   return styles
@@ -147,7 +142,7 @@ function onMapInit(mapInstance: MapGL): void {
     pinMarkerRenderFn: pinMarkerRender,
   })
 
-  teritorioCluster.value.addEventListener('feature-click', (e: Event) => updateSelectedFeature((e as CustomEvent).detail.selectedFeature))
+  teritorioCluster.value.addEventListener('feature-click', async (e: Event) => await mapStore.setSelectedFeature((e as CustomEvent).detail.selectedFeature))
 
   map.value.on('click', onClick)
 
@@ -199,7 +194,7 @@ function onMapStyleLoad(): void {
 }
 
 // Map interactions
-function onClick(e: MapMouseEvent): void {
+async function onClick(e: MapMouseEvent): Promise<void> {
   if (!map.value)
     return
 
@@ -207,103 +202,9 @@ function onClick(e: MapMouseEvent): void {
     layers: STYLE_LAYERS.filter(layer => map.value?.getLayer(layer)),
   })
 
-  if (vectorSelectedFeatures.length > 0) {
-    updateSelectedFeature(vectorTilesPoi2ApiPoi(vectorSelectedFeatures[0]))
-    showVectorSelectedFeature()
-  }
-  else {
-    updateSelectedFeature()
-  }
-}
-
-const selectedFeatureDepsIDs = ref<number[]>([])
-async function updateSelectedFeature(feature?: ApiPoi): Promise<void> {
-  selectedFeatureDepsIDs.value = []
-
-  if (!feature) {
-    await menuStore.fetchFeatures({
-      vidoConfig: config!,
-      categoryIds: props.selectedCategoriesIds,
-      clipingPolygonSlug: route.query.clipingPolygonSlug?.toString(),
-    })
-    mapStore.setSelectedFeature()
-  }
-  else {
-    const id = feature.properties.metadata.id || feature.properties.id || feature.id
-
-    if (selectedFeature.value?.properties.metadata.id !== id) {
-      try {
-        if (feature.properties['route:point:type']) {
-          return
-        }
-
-        const { data, error, status } = await useFetch<ApiPoiDeps>(
-          () => `${API_ENDPOINT}/${API_PROJECT}/${API_THEME}/poi/${id}/deps.geojson`,
-          {
-            query: {
-              geometry_as: 'point_or_bbox',
-              short_description: false,
-            },
-          },
-        )
-
-        if (error.value)
-          throw createError(error.value)
-
-        if (status.value === 'success' && data.value) {
-          let poi: ApiPoi | undefined
-          const deps = [] as ApiPoi[]
-          let waypointIndex = 1
-
-          data.value.features.forEach((f) => {
-            const depID = 'metadata' in f.properties ? f.properties.metadata.id : f.properties.id
-            selectedFeatureDepsIDs.value.push(depID)
-
-            f = {
-              ...f,
-              properties: {
-                ...f.properties,
-                vido_visible: true,
-              },
-            }
-
-            if (id === depID) {
-              poi = f as ApiPoi
-            }
-
-            if (f.properties['route:point:type']) {
-              f = apiRouteWaypointToApiPoi(
-                f as ApiRouteWaypoint,
-                poi?.properties.display?.color_fill || '#76009E',
-                poi?.properties.display?.color_line || '#76009E',
-                f.properties['route:point:type'] === ApiRouteWaypointType.way_point
-                  ? (waypointIndex++).toString()
-                  : undefined,
-              )
-            }
-
-            if (f.geometry.type === 'Point') {
-              deps.push(f as ApiPoi)
-            }
-          })
-
-          if (!poi)
-            throw new Error(`Feature with ID: ${id} not found.`)
-
-          mapStore.setSelectedFeature(poi)
-
-          // In case user click on vecto element, attach Pin Marker to POI Marker
-          teritorioCluster.value?.setSelectedFeature(poi as unknown as MapGeoJSONFeature)
-
-          if (poi.properties.metadata.category_ids?.length)
-            menuStore.filterByDeps(poi.properties.metadata.category_ids, deps)
-        }
-      }
-      catch (e) {
-        console.error('Vido error:', (e as Error).message)
-      }
-    }
-  }
+  vectorSelectedFeatures.length > 0
+    ? await mapStore.setSelectedFeature(vectorTilesPoi2ApiPoi(vectorSelectedFeatures[0]))
+    : await mapStore.setSelectedFeature()
 }
 
 function goToSelectedFeature(): void {
@@ -388,7 +289,7 @@ function showVectorSelectedFeature(): void {
   if (!map.value)
     return
 
-  if (mode.value === Mode.EXPLORER) {
+  if (mode.value === Mode.EXPLORER || mode.value === Mode.FAVORITES) {
     filterRouteByPoiIds(map.value, [])
     return
   }
@@ -407,7 +308,7 @@ function showVectorSelectedFeature(): void {
   }
 }
 
-defineExpose({ goToSelectedFeature, updateSelectedFeature })
+defineExpose({ goToSelectedFeature })
 </script>
 
 <template>

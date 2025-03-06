@@ -16,7 +16,7 @@ import PoiCard from '~/components/PoisCard/PoiCard.vue'
 import Search from '~/components/Search/Search.vue'
 import CookiesConsent from '~/components/UI/CookiesConsent.vue'
 import Logo from '~/components/UI/Logo.vue'
-import type { ApiMenuCategory, MenuItem } from '~/lib/apiMenu'
+import type { MenuItem } from '~/lib/apiMenu'
 import type { ApiPoi } from '~/lib/apiPois'
 import { getPois } from '~/lib/apiPois'
 import { getBBoxFeature, getBBoxFeatures } from '~/lib/bbox'
@@ -36,7 +36,6 @@ import IsochroneStatus from '~/components/Isochrone/IsochroneStatus.vue'
 //
 const props = defineProps<{
   boundaryArea?: Polygon | MultiPolygon
-  initialCategoryIds?: number[]
 }>()
 
 //
@@ -109,22 +108,6 @@ onBeforeMount(async () => {
 })
 
 onMounted(async () => {
-  if (props.initialCategoryIds) {
-    menuStore.setSelectedCategoryIds(props.initialCategoryIds)
-  }
-  else if (typeof location !== 'undefined') {
-    const enabledCategories: ApiMenuCategory['id'][] = []
-
-    if (apiMenuCategory.value) {
-      apiMenuCategory.value.forEach((category) => {
-        if (category.selected_by_default)
-          enabledCategories.push(category.id)
-      })
-    }
-
-    menuStore.setSelectedCategoryIds(enabledCategories)
-  }
-
   $tracking({
     type: 'page',
     title: (route.name && String(route.name)) || undefined,
@@ -242,16 +225,14 @@ watch(selectedFeature, (newFeature) => {
   }
 }, { immediate: true })
 
-watch(selectedCategoryIds, (a, b) => {
+watch(selectedCategoryIds, async (a, b) => {
   if (a !== b) {
     routerPushUrl()
-
-    menuStore.fetchFeatures({
+    await menuStore.fetchFeatures({
       vidoConfig: config!,
       categoryIds: selectedCategoryIds.value,
       clipingPolygonSlug: route.query.clipingPolygonSlug?.toString(),
     })
-
     allowRegionBackZoom.value = true
   }
 })
@@ -284,10 +265,10 @@ watch(isModeFavorites, async (isEnabled) => {
 //
 // Methods
 //
-function goToSelectedFeature(feature?: ApiPoi) {
+async function goToSelectedFeature(feature?: ApiPoi): Promise<void> {
   if (mapFeaturesRef.value) {
     if (feature)
-      mapFeaturesRef.value.updateSelectedFeature(feature)
+      await mapStore.setSelectedFeature(feature)
     mapFeaturesRef.value.goToSelectedFeature()
   }
 }
@@ -356,9 +337,9 @@ function onBottomMenuButtonClick() {
   isMenuItemOpen.value = !isMenuItemOpen.value
 }
 
-async function onQuitExplorerFavoriteMode() {
+async function onQuitExplorerFavoriteMode(): Promise<void> {
   if (mapFeaturesRef.value)
-    await mapFeaturesRef.value.updateSelectedFeature()
+    await mapStore.setSelectedFeature()
 
   mode.value = Mode.BROWSER
 }
@@ -447,9 +428,9 @@ function scrollTop() {
     header.scrollTop = 0
 }
 
-function handlePoiCardClose() {
+async function handlePoiCardClose(): Promise<void> {
   if (mapFeaturesRef.value) {
-    mapFeaturesRef.value.updateSelectedFeature()
+    await mapStore.setSelectedFeature()
   }
 }
 </script>
