@@ -87,7 +87,7 @@ if (error.value)
   createError(error.value)
 
 if (status.value === 'success' && data.value)
-  mapStore.setSelectedFeature(data.value)
+  await mapStore.setSelectedFeature(data.value)
 
 // Disable Favorite Mode
 favoritesModeEnabled.value = false
