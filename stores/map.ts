@@ -114,6 +114,10 @@ export const mapStore = defineStore('map', () => {
 
           if (id === depID) {
             poi = f as ApiPoi
+            // In case the geometry isn't Point
+            // we get the clicked feature instead of the one returned by API
+            if (f.geometry.type !== 'Point')
+              deps.push(feature)
           }
 
           if (f.properties['route:point:type']) {
