@@ -31,16 +31,10 @@ import useDevice from '~/composables/useDevice'
 import type { ApiAddrSearchResult, ApiSearchResult } from '~/lib/apiSearch'
 import IsochroneStatus from '~/components/Isochrone/IsochroneStatus.vue'
 
-//
-// Props
-//
 const props = defineProps<{
   boundaryArea?: Polygon | MultiPolygon
 }>()
 
-//
-// Composables
-//
 const mapStore = useMapStore()
 const { center, isModeFavorites, isModeExplorer, isModeExplorerOrFavorites, mode, selectedFeature, teritorioCluster } = storeToRefs(mapStore)
 const menuStore = useMenuStore()
@@ -56,10 +50,8 @@ const router = useRouter()
 const device = useDevice()
 const { isochroneCurrentFeature } = useIsochrone()
 
-//
-// Data
-//
-const allowRegionBackZoom = ref<boolean>(false)
+// CHECK: maybe unused
+// const allowRegionBackZoom = ref<boolean>(false)
 const isFilterActive = ref<boolean>(false)
 const initialBbox = ref<LngLatBounds>()
 const isMenuItemOpen = ref<boolean>(false)
@@ -68,9 +60,6 @@ const showFavoritesOverlay = ref<boolean>(false)
 const isPoiCardShown = ref<boolean>(false)
 const mapFeaturesRef = ref<InstanceType<typeof MapFeatures>>()
 
-//
-// Hooks
-//
 onBeforeMount(async () => {
   const favs = getHashPart(router, 'favs')
   if (favs) {
@@ -125,9 +114,6 @@ onMounted(async () => {
   }
 })
 
-//
-// Computed
-//
 const isBottomMenuOpened = computed(() => {
   return ((device.value.smallScreen && isPoiCardShown.value) || isMenuItemOpen.value)
 })
@@ -203,9 +189,6 @@ const siteName = computed(() => {
   return settings!.themes[0]?.title.fr || ''
 })
 
-//
-// Watchers
-//
 watch(selectedFeature, (newFeature) => {
   isPoiCardShown.value = !!newFeature
 
@@ -223,23 +206,15 @@ watch(selectedFeature, (newFeature) => {
       })
     }
   }
-}, { immediate: true })
+})
 
-watch(selectedCategoryIds, async (a, b) => {
-  if (a !== b) {
+watch(selectedCategoryIds, async (newValue, oldValue) => {
+  if (newValue.toString() !== oldValue.toString()) {
     routerPushUrl()
-    await menuStore.fetchFeatures({
-      vidoConfig: config!,
-      categoryIds: selectedCategoryIds.value,
-      clipingPolygonSlug: route.query.clipingPolygonSlug?.toString(),
-    })
-    allowRegionBackZoom.value = true
   }
 })
 
 watch(mode, () => {
-  allowRegionBackZoom.value = false
-
   const hash = {
     mode: mode.value !== Mode.BROWSER ? mode.value : null,
   }
@@ -262,13 +237,10 @@ watch(isModeFavorites, async (isEnabled) => {
   }
 })
 
-//
-// Methods
-//
-async function goToSelectedFeature(feature?: ApiPoi): Promise<void> {
+function goToSelectedFeature(feature?: ApiPoi): void {
   if (mapFeaturesRef.value) {
     if (feature)
-      await mapStore.setSelectedFeature(feature)
+      mapStore.setSelectedFeature(feature)
     mapFeaturesRef.value.goToSelectedFeature()
   }
 }
@@ -337,9 +309,9 @@ function onBottomMenuButtonClick() {
   isMenuItemOpen.value = !isMenuItemOpen.value
 }
 
-async function onQuitExplorerFavoriteMode(): Promise<void> {
+function onQuitExplorerFavoriteMode(): void {
   if (mapFeaturesRef.value)
-    await mapStore.setSelectedFeature()
+    mapStore.setSelectedFeature()
 
   mode.value = Mode.BROWSER
 }
@@ -378,7 +350,7 @@ function routerPushUrl(hashUpdate: { [key: string]: string | null } = {}) {
   if (hashUpdate)
     hash = setHashParts(hash, hashUpdate)
 
-  router.push({
+  navigateTo({
     path: mode.value !== Mode.BROWSER
       ? '/'
       : (categoryIds ? `/${categoryIds}/` : '/') + (id ? `${id}` : ''),
@@ -396,7 +368,7 @@ function toggleExploreAroundSelectedPoi(feature?: ApiPoi) {
       isPoiCardShown.value = false
   }
   else {
-    allowRegionBackZoom.value = false
+    // allowRegionBackZoom.value = false
     mode.value = Mode.BROWSER
   }
 }
@@ -428,9 +400,9 @@ function scrollTop() {
     header.scrollTop = 0
 }
 
-async function handlePoiCardClose(): Promise<void> {
+function handlePoiCardClose(): void {
   if (mapFeaturesRef.value) {
-    await mapStore.setSelectedFeature()
+    mapStore.setSelectedFeature()
   }
 }
 </script>

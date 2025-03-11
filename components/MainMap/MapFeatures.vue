@@ -92,19 +92,14 @@ const availableStyles = computed((): MapStyleEnum[] => {
   return styles
 })
 
-watch(
-  () => props.features,
-  () => {
-    if (!map.value)
-      return
+watch(() => props.features, () => {
+  if (!map.value)
+    return
 
-    showVectorSelectedFeature()
-    renderPois()
-    handleResetMapZoom(t('snack.noPoi.issue'), t('snack.noPoi.action'))
-  },
-)
-
-watch(selectedFeature, () => showVectorSelectedFeature())
+  showVectorSelectedFeature()
+  renderPois()
+  handleResetMapZoom(t('snack.noPoi.issue'), t('snack.noPoi.action'))
+})
 
 watch(selectedBackground, () => {
   if (!map.value)
@@ -142,7 +137,7 @@ function onMapInit(mapInstance: MapGL): void {
     pinMarkerRenderFn: pinMarkerRender,
   })
 
-  teritorioCluster.value.addEventListener('feature-click', async (e: Event) => await mapStore.setSelectedFeature((e as CustomEvent).detail.selectedFeature))
+  teritorioCluster.value.addEventListener('feature-click', (e: Event) => mapStore.setSelectedFeature((e as CustomEvent).detail.selectedFeature))
 
   map.value.on('click', onClick)
 
@@ -194,7 +189,7 @@ function onMapStyleLoad(): void {
 }
 
 // Map interactions
-async function onClick(e: MapMouseEvent): Promise<void> {
+function onClick(e: MapMouseEvent): void {
   if (!map.value)
     return
 
@@ -203,8 +198,8 @@ async function onClick(e: MapMouseEvent): Promise<void> {
   })
 
   vectorSelectedFeatures.length > 0
-    ? await mapStore.setSelectedFeature(vectorTilesPoi2ApiPoi(vectorSelectedFeatures[0]))
-    : await mapStore.setSelectedFeature()
+    ? mapStore.setSelectedFeature(vectorTilesPoi2ApiPoi(vectorSelectedFeatures[0]))
+    : mapStore.setSelectedFeature()
 }
 
 function goToSelectedFeature(): void {

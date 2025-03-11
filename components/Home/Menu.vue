@@ -111,7 +111,6 @@ export default defineNuxtComponent({
     ...mapActions(menuStore, [
       'addSelectedCategoryIds',
       'delSelectedCategoryIds',
-      'toggleSelectedCategoryId',
     ]),
 
     getMenuItemByParentId(
@@ -213,7 +212,6 @@ export default defineNuxtComponent({
           display-mode-default="compact"
           class="tw-flex-1 tw-pointer-events-auto tw-h-full"
           @menu-group-click="onMenuGroupClick"
-          @category-click="toggleSelectedCategoryId($event)"
           @filter-click="onCategoryFilterClick"
         />
       </component>
@@ -264,7 +262,6 @@ export default defineNuxtComponent({
         display-mode-default="large"
         class="tw-flex-1 tw-pointer-events-auto tw-h-full"
         @menu-group-click="onMenuGroupClick"
-        @category-click="toggleSelectedCategoryId($event)"
         @filter-click="onCategoryFilterClick"
       />
     </component>

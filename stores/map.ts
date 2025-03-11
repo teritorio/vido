@@ -61,7 +61,7 @@ export const mapStore = defineStore('map', () => {
     throw createError({ statusCode: 500, statusMessage: 'Wrong config', fatal: true })
 
   const { API_ENDPOINT, API_PROJECT, API_THEME } = config
-  async function setSelectedFeature(feature?: ApiPoi) {
+  async function setSelectedFeature(feature?: ApiPoi): Promise<void> {
     selectedFeatureDepsIDs.value = []
 
     if (!feature) {
@@ -143,8 +143,8 @@ export const mapStore = defineStore('map', () => {
         // In case user click on vecto element, attach Pin Marker to POI Marker
         teritorioCluster.value?.setSelectedFeature(poi as unknown as MapGeoJSONFeature)
 
-        if (poi.properties.metadata.category_ids?.length)
-          menuStore.filterByDeps(poi.properties.metadata.category_ids, deps)
+        // if (poi.properties.metadata.category_ids?.length)
+        //   menuStore.filterByDeps(poi.properties.metadata.category_ids, deps)
       }
     }
   }

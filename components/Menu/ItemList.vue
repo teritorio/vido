@@ -44,17 +44,10 @@ export default defineNuxtComponent({
 
   emits: {
     menuGroupClick: (_menuItemId: ApiMenuItem['id']) => true,
-    categoryClick: (_menuItemId: ApiMenuItem['id']) => true,
     filterClick: (_categoryId: ApiMenuCategory['id']) => true,
   },
 
   methods: {
-    onMenuGroupClick(menuItem: MenuItem) {
-      this.$emit('menuGroupClick', menuItem.id)
-    },
-    onCategoryClick(menuItem: MenuItem) {
-      this.$emit('categoryClick', menuItem.id)
-    },
     onFilterClick(categoryId: ApiMenuCategory['id']) {
       this.$emit('filterClick', categoryId)
     },
@@ -78,7 +71,7 @@ export default defineNuxtComponent({
           (menuItem.menu_group.display_mode || displayModeDefault)
             === 'large' && ['tw-col-start-1 tw-col-span-4']
         "
-        @click="onMenuGroupClick(menuItem)"
+        @click="$emit('menuGroupClick', $event)"
       />
       <LinkItem
         v-else-if="menuItem.link"
@@ -102,7 +95,6 @@ export default defineNuxtComponent({
           (menuItem.category.display_mode || displayModeDefault)
             === 'large' && ['tw-col-start-1 tw-col-span-4']
         "
-        @click="onCategoryClick(menuItem)"
         @filter-click="onFilterClick($event)"
       />
     </template>
