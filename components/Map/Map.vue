@@ -1,4 +1,4 @@
-<script lang="ts">
+<script setup lang="ts">
 import { OpenMapTilesLanguage } from '@teritorio/openmaptiles-gl-language'
 import type {
   FitBoundsOptions,
@@ -9,7 +9,6 @@ import type {
   MapTouchEvent,
   RasterSourceSpecification,
   StyleSpecification,
-
   VectorSourceSpecification,
 } from 'maplibre-gl'
 import {
@@ -20,10 +19,7 @@ import {
   NavigationControl,
   ScaleControl,
 } from 'maplibre-gl'
-import { mapState, storeToRefs } from 'pinia'
-import type { PropType } from 'vue'
-
-import { defineNuxtComponent } from '#app'
+import { storeToRefs } from 'pinia'
 import { DEFAULT_MAP_STYLE, MAP_ZOOM } from '~/lib/constants'
 import { useSiteStore } from '~/stores/site'
 import { fetchStyle } from '~/utils/styles'
@@ -32,344 +28,285 @@ import { MapStyleEnum } from '~/utils/types'
 type ITMap = InstanceType<typeof Map>
 type ITAttributionControl = InstanceType<typeof AttributionControl>
 
-export default defineNuxtComponent({
-  props: {
-    mapStyle: {
-      type: String as PropType<MapStyleEnum>,
-      default: DEFAULT_MAP_STYLE as MapStyleEnum,
-    },
-    bounds: {
-      type: [Array, Object] as PropType<LngLatBounds>,
-      default: undefined,
-    },
-    fitBoundsOptions: {
-      type: Object as PropType<FitBoundsOptions>,
-      default: () => ({
-        padding: 50,
-        maxZoom: 17,
-      }),
-    },
-    extraAttributions: {
-      type: Array as PropType<string[]>,
-      default: () => [],
-    },
-    center: {
-      type: [Array, Object] as PropType<LngLatLike>,
-      default: undefined,
-    },
-    zoom: {
-      type: Number,
-      default: null,
-    },
-    rotate: {
-      type: Boolean,
-      default: false,
-    },
-    fullscreenControl: {
-      type: Boolean,
-      default: false,
-    },
-    hash: {
-      type: String as PropType<string>,
-      default: undefined,
-    },
-    showAttribution: {
-      type: Boolean,
-      default: true,
-    },
-    hideControl: {
-      type: Boolean,
-      default: false,
-    },
-    cooperativeGestures: {
-      type: Boolean,
-      default: false,
-    },
-  },
+const props = withDefaults(defineProps<{
+  mapStyle?: MapStyleEnum
+  bounds?: LngLatBounds
+  fitBoundsOptions?: FitBoundsOptions
+  extraAttributions?: string[]
+  center?: LngLatLike
+  zoom?: number
+  rotate: boolean
+  fullscreenControl: boolean
+  hash?: string
+  showAttribution?: boolean
+  hideControl?: boolean
+  cooperativeGestures: boolean
+}>(), {
+  mapStyle: DEFAULT_MAP_STYLE,
+  fitBoundsOptions: () => ({
+    padding: 50,
+    maxZoom: 17,
+  }),
+  extraAttributions: () => [],
+  rotate: false,
+  fullscreenControl: false,
+  showAttribution: true,
+  hideControl: false,
+  cooperativeGestures: false,
+})
 
-  setup() {
-    const { config } = storeToRefs(useSiteStore())
-    const fullscreenControlObject = ref<FullscreenControl>()
+const emit = defineEmits<{
+  (event: 'mapInit', map: ITMap): void
+  (event: 'mapData', e: MapDataEvent & object): void
+  (event: 'mapDragEnd', e: MapLibreEvent<MouseEvent | TouchEvent | undefined> & object): void
+  (event: 'mapMoveEnd', e: MapLibreEvent<MouseEvent | TouchEvent | WheelEvent | undefined> & object): void
+  (event: 'mapResize', e: MapLibreEvent<unknown> & object): void
+  (event: 'mapRotateEnd', e: MapLibreEvent<MouseEvent | TouchEvent | undefined> & object): void
+  (event: 'mapTouchMove', e: MapTouchEvent & object): void
+  (event: 'mapZoomEnd', e: MapLibreEvent<MouseEvent | TouchEvent | WheelEvent | undefined> & object): void
+  (event: 'fullAttribution', attribution: string): void
+  (event: 'mapStyleLoad', style: StyleSpecification): void
+}>()
 
-    onMounted(() => {
-      fullscreenControlObject.value = new FullscreenControl()
-    })
+const { config } = useSiteStore()
+if (!config)
+  throw createError({ statusCode: 500, statusMessage: 'Wrong config', fatal: true })
 
-    return {
-      config,
-      fullscreenControlObject,
-    }
-  },
+const { t } = useI18n()
+const { locale } = storeToRefs(useSiteStore())
 
-  data(): {
-    map: ITMap | undefined
-    style: StyleSpecification | null
-    mapStyleCache: { [key: string]: StyleSpecification }
-    attributionControl: ITAttributionControl | null
-    languageControl: OpenMapTilesLanguage | null
-    withMap: any[]
-  } {
-    return {
-      map: undefined,
-      style: null,
-      mapStyleCache: {},
-      attributionControl: null,
-      languageControl: null,
-      withMap: [],
-    }
-  },
+const fullscreenControlObject = ref<FullscreenControl>()
+const map = ref<ITMap>()
+const style = ref<StyleSpecification | null>(null)
+const mapStyleCache = ref<{ [key: string]: StyleSpecification }>({})
+const attributionControl = ref<ITAttributionControl>()
+const languageControl = ref<OpenMapTilesLanguage | null>(null)
+const withMap = ref<any[]>([])
 
-  mounted() {
-    const map = new Map({
-      container: 'map',
-      style: (this.style as StyleSpecification) || {
-        version: 8,
-        sources: {},
-        layers: [
-          {
-            id: 'bg',
-            type: 'background',
-            paint: { 'background-color': '#f8f4f0' },
-          },
-        ],
-      },
-      center: this.center,
-      zoom: this.zoom,
-      bounds: this.bounds,
-      fitBoundsOptions: this.fitBoundsOptions,
-      hash: this.hash,
-      maxZoom: this.defaultZoom.max,
-      minZoom: this.defaultZoom.min,
-      // style: this.style,
-      attributionControl: false,
-      cooperativeGestures: this.cooperativeGestures,
-      locale: {
-        'NavigationControl.ResetBearing':
-          this.$t('mapControls.resetBearing') || 'Reset bearing to north',
-        'NavigationControl.ZoomIn': this.$t('mapControls.zoomIn') || 'Zoom in',
-        'NavigationControl.ZoomOut':
-          this.$t('mapControls.zoomOut') || 'Zoom out',
-      },
-    })
+const defaultZoom = computed(() => MAP_ZOOM.zoom)
 
-    map.on('load', _event => this.onMapInit(map as ITMap))
-    map.on('data', $event => this.$emit('mapData', $event))
-    map.on('dragend', $event => this.$emit('mapDragEnd', $event))
-    map.on('moveend', $event => this.$emit('mapMoveEnd', $event))
-    map.on('resize', $event => this.$emit('mapResize', $event))
-    map.on('rotateend', $event => this.$emit('mapRotateEnd', $event))
-    map.on('touchmove', $event => this.$emit('mapTouchMove', $event))
-    map.on('zoomend', $event => this.$emit('mapZoomEnd', $event))
+onMounted(() => {
+  fullscreenControlObject.value = new FullscreenControl()
 
-    map.addControl(
-      new NavigationControl({
-        showZoom: true,
-        showCompass: this.rotate,
-        visualizePitch: true,
-      }),
-    )
-
-    const geolocateControl = new GeolocateControl({
-      positionOptions: { enableHighAccuracy: true },
-      trackUserLocation: true,
-    })
-    map.addControl(geolocateControl)
-    geolocateControl._container.classList.add('control-geolocate')
-
-    if (this.fullscreenControl && this.fullscreenControlObject)
-      map.addControl(this.fullscreenControlObject)
-
-    map.addControl(
-      new ScaleControl({
-        maxWidth: 80,
-      }),
-    )
-  },
-
-  emits: {
-    mapInit: (_map: ITMap) => true,
-    mapData: (_event: MapDataEvent & object) => true,
-    mapDragEnd: (
-      _event: MapLibreEvent<MouseEvent | TouchEvent | undefined> & object,
-    ) => true,
-    mapMoveEnd: (
-      _event: MapLibreEvent<MouseEvent | TouchEvent | WheelEvent | undefined> &
-      object,
-    ) => true,
-    mapResize: (_event: MapLibreEvent<unknown> & object) => true,
-    mapRotateEnd: (
-      _event: MapLibreEvent<MouseEvent | TouchEvent | undefined> & object,
-    ) => true,
-    mapTouchMove: (_event: MapTouchEvent & object) => true,
-    mapZoomEnd: (
-      _event: MapLibreEvent<MouseEvent | TouchEvent | WheelEvent | undefined> &
-      object,
-    ) => true,
-    fullAttribution: (_attribution: string) => true,
-    mapStyleLoad: (_style: StyleSpecification) => true,
-  },
-
-  computed: {
-    ...mapState(useSiteStore, ['locale']),
-
-    defaultZoom() {
-      return MAP_ZOOM.zoom
+  const map = new Map({
+    container: 'map',
+    style: (style.value as StyleSpecification) || {
+      version: 8,
+      sources: {},
+      layers: [
+        {
+          id: 'bg',
+          type: 'background',
+          paint: { 'background-color': '#f8f4f0' },
+        },
+      ],
     },
-  },
+    center: props.center,
+    zoom: props.zoom,
+    bounds: props.bounds,
+    fitBoundsOptions: props.fitBoundsOptions,
+    hash: props.hash,
+    maxZoom: defaultZoom.value.max,
+    minZoom: defaultZoom.value.min,
+    attributionControl: false,
+    cooperativeGestures: props.cooperativeGestures,
+    locale: {
+      'NavigationControl.ResetBearing':
+          t('mapControls.resetBearing') || 'Reset bearing to north',
+      'NavigationControl.ZoomIn': t('mapControls.zoomIn') || 'Zoom in',
+      'NavigationControl.ZoomOut':
+          t('mapControls.zoomOut') || 'Zoom out',
+    },
+  })
 
-  watch: {
-    mapStyle(value: MapStyleEnum) {
-      this.setStyle(value)
-    },
-    showAttribution(enable: boolean) {
-      if (enable)
-        this.addAttribution()
-      else
-        this.removeAttribution()
-    },
-    locale(locale: string) {
-      this.setLanguage(locale)
-    },
-    bounds() {
-      if (this.bounds)
-        this.map?.fitBounds(this.bounds, this.fitBoundsOptions)
-    },
-  },
+  map.on('load', _event => onMapInit(map!))
+  map.on('data', $event => emit('mapData', $event))
+  map.on('dragend', $event => emit('mapDragEnd', $event))
+  map.on('moveend', $event => emit('mapMoveEnd', $event))
+  map.on('resize', $event => emit('mapResize', $event))
+  map.on('rotateend', $event => emit('mapRotateEnd', $event))
+  map.on('touchmove', $event => emit('mapTouchMove', $event))
+  map.on('zoomend', $event => emit('mapZoomEnd', $event))
 
-  beforeMount() {
-    this.setStyle(this.mapStyle)
-  },
+  map.addControl(
+    new NavigationControl({
+      showZoom: true,
+      showCompass: props.rotate,
+      visualizePitch: true,
+    }),
+  )
 
-  methods: {
-    doWithMap(lambda: () => void) {
-      if (this.map)
-        lambda()
-      else
-        this.withMap.push(lambda)
-    },
+  const geolocateControl = new GeolocateControl({
+    positionOptions: { enableHighAccuracy: true },
+    trackUserLocation: true,
+  })
+  map.addControl(geolocateControl)
+  geolocateControl._container.classList.add('control-geolocate')
 
-    onMapInit(map: ITMap) {
-      this.$emit('mapInit', map)
+  if (props.fullscreenControl && fullscreenControlObject.value)
+    map.addControl(fullscreenControlObject.value)
+
+  map.addControl(
+    new ScaleControl({
+      maxWidth: 80,
+    }),
+  )
+})
+
+watch(() => props.mapStyle, (value: MapStyleEnum) => {
+  setStyle(value)
+})
+
+watch(() => props.showAttribution, (enable: boolean) => {
+  if (enable)
+    addAttribution()
+  else
+    removeAttribution()
+})
+
+watch(locale, (newValue) => {
+  if (newValue)
+    setLanguage(newValue)
+})
+
+watch(() => props.bounds, (newValue) => {
+  if (newValue)
+    map.value?.fitBounds(newValue, props.fitBoundsOptions)
+})
+
+function doWithMap(lambda: () => void) {
+  if (map.value)
+    lambda()
+  else
+    withMap.value.push(lambda)
+}
+
+function onMapInit(mapInstance: ITMap) {
+  map.value = mapInstance
+  languageControl.value = new OpenMapTilesLanguage({
+    defaultLanguage: locale.value || undefined,
+  })
+
+  if (props.showAttribution)
+    addAttribution()
+
+  map.value.addControl(languageControl.value)
+
+  if (!props.rotate) {
+    map.value.dragRotate.disable()
+    map.value.touchZoomRotate.disableRotation()
+  }
+
+  new ResizeObserver((_entries) => {
+    map.value?.resize()
+  }).observe(document.getElementById('map')!)
+
+  while (withMap.value.length > 0)
+    withMap.value.pop()()
+
+  setStyle(props.mapStyle)
+
+  emit('mapInit', map.value)
+}
+
+function setStyle(mapStyle: MapStyleEnum) {
+  if (!map.value)
+    return
+
+  getStyle(mapStyle)
+    .then((s) => {
+      const vectorSource = Object.values(s.sources || []).find(
+        source => ['vector', 'raster'].lastIndexOf(source.type) >= 0,
+      ) as VectorSourceSpecification | RasterSourceSpecification | undefined
+
+      if (vectorSource?.attribution)
+        emit('fullAttribution', vectorSource.attribution)
 
       // @ts-expect-error: Type is too deep
-      this.map = map
-      this.languageControl = new OpenMapTilesLanguage({
-        defaultLanguage: this.locale || undefined,
-      })
-
-      if (this.showAttribution)
-        this.addAttribution()
-
-      this.map.addControl(this.languageControl)
-
-      if (!this.rotate) {
-        this.map.dragRotate.disable()
-        this.map.touchZoomRotate.disableRotation()
-      }
-
-      new ResizeObserver((_entries) => {
-        this.map?.resize()
-      }).observe(document.getElementById('map')!)
-
-      while (this.withMap.length > 0)
-        this.withMap.pop()()
-    },
-
-    setStyle(mapStyle: MapStyleEnum) {
-      this.getStyle(mapStyle)
-        .then((style) => {
-          const vectorSource = Object.values(style.sources || []).find(
-            source => ['vector', 'raster'].lastIndexOf(source.type) >= 0,
-          ) as VectorSourceSpecification | RasterSourceSpecification | undefined
-          if (vectorSource?.attribution)
-            this.$emit('fullAttribution', vectorSource.attribution)
-
-          this.style = style
-          this.doWithMap(() => {
-            // Use no diff mode to avoid issue with added layers
-            this.map!.setStyle(style, {
-              diff: false,
-              transformStyle: (previousStyle, nextStyle) => {
-                if (previousStyle?.sources.isochrone) {
-                  style = {
-                    ...nextStyle,
-                    sources: {
-                      ...nextStyle.sources,
-                      isochrone: previousStyle.sources.isochrone,
-                    },
-                    layers: [
-                      ...nextStyle.layers,
-                      ...previousStyle.layers.filter(l => l.id.includes('isochrone')),
-                    ],
-                  }
-                }
-                return style
-              },
-            })
-            this.emitStyleLoad()
-          })
+      style.value = s as StyleSpecification
+      doWithMap(() => {
+        // Use no diff mode to avoid issue with added layers
+        map.value!.setStyle(s, {
+          diff: false,
+          transformStyle: (previousStyle, nextStyle) => {
+            if (previousStyle?.sources.isochrone) {
+              s = {
+                ...nextStyle,
+                sources: {
+                  ...nextStyle.sources,
+                  isochrone: previousStyle.sources.isochrone,
+                },
+                layers: [
+                  ...nextStyle.layers,
+                  ...previousStyle.layers.filter(l => l.id.includes('isochrone')),
+                ],
+              }
+            }
+            return s
+          },
         })
-        .catch((e) => {
-          console.error('Vido error:', (e as Error).message)
-        })
-    },
-
-    emitStyleLoad() {
-      if (this.map) {
-        const styleEvent = (e: MapDataEvent) => {
-          if (this.map && e.dataType === 'style' && this.style) {
-            this.map.off('styledata', styleEvent)
-            this.$emit('mapStyleLoad', this.style as StyleSpecification)
-          }
-        }
-        this.map.on('styledata', styleEvent)
-      }
-    },
-
-    async getStyle(mapStyle: MapStyleEnum): Promise<StyleSpecification> {
-      if (this.mapStyleCache[mapStyle]) {
-        return this.mapStyleCache[mapStyle]
-      }
-      else {
-        const { BICYCLE_STYLE_URL, SATELLITE_STYLE_URL, VECTO_STYLE_URL } = this.config!
-        const styleURLs = {
-          [MapStyleEnum.vector]: VECTO_STYLE_URL,
-          [MapStyleEnum.aerial]: SATELLITE_STYLE_URL,
-          [MapStyleEnum.bicycle]: BICYCLE_STYLE_URL,
-        }
-        const style = await fetchStyle(
-          styleURLs[mapStyle],
-          this.extraAttributions,
-        )
-        this.mapStyleCache[mapStyle] = style
-
-        return style
-      }
-    },
-
-    addAttribution() {
-      this.doWithMap(() => {
-        if (!this.attributionControl) {
-          this.attributionControl = new AttributionControl({ compact: false })
-          this.map!.addControl(this.attributionControl)
-        }
+        emitStyleLoad()
       })
-    },
+    })
+    .catch((e) => {
+      console.error('Vido error:', (e as Error).message)
+    })
+}
 
-    removeAttribution() {
-      this.doWithMap(() => {
-        if (this.attributionControl) {
-          this.map!.removeControl(this.attributionControl)
-          this.attributionControl = null
-        }
-      })
-    },
+function emitStyleLoad() {
+  if (map.value) {
+    const styleEvent = (e: MapDataEvent) => {
+      if (e.dataType === 'style' && style.value) {
+        map.value!.off('styledata', styleEvent)
+        emit('mapStyleLoad', style.value as StyleSpecification)
+      }
+    }
+    map.value.on('styledata', styleEvent)
+  }
+}
 
-    setLanguage(locale: string) {
-      this.languageControl?.setLanguage(locale)
-    },
-  },
-})
+async function getStyle(mapStyle: MapStyleEnum): Promise<StyleSpecification> {
+  if (mapStyleCache.value[mapStyle]) {
+    return mapStyleCache.value[mapStyle]
+  }
+  else {
+    const { BICYCLE_STYLE_URL, SATELLITE_STYLE_URL, VECTO_STYLE_URL } = config!
+    const styleURLs = {
+      [MapStyleEnum.vector]: VECTO_STYLE_URL,
+      [MapStyleEnum.aerial]: SATELLITE_STYLE_URL,
+      [MapStyleEnum.bicycle]: BICYCLE_STYLE_URL,
+    }
+    const style = await fetchStyle(
+      styleURLs[mapStyle],
+      props.extraAttributions,
+    )
+    mapStyleCache.value[mapStyle] = style
+
+    return style
+  }
+}
+
+function addAttribution() {
+  doWithMap(() => {
+    if (!attributionControl.value) {
+      attributionControl.value = new AttributionControl({ compact: false })
+      map.value!.addControl(attributionControl.value)
+    }
+  })
+}
+
+function removeAttribution() {
+  doWithMap(() => {
+    if (attributionControl.value) {
+      map.value!.removeControl(attributionControl.value)
+      attributionControl.value = undefined
+    }
+  })
+}
+
+function setLanguage(locale: string) {
+  languageControl.value?.setLanguage(locale)
+}
 </script>
 
 <template>
