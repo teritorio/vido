@@ -183,6 +183,7 @@ function doWithMap(lambda: () => void) {
 
 function onMapInit(mapInstance: ITMap) {
   map.value = mapInstance
+  useMapSync(map)
   languageControl.value = new OpenMapTilesLanguage({
     defaultLanguage: locale.value || undefined,
   })

@@ -50,8 +50,6 @@ const router = useRouter()
 const device = useDevice()
 const { isochroneCurrentFeature } = useIsochrone()
 
-// CHECK: maybe unused
-// const allowRegionBackZoom = ref<boolean>(false)
 const isFilterActive = ref<boolean>(false)
 const initialBbox = ref<LngLatBounds>()
 const isMenuItemOpen = ref<boolean>(false)
@@ -193,8 +191,6 @@ watch(selectedFeature, (newFeature) => {
   isPoiCardShown.value = !!newFeature
 
   if (process.client) {
-    routerPushUrl()
-
     if (newFeature) {
       $tracking({
         type: 'popup',
@@ -208,18 +204,15 @@ watch(selectedFeature, (newFeature) => {
   }
 })
 
-watch(selectedCategoryIds, async (newValue, oldValue) => {
-  if (newValue.toString() !== oldValue.toString()) {
-    routerPushUrl()
-  }
-})
-
-watch(mode, () => {
+watch(mode, async () => {
   const hash = {
     mode: mode.value !== Mode.BROWSER ? mode.value : null,
   }
 
-  routerPushUrl(hash)
+  if (hash.mode)
+    await navigateTo({ query: { mode: hash.mode }, hash: route.hash })
+  else
+    await navigateTo({ query: {}, hash: route.hash })
 })
 
 watch(isModeFavorites, async (isEnabled) => {
@@ -340,25 +333,6 @@ async function toggleNoteBookMode() {
   }
 }
 
-function routerPushUrl(hashUpdate: { [key: string]: string | null } = {}) {
-  const categoryIds = selectedCategoryIds.value.join(',')
-  const id = selectedFeature.value?.properties?.metadata?.id?.toString()
-    || selectedFeature.value?.id?.toString()
-    || null
-
-  let hash = router.currentRoute.value.hash
-  if (hashUpdate)
-    hash = setHashParts(hash, hashUpdate)
-
-  navigateTo({
-    path: mode.value !== Mode.BROWSER
-      ? '/'
-      : (categoryIds ? `/${categoryIds}/` : '/') + (id ? `${id}` : ''),
-    query: router.currentRoute.value.query,
-    hash,
-  })
-}
-
 function toggleExploreAroundSelectedPoi(feature?: ApiPoi) {
   if (!isModeExplorer.value) {
     mode.value = Mode.EXPLORER
@@ -368,7 +342,6 @@ function toggleExploreAroundSelectedPoi(feature?: ApiPoi) {
       isPoiCardShown.value = false
   }
   else {
-    // allowRegionBackZoom.value = false
     mode.value = Mode.BROWSER
   }
 }
@@ -400,10 +373,13 @@ function scrollTop() {
     header.scrollTop = 0
 }
 
-function handlePoiCardClose(): void {
-  if (mapFeaturesRef.value) {
-    mapStore.setSelectedFeature()
-  }
+async function handlePoiCardClose(): Promise<void> {
+  const { params, query, hash } = route
+  await navigateTo({
+    path: `/${params.p1}/`,
+    query,
+    hash,
+  })
 }
 </script>
 
@@ -499,9 +475,7 @@ function handlePoiCardClose(): void {
           </Menu>
         </transition-group>
         <SelectedCategories
-          v-if="
-            !isModeExplorer && selectedCategoryIds.length && !isModeFavorites
-          "
+          v-if="!isModeExplorer && !isModeFavorites"
           class="tw-hidden md:tw-block flex-shrink-1"
         />
         <IsochroneStatus v-if="isochroneCurrentFeature" />

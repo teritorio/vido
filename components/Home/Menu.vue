@@ -137,16 +137,33 @@ export default defineNuxtComponent({
       ].sort()
     },
 
-    onClickSelectAll(): void {
-      this.addSelectedCategoryIds(
-        this.getRecursiveCategoryIdByParentId(this.currentParentId),
-      )
+    async onClickSelectAll(): Promise<void> {
+      const { params, hash, query } = this.$route
+      const routeCategoryIds = params.p1?.toString().split(',').map(id => Number.parseInt(id))
+      const categoryIds = [
+        ...new Set([...routeCategoryIds || [], ...this.getRecursiveCategoryIdByParentId(this.currentParentId)]),
+      ].toString()
+
+      await navigateTo({
+        path: `/${categoryIds}/${params.poiId ? `${params.poiId}` : ''}`,
+        query,
+        hash,
+      })
     },
 
-    onClickUnselectAll(): void {
-      this.delSelectedCategoryIds(
-        this.getRecursiveCategoryIdByParentId(this.currentParentId),
-      )
+    async onClickUnselectAll(): Promise<void> {
+      const { params, hash, query } = this.$route
+      const categoryIds = params.p1
+        .toString()
+        .split(',')
+        .filter(id => !this.getRecursiveCategoryIdByParentId(this.currentParentId).includes(Number.parseInt(id)))
+        .join(',')
+
+      await navigateTo({
+        path: (categoryIds ? `/${categoryIds}/` : '/') + (params.poiId ? `${params.poiId}` : ''),
+        query,
+        hash,
+      })
     },
 
     onGoBackClick() {

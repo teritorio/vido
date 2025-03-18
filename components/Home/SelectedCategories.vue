@@ -1,6 +1,6 @@
 <script lang="ts">
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
-import { mapActions, mapState } from 'pinia'
+import { mapState } from 'pinia'
 
 import { defineNuxtComponent } from '#app'
 import TeritorioIconBadge from '~/components/UI/TeritorioIconBadge.vue'
@@ -17,10 +17,28 @@ export default defineNuxtComponent({
   },
 
   methods: {
-    ...mapActions(menuStore, [
-      'delSelectedCategoryIds',
-      'clearSelectedCategoryIds',
-    ]),
+    async removeCategory(idToRemove: string): Promise<void> {
+      const { params, query, hash } = this.$route
+      const categoryIds = params.p1
+        .toString()
+        .split(',')
+        .filter(id => id !== idToRemove)
+        .join(',')
+
+      await navigateTo({
+        path: categoryIds ? `/${categoryIds}/${params.poiId ? `${params.poiId}` : ''}` : `/${params.poiId ? `${params.poiId}` : ''}`,
+        query,
+        hash,
+      })
+    },
+    async resetCategories(): Promise<void> {
+      const { params, query, hash } = this.$route
+      await navigateTo({
+        path: `/${params.poiId ? `${params.poiId}` : ''}`,
+        query,
+        hash,
+      })
+    },
   },
 })
 </script>
@@ -59,7 +77,7 @@ export default defineNuxtComponent({
             type="button"
             class="tw-flex tw-items-center tw-justify-center tw-text-white tw-text-center tw-rounded-full tw-absolute -tw-top-1 -tw-right-1 tw-w-5 tw-h-5 tw-border-solid tw-border-2 tw-border-white tw-bg-red-600 hover:tw-bg-red-800"
             :title="$t('headerMenu.hideCategory')"
-            @click="delSelectedCategoryIds([menuItem.id])"
+            @click="removeCategory(menuItem.id.toString())"
           >
             <span class="tw-sr-only">{{
               $t('headerMenu.disableCategory')
@@ -75,7 +93,7 @@ export default defineNuxtComponent({
       class="tw-absolute -tw-top-3 -tw-right-3 tw-pointer-events-auto tw-flex tw-items-center tw-justify-center tw-text-white tw-text-center tw-rounded-full tw-w-7 tw-h-7 tw-border-solid tw-border-2 tw-border-white tw-bg-red-600 hover:tw-bg-red-800"
       :title="$t('headerMenu.clearAllCategories')"
       :aria-label="$t('headerMenu.clearAllCategories')"
-      @click="clearSelectedCategoryIds"
+      @click="resetCategories"
     >
       <FontAwesomeIcon icon="times" class="tw-text-white" />
     </button>

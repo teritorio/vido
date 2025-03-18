@@ -45,24 +45,23 @@ export default defineNuxtComponent({
       return this.filters && filterValuesIsSet(this.filters)
     },
     categoryUrl(): string {
-      const id = this.category.id.toString()
-      // Get current categories from the route
-      const currentCategories = this.$route.params.p1?.toString().split(',') ?? []
+      const { params } = this.$route
+      let currentCategories = params.p1 ? params.p1.toString().split(',') : []
 
-      // Check if the category is already selected
-      const categoryIndex = currentCategories.indexOf(id)
-
-      if (categoryIndex === -1) {
-      // Add the category if it doesn't exist
-        currentCategories.push(id)
+      if (!currentCategories.includes(this.category.id.toString())) {
+        currentCategories.push(this.category.id.toString())
       }
       else {
-      // Remove the category if it exists
-        currentCategories.splice(categoryIndex, 1)
+        currentCategories = currentCategories.filter(id => id !== this.category.id.toString())
       }
 
-      // Generate the new route
-      return currentCategories.length ? `/${currentCategories.join(',')}/` : '/'
+      let targetPath = currentCategories?.length ? `/${currentCategories}/` : '/'
+
+      if (params.poiId) {
+        targetPath += `${params.poiId}`
+      }
+
+      return targetPath
     },
   },
 

@@ -39,7 +39,6 @@ const props = withDefaults(defineProps<{
   small?: boolean
   categories: ApiMenuCategory[]
   features: ApiPoi[]
-  selectedCategoriesIds?: ApiMenuCategory['id'][]
   styleIconFilter?: string[][]
   enableFilterRouteByCategories?: boolean
   enableFilterRouteByFeatures?: boolean
@@ -49,7 +48,6 @@ const props = withDefaults(defineProps<{
   fitBoundsPaddingOptions: 50,
   extraAttributions: () => [] satisfies string[],
   small: false,
-  selectedCategoriesIds: () => [] satisfies ApiMenuCategory['id'][],
   enableFilterRouteByCategories: true,
   enableFilterRouteByFeatures: false,
   cooperativeGestures: false,
@@ -63,12 +61,13 @@ const STYLE_LAYERS = [
   'features-fill',
 ]
 
+const route = useRoute()
 const router = useRouter()
 const { t } = useI18n()
 const device = useDevice()
 const snackStore = useSnackStore()
 const menuStore = useMenuStore()
-const { featuresColor, isLoadingFeatures } = storeToRefs(menuStore)
+const { featuresColor, isLoadingFeatures, selectedCategoryIds } = storeToRefs(menuStore)
 const siteStore = useSiteStore()
 const { config } = siteStore
 
@@ -96,10 +95,11 @@ watch(() => props.features, () => {
   if (!map.value)
     return
 
-  showVectorSelectedFeature()
   renderPois()
   handleResetMapZoom(t('snack.noPoi.issue'), t('snack.noPoi.action'))
 })
+
+watch(selectedCategoryIds, () => showVectorSelectedFeature())
 
 watch(selectedBackground, () => {
   if (!map.value)
@@ -137,7 +137,16 @@ function onMapInit(mapInstance: MapGL): void {
     pinMarkerRenderFn: pinMarkerRender,
   })
 
-  teritorioCluster.value.addEventListener('feature-click', (e: Event) => mapStore.setSelectedFeature((e as CustomEvent).detail.selectedFeature))
+  teritorioCluster.value.addEventListener('feature-click', async (e: Event) => {
+    const { query, params, hash } = route
+    const selectedFeature = (e as CustomEvent).detail.selectedFeature
+
+    await navigateTo({
+      path: `/${params.p1}/${selectedFeature.properties.metadata.id}`,
+      query,
+      hash,
+    })
+  })
 
   map.value.on('click', onClick)
 
@@ -183,23 +192,35 @@ function onMapStyleLoad(): void {
     })
   })
 
-  showVectorSelectedFeature()
   renderPois()
+  showVectorSelectedFeature()
   mapStyleLoaded.value = true
 }
 
 // Map interactions
-function onClick(e: MapMouseEvent): void {
+async function onClick(e: MapMouseEvent): Promise<void> {
   if (!map.value)
     return
 
-  const vectorSelectedFeatures = map.value!.queryRenderedFeatures(e.point, {
-    layers: STYLE_LAYERS.filter(layer => map.value?.getLayer(layer)),
-  })
+  const { query, params, hash } = route
 
-  vectorSelectedFeatures.length > 0
-    ? mapStore.setSelectedFeature(vectorTilesPoi2ApiPoi(vectorSelectedFeatures[0]))
-    : mapStore.setSelectedFeature()
+  const availableLayers = STYLE_LAYERS.filter(layer => map.value?.getLayer(layer))
+  const selectedFeatures = map.value.queryRenderedFeatures(e.point, { layers: availableLayers })
+
+  if (selectedFeatures.length === 0) {
+    if (params.poiId) {
+      await navigateTo({ path: `/${params.p1}/`, query, hash })
+    }
+    return
+  }
+
+  const selectedFeature = vectorTilesPoi2ApiPoi(selectedFeatures[0])
+
+  await navigateTo({
+    path: `/${params.p1}/${selectedFeature.properties.metadata.id}`,
+    query,
+    hash,
+  })
 }
 
 function goToSelectedFeature(): void {
@@ -298,7 +319,7 @@ function showVectorSelectedFeature(): void {
     }
 
     if (props.enableFilterRouteByCategories) {
-      filterRouteByCategories(map.value, props.selectedCategoriesIds)
+      filterRouteByCategories(map.value, selectedCategoryIds.value)
     }
   }
 }
