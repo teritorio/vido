@@ -187,11 +187,11 @@ const siteName = computed(() => {
   return settings!.themes[0]?.title.fr || ''
 })
 
-watch(selectedFeature, (newFeature) => {
-  isPoiCardShown.value = !!newFeature
+watch(selectedFeature, (newFeature, oldFeature) => {
+  if (newFeature?.properties.metadata.id !== oldFeature?.properties.metadata.id) {
+    isPoiCardShown.value = true
 
-  if (process.client) {
-    if (newFeature) {
+    if (process.client && newFeature) {
       $tracking({
         type: 'popup',
         poiId: newFeature.properties.metadata.id || newFeature.properties?.id,
@@ -202,17 +202,20 @@ watch(selectedFeature, (newFeature) => {
       })
     }
   }
-})
+  else {
+    isPoiCardShown.value = false
+  }
+}, { immediate: true })
 
-watch(mode, async () => {
+watch(mode, () => {
   const hash = {
     mode: mode.value !== Mode.BROWSER ? mode.value : null,
   }
 
   if (hash.mode)
-    await navigateTo({ query: { mode: hash.mode }, hash: route.hash })
+    navigateTo({ query: { mode: hash.mode }, hash: route.hash })
   else
-    await navigateTo({ query: {}, hash: route.hash })
+    navigateTo({ query: {}, hash: route.hash })
 })
 
 watch(isModeFavorites, async (isEnabled) => {
@@ -373,12 +376,11 @@ function scrollTop() {
     header.scrollTop = 0
 }
 
-async function handlePoiCardClose(): Promise<void> {
-  const { params, query, hash } = route
-  await navigateTo({
-    path: `/${params.p1}/`,
-    query,
-    hash,
+function handlePoiCardClose(): void {
+  navigateTo({
+    params: {
+      poiId: '',
+    },
   })
 }
 </script>

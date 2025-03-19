@@ -46,7 +46,7 @@ export default defineNuxtComponent({
     },
     categoryUrl(): string {
       const { params } = this.$route
-      let currentCategories = params.p1 ? params.p1.toString().split(',') : []
+      let currentCategories = params.catIds ? params.catIds.toString().split(',') : []
 
       if (!currentCategories.includes(this.category.id.toString())) {
         currentCategories.push(this.category.id.toString())

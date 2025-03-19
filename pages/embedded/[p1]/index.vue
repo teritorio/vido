@@ -6,7 +6,7 @@ import { regexForCategoryIds } from '~/composables/useIdsResolver'
 //
 definePageMeta({
   validate: ({ params }) => {
-    return !!params.p1 && regexForCategoryIds.test(params.p1.toString())
+    return !!params.catIds && regexForCategoryIds.test(params.catIds.toString())
   },
 })
 </script>

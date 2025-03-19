@@ -137,32 +137,36 @@ export default defineNuxtComponent({
       ].sort()
     },
 
-    async onClickSelectAll(): Promise<void> {
-      const { params, hash, query } = this.$route
-      const routeCategoryIds = params.p1?.toString().split(',').map(id => Number.parseInt(id))
-      const categoryIds = [
-        ...new Set([...routeCategoryIds || [], ...this.getRecursiveCategoryIdByParentId(this.currentParentId)]),
-      ].toString()
+    onClickSelectAll(): void {
+      const { params } = this.$route
+      const currentIds = params.catIds
+        ? params.catIds.toString().split(',').map(Number)
+        : []
 
-      await navigateTo({
-        path: `/${categoryIds}/${params.poiId ? `${params.poiId}` : ''}`,
-        query,
-        hash,
+      navigateTo({
+        params: {
+          catIds: [
+            ...new Set([
+              ...currentIds,
+              ...this.getRecursiveCategoryIdByParentId(this.currentParentId),
+            ]),
+          ].join(','),
+        },
       })
     },
 
-    async onClickUnselectAll(): Promise<void> {
-      const { params, hash, query } = this.$route
-      const categoryIds = params.p1
+    onClickUnselectAll(): void {
+      const updatedIds = this.$route.params.catIds
         .toString()
         .split(',')
-        .filter(id => !this.getRecursiveCategoryIdByParentId(this.currentParentId).includes(Number.parseInt(id)))
+        .map(Number)
+        .filter(id => !this.getRecursiveCategoryIdByParentId(this.currentParentId).includes(id))
         .join(',')
 
-      await navigateTo({
-        path: (categoryIds ? `/${categoryIds}/` : '/') + (params.poiId ? `${params.poiId}` : ''),
-        query,
-        hash,
+      navigateTo({
+        params: {
+          catIds: updatedIds,
+        },
       })
     },
 

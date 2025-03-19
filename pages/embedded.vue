@@ -10,7 +10,7 @@ import { regexForCategoryIds } from '~/composables/useIdsResolver'
 //
 // Composables
 //
-const { params, query, path, name } = useRoute()
+const { params, query, path } = useRoute()
 const mapStore = useMapStore()
 const siteStore = useSiteStore()
 const { config, settings } = siteStore
@@ -53,18 +53,18 @@ if (boundary && typeof boundary === 'string' && settings!.polygons_extra) {
 }
 
 // Get category IDs from URL
-if (params.p1) {
-  const match = params.p1.toString().match(regexForCategoryIds)
+if (params.catIds) {
+  const match = params.catIds.toString().match(regexForCategoryIds)
 
   if (!match || (path.endsWith('/') && match.groups && (match.groups.cartocode || match.groups.reference || match.groups.osm)))
-    throw createError({ statusCode: 400, message: `No match for category ID: ${params.p1}` })
+    throw createError({ statusCode: 400, message: `No match for category ID: ${params.catIds}` })
 
   categoryIds.value = match.input?.split(',').map(id => Number.parseInt(id))
 }
 
 // Get POI ID from URL
-if (categoryIds.value?.length === 1 && name === 'index-p1' && !path.endsWith('/')) {
-  poiId.value = params.p1?.toString()
+if (categoryIds.value?.length === 1 && !params.poiId && !path.endsWith('/')) {
+  poiId.value = params.catIds?.toString()
   categoryIds.value = undefined
 }
 

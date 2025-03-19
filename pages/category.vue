@@ -54,11 +54,11 @@ onBeforeMount(() => {
 //
 // Methods
 //
-async function onCategoryUpdate(categoryId: number) {
+function onCategoryUpdate(categoryId: number) {
   if (!categoryId)
     return
 
-  await navigateTo({
+  navigateTo({
     path: isEmbedded.value ? `/category/embedded/${categoryId}` : `/category/${categoryId}`,
     query,
   })

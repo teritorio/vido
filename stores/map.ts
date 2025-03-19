@@ -64,6 +64,7 @@ export const mapStore = defineStore('map', () => {
   async function setSelectedFeature(feature?: ApiPoi): Promise<void> {
     selectedFeatureDepsIDs.value = []
 
+    // CAVEAT: maybe duplicate call with useAsyncData() from page
     if (!feature) {
       await menuStore.fetchFeatures({
         vidoConfig: config!,

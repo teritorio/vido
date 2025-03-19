@@ -17,26 +17,24 @@ export default defineNuxtComponent({
   },
 
   methods: {
-    async removeCategory(idToRemove: string): Promise<void> {
-      const { params, query, hash } = this.$route
-      const categoryIds = params.p1
+    removeCategory(idToRemove: string): void {
+      const updatedIds = this.$route.params.catIds
         .toString()
         .split(',')
         .filter(id => id !== idToRemove)
         .join(',')
 
-      await navigateTo({
-        path: categoryIds ? `/${categoryIds}/${params.poiId ? `${params.poiId}` : ''}` : `/${params.poiId ? `${params.poiId}` : ''}`,
-        query,
-        hash,
+      navigateTo({
+        params: {
+          catIds: updatedIds,
+        },
       })
     },
-    async resetCategories(): Promise<void> {
-      const { params, query, hash } = this.$route
-      await navigateTo({
-        path: `/${params.poiId ? `${params.poiId}` : ''}`,
-        query,
-        hash,
+    resetCategories(): void {
+      navigateTo({
+        params: {
+          catIds: '',
+        },
       })
     },
   },

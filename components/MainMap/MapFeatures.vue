@@ -137,14 +137,13 @@ function onMapInit(mapInstance: MapGL): void {
     pinMarkerRenderFn: pinMarkerRender,
   })
 
-  teritorioCluster.value.addEventListener('feature-click', async (e: Event) => {
-    const { query, params, hash } = route
+  teritorioCluster.value.addEventListener('feature-click', (e: Event) => {
     const selectedFeature = (e as CustomEvent).detail.selectedFeature
 
-    await navigateTo({
-      path: `/${params.p1}/${selectedFeature.properties.metadata.id}`,
-      query,
-      hash,
+    navigateTo({
+      params: {
+        poiId: selectedFeature.properties.metadata.id,
+      },
     })
   })
 
@@ -198,28 +197,32 @@ function onMapStyleLoad(): void {
 }
 
 // Map interactions
-async function onClick(e: MapMouseEvent): Promise<void> {
+function onClick(e: MapMouseEvent): void {
   if (!map.value)
     return
 
-  const { query, params, hash } = route
+  const { params } = route
 
   const availableLayers = STYLE_LAYERS.filter(layer => map.value?.getLayer(layer))
   const selectedFeatures = map.value.queryRenderedFeatures(e.point, { layers: availableLayers })
 
   if (selectedFeatures.length === 0) {
     if (params.poiId) {
-      await navigateTo({ path: `/${params.p1}/`, query, hash })
+      navigateTo({
+        params: {
+          poiId: '',
+        },
+      })
     }
     return
   }
 
   const selectedFeature = vectorTilesPoi2ApiPoi(selectedFeatures[0])
 
-  await navigateTo({
-    path: `/${params.p1}/${selectedFeature.properties.metadata.id}`,
-    query,
-    hash,
+  navigateTo({
+    params: {
+      poiId: selectedFeature.properties.metadata.id,
+    },
   })
 }
 
