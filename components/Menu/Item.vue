@@ -54,10 +54,13 @@ export default defineNuxtComponent({
 
 <template>
   <div class="tw-flex tw-flex-col tw-items-start">
-    <a
+    <NuxtLink
       :id="id"
-      :href="href"
-      target="_blank"
+      :to="{
+        path: href,
+        query: $route.query,
+        hash: $route.hash,
+      }"
       class="tw-flex focus:tw-outline-none tw-outline-none tw-items-center tw-text-center tw-self-stretch tw-justify-start tw-leading-none tw-transition-colors tw-rounded-lg tw-relative hover:tw-bg-zinc-100" :class="[
         displayMode === 'large'
           ? 'tw-px-4 tw-py-2 tw-col-start-1 tw-col-span-4'
@@ -101,7 +104,7 @@ export default defineNuxtComponent({
         class="tw-text-zinc-700 tw-shrink-0"
         size="sm"
       />
-    </a>
+    </NuxtLink>
 
     <slot name="more" />
   </div>

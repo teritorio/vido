@@ -16,7 +16,7 @@ import PoiCard from '~/components/PoisCard/PoiCard.vue'
 import Search from '~/components/Search/Search.vue'
 import CookiesConsent from '~/components/UI/CookiesConsent.vue'
 import Logo from '~/components/UI/Logo.vue'
-import type { ApiMenuCategory, MenuItem } from '~/lib/apiMenu'
+import type { MenuItem } from '~/lib/apiMenu'
 import type { ApiPoi } from '~/lib/apiPois'
 import { getPois } from '~/lib/apiPois'
 import { getBBoxFeature, getBBoxFeatures } from '~/lib/bbox'
@@ -31,17 +31,10 @@ import useDevice from '~/composables/useDevice'
 import type { ApiAddrSearchResult, ApiSearchResult } from '~/lib/apiSearch'
 import IsochroneStatus from '~/components/Isochrone/IsochroneStatus.vue'
 
-//
-// Props
-//
 const props = defineProps<{
   boundaryArea?: Polygon | MultiPolygon
-  initialCategoryIds?: number[]
 }>()
 
-//
-// Composables
-//
 const mapStore = useMapStore()
 const { center, isModeFavorites, isModeExplorer, isModeExplorerOrFavorites, mode, selectedFeature, teritorioCluster } = storeToRefs(mapStore)
 const menuStore = useMenuStore()
@@ -57,10 +50,6 @@ const router = useRouter()
 const device = useDevice()
 const { isochroneCurrentFeature } = useIsochrone()
 
-//
-// Data
-//
-const allowRegionBackZoom = ref<boolean>(false)
 const isFilterActive = ref<boolean>(false)
 const initialBbox = ref<LngLatBounds>()
 const isMenuItemOpen = ref<boolean>(false)
@@ -69,9 +58,6 @@ const showFavoritesOverlay = ref<boolean>(false)
 const isPoiCardShown = ref<boolean>(false)
 const mapFeaturesRef = ref<InstanceType<typeof MapFeatures>>()
 
-//
-// Hooks
-//
 onBeforeMount(async () => {
   const favs = getHashPart(router, 'favs')
   if (favs) {
@@ -109,22 +95,6 @@ onBeforeMount(async () => {
 })
 
 onMounted(async () => {
-  if (props.initialCategoryIds) {
-    menuStore.setSelectedCategoryIds(props.initialCategoryIds)
-  }
-  else if (typeof location !== 'undefined') {
-    const enabledCategories: ApiMenuCategory['id'][] = []
-
-    if (apiMenuCategory.value) {
-      apiMenuCategory.value.forEach((category) => {
-        if (category.selected_by_default)
-          enabledCategories.push(category.id)
-      })
-    }
-
-    menuStore.setSelectedCategoryIds(enabledCategories)
-  }
-
   $tracking({
     type: 'page',
     title: (route.name && String(route.name)) || undefined,
@@ -142,9 +112,6 @@ onMounted(async () => {
   }
 })
 
-//
-// Computed
-//
 const isBottomMenuOpened = computed(() => {
   return ((device.value.smallScreen && isPoiCardShown.value) || isMenuItemOpen.value)
 })
@@ -220,16 +187,11 @@ const siteName = computed(() => {
   return settings!.themes[0]?.title.fr || ''
 })
 
-//
-// Watchers
-//
-watch(selectedFeature, (newFeature) => {
-  isPoiCardShown.value = !!newFeature
+watch(selectedFeature, (newFeature, oldFeature) => {
+  if (newFeature?.properties.metadata.id !== oldFeature?.properties.metadata.id) {
+    isPoiCardShown.value = true
 
-  if (process.client) {
-    routerPushUrl()
-
-    if (newFeature) {
+    if (process.client && newFeature) {
       $tracking({
         type: 'popup',
         poiId: newFeature.properties.metadata.id || newFeature.properties?.id,
@@ -240,30 +202,20 @@ watch(selectedFeature, (newFeature) => {
       })
     }
   }
+  else {
+    isPoiCardShown.value = false
+  }
 }, { immediate: true })
 
-watch(selectedCategoryIds, (a, b) => {
-  if (a !== b) {
-    routerPushUrl()
-
-    menuStore.fetchFeatures({
-      vidoConfig: config!,
-      categoryIds: selectedCategoryIds.value,
-      clipingPolygonSlug: route.query.clipingPolygonSlug?.toString(),
-    })
-
-    allowRegionBackZoom.value = true
-  }
-})
-
 watch(mode, () => {
-  allowRegionBackZoom.value = false
-
   const hash = {
     mode: mode.value !== Mode.BROWSER ? mode.value : null,
   }
 
-  routerPushUrl(hash)
+  if (hash.mode)
+    navigateTo({ query: { mode: hash.mode }, hash: route.hash })
+  else
+    navigateTo({ query: {}, hash: route.hash })
 })
 
 watch(isModeFavorites, async (isEnabled) => {
@@ -281,13 +233,10 @@ watch(isModeFavorites, async (isEnabled) => {
   }
 })
 
-//
-// Methods
-//
-function goToSelectedFeature(feature?: ApiPoi) {
+function goToSelectedFeature(feature?: ApiPoi): void {
   if (mapFeaturesRef.value) {
     if (feature)
-      mapFeaturesRef.value.updateSelectedFeature(feature)
+      mapStore.setSelectedFeature(feature)
     mapFeaturesRef.value.goToSelectedFeature()
   }
 }
@@ -356,9 +305,9 @@ function onBottomMenuButtonClick() {
   isMenuItemOpen.value = !isMenuItemOpen.value
 }
 
-async function onQuitExplorerFavoriteMode() {
+function onQuitExplorerFavoriteMode(): void {
   if (mapFeaturesRef.value)
-    await mapFeaturesRef.value.updateSelectedFeature()
+    mapStore.setSelectedFeature()
 
   mode.value = Mode.BROWSER
 }
@@ -387,25 +336,6 @@ async function toggleNoteBookMode() {
   }
 }
 
-function routerPushUrl(hashUpdate: { [key: string]: string | null } = {}) {
-  const categoryIds = selectedCategoryIds.value.join(',')
-  const id = selectedFeature.value?.properties?.metadata?.id?.toString()
-    || selectedFeature.value?.id?.toString()
-    || null
-
-  let hash = router.currentRoute.value.hash
-  if (hashUpdate)
-    hash = setHashParts(hash, hashUpdate)
-
-  router.push({
-    path: mode.value !== Mode.BROWSER
-      ? '/'
-      : (categoryIds ? `/${categoryIds}/` : '/') + (id ? `${id}` : ''),
-    query: router.currentRoute.value.query,
-    hash,
-  })
-}
-
 function toggleExploreAroundSelectedPoi(feature?: ApiPoi) {
   if (!isModeExplorer.value) {
     mode.value = Mode.EXPLORER
@@ -415,7 +345,6 @@ function toggleExploreAroundSelectedPoi(feature?: ApiPoi) {
       isPoiCardShown.value = false
   }
   else {
-    allowRegionBackZoom.value = false
     mode.value = Mode.BROWSER
   }
 }
@@ -447,10 +376,12 @@ function scrollTop() {
     header.scrollTop = 0
 }
 
-function handlePoiCardClose() {
-  if (mapFeaturesRef.value) {
-    mapFeaturesRef.value.updateSelectedFeature()
-  }
+function handlePoiCardClose(): void {
+  navigateTo({
+    params: {
+      poiId: '',
+    },
+  })
 }
 </script>
 
@@ -546,9 +477,7 @@ function handlePoiCardClose() {
           </Menu>
         </transition-group>
         <SelectedCategories
-          v-if="
-            !isModeExplorer && selectedCategoryIds.length && !isModeFavorites
-          "
+          v-if="!isModeExplorer && !isModeFavorites"
           class="tw-hidden md:tw-block flex-shrink-1"
         />
         <IsochroneStatus v-if="isochroneCurrentFeature" />

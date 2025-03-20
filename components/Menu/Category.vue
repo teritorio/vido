@@ -44,6 +44,25 @@ export default defineNuxtComponent({
     isFiltered(): boolean {
       return this.filters && filterValuesIsSet(this.filters)
     },
+    categoryUrl(): string {
+      const { params } = this.$route
+      let currentCategories = params.catIds ? params.catIds.toString().split(',') : []
+
+      if (!currentCategories.includes(this.category.id.toString())) {
+        currentCategories.push(this.category.id.toString())
+      }
+      else {
+        currentCategories = currentCategories.filter(id => id !== this.category.id.toString())
+      }
+
+      let targetPath = currentCategories?.length ? `/${currentCategories}/` : '/'
+
+      if (params.poiId) {
+        targetPath += `${params.poiId}`
+      }
+
+      return targetPath
+    },
   },
 
   emits: {
@@ -59,8 +78,6 @@ export default defineNuxtComponent({
         categoryId: this.category.id,
         title: this.category.category.name.fr,
       })
-
-      this.$emit('click', this.category.id)
     },
     onFilterClick() {
       this.$tracking({
@@ -78,14 +95,14 @@ export default defineNuxtComponent({
 <template>
   <MenuItem
     :id="`MenuItem-${category.id}`"
-    :href="`/${category.id}`"
+    :href="categoryUrl"
     :display-mode="category.category.display_mode || displayModeDefault"
     :color-fill="category.category.color_fill"
     :icon="category.category.icon"
     :size="size"
     :name="category.category.name"
     badge-class="tw-bg-white tw-text-zinc-700 tw-rounded-full tw-border-solid tw-border-2 tw-border-white"
-    @click.prevent="onClick"
+    @click="onClick"
   >
     <template v-if="category.category.display_mode === 'compact'" #badge>
       <FontAwesomeIcon

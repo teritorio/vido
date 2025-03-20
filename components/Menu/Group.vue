@@ -56,7 +56,7 @@ export default defineNuxtComponent({
 <template>
   <MenuItem
     :id="`MenuGroup-${menuGroup.id}`"
-    :href="`/${menuGroup.id}/`"
+    href=""
     :display-mode="menuGroup.menu_group.display_mode || displayModeDefault"
     :color-fill="menuGroup.menu_group.color_fill"
     :icon="menuGroup.menu_group.icon"
@@ -68,7 +68,7 @@ export default defineNuxtComponent({
         size === '2xl' ? 'tw-w-6 tw-h-6' : 'tw-w-5 tw-h-5',
       ].join(' ')
     "
-    @click.prevent="onClick"
+    @click="onClick"
   >
     <template v-if="categoriesActivesCount > 0" #badge>
       {{ categoriesActivesCount }}

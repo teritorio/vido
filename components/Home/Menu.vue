@@ -111,7 +111,6 @@ export default defineNuxtComponent({
     ...mapActions(menuStore, [
       'addSelectedCategoryIds',
       'delSelectedCategoryIds',
-      'toggleSelectedCategoryId',
     ]),
 
     getMenuItemByParentId(
@@ -139,15 +138,36 @@ export default defineNuxtComponent({
     },
 
     onClickSelectAll(): void {
-      this.addSelectedCategoryIds(
-        this.getRecursiveCategoryIdByParentId(this.currentParentId),
-      )
+      const { params } = this.$route
+      const currentIds = params.catIds
+        ? params.catIds.toString().split(',').map(Number)
+        : []
+
+      navigateTo({
+        params: {
+          catIds: [
+            ...new Set([
+              ...currentIds,
+              ...this.getRecursiveCategoryIdByParentId(this.currentParentId),
+            ]),
+          ].join(','),
+        },
+      })
     },
 
     onClickUnselectAll(): void {
-      this.delSelectedCategoryIds(
-        this.getRecursiveCategoryIdByParentId(this.currentParentId),
-      )
+      const updatedIds = this.$route.params.catIds
+        .toString()
+        .split(',')
+        .map(Number)
+        .filter(id => !this.getRecursiveCategoryIdByParentId(this.currentParentId).includes(id))
+        .join(',')
+
+      navigateTo({
+        params: {
+          catIds: updatedIds,
+        },
+      })
     },
 
     onGoBackClick() {
@@ -213,7 +233,6 @@ export default defineNuxtComponent({
           display-mode-default="compact"
           class="tw-flex-1 tw-pointer-events-auto tw-h-full"
           @menu-group-click="onMenuGroupClick"
-          @category-click="toggleSelectedCategoryId($event)"
           @filter-click="onCategoryFilterClick"
         />
       </component>
@@ -264,7 +283,6 @@ export default defineNuxtComponent({
         display-mode-default="large"
         class="tw-flex-1 tw-pointer-events-auto tw-h-full"
         @menu-group-click="onMenuGroupClick"
-        @category-click="toggleSelectedCategoryId($event)"
         @filter-click="onCategoryFilterClick"
       />
     </component>

@@ -6,7 +6,6 @@ import type {
   LngLatBounds,
   MapDataEvent,
   Map as MapGL,
-  MapGeoJSONFeature,
   MapMouseEvent,
 } from 'maplibre-gl'
 import { storeToRefs } from 'pinia'
@@ -19,8 +18,6 @@ import MapControls3D from '~/components/Map/MapControls3D.vue'
 import MapControlsBackground from '~/components/Map/MapControlsBackground.vue'
 import type { ApiMenuCategory } from '~/lib/apiMenu'
 import type { ApiPoi } from '~/lib/apiPois'
-import type { ApiPoiDeps, ApiRouteWaypoint } from '~/lib/apiPoiDeps'
-import { ApiRouteWaypointType, apiRouteWaypointToApiPoi } from '~/lib/apiPoiDeps'
 import { getBBoxFeatures } from '~/lib/bbox'
 import { DEFAULT_MAP_STYLE, MAP_ZOOM } from '~/lib/constants'
 import { vectorTilesPoi2ApiPoi } from '~/lib/vectorTilesPois'
@@ -42,7 +39,6 @@ const props = withDefaults(defineProps<{
   small?: boolean
   categories: ApiMenuCategory[]
   features: ApiPoi[]
-  selectedCategoriesIds?: ApiMenuCategory['id'][]
   styleIconFilter?: string[][]
   enableFilterRouteByCategories?: boolean
   enableFilterRouteByFeatures?: boolean
@@ -52,7 +48,6 @@ const props = withDefaults(defineProps<{
   fitBoundsPaddingOptions: 50,
   extraAttributions: () => [] satisfies string[],
   small: false,
-  selectedCategoriesIds: () => [] satisfies ApiMenuCategory['id'][],
   enableFilterRouteByCategories: true,
   enableFilterRouteByFeatures: false,
   cooperativeGestures: false,
@@ -72,17 +67,16 @@ const { t } = useI18n()
 const device = useDevice()
 const snackStore = useSnackStore()
 const menuStore = useMenuStore()
-const { featuresColor, isLoadingFeatures } = storeToRefs(menuStore)
+const { featuresColor, isLoadingFeatures, selectedCategoryIds } = storeToRefs(menuStore)
 const siteStore = useSiteStore()
 const { config } = siteStore
 
 if (!config)
   throw createError({ statusCode: 500, statusMessage: 'Wrong config', fatal: true })
 
-const { BICYCLE_STYLE_URL, API_ENDPOINT, API_PROJECT, API_THEME } = config
 const { explorerModeEnabled } = storeToRefs(siteStore)
 const mapStore = useMapStore()
-const { center, selectedFeature, teritorioCluster, mode } = storeToRefs(mapStore)
+const { center, selectedFeature, teritorioCluster, mode, selectedFeatureDepsIDs } = storeToRefs(mapStore)
 const mapStyleLoaded = ref(false)
 const mapBaseRef = ref<InstanceType<typeof MapBase>>()
 const map = ref<MapGL>()
@@ -91,25 +85,21 @@ const selectedBackground = ref<MapStyleEnum>(DEFAULT_MAP_STYLE)
 const availableStyles = computed((): MapStyleEnum[] => {
   const styles = [MapStyleEnum.vector, MapStyleEnum.aerial]
 
-  if (BICYCLE_STYLE_URL)
+  if (config.BICYCLE_STYLE_URL)
     styles.push(MapStyleEnum.bicycle)
 
   return styles
 })
 
-watch(
-  () => props.features,
-  () => {
-    if (!map.value)
-      return
+watch(() => props.features, () => {
+  if (!map.value)
+    return
 
-    showVectorSelectedFeature()
-    renderPois()
-    handleResetMapZoom(t('snack.noPoi.issue'), t('snack.noPoi.action'))
-  },
-)
+  renderPois()
+  handleResetMapZoom(t('snack.noPoi.issue'), t('snack.noPoi.action'))
+})
 
-watch(selectedFeature, () => showVectorSelectedFeature())
+watch(selectedCategoryIds, () => showVectorSelectedFeature())
 
 watch(selectedBackground, () => {
   if (!map.value)
@@ -147,7 +137,15 @@ function onMapInit(mapInstance: MapGL): void {
     pinMarkerRenderFn: pinMarkerRender,
   })
 
-  teritorioCluster.value.addEventListener('feature-click', (e: Event) => updateSelectedFeature((e as CustomEvent).detail.selectedFeature))
+  teritorioCluster.value.addEventListener('feature-click', (e: Event) => {
+    const selectedFeature = (e as CustomEvent).detail.selectedFeature
+
+    navigateTo({
+      params: {
+        poiId: selectedFeature.properties.metadata.id,
+      },
+    })
+  })
 
   map.value.on('click', onClick)
 
@@ -193,8 +191,8 @@ function onMapStyleLoad(): void {
     })
   })
 
-  showVectorSelectedFeature()
   renderPois()
+  showVectorSelectedFeature()
   mapStyleLoaded.value = true
 }
 
@@ -203,96 +201,29 @@ function onClick(e: MapMouseEvent): void {
   if (!map.value)
     return
 
-  const vectorSelectedFeatures = map.value!.queryRenderedFeatures(e.point, {
-    layers: STYLE_LAYERS.filter(layer => map.value?.getLayer(layer)),
-  })
+  const { params } = route
 
-  if (vectorSelectedFeatures.length > 0) {
-    updateSelectedFeature(vectorTilesPoi2ApiPoi(vectorSelectedFeatures[0]))
-    showVectorSelectedFeature()
-  }
-  else {
-    updateSelectedFeature()
-  }
-}
+  const availableLayers = STYLE_LAYERS.filter(layer => map.value?.getLayer(layer))
+  const selectedFeatures = map.value.queryRenderedFeatures(e.point, { layers: availableLayers })
 
-async function updateSelectedFeature(feature?: ApiPoi): Promise<void> {
-  if (!feature) {
-    await menuStore.fetchFeatures({
-      vidoConfig: config!,
-      categoryIds: props.selectedCategoriesIds,
-      clipingPolygonSlug: route.query.clipingPolygonSlug?.toString(),
-    })
-    mapStore.setSelectedFeature()
-  }
-  else {
-    const id = feature.properties.metadata.id || feature.properties.id || feature.id
-
-    if (selectedFeature.value?.properties.metadata.id !== id) {
-      try {
-        if (feature.properties['route:point:type']) {
-          return
-        }
-
-        const { data, error, status } = await useFetch<ApiPoiDeps>(
-          () => `${API_ENDPOINT}/${API_PROJECT}/${API_THEME}/poi/${id}/deps.geojson`,
-          {
-            query: {
-              geometry_as: 'point_or_bbox',
-              short_description: false,
-            },
-          },
-        )
-
-        if (error.value)
-          throw createError(error.value)
-
-        if (status.value === 'success' && data.value) {
-          let poi: ApiPoi | undefined
-          const deps = [] as ApiPoi[]
-          let waypointIndex = 1
-
-          data.value.features.forEach((f) => {
-            f = {
-              ...f,
-              properties: {
-                ...f.properties,
-                vido_visible: true,
-              },
-            }
-            if ('metadata' in f.properties && f.properties.metadata.id === id) {
-              poi = f as ApiPoi
-            }
-            else {
-              if (f.properties['route:point:type']) {
-                f = apiRouteWaypointToApiPoi(
-                  f as ApiRouteWaypoint,
-                  poi?.properties.display?.color_fill || '#76009E',
-                  poi?.properties.display?.color_line || '#76009E',
-                  f.properties['route:point:type'] === ApiRouteWaypointType.way_point
-                    ? (waypointIndex++).toString()
-                    : undefined,
-                )
-              }
-              deps.push(f as ApiPoi)
-            }
-          })
-
-          mapStore.setSelectedFeature(poi)
-          if (poi) {
-            // In case user click on vecto element, attach Pin Marker to POI Marker
-            teritorioCluster.value?.setSelectedFeature(poi as unknown as MapGeoJSONFeature)
-
-            if (poi.properties.metadata.category_ids?.length)
-              menuStore.filterByDeps(poi.properties.metadata.category_ids, deps, selectedFeature.value)
-          }
-        }
-      }
-      catch (e) {
-        console.error('Vido error:', (e as Error).message)
-      }
+  if (selectedFeatures.length === 0) {
+    if (params.poiId) {
+      navigateTo({
+        params: {
+          poiId: '',
+        },
+      })
     }
+    return
   }
+
+  const selectedFeature = vectorTilesPoi2ApiPoi(selectedFeatures[0])
+
+  navigateTo({
+    params: {
+      poiId: selectedFeature.properties.metadata.id,
+    },
+  })
 }
 
 function goToSelectedFeature(): void {
@@ -377,16 +308,13 @@ function showVectorSelectedFeature(): void {
   if (!map.value)
     return
 
-  if (mode.value === Mode.EXPLORER) {
+  if (mode.value === Mode.EXPLORER || mode.value === Mode.FAVORITES) {
     filterRouteByPoiIds(map.value, [])
     return
   }
 
-  if (
-    selectedFeature.value
-    && (selectedFeature.value.properties?.metadata?.id || selectedFeature.value.id || selectedFeature.value.properties?.id)
-  ) {
-    filterRouteByPoiIds(map.value, [selectedFeature.value.properties?.metadata?.id || selectedFeature.value.id || selectedFeature.value.properties?.id])
+  if (selectedFeature.value) {
+    filterRouteByPoiIds(map.value, selectedFeatureDepsIDs.value)
   }
   else {
     if (props.enableFilterRouteByFeatures) {
@@ -394,12 +322,12 @@ function showVectorSelectedFeature(): void {
     }
 
     if (props.enableFilterRouteByCategories) {
-      filterRouteByCategories(map.value, props.selectedCategoriesIds)
+      filterRouteByCategories(map.value, selectedCategoryIds.value)
     }
   }
 }
 
-defineExpose({ goToSelectedFeature, updateSelectedFeature })
+defineExpose({ goToSelectedFeature })
 </script>
 
 <template>

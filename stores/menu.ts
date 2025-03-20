@@ -48,6 +48,18 @@ export const menuStore = defineStore('menu', {
   }),
 
   getters: {
+    getFeatureById: (state: State): (id: number) => ApiPoi | undefined => {
+      return (id) => {
+        for (const key in state.features) {
+          for (const feature of state.features[key]) {
+            if (feature.properties.metadata.id === id) {
+              return feature
+            }
+          }
+        }
+        return undefined
+      }
+    },
     featuresColor: (state: State) => {
       const colors = Object.values(state.features)
         .flat()
@@ -252,15 +264,13 @@ export const menuStore = defineStore('menu', {
 
     // TODO: Maybe merge filterDeps with fetchFeatures
     // Check potential side-effects in components calling fetchFeatures
-    filterByDeps(categoryIds: number[], deps: ApiPoi[], selectedFeature: ApiPoi | null) {
+    filterByDeps(categoryIds: number[], deps: ApiPoi[]) {
       if (!deps.length)
         return
 
       const filteredFeatures: { [key: number]: ApiPoi[] } = {}
       categoryIds.forEach((id) => {
         filteredFeatures[id] = deps
-        if (selectedFeature?.properties.metadata.category_ids?.includes(id))
-          filteredFeatures[id].push(selectedFeature)
       })
       this.features = filteredFeatures
     },
