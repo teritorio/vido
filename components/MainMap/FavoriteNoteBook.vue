@@ -138,3 +138,11 @@ function removeFavorites() {
     <ShareLinkModal ref="shareModal" :title="t('favorites.share_link')" />
   </div>
 </template>
+
+<style lang="css" scoped>
+@media (width >= 991px) {
+  .pois-deck {
+    flex-direction: row;
+  }
+}
+</style>
