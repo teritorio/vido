@@ -70,7 +70,7 @@ const asyncKey = computed(() => {
   return poiId ? `map-${catIds}-${poiId}` : `map-${catIds}`
 })
 
-const isDirectPoi = computed(() => catIds.value.length === 1 && !poiId.value && !route.path.endsWith('/'))
+const isDirectPoi = computed(() => !catIds.value.length && poiId.value && !route.path.endsWith('/'))
 
 const mapStore = useMapStore()
 const menuStore = useMenuStore()
@@ -78,12 +78,9 @@ const { API_ENDPOINT, API_PROJECT, API_THEME } = config
 const { data, pending, error } = useAsyncData<ApiPoiDeps>(
   asyncKey.value,
   async () => {
-    if (!catIds.value)
-      return {} as ApiPoiDeps
-
     if (isDirectPoi.value) {
       return await $fetch<ApiPoiDeps>(
-        `${API_ENDPOINT}/${API_PROJECT}/${API_THEME}/poi/${catIds.value[0]}/deps.geojson`,
+        `${API_ENDPOINT}/${API_PROJECT}/${API_THEME}/poi/${poiId.value}/deps.geojson`,
         {
           query: {
             geometry_as: 'point_or_bbox',
@@ -99,7 +96,10 @@ const { data, pending, error } = useAsyncData<ApiPoiDeps>(
       clipingPolygonSlug: route.query.clipingPolygonSlug?.toString(),
     })
 
-    if (poiId.value) {
+    if (!poiId.value) {
+      await mapStore.setSelectedFeature()
+    }
+    else {
       let feature = menuStore.getFeatureById(poiId.value)
 
       if (!feature) {
@@ -137,7 +137,7 @@ watchEffect(() => {
   if (isDirectPoi.value && data.value) {
     const feature = data.value.features.find((f) => {
       const id = 'metadata' in f.properties ? f.properties.metadata.id : f.properties.id
-      return id === catIds.value[0]
+      return id === poiId.value
     }) as ApiPoi
 
     if (!feature) {
@@ -147,9 +147,9 @@ watchEffect(() => {
     navigateTo({
       params: {
         catIds: feature.properties.metadata.category_ids?.join(','),
-        poiId: catIds.value[0],
+        poiId: poiId.value,
       },
-    })
+    }, { replace: true })
   }
 })
 
@@ -184,7 +184,7 @@ if (boundary && typeof boundary === 'string' && settings!.polygons_extra) {
       {{ error }}
     </p>
 
-    <VApp v-else>
+    <VApp>
       <Home :boundary-area="boundaryGeojson" />
     </VApp>
   </div>

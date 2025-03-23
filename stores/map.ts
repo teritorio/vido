@@ -1,8 +1,7 @@
-import { defineStore, storeToRefs } from 'pinia'
+import { defineStore } from 'pinia'
 import type { FitBoundsOptions, MapGeoJSONFeature } from 'maplibre-gl'
 import type { TeritorioCluster } from '@teritorio/maplibre-gl-teritorio-cluster'
 import { useSiteStore } from '~/stores/site'
-import { menuStore as useMenuStore } from '~/stores/menu'
 import type { ApiPoi, ApiPoiProperties } from '~/lib/apiPois'
 import type { LatLng, Pitch } from '~/utils/types'
 import { Mode } from '~/utils/types'
@@ -52,10 +51,7 @@ export const mapStore = defineStore('map', () => {
   const isModeFavorites = computed(() => mode.value === Mode.FAVORITES)
   const isModeExplorerOrFavorites = computed(() => mode.value === Mode.EXPLORER || mode.value === Mode.FAVORITES)
 
-  const route = useRoute()
   const { config } = useSiteStore()
-  const menuStore = useMenuStore()
-  const { selectedCategoryIds } = storeToRefs(menuStore)
 
   if (!config)
     throw createError({ statusCode: 500, statusMessage: 'Wrong config', fatal: true })
@@ -64,13 +60,7 @@ export const mapStore = defineStore('map', () => {
   async function setSelectedFeature(feature?: ApiPoi): Promise<void> {
     selectedFeatureDepsIDs.value = []
 
-    // CAVEAT: maybe duplicate call with useAsyncData() from page
     if (!feature) {
-      await menuStore.fetchFeatures({
-        vidoConfig: config!,
-        categoryIds: selectedCategoryIds.value,
-        clipingPolygonSlug: route.query.clipingPolygonSlug?.toString(),
-      })
       selectedFeature.value = null
       teritorioCluster.value?.resetSelectedFeature()
     }
