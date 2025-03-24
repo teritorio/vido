@@ -269,6 +269,10 @@ async function updateSelectedFeature(feature?: ApiPoi): Promise<void> {
 
             if (id === depID) {
               poi = f as ApiPoi
+              // In case the geometry isn't Point
+              // we get the clicked feature instead of the one returned by API
+              if (f.geometry.type !== 'Point')
+                deps.push(feature)
             }
 
             if (f.properties['route:point:type']) {
