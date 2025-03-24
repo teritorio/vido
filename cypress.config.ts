@@ -1,5 +1,5 @@
 import { defineConfig } from 'cypress'
-import installLogsPrinter from 'cypress-terminal-report/src/installLogsPrinter'
+import installLogsPrinter from 'cypress-terminal-report/src/installLogsPrinter.js'
 import htmlvalidate from 'cypress-html-validate/plugin'
 
 export default defineConfig({
