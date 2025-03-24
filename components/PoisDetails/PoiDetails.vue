@@ -285,7 +285,7 @@ export default defineNuxtComponent({
       <RouteMap
         v-if="isLargeLayeout"
         id="route-map"
-        :poi-id="id"
+        :poi="poi"
         :route="poiDeps"
         :color-fill="colorFill"
         :color-line="colorLine"

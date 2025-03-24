@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import type { ApiPoiDeps, ApiRouteWaypoint } from '~/lib/apiPoiDeps'
-import type { ApiPoi, ApiPoiId } from '~/lib/apiPois'
+import type { ApiPoi } from '~/lib/apiPois'
 import MapPois from '~/components/Map/MapPois.vue'
 import PoisDeck from '~/components/PoisCard/PoisDeck.vue'
 import { ApiRouteWaypointType, apiRouteWaypointToApiPoi } from '~/lib/apiPoiDeps'
 
 const props = defineProps<{
-  poiId: ApiPoiId
+  poi: ApiPoi
   route: ApiPoiDeps
   colorFill: string
   colorLine: string
@@ -23,9 +23,13 @@ const { t } = useI18n()
 const routeCollection = ref<ApiPoi[] | null>(null)
 const points = ref<ApiPoi[]>([])
 const pois = ref<ApiPoi[]>([])
+const featureDepsIDs = ref<number[]>([props.poi.properties.metadata.id])
 
 let index = 1
 routeCollection.value = props.route.features.map((feature) => {
+  const depID = 'metadata' in feature.properties ? feature.properties.metadata.id : feature.properties.id
+  featureDepsIDs.value.push(depID)
+
   if (feature.properties['route:point:type'] && !('metadata' in feature.properties)) {
     const mapPoi = apiRouteWaypointToApiPoi(
       feature as ApiRouteWaypoint,
@@ -41,7 +45,8 @@ routeCollection.value = props.route.features.map((feature) => {
   }
   else {
     const featureApi = feature as ApiPoi
-    if ('metadata' in feature.properties && feature.properties.metadata?.id !== props.poiId)
+
+    if ('metadata' in feature.properties && feature.properties.metadata?.id !== props.poi.properties.metadata.id)
       pois.value.push(featureApi)
 
     return featureApi
@@ -53,8 +58,8 @@ routeCollection.value = props.route.features.map((feature) => {
   <div v-if="routeCollection">
     <MapPois
       class="map-pois tw-relative"
-      :features="routeCollection"
-      :feature-ids="[poiId]"
+      :features="[poi, ...routeCollection]"
+      :feature-ids="featureDepsIDs"
       :fullscreen-control="true"
       :off-map-attribution="true"
       :cluster="false"
