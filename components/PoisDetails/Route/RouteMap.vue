@@ -1,87 +1,51 @@
-<script lang="ts">
-import type { PropType } from 'vue'
-
-import { defineNuxtComponent } from '#app'
+<script setup lang="ts">
+import type { ApiPoiDeps, ApiRouteWaypoint } from '~/lib/apiPoiDeps'
+import type { ApiPoi, ApiPoiId } from '~/lib/apiPois'
 import MapPois from '~/components/Map/MapPois.vue'
 import PoisDeck from '~/components/PoisCard/PoisDeck.vue'
-import type {
-  ApiPoiDeps,
-  ApiRouteWaypoint,
-} from '~/lib/apiPoiDeps'
-import {
-  ApiRouteWaypointType,
-  apiRouteWaypointToApiPoi,
-} from '~/lib/apiPoiDeps'
-import type { ApiPoi, ApiPoiId } from '~/lib/apiPois'
+import { ApiRouteWaypointType, apiRouteWaypointToApiPoi } from '~/lib/apiPoiDeps'
 
-export default defineNuxtComponent({
-  components: {
-    MapPois,
-    PoisDeck,
-  },
+const props = defineProps<{
+  poiId: ApiPoiId
+  route: ApiPoiDeps
+  colorFill: string
+  colorLine: string
+}>()
 
-  emits: {
-    zoomClick: (_poi: ApiPoi) => true,
-    exploreClick: (_poi: ApiPoi) => true,
-    favoriteClick: (_poi: ApiPoi) => true,
-  },
+defineEmits<{
+  (e: 'zoomClick', poi: ApiPoi): void
+  (e: 'exploreClick', poi: ApiPoi): void
+  (e: 'favoriteClick', poi: ApiPoi): void
+}>()
 
-  props: {
-    poiId: {
-      type: Number as PropType<ApiPoiId>,
-      required: true,
-    },
-    route: {
-      type: Object as PropType<ApiPoiDeps>,
-      required: true,
-    },
-    colorFill: {
-      type: String as PropType<string>,
-      required: true,
-    },
-    colorLine: {
-      type: String as PropType<string>,
-      required: true,
-    },
-  },
+const { t } = useI18n()
 
-  data(): {
-    routeCollection: ApiPoi[] | null
-    points: ApiPoi[]
-    pois: ApiPoi[]
-  } {
-    return {
-      routeCollection: null,
-      points: [],
-      pois: [],
-    }
-  },
+const routeCollection = ref<ApiPoi[] | null>(null)
+const points = ref<ApiPoi[]>([])
+const pois = ref<ApiPoi[]>([])
 
-  created() {
-    let index = 1
-    this.routeCollection = this.route.features.map((feature) => {
-      if (feature.properties['route:point:type'] && !('metadata' in feature.properties)) {
-        const mapPoi = apiRouteWaypointToApiPoi(
-          feature as ApiRouteWaypoint,
-          this.colorFill,
-          this.colorLine,
-          feature.properties['route:point:type']
-          === ApiRouteWaypointType.way_point
-            ? (index++).toString()
-            : undefined,
-        )
-        this.points.push(mapPoi)
-        return mapPoi
-      }
-      else {
-        const featureApi = feature as ApiPoi
-        if ('metadata' in feature.properties && feature.properties.metadata?.id !== this.poiId)
-          this.pois.push(featureApi)
+let index = 1
+routeCollection.value = props.route.features.map((feature) => {
+  if (feature.properties['route:point:type'] && !('metadata' in feature.properties)) {
+    const mapPoi = apiRouteWaypointToApiPoi(
+      feature as ApiRouteWaypoint,
+      props.colorFill,
+      props.colorLine,
+      feature.properties['route:point:type']
+      === ApiRouteWaypointType.way_point
+        ? (index++).toString()
+        : undefined,
+    )
+    points.value.push(mapPoi)
+    return mapPoi
+  }
+  else {
+    const featureApi = feature as ApiPoi
+    if ('metadata' in feature.properties && feature.properties.metadata?.id !== props.poiId)
+      pois.value.push(featureApi)
 
-        return featureApi
-      }
-    })
-  },
+    return featureApi
+  }
 })
 </script>
 
@@ -97,11 +61,11 @@ export default defineNuxtComponent({
     />
     <div class="detail-wrapper">
       <div v-if="points.length > 0" class="detail-left">
-        <h2>{{ $t('poiDetails.routes.waypoints') }}</h2>
+        <h2>{{ t('poiDetails.routes.waypoints') }}</h2>
         <PoisDeck :pois="points" :is-card-light="true" />
       </div>
       <div v-if="pois.length > 0" class="detail-right">
-        <h2>{{ $t('poiDetails.routes.pois') }}</h2>
+        <h2>{{ t('poiDetails.routes.pois') }}</h2>
         <PoisDeck :pois="pois" :is-card-light="true" />
       </div>
     </div>
