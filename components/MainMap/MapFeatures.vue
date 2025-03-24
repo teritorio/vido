@@ -275,7 +275,7 @@ async function updateSelectedFeature(feature?: ApiPoi): Promise<void> {
                 deps.push(feature)
             }
 
-            if (f.properties['route:point:type']) {
+            if (f.properties['route:point:type'] && !('metadata' in f.properties)) {
               f = apiRouteWaypointToApiPoi(
                 f as ApiRouteWaypoint,
                 poi?.properties.display?.color_fill || '#76009E',

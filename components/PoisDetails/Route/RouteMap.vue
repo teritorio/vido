@@ -60,7 +60,7 @@ export default defineNuxtComponent({
   created() {
     let index = 1
     this.routeCollection = this.route.features.map((feature) => {
-      if (feature.properties['route:point:type']) {
+      if (feature.properties['route:point:type'] && !('metadata' in feature.properties)) {
         const mapPoi = apiRouteWaypointToApiPoi(
           feature as ApiRouteWaypoint,
           this.colorFill,
