@@ -68,7 +68,7 @@ function renderPois(): void {
     ),
   ]
 
-  mapBaseRef.value.initPoiLayer(props.features, colors, [
+  mapBaseRef.value.initPoiLayer(props.features.filter(feature => feature.geometry.type === 'Point'), colors, [
     'case',
     ['all', ['has', 'display'], ['has', 'color_fill', ['get', 'display']]],
     ['get', 'color_fill', ['get', 'display']],
