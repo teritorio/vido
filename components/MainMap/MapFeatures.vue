@@ -444,6 +444,9 @@ defineExpose({ goToSelectedFeature, updateSelectedFeature })
           @change-background="selectedBackground = $event"
         />
       </template>
+      <template #body>
+        <slot />
+      </template>
     </MapBase>
     <SnackBar @click="handleSnackAction" />
     <div
