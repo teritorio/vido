@@ -404,8 +404,7 @@ function showVectorSelectedFeature(): void {
     if (props.enableFilterRouteByFeatures) {
       filterRouteByPoiIds(map.value, props.features.map(feature => feature.properties?.metadata?.id || feature.id || feature.properties?.id))
     }
-
-    if (props.enableFilterRouteByCategories) {
+    else if (props.enableFilterRouteByCategories) {
       filterRouteByCategories(map.value, props.selectedCategoriesIds)
     }
   }
