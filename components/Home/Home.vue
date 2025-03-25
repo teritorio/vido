@@ -582,7 +582,7 @@ function handlePoiCardClose() {
           :selected-categories-ids="selectedCategoryIds"
           :style-icon-filter="poiFilters"
           :enable-filter-route-by-categories="!isModeFavorites"
-          :enable-filter-route-by-features="isModeFavorites"
+          :enable-filter-route-by-features="true"
           :boundary-area="boundaryArea || settings!.polygon.data"
         >
           <div class="tw-relative">
