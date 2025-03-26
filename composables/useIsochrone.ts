@@ -146,7 +146,10 @@ export default function useIsochrone() {
   const fetchIsochrone = async (feature: GeoJSON.Feature, profile: Profile, range: number[] = [900, 1800, 3600]) => {
     reset()
 
-    const { coordinates } = feature.geometry as GeoJSON.Point
+    if (feature.geometry.type !== 'Point')
+      return
+
+    const { coordinates } = feature.geometry
     const uniqueID = `isochrone-${profile}-${feature.properties?.metadata.id}`
 
     const { data, error } = await useAsyncData<ORSData>(
