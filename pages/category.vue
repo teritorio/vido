@@ -15,21 +15,21 @@ const { config, settings } = siteStore
 const menuStore = useMenuStore()
 const { menuItems } = storeToRefs(menuStore)
 const { $trackingInit } = useNuxtApp()
-const { params, query, name } = useRoute()
+const route = useRoute()
 
 //
 // Computed
 //
 const categoryId = computed(() => {
-  if (!params.id)
+  if (!route.params.id)
     return undefined
 
-  return Number.parseInt(params.id as string)
+  return Number.parseInt(route.params.id as string)
 })
 
 const filters = computed(() => {
-  return query.menuItemIds
-    ? query.menuItemIds
+  return route.query.menuItemIds
+    ? route.query.menuItemIds
       .toString()
       .split(',')
       .map(f => Number.parseInt(f))
@@ -37,7 +37,7 @@ const filters = computed(() => {
 })
 
 const isEmbedded = computed(() => {
-  return name?.toString().indexOf('embedded') !== -1
+  return route.name?.toString().indexOf('embedded') !== -1
 })
 
 const isFiltersEqualToCategoryId = computed(() => {
@@ -60,7 +60,7 @@ async function onCategoryUpdate(categoryId: number) {
 
   await navigateTo({
     path: isEmbedded.value ? `/category/embedded/${categoryId}` : `/category/${categoryId}`,
-    query,
+    query: route.query,
   })
 }
 </script>
