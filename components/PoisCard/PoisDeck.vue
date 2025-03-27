@@ -43,7 +43,7 @@ const emit = defineEmits<{
 <style lang="css" scoped>
 .pois-deck {
   display: flex;
-  flex-direction: column;
+  flex-flow: column wrap;
   gap: 1rem;
 }
 </style>
