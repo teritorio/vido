@@ -3,7 +3,7 @@ import type { ApiPoiDeps, ApiRouteWaypoint } from '~/lib/apiPoiDeps'
 import type { ApiPoi } from '~/lib/apiPois'
 import MapPois from '~/components/Map/MapPois.vue'
 import PoisDeck from '~/components/PoisCard/PoisDeck.vue'
-import { ApiRouteWaypointType, apiRouteWaypointToApiPoi } from '~/lib/apiPoiDeps'
+import { ApiRouteWaypointType, apiRouteWaypointToApiPoi, iconMap } from '~/lib/apiPoiDeps'
 
 const props = defineProps<{
   poi: ApiPoi
@@ -30,16 +30,37 @@ routeCollection.value = props.route.features.map((feature) => {
   const depID = 'metadata' in feature.properties ? feature.properties.metadata.id : feature.properties.id
   featureDepsIDs.value.push(depID)
 
-  if (feature.properties['route:point:type'] && !('metadata' in feature.properties)) {
-    const mapPoi = apiRouteWaypointToApiPoi(
-      feature as ApiRouteWaypoint,
-      props.colorFill,
-      props.colorLine,
-      feature.properties['route:point:type']
-      === ApiRouteWaypointType.way_point
-        ? (index++).toString()
-        : undefined,
-    )
+  if (feature.properties['route:point:type']) {
+    let mapPoi: ApiPoi
+
+    if (!('metadata' in feature.properties)) {
+      mapPoi = apiRouteWaypointToApiPoi(
+        feature as ApiRouteWaypoint,
+        props.colorFill,
+        props.colorLine,
+        feature.properties['route:point:type']
+        === ApiRouteWaypointType.way_point
+          ? (index++).toString()
+          : undefined,
+      )
+    }
+    else {
+      mapPoi = {
+        ...feature,
+        properties: {
+          ...feature.properties,
+          display: {
+            ...feature.properties.display!,
+            icon: iconMap[feature.properties['route:point:type']],
+            text: feature.properties['route:point:type']
+            === ApiRouteWaypointType.way_point
+              ? (index++).toString()
+              : undefined,
+          },
+        },
+      }
+    }
+
     points.value.push(mapPoi)
     return mapPoi
   }

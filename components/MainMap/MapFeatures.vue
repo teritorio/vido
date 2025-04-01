@@ -20,7 +20,7 @@ import MapControlsBackground from '~/components/Map/MapControlsBackground.vue'
 import type { ApiMenuCategory } from '~/lib/apiMenu'
 import type { ApiPoi } from '~/lib/apiPois'
 import type { ApiPoiDeps, ApiRouteWaypoint } from '~/lib/apiPoiDeps'
-import { ApiRouteWaypointType, apiRouteWaypointToApiPoi } from '~/lib/apiPoiDeps'
+import { ApiRouteWaypointType, apiRouteWaypointToApiPoi, iconMap } from '~/lib/apiPoiDeps'
 import { getBBoxFeatures } from '~/lib/bbox'
 import { DEFAULT_MAP_STYLE, MAP_ZOOM } from '~/lib/constants'
 import { vectorTilesPoi2ApiPoi } from '~/lib/vectorTilesPois'
@@ -275,15 +275,33 @@ async function updateSelectedFeature(feature?: ApiPoi): Promise<void> {
                 deps.push(feature)
             }
 
-            if (f.properties['route:point:type'] && !('metadata' in f.properties)) {
-              f = apiRouteWaypointToApiPoi(
-                f as ApiRouteWaypoint,
-                poi?.properties.display?.color_fill || '#76009E',
-                poi?.properties.display?.color_line || '#76009E',
-                f.properties['route:point:type'] === ApiRouteWaypointType.way_point
-                  ? (waypointIndex++).toString()
-                  : undefined,
-              )
+            if (f.properties['route:point:type']) {
+              if (!('metadata' in f.properties)) {
+                f = apiRouteWaypointToApiPoi(
+                  f as ApiRouteWaypoint,
+                  poi?.properties.display?.color_fill || '#76009E',
+                  poi?.properties.display?.color_line || '#76009E',
+                  f.properties['route:point:type'] === ApiRouteWaypointType.way_point
+                    ? (waypointIndex++).toString()
+                    : undefined,
+                )
+              }
+              else {
+                f = {
+                  ...f,
+                  properties: {
+                    ...f.properties,
+                    display: {
+                      ...f.properties.display!,
+                      icon: iconMap[f.properties['route:point:type']],
+                      text: f.properties['route:point:type']
+                      === ApiRouteWaypointType.way_point
+                        ? (waypointIndex++).toString()
+                        : undefined,
+                    },
+                  },
+                }
+              }
             }
 
             if (f.geometry.type === 'Point') {
