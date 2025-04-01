@@ -299,6 +299,10 @@ async function updateSelectedFeature(feature?: ApiPoi): Promise<void> {
                         ? (waypointIndex++).toString()
                         : undefined,
                     },
+                    editorial: {
+                      ...f.properties.editorial,
+                      'website:details': undefined,
+                    },
                   },
                 }
               }
