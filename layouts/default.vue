@@ -1,39 +1,80 @@
 <script setup lang="ts">
 import { storeToRefs } from 'pinia'
+import type { Settings } from '~/lib/apiSettings'
+import type { PropertyTranslations } from '~/lib/apiPropertyTranslations'
+import type { Article } from '~/lib/apiArticle'
+import type { MenuItem } from '~/lib/apiMenu'
+import { getSlugFromURL } from '~/lib/apiArticle'
 import { useSiteStore } from '~/stores/site'
 import { menuStore as useMenuStore } from '~/stores/menu'
 import { headerFromSettings } from '~/lib/apiSettings'
+import { vidoConfig } from '~/plugins/vido-config'
 import '~/assets/tailwind.scss'
 
-//
-// Composables
-//
 const { locale: i18nLocale } = useI18n()
 const siteStore = useSiteStore()
-const { config, settings, translations, locale } = storeToRefs(siteStore)
 const menuStore = useMenuStore()
-const { menuItems } = storeToRefs(menuStore)
+
+const { config, settings, translations, articles, locale } = storeToRefs(siteStore)
 
 if (process.server) {
-  await siteStore.init(useRequestHeaders())
-
-  if (!config.value)
-    throw createError({ statusCode: 500, statusMessage: 'Wrong config', fatal: true })
-
-  await menuStore.init(config.value)
+  config.value = vidoConfig(useRequestHeaders())
 }
 
-if (!menuItems?.value)
-  throw createError({ statusCode: 404, statusMessage: 'Menu not found', fatal: true })
+if (!config.value)
+  throw createError({ statusCode: 500, statusMessage: 'Wrong config', fatal: true })
 
-if (!settings.value)
-  throw createError({ statusCode: 500, statusMessage: 'Failed to fetch settings', fatal: true })
+const { API_ENDPOINT, API_PROJECT, API_THEME, GOOGLE_SITE_VERIFICATION } = config.value
+const { data, error, status } = await useAsyncData('parallel', async () => {
+  const [settings, menu, translations, articles] = await Promise.all([
+    $fetch<Settings>(`${API_ENDPOINT}/${API_PROJECT}/${API_THEME}/settings.json`),
+    $fetch<MenuItem[]>(`${API_ENDPOINT}/${API_PROJECT}/${API_THEME}/menu.json`),
+    $fetch<PropertyTranslations>(`${API_ENDPOINT}/${API_PROJECT}/${API_THEME}/attribute_translations/fr.json`),
+    // INFO: slug query param is here only for WP API backward compatibility
+    $fetch<Article[]>(`${API_ENDPOINT}/${API_PROJECT}/${API_THEME}/articles.json?slug=non-classe`),
+  ])
 
-if (!translations.value)
-  throw createError({ statusCode: 500, statusMessage: 'Failed to fetch translations', fatal: true })
+  menuStore.fetchConfig(menu)
 
-useHead(headerFromSettings(settings.value, { googleSiteVerification: config.value!.GOOGLE_SITE_VERIFICATION }))
-locale.value = i18nLocale.value
+  return {
+    articles: articles.map(article => ({
+      ...article,
+      url: getSlugFromURL(article.url),
+    })),
+    settings: Object.assign(
+      {
+        id: 0,
+        slug: '',
+        name: '',
+        attribution: [],
+        icon_font_css_url: '',
+        bbox_line: {
+          type: 'LineString',
+          coordinates: [
+            [1.43862, 42.41845],
+            [1.68279, 42.6775],
+          ],
+        },
+        themes: [],
+      },
+      settings,
+    ),
+    translations,
+  }
+})
+
+if (error.value) {
+  throw createError(error.value)
+}
+
+if (status.value === 'success' && data.value) {
+  settings.value = data.value.settings
+  translations.value = data.value.translations
+  articles.value = data.value.articles
+  locale.value = i18nLocale.value
+
+  useHead(headerFromSettings(settings.value, { googleSiteVerification: GOOGLE_SITE_VERIFICATION }))
+}
 </script>
 
 <template>

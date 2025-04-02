@@ -9,7 +9,7 @@ export interface Article {
   url: string
 }
 
-function _getSlugFromURL(url: string): string {
+export function getSlugFromURL(url: string): string {
   const urlParts = url.split('/')
   return urlParts[urlParts.length - 1].split('.')[0]
 }
@@ -27,7 +27,7 @@ export async function getArticles(config: VidoConfig): Promise<{
       transform: (articles) => {
         return articles.map(article => ({
           ...article,
-          url: _getSlugFromURL(article.url),
+          url: getSlugFromURL(article.url),
         }))
       },
     },
