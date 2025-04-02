@@ -1,38 +1,35 @@
 <script setup lang="ts">
+import { storeToRefs } from 'pinia'
 import type { GeoJSON, MultiPolygon, Polygon } from 'geojson'
-import Home from '~/components/Home/Home.vue'
 import type { ApiPoi } from '~/lib/apiPois'
+import Home from '~/components/Home/Home.vue'
 import { useSiteStore } from '~/stores/site'
 import { mapStore as useMapStore } from '~/stores/map'
 import { regexForCategoryIds } from '~/composables/useIdsResolver'
 
-//
-// Composables
-//
+const siteStore = useSiteStore()
+const { config, settings } = storeToRefs(siteStore)
+
+if (!config.value)
+  throw createError({ statusCode: 500, statusMessage: 'Wrong config', fatal: true })
+
 const route = useRoute()
 const mapStore = useMapStore()
-const siteStore = useSiteStore()
-const { config, settings } = siteStore
-const { API_ENDPOINT, API_PROJECT, API_THEME } = config!
+const { API_ENDPOINT, API_PROJECT, API_THEME } = config.value
 const { $trackingInit } = useNuxtApp()
 
-//
-// Data
-//
 const boundaryGeojson = ref<Polygon | MultiPolygon>()
 const poiId = ref<string>()
 const categoryIds = ref<number[]>()
 
-//
-// Hooks
-//
-onBeforeMount(() => {
-  $trackingInit(config!)
+onMounted(() => {
+  if (config.value)
+    $trackingInit(config.value)
 })
 
 const { boundary } = route.query
-if (boundary && typeof boundary === 'string' && settings!.polygons_extra) {
-  const boundaryObject = settings!.polygons_extra[boundary]
+if (boundary && typeof boundary === 'string' && settings.value?.polygons_extra) {
+  const boundaryObject = settings.value.polygons_extra[boundary]
   if (boundaryObject) {
     if (typeof boundaryObject.data === 'string') {
       const geojson = (await (await fetch(boundaryObject.data)).json()) as GeoJSON

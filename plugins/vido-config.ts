@@ -15,23 +15,18 @@ export function vidoConfig(
   headers: Record<string, string | undefined>,
 ): VidoConfig {
   let host: string
-  if (process.server) {
-    const hostHeader = (headers['x-forwarded-host'] as string) || headers.host
-    if (!hostHeader) {
-      throw new Error(
-        `No header "Host" nor "x-forwarded-host": ${JSON.stringify(headers)}`,
-      )
-    }
-    else {
-      host = hostHeader
-    }
+  const hostHeader = (headers['x-forwarded-host'] as string) || headers.host
+  if (!hostHeader) {
+    throw new Error(`No header "Host" nor "x-forwarded-host": ${JSON.stringify(headers)}`)
   }
   else {
-    host = window.location.host
+    host = hostHeader
   }
+
   host = host?.split(':')[0]
 
   const vidoHostConfig = vidos()
+
   if (!(host in vidoHostConfig) && !('' in vidoHostConfig))
     throw new Error(`Not configured host "${host}"`)
 
