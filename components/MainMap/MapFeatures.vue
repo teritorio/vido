@@ -74,15 +74,15 @@ const snackStore = useSnackStore()
 const menuStore = useMenuStore()
 const { featuresColor, isLoadingFeatures } = storeToRefs(menuStore)
 const siteStore = useSiteStore()
-const { config } = siteStore
+const { config } = storeToRefs(siteStore)
 
-if (!config)
+if (!config.value)
   throw createError({ statusCode: 500, statusMessage: 'Wrong config', fatal: true })
 
-const { BICYCLE_STYLE_URL, API_ENDPOINT, API_PROJECT, API_THEME } = config
+const { BICYCLE_STYLE_URL, API_ENDPOINT, API_PROJECT, API_THEME } = config.value
 const { explorerModeEnabled } = storeToRefs(siteStore)
 const mapStore = useMapStore()
-const { center, selectedFeature, teritorioCluster, mode } = storeToRefs(mapStore)
+const { center, selectedFeature, selectedFeatureDepsIDs, teritorioCluster, mode } = storeToRefs(mapStore)
 const mapStyleLoaded = ref(false)
 const mapBaseRef = ref<InstanceType<typeof MapBase>>()
 const map = ref<MapGL>()
@@ -209,29 +209,28 @@ function onClick(e: MapMouseEvent): void {
 
   if (vectorSelectedFeatures.length > 0) {
     updateSelectedFeature(vectorTilesPoi2ApiPoi(vectorSelectedFeatures[0]))
-    showVectorSelectedFeature()
   }
   else {
     updateSelectedFeature()
   }
 }
 
-const selectedFeatureDepsIDs = ref<number[]>([])
 async function updateSelectedFeature(feature?: ApiPoi): Promise<void> {
-  selectedFeatureDepsIDs.value = []
+  isLoadingFeatures.value = true
+  mapStore.setSelectedFeature()
+  mapStore.setSelectedFeatureDepsIDs()
 
   if (!feature) {
-    await menuStore.fetchFeatures({
-      vidoConfig: config!,
+    menuStore.fetchFeatures({
+      vidoConfig: config.value!,
       categoryIds: props.selectedCategoriesIds,
       clipingPolygonSlug: route.query.clipingPolygonSlug?.toString(),
     })
-    mapStore.setSelectedFeature()
   }
   else {
     const id = feature.properties.metadata.id || feature.properties.id || feature.id
 
-    if (selectedFeature.value?.properties.metadata.id !== id) {
+    if ((selectedFeature.value?.properties.metadata.id !== id) && !id.toString().includes('_')) {
       try {
         if (feature.properties['route:point:type']) {
           return
@@ -241,7 +240,7 @@ async function updateSelectedFeature(feature?: ApiPoi): Promise<void> {
           () => `${API_ENDPOINT}/${API_PROJECT}/${API_THEME}/poi/${id}/deps.geojson`,
           {
             query: {
-              geometry_as: 'point_or_bbox',
+              geometry_as: 'point',
               short_description: false,
             },
           },
@@ -257,7 +256,7 @@ async function updateSelectedFeature(feature?: ApiPoi): Promise<void> {
 
           data.value.features.forEach((f) => {
             const depID = 'metadata' in f.properties ? f.properties.metadata.id : f.properties.id
-            selectedFeatureDepsIDs.value.push(depID)
+            mapStore.addSelectedFeatureDepsIDs(depID)
 
             f = {
               ...f,
@@ -269,10 +268,6 @@ async function updateSelectedFeature(feature?: ApiPoi): Promise<void> {
 
             if (id === depID) {
               poi = f as ApiPoi
-              // In case the geometry isn't Point
-              // we get the clicked feature instead of the one returned by API
-              if (f.geometry.type !== 'Point')
-                deps.push(feature)
             }
 
             if (f.properties['route:point:type']) {
@@ -304,9 +299,7 @@ async function updateSelectedFeature(feature?: ApiPoi): Promise<void> {
               }
             }
 
-            if (f.geometry.type === 'Point') {
-              deps.push(f as ApiPoi)
-            }
+            deps.push(f as ApiPoi)
           })
 
           if (!poi)
@@ -325,7 +318,11 @@ async function updateSelectedFeature(feature?: ApiPoi): Promise<void> {
         console.error('Vido error:', (e as Error).message)
       }
     }
+    else {
+      mapStore.setSelectedFeature(feature)
+    }
   }
+  isLoadingFeatures.value = false
 }
 
 function goToSelectedFeature(): void {
