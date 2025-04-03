@@ -11,6 +11,7 @@ interface State {
   mode: Mode
   pitch: Pitch
   selectedFeature: ApiPoi | null
+  selectedFeatureDepsIDs: number[]
   teritorioCluster: TeritorioCluster | null
 }
 
@@ -21,6 +22,7 @@ export const mapStore = defineStore('map', {
     mode: Mode.BROWSER,
     pitch: 0,
     selectedFeature: null,
+    selectedFeatureDepsIDs: [],
     teritorioCluster: null,
   }),
 
@@ -32,6 +34,12 @@ export const mapStore = defineStore('map', {
   },
 
   actions: {
+    setSelectedFeatureDepsIDs(ids?: number[]): void {
+      this.selectedFeatureDepsIDs = ids || []
+    },
+    addSelectedFeatureDepsIDs(id: number): void {
+      this.selectedFeatureDepsIDs.push(id)
+    },
     setSelectedFeature(feature?: ApiPoi) {
       if (!feature) {
         this.selectedFeature = null

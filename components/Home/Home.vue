@@ -16,7 +16,7 @@ import PoiCard from '~/components/PoisCard/PoiCard.vue'
 import Search from '~/components/Search/Search.vue'
 import CookiesConsent from '~/components/UI/CookiesConsent.vue'
 import Logo from '~/components/UI/Logo.vue'
-import type { ApiMenuCategory, MenuItem } from '~/lib/apiMenu'
+import type { MenuItem } from '~/lib/apiMenu'
 import type { ApiPoi } from '~/lib/apiPois'
 import { getPois } from '~/lib/apiPois'
 import { getBBoxFeature, getBBoxFeatures } from '~/lib/bbox'
@@ -108,23 +108,7 @@ onBeforeMount(async () => {
   mode.value = Mode[Object.keys(Mode).find(key => Mode[key as keyof typeof Mode] === modeHash) as keyof typeof Mode] || Mode.BROWSER
 })
 
-onMounted(async () => {
-  if (props.initialCategoryIds) {
-    menuStore.setSelectedCategoryIds(props.initialCategoryIds)
-  }
-  else if (typeof location !== 'undefined') {
-    const enabledCategories: ApiMenuCategory['id'][] = []
-
-    if (apiMenuCategory.value) {
-      apiMenuCategory.value.forEach((category) => {
-        if (category.selected_by_default)
-          enabledCategories.push(category.id)
-      })
-    }
-
-    menuStore.setSelectedCategoryIds(enabledCategories)
-  }
-
+onMounted(() => {
   $tracking({
     type: 'page',
     title: (route.name && String(route.name)) || undefined,
@@ -226,21 +210,19 @@ const siteName = computed(() => {
 watch(selectedFeature, (newFeature) => {
   isPoiCardShown.value = !!newFeature
 
-  if (process.client) {
-    routerPushUrl()
+  routerPushUrl()
 
-    if (newFeature) {
-      $tracking({
-        type: 'popup',
-        poiId: newFeature.properties.metadata.id || newFeature.properties?.id,
-        title: newFeature.properties?.name,
-        location: window.location.href,
-        path: route.path,
-        categoryIds: newFeature.properties?.metadata?.category_ids || [],
-      })
-    }
+  if (newFeature) {
+    $tracking({
+      type: 'popup',
+      poiId: newFeature.properties.metadata.id || newFeature.properties?.id,
+      title: newFeature.properties?.name,
+      location: window.location.href,
+      path: route.path,
+      categoryIds: newFeature.properties?.metadata?.category_ids || [],
+    })
   }
-}, { immediate: true })
+})
 
 watch(selectedCategoryIds, (a, b) => {
   if (a !== b) {
@@ -286,7 +268,7 @@ watch(isModeFavorites, async (isEnabled) => {
 //
 function goToSelectedFeature(feature?: ApiPoi) {
   if (mapFeaturesRef.value) {
-    if (feature)
+    if (feature && selectedFeature.value?.properties.metadata.id !== feature.properties.metadata.id)
       mapFeaturesRef.value.updateSelectedFeature(feature)
     mapFeaturesRef.value.goToSelectedFeature()
   }
