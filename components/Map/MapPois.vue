@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import type { LngLatBounds, LngLatLike, Map as MapGL } from 'maplibre-gl'
+import type { LngLatLike, Map as MapGL } from 'maplibre-gl'
 import { TeritorioCluster } from '@teritorio/maplibre-gl-teritorio-cluster'
 import { storeToRefs } from 'pinia'
+import { getBBox } from '~/lib/bbox'
 import MapBase from '~/components/Map/MapBase.vue'
 import type { ApiPoi } from '~/lib/apiPois'
-import { getBBoxFeatures } from '~/lib/bbox'
 import { MAP_ZOOM } from '~/lib/constants'
 import type { MapPoiId } from '~/lib/mapPois'
 import { filterRouteByPoiIds } from '~/utils/styles'
@@ -17,7 +17,6 @@ const props = withDefaults(defineProps<{
   features: ApiPoi[]
   featureIds?: MapPoiId[]
   fullscreenControl?: boolean
-  defaultBounds?: LngLatBounds
   cluster?: boolean
 }>(), {
   extraAttributions: () => [] satisfies string[],
@@ -34,7 +33,7 @@ const mapBaseRef = ref<InstanceType<typeof MapBase>>()
 const map = ref<MapGL>()
 
 const selectionZoom = computed(() => MAP_ZOOM.selectionZoom)
-const bounds = computed((): LngLatBounds | undefined => getBBoxFeatures(props.features.filter(feature => feature.geometry)) || props.defaultBounds)
+const bounds = computed(() => getBBox({ type: 'FeatureCollection', features: props.features }))
 const center = computed((): LngLatLike | undefined => bounds.value?.getCenter())
 
 function onMapInit(mapInstance: MapGL): void {
