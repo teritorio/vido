@@ -9,7 +9,7 @@ import CategorySelector from '~/components/PoisList/CategorySelector.vue'
 import UIButton from '~/components/UI/UIButton.vue'
 import type { ApiPoi } from '~/lib/apiPois'
 import type { ApiMenuCategory } from '~/lib/apiMenu'
-import { getBBoxFeature } from '~/lib/bbox'
+import { getBBox } from '~/lib/bbox'
 import { mapStore as useMapStore } from '~/stores/map'
 import { menuStore as useMenuStore } from '~/stores/menu'
 import { useSiteStore } from '~/stores/site'
@@ -62,13 +62,7 @@ onMounted(() => {
     menuStore.setSelectedCategoryIds(enabledCategories)
   }
 
-  if (props.boundaryArea) {
-    initialBbox.value = getBBoxFeature(props.boundaryArea)
-  }
-  else {
-    // @ts-expect-error: setting wrong type to initialBbox
-    initialBbox.value = settings!.bbox_line.coordinates
-  }
+  initialBbox.value = getBBox({ type: 'Feature', geometry: props.boundaryArea || settings!.bbox_line, properties: {} })
 })
 
 //

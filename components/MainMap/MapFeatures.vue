@@ -21,7 +21,7 @@ import type { ApiMenuCategory } from '~/lib/apiMenu'
 import type { ApiPoi } from '~/lib/apiPois'
 import type { ApiPoiDeps, ApiRouteWaypoint } from '~/lib/apiPoiDeps'
 import { ApiRouteWaypointType, apiRouteWaypointToApiPoi, iconMap } from '~/lib/apiPoiDeps'
-import { getBBoxFeatures } from '~/lib/bbox'
+import { getBBox } from '~/lib/bbox'
 import { DEFAULT_MAP_STYLE, MAP_ZOOM } from '~/lib/constants'
 import { vectorTilesPoi2ApiPoi } from '~/lib/vectorTilesPois'
 import { mapStore as useMapStore } from '~/stores/map'
@@ -366,7 +366,7 @@ function handleSnackAction(): void {
   resetZoom()
 
   if (props.features.length) {
-    const bounds = getBBoxFeatures(props.features)
+    const bounds = getBBox({ type: 'FeatureCollection', features: props.features })
 
     if (bounds)
       mapBaseRef.value.fitBounds(bounds)

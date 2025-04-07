@@ -4227,6 +4227,7 @@ __metadata:
     "@teritorio/map": "npm:^0.12.7"
     "@teritorio/maplibre-gl-teritorio-cluster": "npm:^0.0.17"
     "@teritorio/openmaptiles-gl-language": "npm:^1.5.4"
+    "@turf/bbox": "npm:^7.2.0"
     "@turf/boolean-intersects": "npm:^6.5.0"
     "@turf/distance": "npm:^7.2.0"
     "@turf/mask": "npm:^7.1.0"
@@ -4342,6 +4343,18 @@ __metadata:
     "@types/geojson": "npm:^7946.0.10"
     tslib: "npm:^2.6.2"
   checksum: 10c0/901ed437ad1241b1c7cf76ee3f1dd998b32a59647074216d076a62080281693cc3f1d66d1dedd02fd5617ea57434ec059843bcc275d20f667019f3e1f378b05d
+  languageName: node
+  linkType: hard
+
+"@turf/bbox@npm:^7.2.0":
+  version: 7.2.0
+  resolution: "@turf/bbox@npm:7.2.0"
+  dependencies:
+    "@turf/helpers": "npm:^7.2.0"
+    "@turf/meta": "npm:^7.2.0"
+    "@types/geojson": "npm:^7946.0.10"
+    tslib: "npm:^2.8.1"
+  checksum: 10c0/766d59d5f75c272481e971cd4004e139962607e8f34391b2abfb15bb34f9544a0479ceb14772565e005e4a12fdd82adf0d440ab1c9e0decbde6de50a5706db43
   languageName: node
   linkType: hard
 
@@ -4502,6 +4515,16 @@ __metadata:
     "@turf/helpers": "npm:^7.1.0"
     "@types/geojson": "npm:^7946.0.10"
   checksum: 10c0/c7aa77ddb28ef5068b031c1b422d2d5dc1df51975f727be42e2d8d500a026a2e667242d6aa06453f757cbd5ead2db0ba6b9a5d2fcf5ab496574cd4c0ae4fe325
+  languageName: node
+  linkType: hard
+
+"@turf/meta@npm:^7.2.0":
+  version: 7.2.0
+  resolution: "@turf/meta@npm:7.2.0"
+  dependencies:
+    "@turf/helpers": "npm:^7.2.0"
+    "@types/geojson": "npm:^7946.0.10"
+  checksum: 10c0/707ed63ba64fe48769806bf2419f5c0cd2ebf821a6467aeffb784ba7ebd6a63ec98d4192b97915948529c00304ed46ddc83842a80714fb1f2018fd4e3c455498
   languageName: node
   linkType: hard
 

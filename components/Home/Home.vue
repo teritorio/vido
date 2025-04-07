@@ -19,7 +19,7 @@ import Logo from '~/components/UI/Logo.vue'
 import type { MenuItem } from '~/lib/apiMenu'
 import type { ApiPoi } from '~/lib/apiPois'
 import { getPois } from '~/lib/apiPois'
-import { getBBoxFeature, getBBoxFeatures } from '~/lib/bbox'
+import { getBBox } from '~/lib/bbox'
 import { favoriteStore as useFavoriteStore } from '~/stores/favorite'
 import { mapStore as useMapStore } from '~/stores/map'
 import { menuStore as useMenuStore } from '~/stores/menu'
@@ -117,13 +117,7 @@ onMounted(() => {
     origin: OriginEnum[router.currentRoute.value.query.origin as keyof typeof OriginEnum],
   })
 
-  if (props.boundaryArea) {
-    initialBbox.value = getBBoxFeature(props.boundaryArea)
-  }
-  else {
-    // @ts-expect-error: setting wrong type to initialBbox
-    initialBbox.value = settings!.bbox_line.coordinates
-  }
+  initialBbox.value = getBBox({ type: 'Feature', geometry: props.boundaryArea || settings!.bbox_line, properties: {} })
 })
 
 //
@@ -259,7 +253,7 @@ watch(isModeFavorites, async (isEnabled) => {
       await handleFavorites()
     }
 
-    initialBbox.value = getBBoxFeatures(favoriteFeatures.value)
+    initialBbox.value = getBBox({ type: 'FeatureCollection', features: favoriteFeatures.value })
   }
 })
 
