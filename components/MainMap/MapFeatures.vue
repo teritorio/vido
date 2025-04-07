@@ -287,8 +287,9 @@ async function updateSelectedFeature(feature?: ApiPoi): Promise<void> {
                   properties: {
                     ...f.properties,
                     display: {
-                      ...f.properties.display!,
                       icon: iconMap[f.properties['route:point:type']],
+                      color_fill: f.properties.display?.color_fill || poi?.properties.display?.color_fill || '#76009E',
+                      color_line: f.properties.display?.color_line || poi?.properties.display?.color_line || '#76009E',
                       text: f.properties['route:point:type']
                       === ApiRouteWaypointType.way_point
                         ? (waypointIndex++).toString()
