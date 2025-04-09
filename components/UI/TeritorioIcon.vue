@@ -1,32 +1,14 @@
-<script lang="ts">
+<script setup lang="ts">
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
-import type { PropType } from 'vue'
 
-import { defineNuxtComponent } from '#app'
-
-export default defineNuxtComponent({
-  components: {
-    FontAwesomeIcon,
-  },
-
-  props: {
-    colorText: {
-      type: String as PropType<string>,
-      rdefault: '#ffffff',
-    },
-    picto: {
-      type: String as PropType<string>,
-      required: true,
-    },
-    useNativeAlignment: {
-      type: Boolean,
-      default: null,
-    },
-    image: {
-      type: String as PropType<string>,
-      default: null,
-    },
-  },
+withDefaults(defineProps<{
+  colorText?: string
+  picto: string
+  useNativeAlignment?: boolean
+  image?: string
+}>(), {
+  colorText: '#ffffff',
+  useNativeAlignment: false,
 })
 </script>
 
