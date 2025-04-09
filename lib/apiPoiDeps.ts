@@ -66,6 +66,7 @@ export function apiRouteWaypointToApiPoi(
   waypoint: ApiRouteWaypoint,
   colorFill: string,
   colorLine: string,
+  colorText: string,
   text?: string,
 ): ApiPoi {
   return {
@@ -81,6 +82,7 @@ export function apiRouteWaypointToApiPoi(
         icon: iconMap[waypoint.properties['route:point:type']],
         color_fill: colorFill,
         color_line: colorLine,
+        color_text: colorText,
         text,
       },
       editorial: {

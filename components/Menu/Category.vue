@@ -1,17 +1,13 @@
 <script lang="ts">
-import type {
-  FontAwesomeIconProps,
-} from '@fortawesome/vue-fontawesome'
-import {
-  FontAwesomeIcon,
-} from '@fortawesome/vue-fontawesome'
+import type { FontAwesomeIconProps } from '@fortawesome/vue-fontawesome'
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import type { PropType } from 'vue'
-
 import { defineNuxtComponent } from '#app'
 import MenuItem from '~/components/Menu/Item.vue'
 import type { ApiMenuCategory, ApiMenuItem } from '~/lib/apiMenu'
 import type { FilterValues } from '~/utils/types-filters'
 import { filterValuesIsSet } from '~/utils/types-filters'
+import { getContrastedColors } from '~/composables/useFeature'
 
 export default defineNuxtComponent({
   components: {
@@ -43,6 +39,20 @@ export default defineNuxtComponent({
   computed: {
     isFiltered(): boolean {
       return this.filters && filterValuesIsSet(this.filters)
+    },
+    menuItemProps() {
+      const { colorFill, colorText } = getContrastedColors(this.category.category.color_fill, this.category.category.color_text)
+
+      return {
+        id: `MenuItem-${this.category.id}`,
+        href: `/${this.category.id}`,
+        displayMode: this.category.category.display_mode || this.displayModeDefault,
+        colorFill,
+        colorText,
+        icon: this.category.category.icon,
+        size: this.size,
+        name: this.category.category.name,
+      }
     },
   },
 
@@ -77,13 +87,7 @@ export default defineNuxtComponent({
 
 <template>
   <MenuItem
-    :id="`MenuItem-${category.id}`"
-    :href="`/${category.id}`"
-    :display-mode="category.category.display_mode || displayModeDefault"
-    :color-fill="category.category.color_fill"
-    :icon="category.category.icon"
-    :size="size"
-    :name="category.category.name"
+    v-bind="menuItemProps"
     badge-class="tw-bg-white tw-text-zinc-700 tw-rounded-full tw-border-solid tw-border-2 tw-border-white"
     @click.prevent="onClick"
   >

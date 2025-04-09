@@ -1,6 +1,5 @@
 <script lang="ts">
 import type { PropType } from 'vue'
-
 import { defineNuxtComponent } from '#app'
 import TeritorioIcon from '~/components/UI/TeritorioIcon.vue'
 
@@ -11,6 +10,10 @@ export default defineNuxtComponent({
 
   props: {
     colorFill: {
+      type: String as PropType<string>,
+      required: true,
+    },
+    colorText: {
       type: String as PropType<string>,
       required: true,
     },
@@ -73,6 +76,7 @@ export default defineNuxtComponent({
       :class="`tw-text-${iconSize}`"
       :picto="picto"
       :image="image"
+      :color-text="colorText"
     />
 
     <slot />

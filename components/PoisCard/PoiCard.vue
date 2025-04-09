@@ -4,11 +4,9 @@ import TeritorioIcon from '~/components/UI/TeritorioIcon.vue'
 import UIButton from '~/components/UI/UIButton.vue'
 import UIPicture from '~/components/UI/UIPicture.vue'
 import type { ApiPoi } from '~/lib/apiPois'
+import { getContrastedColors } from '~/composables/useFeature'
 
-//
-// Props
-//
-withDefaults(defineProps<{
+const props = withDefaults(defineProps<{
   canClose?: boolean
   poi: ApiPoi
   showImage?: boolean
@@ -17,9 +15,6 @@ withDefaults(defineProps<{
   showImage: true,
 })
 
-//
-// Events
-//
 const emit = defineEmits<{
   (e: 'exploreClick', poi: ApiPoi): void
   (e: 'favoriteClick', poi: ApiPoi): void
@@ -27,14 +22,9 @@ const emit = defineEmits<{
   (e: 'zoomClick', poi: ApiPoi): void
 }>()
 
-//
-// Composables
-//
 const device = useDevice()
+const { colorFill } = getContrastedColors(props.poi.properties.display?.color_fill)
 
-//
-// Data
-//
 const closeBtnStyles = reactive({
   backgroundColor: 'rgb(0 0 0 / 55%)',
   borderRadius: device.value.smallScreen ? '0 0 0 8px' : '0 0 8px 0',
@@ -69,7 +59,7 @@ const closeBtnStyles = reactive({
         :color-text="
           poi.properties.image && poi.properties.image.length > 0
             ? '#AAA'
-            : poi.properties.display?.color_fill || 'black'
+            : colorFill
         "
       />
       <UIPicture

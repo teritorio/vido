@@ -3,6 +3,7 @@ import Fields from '~/components/PoisCard/Fields.vue'
 import TeritorioIconBadge from '~/components/UI/TeritorioIconBadge.vue'
 import UIPicture from '~/components/UI/UIPicture.vue'
 import type { ApiPoi } from '~/lib/apiPois'
+import { getContrastedColors } from '~/composables/useFeature'
 
 const props = withDefaults(defineProps<{
   notebook?: boolean
@@ -13,9 +14,20 @@ const props = withDefaults(defineProps<{
 
 const { featureName } = useFeature(toRef(() => props.poi), { type: 'popup' })
 
-const colorFill = ref(props.poi.properties.display?.color_fill || 'black')
-const colorLine = ref(props.poi.properties.display?.color_line || 'black')
+const colorLine = ref(props.poi.properties.display?.color_line || '#000000')
 const websiteDetails = ref(props.poi.properties.editorial && props.poi.properties.editorial['website:details'])
+
+const teritorioIconBadgeProps = computed(() => {
+  const { colorFill, colorText } = getContrastedColors(props.poi.properties.display?.color_fill, props.poi.properties.display?.color_text)
+
+  return {
+    colorFill,
+    colorText,
+    picto: props.poi.properties.display?.icon,
+    text: props.poi.properties.display?.text,
+    size: 'lg',
+  }
+})
 </script>
 
 <template>
@@ -24,13 +36,14 @@ const websiteDetails = ref(props.poi.properties.editorial && props.poi.propertie
       <header>
         <TeritorioIconBadge
           v-if="props.poi.properties.display?.icon || poi.properties.display?.text"
-          :color-fill="colorFill"
-          :picto="props.poi.properties.display?.icon"
-          :image="undefined"
-          :text="poi.properties.display?.text"
-          size="lg"
+          v-bind="teritorioIconBadgeProps"
         />
-        <h3 class="tw-text-xl tw-font-semibold tw-leading-tight" :style="`color:${colorLine}`">
+        <h3
+          class="tw-text-xl tw-font-semibold tw-leading-tight"
+          :style="{
+            color: colorLine,
+          }"
+        >
           {{ featureName }}
         </h3>
 
