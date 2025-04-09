@@ -2,6 +2,7 @@ import type { LngLatLike, MapGeoJSONFeature, Point } from 'maplibre-gl'
 import { Marker } from 'maplibre-gl'
 import { createApp } from 'vue'
 import TeritorioIconBadge from '~/components/UI/TeritorioIconBadge.vue'
+import { getContrastedColors } from '~/composables/useFeature'
 
 function getMarkerDonutSegment(start: number, end: number, r: number, r0: number, colorFill: string): string {
   if (end - start === 1)
@@ -105,8 +106,11 @@ export function markerRender(element: HTMLDivElement, feature: MapGeoJSONFeature
   if (typeof feature.properties?.editorial === 'string')
     feature.properties.editorial = JSON.parse(feature.properties?.editorial)
 
+  const { colorFill, colorText } = getContrastedColors(feature.properties.display?.color_fill, feature.properties.display?.color_text)
+
   createApp(TeritorioIconBadge, {
-    colorFill: feature.properties.display?.color_fill,
+    colorFill,
+    colorText,
     picto: feature.properties.display?.icon,
     image: feature.properties!['image:thumbnail'],
     size: null,
