@@ -1,45 +1,17 @@
-<script lang="ts">
-import type { PropType } from 'vue'
-import { defineNuxtComponent } from '#app'
+<script setup lang="ts">
 import Footer from '~/components/Layout/Footer.vue'
 import Header from '~/components/Layout/Header.vue'
 import TeritorioIconBadge from '~/components/UI/TeritorioIconBadge.vue'
 import type { Settings } from '~/lib/apiSettings'
 
-export default defineNuxtComponent({
-  components: {
-    Header,
-    TeritorioIconBadge,
-    Footer,
-  },
-
-  props: {
-    settings: {
-      type: Object as PropType<Settings>,
-      required: true,
-    },
-    name: {
-      type: String as PropType<string | undefined>,
-      default: undefined,
-    },
-    icon: {
-      type: String as PropType<string | undefined>,
-      default: undefined,
-    },
-    colorLine: {
-      type: String as PropType<string>,
-      required: true,
-    },
-    colorFill: {
-      type: String as PropType<string>,
-      required: true,
-    },
-    colorText: {
-      type: String as PropType<string>,
-      required: true,
-    },
-  },
-})
+defineProps<{
+  settings: Settings
+  name?: string
+  icon?: string
+  colorLine: string
+  colorFill: string
+  colorText: string
+}>()
 </script>
 
 <template>
