@@ -5,6 +5,32 @@ interface Options {
   type?: LabelType
 }
 
+/**
+ * Returns '#000000' or '#FFFFFF' depending on which has better contrast with the given fill color.
+ * @param fillColor - Hex color string (e.g., '#1a1a1a', '#fff', '#FFAA33')
+ * @returns A high-contrast text color: '#000000' or '#FFFFFF'
+ */
+function getReadableTextColor(fillColor: string): '#000000' | '#FFFFFF' {
+  const hex = fillColor.replace('#', '')
+
+  const r = Number.parseInt(hex.substring(0, 2), 16)
+  const g = Number.parseInt(hex.substring(2, 4), 16)
+  const b = Number.parseInt(hex.substring(4, 6), 16)
+
+  // Perceived brightness (YIQ formula)
+  const yiq = (r * 299 + g * 587 + b * 114) / 1000
+
+  // If luminance is high, use black text; otherwise, white
+  return yiq > 128 ? '#000000' : '#FFFFFF'
+}
+
+export function getContrastedColors(colorFill?: string, colorText?: string) {
+  const fill = colorFill || '#000000'
+  const text = colorText || getReadableTextColor(fill)
+
+  return { colorFill: fill, colorText: text }
+}
+
 export default function useFeature(feature: Ref<ApiPoi>, options: Options = {
   type: undefined,
 }) {
