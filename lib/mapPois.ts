@@ -17,6 +17,8 @@ export interface MapPoiProperties {
 
     color_fill?: string
 
+    color_text?: string
+
     color_line?: string
     text?: string
   }
