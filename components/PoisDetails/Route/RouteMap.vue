@@ -9,6 +9,7 @@ const props = defineProps<{
   poi: ApiPoi
   route: ApiPoiDeps
   colorFill: string
+  colorText: string
   colorLine: string
 }>()
 
@@ -37,6 +38,7 @@ routeCollection.value = props.route.features.map((feature) => {
       mapPoi = apiRouteWaypointToApiPoi(
         feature as ApiRouteWaypoint,
         props.colorFill,
+        props.colorText,
         props.colorLine,
         feature.properties['route:point:type']
         === ApiRouteWaypointType.way_point
@@ -52,6 +54,7 @@ routeCollection.value = props.route.features.map((feature) => {
           display: {
             icon: iconMap[feature.properties['route:point:type']],
             color_fill: feature.properties.display?.color_fill || props.colorFill,
+            color_text: feature.properties.display?.color_text || props.colorText,
             color_line: feature.properties.display?.color_line || props.colorLine,
             text: feature.properties['route:point:type']
             === ApiRouteWaypointType.way_point

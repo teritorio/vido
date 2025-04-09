@@ -1,7 +1,6 @@
 <script lang="ts">
 import type { FontAwesomeIconProps } from '@fortawesome/vue-fontawesome'
 import type { PropType } from 'vue'
-
 import { defineNuxtComponent } from '#app'
 import TeritorioIconBadge from '~/components/UI/TeritorioIconBadge.vue'
 import type { MultilingualString } from '~/utils/types'
@@ -29,6 +28,10 @@ export default defineNuxtComponent({
       required: true,
     },
     colorFill: {
+      type: String as PropType<string>,
+      required: true,
+    },
+    colorText: {
       type: String as PropType<string>,
       required: true,
     },
@@ -71,7 +74,12 @@ export default defineNuxtComponent({
         ]"
         :style="{ flexShrink: 0 }"
       >
-        <TeritorioIconBadge :color-fill="colorFill" :picto="icon" :size="size">
+        <TeritorioIconBadge
+          :color-fill="colorFill"
+          :color-text="colorText"
+          :picto="icon"
+          :size="size"
+        >
           <span
             v-if="$slots.badge"
             class="tw-flex tw-items-center tw-justify-center tw-text-xs tw-font-semibold tw-font-sans tw-text-center tw-absolute" :class="[

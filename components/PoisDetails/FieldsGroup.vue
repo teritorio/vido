@@ -1,8 +1,6 @@
 <script lang="ts">
 import type { PropType } from 'vue'
-
 import { isFiledEmpty } from '../Fields/Field.vue'
-
 import { defineNuxtComponent } from '#app'
 import Field from '~/components/Fields/Field.vue'
 import Block from '~/components/PoisDetails/Block.vue'
@@ -42,6 +40,10 @@ export default defineNuxtComponent({
       required: true,
     },
     colorFill: {
+      type: String as PropType<string>,
+      required: true,
+    },
+    colorText: {
       type: String as PropType<string>,
       required: true,
     },
@@ -111,6 +113,7 @@ export default defineNuxtComponent({
             :properties="properties"
             :geom="geom"
             :color-fill="colorFill"
+            :color-text="colorText"
           />
         </div>
         <Block
@@ -132,6 +135,7 @@ export default defineNuxtComponent({
             :properties="properties"
             :geom="geom"
             :color-fill="colorFill"
+            :color-text="colorText"
           />
         </Block>
       </div>
