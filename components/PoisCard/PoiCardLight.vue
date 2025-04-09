@@ -14,7 +14,9 @@ const props = withDefaults(defineProps<{
 const { featureName } = useFeature(toRef(() => props.poi), { type: 'popup' })
 
 const colorFill = ref(props.poi.properties.display?.color_fill || 'black')
+const colorText = ref(props.poi.properties.display?.color_text || 'white')
 const colorLine = ref(props.poi.properties.display?.color_line || 'black')
+
 const websiteDetails = ref(props.poi.properties.editorial && props.poi.properties.editorial['website:details'])
 </script>
 
@@ -24,13 +26,19 @@ const websiteDetails = ref(props.poi.properties.editorial && props.poi.propertie
       <header>
         <TeritorioIconBadge
           v-if="props.poi.properties.display?.icon || poi.properties.display?.text"
-          :color-fill="colorFill"
+          :color-fill="props.poi.properties['route:point:type'] ? colorText : colorFill"
+          :color-text="props.poi.properties['route:point:type'] ? colorFill : colorText"
           :picto="props.poi.properties.display?.icon"
           :image="undefined"
           :text="poi.properties.display?.text"
           size="lg"
         />
-        <h3 class="tw-text-xl tw-font-semibold tw-leading-tight" :style="`color:${colorLine}`">
+        <h3
+          class="tw-text-xl tw-font-semibold tw-leading-tight"
+          :style="{
+            color: colorLine,
+          }"
+        >
           {{ featureName }}
         </h3>
 

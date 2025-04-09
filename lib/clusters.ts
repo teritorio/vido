@@ -106,7 +106,8 @@ export function markerRender(element: HTMLDivElement, feature: MapGeoJSONFeature
     feature.properties.editorial = JSON.parse(feature.properties?.editorial)
 
   createApp(TeritorioIconBadge, {
-    colorFill: feature.properties.display?.color_fill,
+    colorFill: feature.properties['route:point:type'] ? (feature.properties.display?.color_text || '#FFF') : feature.properties.display?.color_fill,
+    colorText: feature.properties['route:point:type'] ? feature.properties.display?.color_fill : (feature.properties.display?.color_text || '#FFF'),
     picto: feature.properties.display?.icon,
     image: feature.properties!['image:thumbnail'],
     size: null,
