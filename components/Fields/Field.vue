@@ -2,7 +2,6 @@
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import type GeoJSON from 'geojson'
 import type { PropType } from 'vue'
-
 import { defineNuxtComponent } from '#app'
 import AddressField from '~/components/Fields/AddressField.vue'
 import Coordinates, { isCoordinatesEmpty } from '~/components/Fields/Coordinates.vue'
@@ -21,6 +20,7 @@ import type { ApiPoiProperties, FieldsListItem } from '~/lib/apiPois'
 import { ADDRESS_FIELDS } from '~/composables/useField'
 import type { PropertyTranslationsContextEnum } from '~/stores/site'
 import { useSiteStore } from '~/stores/site'
+import { getContrastedColors } from '~/composables/useFeature'
 
 export function isFiledEmpty(
   field: FieldsListItem,
@@ -101,12 +101,13 @@ export default defineNuxtComponent({
   },
 
   setup(props) {
-    const colorfill = ref(props.properties.display?.color_fill || 'black')
+    const { colorFill, colorText } = getContrastedColors(props.properties.display?.color_fill, props.properties.display?.color_text)
     const textLimit = ref(130)
     const { p, pv } = useSiteStore()
 
     return {
-      colorfill,
+      colorFill,
+      colorText,
       textLimit,
       p,
       pv,
@@ -318,7 +319,7 @@ export default defineNuxtComponent({
         "
         :href="properties[field.field]"
         class="d-inline-block pa-2 rounded-lg"
-        :style="{ backgroundColor: colorfill, color: '#ffffff' }"
+        :style="{ backgroundColor: colorFill, color: colorText }"
       >
         <FontAwesomeIcon icon="arrow-circle-down" />
         {{ fieldTranslateK(field.field) }}

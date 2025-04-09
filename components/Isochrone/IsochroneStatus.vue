@@ -1,10 +1,11 @@
 <script setup lang="ts">
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
+import { getContrastedColors } from '~/composables/useFeature'
 
 const { t } = useI18n()
 const { reset, isochroneCurrentFeature } = useIsochrone()
 
-const color = computed(() => isochroneCurrentFeature.value?.properties?.display?.color_fill ?? 'transparent')
+const { colorFill: color_fill, colorText: color_text } = getContrastedColors(isochroneCurrentFeature.value?.properties?.display?.color_fill, isochroneCurrentFeature.value?.properties?.display?.color_text)
 </script>
 
 <template>
@@ -41,12 +42,12 @@ div > div {
 
 .icon {
   border-radius: 100%;
-  background-color: v-bind(color);
+  background-color: v-bind(color_fill);
   width: 40px;
   height: 40px;
 }
 
-svg {
-  color: #fff;
+.icon svg {
+  color: v-bind(color_text);
 }
 </style>

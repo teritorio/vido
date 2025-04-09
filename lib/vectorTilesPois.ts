@@ -1,7 +1,7 @@
 import type { MapGeoJSONFeature } from 'maplibre-gl'
-
 import type { ApiPoi, ApiPoiId } from './apiPois'
 import { ApiPoiPropertiesArray } from './apiPois'
+import { getContrastedColors } from '~/composables/useFeature'
 
 export type VectorTilesPoi = MapGeoJSONFeature
 
@@ -21,6 +21,7 @@ export function vectorTilesPoi2ApiPoi(mapPoi: VectorTilesPoi): ApiPoi {
       value && ApiPoiPropertiesArray.includes(key) ? split(value) : value,
     ]),
   )
+  const { colorFill, colorText } = getContrastedColors(props.color_fill, props.color_text)
 
   props.metadata = {
     id: mapPoi.id as ApiPoiId,
@@ -30,8 +31,9 @@ export function vectorTilesPoi2ApiPoi(mapPoi: VectorTilesPoi): ApiPoi {
 
   props.display = {
     icon: props.subclass || props.class || props.superclass,
-    color_fill: props.color_fill,
+    color_fill: colorFill,
     color_line: props.color_line,
+    color_text: colorText,
     style_class: [props.superclass, props.class, props.subclass],
   }
   delete props.subclass

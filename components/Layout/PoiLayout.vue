@@ -1,6 +1,5 @@
 <script lang="ts">
 import type { PropType } from 'vue'
-
 import { defineNuxtComponent } from '#app'
 import Footer from '~/components/Layout/Footer.vue'
 import Header from '~/components/Layout/Header.vue'
@@ -35,6 +34,10 @@ export default defineNuxtComponent({
       type: String as PropType<string>,
       required: true,
     },
+    colorText: {
+      type: String as PropType<string>,
+      required: true,
+    },
   },
 })
 </script>
@@ -46,7 +49,12 @@ export default defineNuxtComponent({
         <slot name="headerButtons" />
       </Header>
       <div v-if="icon" class="tw-flex tw-justify-center">
-        <TeritorioIconBadge :color-fill="colorFill" size="2xl" :picto="icon" />
+        <TeritorioIconBadge
+          :color-fill="colorFill"
+          :color-text="colorText"
+          :picto="icon"
+          size="2xl"
+        />
       </div>
       <h1 class="print:tw-pb-4">
         {{ name }}

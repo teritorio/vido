@@ -9,6 +9,7 @@ import { useSiteStore } from '~/stores/site'
 import { menuStore as useMenuStore } from '~/stores/menu'
 import { mapStore as useMapStore } from '~/stores/map'
 import { regexForCategoryIds } from '~/composables/useIdsResolver'
+import { getContrastedColors } from '~/composables/useFeature'
 
 const siteStore = useSiteStore()
 const { config, settings } = storeToRefs(siteStore)
@@ -135,24 +136,33 @@ if (status.value === 'success' && data.value) {
 
     if (f.properties['route:point:type']) {
       if (!('metadata' in f.properties)) {
+        const { colorFill, colorText } = getContrastedColors(poi?.properties.display?.color_fill || '#76009E', poi?.properties.display?.color_text)
+
         f = apiRouteWaypointToApiPoi(
           f as ApiRouteWaypoint,
-          poi?.properties.display?.color_fill || '#76009E',
+          colorFill,
           poi?.properties.display?.color_line || '#76009E',
+          colorText,
           f.properties['route:point:type'] === ApiRouteWaypointType.way_point
             ? (waypointIndex++).toString()
             : undefined,
         )
       }
       else {
+        const { colorFill, colorText } = getContrastedColors(
+          f.properties.display?.color_fill || poi?.properties.display?.color_fill || '#76009E',
+          f.properties.display?.color_text || poi?.properties.display?.color_text,
+        )
+
         f = {
           ...f,
           properties: {
             ...f.properties,
             display: {
               icon: iconMap[f.properties['route:point:type']],
-              color_fill: f.properties.display?.color_fill || poi?.properties.display?.color_fill || '#76009E',
+              color_fill: colorFill,
               color_line: f.properties.display?.color_line || poi?.properties.display?.color_line || '#76009E',
+              color_text: colorText,
               text: f.properties['route:point:type']
               === ApiRouteWaypointType.way_point
                 ? (waypointIndex++).toString()
