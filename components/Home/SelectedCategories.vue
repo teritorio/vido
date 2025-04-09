@@ -1,44 +1,31 @@
-<script lang="ts">
+<script setup lang="ts">
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
-import { mapActions, mapState } from 'pinia'
 import type { ApiMenuCategory } from '~/lib/apiMenu'
-import { defineNuxtComponent } from '#app'
+import { storeToRefs } from 'pinia'
 import TeritorioIconBadge from '~/components/UI/TeritorioIconBadge.vue'
-import { menuStore } from '~/stores/menu'
+import { menuStore as useMenuStore } from '~/stores/menu'
 import { getContrastedColors } from '~/composables/useFeature'
 
-export default defineNuxtComponent({
-  components: {
-    FontAwesomeIcon,
-    TeritorioIconBadge,
-  },
+const { t } = useI18n()
+const menuStore = useMenuStore()
+const { selectedCategories } = storeToRefs(menuStore)
 
-  computed: {
-    ...mapState(menuStore, ['selectedCategories']),
-  },
+function getItem(item: ApiMenuCategory) {
+  return item.menu_group || item.link || item.category || {}
+}
 
-  methods: {
-    ...mapActions(menuStore, [
-      'delSelectedCategoryIds',
-      'clearSelectedCategoryIds',
-    ]),
-    getItem(item: ApiMenuCategory) {
-      return item.menu_group || item.link || item.category || {}
-    },
-    getTeritorioIconBadgeProps(item: ApiMenuCategory) {
-      const base = this.getItem(item)
-      const { colorFill, colorText } = getContrastedColors(base.color_fill, base.color_text)
+function getTeritorioIconBadgeProps(item: ApiMenuCategory) {
+  const base = this.getItem(item)
+  const { colorFill, colorText } = getContrastedColors(base.color_fill, base.color_text)
 
-      return {
-        id: item.id,
-        picto: base.icon,
-        colorFill,
-        colorText,
-        size: 'lg',
-      }
-    },
-  },
-})
+  return {
+    id: item.id,
+    picto: base.icon,
+    colorFill,
+    colorText,
+    size: 'lg',
+  }
+}
 </script>
 
 <template>
@@ -62,11 +49,11 @@ export default defineNuxtComponent({
           <button
             type="button"
             class="tw-flex tw-items-center tw-justify-center tw-text-white tw-text-center tw-rounded-full tw-absolute -tw-top-1 -tw-right-1 tw-w-5 tw-h-5 tw-border-solid tw-border-2 tw-border-white tw-bg-red-600 hover:tw-bg-red-800"
-            :title="$t('headerMenu.hideCategory')"
-            @click="delSelectedCategoryIds([menuItem.id])"
+            :title="t('headerMenu.hideCategory')"
+            @click="menuStore.delSelectedCategoryIds([menuItem.id])"
           >
             <span class="tw-sr-only">{{
-              $t('headerMenu.disableCategory')
+              t('headerMenu.disableCategory')
             }}</span>
             <FontAwesomeIcon icon="times" class="tw-text-white" size="sm" />
           </button>
@@ -77,9 +64,9 @@ export default defineNuxtComponent({
       v-if="selectedCategories.length > 1"
       type="button"
       class="tw-absolute -tw-top-3 -tw-right-3 tw-pointer-events-auto tw-flex tw-items-center tw-justify-center tw-text-white tw-text-center tw-rounded-full tw-w-7 tw-h-7 tw-border-solid tw-border-2 tw-border-white tw-bg-red-600 hover:tw-bg-red-800"
-      :title="$t('headerMenu.clearAllCategories')"
-      :aria-label="$t('headerMenu.clearAllCategories')"
-      @click="clearSelectedCategoryIds"
+      :title="t('headerMenu.clearAllCategories')"
+      :aria-label="t('headerMenu.clearAllCategories')"
+      @click="menuStore.clearSelectedCategoryIds"
     >
       <FontAwesomeIcon icon="times" class="tw-text-white" />
     </button>
