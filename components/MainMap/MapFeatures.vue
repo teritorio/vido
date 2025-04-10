@@ -216,7 +216,6 @@ function onClick(e: MapMouseEvent): void {
 }
 
 async function updateSelectedFeature(feature?: ApiPoi): Promise<void> {
-  isLoadingFeatures.value = true
   mapStore.setSelectedFeature()
   mapStore.setSelectedFeatureDepsIDs()
 
@@ -327,7 +326,6 @@ async function updateSelectedFeature(feature?: ApiPoi): Promise<void> {
       mapStore.setSelectedFeature(feature)
     }
   }
-  isLoadingFeatures.value = false
 }
 
 function goToSelectedFeature(): void {
