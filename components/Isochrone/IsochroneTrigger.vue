@@ -77,8 +77,8 @@ function handleTriggerClick() {
 
 <template>
   <button
+    v-show="isElligibleToIsochrone"
     type="button"
-    :disabled="!isElligibleToIsochrone"
     :title="t('isochrone.trigger.title')"
     :class="$attrs.class"
     :aria-label="t('isochrone.trigger.label')"
@@ -142,11 +142,3 @@ function handleTriggerClick() {
     </VCard>
   </VOverlay>
 </template>
-
-<style lang="css" scoped>
-button:disabled {
-  cursor: not-allowed;
-  pointer-events: none;
-  opacity: 0.5;
-}
-</style>
