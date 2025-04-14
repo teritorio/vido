@@ -216,6 +216,10 @@ function onClick(e: MapMouseEvent): void {
 }
 
 async function updateSelectedFeature(feature?: ApiPoi): Promise<void> {
+  if (feature?.properties['route:point:type']) {
+    return
+  }
+
   mapStore.setSelectedFeature()
   mapStore.setSelectedFeatureDepsIDs()
 
@@ -231,10 +235,6 @@ async function updateSelectedFeature(feature?: ApiPoi): Promise<void> {
 
     if ((selectedFeature.value?.properties.metadata.id !== id) && !id.toString().includes('_')) {
       try {
-        if (feature.properties['route:point:type']) {
-          return
-        }
-
         const { data, error, status } = await useFetch<ApiPoiDeps>(
           () => `${API_ENDPOINT}/${API_PROJECT}/${API_THEME}/poi/${id}/deps.geojson`,
           {
