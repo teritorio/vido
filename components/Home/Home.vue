@@ -204,19 +204,21 @@ const siteName = computed(() => {
 watch(selectedFeature, (newFeature) => {
   isPoiCardShown.value = !!newFeature
 
-  routerPushUrl()
+  if (process.client) {
+    routerPushUrl()
 
-  if (newFeature) {
-    $tracking({
-      type: 'popup',
-      poiId: newFeature.properties.metadata.id || newFeature.properties?.id,
-      title: newFeature.properties?.name,
-      location: window.location.href,
-      path: route.path,
-      categoryIds: newFeature.properties?.metadata?.category_ids || [],
-    })
+    if (newFeature) {
+      $tracking({
+        type: 'popup',
+        poiId: newFeature.properties.metadata.id || newFeature.properties?.id,
+        title: newFeature.properties?.name,
+        location: window.location.href,
+        path: route.path,
+        categoryIds: newFeature.properties?.metadata?.category_ids || [],
+      })
+    }
   }
-})
+}, { immediate: true })
 
 watch(selectedCategoryIds, (a, b) => {
   if (a !== b) {
