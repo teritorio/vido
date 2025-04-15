@@ -26,11 +26,6 @@ const boundaryGeojson = ref<Polygon | MultiPolygon>()
 const poiId = ref<number>()
 const categoryIds = ref<number[]>()
 
-onMounted(() => {
-  if (config.value)
-    $trackingInit(config.value)
-})
-
 const { boundary } = route.query
 if (boundary && typeof boundary === 'string' && settings.value?.polygons_extra) {
   const boundaryObject = settings.value.polygons_extra[boundary]
@@ -74,6 +69,9 @@ if (route.params.poiId) {
 const menuStore = useMenuStore()
 const { apiMenuCategory } = storeToRefs(menuStore)
 onBeforeMount(() => {
+  $trackingInit(config.value!)
+
+  // TODO: It could be processed on server-side ?
   if (categoryIds.value) {
     menuStore.setSelectedCategoryIds(categoryIds.value)
   }
