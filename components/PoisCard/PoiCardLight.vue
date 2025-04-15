@@ -99,10 +99,15 @@ header > h3 {
   margin: 0;
 }
 
+article > picture {
+  display: flex;
+}
+
 article > picture:deep(img) {
   width: 100%;
   max-height: 280px;
-  object-fit: scale-down;
+  object-fit: contain;
+  place-self: baseline;
 }
 
 @media (width >= 768px) {
