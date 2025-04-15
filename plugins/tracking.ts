@@ -11,15 +11,18 @@ export default defineNuxtPlugin((nuxtApp) => {
     provide: {
       trackingInit: (config: VidoConfig): void => {
         if (navigator.doNotTrack !== '1') {
-          const consentIsGranted = localStorage.getItem('vue-cookie-accept-decline-cookies-consent') === 'accept'
-          const googleTagManagerId = config.GOOGLE_TAG_MANAGER_ID
+          const { GOOGLE_TAG_MANAGER_ID, COOKIES_CONSENT } = config
 
-          if (googleTagManagerId) {
+          if (GOOGLE_TAG_MANAGER_ID) {
+            const consentIsGranted = COOKIES_CONSENT
+              ? localStorage.getItem('vue-cookie-accept-decline-cookies-consent') === 'accept'
+              : true // Bypass consent if COOKIES_CONSENT is not enabled
+
             trackers.push(
               new Google(
                 nuxtApp.vueApp,
                 !consentIsGranted,
-                googleTagManagerId,
+                GOOGLE_TAG_MANAGER_ID,
               ),
             )
           }
