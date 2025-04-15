@@ -99,10 +99,18 @@ header > h3 {
   margin: 0;
 }
 
-article > picture:deep(img) {
+article > picture {
+  display: block;
   width: 100%;
   max-height: 280px;
-  object-fit: scale-down;
+  overflow: hidden;
+}
+
+article > picture:deep(img) {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
 }
 
 @media (width >= 768px) {
