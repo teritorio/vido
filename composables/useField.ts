@@ -104,7 +104,7 @@ export default function () {
     if (!length)
       return undefined
 
-    return new Intl.NumberFormat(locale.value, { style: 'unit', unit: 'kilometer' }).format(length / 1000)
+    return new Intl.NumberFormat(locale.value, { style: 'unit', unit: 'kilometer' }).format(length)
   }
 
   const getRouteNoDetails = (activity: string, route: Route, context: PropertyTranslationsContextEnum): string => {
