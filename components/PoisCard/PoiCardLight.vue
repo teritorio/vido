@@ -21,8 +21,8 @@ const teritorioIconBadgeProps = computed(() => {
   const { colorFill, colorText } = getContrastedColors(props.poi.properties.display?.color_fill, props.poi.properties.display?.color_text)
 
   return {
-    colorFill,
-    colorText,
+    colorFill: props.poi.properties['route:point:type'] ? colorText : colorFill,
+    colorText: props.poi.properties['route:point:type'] ? colorFill : colorText,
     picto: props.poi.properties.display?.icon,
     text: props.poi.properties.display?.text,
     size: 'lg',
