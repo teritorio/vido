@@ -109,8 +109,8 @@ export function markerRender(element: HTMLDivElement, feature: MapGeoJSONFeature
   const { colorFill, colorText } = getContrastedColors(feature.properties.display?.color_fill, feature.properties.display?.color_text)
 
   createApp(TeritorioIconBadge, {
-    colorFill,
-    colorText,
+    colorFill: feature.properties['route:point:type'] ? colorText : colorFill,
+    colorText: feature.properties['route:point:type'] ? colorFill : colorText,
     picto: feature.properties.display?.icon,
     image: feature.properties!['image:thumbnail'],
     size: null,
