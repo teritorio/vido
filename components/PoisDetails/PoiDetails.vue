@@ -1,7 +1,6 @@
 <script lang="ts">
 import { mapState } from 'pinia'
 import type { PropType } from 'vue'
-
 import { defineNuxtComponent } from '#app'
 import PoiLayout from '~/components/Layout/PoiLayout.vue'
 import MapPois from '~/components/Map/MapPois.vue'
@@ -15,14 +14,13 @@ import IconButton from '~/components/UI/IconButton.vue'
 import RelativeDate from '~/components/UI/RelativeDate.vue'
 import TeritorioIcon from '~/components/UI/TeritorioIcon.vue'
 import type { ApiPoiDeps } from '~/lib/apiPoiDeps'
-import type { ApiPoi, ApiPoiId, ApiPoiProperties, FieldsList } from '~/lib/apiPois'
+import type { ApiPoi, ApiPoiId, FieldsList } from '~/lib/apiPois'
 import type { Settings } from '~/lib/apiSettings'
 import { PropertyTranslationsContextEnum } from '~/stores/site'
 import { favoriteStore } from '~/stores/favorite'
 import { OriginEnum } from '~/utils/types'
 import FieldsHeader from '~/components/UI/FieldsHeader.vue'
 import ContribFieldGroup from '~/components/Fields/ContribFieldGroup.vue'
-import type { ContribFields } from '~/composables/useContrib'
 
 export default defineNuxtComponent({
   components: {
@@ -60,17 +58,16 @@ export default defineNuxtComponent({
     },
   },
 
-  data(): {
-    contribMode: boolean
-    isContribEligible: (properties: ApiPoiProperties) => boolean
-    getContributorFields: (feature: ApiPoi) => ContribFields
-  } {
+  setup(props) {
     const { contribMode, isContribEligible, getContributorFields } = useContrib()
+    const { colorFill, colorText } = getContrastedColors(props.poi.properties.display?.color_fill, props.poi.properties.display?.color_text)
 
     return {
       contribMode,
       isContribEligible,
       getContributorFields,
+      colorFill,
+      colorText,
     }
   },
 
@@ -104,10 +101,6 @@ export default defineNuxtComponent({
         // @ts-expect-error: ignore
         return fields.filter(field => field.field !== 'description')
       }
-    },
-
-    colorFill(): string {
-      return this.poi.properties.display?.color_fill || '#76009E'
     },
 
     colorLine(): string {
@@ -186,6 +179,7 @@ export default defineNuxtComponent({
     :icon="poi.properties.display && poi.properties.display.icon"
     :color-line="colorLine"
     :color-fill="colorFill"
+    :color-text="colorText"
   >
     <template #headerButtons>
       <IconButton
@@ -230,6 +224,7 @@ export default defineNuxtComponent({
             }"
             :properties="properties"
             :color-fill="colorFill"
+            :color-text="colorText"
             :geom="poi.geometry"
           />
           <div v-if="contribMode && isContribEligible(poi.properties)">
@@ -278,6 +273,7 @@ export default defineNuxtComponent({
             :properties="poi.properties"
             :geom="poi.geometry"
             :color-fill="colorFill"
+            :color-text="colorText"
           />
         </div>
       </div>
@@ -288,6 +284,7 @@ export default defineNuxtComponent({
         :poi="poi"
         :route="poiDeps"
         :color-fill="colorFill"
+        :color-text="colorText"
         :color-line="colorLine"
       />
     </template>

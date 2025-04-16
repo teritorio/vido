@@ -12,7 +12,7 @@ export default defineNuxtComponent({
   props: {
     colorText: {
       type: String as PropType<string>,
-      default: '#ffffff',
+      rdefault: '#ffffff',
     },
     picto: {
       type: String as PropType<string>,
