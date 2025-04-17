@@ -139,7 +139,7 @@ export default defineI18nLocale(() => {
     },
     categorySelector: {
       placeholderSelect: 'Seleccione una categoría',
-      placeholderAdd: 'Montrar una categoría',
+      placeholderAdd: 'Ver una categoría',
       search: 'Buscar en la lista',
     },
     dateFilter: {
