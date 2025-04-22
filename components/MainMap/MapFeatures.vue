@@ -216,7 +216,9 @@ function onClick(e: MapMouseEvent): void {
 }
 
 async function updateSelectedFeature(feature?: ApiPoi): Promise<void> {
-  if (feature?.properties['route:point:type']) {
+  if ((feature?.properties.metadata.id === selectedFeature.value?.properties.metadata.id)
+    || feature?.properties['route:point:type']
+  ) {
     return
   }
 
