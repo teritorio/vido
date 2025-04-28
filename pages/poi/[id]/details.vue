@@ -7,7 +7,7 @@ import { getPoiDepsById } from '~/lib/apiPoiDeps'
 import type { ApiPoi } from '~/lib/apiPois'
 import { headerFromSettings } from '~/lib/apiSettings'
 import { getAsyncDataOrThrows } from '~/lib/getAsyncData'
-import { siteStore as useSiteStore } from '~/stores/site'
+import { useSiteStore } from '~/stores/site'
 import { regexForPOIIds } from '~/composables/useIdsResolver'
 
 //
@@ -23,7 +23,8 @@ definePageMeta({
 // Composables
 //
 const siteStore = useSiteStore()
-const { config, settings, contents } = storeToRefs(siteStore)
+const { config, settings } = siteStore
+const { articles } = storeToRefs(siteStore)
 const { params } = useRoute()
 const { $trackingInit } = useNuxtApp()
 
@@ -35,7 +36,7 @@ const poiDeps = ref<ApiPoiDeps>()
 const fetchPoiPoiDeps = getAsyncDataOrThrows(
   `fetchPoiPoiDeps-${params.id}`,
   async () => {
-    return await getPoiDepsById(config.value!, params.id as string, {
+    return await getPoiDepsById(config!, params.id as string, {
       geometry_as: 'point_or_bbox',
       short_description: false,
     }).then((poiDeps) => {
@@ -77,11 +78,11 @@ if (!featureSeoTitle.value)
 // Hooks
 //
 onBeforeMount(() => {
-  $trackingInit(config.value!)
+  $trackingInit(config!)
 })
 
 useHead(
-  headerFromSettings(settings.value!, {
+  headerFromSettings(settings!, {
     title: featureSeoTitle.value,
     description: {
       fr: poi.value?.properties.description,
@@ -94,7 +95,7 @@ useHead(
   <PoiDetails
     v-if="settings"
     :settings="settings"
-    :nav-menu-entries="contents!"
+    :nav-menu-entries="articles!"
     :poi="poi!"
     :poi-deps="poiDeps"
     :page-title="featureSeoTitle!"

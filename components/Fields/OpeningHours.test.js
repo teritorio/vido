@@ -2,13 +2,12 @@ import { createPinia } from 'pinia'
 import { createApp } from 'vue'
 import { beforeEach, expect, it } from 'mocha'
 import OpeningHours from '~/components/Fields/OpeningHours.vue'
-import { PropertyTranslationsContextEnum } from '~/plugins/property-translations'
-import { siteStore } from '~/stores/site'
+import { PropertyTranslationsContextEnum, useSiteStore } from '~/stores/site'
 
 const realPinia = createPinia()
 
 beforeEach(() => {
-  siteStore(realPinia).$patch({
+  useSiteStore(realPinia).$patch({
     locale: 'fr',
   })
 })

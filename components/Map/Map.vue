@@ -25,7 +25,7 @@ import type { PropType } from 'vue'
 
 import { defineNuxtComponent } from '#app'
 import { DEFAULT_MAP_STYLE, MAP_ZOOM } from '~/lib/constants'
-import { siteStore as useSiteStore } from '~/stores/site'
+import { useSiteStore } from '~/stores/site'
 import { fetchStyle } from '~/utils/styles'
 import { MapStyleEnum } from '~/utils/types'
 

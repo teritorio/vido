@@ -1,5 +1,6 @@
 import type { ApiPoiProperties } from '~/lib/apiPois'
-import type { PropertyTranslationsContextEnum } from '~/plugins/property-translations'
+import type { PropertyTranslationsContextEnum } from '~/stores/site'
+import { useSiteStore } from '~/stores/site'
 
 interface Route {
   duration?: number
@@ -15,8 +16,8 @@ export const ADDRESS_FIELDS = [
 ]
 
 export default function () {
-  const { $propertyTranslations } = useNuxtApp()
-  const { t } = useI18n()
+  const { pv } = useSiteStore()
+  const { locale } = useI18n()
 
   // Address Field
   const addressToString = (properties: ApiPoiProperties): string => {
@@ -65,36 +66,45 @@ export default function () {
 
     return !activityKey
       ? undefined
-      : { key: activityKey, translatedValue: $propertyTranslations.pv('route', `${activityKey}`, context) }
+      : { key: activityKey, translatedValue: pv('route', `${activityKey}`, context) }
   }
 
   const getRouteDifficulty = (activity: string, difficulty: string, context: PropertyTranslationsContextEnum): string | undefined => {
     return !difficulty
       ? undefined
-      : $propertyTranslations.pv(`route:${activity}:difficulty`, difficulty, context)
+      : pv(`route:${activity}:difficulty`, difficulty, context)
   }
 
   const getRouteDuration = (duration: number): string | undefined => {
     if (!duration)
       return undefined
 
-    let string = ''
     const hours = Math.floor(duration / 60)
     const minutes = duration % 60
 
-    if (hours > 0)
-      string += t('units.hours', { hours })
+    const formatter = new Intl.NumberFormat(locale.value, {
+      style: 'unit',
+      unit: 'hour',
+      unitDisplay: 'narrow',
+    })
 
-    if (minutes > 0)
-      string += `${hours > 0 ? ' ' : ''}${t('units.min', { minutes })}`
+    const formattedHours = hours > 0 ? formatter.format(hours) : ''
+    const formattedMinutes = minutes > 0
+      ? new Intl.NumberFormat(locale.value, {
+        style: 'unit',
+        unit: 'minute',
+        unitDisplay: 'narrow',
+      }).format(minutes)
+      : ''
 
-    return string
+    return `${formattedHours} ${formattedMinutes}`.trim()
   }
 
   const getRouteLength = (length: number): string | undefined => {
-    return !length
-      ? undefined
-      : t('units.km', { length })
+    if (!length)
+      return undefined
+
+    return new Intl.NumberFormat(locale.value, { style: 'unit', unit: 'kilometer' }).format(length)
   }
 
   const getRouteNoDetails = (activity: string, route: Route, context: PropertyTranslationsContextEnum): string => {

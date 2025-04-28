@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import RoutesField from '~/components/Fields/RoutesField.vue'
-import { PropertyTranslationsContextEnum } from '~/plugins/property-translations'
+import { PropertyTranslationsContextEnum } from '~/stores/site'
 
 const defaultProps = {
   context: PropertyTranslationsContextEnum.Details,

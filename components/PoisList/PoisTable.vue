@@ -1,15 +1,13 @@
 <script setup lang="ts">
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { localeIncludes } from 'locale-includes'
-import { storeToRefs } from 'pinia'
-import { PropertyTranslationsContextEnum } from '~/plugins/property-translations'
+import { PropertyTranslationsContextEnum, useSiteStore } from '~/stores/site'
 import type { ApiPoi, ApiPois, FieldsListItem } from '~/lib/apiPois'
 import Field from '~/components/Fields/Field.vue'
 import IconButton from '~/components/UI/IconButton.vue'
 import ContribFieldGroup from '~/components/Fields/ContribFieldGroup.vue'
 import Actions from '~/components/PoisList/Actions.vue'
 import TeritorioIconBadge from '~/components/UI/TeritorioIconBadge.vue'
-import { siteStore as useSiteStore } from '~/stores/site'
 import { menuStore as useMenuStore } from '~/stores/menu'
 import { headerFromSettings } from '~/lib/apiSettings'
 
@@ -34,17 +32,15 @@ defineProps<{
 //
 const { routeToString, addressToString } = useField()
 const { t, locale } = useI18n()
-const siteStore = useSiteStore()
-const { config, settings } = storeToRefs(siteStore)
+const { config, settings, p } = useSiteStore()
 const menuStore = useMenuStore()
-const { $propertyTranslations } = useNuxtApp()
 const { contribMode, isContribEligible, getContributorFields } = useContrib()
 const route = useRoute()
 
 //
 // Data
 //
-const { API_ENDPOINT, API_PROJECT, API_THEME } = config.value!
+const { API_ENDPOINT, API_PROJECT, API_THEME } = config!
 const search = ref('')
 const query = {
   geometry_as: 'point',
@@ -111,7 +107,7 @@ const headers = computed(() => {
     filterable: true,
     key: `properties.${f.field}`,
     sortable: true,
-    title: $propertyTranslations.p(
+    title: p(
       f.field,
       PropertyTranslationsContextEnum.List,
     ),
@@ -200,7 +196,7 @@ function getColKey(key: string) {
   return key
 }
 
-useHead(headerFromSettings(settings.value!, { title: category.value?.category.name.fr }))
+useHead(headerFromSettings(settings!, { title: category.value?.category.name.fr }))
 </script>
 
 <template>

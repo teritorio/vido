@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { storeToRefs } from 'pinia'
 import { menuStore as useMenuStore } from '~/stores/menu'
-import { siteStore as useSiteStore } from '~/stores/site'
+import { useSiteStore } from '~/stores/site'
 import Header from '~/components/Layout/Header.vue'
 import Footer from '~/components/Layout/Footer.vue'
 import PoisTable from '~/components/PoisList/PoisTable.vue'
@@ -11,25 +11,25 @@ import CategorySelector from '~/components/PoisList/CategorySelector.vue'
 // Composables
 //
 const siteStore = useSiteStore()
-const { config, settings, contents } = storeToRefs(siteStore)
+const { config, settings } = siteStore
 const menuStore = useMenuStore()
 const { menuItems } = storeToRefs(menuStore)
 const { $trackingInit } = useNuxtApp()
-const { params, query, name } = useRoute()
+const route = useRoute()
 
 //
 // Computed
 //
 const categoryId = computed(() => {
-  if (!params.id)
+  if (!route.params.id)
     return undefined
 
-  return Number.parseInt(params.id as string)
+  return Number.parseInt(route.params.id as string)
 })
 
 const filters = computed(() => {
-  return query.menuItemIds
-    ? query.menuItemIds
+  return route.query.menuItemIds
+    ? route.query.menuItemIds
       .toString()
       .split(',')
       .map(f => Number.parseInt(f))
@@ -37,7 +37,7 @@ const filters = computed(() => {
 })
 
 const isEmbedded = computed(() => {
-  return name?.toString().indexOf('embedded') !== -1
+  return route.name?.toString().indexOf('embedded') !== -1
 })
 
 const isFiltersEqualToCategoryId = computed(() => {
@@ -48,7 +48,7 @@ const isFiltersEqualToCategoryId = computed(() => {
 // Hooks
 //
 onBeforeMount(() => {
-  $trackingInit(config.value!)
+  $trackingInit(config!)
 })
 
 //
@@ -60,7 +60,7 @@ async function onCategoryUpdate(categoryId: number) {
 
   await navigateTo({
     path: isEmbedded.value ? `/category/embedded/${categoryId}` : `/category/${categoryId}`,
-    query,
+    query: route.query,
   })
 }
 </script>
@@ -78,11 +78,7 @@ async function onCategoryUpdate(categoryId: number) {
     <PoisTable :details-is-external="true" />
   </div>
   <VContainer v-else fluid>
-    <Header
-      class="mb-4"
-      :theme="settings!.themes[0]"
-      :nav-menu-entries="contents!"
-    >
+    <Header class="mb-4">
       <template #search>
         <CategorySelector
           class="w-50"

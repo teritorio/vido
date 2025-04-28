@@ -3,18 +3,19 @@ import type { GeoJSON, MultiPolygon, Polygon } from 'geojson'
 import { storeToRefs } from 'pinia'
 import Embedded from '~/components/Home/Embedded.vue'
 import type { ApiPoi } from '~/lib/apiPois'
-import { siteStore as useSiteStore } from '~/stores/site'
+import { useSiteStore } from '~/stores/site'
 import { mapStore as useMapStore } from '~/stores/map'
 import { regexForCategoryIds } from '~/composables/useIdsResolver'
 
 //
 // Composables
 //
-const route = useRoute()
-const siteStore = useSiteStore()
+const { params, query, path, name } = useRoute()
 const mapStore = useMapStore()
-const { config, settings } = storeToRefs(siteStore)
-const { API_ENDPOINT, API_PROJECT, API_THEME } = config.value!
+const siteStore = useSiteStore()
+const { config, settings } = siteStore
+const { favoritesModeEnabled } = storeToRefs(siteStore)
+const { API_ENDPOINT, API_PROJECT, API_THEME } = config!
 const { $trackingInit } = useNuxtApp()
 
 //
@@ -28,12 +29,12 @@ const categoryIds = ref<number[]>()
 // Hooks
 //
 onBeforeMount(() => {
-  $trackingInit(config.value!)
+  $trackingInit(config!)
 })
 
-const { boundary } = route.query
-if (boundary && typeof boundary === 'string' && settings.value!.polygons_extra) {
-  const boundaryObject = settings.value!.polygons_extra[boundary]
+const { boundary } = query
+if (boundary && typeof boundary === 'string' && settings!.polygons_extra) {
+  const boundaryObject = settings!.polygons_extra[boundary]
   if (boundaryObject) {
     if (typeof boundaryObject.data === 'string') {
       const geojson = (await (await fetch(boundaryObject.data)).json()) as GeoJSON
@@ -52,23 +53,23 @@ if (boundary && typeof boundary === 'string' && settings.value!.polygons_extra) 
 }
 
 // Get category IDs from URL
-if (route.params.p1) {
-  const match = route.params.p1.toString().match(regexForCategoryIds)
+if (params.p1) {
+  const match = params.p1.toString().match(regexForCategoryIds)
 
-  if (!match || (route.path.endsWith('/') && match.groups && (match.groups.cartocode || match.groups.reference || match.groups.osm)))
-    throw createError({ statusCode: 400, message: `No match for category ID: ${route.params.p1}` })
+  if (!match || (path.endsWith('/') && match.groups && (match.groups.cartocode || match.groups.reference || match.groups.osm)))
+    throw createError({ statusCode: 400, message: `No match for category ID: ${params.p1}` })
 
   categoryIds.value = match.input?.split(',').map(id => Number.parseInt(id))
 }
 
 // Get POI ID from URL
-if (categoryIds.value?.length === 1 && route.name === 'index-p1' && !route.path.endsWith('/')) {
-  poiId.value = route.params.p1?.toString()
+if (categoryIds.value?.length === 1 && name === 'index-p1' && !path.endsWith('/')) {
+  poiId.value = params.p1?.toString()
   categoryIds.value = undefined
 }
 
-if (route.params.poiId)
-  poiId.value = route.params.poiId.toString()
+if (params.poiId)
+  poiId.value = params.poiId.toString()
 
 // Fetch inital POI
 const { data, error, status } = await useFetch<ApiPoi>(
@@ -78,7 +79,7 @@ const { data, error, status } = await useFetch<ApiPoi>(
       geometry_as: 'bbox',
       short_description: false,
     },
-    immediate: !!poiId.value,
+    immediate: !!poiId.value && !poiId.value.includes('_'),
   },
 )
 
@@ -87,6 +88,9 @@ if (error.value)
 
 if (status.value === 'success' && data.value)
   mapStore.setSelectedFeature(data.value)
+
+// Disable Favorite Mode
+favoritesModeEnabled.value = false
 </script>
 
 <template>

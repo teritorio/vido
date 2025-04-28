@@ -1,64 +1,16 @@
-import type { Geometry } from 'geojson'
 import type GeoJSON from 'geojson'
 import { LngLatBounds } from 'maplibre-gl'
+import { bbox as turfBbox } from '@turf/bbox'
 
 type ITLngLatBounds = InstanceType<typeof LngLatBounds>
 
-export function getBBoxFeatures(features: GeoJSON.Feature[]): ITLngLatBounds | null {
-  return features.reduce(
-    (bounds: ITLngLatBounds | null, coord: GeoJSON.Feature<GeoJSON.Geometry>) =>
-      bounds ? bounds.extend(getBBoxFeature(coord)) : getBBoxFeature(coord),
-    null,
+export function getBBox(data: GeoJSON.Feature | GeoJSON.FeatureCollection): LngLatBounds {
+  const bbox = turfBbox(data)
+
+  return new LngLatBounds(
+    [bbox[0], bbox[1]],
+    [bbox[2], bbox[3]],
   )
-}
-
-export function getBBoxFeature(feature: GeoJSON.Feature | Geometry): ITLngLatBounds {
-  const geometry: Geometry
-    = feature.type === 'Feature' ? feature.geometry : feature
-  switch (geometry.type) {
-    case 'LineString':
-    case 'MultiPoint':
-      return (geometry.coordinates as [[number, number]]).reduce(
-        (bounds: ITLngLatBounds, coord: [number, number]) => {
-          return bounds.extend(coord)
-        },
-        new LngLatBounds(
-          geometry.coordinates[0] as [number, number],
-          geometry.coordinates[0] as [number, number],
-        ),
-      )
-
-    case 'Polygon':
-      return (geometry.coordinates.flat(1) as [[number, number]]).reduce(
-        (bounds: ITLngLatBounds, coord: [number, number]) => {
-          return bounds.extend(coord)
-        },
-        new LngLatBounds(
-          geometry.coordinates[0][0] as [number, number],
-          geometry.coordinates[0][0] as [number, number],
-        ),
-      )
-
-    case 'MultiPolygon':
-      return (geometry.coordinates.flat(2) as [[number, number]]).reduce(
-        (bounds: ITLngLatBounds, coord: [number, number]) => {
-          return bounds.extend(coord)
-        },
-        new LngLatBounds(
-          geometry.coordinates[0][0][0] as [number, number],
-          geometry.coordinates[0][0][0] as [number, number],
-        ),
-      )
-
-    case 'Point':
-      return new LngLatBounds(
-        geometry.coordinates as [number, number],
-        geometry.coordinates as [number, number],
-      )
-
-    default:
-      return new LngLatBounds([-180, -90], [180, 90])
-  }
 }
 
 export function getBBoxCoordList(coordinates: [[number, number]]) {

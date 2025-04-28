@@ -81,3 +81,5 @@ cypress
 **/*.story.vue
 vidos.config.ts
 vidos-config.json
+
+.github

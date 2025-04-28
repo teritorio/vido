@@ -1,149 +1,92 @@
-<script lang="ts">
-import type { LngLatBounds, LngLatLike, Map } from 'maplibre-gl'
-import type { PropType } from 'vue'
-import { ref } from 'vue'
-
+<script setup lang="ts">
+import type { LngLatLike, Map as MapGL } from 'maplibre-gl'
 import { TeritorioCluster } from '@teritorio/maplibre-gl-teritorio-cluster'
 import { storeToRefs } from 'pinia'
-import { defineNuxtComponent } from '#app'
+import { getBBox } from '~/lib/bbox'
 import MapBase from '~/components/Map/MapBase.vue'
 import type { ApiPoi } from '~/lib/apiPois'
-import { getBBoxFeatures } from '~/lib/bbox'
 import { MAP_ZOOM } from '~/lib/constants'
 import type { MapPoiId } from '~/lib/mapPois'
 import { filterRouteByPoiIds } from '~/utils/styles'
 import { clusterRender, markerRender, pinMarkerRender } from '~/lib/clusters'
 import { mapStore as useMapStore } from '~/stores/map'
 
+const props = withDefaults(defineProps<{
+  extraAttributions?: string[]
+  offMapAttribution?: boolean
+  features: ApiPoi[]
+  featureIds?: MapPoiId[]
+  fullscreenControl?: boolean
+  cluster?: boolean
+}>(), {
+  extraAttributions: () => [] satisfies string[],
+  offMapAttribution: false,
+  fullscreenControl: false,
+  cluster: true,
+})
+
 const POI_SOURCE = 'poi'
 
-export default defineNuxtComponent({
-  components: {
-    MapBase,
-  },
+const { teritorioCluster } = storeToRefs(useMapStore())
 
-  props: {
-    extraAttributions: {
-      type: Array as PropType<string[]>,
-      default: () => [],
-    },
-    offMapAttribution: {
-      type: Boolean,
-      default: false,
-    },
-    features: {
-      type: Array as PropType<ApiPoi[]>,
-      required: true,
-    },
-    featureIds: {
-      type: Array as PropType<MapPoiId[] | null>,
-      default: null,
-    },
-    fullscreenControl: {
-      type: Boolean,
-      default: false,
-    },
-    defaultBounds: {
-      type: [Array, Object] as PropType<
-        LngLatBounds | undefined
-      >,
-      default: undefined,
-    },
-    cluster: {
-      type: Boolean,
-      default: true,
-    },
-  },
-  setup() {
-    const { teritorioCluster } = storeToRefs(useMapStore())
+const mapBaseRef = ref<InstanceType<typeof MapBase>>()
+const map = ref<MapGL>()
 
-    return {
-      mapBase: ref<InstanceType<typeof MapBase>>(),
-      teritorioCluster,
-    }
-  },
+const selectionZoom = computed(() => MAP_ZOOM.selectionZoom)
+const bounds = computed(() => getBBox({ type: 'FeatureCollection', features: props.features }))
+const center = computed((): LngLatLike | undefined => bounds.value?.getCenter())
 
-  data(): {
-    map: Map
-  } {
-    return {
-      map: null!,
-    }
-  },
+function onMapInit(mapInstance: MapGL): void {
+  map.value = mapInstance
 
-  computed: {
-    selectionZoom() {
-      return MAP_ZOOM.selectionZoom
-    },
+  teritorioCluster.value = new TeritorioCluster(mapInstance, POI_SOURCE, {
+    clusterRenderFn: clusterRender,
+    fitBoundsOptions: mapBaseRef.value?.fitBoundsOptions(),
+    markerRenderFn: markerRender,
+    markerSize: 32,
+    pinMarkerRenderFn: pinMarkerRender,
+  })
+}
 
-    center(): LngLatLike | undefined {
-      return this.bounds?.getCenter()
-    },
+function onMapStyleLoad(): void {
+  if (map.value && props.featureIds)
+    filterRouteByPoiIds(map.value, props.featureIds)
 
-    bounds(): LngLatBounds | undefined {
-      return (
-        getBBoxFeatures(
-          this.features.filter(feature => feature.geometry),
-        ) || this.defaultBounds
-      )
-    },
-  },
+  renderPois()
+}
 
-  watch: {
-    features() {
-      if (this.map)
-        this.onMapStyleLoad()
-    },
-  },
+function renderPois(): void {
+  if (!mapBaseRef.value)
+    return
 
-  methods: {
-    onMapInit(map: Map): void {
-      this.map = map
+  const colors = [
+    ...new Set(
+      props.features.map(
+        feature => feature.properties?.display?.color_fill || '#000000',
+      ),
+    ),
+  ]
 
-      this.teritorioCluster = new TeritorioCluster(map, POI_SOURCE, {
-        clusterRenderFn: clusterRender,
-        fitBoundsOptions: this.mapBase?.fitBoundsOptions(),
-        markerRenderFn: markerRender,
-        markerSize: 32,
-        pinMarkerRenderFn: pinMarkerRender,
-      })
-    },
-
-    onMapStyleLoad(): void {
-      const colors = [
-        ...new Set(
-          this.features.map(
-            feature => feature.properties?.display?.color_fill || '#000000',
-          ),
-        ),
-      ]
-      this.mapBase!.initPoiLayer(
-        this.features,
-        colors,
-        [
-          'case',
-          [
-            'all',
-            ['has', 'display'],
-            ['has', 'color_fill', ['get', 'display']],
-          ],
-          ['get', 'color_fill', ['get', 'display']],
-          '#000000',
-        ],
-        this.cluster,
-      )
-
-      if (this.featureIds)
-        filterRouteByPoiIds(this.map as Map, this.featureIds)
-    },
-  },
-})
+  mapBaseRef.value.initPoiLayer(props.features.filter(feature => feature.geometry.type === 'Point'), colors, [
+    'case',
+    ['all', ['has', 'display'], ['has', 'color_fill', ['get', 'display']]],
+    ['get', 'color_fill', ['get', 'display']],
+    '#000000',
+  ], props.cluster)
+}
 </script>
 
 <template>
   <MapBase
-    ref="mapBase" :features="features" :center="center" :bounds="bounds" :zoom="selectionZoom.poi"
-    :fullscreen-control="fullscreenControl" :extra-attributions="extraAttributions"
-    :off-map-attribution="offMapAttribution" @map-init="onMapInit" @map-style-load="onMapStyleLoad"
+    ref="mapBaseRef"
+    :features="features"
+    :center="center"
+    :bounds="bounds"
+    :zoom="selectionZoom.poi"
+    :fullscreen-control="fullscreenControl"
+    :extra-attributions="extraAttributions"
+    :off-map-attribution="offMapAttribution"
+    @map-init="onMapInit"
+    @map-style-load="onMapStyleLoad"
   />
 </template>

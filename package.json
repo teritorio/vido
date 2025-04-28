@@ -1,14 +1,14 @@
 {
   "name": "@teritorio/vido",
   "type": "module",
-  "version": "1.24.2",
+  "version": "1.25.0",
   "private": true,
   "packageManager": "yarn@4.4.1",
   "engines": {
     "node": "^14.18.0 || >=16.10.0"
   },
   "scripts": {
-    "prepare": "nuxi prepare",
+    "prepare": "simple-git-hooks && nuxi prepare",
     "build-config": "npx vite-node bin/build-config.ts > vidos-config.json",
     "build-fixture": "ruby poi_explode.rb cypress/fixtures/teritorio/references/pois.geojson",
     "dev": "nuxi dev",
@@ -17,17 +17,17 @@
     "generate": "nuxi generate",
     "start": "CONFIG=${CONFIG:-$PWD/vidos-config.json} nuxi preview",
     "start:histoire": "CONFIG=vidos-config-empty.json yarn histoire dev",
-    "start:cypress": "CONFIG=vidos-config-cypress.json yarn build-fixture && yarn run cypress open",
     "lint": "yarn lint:js && yarn lint:style",
     "lint:js": "eslint .",
     "lint:js:fix": "eslint --fix .",
     "lint:style": "stylelint --cache **/*.{vue,css,scss}",
-    "test": "yarn test:cypress && yarn test:histoire",
-    "test:cypress": "yarn build-fixture && yarn run cypress run",
+    "test": "yarn build-fixture && yarn build && yarn test:gui",
+    "test:gui": "yarn run cypress open",
+    "test:cli": "yarn run cypress run",
     "test:histoire:report": "yarn build:histoire && npx --yes -- reg-cli __screenshots__/current __screenshots__/actual __screenshots__/diff -R __screenshots__/diff/index.html -J __screenshots__/diff/index.json --thresholdPixel 5 --matchingThreshold 0.3 --extendedErrors || exit 0",
     "test:histoire:check-report": "cat __screenshots__/diff/index.json | jq --exit-status '.failedItems + .newItems + .deletedItems | length == 0'",
     "test:histoire": "yarn test:histoire:report && yarn test:histoire:check-report",
-    "postinstall": "yarn prepare"
+    "postinstall": "nuxi prepare"
   },
   "dependencies": {
     "@fortawesome/vue-fontawesome": "^3.0.3",
@@ -39,7 +39,9 @@
     "@teritorio/map": "^0.12.7",
     "@teritorio/maplibre-gl-teritorio-cluster": "^0.0.17",
     "@teritorio/openmaptiles-gl-language": "^1.5.4",
+    "@turf/bbox": "^7.2.0",
     "@turf/boolean-intersects": "^6.5.0",
+    "@turf/distance": "^7.2.0",
     "@turf/mask": "^7.1.0",
     "@types/geojson": "^7946.0.10",
     "core-js": "^3.31.0",
@@ -54,7 +56,7 @@
     "lodash.uniq": "^4.5.0",
     "lodash.uniqby": "^4.7.0",
     "lodash.without": "^4.4.0",
-    "maplibre-gl": "^4.5.0",
+    "maplibre-gl": "~5.1.0",
     "opening_hours": "^3.8.0",
     "pinia": "^2.0.33",
     "pinia-shared-state": "0.5.1",
@@ -67,6 +69,8 @@
   },
   "devDependencies": {
     "@antfu/eslint-config": "^2.21.1",
+    "@commitlint/cli": "^19.6.1",
+    "@commitlint/config-conventional": "^19.6.0",
     "@fortawesome/fontawesome-svg-core": "6.4.2",
     "@fortawesome/free-brands-svg-icons": "6.4.2",
     "@fortawesome/free-regular-svg-icons": "6.4.2",
@@ -120,7 +124,9 @@
     "vue-tsc": "^1.8.27"
   },
   "simple-git-hooks": {
-    "pre-commit": "yarn dlx lint-staged"
+    "commit-msg": "yarn dlx commitlint --edit $1",
+    "pre-commit": "yarn dlx lint-staged",
+    "preserveUnused": true
   },
   "lint-staged": {
     "*.{css,scss,vue}": "stylelint",

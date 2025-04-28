@@ -19,11 +19,11 @@ export default defineNuxtComponent({
 
 <template>
   <aside
-    class="tw-rounded-xl tw-shadow-md tw-pointer-events-auto" :class="[
+    class="tw-rounded-xl tw-pointer-events-auto" :class="[
       !isFilterActive && 'tw-overflow-y-hidden',
     ]"
   >
-    <div class="tw-px-5 tw-py-4" :class="[extraClassTextBackground]">
+    <div class="tw-px-5 tw-py-4 tw-rounded-xl tw-shadow-md" :class="[extraClassTextBackground]">
       <slot />
     </div>
   </aside>

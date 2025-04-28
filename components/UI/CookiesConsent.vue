@@ -4,7 +4,7 @@ import VueCookieAcceptDecline from 'vue-cookie-accept-decline'
 import { defineNuxtComponent } from '#app'
 import 'vue-cookie-accept-decline/dist/vue-cookie-accept-decline.css'
 import ExternalLink from '~/components/UI/ExternalLink.vue'
-import { siteStore as useSiteStore } from '~/stores/site'
+import { useSiteStore } from '~/stores/site'
 
 export default defineNuxtComponent({
   components: {

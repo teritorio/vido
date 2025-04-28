@@ -3,11 +3,6 @@ export default defineI18nLocale(() => {
     ui: {
       close: 'Cerrar',
     },
-    units: {
-      min: '{minutes} min',
-      hours: '{hours} h',
-      km: '{length} km',
-    },
     ponctuation: {
       colon: ' :',
     },
@@ -144,7 +139,7 @@ export default defineI18nLocale(() => {
     },
     categorySelector: {
       placeholderSelect: 'Seleccione una categoría',
-      placeholderAdd: 'Buscar una categoría para añadir',
+      placeholderAdd: 'Ver una categoría',
       search: 'Buscar en la lista',
     },
     dateFilter: {

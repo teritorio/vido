@@ -48,6 +48,25 @@ export const menuStore = defineStore('menu', {
   }),
 
   getters: {
+    getFeatureById: (state: State): (id: number) => ApiPoi | undefined => {
+      return (id) => {
+        for (const key in state.allFeatures) {
+          for (const feature of state.allFeatures[key]) {
+            if (feature.properties.metadata.id === id) {
+              return feature
+            }
+          }
+        }
+        return undefined
+      }
+    },
+    featuresColor: (state: State) => {
+      const colors = Object.values(state.features)
+        .flat()
+        .filter(feature => feature.properties.display)
+        .map(feature => feature.properties.display!.color_fill)
+      return [...new Set(colors)]
+    },
     apiMenuCategory: (state: State): ApiMenuCategory[] | undefined => {
       return state.menuItems === undefined
         ? undefined
@@ -185,8 +204,7 @@ export const menuStore = defineStore('menu', {
                   return getPoiByCategoryId(vidoConfig, categoryId, options)
                 }
                 catch (e) {
-                  // eslint-disable-next-line no-console
-                  console.log('Vido error:', e)
+                  console.error('Vido error:', e)
                   return undefined
                 }
               })
@@ -242,6 +260,19 @@ export const menuStore = defineStore('menu', {
       finally {
         this.isLoadingFeatures = false
       }
+    },
+
+    // TODO: Maybe merge filterDeps with fetchFeatures
+    // Check potential side-effects in components calling fetchFeatures
+    filterByDeps(categoryIds: number[], deps: ApiPoi[]) {
+      if (deps.length <= 1)
+        return
+
+      const filteredFeatures: { [key: number]: ApiPoi[] } = {}
+      categoryIds.forEach((id) => {
+        filteredFeatures[id] = deps
+      })
+      this.features = filteredFeatures
     },
 
     applyFilters({

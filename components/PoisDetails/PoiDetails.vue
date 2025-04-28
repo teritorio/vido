@@ -14,11 +14,10 @@ import FavoriteIcon from '~/components/UI/FavoriteIcon.vue'
 import IconButton from '~/components/UI/IconButton.vue'
 import RelativeDate from '~/components/UI/RelativeDate.vue'
 import TeritorioIcon from '~/components/UI/TeritorioIcon.vue'
-import type { ContentEntry } from '~/lib/apiContent'
 import type { ApiPoiDeps } from '~/lib/apiPoiDeps'
 import type { ApiPoi, ApiPoiId, ApiPoiProperties, FieldsList } from '~/lib/apiPois'
 import type { Settings } from '~/lib/apiSettings'
-import { PropertyTranslationsContextEnum } from '~/plugins/property-translations'
+import { PropertyTranslationsContextEnum } from '~/stores/site'
 import { favoriteStore } from '~/stores/favorite'
 import { OriginEnum } from '~/utils/types'
 import FieldsHeader from '~/components/UI/FieldsHeader.vue'
@@ -45,10 +44,6 @@ export default defineNuxtComponent({
   props: {
     settings: {
       type: Object as PropType<Settings>,
-      required: true,
-    },
-    navMenuEntries: {
-      type: Array as PropType<ContentEntry[]>,
       required: true,
     },
     poi: {
@@ -84,10 +79,6 @@ export default defineNuxtComponent({
 
     context(): PropertyTranslationsContextEnum {
       return PropertyTranslationsContextEnum.Details
-    },
-
-    favoritesModeEnabled(): boolean {
-      return this.settings.themes[0]?.favorites_mode ?? true
     },
 
     properties(): ApiPoi['properties'] {
@@ -191,7 +182,6 @@ export default defineNuxtComponent({
 <template>
   <PoiLayout
     :settings="settings"
-    :nav-menu-entries="navMenuEntries"
     :name="pageTitle"
     :icon="poi.properties.display && poi.properties.display.icon"
     :color-line="colorLine"
@@ -295,11 +285,10 @@ export default defineNuxtComponent({
       <RouteMap
         v-if="isLargeLayeout"
         id="route-map"
-        :poi-id="id"
+        :poi="poi"
         :route="poiDeps"
         :color-fill="colorFill"
         :color-line="colorLine"
-        :favorites-mode-enabled="favoritesModeEnabled"
       />
     </template>
 

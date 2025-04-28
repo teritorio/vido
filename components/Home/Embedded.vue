@@ -9,10 +9,10 @@ import CategorySelector from '~/components/PoisList/CategorySelector.vue'
 import UIButton from '~/components/UI/UIButton.vue'
 import type { ApiPoi } from '~/lib/apiPois'
 import type { ApiMenuCategory } from '~/lib/apiMenu'
-import { getBBoxFeature } from '~/lib/bbox'
+import { getBBox } from '~/lib/bbox'
 import { mapStore as useMapStore } from '~/stores/map'
 import { menuStore as useMenuStore } from '~/stores/menu'
-import { siteStore as useSiteStore } from '~/stores/site'
+import { useSiteStore } from '~/stores/site'
 import { Mode } from '~/utils/types'
 import { flattenFeatures } from '~/utils/utilities'
 import IsochroneStatus from '~/components/Isochrone/IsochroneStatus.vue'
@@ -41,7 +41,7 @@ const { isochroneCurrentFeature } = useIsochrone()
 //
 // Data
 //
-const initialBbox = ref<LngLatBounds | null>(null)
+const initialBbox = ref<LngLatBounds>()
 const mapFeaturesRef = ref<InstanceType<typeof MapFeatures>>()
 
 //
@@ -62,22 +62,12 @@ onMounted(() => {
     menuStore.setSelectedCategoryIds(enabledCategories)
   }
 
-  if (props.boundaryArea) {
-    initialBbox.value = getBBoxFeature(props.boundaryArea)
-  }
-  else {
-    // @ts-expect-error: setting wrong type to initialBbox
-    initialBbox.value = settings!.bbox_line.coordinates
-  }
+  initialBbox.value = getBBox({ type: 'Feature', geometry: props.boundaryArea || settings!.bbox_line, properties: {} })
 })
 
 //
 // Computed
 //
-const explorerModeEnabled = computed(() => {
-  return settings!.themes[0]?.explorer_mode ?? true
-})
-
 const filters = computed(() => {
   return route.query.menuItemIds
     ? route.query.menuItemIds
@@ -114,7 +104,7 @@ const poiFilters = computed(() => {
         .map(c => c.category?.style_class)
         .filter(s => s !== undefined) as string[][])
     )
-    || null
+    || undefined
   )
 })
 
@@ -183,14 +173,12 @@ function toggleExploreAroundSelectedPoi() {
         <UIButton
           :label="t('ui.close')"
           icon="times"
-          @click="mapStore.setSelectedFeature(null)"
+          @click="mapStore.setSelectedFeature()"
         />
       </div>
       <PoiCardContent
         :details-is-external="true"
         :poi="selectedFeature"
-        :explorer-mode-enabled="explorerModeEnabled"
-        :favorites-mode-enabled="false"
         @explore-click="toggleExploreAroundSelectedPoi"
         @zoom-click="goToSelectedFeature"
       />
@@ -209,7 +197,6 @@ function toggleExploreAroundSelectedPoi() {
           :features="mapFeatures"
           :selected-categories-ids="selectedCategoryIds"
           :style-icon-filter="poiFilters"
-          :explorer-mode-enabled="explorerModeEnabled"
           :cooperative-gestures="false"
           :boundary-area="boundaryArea || settings!.polygon.data"
         />

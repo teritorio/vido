@@ -16,14 +16,14 @@ import PoiCard from '~/components/PoisCard/PoiCard.vue'
 import Search from '~/components/Search/Search.vue'
 import CookiesConsent from '~/components/UI/CookiesConsent.vue'
 import Logo from '~/components/UI/Logo.vue'
-import type { ApiMenuCategory, MenuItem } from '~/lib/apiMenu'
+import type { MenuItem } from '~/lib/apiMenu'
 import type { ApiPoi } from '~/lib/apiPois'
 import { getPois } from '~/lib/apiPois'
-import { getBBoxFeature, getBBoxFeatures } from '~/lib/bbox'
+import { getBBox } from '~/lib/bbox'
 import { favoriteStore as useFavoriteStore } from '~/stores/favorite'
 import { mapStore as useMapStore } from '~/stores/map'
 import { menuStore as useMenuStore } from '~/stores/menu'
-import { siteStore as useSiteStore } from '~/stores/site'
+import { useSiteStore } from '~/stores/site'
 import { Mode, OriginEnum } from '~/utils/types'
 import { getHashPart, setHashParts } from '~/utils/url'
 import { flattenFeatures, formatApiAddressToFeature } from '~/utils/utilities'
@@ -48,7 +48,9 @@ const menuStore = useMenuStore()
 const { apiMenuCategory, features, selectedCategoryIds } = storeToRefs(menuStore)
 const favoriteStore = useFavoriteStore()
 const { favoritesIds, favoriteAddresses, favoriteFeatures, favoriteCount } = storeToRefs(favoriteStore)
-const { config, settings, contents } = useSiteStore()
+const siteStore = useSiteStore()
+const { config, settings } = siteStore
+const { favoritesModeEnabled } = storeToRefs(siteStore)
 const { $tracking } = useNuxtApp()
 const route = useRoute()
 const router = useRouter()
@@ -60,7 +62,7 @@ const { isochroneCurrentFeature } = useIsochrone()
 //
 const allowRegionBackZoom = ref<boolean>(false)
 const isFilterActive = ref<boolean>(false)
-const initialBbox = ref<LngLatBounds | null>(null)
+const initialBbox = ref<LngLatBounds>()
 const isMenuItemOpen = ref<boolean>(false)
 const isOnSearch = ref<boolean>(false)
 const showFavoritesOverlay = ref<boolean>(false)
@@ -106,23 +108,7 @@ onBeforeMount(async () => {
   mode.value = Mode[Object.keys(Mode).find(key => Mode[key as keyof typeof Mode] === modeHash) as keyof typeof Mode] || Mode.BROWSER
 })
 
-onMounted(async () => {
-  if (props.initialCategoryIds) {
-    menuStore.setSelectedCategoryIds(props.initialCategoryIds)
-  }
-  else if (typeof location !== 'undefined') {
-    const enabledCategories: ApiMenuCategory['id'][] = []
-
-    if (apiMenuCategory.value) {
-      apiMenuCategory.value.forEach((category) => {
-        if (category.selected_by_default)
-          enabledCategories.push(category.id)
-      })
-    }
-
-    menuStore.setSelectedCategoryIds(enabledCategories)
-  }
-
+onMounted(() => {
   $tracking({
     type: 'page',
     title: (route.name && String(route.name)) || undefined,
@@ -131,26 +117,12 @@ onMounted(async () => {
     origin: OriginEnum[router.currentRoute.value.query.origin as keyof typeof OriginEnum],
   })
 
-  if (props.boundaryArea) {
-    initialBbox.value = getBBoxFeature(props.boundaryArea)
-  }
-  else {
-    // @ts-expect-error: setting wrong type to initialBbox
-    initialBbox.value = settings!.bbox_line.coordinates
-  }
+  initialBbox.value = getBBox({ type: 'Feature', geometry: props.boundaryArea || settings!.bbox_line, properties: {} })
 })
 
 //
 // Computed
 //
-const explorerModeEnabled = computed(() => {
-  return settings!.themes[0]?.explorer_mode ?? true
-})
-
-const favoritesModeEnabled = computed(() => {
-  return settings!.themes[0]?.favorites_mode ?? true
-})
-
 const isBottomMenuOpened = computed(() => {
   return ((device.value.smallScreen && isPoiCardShown.value) || isMenuItemOpen.value)
 })
@@ -218,7 +190,7 @@ const poiFilters = computed(() => {
         .map(c => c.category?.style_class)
         .filter(s => s !== undefined) as string[][])
     )
-    || null
+    || undefined
   )
 })
 
@@ -283,16 +255,19 @@ watch(isModeFavorites, async (isEnabled) => {
       await handleFavorites()
     }
 
-    initialBbox.value = getBBoxFeatures(favoriteFeatures.value)
+    initialBbox.value = getBBox({ type: 'FeatureCollection', features: favoriteFeatures.value })
   }
 })
 
 //
 // Methods
 //
-function goToSelectedFeature() {
-  if (mapFeaturesRef.value)
+function goToSelectedFeature(feature?: ApiPoi) {
+  if (mapFeaturesRef.value) {
+    if (feature && selectedFeature.value?.properties.metadata.id !== feature.properties.metadata.id)
+      mapFeaturesRef.value.updateSelectedFeature(feature)
     mapFeaturesRef.value.goToSelectedFeature()
+  }
 }
 
 async function fetchAddress(hash: string) {
@@ -359,9 +334,11 @@ function onBottomMenuButtonClick() {
   isMenuItemOpen.value = !isMenuItemOpen.value
 }
 
-function onQuitExplorerFavoriteMode() {
+async function onQuitExplorerFavoriteMode() {
+  if (mapFeaturesRef.value)
+    await mapFeaturesRef.value.updateSelectedFeature()
+
   mode.value = Mode.BROWSER
-  mapStore.setSelectedFeature(null)
 }
 
 function toggleFavoriteMode() {
@@ -408,12 +385,9 @@ function routerPushUrl(hashUpdate: { [key: string]: string | null } = {}) {
 }
 
 function toggleExploreAroundSelectedPoi(feature?: ApiPoi) {
-  if (feature)
-    mapStore.setSelectedFeature(feature)
-
   if (!isModeExplorer.value) {
     mode.value = Mode.EXPLORER
-    goToSelectedFeature()
+    goToSelectedFeature(feature)
 
     if (device.value.smallScreen)
       isPoiCardShown.value = false
@@ -437,9 +411,7 @@ function toggleFavorite(feature: ApiPoi) {
 }
 
 function searchSelectFeature(feature: ApiPoi) {
-  mapStore.setSelectedFeature(feature)
-  goToSelectedFeature()
-
+  goToSelectedFeature(feature)
   teritorioCluster.value?.setSelectedFeature(feature as unknown as MapGeoJSONFeature)
 }
 
@@ -454,7 +426,9 @@ function scrollTop() {
 }
 
 function handlePoiCardClose() {
-  mapStore.setSelectedFeature(null)
+  if (mapFeaturesRef.value) {
+    mapFeaturesRef.value.updateSelectedFeature()
+  }
 }
 </script>
 
@@ -562,18 +536,13 @@ function handlePoiCardClose() {
         >
           <FavoriteMenu
             v-if="favoritesModeEnabled"
-            :explore-around-selected-poi="toggleExploreAroundSelectedPoi"
-            :go-to-selected-poi="goToSelectedFeature"
-            :toggle-favorite="toggleFavorite"
-            :explorer-mode-enabled="explorerModeEnabled"
+            @explore-click="toggleExploreAroundSelectedPoi"
+            @favorite-click="toggleFavorite"
             @toggle-favorite-mode="toggleFavoriteMode"
             @toggle-note-book-mode="toggleNoteBookMode"
+            @zoom-click="goToSelectedFeature"
           />
-          <NavMenu
-            id="nav-menu"
-            :entries="contents!"
-            class="tw-ml-3 sm:tw-ml-4"
-          />
+          <NavMenu id="nav-menu" class="tw-ml-3 sm:tw-ml-4" />
         </div>
       </header>
 
@@ -588,11 +557,10 @@ function handlePoiCardClose() {
           :small="isBottomMenuOpened"
           :categories="apiMenuCategory || []"
           :features="mapFeatures"
-          :selected-categories-ids="isModeExplorer ? [] : selectedCategoryIds"
+          :selected-categories-ids="selectedCategoryIds"
           :style-icon-filter="poiFilters"
-          :explorer-mode-enabled="explorerModeEnabled"
           :enable-filter-route-by-categories="!isModeFavorites"
-          :enable-filter-route-by-features="isModeFavorites"
+          :enable-filter-route-by-features="true"
           :boundary-area="boundaryArea || settings!.polygon.data"
         >
           <div class="tw-relative">
@@ -630,8 +598,6 @@ function handlePoiCardClose() {
           "
           :poi="selectedFeature"
           class="tw-grow-0"
-          :explorer-mode-enabled="explorerModeEnabled"
-          :favorites-mode-enabled="favoritesModeEnabled"
           @explore-click="toggleExploreAroundSelectedPoi(undefined)"
           @favorite-click="toggleFavorite"
           @zoom-click="goToSelectedFeature"
@@ -661,8 +627,6 @@ function handlePoiCardClose() {
             "
             :poi="selectedFeature"
             class="tw-grow-0 tw-text-left tw-h-full"
-            :explorer-mode-enabled="explorerModeEnabled"
-            :favorites-mode-enabled="favoritesModeEnabled"
             @explore-click="toggleExploreAroundSelectedPoi(undefined)"
             @favorite-click="toggleFavorite"
             @zoom-click="goToSelectedFeature"

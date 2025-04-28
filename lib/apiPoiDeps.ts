@@ -22,7 +22,6 @@ export interface ApiRouteWaypointProperties {
   'id': ApiPoiId
   'name'?: MultilingualString
   'description'?: MultilingualString
-
   'route:point:type': ApiRouteWaypointType
 }
 

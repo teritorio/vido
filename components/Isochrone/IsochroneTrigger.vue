@@ -1,34 +1,41 @@
 <script setup lang="ts">
+import { distance } from '@turf/distance'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import type { ProfileKeys } from '~/composables/useIsochrone'
 
-//
-// Props
-//
 const props = defineProps<{
   feature: GeoJSON.Feature
 }>()
 
-//
-// Emits
-//
 const emit = defineEmits<{
   (event: 'profileUpdate', profile: Profile): void
   (event: 'triggerClick'): void
 }>()
 
-//
-// Composables
-//
 const { isOverlayOpen, toggleOverlay, profiles, fetchIsochrone } = useIsochrone()
 const { t } = useI18n()
 
-//
-// Data
-//
 const loading = ref(false)
 const profile = ref<Profile>()
 const error = ref<string>()
+
+const isElligibleToIsochrone = computed(() => {
+  if (!props.feature.bbox) {
+    return props.feature.geometry.type === 'Point'
+  }
+  else {
+    const [minX, minY, maxX, maxY] = props.feature.bbox
+
+    // Create the two corner points
+    const point1 = [minX, minY]
+    const point2 = [maxX, maxY]
+
+    const diagonal = distance(point1, point2, { units: 'meters' })
+
+    // We check if the feature size is bigger than 200 meters.
+    return diagonal <= 200
+  }
+})
 
 //
 // Methods
@@ -70,6 +77,7 @@ function handleTriggerClick() {
 
 <template>
   <button
+    v-show="isElligibleToIsochrone"
     type="button"
     :title="t('isochrone.trigger.title')"
     :class="$attrs.class"

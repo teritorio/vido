@@ -4,7 +4,7 @@ import { enGB, es, fr } from 'date-fns/locale'
 import { mapState } from 'pinia'
 
 import { defineNuxtComponent } from '#app'
-import { siteStore } from '~/stores/site'
+import { useSiteStore } from '~/stores/site'
 
 const DateFormatLocales: { [key: string]: Locale } = { en: enGB, fr, es }
 
@@ -17,7 +17,7 @@ export default defineNuxtComponent({
   },
 
   computed: {
-    ...mapState(siteStore, ['locale']),
+    ...mapState(useSiteStore, ['locale']),
 
     formatLocale(): { locale: Locale } {
       return {

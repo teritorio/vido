@@ -5,7 +5,6 @@ import { defineNuxtComponent } from '#app'
 import Footer from '~/components/Layout/Footer.vue'
 import Header from '~/components/Layout/Header.vue'
 import TeritorioIconBadge from '~/components/UI/TeritorioIconBadge.vue'
-import type { ContentEntry } from '~/lib/apiContent'
 import type { Settings } from '~/lib/apiSettings'
 
 export default defineNuxtComponent({
@@ -18,10 +17,6 @@ export default defineNuxtComponent({
   props: {
     settings: {
       type: Object as PropType<Settings>,
-      required: true,
-    },
-    navMenuEntries: {
-      type: Array as PropType<ContentEntry[]>,
       required: true,
     },
     name: {
@@ -47,11 +42,7 @@ export default defineNuxtComponent({
 <template>
   <div class="tw-w-full container">
     <div>
-      <Header
-        :theme="settings.themes[0]"
-        :nav-menu-entries="navMenuEntries"
-        :color-line="colorLine"
-      >
+      <Header>
         <slot name="headerButtons" />
       </Header>
       <div v-if="icon" class="tw-flex tw-justify-center">

@@ -10,7 +10,7 @@ import { defineNuxtComponent } from '#app'
 import UIButton from '~/components/UI/UIButton.vue'
 import { OriginEnum } from '~/utils/types'
 import { urlAddTrackOrigin } from '~/utils/url'
-import { siteStore as useSiteStore } from '~/stores/site'
+import { useSiteStore } from '~/stores/site'
 
 export default defineNuxtComponent({
   components: {

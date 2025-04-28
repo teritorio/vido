@@ -4,7 +4,7 @@ import type { PropType } from 'vue'
 import { defineNuxtComponent } from '#app'
 import FieldsHeader from '~/components/UI/FieldsHeader.vue'
 import type { ApiPoiProperties } from '~/lib/apiPois'
-import { PropertyTranslationsContextEnum } from '~/plugins/property-translations'
+import { PropertyTranslationsContextEnum, useSiteStore } from '~/stores/site'
 
 export default defineNuxtComponent({
   components: {
@@ -34,6 +34,7 @@ export default defineNuxtComponent({
       getRouteNoDetails,
       getRoutes,
     } = useField()
+    const { pv } = useSiteStore()
 
     return {
       getRouteDifficulty,
@@ -41,6 +42,7 @@ export default defineNuxtComponent({
       getRouteLength,
       getRouteNoDetails,
       getRoutes,
+      pv,
     }
   },
 
@@ -61,7 +63,7 @@ export default defineNuxtComponent({
     <slot />
     <div v-if="isCompact">
       <p v-for="(route, activity) in routes" :key="activity">
-        {{ $propertyTranslations.pv('route', `${activity}`, context) }} :
+        {{ pv('route', `${activity}`, context) }} :
         {{ getRouteNoDetails(activity.toString(), route, context) }}.
         <br>
         <span v-if="route.length">
@@ -78,7 +80,7 @@ export default defineNuxtComponent({
           :recursion-stack="[...recursionStack, `${activity}`]"
           :class="`field_header_level_${[...recursionStack, activity].length}`"
         >
-          {{ $propertyTranslations.pv('route', `${activity}`, context) }}
+          {{ pv('route', `${activity}`, context) }}
         </FieldsHeader>
         <ul class="tw-list-disc tw-ml-6">
           <li v-if="route.difficulty">
