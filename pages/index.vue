@@ -67,7 +67,7 @@ if (route.params.poiId) {
 }
 
 const menuStore = useMenuStore()
-const { apiMenuCategory } = storeToRefs(menuStore)
+const { apiMenuCategory, selectedCategoryIds } = storeToRefs(menuStore)
 onBeforeMount(() => {
   $trackingInit(config.value!)
 
@@ -93,7 +93,7 @@ const { teritorioCluster } = storeToRefs(mapStore)
 const { data, error, status } = await useAsyncData('features', async () => {
   await menuStore.fetchFeatures({
     vidoConfig: config.value!,
-    categoryIds: categoryIds.value || [],
+    categoryIds: selectedCategoryIds.value || [],
     clipingPolygonSlug: route.query.clipingPolygonSlug?.toString(),
   })
 
