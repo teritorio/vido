@@ -54,42 +54,65 @@ if (route.query.clipingPolygonSlug)
 //
 // Data Fetching
 //
-const { data: pois, error, pending, status } = useFetch<ApiPois>(
-  () => `${API_ENDPOINT}/${API_PROJECT}/${API_THEME}/pois/category/${route.params.id}.geojson`,
-  {
-    query,
-    immediate: !!route.params.id,
-    transform(pois) {
-      if (!pois.features.length)
-        return pois
+const pois = ref<ApiPois | null>(null)
+const error = ref()
+const pending = ref(false)
+const status = ref()
 
-      const featureFields = pois.features[0].properties.editorial?.list_fields || []
+async function fetchPois(id: string) {
+  if (!id)
+    return
 
-      // Transform non-string values to single string
-      // Used for sort and filter comparisons
-      return {
-        ...pois,
-        features: pois.features.map((f: ApiPoi) => {
-          const arrayProps: { [key: string]: any } = []
-          const fieldEntries = featureFields.map((f: FieldsListItem) => f.field)
+  const { data, error: fetchError, pending: fetchPending, status: fetchStatus } = await useFetch<ApiPois>(
+    `${API_ENDPOINT}/${API_PROJECT}/${API_THEME}/pois/category/${id}.geojson`,
+    {
+      query,
+      transform(pois) {
+        if (!pois.features.length)
+          return pois
 
-          if (fieldEntries.includes('route'))
-            arrayProps.route = routeToString(f.properties, getContext('route'))
+        const featureFields = pois.features[0].properties.editorial?.list_fields || []
 
-          if (fieldEntries.includes('addr'))
-            arrayProps.addr = addressToString(f.properties)
+        return {
+          ...pois,
+          features: pois.features.map((f: ApiPoi) => {
+            const arrayProps: { [key: string]: any } = {}
+            const fieldEntries = featureFields.map((f: FieldsListItem) => f.field)
 
-          return {
-            ...f,
-            properties: {
-              ...f.properties,
-              ...arrayProps,
-            },
-          }
-        }),
-      }
+            if (fieldEntries.includes('route'))
+              arrayProps.route = routeToString(f.properties, getContext('route'))
+
+            if (fieldEntries.includes('addr'))
+              arrayProps.addr = addressToString(f.properties)
+
+            return {
+              ...f,
+              properties: {
+                ...f.properties,
+                ...arrayProps,
+              },
+            }
+          }),
+        }
+      },
     },
+  )
+
+  pois.value = data.value
+  error.value = fetchError.value
+  pending.value = fetchPending.value
+  status.value = fetchStatus.value
+}
+
+watch(
+  () => route.params.id,
+  (id) => {
+    if (id)
+      fetchPois(id as string)
+    else
+      pois.value = null
   },
+  { immediate: true },
 )
 
 if (error.value) {
