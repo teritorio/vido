@@ -100,14 +100,17 @@ header > h3 {
 }
 
 article > picture {
-  display: flex;
+  display: block;
+  width: 100%;
+  max-height: 280px;
+  overflow: hidden;
 }
 
 article > picture:deep(img) {
   width: 100%;
-  max-height: 280px;
+  height: 100%;
   object-fit: contain;
-  place-self: baseline;
+  display: block;
 }
 
 @media (width >= 768px) {
