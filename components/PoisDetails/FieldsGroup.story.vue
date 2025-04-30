@@ -18,6 +18,7 @@ const defaultProps = {
     ],
   },
   colorFill: '#f76Ffe',
+  colorText: '#ffffff',
   properties: {
     metadata: { id: 0 },
     name: 'foo',

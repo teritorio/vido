@@ -1,10 +1,11 @@
 <script lang="ts">
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { mapActions, mapState } from 'pinia'
-
+import type { ApiMenuCategory } from '~/lib/apiMenu'
 import { defineNuxtComponent } from '#app'
 import TeritorioIconBadge from '~/components/UI/TeritorioIconBadge.vue'
 import { menuStore } from '~/stores/menu'
+import { getContrastedColors } from '~/composables/useFeature'
 
 export default defineNuxtComponent({
   components: {
@@ -21,6 +22,21 @@ export default defineNuxtComponent({
       'delSelectedCategoryIds',
       'clearSelectedCategoryIds',
     ]),
+    getItem(item: ApiMenuCategory) {
+      return item.menu_group || item.link || item.category || {}
+    },
+    getTeritorioIconBadgeProps(item: ApiMenuCategory) {
+      const base = this.getItem(item)
+      const { colorFill, colorText } = getContrastedColors(base.color_fill, base.color_text)
+
+      return {
+        id: item.id,
+        picto: base.icon,
+        colorFill,
+        colorText,
+        size: 'lg',
+      }
+    },
   },
 })
 </script>
@@ -39,22 +55,10 @@ export default defineNuxtComponent({
           v-for="menuItem in selectedCategories"
           :id="`selected-category-${menuItem.id}`"
           :key="menuItem.id"
+          :title="getItem(menuItem).name.fr"
           class="tw-m-1 tw-relative"
-          :title="
-            (menuItem.menu_group || menuItem.link || menuItem.category).name.fr
-          "
         >
-          <TeritorioIconBadge
-            :id="menuItem.id"
-            :color-fill="
-              (menuItem.menu_group || menuItem.link || menuItem.category)
-                .color_fill
-            "
-            :picto="
-              (menuItem.menu_group || menuItem.link || menuItem.category).icon
-            "
-            size="lg"
-          />
+          <TeritorioIconBadge v-bind="getTeritorioIconBadgeProps(menuItem)" />
           <button
             type="button"
             class="tw-flex tw-items-center tw-justify-center tw-text-white tw-text-center tw-rounded-full tw-absolute -tw-top-1 -tw-right-1 tw-w-5 tw-h-5 tw-border-solid tw-border-2 tw-border-white tw-bg-red-600 hover:tw-bg-red-800"
