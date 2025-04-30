@@ -2,7 +2,7 @@
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { localeIncludes } from 'locale-includes'
 import { PropertyTranslationsContextEnum, useSiteStore } from '~/stores/site'
-import type { ApiPoi, ApiPois, FieldsListItem } from '~/lib/apiPois'
+import type { FieldsListItem } from '~/lib/apiPois'
 import Field from '~/components/Fields/Field.vue'
 import IconButton from '~/components/UI/IconButton.vue'
 import ContribFieldGroup from '~/components/Fields/ContribFieldGroup.vue'
@@ -31,9 +31,8 @@ defineProps<{
 //
 // Composables
 //
-const { routeToString, addressToString } = useField()
 const { t, locale } = useI18n()
-const { config, settings, p } = useSiteStore()
+const { settings, p } = useSiteStore()
 const menuStore = useMenuStore()
 const { contribMode, isContribEligible, getContributorFields } = useContrib()
 const route = useRoute()
@@ -41,79 +40,12 @@ const route = useRoute()
 //
 // Data
 //
-const { API_ENDPOINT, API_PROJECT, API_THEME } = config!
 const search = ref('')
-const query = {
-  geometry_as: 'point',
-  short_description: true,
-} as Record<string, any>
-
-if (route.query.clipingPolygonSlug)
-  query.cliping_polygon_slug = route.query.clipingPolygonSlug.toString()
 
 //
 // Data Fetching
 //
-const pois = ref<ApiPois | null>(null)
-const error = ref()
-const pending = ref(false)
-const status = ref()
-
-async function fetchPois(id: string) {
-  if (!id)
-    return
-
-  const { data, error: fetchError, pending: fetchPending, status: fetchStatus } = await useFetch<ApiPois>(
-    `${API_ENDPOINT}/${API_PROJECT}/${API_THEME}/pois/category/${id}.geojson`,
-    {
-      query,
-      transform(pois) {
-        if (!pois.features.length)
-          return pois
-
-        const featureFields = pois.features[0].properties.editorial?.list_fields || []
-
-        return {
-          ...pois,
-          features: pois.features.map((f: ApiPoi) => {
-            const arrayProps: { [key: string]: any } = {}
-            const fieldEntries = featureFields.map((f: FieldsListItem) => f.field)
-
-            if (fieldEntries.includes('route'))
-              arrayProps.route = routeToString(f.properties, getContext('route'))
-
-            if (fieldEntries.includes('addr'))
-              arrayProps.addr = addressToString(f.properties)
-
-            return {
-              ...f,
-              properties: {
-                ...f.properties,
-                ...arrayProps,
-              },
-            }
-          }),
-        }
-      },
-    },
-  )
-
-  pois.value = data.value
-  error.value = fetchError.value
-  pending.value = fetchPending.value
-  status.value = fetchStatus.value
-}
-
-watch(
-  () => route.params.id,
-  (id) => {
-    if (id)
-      fetchPois(id as string)
-    else
-      pois.value = null
-  },
-  { immediate: true },
-)
+const { pois, error, pending, status } = usePois()
 
 if (error.value) {
   clearError()
