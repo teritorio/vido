@@ -159,8 +159,9 @@ Then, create a PR from `develop` to `main`, it will launch the continuous develo
 ## Details fields configurations
 
 Popup and details special fields support:
-* `addr:*`: combined all address fields.
-* `route:*`: all routes activity types and fields.
+* `addr`: combined all address fields.
+* `route`: all routes activity types and fields.
+* `coordinates`: geographic coordinates.
 * `start_end_date`: combined `start_date` and `end_date` fields.
 * `short_description`
 
