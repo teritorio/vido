@@ -4,7 +4,6 @@ import type { Settings } from '~/lib/apiSettings'
 import type { PropertyTranslations } from '~/lib/apiPropertyTranslations'
 import type { Article } from '~/lib/apiArticle'
 import type { MenuItem } from '~/lib/apiMenu'
-import { getSlugFromURL } from '~/lib/apiArticle'
 import { useSiteStore } from '~/stores/site'
 import { menuStore as useMenuStore } from '~/stores/menu'
 import { headerFromSettings } from '~/lib/apiSettings'
@@ -37,10 +36,7 @@ const { data, error, status } = await useAsyncData('parallel', async () => {
   menuStore.fetchConfig(menu)
 
   return {
-    articles: articles.map(article => ({
-      ...article,
-      url: getSlugFromURL(article.url),
-    })),
+    articles,
     settings: Object.assign(
       {
         id: 0,

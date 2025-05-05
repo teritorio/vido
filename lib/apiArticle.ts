@@ -24,12 +24,6 @@ export async function getArticles(config: VidoConfig): Promise<{
     () => `${config.API_ENDPOINT}/${config.API_PROJECT}/${config.API_THEME}/articles.json?slug=non-classe`,
     {
       method: 'GET',
-      transform: (articles) => {
-        return articles.map(article => ({
-          ...article,
-          url: getSlugFromURL(article.url),
-        }))
-      },
     },
   )
 

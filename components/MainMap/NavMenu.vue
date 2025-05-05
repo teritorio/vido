@@ -7,10 +7,11 @@ import { VList, VListItem } from 'vuetify/components/VList'
 import { VMenu } from 'vuetify/components/VMenu'
 import IconButton from '~/components/UI/IconButton.vue'
 import VFlag from '~/components/UI/VFlag.vue'
+import { getSlugFromURL } from '~/lib/apiArticle'
 import { useSiteStore } from '~/stores/site'
 
 const { $tracking } = useNuxtApp()
-const { articles: entries, locale: currentI18n } = storeToRefs(useSiteStore())
+const { articles: entries, locale: currentI18n, config } = storeToRefs(useSiteStore())
 const { current: vuetifyLocale } = useLocale()
 const { locales, setLocale, localeProperties } = useI18n() // LocaleObject[]
 
@@ -27,6 +28,23 @@ function handleClick(title: string, url: string): void {
     title,
   })
 }
+
+function isExternalLink(url: string): boolean {
+  return /^https?:?\/\//.test(url)
+}
+
+function isAPIUrl(url: string): boolean {
+  return url.includes(config.value!.API_ENDPOINT)
+}
+
+function getLinkTo(url: string) {
+  return isExternalLink(url) && !isAPIUrl(url)
+    ? url
+    : {
+        name: 'articles-slug',
+        params: { slug: getSlugFromURL(url) },
+      }
+}
 </script>
 
 <template>
@@ -38,16 +56,21 @@ function handleClick(title: string, url: string): void {
         </IconButton>
       </template>
       <VList id="nav-menu-dropdown">
-        <VListItem
-          v-for="(entry, index) in entries"
-          :key="index"
-          :to="{ name: 'articles-slug', params: { slug: entry.url } }"
-          tag="NuxtLink"
-          class="tw-w-full tw-px-5 tw-py-3 hover:tw-bg-zinc-100"
-          @click="handleClick(entry.title, entry.url)"
-        >
-          {{ entry.title }}
-        </VListItem>
+        <template v-for="(entry, index) in entries" :key="index">
+          <NuxtLink
+            v-slot="{ href }"
+            custom
+            :to="getLinkTo(entry.url)"
+          >
+            <VListItem
+              class="tw-w-full tw-px-5 tw-py-3 hover:tw-bg-zinc-100"
+              :href="href"
+              @click="handleClick(entry.title, entry.url)"
+            >
+              {{ entry.title }}
+            </VListItem>
+          </NuxtLink>
+        </template>
         <VDivider v-if="Boolean(entries.length)" />
         <VListItem
           v-for="locale in locales"

@@ -27,6 +27,7 @@ export const useSiteStore = defineStore('site', () => {
   const explorerModeEnabled = ref<SiteInfosTheme['explorer_mode']>(theme.value?.explorer_mode ?? true)
   const favoritesModeEnabled = ref<SiteInfosTheme['favorites_mode']>(theme.value?.favorites_mode ?? true)
 
+  // TODO: Looks unused maybe remove ?
   async function init(headers: Record<string, string>) {
     config.value = vidoConfig(headers)
     settings.value = await getSettings(config.value)
