@@ -9,7 +9,6 @@ import { useSiteStore } from '~/stores/site'
 import { menuStore as useMenuStore } from '~/stores/menu'
 import { mapStore as useMapStore } from '~/stores/map'
 import { regexForCategoryIds } from '~/composables/useIdsResolver'
-import type { ApiMenuCategory } from '~/lib/apiMenu'
 
 const siteStore = useSiteStore()
 const { config, settings } = storeToRefs(siteStore)
@@ -24,7 +23,7 @@ const { $trackingInit } = useNuxtApp()
 
 const boundaryGeojson = ref<Polygon | MultiPolygon>()
 const poiId = ref<number>()
-const categoryIds = ref<number[]>()
+const categoryIds = ref<number[]>([])
 
 const { boundary } = route.query
 if (boundary && typeof boundary === 'string' && settings.value?.polygons_extra) {
@@ -53,13 +52,14 @@ if (route.params.p1) {
   if (!match || (route.path.endsWith('/') && match.groups && (match.groups.cartocode || match.groups.reference || match.groups.osm)))
     throw createError({ statusCode: 400, message: `No match for category ID: ${route.params.p1}` })
 
-  categoryIds.value = match.input?.split(',').map(id => Number.parseInt(id))
+  match.input?.split(',')
+    .map(id => categoryIds.value.push(Number.parseInt(id)))
 }
 
 // Get POI ID from URL
-if (categoryIds.value?.length === 1 && route.name === 'index-p1' && !route.path.endsWith('/')) {
+if (categoryIds.value.length === 1 && route.name === 'index-p1' && !route.path.endsWith('/')) {
   poiId.value = Number(route.params.p1?.toString())
-  categoryIds.value = undefined
+  categoryIds.value = []
 }
 
 if (route.params.poiId) {
@@ -67,33 +67,32 @@ if (route.params.poiId) {
 }
 
 const menuStore = useMenuStore()
-const { apiMenuCategory, selectedCategoryIds } = storeToRefs(menuStore)
+const { apiMenuCategory } = storeToRefs(menuStore)
 onBeforeMount(() => {
   $trackingInit(config.value!)
-
-  // TODO: It could be processed on server-side ?
-  if (categoryIds.value) {
-    menuStore.setSelectedCategoryIds(categoryIds.value)
-  }
-  else if (typeof location !== 'undefined') {
-    const enabledCategories: ApiMenuCategory['id'][] = []
-
-    if (apiMenuCategory.value) {
-      apiMenuCategory.value.forEach((category) => {
-        if (category.selected_by_default)
-          enabledCategories.push(category.id)
-      })
-    }
-
-    menuStore.setSelectedCategoryIds(enabledCategories)
-  }
 })
+
+if (categoryIds.value.length) {
+  menuStore.setSelectedCategoryIds(categoryIds.value)
+}
+else {
+  categoryIds.value = []
+
+  if (apiMenuCategory.value) {
+    apiMenuCategory.value.forEach((category) => {
+      if (category.selected_by_default)
+        categoryIds.value.push(category.id)
+    })
+  }
+
+  menuStore.setSelectedCategoryIds(categoryIds.value)
+}
 
 const { teritorioCluster } = storeToRefs(mapStore)
 const { data, error, status } = await useAsyncData('features', async () => {
   await menuStore.fetchFeatures({
     vidoConfig: config.value!,
-    categoryIds: selectedCategoryIds.value || [],
+    categoryIds: categoryIds.value || [],
     clipingPolygonSlug: route.query.clipingPolygonSlug?.toString(),
   })
 
