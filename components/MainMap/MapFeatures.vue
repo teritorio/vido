@@ -11,7 +11,6 @@ import type {
 } from 'maplibre-gl'
 import { storeToRefs } from 'pinia'
 import booleanIntersects from '@turf/boolean-intersects'
-import { TeritorioCluster } from '@teritorio/maplibre-gl-teritorio-cluster'
 import MapControlsExplore from '~/components/MainMap/MapControlsExplore.vue'
 import SnackBar from '~/components/MainMap/SnackBar.vue'
 import MapBase from '~/components/Map/MapBase.vue'
@@ -33,7 +32,6 @@ import type { LatLng } from '~/utils/types'
 import { MapStyleEnum } from '~/utils/types'
 import { getHashPart } from '~/utils/url'
 import useDevice from '~/composables/useDevice'
-import { clusterRender, markerRender, pinMarkerRender } from '~/lib/clusters'
 import { getContrastedColors } from '~/composables/useFeature'
 
 const props = withDefaults(defineProps<{
@@ -58,7 +56,7 @@ const props = withDefaults(defineProps<{
   enableFilterRouteByFeatures: false,
   cooperativeGestures: false,
 })
-const POI_SOURCE = 'poi'
+
 const STYLE_LAYERS = [
   'poi-level-1',
   'poi-level-2',
@@ -138,18 +136,6 @@ function onMapInit(mapInstance: MapGL): void {
   if (!mapBaseRef.value)
     return
 
-  teritorioCluster.value = new TeritorioCluster(map.value, POI_SOURCE, {
-    clusterRenderFn: clusterRender,
-    fitBoundsOptions: mapBaseRef.value.fitBoundsOptions(),
-    // @ts-expect-error: MapGeoJSONFeature type mismatch
-    initialFeature: selectedFeature.value ? selectedFeature.value : undefined,
-    markerRenderFn: markerRender,
-    markerSize: 32,
-    pinMarkerRenderFn: pinMarkerRender,
-  })
-
-  teritorioCluster.value.addEventListener('feature-click', (e: Event) => updateSelectedFeature((e as CustomEvent).detail.selectedFeature))
-
   map.value.on('click', onClick)
 
   map.value.on('moveend', () => {
@@ -172,6 +158,8 @@ function renderPois() {
     ['get', 'color_fill', ['get', 'display']],
     '#000000',
   ])
+
+  teritorioCluster.value?.addEventListener('feature-click', (e: Event) => updateSelectedFeature((e as CustomEvent).detail.selectedFeature))
 }
 
 function onMapStyleLoad(): void {

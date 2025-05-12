@@ -1,15 +1,11 @@
 <script setup lang="ts">
 import type { LngLatLike, Map as MapGL } from 'maplibre-gl'
-import { TeritorioCluster } from '@teritorio/maplibre-gl-teritorio-cluster'
-import { storeToRefs } from 'pinia'
 import { getBBox } from '~/lib/bbox'
 import MapBase from '~/components/Map/MapBase.vue'
 import type { ApiPoi } from '~/lib/apiPois'
 import { MAP_ZOOM } from '~/lib/constants'
 import type { MapPoiId } from '~/lib/mapPois'
 import { filterRouteByPoiIds } from '~/utils/styles'
-import { clusterRender, markerRender, pinMarkerRender } from '~/lib/clusters'
-import { mapStore as useMapStore } from '~/stores/map'
 
 const props = withDefaults(defineProps<{
   extraAttributions?: string[]
@@ -25,10 +21,6 @@ const props = withDefaults(defineProps<{
   cluster: true,
 })
 
-const POI_SOURCE = 'poi'
-
-const { teritorioCluster } = storeToRefs(useMapStore())
-
 const mapBaseRef = ref<InstanceType<typeof MapBase>>()
 const map = ref<MapGL>()
 
@@ -38,14 +30,6 @@ const center = computed((): LngLatLike | undefined => bounds.value?.getCenter())
 
 function onMapInit(mapInstance: MapGL): void {
   map.value = mapInstance
-
-  teritorioCluster.value = new TeritorioCluster(mapInstance, POI_SOURCE, {
-    clusterRenderFn: clusterRender,
-    fitBoundsOptions: mapBaseRef.value?.fitBoundsOptions(),
-    markerRenderFn: markerRender,
-    markerSize: 32,
-    pinMarkerRenderFn: pinMarkerRender,
-  })
 }
 
 function onMapStyleLoad(): void {
