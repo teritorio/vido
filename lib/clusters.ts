@@ -1,4 +1,4 @@
-import type { LngLatLike, MapGeoJSONFeature, Point } from 'maplibre-gl'
+import type { GeoJSONFeature, LngLatLike, MapGeoJSONFeature, Point } from 'maplibre-gl'
 import { Marker } from 'maplibre-gl'
 import { createApp } from 'vue'
 import TeritorioIconBadge from '~/components/UI/TeritorioIconBadge.vue'
@@ -94,7 +94,10 @@ export function clusterRender(element: HTMLDivElement, props: MapGeoJSONFeature[
   element.innerHTML = html
 }
 
-export function markerRender(element: HTMLDivElement, feature: MapGeoJSONFeature) {
+export function markerRender(element: HTMLDivElement, markerSize: number, feature?: GeoJSONFeature) {
+  if (!feature)
+    return
+
   element.style.cursor = 'pointer'
 
   if (typeof feature.properties?.metadata === 'string')
