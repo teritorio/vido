@@ -17,6 +17,7 @@ import type {
 import { mask } from '@turf/mask'
 import { nextTick } from 'vue'
 import { storeToRefs } from 'pinia'
+import { TeritorioCluster } from '@teritorio/maplibre-gl-teritorio-cluster'
 import Attribution from '~/components/Map/Attribution.vue'
 import Map from '~/components/Map/Map.vue'
 import type { ApiPoi } from '~/lib/apiPois'
@@ -25,6 +26,7 @@ import type { MapPoi } from '~/lib/mapPois'
 import { markerLayerTextFactory } from '~/lib/markerLayerFactory'
 import type { MapStyleEnum } from '~/utils/types'
 import { mapStore as useMapStore } from '~/stores/map'
+import { clusterRender, markerRender, pinMarkerRender } from '~/lib/clusters'
 
 const props = withDefaults(defineProps<{
   center?: LngLatLike
@@ -66,13 +68,11 @@ const emit = defineEmits<{
 }>()
 
 const POI_SOURCE = 'poi'
-const POI_LAYER = 'poi'
-
 const BOUNDARY_SOURCE = 'boundary_area'
 const BOUNDARY_AREA_LAYER = 'boundary_area'
 const BOUNDAR_BORDER_LAYER = 'boundary_border'
 
-const { boundOptions, teritorioCluster } = storeToRefs(useMapStore())
+const { boundOptions, teritorioCluster, selectedFeature } = storeToRefs(useMapStore())
 
 const map = ref<MapGL>()
 const poiFilter = ref<PoiFilter>()
@@ -161,8 +161,8 @@ function initPoiLayer(features: MapPoi[], clusterPropertiesValues: string[], clu
   if (!map.value)
     return
 
-  if (map.value.getLayer(POI_LAYER))
-    map.value.removeLayer(POI_LAYER)
+  if (map.value.getLayer('teritorio-cluster-layer'))
+    map.value.removeLayer('teritorio-cluster-layer')
 
   if (map.value.getSource(POI_SOURCE))
     map.value.removeSource(POI_SOURCE)
@@ -203,16 +203,28 @@ function initPoiLayer(features: MapPoi[], clusterPropertiesValues: string[], clu
     },
   })
 
-  // Add individual markers
-  if (poiLayerTemplate.value) {
-    map.value.addLayer(
-      markerLayerTextFactory(
-        poiLayerTemplate.value,
-        POI_LAYER,
-        POI_SOURCE,
-      ),
-    )
-  }
+  teritorioCluster.value = new TeritorioCluster('teritorio-cluster-layer', POI_SOURCE, {
+    clusterRender,
+    fitBoundsOptions: fitBoundsOptions(),
+    // @ts-expect-error: MapGeoJSONFeature type mismatch
+    initialFeature: selectedFeature.value ? selectedFeature.value : undefined,
+    markerRender,
+    markerSize: 32,
+    pinMarkerRender,
+  })
+
+  map.value.addLayer(teritorioCluster.value)
+
+  // // Add individual markers
+  // if (poiLayerTemplate.value) {
+  //   map.value.addLayer(
+  //     markerLayerTextFactory(
+  //       poiLayerTemplate.value,
+  //       POI_LAYER,
+  //       POI_SOURCE,
+  //     ),
+  //   )
+  // }
 }
 
 function onMapInit(mapInstance: MapGL): void {
