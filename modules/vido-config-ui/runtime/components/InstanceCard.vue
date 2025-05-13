@@ -25,7 +25,7 @@ const isImageProxy = computed(() => props.config.IMAGE_PROXY)
 <template>
   <div class="card" @click="openInstance(hostname)">
     <div class="card-header">
-      <VidoConfigInstanceCardSkeleton v-if="loading" />
+      <InstanceCardSkeleton v-if="loading" />
       <template v-else>
         <img v-if="logoUrl" :src="logoUrl" alt="Logo" class="logo">
         <div v-else class="skeleton-logo" />

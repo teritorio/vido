@@ -1,8 +1,6 @@
 <script setup lang="ts">
 import configData from '@/vidos-config.json'
 
-definePageMeta({ layout: 'vido-config-ui' })
-
 const selectedTheme = ref('tourism')
 const searchQuery = ref('')
 
@@ -98,7 +96,7 @@ function toggleTheme(theme: string) {
 
     <div v-for="(instances, theme) in filteredConfigs" :key="theme" class="theme-section">
       <div class="grid">
-        <VidoConfigInstanceCard
+        <InstanceCard
           v-for="(config, hostname) in instances"
           :key="hostname"
           :hostname="hostname"
