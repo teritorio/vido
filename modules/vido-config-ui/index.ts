@@ -5,6 +5,9 @@ export default defineNuxtModule({
     name: 'vido-config-ui',
     configKey: 'vidoConfigUI',
     version: '1.0.0',
+    compatibility: {
+      nuxt: '>=3.8.0',
+    },
   },
   setup(options, nuxt) {
     if (!options.enabled) {
@@ -25,7 +28,7 @@ export default defineNuxtModule({
       pages.unshift({
         name: 'vido-config-ui',
         path: '/config',
-        file: resolve('pages/vido-config-ui.vue'),
+        file: resolve('runtime/vido-config-ui.vue'),
       })
     })
 
