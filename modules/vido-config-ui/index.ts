@@ -1,45 +1,39 @@
-import { readFileSync } from 'node:fs'
-import { addTemplate, createResolver, defineNuxtModule } from 'nuxt/kit'
+import { addLayout, createResolver, defineNuxtModule, extendPages } from 'nuxt/kit'
 
 export default defineNuxtModule({
   meta: {
     name: 'vido-config-ui',
     configKey: 'vidoConfigUI',
+    version: '1.0.0',
   },
-  setup(_options, nuxt) {
-    const resolver = createResolver(import.meta.url)
+  setup(options, nuxt) {
+    if (!options.enabled) {
+      // eslint-disable-next-line no-console
+      console.info('[@teritorio/vido-config-ui] Skipped - only enabled in development mode.')
+      return
+    }
 
-    addTemplate({
-      filename: 'layouts/vido-config-ui.vue',
+    const { resolve } = createResolver(import.meta.url)
+
+    addLayout({
+      src: resolve('layouts/vido-config-ui.vue'),
+      filename: 'vido-config-ui.vue',
       write: true,
-      getContents: () =>
-        readFileSync(resolver.resolve('layouts/vido-config-ui.vue'), 'utf-8'),
+    }, 'vido-config-ui')
+
+    extendPages((pages) => {
+      pages.unshift({
+        name: 'vido-config-ui',
+        path: '/config',
+        file: resolve('pages/vido-config-ui.vue'),
+      })
     })
 
-    const pageTemplate = addTemplate({
-      filename: 'pages/vido-config-ui.vue',
-      write: true,
-      getContents: () =>
-        readFileSync(resolver.resolve('pages/vido-config-ui.vue'), 'utf-8'),
+    nuxt.hook('components:dirs', (dirs) => {
+      dirs.push({
+        path: resolve('components'),
+        prefix: 'VidoConfig', // use <VidoConfigInstanceCard />
+      })
     })
-
-    if (nuxt.options.dev) {
-      nuxt.hook('pages:extend', (pages) => {
-        pages.push({
-          name: 'vido-config-ui',
-          path: '/config',
-          file: pageTemplate.dst,
-        })
-      })
-      nuxt.hook('components:dirs', (dirs) => {
-        dirs.push({
-          path: resolver.resolve('components'),
-          prefix: 'VidoConfig', // use <VidoConfigInstanceCard />
-        })
-      })
-    }
-    else {
-      console.warn('[@teritorio/vido-config-ui] Skipped - only enabled in development mode.')
-    }
   },
 })

@@ -16,6 +16,9 @@ export default defineNuxtConfig({
       '@fortawesome/vue-fontawesome',
     ],
   },
+  vidoConfigUI: {
+    enabled: process.env.NODE_ENV === 'development',
+  },
   components: false,
   css: ['@fortawesome/fontawesome-svg-core/styles.css'],
   devtools: { enabled: true },
