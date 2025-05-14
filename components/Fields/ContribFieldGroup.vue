@@ -12,6 +12,8 @@ const props = defineProps<{
   osm_note: ContribFields['osm_note']
 }>()
 
+const { t } = useI18n()
+
 const onlyDefinedProps = computed(() => {
   return pickBy(props, p => !!p)
 }) as ComputedRef<Record<string, Link>>
@@ -27,7 +29,7 @@ const onlyDefinedProps = computed(() => {
       :href="field.url"
       :target="field.target"
     >
-      {{ $t(`fields.contrib.${key}`) }}
+      {{ t(`fields.contrib.${key}`) }}
       <iframe v-if="key === 'josm'" id="hidden-iframe" name="hiddenIframe" />
     </ExternalLink>
   </div>
