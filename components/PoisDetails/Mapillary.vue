@@ -1,32 +1,21 @@
-<script lang="ts">
-import type { PropType } from 'vue'
-
-import { defineNuxtComponent } from '#app'
+<script setup lang="ts">
 import ExternalLink from '~/components/UI/ExternalLink.vue'
 
-export default defineNuxtComponent({
-  components: {
-    ExternalLink,
-  },
-  props: {
-    imageId: {
-      type: String as PropType<string>,
-      required: true,
-    },
-  },
-})
+defineProps<{
+  imageId: string
+}>()
+
+const { t } = useI18n()
 </script>
 
 <template>
   <div>
-    <iframe
-      :src="`https://www.mapillary.com/embed?image_key=${imageId}&x=0.5&y=0.5&style=photo`"
-    />
+    <iframe :src="`https://www.mapillary.com/embed?image_key=${imageId}&x=0.5&y=0.5&style=photo`" />
     <ExternalLink
       :href="`https://www.mapillary.com/app/?pKey=${imageId}&focus=photo`"
       target="_blank"
     >
-      {{ $t('poiDetails.mapillaryExplore') }}
+      {{ t('poiDetails.mapillaryExplore') }}
     </ExternalLink>
   </div>
 </template>
