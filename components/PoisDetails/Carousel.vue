@@ -1,33 +1,14 @@
-<script lang="ts">
-import type { PropType } from 'vue'
+<script setup lang="ts">
 import { VCarousel, VCarouselItem } from 'vuetify/components/VCarousel'
-
-import { defineNuxtComponent } from '#app'
 import UIPicture from '~/components/UI/UIPicture.vue'
 import useDevice from '~/composables/useDevice'
 
-export default defineNuxtComponent({
-  components: {
-    UIPicture,
-    VCarousel,
-    VCarouselItem,
-  },
+defineProps<{
+  images: string[]
+}>()
 
-  setup() {
-    const device = useDevice()
-
-    return {
-      device,
-    }
-  },
-
-  props: {
-    images: {
-      type: Array as PropType<string[]>,
-      required: true,
-    },
-  },
-})
+const device = useDevice()
+const { t } = useI18n()
 </script>
 
 <template>
@@ -35,24 +16,24 @@ export default defineNuxtComponent({
     <UIPicture
       :src="images[0]"
       :media-size="device.smallScreen ? '100vw' : '66vw'"
-      :alt="$t('poiCard.image')"
+      :alt="t('poiCard.image')"
     />
   </div>
   <div v-else-if="images.length > 1">
-    <v-carousel
+    <VCarousel
       :show-arrows="false"
       :hide-delimiter-background="true"
       class="tw-mb-14 print:tw-mb-6"
       height="auto"
     >
-      <v-carousel-item v-for="(image, i) in images" :key="i">
+      <VCarouselItem v-for="(image, i) in images" :key="i">
         <UIPicture
           :src="image"
           :media-size="device.smallScreen ? '100vw' : '66vw'"
-          :alt="$t('poiCard.image')"
+          :alt="t('poiCard.image')"
         />
-      </v-carousel-item>
-    </v-carousel>
+      </VCarouselItem>
+    </VCarousel>
   </div>
 </template>
 
