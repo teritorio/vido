@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
-import type { ApiMenuCategory } from '~/lib/apiMenu'
 import { storeToRefs } from 'pinia'
+import type { ApiMenuCategory } from '~/lib/apiMenu'
 import TeritorioIconBadge from '~/components/UI/TeritorioIconBadge.vue'
 import { menuStore as useMenuStore } from '~/stores/menu'
 import { getContrastedColors } from '~/composables/useFeature'
@@ -15,7 +15,7 @@ function getItem(item: ApiMenuCategory) {
 }
 
 function getTeritorioIconBadgeProps(item: ApiMenuCategory) {
-  const base = this.getItem(item)
+  const base = getItem(item)
   const { colorFill, colorText } = getContrastedColors(base.color_fill, base.color_text)
 
   return {
