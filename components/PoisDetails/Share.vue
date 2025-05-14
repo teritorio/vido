@@ -1,88 +1,40 @@
-<script lang="ts">
+<script setup lang="ts">
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
-import type { PropType } from 'vue'
-import { ref } from 'vue'
-
-import { defineNuxtComponent } from '#app'
 import IconButton from '~/components/UI/IconButton.vue'
 import IconsBar from '~/components/UI/IconsBar.vue'
 import ShareLinkModal from '~/components/UI/ShareLinkModal.vue'
 import { OriginEnum } from '~/utils/types'
 import { urlAddTrackOrigin } from '~/utils/url'
 
-export default defineNuxtComponent({
-  components: {
-    FontAwesomeIcon,
-    IconsBar,
-    IconButton,
-    ShareLinkModal,
-  },
+const props = defineProps<{
+  title?: string
+  href?: string
+  colorLine: string
+}>()
 
-  props: {
-    title: {
-      type: String as PropType<string>,
-      default: null,
-    },
-    href: {
-      type: String as PropType<string>,
-      default: null,
-    },
-    colorLine: {
-      type: String as PropType<string>,
-      required: true,
-    },
-  },
-  setup() {
-    return {
-      shareModal: ref<InstanceType<typeof ShareLinkModal>>(),
-    }
-  },
+const { t } = useI18n()
 
-  data(): {
-    shareFacebook: string | undefined
-    shareTwitter: string | undefined
-    shareWhatsApp: string | undefined
-  } {
-    return {
-      shareFacebook: undefined,
-      shareTwitter: undefined,
-      shareWhatsApp: undefined,
-    }
-  },
+const shareModalRef = ref<InstanceType<typeof ShareLinkModal>>()
+const shareFacebook = ref<string>()
+const shareTwitter = ref<string>()
+const shareWhatsApp = ref<string>()
 
-  mounted() {
-    this.shareFacebook
-      = `https://www.facebook.com/share.php?${
-       new URLSearchParams({
-        u: urlAddTrackOrigin(window.location.href, OriginEnum.facebook),
-      }).toString()}`
-
-    this.shareTwitter
-      = `https://twitter.com/intent/tweet?${
-       new URLSearchParams({
-        text:
-          `${this.title}\n${
-          urlAddTrackOrigin(window.location.href, OriginEnum.twitter)}`,
-      }).toString()}`
-
-    this.shareWhatsApp
-      = `https://api.whatsapp.com/send?${
-       new URLSearchParams({
-        text:
-          `${this.title}\n${
-          urlAddTrackOrigin(window.location.href, OriginEnum.whatsapp)}`,
-      }).toString()}`
-  },
-
-  methods: {
-    print() {
-      window.print()
-    },
-    shareUrl() {
-      this.shareModal?.open(window.location.href)
-    },
-  },
+onMounted(() => {
+  shareFacebook.value = `https://www.facebook.com/share.php?${new URLSearchParams({ u: urlAddTrackOrigin(window.location.href, OriginEnum.facebook) }).toString()}`
+  shareTwitter.value = `https://twitter.com/intent/tweet?${new URLSearchParams({ text: `${props.title}\n${urlAddTrackOrigin(window.location.href, OriginEnum.twitter)}` }).toString()}`
+  shareWhatsApp.value = `https://api.whatsapp.com/send?${new URLSearchParams({ text: `${props.title}\n${urlAddTrackOrigin(window.location.href, OriginEnum.whatsapp)}` }).toString()}`
 })
+
+function print(): void {
+  window.print()
+}
+
+function shareUrl(): void {
+  if (!shareModalRef.value)
+    return
+
+  shareModalRef.value.open(window.location.href)
+}
 </script>
 
 <template>
@@ -90,10 +42,10 @@ export default defineNuxtComponent({
     <IconsBar>
       <IconButton
         v-if="href"
-        :label="$t('poiDetails.shareFacebook')"
         class="tw-w-8 tw-h-8"
-        :href="shareFacebook"
         target="_blank"
+        :label="t('poiDetails.shareFacebook')"
+        :href="shareFacebook"
       >
         <FontAwesomeIcon
           :icon="['fab', 'facebook']"
@@ -102,10 +54,10 @@ export default defineNuxtComponent({
       </IconButton>
       <IconButton
         v-if="title && href"
-        :label="$t('poiDetails.shareTwitter')"
         class="tw-w-8 tw-h-8"
-        :href="shareTwitter"
         target="_blank"
+        :label="t('poiDetails.shareTwitter')"
+        :href="shareTwitter"
       >
         <FontAwesomeIcon
           :icon="['fab', 'x-twitter']"
@@ -114,10 +66,10 @@ export default defineNuxtComponent({
       </IconButton>
       <IconButton
         v-if="title && href"
-        :label="$t('poiDetails.shareWhatsApp')"
         class="tw-w-8 tw-h-8"
-        :href="shareWhatsApp"
         target="_blank"
+        :label="t('poiDetails.shareWhatsApp')"
+        :href="shareWhatsApp"
       >
         <FontAwesomeIcon
           :icon="['fab', 'whatsapp']"
@@ -125,21 +77,21 @@ export default defineNuxtComponent({
         />
       </IconButton>
       <IconButton
-        :label="$t('poiDetails.print')"
         class="tw-w-8 tw-h-8"
+        :label="t('poiDetails.print')"
         @click="print"
       >
         <FontAwesomeIcon icon="print" :style="{ color: colorLine }" />
       </IconButton>
       <IconButton
         v-if="href"
-        :label="$t('poiDetails.link')"
         class="tw-w-8 tw-h-8"
+        :label="t('poiDetails.link')"
         @click="shareUrl"
       >
         <FontAwesomeIcon icon="link" :style="{ color: colorLine }" />
       </IconButton>
     </IconsBar>
-    <ShareLinkModal ref="shareModal" :title="$t('poiDetails.link')" />
+    <ShareLinkModal ref="shareModalRef" :title="t('poiDetails.link')" />
   </div>
 </template>
