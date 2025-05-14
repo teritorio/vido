@@ -1,24 +1,9 @@
-<script lang="ts">
-import type { PropType } from 'vue'
-
-import { defineNuxtComponent } from '#app'
-
-export default defineNuxtComponent({
-  props: {
-    label: {
-      type: String as PropType<string>,
-      required: true,
-    },
-    href: {
-      type: String as PropType<string | undefined>,
-      default: undefined,
-    },
-    target: {
-      type: String as PropType<string | undefined>,
-      default: undefined,
-    },
-  },
-})
+<script setup lang="ts">
+defineProps<{
+  label: string
+  href?: string
+  target?: string
+}>()
 </script>
 
 <template>
