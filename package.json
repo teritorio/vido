@@ -86,6 +86,7 @@
     "@nuxtjs/i18n": "8.0.0",
     "@tailwindcss/forms": "^0.5.3",
     "@teritorio/font-teritorio": "^2.5.0",
+    "@teritorio/vido-config-ui": "../vido-config-ui/teritorio-vido-config-ui-1.0.0.tgz",
     "@types/lodash.debounce": "^4.0.7",
     "@types/lodash.memoize": "^4.1.7",
     "@types/lodash.throttle": "^4.1.7",

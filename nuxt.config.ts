@@ -45,6 +45,7 @@ export default defineNuxtConfig({
   },
   loadingIndicator: false,
   modules: [
+    '@teritorio/vido-config-ui',
     '@nuxtjs/i18n',
     '@nuxt/image-edge',
     '@pinia/nuxt',
@@ -55,6 +56,11 @@ export default defineNuxtConfig({
         config.plugins.push(vuetify()))
     },
   ],
+  vidoConfigUI: {
+    enabled: true,
+    configFilePath: 'vidos-config.json',
+    pagePath: '/config',
+  },
   runtimeConfig: {
     public: {
       // @ts-expect-error: Bad pratice, make it the Nuxt way (https://nuxt.com/docs/guide/going-further/runtime-config)
