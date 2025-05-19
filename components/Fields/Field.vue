@@ -101,7 +101,10 @@ export default defineNuxtComponent({
   },
 
   setup(props) {
-    const { colorFill, colorText } = getContrastedColors(props.properties.display?.color_fill, props.properties.display?.color_text)
+    if (!props.properties.display)
+      throw createError(`Feature ${props.properties.metadata.id} is missing 'display' property.`)
+
+    const { colorFill, colorText } = getContrastedColors(props.properties.display.color_fill, props.properties.display.color_text)
     const textLimit = ref(130)
     const { p, pv } = useSiteStore()
 

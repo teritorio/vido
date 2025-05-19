@@ -39,7 +39,7 @@ routeCollection.value = props.route.features.map((feature) => {
         feature as ApiRouteWaypoint,
         props.colorFill,
         props.colorText,
-        props.colorLine,
+        props.colorLine as '#000000' | '#FFFFFF',
         feature.properties['route:point:type']
         === ApiRouteWaypointType.way_point
           ? (index++).toString()
@@ -54,7 +54,7 @@ routeCollection.value = props.route.features.map((feature) => {
           display: {
             icon: iconMap[feature.properties['route:point:type']],
             color_fill: feature.properties.display?.color_fill || props.colorFill,
-            color_text: feature.properties.display?.color_text || props.colorText,
+            color_text: (feature.properties.display?.color_text || props.colorText) as '#000000' | '#FFFFFF',
             color_line: feature.properties.display?.color_line || props.colorLine,
             text: feature.properties['route:point:type']
             === ApiRouteWaypointType.way_point

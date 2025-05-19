@@ -22,7 +22,7 @@ const defaultProps = {
       feature as unknown as ApiRouteWaypoint,
       '#123456',
       '#123456',
-      '#ffffff',
+      '#FFFFFF',
     ),
   ),
   selectedPoiIds: points.map(feature => feature.properties.id),

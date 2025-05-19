@@ -12,7 +12,7 @@ export interface MapPoiProperties {
     icon: string
     color_fill?: string
     color_line?: string
-    color_text?: string
+    color_text?: '#000000' | '#FFFFFF'
     text?: string
   }
 }

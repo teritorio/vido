@@ -60,7 +60,11 @@ export default defineNuxtComponent({
 
   setup(props) {
     const { contribMode, isContribEligible, getContributorFields } = useContrib()
-    const { colorFill, colorText } = getContrastedColors(props.poi.properties.display?.color_fill, props.poi.properties.display?.color_text)
+
+    if (!props.poi.properties.display)
+      throw createError(`Feature ${props.poi.properties.metadata.id} is missing 'display' property.`)
+
+    const { colorFill, colorText } = getContrastedColors(props.poi.properties.display.color_fill, props.poi.properties.display.color_text)
 
     return {
       contribMode,
