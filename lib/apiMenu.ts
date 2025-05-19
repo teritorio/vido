@@ -49,7 +49,7 @@ export interface ApiMenuGroup extends ApiMenuItem {
     icon: string
     color_fill: string
     color_line: string
-    color_text?: string
+    color_text?: '#000000' | '#FFFFFF'
     display_mode: 'large' | 'compact'
   }
   link: undefined
@@ -64,7 +64,7 @@ export interface ApiMenuLink extends ApiMenuItem {
     icon: string
     color_fill: string
     color_line: string
-    color_text?: string
+    color_text?: '#000000' | '#FFFFFF'
     display_mode: 'large' | 'compact'
   }
   category: undefined
@@ -78,7 +78,7 @@ export interface ApiMenuCategory extends ApiMenuItem {
     icon: string
     color_fill: string
     color_line: string
-    color_text?: string
+    color_text?: '#000000' | '#FFFFFF'
     style_class?: string[]
     style_merge: boolean
     display_mode: 'large' | 'compact'
