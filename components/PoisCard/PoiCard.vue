@@ -23,7 +23,11 @@ const emit = defineEmits<{
 }>()
 
 const device = useDevice()
-const { colorFill } = getContrastedColors(props.poi.properties.display?.color_fill)
+
+if (!props.poi.properties.display)
+  throw createError(`Feature ${props.poi.properties.metadata.id} is missing 'display' property.`)
+
+const { colorFill } = getContrastedColors(props.poi.properties.display.color_fill)
 
 const closeBtnStyles = reactive({
   backgroundColor: 'rgb(0 0 0 / 55%)',

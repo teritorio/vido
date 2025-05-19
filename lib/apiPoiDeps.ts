@@ -66,7 +66,7 @@ export function apiRouteWaypointToApiPoi(
   waypoint: ApiRouteWaypoint,
   colorFill: string,
   colorLine: string,
-  colorText: string,
+  colorText: '#000000' | '#FFFFFF',
   text?: string,
 ): ApiPoi {
   return {

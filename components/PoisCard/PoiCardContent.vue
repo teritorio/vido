@@ -47,7 +47,11 @@ const device = useDevice()
 const { enabled: isochroneEnabled, isochroneCurrentFeature } = useIsochrone()
 const { featureName, featureCategoryName } = useFeature(toRef(() => props.poi), { type: 'popup' })
 const { explorerModeEnabled, favoritesModeEnabled } = storeToRefs(useSiteStore())
-const { colorFill, colorText } = getContrastedColors(props.poi.properties.display?.color_fill, props.poi.properties.display?.color_text)
+
+if (!props.poi.properties.display)
+  throw createError(`Feature ${props.poi.properties.metadata.id} is missing 'display' property.`)
+
+const { colorFill, colorText } = getContrastedColors(props.poi.properties.display.color_fill, props.poi.properties.display.color_text)
 
 //
 // Data

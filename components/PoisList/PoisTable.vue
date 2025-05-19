@@ -105,7 +105,11 @@ const category = computed(() => {
 })
 
 const teritorioIconBadgeProps = computed(() => {
-  const { colorFill, colorText } = getContrastedColors(category.value?.category.color_fill, category.value?.category.color_text)
+  if (!category.value) {
+    throw createError({ statusCode: 404, message: 'Category Not Found' })
+  }
+
+  const { colorFill, colorText } = getContrastedColors(category.value.category.color_fill, category.value.category.color_text)
 
   return {
     colorFill,
