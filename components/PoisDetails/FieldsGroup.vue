@@ -58,7 +58,7 @@ function isListEmpty(
         v-if="field.group !== undefined && !isListEmpty(field.fields, properties, geom)"
         class="block print:tw-mb-2"
       >
-        <div v-if="field.display_mode === 'standard'">
+        <div v-if="!field.display_mode || field.display_mode === 'standard'">
           <FieldsHeader
             v-if="fieldTranslateK(field.group)"
             :recursion-stack="recursionStack"
