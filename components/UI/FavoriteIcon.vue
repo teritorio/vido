@@ -19,6 +19,6 @@ withDefaults(defineProps<{
       isActive && 'tw-text-amber-500',
     ]"
     :color="!isActive && colorLine"
-    size="sm"
+    size="lg"
   />
 </template>
