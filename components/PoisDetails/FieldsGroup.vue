@@ -12,7 +12,7 @@ import type {
 import { PropertyTranslationsContextEnum, useSiteStore } from '~/stores/site'
 
 withDefaults(defineProps<{
-  recursionStack: string[]
+  recursionStack?: string[]
   group: FieldsListGroup
   properties: ApiPoiProperties
   geom: GeoJSON.Geometry
