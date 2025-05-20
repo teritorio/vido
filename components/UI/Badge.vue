@@ -18,7 +18,7 @@ withDefaults(defineProps<{
   align-items: center;
   justify-content: center;
   color: #FFF;
-  border-radius: 50%;
+  border-radius: 9999px;
   min-width: 1.25rem;
   height: 1.25rem;
   border: 2px solid #FFF;

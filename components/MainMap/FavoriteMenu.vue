@@ -69,16 +69,19 @@ async function toggleNoteBookMode() {
         <span class="tw-hidden md:tw-inline favorite-title">
           {{ $t('favorites.title') }}
         </span>
-        <Badge
-          id="favourites_counter"
-          :items="favoriteCount"
-          class="tw-absolute tw-top-1/2 tw-right-0 -tw-translate-y-1/2 tw-translate-x-1/2"
-        />
+        <ClientOnly>
+          <Badge
+            v-if="favoriteCount > 0"
+            id="favourites_counter"
+            class="tw-absolute tw-top-1/2 tw-right-0 -tw-translate-y-1/2 tw-translate-x-1/2"
+            :items="favoriteCount"
+          />
+        </ClientOnly>
       </button>
       <button
         id="open_favourites_notebook"
         type="button"
-        class="tw-relative tw-space-x-1 tw-text-sm tw-font-medium tw-shadow-md tw-outline-none md:tw-px-5 tw-w-11 md:tw-w-auto tw-h-11 focus:tw-outline-none tw-shrink-0 tw-rounded-r-full tw-bg-white hover:tw-bg-zinc-100 focus-visible:tw-bg-zinc-100 tw-text-zinc-800"
+        class="tw-pl-2 tw-relative tw-space-x-1 tw-text-sm tw-font-medium tw-shadow-md tw-outline-none md:tw-px-5 tw-w-11 md:tw-w-auto tw-h-11 focus:tw-outline-none tw-shrink-0 tw-rounded-r-full tw-bg-white hover:tw-bg-zinc-100 focus-visible:tw-bg-zinc-100 tw-text-zinc-800"
         :class="[favoriteCount === 0 && 'tw-bg-zinc-100 tw-cursor-not-allowed']"
         :disabled="favoriteCount === 0"
         @click="toggleNoteBookMode"
@@ -87,7 +90,7 @@ async function toggleNoteBookMode() {
           ref="menu_icon"
           icon="book-open"
           class="tw-text-zinc-500 tw-mr-2"
-          size="sm"
+          size="lg"
         />
         <span class="tw-hidden md:tw-inline favorite-title">
           {{ $t('favorites.menu_notebook') }}

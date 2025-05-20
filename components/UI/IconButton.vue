@@ -1,19 +1,15 @@
 <script setup lang="ts">
-withDefaults(defineProps<{
+defineProps<{
   label: string
   href?: string
   target?: string
-  role: string
-}>(), {
-  role: 'button',
-})
+}>()
 </script>
 
 <template>
   <button
     v-if="!href"
     :aria-label="label"
-    :role="role"
     type="button"
     class="icon-button"
   >
@@ -24,7 +20,6 @@ withDefaults(defineProps<{
     :aria-label="label"
     :to="href"
     :target="target"
-    :role="role"
     class="icon-button"
   >
     <slot />
@@ -34,7 +29,6 @@ withDefaults(defineProps<{
     :aria-label="label"
     :href="href"
     :target="target"
-    :role="role"
     class="icon-button"
   >
     <slot />
@@ -46,7 +40,7 @@ withDefaults(defineProps<{
   font-size: 0.875rem;
   color: #27272A;
   background-color: #FFF;
-  border-radius: 50%;
+  border-radius: 9999px;
   box-shadow: 0 1px 2px rgb(0 0 0 / 10%), 0 1px 3px rgb(0 0 0 / 10%);
   flex-shrink: 0;
   display: flex;

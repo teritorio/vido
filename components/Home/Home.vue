@@ -7,7 +7,6 @@ import ExplorerOrFavoritesBack from '~/components/Home/ExplorerOrFavoritesBack.v
 import Menu from '~/components/Home/Menu.vue'
 import MenuBlock from '~/components/Home/MenuBlock.vue'
 import SelectedCategories from '~/components/Home/SelectedCategories.vue'
-import BottomMenu from '~/components/MainMap/BottomMenu.vue'
 import FavoriteMenu from '~/components/MainMap/FavoriteMenu.vue'
 import FavoritesOverlay from '~/components/MainMap/FavoritesOverlay.vue'
 import MapFeatures from '~/components/MainMap/MapFeatures.vue'
@@ -30,6 +29,7 @@ import { flattenFeatures, formatApiAddressToFeature } from '~/utils/utilities'
 import useDevice from '~/composables/useDevice'
 import type { ApiAddrSearchResult, ApiSearchResult } from '~/lib/apiSearch'
 import IsochroneStatus from '~/components/Isochrone/IsochroneStatus.vue'
+import MenuNavbar from '~/components/MenuNavbar.vue'
 
 //
 // Props
@@ -63,7 +63,6 @@ const { isochroneCurrentFeature } = useIsochrone()
 const allowRegionBackZoom = ref<boolean>(false)
 const isFilterActive = ref<boolean>(false)
 const initialBbox = ref<LngLatBounds>()
-const isMenuItemOpen = ref<boolean>(false)
 const isOnSearch = ref<boolean>(false)
 const showFavoritesOverlay = ref<boolean>(false)
 const isPoiCardShown = ref<boolean>(false)
@@ -123,10 +122,6 @@ onMounted(() => {
 //
 // Computed
 //
-const isBottomMenuOpened = computed(() => {
-  return ((device.value.smallScreen && isPoiCardShown.value) || isMenuItemOpen.value)
-})
-
 const fitBoundsPaddingOptions = computed((): FitBoundsOptions['padding'] => {
   if (device.value.smallScreen) {
     return {
@@ -330,10 +325,6 @@ function onActivateFilter(val: boolean) {
   isFilterActive.value = val
 }
 
-function onBottomMenuButtonClick() {
-  isMenuItemOpen.value = !isMenuItemOpen.value
-}
-
 async function onQuitExplorerFavoriteMode() {
   if (mapFeaturesRef.value)
     await mapFeaturesRef.value.updateSelectedFeature()
@@ -443,7 +434,7 @@ function handlePoiCardClose() {
       <header
         class="tw-flex md:tw-hidden tw-relative tw-fidex tw-top-0 tw-bottom-0 tw-z-10 tw-flex-row tw-w-full tw-space-x-4"
       >
-        <div class="tw-w-full" :class="[isBottomMenuOpened && 'tw-hidden']">
+        <div v-if="!device.smallScreen" class="tw-w-full">
           <aside
             v-if="!isModeExplorerOrFavorites"
             class="tw-flex tw-flex-col tw-max-h-full tw-px-5 tw-py-4 tw-space-y-6 tw-shadow-md tw-pointer-events-auto md:tw-rounded-xl md:tw-w-96 tw-bg-white tw-min-h-20"
@@ -524,16 +515,12 @@ function handlePoiCardClose() {
           </Menu>
         </transition-group>
         <SelectedCategories
-          v-if="
-            !isModeExplorer && selectedCategoryIds.length && !isModeFavorites
-          "
+          v-if="!isModeExplorer && selectedCategoryIds.length && !isModeFavorites"
           class="tw-hidden md:tw-block flex-shrink-1"
         />
         <IsochroneStatus v-if="isochroneCurrentFeature" />
         <div class="tw-grow" style="margin-left: 0" />
-        <div
-          class="tw-flex-none tw-flex" :class="[isBottomMenuOpened && 'hidden']"
-        >
+        <div v-if="!device.smallScreen" class="tw-flex-none tw-flex">
           <FavoriteMenu
             v-if="favoritesModeEnabled"
             @explore-click="toggleExploreAroundSelectedPoi"
@@ -546,15 +533,13 @@ function handlePoiCardClose() {
         </div>
       </header>
 
-      <div
-        class="tw-relative tw-flex tw-flex-col tw-w-full tw-h-full md:tw-h-full"
-      >
+      <div class="tw-relative tw-flex tw-flex-col tw-w-full tw-h-full md:tw-h-full">
         <MapFeatures
           ref="mapFeaturesRef"
           :default-bounds="initialBbox"
           :fit-bounds-padding-options="fitBoundsPaddingOptions"
           :extra-attributions="settings!.attributions"
-          :small="isBottomMenuOpened"
+          :small="false"
           :categories="apiMenuCategory || []"
           :features="mapFeatures"
           :selected-categories-ids="selectedCategoryIds"
@@ -563,17 +548,14 @@ function handlePoiCardClose() {
           :enable-filter-route-by-features="true"
           :boundary-area="boundaryArea || settings!.polygon.data"
         >
-          <div class="tw-relative">
-            <button
-              v-if="!(isModeExplorer || isModeFavorites || isPoiCardShown)"
-              type="button"
-              class="md:tw-hidden tw-absolute -tw-top-12 tw-z-0 tw-w-1/4 tw-h-12 tw-transition-all tw-rounded-t-lg tw-text-sm tw-font-medium tw-px-5 tw-shadow-lg tw-outline-none focus:tw-outline-none tw-bg-white tw-text-zinc-800 hover:tw-bg-zinc-100 focus-visible:tw-bg-zinc-100"
-              style="right: 37.5%"
-              @click="onBottomMenuButtonClick"
-            >
-              <span>{{ $t('headerMenu.burgerLabel') }}</span>
-            </button>
-          </div>
+          <MenuNavbar
+            v-if="device.smallScreen"
+            @explore-click="toggleExploreAroundSelectedPoi"
+            @favorite-click="toggleFavorite"
+            @toggle-favorite-mode="toggleFavoriteMode"
+            @toggle-note-book-mode="toggleNoteBookMode"
+            @zoom-click="goToSelectedFeature"
+          />
         </MapFeatures>
       </div>
     </div>
@@ -605,35 +587,6 @@ function handlePoiCardClose() {
         />
         <div class="tw-grow-[3]" />
       </div>
-    </ClientOnly>
-
-    <ClientOnly>
-      <BottomMenu class="md:tw-hidden" :is-open="isBottomMenuOpened">
-        <div
-          ref="bottomMenuRef"
-          class="tw-flex-1 tw-h-full tw-overflow-y-auto tw-h-screen-3/5 tw-divide-y"
-        >
-          <Menu
-            v-if="!isPoiCardShown"
-            menu-block="MenuBlockBottom"
-            @scroll-top="scrollTop"
-          />
-          <PoiCard
-            v-else-if="
-              selectedFeature
-                && selectedFeature.properties
-                && selectedFeature.properties.metadata
-                && isPoiCardShown
-            "
-            :poi="selectedFeature"
-            class="tw-grow-0 tw-text-left tw-h-full"
-            @explore-click="toggleExploreAroundSelectedPoi(undefined)"
-            @favorite-click="toggleFavorite"
-            @zoom-click="goToSelectedFeature"
-            @on-close="handlePoiCardClose"
-          />
-        </div>
-      </BottomMenu>
     </ClientOnly>
 
     <ClientOnly>
