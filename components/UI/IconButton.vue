@@ -1,17 +1,21 @@
 <script setup lang="ts">
-defineProps<{
+withDefaults(defineProps<{
   label: string
   href?: string
   target?: string
-}>()
+  role: string
+}>(), {
+  role: 'button',
+})
 </script>
 
 <template>
   <button
     v-if="!href"
     :aria-label="label"
+    :role="role"
     type="button"
-    class="tw-text-sm tw-text-zinc-800 tw-bg-white tw-rounded-full tw-shadow-md tw-outline-none focus:tw-outline-none hover:tw-bg-zinc-100 focus-visible:tw-bg-zinc-100 tw-shrink-0 tw-flex tw-items-center tw-justify-center tw-px-2.5 tw-gap-2"
+    class="icon-button"
   >
     <slot />
   </button>
@@ -20,7 +24,8 @@ defineProps<{
     :aria-label="label"
     :to="href"
     :target="target"
-    class="tw-text-sm tw-text-zinc-800 tw-bg-white tw-rounded-full tw-shadow-md tw-outline-none focus:tw-outline-none hover:tw-bg-zinc-100 focus-visible:tw-bg-zinc-100 tw-shrink-0 tw-flex tw-items-center tw-justify-center tw-px-2.5 tw-gap-2"
+    :role="role"
+    class="icon-button"
   >
     <slot />
   </NuxtLink>
@@ -29,8 +34,36 @@ defineProps<{
     :aria-label="label"
     :href="href"
     :target="target"
-    class="tw-text-sm tw-text-zinc-800 tw-bg-white tw-rounded-full tw-shadow-md tw-outline-none focus:tw-outline-none hover:tw-bg-zinc-100 focus-visible:tw-bg-zinc-100 tw-shrink-0 tw-flex tw-items-center tw-justify-center tw-px-2.5 tw-gap-2"
+    :role="role"
+    class="icon-button"
   >
     <slot />
   </a>
 </template>
+
+<style lang="css" scoped>
+.icon-button {
+  font-size: 0.875rem;
+  color: #27272A;
+  background-color: #FFF;
+  border-radius: 50%;
+  box-shadow: 0 1px 2px rgb(0 0 0 / 10%), 0 1px 3px rgb(0 0 0 / 10%);
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-left: 0.625rem;
+  padding-right: 0.625rem;
+  gap: 0.5rem;
+  transition: background-color 0.2s ease;
+}
+
+.icon-button:hover,
+.icon-button:focus-visible {
+  background-color: #F4F4F5;
+}
+
+.icon-button:focus {
+  outline: none;
+}
+</style>
