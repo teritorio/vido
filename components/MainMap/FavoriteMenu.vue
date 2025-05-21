@@ -57,6 +57,7 @@ async function toggleNoteBookMode() {
     <div class="tw-flex tw-right-10 tw-pointer-events-auto">
       <button
         ref="menu"
+        v-bind="$attrs"
         type="button"
         class="tw-relative tw-space-x-1 tw-text-sm tw-font-medium tw-shadow-md tw-outline-none md:tw-px-5 tw-w-11 md:tw-w-auto tw-h-11 focus:tw-outline-none tw-shrink-0 border-solid tw-border-r tw-border-zinc-400 tw-rounded-l-full tw-z-10"
         :class="[
@@ -80,6 +81,7 @@ async function toggleNoteBookMode() {
       </button>
       <button
         id="open_favourites_notebook"
+        v-bind="$attrs"
         type="button"
         class="tw-pl-2 tw-relative tw-space-x-1 tw-text-sm tw-font-medium tw-shadow-md tw-outline-none md:tw-px-5 tw-w-11 md:tw-w-auto tw-h-11 focus:tw-outline-none tw-shrink-0 tw-rounded-r-full tw-bg-white hover:tw-bg-zinc-100 focus-visible:tw-bg-zinc-100 tw-text-zinc-800"
         :class="[favoriteCount === 0 && 'tw-bg-zinc-100 tw-cursor-not-allowed']"
