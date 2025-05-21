@@ -14,7 +14,7 @@ export default defineNuxtComponent({
 </script>
 
 <template>
-  <div class="tw-px-5 tw-py-4" :class="extraClass">
+  <div :class="extraClass">
     <slot />
   </div>
 </template>
