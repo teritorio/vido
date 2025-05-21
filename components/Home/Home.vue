@@ -555,6 +555,7 @@ function handlePoiCardClose() {
             @toggle-favorite-mode="toggleFavoriteMode"
             @toggle-note-book-mode="toggleNoteBookMode"
             @zoom-click="goToSelectedFeature"
+            @select-feature="searchSelectFeature"
           />
         </MapFeatures>
       </div>
