@@ -199,5 +199,14 @@ export default defineI18nLocale(() => {
         'foot-walking': 'On foot',
       },
     },
+    menuNavbar: {
+      label: 'Main menu',
+      actions: {
+        search: {
+          open: 'Show search menu',
+          close: 'Close search menu',
+        },
+      },
+    },
   }
 })

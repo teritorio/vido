@@ -23,6 +23,7 @@ const emit = defineEmits<{
   (e: 'selectFeature', poi: ApiPoi): void
 }>()
 
+const { t } = useI18n()
 const { favoritesModeEnabled } = storeToRefs(useSiteStore())
 const { apiMenuCategory } = storeToRefs(useMenuStore())
 const { center } = storeToRefs(useMapStore())
@@ -37,7 +38,7 @@ const menuItemsToIcons = computed(() => {
 </script>
 
 <template>
-  <nav role="navigation" aria-label="Main navigation">
+  <nav role="navigation" :aria-label="t('menuNavbar.label')">
     <ul role="menubar">
       <li role="none">
         <VDialog
@@ -49,7 +50,7 @@ const menuItemsToIcons = computed(() => {
           <template #activator="{ props: activatorProps }">
             <IconButton
               role="menuitem"
-              label="Afficher le menu de recherche"
+              :label="t('menuNavbar.actions.search.open')"
               class="tw-w-11 tw-h-11 tw-pointer-events-auto"
               v-bind="activatorProps"
             >
@@ -61,10 +62,10 @@ const menuItemsToIcons = computed(() => {
             </IconButton>
           </template>
           <template #default="{ isActive }">
-            <VCard title="Menu de recherche">
+            <VCard>
               <template #prepend>
                 <VBtn
-                  text="Ferme le menu de recherche"
+                  :text="t('menuNavbar.actions.search.close')"
                   variant="text"
                   size="xsmall"
                   @click="isActive.value = false"
@@ -93,6 +94,7 @@ const menuItemsToIcons = computed(() => {
       <li role="none">
         <FavoriteMenu
           v-if="favoritesModeEnabled"
+          role="menuitem"
           @explore-click="emit('exploreClick', $event)"
           @favorite-click="emit('favoriteClick', $event)"
           @toggle-favorite-mode="emit('toggleFavoriteMode')"
@@ -100,8 +102,8 @@ const menuItemsToIcons = computed(() => {
           @zoom-click="emit('zoomClick', $event)"
         />
       </li>
-      <li>
-        <NavMenu id="nav-menu" />
+      <li role="none">
+        <NavMenu id="nav-menu" role="menuitem" />
       </li>
     </ul>
   </nav>

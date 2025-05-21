@@ -200,5 +200,14 @@ export default defineI18nLocale(() => {
         'foot-walking': 'À pied',
       },
     },
+    menuNavbar: {
+      label: 'Menu principal',
+      actions: {
+        search: {
+          open: 'Afficher le menu de recherche',
+          close: 'Fermer le menu de recherche',
+        },
+      },
+    },
   }
 })
