@@ -14,20 +14,32 @@ const { t } = useI18n()
 </script>
 
 <template>
-  <div>
-    <a
-      rel="noopener noreferrer"
-      :aria-label="siteName"
-      :href="mainUrl"
-      :title="siteName"
-      :target="target"
+  <a
+    rel="noopener noreferrer"
+    :aria-label="siteName"
+    :href="mainUrl"
+    :title="siteName"
+    :target="target"
+  >
+    <img
+      class="tw-w-auto tw-h-auto"
+      :src="logoUrl"
+      :class="[imageClass]"
+      :alt="t('headerMenu.logo')"
     >
-      <img
-        class="tw-w-auto tw-h-auto"
-        :src="logoUrl"
-        :class="[imageClass]"
-        :alt="t('headerMenu.logo')"
-      >
-    </a>
-  </div>
+  </a>
 </template>
+
+<style lang="css" scoped>
+@media (width < 768px) {
+  a {
+    position: absolute;
+    top: 1rem;
+    left: 1rem;
+    background-color: #FFF;
+    box-shadow: 0 1px 2px rgb(0 0 0 / 10%), 0 1px 3px rgb(0 0 0 / 10%);
+    border-radius: 0.75rem;
+    padding: 1rem;
+  }
+}
+</style>

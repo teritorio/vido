@@ -81,7 +81,7 @@ const closeBtnStyles = reactive({
   </div>
 </template>
 
-<style scoped>
+<style lang="css" scoped>
 .poiDescription {
   position: relative;
 }
