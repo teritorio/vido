@@ -454,7 +454,6 @@ defineExpose({ goToSelectedFeature, updateSelectedFeature })
       :map-style="selectedBackground"
       :rotate="!device.touch"
       :show-attribution="!small"
-      :off-map-attribution="device.smallScreen && !small"
       :hide-control="small"
       :style-icon-filter="styleIconFilter"
       :cooperative-gestures="cooperativeGestures"
