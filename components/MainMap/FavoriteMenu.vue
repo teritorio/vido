@@ -104,6 +104,7 @@ async function toggleNoteBookMode() {
       <VDialog
         v-model="notebookModal"
         :fullscreen="device.smallScreen"
+        transition="dialog-bottom-transition"
         max-width="80rem"
       >
         <FavoriteNoteBook

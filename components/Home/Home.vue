@@ -424,48 +424,14 @@ function handlePoiCardClose() {
 </script>
 
 <template>
-  <div
-    class="tw-fixed tw-w-full tw-h-full tw-overflow-hidden tw-flex tw-flex-col"
-  >
+  <div class="tw-fixed tw-w-full tw-h-full tw-overflow-hidden tw-flex tw-flex-col">
     <h1 class="tw-absolute tw-text-white">
       {{ siteName }}
     </h1>
-    <ClientOnly>
-      <header
-        class="tw-flex md:tw-hidden tw-relative tw-fidex tw-top-0 tw-bottom-0 tw-z-10 tw-flex-row tw-w-full tw-space-x-4"
-      >
-        <div v-if="!device.smallScreen" class="tw-w-full">
-          <aside
-            v-if="!isModeExplorerOrFavorites"
-            class="tw-flex tw-flex-col tw-max-h-full tw-px-5 tw-py-4 tw-space-y-6 tw-shadow-md tw-pointer-events-auto md:tw-rounded-xl md:tw-w-96 tw-bg-white tw-min-h-20"
-          >
-            <Search
-              :menu-to-icon="menuItemsToIcons"
-              :map-center="center"
-              @select-feature="searchSelectFeature"
-            >
-              <Logo
-                :main-url="mainUrl"
-                :site-name="siteName"
-                :logo-url="logoUrl"
-                :target="target"
-                class="tw-flex-none md:tw-hidden tw-mr-2"
-                image-class="tw-max-w-2xl tw-max-h-12 md:tw-max-h-16"
-              />
-            </Search>
-          </aside>
-          <aside
-            v-else
-            class="tw-flex tw-flex-col tw-max-h-full tw-px-5 tw-py-4 tw-space-y-6 tw-shadow-md tw-pointer-events-auto md:tw-rounded-xl md:tw-w-96 tw-bg-blue-500 md:tw-bg-white tw-text-white tw-h-20"
-          >
-            <ExplorerOrFavoritesBack @click="onQuitExplorerFavoriteMode" />
-          </aside>
-        </div>
-      </header>
-    </ClientOnly>
 
     <div v-if="initialBbox" class="tw-w-full tw-h-full">
       <header
+        v-if="!device.smallScreen"
         class="tw-pointer-events-none tw-flex tw-flex-row tw-fixed tw-z-10 tw-w-full tw-h-auto tw-p-4 tw-pr-[10px] tw-space-x-4"
         style="max-height: calc(100vh - 30px)"
       >
@@ -548,6 +514,47 @@ function handlePoiCardClose() {
           :enable-filter-route-by-features="true"
           :boundary-area="boundaryArea || settings!.polygon.data"
         >
+          <Logo
+            v-if="device.smallScreen && !isModeExplorerOrFavorites"
+            :main-url="mainUrl"
+            :site-name="siteName"
+            :logo-url="logoUrl"
+            :target="target"
+          />
+          <aside
+            v-if="device.smallScreen && isModeExplorerOrFavorites"
+            :style="{
+              color: '#FFF',
+              backgroundColor: isModeExplorerOrFavorites ? '#3B82F6' : 'transparent',
+              position: 'fixed',
+              top: 0,
+              left: 0,
+              display: 'flex',
+              width: '100%',
+              padding: '1rem',
+            }"
+          >
+            <ExplorerOrFavoritesBack v-if="isModeExplorerOrFavorites" @click="onQuitExplorerFavoriteMode" />
+          </aside>
+          <PoiCard
+            v-if="device.smallScreen
+              && selectedFeature
+              && selectedFeature.properties
+              && selectedFeature.properties.metadata
+              && isPoiCardShown
+            "
+            :poi="selectedFeature"
+            :style="{
+              position: 'absolute',
+              top: '50%',
+              bottom: 0,
+              zIndex: 15,
+            }"
+            @explore-click="toggleExploreAroundSelectedPoi(undefined)"
+            @favorite-click="toggleFavorite"
+            @zoom-click="goToSelectedFeature"
+            @on-close="handlePoiCardClose"
+          />
           <MenuNavbar
             v-if="device.smallScreen"
             @explore-click="toggleExploreAroundSelectedPoi"
@@ -567,9 +574,7 @@ function handlePoiCardClose() {
     />
 
     <ClientOnly>
-      <div
-        class="tw-hidden tw-fixed tw-inset-x-0 tw-bottom-0 md:tw-flex tw-overflow-y-auto tw-h-auto md:tw-left-8 md:tw-right-16 md:tw-bottom-5 tw-pointer-events-none"
-      >
+      <div v-if="!device.smallScreen" class="tw-hidden tw-fixed tw-inset-x-0 tw-bottom-0 md:tw-flex tw-overflow-y-auto tw-h-auto md:tw-left-8 md:tw-right-16 md:tw-bottom-5 tw-pointer-events-none">
         <div class="tw-w-full tw-max-w-md" />
         <div class="tw-grow-[1]" />
         <PoiCard
