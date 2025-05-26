@@ -107,4 +107,8 @@ onMounted(() => {
   margin-top: 1.2rem;
   margin-bottom: 0.7rem;
 }
+
+:deep(a) {
+  text-decoration: underline;
+}
 </style>
