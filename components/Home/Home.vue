@@ -429,83 +429,83 @@ function handlePoiCardClose() {
       {{ siteName }}
     </h1>
 
-    <div v-if="initialBbox" class="tw-w-full tw-h-full">
-      <header
-        v-if="!device.smallScreen"
-        class="tw-pointer-events-none tw-flex tw-flex-row tw-fixed tw-z-10 tw-w-full tw-h-auto tw-p-4 tw-pr-[10px] tw-space-x-4"
-        style="max-height: calc(100vh - 30px)"
+    <header
+      v-if="!device.smallScreen"
+      class="tw-pointer-events-none tw-flex tw-flex-row tw-fixed tw-z-10 tw-w-full tw-h-auto tw-p-4 tw-pr-[10px] tw-space-x-4"
+      style="max-height: calc(100vh - 30px)"
+    >
+      <transition-group
+        id="header-menu"
+        ref="headerMenu"
+        tag="div"
+        name="headers"
+        appear
+        mode="out-in"
+        class="tw-pointer-events-auto tw-hidden md:tw-block flex-none tw-max-w-md tw-overflow-y-auto tw-overflow-x-clip flex-shrink-0"
       >
-        <transition-group
-          id="header-menu"
-          ref="headerMenu"
-          tag="div"
-          name="headers"
-          appear
-          mode="out-in"
-          class="tw-pointer-events-auto tw-hidden md:tw-block flex-none tw-max-w-md tw-overflow-y-auto tw-overflow-x-clip flex-shrink-0"
+        <MenuBlock
+          v-if="isModeExplorerOrFavorites"
+          key="ExplorerOrFavoritesBack"
+          extra-class-text-background="tw-bg-blue-500 tw-text-white"
         >
-          <MenuBlock
-            v-if="isModeExplorerOrFavorites"
-            key="ExplorerOrFavoritesBack"
-            extra-class-text-background="tw-bg-blue-500 tw-text-white"
-          >
-            <ExplorerOrFavoritesBack @click="onQuitExplorerFavoriteMode" />
-          </MenuBlock>
+          <ExplorerOrFavoritesBack @click="onQuitExplorerFavoriteMode" />
+        </MenuBlock>
 
-          <Menu
-            v-else
-            key="Menu"
-            menu-block="MenuBlock"
-            :is-on-search="isOnSearch"
-            :is-filter-active="isFilterActive"
-            class="tw-px-1 tw-pb-1.5"
-            @activate-filter="onActivateFilter"
-            @scroll-top="scrollTop"
+        <Menu
+          v-else
+          key="Menu"
+          menu-block="MenuBlock"
+          :is-on-search="isOnSearch"
+          :is-filter-active="isFilterActive"
+          class="tw-px-1 tw-pb-1.5"
+          @activate-filter="onActivateFilter"
+          @scroll-top="scrollTop"
+        >
+          <Search
+            :menu-to-icon="menuItemsToIcons"
+            :map-center="center"
+            @focus="isOnSearch = true"
+            @blur="isOnSearch = false"
+            @select-feature="searchSelectFeature"
           >
-            <Search
-              :menu-to-icon="menuItemsToIcons"
-              :map-center="center"
-              @focus="isOnSearch = true"
-              @blur="isOnSearch = false"
-              @select-feature="searchSelectFeature"
-            >
-              <Logo
-                :main-url="mainUrl"
-                :site-name="siteName"
-                :logo-url="logoUrl"
-                :target="target"
-                class="tw-flex-none tw-mr-2"
-                image-class="tw-max-w-2xl tw-max-h-12 md:tw-max-h-16"
-              />
-            </Search>
-          </Menu>
-        </transition-group>
-        <SelectedCategories
-          v-if="!isModeExplorer && selectedCategoryIds.length && !isModeFavorites"
-          class="tw-hidden md:tw-block flex-shrink-1"
+            <Logo
+              :main-url="mainUrl"
+              :site-name="siteName"
+              :logo-url="logoUrl"
+              :target="target"
+              class="tw-flex-none tw-mr-2"
+              image-class="tw-max-w-2xl tw-max-h-12 md:tw-max-h-16"
+            />
+          </Search>
+        </Menu>
+      </transition-group>
+      <SelectedCategories
+        v-if="!isModeExplorer && selectedCategoryIds.length && !isModeFavorites"
+        class="tw-hidden md:tw-block flex-shrink-1"
+      />
+      <IsochroneStatus v-if="isochroneCurrentFeature" />
+      <div class="tw-grow" style="margin-left: 0" />
+      <div class="tw-flex-none tw-flex">
+        <FavoriteMenu
+          v-if="favoritesModeEnabled"
+          @explore-click="toggleExploreAroundSelectedPoi"
+          @favorite-click="toggleFavorite"
+          @toggle-favorite-mode="toggleFavoriteMode"
+          @toggle-note-book-mode="toggleNoteBookMode"
+          @zoom-click="goToSelectedFeature"
         />
-        <IsochroneStatus v-if="isochroneCurrentFeature" />
-        <div class="tw-grow" style="margin-left: 0" />
-        <div v-if="!device.smallScreen" class="tw-flex-none tw-flex">
-          <FavoriteMenu
-            v-if="favoritesModeEnabled"
-            @explore-click="toggleExploreAroundSelectedPoi"
-            @favorite-click="toggleFavorite"
-            @toggle-favorite-mode="toggleFavoriteMode"
-            @toggle-note-book-mode="toggleNoteBookMode"
-            @zoom-click="goToSelectedFeature"
-          />
-          <NavMenu id="nav-menu" class="tw-ml-3 sm:tw-ml-4" />
-        </div>
-      </header>
+        <NavMenu class="tw-ml-3 sm:tw-ml-4" />
+      </div>
+    </header>
 
+    <div v-if="initialBbox" class="tw-w-full tw-h-full">
       <div class="tw-relative tw-flex tw-flex-col tw-w-full tw-h-full md:tw-h-full">
         <MapFeatures
           ref="mapFeaturesRef"
           :default-bounds="initialBbox"
           :fit-bounds-padding-options="fitBoundsPaddingOptions"
           :extra-attributions="settings!.attributions"
-          :small="false"
+          :small="device.smallScreen && isPoiCardShown"
           :categories="apiMenuCategory || []"
           :features="mapFeatures"
           :selected-categories-ids="selectedCategoryIds"
@@ -536,27 +536,8 @@ function handlePoiCardClose() {
           >
             <ExplorerOrFavoritesBack v-if="isModeExplorerOrFavorites" @click="onQuitExplorerFavoriteMode" />
           </aside>
-          <PoiCard
-            v-if="device.smallScreen
-              && selectedFeature
-              && selectedFeature.properties
-              && selectedFeature.properties.metadata
-              && isPoiCardShown
-            "
-            :poi="selectedFeature"
-            :style="{
-              position: 'absolute',
-              top: '50%',
-              bottom: 0,
-              zIndex: 15,
-            }"
-            @explore-click="toggleExploreAroundSelectedPoi(undefined)"
-            @favorite-click="toggleFavorite"
-            @zoom-click="goToSelectedFeature"
-            @on-close="handlePoiCardClose"
-          />
           <MenuNavbar
-            v-if="device.smallScreen"
+            v-if="device.smallScreen && !isPoiCardShown"
             @explore-click="toggleExploreAroundSelectedPoi"
             @favorite-click="toggleFavorite"
             @toggle-favorite-mode="toggleFavoriteMode"
@@ -567,6 +548,26 @@ function handlePoiCardClose() {
         </MapFeatures>
       </div>
     </div>
+
+    <ClientOnly>
+      <PoiCard
+        v-if="device.smallScreen
+          && selectedFeature
+          && selectedFeature.properties
+          && selectedFeature.properties.metadata
+          && isPoiCardShown
+        "
+        :poi="selectedFeature"
+        :style="{
+          height: '50vh',
+          flexShrink: 0,
+        }"
+        @explore-click="toggleExploreAroundSelectedPoi(undefined)"
+        @favorite-click="toggleFavorite"
+        @zoom-click="goToSelectedFeature"
+        @on-close="handlePoiCardClose"
+      />
+    </ClientOnly>
 
     <FavoritesOverlay
       v-if="showFavoritesOverlay"

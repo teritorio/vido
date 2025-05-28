@@ -103,7 +103,7 @@ const menuItemsToIcons = computed(() => {
         />
       </li>
       <li role="none">
-        <NavMenu id="nav-menu" role="menuitem" />
+        <NavMenu role="menuitem" />
       </li>
     </ul>
   </nav>
