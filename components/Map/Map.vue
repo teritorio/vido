@@ -425,11 +425,18 @@ export default defineNuxtComponent({
 }
 
 #map .maplibregl-ctrl-attrib {
-  font-size: 0.75rem;
+  font-size: 0.70rem;
   line-height: 1rem;
+  margin-left: 6rem;
 }
 
 .control-geolocate {
   @apply md:tw-hidden;
+}
+
+@media (width >= 768px) {
+  #map .maplibregl-ctrl-attrib {
+    font-size: 0.8rem;
+  }
 }
 </style>
