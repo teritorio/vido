@@ -429,74 +429,76 @@ function handlePoiCardClose() {
       {{ siteName }}
     </h1>
 
-    <header
-      v-if="!device.smallScreen"
-      class="tw-pointer-events-none tw-flex tw-flex-row tw-fixed tw-z-10 tw-w-full tw-h-auto tw-p-4 tw-pr-[10px] tw-space-x-4"
-      style="max-height: calc(100vh - 30px)"
-    >
-      <transition-group
-        id="header-menu"
-        ref="headerMenu"
-        tag="div"
-        name="headers"
-        appear
-        mode="out-in"
-        class="tw-pointer-events-auto tw-hidden md:tw-block flex-none tw-max-w-md tw-overflow-y-auto tw-overflow-x-clip flex-shrink-0"
+    <ClientOnly>
+      <header
+        v-if="!device.smallScreen"
+        class="tw-pointer-events-none tw-flex tw-flex-row tw-fixed tw-z-10 tw-w-full tw-h-auto tw-p-4 tw-pr-[10px] tw-space-x-4"
+        style="max-height: calc(100vh - 30px)"
       >
-        <MenuBlock
-          v-if="isModeExplorerOrFavorites"
-          key="ExplorerOrFavoritesBack"
-          extra-class-text-background="tw-bg-blue-500 tw-text-white"
+        <transition-group
+          id="header-menu"
+          ref="headerMenu"
+          tag="div"
+          name="headers"
+          appear
+          mode="out-in"
+          class="tw-pointer-events-auto tw-hidden md:tw-block flex-none tw-max-w-md tw-overflow-y-auto tw-overflow-x-clip flex-shrink-0"
         >
-          <ExplorerOrFavoritesBack @click="onQuitExplorerFavoriteMode" />
-        </MenuBlock>
-
-        <Menu
-          v-else
-          key="Menu"
-          menu-block="MenuBlock"
-          :is-on-search="isOnSearch"
-          :is-filter-active="isFilterActive"
-          class="tw-px-1 tw-pb-1.5"
-          @activate-filter="onActivateFilter"
-          @scroll-top="scrollTop"
-        >
-          <Search
-            :menu-to-icon="menuItemsToIcons"
-            :map-center="center"
-            @focus="isOnSearch = true"
-            @blur="isOnSearch = false"
-            @select-feature="searchSelectFeature"
+          <MenuBlock
+            v-if="isModeExplorerOrFavorites"
+            key="ExplorerOrFavoritesBack"
+            extra-class-text-background="tw-bg-blue-500 tw-text-white"
           >
-            <Logo
-              :main-url="mainUrl"
-              :site-name="siteName"
-              :logo-url="logoUrl"
-              :target="target"
-              class="tw-flex-none tw-mr-2"
-              image-class="tw-max-w-2xl tw-max-h-12 md:tw-max-h-16"
-            />
-          </Search>
-        </Menu>
-      </transition-group>
-      <SelectedCategories
-        v-if="!isModeExplorer && selectedCategoryIds.length && !isModeFavorites"
-        class="tw-hidden md:tw-block flex-shrink-1"
-      />
-      <IsochroneStatus v-if="isochroneCurrentFeature" />
-      <div class="tw-grow" style="margin-left: 0" />
-      <div class="tw-flex-none tw-flex">
-        <FavoriteMenu
-          v-if="favoritesModeEnabled"
-          @explore-click="toggleExploreAroundSelectedPoi"
-          @favorite-click="toggleFavorite"
-          @toggle-favorite-mode="toggleFavoriteMode"
-          @toggle-note-book-mode="toggleNoteBookMode"
-          @zoom-click="goToSelectedFeature"
+            <ExplorerOrFavoritesBack @click="onQuitExplorerFavoriteMode" />
+          </MenuBlock>
+
+          <Menu
+            v-else
+            key="Menu"
+            menu-block="MenuBlock"
+            :is-on-search="isOnSearch"
+            :is-filter-active="isFilterActive"
+            class="tw-px-1 tw-pb-1.5"
+            @activate-filter="onActivateFilter"
+            @scroll-top="scrollTop"
+          >
+            <Search
+              :menu-to-icon="menuItemsToIcons"
+              :map-center="center"
+              @focus="isOnSearch = true"
+              @blur="isOnSearch = false"
+              @select-feature="searchSelectFeature"
+            >
+              <Logo
+                :main-url="mainUrl"
+                :site-name="siteName"
+                :logo-url="logoUrl"
+                :target="target"
+                class="tw-flex-none tw-mr-2"
+                image-class="tw-max-w-2xl tw-max-h-12 md:tw-max-h-16"
+              />
+            </Search>
+          </Menu>
+        </transition-group>
+        <SelectedCategories
+          v-if="!isModeExplorer && selectedCategoryIds.length && !isModeFavorites"
+          class="tw-hidden md:tw-block flex-shrink-1"
         />
-        <NavMenu data-testid="nav-menu" class="tw-ml-3 sm:tw-ml-4" />
-      </div>
-    </header>
+        <IsochroneStatus v-if="isochroneCurrentFeature" />
+        <div class="tw-grow" style="margin-left: 0" />
+        <div class="tw-flex-none tw-flex">
+          <FavoriteMenu
+            v-if="favoritesModeEnabled"
+            @explore-click="toggleExploreAroundSelectedPoi"
+            @favorite-click="toggleFavorite"
+            @toggle-favorite-mode="toggleFavoriteMode"
+            @toggle-note-book-mode="toggleNoteBookMode"
+            @zoom-click="goToSelectedFeature"
+          />
+          <NavMenu data-testid="nav-menu" class="tw-ml-3 sm:tw-ml-4" />
+        </div>
+      </header>
+    </ClientOnly>
 
     <div v-if="initialBbox" class="tw-w-full tw-h-full">
       <div class="tw-relative tw-flex tw-flex-col tw-w-full tw-h-full md:tw-h-full">
