@@ -48,7 +48,7 @@ function getLinkTo(url: string) {
 </script>
 
 <template>
-  <section v-if="entries.length + locales.length > 0" class="tw-relative tw-z-40">
+  <section v-if="entries.length + locales.length > 0" class="nav-menu tw-relative tw-z-40">
     <VMenu offset-y>
       <template #activator="{ props }">
         <IconButton
