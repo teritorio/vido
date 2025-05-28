@@ -494,7 +494,7 @@ function handlePoiCardClose() {
           @toggle-note-book-mode="toggleNoteBookMode"
           @zoom-click="goToSelectedFeature"
         />
-        <NavMenu class="tw-ml-3 sm:tw-ml-4" />
+        <NavMenu data-testid="nav-menu" class="tw-ml-3 sm:tw-ml-4" />
       </div>
     </header>
 
