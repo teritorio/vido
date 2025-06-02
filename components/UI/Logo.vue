@@ -15,6 +15,7 @@ const { t } = useI18n()
 
 <template>
   <a
+    class="logo"
     rel="noopener noreferrer"
     :aria-label="siteName"
     :href="mainUrl"
@@ -29,17 +30,3 @@ const { t } = useI18n()
     >
   </a>
 </template>
-
-<style lang="css" scoped>
-@media (width < 768px) {
-  a {
-    position: absolute;
-    top: 1rem;
-    left: 1rem;
-    background-color: #FFF;
-    box-shadow: 0 1px 2px rgb(0 0 0 / 10%), 0 1px 3px rgb(0 0 0 / 10%);
-    border-radius: 0.75rem;
-    padding: 1rem;
-  }
-}
-</style>

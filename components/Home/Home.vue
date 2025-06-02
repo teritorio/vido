@@ -606,7 +606,7 @@ function handlePoiCardClose() {
   </div>
 </template>
 
-<style scoped>
+<style lang="css" scoped>
 .headers-enter-active,
 .headers-leave-active {
   transition: opacity 0.1s, transform 0.1s;
@@ -630,5 +630,17 @@ function handlePoiCardClose() {
 
 .right-3 {
   right: 37.5%;
+}
+
+@media (width < 768px) {
+  .logo {
+    position: absolute;
+    top: 1rem;
+    left: 1rem;
+    background-color: #FFF;
+    box-shadow: 0 1px 2px rgb(0 0 0 / 10%), 0 1px 3px rgb(0 0 0 / 10%);
+    border-radius: 0.75rem;
+    padding: 1rem;
+  }
 }
 </style>
