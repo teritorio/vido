@@ -223,10 +223,9 @@ async function updateSelectedFeature(feature?: ApiPoi): Promise<void> {
     return
   }
 
-  mapStore.setSelectedFeature()
-  mapStore.setSelectedFeatureDepsIDs()
-
   if (!feature) {
+    mapStore.setSelectedFeature()
+    mapStore.setSelectedFeatureDepsIDs()
     menuStore.fetchFeatures({
       vidoConfig: config.value!,
       categoryIds: props.selectedCategoriesIds,
@@ -255,6 +254,7 @@ async function updateSelectedFeature(feature?: ApiPoi): Promise<void> {
           let poi: ApiPoi | undefined
           const deps = [] as ApiPoi[]
           let waypointIndex = 1
+          mapStore.setSelectedFeatureDepsIDs()
 
           data.value.features.forEach((f) => {
             const depID = 'metadata' in f.properties ? f.properties.metadata.id : f.properties.id
