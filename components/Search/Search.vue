@@ -1,15 +1,11 @@
-<script lang="ts">
-import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
+<script setup lang="ts">
 import copy from 'fast-copy'
-import type { DebouncedFunc } from 'lodash'
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { debounce } from 'lodash'
-import { mapActions, mapState, storeToRefs } from 'pinia'
-import type { PropType } from 'vue'
-import { defineNuxtComponent } from '#app'
-import SearchInput from '~/components/Search/SearchInput.vue'
-import SearchResultBlock from '~/components/Search/SearchResultBlock.vue'
+import { storeToRefs } from 'pinia'
+import type { DebouncedFunc } from 'lodash'
 import type { ApiPoi } from '~/lib/apiPois'
-import { getPoiById } from '~/lib/apiPois'
+import type { FilterValue } from '~/utils/types-filters'
 import type {
   ApiAddrSearchResult,
   ApiMenuItemSearchResult,
@@ -17,339 +13,302 @@ import type {
   ApiSearchResult,
   SearchResult,
 } from '~/lib/apiSearch'
-import { menuStore } from '~/stores/menu'
-import type { FilterValue } from '~/utils/types-filters'
+import SearchInput from '~/components/Search/SearchInput.vue'
+import SearchResultBlock from '~/components/Search/SearchResultBlock.vue'
+import { getPoiById } from '~/lib/apiPois'
+import { menuStore as useMenuStore } from '~/stores/menu'
 import { useSiteStore } from '~/stores/site'
 
-export default defineNuxtComponent({
-  components: {
-    FontAwesomeIcon,
-    SearchInput,
-    SearchResultBlock,
-  },
+const props = withDefaults(defineProps<{
+  menuToIcon: { [id: string]: string }
+  mapCenter: { lng: number, lat: number }
+}>(), {
+  mapCenter: () => ({ lng: 0, lat: 0 }),
+})
 
-  props: {
-    menuToIcon: {
-      type: Object as PropType<{ [id: string]: string }>,
-      required: true,
-    },
-    mapCenter: {
-      type: Object as PropType<{ lng: number, lat: number }>,
-      default: () => ({ lng: 0, lat: 0 }),
-    },
-  },
+const emit = defineEmits<{
+  (e: 'blur', event: FocusEvent): void
+  (e: 'focus', event: string | Event): void
+  (e: 'selectFeature', feature: ApiPoi): void
+}>()
 
-  setup() {
-    const { config } = storeToRefs(useSiteStore())
+const { config } = storeToRefs(useSiteStore())
+const menuStore = useMenuStore()
+const { filters } = storeToRefs(menuStore)
+const { $tracking } = useNuxtApp()
+const { t } = useI18n()
 
-    return {
-      config,
+const focus = ref(false)
+const searchQueryId = ref(0)
+const searchResultId = ref(0)
+const searchText = ref('')
+const searchMenuItemsResults = ref<ApiSearchResult<ApiMenuItemSearchResult> | null>(null)
+const searchPoisResults = ref<ApiSearchResult<ApiPoisSearchResult> | null>(null)
+const searchAddressesResults = ref<ApiSearchResult<ApiAddrSearchResult> | null>(null)
+const searchCartocodeResult = ref<ApiPoi | null>(null)
+const search = ref<DebouncedFunc<() => void> | null>(null)
+const trackSearchQuery = ref<DebouncedFunc<(query: string) => void> | null>(null)
+
+onMounted(() => {
+  search.value = debounce(search_, 300)
+  trackSearchQuery.value = debounce(trackSearchQuery_, 3000)
+})
+
+onUnmounted(() => {
+  search.value?.cancel()
+  trackSearchQuery.value?.cancel()
+})
+
+const isLoading = computed(() => {
+  return searchResultId.value !== searchQueryId.value
+})
+
+const itemsCartocode = computed(() => {
+  const v = searchCartocodeResult.value
+  if (v && v.properties.metadata?.id) {
+    const { featureName } = useFeature(toRef(v), { type: 'popup' })
+
+    if (featureName.value) {
+      return [{
+        id: v.properties.metadata?.id,
+        label: featureName.value,
+      }]
     }
-  },
+  }
 
-  data(): {
-    focus: boolean
-    searchQueryId: number
-    searchResultId: number
-    searchText: string
-    searchMenuItemsResults: null | ApiSearchResult<ApiMenuItemSearchResult>
-    searchPoisResults: null | ApiSearchResult<ApiPoisSearchResult>
-    searchAddressesResults: null | ApiSearchResult<ApiAddrSearchResult>
-    searchCartocodeResult: null | ApiPoi
-    search: null | DebouncedFunc<() => void>
-    trackSearchQuery: null | DebouncedFunc<(query: string) => void>
-  } {
-    return {
-      focus: false,
-      searchQueryId: 0,
-      searchResultId: 0,
-      searchText: '',
-      searchMenuItemsResults: null,
-      searchPoisResults: null,
-      searchAddressesResults: null,
-      searchCartocodeResult: null,
-      search: null,
-      trackSearchQuery: null,
-    }
-  },
+  return []
+})
 
-  computed: {
-    ...mapState(menuStore, ['filters']),
+const itemsMenuItems = computed(() => {
+  return (
+    searchMenuItemsResults.value?.features?.map(v => ({
+      id: v.properties.id,
+      label: v.properties.label,
+      icon: props.menuToIcon[v.properties.id],
+      filter_property: v.properties.filter_property,
+      filter_value: v.properties.filter_value,
+    })) || []
+  )
+})
 
-    isLoading(): boolean {
-      return this.searchResultId !== this.searchQueryId
-    },
+const itemsPois = computed(() => {
+  return (
+    searchPoisResults.value?.features?.map(v => ({
+      id: v.properties.id,
+      label: v.properties.label,
+      icon: v.properties.icon,
+      small: v.properties.city,
+    })) || []
+  )
+})
 
-    itemsCartocode(): SearchResult[] {
-      const v = this.searchCartocodeResult
-      if (v && v.properties.metadata?.id) {
-        const { featureName } = useFeature(toRef(v), { type: 'popup' })
+const itemsAddresses = computed(() => {
+  return (
+    searchAddressesResults.value?.features?.map(v => ({
+      id: v.properties.id,
+      label: v.properties.label,
+      icon: v.properties.type === 'municipality' ? 'city' : 'map-marker-alt',
+    })) || []
+  )
+})
 
-        if (featureName.value) {
-          return [{
-            id: v.properties.metadata?.id,
-            label: featureName.value,
-          }]
-        }
-      }
+const results = computed(() => {
+  return (
+    itemsCartocode.value.length
+    + itemsMenuItems.value.length
+    + itemsPois.value.length
+    + itemsAddresses.value.length
+  )
+})
 
-      return []
-    },
+function reset() {
+  searchMenuItemsResults.value = null
+  searchPoisResults.value = null
+  searchAddressesResults.value = null
+  searchCartocodeResult.value = null
+  searchText.value = ''
+  focus.value = false
+}
 
-    itemsMenuItems(): SearchResult[] {
-      return (
-        this.searchMenuItemsResults?.features?.map(v => ({
-          id: v.properties.id,
-          label: v.properties.label,
-          icon: this.menuToIcon[v.properties.id],
-          filter_property: v.properties.filter_property,
-          filter_value: v.properties.filter_value,
-        })) || []
-      )
-    },
+function delayedFocusLose(event: FocusEvent) {
+  // Let time to catch click on results before hiden
+  setTimeout(() => {
+    emit('blur', event)
+    focus.value = false
+  }, 200)
+}
 
-    itemsPois(): SearchResult[] {
-      return (
-        this.searchPoisResults?.features?.map(v => ({
-          id: v.properties.id,
-          label: v.properties.label,
-          icon: v.properties.icon,
-          small: v.properties.city,
-        })) || []
-      )
-    },
+function onSearchFocus(event: string | Event) {
+  emit('focus', event)
+  focus.value = true
+}
 
-    itemsAddresses(): SearchResult[] {
-      return (
-        this.searchAddressesResults?.features?.map(v => ({
-          id: v.properties.id,
-          label: v.properties.label,
-          icon:
-            v.properties.type === 'municipality' ? 'city' : 'map-marker-alt',
-        })) || []
-      )
-    },
+function onCartocodeClick(searchResult: SearchResult) {
+  const cartocodeId = searchCartocodeResult.value?.properties.metadata?.id
+  if (cartocodeId === searchResult.id)
+    onPoiClick(searchResult)
+}
 
-    results(): number {
-      return (
-        this.itemsCartocode.length
-        + this.itemsMenuItems.length
-        + this.itemsPois.length
-        + this.itemsAddresses.length
-      )
-    },
-  },
+function onCategoryClick(category: SearchResult) {
+  if (searchMenuItemsResults.value) {
+    const filter = searchMenuItemsResults.value.features.find(
+      a =>
+        a.properties.filter_property === category.filter_property
+        && a.properties.filter_value === category.filter_value
+        && a.properties.id === category.id,
+    )
 
-  created() {
-    this.search = debounce(this.search_, 300)
-    this.trackSearchQuery = debounce(this.trackSearchQuery_, 3000)
-  },
-
-  emits: {
-    blur: (_event: FocusEvent) => true,
-    focus: (_event: string | Event) => true,
-    selectFeature: (_feature: ApiPoi) => true,
-  },
-
-  methods: {
-    ...mapActions(menuStore, ['addSelectedCategoryIds', 'applyFilters']),
-
-    reset() {
-      this.searchMenuItemsResults = null
-      this.searchPoisResults = null
-      this.searchAddressesResults = null
-      this.searchCartocodeResult = null
-      this.searchText = ''
-      this.focus = false
-    },
-
-    delayedFocusLose(event: FocusEvent) {
-      // Let time to catch click on results before hiden
-      setTimeout(() => {
-        this.$emit('blur', event)
-        this.focus = false
-      }, 200)
-    },
-
-    onSearchFocus(event: string | Event) {
-      this.$emit('focus', event)
-      this.focus = true
-    },
-
-    onCartocodeClick(searchResult: SearchResult) {
-      const cartocodeId = this.searchCartocodeResult?.properties.metadata?.id
-      if (cartocodeId === searchResult.id)
-        this.onPoiClick(searchResult)
-    },
-
-    onCategoryClick(category: SearchResult) {
-      if (this.searchMenuItemsResults) {
-        const filter = this.searchMenuItemsResults.features.find(
-          a =>
-            a.properties.filter_property === category.filter_property
-            && a.properties.filter_value === category.filter_value
-            && a.properties.id === category.id,
+    if (filter?.properties) {
+      const newFilter = filter.properties
+      if (newFilter.filter_property) {
+        const newFilters = copy(filters.value[newFilter.id])
+        const filter = newFilters.find(
+          (filter: FilterValue) =>
+            (filter.type === 'boolean'
+            || filter.type === 'multiselection'
+            || filter.type === 'checkboxes_list')
+            && filter.def.property === newFilter.filter_property,
         )
+        if (filter) {
+          switch (filter?.type) {
+            case 'boolean':
+              if (newFilter.filter_value === true)
+                filter.filterValue = newFilter.filter_value
 
-        if (filter?.properties) {
-          const newFilter = filter.properties
-          if (newFilter.filter_property) {
-            const filters = copy(this.filters[newFilter.id])
-            const filter = filters.find(
-              (filter: FilterValue) =>
-                (filter.type === 'boolean'
-                || filter.type === 'multiselection'
-                || filter.type === 'checkboxes_list')
-                && filter.def.property === newFilter.filter_property,
-            )
-            if (filter) {
-              switch (filter?.type) {
-                case 'boolean':
-                  if (newFilter.filter_value === true)
-                    filter.filterValue = newFilter.filter_value
-
-                  break
-                case 'multiselection':
-                case 'checkboxes_list':
-                  filter.filterValues = [newFilter.filter_value as string]
-                  break
-              }
-
-              this.applyFilters({
-                categoryId: newFilter.id,
-                filterValues: filters,
-              })
-            }
+              break
+            case 'multiselection':
+            case 'checkboxes_list':
+              filter.filterValues = [newFilter.filter_value as string]
+              break
           }
 
-          this.addSelectedCategoryIds([newFilter.id])
-
-          this.reset()
+          menuStore.applyFilters({
+            categoryId: newFilter.id,
+            filterValues: newFilters,
+          })
         }
       }
-    },
 
-    onPoiClick(searchResult: SearchResult) {
-      getPoiById(this.config!, searchResult.id).then(
-        (poi) => {
-          this.$emit('selectFeature', poi)
-        },
-      )
+      menuStore.addSelectedCategoryIds([newFilter.id])
 
-      this.reset()
-    },
+      reset()
+    }
+  }
+}
 
-    onAddressClick(searchResult: SearchResult) {
-      const feature = (this.searchAddressesResults?.features || []).find(
-        a => a.properties.id === searchResult.id,
-      )
-      if (feature) {
-        const f = formatApiAddressToFeature(feature, true)
-        this.$emit('selectFeature', f)
-      }
-      this.reset()
-    },
+function onPoiClick(searchResult: SearchResult) {
+  getPoiById(config.value!, searchResult.id).then(
+    poi => emit('selectFeature', poi),
+  )
 
-    onSubmit(searchText: string) {
-      this.searchText = searchText
+  reset()
+}
 
-      // Reset results if empty search text
-      if (!this.searchText || this.searchText.trim().length === 0) {
-        this.searchMenuItemsResults = null
-        this.searchPoisResults = null
-        this.searchAddressesResults = null
-        this.searchCartocodeResult = null
-      }
+function onAddressClick(searchResult: SearchResult) {
+  const feature = (searchAddressesResults.value?.features || []).find(
+    a => a.properties.id === searchResult.id,
+  )
+  if (feature) {
+    const f = formatApiAddressToFeature(feature, true)
+    emit('selectFeature', f)
+  }
+  reset()
+}
 
-      // Launch search if not already loading + search text length >= 3
-      if (this.search)
-        this.search()
-    },
+function onSubmit(query: string) {
+  searchText.value = query
 
-    search_() {
-      if (this.searchText) {
-        if (this.trackSearchQuery) {
-          this.trackSearchQuery.cancel()
-          this.trackSearchQuery(this.searchText)
-        }
+  // Reset results if empty search text
+  if (!searchText.value || searchText.value.trim().length === 0) {
+    searchMenuItemsResults.value = null
+    searchPoisResults.value = null
+    searchAddressesResults.value = null
+    searchCartocodeResult.value = null
+  }
 
-        this.searchQueryId += 1
-        const currentSearchQueryId = this.searchQueryId
-        const projectTheme = `project_theme=${this.config!.API_PROJECT}-${this.config!.API_THEME}`
-        const searchText = this.searchText.trim()
-        if (searchText.length === 2) {
-          const cartocode = this.searchText
-          getPoiById(this.config!, `cartocode:${cartocode}`)
-            .then((poi) => {
-              if (currentSearchQueryId > this.searchResultId) {
-                this.searchResultId = currentSearchQueryId
+  // Launch search if not already loading + search text length >= 3
+  if (search.value)
+    search_()
+}
 
-                this.searchMenuItemsResults = null
-                this.searchPoisResults = null
-                this.searchAddressesResults = null
-                this.searchCartocodeResult = poi
-              }
-            })
-            .catch(() => {
-              // Deals with 404 and error from API
-              if (currentSearchQueryId > this.searchResultId) {
-                this.searchResultId = currentSearchQueryId
+function search_() {
+  if (searchText.value) {
+    if (trackSearchQuery.value) {
+      trackSearchQuery.value.cancel()
+      trackSearchQuery_(searchText.value)
+    }
 
-                this.searchMenuItemsResults = null
-                this.searchPoisResults = null
-                this.searchAddressesResults = null
-                this.searchCartocodeResult = null
-              }
-            })
-        }
-        else if (searchText.length > 2) {
-          const query = `q=${this.searchText}&lon=${this.mapCenter.lng}&lat=${this.mapCenter.lat}`
-          const MenuItemsFetch: Promise<ApiSearchResult<ApiMenuItemSearchResult>> = fetch(`${this.config!.API_SEARCH}?${projectTheme}&type=menu_item&${query}`)
-            .then(data => (data.ok ? data.json() : null))
+    searchQueryId.value += 1
+    const currentSearchQueryId = searchQueryId.value
+    const projectTheme = `project_theme=${config.value!.API_PROJECT}-${config.value!.API_THEME}`
+    const searchValue = searchText.value.trim()
+    if (searchValue.length === 2) {
+      const cartocode = searchText.value
+      getPoiById(config.value!, `cartocode:${cartocode}`)
+        .then((poi) => {
+          if (currentSearchQueryId > searchResultId.value) {
+            searchResultId.value = currentSearchQueryId
+            searchMenuItemsResults.value = null
+            searchPoisResults.value = null
+            searchAddressesResults.value = null
+            searchCartocodeResult.value = poi
+          }
+        })
+        .catch(() => {
+          // Deals with 404 and error from API
+          if (currentSearchQueryId > searchResultId.value) {
+            searchResultId.value = currentSearchQueryId
+            searchMenuItemsResults.value = null
+            searchPoisResults.value = null
+            searchAddressesResults.value = null
+            searchCartocodeResult.value = null
+          }
+        })
+    }
+    else if (searchValue.length > 2) {
+      const query = `q=${searchText.value}&lon=${props.mapCenter.lng}&lat=${props.mapCenter.lat}`
+      const MenuItemsFetch: Promise<ApiSearchResult<ApiMenuItemSearchResult>> = fetch(`${config.value!.API_SEARCH}?${projectTheme}&type=menu_item&${query}`)
+        .then(data => (data.ok ? data.json() : null))
 
-          const poisFetch: Promise<ApiSearchResult<ApiPoisSearchResult>> = fetch(`${this.config!.API_SEARCH}?${projectTheme}&type=poi&${query}&limit=10`)
-            .then(data => (data.ok ? data.json() : null))
+      const poisFetch: Promise<ApiSearchResult<ApiPoisSearchResult>> = fetch(`${config.value!.API_SEARCH}?${projectTheme}&type=poi&${query}&limit=10`)
+        .then(data => (data.ok ? data.json() : null))
 
-          const addressesFetch: Promise<ApiSearchResult<ApiAddrSearchResult>> = fetch(`${this.config!.API_ADDR}/search?${query}`)
-            .then(data => data.ok ? data.json() : null)
+      const addressesFetch: Promise<ApiSearchResult<ApiAddrSearchResult>> = fetch(`${config.value!.API_ADDR}/search?${query}`)
+        .then(data => data.ok ? data.json() : null)
 
-          Promise.all([MenuItemsFetch, poisFetch, addressesFetch])
-            .then(
-              ([
-                searchMenuItemsResults,
-                searchPoisResults,
-                searchAddressesResults,
-              ]) => {
-                if (currentSearchQueryId > this.searchResultId) {
-                  this.searchResultId = currentSearchQueryId
+      Promise.all([MenuItemsFetch, poisFetch, addressesFetch])
+        .then(
+          ([
+            menuItems,
+            pois,
+            addresses,
+          ]) => {
+            if (currentSearchQueryId > searchResultId.value) {
+              searchResultId.value = currentSearchQueryId
+              searchMenuItemsResults.value = menuItems
+              searchPoisResults.value = pois
+              searchAddressesResults.value = addresses
+              searchCartocodeResult.value = null
+            }
+          },
+        )
+        .catch(() => {
+          // Deals with error from API
+          if (currentSearchQueryId > searchResultId.value) {
+            searchResultId.value = currentSearchQueryId
+            searchMenuItemsResults.value = null
+            searchPoisResults.value = null
+            searchAddressesResults.value = null
+            searchCartocodeResult.value = null
+          }
+        })
+    }
+  }
+}
 
-                  this.searchMenuItemsResults = searchMenuItemsResults
-                  this.searchPoisResults = searchPoisResults
-                  this.searchAddressesResults = searchAddressesResults
-                  this.searchCartocodeResult = null
-                }
-              },
-            )
-            .catch(() => {
-              // Deals with error from API
-              if (currentSearchQueryId > this.searchResultId) {
-                this.searchResultId = currentSearchQueryId
-
-                this.searchMenuItemsResults = null
-                this.searchPoisResults = null
-                this.searchAddressesResults = null
-                this.searchCartocodeResult = null
-              }
-            })
-        }
-      }
-    },
-
-    trackSearchQuery_(searchText: string) {
-      this.$tracking({ type: 'search_query', query: searchText })
-    },
-  },
-})
+function trackSearchQuery_(searchText: string) {
+  $tracking({ type: 'search_query', query: searchText })
+}
 </script>
 
 <template>
@@ -380,7 +339,7 @@ export default defineNuxtComponent({
       <SearchResultBlock
         v-if="itemsCartocode.length > 0"
         type="cartocode"
-        :label="$t('headerMenu.cartocode')"
+        :label="t('headerMenu.cartocode')"
         icon="layer-group"
         :items="itemsCartocode"
         @item-click="onCartocodeClick"
@@ -389,7 +348,7 @@ export default defineNuxtComponent({
       <SearchResultBlock
         v-if="itemsMenuItems.length > 0"
         type="category"
-        :label="$t('headerMenu.categories')"
+        :label="t('headerMenu.categories')"
         icon="layer-group"
         :items="itemsMenuItems"
         @item-click="onCategoryClick"
@@ -398,7 +357,7 @@ export default defineNuxtComponent({
       <SearchResultBlock
         v-if="itemsPois.length > 0"
         type="pois"
-        :label="$t('headerMenu.pois')"
+        :label="t('headerMenu.pois')"
         icon="map-marker-alt"
         :items="itemsPois"
         @item-click="onPoiClick"
@@ -407,20 +366,20 @@ export default defineNuxtComponent({
       <SearchResultBlock
         v-if="itemsAddresses.length > 0"
         type="addresse"
-        :label="$t('headerMenu.addresses')"
+        :label="t('headerMenu.addresses')"
         icon="home"
         :items="itemsAddresses"
         @item-click="onAddressClick"
       />
 
       <p v-if="results === 0">
-        {{ $t('headerMenu.noResult') }}
+        {{ t('headerMenu.noResult') }}
       </p>
     </div>
   </div>
 </template>
 
-<style scoped>
+<style lang="css" scoped>
 .search-results {
   height: auto;
   overflow-y: auto;
