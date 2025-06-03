@@ -1,44 +1,26 @@
-<script lang="ts">
+<script setup lang="ts">
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
-import type { PropType } from 'vue'
-import { ref } from 'vue'
 
-import { defineNuxtComponent } from '#app'
-
-export default defineNuxtComponent({
-  components: {
-    FontAwesomeIcon,
-  },
-
-  props: {
-    searchText: {
-      type: String as PropType<string>,
-      default: '',
-    },
-    isLoading: {
-      type: Boolean,
-      default: false,
-    },
-  },
-  setup() {
-    return {
-      search: ref<InstanceType<typeof HTMLInputElement>>(),
-    }
-  },
-
-  emits: {
-    input: (_value: string) => true,
-    focus: (_event: string | Event) => true,
-    blur: (_event: FocusEvent) => true,
-  },
-
-  methods: {
-    onFocus(event: string | Event) {
-      this.$emit('focus', event)
-      this.$tracking({ type: 'search' })
-    },
-  },
+withDefaults(defineProps<{
+  searchText: string
+  isLoading: boolean
+}>(), {
+  searchText: '',
+  isLoading: false,
 })
+
+const emit = defineEmits<{
+  (e: 'input', value: string): void
+  (e: 'focus', event: string | Event): void
+  (e: 'blur', event: FocusEvent): void
+}>()
+const { $tracking } = useNuxtApp()
+const searchRef = ref<InstanceType<typeof HTMLInputElement>>()
+
+function onFocus(event: string | Event) {
+  emit('focus', event)
+  $tracking({ type: 'search' })
+}
 </script>
 
 <template>
@@ -50,7 +32,8 @@ export default defineNuxtComponent({
       <label>
         <span class="tw-sr-only">{{ $t('headerMenu.searchHint') }}</span>
         <input
-          ref="search"
+          ref="searchRef"
+          name="search"
           :value="searchText"
           class="tw-w-full tw-px-5 tw-py-3 tw-font-medium tw-text-zinc-700 tw-placeholder-zinc-500 tw-bg-zinc-100 tw-border-none tw-rounded-full tw-outline-none tw-appearance-none focus:tw-outline-none focus:tw-ring focus:tw-ring-zinc-300 tw-truncate tw-pr-10"
           :placeholder="$t('headerMenu.searchHint')"
