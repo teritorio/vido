@@ -206,6 +206,7 @@ export default defineI18nLocale(() => {
           open: 'Mostrar menú de búsqueda',
           close: 'Cerrar menú de búsqueda',
         },
+        goToMap: 'Mostrar en el mapa',
       },
     },
   }

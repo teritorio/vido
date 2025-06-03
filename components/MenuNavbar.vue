@@ -25,7 +25,7 @@ const emit = defineEmits<{
 
 const { t } = useI18n()
 const { favoritesModeEnabled } = storeToRefs(useSiteStore())
-const { apiMenuCategory } = storeToRefs(useMenuStore())
+const { apiMenuCategory, selectedCategoryIds } = storeToRefs(useMenuStore())
 const { center } = storeToRefs(useMapStore())
 
 const menuItemsToIcons = computed(() => {
@@ -86,6 +86,13 @@ const menuItemsToIcons = computed(() => {
               </template>
               <template #text>
                 <HomeMenu menu-block="MenuBlockBottom" />
+                <VBtn
+                  v-if="selectedCategoryIds.length"
+                  id="show-results"
+                  variant="tonal"
+                  :text="t('menuNavbar.actins.goToMap')"
+                  @click="isActive.value = false"
+                />
               </template>
             </VCard>
           </template>
@@ -121,5 +128,24 @@ nav {
 ul {
   display: flex;
   gap: 1rem;
+}
+
+:deep(.v-card-text > div) {
+  overflow-y: auto;
+}
+
+:deep(.v-card-text > div::-webkit-scrollbar ) {
+  width: 4px;
+}
+
+:deep(.v-card-text > div::-webkit-scrollbar-thumb) {
+  background: rgb(0 0 0 / 20%);
+  border-radius: 2px;
+}
+
+:deep(.v-card-text) {
+  display: grid;
+  grid-template-rows: 1fr auto;
+  height: calc(100vh - 80px);
 }
 </style>
