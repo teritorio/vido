@@ -209,5 +209,8 @@ export default defineI18nLocale(() => {
         goToMap: 'See on map',
       },
     },
+    selectedCategories: {
+      label: 'Selected categories',
+    },
   }
 })

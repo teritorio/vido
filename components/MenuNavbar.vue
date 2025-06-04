@@ -1,17 +1,17 @@
 <script setup lang="ts">
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { storeToRefs } from 'pinia'
-import { VDialog } from 'vuetify/components/VDialog'
-import IconButton from '~/components/UI/IconButton.vue'
+import type { MenuItem } from '~/lib/apiMenu'
+import type { ApiPoi } from '~/lib/apiPois'
 import { useSiteStore } from '~/stores/site'
 import { menuStore as useMenuStore } from '~/stores/menu'
 import { mapStore as useMapStore } from '~/stores/map'
+import IconButton from '~/components/UI/IconButton.vue'
 import NavMenu from '~/components/MainMap/NavMenu.vue'
 import FavoriteMenu from '~/components/MainMap/FavoriteMenu.vue'
-import type { ApiPoi } from '~/lib/apiPois'
 import Search from '~/components/Search/Search.vue'
-import type { MenuItem } from '~/lib/apiMenu'
 import HomeMenu from '~/components/Home/Menu.vue'
+import SelectedCategories from '~/components/Home/SelectedCategories.vue'
 
 const emit = defineEmits<{
   (e: 'exploreClick', poi: ApiPoi): void
@@ -25,7 +25,7 @@ const emit = defineEmits<{
 
 const { t } = useI18n()
 const { favoritesModeEnabled } = storeToRefs(useSiteStore())
-const { apiMenuCategory, selectedCategoryIds } = storeToRefs(useMenuStore())
+const { apiMenuCategory, selectedCategories } = storeToRefs(useMenuStore())
 const { center } = storeToRefs(useMapStore())
 
 const menuItemsToIcons = computed(() => {
@@ -85,9 +85,10 @@ const menuItemsToIcons = computed(() => {
                 />
               </template>
               <template #text>
-                <HomeMenu menu-block="MenuBlockBottom" />
+                <SelectedCategories v-if="selectedCategories?.length" :categories="selectedCategories" />
+                <HomeMenu class="home-menu" menu-block="MenuBlockBottom" />
                 <VBtn
-                  v-if="selectedCategoryIds.length"
+                  v-if="selectedCategories?.length"
                   id="show-results"
                   variant="tonal"
                   :text="t('menuNavbar.actions.goToMap')"
@@ -130,7 +131,7 @@ ul {
   gap: 1rem;
 }
 
-:deep(.v-card-text > div) {
+:deep(.v-card-text > .home-menu) {
   overflow-y: auto;
 }
 
@@ -145,7 +146,8 @@ ul {
 
 :deep(.v-card-text) {
   display: grid;
-  grid-template-rows: 1fr auto;
+  grid-template-rows: auto 1fr auto;
   height: calc(100vh - 80px);
+  gap: 0.5rem;
 }
 </style>
