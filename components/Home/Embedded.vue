@@ -31,7 +31,7 @@ const props = defineProps<{
 const mapStore = useMapStore()
 const { isModeExplorer, mode, selectedFeature } = storeToRefs(mapStore)
 const menuStore = useMenuStore()
-const { apiMenuCategory, features, selectedCategoryIds, menuItems } = storeToRefs(menuStore)
+const { apiMenuCategory, features, selectedCategories, selectedCategoryIds, menuItems } = storeToRefs(menuStore)
 const { config, settings } = useSiteStore()
 const route = useRoute()
 const router = useRouter()
@@ -211,7 +211,7 @@ function toggleExploreAroundSelectedPoi() {
           @category-change="onMenuChange"
         />
         <div class="tw-p-4 tw-pt-24 tw-absolute tw-flex tw-gap-4">
-          <SelectedCategories v-if="!isFiltersEqualToCategoryId && showEmbeddedUi" />
+          <SelectedCategories v-if="!isFiltersEqualToCategoryId && selectedCategories?.length && showEmbeddedUi" :categories="selectedCategories" />
           <IsochroneStatus v-if="isochroneCurrentFeature" />
         </div>
       </div>
