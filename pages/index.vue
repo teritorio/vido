@@ -23,7 +23,7 @@ const { API_ENDPOINT, API_PROJECT, API_THEME } = config.value
 const { $trackingInit } = useNuxtApp()
 
 const boundaryGeojson = ref<Polygon | MultiPolygon>()
-const poiId = ref<number>()
+const poiId = ref<string>()
 const categoryIds = ref<number[]>([])
 
 const { boundary } = route.query
@@ -59,12 +59,12 @@ if (route.params.p1) {
 
 // Get POI ID from URL
 if (categoryIds.value.length === 1 && route.name === 'index-p1' && !route.path.endsWith('/')) {
-  poiId.value = Number(route.params.p1?.toString())
+  poiId.value = route.params.p1?.toString()
   categoryIds.value = []
 }
 
 if (route.params.poiId) {
-  poiId.value = Number(route.params.poiId.toString())
+  poiId.value = route.params.poiId.toString()
 }
 
 const menuStore = useMenuStore()
@@ -98,7 +98,7 @@ const { data, error, status } = await useAsyncData('features', async () => {
   })
 
   let initialFeature: ApiPoiDeps | undefined
-  if (poiId.value && !poiId.value.toString().includes('_')) {
+  if (poiId.value && !poiId.value.includes('_')) {
     initialFeature = await $fetch<ApiPoiDeps>(`${API_ENDPOINT}/${API_PROJECT}/${API_THEME}/poi/${poiId.value}/deps.geojson`, {
       query: {
         geometry_as: 'point',
@@ -117,6 +117,12 @@ if (status.value === 'success' && data.value) {
   let poi: ApiPoi | undefined
   const deps = [] as ApiPoi[]
   let waypointIndex = 1
+  const isRefPoiId = Number.isNaN(Number(poiId.value))
+
+  if (isRefPoiId && poiId.value) {
+    const refSplit = poiId.value.split(':')
+    poiId.value = refSplit[refSplit.length - 1]
+  }
 
   data.value.features.forEach((f) => {
     const depID = 'metadata' in f.properties ? f.properties.metadata.id : f.properties.id
@@ -130,7 +136,10 @@ if (status.value === 'success' && data.value) {
       },
     }
 
-    if (poiId.value === depID) {
+    if (
+      (!isRefPoiId && (Number(poiId.value) === depID))
+      || (isRefPoiId && Object.values(f.properties).find(v => v === poiId.value))
+    ) {
       poi = f as ApiPoi
     }
 
