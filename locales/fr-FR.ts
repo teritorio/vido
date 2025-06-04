@@ -210,5 +210,8 @@ export default defineI18nLocale(() => {
         goToMap: 'Voir sur la carte',
       },
     },
+    selectedCategories: {
+      label: 'Catégories sélectionnées',
+    },
   }
 })
