@@ -45,7 +45,7 @@ const props = defineProps<{
 const mapStore = useMapStore()
 const { center, isModeFavorites, isModeExplorer, isModeExplorerOrFavorites, mode, selectedFeature, teritorioCluster } = storeToRefs(mapStore)
 const menuStore = useMenuStore()
-const { apiMenuCategory, features, selectedCategoryIds } = storeToRefs(menuStore)
+const { apiMenuCategory, features, selectedCategoryIds, selectedCategories } = storeToRefs(menuStore)
 const favoriteStore = useFavoriteStore()
 const { favoritesIds, favoriteAddresses, favoriteFeatures, favoriteCount } = storeToRefs(favoriteStore)
 const siteStore = useSiteStore()
@@ -481,8 +481,8 @@ function handlePoiCardClose() {
           </Menu>
         </transition-group>
         <SelectedCategories
-          v-if="!isModeExplorer && selectedCategoryIds.length && !isModeFavorites"
-          class="tw-hidden md:tw-block flex-shrink-1"
+          v-if="!isModeExplorer && selectedCategories?.length && !isModeFavorites"
+          :categories="selectedCategories"
         />
         <IsochroneStatus v-if="isochroneCurrentFeature" />
         <div class="tw-grow" style="margin-left: 0" />
