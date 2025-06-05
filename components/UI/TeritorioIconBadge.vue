@@ -16,6 +16,7 @@ export default defineNuxtComponent({
     },
     colorText: {
       type: String as PropType<string>,
+      default: '#FFF',
     },
     picto: {
       type: String as PropType<string>,
