@@ -5,24 +5,25 @@ import type { ApiPoi, ApiPoiId } from '~/lib/apiPois'
 
 const LOCAL_STORAGE = { favorites: 'vido:favorites', favoritesAddr: 'vido:favorites-addr' }
 
-type FavoriteAddress = Map<string, string>
-
 interface State {
   favoritesIds: ApiPoiId[]
-  favoriteAddresses: FavoriteAddress
+  favoriteAddressesObj: Record<string, string> // Replaces Map
   favoriteFeatures: ApiPoi[]
 }
 
 export const favoriteStore = defineStore('favorite', {
   state: (): State => ({
     favoritesIds: [],
-    favoriteAddresses: new Map(),
+    favoriteAddressesObj: {},
     favoriteFeatures: [],
   }),
 
   getters: {
-    favoriteCount: (state: State) => {
-      return state.favoritesIds.length + state.favoriteAddresses.size
+    favoriteAddresses(state: State): Map<string, string> {
+      return new Map(Object.entries(state.favoriteAddressesObj))
+    },
+    favoriteCount(state: State): number {
+      return state.favoritesIds.length + Object.keys(state.favoriteAddressesObj).length
     },
   },
 
@@ -38,9 +39,9 @@ export const favoriteStore = defineStore('favorite', {
       }
 
       if (addressFavorites) {
-        const favorites: FavoriteAddress = new Map(JSON.parse(addressFavorites).favorites)
-        this.favoriteAddresses = favorites
-        this.saveToLocalStorage(LOCAL_STORAGE.favoritesAddr, Array.from(favorites.entries()))
+        const entries: [string, string][] = JSON.parse(addressFavorites).favorites
+        this.favoriteAddressesObj = Object.fromEntries(entries)
+        this.saveToLocalStorage(LOCAL_STORAGE.favoritesAddr, entries)
       }
     },
 
@@ -56,12 +57,13 @@ export const favoriteStore = defineStore('favorite', {
       const coords = (poi.geometry as GeoJSON.Point).coordinates
       const hash = encodeBase32(coords[1], coords[0])
 
-      if (!this.favoriteAddresses.has(id))
-        this.favoriteAddresses.set(id, hash)
+      if (!this.favoriteAddressesObj[id])
+        this.favoriteAddressesObj[id] = hash
       else
-        this.favoriteAddresses.delete(id)
+        delete this.favoriteAddressesObj[id]
 
-      this.saveToLocalStorage(LOCAL_STORAGE.favoritesAddr, Array.from(this.favoriteAddresses.entries()))
+      const entries = Object.entries(this.favoriteAddressesObj)
+      this.saveToLocalStorage(LOCAL_STORAGE.favoritesAddr, entries)
     },
 
     toggleFavorite(poi: ApiPoi | number) {
@@ -69,7 +71,7 @@ export const favoriteStore = defineStore('favorite', {
       const favIndex = id ? this.favoritesIds.findIndex(favId => favId === id) : false
 
       if (favIndex === false)
-        throw createError({ statusCode: 404, statusMessage: 'Favorite has not ID.' })
+        throw createError({ statusCode: 404, statusMessage: 'Favorite has no ID.' })
 
       if (favIndex === -1)
         this.favoritesIds.push(id)
@@ -81,7 +83,7 @@ export const favoriteStore = defineStore('favorite', {
 
     reset() {
       this.favoritesIds = []
-      this.favoriteAddresses = new Map()
+      this.favoriteAddressesObj = {}
       this.saveToLocalStorage(LOCAL_STORAGE.favorites)
       this.saveToLocalStorage(LOCAL_STORAGE.favoritesAddr)
     },
