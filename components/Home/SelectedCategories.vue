@@ -1,14 +1,15 @@
 <script setup lang="ts">
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
-import { storeToRefs } from 'pinia'
 import type { ApiMenuCategory } from '~/lib/apiMenu'
 import TeritorioIconBadge from '~/components/UI/TeritorioIconBadge.vue'
 import { menuStore as useMenuStore } from '~/stores/menu'
 import { getContrastedColors } from '~/composables/useFeature'
 
+defineProps<{
+  categories: ApiMenuCategory[]
+}>()
 const { t } = useI18n()
 const menuStore = useMenuStore()
-const { selectedCategories } = storeToRefs(menuStore)
 
 function getItem(item: ApiMenuCategory) {
   return item.menu_group || item.link || item.category || {}
@@ -29,46 +30,105 @@ function getTeritorioIconBadgeProps(item: ApiMenuCategory) {
 </script>
 
 <template>
-  <div
-    v-if="selectedCategories && selectedCategories.length > 0"
-    class="tw-relative"
-  >
-    <div class="tw-flex tw-flex-row tw-pointer-events-auto">
-      <div
-        class="tw-flex tw-flex-row tw-p-2 tw-flex-wrap tw-bg-white tw-shadow-md tw-rounded-xl"
-        style="min-width: 64px"
-      >
-        <div
-          v-for="menuItem in selectedCategories"
-          :id="`selected-category-${menuItem.id}`"
-          :key="menuItem.id"
-          :title="getItem(menuItem).name.fr"
-          class="tw-m-1 tw-relative"
+  <div class="selected-categories">
+    <h3>{{ t('selectedCategories.label') }}</h3>
+    <div class="selected-categories-wrapper">
+      <div>
+        <VBtn
+          v-for="category in categories"
+          :key="category.id"
+          :data-testid="`selected-category-${category.id}`"
+          :aria-label="`${t('headerMenu.disableCategory')}: ${getItem(category).name.fr}`"
+          :title="`${t('headerMenu.disableCategory')}: ${getItem(category).name.fr}`"
+          icon
+          width="40px"
+          height="40px"
+          @click="menuStore.delSelectedCategoryIds([category.id])"
         >
-          <TeritorioIconBadge v-bind="getTeritorioIconBadgeProps(menuItem)" />
-          <button
-            type="button"
-            class="tw-flex tw-items-center tw-justify-center tw-text-white tw-text-center tw-rounded-full tw-absolute -tw-top-1 -tw-right-1 tw-w-5 tw-h-5 tw-border-solid tw-border-2 tw-border-white tw-bg-red-600 hover:tw-bg-red-800"
-            :title="t('headerMenu.hideCategory')"
-            @click="menuStore.delSelectedCategoryIds([menuItem.id])"
-          >
-            <span class="tw-sr-only">{{
-              t('headerMenu.disableCategory')
-            }}</span>
-            <FontAwesomeIcon icon="times" class="tw-text-white" size="sm" />
-          </button>
-        </div>
+          <TeritorioIconBadge v-bind="getTeritorioIconBadgeProps(category)" />
+          <span class="disable-category v-btn__content">
+            <FontAwesomeIcon icon="times" size="sm" />
+          </span>
+        </VBtn>
       </div>
     </div>
-    <button
-      v-if="selectedCategories.length > 1"
-      type="button"
-      class="tw-absolute -tw-top-3 -tw-right-3 tw-pointer-events-auto tw-flex tw-items-center tw-justify-center tw-text-white tw-text-center tw-rounded-full tw-w-7 tw-h-7 tw-border-solid tw-border-2 tw-border-white tw-bg-red-600 hover:tw-bg-red-800"
+    <VBtn
+      v-if="categories.length > 1"
       :title="t('headerMenu.clearAllCategories')"
       :aria-label="t('headerMenu.clearAllCategories')"
+      class="disable-all-categories"
+      icon
+      color="#dc2626"
+      width="28px"
+      height="28px"
       @click="menuStore.clearSelectedCategoryIds"
     >
-      <FontAwesomeIcon icon="times" class="tw-text-white" />
-    </button>
+      <FontAwesomeIcon icon="times" />
+    </VBtn>
   </div>
 </template>
+
+<style lang="css" scoped>
+.selected-categories,
+.selected-categories-wrapper > div {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.selected-categories {
+  min-width: 0;
+  position: relative;
+  flex-direction: column;
+  padding: 0.5rem;
+  border-radius: 0.25rem;
+  background-color: #f4f4f5;
+}
+
+.selected-categories-wrapper {
+  overflow-x: auto;
+  padding: 0.5rem;
+}
+
+.disable-category,
+.disable-all-categories {
+  position: absolute;
+  top: 0;
+  right: 0;
+  border: 2px solid #FFF;
+}
+
+.disable-all-categories {
+  transform: translate(50%, -50%);
+}
+
+.disable-category {
+  transform: translate(25%, -25%);
+  background-color: #dc2626;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  color: #fff;
+}
+
+h3 {
+  font-weight: bold;
+}
+
+:deep(.v-btn__content button) {
+  position: absolute;
+}
+
+@media (width >= 768px) {
+  .selected-categories {
+    flex-shrink: 0;
+    align-self: flex-start;
+    pointer-events: all;
+    background-color: #fff;
+    border-radius: 0.75rem;
+  }
+
+  h3 {
+    display: none;
+  }
+}
+</style>
