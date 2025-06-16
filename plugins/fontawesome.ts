@@ -8,7 +8,9 @@ import {
 } from '@fortawesome/free-brands-svg-icons'
 import {
   faCircle,
+  faCircleXmark,
   faCompass,
+  faCheckCircle as farCheckCircle,
   faStar as farStar,
 } from '@fortawesome/free-regular-svg-icons'
 import {
@@ -75,10 +77,12 @@ library.add(
   faBiking,
   faCar,
   faCheckCircle,
+  farCheckCircle,
   faChevronDown,
   faChevronUp,
   faChevronRight,
   faCircle,
+  faCircleXmark,
   faClock,
   fasCircle,
   faHiking,
