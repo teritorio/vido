@@ -6,7 +6,7 @@ services:
       context: .
       args:
         NODE_VERSION: 20-alpine3.18
-    image: ghcr.io/teritorio/vido-vido:develop
+    image: ghcr.io/teritorio/vido:develop
     restart: unless-stopped
     ports:
       - '3000:3000'
