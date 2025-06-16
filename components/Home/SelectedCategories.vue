@@ -86,7 +86,7 @@ function getTeritorioIconBadgeProps(item: ApiMenuCategory) {
 
 .selected-categories-wrapper {
   overflow-x: auto;
-  padding: 0.5rem;
+  padding: 0.5rem 0;
 }
 
 .disable-category,
@@ -125,6 +125,14 @@ h3 {
     pointer-events: all;
     background-color: #fff;
     border-radius: 0.75rem;
+  }
+
+  .selected-categories-wrapper > div {
+    flex-wrap: wrap;
+  }
+
+  .selected-categories-wrapper {
+    overflow-x: visible;
   }
 
   h3 {
