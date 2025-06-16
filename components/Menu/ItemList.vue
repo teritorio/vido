@@ -6,7 +6,7 @@ import { defineNuxtComponent } from '#app'
 import Category from '~/components/Menu/Category.vue'
 import MenuGroup from '~/components/Menu/Group.vue'
 import LinkItem from '~/components/Menu/Link.vue'
-import type { ApiMenuCategory, ApiMenuItem, MenuItem } from '~/lib/apiMenu'
+import type { ApiMenuCategory, ApiMenuItem, MenuGroup as MenuGroupType, MenuItem } from '~/lib/apiMenu'
 import type { FilterValues } from '~/utils/types-filters'
 
 export default defineNuxtComponent({
@@ -43,14 +43,14 @@ export default defineNuxtComponent({
   },
 
   emits: {
-    menuGroupClick: (_menuItemId: ApiMenuItem['id']) => true,
+    menuGroupClick: (_menuItem: MenuGroupType) => true,
     categoryClick: (_menuItemId: ApiMenuItem['id']) => true,
     filterClick: (_categoryId: ApiMenuCategory['id']) => true,
   },
 
   methods: {
-    onMenuGroupClick(menuItem: MenuItem) {
-      this.$emit('menuGroupClick', menuItem.id)
+    onMenuGroupClick(menuItem: MenuGroupType) {
+      this.$emit('menuGroupClick', menuItem)
     },
     onCategoryClick(menuItem: MenuItem) {
       this.$emit('categoryClick', menuItem.id)

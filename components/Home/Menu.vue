@@ -2,12 +2,14 @@
 import type { FontAwesomeIconProps } from '@fortawesome/vue-fontawesome'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { storeToRefs } from 'pinia'
+import BreadcrumbsWrapper from '~/components/BreadcrumbsWrapper.vue'
 import FilterCompo from '~/components/Menu/Filter.vue'
 import ItemList from '~/components/Menu/ItemList.vue'
 import type { ApiMenuCategory, MenuGroup, MenuItem } from '~/lib/apiMenu'
 import { menuStore as useMenuStore } from '~/stores/menu'
 import MenuBlock from '~/components/Home/MenuBlock.vue'
 import MenuBlockBottom from '~/components/Home/MenuBlockBottom.vue'
+import { useNavigationStore } from '~/stores/navigation'
 
 const props = withDefaults(defineProps<{
   menuBlock: keyof typeof componentMap
@@ -28,24 +30,17 @@ const componentMap = {
   MenuBlockBottom,
 } as const
 
+const device = useDevice()
 const slots = useSlots()
 const menuStore = useMenuStore()
+const navigationStore = useNavigationStore()
+const { currentParent, isRootMenu, categoryIdFilter } = storeToRefs(navigationStore)
 const { filters, selectedCategoryIds, menuItems } = storeToRefs(menuStore)
-const navigationParentIdStack = ref<MenuItem['id'][]>([])
-const categoryIdFilter = ref<ApiMenuCategory['id'] | null>(null)
 
 const dynamicComponent = computed(() => componentMap[props.menuBlock])
 
-const currentParentId = computed((): MenuItem['id'] | undefined => {
-  return navigationParentIdStack.value.at(-1)
-})
-
 const currentMenuItems = computed((): MenuItem[] => {
-  return getMenuItemByParentId(currentParentId.value)
-})
-
-const isRootMenu = computed((): boolean => {
-  return navigationParentIdStack.value.length === 0
+  return getMenuItemByParentId(currentParent.value?.id)
 })
 
 const size = computed((): FontAwesomeIconProps['size'] => {
@@ -53,7 +48,7 @@ const size = computed((): FontAwesomeIconProps['size'] => {
 })
 
 const isAllSelected = computed((): boolean => {
-  return getRecursiveCategoryIdByParentId(currentParentId.value).every(
+  return getRecursiveCategoryIdByParentId(currentParent.value?.id).every(
     categoryId => selectedCategoryIds.value.includes(categoryId),
   )
 })
@@ -100,31 +95,21 @@ function getRecursiveCategoryIdByParentId(menuGroupId: MenuGroup['id'] | undefin
 }
 
 function onClickSelectAll(): void {
+  if (!currentParent.value)
+    return
+
   menuStore.addSelectedCategoryIds(
-    getRecursiveCategoryIdByParentId(currentParentId.value),
+    getRecursiveCategoryIdByParentId(currentParent.value.id),
   )
 }
 
 function onClickUnselectAll(): void {
+  if (!currentParent.value)
+    return
+
   menuStore.delSelectedCategoryIds(
-    getRecursiveCategoryIdByParentId(currentParentId.value),
+    getRecursiveCategoryIdByParentId(currentParent.value.id),
   )
-}
-
-function onGoBackClick() {
-  navigationParentIdStack.value.pop()
-}
-
-function onMenuGroupClick(menuGroupId: MenuGroup['id']) {
-  navigationParentIdStack.value.push(menuGroupId)
-}
-
-function onCategoryFilterClick(categoryId: ApiMenuCategory['id']) {
-  categoryIdFilter.value = categoryId
-}
-
-function onBackToCategoryClick() {
-  categoryIdFilter.value = null
 }
 </script>
 
@@ -138,7 +123,7 @@ function onBackToCategoryClick() {
       <button
         type="button"
         class="tw-flex tw-items-center tw-justify-center tw-w-10 tw-h-10 tw-text-2xl tw-font-bold tw-transition-all tw-rounded-full tw-outline-none tw-cursor-pointer focus:tw-outline-none hover:tw-bg-zinc-100 focus:tw-bg-zinc-100"
-        @click="onBackToCategoryClick"
+        @click="navigationStore.setCategoryFilter(null)"
       >
         <FontAwesomeIcon icon="arrow-left" class="tw-text-zinc-800" size="xs" />
       </button>
@@ -149,7 +134,7 @@ function onBackToCategoryClick() {
       :category-id="categoryIdFilter"
       :filters-values="categoryIdFilter ? filters[categoryIdFilter] : []"
       @activate-filter="$emit('activateFilter', $event)"
-      @go-back-click="onBackToCategoryClick"
+      @go-back-click="navigationStore.setCategoryFilter(null)"
     />
   </component>
 
@@ -171,9 +156,9 @@ function onBackToCategoryClick() {
           :size="size"
           display-mode-default="compact"
           class="tw-flex-1 tw-pointer-events-auto tw-h-full"
-          @menu-group-click="onMenuGroupClick"
+          @menu-group-click="navigationStore.navigateTo($event)"
           @category-click="menuStore.toggleSelectedCategoryId($event)"
-          @filter-click="onCategoryFilterClick"
+          @filter-click="navigationStore.setCategoryFilter($event)"
         />
       </component>
     </template>
@@ -181,11 +166,20 @@ function onBackToCategoryClick() {
 
   <div v-else>
     <component :is="dynamicComponent">
-      <div class="tw-w-full tw-flex tw-justify-between tw-pb-4">
+      <div class="tw-w-full tw-flex tw-justify-between">
+        <BreadcrumbsWrapper
+          v-if="device.smallScreen"
+          :style="{
+            flex: '1 1 auto',
+            minWidth: 0,
+          }"
+        />
         <button
+          v-else
           type="button"
           class="tw-flex tw-items-center tw-justify-center tw-w-10 tw-h-10 tw-text-2xl tw-font-bold tw-transition-all tw-rounded-full tw-outline-none tw-cursor-pointer focus:tw-outline-none hover:tw-bg-zinc-100"
-          @click="onGoBackClick"
+          :style="{ flex: '0 0 auto' }"
+          @click="navigationStore.goBack"
         >
           <span class="sr-only">{{ $t('headerMenu.back') }}</span>
           <FontAwesomeIcon
@@ -199,20 +193,42 @@ function onBackToCategoryClick() {
           v-if="!isAllSelected"
           type="button"
           class="tw-px-3 tw-py-2 tw-font-medium tw-transition-all tw-rounded-md tw-outline-none focus:tw-outline-none hover:tw-bg-zinc-100 focus:tw-bg-zinc-100"
+          :title="$t('headerMenu.selectAll')"
           @click="onClickSelectAll"
         >
-          {{ $t('headerMenu.selectAll') }}
+          <FontAwesomeIcon
+            v-if="device.smallScreen"
+            :icon="['far', 'check-circle']"
+            size="xl"
+          />
+          <span v-else>
+            {{ $t('headerMenu.selectAll') }}
+          </span>
         </button>
 
         <button
           v-if="isAllSelected"
           type="button"
           class="tw-px-3 tw-py-2 tw-font-medium tw-transition-all tw-rounded-md tw-outline-none focus:tw-outline-none hover:tw-bg-zinc-100 focus:tw-bg-zinc-100"
+          :title="$t('headerMenu.unselectAll')"
           @click="onClickUnselectAll"
         >
-          {{ $t('headerMenu.unselectAll') }}
+          <FontAwesomeIcon
+            v-if="device.smallScreen"
+            :icon="['far', 'circle-xmark']"
+            size="xl"
+          />
+          <span v-else>
+            {{ $t('headerMenu.unselectAll') }}
+          </span>
         </button>
       </div>
+
+      <VDivider
+        class="border-opacity-100"
+        role="presentation"
+        aria-orientation="horizontal"
+      />
 
       <ItemList
         :menu-items="currentMenuItems"
@@ -222,9 +238,9 @@ function onBackToCategoryClick() {
         :size="size"
         display-mode-default="large"
         class="tw-flex-1 tw-pointer-events-auto tw-h-full"
-        @menu-group-click="onMenuGroupClick"
+        @menu-group-click="navigationStore.navigateTo($event)"
         @category-click="menuStore.toggleSelectedCategoryId($event)"
-        @filter-click="onCategoryFilterClick"
+        @filter-click="navigationStore.setCategoryFilter"
       />
     </component>
   </div>

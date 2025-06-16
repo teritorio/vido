@@ -33,4 +33,10 @@ export default defineNuxtComponent({
 aside {
   min-width: 432px;
 }
+
+aside > div {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
 </style>

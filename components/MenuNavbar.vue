@@ -12,6 +12,7 @@ import FavoriteMenu from '~/components/MainMap/FavoriteMenu.vue'
 import Search from '~/components/Search/Search.vue'
 import HomeMenu from '~/components/Home/Menu.vue'
 import SelectedCategories from '~/components/Home/SelectedCategories.vue'
+import { useNavigationStore } from '~/stores/navigation'
 
 const emit = defineEmits<{
   (e: 'exploreClick', poi: ApiPoi): void
@@ -24,6 +25,7 @@ const emit = defineEmits<{
 }>()
 
 const { t } = useI18n()
+const navigationStore = useNavigationStore()
 const { favoritesModeEnabled } = storeToRefs(useSiteStore())
 const { apiMenuCategory, selectedCategories } = storeToRefs(useMenuStore())
 const { center } = storeToRefs(useMapStore())
@@ -68,7 +70,10 @@ const menuItemsToIcons = computed(() => {
                   :text="t('menuNavbar.actions.search.close')"
                   variant="text"
                   size="xsmall"
-                  @click="isActive.value = false"
+                  @click="
+                    isActive.value = false;
+                    navigationStore.resetNavigation();
+                  "
                 >
                   <FontAwesomeIcon
                     icon="arrow-left"
@@ -92,7 +97,10 @@ const menuItemsToIcons = computed(() => {
                   id="show-results"
                   variant="tonal"
                   :text="t('menuNavbar.actions.goToMap')"
-                  @click="isActive.value = false"
+                  @click="
+                    isActive.value = false;
+                    navigationStore.resetNavigation();
+                  "
                 />
               </template>
             </VCard>
