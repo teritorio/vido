@@ -133,7 +133,7 @@ export default defineNuxtComponent({
       :key="filter.def.property"
     >
       <div v-if="filter.type === 'boolean'">
-        <label class="tw-block tw-mb-1 tw-text-zinc-800">
+        <label class="tw-block tw-mb-1 tw-text-zinc-800 tw-cursor-pointer">
           <input
             type="checkbox"
             class="tw-text-emerald-500 tw-rounded-full focus:tw-ring-0 focus:tw-ring-transparent"
@@ -147,7 +147,7 @@ export default defineNuxtComponent({
       <div v-else-if="filter.type === 'multiselection'">
         <label
           :for="filter.def.property"
-          class="tw-block tw-mb-2 tw-text-zinc-500"
+          class="tw-block tw-mb-2 tw-text-zinc-500 tw-cursor-pointer"
         >
           {{ (filter.def.name && filter.def.name.fr) || filter.def.property }}
         </label>
@@ -165,7 +165,7 @@ export default defineNuxtComponent({
         <label
           v-for="value in filter.def.values"
           :key="value.value"
-          class="tw-block tw-mb-1 tw-text-zinc-800"
+          class="tw-block tw-mb-1 tw-text-zinc-800 tw-cursor-pointer"
         >
           <input
             type="checkbox"
@@ -192,7 +192,7 @@ export default defineNuxtComponent({
         />
       </div>
       <div v-else-if="filter.type === 'number_range'">
-        <label class="tw-block tw-mb-1 tw-text-zinc-800">
+        <label class="tw-block tw-mb-1 tw-text-zinc-800 tw-cursor-pointer">
           {{ (filter.def.name && filter.def.name.fr) || filter.def.property }}
           <NumberRange
             :filter="filter"
