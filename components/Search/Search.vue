@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import copy from 'fast-copy'
-import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { debounce } from 'lodash'
 import { storeToRefs } from 'pinia'
 import type { DebouncedFunc } from 'lodash'
@@ -13,8 +12,8 @@ import type {
   ApiSearchResult,
   SearchResult,
 } from '~/lib/apiSearch'
+import SearchResults from '~/components/Search/SearchResults.vue'
 import SearchInput from '~/components/Search/SearchInput.vue'
-import SearchResultBlock from '~/components/Search/SearchResultBlock.vue'
 import { getPoiById } from '~/lib/apiPois'
 import { menuStore as useMenuStore } from '~/stores/menu'
 import { useSiteStore } from '~/stores/site'
@@ -36,7 +35,6 @@ const { config } = storeToRefs(useSiteStore())
 const menuStore = useMenuStore()
 const { filters } = storeToRefs(menuStore)
 const { $tracking } = useNuxtApp()
-const { t } = useI18n()
 
 const focus = ref(false)
 const searchQueryId = ref(0)
@@ -109,15 +107,6 @@ const itemsAddresses = computed(() => {
       label: v.properties.label,
       icon: v.properties.type === 'municipality' ? 'city' : 'map-marker-alt',
     })) || []
-  )
-})
-
-const results = computed(() => {
-  return (
-    itemsCartocode.value.length
-    + itemsMenuItems.value.length
-    + itemsPois.value.length
-    + itemsAddresses.value.length
   )
 })
 
@@ -326,56 +315,18 @@ function trackSearchQuery_(searchText: string) {
       />
     </div>
 
-    <button
-      v-if="focus && results > 0"
-      type="button"
-      class="tw-shrink-0 tw-w-10 tw-h-10 tw-text-2xl tw-font-bold tw-transition-all tw-rounded-full tw-outline-none tw-cursor-pointer focus:tw-outline-none hover:tw-bg-zinc-10"
-      @click="reset"
-    >
-      <FontAwesomeIcon icon="arrow-left" class="tw-text-zinc-800" size="xs" />
-    </button>
-
-    <div v-if="focus && results > 0" class="search-results">
-      <SearchResultBlock
-        v-if="itemsCartocode.length > 0"
-        type="cartocode"
-        :label="t('headerMenu.cartocode')"
-        icon="layer-group"
-        :items="itemsCartocode"
-        @item-click="onCartocodeClick"
-      />
-
-      <SearchResultBlock
-        v-if="itemsMenuItems.length > 0"
-        type="category"
-        :label="t('headerMenu.categories')"
-        icon="layer-group"
-        :items="itemsMenuItems"
-        @item-click="onCategoryClick"
-      />
-
-      <SearchResultBlock
-        v-if="itemsPois.length > 0"
-        type="pois"
-        :label="t('headerMenu.pois')"
-        icon="map-marker-alt"
-        :items="itemsPois"
-        @item-click="onPoiClick"
-      />
-
-      <SearchResultBlock
-        v-if="itemsAddresses.length > 0"
-        type="addresse"
-        :label="t('headerMenu.addresses')"
-        icon="home"
-        :items="itemsAddresses"
-        @item-click="onAddressClick"
-      />
-
-      <p v-if="results === 0">
-        {{ t('headerMenu.noResult') }}
-      </p>
-    </div>
+    <SearchResults
+      v-if="focus"
+      :items-cartocode="itemsCartocode"
+      :items-menu-items="itemsMenuItems"
+      :items-pois="itemsPois"
+      :items-addresses="itemsAddresses"
+      @reset="reset"
+      @cartocode-click="onCartocodeClick"
+      @category-click="onCategoryClick"
+      @poi-click="onPoiClick"
+      @address-click="onAddressClick"
+    />
   </div>
 </template>
 
