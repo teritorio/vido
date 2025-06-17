@@ -198,7 +198,8 @@ function onClickUnselectAll(): void {
         >
           <FontAwesomeIcon
             v-if="device.smallScreen"
-            :icon="['far', 'check-circle']"
+            class="tw-text-zinc-300"
+            :icon="['far', 'circle']"
             size="xl"
           />
           <span v-else>
@@ -215,7 +216,8 @@ function onClickUnselectAll(): void {
         >
           <FontAwesomeIcon
             v-if="device.smallScreen"
-            :icon="['far', 'circle-xmark']"
+            class="tw-text-emerald-500"
+            icon="check-circle"
             size="xl"
           />
           <span v-else>
