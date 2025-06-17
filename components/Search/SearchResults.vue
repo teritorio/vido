@@ -50,6 +50,7 @@ const results = computed(() => {
   <VBtn
     type="button"
     variant="text"
+    :style="{ alignSelf: 'flex-start' }"
     @click="$emit('reset')"
   >
     <FontAwesomeIcon
