@@ -1,95 +1,81 @@
 <script setup lang="ts">
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { storeToRefs } from 'pinia'
-import type { VBreadcrumbs } from 'vuetify/lib/components/index.mjs'
 import type { MenuItem } from '~/lib/apiMenu'
 import { useNavigationStore } from '~/stores/navigation'
+import TeritorioIconBadge from '~/components/UI/TeritorioIconBadge.vue'
+import type { RouteLocationRaw } from '#vue-router'
 
 const navigationStore = useNavigationStore()
 const { navigationStack } = storeToRefs(navigationStore)
 
-const breadcrumbsRef = ref<InstanceType<typeof VBreadcrumbs>>()
+interface LinkProps {
+  href: string | undefined
+  replace: boolean | undefined
+  to: RouteLocationRaw | undefined
+  exact: boolean | undefined
+}
 
-const breadcrumbsItems = computed(() => {
+type InternalBreadcrumbItem = Partial<LinkProps> & {
+  title: string
+  disabled?: boolean
+}
+
+type CustomBreadcrumbItem = InternalBreadcrumbItem & {
+  icon: {
+    id: number
+    picto: string
+    colorFill: string
+    colorText: string
+    size: string
+  }
+}
+
+const items = computed(() => {
   return navigationStack.value.map((item) => {
-    const menuItem = getMenuItem(item)
+    const base = getItem(item)
+    const { colorFill, colorText } = getContrastedColors(base.color_fill, base.color_text)
 
     return {
-      title: menuItem.name.fr,
-    }
+      icon: {
+        id: item.id,
+        picto: base.icon,
+        colorFill,
+        colorText,
+        size: 'sm',
+      },
+      title: base.name.fr,
+    } satisfies CustomBreadcrumbItem
   })
 })
 
-function getMenuItem(item: MenuItem) {
+function getItem(item: MenuItem) {
   return item.menu_group || item.link || item.category || {}
 }
-
-function checkScrollEnd() {
-  if (!breadcrumbsRef.value)
-    return
-
-  const isAtEnd = breadcrumbsRef.value.$el.scrollWidth - breadcrumbsRef.value.$el.scrollLeft <= breadcrumbsRef.value.$el.clientWidth + 1
-  breadcrumbsRef.value.$parent?.$el.classList.toggle('no-fade', isAtEnd)
-}
-
-onMounted(() => {
-  if (!breadcrumbsRef.value)
-    return
-
-  breadcrumbsRef.value.$el.addEventListener('scroll', checkScrollEnd)
-})
-
-onBeforeUnmount(() => {
-  if (!breadcrumbsRef.value)
-    return
-
-  breadcrumbsRef.value.$el.removeEventListener('scroll', checkScrollEnd)
-})
 </script>
 
 <template>
-  <div class="breadcrumbs-wrapper">
-    <VBreadcrumbs ref="breadcrumbsRef" :items="breadcrumbsItems" density="comfortable">
-      <template #prepend>
-        <FontAwesomeIcon
-          icon="arrow-left"
-          size="lg"
-          @click="navigationStore.goBack()"
-        />
-      </template>
-      <template #item="{ item, index }">
-        <VBreadcrumbsItem @click="navigationStore.navigateTo(navigationStack[index])">
+  <VBreadcrumbs :items="items" density="comfortable">
+    <template #prepend>
+      <FontAwesomeIcon
+        icon="arrow-left"
+        size="lg"
+        @click="navigationStore.goBack()"
+      />
+    </template>
+    <template #item="{ item, index }">
+      <VBreadcrumbsItem @click="navigationStore.navigateTo(navigationStack[index])">
+        <TeritorioIconBadge v-bind="(item as CustomBreadcrumbItem).icon" />
+        <span v-if="index === navigationStack.length - 1">
           {{ item.title }}
-        </VBreadcrumbsItem>
-      </template>
-    </VBreadcrumbs>
-  </div>
+        </span>
+      </VBreadcrumbsItem>
+    </template>
+  </VBreadcrumbs>
 </template>
 
 <style lang="css" scoped>
-.breadcrumbs-wrapper {
-  position: relative;
-}
-
-.breadcrumbs-wrapper::after {
-  content: "";
-  position: absolute;
-  top: 0;
-  right: -2px;
-  height: 100%;
-  width: 3rem;
-  pointer-events: none;
-  background: linear-gradient(to right, rgb(255 255 255 / 0%), rgb(255 255 255 / 60%), #fff);
-  transition: opacity 0.3s ease;
-  opacity: 1;
-}
-
-.breadcrumbs-wrapper.no-fade::after {
-  opacity: 0;
-}
-
 .v-breadcrumbs {
-  overflow-x: auto;
   line-height: unset;
 }
 
@@ -97,7 +83,25 @@ onBeforeUnmount(() => {
   margin-right: 0.25rem;
 }
 
+:deep(.v-breadcrumbs-divider) {
+  padding: 0 4px;
+}
+
 .v-breadcrumbs-item {
-  flex-shrink: 0;
+  font-size: 0.88rem;
+  gap: 0.5rem;
+  overflow: hidden;
+  padding: 0;
+  min-width: 32px;
+}
+
+.v-breadcrumbs-item span:last-of-type {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.v-breadcrumbs-item:last-of-type {
+  font-weight: 500;
 }
 </style>
