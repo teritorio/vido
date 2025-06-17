@@ -1,15 +1,8 @@
-<script lang="ts">
-import type { PropType } from 'vue'
-
-import { defineNuxtComponent } from '#app'
-
-export default defineNuxtComponent({
-  props: {
-    extraClass: {
-      type: String as PropType<string>,
-      default: '',
-    },
-  },
+<script setup lang="ts">
+withDefaults(defineProps<{
+  extraClass?: string
+}>(), {
+  extraClass: '',
 })
 </script>
 
