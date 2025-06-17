@@ -67,18 +67,17 @@ const menuItemsToIcons = computed(() => {
             <VCard>
               <template #prepend>
                 <VBtn
-                  :text="t('menuNavbar.actions.search.close')"
                   variant="text"
                   size="xsmall"
+                  :title="t('menuNavbar.actions.search.close')"
                   @click="
                     isActive.value = false;
                     navigationStore.resetNavigation();
                   "
                 >
                   <FontAwesomeIcon
-                    icon="arrow-left"
-                    class="tw-text-zinc-800"
-                    size="lg"
+                    :icon="['far', 'circle-xmark']"
+                    size="xl"
                   />
                 </VBtn>
               </template>

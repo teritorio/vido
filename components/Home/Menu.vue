@@ -166,7 +166,7 @@ function onClickUnselectAll(): void {
 
   <div v-else>
     <component :is="dynamicComponent">
-      <div class="tw-w-full tw-flex tw-justify-between">
+      <div class="tw-flex tw-items-center tw-justify-between">
         <BreadcrumbsWrapper
           :style="{
             flex: '1 1 auto',
@@ -174,10 +174,10 @@ function onClickUnselectAll(): void {
           }"
         />
 
-        <button
+        <VBtn
           v-if="!isAllSelected"
-          type="button"
-          class="tw-px-3 tw-py-2 tw-font-medium tw-transition-all tw-rounded-md tw-outline-none focus:tw-outline-none hover:tw-bg-zinc-100 focus:tw-bg-zinc-100"
+          variant="text"
+          density="comfortable"
           :title="$t('headerMenu.selectAll')"
           @click="onClickSelectAll"
         >
@@ -190,12 +190,12 @@ function onClickUnselectAll(): void {
           <span v-else>
             {{ $t('headerMenu.selectAll') }}
           </span>
-        </button>
+        </VBtn>
 
-        <button
+        <VBtn
           v-if="isAllSelected"
-          type="button"
-          class="tw-px-3 tw-py-2 tw-font-medium tw-transition-all tw-rounded-md tw-outline-none focus:tw-outline-none hover:tw-bg-zinc-100 focus:tw-bg-zinc-100"
+          variant="text"
+          density="comfortable"
           :title="$t('headerMenu.unselectAll')"
           @click="onClickUnselectAll"
         >
@@ -208,7 +208,7 @@ function onClickUnselectAll(): void {
           <span v-else>
             {{ $t('headerMenu.unselectAll') }}
           </span>
-        </button>
+        </VBtn>
       </div>
 
       <VDivider
@@ -232,3 +232,12 @@ function onClickUnselectAll(): void {
     </component>
   </div>
 </template>
+
+<style lang="css" scoped>
+.v-btn {
+  font-weight: 500;
+  font-size: 1rem;
+  text-transform: none;
+  letter-spacing: inherit;
+}
+</style>

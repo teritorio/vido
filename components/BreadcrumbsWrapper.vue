@@ -55,13 +55,19 @@ function getItem(item: MenuItem) {
 </script>
 
 <template>
-  <VBreadcrumbs :items="items" density="comfortable">
+  <VBreadcrumbs :items="items" density="compact">
     <template #prepend>
-      <FontAwesomeIcon
-        icon="arrow-left"
-        size="lg"
+      <VBtn
+        variant="text"
+        density="compact"
+        :title="$t('headerMenu.back')"
         @click="navigationStore.goBack()"
-      />
+      >
+        <FontAwesomeIcon
+          icon="arrow-left"
+          size="lg"
+        />
+      </VBtn>
     </template>
     <template #item="{ item, index }">
       <VBreadcrumbsItem @click="navigationStore.navigateTo(navigationStack[index])">
@@ -77,10 +83,8 @@ function getItem(item: MenuItem) {
 <style lang="css" scoped>
 .v-breadcrumbs {
   line-height: unset;
-}
-
-:deep(.v-breadcrumbs__prepend) {
-  margin-right: 0.25rem;
+  padding-left: 0;
+  padding-right: 0;
 }
 
 :deep(.v-breadcrumbs-divider) {
