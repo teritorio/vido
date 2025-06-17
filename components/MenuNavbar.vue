@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { storeToRefs } from 'pinia'
-import type { MenuItem } from '~/lib/apiMenu'
 import type { ApiPoi } from '~/lib/apiPois'
 import { useSiteStore } from '~/stores/site'
 import { menuStore as useMenuStore } from '~/stores/menu'
@@ -9,7 +8,8 @@ import { mapStore as useMapStore } from '~/stores/map'
 import IconButton from '~/components/UI/IconButton.vue'
 import NavMenu from '~/components/MainMap/NavMenu.vue'
 import FavoriteMenu from '~/components/MainMap/FavoriteMenu.vue'
-import Search from '~/components/Search/Search.vue'
+import SearchInput from '~/components/Search/SearchInput.vue'
+import SearchResults from '~/components/Search/SearchResults.vue'
 import HomeMenu from '~/components/Home/Menu.vue'
 import SelectedCategories from '~/components/Home/SelectedCategories.vue'
 import { useNavigationStore } from '~/stores/navigation'
@@ -21,22 +21,42 @@ const emit = defineEmits<{
   (e: 'toggleFavoriteMode'): void
   (e: 'toggleNoteBookMode'): void
   (e: 'zoomClick', poi: ApiPoi): void
-  (e: 'selectFeature', poi: ApiPoi): void
 }>()
 
 const { t } = useI18n()
 const navigationStore = useNavigationStore()
 const { favoritesModeEnabled } = storeToRefs(useSiteStore())
-const { apiMenuCategory, selectedCategories } = storeToRefs(useMenuStore())
+const { selectedCategories } = storeToRefs(useMenuStore())
 const { center } = storeToRefs(useMapStore())
+const {
+  searchText,
+  isLoading,
+  focus,
+  itemsCartocode,
+  itemsMenuItems,
+  itemsPois,
+  itemsAddresses,
+  onCartocodeClick,
+  onCategoryClick,
+  onPoiClick,
+  onAddressClick,
+  reset,
+  dispose,
+  delayedFocusLose,
+  submit: searchSubmit,
+  onFocus: onSearchFocus,
+} = useSearch(center.value)
 
-const menuItemsToIcons = computed(() => {
-  const resources: Record<MenuItem['id'], string> = {}
-  Object.values(apiMenuCategory.value || {}).forEach((sc) => {
-    resources[sc.id] = (sc.menu_group || sc.link || sc.category).icon
-  })
-  return resources
+const results = computed(() => {
+  return (
+    itemsCartocode.value.length
+    + itemsMenuItems.value.length
+    + itemsPois.value.length
+    + itemsAddresses.value.length
+  )
 })
+
+onBeforeUnmount(() => dispose())
 </script>
 
 <template>
@@ -82,25 +102,53 @@ const menuItemsToIcons = computed(() => {
                 </VBtn>
               </template>
               <template #title>
-                <Search
-                  :menu-to-icon="menuItemsToIcons"
-                  :map-center="center"
-                  @select-feature="emit('selectFeature', $event)"
+                <SearchInput
+                  :search-text="searchText"
+                  :is-loading="isLoading"
+                  @input="searchSubmit"
+                  @focus="onSearchFocus"
+                  @blur="delayedFocusLose"
                 />
               </template>
               <template #text>
-                <SelectedCategories v-if="selectedCategories?.length" :categories="selectedCategories" />
-                <HomeMenu class="home-menu" menu-block="MenuBlockBottom" />
-                <VBtn
-                  v-if="selectedCategories?.length"
-                  id="show-results"
-                  variant="tonal"
-                  :text="t('menuNavbar.actions.goToMap')"
-                  @click="
+                <SearchResults
+                  v-if="results"
+                  :items-cartocode="itemsCartocode"
+                  :items-menu-items="itemsMenuItems"
+                  :items-pois="itemsPois"
+                  :items-addresses="itemsAddresses"
+                  @reset="reset"
+                  @cartocode-click="
+                    onCartocodeClick($event);
                     isActive.value = false;
-                    navigationStore.resetNavigation();
+                  "
+                  @category-click="
+                    onCategoryClick($event);
+                    isActive.value = false;
+                  "
+                  @poi-click="
+                    onPoiClick($event);
+                    isActive.value = false;
+                  "
+                  @address-click="
+                    onAddressClick($event);
+                    isActive.value = false;
                   "
                 />
+                <template v-if="!focus && !results">
+                  <SelectedCategories v-if="selectedCategories?.length" :categories="selectedCategories" />
+                  <HomeMenu class="home-menu" menu-block="MenuBlockBottom" />
+                  <VBtn
+                    v-if="selectedCategories?.length"
+                    id="show-results"
+                    variant="tonal"
+                    :text="t('menuNavbar.actions.goToMap')"
+                    @click="
+                      isActive.value = false;
+                      navigationStore.resetNavigation();
+                    "
+                  />
+                </template>
               </template>
             </VCard>
           </template>

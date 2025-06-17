@@ -12,12 +12,11 @@ import FavoritesOverlay from '~/components/MainMap/FavoritesOverlay.vue'
 import MapFeatures from '~/components/MainMap/MapFeatures.vue'
 import NavMenu from '~/components/MainMap/NavMenu.vue'
 import PoiCard from '~/components/PoisCard/PoiCard.vue'
-import Search from '~/components/Search/Search.vue'
+import SearchResults from '~/components/Search/SearchResults.vue'
+import SearchInput from '~/components/Search/SearchInput.vue'
 import CookiesConsent from '~/components/UI/CookiesConsent.vue'
 import Logo from '~/components/UI/Logo.vue'
-import type { MenuItem } from '~/lib/apiMenu'
-import type { ApiPoi } from '~/lib/apiPois'
-import { getPois } from '~/lib/apiPois'
+import { type ApiPoi, getPois } from '~/lib/apiPois'
 import { getBBox } from '~/lib/bbox'
 import { favoriteStore as useFavoriteStore } from '~/stores/favorite'
 import { mapStore as useMapStore } from '~/stores/map'
@@ -56,6 +55,25 @@ const route = useRoute()
 const router = useRouter()
 const device = useDevice()
 const { isochroneCurrentFeature } = useIsochrone()
+const {
+  searchText,
+  isLoading,
+  focus,
+  itemsCartocode,
+  itemsMenuItems,
+  itemsPois,
+  itemsAddresses,
+  searchSelectedFeature,
+  onCartocodeClick,
+  onCategoryClick,
+  onPoiClick,
+  onAddressClick,
+  reset,
+  dispose,
+  delayedFocusLose,
+  submit: searchSubmit,
+  onFocus: onSearchFocus,
+} = useSearch(center.value)
 
 //
 // Data
@@ -63,7 +81,6 @@ const { isochroneCurrentFeature } = useIsochrone()
 const allowRegionBackZoom = ref<boolean>(false)
 const isFilterActive = ref<boolean>(false)
 const initialBbox = ref<LngLatBounds>()
-const isOnSearch = ref<boolean>(false)
 const showFavoritesOverlay = ref<boolean>(false)
 const isPoiCardShown = ref<boolean>(false)
 const mapFeaturesRef = ref<InstanceType<typeof MapFeatures>>()
@@ -119,6 +136,10 @@ onMounted(() => {
   initialBbox.value = getBBox({ type: 'Feature', geometry: props.boundaryArea || settings!.bbox_line, properties: {} })
 })
 
+onBeforeUnmount(() => {
+  dispose()
+})
+
 //
 // Computed
 //
@@ -169,14 +190,6 @@ const mapFeatures = computed(() => {
   return f
 })
 
-const menuItemsToIcons = computed(() => {
-  const resources: Record<MenuItem['id'], string> = {}
-  Object.values(apiMenuCategory.value || {}).forEach((sc) => {
-    resources[sc.id] = (sc.menu_group || sc.link || sc.category).icon
-  })
-  return resources
-})
-
 const poiFilters = computed(() => {
   return (
     (
@@ -196,6 +209,11 @@ const siteName = computed(() => {
 //
 // Watchers
 //
+watch(searchSelectedFeature, (newValue) => {
+  if (newValue)
+    searchSelectFeature(newValue)
+})
+
 watch(selectedFeature, (newFeature) => {
   isPoiCardShown.value = !!newFeature
 
@@ -456,20 +474,15 @@ function handlePoiCardClose() {
             v-else
             key="Menu"
             menu-block="MenuBlock"
-            :is-on-search="isOnSearch"
+            :is-on-search="focus"
             :is-filter-active="isFilterActive"
             class="tw-px-1 tw-pb-1.5"
             @activate-filter="onActivateFilter"
             @scroll-top="scrollTop"
           >
-            <Search
-              :menu-to-icon="menuItemsToIcons"
-              :map-center="center"
-              @focus="isOnSearch = true"
-              @blur="isOnSearch = false"
-              @select-feature="searchSelectFeature"
-            >
+            <div class="tw-flex tw-flex-row tw-items-center">
               <Logo
+                v-if="!focus"
                 :main-url="mainUrl"
                 :site-name="siteName"
                 :logo-url="logoUrl"
@@ -477,7 +490,26 @@ function handlePoiCardClose() {
                 class="tw-flex-none tw-mr-2"
                 image-class="tw-max-w-2xl tw-max-h-12 md:tw-max-h-16"
               />
-            </Search>
+              <SearchInput
+                :search-text="searchText"
+                :is-loading="isLoading"
+                @input="searchSubmit"
+                @focus="onSearchFocus"
+                @blur="delayedFocusLose"
+              />
+            </div>
+            <SearchResults
+              v-if="focus && !device.smallScreen"
+              :items-cartocode="itemsCartocode"
+              :items-menu-items="itemsMenuItems"
+              :items-pois="itemsPois"
+              :items-addresses="itemsAddresses"
+              @reset="reset"
+              @cartocode-click="onCartocodeClick"
+              @category-click="onCategoryClick"
+              @poi-click="onPoiClick"
+              @address-click="onAddressClick"
+            />
           </Menu>
         </transition-group>
         <SelectedCategories
@@ -546,7 +578,6 @@ function handlePoiCardClose() {
             @toggle-favorite-mode="toggleFavoriteMode"
             @toggle-note-book-mode="toggleNoteBookMode"
             @zoom-click="goToSelectedFeature"
-            @select-feature="searchSelectFeature"
           />
         </MapFeatures>
       </div>

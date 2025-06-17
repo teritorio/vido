@@ -10,15 +10,15 @@ withDefaults(defineProps<{
 })
 
 const emit = defineEmits<{
-  (e: 'input', value: string): void
-  (e: 'focus', event: string | Event): void
-  (e: 'blur', event: FocusEvent): void
+  (e: 'input', event: Event): void
+  (e: 'focus'): void
+  (e: 'blur'): void
 }>()
 const { $tracking } = useNuxtApp()
 const searchRef = ref<InstanceType<typeof HTMLInputElement>>()
 
-function onFocus(event: string | Event) {
-  emit('focus', event)
+function onFocus() {
+  emit('focus')
   $tracking({ type: 'search' })
 }
 </script>
@@ -38,12 +38,9 @@ function onFocus(event: string | Event) {
           class="tw-w-full tw-px-5 tw-py-3 tw-font-medium tw-text-zinc-700 tw-placeholder-zinc-500 tw-bg-zinc-100 tw-border-none tw-rounded-full tw-outline-none tw-appearance-none focus:tw-outline-none focus:tw-ring focus:tw-ring-zinc-300 tw-truncate tw-pr-10"
           :placeholder="$t('headerMenu.searchHint')"
           type="text"
-          @input="
-            //@ts-ignore
-            $emit('input', $event.target.value)
-          "
+          @input="$emit('input', $event)"
           @focus="onFocus"
-          @blur="$emit('blur', $event)"
+          @blur="$emit('blur')"
         >
       </label>
       <button
