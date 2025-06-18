@@ -173,6 +173,7 @@ useHead(headerFromSettings(settings!, { title: category.value?.category.name.fr 
       <VBanner v-if="error" bg-color="#F44336" :text="error.message" />
       <VDataTable
         v-else
+        :mobile="false"
         :loading="pending && status === 'pending'"
         :headers="headers"
         :items="pois?.features"
