@@ -5,6 +5,7 @@ import type { ApiPoi } from '~/lib/apiPois'
 import { useSiteStore } from '~/stores/site'
 import { menuStore as useMenuStore } from '~/stores/menu'
 import { useSearchStore } from '~/stores/search'
+import { useNavigationStore } from '~/stores/navigation'
 import IconButton from '~/components/UI/IconButton.vue'
 import NavMenu from '~/components/MainMap/NavMenu.vue'
 import FavoriteMenu from '~/components/MainMap/FavoriteMenu.vue'
@@ -12,7 +13,7 @@ import SearchInput from '~/components/Search/SearchInput.vue'
 import SearchResults from '~/components/Search/SearchResults.vue'
 import HomeMenu from '~/components/Home/Menu.vue'
 import SelectedCategories from '~/components/Home/SelectedCategories.vue'
-import { useNavigationStore } from '~/stores/navigation'
+import UIButton from '~/components/UI/UIButton.vue'
 
 const emit = defineEmits<{
   (e: 'exploreClick', poi: ApiPoi): void
@@ -23,7 +24,6 @@ const emit = defineEmits<{
   (e: 'zoomClick', poi: ApiPoi): void
 }>()
 
-const { t } = useI18n()
 const navigationStore = useNavigationStore()
 const { favoritesModeEnabled } = storeToRefs(useSiteStore())
 const { selectedCategories } = storeToRefs(useMenuStore())
@@ -51,7 +51,7 @@ onBeforeUnmount(() => searchStore.dispose())
 </script>
 
 <template>
-  <nav role="navigation" :aria-label="t('menuNavbar.label')">
+  <nav role="navigation" :aria-label="$t('menuNavbar.label')">
     <ul role="menubar">
       <li role="none">
         <VDialog
@@ -63,7 +63,7 @@ onBeforeUnmount(() => searchStore.dispose())
           <template #activator="{ props: activatorProps }">
             <IconButton
               role="menuitem"
-              :label="t('menuNavbar.actions.search.open')"
+              :label="$t('menuNavbar.actions.search.open')"
               class="tw-w-11 tw-h-11 tw-pointer-events-auto"
               v-bind="activatorProps"
             >
@@ -75,23 +75,17 @@ onBeforeUnmount(() => searchStore.dispose())
             </IconButton>
           </template>
           <template #default="{ isActive }">
+            <UIButton
+              class="close-button"
+              color="#ffffff"
+              icon="times"
+              :title="$t('menuNavbar.actions.search.close')"
+              @click="
+                isActive.value = false;
+                navigationStore.resetNavigation();
+              "
+            />
             <VCard>
-              <template #prepend>
-                <VBtn
-                  variant="text"
-                  size="xsmall"
-                  :title="t('menuNavbar.actions.search.close')"
-                  @click="
-                    isActive.value = false;
-                    navigationStore.resetNavigation();
-                  "
-                >
-                  <FontAwesomeIcon
-                    :icon="['far', 'circle-xmark']"
-                    size="xl"
-                  />
-                </VBtn>
-              </template>
               <template #title>
                 <SearchInput
                   :search-text="searchText"
@@ -133,7 +127,7 @@ onBeforeUnmount(() => searchStore.dispose())
                     v-if="selectedCategories?.length"
                     id="show-results"
                     variant="tonal"
-                    :text="t('menuNavbar.actions.goToMap')"
+                    :text="$t('menuNavbar.actions.goToMap')"
                     @click="
                       isActive.value = false;
                       navigationStore.resetNavigation();
@@ -195,5 +189,24 @@ ul {
   grid-template-rows: auto 1fr auto;
   height: calc(100vh - 80px);
   gap: 0.5rem;
+}
+
+:deep(.v-card-item) {
+  max-width: calc(100% - 56px);
+}
+
+:deep(.close-button) {
+  background-color: rgb(0 0 0 / 55%);
+  border-radius: 0 0 0 8px;
+  right: 0;
+  top: 0;
+  border: 0;
+  position: absolute;
+  z-index: 1;
+}
+
+:deep(.close-button svg) {
+  width: 24px;
+  height: 24px;
 }
 </style>
