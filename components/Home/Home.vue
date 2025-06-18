@@ -22,6 +22,7 @@ import { favoriteStore as useFavoriteStore } from '~/stores/favorite'
 import { mapStore as useMapStore } from '~/stores/map'
 import { menuStore as useMenuStore } from '~/stores/menu'
 import { useSiteStore } from '~/stores/site'
+import { useSearchStore } from '~/stores/search'
 import { Mode, OriginEnum } from '~/utils/types'
 import { getHashPart, setHashParts } from '~/utils/url'
 import { flattenFeatures, formatApiAddressToFeature } from '~/utils/utilities'
@@ -42,7 +43,7 @@ const props = defineProps<{
 // Composables
 //
 const mapStore = useMapStore()
-const { center, isModeFavorites, isModeExplorer, isModeExplorerOrFavorites, mode, selectedFeature, teritorioCluster } = storeToRefs(mapStore)
+const { isModeFavorites, isModeExplorer, isModeExplorerOrFavorites, mode, selectedFeature, teritorioCluster } = storeToRefs(mapStore)
 const menuStore = useMenuStore()
 const { apiMenuCategory, features, selectedCategoryIds, selectedCategories } = storeToRefs(menuStore)
 const favoriteStore = useFavoriteStore()
@@ -55,6 +56,7 @@ const route = useRoute()
 const router = useRouter()
 const device = useDevice()
 const { isochroneCurrentFeature } = useIsochrone()
+const searchStore = useSearchStore()
 const {
   searchText,
   isLoading,
@@ -64,16 +66,7 @@ const {
   itemsPois,
   itemsAddresses,
   searchSelectedFeature,
-  onCartocodeClick,
-  onCategoryClick,
-  onPoiClick,
-  onAddressClick,
-  reset,
-  dispose,
-  delayedFocusLose,
-  submit: searchSubmit,
-  onFocus: onSearchFocus,
-} = useSearch(center.value)
+} = storeToRefs(searchStore)
 
 //
 // Data
@@ -137,7 +130,7 @@ onMounted(() => {
 })
 
 onBeforeUnmount(() => {
-  dispose()
+  searchStore.dispose()
 })
 
 //
@@ -493,9 +486,9 @@ function handlePoiCardClose() {
               <SearchInput
                 :search-text="searchText"
                 :is-loading="isLoading"
-                @input="searchSubmit"
-                @focus="onSearchFocus"
-                @blur="delayedFocusLose"
+                @input="searchStore.submit"
+                @focus="searchStore.onFocus"
+                @blur="searchStore.delayedFocusLose"
               />
             </div>
             <SearchResults
@@ -504,11 +497,11 @@ function handlePoiCardClose() {
               :items-menu-items="itemsMenuItems"
               :items-pois="itemsPois"
               :items-addresses="itemsAddresses"
-              @reset="reset"
-              @cartocode-click="onCartocodeClick"
-              @category-click="onCategoryClick"
-              @poi-click="onPoiClick"
-              @address-click="onAddressClick"
+              @reset="searchStore.reset"
+              @cartocode-click="searchStore.onCartocodeClick"
+              @category-click="searchStore.onCategoryClick"
+              @poi-click="searchStore.onPoiClick"
+              @address-click="searchStore.onAddressClick"
             />
           </Menu>
         </transition-group>
