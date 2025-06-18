@@ -16,7 +16,7 @@ const iconSize = computed((): string => {
   const values: { [size: string]: string } = {
     'xs': 'xs',
     'sm': 'md',
-    'md': 'lg',
+    'md': 'sm',
     'lg': 'lg',
     'xl': 'xl',
     '2xl': '2xl',

@@ -42,7 +42,7 @@ const items = computed(() => {
         picto: base.icon,
         colorFill,
         colorText,
-        size: 'sm',
+        size: 'md',
       },
       title: base.name.fr,
     } satisfies CustomBreadcrumbItem
