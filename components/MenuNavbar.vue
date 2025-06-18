@@ -121,14 +121,11 @@ onBeforeUnmount(() => searchStore.dispose())
                   "
                 />
                 <template v-if="!focus && !results">
-                  <SelectedCategories v-if="selectedCategories?.length" :categories="selectedCategories" />
                   <HomeMenu class="home-menu" menu-block="MenuBlockBottom" />
-                  <VBtn
+                  <SelectedCategories
                     v-if="selectedCategories?.length"
-                    id="show-results"
-                    variant="tonal"
-                    :text="$t('menuNavbar.actions.goToMap')"
-                    @click="
+                    :categories="selectedCategories"
+                    @show-map="
                       isActive.value = false;
                       navigationStore.resetNavigation();
                     "
@@ -175,18 +172,9 @@ ul {
   overflow-y: auto;
 }
 
-:deep(.v-card-text > div::-webkit-scrollbar ) {
-  width: 4px;
-}
-
-:deep(.v-card-text > div::-webkit-scrollbar-thumb) {
-  background: rgb(0 0 0 / 20%);
-  border-radius: 2px;
-}
-
 :deep(.v-card-text) {
   display: grid;
-  grid-template-rows: auto 1fr auto;
+  grid-template-rows: 1fr auto;
   height: calc(100vh - 80px);
   gap: 0.5rem;
 }

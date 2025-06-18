@@ -8,7 +8,12 @@ import { getContrastedColors } from '~/composables/useFeature'
 defineProps<{
   categories: ApiMenuCategory[]
 }>()
-const { t } = useI18n()
+
+defineEmits<{
+  (e: 'showMap'): void
+}>()
+
+const device = useDevice()
 const menuStore = useMenuStore()
 
 function getItem(item: ApiMenuCategory) {
@@ -31,15 +36,15 @@ function getTeritorioIconBadgeProps(item: ApiMenuCategory) {
 
 <template>
   <div class="selected-categories">
-    <h3>{{ t('selectedCategories.label') }}</h3>
+    <h3>{{ $t('selectedCategories.label') }}</h3>
     <div class="selected-categories-wrapper">
       <div>
         <VBtn
           v-for="category in categories"
           :key="category.id"
           :data-testid="`selected-category-${category.id}`"
-          :aria-label="`${t('headerMenu.disableCategory')}: ${getItem(category).name.fr}`"
-          :title="`${t('headerMenu.disableCategory')}: ${getItem(category).name.fr}`"
+          :aria-label="`${$t('headerMenu.disableCategory')}: ${getItem(category).name.fr}`"
+          :title="`${$t('headerMenu.disableCategory')}: ${getItem(category).name.fr}`"
           icon
           width="40px"
           height="40px"
@@ -53,9 +58,18 @@ function getTeritorioIconBadgeProps(item: ApiMenuCategory) {
       </div>
     </div>
     <VBtn
+      v-if="categories.length && device.smallScreen"
+      @click="$emit('showMap')"
+    >
+      <template #prepend>
+        <FontAwesomeIcon icon="map" />
+      </template>
+      {{ $t('menuNavbar.actions.goToMap') }}
+    </VBtn>
+    <VBtn
       v-if="categories.length > 1"
-      :title="t('headerMenu.clearAllCategories')"
-      :aria-label="t('headerMenu.clearAllCategories')"
+      :title="$t('headerMenu.clearAllCategories')"
+      :aria-label="$t('headerMenu.clearAllCategories')"
       class="disable-all-categories"
       icon
       color="#dc2626"
@@ -63,7 +77,7 @@ function getTeritorioIconBadgeProps(item: ApiMenuCategory) {
       height="28px"
       @click="menuStore.clearSelectedCategoryIds"
     >
-      <FontAwesomeIcon icon="times" />
+      <FontAwesomeIcon icon="trash" />
     </VBtn>
   </div>
 </template>
@@ -97,10 +111,6 @@ function getTeritorioIconBadgeProps(item: ApiMenuCategory) {
   border: 2px solid #FFF;
 }
 
-.disable-all-categories {
-  transform: translate(50%, -50%);
-}
-
 .disable-category {
   transform: translate(25%, -25%);
   background-color: #dc2626;
@@ -125,6 +135,10 @@ h3 {
     pointer-events: all;
     background-color: #fff;
     border-radius: 0.75rem;
+  }
+
+  .disable-all-categories {
+    transform: translate(50%, -50%);
   }
 
   .selected-categories-wrapper > div {
