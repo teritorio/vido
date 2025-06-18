@@ -4,7 +4,7 @@ import { storeToRefs } from 'pinia'
 import type { ApiPoi } from '~/lib/apiPois'
 import { useSiteStore } from '~/stores/site'
 import { menuStore as useMenuStore } from '~/stores/menu'
-import { mapStore as useMapStore } from '~/stores/map'
+import { useSearchStore } from '~/stores/search'
 import IconButton from '~/components/UI/IconButton.vue'
 import NavMenu from '~/components/MainMap/NavMenu.vue'
 import FavoriteMenu from '~/components/MainMap/FavoriteMenu.vue'
@@ -27,7 +27,7 @@ const { t } = useI18n()
 const navigationStore = useNavigationStore()
 const { favoritesModeEnabled } = storeToRefs(useSiteStore())
 const { selectedCategories } = storeToRefs(useMenuStore())
-const { center } = storeToRefs(useMapStore())
+const searchStore = useSearchStore()
 const {
   searchText,
   isLoading,
@@ -36,16 +36,7 @@ const {
   itemsMenuItems,
   itemsPois,
   itemsAddresses,
-  onCartocodeClick,
-  onCategoryClick,
-  onPoiClick,
-  onAddressClick,
-  reset,
-  dispose,
-  delayedFocusLose,
-  submit: searchSubmit,
-  onFocus: onSearchFocus,
-} = useSearch(center.value)
+} = storeToRefs(searchStore)
 
 const results = computed(() => {
   return (
@@ -56,7 +47,7 @@ const results = computed(() => {
   )
 })
 
-onBeforeUnmount(() => dispose())
+onBeforeUnmount(() => searchStore.dispose())
 </script>
 
 <template>
@@ -105,9 +96,9 @@ onBeforeUnmount(() => dispose())
                 <SearchInput
                   :search-text="searchText"
                   :is-loading="isLoading"
-                  @input="searchSubmit"
-                  @focus="onSearchFocus"
-                  @blur="delayedFocusLose"
+                  @input="searchStore.submit"
+                  @focus="searchStore.onFocus"
+                  @blur="searchStore.delayedFocusLose"
                 />
               </template>
               <template #text>
@@ -117,21 +108,21 @@ onBeforeUnmount(() => dispose())
                   :items-menu-items="itemsMenuItems"
                   :items-pois="itemsPois"
                   :items-addresses="itemsAddresses"
-                  @reset="reset"
+                  @reset="searchStore.reset"
                   @cartocode-click="
-                    onCartocodeClick($event);
+                    searchStore.onCartocodeClick($event);
                     isActive.value = false;
                   "
                   @category-click="
-                    onCategoryClick($event);
+                    searchStore.onCategoryClick($event);
                     isActive.value = false;
                   "
                   @poi-click="
-                    onPoiClick($event);
+                    searchStore.onPoiClick($event);
                     isActive.value = false;
                   "
                   @address-click="
-                    onAddressClick($event);
+                    searchStore.onAddressClick($event);
                     isActive.value = false;
                   "
                 />

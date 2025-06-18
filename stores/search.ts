@@ -1,17 +1,19 @@
+import { defineStore, storeToRefs } from 'pinia'
 import { debounce } from 'lodash'
 import copy from 'fast-copy'
-import { storeToRefs } from 'pinia'
+import { useSiteStore } from '~/stores/site'
+import { menuStore as useMenuStore } from '~/stores/menu'
 import type { MenuItem } from '~/lib/apiMenu'
 import { type ApiPoi, getPoiById } from '~/lib/apiPois'
 import type { ApiAddrSearchResult, ApiMenuItemSearchResult, ApiPoisSearchResult, ApiSearchResult, SearchResult } from '~/lib/apiSearch'
-import { useSiteStore } from '~/stores/site'
-import { menuStore as useMenuStore } from '~/stores/menu'
+import { mapStore as useMapStore } from '~/stores/map'
 
-export function useSearch(mapCenter: { lng: number, lat: number }) {
+export const useSearchStore = defineStore('search', () => {
   const { $tracking } = useNuxtApp()
   const { config } = storeToRefs(useSiteStore())
   const menuStore = useMenuStore()
   const { filters, apiMenuCategory } = storeToRefs(menuStore)
+  const { center } = storeToRefs(useMapStore())
 
   if (!config.value)
     throw createError({ statusCode: 500, statusMessage: 'Wrong config', fatal: true })
@@ -234,7 +236,7 @@ export function useSearch(mapCenter: { lng: number, lat: number }) {
         })
     }
     else if (searchValue.length > 2) {
-      const query = `q=${searchText.value}&lon=${mapCenter.lng}&lat=${mapCenter.lat}`
+      const query = `q=${searchText.value}&lon=${center.value.lng}&lat=${center.value.lat}`
       const MenuItemsFetch: Promise<ApiSearchResult<ApiMenuItemSearchResult>> = fetch(`${API_SEARCH}?${projectTheme}&type=menu_item&${query}`)
         .then(data => (data.ok ? data.json() : null))
 
@@ -298,4 +300,4 @@ export function useSearch(mapCenter: { lng: number, lat: number }) {
     dispose,
     onFocus,
   }
-}
+})
