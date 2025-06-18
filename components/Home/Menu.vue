@@ -168,26 +168,11 @@ function onClickUnselectAll(): void {
     <component :is="dynamicComponent">
       <div class="tw-w-full tw-flex tw-justify-between">
         <BreadcrumbsWrapper
-          v-if="device.smallScreen"
           :style="{
             flex: '1 1 auto',
             minWidth: 0,
           }"
         />
-        <button
-          v-else
-          type="button"
-          class="tw-flex tw-items-center tw-justify-center tw-w-10 tw-h-10 tw-text-2xl tw-font-bold tw-transition-all tw-rounded-full tw-outline-none tw-cursor-pointer focus:tw-outline-none hover:tw-bg-zinc-100"
-          :style="{ flex: '0 0 auto' }"
-          @click="navigationStore.goBack"
-        >
-          <span class="sr-only">{{ $t('headerMenu.back') }}</span>
-          <FontAwesomeIcon
-            icon="arrow-left"
-            class="tw-text-zinc-800"
-            size="xs"
-          />
-        </button>
 
         <button
           v-if="!isAllSelected"
