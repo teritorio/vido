@@ -127,7 +127,7 @@ export default defineNuxtComponent({
 </script>
 
 <template>
-  <div class="tw-basis-max tw-shrink tw-flex tw-flex-col tw-gap-4 tw-flex-1">
+  <div class="tw-basis-max tw-shrink tw-flex tw-flex-col tw-gap-4 tw-flex-1 tw-p-4">
     <template
       v-for="(filter, filterIndex) in filtersSafeCopy"
       :key="filter.def.property"
