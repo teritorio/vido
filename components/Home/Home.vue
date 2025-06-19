@@ -484,6 +484,12 @@ function handlePoiCardClose() {
               />
               <SearchInput />
             </div>
+            <VDivider
+              v-if="resultsCount"
+              class="border-opacity-100"
+              role="presentation"
+              aria-orientation="horizontal"
+            />
             <SearchResults
               v-if="resultsCount"
               :items-cartocode="itemsCartocode"
