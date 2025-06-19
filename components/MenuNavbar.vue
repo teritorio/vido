@@ -29,23 +29,12 @@ const { favoritesModeEnabled } = storeToRefs(useSiteStore())
 const { selectedCategories } = storeToRefs(useMenuStore())
 const searchStore = useSearchStore()
 const {
-  searchText,
-  isLoading,
-  focus,
   itemsCartocode,
   itemsMenuItems,
   itemsPois,
   itemsAddresses,
+  resultsCount,
 } = storeToRefs(searchStore)
-
-const results = computed(() => {
-  return (
-    itemsCartocode.value.length
-    + itemsMenuItems.value.length
-    + itemsPois.value.length
-    + itemsAddresses.value.length
-  )
-})
 
 onBeforeUnmount(() => searchStore.dispose())
 </script>
@@ -87,22 +76,15 @@ onBeforeUnmount(() => searchStore.dispose())
             />
             <VCard>
               <template #title>
-                <SearchInput
-                  :search-text="searchText"
-                  :is-loading="isLoading"
-                  @input="searchStore.submit"
-                  @focus="searchStore.onFocus"
-                  @blur="searchStore.delayedFocusLose"
-                />
+                <SearchInput />
               </template>
               <template #text>
                 <SearchResults
-                  v-if="results"
+                  v-if="resultsCount"
                   :items-cartocode="itemsCartocode"
                   :items-menu-items="itemsMenuItems"
                   :items-pois="itemsPois"
                   :items-addresses="itemsAddresses"
-                  @reset="searchStore.reset"
                   @cartocode-click="
                     searchStore.onCartocodeClick($event);
                     isActive.value = false;
@@ -120,7 +102,7 @@ onBeforeUnmount(() => searchStore.dispose())
                     isActive.value = false;
                   "
                 />
-                <template v-if="!focus && !results">
+                <template v-else>
                   <HomeMenu class="home-menu" menu-block="MenuBlockBottom" />
                   <SelectedCategories
                     v-if="selectedCategories?.length"

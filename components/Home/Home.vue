@@ -58,14 +58,13 @@ const device = useDevice()
 const { isochroneCurrentFeature } = useIsochrone()
 const searchStore = useSearchStore()
 const {
-  searchText,
-  isLoading,
-  focus,
+  isActive: searchisActive,
   itemsCartocode,
   itemsMenuItems,
   itemsPois,
   itemsAddresses,
   searchSelectedFeature,
+  resultsCount,
 } = storeToRefs(searchStore)
 
 //
@@ -467,7 +466,7 @@ function handlePoiCardClose() {
             v-else
             key="Menu"
             menu-block="MenuBlock"
-            :is-on-search="focus"
+            :is-on-search="resultsCount > 0"
             :is-filter-active="isFilterActive"
             class="tw-px-1 tw-pb-1.5"
             @activate-filter="onActivateFilter"
@@ -475,7 +474,7 @@ function handlePoiCardClose() {
           >
             <div class="tw-flex tw-flex-row tw-items-center">
               <Logo
-                v-if="!focus"
+                v-if="!searchisActive"
                 :main-url="mainUrl"
                 :site-name="siteName"
                 :logo-url="logoUrl"
@@ -483,21 +482,14 @@ function handlePoiCardClose() {
                 class="tw-flex-none tw-mr-2"
                 image-class="tw-max-w-2xl tw-max-h-12 md:tw-max-h-16"
               />
-              <SearchInput
-                :search-text="searchText"
-                :is-loading="isLoading"
-                @input="searchStore.submit"
-                @focus="searchStore.onFocus"
-                @blur="searchStore.delayedFocusLose"
-              />
+              <SearchInput />
             </div>
             <SearchResults
-              v-if="focus && !device.smallScreen"
+              v-if="resultsCount"
               :items-cartocode="itemsCartocode"
               :items-menu-items="itemsMenuItems"
               :items-pois="itemsPois"
               :items-addresses="itemsAddresses"
-              @reset="searchStore.reset"
               @cartocode-click="searchStore.onCartocodeClick"
               @category-click="searchStore.onCategoryClick"
               @poi-click="searchStore.onPoiClick"

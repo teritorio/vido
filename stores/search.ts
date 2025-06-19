@@ -19,7 +19,8 @@ export const useSearchStore = defineStore('search', () => {
     throw createError({ statusCode: 500, statusMessage: 'Wrong config', fatal: true })
 
   const { API_PROJECT, API_THEME, API_SEARCH, API_ADDR } = config.value
-  const focus = ref(false)
+
+  const isActive = ref(false)
   const searchText = ref('')
   const searchResultId = ref(0)
   const searchQueryId = ref(0)
@@ -91,40 +92,46 @@ export const useSearchStore = defineStore('search', () => {
     )
   })
 
+  const resultsCount = computed(() => {
+    return (
+      itemsCartocode.value.length
+      + itemsMenuItems.value.length
+      + itemsPois.value.length
+      + itemsAddresses.value.length
+    )
+  })
+
   function reset() {
     searchMenuItemsResults.value = null
     searchPoisResults.value = null
     searchAddressesResults.value = null
     searchCartocodeResult.value = null
     searchText.value = ''
-    focus.value = false
   }
 
-  function submit(event: Event): void {
-    searchText.value = (event.target as HTMLInputElement).value
+  function openSearch() {
+    isActive.value = true
+  }
 
-    // Reset results if empty search text
-    if (!searchText.value || searchText.value.trim().length === 0) {
+  function closeSearch() {
+    isActive.value = false
+    reset()
+  }
+
+  function submit(value: string): void {
+    if (!value || !value.trim().length) {
       searchMenuItemsResults.value = null
       searchPoisResults.value = null
       searchAddressesResults.value = null
       searchCartocodeResult.value = null
+      return
     }
+
+    searchText.value = value
 
     // Launch search if not already loading + search text length >= 3
     if (!isLoading.value && searchText.value.trim().length >= 3)
       performSearch()
-  }
-
-  function onFocus() {
-    focus.value = true
-  }
-
-  function delayedFocusLose() {
-  // Let time to catch click on results before hiden
-    setTimeout(() => {
-      focus.value = false
-    }, 200)
   }
 
   function onCartocodeClick(searchResult: SearchResult) {
@@ -284,20 +291,21 @@ export const useSearchStore = defineStore('search', () => {
   return {
     searchText,
     isLoading,
-    focus,
+    isActive,
     itemsCartocode,
     itemsMenuItems,
     itemsPois,
     itemsAddresses,
     searchSelectedFeature,
+    resultsCount,
     onCartocodeClick,
     onCategoryClick,
     onPoiClick,
     onAddressClick,
     reset,
     submit,
-    delayedFocusLose,
     dispose,
-    onFocus,
+    openSearch,
+    closeSearch,
   }
 })

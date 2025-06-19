@@ -1,9 +1,10 @@
 <script setup lang="ts">
-import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
+import { storeToRefs } from 'pinia'
 import SearchResultBlock from '~/components/Search/SearchResultBlock.vue'
 import type { SearchResult } from '~/lib/apiSearch'
+import { useSearchStore } from '~/stores/search'
 
-const props = defineProps<{
+defineProps<{
   itemsCartocode: {
     id: number
     label: string
@@ -29,36 +30,16 @@ const props = defineProps<{
 }>()
 
 defineEmits<{
-  (e: 'reset'): void
   (e: 'cartocodeClick', searchResult: SearchResult): void
   (e: 'categoryClick', searchResult: SearchResult): void
   (e: 'poiClick', searchResult: SearchResult): void
   (e: 'addressClick', searchResult: SearchResult): void
 }>()
 
-const results = computed(() => {
-  return (
-    props.itemsCartocode.length
-    + props.itemsMenuItems.length
-    + props.itemsPois.length
-    + props.itemsAddresses.length
-  )
-})
+const { resultsCount } = storeToRefs(useSearchStore())
 </script>
 
 <template>
-  <VBtn
-    type="button"
-    variant="text"
-    :style="{ alignSelf: 'flex-start' }"
-    @click="$emit('reset')"
-  >
-    <FontAwesomeIcon
-      icon="arrow-left"
-      size="lg"
-    />
-  </VBtn>
-
   <div class="search-results">
     <SearchResultBlock
       v-if="itemsCartocode.length > 0"
@@ -96,7 +77,7 @@ const results = computed(() => {
       @item-click="$emit('addressClick', $event)"
     />
 
-    <p v-if="results === 0">
+    <p v-if="resultsCount === 0">
       {{ $t('headerMenu.noResult') }}
     </p>
   </div>
