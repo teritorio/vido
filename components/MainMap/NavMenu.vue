@@ -2,7 +2,6 @@
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { storeToRefs } from 'pinia'
 import { useLocale } from 'vuetify'
-import { VDivider } from 'vuetify/components/VDivider'
 import { VList, VListItem } from 'vuetify/components/VList'
 import { VMenu } from 'vuetify/components/VMenu'
 import IconButton from '~/components/UI/IconButton.vue'
@@ -75,7 +74,12 @@ function getLinkTo(url: string) {
             </VListItem>
           </NuxtLink>
         </template>
-        <VDivider v-if="Boolean(entries.length)" />
+        <VDivider
+          v-if="Boolean(entries.length)"
+          class="border-opacity-100"
+          role="presentation"
+          aria-orientation="horizontal"
+        />
         <VListItem
           v-for="locale in locales"
           :key="typeof locale === 'string' ? locale : locale.code"

@@ -23,7 +23,7 @@ function onFocus(state: boolean) {
     :placeholder="$t('headerMenu.searchHint')"
     :persistent-clear="true"
     :autofocus="device.smallScreen"
-    bg-color="#F4F4F5"
+    :bg-color="device.smallScreen ? '#FFFFFF' : '#F4F4F5'"
     rounded
     clearable
     variant="solo"

@@ -162,6 +162,15 @@ ul {
 }
 
 :deep(.v-card-item) {
+  background-color: #F4F4F5;
+  box-shadow: rgb(0 0 0 / 20%) 0 11px 10px -7px;
+}
+
+:deep(.v-card-item__content) {
+  margin-bottom: 14px;
+}
+
+:deep(.v-card-title) {
   max-width: calc(100% - 56px);
 }
 
