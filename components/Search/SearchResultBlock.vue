@@ -1,57 +1,35 @@
-<script lang="ts">
+<script setup lang="ts">
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
-import type { PropType } from 'vue'
-
-import { defineNuxtComponent } from '#app'
 import TeritorioIcon from '~/components/UI/TeritorioIcon.vue'
 import type { SearchResult } from '~/lib/apiSearch'
 
-export default defineNuxtComponent({
-  components: {
-    FontAwesomeIcon,
-    TeritorioIcon,
-  },
+const props = defineProps<{
+  label: string
+  type: 'cartocode' | 'category' | 'pois' | 'addresse'
+  items: SearchResult[]
+  icon: string
+}>()
 
-  props: {
-    label: {
-      type: String as PropType<string>,
-      required: true,
-    },
-    type: {
-      type: String as PropType<'cartocode' | 'category' | 'pois' | 'addresse'>,
-      required: true,
-    },
-    items: {
-      type: Array as PropType<SearchResult[]>,
-      required: true,
-    },
-    icon: {
-      type: String as PropType<string>,
-      default: null,
-    },
-  },
+const emit = defineEmits<{
+  (e: 'itemClick', searchResult: SearchResult): void
+}>()
 
-  emits: {
-    itemClick: (_searchResult: SearchResult) => true,
-  },
+const { $tracking } = useNuxtApp()
 
-  methods: {
-    onItemClick(searchResult: SearchResult) {
-      this.$tracking({
-        type: 'search_result_event',
-        event: 'select',
-        resultType: this.type,
-        title: searchResult.label,
-      })
-      this.$emit('itemClick', searchResult)
-    },
-  },
-})
+function onItemClick(searchResult: SearchResult): void {
+  $tracking({
+    type: 'search_result_event',
+    event: 'select',
+    resultType: props.type,
+    title: searchResult.label,
+  })
+  emit('itemClick', searchResult)
+}
 </script>
 
 <template>
   <div class="tw-mb-3">
-    <h4 class="tw-text-zinc-500 tw-text-sm tw-mb-2">
+    <h4 class="tw-text-zinc-500 tw-text-md tw-mb-2">
       <FontAwesomeIcon v-if="icon" :icon="icon" />
       {{ label }}
     </h4>
@@ -63,7 +41,7 @@ export default defineNuxtComponent({
         :data-item="item.id"
         @click="onItemClick(item)"
       >
-        <teritorio-icon
+        <TeritorioIcon
           v-if="item.icon && item.icon.indexOf('teritorio') !== -1"
           :picto="item.icon"
           color-text="#6B7280"
