@@ -49,4 +49,12 @@ function onFocus(state: boolean) {
 :deep(.v-field__input:focus) {
   box-shadow: none;
 }
+
+:deep(.v-field__clearable) {
+  grid-column: 4;
+}
+
+:deep(.v-field__append-inner) {
+  grid-column: 3;
+}
 </style>
