@@ -246,6 +246,14 @@ function onMapStyleLoad(style: StyleSpecification): void {
 
     const firstSymbolLayerId = map.value.getStyle().layers.find(layer => layer.type === 'line')?.id
 
+    if (map.value.getLayer('BOUNDARY_AREA_LAYER')) {
+      map.value.removeLayer('BOUNDARY_AREA_LAYER')
+    }
+
+    if (map.value.getLayer('BOUNDAR_BORDER_LAYER')) {
+      map.value.removeLayer('BOUNDAR_BORDER_LAYER')
+    }
+
     map.value.addLayer({
       id: BOUNDARY_AREA_LAYER,
       source: BOUNDARY_SOURCE,
