@@ -21,7 +21,7 @@
     "lint:js": "eslint .",
     "lint:js:fix": "eslint --fix .",
     "lint:style": "stylelint --cache **/*.{vue,css,scss}",
-    "test": "yarn build-fixture && yarn build && yarn test:gui",
+    "test": "CYPRESS=true yarn build-fixture && CYPRESS=true yarn build && CYPRESS=true yarn test:gui",
     "test:gui": "yarn run cypress open",
     "test:cli": "yarn run cypress run",
     "test:histoire:report": "yarn build:histoire && npx --yes -- reg-cli __screenshots__/current __screenshots__/actual __screenshots__/diff -R __screenshots__/diff/index.html -J __screenshots__/diff/index.json --thresholdPixel 5 --matchingThreshold 0.3 --extendedErrors || exit 0",
