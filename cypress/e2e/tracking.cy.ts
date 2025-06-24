@@ -81,7 +81,7 @@ describe('home content', () => {
     })
 
     // Click on map POI
-    cy.get('#1', { timeout: 10000 }).click()
+    cy.get('#1', { timeout: 10000 }).click({ force: true })
     asserts.push((event: Event) => {
       assert(event.type === 'popup' && event.poiId === 1, 'Click on map POI')
     })
