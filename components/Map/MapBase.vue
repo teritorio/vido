@@ -300,6 +300,7 @@ defineExpose({ fitBounds, initPoiLayer, featuresPrepare, fitBoundsOptions })
       <template #body>
         <slot name="body" />
       </template>
+      <slot name="drawer" />
     </Map>
     <Attribution v-if="showAttribution && offMapAttribution" :attribution="fullAttribution" />
   </div>

@@ -29,7 +29,7 @@ export default defineNuxtComponent({
 <template>
   <button
     type="button"
-    class="tw-flex tw-gap-1 tw-items-center tw-border-solid tw-border-zinc-300 tw-border-2 tw-bg-white focus:tw-outline-none focus-visible:tw-bg-zinc-100 hover:tw-bg-zinc-100 tw-py-2 tw-px-4 tw-rounded-full"
+    class="tw-flex tw-gap-1 tw-items-center tw-border-solid tw-border-zinc-300 tw-border-2 tw-bg-white focus:tw-outline-none focus-visible:tw-bg-zinc-100 tw-py-2 tw-px-4 tw-rounded-full"
     v-bind="$attrs"
   >
     <FontAwesomeIcon

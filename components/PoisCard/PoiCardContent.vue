@@ -20,8 +20,10 @@ import { getContrastedColors } from '~/composables/useFeature'
 const props = withDefaults(defineProps<{
   detailsIsExternal?: boolean
   poi: ApiPoi
+  showActions?: boolean
 }>(), {
   detailsIsExternal: false,
+  showActions: true,
 })
 
 //
@@ -239,7 +241,7 @@ function trackIsochroneEvent(profile: Profile) {
       <ContribFieldGroup v-if="contribMode && isContribEligible(poi.properties)" v-bind="getContributorFields(poi)" />
     </div>
 
-    <div class="tw-flex tw-items-center tw-space-x-2 tw-justify-evenly tw-shrink-0 tw-bottom-0 tw-pt-2">
+    <div v-if="showActions" class="tw-flex tw-items-center tw-space-x-2 tw-justify-evenly tw-shrink-0 tw-bottom-0 tw-pt-2">
       <a
         v-if="device.phone && routeHref"
         :href="routeHref"

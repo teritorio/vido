@@ -92,7 +92,14 @@ export default defineNuxtComponent({
     const fullscreenControlObject = ref<FullscreenControl>()
 
     onMounted(() => {
-      fullscreenControlObject.value = new FullscreenControl()
+      const mapContainer = document.getElementById('map')
+
+      if (!mapContainer || !mapContainer.parentElement)
+        return
+
+      fullscreenControlObject.value = new FullscreenControl({
+        container: mapContainer.parentElement,
+      })
     })
 
     return {
@@ -373,10 +380,11 @@ export default defineNuxtComponent({
 </script>
 
 <template>
-  <div :class="(hideControl || !map) && 'map-controls-hidden'">
+  <div class="tw-relative" :class="(hideControl || !map) && 'map-controls-hidden'">
     <div id="map" />
     <slot name="controls" />
     <slot name="body" />
+    <slot />
   </div>
 </template>
 
