@@ -1,14 +1,16 @@
 <script setup lang="ts">
 import type { LngLatLike, Map as MapGL } from 'maplibre-gl'
-import { Popup } from 'maplibre-gl'
 import { storeToRefs } from 'pinia'
 import { getBBox } from '~/lib/bbox'
 import MapBase from '~/components/Map/MapBase.vue'
+import PoiCardContent from '~/components/PoisCard/PoiCardContent.vue'
+import UIButton from '~/components/UI/UIButton.vue'
 import type { ApiPoi } from '~/lib/apiPois'
 import { MAP_ZOOM } from '~/lib/constants'
 import type { MapPoiId } from '~/lib/mapPois'
 import { filterRouteByPoiIds } from '~/utils/styles'
 import { mapStore as useMapStore } from '~/stores/map'
+import { useSiteStore } from '~/stores/site'
 
 const props = withDefaults(defineProps<{
   extraAttributions?: string[]
@@ -24,13 +26,19 @@ const props = withDefaults(defineProps<{
   cluster: true,
 })
 
+const { config } = storeToRefs(useSiteStore())
+
+if (!config.value)
+  throw createError({ statusCode: 500, statusMessage: 'Wrong config', fatal: true })
+
+const { API_ENDPOINT, API_PROJECT, API_THEME } = config.value
 const mapBaseRef = ref<InstanceType<typeof MapBase>>()
 const map = ref<MapGL>()
+const selectedFeature = ref<ApiPoi | null>(null)
 
 const selectionZoom = computed(() => MAP_ZOOM.selectionZoom)
 const bounds = computed(() => getBBox({ type: 'FeatureCollection', features: props.features }))
 const center = computed((): LngLatLike | undefined => bounds.value?.getCenter())
-const popup = ref<Popup | null>(null)
 const { teritorioCluster } = storeToRefs(useMapStore())
 
 function onMapInit(mapInstance: MapGL): void {
@@ -63,17 +71,36 @@ function renderPois(): void {
     '#000000',
   ], props.cluster)
 
-  teritorioCluster.value?.addEventListener('feature-click', (e: Event) => {
-    if (popup.value) {
-      popup.value.remove()
-      popup.value = null
+  teritorioCluster.value?.addEventListener('feature-click', async (e: Event) => {
+    const feature: ApiPoi = (e as CustomEvent).detail.selectedFeature
+
+    if (feature.properties['route:point:type']) {
+      selectedFeature.value = feature
+      return
     }
-    const feature = (e as CustomEvent).detail.selectedFeature
-    popup.value = new Popup()
-      .setLngLat(feature.geometry.coordinates)
-      .setHTML(`<h3>${feature.properties.name}</h3>`)
-      .addTo(map.value as MapGL)
+
+    const { data, error, status } = await useFetch(
+      () => `${API_ENDPOINT}/${API_PROJECT}/${API_THEME}/poi/${feature.properties.metadata.id}.geojson`,
+      {
+        query: {
+          geometry_as: 'point',
+          short_description: true,
+        },
+      },
+    )
+
+    if (error.value)
+      throw createError(error.value)
+
+    if (status.value === 'success' && data.value) {
+      selectedFeature.value = data.value
+    }
   })
+}
+
+function handleClose(): void {
+  selectedFeature.value = null
+  teritorioCluster.value?.resetSelectedFeature()
 }
 </script>
 
@@ -89,17 +116,56 @@ function renderPois(): void {
     :off-map-attribution="offMapAttribution"
     @map-init="onMapInit"
     @map-style-load="onMapStyleLoad"
-  />
+  >
+    <template #drawer>
+      <VLayout v-if="selectedFeature">
+        <VNavigationDrawer absolute permanent elevation="4" location="start">
+          <VCard>
+            <template #append>
+              <UIButton
+                class="close-button"
+                color="#ffffff"
+                icon="times"
+                :title="$t('ui.close')"
+                @click=" handleClose"
+              />
+            </template>
+            <VCardText>
+              <PoiCardContent
+                :show-actions="false"
+                :details-is-external="true"
+                :poi="selectedFeature"
+              />
+            </VCardText>
+          </VCard>
+        </VNavigationDrawer>
+      </VLayout>
+    </template>
+  </MapBase>
 </template>
 
 <style lang="css" scoped>
-:deep(.maplibregl-popup-close-button) {
-  width: 24px;
-  height: 24px;
-  font-size: 24px;
-  border: 1px solid #000;
-  border-radius: 50%;
-  margin-top: 4px;
-  margin-right: 4px;
+.v-card {
+  height: 100%;
+}
+
+:deep(.v-card-item) {
+  padding-top: 0;
+  padding-right: 0;
+}
+
+:deep(.v-navigation-drawer__content h2) {
+  font-size: 1rem;
+}
+
+:deep(.close-button) {
+  background-color: rgb(0 0 0 / 55%);
+  border-radius: 0 0 0 8px;
+  border: 0;
+}
+
+:deep(.close-button svg) {
+  width: 20px;
+  height: 20px;
 }
 </style>
