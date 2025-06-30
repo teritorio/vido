@@ -1566,10 +1566,24 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@fontsource/atkinson-hyperlegible-next@npm:^5.2.2":
+  version: 5.2.5
+  resolution: "@fontsource/atkinson-hyperlegible-next@npm:5.2.5"
+  checksum: 10c0/7a717c81818f76487aff4f8d5a6bb1b2c8d76bfbcc1f9bcd3e81b7a9fb3af9b2f5719ec27001002eafb0dd8a2f0c8498388a0c0fd343598c636f5ef845460b61
+  languageName: node
+  linkType: hard
+
 "@fortawesome/fontawesome-common-types@npm:6.4.2":
   version: 6.4.2
   resolution: "@fortawesome/fontawesome-common-types@npm:6.4.2"
   checksum: 10c0/121bb1c55f7578d7516a1dfb95b4b5644d3aacd04cbbbddef317b99ec84ddd56aa8f6414abff190e9fc72ea1754f1beef1c5068641c31fbaf8407822a1733f82
+  languageName: node
+  linkType: hard
+
+"@fortawesome/fontawesome-common-types@npm:6.7.2":
+  version: 6.7.2
+  resolution: "@fortawesome/fontawesome-common-types@npm:6.7.2"
+  checksum: 10c0/0785df560542d9c08a0ba07bb7a39902274a3cd65c018672eb2520a99efccce18bdb7f7f4b1c6089763bc5627bf0f0837c3af963a8427eaeb535bd57c820a723
   languageName: node
   linkType: hard
 
@@ -1579,6 +1593,15 @@ __metadata:
   dependencies:
     "@fortawesome/fontawesome-common-types": "npm:6.4.2"
   checksum: 10c0/1d53c9f3c47aba71718dc701c97df356407f55d702f104f4fe685688a76d07706df6d0eca6307a33c62705c90051f63faeb483b5e2f89f0588ed441fa9c36d4c
+  languageName: node
+  linkType: hard
+
+"@fortawesome/fontawesome-svg-core@npm:^6.7.2":
+  version: 6.7.2
+  resolution: "@fortawesome/fontawesome-svg-core@npm:6.7.2"
+  dependencies:
+    "@fortawesome/fontawesome-common-types": "npm:6.7.2"
+  checksum: 10c0/9e4e2992b341d2d11cd6ab8cf001e2cb9be4266ce200b307d15c0618e7d2cf11c1c4c67a1f95f3cc70feed2380fa66672132c32078674d5f9cb2cb0b7703f3ac
   languageName: node
   linkType: hard
 
@@ -1600,12 +1623,30 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@fortawesome/free-regular-svg-icons@npm:^6.7.2":
+  version: 6.7.2
+  resolution: "@fortawesome/free-regular-svg-icons@npm:6.7.2"
+  dependencies:
+    "@fortawesome/fontawesome-common-types": "npm:6.7.2"
+  checksum: 10c0/3a334cb0c837170f7b14759ddc8ef2a821b8d2c59b23a7b852d7e3fb16b066dd5fe8649e47bc1ef91764c78a78f51d1c0c8c5b8567e1680eeb21e8afdc70f5f7
+  languageName: node
+  linkType: hard
+
 "@fortawesome/free-solid-svg-icons@npm:6.4.2":
   version: 6.4.2
   resolution: "@fortawesome/free-solid-svg-icons@npm:6.4.2"
   dependencies:
     "@fortawesome/fontawesome-common-types": "npm:6.4.2"
   checksum: 10c0/1a46c27be60ecdfaecd82f5e8ef07cbf5843b040f03fbab36da2eafc839df97efb437cc2c7ce5df53c6e71c06bf4ef8b520b62c4c0b153fe8a2a04368f155410
+  languageName: node
+  linkType: hard
+
+"@fortawesome/free-solid-svg-icons@npm:^6.7.2":
+  version: 6.7.2
+  resolution: "@fortawesome/free-solid-svg-icons@npm:6.7.2"
+  dependencies:
+    "@fortawesome/fontawesome-common-types": "npm:6.7.2"
+  checksum: 10c0/e900f3bb7b7d821421f11439ff78cd2b3c98ca31e848e1afebf7caa578d29a31fb6cf8ef283d4df342de777126a71fcbb154dd395b9d9ab6914a40a86df81413
   languageName: node
   linkType: hard
 
@@ -1768,6 +1809,13 @@ __metadata:
   version: 0.3.0
   resolution: "@humanwhocodes/retry@npm:0.3.0"
   checksum: 10c0/7111ec4e098b1a428459b4e3be5a5d2a13b02905f805a2468f4fa628d072f0de2da26a27d04f65ea2846f73ba51f4204661709f05bfccff645e3cedef8781bb6
+  languageName: node
+  linkType: hard
+
+"@iconify/types@npm:^2.0.0":
+  version: 2.0.0
+  resolution: "@iconify/types@npm:2.0.0"
+  checksum: 10c0/65a3be43500c7ccacf360e136d00e1717f050b7b91da644e94370256ac66f582d59212bdb30d00788aab4fc078262e91c95b805d1808d654b72f6d2072a7e4b2
   languageName: node
   linkType: hard
 
@@ -2068,6 +2116,22 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@lit-labs/ssr-dom-shim@npm:^1.2.0":
+  version: 1.3.0
+  resolution: "@lit-labs/ssr-dom-shim@npm:1.3.0"
+  checksum: 10c0/743a9b295ef2f186712f08883da553c9990be291409615309c99aa4946cfe440a184e4213c790c24505c80beb86b9cfecf10b5fb30ce17c83698f8424f48678d
+  languageName: node
+  linkType: hard
+
+"@lit/reactive-element@npm:^2.1.0":
+  version: 2.1.0
+  resolution: "@lit/reactive-element@npm:2.1.0"
+  dependencies:
+    "@lit-labs/ssr-dom-shim": "npm:^1.2.0"
+  checksum: 10c0/3cd61c4e7cc8effeb2c246d5dada8fbe0a730e9e0dd488eb38c91a4f63b773e3b7f86f8384051677298e73de470c7ca6b5634df3ca190b307f8bb8e0d51bb91c
+  languageName: node
+  linkType: hard
+
 "@mapbox/geojson-rewind@npm:^0.5.2":
   version: 0.5.2
   resolution: "@mapbox/geojson-rewind@npm:0.5.2"
@@ -2159,6 +2223,25 @@ __metadata:
     gl-style-migrate: dist/gl-style-migrate.mjs
     gl-style-validate: dist/gl-style-validate.mjs
   checksum: 10c0/cb2b761dc36fc94a58836859f4890b89cc85b24a7e8dc041ebd7ce87ef92de5ffb740ee3c1fde6f94298a63f1506ecf69a8525c8f23919fb408d78cdd93296c3
+  languageName: node
+  linkType: hard
+
+"@maplibre/maplibre-gl-style-spec@npm:^23.3.0":
+  version: 23.3.0
+  resolution: "@maplibre/maplibre-gl-style-spec@npm:23.3.0"
+  dependencies:
+    "@mapbox/jsonlint-lines-primitives": "npm:~2.0.2"
+    "@mapbox/unitbezier": "npm:^0.0.1"
+    json-stringify-pretty-compact: "npm:^4.0.0"
+    minimist: "npm:^1.2.8"
+    quickselect: "npm:^3.0.0"
+    rw: "npm:^1.3.3"
+    tinyqueue: "npm:^3.0.0"
+  bin:
+    gl-style-format: dist/gl-style-format.mjs
+    gl-style-migrate: dist/gl-style-migrate.mjs
+    gl-style-validate: dist/gl-style-validate.mjs
+  checksum: 10c0/c6207675c5e787a5743ef4d9b33778f5a85ba1f2a4e597e0e3dd0b527977cdac9b4c576477979f6af8d625b2bed8af76368f5a1c8b10500a2b855141d3f5caf3
   languageName: node
   linkType: hard
 
@@ -3323,6 +3406,29 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@panoramax/web-viewer@npm:^4.0.3":
+  version: 4.0.3
+  resolution: "@panoramax/web-viewer@npm:4.0.3"
+  dependencies:
+    "@fontsource/atkinson-hyperlegible-next": "npm:^5.2.2"
+    "@fortawesome/fontawesome-svg-core": "npm:^6.7.2"
+    "@fortawesome/free-regular-svg-icons": "npm:^6.7.2"
+    "@fortawesome/free-solid-svg-icons": "npm:^6.7.2"
+    "@photo-sphere-viewer/core": "npm:5.12.1"
+    "@photo-sphere-viewer/equirectangular-tiles-adapter": "npm:5.12.1"
+    "@photo-sphere-viewer/gallery-plugin": "npm:5.12.1"
+    "@photo-sphere-viewer/markers-plugin": "npm:5.12.1"
+    "@photo-sphere-viewer/virtual-tour-plugin": "npm:5.12.1"
+    iconify-icon: "npm:^3.0.0"
+    json5: "npm:^2.2.3"
+    lit: "npm:^3.2.1"
+    maplibre-gl: "npm:^5.3.0"
+    pmtiles: "npm:^4.3.0"
+    query-selector-shadow-dom: "npm:^1.0.1"
+  checksum: 10c0/bde961d57a02c3bcffcd8d21108a2f4430bcf3bb5c0987bf7273eac76cbc6f6daa677594278c781055bf3817c1791bd19b8cfc7726a08576b12a9e76d4daaca6
+  languageName: node
+  linkType: hard
+
 "@parcel/watcher-android-arm64@npm:2.4.1":
   version: 2.4.1
   resolution: "@parcel/watcher-android-arm64@npm:2.4.1"
@@ -3465,6 +3571,51 @@ __metadata:
     "@parcel/watcher-win32-x64":
       optional: true
   checksum: 10c0/33b7112094b9eb46c234d824953967435b628d3d93a0553255e9910829b84cab3da870153c3a870c31db186dc58f3b2db81382fcaee3451438aeec4d786a6211
+  languageName: node
+  linkType: hard
+
+"@photo-sphere-viewer/core@npm:5.12.1":
+  version: 5.12.1
+  resolution: "@photo-sphere-viewer/core@npm:5.12.1"
+  dependencies:
+    three: "npm:^0.173.0"
+  checksum: 10c0/4f0908be36597adeda6b0cbd40f886c4ee4b944dd343bafb6894d4a401bd827a4d5bee6446f71110296a1567f152732294d0efd2358684a1fa3ff8c1f6889739
+  languageName: node
+  linkType: hard
+
+"@photo-sphere-viewer/equirectangular-tiles-adapter@npm:5.12.1":
+  version: 5.12.1
+  resolution: "@photo-sphere-viewer/equirectangular-tiles-adapter@npm:5.12.1"
+  peerDependencies:
+    "@photo-sphere-viewer/core": 5.12.1
+  checksum: 10c0/5f2de062a989268861bef2daddcef33eb038e65ab46b582010d81af3e1034c27d425e3da6f131793bf075466bfa60e56b5481f2588a4be5ec3dcb83fa972ed47
+  languageName: node
+  linkType: hard
+
+"@photo-sphere-viewer/gallery-plugin@npm:5.12.1":
+  version: 5.12.1
+  resolution: "@photo-sphere-viewer/gallery-plugin@npm:5.12.1"
+  peerDependencies:
+    "@photo-sphere-viewer/core": 5.12.1
+  checksum: 10c0/a03a54330bf5d3d770ad7cdf3b15216dd1faea3f132058126dcfbbea0b363549aff2d1328ebcb0c62b34086cbea72bad338bcd55bc464e9ba564b8841a5f39de
+  languageName: node
+  linkType: hard
+
+"@photo-sphere-viewer/markers-plugin@npm:5.12.1":
+  version: 5.12.1
+  resolution: "@photo-sphere-viewer/markers-plugin@npm:5.12.1"
+  peerDependencies:
+    "@photo-sphere-viewer/core": 5.12.1
+  checksum: 10c0/a5145f7971e622f68493c560ee1afc793148f63e69b23ab29b23a675f50d0ef48f58328c7a92347c03669428435ac09efa1c501bfe9b6f3a4be703ffcb06db1c
+  languageName: node
+  linkType: hard
+
+"@photo-sphere-viewer/virtual-tour-plugin@npm:5.12.1":
+  version: 5.12.1
+  resolution: "@photo-sphere-viewer/virtual-tour-plugin@npm:5.12.1"
+  peerDependencies:
+    "@photo-sphere-viewer/core": 5.12.1
+  checksum: 10c0/e0a57e95e44a523403c24f97806029662911c20729508e3952cb48a93a276f7ad33c89aadf53cb76064201a6c8a9e048591b6c0c3636c47e8819f95e38f6d71d
   languageName: node
   linkType: hard
 
@@ -4218,6 +4369,7 @@ __metadata:
     "@nuxt/image-edge": "npm:1.0.0-rc.1-28119537.bfe30ab"
     "@nuxt/types": "npm:^2.17.0"
     "@nuxtjs/i18n": "npm:8.0.0"
+    "@panoramax/web-viewer": "npm:^4.0.3"
     "@pinia/nuxt": "npm:0.4.11"
     "@sentry/node": "npm:^8.35.0"
     "@sentry/vue": "npm:^8.35.0"
@@ -5192,6 +5344,13 @@ __metadata:
     "@types/webpack": "npm:^4"
     terser: "npm:^4.6.13"
   checksum: 10c0/bcedcf67b5903b6ea88e6b7113566945347a655b97f184810337478842e9623ebc85e6e491f3d990863cb645821b0ade71dd703e1e35048ca99cb6b76fe48974
+  languageName: node
+  linkType: hard
+
+"@types/trusted-types@npm:^2.0.2":
+  version: 2.0.7
+  resolution: "@types/trusted-types@npm:2.0.7"
+  checksum: 10c0/4c4855f10de7c6c135e0d32ce462419d8abbbc33713b31d294596c0cc34ae1fa6112a2f9da729c8f7a20707782b0d69da3b1f8df6645b0366d08825ca1522e0c
   languageName: node
   linkType: hard
 
@@ -9535,6 +9694,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"fflate@npm:^0.8.2":
+  version: 0.8.2
+  resolution: "fflate@npm:0.8.2"
+  checksum: 10c0/03448d630c0a583abea594835a9fdb2aaf7d67787055a761515bf4ed862913cfd693b4c4ffd5c3f3b355a70cf1e19033e9ae5aedcca103188aaff91b8bd6e293
+  languageName: node
+  linkType: hard
+
 "figures@npm:^3.0.0, figures@npm:^3.2.0":
   version: 3.2.0
   resolution: "figures@npm:3.2.0"
@@ -10669,6 +10835,15 @@ __metadata:
   dependencies:
     "@babel/runtime": "npm:^7.17.2"
   checksum: 10c0/2a674739aab219704d5a0bf62d03bed20ad2bceff9579efb4da61c4946c883fc172062ba7405a26bf795995860f2ab15826b05271f4c457bf7eb19e852f6006d
+  languageName: node
+  linkType: hard
+
+"iconify-icon@npm:^3.0.0":
+  version: 3.0.0
+  resolution: "iconify-icon@npm:3.0.0"
+  dependencies:
+    "@iconify/types": "npm:^2.0.0"
+  checksum: 10c0/aa8b99c00e2328e1dfd31fed72b8b4770097063cd50792eb3dd0fc3892ce25a4ae28b4f9c8c3a379851a516572b91f041b1fe64c6ad7093bad42b7f4496131bf
   languageName: node
   linkType: hard
 
@@ -11815,6 +11990,37 @@ __metadata:
   languageName: node
   linkType: hard
 
+"lit-element@npm:^4.2.0":
+  version: 4.2.0
+  resolution: "lit-element@npm:4.2.0"
+  dependencies:
+    "@lit-labs/ssr-dom-shim": "npm:^1.2.0"
+    "@lit/reactive-element": "npm:^2.1.0"
+    lit-html: "npm:^3.3.0"
+  checksum: 10c0/20577f2092ac1e1bd82fba2bbc9ce0122b35dc2495906d3fbcb437c3727b9c8ed1c0691b8b859f65a51e910db1341d95233c117e1e1c88c450b30e2d3b62fdb8
+  languageName: node
+  linkType: hard
+
+"lit-html@npm:^3.3.0":
+  version: 3.3.0
+  resolution: "lit-html@npm:3.3.0"
+  dependencies:
+    "@types/trusted-types": "npm:^2.0.2"
+  checksum: 10c0/c1065048d89d93df6a46cdeed9abd637ae9bcc0847ee108dccbb2e1627a4074074e1d3ac9360e08a736d76f8c76b2c88166dbe465406da123b9137e29c2e0034
+  languageName: node
+  linkType: hard
+
+"lit@npm:^3.2.1":
+  version: 3.3.0
+  resolution: "lit@npm:3.3.0"
+  dependencies:
+    "@lit/reactive-element": "npm:^2.1.0"
+    lit-element: "npm:^4.2.0"
+    lit-html: "npm:^3.3.0"
+  checksum: 10c0/27e6d109c04c8995f47c82a546407c5ed8d399705f9511d1f3ee562eb1ab4bc00fae5ec897da55fb50f202b2a659466e23cccd809d039e7d4f935fcecb2bc6a7
+  languageName: node
+  linkType: hard
+
 "loader-utils@npm:^3.2.1":
   version: 3.2.2
   resolution: "loader-utils@npm:3.2.2"
@@ -12142,6 +12348,40 @@ __metadata:
     promise-retry: "npm:^2.0.1"
     ssri: "npm:^10.0.0"
   checksum: 10c0/df5f4dbb6d98153b751bccf4dc4cc500de85a96a9331db9805596c46aa9f99d9555983954e6c1266d9f981ae37a9e4647f42b9a4bb5466f867f4012e582c9e7e
+  languageName: node
+  linkType: hard
+
+"maplibre-gl@npm:^5.3.0":
+  version: 5.6.0
+  resolution: "maplibre-gl@npm:5.6.0"
+  dependencies:
+    "@mapbox/geojson-rewind": "npm:^0.5.2"
+    "@mapbox/jsonlint-lines-primitives": "npm:^2.0.2"
+    "@mapbox/point-geometry": "npm:^0.1.0"
+    "@mapbox/tiny-sdf": "npm:^2.0.6"
+    "@mapbox/unitbezier": "npm:^0.0.1"
+    "@mapbox/vector-tile": "npm:^1.3.1"
+    "@mapbox/whoots-js": "npm:^3.1.0"
+    "@maplibre/maplibre-gl-style-spec": "npm:^23.3.0"
+    "@types/geojson": "npm:^7946.0.16"
+    "@types/geojson-vt": "npm:3.2.5"
+    "@types/mapbox__point-geometry": "npm:^0.1.4"
+    "@types/mapbox__vector-tile": "npm:^1.3.4"
+    "@types/pbf": "npm:^3.0.5"
+    "@types/supercluster": "npm:^7.1.3"
+    earcut: "npm:^3.0.1"
+    geojson-vt: "npm:^4.0.2"
+    gl-matrix: "npm:^3.4.3"
+    global-prefix: "npm:^4.0.0"
+    kdbush: "npm:^4.0.2"
+    murmurhash-js: "npm:^1.0.0"
+    pbf: "npm:^3.3.0"
+    potpack: "npm:^2.0.0"
+    quickselect: "npm:^3.0.0"
+    supercluster: "npm:^8.0.1"
+    tinyqueue: "npm:^3.0.0"
+    vt-pbf: "npm:^3.1.3"
+  checksum: 10c0/d679ac3f4219cfe2fbdcb61147575052123d4336edd408d43a7d1f8ac9e7b1c73dc30e384c44d4b3790118b44041c423d0821a54fd5594174b88d40857e376b6
   languageName: node
   linkType: hard
 
@@ -14028,6 +14268,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"pmtiles@npm:^4.3.0":
+  version: 4.3.0
+  resolution: "pmtiles@npm:4.3.0"
+  dependencies:
+    fflate: "npm:^0.8.2"
+  checksum: 10c0/4e3d4195f04c8229e51eaa1cd5bd94ebbeabcb159489100340a0fa6e1f929d52a2e42964acad51f846a91a065e359b9a9fc7ce93530522f634e2d904ed290645
+  languageName: node
+  linkType: hard
+
 "polygon-clipping@npm:^0.15.3":
   version: 0.15.7
   resolution: "polygon-clipping@npm:0.15.7"
@@ -14780,6 +15029,13 @@ __metadata:
   dependencies:
     side-channel: "npm:^1.0.4"
   checksum: 10c0/7a8c9d77968aeccb769aedd7e047c0e0109dad0cfa57cab1ad906f4069fd58f361b80abd2de5854ba9a09b4c5d06d6a2c82108766f1f1527572fe6130deaa471
+  languageName: node
+  linkType: hard
+
+"query-selector-shadow-dom@npm:^1.0.1":
+  version: 1.0.1
+  resolution: "query-selector-shadow-dom@npm:1.0.1"
+  checksum: 10c0/f36de03f170ff1da69c3eecfa7f8b01e450a46dd266c921e17f36076ec59862eee00179489f30cb17c118bb56e868436578c01ea66f671fb358750d6ae474125
   languageName: node
   linkType: hard
 
@@ -16681,6 +16937,13 @@ __metadata:
   dependencies:
     any-promise: "npm:^1.0.0"
   checksum: 10c0/f375aeb2b05c100a456a30bc3ed07ef03a39cbdefe02e0403fb714b8c7e57eeaad1a2f5c4ecfb9ce554ce3db9c2b024eba144843cd9e344566d9fcee73b04767
+  languageName: node
+  linkType: hard
+
+"three@npm:^0.173.0":
+  version: 0.173.0
+  resolution: "three@npm:0.173.0"
+  checksum: 10c0/6c8ad9b7ab6baaa0dc033c550e76cd3afe462ecfa99ba1b445714f36eeb4994e7dfcb1b72d3c32f6b53ac38df457aa3341ae4f948cb6cfd1d3acc9ee7bba4e58
   languageName: node
   linkType: hard
 
