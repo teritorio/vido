@@ -32,6 +32,7 @@
   "dependencies": {
     "@fortawesome/vue-fontawesome": "^3.0.3",
     "@gtm-support/vue-gtm": "^2.0.0",
+    "@panoramax/web-viewer": "^4.0.3",
     "@pinia/nuxt": "0.4.11",
     "@sentry/node": "^8.35.0",
     "@sentry/vue": "^8.35.0",
