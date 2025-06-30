@@ -1,7 +1,7 @@
-ARG NODE_VERSION
+ARG NODE_VERSION=20-alpine3.18
 FROM node:${NODE_VERSION}
 
-RUN apk --no-cache add git
+RUN apk --no-cache add git ruby
 
 # Create app directory
 RUN mkdir -p /usr/src/app/.nuxt
@@ -12,16 +12,17 @@ RUN corepack enable
 COPY package.json yarn.lock .yarnrc.yml /usr/src/app/
 RUN yarn install && yarn cache clean
 COPY . /usr/src/app
+RUN yarn build-fixture
 
-ENV NODE_OPTIONS --openssl-legacy-provider
+ENV NODE_OPTIONS="--openssl-legacy-provider"
 COPY vidos-config-empty.json vidos-config.json
 COPY vidos.config.sample.ts vidos.config.ts
 RUN yarn build
 
 # Set environment variables
-ENV NODE_ENV production
-ENV NUXT_HOST 0.0.0.0
-ENV NUXT_PORT 3000
+ENV NODE_ENV="production"
+ENV NUXT_HOST="0.0.0.0"
+ENV NUXT_PORT="3000"
 
 EXPOSE 3000
 CMD [ "node", ".output/server/index.mjs" ]
