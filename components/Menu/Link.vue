@@ -5,7 +5,6 @@ import type { PropType } from 'vue'
 import { defineNuxtComponent } from '#app'
 import MenuItem from '~/components/Menu/Item.vue'
 import type { ApiMenuItem, ApiMenuLink } from '~/lib/apiMenu'
-import { getContrastedColors } from '~/composables/useFeature'
 
 export default defineNuxtComponent({
   components: {
@@ -27,20 +26,27 @@ export default defineNuxtComponent({
     },
   },
 
+  setup(props) {
+    const { colorFill, colorText } = useContrastedColors(
+      props.menuLink.link.color_fill,
+      props.menuLink.link.color_text,
+    )
+
+    return { colorFill, colorText }
+  },
+
   emits: {
     click: (_menuLinkId: ApiMenuItem['id']) => true,
   },
 
   computed: {
     menuItemProps() {
-      const { colorFill, colorText } = getContrastedColors(this.menuLink.link.color_fill, this.menuLink.link.color_text)
-
       return {
         id: `MenuLink-${this.menuLink.id}`,
         href: this.menuLink.link.href,
         displayMode: this.menuLink.link.display_mode || this.displayModeDefault,
-        colorFill,
-        colorText,
+        colorFill: this.colorFill,
+        colorText: this.colorText,
         icon: this.menuLink.link.icon,
         size: this.size,
         name: this.menuLink.link.name,

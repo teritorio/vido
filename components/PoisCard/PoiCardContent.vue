@@ -12,7 +12,6 @@ import { useSiteStore } from '~/stores/site'
 import ContribFieldGroup from '~/components/Fields/ContribFieldGroup.vue'
 import useDevice from '~/composables/useDevice'
 import IsochroneTrigger from '~/components/Isochrone/IsochroneTrigger.vue'
-import { getContrastedColors } from '~/composables/useFeature'
 
 //
 // Props
@@ -51,7 +50,10 @@ const { explorerModeEnabled, favoritesModeEnabled } = storeToRefs(useSiteStore()
 if (!props.poi.properties.display)
   throw createError(`Feature ${props.poi.properties.metadata.id} is missing 'display' property.`)
 
-const { colorFill, colorText } = getContrastedColors(props.poi.properties.display.color_fill, props.poi.properties.display.color_text)
+const { colorFill, colorText } = useContrastedColors(
+  toRef(() => props.poi.properties.display!.color_fill),
+  toRef(() => props.poi.properties.display!.color_text),
+)
 
 //
 // Data

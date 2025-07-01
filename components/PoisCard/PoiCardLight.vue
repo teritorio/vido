@@ -3,7 +3,6 @@ import Fields from '~/components/PoisCard/Fields.vue'
 import TeritorioIconBadge from '~/components/UI/TeritorioIconBadge.vue'
 import UIPicture from '~/components/UI/UIPicture.vue'
 import type { ApiPoi } from '~/lib/apiPois'
-import { getContrastedColors } from '~/composables/useFeature'
 
 const props = withDefaults(defineProps<{
   notebook?: boolean
@@ -17,15 +16,18 @@ const { featureName } = useFeature(toRef(() => props.poi), { type: 'popup' })
 const colorLine = ref(props.poi.properties.display?.color_line || '#000000')
 const websiteDetails = ref(props.poi.properties.editorial && props.poi.properties.editorial['website:details'])
 
+if (!props.poi.properties.display)
+  throw createError(`Feature ${props.poi.properties.metadata.id} is missing 'display' property.`)
+
+const { colorFill, colorText } = useContrastedColors(
+  toRef(() => props.poi.properties.display!.color_fill),
+  toRef(() => props.poi.properties.display!.color_text),
+)
+
 const teritorioIconBadgeProps = computed(() => {
-  if (!props.poi.properties.display)
-    throw createError(`Feature ${props.poi.properties.metadata.id} is missing 'display' property.`)
-
-  const { colorFill, colorText } = getContrastedColors(props.poi.properties.display.color_fill, props.poi.properties.display.color_text)
-
   return {
-    colorFill: props.poi.properties['route:point:type'] ? colorText : colorFill,
-    colorText: props.poi.properties['route:point:type'] ? colorFill : colorText,
+    colorFill: props.poi.properties['route:point:type'] ? colorText.value : colorFill.value,
+    colorText: props.poi.properties['route:point:type'] ? colorFill.value : colorText.value,
     picto: props.poi.properties.display?.icon,
     text: props.poi.properties.display?.text,
     size: 'lg',

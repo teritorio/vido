@@ -20,7 +20,6 @@ import type { ApiPoiProperties, FieldsListItem } from '~/lib/apiPois'
 import { ADDRESS_FIELDS } from '~/composables/useField'
 import type { PropertyTranslationsContextEnum } from '~/stores/site'
 import { useSiteStore } from '~/stores/site'
-import { getContrastedColors } from '~/composables/useFeature'
 
 export function isFiledEmpty(
   field: FieldsListItem,
@@ -104,7 +103,10 @@ export default defineNuxtComponent({
     if (!props.properties.display)
       throw createError(`Feature ${props.properties.metadata.id} is missing 'display' property.`)
 
-    const { colorFill, colorText } = getContrastedColors(props.properties.display.color_fill, props.properties.display.color_text)
+    const { colorFill, colorText } = useContrastedColors(
+      toRef(() => props.properties.display!.color_fill),
+      toRef(() => props.properties.display!.color_text),
+    )
     const textLimit = ref(130)
     const { p, pv } = useSiteStore()
 

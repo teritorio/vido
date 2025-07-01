@@ -5,7 +5,6 @@ import type { PropType } from 'vue'
 import { defineNuxtComponent } from '#app'
 import MenuItem from '~/components/Menu/Item.vue'
 import type { ApiMenuGroup, ApiMenuItem } from '~/lib/apiMenu'
-import { getContrastedColors } from '~/composables/useFeature'
 
 export default defineNuxtComponent({
   components: {
@@ -35,16 +34,23 @@ export default defineNuxtComponent({
     click: (_menuGroupId: ApiMenuItem['id']) => true,
   },
 
+  setup(props) {
+    const { colorFill, colorText } = useContrastedColors(
+      props.menuGroup.menu_group.color_fill,
+      props.menuGroup.menu_group.color_text,
+    )
+
+    return { colorFill, colorText }
+  },
+
   computed: {
     menuItemProps() {
-      const { colorFill, colorText } = getContrastedColors(this.menuGroup.menu_group.color_fill, this.menuGroup.menu_group.color_text)
-
       return {
         id: `MenuGroup-${this.menuGroup.id}`,
         href: `/${this.menuGroup.id}/`,
         displayMode: this.menuGroup.menu_group.display_mode || this.displayModeDefault,
-        colorFill,
-        colorText,
+        colorFill: this.colorFill,
+        colorText: this.colorText,
         icon: this.menuGroup.menu_group.icon,
         size: this.size,
         name: this.menuGroup.menu_group.name,
