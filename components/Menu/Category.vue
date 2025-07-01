@@ -7,7 +7,6 @@ import MenuItem from '~/components/Menu/Item.vue'
 import type { ApiMenuCategory, ApiMenuItem } from '~/lib/apiMenu'
 import type { FilterValues } from '~/utils/types-filters'
 import { filterValuesIsSet } from '~/utils/types-filters'
-import { getContrastedColors } from '~/composables/useFeature'
 
 export default defineNuxtComponent({
   components: {
@@ -36,19 +35,27 @@ export default defineNuxtComponent({
       required: true,
     },
   },
+
+  setup(props) {
+    const { colorFill, colorText } = useContrastedColors(
+      props.category.category.color_fill,
+      props.category.category.color_text,
+    )
+
+    return { colorFill, colorText }
+  },
+
   computed: {
     isFiltered(): boolean {
       return this.filters && filterValuesIsSet(this.filters)
     },
     menuItemProps() {
-      const { colorFill, colorText } = getContrastedColors(this.category.category.color_fill, this.category.category.color_text)
-
       return {
         id: `MenuItem-${this.category.id}`,
         href: `/${this.category.id}`,
         displayMode: this.category.category.display_mode || this.displayModeDefault,
-        colorFill,
-        colorText,
+        colorFill: this.colorFill,
+        colorText: this.colorText,
         icon: this.category.category.icon,
         size: this.size,
         name: this.category.category.name,

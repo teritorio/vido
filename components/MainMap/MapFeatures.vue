@@ -32,7 +32,6 @@ import type { LatLng } from '~/utils/types'
 import { MapStyleEnum } from '~/utils/types'
 import { getHashPart } from '~/utils/url'
 import useDevice from '~/composables/useDevice'
-import { getContrastedColors } from '~/composables/useFeature'
 
 const props = withDefaults(defineProps<{
   defaultBounds: LngLatBounds
@@ -262,20 +261,23 @@ async function updateSelectedFeature(feature?: ApiPoi): Promise<void> {
 
             if (f.properties['route:point:type']) {
               if (!('metadata' in f.properties)) {
-                const { colorFill, colorText } = getContrastedColors(poi?.properties.display?.color_fill || '#76009E', poi?.properties.display?.color_text)
+                const { colorFill, colorText } = useContrastedColors(
+                  poi?.properties.display?.color_fill || '#76009E',
+                  poi?.properties.display?.color_text,
+                )
 
                 f = apiRouteWaypointToApiPoi(
                   f as ApiRouteWaypoint,
-                  colorFill,
+                  colorFill.value,
                   poi?.properties.display?.color_line || '#76009E',
-                  colorText,
+                  colorText.value,
                   f.properties['route:point:type'] === ApiRouteWaypointType.way_point
                     ? (waypointIndex++).toString()
                     : undefined,
                 )
               }
               else {
-                const { colorFill, colorText } = getContrastedColors(
+                const { colorFill, colorText } = useContrastedColors(
                   f.properties.display?.color_fill || poi?.properties.display?.color_fill || '#76009E',
                   f.properties.display?.color_text || poi?.properties.display?.color_text,
                 )
@@ -286,9 +288,9 @@ async function updateSelectedFeature(feature?: ApiPoi): Promise<void> {
                     ...f.properties,
                     display: {
                       icon: iconMap[f.properties['route:point:type']],
-                      color_fill: colorFill,
+                      color_fill: colorFill.value,
                       color_line: f.properties.display?.color_line || poi?.properties.display?.color_line || '#76009E',
-                      color_text: colorText,
+                      color_text: colorText.value,
                       text: f.properties['route:point:type']
                       === ApiRouteWaypointType.way_point
                         ? (waypointIndex++).toString()

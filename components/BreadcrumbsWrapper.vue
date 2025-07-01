@@ -5,6 +5,7 @@ import type { MenuItem } from '~/lib/apiMenu'
 import { useNavigationStore } from '~/stores/navigation'
 import TeritorioIconBadge from '~/components/UI/TeritorioIconBadge.vue'
 import type { RouteLocationRaw } from '#vue-router'
+import type { TextColors } from '~/lib/apiPois'
 
 const navigationStore = useNavigationStore()
 const { navigationStack } = storeToRefs(navigationStore)
@@ -26,31 +27,35 @@ type CustomBreadcrumbItem = InternalBreadcrumbItem & {
     id: number
     picto: string
     colorFill: string
-    colorText: string
+    colorText: TextColors
     size: string
   }
 }
 
 const items = computed(() => {
   return navigationStack.value.map((item) => {
-    const base = getItem(item)
-    const { colorFill, colorText } = getContrastedColors(base.color_fill, base.color_text)
-
-    return {
-      icon: {
-        id: item.id,
-        picto: base.icon,
-        colorFill,
-        colorText,
-        size: 'md',
-      },
-      title: base.name.fr,
-    } satisfies CustomBreadcrumbItem
+    return getTeritorioIconBadgeProps(item)
   })
 })
 
 function getItem(item: MenuItem) {
   return item.menu_group || item.link || item.category || {}
+}
+
+function getTeritorioIconBadgeProps(item: MenuItem): CustomBreadcrumbItem {
+  const base = getItem(item)
+  const { colorFill, colorText } = useContrastedColors(base.color_fill, base.color_text)
+
+  return {
+    icon: {
+      id: item.id,
+      picto: base.icon,
+      colorFill: colorFill.value,
+      colorText: colorText.value,
+      size: 'md',
+    },
+    title: base.name.fr,
+  }
 }
 </script>
 

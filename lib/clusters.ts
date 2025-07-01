@@ -2,7 +2,6 @@ import type { GeoJSONFeature, LngLatLike, MapGeoJSONFeature, Point } from 'mapli
 import { Marker } from 'maplibre-gl'
 import { createApp } from 'vue'
 import TeritorioIconBadge from '~/components/UI/TeritorioIconBadge.vue'
-import { getContrastedColors } from '~/composables/useFeature'
 
 function getMarkerDonutSegment(start: number, end: number, r: number, r0: number, colorFill: string): string {
   if (end - start === 1)
@@ -109,11 +108,17 @@ export function markerRender(element: HTMLDivElement, markerSize: number, featur
   if (typeof feature.properties?.editorial === 'string')
     feature.properties.editorial = JSON.parse(feature.properties?.editorial)
 
-  const { colorFill, colorText } = getContrastedColors(feature.properties.display?.color_fill, feature.properties.display?.color_text)
+  if (!feature.properties.display)
+    throw createError(`Feature ${feature.properties.metadata.id} is missing 'display' property.`)
+
+  const { colorFill, colorText } = useContrastedColors(
+    toRef(() => feature.properties.display.color_fill),
+    toRef(() => feature.properties.display.color_text),
+  )
 
   createApp(TeritorioIconBadge, {
-    colorFill: feature.properties['route:point:type'] ? colorText : colorFill,
-    colorText: feature.properties['route:point:type'] ? colorFill : colorText,
+    colorFill: feature.properties['route:point:type'] ? colorText.value : colorFill.value,
+    colorText: feature.properties['route:point:type'] ? colorFill.value : colorText.value,
     picto: feature.properties.display?.icon,
     image: feature.properties!['image:thumbnail'],
     size: null,

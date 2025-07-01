@@ -10,7 +10,6 @@ import Actions from '~/components/PoisList/Actions.vue'
 import TeritorioIconBadge from '~/components/UI/TeritorioIconBadge.vue'
 import { menuStore as useMenuStore } from '~/stores/menu'
 import { headerFromSettings } from '~/lib/apiSettings'
-import { getContrastedColors } from '~/composables/useFeature'
 
 interface DataTableHeader {
   filterable?: boolean
@@ -109,15 +108,27 @@ const teritorioIconBadgeProps = computed(() => {
     throw createError({ statusCode: 404, message: 'Category Not Found' })
   }
 
-  const { colorFill, colorText } = getContrastedColors(category.value.category.color_fill, category.value.category.color_text)
+  const { colorFill, colorText } = getContrastedColors()
 
   return {
-    colorFill,
-    colorText,
-    picto: category.value?.category.icon,
+    colorFill: colorFill.value,
+    colorText: colorText.value,
+    picto: category.value!.category.icon,
     size: 'xl',
   }
 })
+
+function getContrastedColors() {
+  if (!category.value) {
+    throw createError({ statusCode: 404, message: 'Category Not Found' })
+  }
+
+  const { colorFill, colorText } = useContrastedColors(
+    category.value.category.color_fill,
+    category.value.category.color_text,
+  )
+  return { colorFill, colorText }
+}
 
 //
 // Methods

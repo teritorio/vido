@@ -3,7 +3,6 @@ import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import type { ApiMenuCategory } from '~/lib/apiMenu'
 import TeritorioIconBadge from '~/components/UI/TeritorioIconBadge.vue'
 import { menuStore as useMenuStore } from '~/stores/menu'
-import { getContrastedColors } from '~/composables/useFeature'
 
 defineProps<{
   categories: ApiMenuCategory[]
@@ -22,13 +21,13 @@ function getItem(item: ApiMenuCategory) {
 
 function getTeritorioIconBadgeProps(item: ApiMenuCategory) {
   const base = getItem(item)
-  const { colorFill, colorText } = getContrastedColors(base.color_fill, base.color_text)
+  const { colorFill, colorText } = useContrastedColors(base.color_fill, base.color_text)
 
   return {
     id: item.id,
     picto: base.icon,
-    colorFill,
-    colorText,
+    colorFill: colorFill.value,
+    colorText: colorText.value,
     size: 'lg',
   }
 }

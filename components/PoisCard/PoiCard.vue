@@ -4,7 +4,6 @@ import TeritorioIcon from '~/components/UI/TeritorioIcon.vue'
 import UIButton from '~/components/UI/UIButton.vue'
 import UIPicture from '~/components/UI/UIPicture.vue'
 import type { ApiPoi } from '~/lib/apiPois'
-import { getContrastedColors } from '~/composables/useFeature'
 
 const props = withDefaults(defineProps<{
   canClose?: boolean
@@ -27,14 +26,16 @@ const device = useDevice()
 if (!props.poi.properties.display)
   throw createError(`Feature ${props.poi.properties.metadata.id} is missing 'display' property.`)
 
-const { colorFill } = getContrastedColors(props.poi.properties.display.color_fill)
-
 const closeBtnStyles = reactive({
   backgroundColor: 'rgb(0 0 0 / 55%)',
   borderRadius: device.value.smallScreen ? '0 0 0 8px' : '0 0 8px 0',
   right: device.value.smallScreen ? 0 : 'unset',
   left: device.value.smallScreen ? 'unset' : 0,
 })
+
+const { colorFill } = useContrastedColors(toRef(() => props.poi.properties.display!.color_fill))
+const hasImage = computed(() => props.poi.properties.image && props.poi.properties.image.length > 0)
+const logoColor = computed(() => hasImage.value ? '#AAA' : colorFill.value)
 </script>
 
 <template>
@@ -60,11 +61,7 @@ const closeBtnStyles = reactive({
         :picto="poi.properties.display.icon"
         :use-native-alignment="false"
         class="tw-text-8xl tw-align-middle tw-absolute tw-z-0"
-        :color-text="
-          poi.properties.image && poi.properties.image.length > 0
-            ? '#AAA'
-            : colorFill
-        "
+        :color-text="logoColor"
       />
       <UIPicture
         v-if="poi.properties.image && poi.properties.image.length > 0"

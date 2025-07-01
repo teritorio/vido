@@ -1,11 +1,19 @@
 <script setup lang="ts">
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
-import { getContrastedColors } from '~/composables/useFeature'
 
 const { t } = useI18n()
 const { reset, isochroneCurrentFeature } = useIsochrone()
 
-const { colorFill: color_fill, colorText: color_text } = getContrastedColors(isochroneCurrentFeature.value?.properties?.display?.color_fill, isochroneCurrentFeature.value?.properties?.display?.color_text)
+if (!isochroneCurrentFeature.value)
+  throw createError('Missing current feature.')
+
+if (!isochroneCurrentFeature.value.properties?.display?.color_fill)
+  throw createError(`Feature ${isochroneCurrentFeature.value.id} is missing color_fill`)
+
+const { colorFill: color_fill, colorText: color_text } = useContrastedColors(
+  isochroneCurrentFeature.value.properties.display.color_fill,
+  isochroneCurrentFeature.value.properties.display.color_text,
+)
 </script>
 
 <template>
