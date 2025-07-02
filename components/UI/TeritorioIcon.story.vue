@@ -27,7 +27,7 @@ const props = {
   Image: {
     ...defaultProps,
     image:
-      'https://www.teritorio.fr/wp-content/themes/teritorio/img/favicon/favicon-194x194.png',
+      'https://elasa-dev.teritorio.xyz/static/font-teritorio-2.10.0/teritorio/teritorio.css',
   },
 }
 </script>
