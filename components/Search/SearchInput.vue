@@ -24,6 +24,7 @@ function onFocus(state: boolean) {
     :persistent-clear="true"
     :autofocus="device.smallScreen"
     :bg-color="device.smallScreen ? '#FFFFFF' : '#F4F4F5'"
+    persistent-placeholder
     rounded
     clearable
     variant="solo"
@@ -36,6 +37,9 @@ function onFocus(state: boolean) {
     @click:control="searchStore.openSearch"
     @click:clear="searchStore.reset"
   >
+    <template #label>
+      <span class="d-sr-only">{{ $t('headerMenu.searchHint') }}</span>
+    </template>
     <template #prepend-inner>
       <FontAwesomeIcon icon="search" />
     </template>
