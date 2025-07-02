@@ -21,7 +21,7 @@ const { t } = useI18n()
       <a target="_blank" href="https://www.teritorio.fr/" title="Teritorio">
         <img
           class="footer-logo"
-          src="https://carte.bidarttourisme.com/content/wp-content/uploads/2020/05/logo-teritorio.png"
+          src="~/assets/logo-teritorio.png"
           alt="Teritorio"
         >
       </a>
