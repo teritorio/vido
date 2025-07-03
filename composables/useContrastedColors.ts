@@ -1,5 +1,26 @@
 import type { TextColors } from '~/lib/apiPois'
 
+const colorMigrationTable: Record<string, string> = {
+  '#2a62ac': '#2a62ac', // Services de proximité & Équipements de proximité
+  '#db7900': '#cc4b00', // Restauration & Bar
+  '#009cb8': '#0075db', // Commerces de proximité
+  '#c58511': '#996e0a', // Artisanat
+  '#76009e': '#76009e', // Culture et patrimoine
+  '#a04c97': '#a04c97', // Commerces culturels
+  '#4076f6': '#3366ff', // Education
+  '#99163a': '#99163a', // Hébergements
+  '#00a757': '#008a00', // Loisirs
+  '#008ecf': '#007f94', // Mobilités
+  '#8cc56f': '#006b31', // Nature
+  '#f25c05': '#eb1700', // Produits locaux
+  '#1d1d1b': '#000000', // Point de repères du territoire
+  '#e50980': '#c02469', // Elements notables
+  '#e42224': '#e42224', // Santé
+  '#4e7ab5': '#278096', // Commerces de services
+  '#808080': '#767676', // Commerces
+  '#006660': '#006660', // Services sociaux
+}
+
 export function useContrastedColors(backgroundColor: MaybeRef<string>, foregroundColor?: MaybeRef<TextColors | undefined>) {
   const colorFill = ref('#FFFFFF')
   const colorText = ref<TextColors>('#000000')
@@ -17,6 +38,7 @@ export function useContrastedColors(backgroundColor: MaybeRef<string>, foregroun
     fill: string,
     text?: TextColors,
   ): { fill: string, text: TextColors } {
+    fill = colorMigrationTable[fill.toLowerCase()] || fill
     const AAA_CONTRAST_THRESHOLD = 4.5
 
     const contrastWithWhite = getContrastRatio(fill, '#FFFFFF')
