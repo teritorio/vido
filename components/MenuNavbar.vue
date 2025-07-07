@@ -34,6 +34,7 @@ const {
   itemsPois,
   itemsAddresses,
   resultsCount,
+  firstVisitCookie,
 } = storeToRefs(searchStore)
 
 onBeforeUnmount(() => searchStore.dispose())
@@ -55,7 +56,14 @@ onBeforeUnmount(() => searchStore.dispose())
               :label="$t('menuNavbar.actions.search.open')"
               class="tw-w-11 tw-h-11 tw-pointer-events-auto"
               v-bind="activatorProps"
+              @click="searchStore.setFirstVisit"
             >
+              <VTooltip
+                v-model="firstVisitCookie"
+                activator="parent"
+                :text="$t('menuNavbar.actions.search.tooltip')"
+                location="top"
+              />
               <FontAwesomeIcon
                 icon="search"
                 class="tw-text-zinc-800"

@@ -14,6 +14,7 @@ export const useSearchStore = defineStore('search', () => {
   const menuStore = useMenuStore()
   const { filters, apiMenuCategory } = storeToRefs(menuStore)
   const { center } = storeToRefs(useMapStore())
+  const firstVisitCookie = useCookie('first-visit', { default: () => true })
 
   if (!config.value)
     throw createError({ statusCode: 500, statusMessage: 'Wrong config', fatal: true })
@@ -100,6 +101,10 @@ export const useSearchStore = defineStore('search', () => {
       + itemsAddresses.value.length
     )
   })
+
+  function setFirstVisit() {
+    firstVisitCookie.value = false
+  }
 
   function reset() {
     searchMenuItemsResults.value = null
@@ -298,6 +303,8 @@ export const useSearchStore = defineStore('search', () => {
     itemsAddresses,
     searchSelectedFeature,
     resultsCount,
+    firstVisitCookie,
+    setFirstVisit,
     onCartocodeClick,
     onCategoryClick,
     onPoiClick,
