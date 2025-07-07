@@ -102,6 +102,7 @@ function getTeritorioIconBadgeProps(item: MenuItem): CustomBreadcrumbItem {
   overflow: hidden;
   padding: 0;
   min-width: 32px;
+  cursor: pointer;
 }
 
 .v-breadcrumbs-item span:last-of-type {
