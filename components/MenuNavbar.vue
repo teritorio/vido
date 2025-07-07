@@ -170,8 +170,7 @@ ul {
 }
 
 :deep(.v-card-item) {
-  background-color: #F4F4F5;
-  box-shadow: rgb(0 0 0 / 20%) 0 11px 10px -7px;
+  border: 2px solid #F4F4F5;
 }
 
 :deep(.v-card-item__content) {
