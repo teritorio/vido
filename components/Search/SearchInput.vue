@@ -50,6 +50,12 @@ function onFocus(state: boolean) {
 </template>
 
 <style lang="css" scoped>
+@media (width < 768px) {
+  .v-text-field:deep(.v-field) {
+    border: 2px solid black;
+  }
+}
+
 :deep(.v-field__input:focus) {
   box-shadow: none;
 }
