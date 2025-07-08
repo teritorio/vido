@@ -563,7 +563,7 @@ function handlePoiCardClose() {
             <ExplorerOrFavoritesBack v-if="isModeExplorerOrFavorites" @click="onQuitExplorerFavoriteMode" />
           </aside>
           <MenuNavbar
-            v-if="device.smallScreen && !isPoiCardShown"
+            v-if="device.smallScreen && !isPoiCardShown && !isModeExplorerOrFavorites"
             @explore-click="toggleExploreAroundSelectedPoi"
             @favorite-click="toggleFavorite"
             @toggle-favorite-mode="toggleFavoriteMode"
