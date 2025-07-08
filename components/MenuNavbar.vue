@@ -60,8 +60,11 @@ onBeforeUnmount(() => searchStore.dispose())
             >
               <VTooltip
                 v-model="firstVisitCookie"
-                activator="parent"
                 :text="$t('menuNavbar.actions.search.tooltip')"
+                :open-on-hover="false"
+                :open-on-click="false"
+                :open-on-focus="false"
+                activator="parent"
                 location="top"
               />
               <FontAwesomeIcon
