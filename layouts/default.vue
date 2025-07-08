@@ -78,3 +78,9 @@ if (status.value === 'success' && data.value) {
     <slot />
   </div>
 </template>
+
+<style lang="css">
+.v-tooltip > .v-overlay__content {
+  font-size: 1rem;
+}
+</style>
