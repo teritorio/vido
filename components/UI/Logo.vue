@@ -30,3 +30,16 @@ const { t } = useI18n()
     >
   </a>
 </template>
+
+<style lang="css" scoped>
+.logo {
+  opacity: 0.3;
+  pointer-events: none;
+}
+
+@media (width >= 768px) {
+  .logo {
+    opacity: 1;
+  }
+}
+</style>
