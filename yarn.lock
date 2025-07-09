@@ -3406,26 +3406,26 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@panoramax/web-viewer@npm:^4.0.3":
-  version: 4.0.3
-  resolution: "@panoramax/web-viewer@npm:4.0.3"
+"@panoramax/web-viewer@npm:4.0.3-develop-b8d837b4":
+  version: 4.0.3-develop-b8d837b4
+  resolution: "@panoramax/web-viewer@npm:4.0.3-develop-b8d837b4"
   dependencies:
     "@fontsource/atkinson-hyperlegible-next": "npm:^5.2.2"
     "@fortawesome/fontawesome-svg-core": "npm:^6.7.2"
     "@fortawesome/free-regular-svg-icons": "npm:^6.7.2"
     "@fortawesome/free-solid-svg-icons": "npm:^6.7.2"
-    "@photo-sphere-viewer/core": "npm:5.12.1"
-    "@photo-sphere-viewer/equirectangular-tiles-adapter": "npm:5.12.1"
-    "@photo-sphere-viewer/gallery-plugin": "npm:5.12.1"
-    "@photo-sphere-viewer/markers-plugin": "npm:5.12.1"
-    "@photo-sphere-viewer/virtual-tour-plugin": "npm:5.12.1"
+    "@photo-sphere-viewer/core": "npm:5.13.3"
+    "@photo-sphere-viewer/equirectangular-tiles-adapter": "npm:5.13.3"
+    "@photo-sphere-viewer/gallery-plugin": "npm:5.13.3"
+    "@photo-sphere-viewer/markers-plugin": "npm:5.13.3"
+    "@photo-sphere-viewer/virtual-tour-plugin": "npm:5.13.3"
     iconify-icon: "npm:^3.0.0"
     json5: "npm:^2.2.3"
     lit: "npm:^3.2.1"
-    maplibre-gl: "npm:^5.3.0"
+    maplibre-gl: "npm:^5.6.0"
     pmtiles: "npm:^4.3.0"
     query-selector-shadow-dom: "npm:^1.0.1"
-  checksum: 10c0/bde961d57a02c3bcffcd8d21108a2f4430bcf3bb5c0987bf7273eac76cbc6f6daa677594278c781055bf3817c1791bd19b8cfc7726a08576b12a9e76d4daaca6
+  checksum: 10c0/5ef104c2e4f21dadf3e366432f93166456dc0131a47b32c3bdcb87da7c1cb64ac91b6fd15b37b7ba9881a7538c8b32ebec26852ceb361495be6aa003124b428c
   languageName: node
   linkType: hard
 
@@ -3574,48 +3574,48 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@photo-sphere-viewer/core@npm:5.12.1":
-  version: 5.12.1
-  resolution: "@photo-sphere-viewer/core@npm:5.12.1"
+"@photo-sphere-viewer/core@npm:5.13.3":
+  version: 5.13.3
+  resolution: "@photo-sphere-viewer/core@npm:5.13.3"
   dependencies:
-    three: "npm:^0.173.0"
-  checksum: 10c0/4f0908be36597adeda6b0cbd40f886c4ee4b944dd343bafb6894d4a401bd827a4d5bee6446f71110296a1567f152732294d0efd2358684a1fa3ff8c1f6889739
+    three: "npm:^0.175.0"
+  checksum: 10c0/9376d2b7264448d1f3f482be8b307855cc4a269e0f7195cf035c9615ce5aa828b45efaccd865239adaae9b3780d1b7ba0d5a6ec56c910cbfb73a072ef1eda3b9
   languageName: node
   linkType: hard
 
-"@photo-sphere-viewer/equirectangular-tiles-adapter@npm:5.12.1":
-  version: 5.12.1
-  resolution: "@photo-sphere-viewer/equirectangular-tiles-adapter@npm:5.12.1"
+"@photo-sphere-viewer/equirectangular-tiles-adapter@npm:5.13.3":
+  version: 5.13.3
+  resolution: "@photo-sphere-viewer/equirectangular-tiles-adapter@npm:5.13.3"
   peerDependencies:
-    "@photo-sphere-viewer/core": 5.12.1
-  checksum: 10c0/5f2de062a989268861bef2daddcef33eb038e65ab46b582010d81af3e1034c27d425e3da6f131793bf075466bfa60e56b5481f2588a4be5ec3dcb83fa972ed47
+    "@photo-sphere-viewer/core": 5.13.3
+  checksum: 10c0/8574059e1d06ffd7c4b5a605583de62a826979176eaae64ff1a8cc97471eb08f57ab8a9720c53e76842ca2d4e35f7eea5bf365e9557bd888b0c3c12a5d916429
   languageName: node
   linkType: hard
 
-"@photo-sphere-viewer/gallery-plugin@npm:5.12.1":
-  version: 5.12.1
-  resolution: "@photo-sphere-viewer/gallery-plugin@npm:5.12.1"
+"@photo-sphere-viewer/gallery-plugin@npm:5.13.3":
+  version: 5.13.3
+  resolution: "@photo-sphere-viewer/gallery-plugin@npm:5.13.3"
   peerDependencies:
-    "@photo-sphere-viewer/core": 5.12.1
-  checksum: 10c0/a03a54330bf5d3d770ad7cdf3b15216dd1faea3f132058126dcfbbea0b363549aff2d1328ebcb0c62b34086cbea72bad338bcd55bc464e9ba564b8841a5f39de
+    "@photo-sphere-viewer/core": 5.13.3
+  checksum: 10c0/b09bc236277e01b9d51657bb419d27a4b519ae41628340e3c15abc4bf0433ef8061c17197f9035bc2b5fcb03fb5bd69cb4f116c826ddb7f9071777ab8d9e16cd
   languageName: node
   linkType: hard
 
-"@photo-sphere-viewer/markers-plugin@npm:5.12.1":
-  version: 5.12.1
-  resolution: "@photo-sphere-viewer/markers-plugin@npm:5.12.1"
+"@photo-sphere-viewer/markers-plugin@npm:5.13.3":
+  version: 5.13.3
+  resolution: "@photo-sphere-viewer/markers-plugin@npm:5.13.3"
   peerDependencies:
-    "@photo-sphere-viewer/core": 5.12.1
-  checksum: 10c0/a5145f7971e622f68493c560ee1afc793148f63e69b23ab29b23a675f50d0ef48f58328c7a92347c03669428435ac09efa1c501bfe9b6f3a4be703ffcb06db1c
+    "@photo-sphere-viewer/core": 5.13.3
+  checksum: 10c0/a924468b2375e88cccc8882a0c868b526464c4883c2fc69ca5649faff01573cdb5f955987473025fb3101edc0eae61bb4f56be70bc6098aa678f4310e9195e22
   languageName: node
   linkType: hard
 
-"@photo-sphere-viewer/virtual-tour-plugin@npm:5.12.1":
-  version: 5.12.1
-  resolution: "@photo-sphere-viewer/virtual-tour-plugin@npm:5.12.1"
+"@photo-sphere-viewer/virtual-tour-plugin@npm:5.13.3":
+  version: 5.13.3
+  resolution: "@photo-sphere-viewer/virtual-tour-plugin@npm:5.13.3"
   peerDependencies:
-    "@photo-sphere-viewer/core": 5.12.1
-  checksum: 10c0/e0a57e95e44a523403c24f97806029662911c20729508e3952cb48a93a276f7ad33c89aadf53cb76064201a6c8a9e048591b6c0c3636c47e8819f95e38f6d71d
+    "@photo-sphere-viewer/core": 5.13.3
+  checksum: 10c0/684ce72cb1f1a4abcf480609ac672e272de09abe725485f63b43dc8301e6bab7fa476da01b96890133d10b6db72f2f64291d88c17d4b7c1b956960bc05e2db8b
   languageName: node
   linkType: hard
 
@@ -4369,7 +4369,7 @@ __metadata:
     "@nuxt/image-edge": "npm:1.0.0-rc.1-28119537.bfe30ab"
     "@nuxt/types": "npm:^2.17.0"
     "@nuxtjs/i18n": "npm:8.0.0"
-    "@panoramax/web-viewer": "npm:^4.0.3"
+    "@panoramax/web-viewer": "npm:4.0.3-develop-b8d837b4"
     "@pinia/nuxt": "npm:0.4.11"
     "@sentry/node": "npm:^8.35.0"
     "@sentry/vue": "npm:^8.35.0"
@@ -12351,40 +12351,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"maplibre-gl@npm:^5.3.0":
-  version: 5.6.0
-  resolution: "maplibre-gl@npm:5.6.0"
-  dependencies:
-    "@mapbox/geojson-rewind": "npm:^0.5.2"
-    "@mapbox/jsonlint-lines-primitives": "npm:^2.0.2"
-    "@mapbox/point-geometry": "npm:^0.1.0"
-    "@mapbox/tiny-sdf": "npm:^2.0.6"
-    "@mapbox/unitbezier": "npm:^0.0.1"
-    "@mapbox/vector-tile": "npm:^1.3.1"
-    "@mapbox/whoots-js": "npm:^3.1.0"
-    "@maplibre/maplibre-gl-style-spec": "npm:^23.3.0"
-    "@types/geojson": "npm:^7946.0.16"
-    "@types/geojson-vt": "npm:3.2.5"
-    "@types/mapbox__point-geometry": "npm:^0.1.4"
-    "@types/mapbox__vector-tile": "npm:^1.3.4"
-    "@types/pbf": "npm:^3.0.5"
-    "@types/supercluster": "npm:^7.1.3"
-    earcut: "npm:^3.0.1"
-    geojson-vt: "npm:^4.0.2"
-    gl-matrix: "npm:^3.4.3"
-    global-prefix: "npm:^4.0.0"
-    kdbush: "npm:^4.0.2"
-    murmurhash-js: "npm:^1.0.0"
-    pbf: "npm:^3.3.0"
-    potpack: "npm:^2.0.0"
-    quickselect: "npm:^3.0.0"
-    supercluster: "npm:^8.0.1"
-    tinyqueue: "npm:^3.0.0"
-    vt-pbf: "npm:^3.1.3"
-  checksum: 10c0/d679ac3f4219cfe2fbdcb61147575052123d4336edd408d43a7d1f8ac9e7b1c73dc30e384c44d4b3790118b44041c423d0821a54fd5594174b88d40857e376b6
-  languageName: node
-  linkType: hard
-
 "maplibre-gl@npm:^5.4.0":
   version: 5.5.0
   resolution: "maplibre-gl@npm:5.5.0"
@@ -12416,6 +12382,40 @@ __metadata:
     tinyqueue: "npm:^3.0.0"
     vt-pbf: "npm:^3.1.3"
   checksum: 10c0/3ba5fab0a75b547bfafbd6d9c572fd14f5df306341505f58e4755386baf20f805abd5f580b63567971b111c82b44522ba64c1871a68121bce314b108f9966bf8
+  languageName: node
+  linkType: hard
+
+"maplibre-gl@npm:^5.6.0":
+  version: 5.6.1
+  resolution: "maplibre-gl@npm:5.6.1"
+  dependencies:
+    "@mapbox/geojson-rewind": "npm:^0.5.2"
+    "@mapbox/jsonlint-lines-primitives": "npm:^2.0.2"
+    "@mapbox/point-geometry": "npm:^0.1.0"
+    "@mapbox/tiny-sdf": "npm:^2.0.6"
+    "@mapbox/unitbezier": "npm:^0.0.1"
+    "@mapbox/vector-tile": "npm:^1.3.1"
+    "@mapbox/whoots-js": "npm:^3.1.0"
+    "@maplibre/maplibre-gl-style-spec": "npm:^23.3.0"
+    "@types/geojson": "npm:^7946.0.16"
+    "@types/geojson-vt": "npm:3.2.5"
+    "@types/mapbox__point-geometry": "npm:^0.1.4"
+    "@types/mapbox__vector-tile": "npm:^1.3.4"
+    "@types/pbf": "npm:^3.0.5"
+    "@types/supercluster": "npm:^7.1.3"
+    earcut: "npm:^3.0.1"
+    geojson-vt: "npm:^4.0.2"
+    gl-matrix: "npm:^3.4.3"
+    global-prefix: "npm:^4.0.0"
+    kdbush: "npm:^4.0.2"
+    murmurhash-js: "npm:^1.0.0"
+    pbf: "npm:^3.3.0"
+    potpack: "npm:^2.0.0"
+    quickselect: "npm:^3.0.0"
+    supercluster: "npm:^8.0.1"
+    tinyqueue: "npm:^3.0.0"
+    vt-pbf: "npm:^3.1.3"
+  checksum: 10c0/d7f1ca95e7f2a131cf94c22100d27b4e4b811b0e0b72bf245fde312e82027c49cf5386444ca7a21eec9c2f40ca3659e53ba952bf46e2593023e7b47edf64c384
   languageName: node
   linkType: hard
 
@@ -16940,10 +16940,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"three@npm:^0.173.0":
-  version: 0.173.0
-  resolution: "three@npm:0.173.0"
-  checksum: 10c0/6c8ad9b7ab6baaa0dc033c550e76cd3afe462ecfa99ba1b445714f36eeb4994e7dfcb1b72d3c32f6b53ac38df457aa3341ae4f948cb6cfd1d3acc9ee7bba4e58
+"three@npm:^0.175.0":
+  version: 0.175.0
+  resolution: "three@npm:0.175.0"
+  checksum: 10c0/eb47d45aaee376cfbbe7334ec4e9f3ea9cb03f9ecce5a313a08f56a01834e7f514a0c657cf2c4abeff9956079721cd542e2913fede50553d935e7fa390921452
   languageName: node
   linkType: hard
 
