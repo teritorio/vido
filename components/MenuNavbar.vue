@@ -46,7 +46,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <nav role="navigation" :aria-label="$t('menuNavbar.label')">
+  <nav class="menu-navbar" role="navigation" :aria-label="$t('menuNavbar.label')">
     <ul role="menubar">
       <li role="none">
         <VDialog
@@ -155,11 +155,7 @@ onMounted(() => {
 </template>
 
 <style lang="css" scoped>
-nav {
-  position: absolute;
-  bottom: 5rem;
-  left: 50%;
-  transform: translateX(-50%);
+.menu-navbar {
   pointer-events: none;
 }
 

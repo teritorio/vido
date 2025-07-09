@@ -651,6 +651,13 @@ function handlePoiCardClose() {
   transform: translateX(-10px);
 }
 
+.menu-navbar {
+  position: absolute;
+  bottom: 12vh;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
 .right-3 {
   right: 37.5%;
 }
