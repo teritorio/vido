@@ -38,6 +38,11 @@ const {
 } = storeToRefs(searchStore)
 
 onBeforeUnmount(() => searchStore.dispose())
+
+onMounted(() => {
+  const vh = window.innerHeight * 0.01
+  document.documentElement.style.setProperty('--vh', `${vh}px`)
+})
 </script>
 
 <template>
@@ -170,7 +175,8 @@ ul {
 :deep(.v-card-text) {
   display: grid;
   grid-template-rows: 1fr auto;
-  height: calc(100vh - 84px);
+  height: 100%;
+  height: calc(var(--vh, 1vh) * 100 - 84px);
   gap: 0.5rem;
 }
 
