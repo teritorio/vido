@@ -85,6 +85,7 @@ const mapStyleLoaded = ref(false)
 const mapBaseRef = ref<InstanceType<typeof MapBase>>()
 const map = ref<MapGL>()
 const selectedBackground = ref<MapStyleEnum>(DEFAULT_MAP_STYLE)
+const isProcessing = ref(false)
 
 const availableStyles = computed((): MapStyleEnum[] => {
   const styles = [MapStyleEnum.vector, MapStyleEnum.aerial]
@@ -98,7 +99,7 @@ const availableStyles = computed((): MapStyleEnum[] => {
 watch(
   () => props.features,
   () => {
-    if (!map.value)
+    if (!map.value || isProcessing.value)
       return
 
     showVectorSelectedFeature()
@@ -107,7 +108,12 @@ watch(
   },
 )
 
-watch(selectedFeature, () => showVectorSelectedFeature())
+watch(selectedFeature, () => {
+  if (isProcessing.value)
+    return
+
+  showVectorSelectedFeature()
+})
 
 watch(selectedBackground, () => {
   if (!map.value)
@@ -223,6 +229,10 @@ async function updateSelectedFeature(feature?: ApiPoi): Promise<void> {
     const id = feature.properties.metadata.id || feature.properties.id || feature.id
 
     if ((selectedFeature.value?.properties.metadata.id !== id) && !id.toString().includes('_')) {
+      isProcessing.value = true
+      // Optimistic UI
+      mapStore.setSelectedFeature(menuStore.getFeatureById(id))
+
       try {
         const { data, error, status } = await useFetch<ApiPoiDeps>(
           () => `${API_ENDPOINT}/${API_PROJECT}/${API_THEME}/poi/${id}/deps.geojson`,
@@ -322,6 +332,9 @@ async function updateSelectedFeature(feature?: ApiPoi): Promise<void> {
       }
       catch (e) {
         console.error('Vido error:', (e as Error).message)
+      }
+      finally {
+        isProcessing.value = false
       }
     }
     else {
