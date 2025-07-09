@@ -17,10 +17,8 @@ onMounted(async () => {
     :picture="pictureId"
     :widgets="false"
   >
-    <!-- eslint-disable-next-line vue/no-deprecated-slot-attribute -->
-    <span slot="bottom-right">
-      <pnx-widget-legend />
-    </span>
+    <!-- eslint-disable-next-line vue/no-deprecated-slot-attribute vue/html-self-closing -->
+    <pnx-widget-legend slot="bottom-right" focus="map" />
   </pnx-photo-viewer>
 </template>
 
