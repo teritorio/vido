@@ -65,6 +65,7 @@ onBeforeUnmount(() => searchStore.dispose())
                 :open-on-hover="false"
                 :open-on-click="false"
                 :open-on-focus="false"
+                :attach="$el"
                 activator="parent"
                 location="top"
               />
