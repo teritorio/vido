@@ -325,6 +325,8 @@ async function updateSelectedFeature(feature?: ApiPoi): Promise<void> {
 
           // In case user click on vecto element, attach Pin Marker to POI Marker
           teritorioCluster.value?.setSelectedFeature(poi as unknown as MapGeoJSONFeature)
+          const bounds = getBBox({ type: 'FeatureCollection', features: data.value.features })
+          mapBaseRef.value?.fitBounds(bounds)
 
           if (poi.properties.metadata.category_ids?.length)
             menuStore.filterByDeps(poi.properties.metadata.category_ids, deps)
