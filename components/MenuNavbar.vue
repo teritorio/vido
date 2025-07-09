@@ -47,6 +47,7 @@ onBeforeUnmount(() => searchStore.dispose())
         <VDialog
           :fullscreen="true"
           :scrim="false"
+          :scrollable="false"
           transition="dialog-bottom-transition"
           max-width="80rem"
         >
@@ -168,7 +169,7 @@ ul {
 :deep(.v-card-text) {
   display: grid;
   grid-template-rows: 1fr auto;
-  height: calc(100vh - 80px);
+  height: calc(100vh - 84px);
   gap: 0.5rem;
 }
 
