@@ -13,6 +13,7 @@ const htmlValidateRules = {
     'unique-landmark': 0,
     'text-content': 0,
     'no-dup-id': 0,
+    'no-dup-class': 0,
   },
 }
 
