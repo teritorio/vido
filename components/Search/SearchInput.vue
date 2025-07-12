@@ -22,7 +22,6 @@ function onFocus(state: boolean) {
     v-model="searchText"
     :placeholder="$t('headerMenu.searchHint')"
     :persistent-clear="true"
-    :autofocus="device.smallScreen"
     :bg-color="device.smallScreen ? '#FFFFFF' : '#F4F4F5'"
     persistent-placeholder
     rounded
