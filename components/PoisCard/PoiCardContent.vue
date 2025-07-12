@@ -162,7 +162,7 @@ function trackIsochroneEvent(profile: Profile) {
 
 <template>
   <div>
-    <div class="tw-flex tw-items-center tw-justify-between tw-shrink-0">
+    <div class="tw-flex tw-items-start tw-justify-between tw-shrink-0">
       <h2
         v-if="featureName"
         class="tw-block tw-text-xl tw-font-semibold tw-leading-tight"
