@@ -3,7 +3,7 @@ import type { ApiPoiDeps, ApiRouteWaypoint } from '~/lib/apiPoiDeps'
 import type { ApiPoi } from '~/lib/apiPois'
 import MapPois from '~/components/Map/MapPois.vue'
 import PoisDeck from '~/components/PoisCard/PoisDeck.vue'
-import { ApiRouteWaypointType, apiRouteWaypointToApiPoi, iconMap } from '~/lib/apiPoiDeps'
+import { ApiRouteWaypointType, iconMap, prepareApiPoiDeps } from '~/lib/apiPoiDeps'
 
 const props = defineProps<{
   poi: ApiPoi
@@ -21,89 +21,75 @@ defineEmits<{
 
 const { t } = useI18n()
 
-const routeCollection = ref<ApiPoi[] | null>(null)
-const points = ref<ApiPoi[]>([])
+const deps = ref<ApiPoi[]>([])
+const waypoints = ref<ApiRouteWaypoint[]>([])
 const pois = ref<ApiPoi[]>([])
-const featureDepsIDs = ref<number[]>([props.poi.properties.metadata.id])
 
-let index = 1
-routeCollection.value = props.route.features.map((feature) => {
-  const depID = 'metadata' in feature.properties ? feature.properties.metadata.id : feature.properties.id
-  featureDepsIDs.value.push(depID)
+const featureDepsIDs = ref<number[]>([])
 
-  if (feature.properties['route:point:type']) {
-    let mapPoi: ApiPoi
+if (props.poi.properties.metadata.dep_ids) {
+  const featureReordered = prepareApiPoiDeps(
+    props.route.features,
+    props.poi.properties.metadata.dep_ids,
+  )
 
-    if (!('metadata' in feature.properties)) {
-      mapPoi = apiRouteWaypointToApiPoi(
-        feature as ApiRouteWaypoint,
-        props.colorFill,
-        props.colorText,
-        props.colorLine as '#000000' | '#FFFFFF',
-        feature.properties['route:point:type']
+  waypoints.value = featureReordered.waypoints
+  pois.value = featureReordered.pois
+}
+
+deps.value.push(...pois.value, props.poi)
+
+const apiWaypoints = waypoints.value.map((w, index) => {
+  const formattedWaypoint = {
+    ...w,
+    properties: {
+      ...w.properties,
+      display: {
+        icon: iconMap[w.properties['route:point:type']],
+        color_fill: props.colorFill,
+        color_text: props.colorText,
+        color_line: props.colorLine,
+        text: w.properties['route:point:type']
         === ApiRouteWaypointType.way_point
-          ? (index++).toString()
+          ? index.toString()
           : undefined,
-      )
-    }
-    else {
-      mapPoi = {
-        ...feature,
-        properties: {
-          ...feature.properties,
-          display: {
-            icon: iconMap[feature.properties['route:point:type']],
-            color_fill: feature.properties.display?.color_fill || props.colorFill,
-            color_text: (feature.properties.display?.color_text || props.colorText) as '#000000' | '#FFFFFF',
-            color_line: feature.properties.display?.color_line || props.colorLine,
-            text: feature.properties['route:point:type']
-            === ApiRouteWaypointType.way_point
-              ? (index++).toString()
-              : undefined,
+      },
+      editorial: {
+        popup_fields: [
+          {
+            field: 'short_description',
           },
-          editorial: {
-            popup_fields: feature.properties.editorial?.popup_fields || [
-              {
-                field: 'short_description',
-              },
-              {
-                field: 'coordinates',
-                label: true,
-              },
-            ],
+          {
+            field: 'coordinates',
+            label: true,
           },
-        },
-      }
-    }
+        ],
+      },
+    },
+  } as ApiPoi
 
-    points.value.push(mapPoi)
-    return mapPoi
-  }
-  else {
-    const featureApi = feature as ApiPoi
+  deps.value.push(formattedWaypoint)
 
-    if ('metadata' in feature.properties && feature.properties.metadata?.id !== props.poi.properties.metadata.id)
-      pois.value.push(featureApi)
-
-    return featureApi
-  }
+  return formattedWaypoint
 })
+
+deps.value.forEach(d => featureDepsIDs.value.push(d.properties.metadata.id))
 </script>
 
 <template>
-  <div v-if="routeCollection">
+  <div v-if="deps.length">
     <MapPois
       class="map-pois tw-relative"
-      :features="[poi, ...routeCollection]"
+      :features="deps"
       :feature-ids="featureDepsIDs"
       :fullscreen-control="true"
       :off-map-attribution="true"
       :cluster="false"
     />
     <div class="detail-wrapper">
-      <div v-if="points.length > 0" class="detail-left">
+      <div v-if="waypoints.length > 0" class="detail-left">
         <h2>{{ t('poiDetails.routes.waypoints') }}</h2>
-        <PoisDeck :pois="points" :is-card-light="true" />
+        <PoisDeck :pois="apiWaypoints" :is-card-light="true" />
       </div>
       <div v-if="pois.length > 0" class="detail-right">
         <h2>{{ t('poiDetails.routes.pois') }}</h2>

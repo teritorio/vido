@@ -19,7 +19,7 @@ import MapControlsBackground from '~/components/Map/MapControlsBackground.vue'
 import type { ApiMenuCategory } from '~/lib/apiMenu'
 import type { ApiPoi } from '~/lib/apiPois'
 import type { ApiPoiDeps, ApiRouteWaypoint } from '~/lib/apiPoiDeps'
-import { ApiRouteWaypointType, apiRouteWaypointToApiPoi, iconMap } from '~/lib/apiPoiDeps'
+import { ApiRouteWaypointType, iconMap, prepareApiPoiDeps } from '~/lib/apiPoiDeps'
 import { getBBox } from '~/lib/bbox'
 import { DEFAULT_MAP_STYLE, MAP_ZOOM } from '~/lib/constants'
 import { vectorTilesPoi2ApiPoi } from '~/lib/vectorTilesPois'
@@ -248,78 +248,69 @@ async function updateSelectedFeature(feature?: ApiPoi): Promise<void> {
           throw createError(error.value)
 
         if (status.value === 'success' && data.value) {
-          let poi: ApiPoi | undefined
-          const deps = [] as ApiPoi[]
-          let waypointIndex = 1
+          let waypoints: ApiRouteWaypoint[] = []
+          let pois: ApiPoi[] = []
+          let deps: ApiPoi[] = []
+
           mapStore.setSelectedFeatureDepsIDs()
 
-          data.value.features.forEach((f) => {
-            const depID = 'metadata' in f.properties ? f.properties.metadata.id : f.properties.id
-            mapStore.addSelectedFeatureDepsIDs(depID)
+          const poi = data.value.features.find(f => f.properties.metadata.id === id) as ApiPoi
 
-            f = {
-              ...f,
+          if (!poi)
+            throw createError(`Feature with ID: ${id} not found.`)
+
+          if (poi.properties.metadata.dep_ids) {
+            const featureReordered = prepareApiPoiDeps(
+              data.value.features,
+              poi.properties.metadata.dep_ids,
+            )
+
+            waypoints = featureReordered.waypoints
+            pois = featureReordered.pois
+          }
+
+          deps.push(...pois)
+
+          waypoints.forEach((w, index) => {
+            const { colorFill, colorText } = useContrastedColors(
+              poi.properties.display?.color_fill || '#76009E',
+              poi.properties.display?.color_text,
+            )
+
+            const formattedWaypoint = {
+              ...w,
               properties: {
-                ...f.properties,
+                ...w.properties,
+                display: {
+                  icon: iconMap[w.properties['route:point:type']],
+                  color_fill: colorFill.value,
+                  color_line: poi.properties.display?.color_line || '#76009E',
+                  color_text: colorText.value,
+                  text: w.properties['route:point:type']
+                  === ApiRouteWaypointType.way_point
+                    ? index.toString()
+                    : undefined,
+                },
+                editorial: {
+                  'website:details': undefined,
+                },
+              },
+            } as ApiPoi
+
+            deps.push(formattedWaypoint)
+          })
+
+          deps = deps.map((d) => {
+            mapStore.addSelectedFeatureDepsIDs(d.properties.metadata.id)
+
+            return {
+              ...d,
+              properties: {
+                ...d.properties,
                 vido_visible: true,
               },
             }
-
-            if (id === depID) {
-              poi = f as ApiPoi
-            }
-
-            if (f.properties['route:point:type']) {
-              if (!('metadata' in f.properties)) {
-                const { colorFill, colorText } = useContrastedColors(
-                  poi?.properties.display?.color_fill || '#76009E',
-                  poi?.properties.display?.color_text,
-                )
-
-                f = apiRouteWaypointToApiPoi(
-                  f as ApiRouteWaypoint,
-                  colorFill.value,
-                  poi?.properties.display?.color_line || '#76009E',
-                  colorText.value,
-                  f.properties['route:point:type'] === ApiRouteWaypointType.way_point
-                    ? (waypointIndex++).toString()
-                    : undefined,
-                )
-              }
-              else {
-                const { colorFill, colorText } = useContrastedColors(
-                  f.properties.display?.color_fill || poi?.properties.display?.color_fill || '#76009E',
-                  f.properties.display?.color_text || poi?.properties.display?.color_text,
-                )
-
-                f = {
-                  ...f,
-                  properties: {
-                    ...f.properties,
-                    display: {
-                      icon: iconMap[f.properties['route:point:type']],
-                      color_fill: colorFill.value,
-                      color_line: f.properties.display?.color_line || poi?.properties.display?.color_line || '#76009E',
-                      color_text: colorText.value,
-                      text: f.properties['route:point:type']
-                      === ApiRouteWaypointType.way_point
-                        ? (waypointIndex++).toString()
-                        : undefined,
-                    },
-                    editorial: {
-                      ...f.properties.editorial,
-                      'website:details': undefined,
-                    },
-                  },
-                }
-              }
-            }
-
-            deps.push(f as ApiPoi)
           })
-
-          if (!poi)
-            throw new Error(`Feature with ID: ${id} not found.`)
 
           mapStore.setSelectedFeature(poi)
 
