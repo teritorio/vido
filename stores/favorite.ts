@@ -19,6 +19,9 @@ export const favoriteStore = defineStore('favorite', {
   }),
 
   getters: {
+    isFavorite: (state: State): (id: number) => boolean => {
+      return id => !!state.favoritesIds.find(fav => fav === id)
+    },
     favoriteAddresses(state: State): Map<string, string> {
       return new Map(Object.entries(state.favoriteAddressesObj))
     },
