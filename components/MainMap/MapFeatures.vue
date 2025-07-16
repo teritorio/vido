@@ -64,7 +64,6 @@ const STYLE_LAYERS = [
   'features-fill',
 ]
 
-const route = useRoute()
 const router = useRouter()
 const { t } = useI18n()
 const device = useDevice()
@@ -219,11 +218,6 @@ async function updateSelectedFeature(feature?: ApiPoi): Promise<void> {
   if (!feature) {
     mapStore.setSelectedFeature()
     mapStore.setSelectedFeatureDepsIDs()
-    menuStore.fetchFeatures({
-      vidoConfig: config.value!,
-      categoryIds: props.selectedCategoriesIds,
-      clipingPolygonSlug: route.query.clipingPolygonSlug?.toString(),
-    })
   }
   else {
     const id = feature.properties.metadata.id || feature.properties.id || feature.id
