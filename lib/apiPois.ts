@@ -37,6 +37,7 @@ export type ApiPoiProperties = MapPoiProperties & {
     updated_at?: string
     osm_id?: number
     osm_type?: 'node' | 'way' | 'relation'
+    dep_ids?: number[]
   }
   'display'?: {
     style_class?: string[]
