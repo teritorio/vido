@@ -235,6 +235,8 @@ async function updateSelectedFeature(feature?: ApiPoi): Promise<void> {
 
     if ((selectedFeature.value?.properties.metadata.id !== id) && !id.toString().includes('_')) {
       isProcessing.value = true
+      const isDepSelected = selectedFeatureDepsIDs.value.find(i => i === id)
+
       // Optimistic UI
       mapStore.setSelectedFeature(menuStore.getFeatureById(id))
 
@@ -261,7 +263,8 @@ async function updateSelectedFeature(feature?: ApiPoi): Promise<void> {
           let pois: ApiPoi[] = []
           let deps: ApiPoi[] = []
 
-          mapStore.setSelectedFeatureDepsIDs()
+          if (!isDepSelected)
+            mapStore.setSelectedFeatureDepsIDs()
 
           const poi = data.value.features.find(f => f.properties.metadata.id === id) as ApiPoi
 
@@ -309,25 +312,32 @@ async function updateSelectedFeature(feature?: ApiPoi): Promise<void> {
             deps.push(formattedWaypoint)
           })
 
-          deps = deps.map((d) => {
-            mapStore.addSelectedFeatureDepsIDs(d.properties.metadata.id)
+          if (!isDepSelected) {
+            deps = deps.map((d) => {
+              mapStore.addSelectedFeatureDepsIDs(d.properties.metadata.id)
 
-            return {
-              ...d,
-              properties: {
-                ...d.properties,
-                vido_visible: true,
-              },
-            }
-          })
+              return {
+                ...d,
+                properties: {
+                  ...d.properties,
+                  vido_visible: true,
+                },
+              }
+            })
+          }
 
           mapStore.setSelectedFeature(poi)
 
           // In case user click on vecto element, attach Pin Marker to POI Marker
           teritorioCluster.value?.setSelectedFeature(poi as unknown as MapGeoJSONFeature)
 
-          if (poi.properties.metadata.category_ids?.length)
+          if (!isDepSelected && poi.properties.metadata.category_ids?.length) {
             menuStore.filterByDeps(poi.properties.metadata.category_ids, deps)
+            if (deps.length > 1)
+              mapStore.setIsDepsView(true)
+            else
+              mapStore.setIsDepsView(false)
+          }
         }
       }
       catch (e) {

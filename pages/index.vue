@@ -186,8 +186,13 @@ if (status.value === 'success' && data.value) {
   // In case user click on vecto element, attach Pin Marker to POI Marker
   teritorioCluster.value?.setSelectedFeature(poi as unknown as MapGeoJSONFeature)
 
-  if (poi.properties.metadata.category_ids?.length)
+  if (poi.properties.metadata.category_ids?.length) {
     menuStore.filterByDeps(poi.properties.metadata.category_ids, deps)
+    if (deps.length > 1)
+      mapStore.setIsDepsView(true)
+    else
+      mapStore.setIsDepsView(false)
+  }
 }
 </script>
 

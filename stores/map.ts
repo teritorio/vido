@@ -13,6 +13,7 @@ interface State {
   selectedFeature: ApiPoi | null
   selectedFeatureDepsIDs: number[]
   teritorioCluster: TeritorioCluster | null
+  isDepsView: boolean
 }
 
 export const mapStore = defineStore('map', {
@@ -24,6 +25,7 @@ export const mapStore = defineStore('map', {
     selectedFeature: null,
     selectedFeatureDepsIDs: [],
     teritorioCluster: null,
+    isDepsView: false,
   }),
 
   getters: {
@@ -34,6 +36,9 @@ export const mapStore = defineStore('map', {
   },
 
   actions: {
+    setIsDepsView(state: boolean): void {
+      this.isDepsView = state
+    },
     setSelectedFeatureDepsIDs(ids?: number[]): void {
       this.selectedFeatureDepsIDs = ids || []
     },
