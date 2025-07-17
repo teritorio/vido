@@ -208,7 +208,18 @@ function onClick(e: MapMouseEvent): void {
   }
 }
 
+let currentRequestToken: { cancelled: boolean } | null = null
+
 async function updateSelectedFeature(feature?: ApiPoi): Promise<void> {
+  // Cancel previous request if it exists
+  if (currentRequestToken) {
+    currentRequestToken.cancelled = true
+  }
+
+  // Create new cancellation token for this request
+  const token = { cancelled: false }
+  currentRequestToken = token
+
   if ((feature?.properties.metadata.id === selectedFeature.value?.properties.metadata.id)
     || feature?.properties['route:point:type']
   ) {
@@ -237,6 +248,10 @@ async function updateSelectedFeature(feature?: ApiPoi): Promise<void> {
             },
           },
         )
+
+        // Check if this request was cancelled
+        if (token.cancelled)
+          return
 
         if (error.value)
           throw createError(error.value)
@@ -316,10 +331,14 @@ async function updateSelectedFeature(feature?: ApiPoi): Promise<void> {
         }
       }
       catch (e) {
-        console.error('Vido error:', (e as Error).message)
+        if (!token.cancelled) {
+          console.error('Vido error:', (e as Error).message)
+        }
       }
       finally {
-        isProcessing.value = false
+        if (!token.cancelled) {
+          isProcessing.value = false
+        }
       }
     }
     else {
