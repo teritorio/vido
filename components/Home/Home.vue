@@ -43,7 +43,7 @@ const props = defineProps<{
 // Composables
 //
 const mapStore = useMapStore()
-const { isModeFavorites, isModeExplorer, isModeExplorerOrFavorites, mode, selectedFeature, teritorioCluster } = storeToRefs(mapStore)
+const { isModeFavorites, isModeExplorer, isModeExplorerOrFavorites, mode, selectedFeature, teritorioCluster, isDepsView } = storeToRefs(mapStore)
 const menuStore = useMenuStore()
 const { apiMenuCategory, features, selectedCategoryIds, selectedCategories } = storeToRefs(menuStore)
 const favoriteStore = useFavoriteStore()
@@ -206,11 +206,14 @@ watch(searchSelectedFeature, (newValue) => {
     searchSelectFeature(newValue)
 })
 
-watch(selectedFeature, (newFeature) => {
+watch(selectedFeature, (newFeature, oldFeature) => {
   isPoiCardShown.value = !!newFeature
 
   if (process.client) {
     routerPushUrl()
+
+    if (newFeature && oldFeature && newFeature.properties.metadata.id === oldFeature.properties.metadata.id)
+      return
 
     if (newFeature) {
       $tracking({
@@ -220,6 +223,13 @@ watch(selectedFeature, (newFeature) => {
         location: window.location.href,
         path: route.path,
         categoryIds: newFeature.properties?.metadata?.category_ids || [],
+      })
+    }
+    else if (isDepsView.value) {
+      menuStore.fetchFeatures({
+        vidoConfig: config!,
+        categoryIds: selectedCategoryIds.value,
+        clipingPolygonSlug: route.query.clipingPolygonSlug?.toString(),
       })
     }
   }
