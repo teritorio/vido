@@ -205,7 +205,7 @@ export default defineI18nLocale(() => {
         search: {
           open: 'Show search menu',
           close: 'Close search menu',
-          tooltip: 'Search here !',
+          tooltip: 'Search here!',
         },
         goToMap: 'See on map',
       },
