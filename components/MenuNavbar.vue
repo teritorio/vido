@@ -168,6 +168,14 @@ ul {
   overflow-y: auto;
 }
 
+@media (width <= 400px) {
+  .v-dialog:deep(.v-overlay__content > .v-card > .v-card-item + .v-card-text),
+  .v-dialog:deep(.v-overlay__content > .v-card > .v-card-item) {
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+}
+
 :deep(.v-card-text) {
   display: grid;
   grid-template-rows: 1fr auto;
