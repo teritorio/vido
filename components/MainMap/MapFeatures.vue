@@ -69,7 +69,7 @@ const { t } = useI18n()
 const device = useDevice()
 const snackStore = useSnackStore()
 const menuStore = useMenuStore()
-const { featuresColor, isLoadingFeatures } = storeToRefs(menuStore)
+const { featuresColor, isLoadingFeatures, selectedCategoryIds } = storeToRefs(menuStore)
 const siteStore = useSiteStore()
 const { config } = storeToRefs(siteStore)
 
@@ -331,8 +331,13 @@ async function updateSelectedFeature(feature?: ApiPoi): Promise<void> {
           // In case user click on vecto element, attach Pin Marker to POI Marker
           teritorioCluster.value?.setSelectedFeature(poi as unknown as MapGeoJSONFeature)
 
-          if (!isDepSelected && poi.properties.metadata.category_ids?.length) {
-            menuStore.filterByDeps(poi.properties.metadata.category_ids, deps)
+          const currentCategory = selectedCategoryIds.value.find(id => poi.properties.metadata.category_ids?.includes(id))
+
+          if (!currentCategory)
+            throw createError('Category not found.')
+
+          if (!isDepSelected) {
+            menuStore.filterByDeps(currentCategory, deps)
             if (deps.length > 1)
               mapStore.setIsDepsView(true)
             else

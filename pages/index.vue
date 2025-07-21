@@ -67,7 +67,7 @@ if (route.params.poiId) {
 }
 
 const menuStore = useMenuStore()
-const { apiMenuCategory } = storeToRefs(menuStore)
+const { apiMenuCategory, selectedCategoryIds } = storeToRefs(menuStore)
 onBeforeMount(() => {
   $trackingInit(config.value!)
 })
@@ -186,8 +186,13 @@ if (status.value === 'success' && data.value) {
   // In case user click on vecto element, attach Pin Marker to POI Marker
   teritorioCluster.value?.setSelectedFeature(poi as unknown as MapGeoJSONFeature)
 
+  const currentCategory = selectedCategoryIds.value.find(id => poi.properties.metadata.category_ids?.includes(id))
+
+  if (!currentCategory)
+    throw createError('Category not found.')
+
   if (poi.properties.metadata.category_ids?.length) {
-    menuStore.filterByDeps(poi.properties.metadata.category_ids, deps)
+    menuStore.filterByDeps(currentCategory, deps)
     if (deps.length > 1)
       mapStore.setIsDepsView(true)
     else
