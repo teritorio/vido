@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
-import type { MultiPolygon, Polygon } from 'geojson'
+import type { MultiPolygon, Point, Polygon } from 'geojson'
 import type {
   FitBoundsOptions,
   LngLatBounds,
@@ -367,7 +367,7 @@ function goToSelectedFeature(): void {
     return
 
   if (selectedFeature.value.geometry.type === 'Point') {
-    let zoom
+    let zoom: number
 
     if (selectedFeature.value.properties.vido_zoom) {
       zoom = selectedFeature.value.properties.vido_zoom
@@ -376,10 +376,12 @@ function goToSelectedFeature(): void {
       zoom = props.categories.find(category => category.id === selectedFeature.value!.properties.vido_cat)?.category.zoom || 17
     }
 
-    map.value.flyTo({
-      center: selectedFeature.value.geometry.coordinates as unknown as LatLng,
-      zoom: zoom === undefined ? Math.max(map.value.getZoom(), 17) : zoom,
-    })
+    setTimeout(() => {
+      map.value!.flyTo({
+        center: (selectedFeature.value!.geometry as Point).coordinates as unknown as LatLng,
+        zoom: zoom === undefined ? Math.max(map.value!.getZoom(), 17) : zoom,
+      })
+    }, 300)
   }
 }
 
