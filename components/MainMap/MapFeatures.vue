@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
-import type { MultiPolygon, Polygon } from 'geojson'
+import type { MultiPolygon, Point, Polygon } from 'geojson'
 import type {
   FitBoundsOptions,
   LngLatBounds,
@@ -85,6 +85,7 @@ const mapBaseRef = ref<InstanceType<typeof MapBase>>()
 const map = ref<MapGL>()
 const selectedBackground = ref<MapStyleEnum>(DEFAULT_MAP_STYLE)
 const isProcessing = ref(false)
+const isZooming = ref(false)
 
 const availableStyles = computed((): MapStyleEnum[] => {
   const styles = [MapStyleEnum.vector, MapStyleEnum.aerial]
@@ -367,7 +368,7 @@ function goToSelectedFeature(): void {
     return
 
   if (selectedFeature.value.geometry.type === 'Point') {
-    let zoom
+    let zoom: number | undefined
 
     if (selectedFeature.value.properties.vido_zoom) {
       zoom = selectedFeature.value.properties.vido_zoom
@@ -376,9 +377,9 @@ function goToSelectedFeature(): void {
       zoom = props.categories.find(category => category.id === selectedFeature.value!.properties.vido_cat)?.category.zoom || 17
     }
 
-    map.value.flyTo({
-      center: selectedFeature.value.geometry.coordinates as unknown as LatLng,
-      zoom: zoom === undefined ? Math.max(map.value.getZoom(), 17) : zoom,
+    map.value!.flyTo({
+      center: (selectedFeature.value!.geometry as Point).coordinates as unknown as LatLng,
+      zoom: zoom === undefined ? Math.max(map.value!.getZoom(), 17) : zoom,
     })
   }
 }
@@ -435,7 +436,7 @@ function handleResetMapZoom(text: string, textBtn: string): void {
     showZoomSnack(text, textBtn)
   }
 
-  if (currentZoom < MAP_ZOOM.zoom.default) {
+  if (!isZooming.value && currentZoom < MAP_ZOOM.zoom.default) {
     resetZoom()
   }
 }
@@ -462,6 +463,14 @@ function showVectorSelectedFeature(): void {
   }
 }
 
+function onMapZoomStart() {
+  isZooming.value = true
+}
+
+function onMapZoomEnd() {
+  isZooming.value = false
+}
+
 defineExpose({ goToSelectedFeature, updateSelectedFeature })
 </script>
 
@@ -483,6 +492,8 @@ defineExpose({ goToSelectedFeature, updateSelectedFeature })
       hash="map"
       @map-init="onMapInit"
       @map-style-load="onMapStyleLoad"
+      @map-zoom-start="onMapZoomStart"
+      @map-zoom-end="onMapZoomEnd"
     >
       <template #controls>
         <MapControlsExplore v-if="explorerModeEnabled" :map="map" />

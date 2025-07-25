@@ -167,6 +167,7 @@ export default defineNuxtComponent({
     map.on('rotateend', $event => this.$emit('mapRotateEnd', $event))
     map.on('touchmove', $event => this.$emit('mapTouchMove', $event))
     map.on('zoomend', $event => this.$emit('mapZoomEnd', $event))
+    map.on('zoomstart', $event => this.$emit('mapZoomStart', $event))
 
     map.addControl(
       new NavigationControl({
@@ -209,6 +210,10 @@ export default defineNuxtComponent({
     ) => true,
     mapTouchMove: (_event: MapTouchEvent & object) => true,
     mapZoomEnd: (
+      _event: MapLibreEvent<MouseEvent | TouchEvent | WheelEvent | undefined> &
+      object,
+    ) => true,
+    mapZoomStart: (
       _event: MapLibreEvent<MouseEvent | TouchEvent | WheelEvent | undefined> &
       object,
     ) => true,

@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { PoiFilter } from '@teritorio/map'
 import type { MultiLineString, MultiPoint, MultiPolygon, Polygon } from 'geojson'
-import throttle from 'lodash.throttle'
 import type {
   ExpressionSpecification,
   FitBoundsOptions,
@@ -62,6 +61,7 @@ const emit = defineEmits<{
   (e: 'mapResize', event: MapLibreEvent<undefined> & object): void
   (e: 'mapRotateEnd', event: MapLibreEvent<MouseEvent | TouchEvent | undefined> & object): void
   (e: 'mapTouchMove', event: MapTouchEvent & object): void
+  (e: 'mapZoomStart', event: MapLibreEvent<MouseEvent | TouchEvent | WheelEvent | undefined> & object): void
   (e: 'mapZoomEnd', event: MapLibreEvent<MouseEvent | TouchEvent | WheelEvent | undefined> & object): void
   (e: 'mapStyleLoad', style: StyleSpecification): void
 }>()
@@ -270,12 +270,9 @@ function onMapStyleLoad(style: StyleSpecification): void {
   emit('mapStyleLoad', style)
 }
 
-function onMapRender(eventName: 'mapData' | 'mapDragEnd' | 'mapMoveEnd' | 'mapResize' | 'mapRotateEnd' | 'mapTouchMove' | 'mapZoomEnd', event: any): void {
+function onMapRender(eventName: 'mapData' | 'mapDragEnd' | 'mapMoveEnd' | 'mapResize' | 'mapRotateEnd' | 'mapTouchMove' | 'mapZoomEnd' | 'mapZoomStart', event: any): void {
   // @ts-expect-error: eventName is not in events definition
-  throttle(() => emit(eventName, event), 200, {
-    leading: true,
-    trailing: true,
-  })
+  emit(eventName, event)
 }
 
 defineExpose({ fitBounds, initPoiLayer, featuresPrepare, fitBoundsOptions })
@@ -291,7 +288,7 @@ defineExpose({ fitBounds, initPoiLayer, featuresPrepare, fitBoundsOptions })
       @map-data="onMapRender('mapData', $event)" @map-drag-end="onMapRender('mapDragEnd', $event)"
       @map-move-end="onMapRender('mapMoveEnd', $event)" @map-resize="onMapRender('mapResize', $event)"
       @map-rotate-end="onMapRender('mapRotateEnd', $event)" @map-touch-move="onMapRender('mapTouchMove', $event)"
-      @map-zoom-end="onMapRender('mapZoomEnd', $event)" @map-style-load="onMapStyleLoad($event)"
+      @map-zoom-end="onMapRender('mapZoomEnd', $event)" @map-zoom-start="onMapRender('mapZoomStart', $event)" @map-style-load="onMapStyleLoad($event)"
       @full-attribution="fullAttribution = $event"
     >
       <template #controls>
