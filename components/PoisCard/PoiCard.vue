@@ -87,6 +87,12 @@ const logoColor = computed(() => hasImage.value ? '#AAA' : colorFill.value)
   position: relative;
 }
 
+@media (width >= 768px) {
+  .poiDescription {
+    max-height: 320px;
+  }
+}
+
 :deep(img) {
   @apply tw-object-cover tw-w-full tw-h-full;
 }
