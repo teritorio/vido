@@ -101,7 +101,7 @@ const { data, error, status } = await useAsyncData('features', async () => {
     initialFeature = await $fetch<ApiPoiDeps>(`${API_ENDPOINT}/${API_PROJECT}/${API_THEME}/poi/${poiId.value}/deps.geojson`, {
       query: {
         geometry_as: 'point',
-        short_description: false,
+        short_description: true,
       },
     })
   }
