@@ -98,12 +98,5 @@ export default defineNuxtConfig({
   },
   vite: {
     optimizeDeps: { exclude: ['fsevents'] },
-    vue: {
-      template: {
-        compilerOptions: {
-          isCustomElement: tag => tag.includes('pnx-'),
-        },
-      },
-    },
   },
 })

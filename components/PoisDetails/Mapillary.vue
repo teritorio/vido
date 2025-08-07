@@ -23,6 +23,10 @@ const { t } = useI18n()
 <style lang="scss" scoped>
 @import '~/assets/details';
 
+div {
+  margin-bottom: 60px;
+}
+
 iframe {
   width: 100%;
   height: 346px;
