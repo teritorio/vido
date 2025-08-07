@@ -19,8 +19,10 @@ import IsochroneTrigger from '~/components/Isochrone/IsochroneTrigger.vue'
 const props = withDefaults(defineProps<{
   detailsIsExternal?: boolean
   poi: ApiPoi
+  showActions?: boolean
 }>(), {
   detailsIsExternal: false,
+  showActions: true,
 })
 
 //
@@ -44,6 +46,14 @@ const device = useDevice()
 const { enabled: isochroneEnabled, isochroneCurrentFeature } = useIsochrone()
 const { featureName, featureCategoryName } = useFeature(toRef(() => props.poi), { type: 'popup' })
 const { explorerModeEnabled, favoritesModeEnabled } = storeToRefs(useSiteStore())
+
+if (!props.poi.properties.display)
+  throw createError(`Feature ${props.poi.properties.metadata.id} is missing 'display' property.`)
+
+const { colorFill, colorText } = useContrastedColors(
+  toRef(() => props.poi.properties.display!.color_fill),
+  toRef(() => props.poi.properties.display!.color_text),
+)
 
 //
 // Data
@@ -70,12 +80,8 @@ const isFavorite = computed(() => {
   return favoritesIds.value.includes(id.value) || favoriteAddresses.value.has(id.value.toString())
 })
 
-const colorFill = computed(() => {
-  return props.poi.properties.display?.color_fill || 'black'
-})
-
 const colorLine = computed(() => {
-  return props.poi.properties.display?.color_line || 'black'
+  return props.poi.properties.display?.color_line || '#000000'
 })
 
 const icon = computed(() => {
@@ -156,11 +162,13 @@ function trackIsochroneEvent(profile: Profile) {
 
 <template>
   <div>
-    <div class="tw-flex tw-items-center tw-justify-between tw-shrink-0">
+    <div class="tw-flex tw-items-start tw-justify-between tw-shrink-0">
       <h2
         v-if="featureName"
         class="tw-block tw-text-xl tw-font-semibold tw-leading-tight"
-        :style="`color:${colorLine}`"
+        :style="{
+          color: colorLine,
+        }"
       >
         {{ featureName }}
       </h2>
@@ -174,7 +182,10 @@ function trackIsochroneEvent(profile: Profile) {
             "
             class="tw-ml-6 tw-px-3 tw-py-1.5 tw-text-xs tw-text-zinc-800 tw-bg-zinc-100 hover:tw-bg-zinc-200 focus:tw-bg-zinc-200 tw-transition tw-transition-colors tw-rounded-md"
             :to="websiteDetails"
-            :style="`background:${colorFill};color:white`"
+            :style="{
+              background: colorFill,
+              color: colorText,
+            }"
             rel="noopener noreferrer"
             :target="detailsIsExternal ? '_blank' : '_self'"
             @click.stop="trackingPopupEvent('details')"
@@ -185,7 +196,10 @@ function trackIsochroneEvent(profile: Profile) {
             v-else
             class="tw-ml-6 tw-px-3 tw-py-1.5 tw-text-xs tw-text-zinc-800 tw-bg-zinc-100 hover:tw-bg-zinc-200 focus:tw-bg-zinc-200 tw-transition tw-transition-colors tw-rounded-md"
             :href="websiteDetails"
-            :style="`background:${colorFill};color:white`"
+            :style="{
+              background: colorFill,
+              color: colorText,
+            }"
             rel="noopener noreferrer"
             :target="detailsIsExternal ? '_blank' : '_self'"
             @click.stop="trackingPopupEvent('details')"
@@ -233,7 +247,7 @@ function trackIsochroneEvent(profile: Profile) {
       <ContribFieldGroup v-if="contribMode && isContribEligible(poi.properties)" v-bind="getContributorFields(poi)" />
     </div>
 
-    <div class="tw-flex tw-items-center tw-space-x-2 tw-justify-evenly tw-shrink-0 tw-bottom-0 tw-pt-2">
+    <div v-if="showActions" class="tw-flex tw-items-center tw-space-x-2 tw-justify-evenly tw-shrink-0 tw-bottom-0 tw-pt-2">
       <a
         v-if="device.phone && routeHref"
         :href="routeHref"
@@ -256,7 +270,7 @@ function trackIsochroneEvent(profile: Profile) {
         @trigger-click="trackingPopupEvent('isochrone')"
         @profile-update="trackIsochroneEvent"
       >
-        <FontAwesomeIcon :color="isSameFeatureAsIsochrone ? '#fff' : colorLine" icon="clock" size="sm" />
+        <FontAwesomeIcon :color="isSameFeatureAsIsochrone ? '#ffffff' : colorLine" icon="clock" size="sm" />
         <span class="tw-text-sm">{{ t('isochrone.trigger.label') }}</span>
       </IsochroneTrigger>
 
@@ -283,7 +297,7 @@ function trackIsochroneEvent(profile: Profile) {
       >
         <FontAwesomeIcon
           icon="eye"
-          :color="isModeExplorer ? 'white' : colorLine"
+          :color="isModeExplorer ? '#ffffff' : colorLine"
           size="sm"
         />
         <span class="tw-text-sm">{{ t('poiCard.explore') }}</span>

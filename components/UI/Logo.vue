@@ -1,48 +1,45 @@
-<script lang="ts">
-import type { PropType } from 'vue'
-
-import { defineNuxtComponent } from '#app'
-
-export default defineNuxtComponent({
-  props: {
-    logoUrl: {
-      type: String as PropType<string>,
-      required: true,
-    },
-    mainUrl: {
-      type: String as PropType<string>,
-      required: true,
-    },
-    siteName: {
-      type: String as PropType<string>,
-      required: true,
-    },
-    imageClass: {
-      type: String as PropType<string>,
-      default: 'tw-max-w-2xl tw-max-h-16',
-    },
-    target: {
-      type: String,
-      default: '_blank',
-    },
-  },
+<script setup lang="ts">
+withDefaults(defineProps<{
+  logoUrl: string
+  mainUrl: string
+  siteName: string
+  imageClass?: string
+  target?: string
+}>(), {
+  imageClass: 'tw-max-w-2xl tw-max-h-16',
+  target: '_blank',
 })
+
+const { t } = useI18n()
 </script>
 
 <template>
-  <div>
-    <a
-      :href="mainUrl"
-      rel="noopener noreferrer"
-      :aria-label="siteName"
-      :title="siteName"
-      :target="target"
+  <a
+    class="logo"
+    rel="noopener noreferrer"
+    :aria-label="siteName"
+    :href="mainUrl"
+    :title="siteName"
+    :target="target"
+  >
+    <img
+      class="tw-w-auto tw-h-auto"
+      :src="logoUrl"
+      :class="[imageClass]"
+      :alt="t('headerMenu.logo')"
     >
-      <img
-        :src="logoUrl"
-        class="tw-w-auto tw-h-auto" :class="[imageClass]"
-        :alt="$t('headerMenu.logo')"
-      >
-    </a>
-  </div>
+  </a>
 </template>
+
+<style lang="css" scoped>
+.logo {
+  opacity: 0.3;
+  pointer-events: none;
+}
+
+@media (width >= 768px) {
+  .logo {
+    opacity: 1;
+  }
+}
+</style>

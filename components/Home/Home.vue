@@ -7,29 +7,29 @@ import ExplorerOrFavoritesBack from '~/components/Home/ExplorerOrFavoritesBack.v
 import Menu from '~/components/Home/Menu.vue'
 import MenuBlock from '~/components/Home/MenuBlock.vue'
 import SelectedCategories from '~/components/Home/SelectedCategories.vue'
-import BottomMenu from '~/components/MainMap/BottomMenu.vue'
 import FavoriteMenu from '~/components/MainMap/FavoriteMenu.vue'
 import FavoritesOverlay from '~/components/MainMap/FavoritesOverlay.vue'
 import MapFeatures from '~/components/MainMap/MapFeatures.vue'
 import NavMenu from '~/components/MainMap/NavMenu.vue'
 import PoiCard from '~/components/PoisCard/PoiCard.vue'
-import Search from '~/components/Search/Search.vue'
+import SearchResults from '~/components/Search/SearchResults.vue'
+import SearchInput from '~/components/Search/SearchInput.vue'
 import CookiesConsent from '~/components/UI/CookiesConsent.vue'
 import Logo from '~/components/UI/Logo.vue'
-import type { MenuItem } from '~/lib/apiMenu'
-import type { ApiPoi } from '~/lib/apiPois'
-import { getPois } from '~/lib/apiPois'
+import { type ApiPoi, getPois } from '~/lib/apiPois'
 import { getBBox } from '~/lib/bbox'
 import { favoriteStore as useFavoriteStore } from '~/stores/favorite'
 import { mapStore as useMapStore } from '~/stores/map'
 import { menuStore as useMenuStore } from '~/stores/menu'
 import { useSiteStore } from '~/stores/site'
+import { useSearchStore } from '~/stores/search'
 import { Mode, OriginEnum } from '~/utils/types'
 import { getHashPart, setHashParts } from '~/utils/url'
 import { flattenFeatures, formatApiAddressToFeature } from '~/utils/utilities'
 import useDevice from '~/composables/useDevice'
 import type { ApiAddrSearchResult, ApiSearchResult } from '~/lib/apiSearch'
 import IsochroneStatus from '~/components/Isochrone/IsochroneStatus.vue'
+import MenuNavbar from '~/components/MenuNavbar.vue'
 
 //
 // Props
@@ -43,9 +43,9 @@ const props = defineProps<{
 // Composables
 //
 const mapStore = useMapStore()
-const { center, isModeFavorites, isModeExplorer, isModeExplorerOrFavorites, mode, selectedFeature, teritorioCluster } = storeToRefs(mapStore)
+const { isModeFavorites, isModeExplorer, isModeExplorerOrFavorites, mode, selectedFeature, teritorioCluster, isDepsView } = storeToRefs(mapStore)
 const menuStore = useMenuStore()
-const { apiMenuCategory, features, selectedCategoryIds } = storeToRefs(menuStore)
+const { apiMenuCategory, features, selectedCategoryIds, selectedCategories } = storeToRefs(menuStore)
 const favoriteStore = useFavoriteStore()
 const { favoritesIds, favoriteAddresses, favoriteFeatures, favoriteCount } = storeToRefs(favoriteStore)
 const siteStore = useSiteStore()
@@ -56,6 +56,16 @@ const route = useRoute()
 const router = useRouter()
 const device = useDevice()
 const { isochroneCurrentFeature } = useIsochrone()
+const searchStore = useSearchStore()
+const {
+  isActive: searchisActive,
+  itemsCartocode,
+  itemsMenuItems,
+  itemsPois,
+  itemsAddresses,
+  searchSelectedFeature,
+  resultsCount,
+} = storeToRefs(searchStore)
 
 //
 // Data
@@ -63,8 +73,6 @@ const { isochroneCurrentFeature } = useIsochrone()
 const allowRegionBackZoom = ref<boolean>(false)
 const isFilterActive = ref<boolean>(false)
 const initialBbox = ref<LngLatBounds>()
-const isMenuItemOpen = ref<boolean>(false)
-const isOnSearch = ref<boolean>(false)
 const showFavoritesOverlay = ref<boolean>(false)
 const isPoiCardShown = ref<boolean>(false)
 const mapFeaturesRef = ref<InstanceType<typeof MapFeatures>>()
@@ -120,13 +128,13 @@ onMounted(() => {
   initialBbox.value = getBBox({ type: 'Feature', geometry: props.boundaryArea || settings!.bbox_line, properties: {} })
 })
 
+onBeforeUnmount(() => {
+  searchStore.dispose()
+})
+
 //
 // Computed
 //
-const isBottomMenuOpened = computed(() => {
-  return ((device.value.smallScreen && isPoiCardShown.value) || isMenuItemOpen.value)
-})
-
 const fitBoundsPaddingOptions = computed((): FitBoundsOptions['padding'] => {
   if (device.value.smallScreen) {
     return {
@@ -174,14 +182,6 @@ const mapFeatures = computed(() => {
   return f
 })
 
-const menuItemsToIcons = computed(() => {
-  const resources: Record<MenuItem['id'], string> = {}
-  Object.values(apiMenuCategory.value || {}).forEach((sc) => {
-    resources[sc.id] = (sc.menu_group || sc.link || sc.category).icon
-  })
-  return resources
-})
-
 const poiFilters = computed(() => {
   return (
     (
@@ -201,11 +201,19 @@ const siteName = computed(() => {
 //
 // Watchers
 //
-watch(selectedFeature, (newFeature) => {
+watch(searchSelectedFeature, (newValue) => {
+  if (newValue)
+    searchSelectFeature(newValue)
+})
+
+watch(selectedFeature, (newFeature, oldFeature) => {
   isPoiCardShown.value = !!newFeature
 
   if (process.client) {
     routerPushUrl()
+
+    if (newFeature && oldFeature && newFeature.properties.metadata.id === oldFeature.properties.metadata.id)
+      return
 
     if (newFeature) {
       $tracking({
@@ -215,6 +223,13 @@ watch(selectedFeature, (newFeature) => {
         location: window.location.href,
         path: route.path,
         categoryIds: newFeature.properties?.metadata?.category_ids || [],
+      })
+    }
+    else if (isDepsView.value) {
+      menuStore.fetchFeatures({
+        vidoConfig: config!,
+        categoryIds: selectedCategoryIds.value,
+        clipingPolygonSlug: route.query.clipingPolygonSlug?.toString(),
       })
     }
   }
@@ -330,10 +345,6 @@ function onActivateFilter(val: boolean) {
   isFilterActive.value = val
 }
 
-function onBottomMenuButtonClick() {
-  isMenuItemOpen.value = !isMenuItemOpen.value
-}
-
 async function onQuitExplorerFavoriteMode() {
   if (mapFeaturesRef.value)
     await mapFeaturesRef.value.updateSelectedFeature()
@@ -433,48 +444,14 @@ function handlePoiCardClose() {
 </script>
 
 <template>
-  <div
-    class="tw-fixed tw-w-full tw-h-full tw-overflow-hidden tw-flex tw-flex-col"
-  >
+  <div class="tw-fixed tw-w-full tw-h-full tw-overflow-hidden tw-flex tw-flex-col">
     <h1 class="tw-absolute tw-text-white">
       {{ siteName }}
     </h1>
+
     <ClientOnly>
       <header
-        class="tw-flex md:tw-hidden tw-relative tw-fidex tw-top-0 tw-bottom-0 tw-z-10 tw-flex-row tw-w-full tw-space-x-4"
-      >
-        <div class="tw-w-full" :class="[isBottomMenuOpened && 'tw-hidden']">
-          <aside
-            v-if="!isModeExplorerOrFavorites"
-            class="tw-flex tw-flex-col tw-max-h-full tw-px-5 tw-py-4 tw-space-y-6 tw-shadow-md tw-pointer-events-auto md:tw-rounded-xl md:tw-w-96 tw-bg-white tw-min-h-20"
-          >
-            <Search
-              :menu-to-icon="menuItemsToIcons"
-              :map-center="center"
-              @select-feature="searchSelectFeature"
-            >
-              <Logo
-                :main-url="mainUrl"
-                :site-name="siteName"
-                :logo-url="logoUrl"
-                :target="target"
-                class="tw-flex-none md:tw-hidden tw-mr-2"
-                image-class="tw-max-w-2xl tw-max-h-12 md:tw-max-h-16"
-              />
-            </Search>
-          </aside>
-          <aside
-            v-else
-            class="tw-flex tw-flex-col tw-max-h-full tw-px-5 tw-py-4 tw-space-y-6 tw-shadow-md tw-pointer-events-auto md:tw-rounded-xl md:tw-w-96 tw-bg-blue-500 md:tw-bg-white tw-text-white tw-h-20"
-          >
-            <ExplorerOrFavoritesBack @click="onQuitExplorerFavoriteMode" />
-          </aside>
-        </div>
-      </header>
-    </ClientOnly>
-
-    <div v-if="initialBbox" class="tw-w-full tw-h-full">
-      <header
+        v-if="!device.smallScreen"
         class="tw-pointer-events-none tw-flex tw-flex-row tw-fixed tw-z-10 tw-w-full tw-h-auto tw-p-4 tw-pr-[10px] tw-space-x-4"
         style="max-height: calc(100vh - 30px)"
       >
@@ -499,20 +476,15 @@ function handlePoiCardClose() {
             v-else
             key="Menu"
             menu-block="MenuBlock"
-            :is-on-search="isOnSearch"
+            :is-on-search="resultsCount > 0"
             :is-filter-active="isFilterActive"
             class="tw-px-1 tw-pb-1.5"
             @activate-filter="onActivateFilter"
             @scroll-top="scrollTop"
           >
-            <Search
-              :menu-to-icon="menuItemsToIcons"
-              :map-center="center"
-              @focus="isOnSearch = true"
-              @blur="isOnSearch = false"
-              @select-feature="searchSelectFeature"
-            >
+            <div class="tw-flex tw-flex-row tw-items-center">
               <Logo
+                v-if="!searchisActive"
                 :main-url="mainUrl"
                 :site-name="siteName"
                 :logo-url="logoUrl"
@@ -520,20 +492,35 @@ function handlePoiCardClose() {
                 class="tw-flex-none tw-mr-2"
                 image-class="tw-max-w-2xl tw-max-h-12 md:tw-max-h-16"
               />
-            </Search>
+              <SearchInput />
+            </div>
+            <VDivider
+              v-if="resultsCount"
+              class="border-opacity-100"
+              role="presentation"
+              aria-orientation="horizontal"
+            />
+            <SearchResults
+              v-if="resultsCount"
+              :items-cartocode="itemsCartocode"
+              :items-menu-items="itemsMenuItems"
+              :items-pois="itemsPois"
+              :items-addresses="itemsAddresses"
+              @cartocode-click="searchStore.onCartocodeClick"
+              @category-click="searchStore.onCategoryClick"
+              @poi-click="searchStore.onPoiClick"
+              @address-click="searchStore.onAddressClick"
+            />
           </Menu>
         </transition-group>
         <SelectedCategories
-          v-if="
-            !isModeExplorer && selectedCategoryIds.length && !isModeFavorites
-          "
+          v-if="!isModeExplorer && selectedCategories?.length && !isModeFavorites"
+          :categories="selectedCategories"
           class="tw-hidden md:tw-block flex-shrink-1"
         />
         <IsochroneStatus v-if="isochroneCurrentFeature" />
         <div class="tw-grow" style="margin-left: 0" />
-        <div
-          class="tw-flex-none tw-flex" :class="[isBottomMenuOpened && 'hidden']"
-        >
+        <div class="tw-flex-none tw-flex">
           <FavoriteMenu
             v-if="favoritesModeEnabled"
             @explore-click="toggleExploreAroundSelectedPoi"
@@ -542,19 +529,19 @@ function handlePoiCardClose() {
             @toggle-note-book-mode="toggleNoteBookMode"
             @zoom-click="goToSelectedFeature"
           />
-          <NavMenu id="nav-menu" class="tw-ml-3 sm:tw-ml-4" />
+          <NavMenu data-testid="nav-menu" class="tw-ml-3 sm:tw-ml-4" />
         </div>
       </header>
+    </ClientOnly>
 
-      <div
-        class="tw-relative tw-flex tw-flex-col tw-w-full tw-h-full md:tw-h-full"
-      >
+    <div v-if="initialBbox" class="tw-w-full tw-h-full">
+      <div class="tw-relative tw-flex tw-flex-col tw-w-full tw-h-full md:tw-h-full">
         <MapFeatures
           ref="mapFeaturesRef"
           :default-bounds="initialBbox"
           :fit-bounds-padding-options="fitBoundsPaddingOptions"
           :extra-attributions="settings!.attributions"
-          :small="isBottomMenuOpened"
+          :small="device.smallScreen && isPoiCardShown"
           :categories="apiMenuCategory || []"
           :features="mapFeatures"
           :selected-categories-ids="selectedCategoryIds"
@@ -563,20 +550,59 @@ function handlePoiCardClose() {
           :enable-filter-route-by-features="true"
           :boundary-area="boundaryArea || settings!.polygon.data"
         >
-          <div class="tw-relative">
-            <button
-              v-if="!(isModeExplorer || isModeFavorites || isPoiCardShown)"
-              type="button"
-              class="md:tw-hidden tw-absolute -tw-top-12 tw-z-0 tw-w-1/4 tw-h-12 tw-transition-all tw-rounded-t-lg tw-text-sm tw-font-medium tw-px-5 tw-shadow-lg tw-outline-none focus:tw-outline-none tw-bg-white tw-text-zinc-800 hover:tw-bg-zinc-100 focus-visible:tw-bg-zinc-100"
-              style="right: 37.5%"
-              @click="onBottomMenuButtonClick"
-            >
-              <span>{{ $t('headerMenu.burgerLabel') }}</span>
-            </button>
-          </div>
+          <Logo
+            v-if="device.smallScreen && !isModeExplorerOrFavorites"
+            :main-url="mainUrl"
+            :site-name="siteName"
+            :logo-url="logoUrl"
+            :target="target"
+          />
+          <aside
+            v-if="device.smallScreen && isModeExplorerOrFavorites"
+            :style="{
+              color: '#FFF',
+              backgroundColor: isModeExplorerOrFavorites ? '#3B82F6' : 'transparent',
+              position: 'fixed',
+              top: 0,
+              left: 0,
+              display: 'flex',
+              width: '100%',
+              padding: '1rem',
+            }"
+          >
+            <ExplorerOrFavoritesBack v-if="isModeExplorerOrFavorites" @click="onQuitExplorerFavoriteMode" />
+          </aside>
+          <MenuNavbar
+            v-if="device.smallScreen && !isPoiCardShown && !isModeExplorerOrFavorites"
+            @explore-click="toggleExploreAroundSelectedPoi"
+            @favorite-click="toggleFavorite"
+            @toggle-favorite-mode="toggleFavoriteMode"
+            @toggle-note-book-mode="toggleNoteBookMode"
+            @zoom-click="goToSelectedFeature"
+          />
         </MapFeatures>
       </div>
     </div>
+
+    <ClientOnly>
+      <PoiCard
+        v-if="device.smallScreen
+          && selectedFeature
+          && selectedFeature.properties
+          && selectedFeature.properties.metadata
+          && isPoiCardShown
+        "
+        :poi="selectedFeature"
+        :style="{
+          height: '50vh',
+          flexShrink: 0,
+        }"
+        @explore-click="toggleExploreAroundSelectedPoi(undefined)"
+        @favorite-click="toggleFavorite"
+        @zoom-click="goToSelectedFeature"
+        @on-close="handlePoiCardClose"
+      />
+    </ClientOnly>
 
     <FavoritesOverlay
       v-if="showFavoritesOverlay"
@@ -584,9 +610,7 @@ function handlePoiCardClose() {
     />
 
     <ClientOnly>
-      <div
-        class="tw-hidden tw-fixed tw-inset-x-0 tw-bottom-0 md:tw-flex tw-overflow-y-auto tw-h-auto md:tw-left-8 md:tw-right-16 md:tw-bottom-5 tw-pointer-events-none"
-      >
+      <div v-if="!device.smallScreen" class="tw-hidden tw-fixed tw-inset-x-0 tw-bottom-0 md:tw-flex tw-overflow-y-auto tw-h-auto md:tw-left-8 md:tw-right-16 md:tw-bottom-5 tw-pointer-events-none">
         <div class="tw-w-full tw-max-w-md" />
         <div class="tw-grow-[1]" />
         <PoiCard
@@ -608,35 +632,6 @@ function handlePoiCardClose() {
     </ClientOnly>
 
     <ClientOnly>
-      <BottomMenu class="md:tw-hidden" :is-open="isBottomMenuOpened">
-        <div
-          ref="bottomMenuRef"
-          class="tw-flex-1 tw-h-full tw-overflow-y-auto tw-h-screen-3/5 tw-divide-y"
-        >
-          <Menu
-            v-if="!isPoiCardShown"
-            menu-block="MenuBlockBottom"
-            @scroll-top="scrollTop"
-          />
-          <PoiCard
-            v-else-if="
-              selectedFeature
-                && selectedFeature.properties
-                && selectedFeature.properties.metadata
-                && isPoiCardShown
-            "
-            :poi="selectedFeature"
-            class="tw-grow-0 tw-text-left tw-h-full"
-            @explore-click="toggleExploreAroundSelectedPoi(undefined)"
-            @favorite-click="toggleFavorite"
-            @zoom-click="goToSelectedFeature"
-            @on-close="handlePoiCardClose"
-          />
-        </div>
-      </BottomMenu>
-    </ClientOnly>
-
-    <ClientOnly>
       <footer class="tw-z-20">
         <CookiesConsent />
       </footer>
@@ -644,7 +639,7 @@ function handlePoiCardClose() {
   </div>
 </template>
 
-<style scoped>
+<style lang="css" scoped>
 .headers-enter-active,
 .headers-leave-active {
   transition: opacity 0.1s, transform 0.1s;
@@ -666,7 +661,22 @@ function handlePoiCardClose() {
   transform: translateX(-10px);
 }
 
+.menu-navbar {
+  position: absolute;
+  bottom: 12vh;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
 .right-3 {
   right: 37.5%;
+}
+
+@media (width < 768px) {
+  .logo {
+    position: absolute;
+    top: 1rem;
+    left: 1rem;
+  }
 }
 </style>

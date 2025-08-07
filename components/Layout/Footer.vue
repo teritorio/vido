@@ -1,21 +1,11 @@
-<script lang="ts">
-import type { PropType } from 'vue'
-
-import { defineNuxtComponent } from '#app'
+<script setup lang="ts">
 import CookiesConsent from '~/components/UI/CookiesConsent.vue'
 
-export default defineNuxtComponent({
-  components: {
-    CookiesConsent,
-  },
+defineProps<{
+  attributions?: string[]
+}>()
 
-  props: {
-    attributions: {
-      type: Array as PropType<string[]>,
-      default: null,
-    },
-  },
-})
+const { t } = useI18n()
 </script>
 
 <template>
@@ -27,11 +17,11 @@ export default defineNuxtComponent({
       v-html="attribution"
     />
     <span>
-      {{ $t('poiDetails.poweredBy') }}
+      {{ t('poiDetails.poweredBy') }}
       <a target="_blank" href="https://www.teritorio.fr/" title="Teritorio">
         <img
           class="footer-logo"
-          src="https://carte.bidarttourisme.com/content/wp-content/uploads/2020/05/logo-teritorio.png"
+          src="~/assets/logo-teritorio.png"
           alt="Teritorio"
         >
       </a>

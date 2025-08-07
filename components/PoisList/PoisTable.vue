@@ -2,7 +2,7 @@
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { localeIncludes } from 'locale-includes'
 import { PropertyTranslationsContextEnum, useSiteStore } from '~/stores/site'
-import type { ApiPoi, ApiPois, FieldsListItem } from '~/lib/apiPois'
+import type { FieldsListItem } from '~/lib/apiPois'
 import Field from '~/components/Fields/Field.vue'
 import IconButton from '~/components/UI/IconButton.vue'
 import ContribFieldGroup from '~/components/Fields/ContribFieldGroup.vue'
@@ -30,9 +30,8 @@ defineProps<{
 //
 // Composables
 //
-const { routeToString, addressToString } = useField()
 const { t, locale } = useI18n()
-const { config, settings, p } = useSiteStore()
+const { settings, p } = useSiteStore()
 const menuStore = useMenuStore()
 const { contribMode, isContribEligible, getContributorFields } = useContrib()
 const route = useRoute()
@@ -40,56 +39,12 @@ const route = useRoute()
 //
 // Data
 //
-const { API_ENDPOINT, API_PROJECT, API_THEME } = config!
 const search = ref('')
-const query = {
-  geometry_as: 'point',
-  short_description: true,
-} as Record<string, any>
-
-if (route.query.clipingPolygonSlug)
-  query.cliping_polygon_slug = route.query.clipingPolygonSlug.toString()
 
 //
 // Data Fetching
 //
-const { data: pois, error, pending, status } = useFetch<ApiPois>(
-  () => `${API_ENDPOINT}/${API_PROJECT}/${API_THEME}/pois/category/${route.params.id}.geojson`,
-  {
-    query,
-    immediate: !!route.params.id,
-    transform(pois) {
-      if (!pois.features.length)
-        return pois
-
-      const featureFields = pois.features[0].properties.editorial?.list_fields || []
-
-      // Transform non-string values to single string
-      // Used for sort and filter comparisons
-      return {
-        ...pois,
-        features: pois.features.map((f: ApiPoi) => {
-          const arrayProps: { [key: string]: any } = []
-          const fieldEntries = featureFields.map((f: FieldsListItem) => f.field)
-
-          if (fieldEntries.includes('route'))
-            arrayProps.route = routeToString(f.properties, getContext('route'))
-
-          if (fieldEntries.includes('addr'))
-            arrayProps.addr = addressToString(f.properties)
-
-          return {
-            ...f,
-            properties: {
-              ...f.properties,
-              ...arrayProps,
-            },
-          }
-        }),
-      }
-    },
-  },
-)
+const { pois, error, pending, status } = usePois()
 
 if (error.value) {
   clearError()
@@ -147,6 +102,33 @@ const category = computed(() => {
 
   return categoryExists
 })
+
+const teritorioIconBadgeProps = computed(() => {
+  if (!category.value) {
+    throw createError({ statusCode: 404, message: 'Category Not Found' })
+  }
+
+  const { colorFill, colorText } = getContrastedColors()
+
+  return {
+    colorFill: colorFill.value,
+    colorText: colorText.value,
+    picto: category.value!.category.icon,
+    size: 'xl',
+  }
+})
+
+function getContrastedColors() {
+  if (!category.value) {
+    throw createError({ statusCode: 404, message: 'Category Not Found' })
+  }
+
+  const { colorFill, colorText } = useContrastedColors(
+    category.value.category.color_fill,
+    category.value.category.color_text,
+  )
+  return { colorFill, colorText }
+}
 
 //
 // Methods
@@ -227,11 +209,7 @@ useHead(headerFromSettings(settings!, { title: category.value?.category.name.fr 
                   v-if="category"
                   class="d-flex align-center justify-center justify-sm-start print:tw-pb-4"
                 >
-                  <TeritorioIconBadge
-                    :color-fill="category.category.color_fill"
-                    :picto="category.category.icon"
-                    size="xl"
-                  />
+                  <TeritorioIconBadge v-bind="teritorioIconBadgeProps" />
                   {{ category.category.name.fr }}
                 </h1>
               </VCol>

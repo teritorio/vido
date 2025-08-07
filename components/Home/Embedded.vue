@@ -31,7 +31,7 @@ const props = defineProps<{
 const mapStore = useMapStore()
 const { isModeExplorer, mode, selectedFeature } = storeToRefs(mapStore)
 const menuStore = useMenuStore()
-const { apiMenuCategory, features, selectedCategoryIds, menuItems } = storeToRefs(menuStore)
+const { apiMenuCategory, features, selectedCategories, selectedCategoryIds, menuItems } = storeToRefs(menuStore)
 const { config, settings } = useSiteStore()
 const route = useRoute()
 const router = useRouter()
@@ -68,6 +68,8 @@ onMounted(() => {
 //
 // Computed
 //
+const showEmbeddedUi = computed(() => route.query.showEmbeddedUi !== 'false')
+
 const filters = computed(() => {
   return route.query.menuItemIds
     ? route.query.menuItemIds
@@ -201,7 +203,7 @@ function toggleExploreAroundSelectedPoi() {
           :boundary-area="boundaryArea || settings!.polygon.data"
         />
         <CategorySelector
-          v-if="!isFiltersEqualToCategoryId"
+          v-if="!isFiltersEqualToCategoryId && showEmbeddedUi"
           :filters="filters"
           :menu-items="menuItems || {}"
           label="categorySelector.placeholderAdd"
@@ -209,7 +211,7 @@ function toggleExploreAroundSelectedPoi() {
           @category-change="onMenuChange"
         />
         <div class="tw-p-4 tw-pt-24 tw-absolute tw-flex tw-gap-4">
-          <SelectedCategories v-if="!isFiltersEqualToCategoryId" />
+          <SelectedCategories v-if="!isFiltersEqualToCategoryId && selectedCategories?.length && showEmbeddedUi" :categories="selectedCategories" />
           <IsochroneStatus v-if="isochroneCurrentFeature" />
         </div>
       </div>

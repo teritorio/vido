@@ -92,7 +92,14 @@ export default defineNuxtComponent({
     const fullscreenControlObject = ref<FullscreenControl>()
 
     onMounted(() => {
-      fullscreenControlObject.value = new FullscreenControl()
+      const mapContainer = document.getElementById('map')
+
+      if (!mapContainer || !mapContainer.parentElement)
+        return
+
+      fullscreenControlObject.value = new FullscreenControl({
+        container: mapContainer.parentElement,
+      })
     })
 
     return {
@@ -160,6 +167,7 @@ export default defineNuxtComponent({
     map.on('rotateend', $event => this.$emit('mapRotateEnd', $event))
     map.on('touchmove', $event => this.$emit('mapTouchMove', $event))
     map.on('zoomend', $event => this.$emit('mapZoomEnd', $event))
+    map.on('zoomstart', $event => this.$emit('mapZoomStart', $event))
 
     map.addControl(
       new NavigationControl({
@@ -202,6 +210,10 @@ export default defineNuxtComponent({
     ) => true,
     mapTouchMove: (_event: MapTouchEvent & object) => true,
     mapZoomEnd: (
+      _event: MapLibreEvent<MouseEvent | TouchEvent | WheelEvent | undefined> &
+      object,
+    ) => true,
+    mapZoomStart: (
       _event: MapLibreEvent<MouseEvent | TouchEvent | WheelEvent | undefined> &
       object,
     ) => true,
@@ -373,10 +385,11 @@ export default defineNuxtComponent({
 </script>
 
 <template>
-  <div :class="(hideControl || !map) && 'map-controls-hidden'">
+  <div class="tw-relative" :class="(hideControl || !map) && 'map-controls-hidden'">
     <div id="map" />
     <slot name="controls" />
     <slot name="body" />
+    <slot />
   </div>
 </template>
 
@@ -425,11 +438,18 @@ export default defineNuxtComponent({
 }
 
 #map .maplibregl-ctrl-attrib {
-  font-size: 0.75rem;
+  font-size: 0.70rem;
   line-height: 1rem;
+  margin-left: 6rem;
 }
 
 .control-geolocate {
   @apply md:tw-hidden;
+}
+
+@media (width >= 768px) {
+  #map .maplibregl-ctrl-attrib {
+    font-size: 0.8rem;
+  }
 }
 </style>

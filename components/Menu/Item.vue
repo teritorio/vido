@@ -1,7 +1,6 @@
 <script lang="ts">
 import type { FontAwesomeIconProps } from '@fortawesome/vue-fontawesome'
 import type { PropType } from 'vue'
-
 import { defineNuxtComponent } from '#app'
 import TeritorioIconBadge from '~/components/UI/TeritorioIconBadge.vue'
 import type { MultilingualString } from '~/utils/types'
@@ -32,6 +31,10 @@ export default defineNuxtComponent({
       type: String as PropType<string>,
       required: true,
     },
+    colorText: {
+      type: String as PropType<string>,
+      required: true,
+    },
     icon: {
       type: String as PropType<string>,
       required: true,
@@ -53,7 +56,7 @@ export default defineNuxtComponent({
 </script>
 
 <template>
-  <div class="tw-flex tw-flex-col tw-items-start">
+  <div class="menu-item tw-flex tw-flex-col tw-items-start">
     <a
       :id="id"
       :href="href"
@@ -71,7 +74,12 @@ export default defineNuxtComponent({
         ]"
         :style="{ flexShrink: 0 }"
       >
-        <TeritorioIconBadge :color-fill="colorFill" :picto="icon" :size="size">
+        <TeritorioIconBadge
+          :color-fill="colorFill"
+          :color-text="colorText"
+          :picto="icon"
+          :size="size"
+        >
           <span
             v-if="$slots.badge"
             class="tw-flex tw-items-center tw-justify-center tw-text-xs tw-font-semibold tw-font-sans tw-text-center tw-absolute" :class="[
@@ -87,6 +95,7 @@ export default defineNuxtComponent({
       </div>
 
       <div
+        class="label"
         :class="[
           displayMode === 'compact' && 'tw-text-xs',
           displayMode === 'large' && 'tw-mx-4 tw-text-left tw-grow tw-w-full',
@@ -106,3 +115,11 @@ export default defineNuxtComponent({
     <slot name="more" />
   </div>
 </template>
+
+<style lang="css" scoped>
+@media (width <= 380px) {
+  .menu-item .label{
+    font-size: 0.70rem;
+  }
+}
+</style>

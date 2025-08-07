@@ -10,7 +10,7 @@ import type { ApiPoi } from '~/lib/apiPois'
 import { favoriteStore as useFavoriteStore } from '~/stores/favorite'
 import { useSiteStore } from '~/stores/site'
 
-const emit = defineEmits<{
+defineEmits<{
   (e: 'onClose'): void
   (e: 'exploreClick', poi: ApiPoi): void
   (e: 'favoriteClick', poi: ApiPoi): void
@@ -18,8 +18,6 @@ const emit = defineEmits<{
 }>()
 
 const shareModal = ref<InstanceType<typeof ShareLinkModal>>()
-
-const { t } = useI18n()
 
 const favoriteStore = useFavoriteStore()
 const { favoritesIds, favoriteAddresses, favoriteFeatures } = storeToRefs(favoriteStore)
@@ -70,56 +68,58 @@ function removeFavorites() {
     <div class="tw-sticky tw-p-4 tw-top-0 tw-z-20 tw-bg-white">
       <div class="tw-flex tw-justify-between tw-items-center">
         <p class="tw-text-lg">
-          {{ t('favorites.notebook.title') }}
+          {{ $t('favorites.notebook.title') }}
         </p>
         <UIButton
           id="close_favourite_notebook"
-          :label="t('ui.close')"
+          class="close-button"
           icon="times"
-          @click="emit('onClose')"
+          color="#ffffff"
+          :label="$t('ui.close')"
+          @click="$emit('onClose')"
         />
       </div>
 
       <div>
         <IconsBar class="tw-mr-6">
           <IconButton
-            :label="t('favorites.menu_share')"
             class="tw-h-8"
+            :label="$t('favorites.menu_share')"
             @click="setShareLink"
           >
             <FontAwesomeIcon icon="share-alt" />
-            <span class="tw-text-sm">{{ t('favorites.notebook.share') }}</span>
+            <span class="tw-text-sm">{{ $t('favorites.notebook.share') }}</span>
           </IconButton>
           <IconButton
-            :label="t('favorites.export_pdf')"
             class="tw-h-8"
-            :href="pdfLink"
             target="_blank"
+            :label="$t('favorites.export_pdf')"
+            :href="pdfLink"
             @click="exportLink('export_pdf')"
           >
             <FontAwesomeIcon icon="print" />
-            <span class="tw-text-sm">{{ t('favorites.notebook.print') }}</span>
+            <span class="tw-text-sm">{{ $t('favorites.notebook.print') }}</span>
           </IconButton>
           <IconButton
-            :label="t('favorites.export_csv')"
             class="tw-h-8"
-            :href="csvLink"
             target="_blank"
+            :label="$t('favorites.export_csv')"
+            :href="csvLink"
             @click="exportLink('export_csv')"
           >
             <FontAwesomeIcon icon="file-csv" />
             <span class="tw-text-sm">{{
-              t('favorites.notebook.export')
+              $t('favorites.notebook.export')
             }}</span>
           </IconButton>
           <IconButton
-            :label="t('favorites.menu_clear')"
             class="tw-h-8"
+            :label="$t('favorites.menu_clear')"
             @click="removeFavorites"
           >
             <FontAwesomeIcon icon="trash" />
             <span class="tw-text-sm">{{
-              t('favorites.notebook.remove')
+              $t('favorites.notebook.remove')
             }}</span>
           </IconButton>
         </IconsBar>
@@ -130,16 +130,32 @@ function removeFavorites() {
       :pois="favoriteFeatures"
       :is-card-light="false"
       class="tw-pb-4"
-      @explore-click="emit('exploreClick', $event)"
-      @favorite-click="emit('favoriteClick', $event)"
-      @zoom-click="emit('zoomClick', $event)"
+      @explore-click="$emit('exploreClick', $event)"
+      @favorite-click="$emit('favoriteClick', $event)"
+      @zoom-click="$emit('zoomClick', $event)"
     />
 
-    <ShareLinkModal ref="shareModal" :title="t('favorites.share_link')" />
+    <ShareLinkModal ref="shareModal" :title="$t('favorites.share_link')" />
   </div>
 </template>
 
 <style lang="css" scoped>
+.close-button {
+  background-color: rgb(0 0 0 / 55%);
+  border-radius: 0 0 0 8px;
+  color: #fff;
+  right: 0;
+  top: 0;
+  border: 0;
+  position: absolute;
+  z-index: 1;
+}
+
+.close-button:deep(svg) {
+  width: 24px;
+  height: 24px;
+}
+
 @media (width >= 991px) {
   .pois-deck {
     flex-direction: row;

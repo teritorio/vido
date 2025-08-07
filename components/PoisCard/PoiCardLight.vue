@@ -13,11 +13,26 @@ const props = withDefaults(defineProps<{
 
 const { featureName } = useFeature(toRef(() => props.poi), { type: 'popup' })
 
-const colorFill = ref(props.poi.properties.display?.color_fill || 'black')
-const colorText = ref(props.poi.properties.display?.color_text || 'white')
-const colorLine = ref(props.poi.properties.display?.color_line || 'black')
-
+const colorLine = ref(props.poi.properties.display?.color_line || '#000000')
 const websiteDetails = ref(props.poi.properties.editorial && props.poi.properties.editorial['website:details'])
+
+if (!props.poi.properties.display)
+  throw createError(`Feature ${props.poi.properties.metadata.id} is missing 'display' property.`)
+
+const { colorFill, colorText } = useContrastedColors(
+  toRef(() => props.poi.properties.display!.color_fill),
+  toRef(() => props.poi.properties.display!.color_text),
+)
+
+const teritorioIconBadgeProps = computed(() => {
+  return {
+    colorFill: props.poi.properties['route:point:type'] ? colorText.value : colorFill.value,
+    colorText: props.poi.properties['route:point:type'] ? colorFill.value : colorText.value,
+    picto: props.poi.properties.display?.icon,
+    text: props.poi.properties.display?.text,
+    size: 'lg',
+  }
+})
 </script>
 
 <template>
@@ -26,12 +41,7 @@ const websiteDetails = ref(props.poi.properties.editorial && props.poi.propertie
       <header>
         <TeritorioIconBadge
           v-if="props.poi.properties.display?.icon || poi.properties.display?.text"
-          :color-fill="props.poi.properties['route:point:type'] ? colorText : colorFill"
-          :color-text="props.poi.properties['route:point:type'] ? colorFill : colorText"
-          :picto="props.poi.properties.display?.icon"
-          :image="undefined"
-          :text="poi.properties.display?.text"
-          size="lg"
+          v-bind="teritorioIconBadgeProps"
         />
         <h3
           class="tw-text-xl tw-font-semibold tw-leading-tight"

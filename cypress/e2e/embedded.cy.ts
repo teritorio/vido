@@ -27,7 +27,7 @@ describe('pois table', () => {
     cy.get('#1 ', { timeout: 30000 }).click()
     cy.url().should('include', `/embedded/22/1`)
 
-    cy.get('#selected-category-22 button').click()
+    cy.get('[data-testid="selected-category-22"]').click()
     cy.url().should('include', `/embedded/1`)
 
     cy.htmlvalidate()

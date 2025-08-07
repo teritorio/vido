@@ -74,7 +74,7 @@ jspm_packages/
 storybook-static
 
 # Cypress
-cypress
+# cypress
 
 # Vido
 **/*.stories.ts

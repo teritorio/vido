@@ -1,177 +1,121 @@
-<script lang="ts">
-import type {
-  FontAwesomeIconProps,
-} from '@fortawesome/vue-fontawesome'
-import {
-  FontAwesomeIcon,
-} from '@fortawesome/vue-fontawesome'
-import { mapActions, mapState } from 'pinia'
-import type { PropType } from 'vue'
-
-import { defineNuxtComponent } from '#app'
-import MenuBlock from '~/components/Home/MenuBlock.vue'
-import MenuBlockBottom from '~/components/Home/MenuBlockBottom.vue'
+<script setup lang="ts">
+import type { FontAwesomeIconProps } from '@fortawesome/vue-fontawesome'
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
+import { storeToRefs } from 'pinia'
+import BreadcrumbsWrapper from '~/components/BreadcrumbsWrapper.vue'
 import FilterCompo from '~/components/Menu/Filter.vue'
 import ItemList from '~/components/Menu/ItemList.vue'
-import Search from '~/components/Search/Search.vue'
-import Logo from '~/components/UI/Logo.vue'
 import type { ApiMenuCategory, MenuGroup, MenuItem } from '~/lib/apiMenu'
-import { menuStore } from '~/stores/menu'
+import { menuStore as useMenuStore } from '~/stores/menu'
+import MenuBlock from '~/components/Home/MenuBlock.vue'
+import MenuBlockBottom from '~/components/Home/MenuBlockBottom.vue'
+import { useNavigationStore } from '~/stores/navigation'
 
-export default defineNuxtComponent({
-  components: {
-    FontAwesomeIcon,
-    Logo,
-    MenuBlock,
-    MenuBlockBottom,
-    ItemList,
-    FilterCompo,
-    Search,
-  },
-
-  props: {
-    menuBlock: {
-      type: String as PropType<'MenuBlock' | 'MenuBlockBottom'>,
-      required: true,
-    },
-    isOnSearch: {
-      type: Boolean,
-      default: false,
-    },
-    isFilterActive: {
-      type: Boolean,
-      default: false,
-    },
-  },
-
-  data(): {
-    navigationParentIdStack: MenuItem['id'][]
-    categoryIdFilter: ApiMenuCategory['id'] | null
-  } {
-    return {
-      navigationParentIdStack: [],
-      categoryIdFilter: null,
-    }
-  },
-
-  computed: {
-    ...mapState(menuStore, ['filters', 'selectedCategoryIds', 'menuItems']),
-
-    currentParentId(): MenuItem['id'] | undefined {
-      return this.navigationParentIdStack.at(-1)
-    },
-
-    currentMenuItems(): MenuItem[] {
-      return this.getMenuItemByParentId(this.currentParentId)
-    },
-
-    isRootMenu(): boolean {
-      return this.navigationParentIdStack.length === 0
-    },
-
-    size(): FontAwesomeIconProps['size'] {
-      return this.isRootMenu ? '2xl' : 'lg'
-    },
-
-    isAllSelected(): boolean {
-      return this.getRecursiveCategoryIdByParentId(this.currentParentId).every(
-        categoryId => this.selectedCategoryIds.includes(categoryId),
-      )
-    },
-
-    categoriesActivesCountByParent(): Record<ApiMenuCategory['id'], number> {
-      const counts: { [id: string]: number } = {}
-      this.selectedCategoryIds.forEach((categoryId: ApiMenuCategory['id']) => {
-        let parentId = this.menuItems?.[categoryId]?.parent_id
-        while (parentId) {
-          counts[parentId] = (counts[parentId] || 0) + 1
-          parentId = this.menuItems?.[parentId].parent_id
-        }
-      })
-      return counts
-    },
-
-    hasSlot(): boolean {
-      return this.$slots.default !== undefined
-    },
-  },
-
-  emits: {
-    activateFilter: (_val: boolean) => true,
-    scrollTop: () => true,
-  },
-
-  watch: {
-    currentMenuItems() {
-      this.$emit('scrollTop')
-    },
-  },
-
-  methods: {
-    ...mapActions(menuStore, [
-      'addSelectedCategoryIds',
-      'delSelectedCategoryIds',
-      'toggleSelectedCategoryId',
-    ]),
-
-    getMenuItemByParentId(
-      menuGroupId: MenuGroup['id'] | undefined,
-    ): MenuItem[] {
-      return Object.values(this.menuItems || {})
-        .filter(c => (c.parent_id || null) === (menuGroupId || null))
-        .sort((a, b) => a.index_order - b.index_order)
-    },
-
-    getRecursiveCategoryIdByParentId(
-      menuGroupId: MenuGroup['id'] | undefined,
-    ): ApiMenuCategory['id'][] {
-      const menuItems = this.getMenuItemByParentId(menuGroupId)
-      const menuGroups = menuItems.filter(menuItem => menuItem.menu_group)
-      const categories = menuItems
-        .filter(menuItem => menuItem.category)
-        .map(category => category.id)
-      return [
-        ...categories,
-        ...menuGroups
-          .map(parent => this.getRecursiveCategoryIdByParentId(parent.id))
-          .flat(),
-      ].sort()
-    },
-
-    onClickSelectAll(): void {
-      this.addSelectedCategoryIds(
-        this.getRecursiveCategoryIdByParentId(this.currentParentId),
-      )
-    },
-
-    onClickUnselectAll(): void {
-      this.delSelectedCategoryIds(
-        this.getRecursiveCategoryIdByParentId(this.currentParentId),
-      )
-    },
-
-    onGoBackClick() {
-      this.navigationParentIdStack.pop()
-    },
-
-    onMenuGroupClick(menuGroupId: MenuGroup['id']) {
-      this.navigationParentIdStack.push(menuGroupId)
-    },
-
-    onCategoryFilterClick(categoryId: ApiMenuCategory['id']) {
-      this.categoryIdFilter = categoryId
-    },
-
-    onBackToCategoryClick() {
-      this.categoryIdFilter = null
-    },
-  },
+const props = withDefaults(defineProps<{
+  menuBlock: keyof typeof componentMap
+  isOnSearch?: boolean
+  isFilterActive?: boolean
+}>(), {
+  isOnSearch: false,
+  isFilterActive: false,
 })
+
+const emit = defineEmits<{
+  (e: 'activateFilter', val: boolean): void
+  (e: 'scrollTop'): void
+}>()
+
+const componentMap = {
+  MenuBlock,
+  MenuBlockBottom,
+} as const
+
+const device = useDevice()
+const slots = useSlots()
+const menuStore = useMenuStore()
+const navigationStore = useNavigationStore()
+const { currentParent, isRootMenu, categoryIdFilter } = storeToRefs(navigationStore)
+const { filters, selectedCategoryIds, menuItems } = storeToRefs(menuStore)
+
+const dynamicComponent = computed(() => componentMap[props.menuBlock])
+
+const currentMenuItems = computed((): MenuItem[] => {
+  return getMenuItemByParentId(currentParent.value?.id)
+})
+
+const size = computed((): FontAwesomeIconProps['size'] => {
+  return isRootMenu.value ? '2xl' : 'lg'
+})
+
+const isAllSelected = computed((): boolean => {
+  return getRecursiveCategoryIdByParentId(currentParent.value?.id).every(
+    categoryId => selectedCategoryIds.value.includes(categoryId),
+  )
+})
+
+const categoriesActivesCountByParent = computed((): Record<ApiMenuCategory['id'], number> => {
+  const counts: { [id: string]: number } = {}
+
+  selectedCategoryIds.value.forEach((categoryId: ApiMenuCategory['id']) => {
+    let parentId = menuItems?.value?.[categoryId]?.parent_id
+    while (parentId) {
+      counts[parentId] = (counts[parentId] || 0) + 1
+      parentId = menuItems?.value?.[parentId].parent_id
+    }
+  })
+  return counts
+})
+
+const hasSlot = computed((): boolean => {
+  return slots.default !== undefined
+})
+
+watch(currentMenuItems, () => {
+  emit('scrollTop')
+})
+
+function getMenuItemByParentId(menuGroupId: MenuGroup['id'] | undefined): MenuItem[] {
+  return Object.values(menuItems?.value || {})
+    .filter(c => (c.parent_id || null) === (menuGroupId || null))
+    .sort((a, b) => a.index_order - b.index_order)
+}
+
+function getRecursiveCategoryIdByParentId(menuGroupId: MenuGroup['id'] | undefined): ApiMenuCategory['id'][] {
+  const menuItems = getMenuItemByParentId(menuGroupId)
+  const menuGroups = menuItems.filter(menuItem => menuItem.menu_group)
+  const categories = menuItems
+    .filter(menuItem => menuItem.category)
+    .map(category => category.id)
+  return [
+    ...categories,
+    ...menuGroups
+      .map(parent => getRecursiveCategoryIdByParentId(parent.id))
+      .flat(),
+  ].sort()
+}
+
+function onClickSelectAll(): void {
+  if (!currentParent.value)
+    return
+
+  menuStore.addSelectedCategoryIds(
+    getRecursiveCategoryIdByParentId(currentParent.value.id),
+  )
+}
+
+function onClickUnselectAll(): void {
+  if (!currentParent.value)
+    return
+
+  menuStore.delSelectedCategoryIds(
+    getRecursiveCategoryIdByParentId(currentParent.value.id),
+  )
+}
 </script>
 
 <template>
   <component
-    :is="menuBlock"
+    :is="dynamicComponent"
     v-if="categoryIdFilter"
     :is-filter-active="isFilterActive"
   >
@@ -179,7 +123,7 @@ export default defineNuxtComponent({
       <button
         type="button"
         class="tw-flex tw-items-center tw-justify-center tw-w-10 tw-h-10 tw-text-2xl tw-font-bold tw-transition-all tw-rounded-full tw-outline-none tw-cursor-pointer focus:tw-outline-none hover:tw-bg-zinc-100 focus:tw-bg-zinc-100"
-        @click="onBackToCategoryClick"
+        @click="navigationStore.setCategoryFilter(null)"
       >
         <FontAwesomeIcon icon="arrow-left" class="tw-text-zinc-800" size="xs" />
       </button>
@@ -190,17 +134,17 @@ export default defineNuxtComponent({
       :category-id="categoryIdFilter"
       :filters-values="categoryIdFilter ? filters[categoryIdFilter] : []"
       @activate-filter="$emit('activateFilter', $event)"
-      @go-back-click="onBackToCategoryClick"
+      @go-back-click="navigationStore.setCategoryFilter(null)"
     />
   </component>
 
   <div v-else-if="isRootMenu" class="tw-flex tw-flex-col tw-space-y-4">
     <template v-for="(menuItem, index) in currentMenuItems" :key="menuItem.id">
-      <component :is="menuBlock" v-if="index === 0 && hasSlot">
+      <component :is="dynamicComponent" v-if="index === 0 && hasSlot">
         <slot />
       </component>
       <component
-        :is="menuBlock"
+        :is="dynamicComponent"
         v-else-if="index !== 0 && !isOnSearch"
         :class="[index === 0 && 'tw-hidden md:tw-block']"
       >
@@ -212,48 +156,66 @@ export default defineNuxtComponent({
           :size="size"
           display-mode-default="compact"
           class="tw-flex-1 tw-pointer-events-auto tw-h-full"
-          @menu-group-click="onMenuGroupClick"
-          @category-click="toggleSelectedCategoryId($event)"
-          @filter-click="onCategoryFilterClick"
+          @menu-group-click="navigationStore.navigateTo($event)"
+          @category-click="menuStore.toggleSelectedCategoryId($event)"
+          @filter-click="navigationStore.setCategoryFilter($event)"
         />
       </component>
     </template>
   </div>
 
   <div v-else>
-    <component :is="menuBlock">
-      <div class="tw-w-full tw-flex tw-justify-between tw-pb-4">
-        <button
-          type="button"
-          class="tw-flex tw-items-center tw-justify-center tw-w-10 tw-h-10 tw-text-2xl tw-font-bold tw-transition-all tw-rounded-full tw-outline-none tw-cursor-pointer focus:tw-outline-none hover:tw-bg-zinc-100"
-          @click="onGoBackClick"
-        >
-          <span class="sr-only">{{ $t('headerMenu.back') }}</span>
-          <FontAwesomeIcon
-            icon="arrow-left"
-            class="tw-text-zinc-800"
-            size="xs"
-          />
-        </button>
+    <component :is="dynamicComponent">
+      <div class="tw-flex tw-items-center tw-justify-between">
+        <BreadcrumbsWrapper
+          :style="{
+            flex: '1 1 auto',
+            minWidth: 0,
+          }"
+        />
 
-        <button
+        <VBtn
           v-if="!isAllSelected"
-          type="button"
-          class="tw-px-3 tw-py-2 tw-font-medium tw-transition-all tw-rounded-md tw-outline-none focus:tw-outline-none hover:tw-bg-zinc-100 focus:tw-bg-zinc-100"
+          variant="text"
+          density="comfortable"
+          :title="$t('headerMenu.selectAll')"
           @click="onClickSelectAll"
         >
-          {{ $t('headerMenu.selectAll') }}
-        </button>
+          <FontAwesomeIcon
+            v-if="device.smallScreen"
+            class="tw-text-zinc-300"
+            :icon="['far', 'circle']"
+            size="xl"
+          />
+          <span v-else>
+            {{ $t('headerMenu.selectAll') }}
+          </span>
+        </VBtn>
 
-        <button
+        <VBtn
           v-if="isAllSelected"
-          type="button"
-          class="tw-px-3 tw-py-2 tw-font-medium tw-transition-all tw-rounded-md tw-outline-none focus:tw-outline-none hover:tw-bg-zinc-100 focus:tw-bg-zinc-100"
+          variant="text"
+          density="comfortable"
+          :title="$t('headerMenu.unselectAll')"
           @click="onClickUnselectAll"
         >
-          {{ $t('headerMenu.unselectAll') }}
-        </button>
+          <FontAwesomeIcon
+            v-if="device.smallScreen"
+            class="tw-text-emerald-500"
+            icon="check-circle"
+            size="xl"
+          />
+          <span v-else>
+            {{ $t('headerMenu.unselectAll') }}
+          </span>
+        </VBtn>
       </div>
+
+      <VDivider
+        class="border-opacity-100"
+        role="presentation"
+        aria-orientation="horizontal"
+      />
 
       <ItemList
         :menu-items="currentMenuItems"
@@ -263,10 +225,19 @@ export default defineNuxtComponent({
         :size="size"
         display-mode-default="large"
         class="tw-flex-1 tw-pointer-events-auto tw-h-full"
-        @menu-group-click="onMenuGroupClick"
-        @category-click="toggleSelectedCategoryId($event)"
-        @filter-click="onCategoryFilterClick"
+        @menu-group-click="navigationStore.navigateTo($event)"
+        @category-click="menuStore.toggleSelectedCategoryId($event)"
+        @filter-click="navigationStore.setCategoryFilter"
       />
     </component>
   </div>
 </template>
+
+<style lang="css" scoped>
+.v-btn {
+  font-weight: 500;
+  font-size: 1rem;
+  text-transform: none;
+  letter-spacing: inherit;
+}
+</style>

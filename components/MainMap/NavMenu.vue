@@ -2,7 +2,6 @@
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { storeToRefs } from 'pinia'
 import { useLocale } from 'vuetify'
-import { VDivider } from 'vuetify/components/VDivider'
 import { VList, VListItem } from 'vuetify/components/VList'
 import { VMenu } from 'vuetify/components/VMenu'
 import IconButton from '~/components/UI/IconButton.vue'
@@ -48,10 +47,14 @@ function getLinkTo(url: string) {
 </script>
 
 <template>
-  <section v-if="entries.length + locales.length > 0" class="tw-relative tw-z-40">
+  <section v-if="entries.length + locales.length > 0" class="nav-menu tw-relative tw-z-40">
     <VMenu offset-y>
       <template #activator="{ props }">
-        <IconButton :label="$t('navMenu.label')" class="tw-w-11 tw-h-11 tw-pointer-events-auto" v-bind="props">
+        <IconButton
+          :label="$t('navMenu.label')"
+          class="tw-w-11 tw-h-11 tw-pointer-events-auto"
+          v-bind="{ ...$attrs, ...props }"
+        >
           <FontAwesomeIcon icon="cog" class="tw-text-zinc-800" size="lg" />
         </IconButton>
       </template>
@@ -71,7 +74,12 @@ function getLinkTo(url: string) {
             </VListItem>
           </NuxtLink>
         </template>
-        <VDivider v-if="Boolean(entries.length)" />
+        <VDivider
+          v-if="Boolean(entries.length)"
+          class="border-opacity-100"
+          role="presentation"
+          aria-orientation="horizontal"
+        />
         <VListItem
           v-for="locale in locales"
           :key="typeof locale === 'string' ? locale : locale.code"

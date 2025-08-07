@@ -199,5 +199,19 @@ export default defineI18nLocale(() => {
         'foot-walking': 'A pie',
       },
     },
+    menuNavbar: {
+      label: 'Menú principal',
+      actions: {
+        search: {
+          open: 'Mostrar menú de búsqueda',
+          close: 'Cerrar menú de búsqueda',
+          tooltip: '¡Busque aquí!',
+        },
+        goToMap: 'Mostrar en el mapa',
+      },
+    },
+    selectedCategories: {
+      label: 'Categorías seleccionadas',
+    },
   }
 })

@@ -1,8 +1,5 @@
-<script lang="ts">
-import { mapState } from 'pinia'
-import type { PropType } from 'vue'
-
-import { defineNuxtComponent } from '#app'
+<script setup lang="ts">
+import { storeToRefs } from 'pinia'
 import PoiLayout from '~/components/Layout/PoiLayout.vue'
 import MapPois from '~/components/Map/MapPois.vue'
 import Carousel from '~/components/PoisDetails/Carousel.vue'
@@ -15,167 +12,124 @@ import IconButton from '~/components/UI/IconButton.vue'
 import RelativeDate from '~/components/UI/RelativeDate.vue'
 import TeritorioIcon from '~/components/UI/TeritorioIcon.vue'
 import type { ApiPoiDeps } from '~/lib/apiPoiDeps'
-import type { ApiPoi, ApiPoiId, ApiPoiProperties, FieldsList } from '~/lib/apiPois'
+import type { ApiPoi, ApiPoiId, FieldsList } from '~/lib/apiPois'
 import type { Settings } from '~/lib/apiSettings'
-import { PropertyTranslationsContextEnum } from '~/stores/site'
-import { favoriteStore } from '~/stores/favorite'
+import { favoriteStore as useFavoriteStore } from '~/stores/favorite'
 import { OriginEnum } from '~/utils/types'
 import FieldsHeader from '~/components/UI/FieldsHeader.vue'
 import ContribFieldGroup from '~/components/Fields/ContribFieldGroup.vue'
-import type { ContribFields } from '~/composables/useContrib'
 
-export default defineNuxtComponent({
-  components: {
-    ContribFieldGroup,
-    PoiLayout,
-    IconButton,
-    FavoriteIcon,
-    FieldsHeader,
-    TeritorioIcon,
-    Share,
-    Carousel,
-    Mapillary,
-    MapPois,
-    RouteMap,
-    FieldsGroup,
-    RelativeDate,
-  },
+const props = defineProps<{
+  settings: Settings
+  poi: ApiPoi
+  poiDeps?: ApiPoiDeps
+  pageTitle: string
+}>()
 
-  props: {
-    settings: {
-      type: Object as PropType<Settings>,
-      required: true,
-    },
-    poi: {
-      type: Object as PropType<ApiPoi>,
-      required: true,
-    },
-    poiDeps: {
-      type: Object as PropType<ApiPoiDeps>,
-      default: null,
-    },
-    pageTitle: {
-      type: String,
-      required: true,
-    },
-  },
+const { t } = useI18n()
+const { $tracking } = useNuxtApp()
+const router = useRouter()
+const route = useRoute()
+const favoriteStore = useFavoriteStore()
+const { favoritesIds, favoriteAddresses } = storeToRefs(favoriteStore)
+const { contribMode, isContribEligible, getContributorFields } = useContrib()
 
-  data(): {
-    contribMode: boolean
-    isContribEligible: (properties: ApiPoiProperties) => boolean
-    getContributorFields: (feature: ApiPoi) => ContribFields
-  } {
-    const { contribMode, isContribEligible, getContributorFields } = useContrib()
+if (!props.poi.properties.display)
+  throw createError(`Feature ${props.poi.properties.metadata.id} is missing 'display' property.`)
 
-    return {
-      contribMode,
-      isContribEligible,
-      getContributorFields,
-    }
-  },
+const { colorFill, colorText } = useContrastedColors(
+  props.poi.properties.display.color_fill,
+  props.poi.properties.display.color_text,
+)
 
-  computed: {
-    ...mapState(favoriteStore, ['favoritesIds', 'favoriteAddresses']),
+const isLargeLayout = computed((): boolean => {
+  if (!props.poiDeps)
+    return false
 
-    context(): PropertyTranslationsContextEnum {
-      return PropertyTranslationsContextEnum.Details
-    },
+  return props.poiDeps.features.length > 0
+})
 
-    properties(): ApiPoi['properties'] {
-      if (!this.isLargeLayeout) {
-        return this.poi.properties
-      }
-      else {
-        const { 'description': _omitted, ...rest } = this.poi.properties
-        return rest
-      }
-    },
+const properties = computed((): ApiPoi['properties'] => {
+  if (!isLargeLayout.value) {
+    return props.poi.properties
+  }
+  else {
+    const { 'description': _omitted, ...rest } = props.poi.properties
+    return rest
+  }
+})
 
-    isLargeLayeout(): boolean {
-      return this.poiDeps?.features.length > 0
-    },
+const detailsFields = computed((): FieldsList | undefined => {
+  const fields = props.poi.properties.editorial?.details_fields
+  if (!fields || !isLargeLayout.value) {
+    return fields
+  }
+  else {
+    // @ts-expect-error: ignore
+    return fields.filter(field => field.field !== 'description')
+  }
+})
 
-    detailsFields(): FieldsList | undefined {
-      const fields = this.poi.properties.editorial?.details_fields
-      if (!fields || !this.isLargeLayeout) {
-        return fields
-      }
-      else {
-        // @ts-expect-error: ignore
-        return fields.filter(field => field.field !== 'description')
-      }
-    },
+const colorLine = computed((): string => {
+  return props.poi.properties.display?.color_line || '#76009E'
+})
 
-    colorFill(): string {
-      return this.poi.properties.display?.color_fill || '#76009E'
-    },
+const id = computed((): ApiPoiId => {
+  return props.poi.properties.metadata.id
+})
 
-    colorLine(): string {
-      return this.poi.properties.display?.color_line || '#76009E'
-    },
+const isFavorite = computed((): boolean => {
+  return favoritesIds.value.includes(id.value) || favoriteAddresses.value.has(id.value.toString())
+})
 
-    id(): ApiPoiId {
-      return this.poi.properties.metadata.id
-    },
+const mapURL = computed((): string | undefined => {
+  // Assume if there is a history on the same site, it comes form the main map
+  const localHistoryBack = router.options.history.state.back && !(router.options.history.state.back as string).startsWith('http')
 
-    isFavorite(): boolean {
-      return this.favoritesIds.includes(this.id) || this.favoriteAddresses.has(this.id.toString())
-    },
+  if (localHistoryBack) {
+    // Use history back rather than forward to map
+    return undefined
+  }
+  else {
+    const categoryIds = `${props.poi.properties.metadata.category_ids?.join(',')}/`
+    const id = props.poi.properties.metadata.id
+    return `/${categoryIds}${id}`
+  }
+})
 
-    mapURL(): string | undefined {
-      // Assume if there is a history on the same site, it comes form the main map
-      const localHistoryBack
-        = this.$router.options.history.state.back
-        && !(this.$router.options.history.state.back as string).startsWith('http')
-      if (localHistoryBack) {
-        // Use history back rather than forward to map
-        return undefined
-      }
-      else {
-        const categoryIds
-          = `${this.poi.properties.metadata.category_ids?.join(',')}/`
-        const id = this.poi.properties.metadata.id
-        return `/${categoryIds}${id}`
-      }
-    },
-  },
+function toggleFavorite(): void {
+  if (id.value) {
+    $tracking({
+      type: 'details_event',
+      event: 'favorite',
+      poiId: id.value,
+      title: props.poi.properties.name,
+    })
 
-  mounted() {
-    favoriteStore().init()
-    this.$tracking({
-      type: 'page',
-      title: (this.$route.name && String(this.$route.name)) || undefined,
-      location: window.location.href,
-      path: this.$route.path,
-      origin:
+    if (props.poi.properties.internalType === 'address')
+      favoriteStore.toggleFavoriteAddr(props.poi)
+    else
+      favoriteStore.toggleFavorite(props.poi)
+  }
+}
+
+function back(): void {
+  router.go(-1)
+}
+
+onMounted(() => {
+  favoriteStore.init()
+  $tracking({
+    type: 'page',
+    title: (route.name && String(route.name)) || undefined,
+    location: window.location.href,
+    path: route.path,
+    origin:
         OriginEnum[
-          this.$router.currentRoute.value.query
+          router.currentRoute.value.query
             .origin as keyof typeof OriginEnum
         ],
-    })
-  },
-
-  methods: {
-    toggleFavorite() {
-      if (this.id) {
-        this.$tracking({
-          type: 'details_event',
-          event: 'favorite',
-          poiId: this.id,
-          title: this.poi.properties.name,
-        })
-
-        if (this.poi.properties.internalType === 'address')
-          favoriteStore().toggleFavoriteAddr(this.poi)
-        else
-          favoriteStore().toggleFavorite(this.poi)
-      }
-    },
-
-    back(): void {
-      this.$router.go(-1)
-    },
-  },
+  })
 })
 </script>
 
@@ -186,12 +140,11 @@ export default defineNuxtComponent({
     :icon="poi.properties.display && poi.properties.display.icon"
     :color-line="colorLine"
     :color-fill="colorFill"
+    :color-text="colorText"
   >
     <template #headerButtons>
       <IconButton
-        :label="
-          isFavorite ? $t('poiCard.favoriteOn') : $t('poiCard.favoriteOff')
-        "
+        :label="isFavorite ? t('poiCard.favoriteOn') : t('poiCard.favoriteOff')"
         class="tw-w-11 tw-h-11 tw-mr-3 sm:tw-mr-9"
         @click.stop="toggleFavorite"
       >
@@ -199,7 +152,7 @@ export default defineNuxtComponent({
       </IconButton>
       <IconButton
         :href="mapURL"
-        :label="$t('poiCard.backToMap')"
+        :label="t('poiCard.backToMap')"
         class="tw-w-11 tw-h-11 tw-mr-3 sm:tw-mr-9"
         @click="!mapURL && back()"
       >
@@ -230,11 +183,12 @@ export default defineNuxtComponent({
             }"
             :properties="properties"
             :color-fill="colorFill"
+            :color-text="colorText"
             :geom="poi.geometry"
           />
           <div v-if="contribMode && isContribEligible(poi.properties)">
             <FieldsHeader :recursion-stack="[]">
-              {{ $t('fields.contrib.heading') }}
+              {{ t('fields.contrib.heading') }}
             </FieldsHeader>
             <ContribFieldGroup v-bind="getContributorFields(poi)" />
           </div>
@@ -250,7 +204,7 @@ export default defineNuxtComponent({
             :images="poi.properties.image"
           />
 
-          <template v-if="!isLargeLayeout">
+          <template v-if="!isLargeLayout">
             <MapPois
               :extra-attributions="settings.attributions"
               :feature-ids="[id]"
@@ -278,23 +232,25 @@ export default defineNuxtComponent({
             :properties="poi.properties"
             :geom="poi.geometry"
             :color-fill="colorFill"
+            :color-text="colorText"
           />
         </div>
       </div>
 
       <RouteMap
-        v-if="isLargeLayeout"
+        v-if="isLargeLayout && poiDeps"
         id="route-map"
         :poi="poi"
         :route="poiDeps"
         :color-fill="colorFill"
+        :color-text="colorText"
         :color-line="colorLine"
       />
     </template>
 
     <template #footer>
       <span v-if="poi.properties.metadata.updated_at">
-        {{ $t('poiDetails.lastUpdate') }}
+        {{ t('poiDetails.lastUpdate') }}
         <a
           v-if="poi.properties.metadata.osm_type && poi.properties.metadata.osm_id"
           :href="`https://www.openstreetmap.org/${poi.properties.metadata.osm_type}/${poi.properties.metadata.osm_id}`"

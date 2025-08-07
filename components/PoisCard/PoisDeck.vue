@@ -2,6 +2,7 @@
 import type { ApiPoi } from '~/lib/apiPois'
 import PoiCard from '~/components/PoisCard/PoiCard.vue'
 import PoiCardLight from '~/components/PoisCard/PoiCardLight.vue'
+import { favoriteStore as useFavoriteStore } from '~/stores/favorite'
 
 defineProps<{
   pois: ApiPoi[]
@@ -13,6 +14,8 @@ const emit = defineEmits<{
   (e: 'favoriteClick', poi: ApiPoi): void
   (e: 'zoomClick', poi: ApiPoi): void
 }>()
+
+const favoriteStore = useFavoriteStore()
 </script>
 
 <template>
@@ -33,6 +36,10 @@ const emit = defineEmits<{
       :can-close="false"
       :poi="item"
       class="tw-grow-1 poi-deck"
+      :class="[
+        !favoriteStore.isFavorite(item.properties.metadata.id)
+          && 'tw-bg-zinc-200 tw-opacity-70',
+      ]"
       @explore-click="emit('exploreClick', $event)"
       @favorite-click="emit('favoriteClick', $event)"
       @zoom-click="emit('zoomClick', $event)"

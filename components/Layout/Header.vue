@@ -29,7 +29,7 @@ const target = computed(() => (locale.value && theme.value.main_url?.[locale.val
     <slot name="search" />
     <div class="tw-flex tw-justify-end print:tw-hidden">
       <slot />
-      <NavMenu />
+      <NavMenu data-testid="nav-menu" />
     </div>
   </header>
 </template>

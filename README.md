@@ -30,19 +30,21 @@ Full entry points documentation available on [api.yml](public/api.yaml) and on s
     * `boundary`: an alternative boundary key from settings `polygons_extra`.
     * `clipingPolygonSlug`: POI filtering by polygon (key from settings `polygons_extra`).
 * Embedded: `/embedded/`, same subpath and parameters as full page.
+  * Parameters:
+    * `showEmbeddedUi`: Show/hide category selector and selected categories indicator (values: true | false)
 * POI:
   * details: `/poi/{id}/details`.
 * POIs:
   * map only: `/pois/{ids}/map`.
 * Categories
   * Empty list: `/category`
-  * Embedded empty list: `/category/embedded`
-    * Parameters:
-      * `menuItemIds=[id,id]`: filters selector entries by categories IDs
   * List of POIs by category ID: `/category/{id}`
+* Categories (embedded):
+  * Embedded empty list: `/category/embedded`
   * Embedded list of POIs by category ID: `/category/embedded/{id}`
     * Parameters:
       * `menuItemIds=[id,id]`: filters selector entries by categories IDs
+      * `showEmbeddedUi`: Show/hide category selector and selected categories indicator (values: true | false)
 
 ### Sitemap & WPA
 * `/manifest.webmanifest`

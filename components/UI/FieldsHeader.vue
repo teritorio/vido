@@ -1,16 +1,11 @@
-<script lang="ts">
-import type { PropType } from 'vue'
-
-import { defineNuxtComponent } from '#app'
-
-export default defineNuxtComponent({
-  props: {
-    recursionStack: {
-      type: Array as PropType<string[]>,
-      default: () => [],
-    },
-  },
+<script setup lang="ts">
+withDefaults(defineProps<{
+  recursionStack: string[]
+}>(), {
+  recursionStack: () => [],
 })
+
+const { t } = useI18n()
 </script>
 
 <template>
@@ -20,5 +15,5 @@ export default defineNuxtComponent({
   <h3 v-else-if="recursionStack && recursionStack.length === 1">
     <slot />
   </h3>
-  <span v-else><slot />{{ $t('ponctuation.colon') }}</span>
+  <span v-else><slot />{{ t('ponctuation.colon') }}</span>
 </template>

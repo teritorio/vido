@@ -5,10 +5,7 @@ import UIButton from '~/components/UI/UIButton.vue'
 import UIPicture from '~/components/UI/UIPicture.vue'
 import type { ApiPoi } from '~/lib/apiPois'
 
-//
-// Props
-//
-withDefaults(defineProps<{
+const props = withDefaults(defineProps<{
   canClose?: boolean
   poi: ApiPoi
   showImage?: boolean
@@ -17,9 +14,6 @@ withDefaults(defineProps<{
   showImage: true,
 })
 
-//
-// Events
-//
 const emit = defineEmits<{
   (e: 'exploreClick', poi: ApiPoi): void
   (e: 'favoriteClick', poi: ApiPoi): void
@@ -27,20 +21,21 @@ const emit = defineEmits<{
   (e: 'zoomClick', poi: ApiPoi): void
 }>()
 
-//
-// Composables
-//
 const device = useDevice()
 
-//
-// Data
-//
+if (!props.poi.properties.display)
+  throw createError(`Feature ${props.poi.properties.metadata.id} is missing 'display' property.`)
+
 const closeBtnStyles = reactive({
   backgroundColor: 'rgb(0 0 0 / 55%)',
   borderRadius: device.value.smallScreen ? '0 0 0 8px' : '0 0 8px 0',
   right: device.value.smallScreen ? 0 : 'unset',
   left: device.value.smallScreen ? 'unset' : 0,
 })
+
+const { colorFill } = useContrastedColors(toRef(() => props.poi.properties.display!.color_fill))
+const hasImage = computed(() => props.poi.properties.image && props.poi.properties.image.length > 0)
+const logoColor = computed(() => hasImage.value ? '#AAA' : colorFill.value)
 </script>
 
 <template>
@@ -66,11 +61,7 @@ const closeBtnStyles = reactive({
         :picto="poi.properties.display.icon"
         :use-native-alignment="false"
         class="tw-text-8xl tw-align-middle tw-absolute tw-z-0"
-        :color-text="
-          poi.properties.image && poi.properties.image.length > 0
-            ? '#AAA'
-            : poi.properties.display?.color_fill || 'black'
-        "
+        :color-text="logoColor"
       />
       <UIPicture
         v-if="poi.properties.image && poi.properties.image.length > 0"
@@ -91,9 +82,15 @@ const closeBtnStyles = reactive({
   </div>
 </template>
 
-<style scoped>
+<style lang="css" scoped>
 .poiDescription {
   position: relative;
+}
+
+@media (width >= 768px) {
+  .poiDescription {
+    max-height: 320px;
+  }
 }
 
 :deep(img) {

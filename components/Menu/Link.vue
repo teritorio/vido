@@ -1,12 +1,7 @@
 <script lang="ts">
-import type {
-  FontAwesomeIconProps,
-} from '@fortawesome/vue-fontawesome'
-import {
-  FontAwesomeIcon,
-} from '@fortawesome/vue-fontawesome'
+import type { FontAwesomeIconProps } from '@fortawesome/vue-fontawesome'
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import type { PropType } from 'vue'
-
 import { defineNuxtComponent } from '#app'
 import MenuItem from '~/components/Menu/Item.vue'
 import type { ApiMenuItem, ApiMenuLink } from '~/lib/apiMenu'
@@ -31,8 +26,36 @@ export default defineNuxtComponent({
     },
   },
 
+  setup(props) {
+    const { colorFill, colorText } = useContrastedColors(
+      props.menuLink.link.color_fill,
+      props.menuLink.link.color_text,
+    )
+
+    return { colorFill, colorText }
+  },
+
   emits: {
     click: (_menuLinkId: ApiMenuItem['id']) => true,
+  },
+
+  computed: {
+    menuItemProps() {
+      return {
+        id: `MenuLink-${this.menuLink.id}`,
+        href: this.menuLink.link.href,
+        displayMode: this.menuLink.link.display_mode || this.displayModeDefault,
+        colorFill: this.colorFill,
+        colorText: this.colorText,
+        icon: this.menuLink.link.icon,
+        size: this.size,
+        name: this.menuLink.link.name,
+        badgeClass: [
+          'tw-bg-white tw-text-zinc-700 tw-rounded-full tw-border-2 tw-border-white',
+          this.size === '2xl' ? 'tw-w-6 tw-h-6' : 'tw-w-5 tw-h-5',
+        ].join(' '),
+      }
+    },
   },
 
   methods: {
@@ -50,22 +73,7 @@ export default defineNuxtComponent({
 </script>
 
 <template>
-  <MenuItem
-    :id="`MenuLink-${menuLink.id}`"
-    :href="menuLink.link.href"
-    :display-mode="menuLink.link.display_mode || displayModeDefault"
-    :color-fill="menuLink.link.color_fill"
-    :icon="menuLink.link.icon"
-    :size="size"
-    :name="menuLink.link.name"
-    :badge-class="
-      [
-        'tw-bg-white tw-text-zinc-700 tw-rounded-full tw-border-2 tw-border-white',
-        size === '2xl' ? 'tw-w-6 tw-h-6' : 'tw-w-5 tw-h-5',
-      ].join(' ')
-    "
-    @click="onClick"
-  >
+  <MenuItem v-bind="menuItemProps" @click="onClick">
     <template v-if="menuLink.link.display_mode === 'compact'" #badge>
       <FontAwesomeIcon icon="external-link-alt" size="sm" />
     </template>

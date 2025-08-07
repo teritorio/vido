@@ -1,42 +1,17 @@
-<script lang="ts">
-import type { PropType } from 'vue'
-
-import { defineNuxtComponent } from '#app'
+<script setup lang="ts">
 import Footer from '~/components/Layout/Footer.vue'
 import Header from '~/components/Layout/Header.vue'
 import TeritorioIconBadge from '~/components/UI/TeritorioIconBadge.vue'
 import type { Settings } from '~/lib/apiSettings'
 
-export default defineNuxtComponent({
-  components: {
-    Header,
-    TeritorioIconBadge,
-    Footer,
-  },
-
-  props: {
-    settings: {
-      type: Object as PropType<Settings>,
-      required: true,
-    },
-    name: {
-      type: String as PropType<string | undefined>,
-      default: undefined,
-    },
-    icon: {
-      type: String as PropType<string | undefined>,
-      default: undefined,
-    },
-    colorLine: {
-      type: String as PropType<string>,
-      required: true,
-    },
-    colorFill: {
-      type: String as PropType<string>,
-      required: true,
-    },
-  },
-})
+defineProps<{
+  settings: Settings
+  name?: string
+  icon?: string
+  colorLine: string
+  colorFill: string
+  colorText: string
+}>()
 </script>
 
 <template>
@@ -46,7 +21,12 @@ export default defineNuxtComponent({
         <slot name="headerButtons" />
       </Header>
       <div v-if="icon" class="tw-flex tw-justify-center">
-        <TeritorioIconBadge :color-fill="colorFill" size="2xl" :picto="icon" />
+        <TeritorioIconBadge
+          :color-fill="colorFill"
+          :color-text="colorText"
+          :picto="icon"
+          size="2xl"
+        />
       </div>
       <h1 class="print:tw-pb-4">
         {{ name }}

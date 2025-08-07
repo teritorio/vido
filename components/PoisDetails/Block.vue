@@ -1,7 +1,6 @@
 <script lang="ts">
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import type { PropType } from 'vue'
-
 import { defineNuxtComponent } from '#app'
 
 export default defineNuxtComponent({
@@ -25,9 +24,9 @@ export default defineNuxtComponent({
 <template>
   <div
     class="block-block tw-relative tw-detail-left-block tw-flex tw-flex-col tw-justify-start tw-z-0"
-    :style="`
-      background-color: ${colorFill};
-    `"
+    :style="{
+      backgroundColor: colorFill,
+    }"
   >
     <div class="tw-relative tw-z-10">
       <slot id="block-content" />

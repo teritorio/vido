@@ -23,6 +23,9 @@ export interface ApiRouteWaypointProperties {
   'name'?: MultilingualString
   'description'?: MultilingualString
   'route:point:type': ApiRouteWaypointType
+  'metadata': {
+    id: number
+  }
 }
 
 export type ApiRouteWaypoint = GeoJSON.Feature<
@@ -34,6 +37,41 @@ export type ApiPoiDeps = GeoJSON.FeatureCollection<
   GeoJSON.Geometry,
   ApiPoiProperties | ApiRouteWaypointProperties
 >
+
+export function prepareApiPoiDeps(
+  featureCollection: GeoJSON.Feature<GeoJSON.Geometry, ApiPoiProperties | ApiRouteWaypointProperties>[],
+  referenceIds: number[],
+): {
+    waypoints: ApiRouteWaypoint[]
+    pois: ApiPoi[]
+  } {
+  const waypoints: ApiRouteWaypoint[] = []
+  const pois: ApiPoi[] = []
+
+  const featureById = new Map<number, GeoJSON.Feature<GeoJSON.Geometry, ApiPoiProperties | ApiRouteWaypointProperties>>()
+
+  for (const feature of featureCollection) {
+    const id = feature.properties.metadata.id
+    featureById.set(id, feature)
+
+    if (feature.properties['route:point:type']) {
+      // It's a waypoint, skip adding to POIs
+      continue
+    }
+
+    pois.push(feature as ApiPoi)
+  }
+
+  for (const id of referenceIds) {
+    const feature = featureById.get(id)
+
+    if (feature && feature.properties['route:point:type']) {
+      waypoints.push(feature as ApiRouteWaypoint)
+    }
+  }
+
+  return { waypoints, pois }
+}
 
 export async function getPoiDepsById(
   vidoConfig: VidoConfig,
@@ -66,6 +104,7 @@ export function apiRouteWaypointToApiPoi(
   waypoint: ApiRouteWaypoint,
   colorFill: string,
   colorLine: string,
+  colorText: '#000000' | '#FFFFFF',
   text?: string,
 ): ApiPoi {
   return {
@@ -81,6 +120,7 @@ export function apiRouteWaypointToApiPoi(
         icon: iconMap[waypoint.properties['route:point:type']],
         color_fill: colorFill,
         color_line: colorLine,
+        color_text: colorText,
         text,
       },
       editorial: {

@@ -1,77 +1,69 @@
-<script lang="ts">
+<script setup lang="ts">
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
-import type { PropType } from 'vue'
-import { ref } from 'vue'
+import { storeToRefs } from 'pinia'
+import { VTextField } from 'vuetify/lib/components/index.mjs'
+import { useSearchStore } from '~/stores/search'
 
-import { defineNuxtComponent } from '#app'
+const searchStore = useSearchStore()
+const { searchText, isLoading } = storeToRefs(searchStore)
+const { $tracking } = useNuxtApp()
+const device = useDevice()
 
-export default defineNuxtComponent({
-  components: {
-    FontAwesomeIcon,
-  },
-
-  props: {
-    searchText: {
-      type: String as PropType<string>,
-      default: '',
-    },
-    isLoading: {
-      type: Boolean,
-      default: false,
-    },
-  },
-  setup() {
-    return {
-      search: ref<InstanceType<typeof HTMLInputElement>>(),
-    }
-  },
-
-  emits: {
-    input: (_value: string) => true,
-    focus: (_event: string | Event) => true,
-    blur: (_event: FocusEvent) => true,
-  },
-
-  methods: {
-    onFocus(event: string | Event) {
-      this.$emit('focus', event)
-      this.$tracking({ type: 'search' })
-    },
-  },
-})
+function onFocus(state: boolean) {
+  if (state)
+    $tracking({ type: 'search' })
+  else
+    setTimeout(() => searchStore.closeSearch(), 300)
+}
 </script>
 
 <template>
-  <form
-    class="tw-flex-grow tw-relative tw-pointer-events-auto tw-w-full"
-    @submit.prevent
+  <VTextField
+    v-model="searchText"
+    :placeholder="$t('headerMenu.searchHint')"
+    :persistent-clear="true"
+    :bg-color="device.smallScreen ? '#FFFFFF' : '#F4F4F5'"
+    persistent-placeholder
+    rounded
+    clearable
+    variant="solo"
+    hide-details
+    glow
+    density="comfortable"
+    flat
+    @update:model-value="searchStore.submit"
+    @update:focused="onFocus"
+    @click:control="searchStore.openSearch"
+    @click:clear="searchStore.reset"
   >
-    <section class="tw-relative tw-w-full">
-      <label>
-        <span class="tw-sr-only">{{ $t('headerMenu.searchHint') }}</span>
-        <input
-          ref="search"
-          :value="searchText"
-          class="tw-w-full tw-px-5 tw-py-3 tw-font-medium tw-text-zinc-700 tw-placeholder-zinc-500 tw-bg-zinc-100 tw-border-none tw-rounded-full tw-outline-none tw-appearance-none focus:tw-outline-none focus:tw-ring focus:tw-ring-zinc-300 tw-truncate tw-pr-10"
-          :placeholder="$t('headerMenu.searchHint')"
-          type="text"
-          @input="
-            //@ts-ignore
-            $emit('input', $event.target.value)
-          "
-          @focus="onFocus"
-          @blur="$emit('blur', $event)"
-        >
-      </label>
-      <button
-        class="tw-absolute tw-inset-y-0 tw-right-0 tw-px-5 tw-text-zinc-800 tw-rounded-r-full tw-outline-none focus:tw-outline-none"
-        style="pointer-events: none"
-        type="submit"
-      >
-        <span class="tw-sr-only">{{ $t('headerMenu.search') }}</span>
-        <FontAwesomeIcon v-if="!isLoading" icon="search" />
-        <FontAwesomeIcon v-else icon="spinner" class="tw-animate-spin" />
-      </button>
-    </section>
-  </form>
+    <template #label>
+      <span class="d-sr-only">{{ $t('headerMenu.searchHint') }}</span>
+    </template>
+    <template #prepend-inner>
+      <FontAwesomeIcon icon="search" />
+    </template>
+    <template #append-inner>
+      <FontAwesomeIcon v-if="isLoading" icon="spinner" class="tw-animate-spin" />
+    </template>
+  </VTextField>
 </template>
+
+<style lang="css" scoped>
+@media (width < 768px) {
+  .v-text-field:deep(.v-field) {
+    border: 2px solid black;
+  }
+}
+
+:deep(.v-field__input:focus) {
+  box-shadow: none;
+}
+
+:deep(.v-field__clearable) {
+  grid-column: 4;
+}
+
+:deep(.v-field__append-inner) {
+  grid-column: 3;
+}
+</style>

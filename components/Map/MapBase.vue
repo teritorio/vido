@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { PoiFilter } from '@teritorio/map'
 import type { MultiLineString, MultiPoint, MultiPolygon, Polygon } from 'geojson'
-import throttle from 'lodash.throttle'
 import type {
   ExpressionSpecification,
   FitBoundsOptions,
@@ -17,14 +16,15 @@ import type {
 import { mask } from '@turf/mask'
 import { nextTick } from 'vue'
 import { storeToRefs } from 'pinia'
+import { TeritorioCluster } from '@teritorio/maplibre-gl-teritorio-cluster'
 import Attribution from '~/components/Map/Attribution.vue'
 import Map from '~/components/Map/Map.vue'
 import type { ApiPoi } from '~/lib/apiPois'
 import { MAP_ZOOM } from '~/lib/constants'
 import type { MapPoi } from '~/lib/mapPois'
-import { markerLayerTextFactory } from '~/lib/markerLayerFactory'
 import type { MapStyleEnum } from '~/utils/types'
 import { mapStore as useMapStore } from '~/stores/map'
+import { clusterRender, markerRender, pinMarkerRender } from '~/lib/clusters'
 
 const props = withDefaults(defineProps<{
   center?: LngLatLike
@@ -61,18 +61,18 @@ const emit = defineEmits<{
   (e: 'mapResize', event: MapLibreEvent<undefined> & object): void
   (e: 'mapRotateEnd', event: MapLibreEvent<MouseEvent | TouchEvent | undefined> & object): void
   (e: 'mapTouchMove', event: MapTouchEvent & object): void
+  (e: 'mapZoomStart', event: MapLibreEvent<MouseEvent | TouchEvent | WheelEvent | undefined> & object): void
   (e: 'mapZoomEnd', event: MapLibreEvent<MouseEvent | TouchEvent | WheelEvent | undefined> & object): void
   (e: 'mapStyleLoad', style: StyleSpecification): void
 }>()
 
 const POI_SOURCE = 'poi'
-const POI_LAYER = 'poi'
-
+const POI_LAYER = 'teritorio-cluster-layer'
 const BOUNDARY_SOURCE = 'boundary_area'
 const BOUNDARY_AREA_LAYER = 'boundary_area'
 const BOUNDAR_BORDER_LAYER = 'boundary_border'
 
-const { boundOptions, teritorioCluster } = storeToRefs(useMapStore())
+const { boundOptions, teritorioCluster, selectedFeature } = storeToRefs(useMapStore())
 
 const map = ref<MapGL>()
 const poiFilter = ref<PoiFilter>()
@@ -203,16 +203,17 @@ function initPoiLayer(features: MapPoi[], clusterPropertiesValues: string[], clu
     },
   })
 
-  // Add individual markers
-  if (poiLayerTemplate.value) {
-    map.value.addLayer(
-      markerLayerTextFactory(
-        poiLayerTemplate.value,
-        POI_LAYER,
-        POI_SOURCE,
-      ),
-    )
-  }
+  teritorioCluster.value = new TeritorioCluster(POI_LAYER, POI_SOURCE, {
+    clusterRender,
+    fitBoundsOptions: fitBoundsOptions(),
+    // @ts-expect-error: MapGeoJSONFeature type mismatch
+    initialFeature: selectedFeature.value ? selectedFeature.value : undefined,
+    markerRender,
+    markerSize: 32,
+    pinMarkerRender,
+  })
+
+  map.value.addLayer(teritorioCluster.value)
 }
 
 function onMapInit(mapInstance: MapGL): void {
@@ -269,12 +270,9 @@ function onMapStyleLoad(style: StyleSpecification): void {
   emit('mapStyleLoad', style)
 }
 
-function onMapRender(eventName: 'mapData' | 'mapDragEnd' | 'mapMoveEnd' | 'mapResize' | 'mapRotateEnd' | 'mapTouchMove' | 'mapZoomEnd', event: any): void {
+function onMapRender(eventName: 'mapData' | 'mapDragEnd' | 'mapMoveEnd' | 'mapResize' | 'mapRotateEnd' | 'mapTouchMove' | 'mapZoomEnd' | 'mapZoomStart', event: any): void {
   // @ts-expect-error: eventName is not in events definition
-  throttle(() => emit(eventName, event), 200, {
-    leading: true,
-    trailing: true,
-  })
+  emit(eventName, event)
 }
 
 defineExpose({ fitBounds, initPoiLayer, featuresPrepare, fitBoundsOptions })
@@ -290,7 +288,7 @@ defineExpose({ fitBounds, initPoiLayer, featuresPrepare, fitBoundsOptions })
       @map-data="onMapRender('mapData', $event)" @map-drag-end="onMapRender('mapDragEnd', $event)"
       @map-move-end="onMapRender('mapMoveEnd', $event)" @map-resize="onMapRender('mapResize', $event)"
       @map-rotate-end="onMapRender('mapRotateEnd', $event)" @map-touch-move="onMapRender('mapTouchMove', $event)"
-      @map-zoom-end="onMapRender('mapZoomEnd', $event)" @map-style-load="onMapStyleLoad($event)"
+      @map-zoom-end="onMapRender('mapZoomEnd', $event)" @map-zoom-start="onMapRender('mapZoomStart', $event)" @map-style-load="onMapStyleLoad($event)"
       @full-attribution="fullAttribution = $event"
     >
       <template #controls>
@@ -299,6 +297,7 @@ defineExpose({ fitBounds, initPoiLayer, featuresPrepare, fitBoundsOptions })
       <template #body>
         <slot name="body" />
       </template>
+      <slot name="drawer" />
     </Map>
     <Attribution v-if="showAttribution && offMapAttribution" :attribution="fullAttribution" />
   </div>

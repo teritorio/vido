@@ -20,6 +20,8 @@ const route = useRoute()
 //
 // Computed
 //
+const showEmbeddedUi = computed(() => route.query.showEmbeddedUi !== 'false')
+
 const categoryId = computed(() => {
   if (!route.params.id)
     return undefined
@@ -68,7 +70,7 @@ async function onCategoryUpdate(categoryId: number) {
 <template>
   <div v-if="isEmbedded">
     <CategorySelector
-      v-if="!isFiltersEqualToCategoryId"
+      v-if="!isFiltersEqualToCategoryId && showEmbeddedUi"
       class="pa-4"
       :filters="filters"
       :menu-items="menuItems || {}"

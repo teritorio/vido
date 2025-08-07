@@ -4,7 +4,16 @@ import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 const { t } = useI18n()
 const { reset, isochroneCurrentFeature } = useIsochrone()
 
-const color = computed(() => isochroneCurrentFeature.value?.properties?.display?.color_fill ?? 'transparent')
+if (!isochroneCurrentFeature.value)
+  throw createError('Missing current feature.')
+
+if (!isochroneCurrentFeature.value.properties?.display?.color_fill)
+  throw createError(`Feature ${isochroneCurrentFeature.value.id} is missing color_fill`)
+
+const { colorFill: color_fill, colorText: color_text } = useContrastedColors(
+  isochroneCurrentFeature.value.properties.display.color_fill,
+  isochroneCurrentFeature.value.properties.display.color_text,
+)
 </script>
 
 <template>
@@ -41,12 +50,12 @@ div > div {
 
 .icon {
   border-radius: 100%;
-  background-color: v-bind(color);
+  background-color: v-bind(color_fill);
   width: 40px;
   height: 40px;
 }
 
-svg {
-  color: #fff;
+.icon svg {
+  color: v-bind(color_text);
 }
 </style>

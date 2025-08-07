@@ -1,19 +1,10 @@
-<script lang="ts">
-import type { PropType } from 'vue'
-
-import { defineNuxtComponent } from '#app'
-
-export default defineNuxtComponent({
-  props: {
-    extraClassTextBackground: {
-      type: String as PropType<string>,
-      default: 'tw-bg-white',
-    },
-    isFilterActive: {
-      type: Boolean,
-      default: false,
-    },
-  },
+<script setup lang="ts">
+withDefaults(defineProps<{
+  extraClassTextBackground?: string
+  isFilterActive?: boolean
+}>(), {
+  extraClassTextBackground: 'tw-bg-white',
+  isFilterActive: false,
 })
 </script>
 
@@ -29,8 +20,14 @@ export default defineNuxtComponent({
   </aside>
 </template>
 
-<style scoped>
+<style lang="css" scoped>
 aside {
   min-width: 432px;
+}
+
+aside > div {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
 }
 </style>

@@ -1,9 +1,5 @@
-<script lang="ts">
-import type { PropType } from 'vue'
-
+<script setup lang="ts">
 import { isFiledEmpty } from '../Fields/Field.vue'
-
-import { defineNuxtComponent } from '#app'
 import Field from '~/components/Fields/Field.vue'
 import Block from '~/components/PoisDetails/Block.vue'
 import FieldsHeader from '~/components/UI/FieldsHeader.vue'
@@ -15,89 +11,54 @@ import type {
 } from '~/lib/apiPois'
 import { PropertyTranslationsContextEnum, useSiteStore } from '~/stores/site'
 
-export default defineNuxtComponent({
-  name: 'FieldsGroup',
-
-  components: {
-    Block,
-    FieldsHeader,
-    Field,
-  },
-
-  props: {
-    recursionStack: {
-      type: Array as PropType<string[]>,
-      default: () => [],
-    },
-    group: {
-      type: Object as PropType<FieldsListGroup>,
-      required: true,
-    },
-    properties: {
-      type: Object as PropType<ApiPoiProperties>,
-      required: true,
-    },
-    geom: {
-      type: Object as PropType<GeoJSON.Geometry>,
-      required: true,
-    },
-    colorFill: {
-      type: String as PropType<string>,
-      required: true,
-    },
-  },
-
-  setup() {
-    const { p } = useSiteStore()
-
-    return {
-      p,
-    }
-  },
-
-  computed: {
-    context(): PropertyTranslationsContextEnum {
-      return PropertyTranslationsContextEnum.Details
-    },
-  },
-
-  methods: {
-    fieldTranslateK(field: string) {
-      return this.p(field, this.context)
-    },
-
-    isListEmpty(
-      fileds: FieldsList,
-      properties: { [key: string]: string },
-      geom: GeoJSON.Geometry,
-    ): boolean {
-      return (
-        !fileds
-        || fileds.reduce(
-          (sum: boolean, value: FieldsListItem | FieldsListGroup) =>
-            sum
-            && (value.group !== undefined
-              ? this.isListEmpty(value.fields, properties, geom)
-              : isFiledEmpty(value, properties, geom)),
-          true,
-        )
-      )
-    },
-  },
+withDefaults(defineProps<{
+  recursionStack?: string[]
+  group: FieldsListGroup
+  properties: ApiPoiProperties
+  geom: GeoJSON.Geometry
+  colorFill: string
+  colorText: string
+}>(), {
+  recursionStack: () => [],
 })
+
+const { p } = useSiteStore()
+
+const context = computed((): PropertyTranslationsContextEnum => {
+  return PropertyTranslationsContextEnum.Details
+})
+
+function fieldTranslateK(field: string) {
+  return p(field, context.value)
+}
+
+function isListEmpty(
+  fileds: FieldsList,
+  properties: { [key: string]: string },
+  geom: GeoJSON.Geometry,
+): boolean {
+  return (
+    !fileds
+    || fileds.reduce(
+      (sum: boolean, value: FieldsListItem | FieldsListGroup) =>
+        sum
+        && (value.group !== undefined
+          ? isListEmpty(value.fields, properties, geom)
+          : isFiledEmpty(value, properties, geom)),
+      true,
+    )
+  )
+}
 </script>
 
 <template>
   <div>
     <template v-for="field in group.fields" :key="field.group">
       <div
-        v-if="
-          field.group !== undefined
-            && !isListEmpty(field.fields, properties, geom)
-        "
+        v-if="field.group !== undefined && !isListEmpty(field.fields, properties, geom)"
         class="block print:tw-mb-2"
       >
-        <div v-if="field.display_mode === 'standard'">
+        <div v-if="!field.display_mode || field.display_mode === 'standard'">
           <FieldsHeader
             v-if="fieldTranslateK(field.group)"
             :recursion-stack="recursionStack"
@@ -111,6 +72,7 @@ export default defineNuxtComponent({
             :properties="properties"
             :geom="geom"
             :color-fill="colorFill"
+            :color-text="colorText"
           />
         </div>
         <Block
@@ -132,6 +94,7 @@ export default defineNuxtComponent({
             :properties="properties"
             :geom="geom"
             :color-fill="colorFill"
+            :color-text="colorText"
           />
         </Block>
       </div>

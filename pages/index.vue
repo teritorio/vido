@@ -3,7 +3,7 @@ import { storeToRefs } from 'pinia'
 import type { GeoJSON, MultiPolygon, Polygon } from 'geojson'
 import type { MapGeoJSONFeature } from 'maplibre-gl'
 import type { ApiPoi } from '~/lib/apiPois'
-import { type ApiPoiDeps, type ApiRouteWaypoint, ApiRouteWaypointType, apiRouteWaypointToApiPoi, iconMap } from '~/lib/apiPoiDeps'
+import { type ApiPoiDeps, type ApiRouteWaypoint, ApiRouteWaypointType, iconMap, prepareApiPoiDeps } from '~/lib/apiPoiDeps'
 import Home from '~/components/Home/Home.vue'
 import { useSiteStore } from '~/stores/site'
 import { menuStore as useMenuStore } from '~/stores/menu'
@@ -67,7 +67,7 @@ if (route.params.poiId) {
 }
 
 const menuStore = useMenuStore()
-const { apiMenuCategory } = storeToRefs(menuStore)
+const { apiMenuCategory, selectedCategoryIds } = storeToRefs(menuStore)
 onBeforeMount(() => {
   $trackingInit(config.value!)
 })
@@ -113,9 +113,9 @@ if (error.value)
   throw createError(error.value)
 
 if (status.value === 'success' && data.value) {
-  let poi: ApiPoi | undefined
-  const deps = [] as ApiPoi[]
-  let waypointIndex = 1
+  let waypoints: ApiRouteWaypoint[] = []
+  let pois: ApiPoi[] = []
+  let deps: ApiPoi[] = []
   const isRefPoiId = Number.isNaN(Number(poiId.value))
 
   if (isRefPoiId && poiId.value) {
@@ -123,70 +123,80 @@ if (status.value === 'success' && data.value) {
     poiId.value = refSplit[refSplit.length - 1]
   }
 
-  data.value.features.forEach((f) => {
-    const depID = 'metadata' in f.properties ? f.properties.metadata.id : f.properties.id
-    mapStore.addSelectedFeatureDepsIDs(depID)
+  const poi = data.value.features.find(f => (f.properties.metadata.id === Number(poiId.value))) as ApiPoi
 
-    f = {
-      ...f,
+  if (!poi)
+    throw createError(`Feature with ID: ${poiId.value} not found.`)
+
+  if (poi.properties.metadata.dep_ids) {
+    const featureReordered = prepareApiPoiDeps(
+      data.value.features,
+      poi.properties.metadata.dep_ids,
+    )
+
+    waypoints = featureReordered.waypoints
+    pois = featureReordered.pois
+  }
+
+  deps.push(...pois)
+
+  waypoints.forEach((w, index) => {
+    const { colorFill, colorText } = useContrastedColors(
+      poi.properties.display?.color_fill || '#76009E',
+      poi.properties.display?.color_text,
+    )
+
+    const formattedWaypoint = {
+      ...w,
       properties: {
-        ...f.properties,
+        ...w.properties,
+        display: {
+          icon: iconMap[w.properties['route:point:type']],
+          color_fill: colorFill.value,
+          color_line: poi.properties.display?.color_line || '#76009E',
+          color_text: colorText.value,
+          text: w.properties['route:point:type']
+          === ApiRouteWaypointType.way_point
+            ? index.toString()
+            : undefined,
+        },
+        editorial: {
+          'website:details': undefined,
+        },
+      },
+    } as ApiPoi
+
+    deps.push(formattedWaypoint)
+  })
+
+  deps = deps.map((d) => {
+    mapStore.addSelectedFeatureDepsIDs(d.properties.metadata.id)
+
+    return {
+      ...d,
+      properties: {
+        ...d.properties,
         vido_visible: true,
       },
     }
-
-    if (
-      (!isRefPoiId && (Number(poiId.value) === depID))
-      || (isRefPoiId && Object.values(f.properties).find(v => v === poiId.value))
-    ) {
-      poi = f as ApiPoi
-    }
-
-    if (f.properties['route:point:type']) {
-      if (!('metadata' in f.properties)) {
-        f = apiRouteWaypointToApiPoi(
-          f as ApiRouteWaypoint,
-          poi?.properties.display?.color_fill || '#76009E',
-          poi?.properties.display?.color_line || '#76009E',
-          f.properties['route:point:type'] === ApiRouteWaypointType.way_point
-            ? (waypointIndex++).toString()
-            : undefined,
-        )
-      }
-      else {
-        f = {
-          ...f,
-          properties: {
-            ...f.properties,
-            display: {
-              icon: iconMap[f.properties['route:point:type']],
-              color_fill: f.properties.display?.color_fill || poi?.properties.display?.color_fill || '#76009E',
-              color_line: f.properties.display?.color_line || poi?.properties.display?.color_line || '#76009E',
-              text: f.properties['route:point:type']
-              === ApiRouteWaypointType.way_point
-                ? (waypointIndex++).toString()
-                : undefined,
-            },
-            editorial: {
-              ...f.properties.editorial,
-              'website:details': undefined,
-            },
-          },
-        }
-      }
-    }
-
-    deps.push(f as ApiPoi)
   })
 
-  if (poi) {
-    mapStore.setSelectedFeature(poi)
+  mapStore.setSelectedFeature(poi)
 
-    // In case user click on vecto element, attach Pin Marker to POI Marker
-    teritorioCluster.value?.setSelectedFeature(poi as unknown as MapGeoJSONFeature)
+  // In case user click on vecto element, attach Pin Marker to POI Marker
+  teritorioCluster.value?.setSelectedFeature(poi as unknown as MapGeoJSONFeature)
 
-    if (poi.properties.metadata.category_ids?.length)
-      menuStore.filterByDeps(poi.properties.metadata.category_ids, deps)
+  const currentCategory = selectedCategoryIds.value.find(id => poi.properties.metadata.category_ids?.includes(id))
+
+  if (!currentCategory)
+    throw createError('Category not found.')
+
+  if (poi.properties.metadata.category_ids?.length) {
+    menuStore.filterByDeps(currentCategory, deps)
+    if (deps.length > 1)
+      mapStore.setIsDepsView(true)
+    else
+      mapStore.setIsDepsView(false)
   }
 }
 </script>

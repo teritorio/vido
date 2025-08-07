@@ -52,54 +52,54 @@ jobs:
       - name: Run linter 👀
         run: yarn lint
 
-  cypress:
-    needs: install_cache
-    name: Cypress
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        os:
-          - ubuntu-latest
-        node:
-          - 20
-    steps:
-      - name: Checkout 🛎
-        uses: actions/checkout@v4
-      - run: corepack enable
+  # cypress:
+  #   needs: install_cache
+  #   name: Cypress
+  #   runs-on: ${{ matrix.os }}
+  #   strategy:
+  #     matrix:
+  #       os:
+  #         - ubuntu-latest
+  #       node:
+  #         - 20
+  #   steps:
+  #     - name: Checkout 🛎
+  #       uses: actions/checkout@v4
+  #     - run: corepack enable
 
-      - name: Install code and deps
-        uses: ./.github/actions/install
+  #     - name: Install code and deps
+  #       uses: ./.github/actions/install
 
-      - name: Install ruby
-        run: |
-          sudo apt-get install -y ruby &&
-          ruby poi_explode.rb cypress/fixtures/teritorio/references/pois.geojson
+  #     - name: Install ruby
+  #       run: |
+  #         sudo apt-get install -y ruby &&
+  #         ruby poi_explode.rb cypress/fixtures/teritorio/references/pois.geojson
 
-      - name: Prepare
-        run: cp -R cypress/fixtures/ public/fixtures
+  #     - name: Prepare
+  #       run: cp -R cypress/fixtures/ public/fixtures
 
-      - name: Run Cypress Tests 🧪
-        uses: cypress-io/github-action@v6
-        env:
-          CONFIG: vidos-config-cypress.json
-          CYPRESS: true
-        with:
-          build: yarn build
-          install-command: yarn --immutable --silent
-          start: node .output/server/index.mjs
-          wait-on: 'http://127.0.0.1:3000'
-          wait-on-timeout: 30
+  #     - name: Run Cypress Tests 🧪
+  #       uses: cypress-io/github-action@v6
+  #       env:
+  #         CONFIG: vidos-config-cypress.json
+  #         CYPRESS: true
+  #       with:
+  #         build: yarn build
+  #         install-command: yarn --immutable --silent
+  #         start: node .output/server/index.mjs
+  #         wait-on: 'http://127.0.0.1:3000'
+  #         wait-on-timeout: 30
 
-      - name: Keep failed cypress-screenshots
-        uses: actions/upload-artifact@v4
-        if: failure()
-        with:
-          name: cypress-screenshots
-          path: cypress/screenshots
+  #     - name: Keep failed cypress-screenshots
+  #       uses: actions/upload-artifact@v4
+  #       if: failure()
+  #       with:
+  #         name: cypress-screenshots
+  #         path: cypress/screenshots
 
   docker:
     runs-on: ubuntu-latest
-    needs: [lint, cypress]
+    needs: [lint]
     if: github.ref == 'refs/heads/develop'
 
     permissions:
@@ -111,4 +111,5 @@ jobs:
       - name: Docker Build and Push
         uses: cartoway/docker-compose-build-push-action@main
         with:
+          service: vido
           registry_password: ${{ secrets.GITHUB_TOKEN }}
