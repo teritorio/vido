@@ -247,7 +247,7 @@ async function updateSelectedFeature(feature?: ApiPoi): Promise<void> {
           {
             query: {
               geometry_as: 'point',
-              short_description: false,
+              short_description: true,
             },
           },
         )
