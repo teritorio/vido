@@ -16,12 +16,19 @@ const numberFormated = computed((): string => {
 <template>
   <ExternalLink
     v-if="device.phone"
+    class="phone"
     :href="`tel:${number}`"
     :title="$t('fields.phone.callNumber')"
   >
     {{ numberFormated }}
   </ExternalLink>
-  <span v-else>
+  <span v-else class="phone">
     {{ numberFormated }}
   </span>
 </template>
+
+<style lang="css" scoped>
+.phone {
+  word-break: break-word;
+}
+</style>
