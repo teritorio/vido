@@ -247,7 +247,7 @@ async function updateSelectedFeature(feature?: ApiPoi): Promise<void> {
           {
             query: {
               geometry_as: 'point',
-              short_description: false,
+              short_description: true,
             },
           },
         )
@@ -334,10 +334,7 @@ async function updateSelectedFeature(feature?: ApiPoi): Promise<void> {
 
           const currentCategory = selectedCategoryIds.value.find(id => poi.properties.metadata.category_ids?.includes(id))
 
-          if (!currentCategory)
-            throw createError('Category not found.')
-
-          if (!isDepSelected) {
+          if (!isDepSelected && currentCategory) {
             menuStore.filterByDeps(currentCategory, deps)
             if (deps.length > 1)
               mapStore.setIsDepsView(true)
