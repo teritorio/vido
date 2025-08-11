@@ -22,7 +22,7 @@ export function useContrastedColors(backgroundColor: MaybeRef<string>, foregroun
     const contrastWithWhite = getContrastRatio(fill, '#FFFFFF')
     const contrastWithBlack = getContrastRatio(fill, '#000000')
 
-    let finalText: TextColors = '#FFFFFF'
+    let finalText: TextColors = text || '#FFFFFF'
 
     if (!text) {
       if (contrastWithWhite >= AAA_CONTRAST_THRESHOLD) {
