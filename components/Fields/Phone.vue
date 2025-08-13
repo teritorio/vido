@@ -14,17 +14,19 @@ const numberFormated = computed((): string => {
 </script>
 
 <template>
-  <ExternalLink
-    v-if="device.phone"
-    class="phone"
-    :href="`tel:${number}`"
-    :title="$t('fields.phone.callNumber')"
-  >
-    {{ numberFormated }}
-  </ExternalLink>
-  <span v-else class="phone">
-    {{ numberFormated }}
-  </span>
+  <ClientOnly>
+    <ExternalLink
+      v-if="device.phone"
+      class="phone"
+      :href="`tel:${number}`"
+      :title="$t('fields.phone.callNumber')"
+    >
+      {{ numberFormated }}
+    </ExternalLink>
+    <span v-else class="phone">
+      {{ numberFormated }}
+    </span>
+  </ClientOnly>
 </template>
 
 <style lang="css" scoped>
