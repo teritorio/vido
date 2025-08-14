@@ -213,5 +213,9 @@ export default defineI18nLocale(() => {
     selectedCategories: {
       label: 'Categorías seleccionadas',
     },
+    error: {
+      backHome: 'Regresar al mapa',
+      statusCode: 'Error {status}',
+    },
   }
 })
