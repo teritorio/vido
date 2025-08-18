@@ -672,6 +672,18 @@ function handlePoiCardClose() {
   right: 37.5%;
 }
 
+.logo {
+  opacity: 0.3;
+  pointer-events: none;
+}
+
+@media (width >= 768px) {
+  .logo {
+    opacity: 1;
+    pointer-events: all;
+  }
+}
+
 @media (width < 768px) {
   .logo {
     position: absolute;
