@@ -1,27 +1,50 @@
-<script lang="ts">
-import { defineNuxtComponent } from '#app'
+<script setup lang="ts">
+import { storeToRefs } from 'pinia'
+import type { Settings } from '~/lib/apiSettings'
+import { useSiteStore } from '~/stores/site'
+import { vidoConfig } from '~/plugins/vido-config'
 
-export default defineNuxtComponent({
-  layout: 'error-layout',
+const { locale: i18nLocale } = useI18n()
+const { config, settings, locale } = storeToRefs(useSiteStore())
 
-  props: {
-    error: {
-      type: Object,
-      required: true,
+if (process.server) {
+  config.value = vidoConfig(useRequestHeaders())
+}
+
+if (!config.value)
+  throw createError({ statusCode: 500, statusMessage: 'Wrong config', fatal: true })
+
+const { API_ENDPOINT, API_PROJECT, API_THEME } = config.value
+const { data, error, status } = await useAsyncData('parallel', async () => $fetch<Settings>(`${API_ENDPOINT}/${API_PROJECT}/${API_THEME}/settings.json`))
+
+if (error.value)
+  throw createError(error.value)
+
+if (status.value === 'success' && data.value) {
+  settings.value = Object.assign(
+    {
+      id: 0,
+      slug: '',
+      name: '',
+      attribution: [],
+      icon_font_css_url: '',
+      bbox_line: {
+        type: 'LineString',
+        coordinates: [
+          [1.43862, 42.41845],
+          [1.68279, 42.6775],
+        ],
+      },
+      themes: [],
     },
-  },
-})
+    data.value,
+  )
+  locale.value = i18nLocale.value
+}
 </script>
 
 <template>
-  <div class="tw-flex tw-h-screen">
-    <div class="tw-m-auto">
-      <h1 v-if="error.statusCode === 404">
-        404<br>Page not found
-      </h1>
-      <h1 v-else>
-        An error occurred - {{ error.statusCode }}
-      </h1>
-    </div>
+  <div class="v-locale--is-ltr">
+    <slot />
   </div>
 </template>

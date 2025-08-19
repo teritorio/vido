@@ -1,49 +1,34 @@
-<script lang="ts">
-import type { PropType } from 'vue'
-
-import { defineNuxtComponent } from '#app'
+<script setup lang="ts">
 import ExternalLink from '~/components/UI/ExternalLink.vue'
 import useDevice from '~/composables/useDevice'
 
-export default defineNuxtComponent({
-  components: {
-    ExternalLink,
-  },
+const props = defineProps<{
+  number: string
+}>()
 
-  props: {
-    number: {
-      type: String as PropType<string>,
-      default: null,
-    },
-  },
+const device = useDevice()
 
-  setup() {
-    const device = useDevice()
-
-    return {
-      device,
-    }
-  },
-
-  computed: {
-    numberFormated(): string {
-      return this.number.replaceAll(' ', ' ')
-    },
-  },
+const numberFormated = computed((): string => {
+  return props.number.replaceAll(' ', ' ')
 })
 </script>
 
 <template>
-  <client-only>
-    <ExternalLink
-      v-if="device.phone"
-      :href="`tel:${number}`"
-      :title="$t('fields.phone.callNumber')"
-    >
-      {{ numberFormated }}
-    </ExternalLink>
-    <span v-else>
-      {{ numberFormated }}
-    </span>
-  </client-only>
+  <ExternalLink
+    v-if="device.phone"
+    class="phone"
+    :href="`tel:${number}`"
+    :title="$t('fields.phone.callNumber')"
+  >
+    {{ numberFormated }}
+  </ExternalLink>
+  <span v-else class="phone">
+    {{ numberFormated }}
+  </span>
 </template>
+
+<style lang="css" scoped>
+.phone {
+  word-break: break-word;
+}
+</style>
