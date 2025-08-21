@@ -260,6 +260,7 @@ async function updateSelectedFeature(feature?: ApiPoi): Promise<void> {
           throw createError(error.value)
 
         if (status.value === 'success' && data.value) {
+          let waypointIndex = 1
           let waypoints: ApiRouteWaypoint[] = []
           let pois: ApiPoi[] = []
           let deps: ApiPoi[] = []
@@ -284,7 +285,7 @@ async function updateSelectedFeature(feature?: ApiPoi): Promise<void> {
 
           deps.push(...pois)
 
-          waypoints.forEach((w, index) => {
+          waypoints.forEach((w) => {
             const { colorFill, colorText } = useContrastedColors(
               poi.properties.display?.color_fill || '#76009E',
               poi.properties.display?.color_text,
@@ -301,7 +302,7 @@ async function updateSelectedFeature(feature?: ApiPoi): Promise<void> {
                   color_text: colorText.value,
                   text: w.properties['route:point:type']
                   === ApiRouteWaypointType.way_point
-                    ? index.toString()
+                    ? waypointIndex.toString()
                     : undefined,
                 },
                 editorial: {
@@ -309,6 +310,9 @@ async function updateSelectedFeature(feature?: ApiPoi): Promise<void> {
                 },
               },
             } as ApiPoi
+
+            if (w.properties['route:point:type'] === ApiRouteWaypointType.way_point)
+              waypointIndex++
 
             deps.push(formattedWaypoint)
           })
