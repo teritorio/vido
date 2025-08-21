@@ -39,7 +39,8 @@ if (props.poi.properties.metadata.dep_ids) {
 
 deps.value.push(...pois.value, props.poi)
 
-const apiWaypoints = waypoints.value.map((w, index) => {
+let waypointIndex = 1
+const apiWaypoints = waypoints.value.map((w) => {
   const formattedWaypoint = {
     ...w,
     properties: {
@@ -51,7 +52,7 @@ const apiWaypoints = waypoints.value.map((w, index) => {
         color_line: props.colorLine,
         text: w.properties['route:point:type']
         === ApiRouteWaypointType.way_point
-          ? index.toString()
+          ? waypointIndex.toString()
           : undefined,
       },
       editorial: {
@@ -69,6 +70,9 @@ const apiWaypoints = waypoints.value.map((w, index) => {
   } as ApiPoi
 
   deps.value.push(formattedWaypoint)
+
+  if (w.properties['route:point:type'] === ApiRouteWaypointType.way_point)
+    waypointIndex++
 
   return formattedWaypoint
 })
