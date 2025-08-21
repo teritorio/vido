@@ -7,6 +7,7 @@ import type {
 } from 'maplibre-gl'
 
 import type { ApiPoiId } from '~/lib/apiPois'
+import { removeDuplicateAttributions } from '~/utils/utilities'
 
 export function fetchStyle(styleUrl: string, extraAttributions: string[]): Promise<StyleSpecification> {
   return fetch(styleUrl)
@@ -55,7 +56,7 @@ export function fetchStyle(styleUrl: string, extraAttributions: string[]): Promi
       Object.keys(style.sources).forEach((key) => {
         nuStyle.sources[key] = {
           ...style.sources[key],
-          attribution: nuAttribution,
+          attribution: removeDuplicateAttributions(nuAttribution),
         }
       })
 

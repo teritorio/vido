@@ -2,6 +2,24 @@ import type { ApiPoi, ApiPoiId } from '~/lib/apiPois'
 import type { ApiAddrSearchResult } from '~/lib/apiSearch'
 import { MAP_ZOOM } from '~/lib/constants'
 
+export function removeDuplicateAttributions(input: string) {
+  const regex = /(<a[^>]*>.*?<\/a>)|([^<>]+)/g
+  const matches = input.match(regex) || []
+
+  const seen = new Set()
+  const uniqueSegments = []
+
+  for (const match of matches) {
+    const trimmed = match.trim()
+    if (trimmed && !seen.has(trimmed)) {
+      seen.add(trimmed)
+      uniqueSegments.push(match)
+    }
+  }
+
+  return uniqueSegments.join(' ').replace(/\s+/g, ' ').trim()
+}
+
 export function flattenFeatures(features: { [categoryId: number]: ApiPoi[] }) {
   return Object.values(features)
     .flat()

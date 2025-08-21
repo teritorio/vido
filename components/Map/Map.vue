@@ -9,7 +9,6 @@ import type {
   MapTouchEvent,
   RasterSourceSpecification,
   StyleSpecification,
-
   VectorSourceSpecification,
 } from 'maplibre-gl'
 import {
@@ -353,6 +352,7 @@ export default defineNuxtComponent({
           styleURLs[mapStyle],
           this.extraAttributions,
         )
+
         this.mapStyleCache[mapStyle] = style
 
         return style
