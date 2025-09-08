@@ -40,7 +40,7 @@ export type ApiPoiDeps = GeoJSON.FeatureCollection<
 
 export function prepareApiPoiDeps(
   featureCollection: GeoJSON.Feature<GeoJSON.Geometry, ApiPoiProperties | ApiRouteWaypointProperties>[],
-  referenceIds: number[],
+  referenceIds?: number[],
 ): {
     waypoints: ApiRouteWaypoint[]
     pois: ApiPoi[]
@@ -62,11 +62,13 @@ export function prepareApiPoiDeps(
     pois.push(feature as ApiPoi)
   }
 
-  for (const id of referenceIds) {
-    const feature = featureById.get(id)
+  if (referenceIds) {
+    for (const id of referenceIds) {
+      const feature = featureById.get(id)
 
-    if (feature && feature.properties['route:point:type']) {
-      waypoints.push(feature as ApiRouteWaypoint)
+      if (feature && feature.properties['route:point:type']) {
+        waypoints.push(feature as ApiRouteWaypoint)
+      }
     }
   }
 

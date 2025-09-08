@@ -273,15 +273,13 @@ async function updateSelectedFeature(feature?: ApiPoi): Promise<void> {
           if (!poi)
             throw createError(`Feature with ID: ${id} not found.`)
 
-          if (poi.properties.metadata.dep_ids) {
-            const featureReordered = prepareApiPoiDeps(
-              data.value.features,
-              poi.properties.metadata.dep_ids,
-            )
+          const featureReordered = prepareApiPoiDeps(
+            data.value.features,
+            poi.properties.metadata.dep_ids,
+          )
 
-            waypoints = featureReordered.waypoints
-            pois = featureReordered.pois
-          }
+          waypoints = featureReordered.waypoints
+          pois = featureReordered.pois
 
           deps.push(...pois)
 
