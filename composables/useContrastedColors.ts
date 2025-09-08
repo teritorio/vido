@@ -17,14 +17,16 @@ export function useContrastedColors(backgroundColor: MaybeRef<string>, foregroun
     fill: string,
     text?: TextColors,
   ): { fill: string, text: TextColors } {
-    const AAA_CONTRAST_THRESHOLD = 4.5
+    if (text) {
+      return { fill, text }
+    }
+    else {
+      const AAA_CONTRAST_THRESHOLD = 4.5
 
-    const contrastWithWhite = getContrastRatio(fill, '#FFFFFF')
-    const contrastWithBlack = getContrastRatio(fill, '#000000')
+      const contrastWithWhite = getContrastRatio(fill, '#FFFFFF')
+      const contrastWithBlack = getContrastRatio(fill, '#000000')
 
-    let finalText: TextColors = text || '#FFFFFF'
-
-    if (!text) {
+      let finalText: TextColors
       if (contrastWithWhite >= AAA_CONTRAST_THRESHOLD) {
         finalText = '#FFFFFF' // Prefer white
       }
@@ -35,9 +37,9 @@ export function useContrastedColors(backgroundColor: MaybeRef<string>, foregroun
         // Neither passes AAA — pick best (even if below AAA)
         finalText = contrastWithWhite >= contrastWithBlack ? '#FFFFFF' : '#000000'
       }
-    }
 
-    return { fill, text: finalText }
+      return { fill, text: finalText }
+    }
   }
 
   function hexToRgb(hex: string): [number, number, number] {
