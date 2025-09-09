@@ -260,6 +260,7 @@ async function updateSelectedFeature(feature?: ApiPoi): Promise<void> {
           throw createError(error.value)
 
         if (status.value === 'success' && data.value) {
+          let waypointIndex = 1
           let waypoints: ApiRouteWaypoint[] = []
           let pois: ApiPoi[] = []
           let deps: ApiPoi[] = []
@@ -272,19 +273,17 @@ async function updateSelectedFeature(feature?: ApiPoi): Promise<void> {
           if (!poi)
             throw createError(`Feature with ID: ${id} not found.`)
 
-          if (poi.properties.metadata.dep_ids) {
-            const featureReordered = prepareApiPoiDeps(
-              data.value.features,
-              poi.properties.metadata.dep_ids,
-            )
+          const featureReordered = prepareApiPoiDeps(
+            data.value.features,
+            poi.properties.metadata.dep_ids,
+          )
 
-            waypoints = featureReordered.waypoints
-            pois = featureReordered.pois
-          }
+          waypoints = featureReordered.waypoints
+          pois = featureReordered.pois
 
           deps.push(...pois)
 
-          waypoints.forEach((w, index) => {
+          waypoints.forEach((w) => {
             const { colorFill, colorText } = useContrastedColors(
               poi.properties.display?.color_fill || '#76009E',
               poi.properties.display?.color_text,
@@ -301,7 +300,7 @@ async function updateSelectedFeature(feature?: ApiPoi): Promise<void> {
                   color_text: colorText.value,
                   text: w.properties['route:point:type']
                   === ApiRouteWaypointType.way_point
-                    ? index.toString()
+                    ? waypointIndex.toString()
                     : undefined,
                 },
                 editorial: {
@@ -309,6 +308,9 @@ async function updateSelectedFeature(feature?: ApiPoi): Promise<void> {
                 },
               },
             } as ApiPoi
+
+            if (w.properties['route:point:type'] === ApiRouteWaypointType.way_point)
+              waypointIndex++
 
             deps.push(formattedWaypoint)
           })
