@@ -26,3 +26,11 @@ ENV NUXT_PORT="3000"
 
 EXPOSE 3000
 CMD [ "node", ".output/server/index.mjs" ]
+
+HEALTHCHECK \
+    --start-interval=1s \
+    --start-period=30s \
+    --interval=30s \
+    --timeout=20s \
+    --retries=5 \
+    CMD wget --no-verbose --tries=1 -O /dev/null http://localhost:3000/up || exit 1
