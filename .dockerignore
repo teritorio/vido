@@ -83,3 +83,6 @@ vidos.config.ts
 vidos-config.json
 
 .github
+
+Dockerfile
+docker-compose.yml
