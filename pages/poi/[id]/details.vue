@@ -23,8 +23,8 @@ definePageMeta({
 // Composables
 //
 const siteStore = useSiteStore()
-const { config, settings } = siteStore
-const { articles } = storeToRefs(siteStore)
+const { config } = siteStore
+const { articles, settings, theme } = storeToRefs(siteStore)
 const { params } = useRoute()
 const { $trackingInit } = useNuxtApp()
 
@@ -81,14 +81,20 @@ onBeforeMount(() => {
   $trackingInit(config!)
 })
 
-useHead(
-  headerFromSettings(settings!, {
-    title: featureSeoTitle.value,
-    description: {
-      fr: poi.value?.properties.description,
-    },
-  }),
-)
+if (settings.value && theme.value) {
+  useHead(
+    headerFromSettings(
+      theme.value,
+      settings.value.icon_font_css_url,
+      {
+        title: featureSeoTitle.value,
+        description: {
+          fr: poi.value?.properties.description,
+        },
+      },
+    ),
+  )
+}
 </script>
 
 <template>
