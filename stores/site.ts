@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
 import type { Article } from '~/lib/apiArticle'
 import type { PropertyTranslations } from '~/lib/apiPropertyTranslations'
-import type { Settings, SiteInfosTheme } from '~/lib/apiSettings'
+import type { Settings } from '~/lib/apiSettings'
 import type { VidoConfig } from '~/utils/types-config'
 import { getArticles } from '~/lib/apiArticle'
 import { getPropertyTranslations } from '~/lib/apiPropertyTranslations'
@@ -23,9 +23,29 @@ export const useSiteStore = defineStore('site', () => {
   const settings = ref<Settings>()
   const articles = ref<Article[]>([])
   const translations = ref<PropertyTranslations>()
-  const theme = ref<SiteInfosTheme | undefined>(settings.value?.themes[0])
-  const explorerModeEnabled = ref<SiteInfosTheme['explorer_mode']>(theme.value?.explorer_mode ?? true)
-  const favoritesModeEnabled = ref<SiteInfosTheme['favorites_mode']>(theme.value?.favorites_mode ?? true)
+
+  const theme = computed(() => {
+    if (!config.value)
+      return undefined
+
+    return settings.value?.themes.find(t => t.slug === config.value!.API_THEME)
+  })
+
+  const siteName = computed(() => {
+    return theme.value?.title.fr || ''
+  })
+
+  const logoUrl = computed(() => {
+    return theme.value?.logo_url || ''
+  })
+
+  const mainUrl = computed(() => {
+    return theme.value?.main_url?.fr || '/'
+  })
+
+  const explorerModeEnabled = ref(theme.value?.explorer_mode ?? true)
+
+  const favoritesModeEnabled = ref(theme.value?.favorites_mode ?? true)
 
   // TODO: Looks unused maybe remove ?
   async function init(headers: Record<string, string>) {
@@ -79,6 +99,9 @@ export const useSiteStore = defineStore('site', () => {
     articles,
     translations,
     theme,
+    logoUrl,
+    mainUrl,
+    siteName,
     explorerModeEnabled,
     favoritesModeEnabled,
     init,

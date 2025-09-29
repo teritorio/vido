@@ -50,7 +50,7 @@ const favoriteStore = useFavoriteStore()
 const { favoritesIds, favoriteAddresses, favoriteFeatures, favoriteCount } = storeToRefs(favoriteStore)
 const siteStore = useSiteStore()
 const { config, settings } = siteStore
-const { favoritesModeEnabled } = storeToRefs(siteStore)
+const { favoritesModeEnabled, theme, siteName, logoUrl, mainUrl } = storeToRefs(siteStore)
 const { $tracking } = useNuxtApp()
 const route = useRoute()
 const router = useRouter()
@@ -154,16 +154,8 @@ const fitBoundsPaddingOptions = computed((): FitBoundsOptions['padding'] => {
   }
 })
 
-const logoUrl = computed(() => {
-  return settings!.themes[0]?.logo_url || ''
-})
-
-const mainUrl = computed(() => {
-  return settings!.themes[0]?.main_url?.fr || '/'
-})
-
 const target = computed(() => {
-  return settings!.themes[0]?.main_url?.fr ? '_blank' : '_self'
+  return theme.value?.main_url?.fr ? '_blank' : '_self'
 })
 
 const mapFeatures = computed(() => {
@@ -192,10 +184,6 @@ const poiFilters = computed(() => {
     )
     || undefined
   )
-})
-
-const siteName = computed(() => {
-  return settings!.themes[0]?.title.fr || ''
 })
 
 //

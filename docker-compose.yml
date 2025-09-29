@@ -1,5 +1,3 @@
-version: '3'
-
 services:
   vido:
     build:
@@ -15,5 +13,5 @@ services:
       - ./vidos-config.json:/usr/src/app/vidos-config.json
     environment:
       - CONFIG=/usr/src/app/vidos-config.json
-      - NUXT_PUBLIC_SENTRY_DSN=${SENTRY_DSN}
-      - NUXT_PUBLIC_SENTRY_ENVIRONMENT=${SENTRY_ENVIRONMENT}
+      - NUXT_PUBLIC_SENTRY_DSN=${SENTRY_DSN:-}
+      - NUXT_PUBLIC_SENTRY_ENVIRONMENT=${SENTRY_ENVIRONMENT:-}

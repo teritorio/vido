@@ -8,11 +8,7 @@ defineProps({
   error: Object as () => NuxtError,
 })
 
-const { settings } = storeToRefs(useSiteStore())
-
-const logoUrl = computed(() => {
-  return settings.value?.themes[0]?.logo_url || ''
-})
+const { logoUrl } = storeToRefs(useSiteStore())
 
 const handleError = () => reloadNuxtApp({ path: '/' })
 </script>

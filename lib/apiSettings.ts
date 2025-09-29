@@ -94,7 +94,8 @@ function stripHTML(value?: string): string | undefined {
 }
 
 export function headerFromSettings(
-  settings: Settings,
+  theme: SiteInfosTheme,
+  iconFontUrl: string,
   options:
     | { title?: string, description?: any, googleSiteVerification?: string }
     | undefined = undefined,
@@ -103,19 +104,19 @@ export function headerFromSettings(
     htmlAttrs: {
       lang: 'fr',
     },
-    title: [settings.themes[0].title.fr, options?.title]
+    title: [theme.title.fr, options?.title]
       .filter(o => o)
       .join(' - '),
     link: [
       {
         rel: 'stylesheet',
-        href: settings.icon_font_css_url,
+        href: iconFontUrl,
       },
       {
         hid: 'icon',
         rel: 'icon',
         type: 'image/x-icon',
-        href: settings.themes[0].favicon_url,
+        href: theme.favicon_url,
       },
       {
         rel: 'manifest',
@@ -129,13 +130,13 @@ export function headerFromSettings(
         name: 'description',
         content:
           stripHTML(
-            options?.description?.fr || settings.themes[0]?.description?.fr,
+            options?.description?.fr || theme.description?.fr,
           ) || '',
       },
       {
         hid: 'keywords',
         name: 'keywords',
-        content: settings.themes[0]?.keywords?.fr,
+        content: theme.keywords?.fr,
       },
       {
         hid: 'google-site-verification',

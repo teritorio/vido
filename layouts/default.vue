@@ -14,7 +14,7 @@ const { locale: i18nLocale } = useI18n()
 const siteStore = useSiteStore()
 const menuStore = useMenuStore()
 
-const { config, settings, translations, articles, locale } = storeToRefs(siteStore)
+const { config, settings, theme, translations, articles, locale } = storeToRefs(siteStore)
 
 if (process.server) {
   config.value = vidoConfig(useRequestHeaders())
@@ -69,7 +69,15 @@ if (status.value === 'success' && data.value) {
   articles.value = data.value.articles
   locale.value = i18nLocale.value
 
-  useHead(headerFromSettings(settings.value, { googleSiteVerification: GOOGLE_SITE_VERIFICATION }))
+  if (settings.value && theme.value) {
+    useHead(
+      headerFromSettings(
+        theme.value,
+        settings.value.icon_font_css_url,
+        { googleSiteVerification: GOOGLE_SITE_VERIFICATION },
+      ),
+    )
+  }
 }
 </script>
 

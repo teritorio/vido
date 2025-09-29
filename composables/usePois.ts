@@ -22,9 +22,7 @@ export function usePois() {
     const query: Record<string, any> = {
       geometry_as: 'point',
       short_description: true,
-      query: {
-        cliping_polygon_slug: clipSlug.value,
-      },
+      cliping_polygon_slug: clipSlug.value,
     }
 
     const { data, error: err, pending: pend, status: stat } = await useFetch<ApiPois>(
