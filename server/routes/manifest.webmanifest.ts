@@ -14,18 +14,22 @@ async function manifest(
   if (hostname) {
     const vido = vidoConfigResolve(hostname, vidos())
     const settings = await getSettings(vido)
+    const theme = settings.themes.find(t => t.slug === vido.API_THEME)
+
+    if (!theme)
+      throw createError({ statusCode: 500, statusMessage: `Theme ${vido.API_THEME} not found.`, fatal: true })
 
     res.write(
       JSON.stringify({
-        name: settings.themes[0].title.fr,
-        short_name: settings.themes[0].title.fr,
-        description: settings.themes[0].description.fr,
+        name: theme.title.fr,
+        short_name: theme.title.fr,
+        description: theme.description.fr,
         start_url: '.',
         background_color: '#ffffff',
         display: 'standalone',
         icons: [
           {
-            src: settings.themes[0].favicon_url,
+            src: theme.favicon_url,
             sizes: '192x192',
             type: 'image/png',
           },

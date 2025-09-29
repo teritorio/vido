@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { storeToRefs } from 'pinia'
 import Header from '~/components/Layout/Header.vue'
 import Footer from '~/components/Layout/Footer.vue'
 import IconButton from '~/components/UI/IconButton.vue'
@@ -13,12 +14,14 @@ definePageMeta({
   },
 })
 
-const { config, settings } = useSiteStore()
+const siteStore = useSiteStore()
+const { config } = siteStore
+const { settings, theme } = storeToRefs(siteStore)
 
 if (!config)
   throw createError({ statusCode: 500, statusMessage: 'Wrong config', fatal: true })
 
-if (!settings)
+if (!settings.value)
   throw createError({ statusCode: 500, statusMessage: 'Failed to fetch settings', fatal: true })
 
 const { t } = useI18n()
@@ -36,7 +39,16 @@ onMounted(() => {
     const document = parser.parseFromString(data.value, 'text/html')
     const title = document.querySelector('title')?.textContent
     content.value = document.querySelector('body')?.innerHTML
-    useHead(headerFromSettings(settings, { title: title || undefined }))
+
+    if (settings.value && theme.value) {
+      useHead(
+        headerFromSettings(
+          theme.value,
+          settings.value.icon_font_css_url,
+          { title: title || undefined },
+        ),
+      )
+    }
   }
 })
 </script>
@@ -67,7 +79,7 @@ onMounted(() => {
       <ClientOnly>
         <p v-html="content" />
       </ClientOnly>
-      <Footer :attributions="settings.attributions" />
+      <Footer :attributions="settings?.attributions" />
     </VContainer>
   </VApp>
 </template>

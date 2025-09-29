@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { localeIncludes } from 'locale-includes'
+import { storeToRefs } from 'pinia'
 import { PropertyTranslationsContextEnum, useSiteStore } from '~/stores/site'
 import type { FieldsListItem } from '~/lib/apiPois'
 import Field from '~/components/Fields/Field.vue'
@@ -31,7 +32,9 @@ defineProps<{
 // Composables
 //
 const { t, locale } = useI18n()
-const { settings, p } = useSiteStore()
+const siteStore = useSiteStore()
+const { p } = siteStore
+const { settings, theme } = storeToRefs(siteStore)
 const menuStore = useMenuStore()
 const { contribMode, isContribEligible, getContributorFields } = useContrib()
 const route = useRoute()
@@ -178,7 +181,15 @@ function getColKey(key: string) {
   return key
 }
 
-useHead(headerFromSettings(settings!, { title: category.value?.category.name.fr }))
+if (settings.value && theme.value) {
+  useHead(
+    headerFromSettings(
+      theme.value,
+      settings.value.icon_font_css_url,
+      { title: category.value?.category.name.fr },
+    ),
+  )
+}
 </script>
 
 <template>
