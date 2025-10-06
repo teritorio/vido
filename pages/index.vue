@@ -224,7 +224,6 @@ if (status.value === 'success' && data.value) {
       variant="elevated"
     />
     <Home
-      v-else
       :boundary-area="boundaryGeojson"
       :initial-category-ids="categoryIds"
     />
