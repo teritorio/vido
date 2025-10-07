@@ -1,5 +1,5 @@
 import { createGtm } from '@gtm-support/vue-gtm'
-import type { App } from 'nuxt/dist/app/compat/vue-demi'
+import type { App } from 'vue'
 import urlSlug from 'url-slug'
 
 import type { Event, Tracker } from '~/lib/trackers'

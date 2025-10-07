@@ -1,4 +1,5 @@
 import vuetify from 'vite-plugin-vuetify'
+import { defineNuxtConfig } from 'nuxt/config'
 import { vidos } from './lib/config'
 import { configuredApi, configuredImageProxy } from './utils/vido-config-static'
 
@@ -16,6 +17,7 @@ export default defineNuxtConfig({
       '@fortawesome/vue-fontawesome',
     ],
   },
+  compatibilityDate: '2025-10-07',
   components: false,
   css: ['@fortawesome/fontawesome-svg-core/styles.css'],
   devtools: { enabled: true },
