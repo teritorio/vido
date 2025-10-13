@@ -66,7 +66,7 @@ export default defineNuxtComponent({
 </script>
 
 <template>
-  <div class="tw-grid tw-items-start tw-grid-cols-4">
+  <div class="tw-grid tw-items-start tw-grid-cols-4 tw-grid-rows-1">
     <template v-for="menuItem in menuItems" :key="menuItem.id">
       <MenuGroup
         v-if="menuItem.menu_group"

@@ -116,7 +116,7 @@ export function headerFromSettings(
         hid: 'icon',
         rel: 'icon',
         type: 'image/x-icon',
-        href: theme.favicon_url,
+        href: theme.favicon_url || '',
       },
       {
         rel: 'manifest',
@@ -130,7 +130,7 @@ export function headerFromSettings(
         name: 'description',
         content:
           stripHTML(
-            options?.description?.fr || theme.description?.fr,
+            options?.description?.fr || theme.description?.fr || '',
           ) || '',
       },
       {
