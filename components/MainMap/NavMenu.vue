@@ -12,9 +12,9 @@ import { useSiteStore } from '~/stores/site'
 const { $tracking } = useNuxtApp()
 const { articles: entries, locale: currentI18n, config } = storeToRefs(useSiteStore())
 const { current: vuetifyLocale } = useLocale()
-const { locales, setLocale, localeProperties } = useI18n() // LocaleObject[]
+const { locales, setLocale, localeProperties } = useI18n()
 
-async function updateLocale(value: string): Promise<void> {
+async function updateLocale(value: 'en' | 'es' | 'fr'): Promise<void> {
   await setLocale(value)
   currentI18n.value = value
   vuetifyLocale.value = value
@@ -88,7 +88,7 @@ function getLinkTo(url: string) {
           @click="updateLocale(typeof locale === 'string' ? locale : locale.code)"
         >
           <template v-if="(typeof locale !== 'string')">
-            <VFlag :flag="locale.flag" class="flag" />
+            <VFlag :flag="(locale.flag as string)" class="flag" />
             {{ locale.name }}
           </template>
           <template v-else>

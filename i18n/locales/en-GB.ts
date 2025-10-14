@@ -1,4 +1,4 @@
-export default defineI18nLocale(() => {
+export default defineI18nLocale(async () => {
   return {
     ui: {
       close: 'Close',

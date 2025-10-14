@@ -210,7 +210,7 @@ export default defineNuxtComponent({
   >
     <FieldsHeader
       v-if="field.label"
-      :recursion-stack="undefined"
+      :recursion-stack="[]"
       :class="`field_header_level_${recursionStack.length}`"
     >
       {{ fieldTranslateK(field.field) }}

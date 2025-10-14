@@ -202,7 +202,7 @@ export default defineNuxtComponent({
     ) => true,
     mapMoveEnd: (
       _event: MapLibreEvent<MouseEvent | TouchEvent | WheelEvent | undefined> &
-      object,
+        object,
     ) => true,
     mapResize: (_event: MapLibreEvent<unknown> & object) => true,
     mapRotateEnd: (
@@ -211,11 +211,11 @@ export default defineNuxtComponent({
     mapTouchMove: (_event: MapTouchEvent & object) => true,
     mapZoomEnd: (
       _event: MapLibreEvent<MouseEvent | TouchEvent | WheelEvent | undefined> &
-      object,
+        object,
     ) => true,
     mapZoomStart: (
       _event: MapLibreEvent<MouseEvent | TouchEvent | WheelEvent | undefined> &
-      object,
+        object,
     ) => true,
     fullAttribution: (_attribution: string) => true,
     mapStyleLoad: (_style: StyleSpecification) => true,
@@ -263,7 +263,7 @@ export default defineNuxtComponent({
     onMapInit(map: ITMap) {
       this.$emit('mapInit', map)
 
-      // @ts-expect-error: Type is too deep
+      // @ts-ignore: Type is too deep
       this.map = map
       this.languageControl = new OpenMapTilesLanguage({
         defaultLanguage: this.locale || undefined,
@@ -291,7 +291,7 @@ export default defineNuxtComponent({
       this.getStyle(mapStyle)
         .then((style) => {
           const vectorSource = Object.values(style.sources || []).find(
-            source => ['vector', 'raster'].lastIndexOf(source.type) >= 0,
+            source => ['vector', 'raster'].includes(source.type),
           ) as VectorSourceSpecification | RasterSourceSpecification | undefined
           if (vectorSource?.attribution)
             this.$emit('fullAttribution', vectorSource.attribution)

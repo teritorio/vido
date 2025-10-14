@@ -30,14 +30,12 @@ export default defineNuxtConfig({
       useCookie: false,
     },
     langDir: 'locales',
-    lazy: true,
     locales: [
-      { code: 'en', name: 'English', flag: 'GB', iso: 'en-GB', file: 'en-GB.ts' },
-      { code: 'es', name: 'Español', flag: 'ES', iso: 'es-ES', file: 'es-ES.ts' },
-      { code: 'fr', name: 'Français', flag: 'FR', iso: 'fr-FR', file: 'fr-FR.ts' },
+      { code: 'en', name: 'English', flag: 'GB', file: 'en-GB.ts' },
+      { code: 'es', name: 'Español', flag: 'ES', file: 'es-ES.ts' },
+      { code: 'fr', name: 'Français', flag: 'FR', file: 'fr-FR.ts' },
     ],
     strategy: 'no_prefix',
-    vueI18n: 'config/i18n.config.ts',
   },
   image: {
     domains: [...configuredApi(vidos), ...configuredImageProxy(vidos)],

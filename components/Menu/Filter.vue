@@ -130,7 +130,7 @@ export default defineNuxtComponent({
   <div class="tw-basis-max tw-shrink tw-flex tw-flex-col tw-gap-4 tw-flex-1 tw-p-4">
     <template
       v-for="(filter, filterIndex) in filtersSafeCopy"
-      :key="filter.def.property"
+      :key="'property' in filter.def ? filter.def.property : filter.def.property_begin"
     >
       <div v-if="filter.type === 'boolean'">
         <label class="tw-block tw-mb-1 tw-text-zinc-800 tw-cursor-pointer">

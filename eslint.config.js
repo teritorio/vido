@@ -21,6 +21,8 @@ export default antfu(
   {
     rules: {
       'node/prefer-global/process': 0,
+      '@typescript-eslint/prefer-ts-expect-error': 'off',
+      'ts/ban-ts-comment': 'off',
     },
   },
 )
