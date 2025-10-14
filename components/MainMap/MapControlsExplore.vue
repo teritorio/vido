@@ -1,59 +1,39 @@
-<script lang="ts">
+<script setup lang="ts">
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { Control } from '@teritorio/map'
 import type { Map } from 'maplibre-gl'
 import { storeToRefs } from 'pinia'
-import type { PropType } from 'vue'
-import { ref } from 'vue'
-
-import { defineNuxtComponent } from '#app'
 import { mapStore as useMapStore } from '~/stores/map'
 import { Mode } from '~/utils/types'
 
-export default defineNuxtComponent({
-  components: {
-    FontAwesomeIcon,
-  },
+const props = defineProps<{
+  map?: Map
+}>()
 
-  props: {
-    map: {
-      type: Object as PropType<Map>,
-      default: null,
-    },
-  },
+const { t } = useI18n()
+const { $tracking } = useNuxtApp()
+const { isModeExplorer, mode } = storeToRefs(useMapStore())
+const container = ref<InstanceType<typeof HTMLDivElement>>()
 
-  setup() {
-    const { isModeExplorer, mode } = storeToRefs(useMapStore())
-
-    return {
-      container: ref<InstanceType<typeof HTMLDivElement>>(),
-      isModeExplorer,
-      mode,
-    }
-  },
-
-  watch: {
-    map(value, oldValue) {
-      if (!oldValue && value) {
-        class BackgroundControl extends Control {
-          constructor(container: HTMLDivElement) {
-            super(container)
-          }
-        }
-
-        const control = new BackgroundControl(this.container!)
-        this.map.addControl(control)
+watch(() => props.map, (newValue, oldValue) => {
+  if (!oldValue && newValue) {
+    class BackgroundControl extends Control {
+      constructor(container: HTMLDivElement) {
+        super(container)
       }
-    },
-  },
+    }
 
-  methods: {
-    toggleMode() {
-      this.$tracking({ type: 'map_control_event', event: 'explorer' })
-      this.mode = this.isModeExplorer ? Mode.BROWSER : Mode.EXPLORER
-    },
-  },
+    if (container.value) {
+      const control = new BackgroundControl(container.value!)
+      newValue.addControl(control)
+    }
+  }
 })
+
+function toggleMode() {
+  $tracking({ type: 'map_control_event', event: 'explorer' })
+  mode.value = isModeExplorer.value ? Mode.BROWSER : Mode.EXPLORER
+}
 </script>
 
 <template>
@@ -62,8 +42,8 @@ export default defineNuxtComponent({
     class="maplibregl-ctrl maplibregl-ctrl-group tw-hidden md:tw-block"
   >
     <button
-      :aria-label="$t('mapControls.exploreAriaLabel')"
-      :title="$t('mapControls.exploreButton')"
+      :aria-label="t('mapControls.exploreAriaLabel')"
+      :title="t('mapControls.exploreButton')"
       type="button"
       class="tw-hidden md:tw-block" :class="[
         isModeExplorer && 'maplibregl-ctrl-active',
