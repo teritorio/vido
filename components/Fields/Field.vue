@@ -1,11 +1,9 @@
-<script lang="ts">
+<script setup lang="ts">
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import type GeoJSON from 'geojson'
-import type { PropType } from 'vue'
-import { defineNuxtComponent } from '#app'
 import AddressField from '~/components/Fields/AddressField.vue'
-import Coordinates, { isCoordinatesEmpty } from '~/components/Fields/Coordinates.vue'
-import DateRange, { isDateRangeEmpty } from '~/components/Fields/DateRange.vue'
+import Coordinates from '~/components/Fields/Coordinates.vue'
+import DateRange from '~/components/Fields/DateRange.vue'
 import Facebook from '~/components/Fields/Facebook.vue'
 import LinkedIn from '~/components/Fields/LinkedIn.vue'
 import Instagram from '~/components/Fields/Instagram.vue'
@@ -17,136 +15,57 @@ import Stars from '~/components/Fields/Stars.vue'
 import ExternalLink from '~/components/UI/ExternalLink.vue'
 import FieldsHeader from '~/components/UI/FieldsHeader.vue'
 import type { ApiPoiProperties, FieldsListItem } from '~/lib/apiPois'
-import { ADDRESS_FIELDS } from '~/composables/useField'
 import type { PropertyTranslationsContextEnum } from '~/stores/site'
 import { useSiteStore } from '~/stores/site'
 
-export function isFiledEmpty(
-  field: FieldsListItem,
-  properties: { [key: string]: string },
-  geom: GeoJSON.Geometry,
-): boolean {
-  if (field.field === 'route') {
-    return !(
-      Object.entries(properties || {})
-        .map(([key, value]) => [key.split(':'), value])
-        .filter(([keys, _value]) => keys[0] === 'route' && keys.length === 3)
-        .length > 0
-    )
-  }
+const props = withDefaults(defineProps<{
+  context: PropertyTranslationsContextEnum
+  recursionStack?: string[]
+  field: FieldsListItem
+  properties: ApiPoiProperties
+  details?: string
+  geom: GeoJSON.Geometry
+}>(), {
+  recursionStack: () => [],
+})
 
-  if (field.field === 'addr') {
-    return ADDRESS_FIELDS.reduce(
-      (sum: boolean, value) => sum || value in properties,
-      false,
-    )
-  }
+defineEmits<{
+  (e: 'clickDetails'): void
+}>()
 
-  if (field.field === 'start_end_date')
-    return isDateRangeEmpty(properties)
+if (!props.properties.display)
+  throw createError(`Feature ${props.properties.metadata.id} is missing 'display' property.`)
 
-  if (field.field === 'coordinates')
-    return isCoordinatesEmpty(geom)
+const { t } = useI18n()
+const { colorFill, colorText } = useContrastedColors(
+  toRef(() => props.properties.display?.color_fill || '#FFFFFF'),
+  toRef(() => props.properties.display?.color_text),
+)
+const textLimit = ref(130)
+const { p, pv } = useSiteStore()
 
-  return !(field.field in properties)
+const isWebsite = computed((): boolean => {
+  return props.field.field === 'website' || props.field.field.startsWith('website:') || props.field.field.endsWith(':website')
+})
+const shortDescription = computed((): string | undefined => {
+  return props.properties?.description?.replace(/(<([^>]+)>)/g, '')
+})
+
+function fieldTranslateK(field: string) {
+  return p(field, props.context)
 }
 
-export default defineNuxtComponent({
-  components: {
-    FontAwesomeIcon,
-    FieldsHeader,
-    OpeningHours,
-    RoutesField,
-    AddressField,
-    DateRange,
-    Coordinates,
-    Phone,
-    Facebook,
-    LinkedIn,
-    Instagram,
-    ExternalLink,
-    Stars,
-  },
+function propTranslateV(field: string) {
+  return pv(
+    field,
+    props.properties[field],
+    props.context,
+  )
+}
 
-  emits: {
-    clickDetails: () => true,
-  },
-
-  props: {
-    context: {
-      type: String as PropType<PropertyTranslationsContextEnum>,
-      required: true,
-    },
-    recursionStack: {
-      type: Array as PropType<string[]>,
-      default: () => [],
-    },
-    field: {
-      type: Object as PropType<FieldsListItem>,
-      required: true,
-    },
-    properties: {
-      type: Object as PropType<ApiPoiProperties>,
-      required: true,
-    },
-    details: {
-      type: String as PropType<string>,
-      default: null,
-    },
-    geom: {
-      type: Object as PropType<GeoJSON.Geometry>,
-      required: true,
-    },
-  },
-
-  setup(props) {
-    const { colorFill, colorText } = useContrastedColors(
-      toRef(() => props.properties.display?.color_fill || '#FFFFFF'),
-      toRef(() => props.properties.display?.color_text),
-    )
-    const textLimit = ref(130)
-    const { p, pv } = useSiteStore()
-
-    return {
-      colorFill,
-      colorText,
-      textLimit,
-      p,
-      pv,
-    }
-  },
-
-  computed: {
-    isWebsite(): boolean {
-      return this.field.field === 'website' || this.field.field.startsWith('website:') || this.field.field.endsWith(':website')
-    },
-    shortDescription(): string | undefined {
-      return this.properties?.description?.replace(/(<([^>]+)>)/g, '')
-    },
-  },
-
-  methods: {
-    fieldTranslateK(field: string) {
-      return this.p(field, this.context)
-    },
-
-    propTranslateV(field: string) {
-      return this.pv(
-        field,
-        this.properties[field],
-        this.context,
-      )
-    },
-
-    propTranslateVs(field: string, value: string) {
-      return this.pv(field, value, this.context)
-    },
-
-    isOpeningHoursSupportedOsmTags(key: string) {
-      return isOpeningHoursSupportedOsmTags(key)
-    },
-  },
-})
+function propTranslateVs(field: string, value: string) {
+  return pv(field, value, props.context)
+}
 </script>
 
 <template>
@@ -224,7 +143,7 @@ export default defineNuxtComponent({
       target="_blank"
       @click.stop="$emit('clickDetails')"
     >
-      {{ $t('poiCard.seeDetail') }}
+      {{ t('poiCard.seeDetail') }}
     </a>
   </div>
 
