@@ -33,7 +33,7 @@ const target = computed(() => (locale.value && theme.value?.main_url?.[locale.va
 </template>
 
 <style lang="scss" scoped>
-@import '~/assets/details';
+@use '~/assets/details';
 
 #header {
   display: flex;

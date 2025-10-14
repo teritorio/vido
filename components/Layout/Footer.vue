@@ -33,7 +33,7 @@ const { t } = useI18n()
 </template>
 
 <style lang="scss" scoped>
-@import '~/assets/details';
+@use '~/assets/details';
 
 .footer {
   position: relative;

@@ -265,7 +265,7 @@ onMounted(() => {
 </template>
 
 <style lang="scss" scoped>
-@import '~/assets/details';
+@use '~/assets/details';
 
 .detail-wrapper {
   position: relative;

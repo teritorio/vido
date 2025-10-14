@@ -17,7 +17,7 @@ export default defineNuxtComponent({
 </template>
 
 <style lang="scss" scoped>
-@import '~/assets/details';
+@use '~/assets/details';
 
 ul {
   position: relative;

@@ -120,7 +120,7 @@ onBeforeMount(() => {
 </template>
 
 <style lang="scss" scoped>
-@import '~/assets/details';
+@use '~/assets/details';
 
 .page-details {
   color: $color-text;

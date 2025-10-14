@@ -41,7 +41,7 @@ defineProps<{
 </template>
 
 <style lang="scss" scoped>
-@import '~/assets/details';
+@use '~/assets/details';
 
 :deep(body) {
   color: $color-text;

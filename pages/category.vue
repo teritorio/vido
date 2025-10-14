@@ -32,9 +32,9 @@ const categoryId = computed(() => {
 const filters = computed(() => {
   return route.query.menuItemIds
     ? route.query.menuItemIds
-      .toString()
-      .split(',')
-      .map(f => Number.parseInt(f))
+        .toString()
+        .split(',')
+        .map(f => Number.parseInt(f))
     : undefined
 })
 
@@ -96,7 +96,7 @@ async function onCategoryUpdate(categoryId: number) {
 </template>
 
 <style lang="scss" scoped>
-@import '~/assets/details';
+@use '~/assets/details';
 
 .page-index {
   color: $color-text;

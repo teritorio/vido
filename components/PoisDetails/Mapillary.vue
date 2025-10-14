@@ -21,7 +21,7 @@ const { t } = useI18n()
 </template>
 
 <style lang="scss" scoped>
-@import '~/assets/details';
+@use '~/assets/details';
 
 div {
   margin-bottom: 60px;
