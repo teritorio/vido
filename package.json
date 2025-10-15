@@ -1,7 +1,7 @@
 {
   "name": "@teritorio/vido",
   "type": "module",
-  "version": "1.26.5",
+  "version": "1.26.6",
   "private": true,
   "packageManager": "yarn@4.4.1",
   "engines": {
