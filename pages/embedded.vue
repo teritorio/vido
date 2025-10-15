@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import type { GeoJSON, MultiPolygon, Polygon } from 'geojson'
-import { storeToRefs } from 'pinia'
 import Embedded from '~/components/Home/Embedded.vue'
 import type { ApiPoi } from '~/lib/apiPois'
 import { useSiteStore } from '~/stores/site'
@@ -13,8 +12,7 @@ import { regexForCategoryIds } from '~/composables/useIdsResolver'
 const { params, query, path, name } = useRoute()
 const mapStore = useMapStore()
 const siteStore = useSiteStore()
-const { config, settings } = siteStore
-const { favoritesModeEnabled } = storeToRefs(siteStore)
+const { config, settings, setFavoritesMode } = siteStore
 const { API_ENDPOINT, API_PROJECT, API_THEME } = config!
 const { $trackingInit } = useNuxtApp()
 
@@ -90,7 +88,7 @@ if (status.value === 'success' && data.value)
   mapStore.setSelectedFeature(data.value)
 
 // Disable Favorite Mode
-favoritesModeEnabled.value = false
+setFavoritesMode(false)
 </script>
 
 <template>

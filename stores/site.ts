@@ -25,27 +25,40 @@ export const useSiteStore = defineStore('site', () => {
   const translations = ref<PropertyTranslations>()
 
   const theme = computed(() => {
-    if (!config.value)
+    if (!config.value || !settings.value?.themes)
       return undefined
 
-    return settings.value?.themes.find(t => t.slug === config.value!.API_THEME)
+    return settings.value.themes.find(t => t.slug === config.value!.API_THEME)
   })
 
-  const siteName = computed(() => {
-    return theme.value?.title.fr || ''
-  })
+  const siteName = computed(() => theme.value?.title.fr ?? '')
 
-  const logoUrl = computed(() => {
-    return theme.value?.logo_url || ''
-  })
+  const logoUrl = computed(() => theme.value?.logo_url ?? '')
 
-  const mainUrl = computed(() => {
-    return theme.value?.main_url?.fr || '/'
-  })
+  const mainUrl = computed(() => theme.value?.main_url?.fr ?? '/')
 
-  const explorerModeEnabled = ref(theme.value?.explorer_mode ?? true)
+  const explorerModeEnabled = ref(true)
 
-  const favoritesModeEnabled = ref(theme.value?.favorites_mode ?? true)
+  const favoritesModeEnabled = ref(true)
+
+  watch(theme, (newTheme) => {
+    if (newTheme) {
+      if ('explorer_mode' in newTheme) {
+        explorerModeEnabled.value = newTheme.explorer_mode
+      }
+      if ('favorites_mode' in newTheme) {
+        favoritesModeEnabled.value = newTheme.favorites_mode
+      }
+    }
+  }, { immediate: true })
+
+  function setExplorerMode(value: boolean) {
+    explorerModeEnabled.value = value
+  }
+
+  function setFavoritesMode(value: boolean) {
+    favoritesModeEnabled.value = value
+  }
 
   // TODO: Looks unused maybe remove ?
   async function init(headers: Record<string, string>) {
@@ -104,6 +117,8 @@ export const useSiteStore = defineStore('site', () => {
     siteName,
     explorerModeEnabled,
     favoritesModeEnabled,
+    setFavoritesMode,
+    setExplorerMode,
     init,
     p,
     pv,
