@@ -3,10 +3,6 @@ import type { Article } from '~/lib/apiArticle'
 import type { PropertyTranslations } from '~/lib/apiPropertyTranslations'
 import type { Settings } from '~/lib/apiSettings'
 import type { VidoConfig } from '~/utils/types-config'
-import { getArticles } from '~/lib/apiArticle'
-import { getPropertyTranslations } from '~/lib/apiPropertyTranslations'
-import { getSettings } from '~/lib/apiSettings'
-import { vidoConfig } from '~/plugins/vido-config'
 
 export enum PropertyTranslationsContextEnum {
   Default = 'label',
@@ -60,21 +56,6 @@ export const useSiteStore = defineStore('site', () => {
     favoritesModeEnabled.value = value
   }
 
-  // TODO: Looks unused maybe remove ?
-  async function init(headers: Record<string, string>) {
-    config.value = vidoConfig(headers)
-    settings.value = await getSettings(config.value)
-    translations.value = await getPropertyTranslations(config.value)
-    const { data: articlesData, error: articlesError, status: articlesStatus } = await getArticles(config.value)
-
-    if (articlesError.value)
-      throw createError(articlesError.value)
-
-    if (articlesStatus.value === 'success' && articlesData.value) {
-      articles.value = articlesData.value
-    }
-  }
-
   function p(propertyName: string, context: PropertyTranslationsContextEnum = Default): string {
     if (!translations.value)
       throw new Error('Missing translation, call siteStore.init() first.')
@@ -119,7 +100,6 @@ export const useSiteStore = defineStore('site', () => {
     favoritesModeEnabled,
     setFavoritesMode,
     setExplorerMode,
-    init,
     p,
     pv,
   }

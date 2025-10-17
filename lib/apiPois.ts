@@ -95,8 +95,9 @@ export function getPoiById(
   poiId: ApiPoiId | string,
   options: ApiPoisOptions = {},
 ): Promise<ApiPoi> {
+  const { apiEndpoint } = useRuntimeConfig().public
   return fetch(
-    `${vidoConfig.API_ENDPOINT}/${vidoConfig.API_PROJECT}/${
+    `${apiEndpoint}/${vidoConfig.API_PROJECT}/${
       vidoConfig.API_THEME
     }/poi/${poiId}.${options.format || defaultOptions.format}?${
       new URLSearchParams(stringifyOptions(options))}`,
@@ -117,8 +118,9 @@ export async function getPois(
   poiIds?: (ApiPoiId | string)[],
   options: ApiPoisOptions = {},
 ): Promise<ApiPois> {
+  const { apiEndpoint } = useRuntimeConfig().public
   return await fetch(
-    `${vidoConfig.API_ENDPOINT}/${vidoConfig.API_PROJECT}/${
+    `${apiEndpoint}/${vidoConfig.API_PROJECT}/${
       vidoConfig.API_THEME
     }/pois.${options.format || defaultOptions.format}?${
       new URLSearchParams([
@@ -142,9 +144,10 @@ export function getPoiByCategoryIdUrl(
   categoryId: number | string,
   options: ApiPoisOptions = {},
 ): string {
+  const { apiEndpoint } = useRuntimeConfig().public
   options = Object.assign(defaultOptions, { geometry_as: 'point' }, options)
   return (
-    `${vidoConfig.API_ENDPOINT}/${vidoConfig.API_PROJECT}/${vidoConfig.API_THEME}/pois/category/${categoryId}.${options.format}?${
+    `${apiEndpoint}/${vidoConfig.API_PROJECT}/${vidoConfig.API_THEME}/pois/category/${categoryId}.${options.format}?${
     new URLSearchParams(stringifyOptions(options))}`
   )
 }

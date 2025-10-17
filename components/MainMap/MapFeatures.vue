@@ -76,7 +76,8 @@ const { config } = storeToRefs(siteStore)
 if (!config.value)
   throw createError({ statusCode: 500, statusMessage: 'Wrong config', fatal: true })
 
-const { BICYCLE_STYLE_URL, API_ENDPOINT, API_PROJECT, API_THEME } = config.value
+const { apiEndpoint } = useRuntimeConfig().public
+const { BICYCLE_STYLE_URL, API_PROJECT, API_THEME } = config.value
 const { explorerModeEnabled } = storeToRefs(siteStore)
 const mapStore = useMapStore()
 const { center, selectedFeature, selectedFeatureDepsIDs, teritorioCluster, mode } = storeToRefs(mapStore)
@@ -243,7 +244,7 @@ async function updateSelectedFeature(feature?: ApiPoi): Promise<void> {
 
       try {
         const { data, error, status } = await useFetch<ApiPoiDeps>(
-          () => `${API_ENDPOINT}/${API_PROJECT}/${API_THEME}/poi/${id}/deps.geojson`,
+          () => `${apiEndpoint}/${API_PROJECT}/${API_THEME}/poi/${id}/deps.geojson`,
           {
             query: {
               geometry_as: 'point',

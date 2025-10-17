@@ -19,6 +19,7 @@ defineEmits<{
 
 const shareModal = ref<InstanceType<typeof ShareLinkModal>>()
 
+const { apiExport, apiEndpoint } = useRuntimeConfig().public
 const favoriteStore = useFavoriteStore()
 const { favoritesIds, favoriteAddresses, favoriteFeatures } = storeToRefs(favoriteStore)
 
@@ -26,11 +27,11 @@ const { config } = useSiteStore()
 const idsStringified = [...favoritesIds.value, ...Array.from(favoriteAddresses.value.values()).map(id => `addr:${id}`)].join(',')
 
 const pdfLink = computed(() => {
-  return `${config!.API_EXPORT}/${config!.API_PROJECT}/${config!.API_THEME}/pois/favorites.pdf?ids=${favoritesIds.value.join(',')}`
+  return `${apiExport}/${config!.API_PROJECT}/${config!.API_THEME}/pois/favorites.pdf?ids=${favoritesIds.value.join(',')}`
 })
 
 const csvLink = computed(() => {
-  return `${config!.API_ENDPOINT}/${config!.API_PROJECT}/${config!.API_THEME}/pois.csv?ids=${favoritesIds.value.join(',')}`
+  return `${apiEndpoint}/${config!.API_PROJECT}/${config!.API_THEME}/pois.csv?ids=${favoritesIds.value.join(',')}`
 })
 
 function setShareLink() {

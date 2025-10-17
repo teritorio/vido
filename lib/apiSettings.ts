@@ -1,7 +1,5 @@
 import type { MetaObject } from 'nuxt/schema'
-
 import type { MultilingualString } from '~/utils/types'
-import type { VidoConfig } from '~/utils/types-config'
 
 export interface SiteInfosTheme {
   id: number
@@ -9,19 +7,12 @@ export interface SiteInfosTheme {
   title: MultilingualString
   description: MultilingualString
   keywords: MultilingualString
-
   site_url: MultilingualString
-
   main_url?: MultilingualString
-
   logo_url: string
-
   favicon_url: string
-
   favorites_mode: boolean
-
   explorer_mode: boolean
-
   isochroneEnabled: boolean
 }
 
@@ -30,7 +21,6 @@ export interface Settings {
   slug: string
   name: MultilingualString
   attributions: string[]
-
   icon_font_css_url: string
   polygon: {
     type: 'geojson'
@@ -42,50 +32,10 @@ export interface Settings {
       data: string | GeoJSON.Polygon
     }
   }
-
   bbox_line: GeoJSON.LineString
-
   default_country: string
-
   default_country_state_opening_hours: string
-
   themes: SiteInfosTheme[]
-}
-
-export async function getSettings(vidoConfig: VidoConfig): Promise<Settings> {
-  return await fetch(
-    `${vidoConfig.API_ENDPOINT}/${vidoConfig.API_PROJECT}/${vidoConfig.API_THEME}/settings.json`,
-  )
-    .then((data) => {
-      if (data.ok) {
-        return data.json() as unknown as Settings
-      }
-      else {
-        return Promise.reject(
-          new Error([data.url, data.status, data.statusText].join(' ')),
-        )
-      }
-    })
-    .then((json: Settings) => {
-      return Object.assign(
-        {
-          id: 0,
-          slug: '',
-          name: '',
-          attribution: [],
-          icon_font_css_url: '',
-          bbox_line: {
-            type: 'LineString',
-            coordinates: [
-              [1.43862, 42.41845],
-              [1.68279, 42.6775],
-            ],
-          },
-          themes: [],
-        },
-        json,
-      )
-    })
 }
 
 function stripHTML(value?: string): string | undefined {

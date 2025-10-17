@@ -1,14 +1,9 @@
 import type { IncomingMessage, ServerResponse } from 'node:http'
 import { defineEventHandler } from 'h3'
-
 import type { SitemapEntry } from '~/node_modules/nuxt-simple-sitemap/dist/module'
-import type {
-  BuildSitemapOptions,
-} from '~/node_modules/nuxt-simple-sitemap/dist/runtime/util/builder'
-import {
-  buildSitemap,
-} from '~/node_modules/nuxt-simple-sitemap/dist/runtime/util/builder'
-import { getMenu } from '~/lib/apiMenu'
+import type { BuildSitemapOptions } from '~/node_modules/nuxt-simple-sitemap/dist/runtime/util/builder'
+import { buildSitemap } from '~/node_modules/nuxt-simple-sitemap/dist/runtime/util/builder'
+import type { MenuItem } from '~/lib/apiMenu'
 import { getPois } from '~/lib/apiPois'
 import { vidos } from '~/lib/config'
 import { vidoConfigResolve } from '~/plugins/vido-config'
@@ -22,9 +17,10 @@ async function manifest(
   const hostname = (req.headers['x-forwarded-host'] || req.headers.host)?.toString()
 
   if (hostname) {
+    const { apiEndpoint } = useRuntimeConfig().public
     const vido = vidoConfigResolve(hostname.split(':')[0], vidos())
 
-    const menu = getMenu(vido)
+    const menu = await $fetch<MenuItem[]>(`${apiEndpoint}/${vido.API_PROJECT}/${vido.API_THEME}/menu.json`)
       .then(menuItem => menuItem
         .filter(menuItem => menuItem.category && menuItem.id)
         .map(menuCategory => ({
