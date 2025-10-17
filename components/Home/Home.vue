@@ -42,6 +42,7 @@ const props = defineProps<{
 //
 // Composables
 //
+const { apiAddr } = useRuntimeConfig().public
 const mapStore = useMapStore()
 const { isModeFavorites, isModeExplorer, isModeExplorerOrFavorites, mode, selectedFeature, teritorioCluster, isDepsView } = storeToRefs(mapStore)
 const menuStore = useMenuStore()
@@ -276,7 +277,7 @@ function goToSelectedFeature(feature?: ApiPoi) {
 async function fetchAddress(hash: string) {
   try {
     const coordinates = decodeBase32(hash)
-    return await $fetch<ApiSearchResult<ApiAddrSearchResult>>(`${config!.API_ADDR}/reverse?lon=${coordinates.lng}&lat=${coordinates.lat}&limit=1`)
+    return await $fetch<ApiSearchResult<ApiAddrSearchResult>>(`${apiAddr}/reverse?lon=${coordinates.lng}&lat=${coordinates.lat}&limit=1`)
   }
   catch (error: any) {
     console.error(error)

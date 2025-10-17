@@ -19,8 +19,9 @@ export async function getArticle(config: VidoConfig, slug: string): Promise<{
   error: Ref<FetchError<any> | null>
   status: Ref<AsyncDataRequestStatus>
 }> {
+  const { apiEndpoint } = useRuntimeConfig().public
   const { data, error, status } = await useFetch<string>(
-    () => `${config.API_ENDPOINT}/${config.API_PROJECT}/${config.API_THEME}/article/${slug}.html`,
+    () => `${apiEndpoint}/${config.API_PROJECT}/${config.API_THEME}/article/${slug}.html`,
     { method: 'GET' },
   )
 

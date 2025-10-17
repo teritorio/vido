@@ -33,9 +33,11 @@ export default defineNuxtComponent({
 
   setup() {
     const { config } = storeToRefs(useSiteStore())
+    const { apiQrShortener } = useRuntimeConfig().public
 
     return {
       config,
+      apiQrShortener,
     }
   },
 
@@ -103,7 +105,7 @@ export default defineNuxtComponent({
 
     qrCodeUrl() {
       if (this.linkQrCode) {
-        return `${this.config!.API_QR_SHORTENER}/qrcode.svg?url=${encodeURIComponent(this.linkQrCode)}`
+        return `${this.apiQrShortener}/qrcode.svg?url=${encodeURIComponent(this.linkQrCode)}`
       }
     },
   },
