@@ -1,7 +1,6 @@
 import type { IncomingMessage, ServerResponse } from 'node:http'
 import { defineEventHandler } from 'h3'
-
-import { getSettings } from '../../lib/apiSettings'
+import type { Settings } from '../../lib/apiSettings'
 import { vidos } from '../../lib/config'
 import { vidoConfigResolve } from '../../plugins/vido-config'
 
@@ -12,8 +11,9 @@ async function manifest(
   const hostname = (req.headers['x-forwarded-host'] || req.headers.host)?.toString().split(':')[0]
 
   if (hostname) {
+    const { apiEndpoint } = useRuntimeConfig().public
     const vido = vidoConfigResolve(hostname, vidos())
-    const settings = await getSettings(vido)
+    const settings = await $fetch<Settings>(`${apiEndpoint}/${vido.API_PROJECT}/${vido.API_THEME}/settings.json`)
     const theme = settings.themes.find(t => t.slug === vido.API_THEME)
 
     if (!theme)
