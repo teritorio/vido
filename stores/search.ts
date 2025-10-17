@@ -9,6 +9,7 @@ import type { ApiAddrSearchResult, ApiMenuItemSearchResult, ApiPoisSearchResult,
 import { mapStore as useMapStore } from '~/stores/map'
 
 export const useSearchStore = defineStore('search', () => {
+  const { apiAddr, apiSearch } = useRuntimeConfig().public
   const { $tracking } = useNuxtApp()
   const { config } = storeToRefs(useSiteStore())
   const menuStore = useMenuStore()
@@ -19,7 +20,7 @@ export const useSearchStore = defineStore('search', () => {
   if (!config.value)
     throw createError({ statusCode: 500, statusMessage: 'Wrong config', fatal: true })
 
-  const { API_PROJECT, API_THEME, API_SEARCH, API_ADDR } = config.value
+  const { API_PROJECT, API_THEME } = config.value
 
   const isActive = ref(false)
   const searchText = ref('')
@@ -249,13 +250,13 @@ export const useSearchStore = defineStore('search', () => {
     }
     else if (searchValue.length > 2) {
       const query = `q=${searchText.value}&lon=${center.value.lng}&lat=${center.value.lat}`
-      const MenuItemsFetch: Promise<ApiSearchResult<ApiMenuItemSearchResult>> = fetch(`${API_SEARCH}?${projectTheme}&type=menu_item&${query}`)
+      const MenuItemsFetch: Promise<ApiSearchResult<ApiMenuItemSearchResult>> = fetch(`${apiSearch}?${projectTheme}&type=menu_item&${query}`)
         .then(data => (data.ok ? data.json() : null))
 
-      const poisFetch: Promise<ApiSearchResult<ApiPoisSearchResult>> = fetch(`${API_SEARCH}?${projectTheme}&type=poi&${query}&limit=10`)
+      const poisFetch: Promise<ApiSearchResult<ApiPoisSearchResult>> = fetch(`${apiSearch}?${projectTheme}&type=poi&${query}&limit=10`)
         .then(data => (data.ok ? data.json() : null))
 
-      const addressesFetch: Promise<ApiSearchResult<ApiAddrSearchResult>> = fetch(`${API_ADDR}/search?${query}`)
+      const addressesFetch: Promise<ApiSearchResult<ApiAddrSearchResult>> = fetch(`${apiAddr}/search?${query}`)
         .then(data => data.ok ? data.json() : null)
 
       Promise.all([MenuItemsFetch, poisFetch, addressesFetch])

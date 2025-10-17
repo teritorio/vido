@@ -1,10 +1,12 @@
 import type { VidosConfig } from '~/utils/types-config'
 
 export function configuredApi(vidos: () => VidosConfig): string[] {
+  const { apiEndpoint } = useApiEndpoint()
+
   return [
     ...new Set(
       Object.values(vidos())
-        .map(vido => vido.API_ENDPOINT || [])
+        .map(_vido => apiEndpoint.value || [])
         .flat(),
     ),
   ].map(url => new URL(url).hostname)

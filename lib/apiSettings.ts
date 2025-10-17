@@ -53,8 +53,9 @@ export interface Settings {
 }
 
 export async function getSettings(vidoConfig: VidoConfig): Promise<Settings> {
+  const { apiEndpoint } = useApiEndpoint()
   return await fetch(
-    `${vidoConfig.API_ENDPOINT}/${vidoConfig.API_PROJECT}/${vidoConfig.API_THEME}/settings.json`,
+    `${apiEndpoint.value}/${vidoConfig.API_PROJECT}/${vidoConfig.API_THEME}/settings.json`,
   )
     .then((data) => {
       if (data.ok) {

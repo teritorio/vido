@@ -13,7 +13,8 @@ const { params, query, path, name } = useRoute()
 const mapStore = useMapStore()
 const siteStore = useSiteStore()
 const { config, settings, setFavoritesMode } = siteStore
-const { API_ENDPOINT, API_PROJECT, API_THEME } = config!
+const { apiEndpoint } = useApiEndpoint()
+const { API_PROJECT, API_THEME } = config!
 const { $trackingInit } = useNuxtApp()
 
 //
@@ -71,7 +72,7 @@ if (params.poiId)
 
 // Fetch inital POI
 const { data, error, status } = await useFetch<ApiPoi>(
-  () => `${API_ENDPOINT}/${API_PROJECT}/${API_THEME}/poi/${poiId.value}.geojson`,
+  () => `${apiEndpoint.value}/${API_PROJECT}/${API_THEME}/poi/${poiId.value}.geojson`,
   {
     query: {
       geometry_as: 'bbox',
