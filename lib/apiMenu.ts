@@ -96,9 +96,9 @@ export interface MenuGroup extends ApiMenuGroup {
 export type MenuItem = MenuGroup | ApiMenuLink | ApiMenuCategory
 
 export async function getMenu(vidoConfig: VidoConfig): Promise<MenuItem[]> {
-  const { apiEndpoint } = useRuntimeConfig().public
+  const { apiEndpoint } = useApiEndpoint()
   return await fetch(
-    `${apiEndpoint}/${vidoConfig.API_PROJECT}/${vidoConfig.API_THEME}/menu.json`,
+    `${apiEndpoint.value}/${vidoConfig.API_PROJECT}/${vidoConfig.API_THEME}/menu.json`,
   ).then((data) => {
     if (data.ok) {
       return data.json() as unknown as MenuItem[]

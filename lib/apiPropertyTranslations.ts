@@ -27,9 +27,9 @@ export interface PropertyTranslations {
 export function getPropertyTranslations(
   vidoConfig: VidoConfig,
 ): Promise<PropertyTranslations> {
-  const { apiEndpoint } = useRuntimeConfig().public
+  const { apiEndpoint } = useApiEndpoint()
   return fetch(
-    `${apiEndpoint}/${vidoConfig.API_PROJECT}/${vidoConfig.API_THEME}/attribute_translations/fr.json`,
+    `${apiEndpoint.value}/${vidoConfig.API_PROJECT}/${vidoConfig.API_THEME}/attribute_translations/fr.json`,
   ).then((data) => {
     if (data.ok) {
       return data.json() as unknown as PropertyTranslations

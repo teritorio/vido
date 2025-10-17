@@ -23,15 +23,15 @@ if (process.server) {
 if (!config.value)
   throw createError({ statusCode: 500, statusMessage: 'Wrong config', fatal: true })
 
-const { apiEndpoint } = useRuntimeConfig().public
+const { apiEndpoint } = useApiEndpoint()
 const { API_PROJECT, API_THEME, GOOGLE_SITE_VERIFICATION } = config.value
 const { data, error, status } = await useAsyncData('parallel', async () => {
   const [settings, menu, translations, articles] = await Promise.all([
-    $fetch<Settings>(`${apiEndpoint}/${API_PROJECT}/${API_THEME}/settings.json`),
-    $fetch<MenuItem[]>(`${apiEndpoint}/${API_PROJECT}/${API_THEME}/menu.json`),
-    $fetch<PropertyTranslations>(`${apiEndpoint}/${API_PROJECT}/${API_THEME}/attribute_translations/fr.json`),
+    $fetch<Settings>(`${apiEndpoint.value}/${API_PROJECT}/${API_THEME}/settings.json`),
+    $fetch<MenuItem[]>(`${apiEndpoint.value}/${API_PROJECT}/${API_THEME}/menu.json`),
+    $fetch<PropertyTranslations>(`${apiEndpoint.value}/${API_PROJECT}/${API_THEME}/attribute_translations/fr.json`),
     // INFO: slug query param is here only for WP API backward compatibility
-    $fetch<Article[]>(`${apiEndpoint}/${API_PROJECT}/${API_THEME}/articles.json?slug=non-classe`),
+    $fetch<Article[]>(`${apiEndpoint.value}/${API_PROJECT}/${API_THEME}/articles.json?slug=non-classe`),
   ])
 
   menuStore.fetchConfig(menu)
