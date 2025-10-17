@@ -19,7 +19,7 @@ defineEmits<{
 
 const shareModal = ref<InstanceType<typeof ShareLinkModal>>()
 
-const { apiExport } = useRuntimeConfig().public
+const { apiExport, apiEndpoint } = useRuntimeConfig().public
 const favoriteStore = useFavoriteStore()
 const { favoritesIds, favoriteAddresses, favoriteFeatures } = storeToRefs(favoriteStore)
 
@@ -31,7 +31,7 @@ const pdfLink = computed(() => {
 })
 
 const csvLink = computed(() => {
-  return `${config!.API_ENDPOINT}/${config!.API_PROJECT}/${config!.API_THEME}/pois.csv?ids=${favoritesIds.value.join(',')}`
+  return `${apiEndpoint}/${config!.API_PROJECT}/${config!.API_THEME}/pois.csv?ids=${favoritesIds.value.join(',')}`
 })
 
 function setShareLink() {

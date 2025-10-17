@@ -15,7 +15,6 @@ const config: VidosConfig = {
   localhost: {
     HOSTS: ['localhost'],
     ...configDefault,
-    API_ENDPOINT: 'https://dev.appcarto.teritorio.xyz/content/api.teritorio/geodata/v0.1',
     API_PROJECT: 'dev',
     API_THEME: 'tourism',
     VECTO_STYLE_URL: 'https://merge-proxy.teritorio.xyz/styles/teritorio-tourism-1.0/style.json?key=###',

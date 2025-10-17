@@ -14,8 +14,9 @@ if (process.server) {
 if (!config.value)
   throw createError({ statusCode: 500, statusMessage: 'Wrong config', fatal: true })
 
-const { API_ENDPOINT, API_PROJECT, API_THEME } = config.value
-const { data, error, status } = await useAsyncData('parallel', async () => $fetch<Settings>(`${API_ENDPOINT}/${API_PROJECT}/${API_THEME}/settings.json`))
+const { apiEndpoint } = useRuntimeConfig()
+const { API_PROJECT, API_THEME } = config.value
+const { data, error, status } = await useAsyncData('parallel', async () => $fetch<Settings>(`${apiEndpoint}/${API_PROJECT}/${API_THEME}/settings.json`))
 
 if (error.value)
   throw createError(error.value)

@@ -35,7 +35,7 @@ export default defineNuxtConfig({
     vueI18n: 'config/i18n.config.ts',
   },
   image: {
-    domains: [...configuredApi(vidos), ...configuredImageProxy(vidos)],
+    domains: [...configuredApi(vidos, process.env.NUXT_PUBLIC_API_ENDPOINT), ...configuredImageProxy(vidos)],
   },
   imports: {
     autoImport: true,
@@ -55,6 +55,7 @@ export default defineNuxtConfig({
       cypress: process.env.CYPRESS,
       vidos: vidos(),
       appUrl: process.env.NUXT_PUBLIC_APP_URL,
+      apiEndpoint: process.env.NUXT_PUBLIC_API_ENDPOINT,
       apiSearch: process.env.NUXT_PUBLIC_API_SEARCH,
       apiAddr: process.env.NUXT_PUBLIC_API_ADDR,
       apiExport: process.env.NUXT_PUBLIC_API_EXPORT,

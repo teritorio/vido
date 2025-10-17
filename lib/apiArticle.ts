@@ -19,9 +19,10 @@ export async function getArticles(config: VidoConfig): Promise<{
   error: Ref<FetchError<any> | null>
   status: Ref<AsyncDataRequestStatus>
 }> {
+  const { apiEndpoint } = useRuntimeConfig()
   // HINT: slug query param is here only for WP API backward compatibility
   const { data, error, status } = await useFetch<Article[]>(
-    () => `${config.API_ENDPOINT}/${config.API_PROJECT}/${config.API_THEME}/articles.json?slug=non-classe`,
+    () => `${apiEndpoint}/${config.API_PROJECT}/${config.API_THEME}/articles.json?slug=non-classe`,
     {
       method: 'GET',
     },
@@ -39,8 +40,9 @@ export async function getArticle(config: VidoConfig, slug: string): Promise<{
   error: Ref<FetchError<any> | null>
   status: Ref<AsyncDataRequestStatus>
 }> {
+  const { apiEndpoint } = useRuntimeConfig().public
   const { data, error, status } = await useFetch<string>(
-    () => `${config.API_ENDPOINT}/${config.API_PROJECT}/${config.API_THEME}/article/${slug}.html`,
+    () => `${apiEndpoint}/${config.API_PROJECT}/${config.API_THEME}/article/${slug}.html`,
     { method: 'GET' },
   )
 

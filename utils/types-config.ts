@@ -1,6 +1,5 @@
 export interface VidoConfig {
   HOSTS: string[]
-  API_ENDPOINT: string
   API_PROJECT: string
   API_THEME: string
   VECTO_STYLE_URL: string

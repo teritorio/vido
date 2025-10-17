@@ -10,7 +10,7 @@ import { getSlugFromURL } from '~/lib/apiArticle'
 import { useSiteStore } from '~/stores/site'
 
 const { $tracking } = useNuxtApp()
-const { articles: entries, locale: currentI18n, config } = storeToRefs(useSiteStore())
+const { articles: entries, locale: currentI18n } = storeToRefs(useSiteStore())
 const { current: vuetifyLocale } = useLocale()
 const { locales, setLocale, localeProperties } = useI18n() // LocaleObject[]
 
@@ -32,8 +32,9 @@ function isExternalLink(url: string): boolean {
   return /^https?:?\/\//.test(url)
 }
 
+const { apiEndpoint } = useRuntimeConfig().public
 function isAPIUrl(url: string): boolean {
-  return url.includes(config.value!.API_ENDPOINT)
+  return url.includes(apiEndpoint)
 }
 
 function getLinkTo(url: string) {
