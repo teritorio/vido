@@ -80,9 +80,9 @@ export async function getPoiDepsById(
   poiId: ApiPoiId | string,
   options: ApiPoisOptions = {},
 ): Promise<ApiPoiDeps> {
-  const { apiEndpoint } = useRuntimeConfig().public
+  const { apiEndpoint } = useApiEndpoint()
   return await fetch(
-    `${apiEndpoint}/${vidoConfig.API_PROJECT}/${vidoConfig.API_THEME}/poi/${poiId}/deps.geojson?${
+    `${apiEndpoint.value}/${vidoConfig.API_PROJECT}/${vidoConfig.API_THEME}/poi/${poiId}/deps.geojson?${
       new URLSearchParams(stringifyOptions(options))}`,
   ).then((data) => {
     if (data.ok) {
