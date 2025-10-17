@@ -19,9 +19,6 @@ export default defineNuxtConfig({
   components: false,
   css: ['@fortawesome/fontawesome-svg-core/styles.css'],
   devtools: { enabled: true },
-  gtm: {
-    pageTracking: false,
-  },
   i18n: {
     defaultLocale: 'en',
     detectBrowserLanguage: {
@@ -38,32 +35,35 @@ export default defineNuxtConfig({
     vueI18n: 'config/i18n.config.ts',
   },
   image: {
-    domains: [...configuredApi(vidos), ...configuredImageProxy(vidos)],
+    domains: [...configuredApi(vidos, process.env.NUXT_PUBLIC_API_ENDPOINT), ...configuredImageProxy(vidos)],
   },
   imports: {
     autoImport: true,
   },
-  loadingIndicator: false,
   modules: [
     '@nuxtjs/i18n',
     '@nuxt/image-edge',
     '@pinia/nuxt',
     '@kevinmarrec/nuxt-pwa',
-    async (_options, nuxt) => {
-      nuxt.hooks.hook('vite:extendConfig', config =>
-        // @ts-expect-error: Do we really need to extend the config ?
+    async (_options: any, nuxt: any) => {
+      nuxt.hooks.hook('vite:extendConfig', (config: any) =>
         config.plugins.push(vuetify()))
     },
   ],
   runtimeConfig: {
     public: {
-      // @ts-expect-error: Bad pratice, make it the Nuxt way (https://nuxt.com/docs/guide/going-further/runtime-config)
-      vidos: vidos.__publicRuntimeConfig__ ? vidos : undefined,
       cypress: process.env.CYPRESS,
-      sentry: {
-        dsn: undefined,
-        environment: 'production',
-      },
+      vidos: vidos(),
+      appHost: process.env.NUXT_PUBLIC_APP_HOST,
+      apiEndpoint: process.env.NUXT_PUBLIC_API_ENDPOINT,
+      apiSearch: process.env.NUXT_PUBLIC_API_SEARCH,
+      apiAddr: process.env.NUXT_PUBLIC_API_ADDR,
+      apiExport: process.env.NUXT_PUBLIC_API_EXPORT,
+      apiQrShortener: process.env.NUXT_PUBLIC_API_QR_SHORTENER,
+      mapillaryAccessToken: process.env.NUXT_PUBLIC_MAPILLARY_ACCESS_TOKEN,
+      openRouteServiceKey: process.env.NUXT_PUBLIC_OPEN_ROUTE_SERVICE_KEY,
+      sentryDsn: process.env.NUXT_PUBLIC_SENTRY_DSN,
+      sentryEnvironment: process.env.NUXT_PUBLIC_SENTRY_ENVIRONMENT,
     },
   },
   plugins: [
@@ -79,9 +79,6 @@ export default defineNuxtConfig({
       autoprefixer: {},
     },
   },
-  purgeCSS: {
-    whitelistPatterns: [/svg.*/, /fa.*/],
-  },
   pwa: {
     icon: false,
     meta: false,
@@ -90,7 +87,7 @@ export default defineNuxtConfig({
       enabled: false,
     },
   },
-  server: {
+  devServer: {
     host: '0.0.0.0',
   },
   typescript: {
