@@ -31,7 +31,7 @@ const { config } = storeToRefs(useSiteStore())
 if (!config.value)
   throw createError({ statusCode: 500, statusMessage: 'Wrong config', fatal: true })
 
-const { apiEndpoint } = useRuntimeConfig().public
+const { apiEndpoint } = useApiEndpoint()
 const { API_PROJECT, API_THEME } = config.value
 const mapBaseRef = ref<InstanceType<typeof MapBase>>()
 const map = ref<MapGL>()
@@ -81,7 +81,7 @@ function renderPois(): void {
     }
 
     const { data, error, status } = await useFetch(
-      () => `${apiEndpoint}/${API_PROJECT}/${API_THEME}/poi/${feature.properties.metadata.id}.geojson`,
+      () => `${apiEndpoint.value}/${API_PROJECT}/${API_THEME}/poi/${feature.properties.metadata.id}.geojson`,
       {
         query: {
           geometry_as: 'point',

@@ -32,9 +32,9 @@ function isExternalLink(url: string): boolean {
   return /^https?:?\/\//.test(url)
 }
 
-const { apiEndpoint } = useRuntimeConfig().public
+const { apiEndpoint } = useApiEndpoint()
 function isAPIUrl(url: string): boolean {
-  return url.includes(apiEndpoint)
+  return url.includes(apiEndpoint.value)
 }
 
 function getLinkTo(url: string) {

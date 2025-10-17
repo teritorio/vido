@@ -2,7 +2,7 @@ import type { ApiPoi, ApiPois } from '~/lib/apiPois'
 import { PropertyTranslationsContextEnum, useSiteStore } from '~/stores/site'
 
 export function usePois() {
-  const { apiEndpoint } = useRuntimeConfig().public
+  const { apiEndpoint } = useApiEndpoint()
   const { routeToString, addressToString } = useField()
   const { config } = useSiteStore()
   const route = useRoute()
@@ -27,7 +27,7 @@ export function usePois() {
     }
 
     const { data, error: err, pending: pend, status: stat } = await useFetch<ApiPois>(
-      `${apiEndpoint}/${API_PROJECT}/${API_THEME}/pois/category/${id}.geojson`,
+      `${apiEndpoint.value}/${API_PROJECT}/${API_THEME}/pois/category/${id}.geojson`,
       {
         query,
         transform: pois => transformPois(pois, routeToString, addressToString),

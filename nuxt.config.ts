@@ -34,9 +34,9 @@ export default defineNuxtConfig({
     strategy: 'no_prefix',
     vueI18n: 'config/i18n.config.ts',
   },
-  image: {
-    domains: [...configuredApi(vidos, process.env.NUXT_PUBLIC_API_ENDPOINT), ...configuredImageProxy(vidos)],
-  },
+  // image: {
+  //   domains: [...configuredApi(vidos), ...configuredImageProxy(vidos)],
+  // },
   imports: {
     autoImport: true,
   },
@@ -60,8 +60,8 @@ export default defineNuxtConfig({
       apiAddr: process.env.NUXT_PUBLIC_API_ADDR,
       apiExport: process.env.NUXT_PUBLIC_API_EXPORT,
       apiQrShortener: process.env.NUXT_PUBLIC_API_QR_SHORTENER,
-      mapillaryAccessToken: process.env.NUXT_PUBLIC_MAPILLARY_ACCESS_TOKEN,
-      openRouteServiceKey: process.env.NUXT_PUBLIC_OPEN_ROUTE_SERVICE_KEY,
+      mapillaryAccessToken: process.env.NUXT_PUBLIC_MAPILLARY_ACCESS_TOKEN || '',
+      openRouteServiceKey: process.env.NUXT_PUBLIC_OPEN_ROUTE_SERVICE_KEY || '',
       sentryDsn: process.env.NUXT_PUBLIC_SENTRY_DSN,
       sentryEnvironment: process.env.NUXT_PUBLIC_SENTRY_ENVIRONMENT,
     },
