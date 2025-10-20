@@ -36,7 +36,7 @@ if (status.value === 'success' && data.value) {
           [1.68279, 42.6775],
         ],
       },
-      themes: [],
+      themes: {},
     },
     data.value,
   )

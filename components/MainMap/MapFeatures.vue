@@ -71,13 +71,13 @@ const snackStore = useSnackStore()
 const menuStore = useMenuStore()
 const { featuresColor, isLoadingFeatures, selectedCategoryIds } = storeToRefs(menuStore)
 const siteStore = useSiteStore()
-const { config } = storeToRefs(siteStore)
+const { config, theme } = storeToRefs(siteStore)
 
 if (!config.value)
   throw createError({ statusCode: 500, statusMessage: 'Wrong config', fatal: true })
 
 const { apiEndpoint } = useApiEndpoint()
-const { BICYCLE_STYLE_URL, API_PROJECT, API_THEME } = config.value
+const { API_PROJECT, API_THEME } = config.value
 const { explorerModeEnabled } = storeToRefs(siteStore)
 const mapStore = useMapStore()
 const { center, selectedFeature, selectedFeatureDepsIDs, teritorioCluster, mode } = storeToRefs(mapStore)
@@ -91,7 +91,7 @@ const isZooming = ref(false)
 const availableStyles = computed((): MapStyleEnum[] => {
   const styles = [MapStyleEnum.vector, MapStyleEnum.aerial]
 
-  if (BICYCLE_STYLE_URL)
+  if (theme.value?.map_bicycle_style_url)
     styles.push(MapStyleEnum.bicycle)
 
   return styles

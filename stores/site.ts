@@ -24,7 +24,7 @@ export const useSiteStore = defineStore('site', () => {
     if (!config.value || !settings.value?.themes)
       return undefined
 
-    return settings.value.themes.find(t => t.slug === config.value!.API_THEME)
+    return settings.value.themes[config.value.API_THEME]
   })
 
   const siteName = computed(() => theme.value?.title.fr ?? '')

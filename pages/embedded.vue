@@ -28,7 +28,7 @@ const categoryIds = ref<number[]>()
 // Hooks
 //
 onBeforeMount(() => {
-  $trackingInit(config!)
+  $trackingInit()
 })
 
 const { boundary } = query

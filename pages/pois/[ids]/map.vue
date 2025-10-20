@@ -54,7 +54,7 @@ const ids = computed((): ApiPoiId[] => pois.value?.features.map(feature => featu
 // Hooks
 //
 onBeforeMount(() => {
-  $trackingInit(config!)
+  $trackingInit()
 })
 </script>
 

@@ -13,10 +13,13 @@ export default defineNuxtComponent({
   },
 
   setup() {
-    const { config } = storeToRefs(useSiteStore())
+    const { theme } = storeToRefs(useSiteStore())
+
+    if (!theme.value)
+      throw createError({ statusCode: 500, statusMessage: 'Theme is missing', fatal: true })
 
     return {
-      config,
+      theme,
     }
   },
 
@@ -37,7 +40,7 @@ export default defineNuxtComponent({
 </script>
 
 <template>
-  <client-only v-if="doNotTrack && config!.COOKIES_CONSENT">
+  <client-only v-if="doNotTrack && theme!.cookies_consent_message">
     <VueCookieAcceptDecline
       element-id="cookies-consent"
       type="bar"
@@ -45,10 +48,10 @@ export default defineNuxtComponent({
       @clicked-accept="accept"
     >
       <template #message>
-        {{ config!.COOKIES_CONSENT }}
+        {{ theme!.cookies_consent_message.fr }}
         <ExternalLink
-          v-if="config!.COOKIES_LINK"
-          :href="config!.COOKIES_LINK"
+          v-if="theme!.cookies_usage_detail_url"
+          :href="theme!.cookies_usage_detail_url"
           target="_blank"
         >
           {{ $t('cookiesConsent.details') }}

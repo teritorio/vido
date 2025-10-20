@@ -24,7 +24,7 @@ if (!config.value)
   throw createError({ statusCode: 500, statusMessage: 'Wrong config', fatal: true })
 
 const { apiEndpoint } = useApiEndpoint()
-const { API_PROJECT, API_THEME, GOOGLE_SITE_VERIFICATION } = config.value
+const { API_PROJECT, API_THEME } = config.value
 const { data, error, status } = await useAsyncData('parallel', async () => {
   const [settings, menu, translations, articles] = await Promise.all([
     $fetch<Settings>(`${apiEndpoint.value}/${API_PROJECT}/${API_THEME}/settings.json`),
@@ -52,7 +52,7 @@ const { data, error, status } = await useAsyncData('parallel', async () => {
             [1.68279, 42.6775],
           ],
         },
-        themes: [],
+        themes: {},
       },
       settings,
     ),
@@ -75,7 +75,6 @@ if (status.value === 'success' && data.value) {
       headerFromSettings(
         theme.value,
         settings.value.icon_font_css_url,
-        { googleSiteVerification: GOOGLE_SITE_VERIFICATION },
       ),
     )
   }

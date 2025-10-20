@@ -7,17 +7,7 @@
     "IMAGE_PROXY": [
       "cdt40.tourinsoft.com"
     ],
-    "ISOCHRONE": false,
-    "COOKIES_CONSENT": null,
-    "COOKIES_LINK": null,
-    "GOOGLE_SITE_VERIFICATION": null,
-    "GOOGLE_TAG_MANAGER_ID": null,
-    "MATOMO_URL": null,
-    "MATOMO_SITEID": null,
     "API_PROJECT": "teritorio",
-    "API_THEME": "empty",
-    "VECTO_STYLE_URL": "https://example.com/style.json",
-    "SATELLITE_STYLE_URL": "https://example.com/style.json",
-    "BICYCLE_STYLE_URL": "https://example.com/style.json"
+    "API_THEME": "empty"
   }
 }
