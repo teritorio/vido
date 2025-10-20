@@ -1,6 +1,6 @@
 import vuetify from 'vite-plugin-vuetify'
 import { vidos } from './lib/config'
-import { configuredApi, configuredImageProxy } from './utils/vido-config-static'
+// import { configuredApi, configuredImageProxy } from './utils/vido-config-static'
 
 // Build Configuration (https://nuxt.com/docs/api/nuxt-config)
 export default defineNuxtConfig({
@@ -60,8 +60,8 @@ export default defineNuxtConfig({
       apiAddr: process.env.NUXT_PUBLIC_API_ADDR,
       apiExport: process.env.NUXT_PUBLIC_API_EXPORT,
       apiQrShortener: process.env.NUXT_PUBLIC_API_QR_SHORTENER,
-      mapillaryAccessToken: process.env.NUXT_PUBLIC_MAPILLARY_ACCESS_TOKEN || '',
-      openRouteServiceKey: process.env.NUXT_PUBLIC_OPEN_ROUTE_SERVICE_KEY || '',
+      mapillaryAccessToken: process.env.NUXT_PUBLIC_MAPILLARY_ACCESS_TOKEN,
+      openRouteServiceKey: process.env.NUXT_PUBLIC_OPEN_ROUTE_SERVICE_KEY,
       sentryDsn: process.env.NUXT_PUBLIC_SENTRY_DSN,
       sentryEnvironment: process.env.NUXT_PUBLIC_SENTRY_ENVIRONMENT,
     },
