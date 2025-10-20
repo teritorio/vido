@@ -78,7 +78,7 @@ if (!featureSeoTitle.value)
 // Hooks
 //
 onBeforeMount(() => {
-  $trackingInit(config!)
+  $trackingInit()
 })
 
 if (settings.value && theme.value) {

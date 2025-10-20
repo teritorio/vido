@@ -70,7 +70,7 @@ if (route.params.poiId) {
 const menuStore = useMenuStore()
 const { apiMenuCategory, selectedCategoryIds } = storeToRefs(menuStore)
 onBeforeMount(() => {
-  $trackingInit(config.value!)
+  $trackingInit()
 })
 
 if (categoryIds.value.length) {

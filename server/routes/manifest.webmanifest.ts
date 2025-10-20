@@ -14,7 +14,7 @@ async function manifest(
     const { apiEndpoint } = useRuntimeConfig().public
     const vido = vidoConfigResolve(hostname, vidos())
     const settings = await $fetch<Settings>(`${apiEndpoint}/${vido.API_PROJECT}/${vido.API_THEME}/settings.json`)
-    const theme = settings.themes.find(t => t.slug === vido.API_THEME)
+    const theme = settings.themes[vido.API_THEME]
 
     if (!theme)
       throw createError({ statusCode: 500, statusMessage: `Theme ${vido.API_THEME} not found.`, fatal: true })

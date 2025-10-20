@@ -13,7 +13,16 @@ export interface SiteInfosTheme {
   favicon_url: string
   favorites_mode: boolean
   explorer_mode: boolean
-  isochroneEnabled: boolean
+  isochrone: boolean
+  matomo_url: string
+  matomo_siteid: string
+  map_style_base_url: string
+  map_bicycle_style_url: string
+  map_style_satellite_url: string
+  cookies_consent_message: MultilingualString
+  cookies_usage_detail_url: string
+  google_site_verification: string
+  google_tag_manager_id: string
 }
 
 export interface Settings {
@@ -35,7 +44,7 @@ export interface Settings {
   bbox_line: GeoJSON.LineString
   default_country: string
   default_country_state_opening_hours: string
-  themes: SiteInfosTheme[]
+  themes: Record<string, SiteInfosTheme>
 }
 
 function stripHTML(value?: string): string | undefined {
@@ -91,7 +100,7 @@ export function headerFromSettings(
       {
         hid: 'google-site-verification',
         name: 'google-site-verification',
-        content: options?.googleSiteVerification,
+        content: theme.google_site_verification,
       },
     ].filter(meta => meta.content),
   }
