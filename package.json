@@ -12,6 +12,7 @@
     "build-config": "npx vite-node bin/build-config.ts > vidos-config.json",
     "build-fixture": "ruby poi_explode.rb cypress/fixtures/teritorio/references/pois.geojson",
     "dev": "nuxi dev",
+    "fetch-domains": "npx vite-node utils/fetch-domains.ts",
     "build": "nuxi build",
     "build:histoire": "rm -fr __screenshots__/current/ && mkdir -p __screenshots__/current/ && yarn histoire build",
     "generate": "nuxi generate",

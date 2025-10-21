@@ -1,6 +1,5 @@
 import vuetify from 'vite-plugin-vuetify'
 import { vidos } from './lib/config'
-// import { configuredApi, configuredImageProxy } from './utils/vido-config-static'
 
 // Build Configuration (https://nuxt.com/docs/api/nuxt-config)
 export default defineNuxtConfig({
@@ -34,9 +33,9 @@ export default defineNuxtConfig({
     strategy: 'no_prefix',
     vueI18n: 'config/i18n.config.ts',
   },
-  // image: {
-  //   domains: [...configuredApi(vidos), ...configuredImageProxy(vidos)],
-  // },
+  image: {
+    domains: process.env.NUXT_PUBLIC_IMAGE_DOMAINS?.split(',').filter(Boolean) || [],
+  },
   imports: {
     autoImport: true,
   },

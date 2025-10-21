@@ -4,9 +4,6 @@
     "HOSTS": [
       ""
     ],
-    "IMAGE_PROXY": [
-      "cdt40.tourinsoft.com"
-    ],
     "API_PROJECT": "teritorio",
     "API_THEME": "references"
   }
