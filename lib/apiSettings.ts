@@ -45,6 +45,7 @@ export interface Settings {
   default_country: string
   default_country_state_opening_hours: string
   themes: Record<string, SiteInfosTheme>
+  image_proxy_hosts: string[]
 }
 
 function stripHTML(value?: string): string | undefined {
