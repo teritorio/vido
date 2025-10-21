@@ -7,12 +7,13 @@ import { useSiteStore } from '~/stores/site'
 
 export default defineNuxtPlugin((nuxtApp) => {
   const trackers: Tracker[] = []
+  const { trackingEnabled, cypress } = useRuntimeConfig().public
   const { theme } = storeToRefs(useSiteStore())
 
   return {
     provide: {
       trackingInit: (): void => {
-        if (navigator.doNotTrack !== '1') {
+        if (navigator.doNotTrack !== '1' && trackingEnabled) {
           if (theme.value?.google_tag_manager_id) {
             const consentIsGranted = theme.value?.cookies_consent_message
               ? localStorage.getItem('vue-cookie-accept-decline-cookies-consent') === 'accept'
@@ -52,7 +53,7 @@ export default defineNuxtPlugin((nuxtApp) => {
       },
 
       tracking: (event: Event): void => {
-        if (process.dev || useRuntimeConfig().public.cypress)
+        if (process.dev || cypress)
           console.error('Tracking event', event)
 
         trackers.forEach((tracker) => {

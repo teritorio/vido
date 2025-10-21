@@ -63,6 +63,7 @@ export default defineNuxtConfig({
       openRouteServiceKey: process.env.NUXT_PUBLIC_OPEN_ROUTE_SERVICE_KEY,
       sentryDsn: process.env.NUXT_PUBLIC_SENTRY_DSN,
       sentryEnvironment: process.env.NUXT_PUBLIC_SENTRY_ENVIRONMENT,
+      trackingEnabled: process.env.NUXT_PUBLIC_TRACKING_ENABLED,
     },
   },
   plugins: [
