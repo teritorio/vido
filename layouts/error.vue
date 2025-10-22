@@ -2,21 +2,13 @@
 import { storeToRefs } from 'pinia'
 import type { Settings } from '~/lib/apiSettings'
 import { useSiteStore } from '~/stores/site'
-import { vidoConfig } from '~/plugins/vido-config'
+
+const { data: context } = await useFetch('/api/config')
 
 const { locale: i18nLocale } = useI18n()
-const { config, settings, locale } = storeToRefs(useSiteStore())
-
-if (process.server) {
-  config.value = vidoConfig(useRequestHeaders())
-}
-
-if (!config.value)
-  throw createError({ statusCode: 500, statusMessage: 'Wrong config', fatal: true })
-
+const { settings, locale } = storeToRefs(useSiteStore())
 const { apiEndpoint } = useApiEndpoint()
-const { API_PROJECT, API_THEME } = config.value
-const { data, error, status } = await useAsyncData('parallel', async () => $fetch<Settings>(`${apiEndpoint.value}/${API_PROJECT}/${API_THEME}/settings.json`))
+const { data, error, status } = await useAsyncData('parallel', async () => $fetch<Settings>(`${apiEndpoint.value}/${context.value?.project}/${context.value?.theme}/settings.json`))
 
 if (error.value)
   throw createError(error.value)

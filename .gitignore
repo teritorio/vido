@@ -1,6 +1,3 @@
-# Vido
-vidos.config.ts
-
 # Created by .ignore support plugin (hsz.mobi)
 ### Node template
 
@@ -121,5 +118,4 @@ cypress/fixtures/**/deps.json
 cypress/fixtures/teritorio/references/pois/
 
 # Vido
-vidos-config.json
 public/fixtures

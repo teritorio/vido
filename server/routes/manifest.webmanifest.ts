@@ -1,8 +1,6 @@
 import type { IncomingMessage, ServerResponse } from 'node:http'
 import { defineEventHandler } from 'h3'
 import type { Settings } from '../../lib/apiSettings'
-import { vidos } from '../../lib/config'
-import { vidoConfigResolve } from '../../plugins/vido-config'
 
 async function manifest(
   req: IncomingMessage,
@@ -11,13 +9,14 @@ async function manifest(
   const hostname = (req.headers['x-forwarded-host'] || req.headers.host)?.toString().split(':')[0]
 
   if (hostname) {
+    const { project, theme: themeSlug } = await $fetch('/api/config')
+
     const { apiEndpoint } = useRuntimeConfig().public
-    const vido = vidoConfigResolve(hostname, vidos())
-    const settings = await $fetch<Settings>(`${apiEndpoint}/${vido.API_PROJECT}/${vido.API_THEME}/settings.json`)
-    const theme = settings.themes[vido.API_THEME]
+    const settings = await $fetch<Settings>(`${apiEndpoint}/${project}/${themeSlug}/settings.json`)
+    const theme = settings.themes[themeSlug]
 
     if (!theme)
-      throw createError({ statusCode: 500, statusMessage: `Theme ${vido.API_THEME} not found.`, fatal: true })
+      throw createError({ statusCode: 500, statusMessage: `Theme ${themeSlug} not found.`, fatal: true })
 
     res.write(
       JSON.stringify({

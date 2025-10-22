@@ -7,31 +7,25 @@ import type { MenuItem } from '~/lib/apiMenu'
 import { useSiteStore } from '~/stores/site'
 import { menuStore as useMenuStore } from '~/stores/menu'
 import { headerFromSettings } from '~/lib/apiSettings'
-import { vidoConfig } from '~/plugins/vido-config'
 import '~/assets/tailwind.scss'
 
+const { data: context } = await useFetch('/api/config')
+
+const projectSlug = useState('project', () => context.value?.project)
+const themeSlug = useState('theme', () => context.value?.theme)
 const { locale: i18nLocale } = useI18n()
 const siteStore = useSiteStore()
 const menuStore = useMenuStore()
-
-const { config, settings, theme, translations, articles, locale } = storeToRefs(siteStore)
-
-if (process.server) {
-  config.value = vidoConfig(useRequestHeaders())
-}
-
-if (!config.value)
-  throw createError({ statusCode: 500, statusMessage: 'Wrong config', fatal: true })
-
+const { settings, theme, translations, articles, locale } = storeToRefs(siteStore)
 const { apiEndpoint } = useApiEndpoint()
-const { API_PROJECT, API_THEME } = config.value
+
 const { data, error, status } = await useAsyncData('parallel', async () => {
   const [settings, menu, translations, articles] = await Promise.all([
-    $fetch<Settings>(`${apiEndpoint.value}/${API_PROJECT}/${API_THEME}/settings.json`),
-    $fetch<MenuItem[]>(`${apiEndpoint.value}/${API_PROJECT}/${API_THEME}/menu.json`),
-    $fetch<PropertyTranslations>(`${apiEndpoint.value}/${API_PROJECT}/${API_THEME}/attribute_translations/fr.json`),
+    $fetch<Settings>(`${apiEndpoint.value}/${projectSlug.value}/${themeSlug.value}/settings.json`),
+    $fetch<MenuItem[]>(`${apiEndpoint.value}/${projectSlug.value}/${themeSlug.value}/menu.json`),
+    $fetch<PropertyTranslations>(`${apiEndpoint.value}/${projectSlug.value}/${themeSlug.value}/attribute_translations/fr.json`),
     // INFO: slug query param is here only for WP API backward compatibility
-    $fetch<Article[]>(`${apiEndpoint.value}/${API_PROJECT}/${API_THEME}/articles.json?slug=non-classe`),
+    $fetch<Article[]>(`${apiEndpoint.value}/${projectSlug.value}/${themeSlug.value}/articles.json?slug=non-classe`),
   ])
 
   menuStore.fetchConfig(menu)

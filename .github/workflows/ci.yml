@@ -29,7 +29,7 @@ jobs:
 
       - name: Install dependencies 👨🏻‍💻
         shell: bash
-        run: cp vidos-config-empty.json vidos-config.json && yarn install --immutable
+        run: yarn install --immutable
 
   lint:
     needs: install_cache
@@ -81,7 +81,6 @@ jobs:
   #     - name: Run Cypress Tests 🧪
   #       uses: cypress-io/github-action@v6
   #       env:
-  #         CONFIG: vidos-config-cypress.json
   #         CYPRESS: true
   #       with:
   #         build: yarn build

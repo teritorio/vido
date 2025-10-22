@@ -80,8 +80,6 @@ storybook-static
 # Vido
 **/*.stories.ts
 **/*.story.vue
-vidos.config.ts
-vidos-config.json
 
 .github
 

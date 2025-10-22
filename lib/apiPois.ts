@@ -1,7 +1,5 @@
 import type { MapPoiId, MapPoiProperties } from './mapPois'
-
 import type { MultilingualString } from '~/utils/types'
-import type { VidoConfig } from '~/utils/types-config'
 
 export type ApiPoiId = MapPoiId
 
@@ -91,38 +89,38 @@ export function stringifyOptions(options: ApiPoisOptions): string[][] {
 }
 
 export function getPoiById(
-  vidoConfig: VidoConfig,
   poiId: ApiPoiId | string,
   options: ApiPoisOptions = {},
 ): Promise<ApiPoi> {
   const { apiEndpoint } = useApiEndpoint()
+  const projectSlug = useState<string>('project')
+  const themeSlug = useState<string>('theme')
+
   return fetch(
-    `${apiEndpoint.value}/${vidoConfig.API_PROJECT}/${
-      vidoConfig.API_THEME
-    }/poi/${poiId}.${options.format || defaultOptions.format}?${
-      new URLSearchParams(stringifyOptions(options))}`,
-  ).then((data) => {
-    if (data.ok) {
-      return data.json() as unknown as ApiPoi
-    }
-    else {
-      return Promise.reject(
-        new Error([data.url, data.status, data.statusText].join(' ')),
-      )
-    }
-  })
+    `${apiEndpoint.value}/${projectSlug.value}/${themeSlug.value}/poi/${poiId}.${options.format || defaultOptions.format}?${new URLSearchParams(stringifyOptions(options))}`,
+  )
+    .then((data) => {
+      if (data.ok) {
+        return data.json() as unknown as ApiPoi
+      }
+      else {
+        return Promise.reject(
+          new Error([data.url, data.status, data.statusText].join(' ')),
+        )
+      }
+    })
 }
 
 export async function getPois(
-  vidoConfig: VidoConfig,
   poiIds?: (ApiPoiId | string)[],
   options: ApiPoisOptions = {},
 ): Promise<ApiPois> {
   const { apiEndpoint } = useApiEndpoint()
+  const projectSlug = useState<string>('project')
+  const themeSlug = useState<string>('theme')
+
   return await fetch(
-    `${apiEndpoint.value}/${vidoConfig.API_PROJECT}/${
-      vidoConfig.API_THEME
-    }/pois.${options.format || defaultOptions.format}?${
+    `${apiEndpoint.value}/${projectSlug.value}/${themeSlug.value}/pois.${options.format || defaultOptions.format}?${
       new URLSearchParams([
         ...(poiIds ? [['ids', poiIds.join(',')]] : []),
         ...stringifyOptions(options),
@@ -140,25 +138,27 @@ export async function getPois(
 }
 
 export function getPoiByCategoryIdUrl(
-  vidoConfig: VidoConfig,
   categoryId: number | string,
   options: ApiPoisOptions = {},
 ): string {
   const { apiEndpoint } = useApiEndpoint()
+  const projectSlug = useState<string>('project')
+  const themeSlug = useState<string>('theme')
+
   options = Object.assign(defaultOptions, { geometry_as: 'point' }, options)
   return (
-    `${apiEndpoint.value}/${vidoConfig.API_PROJECT}/${vidoConfig.API_THEME}/pois/category/${categoryId}.${options.format}?${
+    `${apiEndpoint.value}/${projectSlug.value}/${themeSlug.value}/pois/category/${categoryId}.${options.format}?${
     new URLSearchParams(stringifyOptions(options))}`
   )
 }
 
 export async function getPoiByCategoryId(
-  vidoConfig: VidoConfig,
   categoryId: number | string,
   options: ApiPoisOptions = {},
 ): Promise<ApiPois> {
   options = Object.assign(defaultOptions, { geometry_as: 'point' }, options)
-  return await fetch(getPoiByCategoryIdUrl(vidoConfig, categoryId, options)).then(
+
+  return await fetch(getPoiByCategoryIdUrl(categoryId, options)).then(
     (data) => {
       if (data.ok) {
         return data.json() as unknown as ApiPois

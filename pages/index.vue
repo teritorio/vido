@@ -10,16 +10,13 @@ import { menuStore as useMenuStore } from '~/stores/menu'
 import { mapStore as useMapStore } from '~/stores/map'
 import { regexForCategoryIds } from '~/composables/useIdsResolver'
 
-const siteStore = useSiteStore()
-const { config, settings } = storeToRefs(siteStore)
-
-if (!config.value)
-  throw createError({ statusCode: 500, statusMessage: 'Wrong config', fatal: true })
+const { settings } = storeToRefs(useSiteStore())
+const projectSlug = useState<string>('project')
+const themeSlug = useState<string>('theme')
 
 const route = useRoute()
 const mapStore = useMapStore()
 const { apiEndpoint } = useApiEndpoint()
-const { API_PROJECT, API_THEME } = config.value
 const { $trackingInit } = useNuxtApp()
 
 const boundaryGeojson = ref<Polygon | MultiPolygon>()
@@ -92,14 +89,13 @@ else {
 const { teritorioCluster } = storeToRefs(mapStore)
 const { data, error, status } = await useAsyncData('features', async () => {
   await menuStore.fetchFeatures({
-    vidoConfig: config.value!,
     categoryIds: categoryIds.value || [],
     clipingPolygonSlug: route.query.clipingPolygonSlug?.toString(),
   })
 
   let initialFeature: ApiPoiDeps | undefined
   if (poiId.value && !poiId.value.includes('_')) {
-    initialFeature = await $fetch<ApiPoiDeps>(`${apiEndpoint.value}/${API_PROJECT}/${API_THEME}/poi/${poiId.value}/deps.geojson`, {
+    initialFeature = await $fetch<ApiPoiDeps>(`${apiEndpoint.value}/${projectSlug.value}/${themeSlug.value}/poi/${poiId.value}/deps.geojson`, {
       query: {
         geometry_as: 'point',
         short_description: true,
