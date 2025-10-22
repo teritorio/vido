@@ -4,7 +4,7 @@ import type { SitemapEntry } from '~/node_modules/nuxt-simple-sitemap/dist/modul
 import type { BuildSitemapOptions } from '~/node_modules/nuxt-simple-sitemap/dist/runtime/util/builder'
 import { buildSitemap } from '~/node_modules/nuxt-simple-sitemap/dist/runtime/util/builder'
 import type { MenuItem } from '~/lib/apiMenu'
-import { getPois } from '~/lib/apiPois'
+import type { ApiPois } from '~/lib/apiPois'
 import { vidos } from '~/lib/config'
 import { vidoConfigResolve } from '~/plugins/vido-config'
 
@@ -20,22 +20,21 @@ async function manifest(
     const { apiEndpoint } = useRuntimeConfig().public
     const vido = vidoConfigResolve(hostname.split(':')[0], vidos())
 
-    const menu = await $fetch<MenuItem[]>(`${apiEndpoint}/${vido.API_PROJECT}/${vido.API_THEME}/menu.json`)
-      .then(menuItem => menuItem
-        .filter(menuItem => menuItem.category && menuItem.id)
-        .map(menuCategory => ({
-          url: `/${menuCategory.id}/`,
+    const entries: SitemapEntry[] = (await Promise.all([
+      await $fetch<MenuItem[]>(`${apiEndpoint}/${vido.API_PROJECT}/${vido.API_THEME}/menu.json`)
+        .then(menuItem => menuItem
+          .filter(menuItem => menuItem.category && menuItem.id)
+          .map(menuCategory => ({
+            url: `/${menuCategory.id}/`,
+          })),
+        ),
+      await $fetch<ApiPois>(`${apiEndpoint}/${vido.API_PROJECT}/${vido.API_THEME}/pois.geojson`)
+        .then(pois => pois.features.map(poi => ({
+          url: `/poi/${poi.properties.metadata.id}/details`,
+          lastmod: poi.properties.metadata.updated_at,
         })),
-      )
-
-    const pois = getPois(vido).then(apiPois =>
-      apiPois.features.map(poi => ({
-        url: `/poi/${poi.properties.metadata.id}/details`,
-        lastmod: poi.properties.metadata.updated_at,
-      })),
-    )
-
-    const entries: SitemapEntry[] = (await Promise.all([menu, pois])).flat(1)
+        ),
+    ])).flat(1)
 
     entries.push({
       url: '/',
