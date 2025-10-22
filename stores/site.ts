@@ -2,7 +2,6 @@ import { defineStore } from 'pinia'
 import type { Article } from '~/lib/apiArticle'
 import type { PropertyTranslations } from '~/lib/apiPropertyTranslations'
 import type { Settings } from '~/lib/apiSettings'
-import type { VidoConfig } from '~/utils/types-config'
 
 export enum PropertyTranslationsContextEnum {
   Default = 'label',
@@ -15,16 +14,16 @@ const Default = PropertyTranslationsContextEnum.Default
 
 export const useSiteStore = defineStore('site', () => {
   const locale = ref<string>()
-  const config = ref<VidoConfig>()
   const settings = ref<Settings>()
   const articles = ref<Article[]>([])
   const translations = ref<PropertyTranslations>()
+  const themeSlug = useState<string>('theme')
 
   const theme = computed(() => {
-    if (!config.value || !settings.value?.themes)
+    if (!settings.value?.themes)
       return undefined
 
-    return settings.value.themes[config.value.API_THEME]
+    return settings.value.themes[themeSlug.value]
   })
 
   const siteName = computed(() => theme.value?.title.fr ?? '')
@@ -88,7 +87,6 @@ export const useSiteStore = defineStore('site', () => {
 
   return {
     locale,
-    config,
     settings,
     articles,
     translations,

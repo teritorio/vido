@@ -28,7 +28,6 @@ export default function useIsochrone() {
   //
   const { openRouteServiceKey } = useRuntimeConfig().public
   const { theme } = storeToRefs(useSiteStore())
-  // Get feature flag for Vido config
   const enabled = (openRouteServiceKey && theme.value?.isochrone) || false
   const { t, locale } = useI18n()
   const map = useState<Map>('map-instance')

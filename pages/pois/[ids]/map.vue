@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { storeToRefs } from 'pinia'
 import MapPois from '~/components/Map/MapPois.vue'
 import { type ApiPoiId, type ApiPois, getPois } from '~/lib/apiPois'
 import { getAsyncDataOrThrows } from '~/lib/getAsyncData'
@@ -18,8 +19,7 @@ definePageMeta({
 // Composables
 //
 const { params } = useRoute()
-const siteStore = useSiteStore()
-const { config, settings } = siteStore
+const { settings } = storeToRefs(useSiteStore())
 const { $trackingInit } = useNuxtApp()
 const route = useRoute()
 
@@ -37,7 +37,7 @@ if (params.ids) {
   if (route.query.clipingPolygonSlug)
     query.cliping_polygon_slug = route.query.clipingPolygonSlug.toString()
 
-  const getPoiPromise = getAsyncDataOrThrows('getPoiPromise', async () => await getPois(config!, ids, query))
+  const getPoiPromise = getAsyncDataOrThrows('getPoiPromise', async () => await getPois(ids, query))
   const [poisF] = await Promise.all([getPoiPromise])
   pois.value = poisF.value
 }
