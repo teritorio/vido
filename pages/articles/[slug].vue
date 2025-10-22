@@ -14,12 +14,7 @@ definePageMeta({
   },
 })
 
-const siteStore = useSiteStore()
-const { config } = siteStore
-const { settings, theme } = storeToRefs(siteStore)
-
-if (!config)
-  throw createError({ statusCode: 500, statusMessage: 'Wrong config', fatal: true })
+const { settings, theme } = storeToRefs(useSiteStore())
 
 if (!settings.value)
   throw createError({ statusCode: 500, statusMessage: 'Failed to fetch settings', fatal: true })
@@ -27,7 +22,7 @@ if (!settings.value)
 const { t } = useI18n()
 const { params } = useRoute()
 
-const { data, error, status } = await getArticle(config, params.slug as string)
+const { data, error, status } = await getArticle(params.slug as string)
 
 if (error.value)
   throw createError(error.value)

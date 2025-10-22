@@ -9,7 +9,6 @@ import {
 } from './apiPois'
 
 import type { MultilingualString } from '~/utils/types'
-import type { VidoConfig } from '~/utils/types-config'
 
 export enum ApiRouteWaypointType {
   parking = 'parking',
@@ -76,13 +75,16 @@ export function prepareApiPoiDeps(
 }
 
 export async function getPoiDepsById(
-  vidoConfig: VidoConfig,
   poiId: ApiPoiId | string,
   options: ApiPoisOptions = {},
 ): Promise<ApiPoiDeps> {
   const { apiEndpoint } = useApiEndpoint()
+
+  const projectSlug = useState<string>('project')
+  const themeSlug = useState<string>('theme')
+
   return await fetch(
-    `${apiEndpoint.value}/${vidoConfig.API_PROJECT}/${vidoConfig.API_THEME}/poi/${poiId}/deps.geojson?${
+    `${apiEndpoint.value}/${projectSlug.value}/${themeSlug.value}/poi/${poiId}/deps.geojson?${
       new URLSearchParams(stringifyOptions(options))}`,
   ).then((data) => {
     if (data.ok) {

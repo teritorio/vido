@@ -11,4 +11,4 @@ runs:
 
     - name: Install dependencies 👨🏻‍💻
       shell: bash
-      run: cp vidos-config-empty.json vidos-config.json && yarn install --immutable
+      run: yarn install --immutable

@@ -1,6 +1,5 @@
 import type { ApiPoi, ApiPoiProperties } from '~/lib/apiPois'
 import { STORE_NAME, useContribStore } from '~/stores/contrib'
-import { useSiteStore } from '~/stores/site'
 
 export interface Link {
   icon: string
@@ -18,7 +17,6 @@ export interface ContribFields {
 
 export default function () {
   const { enabled, setEnabled } = useContribStore()
-  const { config } = useSiteStore()
 
   function isContribEligible(properties: ApiPoiProperties): boolean {
     return !!(properties.metadata.osm_id && properties.metadata.osm_type && properties.editorial)
@@ -29,6 +27,8 @@ export default function () {
     const { osm_id, osm_type, id } = feature.properties.metadata
     const { coordinates } = feature.geometry as GeoJSON.Point
     const { apiEndpoint } = useApiEndpoint()
+    const projectSlug = useState<string>('project')
+    const themeSlug = useState<string>('theme')
 
     return {
       editor_id: {
@@ -37,7 +37,7 @@ export default function () {
       },
       json: {
         icon: 'map-marker-alt',
-        url: `${apiEndpoint.value}/${config!.API_PROJECT}/${config!.API_THEME}/poi/${id}/deps.geojson?geometry_as=bbox&short_description=false`,
+        url: `${apiEndpoint.value}/${projectSlug.value}/${themeSlug.value}/poi/${id}/deps.geojson?geometry_as=bbox&short_description=false`,
       },
       josm: {
         icon: 'pen-to-square',

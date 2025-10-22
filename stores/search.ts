@@ -1,7 +1,6 @@
 import { defineStore, storeToRefs } from 'pinia'
 import { debounce } from 'lodash'
 import copy from 'fast-copy'
-import { useSiteStore } from '~/stores/site'
 import { menuStore as useMenuStore } from '~/stores/menu'
 import type { MenuItem } from '~/lib/apiMenu'
 import { type ApiPoi, getPoiById } from '~/lib/apiPois'
@@ -11,16 +10,12 @@ import { mapStore as useMapStore } from '~/stores/map'
 export const useSearchStore = defineStore('search', () => {
   const { apiAddr, apiSearch } = useRuntimeConfig().public
   const { $tracking } = useNuxtApp()
-  const { config } = storeToRefs(useSiteStore())
   const menuStore = useMenuStore()
   const { filters, apiMenuCategory } = storeToRefs(menuStore)
   const { center } = storeToRefs(useMapStore())
   const firstVisitCookie = useCookie('first-visit', { default: () => true })
-
-  if (!config.value)
-    throw createError({ statusCode: 500, statusMessage: 'Wrong config', fatal: true })
-
-  const { API_PROJECT, API_THEME } = config.value
+  const projectSlug = useState<string>('project')
+  const themeSlug = useState<string>('theme')
 
   const isActive = ref(false)
   const searchText = ref('')
@@ -194,7 +189,7 @@ export const useSearchStore = defineStore('search', () => {
   }
 
   async function onPoiClick(searchResult: SearchResult) {
-    const poi = await getPoiById(config.value!, searchResult.id)
+    const poi = await getPoiById(searchResult.id)
     searchSelectedFeature.value = poi
     reset()
   }
@@ -223,11 +218,11 @@ export const useSearchStore = defineStore('search', () => {
 
     searchQueryId.value += 1
     const currentSearchQueryId = searchQueryId.value
-    const projectTheme = `project_theme=${API_PROJECT}-${API_THEME}`
+    const projectTheme = `project_theme=${projectSlug.value}-${themeSlug.value}`
     const searchValue = searchText.value.trim()
     if (searchValue.length === 2) {
       const cartocode = searchText.value
-      getPoiById(config.value!, `cartocode:${cartocode}`)
+      getPoiById(`cartocode:${cartocode}`)
         .then((poi) => {
           if (currentSearchQueryId > searchResultId.value) {
             searchResultId.value = currentSearchQueryId

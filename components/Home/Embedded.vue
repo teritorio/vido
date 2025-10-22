@@ -32,7 +32,7 @@ const mapStore = useMapStore()
 const { isModeExplorer, mode, selectedFeature } = storeToRefs(mapStore)
 const menuStore = useMenuStore()
 const { apiMenuCategory, features, selectedCategories, selectedCategoryIds, menuItems } = storeToRefs(menuStore)
-const { config, settings } = useSiteStore()
+const { settings } = storeToRefs(useSiteStore())
 const route = useRoute()
 const router = useRouter()
 const { t } = useI18n()
@@ -62,7 +62,7 @@ onMounted(() => {
     menuStore.setSelectedCategoryIds(enabledCategories)
   }
 
-  initialBbox.value = getBBox({ type: 'Feature', geometry: props.boundaryArea || settings!.bbox_line, properties: {} })
+  initialBbox.value = getBBox({ type: 'Feature', geometry: props.boundaryArea || settings.value!.bbox_line, properties: {} })
 })
 
 //
@@ -122,7 +122,6 @@ watch(selectedCategoryIds, (a, b) => {
     routerPushUrl()
     if (selectedCategoryIds.value) {
       menuStore.fetchFeatures({
-        vidoConfig: config!,
         categoryIds: selectedCategoryIds.value,
         clipingPolygonSlug: route.query.clipingPolygonSlug?.toString(),
       })

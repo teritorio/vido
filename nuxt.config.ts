@@ -1,5 +1,4 @@
 import vuetify from 'vite-plugin-vuetify'
-import { vidos } from './lib/config'
 
 // Build Configuration (https://nuxt.com/docs/api/nuxt-config)
 export default defineNuxtConfig({
@@ -52,8 +51,9 @@ export default defineNuxtConfig({
   runtimeConfig: {
     public: {
       cypress: process.env.CYPRESS,
-      vidos: vidos(),
       appHost: process.env.NUXT_PUBLIC_APP_HOST,
+      appTheme: process.env.NUXT_PUBLIC_APP_THEME,
+      appProject: process.env.NUXT_PUBLIC_APP_PROJECT,
       apiEndpoint: process.env.NUXT_PUBLIC_API_ENDPOINT,
       apiSearch: process.env.NUXT_PUBLIC_API_SEARCH,
       apiAddr: process.env.NUXT_PUBLIC_API_ADDR,
@@ -67,7 +67,6 @@ export default defineNuxtConfig({
     },
   },
   plugins: [
-    '@/plugins/vido-config.ts',
     '@/plugins/fontawesome.ts',
     '@/plugins/touch.ts',
     { src: '@/plugins/tracking.ts', mode: 'client' },

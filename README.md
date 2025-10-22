@@ -61,17 +61,11 @@ Can be build directly (dev) or within Docker.
 - Node ^14.18.0 || >=16.10.0
 
 ```bash
-# Create empty config file, will be build on `build-config` step
-cp vidos-config-empty.json vidos-config.json
-
 # install dependencies
 yarn install
 
 # Generate fixtures
 yarn build-fixture
-
-# Generate configuration from `vidos.config.ts`
-yarn build-config
 
 # serve with hot reload at localhost:3000
 yarn dev
@@ -85,7 +79,6 @@ yarn start
 ```
 cp .env.sample .env
 docker compose build
-docker compose run --rm vido yarn build-config
 docker compose up -d
 ```
 
@@ -130,8 +123,6 @@ Historie build also available on `gh-pages` branch built by CI and online at htt
 Run end to end tests with build or dev server:
 
 ```bash
-cp vidos-config-cypress.json vidos-config.json
-
 # With build
 yarn test
 yarn start # In a new terminal for separate logs

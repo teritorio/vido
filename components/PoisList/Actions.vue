@@ -6,7 +6,6 @@ import { defineNuxtComponent } from '#app'
 import IconButton from '~/components/UI/IconButton.vue'
 import IconsBar from '~/components/UI/IconsBar.vue'
 import { getPoiByCategoryIdUrl } from '~/lib/apiPois'
-import { useSiteStore } from '~/stores/site'
 
 export default defineNuxtComponent({
   components: {
@@ -50,7 +49,7 @@ export default defineNuxtComponent({
       if (this.$route.query.clipingPolygonSlug)
         query.cliping_polygon_slug = this.$route.query.clipingPolygonSlug.toString()
 
-      return getPoiByCategoryIdUrl(useSiteStore().config!, this.categoryId, query)
+      return getPoiByCategoryIdUrl(this.categoryId, query)
     },
   },
 })

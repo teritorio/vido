@@ -4,12 +4,10 @@ import { defineStore } from 'pinia'
 import type { ApiMenuCategory, MenuItem } from '~/lib/apiMenu'
 import type { ApiPoi, ApiPois } from '~/lib/apiPois'
 import { getPoiByCategoryId } from '~/lib/apiPois'
-import type { VidoConfig } from '~/utils/types-config'
 import type { FilterValues } from '~/utils/types-filters'
 import { filterValueFactory, filterValuesIsSet, isMatch, isSet } from '~/utils/types-filters'
 
 interface FetchFeaturesPayload {
-  vidoConfig: VidoConfig
   categoryIds: ApiMenuCategory['id'][]
   clipingPolygonSlug?: string
 }
@@ -175,7 +173,7 @@ export const menuStore = defineStore('menu', {
       }
     },
 
-    async fetchFeatures({ vidoConfig, categoryIds, clipingPolygonSlug }: FetchFeaturesPayload) {
+    async fetchFeatures({ categoryIds, clipingPolygonSlug }: FetchFeaturesPayload) {
       this.isLoadingFeatures = true
 
       try {
@@ -193,7 +191,7 @@ export const menuStore = defineStore('menu', {
                   let options = {}
                   if (clipingPolygonSlug)
                     options = { cliping_polygon_slug: clipingPolygonSlug }
-                  return getPoiByCategoryId(vidoConfig, categoryId, options)
+                  return getPoiByCategoryId(categoryId, options)
                 }
                 catch (e) {
                   console.error('Vido error:', e)

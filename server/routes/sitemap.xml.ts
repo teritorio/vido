@@ -5,8 +5,6 @@ import type { BuildSitemapOptions } from '~/node_modules/nuxt-simple-sitemap/dis
 import { buildSitemap } from '~/node_modules/nuxt-simple-sitemap/dist/runtime/util/builder'
 import type { MenuItem } from '~/lib/apiMenu'
 import type { ApiPois } from '~/lib/apiPois'
-import { vidos } from '~/lib/config'
-import { vidoConfigResolve } from '~/plugins/vido-config'
 
 // Import by node_modules because access to internal module content
 
@@ -17,18 +15,19 @@ async function manifest(
   const hostname = (req.headers['x-forwarded-host'] || req.headers.host)?.toString()
 
   if (hostname) {
+    const { project, theme } = await $fetch('/api/config')
+
     const { apiEndpoint } = useRuntimeConfig().public
-    const vido = vidoConfigResolve(hostname.split(':')[0], vidos())
 
     const entries: SitemapEntry[] = (await Promise.all([
-      await $fetch<MenuItem[]>(`${apiEndpoint}/${vido.API_PROJECT}/${vido.API_THEME}/menu.json`)
+      await $fetch<MenuItem[]>(`${apiEndpoint}/${project}/${theme}/menu.json`)
         .then(menuItem => menuItem
           .filter(menuItem => menuItem.category && menuItem.id)
           .map(menuCategory => ({
             url: `/${menuCategory.id}/`,
           })),
         ),
-      await $fetch<ApiPois>(`${apiEndpoint}/${vido.API_PROJECT}/${vido.API_THEME}/pois.geojson`)
+      await $fetch<ApiPois>(`${apiEndpoint}/${project}/${theme}/pois.geojson`)
         .then(pois => pois.features.map(poi => ({
           url: `/poi/${poi.properties.metadata.id}/details`,
           lastmod: poi.properties.metadata.updated_at,
