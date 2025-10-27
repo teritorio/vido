@@ -3,7 +3,13 @@ import { storeToRefs } from 'pinia'
 import type { Settings } from '~/lib/apiSettings'
 import { useSiteStore } from '~/stores/site'
 
-const { data: context } = await useFetch('/api/config')
+const { detectHost } = useHostDetection()
+
+const { data: context } = await useFetch('/api/config', {
+  headers: {
+    'x-client-host': detectHost(),
+  },
+})
 
 const { locale: i18nLocale } = useI18n()
 const { settings, locale } = storeToRefs(useSiteStore())

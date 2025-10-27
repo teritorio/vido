@@ -9,7 +9,17 @@ import { menuStore as useMenuStore } from '~/stores/menu'
 import { headerFromSettings } from '~/lib/apiSettings'
 import '~/assets/tailwind.scss'
 
-const { data: context } = await useFetch('/api/config')
+const { detectHost } = useHostDetection()
+
+const { data: context, error: configError } = await useFetch('/api/config', {
+  headers: {
+    'x-client-host': detectHost(),
+  },
+})
+
+if (configError.value) {
+  showError({ ...configError.value })
+}
 
 const projectSlug = useState('project', () => context.value?.project)
 const themeSlug = useState('theme', () => context.value?.theme)
