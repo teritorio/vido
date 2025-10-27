@@ -1,6 +1,14 @@
 export default defineEventHandler((event) => {
-  const host = getRequestHost(event)
   const headers = getRequestHeaders(event)
+  const host = headers['x-client-host']
+
+  if (!host) {
+    throw createError({
+      statusCode: 400,
+      statusMessage: 'Missing \'x-client-side\' header',
+    })
+  }
+
   const { appHost, appTheme, appProject } = useRuntimeConfig().public
 
   if (headers['x-vido-project'] && headers['x-vido-theme']) {
@@ -9,21 +17,26 @@ export default defineEventHandler((event) => {
       theme: headers['x-vido-theme'],
     }
   }
-  else if (host.endsWith(`.${appHost}`)) {
-    const [subdomain, ..._rest] = host.split('.')
+
+  if (appHost && host.endsWith(`.${appHost}`)) {
+    const subdomain = host.slice(0, -(appHost.length + 1))
     const [theme, project] = subdomain.split('-')
+
     return {
       project,
       theme,
     }
   }
-  else if (appProject && appTheme) {
+
+  if (appProject && appTheme) {
     return {
       project: appProject,
       theme: appTheme,
     }
   }
-  else {
-    throw createError({ statusCode: 500, message: 'Missing project & theme.', fatal: true })
-  }
+
+  throw createError({
+    statusCode: 400,
+    statusMessage: 'Configuration Error',
+  })
 })

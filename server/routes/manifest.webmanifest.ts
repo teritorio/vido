@@ -6,10 +6,14 @@ async function manifest(
   req: IncomingMessage,
   res: ServerResponse<IncomingMessage>,
 ) {
-  const hostname = (req.headers['x-forwarded-host'] || req.headers.host)?.toString().split(':')[0]
+  const hostname = req.headers.host?.toString()
 
   if (hostname) {
-    const { project, theme: themeSlug } = await $fetch('/api/config')
+    const { project, theme: themeSlug } = await $fetch('/api/config', {
+      headers: {
+        'x-client-host': hostname,
+      },
+    })
 
     const { apiEndpoint } = useRuntimeConfig().public
     const settings = await $fetch<Settings>(`${apiEndpoint}/${project}/${themeSlug}/settings.json`)
