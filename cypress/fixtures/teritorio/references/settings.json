@@ -1,8 +1,6 @@
 {
     "id": 1,
-    "name": {
-        "fr": "Teritorio"
-    },
+    "name": "Teritorio",
     "attributions": [
         "<a href=\"https://teritorio.fr\" target=\"_blank\">&copy; Teritorio<\/a>"
     ],

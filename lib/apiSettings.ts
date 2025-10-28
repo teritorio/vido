@@ -28,7 +28,7 @@ export interface SiteInfosTheme {
 export interface Settings {
   id: number
   slug: string
-  name: MultilingualString
+  name: string
   attributions: string[]
   icon_font_css_url: string
   polygon: {
