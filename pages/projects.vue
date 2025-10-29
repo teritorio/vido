@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { VCardSubtitle } from 'vuetify/lib/components/index.mjs'
 import type { Settings } from '~/lib/apiSettings'
 
 definePageMeta({
@@ -186,20 +187,25 @@ const filteredProjects = computed(() => {
                     </template>
                   </VImg>
 
-                  <VCardTitle class="text-body-2 pa-2">
-                    <VChip :color="themeColors[theme.slug]" size="small">
-                      {{ theme.slug }}
-                    </VChip>
-                    {{ theme.title.fr }}
-                  </VCardTitle>
+                  <VCardItem>
+                    <VCardTitle class="text-body-2 pa-2">
+                      <VChip :color="themeColors[theme.slug]" size="small">
+                        {{ theme.slug }}
+                      </VChip>
+                      {{ theme.title.fr }}
+                    </VCardTitle>
+                    <VCardSubtitle style="overflow: visible; text-overflow: unset; white-space: unset;">
+                      URL: {{ theme.site_url.fr }}
+                    </VCardSubtitle>
+                  </VCardItem>
 
                   <VCardText class="pa-2">
                     <VList :lines="false" density="compact">
                       <VListItem>
-                        Explorer Mode: {{ theme.explorer_mode ? '✅' : '❌' }}
+                        Explorer Mode: {{ theme.explorer_mode === false ? '❌' : '✅' }}
                       </VListItem>
                       <VListItem>
-                        Favorites Mode: {{ theme.favorites_mode ? '✅' : '❌' }}
+                        Favorites Mode: {{ theme.favorites_mode === false ? '❌' : '✅' }}
                       </VListItem>
                       <VListItem>
                         Isochrone: {{ theme.isochrone ? '✅' : '❌' }}
