@@ -20,6 +20,7 @@ const themeColors = {
 
 const searchQuery = ref('')
 const selectedTheme = ref('all')
+const { appHost } = useRuntimeConfig().public
 
 const availableThemes = computed(() => {
   const themes = new Set<string>()
@@ -194,8 +195,17 @@ const filteredProjects = computed(() => {
                       </VChip>
                       {{ theme.title.fr }}
                     </VCardTitle>
-                    <VCardSubtitle style="overflow: visible; text-overflow: unset; white-space: unset;">
-                      URL: {{ theme.site_url.fr }}
+                    <VCardSubtitle
+                      :style="{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        overflow: 'visible',
+                        textOverflow: 'unset',
+                        whiteSpace: 'unset',
+                      }"
+                    >
+                      <span>PROD: {{ theme.site_url.fr }}</span>
+                      <span>DEV: {{ `https://${theme.slug}-${project.slug}.${appHost}` }}</span>
                     </VCardSubtitle>
                   </VCardItem>
 
