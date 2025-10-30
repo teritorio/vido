@@ -20,11 +20,13 @@ export default defineEventHandler((event) => {
 
   if (appHost && host.endsWith(`.${appHost}`)) {
     const subdomain = host.slice(0, -(appHost.length + 1))
-    const [theme, project] = subdomain.split('-')
+    const [theme, project] = subdomain.split('-', 2)
 
-    return {
-      project,
-      theme,
+    if (theme && project) {
+      return {
+        project,
+        theme,
+      }
     }
   }
 
