@@ -1,5 +1,6 @@
 <script lang="ts" setup>
-import Stars, { StarsEnum } from '~/components/Fields/Stars.vue'
+import { StarsEnum } from '~/utils/types'
+import Stars from '~/components/Fields/Stars.vue'
 
 const defaultProps = {
   stars: StarsEnum.Three,
