@@ -17,7 +17,7 @@ definePageMeta({
 const { settings, theme } = storeToRefs(useSiteStore())
 
 if (!settings.value)
-  throw createError({ statusCode: 500, statusMessage: 'Failed to fetch settings', fatal: true })
+  throw createError({ statusCode: 400, statusMessage: 'Failed to fetch settings', fatal: true })
 
 const { t } = useI18n()
 const { params } = useRoute()

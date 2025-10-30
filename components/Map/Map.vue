@@ -92,7 +92,7 @@ export default defineNuxtComponent({
     const fullscreenControlObject = ref<FullscreenControl>()
 
     if (!theme.value)
-      throw createError({ statusCode: 500, statusMessage: 'Theme is missing', fatal: true })
+      throw createError({ statusCode: 400, statusMessage: 'Theme is missing', fatal: true })
 
     onMounted(() => {
       const mapContainer = document.getElementById('map')

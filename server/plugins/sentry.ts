@@ -24,7 +24,7 @@ export default defineNitroPlugin((nitroApp) => {
   nitroApp.hooks.hook('error', (error) => {
     // Do not handle 404s and 422s
     if (error instanceof H3Error) {
-      if (error.statusCode === 404 || error.statusCode === 422) {
+      if ([404, 422, 406, 400].includes(error.statusCode)) {
         return
       }
     }

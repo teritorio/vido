@@ -9,7 +9,7 @@ const { settings } = siteStore
 const { locale, theme } = storeToRefs(siteStore)
 
 if (!settings)
-  throw createError({ statusCode: 500, statusMessage: 'Failed to fetch settings', fatal: true })
+  throw createError({ statusCode: 400, statusMessage: 'Failed to fetch settings', fatal: true })
 
 const mainUrl = computed(() => (locale.value && theme.value?.main_url?.[locale.value]) || '/')
 const target = computed(() => (locale.value && theme.value?.main_url?.[locale.value]) ? '_blank' : '_self')

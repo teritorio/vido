@@ -16,7 +16,7 @@ export default defineNuxtComponent({
     const { theme } = storeToRefs(useSiteStore())
 
     if (!theme.value)
-      throw createError({ statusCode: 500, statusMessage: 'Theme is missing', fatal: true })
+      throw createError({ statusCode: 400, statusMessage: 'Theme is missing', fatal: true })
 
     return {
       theme,
