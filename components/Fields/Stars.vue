@@ -1,45 +1,21 @@
-<script lang="ts">
+<script setup lang="ts">
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
+import type { StarsEnum } from '~/utils/types'
 
-import type { PropType } from 'vue'
-import { defineNuxtComponent } from '#app'
+const props = defineProps<{
+  stars: StarsEnum
+}>()
 
-export enum StarsEnum {
-  One = '1',
-  OneS = '1S',
-  Two = '2',
-  TwoS = '2S',
-  Three = '3',
-  ThreeS = '3S',
-  Four = '4',
-  FourS = '4S',
-  Five = '5',
-  FiveS = '5S',
-}
+const isSNotation = computed((): boolean => {
+  return Boolean(props.stars.includes('S'))
+})
 
-export default defineNuxtComponent({
-  components: {
-    FontAwesomeIcon,
-  },
+const numericProp = computed((): number => {
+  let stars: string = props.stars
+  if (isSNotation.value)
+    stars = props.stars.slice(0, -1)
 
-  props: {
-    stars: {
-      type: String as PropType<StarsEnum>,
-      required: true,
-    },
-  },
-  computed: {
-    isSNotation(): boolean {
-      return Boolean(this.stars.includes('S'))
-    },
-    numericProp(): number {
-      let stars: string = this.stars
-      if (this.isSNotation)
-        stars = this.stars.slice(0, -1)
-
-      return Number(stars)
-    },
-  },
+  return Number(stars)
 })
 </script>
 
