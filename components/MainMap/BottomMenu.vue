@@ -1,11 +1,7 @@
-<script lang="ts">
-import { defineNuxtComponent } from '#app'
-
-export default defineNuxtComponent({
-  props: {
-    isOpen: Boolean,
-  },
-})
+<script setup lang="ts">
+defineProps<{
+  isOpen: boolean
+}>()
 </script>
 
 <template>
