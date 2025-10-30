@@ -1,23 +1,14 @@
-<script lang="ts">
-import type { PropType } from 'vue'
-
-import { defineNuxtComponent } from '#app'
+<script setup lang="ts">
 import type { ApiPoiProperties } from '~/lib/apiPois'
 
-export default defineNuxtComponent({
-  props: {
-    properties: {
-      type: Object as PropType<ApiPoiProperties>,
-      default: null,
-    },
-  },
+const props = defineProps<{
+  properties: ApiPoiProperties
+}>()
 
-  computed: {
-    address() {
-      const { addressToString } = useField()
-      return addressToString(this.properties)
-    },
-  },
+const address = computed(() => {
+  const { addressToString } = useField()
+
+  return addressToString(props.properties)
 })
 </script>
 
