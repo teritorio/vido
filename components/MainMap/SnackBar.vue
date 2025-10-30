@@ -1,31 +1,24 @@
-<script lang="ts">
-import { mapState } from 'pinia'
+<script setup lang="ts">
+import { storeToRefs } from 'pinia'
+import { snackStore as useSnackStore } from '~/stores/snack'
 
-import { defineNuxtComponent } from '#app'
-import { snackStore } from '~/stores/snack'
+const emit = defineEmits<{
+  (e: 'click'): void
+}>()
 
-export default defineNuxtComponent({
-  computed: {
-    ...mapState(snackStore, ['snack']),
+const { snack } = storeToRefs(useSnackStore())
 
-    text(): string | undefined {
-      return this.snack?.text
-    },
-    textBtn(): string | undefined {
-      return this.snack?.textBtn
-    },
-  },
-
-  emits: {
-    click: () => true,
-  },
-
-  methods: {
-    callback() {
-      this.snack && this.$emit('click')
-    },
-  },
+const text = computed((): string | undefined => {
+  return snack.value?.text
 })
+const textBtn = computed((): string | undefined => {
+  return snack.value?.textBtn
+})
+
+function callback() {
+  if (snack.value)
+    emit('click')
+}
 </script>
 
 <template>
