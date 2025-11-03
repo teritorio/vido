@@ -1,41 +1,18 @@
-<script lang="ts">
+<script setup lang="ts">
 import type GeoJSON from 'geojson'
-import type { PropType } from 'vue'
-
-import { defineNuxtComponent } from '#app'
 import Field from '~/components/Fields/Field.vue'
 import type { ApiPoiProperties, FieldsListItem } from '~/lib/apiPois'
 import { PropertyTranslationsContextEnum } from '~/stores/site'
 
-export default defineNuxtComponent({
-  components: {
-    Field,
-  },
+defineProps<{
+  fields: FieldsListItem[]
+  properties: ApiPoiProperties
+  details?: string
+  geom: GeoJSON.Geometry
+}>()
 
-  props: {
-    fields: {
-      type: Array as PropType<FieldsListItem[]>,
-      required: true,
-    },
-    properties: {
-      type: Object as PropType<ApiPoiProperties>,
-      required: true,
-    },
-    details: {
-      type: String as PropType<string>,
-      default: null,
-    },
-    geom: {
-      type: Object as PropType<GeoJSON.Geometry>,
-      required: true,
-    },
-  },
-
-  computed: {
-    context(): PropertyTranslationsContextEnum {
-      return PropertyTranslationsContextEnum.Card
-    },
-  },
+const context = computed((): PropertyTranslationsContextEnum => {
+  return PropertyTranslationsContextEnum.Card
 })
 </script>
 
