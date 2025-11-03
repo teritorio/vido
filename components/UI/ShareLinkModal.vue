@@ -1,121 +1,90 @@
-<script lang="ts">
+<script setup lang="ts">
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
-import type { PropType } from 'vue'
 import { VCard, VCardActions, VCardTitle } from 'vuetify/components/VCard'
 import { VDialog } from 'vuetify/components/VDialog'
 import { VDivider } from 'vuetify/components/VDivider'
 import { VSpacer } from 'vuetify/components/VGrid'
-import { defineNuxtComponent } from '#app'
 import UIButton from '~/components/UI/UIButton.vue'
 import { OriginEnum } from '~/utils/types'
 import { urlAddTrackOrigin } from '~/utils/url'
 
-export default defineNuxtComponent({
-  components: {
-    FontAwesomeIcon,
-    VDialog,
-    VCard,
-    VCardTitle,
-    VCardActions,
-    VDivider,
-    VSpacer,
-    UIButton,
-  },
+defineProps<{
+  title: string
+}>()
 
-  props: {
-    title: {
-      type: String as PropType<string>,
-      required: true,
-    },
-  },
+const { apiQrShortener } = useRuntimeConfig().public
 
-  setup() {
-    const { apiQrShortener } = useRuntimeConfig().public
+const modal = shallowRef<boolean>(false)
+const link = shallowRef<string>()
+const hasClipboard = shallowRef<boolean>(true)
+const isCopied = shallowRef<boolean>(false)
 
-    return {
-      apiQrShortener,
-    }
-  },
-
-  data(): {
-    modal: boolean
-    link: string | null
-    hasClipboard: boolean
-    isCopied: boolean
-  } {
-    return {
-      modal: false,
-      link: null,
-      hasClipboard: true,
-      isCopied: false,
-    }
-  },
-
-  computed: {
-    linkShare(): string | null {
-      return this.link
-        ? urlAddTrackOrigin(this.link, OriginEnum.link_share)
-        : null
-    },
-    linkQrCode(): string | null {
-      return this.link ? urlAddTrackOrigin(this.link, OriginEnum.qr_code) : null
-    },
-  },
-
-  mounted() {
-    this.hasClipboard = Boolean(navigator.clipboard)
-  },
-
-  methods: {
-    open(link: string) {
-      this.$tracking({ type: 'favorites_event', event: 'open_share' })
-      this.link = link
-      this.modal = true
-
-      const scrollWidth = window.innerWidth - document.body.clientWidth
-      document.body.style.marginRight = `${scrollWidth}px`
-    },
-
-    copyLink() {
-      this.$tracking({ type: 'favorites_event', event: 'copy_link' })
-      if (this.hasClipboard && this.linkShare) {
-        navigator.clipboard.writeText(this.linkShare).then(
-          () => {
-            this.isCopied = true
-            setTimeout(() => {
-              this.isCopied = false
-            }, 5000)
-          },
-          (err) => {
-            console.error('Vido error: ', err)
-          },
-        )
-      }
-    },
-
-    close() {
-      this.link = null
-      this.modal = false
-      document.body.style.marginRight = '0'
-    },
-
-    qrCodeUrl() {
-      if (this.linkQrCode) {
-        return `${this.apiQrShortener}/qrcode.svg?url=${encodeURIComponent(this.linkQrCode)}`
-      }
-    },
-  },
+const linkShare = computed((): string | null => {
+  return link.value
+    ? urlAddTrackOrigin(link.value, OriginEnum.link_share)
+    : null
 })
+const linkQrCode = computed((): string | null => {
+  return link.value ? urlAddTrackOrigin(link.value, OriginEnum.qr_code) : null
+})
+
+onMounted(() => {
+  hasClipboard.value = Boolean(navigator.clipboard)
+})
+
+const { $tracking } = useNuxtApp()
+
+function open(l: string) {
+  $tracking({ type: 'favorites_event', event: 'open_share' })
+  link.value = l
+  modal.value = true
+
+  const scrollWidth = window.innerWidth - document.body.clientWidth
+  document.body.style.marginRight = `${scrollWidth}px`
+}
+
+function copyLink() {
+  $tracking({ type: 'favorites_event', event: 'copy_link' })
+
+  if (hasClipboard.value && linkShare.value) {
+    navigator.clipboard.writeText(linkShare.value).then(
+      () => {
+        isCopied.value = true
+
+        setTimeout(() => {
+          isCopied.value = false
+        }, 5000)
+      },
+      (err) => {
+        console.error('Vido error: ', err)
+      },
+    )
+  }
+}
+
+function close() {
+  link.value = undefined
+  modal.value = false
+  document.body.style.marginRight = '0'
+}
+
+function qrCodeUrl() {
+  if (linkQrCode.value) {
+    return `${apiQrShortener}/qrcode.svg?url=${encodeURIComponent(linkQrCode.value)}`
+  }
+}
+
+defineExpose({ open })
 </script>
 
 <template>
   <div>
-    <v-dialog v-model="modal" scrollable max-width="30rem">
-      <v-card>
-        <v-card-title class="tw-text-h5">
+    <VDialog v-model="modal" scrollable max-width="30rem">
+      <VCard>
+        <VCardTitle class="tw-text-h5">
           {{ title }}
-        </v-card-title>
-        <v-divider class="tw-mx-4" />
+        </VCardTitle>
+        <VDivider class="tw-mx-4" />
 
         <div class="tw-p-3">
           <div class="tw-flex tw-items-center tw-mb-4">
@@ -146,16 +115,16 @@ export default defineNuxtComponent({
           </div>
         </div>
 
-        <v-card-actions>
-          <v-spacer />
+        <VCardActions>
+          <VSpacer />
           <UIButton
             :label="$t('ui.close')"
             icon="times"
             class="self-end"
             @click="close"
           />
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
+        </VCardActions>
+      </VCard>
+    </VDialog>
   </div>
 </template>
