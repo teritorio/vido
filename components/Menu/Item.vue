@@ -1,58 +1,24 @@
-<script lang="ts">
+<script setup lang="ts">
 import type { FontAwesomeIconProps } from '@fortawesome/vue-fontawesome'
-import type { PropType } from 'vue'
-import { defineNuxtComponent } from '#app'
 import TeritorioIconBadge from '~/components/UI/TeritorioIconBadge.vue'
 import type { MultilingualString } from '~/utils/types'
 
-export default defineNuxtComponent({
-  components: {
-    TeritorioIconBadge,
-  },
-
-  emits: {
-    click: (_val: MouseEvent) => true,
-  },
-
-  props: {
-    id: {
-      type: String as PropType<string>,
-      required: true,
-    },
-    href: {
-      type: String as PropType<string>,
-      required: true,
-    },
-    displayMode: {
-      type: String as PropType<'compact' | 'large'>,
-      required: true,
-    },
-    colorFill: {
-      type: String as PropType<string>,
-      required: true,
-    },
-    colorText: {
-      type: String as PropType<string>,
-      required: true,
-    },
-    icon: {
-      type: String as PropType<string>,
-      required: true,
-    },
-    size: {
-      type: String as PropType<FontAwesomeIconProps['size']>,
-      required: true,
-    },
-    name: {
-      type: Object as PropType<MultilingualString>,
-      required: true,
-    },
-    badgeClass: {
-      type: String as PropType<string>,
-      default: '',
-    },
-  },
+withDefaults(defineProps<{
+  id: string
+  href: string
+  displayMode: 'compact' | 'large'
+  colorFill: string
+  colorText: string
+  icon: string
+  size: FontAwesomeIconProps['size']
+  name: MultilingualString
+  badgeClass: string
+}>(), {
+  badgeClass: '',
 })
+const emit = defineEmits<{
+  (e: 'click', val: MouseEvent): void
+}>()
 </script>
 
 <template>
@@ -66,7 +32,7 @@ export default defineNuxtComponent({
           ? 'tw-px-4 tw-py-2 tw-col-start-1 tw-col-span-4'
           : 'tw-p-4 tw-flex-col',
       ]"
-      @click="$emit('click', $event)"
+      @click="emit('click', $event)"
     >
       <div
         class="tw-relative tw-flex tw-items-center tw-justify-center tw-w-12 tw-h-12 tw-text-white tw-rounded-full" :class="[
