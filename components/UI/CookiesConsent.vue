@@ -1,42 +1,26 @@
-<script lang="ts">
+<script setup lang="ts">
 import { storeToRefs } from 'pinia'
 import VueCookieAcceptDecline from 'vue-cookie-accept-decline'
-import { defineNuxtComponent } from '#app'
 import 'vue-cookie-accept-decline/dist/vue-cookie-accept-decline.css'
 import ExternalLink from '~/components/UI/ExternalLink.vue'
 import { useSiteStore } from '~/stores/site'
 
-export default defineNuxtComponent({
-  components: {
-    VueCookieAcceptDecline,
-    ExternalLink,
-  },
+const { theme } = storeToRefs(useSiteStore())
 
-  setup() {
-    const { theme } = storeToRefs(useSiteStore())
-
-    if (!theme.value)
-      throw createError({ statusCode: 400, statusMessage: 'Theme is missing', fatal: true })
-
-    return {
-      theme,
-    }
-  },
-
-  computed: {
-    doNotTrack(): boolean {
-      return (
-        (process.client && navigator && navigator.doNotTrack !== '1') || false
-      )
-    },
-  },
-
-  methods: {
-    accept() {
-      this.$tracking_consent()
-    },
-  },
+const doNotTrack = computed((): boolean => {
+  return (
+    (process.client && navigator && navigator.doNotTrack !== '1') || false
+  )
 })
+
+if (!theme.value)
+  throw createError({ statusCode: 400, statusMessage: 'Theme is missing', fatal: true })
+
+const { $tracking_consent } = useNuxtApp()
+
+function accept() {
+  $tracking_consent()
+}
 </script>
 
 <template>
