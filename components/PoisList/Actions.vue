@@ -1,58 +1,33 @@
-<script lang="ts">
+<script setup lang="ts">
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
-import type { PropType } from 'vue'
-
-import { defineNuxtComponent } from '#app'
 import IconButton from '~/components/UI/IconButton.vue'
 import IconsBar from '~/components/UI/IconsBar.vue'
 import { getPoiByCategoryIdUrl } from '~/lib/apiPois'
 
-export default defineNuxtComponent({
-  components: {
-    FontAwesomeIcon,
-    IconsBar,
-    IconButton,
-  },
-  props: {
-    categoryId: {
-      type: Number,
-      required: true,
-    },
-    colorLine: {
-      type: String as PropType<string>,
-      required: true,
-    },
-  },
+const props = defineProps<{
+  categoryId: number
+  colorLine: string
+}>()
 
-  computed: {
-    urlMap(): string {
-      return `/${this.categoryId}/`
-    },
+const urlMap = computed((): string => `/${props.categoryId}/`)
 
-    urlCsv(): string {
-      return this.url('csv')
-    },
+const urlCsv = computed((): string => url('csv'))
 
-    urlGeojson(): string {
-      return this.url('geojson')
-    },
-  },
+const urlGeojson = computed((): string => url('geojson'))
 
-  methods: {
-    url(format: 'geojson' | 'csv'): string {
-      const query = {
-        geometry_as: 'point',
-        short_description: false,
-        format,
-      } as Record<string, any>
+const route = useRoute()
+function url(format: 'geojson' | 'csv'): string {
+  const query = {
+    geometry_as: 'point',
+    short_description: false,
+    format,
+  } as Record<string, any>
 
-      if (this.$route.query.clipingPolygonSlug)
-        query.cliping_polygon_slug = this.$route.query.clipingPolygonSlug.toString()
+  if (route.query.clipingPolygonSlug)
+    query.cliping_polygon_slug = route.query.clipingPolygonSlug.toString()
 
-      return getPoiByCategoryIdUrl(this.categoryId, query)
-    },
-  },
-})
+  return getPoiByCategoryIdUrl(props.categoryId, query)
+}
 </script>
 
 <template>
