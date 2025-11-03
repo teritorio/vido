@@ -45,3 +45,18 @@ export enum StarsEnum {
   Five = '5',
   FiveS = '5S',
 }
+
+export enum DateFilterLabel {
+  TODAY = 'today',
+  TOMORROW = 'tomorrow',
+  THIS_WEEKEND = 'thisWeekend',
+  NEXT_WEEK = 'nextWeek',
+  NEXT_MONTH = 'nextMonth',
+}
+
+export interface DateFilterOption {
+  title: string
+  value: string
+  begin: string
+  end: string
+}
