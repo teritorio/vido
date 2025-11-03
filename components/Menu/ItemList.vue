@@ -1,68 +1,41 @@
-<script lang="ts">
+<script setup lang="ts">
 import type { FontAwesomeIconProps } from '@fortawesome/vue-fontawesome'
-import type { PropType } from 'vue'
-
-import { defineNuxtComponent } from '#app'
 import Category from '~/components/Menu/Category.vue'
 import MenuGroup from '~/components/Menu/Group.vue'
 import LinkItem from '~/components/Menu/Link.vue'
 import type { ApiMenuCategory, ApiMenuItem, MenuGroup as MenuGroupType, MenuItem } from '~/lib/apiMenu'
 import type { FilterValues } from '~/utils/types-filters'
 
-export default defineNuxtComponent({
-  components: {
-    Category,
-    MenuGroup,
-    LinkItem,
-  },
-  props: {
-    menuItems: {
-      type: Array as PropType<MenuItem[]>,
-      required: true,
-    },
-    filters: {
-      type: Object as PropType<{ [categoryId: number]: FilterValues }>,
-      required: true,
-    },
-    categoriesActivesCountByParent: {
-      type: Object as PropType<{ [id: string]: number }>,
-      required: true,
-    },
-    selectedCategoriesIds: {
-      type: Array as PropType<ApiMenuCategory['id'][]>,
-      required: true,
-    },
-    displayModeDefault: {
-      type: String as PropType<'compact' | 'large'>,
-      required: true,
-    },
-    size: {
-      type: String as PropType<FontAwesomeIconProps['size']>,
-      required: true,
-    },
-  },
+const props = defineProps<{
+  menuItems: MenuItem[]
+  filters: Record<number, FilterValues>
+  categoriesActivesCountByParent: Record<string, number>
+  selectedCategoriesIds: ApiMenuCategory['id'][]
+  displayModeDefault: 'compact' | 'large'
+  size: FontAwesomeIconProps['size']
+}>()
 
-  emits: {
-    menuGroupClick: (_menuItem: MenuGroupType) => true,
-    categoryClick: (_menuItemId: ApiMenuItem['id']) => true,
-    filterClick: (_categoryId: ApiMenuCategory['id']) => true,
-  },
+const emit = defineEmits<{
+  (e: 'menuGroupClick', menuItem: MenuGroupType): void
+  (e: 'categoryClick', menuItemId: ApiMenuItem['id']): void
+  (e: 'filterClick', categoryId: ApiMenuCategory['id']): void
+}>()
 
-  methods: {
-    onMenuGroupClick(menuItem: MenuGroupType) {
-      this.$emit('menuGroupClick', menuItem)
-    },
-    onCategoryClick(menuItem: MenuItem) {
-      this.$emit('categoryClick', menuItem.id)
-    },
-    onFilterClick(categoryId: ApiMenuCategory['id']) {
-      this.$emit('filterClick', categoryId)
-    },
-    isCategorySelected(categoryId: ApiMenuCategory['id']) {
-      return this.selectedCategoriesIds.includes(categoryId)
-    },
-  },
-})
+function onMenuGroupClick(menuItem: MenuGroupType) {
+  emit('menuGroupClick', menuItem)
+}
+
+function onCategoryClick(menuItem: MenuItem) {
+  emit('categoryClick', menuItem.id)
+}
+
+function onFilterClick(categoryId: ApiMenuCategory['id']) {
+  emit('filterClick', categoryId)
+}
+
+function isCategorySelected(categoryId: ApiMenuCategory['id']) {
+  return props.selectedCategoriesIds.includes(categoryId)
+}
 </script>
 
 <template>
