@@ -3,6 +3,16 @@ import type { ApiAddrSearchResult } from '~/lib/apiSearch'
 import { MAP_ZOOM } from '~/lib/constants'
 import { ADDRESS_FIELDS } from '~/composables/useField'
 
+export function formatDate(date: Date): string {
+  return (
+    `${date.getFullYear().toString()
+    }-${
+    (date.getMonth() + 1).toString().padStart(2, '0')
+    }-${
+    date.getDate().toString().padStart(2, '0')}`
+  )
+}
+
 export function isFiledEmpty(
   field: FieldsListItem,
   properties: { [key: string]: string },
