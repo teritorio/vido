@@ -170,7 +170,7 @@ const filteredProjects = computed(() => {
                 cols="12"
                 sm="6"
               >
-                <VCard :href="theme.site_url.fr">
+                <VCard>
                   <VImg
                     aspect-ratio="1/1"
                     height="80px"
@@ -204,8 +204,8 @@ const filteredProjects = computed(() => {
                         whiteSpace: 'unset',
                       }"
                     >
-                      <span>PROD: {{ theme.site_url.fr }}</span>
-                      <span>DEV: {{ `https://${theme.slug}-${project.slug}.${appHost}` }}</span>
+                      <a :href="theme.site_url.fr" target="_blank">PROD: {{ theme.site_url.fr }}</a>
+                      <a :href="`https://${theme.slug}-${project.slug}.${appHost}`" target="_blank">DEV: {{ `https://${theme.slug}-${project.slug}.${appHost}` }}</a>
                     </VCardSubtitle>
                   </VCardItem>
 
