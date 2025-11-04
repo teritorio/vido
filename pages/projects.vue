@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { VCardSubtitle } from 'vuetify/lib/components/index.mjs'
-import type { Settings } from '~/lib/apiSettings'
+import type { Settings, SiteInfosTheme } from '~/lib/apiSettings'
 
 definePageMeta({
   layout: 'projects',
@@ -62,6 +62,10 @@ const filteredProjects = computed(() => {
     }),
   )
 })
+
+function getDevUrl(theme: SiteInfosTheme, project: Settings): string {
+  return `${import.meta.dev ? 'http' : 'https'}://${theme.slug}-${project.slug}.${appHost}`
+}
 </script>
 
 <template>
@@ -205,7 +209,12 @@ const filteredProjects = computed(() => {
                       }"
                     >
                       <a :href="theme.site_url.fr" target="_blank">PROD: {{ theme.site_url.fr }}</a>
-                      <a :href="`https://${theme.slug}-${project.slug}.${appHost}`" target="_blank">DEV: {{ `https://${theme.slug}-${project.slug}.${appHost}` }}</a>
+                      <a
+                        :href="getDevUrl(theme, project)"
+                        target="_blank"
+                      >
+                        DEV: {{ getDevUrl(theme, project) }}
+                      </a>
                     </VCardSubtitle>
                   </VCardItem>
 
