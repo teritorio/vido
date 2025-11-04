@@ -42,15 +42,14 @@ const props = defineProps<{
 //
 // Composables
 //
+const { apiAddr } = useRuntimeConfig().public
 const mapStore = useMapStore()
 const { isModeFavorites, isModeExplorer, isModeExplorerOrFavorites, mode, selectedFeature, teritorioCluster, isDepsView } = storeToRefs(mapStore)
 const menuStore = useMenuStore()
 const { apiMenuCategory, features, selectedCategoryIds, selectedCategories } = storeToRefs(menuStore)
 const favoriteStore = useFavoriteStore()
 const { favoritesIds, favoriteAddresses, favoriteFeatures, favoriteCount } = storeToRefs(favoriteStore)
-const siteStore = useSiteStore()
-const { config, settings } = siteStore
-const { favoritesModeEnabled, theme, siteName, logoUrl, mainUrl } = storeToRefs(siteStore)
+const { favoritesModeEnabled, theme, siteName, logoUrl, mainUrl, settings } = storeToRefs(useSiteStore())
 const { $tracking } = useNuxtApp()
 const route = useRoute()
 const router = useRouter()
@@ -125,7 +124,7 @@ onMounted(() => {
     origin: OriginEnum[router.currentRoute.value.query.origin as keyof typeof OriginEnum],
   })
 
-  initialBbox.value = getBBox({ type: 'Feature', geometry: props.boundaryArea || settings!.bbox_line, properties: {} })
+  initialBbox.value = getBBox({ type: 'Feature', geometry: props.boundaryArea || settings.value!.bbox_line, properties: {} })
 })
 
 onBeforeUnmount(() => {
@@ -215,7 +214,6 @@ watch(selectedFeature, (newFeature, oldFeature) => {
     }
     else if (isDepsView.value) {
       menuStore.fetchFeatures({
-        vidoConfig: config!,
         categoryIds: selectedCategoryIds.value,
         clipingPolygonSlug: route.query.clipingPolygonSlug?.toString(),
       })
@@ -228,7 +226,6 @@ watch(selectedCategoryIds, (a, b) => {
     routerPushUrl()
 
     menuStore.fetchFeatures({
-      vidoConfig: config!,
       categoryIds: selectedCategoryIds.value,
       clipingPolygonSlug: route.query.clipingPolygonSlug?.toString(),
     })
@@ -276,7 +273,7 @@ function goToSelectedFeature(feature?: ApiPoi) {
 async function fetchAddress(hash: string) {
   try {
     const coordinates = decodeBase32(hash)
-    return await $fetch<ApiSearchResult<ApiAddrSearchResult>>(`${config!.API_ADDR}/reverse?lon=${coordinates.lng}&lat=${coordinates.lat}&limit=1`)
+    return await $fetch<ApiSearchResult<ApiAddrSearchResult>>(`${apiAddr}/reverse?lon=${coordinates.lng}&lat=${coordinates.lat}&limit=1`)
   }
   catch (error: any) {
     console.error(error)
@@ -294,7 +291,7 @@ async function fetchFavorites() {
   if (route.query.clipingPolygonSlug)
     query.cliping_polygon_slug = route.query.clipingPolygonSlug.toString()
 
-  return await getPois(config!, favoritesIds.value, query)
+  return await getPois(favoritesIds.value, query)
     .then(pois => (pois && pois.features) || [])
     .then(pois =>
       pois.map(poi => ({

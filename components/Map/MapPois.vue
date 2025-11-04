@@ -10,7 +10,6 @@ import { MAP_ZOOM } from '~/lib/constants'
 import type { MapPoiId } from '~/lib/mapPois'
 import { filterRouteByPoiIds } from '~/utils/styles'
 import { mapStore as useMapStore } from '~/stores/map'
-import { useSiteStore } from '~/stores/site'
 
 const props = withDefaults(defineProps<{
   extraAttributions?: string[]
@@ -26,12 +25,10 @@ const props = withDefaults(defineProps<{
   cluster: true,
 })
 
-const { config } = storeToRefs(useSiteStore())
+const projectSlug = useState<string>('project')
+const themeSlug = useState<string>('theme')
 
-if (!config.value)
-  throw createError({ statusCode: 500, statusMessage: 'Wrong config', fatal: true })
-
-const { API_ENDPOINT, API_PROJECT, API_THEME } = config.value
+const { apiEndpoint } = useApiEndpoint()
 const mapBaseRef = ref<InstanceType<typeof MapBase>>()
 const map = ref<MapGL>()
 const selectedFeature = ref<ApiPoi | null>(null)
@@ -79,8 +76,8 @@ function renderPois(): void {
       return
     }
 
-    const { data, error, status } = await useFetch(
-      () => `${API_ENDPOINT}/${API_PROJECT}/${API_THEME}/poi/${feature.properties.metadata.id}.geojson`,
+    const { data, error, status } = await useFetch<ApiPoi>(
+      () => `${apiEndpoint.value}/${projectSlug.value}/${themeSlug.value}/poi/${feature.properties.metadata.id}.geojson`,
       {
         query: {
           geometry_as: 'point',

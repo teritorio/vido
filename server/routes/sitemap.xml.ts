@@ -1,17 +1,10 @@
 import type { IncomingMessage, ServerResponse } from 'node:http'
 import { defineEventHandler } from 'h3'
-
 import type { SitemapEntry } from '~/node_modules/nuxt-simple-sitemap/dist/module'
-import type {
-  BuildSitemapOptions,
-} from '~/node_modules/nuxt-simple-sitemap/dist/runtime/util/builder'
-import {
-  buildSitemap,
-} from '~/node_modules/nuxt-simple-sitemap/dist/runtime/util/builder'
-import { getMenu } from '~/lib/apiMenu'
-import { getPois } from '~/lib/apiPois'
-import { vidos } from '~/lib/config'
-import { vidoConfigResolve } from '~/plugins/vido-config'
+import type { BuildSitemapOptions } from '~/node_modules/nuxt-simple-sitemap/dist/runtime/util/builder'
+import { buildSitemap } from '~/node_modules/nuxt-simple-sitemap/dist/runtime/util/builder'
+import type { MenuItem } from '~/lib/apiMenu'
+import type { ApiPois } from '~/lib/apiPois'
 
 // Import by node_modules because access to internal module content
 
@@ -19,27 +12,32 @@ async function manifest(
   req: IncomingMessage,
   res: ServerResponse<IncomingMessage>,
 ) {
-  const hostname = (req.headers['x-forwarded-host'] || req.headers.host)?.toString()
+  const hostname = req.headers.host?.toString()
 
   if (hostname) {
-    const vido = vidoConfigResolve(hostname.split(':')[0], vidos())
+    const { project, theme } = await $fetch('/api/config', {
+      headers: {
+        'x-client-host': hostname,
+      },
+    })
 
-    const menu = getMenu(vido)
-      .then(menuItem => menuItem
-        .filter(menuItem => menuItem.category && menuItem.id)
-        .map(menuCategory => ({
-          url: `/${menuCategory.id}/`,
+    const { apiEndpoint } = useRuntimeConfig().public
+
+    const entries: SitemapEntry[] = (await Promise.all([
+      await $fetch<MenuItem[]>(`${apiEndpoint}/${project}/${theme}/menu.json`)
+        .then(menuItem => menuItem
+          .filter(menuItem => menuItem.category && menuItem.id)
+          .map(menuCategory => ({
+            url: `/${menuCategory.id}/`,
+          })),
+        ),
+      await $fetch<ApiPois>(`${apiEndpoint}/${project}/${theme}/pois.geojson`)
+        .then(pois => pois.features.map(poi => ({
+          url: `/poi/${poi.properties.metadata.id}/details`,
+          lastmod: poi.properties.metadata.updated_at,
         })),
-      )
-
-    const pois = getPois(vido).then(apiPois =>
-      apiPois.features.map(poi => ({
-        url: `/poi/${poi.properties.metadata.id}/details`,
-        lastmod: poi.properties.metadata.updated_at,
-      })),
-    )
-
-    const entries: SitemapEntry[] = (await Promise.all([menu, pois])).flat(1)
+        ),
+    ])).flat(1)
 
     entries.push({
       url: '/',

@@ -70,14 +70,10 @@ const device = useDevice()
 const snackStore = useSnackStore()
 const menuStore = useMenuStore()
 const { featuresColor, isLoadingFeatures, selectedCategoryIds } = storeToRefs(menuStore)
-const siteStore = useSiteStore()
-const { config } = storeToRefs(siteStore)
-
-if (!config.value)
-  throw createError({ statusCode: 500, statusMessage: 'Wrong config', fatal: true })
-
-const { BICYCLE_STYLE_URL, API_ENDPOINT, API_PROJECT, API_THEME } = config.value
-const { explorerModeEnabled } = storeToRefs(siteStore)
+const { theme, explorerModeEnabled } = storeToRefs(useSiteStore())
+const projectSlug = useState<string>('project')
+const themeSlug = useState<string>('theme')
+const { apiEndpoint } = useApiEndpoint()
 const mapStore = useMapStore()
 const { center, selectedFeature, selectedFeatureDepsIDs, teritorioCluster, mode } = storeToRefs(mapStore)
 const mapStyleLoaded = ref(false)
@@ -90,7 +86,7 @@ const isZooming = ref(false)
 const availableStyles = computed((): MapStyleEnum[] => {
   const styles = [MapStyleEnum.vector, MapStyleEnum.aerial]
 
-  if (BICYCLE_STYLE_URL)
+  if (theme.value?.map_bicycle_style_url)
     styles.push(MapStyleEnum.bicycle)
 
   return styles
@@ -243,7 +239,7 @@ async function updateSelectedFeature(feature?: ApiPoi): Promise<void> {
 
       try {
         const { data, error, status } = await useFetch<ApiPoiDeps>(
-          () => `${API_ENDPOINT}/${API_PROJECT}/${API_THEME}/poi/${id}/deps.geojson`,
+          () => `${apiEndpoint.value}/${projectSlug.value}/${themeSlug.value}/poi/${id}/deps.geojson`,
           {
             query: {
               geometry_as: 'point',

@@ -2,15 +2,15 @@ import * as Sentry from '@sentry/vue'
 
 export default defineNuxtPlugin((nuxtApp) => {
   const router = useRouter()
-  const { public: { sentry } } = useRuntimeConfig()
+  const { sentryDsn, sentryEnvironment } = useRuntimeConfig().public
 
-  if (!sentry.dsn)
+  if (!sentryDsn)
     return
 
   Sentry.init({
     app: nuxtApp.vueApp,
-    dsn: sentry.dsn,
-    environment: sentry.environment,
+    dsn: sentryDsn,
+    environment: sentryEnvironment,
     integrations: [
       Sentry.browserTracingIntegration({ router }),
       Sentry.replayIntegration({

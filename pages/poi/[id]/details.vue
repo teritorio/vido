@@ -22,9 +22,7 @@ definePageMeta({
 //
 // Composables
 //
-const siteStore = useSiteStore()
-const { config } = siteStore
-const { articles, settings, theme } = storeToRefs(siteStore)
+const { articles, settings, theme } = storeToRefs(useSiteStore())
 const { params } = useRoute()
 const { $trackingInit } = useNuxtApp()
 
@@ -36,7 +34,7 @@ const poiDeps = ref<ApiPoiDeps>()
 const fetchPoiPoiDeps = getAsyncDataOrThrows(
   `fetchPoiPoiDeps-${params.id}`,
   async () => {
-    return await getPoiDepsById(config!, params.id as string, {
+    return await getPoiDepsById(params.id as string, {
       geometry_as: 'point_or_bbox',
       short_description: false,
     }).then((poiDeps) => {
@@ -78,7 +76,7 @@ if (!featureSeoTitle.value)
 // Hooks
 //
 onBeforeMount(() => {
-  $trackingInit(config!)
+  $trackingInit()
 })
 
 if (settings.value && theme.value) {

@@ -11,7 +11,7 @@ import CategorySelector from '~/components/PoisList/CategorySelector.vue'
 // Composables
 //
 const siteStore = useSiteStore()
-const { config, settings } = siteStore
+const { settings } = siteStore
 const menuStore = useMenuStore()
 const { menuItems } = storeToRefs(menuStore)
 const { $trackingInit } = useNuxtApp()
@@ -50,7 +50,7 @@ const isFiltersEqualToCategoryId = computed(() => {
 // Hooks
 //
 onBeforeMount(() => {
-  $trackingInit(config!)
+  $trackingInit()
 })
 
 //

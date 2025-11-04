@@ -15,8 +15,6 @@ COPY . /usr/src/app
 RUN yarn build-fixture
 
 ENV NODE_OPTIONS="--openssl-legacy-provider"
-COPY vidos-config-empty.json vidos-config.json
-COPY vidos.config.sample.ts vidos.config.ts
 RUN yarn build
 
 # Set environment variables
@@ -25,7 +23,7 @@ ENV NUXT_HOST="0.0.0.0"
 ENV NUXT_PORT="3000"
 
 EXPOSE 3000
-CMD [ "node", ".output/server/index.mjs" ]
+CMD ["/bin/sh", "-c", "NUXT_PUBLIC_IMAGE_DOMAINS=$(yarn fetch-domains) node .output/server/index.mjs"]
 
 HEALTHCHECK \
     --start-interval=1s \

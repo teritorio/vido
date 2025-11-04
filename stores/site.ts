@@ -2,11 +2,6 @@ import { defineStore } from 'pinia'
 import type { Article } from '~/lib/apiArticle'
 import type { PropertyTranslations } from '~/lib/apiPropertyTranslations'
 import type { Settings } from '~/lib/apiSettings'
-import type { VidoConfig } from '~/utils/types-config'
-import { getArticles } from '~/lib/apiArticle'
-import { getPropertyTranslations } from '~/lib/apiPropertyTranslations'
-import { getSettings } from '~/lib/apiSettings'
-import { vidoConfig } from '~/plugins/vido-config'
 
 export enum PropertyTranslationsContextEnum {
   Default = 'label',
@@ -19,16 +14,16 @@ const Default = PropertyTranslationsContextEnum.Default
 
 export const useSiteStore = defineStore('site', () => {
   const locale = ref<string>()
-  const config = ref<VidoConfig>()
   const settings = ref<Settings>()
   const articles = ref<Article[]>([])
   const translations = ref<PropertyTranslations>()
+  const themeSlug = useState<string>('theme')
 
   const theme = computed(() => {
-    if (!config.value || !settings.value?.themes)
+    if (!settings.value?.themes)
       return undefined
 
-    return settings.value.themes.find(t => t.slug === config.value!.API_THEME)
+    return settings.value.themes[themeSlug.value]
   })
 
   const siteName = computed(() => theme.value?.title.fr ?? '')
@@ -58,21 +53,6 @@ export const useSiteStore = defineStore('site', () => {
 
   function setFavoritesMode(value: boolean) {
     favoritesModeEnabled.value = value
-  }
-
-  // TODO: Looks unused maybe remove ?
-  async function init(headers: Record<string, string>) {
-    config.value = vidoConfig(headers)
-    settings.value = await getSettings(config.value)
-    translations.value = await getPropertyTranslations(config.value)
-    const { data: articlesData, error: articlesError, status: articlesStatus } = await getArticles(config.value)
-
-    if (articlesError.value)
-      throw createError(articlesError.value)
-
-    if (articlesStatus.value === 'success' && articlesData.value) {
-      articles.value = articlesData.value
-    }
   }
 
   function p(propertyName: string, context: PropertyTranslationsContextEnum = Default): string {
@@ -107,7 +87,6 @@ export const useSiteStore = defineStore('site', () => {
 
   return {
     locale,
-    config,
     settings,
     articles,
     translations,
@@ -119,7 +98,6 @@ export const useSiteStore = defineStore('site', () => {
     favoritesModeEnabled,
     setFavoritesMode,
     setExplorerMode,
-    init,
     p,
     pv,
   }

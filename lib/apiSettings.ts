@@ -1,7 +1,5 @@
 import type { MetaObject } from 'nuxt/schema'
-
 import type { MultilingualString } from '~/utils/types'
-import type { VidoConfig } from '~/utils/types-config'
 
 export interface SiteInfosTheme {
   id: number
@@ -9,28 +7,29 @@ export interface SiteInfosTheme {
   title: MultilingualString
   description: MultilingualString
   keywords: MultilingualString
-
   site_url: MultilingualString
-
   main_url?: MultilingualString
-
   logo_url: string
-
   favicon_url: string
-
   favorites_mode: boolean
-
   explorer_mode: boolean
-
-  isochroneEnabled: boolean
+  isochrone: boolean
+  matomo_url: string
+  matomo_siteid: string
+  map_style_base_url: string
+  map_bicycle_style_url: string
+  map_style_satellite_url: string
+  cookies_consent_message: MultilingualString
+  cookies_usage_detail_url: string
+  google_site_verification: string
+  google_tag_manager_id: string
 }
 
 export interface Settings {
   id: number
   slug: string
-  name: MultilingualString
+  name: string
   attributions: string[]
-
   icon_font_css_url: string
   polygon: {
     type: 'geojson'
@@ -42,50 +41,11 @@ export interface Settings {
       data: string | GeoJSON.Polygon
     }
   }
-
   bbox_line: GeoJSON.LineString
-
   default_country: string
-
   default_country_state_opening_hours: string
-
-  themes: SiteInfosTheme[]
-}
-
-export async function getSettings(vidoConfig: VidoConfig): Promise<Settings> {
-  return await fetch(
-    `${vidoConfig.API_ENDPOINT}/${vidoConfig.API_PROJECT}/${vidoConfig.API_THEME}/settings.json`,
-  )
-    .then((data) => {
-      if (data.ok) {
-        return data.json() as unknown as Settings
-      }
-      else {
-        return Promise.reject(
-          new Error([data.url, data.status, data.statusText].join(' ')),
-        )
-      }
-    })
-    .then((json: Settings) => {
-      return Object.assign(
-        {
-          id: 0,
-          slug: '',
-          name: '',
-          attribution: [],
-          icon_font_css_url: '',
-          bbox_line: {
-            type: 'LineString',
-            coordinates: [
-              [1.43862, 42.41845],
-              [1.68279, 42.6775],
-            ],
-          },
-          themes: [],
-        },
-        json,
-      )
-    })
+  themes: Record<string, SiteInfosTheme>
+  image_proxy_hosts: string[]
 }
 
 function stripHTML(value?: string): string | undefined {
@@ -141,7 +101,7 @@ export function headerFromSettings(
       {
         hid: 'google-site-verification',
         name: 'google-site-verification',
-        content: options?.googleSiteVerification,
+        content: theme.google_site_verification,
       },
     ].filter(meta => meta.content),
   }

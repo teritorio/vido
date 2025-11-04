@@ -88,8 +88,11 @@ export default defineNuxtComponent({
   },
 
   setup() {
-    const { config } = storeToRefs(useSiteStore())
+    const { theme } = storeToRefs(useSiteStore())
     const fullscreenControlObject = ref<FullscreenControl>()
+
+    if (!theme.value)
+      throw createError({ statusCode: 400, statusMessage: 'Theme is missing', fatal: true })
 
     onMounted(() => {
       const mapContainer = document.getElementById('map')
@@ -103,7 +106,7 @@ export default defineNuxtComponent({
     })
 
     return {
-      config,
+      theme,
       fullscreenControlObject,
     }
   },
@@ -343,11 +346,10 @@ export default defineNuxtComponent({
         return this.mapStyleCache[mapStyle]
       }
       else {
-        const { BICYCLE_STYLE_URL, SATELLITE_STYLE_URL, VECTO_STYLE_URL } = this.config!
         const styleURLs = {
-          [MapStyleEnum.vector]: VECTO_STYLE_URL,
-          [MapStyleEnum.aerial]: SATELLITE_STYLE_URL,
-          [MapStyleEnum.bicycle]: BICYCLE_STYLE_URL,
+          [MapStyleEnum.vector]: this.theme!.map_style_base_url,
+          [MapStyleEnum.aerial]: this.theme!.map_style_satellite_url,
+          [MapStyleEnum.bicycle]: this.theme!.map_bicycle_style_url,
         }
         const style = await fetchStyle(
           styleURLs[mapStyle],

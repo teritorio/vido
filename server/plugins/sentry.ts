@@ -2,18 +2,18 @@ import * as Sentry from '@sentry/node'
 import { H3Error } from 'h3'
 
 export default defineNitroPlugin((nitroApp) => {
-  const { public: { sentry } } = useRuntimeConfig()
+  const { sentryDsn, sentryEnvironment } = useRuntimeConfig().public
 
   // If no sentry DSN set, ignore and warn in the console
-  if (!sentry.dsn) {
+  if (!sentryDsn) {
     console.warn('Sentry DSN not set, skipping Sentry initialization')
     return
   }
 
   // Initialize Sentry
   Sentry.init({
-    dsn: sentry.dsn,
-    environment: sentry.environment,
+    dsn: sentryDsn,
+    environment: sentryEnvironment,
     integrations: [],
     // Performance Monitoring
     tracesSampleRate: 1.0, // Change in production!
@@ -24,7 +24,7 @@ export default defineNitroPlugin((nitroApp) => {
   nitroApp.hooks.hook('error', (error) => {
     // Do not handle 404s and 422s
     if (error instanceof H3Error) {
-      if (error.statusCode === 404 || error.statusCode === 422) {
+      if ([404, 422, 406, 400].includes(error.statusCode)) {
         return
       }
     }

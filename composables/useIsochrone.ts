@@ -26,9 +26,9 @@ export default function useIsochrone() {
   //
   // Composables
   //
-  const { config } = useSiteStore()
-  // Get feature flag for Vido config
-  const enabled = (config?.OPEN_ROUTE_SERVICE_KEY && config?.ISOCHRONE) || false
+  const { openRouteServiceKey } = useRuntimeConfig().public
+  const { theme } = storeToRefs(useSiteStore())
+  const enabled = (openRouteServiceKey && theme.value?.isochrone) || false
   const { t, locale } = useI18n()
   const map = useState<Map>('map-instance')
   const profile = useState<Profile | null>('isochrone-profile', () => null)
@@ -158,7 +158,7 @@ export default function useIsochrone() {
         method: 'POST',
         headers: {
           'Accept': 'application/json, application/geo+json, application/gpx+xml, img/png; charset=utf-8',
-          'Authorization': config!.OPEN_ROUTE_SERVICE_KEY!,
+          'Authorization': openRouteServiceKey,
           'Content-Type': 'application/json',
         },
         body: {

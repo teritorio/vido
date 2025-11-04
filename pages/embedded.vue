@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { GeoJSON, MultiPolygon, Polygon } from 'geojson'
+import { storeToRefs } from 'pinia'
 import Embedded from '~/components/Home/Embedded.vue'
 import type { ApiPoi } from '~/lib/apiPois'
 import { useSiteStore } from '~/stores/site'
@@ -9,11 +10,13 @@ import { regexForCategoryIds } from '~/composables/useIdsResolver'
 //
 // Composables
 //
+const projectSlug = useState<string>('project')
+const themeSlug = useState<string>('theme')
 const { params, query, path, name } = useRoute()
 const mapStore = useMapStore()
 const siteStore = useSiteStore()
-const { config, settings, setFavoritesMode } = siteStore
-const { API_ENDPOINT, API_PROJECT, API_THEME } = config!
+const { settings } = storeToRefs(siteStore)
+const { apiEndpoint } = useApiEndpoint()
 const { $trackingInit } = useNuxtApp()
 
 //
@@ -27,12 +30,12 @@ const categoryIds = ref<number[]>()
 // Hooks
 //
 onBeforeMount(() => {
-  $trackingInit(config!)
+  $trackingInit()
 })
 
 const { boundary } = query
-if (boundary && typeof boundary === 'string' && settings!.polygons_extra) {
-  const boundaryObject = settings!.polygons_extra[boundary]
+if (boundary && typeof boundary === 'string' && settings.value!.polygons_extra) {
+  const boundaryObject = settings.value!.polygons_extra[boundary]
   if (boundaryObject) {
     if (typeof boundaryObject.data === 'string') {
       const geojson = (await (await fetch(boundaryObject.data)).json()) as GeoJSON
@@ -71,7 +74,7 @@ if (params.poiId)
 
 // Fetch inital POI
 const { data, error, status } = await useFetch<ApiPoi>(
-  () => `${API_ENDPOINT}/${API_PROJECT}/${API_THEME}/poi/${poiId.value}.geojson`,
+  () => `${apiEndpoint.value}/${projectSlug.value}/${themeSlug.value}/poi/${poiId.value}.geojson`,
   {
     query: {
       geometry_as: 'bbox',
@@ -88,7 +91,7 @@ if (status.value === 'success' && data.value)
   mapStore.setSelectedFeature(data.value)
 
 // Disable Favorite Mode
-setFavoritesMode(false)
+siteStore.setFavoritesMode(false)
 </script>
 
 <template>

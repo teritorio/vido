@@ -8,7 +8,6 @@ import ShareLinkModal from '~/components/UI/ShareLinkModal.vue'
 import UIButton from '~/components/UI/UIButton.vue'
 import type { ApiPoi } from '~/lib/apiPois'
 import { favoriteStore as useFavoriteStore } from '~/stores/favorite'
-import { useSiteStore } from '~/stores/site'
 
 defineEmits<{
   (e: 'onClose'): void
@@ -19,19 +18,17 @@ defineEmits<{
 
 const shareModal = ref<InstanceType<typeof ShareLinkModal>>()
 
+const { apiEndpoint } = useApiEndpoint()
+const { apiExport } = useRuntimeConfig().public
 const favoriteStore = useFavoriteStore()
 const { favoritesIds, favoriteAddresses, favoriteFeatures } = storeToRefs(favoriteStore)
+const projectSlug = useState<string>('project')
+const themeSlug = useState<string>('theme')
 
-const { config } = useSiteStore()
 const idsStringified = [...favoritesIds.value, ...Array.from(favoriteAddresses.value.values()).map(id => `addr:${id}`)].join(',')
 
-const pdfLink = computed(() => {
-  return `${config!.API_EXPORT}/${config!.API_PROJECT}/${config!.API_THEME}/pois/favorites.pdf?ids=${favoritesIds.value.join(',')}`
-})
-
-const csvLink = computed(() => {
-  return `${config!.API_ENDPOINT}/${config!.API_PROJECT}/${config!.API_THEME}/pois.csv?ids=${favoritesIds.value.join(',')}`
-})
+const pdfLink = computed(() => `${apiExport}/${projectSlug.value}/${themeSlug.value}/pois/favorites.pdf?ids=${favoritesIds.value.join(',')}`)
+const csvLink = computed(() => `${apiEndpoint.value}/${projectSlug.value}/${themeSlug.value}/pois.csv?ids=${favoritesIds.value.join(',')}`)
 
 function setShareLink() {
   try {

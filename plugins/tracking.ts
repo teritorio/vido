@@ -1,39 +1,41 @@
+import { storeToRefs } from 'pinia'
 import { defineNuxtPlugin, useRuntimeConfig } from '#app/nuxt'
 import Google from '~/lib/tracker-google'
 import Matomo from '~/lib/tracker-matomo'
 import type { Event, Tracker } from '~/lib/trackers'
-import type { VidoConfig } from '~/utils/types-config'
+import { useSiteStore } from '~/stores/site'
 
 export default defineNuxtPlugin((nuxtApp) => {
   const trackers: Tracker[] = []
+  const { trackingEnabled, cypress } = useRuntimeConfig().public
+  const { theme } = storeToRefs(useSiteStore())
 
   return {
     provide: {
-      trackingInit: (config: VidoConfig): void => {
-        if (navigator.doNotTrack !== '1') {
-          const { GOOGLE_TAG_MANAGER_ID, COOKIES_CONSENT } = config
-
-          if (GOOGLE_TAG_MANAGER_ID) {
-            const consentIsGranted = COOKIES_CONSENT
+      trackingInit: (): void => {
+        if (navigator.doNotTrack !== '1' && trackingEnabled) {
+          if (theme.value?.google_tag_manager_id) {
+            const consentIsGranted = theme.value?.cookies_consent_message
               ? localStorage.getItem('vue-cookie-accept-decline-cookies-consent') === 'accept'
-              : true // Bypass consent if COOKIES_CONSENT is not enabled
+              : true // Bypass consent if cookies_consent_message is not enabled
 
             trackers.push(
               new Google(
                 nuxtApp.vueApp,
                 !consentIsGranted,
-                GOOGLE_TAG_MANAGER_ID,
+                theme.value.google_tag_manager_id,
               ),
             )
           }
 
-          const matomoUrl = config.MATOMO_URL
-          const matomoIdsite = config.MATOMO_SITEID
+          const matomoUrl = theme.value?.matomo_url
+          const matomoIdsite = theme.value?.matomo_siteid
+
           if (matomoUrl && matomoIdsite) {
             trackers.push(
               new Matomo(
                 nuxtApp.vueApp,
-                Boolean(config.COOKIES_CONSENT),
+                Boolean(theme.value.cookies_consent_message),
                 matomoUrl,
                 matomoIdsite,
               ),
@@ -51,7 +53,7 @@ export default defineNuxtPlugin((nuxtApp) => {
       },
 
       tracking: (event: Event): void => {
-        if (process.dev || useRuntimeConfig().public.cypress)
+        if (process.dev || cypress)
           console.error('Tracking event', event)
 
         trackers.forEach((tracker) => {

@@ -1,8 +1,6 @@
 {
     "id": 1,
-    "name": {
-        "fr": "Teritorio"
-    },
+    "name": "Teritorio",
     "attributions": [
         "<a href=\"https://teritorio.fr\" target=\"_blank\">&copy; Teritorio<\/a>"
     ],
@@ -45,8 +43,8 @@
         ]
     },
     "icon_font_css_url": "https://elasa-dev.teritorio.xyz/static/font-teritorio-2.10.0/teritorio/teritorio.css",
-    "themes": [
-        {
+    "themes": {
+        "tourism": {
             "id": 1,
             "slug": "references",
             "description": {
@@ -70,7 +68,19 @@
             },
             "favorites_mode": true,
             "explorer_mode": true,
-            "isochroneEnabled": false
+            "isochrone": false,
+            "matomo_url": "",
+            "matomo_siteid": "",
+            "map_style_base_url": "",
+            "map_bicycle_style_url": "",
+            "cookies_consent_message": {
+                "fr": "test"
+            },
+            "map_style_satellite_url": "",
+            "cookies_usage_detail_url": "",
+            "google_site_verification": "",
+            "google_tag_manager_id": ""
         }
-    ]
+    },
+    "image_proxy_hosts": []
 }
