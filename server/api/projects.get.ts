@@ -1,9 +1,9 @@
 import type { Settings } from '~/lib/apiSettings'
 
 export default defineEventHandler(async () => {
-  const { apiEndpoint } = useRuntimeConfig().public
+  const { genericApiEndpoint } = useRuntimeConfig().public
 
-  if (!apiEndpoint || typeof apiEndpoint !== 'string') {
+  if (!genericApiEndpoint || typeof genericApiEndpoint !== 'string') {
     throw createError({
       statusCode: 500,
       statusMessage: 'Missing API endpoint',
@@ -11,7 +11,7 @@ export default defineEventHandler(async () => {
   }
 
   try {
-    const projects: Record<string, Settings> = await $fetch(apiEndpoint)
+    const projects: Record<string, Settings> = await $fetch(genericApiEndpoint)
 
     return projects
   }

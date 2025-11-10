@@ -32,7 +32,7 @@ function isExternalLink(url: string): boolean {
   return /^https?:?\/\//.test(url)
 }
 
-const { apiEndpoint } = useApiEndpoint()
+const apiEndpoint = useState<string>('api-endpoint')
 function isAPIUrl(url: string): boolean {
   return url.includes(apiEndpoint.value)
 }

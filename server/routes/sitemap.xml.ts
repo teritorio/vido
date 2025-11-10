@@ -15,23 +15,21 @@ async function manifest(
   const hostname = req.headers.host?.toString()
 
   if (hostname) {
-    const { project, theme } = await $fetch('/api/config', {
+    const { api: apiEndpoint } = await $fetch('/api/config', {
       headers: {
         'x-client-host': hostname,
       },
     })
 
-    const { apiEndpoint } = useRuntimeConfig().public
-
     const entries: SitemapEntry[] = (await Promise.all([
-      await $fetch<MenuItem[]>(`${apiEndpoint}/${project}/${theme}/menu.json`)
+      await $fetch<MenuItem[]>(`${apiEndpoint}/menu.json`)
         .then(menuItem => menuItem
           .filter(menuItem => menuItem.category && menuItem.id)
           .map(menuCategory => ({
             url: `/${menuCategory.id}/`,
           })),
         ),
-      await $fetch<ApiPois>(`${apiEndpoint}/${project}/${theme}/pois.geojson`)
+      await $fetch<ApiPois>(`${apiEndpoint}/pois.geojson`)
         .then(pois => pois.features.map(poi => ({
           url: `/poi/${poi.properties.metadata.id}/details`,
           lastmod: poi.properties.metadata.updated_at,

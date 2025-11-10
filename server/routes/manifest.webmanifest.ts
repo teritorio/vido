@@ -9,14 +9,13 @@ async function manifest(
   const hostname = req.headers.host?.toString()
 
   if (hostname) {
-    const { project, theme: themeSlug } = await $fetch('/api/config', {
+    const { api: apiEndpoint, theme: themeSlug } = await $fetch('/api/config', {
       headers: {
         'x-client-host': hostname,
       },
     })
 
-    const { apiEndpoint } = useRuntimeConfig().public
-    const settings = await $fetch<Settings>(`${apiEndpoint}/${project}/${themeSlug}/settings.json`)
+    const settings = await $fetch<Settings>(`${apiEndpoint}/settings.json`)
     const theme = settings.themes[themeSlug]
 
     if (!theme)

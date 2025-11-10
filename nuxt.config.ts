@@ -54,7 +54,7 @@ export default defineNuxtConfig({
       appHost: process.env.NUXT_PUBLIC_APP_HOST,
       appTheme: process.env.NUXT_PUBLIC_APP_THEME,
       appProject: process.env.NUXT_PUBLIC_APP_PROJECT,
-      apiEndpoint: process.env.NUXT_PUBLIC_API_ENDPOINT,
+      genericApiEndpoint: process.env.NUXT_PUBLIC_GENERIC_API_ENDPOINT,
       apiSearch: process.env.NUXT_PUBLIC_API_SEARCH,
       apiAddr: process.env.NUXT_PUBLIC_API_ADDR,
       apiExport: process.env.NUXT_PUBLIC_API_EXPORT,

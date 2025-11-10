@@ -5,16 +5,20 @@ import { useSiteStore } from '~/stores/site'
 
 const { detectHost } = useHostDetection()
 
-const { data: context } = await useFetch('/api/config', {
+const { data: context, error: configError } = await useFetch('/api/config', {
   headers: {
     'x-client-host': detectHost(),
   },
 })
 
+if (configError.value) {
+  showError({ ...configError.value })
+}
+
 const { locale: i18nLocale } = useI18n()
 const { settings, locale } = storeToRefs(useSiteStore())
-const { apiEndpoint } = useApiEndpoint()
-const { data, error, status } = await useAsyncData('parallel', async () => $fetch<Settings>(`${apiEndpoint.value}/${context.value?.project}/${context.value?.theme}/settings.json`))
+const apiEndpoint = useState('api-endpoint', () => context.value?.api)
+const { data, error, status } = await useAsyncData('parallel', async () => $fetch<Settings>(`${apiEndpoint.value}/settings.json`))
 
 if (error.value)
   throw createError(error.value)
