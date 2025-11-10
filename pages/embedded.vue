@@ -10,13 +10,11 @@ import { regexForCategoryIds } from '~/composables/useIdsResolver'
 //
 // Composables
 //
-const projectSlug = useState<string>('project')
-const themeSlug = useState<string>('theme')
 const { params, query, path, name } = useRoute()
 const mapStore = useMapStore()
 const siteStore = useSiteStore()
 const { settings } = storeToRefs(siteStore)
-const { apiEndpoint } = useApiEndpoint()
+const apiEndpoint = useState('api-endpoint')
 const { $trackingInit } = useNuxtApp()
 
 //
@@ -74,7 +72,7 @@ if (params.poiId)
 
 // Fetch inital POI
 const { data, error, status } = await useFetch<ApiPoi>(
-  () => `${apiEndpoint.value}/${projectSlug.value}/${themeSlug.value}/poi/${poiId.value}.geojson`,
+  () => `${apiEndpoint.value}/poi/${poiId.value}.geojson`,
   {
     query: {
       geometry_as: 'bbox',

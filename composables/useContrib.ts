@@ -26,9 +26,7 @@ export default function () {
     const { mapillary } = feature.properties
     const { osm_id, osm_type, id } = feature.properties.metadata
     const { coordinates } = feature.geometry as GeoJSON.Point
-    const { apiEndpoint } = useApiEndpoint()
-    const projectSlug = useState<string>('project')
-    const themeSlug = useState<string>('theme')
+    const apiEndpoint = useState<string>('api-endpoint')
 
     return {
       editor_id: {
@@ -37,7 +35,7 @@ export default function () {
       },
       json: {
         icon: 'map-marker-alt',
-        url: `${apiEndpoint.value}/${projectSlug.value}/${themeSlug.value}/poi/${id}/deps.geojson?geometry_as=bbox&short_description=false`,
+        url: `${apiEndpoint.value}/poi/${id}/deps.geojson?geometry_as=bbox&short_description=false`,
       },
       josm: {
         icon: 'pen-to-square',

@@ -78,13 +78,10 @@ export async function getPoiDepsById(
   poiId: ApiPoiId | string,
   options: ApiPoisOptions = {},
 ): Promise<ApiPoiDeps> {
-  const { apiEndpoint } = useApiEndpoint()
-
-  const projectSlug = useState<string>('project')
-  const themeSlug = useState<string>('theme')
+  const apiEndpoint = useState('api-endpoint')
 
   return await fetch(
-    `${apiEndpoint.value}/${projectSlug.value}/${themeSlug.value}/poi/${poiId}/deps.geojson?${
+    `${apiEndpoint.value}/poi/${poiId}/deps.geojson?${
       new URLSearchParams(stringifyOptions(options))}`,
   ).then((data) => {
     if (data.ok) {

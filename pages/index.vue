@@ -11,12 +11,10 @@ import { mapStore as useMapStore } from '~/stores/map'
 import { regexForCategoryIds } from '~/composables/useIdsResolver'
 
 const { settings } = storeToRefs(useSiteStore())
-const projectSlug = useState<string>('project')
-const themeSlug = useState<string>('theme')
+const apiEndpoint = useState('api-endpoint')
 
 const route = useRoute()
 const mapStore = useMapStore()
-const { apiEndpoint } = useApiEndpoint()
 const { $trackingInit } = useNuxtApp()
 
 const boundaryGeojson = ref<Polygon | MultiPolygon>()
@@ -95,7 +93,7 @@ const { data, error, status } = await useAsyncData('features', async () => {
 
   let initialFeature: ApiPoiDeps | undefined
   if (poiId.value && !poiId.value.includes('_')) {
-    initialFeature = await $fetch<ApiPoiDeps>(`${apiEndpoint.value}/${projectSlug.value}/${themeSlug.value}/poi/${poiId.value}/deps.geojson`, {
+    initialFeature = await $fetch<ApiPoiDeps>(`${apiEndpoint.value}/poi/${poiId.value}/deps.geojson`, {
       query: {
         geometry_as: 'point',
         short_description: true,

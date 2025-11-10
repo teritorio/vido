@@ -25,10 +25,7 @@ const props = withDefaults(defineProps<{
   cluster: true,
 })
 
-const projectSlug = useState<string>('project')
-const themeSlug = useState<string>('theme')
-
-const { apiEndpoint } = useApiEndpoint()
+const apiEndpoint = useState<string>('api-endpoint')
 const mapBaseRef = ref<InstanceType<typeof MapBase>>()
 const map = ref<MapGL>()
 const selectedFeature = ref<ApiPoi | null>(null)
@@ -77,7 +74,7 @@ function renderPois(): void {
     }
 
     const { data, error, status } = await useFetch<ApiPoi>(
-      () => `${apiEndpoint.value}/${projectSlug.value}/${themeSlug.value}/poi/${feature.properties.metadata.id}.geojson`,
+      () => `${apiEndpoint.value}/poi/${feature.properties.metadata.id}.geojson`,
       {
         query: {
           geometry_as: 'point',

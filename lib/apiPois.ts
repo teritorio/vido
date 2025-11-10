@@ -92,12 +92,10 @@ export function getPoiById(
   poiId: ApiPoiId | string,
   options: ApiPoisOptions = {},
 ): Promise<ApiPoi> {
-  const { apiEndpoint } = useApiEndpoint()
-  const projectSlug = useState<string>('project')
-  const themeSlug = useState<string>('theme')
+  const apiEndpoint = useState('api-endpoint')
 
   return fetch(
-    `${apiEndpoint.value}/${projectSlug.value}/${themeSlug.value}/poi/${poiId}.${options.format || defaultOptions.format}?${new URLSearchParams(stringifyOptions(options))}`,
+    `${apiEndpoint.value}/poi/${poiId}.${options.format || defaultOptions.format}?${new URLSearchParams(stringifyOptions(options))}`,
   )
     .then((data) => {
       if (data.ok) {
@@ -115,12 +113,10 @@ export async function getPois(
   poiIds?: (ApiPoiId | string)[],
   options: ApiPoisOptions = {},
 ): Promise<ApiPois> {
-  const { apiEndpoint } = useApiEndpoint()
-  const projectSlug = useState<string>('project')
-  const themeSlug = useState<string>('theme')
+  const apiEndpoint = useState('api-endpoint')
 
   return await fetch(
-    `${apiEndpoint.value}/${projectSlug.value}/${themeSlug.value}/pois.${options.format || defaultOptions.format}?${
+    `${apiEndpoint.value}/pois.${options.format || defaultOptions.format}?${
       new URLSearchParams([
         ...(poiIds ? [['ids', poiIds.join(',')]] : []),
         ...stringifyOptions(options),
@@ -141,13 +137,11 @@ export function getPoiByCategoryIdUrl(
   categoryId: number | string,
   options: ApiPoisOptions = {},
 ): string {
-  const { apiEndpoint } = useApiEndpoint()
-  const projectSlug = useState<string>('project')
-  const themeSlug = useState<string>('theme')
+  const apiEndpoint = useState('api-endpoint')
 
   options = Object.assign(defaultOptions, { geometry_as: 'point' }, options)
   return (
-    `${apiEndpoint.value}/${projectSlug.value}/${themeSlug.value}/pois/category/${categoryId}.${options.format}?${
+    `${apiEndpoint.value}/pois/category/${categoryId}.${options.format}?${
     new URLSearchParams(stringifyOptions(options))}`
   )
 }

@@ -4,12 +4,12 @@ import type { Settings } from '~/lib/apiSettings'
 export async function fetchDynamicDomains() {
   try {
     config()
-    const apiEndpoint = process.env.NUXT_PUBLIC_API_ENDPOINT
+    const genericApiEndpoint = process.env.NUXT_PUBLIC_GENERIC_API_ENDPOINT
 
-    if (!apiEndpoint)
-      throw new Error('Missing apiEndpoint.')
+    if (!genericApiEndpoint)
+      throw new Error('Missing genericApiEndpoint.')
 
-    await fetch(apiEndpoint)
+    await fetch(genericApiEndpoint)
       .then((data: Response) => {
         if (data.ok) {
           return data.json() as unknown as Record<string, Settings>

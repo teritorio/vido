@@ -18,12 +18,10 @@ export async function getArticle(slug: string): Promise<{
   error: Ref<FetchError<any> | null>
   status: Ref<AsyncDataRequestStatus>
 }> {
-  const { apiEndpoint } = useApiEndpoint()
-  const projectSlug = useState<string>('project')
-  const themeSlug = useState<string>('theme')
+  const apiEndpoint = useState('api-endpoint')
 
   const { data, error, status } = await useFetch<string>(
-    () => `${apiEndpoint.value}/${projectSlug.value}/${themeSlug.value}/article/${slug}.html`,
+    () => `${apiEndpoint.value}/article/${slug}.html`,
     { method: 'GET' },
   )
 

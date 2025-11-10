@@ -71,9 +71,7 @@ const snackStore = useSnackStore()
 const menuStore = useMenuStore()
 const { featuresColor, isLoadingFeatures, selectedCategoryIds } = storeToRefs(menuStore)
 const { theme, explorerModeEnabled } = storeToRefs(useSiteStore())
-const projectSlug = useState<string>('project')
-const themeSlug = useState<string>('theme')
-const { apiEndpoint } = useApiEndpoint()
+const apiEndpoint = useState<string>('api-endpoint')
 const mapStore = useMapStore()
 const { center, selectedFeature, selectedFeatureDepsIDs, teritorioCluster, mode } = storeToRefs(mapStore)
 const mapStyleLoaded = ref(false)
@@ -239,7 +237,7 @@ async function updateSelectedFeature(feature?: ApiPoi): Promise<void> {
 
       try {
         const { data, error, status } = await useFetch<ApiPoiDeps>(
-          () => `${apiEndpoint.value}/${projectSlug.value}/${themeSlug.value}/poi/${id}/deps.geojson`,
+          () => `${apiEndpoint.value}/poi/${id}/deps.geojson`,
           {
             query: {
               geometry_as: 'point',

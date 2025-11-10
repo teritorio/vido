@@ -2,11 +2,9 @@ import type { ApiPoi, ApiPois } from '~/lib/apiPois'
 import { PropertyTranslationsContextEnum } from '~/stores/site'
 
 export function usePois() {
-  const { apiEndpoint } = useApiEndpoint()
   const { routeToString, addressToString } = useField()
   const route = useRoute()
-  const projectSlug = useState<string>('project')
-  const themeSlug = useState<string>('theme')
+  const apiEndpoint = useState<string>('api-endpoint')
 
   const pois = ref<ApiPois | null>(null)
   const error = ref()
@@ -27,7 +25,7 @@ export function usePois() {
     }
 
     const { data, error: err, pending: pend, status: stat } = await useFetch<ApiPois>(
-      () => `${apiEndpoint.value}/${projectSlug.value}/${themeSlug.value}/pois/category/${id}.geojson`,
+      () => `${apiEndpoint.value}/pois/category/${id}.geojson`,
       {
         query,
         transform: pois => transformPois(pois, routeToString, addressToString),
