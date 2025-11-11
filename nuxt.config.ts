@@ -33,14 +33,22 @@ export default defineNuxtConfig({
     vueI18n: 'config/i18n.config.ts',
   },
   image: {
-    domains: process.env.NUXT_PUBLIC_IMAGE_DOMAINS?.split(',').filter(Boolean) || [],
+    provider: 'customProxy',
+    providers: {
+      customProxy: {
+        provider: '~/providers/custom-proxy',
+        options: {
+          baseURL: '',
+        },
+      },
+    },
   },
   imports: {
     autoImport: true,
   },
   modules: [
     '@nuxtjs/i18n',
-    '@nuxt/image-edge',
+    '@nuxt/image',
     '@pinia/nuxt',
     '@kevinmarrec/nuxt-pwa',
     async (_options: any, nuxt: any) => {
