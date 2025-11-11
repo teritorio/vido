@@ -23,7 +23,7 @@ ENV NUXT_HOST="0.0.0.0"
 ENV NUXT_PORT="3000"
 
 EXPOSE 3000
-CMD ["/bin/sh", "-c", "NUXT_PUBLIC_IMAGE_DOMAINS=$(yarn fetch-domains) node .output/server/index.mjs"]
+CMD [ "node", ".output/server/index.mjs" ]
 
 HEALTHCHECK \
     --start-interval=1s \
