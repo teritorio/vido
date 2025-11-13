@@ -6,22 +6,22 @@ export default defineNitroPlugin(async () => {
   try {
     const configs = await $fetch<Record<string, Settings>>(genericApiEndpoint)
 
-    const domains = [
-      ...new Set([
-        ...Object.entries(configs)
-          .map(([_slug, config]) =>
-            Object.entries(config.themes)
-              .map(([_slug, theme]) => theme.site_url.fr)
-              .filter(Boolean)
-              .flat(),
-          )
-          .flat(),
-        ...Object.entries(configs)
-          .map(([_slug, config]) => config.image_proxy_hosts)
+    const domains = Object.fromEntries(
+      Object.entries(configs).map(([slug, config]) => {
+        const urls = Object.values(config.themes)
+          .map(theme => theme.site_url?.fr)
           .filter(Boolean)
-          .flat(),
-      ]),
-    ]
+
+        const hosts = Array.isArray(config.image_proxy_hosts)
+          ? config.image_proxy_hosts
+          : config.image_proxy_hosts
+            ? [config.image_proxy_hosts]
+            : []
+        const values = Array.from(new Set([...urls, ...hosts]))
+
+        return [slug, values]
+      }),
+    )
 
     // @ts-expect-error: can't declare the interface
     globalThis.allowedDomains = domains
