@@ -2,13 +2,14 @@ import { Buffer } from 'node:buffer'
 
 export default defineEventHandler(async (event) => {
   const url = getQuery(event).url as string
+  const project = getQuery(event).project as string
 
   if (!url)
     throw createError({ statusCode: 400, message: 'Missing URL' })
 
   const domain = new URL(url).hostname
   // @ts-expect-error: can't declare the interface
-  const allowedDomains: string[] = globalThis.allowedDomains || []
+  const allowedDomains: string[] = globalThis.allowedDomains[project] || []
 
   if (!allowedDomains.includes(domain)) {
     throw createError({ statusCode: 403, message: 'Domain not allowed' })
