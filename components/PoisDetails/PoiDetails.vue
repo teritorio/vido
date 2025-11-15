@@ -18,6 +18,7 @@ import { favoriteStore as useFavoriteStore } from '~/stores/favorite'
 import { OriginEnum } from '~/utils/types'
 import FieldsHeader from '~/components/UI/FieldsHeader.vue'
 import ContribFieldGroup from '~/components/Fields/ContribFieldGroup.vue'
+import PanoramaxViewer from '~/components/PoisDetails/PanoramaxViewer.vue'
 
 const props = defineProps<{
   settings: Settings
@@ -195,12 +196,17 @@ onMounted(() => {
         </div>
 
         <div class="detail-right">
+          <PanoramaxViewer
+            v-if="poi.properties.panoramax"
+            :image-id="poi.properties.panoramax"
+            :title="pageTitle"
+          />
           <Mapillary
-            v-if="poi.properties.mapillary"
+            v-else-if="poi.properties.mapillary"
             :image-id="poi.properties.mapillary"
           />
           <Carousel
-            v-else-if="poi.properties.image"
+            v-if="poi.properties.image"
             :images="poi.properties.image"
           />
 

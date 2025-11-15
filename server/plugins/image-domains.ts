@@ -19,7 +19,7 @@ export default defineNitroPlugin(async () => {
             : []
         const values = Array.from(new Set([...urls, ...hosts]))
 
-        return [slug, values]
+        return [slug, [...values, 'api.panoramax.xyz']]
       }),
     )
 
