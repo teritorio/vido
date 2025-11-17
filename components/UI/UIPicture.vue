@@ -2,11 +2,10 @@
 defineProps<{
   alt: string
   src: string
+  sizes: string
 }>()
 </script>
 
 <template>
-  <div>
-    <NuxtPicture :src="src" :alt="alt" />
-  </div>
+  <NuxtPicture :src="src" :alt="alt" :sizes="sizes" />
 </template>

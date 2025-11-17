@@ -15,7 +15,7 @@ const { t } = useI18n()
   <div v-if="images.length === 1" class="tw-margin tw-slide tw-mb-14">
     <UIPicture
       :src="images[0]"
-      :media-size="device.smallScreen ? '100vw' : '66vw'"
+      :sizes="device.smallScreen ? '100vw' : '66vw'"
       :alt="t('poiCard.image')"
     />
   </div>
@@ -29,7 +29,7 @@ const { t } = useI18n()
       <VCarouselItem v-for="(image, i) in images" :key="i">
         <UIPicture
           :src="image"
-          :media-size="device.smallScreen ? '100vw' : '66vw'"
+          :sizes="device.smallScreen ? '100vw' : '66vw'"
           :alt="t('poiCard.image')"
         />
       </VCarouselItem>

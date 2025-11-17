@@ -12,6 +12,7 @@ defineProps<{
     <UIPicture
       :src="`https://api.panoramax.xyz/api/pictures/${imageId}/sd.jpg`"
       :alt="title"
+      sizes="100vw"
     />
     <p>© <a :href="`https://api.panoramax.xyz/?pic=${imageId}`" target="_blank">Panoramax</a></p>
   </div>
