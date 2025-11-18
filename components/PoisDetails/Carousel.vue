@@ -1,21 +1,19 @@
 <script setup lang="ts">
 import { VCarousel, VCarouselItem } from 'vuetify/components/VCarousel'
 import UIPicture from '~/components/UI/UIPicture.vue'
-import useDevice from '~/composables/useDevice'
 
 defineProps<{
   images: string[]
 }>()
 
-const device = useDevice()
 const { t } = useI18n()
 </script>
 
 <template>
   <div v-if="images.length === 1" class="tw-margin tw-slide tw-mb-14">
     <UIPicture
+      sizes="sm:768px"
       :src="images[0]"
-      :sizes="device.smallScreen ? '100vw' : '66vw'"
       :alt="t('poiCard.image')"
     />
   </div>
@@ -28,8 +26,8 @@ const { t } = useI18n()
     >
       <VCarouselItem v-for="(image, i) in images" :key="i">
         <UIPicture
+          sizes="sm:768px"
           :src="image"
-          :sizes="device.smallScreen ? '100vw' : '66vw'"
           :alt="t('poiCard.image')"
         />
       </VCarouselItem>
