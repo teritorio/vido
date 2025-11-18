@@ -251,7 +251,9 @@ export default defineNuxtComponent({
         v-else-if="field.field === 'phone' || field.field === 'mobile'"
         :key="`phone_${phone}`"
       >
-        <Phone :number="phone" />
+        <ClientOnly>
+          <Phone :number="phone" />
+        </ClientOnly>
       </div>
 
       <div
