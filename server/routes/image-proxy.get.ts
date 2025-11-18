@@ -12,13 +12,15 @@ export default defineEventHandler(async (event) => {
   const allowedDomains: string[] = globalThis.allowedDomains[project] || []
 
   if (!allowedDomains.includes(domain)) {
-    throw createError({ statusCode: 403, message: 'Domain not allowed' })
+    event.node.res.statusCode = 403
+    return { error: 'Domain not allowed' }
   }
 
   const response = await fetch(url)
 
   if (!response.ok) {
-    throw createError({ statusCode: response.status, message: `Failed to fetch image from ${domain}` })
+    event.node.res.statusCode = response.status
+    return { error: `Failed to fetch image from ${domain}` }
   }
 
   return Buffer.from(await response.arrayBuffer())
