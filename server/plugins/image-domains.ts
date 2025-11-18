@@ -8,8 +8,12 @@ export default defineNitroPlugin(async () => {
 
     const domains = Object.fromEntries(
       Object.entries(configs).map(([slug, config]) => {
+        const devUrls = [] as string[]
         const urls = Object.values(config.themes)
-          .map(theme => theme.site_url?.fr)
+          .map((theme) => {
+            devUrls.push(`${theme.slug}-${slug}.elasa-dev.teritorio.xyz`)
+            return new URL(theme.site_url?.fr).hostname
+          })
           .filter(Boolean)
 
         const hosts = Array.isArray(config.image_proxy_hosts)
@@ -17,7 +21,7 @@ export default defineNitroPlugin(async () => {
           : config.image_proxy_hosts
             ? [config.image_proxy_hosts]
             : []
-        const values = Array.from(new Set([...urls, ...hosts]))
+        const values = Array.from(new Set([...urls, ...devUrls, ...hosts]))
 
         return [slug, [...values, 'api.panoramax.xyz']]
       }),
