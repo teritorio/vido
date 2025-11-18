@@ -77,7 +77,7 @@ const teritorioIconBadgeProps = computed(() => {
       v-if="poi.properties.image && poi.properties.image.length > 0"
       :src="poi.properties.image[0]"
       :alt="$t('poiCard.thumbnail')"
-      sizes="8rem"
+      sizes="sm:250px"
     />
   </article>
 </template>

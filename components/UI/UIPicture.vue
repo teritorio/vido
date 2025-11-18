@@ -7,5 +7,9 @@ defineProps<{
 </script>
 
 <template>
-  <NuxtPicture :src="src" :alt="alt" :sizes="sizes" />
+  <NuxtPicture
+    :src="src"
+    :alt="alt"
+    :sizes="sizes"
+  />
 </template>
