@@ -6,23 +6,20 @@ interface Snack {
   textBtn: string
 }
 
-interface State {
-  snack: Snack | null
-}
+export const snackStore = defineStore('snack', () => {
+  const snack = ref<Snack>()
 
-export const snackStore = defineStore('snack', {
-  state: (): State => ({
-    snack: null,
-  }),
+  function showSnack(payload?: Snack) {
+    snack.value = payload
+    if (payload) {
+      setTimeout(() => {
+        snack.value = undefined
+      }, payload.time)
+    }
+  }
 
-  actions: {
-    showSnack(payload: Snack | null) {
-      this.snack = payload
-      if (payload) {
-        setTimeout(() => {
-          this.snack = null
-        }, payload.time)
-      }
-    },
-  },
+  return {
+    snack,
+    showSnack,
+  }
 })

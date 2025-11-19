@@ -389,7 +389,7 @@ function handleSnackAction(): void {
   if (!mapBaseRef.value)
     return
 
-  snackStore.showSnack(null)
+  snackStore.showSnack(undefined)
   resetZoom()
 
   if (props.features.length) {
