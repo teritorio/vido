@@ -9,7 +9,7 @@ const { t } = useI18n()
 </script>
 
 <template>
-  <div>
+  <div class="mapillary">
     <iframe :src="`https://www.mapillary.com/embed?image_key=${imageId}&x=0.5&y=0.5&style=photo`" />
     <ExternalLink
       :href="`https://www.mapillary.com/app/?pKey=${imageId}&focus=photo`"
@@ -22,10 +22,6 @@ const { t } = useI18n()
 
 <style lang="scss" scoped>
 @import '~/assets/details';
-
-div {
-  margin-bottom: 60px;
-}
 
 iframe {
   width: 100%;

@@ -27,8 +27,14 @@ p {
   position: absolute;
   bottom: 0;
   right: 0;
-  background-color: #FFF;
-  padding: .25rem 0.5rem;
-  border-radius: .5rem 0 0;
+  background-color: #ffffff80;
+  padding-left: .25rem;
+  font-size: 0.7rem;
+}
+
+@media (width >= 768px) {
+  p {
+    font-size: 0.8rem;
+  }
 }
 </style>
