@@ -5,93 +5,97 @@ import type { ApiPoi, ApiPoiId } from '~/lib/apiPois'
 
 const LOCAL_STORAGE = { favorites: 'vido:favorites', favoritesAddr: 'vido:favorites-addr' }
 
-interface State {
-  favoritesIds: ApiPoiId[]
-  favoriteAddressesObj: Record<string, string> // Replaces Map
-  favoriteFeatures: ApiPoi[]
-}
+export const favoriteStore = defineStore('favorite', () => {
+  const favoritesIds = ref<ApiPoiId[]>([])
+  const favoriteAddressesObj = ref<Record<string, string>>({})
+  const favoriteFeatures = ref<ApiPoi[]>([])
 
-export const favoriteStore = defineStore('favorite', {
-  state: (): State => ({
-    favoritesIds: [],
-    favoriteAddressesObj: {},
-    favoriteFeatures: [],
-  }),
+  const isFavorite = computed((): (id: number) => boolean => {
+    return id => !!favoritesIds.value.find(fav => fav === id)
+  })
 
-  getters: {
-    isFavorite: (state: State): (id: number) => boolean => {
-      return id => !!state.favoritesIds.find(fav => fav === id)
-    },
-    favoriteAddresses(state: State): Map<string, string> {
-      return new Map(Object.entries(state.favoriteAddressesObj))
-    },
-    favoriteCount(state: State): number {
-      return state.favoritesIds.length + Object.keys(state.favoriteAddressesObj).length
-    },
-  },
+  const favoriteAddresses = computed((): Map<string, string> => {
+    return new Map(Object.entries(favoriteAddressesObj.value))
+  })
 
-  actions: {
-    init() {
-      const poiFavorites = localStorage.getItem(LOCAL_STORAGE.favorites)
-      const addressFavorites = localStorage.getItem(LOCAL_STORAGE.favoritesAddr)
+  const favoriteCount = computed((): number => {
+    return favoritesIds.value.length + Object.keys(favoriteAddressesObj.value).length
+  })
 
-      if (poiFavorites) {
-        const favorites = JSON.parse(poiFavorites).favorites
-        this.favoritesIds = favorites
-        this.saveToLocalStorage(LOCAL_STORAGE.favorites, favorites)
-      }
+  function init() {
+    const poiFavorites = localStorage.getItem(LOCAL_STORAGE.favorites)
+    const addressFavorites = localStorage.getItem(LOCAL_STORAGE.favoritesAddr)
 
-      if (addressFavorites) {
-        const entries: [string, string][] = JSON.parse(addressFavorites).favorites
-        this.favoriteAddressesObj = Object.fromEntries(entries)
-        this.saveToLocalStorage(LOCAL_STORAGE.favoritesAddr, entries)
-      }
-    },
+    if (poiFavorites) {
+      const favorites = JSON.parse(poiFavorites).favorites
+      favoritesIds.value = favorites
+      saveToLocalStorage(LOCAL_STORAGE.favorites, favorites)
+    }
 
-    saveToLocalStorage(key: string, favorites?: ApiPoiId[] | [string, string][]) {
-      if (!favorites)
-        localStorage.removeItem(key)
-      else
-        localStorage.setItem(key, JSON.stringify({ favorites, version: 1 }))
-    },
+    if (addressFavorites) {
+      const entries: [string, string][] = JSON.parse(addressFavorites).favorites
+      favoriteAddressesObj.value = Object.fromEntries(entries)
+      saveToLocalStorage(LOCAL_STORAGE.favoritesAddr, entries)
+    }
+  }
 
-    toggleFavoriteAddr(poi: ApiPoi) {
-      const id = poi.properties.metadata.id.toString()
-      const coords = (poi.geometry as GeoJSON.Point).coordinates
-      const hash = encodeBase32(coords[1], coords[0])
+  function saveToLocalStorage(key: string, favorites?: ApiPoiId[] | [string, string][]) {
+    if (!favorites)
+      localStorage.removeItem(key)
+    else
+      localStorage.setItem(key, JSON.stringify({ favorites, version: 1 }))
+  }
 
-      if (!this.favoriteAddressesObj[id])
-        this.favoriteAddressesObj[id] = hash
-      else
-        delete this.favoriteAddressesObj[id]
+  function toggleFavoriteAddr(poi: ApiPoi) {
+    const id = poi.properties.metadata.id.toString()
+    const coords = (poi.geometry as GeoJSON.Point).coordinates
+    const hash = encodeBase32(coords[1], coords[0])
 
-      const entries = Object.entries(this.favoriteAddressesObj)
-      this.saveToLocalStorage(LOCAL_STORAGE.favoritesAddr, entries)
-    },
+    if (!favoriteAddressesObj.value[id])
+      favoriteAddressesObj.value[id] = hash
+    else
+      delete favoriteAddressesObj.value[id]
 
-    toggleFavorite(poi: ApiPoi | number) {
-      const id = typeof poi === 'number' ? poi : poi.properties.metadata.id || (poi.id as number)
-      const favIndex = id ? this.favoritesIds.findIndex(favId => favId === id) : false
+    const entries = Object.entries(favoriteAddressesObj.value)
+    saveToLocalStorage(LOCAL_STORAGE.favoritesAddr, entries)
+  }
 
-      if (favIndex === false)
-        throw createError({ statusCode: 404, statusMessage: 'Favorite has no ID.' })
+  function toggleFavorite(poi: ApiPoi | number) {
+    const id = typeof poi === 'number' ? poi : poi.properties.metadata.id || (poi.id as number)
+    const favIndex = id ? favoritesIds.value.findIndex(favId => favId === id) : false
 
-      if (favIndex === -1)
-        this.favoritesIds.push(id)
-      else
-        this.favoritesIds.splice(favIndex, 1)
+    if (favIndex === false)
+      throw createError({ statusCode: 404, statusMessage: 'Favorite has no ID.' })
 
-      this.saveToLocalStorage(LOCAL_STORAGE.favorites, this.favoritesIds)
-    },
+    if (favIndex === -1)
+      favoritesIds.value.push(id)
+    else
+      favoritesIds.value.splice(favIndex, 1)
 
-    reset() {
-      this.favoritesIds = []
-      this.favoriteAddressesObj = {}
-      this.saveToLocalStorage(LOCAL_STORAGE.favorites)
-      this.saveToLocalStorage(LOCAL_STORAGE.favoritesAddr)
-    },
-  },
+    saveToLocalStorage(LOCAL_STORAGE.favorites, favoritesIds.value)
+  }
 
+  function reset() {
+    favoritesIds.value = []
+    favoriteAddressesObj.value = {}
+    saveToLocalStorage(LOCAL_STORAGE.favorites)
+    saveToLocalStorage(LOCAL_STORAGE.favoritesAddr)
+  }
+
+  return {
+    favoritesIds,
+    favoriteAddressesObj,
+    favoriteFeatures,
+    isFavorite,
+    favoriteAddresses,
+    favoriteCount,
+    init,
+    saveToLocalStorage,
+    toggleFavoriteAddr,
+    toggleFavorite,
+    reset,
+  }
+}, {
   share: {
     enable: true,
   },
