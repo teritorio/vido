@@ -10,7 +10,7 @@ defineProps<{
 <template>
   <div class="panoramax-viewer">
     <UIPicture
-      sizes="sm:768px"
+      sizes="768px"
       :src="`https://api.panoramax.xyz/api/pictures/${imageId}/sd.jpg`"
       :alt="title"
     />

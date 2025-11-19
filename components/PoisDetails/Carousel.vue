@@ -13,7 +13,7 @@ const { t } = useI18n()
   <div class="carousel">
     <UIPicture
       v-if="images.length === 1" class="tw-margin tw-slide"
-      sizes="sm:768px"
+      sizes="768px"
       :src="images[0]"
       :alt="t('poiCard.image')"
     />
@@ -26,7 +26,7 @@ const { t } = useI18n()
     >
       <VCarouselItem v-for="(image, i) in images" :key="i">
         <UIPicture
-          sizes="sm:768px"
+          sizes="768px"
           :src="image"
           :alt="t('poiCard.image')"
         />
