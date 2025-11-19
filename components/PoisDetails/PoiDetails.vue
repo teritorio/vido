@@ -292,6 +292,9 @@ onMounted(() => {
   .detail-right {
     width: 66%;
     padding-left: 3.3rem;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
   }
 }
 
