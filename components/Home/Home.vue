@@ -430,7 +430,7 @@ function handlePoiCardClose() {
 
 onBeforeUnmount(() => {
   mapStore.setSelectedFeature()
-  teritorioCluster.value = null
+  teritorioCluster.value = undefined
 })
 </script>
 
