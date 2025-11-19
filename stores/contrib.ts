@@ -2,20 +2,18 @@ import { defineStore } from 'pinia'
 
 export const STORE_NAME = 'contrib'
 
-interface State {
-  enabled: boolean
-}
+export const useContribStore = defineStore(STORE_NAME, () => {
+  const enabled = ref<boolean>(false)
 
-export const useContribStore = defineStore(STORE_NAME, {
-  state: (): State => ({
-    enabled: false,
-  }),
-  actions: {
-    setEnabled(state: boolean) {
-      const cookie = useCookie(STORE_NAME)
+  function setEnabled(state: boolean): void {
+    const cookie = useCookie(STORE_NAME)
 
-      this.enabled = state
-      cookie.value = JSON.stringify(state)
-    },
-  },
+    enabled.value = state
+    cookie.value = JSON.stringify(state)
+  }
+
+  return {
+    enabled,
+    setEnabled,
+  }
 })
