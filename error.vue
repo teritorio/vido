@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { storeToRefs } from 'pinia'
 import { VEmptyState } from 'vuetify/lib/labs/components.mjs'
-import { useSiteStore } from './stores/site'
+import { useSiteStore } from '~/stores/site'
 import type { NuxtError } from '#app'
 
 defineProps({
