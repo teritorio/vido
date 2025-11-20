@@ -11,7 +11,7 @@ export default defineEventHandler(async (event) => {
   if (!url)
     throw createError({ statusCode: 400, message: 'Missing URL' })
 
-  const domain = new URL(url).hostname
+  const domain = new URL(url).host
   // @ts-expect-error: can't declare the interface
   const allowedDomains: string[] = globalThis.allowedDomains[project] || []
 

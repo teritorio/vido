@@ -1,27 +1,31 @@
 import type { Settings } from '~/lib/apiSettings'
 
 export default defineNitroPlugin(async () => {
-  const { genericApiEndpoint } = useRuntimeConfig().public
+  const { genericApiEndpoint, appHost } = useRuntimeConfig().public
 
   try {
     const configs = await $fetch<Record<string, Settings>>(genericApiEndpoint)
 
     const domains = Object.fromEntries(
       Object.entries(configs).map(([slug, config]) => {
-        const devUrls = [] as string[]
         const urls = Object.values(config.themes)
           .map((theme) => {
-            devUrls.push(`${theme.slug}-${slug}.elasa-dev.teritorio.xyz`)
-            return new URL(theme.site_url?.fr).hostname
+            return [
+              new URL(theme.site_url.fr).host,
+              import.meta.dev
+                ? `${theme.slug}-${slug}.${new URL(genericApiEndpoint).host}`
+                : `${theme.slug}-${slug}.${appHost}`,
+            ]
           })
           .filter(Boolean)
+          .flat()
 
-        const hosts = Array.isArray(config.image_proxy_hosts)
+        const imageHosts = Array.isArray(config.image_proxy_hosts)
           ? config.image_proxy_hosts
           : config.image_proxy_hosts
             ? [config.image_proxy_hosts]
             : []
-        const values = Array.from(new Set([...urls, ...devUrls, ...hosts]))
+        const values = Array.from(new Set([...urls, ...imageHosts]))
 
         return [slug, [...values, 'api.panoramax.xyz']]
       }),

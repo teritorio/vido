@@ -18,12 +18,33 @@ export const useSiteStore = defineStore('site', () => {
   const articles = ref<Article[]>([])
   const translations = ref<PropertyTranslations>()
   const themeSlug = useState<string>('theme')
+  const projectSlug = useState<string>('project')
+  const { genericApiEndpoint, appHost } = useRuntimeConfig().public
 
   const theme = computed(() => {
     if (!settings.value?.themes)
       return undefined
 
     return settings.value.themes[themeSlug.value]
+  })
+
+  const imageDomains = computed(() => {
+    const domains = ['api.panoramax.xyz'] as string []
+
+    if (settings.value?.image_proxy_hosts)
+      domains.push(...settings.value.image_proxy_hosts)
+
+    if (theme.value)
+      domains.push(new URL(theme.value.site_url.fr).host)
+
+    if (import.meta.dev) {
+      domains.push(`${themeSlug.value}-${projectSlug.value}.${new URL(genericApiEndpoint).host}`)
+    }
+    else {
+      domains.push(`${themeSlug.value}-${projectSlug.value}.${appHost}`)
+    }
+
+    return domains
   })
 
   const siteName = computed(() => theme.value?.title.fr ?? '')
@@ -91,6 +112,7 @@ export const useSiteStore = defineStore('site', () => {
     articles,
     translations,
     theme,
+    imageDomains,
     logoUrl,
     mainUrl,
     siteName,
