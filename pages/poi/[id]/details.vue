@@ -3,81 +3,84 @@ import { groupBy } from 'lodash'
 import { storeToRefs } from 'pinia'
 import PoiDetails from '~/components/PoisDetails/PoiDetails.vue'
 import type { ApiPoiDeps } from '~/lib/apiPoiDeps'
-import { getPoiDepsById } from '~/lib/apiPoiDeps'
 import type { ApiPoi } from '~/lib/apiPois'
 import { headerFromSettings } from '~/lib/apiSettings'
-import { getAsyncDataOrThrows } from '~/lib/getAsyncData'
 import { useSiteStore } from '~/stores/site'
 import { regexForPOIIds } from '~/composables/useIdsResolver'
 
-//
-// Validators
-//
+interface PoiPageData {
+  poi?: ApiPoi
+  poiDeps?: ApiPoiDeps
+}
+
 definePageMeta({
   validate({ params }) {
     return !!params.id && regexForPOIIds.test(params.id.toString())
   },
 })
 
-//
-// Composables
-//
 const { articles, settings, theme } = storeToRefs(useSiteStore())
 const { params } = useRoute()
 const { $trackingInit } = useNuxtApp()
+const apiEndpoint = useState('api-endpoint')
 
-//
-// Data
-//
-const poiDeps = ref<ApiPoiDeps>()
+const { data, error } = await useFetch(
+  `${apiEndpoint.value}/poi/${params.id}/deps.geojson`,
+  {
+    key: `poi-${params.id}`,
+    query: {
 
-const fetchPoiPoiDeps = getAsyncDataOrThrows(
-  `fetchPoiPoiDeps-${params.id}`,
-  async () => {
-    return await getPoiDepsById(params.id as string, {
       geometry_as: 'point_or_bbox',
       short_description: false,
-    }).then((poiDeps) => {
-      let poi: ApiPoi | undefined
-      if (poiDeps) {
-        const g = groupBy(
-          poiDeps.features,
-          feature => 'metadata' in feature.properties
-            ? feature.properties.metadata.id.toString() === params.id
-            : false,
-        )
-        poi = g.true && (g.true[0] as ApiPoi)
-        poiDeps.features = g.false || []
+    },
+    transform: (response: ApiPoiDeps): PoiPageData => {
+      if (!response?.features) {
+        return { poi: undefined, poiDeps: undefined }
+      }
+
+      const { true: poiFeatures, false: otherFeatures } = groupBy(
+        response.features,
+        feature => 'metadata' in feature.properties
+          ? feature.properties.metadata.id.toString() === params.id
+          : false,
+      )
+
+      const poi = poiFeatures?.[0] as ApiPoi | undefined
+
+      const poiDeps: ApiPoiDeps = {
+        ...response,
+        features: otherFeatures || [],
       }
 
       return { poi, poiDeps }
-    })
+    },
   },
 )
 
-const [poiPoiDeps] = await Promise.all([fetchPoiPoiDeps])
-
-if (!poiPoiDeps.value.poi) {
+if (error.value) {
   throw createError({
-    statusCode: 404,
-    statusMessage: 'POI not found. Missing main object.',
+    statusCode: 500,
+    statusMessage: `Failed to fetch POI data: ${error.value.message}`,
   })
 }
 
-const poi = ref(poiPoiDeps.value.poi)
-poiDeps.value = poiPoiDeps.value.poiDeps
+if (!data.value?.poi) {
+  throw createError({
+    statusCode: 404,
+    statusMessage: `POI with ID: ${params.id} not found`,
+  })
+}
 
-const { featureSeoTitle } = useFeature(poi, { type: 'details' })
+const poi = ref(data.value.poi)
+const poiDeps = ref(data.value.poiDeps)
+const { featureSeoTitle } = useFeature(poi as Ref<ApiPoi>, { type: 'details' })
 
-if (!featureSeoTitle.value)
-  throw createError('Feature has no name')
-
-//
-// Hooks
-//
-onBeforeMount(() => {
-  $trackingInit()
-})
+if (!featureSeoTitle.value) {
+  throw createError({
+    statusCode: 404,
+    statusMessage: 'Feature has no name',
+  })
+}
 
 if (settings.value && theme.value) {
   useHead(
@@ -93,6 +96,10 @@ if (settings.value && theme.value) {
     ),
   )
 }
+
+onBeforeMount(() => {
+  $trackingInit()
+})
 </script>
 
 <template>
