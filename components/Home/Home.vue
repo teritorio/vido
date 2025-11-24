@@ -262,10 +262,11 @@ watch(isModeFavorites, async (isEnabled) => {
 //
 // Methods
 //
-function goToSelectedFeature(feature?: ApiPoi) {
+async function goToSelectedFeature(feature?: ApiPoi) {
   if (mapFeaturesRef.value) {
     if (feature && selectedFeature.value?.properties.metadata.id !== feature.properties.metadata.id)
-      mapFeaturesRef.value.updateSelectedFeature(feature)
+      await mapFeaturesRef.value.updateSelectedFeature(feature)
+
     mapFeaturesRef.value.goToSelectedFeature()
   }
 }
