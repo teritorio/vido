@@ -1,49 +1,54 @@
-import type { IncomingMessage, ServerResponse } from 'node:http'
-import { defineEventHandler } from 'h3'
 import type { SitemapEntry } from '~/node_modules/nuxt-simple-sitemap/dist/module'
 import type { BuildSitemapOptions } from '~/node_modules/nuxt-simple-sitemap/dist/runtime/util/builder'
 import { buildSitemap } from '~/node_modules/nuxt-simple-sitemap/dist/runtime/util/builder'
 import type { MenuItem } from '~/lib/apiMenu'
 import type { ApiPois } from '~/lib/apiPois'
 
-// Import by node_modules because access to internal module content
+export default defineEventHandler(async (event) => {
+  const hostname = getHeader(event, 'host')
 
-async function manifest(
-  req: IncomingMessage,
-  res: ServerResponse<IncomingMessage>,
-) {
-  const hostname = req.headers.host?.toString()
+  if (!hostname) {
+    setResponseStatus(event, 500)
+    return 'Missing host header'
+  }
 
-  if (hostname) {
+  try {
+    // Get all request headers from the original request
+    const incomingHeaders = getRequestHeaders(event)
+
+    // Fetch API endpoint configuration
     const { api: apiEndpoint } = await $fetch('/api/config', {
       headers: {
         'x-client-host': hostname,
+        ...incomingHeaders,
       },
     })
 
-    const entries: SitemapEntry[] = (await Promise.all([
-      await $fetch<MenuItem[]>(`${apiEndpoint}/menu.json`)
-        .then(menuItem => menuItem
-          .filter(menuItem => menuItem.category && menuItem.id)
-          .map(menuCategory => ({
-            url: `/${menuCategory.id}/`,
-          })),
-        ),
-      await $fetch<ApiPois>(`${apiEndpoint}/pois.geojson`)
-        .then(pois => pois.features.map(poi => ({
-          url: `/poi/${poi.properties.metadata.id}/details`,
-          lastmod: poi.properties.metadata.updated_at,
+    // Fetch menu and POIs data in parallel
+    const [menuItems, pois] = await Promise.all([
+      $fetch<MenuItem[]>(`${apiEndpoint}/menu.json`),
+      $fetch<ApiPois>(`${apiEndpoint}/pois.geojson`),
+    ])
+
+    // Build sitemap entries
+    const entries: SitemapEntry[] = [
+      // Static routes
+      { url: '/' },
+      { url: '/embedded/' },
+      // Menu category routes
+      ...menuItems
+        .filter(item => item.category && item.id)
+        .map(category => ({
+          url: `/${category.id}/`,
         })),
-        ),
-    ])).flat(1)
+      // POI detail routes
+      ...pois.features.map(poi => ({
+        url: `/poi/${poi.properties.metadata.id}/details`,
+        lastmod: poi.properties.metadata.updated_at,
+      })),
+    ]
 
-    entries.push({
-      url: '/',
-    })
-    entries.push({
-      url: '/embedded/',
-    })
-
+    // Build sitemap options
     const options: BuildSitemapOptions = {
       sitemapConfig: {
         dynamicUrlsApiEndpoint: '/__sitemap',
@@ -55,7 +60,6 @@ async function manifest(
         siteUrl: `https://${hostname}`,
         autoLastmod: false,
         inferStaticPagesAsRoutes: false,
-        //  sitemaps?: boolean | Record<string, Partial<SitemapRoot>>;
         hasApiRoutesUrl: false,
         hasPrerenderedRoutesPayload: false,
         isNuxtContentDocumentDriven: false,
@@ -68,22 +72,20 @@ async function manifest(
       },
     }
 
-    res.write(
-      await buildSitemap({
-        ...options,
-        sitemapName: 'default',
-      }),
-    )
+    // Generate sitemap
+    const sitemapContent = await buildSitemap({
+      ...options,
+      sitemapName: 'default',
+    })
 
-    res.statusCode = 200
-    res.end()
-  }
-  else {
-    res.statusCode = 500
-    res.end()
-  }
-}
+    setResponseHeader(event, 'Content-Type', 'application/xml')
+    setResponseStatus(event, 200)
 
-export default defineEventHandler(
-  async event => await manifest(event.node.req, event.node.res),
-)
+    return sitemapContent
+  }
+  catch (error) {
+    console.error('Error generating sitemap:', error)
+    setResponseStatus(event, 500)
+    return 'Error generating sitemap'
+  }
+})
