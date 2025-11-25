@@ -30,7 +30,11 @@ export default defineEventHandler(async (event) => {
   const arrayBuffer = await response.arrayBuffer()
   let image = sharp(Buffer.from(arrayBuffer))
 
-  if (width) {
+  // Get original image metadata
+  const metadata = await image.metadata()
+
+  // Only resize if width is specified AND original is larger than requested
+  if (width && metadata.width && metadata.width > width) {
     image = image.resize({ width })
   }
 
