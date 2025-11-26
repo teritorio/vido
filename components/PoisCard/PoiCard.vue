@@ -68,7 +68,7 @@ const logoColor = computed(() => hasImage.value ? '#AAA' : colorFill.value)
         class="tw-object-cover tw-h-full tw-w-full tw-z-10"
         :src="poi.properties.image[0]"
         :alt="$t('poiCard.thumbnail')"
-        sizes="768px"
+        sizes="320px xs:640px sm:748px md:640px"
       />
     </div>
 
