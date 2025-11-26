@@ -427,6 +427,11 @@ function handlePoiCardClose() {
     mapFeaturesRef.value.updateSelectedFeature()
   }
 }
+
+onBeforeUnmount(() => {
+  mapStore.setSelectedFeature()
+  teritorioCluster.value = null
+})
 </script>
 
 <template>
