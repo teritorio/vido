@@ -10,9 +10,9 @@ defineProps<{
 <template>
   <div class="panoramax-viewer">
     <UIPicture
-      sizes="768px"
       :src="`https://api.panoramax.xyz/api/pictures/${imageId}/sd.jpg`"
       :alt="title"
+      sizes="320px xs:640px sm:748px md:1024px lg:768px"
     />
     <p>© <a :href="`https://api.panoramax.xyz/?pic=${imageId}`" target="_blank">Panoramax</a></p>
   </div>
