@@ -20,12 +20,14 @@ export default defineI18nLocale(() => {
       export_pdf: 'Exportación PDF',
       export_csv: 'exportación CSV',
       share_link: 'Compartir enlace de favoritos',
+      static_map: 'Generar un enlace a un mapa',
       notebook: {
         title: 'Cuaderno de favoritos',
         share: 'Compartir',
         print: 'Imprimir',
         export: 'Exportar',
         remove: 'Borrar',
+        map: 'Mapa',
       },
       noFavs:
         'Todavía no tienes ningún lugar marcado. Puedes hacerlo seleccionando un lugar en el mapa y guardándolo como favorito',
