@@ -206,7 +206,7 @@ onMounted(() => {
             :image-id="poi.properties.mapillary"
           />
           <Carousel
-            v-if="poi.properties.image"
+            v-else-if="poi.properties.image"
             :images="poi.properties.image"
           />
 
