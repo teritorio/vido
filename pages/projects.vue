@@ -63,7 +63,7 @@ const filteredProjects = computed(() => {
   )
 })
 
-function getDevUrl(theme: SiteInfosTheme, project: Settings): string {
+function getGenericUrl(theme: SiteInfosTheme, project: Settings): string {
   return `${import.meta.dev ? 'http' : 'https'}://${theme.slug}-${project.slug}.${appHost}`
 }
 </script>
@@ -210,10 +210,10 @@ function getDevUrl(theme: SiteInfosTheme, project: Settings): string {
                     >
                       <a :href="theme.site_url.fr" target="_blank">PROD: {{ theme.site_url.fr }}</a>
                       <a
-                        :href="getDevUrl(theme, project)"
+                        :href="getGenericUrl(theme, project)"
                         target="_blank"
                       >
-                        DEV: {{ getDevUrl(theme, project) }}
+                        GENERIC: {{ getGenericUrl(theme, project) }}
                       </a>
                     </VCardSubtitle>
                   </VCardItem>
