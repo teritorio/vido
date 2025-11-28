@@ -19,7 +19,7 @@ export interface SiteInfosTheme {
   map_style_base_url: string
   map_bicycle_style_url: string
   map_style_satellite_url: string
-  cookies_consent_message: MultilingualString
+  cookies_consent_message?: MultilingualString
   cookies_usage_detail_url: string
   google_site_verification: string
   google_tag_manager_id: string
