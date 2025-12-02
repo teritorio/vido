@@ -502,6 +502,7 @@ function handlePoiCardClose() {
         <SelectedCategories
           v-if="!isModeExplorer && selectedCategories?.length && !isModeFavorites"
           :categories="selectedCategories"
+          :show-go-to-map="false"
           class="tw-hidden md:tw-block flex-shrink-1"
         />
         <IsochroneStatus v-if="isochroneCurrentFeature" />

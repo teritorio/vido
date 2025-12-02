@@ -4,15 +4,17 @@ import type { ApiMenuCategory } from '~/lib/apiMenu'
 import TeritorioIconBadge from '~/components/UI/TeritorioIconBadge.vue'
 import { menuStore as useMenuStore } from '~/stores/menu'
 
-defineProps<{
+withDefaults(defineProps<{
   categories: ApiMenuCategory[]
-}>()
+  showGoToMap: boolean
+}>(), {
+  showGoToMap: true,
+})
 
 defineEmits<{
   (e: 'showMap'): void
 }>()
 
-const device = useDevice()
 const menuStore = useMenuStore()
 
 function getItem(item: ApiMenuCategory) {
@@ -35,7 +37,9 @@ function getTeritorioIconBadgeProps(item: ApiMenuCategory) {
 
 <template>
   <div class="selected-categories">
-    <h3>{{ $t('selectedCategories.label') }}</h3>
+    <h3 v-if="showGoToMap">
+      {{ $t('selectedCategories.label') }}
+    </h3>
     <div class="selected-categories-wrapper">
       <div>
         <VBtn
@@ -57,7 +61,7 @@ function getTeritorioIconBadgeProps(item: ApiMenuCategory) {
       </div>
     </div>
     <VBtn
-      v-if="categories.length && device.smallScreen"
+      v-if="showGoToMap && categories.length"
       @click="$emit('showMap')"
     >
       <template #prepend>
@@ -74,6 +78,9 @@ function getTeritorioIconBadgeProps(item: ApiMenuCategory) {
       color="#dc2626"
       width="28px"
       height="28px"
+      :style="{
+        transform: showGoToMap ? 'unset' : 'translate(50%, -50%)',
+      }"
       @click="menuStore.clearSelectedCategoryIds"
     >
       <FontAwesomeIcon icon="trash" />
@@ -134,10 +141,6 @@ h3 {
     pointer-events: all;
     background-color: #fff;
     border-radius: 0.75rem;
-  }
-
-  .disable-all-categories {
-    transform: translate(50%, -50%);
   }
 
   .selected-categories-wrapper > div {
