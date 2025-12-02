@@ -210,7 +210,11 @@ function toggleExploreAroundSelectedPoi() {
           @category-change="onMenuChange"
         />
         <div class="tw-p-4 tw-pt-24 tw-absolute tw-flex tw-gap-4">
-          <SelectedCategories v-if="!isFiltersEqualToCategoryId && selectedCategories?.length && showEmbeddedUi" :categories="selectedCategories" />
+          <SelectedCategories
+            v-if="!isFiltersEqualToCategoryId && selectedCategories?.length && showEmbeddedUi"
+            :categories="selectedCategories"
+            :show-go-to-map="false"
+          />
           <IsochroneStatus v-if="isochroneCurrentFeature" />
         </div>
       </div>
