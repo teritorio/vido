@@ -153,9 +153,9 @@ export async function getPoiByCategoryId(
   options = Object.assign(defaultOptions, { geometry_as: 'point' }, options)
 
   return await fetch(getPoiByCategoryIdUrl(categoryId, options)).then(
-    (data) => {
+    async (data) => {
       if (data.ok) {
-        return data.json() as unknown as ApiPois
+        return await data.json() as unknown as ApiPois
       }
       else {
         return Promise.reject(
