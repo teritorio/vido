@@ -2,6 +2,7 @@
 import type { FitBoundsOptions, LngLatBounds } from 'maplibre-gl'
 import type { MultiPolygon, Polygon } from 'geojson'
 import { storeToRefs } from 'pinia'
+import { localeIncludes } from 'locale-includes'
 import SelectedCategories from '~/components/Home/SelectedCategories.vue'
 import MapFeatures from '~/components/MainMap/MapFeatures.vue'
 import PoiCardContent from '~/components/PoisCard/PoiCardContent.vue'
@@ -94,8 +95,17 @@ const isFiltersEqualToCategoryId = computed(() => {
   return false
 })
 
+const poiFilter = ref<string>('')
+const { locale } = useI18n()
 const mapFeatures = computed((): ApiPoi[] => {
-  return flattenFeatures(features.value)
+  const f = flattenFeatures(features.value)
+
+  if (!poiFilter.value)
+    return f
+
+  return f.filter((f) => {
+    return localeIncludes(f.properties.name, poiFilter.value, { locales: locale.value, sensitivity: 'base' })
+  })
 })
 
 const poiFilters = computed(() => {
@@ -201,6 +211,7 @@ function toggleExploreAroundSelectedPoi() {
           :cooperative-gestures="false"
           :boundary-area="boundaryArea || settings!.polygon.data"
         />
+        <input v-model="poiFilter" name="poi-filter" type="text">
         <CategorySelector
           v-if="!isFiltersEqualToCategoryId && showEmbeddedUi"
           :filters="filters"
