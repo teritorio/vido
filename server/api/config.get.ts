@@ -40,7 +40,7 @@ export default defineEventHandler((event) => {
     return {
       project: appProject,
       theme: appTheme,
-      api: `${genericApiEndpoint}${apiPath}${appProject}/${appTheme}`,
+      api: `${genericApiEndpoint}/${appProject}/${appTheme}`,
     }
   }
 
