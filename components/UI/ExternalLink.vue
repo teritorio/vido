@@ -1,47 +1,23 @@
-<script lang="ts">
+<script setup lang="ts">
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
-import type { PropType } from 'vue'
 
-import { defineNuxtComponent } from '#app'
+const props = withDefaults(defineProps<{
+  href: string
+  title?: string
+  target?: string
+  rel?: string
+  icon?: string
+}>(), {
+  target: '_blank',
+})
 
-export default defineNuxtComponent({
-  components: {
-    FontAwesomeIcon,
-  },
-
-  props: {
-    href: {
-      type: String as PropType<string>,
-      required: true,
-    },
-    title: {
-      type: String as PropType<string>,
-      default: null,
-    },
-    target: {
-      type: String as PropType<string>,
-      default: '_blank',
-    },
-    rel: {
-      type: String as PropType<string>,
-      default: null,
-    },
-    icon: {
-      type: String as PropType<string>,
-      default: null,
-    },
-  },
-
-  computed: {
-    iconDefault(): string {
-      if (this.icon)
-        return this.icon
-      else if (this.href.startsWith('tel:'))
-        return 'phone'
-      else
-        return 'external-link-alt'
-    },
-  },
+const iconDefault = computed((): string => {
+  if (props.icon)
+    return props.icon
+  else if (props.href.startsWith('tel:'))
+    return 'phone'
+  else
+    return 'external-link-alt'
 })
 </script>
 

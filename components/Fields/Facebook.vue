@@ -1,21 +1,9 @@
-<script lang="ts">
+<script setup lang="ts">
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
-import type { PropType } from 'vue'
 
-import { defineNuxtComponent } from '#app'
-
-export default defineNuxtComponent({
-  components: {
-    FontAwesomeIcon,
-  },
-
-  props: {
-    url: {
-      type: String as PropType<string>,
-      default: null,
-    },
-  },
-})
+defineProps<{
+  url: string
+}>()
 </script>
 
 <template>

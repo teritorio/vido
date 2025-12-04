@@ -1,60 +1,46 @@
-<script lang="ts">
+<script setup lang="ts">
 import copy from 'fast-copy'
-import type { PropType } from 'vue'
 import { VRangeSlider } from 'vuetify/components/VRangeSlider'
-
-import { defineNuxtComponent } from '#app'
 import type { FilterValueNumberRange } from '~/utils/types-filters'
 
-export default defineNuxtComponent({
-  components: {
-    VRangeSlider,
-  },
+const props = defineProps<{
+  filter: FilterValueNumberRange
+}>()
 
-  props: {
-    filter: {
-      type: Object as PropType<FilterValueNumberRange>,
-      required: true,
-    },
-  },
+const emit = defineEmits<{
+  (e: 'change', newFilter: FilterValueNumberRange): void
+}>()
 
-  emits: {
-    change: (_newFilter: FilterValueNumberRange) => true,
-  },
-
-  computed: {
-    min(): number {
-      return this.filter.def.min
-    },
-    max(): number {
-      return this.filter.def.max
-    },
-    value(): [number, number] {
-      return [
-        this.filter.filterValueMin != null
-          ? this.filter.filterValueMin
-          : this.filter.def.min,
-        this.filter.filterValueMax != null
-          ? this.filter.filterValueMax
-          : this.filter.def.max,
-      ]
-    },
-  },
-
-  methods: {
-    onChange(value: [number, number]) {
-      const newFilter = copy(this.filter)
-      newFilter.filterValueMin = value[0]
-      newFilter.filterValueMax = value[1]
-      this.$emit('change', newFilter)
-    },
-  },
+const min = computed((): number => {
+  return props.filter.def.min
 })
+
+const max = computed((): number => {
+  return props.filter.def.max
+})
+
+const value = computed((): [number, number] => {
+  return [
+    props.filter.filterValueMin != null
+      ? props.filter.filterValueMin
+      : props.filter.def.min,
+    props.filter.filterValueMax != null
+      ? props.filter.filterValueMax
+      : props.filter.def.max,
+  ]
+})
+
+function onChange(value: [number, number]) {
+  const newFilter = copy(props.filter)
+  newFilter.filterValueMin = value[0]
+  newFilter.filterValueMax = value[1]
+  emit('change', newFilter)
+}
 </script>
 
 <template>
   <div class="tw-mt-7 filters-number-range">
-    <v-range-slider
+    <VRangeSlider
       :model-value="value"
       strict
       :min="min"

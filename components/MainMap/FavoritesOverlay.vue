@@ -1,29 +1,19 @@
-<script lang="ts">
+<script setup lang="ts">
 import { storeToRefs } from 'pinia'
-import { defineNuxtComponent } from '#app'
 import { mapStore as useMapStore } from '~/stores/map'
 import { Mode } from '~/utils/types'
 
-export default defineNuxtComponent({
-  setup() {
-    const { mode } = storeToRefs(useMapStore())
+const emit = defineEmits<{
+  (e: 'discard'): void
+}>()
 
-    return {
-      mode,
-    }
-  },
+const { t } = useI18n()
+const { mode } = storeToRefs(useMapStore())
 
-  emits: {
-    discard: () => true,
-  },
-
-  methods: {
-    onOverlayClick() {
-      this.mode = Mode.BROWSER
-      this.$emit('discard')
-    },
-  },
-})
+function onOverlayClick() {
+  mode.value = Mode.BROWSER
+  emit('discard')
+}
 </script>
 
 <template>
@@ -33,7 +23,7 @@ export default defineNuxtComponent({
     @click="onOverlayClick"
   >
     <p class="tw-p-8 tw-max-w-sm tw-text-center tw-text-white">
-      {{ $t('favorites.noFavs') }}
+      {{ t('favorites.noFavs') }}
     </p>
   </div>
 </template>
