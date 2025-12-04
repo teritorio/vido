@@ -1,17 +1,10 @@
-<script lang="ts">
-import { defineNuxtComponent } from '#app'
-
-export default defineNuxtComponent({
-  components: {
-    VNodes: (props, _ctx) => props.vnodes,
-  },
-})
+<script setup lang="ts">
 </script>
 
 <template>
   <ul v-if="$slots.default">
     <li v-for="(vnode, index) in $slots.default()" :key="index">
-      <VNodes v-if="vnode" :vnodes="[vnode]" />
+      <component :is="vnode" v-if="vnode" />
     </li>
   </ul>
 </template>

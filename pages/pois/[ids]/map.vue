@@ -1,58 +1,66 @@
 <script setup lang="ts">
 import { storeToRefs } from 'pinia'
 import MapPois from '~/components/Map/MapPois.vue'
-import { type ApiPoiId, type ApiPois, getPois } from '~/lib/apiPois'
-import { getAsyncDataOrThrows } from '~/lib/getAsyncData'
+import type { ApiPois } from '~/lib/apiPois'
 import { useSiteStore } from '~/stores/site'
 import { regexForCategoryIds } from '~/composables/useIdsResolver'
 
-//
-// Validators
-//
 definePageMeta({
   validate({ params }) {
     return !!params.ids && regexForCategoryIds.test(params.ids.toString())
   },
 })
 
-//
-// Composables
-//
-const { params } = useRoute()
 const { settings } = storeToRefs(useSiteStore())
 const { $trackingInit } = useNuxtApp()
 const route = useRoute()
+const apiEndpoint = useState('api-endpoint')
 
-//
-// Data
-//
-const pois = ref<ApiPois>()
+const poiIds = computed(() => {
+  const param = route.params.ids
 
-if (params.ids) {
-  const ids = (params.ids as string).split(',')
-  const query = {
-    geometry_as: undefined,
-  } as Record<string, any>
+  if (Array.isArray(param)) {
+    return param
+  }
+  else if (typeof param === 'string') {
+    return param ? param.split(',') : []
+  }
 
-  if (route.query.clipingPolygonSlug)
-    query.cliping_polygon_slug = route.query.clipingPolygonSlug.toString()
+  return [] as string[]
+})
 
-  const getPoiPromise = getAsyncDataOrThrows('getPoiPromise', async () => await getPois(ids, query))
-  const [poisF] = await Promise.all([getPoiPromise])
-  pois.value = poisF.value
+const poiIdsAsNumbers = computed(() => poiIds.value.map(id => Number(id)))
+
+const clipingPolygonSlug = computed(() => route.query.clipingPolygonSlug?.toString())
+
+const { data, error } = await useFetch<ApiPois>(
+  `${apiEndpoint.value}/pois.geojson`,
+  {
+    query: {
+      ids: poiIds.value.join(','),
+      geometry_as: undefined,
+      short_description: true,
+      cliping_polygon_slug: clipingPolygonSlug.value,
+    },
+  },
+)
+
+if (error.value) {
+  throw createError({
+    statusCode: 500,
+    statusMessage: `Failed to fetch POI data: ${error.value.message}`,
+  })
 }
-else {
-  pois.value = undefined
+
+if (!data.value || !data.value.features.length) {
+  throw createError({
+    statusCode: 404,
+    statusMessage: `POIS ${poiIds.value} data not found`,
+  })
 }
 
-//
-// Computed
-//
-const ids = computed((): ApiPoiId[] => pois.value?.features.map(feature => feature.properties.metadata.id) || [])
+const features = computed(() => data.value?.features ?? [])
 
-//
-// Hooks
-//
 onBeforeMount(() => {
   $trackingInit()
 })
@@ -62,8 +70,8 @@ onBeforeMount(() => {
   <div class="tw-flex tw-flex-col tw-w-full tw-h-full">
     <MapPois
       :extra-attributions="settings!.attributions"
-      :features="pois ? pois.features : []"
-      :feature-ids="ids"
+      :features="features"
+      :feature-ids="poiIdsAsNumbers"
     />
   </div>
 </template>

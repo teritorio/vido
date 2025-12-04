@@ -1,16 +1,7 @@
-<script lang="ts">
-import type { PropType } from 'vue'
-
-import { defineNuxtComponent } from '#app'
-
-export default defineNuxtComponent({
-  props: {
-    attribution: {
-      type: String as PropType<string>,
-      default: null,
-    },
-  },
-})
+<script setup lang="ts">
+defineProps<{
+  attribution?: string
+}>()
 </script>
 
 <template>

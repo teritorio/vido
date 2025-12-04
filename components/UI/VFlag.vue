@@ -1,37 +1,25 @@
-<script lang="ts">
+<script setup lang="ts">
 import { hasFlag } from 'country-flag-icons'
 import { ES, FR, GB } from 'country-flag-icons/string/3x2'
-import { h, ref, watch } from 'vue'
 
-import { defineNuxtComponent } from '#app'
+type CountryCode = keyof typeof svgs
 
-export default defineNuxtComponent({
-  name: 'VFlag',
+const props = defineProps<{
+  flag: CountryCode
+}>()
 
-  props: {
-    flag: {
-      type: String,
-      required: true,
-      validator: (value: string) => {
-        return hasFlag(value)
-      },
-    },
-  },
+const svgs = { FR, GB, ES } as const
+const svgFlag = ref<string>()
 
-  setup(props) {
-    const svgFlag = ref(null)
-    const svgs = { FR, GB, ES }
-    watch(
-      () => props.flag,
-      async (newFlag, oldFlag) => {
-        if (newFlag !== oldFlag) {
-          // @ts-expect-error: Fix type
-          svgFlag.value = svgs[newFlag]
-        }
-      },
-      { immediate: true },
-    )
-    return () => h('div', { innerHTML: svgFlag.value })
-  },
-})
+if (!hasFlag(props.flag)) {
+  console.warn(`Invalid country code: ${props.flag}`)
+}
+
+watch(() => props.flag, (newFlag: CountryCode) => {
+  svgFlag.value = svgs[newFlag] || undefined
+}, { immediate: true })
 </script>
+
+<template>
+  <div v-html="svgFlag" />
+</template>

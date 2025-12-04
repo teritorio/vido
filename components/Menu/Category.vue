@@ -1,99 +1,72 @@
-<script lang="ts">
+<script setup lang="ts">
 import type { FontAwesomeIconProps } from '@fortawesome/vue-fontawesome'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
-import type { PropType } from 'vue'
-import { defineNuxtComponent } from '#app'
-import MenuItem from '~/components/Menu/Item.vue'
+import Item from '~/components/Menu/Item.vue'
 import type { ApiMenuCategory, ApiMenuItem } from '~/lib/apiMenu'
 import type { FilterValues } from '~/utils/types-filters'
 import { filterValuesIsSet } from '~/utils/types-filters'
 
-export default defineNuxtComponent({
-  components: {
-    FontAwesomeIcon,
-    MenuItem,
-  },
-  props: {
-    category: {
-      type: Object as PropType<ApiMenuCategory>,
-      required: true,
-    },
-    filters: {
-      type: Array as unknown as PropType<FilterValues>,
-      default: null,
-    },
-    selected: {
-      type: Boolean,
-      required: true,
-    },
-    size: {
-      type: String as PropType<FontAwesomeIconProps['size']>,
-      required: true,
-    },
-    displayModeDefault: {
-      type: String as PropType<'compact' | 'large'>,
-      required: true,
-    },
-  },
+const props = defineProps<{
+  category: ApiMenuCategory
+  filters?: FilterValues
+  selected: boolean
+  size: FontAwesomeIconProps['size']
+  displayModeDefault: 'compact' | 'large'
+}>()
 
-  setup(props) {
-    const { colorFill, colorText } = useContrastedColors(
-      props.category.category.color_fill,
-      props.category.category.color_text,
-    )
+const emit = defineEmits<{
+  (e: 'click', category_id: ApiMenuItem['id']): true
+  (e: 'filterClick', category_id: ApiMenuItem['id']): true
+}>()
 
-    return { colorFill, colorText }
-  },
+const { t } = useI18n()
+const { $tracking } = useNuxtApp()
+const { colorFill, colorText } = useContrastedColors(
+  props.category.category.color_fill,
+  props.category.category.color_text,
+)
 
-  computed: {
-    isFiltered(): boolean {
-      return this.filters && filterValuesIsSet(this.filters)
-    },
-    menuItemProps() {
-      return {
-        id: `MenuItem-${this.category.id}`,
-        href: `/${this.category.id}`,
-        displayMode: this.category.category.display_mode || this.displayModeDefault,
-        colorFill: this.colorFill,
-        colorText: this.colorText,
-        icon: this.category.category.icon,
-        size: this.size,
-        name: this.category.category.name,
-      }
-    },
-  },
-
-  emits: {
-    click: (_category_id: ApiMenuItem['id']) => true,
-    filterClick: (_category_id: ApiMenuItem['id']) => true,
-  },
-
-  methods: {
-    onClick() {
-      this.$tracking({
-        type: 'category_event',
-        event: 'enable',
-        categoryId: this.category.id,
-        title: this.category.category.name.fr,
-      })
-
-      this.$emit('click', this.category.id)
-    },
-    onFilterClick() {
-      this.$tracking({
-        type: 'category_event',
-        event: 'filter',
-        categoryId: this.category.id,
-        title: this.category.category.name.fr,
-      })
-      this.$emit('filterClick', this.category.id)
-    },
-  },
+const isFiltered = computed((): boolean | undefined => {
+  return props.filters && filterValuesIsSet(props.filters)
 })
+
+const menuItemProps = computed(() => {
+  return {
+    id: `MenuItem-${props.category.id}`,
+    href: `/${props.category.id}`,
+    displayMode: props.category.category.display_mode || props.displayModeDefault,
+    colorFill: colorFill.value,
+    colorText: colorText.value,
+    icon: props.category.category.icon,
+    size: props.size,
+    name: props.category.category.name,
+  }
+})
+
+function onClick() {
+  $tracking({
+    type: 'category_event',
+    event: 'enable',
+    categoryId: props.category.id,
+    title: props.category.category.name.fr,
+  })
+
+  emit('click', props.category.id)
+}
+
+function onFilterClick() {
+  $tracking({
+    type: 'category_event',
+    event: 'filter',
+    categoryId: props.category.id,
+    title: props.category.category.name.fr,
+  })
+  emit('filterClick', props.category.id)
+}
 </script>
 
 <template>
-  <MenuItem
+  <Item
     v-bind="menuItemProps"
     badge-class="tw-bg-white tw-text-zinc-700 tw-rounded-full tw-border-solid tw-border-2 tw-border-white"
     @click.prevent="onClick"
@@ -143,11 +116,11 @@ export default defineNuxtComponent({
       >
         <FontAwesomeIcon icon="filter" size="sm" class="tw-ml-16" />
         {{
-          isFiltered ? $t('headerMenu.editFilters') : $t('headerMenu.filter')
+          isFiltered ? t('headerMenu.editFilters') : t('headerMenu.filter')
         }}
       </button>
     </template>
-  </MenuItem>
+  </Item>
 </template>
 
 <style scoped>
