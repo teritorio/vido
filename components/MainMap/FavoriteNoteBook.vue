@@ -39,6 +39,10 @@ function setShareLink() {
   }
 }
 
+async function setStaticMapLink() {
+  return await navigateTo(`/pois/${idsStringified}/map`)
+}
+
 const { $tracking } = useNuxtApp()
 function exportLink(w: 'export_pdf' | 'export_csv') {
   $tracking({
@@ -79,6 +83,14 @@ function removeFavorites() {
 
       <div>
         <IconsBar class="tw-mr-6">
+          <IconButton
+            class="tw-h-8"
+            :label="$t('favorites.static_map')"
+            @click="setStaticMapLink"
+          >
+            <FontAwesomeIcon icon="map" />
+            <span class="tw-text-sm">{{ $t('favorites.notebook.map') }}</span>
+          </IconButton>
           <IconButton
             class="tw-h-8"
             :label="$t('favorites.menu_share')"
