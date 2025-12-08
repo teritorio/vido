@@ -108,12 +108,9 @@ export function markerRender(element: HTMLDivElement, markerSize: number, featur
   if (typeof feature.properties?.editorial === 'string')
     feature.properties.editorial = JSON.parse(feature.properties?.editorial)
 
-  if (!feature.properties.display)
-    throw createError(`Feature ${feature.properties.metadata.id} is missing 'display' property.`)
-
   const { colorFill, colorText } = useContrastedColors(
-    toRef(() => feature.properties.display.color_fill),
-    toRef(() => feature.properties.display.color_text),
+    toRef(() => feature.properties.display?.color_fill || '#FFFFFF'),
+    toRef(() => feature.properties.display?.color_text),
   )
 
   createApp(TeritorioIconBadge, {

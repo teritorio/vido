@@ -23,9 +23,6 @@ const emit = defineEmits<{
 
 const device = useDevice()
 
-if (!props.poi.properties.display)
-  throw createError(`Feature ${props.poi.properties.metadata.id} is missing 'display' property.`)
-
 const closeBtnStyles = reactive({
   backgroundColor: 'rgb(0 0 0 / 55%)',
   borderRadius: device.value.smallScreen ? '0 0 0 8px' : '0 0 8px 0',
@@ -33,7 +30,7 @@ const closeBtnStyles = reactive({
   left: device.value.smallScreen ? 'unset' : 0,
 })
 
-const { colorFill } = useContrastedColors(toRef(() => props.poi.properties.display!.color_fill))
+const { colorFill } = useContrastedColors(toRef(() => props.poi.properties.display?.color_fill || '#FFFFFF'))
 const hasImage = computed(() => props.poi.properties.image && props.poi.properties.image.length > 0)
 const logoColor = computed(() => hasImage.value ? '#AAA' : colorFill.value)
 </script>
