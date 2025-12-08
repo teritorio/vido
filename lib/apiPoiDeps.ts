@@ -47,26 +47,20 @@ export function prepareApiPoiDeps(
   const waypoints: ApiRouteWaypoint[] = []
   const pois: ApiPoi[] = []
 
-  const featureById = new Map<number, GeoJSON.Feature<GeoJSON.Geometry, ApiPoiProperties | ApiRouteWaypointProperties>>()
-
-  for (const feature of featureCollection) {
-    const id = feature.properties.metadata.id
-    featureById.set(id, feature)
-
-    if (feature.properties['route:point:type']) {
-      // It's a waypoint, skip adding to POIs
-      continue
-    }
-
-    pois.push(feature as ApiPoi)
-  }
-
-  if (referenceIds) {
+  if (referenceIds && referenceIds.length > 0) {
     for (const id of referenceIds) {
-      const feature = featureById.get(id)
+      const feature = Object.values(featureCollection).find(f => f.properties.metadata.id === id)
 
-      if (feature && feature.properties['route:point:type']) {
+      if (!feature) {
+        console.error(`Feature ${id} in dep_ids but not in collection.`)
+        continue
+      }
+
+      if (feature.properties['route:point:type']) {
         waypoints.push(feature as ApiRouteWaypoint)
+      }
+      else {
+        pois.push(feature as ApiPoi)
       }
     }
   }
