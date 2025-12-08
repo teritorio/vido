@@ -20,12 +20,14 @@ export default defineI18nLocale(() => {
       export_pdf: 'PDF Export',
       export_csv: 'CSV Export',
       share_link: 'Share link of favorites',
+      static_map: 'Generate a link to a map',
       notebook: {
         title: 'Favorites notebook',
         share: 'Share',
         print: 'Print',
         export: 'Export',
         remove: 'Remove',
+        map: 'Map',
       },
       noFavs:
         'You do not have any favorite places yet. You can do this by selecting a location on the map, then saving it as a favorite.',
