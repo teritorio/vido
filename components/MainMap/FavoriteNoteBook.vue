@@ -18,6 +18,7 @@ defineEmits<{
 
 const shareModal = ref<InstanceType<typeof ShareLinkModal>>()
 
+const { contribMode } = useContrib()
 const { apiExport } = useRuntimeConfig().public
 const favoriteStore = useFavoriteStore()
 const { favoritesIds, favoriteAddresses, favoriteFeatures } = storeToRefs(favoriteStore)
@@ -37,6 +38,10 @@ function setShareLink() {
   catch (e) {
     console.error('Vido error:', (e as Error).message)
   }
+}
+
+async function setStaticMapLink() {
+  return await navigateTo(`/pois/${idsStringified}/map`)
 }
 
 const { $tracking } = useNuxtApp()
@@ -79,6 +84,15 @@ function removeFavorites() {
 
       <div>
         <IconsBar class="tw-mr-6">
+          <IconButton
+            v-if="contribMode"
+            class="tw-h-8"
+            :label="$t('favorites.static_map')"
+            @click="setStaticMapLink"
+          >
+            <FontAwesomeIcon icon="map" />
+            <span class="tw-text-sm">{{ $t('favorites.notebook.map') }}</span>
+          </IconButton>
           <IconButton
             class="tw-h-8"
             :label="$t('favorites.menu_share')"
