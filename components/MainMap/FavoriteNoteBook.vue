@@ -18,6 +18,7 @@ defineEmits<{
 
 const shareModal = ref<InstanceType<typeof ShareLinkModal>>()
 
+const { contribMode } = useContrib()
 const { apiExport } = useRuntimeConfig().public
 const favoriteStore = useFavoriteStore()
 const { favoritesIds, favoriteAddresses, favoriteFeatures } = storeToRefs(favoriteStore)
@@ -84,6 +85,7 @@ function removeFavorites() {
       <div>
         <IconsBar class="tw-mr-6">
           <IconButton
+            v-if="contribMode"
             class="tw-h-8"
             :label="$t('favorites.static_map')"
             @click="setStaticMapLink"
