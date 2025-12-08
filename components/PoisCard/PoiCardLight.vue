@@ -16,12 +16,9 @@ const { featureName } = useFeature(toRef(() => props.poi), { type: 'popup' })
 const colorLine = ref(props.poi.properties.display?.color_line || '#000000')
 const websiteDetails = ref(props.poi.properties.editorial && props.poi.properties.editorial['website:details'])
 
-if (!props.poi.properties.display)
-  throw createError(`Feature ${props.poi.properties.metadata.id} is missing 'display' property.`)
-
 const { colorFill, colorText } = useContrastedColors(
-  toRef(() => props.poi.properties.display!.color_fill),
-  toRef(() => props.poi.properties.display!.color_text),
+  toRef(() => props.poi.properties.display?.color_fill || '#FFFFFF'),
+  toRef(() => props.poi.properties.display?.color_text),
 )
 
 const teritorioIconBadgeProps = computed(() => {
