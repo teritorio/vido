@@ -24,10 +24,9 @@ if (configError.value) {
 const apiEndpoint = useState('api-endpoint', () => context.value?.api)
 useState('project', () => context.value?.project)
 useState('theme', () => context.value?.theme)
-const { locale: i18nLocale } = useI18n()
 const siteStore = useSiteStore()
 const menuStore = useMenuStore()
-const { settings, theme, translations, articles, locale } = storeToRefs(siteStore)
+const { settings, theme, translations, articles } = storeToRefs(siteStore)
 
 const { data, error, status } = await useAsyncData('parallel', async () => {
   const [settings, menu, translations, articles] = await Promise.all([
@@ -72,7 +71,6 @@ if (status.value === 'success' && data.value) {
   settings.value = data.value.settings
   translations.value = data.value.translations
   articles.value = data.value.articles
-  locale.value = i18nLocale.value
 
   if (settings.value && theme.value) {
     useHead(

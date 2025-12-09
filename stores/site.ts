@@ -13,7 +13,6 @@ export enum PropertyTranslationsContextEnum {
 const Default = PropertyTranslationsContextEnum.Default
 
 export const useSiteStore = defineStore('site', () => {
-  const locale = ref<string>()
   const settings = ref<Settings>()
   const articles = ref<Article[]>([])
   const translations = ref<PropertyTranslations>()
@@ -107,7 +106,6 @@ export const useSiteStore = defineStore('site', () => {
   }
 
   return {
-    locale,
     settings,
     articles,
     translations,
