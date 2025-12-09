@@ -15,8 +15,7 @@ if (configError.value) {
   showError({ ...configError.value })
 }
 
-const { locale: i18nLocale } = useI18n()
-const { settings, locale } = storeToRefs(useSiteStore())
+const { settings } = storeToRefs(useSiteStore())
 const apiEndpoint = useState('api-endpoint', () => context.value?.api)
 const { data, error, status } = await useAsyncData('parallel', async () => $fetch<Settings>(`${apiEndpoint.value}/settings.json`))
 
@@ -42,7 +41,6 @@ if (status.value === 'success' && data.value) {
     },
     data.value,
   )
-  locale.value = i18nLocale.value
 }
 </script>
 

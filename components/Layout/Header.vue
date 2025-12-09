@@ -6,7 +6,8 @@ import { useSiteStore } from '~/stores/site'
 
 const siteStore = useSiteStore()
 const { settings } = siteStore
-const { locale, theme } = storeToRefs(siteStore)
+const { theme } = storeToRefs(siteStore)
+const { locale } = useI18n()
 
 if (!settings)
   throw createError({ statusCode: 400, statusMessage: 'Failed to fetch settings', fatal: true })

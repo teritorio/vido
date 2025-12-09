@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import type { optional_conf } from 'opening_hours'
 import OpeningHours from 'opening_hours'
-import { storeToRefs } from 'pinia'
 import RelativeDate from '~/components/UI/RelativeDate.vue'
 import { PropertyTranslationsContextEnum, useSiteStore } from '~/stores/site'
 import { PointTime, isSupportedOsmTags } from '~/composables/useOpeningHours'
@@ -23,7 +22,7 @@ const props = withDefaults(defineProps<{
 //
 const siteStore = useSiteStore()
 const { settings } = siteStore
-const { locale } = storeToRefs(useSiteStore())
+const { locale } = useI18n()
 const { t } = useI18n()
 
 //
