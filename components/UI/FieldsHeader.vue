@@ -1,6 +1,6 @@
 <script setup lang="ts">
 withDefaults(defineProps<{
-  recursionStack: string[]
+  recursionStack?: string[]
 }>(), {
   recursionStack: () => [],
 })
