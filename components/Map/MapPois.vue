@@ -126,7 +126,8 @@ function handleClose(): void {
             </template>
             <VCardText>
               <PoiCardContent
-                :show-actions="false"
+                :show-actions="true"
+                :show-only-route-action="true"
                 :details-is-external="true"
                 :poi="selectedFeature"
               />
