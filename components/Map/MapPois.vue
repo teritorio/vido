@@ -112,28 +112,27 @@ function handleClose(): void {
     @map-style-load="onMapStyleLoad"
   >
     <template #drawer>
-      <VLayout v-if="selectedFeature">
-        <VNavigationDrawer absolute permanent elevation="4" location="start">
-          <VCard>
-            <template #append>
-              <UIButton
-                class="close-button"
-                color="#ffffff"
-                icon="times"
-                :title="$t('ui.close')"
-                @click=" handleClose"
-              />
-            </template>
-            <VCardText>
-              <PoiCardContent
-                :show-actions="false"
-                :details-is-external="true"
-                :poi="selectedFeature"
-              />
-            </VCardText>
-          </VCard>
-        </VNavigationDrawer>
-      </VLayout>
+      <VNavigationDrawer v-if="selectedFeature" absolute permanent elevation="4" location="start">
+        <VCard>
+          <template #append>
+            <UIButton
+              class="close-button"
+              color="#ffffff"
+              icon="times"
+              :title="$t('ui.close')"
+              @click="handleClose"
+            />
+          </template>
+          <VCardText>
+            <PoiCardContent
+              :show-actions="false"
+              :show-only-route-action="true"
+              :details-is-external="true"
+              :poi="selectedFeature"
+            />
+          </VCardText>
+        </VCard>
+      </VNavigationDrawer>
     </template>
   </MapBase>
 </template>
