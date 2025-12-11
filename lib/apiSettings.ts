@@ -23,6 +23,7 @@ export interface SiteInfosTheme {
   cookies_usage_detail_url: string
   google_site_verification: string
   google_tag_manager_id: string
+  report_issue?: boolean
 }
 
 export interface Settings {

@@ -128,6 +128,7 @@ export default defineI18nLocale(() => {
         waypoints: 'Puntos de ruta',
         pois: 'Puntos de interés',
       },
+      report: 'Notificar un problema',
     },
     poisTable: {
       empty: 'La lista está vacía: seleccione una categoría',

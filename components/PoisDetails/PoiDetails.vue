@@ -20,6 +20,7 @@ import FieldsHeader from '~/components/UI/FieldsHeader.vue'
 import ContribFieldGroup from '~/components/Fields/ContribFieldGroup.vue'
 import PanoramaxViewer from '~/components/PoisDetails/PanoramaxViewer.vue'
 import type { PoiUnion } from '~/types/local/poi-deps'
+import { useSiteStore } from '~/stores/site'
 
 const props = defineProps<{
   settings: Settings
@@ -32,6 +33,7 @@ const { t } = useI18n()
 const { $tracking } = useNuxtApp()
 const router = useRouter()
 const route = useRoute()
+const { theme } = storeToRefs(useSiteStore())
 const favoriteStore = useFavoriteStore()
 const { favoritesIds, favoriteAddresses } = storeToRefs(favoriteStore)
 const { contribMode, isContribEligible, getContributorFields } = useContrib()
@@ -239,6 +241,14 @@ onMounted(() => {
     </template>
 
     <template #footer>
+      <a
+        v-if="theme?.report_issue && poi.properties.metadata.report_issue_url"
+        class="report"
+        :href="poi.properties.metadata.report_issue_url"
+        target="_blank"
+      >
+        {{ t('poiDetails.report') }}
+      </a>
       <span v-if="poi.properties.metadata.updated_at">
         {{ t('poiDetails.lastUpdate') }}
         <a

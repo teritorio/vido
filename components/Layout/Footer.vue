@@ -16,7 +16,7 @@ const { t } = useI18n()
       :key="attribution"
       v-html="attribution"
     />
-    <span>
+    <span class="poweredBy">
       {{ t('poiDetails.poweredBy') }}
       <a target="_blank" href="https://www.teritorio.fr/" title="Teritorio">
         <img
@@ -36,17 +36,24 @@ const { t } = useI18n()
 @import '~/assets/details';
 
 .footer {
-  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
   font-size: 0.9rem;
-  padding-top: 4rem;
-  padding-bottom: 1rem;
+  padding: 4rem 0 1rem;
   background: white;
   color: $color-primary;
-  text-align: center;
   text-decoration: none;
 
-  > span {
-    margin: 0 0.8rem;
+  .poweredBy {
+    border-top: 1px solid $color-tertiary;
+    padding-top: 0.25rem;
+    flex: 100%;
+    text-align: center;
+  }
+
+  :deep(.report) {
+    margin-right: auto;
   }
 
   a {
