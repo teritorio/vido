@@ -1,13 +1,18 @@
 <script setup lang="ts">
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 
-defineProps<{
+const props = defineProps<{
   url: string
+  icon?: string
 }>()
+
+const iconSlug = computed(() => {
+  return props.icon || 'fa-share'
+})
 </script>
 
 <template>
   <a v-if="url" :href="url" target="_blank">
-    <FontAwesomeIcon icon="fa-brands fa-instagram" size="lg" />
+    <FontAwesomeIcon :icon="`fa-brands ${iconSlug}`" size="lg" />
   </a>
 </template>

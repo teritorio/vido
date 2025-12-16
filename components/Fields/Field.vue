@@ -4,9 +4,7 @@ import type GeoJSON from 'geojson'
 import AddressField from '~/components/Fields/AddressField.vue'
 import Coordinates from '~/components/Fields/Coordinates.vue'
 import DateRange from '~/components/Fields/DateRange.vue'
-import Facebook from '~/components/Fields/Facebook.vue'
-import LinkedIn from '~/components/Fields/LinkedIn.vue'
-import Instagram from '~/components/Fields/Instagram.vue'
+import SocialNetwork from '~/components/Fields/SocialNetwork.vue'
 import OpeningHours from '~/components/Fields/OpeningHours.vue'
 import { isOpeningHoursSupportedOsmTags } from '~/composables/useOpeningHours'
 import Phone from '~/components/Fields/Phone.vue'
@@ -207,8 +205,9 @@ function propTranslateVs(field: string, value: string) {
       </a>
 
       <SocialNetwork
-        v-else-if="field.render === 'weblink@social-network' && field.icon"
+        v-else-if="field.render === 'weblink@social-network'"
         :url="properties[field.field]"
+        :icon="field.icon"
       />
 
       <Stars
