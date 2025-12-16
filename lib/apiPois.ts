@@ -57,10 +57,6 @@ export type ApiPoiProperties = MapPoiProperties & {
   'addr:housenumber'?: string
   'addr:postcode'?: string
   'addr:street'?: string
-  'phone'?: string[]
-  'email'?: string[]
-  'website'?: string[]
-  'download'?: string[]
   'metadata': {
     id: ApiPoiId
     source?: string

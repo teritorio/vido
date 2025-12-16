@@ -117,7 +117,7 @@ export function markerRender(element: HTMLDivElement, markerSize: number, featur
     colorFill: feature.properties['route:point:type'] ? colorText.value : colorFill.value,
     colorText: feature.properties['route:point:type'] ? colorFill.value : colorText.value,
     picto: feature.properties.display?.icon,
-    image: feature.properties!['image:thumbnail'],
+    image: feature.properties['image:thumbnail'],
     size: null,
     text: feature.properties.display?.text,
   }).mount(element)
