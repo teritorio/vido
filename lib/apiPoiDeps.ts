@@ -123,9 +123,11 @@ export function apiRouteWaypointToApiPoi(
         popup_fields: [
           {
             field: 'short_description',
+            render: 'string@short',
           },
           {
             field: 'coordinates',
+            render: 'coordinates',
             label: true,
           },
         ],

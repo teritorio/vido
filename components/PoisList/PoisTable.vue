@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { localeIncludes } from 'locale-includes'
 import { storeToRefs } from 'pinia'
 import { PropertyTranslationsContextEnum, useSiteStore } from '~/stores/site'
-import type { FieldsListItem } from '~/lib/apiPois'
+import type { ApiPoi, FieldsListItem, RenderEnum } from '~/lib/apiPois'
 import Field from '~/components/Fields/Field.vue'
 import IconButton from '~/components/UI/IconButton.vue'
 import ContribFieldGroup from '~/components/Fields/ContribFieldGroup.vue'
@@ -16,6 +16,10 @@ interface DataTableHeader {
   filterable?: boolean
   key: string
   sortable?: boolean
+  render: RenderEnum
+  array?: boolean
+  icon?: string
+  multilingual?: boolean
   sort?: (a: string, b: string) => number
   title: string
   width?: string
@@ -57,7 +61,7 @@ if (error.value) {
 // Computed
 //
 const headers = computed(() => {
-  let fields = [{ field: 'name' }]
+  let fields = [{ field: 'name', render: 'string' } as FieldsListItem]
   if (pois.value?.features.length && pois.value.features[0].properties.editorial?.list_fields)
     fields = pois.value.features[0].properties.editorial.list_fields
 
@@ -65,6 +69,10 @@ const headers = computed(() => {
     filterable: true,
     key: `properties.${f.field}`,
     sortable: true,
+    render: f.render,
+    array: f.array,
+    icon: f.icon,
+    multilingual: f.multilingual,
     title: p(
       f.field,
       PropertyTranslationsContextEnum.List,
@@ -76,6 +84,7 @@ const headers = computed(() => {
     headers.push({
       filterable: false,
       sortable: false,
+      render: 'string',
       key: 'contrib',
       title: t('fields.contrib.heading'),
       width: '100px',
@@ -85,6 +94,7 @@ const headers = computed(() => {
   headers.push({
     filterable: false,
     sortable: false,
+    render: 'weblink',
     key: 'details',
     title: 'Actions',
     width: '100px',
@@ -181,6 +191,11 @@ function getColKey(key: string) {
   return key
 }
 
+function getField(key: string, item: ApiPoi) {
+  const keyName = getColKey(key)
+  return item.properties.editorial?.list_fields?.find(f => f.field === keyName)
+}
+
 if (settings.value && theme.value) {
   useHead(
     headerFromSettings(
@@ -251,10 +266,12 @@ if (settings.value && theme.value) {
         <template #item="{ item, columns }">
           <tr>
             <td v-for="col in columns" :key="col.key!">
+              <!-- TODO: Pass it as Field -->
               <ContribFieldGroup
                 v-if="col.key === 'contrib' && isContribEligible(item.properties)"
                 v-bind="getContributorFields(item)"
               />
+              <!-- TODO: Pass it as Field -->
               <IconButton
                 v-else-if="col.key === 'details' && item.properties.editorial && item.properties.editorial['website:details']"
                 class="tw-h-10"
@@ -269,7 +286,13 @@ if (settings.value && theme.value) {
                 v-else
                 :context="getContext(getColKey(col.key!))"
                 :recursion-stack="[getColKey(col.key!)]"
-                :field="{ field: getColKey(col.key!) }"
+                :field="{
+                  field: getColKey(col.key!),
+                  render: getField(col.key!, item)?.render || 'string',
+                  array: getField(col.key!, item)?.array,
+                  icon: getField(col.key!, item)?.icon,
+                  multilingual: getField(col.key!, item)?.multilingual,
+                }"
                 :details="t('poisTable.details')"
                 :properties="item.properties"
                 :geom="item.geometry"

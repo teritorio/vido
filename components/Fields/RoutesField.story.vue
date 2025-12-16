@@ -21,7 +21,7 @@ const props = {
   },
   MissingFields: {
     ...defaultProps,
-    field: { field: 'route:gpx_trace' },
+    field: { field: 'route:gpx_trace', render: 'weblink@download' },
     properties: {
       'metadata': { id: 0 },
       'route:hiking:difficulty': 'easy',
@@ -29,7 +29,7 @@ const props = {
   },
   MissingDifficulty: {
     ...defaultProps,
-    field: { field: 'route:gpx_trace' },
+    field: { field: 'route:gpx_trace', render: 'weblink@download' },
     properties: {
       'metadata': { id: 0 },
       'route:hiking:duration': 285,

@@ -32,9 +32,9 @@ const description
 export const Many = bind(Fields, {
   ...defaultProps,
   fields: [
-    { field: 'phone' },
-    { field: 'route' },
-    { field: 'short_description' },
+    { field: 'phone', render: 'string' },
+    { field: 'route', render: 'route' },
+    { field: 'short_description', render: 'string@short' },
   ],
   properties: {
     'metadata': { id: 0 },

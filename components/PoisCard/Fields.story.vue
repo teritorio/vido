@@ -2,7 +2,7 @@
 import type GeoJSON from 'geojson'
 
 import Fields from '~/components/PoisCard/Fields.vue'
-import type { ApiPoiProperties } from '~/lib/apiPois'
+import type { ApiPoiProperties, FieldsListItem } from '~/lib/apiPois'
 
 const properties: ApiPoiProperties = {
   metadata: {
@@ -29,9 +29,9 @@ const props = {
   Many: {
     ...defaultProps,
     fields: [
-      { field: 'phone' },
-      { field: 'route' },
-      { field: 'short_description' },
+      { field: 'phone', render: 'phone' } as FieldsListItem,
+      { field: 'route', render: 'route' } as FieldsListItem,
+      { field: 'short_description', render: 'string@short' } as FieldsListItem,
     ],
     properties: {
       'metadata': { id: 0 },
