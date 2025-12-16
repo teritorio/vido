@@ -33,9 +33,6 @@ defineEmits<{
   (e: 'clickDetails'): void
 }>()
 
-if (!props.properties.display)
-  throw createError(`Feature ${props.properties.metadata.id} is missing 'display' property.`)
-
 const { t } = useI18n()
 const { colorFill, colorText } = useContrastedColors(
   toRef(() => props.properties.display?.color_fill || '#FFFFFF'),
@@ -44,9 +41,6 @@ const { colorFill, colorText } = useContrastedColors(
 const textLimit = ref(130)
 const { p, pv } = useSiteStore()
 
-const isWebsite = computed((): boolean => {
-  return props.field.field === 'website' || props.field.field.startsWith('website:') || props.field.field.endsWith(':website')
-})
 const shortDescription = computed((): string | undefined => {
   return props.properties?.description?.replace(/(<([^>]+)>)/g, '')
 })
@@ -70,7 +64,7 @@ function propTranslateVs(field: string, value: string) {
 
 <template>
   <RoutesField
-    v-if="field.field === 'route'"
+    v-if="field.render === 'route'"
     class="field_content"
     :context="context"
     :recursion-stack="recursionStack"
@@ -85,7 +79,7 @@ function propTranslateVs(field: string, value: string) {
     </FieldsHeader>
   </RoutesField>
 
-  <AddressField v-else-if="field.field === 'addr'" :properties="properties">
+  <AddressField v-else-if="field.render === 'addr'" :properties="properties">
     <FieldsHeader
       v-if="field.label"
       :recursion-stack="recursionStack"
@@ -96,7 +90,7 @@ function propTranslateVs(field: string, value: string) {
   </AddressField>
 
   <DateRange
-    v-else-if="field.field === 'start_end_date'"
+    v-else-if="field.render === 'start_end_date'"
     :start="properties.start_date"
     :end="properties.end_date"
     :class="`field_content_level_${recursionStack.length}`"
@@ -110,7 +104,7 @@ function propTranslateVs(field: string, value: string) {
     </FieldsHeader>
   </DateRange>
 
-  <Coordinates v-else-if="field.field === 'coordinates'" :geom="geom">
+  <Coordinates v-else-if="field.render === 'coordinates'" :geom="geom">
     <FieldsHeader
       v-if="field.label"
       :recursion-stack="recursionStack"
@@ -121,7 +115,7 @@ function propTranslateVs(field: string, value: string) {
   </Coordinates>
 
   <div
-    v-else-if="field.field === 'short_description' && shortDescription"
+    v-else-if="field.render === 'string@short' && shortDescription"
     class="inline"
   >
     <FieldsHeader
@@ -157,14 +151,14 @@ function propTranslateVs(field: string, value: string) {
     </FieldsHeader>
     <div :class="`inline field_content_level_${recursionStack.length}`">
       <div
-        v-if="field.field === 'description'"
+        v-if="field.render === 'html'"
         class="tw-prose"
         v-html="properties.description"
       />
 
       <div
         v-for="phone in properties[field.field]"
-        v-else-if="field.field === 'phone' || field.field === 'mobile'"
+        v-else-if="field.render === 'phone'"
         :key="`phone_${phone}`"
       >
         <ClientOnly>
@@ -174,7 +168,7 @@ function propTranslateVs(field: string, value: string) {
 
       <div
         v-for="item in properties[field.field]"
-        v-else-if="isWebsite"
+        v-else-if="field.render === 'weblink'"
         :key="`website_${item}`"
       >
         <ExternalLink :title="item" :href="item">
@@ -184,7 +178,7 @@ function propTranslateVs(field: string, value: string) {
 
       <div
         v-for="item in properties[field.field]"
-        v-else-if="field.field === 'email'"
+        v-else-if="field.render === 'email'"
         :key="`email_${item}`"
       >
         <ExternalLink :title="item" :href="`mailto:${item}`" icon="envelope">
@@ -194,7 +188,7 @@ function propTranslateVs(field: string, value: string) {
 
       <div
         v-for="item in properties[field.field]"
-        v-else-if="field.field === 'download'"
+        v-else-if="field.array && field.render === 'weblink@download'"
         :key="`download_${item}`"
       >
         <ExternalLink :href="item" icon="arrow-circle-down">
@@ -202,44 +196,8 @@ function propTranslateVs(field: string, value: string) {
         </ExternalLink>
       </div>
 
-      <ul
-        v-else-if="
-          Array.isArray(properties[field.field])
-            && properties[field.field].length > 0
-        "
-      >
-        <li
-          v-for="item in properties[field.field]"
-          :key="`${field.field}_${item}`"
-        >
-          {{ propTranslateVs(field.field, item) }}
-        </li>
-      </ul>
-
-      <Facebook
-        v-else-if="field.field === 'facebook'"
-        :url="properties[field.field]"
-      />
-
-      <LinkedIn
-        v-else-if="field.field === 'linkedin'"
-        :url="properties[field.field]"
-      />
-
-      <Instagram
-        v-else-if="field.field === 'instagram'"
-        :url="properties[field.field]"
-      />
-
-      <Stars
-        v-else-if="field.field === 'stars'"
-        :stars="properties[field.field]"
-      />
-
       <a
-        v-else-if="
-          field.field === 'route:gpx_trace' || field.field === 'route:pdf'
-        "
+        v-else-if="field.render === 'weblink@download'"
         :href="properties[field.field]"
         class="d-inline-block pa-2 rounded-lg"
         :style="{ backgroundColor: colorFill, color: colorText }"
@@ -248,12 +206,31 @@ function propTranslateVs(field: string, value: string) {
         {{ fieldTranslateK(field.field) }}
       </a>
 
+      <SocialNetwork
+        v-else-if="field.render === 'weblink@social-network' && field.icon"
+        :url="properties[field.field]"
+      />
+
+      <Stars
+        v-else-if="field.render === 'osm:stars'"
+        :stars="properties[field.field]"
+      />
+
       <OpeningHours
-        v-else-if="isOpeningHoursSupportedOsmTags(field.field)"
+        v-else-if="isOpeningHoursSupportedOsmTags(field.render)"
         :opening-hours="properties[field.field]"
         :context="context"
-        :tag-key="field.field"
+        :tag-key="field.render"
       />
+
+      <ul v-else-if="field.array">
+        <li
+          v-for="item in properties[field.field]"
+          :key="`${field.field}_${item}`"
+        >
+          {{ propTranslateVs(field.field, item) }}
+        </li>
+      </ul>
 
       <span v-else>
         {{ propTranslateV(field.field) }}

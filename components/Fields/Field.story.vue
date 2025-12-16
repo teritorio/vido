@@ -1,12 +1,12 @@
 <script lang="ts" setup>
 import type GeoJSON from 'geojson'
-
+import type { FieldsListItem } from '~/lib/apiPois'
 import Field from '~/components/Fields/Field.vue'
 import { PropertyTranslationsContextEnum } from '~/stores/site'
 
 const defaultProps = {
   context: PropertyTranslationsContextEnum.Details,
-  field: { field: 'name' },
+  field: { field: 'name', render: 'string' } as FieldsListItem,
   properties: {
     metadata: { id: 0 },
     name: 'foo',
@@ -26,7 +26,7 @@ const props = {
   },
   DefaultListOne: {
     ...defaultProps,
-    field: { field: 'email' },
+    field: { field: 'email', render: 'email' } as FieldsListItem,
     properties: {
       metadata: { id: 0 },
       email: ['foo'],
@@ -34,7 +34,7 @@ const props = {
   },
   DefaultListMany: {
     ...defaultProps,
-    field: { field: 'email' },
+    field: { field: 'email', render: 'email' } as FieldsListItem,
     properties: {
       metadata: { id: 0 },
       email: ['foo', 'bar'],
@@ -55,7 +55,7 @@ const props = {
   },
   StartEndDate: {
     ...defaultProps,
-    field: { field: 'start_end_date' },
+    field: { field: 'start_end_date', render: 'start_end_date' } as FieldsListItem,
     properties: {
       metadata: { id: 0 },
       start_date: '2001-01-01',
@@ -64,7 +64,7 @@ const props = {
   },
   Addr: {
     ...defaultProps,
-    field: { field: 'addr' },
+    field: { field: 'addr', render: 'addr' } as FieldsListItem,
     properties: {
       'metadata': { id: 0 },
       'addr:housenumber': '33',
@@ -75,7 +75,7 @@ const props = {
   },
   Description: {
     ...defaultProps,
-    field: { field: 'description' },
+    field: { field: 'description', render: 'html' } as FieldsListItem,
     properties: {
       metadata: { id: 0 },
       description,
@@ -83,7 +83,7 @@ const props = {
   },
   DescriptionShort: {
     ...defaultProps,
-    field: { field: 'short_description' },
+    field: { field: 'short_description', render: 'string@short' } as FieldsListItem,
     properties: {
       metadata: { id: 0 },
       description,
@@ -91,7 +91,7 @@ const props = {
   },
   DescriptionDetails: {
     ...defaultProps,
-    field: { field: 'short_description' },
+    field: { field: 'short_description', render: 'string@short' } as FieldsListItem,
     properties: {
       metadata: { id: 0 },
       description,
@@ -100,7 +100,7 @@ const props = {
   },
   Email: {
     ...defaultProps,
-    field: { field: 'email' },
+    field: { field: 'email', render: 'email' } as FieldsListItem,
     properties: {
       metadata: { id: 0 },
       email: ['root@example.com'],
@@ -108,7 +108,7 @@ const props = {
   },
   Website: {
     ...defaultProps,
-    field: { field: 'website' },
+    field: { field: 'website', render: 'weblink' } as FieldsListItem,
     properties: {
       metadata: { id: 0 },
       website: ['https://example.com'],
@@ -116,7 +116,7 @@ const props = {
   },
   Facebook: {
     ...defaultProps,
-    field: { field: 'facebook' },
+    field: { field: 'facebook', render: 'weblink@social-network' } as FieldsListItem,
     properties: {
       metadata: { id: 0 },
       facebook: 'https://www.facebook.com/',
@@ -124,7 +124,7 @@ const props = {
   },
   Instagram: {
     ...defaultProps,
-    field: { field: 'instagram' },
+    field: { field: 'instagram', render: 'weblink@social-network' } as FieldsListItem,
     properties: {
       metadata: { id: 0 },
       instagram: 'https://www.instagram.com/',
@@ -132,7 +132,7 @@ const props = {
   },
   RouteGpxTrace: {
     ...defaultProps,
-    field: { field: 'route:gpx_trace' },
+    field: { field: 'route:gpx_trace', render: 'weblink@download' } as FieldsListItem,
     properties: {
       'metadata': { id: 0 },
       'route:gpx_trace': 'https://cdt40.tourinsoft.com/upload/15.8.gpx',
@@ -140,7 +140,7 @@ const props = {
   },
   RoutePdf: {
     ...defaultProps,
-    field: { field: 'route:pdf' },
+    field: { field: 'route:pdf', render: 'weblink@download' } as FieldsListItem,
     properties: {
       'metadata': { id: 0 },
       'route:pdf': 'https://cdt40.tourinsoft.com/upload/ITIAQU040V502MFU.pdf',
@@ -148,7 +148,7 @@ const props = {
   },
   Download: {
     ...defaultProps,
-    field: { field: 'download' },
+    field: { field: 'download', render: 'weblink@download' } as FieldsListItem,
     properties: {
       metadata: { id: 0 },
       download: [
@@ -159,7 +159,7 @@ const props = {
   },
   Coordinates: {
     ...defaultProps,
-    field: { field: 'coordinates' },
+    field: { field: 'coordinates', render: 'coordinates' } as FieldsListItem,
   },
 }
 

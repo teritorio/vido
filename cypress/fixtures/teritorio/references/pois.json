@@ -40,7 +40,8 @@
                 "editorial": {
                     "details_fields": [
                         {
-                            "field": "name"
+                            "field": "name",
+                            "render": "string"
                         },
                         {
                             "group": "contact_standard",
@@ -48,16 +49,20 @@
                             "icon": "phone",
                             "fields": [
                                 {
-                                    "field": "name"
+                                    "field": "name",
+                                    "render": "string"
                                 },
                                 {
-                                    "field": "addr"
+                                    "field": "addr",
+                                    "render": "addr"
                                 },
                                 {
-                                    "field": "phone"
+                                    "field": "phone",
+                                    "render": "phone"
                                 },
                                 {
-                                    "field": "mobile"
+                                    "field": "mobile",
+                                    "render": "phone"
                                 }
                             ]
                         },
@@ -67,47 +72,59 @@
                             "icon": "phone",
                             "fields": [
                                 {
-                                    "field": "addr"
+                                    "field": "addr",
+                                    "render": "addr"
                                 },
                                 {
-                                    "field": "phone"
+                                    "field": "phone",
+                                    "render": "phone"
                                 },
                                 {
-                                    "field": "mobile"
+                                    "field": "mobile",
+                                    "render": "phone"
                                 }
                             ]
                         },
                         {
-                            "field": "opening_hours"
+                            "field": "opening_hours",
+                            "render": "osm:opening_hours"
                         },
                         {
-                            "field": "description"
+                            "field": "description",
+                            "render": "html"
                         },
                         {
                             "field": "coordinates",
+                            "render": "coordinates",
                             "label": true
                         }
                     ],
                     "popup_fields": [
                         {
-                            "field": "description"
+                            "field": "description",
+                            "render": "html"
                         },
                         {
-                            "field": "addr"
+                            "field": "addr",
+                            "render": "addr"
                         }
                     ],
                     "list_fields": [
                         {
-                            "field": "name"
+                            "field": "name",
+                            "render": "string"
                         },
                         {
-                            "field": "description"
+                            "field": "description",
+                            "render": "html"
                         },
                         {
-                            "field": "addr"
+                            "field": "addr",
+                            "render": "addr"
                         },
                         {
-                            "field": "opening_hours"
+                            "field": "opening_hours",
+                            "render": "osm:opening_hours"
                         }
                     ],
                     "class_label": {
@@ -164,10 +181,12 @@
                 "editorial": {
                     "details_fields": [
                         {
-                            "field": "route"
+                            "field": "route",
+                            "render": "route"
                         },
                         {
-                            "field": "opening_hours"
+                            "field": "opening_hours",
+                            "render": "osm:opening_hours"
                         },
                         {
                             "group": "download",
@@ -175,10 +194,12 @@
                             "icon": "arrow-circle-down",
                             "fields": [
                                 {
-                                    "field": "route:gpx_trace"
+                                    "field": "route:gpx_trace",
+                                    "render": "route"
                                 },
                                 {
-                                    "field": "route:pdf"
+                                    "field": "route:pdf",
+                                    "render": "route"
                                 }
                             ]
                         },
@@ -188,40 +209,50 @@
                             "icon": "phone",
                             "fields": [
                                 {
-                                    "field": "addr"
+                                    "field": "addr",
+                                    "render": "addr"
                                 },
                                 {
-                                    "field": "phone"
+                                    "field": "phone",
+                                    "render": "phone"
                                 },
                                 {
-                                    "field": "mobile"
+                                    "field": "mobile",
+                                    "render": "phone"
                                 }
                             ]
                         },
                         {
-                            "field": "description"
+                            "field": "description",
+                            "render": "html"
                         }
                     ],
                     "popup_fields": [
                         {
-                            "field": "route"
+                            "field": "route",
+                            "render": "route"
                         },
                         {
-                            "field": "addr"
+                            "field": "addr",
+                            "render": "addr"
                         }
                     ],
                     "list_fields": [
                         {
-                            "field": "name"
+                            "field": "name",
+                            "render": "string"
                         },
                         {
-                            "field": "description"
+                            "field": "description",
+                            "render": "html"
                         },
                         {
-                            "field": "addr"
+                            "field": "addr",
+                            "render": "addr"
                         },
                         {
-                            "field": "opening_hours"
+                            "field": "opening_hours",
+                            "render": "osm:opening_hours"
                         }
                     ],
                     "class_label": {

@@ -227,7 +227,7 @@ onMounted(() => {
                 {
                   group: 'description',
                   display_mode: 'standard',
-                  fields: [{ field: 'description' }],
+                  fields: [{ field: 'description', render: 'html' }],
                   icon: '',
                 },
               ],

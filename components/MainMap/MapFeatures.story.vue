@@ -56,7 +56,7 @@ const feature1: ApiPoi = {
       style_class: ['catering', 'catering_food', 'restaurant'],
     },
     editorial: {
-      popup_fields: [{ field: 'foot' }],
+      popup_fields: [{ field: 'foo', render: 'string' }],
     },
   },
 }

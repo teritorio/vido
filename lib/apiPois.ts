@@ -3,10 +3,43 @@ import type { MultilingualString } from '~/utils/types'
 
 export type ApiPoiId = MapPoiId
 
+export type RenderEnum =
+  | 'array'
+  | 'string'
+  | 'html'
+  | 'integer'
+  | 'boolean'
+  | 'email'
+  | 'phone'
+  | 'date'
+  | 'coordinates'
+  | 'addr'
+  | 'route'
+  | 'datetime'
+  | 'duration'
+  | 'start_end_date'
+  | 'image'
+  | 'mapillary'
+  | 'panoramax'
+  | 'tag'
+  | 'color'
+  | 'rating-scale'
+  | 'weblink'
+  | 'weblink@social-network'
+  | 'weblink@download'
+  | 'string@short'
+  | 'osm:opening_hours'
+  | 'osm:collection_times'
+  | 'osm:stars'
+
 export interface FieldsListItem {
   group?: undefined
   label?: boolean
   field: string
+  render: RenderEnum
+  icon?: string
+  array?: boolean
+  multilingual?: boolean
 }
 
 export interface FieldsListGroup {
