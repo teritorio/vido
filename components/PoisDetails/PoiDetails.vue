@@ -35,12 +35,9 @@ const favoriteStore = useFavoriteStore()
 const { favoritesIds, favoriteAddresses } = storeToRefs(favoriteStore)
 const { contribMode, isContribEligible, getContributorFields } = useContrib()
 
-if (!props.poi.properties.display)
-  throw createError(`Feature ${props.poi.properties.metadata.id} is missing 'display' property.`)
-
 const { colorFill, colorText } = useContrastedColors(
-  props.poi.properties.display.color_fill,
-  props.poi.properties.display.color_text,
+  props.poi.properties.display?.color_fill || '#FFFFFF',
+  props.poi.properties.display?.color_text,
 )
 
 const isLargeLayout = computed((): boolean => {

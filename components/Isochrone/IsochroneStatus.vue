@@ -11,8 +11,8 @@ if (!isochroneCurrentFeature.value.properties?.display?.color_fill)
   throw createError(`Feature ${isochroneCurrentFeature.value.id} is missing color_fill`)
 
 const { colorFill: color_fill, colorText: color_text } = useContrastedColors(
-  isochroneCurrentFeature.value.properties.display.color_fill,
-  isochroneCurrentFeature.value.properties.display.color_text,
+  isochroneCurrentFeature.value.properties.display?.color_fill || '#FFFFFF',
+  isochroneCurrentFeature.value.properties.display?.color_text,
 )
 </script>
 
