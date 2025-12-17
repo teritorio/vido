@@ -3,7 +3,6 @@ import type { optional_conf } from 'opening_hours'
 import OpeningHours from 'opening_hours'
 import RelativeDate from '~/components/UI/RelativeDate.vue'
 import { PropertyTranslationsContextEnum, useSiteStore } from '~/stores/site'
-import { PointTime, isSupportedOsmTags } from '~/composables/useOpeningHours'
 
 //
 // Props
@@ -12,7 +11,7 @@ const props = withDefaults(defineProps<{
   baseDate?: Date
   context: PropertyTranslationsContextEnum
   openingHours: string
-  tagKey: string
+  renderKey: AssocRenderKey
 }>(), {
   baseDate: () => new Date(),
 })
@@ -25,10 +24,21 @@ const { settings } = siteStore
 const { locale } = useI18n()
 const { t } = useI18n()
 
+const assocRenderKey = {
+  'osm:opening_hours': 'opening_hours',
+  'osm:collection_times': 'collection_times',
+  'osm:opening_hours+values': 'lit',
+} as const
+
+export type AssocRenderKey = keyof typeof assocRenderKey
+const PointTime = ['osm:collection_times']
+
+const tagKey = computed(() => assocRenderKey[props.renderKey])
+
 //
 // Computed
 //
-const isPointTime = computed(() => isSupportedOsmTags(PointTime, props.tagKey))
+const isPointTime = computed(() => PointTime.includes(tagKey.value))
 
 const comment = computed(() => {
   const oh = OpeningHoursFactory()
@@ -121,7 +131,7 @@ function OpeningHoursFactory(): OpeningHours | undefined {
     // https://github.com/opening-hours/opening_hours.js/issues/428
     // @ts-expect-error: Fix typings
     const optionalConf: optional_conf = {
-      tag_key: props.tagKey,
+      tag_key: tagKey.value,
     }
     return new OpeningHours(
       props.openingHours,

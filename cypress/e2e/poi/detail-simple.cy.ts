@@ -25,7 +25,7 @@ describe('home content', () => {
 
   it('contain basic details', () => {
     cy.get('h1').contains(
-      teritorioReferenceAPIFixture.deps[1].features[0].properties.name as string,
+      teritorioReferenceAPIFixture.deps[1].features[0].properties.name?.['fr-FR'] as string,
     )
 
     cy.get('#FieldsGroup--contact_standard')

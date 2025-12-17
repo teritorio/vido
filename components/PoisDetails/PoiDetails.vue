@@ -101,7 +101,7 @@ function toggleFavorite(): void {
       type: 'details_event',
       event: 'favorite',
       poiId: id.value,
-      title: props.poi.properties.name,
+      title: props.poi.properties.name?.['fr-FR'],
     })
 
     if (props.poi.properties.internalType === 'address')
@@ -160,11 +160,8 @@ onMounted(() => {
     <template #actions>
       <Share
         class="print:tw-hidden"
-        :title="poi.properties.name"
-        :href="
-          poi.properties.editorial
-            && poi.properties.editorial['website:details']
-        "
+        :title="poi.properties.name?.['fr-FR']"
+        :href="poi.properties.editorial && poi.properties.editorial['website:details']?.['fr-FR']"
         :color-line="colorLine"
       />
     </template>

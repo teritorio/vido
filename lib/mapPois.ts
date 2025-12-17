@@ -2,8 +2,8 @@ export type MapPoiId = number
 
 export interface MapPoiProperties {
   [key: string]: any
-  'name'?: string
-  'description'?: string
+  'name'?: MultilingualString
+  'description'?: MultilingualString
   'image:thumbnail'?: string
   'metadata': {
     id: MapPoiId

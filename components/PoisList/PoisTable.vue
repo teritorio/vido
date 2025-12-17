@@ -273,9 +273,9 @@ if (settings.value && theme.value) {
               />
               <!-- TODO: Pass it as Field -->
               <IconButton
-                v-else-if="col.key === 'details' && item.properties.editorial && item.properties.editorial['website:details']"
+                v-else-if="col.key === 'details' && item.properties.editorial && item.properties.editorial['website:details']?.['fr-FR']"
                 class="tw-h-10"
-                :href="item.properties.editorial['website:details']"
+                :href="item.properties.editorial['website:details']?.['fr-FR']"
                 :label="t('poisTable.details')"
                 :target="detailsIsExternal ? '_blank' : '_self'"
               >

@@ -4,7 +4,6 @@ import type { MultilingualString } from '~/utils/types'
 export type ApiPoiId = MapPoiId
 
 export type RenderEnum =
-  | 'array'
   | 'string'
   | 'html'
   | 'integer'
@@ -79,7 +78,7 @@ export type ApiPoiProperties = MapPoiProperties & {
     'class_label'?: MultilingualString
     'class_label_popup'?: MultilingualString
     'class_label_details'?: MultilingualString
-    'website:details'?: string
+    'website:details'?: MultilingualString
     'unavoidable'?: boolean
   }
 }

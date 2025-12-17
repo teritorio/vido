@@ -5,8 +5,7 @@ import AddressField from '~/components/Fields/AddressField.vue'
 import Coordinates from '~/components/Fields/Coordinates.vue'
 import DateRange from '~/components/Fields/DateRange.vue'
 import SocialNetwork from '~/components/Fields/SocialNetwork.vue'
-import OpeningHours from '~/components/Fields/OpeningHours.vue'
-import { isOpeningHoursSupportedOsmTags } from '~/composables/useOpeningHours'
+import OpeningHours, { type AssocRenderKey } from '~/components/Fields/OpeningHours.vue'
 import Phone from '~/components/Fields/Phone.vue'
 import RoutesField from '~/components/Fields/RoutesField.vue'
 import Stars from '~/components/Fields/Stars.vue'
@@ -40,24 +39,20 @@ const textLimit = ref(130)
 const { p, pv } = useSiteStore()
 
 const shortDescription = computed((): string | undefined => {
-  return props.properties?.description?.replace(/(<([^>]+)>)/g, '')
+  return props.properties?.description?.['fr-FR'].replace(/(<([^>]+)>)/g, '')
 })
 
 function fieldTranslateK(field: string) {
   return p(field, props.context)
 }
 
-function propTranslateV(field: string) {
-  return pv(
-    field,
-    props.properties[field],
-    props.context,
-  )
-}
+const translatedValue = computed(() => {
+  const value = props.field.multilingual
+    ? props.properties[props.field.field]?.['fr-FR']
+    : props.properties[props.field.field]
 
-function propTranslateVs(field: string, value: string) {
-  return pv(field, value, props.context)
-}
+  return props.field.array ? value : [value]
+})
 </script>
 
 <template>
@@ -148,92 +143,85 @@ function propTranslateVs(field: string, value: string) {
       {{ fieldTranslateK(field.field) }}
     </FieldsHeader>
     <div :class="`inline field_content_level_${recursionStack.length}`">
-      <div
-        v-if="field.render === 'html'"
-        class="tw-prose"
-        v-html="properties.description"
-      />
+      <template v-for="(f, index) in translatedValue" :key="index">
+        <div
+          v-if="field.render === 'html'"
+          class="tw-prose"
+          v-html="properties.description?.['fr-FR']"
+        />
 
-      <div
-        v-for="phone in properties[field.field]"
-        v-else-if="field.render === 'phone'"
-        :key="`phone_${phone}`"
-      >
-        <ClientOnly>
-          <Phone :number="phone" />
-        </ClientOnly>
-      </div>
-
-      <div
-        v-for="item in properties[field.field]"
-        v-else-if="field.render === 'weblink'"
-        :key="`website_${item}`"
-      >
-        <ExternalLink :title="item" :href="item">
-          {{ context !== 'label_list' ? item : '' }}
-        </ExternalLink>
-      </div>
-
-      <div
-        v-for="item in properties[field.field]"
-        v-else-if="field.render === 'email'"
-        :key="`email_${item}`"
-      >
-        <ExternalLink :title="item" :href="`mailto:${item}`" icon="envelope">
-          {{ context !== 'label_list' ? item : '' }}
-        </ExternalLink>
-      </div>
-
-      <div
-        v-for="item in properties[field.field]"
-        v-else-if="field.array && field.render === 'weblink@download'"
-        :key="`download_${item}`"
-      >
-        <ExternalLink :href="item" icon="arrow-circle-down">
-          {{ item.split('/').pop() }}
-        </ExternalLink>
-      </div>
-
-      <a
-        v-else-if="field.render === 'weblink@download'"
-        :href="properties[field.field]"
-        class="d-inline-block pa-2 rounded-lg"
-        :style="{ backgroundColor: colorFill, color: colorText }"
-      >
-        <FontAwesomeIcon icon="arrow-circle-down" />
-        {{ fieldTranslateK(field.field) }}
-      </a>
-
-      <SocialNetwork
-        v-else-if="field.render === 'weblink@social-network'"
-        :url="properties[field.field]"
-        :icon="field.icon"
-      />
-
-      <Stars
-        v-else-if="field.render === 'osm:stars'"
-        :stars="properties[field.field]"
-      />
-
-      <OpeningHours
-        v-else-if="isOpeningHoursSupportedOsmTags(field.render)"
-        :opening-hours="properties[field.field]"
-        :context="context"
-        :tag-key="field.render"
-      />
-
-      <ul v-else-if="field.array">
-        <li
-          v-for="item in properties[field.field]"
-          :key="`${field.field}_${item}`"
+        <div
+          v-else-if="field.render === 'phone'"
+          :key="`phone_${f}`"
         >
-          {{ propTranslateVs(field.field, item) }}
-        </li>
-      </ul>
+          <ClientOnly>
+            <Phone :number="f" />
+          </ClientOnly>
+        </div>
 
-      <span v-else>
-        {{ propTranslateV(field.field) }}
-      </span>
+        <div
+          v-else-if="field.render === 'weblink'"
+          :key="`website_${f}`"
+        >
+          <ExternalLink :title="f" :href="f">
+            {{ context !== 'label_list' ? f : '' }}
+          </ExternalLink>
+        </div>
+
+        <div
+          v-else-if="field.render === 'email'"
+          :key="`email_${f}`"
+        >
+          <ExternalLink :title="f" :href="`mailto:${f}`" icon="envelope">
+            {{ context !== 'label_list' ? f : '' }}
+          </ExternalLink>
+        </div>
+
+        <div
+          v-else-if="field.array && field.render === 'weblink@download'"
+          :key="`download_${f}`"
+        >
+          <ExternalLink :href="f" icon="arrow-circle-down">
+            {{ f.split('/').pop() }}
+          </ExternalLink>
+        </div>
+
+        <a
+          v-else-if="field.render === 'weblink@download'"
+          :href="properties[field.field]"
+          class="d-inline-block pa-2 rounded-lg"
+          :style="{ backgroundColor: colorFill, color: colorText }"
+        >
+          <FontAwesomeIcon icon="arrow-circle-down" />
+          {{ fieldTranslateK(field.field) }}
+        </a>
+
+        <SocialNetwork
+          v-else-if="field.render === 'weblink@social-network'"
+          :url="properties[field.field]"
+          :icon="field.icon"
+        />
+
+        <Stars
+          v-else-if="field.render === 'osm:stars'"
+          :stars="properties[field.field]"
+        />
+
+        <OpeningHours
+          v-else-if="['osm:opening_hours', 'osm:collection_times', 'osm:opening_hours+values'].includes(field.render)"
+          :opening-hours="properties[field.field]"
+          :context="context"
+          :render-key="(field.render as AssocRenderKey)"
+        />
+
+        <span v-else>
+          {{ pv(
+            field.field,
+            f,
+            props.context,
+          ) }}
+        </span>
+      </template>
     </div>
   </div>
 </template>

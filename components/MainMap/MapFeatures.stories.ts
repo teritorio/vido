@@ -74,7 +74,9 @@ const feature1: ApiPoi = {
     coordinates: [-1.4745043, 43.4910071],
   },
   properties: {
-    name: 'foo',
+    name: {
+      'fr-FR': 'foo',
+    },
     metadata: {
       id: 1,
       category_ids: [1],
