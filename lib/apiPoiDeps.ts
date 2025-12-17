@@ -107,8 +107,8 @@ export function apiRouteWaypointToApiPoi(
     ...waypoint,
     properties: {
       ...waypoint.properties,
-      name: waypoint.properties.name?.fr,
-      description: waypoint.properties.description?.fr,
+      name: waypoint.properties.name,
+      description: waypoint.properties.description,
       metadata: {
         id: waypoint.properties.id,
       },

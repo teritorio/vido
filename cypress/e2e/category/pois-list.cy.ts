@@ -39,7 +39,7 @@ describe('pois table', () => {
     }
 
     cy.get('td')
-      .contains(pois.features[0].properties.name as string)
+      .contains(pois.features[0].properties.name?.['fr-FR'] as string)
 
     cy.htmlvalidate(htmlValidateRules)
   })
@@ -56,7 +56,7 @@ describe('pois table', () => {
     cy.get('th').contains(
       poisCategory22.features[0].properties.editorial.list_fields[0].field,
     )
-    cy.get('td').contains(poisCategory22.features[0].properties.name)
+    cy.get('td').contains(poisCategory22.features[0].properties.name['fr-FR'])
 
     // Unselect the selector before validate
     cy.get('body').click()

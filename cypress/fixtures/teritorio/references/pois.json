@@ -11,7 +11,9 @@
                 ]
             },
             "properties": {
-                "name": "Aire de Moyen Passage des Gens du Voyage",
+                "name": {
+                    "fr-FR": "Aire de Moyen Passage des Gens du Voyage"
+                },
                 "tourism": "caravan_site",
                 "addr:postcode": "40000",
                 "addr:city": "Mont-de-Marsan",
@@ -136,7 +138,9 @@
                     "class_label_details": {
                         "fr": "Aire de camping-cars"
                     },
-                    "website:details": "/poi/1/details"
+                    "website:details": {
+                        "fr-FR": "/poi/1/details"
+                    }
                 }
             }
         },
@@ -150,7 +154,9 @@
                 ]
             },
             "properties": {
-                "name": "A Mézos, circuit du Courlis",
+                "name": {
+                    "fr-FR": "A Mézos, circuit du Courlis"
+                },
                 "classe": "Balades à pieds",
                 "teritorio:url": "https://www.tourismelandes.com/wp-json/irisit/link/ITIAQU040V502MFU",
                 "addr:street": "Avenue du Born",
@@ -264,9 +270,13 @@
                     "class_label_details": {
                         "fr": "Balades à pieds"
                     },
-                    "website:details": "/poi/2/details"
+                    "website:details": {
+                        "fr-FR": "/poi/2/details"
+                    }
                 },
-                "description": "<div>Itinéraire très intéressant, d'une part pour sa variété paysagère accentuée par la traversée fréquente de cours d'eau et d'autre part, par la qualité du patrimoine bâti : maisons traditionnelles landaises, église en garluche. \n\nDistance : 10,2 km - Durée : 4h45 - Animaux tenus en laisse  - Sentier pédestre et VTT \nFiche rando disponible dans le topoguide du Département des Landes du Pays de Born n°15 (en vente : 2 €)</div><div><br /></div><div><span type=\"champSimple\" id=\"408feabd-c6ba-44fe-99e6-2dcb32b888b1\" data-champcoderef=\" \"></span><br /></div><br />",
+                "description": {
+                    "fr-FR": "<div>Itinéraire très intéressant, d'une part pour sa variété paysagère accentuée par la traversée fréquente de cours d'eau et d'autre part, par la qualité du patrimoine bâti : maisons traditionnelles landaises, église en garluche. \n\nDistance : 10,2 km - Durée : 4h45 - Animaux tenus en laisse  - Sentier pédestre et VTT \nFiche rando disponible dans le topoguide du Département des Landes du Pays de Born n°15 (en vente : 2 €)</div><div><br /></div><div><span type=\"champSimple\" id=\"408feabd-c6ba-44fe-99e6-2dcb32b888b1\" data-champcoderef=\" \"></span><br /></div><br />"
+                },
                 "image": [
                     "https://tile.openstreetmap.org/7/6/19.png"
                 ],

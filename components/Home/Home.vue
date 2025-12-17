@@ -206,7 +206,7 @@ watch(selectedFeature, (newFeature, oldFeature) => {
       $tracking({
         type: 'popup',
         poiId: newFeature.properties.metadata.id || newFeature.properties?.id,
-        title: newFeature.properties?.name,
+        title: newFeature.properties?.name?.['fr-FR'],
         location: window.location.href,
         path: route.path,
         categoryIds: newFeature.properties?.metadata?.category_ids || [],

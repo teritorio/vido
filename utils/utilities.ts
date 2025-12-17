@@ -85,7 +85,7 @@ export function formatApiAddressToFeature(feature: GeoJSON.Feature<GeoJSON.Point
       metadata: {
         id: feature.properties.id as ApiPoiId,
       },
-      name: feature.properties.label,
+      name: { 'fr-FR': feature.properties.label },
       vido_zoom,
       display: {
         icon: feature.properties.type === 'municipality'

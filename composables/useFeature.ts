@@ -35,11 +35,11 @@ export default function useFeature(feature: Ref<ApiPoi>, options: Options = {
   const name = computed(() => {
     switch (type) {
       case 'details':
-        return feature.value.properties.name ?? getDetailsClassLabel()
+        return feature.value.properties.name?.['fr-FR'] ?? getDetailsClassLabel()
       case 'popup':
-        return feature.value.properties.name ?? getPopupClassLabel()
+        return feature.value.properties.name?.['fr-FR'] ?? getPopupClassLabel()
       default:
-        return feature.value.properties.name ?? getClassLabel(locale.value)
+        return feature.value.properties.name?.['fr-FR'] ?? getClassLabel(locale.value)
     }
   })
 

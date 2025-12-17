@@ -14,7 +14,7 @@ const props = withDefaults(defineProps<{
 const { featureName } = useFeature(toRef(() => props.poi), { type: 'popup' })
 
 const colorLine = ref(props.poi.properties.display?.color_line || '#000000')
-const websiteDetails = ref(props.poi.properties.editorial && props.poi.properties.editorial['website:details'])
+const websiteDetails = ref(props.poi.properties.editorial && props.poi.properties.editorial['website:details']?.['fr-FR'])
 
 const { colorFill, colorText } = useContrastedColors(
   toRef(() => props.poi.properties.display?.color_fill || '#FFFFFF'),

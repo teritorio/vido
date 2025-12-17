@@ -22,7 +22,9 @@ const defaultProps = {
   colorText: '#ffffff',
   properties: {
     metadata: { id: 0 },
-    name: 'foo',
+    name: {
+      'fr-FR': 'foo',
+    },
   },
   geom: {
     type: 'Point',
@@ -30,8 +32,9 @@ const defaultProps = {
   } as GeoJSON.Geometry,
 }
 
-const description
-  = 'Itinéraire très intéressant, d\'une part pour sa variété paysagère accentuée par la traversée fréquente de cours d\'eau et d\'autre part, par la qualité du patrimoine bâti : maisons traditionnelles landaises, église en garluche. \n\nDistance : 10,2 km - Durée : 4h45 - Animaux tenus en laisse  - Sentier pédestre et VTT \nFiche rando disponible dans le topoguide du Département des Landes du Pays de Born n°15 (en vente : 2 €)'
+const description = {
+  'fr-FR': 'Itinéraire très intéressant, d\'une part pour sa variété paysagère accentuée par la traversée fréquente de cours d\'eau et d\'autre part, par la qualité du patrimoine bâti : maisons traditionnelles landaises, église en garluche. \n\nDistance : 10,2 km - Durée : 4h45 - Animaux tenus en laisse  - Sentier pédestre et VTT \nFiche rando disponible dans le topoguide du Département des Landes du Pays de Born n°15 (en vente : 2 €)',
+}
 
 const props = {
   Sandart: {

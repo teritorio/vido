@@ -86,7 +86,7 @@ const icon = computed(() => {
 })
 
 const description = computed(() => {
-  return props.poi.properties.description
+  return props.poi.properties.description?.['fr-FR']
 })
 
 const unavoidable = computed(() => {
@@ -94,7 +94,7 @@ const unavoidable = computed(() => {
 })
 
 const websiteDetails = computed(() => {
-  const url = props.poi.properties.editorial && props.poi.properties.editorial['website:details']
+  const url = props.poi.properties.editorial && props.poi.properties.editorial['website:details']?.['fr-FR']
 
   if (!url) {
     return undefined
