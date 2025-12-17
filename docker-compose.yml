@@ -4,10 +4,10 @@ services:
       context: .
       args:
         NODE_VERSION: 20-alpine3.18
-    image: ghcr.io/teritorio/vido:develop
+    image: ghcr.io/teritorio/vido:${VIDO_VERSION:-develop}
     restart: unless-stopped
     ports:
-      - '3000:3000'
+      - ${VIDO_PORT:-3000}:3000
     environment:
       - NUXT_PUBLIC_SENTRY_DSN=${NUXT_PUBLIC_SENTRY_DSN:-}
       - NUXT_PUBLIC_SENTRY_ENVIRONMENT=${NUXT_PUBLIC_SENTRY_ENVIRONMENT:-}
