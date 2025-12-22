@@ -3,6 +3,8 @@ import type { optional_conf } from 'opening_hours'
 import OpeningHours from 'opening_hours'
 import RelativeDate from '~/components/UI/RelativeDate.vue'
 import { PropertyTranslationsContextEnum, useSiteStore } from '~/stores/site'
+import type { AssocRenderKey, AssocRenderValue } from '~/utils/types'
+import { assocRenderKey } from '~/utils/types'
 
 //
 // Props
@@ -24,14 +26,7 @@ const { settings } = siteStore
 const { locale } = useI18n()
 const { t } = useI18n()
 
-const assocRenderKey = {
-  'osm:opening_hours': 'opening_hours',
-  'osm:collection_times': 'collection_times',
-  'osm:opening_hours+values': 'lit',
-} as const
-
-export type AssocRenderKey = keyof typeof assocRenderKey
-const PointTime = ['osm:collection_times']
+const PointTime = ['collection_times'] as AssocRenderValue[]
 
 const tagKey = computed(() => assocRenderKey[props.renderKey])
 
