@@ -5,7 +5,7 @@ import AddressField from '~/components/Fields/AddressField.vue'
 import Coordinates from '~/components/Fields/Coordinates.vue'
 import DateRange from '~/components/Fields/DateRange.vue'
 import SocialNetwork from '~/components/Fields/SocialNetwork.vue'
-import OpeningHours, { type AssocRenderKey } from '~/components/Fields/OpeningHours.vue'
+import OpeningHours from '~/components/Fields/OpeningHours.vue'
 import Phone from '~/components/Fields/Phone.vue'
 import RoutesField from '~/components/Fields/RoutesField.vue'
 import Stars from '~/components/Fields/Stars.vue'
@@ -14,6 +14,7 @@ import FieldsHeader from '~/components/UI/FieldsHeader.vue'
 import type { ApiPoiProperties, FieldsListItem } from '~/lib/apiPois'
 import type { PropertyTranslationsContextEnum } from '~/stores/site'
 import { useSiteStore } from '~/stores/site'
+import { AssocRenderKeys } from '~/utils/types'
 
 const props = withDefaults(defineProps<{
   context: PropertyTranslationsContextEnum
@@ -212,7 +213,7 @@ const translatedValue = computed(() => {
           />
 
           <OpeningHours
-            v-else-if="['osm:opening_hours', 'osm:collection_times', 'osm:opening_hours+values'].includes(field.render)"
+            v-else-if="AssocRenderKeys.includes(field.render as AssocRenderKey)"
             :opening-hours="properties[field.field]"
             :context="context"
             :render-key="(field.render as AssocRenderKey)"

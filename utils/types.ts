@@ -60,3 +60,13 @@ export interface DateFilterOption {
   begin: string
   end: string
 }
+
+export const assocRenderKey = {
+  'osm:opening_hours': 'opening_hours',
+  'osm:collection_times': 'collection_times',
+  'osm:opening_hours+values': 'lit',
+} as const
+
+export type AssocRenderKey = keyof typeof assocRenderKey
+export type AssocRenderValue = typeof assocRenderKey[AssocRenderKey]
+export const AssocRenderKeys = Object.keys(assocRenderKey) as AssocRenderKey[]
