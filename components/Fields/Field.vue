@@ -143,85 +143,94 @@ const translatedValue = computed(() => {
       {{ fieldTranslateK(field.field) }}
     </FieldsHeader>
     <div :class="`inline field_content_level_${recursionStack.length}`">
-      <template v-for="(f, index) in translatedValue" :key="index">
-        <div
-          v-if="field.render === 'html'"
-          class="tw-prose"
-          v-html="properties.description?.['fr-FR']"
-        />
+      <component :is="field.array ? 'ul' : 'div'">
+        <template v-for="(f, index) in translatedValue" :key="index">
+          <div
+            v-if="field.render === 'html'"
+            class="tw-prose"
+            v-html="properties.description?.['fr-FR']"
+          />
 
-        <div
-          v-else-if="field.render === 'phone'"
-          :key="`phone_${f}`"
-        >
-          <ClientOnly>
-            <Phone :number="f" />
-          </ClientOnly>
-        </div>
+          <component
+            :is="field.array ? 'li' : 'div'"
+            v-else-if="field.render === 'phone'"
+            :key="`phone_${f}`"
+          >
+            <ClientOnly>
+              <Phone :number="f" />
+            </ClientOnly>
+          </component>
 
-        <div
-          v-else-if="field.render === 'weblink'"
-          :key="`website_${f}`"
-        >
-          <ExternalLink :title="f" :href="f">
-            {{ context !== 'label_list' ? f : '' }}
-          </ExternalLink>
-        </div>
+          <component
+            :is="field.array ? 'li' : 'div'"
+            v-else-if="field.render === 'weblink'"
+            :key="`website_${f}`"
+          >
+            <ExternalLink :title="f" :href="f">
+              {{ context !== 'label_list' ? f : '' }}
+            </ExternalLink>
+          </component>
 
-        <div
-          v-else-if="field.render === 'email'"
-          :key="`email_${f}`"
-        >
-          <ExternalLink :title="f" :href="`mailto:${f}`" icon="envelope">
-            {{ context !== 'label_list' ? f : '' }}
-          </ExternalLink>
-        </div>
+          <component
+            :is="field.array ? 'li' : 'div'"
+            v-else-if="field.render === 'email'"
+            :key="`email_${f}`"
+          >
+            <ExternalLink :title="f" :href="`mailto:${f}`" icon="envelope">
+              {{ context !== 'label_list' ? f : '' }}
+            </ExternalLink>
+          </component>
 
-        <div
-          v-else-if="field.array && field.render === 'weblink@download'"
-          :key="`download_${f}`"
-        >
-          <ExternalLink :href="f" icon="arrow-circle-down">
-            {{ f.split('/').pop() }}
-          </ExternalLink>
-        </div>
+          <li
+            v-else-if="field.array && field.render === 'weblink@download'"
+            :key="`download_${f}`"
+          >
+            <ExternalLink :href="f" icon="arrow-circle-down">
+              {{ f.split('/').pop() }}
+            </ExternalLink>
+          </li>
 
-        <a
-          v-else-if="field.render === 'weblink@download'"
-          :href="properties[field.field]"
-          class="d-inline-block pa-2 rounded-lg"
-          :style="{ backgroundColor: colorFill, color: colorText }"
-        >
-          <FontAwesomeIcon icon="arrow-circle-down" />
-          {{ fieldTranslateK(field.field) }}
-        </a>
+          <a
+            v-else-if="field.render === 'weblink@download'"
+            :href="properties[field.field]"
+            class="d-inline-block pa-2 rounded-lg"
+            :style="{ backgroundColor: colorFill, color: colorText }"
+          >
+            <FontAwesomeIcon icon="arrow-circle-down" />
+            {{ fieldTranslateK(field.field) }}
+          </a>
 
-        <SocialNetwork
-          v-else-if="field.render === 'weblink@social-network'"
-          :url="properties[field.field]"
-          :icon="field.icon"
-        />
+          <SocialNetwork
+            v-else-if="field.render === 'weblink@social-network'"
+            :url="properties[field.field]"
+            :icon="field.icon"
+          />
 
-        <Stars
-          v-else-if="field.render === 'osm:stars'"
-          :stars="properties[field.field]"
-        />
+          <Stars
+            v-else-if="field.render === 'osm:stars'"
+            :stars="properties[field.field]"
+          />
 
-        <OpeningHours
-          v-else-if="['osm:opening_hours', 'osm:collection_times', 'osm:opening_hours+values'].includes(field.render)"
-          :opening-hours="properties[field.field]"
-          :context="context"
-          :render-key="(field.render as AssocRenderKey)"
-        />
+          <OpeningHours
+            v-else-if="['osm:opening_hours', 'osm:collection_times', 'osm:opening_hours+values'].includes(field.render)"
+            :opening-hours="properties[field.field]"
+            :context="context"
+            :render-key="(field.render as AssocRenderKey)"
+          />
 
-        <span v-else>
-          {{ pv(
-            field.field,
-            f,
-            props.context,
-          ) }}
-        </span>
-      </template>
+          <li v-else-if="field.array">
+            {{ pv(field.field, f, props.context) }}
+          </li>
+
+          <span v-else>
+            {{ pv(
+              field.field,
+              f,
+              props.context,
+            ) }}
+          </span>
+        </template>
+      </component>
     </div>
   </div>
 </template>
