@@ -13,7 +13,11 @@
             "properties": {
                 "route:point:type": "parking",
                 "description": {
-                    "fr-FR": "Gratuit le weekend."
+                    "fr-FR": {
+                        "value": "Gratuit le weekend.",
+                        "html": false,
+                        "is_shortened": false
+                    }
                 },
                 "id": 10001
             }
@@ -33,7 +37,11 @@
                     "fr-FR": "Départ"
                 },
                 "description": {
-                    "fr-FR": "Prendre en direction du sud."
+                    "fr-FR": {
+                        "value": "Prendre en direction du sud.",
+                        "html": false,
+                        "is_shortened": false
+                    }
                 },
                 "id": 10002
             }
@@ -53,7 +61,11 @@
                     "fr-FR": "Petite Pause"
                 },
                 "description": {
-                    "fr-FR": "Point de vue sur les fougères."
+                    "fr-FR": {
+                        "value": "Point de vue sur les fougères.",
+                        "html": false,
+                        "is_shortened": false
+                    }
                 },
                 "id": 10003
             }
@@ -73,7 +85,11 @@
                     "fr-FR": "Arrivé"
                 },
                 "description": {
-                    "fr-FR": "Alors, elles ne sont pas belles nos fougères ?"
+                    "fr-FR": {
+                        "value": "Alors, elles ne sont pas belles nos fougères ?",
+                        "html": false,
+                        "is_shortened": false
+                    }
                 },
                 "id": 10004
             }

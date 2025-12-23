@@ -93,7 +93,7 @@
                         },
                         {
                             "field": "description",
-                            "render": "html"
+                            "render": "text"
                         },
                         {
                             "field": "coordinates",
@@ -104,7 +104,7 @@
                     "popup_fields": [
                         {
                             "field": "description",
-                            "render": "html"
+                            "render": "text"
                         },
                         {
                             "field": "addr",
@@ -118,7 +118,7 @@
                         },
                         {
                             "field": "description",
-                            "render": "html"
+                            "render": "text"
                         },
                         {
                             "field": "addr",
@@ -230,7 +230,7 @@
                         },
                         {
                             "field": "description",
-                            "render": "html"
+                            "render": "text"
                         }
                     ],
                     "popup_fields": [
@@ -250,7 +250,7 @@
                         },
                         {
                             "field": "description",
-                            "render": "html"
+                            "render": "text"
                         },
                         {
                             "field": "addr",
@@ -275,7 +275,11 @@
                     }
                 },
                 "description": {
-                    "fr-FR": "<div>Itinéraire très intéressant, d'une part pour sa variété paysagère accentuée par la traversée fréquente de cours d'eau et d'autre part, par la qualité du patrimoine bâti : maisons traditionnelles landaises, église en garluche. \n\nDistance : 10,2 km - Durée : 4h45 - Animaux tenus en laisse  - Sentier pédestre et VTT \nFiche rando disponible dans le topoguide du Département des Landes du Pays de Born n°15 (en vente : 2 €)</div><div><br /></div><div><span type=\"champSimple\" id=\"408feabd-c6ba-44fe-99e6-2dcb32b888b1\" data-champcoderef=\" \"></span><br /></div><br />"
+                    "fr-FR": {
+                        "value": "<div>Itinéraire très intéressant, d'une part pour sa variété paysagère accentuée par la traversée fréquente de cours d'eau et d'autre part, par la qualité du patrimoine bâti : maisons traditionnelles landaises, église en garluche. \n\nDistance : 10,2 km - Durée : 4h45 - Animaux tenus en laisse  - Sentier pédestre et VTT \nFiche rando disponible dans le topoguide du Département des Landes du Pays de Born n°15 (en vente : 2 €)</div><div><br /></div><div><span type=\"champSimple\" id=\"408feabd-c6ba-44fe-99e6-2dcb32b888b1\" data-champcoderef=\" \"></span><br /></div><br />",
+                        "html": true,
+                        "is_shortened": false
+                    }
                 },
                 "image": [
                     "https://tile.openstreetmap.org/7/6/19.png"

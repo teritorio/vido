@@ -103,7 +103,7 @@ const description = {
 
 export const Description = bind(Field, {
   ...defaultProps,
-  field: { field: 'short_description', render: 'string@short' },
+  field: { field: 'short_description', render: 'text' },
   properties: {
     metadata: { id: 0 },
     description,
@@ -112,7 +112,7 @@ export const Description = bind(Field, {
 
 export const DescriptionDetails = bind(Field, {
   ...defaultProps,
-  field: { field: 'short_description', render: 'string@short' },
+  field: { field: 'short_description', render: 'text' },
   properties: {
     metadata: { id: 0 },
     description,

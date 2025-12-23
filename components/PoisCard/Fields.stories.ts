@@ -35,7 +35,7 @@ export const Many = bind(Fields, {
   fields: [
     { field: 'phone', render: 'phone' },
     { field: 'route', render: 'route' },
-    { field: 'short_description', render: 'string@short' },
+    { field: 'short_description', render: 'text' },
   ],
   properties: {
     'metadata': { id: 0 },
