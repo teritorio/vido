@@ -1,9 +1,17 @@
 export type MapPoiId = number
 
+export interface MapPoiDescription {
+  'fr-FR': {
+    value: string
+    html: boolean
+    is_shortened: boolean
+  }
+}
+
 export interface MapPoiProperties {
   [key: string]: any
   'name'?: MultilingualString
-  'description'?: MultilingualString
+  'description'?: MapPoiDescription
   'image:thumbnail'?: string
   'metadata': {
     id: MapPoiId

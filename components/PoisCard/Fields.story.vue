@@ -32,7 +32,7 @@ const props = {
     fields: [
       { field: 'phone', render: 'phone' } as FieldsListItem,
       { field: 'route', render: 'route' } as FieldsListItem,
-      { field: 'short_description', render: 'string@short' } as FieldsListItem,
+      { field: 'short_description', render: 'text' } as FieldsListItem,
     ],
     properties: {
       'metadata': { id: 0 },

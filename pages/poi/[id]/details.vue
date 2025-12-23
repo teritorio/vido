@@ -90,7 +90,7 @@ if (settings.value && theme.value) {
       {
         title: featureSeoTitle.value,
         description: {
-          fr: poi.value?.properties.description?.['fr-FR'],
+          fr: poi.value?.properties.description?.['fr-FR'].value,
         },
       },
     ),

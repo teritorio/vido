@@ -36,12 +36,7 @@ const { colorFill, colorText } = useContrastedColors(
   toRef(() => props.properties.display?.color_fill || '#FFFFFF'),
   toRef(() => props.properties.display?.color_text),
 )
-const textLimit = ref(130)
 const { p, pv } = useSiteStore()
-
-const shortDescription = computed((): string | undefined => {
-  return props.properties?.description?.['fr-FR'].replace(/(<([^>]+)>)/g, '')
-})
 
 function fieldTranslateK(field: string) {
   return p(field, props.context)
@@ -108,33 +103,6 @@ const translatedValue = computed(() => {
     </FieldsHeader>
   </Coordinates>
 
-  <div
-    v-else-if="field.render === 'string@short' && shortDescription"
-    class="inline"
-  >
-    <FieldsHeader
-      v-if="field.label"
-      :recursion-stack="undefined"
-      :class="`field_header_level_${recursionStack.length}`"
-    >
-      {{ fieldTranslateK(field.field) }}
-    </FieldsHeader>
-    {{ shortDescription.substring(0, textLimit) }}
-    <template v-if="shortDescription.length > textLimit">
-      …
-    </template>
-    <a
-      v-if="Boolean(details) && shortDescription.length > textLimit"
-      class="tw-underline"
-      :href="details"
-      rel="noopener noreferrer"
-      target="_blank"
-      @click.stop="$emit('clickDetails')"
-    >
-      {{ t('poiCard.seeDetail') }}
-    </a>
-  </div>
-
   <div v-else-if="properties[field.field]">
     <FieldsHeader
       v-if="field.label"
@@ -146,90 +114,99 @@ const translatedValue = computed(() => {
     <div :class="`inline field_content_level_${recursionStack.length}`">
       <component :is="field.array ? 'ul' : 'div'">
         <template v-for="(f, index) in translatedValue" :key="index">
-          <div
-            v-if="field.render === 'html'"
-            class="tw-prose"
-            v-html="properties.description?.['fr-FR']"
-          />
+          <component :is="field.array ? 'li' : 'div'">
+            <p
+              v-if="field.render === 'text' && f.html"
+              class="tw-prose"
+              v-html="f.value"
+            />
 
-          <component
-            :is="field.array ? 'li' : 'div'"
-            v-else-if="field.render === 'phone'"
-            :key="`phone_${f}`"
-          >
-            <ClientOnly>
+            <p
+              v-else-if="field.render === 'text'"
+              class="inline"
+            >
+              {{ f.value }}
+              <a
+                v-if="Boolean(details) && f.is_shortened"
+                class="tw-underline"
+                rel="noopener noreferrer"
+                target="_blank"
+                :href="details"
+                @click.stop="$emit('clickDetails')"
+              >
+                {{ t('poiCard.seeDetail') }}
+              </a>
+            </p>
+
+            <ClientOnly v-else-if="field.render === 'phone'">
               <Phone :number="f" />
             </ClientOnly>
-          </component>
 
-          <component
-            :is="field.array ? 'li' : 'div'"
-            v-else-if="field.render === 'weblink'"
-            :key="`website_${f}`"
-          >
-            <ExternalLink :title="f" :href="f">
+            <ExternalLink
+              v-else-if="field.render === 'weblink'"
+              :title="f"
+              :href="f"
+            >
               {{ context !== 'label_list' ? f : '' }}
             </ExternalLink>
-          </component>
 
-          <component
-            :is="field.array ? 'li' : 'div'"
-            v-else-if="field.render === 'email'"
-            :key="`email_${f}`"
-          >
-            <ExternalLink :title="f" :href="`mailto:${f}`" icon="envelope">
+            <ExternalLink
+              v-else-if="field.render === 'email'"
+              :title="f"
+              :href="`mailto:${f}`"
+              icon="envelope"
+            >
               {{ context !== 'label_list' ? f : '' }}
             </ExternalLink>
-          </component>
 
-          <li
-            v-else-if="field.array && field.render === 'weblink@download'"
-            :key="`download_${f}`"
-          >
-            <ExternalLink :href="f" icon="arrow-circle-down">
+            <ExternalLink
+              v-else-if="field.array && field.render === 'weblink@download'"
+              :href="f"
+              icon="arrow-circle-down"
+            >
               {{ f.split('/').pop() }}
             </ExternalLink>
-          </li>
 
-          <a
-            v-else-if="field.render === 'weblink@download'"
-            :href="properties[field.field]"
-            class="d-inline-block pa-2 rounded-lg"
-            :style="{ backgroundColor: colorFill, color: colorText }"
-          >
-            <FontAwesomeIcon icon="arrow-circle-down" />
-            {{ fieldTranslateK(field.field) }}
-          </a>
+            <a
+              v-else-if="field.render === 'weblink@download'"
+              class="d-inline-block pa-2 rounded-lg"
+              :href="f"
+              :style="{ backgroundColor: colorFill, color: colorText }"
+            >
+              <FontAwesomeIcon icon="arrow-circle-down" />
+              {{ fieldTranslateK(field.field) }}
+            </a>
 
-          <SocialNetwork
-            v-else-if="field.render === 'weblink@social-network'"
-            :url="properties[field.field]"
-            :icon="field.icon"
-          />
+            <SocialNetwork
+              v-else-if="field.render === 'weblink@social-network'"
+              :url="f"
+              :icon="field.icon"
+            />
 
-          <Stars
-            v-else-if="field.render === 'osm:stars'"
-            :stars="properties[field.field]"
-          />
+            <Stars
+              v-else-if="field.render === 'osm:stars'"
+              :stars="f"
+            />
 
-          <OpeningHours
-            v-else-if="AssocRenderKeys.includes(field.render as AssocRenderKey)"
-            :opening-hours="properties[field.field]"
-            :context="context"
-            :render-key="(field.render as AssocRenderKey)"
-          />
+            <OpeningHours
+              v-else-if="AssocRenderKeys.includes(field.render as AssocRenderKey)"
+              :opening-hours="f"
+              :context="context"
+              :render-key="(field.render as AssocRenderKey)"
+            />
 
-          <li v-else-if="field.array">
-            {{ pv(field.field, f, props.context) }}
-          </li>
+            <li v-else-if="field.array">
+              {{ pv(field.field, f, props.context) }}
+            </li>
 
-          <span v-else>
-            {{ pv(
-              field.field,
-              f,
-              props.context,
-            ) }}
-          </span>
+            <span v-else>
+              {{ pv(
+                field.field,
+                f,
+                props.context,
+              ) }}
+            </span>
+          </component>
         </template>
       </component>
     </div>
