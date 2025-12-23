@@ -86,7 +86,7 @@ const icon = computed(() => {
 })
 
 const description = computed(() => {
-  return props.poi.properties.description?.['fr-FR']
+  return props.poi.properties.description?.['fr-FR'].value
 })
 
 const unavoidable = computed(() => {

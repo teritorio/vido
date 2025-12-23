@@ -266,12 +266,10 @@ if (settings.value && theme.value) {
         <template #item="{ item, columns }">
           <tr>
             <td v-for="col in columns" :key="col.key!">
-              <!-- TODO: Pass it as Field -->
               <ContribFieldGroup
                 v-if="col.key === 'contrib' && isContribEligible(item.properties)"
                 v-bind="getContributorFields(item)"
               />
-              <!-- TODO: Pass it as Field -->
               <IconButton
                 v-else-if="col.key === 'details' && item.properties.editorial && item.properties.editorial['website:details']?.['fr-FR']"
                 class="tw-h-10"
@@ -293,7 +291,7 @@ if (settings.value && theme.value) {
                   icon: getField(col.key!, item)?.icon,
                   multilingual: getField(col.key!, item)?.multilingual,
                 }"
-                :details="t('poisTable.details')"
+                :details="undefined"
                 :properties="item.properties"
                 :geom="item.geometry"
               />

@@ -78,7 +78,7 @@ const props = {
   },
   Description: {
     ...defaultProps,
-    field: { field: 'description', render: 'html' } as FieldsListItem,
+    field: { field: 'description', render: 'text' } as FieldsListItem,
     properties: {
       metadata: { id: 0 },
       description,
@@ -86,7 +86,7 @@ const props = {
   },
   DescriptionShort: {
     ...defaultProps,
-    field: { field: 'short_description', render: 'string@short' } as FieldsListItem,
+    field: { field: 'short_description', render: 'text' } as FieldsListItem,
     properties: {
       metadata: { id: 0 },
       description,
@@ -94,7 +94,7 @@ const props = {
   },
   DescriptionDetails: {
     ...defaultProps,
-    field: { field: 'short_description', render: 'string@short' } as FieldsListItem,
+    field: { field: 'short_description', render: 'text' } as FieldsListItem,
     properties: {
       metadata: { id: 0 },
       description,

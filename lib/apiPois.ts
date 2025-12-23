@@ -5,7 +5,7 @@ export type ApiPoiId = MapPoiId
 
 export type RenderEnum =
   | 'string'
-  | 'html'
+  | 'text'
   | 'integer'
   | 'boolean'
   | 'email'
@@ -26,7 +26,6 @@ export type RenderEnum =
   | 'weblink'
   | 'weblink@social-network'
   | 'weblink@download'
-  | 'string@short'
   | 'osm:opening_hours'
   | 'osm:collection_times'
   | 'osm:stars'

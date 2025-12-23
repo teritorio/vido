@@ -8,6 +8,7 @@ import {
   stringifyOptions,
 } from './apiPois'
 
+import type { MapPoiDescription } from './mapPois'
 import type { MultilingualString } from '~/utils/types'
 
 export enum ApiRouteWaypointType {
@@ -20,7 +21,7 @@ export enum ApiRouteWaypointType {
 export interface ApiRouteWaypointProperties {
   'id': ApiPoiId
   'name'?: MultilingualString
-  'description'?: MultilingualString
+  'description'?: MapPoiDescription
   'route:point:type': ApiRouteWaypointType
   'metadata': {
     id: number
@@ -123,7 +124,7 @@ export function apiRouteWaypointToApiPoi(
         popup_fields: [
           {
             field: 'short_description',
-            render: 'string@short',
+            render: 'text',
           },
           {
             field: 'coordinates',
