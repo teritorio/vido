@@ -3,6 +3,7 @@ import type GeoJSON from 'geojson'
 
 import Fields from '~/components/PoisCard/Fields.vue'
 import type { ApiPoiProperties, FieldsListItem } from '~/lib/apiPois'
+import type { MapPoiDescription } from '~/lib/mapPois'
 
 const properties: ApiPoiProperties = {
   metadata: {
@@ -20,8 +21,12 @@ const defaultProps = {
 }
 
 const description = {
-  'fr-FR': 'Itinéraire très intéressant, d\'une part pour sa variété paysagère accentuée par la traversée fréquente de cours d\'eau et d\'autre part, par la qualité du patrimoine bâti : maisons traditionnelles landaises, église en garluche. \n\nDistance : 10,2 km - Durée : 4h45 - Animaux tenus en laisse  - Sentier pédestre et VTT \nFiche rando disponible dans le topoguide du Département des Landes du Pays de Born n°15 (en vente : 2 €)',
-}
+  'fr-FR': {
+    html: false,
+    is_shortened: false,
+    value: 'Itinéraire très intéressant, d\'une part pour sa variété paysagère accentuée par la traversée fréquente de cours d\'eau et d\'autre part, par la qualité du patrimoine bâti : maisons traditionnelles landaises, église en garluche. \n\nDistance : 10,2 km - Durée : 4h45 - Animaux tenus en laisse  - Sentier pédestre et VTT \nFiche rando disponible dans le topoguide du Département des Landes du Pays de Born n°15 (en vente : 2 €)',
+  },
+} satisfies MapPoiDescription
 
 const props = {
   DefaultEmpty: {

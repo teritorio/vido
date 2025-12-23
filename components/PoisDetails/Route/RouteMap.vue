@@ -59,7 +59,7 @@ const apiWaypoints = waypoints.value.map((w) => {
         popup_fields: [
           {
             field: 'short_description',
-            render: 'string@short',
+            render: 'text',
           },
           {
             field: 'coordinates',
