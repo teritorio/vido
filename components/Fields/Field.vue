@@ -115,13 +115,13 @@ const translatedValue = computed(() => {
       <component :is="field.array ? 'ul' : 'div'">
         <template v-for="(f, index) in translatedValue" :key="index">
           <component :is="field.array ? 'li' : 'div'">
-            <p
+            <div
               v-if="field.render === 'text' && f.html"
               class="tw-prose"
               v-html="f.value"
             />
 
-            <p
+            <div
               v-else-if="field.render === 'text'"
               class="inline"
             >
@@ -136,7 +136,7 @@ const translatedValue = computed(() => {
               >
                 {{ t('poiCard.seeDetail') }}
               </a>
-            </p>
+            </div>
 
             <ClientOnly v-else-if="field.render === 'phone'">
               <Phone :number="f" />
@@ -154,7 +154,7 @@ const translatedValue = computed(() => {
               v-else-if="field.render === 'email'"
               :title="f"
               :href="`mailto:${f}`"
-              icon="envelope"
+              :icon="field.icon"
             >
               {{ context !== 'label_list' ? f : '' }}
             </ExternalLink>
@@ -162,7 +162,7 @@ const translatedValue = computed(() => {
             <ExternalLink
               v-else-if="field.array && field.render === 'weblink@download'"
               :href="f"
-              icon="arrow-circle-down"
+              :icon="field.icon"
             >
               {{ f.split('/').pop() }}
             </ExternalLink>
@@ -173,7 +173,7 @@ const translatedValue = computed(() => {
               :href="f"
               :style="{ backgroundColor: colorFill, color: colorText }"
             >
-              <FontAwesomeIcon icon="arrow-circle-down" />
+              <FontAwesomeIcon :icon="field.icon || 'external-link-alt'" />
               {{ fieldTranslateK(field.field) }}
             </a>
 
@@ -194,10 +194,6 @@ const translatedValue = computed(() => {
               :context="context"
               :render-key="(field.render as AssocRenderKey)"
             />
-
-            <li v-else-if="field.array">
-              {{ pv(field.field, f, props.context) }}
-            </li>
 
             <span v-else>
               {{ pv(

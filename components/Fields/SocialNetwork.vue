@@ -7,7 +7,7 @@ const props = defineProps<{
 }>()
 
 const iconSlug = computed(() => {
-  return props.icon || 'fa-share'
+  return `fa-${props.icon}` || 'fa-share'
 })
 </script>
 
