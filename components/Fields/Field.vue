@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import type GeoJSON from 'geojson'
 import AddressField from '~/components/Fields/AddressField.vue'
 import Coordinates from '~/components/Fields/Coordinates.vue'
@@ -9,11 +8,10 @@ import OpeningHours from '~/components/Fields/OpeningHours.vue'
 import Phone from '~/components/Fields/Phone.vue'
 import RoutesField from '~/components/Fields/RoutesField.vue'
 import Stars from '~/components/Fields/Stars.vue'
-import ExternalLink from '~/components/UI/ExternalLink.vue'
 import FieldsHeader from '~/components/UI/FieldsHeader.vue'
+import FieldLink from '~/components/Fields/FieldLink.vue'
 import type { ApiPoiProperties, FieldsListItem } from '~/lib/apiPois'
-import type { PropertyTranslationsContextEnum } from '~/stores/site'
-import { useSiteStore } from '~/stores/site'
+import { PropertyTranslationsContextEnum, useSiteStore } from '~/stores/site'
 import { AssocRenderKeys } from '~/utils/types'
 
 const props = withDefaults(defineProps<{
@@ -32,10 +30,6 @@ defineEmits<{
 }>()
 
 const { t } = useI18n()
-const { colorFill, colorText } = useContrastedColors(
-  toRef(() => props.properties.display?.color_fill || '#FFFFFF'),
-  toRef(() => props.properties.display?.color_text),
-)
 const { p, pv } = useSiteStore()
 
 function fieldTranslateK(field: string) {
@@ -112,7 +106,12 @@ const translatedValue = computed(() => {
       {{ fieldTranslateK(field.field) }}
     </FieldsHeader>
     <div :class="`inline field_content_level_${recursionStack.length}`">
-      <component :is="field.array ? 'ul' : 'div'">
+      <component
+        :is="field.array ? 'ul' : 'div'"
+        :style="{
+          listStyleType: context === PropertyTranslationsContextEnum.Card ? 'none' : 'disc',
+        }"
+      >
         <template v-for="(f, index) in translatedValue" :key="index">
           <component :is="field.array ? 'li' : 'div'">
             <div
@@ -142,40 +141,17 @@ const translatedValue = computed(() => {
               <Phone :number="f" />
             </ClientOnly>
 
-            <ExternalLink
-              v-else-if="field.render === 'weblink'"
-              :title="f"
-              :href="f"
-            >
-              {{ context !== 'label_list' ? f : '' }}
-            </ExternalLink>
-
-            <ExternalLink
-              v-else-if="field.render === 'email'"
-              :title="f"
-              :href="`mailto:${f}`"
+            <FieldLink
+              v-else-if="['email', 'weblink', 'weblink@download'].includes(field.render)"
+              :title="props.properties.name?.['fr-FR']"
+              :href="field.render === 'email' ? `mailto:${f}` : f"
               :icon="field.icon"
+              :context="context"
+              :color-fill="props.properties.display?.color_fill"
+              :color-text="props.properties.display?.color_text"
             >
-              {{ context !== 'label_list' ? f : '' }}
-            </ExternalLink>
-
-            <ExternalLink
-              v-else-if="field.array && field.render === 'weblink@download'"
-              :href="f"
-              :icon="field.icon"
-            >
-              {{ f.split('/').pop() }}
-            </ExternalLink>
-
-            <a
-              v-else-if="field.render === 'weblink@download'"
-              class="d-inline-block pa-2 rounded-lg"
-              :href="f"
-              :style="{ backgroundColor: colorFill, color: colorText }"
-            >
-              <FontAwesomeIcon :icon="field.icon || 'external-link-alt'" />
               {{ fieldTranslateK(field.field) }}
-            </a>
+            </FieldLink>
 
             <SocialNetwork
               v-else-if="field.render === 'weblink@social-network'"
@@ -216,9 +192,5 @@ const translatedValue = computed(() => {
 
 .tw-prose {
   max-width: none;
-}
-
-ul {
-  @apply tw-list-disc tw-ml-6;
 }
 </style>
