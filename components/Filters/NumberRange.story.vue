@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import NumberRange from '~/components/Filters/NumberRange.vue'
-import type { FilterNumberRange } from '~/lib/apiMenu'
+import type { FilterNumberRange } from '~/types/api/menu'
 import { FilterValueNumberRange } from '~/utils/types-filters'
 
 const def: FilterNumberRange = {

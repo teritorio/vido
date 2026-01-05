@@ -4,7 +4,7 @@ import type {
   FilterDate,
   FilterList,
   FilterNumberRange,
-} from '~/lib/apiMenu'
+} from '~/types/api/menu'
 import type { ApiPoi } from '~/lib/apiPois'
 
 abstract class FilterValueDef<Type extends Filter> {

@@ -3,7 +3,7 @@ import type { FontAwesomeIconProps } from '@fortawesome/vue-fontawesome'
 import Category from '~/components/Menu/Category.vue'
 import MenuGroup from '~/components/Menu/Group.vue'
 import LinkItem from '~/components/Menu/Link.vue'
-import type { ApiMenuCategory, ApiMenuItem, MenuGroup as MenuGroupType, MenuItem } from '~/lib/apiMenu'
+import type { ApiMenuCategory, ApiMenuItem, MenuGroup as MenuGroupType, MenuItem } from '~/types/api/menu'
 import type { FilterValues } from '~/utils/types-filters'
 
 const props = defineProps<{

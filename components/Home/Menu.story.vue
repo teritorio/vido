@@ -6,7 +6,7 @@ import type {
   ApiMenuLink,
   MenuGroup,
   MenuItem,
-} from '~/lib/apiMenu'
+} from '~/types/api/menu'
 
 const search: MenuGroup = {
   id: 1,
