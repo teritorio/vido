@@ -10,7 +10,6 @@ export default {
 const category: ApiMenuCategory = {
   id: 123,
   selected_by_default: false,
-  parent_id: null,
   index_order: 1,
   menu_group: undefined,
   link: undefined,

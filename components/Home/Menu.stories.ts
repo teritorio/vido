@@ -15,7 +15,6 @@ export default {
 const search: MenuGroup = {
   id: 1,
   selected_by_default: false,
-  parent_id: null,
   index_order: 1,
   menu_group: {
     name: { fr: 'Search' },
@@ -33,7 +32,6 @@ const search: MenuGroup = {
 const menuGroup1: MenuGroup = {
   id: 1,
   selected_by_default: false,
-  parent_id: null,
   index_order: 1,
   menu_group: {
     name: { fr: 'Leisure & Skiing' },

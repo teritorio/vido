@@ -3,7 +3,7 @@ import type { Filters } from '~/types/api/filters'
 
 export interface ApiMenuItem {
   id: number
-  parent_id: ApiMenuItem['id'] | null
+  parent_id?: number
   index_order: number
   hidden?: boolean
   selected_by_default?: boolean
