@@ -2,7 +2,7 @@
 import type { FontAwesomeIconProps } from '@fortawesome/vue-fontawesome'
 
 import Link from '~/components/Menu/Link.vue'
-import type { ApiMenuLink } from '~/lib/apiMenu'
+import type { ApiMenuLink } from '~/types/api/menu'
 
 const menuLink: ApiMenuLink = {
   id: 123,

@@ -4,7 +4,7 @@ import type {
   ApiMenuLink,
   MenuGroup,
   MenuItem,
-} from '~/lib/apiMenu'
+} from '~/types/api/menu'
 import { bind } from '~/lib/storybook-types'
 
 export default {

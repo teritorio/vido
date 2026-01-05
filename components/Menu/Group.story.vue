@@ -2,7 +2,7 @@
 import type { FontAwesomeIconProps } from '@fortawesome/vue-fontawesome'
 
 import Group from '~/components/Menu/Group.vue'
-import type { MenuGroup } from '~/lib/apiMenu'
+import type { MenuGroup } from '~/types/api/menu'
 
 const menuGroup: MenuGroup = {
   id: 123,

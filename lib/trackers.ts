@@ -2,7 +2,7 @@ import type { App } from 'nuxt/dist/app/compat/vue-demi'
 
 import type { ApiPoiId } from './apiPois'
 
-import type { ApiMenuCategory, MenuItem } from '~/lib/apiMenu'
+import type { ApiMenuCategory, MenuItem } from '~/types/api/menu'
 import type { OriginEnum } from '~/utils/types'
 
 // Also Update README.md according to tracking changes.

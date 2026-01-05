@@ -3,7 +3,7 @@ import copy from 'fast-copy'
 import DateRange from '~/components/Filters/DateRange.vue'
 import NumberRange from '~/components/Filters/NumberRange.vue'
 import SelectFilter from '~/components/Filters/Select.vue'
-import type { ApiMenuCategory } from '~/lib/apiMenu'
+import type { ApiMenuCategory } from '~/types/api/menu'
 import { menuStore as useMenuStore } from '~/stores/menu'
 import type {
   FilterValueBoolean,

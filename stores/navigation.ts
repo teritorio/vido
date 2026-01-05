@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import type { ApiMenuCategory, MenuItem } from '~/lib/apiMenu'
+import type { ApiMenuCategory, MenuItem } from '~/types/api/menu'
 
 export const useNavigationStore = defineStore('navigation', () => {
   const navigationStack = ref<MenuItem[]>([])

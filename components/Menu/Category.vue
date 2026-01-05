@@ -2,7 +2,7 @@
 import type { FontAwesomeIconProps } from '@fortawesome/vue-fontawesome'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import Item from '~/components/Menu/Item.vue'
-import type { ApiMenuCategory, ApiMenuItem } from '~/lib/apiMenu'
+import type { ApiMenuCategory, ApiMenuItem } from '~/types/api/menu'
 import type { FilterValues } from '~/utils/types-filters'
 import { filterValuesIsSet } from '~/utils/types-filters'
 
