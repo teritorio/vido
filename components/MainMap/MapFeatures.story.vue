@@ -16,7 +16,6 @@ const defaultProps = {
   categories: [
     {
       id: 1,
-      parent_id: null,
       index_order: 0,
       hidden: false,
       menu_group: undefined,

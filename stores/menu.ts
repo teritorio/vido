@@ -130,7 +130,7 @@ export const menuStore = defineStore('menu', () => {
         .forEach((menuItem) => {
           // Separated from previous map to allow batch processing and make sure parent category is always there
           // Associate to parent_id
-          if (menuItem.parent_id && menuItem.parent_id !== null) {
+          if (menuItem.parent_id) {
             const parent = stateMenuItems[menuItem.parent_id]
             if (parent?.menu_group) {
               if (!parent.menu_group.vido_children)

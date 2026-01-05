@@ -7,7 +7,6 @@ import type { ApiMenuCategory, ApiMenuLink, MenuGroup } from '~/types/api/menu'
 const menuGroup: MenuGroup = {
   id: 1,
   selected_by_default: false,
-  parent_id: null,
   index_order: 1,
   menu_group: {
     name: { fr: 'Leisure & Skiing' },
@@ -25,7 +24,6 @@ const menuGroup: MenuGroup = {
 const menuLink: ApiMenuLink = {
   id: 2,
   selected_by_default: false,
-  parent_id: null,
   index_order: 1,
   menu_group: undefined,
   link: {
@@ -42,7 +40,6 @@ const menuLink: ApiMenuLink = {
 const category: ApiMenuCategory = {
   id: 3,
   selected_by_default: false,
-  parent_id: null,
   index_order: 1,
   menu_group: undefined,
   link: undefined,

@@ -1,7 +1,6 @@
 [
     {
         "id": 1,
-        "parent_id": null,
         "menu_group": {
             "id": 1,
             "name": {
@@ -35,7 +34,6 @@
     },
     {
         "id": 2,
-        "parent_id": null,
         "menu_group": {
             "id": 2,
             "name": {
