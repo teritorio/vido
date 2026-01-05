@@ -9,7 +9,7 @@ import pois from './pois.json'
 import menu from './menu.json'
 import settings from './settings.json'
 import type { ApiPoiDeps } from '~/lib/apiPoiDeps'
-import type { MenuItem } from '~/lib/apiMenu'
+import type { MenuItem } from '~/types/api/menu'
 import type { ApiPois } from '~/lib/apiPois'
 import type { Settings } from '~/lib/apiSettings'
 

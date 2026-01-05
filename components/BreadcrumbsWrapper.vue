@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { storeToRefs } from 'pinia'
-import type { MenuItem } from '~/lib/apiMenu'
+import type { MenuItem } from '~/types/api/menu'
 import { useNavigationStore } from '~/stores/navigation'
 import TeritorioIconBadge from '~/components/UI/TeritorioIconBadge.vue'
 import type { RouteLocationRaw } from '#vue-router'

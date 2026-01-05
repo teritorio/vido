@@ -1,5 +1,5 @@
 import Category from '~/components/Menu/Category.vue'
-import type { ApiMenuCategory } from '~/lib/apiMenu'
+import type { ApiMenuCategory } from '~/types/api/menu'
 import { bind } from '~/lib/storybook-types'
 
 export default {

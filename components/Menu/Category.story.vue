@@ -2,7 +2,7 @@
 import type { FontAwesomeIconProps } from '@fortawesome/vue-fontawesome'
 
 import Category from '~/components/Menu/Category.vue'
-import type { ApiMenuCategory } from '~/lib/apiMenu'
+import type { ApiMenuCategory } from '~/types/api/menu'
 
 const category: ApiMenuCategory = {
   id: 123,

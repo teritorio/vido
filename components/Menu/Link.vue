@@ -2,7 +2,7 @@
 import type { FontAwesomeIconProps } from '@fortawesome/vue-fontawesome'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import MenuItem from '~/components/Menu/Item.vue'
-import type { ApiMenuItem, ApiMenuLink } from '~/lib/apiMenu'
+import type { ApiMenuItem, ApiMenuLink } from '~/types/api/menu'
 
 const props = defineProps<{
   menuLink: ApiMenuLink
