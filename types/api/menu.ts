@@ -1,37 +1,5 @@
 import type { MultilingualString } from '~/utils/types'
-
-export interface FilterList {
-  type: 'multiselection' | 'checkboxes_list'
-  property: string
-  name: MultilingualString
-  values: {
-    value: string
-    name: MultilingualString
-  }[]
-}
-
-export interface FilterBoolean {
-  type: 'boolean'
-  property: string
-  name: MultilingualString
-}
-
-export interface FilterDate {
-  type: 'date_range'
-  property_begin: string
-  property_end: string
-  name: MultilingualString
-}
-
-export interface FilterNumberRange {
-  type: 'number_range'
-  property: string
-  name: MultilingualString
-  min: number
-  max: number
-}
-
-export type Filters = FilterList | FilterBoolean | FilterDate | FilterNumberRange
+import type { Filters } from '~/types/api/filters'
 
 export interface ApiMenuItem {
   id: number
