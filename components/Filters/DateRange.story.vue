@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import DateRange from '~/components/Filters/DateRange.vue'
-import type { FilterDate } from '~/types/api/menu'
+import type { FilterDate } from '~/types/api/filters'
 import { FilterValueDate } from '~/utils/types-filters'
 
 const def: FilterDate = {

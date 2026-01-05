@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import Select from '~/components/Filters/Select.vue'
-import type { FilterList } from '~/types/api/menu'
+import type { FilterList } from '~/types/api/filters'
 import { FilterValueList } from '~/utils/types-filters'
 
 const def: FilterList = {
