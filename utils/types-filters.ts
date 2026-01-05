@@ -1,13 +1,13 @@
 import type {
-  Filter,
   FilterBoolean,
   FilterDate,
   FilterList,
   FilterNumberRange,
+  Filters,
 } from '~/types/api/menu'
 import type { ApiPoi } from '~/lib/apiPois'
 
-abstract class FilterValueDef<Type extends Filter> {
+abstract class FilterValueDef<Type extends Filters> {
   def: Type
   type: Type['type']
 
@@ -114,7 +114,7 @@ export function filterValuesIsSet(filterValues: FilterValues) {
   return filterValues.some(filterValue => isSet(filterValue))
 }
 
-export function filterValueFactory(filter: Filter): FilterValue {
+export function filterValueFactory(filter: Filters): FilterValue {
   switch (filter.type) {
     case 'boolean':
       return new FilterValueBoolean(filter).toJSON()

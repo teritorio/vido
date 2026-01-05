@@ -31,7 +31,7 @@ export interface FilterNumberRange {
   max: number
 }
 
-export type Filter = FilterList | FilterBoolean | FilterDate | FilterNumberRange
+export type Filters = FilterList | FilterBoolean | FilterDate | FilterNumberRange
 
 export interface ApiMenuItem {
   id: number
@@ -82,7 +82,7 @@ export interface ApiMenuCategory extends ApiMenuItem {
     style_merge: boolean
     display_mode: 'large' | 'compact'
     zoom: number
-    filters?: Filter[]
+    filters?: Filters[]
   }
 }
 
