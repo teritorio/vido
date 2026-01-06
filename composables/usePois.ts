@@ -1,5 +1,4 @@
-import type { ApiPois } from '~/lib/apiPois'
-import type { ApiPoi } from '~/types/api/poi'
+import type { ApiPoiCollectionResponse, ApiPoiResponse } from '~/types/api/poi'
 import { PropertyTranslationsContextEnum } from '~/stores/site'
 
 export function usePois() {
@@ -7,7 +6,7 @@ export function usePois() {
   const route = useRoute()
   const apiEndpoint = useState<string>('api-endpoint')
 
-  const pois = ref<ApiPois | null>(null)
+  const pois = ref<ApiPoiCollectionResponse | null>(null)
   const error = ref()
   const pending = ref(false)
   const status = ref()
@@ -25,7 +24,7 @@ export function usePois() {
       cliping_polygon_slug: clipSlug.value,
     }
 
-    const { data, error: err, pending: pend, status: stat } = await useFetch<ApiPois>(
+    const { data, error: err, pending: pend, status: stat } = await useFetch<ApiPoiCollectionResponse>(
       () => `${apiEndpoint.value}/pois/category/${id}.geojson`,
       {
         query,
@@ -49,16 +48,16 @@ export function usePois() {
 }
 
 function transformPois(
-  pois: ApiPois,
+  pois: ApiPoiCollectionResponse,
   routeToString: Function,
   addressToString: Function,
-): ApiPois {
+): ApiPoiCollectionResponse {
   const features = pois.features
   const fields = features?.[0]?.properties.editorial?.list_fields || []
 
   return {
     ...pois,
-    features: features.map((f: ApiPoi) => {
+    features: features.map((f: ApiPoiResponse) => {
       const props = { ...f.properties }
 
       if (fields.some(f => f.field === 'route')) {

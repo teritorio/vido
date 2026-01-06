@@ -4,7 +4,7 @@ import { storeToRefs } from 'pinia'
 import Fields from '~/components/PoisCard/Fields.vue'
 import FavoriteIcon from '~/components/UI/FavoriteIcon.vue'
 import TeritorioIcon from '~/components/UI/TeritorioIcon.vue'
-import type { ApiPoi } from '~/types/api/poi'
+import type { Poi } from '~/types/local/poi'
 import { coordinatesHref } from '~/lib/coordinates'
 import { favoriteStore as useFavoriteStore } from '~/stores/favorite'
 import { mapStore as useMapStore } from '~/stores/map'
@@ -18,7 +18,7 @@ import IsochroneTrigger from '~/components/Isochrone/IsochroneTrigger.vue'
 //
 const props = withDefaults(defineProps<{
   detailsIsExternal?: boolean
-  poi: ApiPoi
+  poi: Poi
   showActions?: boolean
 }>(), {
   detailsIsExternal: false,
@@ -29,9 +29,9 @@ const props = withDefaults(defineProps<{
 // Emits
 //
 const emit = defineEmits<{
-  (e: 'favoriteClick', poi: ApiPoi): void
-  (e: 'exploreClick', poi: ApiPoi): void
-  (e: 'zoomClick', poi: ApiPoi): void
+  (e: 'favoriteClick', poi: Poi): void
+  (e: 'exploreClick', poi: Poi): void
+  (e: 'zoomClick', poi: Poi): void
 }>()
 
 //

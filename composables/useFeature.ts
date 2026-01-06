@@ -1,11 +1,11 @@
-import type { ApiPoi } from '~/types/api/poi'
+import type { Poi } from '~/types/local/poi'
 
 type LabelType = 'details' | 'popup'
 interface Options {
   type?: LabelType
 }
 
-export default function useFeature(feature: Ref<ApiPoi>, options: Options = {
+export default function useFeature(feature: Ref<Poi>, options: Options = {
   type: undefined,
 }) {
   //

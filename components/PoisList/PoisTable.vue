@@ -4,7 +4,7 @@ import { localeIncludes } from 'locale-includes'
 import { storeToRefs } from 'pinia'
 import { PropertyTranslationsContextEnum, useSiteStore } from '~/stores/site'
 import type { FieldsListItem, RenderEnum } from '~/lib/apiPois'
-import type { ApiPoi } from '~/types/api/poi'
+import type { ApiPoiResponse } from '~/types/api/poi'
 import Field from '~/components/Fields/Field.vue'
 import IconButton from '~/components/UI/IconButton.vue'
 import ContribFieldGroup from '~/components/Fields/ContribFieldGroup.vue'
@@ -189,7 +189,7 @@ function getColKey(key: string) {
   return key
 }
 
-function getField(key: string, item: ApiPoi) {
+function getField(key: string, item: ApiPoiResponse) {
   const keyName = getColKey(key)
   return item.properties.editorial?.list_fields?.find(f => f.field === keyName)
 }

@@ -9,6 +9,45 @@ export interface ApiPoiProperties {
   'display'?: ApiPoiPropertiesDisplay
   'editorial'?: ApiPoiPropertiesEditorial
   'ref'?: string
+  'text'?: ApiPoiPropertiesText
+  'start_end_date'?: ApiPoiPropertiesStartEndDate
+  'addr'?: ApiPoiPropertiesAddress
+  'route'?: ApiPoiPropertiesRoute
+}
+
+export interface ApiPoiPropertiesText {
+  html: boolean
+  value: string
+  is_shortened: boolean
+}
+
+export interface ApiPoiPropertiesStartEndDate {
+  start_date: string
+  end_date: string
+}
+
+export interface ApiPoiPropertiesAddress {
+  [key: string]: string
+  street: string
+  hamlet: string
+  postcode: string
+  city: string
+  country: string
+}
+
+export interface ApiPoiPropertiesRoute {
+  [lang: string]: {
+    gpx_trace?: string
+    pdf?: string
+    waypoint?: {
+      type: 'parking' | 'start' | 'end' | 'waypoint'
+    }
+    hiking?: {
+      difficulty: 'easy' | 'normal' | 'hard'
+      duration: number
+      length: number
+    }
+  }
 }
 
 export interface ApiPoiPropertiesMetadata {
@@ -31,7 +70,9 @@ export interface ApiPoiPropertiesDisplay {
 
 export interface ApiPoiPropertiesEditorial {
   'website:details'?: MultilingualString
-  'unavoidable': boolean
+  'unavoidable'?: boolean
 }
 
-export type ApiPoi = GeoJSON.Feature<GeoJSON.Geometry, ApiPoiProperties>
+export type ApiPoiResponse = GeoJSON.Feature<GeoJSON.Geometry, ApiPoiProperties>
+
+export type ApiPoiCollectionResponse = GeoJSON.FeatureCollection<GeoJSON.Geometry, ApiPoiProperties>

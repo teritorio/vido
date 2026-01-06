@@ -1,9 +1,8 @@
 import { LngLatBounds } from 'maplibre-gl'
-
 import MapFeatures from '~/components/MainMap/MapFeatures.vue'
 import type { ApiMenuCategory } from '~/types/api/menu'
-import type { ApiPoi } from '~/types/api/poi'
 import { bind, mapCss, parametersMap } from '~/lib/storybook-types'
+import type { Poi } from '~/types/local/poi'
 
 export default {
   title: 'MainMap/MapFeatures',
@@ -66,7 +65,7 @@ export const StyleIconFilter = bind(
   { style: mapCss },
 )
 
-const feature1: ApiPoi = {
+const feature1: Poi = {
   type: 'Feature',
   geometry: {
     type: 'Point',

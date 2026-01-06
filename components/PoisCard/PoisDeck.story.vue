@@ -3,7 +3,6 @@ import PoisDeck from '~/components/PoisCard/PoisDeck.vue'
 import poisDeps from '~/cypress/fixtures/teritorio/references/poi/2/deps.json'
 import type { ApiRouteWaypoint } from '~/lib/apiPoiDeps'
 import { apiRouteWaypointToApiPoi } from '~/lib/apiPoiDeps'
-import type { ApiPoiId } from '~/lib/apiPois'
 
 const points = poisDeps.features.filter(
   feature => feature.properties['route:point:type'],
@@ -18,7 +17,7 @@ const defaultProps = {
       '#FFFFFF',
     ),
   ),
-  selectedPoiIds: points.map(feature => feature.properties.id as ApiPoiId),
+  selectedPoiIds: points.map(feature => feature.properties.id),
   isCardLight: true,
 }
 

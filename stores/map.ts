@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
 import type { FitBoundsOptions } from 'maplibre-gl'
 import type { TeritorioCluster } from '@teritorio/maplibre-gl-teritorio-cluster'
-import type { ApiPoi, ApiPoiProperties } from '~/types/api/poi'
+import type { ApiPoiResponse, ApiPoiProperties } from '~/types/api/poi'
 import type { LatLng, Pitch } from '~/utils/types'
 import { Mode } from '~/utils/types'
 
@@ -10,7 +10,7 @@ export const mapStore = defineStore('map', () => {
   const center = ref<LatLng>({ lng: 0, lat: 0 })
   const mode = ref<Mode>(Mode.BROWSER)
   const pitch = ref<Pitch>(0)
-  const selectedFeature = ref<ApiPoi>()
+  const selectedFeature = ref<ApiPoiResponse>()
   const selectedFeatureDepsIDs = ref<number[]>([])
   const teritorioCluster = ref<TeritorioCluster>()
   const isDepsView = ref<boolean>(false)
@@ -43,7 +43,7 @@ export const mapStore = defineStore('map', () => {
     return typeof value === 'object' && value !== null
   }
 
-  function setSelectedFeature(feature?: ApiPoi) {
+  function setSelectedFeature(feature?: ApiPoiResponse) {
     if (!feature) {
       selectedFeature.value = undefined
       teritorioCluster.value?.resetSelectedFeature()
