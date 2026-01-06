@@ -1,15 +1,16 @@
 <script setup lang="ts">
 import { storeToRefs } from 'pinia'
 import type { GeoJSON, MultiPolygon, Polygon } from 'geojson'
-import type { MapGeoJSONFeature } from 'maplibre-gl'
-import type { ApiPoiProperties, ApiPoiResponse } from '~/types/api/poi'
-import type { ApiPoiDeps, ApiPoiDepsResponse } from '~/types/api/poi-deps'
-import { ApiRouteWaypointType, iconMap, prepareApiPoiDeps } from '~/lib/apiPoiDeps'
+import type { GeoJSONFeature } from 'maplibre-gl'
+import type { ApiPoi } from '~/types/api/poi'
+import type { ApiPoiDepsCollection, ApiPoiUnion } from '~/types/api/poi-deps'
+import { usePoiDeps } from '~/composables/usePoiDeps'
 import Home from '~/components/Home/Home.vue'
 import { useSiteStore } from '~/stores/site'
 import { menuStore as useMenuStore } from '~/stores/menu'
 import { mapStore as useMapStore } from '~/stores/map'
 import { regexForCategoryIds } from '~/composables/useIdsResolver'
+import type { Poi } from '~/types/local/poi'
 
 const { settings } = storeToRefs(useSiteStore())
 const apiEndpoint = useState('api-endpoint')
@@ -17,7 +18,10 @@ const apiEndpoint = useState('api-endpoint')
 const route = useRoute()
 const mapStore = useMapStore()
 const { $trackingInit } = useNuxtApp()
+const menuStore = useMenuStore()
+const poiDeps = usePoiDeps()
 
+const mainPoi = ref<ApiPoi>()
 const boundaryGeojson = ref<Polygon | MultiPolygon>()
 const poiId = ref<string>()
 const categoryIds = ref<number[]>([])
@@ -63,7 +67,6 @@ if (route.params.poiId) {
   poiId.value = route.params.poiId.toString()
 }
 
-const menuStore = useMenuStore()
 const { apiMenuCategory, selectedCategoryIds } = storeToRefs(menuStore)
 onBeforeMount(() => {
   $trackingInit()
@@ -92,9 +95,9 @@ const { data, error, status } = await useAsyncData('features', async () => {
     clipingPolygonSlug: route.query.clipingPolygonSlug?.toString(),
   })
 
-  let initialFeature: ApiPoiDepsResponse | undefined
+  let initialFeature: ApiPoiDepsCollection | undefined
   if (poiId.value && !poiId.value.includes('_')) {
-    initialFeature = await $fetch<ApiPoiDepsResponse>(`${apiEndpoint.value}/poi/${poiId.value}/deps.geojson`, {
+    initialFeature = await $fetch<ApiPoiDepsCollection>(`${apiEndpoint.value}/poi/${poiId.value}/deps.geojson`, {
       query: {
         geometry_as: 'point',
         short_description: true,
@@ -103,107 +106,78 @@ const { data, error, status } = await useAsyncData('features', async () => {
   }
 
   return initialFeature
+}, {
+  transform: data => transformApiPoiDepsCollection(data),
 })
 
 if (error.value)
   throw createError(error.value)
 
 if (status.value === 'success' && data.value) {
-  let poi: ApiPoiResponse
-  let waypointIndex = 1
-  let waypoints: ApiPoiDeps[] = []
-  let pois: ApiPoiResponse[] = []
-  let deps: ApiPoiResponse[] = []
+  data.value.forEach((f) => {
+    mapStore.addSelectedFeatureDepsIDs(f.properties.metadata.id)
+  })
+
+  if (mainPoi.value) {
+    const poi = data.value.find(f => f.properties.metadata.id === mainPoi.value!.properties.metadata.id)
+    mapStore.setSelectedFeature(poi as Poi)
+
+    // In case user click on vecto element, attach Pin Marker to POI Marker
+    teritorioCluster.value?.setSelectedFeature(mainPoi.value as unknown as GeoJSONFeature)
+
+    if (selectedCategoryIds.value.length && mainPoi.value.properties.metadata.category_ids?.length) {
+      const currentCategory = selectedCategoryIds.value.find(id => mainPoi.value!.properties.metadata.category_ids!.includes(id))
+
+      if (currentCategory) {
+        menuStore.filterByDeps(currentCategory, data.value)
+
+        if (data.value.length > 1)
+          mapStore.setIsDepsView(true)
+        else
+          mapStore.setIsDepsView(false)
+      }
+    }
+  }
+}
+
+function getMainPoi(features: ApiPoiUnion[]): ApiPoi {
+  let poi: ApiPoiUnion | undefined
   const isRefPoiId = Number.isNaN(Number(poiId.value))
 
   if (isRefPoiId && poiId.value) {
     const refSplit = poiId.value.split(':')
     const idValue = refSplit.pop()
     const key = refSplit.join(':')
-    poi = data.value.features.find(f => (f.properties as ApiPoiProperties)[key] === idValue) as ApiPoiResponse
+    poi = features.find(f => f.properties[key] === idValue)
   }
   else {
-    poi = data.value.features.find(f => (f.properties.metadata.id === Number(poiId.value))) as ApiPoiResponse
+    poi = features.find(f => (f.properties.metadata.id === Number(poiId.value)))
   }
 
   if (!poi)
     throw createError(`Feature with ID: ${poiId.value} not found.`)
 
-  if (poi.properties.metadata.dep_ids) {
-    const featureReordered = prepareApiPoiDeps(
-      data.value.features,
-      poi.properties.metadata.dep_ids,
-    )
+  return poi as ApiPoi
+}
 
-    waypoints = featureReordered.waypoints
-    pois = featureReordered.pois
+function transformApiPoiDepsCollection(data?: ApiPoiDepsCollection) {
+  poiDeps.resetWaypointIndex()
 
-    deps.push(...pois)
+  if (!data)
+    return undefined
 
-    waypoints.forEach((w) => {
-      const { colorFill, colorText } = useContrastedColors(
-        poi.properties.display?.color_fill || '#76009E',
-        poi.properties.display?.color_text,
-      )
+  mainPoi.value = getMainPoi(data.features)
+  const catId = mainPoi.value.properties.metadata.category_ids?.[0]
 
-      const formattedWaypoint = {
-        ...w,
-        properties: {
-          ...w.properties,
-          display: {
-            icon: iconMap[w.properties['route:point:type']],
-            color_fill: colorFill.value,
-            color_line: poi.properties.display?.color_line || '#76009E',
-            color_text: colorText.value,
-            text: w.properties['route:point:type']
-            === ApiRouteWaypointType.way_point
-              ? waypointIndex.toString()
-              : undefined,
-          },
-          editorial: {
-            'website:details': undefined,
-          },
-        },
-      } as ApiPoiResponse
+  if (!catId)
+    throw createError(`Category ID not found for feature ${poiId.value}.`)
 
-      if (w.properties['route:point:type'] === ApiRouteWaypointType.way_point)
-        waypointIndex++
+  const category = menuStore.getCurrentCategory(catId)
 
-      deps.push(formattedWaypoint)
-    })
-  }
-  else {
-    deps.push(poi)
-  }
+  if (!category)
+    throw createError(`Category ${catId} not found.`)
 
-  deps = deps.map((d) => {
-    mapStore.addSelectedFeatureDepsIDs(d.properties.metadata.id)
-
-    return {
-      ...d,
-      properties: {
-        ...d.properties,
-        vido_visible: true,
-      },
-    }
-  })
-
-  mapStore.setSelectedFeature(poi)
-
-  // In case user click on vecto element, attach Pin Marker to POI Marker
-  teritorioCluster.value?.setSelectedFeature(poi as unknown as MapGeoJSONFeature)
-
-  if (selectedCategoryIds.value.length) {
-    const currentCategory = selectedCategoryIds.value.find(id => poi.properties.metadata.category_ids?.includes(id))
-
-    if (poi.properties.metadata.category_ids?.length && currentCategory) {
-      menuStore.filterByDeps(currentCategory, deps)
-      if (deps.length > 1)
-        mapStore.setIsDepsView(true)
-      else
-        mapStore.setIsDepsView(false)
-    }
-  }
+  return poiDeps.formatPoiDepsCollection(data, category, 'fr-FR')
 }
 </script>
 

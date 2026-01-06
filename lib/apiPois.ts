@@ -1,4 +1,4 @@
-import type { ApiPoiCollectionResponse, ApiPoiResponse } from '~/types/api/poi'
+import type { ApiPoi, ApiPoiCollection } from '~/types/api/poi'
 
 export type RenderEnum =
   | 'string'
@@ -69,7 +69,7 @@ export function stringifyOptions(options: ApiPoisOptions): string[][] {
 export function getPoiById(
   poiId: number | string,
   options: ApiPoisOptions = {},
-): Promise<ApiPoiResponse> {
+): Promise<ApiPoi> {
   const apiEndpoint = useState('api-endpoint')
 
   return fetch(
@@ -77,7 +77,7 @@ export function getPoiById(
   )
     .then((data) => {
       if (data.ok) {
-        return data.json() as unknown as ApiPoiResponse
+        return data.json() as unknown as ApiPoi
       }
       else {
         return Promise.reject(
@@ -90,7 +90,7 @@ export function getPoiById(
 export async function getPois(
   poiIds?: (number | string)[],
   options: ApiPoisOptions = {},
-): Promise<ApiPoiCollectionResponse> {
+): Promise<ApiPoiCollection> {
   const apiEndpoint = useState('api-endpoint')
 
   return await fetch(
@@ -101,7 +101,7 @@ export async function getPois(
       ])}`,
   ).then((data) => {
     if (data.ok) {
-      return data.json() as unknown as ApiPoiCollectionResponse
+      return data.json() as unknown as ApiPoiCollection
     }
     else {
       return Promise.reject(
@@ -127,13 +127,13 @@ export function getPoiByCategoryIdUrl(
 export async function getPoiByCategoryId(
   categoryId: number | string,
   options: ApiPoisOptions = {},
-): Promise<ApiPoiCollectionResponse> {
+): Promise<ApiPoiCollection> {
   options = Object.assign(defaultOptions, { geometry_as: 'point' }, options)
 
   return await fetch(getPoiByCategoryIdUrl(categoryId, options)).then(
     async (data) => {
       if (data.ok) {
-        return await data.json() as unknown as ApiPoiCollectionResponse
+        return await data.json() as unknown as ApiPoiCollection
       }
       else {
         return Promise.reject(

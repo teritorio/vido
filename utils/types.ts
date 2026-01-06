@@ -2,7 +2,7 @@ export type MultilingualString = {
   [lang in LanguageCode]?: string
 }
 
-export type LanguageCode = 'fr-FR' | 'en-US' | 'es-ES'
+export type LanguageCode = 'fr-FR' | 'en-US' | 'es-ES' | 'fr' | 'en' | 'es'
 
 export interface LatLng {
   lat: number

@@ -1,4 +1,4 @@
-import type { ApiPoiProperties } from '~/types/api/poi'
+import type { Poi } from '~/types/local/poi'
 import type { PropertyTranslationsContextEnum } from '~/stores/site'
 import { useSiteStore } from '~/stores/site'
 
@@ -20,7 +20,7 @@ export default function () {
   const { locale } = useI18n()
 
   // Address Field
-  const addressToString = (properties: ApiPoiProperties): string => {
+  const addressToString = (properties: Poi['properties']): string => {
     return ADDRESS_FIELDS
       .map(field => properties[field])
       .map(f => (f || '').toString().trim())
@@ -29,7 +29,7 @@ export default function () {
   }
 
   // Routes Field
-  const getRoutes = (properties: ApiPoiProperties): { [key: string]: Route } => {
+  const getRoutes = (properties: Poi['properties']): { [key: string]: Route } => {
     const routes: { [key: string]: { [key: string]: string } } = {}
 
     Object.entries(properties)
@@ -48,7 +48,7 @@ export default function () {
     return routes
   }
 
-  const getRouteActivity = (properties: ApiPoiProperties, context: PropertyTranslationsContextEnum): { key: string, translatedValue: string } | undefined => {
+  const getRouteActivity = (properties: Poi['properties'], context: PropertyTranslationsContextEnum): { key: string, translatedValue: string } | undefined => {
     const activity = Object.entries(properties)
       .find(([key, _value]) => {
         if (!key.includes(':'))
@@ -113,7 +113,7 @@ export default function () {
       .join(', ')
   }
 
-  const routeToString = (properties: ApiPoiProperties, context: PropertyTranslationsContextEnum): string => {
+  const routeToString = (properties: Poi['properties'], context: PropertyTranslationsContextEnum): string => {
     let routeData = []
     const activity = getRouteActivity(properties, context)
 

@@ -4,7 +4,7 @@ import copy from 'fast-copy'
 import { menuStore as useMenuStore } from '~/stores/menu'
 import type { MenuItem } from '~/types/local/menu'
 import { getPoiById } from '~/lib/apiPois'
-import type { ApiPoiResponse } from '~/types/api/poi'
+import type { ApiPoi } from '~/types/api/poi'
 import type { ApiAddrSearchResult, ApiMenuItemSearchResult, ApiPoisSearchResult, ApiSearchResult, SearchResult } from '~/lib/apiSearch'
 import { mapStore as useMapStore } from '~/stores/map'
 
@@ -22,12 +22,12 @@ export const useSearchStore = defineStore('search', () => {
   const searchText = ref('')
   const searchResultId = ref(0)
   const searchQueryId = ref(0)
-  const searchSelectedFeature = ref<ApiPoiResponse | null>(null)
+  const searchSelectedFeature = ref<ApiPoi | null>(null)
 
   const searchMenuItemsResults = ref<ApiSearchResult<ApiMenuItemSearchResult> | null>(null)
   const searchPoisResults = ref<ApiSearchResult<ApiPoisSearchResult> | null>(null)
   const searchAddressesResults = ref<ApiSearchResult<ApiAddrSearchResult> | null>(null)
-  const searchCartocodeResult = ref<ApiPoiResponse | null>(null)
+  const searchCartocodeResult = ref<ApiPoi | null>(null)
 
   const isLoading = computed(() => {
     return searchResultId.value !== searchQueryId.value

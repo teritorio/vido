@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { storeToRefs } from 'pinia'
 import MapPois from '~/components/Map/MapPois.vue'
-import type { ApiPoiCollectionResponse } from '~/types/api/poi'
+import type { ApiPoiCollection } from '~/types/api/poi'
 import { useSiteStore } from '~/stores/site'
 import { regexForCategoryIds } from '~/composables/useIdsResolver'
 
@@ -33,7 +33,7 @@ const poiIdsAsNumbers = computed(() => poiIds.value.map(id => Number(id)))
 
 const clipingPolygonSlug = computed(() => route.query.clipingPolygonSlug?.toString())
 
-const { data, error } = await useFetch<ApiPoiCollectionResponse>(
+const { data, error } = await useFetch<ApiPoiCollection>(
   `${apiEndpoint.value}/pois.geojson`,
   {
     query: {

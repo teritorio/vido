@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { FitBoundsOptions, LngLatBounds, MapGeoJSONFeature } from 'maplibre-gl'
+import type { FitBoundsOptions, GeoJSONFeature, LngLatBounds } from 'maplibre-gl'
 import { storeToRefs } from 'pinia'
 import type { MultiPolygon, Polygon } from 'geojson'
 import { decodeBase32 } from 'geohashing'
@@ -17,7 +17,7 @@ import SearchInput from '~/components/Search/SearchInput.vue'
 import CookiesConsent from '~/components/UI/CookiesConsent.vue'
 import Logo from '~/components/UI/Logo.vue'
 import { getPois } from '~/lib/apiPois'
-import type { ApiPoiResponse } from '~/types/api/poi'
+import type { Poi } from '~/types/local/poi'
 import { getBBox } from '~/lib/bbox'
 import { favoriteStore as useFavoriteStore } from '~/stores/favorite'
 import { mapStore as useMapStore } from '~/stores/map'
@@ -32,17 +32,11 @@ import type { ApiAddrSearchResult, ApiSearchResult } from '~/lib/apiSearch'
 import IsochroneStatus from '~/components/Isochrone/IsochroneStatus.vue'
 import MenuNavbar from '~/components/MenuNavbar.vue'
 
-//
-// Props
-//
 const props = defineProps<{
   boundaryArea?: Polygon | MultiPolygon
   initialCategoryIds?: number[]
 }>()
 
-//
-// Composables
-//
 const { apiAddr } = useRuntimeConfig().public
 const mapStore = useMapStore()
 const { isModeFavorites, isModeExplorer, isModeExplorerOrFavorites, mode, selectedFeature, teritorioCluster, isDepsView } = storeToRefs(mapStore)
@@ -67,9 +61,6 @@ const {
   resultsCount,
 } = storeToRefs(searchStore)
 
-//
-// Data
-//
 const allowRegionBackZoom = ref<boolean>(false)
 const isFilterActive = ref<boolean>(false)
 const initialBbox = ref<LngLatBounds>()
@@ -77,9 +68,6 @@ const showFavoritesOverlay = ref<boolean>(false)
 const isPoiCardShown = ref<boolean>(false)
 const mapFeaturesRef = ref<InstanceType<typeof MapFeatures>>()
 
-//
-// Hooks
-//
 onBeforeMount(async () => {
   const favs = getHashPart(router, 'favs')
   if (favs) {
@@ -132,9 +120,6 @@ onBeforeUnmount(() => {
   searchStore.dispose()
 })
 
-//
-// Computed
-//
 const fitBoundsPaddingOptions = computed((): FitBoundsOptions['padding'] => {
   if (device.value.smallScreen) {
     return {
@@ -159,7 +144,8 @@ const target = computed(() => {
 })
 
 const mapFeatures = computed(() => {
-  let f: ApiPoiResponse[]
+  let f: Poi[]
+
   switch (mode.value as Mode) {
     case Mode.BROWSER:
       f = flattenFeatures(features.value)
@@ -186,9 +172,6 @@ const poiFilters = computed(() => {
   )
 })
 
-//
-// Watchers
-//
 watch(searchSelectedFeature, (newValue) => {
   if (newValue)
     searchSelectFeature(newValue)
@@ -260,10 +243,7 @@ watch(isModeFavorites, async (isEnabled) => {
   }
 })
 
-//
-// Methods
-//
-async function goToSelectedFeature(feature?: ApiPoiResponse) {
+async function goToSelectedFeature(feature?: Poi) {
   if (mapFeaturesRef.value) {
     if (feature && selectedFeature.value?.properties.metadata.id !== feature.properties.metadata.id)
       await mapFeaturesRef.value.updateSelectedFeature(feature)
@@ -382,7 +362,7 @@ function routerPushUrl(hashUpdate: { [key: string]: string | null } = {}) {
   })
 }
 
-function toggleExploreAroundSelectedPoi(feature?: ApiPoiResponse) {
+function toggleExploreAroundSelectedPoi(feature?: Poi) {
   if (!isModeExplorer.value) {
     mode.value = Mode.EXPLORER
     goToSelectedFeature(feature)
@@ -396,7 +376,7 @@ function toggleExploreAroundSelectedPoi(feature?: ApiPoiResponse) {
   }
 }
 
-function toggleFavorite(feature: ApiPoiResponse) {
+function toggleFavorite(feature: Poi) {
   try {
     if (feature.properties.internalType === 'address')
       favoriteStore.toggleFavoriteAddr(feature)
@@ -408,9 +388,9 @@ function toggleFavorite(feature: ApiPoiResponse) {
   }
 }
 
-function searchSelectFeature(feature: ApiPoiResponse) {
+function searchSelectFeature(feature: Poi) {
   goToSelectedFeature(feature)
-  teritorioCluster.value?.setSelectedFeature(feature as unknown as MapGeoJSONFeature)
+  teritorioCluster.value?.setSelectedFeature(feature as unknown as GeoJSONFeature)
 }
 
 const bottomMenuRef = ref<HTMLDivElement>()

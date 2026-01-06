@@ -1,29 +1,30 @@
 <script setup lang="ts">
-import type { ApiPoiDeps, ApiPoiDepsResponse } from '~/types/api/poi-deps'
-import type { ApiPoiResponse } from '~/types/api/poi'
+import type { ApiPoiDeps, ApiPoiDepsCollection } from '~/types/api/poi-deps'
+import { iconMap } from '~/types/local/poi-deps'
+import type { Poi } from '~/types/local/poi'
 import MapPois from '~/components/Map/MapPois.vue'
 import PoisDeck from '~/components/PoisCard/PoisDeck.vue'
-import { ApiRouteWaypointType, iconMap, prepareApiPoiDeps } from '~/lib/apiPoiDeps'
+import { prepareApiPoiDeps } from '~/lib/apiPoiDeps'
 
 const props = defineProps<{
-  poi: ApiPoiResponse
-  route: ApiPoiDepsResponse
+  poi: Poi
+  route: ApiPoiDepsCollection
   colorFill: string
   colorText: string
   colorLine: string
 }>()
 
 defineEmits<{
-  (e: 'zoomClick', poi: ApiPoiResponse): void
-  (e: 'exploreClick', poi: ApiPoiResponse): void
-  (e: 'favoriteClick', poi: ApiPoiResponse): void
+  (e: 'zoomClick', poi: Poi): void
+  (e: 'exploreClick', poi: Poi): void
+  (e: 'favoriteClick', poi: Poi): void
 }>()
 
 const { t } = useI18n()
 
-const deps = ref<ApiPoiResponse[]>([])
+const deps = ref<Poi[]>([])
 const waypoints = ref<ApiPoiDeps[]>([])
-const pois = ref<ApiPoiResponse[]>([])
+const pois = ref<Poi[]>([])
 
 const featureDepsIDs = ref<number[]>([])
 
@@ -69,7 +70,7 @@ const apiWaypoints = waypoints.value.map((w) => {
         ],
       },
     },
-  } as ApiPoiResponse
+  } as Poi
 
   deps.value.push(formattedWaypoint)
 

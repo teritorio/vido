@@ -17,9 +17,10 @@ import MapBase from '~/components/Map/MapBase.vue'
 import MapControls3D from '~/components/Map/MapControls3D.vue'
 import MapControlsBackground from '~/components/Map/MapControlsBackground.vue'
 import type { ApiMenuCategory } from '~/types/api/menu'
-import type { ApiPoiResponse } from '~/types/api/poi'
-import type { ApiPoiDeps, ApiPoiDepsResponse } from '~/types/api/poi-deps'
-import { ApiRouteWaypointType, iconMap, prepareApiPoiDeps } from '~/lib/apiPoiDeps'
+import type { Poi } from '~/types/local/poi'
+import type { ApiPoiDeps, ApiPoiDepsCollection } from '~/types/api/poi-deps'
+import { iconMap } from '~/types/local/poi-deps'
+import { prepareApiPoiDeps } from '~/lib/apiPoiDeps'
 import { getBBox } from '~/lib/bbox'
 import { DEFAULT_MAP_STYLE, MAP_ZOOM } from '~/lib/constants'
 import { vectorTilesPoi2ApiPoi } from '~/lib/vectorTilesPois'
@@ -39,7 +40,7 @@ const props = withDefaults(defineProps<{
   extraAttributions?: string[]
   small?: boolean
   categories: ApiMenuCategory[]
-  features: ApiPoiResponse[]
+  features: Poi[]
   selectedCategoriesIds?: ApiMenuCategory['id'][]
   styleIconFilter?: string[][]
   enableFilterRouteByCategories?: boolean
@@ -205,7 +206,7 @@ function onClick(e: MapMouseEvent): void {
 
 let currentRequestToken: { cancelled: boolean } | null = null
 
-async function updateSelectedFeature(feature?: ApiPoiResponse): Promise<void> {
+async function updateSelectedFeature(feature?: Poi): Promise<void> {
   // Cancel previous request if it exists
   if (currentRequestToken) {
     currentRequestToken.cancelled = true
@@ -236,7 +237,7 @@ async function updateSelectedFeature(feature?: ApiPoiResponse): Promise<void> {
       mapStore.setSelectedFeature(menuStore.getFeatureById(id))
 
       try {
-        const { data, error, status } = await useFetch<ApiPoiDepsResponse>(
+        const { data, error, status } = await useFetch<ApiPoiDepsCollection>(
           () => `${apiEndpoint.value}/poi/${id}/deps.geojson`,
           {
             query: {
@@ -256,8 +257,8 @@ async function updateSelectedFeature(feature?: ApiPoiResponse): Promise<void> {
         if (status.value === 'success' && data.value) {
           let waypointIndex = 1
           let waypoints: ApiPoiDeps[] = []
-          let pois: ApiPoiResponse[] = []
-          let deps: ApiPoiResponse[] = []
+          let pois: Poi[] = []
+          let deps: Poi[] = []
 
           if (!isDepSelected)
             mapStore.setSelectedFeatureDepsIDs()
@@ -301,7 +302,7 @@ async function updateSelectedFeature(feature?: ApiPoiResponse): Promise<void> {
                   'website:details': undefined,
                 },
               },
-            } as ApiPoiResponse
+            } as Poi
 
             if (w.properties['route:point:type'] === ApiRouteWaypointType.way_point)
               waypointIndex++
