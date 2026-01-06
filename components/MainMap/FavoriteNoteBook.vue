@@ -6,14 +6,14 @@ import IconButton from '~/components/UI/IconButton.vue'
 import IconsBar from '~/components/UI/IconsBar.vue'
 import ShareLinkModal from '~/components/UI/ShareLinkModal.vue'
 import UIButton from '~/components/UI/UIButton.vue'
-import type { ApiPoi } from '~/types/api/poi'
+import type { Poi } from '~/types/local/poi'
 import { favoriteStore as useFavoriteStore } from '~/stores/favorite'
 
 defineEmits<{
   (e: 'onClose'): void
-  (e: 'exploreClick', poi: ApiPoi): void
-  (e: 'favoriteClick', poi: ApiPoi): void
-  (e: 'zoomClick', poi: ApiPoi): void
+  (e: 'exploreClick', poi: Poi): void
+  (e: 'favoriteClick', poi: Poi): void
+  (e: 'zoomClick', poi: Poi): void
 }>()
 
 const shareModal = ref<InstanceType<typeof ShareLinkModal>>()

@@ -1,4 +1,4 @@
-import type { ApiPoi, ApiPoiProperties } from '~/types/api/poi'
+import type { ApiPoiResponse, ApiPoiProperties } from '~/types/api/poi'
 import { STORE_NAME, useContribStore } from '~/stores/contrib'
 
 export interface Link {
@@ -22,7 +22,7 @@ export default function () {
     return !!(properties.metadata.osm_id && properties.metadata.osm_type && properties.editorial)
   }
 
-  function getContributorFields(feature: ApiPoi): ContribFields {
+  function getContributorFields(feature: ApiPoiResponse): ContribFields {
     const { mapillary } = feature.properties
     const { osm_id, osm_type, id } = feature.properties.metadata
     const { coordinates } = feature.geometry as GeoJSON.Point

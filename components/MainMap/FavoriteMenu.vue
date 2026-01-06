@@ -5,16 +5,16 @@ import { VDialog } from 'vuetify/components/VDialog'
 import FavoriteNoteBook from '~/components/MainMap/FavoriteNoteBook.vue'
 import Badge from '~/components/UI/Badge.vue'
 import FavoriteIcon from '~/components/UI/FavoriteIcon.vue'
-import type { ApiPoi } from '~/types/api/poi'
+import type { Poi } from '~/types/local/poi'
 import { mapStore as useMapStore } from '~/stores/map'
 import { favoriteStore as useFavoriteStore } from '~/stores/favorite'
 
 const emit = defineEmits<{
-  (e: 'exploreClick', poi: ApiPoi): void
-  (e: 'favoriteClick', poi: ApiPoi): void
+  (e: 'exploreClick', poi: Poi): void
+  (e: 'favoriteClick', poi: Poi): void
   (e: 'toggleFavoriteMode'): void
   (e: 'toggleNoteBookMode'): void
-  (e: 'zoomClick', poi: ApiPoi): void
+  (e: 'zoomClick', poi: Poi): void
 }>()
 
 const device = useDevice()
@@ -24,7 +24,7 @@ const mapStore = useMapStore()
 const { isModeFavorites } = storeToRefs(mapStore)
 const { favoriteCount } = storeToRefs(useFavoriteStore())
 
-function onExploreClick(poi: ApiPoi) {
+function onExploreClick(poi: Poi) {
   notebookModal.value = false
   emit('exploreClick', poi)
 }
@@ -34,7 +34,7 @@ function onClose() {
   emit('toggleNoteBookMode')
 }
 
-function onZoomClick(poi: ApiPoi) {
+function onZoomClick(poi: Poi) {
   notebookModal.value = false
   emit('zoomClick', poi)
 }

@@ -1,10 +1,10 @@
 <script lang="ts" setup>
 import PoiCardLight from '~/components/PoisCard/PoiCardLight.vue'
 import poi from '~/cypress/fixtures/teritorio/references/poi/2.json'
-import type { ApiPoi } from '~/types/api/poi'
+import type { ApiPoiResponse } from '~/types/api/poi'
 
 const defaultProps = {
-  poi: poi as ApiPoi,
+  poi: poi as ApiPoiResponse,
 }
 
 const props = {

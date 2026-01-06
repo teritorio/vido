@@ -5,7 +5,7 @@ import { getBBox } from '~/lib/bbox'
 import MapBase from '~/components/Map/MapBase.vue'
 import PoiCardContent from '~/components/PoisCard/PoiCardContent.vue'
 import UIButton from '~/components/UI/UIButton.vue'
-import type { ApiPoi } from '~/types/api/poi'
+import type { ApiPoiResponse } from '~/types/api/poi'
 import { MAP_ZOOM } from '~/lib/constants'
 import type { MapPoiId } from '~/lib/mapPois'
 import { filterRouteByPoiIds } from '~/utils/styles'
@@ -14,7 +14,7 @@ import { mapStore as useMapStore } from '~/stores/map'
 const props = withDefaults(defineProps<{
   extraAttributions?: string[]
   offMapAttribution?: boolean
-  features: ApiPoi[]
+  features: ApiPoiResponse[]
   featureIds?: MapPoiId[]
   fullscreenControl?: boolean
   cluster?: boolean
@@ -28,7 +28,7 @@ const props = withDefaults(defineProps<{
 const apiEndpoint = useState<string>('api-endpoint')
 const mapBaseRef = ref<InstanceType<typeof MapBase>>()
 const map = ref<MapGL>()
-const selectedFeature = ref<ApiPoi | null>(null)
+const selectedFeature = ref<ApiPoiResponse | null>(null)
 
 const selectionZoom = computed(() => MAP_ZOOM.selectionZoom)
 const bounds = computed(() => getBBox({ type: 'FeatureCollection', features: props.features }))
@@ -66,14 +66,14 @@ function renderPois(): void {
   ], props.cluster)
 
   teritorioCluster.value?.addEventListener('feature-click', async (e: Event) => {
-    const feature: ApiPoi = (e as CustomEvent).detail.selectedFeature
+    const feature: ApiPoiResponse = (e as CustomEvent).detail.selectedFeature
 
     if (feature.properties['route:point:type']) {
       selectedFeature.value = feature
       return
     }
 
-    const { data, error, status } = await useFetch<ApiPoi>(
+    const { data, error, status } = await useFetch<ApiPoiResponse>(
       () => `${apiEndpoint.value}/poi/${feature.properties.metadata.id}.geojson`,
       {
         query: {

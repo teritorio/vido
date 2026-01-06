@@ -17,7 +17,7 @@ import MapBase from '~/components/Map/MapBase.vue'
 import MapControls3D from '~/components/Map/MapControls3D.vue'
 import MapControlsBackground from '~/components/Map/MapControlsBackground.vue'
 import type { ApiMenuCategory } from '~/types/api/menu'
-import type { ApiPoi } from '~/types/api/poi'
+import type { ApiPoiResponse } from '~/types/api/poi'
 import type { ApiPoiDeps, ApiRouteWaypoint } from '~/lib/apiPoiDeps'
 import { ApiRouteWaypointType, iconMap, prepareApiPoiDeps } from '~/lib/apiPoiDeps'
 import { getBBox } from '~/lib/bbox'
@@ -39,7 +39,7 @@ const props = withDefaults(defineProps<{
   extraAttributions?: string[]
   small?: boolean
   categories: ApiMenuCategory[]
-  features: ApiPoi[]
+  features: ApiPoiResponse[]
   selectedCategoriesIds?: ApiMenuCategory['id'][]
   styleIconFilter?: string[][]
   enableFilterRouteByCategories?: boolean
@@ -205,7 +205,7 @@ function onClick(e: MapMouseEvent): void {
 
 let currentRequestToken: { cancelled: boolean } | null = null
 
-async function updateSelectedFeature(feature?: ApiPoi): Promise<void> {
+async function updateSelectedFeature(feature?: ApiPoiResponse): Promise<void> {
   // Cancel previous request if it exists
   if (currentRequestToken) {
     currentRequestToken.cancelled = true
@@ -256,13 +256,13 @@ async function updateSelectedFeature(feature?: ApiPoi): Promise<void> {
         if (status.value === 'success' && data.value) {
           let waypointIndex = 1
           let waypoints: ApiRouteWaypoint[] = []
-          let pois: ApiPoi[] = []
-          let deps: ApiPoi[] = []
+          let pois: ApiPoiResponse[] = []
+          let deps: ApiPoiResponse[] = []
 
           if (!isDepSelected)
             mapStore.setSelectedFeatureDepsIDs()
 
-          const poi = data.value.features.find(f => f.properties.metadata.id === id) as ApiPoi
+          const poi = data.value.features.find(f => f.properties.metadata.id === id) as ApiPoiResponse
 
           if (!poi)
             throw createError(`Feature with ID: ${id} not found.`)
@@ -301,7 +301,7 @@ async function updateSelectedFeature(feature?: ApiPoi): Promise<void> {
                   'website:details': undefined,
                 },
               },
-            } as ApiPoi
+            } as ApiPoiResponse
 
             if (w.properties['route:point:type'] === ApiRouteWaypointType.way_point)
               waypointIndex++

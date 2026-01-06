@@ -1,7 +1,7 @@
 import type { MapPoiDescription } from '~/lib/mapPois'
 import { stringifyOptions } from '~/lib/apiPois'
-import type { ApiPoiId, ApiPoisOptions } from '~/lib/apiPois'
-import type { ApiPoi, ApiPoiProperties } from '~/types/api/poi'
+import type { ApiPoisOptions } from '~/lib/apiPois'
+import type { ApiPoiProperties, ApiPoiResponse } from '~/types/api/poi'
 import type { MultilingualString } from '~/utils/types'
 
 export enum ApiRouteWaypointType {
@@ -12,7 +12,7 @@ export enum ApiRouteWaypointType {
 }
 
 export interface ApiRouteWaypointProperties {
-  'id': ApiPoiId
+  'id': number
   'name'?: MultilingualString
   'description'?: MapPoiDescription
   'route:point:type': ApiRouteWaypointType
@@ -36,10 +36,10 @@ export function prepareApiPoiDeps(
   referenceIds?: number[],
 ): {
     waypoints: ApiRouteWaypoint[]
-    pois: ApiPoi[]
+    pois: ApiPoiResponse[]
   } {
   const waypoints: ApiRouteWaypoint[] = []
-  const pois: ApiPoi[] = []
+  const pois: ApiPoiResponse[] = []
 
   if (referenceIds && referenceIds.length > 0) {
     for (const id of referenceIds) {
@@ -54,7 +54,7 @@ export function prepareApiPoiDeps(
         waypoints.push(feature as ApiRouteWaypoint)
       }
       else {
-        pois.push(feature as ApiPoi)
+        pois.push(feature as ApiPoiResponse)
       }
     }
   }
@@ -63,7 +63,7 @@ export function prepareApiPoiDeps(
 }
 
 export async function getPoiDepsById(
-  poiId: ApiPoiId | string,
+  poiId: number | string,
   options: ApiPoisOptions = {},
 ): Promise<ApiPoiDeps> {
   const apiEndpoint = useState('api-endpoint')
@@ -96,7 +96,7 @@ export function apiRouteWaypointToApiPoi(
   colorLine: string,
   colorText: '#000000' | '#FFFFFF',
   text?: string,
-): ApiPoi {
+): ApiPoiResponse {
   return {
     ...waypoint,
     properties: {

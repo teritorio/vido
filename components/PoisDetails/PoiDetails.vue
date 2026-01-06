@@ -12,8 +12,8 @@ import IconButton from '~/components/UI/IconButton.vue'
 import RelativeDate from '~/components/UI/RelativeDate.vue'
 import TeritorioIcon from '~/components/UI/TeritorioIcon.vue'
 import type { ApiPoiDeps } from '~/lib/apiPoiDeps'
-import type { ApiPoiId, FieldsList } from '~/lib/apiPois'
-import type { ApiPoi } from '~/types/api/poi'
+import type { FieldsList } from '~/lib/apiPois'
+import type { ApiPoiResponse } from '~/types/api/poi'
 import type { Settings } from '~/lib/apiSettings'
 import { favoriteStore as useFavoriteStore } from '~/stores/favorite'
 import { OriginEnum } from '~/utils/types'
@@ -23,7 +23,7 @@ import PanoramaxViewer from '~/components/PoisDetails/PanoramaxViewer.vue'
 
 const props = defineProps<{
   settings: Settings
-  poi: ApiPoi
+  poi: ApiPoiResponse
   poiDeps?: ApiPoiDeps
   pageTitle: string
 }>()
@@ -48,7 +48,7 @@ const isLargeLayout = computed((): boolean => {
   return props.poiDeps.features.length > 0
 })
 
-const properties = computed((): ApiPoi['properties'] => {
+const properties = computed((): ApiPoiResponse['properties'] => {
   if (!isLargeLayout.value) {
     return props.poi.properties
   }
@@ -73,7 +73,7 @@ const colorLine = computed((): string => {
   return props.poi.properties.display?.color_line || '#76009E'
 })
 
-const id = computed((): ApiPoiId => {
+const id = computed((): number => {
   return props.poi.properties.metadata.id
 })
 

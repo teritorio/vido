@@ -2,14 +2,14 @@
 import PoiDetails from '~/components/PoisDetails/PoiDetails.vue'
 import poisDeps from '~/cypress/fixtures/teritorio/references/poi/1/deps.json'
 import settings from '~/cypress/fixtures/teritorio/references/settings.json'
-import type { ApiPoi } from '~/types/api/poi'
+import type { ApiPoiResponse } from '~/types/api/poi'
 import type { Settings } from '~/lib/apiSettings'
 
 // ...parametersMap,
 
 const defaultProps = {
   settings: settings as Settings,
-  poi: poisDeps.features[0] as ApiPoi,
+  poi: poisDeps.features[0] as ApiPoiResponse,
 }
 
 const { featureSeoTitle } = useFeature(toRef(defaultProps.poi), { type: 'details' })

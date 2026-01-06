@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { storeToRefs } from 'pinia'
-import type { ApiPoi } from '~/types/api/poi'
+import type { Poi } from '~/types/local/poi'
 import { useSiteStore } from '~/stores/site'
 import { menuStore as useMenuStore } from '~/stores/menu'
 import { useSearchStore } from '~/stores/search'
@@ -16,12 +16,12 @@ import SelectedCategories from '~/components/Home/SelectedCategories.vue'
 import UIButton from '~/components/UI/UIButton.vue'
 
 const emit = defineEmits<{
-  (e: 'exploreClick', poi: ApiPoi): void
-  (e: 'favoriteClick', poi: ApiPoi): void
+  (e: 'exploreClick', poi: Poi): void
+  (e: 'favoriteClick', poi: Poi): void
   (e: 'toggleSearchMode'): void
   (e: 'toggleFavoriteMode'): void
   (e: 'toggleNoteBookMode'): void
-  (e: 'zoomClick', poi: ApiPoi): void
+  (e: 'zoomClick', poi: Poi): void
 }>()
 
 const navigationStore = useNavigationStore()

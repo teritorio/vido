@@ -7,7 +7,7 @@ import pois from './pois.json'
 import menu from './menu.json'
 import settings from './settings.json'
 import type { ApiPoiDeps } from '~/lib/apiPoiDeps'
-import type { ApiPois } from '~/lib/apiPois'
+import type { ApiPoiCollectionResponse } from '~/types/api/poi'
 import type { Settings } from '~/lib/apiSettings'
 import type { ApiMenuResponse } from '~/types/api/menu'
 
@@ -16,7 +16,7 @@ const fixture: APIFixture = {
   settings: settings as Settings,
   articles,
   menu: menu as ApiMenuResponse,
-  pois: pois as ApiPois,
+  pois: pois as ApiPoiCollectionResponse,
   deps: {
     1: deps1 as ApiPoiDeps,
     2: deps2 as ApiPoiDeps,
