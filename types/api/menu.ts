@@ -56,3 +56,7 @@ export interface ApiMenuCategory extends ApiMenuItem {
     filters?: Filters[]
   }
 }
+
+export type ApiMenuItemUnion = ApiMenuCategory | ApiMenuGroup | ApiMenuLink
+
+export type ApiMenuResponse = ApiMenuItemUnion[]
