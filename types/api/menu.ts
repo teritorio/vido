@@ -56,11 +56,3 @@ export interface ApiMenuCategory extends ApiMenuItem {
     filters?: Filters[]
   }
 }
-
-export interface MenuGroup extends ApiMenuGroup {
-  menu_group: ApiMenuGroup['menu_group'] & {
-    vido_children: null | ApiMenuItem['id'][]
-  }
-}
-
-export type MenuItem = MenuGroup | ApiMenuLink | ApiMenuCategory

@@ -4,7 +4,8 @@ import { VAutocomplete } from 'vuetify/components/VAutocomplete'
 import { VListItem, VListItemMedia } from 'vuetify/components/VList'
 import { localeIncludes } from 'locale-includes'
 import TeritorioIcon from '~/components/UI/TeritorioIcon.vue'
-import type { ApiMenuCategory, MenuItem } from '~/types/api/menu'
+import type { ApiMenuCategory } from '~/types/api/menu'
+import type { MenuItem } from '~/types/local/menu'
 
 const props = withDefaults(defineProps<{
   filters?: number[]
