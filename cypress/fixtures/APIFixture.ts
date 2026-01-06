@@ -1,5 +1,5 @@
 import type { Article } from '~/lib/apiArticle'
-import type { MenuItem } from '~/types/api/menu'
+import type { MenuItem } from '~/types/local/menu'
 import type { ApiPoiDeps } from '~/lib/apiPoiDeps'
 import type { ApiPois } from '~/lib/apiPois'
 import type { PropertyTranslations } from '~/lib/apiPropertyTranslations'

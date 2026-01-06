@@ -2,7 +2,6 @@
     {
         "id": 1,
         "menu_group": {
-            "id": 1,
             "name": {
                 "fr": "Bloc Recherche"
             },
@@ -10,17 +9,14 @@
             "color_fill": "#99163a",
             "color_line": "#99163a",
             "display_mode": "compact",
-            "vido_children": null
+            "vido_children": []
         },
-        "link": null,
-        "category": null,
         "index_order": 1
     },
     {
         "id": 11,
         "parent_id": 1,
         "menu_group": {
-            "id": 11,
             "name": {
                 "fr": "Recherche"
             },
@@ -28,14 +24,13 @@
             "color_fill": "#99163a",
             "color_line": "#99163a",
             "display_mode": "compact",
-            "vido_children": null
+            "vido_children": []
         },
         "index_order": 2
     },
     {
         "id": 2,
         "menu_group": {
-            "id": 2,
             "name": {
                 "fr": "Bloc POI"
             },
@@ -43,17 +38,14 @@
             "color_fill": "#99163a",
             "color_line": "#99163a",
             "display_mode": "compact",
-            "vido_children": null
+            "vido_children": []
         },
-        "link": null,
-        "category": null,
         "index_order": 4
     },
     {
         "id": 21,
         "parent_id": 2,
         "menu_group": {
-            "id": 21,
             "name": {
                 "fr": "Circuit"
             },
@@ -61,20 +53,14 @@
             "color_fill": "#99163a",
             "color_line": "#99163a",
             "display_mode": "compact",
-            "vido_children": null
+            "vido_children": []
         },
-        "link": null,
-        "category": null,
         "index_order": 5
     },
     {
         "id": 211,
         "parent_id": 21,
-        "menu_group": null,
-        "link": null,
         "category": {
-            "id": 211,
-            "slug": "",
             "name": {
                 "en": "By Foot",
                 "fr": "À pied"
@@ -128,11 +114,7 @@
     {
         "id": 22,
         "parent_id": 2,
-        "menu_group": null,
-        "link": null,
         "category": {
-            "id": 22,
-            "slug": "",
             "name": {
                 "en": "Camp site",
                 "fr": "Aire de passage"
@@ -142,7 +124,7 @@
             "color_fill": "#ec0029",
             "color_line": "#ec0029",
             "style_merge": false,
-            "zoom": "16",
+            "zoom": 16,
             "display_mode": "compact",
             "filters": [
                 {
