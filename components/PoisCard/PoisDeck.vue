@@ -1,18 +1,18 @@
 <script setup lang="ts">
-import type { ApiPoi } from '~/types/api/poi'
+import type { Poi } from '~/types/local/poi'
 import PoiCard from '~/components/PoisCard/PoiCard.vue'
 import PoiCardLight from '~/components/PoisCard/PoiCardLight.vue'
 import { favoriteStore as useFavoriteStore } from '~/stores/favorite'
 
 defineProps<{
-  pois: ApiPoi[]
+  pois: Poi[]
   isCardLight: boolean
 }>()
 
 const emit = defineEmits<{
-  (e: 'exploreClick', poi: ApiPoi): void
-  (e: 'favoriteClick', poi: ApiPoi): void
-  (e: 'zoomClick', poi: ApiPoi): void
+  (e: 'exploreClick', poi: Poi): void
+  (e: 'favoriteClick', poi: Poi): void
+  (e: 'zoomClick', poi: Poi): void
 }>()
 
 const favoriteStore = useFavoriteStore()

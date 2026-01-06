@@ -17,7 +17,7 @@ import SearchInput from '~/components/Search/SearchInput.vue'
 import CookiesConsent from '~/components/UI/CookiesConsent.vue'
 import Logo from '~/components/UI/Logo.vue'
 import { getPois } from '~/lib/apiPois'
-import type { ApiPoi } from '~/types/api/poi'
+import type { ApiPoiResponse } from '~/types/api/poi'
 import { getBBox } from '~/lib/bbox'
 import { favoriteStore as useFavoriteStore } from '~/stores/favorite'
 import { mapStore as useMapStore } from '~/stores/map'
@@ -159,7 +159,7 @@ const target = computed(() => {
 })
 
 const mapFeatures = computed(() => {
-  let f: ApiPoi[]
+  let f: ApiPoiResponse[]
   switch (mode.value as Mode) {
     case Mode.BROWSER:
       f = flattenFeatures(features.value)
@@ -263,7 +263,7 @@ watch(isModeFavorites, async (isEnabled) => {
 //
 // Methods
 //
-async function goToSelectedFeature(feature?: ApiPoi) {
+async function goToSelectedFeature(feature?: ApiPoiResponse) {
   if (mapFeaturesRef.value) {
     if (feature && selectedFeature.value?.properties.metadata.id !== feature.properties.metadata.id)
       await mapFeaturesRef.value.updateSelectedFeature(feature)
@@ -382,7 +382,7 @@ function routerPushUrl(hashUpdate: { [key: string]: string | null } = {}) {
   })
 }
 
-function toggleExploreAroundSelectedPoi(feature?: ApiPoi) {
+function toggleExploreAroundSelectedPoi(feature?: ApiPoiResponse) {
   if (!isModeExplorer.value) {
     mode.value = Mode.EXPLORER
     goToSelectedFeature(feature)
@@ -396,7 +396,7 @@ function toggleExploreAroundSelectedPoi(feature?: ApiPoi) {
   }
 }
 
-function toggleFavorite(feature: ApiPoi) {
+function toggleFavorite(feature: ApiPoiResponse) {
   try {
     if (feature.properties.internalType === 'address')
       favoriteStore.toggleFavoriteAddr(feature)
@@ -408,7 +408,7 @@ function toggleFavorite(feature: ApiPoi) {
   }
 }
 
-function searchSelectFeature(feature: ApiPoi) {
+function searchSelectFeature(feature: ApiPoiResponse) {
   goToSelectedFeature(feature)
   teritorioCluster.value?.setSelectedFeature(feature as unknown as MapGeoJSONFeature)
 }

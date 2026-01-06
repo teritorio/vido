@@ -3,7 +3,7 @@ import { LngLatBounds } from 'maplibre-gl'
 
 import MapFeatures from '~/components/MainMap/MapFeatures.vue'
 import type { ApiMenuCategory } from '~/types/api/menu'
-import type { ApiPoi } from '~/types/api/poi'
+import type { ApiPoiResponse } from '~/types/api/poi'
 import { mapCss } from '~/lib/storybook-types'
 
 // ...parametersMap,
@@ -36,7 +36,7 @@ const defaultProps = {
   features: [],
 }
 
-const feature1: ApiPoi = {
+const feature1: ApiPoiResponse = {
   type: 'Feature',
   geometry: {
     type: 'Point',

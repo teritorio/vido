@@ -3,8 +3,7 @@ import { deepEqual } from 'fast-equals'
 import { defineStore } from 'pinia'
 import type { ApiMenuCategory, ApiMenuResponse } from '~/types/api/menu'
 import type { MenuGroup, MenuItem } from '~/types/local/menu'
-import type { ApiPois } from '~/lib/apiPois'
-import type { ApiPoi } from '~/types/api/poi'
+import type { ApiPoiCollectionResponse, ApiPoiResponse } from '~/types/api/poi'
 import { getPoiByCategoryId } from '~/lib/apiPois'
 import type { FilterValues } from '~/utils/types-filters'
 import { filterValueFactory, filterValuesIsSet, isMatch, isSet } from '~/utils/types-filters'
@@ -18,7 +17,7 @@ function sortedUniq<T>(a: T[]): T[] {
   return [...new Set(a)].sort()
 }
 
-function keepFeature(filters: FilterValues, feature: ApiPoi): boolean {
+function keepFeature(filters: FilterValues, feature: ApiPoiResponse): boolean {
   return filters.reduce<boolean>((prevValue, filter) => {
     return prevValue && (!isSet(filter) || isMatch(filter, feature.properties))
   }, true)
@@ -27,13 +26,13 @@ function keepFeature(filters: FilterValues, feature: ApiPoi): boolean {
 export const menuStore = defineStore('menu', () => {
   const menuItems = ref<Record<number, MenuItem>>()
   const selectedCategoryIds = ref<ApiMenuCategory['id'][]>([])
-  const features = ref<Record<number, ApiPoi[]>>({})
+  const features = ref<Record<number, ApiPoiResponse[]>>({})
   const filters = ref<Record<ApiMenuCategory['id'], FilterValues>>({})
-  const allFeatures = ref<Record<number, ApiPoi[]>>({})
+  const allFeatures = ref<Record<number, ApiPoiResponse[]>>({})
   const isLoadingFeatures = ref<boolean>(false)
 
   const getFeatureById = computed(() => {
-    return (id: number): ApiPoi | undefined => {
+    return (id: number): ApiPoiResponse | undefined => {
       for (const key in allFeatures.value) {
         for (const feature of allFeatures.value[key]) {
           if (feature.properties.metadata.id === id) {
@@ -179,7 +178,7 @@ export const menuStore = defineStore('menu', () => {
         Boolean(previousFeatures[categoryId]),
       )
 
-      const posts: ApiPois[] = (
+      const posts: ApiPoiCollectionResponse[] = (
         await Promise.all(
           categoryIds
             .filter(categoryId => !previousFeatures[categoryId])
@@ -197,9 +196,9 @@ export const menuStore = defineStore('menu', () => {
             })
             .filter(apiPoi => !!apiPoi),
         )
-      ).filter(e => e) as ApiPois[]
+      ).filter(e => e) as ApiPoiCollectionResponse[]
 
-      const localFeatures: Record<number, ApiPoi[]> = {}
+      const localFeatures: Record<number, ApiPoiResponse[]> = {}
 
       let i = 0
 
@@ -210,7 +209,7 @@ export const menuStore = defineStore('menu', () => {
 
         if (existingFeatures[j]) {
           localFeatures[categoryId] = previousFeatures[categoryId].map(
-            (f: ApiPoi) => ({
+            (f: ApiPoiResponse) => ({
               ...f,
               properties: {
                 ...f.properties,
@@ -250,11 +249,11 @@ export const menuStore = defineStore('menu', () => {
 
   // TODO: Maybe merge filterDeps with fetchFeatures
   // Check potential side-effects in components calling fetchFeatures
-  function filterByDeps(categoryId: number, deps: ApiPoi[]) {
+  function filterByDeps(categoryId: number, deps: ApiPoiResponse[]) {
     if (deps.length <= 1)
       return
 
-    const filteredFeatures: { [key: number]: ApiPoi[] } = {}
+    const filteredFeatures: { [key: number]: ApiPoiResponse[] } = {}
     filteredFeatures[categoryId] = deps
     features.value = filteredFeatures
   }
@@ -273,10 +272,10 @@ export const menuStore = defineStore('menu', () => {
 
       // Update features visibility
       if (categoryId in features.value) {
-        const localFeatures: { [categoryId: number]: ApiPoi[] } = copy(features.value)
+        const localFeatures: { [categoryId: number]: ApiPoiResponse[] } = copy(features.value)
         const filterIsSet = filterValuesIsSet(filterValues)
 
-        localFeatures[categoryId] = localFeatures[categoryId].map((feature: ApiPoi) => {
+        localFeatures[categoryId] = localFeatures[categoryId].map((feature: ApiPoiResponse) => {
           feature.properties.vido_visible
             = !filterIsSet || keepFeature(filterValues, feature)
           return feature

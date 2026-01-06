@@ -3,13 +3,13 @@ import { groupBy } from 'lodash'
 import { storeToRefs } from 'pinia'
 import PoiDetails from '~/components/PoisDetails/PoiDetails.vue'
 import type { ApiPoiDeps } from '~/lib/apiPoiDeps'
-import type { ApiPoi } from '~/types/api/poi'
+import type { ApiPoiResponse } from '~/types/api/poi'
 import { headerFromSettings } from '~/lib/apiSettings'
 import { useSiteStore } from '~/stores/site'
 import { regexForPOIIds } from '~/composables/useIdsResolver'
 
 interface PoiPageData {
-  poi?: ApiPoi
+  poi?: ApiPoiResponse
   poiDeps?: ApiPoiDeps
 }
 
@@ -45,7 +45,7 @@ const { data, error } = await useFetch(
           : false,
       )
 
-      const poi = poiFeatures?.[0] as ApiPoi | undefined
+      const poi = poiFeatures?.[0] as ApiPoiResponse | undefined
 
       const poiDeps: ApiPoiDeps = {
         ...response,
@@ -73,7 +73,7 @@ if (!data.value?.poi) {
 
 const poi = ref(data.value.poi)
 const poiDeps = ref(data.value.poiDeps)
-const { featureSeoTitle } = useFeature(poi as Ref<ApiPoi>, { type: 'details' })
+const { featureSeoTitle } = useFeature(poi as Ref<ApiPoiResponse>, { type: 'details' })
 
 if (!featureSeoTitle.value) {
   throw createError({

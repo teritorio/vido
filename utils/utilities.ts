@@ -1,5 +1,5 @@
-import type { ApiPoiId, FieldsListItem } from '~/lib/apiPois'
-import type { ApiPoi } from '~/types/api/poi'
+import type { FieldsListItem } from '~/lib/apiPois'
+import type { ApiPoiResponse } from '~/types/api/poi'
 import type { ApiAddrSearchResult } from '~/lib/apiSearch'
 import { MAP_ZOOM } from '~/lib/constants'
 import { ADDRESS_FIELDS } from '~/composables/useField'
@@ -54,10 +54,10 @@ export function isDateRangeEmpty(properties: {
   return !('start' in properties) && !('end' in properties)
 }
 
-export function flattenFeatures(features: { [categoryId: number]: ApiPoi[] }) {
+export function flattenFeatures(features: { [categoryId: number]: ApiPoiResponse[] }) {
   return Object.values(features)
     .flat()
-    .filter((f: ApiPoi) => f.properties.vido_visible)
+    .filter((f: ApiPoiResponse) => f.properties.vido_visible)
 }
 
 export function getPreviousMonday() {
@@ -69,7 +69,7 @@ export function getPreviousMonday() {
   return new Date().setDate(date.getDate() - date.getDate() - 6)
 }
 
-export function formatApiAddressToFeature(feature: GeoJSON.Feature<GeoJSON.Point, ApiAddrSearchResult>, isGeocoding: boolean = false): ApiPoi {
+export function formatApiAddressToFeature(feature: GeoJSON.Feature<GeoJSON.Point, ApiAddrSearchResult>, isGeocoding: boolean = false): ApiPoiResponse {
   let vido_zoom = null
 
   if (isGeocoding) {
@@ -84,7 +84,7 @@ export function formatApiAddressToFeature(feature: GeoJSON.Feature<GeoJSON.Point
     properties: {
       internalType: 'address',
       metadata: {
-        id: feature.properties.id as ApiPoiId,
+        id: feature.properties.id,
       },
       name: { 'fr-FR': feature.properties.label },
       vido_zoom,

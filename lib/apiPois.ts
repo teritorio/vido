@@ -1,7 +1,4 @@
-import type { MapPoiId } from './mapPois'
-import type { ApiPoi, ApiPoiProperties } from '~/types/api/poi'
-
-export type ApiPoiId = MapPoiId
+import type { ApiPoiCollectionResponse, ApiPoiResponse } from '~/types/api/poi'
 
 export type RenderEnum =
   | 'string'
@@ -49,48 +46,6 @@ export interface FieldsListGroup {
 
 export type FieldsList = (FieldsListItem | FieldsListGroup)[]
 export type TextColors = '#000000' | '#FFFFFF'
-// export type ApiPoiProperties = MapPoiProperties & {
-//   'image'?: string[]
-//   'addr:city'?: string
-//   'addr:housenumber'?: string
-//   'addr:postcode'?: string
-//   'addr:street'?: string
-//   'metadata': {
-//     id: ApiPoiId
-//     source?: string
-//     category_ids?: Array<number>
-//     updated_at?: string
-//     osm_id?: number
-//     osm_type?: 'node' | 'way' | 'relation'
-//     dep_ids?: number[]
-//   }
-//   'display'?: {
-//     style_class?: string[]
-//     color_fill: string
-//     color_line: string
-//     color_text?: TextColors
-//   }
-//   'editorial'?: {
-//     'popup_fields'?: FieldsListItem[]
-//     'details_fields'?: FieldsList
-//     'list_fields'?: FieldsListItem[]
-//     'class_label'?: MultilingualString
-//     'class_label_popup'?: MultilingualString
-//     'class_label_details'?: MultilingualString
-//     'website:details'?: MultilingualString
-//     'unavoidable'?: boolean
-//   }
-// }
-
-export const ApiPoiPropertiesArray = [
-  'image',
-  'phone',
-  'mobile',
-  'email',
-  'website',
-]
-
-export type ApiPois = GeoJSON.FeatureCollection<GeoJSON.Geometry, ApiPoiProperties>
 
 export interface ApiPoisOptions {
   cliping_polygon_slug?: string
@@ -112,9 +67,9 @@ export function stringifyOptions(options: ApiPoisOptions): string[][] {
 }
 
 export function getPoiById(
-  poiId: ApiPoiId | string,
+  poiId: number | string,
   options: ApiPoisOptions = {},
-): Promise<ApiPoi> {
+): Promise<ApiPoiResponse> {
   const apiEndpoint = useState('api-endpoint')
 
   return fetch(
@@ -122,7 +77,7 @@ export function getPoiById(
   )
     .then((data) => {
       if (data.ok) {
-        return data.json() as unknown as ApiPoi
+        return data.json() as unknown as ApiPoiResponse
       }
       else {
         return Promise.reject(
@@ -133,9 +88,9 @@ export function getPoiById(
 }
 
 export async function getPois(
-  poiIds?: (ApiPoiId | string)[],
+  poiIds?: (number | string)[],
   options: ApiPoisOptions = {},
-): Promise<ApiPois> {
+): Promise<ApiPoiCollectionResponse> {
   const apiEndpoint = useState('api-endpoint')
 
   return await fetch(
@@ -146,7 +101,7 @@ export async function getPois(
       ])}`,
   ).then((data) => {
     if (data.ok) {
-      return data.json() as unknown as ApiPois
+      return data.json() as unknown as ApiPoiCollectionResponse
     }
     else {
       return Promise.reject(
@@ -172,13 +127,13 @@ export function getPoiByCategoryIdUrl(
 export async function getPoiByCategoryId(
   categoryId: number | string,
   options: ApiPoisOptions = {},
-): Promise<ApiPois> {
+): Promise<ApiPoiCollectionResponse> {
   options = Object.assign(defaultOptions, { geometry_as: 'point' }, options)
 
   return await fetch(getPoiByCategoryIdUrl(categoryId, options)).then(
     async (data) => {
       if (data.ok) {
-        return await data.json() as unknown as ApiPois
+        return await data.json() as unknown as ApiPoiCollectionResponse
       }
       else {
         return Promise.reject(

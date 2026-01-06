@@ -2,7 +2,7 @@
 import { storeToRefs } from 'pinia'
 import type { GeoJSON, MultiPolygon, Polygon } from 'geojson'
 import type { MapGeoJSONFeature } from 'maplibre-gl'
-import type { ApiPoi, ApiPoiProperties } from '~/types/api/poi'
+import type { ApiPoiResponse, ApiPoiProperties } from '~/types/api/poi'
 import { type ApiPoiDeps, type ApiRouteWaypoint, ApiRouteWaypointType, iconMap, prepareApiPoiDeps } from '~/lib/apiPoiDeps'
 import Home from '~/components/Home/Home.vue'
 import { useSiteStore } from '~/stores/site'
@@ -108,21 +108,21 @@ if (error.value)
   throw createError(error.value)
 
 if (status.value === 'success' && data.value) {
-  let poi: ApiPoi
+  let poi: ApiPoiResponse
   let waypointIndex = 1
   let waypoints: ApiRouteWaypoint[] = []
-  let pois: ApiPoi[] = []
-  let deps: ApiPoi[] = []
+  let pois: ApiPoiResponse[] = []
+  let deps: ApiPoiResponse[] = []
   const isRefPoiId = Number.isNaN(Number(poiId.value))
 
   if (isRefPoiId && poiId.value) {
     const refSplit = poiId.value.split(':')
     const idValue = refSplit.pop()
     const key = refSplit.join(':')
-    poi = data.value.features.find(f => (f.properties as ApiPoiProperties)[key] === idValue) as ApiPoi
+    poi = data.value.features.find(f => (f.properties as ApiPoiProperties)[key] === idValue) as ApiPoiResponse
   }
   else {
-    poi = data.value.features.find(f => (f.properties.metadata.id === Number(poiId.value))) as ApiPoi
+    poi = data.value.features.find(f => (f.properties.metadata.id === Number(poiId.value))) as ApiPoiResponse
   }
 
   if (!poi)
@@ -163,7 +163,7 @@ if (status.value === 'success' && data.value) {
             'website:details': undefined,
           },
         },
-      } as ApiPoi
+      } as ApiPoiResponse
 
       if (w.properties['route:point:type'] === ApiRouteWaypointType.way_point)
         waypointIndex++

@@ -3,11 +3,11 @@ import PoiCardContent from '~/components/PoisCard/PoiCardContent.vue'
 import TeritorioIcon from '~/components/UI/TeritorioIcon.vue'
 import UIButton from '~/components/UI/UIButton.vue'
 import UIPicture from '~/components/UI/UIPicture.vue'
-import type { ApiPoi } from '~/types/api/poi'
+import type { Poi } from '~/types/local/poi'
 
 const props = withDefaults(defineProps<{
   canClose?: boolean
-  poi: ApiPoi
+  poi: Poi
   showImage?: boolean
 }>(), {
   canClose: true,
@@ -15,10 +15,10 @@ const props = withDefaults(defineProps<{
 })
 
 const emit = defineEmits<{
-  (e: 'exploreClick', poi: ApiPoi): void
-  (e: 'favoriteClick', poi: ApiPoi): void
+  (e: 'exploreClick', poi: Poi): void
+  (e: 'favoriteClick', poi: Poi): void
   (e: 'onClose'): void
-  (e: 'zoomClick', poi: ApiPoi): void
+  (e: 'zoomClick', poi: Poi): void
 }>()
 
 const device = useDevice()
