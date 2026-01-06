@@ -37,7 +37,7 @@ export default defineEventHandler(async (event) => {
       { url: '/embedded/' },
       // Menu category routes
       ...menuItems
-        .filter(item => item.category && item.id)
+        .filter(item => 'category' in item && item.id)
         .map(category => ({
           url: `/${category.id}/`,
         })),

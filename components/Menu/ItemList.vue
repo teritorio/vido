@@ -42,7 +42,7 @@ function isCategorySelected(categoryId: ApiMenuCategory['id']) {
   <div class="tw-grid tw-items-start tw-grid-cols-4 tw-grid-rows-1">
     <template v-for="menuItem in menuItems" :key="menuItem.id">
       <MenuGroup
-        v-if="menuItem.menu_group"
+        v-if="'menu_group' in menuItem"
         :menu-group="menuItem"
         :categories-actives-count="categoriesActivesCountByParent[menuItem.id]"
         :size="size"
@@ -54,7 +54,7 @@ function isCategorySelected(categoryId: ApiMenuCategory['id']) {
         @click="onMenuGroupClick(menuItem)"
       />
       <LinkItem
-        v-else-if="menuItem.link"
+        v-else-if="'link' in menuItem"
         :menu-link="menuItem"
         :size="size"
         :display-mode-default="displayModeDefault"

@@ -8,8 +8,6 @@ const category: ApiMenuCategory = {
   id: 123,
   selected_by_default: false,
   index_order: 1,
-  menu_group: undefined,
-  link: undefined,
   category: {
     name: { fr: 'Leisure' },
     icon: 'teritorio teritorio-bar',
@@ -19,7 +17,6 @@ const category: ApiMenuCategory = {
     style_merge: true,
     display_mode: 'large' as 'compact' | 'large',
     zoom: 14,
-    // filters
   },
 }
 
@@ -60,10 +57,6 @@ const props = {
     },
     selected: true,
   },
-  // Filter: {
-  //   ...defaultProps,
-  //   filters:
-  // },
 }
 </script>
 

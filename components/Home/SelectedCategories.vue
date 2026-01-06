@@ -17,13 +17,9 @@ defineEmits<{
 
 const menuStore = useMenuStore()
 
-function getItem(item: ApiMenuCategory) {
-  return item.menu_group || item.link || item.category || {}
-}
-
 function getTeritorioIconBadgeProps(item: ApiMenuCategory) {
-  const base = getItem(item)
-  const { colorFill, colorText } = useContrastedColors(base.color_fill, base.color_text)
+  const base = item.category
+  const { colorFill, colorText } = useContrastedColors(base.color_fill)
 
   return {
     id: item.id,
@@ -46,8 +42,8 @@ function getTeritorioIconBadgeProps(item: ApiMenuCategory) {
           v-for="category in categories"
           :key="category.id"
           :data-testid="`selected-category-${category.id}`"
-          :aria-label="`${$t('headerMenu.disableCategory')}: ${getItem(category).name.fr}`"
-          :title="`${$t('headerMenu.disableCategory')}: ${getItem(category).name.fr}`"
+          :aria-label="`${$t('headerMenu.disableCategory')}: ${category.category.name.fr}`"
+          :title="`${$t('headerMenu.disableCategory')}: ${category.category.name.fr}`"
           icon
           width="40px"
           height="40px"

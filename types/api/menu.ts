@@ -1,5 +1,6 @@
 import type { MultilingualString } from '~/utils/types'
 import type { Filters } from '~/types/api/filters'
+import type { FieldsList } from '~/lib/apiPois'
 
 export interface ApiMenuItem {
   id: number
@@ -11,45 +12,47 @@ export interface ApiMenuItem {
 
 export interface ApiMenuGroup extends ApiMenuItem {
   menu_group: {
-    id?: number
+    slug?: string
     name: MultilingualString
     icon: string
     color_fill: string
-    color_line: string
-    color_text?: '#000000' | '#FFFFFF'
+    color_line?: string
     display_mode: 'large' | 'compact'
   }
-  link: undefined
-  category: undefined
 }
 
 export interface ApiMenuLink extends ApiMenuItem {
-  menu_group: undefined
   link: {
     href: string
+    slug?: string
     name: MultilingualString
     icon: string
     color_fill: string
-    color_line: string
-    color_text?: '#000000' | '#FFFFFF'
+    color_line?: string
     display_mode: 'large' | 'compact'
   }
-  category: undefined
 }
 
 export interface ApiMenuCategory extends ApiMenuItem {
-  menu_group: undefined
-  link: undefined
   category: {
+    slug?: string
     name: MultilingualString
+    search_indexed?: boolean
     icon: string
     color_fill: string
     color_line: string
-    color_text?: '#000000' | '#FFFFFF'
     style_class?: string[]
     style_merge: boolean
     display_mode: 'large' | 'compact'
     zoom: number
+    editorial?: {
+      popup_fields?: FieldsList[]
+      details_fields?: FieldsList
+      list_fields?: FieldsList[]
+      class_label?: MultilingualString
+      class_label_popup?: MultilingualString
+      class_label_details?: MultilingualString
+    }
     filters?: Filters[]
   }
 }

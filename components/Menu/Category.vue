@@ -21,10 +21,7 @@ const emit = defineEmits<{
 
 const { t } = useI18n()
 const { $tracking } = useNuxtApp()
-const { colorFill, colorText } = useContrastedColors(
-  props.category.category.color_fill,
-  props.category.category.color_text,
-)
+const { colorFill, colorText } = useContrastedColors(props.category.category.color_fill)
 
 const isFiltered = computed((): boolean | undefined => {
   return props.filters && filterValuesIsSet(props.filters)
