@@ -1,8 +1,8 @@
-import type { MapPoiDescription } from '~/lib/mapPois'
 import { stringifyOptions } from '~/lib/apiPois'
 import type { ApiPoisOptions } from '~/lib/apiPois'
-import type { ApiPoiProperties, ApiPoiResponse } from '~/types/api/poi'
-import type { MultilingualString } from '~/utils/types'
+import type { ApiPoiResponse } from '~/types/api/poi'
+import type { ApiPoiDeps } from '~/types/api/poi-deps'
+import type { PoiDeps } from '~/types/local/poi-deps'
 
 export enum ApiRouteWaypointType {
   parking = 'parking',
@@ -11,34 +11,14 @@ export enum ApiRouteWaypointType {
   way_point = 'way_point',
 }
 
-export interface ApiRouteWaypointProperties {
-  'id': number
-  'name'?: MultilingualString
-  'description'?: MapPoiDescription
-  'route:point:type': ApiRouteWaypointType
-  'metadata': {
-    id: number
-  }
-}
-
-export type ApiRouteWaypoint = GeoJSON.Feature<
-  GeoJSON.Point,
-  ApiRouteWaypointProperties
->
-
-export type ApiPoiDeps = GeoJSON.FeatureCollection<
-  GeoJSON.Geometry,
-  ApiPoiProperties | ApiRouteWaypointProperties
->
-
 export function prepareApiPoiDeps(
-  featureCollection: GeoJSON.Feature<GeoJSON.Geometry, ApiPoiProperties | ApiRouteWaypointProperties>[],
+  featureCollection: ApiPoiDeps[],
   referenceIds?: number[],
 ): {
-    waypoints: ApiRouteWaypoint[]
+    waypoints: ApiPoiDeps[]
     pois: ApiPoiResponse[]
   } {
-  const waypoints: ApiRouteWaypoint[] = []
+  const waypoints: ApiPoiDeps[] = []
   const pois: ApiPoiResponse[] = []
 
   if (referenceIds && referenceIds.length > 0) {
@@ -51,7 +31,7 @@ export function prepareApiPoiDeps(
       }
 
       if (feature.properties['route:point:type']) {
-        waypoints.push(feature as ApiRouteWaypoint)
+        waypoints.push(feature as ApiPoiDeps)
       }
       else {
         pois.push(feature as ApiPoiResponse)
@@ -91,12 +71,12 @@ export const iconMap: { [key: string]: string } = {
 }
 
 export function apiRouteWaypointToApiPoi(
-  waypoint: ApiRouteWaypoint,
+  waypoint: ApiPoiDeps,
   colorFill: string,
   colorLine: string,
   colorText: '#000000' | '#FFFFFF',
   text?: string,
-): ApiPoiResponse {
+): PoiDeps {
   return {
     ...waypoint,
     properties: {

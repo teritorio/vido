@@ -18,7 +18,7 @@ import MapControls3D from '~/components/Map/MapControls3D.vue'
 import MapControlsBackground from '~/components/Map/MapControlsBackground.vue'
 import type { ApiMenuCategory } from '~/types/api/menu'
 import type { ApiPoiResponse } from '~/types/api/poi'
-import type { ApiPoiDeps, ApiRouteWaypoint } from '~/lib/apiPoiDeps'
+import type { ApiPoiDeps, ApiPoiDepsResponse } from '~/types/api/poi-deps'
 import { ApiRouteWaypointType, iconMap, prepareApiPoiDeps } from '~/lib/apiPoiDeps'
 import { getBBox } from '~/lib/bbox'
 import { DEFAULT_MAP_STYLE, MAP_ZOOM } from '~/lib/constants'
@@ -236,7 +236,7 @@ async function updateSelectedFeature(feature?: ApiPoiResponse): Promise<void> {
       mapStore.setSelectedFeature(menuStore.getFeatureById(id))
 
       try {
-        const { data, error, status } = await useFetch<ApiPoiDeps>(
+        const { data, error, status } = await useFetch<ApiPoiDepsResponse>(
           () => `${apiEndpoint.value}/poi/${id}/deps.geojson`,
           {
             query: {
@@ -255,14 +255,14 @@ async function updateSelectedFeature(feature?: ApiPoiResponse): Promise<void> {
 
         if (status.value === 'success' && data.value) {
           let waypointIndex = 1
-          let waypoints: ApiRouteWaypoint[] = []
+          let waypoints: ApiPoiDeps[] = []
           let pois: ApiPoiResponse[] = []
           let deps: ApiPoiResponse[] = []
 
           if (!isDepSelected)
             mapStore.setSelectedFeatureDepsIDs()
 
-          const poi = data.value.features.find(f => f.properties.metadata.id === id) as ApiPoiResponse
+          const poi = data.value.features.find(f => f.properties.metadata.id === id)
 
           if (!poi)
             throw createError(`Feature with ID: ${id} not found.`)

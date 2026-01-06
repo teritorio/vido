@@ -2,8 +2,9 @@
 import { storeToRefs } from 'pinia'
 import type { GeoJSON, MultiPolygon, Polygon } from 'geojson'
 import type { MapGeoJSONFeature } from 'maplibre-gl'
-import type { ApiPoiResponse, ApiPoiProperties } from '~/types/api/poi'
-import { type ApiPoiDeps, type ApiRouteWaypoint, ApiRouteWaypointType, iconMap, prepareApiPoiDeps } from '~/lib/apiPoiDeps'
+import type { ApiPoiProperties, ApiPoiResponse } from '~/types/api/poi'
+import type { ApiPoiDeps, ApiPoiDepsResponse } from '~/types/api/poi-deps'
+import { ApiRouteWaypointType, iconMap, prepareApiPoiDeps } from '~/lib/apiPoiDeps'
 import Home from '~/components/Home/Home.vue'
 import { useSiteStore } from '~/stores/site'
 import { menuStore as useMenuStore } from '~/stores/menu'
@@ -91,9 +92,9 @@ const { data, error, status } = await useAsyncData('features', async () => {
     clipingPolygonSlug: route.query.clipingPolygonSlug?.toString(),
   })
 
-  let initialFeature: ApiPoiDeps | undefined
+  let initialFeature: ApiPoiDepsResponse | undefined
   if (poiId.value && !poiId.value.includes('_')) {
-    initialFeature = await $fetch<ApiPoiDeps>(`${apiEndpoint.value}/poi/${poiId.value}/deps.geojson`, {
+    initialFeature = await $fetch<ApiPoiDepsResponse>(`${apiEndpoint.value}/poi/${poiId.value}/deps.geojson`, {
       query: {
         geometry_as: 'point',
         short_description: true,
@@ -110,7 +111,7 @@ if (error.value)
 if (status.value === 'success' && data.value) {
   let poi: ApiPoiResponse
   let waypointIndex = 1
-  let waypoints: ApiRouteWaypoint[] = []
+  let waypoints: ApiPoiDeps[] = []
   let pois: ApiPoiResponse[] = []
   let deps: ApiPoiResponse[] = []
   const isRefPoiId = Number.isNaN(Number(poiId.value))

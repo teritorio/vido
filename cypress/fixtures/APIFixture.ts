@@ -1,5 +1,5 @@
 import type { Article } from '~/lib/apiArticle'
-import type { ApiPoiDeps } from '~/lib/apiPoiDeps'
+import type { ApiPoiDepsResponse } from '~/types/api/poi-deps'
 import type { ApiPoiCollectionResponse } from '~/types/api/poi'
 import type { PropertyTranslations } from '~/lib/apiPropertyTranslations'
 import type { Settings } from '~/lib/apiSettings'
@@ -11,5 +11,5 @@ export interface APIFixture {
   articles: Article[]
   menu: ApiMenuResponse
   pois: ApiPoiCollectionResponse
-  deps: { [key: number]: ApiPoiDeps }
+  deps: { [key: number]: ApiPoiDepsResponse }
 }

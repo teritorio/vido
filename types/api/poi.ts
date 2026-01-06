@@ -1,4 +1,4 @@
-import type { MultilingualString } from '~/utils/types'
+import type { LanguageCode, MultilingualString } from '~/utils/types'
 
 export interface ApiPoiProperties {
   [key: string]: any
@@ -35,13 +35,10 @@ export interface ApiPoiPropertiesAddress {
   country: string
 }
 
-export interface ApiPoiPropertiesRoute {
-  [lang: string]: {
+export type ApiPoiPropertiesRoute = {
+  [lang in LanguageCode]?: {
     gpx_trace?: string
     pdf?: string
-    waypoint?: {
-      type: 'parking' | 'start' | 'end' | 'waypoint'
-    }
     hiking?: {
       difficulty: 'easy' | 'normal' | 'hard'
       duration: number
@@ -66,6 +63,7 @@ export interface ApiPoiPropertiesDisplay {
   color_fill?: string
   color_line?: string
   color_text?: string
+  text?: string
 }
 
 export interface ApiPoiPropertiesEditorial {
