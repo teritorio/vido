@@ -1,5 +1,5 @@
 import Fields from '~/components/PoisCard/Fields.vue'
-import type { ApiPoiProperties } from '~/lib/apiPois'
+import type { ApiPoiProperties } from '~/types/api/poi'
 import { bind } from '~/lib/storybook-types'
 
 export default {

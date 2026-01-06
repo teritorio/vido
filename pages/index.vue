@@ -2,7 +2,7 @@
 import { storeToRefs } from 'pinia'
 import type { GeoJSON, MultiPolygon, Polygon } from 'geojson'
 import type { MapGeoJSONFeature } from 'maplibre-gl'
-import type { ApiPoi, ApiPoiProperties } from '~/lib/apiPois'
+import type { ApiPoi, ApiPoiProperties } from '~/types/api/poi'
 import { type ApiPoiDeps, type ApiRouteWaypoint, ApiRouteWaypointType, iconMap, prepareApiPoiDeps } from '~/lib/apiPoiDeps'
 import Home from '~/components/Home/Home.vue'
 import { useSiteStore } from '~/stores/site'

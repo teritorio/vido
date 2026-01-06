@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import FieldsHeader from '~/components/UI/FieldsHeader.vue'
-import type { ApiPoiProperties } from '~/lib/apiPois'
+import type { ApiPoiProperties } from '~/types/api/poi'
 import { PropertyTranslationsContextEnum, useSiteStore } from '~/stores/site'
 
 const props = withDefaults(defineProps<{

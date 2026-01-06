@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import pois from '~/cypress/fixtures/teritorio/references/poi/2/deps.json'
-import type { ApiPoi } from '~/lib/apiPois'
+import type { ApiPoi } from '~/types/api/poi'
 
 // ...parametersMap,
 

@@ -1,7 +1,7 @@
 import { encodeBase32 } from 'geohashing'
 import { defineStore } from 'pinia'
-
-import type { ApiPoi, ApiPoiId } from '~/lib/apiPois'
+import type { ApiPoiId } from '~/lib/apiPois'
+import type { ApiPoi } from '~/types/api/poi'
 
 const LOCAL_STORAGE = { favorites: 'vido:favorites', favoritesAddr: 'vido:favorites-addr' }
 

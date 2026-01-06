@@ -1,4 +1,4 @@
-import type { ApiPoi } from '~/lib/apiPois'
+import type { ApiPoi } from '~/types/api/poi'
 
 type LabelType = 'details' | 'popup'
 interface Options {

@@ -5,7 +5,7 @@ import type {
   FilterNumberRange,
   Filters,
 } from '~/types/api/filters'
-import type { ApiPoi } from '~/lib/apiPois'
+import type { ApiPoi } from '~/types/api/poi'
 
 abstract class FilterValueDef<Type extends Filters> {
   def: Type

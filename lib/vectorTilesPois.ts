@@ -1,6 +1,7 @@
 import type { MapGeoJSONFeature } from 'maplibre-gl'
-import type { ApiPoi, ApiPoiId } from './apiPois'
-import { ApiPoiPropertiesArray } from './apiPois'
+import type { ApiPoiId } from '~/lib/apiPois'
+import type { ApiPoi } from '~/types/api/poi'
+import { ApiPoiPropertiesArray } from '~/lib/apiPois'
 
 export type VectorTilesPoi = MapGeoJSONFeature
 

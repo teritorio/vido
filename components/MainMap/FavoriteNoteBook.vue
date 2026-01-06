@@ -6,7 +6,7 @@ import IconButton from '~/components/UI/IconButton.vue'
 import IconsBar from '~/components/UI/IconsBar.vue'
 import ShareLinkModal from '~/components/UI/ShareLinkModal.vue'
 import UIButton from '~/components/UI/UIButton.vue'
-import type { ApiPoi } from '~/lib/apiPois'
+import type { ApiPoi } from '~/types/api/poi'
 import { favoriteStore as useFavoriteStore } from '~/stores/favorite'
 
 defineEmits<{
