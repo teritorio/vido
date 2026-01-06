@@ -16,12 +16,9 @@ const menuGroup: MenuGroup = {
     icon: 'teritorio teritorio-hosting',
     color_fill: '#284627',
     color_line: '#284627',
-    // style_class
     display_mode: 'compact',
     vido_children: [],
   },
-  link: undefined,
-  category: undefined,
 }
 
 const defaultProps = {

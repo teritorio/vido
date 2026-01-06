@@ -11,8 +11,6 @@ const category: ApiMenuCategory = {
   id: 123,
   selected_by_default: false,
   index_order: 1,
-  menu_group: undefined,
-  link: undefined,
   category: {
     name: { fr: 'Leisure' },
     icon: 'teritorio teritorio-bar',
@@ -22,7 +20,6 @@ const category: ApiMenuCategory = {
     style_merge: true,
     display_mode: 'large',
     zoom: 14,
-    // filters
   },
 }
 
@@ -65,8 +62,3 @@ export const SelectedCompact = bind(Category, {
   },
   selected: true,
 })
-
-// export const Filter = bind(Category, {
-//   ...defaultProps,
-//   filters:
-// })

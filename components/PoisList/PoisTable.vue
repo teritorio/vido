@@ -136,10 +136,7 @@ function getContrastedColors() {
     throw createError({ statusCode: 404, message: 'Category Not Found' })
   }
 
-  const { colorFill, colorText } = useContrastedColors(
-    category.value.category.color_fill,
-    category.value.category.color_text,
-  )
+  const { colorFill, colorText } = useContrastedColors(category.value.category.color_fill)
   return { colorFill, colorText }
 }
 

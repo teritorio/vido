@@ -55,7 +55,7 @@ export const menuStore = defineStore('menu', () => {
     return menuItems.value === undefined
       ? undefined
       : (Object.values(menuItems.value).filter(
-          menuItem => !!menuItem.category,
+          menuItem => 'category' in menuItem,
         ) as ApiMenuCategory[])
   })
 
@@ -132,7 +132,8 @@ export const menuStore = defineStore('menu', () => {
           // Associate to parent_id
           if (menuItem.parent_id) {
             const parent = stateMenuItems[menuItem.parent_id]
-            if (parent?.menu_group) {
+
+            if ('menu_group' in parent) {
               if (!parent.menu_group.vido_children)
                 parent.menu_group.vido_children = []
 
@@ -140,7 +141,7 @@ export const menuStore = defineStore('menu', () => {
             }
           }
 
-          if (menuItem.category?.filters) {
+          if ('category' in menuItem && menuItem.category.filters) {
             localFilters[menuItem.id] = menuItem.category?.filters.map(filter =>
               filterValueFactory(filter),
             )

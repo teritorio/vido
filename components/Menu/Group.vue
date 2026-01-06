@@ -17,10 +17,7 @@ const emit = defineEmits<{
   (e: 'click', menuGroupId: ApiMenuItem['id']): void
 }>()
 
-const { colorFill, colorText } = useContrastedColors(
-  props.menuGroup.menu_group.color_fill,
-  props.menuGroup.menu_group.color_text,
-)
+const { colorFill, colorText } = useContrastedColors(props.menuGroup.menu_group.color_fill)
 
 const menuItemProps = computed(() => {
   return {

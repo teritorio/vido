@@ -39,12 +39,18 @@ const items = computed(() => {
 })
 
 function getItem(item: MenuItem) {
-  return item.menu_group || item.link || item.category || {}
+  if ('menu_group' in item)
+    return item.menu_group
+
+  if ('link' in item)
+    return item.link
+
+  return item.category
 }
 
 function getTeritorioIconBadgeProps(item: MenuItem): CustomBreadcrumbItem {
   const base = getItem(item)
-  const { colorFill, colorText } = useContrastedColors(base.color_fill, base.color_text)
+  const { colorFill, colorText } = useContrastedColors(base.color_fill)
 
   return {
     icon: {
