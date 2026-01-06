@@ -2,15 +2,15 @@
 import { groupBy } from 'lodash'
 import { storeToRefs } from 'pinia'
 import PoiDetails from '~/components/PoisDetails/PoiDetails.vue'
-import type { ApiPoiDepsResponse } from '~/types/api/poi-deps'
-import type { ApiPoiResponse } from '~/types/api/poi'
+import type { ApiPoiDepsCollection } from '~/types/api/poi-deps'
+import type { ApiPoi } from '~/types/api/poi'
 import { headerFromSettings } from '~/lib/apiSettings'
 import { useSiteStore } from '~/stores/site'
 import { regexForPOIIds } from '~/composables/useIdsResolver'
 
 interface PoiPageData {
-  poi?: ApiPoiResponse
-  poiDeps?: ApiPoiDepsResponse
+  poi?: ApiPoi
+  poiDeps?: ApiPoiDepsCollection
 }
 
 definePageMeta({
@@ -33,7 +33,7 @@ const { data, error } = await useFetch(
       geometry_as: 'point_or_bbox',
       short_description: false,
     },
-    transform: (response: ApiPoiDepsResponse): PoiPageData => {
+    transform: (response: ApiPoiDepsCollection): PoiPageData => {
       if (!response?.features) {
         return { poi: undefined, poiDeps: undefined }
       }
@@ -45,9 +45,9 @@ const { data, error } = await useFetch(
           : false,
       )
 
-      const poi = poiFeatures?.[0] as ApiPoiResponse | undefined
+      const poi = poiFeatures?.[0] as ApiPoi | undefined
 
-      const poiDeps: ApiPoiDepsResponse = {
+      const poiDeps: ApiPoiDepsCollection = {
         ...response,
         features: otherFeatures || [],
       }
@@ -73,7 +73,7 @@ if (!data.value?.poi) {
 
 const poi = ref(data.value.poi)
 const poiDeps = ref(data.value.poiDeps)
-const { featureSeoTitle } = useFeature(poi as Ref<ApiPoiResponse>, { type: 'details' })
+const { featureSeoTitle } = useFeature(poi as Ref<ApiPoi>, { type: 'details' })
 
 if (!featureSeoTitle.value) {
   throw createError({

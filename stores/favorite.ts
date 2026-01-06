@@ -1,13 +1,13 @@
 import { encodeBase32 } from 'geohashing'
 import { defineStore } from 'pinia'
-import type { ApiPoiResponse } from '~/types/api/poi'
+import type { Poi } from '~/types/local/poi'
 
 const LOCAL_STORAGE = { favorites: 'vido:favorites', favoritesAddr: 'vido:favorites-addr' }
 
 export const favoriteStore = defineStore('favorite', () => {
   const favoritesIds = ref<number[]>([])
   const favoriteAddressesObj = ref<Record<string, string>>({})
-  const favoriteFeatures = ref<ApiPoiResponse[]>([])
+  const favoriteFeatures = ref<Poi[]>([])
 
   const isFavorite = computed((): (id: number) => boolean => {
     return id => !!favoritesIds.value.find(fav => fav === id)
@@ -45,7 +45,7 @@ export const favoriteStore = defineStore('favorite', () => {
       localStorage.setItem(key, JSON.stringify({ favorites, version: 1 }))
   }
 
-  function toggleFavoriteAddr(poi: ApiPoiResponse) {
+  function toggleFavoriteAddr(poi: Poi) {
     const id = poi.properties.metadata.id.toString()
     const coords = (poi.geometry as GeoJSON.Point).coordinates
     const hash = encodeBase32(coords[1], coords[0])
@@ -59,7 +59,7 @@ export const favoriteStore = defineStore('favorite', () => {
     saveToLocalStorage(LOCAL_STORAGE.favoritesAddr, entries)
   }
 
-  function toggleFavorite(poi: ApiPoiResponse | number) {
+  function toggleFavorite(poi: Poi | number) {
     const id = typeof poi === 'number' ? poi : poi.properties.metadata.id || (poi.id as number)
     const favIndex = id ? favoritesIds.value.findIndex(favId => favId === id) : false
 

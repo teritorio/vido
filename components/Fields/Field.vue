@@ -11,7 +11,7 @@ import Stars from '~/components/Fields/Stars.vue'
 import FieldsHeader from '~/components/UI/FieldsHeader.vue'
 import FieldLink from '~/components/Fields/FieldLink.vue'
 import type { FieldsListItem } from '~/lib/apiPois'
-import type { ApiPoiProperties } from '~/types/api/poi'
+import type { Poi } from '~/types/local/poi'
 import { PropertyTranslationsContextEnum, useSiteStore } from '~/stores/site'
 import { AssocRenderKeys } from '~/utils/types'
 
@@ -19,7 +19,7 @@ const props = withDefaults(defineProps<{
   context: PropertyTranslationsContextEnum
   recursionStack?: string[]
   field: FieldsListItem
-  properties: ApiPoiProperties
+  properties: Poi['properties']
   details?: string
   geom: GeoJSON.Geometry
 }>(), {

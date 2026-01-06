@@ -19,7 +19,7 @@ import { storeToRefs } from 'pinia'
 import { TeritorioCluster } from '@teritorio/maplibre-gl-teritorio-cluster'
 import Attribution from '~/components/Map/Attribution.vue'
 import Map from '~/components/Map/Map.vue'
-import type { ApiPoiResponse } from '~/types/api/poi'
+import type { Poi } from '~/types/local/poi'
 import { MAP_ZOOM } from '~/lib/constants'
 import type { MapPoi } from '~/lib/mapPois'
 import type { MapStyleEnum } from '~/utils/types'
@@ -31,7 +31,7 @@ const props = withDefaults(defineProps<{
   bounds?: LngLatBounds
   fitBoundsPaddingOptions?: FitBoundsOptions['padding']
   extraAttributions?: string[]
-  features: ApiPoiResponse[]
+  features: Poi[]
   fullscreenControl?: boolean
   hash?: string
   mapStyle?: MapStyleEnum
@@ -133,7 +133,7 @@ function fitBounds(bounds: LngLatBounds, options: FitBoundsOptions = {}): void {
   map.value.fitBounds(bounds, fitBoundsOptions(options))
 }
 
-function featuresPrepare(features: ApiPoiResponse[]): ApiPoiResponse[] {
+function featuresPrepare(features: Poi[]): Poi[] {
   return features.map((feature) => {
     if (feature.geometry && ['MultiPoint', 'MultiLineString', 'MultiPolygon'].includes(feature.geometry.type)) {
       return (feature.geometry as (MultiPoint | MultiLineString | MultiPolygon)).coordinates.map(coordinates => ({
@@ -143,7 +143,7 @@ function featuresPrepare(features: ApiPoiResponse[]): ApiPoiResponse[] {
           type: feature.geometry.type.substring(5) as ('Point' | 'LineString' | 'Polygon'),
           coordinates,
         },
-      } as ApiPoiResponse))
+      } as Poi))
     }
     else {
       return [feature]
@@ -199,7 +199,7 @@ function initPoiLayer(features: MapPoi[], clusterPropertiesValues: string[], clu
     maxzoom: 24,
     data: {
       type: 'FeatureCollection',
-      features: featuresPrepare(features as ApiPoiResponse[]),
+      features: featuresPrepare(features as Poi[]),
     },
   })
 
