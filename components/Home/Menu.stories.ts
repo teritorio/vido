@@ -21,12 +21,9 @@ const search: MenuGroup = {
     icon: 'teritorio teritorio-hosting',
     color_fill: '#284627',
     color_line: '#284627',
-    // style_class
     display_mode: 'compact',
     vido_children: [],
   },
-  link: undefined,
-  category: undefined,
 }
 
 const menuGroup1: MenuGroup = {
@@ -38,12 +35,9 @@ const menuGroup1: MenuGroup = {
     icon: 'teritorio teritorio-hosting',
     color_fill: '#284627',
     color_line: '#284627',
-    // style_class
     display_mode: 'compact',
     vido_children: [],
   },
-  link: undefined,
-  category: undefined,
 }
 
 const menuGroup2: MenuGroup = {
@@ -56,12 +50,9 @@ const menuGroup2: MenuGroup = {
     icon: 'teritorio teritorio-hosting',
     color_fill: '#284627',
     color_line: '#284627',
-    // style_class
     display_mode: 'large',
     vido_children: [],
   },
-  link: undefined,
-  category: undefined,
 }
 
 const menuLink: ApiMenuLink = {
@@ -69,7 +60,6 @@ const menuLink: ApiMenuLink = {
   selected_by_default: false,
   parent_id: 12,
   index_order: 1,
-  menu_group: undefined,
   link: {
     href: 'https://example.com',
     name: { fr: 'Example.com' },
@@ -78,7 +68,6 @@ const menuLink: ApiMenuLink = {
     color_line: '#284627',
     display_mode: 'large',
   },
-  category: undefined,
 }
 
 const category: ApiMenuCategory = {
@@ -86,8 +75,6 @@ const category: ApiMenuCategory = {
   selected_by_default: false,
   parent_id: 12,
   index_order: 1,
-  menu_group: undefined,
-  link: undefined,
   category: {
     name: { fr: 'Leisure' },
     icon: 'teritorio teritorio-bar',
@@ -97,7 +84,6 @@ const category: ApiMenuCategory = {
     style_merge: true,
     display_mode: 'large',
     zoom: 14,
-    // filters
   },
 }
 

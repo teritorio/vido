@@ -35,7 +35,7 @@ export const useSearchStore = defineStore('search', () => {
   const menuItemsToIcons = computed(() => {
     const resources: Record<MenuItem['id'], string> = {}
     Object.values(apiMenuCategory.value || {}).forEach((sc) => {
-      resources[sc.id] = (sc.menu_group || sc.link || sc.category).icon
+      resources[sc.id] = sc.category.icon
     })
     return resources
   })

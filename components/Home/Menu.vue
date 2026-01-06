@@ -82,9 +82,9 @@ function getMenuItemByParentId(menuGroupId: MenuGroup['id'] | undefined): MenuIt
 
 function getRecursiveCategoryIdByParentId(menuGroupId: MenuGroup['id'] | undefined): ApiMenuCategory['id'][] {
   const menuItems = getMenuItemByParentId(menuGroupId)
-  const menuGroups = menuItems.filter(menuItem => menuItem.menu_group)
+  const menuGroups = menuItems.filter(menuItem => 'menu_group' in menuItem)
   const categories = menuItems
-    .filter(menuItem => menuItem.category)
+    .filter(menuItem => 'category' in menuItem)
     .map(category => category.id)
   return [
     ...categories,
