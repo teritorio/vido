@@ -1,8 +1,8 @@
 <script lang="ts" setup>
 import type { FontAwesomeIconProps } from '@fortawesome/vue-fontawesome'
-
 import ItemList from '~/components/Menu/ItemList.vue'
-import type { ApiMenuCategory, ApiMenuGroup, ApiMenuLink, MenuGroup } from '~/types/api/menu'
+import type { ApiMenuCategory, ApiMenuGroup, ApiMenuLink } from '~/types/api/menu'
+import type { MenuGroup } from '~/types/local/menu'
 
 const menuGroup: MenuGroup = {
   id: 1,

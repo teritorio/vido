@@ -1,7 +1,7 @@
 import type { SitemapEntry } from '~/node_modules/nuxt-simple-sitemap/dist/module'
 import type { BuildSitemapOptions } from '~/node_modules/nuxt-simple-sitemap/dist/runtime/util/builder'
 import { buildSitemap } from '~/node_modules/nuxt-simple-sitemap/dist/runtime/util/builder'
-import type { MenuItem } from '~/types/api/menu'
+import type { MenuItem } from '~/types/local/menu'
 import type { ApiPois } from '~/lib/apiPois'
 
 export default defineEventHandler(async (event) => {

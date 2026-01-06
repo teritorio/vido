@@ -1,10 +1,6 @@
 import Menu from '~/components/Home/Menu.vue'
-import type {
-  ApiMenuCategory,
-  ApiMenuLink,
-  MenuGroup,
-  MenuItem,
-} from '~/types/api/menu'
+import type { ApiMenuCategory, ApiMenuLink } from '~/types/api/menu'
+import type { MenuGroup, MenuItem } from '~/types/local/menu'
 import { bind } from '~/lib/storybook-types'
 
 export default {

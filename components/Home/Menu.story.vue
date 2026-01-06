@@ -1,12 +1,8 @@
 <script lang="ts" setup>
 import { defineNuxtComponent } from '#app'
 import Menu from '~/components/Home/Menu.vue'
-import type {
-  ApiMenuCategory,
-  ApiMenuLink,
-  MenuGroup,
-  MenuItem,
-} from '~/types/api/menu'
+import type { ApiMenuCategory, ApiMenuLink } from '~/types/api/menu'
+import type { MenuGroup, MenuItem } from '~/types/local/menu'
 
 const search: MenuGroup = {
   id: 1,
