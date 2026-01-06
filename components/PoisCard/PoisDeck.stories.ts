@@ -1,5 +1,5 @@
 import PoisDeck from '~/components/PoisCard/PoisDeck.vue'
-import type { ApiRouteWaypoint } from '~/lib/apiPoiDeps'
+import type { ApiPoiDeps } from '~/types/api/poi-deps'
 import { apiRouteWaypointToApiPoi } from '~/lib/apiPoiDeps'
 import { bind } from '~/lib/storybook-types'
 
@@ -19,7 +19,7 @@ const points = poisDeps.features.filter(
 const defaultProps = {
   pois: points.map(feature =>
     apiRouteWaypointToApiPoi(
-      feature as unknown as ApiRouteWaypoint,
+      feature as ApiPoiDeps,
       '#123456',
       '#123456',
       '#FFFFFF',

@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import PoisDeck from '~/components/PoisCard/PoisDeck.vue'
 import poisDeps from '~/cypress/fixtures/teritorio/references/poi/2/deps.json'
-import type { ApiRouteWaypoint } from '~/lib/apiPoiDeps'
+import type { ApiPoiDeps } from '~/types/api/poi-deps'
 import { apiRouteWaypointToApiPoi } from '~/lib/apiPoiDeps'
 
 const points = poisDeps.features.filter(
@@ -11,7 +11,7 @@ const points = poisDeps.features.filter(
 const defaultProps = {
   pois: points.map(feature =>
     apiRouteWaypointToApiPoi(
-      feature as unknown as ApiRouteWaypoint,
+      feature as ApiPoiDeps,
       '#123456',
       '#123456',
       '#FFFFFF',
