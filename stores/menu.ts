@@ -1,8 +1,8 @@
 import copy from 'fast-copy'
 import { deepEqual } from 'fast-equals'
 import { defineStore } from 'pinia'
-import type { ApiMenuCategory } from '~/types/api/menu'
-import type { MenuItem } from '~/types/local/menu'
+import type { ApiMenuCategory, ApiMenuResponse } from '~/types/api/menu'
+import type { MenuGroup, MenuItem } from '~/types/local/menu'
 import type { ApiPoi, ApiPois } from '~/lib/apiPois'
 import { getPoiByCategoryId } from '~/lib/apiPois'
 import type { FilterValues } from '~/utils/types-filters'
@@ -115,39 +115,49 @@ export const menuStore = defineStore('menu', () => {
     }
   }
 
-  function fetchConfig(items: MenuItem[]) {
+  function fetchConfig(items: ApiMenuResponse) {
     try {
       const stateMenuItems: Record<number, MenuItem> = {}
-      const localFilters: Record<ApiMenuCategory['id'], FilterValues> = {}
+      const localFilters: Record<number, FilterValues> = {}
       const { contribMode } = useContrib()
 
       menuItems.value = undefined // Hack, release from store before edit and reappend
       items
         .filter(menuItem => contribMode ? true : !menuItem.hidden)
         .map((menuItem) => {
-          stateMenuItems[menuItem.id] = menuItem
-          return menuItem
+          if ('menu_group' in menuItem) {
+            const groupItem = {
+              ...menuItem,
+              menu_group: {
+                ...menuItem.menu_group,
+                vido_children: [],
+              },
+            } as MenuGroup
+
+            stateMenuItems[menuItem.id] = groupItem
+            return groupItem
+          }
+          else {
+            stateMenuItems[menuItem.id] = menuItem
+            return menuItem
+          }
         })
-        .forEach((menuItem) => {
+        .forEach((menuItem: MenuItem) => {
           // Separated from previous map to allow batch processing and make sure parent category is always there
           // Associate to parent_id
           if (menuItem.parent_id) {
             const parent = stateMenuItems[menuItem.parent_id]
 
             if ('menu_group' in parent) {
-              if (!parent.menu_group.vido_children)
-                parent.menu_group.vido_children = []
-
               parent.menu_group.vido_children.push(menuItem.id)
             }
           }
 
           if ('category' in menuItem && menuItem.category.filters) {
-            localFilters[menuItem.id] = menuItem.category?.filters.map(filter =>
-              filterValueFactory(filter),
-            )
+            localFilters[menuItem.id] = menuItem.category.filters.map(filter => filterValueFactory(filter))
           }
         })
+
       menuItems.value = stateMenuItems
       filters.value = localFilters
     }
