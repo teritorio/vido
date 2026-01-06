@@ -1,7 +1,7 @@
 import PoiDetails from '~/components/PoisDetails/PoiDetails.vue'
 import poisDeps from '~/cypress/fixtures/teritorio/references/poi/1/deps.json'
 import settings from '~/cypress/fixtures/teritorio/references/settings.json'
-import type { ApiPoiCollectionResponse } from '~/types/api/poi'
+import type { ApiPoiCollection } from '~/types/api/poi'
 import { bind, parametersMap } from '~/lib/storybook-types'
 
 export default {
@@ -14,7 +14,7 @@ export default {
 
 const defaultProps = {
   settings,
-  poi: (poisDeps as ApiPoiCollectionResponse).features[0],
+  poi: (poisDeps as ApiPoiCollection).features[0],
 }
 
 export const Default = bind(PoiDetails, {

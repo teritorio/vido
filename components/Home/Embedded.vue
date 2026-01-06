@@ -7,7 +7,7 @@ import MapFeatures from '~/components/MainMap/MapFeatures.vue'
 import PoiCardContent from '~/components/PoisCard/PoiCardContent.vue'
 import CategorySelector from '~/components/PoisList/CategorySelector.vue'
 import UIButton from '~/components/UI/UIButton.vue'
-import type { ApiPoiResponse } from '~/types/api/poi'
+import type { Poi } from '~/types/local/poi'
 import type { ApiMenuCategory } from '~/types/api/menu'
 import { getBBox } from '~/lib/bbox'
 import { mapStore as useMapStore } from '~/stores/map'
@@ -94,7 +94,7 @@ const isFiltersEqualToCategoryId = computed(() => {
   return false
 })
 
-const mapFeatures = computed((): ApiPoiResponse[] => {
+const mapFeatures = computed((): Poi[] => {
   return flattenFeatures(features.value)
 })
 

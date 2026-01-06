@@ -1,11 +1,11 @@
 <script lang="ts" setup>
 import PoisTable from '~/components/PoisList/PoisTable.vue'
 import poisDeps from '~/cypress/fixtures/teritorio/references/poi/1/deps.json'
-import type { ApiPoiCollectionResponse } from '~/types/api/poi'
+import type { ApiPoiCollection } from '~/types/api/poi'
 
 const defaultProps = {
   fields: poisDeps.features[0].properties.editorial.list_fields,
-  pois: poisDeps as ApiPoiCollectionResponse,
+  pois: poisDeps as ApiPoiCollection,
 }
 
 const props = {

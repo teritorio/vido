@@ -2,7 +2,7 @@
 import type { GeoJSON, MultiPolygon, Polygon } from 'geojson'
 import { storeToRefs } from 'pinia'
 import Embedded from '~/components/Home/Embedded.vue'
-import type { ApiPoiResponse } from '~/types/api/poi'
+import type { ApiPoi } from '~/types/api/poi'
 import { useSiteStore } from '~/stores/site'
 import { mapStore as useMapStore } from '~/stores/map'
 import { regexForCategoryIds } from '~/composables/useIdsResolver'
@@ -71,7 +71,7 @@ if (params.poiId)
   poiId.value = params.poiId.toString()
 
 // Fetch inital POI
-const { data, error, status } = await useFetch<ApiPoiResponse>(
+const { data, error, status } = await useFetch<ApiPoi>(
   () => `${apiEndpoint.value}/poi/${poiId.value}.geojson`,
   {
     query: {

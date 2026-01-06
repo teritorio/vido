@@ -7,14 +7,14 @@ import type {
   FieldsListGroup,
   FieldsListItem,
 } from '~/lib/apiPois'
-import type { ApiPoiProperties } from '~/types/api/poi'
+import type { Poi } from '~/types/local/poi'
 import { PropertyTranslationsContextEnum, useSiteStore } from '~/stores/site'
 import { isFiledEmpty } from '~/utils/utilities'
 
 withDefaults(defineProps<{
   recursionStack?: string[]
   group: FieldsListGroup
-  properties: ApiPoiProperties
+  properties: Poi['properties']
   geom: GeoJSON.Geometry
   colorFill: string
   colorText: string

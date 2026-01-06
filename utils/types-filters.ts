@@ -5,7 +5,7 @@ import type {
   FilterNumberRange,
   Filters,
 } from '~/types/api/filters'
-import type { ApiPoiResponse } from '~/types/api/poi'
+import type { ApiPoi } from '~/types/api/poi'
 
 abstract class FilterValueDef<Type extends Filters> {
   def: Type
@@ -70,7 +70,7 @@ export function isSet(filter: FilterValue): boolean {
 
 export function isMatch(
   filter: FilterValue,
-  properties: ApiPoiResponse['properties'],
+  properties: ApiPoi['properties'],
 ): boolean {
   const propertyValues = 'property' in filter.def ? properties[filter.def.property] : null
   switch (filter.type) {

@@ -1,4 +1,4 @@
-import type { ApiPoiResponse, ApiPoiProperties } from '~/types/api/poi'
+import type { Poi } from '~/types/local/poi'
 import { STORE_NAME, useContribStore } from '~/stores/contrib'
 
 export interface Link {
@@ -18,11 +18,11 @@ export interface ContribFields {
 export default function () {
   const { enabled, setEnabled } = useContribStore()
 
-  function isContribEligible(properties: ApiPoiProperties): boolean {
+  function isContribEligible(properties: Poi['properties']): boolean {
     return !!(properties.metadata.osm_id && properties.metadata.osm_type && properties.editorial)
   }
 
-  function getContributorFields(feature: ApiPoiResponse): ContribFields {
+  function getContributorFields(feature: Poi): ContribFields {
     const { mapillary } = feature.properties
     const { osm_id, osm_type, id } = feature.properties.metadata
     const { coordinates } = feature.geometry as GeoJSON.Point

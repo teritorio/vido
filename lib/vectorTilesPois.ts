@@ -1,5 +1,5 @@
 import type { MapGeoJSONFeature } from 'maplibre-gl'
-import type { ApiPoiResponse } from '~/types/api/poi'
+import type { Poi } from '~/types/local/poi'
 
 export type VectorTilesPoi = MapGeoJSONFeature
 
@@ -20,7 +20,7 @@ function split(value: string | undefined): string[] | undefined {
     : undefined
 }
 
-export function vectorTilesPoi2ApiPoi(mapPoi: VectorTilesPoi): ApiPoiResponse {
+export function vectorTilesPoi2ApiPoi(mapPoi: VectorTilesPoi): Poi {
   const props = Object.fromEntries(
     Object.entries(mapPoi.properties).map(([key, value]) => [
       key,
@@ -61,5 +61,5 @@ export function vectorTilesPoi2ApiPoi(mapPoi: VectorTilesPoi): ApiPoiResponse {
   delete props.zoom
 
   mapPoi.properties = props
-  return mapPoi as unknown as ApiPoiResponse
+  return mapPoi as unknown as Poi
 }

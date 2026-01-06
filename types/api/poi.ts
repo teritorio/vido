@@ -71,6 +71,6 @@ export interface ApiPoiPropertiesEditorial {
   'unavoidable'?: boolean
 }
 
-export type ApiPoiResponse = GeoJSON.Feature<GeoJSON.Geometry, ApiPoiProperties>
+export type ApiPoi = GeoJSON.Feature<GeoJSON.Geometry, ApiPoiProperties>
 
-export type ApiPoiCollectionResponse = GeoJSON.FeatureCollection<GeoJSON.Geometry, ApiPoiProperties>
+export type ApiPoiCollection = GeoJSON.FeatureCollection<GeoJSON.Geometry, ApiPoiProperties>

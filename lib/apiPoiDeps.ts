@@ -1,25 +1,19 @@
 import { stringifyOptions } from '~/lib/apiPois'
 import type { ApiPoisOptions } from '~/lib/apiPois'
-import type { ApiPoiResponse } from '~/types/api/poi'
+import type { ApiPoi } from '~/types/api/poi'
 import type { ApiPoiDeps } from '~/types/api/poi-deps'
+import { iconMap } from '~/types/local/poi-deps'
 import type { PoiDeps } from '~/types/local/poi-deps'
-
-export enum ApiRouteWaypointType {
-  parking = 'parking',
-  start = 'start',
-  end = 'end',
-  way_point = 'way_point',
-}
 
 export function prepareApiPoiDeps(
   featureCollection: ApiPoiDeps[],
   referenceIds?: number[],
 ): {
     waypoints: ApiPoiDeps[]
-    pois: ApiPoiResponse[]
+    pois: ApiPoi[]
   } {
   const waypoints: ApiPoiDeps[] = []
-  const pois: ApiPoiResponse[] = []
+  const pois: ApiPoi[] = []
 
   if (referenceIds && referenceIds.length > 0) {
     for (const id of referenceIds) {
@@ -34,7 +28,7 @@ export function prepareApiPoiDeps(
         waypoints.push(feature as ApiPoiDeps)
       }
       else {
-        pois.push(feature as ApiPoiResponse)
+        pois.push(feature as ApiPoi)
       }
     }
   }
@@ -61,13 +55,6 @@ export async function getPoiDepsById(
       )
     }
   })
-}
-
-export const iconMap: { [key: string]: string } = {
-  [ApiRouteWaypointType.parking]: 'square-parking',
-  [ApiRouteWaypointType.start]: 'house-flag',
-  [ApiRouteWaypointType.end]: 'flag-checkered',
-  [ApiRouteWaypointType.way_point]: 'map-marker-alt',
 }
 
 export function apiRouteWaypointToApiPoi(
