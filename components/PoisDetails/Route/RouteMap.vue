@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { ApiPoiDeps, ApiRouteWaypoint } from '~/lib/apiPoiDeps'
+import type { ApiPoiDeps, ApiPoiDepsResponse } from '~/types/api/poi-deps'
 import type { ApiPoiResponse } from '~/types/api/poi'
 import MapPois from '~/components/Map/MapPois.vue'
 import PoisDeck from '~/components/PoisCard/PoisDeck.vue'
@@ -7,7 +7,7 @@ import { ApiRouteWaypointType, iconMap, prepareApiPoiDeps } from '~/lib/apiPoiDe
 
 const props = defineProps<{
   poi: ApiPoiResponse
-  route: ApiPoiDeps
+  route: ApiPoiDepsResponse
   colorFill: string
   colorText: string
   colorLine: string
@@ -22,7 +22,7 @@ defineEmits<{
 const { t } = useI18n()
 
 const deps = ref<ApiPoiResponse[]>([])
-const waypoints = ref<ApiRouteWaypoint[]>([])
+const waypoints = ref<ApiPoiDeps[]>([])
 const pois = ref<ApiPoiResponse[]>([])
 
 const featureDepsIDs = ref<number[]>([])

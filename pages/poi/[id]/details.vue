@@ -2,7 +2,7 @@
 import { groupBy } from 'lodash'
 import { storeToRefs } from 'pinia'
 import PoiDetails from '~/components/PoisDetails/PoiDetails.vue'
-import type { ApiPoiDeps } from '~/lib/apiPoiDeps'
+import type { ApiPoiDepsResponse } from '~/types/api/poi-deps'
 import type { ApiPoiResponse } from '~/types/api/poi'
 import { headerFromSettings } from '~/lib/apiSettings'
 import { useSiteStore } from '~/stores/site'
@@ -10,7 +10,7 @@ import { regexForPOIIds } from '~/composables/useIdsResolver'
 
 interface PoiPageData {
   poi?: ApiPoiResponse
-  poiDeps?: ApiPoiDeps
+  poiDeps?: ApiPoiDepsResponse
 }
 
 definePageMeta({
@@ -33,7 +33,7 @@ const { data, error } = await useFetch(
       geometry_as: 'point_or_bbox',
       short_description: false,
     },
-    transform: (response: ApiPoiDeps): PoiPageData => {
+    transform: (response: ApiPoiDepsResponse): PoiPageData => {
       if (!response?.features) {
         return { poi: undefined, poiDeps: undefined }
       }
@@ -47,7 +47,7 @@ const { data, error } = await useFetch(
 
       const poi = poiFeatures?.[0] as ApiPoiResponse | undefined
 
-      const poiDeps: ApiPoiDeps = {
+      const poiDeps: ApiPoiDepsResponse = {
         ...response,
         features: otherFeatures || [],
       }

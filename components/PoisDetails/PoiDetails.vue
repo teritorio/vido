@@ -11,7 +11,7 @@ import FavoriteIcon from '~/components/UI/FavoriteIcon.vue'
 import IconButton from '~/components/UI/IconButton.vue'
 import RelativeDate from '~/components/UI/RelativeDate.vue'
 import TeritorioIcon from '~/components/UI/TeritorioIcon.vue'
-import type { ApiPoiDeps } from '~/lib/apiPoiDeps'
+import type { ApiPoiDepsResponse } from '~/types/api/poi-deps'
 import type { FieldsList } from '~/lib/apiPois'
 import type { ApiPoiResponse } from '~/types/api/poi'
 import type { Settings } from '~/lib/apiSettings'
@@ -24,7 +24,7 @@ import PanoramaxViewer from '~/components/PoisDetails/PanoramaxViewer.vue'
 const props = defineProps<{
   settings: Settings
   poi: ApiPoiResponse
-  poiDeps?: ApiPoiDeps
+  poiDeps?: ApiPoiDepsResponse
   pageTitle: string
 }>()
 

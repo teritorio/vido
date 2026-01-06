@@ -1,6 +1,8 @@
-export interface MultilingualString {
-  [lang: string]: string
+export type MultilingualString = {
+  [lang in LanguageCode]?: string
 }
+
+export type LanguageCode = 'fr-FR' | 'en-US' | 'es-ES'
 
 export interface LatLng {
   lat: number
