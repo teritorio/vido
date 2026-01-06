@@ -5,7 +5,7 @@ import { VDialog } from 'vuetify/components/VDialog'
 import FavoriteNoteBook from '~/components/MainMap/FavoriteNoteBook.vue'
 import Badge from '~/components/UI/Badge.vue'
 import FavoriteIcon from '~/components/UI/FavoriteIcon.vue'
-import type { ApiPoi } from '~/lib/apiPois'
+import type { ApiPoi } from '~/types/api/poi'
 import { mapStore as useMapStore } from '~/stores/map'
 import { favoriteStore as useFavoriteStore } from '~/stores/favorite'
 

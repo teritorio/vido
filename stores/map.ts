@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
 import type { FitBoundsOptions } from 'maplibre-gl'
 import type { TeritorioCluster } from '@teritorio/maplibre-gl-teritorio-cluster'
-import type { ApiPoi, ApiPoiProperties } from '~/lib/apiPois'
+import type { ApiPoi, ApiPoiProperties } from '~/types/api/poi'
 import type { LatLng, Pitch } from '~/utils/types'
 import { Mode } from '~/utils/types'
 

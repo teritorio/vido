@@ -2,7 +2,7 @@ import { LngLatBounds } from 'maplibre-gl'
 
 import MapFeatures from '~/components/MainMap/MapFeatures.vue'
 import type { ApiMenuCategory } from '~/types/api/menu'
-import type { ApiPoi } from '~/lib/apiPois'
+import type { ApiPoi } from '~/types/api/poi'
 import { bind, mapCss, parametersMap } from '~/lib/storybook-types'
 
 export default {

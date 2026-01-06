@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { ApiPoi } from '~/lib/apiPois'
+import type { ApiPoi } from '~/types/api/poi'
 import PoiCard from '~/components/PoisCard/PoiCard.vue'
 import PoiCardLight from '~/components/PoisCard/PoiCardLight.vue'
 import { favoriteStore as useFavoriteStore } from '~/stores/favorite'

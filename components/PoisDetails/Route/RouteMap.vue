@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { ApiPoiDeps, ApiRouteWaypoint } from '~/lib/apiPoiDeps'
-import type { ApiPoi } from '~/lib/apiPois'
+import type { ApiPoi } from '~/types/api/poi'
 import MapPois from '~/components/Map/MapPois.vue'
 import PoisDeck from '~/components/PoisCard/PoisDeck.vue'
 import { ApiRouteWaypointType, iconMap, prepareApiPoiDeps } from '~/lib/apiPoiDeps'

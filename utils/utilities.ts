@@ -1,4 +1,5 @@
-import type { ApiPoi, ApiPoiId, FieldsListItem } from '~/lib/apiPois'
+import type { ApiPoiId, FieldsListItem } from '~/lib/apiPois'
+import type { ApiPoi } from '~/types/api/poi'
 import type { ApiAddrSearchResult } from '~/lib/apiSearch'
 import { MAP_ZOOM } from '~/lib/constants'
 import { ADDRESS_FIELDS } from '~/composables/useField'

@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import PoiCard from '~/components/PoisCard/PoiCard.vue'
 import poi from '~/cypress/fixtures/teritorio/references/poi/2.json'
-import type { ApiPoi } from '~/lib/apiPois'
+import type { ApiPoi } from '~/types/api/poi'
 
 const defaultProps = {
   poi: poi as ApiPoi,

@@ -3,7 +3,7 @@ import PoiCardContent from '~/components/PoisCard/PoiCardContent.vue'
 import TeritorioIcon from '~/components/UI/TeritorioIcon.vue'
 import UIButton from '~/components/UI/UIButton.vue'
 import UIPicture from '~/components/UI/UIPicture.vue'
-import type { ApiPoi } from '~/lib/apiPois'
+import type { ApiPoi } from '~/types/api/poi'
 
 const props = withDefaults(defineProps<{
   canClose?: boolean

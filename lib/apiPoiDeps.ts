@@ -1,14 +1,7 @@
-import type {
-  ApiPoi,
-  ApiPoiId,
-  ApiPoiProperties,
-  ApiPoisOptions,
-} from './apiPois'
-import {
-  stringifyOptions,
-} from './apiPois'
-
-import type { MapPoiDescription } from './mapPois'
+import type { MapPoiDescription } from '~/lib/mapPois'
+import { stringifyOptions } from '~/lib/apiPois'
+import type { ApiPoiId, ApiPoisOptions } from '~/lib/apiPois'
+import type { ApiPoi, ApiPoiProperties } from '~/types/api/poi'
 import type { MultilingualString } from '~/utils/types'
 
 export enum ApiRouteWaypointType {
