@@ -1,5 +1,5 @@
-import type { MapPoiId, MapPoiProperties } from './mapPois'
-import type { MultilingualString } from '~/utils/types'
+import type { MapPoiId } from './mapPois'
+import type { ApiPoi, ApiPoiProperties } from '~/types/api/poi'
 
 export type ApiPoiId = MapPoiId
 
@@ -49,39 +49,38 @@ export interface FieldsListGroup {
 
 export type FieldsList = (FieldsListItem | FieldsListGroup)[]
 export type TextColors = '#000000' | '#FFFFFF'
-export type ApiPoiProperties = MapPoiProperties & {
-  'image'?: string[]
-  'addr:city'?: string
-  'addr:housenumber'?: string
-  'addr:postcode'?: string
-  'addr:street'?: string
-  'metadata': {
-    id: ApiPoiId
-    source?: string
-    category_ids?: Array<number>
-    updated_at?: string
-    osm_id?: number
-    osm_type?: 'node' | 'way' | 'relation'
-    dep_ids?: number[]
-  }
-  'display'?: {
-    style_class?: string[]
-    color_fill: string
-    color_line: string
-    color_text?: TextColors
-  }
-  'editorial'?: {
-    'popup_fields'?: FieldsListItem[]
-    'details_fields'?: FieldsList
-    'list_fields'?: FieldsListItem[]
-    'class_label'?: MultilingualString
-    'class_label_popup'?: MultilingualString
-    'class_label_details'?: MultilingualString
-    'website:details'?: MultilingualString
-    'unavoidable'?: boolean
-  }
-}
-export type ApiPoi = GeoJSON.Feature<GeoJSON.Geometry, ApiPoiProperties>
+// export type ApiPoiProperties = MapPoiProperties & {
+//   'image'?: string[]
+//   'addr:city'?: string
+//   'addr:housenumber'?: string
+//   'addr:postcode'?: string
+//   'addr:street'?: string
+//   'metadata': {
+//     id: ApiPoiId
+//     source?: string
+//     category_ids?: Array<number>
+//     updated_at?: string
+//     osm_id?: number
+//     osm_type?: 'node' | 'way' | 'relation'
+//     dep_ids?: number[]
+//   }
+//   'display'?: {
+//     style_class?: string[]
+//     color_fill: string
+//     color_line: string
+//     color_text?: TextColors
+//   }
+//   'editorial'?: {
+//     'popup_fields'?: FieldsListItem[]
+//     'details_fields'?: FieldsList
+//     'list_fields'?: FieldsListItem[]
+//     'class_label'?: MultilingualString
+//     'class_label_popup'?: MultilingualString
+//     'class_label_details'?: MultilingualString
+//     'website:details'?: MultilingualString
+//     'unavoidable'?: boolean
+//   }
+// }
 
 export const ApiPoiPropertiesArray = [
   'image',
@@ -91,10 +90,7 @@ export const ApiPoiPropertiesArray = [
   'website',
 ]
 
-export type ApiPois = GeoJSON.FeatureCollection<
-  GeoJSON.Geometry,
-  ApiPoiProperties
->
+export type ApiPois = GeoJSON.FeatureCollection<GeoJSON.Geometry, ApiPoiProperties>
 
 export interface ApiPoisOptions {
   cliping_polygon_slug?: string

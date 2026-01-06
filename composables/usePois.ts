@@ -1,4 +1,5 @@
-import type { ApiPoi, ApiPois } from '~/lib/apiPois'
+import type { ApiPois } from '~/lib/apiPois'
+import type { ApiPoi } from '~/types/api/poi'
 import { PropertyTranslationsContextEnum } from '~/stores/site'
 
 export function usePois() {

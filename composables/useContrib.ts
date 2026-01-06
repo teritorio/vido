@@ -1,4 +1,4 @@
-import type { ApiPoi, ApiPoiProperties } from '~/lib/apiPois'
+import type { ApiPoi, ApiPoiProperties } from '~/types/api/poi'
 import { STORE_NAME, useContribStore } from '~/stores/contrib'
 
 export interface Link {

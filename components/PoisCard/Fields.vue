@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import type GeoJSON from 'geojson'
 import Field from '~/components/Fields/Field.vue'
-import type { ApiPoiProperties, FieldsListItem } from '~/lib/apiPois'
+import type { FieldsListItem } from '~/lib/apiPois'
+import type { ApiPoiProperties } from '~/types/api/poi'
 import { PropertyTranslationsContextEnum } from '~/stores/site'
 
 defineProps<{

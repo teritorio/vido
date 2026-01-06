@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { ApiPoiProperties } from '~/lib/apiPois'
+import type { ApiPoiProperties } from '~/types/api/poi'
 
 const props = defineProps<{
   properties: ApiPoiProperties

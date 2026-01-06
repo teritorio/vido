@@ -1,4 +1,4 @@
-import type { ApiPoiProperties } from '~/lib/apiPois'
+import type { ApiPoiProperties } from '~/types/api/poi'
 import type { PropertyTranslationsContextEnum } from '~/stores/site'
 import { useSiteStore } from '~/stores/site'
 

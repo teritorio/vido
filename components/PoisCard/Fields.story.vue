@@ -2,7 +2,8 @@
 import type GeoJSON from 'geojson'
 
 import Fields from '~/components/PoisCard/Fields.vue'
-import type { ApiPoiProperties, FieldsListItem } from '~/lib/apiPois'
+import type { FieldsListItem } from '~/lib/apiPois'
+import type { ApiPoiProperties } from '~/types/api/poi'
 import type { MapPoiDescription } from '~/lib/mapPois'
 
 const properties: ApiPoiProperties = {

@@ -2,7 +2,7 @@
 import Fields from '~/components/PoisCard/Fields.vue'
 import TeritorioIconBadge from '~/components/UI/TeritorioIconBadge.vue'
 import UIPicture from '~/components/UI/UIPicture.vue'
-import type { ApiPoi } from '~/lib/apiPois'
+import type { ApiPoi } from '~/types/api/poi'
 
 const props = withDefaults(defineProps<{
   notebook?: boolean

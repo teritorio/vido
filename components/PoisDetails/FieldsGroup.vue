@@ -3,11 +3,11 @@ import Field from '~/components/Fields/Field.vue'
 import Block from '~/components/PoisDetails/Block.vue'
 import FieldsHeader from '~/components/UI/FieldsHeader.vue'
 import type {
-  ApiPoiProperties,
   FieldsList,
   FieldsListGroup,
   FieldsListItem,
 } from '~/lib/apiPois'
+import type { ApiPoiProperties } from '~/types/api/poi'
 import { PropertyTranslationsContextEnum, useSiteStore } from '~/stores/site'
 import { isFiledEmpty } from '~/utils/utilities'
 
