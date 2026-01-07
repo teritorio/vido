@@ -1,9 +1,11 @@
 <script setup lang="ts">
 import { storeToRefs } from 'pinia'
 import MapPois from '~/components/Map/MapPois.vue'
-import type { ApiPoiCollection } from '~/types/api/poi'
+import type { ApiPoi, ApiPoiCollection } from '~/types/api/poi'
 import { useSiteStore } from '~/stores/site'
 import { regexForCategoryIds } from '~/composables/useIdsResolver'
+import type { Poi } from '~/types/local/poi'
+import { menuStore as useMenuStore } from '~/stores/menu'
 
 definePageMeta({
   validate({ params }) {
@@ -15,6 +17,8 @@ const { settings } = storeToRefs(useSiteStore())
 const { $trackingInit } = useNuxtApp()
 const route = useRoute()
 const apiEndpoint = useState('api-endpoint')
+const poiCompo = usePoi()
+const menuStore = useMenuStore()
 
 const poiIds = computed(() => {
   const param = route.params.ids
@@ -33,7 +37,7 @@ const poiIdsAsNumbers = computed(() => poiIds.value.map(id => Number(id)))
 
 const clipingPolygonSlug = computed(() => route.query.clipingPolygonSlug?.toString())
 
-const { data, error } = await useFetch<ApiPoiCollection>(
+const { data, error } = await useFetch(
   `${apiEndpoint.value}/pois.geojson`,
   {
     query: {
@@ -42,38 +46,62 @@ const { data, error } = await useFetch<ApiPoiCollection>(
       short_description: true,
       cliping_polygon_slug: clipingPolygonSlug.value,
     },
+    transform: (data: ApiPoiCollection) => transformApiPoiCollection(data),
   },
 )
 
 if (error.value) {
-  throw createError({
-    statusCode: 500,
-    statusMessage: `Failed to fetch POI data: ${error.value.message}`,
-  })
+  throw createError(error.value)
 }
 
-if (!data.value || !data.value.features.length) {
+if (!data.value?.length) {
   throw createError({
     statusCode: 404,
     statusMessage: `POIS ${poiIds.value} data not found`,
   })
 }
 
-const features = computed(() => data.value?.features ?? [])
+const features = computed(() => data.value ?? [])
 
 onBeforeMount(() => {
   $trackingInit()
 })
+
+function transformApiPoiCollection(data: ApiPoiCollection): Poi[] {
+  return data.features.map((feature: ApiPoi) => {
+    const catId = feature.properties.metadata.category_ids?.[0]
+
+    if (!catId)
+      throw createError(`Category ID not found for feature ${feature.properties.metadata.id}.`)
+
+    const category = menuStore.getCurrentCategory(catId)
+
+    if (!category)
+      throw createError(`Category ${catId} not found.`)
+
+    return poiCompo.formatPoi(feature, category)
+  })
+}
 </script>
 
 <template>
-  <div class="tw-flex tw-flex-col tw-w-full tw-h-full">
+  <VApp>
+    <VAlert
+      v-if="error"
+      :closable="true"
+      :style="{ zIndex: 999 }"
+      :text="error.message"
+      location="top center"
+      position="fixed"
+      type="error"
+      variant="elevated"
+    />
     <MapPois
       :extra-attributions="settings!.attributions"
       :features="features"
       :feature-ids="poiIdsAsNumbers"
     />
-  </div>
+  </VApp>
 </template>
 
 <style scoped>
