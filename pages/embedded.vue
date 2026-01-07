@@ -5,28 +5,23 @@ import Embedded from '~/components/Home/Embedded.vue'
 import type { ApiPoi } from '~/types/api/poi'
 import { useSiteStore } from '~/stores/site'
 import { mapStore as useMapStore } from '~/stores/map'
+import { menuStore as useMenuStore } from '~/stores/menu'
 import { regexForCategoryIds } from '~/composables/useIdsResolver'
+import type { Poi } from '~/types/local/poi'
 
-//
-// Composables
-//
 const { params, query, path, name } = useRoute()
 const mapStore = useMapStore()
 const siteStore = useSiteStore()
+const menuStore = useMenuStore()
 const { settings } = storeToRefs(siteStore)
 const apiEndpoint = useState('api-endpoint')
 const { $trackingInit } = useNuxtApp()
+const poiCompo = usePoi()
 
-//
-// Data
-//
 const boundaryGeojson = ref<Polygon | MultiPolygon>()
 const poiId = ref<string>()
 const categoryIds = ref<number[]>()
 
-//
-// Hooks
-//
 onBeforeMount(() => {
   $trackingInit()
 })
@@ -71,7 +66,7 @@ if (params.poiId)
   poiId.value = params.poiId.toString()
 
 // Fetch inital POI
-const { data, error, status } = await useFetch<ApiPoi>(
+const { data, error, status } = await useFetch<Poi>(
   () => `${apiEndpoint.value}/poi/${poiId.value}.geojson`,
   {
     query: {
@@ -79,6 +74,7 @@ const { data, error, status } = await useFetch<ApiPoi>(
       short_description: false,
     },
     immediate: !!poiId.value && !poiId.value.includes('_'),
+    transform: (poi: ApiPoi) => transformApiPoi(poi),
   },
 )
 
@@ -90,6 +86,20 @@ if (status.value === 'success' && data.value)
 
 // Disable Favorite Mode
 siteStore.setFavoritesMode(false)
+
+function transformApiPoi(poi: ApiPoi): Poi {
+  const catId = poi.properties.metadata.category_ids?.[0]
+
+  if (!catId)
+    throw createError(`Category ID not found for feature ${poi.properties.metadata.id}.`)
+
+  const category = menuStore.getCurrentCategory(catId)
+
+  if (!category)
+    throw createError(`Category ${catId} not found.`)
+
+  return poiCompo.formatPoi(poi, category)
+}
 </script>
 
 <template>

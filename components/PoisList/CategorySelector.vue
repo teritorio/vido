@@ -27,7 +27,14 @@ const menuEntries = computed((): Array<{ value: number, title: string, category:
   const localeCompareOptions = locales.value.map(locale => typeof locale === 'string' ? locale : locale.code)
 
   return Object.values(props.menuItems)
-    .filter(menuItem => contribMode && 'category' in menuItem ? menuItem.category : !menuItem.hidden)
+    .filter((menuItem) => {
+      const hasCategory = 'category' in menuItem
+
+      if (!hasCategory)
+        return false
+
+      return contribMode ? true : !menuItem.hidden
+    })
     .map((menuItem) => {
       const parents: string[] = []
       let parentId = menuItem.parent_id
