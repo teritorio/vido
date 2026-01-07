@@ -1,4 +1,4 @@
-import type { FieldsListItem } from '~/lib/apiPois'
+import type { FieldsListItem } from '~/types/api/field'
 import type { Poi } from '~/types/local/poi'
 import type { ApiAddrSearchResult } from '~/lib/apiSearch'
 import { MAP_ZOOM } from '~/lib/constants'
