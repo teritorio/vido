@@ -45,7 +45,6 @@ export interface FieldsListGroup {
 }
 
 export type FieldsList = (FieldsListItem | FieldsListGroup)[]
-export type TextColors = '#000000' | '#FFFFFF'
 
 export interface ApiPoisOptions {
   cliping_polygon_slug?: string

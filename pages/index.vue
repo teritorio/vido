@@ -19,7 +19,7 @@ const route = useRoute()
 const mapStore = useMapStore()
 const { $trackingInit } = useNuxtApp()
 const menuStore = useMenuStore()
-const poiDeps = usePoiDeps()
+const poiDepsCompo = usePoiDeps()
 
 const mainPoi = ref<ApiPoi>()
 const boundaryGeojson = ref<Polygon | MultiPolygon>()
@@ -125,8 +125,8 @@ if (status.value === 'success' && data.value) {
     // In case user click on vecto element, attach Pin Marker to POI Marker
     teritorioCluster.value?.setSelectedFeature(mainPoi.value as unknown as GeoJSONFeature)
 
-    if (selectedCategoryIds.value.length && mainPoi.value.properties.metadata.category_ids?.length) {
-      const currentCategory = selectedCategoryIds.value.find(id => mainPoi.value!.properties.metadata.category_ids!.includes(id))
+    if (poi) {
+      const currentCategory = selectedCategoryIds.value.find(id => poi.properties.metadata.category_ids!.includes(id))
 
       if (currentCategory) {
         menuStore.filterByDeps(currentCategory, data.value)
@@ -161,7 +161,7 @@ function getMainPoi(features: ApiPoiUnion[]): ApiPoi {
 }
 
 function transformApiPoiDepsCollection(data?: ApiPoiDepsCollection) {
-  poiDeps.resetWaypointIndex()
+  poiDepsCompo.resetWaypointIndex()
 
   if (!data)
     return undefined
@@ -177,7 +177,7 @@ function transformApiPoiDepsCollection(data?: ApiPoiDepsCollection) {
   if (!category)
     throw createError(`Category ${catId} not found.`)
 
-  return poiDeps.formatPoiDepsCollection(data, category, 'fr-FR')
+  return poiDepsCompo.formatPoiDepsCollection(data, category, 'fr-FR')
 }
 </script>
 

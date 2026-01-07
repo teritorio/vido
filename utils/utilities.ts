@@ -14,6 +14,19 @@ export function formatDate(date: Date): string {
   )
 }
 
+export function parseStringProperties(obj: Record<string, any>) {
+  Object.keys(obj).forEach((prop) => {
+    const value = obj[prop]
+
+    if (typeof value === 'string') {
+      try {
+        obj[prop] = JSON.parse(value)
+      }
+      catch (e) {}
+    }
+  })
+}
+
 export function isFiledEmpty(
   field: FieldsListItem,
   properties: { [key: string]: string },

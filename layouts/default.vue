@@ -7,7 +7,7 @@ import { useSiteStore } from '~/stores/site'
 import { menuStore as useMenuStore } from '~/stores/menu'
 import { headerFromSettings } from '~/lib/apiSettings'
 import '~/assets/tailwind.scss'
-import type { ApiMenuResponse } from '~/types/api/menu'
+import type { ApiMenuCollection } from '~/types/api/menu'
 
 const { detectHost } = useHostDetection()
 
@@ -31,7 +31,7 @@ const { settings, theme, translations, articles } = storeToRefs(siteStore)
 const { data, error, status } = await useAsyncData('parallel', async () => {
   const [settings, menu, translations, articles] = await Promise.all([
     $fetch<Settings>(`${apiEndpoint.value}/settings.json`),
-    $fetch<ApiMenuResponse>(`${apiEndpoint.value}/menu.json`),
+    $fetch<ApiMenuCollection>(`${apiEndpoint.value}/menu.json`),
     $fetch<PropertyTranslations>(`${apiEndpoint.value}/attribute_translations/fr.json`),
     // INFO: slug query param is here only for WP API backward compatibility
     $fetch<Article[]>(`${apiEndpoint.value}/articles.json?slug=non-classe`),

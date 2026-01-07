@@ -6,7 +6,7 @@ import type { ApiMenuCategory } from '~/types/api/menu'
 export function usePoiDeps() {
   const waypointIndex = ref(1)
 
-  function isWaypoint(feature: ApiPoiUnion, locale: LanguageCode): boolean {
+  function isWaypoint(feature: ApiPoiUnion | PoiUnion, locale: LanguageCode): boolean {
     const route = feature.properties.route?.[locale]
     return !!(route && 'waypoint' in route)
   }
@@ -18,6 +18,11 @@ export function usePoiDeps() {
   ): PoiUnion {
     let displayProps = {}
     let editorialProps = {}
+
+    const { colorFill, colorText } = useContrastedColors(
+      category.category.color_fill,
+      feature.properties.display?.color_text,
+    )
 
     if (isWaypoint(feature, locale)) {
       const f = feature as ApiPoiDeps
@@ -56,6 +61,9 @@ export function usePoiDeps() {
       properties: {
         ...feature.properties,
         display: {
+          color_fill: colorFill,
+          color_line: category.category.color_line,
+          color_text: colorText,
           ...displayProps,
           ...feature.properties.display,
         },
