@@ -45,7 +45,7 @@ function onClick() {
     type: 'category_event',
     event: 'enable',
     categoryId: props.category.id,
-    title: props.category.category.name.fr,
+    title: props.category.category.name.fr || '',
   })
 
   emit('click', props.category.id)
@@ -56,7 +56,7 @@ function onFilterClick() {
     type: 'category_event',
     event: 'filter',
     categoryId: props.category.id,
-    title: props.category.category.name.fr,
+    title: props.category.category.name.fr || '',
   })
   emit('filterClick', props.category.id)
 }

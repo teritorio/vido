@@ -19,7 +19,7 @@ function sortedUniq<T>(a: T[]): T[] {
   return [...new Set(a)].sort()
 }
 
-function keepFeature(filters: FilterValues, feature: ApiPoi): boolean {
+function keepFeature(filters: FilterValues, feature: Poi): boolean {
   return filters.reduce<boolean>((prevValue, filter) => {
     return prevValue && (!isSet(filter) || isMatch(filter, feature.properties))
   }, true)
@@ -32,6 +32,7 @@ export const menuStore = defineStore('menu', () => {
   const filters = ref<Record<ApiMenuCategory['id'], FilterValues>>({})
   const allFeatures = ref<Record<number, Poi[]>>({})
   const isLoadingFeatures = ref<boolean>(false)
+  const poiCompo = usePoi()
 
   const getFeatureById = computed(() => {
     return (id: number): Poi | undefined => {
@@ -211,25 +212,24 @@ export const menuStore = defineStore('menu', () => {
 
         if (existingFeatures[j]) {
           localFeatures[categoryId] = previousFeatures[categoryId].map(
-            (f: Poi) => ({
-              ...f,
-              properties: {
-                ...f.properties,
-                vido_visible:
-                  !filterIsSet || keepFeature(filters.value[categoryId], f),
-              },
-            }),
+            (f: Poi) => {
+              f.properties.vido_visible = !filterIsSet || keepFeature(filters.value[categoryId], f)
+              return f
+            },
           )
         }
         else {
-          localFeatures[categoryId] = posts[i].features.map(f => ({
-            ...f,
-            properties: {
-              ...f.properties,
-              vido_cat: categoryId,
-              vido_visible: !filterIsSet || keepFeature(filters.value[categoryId], f),
-            },
-          }) as Poi)
+          localFeatures[categoryId] = posts[i].features.map((f) => {
+            const category = getCurrentCategory.value(categoryId)
+
+            if (!category)
+              throw new Error(`Category not found for feature ${f.properties.metadata.id}.`)
+
+            const poi = poiCompo.formatPoi(f, category)
+            poi.properties.vido_cat = categoryId
+            poi.properties.vido_visible = !filterIsSet || keepFeature(filters.value[categoryId], poi)
+            return poi
+          })
 
           i++
         }

@@ -42,7 +42,7 @@ function onClick() {
   $tracking({
     type: 'menu',
     menuItemId: props.menuGroup.id,
-    title: props.menuGroup.menu_group.name.fr,
+    title: props.menuGroup.menu_group.name.fr || '',
   })
 
   emit('click', props.menuGroup.id)

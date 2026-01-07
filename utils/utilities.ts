@@ -70,15 +70,7 @@ export function getPreviousMonday() {
 }
 
 export function formatApiAddressToFeature(feature: GeoJSON.Feature<GeoJSON.Point, ApiAddrSearchResult>, isGeocoding: boolean = false): Poi {
-  let vido_zoom = null
-
-  if (isGeocoding) {
-    vido_zoom = feature.properties.type === 'municipality'
-      ? MAP_ZOOM.selectionZoom.municipality
-      : MAP_ZOOM.selectionZoom.streetNumber
-  }
-
-  return {
+  const poi = {
     type: 'Feature',
     geometry: feature.geometry,
     properties: {
@@ -87,7 +79,6 @@ export function formatApiAddressToFeature(feature: GeoJSON.Feature<GeoJSON.Point
         id: feature.properties.id,
       },
       name: { 'fr-FR': feature.properties.label },
-      vido_zoom,
       display: {
         icon: feature.properties.type === 'municipality'
           ? 'city'
@@ -99,5 +90,13 @@ export function formatApiAddressToFeature(feature: GeoJSON.Feature<GeoJSON.Point
         popup_fields: [{ field: 'name', render: 'string' }],
       },
     },
+  } as Poi
+
+  if (isGeocoding) {
+    poi.properties.vido_zoom = feature.properties.type === 'municipality'
+      ? MAP_ZOOM.selectionZoom.municipality
+      : MAP_ZOOM.selectionZoom.streetNumber
   }
+
+  return poi
 }

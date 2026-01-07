@@ -38,7 +38,7 @@ function onClick() {
   $tracking({
     type: 'external_link',
     url: props.menuLink.link.href,
-    title: props.menuLink.link.name.fr,
+    title: props.menuLink.link.name.fr || '',
   })
 
   emit('click', props.menuLink.id)

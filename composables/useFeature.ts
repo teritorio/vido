@@ -12,10 +12,11 @@ export default function useFeature(feature: Ref<Poi>, options: Options = {
   // Composables
   //
   const { locale, fallbackLocale } = useI18n()
+  const lang = locale.value as LanguageCode
   //
   // Data
   //
-  const fallback = fallbackLocale.value.toString()
+  const fallback = fallbackLocale.value.toString() as LanguageCode
   const { type } = options
 
   //
@@ -28,41 +29,35 @@ export default function useFeature(feature: Ref<Poi>, options: Options = {
       case 'popup':
         return getPopupClassLabel()
       default:
-        return getClassLabel(locale.value)
+        return getClassLabel(lang)
     }
   })
 
-  const name = computed(() => {
+  const name = computed((): string | undefined => {
     switch (type) {
       case 'details':
         return feature.value.properties.name?.['fr-FR'] ?? getDetailsClassLabel()
       case 'popup':
         return feature.value.properties.name?.['fr-FR'] ?? getPopupClassLabel()
       default:
-        return feature.value.properties.name?.['fr-FR'] ?? getClassLabel(locale.value)
+        return feature.value.properties.name?.['fr-FR'] ?? getClassLabel(lang)
     }
   })
 
   const seoTitle = computed(() => categoryName.value ? `${categoryName.value} - ${name.value}` : name.value)
 
-  //
-  // Methods
-  //
-  function getClassLabel(lang: string) {
-    return feature.value.properties.editorial?.class_label && feature.value.properties.editorial.class_label[lang]
+  function getClassLabel(lang: LanguageCode) {
+    return feature.value.properties.editorial.class_label && feature.value.properties.editorial.class_label[lang]
       ? feature.value.properties.editorial.class_label[lang]
       : undefined
   }
 
   function getDetailsClassLabel() {
-    if (!feature.value.properties.editorial)
-      return undefined
+    if (feature.value.properties.editorial.class_label_details && feature.value.properties.editorial.class_label_details[lang])
+      return feature.value.properties.editorial.class_label_details[lang]
 
-    if (feature.value.properties.editorial.class_label_details && feature.value.properties.editorial.class_label_details[locale.value])
-      return feature.value.properties.editorial.class_label_details[locale.value]
-
-    if (getClassLabel(locale.value))
-      return getClassLabel(locale.value)
+    if (getClassLabel(lang))
+      return getClassLabel(lang)
 
     if (feature.value.properties.editorial.class_label_details && feature.value.properties.editorial.class_label_details[fallback])
       return feature.value.properties.editorial.class_label_details[fallback]
@@ -74,11 +69,11 @@ export default function useFeature(feature: Ref<Poi>, options: Options = {
     if (!feature.value.properties.editorial)
       return undefined
 
-    if (feature.value.properties.editorial.class_label_popup && feature.value.properties.editorial.class_label_popup[locale.value])
-      return feature.value.properties.editorial.class_label_popup[locale.value]
+    if (feature.value.properties.editorial.class_label_popup && feature.value.properties.editorial.class_label_popup[lang])
+      return feature.value.properties.editorial.class_label_popup[lang]
 
-    if (getClassLabel(locale.value))
-      return getClassLabel(locale.value)
+    if (getClassLabel(lang))
+      return getClassLabel(lang)
 
     if (feature.value.properties.editorial.class_label_popup && feature.value.properties.editorial.class_label_popup[fallback])
       return feature.value.properties.editorial.class_label_popup[fallback]

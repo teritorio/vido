@@ -33,7 +33,7 @@ export const useSiteStore = defineStore('site', () => {
     if (settings.value?.image_proxy_hosts)
       domains.push(...settings.value.image_proxy_hosts)
 
-    if (theme.value)
+    if (theme.value && theme.value.site_url.fr)
       domains.push(new URL(theme.value.site_url.fr).host)
 
     if (import.meta.dev) {

@@ -10,5 +10,6 @@ export interface Poi extends ApiPoi {
     editorial: ApiPoiPropertiesEditorial & ApiMenuCategory['category']['editorial']
     vido_visible?: boolean
     vido_cat?: number
+    vido_zoom?: number
   }
 }

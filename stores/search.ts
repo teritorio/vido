@@ -7,6 +7,7 @@ import { getPoiById } from '~/lib/apiPois'
 import type { ApiPoi } from '~/types/api/poi'
 import type { ApiAddrSearchResult, ApiMenuItemSearchResult, ApiPoisSearchResult, ApiSearchResult, SearchResult } from '~/lib/apiSearch'
 import { mapStore as useMapStore } from '~/stores/map'
+import type { Poi } from '~/types/local/poi'
 
 export const useSearchStore = defineStore('search', () => {
   const { apiAddr, apiSearch } = useRuntimeConfig().public
@@ -17,12 +18,13 @@ export const useSearchStore = defineStore('search', () => {
   const firstVisitCookie = useCookie('first-visit', { default: () => true })
   const projectSlug = useState<string>('project')
   const themeSlug = useState<string>('theme')
+  const poiCompo = usePoi()
 
   const isActive = ref(false)
   const searchText = ref('')
   const searchResultId = ref(0)
   const searchQueryId = ref(0)
-  const searchSelectedFeature = ref<ApiPoi | null>(null)
+  const searchSelectedFeature = ref<Poi | null>(null)
 
   const searchMenuItemsResults = ref<ApiSearchResult<ApiMenuItemSearchResult> | null>(null)
   const searchPoisResults = ref<ApiSearchResult<ApiPoisSearchResult> | null>(null)
@@ -43,12 +45,25 @@ export const useSearchStore = defineStore('search', () => {
 
   const itemsCartocode = computed(() => {
     const v = searchCartocodeResult.value
-    if (v && v.properties.metadata?.id) {
-      const { featureName } = useFeature(toRef(v), { type: 'popup' })
+
+    if (v) {
+      const catId = v?.properties.metadata.category_ids?.[0]
+
+      if (!catId)
+        throw createError(`Category ID not found for feature ${v.properties.metadata.id}.`)
+
+      const category = menuStore.getCurrentCategory(catId)
+
+      if (!category)
+        throw createError(`Category ${catId} not found.`)
+
+      const poi = poiCompo.formatPoi(v, category)
+
+      const { featureName } = useFeature(toRef(poi), { type: 'popup' })
 
       if (featureName.value) {
         return [{
-          id: v.properties.metadata?.id,
+          id: poi.properties.metadata.id,
           label: featureName.value,
         }]
       }
@@ -191,7 +206,17 @@ export const useSearchStore = defineStore('search', () => {
 
   async function onPoiClick(searchResult: SearchResult) {
     const poi = await getPoiById(searchResult.id)
-    searchSelectedFeature.value = poi
+    const catId = poi.properties.metadata.category_ids?.[0]
+
+    if (!catId)
+      throw createError(`Category ID not found for feature ${poi.properties.metadata.id}.`)
+
+    const category = menuStore.getCurrentCategory(catId)
+
+    if (!category)
+      throw createError(`Category ${catId} not found.`)
+
+    searchSelectedFeature.value = poiCompo.formatPoi(poi, category)
     reset()
   }
 
