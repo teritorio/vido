@@ -3,10 +3,10 @@ import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import type { MultiPolygon, Point, Polygon } from 'geojson'
 import type {
   FitBoundsOptions,
+  GeoJSONFeature,
   LngLatBounds,
   MapDataEvent,
   Map as MapGL,
-  MapGeoJSONFeature,
   MapMouseEvent,
 } from 'maplibre-gl'
 import { storeToRefs } from 'pinia'
@@ -18,9 +18,8 @@ import MapControls3D from '~/components/Map/MapControls3D.vue'
 import MapControlsBackground from '~/components/Map/MapControlsBackground.vue'
 import type { ApiMenuCategory } from '~/types/api/menu'
 import type { Poi } from '~/types/local/poi'
-import type { ApiPoiDeps, ApiPoiDepsCollection } from '~/types/api/poi-deps'
-import { iconMap } from '~/types/local/poi-deps'
-import { prepareApiPoiDeps } from '~/lib/apiPoiDeps'
+import type { ApiPoiDepsCollection, ApiPoiUnion } from '~/types/api/poi-deps'
+import type { PoiUnion } from '~/types/local/poi-deps'
 import { getBBox } from '~/lib/bbox'
 import { DEFAULT_MAP_STYLE, MAP_ZOOM } from '~/lib/constants'
 import { vectorTilesPoi2ApiPoi } from '~/lib/vectorTilesPois'
@@ -29,10 +28,11 @@ import { menuStore as useMenuStore } from '~/stores/menu'
 import { useSiteStore } from '~/stores/site'
 import { snackStore as useSnackStore } from '~/stores/snack'
 import { filterRouteByCategories, filterRouteByPoiIds } from '~/utils/styles'
-import type { LatLng } from '~/utils/types'
+import type { LanguageCode, LatLng } from '~/utils/types'
 import { MapStyleEnum } from '~/utils/types'
 import { getHashPart } from '~/utils/url'
 import useDevice from '~/composables/useDevice'
+import type { ApiPoi } from '~/types/api/poi'
 
 const props = withDefaults(defineProps<{
   defaultBounds: LngLatBounds
@@ -81,6 +81,10 @@ const map = ref<MapGL>()
 const selectedBackground = ref<MapStyleEnum>(DEFAULT_MAP_STYLE)
 const isProcessing = ref(false)
 const isZooming = ref(false)
+const { locale } = useI18n()
+const lang = locale.value as LanguageCode
+const poiDepsCompo = usePoiDeps()
+const mainPoi = ref<ApiPoi>()
 
 const availableStyles = computed((): MapStyleEnum[] => {
   const styles = [MapStyleEnum.vector, MapStyleEnum.aerial]
@@ -206,7 +210,7 @@ function onClick(e: MapMouseEvent): void {
 
 let currentRequestToken: { cancelled: boolean } | null = null
 
-async function updateSelectedFeature(feature?: Poi): Promise<void> {
+async function updateSelectedFeature(feature?: PoiUnion): Promise<void> {
   // Cancel previous request if it exists
   if (currentRequestToken) {
     currentRequestToken.cancelled = true
@@ -216,8 +220,9 @@ async function updateSelectedFeature(feature?: Poi): Promise<void> {
   const token = { cancelled: false }
   currentRequestToken = token
 
-  if ((feature?.properties.metadata.id === selectedFeature.value?.properties.metadata.id)
-    || feature?.properties['route:point:type']
+  if (
+    (feature?.properties.metadata.id === selectedFeature.value?.properties.metadata.id)
+    || (feature && poiDepsCompo.isWaypoint(feature, lang))
   ) {
     return
   }
@@ -237,13 +242,14 @@ async function updateSelectedFeature(feature?: Poi): Promise<void> {
       mapStore.setSelectedFeature(menuStore.getFeatureById(id))
 
       try {
-        const { data, error, status } = await useFetch<ApiPoiDepsCollection>(
+        const { data, error, status } = await useFetch(
           () => `${apiEndpoint.value}/poi/${id}/deps.geojson`,
           {
             query: {
               geometry_as: 'point',
               short_description: true,
             },
+            transform: (data: ApiPoiDepsCollection) => transformApiPoiDepsCollection(data, id),
           },
         )
 
@@ -255,88 +261,32 @@ async function updateSelectedFeature(feature?: Poi): Promise<void> {
           throw createError(error.value)
 
         if (status.value === 'success' && data.value) {
-          let waypointIndex = 1
-          let waypoints: ApiPoiDeps[] = []
-          let pois: Poi[] = []
-          let deps: Poi[] = []
-
-          if (!isDepSelected)
-            mapStore.setSelectedFeatureDepsIDs()
-
-          const poi = data.value.features.find(f => f.properties.metadata.id === id)
-
-          if (!poi)
-            throw createError(`Feature with ID: ${id} not found.`)
-
-          const featureReordered = prepareApiPoiDeps(
-            data.value.features,
-            poi.properties.metadata.dep_ids,
-          )
-
-          waypoints = featureReordered.waypoints
-          pois = featureReordered.pois
-
-          deps.push(...pois)
-
-          waypoints.forEach((w) => {
-            const { colorFill, colorText } = useContrastedColors(
-              poi.properties.display?.color_fill || '#76009E',
-              poi.properties.display?.color_text,
-            )
-
-            const formattedWaypoint = {
-              ...w,
-              properties: {
-                ...w.properties,
-                display: {
-                  icon: iconMap[w.properties['route:point:type']],
-                  color_fill: colorFill.value,
-                  color_line: poi.properties.display?.color_line || '#76009E',
-                  color_text: colorText.value,
-                  text: w.properties['route:point:type']
-                  === ApiRouteWaypointType.way_point
-                    ? waypointIndex.toString()
-                    : undefined,
-                },
-                editorial: {
-                  'website:details': undefined,
-                },
-              },
-            } as Poi
-
-            if (w.properties['route:point:type'] === ApiRouteWaypointType.way_point)
-              waypointIndex++
-
-            deps.push(formattedWaypoint)
-          })
-
           if (!isDepSelected) {
-            deps = deps.map((d) => {
-              mapStore.addSelectedFeatureDepsIDs(d.properties.metadata.id)
-
-              return {
-                ...d,
-                properties: {
-                  ...d.properties,
-                  vido_visible: true,
-                },
-              }
+            mapStore.setSelectedFeatureDepsIDs()
+            data.value.forEach((f) => {
+              mapStore.addSelectedFeatureDepsIDs(f.properties.metadata.id)
             })
           }
 
-          mapStore.setSelectedFeature(poi)
+          if (mainPoi.value) {
+            const poi = data.value.find(f => f.properties.metadata.id === mainPoi.value!.properties.metadata.id)
+            mapStore.setSelectedFeature(poi as Poi)
 
-          // In case user click on vecto element, attach Pin Marker to POI Marker
-          teritorioCluster.value?.setSelectedFeature(poi as unknown as MapGeoJSONFeature)
+            // In case user click on vecto element, attach Pin Marker to POI Marker
+            teritorioCluster.value?.setSelectedFeature(poi as unknown as GeoJSONFeature)
 
-          const currentCategory = selectedCategoryIds.value.find(id => poi.properties.metadata.category_ids?.includes(id))
+            if (poi) {
+              const currentCategory = selectedCategoryIds.value.find(id => poi.properties.metadata.category_ids?.includes(id))
 
-          if (!isDepSelected && currentCategory) {
-            menuStore.filterByDeps(currentCategory, deps)
-            if (deps.length > 1)
-              mapStore.setIsDepsView(true)
-            else
-              mapStore.setIsDepsView(false)
+              if (!isDepSelected && currentCategory) {
+                menuStore.filterByDeps(currentCategory, data.value)
+
+                if (data.value.length > 1)
+                  mapStore.setIsDepsView(true)
+                else
+                  mapStore.setIsDepsView(false)
+              }
+            }
           }
         }
       }
@@ -351,10 +301,39 @@ async function updateSelectedFeature(feature?: Poi): Promise<void> {
         }
       }
     }
-    else {
-      mapStore.setSelectedFeature(feature)
-    }
+    // else {
+    //   mapStore.setSelectedFeature(feature)
+    // }
   }
+}
+
+function getMainPoi(features: ApiPoiUnion[], poiId: number): ApiPoi {
+  const poi = features.find(feature => feature.properties.metadata.id === poiId)
+
+  if (!poi)
+    throw createError(`Feature with ID: ${poiId} not found.`)
+
+  return poi as ApiPoi
+}
+
+function transformApiPoiDepsCollection(data: ApiPoiDepsCollection, poiId: number) {
+  poiDepsCompo.resetWaypointIndex()
+
+  if (!data)
+    return undefined
+
+  mainPoi.value = getMainPoi(data.features, poiId)
+  const catId = mainPoi.value.properties.metadata.category_ids?.[0]
+
+  if (!catId)
+    throw createError(`Category ID not found for feature ${poiId}.`)
+
+  const category = menuStore.getCurrentCategory(catId)
+
+  if (!category)
+    throw createError(`Category ${catId} not found.`)
+
+  return poiDepsCompo.formatPoiDepsCollection(data, category, 'fr-FR')
 }
 
 function goToSelectedFeature(): void {

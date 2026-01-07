@@ -1,7 +1,9 @@
-import type { GeoJSONFeature, LngLatLike, MapGeoJSONFeature, Point } from 'maplibre-gl'
+import type { GeoJSONFeature, LngLatLike, Point } from 'maplibre-gl'
 import { Marker } from 'maplibre-gl'
 import { createApp } from 'vue'
 import TeritorioIconBadge from '~/components/UI/TeritorioIconBadge.vue'
+import type { PoiUnion } from '~/types/local/poi-deps'
+import { parseStringProperties } from '~/utils/utilities'
 
 function getMarkerDonutSegment(start: number, end: number, r: number, r0: number, colorFill: string): string {
   if (end - start === 1)
@@ -44,7 +46,7 @@ function getMarkerDonutSegment(start: number, end: number, r: number, r0: number
   ].join(' ')
 }
 
-export function clusterRender(element: HTMLDivElement, props: MapGeoJSONFeature['properties']) {
+export function clusterRender(element: HTMLDivElement, props: GeoJSONFeature['properties']) {
   const {
     cluster: _a,
     cluster_id: _b,
@@ -93,29 +95,21 @@ export function clusterRender(element: HTMLDivElement, props: MapGeoJSONFeature[
   element.innerHTML = html
 }
 
-export function markerRender(element: HTMLDivElement, markerSize: number, feature?: GeoJSONFeature) {
+export function markerRender(element: HTMLDivElement, _markerSize: number, feature?: GeoJSONFeature) {
   if (!feature)
     return
 
   element.style.cursor = 'pointer'
 
-  if (typeof feature.properties?.metadata === 'string')
-    feature.properties.metadata = JSON.parse(feature.properties.metadata)
+  parseStringProperties(feature.properties)
 
-  if (typeof feature.properties?.display === 'string')
-    feature.properties.display = JSON.parse(feature.properties?.display)
-
-  if (typeof feature.properties?.editorial === 'string')
-    feature.properties.editorial = JSON.parse(feature.properties?.editorial)
-
-  const { colorFill, colorText } = useContrastedColors(
-    toRef(() => feature.properties.display?.color_fill || '#FFFFFF'),
-    toRef(() => feature.properties.display?.color_text),
-  )
+  const poiDepsCompo = usePoiDeps()
+  const colorFill = poiDepsCompo.isWaypoint(feature as unknown as PoiUnion, 'fr-FR') ? feature.properties.display?.color_text : feature.properties.display?.color_fill
+  const colorText = poiDepsCompo.isWaypoint(feature as unknown as PoiUnion, 'fr-FR') ? feature.properties.display?.color_fill : feature.properties.display?.color_text
 
   createApp(TeritorioIconBadge, {
-    colorFill: feature.properties['route:point:type'] ? colorText.value : colorFill.value,
-    colorText: feature.properties['route:point:type'] ? colorFill.value : colorText.value,
+    colorFill,
+    colorText,
     picto: feature.properties.display?.icon,
     image: feature.properties['image:thumbnail'],
     size: null,
