@@ -2,11 +2,7 @@
 import Field from '~/components/Fields/Field.vue'
 import Block from '~/components/PoisDetails/Block.vue'
 import FieldsHeader from '~/components/UI/FieldsHeader.vue'
-import type {
-  FieldsList,
-  FieldsListGroup,
-  FieldsListItem,
-} from '~/lib/apiPois'
+import type { FieldsList, FieldsListGroup, FieldsListItem } from '~/types/api/field'
 import type { Poi } from '~/types/local/poi'
 import { PropertyTranslationsContextEnum, useSiteStore } from '~/stores/site'
 import { isFiledEmpty } from '~/utils/utilities'

@@ -2,7 +2,7 @@
 import type GeoJSON from 'geojson'
 
 import FieldsGroup from '~/components/PoisDetails/FieldsGroup.vue'
-import type { FieldsListItem } from '~/lib/apiPois'
+import type { FieldsListItem } from '~/types/api/field'
 import type { MapPoiDescription } from '~/lib/mapPois'
 
 const defaultProps = {
