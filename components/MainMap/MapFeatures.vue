@@ -317,7 +317,7 @@ function getMainPoi(features: ApiPoiUnion[], poiId: number): ApiPoi {
   return poi as ApiPoi
 }
 
-function transformApiPoiDepsCollection(data: ApiPoiDepsCollection, poiId: number) {
+function transformApiPoiDepsCollection(data: ApiPoiDepsCollection, poiId: number): PoiUnion[] | undefined {
   poiDepsCompo.resetWaypointIndex()
 
   if (!data)
