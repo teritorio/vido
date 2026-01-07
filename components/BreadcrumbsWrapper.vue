@@ -60,7 +60,7 @@ function getTeritorioIconBadgeProps(item: MenuItem): CustomBreadcrumbItem {
       colorText: colorText.value,
       size: 'md',
     },
-    title: base.name.fr,
+    title: base.name.fr || '',
   }
 }
 </script>

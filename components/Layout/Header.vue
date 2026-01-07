@@ -8,12 +8,13 @@ const siteStore = useSiteStore()
 const { settings } = siteStore
 const { theme } = storeToRefs(siteStore)
 const { locale } = useI18n()
+const lang = locale.value as LanguageCode
 
 if (!settings)
   throw createError({ statusCode: 400, statusMessage: 'Failed to fetch settings', fatal: true })
 
-const mainUrl = computed(() => (locale.value && theme.value?.main_url?.[locale.value]) || '/')
-const target = computed(() => (locale.value && theme.value?.main_url?.[locale.value]) ? '_blank' : '_self')
+const mainUrl = computed(() => (theme.value?.main_url?.[lang]) || '/')
+const target = computed(() => (theme.value?.main_url?.[lang]) ? '_blank' : '_self')
 </script>
 
 <template>
@@ -22,7 +23,7 @@ const target = computed(() => (locale.value && theme.value?.main_url?.[locale.va
       id="logo"
       :main-url="mainUrl"
       :target="target"
-      :site-name="theme!.title.fr"
+      :site-name="theme!.title.fr || ''"
       :logo-url="theme!.logo_url"
     />
     <slot name="search" />

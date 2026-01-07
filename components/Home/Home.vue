@@ -60,6 +60,7 @@ const {
   searchSelectedFeature,
   resultsCount,
 } = storeToRefs(searchStore)
+const poiCompo = usePoi()
 
 const allowRegionBackZoom = ref<boolean>(false)
 const isFilterActive = ref<boolean>(false)
@@ -262,7 +263,7 @@ async function fetchAddress(hash: string) {
   }
 }
 
-async function fetchFavorites() {
+async function fetchFavorites(): Promise<Poi[]> {
   if (!favoritesIds.value.length)
     return []
 
@@ -274,16 +275,22 @@ async function fetchFavorites() {
     query.cliping_polygon_slug = route.query.clipingPolygonSlug.toString()
 
   return await getPois(favoritesIds.value, query)
-    .then(pois => (pois && pois.features) || [])
-    .then(pois =>
-      pois.map(poi => ({
-        ...poi,
-        properties: {
-          ...poi.properties,
-          vido_cat: poi.properties.metadata?.category_ids?.[0],
-        },
-      })),
-    )
+    .then(pois => pois.features.map((feature) => {
+      const catId = feature.properties.metadata.category_ids?.[0]
+
+      if (!catId)
+        throw createError(`Category ID not found for feature ${feature.properties.metadata.id}.`)
+
+      const category = menuStore.getCurrentCategory(catId)
+
+      if (!category)
+        throw createError(`Category ${catId} not found.`)
+
+      const poi = poiCompo.formatPoi(feature, category)
+      poi.properties.vido_cat = poi.properties.metadata?.category_ids?.[0]
+
+      return poi
+    }))
 }
 
 async function handleFavorites() {
@@ -295,7 +302,7 @@ async function handleFavorites() {
   favoriteFeatures.value = [...favoriteFeatures.value, ...favorites, ...favoriteAddresses]
 }
 
-async function handleFavoriteAddresses() {
+async function handleFavoriteAddresses(): Promise<Poi[]> {
   if (!favoriteAddresses.value.size)
     return []
 
