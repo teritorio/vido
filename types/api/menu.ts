@@ -1,6 +1,6 @@
 import type { MultilingualString } from '~/utils/types'
 import type { Filters } from '~/types/api/filters'
-import type { FieldsList } from '~/lib/apiPois'
+import type { FieldsList } from '~/types/api/field'
 
 export interface ApiMenuItem {
   id: number
