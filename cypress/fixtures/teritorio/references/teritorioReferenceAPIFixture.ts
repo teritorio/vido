@@ -9,13 +9,13 @@ import settings from './settings.json'
 import type { ApiPoiDepsCollection } from '~/types/api/poi-deps'
 import type { ApiPoiCollection } from '~/types/api/poi'
 import type { Settings } from '~/lib/apiSettings'
-import type { ApiMenuResponse } from '~/types/api/menu'
+import type { ApiMenuCollection } from '~/types/api/menu'
 
 const fixture: APIFixture = {
   attribute_translations: { fr },
   settings: settings as Settings,
   articles,
-  menu: menu as ApiMenuResponse,
+  menu: menu as ApiMenuCollection,
   pois: pois as ApiPoiCollection,
   deps: {
     1: deps1 as ApiPoiDepsCollection,

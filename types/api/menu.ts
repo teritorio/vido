@@ -59,4 +59,4 @@ export interface ApiMenuCategory extends ApiMenuItem {
 
 export type ApiMenuItemUnion = ApiMenuCategory | ApiMenuGroup | ApiMenuLink
 
-export type ApiMenuResponse = ApiMenuItemUnion[]
+export type ApiMenuCollection = ApiMenuItemUnion[]

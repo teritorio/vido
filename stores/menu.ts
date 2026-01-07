@@ -1,7 +1,7 @@
 import copy from 'fast-copy'
 import { deepEqual } from 'fast-equals'
 import { defineStore } from 'pinia'
-import type { ApiMenuCategory, ApiMenuResponse } from '~/types/api/menu'
+import type { ApiMenuCategory, ApiMenuCollection } from '~/types/api/menu'
 import type { MenuGroup, MenuItem } from '~/types/local/menu'
 import type { ApiPoi, ApiPoiCollection } from '~/types/api/poi'
 import { getPoiByCategoryId } from '~/lib/apiPois'
@@ -50,8 +50,9 @@ export const menuStore = defineStore('menu', () => {
   const featuresColor = computed(() => {
     const colors = Object.values(features.value)
       .flat()
-      .filter(feature => feature.properties.display)
-      .map(feature => feature.properties.display!.color_fill)
+      .map(feature => feature.properties.display.color_fill)
+      .filter(Boolean) as string[]
+
     return [...new Set(colors)]
   })
 
@@ -118,7 +119,7 @@ export const menuStore = defineStore('menu', () => {
     }
   }
 
-  function fetchConfig(items: ApiMenuResponse) {
+  function fetchConfig(items: ApiMenuCollection) {
     try {
       const stateMenuItems: Record<number, MenuItem> = {}
       const localFilters: Record<number, FilterValues> = {}

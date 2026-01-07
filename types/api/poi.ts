@@ -62,7 +62,7 @@ export interface ApiPoiPropertiesMetadata {
 export interface ApiPoiPropertiesDisplay {
   color_fill?: string
   color_line?: string
-  color_text?: string
+  color_text?: TextColors
   text?: string
 }
 
@@ -70,6 +70,8 @@ export interface ApiPoiPropertiesEditorial {
   'website:details'?: MultilingualString
   'unavoidable'?: boolean
 }
+
+export type TextColors = '#000000' | '#FFFFFF'
 
 export type ApiPoi = GeoJSON.Feature<GeoJSON.Geometry, ApiPoiProperties>
 

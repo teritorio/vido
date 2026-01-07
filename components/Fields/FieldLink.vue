@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { PropertyTranslationsContextEnum } from '~/stores/site'
-import type { TextColors } from '~/lib/apiPois'
+import type { TextColors } from '~/types/api/poi'
 
 const props = withDefaults(defineProps<{
   href: string

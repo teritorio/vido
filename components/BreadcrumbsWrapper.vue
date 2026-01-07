@@ -5,7 +5,7 @@ import type { MenuItem } from '~/types/local/menu'
 import { useNavigationStore } from '~/stores/navigation'
 import TeritorioIconBadge from '~/components/UI/TeritorioIconBadge.vue'
 import type { RouteLocationRaw } from '#vue-router'
-import type { TextColors } from '~/lib/apiPois'
+import type { TextColors } from '~/types/api/poi'
 
 const navigationStore = useNavigationStore()
 const { navigationStack } = storeToRefs(navigationStore)

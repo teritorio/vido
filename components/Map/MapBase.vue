@@ -20,8 +20,8 @@ import { TeritorioCluster } from '@teritorio/maplibre-gl-teritorio-cluster'
 import Attribution from '~/components/Map/Attribution.vue'
 import Map from '~/components/Map/Map.vue'
 import type { Poi } from '~/types/local/poi'
+import type { PoiUnion } from '~/types/local/poi-deps'
 import { MAP_ZOOM } from '~/lib/constants'
-import type { MapPoi } from '~/lib/mapPois'
 import type { MapStyleEnum } from '~/utils/types'
 import { mapStore as useMapStore } from '~/stores/map'
 import { clusterRender, markerRender, pinMarkerRender } from '~/lib/clusters'
@@ -157,7 +157,7 @@ function featuresPrepare(features: Poi[]): Poi[] {
     })
 }
 
-function initPoiLayer(features: MapPoi[], clusterPropertiesValues: string[], clusterPropertiesKeyExpression: ExpressionSpecification, cluster?: boolean): void {
+function initPoiLayer(features: PoiUnion[], clusterPropertiesValues: string[], clusterPropertiesKeyExpression: ExpressionSpecification, cluster?: boolean): void {
   if (!map.value)
     return
 

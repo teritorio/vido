@@ -2,7 +2,7 @@ import type { SitemapEntry } from '~/node_modules/nuxt-simple-sitemap/dist/modul
 import type { BuildSitemapOptions } from '~/node_modules/nuxt-simple-sitemap/dist/runtime/util/builder'
 import { buildSitemap } from '~/node_modules/nuxt-simple-sitemap/dist/runtime/util/builder'
 import type { ApiPoiCollection } from '~/types/api/poi'
-import type { ApiMenuResponse } from '~/types/api/menu'
+import type { ApiMenuCollection } from '~/types/api/menu'
 
 export default defineEventHandler(async (event) => {
   const hostname = getHeader(event, 'host')
@@ -26,7 +26,7 @@ export default defineEventHandler(async (event) => {
 
     // Fetch menu and POIs data in parallel
     const [menuItems, pois] = await Promise.all([
-      $fetch<ApiMenuResponse>(`${apiEndpoint}/menu.json`),
+      $fetch<ApiMenuCollection>(`${apiEndpoint}/menu.json`),
       $fetch<ApiPoiCollection>(`${apiEndpoint}/pois.geojson`),
     ])
 
