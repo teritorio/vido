@@ -197,7 +197,7 @@ watch(selectedFeature, (newFeature, oldFeature) => {
         categoryIds: newFeature.properties?.metadata?.category_ids || [],
       })
     }
-    else if (isDepsView.value) {
+    else if (!isDepsView.value) {
       menuStore.fetchFeatures({
         categoryIds: selectedCategoryIds.value,
         clipingPolygonSlug: route.query.clipingPolygonSlug?.toString(),
@@ -210,12 +210,14 @@ watch(selectedCategoryIds, (a, b) => {
   if (a !== b) {
     routerPushUrl()
 
-    menuStore.fetchFeatures({
-      categoryIds: selectedCategoryIds.value,
-      clipingPolygonSlug: route.query.clipingPolygonSlug?.toString(),
-    })
+    if (!isDepsView.value) {
+      menuStore.fetchFeatures({
+        categoryIds: selectedCategoryIds.value,
+        clipingPolygonSlug: route.query.clipingPolygonSlug?.toString(),
+      })
 
-    allowRegionBackZoom.value = true
+      allowRegionBackZoom.value = true
+    }
   }
 })
 
