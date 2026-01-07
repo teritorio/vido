@@ -17,19 +17,13 @@ import { Mode } from '~/utils/types'
 import { flattenFeatures } from '~/utils/utilities'
 import IsochroneStatus from '~/components/Isochrone/IsochroneStatus.vue'
 
-//
-// Props
-//
 const props = defineProps<{
   boundaryArea?: Polygon | MultiPolygon
   initialCategoryIds?: number[]
 }>()
 
-//
-// Composables
-//
 const mapStore = useMapStore()
-const { isModeExplorer, mode, selectedFeature } = storeToRefs(mapStore)
+const { isModeExplorer, mode, selectedFeature, isDepsView } = storeToRefs(mapStore)
 const menuStore = useMenuStore()
 const { apiMenuCategory, features, selectedCategories, selectedCategoryIds, menuItems } = storeToRefs(menuStore)
 const { settings } = storeToRefs(useSiteStore())
@@ -38,15 +32,9 @@ const router = useRouter()
 const { t } = useI18n()
 const { isochroneCurrentFeature } = useIsochrone()
 
-//
-// Data
-//
 const initialBbox = ref<LngLatBounds>()
 const mapFeaturesRef = ref<InstanceType<typeof MapFeatures>>()
 
-//
-// Hooks
-//
 onMounted(() => {
   if (props.initialCategoryIds) {
     menuStore.setSelectedCategoryIds(props.initialCategoryIds)
@@ -65,9 +53,6 @@ onMounted(() => {
   initialBbox.value = getBBox({ type: 'Feature', geometry: props.boundaryArea || settings.value!.bbox_line, properties: {} })
 })
 
-//
-// Computed
-//
 const showEmbeddedUi = computed(() => route.query.showEmbeddedUi !== 'false')
 
 const filters = computed(() => {
@@ -110,17 +95,25 @@ const poiFilters = computed(() => {
   )
 })
 
-//
-// Watchers
-//
-watch(selectedFeature, () => {
+watch(selectedFeature, (newFeature, oldFeature) => {
   routerPushUrl()
+
+  if (newFeature && oldFeature && newFeature.properties.metadata.id === oldFeature.properties.metadata.id)
+    return
+
+  if (!isDepsView.value) {
+    menuStore.fetchFeatures({
+      categoryIds: selectedCategoryIds.value,
+      clipingPolygonSlug: route.query.clipingPolygonSlug?.toString(),
+    })
+  }
 })
 
 watch(selectedCategoryIds, (a, b) => {
   if (a !== b) {
     routerPushUrl()
-    if (selectedCategoryIds.value) {
+
+    if (!isDepsView.value) {
       menuStore.fetchFeatures({
         categoryIds: selectedCategoryIds.value,
         clipingPolygonSlug: route.query.clipingPolygonSlug?.toString(),
@@ -129,9 +122,6 @@ watch(selectedCategoryIds, (a, b) => {
   }
 })
 
-//
-// Methods
-//
 function goToSelectedFeature() {
   if (mapFeaturesRef.value)
     mapFeaturesRef.value.goToSelectedFeature()
@@ -162,6 +152,12 @@ function toggleExploreAroundSelectedPoi() {
     mode.value = Mode.BROWSER
   }
 }
+
+function handlePoiCardClose() {
+  if (mapFeaturesRef.value) {
+    mapFeaturesRef.value.updateSelectedFeature()
+  }
+}
 </script>
 
 <template>
@@ -174,7 +170,7 @@ function toggleExploreAroundSelectedPoi() {
         <UIButton
           :label="t('ui.close')"
           icon="times"
-          @click="mapStore.setSelectedFeature()"
+          @click="handlePoiCardClose"
         />
       </div>
       <PoiCardContent

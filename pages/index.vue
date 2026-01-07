@@ -11,6 +11,7 @@ import { menuStore as useMenuStore } from '~/stores/menu'
 import { mapStore as useMapStore } from '~/stores/map'
 import { regexForCategoryIds } from '~/composables/useIdsResolver'
 import type { Poi } from '~/types/local/poi'
+import type { PoiUnion } from '~/types/local/poi-deps'
 
 const { settings } = storeToRefs(useSiteStore())
 const apiEndpoint = useState('api-endpoint')
@@ -160,7 +161,7 @@ function getMainPoi(features: ApiPoiUnion[]): ApiPoi {
   return poi as ApiPoi
 }
 
-function transformApiPoiDepsCollection(data?: ApiPoiDepsCollection) {
+function transformApiPoiDepsCollection(data?: ApiPoiDepsCollection): PoiUnion[] | undefined {
   poiDepsCompo.resetWaypointIndex()
 
   if (!data)

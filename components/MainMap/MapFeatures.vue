@@ -230,6 +230,7 @@ async function updateSelectedFeature(feature?: PoiUnion): Promise<void> {
   if (!feature) {
     mapStore.setSelectedFeature()
     mapStore.setSelectedFeatureDepsIDs()
+    mapStore.setIsDepsView(false)
   }
   else {
     const id = feature.properties.metadata.id || feature.properties.id || feature.id
