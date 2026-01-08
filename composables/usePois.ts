@@ -1,12 +1,14 @@
-import type { ApiPoiCollection } from '~/types/api/poi'
-import { PropertyTranslationsContextEnum } from '~/stores/site'
+import type { ApiPoi, ApiPoiCollection } from '~/types/api/poi'
+import { menuStore as useMenuStore } from '~/stores/menu'
+import type { Poi } from '~/types/local/poi'
 
 export function usePois() {
-  const { routeToString, addressToString } = useField()
+  const menuStore = useMenuStore()
   const route = useRoute()
   const apiEndpoint = useState<string>('api-endpoint')
+  const poiCompo = usePoi()
 
-  const pois = ref<ApiPoiCollection | null>(null)
+  const pois = ref<Poi[]>()
   const error = ref()
   const pending = ref(false)
   const status = ref()
@@ -24,57 +26,46 @@ export function usePois() {
       cliping_polygon_slug: clipSlug.value,
     }
 
-    const { data, error: err, pending: pend, status: stat } = await useFetch<ApiPoiCollection>(
+    const { data, error: err, pending: pend, status: stat } = await useFetch(
       () => `${apiEndpoint.value}/pois/category/${id}.geojson`,
       {
         query,
-        transform: pois => transformPois(pois, routeToString, addressToString),
+        transform: (pois: ApiPoiCollection) => transformApiPoiCollection(pois),
       },
     )
 
-    pois.value = data.value
-    error.value = err.value
-    pending.value = pend.value
-    status.value = stat.value
+    if (err.value)
+      createError(error.value)
+
+    if (stat.value === 'success' && data.value) {
+      pois.value = data.value
+      error.value = err.value
+      pending.value = pend.value
+      status.value = stat.value
+    }
   }
 
   watch([id, clipSlug], ([newId]) => {
     if (newId)
       fetchPois(newId)
-    else pois.value = null
+    else pois.value = undefined
   }, { immediate: true })
 
-  return { pois, error, pending, status }
-}
+  function transformApiPoiCollection(data: ApiPoiCollection): Poi[] {
+    return data.features.map((feature: ApiPoi) => {
+      const catId = feature.properties.metadata.category_ids?.[0]
 
-function transformPois(
-  pois: ApiPoiCollection,
-  routeToString: Function,
-  addressToString: Function,
-): ApiPoiCollection {
-  const features = pois.features
-  const fields = features?.[0]?.properties.editorial?.list_fields || []
+      if (!catId)
+        throw createError(`Category ID not found for feature ${feature.properties.metadata.id}.`)
 
-  return {
-    ...pois,
-    features: features.map((f) => {
-      const props = { ...f.properties }
+      const category = menuStore.getCurrentCategory(catId)
 
-      if (fields.some(f => f.field === 'route')) {
-        props.route = routeToString(f.properties, getContext('route'))
-      }
+      if (!category)
+        throw createError(`Category ${catId} not found.`)
 
-      if (fields.some(f => f.field === 'addr')) {
-        props.addr = addressToString(f.properties)
-      }
-
-      return { ...f, properties: props }
-    }),
+      return poiCompo.formatPoi(feature, category)
+    })
   }
-}
 
-function getContext(key: string) {
-  return key === 'opening_hours'
-    ? PropertyTranslationsContextEnum.Card
-    : PropertyTranslationsContextEnum.List
+  return { pois, error, pending, status }
 }
