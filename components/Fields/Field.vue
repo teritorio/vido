@@ -143,7 +143,7 @@ const translatedValue = computed(() => {
             </ClientOnly>
 
             <FieldLink
-              v-else-if="['email', 'weblink', 'weblink@download'].includes(field.render)"
+              v-else-if="field.render && ['email', 'weblink', 'weblink@download'].includes(field.render)"
               :title="props.properties.name?.['fr-FR']"
               :href="field.render === 'email' ? `mailto:${f}` : f"
               :icon="field.icon"

@@ -1,6 +1,7 @@
 import type { Poi } from '~/types/local/poi'
 import type { PropertyTranslationsContextEnum } from '~/stores/site'
 import { useSiteStore } from '~/stores/site'
+import type { FieldsListGroup, FieldsListItem } from '~/types/api/field'
 
 interface Route {
   duration?: number
@@ -14,6 +15,10 @@ export const ADDRESS_FIELDS = [
   'addr:postcode',
   'addr:city',
 ]
+
+export function isFieldsListItem(field: FieldsListItem | FieldsListGroup): field is FieldsListItem {
+  return 'field' in field
+}
 
 export default function () {
   const { pv } = useSiteStore()

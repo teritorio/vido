@@ -4,6 +4,7 @@ import type { ApiPoi, ApiPoiProperties, ApiPoiPropertiesDisplay, ApiPoiPropertie
 export interface Poi extends ApiPoi {
   properties: ApiPoiProperties & {
     display: ApiPoiPropertiesDisplay & {
+      text?: string
       icon: ApiMenuCategory['category']['icon']
       style_class?: ApiMenuCategory['category']['style_class']
     }

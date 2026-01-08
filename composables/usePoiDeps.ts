@@ -20,7 +20,7 @@ export function usePoiDeps() {
     let editorialProps = {}
 
     const { colorFill, colorText } = useContrastedColors(
-      category.category.color_fill,
+      feature.properties.display?.color_fill || category.category.color_fill,
       feature.properties.display?.color_text,
     )
 
@@ -51,8 +51,16 @@ export function usePoiDeps() {
       }
     }
 
+    displayProps = {
+      color_fill: colorFill,
+      color_line: feature.properties.display?.color_line || category.category.color_line,
+      color_text: colorText,
+      ...displayProps,
+    }
+
     editorialProps = {
       ...category.category.editorial,
+      ...feature.properties.editorial,
       ...editorialProps,
     }
 
@@ -60,17 +68,8 @@ export function usePoiDeps() {
       ...feature,
       properties: {
         ...feature.properties,
-        display: {
-          color_fill: colorFill,
-          color_line: category.category.color_line,
-          color_text: colorText,
-          ...displayProps,
-          ...feature.properties.display,
-        },
-        editorial: {
-          ...editorialProps,
-          ...feature.properties.editorial,
-        },
+        display: displayProps,
+        editorial: editorialProps,
         vido_visible: true,
       },
     } as PoiUnion

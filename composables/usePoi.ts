@@ -1,5 +1,5 @@
 import type { ApiMenuCategory } from '~/types/api/menu'
-import type { ApiPoi, ApiPoiCollection } from '~/types/api/poi'
+import type { ApiPoi } from '~/types/api/poi'
 import type { Poi } from '~/types/local/poi'
 
 export function usePoi() {
@@ -8,7 +8,7 @@ export function usePoi() {
     category: ApiMenuCategory,
   ): Poi {
     const { colorFill, colorText } = useContrastedColors(
-      category.category.color_fill,
+      feature.properties.display?.color_fill || category.category.color_fill,
       feature.properties.display?.color_text,
     )
 
@@ -18,7 +18,7 @@ export function usePoi() {
         ...feature.properties,
         display: {
           color_fill: colorFill,
-          color_line: category.category.color_line,
+          color_line: feature.properties.display?.color_line || category.category.color_line,
           color_text: colorText,
           icon: category.category.icon,
           style_class: category.category.style_class,
@@ -33,17 +33,7 @@ export function usePoi() {
     } as Poi
   }
 
-  function formatPoiCollection(
-    collection: ApiPoiCollection,
-    category: ApiMenuCategory,
-  ): Poi[] {
-    return collection.features.map((feature) => {
-      return formatPoi(feature, category)
-    })
-  }
-
   return {
     formatPoi,
-    formatPoiCollection,
   }
 }

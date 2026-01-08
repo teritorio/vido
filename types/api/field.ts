@@ -3,43 +3,44 @@ export type RenderEnum =
   | 'text'
   | 'integer'
   | 'boolean'
+  | 'weblink'
+  | 'weblink@social-network'
+  | 'weblink@download'
   | 'email'
   | 'phone'
   | 'date'
-  | 'coordinates'
-  | 'addr'
-  | 'route'
   | 'datetime'
   | 'duration'
   | 'start_end_date'
+  | 'osm:opening_hours'
+  | 'osm:collection_times'
+  | 'osm:opening_hours+values'
   | 'image'
   | 'mapillary'
   | 'panoramax'
   | 'tag'
   | 'color'
   | 'rating-scale'
-  | 'weblink'
-  | 'weblink@social-network'
-  | 'weblink@download'
-  | 'osm:opening_hours'
-  | 'osm:collection_times'
   | 'osm:stars'
+  | 'addr'
+  | 'route'
+  | 'coordinates'
 
 export interface FieldsListItem {
-  group?: undefined
   label?: boolean
   field: string
-  render: RenderEnum
-  icon?: string
-  array?: boolean
   multilingual?: boolean
+  array?: boolean
+  render?: RenderEnum
+  icon?: string
 }
 
 export interface FieldsListGroup {
   group: string
-  fields: FieldsList
-  display_mode: 'standard' | 'card'
+  label?: boolean
+  display_mode?: 'standard' | 'card'
   icon?: string
+  fields: FieldsList
 }
 
 export type FieldsList = (FieldsListItem | FieldsListGroup)[]
