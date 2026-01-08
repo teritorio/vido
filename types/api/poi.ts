@@ -63,7 +63,6 @@ export interface ApiPoiPropertiesDisplay {
   color_fill?: string
   color_line?: string
   color_text?: TextColors
-  text?: string
 }
 
 export interface ApiPoiPropertiesEditorial {

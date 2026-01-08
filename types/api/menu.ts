@@ -40,7 +40,7 @@ export interface ApiMenuCategory extends ApiMenuItem {
     search_indexed?: boolean
     icon: string
     color_fill: string
-    color_line: string
+    color_line?: string
     style_class?: string[]
     style_merge: boolean
     display_mode: 'large' | 'compact'

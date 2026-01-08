@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { localeIncludes } from 'locale-includes'
 import { storeToRefs } from 'pinia'
 import { PropertyTranslationsContextEnum, useSiteStore } from '~/stores/site'
-import type { FieldsListItem, RenderEnum } from '~/types/api/field'
+import type { FieldsList, RenderEnum } from '~/types/api/field'
 import type { Poi } from '~/types/local/poi'
 import Field from '~/components/Fields/Field.vue'
 import IconButton from '~/components/UI/IconButton.vue'
@@ -12,12 +12,13 @@ import Actions from '~/components/PoisList/Actions.vue'
 import TeritorioIconBadge from '~/components/UI/TeritorioIconBadge.vue'
 import { menuStore as useMenuStore } from '~/stores/menu'
 import { headerFromSettings } from '~/lib/apiSettings'
+import { isFieldsListItem } from '~/composables/useField'
 
 interface DataTableHeader {
   filterable?: boolean
   key: string
   sortable?: boolean
-  render: RenderEnum
+  render?: RenderEnum
   array?: boolean
   icon?: string
   multilingual?: boolean
@@ -26,16 +27,10 @@ interface DataTableHeader {
   width?: string
 }
 
-//
-// Props
-//
 defineProps<{
   detailsIsExternal?: boolean
 }>()
 
-//
-// Composables
-//
 const { t, locale } = useI18n()
 const siteStore = useSiteStore()
 const { p } = siteStore
@@ -43,43 +38,35 @@ const { settings, theme } = storeToRefs(siteStore)
 const menuStore = useMenuStore()
 const { contribMode, isContribEligible, getContributorFields } = useContrib()
 const route = useRoute()
-
-//
-// Data
-//
-const search = ref('')
-
-//
-// Data Fetching
-//
 const { pois, error, pending, status } = usePois()
 
 if (error.value) {
   clearError()
 }
 
-//
-// Computed
-//
-const headers = computed(() => {
-  let fields = [{ field: 'name', render: 'string' } as FieldsListItem]
-  if (pois.value?.features.length && pois.value.features[0].properties.editorial?.list_fields)
-    fields = pois.value.features[0].properties.editorial.list_fields
+const search = ref('')
 
-  const headers: DataTableHeader[] = fields.map((f: FieldsListItem) => ({
-    filterable: true,
-    key: `properties.${f.field}`,
-    sortable: true,
-    render: f.render,
-    array: f.array,
-    icon: f.icon,
-    multilingual: f.multilingual,
-    title: p(
-      f.field,
-      PropertyTranslationsContextEnum.List,
-    ),
-    sort: customSort,
-  }))
+const headers = computed(() => {
+  let fields = [{ field: 'name', render: 'string' }] as FieldsList
+  if (pois.value?.length && pois.value[0].properties.editorial?.list_fields)
+    fields = pois.value[0].properties.editorial.list_fields
+
+  const headers: DataTableHeader[] = fields
+    .filter(isFieldsListItem)
+    .map(field => ({
+      filterable: true,
+      key: `properties.${field.field}`,
+      sortable: true,
+      render: field.render,
+      array: field.array,
+      icon: field.icon,
+      multilingual: field.multilingual,
+      title: p(
+        field.field,
+        PropertyTranslationsContextEnum.List,
+      ),
+      sort: customSort,
+    }))
 
   if (contribMode) {
     headers.push({
@@ -122,7 +109,7 @@ const teritorioIconBadgeProps = computed(() => {
     throw createError({ statusCode: 404, message: 'Category Not Found' })
   }
 
-  const { colorFill, colorText } = getContrastedColors()
+  const { colorFill, colorText } = useContrastedColors(category.value.category.color_fill)
 
   return {
     colorFill: colorFill.value,
@@ -132,18 +119,6 @@ const teritorioIconBadgeProps = computed(() => {
   }
 })
 
-function getContrastedColors() {
-  if (!category.value) {
-    throw createError({ statusCode: 404, message: 'Category Not Found' })
-  }
-
-  const { colorFill, colorText } = useContrastedColors(category.value.category.color_fill)
-  return { colorFill, colorText }
-}
-
-//
-// Methods
-//
 function valueToString(item: any) {
   if (Array.isArray(item))
     return item.join(' ')
@@ -191,7 +166,7 @@ function getColKey(key: string) {
 
 function getField(key: string, item: Poi) {
   const keyName = getColKey(key)
-  return item.properties.editorial?.list_fields?.find(f => f.field === keyName)
+  return item.properties.editorial.list_fields?.filter(isFieldsListItem).find(f => f.field === keyName)
 }
 
 if (settings.value && theme.value) {
@@ -214,7 +189,7 @@ if (settings.value && theme.value) {
         v-else
         :loading="pending && status === 'pending'"
         :headers="headers"
-        :items="pois?.features"
+        :items="pois"
         :no-data-text="t('poisTable.empty')"
         :search="search"
         :custom-filter="customFilter"
@@ -255,7 +230,7 @@ if (settings.value && theme.value) {
                   v-if="category"
                   class="ma-0 w-auto"
                   :category-id="category.id"
-                  :color-line="category.category.color_line"
+                  :color-line="category.category.color_line || '#000000'"
                 />
               </VCol>
             </VRow>

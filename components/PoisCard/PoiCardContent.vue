@@ -12,10 +12,8 @@ import { useSiteStore } from '~/stores/site'
 import ContribFieldGroup from '~/components/Fields/ContribFieldGroup.vue'
 import useDevice from '~/composables/useDevice'
 import IsochroneTrigger from '~/components/Isochrone/IsochroneTrigger.vue'
+import { isFieldsListItem } from '~/composables/useField'
 
-//
-// Props
-//
 const props = withDefaults(defineProps<{
   detailsIsExternal?: boolean
   poi: Poi
@@ -27,18 +25,12 @@ const props = withDefaults(defineProps<{
   showOnlyRouteAction: false,
 })
 
-//
-// Emits
-//
 const emit = defineEmits<{
   (e: 'favoriteClick', poi: Poi): void
   (e: 'exploreClick', poi: Poi): void
   (e: 'zoomClick', poi: Poi): void
 }>()
 
-//
-// Composables
-//
 const { t } = useI18n()
 const { $tracking } = useNuxtApp()
 const { favoritesIds, favoriteAddresses } = storeToRefs(useFavoriteStore())
@@ -48,27 +40,17 @@ const device = useDevice()
 const { enabled: isochroneEnabled, isochroneCurrentFeature } = useIsochrone()
 const { featureName, featureCategoryName } = useFeature(toRef(() => props.poi), { type: 'popup' })
 const { explorerModeEnabled, favoritesModeEnabled } = storeToRefs(useSiteStore())
-
 const { colorFill, colorText } = useContrastedColors(
-  toRef(() => props.poi.properties.display?.color_fill || '#FFFFFF'),
-  toRef(() => props.poi.properties.display?.color_text),
+  toRef(() => props.poi.properties.display.color_fill || '#FFFFFF'),
+  toRef(() => props.poi.properties.display.color_text),
 )
 
-//
-// Data
-//
 const routeHref = ref<string>()
 
-//
-// Hooks
-//
 onMounted(() => {
   routeHref.value = coordinatesHref(props.poi.geometry)
 })
 
-//
-// Computed
-//
 const id = computed(() => {
   return props.poi.properties.metadata.id
 })
@@ -80,11 +62,11 @@ const isFavorite = computed(() => {
 })
 
 const colorLine = computed(() => {
-  return props.poi.properties.display?.color_line || '#000000'
+  return props.poi.properties.display.color_line || '#000000'
 })
 
 const icon = computed(() => {
-  return props.poi.properties.display?.icon
+  return props.poi.properties.display.icon
 })
 
 const description = computed(() => {
@@ -92,11 +74,11 @@ const description = computed(() => {
 })
 
 const unavoidable = computed(() => {
-  return Boolean(props.poi.properties.editorial?.unavoidable)
+  return Boolean(props.poi.properties.editorial.unavoidable)
 })
 
 const websiteDetails = computed(() => {
-  const url = props.poi.properties.editorial && props.poi.properties.editorial['website:details']?.['fr-FR']
+  const url = props.poi.properties.editorial['website:details']?.['fr-FR']
 
   if (!url) {
     return undefined
@@ -118,9 +100,10 @@ const websiteDetails = computed(() => {
   }
 })
 
-//
-// Methods
-//
+const fieldListItems = computed(() => {
+  return props.poi.properties.editorial.popup_fields?.filter(isFieldsListItem)
+})
+
 function onZoomClick() {
   trackingPopupEvent('zoom')
   emit('zoomClick', props.poi)
@@ -233,10 +216,7 @@ function trackIsochroneEvent(profile: Profile) {
 
     <div v-else class="tw-h-auto tw-flex-grow tw-shrink-0">
       <Fields
-        :fields="
-          (poi.properties.editorial && poi.properties.editorial.popup_fields)
-            || []
-        "
+        :fields="fieldListItems || []"
         :properties="poi.properties"
         :details="websiteDetails"
         :geom="poi.geometry"
