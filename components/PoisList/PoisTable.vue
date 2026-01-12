@@ -230,7 +230,7 @@ if (settings.value && theme.value) {
                   v-if="category"
                   class="ma-0 w-auto"
                   :category-id="category.id"
-                  :color-line="category.category.color_line || '#000000'"
+                  :color-line="category.category.color_line || category.category.color_fill"
                 />
               </VCol>
             </VRow>

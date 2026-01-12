@@ -11,7 +11,6 @@ import FavoriteIcon from '~/components/UI/FavoriteIcon.vue'
 import IconButton from '~/components/UI/IconButton.vue'
 import RelativeDate from '~/components/UI/RelativeDate.vue'
 import TeritorioIcon from '~/components/UI/TeritorioIcon.vue'
-import type { ApiPoiDepsCollection } from '~/types/api/poi-deps'
 import type { FieldsList } from '~/types/api/field'
 import type { Poi } from '~/types/local/poi'
 import type { Settings } from '~/lib/apiSettings'
@@ -20,11 +19,12 @@ import { OriginEnum } from '~/utils/types'
 import FieldsHeader from '~/components/UI/FieldsHeader.vue'
 import ContribFieldGroup from '~/components/Fields/ContribFieldGroup.vue'
 import PanoramaxViewer from '~/components/PoisDetails/PanoramaxViewer.vue'
+import type { PoiUnion } from '~/types/local/poi-deps'
 
 const props = defineProps<{
   settings: Settings
   poi: Poi
-  poiDeps?: ApiPoiDepsCollection
+  poiDeps?: PoiUnion[]
   pageTitle: string
 }>()
 
@@ -36,16 +36,11 @@ const favoriteStore = useFavoriteStore()
 const { favoritesIds, favoriteAddresses } = storeToRefs(favoriteStore)
 const { contribMode, isContribEligible, getContributorFields } = useContrib()
 
-const { colorFill, colorText } = useContrastedColors(
-  props.poi.properties.display?.color_fill || '#FFFFFF',
-  props.poi.properties.display?.color_text,
-)
-
 const isLargeLayout = computed((): boolean => {
   if (!props.poiDeps)
     return false
 
-  return props.poiDeps.features.length > 0
+  return props.poiDeps.length > 0
 })
 
 const properties = computed((): Poi['properties'] => {
@@ -59,18 +54,14 @@ const properties = computed((): Poi['properties'] => {
 })
 
 const detailsFields = computed((): FieldsList | undefined => {
-  const fields = props.poi.properties.editorial?.details_fields
+  const fields = props.poi.properties.editorial.details_fields
+
   if (!fields || !isLargeLayout.value) {
     return fields
   }
   else {
-    // @ts-expect-error: ignore
-    return fields.filter(field => field.field !== 'description')
+    return fields.filter(isFieldsListItem).filter(field => field.field !== 'description')
   }
-})
-
-const colorLine = computed((): string => {
-  return props.poi.properties.display?.color_line || '#76009E'
 })
 
 const id = computed((): number => {
@@ -136,10 +127,9 @@ onMounted(() => {
   <PoiLayout
     :settings="settings"
     :name="pageTitle"
-    :icon="poi.properties.display && poi.properties.display.icon"
-    :color-line="colorLine"
-    :color-fill="colorFill"
-    :color-text="colorText"
+    :icon="poi.properties.display.icon"
+    :color-fill="props.poi.properties.display.color_fill"
+    :color-text="props.poi.properties.display.color_text"
   >
     <template #headerButtons>
       <IconButton
@@ -147,7 +137,7 @@ onMounted(() => {
         class="tw-w-11 tw-h-11 tw-mr-3 sm:tw-mr-9"
         @click.stop="toggleFavorite"
       >
-        <FavoriteIcon :is-active="isFavorite" :color-line="colorLine" />
+        <FavoriteIcon :is-active="isFavorite" :color-line="props.poi.properties.display.color_line" />
       </IconButton>
       <IconButton
         :href="mapURL"
@@ -162,8 +152,8 @@ onMounted(() => {
       <Share
         class="print:tw-hidden"
         :title="poi.properties.name?.['fr-FR']"
-        :href="poi.properties.editorial && poi.properties.editorial['website:details']?.['fr-FR']"
-        :color-line="colorLine"
+        :href="poi.properties.editorial['website:details']?.['fr-FR']"
+        :color-line="props.poi.properties.display.color_line"
       />
     </template>
     <template #body>
@@ -178,8 +168,8 @@ onMounted(() => {
               icon: '',
             }"
             :properties="properties"
-            :color-fill="colorFill"
-            :color-text="colorText"
+            :color-fill="props.poi.properties.display.color_fill"
+            :color-text="props.poi.properties.display.color_text"
             :geom="poi.geometry"
           />
           <div v-if="contribMode && isContribEligible(poi.properties)">
@@ -232,8 +222,8 @@ onMounted(() => {
             }"
             :properties="poi.properties"
             :geom="poi.geometry"
-            :color-fill="colorFill"
-            :color-text="colorText"
+            :color-fill="props.poi.properties.display.color_fill"
+            :color-text="props.poi.properties.display.color_text"
           />
         </div>
       </div>
@@ -242,10 +232,9 @@ onMounted(() => {
         v-if="isLargeLayout && poiDeps"
         id="route-map"
         :poi="poi"
-        :route="poiDeps"
-        :color-fill="colorFill"
-        :color-text="colorText"
-        :color-line="colorLine"
+        :poi-deps="poiDeps"
+        :color-fill="props.poi.properties.display.color_fill"
+        :color-text="props.poi.properties.display.color_text"
       />
     </template>
 

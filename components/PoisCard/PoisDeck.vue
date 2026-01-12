@@ -3,9 +3,10 @@ import type { Poi } from '~/types/local/poi'
 import PoiCard from '~/components/PoisCard/PoiCard.vue'
 import PoiCardLight from '~/components/PoisCard/PoiCardLight.vue'
 import { favoriteStore as useFavoriteStore } from '~/stores/favorite'
+import type { PoiUnion } from '~/types/local/poi-deps'
 
 defineProps<{
-  pois: Poi[]
+  pois: PoiUnion[]
   isCardLight: boolean
 }>()
 
@@ -34,7 +35,7 @@ const favoriteStore = useFavoriteStore()
       v-for="item in pois"
       :key="item.properties.metadata.id"
       :can-close="false"
-      :poi="item"
+      :poi="item as Poi"
       class="tw-grow-1 poi-deck"
       :class="[
         !favoriteStore.isFavorite(item.properties.metadata.id)

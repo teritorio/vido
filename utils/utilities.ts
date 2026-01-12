@@ -96,8 +96,9 @@ export function formatApiAddressToFeature(feature: GeoJSON.Feature<GeoJSON.Point
         icon: feature.properties.type === 'municipality'
           ? 'city'
           : 'map-marker-alt',
-        color_fill: '#AAA',
-        color_line: '#AAA',
+        color_fill: '#AAAAAA',
+        color_line: '#AAAAAA',
+        color_text: '#FFFFFF',
       },
       editorial: {
         popup_fields: [{ field: 'name', render: 'string' }],

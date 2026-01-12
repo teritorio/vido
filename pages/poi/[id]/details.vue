@@ -1,17 +1,12 @@
 <script setup lang="ts">
-import { groupBy } from 'lodash'
 import { storeToRefs } from 'pinia'
 import PoiDetails from '~/components/PoisDetails/PoiDetails.vue'
 import type { ApiPoiDepsCollection } from '~/types/api/poi-deps'
-import type { ApiPoi } from '~/types/api/poi'
 import { headerFromSettings } from '~/lib/apiSettings'
 import { useSiteStore } from '~/stores/site'
 import { regexForPOIIds } from '~/composables/useIdsResolver'
-
-interface PoiPageData {
-  poi?: ApiPoi
-  poiDeps?: ApiPoiDepsCollection
-}
+import type { PoiUnion } from '~/types/local/poi-deps'
+import type { Poi } from '~/types/local/poi'
 
 definePageMeta({
   validate({ params }) {
@@ -23,57 +18,45 @@ const { articles, settings, theme } = storeToRefs(useSiteStore())
 const { params } = useRoute()
 const { $trackingInit } = useNuxtApp()
 const apiEndpoint = useState('api-endpoint')
+const poiDepsCompo = usePoiDeps()
 
-const { data, error } = await useFetch(
+const poi = ref<Poi>()
+const poiDeps = ref<PoiUnion[]>()
+const poiId = computed(() => Number.parseInt(params.id.toString()))
+
+const { data, error, status } = await useFetch(
   `${apiEndpoint.value}/poi/${params.id}/deps.geojson`,
   {
     key: `poi-${params.id}`,
     query: {
-
       geometry_as: 'point_or_bbox',
       short_description: false,
     },
-    transform: (response: ApiPoiDepsCollection): PoiPageData => {
-      if (!response?.features) {
-        return { poi: undefined, poiDeps: undefined }
-      }
+    transform: (data: ApiPoiDepsCollection) => {
+      poiDepsCompo.resetWaypointIndex()
 
-      const { true: poiFeatures, false: otherFeatures } = groupBy(
-        response.features,
-        feature => 'metadata' in feature.properties
-          ? feature.properties.metadata.id.toString() === params.id
-          : false,
-      )
-
-      const poi = poiFeatures?.[0] as ApiPoi | undefined
-
-      const poiDeps: ApiPoiDepsCollection = {
-        ...response,
-        features: otherFeatures || [],
-      }
-
-      return { poi, poiDeps }
+      return poiDepsCompo.formatPoiDepsCollection(data, poiId.value, 'fr-FR')
     },
   },
 )
 
 if (error.value) {
-  throw createError({
-    statusCode: 500,
-    statusMessage: `Failed to fetch POI data: ${error.value.message}`,
-  })
+  throw createError(error.value)
 }
 
-if (!data.value?.poi) {
+if (status.value === 'success' && data.value) {
+  poi.value = data.value.find(feature => feature.properties.metadata.id === poiId.value) as Poi
+  poiDeps.value = data.value.filter(feature => feature.properties.metadata.id !== poiId.value) as PoiUnion[]
+}
+
+if (!poi.value) {
   throw createError({
     statusCode: 404,
-    statusMessage: `POI with ID: ${params.id} not found`,
+    statusMessage: `Poi ${poiId.value} not found.`,
   })
 }
 
-const poi = ref(data.value.poi)
-const poiDeps = ref(data.value.poiDeps)
-const { featureSeoTitle } = useFeature(poi as Ref<ApiPoi>, { type: 'details' })
+const { featureSeoTitle } = useFeature(toRef(poi.value), { type: 'details' })
 
 if (!featureSeoTitle.value) {
   throw createError({
@@ -103,15 +86,27 @@ onBeforeMount(() => {
 </script>
 
 <template>
-  <PoiDetails
-    v-if="settings"
-    :settings="settings"
-    :nav-menu-entries="articles!"
-    :poi="poi!"
-    :poi-deps="poiDeps"
-    :page-title="featureSeoTitle!"
-    class="page-details tw-overflow-clip"
-  />
+  <VApp>
+    <VAlert
+      v-if="error"
+      :closable="true"
+      :style="{ zIndex: 999 }"
+      :text="error.message"
+      location="top center"
+      position="fixed"
+      type="error"
+      variant="elevated"
+    />
+    <PoiDetails
+      v-if="settings && poi"
+      :settings="settings"
+      :nav-menu-entries="articles!"
+      :poi="poi"
+      :poi-deps="poiDeps"
+      :page-title="featureSeoTitle!"
+      class="page-details tw-overflow-clip"
+    />
+  </VApp>
 </template>
 
 <style lang="scss" scoped>

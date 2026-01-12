@@ -18,7 +18,7 @@ export function usePoi() {
         ...feature.properties,
         display: {
           color_fill: colorFill,
-          color_line: feature.properties.display?.color_line || category.category.color_line,
+          color_line: feature.properties.display?.color_line || category.category.color_line || colorFill,
           color_text: colorText,
           icon: category.category.icon,
           style_class: category.category.style_class,
