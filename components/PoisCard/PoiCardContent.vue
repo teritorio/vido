@@ -20,7 +20,7 @@ const props = withDefaults(defineProps<{
   detailsIsExternal?: boolean
   poi: ApiPoi
   showActions?: boolean
-  showOnlyRouteAction: boolean
+  showOnlyRouteAction?: boolean
 }>(), {
   detailsIsExternal: false,
   showActions: true,
