@@ -168,17 +168,8 @@ function transformApiPoiDepsCollection(data?: ApiPoiDepsCollection): PoiUnion[] 
     return undefined
 
   mainPoi.value = getMainPoi(data.features)
-  const catId = mainPoi.value.properties.metadata.category_ids?.[0]
 
-  if (!catId)
-    throw createError(`Category ID not found for feature ${poiId.value}.`)
-
-  const category = menuStore.getCurrentCategory(catId)
-
-  if (!category)
-    throw createError(`Category ${catId} not found.`)
-
-  return poiDepsCompo.formatPoiDepsCollection(data, category, 'fr-FR')
+  return poiDepsCompo.formatPoiDepsCollection(data, mainPoi.value.properties.metadata.id, 'fr-FR')
 }
 </script>
 

@@ -1,40 +1,6 @@
 import { stringifyOptions } from '~/lib/apiPois'
 import type { ApiPoisOptions } from '~/lib/apiPois'
-import type { ApiPoi } from '~/types/api/poi'
 import type { ApiPoiDeps } from '~/types/api/poi-deps'
-import { iconMap } from '~/types/local/poi-deps'
-import type { PoiDeps } from '~/types/local/poi-deps'
-
-export function prepareApiPoiDeps(
-  featureCollection: ApiPoiDeps[],
-  referenceIds?: number[],
-): {
-    waypoints: ApiPoiDeps[]
-    pois: ApiPoi[]
-  } {
-  const waypoints: ApiPoiDeps[] = []
-  const pois: ApiPoi[] = []
-
-  if (referenceIds && referenceIds.length > 0) {
-    for (const id of referenceIds) {
-      const feature = Object.values(featureCollection).find(f => f.properties.metadata.id === id)
-
-      if (!feature) {
-        console.error(`Feature ${id} in dep_ids but not in collection.`)
-        continue
-      }
-
-      if (feature.properties['route:point:type']) {
-        waypoints.push(feature as ApiPoiDeps)
-      }
-      else {
-        pois.push(feature as ApiPoi)
-      }
-    }
-  }
-
-  return { waypoints, pois }
-}
 
 export async function getPoiDepsById(
   poiId: number | string,
@@ -55,44 +21,4 @@ export async function getPoiDepsById(
       )
     }
   })
-}
-
-export function apiRouteWaypointToApiPoi(
-  waypoint: ApiPoiDeps,
-  colorFill: string,
-  colorLine: string,
-  colorText: '#000000' | '#FFFFFF',
-  text?: string,
-): PoiDeps {
-  return {
-    ...waypoint,
-    properties: {
-      ...waypoint.properties,
-      name: waypoint.properties.name,
-      description: waypoint.properties.description,
-      metadata: {
-        id: waypoint.properties.id,
-      },
-      display: {
-        icon: iconMap[waypoint.properties['route:point:type']],
-        color_fill: colorFill,
-        color_line: colorLine,
-        color_text: colorText,
-        text,
-      },
-      editorial: {
-        popup_fields: [
-          {
-            field: 'short_description',
-            render: 'text',
-          },
-          {
-            field: 'coordinates',
-            render: 'coordinates',
-            label: true,
-          },
-        ],
-      },
-    },
-  }
 }

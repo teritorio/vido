@@ -7,14 +7,12 @@ import { useSiteStore } from '~/stores/site'
 const siteStore = useSiteStore()
 const { settings } = siteStore
 const { theme } = storeToRefs(siteStore)
-const { locale } = useI18n()
-const lang = locale.value as LanguageCode
 
 if (!settings)
   throw createError({ statusCode: 400, statusMessage: 'Failed to fetch settings', fatal: true })
 
-const mainUrl = computed(() => (theme.value?.main_url?.[lang]) || '/')
-const target = computed(() => (theme.value?.main_url?.[lang]) ? '_blank' : '_self')
+const mainUrl = computed(() => (theme.value?.main_url?.fr) || '/')
+const target = computed(() => (theme.value?.main_url?.fr) ? '_blank' : '_self')
 </script>
 
 <template>

@@ -1,17 +1,14 @@
 <script setup lang="ts">
-import type { ApiPoiDeps, ApiPoiDepsCollection } from '~/types/api/poi-deps'
-import { iconMap } from '~/types/local/poi-deps'
+import type { PoiUnion } from '~/types/local/poi-deps'
 import type { Poi } from '~/types/local/poi'
 import MapPois from '~/components/Map/MapPois.vue'
 import PoisDeck from '~/components/PoisCard/PoisDeck.vue'
-import { prepareApiPoiDeps } from '~/lib/apiPoiDeps'
 
 const props = defineProps<{
   poi: Poi
-  route: ApiPoiDepsCollection
+  poiDeps: PoiUnion[]
   colorFill: string
   colorText: string
-  colorLine: string
 }>()
 
 defineEmits<{
@@ -21,73 +18,43 @@ defineEmits<{
 }>()
 
 const { t } = useI18n()
+const poiDepsCompo = usePoiDeps()
 
-const deps = ref<Poi[]>([])
-const waypoints = ref<ApiPoiDeps[]>([])
-const pois = ref<Poi[]>([])
+const featureDepsIDs = computed(() => {
+  const ids = [props.poi.properties.metadata.id]
 
-const featureDepsIDs = ref<number[]>([])
+  props.poiDeps.map(f => ids.push(f.properties.metadata.id))
 
-if (props.poi.properties.metadata.dep_ids) {
-  const featureReordered = prepareApiPoiDeps(
-    props.route.features,
-    props.poi.properties.metadata.dep_ids,
-  )
-
-  waypoints.value = featureReordered.waypoints
-  pois.value = featureReordered.pois
-}
-
-deps.value.push(...pois.value, props.poi)
-
-let waypointIndex = 1
-const apiWaypoints = waypoints.value.map((w) => {
-  const formattedWaypoint = {
-    ...w,
-    properties: {
-      ...w.properties,
-      display: {
-        icon: iconMap[w.properties['route:point:type']],
-        color_fill: props.colorFill,
-        color_text: props.colorText,
-        color_line: props.colorLine,
-        text: w.properties['route:point:type']
-        === ApiRouteWaypointType.way_point
-          ? waypointIndex.toString()
-          : undefined,
-      },
-      editorial: {
-        popup_fields: [
-          {
-            field: 'short_description',
-            render: 'text',
-          },
-          {
-            field: 'coordinates',
-            render: 'coordinates',
-            label: true,
-          },
-        ],
-      },
-    },
-  } as Poi
-
-  deps.value.push(formattedWaypoint)
-
-  if (w.properties['route:point:type'] === ApiRouteWaypointType.way_point)
-    waypointIndex++
-
-  return formattedWaypoint
+  return ids
 })
 
-deps.value.forEach(d => featureDepsIDs.value.push(d.properties.metadata.id))
+const formattedFeatures = computed(() => {
+  return [props.poi, ...props.poiDeps].map((f) => {
+    f.properties.editorial.popup_fields = [
+      {
+        field: 'short_description',
+        render: 'text',
+      },
+      {
+        field: 'coordinates',
+        render: 'coordinates',
+        label: true,
+      },
+    ]
+
+    return f
+  })
+})
+
+const waypoints = computed(() => props.poiDeps.filter(f => poiDepsCompo.isWaypoint(f, ('fr-FR'))))
+const pois = computed(() => props.poiDeps.filter(f => !poiDepsCompo.isWaypoint(f, 'fr-FR')))
 </script>
 
 <template>
-  <div v-if="deps.length">
+  <div>
     <MapPois
       class="map-pois tw-relative"
-      :features="deps"
+      :features="formattedFeatures"
       :feature-ids="featureDepsIDs"
       :fullscreen-control="true"
       :off-map-attribution="true"
@@ -96,7 +63,7 @@ deps.value.forEach(d => featureDepsIDs.value.push(d.properties.metadata.id))
     <div class="detail-wrapper">
       <div v-if="waypoints.length > 0" class="detail-left">
         <h2>{{ t('poiDetails.routes.waypoints') }}</h2>
-        <PoisDeck :pois="apiWaypoints" :is-card-light="true" />
+        <PoisDeck :pois="waypoints" :is-card-light="true" />
       </div>
       <div v-if="pois.length > 0" class="detail-right">
         <h2>{{ t('poiDetails.routes.pois') }}</h2>

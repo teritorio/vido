@@ -2,12 +2,12 @@
 import type GeoJSON from 'geojson'
 import Field from '~/components/Fields/Field.vue'
 import type { FieldsListItem } from '~/types/api/field'
-import type { Poi } from '~/types/local/poi'
+import type { PoiUnion } from '~/types/local/poi-deps'
 import { PropertyTranslationsContextEnum } from '~/stores/site'
 
 defineProps<{
   fields: FieldsListItem[]
-  properties: Poi['properties']
+  properties: PoiUnion['properties']
   details?: string
   geom: GeoJSON.Geometry
 }>()

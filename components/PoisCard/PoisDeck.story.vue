@@ -2,7 +2,6 @@
 import PoisDeck from '~/components/PoisCard/PoisDeck.vue'
 import poisDeps from '~/cypress/fixtures/teritorio/references/poi/2/deps.json'
 import type { ApiPoiDeps } from '~/types/api/poi-deps'
-import { apiRouteWaypointToApiPoi } from '~/lib/apiPoiDeps'
 
 const points = poisDeps.features.filter(
   feature => feature.properties['route:point:type'],

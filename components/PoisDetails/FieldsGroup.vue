@@ -29,29 +29,27 @@ function fieldTranslateK(field: string) {
 }
 
 function isListEmpty(
-  fileds: FieldsList,
+  fields: FieldsList,
   properties: { [key: string]: string },
   geom: GeoJSON.Geometry,
 ): boolean {
   return (
-    !fileds
-    || fileds.reduce(
-      (sum: boolean, value: FieldsListItem | FieldsListGroup) =>
-        sum
-        && (value.group !== undefined
+    fields.reduce((sum: boolean, value: FieldsListItem | FieldsListGroup) =>
+      sum
+      && (
+        'group' in value
           ? isListEmpty(value.fields, properties, geom)
-          : isFiledEmpty(value, properties, geom)),
-      true,
-    )
+          : isFiledEmpty(value, properties, geom)
+      ), true)
   )
 }
 </script>
 
 <template>
   <div>
-    <template v-for="field in group.fields" :key="field.group">
+    <template v-for="(field, key) in group.fields" :key="key">
       <div
-        v-if="field.group !== undefined && !isListEmpty(field.fields, properties, geom)"
+        v-if="'group' in field && !isListEmpty(field.fields, properties, geom)"
         class="block print:tw-mb-2"
       >
         <div v-if="!field.display_mode || field.display_mode === 'standard'">
@@ -96,7 +94,7 @@ function isListEmpty(
       </div>
 
       <Field
-        v-else-if="field.group === undefined"
+        v-else-if="!('group' in field)"
         :id="`Field_-${recursionStack.join('-')}-${field.field}`"
         :context="context"
         :recursion-stack="recursionStack"

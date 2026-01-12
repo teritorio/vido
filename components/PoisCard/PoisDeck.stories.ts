@@ -1,6 +1,5 @@
 import PoisDeck from '~/components/PoisCard/PoisDeck.vue'
 import type { ApiPoiDeps } from '~/types/api/poi-deps'
-import { apiRouteWaypointToApiPoi } from '~/lib/apiPoiDeps'
 import { bind } from '~/lib/storybook-types'
 
 import '@teritorio/font-teritorio/teritorio/teritorio.css'

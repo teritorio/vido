@@ -11,7 +11,7 @@ import Stars from '~/components/Fields/Stars.vue'
 import FieldsHeader from '~/components/UI/FieldsHeader.vue'
 import FieldLink from '~/components/Fields/FieldLink.vue'
 import type { FieldsListItem } from '~/types/api/field'
-import type { Poi } from '~/types/local/poi'
+import type { PoiUnion } from '~/types/local/poi-deps'
 import { PropertyTranslationsContextEnum, useSiteStore } from '~/stores/site'
 import { AssocRenderKeys } from '~/utils/types'
 
@@ -19,7 +19,7 @@ const props = withDefaults(defineProps<{
   context: PropertyTranslationsContextEnum
   recursionStack?: string[]
   field: FieldsListItem
-  properties: Poi['properties']
+  properties: PoiUnion['properties']
   details?: string
   geom: GeoJSON.Geometry
 }>(), {
@@ -148,8 +148,8 @@ const translatedValue = computed(() => {
               :href="field.render === 'email' ? `mailto:${f}` : f"
               :icon="field.icon"
               :context="context"
-              :color-fill="props.properties.display?.color_fill"
-              :color-text="props.properties.display?.color_text"
+              :color-fill="props.properties.display.color_fill"
+              :color-text="props.properties.display.color_text"
             >
               {{ fieldTranslateK(field.field) }}
             </FieldLink>
