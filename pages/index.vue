@@ -171,9 +171,8 @@ if (status.value === 'success' && data.value) {
       deps.push(formattedWaypoint)
     })
   }
-  else {
-    deps.push(poi)
-  }
+
+  deps.push(poi)
 
   deps = deps.map((d) => {
     mapStore.addSelectedFeatureDepsIDs(d.properties.metadata.id)

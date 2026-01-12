@@ -275,7 +275,7 @@ async function updateSelectedFeature(feature?: ApiPoi): Promise<void> {
           waypoints = featureReordered.waypoints
           pois = featureReordered.pois
 
-          deps.push(...pois)
+          deps.push(...pois, poi)
 
           waypoints.forEach((w) => {
             const { colorFill, colorText } = useContrastedColors(
