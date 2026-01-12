@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import type { Poi } from '~/types/local/poi'
+import type { PoiUnion } from '~/types/local/poi-deps'
 
 const props = defineProps<{
-  properties: Poi['properties']
+  properties: PoiUnion['properties']
 }>()
 
 const address = computed(() => {

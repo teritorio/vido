@@ -2,13 +2,16 @@ import { ApiRouteWaypointTypeObject } from '~/types/api/poi-deps'
 import type { ApiPoiDeps, ApiPoiDepsCollection, ApiPoiUnion } from '~/types/api/poi-deps'
 import { type PoiUnion, iconMap } from '~/types/local/poi-deps'
 import type { ApiMenuCategory } from '~/types/api/menu'
+import { menuStore as useMenuStore } from '~/stores/menu'
+import type { ApiPoi } from '~/types/api/poi'
 
 export function usePoiDeps() {
   const waypointIndex = ref(1)
+  const menuStore = useMenuStore()
 
   function isWaypoint(feature: ApiPoiUnion | PoiUnion, locale: LanguageCode): boolean {
     const route = feature.properties.route?.[locale]
-    return !!(route && 'waypoint' in route)
+    return Boolean(route && 'waypoint' in route)
   }
 
   function formatPoiDeps(
@@ -53,7 +56,7 @@ export function usePoiDeps() {
 
     displayProps = {
       color_fill: colorFill,
-      color_line: feature.properties.display?.color_line || category.category.color_line,
+      color_line: feature.properties.display?.color_line || category.category.color_line || colorFill,
       color_text: colorText,
       ...displayProps,
     }
@@ -79,14 +82,35 @@ export function usePoiDeps() {
     waypointIndex.value = 1
   }
 
+  function getMainPoi(features: ApiPoiUnion[], poiId: number): ApiPoi {
+    const poi = features.find(feature => feature.properties.metadata.id === poiId)
+
+    if (!poi)
+      throw createError(`Feature with ID: ${poiId} not found.`)
+
+    return poi as ApiPoi
+  }
+
   function formatPoiDepsCollection(
     collection: ApiPoiDepsCollection,
-    category: ApiMenuCategory,
+    mainPoiId: number,
     locale: LanguageCode,
   ): PoiUnion[] {
     resetWaypointIndex()
 
+    const mainPoi = getMainPoi(collection.features, mainPoiId)
+
     return collection.features.map((feature) => {
+      const catId = isWaypoint(feature, locale) ? mainPoi.properties.metadata.category_ids?.[0] : feature.properties.metadata.category_ids?.[0]
+
+      if (!catId)
+        throw createError(`Category ID not found for feature ${feature.properties.metadata.id}.`)
+
+      const category = menuStore.getCurrentCategory(catId)
+
+      if (!category)
+        throw createError(`Category ${catId} not found.`)
+
       return formatPoiDeps(feature, category, locale)
     })
   }

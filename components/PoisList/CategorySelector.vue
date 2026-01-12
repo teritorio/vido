@@ -101,7 +101,7 @@ function customFilter(item: string, query: string) {
         <VListItem v-bind="scopedProps" :title="undefined">
           <VListItemMedia>
             <TeritorioIcon
-              :color-text="item.raw!.category.color_line"
+              :color-text="item.raw!.category.color_line || item.raw!.category.color_fill"
               :picto="item.raw!.category.icon"
               use-native-alignment
             />

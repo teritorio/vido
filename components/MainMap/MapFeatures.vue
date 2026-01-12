@@ -18,7 +18,7 @@ import MapControls3D from '~/components/Map/MapControls3D.vue'
 import MapControlsBackground from '~/components/Map/MapControlsBackground.vue'
 import type { ApiMenuCategory } from '~/types/api/menu'
 import type { Poi } from '~/types/local/poi'
-import type { ApiPoiDepsCollection, ApiPoiUnion } from '~/types/api/poi-deps'
+import type { ApiPoiDepsCollection } from '~/types/api/poi-deps'
 import type { PoiUnion } from '~/types/local/poi-deps'
 import { getBBox } from '~/lib/bbox'
 import { DEFAULT_MAP_STYLE, MAP_ZOOM } from '~/lib/constants'
@@ -28,11 +28,10 @@ import { menuStore as useMenuStore } from '~/stores/menu'
 import { useSiteStore } from '~/stores/site'
 import { snackStore as useSnackStore } from '~/stores/snack'
 import { filterRouteByCategories, filterRouteByPoiIds } from '~/utils/styles'
-import type { LanguageCode, LatLng } from '~/utils/types'
+import type { LatLng } from '~/utils/types'
 import { MapStyleEnum } from '~/utils/types'
 import { getHashPart } from '~/utils/url'
 import useDevice from '~/composables/useDevice'
-import type { ApiPoi } from '~/types/api/poi'
 
 const props = withDefaults(defineProps<{
   defaultBounds: LngLatBounds
@@ -81,10 +80,7 @@ const map = ref<MapGL>()
 const selectedBackground = ref<MapStyleEnum>(DEFAULT_MAP_STYLE)
 const isProcessing = ref(false)
 const isZooming = ref(false)
-const { locale } = useI18n()
-const lang = locale.value as LanguageCode
 const poiDepsCompo = usePoiDeps()
-const mainPoi = ref<ApiPoi>()
 
 const availableStyles = computed((): MapStyleEnum[] => {
   const styles = [MapStyleEnum.vector, MapStyleEnum.aerial]
@@ -222,7 +218,7 @@ async function updateSelectedFeature(feature?: PoiUnion): Promise<void> {
 
   if (
     (feature?.properties.metadata.id === selectedFeature.value?.properties.metadata.id)
-    || (feature && poiDepsCompo.isWaypoint(feature, lang))
+    || (feature && poiDepsCompo.isWaypoint(feature, 'fr-FR'))
   ) {
     return
   }
@@ -269,24 +265,22 @@ async function updateSelectedFeature(feature?: PoiUnion): Promise<void> {
             })
           }
 
-          if (mainPoi.value) {
-            const poi = data.value.find(f => f.properties.metadata.id === mainPoi.value!.properties.metadata.id)
-            mapStore.setSelectedFeature(poi as Poi)
+          const poi = data.value.find(f => f.properties.metadata.id === id)
+          mapStore.setSelectedFeature(poi as Poi)
 
-            // In case user click on vecto element, attach Pin Marker to POI Marker
-            teritorioCluster.value?.setSelectedFeature(poi as unknown as GeoJSONFeature)
+          // In case user click on vecto element, attach Pin Marker to POI Marker
+          teritorioCluster.value?.setSelectedFeature(poi as unknown as GeoJSONFeature)
 
-            if (poi) {
-              const currentCategory = selectedCategoryIds.value.find(id => poi.properties.metadata.category_ids?.includes(id))
+          if (poi) {
+            const currentCategory = selectedCategoryIds.value.find(id => poi.properties.metadata.category_ids?.includes(id))
 
-              if (!isDepSelected && currentCategory) {
-                menuStore.filterByDeps(currentCategory, data.value)
+            if (!isDepSelected && currentCategory) {
+              menuStore.filterByDeps(currentCategory, data.value)
 
-                if (data.value.length > 1)
-                  mapStore.setIsDepsView(true)
-                else
-                  mapStore.setIsDepsView(false)
-              }
+              if (data.value.length > 1)
+                mapStore.setIsDepsView(true)
+              else
+                mapStore.setIsDepsView(false)
             }
           }
         }
@@ -308,33 +302,13 @@ async function updateSelectedFeature(feature?: PoiUnion): Promise<void> {
   }
 }
 
-function getMainPoi(features: ApiPoiUnion[], poiId: number): ApiPoi {
-  const poi = features.find(feature => feature.properties.metadata.id === poiId)
-
-  if (!poi)
-    throw createError(`Feature with ID: ${poiId} not found.`)
-
-  return poi as ApiPoi
-}
-
 function transformApiPoiDepsCollection(data: ApiPoiDepsCollection, poiId: number): PoiUnion[] | undefined {
   poiDepsCompo.resetWaypointIndex()
 
   if (!data)
     return undefined
 
-  mainPoi.value = getMainPoi(data.features, poiId)
-  const catId = mainPoi.value.properties.metadata.category_ids?.[0]
-
-  if (!catId)
-    throw createError(`Category ID not found for feature ${poiId}.`)
-
-  const category = menuStore.getCurrentCategory(catId)
-
-  if (!category)
-    throw createError(`Category ${catId} not found.`)
-
-  return poiDepsCompo.formatPoiDepsCollection(data, category, 'fr-FR')
+  return poiDepsCompo.formatPoiDepsCollection(data, poiId, 'fr-FR')
 }
 
 function goToSelectedFeature(): void {

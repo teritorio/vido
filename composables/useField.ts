@@ -2,6 +2,7 @@ import type { Poi } from '~/types/local/poi'
 import type { PropertyTranslationsContextEnum } from '~/stores/site'
 import { useSiteStore } from '~/stores/site'
 import type { FieldsListGroup, FieldsListItem } from '~/types/api/field'
+import type { PoiUnion } from '~/types/local/poi-deps'
 
 interface Route {
   duration?: number
@@ -25,7 +26,7 @@ export default function () {
   const { locale } = useI18n()
 
   // Address Field
-  const addressToString = (properties: Poi['properties']): string => {
+  const addressToString = (properties: PoiUnion['properties']): string => {
     return ADDRESS_FIELDS
       .map(field => properties[field])
       .map(f => (f || '').toString().trim())
@@ -34,7 +35,7 @@ export default function () {
   }
 
   // Routes Field
-  const getRoutes = (properties: Poi['properties']): { [key: string]: Route } => {
+  const getRoutes = (properties: PoiUnion['properties']): { [key: string]: Route } => {
     const routes: { [key: string]: { [key: string]: string } } = {}
 
     Object.entries(properties)

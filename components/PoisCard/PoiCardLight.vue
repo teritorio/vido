@@ -2,31 +2,28 @@
 import Fields from '~/components/PoisCard/Fields.vue'
 import TeritorioIconBadge from '~/components/UI/TeritorioIconBadge.vue'
 import UIPicture from '~/components/UI/UIPicture.vue'
-import type { Poi } from '~/types/local/poi'
+import type { PoiUnion } from '~/types/local/poi-deps'
 
 const props = withDefaults(defineProps<{
   notebook?: boolean
-  poi: Poi
+  poi: PoiUnion
 }>(), {
   notebook: false,
 })
 
 const { featureName } = useFeature(toRef(() => props.poi), { type: 'popup' })
+const poiDepsCompo = usePoiDeps()
 
-const colorLine = ref(props.poi.properties.display?.color_line || '#000000')
-const websiteDetails = ref(props.poi.properties.editorial && props.poi.properties.editorial['website:details']?.['fr-FR'])
+const websiteDetails = ref(props.poi.properties.editorial['website:details']?.['fr-FR'])
 
-const { colorFill, colorText } = useContrastedColors(
-  toRef(() => props.poi.properties.display?.color_fill || '#FFFFFF'),
-  toRef(() => props.poi.properties.display?.color_text),
-)
+const isWaypoint = computed(() => poiDepsCompo.isWaypoint(props.poi, 'fr-FR'))
 
 const teritorioIconBadgeProps = computed(() => {
   return {
-    colorFill: props.poi.properties['route:point:type'] ? colorText.value : colorFill.value,
-    colorText: props.poi.properties['route:point:type'] ? colorFill.value : colorText.value,
-    picto: props.poi.properties.display?.icon,
-    text: props.poi.properties.display?.text,
+    colorFill: isWaypoint.value ? props.poi.properties.display.color_text : props.poi.properties.display.color_fill,
+    colorText: isWaypoint.value ? props.poi.properties.display.color_fill : props.poi.properties.display.color_text,
+    picto: props.poi.properties.display.icon,
+    text: props.poi.properties.display.text,
     size: 'lg',
   }
 })
@@ -37,13 +34,13 @@ const teritorioIconBadgeProps = computed(() => {
     <div>
       <header>
         <TeritorioIconBadge
-          v-if="props.poi.properties.display?.icon || poi.properties.display?.text"
+          v-if="props.poi.properties.display.icon || poi.properties.display.text"
           v-bind="teritorioIconBadgeProps"
         />
         <h3
           class="tw-text-xl tw-font-semibold tw-leading-tight"
           :style="{
-            color: colorLine,
+            color: props.poi.properties.display.color_line,
           }"
         >
           {{ featureName }}
@@ -62,7 +59,7 @@ const teritorioIconBadgeProps = computed(() => {
 
       <section>
         <Fields
-          :fields="(poi.properties.editorial && poi.properties.editorial.popup_fields) || []"
+          :fields="poi.properties.editorial.popup_fields || []"
           :properties="poi.properties"
           :details="websiteDetails"
           :geom="poi.geometry"

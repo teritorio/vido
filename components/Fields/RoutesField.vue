@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import FieldsHeader from '~/components/UI/FieldsHeader.vue'
-import type { Poi } from '~/types/local/poi'
+import type { PoiUnion } from '~/types/local/poi-deps'
 import { PropertyTranslationsContextEnum, useSiteStore } from '~/stores/site'
 
 const props = withDefaults(defineProps<{
   context: PropertyTranslationsContextEnum
   recursionStack?: string[]
-  properties: Poi['properties']
+  properties: PoiUnion['properties']
 }>(), {
   recursionStack: () => [],
 })

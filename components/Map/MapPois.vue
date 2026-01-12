@@ -17,7 +17,7 @@ import type { PoiUnion } from '~/types/local/poi-deps'
 const props = withDefaults(defineProps<{
   extraAttributions?: string[]
   offMapAttribution?: boolean
-  features: Poi[]
+  features: PoiUnion[]
   featureIds?: MapPoiId[]
   fullscreenControl?: boolean
   cluster?: boolean

@@ -59,10 +59,6 @@ const isFavorite = computed(() => {
   return favoritesIds.value.includes(id.value) || favoriteAddresses.value.has(id.value.toString())
 })
 
-const colorLine = computed(() => {
-  return props.poi.properties.display.color_line || '#000000'
-})
-
 const icon = computed(() => {
   return props.poi.properties.display.icon
 })
@@ -147,13 +143,13 @@ function trackIsochroneEvent(profile: Profile) {
         v-if="featureName"
         class="tw-block tw-text-xl tw-font-semibold tw-leading-tight"
         :style="{
-          color: colorLine,
+          color: props.poi.properties.display.color_line,
         }"
       >
         {{ featureName }}
       </h2>
 
-      <client-only>
+      <ClientOnly>
         <template v-if="websiteDetails !== undefined">
           <NuxtLink
             v-if="
@@ -187,7 +183,7 @@ function trackIsochroneEvent(profile: Profile) {
             {{ t('poiCard.details') }}
           </a>
         </template>
-      </client-only>
+      </ClientOnly>
     </div>
 
     <div
@@ -196,7 +192,7 @@ function trackIsochroneEvent(profile: Profile) {
     >
       <TeritorioIcon
         v-if="icon"
-        :color-text="colorLine"
+        :color-text="props.poi.properties.display.color_line"
         class="tw-mr-2"
         :picto="icon"
         :use-native-alignment="false"
@@ -232,7 +228,7 @@ function trackIsochroneEvent(profile: Profile) {
         :title="t('poiCard.findRoute')"
         @click="trackingPopupEvent('route')"
       >
-        <FontAwesomeIcon icon="route" :color="colorLine" size="sm" />
+        <FontAwesomeIcon icon="route" :color="props.poi.properties.display.color_line" size="sm" />
         <span class="tw-text-sm">{{ t('poiCard.route') }}</span>
       </a>
 
@@ -247,7 +243,7 @@ function trackIsochroneEvent(profile: Profile) {
         @trigger-click="trackingPopupEvent('isochrone')"
         @profile-update="trackIsochroneEvent"
       >
-        <FontAwesomeIcon :color="isSameFeatureAsIsochrone ? '#ffffff' : colorLine" icon="clock" size="sm" />
+        <FontAwesomeIcon :color="isSameFeatureAsIsochrone ? '#ffffff' : props.poi.properties.display.color_line" icon="clock" size="sm" />
         <span class="tw-text-sm">{{ t('isochrone.trigger.label') }}</span>
       </IsochroneTrigger>
 
@@ -257,7 +253,7 @@ function trackIsochroneEvent(profile: Profile) {
         :title="t('poiCard.zoom')"
         @click.stop="onZoomClick"
       >
-        <FontAwesomeIcon icon="plus" :color="colorLine" size="sm" />
+        <FontAwesomeIcon icon="plus" :color="props.poi.properties.display.color_line" size="sm" />
         <span class="tw-text-sm">{{ t('poiCard.zoom') }}</span>
       </button>
 
@@ -274,7 +270,7 @@ function trackIsochroneEvent(profile: Profile) {
       >
         <FontAwesomeIcon
           icon="eye"
-          :color="isModeExplorer ? '#ffffff' : colorLine"
+          :color="isModeExplorer ? '#ffffff' : props.poi.properties.display.color_line"
           size="sm"
         />
         <span class="tw-text-sm">{{ t('poiCard.explore') }}</span>
@@ -287,7 +283,7 @@ function trackIsochroneEvent(profile: Profile) {
         :title="isFavorite ? t('poiCard.favoriteOn') : t('poiCard.favoriteOff')"
         @click.stop="onFavoriteClick"
       >
-        <FavoriteIcon :is-active="isFavorite" :color-line="colorLine" />
+        <FavoriteIcon :is-active="isFavorite" :color-line="props.poi.properties.display.color_line" />
         <span class="tw-text-sm">{{ t('poiCard.favorite') }}</span>
       </button>
     </div>
