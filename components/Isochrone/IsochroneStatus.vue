@@ -9,11 +9,6 @@ if (!isochroneCurrentFeature.value)
 
 if (!isochroneCurrentFeature.value.properties?.display?.color_fill)
   throw createError(`Feature ${isochroneCurrentFeature.value.id} is missing color_fill`)
-
-const { colorFill: color_fill, colorText: color_text } = useContrastedColors(
-  isochroneCurrentFeature.value.properties.display?.color_fill || '#FFFFFF',
-  isochroneCurrentFeature.value.properties.display?.color_text,
-)
 </script>
 
 <template>
@@ -50,12 +45,12 @@ div > div {
 
 .icon {
   border-radius: 100%;
-  background-color: v-bind(color_fill);
+  background-color: v-bind(isochroneCurrentFeature.value.properties.display.color_fill);
   width: 40px;
   height: 40px;
 }
 
 .icon svg {
-  color: v-bind(color_text);
+  color: v-bind(isochroneCurrentFeature.value.properties.display.color_text);
 }
 </style>

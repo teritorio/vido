@@ -2,9 +2,10 @@
 import { distance } from '@turf/distance'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import type { ProfileKeys } from '~/composables/useIsochrone'
+import type { Poi } from '~/types/local/poi'
 
 const props = defineProps<{
-  feature: GeoJSON.Feature
+  feature: Poi
 }>()
 
 const emit = defineEmits<{
