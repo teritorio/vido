@@ -3,6 +3,7 @@ import type { FeatureCollection, GeoJsonProperties, Geometry } from 'geojson'
 import { storeToRefs } from 'pinia'
 import { useSiteStore } from '~/stores/site'
 import { mapStore as useMapStore } from '~/stores/map'
+import type { Poi } from '~/types/local/poi'
 
 export const profiles = {
   car: 'driving-car',
@@ -33,7 +34,7 @@ export default function useIsochrone() {
   const map = useState<Map>('map-instance')
   const profile = useState<Profile | null>('isochrone-profile', () => null)
   const layers = useState<string[]>('isochrone-layers', () => [])
-  const isochroneCurrentFeature = useState<GeoJSON.Feature | null>(() => null)
+  const isochroneCurrentFeature = useState<Poi | null>(() => null)
   const { boundOptions } = storeToRefs(useMapStore())
 
   //
@@ -143,7 +144,7 @@ export default function useIsochrone() {
     isOverlayOpen.value = !isOverlayOpen.value
   }
 
-  const fetchIsochrone = async (feature: GeoJSON.Feature, profile: Profile, range: number[] = [900, 1800, 3600]) => {
+  const fetchIsochrone = async (feature: Poi, profile: Profile, range: number[] = [900, 1800, 3600]) => {
     reset()
 
     if (feature.geometry.type !== 'Point')

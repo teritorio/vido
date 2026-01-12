@@ -16,11 +16,6 @@ const props = withDefaults(defineProps<{
   target: '_blank',
 })
 
-const { colorFill, colorText } = useContrastedColors(
-  toRef(() => props.colorFill || '#FFFFFF'),
-  toRef(() => props.colorText),
-)
-
 const iconDefault = computed((): string => {
   if (props.icon)
     return props.icon

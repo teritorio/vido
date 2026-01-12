@@ -40,10 +40,6 @@ const device = useDevice()
 const { enabled: isochroneEnabled, isochroneCurrentFeature } = useIsochrone()
 const { featureName, featureCategoryName } = useFeature(toRef(() => props.poi), { type: 'popup' })
 const { explorerModeEnabled, favoritesModeEnabled } = storeToRefs(useSiteStore())
-const { colorFill, colorText } = useContrastedColors(
-  toRef(() => props.poi.properties.display.color_fill || '#FFFFFF'),
-  toRef(() => props.poi.properties.display.color_text),
-)
 
 const routeHref = ref<string>()
 
@@ -161,8 +157,8 @@ function trackIsochroneEvent(profile: Profile) {
             class="tw-ml-6 tw-px-3 tw-py-1.5 tw-text-xs tw-text-zinc-800 tw-bg-zinc-100 hover:tw-bg-zinc-200 focus:tw-bg-zinc-200 tw-transition tw-transition-colors tw-rounded-md"
             :to="websiteDetails"
             :style="{
-              background: colorFill,
-              color: colorText,
+              background: props.poi.properties.display.color_fill,
+              color: props.poi.properties.display.color_text,
             }"
             rel="noopener noreferrer"
             :target="detailsIsExternal ? '_blank' : '_self'"
@@ -175,8 +171,8 @@ function trackIsochroneEvent(profile: Profile) {
             class="tw-ml-6 tw-px-3 tw-py-1.5 tw-text-xs tw-text-zinc-800 tw-bg-zinc-100 hover:tw-bg-zinc-200 focus:tw-bg-zinc-200 tw-transition tw-transition-colors tw-rounded-md"
             :href="websiteDetails"
             :style="{
-              background: colorFill,
-              color: colorText,
+              background: props.poi.properties.display.color_fill,
+              color: props.poi.properties.display.color_text,
             }"
             rel="noopener noreferrer"
             :target="detailsIsExternal ? '_blank' : '_self'"
