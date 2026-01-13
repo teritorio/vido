@@ -26,13 +26,14 @@ export interface ApiPoiPropertiesStartEndDate {
   end_date: string
 }
 
-export interface ApiPoiPropertiesAddress {
+export type ApiPoiPropertiesAddress = {
+  street?: string
+  hamlet?: string
+  postcode?: string
+  city?: string
+  country?: string
+} & {
   [key: string]: string
-  street: string
-  hamlet: string
-  postcode: string
-  city: string
-  country: string
 }
 
 export type ApiPoiPropertiesRoute = {

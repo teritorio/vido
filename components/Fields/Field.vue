@@ -63,7 +63,10 @@ const translatedValue = computed(() => {
     </FieldsHeader>
   </RoutesField>
 
-  <AddressField v-else-if="field.render === 'addr'" :properties="properties">
+  <AddressField
+    v-else-if="field.render === 'addr'"
+    v-bind="properties.addr"
+  >
     <FieldsHeader
       v-if="field.label"
       :recursion-stack="recursionStack"

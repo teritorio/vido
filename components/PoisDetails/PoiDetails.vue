@@ -60,7 +60,7 @@ const detailsFields = computed((): FieldsList | undefined => {
     return fields
   }
   else {
-    return fields.filter(isFieldsListItem).filter(field => field.field !== 'description')
+    return fields.filter(field => 'group' in field || field.field !== 'description')
   }
 })
 
