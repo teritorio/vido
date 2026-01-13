@@ -45,12 +45,12 @@ div > div {
 
 .icon {
   border-radius: 100%;
-  background-color: v-bind(isochroneCurrentFeature.value.properties.display.color_fill);
+  background-color: v-bind("isochroneCurrentFeature?.properties.display.color_fill");
   width: 40px;
   height: 40px;
 }
 
 .icon svg {
-  color: v-bind(isochroneCurrentFeature.value.properties.display.color_text);
+  color: v-bind("isochroneCurrentFeature?.properties.display.color_text");
 }
 </style>
