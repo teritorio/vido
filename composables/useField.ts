@@ -3,6 +3,7 @@ import type { PropertyTranslationsContextEnum } from '~/stores/site'
 import { useSiteStore } from '~/stores/site'
 import type { FieldsListGroup, FieldsListItem } from '~/types/api/field'
 import type { PoiUnion } from '~/types/local/poi-deps'
+import type { ApiPoiPropertiesAddress } from '~/types/api/poi'
 
 interface Route {
   duration?: number
@@ -11,10 +12,12 @@ interface Route {
 }
 
 export const ADDRESS_FIELDS = [
-  'addr:housenumber',
-  'addr:street',
-  'addr:postcode',
-  'addr:city',
+  'housenumber',
+  'street',
+  'postcode',
+  'city',
+  'hamlet',
+  'country',
 ]
 
 export function isFieldsListItem(field: FieldsListItem | FieldsListGroup): field is FieldsListItem {
@@ -26,7 +29,7 @@ export default function () {
   const { locale } = useI18n()
 
   // Address Field
-  const addressToString = (properties: PoiUnion['properties']): string => {
+  const addressToString = (properties: ApiPoiPropertiesAddress): string => {
     return ADDRESS_FIELDS
       .map(field => properties[field])
       .map(f => (f || '').toString().trim())

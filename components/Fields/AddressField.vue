@@ -1,15 +1,11 @@
 <script setup lang="ts">
-import type { PoiUnion } from '~/types/local/poi-deps'
+import type { ApiPoiPropertiesAddress } from '~/types/api/poi'
 
-const props = defineProps<{
-  properties: PoiUnion['properties']
-}>()
+const props = defineProps<ApiPoiPropertiesAddress>()
 
-const address = computed(() => {
-  const { addressToString } = useField()
+const { addressToString } = useField()
 
-  return addressToString(props.properties)
-})
+const address = computed(() => addressToString(props))
 </script>
 
 <template>
