@@ -1,18 +1,26 @@
 <script lang="ts" setup>
 import RoutesField from '~/components/Fields/RoutesField.vue'
 import { PropertyTranslationsContextEnum } from '~/stores/site'
+import type { ApiPoiPropertiesRoute } from '~/types/api/poi'
 
 const defaultProps = {
   context: PropertyTranslationsContextEnum.Details,
   properties: {
-    'metadata': { id: 0 },
-    'route:hiking:difficulty': 'easy',
-    'route:hiking:duration': 285,
-    'route:hiking:length': 10.2,
-    'route:mtb:difficulty': 'easy',
-    'route:mtb:duration': 90,
-    'route:mtb:length': 10.2,
-  },
+    'fr-FR': {
+      gpx_trace: 'https://cdt40.tourinsoft.com/upload/15.8.gpx',
+      pdf: 'https://cdt40.tourinsoft.com/upload/ITIAQU040V502MFU.pdf',
+      hiking: {
+        difficulty: 'easy' as const,
+        duration: 285,
+        length: 10.2,
+      },
+      mtb: {
+        difficulty: 'easy' as const,
+        duration: 90,
+        length: 10.2,
+      },
+    },
+  } as ApiPoiPropertiesRoute,
 }
 
 const props = {
@@ -21,20 +29,27 @@ const props = {
   },
   MissingFields: {
     ...defaultProps,
-    field: { field: 'route:gpx_trace', render: 'weblink@download' },
     properties: {
-      'metadata': { id: 0 },
-      'route:hiking:difficulty': 'easy',
-    },
+      'fr-FR': {
+        hiking: {
+          difficulty: 'easy' as const,
+          duration: 0,
+          length: 0,
+        },
+      },
+    } as ApiPoiPropertiesRoute,
   },
   MissingDifficulty: {
     ...defaultProps,
-    field: { field: 'route:gpx_trace', render: 'weblink@download' },
     properties: {
-      'metadata': { id: 0 },
-      'route:hiking:duration': 285,
-      'route:hiking:length': 10.2,
-    },
+      'fr-FR': {
+        hiking: {
+          difficulty: 'easy' as const,
+          duration: 285,
+          length: 10.2,
+        },
+      },
+    } as ApiPoiPropertiesRoute,
   },
 }
 </script>

@@ -1,20 +1,21 @@
 <script lang="ts" setup>
 import PoisDeck from '~/components/PoisCard/PoisDeck.vue'
 import poisDeps from '~/cypress/fixtures/teritorio/references/poi/2/deps.json'
-import type { ApiPoiDeps } from '~/types/api/poi-deps'
+import menu from '~/cypress/fixtures/teritorio/references/menu.json'
+import type { ApiPoiUnion } from '~/types/api/poi-deps'
+import type { ApiMenuCategory } from '~/types/api/menu'
+import { usePoiDeps } from '~/composables/usePoiDeps'
 
-const points = poisDeps.features.filter(
-  feature => feature.properties['route:point:type'],
+const { formatPoiDeps, isWaypoint } = usePoiDeps()
+const points = (poisDeps.features as ApiPoiUnion[]).filter(
+  feature => isWaypoint(feature),
 )
+
+const category = menu.find(item => item.id === 211) as ApiMenuCategory
 
 const defaultProps = {
   pois: points.map(feature =>
-    apiRouteWaypointToApiPoi(
-      feature as ApiPoiDeps,
-      '#123456',
-      '#123456',
-      '#FFFFFF',
-    ),
+    formatPoiDeps(feature, category),
   ),
   selectedPoiIds: points.map(feature => feature.properties.id),
   isCardLight: true,

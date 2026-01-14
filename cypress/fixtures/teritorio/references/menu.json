@@ -71,6 +71,46 @@
             "color_line": "#ec0029",
             "style_merge": false,
             "zoom": "16",
+            "editorial": {
+                "popup_fields": [
+                    {
+                        "field": "route",
+                        "render": "route"
+                    },
+                    {
+                        "field": "addr",
+                        "render": "addr"
+                    }
+                ],
+                "details_fields": [
+                    {
+                        "field": "route",
+                        "render": "route"
+                    },
+                    {
+                        "field": "description",
+                        "render": "text"
+                    },
+                    {
+                        "field": "addr",
+                        "render": "addr"
+                    }
+                ],
+                "list_fields": [
+                    {
+                        "field": "name",
+                        "render": "string"
+                    },
+                    {
+                        "field": "description",
+                        "render": "text"
+                    },
+                    {
+                        "field": "addr",
+                        "render": "addr"
+                    }
+                ]
+            },
             "filters": [
                 {
                     "type": "multiselection",
@@ -126,6 +166,50 @@
             "style_merge": false,
             "zoom": 16,
             "display_mode": "compact",
+            "editorial": {
+                "popup_fields": [
+                    {
+                        "field": "description",
+                        "render": "text"
+                    },
+                    {
+                        "field": "addr",
+                        "render": "addr"
+                    }
+                ],
+                "details_fields": [
+                    {
+                        "field": "name",
+                        "render": "string"
+                    },
+                    {
+                        "field": "description",
+                        "render": "text"
+                    },
+                    {
+                        "field": "addr",
+                        "render": "addr"
+                    },
+                    {
+                        "field": "phone",
+                        "render": "phone"
+                    }
+                ],
+                "list_fields": [
+                    {
+                        "field": "name",
+                        "render": "string"
+                    },
+                    {
+                        "field": "description",
+                        "render": "text"
+                    },
+                    {
+                        "field": "addr",
+                        "render": "addr"
+                    }
+                ]
+            },
             "filters": [
                 {
                     "type": "multiselection",
