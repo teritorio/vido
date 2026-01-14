@@ -10,7 +10,7 @@ export function usePoiDeps() {
   const menuStore = useMenuStore()
 
   function isWaypoint(feature: ApiPoiUnion | PoiUnion): boolean {
-    return feature.properties['route:point:type'] === ApiRouteWaypointTypeObject.waypoint
+    return feature.properties['route:point:type']
   }
 
   function formatPoiDeps(
