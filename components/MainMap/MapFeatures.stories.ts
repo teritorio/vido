@@ -83,6 +83,7 @@ const feature1: Poi = {
       icon: 'teritorio teritorio-catering-catering_food-restaurant',
       color_fill: '#ff0000',
       color_line: '#ff0000',
+      color_text: '#FFFFFF',
       style_class: ['catering', 'catering_food', 'restaurant'],
     },
     editorial: {

@@ -1,10 +1,16 @@
 <script lang="ts" setup>
 import PoiCardLight from '~/components/PoisCard/PoiCardLight.vue'
 import poi from '~/cypress/fixtures/teritorio/references/poi/2.json'
-import type { Poi } from '~/types/local/poi'
+import menu from '~/cypress/fixtures/teritorio/references/menu.json'
+import type { ApiPoi } from '~/types/api/poi'
+import type { ApiMenuCategory } from '~/types/api/menu'
+import { usePoi } from '~/composables/usePoi'
+
+const { formatPoi } = usePoi()
+const category = menu.find(item => item.id === 211) as ApiMenuCategory
 
 const defaultProps = {
-  poi: poi as Poi,
+  poi: formatPoi(poi as ApiPoi, category),
 }
 
 const props = {

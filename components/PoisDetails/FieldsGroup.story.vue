@@ -26,6 +26,14 @@ const defaultProps = {
     name: {
       'fr-FR': 'foo',
     },
+    display: {
+      color_fill: '#123456',
+      color_line: '#123456',
+      color_text: '#FFFFFF' as const,
+      icon: 'map-marker-alt',
+    },
+    editorial: {},
+    vido_visible: true,
   },
   geom: {
     type: 'Point',
@@ -48,7 +56,7 @@ const props = {
   Empty: {
     ...defaultProps,
     properties: {
-      metadata: { id: 0 },
+      ...defaultProps.properties,
     },
   },
   Label: {
@@ -97,7 +105,7 @@ const props = {
       ],
     },
     properties: {
-      'metadata': { id: 0 },
+      ...defaultProps.properties,
       'phone': ['+33676544'],
       'mobile': ['+339750987766'],
       'route:hiking:difficulty': 'easy',

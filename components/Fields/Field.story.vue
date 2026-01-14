@@ -13,6 +13,14 @@ const defaultProps = {
     name: {
       'fr-FR': 'foo',
     },
+    display: {
+      color_fill: '#123456',
+      color_line: '#123456',
+      color_text: '#FFFFFF' as const,
+      icon: 'map-marker-alt',
+    },
+    editorial: {},
+    vido_visible: true,
   },
   geom: {
     type: 'Point',
@@ -36,7 +44,7 @@ const props = {
     ...defaultProps,
     field: { field: 'email', render: 'email' } as FieldsListItem,
     properties: {
-      metadata: { id: 0 },
+      ...defaultProps.properties,
       email: ['foo'],
     },
   },
@@ -44,14 +52,14 @@ const props = {
     ...defaultProps,
     field: { field: 'email', render: 'email' } as FieldsListItem,
     properties: {
-      metadata: { id: 0 },
+      ...defaultProps.properties,
       email: ['foo', 'bar'],
     },
   },
   NoValue: {
     ...defaultProps,
     properties: {
-      metadata: { id: 0 },
+      ...defaultProps.properties,
     },
   },
   Label: {
@@ -65,7 +73,7 @@ const props = {
     ...defaultProps,
     field: { field: 'start_end_date', render: 'start_end_date' } as FieldsListItem,
     properties: {
-      metadata: { id: 0 },
+      ...defaultProps.properties,
       start_date: '2001-01-01',
       end_date: '2012-12-12',
     },
@@ -74,7 +82,7 @@ const props = {
     ...defaultProps,
     field: { field: 'addr', render: 'addr' } as FieldsListItem,
     properties: {
-      'metadata': { id: 0 },
+      ...defaultProps.properties,
       'addr:housenumber': '33',
       'addr:street': 'Rue du Nord',
       'addr:postcode': '35677',
@@ -85,7 +93,7 @@ const props = {
     ...defaultProps,
     field: { field: 'description', render: 'text' } as FieldsListItem,
     properties: {
-      metadata: { id: 0 },
+      ...defaultProps.properties,
       description,
     },
   },
@@ -93,7 +101,7 @@ const props = {
     ...defaultProps,
     field: { field: 'short_description', render: 'text' } as FieldsListItem,
     properties: {
-      metadata: { id: 0 },
+      ...defaultProps.properties,
       description,
     },
   },
@@ -101,7 +109,7 @@ const props = {
     ...defaultProps,
     field: { field: 'short_description', render: 'text' } as FieldsListItem,
     properties: {
-      metadata: { id: 0 },
+      ...defaultProps.properties,
       description,
     },
     details: 'details',
@@ -110,7 +118,7 @@ const props = {
     ...defaultProps,
     field: { field: 'email', render: 'email' } as FieldsListItem,
     properties: {
-      metadata: { id: 0 },
+      ...defaultProps.properties,
       email: ['root@example.com'],
     },
   },
@@ -118,7 +126,7 @@ const props = {
     ...defaultProps,
     field: { field: 'website', render: 'weblink' } as FieldsListItem,
     properties: {
-      metadata: { id: 0 },
+      ...defaultProps.properties,
       website: ['https://example.com'],
     },
   },
@@ -126,7 +134,7 @@ const props = {
     ...defaultProps,
     field: { field: 'facebook', render: 'weblink@social-network' } as FieldsListItem,
     properties: {
-      metadata: { id: 0 },
+      ...defaultProps.properties,
       facebook: 'https://www.facebook.com/',
     },
   },
@@ -134,7 +142,7 @@ const props = {
     ...defaultProps,
     field: { field: 'instagram', render: 'weblink@social-network' } as FieldsListItem,
     properties: {
-      metadata: { id: 0 },
+      ...defaultProps.properties,
       instagram: 'https://www.instagram.com/',
     },
   },
@@ -142,7 +150,7 @@ const props = {
     ...defaultProps,
     field: { field: 'route:gpx_trace', render: 'weblink@download' } as FieldsListItem,
     properties: {
-      'metadata': { id: 0 },
+      ...defaultProps.properties,
       'route:gpx_trace': 'https://cdt40.tourinsoft.com/upload/15.8.gpx',
     },
   },
@@ -150,7 +158,7 @@ const props = {
     ...defaultProps,
     field: { field: 'route:pdf', render: 'weblink@download' } as FieldsListItem,
     properties: {
-      'metadata': { id: 0 },
+      ...defaultProps.properties,
       'route:pdf': 'https://cdt40.tourinsoft.com/upload/ITIAQU040V502MFU.pdf',
     },
   },
@@ -158,7 +166,7 @@ const props = {
     ...defaultProps,
     field: { field: 'download', render: 'weblink@download' } as FieldsListItem,
     properties: {
-      metadata: { id: 0 },
+      ...defaultProps.properties,
       download: [
         'https://cdt40.tourinsoft.com/upload/ITIAQU040V502MFU.pdf',
         'https://cdt41.tourinsoft.com/upload/ITIAQU040V502MFU.pdf',
@@ -170,14 +178,6 @@ const props = {
     field: { field: 'coordinates', render: 'coordinates' } as FieldsListItem,
   },
 }
-
-// export const OpeningHours: {
-//   ...defaultProps,
-//   field: { field: 'opening_hours' },
-//   properties: {
-//     'opening_hours': 'Mo-Fr 08:00-12:00,13:00-17:30; Sa',
-//   },
-// })
 </script>
 
 <template>
