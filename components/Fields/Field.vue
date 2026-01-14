@@ -14,6 +14,7 @@ import type { FieldsListItem } from '~/types/api/field'
 import type { PoiUnion } from '~/types/local/poi-deps'
 import { PropertyTranslationsContextEnum, useSiteStore } from '~/stores/site'
 import { AssocRenderKeys } from '~/utils/types'
+import type { ApiPoiPropertiesRoute } from '~/types/api/poi'
 
 const props = withDefaults(defineProps<{
   context: PropertyTranslationsContextEnum
@@ -52,7 +53,7 @@ const translatedValue = computed(() => {
     class="field_content"
     :context="context"
     :recursion-stack="recursionStack"
-    :properties="properties"
+    :properties="properties.route as ApiPoiPropertiesRoute"
   >
     <FieldsHeader
       v-if="field.label"
