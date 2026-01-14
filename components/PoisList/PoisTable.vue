@@ -12,7 +12,7 @@ import Actions from '~/components/PoisList/Actions.vue'
 import TeritorioIconBadge from '~/components/UI/TeritorioIconBadge.vue'
 import { menuStore as useMenuStore } from '~/stores/menu'
 import { headerFromSettings } from '~/lib/apiSettings'
-import { isFieldsListItem } from '~/composables/useField'
+import { isFieldsListItem } from '~/utils/utilities'
 
 interface DataTableHeader {
   filterable?: boolean

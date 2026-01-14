@@ -1,4 +1,4 @@
-import type { FieldsListItem } from '~/types/api/field'
+import type { FieldsListGroup, FieldsListItem } from '~/types/api/field'
 import type { Poi } from '~/types/local/poi'
 import type { ApiAddrSearchResult } from '~/lib/apiSearch'
 import { MAP_ZOOM } from '~/lib/constants'
@@ -25,6 +25,10 @@ export function parseStringProperties(obj: Record<string, any>) {
       catch (e) {}
     }
   })
+}
+
+export function isFieldsListItem(field: FieldsListItem | FieldsListGroup): field is FieldsListItem {
+  return 'field' in field
 }
 
 export function isFiledEmpty(
