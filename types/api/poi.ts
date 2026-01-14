@@ -27,14 +27,24 @@ export interface ApiPoiPropertiesStartEndDate {
 }
 
 export type ApiPoiPropertiesAddress = {
+  housenumber?: string
   street?: string
-  hamlet?: string
   postcode?: string
   city?: string
+  hamlet?: string
   country?: string
 } & {
   [key: string]: string
 }
+
+export const AddressFields = [
+  'housenumber',
+  'street',
+  'postcode',
+  'city',
+  'hamlet',
+  'country',
+] as const
 
 export type ApiPoiPropertiesRoute = {
   [lang in LanguageCode]?: {
