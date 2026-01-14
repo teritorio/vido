@@ -2,7 +2,7 @@ import type { FieldsListItem } from '~/types/api/field'
 import type { Poi } from '~/types/local/poi'
 import type { ApiAddrSearchResult } from '~/lib/apiSearch'
 import { MAP_ZOOM } from '~/lib/constants'
-import { ADDRESS_FIELDS } from '~/composables/useField'
+import { AddressFields } from '~/types/api/poi'
 
 export function formatDate(date: Date): string {
   return (
@@ -42,7 +42,7 @@ export function isFiledEmpty(
   }
 
   if (field.field === 'addr') {
-    return ADDRESS_FIELDS.reduce(
+    return AddressFields.reduce(
       (sum: boolean, value) => sum || value in properties,
       false,
     )
