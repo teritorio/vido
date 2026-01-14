@@ -9,15 +9,13 @@ export function usePoiDeps() {
   const waypointIndex = ref(1)
   const menuStore = useMenuStore()
 
-  function isWaypoint(feature: ApiPoiUnion | PoiUnion, locale: LanguageCode): boolean {
-    const route = feature.properties.route?.[locale]
-    return Boolean(route && 'waypoint' in route)
+  function isWaypoint(feature: ApiPoiUnion | PoiUnion): boolean {
+    return feature.properties['route:point:type'] === ApiRouteWaypointTypeObject.waypoint
   }
 
   function formatPoiDeps(
     feature: ApiPoiUnion,
     category: ApiMenuCategory,
-    locale: LanguageCode,
   ): PoiUnion {
     let displayProps = {}
     let editorialProps = {}
@@ -27,9 +25,9 @@ export function usePoiDeps() {
       feature.properties.display?.color_text,
     )
 
-    if (isWaypoint(feature, locale)) {
+    if (isWaypoint(feature)) {
       const f = feature as ApiPoiDeps
-      const type = f.properties.route[locale]?.waypoint?.type
+      const type = f.properties['route:point:type']
 
       if (!type) {
         throw new Error(`Waypoint ${f.properties.id} is missing type.`)
@@ -94,14 +92,13 @@ export function usePoiDeps() {
   function formatPoiDepsCollection(
     collection: ApiPoiDepsCollection,
     mainPoiId: number,
-    locale: LanguageCode,
   ): PoiUnion[] {
     resetWaypointIndex()
 
     const mainPoi = getMainPoi(collection.features, mainPoiId)
 
     return collection.features.map((feature) => {
-      const catId = isWaypoint(feature, locale) ? mainPoi.properties.metadata.category_ids?.[0] : feature.properties.metadata.category_ids?.[0]
+      const catId = isWaypoint(feature) ? mainPoi.properties.metadata.category_ids?.[0] : feature.properties.metadata.category_ids?.[0]
 
       if (!catId)
         throw createError(`Category ID not found for feature ${feature.properties.metadata.id}.`)
@@ -111,7 +108,7 @@ export function usePoiDeps() {
       if (!category)
         throw createError(`Category ${catId} not found.`)
 
-      return formatPoiDeps(feature, category, locale)
+      return formatPoiDeps(feature, category)
     })
   }
 

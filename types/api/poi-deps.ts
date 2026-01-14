@@ -10,22 +10,14 @@ export const ApiRouteWaypointTypeObject = {
   waypoint: 'waypoint',
 } as const satisfies Record<string, ApiRouteWaypointType>
 
-export interface ApiPoiDepsProperties extends Omit<ApiPoiProperties, 'route'> {
-  id: number
-  route: ApiPoiDepsPropertiesRoute
-  description?: {
+export interface ApiPoiDepsProperties extends ApiPoiProperties {
+  'id': number
+  'route:point:type'?: ApiRouteWaypointType
+  'description'?: {
     [lang in LanguageCode]?: {
       value: string
       html: boolean
       is_shortened: boolean
-    }
-  }
-}
-
-export type ApiPoiDepsPropertiesRoute = {
-  [lang in LanguageCode]?: {
-    waypoint?: {
-      type: ApiRouteWaypointType
     }
   }
 }
