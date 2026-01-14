@@ -1,4 +1,4 @@
-import type { ApiPoiDeps, ApiRouteWaypointType } from '~/types/api/poi-deps'
+import type { ApiPoiDeps, ApiPoiDepsProperties, ApiRouteWaypointType } from '~/types/api/poi-deps'
 import type { Poi } from '~/types/local/poi'
 
 export const iconMap = {
@@ -8,6 +8,7 @@ export const iconMap = {
   waypoint: 'map-marker-alt',
 } as const satisfies Record<ApiRouteWaypointType, string>
 
-export type PoiDeps = ApiPoiDeps
-
+export interface PoiDeps extends ApiPoiDeps {
+  properties: ApiPoiDepsProperties & Poi['properties']
+}
 export type PoiUnion = Poi | PoiDeps

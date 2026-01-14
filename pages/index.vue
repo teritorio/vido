@@ -169,7 +169,7 @@ function transformApiPoiDepsCollection(data?: ApiPoiDepsCollection): PoiUnion[] 
 
   mainPoi.value = getMainPoi(data.features)
 
-  return poiDepsCompo.formatPoiDepsCollection(data, mainPoi.value.properties.metadata.id, 'fr-FR')
+  return poiDepsCompo.formatPoiDepsCollection(data, mainPoi.value.properties.metadata.id)
 }
 </script>
 

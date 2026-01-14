@@ -218,7 +218,7 @@ async function updateSelectedFeature(feature?: PoiUnion): Promise<void> {
 
   if (
     (feature?.properties.metadata.id === selectedFeature.value?.properties.metadata.id)
-    || (feature && poiDepsCompo.isWaypoint(feature, 'fr-FR'))
+    || (feature && poiDepsCompo.isWaypoint(feature))
   ) {
     return
   }
@@ -308,7 +308,7 @@ function transformApiPoiDepsCollection(data: ApiPoiDepsCollection, poiId: number
   if (!data)
     return undefined
 
-  return poiDepsCompo.formatPoiDepsCollection(data, poiId, 'fr-FR')
+  return poiDepsCompo.formatPoiDepsCollection(data, poiId)
 }
 
 function goToSelectedFeature(): void {
