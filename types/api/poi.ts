@@ -40,12 +40,15 @@ export type ApiPoiPropertiesRoute = {
   [lang in LanguageCode]?: {
     gpx_trace?: string
     pdf?: string
-    hiking?: {
-      difficulty: 'easy' | 'normal' | 'hard'
-      duration: number
-      length: number
-    }
+  } & {
+    [key: string]: RouteMetadata
   }
+}
+
+export interface RouteMetadata {
+  difficulty: 'easy' | 'normal' | 'hard'
+  duration: number
+  length: number
 }
 
 export interface ApiPoiPropertiesMetadata {

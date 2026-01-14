@@ -116,12 +116,6 @@ export default function () {
     return new Intl.NumberFormat(locale.value, { style: 'unit', unit: 'kilometer' }).format(length)
   }
 
-  const getRouteNoDetails = (activity: string, route: Route, context: PropertyTranslationsContextEnum): string => {
-    return [getRouteDuration(route.duration!), getRouteDifficulty(activity, route.difficulty!, context)]
-      .filter(x => x)
-      .join(', ')
-  }
-
   const routeToString = (properties: Poi['properties'], context: PropertyTranslationsContextEnum): string => {
     let routeData = []
     const activity = getRouteActivity(properties, context)
@@ -149,7 +143,6 @@ export default function () {
     getRouteDifficulty,
     getRouteDuration,
     getRouteLength,
-    getRouteNoDetails,
     getRoutes,
     routeToString,
   }
