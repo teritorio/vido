@@ -2,7 +2,7 @@ export default defineEventHandler((event) => {
   const headers = getRequestHeaders(event)
   const protocol = getRequestProtocol(event)
   const host = headers['x-client-host']
-  const apiPath = '/api/0.1/'
+  const apiPath = '/api/0.2/'
 
   if (!host) {
     throw createError({
