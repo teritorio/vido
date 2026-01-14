@@ -79,8 +79,8 @@ const translatedValue = computed(() => {
 
   <DateRange
     v-else-if="field.render === 'start_end_date'"
-    :start="properties.start_date"
-    :end="properties.end_date"
+    :start="properties.start_end_date.start_date"
+    :end="properties.start_end_date.end_date"
     :class="`field_content_level_${recursionStack.length}`"
   >
     <FieldsHeader
