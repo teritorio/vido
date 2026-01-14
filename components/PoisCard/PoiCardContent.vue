@@ -12,7 +12,7 @@ import { useSiteStore } from '~/stores/site'
 import ContribFieldGroup from '~/components/Fields/ContribFieldGroup.vue'
 import useDevice from '~/composables/useDevice'
 import IsochroneTrigger from '~/components/Isochrone/IsochroneTrigger.vue'
-import { isFieldsListItem } from '~/composables/useField'
+import { isFieldsListItem } from '~/utils/utilities'
 
 const props = withDefaults(defineProps<{
   detailsIsExternal?: boolean
