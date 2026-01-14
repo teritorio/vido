@@ -3,13 +3,21 @@ import type GeoJSON from 'geojson'
 
 import Fields from '~/components/PoisCard/Fields.vue'
 import type { FieldsListItem } from '~/types/api/field'
-import type { ApiPoiProperties } from '~/types/api/poi'
+import type { PoiUnion } from '~/types/local/poi-deps'
 import type { MapPoiDescription } from '~/lib/mapPois'
 
-const properties: ApiPoiProperties = {
+const properties: PoiUnion['properties'] = {
   metadata: {
     id: 1,
   },
+  display: {
+    color_fill: '#123456',
+    color_line: '#123456',
+    color_text: '#FFFFFF' as const,
+    icon: 'map-marker-alt',
+  },
+  editorial: {},
+  vido_visible: true,
 }
 
 const defaultProps = {
@@ -41,7 +49,7 @@ const props = {
       { field: 'short_description', render: 'text' } as FieldsListItem,
     ],
     properties: {
-      'metadata': { id: 0 },
+      ...properties,
       'phone': ['+33676544'],
       'mobile': ['+339750987766'],
       'route:hiking:difficulty': 'easy',

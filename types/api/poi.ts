@@ -46,14 +46,13 @@ export const AddressFields = [
   'country',
 ] as const
 
-export type ApiPoiPropertiesRoute = {
-  [lang in LanguageCode]?: {
-    gpx_trace?: string
-    pdf?: string
-  } & {
-    [key: string]: RouteMetadata
-  }
+export interface ApiPoiPropertiesRouteLanguage {
+  gpx_trace?: string
+  pdf?: MultilingualString
+  [key: string]: RouteMetadata | string | MultilingualString | undefined
 }
+
+export type ApiPoiPropertiesRoute = Partial<Record<LanguageCode, ApiPoiPropertiesRouteLanguage>>
 
 export interface RouteMetadata {
   difficulty: 'easy' | 'normal' | 'hard'
