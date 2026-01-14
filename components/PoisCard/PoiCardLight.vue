@@ -16,7 +16,7 @@ const poiDepsCompo = usePoiDeps()
 
 const websiteDetails = ref(props.poi.properties.editorial['website:details']?.['fr-FR'])
 
-const isWaypoint = computed(() => poiDepsCompo.isWaypoint(props.poi, 'fr-FR'))
+const isWaypoint = computed(() => poiDepsCompo.isWaypoint(props.poi))
 
 const teritorioIconBadgeProps = computed(() => {
   return {
@@ -59,7 +59,7 @@ const teritorioIconBadgeProps = computed(() => {
 
       <section>
         <Fields
-          :fields="poi.properties.editorial.popup_fields || []"
+          :fields="poi.properties.editorial.popup_fields?.filter(isFieldsListItem) || []"
           :properties="poi.properties"
           :details="websiteDetails"
           :geom="poi.geometry"

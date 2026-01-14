@@ -46,8 +46,8 @@ const formattedFeatures = computed(() => {
   })
 })
 
-const waypoints = computed(() => props.poiDeps.filter(f => poiDepsCompo.isWaypoint(f, ('fr-FR'))))
-const pois = computed(() => props.poiDeps.filter(f => !poiDepsCompo.isWaypoint(f, 'fr-FR')))
+const waypoints = computed(() => props.poiDeps.filter(f => poiDepsCompo.isWaypoint(f)))
+const pois = computed(() => props.poiDeps.filter(f => !poiDepsCompo.isWaypoint(f)))
 </script>
 
 <template>

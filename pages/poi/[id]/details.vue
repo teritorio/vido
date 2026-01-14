@@ -35,7 +35,7 @@ const { data, error, status } = await useFetch(
     transform: (data: ApiPoiDepsCollection) => {
       poiDepsCompo.resetWaypointIndex()
 
-      return poiDepsCompo.formatPoiDepsCollection(data, poiId.value, 'fr-FR')
+      return poiDepsCompo.formatPoiDepsCollection(data, poiId.value)
     },
   },
 )
