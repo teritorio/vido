@@ -8,7 +8,6 @@ import PoiCardContent from '~/components/PoisCard/PoiCardContent.vue'
 import CategorySelector from '~/components/PoisList/CategorySelector.vue'
 import UIButton from '~/components/UI/UIButton.vue'
 import type { Poi } from '~/types/local/poi'
-import type { ApiMenuCategory } from '~/types/api/menu'
 import { getBBox } from '~/lib/bbox'
 import { mapStore as useMapStore } from '~/stores/map'
 import { menuStore as useMenuStore } from '~/stores/menu'
@@ -36,20 +35,6 @@ const initialBbox = ref<LngLatBounds>()
 const mapFeaturesRef = ref<InstanceType<typeof MapFeatures>>()
 
 onMounted(() => {
-  if (props.initialCategoryIds) {
-    menuStore.setSelectedCategoryIds(props.initialCategoryIds)
-  }
-  else if (typeof location !== 'undefined') {
-    const enabledCategories: ApiMenuCategory['id'][] = []
-    if (apiMenuCategory.value) {
-      apiMenuCategory.value.forEach((category) => {
-        if (category.selected_by_default)
-          enabledCategories.push(category.id)
-      })
-    }
-    menuStore.setSelectedCategoryIds(enabledCategories)
-  }
-
   initialBbox.value = getBBox({ type: 'Feature', geometry: props.boundaryArea || settings.value!.bbox_line, properties: {} })
 })
 

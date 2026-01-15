@@ -21,6 +21,8 @@ const mapStore = useMapStore()
 const { $trackingInit } = useNuxtApp()
 const menuStore = useMenuStore()
 const poiDepsCompo = usePoiDeps()
+const { teritorioCluster } = storeToRefs(mapStore)
+const { apiMenuCategory, selectedCategoryIds } = storeToRefs(menuStore)
 
 const mainPoi = ref<ApiPoi>()
 const boundaryGeojson = ref<Polygon | MultiPolygon>()
@@ -30,6 +32,7 @@ const categoryIds = ref<number[]>([])
 const { boundary } = route.query
 if (boundary && typeof boundary === 'string' && settings.value?.polygons_extra) {
   const boundaryObject = settings.value.polygons_extra[boundary]
+
   if (boundaryObject) {
     if (typeof boundaryObject.data === 'string') {
       const geojson = (await (await fetch(boundaryObject.data)).json()) as GeoJSON
@@ -54,8 +57,10 @@ if (route.params.p1) {
   if (!match || (route.path.endsWith('/') && match.groups && (match.groups.cartocode || match.groups.reference || match.groups.osm)))
     throw createError({ statusCode: 400, message: `No match for category ID: ${route.params.p1}` })
 
-  match.input?.split(',')
-    .map(id => categoryIds.value.push(Number.parseInt(id)))
+  const catString = match.input?.split(',').map(id => Number.parseInt(id))
+
+  if (catString)
+    categoryIds.value = catString
 }
 
 // Get POI ID from URL
@@ -68,15 +73,7 @@ if (route.params.poiId) {
   poiId.value = route.params.poiId.toString()
 }
 
-const { apiMenuCategory, selectedCategoryIds } = storeToRefs(menuStore)
-onBeforeMount(() => {
-  $trackingInit()
-})
-
-if (categoryIds.value.length) {
-  menuStore.setSelectedCategoryIds(categoryIds.value)
-}
-else {
+if (!categoryIds.value.length) {
   categoryIds.value = []
 
   if (apiMenuCategory.value) {
@@ -85,11 +82,10 @@ else {
         categoryIds.value.push(category.id)
     })
   }
-
-  menuStore.setSelectedCategoryIds(categoryIds.value)
 }
 
-const { teritorioCluster } = storeToRefs(mapStore)
+menuStore.setSelectedCategoryIds(categoryIds.value)
+
 const { data, error, status } = await useAsyncData('features', async () => {
   await menuStore.fetchFeatures({
     categoryIds: categoryIds.value || [],
@@ -171,6 +167,10 @@ function transformApiPoiDepsCollection(data?: ApiPoiDepsCollection): PoiUnion[] 
 
   return poiDepsCompo.formatPoiDepsCollection(data, mainPoi.value.properties.metadata.id)
 }
+
+onBeforeMount(() => {
+  $trackingInit()
+})
 </script>
 
 <template>
