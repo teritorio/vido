@@ -152,7 +152,7 @@ export const menuStore = defineStore('menu', () => {
           if (menuItem.parent_id) {
             const parent = stateMenuItems[menuItem.parent_id]
 
-            if ('menu_group' in parent) {
+            if (parent && 'menu_group' in parent) {
               parent.menu_group.vido_children.push(menuItem.id)
             }
           }
