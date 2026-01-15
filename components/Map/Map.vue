@@ -297,10 +297,12 @@ onMounted(() => {
     }),
   )
 
-  newMap?.addControl(new GeolocateControl({
+  const geolocateControl = new GeolocateControl({
     positionOptions: { enableHighAccuracy: true },
     trackUserLocation: true,
-  }))
+  })
+  newMap?.addControl(geolocateControl)
+  geolocateControl._container.classList.add('control-geolocate')
 
   if (props.fullscreenControl && fullscreenControlObject.value)
     newMap?.addControl(fullscreenControlObject.value)
@@ -372,7 +374,7 @@ onMounted(() => {
   margin-left: 6rem;
 }
 
-#map .maplibregl-ctrl-geolocate {
+.control-geolocate {
   @apply md:tw-hidden;
 }
 
