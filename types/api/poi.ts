@@ -48,7 +48,7 @@ export const AddressFields = [
 
 export interface ApiPoiPropertiesRouteLanguage {
   gpx_trace?: string
-  pdf?: MultilingualString
+  pdf?: string
   [key: string]: RouteMetadata | string | MultilingualString | undefined
 }
 
