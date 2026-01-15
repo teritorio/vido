@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { storeToRefs } from 'pinia'
+import { distance } from '@turf/distance'
 import Fields from '~/components/PoisCard/Fields.vue'
 import FavoriteIcon from '~/components/UI/FavoriteIcon.vue'
 import TeritorioIcon from '~/components/UI/TeritorioIcon.vue'
@@ -94,6 +95,24 @@ const websiteDetails = computed(() => {
 
 const fieldListItems = computed(() => {
   return props.poi.properties.editorial.popup_fields?.filter(isFieldsListItem)
+})
+
+const isElligibleToIsochrone = computed(() => {
+  if (!props.poi.bbox) {
+    return props.poi.geometry.type === 'Point'
+  }
+  else {
+    const [minX, minY, maxX, maxY] = props.poi.bbox
+
+    // Create the two corner points
+    const point1 = [minX, minY]
+    const point2 = [maxX, maxY]
+
+    const diagonal = distance(point1, point2, { units: 'meters' })
+
+    // We check if the feature size is bigger than 200 meters.
+    return diagonal <= 200
+  }
 })
 
 function onZoomClick() {
@@ -219,31 +238,33 @@ function trackIsochroneEvent(profile: Profile) {
     </div>
 
     <div v-if="showActions" class="tw-flex tw-items-center tw-space-x-2 tw-justify-evenly tw-shrink-0 tw-bottom-0 tw-pt-2">
-      <a
-        v-if="device.phone && routeHref"
-        :href="routeHref"
-        class="tw-flex tw-flex-col tw-items-center tw-flex-1 tw-h-full tw-p-2 tw-space-y-2 tw-rounded-lg hover:tw-bg-zinc-100"
-        :title="t('poiCard.findRoute')"
-        @click="trackingPopupEvent('route')"
-      >
-        <FontAwesomeIcon icon="route" :color="props.poi.properties.display.color_line" size="sm" />
-        <span class="tw-text-sm">{{ t('poiCard.route') }}</span>
-      </a>
+      <ClientOnly>
+        <a
+          v-if="device.phone && routeHref"
+          :href="routeHref"
+          class="tw-flex tw-flex-col tw-items-center tw-flex-1 tw-h-full tw-p-2 tw-space-y-2 tw-rounded-lg hover:tw-bg-zinc-100"
+          :title="t('poiCard.findRoute')"
+          @click="trackingPopupEvent('route')"
+        >
+          <FontAwesomeIcon icon="route" :color="props.poi.properties.display.color_line" size="sm" />
+          <span class="tw-text-sm">{{ t('poiCard.route') }}</span>
+        </a>
 
-      <IsochroneTrigger
-        v-if="isochroneEnabled && !device.smallScreen && !showOnlyRouteAction"
-        class="tw-flex tw-flex-col tw-items-center tw-flex-1 tw-h-full tw-p-2 tw-space-y-2 tw-rounded-lg"
-        :feature="poi"
-        :class="[
-          isSameFeatureAsIsochrone && 'tw-bg-blue-600 tw-text-white hover:tw-bg-blue-500',
-          !isSameFeatureAsIsochrone && 'hover:tw-bg-zinc-100',
-        ]"
-        @trigger-click="trackingPopupEvent('isochrone')"
-        @profile-update="trackIsochroneEvent"
-      >
-        <FontAwesomeIcon :color="isSameFeatureAsIsochrone ? '#ffffff' : props.poi.properties.display.color_line" icon="clock" size="sm" />
-        <span class="tw-text-sm">{{ t('isochrone.trigger.label') }}</span>
-      </IsochroneTrigger>
+        <IsochroneTrigger
+          v-if="isochroneEnabled && !device.smallScreen && !showOnlyRouteAction && isElligibleToIsochrone"
+          class="tw-flex tw-flex-col tw-items-center tw-flex-1 tw-h-full tw-p-2 tw-space-y-2 tw-rounded-lg"
+          :feature="poi"
+          :class="[
+            isSameFeatureAsIsochrone && 'tw-bg-blue-600 tw-text-white hover:tw-bg-blue-500',
+            !isSameFeatureAsIsochrone && 'hover:tw-bg-zinc-100',
+          ]"
+          @trigger-click="trackingPopupEvent('isochrone')"
+          @profile-update="trackIsochroneEvent"
+        >
+          <FontAwesomeIcon :color="isSameFeatureAsIsochrone ? '#ffffff' : props.poi.properties.display.color_line" icon="clock" size="sm" />
+          <span class="tw-text-sm">{{ t('isochrone.trigger.label') }}</span>
+        </IsochroneTrigger>
+      </ClientOnly>
 
       <button
         v-if="!showOnlyRouteAction"

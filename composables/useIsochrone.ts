@@ -34,7 +34,7 @@ export default function useIsochrone() {
   const map = useState<Map>('map-instance')
   const profile = useState<Profile | null>('isochrone-profile', () => null)
   const layers = useState<string[]>('isochrone-layers', () => [])
-  const isochroneCurrentFeature = useState<Poi | null>(() => null)
+  const isochroneCurrentFeature = useState<Poi | null>('isochrone-current-feature', () => null)
   const { boundOptions } = storeToRefs(useMapStore())
 
   //
