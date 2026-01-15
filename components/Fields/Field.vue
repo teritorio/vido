@@ -43,7 +43,7 @@ const translatedValue = computed(() => {
     ? props.properties[props.field.field]?.['fr-FR']
     : props.properties[props.field.field]
 
-  return props.field.array ? value : [value]
+  return props.field.array ? value : [value].filter(Boolean)
 })
 </script>
 
@@ -53,7 +53,7 @@ const translatedValue = computed(() => {
     class="field_content"
     :context="context"
     :recursion-stack="recursionStack"
-    :properties="properties.route as ApiPoiPropertiesRoute"
+    :properties="(properties.route as ApiPoiPropertiesRoute)"
   >
     <FieldsHeader
       v-if="field.label"
@@ -102,7 +102,7 @@ const translatedValue = computed(() => {
     </FieldsHeader>
   </Coordinates>
 
-  <div v-else-if="properties[field.field]">
+  <div v-else>
     <FieldsHeader
       v-if="field.label"
       :recursion-stack="recursionStack"
@@ -127,7 +127,7 @@ const translatedValue = computed(() => {
 
             <div
               v-else-if="field.render === 'text'"
-              class="inline"
+              class="inline tw-prose"
             >
               {{ f.value }}
               <a
