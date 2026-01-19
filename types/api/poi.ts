@@ -9,10 +9,6 @@ export interface ApiPoiProperties {
   'display'?: ApiPoiPropertiesDisplay
   'editorial'?: ApiPoiPropertiesEditorial
   'ref'?: string
-  'text'?: ApiPoiPropertiesText
-  'start_end_date'?: ApiPoiPropertiesStartEndDate
-  'addr'?: ApiPoiPropertiesAddress
-  'route'?: ApiPoiPropertiesRoute
 }
 
 export interface ApiPoiPropertiesText {

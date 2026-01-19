@@ -14,7 +14,8 @@ import type { FieldsListItem } from '~/types/local/field'
 import type { PoiUnion } from '~/types/local/poi-deps'
 import { PropertyTranslationsContextEnum, useSiteStore } from '~/stores/site'
 import { AssocRenderKeys } from '~/utils/types'
-import type { ApiPoiPropertiesRoute } from '~/types/api/poi'
+import { getNestedPropertyValue } from '~/utils/property'
+import type { ApiPoiPropertiesAddress, ApiPoiPropertiesRoute, ApiPoiPropertiesStartEndDate } from '~/types/api/poi'
 
 const props = withDefaults(defineProps<{
   context: PropertyTranslationsContextEnum
@@ -34,19 +35,8 @@ defineEmits<{
 const { t } = useI18n()
 const { p, pv } = useSiteStore()
 
-function getNestedValue(obj: PoiUnion['properties'], path: string, multilingual: boolean): any {
-  const keys = path.split('.')
-  const [firstKey, ...restKeys] = keys
-
-  let value = obj[firstKey]
-  if (multilingual || firstKey === 'route')
-    value = value?.['fr-FR']
-
-  return restKeys.reduce((acc, key) => acc?.[key], value)
-}
-
 const translatedValue = computed(() => {
-  const value = getNestedValue(props.properties, props.field.field, props.field.multilingual ?? false)
+  const value = getNestedPropertyValue(props.properties, props.field.field, props.field.multilingual ?? false)
 
   return props.field.array ? value : [value].filter(Boolean)
 })
@@ -58,7 +48,7 @@ const translatedValue = computed(() => {
     class="field_content"
     :context="context"
     :recursion-stack="recursionStack"
-    :properties="(properties.route as ApiPoiPropertiesRoute)"
+    :properties="(properties[field.field] as ApiPoiPropertiesRoute)"
   >
     <FieldsHeader
       v-if="field.label"
@@ -71,7 +61,7 @@ const translatedValue = computed(() => {
 
   <AddressField
     v-else-if="field.render === 'addr'"
-    v-bind="properties.addr"
+    v-bind="(properties[field.field] as ApiPoiPropertiesAddress)"
   >
     <FieldsHeader
       v-if="field.label"
@@ -84,8 +74,8 @@ const translatedValue = computed(() => {
 
   <DateRange
     v-else-if="field.render === 'start_end_date'"
-    :start="properties.start_end_date?.start_date"
-    :end="properties.start_end_date?.end_date"
+    :start="(properties[field.field] as ApiPoiPropertiesStartEndDate | undefined)?.start_date"
+    :end="(properties[field.field] as ApiPoiPropertiesStartEndDate | undefined)?.end_date"
     :class="`field_content_level_${recursionStack.length}`"
   >
     <FieldsHeader

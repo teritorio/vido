@@ -105,26 +105,26 @@ function onCheckboxFilterChange(filterIndex: number, val: string, checked: boole
   <div class="tw-basis-max tw-shrink tw-flex tw-flex-col tw-gap-4 tw-flex-1 tw-p-4">
     <template
       v-for="(filter, filterIndex) in filtersSafeCopy"
-      :key="'property' in filter.def ? filter.def.property : filterIndex"
+      :key="'property' in filter.def ? filter.def.property.join('.') : filterIndex"
     >
       <div v-if="filter.type === 'boolean'">
         <label class="tw-block tw-mb-1 tw-text-zinc-800 tw-cursor-pointer">
           <input
             type="checkbox"
             class="tw-text-emerald-500 tw-rounded-full focus:tw-ring-0 focus:tw-ring-transparent"
-            :name="filter.def.property"
+            :name="filter.def.property.join('.')"
             :checked="filter.filterValue"
             @change="onBooleanFilterChange(filterIndex, $event)"
           >
-          {{ (filter.def.name && filter.def.name.fr) || filter.def.property }}
+          {{ (filter.def.name && filter.def.name.fr) || filter.def.property.join('.') }}
         </label>
       </div>
       <div v-else-if="filter.type === 'multiselection'">
         <label
-          :for="filter.def.property"
+          :for="filter.def.property.join('.')"
           class="tw-block tw-mb-2 tw-text-zinc-500 tw-cursor-pointer"
         >
-          {{ (filter.def.name && filter.def.name.fr) || filter.def.property }}
+          {{ (filter.def.name && filter.def.name.fr) || filter.def.property.join('.') }}
         </label>
         <SelectFilter
           :filter="filter"
@@ -135,7 +135,7 @@ function onCheckboxFilterChange(filterIndex: number, val: string, checked: boole
       </div>
       <div v-else-if="filter.type === 'checkboxes_list'">
         <p class="tw-mb-2 tw-text-zinc-500">
-          {{ (filter.def.name && filter.def.name.fr) || filter.def.property }}
+          {{ (filter.def.name && filter.def.name.fr) || filter.def.property.join('.') }}
         </p>
         <label
           v-for="value in filter.def.values"
@@ -145,7 +145,7 @@ function onCheckboxFilterChange(filterIndex: number, val: string, checked: boole
           <input
             type="checkbox"
             class="tw-text-emerald-500 tw-rounded-full focus:tw-ring-0 focus:tw-ring-transparent"
-            :name="`${filter.def.property}_${value.value}`"
+            :name="`${filter.def.property.join('.')}_${value.value}`"
             :checked="filter.filterValues.includes(value.value)"
             @change="
               (e) =>
@@ -168,7 +168,7 @@ function onCheckboxFilterChange(filterIndex: number, val: string, checked: boole
       </div>
       <div v-else-if="filter.type === 'number_range'">
         <label class="tw-block tw-mb-1 tw-text-zinc-800 tw-cursor-pointer">
-          {{ (filter.def.name && filter.def.name.fr) || filter.def.property }}
+          {{ (filter.def.name && filter.def.name.fr) || filter.def.property.join('.') }}
           <NumberRange
             :filter="filter"
             @change="onSelectionFilterNumberRangeChange(filterIndex, $event)"

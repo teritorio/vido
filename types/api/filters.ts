@@ -1,6 +1,6 @@
 export interface FilterList {
   type: 'multiselection' | 'checkboxes_list'
-  property: string
+  property: string[]
   name?: MultilingualString
   values: Array<{
     value: string
@@ -10,20 +10,19 @@ export interface FilterList {
 
 export interface FilterBoolean {
   type: 'boolean'
-  property: string
+  property: string[]
   name?: MultilingualString
 }
 
 export interface FilterDate {
   type: 'date_range'
-  property_begin: string
-  property_end: string
+  property: string[]
   name?: MultilingualString
 }
 
 export interface FilterNumberRange {
   type: 'number_range'
-  property: string
+  property: string[]
   name?: MultilingualString
   min: number
   max: number

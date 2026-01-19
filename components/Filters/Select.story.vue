@@ -5,7 +5,7 @@ import { FilterValueList } from '~/utils/types-filters'
 
 const def: FilterList = {
   type: 'multiselection',
-  property: 'string',
+  property: ['string'],
   name: { fr: 'plop' },
   values: [
     {

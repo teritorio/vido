@@ -175,7 +175,7 @@ export const useSearchStore = defineStore('search', () => {
               (filter.type === 'boolean'
               || filter.type === 'multiselection'
               || filter.type === 'checkboxes_list')
-              && filter.def.property === newFilter.filter_property,
+              && filter.def.property.join('.') === newFilter.filter_property,
           )
           if (filter) {
             switch (filter?.type) {
