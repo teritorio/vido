@@ -16,7 +16,7 @@ import SnackBar from '~/components/MainMap/SnackBar.vue'
 import MapBase from '~/components/Map/MapBase.vue'
 import MapControls3D from '~/components/Map/MapControls3D.vue'
 import MapControlsBackground from '~/components/Map/MapControlsBackground.vue'
-import type { ApiMenuCategory } from '~/types/api/menu'
+import type { MenuCategory } from '~/types/local/menu'
 import type { Poi } from '~/types/local/poi'
 import type { ApiPoiDepsCollection } from '~/types/api/poi-deps'
 import type { PoiUnion } from '~/types/local/poi-deps'
@@ -38,9 +38,9 @@ const props = withDefaults(defineProps<{
   fitBoundsPaddingOptions?: FitBoundsOptions['padding']
   extraAttributions?: string[]
   small?: boolean
-  categories: ApiMenuCategory[]
+  categories: MenuCategory[]
   features: Poi[]
-  selectedCategoriesIds?: ApiMenuCategory['id'][]
+  selectedCategoriesIds?: MenuCategory['id'][]
   styleIconFilter?: string[][]
   enableFilterRouteByCategories?: boolean
   enableFilterRouteByFeatures?: boolean
@@ -50,7 +50,7 @@ const props = withDefaults(defineProps<{
   fitBoundsPaddingOptions: 50,
   extraAttributions: () => [] satisfies string[],
   small: false,
-  selectedCategoriesIds: () => [] satisfies ApiMenuCategory['id'][],
+  selectedCategoriesIds: () => [] satisfies MenuCategory['id'][],
   enableFilterRouteByCategories: true,
   enableFilterRouteByFeatures: false,
   cooperativeGestures: false,

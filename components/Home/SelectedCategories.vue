@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
-import type { ApiMenuCategory } from '~/types/api/menu'
+import type { MenuCategory } from '~/types/local/menu'
 import TeritorioIconBadge from '~/components/UI/TeritorioIconBadge.vue'
 import { menuStore as useMenuStore } from '~/stores/menu'
 
 withDefaults(defineProps<{
-  categories: ApiMenuCategory[]
+  categories: MenuCategory[]
   showGoToMap: boolean
 }>(), {
   showGoToMap: true,
@@ -17,7 +17,7 @@ defineEmits<{
 
 const menuStore = useMenuStore()
 
-function getTeritorioIconBadgeProps(item: ApiMenuCategory) {
+function getTeritorioIconBadgeProps(item: MenuCategory) {
   const base = item.category
   const { colorFill, colorText } = useContrastedColors(base.color_fill)
 

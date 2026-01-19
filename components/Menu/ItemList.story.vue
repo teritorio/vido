@@ -1,8 +1,8 @@
 <script lang="ts" setup>
 import type { FontAwesomeIconProps } from '@fortawesome/vue-fontawesome'
 import ItemList from '~/components/Menu/ItemList.vue'
-import type { ApiMenuCategory, ApiMenuGroup, ApiMenuLink } from '~/types/api/menu'
-import type { MenuGroup } from '~/types/local/menu'
+import type { ApiMenuLink } from '~/types/api/menu'
+import type { MenuCategory, MenuGroup } from '~/types/local/menu'
 
 const menuGroup: MenuGroup = {
   id: 1,
@@ -32,7 +32,7 @@ const menuLink: ApiMenuLink = {
   },
 }
 
-const category: ApiMenuCategory = {
+const category: MenuCategory = {
   id: 3,
   selected_by_default: false,
   index_order: 1,
@@ -67,7 +67,7 @@ const props = {
       {
         ...defaultProps.menuItems[0],
         menu_group: {
-          ...(defaultProps.menuItems[0] as ApiMenuGroup).menu_group,
+          ...(defaultProps.menuItems[0] as MenuGroup).menu_group,
           display_mode: 'large' as 'compact' | 'large',
         },
       } as MenuGroup,
@@ -81,10 +81,10 @@ const props = {
       {
         ...defaultProps.menuItems[2],
         category: {
-          ...(defaultProps.menuItems[2] as ApiMenuCategory).category,
+          ...(defaultProps.menuItems[2] as MenuCategory).category,
           display_mode: 'large' as 'compact' | 'large',
         },
-      } as ApiMenuCategory,
+      } as MenuCategory,
     ],
   },
   ManyGroups: {

@@ -1,8 +1,8 @@
 <script lang="ts" setup>
 import { defineNuxtComponent } from '#app'
 import Menu from '~/components/Home/Menu.vue'
-import type { ApiMenuCategory, ApiMenuLink } from '~/types/api/menu'
-import type { MenuGroup, MenuItem } from '~/types/local/menu'
+import type { ApiMenuLink } from '~/types/api/menu'
+import type { MenuCategory, MenuGroup, MenuItem } from '~/types/local/menu'
 
 const search: MenuGroup = {
   id: 1,
@@ -62,7 +62,7 @@ const menuLink: ApiMenuLink = {
   },
 }
 
-const category: ApiMenuCategory = {
+const category: MenuCategory = {
   id: 122,
   selected_by_default: false,
   parent_id: 12,
@@ -93,7 +93,7 @@ const MenuMock = defineNuxtComponent({
   extends: Menu,
 
   computed: {
-    menuItems(): Record<ApiMenuCategory['id'], MenuItem> {
+    menuItems(): Record<MenuCategory['id'], MenuItem> {
       return Object.fromEntries(
         [search, menuGroup1, menuGroup2, menuLink, category].map(i => [
           i.id,

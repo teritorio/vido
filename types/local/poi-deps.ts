@@ -8,7 +8,7 @@ export const iconMap = {
   waypoint: 'map-marker-alt',
 } as const satisfies Record<ApiRouteWaypointType, string>
 
-export interface PoiDeps extends ApiPoiDeps {
+export interface PoiDeps extends Omit<ApiPoiDeps, 'properties'> {
   properties: ApiPoiDepsProperties & Poi['properties']
 }
 export type PoiUnion = Poi | PoiDeps

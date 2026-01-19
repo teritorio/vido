@@ -2,7 +2,7 @@
 import type GeoJSON from 'geojson'
 
 import Fields from '~/components/PoisCard/Fields.vue'
-import type { FieldsListItem } from '~/types/api/field'
+import type { FieldsListItem } from '~/types/local/field'
 import type { PoiUnion } from '~/types/local/poi-deps'
 import type { MapPoiDescription } from '~/lib/mapPois'
 

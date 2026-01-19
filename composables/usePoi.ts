@@ -1,11 +1,11 @@
-import type { ApiMenuCategory } from '~/types/api/menu'
 import type { ApiPoi } from '~/types/api/poi'
+import type { MenuCategory } from '~/types/local/menu'
 import type { Poi } from '~/types/local/poi'
 
 export function usePoi() {
   function formatPoi(
     feature: ApiPoi,
-    category: ApiMenuCategory,
+    category: MenuCategory,
   ): Poi {
     const { colorFill, colorText } = useContrastedColors(
       feature.properties.display?.color_fill || category.category.color_fill,

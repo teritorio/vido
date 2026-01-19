@@ -1,14 +1,16 @@
 import copy from 'fast-copy'
 import { deepEqual } from 'fast-equals'
 import { defineStore } from 'pinia'
+import type { ApiFieldsList, ApiFieldsListGroup, ApiFieldsListItem } from '~/types/api/field'
 import type { ApiMenuCategory, ApiMenuCollection } from '~/types/api/menu'
-import type { MenuGroup, MenuItem } from '~/types/local/menu'
+import type { MenuCategory, MenuCategoryEditorial, MenuGroup, MenuItem } from '~/types/local/menu'
 import type { ApiPoiCollection } from '~/types/api/poi'
 import { getPoiByCategoryId } from '~/lib/apiPois'
 import type { FilterValues } from '~/utils/types-filters'
 import { filterValueFactory, filterValuesIsSet, isMatch, isSet } from '~/utils/types-filters'
 import type { Poi } from '~/types/local/poi'
 import type { PoiUnion } from '~/types/local/poi-deps'
+import type { FieldsList, FieldsListGroup, FieldsListItem } from '~/types/local/field'
 
 interface FetchFeaturesPayload {
   categoryIds: ApiMenuCategory['id'][]
@@ -17,6 +19,54 @@ interface FetchFeaturesPayload {
 
 function sortedUniq<T>(a: T[]): T[] {
   return [...new Set(a)].sort()
+}
+
+function transformApiFieldsListItem(item: ApiFieldsListItem): FieldsListItem {
+  return {
+    ...item,
+    field: item.field.join('.'),
+  }
+}
+
+function transformApiFieldsListGroup(group: ApiFieldsListGroup): FieldsListGroup {
+  return {
+    ...group,
+    fields: transformApiFieldsList(group.fields) || [],
+  }
+}
+
+function transformApiFieldsList(fields: ApiFieldsList | undefined): FieldsList | undefined {
+  if (!fields)
+    return undefined
+
+  return fields.map((item) => {
+    if ('group' in item)
+      return transformApiFieldsListGroup(item)
+
+    return transformApiFieldsListItem(item)
+  })
+}
+
+function transformCategoryEditorial(editorial: ApiMenuCategory['category']['editorial'] | undefined): MenuCategoryEditorial | undefined {
+  if (!editorial)
+    return undefined
+
+  return {
+    ...editorial,
+    popup_fields: transformApiFieldsList(editorial.popup_fields),
+    details_fields: transformApiFieldsList(editorial.details_fields),
+    list_fields: transformApiFieldsList(editorial.list_fields),
+  }
+}
+
+function transformApiMenuCategory(menuItem: ApiMenuCategory): MenuCategory {
+  return {
+    ...menuItem,
+    category: {
+      ...menuItem.category,
+      editorial: transformCategoryEditorial(menuItem.category.editorial),
+    },
+  }
 }
 
 function keepFeature(filters: FilterValues, feature: Poi): boolean {
@@ -56,32 +106,32 @@ export const menuStore = defineStore('menu', () => {
     return [...new Set(colors)]
   })
 
-  const apiMenuCategory = computed((): ApiMenuCategory[] | undefined => {
+  const apiMenuCategory = computed((): MenuCategory[] | undefined => {
     return menuItems.value === undefined
       ? undefined
       : (Object.values(menuItems.value).filter(
           menuItem => 'category' in menuItem,
-        ) as ApiMenuCategory[])
+        ) as MenuCategory[])
   })
 
-  const getCurrentCategory = computed((): (categoryId: number) => ApiMenuCategory | undefined => {
+  const getCurrentCategory = computed((): (categoryId: number) => MenuCategory | undefined => {
     return (categoryId) => {
       return menuItems.value === undefined
         ? undefined
         : Object.values(menuItems.value).find(
           menuItem => menuItem.id === categoryId,
-        ) as ApiMenuCategory
+        ) as MenuCategory
     }
   })
 
-  const selectedCategories = computed((): ApiMenuCategory[] | undefined => {
+  const selectedCategories = computed((): MenuCategory[] | undefined => {
     return menuItems.value === undefined
       ? undefined
       : (selectedCategoryIds.value
           .map(selectedCatagoryId => menuItems.value![selectedCatagoryId])
           .filter(
             menuItems => menuItems !== undefined,
-          ) as ApiMenuCategory[])
+          ) as MenuCategory[])
   })
 
   function setSelectedCategoryIds(ids: ApiMenuCategory['id'][]) {
@@ -140,6 +190,11 @@ export const menuStore = defineStore('menu', () => {
 
             stateMenuItems[menuItem.id] = groupItem
             return groupItem
+          }
+          else if ('category' in menuItem) {
+            const categoryItem = transformApiMenuCategory(menuItem)
+            stateMenuItems[menuItem.id] = categoryItem
+            return categoryItem
           }
           else {
             stateMenuItems[menuItem.id] = menuItem

@@ -1,6 +1,6 @@
 import type { MultilingualString } from '~/utils/types'
 import type { Filters } from '~/types/api/filters'
-import type { FieldsList } from '~/types/api/field'
+import type { ApiFieldsList } from '~/types/api/field'
 
 export interface ApiMenuItem {
   id: number
@@ -46,9 +46,9 @@ export interface ApiMenuCategory extends ApiMenuItem {
     display_mode: 'large' | 'compact'
     zoom: number
     editorial?: {
-      popup_fields?: FieldsList
-      details_fields?: FieldsList
-      list_fields?: FieldsList
+      popup_fields?: ApiFieldsList
+      details_fields?: ApiFieldsList
+      list_fields?: ApiFieldsList
       class_label?: MultilingualString
       class_label_popup?: MultilingualString
       class_label_details?: MultilingualString
