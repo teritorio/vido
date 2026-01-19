@@ -10,7 +10,7 @@ export default {
 
 const def: FilterNumberRange = {
   type: 'number_range',
-  property: 'string',
+  property: ['string'],
   name: { fr: 'plop' },
   min: 20,
   max: 120,

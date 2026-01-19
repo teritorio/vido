@@ -10,8 +10,7 @@ export default {
 
 const def: FilterDate = {
   type: 'date_range',
-  property_begin: 'begin',
-  property_end: 'end',
+  property: ['start_end_date'],
   name: { fr: 'plop' },
 }
 

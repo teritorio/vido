@@ -5,7 +5,9 @@ import type {
   FilterNumberRange,
   Filters,
 } from '~/types/api/filters'
+import type { ApiPoiPropertiesStartEndDate } from '~/types/api/poi'
 import type { Poi } from '~/types/local/poi'
+import { getNestedPropertyValue, isFieldMultilingual } from '~/utils/property'
 
 abstract class FilterValueDef<Type extends Filters> {
   def: Type
@@ -72,40 +74,39 @@ export function isMatch(
   filter: FilterValue,
   properties: Poi['properties'],
 ): boolean {
-  const propertyValues = 'property' in filter.def ? properties[filter.def.property] : null
+  const multilingual = 'property' in filter.def ? isFieldMultilingual(properties.editorial, filter.def.property) : false
+  const propertyValue = 'property' in filter.def ? getNestedPropertyValue(properties, filter.def.property, multilingual) : null
   switch (filter.type) {
     case 'boolean':
-      return Boolean(properties[filter.def.property])
+      return Boolean(propertyValue)
 
     case 'checkboxes_list':
     case 'multiselection':
-      if (Array.isArray(propertyValues)) {
+      if (Array.isArray(propertyValue)) {
         return filter.filterValues.some(filterValue =>
-          propertyValues.includes(filterValue),
+          propertyValue.includes(filterValue),
         )
       }
       else {
-        return filter.filterValues.includes(
-          properties[filter.def.property] as string,
-        )
+        return filter.filterValues.includes(propertyValue as string)
       }
 
     case 'date_range':
       return Boolean(
-        (!filter.def.property_begin
-        || !filter.filterValueEnd
-        || properties[filter.def.property_begin] <= filter.filterValueEnd)
-        && (!filter.def.property_end
-        || !filter.filterValueBegin
-        || properties[filter.def.property_end] >= filter.filterValueBegin),
+        (!filter.filterValueEnd
+        || ((propertyValue as ApiPoiPropertiesStartEndDate)?.start_date
+        && (propertyValue as ApiPoiPropertiesStartEndDate).start_date <= filter.filterValueEnd))
+        && (!filter.filterValueBegin
+        || ((propertyValue as ApiPoiPropertiesStartEndDate)?.end_date
+        && (propertyValue as ApiPoiPropertiesStartEndDate).end_date >= filter.filterValueBegin)),
       )
 
     case 'number_range':
       return (
         (filter.filterValueMin == null
-        || filter.filterValueMin <= properties[filter.def.property])
+        || filter.filterValueMin <= (propertyValue as number))
         && (filter.filterValueMax == null
-        || properties[filter.def.property] <= filter.filterValueMax)
+        || (propertyValue as number) <= filter.filterValueMax)
       )
   }
 }
