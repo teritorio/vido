@@ -33,10 +33,12 @@ const formattedFeatures = computed(() => {
     f.properties.editorial.popup_fields = [
       {
         field: 'short_description',
+        translationKey: 'description',
         render: 'text',
       },
       {
         field: 'coordinates',
+        translationKey: 'coordinates',
         render: 'coordinates',
         label: true,
       },

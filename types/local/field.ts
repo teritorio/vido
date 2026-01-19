@@ -2,6 +2,7 @@ import type { ApiFieldsListGroup, ApiFieldsListItem } from '~/types/api/field'
 
 export interface FieldsListItem extends Omit<ApiFieldsListItem, 'field'> {
   field: string
+  translationKey: string
 }
 
 export interface FieldsListGroup extends Omit<ApiFieldsListGroup, 'fields'> {

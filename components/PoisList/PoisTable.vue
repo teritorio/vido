@@ -48,7 +48,7 @@ if (error.value) {
 const search = ref('')
 
 const headers = computed(() => {
-  let fields = [{ field: 'name', render: 'string' }] as FieldsList
+  let fields = [{ field: 'name', render: 'string', translationKey: 'name' }] as FieldsList
   if (pois.value?.length && pois.value[0].properties.editorial?.list_fields)
     fields = pois.value[0].properties.editorial.list_fields
 
@@ -56,14 +56,14 @@ const headers = computed(() => {
     .filter(isFieldsListItem)
     .map(field => ({
       filterable: true,
-      key: `properties.${field.field}`,
+      key: field.field,
       sortable: true,
       render: field.render,
       array: field.array,
       icon: field.icon,
       multilingual: field.multilingual,
       title: p(
-        field.field,
+        field.translationKey,
         PropertyTranslationsContextEnum.List,
       ),
       sort: customSort,
@@ -156,18 +156,8 @@ function getContext(key: string) {
   return key === 'opening_hours' ? PropertyTranslationsContextEnum.Card : PropertyTranslationsContextEnum.List
 }
 
-function getColKey(key: string) {
-  const keySplit = key.split('.')
-
-  if (keySplit.length > 1)
-    return keySplit[keySplit.length - 1]
-
-  return key
-}
-
 function getField(key: string, item: Poi) {
-  const keyName = getColKey(key)
-  return item.properties.editorial.list_fields?.filter(isFieldsListItem).find(f => f.field === keyName)
+  return item.properties.editorial.list_fields?.filter(isFieldsListItem).find(f => f.field === key)
 }
 
 if (settings.value && theme.value) {
@@ -256,14 +246,12 @@ if (settings.value && theme.value) {
               </IconButton>
               <Field
                 v-else
-                :context="getContext(getColKey(col.key!))"
-                :recursion-stack="[getColKey(col.key!)]"
-                :field="{
-                  field: getColKey(col.key!),
-                  render: getField(col.key!, item)?.render || 'string',
-                  array: getField(col.key!, item)?.array,
-                  icon: getField(col.key!, item)?.icon,
-                  multilingual: getField(col.key!, item)?.multilingual,
+                :context="getContext(col.key!)"
+                :recursion-stack="[col.key!]"
+                :field="getField(col.key!, item) || {
+                  field: col.key!,
+                  render: 'string',
+                  translationKey: col.key!,
                 }"
                 :details="undefined"
                 :properties="item.properties"

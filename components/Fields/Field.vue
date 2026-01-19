@@ -34,14 +34,19 @@ defineEmits<{
 const { t } = useI18n()
 const { p, pv } = useSiteStore()
 
-function fieldTranslateK(field: string) {
-  return p(field, props.context)
+function getNestedValue(obj: PoiUnion['properties'], path: string, multilingual: boolean): any {
+  const keys = path.split('.')
+  const [firstKey, ...restKeys] = keys
+
+  let value = obj[firstKey]
+  if (multilingual || firstKey === 'route')
+    value = value?.['fr-FR']
+
+  return restKeys.reduce((acc, key) => acc?.[key], value)
 }
 
 const translatedValue = computed(() => {
-  const value = props.field.multilingual
-    ? props.properties[props.field.field]?.['fr-FR']
-    : props.properties[props.field.field]
+  const value = getNestedValue(props.properties, props.field.field, props.field.multilingual ?? false)
 
   return props.field.array ? value : [value].filter(Boolean)
 })
@@ -60,7 +65,7 @@ const translatedValue = computed(() => {
       :recursion-stack="recursionStack"
       :class="`field_header_level_${recursionStack.length}`"
     >
-      {{ fieldTranslateK(field.field) }}
+      {{ p(field.translationKey) }}
     </FieldsHeader>
   </RoutesField>
 
@@ -73,7 +78,7 @@ const translatedValue = computed(() => {
       :recursion-stack="recursionStack"
       :class="`field_header_level_${recursionStack.length}`"
     >
-      {{ fieldTranslateK(field.field) }}
+      {{ p(field.translationKey) }}
     </FieldsHeader>
   </AddressField>
 
@@ -88,7 +93,7 @@ const translatedValue = computed(() => {
       :recursion-stack="recursionStack"
       :class="`field_header_level_${recursionStack.length}`"
     >
-      {{ fieldTranslateK(field.field) }}
+      {{ p(field.translationKey) }}
     </FieldsHeader>
   </DateRange>
 
@@ -98,7 +103,7 @@ const translatedValue = computed(() => {
       :recursion-stack="recursionStack"
       :class="`field_header_level_${recursionStack.length}`"
     >
-      {{ fieldTranslateK(field.field) }}
+      {{ p(field.translationKey) }}
     </FieldsHeader>
   </Coordinates>
 
@@ -108,7 +113,7 @@ const translatedValue = computed(() => {
       :recursion-stack="recursionStack"
       :class="`field_header_level_${recursionStack.length}`"
     >
-      {{ fieldTranslateK(field.field) }}
+      {{ p(field.translationKey) }}
     </FieldsHeader>
     <div :class="`inline field_content_level_${recursionStack.length}`">
       <component
@@ -155,7 +160,7 @@ const translatedValue = computed(() => {
               :color-fill="props.properties.display.color_fill"
               :color-text="props.properties.display.color_text"
             >
-              {{ fieldTranslateK(field.field) }}
+              {{ p(field.translationKey) }}
             </FieldLink>
 
             <SocialNetwork
@@ -178,7 +183,7 @@ const translatedValue = computed(() => {
 
             <span v-else>
               {{ pv(
-                field.field,
+                field.translationKey,
                 f,
                 props.context,
               ) }}
