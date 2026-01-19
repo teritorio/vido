@@ -34,15 +34,19 @@ const iconDefault = computed((): string => {
     :rel="rel"
     :title="title"
     :style="{
-      backgroundColor: props.context === 'label_popup' ? colorFill : 'unset',
-      color: props.context === 'label_popup' ? colorText : 'unset',
+      backgroundColor: ['label_popup', 'label_list'].includes(context) ? colorFill : 'unset',
+      color: ['label_popup', 'label_list'].includes(context) ? colorText : 'unset',
     }"
     :class="{
-      'tw-flex tw-flex-row tw-items-center tw-gap-x-2.5 tw-underline tw-underline-offset-4': context !== PropertyTranslationsContextEnum.Card,
-      'd-inline-block pa-2 rounded-lg': context === PropertyTranslationsContextEnum.Card,
+      'tw-flex tw-flex-row tw-items-center tw-gap-x-2.5 tw-underline tw-underline-offset-4': !['label_popup', 'label_list'].includes(context),
+      'tw-inline-flex tw-items-center tw-justify-center tw-gap-1 pa-2 rounded-lg': ['label_popup', 'label_list'].includes(context),
     }"
   >
-    <FontAwesomeIcon :icon="iconDefault" color="inherit" size="sm" />
+    <FontAwesomeIcon
+      :icon="iconDefault"
+      color="inherit"
+      size="sm"
+    />
     <slot v-if="context !== PropertyTranslationsContextEnum.List" />
   </a>
 </template>

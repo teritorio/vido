@@ -105,7 +105,7 @@ export function formatApiAddressToFeature(feature: GeoJSON.Feature<GeoJSON.Point
         color_text: '#FFFFFF',
       },
       editorial: {
-        popup_fields: [{ field: 'name', render: 'string' }],
+        popup_fields: [{ field: 'name', translationKey: 'name', render: 'string' }],
       },
     },
   } as Poi

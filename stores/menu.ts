@@ -25,6 +25,7 @@ function transformApiFieldsListItem(item: ApiFieldsListItem): FieldsListItem {
   return {
     ...item,
     field: item.field.join('.'),
+    translationKey: item.field.length === 1 ? item.field[0] : item.field.join(':'),
   }
 }
 
