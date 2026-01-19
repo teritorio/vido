@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { LngLatBounds } from 'maplibre-gl'
 import MapFeatures from '~/components/MainMap/MapFeatures.vue'
-import type { ApiMenuCategory } from '~/types/api/menu'
+import type { MenuCategory } from '~/types/local/menu'
 import type { Poi } from '~/types/local/poi'
 import { mapCss } from '~/lib/storybook-types'
 
@@ -28,7 +28,7 @@ const defaultProps = {
         display_mode: 'large',
         zoom: 1,
       },
-    } as ApiMenuCategory,
+    } as MenuCategory,
   ],
   features: [],
 }

@@ -2,12 +2,13 @@
 import type { FontAwesomeIconProps } from '@fortawesome/vue-fontawesome'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import Item from '~/components/Menu/Item.vue'
-import type { ApiMenuCategory, ApiMenuItem } from '~/types/api/menu'
+import type { ApiMenuItem } from '~/types/api/menu'
+import type { MenuCategory } from '~/types/local/menu'
 import type { FilterValues } from '~/utils/types-filters'
 import { filterValuesIsSet } from '~/utils/types-filters'
 
 const props = defineProps<{
-  category: ApiMenuCategory
+  category: MenuCategory
   filters?: FilterValues
   selected: boolean
   size: FontAwesomeIconProps['size']

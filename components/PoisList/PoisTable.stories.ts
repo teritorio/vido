@@ -2,7 +2,7 @@ import PoisTable from '~/components/PoisList/PoisTable.vue'
 import poisDeps from '~/cypress/fixtures/teritorio/references/poi/1/deps.json'
 import { bind } from '~/lib/storybook-types'
 import menu from '~/cypress/fixtures/teritorio/references/menu.json'
-import type { ApiMenuCategory } from '~/types/api/menu'
+import type { MenuCategory } from '~/types/local/menu'
 import type { ApiPoiUnion } from '~/types/api/poi-deps'
 
 export default {
@@ -11,7 +11,7 @@ export default {
 }
 
 const { formatPoiDeps } = usePoiDeps()
-const category = menu.find(item => item.id === 211) as ApiMenuCategory
+const category = menu.find(item => item.id === 211) as MenuCategory
 const poi = formatPoiDeps(poisDeps.features[0] as ApiPoiUnion, category)
 
 const defaultProps = {

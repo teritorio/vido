@@ -1,9 +1,9 @@
 import { ApiRouteWaypointTypeObject } from '~/types/api/poi-deps'
 import type { ApiPoiDeps, ApiPoiDepsCollection, ApiPoiUnion } from '~/types/api/poi-deps'
 import { type PoiUnion, iconMap } from '~/types/local/poi-deps'
-import type { ApiMenuCategory } from '~/types/api/menu'
 import { menuStore as useMenuStore } from '~/stores/menu'
 import type { ApiPoi } from '~/types/api/poi'
+import type { MenuCategory } from '~/types/local/menu'
 
 export function usePoiDeps() {
   const waypointIndex = ref(1)
@@ -15,7 +15,7 @@ export function usePoiDeps() {
 
   function formatPoiDeps(
     feature: ApiPoiUnion,
-    category: ApiMenuCategory,
+    category: MenuCategory,
   ): PoiUnion {
     let displayProps = {}
     let editorialProps = {}

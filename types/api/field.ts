@@ -26,21 +26,21 @@ export type RenderEnum =
   | 'route'
   | 'coordinates'
 
-export interface FieldsListItem {
+export interface ApiFieldsListItem {
   label?: boolean
-  field: string
+  field: string[]
   multilingual?: boolean
   array?: boolean
   render?: RenderEnum
   icon?: string
 }
 
-export interface FieldsListGroup {
+export interface ApiFieldsListGroup {
   group: string
   label?: boolean
   display_mode?: 'standard' | 'card'
   icon?: string
-  fields: FieldsList
+  fields: ApiFieldsList
 }
 
-export type FieldsList = (FieldsListItem | FieldsListGroup)[]
+export type ApiFieldsList = (ApiFieldsListItem | ApiFieldsListGroup)[]

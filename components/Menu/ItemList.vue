@@ -3,15 +3,15 @@ import type { FontAwesomeIconProps } from '@fortawesome/vue-fontawesome'
 import Category from '~/components/Menu/Category.vue'
 import MenuGroup from '~/components/Menu/Group.vue'
 import LinkItem from '~/components/Menu/Link.vue'
-import type { ApiMenuCategory, ApiMenuItem } from '~/types/api/menu'
-import type { MenuGroup as MenuGroupType, MenuItem } from '~/types/local/menu'
+import type { ApiMenuItem } from '~/types/api/menu'
+import type { MenuCategory, MenuGroup as MenuGroupType, MenuItem } from '~/types/local/menu'
 import type { FilterValues } from '~/utils/types-filters'
 
 const props = defineProps<{
   menuItems: MenuItem[]
   filters: Record<number, FilterValues>
   categoriesActivesCountByParent: Record<string, number>
-  selectedCategoriesIds: ApiMenuCategory['id'][]
+  selectedCategoriesIds: MenuCategory['id'][]
   displayModeDefault: 'compact' | 'large'
   size: FontAwesomeIconProps['size']
 }>()
@@ -19,7 +19,7 @@ const props = defineProps<{
 const emit = defineEmits<{
   (e: 'menuGroupClick', menuItem: MenuGroupType): void
   (e: 'categoryClick', menuItemId: ApiMenuItem['id']): void
-  (e: 'filterClick', categoryId: ApiMenuCategory['id']): void
+  (e: 'filterClick', categoryId: MenuCategory['id']): void
 }>()
 
 function onMenuGroupClick(menuItem: MenuGroupType) {
@@ -30,11 +30,11 @@ function onCategoryClick(menuItem: MenuItem) {
   emit('categoryClick', menuItem.id)
 }
 
-function onFilterClick(categoryId: ApiMenuCategory['id']) {
+function onFilterClick(categoryId: MenuCategory['id']) {
   emit('filterClick', categoryId)
 }
 
-function isCategorySelected(categoryId: ApiMenuCategory['id']) {
+function isCategorySelected(categoryId: MenuCategory['id']) {
   return props.selectedCategoriesIds.includes(categoryId)
 }
 </script>
