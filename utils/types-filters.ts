@@ -91,15 +91,14 @@ export function isMatch(
         return filter.filterValues.includes(propertyValue as string)
       }
 
-    case 'date_range':
+    case 'date_range': {
+      const startDate = (propertyValue as ApiPoiPropertiesStartEndDate)?.start_date
+      const endDate = (propertyValue as ApiPoiPropertiesStartEndDate)?.end_date
       return Boolean(
-        (!filter.filterValueEnd
-        || ((propertyValue as ApiPoiPropertiesStartEndDate)?.start_date
-        && (propertyValue as ApiPoiPropertiesStartEndDate).start_date <= filter.filterValueEnd))
-        && (!filter.filterValueBegin
-        || ((propertyValue as ApiPoiPropertiesStartEndDate)?.end_date
-        && (propertyValue as ApiPoiPropertiesStartEndDate).end_date >= filter.filterValueBegin)),
+        (!filter.filterValueEnd || (startDate && startDate <= filter.filterValueEnd))
+        && (!filter.filterValueBegin || (endDate && endDate >= filter.filterValueBegin)),
       )
+    }
 
     case 'number_range':
       return (

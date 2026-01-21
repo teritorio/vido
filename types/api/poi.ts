@@ -12,14 +12,14 @@ export interface ApiPoiProperties {
 }
 
 export interface ApiPoiPropertiesText {
-  html: boolean
+  html?: boolean
   value: string
-  is_shortened: boolean
+  is_shortened?: boolean
 }
 
 export interface ApiPoiPropertiesStartEndDate {
-  start_date: string
-  end_date: string
+  start_date?: string
+  end_date?: string
 }
 
 export type ApiPoiPropertiesAddress = {

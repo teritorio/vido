@@ -115,13 +115,13 @@ const translatedValue = computed(() => {
         <template v-for="(f, index) in translatedValue" :key="index">
           <component :is="field.array ? 'li' : 'div'">
             <div
-              v-if="field.render === 'text' && f.html"
+              v-if="field.render === 'text' && (f.html ?? true)"
               class="tw-prose"
               v-html="f.value"
             />
 
             <div
-              v-else-if="field.render === 'text'"
+              v-else-if="field.render === 'text' && f.html === false"
               class="inline tw-prose"
             >
               {{ f.value }}
