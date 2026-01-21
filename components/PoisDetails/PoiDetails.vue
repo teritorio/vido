@@ -215,7 +215,7 @@ onMounted(() => {
                 {
                   group: 'description',
                   display_mode: 'standard',
-                  fields: [{ field: 'description', translationKey: 'description', render: 'text' }],
+                  fields: [{ field: 'description', translationKey: 'description', render: 'text', multilingual: true }],
                   icon: '',
                 },
               ],
