@@ -11,11 +11,13 @@ const { t } = useI18n()
 <template>
   <footer class="footer">
     <slot />
-    <span
-      v-for="attribution in attributions"
-      :key="attribution"
-      v-html="attribution"
-    />
+    <span v-if="attributions?.length" class="attributions">
+      <span
+        v-for="attribution in attributions"
+        :key="attribution"
+        v-html="attribution"
+      />
+    </span>
     <span class="poweredBy">
       {{ t('poiDetails.poweredBy') }}
       <a target="_blank" href="https://www.teritorio.fr/" title="Teritorio">
@@ -37,6 +39,7 @@ const { t } = useI18n()
 
 .footer {
   display: flex;
+  justify-content: center;
   flex-wrap: wrap;
   gap: 0.5rem;
   font-size: 0.9rem;
@@ -45,15 +48,25 @@ const { t } = useI18n()
   color: $color-primary;
   text-decoration: none;
 
+  > :is(a, span):not(.poweredBy) + :is(a, span):not(.poweredBy)::before {
+    content: '|';
+    margin-right: 0.5rem;
+    color: $color-tertiary;
+  }
+
+  .attributions {
+    display: flex;
+
+    > span + span {
+      margin-left: 0.5rem;
+    }
+  }
+
   .poweredBy {
     border-top: 1px solid $color-tertiary;
     padding-top: 0.25rem;
     flex: 100%;
     text-align: center;
-  }
-
-  :deep(.report) {
-    margin-right: auto;
   }
 
   a {
