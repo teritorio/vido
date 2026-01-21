@@ -79,7 +79,7 @@ function formatLength(length: number): string | undefined {
         </FieldsHeader>
         <ul class="tw-list-disc tw-ml-6">
           <li v-if="route.difficulty">
-            {{ t('fields.route.difficulty', { difficulty: route.difficulty }) }}
+            {{ t('fields.route.difficulty', { difficulty: pv(`route:${activity}:difficulty`, route.difficulty, context) }) }}
           </li>
           <li v-if="route.duration">
             {{ t('fields.route.duration', { duration: formatDuration(route.duration) }) }}
