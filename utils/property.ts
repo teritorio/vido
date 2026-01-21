@@ -38,5 +38,10 @@ export function getNestedPropertyValue(obj: Record<string, any>, path: string | 
   if (restKeys.length === 0)
     return value ?? null
 
+  // For nested paths, check if we need to extract multilingual value before continuing
+  // This handles cases like "route.gpx_trace" where route contains {"fr-FR": {...}}
+  if (!multilingual && value && typeof value === 'object' && 'fr-FR' in value)
+    value = value['fr-FR']
+
   return restKeys.reduce((acc, key) => acc?.[key], value) ?? null
 }

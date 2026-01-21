@@ -3,6 +3,7 @@ import type { Poi } from '~/types/local/poi'
 import type { ApiAddrSearchResult } from '~/lib/apiSearch'
 import { MAP_ZOOM } from '~/lib/constants'
 import { AddressFields } from '~/types/api/poi'
+import { getNestedPropertyValue } from '~/utils/property'
 
 export function formatDate(date: Date): string {
   return (
@@ -58,7 +59,8 @@ export function isFiledEmpty(
   if (field.field === 'coordinates')
     return isCoordinatesEmpty(geom)
 
-  return !(field.field in properties)
+  const value = getNestedPropertyValue(properties, field.field, field.multilingual ?? false)
+  return value === null || value === undefined
 }
 
 export function isCoordinatesEmpty(geom: GeoJSON.Geometry): boolean {
