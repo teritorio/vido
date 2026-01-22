@@ -12,7 +12,8 @@ import FieldsHeader from '~/components/UI/FieldsHeader.vue'
 import FieldLink from '~/components/Fields/FieldLink.vue'
 import type { FieldsListItem } from '~/types/local/field'
 import type { PoiUnion } from '~/types/local/poi-deps'
-import { PropertyTranslationsContextEnum, useSiteStore } from '~/stores/site'
+import type { PropertyTranslationsContextEnum } from '~/stores/site'
+import { useSiteStore } from '~/stores/site'
 import { AssocRenderKeys } from '~/utils/types'
 import { getNestedPropertyValue } from '~/utils/property'
 import type { ApiPoiPropertiesAddress, ApiPoiPropertiesRoute, ApiPoiPropertiesStartEndDate } from '~/types/api/poi'
@@ -106,12 +107,7 @@ const translatedValue = computed(() => {
       {{ p(field.translationKey) }}
     </FieldsHeader>
     <div :class="`inline field_content_level_${recursionStack.length}`">
-      <component
-        :is="field.array ? 'ul' : 'div'"
-        :style="{
-          listStyleType: context === PropertyTranslationsContextEnum.Card ? 'none' : 'disc',
-        }"
-      >
+      <component :is="field.array ? 'ul' : 'div'">
         <template v-for="(f, index) in translatedValue" :key="index">
           <component :is="field.array ? 'li' : 'div'">
             <div
@@ -147,10 +143,10 @@ const translatedValue = computed(() => {
               :href="field.render === 'email' ? `mailto:${f}` : f"
               :icon="field.icon"
               :context="context"
-              :color-fill="props.properties.display.color_fill"
-              :color-text="props.properties.display.color_text"
+              :color-fill="['weblink', 'email'].includes(field.render ?? '') ? undefined : props.properties.display.color_fill"
+              :color-text="['weblink', 'email'].includes(field.render ?? '') ? undefined : props.properties.display.color_text"
             >
-              {{ p(field.translationKey) }}
+              {{ field.render === 'weblink' ? f : p(field.translationKey) }}
             </FieldLink>
 
             <SocialNetwork

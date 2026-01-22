@@ -124,8 +124,6 @@ export default defineI18nLocale(() => {
       poweredBy: 'Powered by',
       mapillaryExplore: 'Explore on Mapillary',
       informations: 'Informations',
-      downloadGPX: 'The route (GPS track) in GPX format',
-      downloadPDF: 'The complete card in PDF format',
       routes: {
         waypoints: 'Waypoints',
         pois: 'Point of Interests',

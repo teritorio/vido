@@ -21,6 +21,8 @@ const iconDefault = computed((): string => {
     return props.icon
   else if (props.href.startsWith('tel:'))
     return 'phone'
+  else if (props.href.startsWith('mailto:'))
+    return 'envelope'
   else
     return 'external-link-alt'
 })
