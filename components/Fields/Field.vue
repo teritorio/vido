@@ -146,7 +146,7 @@ const translatedValue = computed(() => {
               :color-fill="['weblink', 'email'].includes(field.render ?? '') ? undefined : props.properties.display.color_fill"
               :color-text="['weblink', 'email'].includes(field.render ?? '') ? undefined : props.properties.display.color_text"
             >
-              {{ field.render === 'weblink' ? f : p(field.translationKey) }}
+              {{ field.render === 'weblink' ? f : p(field.translationKey, context) }}
             </FieldLink>
 
             <SocialNetwork
