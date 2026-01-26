@@ -73,7 +73,7 @@ function isListEmpty(
           v-else-if="field.display_mode === 'card' && field.icon"
           :color-fill="colorFill"
           :icon="field.icon"
-          class="print:tw-hidden"
+          class="block-card print:tw-hidden"
         >
           <FieldsHeader
             v-if="fieldTranslateK(field.group)"
@@ -110,6 +110,11 @@ function isListEmpty(
 <style lang="scss" scoped>
 .block {
   margin-bottom: 3rem;
+}
+
+.block-card :deep(.field ul) {
+  list-style-type: none;
+  margin-left: 0;
 }
 
 @media print {
