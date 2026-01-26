@@ -100,7 +100,7 @@ const translatedValue = computed(() => {
 
   <div v-else>
     <FieldsHeader
-      v-if="field.label"
+      v-if="field.label && translatedValue.length > 0"
       :recursion-stack="recursionStack"
       :class="`field_header_level_${recursionStack.length}`"
     >

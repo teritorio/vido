@@ -38,6 +38,12 @@ export function isFiledEmpty(
   geom: GeoJSON.Geometry,
 ): boolean {
   if (field.field === 'route') {
+    // Check nested object format using existing helper
+    const nestedValue = getNestedPropertyValue(properties, field.field, field.multilingual ?? false)
+    if (nestedValue !== null && nestedValue !== undefined)
+      return false
+
+    // Fallback: check flat key format (route:hiking:difficulty)
     return !(
       Object.entries(properties || {})
         .map(([key, value]) => [key.split(':'), value])
