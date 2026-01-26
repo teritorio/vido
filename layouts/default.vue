@@ -33,8 +33,7 @@ const { data, error, status } = await useAsyncData('parallel', async () => {
     $fetch<Settings>(`${apiEndpoint.value}/settings.json`),
     $fetch<ApiMenuCollection>(`${apiEndpoint.value}/menu.json`),
     $fetch<PropertyTranslations>(`${apiEndpoint.value}/attribute_translations/fr.json`),
-    // INFO: slug query param is here only for WP API backward compatibility
-    $fetch<Article[]>(`${apiEndpoint.value}/articles.json?slug=non-classe`),
+    $fetch<Article[]>(`${apiEndpoint.value}/articles.json`),
   ])
 
   menuStore.fetchConfig(menu)
