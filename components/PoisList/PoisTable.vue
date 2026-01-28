@@ -48,7 +48,7 @@ if (error.value) {
 const search = ref('')
 
 const headers = computed(() => {
-  let fields = [{ field: 'name', render: 'string', translationKey: 'name' }] as FieldsList
+  let fields = [{ field: 'name', render: 'string', translationKey: 'name', multilingual: true }] as FieldsList
   if (pois.value?.length && pois.value[0].properties.editorial?.list_fields)
     fields = pois.value[0].properties.editorial.list_fields
 
