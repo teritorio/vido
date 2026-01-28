@@ -108,10 +108,11 @@ export const menuStore = defineStore('menu', () => {
   })
 
   const apiMenuCategory = computed((): MenuCategory[] | undefined => {
+    const { contribMode } = useContrib()
     return menuItems.value === undefined
       ? undefined
       : (Object.values(menuItems.value).filter(
-          menuItem => 'category' in menuItem,
+          menuItem => 'category' in menuItem && (contribMode || !menuItem.hidden),
         ) as MenuCategory[])
   })
 
@@ -174,11 +175,9 @@ export const menuStore = defineStore('menu', () => {
     try {
       const stateMenuItems: Record<number, MenuItem> = {}
       const localFilters: Record<number, FilterValues> = {}
-      const { contribMode } = useContrib()
 
       menuItems.value = undefined // Hack, release from store before edit and reappend
       items
-        .filter(menuItem => contribMode ? true : !menuItem.hidden)
         .map((menuItem) => {
           if ('menu_group' in menuItem) {
             const groupItem = {

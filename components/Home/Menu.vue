@@ -35,6 +35,7 @@ const device = useDevice()
 const slots = useSlots()
 const menuStore = useMenuStore()
 const navigationStore = useNavigationStore()
+const { contribMode } = useContrib()
 const { currentParent, isRootMenu, categoryIdFilter } = storeToRefs(navigationStore)
 const { filters, selectedCategoryIds, menuItems } = storeToRefs(menuStore)
 
@@ -78,6 +79,7 @@ watch(currentMenuItems, () => {
 function getMenuItemByParentId(menuGroupId: MenuGroup['id'] | undefined): MenuItem[] {
   return Object.values(menuItems?.value || {})
     .filter(c => (c.parent_id || null) === (menuGroupId || null))
+    .filter(c => contribMode || !c.hidden)
     .sort((a, b) => a.index_order - b.index_order)
 }
 
