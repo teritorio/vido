@@ -39,7 +39,10 @@ const { p, pv } = useSiteStore()
 const translatedValue = computed(() => {
   const value = getNestedPropertyValue(props.properties, props.field.field, props.field.multilingual ?? false)
 
-  return props.field.array ? value : [value].filter(Boolean)
+  if (props.field.array)
+    return value ?? []
+
+  return [value].filter(Boolean)
 })
 </script>
 
