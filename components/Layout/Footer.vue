@@ -63,10 +63,15 @@ const { t } = useI18n()
   }
 
   .poweredBy {
-    border-top: 1px solid $color-tertiary;
-    padding-top: 0.25rem;
     flex: 100%;
     text-align: center;
+
+    &::before {
+      content: '·';
+      display: block;
+      color: $color-tertiary;
+      font-size: 1.5rem;
+    }
   }
 
   a {
