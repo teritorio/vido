@@ -47,6 +47,7 @@ export default defineNuxtConfig({
     autoImport: true,
   },
   modules: [
+    '@sentry/nuxt/module',
     '@nuxtjs/i18n',
     '@nuxt/image',
     '@pinia/nuxt',
@@ -102,5 +103,16 @@ export default defineNuxtConfig({
   },
   vite: {
     optimizeDeps: { exclude: ['fsevents'] },
+  },
+  sourcemap: {
+    client: 'hidden',
+  },
+  sentry: {
+    org: process.env.SENTRY_ORG,
+    project: process.env.SENTRY_PROJECT,
+    authToken: process.env.SENTRY_AUTH_TOKEN,
+    sourcemaps: {
+      filesToDeleteAfterUpload: ['.output/**/*.map'],
+    },
   },
 })
