@@ -35,7 +35,8 @@ const initialBbox = ref<LngLatBounds>()
 const mapFeaturesRef = ref<InstanceType<typeof MapFeatures>>()
 
 onMounted(() => {
-  initialBbox.value = getBBox({ type: 'Feature', geometry: props.boundaryArea || settings.value!.bbox_line, properties: {} })
+  if (props.boundaryArea || settings.value?.bbox_line)
+    initialBbox.value = getBBox({ type: 'Feature', geometry: (props.boundaryArea || settings.value!.bbox_line)!, properties: {} })
 })
 
 const showEmbeddedUi = computed(() => route.query.showEmbeddedUi !== 'false')
@@ -180,7 +181,7 @@ function handlePoiCardClose() {
           :selected-categories-ids="selectedCategoryIds"
           :style-icon-filter="poiFilters"
           :cooperative-gestures="false"
-          :boundary-area="boundaryArea || settings!.polygon.data"
+          :boundary-area="boundaryArea || settings?.polygon?.data"
         />
         <CategorySelector
           v-if="!isFiltersEqualToCategoryId && showEmbeddedUi"

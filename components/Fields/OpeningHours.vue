@@ -122,6 +122,9 @@ const nextChange = computed((): { type: 'opened' | 'openAt', nextChange: Date } 
 // Methods
 //
 function OpeningHoursFactory(): OpeningHours | undefined {
+  if (!settings?.bbox_line || !settings.default_country || !settings.default_country_state_opening_hours)
+    return undefined
+
   try {
     // https://github.com/opening-hours/opening_hours.js/issues/428
     // @ts-expect-error: Fix typings
@@ -132,16 +135,16 @@ function OpeningHoursFactory(): OpeningHours | undefined {
       props.openingHours,
       {
         lon:
-          (settings!.bbox_line.coordinates[0][1]
-          + settings!.bbox_line.coordinates[1][1])
+          (settings.bbox_line.coordinates[0][1]
+          + settings.bbox_line.coordinates[1][1])
           / 2,
         lat:
-          (settings!.bbox_line.coordinates[0][0]
-          + settings!.bbox_line.coordinates[1][0])
+          (settings.bbox_line.coordinates[0][0]
+          + settings.bbox_line.coordinates[1][0])
           / 2,
         address: {
-          country_code: settings!.default_country,
-          state: settings!.default_country_state_opening_hours,
+          country_code: settings.default_country,
+          state: settings.default_country_state_opening_hours,
         },
       },
       optionalConf,

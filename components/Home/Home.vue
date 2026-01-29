@@ -114,7 +114,8 @@ onMounted(() => {
     origin: OriginEnum[router.currentRoute.value.query.origin as keyof typeof OriginEnum],
   })
 
-  initialBbox.value = getBBox({ type: 'Feature', geometry: props.boundaryArea || settings.value!.bbox_line, properties: {} })
+  if (props.boundaryArea || settings.value?.bbox_line)
+    initialBbox.value = getBBox({ type: 'Feature', geometry: (props.boundaryArea || settings.value!.bbox_line)!, properties: {} })
 })
 
 onBeforeUnmount(() => {
@@ -530,7 +531,7 @@ onBeforeUnmount(() => {
           :style-icon-filter="poiFilters"
           :enable-filter-route-by-categories="!isModeFavorites"
           :enable-filter-route-by-features="true"
-          :boundary-area="boundaryArea || settings!.polygon.data"
+          :boundary-area="boundaryArea || settings?.polygon?.data"
         >
           <Logo
             v-if="device.smallScreen && !isModeExplorerOrFavorites"

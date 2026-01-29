@@ -197,7 +197,7 @@ function getGenericUrl(theme: SiteInfosTheme, project: Settings): string {
                       <VChip :color="themeColors[theme.slug]" size="small">
                         {{ theme.slug }}
                       </VChip>
-                      {{ theme.title.fr }}
+                      {{ theme.title?.fr }}
                     </VCardTitle>
                     <VCardSubtitle
                       :style="{
@@ -208,7 +208,7 @@ function getGenericUrl(theme: SiteInfosTheme, project: Settings): string {
                         whiteSpace: 'unset',
                       }"
                     >
-                      <a :href="theme.site_url.fr" target="_blank">PROD: {{ theme.site_url.fr }}</a>
+                      <a :href="theme.site_url?.fr" target="_blank">PROD: {{ theme.site_url?.fr }}</a>
                       <a
                         :href="getGenericUrl(theme, project)"
                         target="_blank"

@@ -4,35 +4,35 @@ import type { MultilingualString } from '~/utils/types'
 export interface SiteInfosTheme {
   id: number
   slug: string
-  title: MultilingualString
-  description: MultilingualString
-  keywords: MultilingualString
-  site_url: MultilingualString
+  title?: MultilingualString
+  description?: MultilingualString
+  keywords?: MultilingualString
+  site_url?: MultilingualString
   main_url?: MultilingualString
-  logo_url: string
-  favicon_url: string
-  favorites_mode: boolean
-  explorer_mode: boolean
-  isochrone: boolean
-  matomo_url: string
-  matomo_siteid: string
+  logo_url?: string
+  favicon_url?: string
+  favorites_mode?: boolean
+  explorer_mode?: boolean
+  isochrone?: boolean
+  matomo_url?: string
+  matomo_siteid?: string
   map_style_base_url: string
-  map_bicycle_style_url: string
+  map_bicycle_style_url?: string
   map_style_satellite_url: string
   cookies_consent_message?: MultilingualString
-  cookies_usage_detail_url: string
-  google_site_verification: string
-  google_tag_manager_id: string
-  report_issue?: boolean
+  cookies_usage_detail_url?: string
+  google_site_verification?: string
+  google_tag_manager_id?: string
+  report_issue_url?: boolean
 }
 
 export interface Settings {
-  id: number
+  id?: number
   slug: string
-  name: string
+  name?: string
   attributions: string[]
   icon_font_css_url: string
-  polygon: {
+  polygon?: {
     type: 'geojson'
     data: GeoJSON.Polygon
   }
@@ -42,11 +42,11 @@ export interface Settings {
       data: string | GeoJSON.Polygon
     }
   }
-  bbox_line: GeoJSON.LineString
-  default_country: string
-  default_country_state_opening_hours: string
+  bbox_line?: GeoJSON.LineString
+  default_country?: string
+  default_country_state_opening_hours?: string
   themes: Record<string, SiteInfosTheme>
-  image_proxy_hosts: string[]
+  image_proxy_hosts?: string[]
 }
 
 function stripHTML(value?: string): string | undefined {
@@ -65,7 +65,7 @@ export function headerFromSettings(
     htmlAttrs: {
       lang: 'fr',
     },
-    title: [theme.title.fr, options?.title]
+    title: [theme.title?.fr, options?.title]
       .filter(o => o)
       .join(' - '),
     link: [

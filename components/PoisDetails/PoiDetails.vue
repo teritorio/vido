@@ -242,7 +242,7 @@ onMounted(() => {
 
     <template #footer>
       <a
-        v-if="theme?.report_issue && poi.properties.metadata.report_issue_url"
+        v-if="theme?.report_issue_url && poi.properties.metadata.report_issue_url"
         class="report"
         :href="poi.properties.metadata.report_issue_url"
         target="_blank"

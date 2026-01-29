@@ -33,7 +33,7 @@ export const useSiteStore = defineStore('site', () => {
     if (settings.value?.image_proxy_hosts)
       domains.push(...settings.value.image_proxy_hosts)
 
-    if (theme.value && theme.value.site_url.fr)
+    if (theme.value?.site_url?.fr)
       domains.push(new URL(theme.value.site_url.fr).host)
 
     if (import.meta.dev) {
@@ -46,7 +46,7 @@ export const useSiteStore = defineStore('site', () => {
     return domains
   })
 
-  const siteName = computed(() => theme.value?.title.fr ?? '')
+  const siteName = computed(() => theme.value?.title?.fr ?? '')
 
   const logoUrl = computed(() => theme.value?.logo_url ?? '')
 
@@ -58,10 +58,10 @@ export const useSiteStore = defineStore('site', () => {
 
   watch(theme, (newTheme) => {
     if (newTheme) {
-      if ('explorer_mode' in newTheme) {
+      if (newTheme.explorer_mode !== undefined) {
         explorerModeEnabled.value = newTheme.explorer_mode
       }
-      if ('favorites_mode' in newTheme) {
+      if (newTheme.favorites_mode !== undefined) {
         favoritesModeEnabled.value = newTheme.favorites_mode
       }
     }

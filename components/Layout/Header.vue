@@ -21,8 +21,8 @@ const target = computed(() => (theme.value?.main_url?.fr) ? '_blank' : '_self')
       id="logo"
       :main-url="mainUrl"
       :target="target"
-      :site-name="theme!.title.fr || ''"
-      :logo-url="theme!.logo_url"
+      :site-name="theme?.title?.fr || ''"
+      :logo-url="theme?.logo_url || ''"
     />
     <slot name="search" />
     <div class="tw-flex tw-justify-end print:tw-hidden">

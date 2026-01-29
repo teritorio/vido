@@ -143,7 +143,11 @@ function onMapInit(newMap: ITMap) {
 
 function setStyle(mapStyle: MapStyleEnum) {
   getStyle(mapStyle)
-    .then((s) => {
+    .then((fetchedStyle) => {
+      if (!fetchedStyle)
+        return
+
+      let s: StyleSpecification = fetchedStyle
       const vectorSource = Object.values(s.sources || []).find(
         source => ['vector', 'raster'].lastIndexOf(source.type) >= 0,
       ) as VectorSourceSpecification | RasterSourceSpecification | undefined
@@ -192,18 +196,22 @@ function emitStyleLoad() {
   }
 }
 
-async function getStyle(mapStyle: MapStyleEnum): Promise<StyleSpecification> {
+async function getStyle(mapStyle: MapStyleEnum): Promise<StyleSpecification | undefined> {
   if (mapStyleCache.value[mapStyle]) {
     return mapStyleCache.value[mapStyle]
   }
   else {
-    const styleURLs = {
+    const styleURLs: Record<MapStyleEnum, string | undefined> = {
       [MapStyleEnum.vector]: theme.value!.map_style_base_url,
       [MapStyleEnum.aerial]: theme.value!.map_style_satellite_url,
-      [MapStyleEnum.bicycle]: theme.value!.map_bicycle_style_url,
+      [MapStyleEnum.bicycle]: theme.value?.map_bicycle_style_url,
     }
+    const styleUrl = styleURLs[mapStyle]
+    if (!styleUrl)
+      return undefined
+
     const style = await fetchStyle(
-      styleURLs[mapStyle],
+      styleUrl,
       props.extraAttributions,
     )
     mapStyleCache.value[mapStyle] = style
