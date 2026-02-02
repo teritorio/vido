@@ -12,11 +12,7 @@ const { t } = useI18n()
   <footer class="footer">
     <slot />
     <span v-if="attributions?.length" class="attributions">
-      <span
-        v-for="attribution in attributions"
-        :key="attribution"
-        v-html="attribution"
-      />
+      <span v-for="attribution in attributions" :key="attribution" v-html="attribution" />
     </span>
     <span class="poweredBy">
       {{ t('poiDetails.poweredBy') }}
@@ -40,38 +36,31 @@ const { t } = useI18n()
 .footer {
   display: flex;
   justify-content: center;
+  align-items: center;
   flex-wrap: wrap;
   gap: 0.5rem;
   font-size: 0.9rem;
+  line-height: 0.8;
   padding: 4rem 0 1rem;
   background: white;
   color: $color-primary;
   text-decoration: none;
 
-  > :is(a, span):not(.poweredBy) + :is(a, span):not(.poweredBy)::before {
-    content: '|';
+  > :is(a, span) {
+    display: inline-flex;
+    align-items: center;
+  }
+
+  > :is(a, span) + :is(a, span)::before {
+    content: '·';
     margin-right: 0.5rem;
+    font-size: 2rem;
     color: $color-tertiary;
   }
 
   .attributions {
-    display: flex;
-
-    > span + span {
-      margin-left: 0.5rem;
-    }
-  }
-
-  .poweredBy {
-    flex: 100%;
-    text-align: center;
-
-    &::before {
-      content: '·';
-      display: block;
-      color: $color-tertiary;
-      font-size: 1.5rem;
-    }
+    display: inline-flex;
+    gap: 0.4rem;
   }
 
   a {
