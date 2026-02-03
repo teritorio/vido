@@ -13,6 +13,7 @@ import { mapStore as useMapStore } from '~/stores/map'
 import type { ApiPoi } from '~/types/api/poi'
 import { menuStore as useMenuStore } from '~/stores/menu'
 import type { PoiUnion } from '~/types/local/poi-deps'
+import { usePoiDeps } from '~/composables/usePoiDeps'
 
 const props = withDefaults(defineProps<{
   extraAttributions?: string[]
@@ -35,6 +36,7 @@ const menuStore = useMenuStore()
 const mapStore = useMapStore()
 const { teritorioCluster, selectedFeature } = storeToRefs(mapStore)
 const poiCompo = usePoi()
+const poiDepsCompo = usePoiDeps()
 
 const selectionZoom = computed(() => MAP_ZOOM.selectionZoom)
 const bounds = computed(() => getBBox({ type: 'FeatureCollection', features: props.features }))
@@ -78,6 +80,12 @@ function renderPois(): void {
 
   teritorioCluster.value?.addEventListener('feature-click', async (e: Event) => {
     const feature: PoiUnion = (e as CustomEvent).detail.selectedFeature
+
+    // Waypoints don't have their own API endpoint, use existing data from props
+    if (poiDepsCompo.isWaypoint(feature)) {
+      mapStore.setSelectedFeature(feature as Poi)
+      return
+    }
 
     const { data, error, status } = await useFetch(
       () => `${apiEndpoint.value}/poi/${feature.properties.metadata.id}.geojson`,
