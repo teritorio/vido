@@ -228,6 +228,10 @@ async function updateSelectedFeature(feature?: PoiUnion): Promise<void> {
     mapStore.setSelectedFeatureDepsIDs()
     mapStore.setIsDepsView(false)
   }
+  else if (feature.properties.internalType === 'address') {
+    mapStore.setSelectedFeature(feature as Poi)
+    teritorioCluster.value?.setSelectedFeature(feature as unknown as GeoJSONFeature)
+  }
   else {
     const id = feature.properties.metadata.id || feature.properties.id || feature.id
 
