@@ -56,7 +56,7 @@ const headers = computed(() => {
     .filter(isFieldsListItem)
     .map(field => ({
       filterable: true,
-      key: field.field,
+      key: `properties.${field.field}`,
       sortable: true,
       render: field.render,
       array: field.array,
@@ -120,11 +120,17 @@ const teritorioIconBadgeProps = computed(() => {
   }
 })
 
-function valueToString(item: any) {
-  if (Array.isArray(item))
-    return item.join(' ')
+function valueToString(item: any): string {
+  if (item === undefined || item === null)
+    return ''
 
-  return item === undefined || typeof item === 'object' ? '' : item
+  if (Array.isArray(item))
+    return item.map(valueToString).join(' ')
+
+  if (typeof item === 'object')
+    return Object.values(item).map(valueToString).join(' ')
+
+  return String(item)
 }
 
 function customSort(a: string, b: string) {
@@ -152,12 +158,20 @@ function customFilter(value: any, query: string): boolean {
   return localeIncludes(value, query, { locales: locale.value, sensitivity: 'base' })
 }
 
+function getColKey(key: string) {
+  const keySplit = key.split('.')
+  if (keySplit.length > 1)
+    return keySplit[keySplit.length - 1]
+  return key
+}
+
 function getContext(key: string) {
   return key === 'opening_hours' ? PropertyTranslationsContextEnum.Card : PropertyTranslationsContextEnum.List
 }
 
 function getField(key: string, item: Poi) {
-  return item.properties.editorial.list_fields?.filter(isFieldsListItem).find(f => f.field === key)
+  const keyName = getColKey(key)
+  return item.properties.editorial.list_fields?.filter(isFieldsListItem).find(f => f.field === keyName)
 }
 
 if (settings.value && theme.value) {
@@ -246,12 +260,12 @@ if (settings.value && theme.value) {
               </IconButton>
               <Field
                 v-else
-                :context="getContext(col.key!)"
-                :recursion-stack="[col.key!]"
+                :context="getContext(getColKey(col.key!))"
+                :recursion-stack="[getColKey(col.key!)]"
                 :field="getField(col.key!, item) || {
-                  field: col.key!,
+                  field: getColKey(col.key!),
                   render: 'string',
-                  translationKey: col.key!,
+                  translationKey: getColKey(col.key!),
                 }"
                 :details="undefined"
                 :properties="item.properties"
