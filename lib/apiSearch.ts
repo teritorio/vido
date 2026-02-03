@@ -20,13 +20,13 @@ export interface ApiMenuItemSearchResult {
 }
 
 export interface ApiAddrSearchResult {
-  id: number
+  id: string
   label: string
-  type: 'street' | 'municipality'
+  type: 'street' | 'municipality' | 'locality' | 'housenumber'
 }
 
 export interface SearchResult {
-  id: number
+  id: number | string
   label: string
   icon?: string
   small?: string
