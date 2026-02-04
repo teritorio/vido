@@ -33,6 +33,7 @@
     "@gtm-support/vue-gtm": "^2.0.0",
     "@nuxt/image": "1.7.0",
     "@pinia/nuxt": "0.4.11",
+    "@sentry/nuxt": "^10",
     "@tailwindcss/typography": "^0.5.9",
     "@teritorio/map": "^0.12.7",
     "@teritorio/maplibre-gl-teritorio-cluster": "^0.1.4",
@@ -118,6 +119,10 @@
     "vite-plugin-checker": "^0.6.2",
     "vite-plugin-vuetify": "^2.0.1",
     "vue-tsc": "^1.8.27"
+  },
+  "resolutions": {
+    "@vercel/nft": "^0.27.4",
+    "ofetch": "^1.4.0"
   },
   "simple-git-hooks": {
     "commit-msg": "yarn dlx commitlint --edit $1",

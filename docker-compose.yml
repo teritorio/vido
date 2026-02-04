@@ -4,6 +4,10 @@ services:
       context: .
       args:
         NODE_VERSION: 20-alpine3.18
+        SENTRY_AUTH_TOKEN: ${SENTRY_AUTH_TOKEN:-}
+        SENTRY_ORG: ${SENTRY_ORG:-}
+        SENTRY_PROJECT: ${SENTRY_PROJECT:-}
+        SENTRY_URL: ${SENTRY_URL:-}
     image: ghcr.io/teritorio/vido:${VIDO_VERSION:-develop}
     restart: unless-stopped
     ports:
