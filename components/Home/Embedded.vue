@@ -182,6 +182,7 @@ function handlePoiCardClose() {
           :style-icon-filter="poiFilters"
           :cooperative-gestures="false"
           :boundary-area="boundaryArea || settings?.polygon?.data"
+          :enable-filter-route-by-features="true"
         />
         <CategorySelector
           v-if="!isFiltersEqualToCategoryId && showEmbeddedUi"
