@@ -10,6 +10,7 @@ export interface Poi extends Omit<ApiPoi, 'properties'> {
       color_text: TextColors
       text?: string
       icon: ApiMenuCategory['category']['icon']
+      icon_show: boolean
       style_class?: ApiMenuCategory['category']['style_class']
     }
     editorial: ApiPoiPropertiesEditorial & MenuCategoryEditorial

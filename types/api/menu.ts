@@ -39,6 +39,7 @@ export interface ApiMenuCategory extends ApiMenuItem {
     name: MultilingualString
     search_indexed?: boolean
     icon: string
+    icon_show?: 'always' | 'never'
     color_fill: string
     color_line?: string
     style_class?: string[]

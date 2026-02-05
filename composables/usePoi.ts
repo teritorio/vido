@@ -12,6 +12,9 @@ export function usePoi() {
       feature.properties.display?.color_text,
     )
 
+    const hasBbox = !!feature.bbox
+    const iconShow = !(category.category.icon_show === 'never' && hasBbox)
+
     return {
       ...feature,
       properties: {
@@ -21,6 +24,7 @@ export function usePoi() {
           color_line: feature.properties.display?.color_line || category.category.color_line || colorFill,
           color_text: colorText,
           icon: category.category.icon,
+          icon_show: iconShow,
           style_class: category.category.style_class,
           ...feature.properties.display,
         },
