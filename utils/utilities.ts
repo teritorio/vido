@@ -108,6 +108,7 @@ export function formatApiAddressToFeature(feature: GeoJSON.Feature<GeoJSON.Point
         icon: feature.properties.type === 'municipality'
           ? 'city'
           : 'map-marker-alt',
+        icon_show: true,
         color_fill: '#AAAAAA',
         color_line: '#AAAAAA',
         color_text: '#FFFFFF',

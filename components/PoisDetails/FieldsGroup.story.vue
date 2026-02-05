@@ -31,6 +31,7 @@ const defaultProps = {
       color_line: '#123456',
       color_text: '#FFFFFF' as const,
       icon: 'map-marker-alt',
+      icon_show: true,
     },
     editorial: {},
     vido_visible: true,

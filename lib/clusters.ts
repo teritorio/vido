@@ -103,6 +103,9 @@ export function markerRender(element: HTMLDivElement, _markerSize: number, featu
 
   parseStringProperties(feature.properties)
 
+  if (feature.properties.display?.icon_show === false)
+    return
+
   const poiDepsCompo = usePoiDeps()
   const colorFill = poiDepsCompo.isWaypoint(feature as unknown as PoiUnion) ? feature.properties.display?.color_text : feature.properties.display?.color_fill
   const colorText = poiDepsCompo.isWaypoint(feature as unknown as PoiUnion) ? feature.properties.display?.color_fill : feature.properties.display?.color_text

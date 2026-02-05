@@ -46,8 +46,12 @@ export function usePoiDeps() {
         waypointIndex.value++
     }
     else {
+      const hasBbox = !!feature.bbox
+      const iconShow = !(category.category.icon_show === 'never' && hasBbox)
+
       displayProps = {
         icon: category.category.icon,
+        icon_show: iconShow,
         style_class: category.category.style_class,
       }
     }

@@ -65,6 +65,7 @@ function transformApiMenuCategory(menuItem: ApiMenuCategory): MenuCategory {
     ...menuItem,
     category: {
       ...menuItem.category,
+      icon_show: menuItem.category.icon_show || 'always',
       editorial: transformCategoryEditorial(menuItem.category.editorial),
     },
   }
