@@ -49,6 +49,7 @@ const { t } = useI18n()
   > :is(a, span) {
     display: inline-flex;
     align-items: center;
+    gap: 0.3rem;
   }
 
   > :is(a, span) + :is(a, span)::before {
