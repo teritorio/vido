@@ -663,12 +663,19 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/runtime@npm:^7.17.2, @babel/runtime@npm:^7.19.0, @babel/runtime@npm:^7.21.0":
+"@babel/runtime@npm:^7.21.0":
   version: 7.24.6
   resolution: "@babel/runtime@npm:7.24.6"
   dependencies:
     regenerator-runtime: "npm:^0.14.0"
   checksum: 10c0/224ad205de33ea28979baaec89eea4c4d4e9482000dd87d15b97859365511cdd4d06517712504024f5d33a5fb9412f9b91c96f1d923974adf9359e1575cde049
+  languageName: node
+  linkType: hard
+
+"@babel/runtime@npm:^7.28.4":
+  version: 7.28.6
+  resolution: "@babel/runtime@npm:7.28.6"
+  checksum: 10c0/358cf2429992ac1c466df1a21c1601d595c46930a13c1d4662fde908d44ee78ec3c183aaff513ecb01ef8c55c3624afe0309eeeb34715672dbfadb7feedb2c0d
   languageName: node
   linkType: hard
 
@@ -4910,7 +4917,7 @@ __metadata:
     msw: "npm:^1.2.2"
     nuxt: "npm:3.8.0"
     nuxt-simple-sitemap: "npm:^2.7.0"
-    opening_hours: "npm:^3.8.0"
+    opening_hours: "npm:^3.11.0"
     pinia: "npm:^2.0.33"
     pinia-shared-state: "npm:0.5.1"
     postcss: "npm:^8.4.24"
@@ -11537,21 +11544,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"i18next-browser-languagedetector@npm:^6.1.4":
-  version: 6.1.8
-  resolution: "i18next-browser-languagedetector@npm:6.1.8"
+"i18next@npm:^25.3.2":
+  version: 25.8.4
+  resolution: "i18next@npm:25.8.4"
   dependencies:
-    "@babel/runtime": "npm:^7.19.0"
-  checksum: 10c0/ab679a136de2b9df5984e810ea6ae8f848ac85d64562930f7d9be38d5cff139ed14262fd4abfde8a9a66b01cb521306e87493df766625194b90f0eb240be6f6a
-  languageName: node
-  linkType: hard
-
-"i18next@npm:^21.8.3":
-  version: 21.10.0
-  resolution: "i18next@npm:21.10.0"
-  dependencies:
-    "@babel/runtime": "npm:^7.17.2"
-  checksum: 10c0/2a674739aab219704d5a0bf62d03bed20ad2bceff9579efb4da61c4946c883fc172062ba7405a26bf795995860f2ab15826b05271f4c457bf7eb19e852f6006d
+    "@babel/runtime": "npm:^7.28.4"
+  peerDependencies:
+    typescript: ^5
+  peerDependenciesMeta:
+    typescript:
+      optional: true
+  checksum: 10c0/c2582bd97893b4417c06c5b5f8f3bb37cdf77fc5918d00ff3a0e79c856b94bf8bb52377754bb5d62ade88b457f8ac541471987d359c1adc67bcaeea18121a2b5
   languageName: node
   linkType: hard
 
@@ -14429,14 +14432,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"opening_hours@npm:^3.8.0":
-  version: 3.8.0
-  resolution: "opening_hours@npm:3.8.0"
+"opening_hours@npm:^3.11.0":
+  version: 3.11.0
+  resolution: "opening_hours@npm:3.11.0"
   dependencies:
-    i18next: "npm:^21.8.3"
-    i18next-browser-languagedetector: "npm:^6.1.4"
+    i18next: "npm:^25.3.2"
     suncalc: "npm:^1.9.0"
-  checksum: 10c0/92c66ddd8d5ae74b06075122b1e3b7e173ced7cb1a4a9e385b23b3e1961c464bcfde405391c3c5ed9b0eb9b8209349ae2f0b368dc806aec74de5b0e3fd3114d6
+  checksum: 10c0/3ece07f2ac2039d54d728a06bfb82c5f5597deb7453b9508d5f1d234d16e782103b8d2d5a4d37eff4e1e38a63c7e3419c77c2ece079d6f0f4fcf5f4006893a8f
   languageName: node
   linkType: hard
 
