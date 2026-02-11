@@ -8,6 +8,7 @@ import OpeningHours from '~/components/Fields/OpeningHours.vue'
 import Phone from '~/components/Fields/Phone.vue'
 import RoutesField from '~/components/Fields/RoutesField.vue'
 import Stars from '~/components/Fields/Stars.vue'
+import TagField from '~/components/Fields/TagField.vue'
 import FieldsHeader from '~/components/UI/FieldsHeader.vue'
 import FieldLink from '~/components/Fields/FieldLink.vue'
 import type { FieldsListItem } from '~/types/local/field'
@@ -110,7 +111,13 @@ const translatedValue = computed(() => {
       {{ p(field.translationKey) }}
     </FieldsHeader>
     <div :class="`inline field_content_level_${recursionStack.length}`">
-      <component :is="field.array ? 'ul' : 'div'">
+      <component
+        :is="field.array ? 'ul' : 'div'"
+        :class="{
+          'tw-list-disc': field.render === 'tag',
+          'tw-ml-4': field.render === 'tag',
+        }"
+      >
         <template v-for="(f, index) in translatedValue" :key="index">
           <component :is="field.array ? 'li' : 'div'">
             <div
@@ -168,6 +175,13 @@ const translatedValue = computed(() => {
               :opening-hours="f"
               :context="context"
               :render-key="(field.render as AssocRenderKey)"
+            />
+
+            <TagField
+              v-else-if="field.render === 'tag'"
+              :value="f"
+              :translation-key="field.translationKey"
+              :context="context"
             />
 
             <span v-else>
