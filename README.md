@@ -151,16 +151,47 @@ Then, create a PR from `develop` to `main`, it will launch the continuous develo
 
 ## Details fields configurations
 
-Popup and details special fields support:
-* `addr`: combined all address fields.
-* `route`: all routes activity types and fields.
-* `coordinates`: geographic coordinates.
-* `start_end_date`: combined `start_date` and `end_date` fields.
-* `short_description`
+Fields `render` types:
 
-Special formatting support:
-* `opening_hours`
-* `phone` and `mobile`
+Basic data types:
+* `string`: plain text value.
+* `text`: rich HTML text content.
+* `integer`: numeric integer value.
+* `boolean`: true/false value.
+
+Contact fields:
+* `phone`: telephone number (tel: link on mobile).
+* `email`: email address (mailto: link).
+* `weblink`: standard web URL.
+* `weblink@download`: download link (PDF, GPX, etc.).
+* `weblink@social-network`: social media profile link.
+
+Date/time fields:
+* `date`: single date.
+* `datetime`: date and time.
+* `duration`: time duration.
+* `start_end_date`: combined `start_date` and `end_date` fields.
+
+Location/address fields:
+* `addr`: combined address fields (housenumber, street, postcode, city).
+* `route`: route information (difficulty, duration, length) per activity type.
+* `coordinates`: geographic coordinates.
+
+Special fields:
+* `tag`: categorical tag value displayed as list item.
+* `osm:stars`: star rating (1-5, with optional half-star "S" notation).
+* `osm:opening_hours`: business opening hours.
+* `osm:collection_times`: collection schedule times.
+* `osm:opening_hours+values`: opening hours with additional values.
+
+Media fields:
+* `image`: image.
+* `mapillary`: Mapillary street view imagery.
+* `panoramax`: Panoramax street view imagery.
+
+Display fields:
+* `color`: color value.
+* `rating-scale`: rating scale.
 
 ## Users tracking
 
