@@ -29,27 +29,61 @@ const featureDepsIDs = computed(() => {
 })
 
 const formattedFeatures = computed(() => {
-  return [props.poi, ...props.poiDeps].map((f) => {
-    f.properties.editorial.popup_fields = [
-      {
-        field: 'description',
-        translationKey: 'description',
-        render: 'text',
-        multilingual: true,
-      },
-      {
-        field: 'coordinates',
-        translationKey: 'coordinates',
-        render: 'coordinates',
-        label: true,
-      },
-    ]
+  const result: PoiUnion[] = []
+  const features = [props.poi, ...props.poiDeps]
 
-    return f
+  features.forEach((f) => {
+    result.push({
+      ...f,
+      properties: {
+        ...f.properties,
+        editorial: {
+          ...f.properties.editorial,
+          popup_fields: [
+            {
+              field: 'description',
+              translationKey: 'description',
+              render: 'text',
+              multilingual: true,
+            },
+            {
+              field: 'coordinates',
+              translationKey: 'coordinates',
+              render: 'coordinates',
+              label: true,
+            },
+          ],
+        },
+      },
+    })
   })
+
+  return result
 })
 
-const waypoints = computed(() => props.poiDeps.filter(f => poiDepsCompo.isWaypoint(f)))
+const waypoints = computed(() => props.poiDeps.filter(f => poiDepsCompo.isWaypoint(f)).map(f => ({
+  ...f,
+  properties: {
+    ...f.properties,
+    editorial: {
+      ...f.properties.editorial,
+      popup_fields: [
+        {
+          field: 'description',
+          translationKey: 'description',
+          render: 'text',
+          multilingual: true,
+        },
+        {
+          field: 'coordinates',
+          translationKey: 'coordinates',
+          render: 'coordinates',
+          label: true,
+        },
+      ],
+    },
+  },
+} as typeof f)))
 const pois = computed(() => props.poiDeps.filter(f => !poiDepsCompo.isWaypoint(f)))
 </script>
 

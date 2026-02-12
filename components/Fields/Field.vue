@@ -49,7 +49,7 @@ const translatedValue = computed(() => {
 
 <template>
   <RoutesField
-    v-if="field.render === 'route'"
+    v-if="field.render === 'route' && properties[field.field]"
     class="field_content"
     :context="context"
     :recursion-stack="recursionStack"

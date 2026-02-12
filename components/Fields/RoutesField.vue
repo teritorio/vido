@@ -19,7 +19,10 @@ const isCompact = computed(() => {
 })
 
 const routes = computed((): Record<string, RouteMetadata> => {
-  const entries = Object.entries(props.properties['fr-FR']!)
+  if (!props.properties?.['fr-FR'])
+    return {}
+
+  const entries = Object.entries(props.properties['fr-FR'])
 
   return Object.fromEntries(entries.filter(([key, _value]) => !['gpx_trace', 'pdf'].includes(key))) as Record<string, RouteMetadata>
 })
