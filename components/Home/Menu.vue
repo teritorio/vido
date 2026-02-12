@@ -37,7 +37,7 @@ const menuStore = useMenuStore()
 const navigationStore = useNavigationStore()
 const { contribMode } = useContrib()
 const { currentParent, isRootMenu, categoryIdFilter } = storeToRefs(navigationStore)
-const { filters, selectedCategoryIds, menuItems } = storeToRefs(menuStore)
+const { filters, globalFilters, selectedCategoryIds, menuItems } = storeToRefs(menuStore)
 
 const dynamicComponent = computed(() => componentMap[props.menuBlock])
 
@@ -70,6 +70,12 @@ const categoriesActivesCountByParent = computed((): Record<ApiMenuCategory['id']
 
 const hasSlot = computed((): boolean => {
   return slots.default !== undefined
+})
+
+const hasRootGlobalFilters = computed((): boolean => {
+  return currentMenuItems.value.some(
+    menuItem => 'menu_group' in menuItem && globalFilters.value[menuItem.id],
+  )
 })
 
 watch(currentMenuItems, () => {
@@ -133,23 +139,33 @@ function onClickUnselectAll(): void {
     </div>
 
     <FilterCompo
+      :id="categoryIdFilter"
       key="Filter"
-      :category-id="categoryIdFilter"
       :filters-values="categoryIdFilter ? filters[categoryIdFilter] : []"
       @activate-filter="$emit('activateFilter', $event)"
-      @go-back-click="navigationStore.setCategoryFilter(null)"
     />
   </component>
 
   <div v-else-if="isRootMenu" class="tw-flex tw-flex-col tw-space-y-4">
+    <component :is="dynamicComponent" v-if="hasSlot">
+      <slot />
+    </component>
+
+    <component :is="dynamicComponent" v-if="hasRootGlobalFilters && !isOnSearch">
+      <template v-for="menuItem in currentMenuItems" :key="`filter-${menuItem.id}`">
+        <FilterCompo
+          v-if="'menu_group' in menuItem && globalFilters[menuItem.id]"
+          :id="menuItem.id"
+          :filters-values="globalFilters[menuItem.id]"
+          global
+        />
+      </template>
+    </component>
+
     <template v-for="(menuItem, index) in currentMenuItems" :key="menuItem.id">
-      <component :is="dynamicComponent" v-if="index === 0 && hasSlot">
-        <slot />
-      </component>
       <component
         :is="dynamicComponent"
-        v-else-if="index !== 0 && !isOnSearch"
-        :class="[index === 0 && 'tw-hidden md:tw-block']"
+        v-if="index !== 0 && !isOnSearch"
       >
         <ItemList
           :menu-items="getMenuItemByParentId(menuItem.id)"
@@ -218,6 +234,13 @@ function onClickUnselectAll(): void {
         class="border-opacity-100"
         role="presentation"
         aria-orientation="horizontal"
+      />
+
+      <FilterCompo
+        v-if="currentParent && 'menu_group' in currentParent && globalFilters[currentParent.id]"
+        :id="currentParent.id"
+        :filters-values="globalFilters[currentParent.id]"
+        global
       />
 
       <ItemList
