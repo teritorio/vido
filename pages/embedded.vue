@@ -67,7 +67,7 @@ if (route.params.p1) {
 }
 
 // Get POI ID from URL
-if (categoryIds.value.length === 1 && route.name === 'index-p1' && !route.path.endsWith('/')) {
+if (categoryIds.value.length === 1 && route.name === 'embedded-p1' && !route.path.endsWith('/')) {
   poiId.value = route.params.p1?.toString()
   categoryIds.value = []
 }
