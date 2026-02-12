@@ -18,6 +18,7 @@ export interface ApiMenuGroup extends ApiMenuItem {
     color_fill: string
     color_line?: string
     display_mode: 'large' | 'compact'
+    filters?: Filters[]
   }
 }
 
@@ -54,6 +55,7 @@ export interface ApiMenuCategory extends ApiMenuItem {
       class_label_popup?: MultilingualString
       class_label_details?: MultilingualString
     }
+    filterable_property?: string[]
     filters?: Filters[]
   }
 }
