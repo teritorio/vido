@@ -100,7 +100,7 @@ const props = {
   },
   DescriptionShort: {
     ...defaultProps,
-    field: { field: 'short_description', render: 'text' } as FieldsListItem,
+    field: { field: 'description', render: 'text' } as FieldsListItem,
     properties: {
       ...defaultProps.properties,
       description,
@@ -108,7 +108,7 @@ const props = {
   },
   DescriptionDetails: {
     ...defaultProps,
-    field: { field: 'short_description', render: 'text' } as FieldsListItem,
+    field: { field: 'description', render: 'text' } as FieldsListItem,
     properties: {
       ...defaultProps.properties,
       description,

@@ -68,7 +68,7 @@ export const Many = bind(FieldsGroup, {
     fields: [
       { field: 'phone', render: 'phone' },
       { field: 'route', render: 'route' },
-      { field: 'short_description', render: 'text' },
+      { field: 'description', render: 'text' },
     ],
   },
   properties: {

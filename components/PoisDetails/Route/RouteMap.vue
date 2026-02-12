@@ -32,9 +32,10 @@ const formattedFeatures = computed(() => {
   return [props.poi, ...props.poiDeps].map((f) => {
     f.properties.editorial.popup_fields = [
       {
-        field: 'short_description',
+        field: 'description',
         translationKey: 'description',
         render: 'text',
+        multilingual: true,
       },
       {
         field: 'coordinates',

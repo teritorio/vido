@@ -103,7 +103,7 @@ const description = {
 
 export const Description = bind(Field, {
   ...defaultProps,
-  field: { field: 'short_description', render: 'text' },
+  field: { field: 'description', render: 'text' },
   properties: {
     metadata: { id: 0 },
     description,
@@ -112,7 +112,7 @@ export const Description = bind(Field, {
 
 export const DescriptionDetails = bind(Field, {
   ...defaultProps,
-  field: { field: 'short_description', render: 'text' },
+  field: { field: 'description', render: 'text' },
   properties: {
     metadata: { id: 0 },
     description,
@@ -198,11 +198,3 @@ export const Coordinates = bind(Field, {
   ...defaultProps,
   field: { field: 'coordinates', render: 'coordinates' },
 })
-
-// export const OpeningHours = bind(Field, {
-//   ...defaultProps,
-//   field: { field: 'opening_hours' },
-//   properties: {
-//     'opening_hours': 'Mo-Fr 08:00-12:00,13:00-17:30; Sa',
-//   },
-// })
