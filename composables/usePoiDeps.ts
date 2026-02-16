@@ -101,7 +101,16 @@ export function usePoiDeps() {
 
     const mainPoi = getMainPoi(collection.features, mainPoiId)
 
-    return collection.features.map((feature) => {
+    const depIds = mainPoi.properties.metadata.dep_ids
+    const sortedFeatures = depIds
+      ? collection.features.slice().sort((a, b) => {
+        const indexA = depIds.indexOf(a.properties.metadata.id)
+        const indexB = depIds.indexOf(b.properties.metadata.id)
+        return (indexA === -1 ? Infinity : indexA) - (indexB === -1 ? Infinity : indexB)
+      })
+      : collection.features
+
+    return sortedFeatures.map((feature) => {
       const catId = isWaypoint(feature) ? mainPoi.properties.metadata.category_ids?.[0] : feature.properties.metadata.category_ids?.[0]
 
       if (!catId)
