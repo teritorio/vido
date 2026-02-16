@@ -114,8 +114,8 @@ const translatedValue = computed(() => {
       <component
         :is="field.array ? 'ul' : 'div'"
         :class="{
-          'tw-list-disc': field.render === 'tag',
-          'tw-ml-4': field.render === 'tag',
+          'tw-list-disc': field.array,
+          'tw-ml-4': field.array,
         }"
       >
         <template v-for="(f, index) in translatedValue" :key="index">
