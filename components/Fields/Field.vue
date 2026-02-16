@@ -128,7 +128,7 @@ const translatedValue = computed(() => {
 
             <div
               v-else-if="field.render === 'text' && f.html === false"
-              class="inline tw-prose"
+              class="inline"
             >
               {{ f.value }}
               <a
