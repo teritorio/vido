@@ -42,7 +42,7 @@ const { data, error } = await useFetch(
   {
     query: {
       ids: poiIds.value.join(','),
-      geometry_as: undefined,
+      geometry_as: 'point',
       short_description: true,
       cliping_polygon_slug: clipingPolygonSlug.value,
     },
