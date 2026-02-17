@@ -13,8 +13,7 @@ import FieldsHeader from '~/components/UI/FieldsHeader.vue'
 import FieldLink from '~/components/Fields/FieldLink.vue'
 import type { FieldsListItem } from '~/types/local/field'
 import type { PoiUnion } from '~/types/local/poi-deps'
-import type { PropertyTranslationsContextEnum } from '~/stores/site'
-import { useSiteStore } from '~/stores/site'
+import { PropertyTranslationsContextEnum, useSiteStore } from '~/stores/site'
 import { AssocRenderKeys } from '~/utils/types'
 import { getNestedPropertyValue } from '~/utils/property'
 import type { ApiPoiPropertiesAddress, ApiPoiPropertiesRoute, ApiPoiPropertiesStartEndDate } from '~/types/api/poi'
@@ -114,8 +113,8 @@ const translatedValue = computed(() => {
       <component
         :is="field.array ? 'ul' : 'div'"
         :class="{
-          'tw-list-disc': field.array,
-          'tw-ml-4': field.array,
+          'tw-list-disc': field.array && context !== PropertyTranslationsContextEnum.List,
+          'tw-ml-4': field.array && context !== PropertyTranslationsContextEnum.List,
         }"
       >
         <template v-for="(f, index) in translatedValue" :key="index">
@@ -188,7 +187,7 @@ const translatedValue = computed(() => {
               {{ pv(
                 field.translationKey,
                 f,
-                props.context,
+                context,
               ) }}
             </span>
           </component>
