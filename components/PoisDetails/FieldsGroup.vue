@@ -60,7 +60,7 @@ function isListEmpty(
             {{ fieldTranslateK(field.group) }}
           </FieldsHeader>
           <FieldsGroup
-            :id="`FieldsGroup-${recursionStack.join('-')}-${field.group}`"
+            :id="['fields-group', ...recursionStack, field.group.replace(/_/g, '-')].join('-')"
             :recursion-stack="[...recursionStack, field.group]"
             :group="field"
             :properties="properties"
@@ -82,7 +82,7 @@ function isListEmpty(
             {{ fieldTranslateK(field.group) }}
           </FieldsHeader>
           <FieldsGroup
-            :id="`FieldsGroup-${recursionStack.join('-')}-${field.group}`"
+            :id="['fields-group', ...recursionStack, field.group.replace(/_/g, '-')].join('-')"
             :recursion-stack="[...recursionStack, field.group]"
             :group="field"
             :properties="properties"
@@ -115,6 +115,18 @@ function isListEmpty(
 .block-card :deep(.field ul) {
   list-style-type: none;
   margin-left: 0;
+}
+
+#fields-group-group-download,
+#fields-group-group-download-parcours {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+#fields-group-group-download :deep(a),
+#fields-group-group-download-parcours :deep(a) {
+  text-decoration: none;
 }
 
 @media print {

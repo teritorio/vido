@@ -22,12 +22,12 @@ describe('home content', () => {
       teritorioReferenceAPIFixture.deps[2].features[0].properties.name?.['fr-FR'] as string,
     )
 
-    cy.get('#FieldsGroup--download')
+    cy.get('#fields-group-download')
       .parent()
       .contains('download')
 
     // Check for descript on right column
-    cy.get('.detail-right #FieldsGroup--description')
+    cy.get('.detail-right #fields-group-description')
 
     // Waypoint
     cy.get('#PoiCardLight-10002')
