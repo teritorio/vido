@@ -59,7 +59,7 @@ function handleTriggerClick() {
     <button
       type="button"
       :title="t('isochrone.trigger.title')"
-      :class="$attrs.class"
+      class="tw-px-2 tw-flex tw-flex-col tw-items-center tw-flex-1 tw-h-full tw-space-y-2"
       :aria-label="t('isochrone.trigger.label')"
       @click.stop="handleTriggerClick"
     >

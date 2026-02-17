@@ -237,12 +237,12 @@ function trackIsochroneEvent(profile: Profile) {
       <ContribFieldGroup v-if="contribMode && isContribEligible(poi.properties)" v-bind="getContributorFields(poi)" />
     </div>
 
-    <div v-if="showActions" class="tw-flex tw-items-center tw-gap-1 tw-justify-evenly tw-shrink-0 tw-bottom-0 tw-pt-2">
+    <div v-if="showActions" class="tw-flex tw-items-center tw-gap-1 tw-justify-evenly tw-shrink-0 tw-bottom-0">
       <ClientOnly>
         <a
           v-if="device.phone && routeHref"
           :href="routeHref"
-          class="tw-flex tw-flex-col tw-items-center tw-flex-1 tw-h-full tw-space-y-2 tw-rounded-lg hover:tw-bg-zinc-100"
+          class="tw-flex tw-flex-col tw-items-center tw-flex-1 tw-h-full tw-space-y-2 tw-rounded-lg hover:tw-bg-zinc-100 tw-p-2"
           :title="t('poiCard.findRoute')"
           @click="trackingPopupEvent('route')"
         >
@@ -252,7 +252,7 @@ function trackIsochroneEvent(profile: Profile) {
 
         <IsochroneTrigger
           v-if="isochroneEnabled && !device.smallScreen && !showOnlyRouteAction && isElligibleToIsochrone"
-          class="tw-flex tw-flex-col tw-items-center tw-flex-1 tw-h-full tw-space-y-2 tw-rounded-lg"
+          class="tw-py-2 tw-rounded-lg"
           :feature="poi"
           :class="[
             isSameFeatureAsIsochrone && 'tw-bg-blue-600 tw-text-white hover:tw-bg-blue-500',
@@ -269,7 +269,7 @@ function trackIsochroneEvent(profile: Profile) {
       <button
         v-if="!showOnlyRouteAction"
         type="button"
-        class="tw-flex tw-flex-1 tw-flex-col tw-items-center tw-space-y-2 tw-rounded-lg tw-h-full hover:tw-bg-zinc-100"
+        class="tw-py-2 tw-flex tw-flex-1 tw-flex-col tw-items-center tw-space-y-2 tw-rounded-lg tw-h-full hover:tw-bg-zinc-100"
         :title="t('poiCard.zoom')"
         @click.stop="onZoomClick"
       >
@@ -280,7 +280,7 @@ function trackIsochroneEvent(profile: Profile) {
       <button
         v-if="explorerModeEnabled && !showOnlyRouteAction"
         type="button"
-        class="tw-flex tw-flex-1 tw-flex-col tw-items-center tw-space-y-2 tw-rounded-lg tw-h-full"
+        class="tw-py-2 tw-flex tw-flex-1 tw-flex-col tw-items-center tw-space-y-2 tw-rounded-lg tw-h-full"
         :class="[
           isModeExplorer && 'tw-bg-blue-600 tw-text-white hover:tw-bg-blue-500',
           !isModeExplorer && 'hover:tw-bg-zinc-100',
@@ -299,11 +299,15 @@ function trackIsochroneEvent(profile: Profile) {
       <button
         v-if="favoritesModeEnabled && id && !showOnlyRouteAction"
         type="button"
-        class="tw-flex tw-flex-col tw-items-center tw-flex-1 tw-h-full tw-space-y-2 tw-rounded-lg hover:tw-bg-zinc-100"
+        class="tw-py-2 tw-flex tw-flex-col tw-items-center tw-flex-1 tw-h-full tw-space-y-2 tw-rounded-lg hover:tw-bg-zinc-100"
         :title="isFavorite ? t('poiCard.favoriteOn') : t('poiCard.favoriteOff')"
         @click.stop="onFavoriteClick"
       >
-        <FavoriteIcon :is-active="isFavorite" :color-line="props.poi.properties.display.color_line" />
+        <FavoriteIcon
+          :is-active="isFavorite"
+          :color-line="props.poi.properties.display.color_line"
+          size="sm"
+        />
         <span class="tw-text-sm">{{ t('poiCard.favorite') }}</span>
       </button>
     </div>
