@@ -55,7 +55,7 @@ export interface ApiMenuCategory extends ApiMenuItem {
       class_label_popup?: MultilingualString
       class_label_details?: MultilingualString
     }
-    filterable_property?: string[]
+    filterable_property?: string[][]
     filters?: Filters[]
   }
 }

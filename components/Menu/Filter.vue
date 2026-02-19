@@ -3,7 +3,6 @@ import copy from 'fast-copy'
 import DateRange from '~/components/Filters/DateRange.vue'
 import NumberRange from '~/components/Filters/NumberRange.vue'
 import SelectFilter from '~/components/Filters/Select.vue'
-import type { ApiMenuCategory } from '~/types/api/menu'
 import { menuStore as useMenuStore } from '~/stores/menu'
 import type {
   FilterValueBoolean,
@@ -14,49 +13,46 @@ import type {
 } from '~/utils/types-filters'
 
 const props = defineProps<{
-  categoryId: ApiMenuCategory['id']
+  id: number
   filtersValues: FilterValues
+  global?: boolean
 }>()
 
-const emit = defineEmits<{
-  (e: 'goBackClick'): void
+defineEmits<{
   (e: 'activateFilter', val: boolean): void
 }>()
 
 const menuStore = useMenuStore()
 const filtersSafeCopy = computed(() => copy(props.filtersValues))
 
-// function onGoBackClick() {
-//   emit('goBackClick')
-// }
-
-function onClickFilter(val: boolean) {
-  emit('activateFilter', val)
+function applyChange(filters: FilterValues) {
+  if (props.global) {
+    menuStore.applyGlobalFilters({
+      groupId: props.id,
+      filterValues: filters,
+    })
+  }
+  else {
+    menuStore.applyFilters({
+      categoryId: props.id,
+      filterValues: filters,
+    })
+  }
 }
 
 function onBooleanFilterChange(filterIndex: number, event: Event) {
   const target = event.target as HTMLInputElement
-  const value: boolean = target.checked
-
   const filters = filtersSafeCopy.value
   const filter = filters[filterIndex] as FilterValueBoolean
-
-  filter.filterValue = value
-  menuStore.applyFilters({
-    categoryId: props.categoryId,
-    filterValues: filters,
-  })
+  filter.filterValue = target.checked
+  applyChange(filters)
 }
 
 function onSelectionFilterChange(filterIndex: number, values: string[] | undefined) {
   const filters = filtersSafeCopy.value
   const filter = filters[filterIndex] as FilterValueList
-
   filter.filterValues = values || []
-  menuStore.applyFilters({
-    categoryId: props.categoryId,
-    filterValues: filters,
-  })
+  applyChange(filters)
 }
 
 function onSelectionFilterDateChange(
@@ -65,11 +61,7 @@ function onSelectionFilterDateChange(
 ) {
   const filters = filtersSafeCopy.value
   filters[filterIndex] = filterValue
-
-  menuStore.applyFilters({
-    categoryId: props.categoryId,
-    filterValues: filters,
-  })
+  applyChange(filters)
 }
 
 function onSelectionFilterNumberRangeChange(
@@ -78,11 +70,7 @@ function onSelectionFilterNumberRangeChange(
 ) {
   const filters = filtersSafeCopy.value
   filters[filterIndex] = filterValue
-
-  menuStore.applyFilters({
-    categoryId: props.categoryId,
-    filterValues: filters,
-  })
+  applyChange(filters)
 }
 
 function onCheckboxFilterChange(filterIndex: number, val: string, checked: boolean) {
@@ -94,15 +82,12 @@ function onCheckboxFilterChange(filterIndex: number, val: string, checked: boole
   else if (!checked)
     filter.filterValues = filter.filterValues.filter(k => k !== val)
 
-  menuStore.applyFilters({
-    categoryId: props.categoryId,
-    filterValues: filters,
-  })
+  applyChange(filters)
 }
 </script>
 
 <template>
-  <div class="tw-basis-max tw-shrink tw-flex tw-flex-col tw-gap-4 tw-flex-1 tw-p-4">
+  <div :class="global ? 'tw-flex tw-flex-col tw-gap-4' : 'tw-basis-max tw-shrink tw-flex tw-flex-col tw-gap-4 tw-flex-1 tw-p-4'">
     <template
       v-for="(filter, filterIndex) in filtersSafeCopy"
       :key="'property' in filter.def ? filter.def.property.join('.') : filterIndex"
@@ -129,8 +114,8 @@ function onCheckboxFilterChange(filterIndex: number, val: string, checked: boole
         <SelectFilter
           :filter="filter"
           @change="onSelectionFilterChange(filterIndex, $event)"
-          @click="onClickFilter(true)"
-          @blur="onClickFilter(false)"
+          @click="$emit('activateFilter', true)"
+          @blur="$emit('activateFilter', false)"
         />
       </div>
       <div v-else-if="filter.type === 'checkboxes_list'">
