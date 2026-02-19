@@ -40,6 +40,6 @@ export default defineNitroPlugin(async () => {
   catch (err) {
     console.error('❌ Failed to fetch allowed domains at startup:', err)
     // @ts-expect-error: can't declare the interface
-    globalThis.allowedDomains = []
+    globalThis.allowedDomains = {}
   }
 })

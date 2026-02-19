@@ -12,35 +12,39 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 400, message: 'Missing URL' })
 
   const domain = new URL(url).host
+  const defaultDomains = ['api.panoramax.xyz']
   // @ts-expect-error: can't declare the interface
-  const allowedDomains: string[] = globalThis.allowedDomains[project] || []
+  const allowedDomains: string[] = [...defaultDomains, ...(globalThis.allowedDomains[project] || [])]
 
   if (!allowedDomains.includes(domain)) {
-    event.node.res.statusCode = 403
-    return { error: 'Domain not allowed' }
+    return sendRedirect(event, url)
   }
 
-  const response = await fetch(url)
+  try {
+    const response = await fetch(url)
 
-  if (!response.ok) {
-    event.node.res.statusCode = response.status
-    return { error: `Failed to fetch image from ${domain}` }
+    if (!response.ok) {
+      return sendRedirect(event, url)
+    }
+
+    const arrayBuffer = await response.arrayBuffer()
+    let image = sharp(Buffer.from(arrayBuffer))
+
+    // Get original image metadata
+    const metadata = await image.metadata()
+
+    // Only resize if width is specified AND original is larger than requested
+    if (width && metadata.width && metadata.width > width) {
+      image = image.resize({ width })
+    }
+
+    image = image.toFormat(format)
+
+    const processedBuffer = await image.toBuffer()
+    event.node.res.setHeader('Content-Type', `image/${format}`)
+    return processedBuffer
   }
-
-  const arrayBuffer = await response.arrayBuffer()
-  let image = sharp(Buffer.from(arrayBuffer))
-
-  // Get original image metadata
-  const metadata = await image.metadata()
-
-  // Only resize if width is specified AND original is larger than requested
-  if (width && metadata.width && metadata.width > width) {
-    image = image.resize({ width })
+  catch {
+    return sendRedirect(event, url)
   }
-
-  image = image.toFormat(format)
-
-  const processedBuffer = await image.toBuffer()
-  event.node.res.setHeader('Content-Type', `image/${format}`)
-  return processedBuffer
 })
