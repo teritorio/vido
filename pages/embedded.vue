@@ -4,6 +4,7 @@ import { storeToRefs } from 'pinia'
 import type { GeoJSONFeature } from 'maplibre-gl'
 import Embedded from '~/components/Home/Embedded.vue'
 import type { ApiPoi } from '~/types/api/poi'
+import { type SiteInfosTheme, headerFromSettings } from '~/lib/apiSettings'
 import { useSiteStore } from '~/stores/site'
 import { mapStore as useMapStore } from '~/stores/map'
 import { menuStore as useMenuStore } from '~/stores/menu'
@@ -13,7 +14,7 @@ import type { ApiPoiDepsCollection, ApiPoiUnion } from '~/types/api/poi-deps'
 import type { PoiUnion } from '~/types/local/poi-deps'
 
 const siteStore = useSiteStore()
-const { settings } = storeToRefs(siteStore)
+const { settings, theme } = storeToRefs(siteStore)
 const apiEndpoint = useState('api-endpoint')
 
 const route = useRoute()
@@ -22,7 +23,7 @@ const { $trackingInit } = useNuxtApp()
 const menuStore = useMenuStore()
 const poiDepsCompo = usePoiDeps()
 const { teritorioCluster } = storeToRefs(mapStore)
-const { selectedCategoryIds, apiMenuCategory } = storeToRefs(menuStore)
+const { selectedCategoryIds, apiMenuCategory, selectedCategories } = storeToRefs(menuStore)
 
 const mainPoi = ref<ApiPoi>()
 const boundaryGeojson = ref<Polygon | MultiPolygon>()
@@ -88,6 +89,18 @@ if (!categoryIds.value.length) {
 }
 
 menuStore.setSelectedCategoryIds(categoryIds.value)
+
+if (settings.value && theme.value) {
+  useHead(() => headerFromSettings(
+    theme.value as SiteInfosTheme,
+    settings.value!.icon_font_css_url,
+    {
+      title: selectedCategories.value?.length === 1
+        ? selectedCategories.value[0].category.name.fr
+        : undefined,
+    },
+  ))
+}
 
 const { data, error, status } = await useAsyncData('features', async () => {
   await menuStore.fetchFeatures({

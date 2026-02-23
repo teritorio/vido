@@ -2,6 +2,7 @@
 import { storeToRefs } from 'pinia'
 import { menuStore as useMenuStore } from '~/stores/menu'
 import { useSiteStore } from '~/stores/site'
+import { type SiteInfosTheme, headerFromSettings } from '~/lib/apiSettings'
 import Header from '~/components/Layout/Header.vue'
 import Footer from '~/components/Layout/Footer.vue'
 import PoisTable from '~/components/PoisList/PoisTable.vue'
@@ -11,9 +12,9 @@ import CategorySelector from '~/components/PoisList/CategorySelector.vue'
 // Composables
 //
 const siteStore = useSiteStore()
-const { settings } = siteStore
+const { settings, theme } = storeToRefs(siteStore)
 const menuStore = useMenuStore()
-const { menuItems } = storeToRefs(menuStore)
+const { menuItems, getCurrentCategory } = storeToRefs(menuStore)
 const { $trackingInit } = useNuxtApp()
 const route = useRoute()
 
@@ -45,6 +46,23 @@ const isEmbedded = computed(() => {
 const isFiltersEqualToCategoryId = computed(() => {
   return filters.value?.length === 1 && filters.value[0] === categoryId.value
 })
+
+//
+// Head
+//
+const categoryName = computed(() => {
+  if (!categoryId.value)
+    return undefined
+  return getCurrentCategory.value(categoryId.value)?.category.name.fr
+})
+
+if (settings.value && theme.value) {
+  useHead(() => headerFromSettings(
+    theme.value as SiteInfosTheme,
+    settings.value!.icon_font_css_url,
+    { title: categoryName.value },
+  ))
+}
 
 //
 // Hooks
