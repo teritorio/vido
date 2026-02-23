@@ -56,7 +56,7 @@ export default defineEventHandler(async (event) => {
         xsl: '/sitemap-style.xsl',
         defaults: {},
         enabled: true,
-        trailingSlash: false,
+        trailingSlash: true,
         siteUrl: `https://${hostname}`,
         autoLastmod: false,
         inferStaticPagesAsRoutes: false,
