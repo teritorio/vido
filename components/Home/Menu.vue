@@ -4,9 +4,12 @@ import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { storeToRefs } from 'pinia'
 import BreadcrumbsWrapper from '~/components/BreadcrumbsWrapper.vue'
 import FilterCompo from '~/components/Menu/Filter.vue'
+import GlobalFiltersCollapsible from '~/components/Menu/GlobalFiltersCollapsible.vue'
+import GlobalFiltersChips from '~/components/Menu/GlobalFiltersChips.vue'
 import ItemList from '~/components/Menu/ItemList.vue'
 import type { ApiMenuCategory } from '~/types/api/menu'
 import type { MenuGroup, MenuItem } from '~/types/local/menu'
+import type { FilterValues } from '~/utils/types-filters'
 import { menuStore as useMenuStore } from '~/stores/menu'
 import MenuBlock from '~/components/Home/MenuBlock.vue'
 import MenuBlockBottom from '~/components/Home/MenuBlockBottom.vue'
@@ -72,10 +75,17 @@ const hasSlot = computed((): boolean => {
   return slots.default !== undefined
 })
 
+const rootGlobalFiltersMap = computed((): { id: number, filtersValues: FilterValues }[] => {
+  return currentMenuItems.value
+    .filter(menuItem => 'menu_group' in menuItem && globalFilters.value[menuItem.id]?.length > 0)
+    .map(menuItem => ({
+      id: menuItem.id,
+      filtersValues: globalFilters.value[menuItem.id],
+    }))
+})
+
 const hasRootGlobalFilters = computed((): boolean => {
-  return currentMenuItems.value.some(
-    menuItem => 'menu_group' in menuItem && globalFilters.value[menuItem.id],
-  )
+  return rootGlobalFiltersMap.value.length > 0
 })
 
 watch(currentMenuItems, () => {
@@ -151,15 +161,18 @@ function onClickUnselectAll(): void {
       <slot />
     </component>
 
-    <component :is="dynamicComponent" v-if="hasRootGlobalFilters && !isOnSearch">
-      <template v-for="menuItem in currentMenuItems" :key="`filter-${menuItem.id}`">
-        <FilterCompo
-          v-if="'menu_group' in menuItem && globalFilters[menuItem.id]"
-          :id="menuItem.id"
-          :filters-values="globalFilters[menuItem.id]"
-          global
-        />
-      </template>
+    <component :is="dynamicComponent" v-if="hasRootGlobalFilters && !isOnSearch" :is-filter-active="isFilterActive">
+      <GlobalFiltersCollapsible
+        :filters-map="rootGlobalFiltersMap"
+        @activate-filter="$emit('activateFilter', $event)"
+      />
+    </component>
+
+    <component :is="dynamicComponent" v-if="hasRootGlobalFilters && !isOnSearch" :is-filter-active="isFilterActive">
+      <GlobalFiltersChips
+        :filters-map="rootGlobalFiltersMap"
+        @activate-filter="$emit('activateFilter', $event)"
+      />
     </component>
 
     <template v-for="(menuItem, index) in currentMenuItems" :key="menuItem.id">
