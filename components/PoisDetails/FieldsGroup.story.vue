@@ -2,6 +2,8 @@
 import type GeoJSON from 'geojson'
 
 import FieldsGroup from '~/components/PoisDetails/FieldsGroup.vue'
+import type { FieldsListItem } from '~/types/local/field'
+import type { MapPoiDescription } from '~/lib/mapPois'
 
 const defaultProps = {
   group: {
@@ -13,7 +15,7 @@ const defaultProps = {
         group: 'contact',
         display_mode: 'standard' as 'standard' | 'card',
         icon: 'phone',
-        fields: [{ field: 'name' }],
+        fields: [{ field: 'name', render: 'string' } as FieldsListItem],
       },
     ],
   },
@@ -21,7 +23,18 @@ const defaultProps = {
   colorText: '#ffffff',
   properties: {
     metadata: { id: 0 },
-    name: 'foo',
+    name: {
+      'fr-FR': 'foo',
+    },
+    display: {
+      color_fill: '#123456',
+      color_line: '#123456',
+      color_text: '#FFFFFF' as const,
+      icon: 'map-marker-alt',
+      icon_show: true,
+    },
+    editorial: {},
+    vido_visible: true,
   },
   geom: {
     type: 'Point',
@@ -29,8 +42,13 @@ const defaultProps = {
   } as GeoJSON.Geometry,
 }
 
-const description
-  = 'Itinéraire très intéressant, d\'une part pour sa variété paysagère accentuée par la traversée fréquente de cours d\'eau et d\'autre part, par la qualité du patrimoine bâti : maisons traditionnelles landaises, église en garluche. \n\nDistance : 10,2 km - Durée : 4h45 - Animaux tenus en laisse  - Sentier pédestre et VTT \nFiche rando disponible dans le topoguide du Département des Landes du Pays de Born n°15 (en vente : 2 €)'
+const description = {
+  'fr-FR': {
+    html: false,
+    is_shortened: false,
+    value: 'Itinéraire très intéressant, d\'une part pour sa variété paysagère accentuée par la traversée fréquente de cours d\'eau et d\'autre part, par la qualité du patrimoine bâti : maisons traditionnelles landaises, église en garluche. \n\nDistance : 10,2 km - Durée : 4h45 - Animaux tenus en laisse  - Sentier pédestre et VTT \nFiche rando disponible dans le topoguide du Département des Landes du Pays de Born n°15 (en vente : 2 €)',
+  },
+} satisfies MapPoiDescription
 
 const props = {
   Sandart: {
@@ -39,7 +57,7 @@ const props = {
   Empty: {
     ...defaultProps,
     properties: {
-      metadata: { id: 0 },
+      ...defaultProps.properties,
     },
   },
   Label: {
@@ -53,7 +71,8 @@ const props = {
             {
               label: true,
               field: 'name',
-            },
+              render: 'string',
+            } as FieldsListItem,
           ],
         },
       ],
@@ -79,15 +98,15 @@ const props = {
         {
           ...defaultProps.group.fields[0],
           fields: [
-            { field: 'phone' },
-            { field: 'route' },
-            { field: 'short_description' },
+            { field: 'phone', render: 'phone' } as FieldsListItem,
+            { field: 'route', render: 'route' } as FieldsListItem,
+            { field: 'description', render: 'text' } as FieldsListItem,
           ],
         },
       ],
     },
     properties: {
-      'metadata': { id: 0 },
+      ...defaultProps.properties,
       'phone': ['+33676544'],
       'mobile': ['+339750987766'],
       'route:hiking:difficulty': 'easy',

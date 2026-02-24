@@ -14,6 +14,12 @@ RUN yarn install && yarn cache clean
 COPY . /usr/src/app
 RUN yarn build-fixture
 
+# Sentry sourcemap upload requires these at build time
+ARG SENTRY_AUTH_TOKEN
+ARG SENTRY_ORG
+ARG SENTRY_PROJECT
+ARG SENTRY_URL
+
 ENV NODE_OPTIONS="--openssl-legacy-provider"
 RUN yarn build
 
@@ -23,7 +29,7 @@ ENV NUXT_HOST="0.0.0.0"
 ENV NUXT_PORT="3000"
 
 EXPOSE 3000
-CMD [ "node", ".output/server/index.mjs" ]
+CMD [ "node", "--import", "./.output/server/sentry.server.config.mjs", ".output/server/index.mjs" ]
 
 HEALTHCHECK \
     --start-interval=1s \

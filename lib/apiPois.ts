@@ -1,73 +1,4 @@
-import type { MapPoiId, MapPoiProperties } from './mapPois'
-import type { MultilingualString } from '~/utils/types'
-
-export type ApiPoiId = MapPoiId
-
-export interface FieldsListItem {
-  group?: undefined
-  label?: boolean
-  field: string
-}
-
-export interface FieldsListGroup {
-  group: string
-  fields: FieldsList
-  display_mode: 'standard' | 'card'
-  icon?: string
-}
-
-export type FieldsList = (FieldsListItem | FieldsListGroup)[]
-export type TextColors = '#000000' | '#FFFFFF'
-export type ApiPoiProperties = MapPoiProperties & {
-  'image'?: string[]
-  'addr:city'?: string
-  'addr:housenumber'?: string
-  'addr:postcode'?: string
-  'addr:street'?: string
-  'phone'?: string[]
-  'email'?: string[]
-  'website'?: string[]
-  'download'?: string[]
-  'metadata': {
-    id: ApiPoiId
-    source?: string
-    category_ids?: Array<number>
-    updated_at?: string
-    osm_id?: number
-    osm_type?: 'node' | 'way' | 'relation'
-    dep_ids?: number[]
-  }
-  'display'?: {
-    style_class?: string[]
-    color_fill: string
-    color_line: string
-    color_text?: TextColors
-  }
-  'editorial'?: {
-    'popup_fields'?: FieldsListItem[]
-    'details_fields'?: FieldsList
-    'list_fields'?: FieldsListItem[]
-    'class_label'?: MultilingualString
-    'class_label_popup'?: MultilingualString
-    'class_label_details'?: MultilingualString
-    'website:details'?: string
-    'unavoidable'?: boolean
-  }
-}
-export type ApiPoi = GeoJSON.Feature<GeoJSON.Geometry, ApiPoiProperties>
-
-export const ApiPoiPropertiesArray = [
-  'image',
-  'phone',
-  'mobile',
-  'email',
-  'website',
-]
-
-export type ApiPois = GeoJSON.FeatureCollection<
-  GeoJSON.Geometry,
-  ApiPoiProperties
->
+import type { ApiPoi, ApiPoiCollection } from '~/types/api/poi'
 
 export interface ApiPoisOptions {
   cliping_polygon_slug?: string
@@ -89,7 +20,7 @@ export function stringifyOptions(options: ApiPoisOptions): string[][] {
 }
 
 export function getPoiById(
-  poiId: ApiPoiId | string,
+  poiId: number | string,
   options: ApiPoisOptions = {},
 ): Promise<ApiPoi> {
   const apiEndpoint = useState('api-endpoint')
@@ -110,9 +41,9 @@ export function getPoiById(
 }
 
 export async function getPois(
-  poiIds?: (ApiPoiId | string)[],
+  poiIds?: (number | string)[],
   options: ApiPoisOptions = {},
-): Promise<ApiPois> {
+): Promise<ApiPoiCollection> {
   const apiEndpoint = useState('api-endpoint')
 
   return await fetch(
@@ -123,7 +54,7 @@ export async function getPois(
       ])}`,
   ).then((data) => {
     if (data.ok) {
-      return data.json() as unknown as ApiPois
+      return data.json() as unknown as ApiPoiCollection
     }
     else {
       return Promise.reject(
@@ -149,13 +80,13 @@ export function getPoiByCategoryIdUrl(
 export async function getPoiByCategoryId(
   categoryId: number | string,
   options: ApiPoisOptions = {},
-): Promise<ApiPois> {
+): Promise<ApiPoiCollection> {
   options = Object.assign(defaultOptions, { geometry_as: 'point' }, options)
 
   return await fetch(getPoiByCategoryIdUrl(categoryId, options)).then(
     async (data) => {
       if (data.ok) {
-        return await data.json() as unknown as ApiPois
+        return await data.json() as unknown as ApiPoiCollection
       }
       else {
         return Promise.reject(

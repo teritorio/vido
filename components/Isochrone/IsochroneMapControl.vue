@@ -2,18 +2,13 @@
 import type { Map } from 'maplibre-gl'
 import { Control } from '@teritorio/map'
 import IsochroneTrigger from '~/components/Isochrone/IsochroneTrigger.vue'
+import type { Poi } from '~/types/local/poi'
 
-//
-// Props
-//
 const props = defineProps<{
-  feature: GeoJSON.Feature
+  feature: Poi
   map: Map
 }>()
 
-//
-// Data
-//
 const controlRef = ref<InstanceType<typeof HTMLDivElement>>()
 class IsochroneControl extends Control {
   constructor(container: HTMLDivElement) {

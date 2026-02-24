@@ -4,7 +4,8 @@ import { VAutocomplete } from 'vuetify/components/VAutocomplete'
 import { VListItem, VListItemMedia } from 'vuetify/components/VList'
 import { localeIncludes } from 'locale-includes'
 import TeritorioIcon from '~/components/UI/TeritorioIcon.vue'
-import type { ApiMenuCategory, MenuItem } from '~/lib/apiMenu'
+import type { ApiMenuCategory } from '~/types/api/menu'
+import type { MenuItem } from '~/types/local/menu'
 
 const props = withDefaults(defineProps<{
   filters?: number[]
@@ -26,7 +27,14 @@ const menuEntries = computed((): Array<{ value: number, title: string, category:
   const localeCompareOptions = locales.value.map(locale => typeof locale === 'string' ? locale : locale.code)
 
   return Object.values(props.menuItems)
-    .filter(menuItem => contribMode ? menuItem.category : menuItem.category && !menuItem.hidden)
+    .filter((menuItem) => {
+      const hasCategory = 'category' in menuItem
+
+      if (!hasCategory)
+        return false
+
+      return contribMode ? true : !menuItem.hidden
+    })
     .map((menuItem) => {
       const parents: string[] = []
       let parentId = menuItem.parent_id
@@ -39,10 +47,14 @@ const menuEntries = computed((): Array<{ value: number, title: string, category:
         if (props.filters && (props.filters.includes(parentId) || props.filters.includes(menuItem.id)))
           isIncluded = true
 
-        const name = props.menuItems[parentId].menu_group?.name.fr
+        const item = props.menuItems[parentId]
 
-        if (name && props.menuItems[parentId].parent_id)
-          parents.unshift(name)
+        if ('menu_group' in item) {
+          const name = item.menu_group.name.fr
+
+          if (name && props.menuItems[parentId].parent_id)
+            parents.unshift(name)
+        }
 
         parentId = props.menuItems[parentId].parent_id
       }
@@ -89,7 +101,7 @@ function customFilter(item: string, query: string) {
         <VListItem v-bind="scopedProps" :title="undefined">
           <VListItemMedia>
             <TeritorioIcon
-              :color-text="item.raw!.category.color_line"
+              :color-text="item.raw!.category.color_line || item.raw!.category.color_fill"
               :picto="item.raw!.category.icon"
               use-native-alignment
             />

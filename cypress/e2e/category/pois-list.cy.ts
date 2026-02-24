@@ -1,7 +1,7 @@
 import poisCategory22 from '../../fixtures/teritorio/references/pois/category/22.json'
 import { mockSSRAPI } from '../../support/mock'
 import teritorioReferenceAPIFixture from '../../fixtures/teritorio/references/teritorioReferenceAPIFixture'
-import type { ApiPois } from '../../../lib/apiPois'
+import type { ApiPoiDepsCollection } from '../../../types/api/poi-deps'
 
 const hostnames = {
   'https://dev.appcarto.teritorio.xyz':
@@ -32,14 +32,14 @@ describe('pois table', () => {
   })
 
   it('contain basic table', () => {
-    const pois = teritorioReferenceAPIFixture.deps[2] as ApiPois
-    if (pois.features[0].properties.editorial && pois.features[0].properties.editorial.list_fields) {
-      cy.get('th')
-        .contains(pois.features[0].properties.editorial.list_fields[0].field as string)
-    }
+    const pois = teritorioReferenceAPIFixture.deps[2] as ApiPoiDepsCollection
+    const category = teritorioReferenceAPIFixture.menu.find(item => item.id === 211)!
+
+    cy.get('th')
+      .contains((category as any).category.editorial.list_fields[0].field as string)
 
     cy.get('td')
-      .contains(pois.features[0].properties.name as string)
+      .contains(pois.features[0].properties.name?.['fr-FR'] as string)
 
     cy.htmlvalidate(htmlValidateRules)
   })
@@ -53,10 +53,11 @@ describe('pois table', () => {
     cy.get('.category-selector').wait(1000).click()
     cy.contains('Aire de passage', { timeout: 30000 }).click()
 
+    const category = teritorioReferenceAPIFixture.menu.find(item => item.id === 22)!
     cy.get('th').contains(
-      poisCategory22.features[0].properties.editorial.list_fields[0].field,
+      (category as any).category.editorial.list_fields[0].field,
     )
-    cy.get('td').contains(poisCategory22.features[0].properties.name)
+    cy.get('td').contains(poisCategory22.features[0].properties.name['fr-FR'])
 
     // Unselect the selector before validate
     cy.get('body').click()

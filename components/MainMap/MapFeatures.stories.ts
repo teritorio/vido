@@ -1,9 +1,8 @@
 import { LngLatBounds } from 'maplibre-gl'
-
 import MapFeatures from '~/components/MainMap/MapFeatures.vue'
-import type { ApiMenuCategory } from '~/lib/apiMenu'
-import type { ApiPoi } from '~/lib/apiPois'
+import type { ApiMenuCategory } from '~/types/api/menu'
 import { bind, mapCss, parametersMap } from '~/lib/storybook-types'
+import type { Poi } from '~/types/local/poi'
 
 export default {
   title: 'MainMap/MapFeatures',
@@ -21,7 +20,6 @@ const defaultProps = {
   categories: [
     {
       id: 1,
-      parent_id: null,
       index_order: 0,
       hidden: false,
       menu_group: undefined,
@@ -67,26 +65,30 @@ export const StyleIconFilter = bind(
   { style: mapCss },
 )
 
-const feature1: ApiPoi = {
+const feature1: Poi = {
   type: 'Feature',
   geometry: {
     type: 'Point',
     coordinates: [-1.4745043, 43.4910071],
   },
   properties: {
-    name: 'foo',
+    name: {
+      'fr-FR': 'foo',
+    },
     metadata: {
       id: 1,
       category_ids: [1],
     },
     display: {
       icon: 'teritorio teritorio-catering-catering_food-restaurant',
+      icon_show: true,
       color_fill: '#ff0000',
       color_line: '#ff0000',
+      color_text: '#FFFFFF',
       style_class: ['catering', 'catering_food', 'restaurant'],
     },
     editorial: {
-      popup_fields: [{ field: 'foot' }],
+      popup_fields: [{ field: 'foo', translationKey: 'foo', render: 'string' }],
     },
   },
 }

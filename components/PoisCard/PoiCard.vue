@@ -3,11 +3,11 @@ import PoiCardContent from '~/components/PoisCard/PoiCardContent.vue'
 import TeritorioIcon from '~/components/UI/TeritorioIcon.vue'
 import UIButton from '~/components/UI/UIButton.vue'
 import UIPicture from '~/components/UI/UIPicture.vue'
-import type { ApiPoi } from '~/lib/apiPois'
+import type { Poi } from '~/types/local/poi'
 
 const props = withDefaults(defineProps<{
   canClose?: boolean
-  poi: ApiPoi
+  poi: Poi
   showImage?: boolean
 }>(), {
   canClose: true,
@@ -15,10 +15,10 @@ const props = withDefaults(defineProps<{
 })
 
 const emit = defineEmits<{
-  (e: 'exploreClick', poi: ApiPoi): void
-  (e: 'favoriteClick', poi: ApiPoi): void
+  (e: 'exploreClick', poi: Poi): void
+  (e: 'favoriteClick', poi: Poi): void
   (e: 'onClose'): void
-  (e: 'zoomClick', poi: ApiPoi): void
+  (e: 'zoomClick', poi: Poi): void
 }>()
 
 const device = useDevice()
@@ -30,9 +30,8 @@ const closeBtnStyles = reactive({
   left: device.value.smallScreen ? 'unset' : 0,
 })
 
-const { colorFill } = useContrastedColors(toRef(() => props.poi.properties.display?.color_fill || '#FFFFFF'))
 const hasImage = computed(() => props.poi.properties.image && props.poi.properties.image.length > 0)
-const logoColor = computed(() => hasImage.value ? '#AAA' : colorFill.value)
+const logoColor = computed(() => hasImage.value ? '#AAA' : props.poi.properties.display.color_fill)
 </script>
 
 <template>
@@ -54,7 +53,7 @@ const logoColor = computed(() => hasImage.value ? '#AAA' : colorFill.value)
       class=" tw-bg-gray-100 tw-text-gray-100 tw-flex tw-relative tw-items-center tw-align-middle tw-justify-center tw-h-44 md:tw-w-48 md:tw-h-auto md:tw-max-h-full min-icon-height"
     >
       <TeritorioIcon
-        v-if="poi.properties.display?.icon"
+        v-if="poi.properties.display.icon"
         :picto="poi.properties.display.icon"
         :use-native-alignment="false"
         class="tw-text-8xl tw-align-middle tw-absolute tw-z-0"

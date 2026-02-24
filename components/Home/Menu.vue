@@ -5,7 +5,8 @@ import { storeToRefs } from 'pinia'
 import BreadcrumbsWrapper from '~/components/BreadcrumbsWrapper.vue'
 import FilterCompo from '~/components/Menu/Filter.vue'
 import ItemList from '~/components/Menu/ItemList.vue'
-import type { ApiMenuCategory, MenuGroup, MenuItem } from '~/lib/apiMenu'
+import type { ApiMenuCategory } from '~/types/api/menu'
+import type { MenuGroup, MenuItem } from '~/types/local/menu'
 import { menuStore as useMenuStore } from '~/stores/menu'
 import MenuBlock from '~/components/Home/MenuBlock.vue'
 import MenuBlockBottom from '~/components/Home/MenuBlockBottom.vue'
@@ -34,6 +35,7 @@ const device = useDevice()
 const slots = useSlots()
 const menuStore = useMenuStore()
 const navigationStore = useNavigationStore()
+const { contribMode } = useContrib()
 const { currentParent, isRootMenu, categoryIdFilter } = storeToRefs(navigationStore)
 const { filters, selectedCategoryIds, menuItems } = storeToRefs(menuStore)
 
@@ -77,14 +79,15 @@ watch(currentMenuItems, () => {
 function getMenuItemByParentId(menuGroupId: MenuGroup['id'] | undefined): MenuItem[] {
   return Object.values(menuItems?.value || {})
     .filter(c => (c.parent_id || null) === (menuGroupId || null))
+    .filter(c => contribMode || !c.hidden)
     .sort((a, b) => a.index_order - b.index_order)
 }
 
 function getRecursiveCategoryIdByParentId(menuGroupId: MenuGroup['id'] | undefined): ApiMenuCategory['id'][] {
   const menuItems = getMenuItemByParentId(menuGroupId)
-  const menuGroups = menuItems.filter(menuItem => menuItem.menu_group)
+  const menuGroups = menuItems.filter(menuItem => 'menu_group' in menuItem)
   const categories = menuItems
-    .filter(menuItem => menuItem.category)
+    .filter(menuItem => 'category' in menuItem)
     .map(category => category.id)
   return [
     ...categories,

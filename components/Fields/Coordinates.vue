@@ -1,36 +1,16 @@
-<script lang="ts">
+<script setup lang="ts">
 import type GeoJSON from 'geojson'
-import type { PropType } from 'vue'
-
-import { defineNuxtComponent } from '#app'
 import ExternalLink from '~/components/UI/ExternalLink.vue'
 import { coordinatesHref } from '~/lib/coordinates'
 
-export function isCoordinatesEmpty(geom: GeoJSON.Geometry): boolean {
-  return !(geom && geom.type === 'Point' && geom.coordinates)
-}
+const props = defineProps<{
+  geom: GeoJSON.Geometry
+}>()
 
-export default defineNuxtComponent({
-  components: {
-    ExternalLink,
-  },
+const href = ref<string>()
 
-  props: {
-    geom: {
-      type: Object as PropType<GeoJSON.Geometry>,
-      required: true,
-    },
-  },
-
-  data(): {
-    href: string | undefined
-  } {
-    return { href: undefined }
-  },
-
-  mounted() {
-    this.href = coordinatesHref(this.geom)
-  },
+onMounted(() => {
+  href.value = coordinatesHref(props.geom)
 })
 </script>
 

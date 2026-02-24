@@ -1,64 +1,43 @@
-<script lang="ts">
+<script setup lang="ts">
 import { Building3d } from '@teritorio/map'
 import type { Map } from 'maplibre-gl'
-import type { PropType } from 'vue'
-import { ref } from 'vue'
 
-import { defineNuxtComponent } from '#app'
+const props = defineProps<{
+  map?: Map
+}>()
 
-export default defineNuxtComponent({
-  props: {
-    map: {
-      type: Object as PropType<Map>,
-      default: null,
-    },
-  },
-  setup() {
-    return {
-      container: ref<InstanceType<typeof HTMLDivElement>>(),
+const { $tracking } = useNuxtApp()
+const container = ref<InstanceType<typeof HTMLDivElement>>()
+const building3d = ref<Building3d>()
+const pitched = ref<boolean>(false)
+
+watch(() => props.map, (newValue, oldValue) => {
+  if (!oldValue && newValue) {
+    building3d.value = new Building3d({
+      building3d: pitched.value,
+      container: container.value,
+    })
+
+    if (props.map) {
+      props.map.addControl(building3d.value)
+      pitched.value = props.map.getPitch() !== 0
+
+      props.map.on('pitchend', () => {
+        pitched.value = props.map!.getPitch() !== 0
+      })
     }
-  },
-
-  data(): {
-    building3d: Building3d | null
-    pitched: boolean
-  } {
-    return {
-      building3d: null,
-      pitched: false,
-    }
-  },
-
-  watch: {
-    map(value, oldValue) {
-      if (!oldValue && value) {
-        this.building3d = new Building3d({
-          building3d: this.pitched,
-          container: this.container,
-        })
-
-        this.map.addControl(this.building3d)
-        this.pitched = this.map.getPitch() !== 0
-
-        this.map.on('pitchend', () => {
-          this.pitched = this.map.getPitch() !== 0
-        })
-      }
-    },
-  },
-
-  methods: {
-    toggle3D() {
-      this.$tracking({ type: 'map_control_event', event: '3d' })
-      if (this.building3d) {
-        if (this.pitched)
-          this.building3d.set3d(false, 0)
-        else
-          this.building3d.set3d(true, 60)
-      }
-    },
-  },
+  }
 })
+
+function toggle3D() {
+  $tracking({ type: 'map_control_event', event: '3d' })
+  if (building3d.value) {
+    if (pitched.value)
+      building3d.value.set3d(false, 0)
+    else
+      building3d.value.set3d(true, 60)
+  }
+}
 </script>
 
 <template>

@@ -2,15 +2,12 @@
 import type { FontAwesomeIconProps } from '@fortawesome/vue-fontawesome'
 
 import Category from '~/components/Menu/Category.vue'
-import type { ApiMenuCategory } from '~/lib/apiMenu'
+import type { MenuCategory } from '~/types/local/menu'
 
-const category: ApiMenuCategory = {
+const category: MenuCategory = {
   id: 123,
   selected_by_default: false,
-  parent_id: null,
   index_order: 1,
-  menu_group: undefined,
-  link: undefined,
   category: {
     name: { fr: 'Leisure' },
     icon: 'teritorio teritorio-bar',
@@ -20,7 +17,6 @@ const category: ApiMenuCategory = {
     style_merge: true,
     display_mode: 'large' as 'compact' | 'large',
     zoom: 14,
-    // filters
   },
 }
 
@@ -61,10 +57,6 @@ const props = {
     },
     selected: true,
   },
-  // Filter: {
-  //   ...defaultProps,
-  //   filters:
-  // },
 }
 </script>
 

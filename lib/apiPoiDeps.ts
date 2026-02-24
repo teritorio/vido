@@ -1,75 +1,9 @@
-import type {
-  ApiPoi,
-  ApiPoiId,
-  ApiPoiProperties,
-  ApiPoisOptions,
-} from './apiPois'
-import {
-  stringifyOptions,
-} from './apiPois'
-
-import type { MultilingualString } from '~/utils/types'
-
-export enum ApiRouteWaypointType {
-  parking = 'parking',
-  start = 'start',
-  end = 'end',
-  way_point = 'way_point',
-}
-
-export interface ApiRouteWaypointProperties {
-  'id': ApiPoiId
-  'name'?: MultilingualString
-  'description'?: MultilingualString
-  'route:point:type': ApiRouteWaypointType
-  'metadata': {
-    id: number
-  }
-}
-
-export type ApiRouteWaypoint = GeoJSON.Feature<
-  GeoJSON.Point,
-  ApiRouteWaypointProperties
->
-
-export type ApiPoiDeps = GeoJSON.FeatureCollection<
-  GeoJSON.Geometry,
-  ApiPoiProperties | ApiRouteWaypointProperties
->
-
-export function prepareApiPoiDeps(
-  featureCollection: GeoJSON.Feature<GeoJSON.Geometry, ApiPoiProperties | ApiRouteWaypointProperties>[],
-  referenceIds?: number[],
-): {
-    waypoints: ApiRouteWaypoint[]
-    pois: ApiPoi[]
-  } {
-  const waypoints: ApiRouteWaypoint[] = []
-  const pois: ApiPoi[] = []
-
-  if (referenceIds && referenceIds.length > 0) {
-    for (const id of referenceIds) {
-      const feature = Object.values(featureCollection).find(f => f.properties.metadata.id === id)
-
-      if (!feature) {
-        console.error(`Feature ${id} in dep_ids but not in collection.`)
-        continue
-      }
-
-      if (feature.properties['route:point:type']) {
-        waypoints.push(feature as ApiRouteWaypoint)
-      }
-      else {
-        pois.push(feature as ApiPoi)
-      }
-    }
-  }
-
-  return { waypoints, pois }
-}
+import { stringifyOptions } from '~/lib/apiPois'
+import type { ApiPoisOptions } from '~/lib/apiPois'
+import type { ApiPoiDeps } from '~/types/api/poi-deps'
 
 export async function getPoiDepsById(
-  poiId: ApiPoiId | string,
+  poiId: number | string,
   options: ApiPoisOptions = {},
 ): Promise<ApiPoiDeps> {
   const apiEndpoint = useState('api-endpoint')
@@ -87,49 +21,4 @@ export async function getPoiDepsById(
       )
     }
   })
-}
-
-export const iconMap: { [key: string]: string } = {
-  [ApiRouteWaypointType.parking]: 'square-parking',
-  [ApiRouteWaypointType.start]: 'house-flag',
-  [ApiRouteWaypointType.end]: 'flag-checkered',
-  [ApiRouteWaypointType.way_point]: 'map-marker-alt',
-}
-
-export function apiRouteWaypointToApiPoi(
-  waypoint: ApiRouteWaypoint,
-  colorFill: string,
-  colorLine: string,
-  colorText: '#000000' | '#FFFFFF',
-  text?: string,
-): ApiPoi {
-  return {
-    ...waypoint,
-    properties: {
-      ...waypoint.properties,
-      name: waypoint.properties.name?.fr,
-      description: waypoint.properties.description?.fr,
-      metadata: {
-        id: waypoint.properties.id,
-      },
-      display: {
-        icon: iconMap[waypoint.properties['route:point:type']],
-        color_fill: colorFill,
-        color_line: colorLine,
-        color_text: colorText,
-        text,
-      },
-      editorial: {
-        popup_fields: [
-          {
-            field: 'short_description',
-          },
-          {
-            field: 'coordinates',
-            label: true,
-          },
-        ],
-      },
-    },
-  }
 }

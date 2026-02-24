@@ -124,12 +124,11 @@ export default defineI18nLocale(() => {
       poweredBy: 'Con la tecnología de',
       mapillaryExplore: 'Explorar en Mapillary',
       informations: 'Informaciones',
-      downloadGPX: 'La ruta (pista GPS) en formato GPX',
-      downloadPDF: 'La hoja completa en formato PDF',
       routes: {
         waypoints: 'Puntos de ruta',
         pois: 'Puntos de interés',
       },
+      report: 'Notificar un problema',
     },
     poisTable: {
       empty: 'La lista está vacía: seleccione una categoría',

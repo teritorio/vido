@@ -1,5 +1,5 @@
 import Category from '~/components/Menu/Category.vue'
-import type { ApiMenuCategory } from '~/lib/apiMenu'
+import type { ApiMenuCategory } from '~/types/api/menu'
 import { bind } from '~/lib/storybook-types'
 
 export default {
@@ -10,10 +10,7 @@ export default {
 const category: ApiMenuCategory = {
   id: 123,
   selected_by_default: false,
-  parent_id: null,
   index_order: 1,
-  menu_group: undefined,
-  link: undefined,
   category: {
     name: { fr: 'Leisure' },
     icon: 'teritorio teritorio-bar',
@@ -23,7 +20,6 @@ const category: ApiMenuCategory = {
     style_merge: true,
     display_mode: 'large',
     zoom: 14,
-    // filters
   },
 }
 
@@ -66,8 +62,3 @@ export const SelectedCompact = bind(Category, {
   },
   selected: true,
 })
-
-// export const Filter = bind(Category, {
-//   ...defaultProps,
-//   filters:
-// })

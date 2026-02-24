@@ -6,13 +6,13 @@ import { useSiteStore } from '~/stores/site'
 
 const siteStore = useSiteStore()
 const { settings } = siteStore
-const { locale, theme } = storeToRefs(siteStore)
+const { theme } = storeToRefs(siteStore)
 
 if (!settings)
   throw createError({ statusCode: 400, statusMessage: 'Failed to fetch settings', fatal: true })
 
-const mainUrl = computed(() => (locale.value && theme.value?.main_url?.[locale.value]) || '/')
-const target = computed(() => (locale.value && theme.value?.main_url?.[locale.value]) ? '_blank' : '_self')
+const mainUrl = computed(() => (theme.value?.main_url?.fr) || '/')
+const target = computed(() => (theme.value?.main_url?.fr) ? '_blank' : '_self')
 </script>
 
 <template>
@@ -21,8 +21,8 @@ const target = computed(() => (locale.value && theme.value?.main_url?.[locale.va
       id="logo"
       :main-url="mainUrl"
       :target="target"
-      :site-name="theme!.title.fr"
-      :logo-url="theme!.logo_url"
+      :site-name="theme?.title?.fr || ''"
+      :logo-url="theme?.logo_url || ''"
     />
     <slot name="search" />
     <div class="tw-flex tw-justify-end print:tw-hidden">

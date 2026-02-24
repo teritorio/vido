@@ -30,9 +30,9 @@ export default defineEventHandler(async (event) => {
     setResponseStatus(event, 200)
 
     return JSON.stringify({
-      name: theme.title.fr,
-      short_name: theme.title.fr,
-      description: theme.description.fr,
+      name: theme.title?.fr,
+      short_name: theme.title?.fr,
+      description: theme.description?.fr,
       start_url: '.',
       background_color: '#ffffff',
       display: 'standalone',

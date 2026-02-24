@@ -2,12 +2,23 @@
 import type GeoJSON from 'geojson'
 
 import Fields from '~/components/PoisCard/Fields.vue'
-import type { ApiPoiProperties } from '~/lib/apiPois'
+import type { FieldsListItem } from '~/types/local/field'
+import type { PoiUnion } from '~/types/local/poi-deps'
+import type { MapPoiDescription } from '~/lib/mapPois'
 
-const properties: ApiPoiProperties = {
+const properties: PoiUnion['properties'] = {
   metadata: {
     id: 1,
   },
+  display: {
+    color_fill: '#123456',
+    color_line: '#123456',
+    color_text: '#FFFFFF' as const,
+    icon: 'map-marker-alt',
+    icon_show: true,
+  },
+  editorial: {},
+  vido_visible: true,
 }
 
 const defaultProps = {
@@ -19,8 +30,13 @@ const defaultProps = {
   } as GeoJSON.Geometry,
 }
 
-const description
-  = 'Itinéraire très intéressant, d\'une part pour sa variété paysagère accentuée par la traversée fréquente de cours d\'eau et d\'autre part, par la qualité du patrimoine bâti : maisons traditionnelles landaises, église en garluche. \n\nDistance : 10,2 km - Durée : 4h45 - Animaux tenus en laisse  - Sentier pédestre et VTT \nFiche rando disponible dans le topoguide du Département des Landes du Pays de Born n°15 (en vente : 2 €)'
+const description = {
+  'fr-FR': {
+    html: false,
+    is_shortened: false,
+    value: 'Itinéraire très intéressant, d\'une part pour sa variété paysagère accentuée par la traversée fréquente de cours d\'eau et d\'autre part, par la qualité du patrimoine bâti : maisons traditionnelles landaises, église en garluche. \n\nDistance : 10,2 km - Durée : 4h45 - Animaux tenus en laisse  - Sentier pédestre et VTT \nFiche rando disponible dans le topoguide du Département des Landes du Pays de Born n°15 (en vente : 2 €)',
+  },
+} satisfies MapPoiDescription
 
 const props = {
   DefaultEmpty: {
@@ -29,12 +45,12 @@ const props = {
   Many: {
     ...defaultProps,
     fields: [
-      { field: 'phone' },
-      { field: 'route' },
-      { field: 'short_description' },
+      { field: 'phone', render: 'phone' } as FieldsListItem,
+      { field: 'route', render: 'route' } as FieldsListItem,
+      { field: 'description', render: 'text' } as FieldsListItem,
     ],
     properties: {
-      'metadata': { id: 0 },
+      ...properties,
       'phone': ['+33676544'],
       'mobile': ['+339750987766'],
       'route:hiking:difficulty': 'easy',

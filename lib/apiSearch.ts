@@ -1,11 +1,9 @@
 import type GeoJSON from 'geojson'
 
-import type { ApiPoiId } from './apiPois'
-
 export type ApiSearchResult<T> = GeoJSON.FeatureCollection<GeoJSON.Point, T>
 
 export interface ApiPoisSearchResult {
-  id: ApiPoiId
+  id: number
   label: string
   icon?: string
   city?: string
@@ -22,13 +20,13 @@ export interface ApiMenuItemSearchResult {
 }
 
 export interface ApiAddrSearchResult {
-  id: number
+  id: string
   label: string
-  type: 'street' | 'municipality'
+  type: 'street' | 'municipality' | 'locality' | 'housenumber'
 }
 
 export interface SearchResult {
-  id: ApiPoiId | number
+  id: number | string
   label: string
   icon?: string
   small?: string

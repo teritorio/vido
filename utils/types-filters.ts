@@ -1,13 +1,15 @@
 import type {
-  Filter,
   FilterBoolean,
   FilterDate,
   FilterList,
   FilterNumberRange,
-} from '~/lib/apiMenu'
-import type { ApiPoi } from '~/lib/apiPois'
+  Filters,
+} from '~/types/api/filters'
+import type { ApiPoiPropertiesStartEndDate } from '~/types/api/poi'
+import type { Poi } from '~/types/local/poi'
+import { getNestedPropertyValue, isFieldMultilingual } from '~/utils/property'
 
-abstract class FilterValueDef<Type extends Filter> {
+abstract class FilterValueDef<Type extends Filters> {
   def: Type
   type: Type['type']
 
@@ -70,42 +72,40 @@ export function isSet(filter: FilterValue): boolean {
 
 export function isMatch(
   filter: FilterValue,
-  properties: ApiPoi['properties'],
+  properties: Poi['properties'],
 ): boolean {
-  const propertyValues = 'property' in filter.def ? properties[filter.def.property] : null
+  const multilingual = 'property' in filter.def ? isFieldMultilingual(properties.editorial, filter.def.property) : false
+  const propertyValue = 'property' in filter.def ? getNestedPropertyValue(properties, filter.def.property, multilingual) : null
   switch (filter.type) {
     case 'boolean':
-      return Boolean(properties[filter.def.property])
+      return Boolean(propertyValue)
 
     case 'checkboxes_list':
     case 'multiselection':
-      if (Array.isArray(propertyValues)) {
+      if (Array.isArray(propertyValue)) {
         return filter.filterValues.some(filterValue =>
-          propertyValues.includes(filterValue),
+          propertyValue.includes(filterValue),
         )
       }
       else {
-        return filter.filterValues.includes(
-          properties[filter.def.property] as string,
-        )
+        return filter.filterValues.includes(propertyValue as string)
       }
 
-    case 'date_range':
+    case 'date_range': {
+      const startDate = (propertyValue as ApiPoiPropertiesStartEndDate)?.start_date
+      const endDate = (propertyValue as ApiPoiPropertiesStartEndDate)?.end_date
       return Boolean(
-        (!filter.def.property_begin
-        || !filter.filterValueEnd
-        || properties[filter.def.property_begin] <= filter.filterValueEnd)
-        && (!filter.def.property_end
-        || !filter.filterValueBegin
-        || properties[filter.def.property_end] >= filter.filterValueBegin),
+        (!filter.filterValueEnd || (startDate && startDate <= filter.filterValueEnd))
+        && (!filter.filterValueBegin || (endDate && endDate >= filter.filterValueBegin)),
       )
+    }
 
     case 'number_range':
       return (
         (filter.filterValueMin == null
-        || filter.filterValueMin <= properties[filter.def.property])
+        || filter.filterValueMin <= (propertyValue as number))
         && (filter.filterValueMax == null
-        || properties[filter.def.property] <= filter.filterValueMax)
+        || (propertyValue as number) <= filter.filterValueMax)
       )
   }
 }
@@ -114,7 +114,7 @@ export function filterValuesIsSet(filterValues: FilterValues) {
   return filterValues.some(filterValue => isSet(filterValue))
 }
 
-export function filterValueFactory(filter: Filter): FilterValue {
+export function filterValueFactory(filter: Filters): FilterValue {
   switch (filter.type) {
     case 'boolean':
       return new FilterValueBoolean(filter).toJSON()

@@ -11,7 +11,7 @@ const defaultProps = {
     group: 'contact',
     display_mode: 'standard',
     icon: 'phone',
-    fields: [{ field: 'name' }],
+    fields: [{ field: 'name', render: 'string' }],
   },
   colorFill: '#f76Ffe',
   properties: {
@@ -43,6 +43,7 @@ export const Label = bind(FieldsGroup, {
       {
         label: true,
         field: 'name',
+        render: 'string',
       },
     ],
   },
@@ -56,17 +57,18 @@ export const Card = bind(FieldsGroup, {
   },
 })
 
-const description
-  = 'Itinéraire très intéressant, d\'une part pour sa variété paysagère accentuée par la traversée fréquente de cours d\'eau et d\'autre part, par la qualité du patrimoine bâti : maisons traditionnelles landaises, église en garluche. \n\nDistance : 10,2 km - Durée : 4h45 - Animaux tenus en laisse  - Sentier pédestre et VTT \nFiche rando disponible dans le topoguide du Département des Landes du Pays de Born n°15 (en vente : 2 €)'
+const description = {
+  'fr-FR': 'Itinéraire très intéressant, d\'une part pour sa variété paysagère accentuée par la traversée fréquente de cours d\'eau et d\'autre part, par la qualité du patrimoine bâti : maisons traditionnelles landaises, église en garluche. \n\nDistance : 10,2 km - Durée : 4h45 - Animaux tenus en laisse  - Sentier pédestre et VTT \nFiche rando disponible dans le topoguide du Département des Landes du Pays de Born n°15 (en vente : 2 €)',
+}
 
 export const Many = bind(FieldsGroup, {
   ...defaultProps,
   group: {
     ...defaultProps.group,
     fields: [
-      { field: 'phone' },
-      { field: 'route' },
-      { field: 'short_description' },
+      { field: 'phone', render: 'phone' },
+      { field: 'route', render: 'route' },
+      { field: 'description', render: 'text' },
     ],
   },
   properties: {

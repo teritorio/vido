@@ -1,5 +1,5 @@
 import Group from '~/components/Menu/Group.vue'
-import type { MenuGroup } from '~/lib/apiMenu'
+import type { MenuGroup } from '~/types/local/menu'
 import { bind } from '~/lib/storybook-types'
 
 export default {
@@ -10,19 +10,15 @@ export default {
 const menuGroup: MenuGroup = {
   id: 123,
   selected_by_default: false,
-  parent_id: null,
   index_order: 1,
   menu_group: {
     name: { fr: 'Leisure & Skiing' },
     icon: 'teritorio teritorio-hosting',
     color_fill: '#284627',
     color_line: '#284627',
-    // style_class
     display_mode: 'compact',
     vido_children: [],
   },
-  link: undefined,
-  category: undefined,
 }
 
 const defaultProps = {

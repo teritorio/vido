@@ -1,18 +1,19 @@
 <script setup lang="ts">
-import type { ApiPoi } from '~/lib/apiPois'
+import type { Poi } from '~/types/local/poi'
 import PoiCard from '~/components/PoisCard/PoiCard.vue'
 import PoiCardLight from '~/components/PoisCard/PoiCardLight.vue'
 import { favoriteStore as useFavoriteStore } from '~/stores/favorite'
+import type { PoiUnion } from '~/types/local/poi-deps'
 
 defineProps<{
-  pois: ApiPoi[]
+  pois: PoiUnion[]
   isCardLight: boolean
 }>()
 
 const emit = defineEmits<{
-  (e: 'exploreClick', poi: ApiPoi): void
-  (e: 'favoriteClick', poi: ApiPoi): void
-  (e: 'zoomClick', poi: ApiPoi): void
+  (e: 'exploreClick', poi: Poi): void
+  (e: 'favoriteClick', poi: Poi): void
+  (e: 'zoomClick', poi: Poi): void
 }>()
 
 const favoriteStore = useFavoriteStore()
@@ -34,7 +35,7 @@ const favoriteStore = useFavoriteStore()
       v-for="item in pois"
       :key="item.properties.metadata.id"
       :can-close="false"
-      :poi="item"
+      :poi="item as Poi"
       class="tw-grow-1 poi-deck"
       :class="[
         !favoriteStore.isFavorite(item.properties.metadata.id)

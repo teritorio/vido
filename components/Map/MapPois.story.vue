@@ -1,11 +1,21 @@
 <script lang="ts" setup>
 import pois from '~/cypress/fixtures/teritorio/references/poi/2/deps.json'
-import type { ApiPoi } from '~/lib/apiPois'
+import menu from '~/cypress/fixtures/teritorio/references/menu.json'
+import type { ApiPoiUnion } from '~/types/api/poi-deps'
+import type { PoiUnion } from '~/types/local/poi-deps'
+import type { MenuCategory } from '~/types/local/menu'
+import { usePoiDeps } from '~/composables/usePoiDeps'
 
-// ...parametersMap,
+const { formatPoiDeps, isWaypoint } = usePoiDeps()
 
 const defaultProps = {
-  features: pois.features as ApiPoi[],
+  features: (pois.features as ApiPoiUnion[]).map((feature): PoiUnion => {
+    const catId = isWaypoint(feature)
+      ? pois.features[0].properties.metadata?.category_ids?.[0]
+      : feature.properties.metadata?.category_ids?.[0]
+    const category = menu.find(item => item.id === (catId || 211)) as MenuCategory
+    return formatPoiDeps(feature, category)
+  }),
 }
 
 const props = {

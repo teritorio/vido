@@ -8,7 +8,6 @@ defineProps<{
   settings: Settings
   name?: string
   icon?: string
-  colorLine: string
   colorFill: string
   colorText: string
 }>()

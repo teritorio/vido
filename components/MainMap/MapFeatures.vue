@@ -3,10 +3,10 @@ import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import type { MultiPolygon, Point, Polygon } from 'geojson'
 import type {
   FitBoundsOptions,
+  GeoJSONFeature,
   LngLatBounds,
   MapDataEvent,
   Map as MapGL,
-  MapGeoJSONFeature,
   MapMouseEvent,
 } from 'maplibre-gl'
 import { storeToRefs } from 'pinia'
@@ -16,10 +16,10 @@ import SnackBar from '~/components/MainMap/SnackBar.vue'
 import MapBase from '~/components/Map/MapBase.vue'
 import MapControls3D from '~/components/Map/MapControls3D.vue'
 import MapControlsBackground from '~/components/Map/MapControlsBackground.vue'
-import type { ApiMenuCategory } from '~/lib/apiMenu'
-import type { ApiPoi } from '~/lib/apiPois'
-import type { ApiPoiDeps, ApiRouteWaypoint } from '~/lib/apiPoiDeps'
-import { ApiRouteWaypointType, iconMap, prepareApiPoiDeps } from '~/lib/apiPoiDeps'
+import type { MenuCategory } from '~/types/local/menu'
+import type { Poi } from '~/types/local/poi'
+import type { ApiPoiDepsCollection } from '~/types/api/poi-deps'
+import type { PoiUnion } from '~/types/local/poi-deps'
 import { getBBox } from '~/lib/bbox'
 import { DEFAULT_MAP_STYLE, MAP_ZOOM } from '~/lib/constants'
 import { vectorTilesPoi2ApiPoi } from '~/lib/vectorTilesPois'
@@ -38,9 +38,9 @@ const props = withDefaults(defineProps<{
   fitBoundsPaddingOptions?: FitBoundsOptions['padding']
   extraAttributions?: string[]
   small?: boolean
-  categories: ApiMenuCategory[]
-  features: ApiPoi[]
-  selectedCategoriesIds?: ApiMenuCategory['id'][]
+  categories: MenuCategory[]
+  features: Poi[]
+  selectedCategoriesIds?: MenuCategory['id'][]
   styleIconFilter?: string[][]
   enableFilterRouteByCategories?: boolean
   enableFilterRouteByFeatures?: boolean
@@ -50,7 +50,7 @@ const props = withDefaults(defineProps<{
   fitBoundsPaddingOptions: 50,
   extraAttributions: () => [] satisfies string[],
   small: false,
-  selectedCategoriesIds: () => [] satisfies ApiMenuCategory['id'][],
+  selectedCategoriesIds: () => [] satisfies MenuCategory['id'][],
   enableFilterRouteByCategories: true,
   enableFilterRouteByFeatures: false,
   cooperativeGestures: false,
@@ -80,6 +80,7 @@ const map = ref<MapGL>()
 const selectedBackground = ref<MapStyleEnum>(DEFAULT_MAP_STYLE)
 const isProcessing = ref(false)
 const isZooming = ref(false)
+const poiDepsCompo = usePoiDeps()
 
 const availableStyles = computed((): MapStyleEnum[] => {
   const styles = [MapStyleEnum.vector, MapStyleEnum.aerial]
@@ -205,7 +206,7 @@ function onClick(e: MapMouseEvent): void {
 
 let currentRequestToken: { cancelled: boolean } | null = null
 
-async function updateSelectedFeature(feature?: ApiPoi): Promise<void> {
+async function updateSelectedFeature(feature?: PoiUnion): Promise<void> {
   // Cancel previous request if it exists
   if (currentRequestToken) {
     currentRequestToken.cancelled = true
@@ -215,8 +216,9 @@ async function updateSelectedFeature(feature?: ApiPoi): Promise<void> {
   const token = { cancelled: false }
   currentRequestToken = token
 
-  if ((feature?.properties.metadata.id === selectedFeature.value?.properties.metadata.id)
-    || feature?.properties['route:point:type']
+  if (
+    (feature?.properties.metadata.id === selectedFeature.value?.properties.metadata.id)
+    || (feature && poiDepsCompo.isWaypoint(feature))
   ) {
     return
   }
@@ -224,6 +226,11 @@ async function updateSelectedFeature(feature?: ApiPoi): Promise<void> {
   if (!feature) {
     mapStore.setSelectedFeature()
     mapStore.setSelectedFeatureDepsIDs()
+    mapStore.setIsDepsView(false)
+  }
+  else if (feature.properties.internalType === 'address') {
+    mapStore.setSelectedFeature(feature as Poi)
+    teritorioCluster.value?.setSelectedFeature(feature as unknown as GeoJSONFeature)
   }
   else {
     const id = feature.properties.metadata.id || feature.properties.id || feature.id
@@ -236,13 +243,14 @@ async function updateSelectedFeature(feature?: ApiPoi): Promise<void> {
       mapStore.setSelectedFeature(menuStore.getFeatureById(id))
 
       try {
-        const { data, error, status } = await useFetch<ApiPoiDeps>(
+        const { data, error, status } = await useFetch(
           () => `${apiEndpoint.value}/poi/${id}/deps.geojson`,
           {
             query: {
               geometry_as: 'point',
               short_description: true,
             },
+            transform: (data: ApiPoiDepsCollection) => transformApiPoiDepsCollection(data, id),
           },
         )
 
@@ -254,88 +262,30 @@ async function updateSelectedFeature(feature?: ApiPoi): Promise<void> {
           throw createError(error.value)
 
         if (status.value === 'success' && data.value) {
-          let waypointIndex = 1
-          let waypoints: ApiRouteWaypoint[] = []
-          let pois: ApiPoi[] = []
-          let deps: ApiPoi[] = []
-
-          if (!isDepSelected)
-            mapStore.setSelectedFeatureDepsIDs()
-
-          const poi = data.value.features.find(f => f.properties.metadata.id === id) as ApiPoi
-
-          if (!poi)
-            throw createError(`Feature with ID: ${id} not found.`)
-
-          const featureReordered = prepareApiPoiDeps(
-            data.value.features,
-            poi.properties.metadata.dep_ids,
-          )
-
-          waypoints = featureReordered.waypoints
-          pois = featureReordered.pois
-
-          deps.push(...pois, poi)
-
-          waypoints.forEach((w) => {
-            const { colorFill, colorText } = useContrastedColors(
-              poi.properties.display?.color_fill || '#76009E',
-              poi.properties.display?.color_text,
-            )
-
-            const formattedWaypoint = {
-              ...w,
-              properties: {
-                ...w.properties,
-                display: {
-                  icon: iconMap[w.properties['route:point:type']],
-                  color_fill: colorFill.value,
-                  color_line: poi.properties.display?.color_line || '#76009E',
-                  color_text: colorText.value,
-                  text: w.properties['route:point:type']
-                  === ApiRouteWaypointType.way_point
-                    ? waypointIndex.toString()
-                    : undefined,
-                },
-                editorial: {
-                  'website:details': undefined,
-                },
-              },
-            } as ApiPoi
-
-            if (w.properties['route:point:type'] === ApiRouteWaypointType.way_point)
-              waypointIndex++
-
-            deps.push(formattedWaypoint)
-          })
-
           if (!isDepSelected) {
-            deps = deps.map((d) => {
-              mapStore.addSelectedFeatureDepsIDs(d.properties.metadata.id)
-
-              return {
-                ...d,
-                properties: {
-                  ...d.properties,
-                  vido_visible: true,
-                },
-              }
+            mapStore.setSelectedFeatureDepsIDs()
+            data.value.forEach((f) => {
+              mapStore.addSelectedFeatureDepsIDs(f.properties.metadata.id)
             })
           }
 
-          mapStore.setSelectedFeature(poi)
+          const poi = data.value.find(f => f.properties.metadata.id === id)
+          mapStore.setSelectedFeature(poi as Poi)
 
           // In case user click on vecto element, attach Pin Marker to POI Marker
-          teritorioCluster.value?.setSelectedFeature(poi as unknown as MapGeoJSONFeature)
+          teritorioCluster.value?.setSelectedFeature(poi as unknown as GeoJSONFeature)
 
-          const currentCategory = selectedCategoryIds.value.find(id => poi.properties.metadata.category_ids?.includes(id))
+          if (poi) {
+            const currentCategory = selectedCategoryIds.value.find(id => poi.properties.metadata.category_ids?.includes(id))
 
-          if (!isDepSelected && currentCategory) {
-            menuStore.filterByDeps(currentCategory, deps)
-            if (deps.length > 1)
-              mapStore.setIsDepsView(true)
-            else
-              mapStore.setIsDepsView(false)
+            if (!isDepSelected && currentCategory) {
+              menuStore.filterByDeps(currentCategory, data.value)
+
+              if (data.value.length > 1)
+                mapStore.setIsDepsView(true)
+              else
+                mapStore.setIsDepsView(false)
+            }
           }
         }
       }
@@ -350,10 +300,19 @@ async function updateSelectedFeature(feature?: ApiPoi): Promise<void> {
         }
       }
     }
-    else {
-      mapStore.setSelectedFeature(feature)
-    }
+    // else {
+    //   mapStore.setSelectedFeature(feature)
+    // }
   }
+}
+
+function transformApiPoiDepsCollection(data: ApiPoiDepsCollection, poiId: number): PoiUnion[] | undefined {
+  poiDepsCompo.resetWaypointIndex()
+
+  if (!data)
+    return undefined
+
+  return poiDepsCompo.formatPoiDepsCollection(data, poiId)
 }
 
 function goToSelectedFeature(): void {
@@ -389,7 +348,7 @@ function handleSnackAction(): void {
   if (!mapBaseRef.value)
     return
 
-  snackStore.showSnack(null)
+  snackStore.showSnack(undefined)
   resetZoom()
 
   if (props.features.length) {

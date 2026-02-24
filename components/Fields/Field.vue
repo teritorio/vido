@@ -1,185 +1,85 @@
-<script lang="ts">
-import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
+<script setup lang="ts">
 import type GeoJSON from 'geojson'
-import type { PropType } from 'vue'
-import { defineNuxtComponent } from '#app'
 import AddressField from '~/components/Fields/AddressField.vue'
-import Coordinates, { isCoordinatesEmpty } from '~/components/Fields/Coordinates.vue'
-import DateRange, { isDateRangeEmpty } from '~/components/Fields/DateRange.vue'
-import Facebook from '~/components/Fields/Facebook.vue'
-import LinkedIn from '~/components/Fields/LinkedIn.vue'
-import Instagram from '~/components/Fields/Instagram.vue'
+import Coordinates from '~/components/Fields/Coordinates.vue'
+import DateRange from '~/components/Fields/DateRange.vue'
+import SocialNetwork from '~/components/Fields/SocialNetwork.vue'
 import OpeningHours from '~/components/Fields/OpeningHours.vue'
-import { isOpeningHoursSupportedOsmTags } from '~/composables/useOpeningHours'
 import Phone from '~/components/Fields/Phone.vue'
 import RoutesField from '~/components/Fields/RoutesField.vue'
 import Stars from '~/components/Fields/Stars.vue'
-import ExternalLink from '~/components/UI/ExternalLink.vue'
+import TagField from '~/components/Fields/TagField.vue'
 import FieldsHeader from '~/components/UI/FieldsHeader.vue'
-import type { ApiPoiProperties, FieldsListItem } from '~/lib/apiPois'
-import { ADDRESS_FIELDS } from '~/composables/useField'
-import type { PropertyTranslationsContextEnum } from '~/stores/site'
-import { useSiteStore } from '~/stores/site'
+import FieldLink from '~/components/Fields/FieldLink.vue'
+import type { FieldsListItem } from '~/types/local/field'
+import type { PoiUnion } from '~/types/local/poi-deps'
+import { PropertyTranslationsContextEnum, useSiteStore } from '~/stores/site'
+import { AssocRenderKeys } from '~/utils/types'
+import { getNestedPropertyValue } from '~/utils/property'
+import type { ApiPoiPropertiesAddress, ApiPoiPropertiesRoute, ApiPoiPropertiesStartEndDate } from '~/types/api/poi'
 
-export function isFiledEmpty(
-  field: FieldsListItem,
-  properties: { [key: string]: string },
-  geom: GeoJSON.Geometry,
-): boolean {
-  if (field.field === 'route') {
-    return !(
-      Object.entries(properties || {})
-        .map(([key, value]) => [key.split(':'), value])
-        .filter(([keys, _value]) => keys[0] === 'route' && keys.length === 3)
-        .length > 0
-    )
-  }
+const props = withDefaults(defineProps<{
+  context: PropertyTranslationsContextEnum
+  recursionStack?: string[]
+  field: FieldsListItem
+  properties: PoiUnion['properties']
+  details?: string
+  geom: GeoJSON.Geometry
+}>(), {
+  recursionStack: () => [],
+})
 
-  if (field.field === 'addr') {
-    return ADDRESS_FIELDS.reduce(
-      (sum: boolean, value) => sum || value in properties,
-      false,
-    )
-  }
+defineEmits<{
+  (e: 'clickDetails'): void
+}>()
 
-  if (field.field === 'start_end_date')
-    return isDateRangeEmpty(properties)
+const { t } = useI18n()
+const { p, pv } = useSiteStore()
 
-  if (field.field === 'coordinates')
-    return isCoordinatesEmpty(geom)
+const translatedValue = computed(() => {
+  const value = getNestedPropertyValue(props.properties, props.field.field, props.field.multilingual ?? false)
 
-  return !(field.field in properties)
-}
+  if (props.field.array)
+    return value ?? []
 
-export default defineNuxtComponent({
-  components: {
-    FontAwesomeIcon,
-    FieldsHeader,
-    OpeningHours,
-    RoutesField,
-    AddressField,
-    DateRange,
-    Coordinates,
-    Phone,
-    Facebook,
-    LinkedIn,
-    Instagram,
-    ExternalLink,
-    Stars,
-  },
-
-  emits: {
-    clickDetails: () => true,
-  },
-
-  props: {
-    context: {
-      type: String as PropType<PropertyTranslationsContextEnum>,
-      required: true,
-    },
-    recursionStack: {
-      type: Array as PropType<string[]>,
-      default: () => [],
-    },
-    field: {
-      type: Object as PropType<FieldsListItem>,
-      required: true,
-    },
-    properties: {
-      type: Object as PropType<ApiPoiProperties>,
-      required: true,
-    },
-    details: {
-      type: String as PropType<string>,
-      default: null,
-    },
-    geom: {
-      type: Object as PropType<GeoJSON.Geometry>,
-      required: true,
-    },
-  },
-
-  setup(props) {
-    const { colorFill, colorText } = useContrastedColors(
-      toRef(() => props.properties.display?.color_fill || '#FFFFFF'),
-      toRef(() => props.properties.display?.color_text),
-    )
-    const textLimit = ref(130)
-    const { p, pv } = useSiteStore()
-
-    return {
-      colorFill,
-      colorText,
-      textLimit,
-      p,
-      pv,
-    }
-  },
-
-  computed: {
-    isWebsite(): boolean {
-      return this.field.field === 'website' || this.field.field.startsWith('website:') || this.field.field.endsWith(':website')
-    },
-    shortDescription(): string | undefined {
-      return this.properties?.description?.replace(/(<([^>]+)>)/g, '')
-    },
-  },
-
-  methods: {
-    fieldTranslateK(field: string) {
-      return this.p(field, this.context)
-    },
-
-    propTranslateV(field: string) {
-      return this.pv(
-        field,
-        this.properties[field],
-        this.context,
-      )
-    },
-
-    propTranslateVs(field: string, value: string) {
-      return this.pv(field, value, this.context)
-    },
-
-    isOpeningHoursSupportedOsmTags(key: string) {
-      return isOpeningHoursSupportedOsmTags(key)
-    },
-  },
+  return [value].filter(Boolean)
 })
 </script>
 
 <template>
   <RoutesField
-    v-if="field.field === 'route'"
+    v-if="field.render === 'route' && properties[field.field]"
     class="field_content"
     :context="context"
     :recursion-stack="recursionStack"
-    :properties="properties"
+    :properties="(properties[field.field] as ApiPoiPropertiesRoute)"
   >
     <FieldsHeader
       v-if="field.label"
       :recursion-stack="recursionStack"
       :class="`field_header_level_${recursionStack.length}`"
     >
-      {{ fieldTranslateK(field.field) }}
+      {{ p(field.translationKey) }}
     </FieldsHeader>
   </RoutesField>
 
-  <AddressField v-else-if="field.field === 'addr'" :properties="properties">
+  <AddressField
+    v-else-if="field.render === 'addr'"
+    v-bind="(properties[field.field] as ApiPoiPropertiesAddress)"
+  >
     <FieldsHeader
       v-if="field.label"
       :recursion-stack="recursionStack"
       :class="`field_header_level_${recursionStack.length}`"
     >
-      {{ fieldTranslateK(field.field) }}
+      {{ p(field.translationKey) }}
     </FieldsHeader>
   </AddressField>
 
   <DateRange
-    v-else-if="field.field === 'start_end_date'"
-    :start="properties.start_date"
-    :end="properties.end_date"
+    v-else-if="field.render === 'start_end_date'"
+    :start="(properties[field.field] as ApiPoiPropertiesStartEndDate | undefined)?.start_date"
+    :end="(properties[field.field] as ApiPoiPropertiesStartEndDate | undefined)?.end_date"
     :class="`field_content_level_${recursionStack.length}`"
   >
     <FieldsHeader
@@ -187,158 +87,112 @@ export default defineNuxtComponent({
       :recursion-stack="recursionStack"
       :class="`field_header_level_${recursionStack.length}`"
     >
-      {{ fieldTranslateK(field.field) }}
+      {{ p(field.translationKey) }}
     </FieldsHeader>
   </DateRange>
 
-  <Coordinates v-else-if="field.field === 'coordinates'" :geom="geom">
+  <Coordinates v-else-if="field.render === 'coordinates'" :geom="geom">
     <FieldsHeader
       v-if="field.label"
       :recursion-stack="recursionStack"
       :class="`field_header_level_${recursionStack.length}`"
     >
-      {{ fieldTranslateK(field.field) }}
+      {{ p(field.translationKey) }}
     </FieldsHeader>
   </Coordinates>
 
-  <div
-    v-else-if="field.field === 'short_description' && shortDescription"
-    class="inline"
-  >
+  <div v-else>
     <FieldsHeader
-      v-if="field.label"
-      :recursion-stack="undefined"
-      :class="`field_header_level_${recursionStack.length}`"
-    >
-      {{ fieldTranslateK(field.field) }}
-    </FieldsHeader>
-    {{ shortDescription.substring(0, textLimit) }}
-    <template v-if="shortDescription.length > textLimit">
-      …
-    </template>
-    <a
-      v-if="Boolean(details) && shortDescription.length > textLimit"
-      class="tw-underline"
-      :href="details"
-      rel="noopener noreferrer"
-      target="_blank"
-      @click.stop="$emit('clickDetails')"
-    >
-      {{ $t('poiCard.seeDetail') }}
-    </a>
-  </div>
-
-  <div v-else-if="properties[field.field]">
-    <FieldsHeader
-      v-if="field.label"
+      v-if="field.label && translatedValue.length > 0"
       :recursion-stack="recursionStack"
       :class="`field_header_level_${recursionStack.length}`"
     >
-      {{ fieldTranslateK(field.field) }}
+      {{ p(field.translationKey) }}
     </FieldsHeader>
     <div :class="`inline field_content_level_${recursionStack.length}`">
-      <div
-        v-if="field.field === 'description'"
-        class="tw-prose"
-        v-html="properties.description"
-      />
-
-      <div
-        v-for="phone in properties[field.field]"
-        v-else-if="field.field === 'phone' || field.field === 'mobile'"
-        :key="`phone_${phone}`"
+      <component
+        :is="field.array ? 'ul' : 'div'"
+        :class="{
+          'tw-list-disc': field.array && context !== PropertyTranslationsContextEnum.List,
+          'tw-ml-4': field.array && context !== PropertyTranslationsContextEnum.List,
+        }"
       >
-        <ClientOnly>
-          <Phone :number="phone" />
-        </ClientOnly>
-      </div>
+        <template v-for="(f, index) in translatedValue" :key="index">
+          <component :is="field.array ? 'li' : 'div'">
+            <div
+              v-if="field.render === 'text' && (f.html ?? true)"
+              class="tw-prose"
+              v-html="f.value"
+            />
 
-      <div
-        v-for="item in properties[field.field]"
-        v-else-if="isWebsite"
-        :key="`website_${item}`"
-      >
-        <ExternalLink :title="item" :href="item">
-          {{ context !== 'label_list' ? item : '' }}
-        </ExternalLink>
-      </div>
+            <div
+              v-else-if="field.render === 'text' && f.html === false"
+              class="inline"
+            >
+              {{ f.value }}
+              <a
+                v-if="Boolean(details) && f.is_shortened"
+                class="tw-underline"
+                rel="noopener noreferrer"
+                target="_blank"
+                :href="details"
+                @click.stop="$emit('clickDetails')"
+              >
+                {{ t('poiCard.seeDetail') }}
+              </a>
+            </div>
 
-      <div
-        v-for="item in properties[field.field]"
-        v-else-if="field.field === 'email'"
-        :key="`email_${item}`"
-      >
-        <ExternalLink :title="item" :href="`mailto:${item}`" icon="envelope">
-          {{ context !== 'label_list' ? item : '' }}
-        </ExternalLink>
-      </div>
+            <ClientOnly v-else-if="field.render === 'phone'">
+              <Phone :number="f" />
+            </ClientOnly>
 
-      <div
-        v-for="item in properties[field.field]"
-        v-else-if="field.field === 'download'"
-        :key="`download_${item}`"
-      >
-        <ExternalLink :href="item" icon="arrow-circle-down">
-          {{ item.split('/').pop() }}
-        </ExternalLink>
-      </div>
+            <FieldLink
+              v-else-if="field.render && ['email', 'weblink', 'weblink@download'].includes(field.render) && typeof f === 'string'"
+              :title="props.properties.name?.['fr-FR']"
+              :href="field.render === 'email' ? `mailto:${f}` : f"
+              :icon="field.icon"
+              :context="context"
+              :color-fill="['weblink', 'email'].includes(field.render ?? '') ? undefined : props.properties.display.color_fill"
+              :color-text="['weblink', 'email'].includes(field.render ?? '') ? undefined : props.properties.display.color_text"
+            >
+              {{ field.render === 'weblink' ? f : p(field.translationKey, context) }}
+            </FieldLink>
 
-      <ul
-        v-else-if="
-          Array.isArray(properties[field.field])
-            && properties[field.field].length > 0
-        "
-      >
-        <li
-          v-for="item in properties[field.field]"
-          :key="`${field.field}_${item}`"
-        >
-          {{ propTranslateVs(field.field, item) }}
-        </li>
-      </ul>
+            <SocialNetwork
+              v-else-if="field.render === 'weblink@social-network'"
+              :url="f"
+              :icon="field.icon"
+            />
 
-      <Facebook
-        v-else-if="field.field === 'facebook'"
-        :url="properties[field.field]"
-      />
+            <Stars
+              v-else-if="field.render === 'osm:stars'"
+              :stars="f"
+            />
 
-      <LinkedIn
-        v-else-if="field.field === 'linkedin'"
-        :url="properties[field.field]"
-      />
+            <OpeningHours
+              v-else-if="AssocRenderKeys.includes(field.render as AssocRenderKey)"
+              :opening-hours="f"
+              :context="context"
+              :render-key="(field.render as AssocRenderKey)"
+            />
 
-      <Instagram
-        v-else-if="field.field === 'instagram'"
-        :url="properties[field.field]"
-      />
+            <TagField
+              v-else-if="field.render === 'tag'"
+              :value="f"
+              :translation-key="field.translationKey"
+              :context="context"
+            />
 
-      <Stars
-        v-else-if="field.field === 'stars'"
-        :stars="properties[field.field]"
-      />
-
-      <a
-        v-else-if="
-          field.field === 'route:gpx_trace' || field.field === 'route:pdf'
-        "
-        :href="properties[field.field]"
-        class="d-inline-block pa-2 rounded-lg"
-        :style="{ backgroundColor: colorFill, color: colorText }"
-      >
-        <FontAwesomeIcon icon="arrow-circle-down" />
-        {{ fieldTranslateK(field.field) }}
-      </a>
-
-      <OpeningHours
-        v-else-if="isOpeningHoursSupportedOsmTags(field.field)"
-        :opening-hours="properties[field.field]"
-        :context="context"
-        :tag-key="field.field"
-      />
-
-      <span v-else>
-        {{ propTranslateV(field.field) }}
-      </span>
+            <span v-else>
+              {{ pv(
+                field.translationKey,
+                f,
+                context,
+              ) }}
+            </span>
+          </component>
+        </template>
+      </component>
     </div>
   </div>
 </template>
@@ -350,9 +204,5 @@ export default defineNuxtComponent({
 
 .tw-prose {
   max-width: none;
-}
-
-ul {
-  @apply tw-list-disc tw-ml-6;
 }
 </style>

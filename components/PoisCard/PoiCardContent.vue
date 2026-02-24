@@ -1,10 +1,11 @@
 <script setup lang="ts">
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { storeToRefs } from 'pinia'
+import { distance } from '@turf/distance'
 import Fields from '~/components/PoisCard/Fields.vue'
 import FavoriteIcon from '~/components/UI/FavoriteIcon.vue'
 import TeritorioIcon from '~/components/UI/TeritorioIcon.vue'
-import type { ApiPoi } from '~/lib/apiPois'
+import type { Poi } from '~/types/local/poi'
 import { coordinatesHref } from '~/lib/coordinates'
 import { favoriteStore as useFavoriteStore } from '~/stores/favorite'
 import { mapStore as useMapStore } from '~/stores/map'
@@ -12,13 +13,11 @@ import { useSiteStore } from '~/stores/site'
 import ContribFieldGroup from '~/components/Fields/ContribFieldGroup.vue'
 import useDevice from '~/composables/useDevice'
 import IsochroneTrigger from '~/components/Isochrone/IsochroneTrigger.vue'
+import { isFieldsListItem } from '~/utils/utilities'
 
-//
-// Props
-//
 const props = withDefaults(defineProps<{
   detailsIsExternal?: boolean
-  poi: ApiPoi
+  poi: Poi
   showActions?: boolean
   showOnlyRouteAction?: boolean
 }>(), {
@@ -27,18 +26,12 @@ const props = withDefaults(defineProps<{
   showOnlyRouteAction: false,
 })
 
-//
-// Emits
-//
 const emit = defineEmits<{
-  (e: 'favoriteClick', poi: ApiPoi): void
-  (e: 'exploreClick', poi: ApiPoi): void
-  (e: 'zoomClick', poi: ApiPoi): void
+  (e: 'favoriteClick', poi: Poi): void
+  (e: 'exploreClick', poi: Poi): void
+  (e: 'zoomClick', poi: Poi): void
 }>()
 
-//
-// Composables
-//
 const { t } = useI18n()
 const { $tracking } = useNuxtApp()
 const { favoritesIds, favoriteAddresses } = storeToRefs(useFavoriteStore())
@@ -49,26 +42,12 @@ const { enabled: isochroneEnabled, isochroneCurrentFeature } = useIsochrone()
 const { featureName, featureCategoryName } = useFeature(toRef(() => props.poi), { type: 'popup' })
 const { explorerModeEnabled, favoritesModeEnabled } = storeToRefs(useSiteStore())
 
-const { colorFill, colorText } = useContrastedColors(
-  toRef(() => props.poi.properties.display?.color_fill || '#FFFFFF'),
-  toRef(() => props.poi.properties.display?.color_text),
-)
-
-//
-// Data
-//
 const routeHref = ref<string>()
 
-//
-// Hooks
-//
 onMounted(() => {
   routeHref.value = coordinatesHref(props.poi.geometry)
 })
 
-//
-// Computed
-//
 const id = computed(() => {
   return props.poi.properties.metadata.id
 })
@@ -79,24 +58,20 @@ const isFavorite = computed(() => {
   return favoritesIds.value.includes(id.value) || favoriteAddresses.value.has(id.value.toString())
 })
 
-const colorLine = computed(() => {
-  return props.poi.properties.display?.color_line || '#000000'
-})
-
 const icon = computed(() => {
-  return props.poi.properties.display?.icon
+  return props.poi.properties.display.icon
 })
 
 const description = computed(() => {
-  return props.poi.properties.description
+  return props.poi.properties.description?.['fr-FR'].value
 })
 
 const unavoidable = computed(() => {
-  return Boolean(props.poi.properties.editorial?.unavoidable)
+  return Boolean(props.poi.properties.editorial.unavoidable)
 })
 
 const websiteDetails = computed(() => {
-  const url = props.poi.properties.editorial && props.poi.properties.editorial['website:details']
+  const url = props.poi.properties.editorial['website:details']?.['fr-FR']
 
   if (!url) {
     return undefined
@@ -118,9 +93,28 @@ const websiteDetails = computed(() => {
   }
 })
 
-//
-// Methods
-//
+const fieldListItems = computed(() => {
+  return props.poi.properties.editorial.popup_fields?.filter(isFieldsListItem)
+})
+
+const isElligibleToIsochrone = computed(() => {
+  if (!props.poi.bbox) {
+    return props.poi.geometry.type === 'Point'
+  }
+  else {
+    const [minX, minY, maxX, maxY] = props.poi.bbox
+
+    // Create the two corner points
+    const point1 = [minX, minY]
+    const point2 = [maxX, maxY]
+
+    const diagonal = distance(point1, point2, { units: 'meters' })
+
+    // We check if the feature size is bigger than 200 meters.
+    return diagonal <= 200
+  }
+})
+
 function onZoomClick() {
   trackingPopupEvent('zoom')
   emit('zoomClick', props.poi)
@@ -166,13 +160,13 @@ function trackIsochroneEvent(profile: Profile) {
         v-if="featureName"
         class="tw-block tw-text-xl tw-font-semibold tw-leading-tight"
         :style="{
-          color: colorLine,
+          color: props.poi.properties.display.color_line,
         }"
       >
         {{ featureName }}
       </h2>
 
-      <client-only>
+      <ClientOnly>
         <template v-if="websiteDetails !== undefined">
           <NuxtLink
             v-if="
@@ -182,8 +176,8 @@ function trackIsochroneEvent(profile: Profile) {
             class="tw-ml-6 tw-px-3 tw-py-1.5 tw-text-xs tw-text-zinc-800 tw-bg-zinc-100 hover:tw-bg-zinc-200 focus:tw-bg-zinc-200 tw-transition tw-transition-colors tw-rounded-md"
             :to="websiteDetails"
             :style="{
-              background: colorFill,
-              color: colorText,
+              background: props.poi.properties.display.color_fill,
+              color: props.poi.properties.display.color_text,
             }"
             rel="noopener noreferrer"
             :target="detailsIsExternal ? '_blank' : '_self'"
@@ -196,8 +190,8 @@ function trackIsochroneEvent(profile: Profile) {
             class="tw-ml-6 tw-px-3 tw-py-1.5 tw-text-xs tw-text-zinc-800 tw-bg-zinc-100 hover:tw-bg-zinc-200 focus:tw-bg-zinc-200 tw-transition tw-transition-colors tw-rounded-md"
             :href="websiteDetails"
             :style="{
-              background: colorFill,
-              color: colorText,
+              background: props.poi.properties.display.color_fill,
+              color: props.poi.properties.display.color_text,
             }"
             rel="noopener noreferrer"
             :target="detailsIsExternal ? '_blank' : '_self'"
@@ -206,7 +200,7 @@ function trackIsochroneEvent(profile: Profile) {
             {{ t('poiCard.details') }}
           </a>
         </template>
-      </client-only>
+      </ClientOnly>
     </div>
 
     <div
@@ -215,7 +209,7 @@ function trackIsochroneEvent(profile: Profile) {
     >
       <TeritorioIcon
         v-if="icon"
-        :color-text="colorLine"
+        :color-text="props.poi.properties.display.color_line"
         class="tw-mr-2"
         :picto="icon"
         :use-native-alignment="false"
@@ -233,10 +227,7 @@ function trackIsochroneEvent(profile: Profile) {
 
     <div v-else class="tw-h-auto tw-flex-grow tw-shrink-0">
       <Fields
-        :fields="
-          (poi.properties.editorial && poi.properties.editorial.popup_fields)
-            || []
-        "
+        :fields="fieldListItems || []"
         :properties="poi.properties"
         :details="websiteDetails"
         :geom="poi.geometry"
@@ -246,48 +237,50 @@ function trackIsochroneEvent(profile: Profile) {
       <ContribFieldGroup v-if="contribMode && isContribEligible(poi.properties)" v-bind="getContributorFields(poi)" />
     </div>
 
-    <div v-if="showActions" class="tw-flex tw-items-center tw-space-x-2 tw-justify-evenly tw-shrink-0 tw-bottom-0 tw-pt-2">
-      <a
-        v-if="device.phone && routeHref"
-        :href="routeHref"
-        class="tw-flex tw-flex-col tw-items-center tw-flex-1 tw-h-full tw-p-2 tw-space-y-2 tw-rounded-lg hover:tw-bg-zinc-100"
-        :title="t('poiCard.findRoute')"
-        @click="trackingPopupEvent('route')"
-      >
-        <FontAwesomeIcon icon="route" :color="colorLine" size="sm" />
-        <span class="tw-text-sm">{{ t('poiCard.route') }}</span>
-      </a>
+    <div v-if="showActions" class="tw-flex tw-items-center tw-gap-1 tw-justify-evenly tw-shrink-0 tw-bottom-0">
+      <ClientOnly>
+        <a
+          v-if="device.phone && routeHref"
+          :href="routeHref"
+          class="tw-flex tw-flex-col tw-items-center tw-flex-1 tw-h-full tw-space-y-2 tw-rounded-lg hover:tw-bg-zinc-100 tw-p-2"
+          :title="t('poiCard.findRoute')"
+          @click="trackingPopupEvent('route')"
+        >
+          <FontAwesomeIcon icon="route" :color="props.poi.properties.display.color_line" size="sm" />
+          <span class="tw-text-sm">{{ t('poiCard.route') }}</span>
+        </a>
 
-      <IsochroneTrigger
-        v-if="isochroneEnabled && !device.smallScreen && !showOnlyRouteAction"
-        class="tw-flex tw-flex-col tw-items-center tw-flex-1 tw-h-full tw-p-2 tw-space-y-2 tw-rounded-lg"
-        :feature="poi"
-        :class="[
-          isSameFeatureAsIsochrone && 'tw-bg-blue-600 tw-text-white hover:tw-bg-blue-500',
-          !isSameFeatureAsIsochrone && 'hover:tw-bg-zinc-100',
-        ]"
-        @trigger-click="trackingPopupEvent('isochrone')"
-        @profile-update="trackIsochroneEvent"
-      >
-        <FontAwesomeIcon :color="isSameFeatureAsIsochrone ? '#ffffff' : colorLine" icon="clock" size="sm" />
-        <span class="tw-text-sm">{{ t('isochrone.trigger.label') }}</span>
-      </IsochroneTrigger>
+        <IsochroneTrigger
+          v-if="isochroneEnabled && !device.smallScreen && !showOnlyRouteAction && isElligibleToIsochrone"
+          class="tw-py-2 tw-rounded-lg"
+          :feature="poi"
+          :class="[
+            isSameFeatureAsIsochrone && 'tw-bg-blue-600 tw-text-white hover:tw-bg-blue-500',
+            !isSameFeatureAsIsochrone && 'hover:tw-bg-zinc-100',
+          ]"
+          @trigger-click="trackingPopupEvent('isochrone')"
+          @profile-update="trackIsochroneEvent"
+        >
+          <FontAwesomeIcon :color="isSameFeatureAsIsochrone ? '#ffffff' : props.poi.properties.display.color_line" icon="clock" size="sm" />
+          <span class="tw-text-sm">{{ t('isochrone.trigger.label') }}</span>
+        </IsochroneTrigger>
+      </ClientOnly>
 
       <button
         v-if="!showOnlyRouteAction"
         type="button"
-        class="tw-flex tw-flex-1 tw-flex-col tw-items-center tw-space-y-2 tw-rounded-lg tw-p-2 tw-h-full hover:tw-bg-zinc-100"
+        class="tw-py-2 tw-flex tw-flex-1 tw-flex-col tw-items-center tw-space-y-2 tw-rounded-lg tw-h-full hover:tw-bg-zinc-100"
         :title="t('poiCard.zoom')"
         @click.stop="onZoomClick"
       >
-        <FontAwesomeIcon icon="plus" :color="colorLine" size="sm" />
+        <FontAwesomeIcon icon="plus" :color="props.poi.properties.display.color_line" size="sm" />
         <span class="tw-text-sm">{{ t('poiCard.zoom') }}</span>
       </button>
 
       <button
         v-if="explorerModeEnabled && !showOnlyRouteAction"
         type="button"
-        class="tw-flex tw-flex-1 tw-flex-col tw-items-center tw-space-y-2 tw-rounded-lg tw-p-2 tw-h-full"
+        class="tw-py-2 tw-flex tw-flex-1 tw-flex-col tw-items-center tw-space-y-2 tw-rounded-lg tw-h-full"
         :class="[
           isModeExplorer && 'tw-bg-blue-600 tw-text-white hover:tw-bg-blue-500',
           !isModeExplorer && 'hover:tw-bg-zinc-100',
@@ -297,7 +290,7 @@ function trackIsochroneEvent(profile: Profile) {
       >
         <FontAwesomeIcon
           icon="eye"
-          :color="isModeExplorer ? '#ffffff' : colorLine"
+          :color="isModeExplorer ? '#ffffff' : props.poi.properties.display.color_line"
           size="sm"
         />
         <span class="tw-text-sm">{{ t('poiCard.explore') }}</span>
@@ -306,11 +299,15 @@ function trackIsochroneEvent(profile: Profile) {
       <button
         v-if="favoritesModeEnabled && id && !showOnlyRouteAction"
         type="button"
-        class="tw-flex tw-flex-col tw-items-center tw-flex-1 tw-h-full tw-p-2 tw-space-y-2 tw-rounded-lg hover:tw-bg-zinc-100"
+        class="tw-py-2 tw-flex tw-flex-col tw-items-center tw-flex-1 tw-h-full tw-space-y-2 tw-rounded-lg hover:tw-bg-zinc-100"
         :title="isFavorite ? t('poiCard.favoriteOn') : t('poiCard.favoriteOff')"
         @click.stop="onFavoriteClick"
       >
-        <FavoriteIcon :is-active="isFavorite" :color-line="colorLine" />
+        <FavoriteIcon
+          :is-active="isFavorite"
+          :color-line="props.poi.properties.display.color_line"
+          size="sm"
+        />
         <span class="tw-text-sm">{{ t('poiCard.favorite') }}</span>
       </button>
     </div>

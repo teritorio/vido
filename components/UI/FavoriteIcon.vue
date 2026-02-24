@@ -1,13 +1,15 @@
 <script setup lang="ts">
-import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
+import { FontAwesomeIcon, type FontAwesomeIconProps } from '@fortawesome/vue-fontawesome'
 
 withDefaults(defineProps<{
   isActive?: boolean
   colorLine?: string
   colorClass?: string
+  size?: FontAwesomeIconProps['size']
 }>(), {
   isActive: false,
   colorClass: 'text-white',
+  size: 'lg',
 })
 </script>
 
@@ -19,6 +21,6 @@ withDefaults(defineProps<{
       isActive && 'tw-text-amber-500',
     ]"
     :color="!isActive && colorLine"
-    size="lg"
+    :size="size"
   />
 </template>

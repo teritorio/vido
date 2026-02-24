@@ -23,7 +23,7 @@ defineProps<{
     small: string | undefined
   }[]
   itemsAddresses: {
-    id: number
+    id: string
     label: string
     icon: string
   }[]

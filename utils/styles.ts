@@ -6,8 +6,6 @@ import type {
   VectorSourceSpecification,
 } from 'maplibre-gl'
 
-import type { ApiPoiId } from '~/lib/apiPois'
-
 export function fetchStyle(styleUrl: string, extraAttributions: string[]): Promise<StyleSpecification> {
   return fetch(styleUrl)
     .then(res => res.json())
@@ -82,7 +80,7 @@ export function filterRouteByCategories(map: Map, categorieIds: (number | string
   }
 }
 
-export function filterRouteByPoiIds(map: Map, ids: ApiPoiId[]) {
+export function filterRouteByPoiIds(map: Map, ids: number[]) {
   if (map && map.getLayer('features-line-casing')) {
     map.setLayoutProperty('features-line-casing', 'visibility', 'visible')
     map.setLayoutProperty('features-line', 'visibility', 'visible')

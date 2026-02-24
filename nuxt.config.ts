@@ -55,6 +55,7 @@ export default defineNuxtConfig({
       nuxt.hooks.hook('vite:extendConfig', (config: any) =>
         config.plugins.push(vuetify()))
     },
+    '@sentry/nuxt/module',
   ],
   runtimeConfig: {
     public: {
@@ -102,5 +103,14 @@ export default defineNuxtConfig({
   },
   vite: {
     optimizeDeps: { exclude: ['fsevents'] },
+  },
+  sentry: {
+    org: process.env.SENTRY_ORG,
+    project: process.env.SENTRY_PROJECT,
+    url: process.env.SENTRY_URL,
+    telemetry: false,
+  },
+  sourcemap: {
+    client: 'hidden',
   },
 })

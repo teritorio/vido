@@ -10,9 +10,9 @@ import { getSlugFromURL } from '~/lib/apiArticle'
 import { useSiteStore } from '~/stores/site'
 
 const { $tracking } = useNuxtApp()
-const { articles: entries, locale: currentI18n } = storeToRefs(useSiteStore())
+const { articles: entries } = storeToRefs(useSiteStore())
 const { current: vuetifyLocale } = useLocale()
-const { locales, setLocale, localeProperties } = useI18n() // LocaleObject[]
+const { locales, setLocale, localeProperties, locale: currentI18n } = useI18n() // LocaleObject[]
 
 async function updateLocale(value: string): Promise<void> {
   await setLocale(value)

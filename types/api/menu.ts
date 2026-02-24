@@ -1,0 +1,63 @@
+import type { MultilingualString } from '~/utils/types'
+import type { Filters } from '~/types/api/filters'
+import type { ApiFieldsList } from '~/types/api/field'
+
+export interface ApiMenuItem {
+  id: number
+  parent_id?: number
+  index_order: number
+  hidden?: boolean
+  selected_by_default?: boolean
+}
+
+export interface ApiMenuGroup extends ApiMenuItem {
+  menu_group: {
+    slug?: string
+    name: MultilingualString
+    icon: string
+    color_fill: string
+    color_line?: string
+    display_mode: 'large' | 'compact'
+  }
+}
+
+export interface ApiMenuLink extends ApiMenuItem {
+  link: {
+    href: string
+    slug?: string
+    name: MultilingualString
+    icon: string
+    color_fill: string
+    color_line?: string
+    display_mode: 'large' | 'compact'
+  }
+}
+
+export interface ApiMenuCategory extends ApiMenuItem {
+  category: {
+    slug?: string
+    name: MultilingualString
+    search_indexed?: boolean
+    icon: string
+    icon_show?: 'always' | 'never'
+    color_fill: string
+    color_line?: string
+    style_class?: string[]
+    style_merge: boolean
+    display_mode: 'large' | 'compact'
+    zoom: number
+    editorial?: {
+      popup_fields?: ApiFieldsList
+      details_fields?: ApiFieldsList
+      list_fields?: ApiFieldsList
+      class_label?: MultilingualString
+      class_label_popup?: MultilingualString
+      class_label_details?: MultilingualString
+    }
+    filters?: Filters[]
+  }
+}
+
+export type ApiMenuItemUnion = ApiMenuCategory | ApiMenuGroup | ApiMenuLink
+
+export type ApiMenuCollection = ApiMenuItemUnion[]

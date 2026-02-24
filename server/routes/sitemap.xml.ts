@@ -1,8 +1,8 @@
 import type { SitemapEntry } from '~/node_modules/nuxt-simple-sitemap/dist/module'
 import type { BuildSitemapOptions } from '~/node_modules/nuxt-simple-sitemap/dist/runtime/util/builder'
 import { buildSitemap } from '~/node_modules/nuxt-simple-sitemap/dist/runtime/util/builder'
-import type { MenuItem } from '~/lib/apiMenu'
-import type { ApiPois } from '~/lib/apiPois'
+import type { ApiPoiCollection } from '~/types/api/poi'
+import type { ApiMenuCollection } from '~/types/api/menu'
 
 export default defineEventHandler(async (event) => {
   const hostname = getHeader(event, 'host')
@@ -26,8 +26,8 @@ export default defineEventHandler(async (event) => {
 
     // Fetch menu and POIs data in parallel
     const [menuItems, pois] = await Promise.all([
-      $fetch<MenuItem[]>(`${apiEndpoint}/menu.json`),
-      $fetch<ApiPois>(`${apiEndpoint}/pois.geojson`),
+      $fetch<ApiMenuCollection>(`${apiEndpoint}/menu.json`),
+      $fetch<ApiPoiCollection>(`${apiEndpoint}/pois.geojson`),
     ])
 
     // Build sitemap entries
@@ -37,7 +37,7 @@ export default defineEventHandler(async (event) => {
       { url: '/embedded/' },
       // Menu category routes
       ...menuItems
-        .filter(item => item.category && item.id)
+        .filter(item => 'category' in item && item.id)
         .map(category => ({
           url: `/${category.id}/`,
         })),
@@ -56,7 +56,7 @@ export default defineEventHandler(async (event) => {
         xsl: '/sitemap-style.xsl',
         defaults: {},
         enabled: true,
-        trailingSlash: false,
+        trailingSlash: true,
         siteUrl: `https://${hostname}`,
         autoLastmod: false,
         inferStaticPagesAsRoutes: false,

@@ -1,5 +1,5 @@
 import NumberRange from '~/components/Filters/NumberRange.vue'
-import type { FilterNumberRange } from '~/lib/apiMenu'
+import type { FilterNumberRange } from '~/types/api/filters'
 import { bind } from '~/lib/storybook-types'
 import { FilterValueNumberRange } from '~/utils/types-filters'
 
@@ -10,7 +10,7 @@ export default {
 
 const def: FilterNumberRange = {
   type: 'number_range',
-  property: 'string',
+  property: ['string'],
   name: { fr: 'plop' },
   min: 20,
   max: 120,

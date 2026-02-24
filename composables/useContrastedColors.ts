@@ -1,4 +1,4 @@
-import type { TextColors } from '~/lib/apiPois'
+import type { TextColors } from '~/types/api/poi'
 
 export function useContrastedColors(backgroundColor: MaybeRef<string>, foregroundColor?: MaybeRef<TextColors | undefined>) {
   const colorFill = ref('#FFFFFF')

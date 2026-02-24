@@ -1,14 +1,10 @@
-<script lang="ts">
+<script setup lang="ts">
 import copy from 'fast-copy'
-import { mapActions } from 'pinia'
-import type { PropType } from 'vue'
-
-import { defineNuxtComponent } from '#app'
 import DateRange from '~/components/Filters/DateRange.vue'
 import NumberRange from '~/components/Filters/NumberRange.vue'
 import SelectFilter from '~/components/Filters/Select.vue'
-import type { ApiMenuCategory } from '~/lib/apiMenu'
-import { menuStore } from '~/stores/menu'
+import type { ApiMenuCategory } from '~/types/api/menu'
+import { menuStore as useMenuStore } from '~/stores/menu'
 import type {
   FilterValueBoolean,
   FilterValueDate,
@@ -17,139 +13,118 @@ import type {
   FilterValues,
 } from '~/utils/types-filters'
 
-export default defineNuxtComponent({
-  components: {
-    SelectFilter,
-    DateRange,
-    NumberRange,
-  },
+const props = defineProps<{
+  categoryId: ApiMenuCategory['id']
+  filtersValues: FilterValues
+}>()
 
-  props: {
-    categoryId: {
-      type: Number as PropType<ApiMenuCategory['id']>,
-      required: true,
-    },
-    filtersValues: {
-      type: Array as PropType<FilterValues>,
-      required: true,
-    },
-  },
+const emit = defineEmits<{
+  (e: 'goBackClick'): void
+  (e: 'activateFilter', val: boolean): void
+}>()
 
-  computed: {
-    filtersSafeCopy() {
-      return copy(this.filtersValues)
-    },
-  },
+const menuStore = useMenuStore()
+const filtersSafeCopy = computed(() => copy(props.filtersValues))
 
-  emits: {
-    goBackClick: () => true,
-    activateFilter: (_val: boolean) => true,
-  },
+// function onGoBackClick() {
+//   emit('goBackClick')
+// }
 
-  methods: {
-    ...mapActions(menuStore, ['applyFilters']),
+function onClickFilter(val: boolean) {
+  emit('activateFilter', val)
+}
 
-    onGoBackClick() {
-      this.$emit('goBackClick')
-    },
+function onBooleanFilterChange(filterIndex: number, event: Event) {
+  const target = event.target as HTMLInputElement
+  const value: boolean = target.checked
 
-    onClickFilter(val: boolean) {
-      this.$emit('activateFilter', val)
-    },
+  const filters = filtersSafeCopy.value
+  const filter = filters[filterIndex] as FilterValueBoolean
 
-    onBooleanFilterChange(filterIndex: number, event: Event) {
-      const target = event.target as HTMLInputElement
-      const value: boolean = target.checked
+  filter.filterValue = value
+  menuStore.applyFilters({
+    categoryId: props.categoryId,
+    filterValues: filters,
+  })
+}
 
-      const filters = this.filtersSafeCopy
-      const filter = filters[filterIndex] as FilterValueBoolean
+function onSelectionFilterChange(filterIndex: number, values: string[] | undefined) {
+  const filters = filtersSafeCopy.value
+  const filter = filters[filterIndex] as FilterValueList
 
-      filter.filterValue = value
-      this.applyFilters({
-        categoryId: this.categoryId,
-        filterValues: filters,
-      })
-    },
+  filter.filterValues = values || []
+  menuStore.applyFilters({
+    categoryId: props.categoryId,
+    filterValues: filters,
+  })
+}
 
-    onSelectionFilterChange(filterIndex: number, values: string[] | undefined) {
-      const filters = this.filtersSafeCopy
-      const filter = filters[filterIndex] as FilterValueList
+function onSelectionFilterDateChange(
+  filterIndex: number,
+  filterValue: FilterValueDate,
+) {
+  const filters = filtersSafeCopy.value
+  filters[filterIndex] = filterValue
 
-      filter.filterValues = values || []
-      this.applyFilters({
-        categoryId: this.categoryId,
-        filterValues: filters,
-      })
-    },
+  menuStore.applyFilters({
+    categoryId: props.categoryId,
+    filterValues: filters,
+  })
+}
 
-    onSelectionFilterDateChange(
-      filterIndex: number,
-      filterValue: FilterValueDate,
-    ) {
-      const filters = this.filtersSafeCopy
-      filters[filterIndex] = filterValue
+function onSelectionFilterNumberRangeChange(
+  filterIndex: number,
+  filterValue: FilterValueNumberRange,
+) {
+  const filters = filtersSafeCopy.value
+  filters[filterIndex] = filterValue
 
-      this.applyFilters({
-        categoryId: this.categoryId,
-        filterValues: filters,
-      })
-    },
+  menuStore.applyFilters({
+    categoryId: props.categoryId,
+    filterValues: filters,
+  })
+}
 
-    onSelectionFilterNumberRangeChange(
-      filterIndex: number,
-      filterValue: FilterValueNumberRange,
-    ) {
-      const filters = this.filtersSafeCopy
-      filters[filterIndex] = filterValue
+function onCheckboxFilterChange(filterIndex: number, val: string, checked: boolean) {
+  const filters = filtersSafeCopy.value
+  const filter = filters[filterIndex] as FilterValueList
 
-      this.applyFilters({
-        categoryId: this.categoryId,
-        filterValues: filters,
-      })
-    },
+  if (checked && !filter.filterValues.includes(val))
+    filter.filterValues.push(val)
+  else if (!checked)
+    filter.filterValues = filter.filterValues.filter(k => k !== val)
 
-    onCheckboxFilterChange(filterIndex: number, val: string, checked: boolean) {
-      const filters = this.filtersSafeCopy
-      const filter = filters[filterIndex] as FilterValueList
-
-      if (checked && !filter.filterValues.includes(val))
-        filter.filterValues.push(val)
-      else if (!checked)
-        filter.filterValues = filter.filterValues.filter(k => k !== val)
-
-      this.applyFilters({
-        categoryId: this.categoryId,
-        filterValues: filters,
-      })
-    },
-  },
-})
+  menuStore.applyFilters({
+    categoryId: props.categoryId,
+    filterValues: filters,
+  })
+}
 </script>
 
 <template>
   <div class="tw-basis-max tw-shrink tw-flex tw-flex-col tw-gap-4 tw-flex-1 tw-p-4">
     <template
       v-for="(filter, filterIndex) in filtersSafeCopy"
-      :key="filter.def.property"
+      :key="'property' in filter.def ? filter.def.property.join('.') : filterIndex"
     >
       <div v-if="filter.type === 'boolean'">
         <label class="tw-block tw-mb-1 tw-text-zinc-800 tw-cursor-pointer">
           <input
             type="checkbox"
             class="tw-text-emerald-500 tw-rounded-full focus:tw-ring-0 focus:tw-ring-transparent"
-            :name="filter.def.property"
+            :name="filter.def.property.join('.')"
             :checked="filter.filterValue"
             @change="onBooleanFilterChange(filterIndex, $event)"
           >
-          {{ (filter.def.name && filter.def.name.fr) || filter.def.property }}
+          {{ (filter.def.name && filter.def.name.fr) || filter.def.property.join('.') }}
         </label>
       </div>
       <div v-else-if="filter.type === 'multiselection'">
         <label
-          :for="filter.def.property"
+          :for="filter.def.property.join('.')"
           class="tw-block tw-mb-2 tw-text-zinc-500 tw-cursor-pointer"
         >
-          {{ (filter.def.name && filter.def.name.fr) || filter.def.property }}
+          {{ (filter.def.name && filter.def.name.fr) || filter.def.property.join('.') }}
         </label>
         <SelectFilter
           :filter="filter"
@@ -160,7 +135,7 @@ export default defineNuxtComponent({
       </div>
       <div v-else-if="filter.type === 'checkboxes_list'">
         <p class="tw-mb-2 tw-text-zinc-500">
-          {{ (filter.def.name && filter.def.name.fr) || filter.def.property }}
+          {{ (filter.def.name && filter.def.name.fr) || filter.def.property.join('.') }}
         </p>
         <label
           v-for="value in filter.def.values"
@@ -170,7 +145,7 @@ export default defineNuxtComponent({
           <input
             type="checkbox"
             class="tw-text-emerald-500 tw-rounded-full focus:tw-ring-0 focus:tw-ring-transparent"
-            :name="`${filter.def.property}_${value.value}`"
+            :name="`${filter.def.property.join('.')}_${value.value}`"
             :checked="filter.filterValues.includes(value.value)"
             @change="
               (e) =>
@@ -193,7 +168,7 @@ export default defineNuxtComponent({
       </div>
       <div v-else-if="filter.type === 'number_range'">
         <label class="tw-block tw-mb-1 tw-text-zinc-800 tw-cursor-pointer">
-          {{ (filter.def.name && filter.def.name.fr) || filter.def.property }}
+          {{ (filter.def.name && filter.def.name.fr) || filter.def.property.join('.') }}
           <NumberRange
             :filter="filter"
             @change="onSelectionFilterNumberRangeChange(filterIndex, $event)"

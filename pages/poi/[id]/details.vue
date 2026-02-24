@@ -1,83 +1,69 @@
 <script setup lang="ts">
-import { groupBy } from 'lodash'
 import { storeToRefs } from 'pinia'
 import PoiDetails from '~/components/PoisDetails/PoiDetails.vue'
-import type { ApiPoiDeps } from '~/lib/apiPoiDeps'
-import { getPoiDepsById } from '~/lib/apiPoiDeps'
-import type { ApiPoi } from '~/lib/apiPois'
+import type { ApiPoiDepsCollection } from '~/types/api/poi-deps'
 import { headerFromSettings } from '~/lib/apiSettings'
-import { getAsyncDataOrThrows } from '~/lib/getAsyncData'
 import { useSiteStore } from '~/stores/site'
 import { regexForPOIIds } from '~/composables/useIdsResolver'
+import type { PoiUnion } from '~/types/local/poi-deps'
+import type { Poi } from '~/types/local/poi'
 
-//
-// Validators
-//
 definePageMeta({
   validate({ params }) {
     return !!params.id && regexForPOIIds.test(params.id.toString())
   },
 })
 
-//
-// Composables
-//
 const { articles, settings, theme } = storeToRefs(useSiteStore())
 const { params } = useRoute()
 const { $trackingInit } = useNuxtApp()
+const apiEndpoint = useState('api-endpoint')
+const poiDepsCompo = usePoiDeps()
 
-//
-// Data
-//
-const poiDeps = ref<ApiPoiDeps>()
+const poi = ref<Poi>()
+const poiDeps = ref<PoiUnion[]>()
+const poiId = computed(() => Number.parseInt(params.id.toString()))
 
-const fetchPoiPoiDeps = getAsyncDataOrThrows(
-  `fetchPoiPoiDeps-${params.id}`,
-  async () => {
-    return await getPoiDepsById(params.id as string, {
+const { data, error, status } = await useFetch(
+  `${apiEndpoint.value}/poi/${params.id}/deps.geojson`,
+  {
+    key: `poi-${params.id}`,
+    query: {
       geometry_as: 'point_or_bbox',
       short_description: false,
-    }).then((poiDeps) => {
-      let poi: ApiPoi | undefined
-      if (poiDeps) {
-        const g = groupBy(
-          poiDeps.features,
-          feature => 'metadata' in feature.properties
-            ? feature.properties.metadata.id.toString() === params.id
-            : false,
-        )
-        poi = g.true && (g.true[0] as ApiPoi)
-        poiDeps.features = g.false || []
-      }
+    },
+    transform: (data: ApiPoiDepsCollection) => {
+      poiDepsCompo.resetWaypointIndex()
 
-      return { poi, poiDeps }
-    })
+      return poiDepsCompo.formatPoiDepsCollection(data, poiId.value)
+    },
   },
 )
 
-const [poiPoiDeps] = await Promise.all([fetchPoiPoiDeps])
+if (error.value) {
+  throw createError(error.value)
+}
 
-if (!poiPoiDeps.value.poi) {
+if (status.value === 'success' && data.value) {
+  poi.value = data.value.find(feature => feature.properties.metadata.id === poiId.value) as Poi
+  poiDeps.value = data.value.filter(feature => feature.properties.metadata.id !== poiId.value) as PoiUnion[]
+}
+
+if (!poi.value) {
   throw createError({
     statusCode: 404,
-    statusMessage: 'POI not found. Missing main object.',
+    statusMessage: `Poi ${poiId.value} not found.`,
   })
 }
 
-const poi = ref(poiPoiDeps.value.poi)
-poiDeps.value = poiPoiDeps.value.poiDeps
+const { featureSeoTitle } = useFeature(toRef(poi.value), { type: 'details' })
 
-const { featureSeoTitle } = useFeature(poi, { type: 'details' })
-
-if (!featureSeoTitle.value)
-  throw createError('Feature has no name')
-
-//
-// Hooks
-//
-onBeforeMount(() => {
-  $trackingInit()
-})
+if (!featureSeoTitle.value) {
+  throw createError({
+    statusCode: 404,
+    statusMessage: 'Feature has no name',
+  })
+}
 
 if (settings.value && theme.value) {
   useHead(
@@ -87,24 +73,40 @@ if (settings.value && theme.value) {
       {
         title: featureSeoTitle.value,
         description: {
-          fr: poi.value?.properties.description,
+          fr: poi.value?.properties.description?.['fr-FR'].value,
         },
       },
     ),
   )
 }
+
+onBeforeMount(() => {
+  $trackingInit()
+})
 </script>
 
 <template>
-  <PoiDetails
-    v-if="settings"
-    :settings="settings"
-    :nav-menu-entries="articles!"
-    :poi="poi!"
-    :poi-deps="poiDeps"
-    :page-title="featureSeoTitle!"
-    class="page-details tw-overflow-clip"
-  />
+  <VApp>
+    <VAlert
+      v-if="error"
+      :closable="true"
+      :style="{ zIndex: 999 }"
+      :text="error.message"
+      location="top center"
+      position="fixed"
+      type="error"
+      variant="elevated"
+    />
+    <PoiDetails
+      v-if="settings && poi"
+      :settings="settings"
+      :nav-menu-entries="articles!"
+      :poi="poi"
+      :poi-deps="poiDeps"
+      :page-title="featureSeoTitle!"
+      class="page-details tw-overflow-clip"
+    />
+  </VApp>
 </template>
 
 <style lang="scss" scoped>

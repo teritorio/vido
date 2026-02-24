@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { storeToRefs } from 'pinia'
-import type { MenuItem } from '~/lib/apiMenu'
+import type { MenuItem } from '~/types/local/menu'
 import { useNavigationStore } from '~/stores/navigation'
 import TeritorioIconBadge from '~/components/UI/TeritorioIconBadge.vue'
 import type { RouteLocationRaw } from '#vue-router'
-import type { TextColors } from '~/lib/apiPois'
+import type { TextColors } from '~/types/api/poi'
 
 const navigationStore = useNavigationStore()
 const { navigationStack } = storeToRefs(navigationStore)
@@ -39,12 +39,18 @@ const items = computed(() => {
 })
 
 function getItem(item: MenuItem) {
-  return item.menu_group || item.link || item.category || {}
+  if ('menu_group' in item)
+    return item.menu_group
+
+  if ('link' in item)
+    return item.link
+
+  return item.category
 }
 
 function getTeritorioIconBadgeProps(item: MenuItem): CustomBreadcrumbItem {
   const base = getItem(item)
-  const { colorFill, colorText } = useContrastedColors(base.color_fill, base.color_text)
+  const { colorFill, colorText } = useContrastedColors(base.color_fill)
 
   return {
     icon: {
@@ -54,7 +60,7 @@ function getTeritorioIconBadgeProps(item: MenuItem): CustomBreadcrumbItem {
       colorText: colorText.value,
       size: 'md',
     },
-    title: base.name.fr,
+    title: base.name.fr || '',
   }
 }
 </script>

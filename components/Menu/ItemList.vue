@@ -1,75 +1,49 @@
-<script lang="ts">
+<script setup lang="ts">
 import type { FontAwesomeIconProps } from '@fortawesome/vue-fontawesome'
-import type { PropType } from 'vue'
-
-import { defineNuxtComponent } from '#app'
 import Category from '~/components/Menu/Category.vue'
 import MenuGroup from '~/components/Menu/Group.vue'
 import LinkItem from '~/components/Menu/Link.vue'
-import type { ApiMenuCategory, ApiMenuItem, MenuGroup as MenuGroupType, MenuItem } from '~/lib/apiMenu'
+import type { ApiMenuItem } from '~/types/api/menu'
+import type { MenuCategory, MenuGroup as MenuGroupType, MenuItem } from '~/types/local/menu'
 import type { FilterValues } from '~/utils/types-filters'
 
-export default defineNuxtComponent({
-  components: {
-    Category,
-    MenuGroup,
-    LinkItem,
-  },
-  props: {
-    menuItems: {
-      type: Array as PropType<MenuItem[]>,
-      required: true,
-    },
-    filters: {
-      type: Object as PropType<{ [categoryId: number]: FilterValues }>,
-      required: true,
-    },
-    categoriesActivesCountByParent: {
-      type: Object as PropType<{ [id: string]: number }>,
-      required: true,
-    },
-    selectedCategoriesIds: {
-      type: Array as PropType<ApiMenuCategory['id'][]>,
-      required: true,
-    },
-    displayModeDefault: {
-      type: String as PropType<'compact' | 'large'>,
-      required: true,
-    },
-    size: {
-      type: String as PropType<FontAwesomeIconProps['size']>,
-      required: true,
-    },
-  },
+const props = defineProps<{
+  menuItems: MenuItem[]
+  filters: Record<number, FilterValues>
+  categoriesActivesCountByParent: Record<string, number>
+  selectedCategoriesIds: MenuCategory['id'][]
+  displayModeDefault: 'compact' | 'large'
+  size: FontAwesomeIconProps['size']
+}>()
 
-  emits: {
-    menuGroupClick: (_menuItem: MenuGroupType) => true,
-    categoryClick: (_menuItemId: ApiMenuItem['id']) => true,
-    filterClick: (_categoryId: ApiMenuCategory['id']) => true,
-  },
+const emit = defineEmits<{
+  (e: 'menuGroupClick', menuItem: MenuGroupType): void
+  (e: 'categoryClick', menuItemId: ApiMenuItem['id']): void
+  (e: 'filterClick', categoryId: MenuCategory['id']): void
+}>()
 
-  methods: {
-    onMenuGroupClick(menuItem: MenuGroupType) {
-      this.$emit('menuGroupClick', menuItem)
-    },
-    onCategoryClick(menuItem: MenuItem) {
-      this.$emit('categoryClick', menuItem.id)
-    },
-    onFilterClick(categoryId: ApiMenuCategory['id']) {
-      this.$emit('filterClick', categoryId)
-    },
-    isCategorySelected(categoryId: ApiMenuCategory['id']) {
-      return this.selectedCategoriesIds.includes(categoryId)
-    },
-  },
-})
+function onMenuGroupClick(menuItem: MenuGroupType) {
+  emit('menuGroupClick', menuItem)
+}
+
+function onCategoryClick(menuItem: MenuItem) {
+  emit('categoryClick', menuItem.id)
+}
+
+function onFilterClick(categoryId: MenuCategory['id']) {
+  emit('filterClick', categoryId)
+}
+
+function isCategorySelected(categoryId: MenuCategory['id']) {
+  return props.selectedCategoriesIds.includes(categoryId)
+}
 </script>
 
 <template>
   <div class="tw-grid tw-items-start tw-grid-cols-4 tw-grid-rows-1">
     <template v-for="menuItem in menuItems" :key="menuItem.id">
       <MenuGroup
-        v-if="menuItem.menu_group"
+        v-if="'menu_group' in menuItem"
         :menu-group="menuItem"
         :categories-actives-count="categoriesActivesCountByParent[menuItem.id]"
         :size="size"
@@ -81,7 +55,7 @@ export default defineNuxtComponent({
         @click="onMenuGroupClick(menuItem)"
       />
       <LinkItem
-        v-else-if="menuItem.link"
+        v-else-if="'link' in menuItem"
         :menu-link="menuItem"
         :size="size"
         :display-mode-default="displayModeDefault"

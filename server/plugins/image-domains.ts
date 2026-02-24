@@ -11,7 +11,7 @@ export default defineNitroPlugin(async () => {
         const urls = Object.values(config.themes)
           .map((theme) => {
             return [
-              new URL(theme.site_url.fr).host,
+              new URL(theme.site_url?.fr || '').host,
               import.meta.dev
                 ? `${theme.slug}-${slug}.${new URL(genericApiEndpoint).host}`
                 : `${theme.slug}-${slug}.${appHost}`,
@@ -40,6 +40,6 @@ export default defineNitroPlugin(async () => {
   catch (err) {
     console.error('❌ Failed to fetch allowed domains at startup:', err)
     // @ts-expect-error: can't declare the interface
-    globalThis.allowedDomains = []
+    globalThis.allowedDomains = {}
   }
 })

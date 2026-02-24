@@ -11,12 +11,10 @@ const { t } = useI18n()
 <template>
   <footer class="footer">
     <slot />
-    <span
-      v-for="attribution in attributions"
-      :key="attribution"
-      v-html="attribution"
-    />
-    <span>
+    <span v-if="attributions?.length" class="attributions">
+      <span v-for="attribution in attributions" :key="attribution" v-html="attribution" />
+    </span>
+    <span class="poweredBy">
       {{ t('poiDetails.poweredBy') }}
       <a target="_blank" href="https://www.teritorio.fr/" title="Teritorio">
         <img
@@ -36,17 +34,34 @@ const { t } = useI18n()
 @import '~/assets/details';
 
 .footer {
-  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
   font-size: 0.9rem;
-  padding-top: 4rem;
-  padding-bottom: 1rem;
+  line-height: 0.8;
+  padding: 4rem 0 1rem;
   background: white;
   color: $color-primary;
-  text-align: center;
   text-decoration: none;
 
-  > span {
-    margin: 0 0.8rem;
+  > :is(a, span) {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+  }
+
+  > :is(a, span) + :is(a, span)::before {
+    content: '·';
+    margin-right: 0.5rem;
+    font-size: 2rem;
+    color: $color-tertiary;
+  }
+
+  .attributions {
+    display: inline-flex;
+    gap: 0.4rem;
   }
 
   a {

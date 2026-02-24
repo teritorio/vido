@@ -1,15 +1,15 @@
 import type { Article } from '~/lib/apiArticle'
-import type { MenuItem } from '~/lib/apiMenu'
-import type { ApiPoiDeps } from '~/lib/apiPoiDeps'
-import type { ApiPois } from '~/lib/apiPois'
+import type { ApiPoiDepsCollection } from '~/types/api/poi-deps'
+import type { ApiPoiCollection } from '~/types/api/poi'
 import type { PropertyTranslations } from '~/lib/apiPropertyTranslations'
 import type { Settings } from '~/lib/apiSettings'
+import type { ApiMenuCollection } from '~/types/api/menu'
 
 export interface APIFixture {
   attribute_translations: { [key: string]: PropertyTranslations }
   settings: Settings
   articles: Article[]
-  menu: MenuItem[]
-  pois: ApiPois
-  deps: { [key: number]: ApiPoiDeps }
+  menu: ApiMenuCollection
+  pois: ApiPoiCollection
+  deps: { [key: number]: ApiPoiDepsCollection }
 }

@@ -118,4 +118,8 @@ onMounted(() => {
 :deep(a) {
   text-decoration: underline;
 }
+
+:deep(.footer a) {
+  text-decoration: none;
+}
 </style>

@@ -1,8 +1,15 @@
 import type { MapGeoJSONFeature } from 'maplibre-gl'
-import type { ApiPoi, ApiPoiId } from './apiPois'
-import { ApiPoiPropertiesArray } from './apiPois'
+import type { Poi } from '~/types/local/poi'
 
 export type VectorTilesPoi = MapGeoJSONFeature
+
+const ApiPoiPropertiesArray = [
+  'image',
+  'phone',
+  'mobile',
+  'email',
+  'website',
+]
 
 function split(value: string | undefined): string[] | undefined {
   return value
@@ -13,28 +20,25 @@ function split(value: string | undefined): string[] | undefined {
     : undefined
 }
 
-export function vectorTilesPoi2ApiPoi(mapPoi: VectorTilesPoi): ApiPoi {
+export function vectorTilesPoi2ApiPoi(mapPoi: VectorTilesPoi): Poi {
   const props = Object.fromEntries(
     Object.entries(mapPoi.properties).map(([key, value]) => [
       key,
       value && ApiPoiPropertiesArray.includes(key) ? split(value) : value,
     ]),
   )
-  const { colorFill, colorText } = useContrastedColors(toRef(() => props.color_fill), toRef(() => props.color_text))
 
   props.metadata = {
-    id: mapPoi.id as ApiPoiId,
+    id: mapPoi.id,
     category_ids: split(props.category_ids),
   }
   delete props.category_ids
 
   props.display = {
     icon: props.subclass || props.class || props.superclass,
-    color_fill: colorFill,
-    color_line: props.color_line,
-    color_text: colorText,
     style_class: [props.superclass, props.class, props.subclass],
   }
+
   delete props.subclass
   delete props.class
   delete props.superclass
@@ -54,5 +58,5 @@ export function vectorTilesPoi2ApiPoi(mapPoi: VectorTilesPoi): ApiPoi {
   delete props.zoom
 
   mapPoi.properties = props
-  return mapPoi as unknown as ApiPoi
+  return mapPoi as unknown as Poi
 }

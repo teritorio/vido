@@ -1,294 +1,370 @@
 import copy from 'fast-copy'
 import { deepEqual } from 'fast-equals'
 import { defineStore } from 'pinia'
-import type { ApiMenuCategory, MenuItem } from '~/lib/apiMenu'
-import type { ApiPoi, ApiPois } from '~/lib/apiPois'
+import type { ApiFieldsList, ApiFieldsListGroup, ApiFieldsListItem } from '~/types/api/field'
+import type { ApiMenuCategory, ApiMenuCollection } from '~/types/api/menu'
+import type { MenuCategory, MenuCategoryEditorial, MenuGroup, MenuItem } from '~/types/local/menu'
+import type { ApiPoiCollection } from '~/types/api/poi'
 import { getPoiByCategoryId } from '~/lib/apiPois'
 import type { FilterValues } from '~/utils/types-filters'
 import { filterValueFactory, filterValuesIsSet, isMatch, isSet } from '~/utils/types-filters'
+import type { Poi } from '~/types/local/poi'
+import type { PoiUnion } from '~/types/local/poi-deps'
+import type { FieldsList, FieldsListGroup, FieldsListItem } from '~/types/local/field'
 
 interface FetchFeaturesPayload {
   categoryIds: ApiMenuCategory['id'][]
   clipingPolygonSlug?: string
 }
 
-export interface State {
-  menuItems?: Record<number, MenuItem>
-  selectedCategoryIds: ApiMenuCategory['id'][]
-  features: {
-    [key: number]: ApiPoi[]
-  }
-  allFeatures: {
-    [key: number]: ApiPoi[]
-  }
-  filters: Record<ApiMenuCategory['id'], FilterValues>
-  isLoadingFeatures: boolean
-}
-
 function sortedUniq<T>(a: T[]): T[] {
   return [...new Set(a)].sort()
 }
 
-function keepFeature(filters: FilterValues, feature: ApiPoi): boolean {
+function transformApiFieldsListItem(item: ApiFieldsListItem): FieldsListItem {
+  return {
+    ...item,
+    field: item.field.join('.'),
+    translationKey: item.field.length === 1 ? item.field[0] : item.field.join(':'),
+  }
+}
+
+function transformApiFieldsListGroup(group: ApiFieldsListGroup): FieldsListGroup {
+  return {
+    ...group,
+    fields: transformApiFieldsList(group.fields) || [],
+  }
+}
+
+function transformApiFieldsList(fields: ApiFieldsList | undefined): FieldsList | undefined {
+  if (!fields)
+    return undefined
+
+  return fields.map((item) => {
+    if ('group' in item)
+      return transformApiFieldsListGroup(item)
+
+    return transformApiFieldsListItem(item)
+  })
+}
+
+function transformCategoryEditorial(editorial: ApiMenuCategory['category']['editorial'] | undefined): MenuCategoryEditorial | undefined {
+  if (!editorial)
+    return undefined
+
+  return {
+    ...editorial,
+    popup_fields: transformApiFieldsList(editorial.popup_fields),
+    details_fields: transformApiFieldsList(editorial.details_fields),
+    list_fields: transformApiFieldsList(editorial.list_fields),
+  }
+}
+
+function transformApiMenuCategory(menuItem: ApiMenuCategory): MenuCategory {
+  return {
+    ...menuItem,
+    category: {
+      ...menuItem.category,
+      icon_show: menuItem.category.icon_show || 'always',
+      editorial: transformCategoryEditorial(menuItem.category.editorial),
+    },
+  }
+}
+
+function keepFeature(filters: FilterValues, feature: Poi): boolean {
   return filters.reduce<boolean>((prevValue, filter) => {
     return prevValue && (!isSet(filter) || isMatch(filter, feature.properties))
   }, true)
 }
 
-export const menuStore = defineStore('menu', {
-  state: (): State => ({
-    menuItems: undefined,
-    selectedCategoryIds: [],
-    features: {},
-    filters: {},
-    allFeatures: {},
-    isLoadingFeatures: false,
-  }),
+export const menuStore = defineStore('menu', () => {
+  const menuItems = ref<Record<number, MenuItem>>()
+  const selectedCategoryIds = ref<ApiMenuCategory['id'][]>([])
+  const features = ref<Record<number, Poi[]>>({})
+  const filters = ref<Record<ApiMenuCategory['id'], FilterValues>>({})
+  const allFeatures = ref<Record<number, Poi[]>>({})
+  const isLoadingFeatures = ref<boolean>(false)
+  const poiCompo = usePoi()
 
-  getters: {
-    getFeatureById: (state: State): (id: number) => ApiPoi | undefined => {
-      return (id) => {
-        for (const key in state.allFeatures) {
-          for (const feature of state.allFeatures[key]) {
-            if (feature.properties.metadata.id === id) {
-              return feature
-            }
+  const getFeatureById = computed(() => {
+    return (id: number): Poi | undefined => {
+      for (const key in allFeatures.value) {
+        for (const feature of allFeatures.value[key]) {
+          if (feature.properties.metadata.id === id) {
+            return feature
           }
         }
-        return undefined
       }
-    },
-    featuresColor: (state: State) => {
-      const colors = Object.values(state.features)
-        .flat()
-        .filter(feature => feature.properties.display)
-        .map(feature => feature.properties.display!.color_fill)
-      return [...new Set(colors)]
-    },
-    apiMenuCategory: (state: State): ApiMenuCategory[] | undefined => {
-      return state.menuItems === undefined
+      return undefined
+    }
+  })
+
+  const featuresColor = computed(() => {
+    const colors = Object.values(features.value)
+      .flat()
+      .map(feature => feature.properties.display.color_fill)
+      .filter(Boolean) as string[]
+
+    return [...new Set(colors)]
+  })
+
+  const apiMenuCategory = computed((): MenuCategory[] | undefined => {
+    const { contribMode } = useContrib()
+    return menuItems.value === undefined
+      ? undefined
+      : (Object.values(menuItems.value).filter(
+          menuItem => 'category' in menuItem && (contribMode || !menuItem.hidden),
+        ) as MenuCategory[])
+  })
+
+  const getCurrentCategory = computed((): (categoryId: number) => MenuCategory | undefined => {
+    return (categoryId) => {
+      return menuItems.value === undefined
         ? undefined
-        : (Object.values(state.menuItems).filter(
-            menuItem => !!menuItem.category,
-          ) as ApiMenuCategory[])
-    },
+        : Object.values(menuItems.value).find(
+          menuItem => menuItem.id === categoryId,
+        ) as MenuCategory
+    }
+  })
 
-    getCurrentCategory: (state: State): (categoryId: number) => ApiMenuCategory | undefined => {
-      return (categoryId) => {
-        return state.menuItems === undefined
-          ? undefined
-          : Object.values(state.menuItems).find(
-            menuItem => menuItem.id === categoryId,
-          ) as ApiMenuCategory
-      }
-    },
+  const selectedCategories = computed((): MenuCategory[] | undefined => {
+    return menuItems.value === undefined
+      ? undefined
+      : (selectedCategoryIds.value
+          .map(selectedCatagoryId => menuItems.value![selectedCatagoryId])
+          .filter(
+            menuItems => menuItems !== undefined,
+          ) as MenuCategory[])
+  })
 
-    selectedCategories: (state: State): ApiMenuCategory[] | undefined => {
-      return state.menuItems === undefined
-        ? undefined
-        : (state.selectedCategoryIds
-            .map(selectedCatagoryId => state.menuItems![selectedCatagoryId])
-            .filter(
-              menuItems => menuItems !== undefined,
-            ) as ApiMenuCategory[])
-    },
-  },
+  function setSelectedCategoryIds(ids: ApiMenuCategory['id'][]) {
+    selectedCategoryIds.value = ids
+  }
 
-  actions: {
-    setSelectedCategoryIds(selectedCategoryIds: ApiMenuCategory['id'][]) {
-      this.selectedCategoryIds = selectedCategoryIds
-    },
+  function addSelectedCategoryIds(ids: ApiMenuCategory['id'][]) {
+    selectedCategoryIds.value = sortedUniq([
+      ...selectedCategoryIds.value,
+      ...ids,
+    ])
+  }
 
-    addSelectedCategoryIds(selectedCategoryIds: ApiMenuCategory['id'][]) {
-      this.selectedCategoryIds = sortedUniq([
-        ...this.selectedCategoryIds,
-        ...selectedCategoryIds,
-      ])
-    },
+  function delSelectedCategoryIds(ids: ApiMenuCategory['id'][]) {
+    selectedCategoryIds.value = selectedCategoryIds.value.filter(
+      categoryId => !ids.includes(categoryId),
+    )
+  }
 
-    delSelectedCategoryIds(selectedCategoryIds: ApiMenuCategory['id'][]) {
-      this.selectedCategoryIds = this.selectedCategoryIds.filter(
-        categoryId => !selectedCategoryIds.includes(categoryId),
+  function clearSelectedCategoryIds() {
+    selectedCategoryIds.value = []
+  }
+
+  function toggleSelectedCategoryId(categoryId: ApiMenuCategory['id']) {
+    if (selectedCategoryIds.value.includes(categoryId)) {
+      selectedCategoryIds.value = selectedCategoryIds.value.filter(
+        id => id !== categoryId,
       )
-    },
+    }
+    else {
+      selectedCategoryIds.value = sortedUniq([
+        ...selectedCategoryIds.value,
+        categoryId,
+      ])
+    }
+  }
 
-    clearSelectedCategoryIds() {
-      this.selectedCategoryIds = []
-    },
+  function fetchConfig(items: ApiMenuCollection) {
+    try {
+      const stateMenuItems: Record<number, MenuItem> = {}
+      const localFilters: Record<number, FilterValues> = {}
 
-    toggleSelectedCategoryId(categoryId: ApiMenuCategory['id']) {
-      if (this.selectedCategoryIds.includes(categoryId)) {
-        this.selectedCategoryIds = this.selectedCategoryIds.filter(
-          id => id !== categoryId,
-        )
-      }
-      else {
-        this.selectedCategoryIds = sortedUniq([
-          ...this.selectedCategoryIds,
-          categoryId,
-        ])
-      }
-    },
+      menuItems.value = undefined // Hack, release from store before edit and reappend
+      items
+        .map((menuItem) => {
+          if ('menu_group' in menuItem) {
+            const groupItem = {
+              ...menuItem,
+              menu_group: {
+                ...menuItem.menu_group,
+                vido_children: [],
+              },
+            } as MenuGroup
 
-    fetchConfig(menuItems: MenuItem[]) {
-      try {
-        const stateMenuItems: State['menuItems'] = {}
-        const filters: Record<ApiMenuCategory['id'], FilterValues> = {}
-        const { contribMode } = useContrib()
-
-        this.menuItems = undefined // Hack, release from store before edit and reappend
-        menuItems
-          .filter(menuItem => contribMode ? true : !menuItem.hidden)
-          .map((menuItem) => {
-            stateMenuItems[menuItem.id] = menuItem
-            return menuItem
-          })
-          .forEach((menuItem) => {
-            // Separated from previous map to allow batch processing and make sure parent category is always there
-            // Associate to parent_id
-            if (menuItem.parent_id && menuItem.parent_id !== null) {
-              const parent = stateMenuItems[menuItem.parent_id]
-              if (parent?.menu_group) {
-                if (!parent.menu_group.vido_children)
-                  parent.menu_group.vido_children = []
-
-                parent.menu_group.vido_children.push(menuItem.id)
-              }
-            }
-
-            if (menuItem.category?.filters) {
-              filters[menuItem.id] = menuItem.category?.filters.map(filter =>
-                filterValueFactory(filter),
-              )
-            }
-          })
-        this.menuItems = stateMenuItems
-        this.filters = filters
-      }
-      catch (error) {
-        console.error(
-          'Vido error: Unable to fetch the menu config from the API',
-          error,
-        )
-      }
-    },
-
-    async fetchFeatures({ categoryIds, clipingPolygonSlug }: FetchFeaturesPayload) {
-      this.isLoadingFeatures = true
-
-      try {
-        const previousFeatures = this.allFeatures
-        const existingFeatures = categoryIds.map(categoryId =>
-          Boolean(previousFeatures[categoryId]),
-        )
-
-        const posts: ApiPois[] = (
-          await Promise.all(
-            categoryIds
-              .filter(categoryId => !previousFeatures[categoryId])
-              .map((categoryId) => {
-                try {
-                  let options = {}
-                  if (clipingPolygonSlug)
-                    options = { cliping_polygon_slug: clipingPolygonSlug }
-                  return getPoiByCategoryId(categoryId, options)
-                }
-                catch (e) {
-                  console.error('Vido error:', e)
-                  return undefined
-                }
-              })
-              .filter(apiPoi => !!apiPoi),
-          )
-        ).filter(e => e) as ApiPois[]
-
-        const features: State['features'] = {}
-
-        let i = 0
-
-        for (let j = 0; j < categoryIds.length; j++) {
-          const categoryId = categoryIds[j]
-
-          const filterIsSet
-            = this.filters[categoryId]
-            && filterValuesIsSet(this.filters[categoryId])
-          if (existingFeatures[j]) {
-            features[categoryId] = previousFeatures[categoryId].map(
-              (f: ApiPoi) => ({
-                ...f,
-                properties: {
-                  ...f.properties,
-                  vido_visible:
-                    !filterIsSet || keepFeature(this.filters[categoryId], f),
-                },
-              }),
-            )
+            stateMenuItems[menuItem.id] = groupItem
+            return groupItem
+          }
+          else if ('category' in menuItem) {
+            const categoryItem = transformApiMenuCategory(menuItem)
+            stateMenuItems[menuItem.id] = categoryItem
+            return categoryItem
           }
           else {
-            const post = posts[i]
-
-            features[categoryId] = post.features.map((f) => {
-              f.properties.vido_cat = categoryId
-              f.properties.vido_visible
-                = !filterIsSet || keepFeature(this.filters[categoryId], f)
-              return f
-            })
-
-            i++
+            stateMenuItems[menuItem.id] = menuItem
+            return menuItem
           }
-        }
+        })
+        .forEach((menuItem: MenuItem) => {
+          // Separated from previous map to allow batch processing and make sure parent category is always there
+          // Associate to parent_id
+          if (menuItem.parent_id) {
+            const parent = stateMenuItems[menuItem.parent_id]
 
-        this.features = features
-        this.allFeatures = { ...this.allFeatures, ...features }
-      }
-      catch (error) {
-        console.error(
-          'Vido error: Unable to fetch the features from the API',
-          error,
+            if (parent && 'menu_group' in parent) {
+              parent.menu_group.vido_children.push(menuItem.id)
+            }
+          }
+
+          if ('category' in menuItem && menuItem.category.filters) {
+            localFilters[menuItem.id] = menuItem.category.filters.map(filter => filterValueFactory(filter))
+          }
+        })
+
+      menuItems.value = stateMenuItems
+      filters.value = localFilters
+    }
+    catch (error) {
+      console.error(
+        'Vido error: Unable to fetch the menu config from the API',
+        error,
+      )
+    }
+  }
+
+  async function fetchFeatures({ categoryIds, clipingPolygonSlug }: FetchFeaturesPayload) {
+    isLoadingFeatures.value = true
+
+    try {
+      const previousFeatures = allFeatures.value
+      const existingFeatures = categoryIds.map(categoryId =>
+        Boolean(previousFeatures[categoryId]),
+      )
+
+      const posts = (
+        await Promise.all(
+          categoryIds
+            .filter(categoryId => !previousFeatures[categoryId])
+            .map((categoryId) => {
+              try {
+                let options = {}
+                if (clipingPolygonSlug)
+                  options = { cliping_polygon_slug: clipingPolygonSlug }
+                return getPoiByCategoryId(categoryId, options)
+              }
+              catch (e) {
+                console.error('Vido error:', e)
+                return undefined
+              }
+            })
+            .filter(apiPoi => !!apiPoi),
         )
-      }
-      finally {
-        this.isLoadingFeatures = false
-      }
-    },
+      ).filter(e => e) as ApiPoiCollection[]
 
-    // TODO: Maybe merge filterDeps with fetchFeatures
-    // Check potential side-effects in components calling fetchFeatures
-    filterByDeps(categoryId: number, deps: ApiPoi[]) {
-      if (deps.length <= 1)
-        return
+      const localFeatures: Record<number, Poi[]> = {}
 
-      const filteredFeatures: { [key: number]: ApiPoi[] } = {}
-      filteredFeatures[categoryId] = deps
-      this.features = filteredFeatures
-    },
+      let i = 0
 
-    applyFilters({
-      categoryId,
-      filterValues,
-    }: {
-      categoryId: number
-      filterValues: FilterValues
-    }) {
-      const newFilters = copy(this.filters)
-      if (!deepEqual(newFilters[categoryId], filterValues)) {
-        newFilters[categoryId] = filterValues
-        this.filters = newFilters
+      for (let j = 0; j < categoryIds.length; j++) {
+        const categoryId = categoryIds[j]
 
-        // Update features visibility
-        if (categoryId in this.features) {
-          const features: { [categoryId: number]: ApiPoi[] } = copy(
-            this.features,
+        const filterIsSet = filters.value[categoryId] && filterValuesIsSet(filters.value[categoryId])
+
+        if (existingFeatures[j]) {
+          localFeatures[categoryId] = previousFeatures[categoryId].map(
+            (f: Poi) => {
+              f.properties.vido_visible = !filterIsSet || keepFeature(filters.value[categoryId], f)
+              return f
+            },
           )
-          const filterIsSet = filterValuesIsSet(filterValues)
-          features[categoryId] = features[categoryId].map((feature: ApiPoi) => {
-            feature.properties.vido_visible
-              = !filterIsSet || keepFeature(filterValues, feature)
-            return feature
+        }
+        else {
+          localFeatures[categoryId] = posts[i].features.map((f) => {
+            const category = getCurrentCategory.value(categoryId)
+
+            if (!category)
+              throw new Error(`Category not found for feature ${f.properties.metadata.id}.`)
+
+            const poi = poiCompo.formatPoi(f, category)
+            poi.properties.vido_cat = categoryId
+            poi.properties.vido_visible = !filterIsSet || keepFeature(filters.value[categoryId], poi)
+            return poi
           })
-          this.features = features
+
+          i++
         }
       }
-    },
-  },
+
+      features.value = localFeatures
+      allFeatures.value = { ...allFeatures.value, ...features.value }
+    }
+    catch (error) {
+      console.error(
+        'Vido error: Unable to fetch the features from the API',
+        error,
+      )
+    }
+    finally {
+      isLoadingFeatures.value = false
+    }
+  }
+
+  // TODO: Maybe merge filterDeps with fetchFeatures
+  // Check potential side-effects in components calling fetchFeatures
+  function filterByDeps(categoryId: number, deps: PoiUnion[]) {
+    if (deps.length <= 1)
+      return
+
+    const filteredFeatures: { [key: number]: PoiUnion[] } = {}
+    filteredFeatures[categoryId] = deps
+    features.value = filteredFeatures as Record<number, Poi[]>
+  }
+
+  function applyFilters({
+    categoryId,
+    filterValues,
+  }: {
+    categoryId: number
+    filterValues: FilterValues
+  }) {
+    const newFilters = copy(filters.value)
+    if (!deepEqual(newFilters[categoryId], filterValues)) {
+      newFilters[categoryId] = filterValues
+      filters.value = newFilters
+
+      // Update features visibility
+      if (categoryId in features.value) {
+        const localFeatures: { [categoryId: number]: Poi[] } = copy(features.value)
+        const filterIsSet = filterValuesIsSet(filterValues)
+
+        localFeatures[categoryId] = localFeatures[categoryId].map((feature: Poi) => {
+          feature.properties.vido_visible
+            = !filterIsSet || keepFeature(filterValues, feature)
+          return feature
+        })
+
+        features.value = localFeatures
+      }
+    }
+  }
+
+  return {
+    menuItems,
+    selectedCategoryIds,
+    features,
+    filters,
+    allFeatures,
+    isLoadingFeatures,
+    getFeatureById,
+    featuresColor,
+    apiMenuCategory,
+    getCurrentCategory,
+    selectedCategories,
+    setSelectedCategoryIds,
+    addSelectedCategoryIds,
+    delSelectedCategoryIds,
+    clearSelectedCategoryIds,
+    toggleSelectedCategoryId,
+    fetchConfig,
+    fetchFeatures,
+    filterByDeps,
+    applyFilters,
+  }
 })

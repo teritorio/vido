@@ -1,11 +1,12 @@
 import { defineStore } from 'pinia'
-import type { ApiMenuCategory, MenuItem } from '~/lib/apiMenu'
+import type { ApiMenuCategory } from '~/types/api/menu'
+import type { MenuItem } from '~/types/local/menu'
 
 export const useNavigationStore = defineStore('navigation', () => {
   const navigationStack = ref<MenuItem[]>([])
   const categoryIdFilter = ref<ApiMenuCategory['id'] | null>(null)
 
-  const currentParent = computed(() => navigationStack.value.at(-1))
+  const currentParent = computed(() => navigationStack.value[navigationStack.value.length - 1])
   const isRootMenu = computed(() => navigationStack.value.length === 0)
 
   function goBack() {

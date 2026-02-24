@@ -2,14 +2,12 @@
 import type { FontAwesomeIconProps } from '@fortawesome/vue-fontawesome'
 
 import Link from '~/components/Menu/Link.vue'
-import type { ApiMenuLink } from '~/lib/apiMenu'
+import type { ApiMenuLink } from '~/types/api/menu'
 
 const menuLink: ApiMenuLink = {
   id: 123,
   selected_by_default: false,
-  parent_id: null,
   index_order: 1,
-  menu_group: undefined,
   link: {
     href: 'https://example.com',
     name: { fr: 'Example.com' },
@@ -18,7 +16,6 @@ const menuLink: ApiMenuLink = {
     color_line: '#284627',
     display_mode: 'compact',
   },
-  category: undefined,
 }
 
 const defaultProps = {

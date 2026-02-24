@@ -25,14 +25,14 @@ describe('home content', () => {
 
   it('contain basic details', () => {
     cy.get('h1').contains(
-      teritorioReferenceAPIFixture.deps[1].features[0].properties.name as string,
+      teritorioReferenceAPIFixture.deps[1].features[0].properties.name?.['fr-FR'] as string,
     )
 
-    cy.get('#FieldsGroup--contact_standard')
+    cy.get('#fields-group-contact-standard')
       .parent()
       .contains('contact_standard')
 
-    cy.get('#FieldsGroup--contact_card')
+    cy.get('#fields-group-contact-card')
       .parent()
       .contains('contact_card')
 

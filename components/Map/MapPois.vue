@@ -5,16 +5,20 @@ import { getBBox } from '~/lib/bbox'
 import MapBase from '~/components/Map/MapBase.vue'
 import PoiCardContent from '~/components/PoisCard/PoiCardContent.vue'
 import UIButton from '~/components/UI/UIButton.vue'
-import type { ApiPoi } from '~/lib/apiPois'
+import type { Poi } from '~/types/local/poi'
 import { MAP_ZOOM } from '~/lib/constants'
 import type { MapPoiId } from '~/lib/mapPois'
 import { filterRouteByPoiIds } from '~/utils/styles'
 import { mapStore as useMapStore } from '~/stores/map'
+import type { ApiPoi } from '~/types/api/poi'
+import { menuStore as useMenuStore } from '~/stores/menu'
+import type { PoiUnion } from '~/types/local/poi-deps'
+import { usePoiDeps } from '~/composables/usePoiDeps'
 
 const props = withDefaults(defineProps<{
   extraAttributions?: string[]
   offMapAttribution?: boolean
-  features: ApiPoi[]
+  features: PoiUnion[]
   featureIds?: MapPoiId[]
   fullscreenControl?: boolean
   cluster?: boolean
@@ -28,15 +32,24 @@ const props = withDefaults(defineProps<{
 const apiEndpoint = useState<string>('api-endpoint')
 const mapBaseRef = ref<InstanceType<typeof MapBase>>()
 const map = ref<MapGL>()
-const selectedFeature = ref<ApiPoi | null>(null)
+const menuStore = useMenuStore()
+const mapStore = useMapStore()
+const { teritorioCluster, selectedFeature } = storeToRefs(mapStore)
+const poiCompo = usePoi()
+const poiDepsCompo = usePoiDeps()
 
 const selectionZoom = computed(() => MAP_ZOOM.selectionZoom)
 const bounds = computed(() => getBBox({ type: 'FeatureCollection', features: props.features }))
 const center = computed((): LngLatLike | undefined => bounds.value?.getCenter())
-const { teritorioCluster } = storeToRefs(useMapStore())
 
 function onMapInit(mapInstance: MapGL): void {
   map.value = mapInstance
+
+  map.value.on('click', onClick)
+}
+
+function onClick(): void {
+  mapStore.setSelectedFeature()
 }
 
 function onMapStyleLoad(): void {
@@ -53,7 +66,7 @@ function renderPois(): void {
   const colors = [
     ...new Set(
       props.features.map(
-        feature => feature.properties?.display?.color_fill || '#000000',
+        feature => feature.properties.display.color_fill || '#000000',
       ),
     ),
   ]
@@ -66,20 +79,22 @@ function renderPois(): void {
   ], props.cluster)
 
   teritorioCluster.value?.addEventListener('feature-click', async (e: Event) => {
-    const feature: ApiPoi = (e as CustomEvent).detail.selectedFeature
+    const feature: PoiUnion = (e as CustomEvent).detail.selectedFeature
 
-    if (feature.properties['route:point:type']) {
-      selectedFeature.value = feature
+    // Waypoints don't have their own API endpoint, use existing data from props
+    if (poiDepsCompo.isWaypoint(feature)) {
+      mapStore.setSelectedFeature(feature as Poi)
       return
     }
 
-    const { data, error, status } = await useFetch<ApiPoi>(
+    const { data, error, status } = await useFetch(
       () => `${apiEndpoint.value}/poi/${feature.properties.metadata.id}.geojson`,
       {
         query: {
           geometry_as: 'point',
           short_description: true,
         },
+        transform: (data: ApiPoi) => transformApiPoi(data),
       },
     )
 
@@ -87,14 +102,28 @@ function renderPois(): void {
       throw createError(error.value)
 
     if (status.value === 'success' && data.value) {
-      selectedFeature.value = data.value
+      mapStore.setSelectedFeature(data.value)
     }
   })
 }
 
 function handleClose(): void {
-  selectedFeature.value = null
+  mapStore.setSelectedFeature()
   teritorioCluster.value?.resetSelectedFeature()
+}
+
+function transformApiPoi(feature: ApiPoi): Poi {
+  const catId = feature.properties.metadata.category_ids?.[0]
+
+  if (!catId)
+    throw createError(`Category ID not found for feature ${feature.properties.metadata.id}.`)
+
+  const category = menuStore.getCurrentCategory(catId)
+
+  if (!category)
+    throw createError(`Category ${catId} not found.`)
+
+  return poiCompo.formatPoi(feature, category)
 }
 </script>
 
@@ -112,29 +141,27 @@ function handleClose(): void {
     @map-style-load="onMapStyleLoad"
   >
     <template #drawer>
-      <VLayout v-if="selectedFeature">
-        <VNavigationDrawer absolute permanent elevation="4" location="start">
-          <VCard>
-            <template #append>
-              <UIButton
-                class="close-button"
-                color="#ffffff"
-                icon="times"
-                :title="$t('ui.close')"
-                @click=" handleClose"
-              />
-            </template>
-            <VCardText>
-              <PoiCardContent
-                :show-actions="true"
-                :show-only-route-action="true"
-                :details-is-external="true"
-                :poi="selectedFeature"
-              />
-            </VCardText>
-          </VCard>
-        </VNavigationDrawer>
-      </VLayout>
+      <VNavigationDrawer v-if="selectedFeature" absolute permanent elevation="4" location="start">
+        <VCard>
+          <template #append>
+            <UIButton
+              class="close-button"
+              color="#ffffff"
+              icon="times"
+              :title="$t('ui.close')"
+              @click="handleClose"
+            />
+          </template>
+          <VCardText>
+            <PoiCardContent
+              :show-actions="false"
+              :show-only-route-action="true"
+              :details-is-external="true"
+              :poi="selectedFeature"
+            />
+          </VCardText>
+        </VCard>
+      </VNavigationDrawer>
     </template>
   </MapBase>
 </template>

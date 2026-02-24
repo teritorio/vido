@@ -1,12 +1,11 @@
 <script lang="ts" setup>
 import DateRange from '~/components/Filters/DateRange.vue'
-import type { FilterDate } from '~/lib/apiMenu'
+import type { FilterDate } from '~/types/api/filters'
 import { FilterValueDate } from '~/utils/types-filters'
 
 const def: FilterDate = {
   type: 'date_range',
-  property_begin: 'begin',
-  property_end: 'end',
+  property: ['start_end_date'],
   name: { fr: 'plop' },
 }
 

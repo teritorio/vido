@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { FitBoundsOptions, LngLatBounds, MapGeoJSONFeature } from 'maplibre-gl'
+import type { FitBoundsOptions, GeoJSONFeature, LngLatBounds } from 'maplibre-gl'
 import { storeToRefs } from 'pinia'
 import type { MultiPolygon, Polygon } from 'geojson'
 import { decodeBase32 } from 'geohashing'
@@ -16,7 +16,8 @@ import SearchResults from '~/components/Search/SearchResults.vue'
 import SearchInput from '~/components/Search/SearchInput.vue'
 import CookiesConsent from '~/components/UI/CookiesConsent.vue'
 import Logo from '~/components/UI/Logo.vue'
-import { type ApiPoi, getPois } from '~/lib/apiPois'
+import { getPois } from '~/lib/apiPois'
+import type { Poi } from '~/types/local/poi'
 import { getBBox } from '~/lib/bbox'
 import { favoriteStore as useFavoriteStore } from '~/stores/favorite'
 import { mapStore as useMapStore } from '~/stores/map'
@@ -31,17 +32,11 @@ import type { ApiAddrSearchResult, ApiSearchResult } from '~/lib/apiSearch'
 import IsochroneStatus from '~/components/Isochrone/IsochroneStatus.vue'
 import MenuNavbar from '~/components/MenuNavbar.vue'
 
-//
-// Props
-//
 const props = defineProps<{
   boundaryArea?: Polygon | MultiPolygon
   initialCategoryIds?: number[]
 }>()
 
-//
-// Composables
-//
 const { apiAddr } = useRuntimeConfig().public
 const mapStore = useMapStore()
 const { isModeFavorites, isModeExplorer, isModeExplorerOrFavorites, mode, selectedFeature, teritorioCluster, isDepsView } = storeToRefs(mapStore)
@@ -65,10 +60,8 @@ const {
   searchSelectedFeature,
   resultsCount,
 } = storeToRefs(searchStore)
+const poiCompo = usePoi()
 
-//
-// Data
-//
 const allowRegionBackZoom = ref<boolean>(false)
 const isFilterActive = ref<boolean>(false)
 const initialBbox = ref<LngLatBounds>()
@@ -76,9 +69,6 @@ const showFavoritesOverlay = ref<boolean>(false)
 const isPoiCardShown = ref<boolean>(false)
 const mapFeaturesRef = ref<InstanceType<typeof MapFeatures>>()
 
-//
-// Hooks
-//
 onBeforeMount(async () => {
   const favs = getHashPart(router, 'favs')
   if (favs) {
@@ -124,16 +114,14 @@ onMounted(() => {
     origin: OriginEnum[router.currentRoute.value.query.origin as keyof typeof OriginEnum],
   })
 
-  initialBbox.value = getBBox({ type: 'Feature', geometry: props.boundaryArea || settings.value!.bbox_line, properties: {} })
+  if (props.boundaryArea || settings.value?.bbox_line)
+    initialBbox.value = getBBox({ type: 'Feature', geometry: (props.boundaryArea || settings.value!.bbox_line)!, properties: {} })
 })
 
 onBeforeUnmount(() => {
   searchStore.dispose()
 })
 
-//
-// Computed
-//
 const fitBoundsPaddingOptions = computed((): FitBoundsOptions['padding'] => {
   if (device.value.smallScreen) {
     return {
@@ -158,7 +146,8 @@ const target = computed(() => {
 })
 
 const mapFeatures = computed(() => {
-  let f: ApiPoi[]
+  let f: Poi[]
+
   switch (mode.value as Mode) {
     case Mode.BROWSER:
       f = flattenFeatures(features.value)
@@ -185,9 +174,6 @@ const poiFilters = computed(() => {
   )
 })
 
-//
-// Watchers
-//
 watch(searchSelectedFeature, (newValue) => {
   if (newValue)
     searchSelectFeature(newValue)
@@ -206,13 +192,13 @@ watch(selectedFeature, (newFeature, oldFeature) => {
       $tracking({
         type: 'popup',
         poiId: newFeature.properties.metadata.id || newFeature.properties?.id,
-        title: newFeature.properties?.name,
+        title: newFeature.properties?.name?.['fr-FR'],
         location: window.location.href,
         path: route.path,
         categoryIds: newFeature.properties?.metadata?.category_ids || [],
       })
     }
-    else if (isDepsView.value) {
+    else if (!isDepsView.value) {
       menuStore.fetchFeatures({
         categoryIds: selectedCategoryIds.value,
         clipingPolygonSlug: route.query.clipingPolygonSlug?.toString(),
@@ -225,12 +211,14 @@ watch(selectedCategoryIds, (a, b) => {
   if (a !== b) {
     routerPushUrl()
 
-    menuStore.fetchFeatures({
-      categoryIds: selectedCategoryIds.value,
-      clipingPolygonSlug: route.query.clipingPolygonSlug?.toString(),
-    })
+    if (!isDepsView.value) {
+      menuStore.fetchFeatures({
+        categoryIds: selectedCategoryIds.value,
+        clipingPolygonSlug: route.query.clipingPolygonSlug?.toString(),
+      })
 
-    allowRegionBackZoom.value = true
+      allowRegionBackZoom.value = true
+    }
   }
 })
 
@@ -259,10 +247,7 @@ watch(isModeFavorites, async (isEnabled) => {
   }
 })
 
-//
-// Methods
-//
-async function goToSelectedFeature(feature?: ApiPoi) {
+async function goToSelectedFeature(feature?: Poi) {
   if (mapFeaturesRef.value) {
     if (feature && selectedFeature.value?.properties.metadata.id !== feature.properties.metadata.id)
       await mapFeaturesRef.value.updateSelectedFeature(feature)
@@ -281,7 +266,7 @@ async function fetchAddress(hash: string) {
   }
 }
 
-async function fetchFavorites() {
+async function fetchFavorites(): Promise<Poi[]> {
   if (!favoritesIds.value.length)
     return []
 
@@ -293,16 +278,22 @@ async function fetchFavorites() {
     query.cliping_polygon_slug = route.query.clipingPolygonSlug.toString()
 
   return await getPois(favoritesIds.value, query)
-    .then(pois => (pois && pois.features) || [])
-    .then(pois =>
-      pois.map(poi => ({
-        ...poi,
-        properties: {
-          ...poi.properties,
-          vido_cat: poi.properties.metadata?.category_ids?.[0],
-        },
-      })),
-    )
+    .then(pois => pois.features.map((feature) => {
+      const catId = feature.properties.metadata.category_ids?.[0]
+
+      if (!catId)
+        throw createError(`Category ID not found for feature ${feature.properties.metadata.id}.`)
+
+      const category = menuStore.getCurrentCategory(catId)
+
+      if (!category)
+        throw createError(`Category ${catId} not found.`)
+
+      const poi = poiCompo.formatPoi(feature, category)
+      poi.properties.vido_cat = poi.properties.metadata?.category_ids?.[0]
+
+      return poi
+    }))
 }
 
 async function handleFavorites() {
@@ -314,7 +305,7 @@ async function handleFavorites() {
   favoriteFeatures.value = [...favoriteFeatures.value, ...favorites, ...favoriteAddresses]
 }
 
-async function handleFavoriteAddresses() {
+async function handleFavoriteAddresses(): Promise<Poi[]> {
   if (!favoriteAddresses.value.size)
     return []
 
@@ -381,7 +372,7 @@ function routerPushUrl(hashUpdate: { [key: string]: string | null } = {}) {
   })
 }
 
-function toggleExploreAroundSelectedPoi(feature?: ApiPoi) {
+function toggleExploreAroundSelectedPoi(feature?: Poi) {
   if (!isModeExplorer.value) {
     mode.value = Mode.EXPLORER
     goToSelectedFeature(feature)
@@ -395,7 +386,7 @@ function toggleExploreAroundSelectedPoi(feature?: ApiPoi) {
   }
 }
 
-function toggleFavorite(feature: ApiPoi) {
+function toggleFavorite(feature: Poi) {
   try {
     if (feature.properties.internalType === 'address')
       favoriteStore.toggleFavoriteAddr(feature)
@@ -407,9 +398,9 @@ function toggleFavorite(feature: ApiPoi) {
   }
 }
 
-function searchSelectFeature(feature: ApiPoi) {
+function searchSelectFeature(feature: Poi) {
   goToSelectedFeature(feature)
-  teritorioCluster.value?.setSelectedFeature(feature as unknown as MapGeoJSONFeature)
+  teritorioCluster.value?.setSelectedFeature(feature as unknown as GeoJSONFeature)
 }
 
 const bottomMenuRef = ref<HTMLDivElement>()
@@ -430,7 +421,7 @@ function handlePoiCardClose() {
 
 onBeforeUnmount(() => {
   mapStore.setSelectedFeature()
-  teritorioCluster.value = null
+  teritorioCluster.value = undefined
 })
 </script>
 
@@ -540,7 +531,7 @@ onBeforeUnmount(() => {
           :style-icon-filter="poiFilters"
           :enable-filter-route-by-categories="!isModeFavorites"
           :enable-filter-route-by-features="true"
-          :boundary-area="boundaryArea || settings!.polygon.data"
+          :boundary-area="boundaryArea || settings?.polygon?.data"
         >
           <Logo
             v-if="device.smallScreen && !isModeExplorerOrFavorites"

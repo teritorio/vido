@@ -1,147 +1,103 @@
-<script lang="ts">
+<script setup lang="ts">
 import copy from 'fast-copy'
-import type { PropType } from 'vue'
 import { VSelect } from 'vuetify/components/VSelect'
-
-import { defineNuxtComponent } from '#app'
+import { DateFilterLabel, type DateFilterOption } from '~/utils/types'
 import type { FilterValueDate } from '~/utils/types-filters'
+import { formatDate } from '~/utils/utilities'
 
-export enum DateFilterLabel {
-  TODAY = 'today',
-  TOMORROW = 'tomorrow',
-  THIS_WEEKEND = 'thisWeekend',
-  NEXT_WEEK = 'nextWeek',
-  NEXT_MONTH = 'nextMonth',
-}
+const props = defineProps<{
+  filter: FilterValueDate
+}>()
 
-export interface DateFilterOption {
-  title: string
-  value: string
-  begin: string
-  end: string
-}
+const emit = defineEmits<{
+  (e: 'change', newFilter: FilterValueDate): void
+}>()
 
-function formatDate(date: Date): string {
-  return (
-    `${date.getFullYear().toString()
-    }-${
-    (date.getMonth() + 1).toString().padStart(2, '0')
-    }-${
-    date.getDate().toString().padStart(2, '0')}`
-  )
-}
+const today = new Date()
+today.setHours(0, 0, 0, 0)
 
-export default defineNuxtComponent({
-  components: {
-    VSelect,
+const tomorrow = new Date(today)
+tomorrow.setDate(tomorrow.getDate() + 1)
+
+const saturday = new Date(today)
+saturday.setDate(saturday.getDate() + ((6 + (7 - saturday.getDay())) % 7))
+
+const sunday = new Date(saturday)
+sunday.setDate(saturday.getDate() + 1)
+
+const in7days = new Date(today)
+in7days.setDate(in7days.getDate() + 7)
+
+const in1month = new Date(today)
+in1month.setMonth(in1month.getMonth() + 1)
+
+const { t } = useI18n()
+const dateFilters = computed(() => ([
+  {
+    title: t(`dateFilter.${DateFilterLabel.TODAY}`),
+    value: DateFilterLabel.TODAY,
+    begin: formatDate(today),
+    end: formatDate(today),
   },
-
-  props: {
-    filter: {
-      type: Object as PropType<FilterValueDate>,
-      required: true,
-    },
+  {
+    title: t(`dateFilter.${DateFilterLabel.TOMORROW}`),
+    value: DateFilterLabel.TOMORROW,
+    begin: formatDate(tomorrow),
+    end: formatDate(tomorrow),
   },
-
-  emits: {
-    change: (_newFilter: FilterValueDate) => true,
+  {
+    title: t(`dateFilter.${DateFilterLabel.THIS_WEEKEND}`),
+    value: DateFilterLabel.THIS_WEEKEND,
+    begin: formatDate(saturday),
+    end: formatDate(sunday),
   },
-
-  data(): {
-    dateFilters: DateFilterOption[]
-  } {
-    const today = new Date()
-    today.setHours(0, 0, 0, 0)
-
-    const tomorrow = new Date(today)
-    tomorrow.setDate(tomorrow.getDate() + 1)
-
-    const saturday = new Date(today)
-    saturday.setDate(saturday.getDate() + ((6 + (7 - saturday.getDay())) % 7))
-
-    const sunday = new Date(saturday)
-    sunday.setDate(saturday.getDate() + 1)
-
-    const in7days = new Date(today)
-    in7days.setDate(in7days.getDate() + 7)
-
-    const in1month = new Date(today)
-    in1month.setMonth(in1month.getMonth() + 1)
-
-    return {
-      dateFilters: [
-        {
-          title: this.$t(`dateFilter.${DateFilterLabel.TODAY}`),
-          value: DateFilterLabel.TODAY,
-          begin: formatDate(today),
-          end: formatDate(today),
-        },
-        {
-          title: this.$t(`dateFilter.${DateFilterLabel.TOMORROW}`),
-          value: DateFilterLabel.TOMORROW,
-          begin: formatDate(tomorrow),
-          end: formatDate(tomorrow),
-        },
-        {
-          title: this.$t(`dateFilter.${DateFilterLabel.THIS_WEEKEND}`),
-          value: DateFilterLabel.THIS_WEEKEND,
-          begin: formatDate(saturday),
-          end: formatDate(sunday),
-        },
-        {
-          title: this.$t(`dateFilter.${DateFilterLabel.NEXT_WEEK}`),
-          value: DateFilterLabel.NEXT_WEEK,
-          begin: formatDate(today),
-          end: formatDate(in7days),
-        },
-        {
-          title: this.$t(`dateFilter.${DateFilterLabel.NEXT_MONTH}`),
-          value: DateFilterLabel.NEXT_MONTH,
-          begin: formatDate(today),
-          end: formatDate(in1month),
-        },
-      ],
-    }
+  {
+    title: t(`dateFilter.${DateFilterLabel.NEXT_WEEK}`),
+    value: DateFilterLabel.NEXT_WEEK,
+    begin: formatDate(today),
+    end: formatDate(in7days),
   },
-
-  computed: {
-    currentValue(): string | undefined {
-      return this.dateFilters.find(
-        e =>
-          e.begin === this.filter.filterValueBegin
-          && e.end === this.filter.filterValueEnd,
-      )?.value
-    },
+  {
+    title: t(`dateFilter.${DateFilterLabel.NEXT_MONTH}`),
+    value: DateFilterLabel.NEXT_MONTH,
+    begin: formatDate(today),
+    end: formatDate(in1month),
   },
+]))
 
-  methods: {
-    onChange(value: string | null) {
-      const newFilter = copy(this.filter)
-
-      if (value) {
-        const dateRange = this.dateFilters.find(
-          (e: DateFilterOption) => e.value === value,
-        )
-
-        if (dateRange) {
-          newFilter.filterValueBegin = dateRange.begin
-          newFilter.filterValueEnd = dateRange.end
-        }
-      }
-      else {
-        newFilter.filterValueBegin = null
-        newFilter.filterValueEnd = null
-      }
-
-      this.$emit('change', newFilter)
-    },
-  },
+const currentValue = computed((): string | undefined => {
+  return dateFilters.value.find(
+    e =>
+      e.begin === props.filter.filterValueBegin
+      && e.end === props.filter.filterValueEnd,
+  )?.value
 })
+
+function onChange(value: string | null) {
+  const newFilter = copy(props.filter)
+
+  if (value) {
+    const dateRange = dateFilters.value.find(
+      (e: DateFilterOption) => e.value === value,
+    )
+
+    if (dateRange) {
+      newFilter.filterValueBegin = dateRange.begin
+      newFilter.filterValueEnd = dateRange.end
+    }
+  }
+  else {
+    newFilter.filterValueBegin = null
+    newFilter.filterValueEnd = null
+  }
+
+  emit('change', newFilter)
+}
 </script>
 
 <template>
   <div>
-    <v-select
+    <VSelect
       :model-value="currentValue"
       outlined
       :label="filter.def.name && filter.def.name.fr"

@@ -19,9 +19,8 @@ import { storeToRefs } from 'pinia'
 import { TeritorioCluster } from '@teritorio/maplibre-gl-teritorio-cluster'
 import Attribution from '~/components/Map/Attribution.vue'
 import Map from '~/components/Map/Map.vue'
-import type { ApiPoi } from '~/lib/apiPois'
+import type { PoiUnion } from '~/types/local/poi-deps'
 import { MAP_ZOOM } from '~/lib/constants'
-import type { MapPoi } from '~/lib/mapPois'
 import type { MapStyleEnum } from '~/utils/types'
 import { mapStore as useMapStore } from '~/stores/map'
 import { clusterRender, markerRender, pinMarkerRender } from '~/lib/clusters'
@@ -31,7 +30,7 @@ const props = withDefaults(defineProps<{
   bounds?: LngLatBounds
   fitBoundsPaddingOptions?: FitBoundsOptions['padding']
   extraAttributions?: string[]
-  features: ApiPoi[]
+  features: PoiUnion[]
   fullscreenControl?: boolean
   hash?: string
   mapStyle?: MapStyleEnum
@@ -133,7 +132,7 @@ function fitBounds(bounds: LngLatBounds, options: FitBoundsOptions = {}): void {
   map.value.fitBounds(bounds, fitBoundsOptions(options))
 }
 
-function featuresPrepare(features: ApiPoi[]): ApiPoi[] {
+function featuresPrepare(features: PoiUnion[]): PoiUnion[] {
   return features.map((feature) => {
     if (feature.geometry && ['MultiPoint', 'MultiLineString', 'MultiPolygon'].includes(feature.geometry.type)) {
       return (feature.geometry as (MultiPoint | MultiLineString | MultiPolygon)).coordinates.map(coordinates => ({
@@ -143,7 +142,7 @@ function featuresPrepare(features: ApiPoi[]): ApiPoi[] {
           type: feature.geometry.type.substring(5) as ('Point' | 'LineString' | 'Polygon'),
           coordinates,
         },
-      } as ApiPoi))
+      } as PoiUnion))
     }
     else {
       return [feature]
@@ -157,7 +156,7 @@ function featuresPrepare(features: ApiPoi[]): ApiPoi[] {
     })
 }
 
-function initPoiLayer(features: MapPoi[], clusterPropertiesValues: string[], clusterPropertiesKeyExpression: ExpressionSpecification, cluster?: boolean): void {
+function initPoiLayer(features: PoiUnion[], clusterPropertiesValues: string[], clusterPropertiesKeyExpression: ExpressionSpecification, cluster?: boolean): void {
   if (!map.value)
     return
 
@@ -199,7 +198,7 @@ function initPoiLayer(features: MapPoi[], clusterPropertiesValues: string[], clu
     maxzoom: 24,
     data: {
       type: 'FeatureCollection',
-      features: featuresPrepare(features as ApiPoi[]),
+      features: featuresPrepare(features),
     },
   })
 

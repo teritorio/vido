@@ -125,12 +125,11 @@ export default defineI18nLocale(() => {
       poweredBy: 'Réalisation',
       mapillaryExplore: 'Explorer sur Mapillary',
       informations: 'Informations',
-      downloadGPX: 'Le parcours (trace GPS) au format GPX',
-      downloadPDF: 'La fiche complète au format PDF',
       routes: {
         waypoints: 'Points guides',
         pois: 'Points d’intérêts',
       },
+      report: 'Signaler un problème',
     },
     poisTable: {
       empty: 'La liste est vide : sélectionnez une catégorie',

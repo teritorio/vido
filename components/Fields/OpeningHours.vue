@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import type { optional_conf } from 'opening_hours'
 import OpeningHours from 'opening_hours'
-import { storeToRefs } from 'pinia'
 import RelativeDate from '~/components/UI/RelativeDate.vue'
 import { PropertyTranslationsContextEnum, useSiteStore } from '~/stores/site'
-import { PointTime, isSupportedOsmTags } from '~/composables/useOpeningHours'
+import type { AssocRenderKey, AssocRenderValue } from '~/utils/types'
+import { assocRenderKey } from '~/utils/types'
 
 //
 // Props
@@ -13,7 +13,7 @@ const props = withDefaults(defineProps<{
   baseDate?: Date
   context: PropertyTranslationsContextEnum
   openingHours: string
-  tagKey: string
+  renderKey: AssocRenderKey
 }>(), {
   baseDate: () => new Date(),
 })
@@ -23,13 +23,17 @@ const props = withDefaults(defineProps<{
 //
 const siteStore = useSiteStore()
 const { settings } = siteStore
-const { locale } = storeToRefs(useSiteStore())
+const { locale } = useI18n()
 const { t } = useI18n()
+
+const PointTime = ['collection_times'] as AssocRenderValue[]
+
+const tagKey = computed(() => assocRenderKey[props.renderKey])
 
 //
 // Computed
 //
-const isPointTime = computed(() => isSupportedOsmTags(PointTime, props.tagKey))
+const isPointTime = computed(() => PointTime.includes(tagKey.value))
 
 const comment = computed(() => {
   const oh = OpeningHoursFactory()
@@ -118,26 +122,29 @@ const nextChange = computed((): { type: 'opened' | 'openAt', nextChange: Date } 
 // Methods
 //
 function OpeningHoursFactory(): OpeningHours | undefined {
+  if (!settings?.bbox_line || !settings.default_country || !settings.default_country_state_opening_hours)
+    return undefined
+
   try {
     // https://github.com/opening-hours/opening_hours.js/issues/428
     // @ts-expect-error: Fix typings
     const optionalConf: optional_conf = {
-      tag_key: props.tagKey,
+      tag_key: tagKey.value,
     }
     return new OpeningHours(
       props.openingHours,
       {
         lon:
-          (settings!.bbox_line.coordinates[0][1]
-          + settings!.bbox_line.coordinates[1][1])
+          (settings.bbox_line.coordinates[0][1]
+          + settings.bbox_line.coordinates[1][1])
           / 2,
         lat:
-          (settings!.bbox_line.coordinates[0][0]
-          + settings!.bbox_line.coordinates[1][0])
+          (settings.bbox_line.coordinates[0][0]
+          + settings.bbox_line.coordinates[1][0])
           / 2,
         address: {
-          country_code: settings!.default_country,
-          state: settings!.default_country_state_opening_hours,
+          country_code: settings.default_country,
+          state: settings.default_country_state_opening_hours,
         },
       },
       optionalConf,

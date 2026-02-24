@@ -7,8 +7,7 @@ import MapFeatures from '~/components/MainMap/MapFeatures.vue'
 import PoiCardContent from '~/components/PoisCard/PoiCardContent.vue'
 import CategorySelector from '~/components/PoisList/CategorySelector.vue'
 import UIButton from '~/components/UI/UIButton.vue'
-import type { ApiPoi } from '~/lib/apiPois'
-import type { ApiMenuCategory } from '~/lib/apiMenu'
+import type { Poi } from '~/types/local/poi'
 import { getBBox } from '~/lib/bbox'
 import { mapStore as useMapStore } from '~/stores/map'
 import { menuStore as useMenuStore } from '~/stores/menu'
@@ -17,19 +16,13 @@ import { Mode } from '~/utils/types'
 import { flattenFeatures } from '~/utils/utilities'
 import IsochroneStatus from '~/components/Isochrone/IsochroneStatus.vue'
 
-//
-// Props
-//
 const props = defineProps<{
   boundaryArea?: Polygon | MultiPolygon
   initialCategoryIds?: number[]
 }>()
 
-//
-// Composables
-//
 const mapStore = useMapStore()
-const { isModeExplorer, mode, selectedFeature } = storeToRefs(mapStore)
+const { isModeExplorer, mode, selectedFeature, isDepsView } = storeToRefs(mapStore)
 const menuStore = useMenuStore()
 const { apiMenuCategory, features, selectedCategories, selectedCategoryIds, menuItems } = storeToRefs(menuStore)
 const { settings } = storeToRefs(useSiteStore())
@@ -38,36 +31,14 @@ const router = useRouter()
 const { t } = useI18n()
 const { isochroneCurrentFeature } = useIsochrone()
 
-//
-// Data
-//
 const initialBbox = ref<LngLatBounds>()
 const mapFeaturesRef = ref<InstanceType<typeof MapFeatures>>()
 
-//
-// Hooks
-//
 onMounted(() => {
-  if (props.initialCategoryIds) {
-    menuStore.setSelectedCategoryIds(props.initialCategoryIds)
-  }
-  else if (typeof location !== 'undefined') {
-    const enabledCategories: ApiMenuCategory['id'][] = []
-    if (apiMenuCategory.value) {
-      apiMenuCategory.value.forEach((category) => {
-        if (category.selected_by_default)
-          enabledCategories.push(category.id)
-      })
-    }
-    menuStore.setSelectedCategoryIds(enabledCategories)
-  }
-
-  initialBbox.value = getBBox({ type: 'Feature', geometry: props.boundaryArea || settings.value!.bbox_line, properties: {} })
+  if (props.boundaryArea || settings.value?.bbox_line)
+    initialBbox.value = getBBox({ type: 'Feature', geometry: (props.boundaryArea || settings.value!.bbox_line)!, properties: {} })
 })
 
-//
-// Computed
-//
 const showEmbeddedUi = computed(() => route.query.showEmbeddedUi !== 'false')
 
 const filters = computed(() => {
@@ -94,7 +65,7 @@ const isFiltersEqualToCategoryId = computed(() => {
   return false
 })
 
-const mapFeatures = computed((): ApiPoi[] => {
+const mapFeatures = computed((): Poi[] => {
   return flattenFeatures(features.value)
 })
 
@@ -110,17 +81,25 @@ const poiFilters = computed(() => {
   )
 })
 
-//
-// Watchers
-//
-watch(selectedFeature, () => {
+watch(selectedFeature, (newFeature, oldFeature) => {
   routerPushUrl()
+
+  if (newFeature && oldFeature && newFeature.properties.metadata.id === oldFeature.properties.metadata.id)
+    return
+
+  if (!isDepsView.value) {
+    menuStore.fetchFeatures({
+      categoryIds: selectedCategoryIds.value,
+      clipingPolygonSlug: route.query.clipingPolygonSlug?.toString(),
+    })
+  }
 })
 
 watch(selectedCategoryIds, (a, b) => {
   if (a !== b) {
     routerPushUrl()
-    if (selectedCategoryIds.value) {
+
+    if (!isDepsView.value) {
       menuStore.fetchFeatures({
         categoryIds: selectedCategoryIds.value,
         clipingPolygonSlug: route.query.clipingPolygonSlug?.toString(),
@@ -129,9 +108,6 @@ watch(selectedCategoryIds, (a, b) => {
   }
 })
 
-//
-// Methods
-//
 function goToSelectedFeature() {
   if (mapFeaturesRef.value)
     mapFeaturesRef.value.goToSelectedFeature()
@@ -162,6 +138,12 @@ function toggleExploreAroundSelectedPoi() {
     mode.value = Mode.BROWSER
   }
 }
+
+function handlePoiCardClose() {
+  if (mapFeaturesRef.value) {
+    mapFeaturesRef.value.updateSelectedFeature()
+  }
+}
 </script>
 
 <template>
@@ -174,7 +156,7 @@ function toggleExploreAroundSelectedPoi() {
         <UIButton
           :label="t('ui.close')"
           icon="times"
-          @click="mapStore.setSelectedFeature()"
+          @click="handlePoiCardClose"
         />
       </div>
       <PoiCardContent
@@ -199,7 +181,8 @@ function toggleExploreAroundSelectedPoi() {
           :selected-categories-ids="selectedCategoryIds"
           :style-icon-filter="poiFilters"
           :cooperative-gestures="false"
-          :boundary-area="boundaryArea || settings!.polygon.data"
+          :boundary-area="boundaryArea || settings?.polygon?.data"
+          :enable-filter-route-by-features="true"
         />
         <CategorySelector
           v-if="!isFiltersEqualToCategoryId && showEmbeddedUi"
