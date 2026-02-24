@@ -4,6 +4,7 @@ import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { storeToRefs } from 'pinia'
 import BreadcrumbsWrapper from '~/components/BreadcrumbsWrapper.vue'
 import FilterCompo from '~/components/Menu/Filter.vue'
+import GlobalFiltersCollapsible from '~/components/Menu/GlobalFiltersCollapsible.vue'
 import ItemList from '~/components/Menu/ItemList.vue'
 import type { ApiMenuCategory } from '~/types/api/menu'
 import type { MenuGroup, MenuItem } from '~/types/local/menu'
@@ -70,12 +71,6 @@ const categoriesActivesCountByParent = computed((): Record<ApiMenuCategory['id']
 
 const hasSlot = computed((): boolean => {
   return slots.default !== undefined
-})
-
-const hasRootGlobalFilters = computed((): boolean => {
-  return currentMenuItems.value.some(
-    menuItem => 'menu_group' in menuItem && globalFilters.value[menuItem.id],
-  )
 })
 
 watch(currentMenuItems, () => {
@@ -151,22 +146,16 @@ function onClickUnselectAll(): void {
       <slot />
     </component>
 
-    <component :is="dynamicComponent" v-if="hasRootGlobalFilters && !isOnSearch">
-      <template v-for="menuItem in currentMenuItems" :key="`filter-${menuItem.id}`">
-        <FilterCompo
-          v-if="'menu_group' in menuItem && globalFilters[menuItem.id]"
-          :id="menuItem.id"
-          :filters-values="globalFilters[menuItem.id]"
-          global
-        />
-      </template>
-    </component>
-
     <template v-for="(menuItem, index) in currentMenuItems" :key="menuItem.id">
       <component
         :is="dynamicComponent"
         v-if="index !== 0 && !isOnSearch"
       >
+        <GlobalFiltersCollapsible
+          v-if="'menu_group' in menuItem && globalFilters[menuItem.id]?.length > 0"
+          :filters-map="[{ id: menuItem.id, filtersValues: globalFilters[menuItem.id] }]"
+          @activate-filter="$emit('activateFilter', $event)"
+        />
         <ItemList
           :menu-items="getMenuItemByParentId(menuItem.id)"
           :filters="filters"
@@ -236,11 +225,10 @@ function onClickUnselectAll(): void {
         aria-orientation="horizontal"
       />
 
-      <FilterCompo
-        v-if="currentParent && 'menu_group' in currentParent && globalFilters[currentParent.id]"
-        :id="currentParent.id"
-        :filters-values="globalFilters[currentParent.id]"
-        global
+      <GlobalFiltersCollapsible
+        v-if="currentParent && 'menu_group' in currentParent && globalFilters[currentParent.id]?.length > 0"
+        :filters-map="[{ id: currentParent.id, filtersValues: globalFilters[currentParent.id] }]"
+        @activate-filter="$emit('activateFilter', $event)"
       />
 
       <ItemList
