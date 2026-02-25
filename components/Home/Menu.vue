@@ -62,7 +62,7 @@ const categoriesActivesCountByParent = computed((): Record<ApiMenuCategory['id']
     let parentId = menuItems?.value?.[categoryId]?.parent_id
     while (parentId) {
       counts[parentId] = (counts[parentId] || 0) + 1
-      parentId = menuItems?.value?.[parentId].parent_id
+      parentId = menuItems?.value?.[parentId]?.parent_id
     }
   })
   return counts
