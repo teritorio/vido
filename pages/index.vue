@@ -160,7 +160,7 @@ function getMainPoi(features: ApiPoiUnion[]): ApiPoi {
 function transformApiPoiDepsCollection(data?: ApiPoiDepsCollection): PoiUnion[] | undefined {
   poiDepsCompo.resetWaypointIndex()
 
-  if (!data)
+  if (!data || !poiId.value)
     return undefined
 
   mainPoi.value = getMainPoi(data.features)
