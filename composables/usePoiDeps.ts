@@ -1,3 +1,4 @@
+import { captureMessage } from '@sentry/nuxt'
 import { ApiRouteWaypointTypeObject } from '~/types/api/poi-deps'
 import type { ApiPoiDeps, ApiPoiDepsCollection, ApiPoiUnion } from '~/types/api/poi-deps'
 import { type PoiUnion, iconMap } from '~/types/local/poi-deps'
@@ -111,12 +112,22 @@ export function usePoiDeps() {
       : collection.features
 
     return sortedFeatures.map((feature) => {
-      const catId = isWaypoint(feature) ? mainPoi.properties.metadata.category_ids?.[0] : feature.properties.metadata.category_ids?.[0]
+      let catId = feature.properties.metadata.category_ids?.[0]
+
+      if (!catId) {
+        catId = mainPoi.properties.metadata.category_ids?.[0]
+        captureMessage(`Feature ${feature.properties.metadata.id} has no category_ids, falling back to main POI category`, 'warning')
+      }
 
       if (!catId)
         throw createError(`Category ID not found for feature ${feature.properties.metadata.id}.`)
 
-      const category = menuStore.getCurrentCategory(catId)
+      let category = menuStore.getCurrentCategory(catId)
+
+      if (!category) {
+        captureMessage(`Category ${catId} not found in menu for feature ${feature.properties.metadata.id}`, 'warning')
+        category = menuStore.getCurrentCategory(mainPoi.properties.metadata.category_ids?.[0] as number)
+      }
 
       if (!category)
         throw createError(`Category ${catId} not found.`)
