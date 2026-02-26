@@ -37,7 +37,7 @@ export function isFiledEmpty(
   properties: { [key: string]: string },
   geom: GeoJSON.Geometry,
 ): boolean {
-  if (field.field === 'route') {
+  if (field.field[0] === 'route' && field.field.length === 1) {
     // Check nested object format using existing helper
     const nestedValue = getNestedPropertyValue(properties, field.field, field.multilingual ?? false)
     if (nestedValue !== null && nestedValue !== undefined)
@@ -52,17 +52,17 @@ export function isFiledEmpty(
     )
   }
 
-  if (field.field === 'addr') {
+  if (field.field[0] === 'addr' && field.field.length === 1) {
     return AddressFields.reduce(
       (sum: boolean, value) => sum || value in properties,
       false,
     )
   }
 
-  if (field.field === 'start_end_date')
+  if (field.field[0] === 'start_end_date' && field.field.length === 1)
     return isDateRangeEmpty(properties)
 
-  if (field.field === 'coordinates')
+  if (field.field[0] === 'coordinates' && field.field.length === 1)
     return isCoordinatesEmpty(geom)
 
   const value = getNestedPropertyValue(properties, field.field, field.multilingual ?? false)
@@ -114,7 +114,7 @@ export function formatApiAddressToFeature(feature: GeoJSON.Feature<GeoJSON.Point
         color_text: '#FFFFFF',
       },
       editorial: {
-        popup_fields: [{ field: 'name', translationKey: 'name', render: 'string', multilingual: true }],
+        popup_fields: [{ field: ['name'], translationKey: 'name', render: 'string', multilingual: true }],
       },
     },
   } as Poi

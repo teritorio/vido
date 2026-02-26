@@ -48,11 +48,11 @@ const translatedValue = computed(() => {
 
 <template>
   <RoutesField
-    v-if="field.render === 'route' && properties[field.field]"
+    v-if="field.render === 'route' && getNestedPropertyValue(properties, field.field)"
     class="field_content"
     :context="context"
     :recursion-stack="recursionStack"
-    :properties="(properties[field.field] as ApiPoiPropertiesRoute)"
+    :properties="(getNestedPropertyValue(properties, field.field) as ApiPoiPropertiesRoute)"
   >
     <FieldsHeader
       v-if="field.label"
@@ -65,7 +65,7 @@ const translatedValue = computed(() => {
 
   <AddressField
     v-else-if="field.render === 'addr'"
-    v-bind="(properties[field.field] as ApiPoiPropertiesAddress)"
+    v-bind="(getNestedPropertyValue(properties, field.field) as ApiPoiPropertiesAddress)"
   >
     <FieldsHeader
       v-if="field.label"
@@ -78,8 +78,8 @@ const translatedValue = computed(() => {
 
   <DateRange
     v-else-if="field.render === 'start_end_date'"
-    :start="(properties[field.field] as ApiPoiPropertiesStartEndDate | undefined)?.start_date"
-    :end="(properties[field.field] as ApiPoiPropertiesStartEndDate | undefined)?.end_date"
+    :start="(getNestedPropertyValue(properties, field.field) as ApiPoiPropertiesStartEndDate | undefined)?.start_date"
+    :end="(getNestedPropertyValue(properties, field.field) as ApiPoiPropertiesStartEndDate | undefined)?.end_date"
     :class="`field_content_level_${recursionStack.length}`"
   >
     <FieldsHeader

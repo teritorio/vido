@@ -11,7 +11,7 @@ const defaultProps = {
     group: 'contact',
     display_mode: 'standard',
     icon: 'phone',
-    fields: [{ field: 'name', render: 'string' }],
+    fields: [{ field: ['name'], render: 'string' }],
   },
   colorFill: '#f76Ffe',
   properties: {
@@ -42,7 +42,7 @@ export const Label = bind(FieldsGroup, {
     fields: [
       {
         label: true,
-        field: 'name',
+        field: ['name'],
         render: 'string',
       },
     ],
@@ -66,9 +66,9 @@ export const Many = bind(FieldsGroup, {
   group: {
     ...defaultProps.group,
     fields: [
-      { field: 'phone', render: 'phone' },
-      { field: 'route', render: 'route' },
-      { field: 'description', render: 'text' },
+      { field: ['phone'], render: 'phone' },
+      { field: ['route'], render: 'route' },
+      { field: ['description'], render: 'text' },
     ],
   },
   properties: {

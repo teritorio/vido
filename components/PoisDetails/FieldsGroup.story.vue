@@ -15,7 +15,7 @@ const defaultProps = {
         group: 'contact',
         display_mode: 'standard' as 'standard' | 'card',
         icon: 'phone',
-        fields: [{ field: 'name', render: 'string' } as FieldsListItem],
+        fields: [{ field: ['name'], render: 'string' } as FieldsListItem],
       },
     ],
   },
@@ -70,7 +70,7 @@ const props = {
           fields: [
             {
               label: true,
-              field: 'name',
+              field: ['name'],
               render: 'string',
             } as FieldsListItem,
           ],
@@ -98,9 +98,9 @@ const props = {
         {
           ...defaultProps.group.fields[0],
           fields: [
-            { field: 'phone', render: 'phone' } as FieldsListItem,
-            { field: 'route', render: 'route' } as FieldsListItem,
-            { field: 'description', render: 'text' } as FieldsListItem,
+            { field: ['phone'], render: 'phone' } as FieldsListItem,
+            { field: ['route'], render: 'route' } as FieldsListItem,
+            { field: ['description'], render: 'text' } as FieldsListItem,
           ],
         },
       ],

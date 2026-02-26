@@ -11,7 +11,7 @@ export function findFieldInList(fields: FieldsList | undefined, property: string
       if (found)
         return found
     }
-    else if (item.field === property) {
+    else if (item.field.join('.') === property) {
       return item
     }
   }
@@ -27,21 +27,22 @@ export function isFieldMultilingual(editorial: MenuCategoryEditorial, property: 
 }
 
 export function getNestedPropertyValue(obj: Record<string, any>, path: string | string[], multilingual = false): any {
-  const pathStr = Array.isArray(path) ? path.join('.') : path
-  const keys = pathStr.split(/[.:]/)
-  const [firstKey, ...restKeys] = keys
-  let value = obj?.[firstKey]
+  const keys = Array.isArray(path) ? path : path.split('.')
+  let value: any = obj
 
-  if (multilingual)
-    value = value?.['fr-FR']
+  for (const key of keys) {
+    if (value == null || typeof value !== 'object')
+      return null
 
-  if (restKeys.length === 0)
-    return value ?? null
+    // Auto-unwrap multilingual intermediate objects (e.g. route: { "fr-FR": { gpx_trace: "..." } })
+    if (!(key in value) && 'fr-FR' in value)
+      value = value['fr-FR']
 
-  // For nested paths, check if we need to extract multilingual value before continuing
-  // This handles cases like "route.gpx_trace" where route contains {"fr-FR": {...}}
-  if (!multilingual && value && typeof value === 'object' && 'fr-FR' in value)
+    value = value?.[key]
+  }
+
+  if (multilingual && value && typeof value === 'object' && 'fr-FR' in value)
     value = value['fr-FR']
 
-  return restKeys.reduce((acc, key) => acc?.[key], value) ?? null
+  return value ?? null
 }

@@ -62,7 +62,7 @@ const detailsFields = computed((): FieldsList | undefined => {
     return fields
   }
   else {
-    return fields.filter(field => 'group' in field || field.field !== 'description')
+    return fields.filter(field => 'group' in field || field.field[0] !== 'description')
   }
 })
 
@@ -217,7 +217,7 @@ onMounted(() => {
                 {
                   group: 'description',
                   display_mode: 'standard',
-                  fields: [{ field: 'description', translationKey: 'description', render: 'text', multilingual: true }],
+                  fields: [{ field: ['description'], translationKey: 'description', render: 'text', multilingual: true }],
                   icon: '',
                 },
               ],

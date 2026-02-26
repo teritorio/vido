@@ -36,7 +36,7 @@ describe('pois table', () => {
     const category = teritorioReferenceAPIFixture.menu.find(item => item.id === 211)!
 
     cy.get('th')
-      .contains((category as any).category.editorial.list_fields[0].field as string)
+      .contains((category as any).category.editorial.list_fields[0].field[0] as string)
 
     cy.get('td')
       .contains(pois.features[0].properties.name?.['fr-FR'] as string)
@@ -55,7 +55,7 @@ describe('pois table', () => {
 
     const category = teritorioReferenceAPIFixture.menu.find(item => item.id === 22)!
     cy.get('th').contains(
-      (category as any).category.editorial.list_fields[0].field,
+      (category as any).category.editorial.list_fields[0].field[0],
     )
     cy.get('td').contains(poisCategory22.features[0].properties.name['fr-FR'])
 

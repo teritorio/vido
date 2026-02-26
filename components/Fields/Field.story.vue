@@ -7,7 +7,7 @@ import type { MapPoiDescription } from '~/lib/mapPois'
 
 const defaultProps = {
   context: PropertyTranslationsContextEnum.Details,
-  field: { field: 'name', render: 'string' } as FieldsListItem,
+  field: { field: ['name'], render: 'string' } as FieldsListItem,
   properties: {
     metadata: { id: 0 },
     name: {
@@ -43,7 +43,7 @@ const props = {
   },
   DefaultListOne: {
     ...defaultProps,
-    field: { field: 'email', render: 'email' } as FieldsListItem,
+    field: { field: ['email'], render: 'email' } as FieldsListItem,
     properties: {
       ...defaultProps.properties,
       email: ['foo'],
@@ -51,7 +51,7 @@ const props = {
   },
   DefaultListMany: {
     ...defaultProps,
-    field: { field: 'email', render: 'email' } as FieldsListItem,
+    field: { field: ['email'], render: 'email' } as FieldsListItem,
     properties: {
       ...defaultProps.properties,
       email: ['foo', 'bar'],
@@ -72,7 +72,7 @@ const props = {
   },
   StartEndDate: {
     ...defaultProps,
-    field: { field: 'start_end_date', render: 'start_end_date' } as FieldsListItem,
+    field: { field: ['start_end_date'], render: 'start_end_date' } as FieldsListItem,
     properties: {
       ...defaultProps.properties,
       start_date: '2001-01-01',
@@ -81,7 +81,7 @@ const props = {
   },
   Addr: {
     ...defaultProps,
-    field: { field: 'addr', render: 'addr' } as FieldsListItem,
+    field: { field: ['addr'], render: 'addr' } as FieldsListItem,
     properties: {
       ...defaultProps.properties,
       'addr:housenumber': '33',
@@ -92,7 +92,7 @@ const props = {
   },
   Description: {
     ...defaultProps,
-    field: { field: 'description', render: 'text' } as FieldsListItem,
+    field: { field: ['description'], render: 'text' } as FieldsListItem,
     properties: {
       ...defaultProps.properties,
       description,
@@ -100,7 +100,7 @@ const props = {
   },
   DescriptionShort: {
     ...defaultProps,
-    field: { field: 'description', render: 'text' } as FieldsListItem,
+    field: { field: ['description'], render: 'text' } as FieldsListItem,
     properties: {
       ...defaultProps.properties,
       description,
@@ -108,7 +108,7 @@ const props = {
   },
   DescriptionDetails: {
     ...defaultProps,
-    field: { field: 'description', render: 'text' } as FieldsListItem,
+    field: { field: ['description'], render: 'text' } as FieldsListItem,
     properties: {
       ...defaultProps.properties,
       description,
@@ -117,7 +117,7 @@ const props = {
   },
   Email: {
     ...defaultProps,
-    field: { field: 'email', render: 'email' } as FieldsListItem,
+    field: { field: ['email'], render: 'email' } as FieldsListItem,
     properties: {
       ...defaultProps.properties,
       email: ['root@example.com'],
@@ -125,7 +125,7 @@ const props = {
   },
   Website: {
     ...defaultProps,
-    field: { field: 'website', render: 'weblink' } as FieldsListItem,
+    field: { field: ['website'], render: 'weblink' } as FieldsListItem,
     properties: {
       ...defaultProps.properties,
       website: ['https://example.com'],
@@ -133,7 +133,7 @@ const props = {
   },
   Facebook: {
     ...defaultProps,
-    field: { field: 'facebook', render: 'weblink@social-network' } as FieldsListItem,
+    field: { field: ['facebook'], render: 'weblink@social-network' } as FieldsListItem,
     properties: {
       ...defaultProps.properties,
       facebook: 'https://www.facebook.com/',
@@ -141,7 +141,7 @@ const props = {
   },
   Instagram: {
     ...defaultProps,
-    field: { field: 'instagram', render: 'weblink@social-network' } as FieldsListItem,
+    field: { field: ['instagram'], render: 'weblink@social-network' } as FieldsListItem,
     properties: {
       ...defaultProps.properties,
       instagram: 'https://www.instagram.com/',
@@ -149,7 +149,7 @@ const props = {
   },
   RouteGpxTrace: {
     ...defaultProps,
-    field: { field: 'route:gpx_trace', render: 'weblink@download' } as FieldsListItem,
+    field: { field: ['route:gpx_trace'], render: 'weblink@download' } as FieldsListItem,
     properties: {
       ...defaultProps.properties,
       'route:gpx_trace': 'https://cdt40.tourinsoft.com/upload/15.8.gpx',
@@ -157,7 +157,7 @@ const props = {
   },
   RoutePdf: {
     ...defaultProps,
-    field: { field: 'route:pdf', render: 'weblink@download' } as FieldsListItem,
+    field: { field: ['route:pdf'], render: 'weblink@download' } as FieldsListItem,
     properties: {
       ...defaultProps.properties,
       'route:pdf': 'https://cdt40.tourinsoft.com/upload/ITIAQU040V502MFU.pdf',
@@ -165,7 +165,7 @@ const props = {
   },
   Download: {
     ...defaultProps,
-    field: { field: 'download', render: 'weblink@download' } as FieldsListItem,
+    field: { field: ['download'], render: 'weblink@download' } as FieldsListItem,
     properties: {
       ...defaultProps.properties,
       download: [
@@ -176,7 +176,7 @@ const props = {
   },
   Coordinates: {
     ...defaultProps,
-    field: { field: 'coordinates', render: 'coordinates' } as FieldsListItem,
+    field: { field: ['coordinates'], render: 'coordinates' } as FieldsListItem,
   },
 }
 </script>
