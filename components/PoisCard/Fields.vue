@@ -19,10 +19,10 @@ const context = computed((): PropertyTranslationsContextEnum => {
 
 <template>
   <div>
-    <template v-for="field in fields" :key="field.field">
+    <template v-for="field in fields" :key="field.field.join('.')">
       <Field
         :context="context"
-        :recursion-stack="[field.field]"
+        :recursion-stack="field.field"
         :field="field"
         :properties="properties"
         :details="details"

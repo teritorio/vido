@@ -41,13 +41,13 @@ const formattedFeatures = computed(() => {
           ...f.properties.editorial,
           popup_fields: [
             {
-              field: 'description',
+              field: ['description'],
               translationKey: 'description',
               render: 'text',
               multilingual: true,
             },
             {
-              field: 'coordinates',
+              field: ['coordinates'],
               translationKey: 'coordinates',
               render: 'coordinates',
               label: true,
@@ -69,13 +69,13 @@ const waypoints = computed(() => props.poiDeps.filter(f => poiDepsCompo.isWaypoi
       ...f.properties.editorial,
       popup_fields: [
         {
-          field: 'description',
+          field: ['description'],
           translationKey: 'description',
           render: 'text',
           multilingual: true,
         },
         {
-          field: 'coordinates',
+          field: ['coordinates'],
           translationKey: 'coordinates',
           render: 'coordinates',
           label: true,

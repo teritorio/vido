@@ -95,7 +95,7 @@ function isListEmpty(
 
       <Field
         v-else-if="!('group' in field)"
-        :id="`Field_-${recursionStack.join('-')}-${field.field}`"
+        :id="`Field_-${recursionStack.join('-')}-${field.field.join('-')}`"
         :context="context"
         :recursion-stack="recursionStack"
         :field="field"

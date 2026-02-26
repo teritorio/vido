@@ -33,9 +33,9 @@ const description = {
 export const Many = bind(Fields, {
   ...defaultProps,
   fields: [
-    { field: 'phone', render: 'phone' },
-    { field: 'route', render: 'route' },
-    { field: 'description', render: 'text' },
+    { field: ['phone'], render: 'phone' },
+    { field: ['route'], render: 'route' },
+    { field: ['description'], render: 'text' },
   ],
   properties: {
     'metadata': { id: 0 },

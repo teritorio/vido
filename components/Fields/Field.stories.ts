@@ -9,7 +9,7 @@ export default {
 
 const defaultProps = {
   context: PropertyTranslationsContextEnum.Details,
-  field: { field: 'name', render: 'string' },
+  field: { field: ['name'], render: 'string' },
   properties: {
     metadata: { id: 0 },
     name: {
@@ -63,7 +63,7 @@ export const Label = bind(Field, {
 
 export const Route = bind(Field, {
   ...defaultProps,
-  field: { field: 'route', render: 'route' },
+  field: { field: ['route'], render: 'route' },
   properties: {
     'metadata': { id: 0 },
     'route:hiking:difficulty': 'easy',
@@ -77,7 +77,7 @@ export const Route = bind(Field, {
 
 export const StartEndDate = bind(Field, {
   ...defaultProps,
-  field: { field: 'start_end_date', render: 'start_end_date' },
+  field: { field: ['start_end_date'], render: 'start_end_date' },
   properties: {
     metadata: { id: 0 },
     start_date: '2001-01-01',
@@ -87,7 +87,7 @@ export const StartEndDate = bind(Field, {
 
 export const Addr = bind(Field, {
   ...defaultProps,
-  field: { field: 'addr', render: 'addr' },
+  field: { field: ['addr'], render: 'addr' },
   properties: {
     'metadata': { id: 0 },
     'addr:housenumber': '33',
@@ -103,7 +103,7 @@ const description = {
 
 export const Description = bind(Field, {
   ...defaultProps,
-  field: { field: 'description', render: 'text' },
+  field: { field: ['description'], render: 'text' },
   properties: {
     metadata: { id: 0 },
     description,
@@ -112,7 +112,7 @@ export const Description = bind(Field, {
 
 export const DescriptionDetails = bind(Field, {
   ...defaultProps,
-  field: { field: 'description', render: 'text' },
+  field: { field: ['description'], render: 'text' },
   properties: {
     metadata: { id: 0 },
     description,
@@ -122,7 +122,7 @@ export const DescriptionDetails = bind(Field, {
 
 export const Phone = bind(Field, {
   ...defaultProps,
-  field: { field: 'phone', render: 'phone' },
+  field: { field: ['phone'], render: 'phone' },
   properties: {
     metadata: { id: 0 },
     phone: ['+33676544'],
@@ -131,7 +131,7 @@ export const Phone = bind(Field, {
 
 export const Email = bind(Field, {
   ...defaultProps,
-  field: { field: 'email', render: 'email' },
+  field: { field: ['email'], render: 'email' },
   properties: {
     metadata: { id: 0 },
     email: ['root@example.com'],
@@ -140,7 +140,7 @@ export const Email = bind(Field, {
 
 export const Website = bind(Field, {
   ...defaultProps,
-  field: { field: 'website', render: 'weblink' },
+  field: { field: ['website'], render: 'weblink' },
   properties: {
     metadata: { id: 0 },
     website: ['https://example.com'],
@@ -149,7 +149,7 @@ export const Website = bind(Field, {
 
 export const Facebook = bind(Field, {
   ...defaultProps,
-  field: { field: 'facebook', render: 'weblink@social_network' },
+  field: { field: ['facebook'], render: 'weblink@social_network' },
   properties: {
     metadata: { id: 0 },
     facebook: 'https://www.facebook.com/',
@@ -158,7 +158,7 @@ export const Facebook = bind(Field, {
 
 export const Instagram = bind(Field, {
   ...defaultProps,
-  field: { field: 'instagram', render: 'weblink@social_network' },
+  field: { field: ['instagram'], render: 'weblink@social_network' },
   properties: {
     instagram: 'https://www.instagram.com/',
   },
@@ -166,7 +166,7 @@ export const Instagram = bind(Field, {
 
 export const RouteGpxTrace = bind(Field, {
   ...defaultProps,
-  field: { field: 'route:gpx_trace', render: 'weblink@download' },
+  field: { field: ['route:gpx_trace'], render: 'weblink@download' },
   properties: {
     'metadata': { id: 0 },
     'route:gpx_trace': 'https://cdt40.tourinsoft.com/upload/15.8.gpx',
@@ -175,7 +175,7 @@ export const RouteGpxTrace = bind(Field, {
 
 export const RoutePdf = bind(Field, {
   ...defaultProps,
-  field: { field: 'route:pdf', render: 'weblink@download' },
+  field: { field: ['route:pdf'], render: 'weblink@download' },
   properties: {
     'metadata': { id: 0 },
     'route:pdf': 'https://cdt40.tourinsoft.com/upload/ITIAQU040V502MFU.pdf',
@@ -184,7 +184,7 @@ export const RoutePdf = bind(Field, {
 
 export const Download = bind(Field, {
   ...defaultProps,
-  field: { field: 'download', render: 'weblink@download' },
+  field: { field: ['download'], render: 'weblink@download' },
   properties: {
     metadata: { id: 0 },
     download: [
@@ -196,5 +196,5 @@ export const Download = bind(Field, {
 
 export const Coordinates = bind(Field, {
   ...defaultProps,
-  field: { field: 'coordinates', render: 'coordinates' },
+  field: { field: ['coordinates'], render: 'coordinates' },
 })

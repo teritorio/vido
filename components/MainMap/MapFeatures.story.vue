@@ -54,7 +54,7 @@ const feature1: Poi = {
       style_class: ['catering', 'catering_food', 'restaurant'],
     },
     editorial: {
-      popup_fields: [{ field: 'foo', translationKey: 'foo', render: 'string' }],
+      popup_fields: [{ field: ['foo'], translationKey: 'foo', render: 'string' }],
     },
   },
 }

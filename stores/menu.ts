@@ -24,7 +24,7 @@ function sortedUniq<T>(a: T[]): T[] {
 function transformApiFieldsListItem(item: ApiFieldsListItem): FieldsListItem {
   return {
     ...item,
-    field: item.field.join('.'),
+    field: item.field,
     translationKey: item.field.length === 1 ? item.field[0] : item.field.join(':'),
   }
 }
