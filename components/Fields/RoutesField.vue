@@ -27,7 +27,7 @@ const routes = computed((): Record<string, RouteMetadata> => {
   return Object.fromEntries(entries.filter(([key, _value]) => !['gpx_trace', 'pdf'].includes(key))) as Record<string, RouteMetadata>
 })
 
-function formatDuration(duration: number): string | undefined {
+function formatDuration(duration?: number): string | undefined {
   if (!duration)
     return undefined
 
@@ -52,7 +52,10 @@ function formatDuration(duration: number): string | undefined {
   return `${formattedHours} ${formattedMinutes}`.trim()
 }
 
-function formatLength(length: number): string | undefined {
+function formatLength(length?: number): string | undefined {
+  if (!length)
+    return undefined
+
   return new Intl.NumberFormat(locale.value, { style: 'unit', unit: 'kilometer' }).format(length)
 }
 </script>
@@ -62,8 +65,16 @@ function formatLength(length: number): string | undefined {
     <slot />
     <div v-if="isCompact">
       <p v-for="(route, activity) in routes" :key="activity">
-        {{ pv('route', `${activity}`, context) }} : {{ formatDuration(route.duration) }}, {{ pv(`route:${activity}:difficulty`, route.difficulty, context) }}.
-        <br>
+        {{ pv('route', `${activity}`, context) }}
+        <template v-if="formatDuration(route.duration)">
+          : {{ formatDuration(route.duration) }}
+        </template>
+        <template v-if="route.difficulty">
+          {{ formatDuration(route.duration) ? ', ' : ': ' }}{{ pv(`route:${activity}:difficulty`, route.difficulty, context) }}
+        </template>
+        <!-- eslint-disable-next-line vue/singleline-html-element-content-newline -->
+        <template v-if="formatDuration(route.duration) || route.difficulty">.</template>
+        <br v-if="route.length">
         <span v-if="route.length">
           {{ formatLength(route.length) }}
         </span>
