@@ -32,20 +32,17 @@ const props = {
     properties: {
       'fr-FR': {
         hiking: {
-          difficulty: 'easy' as const,
-          duration: 0,
           length: 0,
         },
       },
     } as ApiPoiPropertiesRoute,
   },
-  MissingDifficulty: {
+  MissingDuration: {
     ...defaultProps,
     properties: {
       'fr-FR': {
         hiking: {
           difficulty: 'easy' as const,
-          duration: 285,
           length: 10.2,
         },
       },
