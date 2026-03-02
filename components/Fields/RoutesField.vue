@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import FieldsHeader from '~/components/UI/FieldsHeader.vue'
 import { PropertyTranslationsContextEnum, useSiteStore } from '~/stores/site'
-import type { ApiPoiPropertiesRoute, RouteMetadata } from '~/types/api/poi'
+import type { ApiPoiPropertiesRouteLanguage, RouteMetadata } from '~/types/api/poi'
 
 const props = withDefaults(defineProps<{
   context: PropertyTranslationsContextEnum
   recursionStack?: string[]
-  properties: ApiPoiPropertiesRoute
+  properties: ApiPoiPropertiesRouteLanguage
 }>(), {
   recursionStack: () => [],
 })
@@ -19,10 +19,10 @@ const isCompact = computed(() => {
 })
 
 const routes = computed((): Record<string, RouteMetadata> => {
-  if (!props.properties?.['fr-FR'])
+  if (!props.properties)
     return {}
 
-  const entries = Object.entries(props.properties['fr-FR'])
+  const entries = Object.entries(props.properties)
 
   return Object.fromEntries(entries.filter(([key, _value]) => !['gpx_trace', 'pdf'].includes(key))) as Record<string, RouteMetadata>
 })
