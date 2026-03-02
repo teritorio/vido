@@ -159,10 +159,7 @@ function customFilter(value: any, query: string): boolean {
 }
 
 function getColKey(key: string) {
-  const keySplit = key.split('.')
-  if (keySplit.length > 1)
-    return keySplit[keySplit.length - 1]
-  return key
+  return key.startsWith('properties.') ? key.slice('properties.'.length) : key
 }
 
 function getContext(key: string) {
