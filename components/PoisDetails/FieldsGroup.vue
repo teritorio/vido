@@ -30,7 +30,7 @@ function fieldTranslateK(field: string) {
 
 function isListEmpty(
   fields: FieldsList,
-  properties: { [key: string]: string },
+  properties: Poi['properties'],
   geom: GeoJSON.Geometry,
 ): boolean {
   return (
