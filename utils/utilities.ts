@@ -1,5 +1,6 @@
 import type { FieldsListGroup, FieldsListItem } from '~/types/local/field'
 import type { Poi } from '~/types/local/poi'
+import type { PoiUnion } from '~/types/local/poi-deps'
 import type { ApiAddrSearchResult } from '~/lib/apiSearch'
 import { MAP_ZOOM } from '~/lib/constants'
 import { AddressFields } from '~/types/api/poi'
@@ -34,7 +35,7 @@ export function isFieldsListItem(field: FieldsListItem | FieldsListGroup): field
 
 export function isFiledEmpty(
   field: FieldsListItem,
-  properties: { [key: string]: string },
+  properties: PoiUnion['properties'],
   geom: GeoJSON.Geometry,
 ): boolean {
   if (field.field[0] === 'route' && field.field.length === 1) {
