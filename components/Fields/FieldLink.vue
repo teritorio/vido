@@ -40,7 +40,7 @@ const iconDefault = computed((): string => {
       color: ['label_popup', 'label_list'].includes(context) ? colorText : 'unset',
     }"
     :class="{
-      'tw-inline-flex tw-flex-row tw-items-center tw-gap-x-2.5 tw-underline tw-underline-offset-4': !['label_popup', 'label_list'].includes(context),
+      'tw-flex tw-flex-row tw-items-center tw-gap-x-2.5 tw-underline tw-underline-offset-4': !['label_popup', 'label_list'].includes(context),
       'tw-inline-flex tw-items-center tw-justify-center tw-gap-1 pa-2 rounded-lg': ['label_popup', 'label_list'].includes(context),
     }"
   >
