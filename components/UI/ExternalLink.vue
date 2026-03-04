@@ -28,7 +28,7 @@ const iconDefault = computed((): string => {
     :target="target"
     :rel="rel"
     :title="title"
-    class="tw-flex tw-flex-row tw-items-center tw-gap-x-2.5 tw-underline tw-underline-offset-4"
+    class="tw-inline-flex tw-flex-row tw-items-center tw-gap-x-2.5 tw-underline tw-underline-offset-4"
   >
     <FontAwesomeIcon :icon="iconDefault" color="inherit" size="sm" />
     <slot />
