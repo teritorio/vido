@@ -169,6 +169,15 @@ function transformApiPoi(feature: ApiPoi): Poi {
 <style lang="css" scoped>
 .v-card {
   height: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+:deep(.v-card-text) {
+  flex: 1 1 0;
+  min-height: 0;
+  overflow-y: auto;
 }
 
 :deep(.v-card-item) {
