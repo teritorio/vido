@@ -16,15 +16,17 @@ export default defineEventHandler(async (event) => {
   // @ts-expect-error: can't declare the interface
   const allowedDomains: string[] = [...defaultDomains, ...(globalThis.allowedDomains[project] || [])]
 
+  const encodedUrl = encodeURI(url)
+
   if (!allowedDomains.includes(domain)) {
-    return sendRedirect(event, url)
+    return sendRedirect(event, encodedUrl)
   }
 
   try {
     const response = await fetch(url)
 
     if (!response.ok) {
-      return sendRedirect(event, url)
+      return sendRedirect(event, encodedUrl)
     }
 
     const arrayBuffer = await response.arrayBuffer()
@@ -45,6 +47,6 @@ export default defineEventHandler(async (event) => {
     return processedBuffer
   }
   catch {
-    return sendRedirect(event, url)
+    return sendRedirect(event, encodedUrl)
   }
 })

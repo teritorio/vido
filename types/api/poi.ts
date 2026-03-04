@@ -51,9 +51,9 @@ export interface ApiPoiPropertiesRouteLanguage {
 export type ApiPoiPropertiesRoute = Partial<Record<LanguageCode, ApiPoiPropertiesRouteLanguage>>
 
 export interface RouteMetadata {
-  difficulty: 'easy' | 'normal' | 'hard'
-  duration: number
-  length: number
+  difficulty?: 'easy' | 'normal' | 'hard'
+  duration?: number
+  length?: number
 }
 
 export interface ApiPoiPropertiesMetadata {

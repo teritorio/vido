@@ -30,7 +30,7 @@ function fieldTranslateK(field: string) {
 
 function isListEmpty(
   fields: FieldsList,
-  properties: { [key: string]: string },
+  properties: Poi['properties'],
   geom: GeoJSON.Geometry,
 ): boolean {
   return (
@@ -95,7 +95,7 @@ function isListEmpty(
 
       <Field
         v-else-if="!('group' in field)"
-        :id="`Field_-${recursionStack.join('-')}-${field.field}`"
+        :id="`Field_-${recursionStack.join('-')}-${field.field.join('-')}`"
         :context="context"
         :recursion-stack="recursionStack"
         :field="field"

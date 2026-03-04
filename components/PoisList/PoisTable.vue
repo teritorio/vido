@@ -48,7 +48,7 @@ if (error.value) {
 const search = ref('')
 
 const headers = computed(() => {
-  let fields = [{ field: 'name', render: 'string', translationKey: 'name', multilingual: true }] as FieldsList
+  let fields = [{ field: ['name'], render: 'string', translationKey: 'name', multilingual: true }] as FieldsList
   if (pois.value?.length && pois.value[0].properties.editorial?.list_fields)
     fields = pois.value[0].properties.editorial.list_fields
 
@@ -56,7 +56,7 @@ const headers = computed(() => {
     .filter(isFieldsListItem)
     .map(field => ({
       filterable: true,
-      key: `properties.${field.field}`,
+      key: `properties.${field.field.join('.')}`,
       sortable: true,
       render: field.render,
       array: field.array,
@@ -159,10 +159,7 @@ function customFilter(value: any, query: string): boolean {
 }
 
 function getColKey(key: string) {
-  const keySplit = key.split('.')
-  if (keySplit.length > 1)
-    return keySplit[keySplit.length - 1]
-  return key
+  return key.startsWith('properties.') ? key.slice('properties.'.length) : key
 }
 
 function getContext(key: string) {
@@ -171,7 +168,7 @@ function getContext(key: string) {
 
 function getField(key: string, item: Poi) {
   const keyName = getColKey(key)
-  return item.properties.editorial.list_fields?.filter(isFieldsListItem).find(f => f.field === keyName)
+  return item.properties.editorial.list_fields?.filter(isFieldsListItem).find(f => f.field.join('.') === keyName)
 }
 
 if (settings.value && theme.value) {
@@ -263,7 +260,7 @@ if (settings.value && theme.value) {
                 :context="getContext(getColKey(col.key!))"
                 :recursion-stack="[getColKey(col.key!)]"
                 :field="getField(col.key!, item) || {
-                  field: getColKey(col.key!),
+                  field: getColKey(col.key!).split('.'),
                   render: 'string',
                   translationKey: getColKey(col.key!),
                 }"

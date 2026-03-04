@@ -237,7 +237,7 @@ function trackIsochroneEvent(profile: Profile) {
       <ContribFieldGroup v-if="contribMode && isContribEligible(poi.properties)" v-bind="getContributorFields(poi)" />
     </div>
 
-    <div v-if="showActions" class="tw-flex tw-items-center tw-gap-1 tw-justify-evenly tw-shrink-0 tw-bottom-0">
+    <div v-if="showActions" class="tw-flex tw-items-start tw-gap-1 tw-justify-evenly tw-shrink-0 tw-bottom-0">
       <ClientOnly>
         <a
           v-if="device.phone && routeHref"

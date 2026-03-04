@@ -464,7 +464,7 @@ defineExpose({ goToSelectedFeature, updateSelectedFeature })
     <SnackBar @click="handleSnackAction" />
     <div
       v-if="isLoadingFeatures"
-      class="tw-fixed tw-inset-0 tw-flex tw-items-center tw-justify-center tw-bg-black tw-bg-opacity-80"
+      class="tw-fixed tw-z-10 tw-inset-0 tw-flex tw-items-center tw-justify-center tw-bg-black tw-bg-opacity-80"
     >
       <FontAwesomeIcon icon="spinner" class="tw-text-zinc-400 tw-animate-spin" size="3x" />
     </div>

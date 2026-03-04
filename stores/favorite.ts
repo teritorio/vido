@@ -22,27 +22,37 @@ export const favoriteStore = defineStore('favorite', () => {
   })
 
   function init() {
-    const poiFavorites = localStorage.getItem(LOCAL_STORAGE.favorites)
-    const addressFavorites = localStorage.getItem(LOCAL_STORAGE.favoritesAddr)
+    try {
+      const poiFavorites = localStorage.getItem(LOCAL_STORAGE.favorites)
+      const addressFavorites = localStorage.getItem(LOCAL_STORAGE.favoritesAddr)
 
-    if (poiFavorites) {
-      const favorites = JSON.parse(poiFavorites).favorites
-      favoritesIds.value = favorites
-      saveToLocalStorage(LOCAL_STORAGE.favorites, favorites)
+      if (poiFavorites) {
+        const favorites = JSON.parse(poiFavorites).favorites
+        favoritesIds.value = favorites
+        saveToLocalStorage(LOCAL_STORAGE.favorites, favorites)
+      }
+
+      if (addressFavorites) {
+        const entries: [string, string][] = JSON.parse(addressFavorites).favorites
+        favoriteAddressesObj.value = Object.fromEntries(entries)
+        saveToLocalStorage(LOCAL_STORAGE.favoritesAddr, entries)
+      }
     }
-
-    if (addressFavorites) {
-      const entries: [string, string][] = JSON.parse(addressFavorites).favorites
-      favoriteAddressesObj.value = Object.fromEntries(entries)
-      saveToLocalStorage(LOCAL_STORAGE.favoritesAddr, entries)
+    catch {
+      // localStorage unavailable (iframe restrictions, disabled cookies, etc.)
     }
   }
 
   function saveToLocalStorage(key: string, favorites?: number[] | [string, string][]) {
-    if (!favorites)
-      localStorage.removeItem(key)
-    else
-      localStorage.setItem(key, JSON.stringify({ favorites, version: 1 }))
+    try {
+      if (!favorites)
+        localStorage.removeItem(key)
+      else
+        localStorage.setItem(key, JSON.stringify({ favorites, version: 1 }))
+    }
+    catch {
+      // localStorage unavailable (iframe restrictions, disabled cookies, etc.)
+    }
   }
 
   function toggleFavoriteAddr(poi: Poi) {

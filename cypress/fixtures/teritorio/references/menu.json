@@ -74,39 +74,39 @@
             "editorial": {
                 "popup_fields": [
                     {
-                        "field": "route",
+                        "field": ["route"],
                         "render": "route"
                     },
                     {
-                        "field": "addr",
+                        "field": ["addr"],
                         "render": "addr"
                     }
                 ],
                 "details_fields": [
                     {
-                        "field": "route",
+                        "field": ["route"],
                         "render": "route"
                     },
                     {
-                        "field": "description",
+                        "field": ["description"],
                         "render": "text"
                     },
                     {
-                        "field": "addr",
+                        "field": ["addr"],
                         "render": "addr"
                     }
                 ],
                 "list_fields": [
                     {
-                        "field": "name",
+                        "field": ["name"],
                         "render": "string"
                     },
                     {
-                        "field": "description",
+                        "field": ["description"],
                         "render": "text"
                     },
                     {
-                        "field": "addr",
+                        "field": ["addr"],
                         "render": "addr"
                     }
                 ]
@@ -168,43 +168,43 @@
             "editorial": {
                 "popup_fields": [
                     {
-                        "field": "description",
+                        "field": ["description"],
                         "render": "text"
                     },
                     {
-                        "field": "addr",
+                        "field": ["addr"],
                         "render": "addr"
                     }
                 ],
                 "details_fields": [
                     {
-                        "field": "name",
+                        "field": ["name"],
                         "render": "string"
                     },
                     {
-                        "field": "description",
+                        "field": ["description"],
                         "render": "text"
                     },
                     {
-                        "field": "addr",
+                        "field": ["addr"],
                         "render": "addr"
                     },
                     {
-                        "field": "phone",
+                        "field": ["phone"],
                         "render": "phone"
                     }
                 ],
                 "list_fields": [
                     {
-                        "field": "name",
+                        "field": ["name"],
                         "render": "string"
                     },
                     {
-                        "field": "description",
+                        "field": ["description"],
                         "render": "text"
                     },
                     {
-                        "field": "addr",
+                        "field": ["addr"],
                         "render": "addr"
                     }
                 ]
