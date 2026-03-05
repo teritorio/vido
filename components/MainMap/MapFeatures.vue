@@ -239,9 +239,6 @@ async function updateSelectedFeature(feature?: PoiUnion): Promise<void> {
       isProcessing.value = true
       const isDepSelected = selectedFeatureDepsIDs.value.find(i => i === id)
 
-      // Optimistic UI
-      mapStore.setSelectedFeature(menuStore.getFeatureById(id))
-
       try {
         const { data, error, status } = await useFetch(
           () => `${apiEndpoint.value}/poi/${id}/deps.geojson`,
