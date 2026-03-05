@@ -153,7 +153,13 @@ const mapFeatures = computed(() => {
       f = flattenFeatures(features.value)
       break
     case Mode.FAVORITES:
-      f = favoriteFeatures.value
+      if (isDepsView.value) {
+        const favoriteIds = new Set(favoriteFeatures.value.map(f => f.properties.metadata.id))
+        f = [...favoriteFeatures.value, ...flattenFeatures(features.value).filter(f => !favoriteIds.has(f.properties.metadata.id))]
+      }
+      else {
+        f = favoriteFeatures.value
+      }
       break
     case Mode.EXPLORER:
       f = []

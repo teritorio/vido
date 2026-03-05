@@ -3,7 +3,9 @@ import { ApiRouteWaypointTypeObject } from '~/types/api/poi-deps'
 import type { ApiPoiDeps, ApiPoiDepsCollection, ApiPoiUnion } from '~/types/api/poi-deps'
 import { type PoiUnion, iconMap } from '~/types/local/poi-deps'
 import { menuStore as useMenuStore } from '~/stores/menu'
+import { mapStore as useMapStore } from '~/stores/map'
 import type { ApiPoi } from '~/types/api/poi'
+import type { Poi } from '~/types/local/poi'
 import type { MenuCategory } from '~/types/local/menu'
 
 export function usePoiDeps() {
@@ -136,10 +138,45 @@ export function usePoiDeps() {
     })
   }
 
+  function processPoiDeps(
+    deps: PoiUnion[],
+    poiId: number,
+    selectedCategoryIds: number[],
+  ): void {
+    const mapStore = useMapStore()
+
+    // Store deps IDs
+    mapStore.setSelectedFeatureDepsIDs()
+    deps.forEach((f) => {
+      mapStore.addSelectedFeatureDepsIDs(f.properties.metadata.id)
+    })
+
+    // Find and set selected feature
+    const poi = deps.find(f => f.properties.metadata.id === poiId)
+    if (poi)
+      mapStore.setSelectedFeature(poi as Poi)
+
+    if (poi) {
+      const currentCategory = selectedCategoryIds.find(
+        id => poi.properties.metadata.category_ids?.includes(id),
+      ) || poi.properties.metadata.category_ids?.[0]
+
+      if (currentCategory) {
+        menuStore.filterByDeps(currentCategory, deps)
+
+        if (deps.length > 1)
+          mapStore.setIsDepsView(true)
+        else
+          mapStore.setIsDepsView(false)
+      }
+    }
+  }
+
   return {
     formatPoiDeps,
     formatPoiDepsCollection,
     isWaypoint,
+    processPoiDeps,
     resetWaypointIndex,
   }
 }
