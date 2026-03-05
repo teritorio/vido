@@ -263,30 +263,17 @@ async function updateSelectedFeature(feature?: PoiUnion): Promise<void> {
 
         if (status.value === 'success' && data.value) {
           if (!isDepSelected) {
-            mapStore.setSelectedFeatureDepsIDs()
-            data.value.forEach((f) => {
-              mapStore.addSelectedFeatureDepsIDs(f.properties.metadata.id)
-            })
+            poiDepsCompo.processPoiDeps(data.value, id, selectedCategoryIds.value)
+          }
+          else {
+            const dep = data.value.find(f => f.properties.metadata.id === id)
+            if (dep && !poiDepsCompo.isWaypoint(dep))
+              mapStore.setSelectedFeature(dep as Poi)
           }
 
           const poi = data.value.find(f => f.properties.metadata.id === id)
-          mapStore.setSelectedFeature(poi as Poi)
-
           // In case user click on vecto element, attach Pin Marker to POI Marker
           teritorioCluster.value?.setSelectedFeature(poi as unknown as GeoJSONFeature)
-
-          if (poi) {
-            const currentCategory = selectedCategoryIds.value.find(id => poi.properties.metadata.category_ids?.includes(id))
-
-            if (!isDepSelected && currentCategory) {
-              menuStore.filterByDeps(currentCategory, data.value)
-
-              if (data.value.length > 1)
-                mapStore.setIsDepsView(true)
-              else
-                mapStore.setIsDepsView(false)
-            }
-          }
         }
       }
       catch (e) {

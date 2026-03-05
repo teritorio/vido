@@ -9,7 +9,6 @@ import { useSiteStore } from '~/stores/site'
 import { mapStore as useMapStore } from '~/stores/map'
 import { menuStore as useMenuStore } from '~/stores/menu'
 import { regexForCategoryIds } from '~/composables/useIdsResolver'
-import type { Poi } from '~/types/local/poi'
 import type { ApiPoiDepsCollection, ApiPoiUnion } from '~/types/api/poi-deps'
 import type { PoiUnion } from '~/types/local/poi-deps'
 
@@ -127,31 +126,9 @@ const { data, error, status } = await useAsyncData('features', async () => {
 if (error.value)
   throw createError(error.value)
 
-if (status.value === 'success' && data.value) {
-  data.value.forEach((f) => {
-    mapStore.addSelectedFeatureDepsIDs(f.properties.metadata.id)
-  })
-
-  if (mainPoi.value) {
-    const poi = data.value.find(f => f.properties.metadata.id === mainPoi.value!.properties.metadata.id)
-    mapStore.setSelectedFeature(poi as Poi)
-
-    // In case user click on vecto element, attach Pin Marker to POI Marker
-    teritorioCluster.value?.setSelectedFeature(mainPoi.value as unknown as GeoJSONFeature)
-
-    if (poi) {
-      const currentCategory = selectedCategoryIds.value.find(id => poi.properties.metadata.category_ids!.includes(id))
-
-      if (currentCategory) {
-        menuStore.filterByDeps(currentCategory, data.value)
-
-        if (data.value.length > 1)
-          mapStore.setIsDepsView(true)
-        else
-          mapStore.setIsDepsView(false)
-      }
-    }
-  }
+if (status.value === 'success' && data.value && mainPoi.value) {
+  poiDepsCompo.processPoiDeps(data.value, mainPoi.value.properties.metadata.id, selectedCategoryIds.value)
+  teritorioCluster.value?.setSelectedFeature(mainPoi.value as unknown as GeoJSONFeature)
 }
 
 function getMainPoi(features: ApiPoiUnion[]): ApiPoi {
