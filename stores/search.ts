@@ -2,7 +2,7 @@ import { defineStore, storeToRefs } from 'pinia'
 import { debounce } from 'lodash'
 import copy from 'fast-copy'
 import { menuStore as useMenuStore } from '~/stores/menu'
-import type { MenuItem } from '~/types/local/menu'
+import type { MenuCategory, MenuItem } from '~/types/local/menu'
 import { getPoiById } from '~/lib/apiPois'
 import type { ApiPoi } from '~/types/api/poi'
 import type { ApiAddrSearchResult, ApiMenuItemSearchResult, ApiPoisSearchResult, ApiSearchResult, SearchResult } from '~/lib/apiSearch'
@@ -37,7 +37,7 @@ export const useSearchStore = defineStore('search', () => {
 
   const menuItemsToIcons = computed(() => {
     const resources: Record<MenuItem['id'], string> = {}
-    Object.values(apiMenuCategory.value || {}).forEach((sc) => {
+    ;(Object.values(apiMenuCategory.value || {}) as MenuCategory[]).forEach((sc: MenuCategory) => {
       resources[sc.id] = sc.category.icon
     })
     return resources
@@ -74,7 +74,7 @@ export const useSearchStore = defineStore('search', () => {
 
   const itemsMenuItems = computed(() => {
     return (
-      searchMenuItemsResults.value?.features?.map(v => ({
+      searchMenuItemsResults.value?.features?.map((v: GeoJSON.Feature<GeoJSON.Point, ApiMenuItemSearchResult>) => ({
         id: v.properties.id,
         label: v.properties.label,
         icon: menuItemsToIcons.value[v.properties.id],
@@ -86,7 +86,7 @@ export const useSearchStore = defineStore('search', () => {
 
   const itemsPois = computed(() => {
     return (
-      searchPoisResults.value?.features?.map(v => ({
+      searchPoisResults.value?.features?.map((v: GeoJSON.Feature<GeoJSON.Point, ApiPoisSearchResult>) => ({
         id: v.properties.id,
         label: v.properties.label,
         icon: v.properties.icon,
@@ -97,7 +97,7 @@ export const useSearchStore = defineStore('search', () => {
 
   const itemsAddresses = computed(() => {
     return (
-      searchAddressesResults.value?.features?.map(v => ({
+      searchAddressesResults.value?.features?.map((v: GeoJSON.Feature<GeoJSON.Point, ApiAddrSearchResult>) => ({
         id: v.properties.id,
         label: v.properties.label,
         icon: v.properties.type === 'municipality' ? 'city' : 'map-marker-alt',
@@ -160,7 +160,7 @@ export const useSearchStore = defineStore('search', () => {
   function onCategoryClick(category: SearchResult) {
     if (searchMenuItemsResults.value) {
       const filter = searchMenuItemsResults.value.features.find(
-        a =>
+        (a: GeoJSON.Feature<GeoJSON.Point, ApiMenuItemSearchResult>) =>
           a.properties.filter_property === category.filter_property
           && a.properties.filter_value === category.filter_value
           && a.properties.id === category.id,
@@ -222,7 +222,7 @@ export const useSearchStore = defineStore('search', () => {
 
   function onAddressClick(searchResult: SearchResult) {
     const feature = (searchAddressesResults.value?.features || []).find(
-      a => a.properties.id === searchResult.id,
+      (a: GeoJSON.Feature<GeoJSON.Point, ApiAddrSearchResult>) => a.properties.id === searchResult.id,
     )
     if (feature) {
       const f = formatApiAddressToFeature(feature, true)

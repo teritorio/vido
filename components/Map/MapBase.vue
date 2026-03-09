@@ -205,7 +205,6 @@ function initPoiLayer(features: PoiUnion[], clusterPropertiesValues: string[], c
   teritorioCluster.value = new TeritorioCluster(POI_LAYER, POI_SOURCE, {
     clusterRender,
     fitBoundsOptions: fitBoundsOptions(),
-    // @ts-expect-error: MapGeoJSONFeature type mismatch
     initialFeature: selectedFeature.value ? selectedFeature.value : undefined,
     markerRender,
     markerSize: 32,
@@ -243,7 +242,7 @@ function onMapStyleLoad(style: StyleSpecification): void {
       })
     }
 
-    const firstSymbolLayerId = map.value.getStyle().layers.find(layer => layer.type === 'line')?.id
+    const firstSymbolLayerId = map.value.getStyle().layers.find((layer: LayerSpecification) => layer.type === 'line')?.id
 
     map.value.addLayer({
       id: BOUNDARY_AREA_LAYER,

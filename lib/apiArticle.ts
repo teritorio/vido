@@ -1,7 +1,6 @@
 import type { Ref } from 'vue'
 import type { FetchError } from 'ofetch'
-// TODO: update Nuxt to be able to import from #app
-import type { AsyncDataRequestStatus } from 'nuxt/dist/app/composables/asyncData'
+import type { AsyncDataRequestStatus } from '#app'
 
 export interface Article {
   title: string

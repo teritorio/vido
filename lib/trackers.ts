@@ -1,4 +1,4 @@
-import type { App } from 'nuxt/dist/app/compat/vue-demi'
+import type { App } from 'vue'
 import type { ApiMenuCategory } from '~/types/api/menu'
 import type { MenuItem } from '~/types/local/menu'
 import type { OriginEnum } from '~/utils/types'

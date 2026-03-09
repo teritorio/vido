@@ -33,7 +33,7 @@ type CustomBreadcrumbItem = InternalBreadcrumbItem & {
 }
 
 const items = computed(() => {
-  return navigationStack.value.map((item) => {
+  return navigationStack.value.map((item: MenuItem) => {
     return getTeritorioIconBadgeProps(item)
   })
 })

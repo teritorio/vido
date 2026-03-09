@@ -12,6 +12,7 @@ import { menuStore as useMenuStore } from '~/stores/menu'
 import { mapStore as useMapStore } from '~/stores/map'
 import { regexForCategoryIds } from '~/composables/useIdsResolver'
 import type { Poi } from '~/types/local/poi'
+import type { MenuCategory } from '~/types/local/menu'
 import type { PoiUnion } from '~/types/local/poi-deps'
 
 const { settings, theme } = storeToRefs(useSiteStore())
@@ -78,7 +79,7 @@ if (!categoryIds.value.length) {
   categoryIds.value = []
 
   if (apiMenuCategory.value) {
-    apiMenuCategory.value.forEach((category) => {
+    apiMenuCategory.value.forEach((category: MenuCategory) => {
       if (category.selected_by_default)
         categoryIds.value.push(category.id)
     })
@@ -136,7 +137,7 @@ if (status.value === 'success' && data.value) {
     teritorioCluster.value?.setSelectedFeature(mainPoi.value as unknown as GeoJSONFeature)
 
     if (poi) {
-      const currentCategory = selectedCategoryIds.value.find(id => poi.properties.metadata.category_ids!.includes(id))
+      const currentCategory = selectedCategoryIds.value.find((id: number) => poi.properties.metadata.category_ids!.includes(id))
 
       if (currentCategory) {
         menuStore.filterByDeps(currentCategory, data.value)

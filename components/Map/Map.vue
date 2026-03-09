@@ -2,6 +2,7 @@
 import { OpenMapTilesLanguage } from '@teritorio/openmaptiles-gl-language'
 import type {
   FitBoundsOptions,
+  LayerSpecification,
   LngLatBounds,
   LngLatLike,
   MapDataEvent,
@@ -159,7 +160,7 @@ function setStyle(mapStyle: MapStyleEnum) {
         // Use no diff mode to avoid issue with added layers
         map.value!.setStyle(s, {
           diff: false,
-          transformStyle: (previousStyle, nextStyle) => {
+          transformStyle: (previousStyle: StyleSpecification | undefined, nextStyle: StyleSpecification) => {
             if (previousStyle?.sources.isochrone) {
               s = {
                 ...nextStyle,
@@ -169,7 +170,7 @@ function setStyle(mapStyle: MapStyleEnum) {
                 },
                 layers: [
                   ...nextStyle.layers,
-                  ...previousStyle.layers.filter(l => l.id.includes('isochrone')),
+                  ...previousStyle.layers.filter((l: LayerSpecification) => l.id.includes('isochrone')),
                 ],
               }
             }

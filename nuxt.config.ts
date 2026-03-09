@@ -25,9 +25,9 @@ export default defineNuxtConfig({
     langDir: 'locales',
     lazy: true,
     locales: [
-      { code: 'en', name: 'English', flag: 'GB', iso: 'en-GB', file: 'en-GB.ts' },
-      { code: 'es', name: 'Español', flag: 'ES', iso: 'es-ES', file: 'es-ES.ts' },
-      { code: 'fr', name: 'Français', flag: 'FR', iso: 'fr-FR', file: 'fr-FR.ts' },
+      { code: 'en', name: 'English', flag: 'GB', language: 'en-GB', file: 'en-GB.ts' },
+      { code: 'es', name: 'Español', flag: 'ES', language: 'es-ES', file: 'es-ES.ts' },
+      { code: 'fr', name: 'Français', flag: 'FR', language: 'fr-FR', file: 'fr-FR.ts' },
     ],
     strategy: 'no_prefix',
     vueI18n: 'config/i18n.config.ts',
@@ -107,7 +107,6 @@ export default defineNuxtConfig({
   sentry: {
     org: process.env.SENTRY_ORG,
     project: process.env.SENTRY_PROJECT,
-    url: process.env.SENTRY_URL,
     telemetry: false,
   },
   sourcemap: {

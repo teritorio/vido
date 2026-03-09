@@ -132,9 +132,9 @@ export const menuStore = defineStore('menu', () => {
         continue
 
       for (const f of groupFilters) {
-        if (filterableProps.some(fp =>
+        if (filterableProps.some((fp: string[]) =>
           fp.length === f.def.property.length
-          && fp.every((v, i) => v === f.def.property[i]),
+          && fp.every((v: string, i: number) => v === f.def.property[i]),
         )) {
           result.push(f)
         }
@@ -170,9 +170,9 @@ export const menuStore = defineStore('menu', () => {
   })
 
   const featuresColor = computed(() => {
-    const colors = Object.values(features.value)
+    const colors = (Object.values(features.value) as Poi[][])
       .flat()
-      .map(feature => feature.properties.display.color_fill)
+      .map((feature: Poi) => feature.properties.display.color_fill)
       .filter(Boolean) as string[]
 
     return [...new Set(colors)]
@@ -182,8 +182,8 @@ export const menuStore = defineStore('menu', () => {
     const { contribMode } = useContrib()
     return menuItems.value === undefined
       ? undefined
-      : (Object.values(menuItems.value).filter(
-          menuItem => 'category' in menuItem && (contribMode || !menuItem.hidden),
+      : ((Object.values(menuItems.value) as MenuItem[]).filter(
+          (menuItem: MenuItem) => 'category' in menuItem && (contribMode || !menuItem.hidden),
         ) as MenuCategory[])
   })
 
@@ -191,9 +191,9 @@ export const menuStore = defineStore('menu', () => {
     return (categoryId) => {
       return menuItems.value === undefined
         ? undefined
-        : Object.values(menuItems.value).find(
-          menuItem => menuItem.id === categoryId,
-        ) as MenuCategory
+        : (Object.values(menuItems.value) as MenuItem[]).find(
+            (menuItem: MenuItem) => menuItem.id === categoryId,
+          ) as MenuCategory
     }
   })
 
@@ -201,9 +201,9 @@ export const menuStore = defineStore('menu', () => {
     return menuItems.value === undefined
       ? undefined
       : (selectedCategoryIds.value
-          .map(selectedCatagoryId => menuItems.value![selectedCatagoryId])
+          .map((selectedCatagoryId: number) => menuItems.value![selectedCatagoryId])
           .filter(
-            menuItems => menuItems !== undefined,
+            (menuItems: MenuItem) => menuItems !== undefined,
           ) as MenuCategory[])
   })
 
@@ -220,7 +220,7 @@ export const menuStore = defineStore('menu', () => {
 
   function delSelectedCategoryIds(ids: ApiMenuCategory['id'][]) {
     selectedCategoryIds.value = selectedCategoryIds.value.filter(
-      categoryId => !ids.includes(categoryId),
+      (categoryId: number) => !ids.includes(categoryId),
     )
   }
 
@@ -231,7 +231,7 @@ export const menuStore = defineStore('menu', () => {
   function toggleSelectedCategoryId(categoryId: ApiMenuCategory['id']) {
     if (selectedCategoryIds.value.includes(categoryId)) {
       selectedCategoryIds.value = selectedCategoryIds.value.filter(
-        id => id !== categoryId,
+        (id: number) => id !== categoryId,
       )
     }
     else {

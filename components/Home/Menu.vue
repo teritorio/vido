@@ -78,10 +78,10 @@ watch(currentMenuItems, () => {
 })
 
 function getMenuItemByParentId(menuGroupId: MenuGroup['id'] | undefined): MenuItem[] {
-  return Object.values(menuItems?.value || {})
-    .filter(c => (c.parent_id || null) === (menuGroupId || null))
-    .filter(c => contribMode || !c.hidden)
-    .sort((a, b) => a.index_order - b.index_order)
+  return (Object.values(menuItems?.value || {}) as MenuItem[])
+    .filter((c: MenuItem) => (c.parent_id || null) === (menuGroupId || null))
+    .filter((c: MenuItem) => contribMode || !c.hidden)
+    .sort((a: MenuItem, b: MenuItem) => a.index_order - b.index_order)
 }
 
 function getRecursiveCategoryIdByParentId(menuGroupId: MenuGroup['id'] | undefined): ApiMenuCategory['id'][] {

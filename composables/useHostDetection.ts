@@ -7,7 +7,7 @@ export function useHostDetection() {
     if (process.server) {
       const event = useRequestEvent()
 
-      return event.node.req.headers.host as string
+      return event?.node.req.headers.host as string ?? 'localhost'
     }
 
     return 'localhost'

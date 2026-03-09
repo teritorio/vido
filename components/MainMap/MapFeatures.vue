@@ -237,7 +237,7 @@ async function updateSelectedFeature(feature?: PoiUnion): Promise<void> {
 
     if ((selectedFeature.value?.properties.metadata.id !== id) && !id.toString().includes('_')) {
       isProcessing.value = true
-      const isDepSelected = selectedFeatureDepsIDs.value.find(i => i === id)
+      const isDepSelected = selectedFeatureDepsIDs.value.find((i: number) => i === id)
 
       // Optimistic UI
       mapStore.setSelectedFeature(menuStore.getFeatureById(id))
@@ -276,7 +276,7 @@ async function updateSelectedFeature(feature?: PoiUnion): Promise<void> {
           teritorioCluster.value?.setSelectedFeature(poi as unknown as GeoJSONFeature)
 
           if (poi) {
-            const currentCategory = selectedCategoryIds.value.find(id => poi.properties.metadata.category_ids?.includes(id))
+            const currentCategory = selectedCategoryIds.value.find((id: number) => poi.properties.metadata.category_ids?.includes(id))
 
             if (!isDepSelected && currentCategory) {
               menuStore.filterByDeps(currentCategory, data.value)

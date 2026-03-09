@@ -14,7 +14,7 @@ export const useNavigationStore = defineStore('navigation', () => {
   }
 
   function navigateTo(item: MenuItem) {
-    const hasItemIndex = navigationStack.value.findIndex(i => i.id === item.id)
+    const hasItemIndex = navigationStack.value.findIndex((i: MenuItem) => i.id === item.id)
     if (hasItemIndex > -1) {
       navigationStack.value.splice(hasItemIndex + 1)
     }

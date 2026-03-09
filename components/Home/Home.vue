@@ -18,6 +18,7 @@ import CookiesConsent from '~/components/UI/CookiesConsent.vue'
 import Logo from '~/components/UI/Logo.vue'
 import { getPois } from '~/lib/apiPois'
 import type { Poi } from '~/types/local/poi'
+import type { MenuCategory } from '~/types/local/menu'
 import { getBBox } from '~/lib/bbox'
 import { favoriteStore as useFavoriteStore } from '~/stores/favorite'
 import { mapStore as useMapStore } from '~/stores/map'
@@ -166,8 +167,8 @@ const poiFilters = computed(() => {
   return (
     (
       isModeExplorer.value
-      && (Object.values(apiMenuCategory.value || {})
-        .map(c => c.category?.style_class)
+      && ((Object.values(apiMenuCategory.value || {}) as MenuCategory[])
+        .map((c: MenuCategory) => c.category?.style_class)
         .filter(s => s !== undefined) as string[][])
     )
     || undefined
@@ -235,7 +236,7 @@ watch(mode, () => {
 watch(isModeFavorites, async (isEnabled) => {
   if (isEnabled) {
     if (favoriteCount.value !== favoriteFeatures.value.length
-      || favoriteFeatures.value.some(f =>
+      || favoriteFeatures.value.some((f: Poi) =>
         !favoritesIds.value.includes(f.properties.metadata.id)
         && !favoriteAddresses.value.has(f.properties.metadata.id.toString()),
       )
@@ -309,7 +310,7 @@ async function handleFavoriteAddresses(): Promise<Poi[]> {
   if (!favoriteAddresses.value.size)
     return []
 
-  const promises = Array.from(favoriteAddresses.value.values()).map(async hash => await fetchAddress(hash))
+  const promises = (Array.from(favoriteAddresses.value.values()) as string[]).map(async (hash: string) => await fetchAddress(hash))
   const responses = await Promise.all(promises)
 
   return responses
@@ -344,7 +345,7 @@ function toggleFavoriteMode() {
 
 async function toggleNoteBookMode() {
   if (favoriteCount.value !== favoriteFeatures.value.length
-    || favoriteFeatures.value.some(f =>
+    || favoriteFeatures.value.some((f: Poi) =>
       !favoritesIds.value.includes(f.properties.metadata.id)
       && !favoriteAddresses.value.has(f.properties.metadata.id.toString()),
     )

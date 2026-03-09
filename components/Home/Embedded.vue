@@ -8,6 +8,7 @@ import PoiCardContent from '~/components/PoisCard/PoiCardContent.vue'
 import CategorySelector from '~/components/PoisList/CategorySelector.vue'
 import UIButton from '~/components/UI/UIButton.vue'
 import type { Poi } from '~/types/local/poi'
+import type { MenuCategory } from '~/types/local/menu'
 import { getBBox } from '~/lib/bbox'
 import { mapStore as useMapStore } from '~/stores/map'
 import { menuStore as useMenuStore } from '~/stores/menu'
@@ -73,8 +74,8 @@ const poiFilters = computed(() => {
   return (
     (
       isModeExplorer.value
-      && (Object.values(apiMenuCategory.value || {})
-        .map(c => c.category?.style_class)
+      && ((Object.values(apiMenuCategory.value || {}) as MenuCategory[])
+        .map((c: MenuCategory) => c.category?.style_class)
         .filter(s => s !== undefined) as string[][])
     )
     || undefined

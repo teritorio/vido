@@ -1,4 +1,4 @@
-import type Router from 'vue-router'
+import type { Router } from 'vue-router'
 
 import type { OriginEnum } from './types'
 
@@ -36,7 +36,7 @@ export function setHashParts(hash: string, hashParts: HashParts) {
 }
 
 export function routerPushHashUpdate(
-  router: Router.Router,
+  router: Router,
   hashParts: HashParts,
 ) {
   let hash = router.currentRoute.value.hash
@@ -53,7 +53,7 @@ export function routerPushHashUpdate(
 /**
  * Get value from URL hash key
  */
-export function getHashPart(router: Router.Router, key: string): string | null {
+export function getHashPart(router: Router, key: string): string | null {
   const params = new URLSearchParams(
     router.currentRoute.value.hash.substring(1),
   )

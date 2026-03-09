@@ -10,7 +10,7 @@ export const favoriteStore = defineStore('favorite', () => {
   const favoriteFeatures = ref<Poi[]>([])
 
   const isFavorite = computed((): (id: number) => boolean => {
-    return id => !!favoritesIds.value.find(fav => fav === id)
+    return (id: number) => !!favoritesIds.value.find((fav: number) => fav === id)
   })
 
   const favoriteAddresses = computed((): Map<string, string> => {
@@ -65,13 +65,13 @@ export const favoriteStore = defineStore('favorite', () => {
     else
       delete favoriteAddressesObj.value[id]
 
-    const entries = Object.entries(favoriteAddressesObj.value)
+    const entries: [string, string][] = Object.entries(favoriteAddressesObj.value)
     saveToLocalStorage(LOCAL_STORAGE.favoritesAddr, entries)
   }
 
   function toggleFavorite(poi: Poi | number) {
     const id = typeof poi === 'number' ? poi : poi.properties.metadata.id || (poi.id as number)
-    const favIndex = id ? favoritesIds.value.findIndex(favId => favId === id) : false
+    const favIndex = id ? favoritesIds.value.findIndex((favId: number) => favId === id) : false
 
     if (favIndex === false)
       throw createError({ statusCode: 404, statusMessage: 'Favorite has no ID.' })
