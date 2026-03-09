@@ -13,6 +13,7 @@ import type { PoiUnion } from '~/types/local/poi-deps'
 import type { FieldsList, FieldsListGroup, FieldsListItem } from '~/types/local/field'
 
 interface FetchFeaturesPayload {
+  apiEndpoint: string
   categoryIds: ApiMenuCategory['id'][]
   clipingPolygonSlug?: string
 }
@@ -305,7 +306,7 @@ export const menuStore = defineStore('menu', () => {
     }
   }
 
-  async function fetchFeatures({ categoryIds, clipingPolygonSlug }: FetchFeaturesPayload) {
+  async function fetchFeatures({ apiEndpoint, categoryIds, clipingPolygonSlug }: FetchFeaturesPayload) {
     isLoadingFeatures.value = true
 
     try {
@@ -323,7 +324,7 @@ export const menuStore = defineStore('menu', () => {
                 let options = {}
                 if (clipingPolygonSlug)
                   options = { cliping_polygon_slug: clipingPolygonSlug }
-                return getPoiByCategoryId(categoryId, options)
+                return getPoiByCategoryId(apiEndpoint, categoryId, options)
               }
               catch (e) {
                 console.error('Vido error:', e)

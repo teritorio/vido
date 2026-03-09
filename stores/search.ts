@@ -12,6 +12,7 @@ import type { Poi } from '~/types/local/poi'
 export const useSearchStore = defineStore('search', () => {
   const { apiAddr, apiSearch } = useRuntimeConfig().public
   const { $tracking } = useNuxtApp()
+  const apiEndpoint = useState<string>('api-endpoint')
   const menuStore = useMenuStore()
   const { filters, apiMenuCategory } = storeToRefs(menuStore)
   const { center } = storeToRefs(useMapStore())
@@ -205,7 +206,7 @@ export const useSearchStore = defineStore('search', () => {
   }
 
   async function onPoiClick(searchResult: SearchResult) {
-    const poi = await getPoiById(searchResult.id)
+    const poi = await getPoiById(apiEndpoint.value, searchResult.id)
     const catId = poi.properties.metadata.category_ids?.[0]
 
     if (!catId)
@@ -248,7 +249,7 @@ export const useSearchStore = defineStore('search', () => {
     const searchValue = searchText.value.trim()
     if (searchValue.length === 2) {
       const cartocode = searchText.value
-      getPoiById(`cartocode:${cartocode}`)
+      getPoiById(apiEndpoint.value, `cartocode:${cartocode}`)
         .then((poi) => {
           if (currentSearchQueryId > searchResultId.value) {
             searchResultId.value = currentSearchQueryId
