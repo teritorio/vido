@@ -70,7 +70,7 @@ export function getPoiByCategoryIdUrl(
 ): string {
   const apiEndpoint = useState('api-endpoint')
 
-  options = Object.assign(defaultOptions, { geometry_as: 'point' }, options)
+  options = Object.assign({}, defaultOptions, { geometry_as: 'point' }, options)
   return (
     `${apiEndpoint.value}/pois/category/${categoryId}.${options.format}?${
     new URLSearchParams(stringifyOptions(options))}`
@@ -81,7 +81,7 @@ export async function getPoiByCategoryId(
   categoryId: number | string,
   options: ApiPoisOptions = {},
 ): Promise<ApiPoiCollection> {
-  options = Object.assign(defaultOptions, { geometry_as: 'point' }, options)
+  options = Object.assign({}, defaultOptions, { geometry_as: 'point' }, options)
 
   return await fetch(getPoiByCategoryIdUrl(categoryId, options)).then(
     async (data) => {
