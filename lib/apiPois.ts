@@ -20,13 +20,12 @@ export function stringifyOptions(options: ApiPoisOptions): string[][] {
 }
 
 export function getPoiById(
+  apiEndpoint: string,
   poiId: number | string,
   options: ApiPoisOptions = {},
 ): Promise<ApiPoi> {
-  const apiEndpoint = useState('api-endpoint')
-
   return fetch(
-    `${apiEndpoint.value}/poi/${poiId}.${options.format || defaultOptions.format}?${new URLSearchParams(stringifyOptions(options))}`,
+    `${apiEndpoint}/poi/${poiId}.${options.format || defaultOptions.format}?${new URLSearchParams(stringifyOptions(options))}`,
   )
     .then((data) => {
       if (data.ok) {
@@ -41,13 +40,12 @@ export function getPoiById(
 }
 
 export async function getPois(
+  apiEndpoint: string,
   poiIds?: (number | string)[],
   options: ApiPoisOptions = {},
 ): Promise<ApiPoiCollection> {
-  const apiEndpoint = useState('api-endpoint')
-
   return await fetch(
-    `${apiEndpoint.value}/pois.${options.format || defaultOptions.format}?${
+    `${apiEndpoint}/pois.${options.format || defaultOptions.format}?${
       new URLSearchParams([
         ...(poiIds ? [['ids', poiIds.join(',')]] : []),
         ...stringifyOptions(options),
@@ -65,25 +63,25 @@ export async function getPois(
 }
 
 export function getPoiByCategoryIdUrl(
+  apiEndpoint: string,
   categoryId: number | string,
   options: ApiPoisOptions = {},
 ): string {
-  const apiEndpoint = useState('api-endpoint')
-
   options = Object.assign({}, defaultOptions, { geometry_as: 'point' }, options)
   return (
-    `${apiEndpoint.value}/pois/category/${categoryId}.${options.format}?${
+    `${apiEndpoint}/pois/category/${categoryId}.${options.format}?${
     new URLSearchParams(stringifyOptions(options))}`
   )
 }
 
 export async function getPoiByCategoryId(
+  apiEndpoint: string,
   categoryId: number | string,
   options: ApiPoisOptions = {},
 ): Promise<ApiPoiCollection> {
   options = Object.assign({}, defaultOptions, { geometry_as: 'point' }, options)
 
-  return await fetch(getPoiByCategoryIdUrl(categoryId, options)).then(
+  return await fetch(getPoiByCategoryIdUrl(apiEndpoint, categoryId, options)).then(
     async (data) => {
       if (data.ok) {
         return await data.json() as unknown as ApiPoiCollection

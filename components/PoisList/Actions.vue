@@ -9,6 +9,8 @@ const props = defineProps<{
   colorLine: string
 }>()
 
+const apiEndpoint = useState<string>('api-endpoint')
+
 const urlMap = computed((): string => `/${props.categoryId}/`)
 
 const urlCsv = computed((): string => url('csv'))
@@ -26,7 +28,7 @@ function url(format: 'geojson' | 'csv'): string {
   if (route.query.clipingPolygonSlug)
     query.cliping_polygon_slug = route.query.clipingPolygonSlug.toString()
 
-  return getPoiByCategoryIdUrl(props.categoryId, query)
+  return getPoiByCategoryIdUrl(apiEndpoint.value, props.categoryId, query)
 }
 </script>
 

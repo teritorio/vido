@@ -101,6 +101,7 @@ if (settings.value && theme.value) {
 
 const { data, error, status } = await useAsyncData('features', async () => {
   await menuStore.fetchFeatures({
+    apiEndpoint: apiEndpoint.value as string,
     categoryIds: categoryIds.value || [],
     clipingPolygonSlug: route.query.clipingPolygonSlug?.toString(),
   })

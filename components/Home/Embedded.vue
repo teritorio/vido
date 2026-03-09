@@ -21,6 +21,7 @@ const props = defineProps<{
   initialCategoryIds?: number[]
 }>()
 
+const apiEndpoint = useState<string>('api-endpoint')
 const mapStore = useMapStore()
 const { isModeExplorer, mode, selectedFeature, isDepsView } = storeToRefs(mapStore)
 const menuStore = useMenuStore()
@@ -89,6 +90,7 @@ watch(selectedFeature, (newFeature, oldFeature) => {
 
   if (!isDepsView.value) {
     menuStore.fetchFeatures({
+      apiEndpoint: apiEndpoint.value,
       categoryIds: selectedCategoryIds.value,
       clipingPolygonSlug: route.query.clipingPolygonSlug?.toString(),
     })
@@ -101,6 +103,7 @@ watch(selectedCategoryIds, (a, b) => {
 
     if (!isDepsView.value) {
       menuStore.fetchFeatures({
+        apiEndpoint: apiEndpoint.value,
         categoryIds: selectedCategoryIds.value,
         clipingPolygonSlug: route.query.clipingPolygonSlug?.toString(),
       })
