@@ -177,6 +177,8 @@ export const menuStore = defineStore('menu', () => {
       const stateMenuItems: Record<number, MenuItem> = {}
       const localFilters: Record<number, FilterValues> = {}
 
+      allFeatures.value = {}
+      features.value = {}
       menuItems.value = undefined // Hack, release from store before edit and reappend
       items
         .map((menuItem) => {
