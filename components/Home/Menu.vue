@@ -147,6 +147,7 @@ function onClickUnselectAll(): void {
     </component>
 
     <template v-for="(menuItem, index) in currentMenuItems" :key="menuItem.id">
+      <VDivider v-if="index > 1 && !isOnSearch && menuBlock === 'MenuBlockBottom'" class="tw-mx-2 border-opacity-100" role="presentation" />
       <component
         :is="dynamicComponent"
         v-if="index !== 0 && !isOnSearch"
@@ -163,7 +164,7 @@ function onClickUnselectAll(): void {
           :selected-categories-ids="selectedCategoryIds"
           :size="size"
           display-mode-default="compact"
-          class="tw-flex-1 tw-pointer-events-auto tw-h-full"
+          class="tw-flex-1 tw-pointer-events-auto"
           @menu-group-click="navigationStore.navigateTo($event)"
           @category-click="menuStore.toggleSelectedCategoryId($event)"
           @filter-click="navigationStore.setCategoryFilter($event)"
