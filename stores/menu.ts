@@ -6,7 +6,7 @@ import type { ApiMenuCategory, ApiMenuCollection } from '~/types/api/menu'
 import type { MenuCategory, MenuCategoryEditorial, MenuGroup, MenuItem } from '~/types/local/menu'
 import type { ApiPoiCollection } from '~/types/api/poi'
 import { getPoiByCategoryId } from '~/lib/apiPois'
-import type { FilterValues } from '~/utils/types-filters'
+import type { FilterValue, FilterValues } from '~/utils/types-filters'
 import { filterValueFactory, filterValuesIsSet, isMatch, isSet } from '~/utils/types-filters'
 import type { Poi } from '~/types/local/poi'
 import type { PoiUnion } from '~/types/local/poi-deps'
@@ -88,70 +88,35 @@ export const menuStore = defineStore('menu', () => {
   const isLoadingFeatures = ref<boolean>(false)
   const poiCompo = usePoi()
 
-  function getAncestorGroupIds(itemId: number): number[] {
-    const result: number[] = []
-    let current = menuItems.value?.[itemId]
-    while (current?.parent_id) {
-      const parent = menuItems.value?.[current.parent_id]
-      if (parent && 'menu_group' in parent)
-        result.push(parent.id)
-      current = parent
-    }
-    return result
+  function getActiveGlobalFilters(): FilterValues {
+    return Object.values(globalFilters.value).flat().filter(f => isSet(f))
   }
 
-  function getChildCategoryIds(groupId: number): number[] {
-    const group = menuItems.value?.[groupId]
-    if (!group || !('menu_group' in group))
-      return []
-
-    const result: number[] = []
-    for (const childId of group.menu_group.vido_children) {
-      const child = menuItems.value?.[childId]
-      if (!child)
-        continue
-      if ('category' in child)
-        result.push(childId)
-      else if ('menu_group' in child)
-        result.push(...getChildCategoryIds(childId))
-    }
-    return result
-  }
-
-  function getApplicableGlobalFilters(categoryId: number): FilterValues {
+  function categorySupportsFilter(categoryId: number, filter: FilterValue): boolean {
     const category = menuItems.value?.[categoryId]
     if (!category || !('category' in category) || !category.category.filterable_property)
-      return []
+      return false
 
-    const filterableProps = category.category.filterable_property
-    const ancestorIds = getAncestorGroupIds(categoryId)
-    const result: FilterValues = []
-
-    for (const ancestorId of ancestorIds) {
-      const groupFilters = globalFilters.value[ancestorId]
-      if (!groupFilters)
-        continue
-
-      for (const f of groupFilters) {
-        if (filterableProps.some(fp =>
-          fp.length === f.def.property.length
-          && fp.every((v, i) => v === f.def.property[i]),
-        )) {
-          result.push(f)
-        }
-      }
-    }
-
-    return result
+    return category.category.filterable_property.some(fp =>
+      fp.length === filter.def.property.length
+      && fp.every((v, i) => v === filter.def.property[i]),
+    )
   }
 
   function isFeatureVisible(categoryId: number, feature: Poi): boolean {
+    const activeGlobalFilters = getActiveGlobalFilters()
+
+    if (activeGlobalFilters.length > 0) {
+      for (const filter of activeGlobalFilters) {
+        if (!categorySupportsFilter(categoryId, filter))
+          return false
+      }
+      if (!keepFeature(activeGlobalFilters, feature))
+        return false
+    }
+
     const categoryFilters = filters.value[categoryId]
     if (categoryFilters && filterValuesIsSet(categoryFilters) && !keepFeature(categoryFilters, feature))
-      return false
-
-    const applicableGlobalFilters = getApplicableGlobalFilters(categoryId)
-    if (applicableGlobalFilters.length > 0 && filterValuesIsSet(applicableGlobalFilters) && !keepFeature(applicableGlobalFilters, feature))
       return false
 
     return true
@@ -432,16 +397,13 @@ export const menuStore = defineStore('menu', () => {
       newGlobalFilters[groupId] = filterValues
       globalFilters.value = newGlobalFilters
 
-      const childCategoryIds = getChildCategoryIds(groupId)
       const localFeatures: Record<number, Poi[]> = copy(features.value)
 
-      for (const categoryId of childCategoryIds) {
-        if (categoryId in localFeatures) {
-          localFeatures[categoryId] = localFeatures[categoryId].map((feature: Poi) => {
-            feature.properties.vido_visible = isFeatureVisible(categoryId, feature)
-            return feature
-          })
-        }
+      for (const categoryId of Object.keys(localFeatures).map(Number)) {
+        localFeatures[categoryId] = localFeatures[categoryId].map((feature: Poi) => {
+          feature.properties.vido_visible = isFeatureVisible(categoryId, feature)
+          return feature
+        })
       }
 
       features.value = localFeatures
