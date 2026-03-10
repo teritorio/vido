@@ -19,7 +19,7 @@ const isOpen = ref(false)
   <div class="tw-flex tw-flex-col">
     <button
       type="button"
-      class="tw-flex tw-items-center tw-justify-between tw-w-full tw-cursor-pointer tw-py-1"
+      class="tw-flex tw-items-center tw-justify-between tw-w-full tw-cursor-pointer tw-py-1 tw-rounded-lg tw-transition-colors hover:tw-bg-zinc-100"
       @click="isOpen = !isOpen"
     >
       <div class="tw-flex tw-items-center tw-gap-2">
