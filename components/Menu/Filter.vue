@@ -87,7 +87,7 @@ function onCheckboxFilterChange(filterIndex: number, val: string, checked: boole
 </script>
 
 <template>
-  <div :class="global ? 'tw-flex tw-flex-col tw-gap-4' : 'tw-basis-max tw-shrink tw-flex tw-flex-col tw-gap-4 tw-flex-1 tw-p-4'">
+  <div :class="global ? 'tw-flex tw-flex-col tw-gap-4 tw-px-4' : 'tw-basis-max tw-shrink tw-flex tw-flex-col tw-gap-4 tw-flex-1 tw-p-4'">
     <template
       v-for="(filter, filterIndex) in filtersSafeCopy"
       :key="'property' in filter.def ? filter.def.property.join('.') : filterIndex"
