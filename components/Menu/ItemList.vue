@@ -40,7 +40,7 @@ function isCategorySelected(categoryId: MenuCategory['id']) {
 </script>
 
 <template>
-  <div class="tw-grid tw-items-start tw-grid-cols-4 tw-grid-rows-1">
+  <div class="tw-grid tw-items-start tw-grid-cols-4">
     <template v-for="menuItem in menuItems" :key="menuItem.id">
       <MenuGroup
         v-if="'menu_group' in menuItem"
