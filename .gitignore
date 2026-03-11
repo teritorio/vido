@@ -119,3 +119,6 @@ cypress/fixtures/teritorio/references/pois/
 
 # Vido
 public/fixtures
+
+# Claude
+CLAUDE.md

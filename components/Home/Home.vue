@@ -38,6 +38,7 @@ const props = defineProps<{
 }>()
 
 const { apiAddr } = useRuntimeConfig().public
+const apiEndpoint = useState<string>('api-endpoint')
 const mapStore = useMapStore()
 const { isModeFavorites, isModeExplorer, isModeExplorerOrFavorites, mode, selectedFeature, teritorioCluster, isDepsView } = storeToRefs(mapStore)
 const menuStore = useMenuStore()
@@ -153,7 +154,13 @@ const mapFeatures = computed(() => {
       f = flattenFeatures(features.value)
       break
     case Mode.FAVORITES:
-      f = favoriteFeatures.value
+      if (isDepsView.value) {
+        const favoriteIds = new Set(favoriteFeatures.value.map(f => f.properties.metadata.id))
+        f = [...favoriteFeatures.value, ...flattenFeatures(features.value).filter(f => !favoriteIds.has(f.properties.metadata.id))]
+      }
+      else {
+        f = favoriteFeatures.value
+      }
       break
     case Mode.EXPLORER:
       f = []
@@ -200,6 +207,7 @@ watch(selectedFeature, (newFeature, oldFeature) => {
     }
     else if (!isDepsView.value) {
       menuStore.fetchFeatures({
+        apiEndpoint: apiEndpoint.value,
         categoryIds: selectedCategoryIds.value,
         clipingPolygonSlug: route.query.clipingPolygonSlug?.toString(),
       })
@@ -213,6 +221,7 @@ watch(selectedCategoryIds, (a, b) => {
 
     if (!isDepsView.value) {
       menuStore.fetchFeatures({
+        apiEndpoint: apiEndpoint.value,
         categoryIds: selectedCategoryIds.value,
         clipingPolygonSlug: route.query.clipingPolygonSlug?.toString(),
       })
@@ -277,7 +286,7 @@ async function fetchFavorites(): Promise<Poi[]> {
   if (route.query.clipingPolygonSlug)
     query.cliping_polygon_slug = route.query.clipingPolygonSlug.toString()
 
-  return await getPois(favoritesIds.value, query)
+  return await getPois(apiEndpoint.value, favoritesIds.value, query)
     .then(pois => pois.features.map((feature) => {
       const catId = feature.properties.metadata.category_ids?.[0]
 

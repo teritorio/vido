@@ -209,4 +209,9 @@ const translatedValue = computed(() => {
 .tw-prose {
   max-width: none;
 }
+
+// Fix Firefox mobile ::marker misalignment when <li> contains a flex <a>
+li :deep(a) {
+  display: inline-flex;
+}
 </style>
