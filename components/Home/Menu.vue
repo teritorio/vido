@@ -73,6 +73,12 @@ const hasSlot = computed((): boolean => {
   return slots.default !== undefined
 })
 
+const rootGlobalFiltersMap = computed(() => {
+  return getMenuItemByParentId(undefined)
+    .filter(item => 'menu_group' in item && globalFilters.value[item.id]?.length > 0)
+    .map(item => ({ id: item.id, filtersValues: globalFilters.value[item.id] }))
+})
+
 watch(currentMenuItems, () => {
   emit('scrollTop')
 })
@@ -227,8 +233,9 @@ function onClickUnselectAll(): void {
       />
 
       <GlobalFiltersCollapsible
-        v-if="currentParent && 'menu_group' in currentParent && globalFilters[currentParent.id]?.length > 0"
-        :filters-map="[{ id: currentParent.id, filtersValues: globalFilters[currentParent.id] }]"
+        v-for="entry in rootGlobalFiltersMap"
+        :key="`global-filter-${entry.id}`"
+        :filters-map="[entry]"
         @activate-filter="$emit('activateFilter', $event)"
       />
 
