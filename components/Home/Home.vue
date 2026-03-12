@@ -115,8 +115,11 @@ onMounted(() => {
     origin: OriginEnum[router.currentRoute.value.query.origin as keyof typeof OriginEnum],
   })
 
-  if (props.boundaryArea || settings.value?.bbox_line)
-    initialBbox.value = getBBox({ type: 'Feature', geometry: (props.boundaryArea || settings.value!.bbox_line)!, properties: {} })
+  if (props.boundaryArea || settings.value?.bbox_line) {
+    const bounds = getBBox({ type: 'Feature', geometry: (props.boundaryArea || settings.value!.bbox_line)!, properties: {} })
+    if (bounds)
+      initialBbox.value = bounds
+  }
 })
 
 onBeforeUnmount(() => {
