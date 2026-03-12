@@ -22,7 +22,7 @@ const { $trackingInit } = useNuxtApp()
 const menuStore = useMenuStore()
 const poiDepsCompo = usePoiDeps()
 const { teritorioCluster } = storeToRefs(mapStore)
-const { apiMenuCategory, selectedCategoryIds, selectedCategories } = storeToRefs(menuStore)
+const { allFeatures, apiMenuCategory, selectedCategoryIds, selectedCategories } = storeToRefs(menuStore)
 
 const mainPoi = ref<ApiPoi>()
 const boundaryGeojson = ref<Polygon | MultiPolygon>()
@@ -86,6 +86,11 @@ if (!categoryIds.value.length) {
 
 menuStore.setSelectedCategoryIds(categoryIds.value)
 
+const isSingleCategory = computed(() => categoryIds.value.length === 1)
+const singleCategory = computed(() => isSingleCategory.value ? menuStore.getCurrentCategory(categoryIds.value[0]) : undefined)
+const categoryFeatures = computed(() => isSingleCategory.value ? allFeatures.value[categoryIds.value[0]] ?? [] : [])
+const namedCategoryFeatures = computed(() => categoryFeatures.value.filter(poi => poi.properties.name?.['fr-FR'] || poi.properties.name?.fr))
+
 if (settings.value && theme.value) {
   useHead(() => headerFromSettings(
     theme.value as SiteInfosTheme,
@@ -122,6 +127,35 @@ const { data, error, status } = await useAsyncData('features', async () => {
 
 if (error.value)
   throw createError(error.value)
+
+if (settings.value && theme.value && isSingleCategory.value && singleCategory.value) {
+  const origin = useRequestURL().origin
+  const categoryName = singleCategory.value.category.name.fr
+  const themeTitle = theme.value.title?.fr ?? ''
+
+  useHead(() => ({
+    script: namedCategoryFeatures.value.length
+      ? [
+          {
+            type: 'application/ld+json',
+            innerHTML: JSON.stringify({
+              '@context': 'https://schema.org',
+              '@type': 'CollectionPage',
+              'name': `${categoryName} — ${themeTitle}`,
+              'mainEntity': {
+                '@type': 'ItemList',
+                'itemListElement': namedCategoryFeatures.value.map((poi, index) => ({
+                  '@type': 'ListItem',
+                  'position': index + 1,
+                  'url': `${origin}/poi/${poi.properties.metadata.id}/details`,
+                })),
+              },
+            }),
+          },
+        ]
+      : [],
+  }))
+}
 
 if (status.value === 'success' && data.value && mainPoi.value) {
   poiDepsCompo.processPoiDeps(data.value, mainPoi.value.properties.metadata.id, selectedCategoryIds.value)
@@ -176,11 +210,19 @@ onBeforeMount(() => {
       type="error"
       variant="elevated"
     />
-    <Home
-      v-else
-      :boundary-area="boundaryGeojson"
-      :initial-category-ids="categoryIds"
-    />
+    <template v-else>
+      <Home
+        :boundary-area="boundaryGeojson"
+        :initial-category-ids="categoryIds"
+      />
+      <ul v-if="isSingleCategory && namedCategoryFeatures.length" class="tw-sr-only">
+        <li v-for="poi in namedCategoryFeatures" :key="poi.properties.metadata.id">
+          <a :href="`/poi/${poi.properties.metadata.id}/details`">
+            {{ poi.properties.name?.['fr-FR'] || poi.properties.name?.fr }}
+          </a>
+        </li>
+      </ul>
+    </template>
   </VApp>
 </template>
 

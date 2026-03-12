@@ -440,7 +440,7 @@ onBeforeUnmount(() => {
 <template>
   <div class="tw-fixed tw-w-full tw-h-full tw-overflow-hidden tw-flex tw-flex-col">
     <h1 class="tw-absolute tw-text-white">
-      {{ siteName }}
+      {{ selectedCategories?.length === 1 ? `${selectedCategories[0].category.name.fr} — ${siteName}` : siteName }}
     </h1>
 
     <ClientOnly>
