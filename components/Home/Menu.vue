@@ -73,10 +73,20 @@ const hasSlot = computed((): boolean => {
   return slots.default !== undefined
 })
 
-const rootGlobalFiltersMap = computed(() => {
-  return getMenuItemByParentId(undefined)
-    .filter(item => 'menu_group' in item && globalFilters.value[item.id]?.length > 0)
-    .map(item => ({ id: item.id, filtersValues: globalFilters.value[item.id] }))
+const rootAncestorGlobalFilters = computed(() => {
+  const firstItem = navigationStore.navigationStack[0]
+  if (!firstItem)
+    return null
+
+  // Traverse up to find the root-level ancestor (parent_id 0/null/undefined = root)
+  let ancestorId: number = firstItem.id
+  while (menuItems.value?.[ancestorId]?.parent_id) {
+    ancestorId = menuItems.value[ancestorId].parent_id!
+  }
+
+  if (!globalFilters.value[ancestorId]?.length)
+    return null
+  return { id: ancestorId, filtersValues: globalFilters.value[ancestorId] }
 })
 
 watch(currentMenuItems, () => {
@@ -233,9 +243,14 @@ function onClickUnselectAll(): void {
       />
 
       <GlobalFiltersCollapsible
-        v-for="entry in rootGlobalFiltersMap"
-        :key="`global-filter-${entry.id}`"
-        :filters-map="[entry]"
+        v-if="rootAncestorGlobalFilters && rootAncestorGlobalFilters.id !== currentParent?.id"
+        :filters-map="[rootAncestorGlobalFilters]"
+        @activate-filter="$emit('activateFilter', $event)"
+      />
+
+      <GlobalFiltersCollapsible
+        v-if="currentParent && 'menu_group' in currentParent && globalFilters[currentParent.id]?.length > 0"
+        :filters-map="[{ id: currentParent.id, filtersValues: globalFilters[currentParent.id] }]"
         @activate-filter="$emit('activateFilter', $event)"
       />
 
