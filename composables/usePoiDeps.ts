@@ -118,7 +118,8 @@ export function usePoiDeps() {
 
       if (!catId) {
         catId = mainPoi.properties.metadata.category_ids?.[0]
-        captureMessage(`Feature ${feature.properties.metadata.id} has no category_ids, falling back to main POI category`, 'warning')
+        if (!isWaypoint(feature))
+          captureMessage(`Feature ${feature.properties.metadata.id} has no category_ids, falling back to main POI category`, 'warning')
       }
 
       if (!catId)
