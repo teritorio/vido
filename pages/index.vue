@@ -144,9 +144,10 @@ if (settings.value && theme.value && isSingleCategory.value && singleCategory.va
               'name': `${categoryName} — ${themeTitle}`,
               'mainEntity': {
                 '@type': 'ItemList',
-                'itemListElement': namedCategoryFeatures.value.map((poi, index) => ({
+                'itemListElement': namedCategoryFeatures.value.slice(0, 100).map((poi, index) => ({
                   '@type': 'ListItem',
                   'position': index + 1,
+                  'name': poi.properties.name?.['fr-FR'] || poi.properties.name?.fr,
                   'url': `${origin}/poi/${poi.properties.metadata.id}/details`,
                 })),
               },
