@@ -4,6 +4,7 @@ import PoiDetails from '~/components/PoisDetails/PoiDetails.vue'
 import type { ApiPoiDepsCollection } from '~/types/api/poi-deps'
 import { headerFromSettings } from '~/lib/apiSettings'
 import { useSiteStore } from '~/stores/site'
+import { menuStore as useMenuStore } from '~/stores/menu'
 import { regexForPOIIds } from '~/composables/useIdsResolver'
 import type { PoiUnion } from '~/types/local/poi-deps'
 import type { Poi } from '~/types/local/poi'
@@ -78,6 +79,28 @@ if (settings.value && theme.value) {
       },
     ),
   )
+
+  const origin = useRequestURL().origin
+  const categoryId = poi.value?.properties.metadata.category_ids?.[0]
+  const menuStore = useMenuStore()
+  const category = categoryId ? menuStore.getCurrentCategory(categoryId) : undefined
+
+  useHead({
+    script: [
+      {
+        type: 'application/ld+json',
+        innerHTML: JSON.stringify({
+          '@context': 'https://schema.org',
+          '@type': 'BreadcrumbList',
+          'itemListElement': [
+            { '@type': 'ListItem', 'position': 1, 'name': theme.value.title?.fr ?? '', 'item': `${origin}/` },
+            ...(category ? [{ '@type': 'ListItem', 'position': 2, 'name': category.category.name.fr, 'item': `${origin}/${categoryId}/` }] : []),
+            { '@type': 'ListItem', 'position': category ? 3 : 2, 'name': featureSeoTitle.value },
+          ],
+        }),
+      },
+    ],
+  })
 }
 
 onBeforeMount(() => {
