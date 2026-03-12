@@ -92,7 +92,7 @@ if (settings.value && theme.value) {
     settings.value!.icon_font_css_url,
     {
       title: selectedCategories.value?.length === 1
-        ? selectedCategories.value[0].category.name.fr
+        ? selectedCategories.value[0]?.category?.name?.fr
         : undefined,
     },
   ))
