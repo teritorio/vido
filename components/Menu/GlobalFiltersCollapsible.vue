@@ -24,6 +24,7 @@ const isFiltered = computed(() => {
   <div class="tw-flex tw-flex-col">
     <button
       type="button"
+      :title="t('headerMenu.filterTitle')"
       class="tw-flex tw-items-center tw-w-full tw-h-12 sm:tw-h-8 tw-text-left tw-cursor-pointer tw-rounded-lg tw-outline-none focus:tw-outline-none tw-transition-colors hover:tw-bg-zinc-100"
       :class="[
         isFiltered ? 'tw-text-emerald-500' : 'tw-text-zinc-500',
