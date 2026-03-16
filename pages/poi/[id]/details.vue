@@ -16,6 +16,7 @@ definePageMeta({
 })
 
 const { articles, settings, theme } = storeToRefs(useSiteStore())
+const menuStore = useMenuStore()
 const { params } = useRoute()
 const { $trackingInit } = useNuxtApp()
 const apiEndpoint = useState('api-endpoint')
@@ -82,7 +83,6 @@ if (settings.value && theme.value) {
 
   const origin = useRequestURL().origin
   const categoryId = poi.value?.properties.metadata.category_ids?.[0]
-  const menuStore = useMenuStore()
   const category = categoryId ? menuStore.getCurrentCategory(categoryId) : undefined
 
   useHead({
