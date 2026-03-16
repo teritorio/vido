@@ -128,35 +128,37 @@ const { data, error, status } = await useAsyncData('features', async () => {
 if (error.value)
   throw createError(error.value)
 
-if (settings.value && theme.value && isSingleCategory.value && singleCategory.value) {
-  const origin = useRequestURL().origin
+const requestOrigin = useRequestURL().origin
+
+useHead(() => {
+  if (!settings.value || !theme.value || !isSingleCategory.value || !singleCategory.value || !namedCategoryFeatures.value.length)
+    return {}
+
   const categoryName = singleCategory.value.category.name.fr
   const themeTitle = theme.value.title?.fr ?? ''
 
-  useHead(() => ({
-    script: namedCategoryFeatures.value.length
-      ? [
-          {
-            type: 'application/ld+json',
-            innerHTML: JSON.stringify({
-              '@context': 'https://schema.org',
-              '@type': 'CollectionPage',
-              'name': `${categoryName} — ${themeTitle}`,
-              'mainEntity': {
-                '@type': 'ItemList',
-                'itemListElement': namedCategoryFeatures.value.slice(0, 100).map((poi, index) => ({
-                  '@type': 'ListItem',
-                  'position': index + 1,
-                  'name': poi.properties.name?.['fr-FR'] || poi.properties.name?.fr,
-                  'url': `${origin}/poi/${poi.properties.metadata.id}/details`,
-                })),
-              },
-            }),
+  return {
+    script: [
+      {
+        type: 'application/ld+json',
+        innerHTML: JSON.stringify({
+          '@context': 'https://schema.org',
+          '@type': 'CollectionPage',
+          'name': `${categoryName} — ${themeTitle}`,
+          'mainEntity': {
+            '@type': 'ItemList',
+            'itemListElement': namedCategoryFeatures.value.slice(0, 100).map((poi, index) => ({
+              '@type': 'ListItem',
+              'position': index + 1,
+              'name': poi.properties.name?.['fr-FR'] || poi.properties.name?.fr,
+              'url': `${requestOrigin}/poi/${poi.properties.metadata.id}/details`,
+            })),
           },
-        ]
-      : [],
-  }))
-}
+        }),
+      },
+    ],
+  }
+})
 
 if (status.value === 'success' && data.value && mainPoi.value) {
   poiDepsCompo.processPoiDeps(data.value, mainPoi.value.properties.metadata.id, selectedCategoryIds.value)
