@@ -63,6 +63,7 @@ export default defineI18nLocale(() => {
       selectAll: 'Seleccionar todo',
       unselectAll: 'Deseleccionar todo',
       filter: 'Filtro',
+      filterTitle: 'El filtro solo se aplicará a las categorías seleccionadas',
       editFilters: 'Editar filtros',
       categories: 'Categorías',
       cities: 'Comunas',
