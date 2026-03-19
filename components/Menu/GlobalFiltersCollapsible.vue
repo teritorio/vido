@@ -52,5 +52,11 @@ const isFiltered = computed(() => {
         />
       </template>
     </div>
+
+    <VDivider
+      class="tw-mt-2 border-opacity-100"
+      :class="{ 'md:tw-hidden': !isOpen }"
+      role="presentation"
+    />
   </div>
 </template>
