@@ -93,7 +93,7 @@ function onCheckboxFilterChange(filterIndex: number, val: string, checked: boole
       :key="'property' in filter.def ? filter.def.property.join('.') : filterIndex"
     >
       <div v-if="filter.type === 'boolean'">
-        <label class="tw-block tw-mb-1 tw-text-zinc-800 tw-cursor-pointer">
+        <label class="tw-block tw-mb-1 tw-text-zinc-800 tw-cursor-pointer tw-capitalize">
           <input
             type="checkbox"
             class="tw-text-emerald-500 tw-rounded-full focus:tw-ring-0 focus:tw-ring-transparent"
@@ -107,7 +107,7 @@ function onCheckboxFilterChange(filterIndex: number, val: string, checked: boole
       <div v-else-if="filter.type === 'multiselection'">
         <label
           :for="filter.def.property.join('.')"
-          class="tw-block tw-mb-2 tw-text-zinc-500 tw-cursor-pointer"
+          class="tw-block tw-mb-2 tw-text-zinc-500 tw-cursor-pointer tw-capitalize"
         >
           {{ (filter.def.name && filter.def.name.fr) || filter.def.property.join('.') }}
         </label>
@@ -119,7 +119,7 @@ function onCheckboxFilterChange(filterIndex: number, val: string, checked: boole
         />
       </div>
       <div v-else-if="filter.type === 'checkboxes_list'">
-        <p class="tw-mb-2 tw-text-zinc-500">
+        <p class="tw-mb-2 tw-text-zinc-500 tw-capitalize">
           {{ (filter.def.name && filter.def.name.fr) || filter.def.property.join('.') }}
         </p>
         <label
@@ -152,7 +152,7 @@ function onCheckboxFilterChange(filterIndex: number, val: string, checked: boole
         />
       </div>
       <div v-else-if="filter.type === 'number_range'">
-        <label class="tw-block tw-mb-1 tw-text-zinc-800 tw-cursor-pointer">
+        <label class="tw-block tw-mb-1 tw-text-zinc-800 tw-cursor-pointer tw-capitalize">
           {{ (filter.def.name && filter.def.name.fr) || filter.def.property.join('.') }}
           <NumberRange
             :filter="filter"
