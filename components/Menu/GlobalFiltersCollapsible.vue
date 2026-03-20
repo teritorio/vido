@@ -54,8 +54,8 @@ const isFiltered = computed(() => {
     </div>
 
     <VDivider
+      v-if="isOpen"
       class="tw-mt-2 border-opacity-100"
-      :class="{ 'md:tw-hidden': !isOpen }"
       role="presentation"
     />
   </div>
