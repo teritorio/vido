@@ -94,7 +94,7 @@ const availableStyles = computed((): MapStyleEnum[] => {
 watch(
   () => props.features,
   () => {
-    if (!map.value || isProcessing.value)
+    if (!map.value || !mapStyleLoaded.value || isProcessing.value)
       return
 
     showVectorSelectedFeature()

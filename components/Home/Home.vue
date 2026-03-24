@@ -115,8 +115,11 @@ onMounted(() => {
     origin: OriginEnum[router.currentRoute.value.query.origin as keyof typeof OriginEnum],
   })
 
-  if (props.boundaryArea || settings.value?.bbox_line)
-    initialBbox.value = getBBox({ type: 'Feature', geometry: (props.boundaryArea || settings.value!.bbox_line)!, properties: {} })
+  if (props.boundaryArea || settings.value?.bbox_line) {
+    const bounds = getBBox({ type: 'Feature', geometry: (props.boundaryArea || settings.value!.bbox_line)!, properties: {} })
+    if (bounds)
+      initialBbox.value = bounds
+  }
 })
 
 onBeforeUnmount(() => {
@@ -437,7 +440,7 @@ onBeforeUnmount(() => {
 <template>
   <div class="tw-fixed tw-w-full tw-h-full tw-overflow-hidden tw-flex tw-flex-col">
     <h1 class="tw-absolute tw-text-white">
-      {{ siteName }}
+      {{ selectedCategories?.length === 1 && selectedCategories[0]?.category?.name?.fr ? `${selectedCategories[0].category.name.fr} — ${siteName}` : siteName }}
     </h1>
 
     <ClientOnly>

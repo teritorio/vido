@@ -6,7 +6,7 @@ import type { ApiMenuCategory, ApiMenuCollection } from '~/types/api/menu'
 import type { MenuCategory, MenuCategoryEditorial, MenuGroup, MenuItem } from '~/types/local/menu'
 import type { ApiPoiCollection } from '~/types/api/poi'
 import { getPoiByCategoryId } from '~/lib/apiPois'
-import type { FilterValues } from '~/utils/types-filters'
+import type { FilterValue, FilterValues } from '~/utils/types-filters'
 import { filterValueFactory, filterValuesIsSet, isMatch, isSet } from '~/utils/types-filters'
 import type { Poi } from '~/types/local/poi'
 import type { PoiUnion } from '~/types/local/poi-deps'
@@ -83,9 +83,44 @@ export const menuStore = defineStore('menu', () => {
   const selectedCategoryIds = ref<ApiMenuCategory['id'][]>([])
   const features = ref<Record<number, Poi[]>>({})
   const filters = ref<Record<ApiMenuCategory['id'], FilterValues>>({})
+  const globalFilters = ref<Record<number, FilterValues>>({})
   const allFeatures = ref<Record<number, Poi[]>>({})
   const isLoadingFeatures = ref<boolean>(false)
   const poiCompo = usePoi()
+
+  function getActiveGlobalFilters(): FilterValues {
+    return Object.values(globalFilters.value).flat().filter(f => isSet(f))
+  }
+
+  function categorySupportsFilter(categoryId: number, filter: FilterValue): boolean {
+    const category = menuItems.value?.[categoryId]
+    if (!category || !('category' in category) || !category.category.filterable_property)
+      return false
+
+    return category.category.filterable_property.some(fp =>
+      fp.length === filter.def.property.length
+      && fp.every((v, i) => v === filter.def.property[i]),
+    )
+  }
+
+  function isFeatureVisible(categoryId: number, feature: Poi): boolean {
+    const activeGlobalFilters = getActiveGlobalFilters()
+
+    if (activeGlobalFilters.length > 0) {
+      for (const filter of activeGlobalFilters) {
+        if (!categorySupportsFilter(categoryId, filter))
+          return false
+      }
+      if (!keepFeature(activeGlobalFilters, feature))
+        return false
+    }
+
+    const categoryFilters = filters.value[categoryId]
+    if (categoryFilters && filterValuesIsSet(categoryFilters) && !keepFeature(categoryFilters, feature))
+      return false
+
+    return true
+  }
 
   const getFeatureById = computed(() => {
     return (id: number): Poi | undefined => {
@@ -177,6 +212,7 @@ export const menuStore = defineStore('menu', () => {
     try {
       const stateMenuItems: Record<number, MenuItem> = {}
       const localFilters: Record<number, FilterValues> = {}
+      const localGlobalFilters: Record<number, FilterValues> = {}
 
       allFeatures.value = {}
       features.value = {}
@@ -219,10 +255,15 @@ export const menuStore = defineStore('menu', () => {
           if ('category' in menuItem && menuItem.category.filters) {
             localFilters[menuItem.id] = menuItem.category.filters.map(filter => filterValueFactory(filter))
           }
+
+          if ('menu_group' in menuItem && menuItem.menu_group.filters) {
+            localGlobalFilters[menuItem.id] = menuItem.menu_group.filters.map(filter => filterValueFactory(filter))
+          }
         })
 
       menuItems.value = stateMenuItems
       filters.value = localFilters
+      globalFilters.value = localGlobalFilters
     }
     catch (error) {
       console.error(
@@ -268,12 +309,10 @@ export const menuStore = defineStore('menu', () => {
       for (let j = 0; j < categoryIds.length; j++) {
         const categoryId = categoryIds[j]
 
-        const filterIsSet = filters.value[categoryId] && filterValuesIsSet(filters.value[categoryId])
-
         if (existingFeatures[j]) {
           localFeatures[categoryId] = previousFeatures[categoryId].map(
             (f: Poi) => {
-              f.properties.vido_visible = !filterIsSet || keepFeature(filters.value[categoryId], f)
+              f.properties.vido_visible = isFeatureVisible(categoryId, f)
               return f
             },
           )
@@ -287,7 +326,7 @@ export const menuStore = defineStore('menu', () => {
 
             const poi = poiCompo.formatPoi(f, category)
             poi.properties.vido_cat = categoryId
-            poi.properties.vido_visible = !filterIsSet || keepFeature(filters.value[categoryId], poi)
+            poi.properties.vido_visible = isFeatureVisible(categoryId, poi)
             return poi
           })
 
@@ -335,16 +374,39 @@ export const menuStore = defineStore('menu', () => {
       // Update features visibility
       if (categoryId in features.value) {
         const localFeatures: { [categoryId: number]: Poi[] } = copy(features.value)
-        const filterIsSet = filterValuesIsSet(filterValues)
 
         localFeatures[categoryId] = localFeatures[categoryId].map((feature: Poi) => {
-          feature.properties.vido_visible
-            = !filterIsSet || keepFeature(filterValues, feature)
+          feature.properties.vido_visible = isFeatureVisible(categoryId, feature)
           return feature
         })
 
         features.value = localFeatures
       }
+    }
+  }
+
+  function applyGlobalFilters({
+    groupId,
+    filterValues,
+  }: {
+    groupId: number
+    filterValues: FilterValues
+  }) {
+    const newGlobalFilters = copy(globalFilters.value)
+    if (!deepEqual(newGlobalFilters[groupId], filterValues)) {
+      newGlobalFilters[groupId] = filterValues
+      globalFilters.value = newGlobalFilters
+
+      const localFeatures: Record<number, Poi[]> = copy(features.value)
+
+      for (const categoryId of Object.keys(localFeatures).map(Number)) {
+        localFeatures[categoryId] = localFeatures[categoryId].map((feature: Poi) => {
+          feature.properties.vido_visible = isFeatureVisible(categoryId, feature)
+          return feature
+        })
+      }
+
+      features.value = localFeatures
     }
   }
 
@@ -369,5 +431,7 @@ export const menuStore = defineStore('menu', () => {
     fetchFeatures,
     filterByDeps,
     applyFilters,
+    globalFilters,
+    applyGlobalFilters,
   }
 })

@@ -4,8 +4,11 @@ import { bbox as turfBbox } from '@turf/bbox'
 
 type ITLngLatBounds = InstanceType<typeof LngLatBounds>
 
-export function getBBox(data: GeoJSON.Feature | GeoJSON.FeatureCollection): LngLatBounds {
+export function getBBox(data: GeoJSON.Feature | GeoJSON.FeatureCollection): LngLatBounds | undefined {
   const bbox = turfBbox(data)
+
+  if (!bbox.every(v => Number.isFinite(v)))
+    return undefined
 
   return new LngLatBounds(
     [bbox[0], bbox[1]],

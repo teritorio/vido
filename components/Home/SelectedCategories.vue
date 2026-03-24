@@ -6,7 +6,7 @@ import { menuStore as useMenuStore } from '~/stores/menu'
 
 withDefaults(defineProps<{
   categories: MenuCategory[]
-  showGoToMap: boolean
+  showGoToMap?: boolean
 }>(), {
   showGoToMap: true,
 })

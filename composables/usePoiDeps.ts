@@ -113,12 +113,13 @@ export function usePoiDeps() {
       })
       : collection.features
 
-    return sortedFeatures.map((feature) => {
+    return sortedFeatures.flatMap((feature) => {
       let catId = feature.properties.metadata.category_ids?.[0]
 
       if (!catId) {
         catId = mainPoi.properties.metadata.category_ids?.[0]
-        captureMessage(`Feature ${feature.properties.metadata.id} has no category_ids, falling back to main POI category`, 'warning')
+        if (!isWaypoint(feature))
+          captureMessage(`Feature ${feature.properties.metadata.id} has no category_ids, falling back to main POI category`, 'warning')
       }
 
       if (!catId)
@@ -131,8 +132,10 @@ export function usePoiDeps() {
         category = menuStore.getCurrentCategory(mainPoi.properties.metadata.category_ids?.[0] as number)
       }
 
-      if (!category)
-        throw createError(`Category ${catId} not found.`)
+      if (!category) {
+        captureMessage(`Category ${catId} not found, skipping feature ${feature.properties.metadata.id}`, 'warning')
+        return []
+      }
 
       return formatPoiDeps(feature, category)
     })
