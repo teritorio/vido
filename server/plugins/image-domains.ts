@@ -18,7 +18,12 @@ export default defineNitroPlugin(async () => {
             if (!siteUrl)
               return [devOrProdHost]
 
-            return [new URL(siteUrl).host, devOrProdHost]
+            try {
+              return [new URL(siteUrl).host, devOrProdHost]
+            }
+            catch {
+              return [devOrProdHost]
+            }
           })
 
         const imageHosts = Array.isArray(config.image_proxy_hosts)
