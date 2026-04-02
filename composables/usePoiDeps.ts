@@ -132,8 +132,9 @@ export function usePoiDeps() {
         category = menuStore.getCurrentCategory(mainPoi.properties.metadata.category_ids?.[0] as number)
       }
 
-      if (!category) {
-        // Fallback to currently selected categories (e.g. POI accessible via category 9050 but deps returns category 45827)
+      if (!category && feature.properties.metadata.id === mainPoiId) {
+        // Fallback to currently selected categories for the main POI only
+        // (e.g. POI accessible via category 9050 but deps returns category 45827)
         for (const selectedId of menuStore.selectedCategoryIds) {
           category = menuStore.getCurrentCategory(selectedId)
           if (category)
