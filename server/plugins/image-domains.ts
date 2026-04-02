@@ -9,16 +9,17 @@ export default defineNitroPlugin(async () => {
     const domains = Object.fromEntries(
       Object.entries(configs).map(([slug, config]) => {
         const urls = Object.values(config.themes)
-          .map((theme) => {
-            return [
-              new URL(theme.site_url?.fr || '').host,
-              import.meta.dev
-                ? `${theme.slug}-${slug}.${new URL(genericApiEndpoint).host}`
-                : `${theme.slug}-${slug}.${appHost}`,
-            ]
+          .flatMap((theme) => {
+            const siteUrl = theme.site_url?.fr
+            const devOrProdHost = import.meta.dev
+              ? `${theme.slug}-${slug}.${new URL(genericApiEndpoint).host}`
+              : `${theme.slug}-${slug}.${appHost}`
+
+            if (!siteUrl)
+              return [devOrProdHost]
+
+            return [new URL(siteUrl).host, devOrProdHost]
           })
-          .filter(Boolean)
-          .flat()
 
         const imageHosts = Array.isArray(config.image_proxy_hosts)
           ? config.image_proxy_hosts
