@@ -133,6 +133,15 @@ export function usePoiDeps() {
       }
 
       if (!category) {
+        // Fallback to currently selected categories (e.g. POI accessible via category 9050 but deps returns category 45827)
+        for (const selectedId of menuStore.selectedCategoryIds) {
+          category = menuStore.getCurrentCategory(selectedId)
+          if (category)
+            break
+        }
+      }
+
+      if (!category) {
         captureMessage(`Category ${catId} not found, skipping feature ${feature.properties.metadata.id}`, 'warning')
         return []
       }
