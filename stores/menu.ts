@@ -155,11 +155,14 @@ export const menuStore = defineStore('menu', () => {
 
   const getCurrentCategory = computed((): (categoryId: number) => MenuCategory | undefined => {
     return (categoryId) => {
-      return menuItems.value === undefined
-        ? undefined
-        : Object.values(menuItems.value).find(
-          menuItem => menuItem.id === categoryId,
-        ) as MenuCategory
+      if (menuItems.value === undefined)
+        return undefined
+
+      const menuItem = menuItems.value[categoryId]
+      if (menuItem && 'category' in menuItem)
+        return menuItem as MenuCategory
+
+      return undefined
     }
   })
 
