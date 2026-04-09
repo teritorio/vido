@@ -95,7 +95,6 @@ const pois = computed(() => props.poiDeps.filter(f => !poiDepsCompo.isWaypoint(f
       :feature-ids="featureDepsIDs"
       :fullscreen-control="true"
       :off-map-attribution="true"
-      :cluster="false"
     />
     <div class="detail-wrapper">
       <div v-if="waypoints.length > 0" class="detail-left">
