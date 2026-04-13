@@ -137,15 +137,17 @@ export const useSearchStore = defineStore('search', () => {
   }
 
   function submit(value: string): void {
+    searchText.value = value
+
     if (!value || !value.trim().length) {
+      searchQueryId.value += 1
+      searchResultId.value = searchQueryId.value
       searchMenuItemsResults.value = null
       searchPoisResults.value = null
       searchAddressesResults.value = null
       searchCartocodeResult.value = null
       return
     }
-
-    searchText.value = value
 
     // Launch search if not already loading + search text length >= 3
     if (!isLoading.value && searchText.value.trim().length >= 3)

@@ -270,7 +270,8 @@ async function updateSelectedFeature(feature?: PoiUnion): Promise<void> {
 
           const poi = data.value.find(f => f.properties.metadata.id === id)
           // In case user click on vecto element, attach Pin Marker to POI Marker
-          teritorioCluster.value?.setSelectedFeature(poi as unknown as GeoJSONFeature)
+          if (poi)
+            teritorioCluster.value?.setSelectedFeature(poi as unknown as GeoJSONFeature)
         }
       }
       catch (e) {
