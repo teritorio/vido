@@ -63,7 +63,13 @@ const { data, error, status } = await useAsyncData('parallel', async () => {
 })
 
 if (error.value) {
-  throw createError(error.value)
+  const err = error.value as Error & { statusCode?: number, statusMessage?: string, data?: unknown }
+  throw createError({
+    statusCode: err.statusCode || 500,
+    statusMessage: err.statusMessage || err.message,
+    data: err.data,
+    fatal: true,
+  })
 }
 
 if (status.value === 'success' && data.value) {
