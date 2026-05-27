@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import type { FetchError } from 'ofetch'
 import { storeToRefs } from 'pinia'
 import type { Settings } from '~/lib/apiSettings'
 import type { PropertyTranslations } from '~/lib/apiPropertyTranslations'
@@ -18,7 +19,13 @@ const { data: context, error: configError } = await useFetch('/api/config', {
 })
 
 if (configError.value) {
-  showError({ ...configError.value })
+  const err = configError.value as FetchError
+  showError({
+    statusCode: err.statusCode || 500,
+    statusMessage: err.statusMessage || err.message,
+    data: err.data,
+    cause: err,
+  })
 }
 
 const apiEndpoint = useState('api-endpoint', () => context.value?.api)
@@ -63,7 +70,14 @@ const { data, error, status } = await useAsyncData('parallel', async () => {
 })
 
 if (error.value) {
-  throw createError(error.value)
+  const err = error.value as FetchError
+  throw createError({
+    statusCode: err.statusCode || 500,
+    statusMessage: err.statusMessage || err.message,
+    data: err.data,
+    cause: err,
+    fatal: true,
+  })
 }
 
 if (status.value === 'success' && data.value) {
