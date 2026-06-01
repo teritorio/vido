@@ -1,26 +1,15 @@
 <script setup lang="ts">
-import type { FetchError } from 'ofetch'
 import { storeToRefs } from 'pinia'
 import type { Settings } from '~/lib/apiSettings'
 import { useSiteStore } from '~/stores/site'
 
 const { detectHost } = useHostDetection()
 
-const { data: context, error: configError } = await useFetch('/api/config', {
+const { data: context } = await useFetch('/api/config', {
   headers: {
     'x-client-host': detectHost(),
   },
 })
-
-if (configError.value) {
-  const err = configError.value as FetchError
-  showError({
-    statusCode: err.statusCode || 500,
-    statusMessage: err.statusMessage || err.message,
-    data: err.data,
-    cause: err,
-  })
-}
 
 const { settings } = storeToRefs(useSiteStore())
 const apiEndpoint = useState('api-endpoint', () => context.value?.api)
