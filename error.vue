@@ -19,7 +19,7 @@ const handleError = () => reloadNuxtApp({ path: '/' })
       <VEmptyState
         v-if="error"
         color="elevated"
-        :image="logoUrl"
+        :image="logoUrl || undefined"
         :headline="$t('error.statusCode', { status: error.statusCode })"
         :text="error.message"
         :action-text="$t('error.backHome')"

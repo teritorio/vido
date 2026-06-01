@@ -19,10 +19,7 @@ const { settings } = storeToRefs(useSiteStore())
 const apiEndpoint = useState('api-endpoint', () => context.value?.api)
 
 if (apiEndpoint.value) {
-  const { data, error, status } = await useAsyncData('parallel', async () => $fetch<Settings>(`${apiEndpoint.value}/settings.json`))
-
-  if (error.value)
-    throw createError(error.value)
+  const { data, status } = await useAsyncData('error-layout-settings', async () => $fetch<Settings>(`${apiEndpoint.value}/settings.json`))
 
   if (status.value === 'success' && data.value) {
     settings.value = Object.assign(
