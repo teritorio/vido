@@ -256,7 +256,7 @@ async function updateSelectedFeature(feature?: PoiUnion): Promise<void> {
           return
 
         if (error.value)
-          throw createFetchError(error.value, true)
+          throw createFetchError(error.value)
 
         if (status.value === 'success' && data.value) {
           if (!isDepSelected) {
