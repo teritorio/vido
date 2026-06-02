@@ -25,7 +25,7 @@ const { params } = useRoute()
 const { data, error, status } = await getArticle(params.slug as string)
 
 if (error.value)
-  throw createError(error.value)
+  throw createFetchError(error.value, true)
 
 const content = ref<string>()
 onMounted(() => {

@@ -103,7 +103,7 @@ const { data, error } = await useAsyncData('pois-map', async () => {
 })
 
 if (error.value) {
-  throw createError(error.value)
+  throw createFetchError(error.value, true)
 }
 
 if (!data.value?.length) {
