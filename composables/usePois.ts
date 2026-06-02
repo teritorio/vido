@@ -35,7 +35,7 @@ export function usePois() {
     )
 
     if (err.value)
-      createError(error.value)
+      throw createFetchError(err.value, true)
 
     if (stat.value === 'success' && data.value) {
       pois.value = data.value
