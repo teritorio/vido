@@ -18,7 +18,7 @@ const { data: context, error: configError } = await useFetch('/api/config', {
 })
 
 if (configError.value) {
-  showError(createFetchError(configError.value))
+  throw createFetchError(configError.value, true)
 }
 
 const apiEndpoint = useState('api-endpoint', () => context.value?.api)
