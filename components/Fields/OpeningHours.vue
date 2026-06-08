@@ -46,6 +46,8 @@ const variable = computed(() => {
     return !oh.value?.isWeekStable()
   }
   catch (e) {
+    if (import.meta.dev)
+      console.warn('[OpeningHours] isWeekStable failed:', props.openingHours, e)
     return false
   }
 })
@@ -67,6 +69,8 @@ const pretty = computed((): [string | undefined, string[]][] | undefined => {
         .split('\n')
     }
     catch (e) {
+      if (import.meta.dev)
+        console.warn('[OpeningHours] prettifyValue failed:', props.openingHours, e)
       return undefined
     }
     if (!variable.value) {
@@ -106,6 +110,8 @@ const nextChange = computed((): { type: 'opened' | 'openAt', nextChange: Date } 
       }
     }
     catch (e) {
+      if (import.meta.dev)
+        console.warn('[OpeningHours] getNextChange failed:', props.openingHours, e)
       return undefined
     }
   }
@@ -144,7 +150,10 @@ function OpeningHoursFactory(): OpeningHours | undefined {
       optionalConf,
     )
   }
-  catch (e) {}
+  catch (e) {
+    if (import.meta.dev)
+      console.warn('[OpeningHours] failed to parse:', props.openingHours, e)
+  }
 }
 </script>
 
