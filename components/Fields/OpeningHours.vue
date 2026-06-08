@@ -35,17 +35,15 @@ const tagKey = computed(() => assocRenderKey[props.renderKey])
 //
 const isPointTime = computed(() => PointTime.includes(tagKey.value))
 
-const comment = computed(() => {
-  const oh = OpeningHoursFactory()
-  return oh?.getComment(props.baseDate)
-})
+const oh = computed(() => OpeningHoursFactory())
+
+const comment = computed(() => oh.value?.getComment(props.baseDate))
 
 const isCompact = computed(() => props.context === PropertyTranslationsContextEnum.Card)
 
 const variable = computed(() => {
-  const oh = OpeningHoursFactory()
   try {
-    return !oh?.isWeekStable()
+    return !oh.value?.isWeekStable()
   }
   catch (e) {
     return false
@@ -53,11 +51,10 @@ const variable = computed(() => {
 })
 
 const pretty = computed((): [string | undefined, string[]][] | undefined => {
-  const oh = OpeningHoursFactory()
-  if (oh) {
+  if (oh.value) {
     let prettyString
     try {
-      prettyString = oh
+      prettyString = oh.value
         .prettifyValue({
           // @ts-expect-error: Fix typings
           conf: {
@@ -94,19 +91,16 @@ const pretty = computed((): [string | undefined, string[]][] | undefined => {
       return ret
     }
   }
-  else {
-    return undefined
-  }
+  return undefined
 })
 
 const nextChange = computed((): { type: 'opened' | 'openAt', nextChange: Date } | undefined => {
-  const oh = OpeningHoursFactory()
-  if (oh) {
+  if (oh.value) {
     try {
-      const nextChange = oh.getNextChange(props.baseDate)
+      const nextChange = oh.value.getNextChange(props.baseDate)
       if (nextChange) {
         return {
-          type: oh.getState(props.baseDate) ? 'opened' : 'openAt',
+          type: oh.value.getState(props.baseDate) ? 'opened' : 'openAt',
           nextChange,
         }
       }
