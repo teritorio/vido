@@ -135,12 +135,12 @@ function OpeningHoursFactory(): OpeningHours | undefined {
       props.openingHours,
       {
         lon:
-          (settings.bbox_line.coordinates[0][1]
-          + settings.bbox_line.coordinates[1][1])
-          / 2,
-        lat:
           (settings.bbox_line.coordinates[0][0]
           + settings.bbox_line.coordinates[1][0])
+          / 2,
+        lat:
+          (settings.bbox_line.coordinates[0][1]
+          + settings.bbox_line.coordinates[1][1])
           / 2,
         address: {
           country_code: settings.default_country,
