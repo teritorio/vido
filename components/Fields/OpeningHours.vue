@@ -58,7 +58,6 @@ const pretty = computed((): [string | undefined, string[]][] | undefined => {
     try {
       prettyString = oh.value
         .prettifyValue({
-          // @ts-expect-error: Fix typings
           conf: {
             locale: locale.value || 'en',
             rule_sep_string: '\n',
@@ -127,10 +126,13 @@ function OpeningHoursFactory(): OpeningHours | undefined {
 
   try {
     // https://github.com/opening-hours/opening_hours.js/issues/428
-    // @ts-expect-error: Fix typings
-    const optionalConf: optional_conf = {
+    const optionalConf = {
       tag_key: tagKey.value,
-    }
+      mode: undefined,
+      map_value: undefined,
+      warnings_severity: undefined,
+      locale: undefined,
+    } satisfies optional_conf
     return new OpeningHours(
       props.openingHours,
       {
