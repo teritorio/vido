@@ -40,7 +40,9 @@ const comment = computed(() => oh.value?.getComment(props.baseDate))
 
 const isCompact = computed(() => props.context === PropertyTranslationsContextEnum.Card)
 
-const isEvent = computed(() => /^\d{4}\s/.test(props.openingHours))
+const isEvent = computed(() =>
+  /^(?:\d{4}|Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\s/i.test(props.openingHours),
+)
 
 const variable = computed(() => {
   try {
