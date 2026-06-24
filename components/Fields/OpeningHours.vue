@@ -134,7 +134,7 @@ function OpeningHoursFactory(): OpeningHours | undefined {
       mode: undefined,
       map_value: undefined,
       warnings_severity: undefined,
-      locale: undefined,
+      locale: locale.value,
     } satisfies optional_conf
     return new OpeningHours(
       props.openingHours,
