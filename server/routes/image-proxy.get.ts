@@ -30,7 +30,7 @@ export default defineEventHandler(async (event) => {
     }
 
     const arrayBuffer = await response.arrayBuffer()
-    let image = sharp(Buffer.from(arrayBuffer))
+    let image = sharp(Buffer.from(arrayBuffer)).rotate()
 
     // Get original image metadata
     const metadata = await image.metadata()
