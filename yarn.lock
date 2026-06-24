@@ -672,13 +672,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/runtime@npm:^7.28.4":
-  version: 7.28.6
-  resolution: "@babel/runtime@npm:7.28.6"
-  checksum: 10c0/358cf2429992ac1c466df1a21c1601d595c46930a13c1d4662fde908d44ee78ec3c183aaff513ecb01ef8c55c3624afe0309eeeb34715672dbfadb7feedb2c0d
-  languageName: node
-  linkType: hard
-
 "@babel/standalone@npm:^7.23.8":
   version: 7.24.6
   resolution: "@babel/standalone@npm:7.24.6"
@@ -4917,7 +4910,7 @@ __metadata:
     msw: "npm:^1.2.2"
     nuxt: "npm:3.8.0"
     nuxt-simple-sitemap: "npm:^2.7.0"
-    opening_hours: "npm:^3.11.0"
+    opening_hours: "npm:^3.13.0"
     pinia: "npm:^2.0.33"
     pinia-shared-state: "npm:0.5.1"
     postcss: "npm:^8.4.24"
@@ -11544,17 +11537,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"i18next@npm:^25.3.2":
-  version: 25.8.4
-  resolution: "i18next@npm:25.8.4"
-  dependencies:
-    "@babel/runtime": "npm:^7.28.4"
+"i18next@npm:^26.1.0":
+  version: 26.3.2
+  resolution: "i18next@npm:26.3.2"
   peerDependencies:
-    typescript: ^5
+    typescript: ^5 || ^6
   peerDependenciesMeta:
     typescript:
       optional: true
-  checksum: 10c0/c2582bd97893b4417c06c5b5f8f3bb37cdf77fc5918d00ff3a0e79c856b94bf8bb52377754bb5d62ade88b457f8ac541471987d359c1adc67bcaeea18121a2b5
+  checksum: 10c0/937180cf9e88ab4ce3b8249d969d65200b012b10eaeadd45671fcaa7bb206ef3263a9023a84a9c8a1de3656dad6c7e93aa306f5e79f0df2821c7ab5bc45f3734
   languageName: node
   linkType: hard
 
@@ -14432,13 +14423,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"opening_hours@npm:^3.11.0":
-  version: 3.11.0
-  resolution: "opening_hours@npm:3.11.0"
+"opening_hours@npm:^3.13.0":
+  version: 3.13.0
+  resolution: "opening_hours@npm:3.13.0"
   dependencies:
-    i18next: "npm:^25.3.2"
+    i18next: "npm:^26.1.0"
     suncalc: "npm:^1.9.0"
-  checksum: 10c0/3ece07f2ac2039d54d728a06bfb82c5f5597deb7453b9508d5f1d234d16e782103b8d2d5a4d37eff4e1e38a63c7e3419c77c2ece079d6f0f4fcf5f4006893a8f
+  checksum: 10c0/a6eba1df4904712656c5151e7172a109bd86519a503c8ca9c3838147e11650bf41015bef3ce87455e5deecf584bcc99ce2d1787d0df4f464e2a1433281d481e1
   languageName: node
   linkType: hard
 
