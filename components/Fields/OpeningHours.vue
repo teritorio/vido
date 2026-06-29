@@ -23,8 +23,7 @@ const props = withDefaults(defineProps<{
 //
 const siteStore = useSiteStore()
 const { settings } = siteStore
-const { locale } = useI18n()
-const { t } = useI18n()
+const { locale, t } = useI18n()
 
 const PointTime = ['collection_times'] as AssocRenderValue[]
 
@@ -35,41 +34,45 @@ const tagKey = computed(() => assocRenderKey[props.renderKey])
 //
 const isPointTime = computed(() => PointTime.includes(tagKey.value))
 
-const comment = computed(() => {
-  const oh = OpeningHoursFactory()
-  return oh?.getComment(props.baseDate)
-})
+const oh = computed(() => OpeningHoursFactory())
+
+const comment = computed(() => oh.value?.getComment(props.baseDate))
 
 const isCompact = computed(() => props.context === PropertyTranslationsContextEnum.Card)
 
+const isEvent = computed(() =>
+  /^(?:\d{4}\s|(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\s\d{1,2}(?:\s|$))/i.test(props.openingHours),
+)
+
 const variable = computed(() => {
-  const oh = OpeningHoursFactory()
   try {
-    return !oh?.isWeekStable()
+    return !oh.value?.isWeekStable()
   }
   catch (e) {
+    if (import.meta.dev)
+      console.warn('[OpeningHours] isWeekStable failed:', props.openingHours, e)
     return false
   }
 })
 
 const pretty = computed((): [string | undefined, string[]][] | undefined => {
-  const oh = OpeningHoursFactory()
-  if (oh) {
+  if (oh.value) {
     let prettyString
     try {
-      prettyString = oh
+      prettyString = oh.value
         .prettifyValue({
-          // @ts-expect-error: Fix typings
           conf: {
             locale: locale.value || 'en',
             rule_sep_string: '\n',
             print_semicolon: false,
           },
         })
-        .replace(/(^\w|\s\w)/g, (c: any) => c.toUpperCase())
+        .replace(/(^\w|\s\w)/g, (c: string) => c.toUpperCase())
         .split('\n')
     }
     catch (e) {
+      if (import.meta.dev)
+        console.warn('[OpeningHours] prettifyValue failed:', props.openingHours, e)
       return undefined
     }
     if (!variable.value) {
@@ -79,12 +82,12 @@ const pretty = computed((): [string | undefined, string[]][] | undefined => {
       const ret: [string | undefined, string[]][] = []
       // Stable group by month
       prettyString
-        .map((row: any) => (
+        .map((row: string) => (
           row.includes(': ')
-            ? [row.slice(0, row.indexOf(': ')), row.slice(row.indexOf(': ') + 1 + 1)]
+            ? [row.slice(0, row.indexOf(': ')), row.slice(row.indexOf(': ') + 2)]
             : [undefined, row]
         ) as [string | undefined, string])
-        .forEach(([month, date]: any) => {
+        .forEach(([month, date]) => {
           const i = ret.findIndex(r => r[0] === month)
           if (i >= 0)
             ret[i][1].push(date)
@@ -94,24 +97,23 @@ const pretty = computed((): [string | undefined, string[]][] | undefined => {
       return ret
     }
   }
-  else {
-    return undefined
-  }
+  return undefined
 })
 
 const nextChange = computed((): { type: 'opened' | 'openAt', nextChange: Date } | undefined => {
-  const oh = OpeningHoursFactory()
-  if (oh) {
+  if (oh.value) {
     try {
-      const nextChange = oh.getNextChange(props.baseDate)
+      const nextChange = oh.value.getNextChange(props.baseDate)
       if (nextChange) {
         return {
-          type: oh.getState(props.baseDate) ? 'opened' : 'openAt',
+          type: oh.value.getState(props.baseDate) ? 'opened' : 'openAt',
           nextChange,
         }
       }
     }
     catch (e) {
+      if (import.meta.dev)
+        console.warn('[OpeningHours] getNextChange failed:', props.openingHours, e)
       return undefined
     }
   }
@@ -127,20 +129,23 @@ function OpeningHoursFactory(): OpeningHours | undefined {
 
   try {
     // https://github.com/opening-hours/opening_hours.js/issues/428
-    // @ts-expect-error: Fix typings
-    const optionalConf: optional_conf = {
+    const optionalConf = {
       tag_key: tagKey.value,
-    }
+      mode: undefined,
+      map_value: undefined,
+      warnings_severity: undefined,
+      locale: locale.value,
+    } satisfies optional_conf
     return new OpeningHours(
       props.openingHours,
       {
         lon:
-          (settings.bbox_line.coordinates[0][1]
-          + settings.bbox_line.coordinates[1][1])
-          / 2,
-        lat:
           (settings.bbox_line.coordinates[0][0]
           + settings.bbox_line.coordinates[1][0])
+          / 2,
+        lat:
+          (settings.bbox_line.coordinates[0][1]
+          + settings.bbox_line.coordinates[1][1])
           / 2,
         address: {
           country_code: settings.default_country,
@@ -150,7 +155,10 @@ function OpeningHoursFactory(): OpeningHours | undefined {
       optionalConf,
     )
   }
-  catch (e) {}
+  catch (e) {
+    if (import.meta.dev)
+      console.warn('[OpeningHours] failed to parse:', props.openingHours, e)
+  }
 }
 </script>
 
@@ -209,7 +217,7 @@ function OpeningHoursFactory(): OpeningHours | undefined {
           </ul>
         </li>
       </ul>
-      <template v-if="variable">
+      <template v-if="variable && !isEvent">
         <p>{{ t('openingHours.variableWeek') }}</p>
       </template>
     </template>

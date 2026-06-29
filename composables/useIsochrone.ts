@@ -173,7 +173,7 @@ export default function useIsochrone() {
     )
 
     if (error.value)
-      throw createError(error.value)
+      throw createFetchError(error.value, true)
 
     if (data.value) {
       isochroneCurrentFeature.value = feature

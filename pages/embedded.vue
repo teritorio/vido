@@ -124,7 +124,7 @@ const { data, error, status } = await useAsyncData('features', async () => {
 })
 
 if (error.value)
-  throw createError(error.value)
+  throw createFetchError(error.value, true)
 
 if (status.value === 'success' && data.value && mainPoi.value) {
   poiDepsCompo.processPoiDeps(data.value, mainPoi.value.properties.metadata.id, selectedCategoryIds.value)

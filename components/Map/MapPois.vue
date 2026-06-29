@@ -99,7 +99,7 @@ function renderPois(): void {
     )
 
     if (error.value)
-      throw createError(error.value)
+      throw createFetchError(error.value)
 
     if (status.value === 'success' && data.value) {
       mapStore.setSelectedFeature(data.value)
