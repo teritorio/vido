@@ -165,38 +165,40 @@ function OpeningHoursFactory(): OpeningHours | undefined {
 <template>
   <div v-if="openingHours">
     <span hidden>{{ openingHours }}</span>
-    <template v-if="nextChange">
-      <p v-if="isPointTime" id="next" class="tw-text-emerald-500">
-        {{ t('openingHours.next') }}
-        <RelativeDate :date="nextChange.nextChange" />
-      </p>
-      <template v-else>
-        <p
-          v-if="nextChange.type === 'opened'"
-          id="opened"
-          class="tw-text-emerald-500"
-        >
-          {{ t('openingHours.opened') }}
-          <template v-if="nextChange.nextChange">
-            -
-            {{ t('openingHours.closeAt') }}
-            <RelativeDate :date="nextChange.nextChange" />
-          </template>
+    <ClientOnly>
+      <template v-if="nextChange">
+        <p v-if="isPointTime" id="next" class="tw-text-emerald-500">
+          {{ t('openingHours.next') }}
+          <RelativeDate :date="nextChange.nextChange" />
         </p>
-        <p
-          v-else-if="nextChange.type === 'openAt'"
-          id="openAt"
-          class="tw-text-red-500"
-        >
-          {{ t('openingHours.closed') }}
-          <template v-if="nextChange.nextChange">
-            -
-            {{ t('openingHours.openAt') }}
-            <RelativeDate :date="nextChange.nextChange" />
-          </template>
-        </p>
+        <template v-else>
+          <p
+            v-if="nextChange.type === 'opened'"
+            id="opened"
+            class="tw-text-emerald-500"
+          >
+            {{ t('openingHours.opened') }}
+            <template v-if="nextChange.nextChange">
+              -
+              {{ t('openingHours.closeAt') }}
+              <RelativeDate :date="nextChange.nextChange" />
+            </template>
+          </p>
+          <p
+            v-else-if="nextChange.type === 'openAt'"
+            id="openAt"
+            class="tw-text-red-500"
+          >
+            {{ t('openingHours.closed') }}
+            <template v-if="nextChange.nextChange">
+              -
+              {{ t('openingHours.openAt') }}
+              <RelativeDate :date="nextChange.nextChange" />
+            </template>
+          </p>
+        </template>
       </template>
-    </template>
+    </ClientOnly>
     <template v-if="!isCompact">
       <br>
       <div v-if="pretty && !pretty[0][0] && pretty[0][1].length === 1">

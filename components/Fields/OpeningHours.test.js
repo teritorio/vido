@@ -1,5 +1,5 @@
 import { createPinia } from 'pinia'
-import { createApp } from 'vue'
+import { createApp, defineComponent } from 'vue'
 import { beforeEach, expect, it } from 'mocha'
 import OpeningHours from '~/components/Fields/OpeningHours.vue'
 import { PropertyTranslationsContextEnum, useSiteStore } from '~/stores/site'
@@ -26,6 +26,12 @@ beforeEach(() => {
   })
 })
 
+const ClientOnlyStub = defineComponent({
+  setup(_, { slots }) {
+    return () => slots.default?.()
+  },
+})
+
 function factory(props = {}) {
   const el = document.createElement('div')
   createApp(OpeningHours, {
@@ -34,7 +40,7 @@ function factory(props = {}) {
     openingHours: '24/7',
     baseDate: new Date('2022-01-02 11:00:00'), // Sunday
     ...props,
-  }).use(realPinia).mount(el)
+  }).component('ClientOnly', ClientOnlyStub).use(realPinia).mount(el)
   return el
 }
 
