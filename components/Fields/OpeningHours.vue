@@ -197,10 +197,10 @@ function OpeningHoursFactory(): OpeningHours | undefined {
             </template>
           </p>
         </template>
+        <br v-if="!isCompact">
       </template>
     </ClientOnly>
     <template v-if="!isCompact">
-      <br>
       <div v-if="pretty && !pretty[0][0] && pretty[0][1].length === 1">
         {{ pretty[0][1][0] }}
       </div>
