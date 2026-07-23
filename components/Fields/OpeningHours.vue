@@ -231,8 +231,13 @@ function OpeningHoursFactory(): OpeningHours | undefined {
         <p>{{ t('openingHours.variableWeek') }}</p>
       </template>
     </template>
-    <template v-if="isCompact && comment">
-      <p>{{ comment }}</p>
+    <template v-if="isCompact">
+      <p v-if="isEvent && pretty">
+        {{ pretty[0][1][0] }}
+      </p>
+      <p v-else-if="comment">
+        {{ comment }}
+      </p>
     </template>
   </div>
 </template>
