@@ -230,26 +230,48 @@ function OpeningHoursFactory(): OpeningHours | undefined {
       </template>
     </ClientOnly>
     <template v-if="!isCompact">
-      <div v-if="pretty && !pretty[0][0] && pretty[0][1].length === 1">
-        {{ pretty[0][1][0] }}
-      </div>
-      <ul v-else-if="pretty && !pretty[0][0]">
-        <li v-for="(row, i) in pretty[0][1]" :key="i">
-          {{ row }}
-        </li>
-      </ul>
-      <ul v-else-if="pretty">
-        <li v-for="[month, dates] in pretty" :key="month">
-          {{ month }}
-          <ul>
-            <li v-for="(row, i) in dates" :key="i">
-              {{ row }}
-            </li>
-          </ul>
-        </li>
-      </ul>
-      <template v-if="variable && !isEvent">
-        <p>{{ t('openingHours.variableWeek') }}</p>
+      <ClientOnly v-if="isEvent">
+        <p v-if="eventDisplay && !eventDisplay.unknown">
+          {{ t('openingHours.eventRange', {
+            date: d(eventDisplay.date, { dateStyle: 'short' }),
+            start: d(eventDisplay.date, { timeStyle: 'short' }),
+            end: d(eventDisplay.end!, { timeStyle: 'short' }),
+          }) }}
+        </p>
+        <p v-else-if="eventDisplay && eventDisplay.unknown">
+          {{ t('openingHours.eventRangeOpenEnd', {
+            date: d(eventDisplay.date, { dateStyle: 'short' }),
+            start: d(eventDisplay.date, { timeStyle: 'short' }),
+          }) }}
+        </p>
+        <template #fallback>
+          <p v-if="pretty">
+            {{ pretty[0][1][0] }}
+          </p>
+        </template>
+      </ClientOnly>
+      <template v-else>
+        <div v-if="pretty && !pretty[0][0] && pretty[0][1].length === 1">
+          {{ pretty[0][1][0] }}
+        </div>
+        <ul v-else-if="pretty && !pretty[0][0]">
+          <li v-for="(row, i) in pretty[0][1]" :key="i">
+            {{ row }}
+          </li>
+        </ul>
+        <ul v-else-if="pretty">
+          <li v-for="[month, dates] in pretty" :key="month">
+            {{ month }}
+            <ul>
+              <li v-for="(row, i) in dates" :key="i">
+                {{ row }}
+              </li>
+            </ul>
+          </li>
+        </ul>
+        <template v-if="variable">
+          <p>{{ t('openingHours.variableWeek') }}</p>
+        </template>
       </template>
     </template>
     <template v-if="isCompact">
