@@ -100,13 +100,14 @@ const pretty = computed((): [string | undefined, string[]][] | undefined => {
   return undefined
 })
 
-const nextChange = computed((): { type: 'opened' | 'openAt', nextChange: Date } | undefined => {
+const nextChange = computed((): { type: 'opened' | 'openAt' | 'unknown', nextChange: Date } | undefined => {
   if (oh.value) {
     try {
       const nextChange = oh.value.getNextChange(props.baseDate)
       if (nextChange) {
+        const isUnknown = oh.value.getUnknown(props.baseDate)
         return {
-          type: oh.value.getState(props.baseDate) ? 'opened' : 'openAt',
+          type: isUnknown ? 'unknown' : (oh.value.getState(props.baseDate) ? 'opened' : 'openAt'),
           nextChange,
         }
       }
@@ -166,7 +167,7 @@ function OpeningHoursFactory(): OpeningHours | undefined {
   <div v-if="openingHours">
     <span hidden>{{ openingHours }}</span>
     <ClientOnly>
-      <template v-if="nextChange">
+      <template v-if="nextChange && !isEvent">
         <p v-if="isPointTime" id="next" class="tw-text-emerald-500">
           {{ t('openingHours.next') }}
           <RelativeDate :date="nextChange.nextChange" />
@@ -195,6 +196,13 @@ function OpeningHoursFactory(): OpeningHours | undefined {
               {{ t('openingHours.openAt') }}
               <RelativeDate :date="nextChange.nextChange" />
             </template>
+          </p>
+          <p
+            v-else-if="nextChange.type === 'unknown'"
+            id="unknown"
+            class="tw-text-amber-500"
+          >
+            {{ t('openingHours.unknown') }}
           </p>
         </template>
         <br v-if="!isCompact">

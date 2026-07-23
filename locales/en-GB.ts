@@ -93,6 +93,7 @@ export default defineI18nLocale(() => {
       openAt: 'Opens',
       next: 'Next',
       formatDayAndDayInMonth: 'EEE do\':\'',
+      unknown: 'Indicative hours',
       variableWeek: 'The hours may vary from week to week.',
     },
     poiCard: {

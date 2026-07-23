@@ -94,6 +94,7 @@ export default defineI18nLocale(() => {
       openAt: 'Ouverture',
       next: 'Prochain',
       formatDayAndDayInMonth: 'EEE d :',
+      unknown: 'Horaires indicatifs',
       variableWeek: 'Les horaires peuvent varier d\'une semaine sur l\'autre.',
     },
     poiCard: {
