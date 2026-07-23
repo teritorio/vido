@@ -4910,7 +4910,7 @@ __metadata:
     msw: "npm:^1.2.2"
     nuxt: "npm:3.8.0"
     nuxt-simple-sitemap: "npm:^2.7.0"
-    opening_hours: "npm:^3.13.0"
+    opening_hours: "npm:3.14.0"
     pinia: "npm:^2.0.33"
     pinia-shared-state: "npm:0.5.1"
     postcss: "npm:^8.4.24"
@@ -11537,15 +11537,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"i18next@npm:^26.1.0":
-  version: 26.3.2
-  resolution: "i18next@npm:26.3.2"
+"i18next@npm:^26.3.6":
+  version: 26.3.6
+  resolution: "i18next@npm:26.3.6"
   peerDependencies:
-    typescript: ^5 || ^6
+    typescript: ^5 || ^6 || ^7
   peerDependenciesMeta:
     typescript:
       optional: true
-  checksum: 10c0/937180cf9e88ab4ce3b8249d969d65200b012b10eaeadd45671fcaa7bb206ef3263a9023a84a9c8a1de3656dad6c7e93aa306f5e79f0df2821c7ab5bc45f3734
+  checksum: 10c0/5920ac8fb6b647a2bdd439d121de04e5297246e52c4d95d13f5faae0824fd45b2faeb66038bcd61fc62362daa815f9c32fb992d6faa3787607d1dfe768e9a8b1
   languageName: node
   linkType: hard
 
@@ -14423,13 +14423,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"opening_hours@npm:^3.13.0":
-  version: 3.13.0
-  resolution: "opening_hours@npm:3.13.0"
+"opening_hours@npm:3.14.0":
+  version: 3.14.0
+  resolution: "opening_hours@npm:3.14.0"
   dependencies:
-    i18next: "npm:^26.1.0"
-    suncalc: "npm:^1.9.0"
-  checksum: 10c0/a6eba1df4904712656c5151e7172a109bd86519a503c8ca9c3838147e11650bf41015bef3ce87455e5deecf584bcc99ce2d1787d0df4f464e2a1433281d481e1
+    i18next: "npm:^26.3.6"
+    suncalc: "npm:^2.0.0"
+  checksum: 10c0/684675491aa0195d70ead9e394773082e86f9baaf737057aef63e87c3d1ea4b98ed7c3a96355c9a287af9bc6ee0b2deeb2383a720b43105b871bf1aae80128bc
   languageName: node
   linkType: hard
 
@@ -17446,10 +17446,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"suncalc@npm:^1.9.0":
-  version: 1.9.0
-  resolution: "suncalc@npm:1.9.0"
-  checksum: 10c0/3c76c600ec8e60b7a6efab72f48cce3fc9b4ce95f8fa404fcd13d22f618fee2b83d7ad486544aee76bc20129c9f4eae4a76b09640c54167edd1de6099ca6cd3d
+"suncalc@npm:^2.0.0":
+  version: 2.0.1
+  resolution: "suncalc@npm:2.0.1"
+  checksum: 10c0/7722397c4fde7091173fe83c4672bb23713a7bd3c5268f26a8a731b39316c294da1dfc32b0dae7abb68b0932c4069183736236c6932d5de385b77348d5a855b0
   languageName: node
   linkType: hard
 
