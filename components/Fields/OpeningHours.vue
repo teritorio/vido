@@ -23,7 +23,7 @@ const props = withDefaults(defineProps<{
 //
 const siteStore = useSiteStore()
 const { settings } = siteStore
-const { locale, t } = useI18n()
+const { locale, t, d } = useI18n()
 
 const PointTime = ['collection_times'] as AssocRenderValue[]
 
@@ -96,6 +96,27 @@ const pretty = computed((): [string | undefined, string[]][] | undefined => {
         })
       return ret
     }
+  }
+  return undefined
+})
+
+const eventDisplay = computed((): { date: Date, end: Date | undefined, unknown: boolean } | undefined => {
+  if (!isEvent.value || !oh.value)
+    return undefined
+  try {
+    const year = props.baseDate.getFullYear()
+    const intervals = oh.value.getOpenIntervals(
+      new Date(year - 1, 0, 1),
+      new Date(year + 2, 0, 1),
+    )
+    if (intervals.length > 0) {
+      const [start, end, unknown] = intervals[0]
+      return { date: start, end: end ?? undefined, unknown }
+    }
+  }
+  catch (e) {
+    if (import.meta.dev)
+      console.warn('[OpeningHours] getOpenIntervals failed:', props.openingHours, e)
   }
   return undefined
 })
@@ -232,12 +253,29 @@ function OpeningHoursFactory(): OpeningHours | undefined {
       </template>
     </template>
     <template v-if="isCompact">
-      <p v-if="isEvent && pretty">
-        {{ pretty[0][1][0] }}
-      </p>
-      <p v-else-if="comment">
-        {{ comment }}
-      </p>
+      <ClientOnly>
+        <p v-if="isEvent && eventDisplay && !eventDisplay.unknown">
+          {{ t('openingHours.eventRange', {
+            date: d(eventDisplay.date, { dateStyle: 'short' }),
+            start: d(eventDisplay.date, { timeStyle: 'short' }),
+            end: d(eventDisplay.end!, { timeStyle: 'short' }),
+          }) }}
+        </p>
+        <p v-else-if="isEvent && eventDisplay && eventDisplay.unknown">
+          {{ t('openingHours.eventRangeOpenEnd', {
+            date: d(eventDisplay.date, { dateStyle: 'short' }),
+            start: d(eventDisplay.date, { timeStyle: 'short' }),
+          }) }}
+        </p>
+        <p v-else-if="comment">
+          {{ comment }}
+        </p>
+        <template #fallback>
+          <p v-if="isEvent && pretty">
+            {{ pretty[0][1][0] }}
+          </p>
+        </template>
+      </ClientOnly>
     </template>
   </div>
 </template>

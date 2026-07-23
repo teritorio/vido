@@ -95,6 +95,8 @@ export default defineI18nLocale(() => {
       next: 'Prochain',
       formatDayAndDayInMonth: 'EEE d :',
       unknown: 'Horaires indicatifs',
+      eventRange: 'Le {date} de {start} à {end}',
+      eventRangeOpenEnd: 'Le {date} à partir de {start}',
       variableWeek: 'Les horaires peuvent varier d\'une semaine sur l\'autre.',
     },
     poiCard: {

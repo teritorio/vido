@@ -94,6 +94,8 @@ export default defineI18nLocale(() => {
       next: 'Next',
       formatDayAndDayInMonth: 'EEE do\':\'',
       unknown: 'Indicative hours',
+      eventRange: '{date} from {start} to {end}',
+      eventRangeOpenEnd: '{date} from {start}',
       variableWeek: 'The hours may vary from week to week.',
     },
     poiCard: {
