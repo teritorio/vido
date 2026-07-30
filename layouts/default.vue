@@ -8,7 +8,6 @@ import { menuStore as useMenuStore } from '~/stores/menu'
 import { headerFromSettings } from '~/lib/apiSettings'
 import '~/assets/tailwind.scss'
 import type { ApiMenuCollection } from '~/types/api/menu'
-import EmergencyBanner from '~/components/EmergencyBanner.vue'
 
 const { detectHost } = useHostDetection()
 
@@ -85,7 +84,6 @@ if (status.value === 'success' && data.value) {
 
 <template>
   <div class="v-locale--is-ltr">
-    <EmergencyBanner />
     <slot />
   </div>
 </template>

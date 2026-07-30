@@ -24,8 +24,6 @@ export interface SiteInfosTheme {
   google_site_verification?: string
   google_tag_manager_id?: string
   report_issue_url?: boolean
-  emergency_message?: MultilingualString
-  emergency_url?: string
 }
 
 export interface Settings {
