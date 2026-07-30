@@ -86,6 +86,9 @@ export default defineI18nLocale(() => {
       to: 'Until {to}',
       on: 'On {on}',
     },
+    emergencyBanner: {
+      action: 'Learn more',
+    },
     openingHours: {
       opened: 'Currently open',
       closeAt: 'Closes',

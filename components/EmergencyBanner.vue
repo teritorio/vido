@@ -1,23 +1,27 @@
 <script setup lang="ts">
 import { storeToRefs } from 'pinia'
 import { useSiteStore } from '~/stores/site'
+import type { LanguageCode } from '~/utils/types'
 
 const siteStore = useSiteStore()
 const { theme } = storeToRefs(siteStore)
+const { locale, t } = useI18n()
 
 const dismissed = ref(false)
 
 const message = computed((): string | undefined => {
-  return theme.value?.emergency_message?.fr
+  const msg = theme.value?.emergency_message
+  if (!msg)
+    return undefined
+  const lang = locale.value.substring(0, 2) as LanguageCode
+  return msg[lang] ?? msg.fr
 })
 
-const url = computed((): string | undefined => {
-  return theme.value?.emergency_url
-})
+const url = computed((): string | undefined => theme.value?.emergency_url)
 
-const isExternalUrl = computed((): boolean => {
-  return !!url.value && (url.value.startsWith('http://') || url.value.startsWith('https://'))
-})
+const isExternalUrl = computed((): boolean =>
+  !!url.value && (url.value.startsWith('http://') || url.value.startsWith('https://')),
+)
 </script>
 
 <template>
@@ -35,7 +39,7 @@ const isExternalUrl = computed((): boolean => {
         rel="noopener noreferrer"
         class="tw-text-sm tw-font-semibold tw-underline tw-text-white hover:tw-text-amber-100"
       >
-        {{ url }}
+        {{ t('emergencyBanner.action') }}
       </a>
       <NuxtLink
         v-else-if="url"
@@ -43,7 +47,7 @@ const isExternalUrl = computed((): boolean => {
         target="_self"
         class="tw-text-sm tw-font-semibold tw-underline tw-text-white hover:tw-text-amber-100"
       >
-        {{ url }}
+        {{ t('emergencyBanner.action') }}
       </NuxtLink>
       <button
         type="button"
