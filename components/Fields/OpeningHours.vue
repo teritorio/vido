@@ -40,7 +40,7 @@ const comment = computed(() => oh.value?.getComment(props.baseDate))
 
 const isCompact = computed(() => props.context === PropertyTranslationsContextEnum.Card)
 
-const isEventRender = computed(() => props.renderKey === 'osm:opening_hours:event')
+const isEventRender = computed(() => props.renderKey === 'osm:opening_hours@event')
 
 const variable = computed(() => {
   try {
