@@ -40,6 +40,8 @@ const comment = computed(() => oh.value?.getComment(props.baseDate))
 
 const isCompact = computed(() => props.context === PropertyTranslationsContextEnum.Card)
 
+const isEventRender = computed(() => props.renderKey === 'osm:opening_hours:event')
+
 const variable = computed(() => {
   try {
     return !oh.value?.isWeekStable()
@@ -161,7 +163,7 @@ function OpeningHoursFactory(): OpeningHours | undefined {
 <template>
   <div v-if="openingHours">
     <span hidden>{{ openingHours }}</span>
-    <ClientOnly>
+    <ClientOnly v-if="!isEventRender">
       <template v-if="nextChange">
         <p v-if="isPointTime" id="next" class="tw-text-emerald-500">
           {{ t('openingHours.next') }}
@@ -215,11 +217,31 @@ function OpeningHoursFactory(): OpeningHours | undefined {
           </ul>
         </li>
       </ul>
-      <template v-if="variable">
+      <template v-if="variable && !isEventRender">
         <p>{{ t('openingHours.variableWeek') }}</p>
       </template>
     </template>
-    <template v-if="isCompact && comment">
+    <template v-if="isEventRender">
+      <div v-if="pretty && !pretty[0][0] && pretty[0][1].length === 1">
+        {{ pretty[0][1][0] }}
+      </div>
+      <ul v-else-if="pretty && !pretty[0][0]">
+        <li v-for="(row, i) in pretty[0][1]" :key="i">
+          {{ row }}
+        </li>
+      </ul>
+      <ul v-else-if="pretty">
+        <li v-for="[month, dates] in pretty" :key="month">
+          {{ month }}
+          <ul>
+            <li v-for="(row, i) in dates" :key="i">
+              {{ row }}
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </template>
+    <template v-if="isCompact && comment && !isEventRender">
       <p>{{ comment }}</p>
     </template>
   </div>

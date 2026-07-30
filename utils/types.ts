@@ -65,6 +65,7 @@ export interface DateFilterOption {
 
 export const assocRenderKey = {
   'osm:opening_hours': 'opening_hours',
+  'osm:opening_hours:event': 'opening_hours',
   'osm:collection_times': 'collection_times',
   'osm:opening_hours+values': 'lit',
 } as const

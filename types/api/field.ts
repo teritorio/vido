@@ -13,6 +13,7 @@ export type RenderEnum =
   | 'duration'
   | 'start_end_date'
   | 'osm:opening_hours'
+  | 'osm:opening_hours:event'
   | 'osm:collection_times'
   | 'osm:opening_hours+values'
   | 'image'
