@@ -51,8 +51,8 @@ const isExternalUrl = computed((): boolean =>
       </NuxtLink>
       <button
         type="button"
-        class="tw-ml-2 tw-text-white tw-text-lg tw-leading-none tw-font-bold tw-bg-transparent tw-border-0 tw-cursor-pointer hover:tw-text-amber-100 focus:tw-outline-none"
-        aria-label="Dismiss"
+        class="tw-text-white tw-text-lg tw-leading-none tw-font-bold tw-bg-transparent tw-border-0 tw-cursor-pointer hover:tw-text-amber-100 focus:tw-outline-none"
+        :aria-label="t('emergencyBanner.dismiss')"
         @click="dismissed = true"
       >
         ✕
