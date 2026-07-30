@@ -40,10 +40,6 @@ const comment = computed(() => oh.value?.getComment(props.baseDate))
 
 const isCompact = computed(() => props.context === PropertyTranslationsContextEnum.Card)
 
-const isEvent = computed(() =>
-  /^(?:\d{4}\s|(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\s\d{1,2}(?:\s|$))/i.test(props.openingHours),
-)
-
 const variable = computed(() => {
   try {
     return !oh.value?.isWeekStable()
@@ -219,7 +215,7 @@ function OpeningHoursFactory(): OpeningHours | undefined {
           </ul>
         </li>
       </ul>
-      <template v-if="variable && !isEvent">
+      <template v-if="variable">
         <p>{{ t('openingHours.variableWeek') }}</p>
       </template>
     </template>
