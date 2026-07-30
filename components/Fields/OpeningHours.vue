@@ -23,7 +23,8 @@ const props = withDefaults(defineProps<{
 //
 const siteStore = useSiteStore()
 const { settings } = siteStore
-const { locale, t } = useI18n()
+const { locale } = useI18n()
+const { t } = useI18n()
 
 const PointTime = ['collection_times'] as AssocRenderValue[]
 
@@ -39,8 +40,6 @@ const oh = computed(() => OpeningHoursFactory())
 const comment = computed(() => oh.value?.getComment(props.baseDate))
 
 const isCompact = computed(() => props.context === PropertyTranslationsContextEnum.Card)
-
-const isEvent = computed(() => /^\d{4}\s/.test(props.openingHours))
 
 const variable = computed(() => {
   try {
@@ -65,7 +64,7 @@ const pretty = computed((): [string | undefined, string[]][] | undefined => {
             print_semicolon: false,
           },
         })
-        .replace(/(^\w|\s\w)/g, (c: string) => c.toUpperCase())
+        .replace(/(^\w|\s\w)/g, (c: any) => c.toUpperCase())
         .split('\n')
     }
     catch (e) {
@@ -80,12 +79,12 @@ const pretty = computed((): [string | undefined, string[]][] | undefined => {
       const ret: [string | undefined, string[]][] = []
       // Stable group by month
       prettyString
-        .map((row: string) => (
+        .map((row: any) => (
           row.includes(': ')
-            ? [row.slice(0, row.indexOf(': ')), row.slice(row.indexOf(': ') + 2)]
+            ? [row.slice(0, row.indexOf(': ')), row.slice(row.indexOf(': ') + 1 + 1)]
             : [undefined, row]
         ) as [string | undefined, string])
-        .forEach(([month, date]) => {
+        .forEach(([month, date]: any) => {
           const i = ret.findIndex(r => r[0] === month)
           if (i >= 0)
             ret[i][1].push(date)
@@ -217,7 +216,7 @@ function OpeningHoursFactory(): OpeningHours | undefined {
           </ul>
         </li>
       </ul>
-      <template v-if="variable && !isEvent">
+      <template v-if="variable">
         <p>{{ t('openingHours.variableWeek') }}</p>
       </template>
     </template>
