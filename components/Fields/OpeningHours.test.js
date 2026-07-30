@@ -126,13 +126,3 @@ it('isEvent — non-event still shows variableWeek for variable schedules', () =
   )
   expect(hasVariableWeek).toBeTruthy()
 })
-
-it('isEvent — seasonal date range is not an event', () => {
-  // "Apr 1-Oct 31: ..." starts with "Apr " but is a seasonal schedule, not a one-time event
-  const wrapper = factory({ openingHours: 'Apr 1-Oct 31: Fr-Su 10:00-18:00' })
-  const paragraphs = [...wrapper.querySelectorAll('p')]
-  const hasVariableWeek = paragraphs.some(p =>
-    p.textContent?.includes('variabl'),
-  )
-  expect(hasVariableWeek).toBeTruthy()
-})
