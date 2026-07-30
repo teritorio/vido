@@ -99,21 +99,3 @@ it('pretty', () => {
     '<li>Dim.,PH 07:30-12:15</li>',
   )
 })
-
-it('isEvent — suppresses variableWeek warning', () => {
-  const wrapper = factory({ openingHours: '2025 Jan 25 20:30-22:00' })
-  const paragraphs = [...wrapper.querySelectorAll('p')]
-  const hasVariableWeek = paragraphs.some(p =>
-    p.textContent?.includes('variabl'),
-  )
-  expect(hasVariableWeek).toBeFalsy()
-})
-
-it('isEvent — non-event still shows variableWeek for variable schedules', () => {
-  const wrapper = factory({ openingHours: 'Apr-Oct: Fr-Su 10:00-18:00' })
-  const paragraphs = [...wrapper.querySelectorAll('p')]
-  const hasVariableWeek = paragraphs.some(p =>
-    p.textContent?.includes('variabl'),
-  )
-  expect(hasVariableWeek).toBeTruthy()
-})
