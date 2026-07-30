@@ -1,0 +1,58 @@
+<script setup lang="ts">
+import { storeToRefs } from 'pinia'
+import { useSiteStore } from '~/stores/site'
+
+const siteStore = useSiteStore()
+const { theme } = storeToRefs(siteStore)
+
+const dismissed = ref(false)
+
+const message = computed((): string | undefined => {
+  return theme.value?.emergency_message?.fr
+})
+
+const url = computed((): string | undefined => {
+  return theme.value?.emergency_url
+})
+
+const isExternalUrl = computed((): boolean => {
+  return !!url.value && (url.value.startsWith('http://') || url.value.startsWith('https://'))
+})
+</script>
+
+<template>
+  <div
+    v-if="!dismissed && message"
+    class="tw-fixed tw-top-0 tw-left-0 tw-w-full tw-z-50 tw-bg-amber-500 tw-text-white tw-flex tw-items-center tw-justify-between tw-px-4 tw-py-2 tw-gap-4"
+    role="alert"
+  >
+    <span class="tw-flex-1 tw-text-sm tw-font-medium">{{ message }}</span>
+    <div class="tw-flex tw-items-center tw-gap-2 tw-shrink-0">
+      <a
+        v-if="url && isExternalUrl"
+        :href="url"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="tw-text-sm tw-font-semibold tw-underline tw-text-white hover:tw-text-amber-100"
+      >
+        {{ url }}
+      </a>
+      <NuxtLink
+        v-else-if="url"
+        :to="url"
+        target="_self"
+        class="tw-text-sm tw-font-semibold tw-underline tw-text-white hover:tw-text-amber-100"
+      >
+        {{ url }}
+      </NuxtLink>
+      <button
+        type="button"
+        class="tw-ml-2 tw-text-white tw-text-lg tw-leading-none tw-font-bold tw-bg-transparent tw-border-0 tw-cursor-pointer hover:tw-text-amber-100 focus:tw-outline-none"
+        aria-label="Dismiss"
+        @click="dismissed = true"
+      >
+        ✕
+      </button>
+    </div>
+  </div>
+</template>
