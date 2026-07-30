@@ -23,8 +23,7 @@ const props = withDefaults(defineProps<{
 //
 const siteStore = useSiteStore()
 const { settings } = siteStore
-const { locale } = useI18n()
-const { t } = useI18n()
+const { locale, t } = useI18n()
 
 const PointTime = ['collection_times'] as AssocRenderValue[]
 
@@ -64,7 +63,7 @@ const pretty = computed((): [string | undefined, string[]][] | undefined => {
             print_semicolon: false,
           },
         })
-        .replace(/(^\w|\s\w)/g, (c: any) => c.toUpperCase())
+        .replace(/(^\w|\s\w)/g, (c: string) => c.toUpperCase())
         .split('\n')
     }
     catch (e) {
@@ -79,12 +78,12 @@ const pretty = computed((): [string | undefined, string[]][] | undefined => {
       const ret: [string | undefined, string[]][] = []
       // Stable group by month
       prettyString
-        .map((row: any) => (
+        .map((row: string) => (
           row.includes(': ')
-            ? [row.slice(0, row.indexOf(': ')), row.slice(row.indexOf(': ') + 1 + 1)]
+            ? [row.slice(0, row.indexOf(': ')), row.slice(row.indexOf(': ') + 2)]
             : [undefined, row]
         ) as [string | undefined, string])
-        .forEach(([month, date]: any) => {
+        .forEach(([month, date]) => {
           const i = ret.findIndex(r => r[0] === month)
           if (i >= 0)
             ret[i][1].push(date)
