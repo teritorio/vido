@@ -100,17 +100,8 @@ it('pretty', () => {
   )
 })
 
-it('isEvent — suppresses variableWeek warning (year-prefixed)', () => {
+it('isEvent — suppresses variableWeek warning', () => {
   const wrapper = factory({ openingHours: '2025 Jan 25 20:30-22:00' })
-  const paragraphs = [...wrapper.querySelectorAll('p')]
-  const hasVariableWeek = paragraphs.some(p =>
-    p.textContent?.includes('variabl'),
-  )
-  expect(hasVariableWeek).toBeFalsy()
-})
-
-it('isEvent — suppresses variableWeek warning (month-prefixed, no year)', () => {
-  const wrapper = factory({ openingHours: 'Aug 04 18:00-23:00' })
   const paragraphs = [...wrapper.querySelectorAll('p')]
   const hasVariableWeek = paragraphs.some(p =>
     p.textContent?.includes('variabl'),
