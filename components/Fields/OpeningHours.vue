@@ -198,7 +198,7 @@ function OpeningHoursFactory(): OpeningHours | undefined {
         <br v-if="!isCompact">
       </template>
     </ClientOnly>
-    <template v-if="!isCompact && !isEventRender">
+    <template v-if="!isCompact || isEventRender">
       <div v-if="pretty && !pretty[0][0] && pretty[0][1].length === 1">
         {{ pretty[0][1][0] }}
       </div>
@@ -217,29 +217,9 @@ function OpeningHoursFactory(): OpeningHours | undefined {
           </ul>
         </li>
       </ul>
-      <template v-if="variable && !isEventRender">
-        <p>{{ t('openingHours.variableWeek') }}</p>
-      </template>
     </template>
-    <template v-if="isEventRender">
-      <div v-if="pretty && !pretty[0][0] && pretty[0][1].length === 1">
-        {{ pretty[0][1][0] }}
-      </div>
-      <ul v-else-if="pretty && !pretty[0][0]">
-        <li v-for="(row, i) in pretty[0][1]" :key="i">
-          {{ row }}
-        </li>
-      </ul>
-      <ul v-else-if="pretty">
-        <li v-for="[month, dates] in pretty" :key="month">
-          {{ month }}
-          <ul>
-            <li v-for="(row, i) in dates" :key="i">
-              {{ row }}
-            </li>
-          </ul>
-        </li>
-      </ul>
+    <template v-if="variable && !isCompact && !isEventRender">
+      <p>{{ t('openingHours.variableWeek') }}</p>
     </template>
     <template v-if="isCompact && comment && !isEventRender">
       <p>{{ comment }}</p>

@@ -69,6 +69,22 @@ it('collection_times', () => {
   expect(wrapper.querySelector('#next')).toBeFalsy()
 })
 
+it('osm:opening_hours@event — hides status, shows pretty in all contexts', () => {
+  let wrapper
+  wrapper = factory({ renderKey: 'osm:opening_hours@event', openingHours: 'Su 00:00-24:00' })
+  expect(wrapper.querySelector('#opened')).toBeFalsy()
+  expect(wrapper.querySelector('#openAt')).toBeFalsy()
+  expect(wrapper.querySelector('ul > li')).toBeTruthy()
+
+  wrapper = factory({
+    renderKey: 'osm:opening_hours@event',
+    openingHours: 'Su 00:00-24:00',
+    context: PropertyTranslationsContextEnum.Card,
+  })
+  expect(wrapper.querySelector('#opened')).toBeFalsy()
+  expect(wrapper.querySelector('ul > li')).toBeTruthy()
+})
+
 it('pretty', () => {
   let wrapper
   wrapper = factory({
