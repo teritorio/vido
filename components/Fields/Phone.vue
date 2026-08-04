@@ -9,7 +9,7 @@ const props = defineProps<{
 const device = useDevice()
 
 const numberFormated = computed((): string => {
-  return props.number.replaceAll(' ', ' ')
+  return String(props.number).replaceAll(' ', ' ')
 })
 </script>
 
