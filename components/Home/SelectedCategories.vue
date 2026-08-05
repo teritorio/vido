@@ -19,8 +19,11 @@ const menuStore = useMenuStore()
 
 function getTeritorioIconBadgeProps(item: MenuCategory) {
   const base = item.category
-  if (!base)
+  if (!base) {
+    if (import.meta.dev)
+      console.warn(`[SelectedCategories] category.category is undefined for item ${item.id}`)
     return { id: item.id, picto: '', colorFill: '', colorText: '', size: 'lg' as const }
+  }
 
   const { colorFill, colorText } = useContrastedColors(base.color_fill)
 
@@ -45,8 +48,8 @@ function getTeritorioIconBadgeProps(item: MenuCategory) {
           v-for="category in categories"
           :key="category.id"
           :data-testid="`selected-category-${category.id}`"
-          :aria-label="`${$t('headerMenu.disableCategory')}: ${category.category?.name?.fr}`"
-          :title="`${$t('headerMenu.disableCategory')}: ${category.category?.name?.fr}`"
+          :aria-label="`${$t('headerMenu.disableCategory')}: ${category.category?.name?.fr ?? ''}`"
+          :title="`${$t('headerMenu.disableCategory')}: ${category.category?.name?.fr ?? ''}`"
           icon
           width="40px"
           height="40px"
