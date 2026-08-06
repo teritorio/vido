@@ -88,7 +88,9 @@ const { data, error } = await useAsyncData('pois-map', async () => {
 
     const deps = depsResults.flatMap((result, index) => {
       if (result.status === 'rejected') {
-        captureMessage(`Failed to fetch deps for POI ${poiIds.value[index]}: ${result.reason}`, 'warning')
+        const httpStatus = (result.reason as { status?: number }).status
+        if (httpStatus !== 404)
+          captureMessage(`Failed to fetch deps for POI ${poiIds.value[index]}: ${result.reason}`, 'warning')
         return []
       }
 
