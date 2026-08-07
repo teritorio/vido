@@ -134,6 +134,7 @@ function transformApiPoi(feature: ApiPoi): Poi {
     :center="center"
     :bounds="bounds"
     :zoom="selectionZoom.poi"
+    hash="map"
     :fullscreen-control="fullscreenControl"
     :extra-attributions="extraAttributions"
     :off-map-attribution="offMapAttribution"
