@@ -256,36 +256,44 @@ onMounted(() => {
     container: mapContainer.parentElement,
   })
 
-  const newMap = new Map({
-    container: 'map',
-    style: style.value || {
-      version: 8,
-      sources: {},
-      layers: [
-        {
-          id: 'bg',
-          type: 'background',
-          paint: { 'background-color': '#f8f4f0' },
-        },
-      ],
-    },
-    center: props.center,
-    zoom: props.zoom,
-    bounds: props.bounds,
-    fitBoundsOptions: props.fitBoundsOptions,
-    hash: props.hash,
-    maxZoom: defaultZoom.value.max,
-    minZoom: defaultZoom.value.min,
-    attributionControl: false,
-    cooperativeGestures: props.cooperativeGestures,
-    locale: {
-      'NavigationControl.ResetBearing':
-          t('mapControls.resetBearing') || 'Reset bearing to north',
-      'NavigationControl.ZoomIn': t('mapControls.zoomIn') || 'Zoom in',
-      'NavigationControl.ZoomOut':
-          t('mapControls.zoomOut') || 'Zoom out',
-    },
-  })
+  let newMap: Map
+  try {
+    newMap = new Map({
+      container: 'map',
+      style: style.value || {
+        version: 8,
+        sources: {},
+        layers: [
+          {
+            id: 'bg',
+            type: 'background',
+            paint: { 'background-color': '#f8f4f0' },
+          },
+        ],
+      },
+      center: props.center,
+      zoom: props.zoom,
+      bounds: props.bounds,
+      fitBoundsOptions: props.fitBoundsOptions,
+      hash: props.hash,
+      maxZoom: defaultZoom.value.max,
+      minZoom: defaultZoom.value.min,
+      attributionControl: false,
+      cooperativeGestures: props.cooperativeGestures,
+      locale: {
+        'NavigationControl.ResetBearing':
+            t('mapControls.resetBearing') || 'Reset bearing to north',
+        'NavigationControl.ZoomIn': t('mapControls.zoomIn') || 'Zoom in',
+        'NavigationControl.ZoomOut':
+            t('mapControls.zoomOut') || 'Zoom out',
+      },
+    })
+  }
+  catch (e) {
+    if (e instanceof Error && e.message.includes('WebGL'))
+      return
+    throw e
+  }
 
   newMap?.on('load', _event => onMapInit(newMap))
   newMap?.on('data', $event => emit('mapData', $event))
