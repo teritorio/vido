@@ -87,7 +87,7 @@ export default defineI18nLocale(() => {
       to: 'Jusqu\'au {to}',
       on: 'Le {on}',
     },
-    emergencyBanner: {
+    banner: {
       dismiss: 'Fermer',
     },
     openingHours: {

@@ -8,7 +8,7 @@ const siteStore = useSiteStore()
 const { theme } = storeToRefs(siteStore)
 const { locale, t } = useI18n()
 
-const dismissed = useState('emergencyBannerDismissed', () => false)
+const dismissed = useState('bannerDismissed', () => false)
 
 const message = computed((): string | undefined => {
   if (import.meta.dev) {
@@ -21,14 +21,14 @@ const message = computed((): string | undefined => {
   </div>
 </div>`
   }
-  const msg = theme.value?.emergency_message
+  const msg = theme.value?.banner_message
   if (!msg)
     return undefined
   const lang = locale.value.substring(0, 2) as LanguageCode
   return msg[lang] ?? msg.fr
 })
 
-const dismissible = computed((): boolean => theme.value?.emergency_dismissible ?? true)
+const dismissible = computed((): boolean => theme.value?.banner_dismissible ?? true)
 </script>
 
 <template>
@@ -43,7 +43,7 @@ const dismissible = computed((): boolean => theme.value?.emergency_dismissible ?
       v-if="dismissible"
       type="button"
       class="tw-absolute tw-top-2 tw-right-2 tw-text-lg tw-leading-none tw-font-bold tw-bg-transparent tw-border-0 tw-cursor-pointer focus:tw-outline-none"
-      :aria-label="t('emergencyBanner.dismiss')"
+      :aria-label="t('banner.dismiss')"
       @click="dismissed = true"
     >
       ✕

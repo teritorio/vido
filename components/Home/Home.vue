@@ -31,7 +31,7 @@ import useDevice from '~/composables/useDevice'
 import type { ApiAddrSearchResult, ApiSearchResult } from '~/lib/apiSearch'
 import IsochroneStatus from '~/components/Isochrone/IsochroneStatus.vue'
 import MenuNavbar from '~/components/MenuNavbar.vue'
-import EmergencyBanner from '~/components/EmergencyBanner.vue'
+import Banner from '~/components/Banner.vue'
 
 const props = defineProps<{
   boundaryArea?: Polygon | MultiPolygon
@@ -449,7 +449,7 @@ onBeforeUnmount(() => {
         v-if="device.smallScreen"
         class="tw-fixed tw-top-0 tw-left-0 tw-w-full tw-z-50 tw-pointer-events-none"
       >
-        <EmergencyBanner class="tw-pointer-events-auto tw-bg-white" />
+        <Banner class="tw-pointer-events-auto tw-bg-white" />
       </div>
 
       <header
@@ -523,7 +523,7 @@ onBeforeUnmount(() => {
               />
             </transition-group>
           </div>
-          <EmergencyBanner class="tw-rounded-xl tw-shadow-md tw-bg-white tw-pointer-events-auto tw-mx-1 tw-mb-1.5" />
+          <Banner class="tw-rounded-xl tw-shadow-md tw-bg-white tw-pointer-events-auto tw-mx-1 tw-mb-1.5" />
         </div>
         <SelectedCategories
           v-if="!isModeExplorer && selectedCategories?.length && !isModeFavorites"
