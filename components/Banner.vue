@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import DOMPurify from 'isomorphic-dompurify'
 import { storeToRefs } from 'pinia'
 import { useSiteStore } from '~/stores/site'
 import type { LanguageCode } from '~/utils/types'
@@ -15,8 +14,7 @@ const message = computed((): string | undefined => {
   if (!msg)
     return undefined
   const lang = locale.value.substring(0, 2) as LanguageCode
-  const raw = msg[lang] ?? Object.values(msg).find(v => !!v)
-  return raw ? DOMPurify.sanitize(raw) : undefined
+  return msg[lang] ?? Object.values(msg).find(v => !!v)
 })
 
 const dismissible = computed((): boolean => theme.value?.banner_dismissible ?? true)
