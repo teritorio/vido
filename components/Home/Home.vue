@@ -446,7 +446,7 @@ onBeforeUnmount(() => {
 
     <ClientOnly>
       <div
-        v-if="device.smallScreen"
+        v-if="device.smallScreen && !isModeExplorerOrFavorites"
         class="tw-fixed tw-top-0 tw-left-0 tw-w-full tw-z-50 tw-pointer-events-none"
       >
         <Banner class="tw-pointer-events-auto tw-bg-white" />
@@ -457,7 +457,7 @@ onBeforeUnmount(() => {
         class="tw-pointer-events-none tw-flex tw-flex-row tw-fixed tw-z-10 tw-w-full tw-h-auto tw-p-4 tw-pr-[10px] tw-space-x-4"
         style="height: calc(100vh - 30px)"
       >
-        <div class="tw-hidden md:tw-flex md:tw-flex-col flex-none flex-shrink-0 tw-max-w-md tw-h-full tw-gap-2">
+        <div class="tw-hidden md:tw-flex md:tw-flex-col tw-flex-none tw-shrink-0 tw-max-w-md tw-h-full tw-gap-2">
           <MenuBlock
             v-if="!isModeExplorerOrFavorites"
             class="tw-shrink-0 tw-mx-1 tw-mt-1.5 tw-pointer-events-auto"

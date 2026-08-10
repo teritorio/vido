@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import DOMPurify from 'isomorphic-dompurify'
 import { storeToRefs } from 'pinia'
 import { useSiteStore } from '~/stores/site'
 import type { LanguageCode } from '~/utils/types'
@@ -14,7 +15,8 @@ const message = computed((): string | undefined => {
   if (!msg)
     return undefined
   const lang = locale.value.substring(0, 2) as LanguageCode
-  return msg[lang] ?? msg.fr
+  const raw = msg[lang] ?? Object.values(msg).find(v => !!v)
+  return raw ? DOMPurify.sanitize(raw) : undefined
 })
 
 const dismissible = computed((): boolean => theme.value?.banner_dismissible ?? true)
@@ -27,7 +29,7 @@ const dismissible = computed((): boolean => theme.value?.banner_dismissible ?? t
     role="alert"
   >
     <!-- eslint-disable-next-line vue/no-v-html -->
-    <div v-html="message" />
+    <div class="tw-p-3" v-html="message" />
     <button
       v-if="dismissible"
       type="button"
