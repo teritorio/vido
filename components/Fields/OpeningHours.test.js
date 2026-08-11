@@ -85,6 +85,33 @@ it('osm:opening_hours@event — hides status, shows pretty in all contexts', () 
   expect(wrapper.querySelector('ul > li')).toBeTruthy()
 })
 
+it('osm:opening_hours@event — hides variableWeek paragraph', () => {
+  // Baseline: variableWeek paragraph visible for osm:opening_hours
+  let wrapper = factory({ openingHours: 'Mo[1,3] 09:00-17:00' })
+  expect(wrapper.querySelector('p')).toBeTruthy()
+
+  // Event render: variableWeek paragraph suppressed
+  wrapper = factory({ renderKey: 'osm:opening_hours@event', openingHours: 'Mo[1,3] 09:00-17:00' })
+  expect(wrapper.querySelector('p')).toBeFalsy()
+})
+
+it('osm:opening_hours@event — hides comment in Card context', () => {
+  // Baseline: comment paragraph visible for osm:opening_hours in Card context
+  let wrapper = factory({
+    openingHours: 'Mo-Fr 09:00-17:00 "by appointment"',
+    context: PropertyTranslationsContextEnum.Card,
+  })
+  expect(wrapper.querySelector('p')).toBeTruthy()
+
+  // Event render: comment paragraph suppressed in Card context
+  wrapper = factory({
+    renderKey: 'osm:opening_hours@event',
+    openingHours: 'Mo-Fr 09:00-17:00 "by appointment"',
+    context: PropertyTranslationsContextEnum.Card,
+  })
+  expect(wrapper.querySelector('p')).toBeFalsy()
+})
+
 it('pretty', () => {
   let wrapper
   wrapper = factory({
