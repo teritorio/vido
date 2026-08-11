@@ -54,7 +54,7 @@ const { data, error } = await useAsyncData('pois-map', async () => {
   )
 
   const depsResults = await Promise.allSettled(
-    poiIdsAsNumbers.value.map(poiId =>
+    poiIds.value.map(poiId =>
       $fetch<ApiPoiDepsCollection>(
         `${apiEndpoint.value}/poi/${poiId}/deps.geojson`,
         {
@@ -88,7 +88,9 @@ const { data, error } = await useAsyncData('pois-map', async () => {
 
     const deps = depsResults.flatMap((result, index) => {
       if (result.status === 'rejected') {
-        captureMessage(`Failed to fetch deps for POI ${poiIdsAsNumbers.value[index]}: ${result.reason}`, 'warning')
+        const httpStatus = (result.reason as { status?: number }).status
+        if (httpStatus !== 404)
+          captureMessage(`Failed to fetch deps for POI ${poiIds.value[index]}: ${result.reason}`, 'warning')
         return []
       }
 

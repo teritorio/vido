@@ -17,7 +17,7 @@ const currentValue = ref(props.filter.filterValues)
 
 const items = computed((): { title: string, value: string }[] => {
   return props.filter.def.values.map(value => ({
-    title: (value.name && value.name.fr) || value.value,
+    title: String((value.name && value.name.fr) || value.value),
     value: value.value,
   })).sort((a, b) => a.title.localeCompare(b.title, locale.value, { sensitivity: 'base' }))
 })

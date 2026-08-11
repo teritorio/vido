@@ -1,5 +1,5 @@
 import { createPinia } from 'pinia'
-import { createApp } from 'vue'
+import { createApp, defineComponent } from 'vue'
 import { beforeEach, expect, it } from 'mocha'
 import OpeningHours from '~/components/Fields/OpeningHours.vue'
 import { PropertyTranslationsContextEnum, useSiteStore } from '~/stores/site'
@@ -26,6 +26,12 @@ beforeEach(() => {
   })
 })
 
+const ClientOnlyStub = defineComponent({
+  setup(_, { slots }) {
+    return () => slots.default?.()
+  },
+})
+
 function factory(props = {}) {
   const el = document.createElement('div')
   createApp(OpeningHours, {
@@ -34,7 +40,7 @@ function factory(props = {}) {
     openingHours: '24/7',
     baseDate: new Date('2022-01-02 11:00:00'), // Sunday
     ...props,
-  }).use(realPinia).mount(el)
+  }).component('ClientOnly', ClientOnlyStub).use(realPinia).mount(el)
   return el
 }
 
@@ -61,6 +67,49 @@ it('collection_times', () => {
     openingHours: 'k; fjlk-gj; lrjglkregm',
   })
   expect(wrapper.querySelector('#next')).toBeFalsy()
+})
+
+it('osm:opening_hours@event — hides status, shows pretty in all contexts', () => {
+  let wrapper
+  wrapper = factory({ renderKey: 'osm:opening_hours@event', openingHours: 'Su 00:00-24:00' })
+  expect(wrapper.querySelector('#opened')).toBeFalsy()
+  expect(wrapper.querySelector('#openAt')).toBeFalsy()
+  expect(wrapper.querySelector('ul > li')).toBeTruthy()
+
+  wrapper = factory({
+    renderKey: 'osm:opening_hours@event',
+    openingHours: 'Su 00:00-24:00',
+    context: PropertyTranslationsContextEnum.Card,
+  })
+  expect(wrapper.querySelector('#opened')).toBeFalsy()
+  expect(wrapper.querySelector('ul > li')).toBeTruthy()
+})
+
+it('osm:opening_hours@event — hides variableWeek paragraph', () => {
+  // Baseline: variableWeek paragraph visible for osm:opening_hours
+  let wrapper = factory({ openingHours: 'Mo[1,3] 09:00-17:00' })
+  expect(wrapper.querySelector('p')).toBeTruthy()
+
+  // Event render: variableWeek paragraph suppressed
+  wrapper = factory({ renderKey: 'osm:opening_hours@event', openingHours: 'Mo[1,3] 09:00-17:00' })
+  expect(wrapper.querySelector('p')).toBeFalsy()
+})
+
+it('osm:opening_hours@event — hides comment in Card context', () => {
+  // Baseline: comment paragraph visible for osm:opening_hours in Card context
+  let wrapper = factory({
+    openingHours: 'Mo-Fr 09:00-17:00 "by appointment"',
+    context: PropertyTranslationsContextEnum.Card,
+  })
+  expect(wrapper.querySelector('p')).toBeTruthy()
+
+  // Event render: comment paragraph suppressed in Card context
+  wrapper = factory({
+    renderKey: 'osm:opening_hours@event',
+    openingHours: 'Mo-Fr 09:00-17:00 "by appointment"',
+    context: PropertyTranslationsContextEnum.Card,
+  })
+  expect(wrapper.querySelector('p')).toBeFalsy()
 })
 
 it('pretty', () => {
@@ -92,41 +141,4 @@ it('pretty', () => {
   expect(wrapper.querySelector('ul > li:nth-child(2)')?.innerHTML).toEqual(
     '<li>Dim.,PH 07:30-12:15</li>',
   )
-})
-
-it('isEvent — suppresses variableWeek warning (year-prefixed)', () => {
-  const wrapper = factory({ openingHours: '2025 Jan 25 20:30-22:00' })
-  const paragraphs = [...wrapper.querySelectorAll('p')]
-  const hasVariableWeek = paragraphs.some(p =>
-    p.textContent?.includes('variabl'),
-  )
-  expect(hasVariableWeek).toBeFalsy()
-})
-
-it('isEvent — suppresses variableWeek warning (month-prefixed, no year)', () => {
-  const wrapper = factory({ openingHours: 'Aug 04 18:00-23:00' })
-  const paragraphs = [...wrapper.querySelectorAll('p')]
-  const hasVariableWeek = paragraphs.some(p =>
-    p.textContent?.includes('variabl'),
-  )
-  expect(hasVariableWeek).toBeFalsy()
-})
-
-it('isEvent — non-event still shows variableWeek for variable schedules', () => {
-  const wrapper = factory({ openingHours: 'Apr-Oct: Fr-Su 10:00-18:00' })
-  const paragraphs = [...wrapper.querySelectorAll('p')]
-  const hasVariableWeek = paragraphs.some(p =>
-    p.textContent?.includes('variabl'),
-  )
-  expect(hasVariableWeek).toBeTruthy()
-})
-
-it('isEvent — seasonal date range is not an event', () => {
-  // "Apr 1-Oct 31: ..." starts with "Apr " but is a seasonal schedule, not a one-time event
-  const wrapper = factory({ openingHours: 'Apr 1-Oct 31: Fr-Su 10:00-18:00' })
-  const paragraphs = [...wrapper.querySelectorAll('p')]
-  const hasVariableWeek = paragraphs.some(p =>
-    p.textContent?.includes('variabl'),
-  )
-  expect(hasVariableWeek).toBeTruthy()
 })

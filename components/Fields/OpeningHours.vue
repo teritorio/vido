@@ -40,9 +40,7 @@ const comment = computed(() => oh.value?.getComment(props.baseDate))
 
 const isCompact = computed(() => props.context === PropertyTranslationsContextEnum.Card)
 
-const isEvent = computed(() =>
-  /^(?:\d{4}\s|(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\s\d{1,2}(?:\s|$))/i.test(props.openingHours),
-)
+const isEventRender = computed(() => props.renderKey === 'osm:opening_hours@event')
 
 const variable = computed(() => {
   try {
@@ -165,40 +163,42 @@ function OpeningHoursFactory(): OpeningHours | undefined {
 <template>
   <div v-if="openingHours">
     <span hidden>{{ openingHours }}</span>
-    <template v-if="nextChange">
-      <p v-if="isPointTime" id="next" class="tw-text-emerald-500">
-        {{ t('openingHours.next') }}
-        <RelativeDate :date="nextChange.nextChange" />
-      </p>
-      <template v-else>
-        <p
-          v-if="nextChange.type === 'opened'"
-          id="opened"
-          class="tw-text-emerald-500"
-        >
-          {{ t('openingHours.opened') }}
-          <template v-if="nextChange.nextChange">
-            -
-            {{ t('openingHours.closeAt') }}
-            <RelativeDate :date="nextChange.nextChange" />
-          </template>
+    <ClientOnly v-if="!isEventRender">
+      <template v-if="nextChange">
+        <p v-if="isPointTime" id="next" class="tw-text-emerald-500">
+          {{ t('openingHours.next') }}
+          <RelativeDate :date="nextChange.nextChange" />
         </p>
-        <p
-          v-else-if="nextChange.type === 'openAt'"
-          id="openAt"
-          class="tw-text-red-500"
-        >
-          {{ t('openingHours.closed') }}
-          <template v-if="nextChange.nextChange">
-            -
-            {{ t('openingHours.openAt') }}
-            <RelativeDate :date="nextChange.nextChange" />
-          </template>
-        </p>
+        <template v-else>
+          <p
+            v-if="nextChange.type === 'opened'"
+            id="opened"
+            class="tw-text-emerald-500"
+          >
+            {{ t('openingHours.opened') }}
+            <template v-if="nextChange.nextChange">
+              -
+              {{ t('openingHours.closeAt') }}
+              <RelativeDate :date="nextChange.nextChange" />
+            </template>
+          </p>
+          <p
+            v-else-if="nextChange.type === 'openAt'"
+            id="openAt"
+            class="tw-text-red-500"
+          >
+            {{ t('openingHours.closed') }}
+            <template v-if="nextChange.nextChange">
+              -
+              {{ t('openingHours.openAt') }}
+              <RelativeDate :date="nextChange.nextChange" />
+            </template>
+          </p>
+        </template>
+        <br v-if="!isCompact">
       </template>
-    </template>
-    <template v-if="!isCompact">
-      <br>
+    </ClientOnly>
+    <template v-if="!isCompact || isEventRender">
       <div v-if="pretty && !pretty[0][0] && pretty[0][1].length === 1">
         {{ pretty[0][1][0] }}
       </div>
@@ -217,11 +217,11 @@ function OpeningHoursFactory(): OpeningHours | undefined {
           </ul>
         </li>
       </ul>
-      <template v-if="variable && !isEvent">
-        <p>{{ t('openingHours.variableWeek') }}</p>
-      </template>
     </template>
-    <template v-if="isCompact && comment">
+    <template v-if="variable && !isCompact && !isEventRender">
+      <p>{{ t('openingHours.variableWeek') }}</p>
+    </template>
+    <template v-if="isCompact && comment && !isEventRender">
       <p>{{ comment }}</p>
     </template>
   </div>

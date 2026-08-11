@@ -31,6 +31,7 @@ import useDevice from '~/composables/useDevice'
 import type { ApiAddrSearchResult, ApiSearchResult } from '~/lib/apiSearch'
 import IsochroneStatus from '~/components/Isochrone/IsochroneStatus.vue'
 import MenuNavbar from '~/components/MenuNavbar.vue'
+import Banner from '~/components/Banner.vue'
 
 const props = defineProps<{
   boundaryArea?: Polygon | MultiPolygon
@@ -444,37 +445,22 @@ onBeforeUnmount(() => {
     </h1>
 
     <ClientOnly>
+      <div
+        v-if="device.smallScreen && !isModeExplorerOrFavorites"
+        class="tw-fixed tw-top-0 tw-left-0 tw-w-full tw-z-50 tw-pointer-events-none"
+      >
+        <Banner class="tw-pointer-events-auto tw-bg-white" />
+      </div>
+
       <header
         v-if="!device.smallScreen"
         class="tw-pointer-events-none tw-flex tw-flex-row tw-fixed tw-z-10 tw-w-full tw-h-auto tw-p-4 tw-pr-[10px] tw-space-x-4"
-        style="max-height: calc(100vh - 30px)"
+        style="height: calc(100vh - 30px)"
       >
-        <transition-group
-          id="header-menu"
-          ref="headerMenu"
-          tag="div"
-          name="headers"
-          appear
-          mode="out-in"
-          class="tw-pointer-events-auto tw-hidden md:tw-block flex-none tw-max-w-md tw-overflow-y-auto tw-overflow-x-clip flex-shrink-0"
-        >
+        <div class="tw-hidden md:tw-flex md:tw-flex-col tw-flex-none tw-shrink-0 tw-max-w-md tw-h-full tw-gap-2">
           <MenuBlock
-            v-if="isModeExplorerOrFavorites"
-            key="ExplorerOrFavoritesBack"
-            extra-class-text-background="tw-bg-blue-500 tw-text-white"
-          >
-            <ExplorerOrFavoritesBack @click="onQuitExplorerFavoriteMode" />
-          </MenuBlock>
-
-          <Menu
-            v-else
-            key="Menu"
-            menu-block="MenuBlock"
-            :is-on-search="resultsCount > 0"
-            :is-filter-active="isFilterActive"
-            class="tw-px-1 tw-pb-1.5"
-            @activate-filter="onActivateFilter"
-            @scroll-top="scrollTop"
+            v-if="!isModeExplorerOrFavorites"
+            class="tw-shrink-0 tw-mx-1 tw-mt-1.5 tw-pointer-events-auto"
           >
             <div class="tw-flex tw-flex-row tw-items-center">
               <Logo
@@ -505,8 +491,40 @@ onBeforeUnmount(() => {
               @poi-click="searchStore.onPoiClick"
               @address-click="searchStore.onAddressClick"
             />
-          </Menu>
-        </transition-group>
+          </MenuBlock>
+
+          <div class="tw-flex-1 tw-min-h-0 tw-rounded-xl tw-overflow-hidden">
+            <transition-group
+              id="header-menu"
+              ref="headerMenu"
+              tag="div"
+              name="headers"
+              appear
+              mode="out-in"
+              class="header-menu-scroll tw-pointer-events-auto tw-overflow-y-auto tw-overflow-x-clip tw-h-full tw-pt-2 tw-pb-2"
+            >
+              <MenuBlock
+                v-if="isModeExplorerOrFavorites"
+                key="ExplorerOrFavoritesBack"
+                extra-class-text-background="tw-bg-blue-500 tw-text-white"
+              >
+                <ExplorerOrFavoritesBack @click="onQuitExplorerFavoriteMode" />
+              </MenuBlock>
+
+              <Menu
+                v-else
+                key="Menu"
+                menu-block="MenuBlock"
+                :is-on-search="resultsCount > 0"
+                :is-filter-active="isFilterActive"
+                class="tw-px-1 tw-pb-1.5"
+                @activate-filter="onActivateFilter"
+                @scroll-top="scrollTop"
+              />
+            </transition-group>
+          </div>
+          <Banner class="tw-rounded-xl tw-shadow-md tw-bg-white tw-pointer-events-auto tw-mx-1 tw-mb-1.5" />
+        </div>
         <SelectedCategories
           v-if="!isModeExplorer && selectedCategories?.length && !isModeFavorites"
           :categories="selectedCategories"
@@ -685,5 +703,23 @@ onBeforeUnmount(() => {
     top: 1rem;
     left: 1rem;
   }
+}
+
+.header-menu-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: rgb(0 0 0 / 15%) transparent;
+}
+
+.header-menu-scroll::-webkit-scrollbar {
+  width: 4px;
+}
+
+.header-menu-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.header-menu-scroll::-webkit-scrollbar-thumb {
+  background: rgb(0 0 0 / 15%);
+  border-radius: 2px;
 }
 </style>

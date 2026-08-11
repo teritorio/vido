@@ -1,7 +1,7 @@
 {
   "name": "@teritorio/vido",
   "type": "module",
-  "version": "1.28.7",
+  "version": "1.28.8",
   "private": true,
   "packageManager": "yarn@4.4.1",
   "engines": {
@@ -55,7 +55,7 @@
     "lodash.uniqby": "^4.7.0",
     "lodash.without": "^4.4.0",
     "maplibre-gl": "^5.4.0",
-    "opening_hours": "^3.13.0",
+    "opening_hours": "3.14.0",
     "pinia": "^2.0.33",
     "pinia-shared-state": "0.5.1",
     "sharp": "^0.34.5",
