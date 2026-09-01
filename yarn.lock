@@ -4910,7 +4910,7 @@ __metadata:
     msw: "npm:^1.2.2"
     nuxt: "npm:3.8.0"
     nuxt-simple-sitemap: "npm:^2.7.0"
-    opening_hours: "npm:@noe-teritorio/opening_hours@3.14.1"
+    opening_hours: "npm:@noe-teritorio/opening_hours@3.14.2"
     pinia: "npm:^2.0.33"
     pinia-shared-state: "npm:0.5.1"
     postcss: "npm:^8.4.24"
@@ -14423,13 +14423,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"opening_hours@npm:@noe-teritorio/opening_hours@3.14.1":
-  version: 3.14.1
-  resolution: "@noe-teritorio/opening_hours@npm:3.14.1"
+"opening_hours@npm:@noe-teritorio/opening_hours@3.14.2":
+  version: 3.14.2
+  resolution: "@noe-teritorio/opening_hours@npm:3.14.2"
   dependencies:
     i18next: "npm:^26.3.6"
     suncalc: "npm:^2.0.1"
-  checksum: 10c0/ac0ef3dbd921ed61fdba47da14d54e71f25ca594ed6426843ecff528bd80bb0d053a27c24f251030505a318a0d4cd6dc66bfa37707e48445ac95d8ac610ec808
+  checksum: 10c0/8583d2e4e9c3769b50db4c3849cde567eb320dc3e1cabad097ba8ab780206c90f3297eef170bf8e0105693f3c698e683094c9c82f195627b8cb189cca43ef323
   languageName: node
   linkType: hard
 
