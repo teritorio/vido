@@ -1,9 +1,18 @@
 <script setup lang="ts">
-defineProps<{
+import OpeningHours from '~/components/Fields/OpeningHours.vue'
+import { PropertyTranslationsContextEnum } from '~/stores/site'
+import type { AssocRenderKey } from '~/utils/types'
+
+withDefaults(defineProps<{
   start?: string
   end?: string
-}>()
+  openingHours?: string
+  context?: PropertyTranslationsContextEnum
+}>(), {
+  context: PropertyTranslationsContextEnum.Default,
+})
 
+const eventRenderKey: AssocRenderKey = 'osm:opening_hours@event'
 const { t, d } = useI18n()
 </script>
 
@@ -33,5 +42,11 @@ const { t, d } = useI18n()
         {{ t('dateRange.to', { to: d(new Date(end)) }) }}
       </template>
     </span>
+    <OpeningHours
+      v-if="openingHours && context !== PropertyTranslationsContextEnum.List"
+      :opening-hours="openingHours"
+      :context="context"
+      :render-key="eventRenderKey"
+    />
   </div>
 </template>

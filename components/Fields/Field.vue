@@ -84,6 +84,8 @@ const translatedValue = computed(() => {
     v-else-if="field.render === 'start_end_date'"
     :start="(rawValue as ApiPoiPropertiesStartEndDate | undefined)?.start_date"
     :end="(rawValue as ApiPoiPropertiesStartEndDate | undefined)?.end_date"
+    :opening-hours="typeof properties.opening_hours === 'string' ? properties.opening_hours : undefined"
+    :context="context"
     :class="`field_content_level_${recursionStack.length}`"
   >
     <FieldsHeader
