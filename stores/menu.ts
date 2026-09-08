@@ -84,6 +84,7 @@ export const menuStore = defineStore('menu', () => {
       return isMatch(filter, feature.properties)
     }, true)
   }
+
   const menuItems = ref<Record<number, MenuItem>>()
   const selectedCategoryIds = ref<ApiMenuCategory['id'][]>([])
   const features = ref<Record<number, Poi[]>>({})
