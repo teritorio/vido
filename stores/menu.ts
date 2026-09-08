@@ -6,7 +6,7 @@ import type { ApiMenuCategory, ApiMenuCollection } from '~/types/api/menu'
 import type { MenuCategory, MenuCategoryEditorial, MenuGroup, MenuItem } from '~/types/local/menu'
 import type { ApiPoiCollection } from '~/types/api/poi'
 import { getPoiByCategoryId } from '~/lib/apiPois'
-import type { FilterValue, FilterValues } from '~/utils/types-filters'
+import type { FilterValue, FilterValueDate, FilterValues } from '~/utils/types-filters'
 import { filterValueFactory, filterValuesIsSet, isMatch, isSet } from '~/utils/types-filters'
 import type { Poi } from '~/types/local/poi'
 import type { PoiUnion } from '~/types/local/poi-deps'
@@ -72,13 +72,19 @@ function transformApiMenuCategory(menuItem: ApiMenuCategory): MenuCategory {
   }
 }
 
-function keepFeature(filters: FilterValues, feature: Poi): boolean {
-  return filters.reduce<boolean>((prevValue, filter) => {
-    return prevValue && (!isSet(filter) || isMatch(filter, feature.properties))
-  }, true)
-}
-
 export const menuStore = defineStore('menu', () => {
+  const { isDateRangeMatch } = useDateRangeFilter()
+
+  function keepFeature(filters: FilterValues, feature: Poi): boolean {
+    return filters.reduce<boolean>((prevValue, filter) => {
+      if (!prevValue || !isSet(filter))
+        return prevValue
+      if (filter.type === 'date_range')
+        return isDateRangeMatch(filter as FilterValueDate, feature.properties)
+      return isMatch(filter, feature.properties)
+    }, true)
+  }
+
   const menuItems = ref<Record<number, MenuItem>>()
   const selectedCategoryIds = ref<ApiMenuCategory['id'][]>([])
   const features = ref<Record<number, Poi[]>>({})

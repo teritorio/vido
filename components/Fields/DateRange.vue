@@ -4,7 +4,7 @@ defineProps<{
   end?: string
 }>()
 
-const { t, d, n } = useI18n()
+const { t, d } = useI18n()
 </script>
 
 <template>
@@ -23,13 +23,6 @@ const { t, d, n } = useI18n()
           t('dateRange.from_to', {
             from: d(new Date(start)),
             to: d(new Date(end)),
-            duration: n(
-              (new Date(end).getTime() - new Date(start).getTime())
-                / 1000
-                / 60
-                / 60
-                / 24,
-            ),
           })
         }}
       </template>
