@@ -19,7 +19,7 @@ const { t, d } = useI18n()
 <template>
   <div>
     <slot />
-    <span>
+    <span v-if="!openingHours">
       <template v-if="start && end && start === end">
         {{
           t('dateRange.on', {
