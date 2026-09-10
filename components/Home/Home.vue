@@ -65,7 +65,6 @@ const {
 const poiCompo = usePoi()
 
 const allowRegionBackZoom = ref<boolean>(false)
-const isFilterActive = ref<boolean>(false)
 const initialBbox = ref<LngLatBounds>()
 const showFavoritesOverlay = ref<boolean>(false)
 const isPoiCardShown = ref<boolean>(false)
@@ -331,10 +330,6 @@ async function handleFavoriteAddresses(): Promise<Poi[]> {
     .concat(favoriteFeatures.value)
 }
 
-function onActivateFilter(val: boolean) {
-  isFilterActive.value = val
-}
-
 async function onQuitExplorerFavoriteMode() {
   if (mapFeaturesRef.value)
     await mapFeaturesRef.value.updateSelectedFeature()
@@ -501,7 +496,7 @@ onBeforeUnmount(() => {
               name="headers"
               appear
               mode="out-in"
-              class="header-menu-scroll tw-pointer-events-auto tw-overflow-y-auto tw-overflow-x-clip tw-h-full tw-pt-2 tw-pb-2"
+              class="header-menu-scroll tw-overflow-y-auto tw-overflow-x-clip tw-h-full tw-pt-2 tw-pb-2"
             >
               <MenuBlock
                 v-if="isModeExplorerOrFavorites"
@@ -516,9 +511,7 @@ onBeforeUnmount(() => {
                 key="Menu"
                 menu-block="MenuBlock"
                 :is-on-search="resultsCount > 0"
-                :is-filter-active="isFilterActive"
                 class="tw-px-1 tw-pb-1.5"
-                @activate-filter="onActivateFilter"
                 @scroll-top="scrollTop"
               />
             </transition-group>

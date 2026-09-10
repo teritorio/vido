@@ -1,19 +1,13 @@
 <script setup lang="ts">
 withDefaults(defineProps<{
   extraClassTextBackground?: string
-  isFilterActive?: boolean
 }>(), {
   extraClassTextBackground: 'tw-bg-white',
-  isFilterActive: false,
 })
 </script>
 
 <template>
-  <aside
-    class="tw-rounded-xl tw-pointer-events-auto" :class="[
-      !isFilterActive && 'tw-overflow-y-hidden',
-    ]"
-  >
+  <aside class="tw-rounded-xl tw-pointer-events-auto tw-overflow-y-hidden">
     <div class="tw-px-5 tw-py-4 tw-rounded-xl tw-shadow-md" :class="[extraClassTextBackground]">
       <slot />
     </div>

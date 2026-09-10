@@ -16,10 +16,8 @@ import { useNavigationStore } from '~/stores/navigation'
 const props = withDefaults(defineProps<{
   menuBlock: keyof typeof componentMap
   isOnSearch?: boolean
-  isFilterActive?: boolean
 }>(), {
   isOnSearch: false,
-  isFilterActive: false,
 })
 
 const emit = defineEmits<{
@@ -137,7 +135,6 @@ function onClickUnselectAll(): void {
   <component
     :is="dynamicComponent"
     v-if="categoryIdFilter"
-    :is-filter-active="isFilterActive"
   >
     <div class="tw-w-full tw-flex tw-justify-between tw-pb-4">
       <button
