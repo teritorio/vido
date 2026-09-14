@@ -54,7 +54,7 @@ export function isFiledEmpty(
   }
 
   if (field.field[0] === 'addr' && field.field.length === 1) {
-    return AddressFields.reduce(
+    return !AddressFields.reduce(
       (sum: boolean, value) => sum || value in properties,
       false,
     )
