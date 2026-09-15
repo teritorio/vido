@@ -81,7 +81,7 @@ export default defineI18nLocale(() => {
       disableCategory: 'Remove the category',
     },
     dateRange: {
-      from_to: 'From {from} to {to}, {duration} day(s)',
+      from_to: 'From {from} to {to}',
       from: 'From {from}',
       to: 'Until {to}',
       on: 'On {on}',
