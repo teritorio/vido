@@ -4908,6 +4908,7 @@ __metadata:
     lodash.without: "npm:^4.4.0"
     maplibre-gl: "npm:^5.4.0"
     msw: "npm:^1.2.2"
+    node-html-parser: "npm:^9.0.4"
     nuxt: "npm:3.8.0"
     nuxt-simple-sitemap: "npm:^2.7.0"
     opening_hours: "npm:^3.15.0"
@@ -9176,6 +9177,13 @@ __metadata:
   version: 4.5.0
   resolution: "entities@npm:4.5.0"
   checksum: 10c0/5b039739f7621f5d1ad996715e53d964035f75ad3b9a4d38c6b3804bb226e282ffeae2443624d8fdd9c47d8e926ae9ac009c54671243f0c3294c26af7cc85250
+  languageName: node
+  linkType: hard
+
+"entities@npm:^8.0.0":
+  version: 8.1.0
+  resolution: "entities@npm:8.1.0"
+  checksum: 10c0/da0bf22912c19d2a4707783e1b905d3f6a977e93e0655a8d2c526455eb3996f668f9f2e4c2a07af8d6927d232c41b6e929a7044df0236c7bf6e9c38e070e3719
   languageName: node
   linkType: hard
 
@@ -13958,6 +13966,16 @@ __metadata:
   bin:
     node-gyp: bin/node-gyp.js
   checksum: 10c0/9cc821111ca244a01fb7f054db7523ab0a0cd837f665267eb962eb87695d71fb1e681f9e21464cc2fd7c05530dc4c81b810bca1a88f7d7186909b74477491a3c
+  languageName: node
+  linkType: hard
+
+"node-html-parser@npm:^9.0.4":
+  version: 9.0.4
+  resolution: "node-html-parser@npm:9.0.4"
+  dependencies:
+    css-select: "npm:^5.1.0"
+    entities: "npm:^8.0.0"
+  checksum: 10c0/129752b901d30d16137729817a7042546e5f603b58ac57d6339b0cefad82630196e1a5f16fd374b22a83dc0d127b0bf743b05a1840d0d8beaa80f6dbcd17c487
   languageName: node
   linkType: hard
 

@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { parse } from 'node-html-parser'
 import { storeToRefs } from 'pinia'
 import Header from '~/components/Layout/Header.vue'
 import Footer from '~/components/Layout/Footer.vue'
@@ -22,30 +23,24 @@ if (!settings.value)
 const { t } = useI18n()
 const { params } = useRoute()
 
-const { data, error, status } = await getArticle(params.slug as string)
+const { data, error } = await getArticle(params.slug as string)
 
 if (error.value)
   throw createFetchError(error.value, true)
 
-const content = ref<string>()
-onMounted(() => {
-  if (status.value === 'success' && data.value) {
-    const parser = new DOMParser()
-    const document = parser.parseFromString(data.value, 'text/html')
-    const title = document.querySelector('title')?.textContent
-    content.value = document.querySelector('body')?.innerHTML
+const doc = data.value ? parse(data.value) : null
+const title = doc?.querySelector('title')?.text || undefined
+const content = doc?.querySelector('body')?.innerHTML
 
-    if (settings.value && theme.value) {
-      useHead(
-        headerFromSettings(
-          theme.value,
-          settings.value.icon_font_css_url,
-          { title: title || undefined },
-        ),
-      )
-    }
-  }
-})
+if (settings.value && theme.value) {
+  useHead(
+    headerFromSettings(
+      theme.value,
+      settings.value.icon_font_css_url,
+      { title },
+    ),
+  )
+}
 </script>
 
 <template>
@@ -71,9 +66,7 @@ onMounted(() => {
           <TeritorioIcon picto="map" class="tw-text-zinc-800" />
         </IconButton>
       </Header>
-      <ClientOnly>
-        <p v-html="content" />
-      </ClientOnly>
+      <div v-html="content" />
       <Footer />
     </VContainer>
   </VApp>
