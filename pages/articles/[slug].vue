@@ -32,7 +32,7 @@ const doc = data.value ? parse(data.value) : null
 const title = doc?.querySelector('title')?.text || undefined
 const content = doc?.querySelector('body')?.innerHTML
 
-if (settings.value && theme.value) {
+if (theme.value) {
   useHead(
     headerFromSettings(
       theme.value,
