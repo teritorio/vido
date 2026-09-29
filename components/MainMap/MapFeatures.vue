@@ -387,7 +387,7 @@ function showVectorSelectedFeature(): void {
     return
   }
 
-  if (selectedFeature.value) {
+  if (selectedFeature.value && selectedFeature.value.properties.internalType !== 'address') {
     filterRouteByPoiIds(map.value, selectedFeatureDepsIDs.value)
   }
   else {
