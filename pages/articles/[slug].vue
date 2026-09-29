@@ -66,7 +66,7 @@ if (settings.value && theme.value) {
           <TeritorioIcon picto="map" class="tw-text-zinc-800" />
         </IconButton>
       </Header>
-      <div v-html="content" />
+      <div class="article-content" v-html="content" />
       <Footer />
     </VContainer>
   </VApp>
@@ -75,7 +75,7 @@ if (settings.value && theme.value) {
 <style lang="scss" scoped>
 @import '~/assets/details';
 
-:deep(body) {
+.article-content {
   color: $color-text;
   background-color: #fefefe;
   padding: 1rem;
