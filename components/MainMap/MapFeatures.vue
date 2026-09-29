@@ -28,6 +28,7 @@ import { menuStore as useMenuStore } from '~/stores/menu'
 import { useSiteStore } from '~/stores/site'
 import { snackStore as useSnackStore } from '~/stores/snack'
 import { filterRouteByCategories, filterRouteByPoiIds } from '~/utils/styles'
+import { INTERNAL_TYPE_ADDRESS } from '~/utils/utilities'
 import type { LatLng } from '~/utils/types'
 import { MapStyleEnum } from '~/utils/types'
 import { getHashPart } from '~/utils/url'
@@ -228,8 +229,9 @@ async function updateSelectedFeature(feature?: PoiUnion): Promise<void> {
     mapStore.setSelectedFeatureDepsIDs()
     mapStore.setIsDepsView(false)
   }
-  else if (feature.properties.internalType === 'address') {
+  else if (feature.properties.internalType === INTERNAL_TYPE_ADDRESS) {
     mapStore.setSelectedFeature(feature as Poi)
+    mapStore.setSelectedFeatureDepsIDs([])
     teritorioCluster.value?.setSelectedFeature(feature as unknown as GeoJSONFeature)
   }
   else {
@@ -387,7 +389,7 @@ function showVectorSelectedFeature(): void {
     return
   }
 
-  if (selectedFeature.value && selectedFeature.value.properties.internalType !== 'address') {
+  if (selectedFeature.value && selectedFeature.value.properties.internalType !== INTERNAL_TYPE_ADDRESS) {
     filterRouteByPoiIds(map.value, selectedFeatureDepsIDs.value)
   }
   else {

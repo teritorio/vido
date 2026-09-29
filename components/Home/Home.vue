@@ -26,7 +26,7 @@ import { useSiteStore } from '~/stores/site'
 import { useSearchStore } from '~/stores/search'
 import { Mode, OriginEnum } from '~/utils/types'
 import { getHashPart, setHashParts } from '~/utils/url'
-import { flattenFeatures, formatApiAddressToFeature } from '~/utils/utilities'
+import { INTERNAL_TYPE_ADDRESS, flattenFeatures, formatApiAddressToFeature } from '~/utils/utilities'
 import useDevice from '~/composables/useDevice'
 import type { ApiAddrSearchResult, ApiSearchResult } from '~/lib/apiSearch'
 import IsochroneStatus from '~/components/Isochrone/IsochroneStatus.vue'
@@ -396,7 +396,7 @@ function toggleExploreAroundSelectedPoi(feature?: Poi) {
 
 function toggleFavorite(feature: Poi) {
   try {
-    if (feature.properties.internalType === 'address')
+    if (feature.properties.internalType === INTERNAL_TYPE_ADDRESS)
       favoriteStore.toggleFavoriteAddr(feature)
     else
       favoriteStore.toggleFavorite(feature)

@@ -15,6 +15,7 @@ import type { FieldsList } from '~/types/local/field'
 import type { Poi } from '~/types/local/poi'
 import type { Settings } from '~/lib/apiSettings'
 import { favoriteStore as useFavoriteStore } from '~/stores/favorite'
+import { INTERNAL_TYPE_ADDRESS } from '~/utils/utilities'
 import { OriginEnum } from '~/utils/types'
 import FieldsHeader from '~/components/UI/FieldsHeader.vue'
 import ContribFieldGroup from '~/components/Fields/ContribFieldGroup.vue'
@@ -98,7 +99,7 @@ function toggleFavorite(): void {
       title: props.poi.properties.name?.['fr-FR'],
     })
 
-    if (props.poi.properties.internalType === 'address')
+    if (props.poi.properties.internalType === INTERNAL_TYPE_ADDRESS)
       favoriteStore.toggleFavoriteAddr(props.poi)
     else
       favoriteStore.toggleFavorite(props.poi)
