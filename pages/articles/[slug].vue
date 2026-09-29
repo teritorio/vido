@@ -74,7 +74,7 @@ onMounted(() => {
       <ClientOnly>
         <p v-html="content" />
       </ClientOnly>
-      <Footer :attributions="settings?.attributions" />
+      <Footer />
     </VContainer>
   </VApp>
 </template>
