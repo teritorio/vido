@@ -95,12 +95,14 @@ export function getPreviousMonday() {
   return new Date().setDate(date.getDate() - date.getDate() - 6)
 }
 
+export const INTERNAL_TYPE_ADDRESS = 'address' as const
+
 export function formatApiAddressToFeature(feature: GeoJSON.Feature<GeoJSON.Point, ApiAddrSearchResult>, isGeocoding: boolean = false): Poi {
   const poi = {
     type: 'Feature',
     geometry: feature.geometry,
     properties: {
-      internalType: 'address',
+      internalType: INTERNAL_TYPE_ADDRESS,
       metadata: {
         id: feature.properties.id,
       },

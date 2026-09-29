@@ -4908,9 +4908,10 @@ __metadata:
     lodash.without: "npm:^4.4.0"
     maplibre-gl: "npm:^5.4.0"
     msw: "npm:^1.2.2"
+    node-html-parser: "npm:^9.0.4"
     nuxt: "npm:3.8.0"
     nuxt-simple-sitemap: "npm:^2.7.0"
-    opening_hours: "npm:@noe-teritorio/opening_hours@3.14.4"
+    opening_hours: "npm:^3.15.0"
     pinia: "npm:^2.0.33"
     pinia-shared-state: "npm:0.5.1"
     postcss: "npm:^8.4.24"
@@ -9176,6 +9177,13 @@ __metadata:
   version: 4.5.0
   resolution: "entities@npm:4.5.0"
   checksum: 10c0/5b039739f7621f5d1ad996715e53d964035f75ad3b9a4d38c6b3804bb226e282ffeae2443624d8fdd9c47d8e926ae9ac009c54671243f0c3294c26af7cc85250
+  languageName: node
+  linkType: hard
+
+"entities@npm:^8.0.0":
+  version: 8.1.0
+  resolution: "entities@npm:8.1.0"
+  checksum: 10c0/da0bf22912c19d2a4707783e1b905d3f6a977e93e0655a8d2c526455eb3996f668f9f2e4c2a07af8d6927d232c41b6e929a7044df0236c7bf6e9c38e070e3719
   languageName: node
   linkType: hard
 
@@ -13961,6 +13969,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"node-html-parser@npm:^9.0.4":
+  version: 9.0.4
+  resolution: "node-html-parser@npm:9.0.4"
+  dependencies:
+    css-select: "npm:^5.1.0"
+    entities: "npm:^8.0.0"
+  checksum: 10c0/129752b901d30d16137729817a7042546e5f603b58ac57d6339b0cefad82630196e1a5f16fd374b22a83dc0d127b0bf743b05a1840d0d8beaa80f6dbcd17c487
+  languageName: node
+  linkType: hard
+
 "node-mock-http@npm:^1.0.2":
   version: 1.0.3
   resolution: "node-mock-http@npm:1.0.3"
@@ -14423,13 +14441,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"opening_hours@npm:@noe-teritorio/opening_hours@3.14.4":
-  version: 3.14.4
-  resolution: "@noe-teritorio/opening_hours@npm:3.14.4"
+"opening_hours@npm:^3.15.0":
+  version: 3.15.0
+  resolution: "opening_hours@npm:3.15.0"
   dependencies:
     i18next: "npm:^26.3.6"
     suncalc: "npm:^2.0.1"
-  checksum: 10c0/51d4ec782c1f619ec6cd70858899d0bf51cb361f487b211d1488b63b76a11acc95a21a2e08d808670079b8d4fef338348f118f9ea4cf8c325f08c30304a53ffd
+  checksum: 10c0/8fd46d3e42bb818d7c3d1ed8cb3708a6b371fbdffb82c154d2cdbfa52d92b6154c6da68ba52d05e3473adf6e0d1091755a9dc93e0c5769a983d62aa056e55a3a
   languageName: node
   linkType: hard
 
