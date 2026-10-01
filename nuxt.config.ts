@@ -73,6 +73,7 @@ export default defineNuxtConfig({
       sentryDsn: process.env.NUXT_PUBLIC_SENTRY_DSN,
       sentryEnvironment: process.env.NUXT_PUBLIC_SENTRY_ENVIRONMENT,
       trackingEnabled: process.env.NUXT_PUBLIC_TRACKING_ENABLED,
+      lisioKey: process.env.NUXT_PUBLIC_LISIO_KEY,
     },
   },
   plugins: [
@@ -80,6 +81,7 @@ export default defineNuxtConfig({
     '@/plugins/touch.ts',
     { src: '@/plugins/tracking.ts', mode: 'client' },
     { src: '@/plugins/pinia-shared-state.ts', mode: 'client' },
+    { src: '@/plugins/lisio.client.ts', mode: 'client' },
   ],
   postcss: {
     plugins: {
