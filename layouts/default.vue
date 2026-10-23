@@ -2,6 +2,7 @@
 import { storeToRefs } from 'pinia'
 import type { Settings } from '~/lib/apiSettings'
 import type { PropertyTranslations } from '~/lib/apiPropertyTranslations'
+import { getSlugFromURL } from '~/lib/apiArticle'
 import type { Article } from '~/lib/apiArticle'
 import { useSiteStore } from '~/stores/site'
 import { menuStore as useMenuStore } from '~/stores/menu'
@@ -71,7 +72,7 @@ if (status.value === 'success' && data.value) {
   translations.value = data.value.translations
   articles.value = data.value.articles.map(article => ({
     ...article,
-    url: article.url.replace(/^.*\/article\//, `${apiEndpoint.value}/article/`),
+    url: `${apiEndpoint.value}/article/${getSlugFromURL(article.url)}.html`,
   }))
 
   if (settings.value && theme.value) {
