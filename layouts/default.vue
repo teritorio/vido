@@ -69,7 +69,10 @@ if (error.value) {
 if (status.value === 'success' && data.value) {
   settings.value = data.value.settings
   translations.value = data.value.translations
-  articles.value = data.value.articles
+  articles.value = data.value.articles.map(article => ({
+    ...article,
+    url: article.url.replace(/^.*\/article\//, `${apiEndpoint.value}/article/`),
+  }))
 
   if (settings.value && theme.value) {
     useHead(
