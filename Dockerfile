@@ -20,7 +20,6 @@ ARG SENTRY_ORG
 ARG SENTRY_PROJECT
 ARG SENTRY_URL
 
-ENV NODE_OPTIONS="--openssl-legacy-provider"
 RUN yarn build
 
 # Set environment variables
