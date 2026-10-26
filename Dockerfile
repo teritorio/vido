@@ -1,4 +1,4 @@
-ARG NODE_VERSION=20-alpine3.18
+ARG NODE_VERSION=22-alpine3.24
 FROM node:${NODE_VERSION}
 
 RUN apk --no-cache add git ruby
@@ -20,7 +20,6 @@ ARG SENTRY_ORG
 ARG SENTRY_PROJECT
 ARG SENTRY_URL
 
-ENV NODE_OPTIONS="--openssl-legacy-provider"
 RUN yarn build
 
 # Set environment variables
