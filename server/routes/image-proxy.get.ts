@@ -1,12 +1,12 @@
 import { Buffer } from 'node:buffer'
-import sharp from 'sharp'
+import sharp, { type FormatEnum } from 'sharp'
 
 export default defineEventHandler(async (event) => {
   const query = getQuery(event)
   const url = query.url as string
   const project = query.project as string
   const width = query.width ? Number.parseInt(query.width as string) : undefined
-  const format = (query.format as keyof sharp.FormatEnum) || 'jpeg'
+  const format = (query.format as keyof FormatEnum) || 'jpeg'
 
   if (!url)
     throw createError({ statusCode: 400, message: 'Missing URL' })
