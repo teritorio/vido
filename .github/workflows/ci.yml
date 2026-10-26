@@ -15,7 +15,7 @@ jobs:
         os:
           - ubuntu-latest
         node:
-          - 20
+          - 22
     steps:
       - name: Checkout 🛎
         uses: actions/checkout@v4
@@ -24,7 +24,7 @@ jobs:
       - name: Setup node env 🏗
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
           cache: yarn
 
       - name: Install dependencies 👨🏻‍💻
@@ -40,7 +40,7 @@ jobs:
         os:
           - ubuntu-latest
         node:
-          - 20
+          - 22
     steps:
       - name: Checkout 🛎
         uses: actions/checkout@v4

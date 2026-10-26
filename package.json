@@ -5,7 +5,7 @@
   "private": true,
   "packageManager": "yarn@4.4.1",
   "engines": {
-    "node": "^14.18.0 || >=16.10.0"
+    "node": ">=22.0.0"
   },
   "scripts": {
     "prepare": "simple-git-hooks && nuxi prepare",
@@ -90,7 +90,7 @@
     "@types/lodash.uniq": "^4.5.7",
     "@types/lodash.uniqby": "^4.7.7",
     "@types/lodash.without": "^4.4.7",
-    "@types/node": "18.19.33",
+    "@types/node": "^22",
     "@types/wcag-contrast": "^3.0.0",
     "autoprefixer": "^10.4.14",
     "cypress": "^13.10.0",
