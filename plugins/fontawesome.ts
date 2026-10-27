@@ -46,8 +46,8 @@ import {
   faLink,
   faMap,
   faMapMarkerAlt,
+  faMessage,
   faMinus,
-  faNoteSticky,
   faPenToSquare,
   faPhone,
   faPlus,
@@ -128,8 +128,8 @@ library.add(
   faCopy,
   faCog,
   faEnvelope,
+  faMessage,
   faPenToSquare,
-  faNoteSticky,
   faWalking,
 )
 
