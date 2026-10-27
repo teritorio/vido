@@ -42,6 +42,10 @@ export default defineI18nLocale(() => {
       resetBearing: 'Remettre la carte vers le nord',
       zoomIn: 'Zoomer avant',
       zoomOut: 'Zoomer arriere',
+      osmNoteAriaLabel: 'Ajouter une note OSM',
+      osmNoteButton: 'Signaler une amélioration dans OpenStreetMap',
+      osmEditorAriaLabel: 'Éditer dans OpenStreetMap',
+      osmEditorButton: 'Modifier la carte dans l\'éditeur OpenStreetMap',
     },
     navMenu: {
       label: 'Navigation',

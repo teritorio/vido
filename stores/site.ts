@@ -56,6 +56,8 @@ export const useSiteStore = defineStore('site', () => {
 
   const favoritesModeEnabled = ref(true)
 
+  const osmNoteControlEnabled = ref(false)
+
   watch(theme, (newTheme) => {
     if (newTheme) {
       if (newTheme.explorer_mode !== undefined) {
@@ -63,6 +65,9 @@ export const useSiteStore = defineStore('site', () => {
       }
       if (newTheme.favorites_mode !== undefined) {
         favoritesModeEnabled.value = newTheme.favorites_mode
+      }
+      if (newTheme.osm_note_map !== undefined) {
+        osmNoteControlEnabled.value = newTheme.osm_note_map
       }
     }
   }, { immediate: true })
@@ -116,6 +121,7 @@ export const useSiteStore = defineStore('site', () => {
     siteName,
     explorerModeEnabled,
     favoritesModeEnabled,
+    osmNoteControlEnabled,
     setFavoritesMode,
     setExplorerMode,
     p,

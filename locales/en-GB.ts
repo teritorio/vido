@@ -41,6 +41,10 @@ export default defineI18nLocale(() => {
       resetBearing: 'Reset bearing to north',
       zoomIn: 'Zoom In',
       zoomOut: 'Zoom Out',
+      osmNoteAriaLabel: 'Add an OSM note',
+      osmNoteButton: 'Suggest an improvement in OpenStreetMap',
+      osmEditorAriaLabel: 'Edit in OpenStreetMap',
+      osmEditorButton: 'Edit the map in OpenStreetMap editor',
     },
     navMenu: {
       label: 'Navigation',
