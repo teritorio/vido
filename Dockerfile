@@ -1,4 +1,4 @@
-ARG NODE_VERSION=22-alpine3.24
+ARG NODE_VERSION=24-alpine3.22
 FROM node:${NODE_VERSION}
 
 RUN apk --no-cache add git ruby
