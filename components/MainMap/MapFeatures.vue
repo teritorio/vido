@@ -12,6 +12,7 @@ import type {
 import { storeToRefs } from 'pinia'
 import booleanIntersects from '@turf/boolean-intersects'
 import MapControlsExplore from '~/components/MainMap/MapControlsExplore.vue'
+import MapControlsOsm from '~/components/MainMap/MapControlsOsm.vue'
 import SnackBar from '~/components/MainMap/SnackBar.vue'
 import MapBase from '~/components/Map/MapBase.vue'
 import MapControls3D from '~/components/Map/MapControls3D.vue'
@@ -32,6 +33,7 @@ import { INTERNAL_TYPE_ADDRESS } from '~/utils/utilities'
 import type { LatLng } from '~/utils/types'
 import { MapStyleEnum } from '~/utils/types'
 import { getHashPart } from '~/utils/url'
+import { useContribStore } from '~/stores/contrib'
 import useDevice from '~/composables/useDevice'
 
 const props = withDefaults(defineProps<{
@@ -71,7 +73,10 @@ const device = useDevice()
 const snackStore = useSnackStore()
 const menuStore = useMenuStore()
 const { featuresColor, isLoadingFeatures, selectedCategoryIds } = storeToRefs(menuStore)
-const { theme, explorerModeEnabled } = storeToRefs(useSiteStore())
+const { theme, explorerModeEnabled, osmNoteControlEnabled } = storeToRefs(useSiteStore())
+const { enabled: contribMode } = storeToRefs(useContribStore())
+
+const showOsmControls = computed(() => contribMode.value || osmNoteControlEnabled.value)
 const apiEndpoint = useState<string>('api-endpoint')
 const mapStore = useMapStore()
 const { center, selectedFeature, selectedFeatureDepsIDs, teritorioCluster, mode } = storeToRefs(mapStore)
@@ -443,6 +448,7 @@ defineExpose({ goToSelectedFeature, updateSelectedFeature })
           :initial-background="selectedBackground"
           @change-background="selectedBackground = $event"
         />
+        <MapControlsOsm v-if="showOsmControls" :map="map" />
       </template>
       <template #body>
         <slot />

@@ -49,7 +49,7 @@ export default function () {
           }
         : undefined,
       osm_note: {
-        icon: 'note-sticky',
+        icon: 'message',
         url: `https://www.openstreetmap.org/note/new#map=19/${coordinates[1]}/${coordinates[0]}&layers=N`,
       },
     }
