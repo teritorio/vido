@@ -23,6 +23,13 @@ defineProps<{
   position: relative
 }
 
+:deep(picture img) {
+  aspect-ratio: 16/9;
+  object-fit: cover;
+  height: auto;
+  width: 100%;
+}
+
 p {
   position: absolute;
   bottom: 0;
