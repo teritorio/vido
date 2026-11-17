@@ -64,18 +64,18 @@ const emit = defineEmits<{
         class="label"
         :class="[
           displayMode === 'compact' && 'tw-text-xs',
-          displayMode === 'large' && 'tw-mx-4 tw-text-left tw-grow tw-w-full',
+          displayMode === 'large' && 'tw-mx-4 tw-text-left tw-grow tw-min-w-0',
         ]"
       >
         {{ name.fr }}
       </div>
 
-      <slot
+      <div
         v-if="displayMode === 'large'"
-        name="end-line-large"
         class="tw-text-zinc-700 tw-shrink-0"
-        size="sm"
-      />
+      >
+        <slot name="end-line-large" />
+      </div>
     </a>
 
     <slot name="more" />
