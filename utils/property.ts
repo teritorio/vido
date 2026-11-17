@@ -27,11 +27,10 @@ export function isFieldMultilingual(editorial: MenuCategoryEditorial, property: 
   return field?.multilingual ?? false
 }
 
-export function getNestedPropertyValue(obj: PoiUnion['properties'], path: string[], multilingual = false): any {
-  // Resolve first key and unwrap multilingual wrapper if present
+export function getNestedPropertyValue(obj: PoiUnion['properties'], path: string[], multilingual = false, locale = 'fr-FR'): any {
   let value: any = obj[path[0]]
-  if (multilingual && value != null && typeof value === 'object' && 'fr-FR' in value)
-    value = value['fr-FR']
+  if (multilingual && value != null && typeof value === 'object' && locale in value)
+    value = value[locale]
 
   for (let i = 1; i < path.length; i++) {
     if (value == null || typeof value !== 'object')
