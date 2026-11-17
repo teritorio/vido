@@ -119,8 +119,8 @@ const translatedValue = computed(() => {
       <component
         :is="field.array ? 'ul' : 'div'"
         :class="{
-          'tw-list-disc': field.array && context !== PropertyTranslationsContextEnum.List,
-          'tw-ml-4': field.array && context !== PropertyTranslationsContextEnum.List,
+          'tw-list-disc': field.array && context === PropertyTranslationsContextEnum.Details,
+          'tw-ml-4': field.array && context === PropertyTranslationsContextEnum.Details,
         }"
       >
         <template v-for="(f, index) in translatedValue" :key="index">
