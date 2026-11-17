@@ -14,6 +14,7 @@ import TeritorioIconBadge from '~/components/UI/TeritorioIconBadge.vue'
 import { menuStore as useMenuStore } from '~/stores/menu'
 import { headerFromSettings } from '~/lib/apiSettings'
 import { isFieldsListItem } from '~/utils/utilities'
+import { getNestedPropertyValue } from '~/utils/property'
 
 interface DataTableHeader {
   filterable?: boolean
@@ -25,6 +26,7 @@ interface DataTableHeader {
   multilingual?: boolean
   sort?: (a: string, b: string) => number
   title: string
+  value?: (item: Poi) => any
   width?: string
 }
 
@@ -67,6 +69,7 @@ const headers = computed(() => {
         PropertyTranslationsContextEnum.List,
       ),
       sort: customSort,
+      value: (item: Poi) => getNestedPropertyValue(item.properties, field.field, field.multilingual ?? false, locale.value),
     }))
 
   if (contribMode) {
